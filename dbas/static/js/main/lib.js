@@ -17,7 +17,6 @@ function swapElements (from, to) {
 	$(from).replaceWith(copy_to);
 }
 
-
 /**
  * Src: http://stackoverflow.com/questions/11919065/sort-an-array-by-the-levenshtein-distance-with-best-performance-in-javascript
  * @param s1

@@ -3,7 +3,7 @@
 
 from dbas.lib import get_author_data
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import VoteStatement, VoteArgument, User, Argument
+from dbas.database.discussion_model import ClickedStatement, ClickedArgument, User, Argument
 from sqlalchemy import and_
 from .keywords import Keywords as _
 from .translator import Translator
@@ -356,8 +356,8 @@ def get_jump_to_argument_text_list(lang):
     """
     _t = Translator(lang)
 
-    tag_premise = '<' + tag_type + ' data-argumentation-type="argument">'
-    tag_conclusion = '<' + tag_type + ' data-argumentation-type="attack">'
+    tag_premise = '<' + tag_type + ' data-argumentation-type="attack">'
+    tag_conclusion = '<' + tag_type + ' data-argumentation-type="argument">'
     tag_end = '</' + tag_type + '>'
     premise = tag_premise + (_t.get(_.reason).lower() if lang != 'de' else _t.get(_.reason)) + tag_end
     conclusion = tag_conclusion + (
@@ -370,6 +370,31 @@ def get_jump_to_argument_text_list(lang):
     answers.append(_t.get(_.jumpAnswer2).format(conclusion, premise))
     answers.append(_t.get(_.jumpAnswer3).format(conclusion, premise))
     answers.append(_t.get(_.jumpAnswer4).format(premise))
+
+    return answers
+
+
+def get_support_to_argument_text_list(lang):
+    """
+
+    :param lang: ui_locales
+    :return: Array with [Conclusion is (right, wrong), Premise is (right, wrong), Premise does not lead to the conclusion, both hold]
+    """
+    _t = Translator(lang)
+
+    tag_premise = '<' + tag_type + ' data-argumentation-type="attack">'
+    tag_conclusion = '<' + tag_type + ' data-argumentation-type="argument">'
+    tag_end = '</' + tag_type + '>'
+    premise = tag_premise + (_t.get(_.reason).lower() if lang != 'de' else _t.get(_.reason)) + tag_end
+    conclusion = tag_conclusion + (
+        _t.get(_.assertion).lower() if lang != 'de' else _t.get(_.assertion)) + tag_end
+
+    answers = list()
+
+    answers.append(_t.get(_.supportAnswer0).format(premise))
+    answers.append(_t.get(_.supportAnswer3).format(premise))
+    answers.append(_t.get(_.supportAnswer1).format(premise))
+    answers.append(_t.get(_.supportAnswer2).format(premise, conclusion))
 
     return answers
 
@@ -438,6 +463,29 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
     e = '</' + tag_type + '>'
     sys_text = confrontation_text + b + '.<br><br>' + _t.get(_.whatDoYouThinkAboutThat) + '?' + e
     return sys_text, gender
+
+
+def get_text_for_support(db_arg, argument_text, nickname, main_page, _t):
+    """
+
+    :param uid:
+    :return:
+    """
+    b = '<' + tag_type + '>'
+    e = '</' + tag_type + '>'
+    db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(main_page, db_arg, nickname)
+    if is_okay:
+        if gender == 'm':
+            intro = _t.get(_.goodPointAndUserIsInterestedTooM)
+        else:
+            intro = _t.get(_.goodPointAndUserIsInterestedTooF)
+        intro = intro.format(b, e, author, b, e, argument_text)
+    else:
+        intro = _t.get(_.goodPointAndOtherParticipantsIsInterestedToo).format(b, e, argument_text)
+
+    question = '<br><br>' + _t.get(_.whatDoYouThinkAboutThat) + '?'
+
+    return intro + question
 
 
 def get_text_for_edit_text_message(lang, nickname, original, edited, url, for_html=True):
@@ -654,15 +702,15 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
     has_other_user_opinion = False
     if is_okay:
         if user_arg.argument_uid is None:
-            db_vote = DBDiscussionSession.query(VoteArgument).filter(and_(VoteArgument.argument_uid == user_arg.argument_uid,
-                                                                          VoteArgument.author_uid == db_other_user.uid,
-                                                                          VoteArgument.is_up_vote == True,
-                                                                          VoteArgument.is_valid == True)).all()
+            db_vote = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.argument_uid == user_arg.argument_uid,
+                                                                             ClickedArgument.author_uid == db_other_user.uid,
+                                                                             ClickedArgument.is_up_vote == True,
+                                                                             ClickedArgument.is_valid == True)).all()
         else:
-            db_vote = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == user_arg.conclusion_uid,
-                                                                           VoteStatement.author_uid == db_other_user.uid,
-                                                                           VoteStatement.is_up_vote == True,
-                                                                           VoteStatement.is_valid == True)).all()
+            db_vote = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == user_arg.conclusion_uid,
+                                                                              ClickedStatement.author_uid == db_other_user.uid,
+                                                                              ClickedStatement.is_up_vote == True,
+                                                                              ClickedStatement.is_valid == True)).all()
         has_other_user_opinion = db_vote and len(db_vote) > 0
 
     # distinguish between reply for argument and reply for premise group
@@ -769,10 +817,10 @@ def __get_name_link_of_arguments_author_with_statement_agree(main_page, argument
     """
 
     # grep all participants who agree with the users premise
-    db_statement_votes = DBDiscussionSession.query(VoteStatement).filter(and_(
-        VoteStatement.statement_uid == statement.uid,
-        VoteStatement.is_valid == True,
-        VoteStatement.is_up_vote == True
+    db_statement_votes = DBDiscussionSession.query(ClickedStatement).filter(and_(
+        ClickedStatement.statement_uid == statement.uid,
+        ClickedStatement.is_valid == True,
+        ClickedStatement.is_up_vote == True
     )).all()
     statement_agrees = [s.author_uid for s in db_statement_votes]
 
@@ -782,10 +830,10 @@ def __get_name_link_of_arguments_author_with_statement_agree(main_page, argument
         statement_agrees.remove(db_current_user.uid)
 
     # grep all participants who agree with system counter argument
-    db_argument_votes = DBDiscussionSession.query(VoteArgument).filter(and_(
-        VoteArgument.argument_uid == argument.uid,
-        VoteArgument.is_valid == True,
-        VoteArgument.is_up_vote == True
+    db_argument_votes = DBDiscussionSession.query(ClickedArgument).filter(and_(
+        ClickedArgument.argument_uid == argument.uid,
+        ClickedArgument.is_valid == True,
+        ClickedArgument.is_up_vote == True
     )).all()
 
     # grep the set of participants who agree with counter and users premise
@@ -814,19 +862,19 @@ def get_author_or_first_supporter_of_argument(argument_uid, current_user):
     """
 
     db_anonymous_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-    db_vote = DBDiscussionSession.query(VoteArgument).filter(and_(
-        VoteArgument.author_uid != db_anonymous_user.uid,
-        VoteArgument.argument_uid == argument_uid,
-        VoteArgument.is_valid == True,
-        VoteArgument.is_up_vote == True
+    db_vote = DBDiscussionSession.query(ClickedArgument).filter(and_(
+        ClickedArgument.author_uid != db_anonymous_user.uid,
+        ClickedArgument.argument_uid == argument_uid,
+        ClickedArgument.is_valid == True,
+        ClickedArgument.is_up_vote == True
     ))
 
     if current_user and db_vote:
-        db_vote = db_vote.filter(VoteArgument.author_uid != current_user.uid)
+        db_vote = db_vote.filter(ClickedArgument.author_uid != current_user.uid)
 
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
     if db_vote:
-        db_vote = db_vote.order_by(VoteArgument.uid.desc()).first()
+        db_vote = db_vote.order_by(ClickedArgument.uid.desc()).first()
 
     if db_vote:
         return DBDiscussionSession.query(User).get(db_vote.author_uid)

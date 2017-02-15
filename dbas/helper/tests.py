@@ -9,7 +9,7 @@ import transaction
 
 from paste.deploy import appconfig
 from dbas.database import DBDiscussionSession as dbs
-from dbas.database.discussion_model import StatementSeenBy, VoteStatement, ArgumentSeenBy, VoteArgument, User
+from dbas.database.discussion_model import StatementSeenBy, ClickedStatement, ArgumentSeenBy, ClickedArgument, User
 
 
 def path_to_settings(ini_file):
@@ -64,6 +64,6 @@ def clear_seen_by_of(nickname):
 
 def clear_votes_of(nickname):
     db_user = dbs.query(User).filter_by(nickname=nickname).first()
-    dbs.query(VoteStatement).filter_by(author_uid=db_user.uid).delete()
-    dbs.query(VoteArgument).filter_by(author_uid=db_user.uid).delete()
+    dbs.query(ClickedStatement).filter_by(author_uid=db_user.uid).delete()
+    dbs.query(ClickedArgument).filter_by(author_uid=db_user.uid).delete()
     transaction.commit()

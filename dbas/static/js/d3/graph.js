@@ -701,7 +701,6 @@ function DiscussionGraph() {
      * @param edges
      */
     function addListenerForNodes(circle, edges) {
-        selectedCircleId;
         circle.on("click", function (d) {
             // distinguish between click and drag event
             if (d3.event.defaultPrevented) return;

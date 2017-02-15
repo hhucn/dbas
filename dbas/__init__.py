@@ -143,6 +143,8 @@ def main(global_config, **settings):
     config.add_route('ajax_get_user_history', 'ajax_get_user_history')
     config.add_route('ajax_get_all_edits', 'ajax_get_all_edits')
     config.add_route('ajax_get_all_posted_statements', 'ajax_get_all_posted_statements')
+    config.add_route('ajax_get_all_argument_clicks', 'ajax_get_all_argument_clicks')
+    config.add_route('ajax_get_all_statement_clicks', 'ajax_get_all_statement_clicks')
     config.add_route('ajax_get_all_argument_votes', 'ajax_get_all_argument_votes')
     config.add_route('ajax_get_all_statement_votes', 'ajax_get_all_statement_votes')
     config.add_route('ajax_set_user_setting', 'ajax_set_user_setting')
@@ -167,9 +169,11 @@ def main(global_config, **settings):
     config.add_route('ajax_get_references', '{url:.*}ajax_get_references')
     config.add_route('ajax_set_references', '{url:.*}ajax_set_references')
     config.add_route('ajax_set_seen_statements', '{url:.*}ajax_set_seen_statements')
+    config.add_route('ajax_mark_statement_or_argument', '{url:.*}ajax_mark_statement_or_argument')
 
     # logic at the end, otherwise the * pattern will do shit
     config.add_route('main_user', '/user/{uid}')
+    config.add_route('discussion_support', '/discuss/{slug}/support/{arg_id_user}/{arg_id_sys}')
     config.add_route('discussion_reaction', '/discuss/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}')
     config.add_route('discussion_justify', '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation')
     config.add_route('discussion_attitude', '/discuss/{slug}/attitude/*statement_id')

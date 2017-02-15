@@ -24,23 +24,31 @@
 					        <table class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
 					        	<tr>
 					        		<td><span class="lead" i18n:translate="statements_posted">Statements posted</span></td>
-					        		<td id="statements-done-count" style="text-align: right">${summary.statements_posted}</td>
+					        		<td style="text-align: right">${summary.statements_posted}</td>
 					        	</tr>
 					        	<tr>
 					        		<td><span class="lead" i18n:translate="edits_done">Edits done</span></td>
-					        		<td id="edits-done-count" style="text-align: right">${summary.edits_done}</td>
+					        		<td style="text-align: right">${summary.edits_done}</td>
 					        	</tr>
 					        	<tr>
 					        		<td><span class="lead" i18n:translate="statements_reported">Statements reported</span></td>
-					        		<td id="edits-done-count" style="text-align: right">${summary.statements_reported}</td>
+					        		<td style="text-align: right">${summary.statements_reported}</td>
 					        	</tr>
 					        	<tr>
 					        		<td><span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span></td>
-					        		<td id="discussion-arg-votes-count" style="text-align: right">${summary.discussion_arg_votes}</td>
+					        		<td style="text-align: right">${summary.discussion_arg_votes}</td>
 					        	</tr>
 					        	<tr>
 					        		<td><span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span></td>
-					        		<td id="discussion-stat-votes-count" style="text-align: right">${summary.discussion_stat_votes}</td>
+					        		<td style="text-align: right">${summary.discussion_stat_votes}</td>
+					        	</tr>
+					        	<tr>
+					        		<td><span class="lead" i18n:translate="discussion_clicked_statements">Clicks for Arguments</span></td>
+					        		<td style="text-align: right">${summary.discussion_arg_clicks}</td>
+					        	</tr>
+					        	<tr>
+					        		<td><span class="lead" i18n:translate="discussion_clicked_arguments">Clicks for Statements</span></td>
+					        		<td style="text-align: right">${summary.discussion_stat_clicks}</td>
 					        	</tr>
 					        </table>
                         </div>

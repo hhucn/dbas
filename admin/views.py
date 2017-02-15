@@ -93,7 +93,7 @@ def main_admin(request):
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
-        'title': 'Admin',
+        'title': 'Admin' if 'is_admin' in extras_dict and extras_dict['is_admin'] else '(B)admin',
         'project': project_name,
         'extras': extras_dict,
         'dashboard': overview

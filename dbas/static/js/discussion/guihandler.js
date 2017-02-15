@@ -30,7 +30,7 @@ function GuiHandler() {
 		var img_plus = copy_div.find('.icon-add-premise');
 		var img_minus = copy_div.find('.icon-rem-premise');
 		body.append(copy_div);
-		setTextWatcherInputLength(copy_div.find('input'));
+		setTextWatcherInputLength(copy_div.find('input'), false);
 		
 		img_plus.click(function () {
 			new GuiHandler().appendAddPremiseRow();

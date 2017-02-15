@@ -72,7 +72,6 @@
             				    <input id="contact-submit" type="submit" name="form.contact.submitted" value="Submit Your message" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.contact_submit"/>
             				</div>
             			</form>
-			            <!--<script type="text/javascript" src="${request.static_url('dbas:static/js/contact.js')}"></script>-->
                     </div>
                 </div>
             </div>

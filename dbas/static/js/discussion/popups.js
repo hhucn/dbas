@@ -236,10 +236,12 @@ function PopupHandler() {
 				$('#item_undercut').click();
 				
 			} else if ($(this).data('special') === 'argument') {
+				console.log('a');
 				new PopupHandler().showFlagStatementPopup(uid, true, text);
 				
 			} else {
-				var tmp = $('#popup-flag-statement-text').text($(this).next().find('em').text());
+				console.log('b');
+				var tmp = $(this).next().find('em').text();
 				new PopupHandler().showFlagStatementPopup($(this).attr('id'), false, tmp);
 			}
 			popup.find('input').prop('checked', false);

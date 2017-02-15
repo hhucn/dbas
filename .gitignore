@@ -44,6 +44,8 @@ gource.sh
 dbas_timelapse.mp4
 git-delete-history.sh
 *.jar
+mergeDatabase.py
+db.txt
 
 # Pycharm
 .idea/
@@ -59,6 +61,7 @@ dbas/static/rss/*
 .babelrc
 startSession.py
 getMails.py
+dbas.js
 
 # node
 node_modules/

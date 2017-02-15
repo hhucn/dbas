@@ -8,7 +8,7 @@ import random
 import arrow
 import datetime
 
-from dbas.user_management import is_user_in_group, get_count_of_statements_of_user, get_count_of_votes_of_user
+from dbas.user_management import is_user_in_group, get_count_of_statements_of_user, get_count_of_votes_of_user, get_count_of_clicks_of_user
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Language, Group, Settings
 from dbas.database.initializedb import nick_of_anonymous_user
@@ -215,10 +215,11 @@ class DictionaryHelper(object):
         edits       = get_count_of_statements_of_user(db_user, True) if db_user else 0
         statements  = get_count_of_statements_of_user(db_user, False) if db_user else 0
         arg_vote, stat_vote = get_count_of_votes_of_user(db_user) if db_user else (0, 0)
+        arg_clicks, stat_clicks = get_count_of_clicks_of_user(db_user) if db_user else (0, 0)
         public_nick = db_user.get_global_nickname() if db_user else ''
         db_group    = DBDiscussionSession.query(Group).get(db_user.group_uid) if db_user else None
         group       = db_group.name if db_group else '-'
-        gravatar_public_url = get_public_profile_picture(db_user)
+        gravatar_public_url = get_public_profile_picture(db_user, 120)
         reputation, tmp = get_reputation_of(db_user.nickname)
 
         db_settings = DBDiscussionSession.query(Settings).get(db_user.uid) if db_user else None
@@ -242,6 +243,8 @@ class DictionaryHelper(object):
             'statements_posted': statements,
             'discussion_arg_votes': arg_vote,
             'discussion_stat_votes': stat_vote,
+            'discussion_arg_clicks': arg_clicks,
+            'discussion_stat_clicks': stat_clicks,
             'send_mails': db_settings.should_send_mails if db_settings else False,
             'send_notifications': db_settings.should_send_notifications if db_settings else False,
             'public_nick': db_settings.should_show_public_nickname if db_settings else True,
@@ -305,7 +308,7 @@ class DictionaryHelper(object):
             user_text = _tn.get(_.firstPositionText).rstrip()
         user_text += '<br>' + (_tn.get(_.pleaseAddYourSuggestion if nickname else _.feelFreeToLogin))
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(is_status=True, uid='end', message=user_text, lang=self.system_lang, nickname=nickname))
+            create_speechbubble_dict(is_status=True, id='end', message=user_text, lang=self.system_lang, nickname=nickname))
 
         if nickname:
             extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
@@ -329,7 +332,7 @@ class DictionaryHelper(object):
                 mid_text = _tn.get(_.firstOneReasonM).rstrip()
             else:
                 mid_text = _tn.get(_.firstOneReason).rstrip()
-            sdict = create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang, nickname=nickname)
+            sdict = create_speechbubble_dict(is_info=True, id='end', message=mid_text, lang=self.system_lang, nickname=nickname)
             discussion_dict['bubbles'].append(sdict)
         # else:
             #     mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin)
@@ -346,9 +349,9 @@ class DictionaryHelper(object):
         sys_text += _tn.get(_.untilNowThereAreNoMoreInformation)
         mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkTextLoggedIn if gender else _.discussionEndLinkTextNotLoggedIn)
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(is_system=True, uid='end', message=sys_text, lang=self.system_lang, nickname=nickname))
+            create_speechbubble_dict(is_system=True, id='end', message=sys_text, lang=self.system_lang, nickname=nickname))
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang, nickname=nickname))
+            create_speechbubble_dict(is_info=True, id='end', message=mid_text, lang=self.system_lang, nickname=nickname))
 
     def __add_discussion_end_text_at_at_justify(self, discussion_dict, extras_dict, nickname, current_premise, supportive, gender, _tn):
         discussion_dict['mode'] = 'justify'
@@ -372,7 +375,7 @@ class DictionaryHelper(object):
             mid_text += _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkTextLoggedIn if gender else _.discussionEndLinkTextNotLoggedIn)
 
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(is_info=True, uid='end', message=mid_text, lang=self.system_lang, nickname=nickname))
+            create_speechbubble_dict(is_info=True, id='end', message=mid_text, lang=self.system_lang, nickname=nickname))
         extras_dict['close_premise_container'] = False
         extras_dict['show_display_style']      = False
         extras_dict['show_bar_icon']           = False
@@ -466,6 +469,9 @@ class DictionaryHelper(object):
                                 'no_data_selected': _tn_dis.get(_.noDataSelected),
                                 'select_statement': _tn_dis.get(_.selectStatement),
                                 'select_multiple_statements': _tn_dis.get(_.selectMultipleStatementsWhichFlag),
+                                'because': _tn_dis.get(_.because).lower(),
+                                'mark_as_opinion': _tn_dis.get(_.mark_as_opinion),
+                                'unmark_as_opinion': _tn_dis.get(_.unmark_as_opinion),
                                 }
 
     def add_tag_text(self, is_ldap, return_dict):

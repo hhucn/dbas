@@ -93,6 +93,7 @@ var an_anonymous_user               = 'an_anonymous_user';
 var allEditsDone                    = 'allEditsDone';
 var allStatementsPosted             = 'allStatementsPosted';
 var allGivenVotes                   = 'allGivenVotes';
+var allGivenInterests               = 'allGivenInterests';
 var author                          = 'author';
 var avatar                          = 'avatar';
 var acceptItTitle                   = 'acceptItTitle';
@@ -269,7 +270,6 @@ var unpinNavigation                 = 'unpinNavigation';
 var veryweak                        = 'veryweak';
 var valid                           = 'valid';
 var vote                            = 'vote';
-var vote                            = 'vote';
 var yes                             = 'yes';
 var youAreAbleToReviewNow           = 'youAreAbleToReviewNow';
 var yourAreNotTheAuthorOfThisAnymore = 'yourAreNotTheAuthorOfThisAnymore';
@@ -336,6 +336,7 @@ var dbas_en = {
     'allEditsDone': 'All edits you\'ve done',
     'allStatementsPosted': 'All statements you\'ve posted',
     'allGivenVotes': 'All Votes',
+    'allGivenInterests': 'All Interests',
     'attack': 'Attack',
     'author': 'Author',
     'because': 'because',
@@ -449,7 +450,7 @@ var dbas_en = {
     'note': 'Note',
     'noEditsInOptimization': 'You have edited nothing!',
     'no_data_selected': 'no data selected',
-    'opinionBarometer': 'Opinion Barometer',
+    'opinionBarometer': 'Mood Barometer',
     'option': 'Options',
     'ohsnap': 'Oh snap!',
     'okay': 'Okay',
@@ -509,7 +510,7 @@ var dbas_en = {
     'textMaxCountMessage': 'characters left',
     'textMaxCountMessageError': 'Put it in a nutshell!', //'Please shorten!',
     'users': 'Users',
-    'usersWithSameOpinion': 'Users with same opinion',
+    'usersWithSameOpinion': 'Users with same mood',
     'unpinNavigation': 'Unpin Navigation',
     'unkownError': 'Unknown error',
     'youAreAbleToReviewNow': 'You are now able to visit the review section.',
@@ -560,6 +561,7 @@ var dbas_de = {
     'allEditsDone': 'Alle Änderungen von Ihnen:',
     'allStatementsPosted': 'Alle Aussagen von Ihnen:',
     'allGivenVotes': 'Alle Stimmen',
+    'allGivenInterests': 'Alle Interessen',
     'attack': 'Angriff',
     'author': 'Autor',
     'because':'weil',
@@ -675,7 +677,7 @@ var dbas_de = {
     'note': 'Hinweis',
     'no_data_selected': 'Nichts ausgewählt',
     'noEditsInOptimization': 'Sie haben keine Änderungen vorgenommen!',
-    'opinionBarometer': 'Meinungsbarometer',
+    'opinionBarometer': 'Stimmungsbarometer',
     'option': 'Optionen',
     'ohsnap': 'Mist!',
     'okay': 'Okay',
@@ -728,7 +730,7 @@ var dbas_de = {
     'to': 'An',
     'timestamp': 'Zeit',
     'users': 'Benutzer',
-    'usersWithSameOpinion': 'Teilnehmer/innen mit derselben Meinung',
+    'usersWithSameOpinion': 'Teilnehmer/innen mit derselben Einstellung',
     'unpinNavigation': 'Navigation lösen',
     'unkownError': 'Unbekannter Fehler',
     'typeofVote': 'Zustimmung/Ablehnung',

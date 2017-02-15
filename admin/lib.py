@@ -8,10 +8,11 @@ import arrow
 import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, StatementReferences, \
-    StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, Argument, History, VoteArgument, VoteStatement, \
+    StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, Argument, ClickedArgument, ClickedStatement, \
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
-    ReviewCanceled, RevokedContent, RevokedContentHistory, RSS, LastReviewerDuplicate, ReviewDuplicate, RevokedDuplicate
+    ReviewCanceled, RevokedContent, RevokedContentHistory, RSS, LastReviewerDuplicate, ReviewDuplicate,\
+    RevokedDuplicate, MarkedArgument, MarkedStatement  # , History
 from dbas.lib import is_user_admin, get_text_for_premisesgroup_uid, get_text_for_argument_uid, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -32,8 +33,10 @@ table_mapper = {
     'Premise'.lower(): {'table': Premise, 'name': 'Premise'},
     'Argument'.lower(): {'table': Argument, 'name': 'Argument'},
     # 'History'.lower(): {'table': History, 'name': 'History'},
-    'VoteArgument'.lower(): {'table': VoteArgument, 'name': 'VoteArgument'},
-    'VoteStatement'.lower(): {'table': VoteStatement, 'name': 'VoteStatement'},
+    'ClickedArgument'.lower(): {'table': ClickedArgument, 'name': 'ClickedArgument'},
+    'ClickedStatement'.lower(): {'table': ClickedStatement, 'name': 'ClickedStatement'},
+    'MarkedArgument'.lower(): {'table': MarkedArgument, 'name': 'MarkedArgument'},
+    'MarkedStatement'.lower(): {'table': MarkedStatement, 'name': 'MarkedStatement'},
     'Message'.lower(): {'table': Message, 'name': 'Message'},
     'ReviewDelete'.lower(): {'table': ReviewDelete, 'name': 'ReviewDelete'},
     'ReviewEdit'.lower(): {'table': ReviewEdit, 'name': 'ReviewEdit'},
@@ -121,10 +124,12 @@ def get_overview(page):
 
     # all tables for the 'voting' group
     voting = list()
-    voting.append(__get_dash_dict('VoteArgument', page + 'VoteArgument'))
-    voting.append(__get_dash_dict('VoteStatement', page + 'VoteStatement'))
-    voting.append(__get_dash_dict('StatementSeenBy', page + 'StatementSeenBy'))
+    voting.append(__get_dash_dict('ClickedArgument', page + 'ClickedArgument'))
+    voting.append(__get_dash_dict('ClickedStatement', page + 'ClickedStatement'))
+    voting.append(__get_dash_dict('MarkedArgument', page + 'MarkedArgument'))
+    voting.append(__get_dash_dict('MarkedStatement', page + 'MarkedStatement'))
     voting.append(__get_dash_dict('ArgumentSeenBy', page + 'ArgumentSeenBy'))
+    voting.append(__get_dash_dict('StatementSeenBy', page + 'StatementSeenBy'))
 
     # all tables for the 'reviews' group
     reviews = list()

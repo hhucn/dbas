@@ -19,7 +19,7 @@ from urllib import parse
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, \
-    VoteArgument, VoteStatement, Group
+    ClickedArgument, ClickedStatement, Group, MarkedArgument, MarkedStatement
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from sqlalchemy import and_, func
@@ -713,8 +713,9 @@ def get_user_by_case_insensitive_public_nickname(public_nickname):
 
 
 def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_flagable=False,
-                             is_author=False, uid='', url='', message='', omit_url=False, argument_uid=None,
-                             statement_uid=None, is_supportive=None, nickname='anonymous', lang='en'):
+                             is_author=False, id='', url='', message='', omit_url=False, argument_uid=None,
+                             statement_uid=None, is_supportive=None, nickname='anonymous', lang='en',
+                             is_users_opinion=False):
     """
     Creates an dictionary which includes every information needed for a bubble.
 
@@ -723,7 +724,7 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     :param is_status: Boolean
     :param is_info: Boolean
     :param is_flagable: Boolean
-    :param uid: Argument.uid
+    :param id: id of bubble
     :param url: URL
     :param message: String
     :param omit_url: Boolean
@@ -748,8 +749,22 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
         if message[pos - 1:pos] not in ['.', '?', '!']:
             message = message[0:pos] + '.' + message[pos:]
     else:
-        if not message.endswith(tuple(['.', '?', '!'])) and uid is not 'now':
+        if not message.endswith(tuple(['.', '?', '!'])) and id is not 'now':
             message += '.'
+
+    # check for users opinion
+    if is_user and nickname != 'anonymous':
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        db_el = None
+        if argument_uid is not None and db_user is not None:
+            db_el = DBDiscussionSession.query(MarkedArgument).filter(and_(MarkedArgument.argument_uid == argument_uid,
+                                                                          MarkedArgument.author_uid == db_user.uid)).first()
+
+        if statement_uid is not None and db_user is not None:
+            db_el = DBDiscussionSession.query(MarkedStatement).filter(and_(MarkedStatement.statement_uid == statement_uid,
+                                                                           MarkedStatement.author_uid == db_user.uid)).first()
+
+        is_users_opinion = db_el is not None
 
     speech = {'is_user': is_user,
               'is_system': is_system,
@@ -757,14 +772,14 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
               'is_info': is_info,
               'is_flagable': is_flagable,
               'is_author': is_author,
-              'id': uid if len(str(uid)) > 0 else str(time.time()),
+              'id': id if len(str(id)) > 0 else str(time.time()),
               'url': url if len(str(url)) > 0 else 'None',
               'message': message,
               'omit_url': omit_url,
               'data_type': 'argument' if argument_uid else 'statement' if statement_uid else 'None',
               'data_argument_uid': str(argument_uid), 'data_statement_uid': str(statement_uid),
               'data_is_supportive': str(is_supportive),
-              # 'url': url if len(str(url)) > 0 else 'None'
+              'is_users_opinion': str(is_users_opinion)
               }
 
     votecount_keys = __get_text_for_votecount(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang)
@@ -787,19 +802,19 @@ def __get_text_for_votecount(nickname, is_user, is_supportive, argument_uid, sta
         db_user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
 
     if argument_uid:
-        db_votecounts = DBDiscussionSession.query(VoteArgument). \
-            filter(and_(VoteArgument.argument_uid == argument_uid,
-                        VoteArgument.is_up_vote == is_supportive,
-                        VoteArgument.is_valid,
-                        VoteArgument.author_uid != db_user.uid)). \
+        db_votecounts = DBDiscussionSession.query(ClickedArgument). \
+            filter(and_(ClickedArgument.argument_uid == argument_uid,
+                        ClickedArgument.is_up_vote == is_supportive,
+                        ClickedArgument.is_valid,
+                        ClickedArgument.author_uid != db_user.uid)). \
             all()
 
     elif statement_uid:
-        db_votecounts = DBDiscussionSession.query(VoteStatement). \
-            filter(and_(VoteStatement.statement_uid == statement_uid,
-                        VoteStatement.is_up_vote == is_supportive,
-                        VoteStatement.is_valid,
-                        VoteStatement.author_uid != db_user.uid)). \
+        db_votecounts = DBDiscussionSession.query(ClickedStatement). \
+            filter(and_(ClickedStatement.statement_uid == statement_uid,
+                        ClickedStatement.is_up_vote == is_supportive,
+                        ClickedStatement.is_valid,
+                        ClickedStatement.author_uid != db_user.uid)). \
             all()
     _t = Translator(lang)
     speech['votecounts'] = len(db_votecounts) if db_votecounts else 0

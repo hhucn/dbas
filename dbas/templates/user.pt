@@ -78,8 +78,8 @@
 
         </div>
 
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/user.js')}"></script>
-		<script type="text/javascript" src="${request.static_url('dbas:static/js/notification.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/main/user.js')}"></script>
+		<script type="text/javascript" src="${request.static_url('dbas:static/js/main/notification.js')}"></script>
 
 	</tal:block>
 </tal:block>

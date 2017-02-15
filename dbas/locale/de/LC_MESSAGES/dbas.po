@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-02-08 12:56+0100\n"
+"POT-Creation-Date: 2017-02-14 08:18+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -136,27 +136,27 @@ msgid "login"
 msgstr "Login"
 
 #. Default: Settings
-#: templates/snippet-header.pt:74 templates/settings.pt:41
+#: templates/snippet-header.pt:69 templates/settings.pt:41
 msgid "settings"
 msgstr "Einstellungen"
 
 #. Default: Notifications
-#: templates/snippet-header.pt:81
+#: templates/snippet-header.pt:76
 msgid "notifications"
 msgstr "Benachrichtigungen"
 
 #. Default: Admin
-#: templates/snippet-header.pt:86
+#: templates/snippet-header.pt:81
 msgid "Admin"
 msgstr "Admin"
 
 #. Default: Logout
-#: templates/snippet-header.pt:91
+#: templates/snippet-header.pt:86
 msgid "logout"
 msgstr "Abmelden"
 
 #. Default: Review
-#: templates/snippet-header.pt:98 templates/review_history.pt:14
+#: templates/snippet-header.pt:93 templates/review_history.pt:14
 #: templates/review_reputation.pt:8 templates/review_content.pt:19
 msgid "review"
 msgstr "Prüfen"
@@ -440,7 +440,7 @@ msgstr "Charts und Graphen von"
 
 #. Default: by
 #.
-#: templates/imprint.pt:72 templates/imprint.pt:74
+#: templates/imprint.pt:72 templates/imprint.pt:74 templates/imprint.pt:75
 msgid "by"
 msgstr "von"
 
@@ -450,12 +450,12 @@ msgid "cookie_manager_by"
 msgstr "Cookie Manager von"
 
 #. Default: is generated with Pyramid Web Framework
-#: templates/imprint.pt:80
+#: templates/imprint.pt:81
 msgid "generated_with"
 msgstr "erstellt mit dem Pyramid Web Framework"
 
 #. Default: Changes
-#: templates/imprint.pt:91
+#: templates/imprint.pt:92
 msgid "changes"
 msgstr "Änderungen in der Version"
 
@@ -673,7 +673,7 @@ msgstr "Rückgängig machen"
 #. Default: Cancel
 #: templates/review_history.pt:96 templates/snippet-popups.pt:172
 #: templates/snippet-popups.pt:195 templates/snippet-popups.pt:220
-#: templates/snippet-popups.pt:1060
+#: templates/snippet-popups.pt:1084
 msgid "cancel"
 msgstr "Abbrechen"
 
@@ -844,7 +844,7 @@ msgstr ""
 
 #. Default: Okay
 #: templates/snippet-popups.pt:171 templates/snippet-popups.pt:194
-#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1059
+#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1083
 msgid "okay"
 msgstr "Okay"
 
@@ -877,8 +877,7 @@ msgstr "Fehler:"
 #. Default: Success:
 #. Default: Success
 #: templates/snippet-popups.pt:315 templates/snippet-popups.pt:393
-#: templates/snippet-popups.pt:486 templates/settings.pt:328
-#: templates/content.pt:66
+#: templates/snippet-popups.pt:486 templates/content.pt:66
 msgid "success"
 msgstr "Erfolg:"
 
@@ -1123,11 +1122,6 @@ msgstr "Die aktuelle Aussage ist"
 msgid "argument_under_consideration_is"
 msgstr "Das aktuelle Argument ist"
 
-#. Default: Why do you want to report it
-#: templates/snippet-popups.pt:827
-msgid "why_do_you_want_to_report"
-msgstr "Wieso möchten Sie es melden"
-
 #. Default: The text needs to be revised.
 #: templates/snippet-popups.pt:833
 msgid "text_need_to_be_revised"
@@ -1204,40 +1198,15 @@ msgstr "Melden"
 msgid "report_whole_argument"
 msgstr "Komplettes Argument melden."
 
-#. Default: Statement is a duplicate
-#: templates/snippet-popups.pt:918
-msgid "statement_is_duplicate"
-msgstr "Aussage ist ein Duplikat"
-
-#. Default: You have selected the statement
-#: templates/snippet-popups.pt:921
-msgid "you_have_selected_statement"
-msgstr "Sie haben folgende Aussage gewählt"
-
-#. Default: Search
-#: templates/snippet-popups.pt:924
-msgid "search"
-msgstr "Suche"
-
-#. Default: Duplicate
-#: templates/snippet-popups.pt:930
-msgid "duplicate_of"
-msgstr "Duplikat von"
-
-#. Default: no data selected
-#: templates/snippet-popups.pt:933
-msgid "no_data_selected"
-msgstr "keine Auswahl getroffen"
-
 #. Default: Caution
-#: templates/snippet-popups.pt:953
+#: templates/snippet-popups.pt:977
 msgid "caution"
 msgstr "Achtung"
 
 #. Default: Do you really want to disassociate yourself from your content? This
 #. step is irreversible! Subsequently you will not be the author of this
 #. statement anymore!
-#: templates/snippet-popups.pt:958
+#: templates/snippet-popups.pt:982
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 "Möchten Sie wirklich von diesem Inhalt distanzieren löschen? Dieser Schritt "
@@ -1245,46 +1214,46 @@ msgstr ""
 "dieses Statements."
 
 #. Default: Please choose a step to jump in
-#: templates/snippet-popups.pt:975
+#: templates/snippet-popups.pt:999
 msgid "choose_a_step_to_jump_in"
 msgstr "Bitte wählen Sie eine Stelle für den Sprung"
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: templates/snippet-popups.pt:978
+#: templates/snippet-popups.pt:1002
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr "Hier finden Sie alle Stellen, in denen die Aussage verwendet wird:"
 
 #. Default: References
-#: templates/snippet-popups.pt:995
+#: templates/snippet-popups.pt:1019
 msgid "refereces"
 msgstr "Referenzen"
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: templates/snippet-popups.pt:1003
+#: templates/snippet-popups.pt:1027
 msgid "statement_reference_definition"
 msgstr ""
 "Die Aussage ist ein Zitat von einer Nachrichtenseite o.Ä., welche Ihre "
 "Meinung untersützt. Die Quelle ist die Website."
 
 #. Default: Statement
-#: templates/snippet-popups.pt:1006 templates/snippet-popups.pt:1027
+#: templates/snippet-popups.pt:1030 templates/snippet-popups.pt:1051
 msgid "statement"
 msgstr "Aussage"
 
 #. Default: Source
-#: templates/snippet-popups.pt:1012
+#: templates/snippet-popups.pt:1036
 msgid "source"
 msgstr "Quelle"
 
 #. Default: Please choose a statement for your reference!
-#: templates/snippet-popups.pt:1017
+#: templates/snippet-popups.pt:1041
 msgid "please_choose_a_reference"
 msgstr "Bitte wählen Sie eine Aussage für Ihre Referenz!"
 
 #. Default: Add reference
-#: templates/snippet-popups.pt:1032
+#: templates/snippet-popups.pt:1056
 msgid "add_reference"
 msgstr "Referenzen hinzufügen"
 
@@ -1395,31 +1364,31 @@ msgid "edits_done"
 msgstr "Änderungen"
 
 #. Default: Votes for Arguments
-#: templates/settings.pt:137 templates/settings.pt:270 templates/finish.pt:38
+#: templates/settings.pt:137 templates/settings.pt:284 templates/finish.pt:38
 #: templates/user.pt:49
 msgid "discussion_votes_statements"
-msgstr "Stimmen für Aussagen"
+msgstr "Markierte Aussagen"
 
 #. Default: Votes for Statements
-#: templates/settings.pt:144 templates/settings.pt:277 templates/finish.pt:42
+#: templates/settings.pt:144 templates/settings.pt:291 templates/finish.pt:42
 #: templates/user.pt:53
 msgid "discussion_votes_arguments"
-msgstr "Stimmen für Argumente"
+msgstr "Markierte Argumente"
 
 #. Default: Reputation
-#: templates/settings.pt:151 templates/settings.pt:284
+#: templates/settings.pt:151 templates/settings.pt:298
 #: templates/review_reputation.pt:9 templates/review_reputation.pt:27
 #: templates/user.pt:57
 msgid "reputation"
 msgstr "Reputation"
 
 #. Default: Statistics could not be deleted.
-#: templates/settings.pt:178 templates/settings.pt:300
+#: templates/settings.pt:178 templates/settings.pt:314
 msgid "statistics_not_deleted"
 msgstr "Statistiken konnten nicht gelöscht werden."
 
 #. Default: Statistics were set successfully deleted.
-#: templates/settings.pt:184 templates/settings.pt:306
+#: templates/settings.pt:184 templates/settings.pt:320
 msgid "statistics_deletet"
 msgstr "Statistiken wurden gelöscht."
 
@@ -1465,10 +1434,15 @@ msgstr "Stärke"
 msgid "password_changed"
 msgstr "Ihr Passwort wurde geändert"
 
-#. Default: Your last history
-#: templates/settings.pt:316
-msgid "last_history"
-msgstr "Ihre letzte URL-History"
+#. Default: Clicks for Arguments
+#: templates/settings.pt:270 templates/finish.pt:46
+msgid "discussion_clicked_statements"
+msgstr "Geklickte Aussagen"
+
+#. Default: Clicks for Statements
+#: templates/settings.pt:277 templates/finish.pt:50
+msgid "discussion_clicked_arguments"
+msgstr "Geklickte Argumente"
 
 #. Default: Get In Touch With Us
 #: templates/contact.pt:8
@@ -1547,12 +1521,12 @@ msgid "statements_reported"
 msgstr "Aussagen gemeldet"
 
 #. Default: Let's go home!
-#: templates/finish.pt:56
+#: templates/finish.pt:64
 msgid "lets_go_home"
 msgstr "Zur Startseite!"
 
 #. Default: Back to the discussion!
-#: templates/finish.pt:59
+#: templates/finish.pt:67
 msgid "back_to_the_discussion"
 msgstr "Zurück zur Diskussion!"
 
@@ -1629,7 +1603,7 @@ msgstr "Das ist okay so"
 #. Default: Let me correct it
 #: templates/review_content.pt:43 templates/review_content.pt:82
 msgid "correct_it"
-msgstr "Lass' mich eine Verbesserungen angeben"
+msgstr "Lass mich eine Verbesserungen angeben"
 
 #. Default: Reject it
 #: templates/review_content.pt:47 templates/review_content.pt:88
@@ -1969,49 +1943,73 @@ msgid "restart_discussion"
 msgstr "Neustart"
 
 #. Default: Show all statements
-#: templates/content.pt:139
+#: templates/content.pt:141
 msgid "show_all_statements"
 msgstr "Alle Aussagen anzeigen"
 
 #. Default: Hide statements
-#: templates/content.pt:140
+#: templates/content.pt:142
 msgid "hide_statements"
 msgstr "Aussage ausblenden"
 
 #. Default: Default View
-#: templates/content.pt:283
+#: templates/content.pt:285
 msgid "default_view"
 msgstr "Standardansicht"
 
 #. Default: Labels
-#: templates/content.pt:284 templates/content.pt:285
+#: templates/content.pt:286 templates/content.pt:287
 msgid "labels"
 msgstr "Beschriftungen"
 
 #. Default: Positions
-#: templates/content.pt:286 templates/content.pt:287
+#: templates/content.pt:288 templates/content.pt:289
 msgid "positions"
 msgstr "Positionen"
 
 #. Default: My path
-#: templates/content.pt:288 templates/content.pt:289
+#: templates/content.pt:290 templates/content.pt:291
 msgid "my_path"
 msgstr "Mein Pfad"
 
 #. Default: My statements
-#: templates/content.pt:290 templates/content.pt:291
+#: templates/content.pt:292 templates/content.pt:293
 msgid "my_statements"
 msgstr "Meine Aussagen"
 
 #. Default: Supports
-#: templates/content.pt:292 templates/content.pt:293
+#: templates/content.pt:294 templates/content.pt:295
 msgid "supports_on_my_statements"
 msgstr "Unterstützungen"
 
 #. Default: Attacks
-#: templates/content.pt:294 templates/content.pt:295
+#: templates/content.pt:296 templates/content.pt:297
 msgid "attacks_on_my_statements"
 msgstr "Angriffe"
+
+#~ msgid "discussion_clicks_arguments"
+#~ msgstr "Geklickte Argumente"
+
+#~ msgid "why_do_you_want_to_report"
+#~ msgstr "Wieso möchten Sie es melden"
+
+#~ msgid "statement_is_duplicate"
+#~ msgstr "Aussage ist ein Duplikat"
+
+#~ msgid "you_have_selected_statement"
+#~ msgstr "Sie haben folgende Aussage gewählt"
+
+#~ msgid "search"
+#~ msgstr "Suche"
+
+#~ msgid "duplicate_of"
+#~ msgstr "Duplikat von"
+
+#~ msgid "no_data_selected"
+#~ msgstr "keine Auswahl getroffen"
+
+#~ msgid "last_history"
+#~ msgstr "Ihre letzte URL-History"
 
 #~ msgid "hide_my_path"
 #~ msgstr "Pfad ausblenden"
@@ -2177,7 +2175,7 @@ msgstr "Angriffe"
 #~ msgstr "Insel-Ansicht für"
 
 #~ msgid "let_me_enter_my_reason"
-#~ msgstr "Lass' mich meinen Grund angeben!"
+#~ msgstr "Lass mich meinen Grund angeben!"
 
 #~ msgid "edit_statement_view_changelog"
 #~ msgstr "Bearbeite die Aussage / Schau ins Changelog"

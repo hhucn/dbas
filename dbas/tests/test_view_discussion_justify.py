@@ -4,7 +4,7 @@ from sqlalchemy import and_
 
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
-from dbas.database.discussion_model import StatementSeenBy, VoteStatement, ArgumentSeenBy, VoteArgument, ReputationHistory
+from dbas.database.discussion_model import StatementSeenBy, ClickedStatement, ArgumentSeenBy, ClickedArgument, ReputationHistory
 
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view, clear_seen_by_of, clear_votes_of
@@ -30,9 +30,9 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         from dbas.views import discussion_justify as d
 
         len_db_seen_s1 = len(DBDiscussionSession.query(StatementSeenBy).all())
-        len_db_votes_s1 = len(DBDiscussionSession.query(VoteStatement).all())
+        len_db_votes_s1 = len(DBDiscussionSession.query(ClickedStatement).all())
         len_db_seen_a1 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
-        len_db_votes_a1 = len(DBDiscussionSession.query(VoteArgument).all())
+        len_db_votes_a1 = len(DBDiscussionSession.query(ClickedArgument).all())
 
         request = testing.DummyRequest()
         request.matchdict = {
@@ -45,9 +45,9 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         verify_dictionary_of_view(self, response)
 
         len_db_seen_s2 = len(DBDiscussionSession.query(StatementSeenBy).all())
-        len_db_votes_s2 = len(DBDiscussionSession.query(VoteStatement).all())
+        len_db_votes_s2 = len(DBDiscussionSession.query(ClickedStatement).all())
         len_db_seen_a2 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
-        len_db_votes_a2 = len(DBDiscussionSession.query(VoteArgument).all())
+        len_db_votes_a2 = len(DBDiscussionSession.query(ClickedArgument).all())
         self.assertEqual(len_db_seen_s1, len_db_seen_s2)  # no more cause we are not logged in
         self.assertEqual(len_db_votes_s1, len_db_votes_s2)
         self.assertEqual(len_db_seen_a1, len_db_seen_a2)
@@ -58,8 +58,8 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         from dbas.views import discussion_justify as d
 
         len_db_seen1 = len(DBDiscussionSession.query(StatementSeenBy).all())
-        len_db_vote1 = len(DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.is_valid == True,
-                                                                                VoteStatement.is_up_vote == True)).all())
+        len_db_vote1 = len(DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.is_valid == True,
+                                                                                   ClickedStatement.is_up_vote == True)).all())
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
@@ -71,8 +71,8 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         transaction.commit()
         verify_dictionary_of_view(self, response)
         len_db_seen2 = len(DBDiscussionSession.query(StatementSeenBy).all())
-        len_db_vote2 = len(DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.is_valid == True,
-                                                                                VoteStatement.is_up_vote == True)).all())
+        len_db_vote2 = len(DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.is_valid == True,
+                                                                                   ClickedStatement.is_up_vote == True)).all())
 
         count = sum([len(el['premises']) for el in response['items']['elements']])
         self.assertEqual(len_db_seen1 + count, len_db_seen2)
@@ -85,8 +85,8 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         from dbas.views import discussion_justify as d
 
         len_db_seen1 = len(DBDiscussionSession.query(StatementSeenBy).all())
-        len_db_vote1 = len(DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.is_valid == True,
-                                                                                VoteStatement.is_up_vote == False)).all())
+        len_db_vote1 = len(DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.is_valid == True,
+                                                                                   ClickedStatement.is_up_vote == False)).all())
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
@@ -98,8 +98,8 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         transaction.commit()
         verify_dictionary_of_view(self, response)
         len_db_seen2 = len(DBDiscussionSession.query(StatementSeenBy).all())
-        len_db_vote2 = len(DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.is_valid == True,
-                                                                                VoteStatement.is_up_vote == False)).all())
+        len_db_vote2 = len(DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.is_valid == True,
+                                                                                   ClickedStatement.is_up_vote == False)).all())
 
         count = sum([len(el['premises']) for el in response['items']['elements']])
         self.assertEqual(len_db_seen1 + count, len_db_seen2)
@@ -111,9 +111,9 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         from dbas.views import discussion_justify as d
 
         len_db_seen_s1 = len(DBDiscussionSession.query(StatementSeenBy).all())
-        len_db_votes_s1 = len(DBDiscussionSession.query(VoteStatement).all())
+        len_db_votes_s1 = len(DBDiscussionSession.query(ClickedStatement).all())
         len_db_seen_a1 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
-        len_db_votes_a1 = len(DBDiscussionSession.query(VoteArgument).all())
+        len_db_votes_a1 = len(DBDiscussionSession.query(ClickedArgument).all())
 
         request = testing.DummyRequest()
         request.matchdict = {
@@ -126,9 +126,9 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         verify_dictionary_of_view(self, response)
 
         len_db_seen_s2 = len(DBDiscussionSession.query(StatementSeenBy).all())
-        len_db_votes_s2 = len(DBDiscussionSession.query(VoteStatement).all())
+        len_db_votes_s2 = len(DBDiscussionSession.query(ClickedStatement).all())
         len_db_seen_a2 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
-        len_db_votes_a2 = len(DBDiscussionSession.query(VoteArgument).all())
+        len_db_votes_a2 = len(DBDiscussionSession.query(ClickedArgument).all())
         self.assertEqual(len_db_seen_s1, len_db_seen_s2)  # no more cause we are not logged in
         self.assertEqual(len_db_votes_s1, len_db_votes_s2)
         self.assertEqual(len_db_seen_a1, len_db_seen_a2)
@@ -138,9 +138,9 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         from dbas.views import discussion_justify as d
 
         len_db_seen_s1 = len(DBDiscussionSession.query(StatementSeenBy).all())
-        len_db_votes_s1 = len(DBDiscussionSession.query(VoteStatement).all())
+        len_db_votes_s1 = len(DBDiscussionSession.query(ClickedStatement).all())
         len_db_seen_a1 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
-        len_db_votes_a1 = len(DBDiscussionSession.query(VoteArgument).all())
+        len_db_votes_a1 = len(DBDiscussionSession.query(ClickedArgument).all())
         len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
 
         request = testing.DummyRequest()
@@ -154,9 +154,9 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         verify_dictionary_of_view(self, response)
 
         len_db_seen_s2 = len(DBDiscussionSession.query(StatementSeenBy).all())
-        len_db_votes_s2 = len(DBDiscussionSession.query(VoteStatement).all())
+        len_db_votes_s2 = len(DBDiscussionSession.query(ClickedStatement).all())
         len_db_seen_a2 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
-        len_db_votes_a2 = len(DBDiscussionSession.query(VoteArgument).all())
+        len_db_votes_a2 = len(DBDiscussionSession.query(ClickedArgument).all())
         len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
         self.assertEqual(len_db_seen_s1, len_db_seen_s2)  # no more cause we are not logged in
         self.assertEqual(len_db_votes_s1, len_db_votes_s2)
@@ -169,9 +169,9 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         from dbas.views import discussion_justify as d
 
         len_db_seen_s1 = len(DBDiscussionSession.query(StatementSeenBy).all())
-        len_db_votes_s1 = len(DBDiscussionSession.query(VoteStatement).all())
+        len_db_votes_s1 = len(DBDiscussionSession.query(ClickedStatement).all())
         len_db_seen_a1 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
-        len_db_votes_a1 = len(DBDiscussionSession.query(VoteArgument).all())
+        len_db_votes_a1 = len(DBDiscussionSession.query(ClickedArgument).all())
         len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
 
         request = testing.DummyRequest()
@@ -185,9 +185,9 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         verify_dictionary_of_view(self, response)
 
         len_db_seen_s2 = len(DBDiscussionSession.query(StatementSeenBy).all())
-        len_db_votes_s2 = len(DBDiscussionSession.query(VoteStatement).all())
+        len_db_votes_s2 = len(DBDiscussionSession.query(ClickedStatement).all())
         len_db_seen_a2 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
-        len_db_votes_a2 = len(DBDiscussionSession.query(VoteArgument).all())
+        len_db_votes_a2 = len(DBDiscussionSession.query(ClickedArgument).all())
         len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
         self.assertNotEqual(len_db_seen_s1, len_db_seen_s2)
         self.assertEqual(len_db_votes_s1, len_db_votes_s2)
@@ -202,9 +202,9 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         from dbas.views import discussion_justify as d
 
         len_db_seen_s1 = len(DBDiscussionSession.query(StatementSeenBy).all())
-        len_db_votes_s1 = len(DBDiscussionSession.query(VoteStatement).all())
+        len_db_votes_s1 = len(DBDiscussionSession.query(ClickedStatement).all())
         len_db_seen_a1 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
-        len_db_votes_a1 = len(DBDiscussionSession.query(VoteArgument).all())
+        len_db_votes_a1 = len(DBDiscussionSession.query(ClickedArgument).all())
         len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
 
         request = testing.DummyRequest()
@@ -218,9 +218,9 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         verify_dictionary_of_view(self, response)
 
         len_db_seen_s2 = len(DBDiscussionSession.query(StatementSeenBy).all())
-        len_db_votes_s2 = len(DBDiscussionSession.query(VoteStatement).all())
+        len_db_votes_s2 = len(DBDiscussionSession.query(ClickedStatement).all())
         len_db_seen_a2 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
-        len_db_votes_a2 = len(DBDiscussionSession.query(VoteArgument).all())
+        len_db_votes_a2 = len(DBDiscussionSession.query(ClickedArgument).all())
         len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
         self.assertNotEqual(len_db_seen_s1, len_db_seen_s2)
         self.assertEqual(len_db_votes_s1, len_db_votes_s2)
@@ -234,9 +234,9 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         from dbas.views import discussion_justify as d
 
         len_db_seen_s1 = len(DBDiscussionSession.query(StatementSeenBy).all())
-        len_db_votes_s1 = len(DBDiscussionSession.query(VoteStatement).all())
+        len_db_votes_s1 = len(DBDiscussionSession.query(ClickedStatement).all())
         len_db_seen_a1 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
-        len_db_votes_a1 = len(DBDiscussionSession.query(VoteArgument).all())
+        len_db_votes_a1 = len(DBDiscussionSession.query(ClickedArgument).all())
 
         request = testing.DummyRequest()
         request.matchdict = {
@@ -291,9 +291,9 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         #     pass
 
         len_db_seen_s2 = len(DBDiscussionSession.query(StatementSeenBy).all())
-        len_db_votes_s2 = len(DBDiscussionSession.query(VoteStatement).all())
+        len_db_votes_s2 = len(DBDiscussionSession.query(ClickedStatement).all())
         len_db_seen_a2 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
-        len_db_votes_a2 = len(DBDiscussionSession.query(VoteArgument).all())
+        len_db_votes_a2 = len(DBDiscussionSession.query(ClickedArgument).all())
         self.assertEqual(len_db_seen_s1, len_db_seen_s2)  # no more cause we are not logged in
         self.assertEqual(len_db_votes_s1, len_db_votes_s2)
         self.assertEqual(len_db_seen_a1, len_db_seen_a2)

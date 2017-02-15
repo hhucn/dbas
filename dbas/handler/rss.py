@@ -7,6 +7,7 @@ Provides helping function round about the news.
 import PyRSS2Gen
 import arrow
 import transaction
+import os
 
 from datetime import datetime
 from dbas.database import DBNewsSession, DBDiscussionSession
@@ -45,6 +46,9 @@ def create_news_rss(main_page, ui_locale):
         items=items
     )
 
+    if not os.path.exists('dbas/static/rss'):
+        os.makedirs('dbas/static/rss')
+
     rss.write_xml(open('dbas/static/rss/news.xml', 'w'))
 
     return True
@@ -74,6 +78,10 @@ def create_initial_issue_rss(main_page, ui_locale):
             ))
 
         rss = __get_issue_rss_gen(main_page, issue, items, ui_locale)
+
+        if not os.path.exists('dbas/static/rss'):
+            os.makedirs('dbas/static/rss')
+
         rss.write_xml(open('dbas/static/rss/' + issue.get_slug() + '.xml', 'w'))
 
     return True
@@ -118,6 +126,10 @@ def append_action_to_issue_rss(issue_uid, author_uid, title, description, ui_loc
         ))
 
     rss = __get_issue_rss_gen(get_global_url(), db_issue, items, ui_locale)
+
+    if not os.path.exists('dbas/static/rss'):
+        os.makedirs('dbas/static/rss')
+
     rss.write_xml(open('dbas/static/rss/' + db_issue.get_slug() + '.xml', 'w'))
 
     return True

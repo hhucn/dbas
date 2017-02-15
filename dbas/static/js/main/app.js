@@ -347,8 +347,9 @@ function prepareLoginRegistrationPopup(){
 /**
  *
  * @param element
+ * @param display_at_top
  */
-function setTextWatcherInputLength(element){
+function setTextWatcherInputLength(element, display_at_top){
 	var min_length = element.data('min-length');
 	var max_length = element.data('max-length');
 	if (!max_length)
@@ -356,7 +357,11 @@ function setTextWatcherInputLength(element){
 	var id = element.attr('id') + '-text-counter';
 	var msg = _t_discussion(textMinCountMessageBegin1) + ' ' + min_length + ' ' + _t_discussion(textMinCountMessageBegin2);
 	var field = $('<span>').text(msg).attr('id', id).addClass('text-info').addClass('text-counter-input');
-	field.insertBefore(element);
+	if (display_at_top){
+		field.insertBefore(element);
+	} else {
+		field.insertAfter(element);
+	}
 	
 	element.keyup(function(){
 		var text = element.val().trim();
@@ -565,7 +570,6 @@ $(document).ready(function () {
 	});
 	
 	
-	'use strict';
 	var path = window.location.href;
 	var lang = $('#hidden_language').val();
 
@@ -596,10 +600,10 @@ $(document).ready(function () {
 
 	// add minimal text length field
 	$('input[data-min-length]').each(function(){
-		setTextWatcherInputLength($(this));
+		setTextWatcherInputLength($(this), false);
 	});
 	$('textarea[data-min-length]').each(function(){
-		setTextWatcherInputLength($(this));
+		setTextWatcherInputLength($(this), false);
 	});
 
 	// session expired popup

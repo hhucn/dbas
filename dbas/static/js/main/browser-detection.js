@@ -38,7 +38,7 @@ function setGlobalErrorHandlerWithoutIds(){
 }
 
 $(document).ready(function mainDocumentReady() {
-	return;
+	/*
 	var splitted = navigator.sayswho.split(' ');
 	var browser = splitted[0];
 	var version = splitted[1];
@@ -56,4 +56,5 @@ $(document).ready(function mainDocumentReady() {
 			setGlobalErrorHandlerWithoutIds();
 		}, 1500);
 	}
+	*/
 });

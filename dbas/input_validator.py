@@ -120,6 +120,22 @@ def is_position(statement_uid):
     return True if db_statement.is_startpoint else False
 
 
+def supports_for_same_conclusion(arg_uid1, arg_uid2):
+    """
+
+    :param arg_uid1:
+    :param arg_uid2:
+    :return:
+    """
+    db_arg1 = DBDiscussionSession.query(Argument).get(arg_uid1)
+    db_arg2 = DBDiscussionSession.query(Argument).get(arg_uid2)
+
+    if not db_arg1 or not arg_uid2:
+        return False
+
+    return db_arg1.conclusion_uid == db_arg2.conclusion_uid
+
+
 def related_with_undermine(attacked_arg_uid, attacking_arg_uid):
     """
 

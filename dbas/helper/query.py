@@ -11,7 +11,7 @@ import dbas.helper.notification as NotificationHelper
 import dbas.recommender_system as RecommenderSystem
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Issue, \
-    RevokedContent, RevokedContentHistory, sql_timestamp_pretty_print
+    RevokedContent, RevokedContentHistory, sql_timestamp_pretty_print, MarkedArgument, MarkedStatement
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for_argument_uid, \
     get_undercuts_for_argument_uid, get_supports_for_argument_uid, set_new_rebut, set_new_support, \
     set_new_undercut, set_new_undermine_or_support_for_pgroup
@@ -211,6 +211,44 @@ def process_seen_statements(uids, nickname, translator, additional_argument=None
         add_seen_statement(uid, db_user)
 
     return error
+
+
+def mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, nickname, _t):
+    """
+
+    :param uid:
+    :param is_argument:
+    :param should_mark:
+    :param nickname:
+    :param _t:
+    :return:
+    """
+    logger('QueryHelper', 'mark_or_unmark_statement_or_argument', '{} {} {}'.format(uid, is_argument, nickname))
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+    if not db_user:
+        return '', _t.get(_.internalError)
+
+    base_type = Argument if is_argument else Statement
+    table = MarkedArgument if is_argument else MarkedStatement
+    column = MarkedArgument.argument_uid if is_argument else MarkedStatement.statement_uid
+
+    db_base = DBDiscussionSession.query(base_type).get(uid)
+    if not db_base:
+        return '', _t.get(_.internalError)
+
+    if should_mark:
+        db_el = DBDiscussionSession.query(table).filter(column == uid).first()
+        logger('QueryHelper', 'mark_or_unmark_statement_or_argument', 'Element {}is present'.format('yet ' if db_el else ''))
+        if not db_el:
+            new_el = MarkedArgument(argument=uid, user=db_user.uid) if is_argument else MarkedStatement(statement=uid, user=db_user.uid)
+            DBDiscussionSession.add(new_el)
+    else:
+        DBDiscussionSession.query(table).filter(column == uid).delete()
+
+    DBDiscussionSession.flush()
+    transaction.commit()
+
+    return _t.get(_.everythingSaved), ''
 
 
 def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type, arg_id, _um, supportive):
@@ -442,6 +480,36 @@ def get_logfile_for_statements(uids, lang, main_page):
         main_dict[get_text_for_statement_uid(uid)] = return_dict
 
     return main_dict
+
+
+def get_another_argument_with_same_support_and_conclusion(uid, history):
+    """
+
+    :param uid:
+    :param history:
+    :return:
+    """
+    logger('QueryHelper', 'get_another_argument_with_same_support_and_conclusion', str(uid))
+    logger('QueryHelper', 'get_another_argument_with_same_support_and_conclusion', str(uid))
+    logger('QueryHelper', 'get_another_argument_with_same_support_and_conclusion', str(uid))
+    db_arg = DBDiscussionSession.query(Argument).get(uid)
+    if not db_arg:
+        return None
+
+    if db_arg.conclusion_uid is None:
+        return None
+
+    # get forbidden uids
+    splitted_histoy = history.split('-')
+    forbidden_uids = [history.split('/')[2] for history in splitted_histoy if 'reaction' in history] + [uid]
+
+    db_supports = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_arg.conclusion_uid,
+                                                                  Argument.is_supportive == db_arg.is_supportive,
+                                                                  ~Argument.uid.in_(forbidden_uids))).all()
+    if len(db_supports) == 0:
+        return None
+
+    return db_supports[random.randint(0, len(db_supports) - 1)]
 
 
 def __get_logfile_dict(textversion, main_page, lang):
@@ -827,9 +895,9 @@ def __revoke_statement(db_user, statement_uid, translator):
     # db_statement_as_conclusion = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == statement_uid,
     #                                                                              Argument.is_supportive == True,
     #                                                                              Argument.author_uid != db_user.uid)).first()
-    # db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.author_uid != db_user.uid,
-    #                                                                 VoteStatement.is_up_vote == True,
-    #                                                                 VoteStatement.is_valid == True)).first()
+    # db_votes = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.author_uid != db_user.uid,
+    #                                                                 ClickedStatement.is_up_vote == True,
+    #                                                                 ClickedStatement.is_valid == True)).first()
     # # search new author who supported this statement
     # if db_statement_as_conclusion or db_votes:  # TODO 197 DO WE REALLY WANT TO SET A NEW AUTHOR HERE?
     #     db_anonymous = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()

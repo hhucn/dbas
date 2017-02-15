@@ -31,14 +31,14 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
 from dbas.helper.query import get_logfile_for_statements, revoke_content, insert_as_statements, \
     process_input_of_premises_for_arguments_and_receive_url, process_input_of_start_premises_and_receive_url, \
-    process_seen_statements
+    process_seen_statements, mark_or_unmark_statement_or_argument
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.helper.views import preparation_for_view, get_nickname, try_to_contact, handle_justification_step, \
     try_to_register_new_user_via_ajax, prepare_parameter_for_justification, login_user
 from dbas.helper.voting import add_vote_for_argument, clear_vote_and_seen_values_of_user
 from dbas.handler.password import request_password
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_argument, \
-    check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement
+    check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement, supports_for_same_conclusion
 from dbas.lib import get_language, escape_string, get_discussion_language, \
     get_user_by_private_or_public_nickname, is_user_author_or_admin, \
     get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid, get_profile_picture, \
@@ -181,7 +181,7 @@ def main_settings(request):
     logger('main_settings', 'def', 'main, request.params: ' + str(request.params))
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
+    #  history_helper.save_path_set_sin_database(request_authenticated_userid, request.path)  # TODO 322
     if session_expired:
         return user_logout(request, True)
 
@@ -742,6 +742,78 @@ def discussion_reaction(request, for_api=False, api_data=None):
         return return_dict
 
 
+# support page
+@view_config(route_name='discussion_support', renderer='templates/content.pt', permission='everybody')
+def discussion_support(request, for_api=False, api_data=None):
+    """
+    View configuration for the jump view.
+
+    :param request: request of the web server
+    :param for_api: Boolean
+    :param api_data:
+    :return: dictionary
+    """
+    # '/discuss/{slug}/jump/{arg_id}'
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    match_dict = request.matchdict
+    params = request.params
+    request_authenticated_userid = request.authenticated_userid
+    logger('discussion_support', 'def', 'main, request.matchdict: ' + str(match_dict))
+    logger('discussion_support', 'def', 'main, request.params: ' + str(params))
+
+    nickname = get_nickname(request_authenticated_userid, for_api, api_data)
+    history = params['history'] if 'history' in params else ''
+
+    if for_api and api_data:
+        slug = api_data["slug"]
+        arg_user_uid = api_data["arg_user_uid"]
+        arg_system_uid = api_data["arg_system_uid"]
+    else:
+        slug = match_dict['slug'] if 'slug' in match_dict else ''
+        arg_user_uid = match_dict['arg_id_user'] if 'arg_id_user' in match_dict else ''
+        arg_system_uid = match_dict['arg_id_sys'] if 'arg_id_sys' in match_dict else ''
+
+    session_expired = user_manager.update_last_action(nickname)
+    #  history_helper.save_path_in_database(nickname, request.path, history)  # TODO 322
+    history_helper.save_history_in_cookie(request, request.path, history)
+    if session_expired:
+        return user_logout(request, True)
+
+    ui_locales = get_language(request)
+    issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
+    disc_ui_locales = get_discussion_language(request, issue)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+
+    if not check_belonging_of_argument(issue, arg_user_uid) or not check_belonging_of_argument(issue, arg_system_uid) or not supports_for_same_conclusion(arg_user_uid, arg_system_uid):
+        logger('discussion_choose', 'def', 'no item dict', error=True)
+        raise HTTPNotFound()
+        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
+
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
+    discussion_dict = _ddh.get_dict_for_supporting_each_other(arg_system_uid, arg_user_uid, nickname, request.application_url)
+    item_dict = _idh.get_array_for_support(arg_system_uid, slug, for_api)
+    extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
+                                                                                    True, True, request,
+                                                                                    application_url=request.application_url,
+                                                                                    for_api=for_api, nickname=request_authenticated_userid)
+
+    return_dict = dict()
+    return_dict['issues'] = issue_dict
+    return_dict['discussion'] = discussion_dict
+    return_dict['items'] = item_dict
+    return_dict['extras'] = extras_dict
+
+    if for_api:
+        return return_dict
+    else:
+        return_dict['layout'] = base_layout()
+        return_dict['language'] = str(ui_locales)
+        return_dict['title'] = issue_dict['title']
+        return_dict['project'] = project_name
+        return return_dict
+
+
 # finish page
 @view_config(route_name='discussion_finish', renderer='templates/finish.pt', permission='everybody')
 def discussion_finish(request):
@@ -901,7 +973,7 @@ def discussion_jump(request, for_api=False, api_data=None):
 
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
-    discussion_dict = _ddh.get_dict_for_jump(arg_uid, history)
+    discussion_dict = _ddh.get_dict_for_jump(arg_uid, nickname, history)
     item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
     extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
                                                                                     True, True, request,
@@ -1167,6 +1239,70 @@ def get_all_edits_of_user(request):
     logger('get_all_edits_of_user', 'def', 'main')
     ui_locales = get_language(request)
     statements, return_array = user_manager.get_textversions_of_user(request_authenticated_userid, ui_locales)
+    return json.dumps(return_array)
+
+
+# ajax - getting all votes for arguments
+@view_config(route_name='ajax_get_all_argument_votes', renderer='json')
+def get_all_argument_votes(request):
+    """
+
+    :return:
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    request_authenticated_userid = request.authenticated_userid
+    user_manager.update_last_action(request_authenticated_userid)
+    logger('get_all_argument_votes', 'def', 'main')
+    ui_locales = get_language(request)
+    return_array = user_manager.get_votes_of_user(request_authenticated_userid, True, ui_locales)
+    return json.dumps(return_array)
+
+
+# ajax - getting all votes for statements
+@view_config(route_name='ajax_get_all_statement_votes', renderer='json')
+def get_all_statement_votes(request):
+    """
+
+    :return:
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    request_authenticated_userid = request.authenticated_userid
+    user_manager.update_last_action(request_authenticated_userid)
+    logger('get_all_statement_votes', 'def', 'main')
+    ui_locales = get_language(request)
+    return_array = user_manager.get_votes_of_user(request_authenticated_userid, False, ui_locales)
+    return json.dumps(return_array)
+
+
+# ajax - getting all votes for arguments
+@view_config(route_name='ajax_get_all_argument_clicks', renderer='json')
+def get_all_argument_clicks(request):
+    """
+
+    :return:
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    request_authenticated_userid = request.authenticated_userid
+    user_manager.update_last_action(request_authenticated_userid)
+    logger('get_all_argument_clicks', 'def', 'main')
+    ui_locales = get_language(request)
+    return_array = user_manager.get_clicks_of_user(request_authenticated_userid, True, ui_locales)
+    return json.dumps(return_array)
+
+
+# ajax - getting all votes for statements
+@view_config(route_name='ajax_get_all_statement_clicks', renderer='json')
+def get_all_statement_clicks(request):
+    """
+
+    :return:
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    request_authenticated_userid = request.authenticated_userid
+    user_manager.update_last_action(request_authenticated_userid)
+    logger('get_all_statement_clicks', 'def', 'main')
+    ui_locales = get_language(request)
+    return_array = user_manager.get_clicks_of_user(request_authenticated_userid, False, ui_locales)
     return json.dumps(return_array)
 
 
@@ -1902,6 +2038,34 @@ def set_seen_statements(request):
 
     return json.dumps(return_dict)
 
+
+# ajax - set users opinion
+@view_config(route_name='ajax_mark_statement_or_argument', renderer='json')
+def mark_statement_or_argument(request):
+    """
+    Set statements as seen, when they were hidden
+
+    :return: json
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('mark_statement_or_argument', 'def', 'main ' + str(request.params))
+    return_dict = dict()
+    ui_locales = get_language(request)
+    _t = Translator(ui_locales)
+
+    try:
+        uid = request.params['uid']
+        is_argument = request.params['is_argument'] == 'true'
+        should_mark = request.params['should_mark'] == 'true'
+
+        success, error = mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, request.authenticated_userid, _t)
+        return_dict['success'] = success
+        return_dict['error'] = error
+    except KeyError as e:
+        logger('set_seen_statements', 'error', repr(e))
+        return_dict['error'] = _t.get(_.internalKeyError)
+
+    return json.dumps(return_dict)
 
 # ###################################
 # ADDTIONAL AJAX STUFF # GET THINGS #

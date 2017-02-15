@@ -9,7 +9,7 @@ import json
 from sqlalchemy import and_
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, VoteStatement, Statement, \
+from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, ClickedStatement, Statement, \
     StatementSeenBy
 from dbas.lib import get_profile_picture
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_statement_as_query
@@ -83,13 +83,13 @@ def get_opinion_data(issue):
     """
     db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all()
     db_all_seen = DBDiscussionSession.query(StatementSeenBy)
-    db_all_votes = DBDiscussionSession.query(VoteStatement)
+    db_all_votes = DBDiscussionSession.query(ClickedStatement)
     ret_dict = dict()
     for statement in db_statements:
         db_seen = len(db_all_seen.filter_by(statement_uid=statement.uid).all())
-        db_votes = len(db_all_votes.filter(and_(VoteStatement.statement_uid == statement.uid,
-                                                VoteStatement.is_up_vote == True,
-                                                VoteStatement.is_valid == True)).all())
+        db_votes = len(db_all_votes.filter(and_(ClickedStatement.statement_uid == statement.uid,
+                                                ClickedStatement.is_up_vote == True,
+                                                ClickedStatement.is_valid == True)).all())
         ret_dict[str(statement.uid)] = (db_votes / db_seen) if db_seen != 0 else 1
 
     return ret_dict
@@ -308,6 +308,7 @@ def __collect_all_nodes_and_edges(all_ids, nodes, edges, conclusion_uids_dict, e
     # 1) with one premise and no undercuts for this argument
     # 2) with at least two premises, one conclusion or an undercut is done on this argument
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
+    logger('X', 'X', 'premisesgroup_uid={}'.format(argument.premisesgroup_uid))
 
     # if there are different premises for one argument add invisible nodes
     if len(db_premises) > 1:
@@ -464,8 +465,8 @@ def __get_author_of_statement(uid, db_user):
     """
     if not db_user:
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-    db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).first()
-    db_author = DBDiscussionSession.query(User).get(db_statement.author_uid)
+    db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).first()
+    db_author = DBDiscussionSession.query(User).get(db_tv.author_uid)
     gravatar = get_profile_picture(db_author, 40)
     name = db_author.get_global_nickname() if db_user.uid != db_author.uid else db_user.nickname
     return {'name': name, 'gravatar_url': gravatar}
@@ -543,9 +544,9 @@ def __get_extras_dict(statement):
     db_author   = DBDiscussionSession.query(User).get(db_textversion_author.author_uid)
     db_modifier = DBDiscussionSession.query(User).get(db_textversion_modifier.author_uid)
 
-    db_votes = DBDiscussionSession.query(VoteStatement).filter(and_(VoteStatement.statement_uid == statement.uid,
-                                                                    VoteStatement.is_up_vote == True,
-                                                                    VoteStatement.is_valid == True)).all()
+    db_votes = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == statement.uid,
+                                                                       ClickedStatement.is_up_vote == True,
+                                                                       ClickedStatement.is_valid == True)).all()
 
     return_dict = {'text': db_textversion_author.content,
                    'author': db_author.get_global_nickname(),

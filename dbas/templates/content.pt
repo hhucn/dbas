@@ -76,6 +76,10 @@
                                         <span class="triangle-content">${structure:bubble.message}</span>
                                     </a>
                                     <br>
+                                    <div tal:omit-tag="" tal:condition="extras.logged_in">
+                                        <i class="fa fa-star user-star uncheck-as-users-opinion" aria-hidden="true" tal:attributes="title extras.title.unmark_as_opinion; data-is-users-opinion bubble.is_users_opinion" style="display:none;"></i>
+                                        <i class="fa fa-star-o user-star check-as-users-opinion" aria-hidden="true" tal:attributes="title extras.title.mark_as_opinion; data-is-users-opinion bubble.is_users_opinion" style="display:none;"></i>
+                                    </div>
                                     <em class="triangle-r-info" tal:attributes="data-type bubble.data_type; data-argument-uid bubble.data_argument_uid; data-statement-uid bubble.data_statement_uid; data-votecount bubble.votecounts; data-is-supportive bubble.data_is_supportive">${bubble.votecounts_message}</em>
                                 </p>
                             </div>
@@ -307,7 +311,7 @@
             </button>
             <br>
             <div class="col-md-12 text-center">
-                <h5>${structure:discussion.add_premise_text}</h5>
+                <!--<p class="lead">${structure:discussion.add_premise_text}</p>-->
                 <div id="add-statement-error-container" class="alert alert-danger" role="alert" style="display:none">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -317,12 +321,12 @@
                 </div>
                 <div id="add-statement-container-body">
 
-            	<div class="form-group">
-            		<div class="col-sm-12 input-group">
-                        <div class="input-group-addon"><i class="fa fa-commenting fa-2x" aria-hidden="true"></i></div>
-            			<input id="add-statement-container-main-input" type="text" class="form-control"  placeholder="..." value="" data-min-length="10"  data-max-length="180" style="width: 100%">
-            		</div>
-            	</div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon" style=" padding-bottom: 1.5em; font-size: 17px;">${structure:discussion.add_premise_text}</span>
+                        <input id="add-statement-container-main-input" type="text" class="form-control" value="" data-min-length="10"  data-max-length="180" style="width: 100%">
+                    </div>
+                </div>
 
                 </div>
                 <div class="list-group" id="proposal-statement-list-group"></div>
@@ -335,7 +339,7 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             <div class="col-md-12 text-center">
-                <h5 style="margin-bottom: 0"><span>${structure:extras.tag.add_premise_title}</span>: <span id="add-premise-container-main-input-intro">${structure:discussion.add_premise_text}</span></h5>
+                <p class="lead" style="margin-bottom: 0"><!--<span>${structure:extras.tag.add_premise_title}</span>:--> <span id="add-premise-container-main-input-intro">${structure:discussion.add_premise_text}</span></p>
                 <div id="add-premise-error-container" class="alert alert-danger" role="alert" style="display:none">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -349,8 +353,8 @@
 
             	            <div class="form-group">
             		            <div class="col-sm-12 input-group">
-                                    <div class="input-group-addon"><i class="fa fa-commenting fa-2x" aria-hidden="true"></i></div>
-                        			<input id="add-premise-container-main-input" type="text" class="form-control"  placeholder="..." value="" data-min-length="10"  data-max-length="180" style="width: 100%">
+                                    <span class="input-group-addon" style=" padding-bottom: 1.5em; font-size: 17px;"><span>...</span><span>${extras.title.because}</span></span>
+                        			<input id="add-premise-container-main-input" type="text" class="form-control" value="" data-min-length="10"  data-max-length="180" style="width: 100%">
             		            </div>
             	            </div>
 
@@ -367,7 +371,7 @@
         <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/main.js')}"></script>
         <script tal:condition="extras.show_bar_icon" type="text/javascript" src="${request.static_url('dbas:static/js/d3/barometer.js')}"></script>
         <script tal:condition="extras.show_graph_icon" type="text/javascript" src="${request.static_url('dbas:static/js/d3/graph.js')}"></script>
-        <script tal:condition="extras.show_graph_icon or extras.show_bar_icon" type="text/javascript" src="${request.static_url('dbas:static/js/d3/d3.min.js')}"></script>
+        <script tal:condition="extras.show_graph_icon or extras.show_bar_icon" type="text/javascript" src="${request.static_url('dbas:static/js/libs/d3.min.js')}"></script>
 
     </tal:block>
 </tal:block>

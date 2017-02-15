@@ -217,7 +217,8 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, state
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_justify_argument(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, relation, nickname, history):
+def preparation_for_justify_argument(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales,
+                                     request_authenticated_userid, relation, nickname, history):
     """
 
     :param request:
@@ -238,7 +239,7 @@ def preparation_for_justify_argument(request, for_api, main_page, slug, statemen
 
     # justifying argument
     # is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
-    item_dict       = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in, nickname)
+    item_dict       = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in, nickname, history)
     discussion_dict = _ddh.get_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request,
                                               argument_id=statement_or_arg_id, application_url=main_page, for_api=for_api,
@@ -358,33 +359,14 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
 
     db_user = get_user_by_case_insensitive_nickname(nickname)
     if not db_user:  # check if the user exists
-        logger('ViewHelper', 'login_user', 'user \'' + nickname + '\' does not exists')
-
-        # if the user does not exists and we are using LDAP, we'll grep the user
-        if is_ldap:
-            msg, db_user = __login_user_ldap(request, nickname, password, _tn)
-            if msg is not None:
-                return msg
-
-        else:
-            success, msg, db_user = try_to_register_new_user_via_ajax(request, _tn)
-            if not success:
-                return msg
+        msg = __login_user_not_existing(request, nickname, password, _tn, is_ldap)
+        if msg is not None:
+            return msg
 
     else:
-        logger('ViewHelper', 'login_user', 'user \'' + nickname + '\' exists')
-        if is_ldap:
-            user_data = verify_ldap_user_data(request, nickname, password)
-
-            if not user_data and not db_user.validate_password(password):  # check password
-                logger('ViewHelper', 'login_user', 'wrong password')
-                error = _tn.get(_.userPasswordNotMatch)
-                return error
-        else:
-            if not db_user.validate_password(password):  # check password
-                logger('ViewHelper', 'user_login', 'wrong password')
-                error = _tn.get(_.userPasswordNotMatch)
-                return error
+        error = __login_user_is_existing(request, nickname, password, _tn, is_ldap, db_user)
+        if error is not None:
+            return error
 
     headers, url = __refresh_headers_and_url(request, db_user, keep_login, url)
 
@@ -398,6 +380,43 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
             location=url,
             headers=headers,
         )
+
+
+def __login_user_not_existing(request, nickname, password, _tn, is_ldap):
+    logger('ViewHelper', 'login_user', 'user \'' + nickname + '\' does not exists')
+
+    # if the user does not exists and we are using LDAP, we'll grep the user
+    if is_ldap:
+        msg, db_user = __login_user_ldap(request, nickname, password, _tn)
+        if msg is not None:
+            return msg
+
+    else:
+        success, msg, db_user = try_to_register_new_user_via_ajax(request, _tn)
+        if not success:
+            return msg
+
+    return None
+
+
+def __login_user_is_existing(request, nickname, password, _tn, is_ldap, db_user):
+    logger('ViewHelper', 'login_user', 'user \'' + nickname + '\' exists')
+    if is_ldap:
+        local_login = db_user.validate_password(password)
+
+        user_data = None
+        if not local_login:
+            user_data = verify_ldap_user_data(request, nickname, password)
+
+        if user_data is None and not local_login:  # check password
+            logger('ViewHelper', 'login_user', 'wrong password')
+            error = _tn.get(_.userPasswordNotMatch)
+            return error
+    else:
+        if not db_user.validate_password(password):  # check password
+            logger('ViewHelper', 'user_login', 'wrong password')
+            error = _tn.get(_.userPasswordNotMatch)
+            return error
 
 
 def __login_user_ldap(request, nickname, password, _tn):
