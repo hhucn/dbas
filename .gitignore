@@ -46,6 +46,7 @@ git-delete-history.sh
 *.jar
 mergeDatabase.py
 db.txt
+*.sql
 
 # Pycharm
 .idea/
