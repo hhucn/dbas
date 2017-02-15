@@ -229,7 +229,9 @@ class ItemDictHelper(object):
             url = ''
 
             # with a chance of 50% or at the end we will seed the new "support step"
-            if 'end' in attack or random.uniform(0, 1) > 0.5:  # TODO 343
+            support = random.uniform(0, 1) > 0.5
+            logger('ItemDictHelper', 'get_array_for_justify_argument', 'take support? is end: {} or rnd: {}'.format('end' in attack, support))
+            if 'end' in attack or support:  # TODO 343
                 new_arg = get_another_argument_with_same_support_and_conclusion(argument.uid, history)
                 the_other_one = new_arg is None
                 if new_arg:

@@ -49,8 +49,6 @@ def get_d3_dump(request):
                 return_dict.update({'partial_graph': get_partial_graph_for_statement(uid)})
         else:
             return_dict.update({'partial_graph': {}})
-        logger('X', 'X', str(return_dict['partial_graph']))
-        logger('X', 'X', str(return_dict['partial_graph']))
 
         return_dict.update({'error': ''})
     else:
