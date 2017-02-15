@@ -148,7 +148,8 @@ def handle_justification_step(request, for_api, ui_locales, nickname, history):
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_justify_statement(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, mode, nickname, history):
+def preparation_for_justify_statement(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales,
+                                      request_authenticated_userid, mode, nickname, history):
     """
 
     :param request:
@@ -168,7 +169,7 @@ def preparation_for_justify_statement(request, for_api, main_page, slug, stateme
 
     VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive)
 
-    item_dict       = _idh.get_array_for_justify_statement(statement_or_arg_id, nickname, supportive)
+    item_dict       = _idh.get_array_for_justify_statement(statement_or_arg_id, nickname, supportive, history)
     discussion_dict = _ddh.get_dict_for_justify_statement(statement_or_arg_id, main_page, slug, supportive, len(item_dict['elements']), nickname)
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, request_authenticated_userid, mode == 't',
                                               application_url=main_page, for_api=for_api)
