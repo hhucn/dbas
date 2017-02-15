@@ -201,13 +201,6 @@ function DiscussionGraph() {
 
         // node
         var node = createNodes(svg, force, drag);
-        // update position of nodes
-        d3.selectAll(".node").each(function (d) {
-            d.x = 100,
-            d.y = 100,
-            d.px = 100,
-            d.py = 100
-        });
         var circle = setNodeProperties(node).attr('class', 'circle');
 
         // tooltip
@@ -1014,8 +1007,8 @@ function DiscussionGraph() {
         // run through all values in jsonData.path
         jsonData.path.forEach(function (d) {
             edges.forEach(function (edge) {
-
-                let edgeTarget;
+                // edge from virtual node to statement
+                let edgeVirtualNode;
 
                 // edge without virtual node
                 if((edge.source.id === getId(d[0])) && (edge.target.id === getId(d[1]))) {
@@ -1023,9 +1016,9 @@ function DiscussionGraph() {
                 }
                 // edge with virtual node
                 else if(edge.source.id == getId(d[0]) && edge.target.label == ''){
-                    edgeTarget = edge;
+                    edgeVirtualNode = edge;
                     edges.forEach(function (e) {
-                        if (e.source.id == edgeTarget.target.id && e.target.id == getId(d[1])) {
+                        if (e.source.id == edgeVirtualNode.target.id && e.target.id == getId(d[1])) {
                             edgesCircleId.push(edge);
                             edgesCircleId.push(e);
                         }
