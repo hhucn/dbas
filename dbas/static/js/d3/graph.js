@@ -323,12 +323,12 @@ function DiscussionGraph() {
         return d3.layout.force()
             .size([width, height])
             // nodes push each other away
-            .charge(-500)
+            .charge(-1000)
+            // modify linkDistance
             .linkDistance(function (d) {
                   return d.size;
             })
-            // modify linkDistance
-            .linkStrength(0.7);
+            .linkStrength(1);
     }
 
     /**
@@ -1000,13 +1000,6 @@ function DiscussionGraph() {
         // run through all values in jsonData.path
         jsonData.path.forEach(function (d) {
             edges.forEach(function (edge) {
-
-                // target of edge is issue
-                if(d[0] == "issue"){
-                    if((edge.source.id === getId(d[1])) && (edge.target.id === "issue")){
-                        edgesCircleId.push(edge);
-                    }
-                }
 
                 let edgeTarget;
 
