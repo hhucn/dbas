@@ -358,10 +358,6 @@ function Main () {
 			var is_argument = info.data('type') == 'argument';
 			var uid = info.data(info.data('type') + '-uid');
 			ajaxHandler.markStatementOrArgument(uid, is_argument, true, id);
-		}).hover(function(){
-			$(this).removeClass('fa-star').addClass('fa-star-o');
-		}, function(){
-			$(this).removeClass('fa-star-o').addClass('fa-star');
 		});
 		
 		$('.' + uncheckAsUsersOpinion).click(function(){
@@ -371,10 +367,6 @@ function Main () {
 			var is_argument = info.data('type') == 'argument';
 			var uid = info.data(info.data('type') + '-uid');
 			ajaxHandler.markStatementOrArgument(uid, is_argument, false, id);
-		}).hover(function(){
-			$(this).removeClass('fa-star-o').addClass('fa-star');
-		}, function(){
-			$(this).removeClass('fa-star').addClass('fa-star-o');
 		});
 		
 		// styling
@@ -564,7 +556,7 @@ function Main () {
 		// hover effects on text elements
 		var data = 'data-argumentation-type';
 		var list = $('#' + discussionSpaceListId);
-		var trianglel = $('.triangle-l').last();
+		var trianglel_last = trianglel.last();
 		list.find('span[' + data + '!=""]').each(function () {
 			var attr = $(this).attr(data);
 			var tmp = $('<span>').addClass(attr + '-highlighter');
@@ -577,14 +569,14 @@ function Main () {
 					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
 						.css({'color': new_color, 'background-color': '#edf3e6', 'border-radius': '2px'});
 					if ($(this).attr(data) == 'argument') {
-						trianglel.find('span[data-attitude="pro"]').addClass('text-success').css({'background-color': '#edf3e6', 'border-radius': '2px'});
-						trianglel.find('span[data-attitude="con"]').addClass('text-danger').css({'background-color': '#edf3e6', 'border-radius': '2px'});
+						trianglel_last.find('span[data-attitude="pro"]').addClass('text-success').css({'background-color': '#edf3e6', 'border-radius': '2px'});
+						trianglel_last.find('span[data-attitude="con"]').addClass('text-danger').css({'background-color': '#edf3e6', 'border-radius': '2px'});
 					}
 				}, function () {
 					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
 						.css({'color': old_color, 'background-color': '', 'border-radius': ''});
-					trianglel.find('span[data-attitude="pro"]').removeClass('text-success').css({'background-color': '', 'border-radius': ''});
-					trianglel.find('span[data-attitude="con"]').removeClass('text-danger').css({'background-color': '', 'border-radius': ''});
+					trianglel_last.find('span[data-attitude="pro"]').removeClass('text-success').css({'background-color': '', 'border-radius': ''});
+					trianglel_last.find('span[data-attitude="con"]').removeClass('text-danger').css({'background-color': '', 'border-radius': ''});
 				}
 			);
 		});

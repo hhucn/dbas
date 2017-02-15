@@ -786,9 +786,9 @@ def set_up_issue(session, lang1, lang2, is_field_test=False):
     """
 
     :param session:
-    :param user:
     :param lang1:
     :param lang2:
+    :param is_field_test:
     :return:
     """
     # adding our main issue
@@ -888,7 +888,6 @@ def setup_dummy_votes(session):
     Drops all votes and init new dummy votes
 
     :param session: DBDiscussionSession
-    :param users:
     :return:
     """
     db_users = DBDiscussionSession.query(User).all()

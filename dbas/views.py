@@ -64,7 +64,7 @@ from dbas.database.initializedb import nick_of_anonymous_user, nick_of_admin
 from dbas.handler.rss import get_list_of_all_feeds
 
 name = 'D-BAS'
-version = '1.2.2'
+version = '1.2.3'
 full_version = version + 'b'
 project_name = name + ' ' + full_version
 
@@ -1303,38 +1303,6 @@ def get_all_statement_clicks(request):
     logger('get_all_statement_clicks', 'def', 'main')
     ui_locales = get_language(request)
     return_array = user_manager.get_clicks_of_user(request_authenticated_userid, False, ui_locales)
-    return json.dumps(return_array)
-
-
-# ajax - getting all votes for arguments
-@view_config(route_name='ajax_get_all_argument_votes', renderer='json')
-def get_all_argument_votes(request):
-    """
-
-    :return:
-    """
-    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    request_authenticated_userid = request.authenticated_userid
-    user_manager.update_last_action(request_authenticated_userid)
-    logger('get_all_argument_votes', 'def', 'main')
-    ui_locales = get_language(request)
-    return_array = user_manager.get_votes_of_user(request_authenticated_userid, True, ui_locales)
-    return json.dumps(return_array)
-
-
-# ajax - getting all votes for statements
-@view_config(route_name='ajax_get_all_statement_votes', renderer='json')
-def get_all_statement_votes(request):
-    """
-
-    :return:
-    """
-    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    request_authenticated_userid = request.authenticated_userid
-    user_manager.update_last_action(request_authenticated_userid)
-    logger('get_all_statement_votes', 'def', 'main')
-    ui_locales = get_language(request)
-    return_array = user_manager.get_votes_of_user(request_authenticated_userid, False, ui_locales)
     return json.dumps(return_array)
 
 

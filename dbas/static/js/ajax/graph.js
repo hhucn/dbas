@@ -47,17 +47,27 @@ function AjaxGraphHandler(){
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
-
+	
 	/**
+	 *
 	 * Displays a graph of current discussion
+	 *
+	 * @param url
+	 * @param uid
+	 * @param is_argument
 	 */
-	this.getDiscussionGraphData = function (url) {
+	this.getDiscussionGraphData = function (url, uid, is_argument) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: url,
 			type: 'GET',
 			dataType: 'json',
-			data: {issue: getCurrentIssueId(), path: window.location.href},
+			data: {
+				issue: getCurrentIssueId(),
+				path: window.location.href,
+				uid: uid,
+				is_argument: is_argument
+			},
 			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function (data) {
 			new DiscussionGraph().callbackIfDoneForDiscussionGraph(data);
