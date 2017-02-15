@@ -31,9 +31,9 @@ d3_graph = Service(name='d3js',
 @d3_graph.get()
 def get_d3_dump(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Graph', 'd3', 'main')
+    logger('Graph', 'd3', 'main: ' + str(request.params))
     path = request.params['path'] if 'path' in request.params else ''
-    uid = request.params['uid'] if 'uid' in request.params else None
+    uid = request.params['uid'] if 'uid' in request.params else '0'
     is_argument = True if 'is_argument' in request.params and request.params['is_argument'] == 'true' else False
     issue = IssueHelper.get_issue_id(request)
 
@@ -42,7 +42,7 @@ def get_d3_dump(request):
         return_dict.update({'node_doj_factors': get_doj_data(issue)})
         return_dict.update({'node_opinion_factors': get_opinion_data(issue)})
         return_dict.update({'path': get_path_of_user(request.application_url, path, issue)})
-        if uid is not None and uid != 0:
+        if uid != '0':
             if is_argument:
                 return_dict.update({'partial_graph': get_partial_graph_for_argument(uid)})
             else:

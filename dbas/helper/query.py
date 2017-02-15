@@ -482,16 +482,14 @@ def get_logfile_for_statements(uids, lang, main_page):
     return main_dict
 
 
-def get_another_argument_with_same_support_and_conclusion(uid, history):
+def get_another_argument_with_same_conclusion(uid, history):
     """
 
     :param uid:
     :param history:
     :return:
     """
-    logger('QueryHelper', 'get_another_argument_with_same_support_and_conclusion', str(uid))
-    logger('QueryHelper', 'get_another_argument_with_same_support_and_conclusion', str(uid))
-    logger('QueryHelper', 'get_another_argument_with_same_support_and_conclusion', str(uid))
+    logger('QueryHelper', 'get_another_argument_with_same_conclusion', str(uid))
     db_arg = DBDiscussionSession.query(Argument).get(uid)
     if not db_arg:
         return None
