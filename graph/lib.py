@@ -24,9 +24,6 @@ def get_d3_data(issue, nickname):
     :return: dictionary
     """
     logger('Graph.lib', 'get_d3_data', 'main')
-    from graph.partial_graph import get_partial_graph_for_argument, get_partial_graph_for_statement
-    # l = get_partial_graph_for_argument(2)
-    l = get_partial_graph_for_statement(35)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
     # default values
