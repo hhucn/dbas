@@ -26,7 +26,7 @@ start-server:
   <<: *job-definition
   stage: build
   script:
-    - pserve $INIFILE --daemon --log-file pserve.log
+    - pserve $INIFILE --log-file pserve.log
     - until (pserve $INIFILE --status &>/dev/null); do echo "Server not up.. waiting" && sleep 1; done
     - pserve $INIFILE --status
 
@@ -49,6 +49,6 @@ acceptance:
   <<: *job-definition
   stage: test
   script:
-    - pserve $INIFILE --daemon --log-file pserve.log
+    - pserve $INIFILE --log-file pserve.log
     - until (pserve $INIFILE --status &>/dev/null); do echo "Server not up.. waiting" && sleep 1; done
     - nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
