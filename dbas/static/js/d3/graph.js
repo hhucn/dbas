@@ -182,7 +182,7 @@ function DiscussionGraph() {
         var height = container.outerHeight() - offset;
 
         var svg = getGraphSvg(width, height);
-        var force = getForce(width, height);
+        var force = getForce(width, height, jsonData);
 
         // zoom and pan
         var zoom = d3.behavior.zoom();
@@ -329,16 +329,15 @@ function DiscussionGraph() {
      * @param height: height of container
      * @return force layout
      */
-    function getForce(width, height) {
+    function getForce(width, height, jsonData) {
+        let factor = jsonData.nodes.length/5 * 100;
         return d3.layout.force()
             .size([width, height])
             // nodes push each other away
-            .charge(-500)
+            .charge(-factor)
             .linkDistance(function (d) {
                   return d.size;
-            })
-            // modify linkDistance
-            .linkStrength(0.7);
+            });
     }
 
     /**
@@ -991,12 +990,9 @@ function DiscussionGraph() {
             grayingElements(d);
         });
 
-        // if jsonData.path is not empty highlight path
-        if(jsonData.path.length != 0) {
+        if(jsonData.path.length != 0) { // if jsonData.path is not empty highlight path
             highlightPath(jsonData, edges);
-        }
-        // if jsonData.path is empty color issue
-        else{
+        } else{ // if jsonData.path is empty color issue
             d3.select('#circle-issue').attr('fill', grey);
         }
     }
@@ -1009,20 +1005,31 @@ function DiscussionGraph() {
      */
     function highlightPath(jsonData, edges) {
         let edgesCircleId = [];
+
         // run through all values in jsonData.path
         jsonData.path.forEach(function (d) {
-            // arrays in jsonData.path
-            d.forEach(function (e) {
-                // find edge with statement in jsonData.path as source
-                edges.forEach(function (edge) {
-                    if ((edge.source.id === "statement_" + e)/* && */) {
-                        if(checkInPathArray(edge.target.id, jsonData)){
+            edges.forEach(function (edge) {
+                // edge from virtual node to statement
+                let edgeVirtualNode;
+
+                // edge without virtual node
+                if((edge.source.id === getId(d[0])) && (edge.target.id === getId(d[1]))) {
+                    edgesCircleId.push(edge);
+                }
+                // edge with virtual node
+                else if(edge.source.id == getId(d[0]) && edge.target.label == ''){
+                    edgeVirtualNode = edge;
+                    edges.forEach(function (e) {
+                        if (e.source.id == edgeVirtualNode.target.id && e.target.id == getId(d[1])) {
                             edgesCircleId.push(edge);
+                            edgesCircleId.push(e);
                         }
-                        // find virtual nodes
-                        testVirtualNode(edges, edge, edgesCircleId, jsonData);
-                    }
-                });
+                    });
+                }
+                // edge is an undercut
+                else if((edge.source.id == getId(d[0])) && (edge.is_undercut == true)){
+                    edgesCircleId.push(edge);
+                }
             });
         });
 
@@ -1032,43 +1039,11 @@ function DiscussionGraph() {
         });
     }
 
-    /**
-     *
-     *
-     * @param id
-     * @param jsonData
-     */
-    function checkInPathArray(id, jsonData){
-        let isInPathArray = false;
-
-        jsonData.path.forEach(function (d) {
-            d.forEach(function (e) {
-                if (id === "statement_" + e || id === "issue") {
-                    isInPathArray = true;
-                }
-            });
-        });
-        return isInPathArray;
-    }
-
-    /**
-     * Test if target of edge is a virtual node.
-     *
-     * @param edges
-     * @param edge
-     * @param edgeCircleId
-     * @param jsonData
-     */
-    function testVirtualNode(edges, edge, edgeCircleId, jsonData) {
-        if(edge.target.label === '') {
-            edges.forEach(function (e) {
-                // color edge if source of edge is an virtual nod
-                if ((edge.target.id === e.source.id) && checkInPathArray(e.target.id, jsonData)) {
-                    edgeCircleId.push(edge);
-                    edgeCircleId.push(e);
-                }
-            });
+    function getId(d) {
+        if(d == "issue"){
+            return d;
         }
+        return "statement_" + d;
     }
 
     /**
@@ -1428,7 +1403,6 @@ function DiscussionGraph() {
     function showAttacksSupports(edges, circleIds) {
         // edges with selected statement as target
         let edgesCircleId = [];
-        //let circleUid = selectUid(circleId);
 
         // edge with circleUid as target
         circleIds.forEach(function (circleId) {

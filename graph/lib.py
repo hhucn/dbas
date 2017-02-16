@@ -155,6 +155,8 @@ def get_path_of_user(base_url, path, issue):
     else:
         history = [path]
 
+    logger('Graph.lib', 'get_path_of_user', 'main ' + str(history))
+
     tmp_list = []
     for h in history:
         steps = __get_statements_of_path_step(h)
@@ -181,20 +183,24 @@ def __get_statements_of_path_step(step):
     splitted = step.split('/')
 
     if 'attitude' in step:
-        statements.append([int(splitted[2])])
+        statements.append([int(splitted[2]), 'issue'])
 
-    elif 'justify' in step:
-        if len(splitted) == 4:  # statement
-            statements.append([int(splitted[2])])
-        else:  # argument
-            db_argument = DBDiscussionSession.query(Argument).get(splitted[2])
-            db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid)
-            statements.append([premise.statement_uid for premise in db_premises])
+    # elif 'justify' in step:
+    #     if len(splitted) == 4:  # statement
+    #         statements.append([int(splitted[2])])
+    #     else:  # argument
+    #         db_argument = DBDiscussionSession.query(Argument).get(splitted[2])
+    #         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid)
+    #         statements.append([premise.statement_uid for premise in db_premises])
 
     elif 'reaction' in step:
         db_argument = DBDiscussionSession.query(Argument).get(splitted[2])
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid)
-        statements.append([premise.statement_uid for premise in db_premises])
+        while db_argument.argument_uid is not None:
+            db_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
+        target = db_argument.conclusion_uid
+        for premise in db_premises:
+            statements.append([premise.statement_uid, target])
 
     # reaction / {arg_id_user}
     # justify / {statement_or_arg_id}
