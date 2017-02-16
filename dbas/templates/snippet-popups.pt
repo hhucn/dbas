@@ -593,7 +593,7 @@
     				<h4 class="modal-title" id="myModalLabelSetPGroup" i18n:translate="need-help-to-understand-statement">${extras.tag.need_help_to_understand_statement}</h4>
     			</div>
     			<div id="popup-set-premisegroups-body" class="lead">
-    				<span id="popup-set-premisegroups-body-intro1">${extras.tag.set_premisegroups_intro1}</span><strong><span id="popup-set-premisegroups-body-intro-statements"></span></strong><span id="popup-set-premisegroups-body-intro2">${extras.tag.set_premisegroups_intro2}</span>
+    				<span>${extras.tag.set_premisegroups_intro1}</span><strong><span id="popup-set-premisegroups-body-intro-statements"></span></strong><span>${extras.tag.set_premisegroups_intro2}</span>
                     <br>
                     <br>
     				<div id="insert_statements_page_" style="display: none;">
@@ -601,7 +601,7 @@
     						<li>
     							<label class="bs-callout bs-callout-primary">
     								<input type="radio" name="insert_statements" id="insert_more_arguments">
-    								<span>${extras.tag.i_actually_have}</span>&#160;<span id="insert_statements_count"></span>&#160;<span>${extras.tag.arguments}:</span>
+    								<span>${extras.tag.i_actually_have}</span>&#160;<span id="insert_statements_count"></span>&#160;<span>${extras.tag.seperated}&#160;<span>${extras.tag.arguments}:</span>
     							    <span id="insert_statements_list_more_arguments" style="font-weight: 300;">
     							    </span>
     							</label>

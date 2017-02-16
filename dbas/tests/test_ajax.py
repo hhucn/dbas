@@ -300,3 +300,33 @@ class AjaxTest(unittest.TestCase):
         self.assertTrue(response['public_nick'] != '')
         self.assertTrue(response['public_page_url'] != '')
         self.assertTrue(response['gravatar_url'] != '')
+
+    def test_mark_statement_or_argument(self):
+        from dbas.views import mark_statement_or_argument as ajax
+        request = testing.DummyRequest(params={'ui_locales': 'en'})
+        response = json.loads(ajax(request))
+        self.assertTrue(len(response['error']) > 0)
+
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        request = testing.DummyRequest(params={'uid': 2, 'is_argument': False, 'should_mark': True})
+        response = json.loads(ajax(request))
+        self.assertTrue(len(response['error']) == 0)
+        self.assertTrue(len(response['success']) != 0)
+
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        request = testing.DummyRequest(params={'uid': 2, 'is_argument': False, 'should_mark': True})
+        response = json.loads(ajax(request))
+        self.assertTrue(len(response['error']) == 0)
+        self.assertTrue(len(response['success']) != 0)
+
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        request = testing.DummyRequest(params={'uid': 2, 'is_argument': False, 'should_mark': False})
+        response = json.loads(ajax(request))
+        self.assertTrue(len(response['error']) == 0)
+        self.assertTrue(len(response['success']) != 0)
+
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        request = testing.DummyRequest(params={'uid': 2, 'is_argument': False, 'should_mark': False})
+        response = json.loads(ajax(request))
+        self.assertTrue(len(response['error']) == 0)
+        self.assertTrue(len(response['success']) != 0)
