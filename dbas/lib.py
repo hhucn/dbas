@@ -146,7 +146,7 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
     :param include_disabled: Boolean
     :return: [Arguments]
     """
-    logger('DBAS.LIB', 'get_all_arguments_by_statement', 'main ' + str(statement_uid))
+    logger('DBAS.LIB', 'get_all_arguments_by_statement', 'main {}, include_disabled {}'.format(statement_uid, include_disabled))
     db_arguments = __get_arguments_of_conclusion(statement_uid, include_disabled)
     return_array = [arg for arg in db_arguments] if db_arguments else []
 
@@ -157,9 +157,6 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
             is_disabled=False,
             statement_uid=statement_uid
         ).all()
-
-    logger('DBAS.LIB', 'get_all_arguments_by_statement', '1 ' + str(len(db_arguments)))
-    logger('DBAS.LIB', 'get_all_arguments_by_statement', '2 ' + str(len(premises)))
 
     for premise in premises:
         return_array = return_array + __get_argument_of_premisegroup(premise.premisesgroup_uid, include_disabled)

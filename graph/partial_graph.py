@@ -49,7 +49,8 @@ def get_partial_graph_for_argument(uid, issue, nickname):
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
     db_premise_args = []
     for premise in db_premises:
-        db_premise_args += get_all_arguments_by_statement(premise.statement_uid)
+        args = get_all_arguments_by_statement(premise.statement_uid)
+        db_premise_args += args if args is not None else []
     db_premise_args = list(set(db_premise_args))
 
     db_positions = __find_position_for_conclusion_of_argument(db_argument, db_premise_args, [], [])
@@ -175,7 +176,8 @@ def __get_argument_net(uid, list_todos, list_dones, graph_arg_list):
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
     db_premise_args = []
     for premise in db_premises:
-        db_premise_args += get_all_arguments_by_statement(premise.statement_uid)
+        args = get_all_arguments_by_statement(premise.statement_uid)
+        db_premise_args += args if args is not None else []
 
     # get new todos
     logger('PartialGraph', '__get_argument_net', 'premises args: {}'.format([arg.uid for arg in db_premise_args]))
@@ -211,7 +213,7 @@ def __get_all_statements_for_args(graph_arg_list):
     :param graph_arg_list:
     :return:
     """
-    logger('PartialGraph', '__get_all_statements_for_args', str(graph_arg_list))
+    logger('PartialGraph', '__get_all_statements_for_args', str([arg.uid for arg in graph_arg_list]))
     nodes = []
 
     for arg in graph_arg_list:
