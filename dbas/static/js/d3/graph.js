@@ -43,12 +43,13 @@ function DiscussionGraph() {
      */
     this.showGraph = function () {
         var url = window.location.href.split('?')['0'];
+        url = url.split('#')[0];
         var is_argument = false;
         var uid = 0;
         var tmp = url.split('/');
-        if (url.indexOf('attitude') != -1){         uid = tmp[tmp.indexOf('attitude') + 1];
-        } else if (url.indexOf('justify') != -1){   uid = tmp[tmp.indexOf('justify') + 1];
-        } else if (url.indexOf('reaction') != -1){   uid = tmp[tmp.indexOf('reaction') + 1]; is_argument = true;
+        if (url.indexOf('attitude') != -1){        uid = tmp[tmp.indexOf('attitude') + 1];
+        } else if (url.indexOf('justify') != -1){  uid = tmp[tmp.indexOf('justify') + 1];
+        } else if (url.indexOf('reaction') != -1){ uid = tmp[tmp.indexOf('reaction') + 1]; is_argument = true;
         }
         new AjaxGraphHandler().getDiscussionGraphData('/graph/d3', uid, is_argument);
     };

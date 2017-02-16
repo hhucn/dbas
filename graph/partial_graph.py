@@ -8,9 +8,17 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, Argument, Premise
 from dbas.lib import get_all_arguments_by_statement
 from dbas.logger import logger
+from graph.lib import get_d3_data
 
 
-def get_partial_graph_for_statement(uid):
+def get_partial_graph_for_statement(uid, issue, nickname):
+    """
+
+    :param uid:
+    :param issue:
+    :param nickname:
+    :return:
+    """
     logger('PartialGraph', 'get_partial_graph_for_statement', str(uid))
     db_arguments = get_all_arguments_by_statement(uid)
 
@@ -18,11 +26,21 @@ def get_partial_graph_for_statement(uid):
     del db_arguments[0]
 
     db_positions = __find_position_for_conclusion_of_argument(current_arg, db_arguments, [], [])
+    logger('PartialGraph', 'get_partial_graph_for_statement', 'positions are: ' + str([pos.uid for pos in db_positions]))
     graph_arg_lists = __climb_graph_down(db_positions)
-    return __get_nodes_and_edges(graph_arg_lists)
+    # return __get_all_nodes_for_pos_dict(graph_arg_lists)
+
+    return __return_d3_data(graph_arg_lists, issue, nickname)
 
 
-def get_partial_graph_for_argument(uid):
+def get_partial_graph_for_argument(uid, issue, nickname):
+    """
+
+    :param uid:
+    :param issue:
+    :param nickname:
+    :return:
+    """
     logger('PartialGraph', 'get_partial_graph_for_argument', str(uid))
     # get argument for the uid
     db_argument = DBDiscussionSession.query(Argument).get(uid)
@@ -31,14 +49,48 @@ def get_partial_graph_for_argument(uid):
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
     db_premise_args = []
     for premise in db_premises:
-        db_premise_args = db_premise_args + get_all_arguments_by_statement(premise.statement_uid)
+        db_premise_args += get_all_arguments_by_statement(premise.statement_uid)
+    db_premise_args = list(set(db_premise_args))
 
     db_positions = __find_position_for_conclusion_of_argument(db_argument, db_premise_args, [], [])
+    logger('PartialGraph', 'get_partial_graph_for_argument', 'positions are: ' + str([pos.uid for pos in db_positions]))
     graph_arg_lists = __climb_graph_down(db_positions)
-    return __get_nodes_and_edges(graph_arg_lists)
+    # return __get_all_nodes_for_pos_dict(graph_arg_lists)
+
+    return __return_d3_data(graph_arg_lists, issue, nickname)
+
+
+def __return_d3_data(graph_arg_lists, issue, nickname):
+    """
+
+    :param graph_arg_lists:
+    :param issue:
+    :param nickname:
+    :return:
+    """
+    logger('PartialGraph', '__return_d3_data', 'main')
+    graph_arg_list = []
+    for key in graph_arg_lists:
+        graph_arg_list += graph_arg_lists[key]
+    graph_arg_list = [DBDiscussionSession.query(Argument).get(uid) for uid in list(set(graph_arg_list))]
+
+    graph_stat_list = __get_all_statements_for_args(graph_arg_list)
+    graph_stat_list = [DBDiscussionSession.query(Statement).get(uid) for uid in graph_stat_list]
+
+    logger('PartialGraph', '__return_d3_data', 'stat_list: {}'.format([stat.uid for stat in graph_stat_list]))
+    logger('PartialGraph', '__return_d3_data', 'arg_list: {}'.format([arg.uid for arg in graph_arg_list]))
+    return get_d3_data(issue, nickname, graph_stat_list, graph_arg_list)
 
 
 def __find_position_for_conclusion_of_argument(current_arg, list_todos, list_dones, positions):
+    """
+
+    :param current_arg:
+    :param list_todos:
+    :param list_dones:
+    :param positions:
+    :return:
+    """
     a = [arg.uid for arg in list_todos] if len(list_todos) > 0 else []
     b = [p.uid for p in positions] if len(positions) > 0 else []
 
@@ -79,42 +131,64 @@ def __find_position_for_conclusion_of_argument(current_arg, list_todos, list_don
 
 
 def __climb_graph_down(db_positions):
+    """
+
+    :param db_positions:
+    :return:
+    """
     logger('PartialGraph', '__climb_graph_down', str([pos.uid for pos in db_positions]))
     graph_arg_lists = {}
     for pos in db_positions:
         args = get_all_arguments_by_statement(pos.uid)
+        logger('PartialGraph', '__climb_graph_down', 'Position {} is present in arg: {}'.format(pos.uid, [arg.uid for arg in args]))
         uid = args[0].uid
         del args[0]
         todos = [arg.uid for arg in args]
-        graph = __get_arguments_connected_with_position(uid, todos, [], [])
+        graph = __get_argument_net(uid, todos, [], [])
         graph_arg_lists[str(pos.uid)] = graph
     return graph_arg_lists
 
 
-def __get_arguments_connected_with_position(uid, list_todos, list_dones, graph_arg_list):
-    logger('PartialGraph', '__get_arguments_connected_with_position', 'uid: {}, todos: {}, dones: {}, graph: {}'.format(uid, list_todos, list_dones, graph_arg_list))
+def __get_argument_net(uid, list_todos, list_dones, graph_arg_list):
+    """
 
-    # get argument for the uid
+    :param uid:
+    :param list_todos:
+    :param list_dones:
+    :param graph_arg_list:
+    :return:
+    """
+    logger('PartialGraph', '__get_argument_net', 'main with arg uid: {}, todos: {}, dones: {}, graph: {}'.format(uid, list_todos, list_dones, graph_arg_list))
     db_argument = DBDiscussionSession.query(Argument).get(uid)
 
-    # get arguments for the premises
+    # getting all args, where the uid is conclusion
+    if db_argument.conclusion_uid is not None:
+        db_concl_args = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_argument.conclusion_uid).all()
+
+        # get new todos
+        logger('PartialGraph', '__get_argument_net', 'conclusi ({}) args: {}'.format(db_argument.conclusion_uid, [arg.uid for arg in db_concl_args]))
+        for arg in db_concl_args:
+            if arg.uid not in list_todos + list_dones + [uid]:
+                list_todos.append(arg.uid)
+
+    # get arguments, where the premises are conclusions
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
     db_premise_args = []
     for premise in db_premises:
-        db_premise_args = db_premise_args + get_all_arguments_by_statement(premise.statement_uid)
+        db_premise_args += get_all_arguments_by_statement(premise.statement_uid)
 
     # get new todos
+    logger('PartialGraph', '__get_argument_net', 'premises args: {}'.format([arg.uid for arg in db_premise_args]))
     for arg in db_premise_args:
-        if arg.uid not in list_todos and arg.uid not in list_dones:
+        if arg.uid not in list_todos and arg.uid not in list_dones and arg.uid != uid:
             list_todos.append(arg.uid)
 
-    # all undercuts
+    # get new todos for undercuts
     db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=uid).all()
-
-    # get new todos
+    logger('PartialGraph', '__get_argument_net', 'undercut args: {}'.format([arg.uid for arg in db_premise_args]))
     if db_undercuts is not None:
         for arg in db_undercuts:
-            if arg.uid not in list_todos and arg.uid not in list_dones:
+            if arg.uid not in list_todos + list_dones + [uid]:
                 list_todos.append(arg.uid)
 
     # current uid is done and part of graph
@@ -126,32 +200,31 @@ def __get_arguments_connected_with_position(uid, list_todos, list_dones, graph_a
     if len(list_todos) > 0:
         uid = list_todos[0]
         del list_todos[0]
-        __get_arguments_connected_with_position(uid, list_todos, list_dones, graph_arg_list)
+        __get_argument_net(uid, list_todos, list_dones, graph_arg_list)
+
     return graph_arg_list
 
 
-def __get_nodes_and_edges(graph_arg_list):
-    logger('PartialGraph', '__get_nodes_and_edges', str(graph_arg_list))
-    edges = []
+def __get_all_statements_for_args(graph_arg_list):
+    """
+
+    :param graph_arg_list:
+    :return:
+    """
+    logger('PartialGraph', '__get_all_statements_for_args', str(graph_arg_list))
     nodes = []
 
-    for position_id in graph_arg_list:
-        argument_uids = graph_arg_list[str(position_id)]
-        for arg in argument_uids:
-            db_arg = DBDiscussionSession.query(Argument).get(arg)
-            # save all premises
-            db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_arg.premisesgroup_uid).all()
+    for arg in graph_arg_list:
+        # save all premises
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=arg.premisesgroup_uid).all()
 
-            # save conclusion
-            nodes = nodes + [premise.uid for premise in db_premises]
-            while db_arg.conclusion_uid is None:
-                db_arg = DBDiscussionSession.query(Argument).get(db_arg.argument_uid)
-            nodes.append(db_arg.conclusion_uid)
-
-            edges = edges + [[premise.uid, db_arg.conclusion_uid] for premise in db_premises]
+        # save conclusion
+        nodes += [premise.statement_uid for premise in db_premises]
+        while arg.conclusion_uid is None:
+            arg = DBDiscussionSession.query(Argument).get(arg.argument_uid)
+        nodes.append(arg.conclusion_uid)
 
     nodes = list(set(nodes))
 
-    logger('PartialGraph', '__get_nodes_and_edges', 'return nodes ({}): {}'.format(len(nodes), nodes))
-    logger('PartialGraph', '__get_nodes_and_edges', 'return edges ({}): {}'.format(len(edges), edges))
-    return {'nodes': nodes, 'edges': edges}
+    logger('PartialGraph', '__get_all_nodes_for_args', 'return nodes ({}): {}'.format(len(nodes), nodes))
+    return nodes

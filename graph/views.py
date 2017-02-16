@@ -44,9 +44,9 @@ def get_d3_dump(request):
         return_dict.update({'path': get_path_of_user(request.application_url, path, issue)})
         if uid is not None and uid != 0:
             if is_argument:
-                return_dict.update({'partial_graph': get_partial_graph_for_argument(uid)})
+                return_dict.update({'partial_graph': get_partial_graph_for_argument(uid, issue, request.authenticated_userid)})
             else:
-                return_dict.update({'partial_graph': get_partial_graph_for_statement(uid)})
+                return_dict.update({'partial_graph': get_partial_graph_for_statement(uid, issue, request.authenticated_userid)})
         else:
             return_dict.update({'partial_graph': {}})
 

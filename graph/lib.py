@@ -16,14 +16,19 @@ from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disa
 from dbas.database.initializedb import nick_of_anonymous_user
 
 
-def get_d3_data(issue, nickname):
+def get_d3_data(issue, nickname, all_statements=None, all_arguments=None):
     """
     Given an issue, create an dictionary and return it
 
     :param issue: Current uid of issue
+    :param nickname: Nickname of user
+    :param all_statements:
+    :param all_arguments:
     :return: dictionary
     """
-    logger('Graph.lib', 'get_d3_data', 'main')
+    a = [a.uid for a in all_statements] if all_statements is not None else 'all'
+    b = [b.uid for b in all_arguments] if all_arguments is not None else 'all'
+    logger('Graph.lib', 'get_d3_data', 'main - statements: {}, arguments: {}'.format(a, b))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
     # default values
@@ -41,8 +46,15 @@ def get_d3_data(issue, nickname):
     logger('Graph.lib', 'get_d3_data', 'title: ' + db_issue.title)
 
     db_textversions = DBDiscussionSession.query(TextVersion).all()
-    db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).order_by(Statement.uid.asc()).all()
-    db_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=issue).order_by(Argument.uid.asc()).all()
+    if all_statements is None:
+        db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).order_by(Statement.uid.asc()).all()
+    else:
+        db_statements = all_statements
+
+    if all_arguments is None:
+        db_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=issue).order_by(Argument.uid.asc()).all()
+    else:
+        db_arguments = all_arguments
 
     # issue
     node_dict = __get_node_dict(id='issue',
@@ -210,7 +222,7 @@ def __prepare_statements_for_d3_data(db_user, db_statements, db_textversions, x,
     extras = {}
     for statement in db_statements:
         text = next((tv for tv in db_textversions if tv.uid == statement.textversion_uid), None)
-        text = text.content if text else 'None'
+        text =(str(text.statement_uid) + ' ' + text.content) if text else 'None'
         node_dict = __get_node_dict(id='statement_' + str(statement.uid),
                                     label=text,
                                     x=x,
