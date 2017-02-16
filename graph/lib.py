@@ -228,7 +228,7 @@ def __prepare_statements_for_d3_data(db_user, db_statements, db_textversions, x,
     extras = {}
     for statement in db_statements:
         text = next((tv for tv in db_textversions if tv.uid == statement.textversion_uid), None)
-        text =(str(text.statement_uid) + ' ' + text.content) if text else 'None'
+        text = (str(text.statement_uid) + ' ' + text.content) if text else 'None'
         node_dict = __get_node_dict(id='statement_' + str(statement.uid),
                                     label=text,
                                     x=x,

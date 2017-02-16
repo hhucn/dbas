@@ -163,35 +163,13 @@ def __get_argument_net(uid, list_todos, list_dones, graph_arg_list):
     db_argument = DBDiscussionSession.query(Argument).get(uid)
 
     # getting all args, where the uid is conclusion
-    if db_argument.conclusion_uid is not None:
-        db_concl_args = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_argument.conclusion_uid).all()
-
-        # get new todos
-        logger('PartialGraph', '__get_argument_net', 'conclusi ({}) args: {}'.format(db_argument.conclusion_uid, [arg.uid for arg in db_concl_args]))
-        for arg in db_concl_args:
-            if arg.uid not in list_todos + list_dones + [uid]:
-                list_todos.append(arg.uid)
+    __append_todos_for_getting_argument_net_with_conclusion(uid, db_argument, list_todos, list_dones)
 
     # get arguments, where the premises are conclusions
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
-    db_premise_args = []
-    for premise in db_premises:
-        args = get_all_arguments_by_statement(premise.statement_uid)
-        db_premise_args += args if args is not None else []
-
-    # get new todos
-    logger('PartialGraph', '__get_argument_net', 'premises args: {}'.format([arg.uid for arg in db_premise_args]))
-    for arg in db_premise_args:
-        if arg.uid not in list_todos and arg.uid not in list_dones and arg.uid != uid:
-            list_todos.append(arg.uid)
+    __append_todos_for_getting_argument_net_with_premises(uid, db_argument, list_todos, list_dones)
 
     # get new todos for undercuts
-    db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=uid).all()
-    logger('PartialGraph', '__get_argument_net', 'undercut args: {}'.format([arg.uid for arg in db_premise_args]))
-    if db_undercuts is not None:
-        for arg in db_undercuts:
-            if arg.uid not in list_todos + list_dones + [uid]:
-                list_todos.append(arg.uid)
+    __append_todos_for_getting_argument_net_with_undercuts(uid, list_todos, list_dones)
 
     # current uid is done and part of graph
     list_dones.append(uid)
@@ -205,6 +183,63 @@ def __get_argument_net(uid, list_todos, list_dones, graph_arg_list):
         __get_argument_net(uid, list_todos, list_dones, graph_arg_list)
 
     return graph_arg_list
+
+
+def __append_todos_for_getting_argument_net_with_conclusion(uid, db_argument, list_todos, list_dones):
+    """
+
+    :param uid:
+    :param db_argument:
+    :param list_todos:
+    :param list_dones:
+    :return:
+    """
+    if db_argument.conclusion_uid is not None:
+        db_concl_args = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_argument.conclusion_uid).all()
+
+        # get new todos
+        logger('PartialGraph', '__get_argument_net', 'conclusi ({}) args: {}'.format(db_argument.conclusion_uid, [arg.uid for arg in db_concl_args]))
+        for arg in db_concl_args:
+            if arg.uid not in list_todos + list_dones + [uid]:
+                list_todos.append(arg.uid)
+
+
+def __append_todos_for_getting_argument_net_with_premises(uid, db_argument, list_todos, list_dones):
+    """
+
+    :param uid:
+    :param db_argument:
+    :param list_todos:
+    :param list_dones:
+    :return:
+    """
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+    db_premise_args = []
+    for premise in db_premises:
+        args = get_all_arguments_by_statement(premise.statement_uid)
+        db_premise_args += args if args is not None else []
+
+    # get new todos
+    logger('PartialGraph', '__get_argument_net', 'premises args: {}'.format([arg.uid for arg in db_premise_args]))
+    for arg in db_premise_args:
+        if arg.uid not in list_todos and arg.uid not in list_dones and arg.uid != uid:
+            list_todos.append(arg.uid)
+
+
+def __append_todos_for_getting_argument_net_with_undercuts(uid, list_todos, list_dones):
+    """
+
+    :param uid:
+    :param list_todos:
+    :param list_dones:
+    :return:
+    """
+    db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=uid).all()
+    logger('PartialGraph', '__get_argument_net', 'undercut args: {}'.format([arg.uid for arg in db_undercuts]))
+    if db_undercuts is not None:
+        for arg in db_undercuts:
+            if arg.uid not in list_todos + list_dones + [uid]:
+                list_todos.append(arg.uid)
 
 
 def __get_all_statements_for_args(graph_arg_list):
