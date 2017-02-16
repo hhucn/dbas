@@ -1,3 +1,5 @@
+import arrow
+
 from dbas.database import DBDiscussionSession as session
 from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, \
     StatementReferences, StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, \
@@ -5,8 +7,9 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, \
     OptimizationReviewLocks, ReviewCanceled, RevokedContent, RevokedContentHistory, \
-    RSS
+    RSS, ReviewDuplicate
 from dbas.helper.tests import add_settings_to_appconfig
+from dbas.lib import get_text_for_statement_uid
 from sqlalchemy import engine_from_config, and_
 
 settings = add_settings_to_appconfig()
@@ -38,6 +41,33 @@ print('  - count:    ' + str(len(db_users)))
 print('  - activity: ' + str(len(db_votes_statements) / len(db_users)) + ' per user')
 print('  - activity: (max): ' + str(max(l)))
 print('  - activity: (min): ' + str(min(l)))
+print('')
+
+
+db_positions = session.query(Statement).filter(and_(Statement.issue_uid == db_issue.uid,
+                                                    Statement.is_startpoint == True)).all()
+print('Positions:')
+print('  - count:     ' + str(len(db_positions)))
+
+position_list = []
+for pos in db_positions:
+    text = get_text_for_statement_uid(pos.uid)
+    db_clicks = session.query(ClickedStatement).filter_by(statement_uid=pos.uid)
+    pro = db_clicks.filter_by(is_up_vote=True).all()
+    con = db_clicks.filter_by(is_up_vote=False).all()
+    end = arrow.get('2017-02-06T15:57:00.000000+00:00')
+    day = session.query(TextVersion).filter_by(statement_uid=pos.uid).order_by(TextVersion.uid.desc()).first().timestamp
+    dif = (end - day).days
+    if dif < 10:
+        dif = ' ' + str(dif)
+    print('  - pos {}:'
+          '\tclicks={},'
+          '\tpro={},'
+          '\tcon={},'
+          '\tdays={},'
+          '\tclick/day={}'
+          '\ttext={}'.
+          format(pos.uid, len(db_clicks.all()), len(pro), len(con), dif, round(len(db_clicks.all()) / int(dif), 2), text))
 print('')
 
 
@@ -86,9 +116,11 @@ print('')
 db_review_edits = session.query(ReviewEdit).all()
 db_review_deletes = session.query(ReviewDelete).all()
 db_review_optimizations = session.query(ReviewOptimization).all()
+db_review_duplicates = session.query(ReviewDuplicate).all()
 db_review_edits = [review for review in db_review_edits if (session.query(Statement).get(review.statement_uid).issue_uid == db_issue.uid if review.statement_uid is not None else session.query(Argument).get(review.argument_uid).issue_uid == db_issue.uid)]
 db_review_deletes = [review for review in db_review_deletes if (session.query(Statement).get(review.statement_uid).issue_uid == db_issue.uid if review.statement_uid is not None else session.query(Argument).get(review.argument_uid).issue_uid == db_issue.uid)]
 db_review_optimizations = [review for review in db_review_optimizations if (session.query(Statement).get(review.statement_uid).issue_uid == db_issue.uid if review.statement_uid is not None else session.query(Argument).get(review.argument_uid).issue_uid == db_issue.uid)]
+db_review_duplicates = [review for review in db_review_duplicates if (session.query(Statement).get(review.statement_uid).issue_uid == db_issue.uid if review.statement_uid is not None else session.query(Argument).get(review.argument_uid).issue_uid == db_issue.uid)]
 print('Reviews:')
 print('  - edits:         ' + str(len(db_review_edits)))
 print('    - executed:    ' + str(len([review for review in db_review_edits if review.is_executed])))
@@ -99,6 +131,9 @@ print('    - revoked:     ' + str(len([review for review in db_review_deletes if
 print('  - optimizations: ' + str(len(db_review_optimizations)))
 print('    - executed:    ' + str(len([review for review in db_review_optimizations if review.is_executed])))
 print('    - revoked:     ' + str(len([review for review in db_review_optimizations if review.is_revoked])))
+print('  - duplicates:    ' + str(len(db_review_duplicates)))
+print('    - executed:    ' + str(len([review for review in db_review_duplicates if review.is_executed])))
+print('    - revoked:     ' + str(len([review for review in db_review_duplicates if review.is_revoked])))
 print('')
 
 session.query(Issue).all()

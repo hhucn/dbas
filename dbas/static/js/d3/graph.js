@@ -41,25 +41,34 @@ function DiscussionGraph() {
     /**
      * Displays a graph of current discussion
      */
-    this.showGraph = function () {
+    this.showGraph = function (override_cases) {
         var url = window.location.href.split('?')['0'];
         url = url.split('#')[0];
-        var is_argument = false;
-        var uid = 0;
+        var is_argument = null;
+        var uid = null;
         var tmp = url.split('/');
-        if (url.indexOf('attitude') != -1){        uid = tmp[tmp.indexOf('attitude') + 1];
-        } else if (url.indexOf('justify') != -1){  uid = tmp[tmp.indexOf('justify') + 1];
-        } else if (url.indexOf('reaction') != -1){ uid = tmp[tmp.indexOf('reaction') + 1]; is_argument = true;
+        if (!override_cases) {
+	        if (url.indexOf('attitude') != -1) {
+		        uid = tmp[tmp.indexOf('attitude') + 1];
+		        is_argument = false;
+	        } else if (url.indexOf('justify') != -1) {
+		        uid = tmp[tmp.indexOf('justify') + 1];
+		        is_argument = false;
+	        } else if (url.indexOf('reaction') != -1) {
+		        uid = tmp[tmp.indexOf('reaction') + 1];
+		        is_argument = true;
+	        }
         }
-        new AjaxGraphHandler().getDiscussionGraphData('/graph/d3', uid, is_argument);
+	    new AjaxGraphHandler().getDiscussionGraphData(uid, is_argument);
     };
 
     /**
      * Callback if ajax request was successful.
      *
      * @param data
+     * @param request_for_complete
      */
-    this.callbackIfDoneForDiscussionGraph = function (data) {
+    this.callbackIfDoneForDiscussionGraph = function (data, request_for_complete) {
         var jsonData = $.parseJSON(data);
         console.log(jsonData);
         if (jsonData.error.length != 0){
@@ -67,7 +76,7 @@ function DiscussionGraph() {
         	new GuiHandler().setDisplayStyleAsDiscussion();
         	return;
         }
-        s = new DiscussionGraph().setDefaultViewParams(true, jsonData, null);
+        s = new DiscussionGraph().setDefaultViewParams(true, jsonData, null, request_for_complete);
     };
 
     /**
@@ -120,15 +129,16 @@ function DiscussionGraph() {
      * @param startD3
      * @param jsonData
      * @param d3
+     * @param request_for_complete
      */
-    this.setDefaultViewParams = function (startD3, jsonData, d3) {
-        new DiscussionGraph().setButtonDefaultSettings(jsonData);
+    this.setDefaultViewParams = function (startD3, jsonData, d3, request_for_complete) {
+        new DiscussionGraph().setButtonDefaultSettings(jsonData, request_for_complete);
         var container = $('#' + graphViewContainerSpaceId);
         container.empty();
 
         if (startD3) {
             if (!this.getD3Graph(jsonData))
-                new DiscussionGraph().setDefaultViewParams(false, null, d3);
+                new DiscussionGraph().setDefaultViewParams(false, null, d3, request_for_complete);
         } else {
             container.empty();
         }
@@ -137,7 +147,7 @@ function DiscussionGraph() {
     /**
      * Set default settings of buttons.
      */
-    this.setButtonDefaultSettings = function (jsonData) {
+    this.setButtonDefaultSettings = function (jsonData, request_for_complete) {
     	$('#graph-view-container').find('.sidebar').find('li').each(function(){
     		$(this).removeClass('hidden');
 	    });
@@ -152,6 +162,11 @@ function DiscussionGraph() {
         $('#hide-supports-on-my-statements').hide();
         $('#show-positions').show();
         $('#hide-positions').hide();
+        if (request_for_complete){
+        	$('#global-view').hide();
+        } else {
+        	$('#global-view').show();
+        }
         
         // show or hide my path
 	    $('#hide-my-path').hide();
@@ -169,7 +184,6 @@ function DiscussionGraph() {
      */
     this.getD3Graph = function (jsonData) {
         var container = $('#' + graphViewContainerSpaceId);
-        var complete_graph = jsonData['complete_graph'];
         container.empty();
         rel_node_factor = {};
         //rel_node_factor = 'node_doj_factors' in jsonData ? jsonData.node_doj_factors : {};
@@ -182,7 +196,7 @@ function DiscussionGraph() {
         var height = container.outerHeight() - offset;
 
         var svg = getGraphSvg(width, height);
-        var force = getForce(width, height, complete_graph);
+        var force = getForce(width, height, jsonData);
 
         // zoom and pan
         var zoom = d3.behavior.zoom();
@@ -193,10 +207,10 @@ function DiscussionGraph() {
         resizeGraph(container, force);
 
         // edge
-        var edges = createEdgeDict(complete_graph);
-        setNodeColorsForData(complete_graph);
+        var edges = createEdgeDict(jsonData);
+        setNodeColorsForData(jsonData);
         // create arrays of links, nodes and move layout forward one step
-        force.links(edges).nodes(complete_graph.nodes).on("tick", forceTick);
+        force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
         var edgesTypeArrow = createArrowDict(edges);
         var marker = createArrows(svg, edgesTypeArrow);
         var link = createLinks(svg, edges, marker);
@@ -225,7 +239,7 @@ function DiscussionGraph() {
         getLegendSvg().call(legend);
 
         // buttons of sidebar
-        addListenersForSidebarButtons(jsonData, complete_graph, label, rect, edges, force, zoom);
+        addListenersForSidebarButtons(jsonData, jsonData, label, rect, edges, force, zoom);
         // add listener to show/hide tooltip on mouse over
         addListenerForTooltip();
 
@@ -829,6 +843,9 @@ function DiscussionGraph() {
      */
     function addListenersForSidebarButtons(jsonData, graphData, label, rect, edges, force, zoom) {
         showDefaultView(graphData, force, edges, label, rect, zoom);
+        $('#global-view').click(function () {
+            new DiscussionGraph().showGraph(true);
+        });
         $('#show-labels').click(function () {
             showLabels(label, rect);
         });
@@ -879,7 +896,7 @@ function DiscussionGraph() {
 	 */
     function showDefaultView(graphData, force, edges, label, rect, zoom) {
 
-        $('#start-view').click(function () {
+        $('#default-view').click(function () {
             isDefaultView = true;
 
             // reset buttons
