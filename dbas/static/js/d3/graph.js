@@ -182,7 +182,7 @@ function DiscussionGraph() {
         var height = container.outerHeight() - offset;
 
         var svg = getGraphSvg(width, height);
-        var force = getForce(width, height);
+        var force = getForce(width, height, complete_graph);
 
         // zoom and pan
         var zoom = d3.behavior.zoom();
@@ -225,7 +225,7 @@ function DiscussionGraph() {
         getLegendSvg().call(legend);
 
         // buttons of sidebar
-        addListenersForSidebarButtons(complete_graph, label, rect, edges, force, zoom);
+        addListenersForSidebarButtons(jsonData, complete_graph, label, rect, edges, force, zoom);
         // add listener to show/hide tooltip on mouse over
         addListenerForTooltip();
 
@@ -329,16 +329,15 @@ function DiscussionGraph() {
      * @param height: height of container
      * @return force layout
      */
-    function getForce(width, height) {
+    function getForce(width, height, graphData) {
+        let factor = graphData.nodes.length/5 * 100;
         return d3.layout.force()
             .size([width, height])
             // nodes push each other away
-            .charge(-500)
+            .charge(-factor)
             .linkDistance(function (d) {
                   return d.size;
-            })
-            // modify linkDistance
-            .linkStrength(0.7);
+            });
     }
 
     /**
@@ -440,10 +439,10 @@ function DiscussionGraph() {
     /**
      * Sets the color in the json Data
      *
-     * @param jsonData: dict with data for nodes and edges
+     * @param graphData: dict with data for nodes and edges
      */
-    function setNodeColorsForData(jsonData) {
-        jsonData.nodes.forEach(function (e) {
+    function setNodeColorsForData(graphData) {
+        graphData.nodes.forEach(function (e) {
             if (e.type === 'position')       e.color = blue;
             else if (e.type === 'statement') e.color = yellow;
             else if (e.type === 'issue')     e.color = grey;
@@ -454,17 +453,17 @@ function DiscussionGraph() {
     /**
      * Create dictionary for edges.
      *
-     * @param jsonData: dict with data for nodes and edges
+     * @param graphData: dict with data for nodes and edges
      * @return edges: array, which contains dicts for edges
      */
-    function createEdgeDict(jsonData) {
+    function createEdgeDict(graphData) {
         var edges = [];
-        jsonData.edges.forEach(function (e) {
+        graphData.edges.forEach(function (e) {
             // get source and target nodes
-            var sourceNode = jsonData.nodes.filter(function (d) {
+            var sourceNode = graphData.nodes.filter(function (d) {
                     return d.id === e.source;
                 })[0],
-                targetNode = jsonData.nodes.filter(function (d) {
+                targetNode = graphData.nodes.filter(function (d) {
                     return d.id === e.target;
                 })[0];
             // add edge, color, type, size and id to array
@@ -821,13 +820,15 @@ function DiscussionGraph() {
      * Add listeners for buttons of sidebar.
      *
      * @param jsonData
+     * @param graphData
      * @param label
      * @param rect
      * @param edges
      * @param force
+     * @param zoom
      */
-    function addListenersForSidebarButtons(jsonData, label, rect, edges, force, zoom) {
-        showDefaultView(jsonData, force, edges, label, rect, zoom);
+    function addListenersForSidebarButtons(jsonData, graphData, label, rect, edges, force, zoom) {
+        showDefaultView(graphData, force, edges, label, rect, zoom);
         $('#show-labels').click(function () {
             showLabels(label, rect);
         });
@@ -865,19 +866,24 @@ function DiscussionGraph() {
             hideAttacksOnMyStatements(edges, force);
         });
     }
-
-    /**
+	
+	/**
      * Restore initial state of graph.
-     *
-     * @param jsonData
-     */
-    function showDefaultView(jsonData, force, edges, label, rect, zoom) {
+	 *
+	 * @param graphData
+	 * @param force
+	 * @param edges
+	 * @param label
+	 * @param rect
+	 * @param zoom
+	 */
+    function showDefaultView(graphData, force, edges, label, rect, zoom) {
 
         $('#start-view').click(function () {
             isDefaultView = true;
 
             // reset buttons
-            new DiscussionGraph().setButtonDefaultSettings(jsonData);
+            new DiscussionGraph().setButtonDefaultSettings(graphData);
 
             // set position of graph and set scale
             d3.selectAll("g.zoom").attr("transform", "translate(" + 0 + ")" + " scale(" + 1 + ")");
@@ -991,12 +997,9 @@ function DiscussionGraph() {
             grayingElements(d);
         });
 
-        // if jsonData.path is not empty highlight path
-        if(jsonData.path.length != 0) {
+        if(jsonData.path.length != 0) { // if graphData.path is not empty highlight path
             highlightPath(jsonData, edges);
-        }
-        // if jsonData.path is empty color issue
-        else{
+        } else{ // if graphData.path is empty color issue
             d3.select('#circle-issue').attr('fill', grey);
         }
     }
@@ -1009,20 +1012,31 @@ function DiscussionGraph() {
      */
     function highlightPath(jsonData, edges) {
         let edgesCircleId = [];
-        // run through all values in jsonData.path
+
+        // run through all values in graphData.path
         jsonData.path.forEach(function (d) {
-            // arrays in jsonData.path
-            d.forEach(function (e) {
-                // find edge with statement in jsonData.path as source
-                edges.forEach(function (edge) {
-                    if ((edge.source.id === "statement_" + e)/* && */) {
-                        if(checkInPathArray(edge.target.id, jsonData)){
+            edges.forEach(function (edge) {
+                // edge from virtual node to statement
+                let edgeVirtualNode;
+
+                // edge without virtual node
+                if((edge.source.id === getId(d[0])) && (edge.target.id === getId(d[1]))) {
+                    edgesCircleId.push(edge);
+                }
+                // edge with virtual node
+                else if(edge.source.id == getId(d[0]) && edge.target.label == ''){
+                    edgeVirtualNode = edge;
+                    edges.forEach(function (e) {
+                        if (e.source.id == edgeVirtualNode.target.id && e.target.id == getId(d[1])) {
                             edgesCircleId.push(edge);
+                            edgesCircleId.push(e);
                         }
-                        // find virtual nodes
-                        testVirtualNode(edges, edge, edgesCircleId, jsonData);
-                    }
-                });
+                    });
+                }
+                // edge is an undercut
+                else if((edge.source.id == getId(d[0])) && (edge.is_undercut == true)){
+                    edgesCircleId.push(edge);
+                }
             });
         });
 
@@ -1032,43 +1046,11 @@ function DiscussionGraph() {
         });
     }
 
-    /**
-     *
-     *
-     * @param id
-     * @param jsonData
-     */
-    function checkInPathArray(id, jsonData){
-        let isInPathArray = false;
-
-        jsonData.path.forEach(function (d) {
-            d.forEach(function (e) {
-                if (id === "statement_" + e || id === "issue") {
-                    isInPathArray = true;
-                }
-            });
-        });
-        return isInPathArray;
-    }
-
-    /**
-     * Test if target of edge is a virtual node.
-     *
-     * @param edges
-     * @param edge
-     * @param edgeCircleId
-     * @param jsonData
-     */
-    function testVirtualNode(edges, edge, edgeCircleId, jsonData) {
-        if(edge.target.label === '') {
-            edges.forEach(function (e) {
-                // color edge if source of edge is an virtual nod
-                if ((edge.target.id === e.source.id) && checkInPathArray(e.target.id, jsonData)) {
-                    edgeCircleId.push(edge);
-                    edgeCircleId.push(e);
-                }
-            });
+    function getId(d) {
+        if(d == "issue"){
+            return d;
         }
+        return "statement_" + d;
     }
 
     /**
@@ -1428,7 +1410,6 @@ function DiscussionGraph() {
     function showAttacksSupports(edges, circleIds) {
         // edges with selected statement as target
         let edgesCircleId = [];
-        //let circleUid = selectUid(circleId);
 
         // edge with circleUid as target
         circleIds.forEach(function (circleId) {
