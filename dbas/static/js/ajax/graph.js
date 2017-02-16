@@ -52,25 +52,30 @@ function AjaxGraphHandler(){
 	 *
 	 * Displays a graph of current discussion
 	 *
-	 * @param url
 	 * @param uid
 	 * @param is_argument
 	 */
-	this.getDiscussionGraphData = function (url, uid, is_argument) {
+	this.getDiscussionGraphData = function (uid, is_argument) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var data = {'issue': getCurrentIssueId(), 'path': window.location.href};
+		var request_for_complete = uid == null;
+		
+		if (request_for_complete){
+			url = '/graph/complete';
+		} else {
+			url = '/graph/partial';
+			data['uid'] = uid;
+			data['is_argument'] = is_argument;
+		}
+		
 		$.ajax({
 			url: url,
 			type: 'GET',
 			dataType: 'json',
-			data: {
-				issue: getCurrentIssueId(),
-				path: window.location.href,
-				uid: uid,
-				is_argument: is_argument
-			},
+			data: data,
 			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function (data) {
-			new DiscussionGraph().callbackIfDoneForDiscussionGraph(data);
+			new DiscussionGraph().callbackIfDoneForDiscussionGraph(data, request_for_complete);
 		}).fail(function () {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
