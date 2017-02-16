@@ -21,7 +21,7 @@ start-server:
   stage: build
   script:
     - pserve $INIFILE &
-    - until (pserve $INIFILE &); do echo "Server not up.. waiting" && sleep 1; done
+    - until pserve $INIFILE &; do echo "Server not up.. waiting" && sleep 1; done
     - pserve $INIFILE --status
 
 flake8:
@@ -36,7 +36,7 @@ unit:
   stage: test
   script:
     - pserve $INIFILE &
-    - until (pserve $INIFILE &); do echo "Server not up.. waiting" && sleep 1; done
+    - until pserve $INIFILE &; do echo "Server not up.. waiting" && sleep 1; done
     - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w $(pwd) dbas graph admin api export
 
 acceptance:
@@ -44,5 +44,5 @@ acceptance:
   stage: test
   script:
     - pserve $INIFILE &
-    - until (pserve $INIFILE &); do echo "Server not up.. waiting" && sleep 1; done
+    - until pserve $INIFILE &; do echo "Server not up.. waiting" && sleep 1; done
     - nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
