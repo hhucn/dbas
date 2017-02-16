@@ -15,19 +15,13 @@ variables:
     - initialize_news_sql $INIFILE
     - init_discussion_testvotes $INIFILE
     - init_review_tests $INIFILE
-  artifacts:
-    name: "$CI_BUILD_NAME pserve log"
-    paths:
-        - ./pserve.log
-    when: on_failure
-    expire_in: "1 day"
 
 start-server:
   <<: *job-definition
   stage: build
   script:
-    - pserve $INIFILE --daemon --log-file pserve.log
-    - until (pserve $INIFILE --status &>/dev/null); do echo "Server not up.. waiting" && sleep 1; done
+    - pserve $INIFILE &
+    - until pserve $INIFILE &; do echo "Server not up.. waiting" && sleep 1; done
     - pserve $INIFILE --status
 
 flake8:
@@ -41,14 +35,14 @@ unit:
   <<: *job-definition
   stage: test
   script:
-    - pserve $INIFILE --daemon --log-file pserve.log
-    - until (pserve $INIFILE --status &>/dev/null); do echo "Server not up.. waiting" && sleep 1; done
+    - pserve $INIFILE &
+    - until pserve $INIFILE &; do echo "Server not up.. waiting" && sleep 1; done
     - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w $(pwd) dbas graph admin api export
 
 acceptance:
   <<: *job-definition
   stage: test
   script:
-    - pserve $INIFILE --daemon --log-file pserve.log
-    - until (pserve $INIFILE --status &>/dev/null); do echo "Server not up.. waiting" && sleep 1; done
+    - pserve $INIFILE &
+    - until pserve $INIFILE &; do echo "Server not up.. waiting" && sleep 1; done
     - nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend

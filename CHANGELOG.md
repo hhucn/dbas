@@ -1,5 +1,6 @@
-## 1.2.4 (2017-02-??)
+## 1.3.0 (2017-02-??)
 - Perfomance tweaks
+- Partial graph instead of complete one
 
 ## 1.2.3 (2017-02-08)
 - Queue for duplicates

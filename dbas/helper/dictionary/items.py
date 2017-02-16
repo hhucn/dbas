@@ -164,14 +164,14 @@ class ItemDictHelper(object):
             already_used = 'reaction/' + str(argument.uid) + '/' in self.path
             additional_text = '(' + _tn.get(_.youUsedThisEarlier) + ')'
 
-            logger('ItemDictHelper', 'get_array_for_justify_statement', 'take support? {}'.format(support_step))
+            new_arg = None
+            url = None
             if support_step or 'end' in attack:  # TODO 343
                 new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
-                support_step = new_arg is None
-                url = ''
                 if new_arg:
                     url = _um.get_url_for_support_each_other(True, argument.uid, new_arg.uid)
-            else:
+
+            if not (support_step or 'end' in attack) or new_arg is None or url is None:
                 url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
 
             statements_array.append(self.__create_answer_dict(str(argument.uid), premise_array, 'justify', url,
@@ -202,6 +202,7 @@ class ItemDictHelper(object):
         :param attack_type: String
         :param logged_in: String
         :param nickname:
+        :param history:
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_justify_argument', 'def: arg ' + str(argument_uid) + ', attack ' + attack_type)
@@ -657,13 +658,12 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
-    def get_array_for_support(self, arg_uid, slug, for_api, only_include_reason=False):
+    def get_array_for_support(self, arg_uid, slug, for_api):
         """
 
         :param arg_uid:
         :param slug:
         :param for_api:
-        :param only_include_assertion:
         :return:
         """
         item_text = get_support_to_argument_text_list(self.lang)
