@@ -11,18 +11,16 @@ variables:
     - pip install --quiet -r requirements.txt
     - python setup.py --quiet develop
     - cp $INIFILE development.ini
-    - initialize_discussion_sql $INIFILE
-    - initialize_news_sql $INIFILE
-    - init_discussion_testvotes $INIFILE
-    - init_review_tests $INIFILE
+    - initialize_discussion_sql $INIFILE > /dev/null 2>&1
+    - initialize_news_sql $INIFILE > /dev/null 2>&1
+    - init_discussion_testvotes $INIFILE > /dev/null 2>&1
+    - init_review_tests $INIFILE > /dev/null 2>&1
 
 start-server:
   <<: *job-definition
   stage: build
   script:
-    - pserve $INIFILE &
-    - until pserve $INIFILE &; do echo "Server not up.. waiting" && sleep 1; done
-    - pserve $INIFILE --status
+    - uwsgi --ini-paste $INIFILE
 
 flake8:
   stage: build
@@ -35,14 +33,12 @@ unit:
   <<: *job-definition
   stage: test
   script:
-    - pserve $INIFILE &
-    - until pserve $INIFILE &; do echo "Server not up.. waiting" && sleep 1; done
+    - uwsgi --ini-paste $INIFILE
     - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w $(pwd) dbas graph admin api export
 
 acceptance:
   <<: *job-definition
   stage: test
   script:
-    - pserve $INIFILE &
-    - until pserve $INIFILE &; do echo "Server not up.. waiting" && sleep 1; done
+    - uwsgi --ini-paste $INIFILE
     - nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
