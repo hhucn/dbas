@@ -43,12 +43,13 @@ function DiscussionGraph() {
      */
     this.showGraph = function () {
         var url = window.location.href.split('?')['0'];
+        url = url.split('#')[0];
         var is_argument = false;
         var uid = 0;
         var tmp = url.split('/');
-        if (url.indexOf('attitude') != -1){         uid = tmp[tmp.indexOf('attitude') + 1];
-        } else if (url.indexOf('justify') != -1){   uid = tmp[tmp.indexOf('justify') + 1];
-        } else if (url.indexOf('reaction') != -1){   uid = tmp[tmp.indexOf('reaction') + 1]; is_argument = true;
+        if (url.indexOf('attitude') != -1){        uid = tmp[tmp.indexOf('attitude') + 1];
+        } else if (url.indexOf('justify') != -1){  uid = tmp[tmp.indexOf('justify') + 1];
+        } else if (url.indexOf('reaction') != -1){ uid = tmp[tmp.indexOf('reaction') + 1]; is_argument = true;
         }
         new AjaxGraphHandler().getDiscussionGraphData('/graph/d3', uid, is_argument);
     };
@@ -168,6 +169,7 @@ function DiscussionGraph() {
      */
     this.getD3Graph = function (jsonData) {
         var container = $('#' + graphViewContainerSpaceId);
+        var complete_graph = jsonData['complete_graph'];
         container.empty();
         rel_node_factor = {};
         //rel_node_factor = 'node_doj_factors' in jsonData ? jsonData.node_doj_factors : {};
@@ -191,10 +193,10 @@ function DiscussionGraph() {
         resizeGraph(container, force);
 
         // edge
-        var edges = createEdgeDict(jsonData);
-        setNodeColorsForData(jsonData);
+        var edges = createEdgeDict(complete_graph);
+        setNodeColorsForData(complete_graph);
         // create arrays of links, nodes and move layout forward one step
-        force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
+        force.links(edges).nodes(complete_graph.nodes).on("tick", forceTick);
         var edgesTypeArrow = createArrowDict(edges);
         var marker = createArrows(svg, edgesTypeArrow);
         var link = createLinks(svg, edges, marker);
@@ -223,7 +225,7 @@ function DiscussionGraph() {
         getLegendSvg().call(legend);
 
         // buttons of sidebar
-        addListenersForSidebarButtons(jsonData, label, rect, edges, force, zoom);
+        addListenersForSidebarButtons(complete_graph, label, rect, edges, force, zoom);
         // add listener to show/hide tooltip on mouse over
         addListenerForTooltip();
 
