@@ -37,7 +37,8 @@ def get_d3_dump(request):
     is_argument = True if 'is_argument' in request.params and request.params['is_argument'] == 'true' else False
     issue = IssueHelper.get_issue_id(request)
 
-    return_dict, error = get_d3_data(issue, request.authenticated_userid)
+    graph, error = get_d3_data(issue, request.authenticated_userid)
+    return_dict = {'complete_graph': graph}
     if not error:
         return_dict.update({'node_doj_factors': get_doj_data(issue)})
         return_dict.update({'node_opinion_factors': get_opinion_data(issue)})
