@@ -293,6 +293,7 @@ var tourStartDiscussionTitle        = 'tourStartDiscussionTitle';
 var tourStartDiscussionContent      = 'tourStartDiscussionContent';
 var tourMarkOpinionTitle            = 'tourMarkOpinionTitle';
 var tourMarkOpinionContent          = 'tourMarkOpinionContent';
+var tourMarkOpinionText             = 'tourMarkOpinionText'
 var tourSelectAnswertTitle          = 'tourSelectAnswertTitle';
 var tourSelectAnswertContent        = 'tourSelectAnswertContent';
 var tourEnterStatementTitle         = 'tourEnterStatementTitle';
@@ -541,6 +542,7 @@ var dbas_en = {
     'tourStartDiscussionContent': 'On the left side there are messages of the system and on the right side there are your answers.',
     'tourMarkOpinionTitle': 'Mark opinon',
     'tourMarkOpinionContent': 'With this little star you can mark your opinion.',
+    'tourMarkOpinionText': 'We should shut down University Park.',
     'tourSelectAnswertTitle': 'First selection',
     'tourSelectAnswertContent': 'In the lower part you can choose your answers ...',
     'tourEnterStatementTitle': 'Your own response',
@@ -770,6 +772,7 @@ var dbas_de = {
     'tourStartDiscussionContent': 'In diesem Abschnitt sehen Sie links Nachrichten des System und rechts Ihre eigenen Nachrichten.',
     'tourMarkOpinionTitle': 'Meinung markieren',
     'tourMarkOpinionContent': 'Mit dem kleinen Stern können Sie Ihre eigene Meinung markieren.',
+    'tourMarkOpinionText': 'Sie interessiert, dass der Park geschlossen werden soll.',
     'tourSelectAnswertTitle': 'Erste Auswahl',
     'tourSelectAnswertContent': 'Im unteren Teil können Sie Antworten auswählen ...',
     'tourEnterStatementTitle': 'Eigene Antworten',

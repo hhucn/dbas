@@ -111,10 +111,9 @@ function GuidedTour(){
 			placement: 'bottom',
 			path: '/discuss',
 			onShow: function (tour) {
-				var txt = getLanguage() == 'en' ? 'We should shut down University Park.' : 'Sie interessiert, dass der Park geschlossen werden soll.'
 				var element = '<div class="line-wrapper-r" id="some-element-bubble">' +
-					'<p class="triangle-r"><i class="fa fa-star-o" aria-hidden="true"></i>' +
-					'<span class="triangle-content">' + txt + '</span></p></div>';
+					'<p class="triangle-r"><i class="fa fa-star-o" aria-hidden="true" style="padding-right: 0.5em"></i>' +
+					'<span class="triangle-content">' + _t(tourMarkOpinionText) + '</span></p></div>';
 				$('#dialog-speech-bubbles-space').prepend($.parseHTML(element));
 			},
 			onHide: function (tour) {
