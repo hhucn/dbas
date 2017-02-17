@@ -81,6 +81,10 @@ class ItemDictHelper(object):
                                                               is_visible=statement.uid in uids))
 
         _tn = Translator(self.lang)
+
+        if type(db_statements) is list and len(db_statements) > 0:
+            random.shuffle(statements_array)
+
         if nickname:
             title = _tn.get(_.newConclusionRadioButtonText) if len(db_statements) > 0 else _tn.get(_.newConclusionRadioButtonTextNewIdea)
             statements_array.append(self.__create_answer_dict('start_statement',
@@ -182,6 +186,9 @@ class ItemDictHelper(object):
                                                               is_visible=argument.uid in uids,
                                                               attack_url=_um.get_url_for_jump(False, argument.uid)))
 
+        if type(db_arguments) is list and len(db_arguments) > 0:
+            random.shuffle(statements_array)
+
         if nickname:
             statements_array.append(self.__create_answer_dict('start_premise',
                                                               [{'title': _tn.get(_.newPremiseRadioButtonText),
@@ -255,6 +262,9 @@ class ItemDictHelper(object):
                                                               is_author=is_author_of_argument(nickname, argument.uid),
                                                               is_visible=argument.uid in uids,
                                                               attack_url=_um.get_url_for_jump(False, argument.uid)))
+
+        if type(db_arguments) is list and len(db_arguments) > 0:
+            random.shuffle(statements_array)
 
         if logged_in:
             if len(statements_array) == 0:
