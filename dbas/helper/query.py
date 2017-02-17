@@ -846,7 +846,7 @@ def __revoke_argument(db_user, argument_uid, translator):
     is_involved = sum([len(rel) if rel else 0 for rel in relations]) > 0
 
     if is_involved:
-        logger('QueryHelper', '__revoke_argument', 'New anonymous author for argument ' + str(argument_uid))
+        logger('QueryHelper', '__revoke_argument', 'Author of argument {} changed from {} to anonymous'.format(argument_uid, db_user.uid))
         db_new_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         db_argument.author_uid = db_new_author.uid
         is_deleted = False
@@ -879,9 +879,11 @@ def __revoke_statement(db_user, statement_uid, translator):
         logger('QueryHelper', '__revoke_statement', 'Statement does not exists')
         return None, is_revoked, translator.get(_.internalError)
 
-    if not is_author:
+    if not is_author and False:
         logger('QueryHelper', '__revoke_statement', db_user.nickname + ' is not the author')
         return None, is_revoked, translator.get(_.userIsNotAuthorOfStatement)
+
+    __remove_user_from_arguments_with_statement(statement_uid, db_user, translator)
 
     db_anonymous = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' will get a new author ' + str(db_anonymous.uid) + ' (old author ' + str(db_user.uid) + ')')
@@ -914,6 +916,7 @@ def __revoke_statement(db_user, statement_uid, translator):
 
     DBDiscussionSession.add(db_statement)
     DBDiscussionSession.flush()
+    transaction.commit()
 
     return db_statement, is_revoked, ''
 
@@ -962,6 +965,7 @@ def __transfer_textversion_to_new_author(statement_uid, old_author, new_author):
     :param new_author:
     :return:
     """
+    logger('QueryHelper', '__revoke_statement', 'Textversion of {} will change author from {} to {}'.format(statement_uid, old_author, new_author))
     db_textversion = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.statement_uid == statement_uid,
                                                                         TextVersion.author_uid == old_author)).all()
     for textversion in db_textversion:
@@ -970,3 +974,12 @@ def __transfer_textversion_to_new_author(statement_uid, old_author, new_author):
         DBDiscussionSession.add(RevokedContentHistory(old_author, new_author, textversion_uid=textversion.uid))
 
     DBDiscussionSession.flush()
+    transaction.commit()
+
+
+def __remove_user_from_arguments_with_statement(statement_uid, db_user, translator):
+    logger('QueryHelper', '__remove_user_from_arguments_with_statement', '{} with user{}'.format(statement_uid, db_user.uid))
+    db_arguments = get_all_arguments_by_statement(statement_uid, True)
+    for arg in db_arguments:
+        if arg.author_uid == db_user.uid:
+            revoke_content(arg.uid, True, db_user.nickname, translator)

@@ -3,7 +3,7 @@
 
 from dbas.lib import get_author_data
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import ClickedStatement, ClickedArgument, User, Argument
+from dbas.database.discussion_model import ClickedStatement, ClickedArgument, User, Argument, RevokedContent
 from sqlalchemy import and_
 from .keywords import Keywords as _
 from .translator import Translator
@@ -869,15 +869,23 @@ def get_author_or_first_supporter_of_argument(argument_uid, current_user):
         ClickedArgument.is_up_vote == True
     ))
 
-    if current_user and db_vote:
-        db_vote = db_vote.filter(ClickedArgument.author_uid != current_user.uid)
+    # Remove all users which have revoked themselves
+    forbidden_users = []
+    db_revoked = DBDiscussionSession.query(RevokedContent).filter_by(argument_uid=argument_uid).all()
+    if db_revoked:
+        forbidden_users += [rev.author_uid for rev in db_revoked]
+
+    if current_user:
+        forbidden_users.append(current_user.uid)
 
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
     if db_vote:
+        db_vote = db_vote.filter(~ClickedArgument.author_uid.in_(forbidden_users))
         db_vote = db_vote.order_by(ClickedArgument.uid.desc()).first()
-
-    if db_vote:
-        return DBDiscussionSession.query(User).get(db_vote.author_uid)
+        if db_vote:
+            return DBDiscussionSession.query(User).get(db_vote.author_uid)
+        else:
+            return None
     elif db_argument:
         DBDiscussionSession.query(User).get(db_argument.author_uid)
     else:
