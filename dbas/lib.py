@@ -19,7 +19,7 @@ from urllib import parse
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, \
-    ClickedArgument, ClickedStatement, Group, MarkedArgument, MarkedStatement
+    ClickedArgument, ClickedStatement, Group, MarkedArgument, MarkedStatement, PremiseGroup
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from sqlalchemy import and_, func
@@ -207,7 +207,7 @@ def __get_arguments_of_conclusion(statement_uid, include_disabled):
     return db_arguments if db_arguments else []
 
 
-def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
+def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
                               user_changed_opinion=False, rearrange_intro=False, colored_position=False,
                               attack_type=None, minimize_on_undercut=False, is_users_opinion=True, anonymous_style=False,
                               support_counter_argument=False):
@@ -236,6 +236,14 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
     # catch error
 
     _t = Translator(lang)
+    if nickname is not None:
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        pgroup = DBDiscussionSession.query(PremiseGroup).get(db_argument.premisesgroup_uid)
+        marked_argument = DBDiscussionSession.query(MarkedArgument).filter(and_(MarkedArgument.argument_uid == uid,
+                                                                                MarkedArgument.author_uid == db_user.uid)).first()
+        premisegroup_by_user = pgroup.author_uid == db_user.uid or marked_argument is not None and len(marked_argument) > 0
+    else:
+        premisegroup_by_user = False
 
     # getting all argument id
     arg_array = [db_argument.uid]
@@ -254,7 +262,7 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
     else:
         # get all pgroups and at last, the conclusion
         return __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag,
-                                       start_with_intro, minimize_on_undercut, anonymous_style, _t)
+                                       start_with_intro, minimize_on_undercut, anonymous_style, premisegroup_by_user, _t)
 
 
 def get_all_arguments_with_text_by_statement_id(statement_uid):
@@ -472,7 +480,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
 
 
 def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro,
-                            minimize_on_undercut, anonymous_style, _t):
+                            minimize_on_undercut, anonymous_style, premisegroup_by_user, _t):
     """
 
     :param arg_array:
@@ -530,12 +538,16 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     # just display the last premise group on undercuts, because the story is always saved in all bubbles
 
     if minimize_on_undercut and not user_changed_opinion and len(pgroups) > 2:
-        return _t.get(_.butYouCounteredWith) + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
+        if premisegroup_by_user:
+            return _t.get(_.butYouCounteredWith).strip() + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
+        else:
+            return _t.get(_.butYouCounteredWith).strip() + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
 
     for i, pgroup in enumerate(pgroups):
         ret_value += ' '
         if tmp_users_opinion and not anonymous_style:
-            ret_value += _t.get(_.otherParticipantsConvincedYouThat if user_changed_opinion else _.butYouCounteredWith)
+            tmp = _.butYouCounteredWithArgument if premisegroup_by_user else _.butYouCounteredWithInterest
+            ret_value += _t.get(_.otherParticipantsConvincedYouThat if user_changed_opinion else tmp)
         elif not anonymous_style:
             ret_value += _t.get(_.youAgreeWithThatNow)
         else:

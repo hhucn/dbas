@@ -164,8 +164,8 @@ class Keywords(Enum):
     butThisDoesNotRejectArgument = 'But this does not rejects the argument that',
     butThisDoesNotRejectStatement = 'But this does not rejects the statement that'
     but = 'but'
-    butThenYouCounteredWith = 'But then you did not agree with this because'
-    butYouCounteredWith = 'You did not agree with this because'
+    butYouCounteredWithInterest = 'You did not agree with this because'
+    butYouCounteredWithArgument = 'You did not agree with this because '
     butYouAgreedWith = 'And you agreed with this because'
     canYouGiveAReason = 'Can you give a reason?'
     canYouGiveAReasonFor = 'Can you give a reason for'

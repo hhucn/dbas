@@ -407,7 +407,7 @@ class DiscussionDictHelper(object):
 
     def __get_dict_for_argumentation_end(self, argument_uid, user_changed_opinion, nickname, attack, _tn):
         #  user_text        = _tn.get(_.soYourOpinionIsThat) + ': '
-        text             = get_text_for_argument_uid(argument_uid, user_changed_opinion=user_changed_opinion, minimize_on_undercut=True)
+        text             = get_text_for_argument_uid(argument_uid, user_changed_opinion=user_changed_opinion, minimize_on_undercut=True, nickname=nickname)
         user_text        = text[0:1].upper() + text[1:]
         sys_text = (_tn.get(_.otherParticipantsDontHaveCounterForThat) + '.') if attack == 'end' else _tn.get(
             _.otherParticipantsDontHaveNewCounterForThat)
@@ -457,7 +457,7 @@ class DiscussionDictHelper(object):
         reply_for_argument = not (db_statement and db_statement.is_startpoint)
         support_counter_argument = 'reaction' in self.history.split('-')[-1]
 
-        current_argument   = get_text_for_argument_uid(db_argument.uid, with_html_tag=True, colored_position=True,
+        current_argument   = get_text_for_argument_uid(db_argument.uid, nickname=nickname, with_html_tag=True, colored_position=True,
                                                        user_changed_opinion=user_changed_opinion, attack_type=attack,
                                                        minimize_on_undercut=True, support_counter_argument=support_counter_argument)
 
