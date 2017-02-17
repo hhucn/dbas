@@ -855,9 +855,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function addListenersForSidebarButtons(jsonData, label, rect, edges, force, zoom) {
         $('#default-view').off('click').click(function () {
-        	if ($('#global-view').attr('data-global-view-loaded') == 'true') {
+        	if ($('#global-view').attr('data-global-view-loaded') == 'true')
                 new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(false);
-            }
 	        else
 	            showDefaultView(jsonData, force, edges, label, rect, zoom);
         });
@@ -966,9 +965,24 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function showLabels(label, rect) {
         isContentVisible = true;
         isPositionVisible = true;
+
         label.style("display", 'inline');
         rect.style("display", 'inline');
 
+        hideLabelsOfNotSelectedNodes();
+
+        $('#show-labels').hide();
+        $('#hide-labels').show();
+        // also show content of positions
+        $('#show-positions').hide();
+        $('#hide-positions').show();
+    }
+
+    /**
+     * Hide labels of not selected nodes
+     */
+    function hideLabelsOfNotSelectedNodes() {
+        // hide labels of nodes which are not selected
         d3.selectAll(".node").each(function (d) {
             if (d3.select('#circle-' + d.id).attr('fill') == light_grey) {
                 // set display style of positions
@@ -976,13 +990,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 d3.select("#rect-" + d.id).style("display", 'none');
             }
         });
-
-
-        $('#show-labels').hide();
-        $('#hide-labels').show();
-        // also show content of positions
-        $('#show-positions').hide();
-        $('#hide-positions').show();
     }
 
     /**
