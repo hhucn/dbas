@@ -3,8 +3,9 @@
  * @email teresa.uebber@hhu.de, krauthoff@cs.uni-duesseldorf.de
  */
 
-function DiscussionGraph(box_sizes_for_rescaling) {
+function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     var s;
+    var isPartialGraphMode = is_partial_graph_mode;
     var isPositionVisible = false;
     var isContentVisible = false;
     var isStatementVisible = false;
@@ -47,19 +48,23 @@ function DiscussionGraph(box_sizes_for_rescaling) {
         var is_argument = null;
         var uid = null;
         var tmp = url.split('/');
+        isPartialGraphMode = override_cases;
         if (!override_cases) {
 	        if (url.indexOf('attitude') != -1) {
 		        uid = tmp[tmp.indexOf('attitude') + 1];
 		        is_argument = false;
+		        isPartialGraphMode = true;
 	        } else if (url.indexOf('justify') != -1) {
 		        uid = tmp[tmp.indexOf('justify') + 1];
 		        is_argument = false;
+		        isPartialGraphMode = true;
 	        } else if (url.indexOf('reaction') != -1) {
 		        uid = tmp[tmp.indexOf('reaction') + 1];
 		        is_argument = true;
+		        isPartialGraphMode = true;
 	        }
         }
-	    new AjaxGraphHandler().getDiscussionGraphData(this, uid, is_argument);
+	    new AjaxGraphHandler().getDiscussionGraphData(this, uid, is_argument, isPartialGraphMode);
     };
 
     /**
@@ -76,7 +81,7 @@ function DiscussionGraph(box_sizes_for_rescaling) {
         	new GuiHandler().setDisplayStyleAsDiscussion();
         	return;
         }
-        s = new DiscussionGraph(box_sizes).setDefaultViewParams(true, jsonData, null, request_for_complete);
+        s = new DiscussionGraph(box_sizes, isPartialGraphMode).setDefaultViewParams(true, jsonData, null, request_for_complete);
     };
 
     /**
@@ -132,13 +137,16 @@ function DiscussionGraph(box_sizes_for_rescaling) {
      * @param request_for_complete
      */
     this.setDefaultViewParams = function (startD3, jsonData, d3, request_for_complete) {
-        new DiscussionGraph(box_sizes).setButtonDefaultSettings(jsonData, request_for_complete);
+    	var dg = new DiscussionGraph(box_sizes, isPartialGraphMode);
+    	console.log(jsonData['type'] + ' ' + (jsonData['type'] == 'complete'));
+	    $('#global-view').attr('data-global-view-loaded', jsonData['type'] == 'complete');
+        dg.setButtonDefaultSettings(jsonData, request_for_complete);
         var container = $('#' + graphViewContainerSpaceId);
         container.empty();
 
         if (startD3) {
             if (!this.getD3Graph(jsonData))
-                new DiscussionGraph(box_sizes).setDefaultViewParams(false, null, d3, request_for_complete);
+                dg.setDefaultViewParams(false, null, d3, request_for_complete);
         } else {
             container.empty();
         }
@@ -162,7 +170,7 @@ function DiscussionGraph(box_sizes_for_rescaling) {
         $('#hide-supports-on-my-statements').hide();
         $('#show-positions').show();
         $('#hide-positions').hide();
-        if (request_for_complete){
+        if ((request_for_complete || typeof request_for_complete === 'undefined') && !isPartialGraphMode){
         	$('#global-view').hide();
         } else {
         	$('#global-view').show();
@@ -310,11 +318,14 @@ function DiscussionGraph(box_sizes_for_rescaling) {
                     edge = e;
                 }
             });
-            if(linkTargetCoordinate === 'x2'){
-                position = (parseInt(d3.select('#link-' + edge.id).attr('x2')) + parseInt(d3.select('#link-' + edge.id).attr('x1')))/2;
-            }
-            else{
-                position = (parseInt(d3.select('#link-' + edge.id).attr('y2')) + parseInt(d3.select('#link-' + edge.id).attr('y1')))/2;
+            try {
+	            if (linkTargetCoordinate === 'x2') {
+		            position = (parseInt(d3.select('#link-' + edge.id).attr('x2')) + parseInt(d3.select('#link-' + edge.id).attr('x1'))) / 2;
+	            } else {
+		            position = (parseInt(d3.select('#link-' + edge.id).attr('y2')) + parseInt(d3.select('#link-' + edge.id).attr('y1'))) / 2;
+	            }
+            } catch (TypeError){
+            	console.log('TypeError in getPositionOfLink while selecting link');
             }
         } else {
             position = nodeCoordinate;
@@ -341,7 +352,7 @@ function DiscussionGraph(box_sizes_for_rescaling) {
      *
      * @param width: width of container, which contains graph
      * @param height: height of container
-     * qparam jsonData
+     * @param jsonData
      * @return force layout
      */
     function getForce(width, height, jsonData) {
@@ -843,44 +854,52 @@ function DiscussionGraph(box_sizes_for_rescaling) {
      * @param zoom
      */
     function addListenersForSidebarButtons(jsonData, label, rect, edges, force, zoom) {
-        showDefaultView(jsonData, force, edges, label, rect, zoom);
-        $('#global-view').click(function () {
-            new DiscussionGraph(box_sizes).showGraph(true);
+        $('#default-view').off('click').click(function () {
+        	if ($('#global-view').attr('data-global-view-loaded') == 'true')
+	            new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(false);
+	        else
+	            showDefaultView(jsonData, force, edges, label, rect, zoom);
         });
-        $('#show-labels').click(function () {
+        $('#global-view').off('click').click(function () {
+        	if ($(this).attr('data-global-view-loaded') == 'true')
+        		showDefaultView(jsonData, force, edges, label, rect, zoom);
+	        else
+                new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(true);
+        });
+        $('#show-labels').off('click').click(function () {
             showLabels(label, rect);
         });
-        $('#hide-labels').click(function () {
+        $('#hide-labels').off('click').click(function () {
             hideLabels(label, rect);
         });
-        $('#show-positions').click(function () {
+        $('#show-positions').off('click').click(function () {
             showPositions();
         });
-        $('#hide-positions').click(function () {
+        $('#hide-positions').off('click').click(function () {
             hidePositions();
         });
-        $('#show-my-path').click(function () {
+        $('#show-my-path').off('click').click(function () {
             showPath(jsonData, edges);
         });
-        $('#hide-my-path').click(function () {
+        $('#hide-my-path').off('click').click(function () {
             hidePath(edges);
         });
-        $('#show-my-statements').click(function () {
+        $('#show-my-statements').off('click').click(function () {
             showMyStatements(edges, force);
         });
-        $('#hide-my-statements').click(function () {
+        $('#hide-my-statements').off('click').click(function () {
             hideMyStatements(edges, force);
         });
-        $('#show-supports-on-my-statements').click(function () {
+        $('#show-supports-on-my-statements').off('click').click(function () {
             showSupportsOnMyStatements(edges, force);
         });
-        $('#hide-supports-on-my-statements').click(function () {
+        $('#hide-supports-on-my-statements').off('click').click(function () {
             hideSupportsOnMyStatements(edges, force);
         });
-        $('#show-attacks-on-my-statements').click(function () {
+        $('#show-attacks-on-my-statements').off('click').click(function () {
             showAttacksOnMyStatements(edges, force);
         });
-        $('#hide-attacks-on-my-statements').click(function () {
+        $('#hide-attacks-on-my-statements').off('click').click(function () {
             hideAttacksOnMyStatements(edges, force);
         });
     }
@@ -896,25 +915,22 @@ function DiscussionGraph(box_sizes_for_rescaling) {
 	 * @param zoom
 	 */
     function showDefaultView(jsonData, force, edges, label, rect, zoom) {
+        isDefaultView = true;
 
-        $('#default-view').click(function () {
-            isDefaultView = true;
+        // reset buttons
+        new DiscussionGraph(box_sizes, isPartialGraphMode).setButtonDefaultSettings(jsonData);
 
-            // reset buttons
-            new DiscussionGraph(box_sizes).setButtonDefaultSettings(jsonData);
+        // set position of graph and set scale
+        d3.selectAll("g.zoom").attr("transform", "translate(" + 0 + ")" + " scale(" + 1 + ")");
 
-            // set position of graph and set scale
-            d3.selectAll("g.zoom").attr("transform", "translate(" + 0 + ")" + " scale(" + 1 + ")");
+        // stop zoom event
+        zoom.on("zoom", null);
 
-            // stop zoom event
-            zoom.on("zoom", null);
+        // create new zoom event listener
+        var zoomDefaultView = d3.behavior.zoom();
+        zoomAndPan(zoomDefaultView);
 
-            // create new zoom event listener
-            var zoomDefaultView = d3.behavior.zoom();
-            zoomAndPan(zoomDefaultView);
-
-            resetButtons(label, rect, edges, force)
-        });
+        resetButtons(label, rect, edges, force)
     }
 
     /**

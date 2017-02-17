@@ -41,6 +41,7 @@ def get_d3_complete_dump(request):
 
     graph, error = get_d3_data(issue, request.authenticated_userid)
     return_dict = graph
+    return_dict.update({'type': 'complete'})
     if not error:
         return_dict.update({'node_doj_factors': get_doj_data(issue)})
         return_dict.update({'node_opinion_factors': get_opinion_data(issue)})
@@ -63,7 +64,7 @@ def get_d3_partial_dump(request):
     uid = request.params['uid'] if 'uid' in request.params else '0'
     is_argument = True if 'is_argument' in request.params and request.params['is_argument'] == 'true' else False
     issue = IssueHelper.get_issue_id(request)
-    return_dict = {}
+    return_dict = {'type': 'partial'}
 
     if uid == '0':
         graph, error = get_d3_data(issue, request.authenticated_userid)
@@ -75,11 +76,12 @@ def get_d3_partial_dump(request):
         else:
             graph, error = get_partial_graph_for_statement(uid, issue, request.authenticated_userid)
         if not error:
-            return_dict = graph
+            return_dict.update(graph)
             return_dict.update({'node_doj_factors': get_doj_data(issue)})
             return_dict.update({'node_opinion_factors': get_opinion_data(issue)})
             return_dict.update({'path': get_path_of_user(request.application_url, path, issue)})
             return_dict.update({'error': ''})
+            return_dict.update()
 
     if error:
         ui_locales = get_language(request)

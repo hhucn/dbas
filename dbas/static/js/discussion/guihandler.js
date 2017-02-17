@@ -120,7 +120,7 @@ function GuiHandler() {
 		graphViewContainer.attr('style', 'height: ' + innerHeight + 'px; margin-left: 2em; margin-right: 2em; margin-bottom: 1em;');
 		innerHeight -= header.outerHeight(true) + 20;
 		$('#' + graphViewContainerSpaceId).attr('style', 'height: ' + innerHeight + 'px; margin-left: 0.5em; margin-right: 0.5em; width: 95%');
-		new DiscussionGraph({}).showGraph(false);
+		new DiscussionGraph({}, false).showGraph(false);
 		main.setSidebarStyle(graphViewContainer, tacked_sidebar);
 		main.setSidebarClicks(graphViewContainer, tacked_sidebar);
 		this.hideAddPositionContainer();

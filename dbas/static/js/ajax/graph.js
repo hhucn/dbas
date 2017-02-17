@@ -95,7 +95,7 @@ function AjaxGraphHandler(){
 			async: true,
 			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function (data) {
-			new DiscussionGraph().callbackIfDoneForGetJumpDataForGraph(data);
+			new DiscussionGraph({}, false).callbackIfDoneForGetJumpDataForGraph(data);
 		}).fail(function () {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
