@@ -76,7 +76,7 @@ def valid_token(request):
     request.validated['session_id'] = request.session.id
 
 
-def validate_login(request):
+def validate_login(request, **kwargs):
     """
     Takes token from request and validates it. Return true if logged in, else false.
 
@@ -110,7 +110,7 @@ def token_to_database(nickname, token):
     transaction.commit()
 
 
-def validate_credentials(request):
+def validate_credentials(request, **kwargs):
     """
     Parse credentials from POST request and validate it against DBA-S' database.
 
