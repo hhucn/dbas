@@ -498,6 +498,7 @@ def discussion_init(request, for_api=False, api_data=None):
     request_authenticated_userid = request.authenticated_userid
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    history_helper.save_path_in_database(nickname, request.path, history)  # TODO 322 / 351
     if session_expired:
         return user_logout(request, True)
 
@@ -567,6 +568,7 @@ def discussion_attitude(request, for_api=False, api_data=None):
     logger('discussion_attitude', 'def', 'main, request.params: ' + str(params))
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    history_helper.save_path_in_database(nickname, request.path, history)  # TODO 322 / 351
     if session_expired:
         return user_logout(request, True)
 
@@ -635,6 +637,7 @@ def discussion_justify(request, for_api=False, api_data=None):
     request_authenticated_userid = request.authenticated_userid
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    history_helper.save_path_in_database(nickname, request.path, history)  # TODO 322 / 351
     if session_expired:
         return user_logout(request, True)
 
@@ -698,6 +701,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
 
     supportive = tmp_argument.is_supportive
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    history_helper.save_path_in_database(nickname, request.path, history)  # TODO 322 / 351
     if session_expired:
         return user_logout(request, True)
 
@@ -774,7 +778,7 @@ def discussion_support(request, for_api=False, api_data=None):
         arg_system_uid = match_dict['arg_id_sys'] if 'arg_id_sys' in match_dict else ''
 
     session_expired = user_manager.update_last_action(nickname)
-    #  history_helper.save_path_in_database(nickname, request.path, history)  # TODO 322
+    history_helper.save_path_in_database(nickname, request.path, history)  # TODO 322 / 351
     history_helper.save_history_in_cookie(request, request.path, history)
     if session_expired:
         return user_logout(request, True)
@@ -785,7 +789,7 @@ def discussion_support(request, for_api=False, api_data=None):
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
     if not check_belonging_of_argument(issue, arg_user_uid) or not check_belonging_of_argument(issue, arg_system_uid) or not supports_for_same_conclusion(arg_user_uid, arg_system_uid):
-        logger('discussion_choose', 'def', 'no item dict', error=True)
+        logger('discussion_support', 'def', 'no item dict', error=True)
         raise HTTPNotFound()
         # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
@@ -830,7 +834,7 @@ def discussion_finish(request):
     ui_locales      = get_language(request)
     nickname        = request.authenticated_userid
     session_expired = user_manager.update_last_action(nickname)
-    #  history_helper.save_path_in_database(nickname, request.path)  # TODO 322
+    history_helper.save_path_in_database(nickname, request.path)  # TODO 322 / 351
     if session_expired:
         return user_logout(request, True)
 
@@ -893,6 +897,7 @@ def discussion_choose(request, for_api=False, api_data=None):
         # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    history_helper.save_path_in_database(nickname, request.path, history)  # TODO 322 / 351
     if session_expired:
         return user_logout(request, True)
 
@@ -956,7 +961,7 @@ def discussion_jump(request, for_api=False, api_data=None):
         arg_uid = match_dict['arg_id'] if 'arg_id' in match_dict else ''
 
     session_expired = user_manager.update_last_action(nickname)
-    #  history_helper.save_path_in_database(nickname, request.path, history)  # TODO 322
+    history_helper.save_path_in_database(nickname, request.path, history)  # TODO 322 / 351
     history_helper.save_history_in_cookie(request, request.path, history)
     if session_expired:
         return user_logout(request, True)
