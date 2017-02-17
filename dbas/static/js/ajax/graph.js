@@ -52,10 +52,11 @@ function AjaxGraphHandler(){
 	 *
 	 * Displays a graph of current discussion
 	 *
+	 * @param context
 	 * @param uid
 	 * @param is_argument
 	 */
-	this.getDiscussionGraphData = function (uid, is_argument) {
+	this.getDiscussionGraphData = function (context, uid, is_argument) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		var data = {'issue': getCurrentIssueId(), 'path': window.location.href};
 		var request_for_complete = uid == null;
@@ -75,7 +76,7 @@ function AjaxGraphHandler(){
 			data: data,
 			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function (data) {
-			new DiscussionGraph().callbackIfDoneForDiscussionGraph(data, request_for_complete);
+			context.callbackIfDoneForDiscussionGraph(data, request_for_complete);
 		}).fail(function () {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});

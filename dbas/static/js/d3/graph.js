@@ -3,7 +3,7 @@
  * @email teresa.uebber@hhu.de, krauthoff@cs.uni-duesseldorf.de
  */
 
-function DiscussionGraph() {
+function DiscussionGraph(box_sizes_for_rescaling) {
     var s;
     var isPositionVisible = false;
     var isContentVisible = false;
@@ -24,7 +24,7 @@ function DiscussionGraph() {
     var dark_blue = '#1976D2';
     var font_size = 14; // needed for rescaling
     var line_height = 1.5; // needed for rescaling
-    var box_sizes = {}; // needed for rescaling
+    var box_sizes = box_sizes_for_rescaling; // needed for rescaling
     var node_id_prefix = 'node_'; // needed for rescaling
     var old_scale = 1.0; // needed for rescaling
     var zoom_scale;
@@ -59,7 +59,7 @@ function DiscussionGraph() {
 		        is_argument = true;
 	        }
         }
-	    new AjaxGraphHandler().getDiscussionGraphData(uid, is_argument);
+	    new AjaxGraphHandler().getDiscussionGraphData(this, uid, is_argument);
     };
 
     /**
@@ -76,7 +76,7 @@ function DiscussionGraph() {
         	new GuiHandler().setDisplayStyleAsDiscussion();
         	return;
         }
-        s = new DiscussionGraph().setDefaultViewParams(true, jsonData, null, request_for_complete);
+        s = new DiscussionGraph(box_sizes).setDefaultViewParams(true, jsonData, null, request_for_complete);
     };
 
     /**
@@ -132,13 +132,13 @@ function DiscussionGraph() {
      * @param request_for_complete
      */
     this.setDefaultViewParams = function (startD3, jsonData, d3, request_for_complete) {
-        new DiscussionGraph().setButtonDefaultSettings(jsonData, request_for_complete);
+        new DiscussionGraph(box_sizes).setButtonDefaultSettings(jsonData, request_for_complete);
         var container = $('#' + graphViewContainerSpaceId);
         container.empty();
 
         if (startD3) {
             if (!this.getD3Graph(jsonData))
-                new DiscussionGraph().setDefaultViewParams(false, null, d3, request_for_complete);
+                new DiscussionGraph(box_sizes).setDefaultViewParams(false, null, d3, request_for_complete);
         } else {
             container.empty();
         }
@@ -341,6 +341,7 @@ function DiscussionGraph() {
      *
      * @param width: width of container, which contains graph
      * @param height: height of container
+     * qparam jsonData
      * @return force layout
      */
     function getForce(width, height, jsonData) {
@@ -844,7 +845,7 @@ function DiscussionGraph() {
     function addListenersForSidebarButtons(jsonData, label, rect, edges, force, zoom) {
         showDefaultView(jsonData, force, edges, label, rect, zoom);
         $('#global-view').click(function () {
-            new DiscussionGraph().showGraph(true);
+            new DiscussionGraph(box_sizes).showGraph(true);
         });
         $('#show-labels').click(function () {
             showLabels(label, rect);
@@ -900,7 +901,7 @@ function DiscussionGraph() {
             isDefaultView = true;
 
             // reset buttons
-            new DiscussionGraph().setButtonDefaultSettings(jsonData);
+            new DiscussionGraph(box_sizes).setButtonDefaultSettings(jsonData);
 
             // set position of graph and set scale
             d3.selectAll("g.zoom").attr("transform", "translate(" + 0 + ")" + " scale(" + 1 + ")");
