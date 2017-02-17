@@ -985,7 +985,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // hide labels of nodes which are not selected
         d3.selectAll(".node").each(function (d) {
             if (d3.select('#circle-' + d.id).attr('fill') == light_grey) {
-                // set display style of positions
                 d3.select('#label-' + d.id).style("display", 'none');
                 d3.select("#rect-" + d.id).style("display", 'none');
             }
@@ -1068,22 +1067,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // run through all values in jsonData.path
         jsonData.path.forEach(function (d) {
             edges.forEach(function (edge) {
-                // edge from virtual node to statement, undercuts
-                let edgeVirtualNode;
-
                 // edge without virtual node
                 if((edge.source.id === getId(d[0])) && (edge.target.id === getId(d[1]))) {
                     edgesCircleId.push(edge);
                 }
                 // edge with virtual node
                 else if(edge.source.id == getId(d[0]) && edge.target.label == ''){
-                    edgeVirtualNode = edge;
-                    edges.forEach(function (e) {
-                        if (e.source.id == edgeVirtualNode.target.id && e.target.id == getId(d[1])) {
-                            edgesCircleId.push(edge);
-                            edgesCircleId.push(e);
-                        }
-                    });
+                    findEdgesVirtualNode(edges, edge, edgesCircleId, d);
                 }
             });
         });
@@ -1094,11 +1084,34 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         });
     }
 
-    function getId(d) {
-        if(d == "issue"){
-            return d;
+    /**
+     * Find two edges which connect source and target.
+     *
+     * @param edges
+     * @param edge
+     * @param edgesCircleId
+     */
+    function findEdgesVirtualNode(edges, edge, edgesCircleId, d){
+        // edge from virtual node to statement
+        edges.forEach(function (e) {
+            if (e.source.id == edge.target.id && e.target.id == getId(d[1])) {
+                edgesCircleId.push(edge);
+                edgesCircleId.push(e);
+            }
+        });
+    }
+
+    /**
+     * Get id of node.
+     *
+     * @param node
+     * @returns {*}
+     */
+    function getId(node) {
+        if(node == "issue"){
+            return node;
         }
-        return "statement_" + d;
+        return "statement_" + node;
     }
 
     /**
