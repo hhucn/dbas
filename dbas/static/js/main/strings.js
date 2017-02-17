@@ -291,6 +291,8 @@ var tourIssueTitle                  = 'tourIssueTitle';
 var tourIssueContent                = 'tourIssueContent';
 var tourStartDiscussionTitle        = 'tourStartDiscussionTitle';
 var tourStartDiscussionContent      = 'tourStartDiscussionContent';
+var tourMarkOpinionTitle            = 'tourMarkOpinionTitle';
+var tourMarkOpinionContent          = 'tourMarkOpinionContent';
 var tourSelectAnswertTitle          = 'tourSelectAnswertTitle';
 var tourSelectAnswertContent        = 'tourSelectAnswertContent';
 var tourEnterStatementTitle         = 'tourEnterStatementTitle';
@@ -537,6 +539,8 @@ var dbas_en = {
     'tourIssueContent': 'Here you can the topic, which the current discussion is about.',
     'tourStartDiscussionTitle': 'First steps',
     'tourStartDiscussionContent': 'On the left side there are messages of the system and on the right side there are your answers.',
+    'tourMarkOpinionTitle': 'Mark opinon',
+    'tourMarkOpinionContent': 'With this little star you can mark your opinion.',
     'tourSelectAnswertTitle': 'First selection',
     'tourSelectAnswertContent': 'In the lower part you can choose your answers ...',
     'tourEnterStatementTitle': 'Your own response',
@@ -764,6 +768,8 @@ var dbas_de = {
     'tourIssueContent': 'Hier sehen Sie das aktuelle Diskussionsthema.',
     'tourStartDiscussionTitle': 'Erste Schritte',
     'tourStartDiscussionContent': 'In diesem Abschnitt sehen Sie links Nachrichten des System und rechts Ihre eigenen Nachrichten.',
+    'tourMarkOpinionTitle': 'Meinung markieren',
+    'tourMarkOpinionContent': 'Mit dem kleinen Stern können Sie Ihre eigene Meinung markieren.',
     'tourSelectAnswertTitle': 'Erste Auswahl',
     'tourSelectAnswertContent': 'Im unteren Teil können Sie Antworten auswählen ...',
     'tourEnterStatementTitle': 'Eigene Antworten',
