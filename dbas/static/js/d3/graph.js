@@ -855,8 +855,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function addListenersForSidebarButtons(jsonData, label, rect, edges, force, zoom) {
         $('#default-view').off('click').click(function () {
-        	if ($('#global-view').attr('data-global-view-loaded') == 'true')
-	            new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(false);
+        	if ($('#global-view').attr('data-global-view-loaded') == 'true') {
+                new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(false);
+            }
 	        else
 	            showDefaultView(jsonData, force, edges, label, rect, zoom);
         });
@@ -930,7 +931,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         var zoomDefaultView = d3.behavior.zoom();
         zoomAndPan(zoomDefaultView);
 
-        resetButtons(label, rect, edges, force)
+        resetButtons(label, rect, edges, force);
     }
 
     /**
@@ -967,6 +968,16 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         isPositionVisible = true;
         label.style("display", 'inline');
         rect.style("display", 'inline');
+
+        d3.selectAll(".node").each(function (d) {
+            if (d3.select('#circle-' + d.id).attr('fill') == light_grey) {
+                // set display style of positions
+                d3.select('#label-' + d.id).style("display", 'none');
+                d3.select("#rect-" + d.id).style("display", 'none');
+            }
+        });
+
+
         $('#show-labels').hide();
         $('#hide-labels').show();
         // also show content of positions
@@ -1050,7 +1061,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // run through all values in jsonData.path
         jsonData.path.forEach(function (d) {
             edges.forEach(function (edge) {
-                // edge from virtual node to statement
+                // edge from virtual node to statement, undercuts
                 let edgeVirtualNode;
 
                 // edge without virtual node
@@ -1066,10 +1077,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                             edgesCircleId.push(e);
                         }
                     });
-                }
-                // edge is an undercut
-                else if((edge.source.id == getId(d[0])) && (edge.is_undercut == true)){
-                    edgesCircleId.push(edge);
                 }
             });
         });
@@ -1328,7 +1335,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // select edges with position as source and issue as target
         d3.selectAll(".node").each(function (d) {
             d3.selectAll(".link").each(function (e) {
-                if (e.source.id === d.id && e.target.id === 'issue') {
+                // only show labels of highlighted nodes
+                if (e.source.id === d.id && e.target.id === 'issue' && d3.select('#circle-' + d.id).attr('fill') != light_grey) {
                     // set display style of positions
                     d3.select('#label-' + d.id).style("display", style);
                     d3.select("#rect-" + d.id).style("display", style);
