@@ -125,13 +125,14 @@ def validate_credentials(request, **kwargs):
 
     # Check in DB-AS' database, if the user's credentials are valid
     logged_in = user_login(request, nickname, password, for_api=True)
+    if isinstance(logged_in, str):
+        logged_in = json.loads(logged_in)
 
-    try:
-        if logged_in['status'] == 'success':
-            token = _create_token(nickname)
-            user = {'nickname': nickname, 'token': token}
-            token_to_database(nickname, token)
-            request.validated['user'] = user
-    except (TypeError, KeyError):
+    if logged_in.get('status') == 'success':
+        token = _create_token(nickname)
+        user = {'nickname': nickname, 'token': token}
+        token_to_database(nickname, token)
+        request.validated['user'] = user
+    else:
         log.error('API Not logged in: %s' % logged_in)
-        request.errors.add(logged_in)
+        request.errors.add('body', logged_in.get("error"))
