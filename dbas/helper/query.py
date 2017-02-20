@@ -9,6 +9,7 @@ import transaction
 
 import dbas.helper.notification as NotificationHelper
 import dbas.recommender_system as RecommenderSystem
+import dbas.helper.issue as issue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Issue, \
     RevokedContent, RevokedContentHistory, sql_timestamp_pretty_print, MarkedArgument, MarkedStatement
@@ -18,7 +19,7 @@ from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for
 from dbas.helper.voting import add_seen_statement, add_seen_argument
 from dbas.input_validator import get_relation_between_arguments
 from dbas.lib import escape_string, get_text_for_premisesgroup_uid, \
-    get_all_attacking_arg_uids_from_history, get_profile_picture, get_text_for_statement_uid,\
+    get_all_attacking_arg_uids_from_history, get_profile_picture, get_text_for_statement_uid, pretty_print_options, \
     is_author_of_argument, is_author_of_statement, get_all_arguments_by_statement, get_text_for_argument_uid
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -29,6 +30,7 @@ from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.input_validator import is_integer
 from dbas.handler.rss import append_action_to_issue_rss
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement
+from dbas.helper.history import get_bubble_from_reaction_step, get_splitted_history
 
 statement_min_length = 10
 
@@ -252,22 +254,26 @@ def mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, nickname
     return _t.get(_.everythingSaved), ''
 
 
-def get_text_for_bubble(uid, is_argument, is_supportive, nickname, _tn):
+def get_text_for_bubble(uid, is_argument, is_supportive, nickname, step, history, _tn):
     """
 
-    :param request:
     :param uid:
     :param is_argument:
     :param is_supportive:
     :param nickname:
-    :param _t:
+    :param step:
+    :param history:
+    :param _tn:
     :return:
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     if is_argument:
-        text = 'asd'
+        splitted_history = get_splitted_history(history)
+        bubbles = get_bubble_from_reaction_step('', step, nickname, _tn.get_lang(), splitted_history, '', color_steps=True)
+        text = bubbles[0]['message']
     else:
         text, tmp = get_user_bubble_text_for_justify_statement(uid, db_user, get_text_for_statement_uid(uid), is_supportive, _tn)
+        text = pretty_print_options(text)
 
     return text
 

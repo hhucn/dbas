@@ -237,14 +237,16 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
 
     _t = Translator(lang)
     premisegroup_by_user = False
+    author_uid = None
     if nickname is not None:
 
         db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
         if db_user:
+            author_uid = db_user.uid
             pgroup = DBDiscussionSession.query(PremiseGroup).get(db_argument.premisesgroup_uid)
             marked_argument = DBDiscussionSession.query(MarkedArgument).filter(and_(MarkedArgument.argument_uid == uid,
                                                                                     MarkedArgument.author_uid == db_user.uid)).first()
-            premisegroup_by_user = pgroup.author_uid == db_user.uid or marked_argument is not None and len(marked_argument) > 0
+            premisegroup_by_user = pgroup.author_uid == db_user.uid or marked_argument is not None
 
     # getting all argument id
     arg_array = [db_argument.uid]
@@ -258,7 +260,7 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
     if len(arg_array) == 1:
         # build one argument only
         return __build_single_argument(arg_array[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t,
-                                       start_with_intro, is_users_opinion, anonymous_style, support_counter_argument)
+                                       start_with_intro, is_users_opinion, anonymous_style, support_counter_argument, author_uid)
 
     else:
         # get all pgroups and at last, the conclusion
@@ -407,7 +409,7 @@ def __build_argument_for_jump(arg_array, with_html_tag):
 
 
 def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_position, attack_type, _t, start_with_intro,
-                            is_users_opinion, anonymous_style, support_counter_argument=False):
+                            is_users_opinion, anonymous_style, support_counter_argument=False, author_uid=None):
     """
 
     :param uid:
@@ -463,7 +465,13 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
             ret_value = (sb_none if attack_type in ['dont_know'] else sb) + intro + se + ' '
         elif is_users_opinion and not anonymous_style:
             ret_value = sb_none
-            ret_value += _t.get(_.youAgreeWithThecounterargument) if support_counter_argument else _t.get(_.youArgue)
+            marked_element = False
+            if author_uid:
+                db_marked = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.argument_uid == uid,
+                                                                             MarkedArgument.author_uid == author_uid).first()
+                marked_element = db_marked is not None
+            tmp = _t.get(_.youHaveTheOpinionThat).format('').strip()
+            ret_value += _t.get(_.youAgreeWithThecounterargument) if support_counter_argument else (tmp if marked_element else _t.get(_.youArgue))
             ret_value += se + ' '
         else:
             ret_value = sb_none + _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous) + se + ' '
@@ -724,6 +732,27 @@ def get_user_by_case_insensitive_public_nickname(public_nickname):
         func.lower(User.public_nickname) == func.lower(public_nickname)).first()
 
 
+def pretty_print_options(message):
+
+    # check for html
+    if message[0:1] == '<':
+        pos = message.index('>')
+        message = message[0:pos + 1] + message[pos + 1:pos + 2].upper() + message[pos + 2:]
+    else:
+        message = message[0:1].upper() + message[1:]
+
+    # check for html
+    if message[-1] == '>':
+        pos = message.rfind('<')
+        if message[pos - 1:pos] not in ['.', '?', '!']:
+            message = message[0:pos] + '.' + message[pos:]
+    else:
+        if not message.endswith(tuple(['.', '?', '!'])) and id is not 'now':
+            message += '.'
+
+    return message
+
+
 def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_flagable=False,
                              is_author=False, id='', url='', message='', omit_url=False, argument_uid=None,
                              statement_uid=None, is_supportive=None, nickname='anonymous', lang='en',
@@ -747,22 +776,7 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     :param lang: String
     :return: dict()
     """
-
-    # check for html
-    if message[0:1] == '<':
-        pos = message.index('>')
-        message = message[0:pos + 1] + message[pos + 1:pos + 2].upper() + message[pos + 2:]
-    else:
-        message = message[0:1].upper() + message[1:]
-
-    # check for html
-    if message[-1] == '>':
-        pos = message.rfind('<')
-        if message[pos - 1:pos] not in ['.', '?', '!']:
-            message = message[0:pos] + '.' + message[pos:]
-    else:
-        if not message.endswith(tuple(['.', '?', '!'])) and id is not 'now':
-            message += '.'
+    message = pretty_print_options(message)
 
     # check for users opinion
     if is_user and nickname != 'anonymous':

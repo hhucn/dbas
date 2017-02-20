@@ -119,7 +119,8 @@ class DiscussionDictHelper(object):
                                                                        tag_end)
 
         # user bubble
-        user_text, add_premise_text = get_user_bubble_text_for_justify_statement(uid, nickname, text,
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        user_text, add_premise_text = get_user_bubble_text_for_justify_statement(uid, db_user, text,
                                                                                  is_supportive, _tn)
 
         # additional stuff

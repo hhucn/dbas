@@ -2028,14 +2028,16 @@ def mark_statement_or_argument(request):
 
     try:
         uid = request.params['uid']
+        step = request.params['step']
         is_argument = request.params['is_argument'].lower() == 'true'
         is_supportive = request.params['is_supportive'].lower() == 'true'
         should_mark = request.params['should_mark'].lower() == 'true'
+        history = request.params['history'] if 'history' in request.params else ''
 
         success, error = mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, request.authenticated_userid, _t)
         return_dict['success'] = success
         return_dict['error'] = error
-        return_dict['text'] = get_text_for_bubble(uid, is_argument, is_supportive, request.authenticated_userid, _t)
+        return_dict['text'] = get_text_for_bubble(uid, is_argument, is_supportive, request.authenticated_userid, step, history, _t)
     except KeyError as e:
         logger('set_seen_statements', 'error', repr(e))
         return_dict['error'] = _t.get(_.internalKeyError)

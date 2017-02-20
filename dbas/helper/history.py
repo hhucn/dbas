@@ -147,7 +147,7 @@ def __prepare_justify_statement_step(bubble_array, index, step, nickname, lang, 
 
 def __prepare_reaction_step(bubble_array, index, application_url, step, nickname, lang, splitted_history, url):
     logger('history_helper', '__prepare_reaction_step', str(index) + ': reaction case -> ' + step)
-    bubbles = __get_bubble_from_reaction_step(application_url, step, nickname, lang, splitted_history, url)
+    bubbles = get_bubble_from_reaction_step(application_url, step, nickname, lang, splitted_history, url)
     if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
         bubble_array += bubbles
 
@@ -281,7 +281,7 @@ def __get_bubble_from_dont_know_step(step, nickname, lang, url):
     return [user_bubble, sys_bubble]
 
 
-def __get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_history, url):
+def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_history, url, color_steps=False):
     """
     Creates bubbles for the reaction-keyword.
 
@@ -313,7 +313,9 @@ def __get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hi
         except IndexError:
             support_counter_argument = False
     current_argument = get_text_for_argument_uid(uid, user_changed_opinion=user_changed_opinion,
-                                                 support_counter_argument=support_counter_argument)
+                                                 support_counter_argument=support_counter_argument,
+                                                 colored_position=color_steps, nickname=nickname,
+                                                 with_html_tag=color_steps)
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     db_confrontation = DBDiscussionSession.query(Argument).get(additional_uid)
     if db_argument.conclusion_uid is not None:
