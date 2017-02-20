@@ -434,24 +434,19 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         # conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
         premises = premises[0:1].lower() + premises[1:]  # pretty print
 
-    sb_tmp = ''
     sb_none = '<' + tag_type + '>' if with_html_tag else ''
     se = '</' + tag_type + '>' if with_html_tag else ''
     if attack_type not in ['dont_know', 'jump']:
         sb = '<' + tag_type + '>' if with_html_tag else ''
         if colored_position:
             sb = '<' + tag_type + ' data-argumentation-type="position">' if with_html_tag else ''
-    else:
-        sb = '<' + tag_type + ' data-argumentation-type="argument">' if with_html_tag else ''
-        sb_tmp = '<' + tag_type + ' data-argumentation-type="attack">' if with_html_tag else ''
-
-    # color_everything = attack_type == 'undercut' and False
-    if attack_type not in ['dont_know', 'jump']:
         if attack_type == 'undermine':
             premises = sb + premises + se
         else:
             conclusion = sb + conclusion + se
     else:
+        sb = '<' + tag_type + ' data-argumentation-type="argument">' if with_html_tag else ''
+        sb_tmp = '<' + tag_type + ' data-argumentation-type="attack">' if with_html_tag else ''
         premises = sb + premises + se
         conclusion = sb_tmp + conclusion + se
 
