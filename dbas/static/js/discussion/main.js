@@ -358,7 +358,8 @@ function Main () {
 			var info = $(this).parent().children().last();
 			var is_argument = info.data('type') == 'argument';
 			var uid = info.data(info.data('type') + '-uid');
-			ajaxHandler.markStatementOrArgument(uid, is_argument, true, id);
+			var is_supportive = info.data('is-supportive');
+			ajaxHandler.markStatementOrArgument(uid, is_argument, is_supportive, true, id);
 		});
 		
 		$('.' + uncheckAsUsersOpinion).click(function(){
@@ -367,7 +368,8 @@ function Main () {
 			var info = $(this).parent().children().last();
 			var is_argument = info.data('type') == 'argument';
 			var uid = info.data(info.data('type') + '-uid');
-			ajaxHandler.markStatementOrArgument(uid, is_argument, false, id);
+			var is_supportive = info.data('is-supportive');
+			ajaxHandler.markStatementOrArgument(uid, is_argument, is_supportive, false, id);
 		});
 		
 		// styling

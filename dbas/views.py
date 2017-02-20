@@ -31,7 +31,7 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
 from dbas.helper.query import get_logfile_for_statements, revoke_content, insert_as_statements, \
     process_input_of_premises_for_arguments_and_receive_url, process_input_of_start_premises_and_receive_url, \
-    process_seen_statements, mark_or_unmark_statement_or_argument
+    process_seen_statements, mark_or_unmark_statement_or_argument, get_text_for_bubble
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.helper.views import preparation_for_view, get_nickname, try_to_contact, handle_justification_step, \
     try_to_register_new_user_via_ajax, prepare_parameter_for_justification, login_user
@@ -2028,13 +2028,14 @@ def mark_statement_or_argument(request):
 
     try:
         uid = request.params['uid']
-        is_argument = request.params['is_argument'] == 'true'
-        should_mark = request.params['should_mark'] == 'true'
+        is_argument = request.params['is_argument'].lower() == 'true'
+        is_supportive = request.params['is_supportive'].lower() == 'true'
+        should_mark = request.params['should_mark'].lower() == 'true'
 
-        success, error, bubble_text = mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, request.authenticated_userid, _t)
+        success, error = mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, request.authenticated_userid, _t)
         return_dict['success'] = success
         return_dict['error'] = error
-        return_dict['text'] = bubble_text
+        return_dict['text'] = get_text_for_bubble(uid, is_argument, is_supportive, request.authenticated_userid, _t)
     except KeyError as e:
         logger('set_seen_statements', 'error', repr(e))
         return_dict['error'] = _t.get(_.internalKeyError)

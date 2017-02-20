@@ -15,6 +15,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support
 from dbas.strings.translator import Translator
 from dbas.database.initializedb import nick_of_anonymous_user
+from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement
 
 
 def save_issue_uid(issue_uid, nickname):
@@ -177,20 +178,13 @@ def __get_bubble_from_justify_statement_step(step, nickname, lang, url):
     logger('history_helper', '__justify_statement_step', 'def')
     steps = step.split('/')
     uid = int(steps[1])
-    #  slug    = ''
     is_supportive = steps[2] == 't' or steps[2] == 'd'  # supportive = t(rue) or d(ont know) mode
 
     _tn = Translator(lang)
-    #  url     = UrlManager(application_url, slug).get_slug_url(False)
-    if lang == 'de':
-        intro = _tn.get(_.youAgreeWith if is_supportive else _.youDisagreeWith) + ' '
-    else:
-        intro = '' if is_supportive else _tn.get(_.youDisagreeWith) + ': '
     text = get_text_for_statement_uid(uid)
-    if lang != 'de':
-        text = text[0:1].upper() + text[1:]
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+    msg, tmp = get_user_bubble_text_for_justify_statement(uid, db_user, text, is_supportive, _tn)
 
-    msg = intro + '<' + tag_type + '>' + text + '</' + tag_type + '>'
     bubble_user = create_speechbubble_dict(is_user=True, message=msg, omit_url=False, statement_uid=uid,
                                            is_supportive=is_supportive, nickname=nickname, lang=lang, url=url)
     return [bubble_user]

@@ -114,7 +114,8 @@ function InteractionHandler() {
 		
 		setGlobalSuccessHandler('Yeah!', parsedData.success);
 		var el = $('#' + callback_id);
-		el.parent().find('.triangle-content').html(parsedData.text);
+		if (parsedData.text.length > 0)
+			el.parent().find('.triangle-content').html(parsedData.text);
 		if (should_mark){
 			el.hide().prev().show();
 		} else {
