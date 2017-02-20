@@ -104,6 +104,22 @@ function GuidedTour(){
 			placement: 'bottom',
 			path: '/discuss'
 		};
+		var mark_opinion = {
+			element: '#some-element-bubble',
+			title: _t(tourMarkOpinionTitle) + lang_switcher,
+			content: _t(tourMarkOpinionContent),
+			placement: 'bottom',
+			path: '/discuss',
+			onShow: function (tour) {
+				var element = '<div class="line-wrapper-r" id="some-element-bubble">' +
+					'<p class="triangle-r"><i class="fa fa-star-o" aria-hidden="true" style="padding-right: 0.5em"></i>' +
+					'<span class="triangle-content">' + _t(tourMarkOpinionText) + '</span></p></div>';
+				$('#dialog-speech-bubbles-space').prepend($.parseHTML(element));
+			},
+			onHide: function (tour) {
+				$('#some-element-bubble').remove();
+			},
+		};
 		var choose_answer = {
 			element: '#discussions-space-list',
 			title: _t(tourSelectAnswertTitle) + lang_switcher,
@@ -135,6 +151,7 @@ function GuidedTour(){
 				//login_button,
 				issue,
 				start_discussion,
+				mark_opinion,
 				choose_answer,
 				set_input,
 				have_fun,

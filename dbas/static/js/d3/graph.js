@@ -62,6 +62,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 		        uid = tmp[tmp.indexOf('reaction') + 1];
 		        is_argument = true;
 		        isPartialGraphMode = true;
+	        } else if (url.indexOf('support') != -1) {
+		        uid = tmp[tmp.indexOf('support') + 1];
+		        is_argument = true;
+		        isPartialGraphMode = true;
 	        }
         }
 	    new AjaxGraphHandler().getDiscussionGraphData(this, uid, is_argument, isPartialGraphMode);
@@ -138,7 +142,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     this.setDefaultViewParams = function (startD3, jsonData, d3, request_for_complete) {
     	var dg = new DiscussionGraph(box_sizes, isPartialGraphMode);
-    	console.log(jsonData['type'] + ' ' + (jsonData['type'] == 'complete'));
 	    $('#global-view').attr('data-global-view-loaded', jsonData['type'] == 'complete');
         dg.setButtonDefaultSettings(jsonData, request_for_complete);
         var container = $('#' + graphViewContainerSpaceId);
@@ -855,7 +858,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function addListenersForSidebarButtons(jsonData, label, rect, edges, force, zoom) {
         $('#default-view').off('click').click(function () {
-        	if ($('#global-view').attr('data-global-view-loaded') == 'true')
+        	if ($('#global-view').attr('data-global-view-loaded') == 'true' && $('#global-view:hidden').length == 0)
 	            new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(false);
 	        else
 	            showDefaultView(jsonData, force, edges, label, rect, zoom);

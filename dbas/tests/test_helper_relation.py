@@ -51,11 +51,11 @@ class RelationHelperTest(unittest.TestCase):
         val = get_undercuts_for_argument_uid(0)
         self.assertIsNone(val)
 
-        val = get_undercuts_for_argument_uid(2)
-        self.assertEqual(len(val), 1)
+        val = get_undercuts_for_argument_uid(36)
+        self.assertGreaterEqual(len(val), 1)
 
-        val = get_undercuts_for_argument_uid('2')
-        self.assertEqual(len(val), 1)
+        val = get_undercuts_for_argument_uid('36')
+        self.assertGreaterEqual(len(val), 1)
 
     def test_get_rebuts_for_argument_uid(self):
         val = get_rebuts_for_argument_uid('a')

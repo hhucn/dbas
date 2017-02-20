@@ -23,7 +23,6 @@ from .references import store_reference, url_to_statement, get_references_for_ur
 
 log = logger()
 
-
 #
 # CORS configuration
 #

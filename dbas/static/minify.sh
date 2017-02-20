@@ -7,33 +7,29 @@
 path="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # files which are minifed (has to be in the same order as paths!
-files=($path"/js/min/main.min.js"
-       $path"/js/min/main_ajax.min.js"
-       $path"/js/min/main_discussion.min.js"
-       $path"/js/min/main_review.min.js")
+files=($path"/js/ajax.min.js"
+       $path"/js/d3.min.js"
+       $path"/js/discussion.min.js"
+       $path"/js/main.min.js"
+       $path"/js/review.min.js")
 
 # path for files, which should be minimized
-paths=($path"/js/*.js"
-       $path"/js/ajax/*.js"
+paths=($path"/js/ajax/*.js"
+       $path"/js/d3/*.js"
        $path"/js/discussion/*.js"
+       $path"/js/main/*.js"
        $path"/js/review/*.js")
 
 # path for files, which should be appended for the final file
-appends=($path"/js/min/main_ajax.min.js"
-         $path"/js/min/main.min.js"
-         $path"/js/min/main_discussion.min.js"
-         $path"/js/min/main_review.min.js"
-         $path"/js/bootstrap/*"
-         $path"/js/d3/*"
-         $path"/js/jquery/*"
-         $path"/js/libs/*"
-         $path"/js/socketio/*"
+appends=($path"/js/ajax.min.js"
+         $path"/js/d3.min.js"
+         $path"/js/discussion.min.js"
+         $path"/js/main.min.js"
+         $path"/js/review.min.js"
          )
 
 
-mkdir -p $path"/js/min"
-
-final_file=$path"/js/min/dbas.min.js"
+final_file=$path"/js/dbas.js"
 rm -f ${files[i]}/*;
 rm -f ${final_file};
 

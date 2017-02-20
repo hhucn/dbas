@@ -47,6 +47,8 @@ git-delete-history.sh
 mergeDatabase.py
 db.txt
 *.sql
+requirementsUpdater.py
+analyzeDiscussion.py
 
 # Pycharm
 .idea/
@@ -63,7 +65,6 @@ dbas/static/rss/*
 startSession.py
 getMails.py
 dbas.js
-requirementsUpdater.py
 
 # node
 node_modules/

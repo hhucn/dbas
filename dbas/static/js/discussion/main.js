@@ -354,19 +354,26 @@ function Main () {
 		$('.' + checkAsUsersOpinion).click(function(){
 			var id = 'star-' + new Date().getTime();
 			$(this).attr('id', id);
-			var info = $(this).next();
+			console.log(id);
+			var info = $(this).parent().children().last();
 			var is_argument = info.data('type') == 'argument';
 			var uid = info.data(info.data('type') + '-uid');
-			ajaxHandler.markStatementOrArgument(uid, is_argument, true, id);
+			var is_supportive = info.data('is-supportive');
+			var step = location.href.split('#')[0].split('?')[0].split('/').slice(5).join('/');
+			var history = location.href.split('#')[0].split('?')[1];
+			ajaxHandler.markStatementOrArgument(uid, is_argument, is_supportive, true, step, history, id);
 		});
 		
 		$('.' + uncheckAsUsersOpinion).click(function(){
 			var id = 'star-' + new Date().getTime();
 			$(this).attr('id', id);
-			var info = $(this).next().next();
+			var info = $(this).parent().children().last();
 			var is_argument = info.data('type') == 'argument';
 			var uid = info.data(info.data('type') + '-uid');
-			ajaxHandler.markStatementOrArgument(uid, is_argument, false, id);
+			var is_supportive = info.data('is-supportive');
+			var step = location.href.split('#')[0].split('?')[0].split('/').slice(5).join('/');
+			var history = location.href.split('#')[0].split('?')[1];
+			ajaxHandler.markStatementOrArgument(uid, is_argument, is_supportive, false, step, history, id);
 		});
 		
 		// styling

@@ -18,7 +18,7 @@ from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for
 from dbas.helper.voting import add_seen_statement, add_seen_argument
 from dbas.input_validator import get_relation_between_arguments
 from dbas.lib import escape_string, get_text_for_premisesgroup_uid, \
-    get_all_attacking_arg_uids_from_history, get_profile_picture, get_text_for_statement_uid,\
+    get_all_attacking_arg_uids_from_history, get_profile_picture, get_text_for_statement_uid, pretty_print_options, \
     is_author_of_argument, is_author_of_statement, get_all_arguments_by_statement, get_text_for_argument_uid
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -28,6 +28,8 @@ from sqlalchemy import and_, func
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.input_validator import is_integer
 from dbas.handler.rss import append_action_to_issue_rss
+from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement
+from dbas.helper.history import get_bubble_from_reaction_step, get_splitted_history
 
 statement_min_length = 10
 
@@ -249,6 +251,30 @@ def mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, nickname
     transaction.commit()
 
     return _t.get(_.everythingSaved), ''
+
+
+def get_text_for_bubble(uid, is_argument, is_supportive, nickname, step, history, _tn):
+    """
+
+    :param uid:
+    :param is_argument:
+    :param is_supportive:
+    :param nickname:
+    :param step:
+    :param history:
+    :param _tn:
+    :return:
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+    if is_argument:
+        splitted_history = get_splitted_history(history)
+        bubbles = get_bubble_from_reaction_step('', step, nickname, _tn.get_lang(), splitted_history, '', color_steps=True)
+        text = bubbles[0]['message']
+    else:
+        text, tmp = get_user_bubble_text_for_justify_statement(uid, db_user, get_text_for_statement_uid(uid), is_supportive, _tn)
+        text = pretty_print_options(text)
+
+    return text
 
 
 def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type, arg_id, _um, supportive):
@@ -846,7 +872,7 @@ def __revoke_argument(db_user, argument_uid, translator):
     is_involved = sum([len(rel) if rel else 0 for rel in relations]) > 0
 
     if is_involved:
-        logger('QueryHelper', '__revoke_argument', 'New anonymous author for argument ' + str(argument_uid))
+        logger('QueryHelper', '__revoke_argument', 'Author of argument {} changed from {} to anonymous'.format(argument_uid, db_user.uid))
         db_new_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         db_argument.author_uid = db_new_author.uid
         is_deleted = False
@@ -869,7 +895,7 @@ def __revoke_statement(db_user, statement_uid, translator):
     :param translator:
     :return:
     """
-    logger('QueryHelper', 'revoke_content', 'Statement ' + str(statement_uid) + ' will be revoked (old author ' + str(db_user.uid) + ')')
+    logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' will be revoked (old author ' + str(db_user.uid) + ')')
     db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
     is_author = is_author_of_statement(db_user.nickname, statement_uid)
 
@@ -879,14 +905,18 @@ def __revoke_statement(db_user, statement_uid, translator):
         logger('QueryHelper', '__revoke_statement', 'Statement does not exists')
         return None, is_revoked, translator.get(_.internalError)
 
-    if not is_author:
+    if not is_author and False:
         logger('QueryHelper', '__revoke_statement', db_user.nickname + ' is not the author')
         return None, is_revoked, translator.get(_.userIsNotAuthorOfStatement)
+
+    __remove_user_from_arguments_with_statement(statement_uid, db_user, translator)
 
     db_anonymous = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' will get a new author ' + str(db_anonymous.uid) + ' (old author ' + str(db_user.uid) + ')')
     db_statement.author_uid = db_anonymous.uid
-    __transfer_textversion_to_new_author(statement_uid, db_user.uid, db_anonymous.uid)
+    if not __transfer_textversion_to_new_author(statement_uid, db_user.uid, db_anonymous.uid):
+        return None, is_revoked, translator.get(_.userIsNotAuthorOfStatement)
+
     is_revoked = True
 
     # # transfer the responsibility to the next author (NOW ANONYMOUS), who used this statement
@@ -914,6 +944,7 @@ def __revoke_statement(db_user, statement_uid, translator):
 
     DBDiscussionSession.add(db_statement)
     DBDiscussionSession.flush()
+    transaction.commit()
 
     return db_statement, is_revoked, ''
 
@@ -962,11 +993,26 @@ def __transfer_textversion_to_new_author(statement_uid, old_author, new_author):
     :param new_author:
     :return:
     """
+    logger('QueryHelper', '__revoke_statement', 'Textversion of {} will change author from {} to {}'.format(statement_uid, old_author, new_author))
     db_textversion = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.statement_uid == statement_uid,
                                                                         TextVersion.author_uid == old_author)).all()
+    if not db_textversion:
+        return False
+
     for textversion in db_textversion:
         textversion.author_uid = new_author
         DBDiscussionSession.add(textversion)
         DBDiscussionSession.add(RevokedContentHistory(old_author, new_author, textversion_uid=textversion.uid))
 
     DBDiscussionSession.flush()
+    transaction.commit()
+
+    return True
+
+
+def __remove_user_from_arguments_with_statement(statement_uid, db_user, translator):
+    logger('QueryHelper', '__remove_user_from_arguments_with_statement', '{} with user{}'.format(statement_uid, db_user.uid))
+    db_arguments = get_all_arguments_by_statement(statement_uid, True)
+    for arg in db_arguments:
+        if arg.author_uid == db_user.uid:
+            revoke_content(arg.uid, True, db_user.nickname, translator)

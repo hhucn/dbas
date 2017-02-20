@@ -92,7 +92,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 2,
             'mode': 'f',
-            'relation': '',
+            'relation': ''
         }
         response = d(request)
         transaction.commit()
@@ -101,7 +101,8 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         len_db_vote2 = len(DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.is_valid == True,
                                                                                    ClickedStatement.is_up_vote == False)).all())
 
-        count = sum([len(el['premises']) for el in response['items']['elements']])
+        # minus 1 for 'none of the above'
+        count = sum([len(el['premises']) for el in response['items']['elements']]) - 1
         self.assertEqual(len_db_seen1 + count, len_db_seen2)
         self.assertEqual(len_db_vote1 + 1, len_db_vote2)
         clear_seen_by_of('Tobias')

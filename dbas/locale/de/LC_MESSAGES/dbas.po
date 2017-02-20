@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-02-14 08:18+0100\n"
+"POT-Creation-Date: 2017-02-17 12:50+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -1209,9 +1209,9 @@ msgstr "Achtung"
 #: templates/snippet-popups.pt:982
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
-"Möchten Sie wirklich von diesem Inhalt distanzieren löschen? Dieser Schritt "
-"kann nicht zurückgenommen werden! Anschließend sind sie nicht mehr Autor "
-"dieses Statements."
+"Möchten Sie wirklich von diesem Inhalt distanzieren? Dieser Schritt kann "
+"nicht zurückgenommen werden! Anschließend sind sie nicht mehr Autor von "
+"diesem Statements."
 
 #. Default: Please choose a step to jump in
 #: templates/snippet-popups.pt:999
@@ -1313,12 +1313,12 @@ msgid "guided_tour_on_start_up"
 msgstr "Einführung auf der Startseite"
 
 #. Default: Profile Picture
-#: templates/settings.pt:91 templates/settings.pt:166
+#: templates/settings.pt:91 templates/settings.pt:190
 msgid "profile_picture"
 msgstr "Profilbild"
 
 #. Default: Change your profile picture on the
-#: templates/settings.pt:93 templates/settings.pt:168
+#: templates/settings.pt:93 templates/settings.pt:192
 msgid "change_gravatar"
 msgstr "Änderen Sie Ihren Ihren Gravatar auf der"
 
@@ -1326,7 +1326,7 @@ msgstr "Änderen Sie Ihren Ihren Gravatar auf der"
 #. create your profile just once, and then when you participate in any
 #. Gravatar-enabled site, your Gravatar image will automatically follow you
 #. there.
-#: templates/settings.pt:95 templates/settings.pt:170
+#: templates/settings.pt:95 templates/settings.pt:194
 msgid "what_is_gravatar"
 msgstr ""
 "Ein Gravatar ist ein Globally Recognized Avatar (Global wiedererkennbarer "
@@ -1347,102 +1347,104 @@ msgid "settings_set"
 msgstr "Einstellungen wurden gesichert."
 
 #. Default: Discussion Statistics
-#: templates/settings.pt:119 templates/settings.pt:252 templates/user.pt:38
+#: templates/settings.pt:119 templates/settings.pt:276 templates/user.pt:38
 msgid "discussion_stat"
 msgstr "Diskussionsstatistik"
 
 #. Default: Statements posted
-#: templates/settings.pt:123 templates/settings.pt:256 templates/finish.pt:26
+#: templates/settings.pt:125 templates/settings.pt:280 templates/finish.pt:26
 #: templates/user.pt:41
 msgid "statements_posted"
 msgstr "Aussagen hinzugefügt"
 
 #. Default: Edits done
-#: templates/settings.pt:130 templates/settings.pt:263 templates/finish.pt:30
+#: templates/settings.pt:132 templates/settings.pt:287 templates/finish.pt:30
 #: templates/user.pt:45
 msgid "edits_done"
 msgstr "Änderungen"
 
+#. Default: Clicks for Arguments
+#: templates/settings.pt:139 templates/settings.pt:294 templates/finish.pt:46
+msgid "discussion_clicked_statements"
+msgstr "Geklickte Aussagen"
+
+#. Default: Clicks for Statements
+#: templates/settings.pt:146 templates/settings.pt:301 templates/finish.pt:50
+msgid "discussion_clicked_arguments"
+msgstr "Geklickte Argumente"
+
+#. Default: Votes for Statements
 #. Default: Votes for Arguments
-#: templates/settings.pt:137 templates/settings.pt:284 templates/finish.pt:38
+#: templates/settings.pt:157 templates/settings.pt:308 templates/finish.pt:38
 #: templates/user.pt:49
 msgid "discussion_votes_statements"
 msgstr "Markierte Aussagen"
 
+#. Default: Votes for Arguments
 #. Default: Votes for Statements
-#: templates/settings.pt:144 templates/settings.pt:291 templates/finish.pt:42
+#: templates/settings.pt:164 templates/settings.pt:315 templates/finish.pt:42
 #: templates/user.pt:53
 msgid "discussion_votes_arguments"
 msgstr "Markierte Argumente"
 
 #. Default: Reputation
-#: templates/settings.pt:151 templates/settings.pt:298
+#: templates/settings.pt:171 templates/settings.pt:322
 #: templates/review_reputation.pt:9 templates/review_reputation.pt:27
 #: templates/user.pt:57
 msgid "reputation"
 msgstr "Reputation"
 
 #. Default: Statistics could not be deleted.
-#: templates/settings.pt:178 templates/settings.pt:314
+#: templates/settings.pt:202 templates/settings.pt:338
 msgid "statistics_not_deleted"
 msgstr "Statistiken konnten nicht gelöscht werden."
 
 #. Default: Statistics were set successfully deleted.
-#: templates/settings.pt:184 templates/settings.pt:320
+#: templates/settings.pt:208 templates/settings.pt:344
 msgid "statistics_deletet"
 msgstr "Statistiken wurden gelöscht."
 
 #. Default: Change your password
-#: templates/settings.pt:195
+#: templates/settings.pt:219
 msgid "change_password"
 msgstr "Passwort ändern"
 
 #. Default: Change your password in D-BAS
-#: templates/settings.pt:196
+#: templates/settings.pt:220
 msgid "change_dbas_password"
 msgstr "Passwort von D-BAS ändern"
 
 #. Default: This does not affect other services next to D-BAS.
-#: templates/settings.pt:198
+#: templates/settings.pt:222
 msgid "this_does_not_affect_other_services"
 msgstr ""
 "Die Änderung betrifft nur die Anmeldung in D-BAS und nicht weitere Dienste "
 "der HHU."
 
 #. Default: Old password
-#: templates/settings.pt:203
+#: templates/settings.pt:227
 msgid "old_password"
 msgstr "Altes Password"
 
 #. Default: New Password
-#: templates/settings.pt:211
+#: templates/settings.pt:235
 msgid "new_password"
 msgstr "Neues Password"
 
 #. Default: New Password (confirm)
-#: templates/settings.pt:219
+#: templates/settings.pt:243
 msgid "new_password_confirm"
 msgstr "Neues Password (Bestätigung)"
 
 #. Default: Strength
-#: templates/settings.pt:227
+#: templates/settings.pt:251
 msgid "strength"
 msgstr "Stärke"
 
 #. Default: Your password was changed
-#: templates/settings.pt:244
+#: templates/settings.pt:268
 msgid "password_changed"
 msgstr "Ihr Passwort wurde geändert"
-
-#. Default: Clicks for Arguments
-#: templates/settings.pt:270 templates/finish.pt:46
-msgid "discussion_clicked_statements"
-msgstr "Geklickte Aussagen"
-
-#. Default: Clicks for Statements
-#: templates/settings.pt:277 templates/finish.pt:50
-msgid "discussion_clicked_arguments"
-msgstr "Geklickte Argumente"
 
 #. Default: Get In Touch With Us
 #: templates/contact.pt:8
@@ -1943,47 +1945,52 @@ msgid "restart_discussion"
 msgstr "Neustart"
 
 #. Default: Show all statements
-#: templates/content.pt:141
+#: templates/content.pt:143
 msgid "show_all_statements"
 msgstr "Alle Aussagen anzeigen"
 
 #. Default: Hide statements
-#: templates/content.pt:142
+#: templates/content.pt:144
 msgid "hide_statements"
 msgstr "Aussage ausblenden"
 
+#. Default: Complete View
+#: templates/content.pt:287
+msgid "complete_view"
+msgstr "Komplette Ansicht"
+
 #. Default: Default View
-#: templates/content.pt:285
+#: templates/content.pt:288
 msgid "default_view"
 msgstr "Standardansicht"
 
 #. Default: Labels
-#: templates/content.pt:286 templates/content.pt:287
+#: templates/content.pt:289 templates/content.pt:290
 msgid "labels"
 msgstr "Beschriftungen"
 
 #. Default: Positions
-#: templates/content.pt:288 templates/content.pt:289
+#: templates/content.pt:291 templates/content.pt:292
 msgid "positions"
 msgstr "Positionen"
 
 #. Default: My path
-#: templates/content.pt:290 templates/content.pt:291
+#: templates/content.pt:293 templates/content.pt:294
 msgid "my_path"
 msgstr "Mein Pfad"
 
 #. Default: My statements
-#: templates/content.pt:292 templates/content.pt:293
+#: templates/content.pt:295 templates/content.pt:296
 msgid "my_statements"
 msgstr "Meine Aussagen"
 
 #. Default: Supports
-#: templates/content.pt:294 templates/content.pt:295
+#: templates/content.pt:297 templates/content.pt:298
 msgid "supports_on_my_statements"
 msgstr "Unterstützungen"
 
 #. Default: Attacks
-#: templates/content.pt:296 templates/content.pt:297
+#: templates/content.pt:299 templates/content.pt:300
 msgid "attacks_on_my_statements"
 msgstr "Angriffe"
 
@@ -2034,9 +2041,6 @@ msgstr "Angriffe"
 
 #~ msgid "island_view"
 #~ msgstr "Insel-Ansicht"
-
-#~ msgid "complete_view"
-#~ msgstr "Komplette Ansicht"
 
 #~ msgid "statement_spam_description"
 #~ msgstr "Die Aussage ist für keine Diskussion in D-BAS relevant."
