@@ -18,10 +18,10 @@ class RecommenerSystemTests(unittest.TestCase):
     def test_get_attack_for_argument(self):
         results = {}
         results[0] = 'end'
-        results[3] = 'rebut'
-        results[16] = 'undermine'
-        results[18] = 'undercut'
-        restriction_on_arg_uids = []
+        results[39] = 'rebut'
+        results[44] = 'undermine'
+        results[43] = 'undercut'
+        restriction_on_arg_uids = [40]
 
         db_all = DBDiscussionSession.query(Argument).all()
         for arg in db_all:
@@ -31,66 +31,61 @@ class RecommenerSystemTests(unittest.TestCase):
         transaction.commit()
 
         for i in range(0, 4):
-            attack_uid, key = recommender_system.get_attack_for_argument(argument_uid=2,
-                                                                         lang='en',
-                                                                         restriction_on_attacks=None,
-                                                                         restriction_on_arg_uids=restriction_on_arg_uids,
-                                                                         last_attack=None,
-                                                                         history=None)
+            attack_uid, key = recommender_system.get_attack_for_argument(argument_uid=42, lang='en', restriction_on_attacks=None, restriction_on_arg_uids=restriction_on_arg_uids, last_attack=None, history=None)
             self.assertEqual(key, results[attack_uid])
             restriction_on_arg_uids.append(attack_uid)
 
-        attack_uid, key = recommender_system.get_attack_for_argument(argument_uid=2,
+        attack_uid, key = recommender_system.get_attack_for_argument(argument_uid=42,
                                                                      lang='en',
                                                                      restriction_on_attacks=None,
-                                                                     restriction_on_arg_uids=[],
+                                                                     restriction_on_arg_uids=[40],
                                                                      last_attack=None,
-                                                                     history='2/rebut/3-2/undermine/16')
-        self.assertEqual(attack_uid, 18)
+                                                                     history='42/rebut/39-42/undermine/44')
+        self.assertEqual(attack_uid, 43)
         self.assertEqual(key, 'undercut')
 
-        attack_uid, key = recommender_system.get_attack_for_argument(argument_uid=2,
+        attack_uid, key = recommender_system.get_attack_for_argument(argument_uid=42,
                                                                      lang='en',
                                                                      restriction_on_attacks=None,
-                                                                     restriction_on_arg_uids=[],
+                                                                     restriction_on_arg_uids=[40],
                                                                      last_attack=None,
-                                                                     history='2/rebut/3-2/undercut/18')
-        self.assertEqual(attack_uid, 16)
+                                                                     history='42/rebut/39-42/undercut/43')
+        self.assertEqual(attack_uid, 44)
         self.assertEqual(key, 'undermine')
 
-        attack_uid, key = recommender_system.get_attack_for_argument(argument_uid=2,
+        attack_uid, key = recommender_system.get_attack_for_argument(argument_uid=42,
                                                                      lang='en',
                                                                      restriction_on_attacks=None,
-                                                                     restriction_on_arg_uids=[],
+                                                                     restriction_on_arg_uids=[40],
                                                                      last_attack=None,
-                                                                     history='2/undercut/18-2/undermine/16')
-        self.assertEqual(attack_uid, 3)
+                                                                     history='42/undercut/43-42/undermine/44')
+        self.assertEqual(attack_uid, 39)
         self.assertEqual(key, 'rebut')
 
-        attack_uid, key = recommender_system.get_attack_for_argument(argument_uid=2,
+        attack_uid, key = recommender_system.get_attack_for_argument(argument_uid=42,
                                                                      lang='en',
                                                                      restriction_on_attacks='undercut',
-                                                                     restriction_on_arg_uids=[],
+                                                                     restriction_on_arg_uids=[40],
                                                                      last_attack=None,
-                                                                     history='2/rebut/3-2/undermine/16')
+                                                                     history='42/rebut/39-42/undermine/44')
         self.assertEqual(attack_uid, 0)
         self.assertTrue(key in ['end', 'end_attack'])
 
-        attack_uid, key = recommender_system.get_attack_for_argument(argument_uid=2,
+        attack_uid, key = recommender_system.get_attack_for_argument(argument_uid=42,
                                                                      lang='en',
                                                                      restriction_on_attacks='undermine',
-                                                                     restriction_on_arg_uids=[],
+                                                                     restriction_on_arg_uids=[40],
                                                                      last_attack=None,
-                                                                     history='2/rebut/3-2/undercut/18')
+                                                                     history='42/rebut/39-42/undercut/43')
         self.assertEqual(attack_uid, 0)
         self.assertTrue(key in ['end', 'end_attack'])
 
-        attack_uid, key = recommender_system.get_attack_for_argument(argument_uid=2,
+        attack_uid, key = recommender_system.get_attack_for_argument(argument_uid=42,
                                                                      lang='en',
                                                                      restriction_on_attacks='rebut',
-                                                                     restriction_on_arg_uids=[],
+                                                                     restriction_on_arg_uids=[40],
                                                                      last_attack=None,
-                                                                     history='2/undercut/18-2/undermine/16')
+                                                                     history='42/undercut/43-42/undermine/44')
         self.assertEqual(attack_uid, 0)
         self.assertTrue(key in ['end', 'end_attack'])
 
