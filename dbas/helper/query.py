@@ -9,7 +9,6 @@ import transaction
 
 import dbas.helper.notification as NotificationHelper
 import dbas.recommender_system as RecommenderSystem
-import dbas.helper.issue as issue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, Issue, \
     RevokedContent, RevokedContentHistory, sql_timestamp_pretty_print, MarkedArgument, MarkedStatement
