@@ -226,7 +226,7 @@ def mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, nickname
     logger('QueryHelper', 'mark_or_unmark_statement_or_argument', '{} {} {}'.format(uid, is_argument, nickname))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     if not db_user:
-        return '', _t.get(_.internalError)
+        return '', _t.get(_.internalError), ''
 
     base_type = Argument if is_argument else Statement
     table = MarkedArgument if is_argument else MarkedStatement
@@ -234,7 +234,7 @@ def mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, nickname
 
     db_base = DBDiscussionSession.query(base_type).get(uid)
     if not db_base:
-        return '', _t.get(_.internalError)
+        return '', _t.get(_.internalError), ''
 
     if should_mark:
         db_el = DBDiscussionSession.query(table).filter(column == uid).first()
@@ -248,7 +248,12 @@ def mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, nickname
     DBDiscussionSession.flush()
     transaction.commit()
 
-    return _t.get(_.everythingSaved), ''
+    if is_argument:
+        text = 'todo for arg ({})'.format(should_mark)  # get_text_for_argument_uid(uid)
+    else:
+        text = 'todo for stat ({})'.format(should_mark)  # get_text_for_statement_uid(uid)
+
+    return _t.get(_.everythingSaved), '', text
 
 
 def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type, arg_id, _um, supportive):

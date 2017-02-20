@@ -362,25 +362,22 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
     if not db_user:  # check if the user exists
         msg = __login_user_not_existing(request, nickname, password, _tn, is_ldap)
         if msg is not None:
-            return msg
+            return msg  # error
 
     else:
         error = __login_user_is_existing(request, nickname, password, _tn, is_ldap, db_user)
         if error is not None:
-            return error
+            return error  # error
 
     headers, url = __refresh_headers_and_url(request, db_user, keep_login, url)
 
     if for_api:
         logger('ViewHelper', 'login_user', 'return for api: success')
-        return {'status': 'success'}
+        return {'status': 'success'}  # api
     else:
         logger('ViewHelper', 'login_user', 'return success: ' + url)
         sleep(0.5)
-        return HTTPFound(
-            location=url,
-            headers=headers,
-        )
+        return HTTPFound(location=url, headers=headers)  # success
 
 
 def __login_user_not_existing(request, nickname, password, _tn, is_ldap):

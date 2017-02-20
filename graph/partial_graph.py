@@ -45,15 +45,7 @@ def get_partial_graph_for_argument(uid, issue, nickname):
     # get argument for the uid
     db_argument = DBDiscussionSession.query(Argument).get(uid)
 
-    # get arguments for the premises
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
-    db_premise_args = []
-    for premise in db_premises:
-        args = get_all_arguments_by_statement(premise.statement_uid)
-        db_premise_args += args if args is not None else []
-    db_premise_args = list(set(db_premise_args))
-
-    db_positions = __find_position_for_conclusion_of_argument(db_argument, db_premise_args, [], [])
+    db_positions = __find_position_for_conclusion_of_argument(db_argument, [], [], [])
     logger('PartialGraph', 'get_partial_graph_for_argument', 'positions are: ' + str([pos.uid for pos in db_positions]))
     graph_arg_lists = __climb_graph_down(db_positions)
     # return __get_all_nodes_for_pos_dict(graph_arg_lists)

@@ -280,6 +280,7 @@ class Keywords(Enum):
     exampleStatement = 'Please enter the source here'
     exampleSource = 'Please enter the cite here'
     everythingSaved = 'Everything saved!'
+    opinionSaved = 'Your opinion was saved!'
     error_code = 'Error code'
     edit = 'Edit'
     editTitle = 'Edit statement'

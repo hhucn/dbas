@@ -113,11 +113,12 @@ function InteractionHandler() {
 		}
 		
 		setGlobalSuccessHandler('Yeah!', parsedData.success);
+		var el = $('#' + callback_id);
+		el.parent().find('.triangle-content').html(parsedData.text);
 		if (should_mark){
-			$('#' + callback_id).hide().prev().show();
+			el.hide().prev().show();
 		} else {
-			$('#' + callback_id).hide().next().show();
-			
+			el.hide().next().show();
 		}
 	};
 

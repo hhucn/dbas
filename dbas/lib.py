@@ -236,14 +236,15 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
     # catch error
 
     _t = Translator(lang)
+    premisegroup_by_user = False
     if nickname is not None:
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        pgroup = DBDiscussionSession.query(PremiseGroup).get(db_argument.premisesgroup_uid)
-        marked_argument = DBDiscussionSession.query(MarkedArgument).filter(and_(MarkedArgument.argument_uid == uid,
-                                                                                MarkedArgument.author_uid == db_user.uid)).first()
-        premisegroup_by_user = pgroup.author_uid == db_user.uid or marked_argument is not None and len(marked_argument) > 0
-    else:
-        premisegroup_by_user = False
+
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+        if db_user:
+            pgroup = DBDiscussionSession.query(PremiseGroup).get(db_argument.premisesgroup_uid)
+            marked_argument = DBDiscussionSession.query(MarkedArgument).filter(and_(MarkedArgument.argument_uid == uid,
+                                                                                    MarkedArgument.author_uid == db_user.uid)).first()
+            premisegroup_by_user = pgroup.author_uid == db_user.uid or marked_argument is not None and len(marked_argument) > 0
 
     # getting all argument id
     arg_array = [db_argument.uid]
@@ -766,32 +767,34 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     # check for users opinion
     if is_user and nickname != 'anonymous':
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        db_el = None
+        db_marked = None
         if argument_uid is not None and db_user is not None:
-            db_el = DBDiscussionSession.query(MarkedArgument).filter(and_(MarkedArgument.argument_uid == argument_uid,
-                                                                          MarkedArgument.author_uid == db_user.uid)).first()
+            db_marked = DBDiscussionSession.query(MarkedArgument).filter(and_(MarkedArgument.argument_uid == argument_uid,
+                                                                              MarkedArgument.author_uid == db_user.uid)).first()
 
         if statement_uid is not None and db_user is not None:
-            db_el = DBDiscussionSession.query(MarkedStatement).filter(and_(MarkedStatement.statement_uid == statement_uid,
-                                                                           MarkedStatement.author_uid == db_user.uid)).first()
+            db_marked = DBDiscussionSession.query(MarkedStatement).filter(and_(MarkedStatement.statement_uid == statement_uid,
+                                                                               MarkedStatement.author_uid == db_user.uid)).first()
 
-        is_users_opinion = db_el is not None
+        is_users_opinion = db_marked is not None
 
-    speech = {'is_user': is_user,
-              'is_system': is_system,
-              'is_status': is_status,
-              'is_info': is_info,
-              'is_flagable': is_flagable,
-              'is_author': is_author,
-              'id': id if len(str(id)) > 0 else str(time.time()),
-              'url': url if len(str(url)) > 0 else 'None',
-              'message': message,
-              'omit_url': omit_url,
-              'data_type': 'argument' if argument_uid else 'statement' if statement_uid else 'None',
-              'data_argument_uid': str(argument_uid), 'data_statement_uid': str(statement_uid),
-              'data_is_supportive': str(is_supportive),
-              'is_users_opinion': str(is_users_opinion)
-              }
+    speech = {
+        'is_user': is_user,
+        'is_system': is_system,
+        'is_status': is_status,
+        'is_info': is_info,
+        'is_flagable': is_flagable,
+        'is_author': is_author,
+        'id': id if len(str(id)) > 0 else str(time.time()),
+        'url': url if len(str(url)) > 0 else 'None',
+        'message': message,
+        'omit_url': omit_url,
+        'data_type': 'argument' if argument_uid else 'statement' if statement_uid else 'None',
+        'data_argument_uid': str(argument_uid),
+        'data_statement_uid': str(statement_uid),
+        'data_is_supportive': str(is_supportive),
+        'is_users_opinion': str(is_users_opinion),
+    }
 
     votecount_keys = __get_text_for_votecount(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang)
 
