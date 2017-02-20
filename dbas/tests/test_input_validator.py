@@ -94,8 +94,8 @@ class InputValidatorTests(unittest.TestCase):
         self.assertEqual(undermine_string_false, False)
 
         # undercut
-        undercut_true = check_reaction(attacked_arg_uid=2,
-                                       attacking_arg_uid=18,
+        undercut_true = check_reaction(attacked_arg_uid=3,
+                                       attacking_arg_uid=22,
                                        relation='undercut',
                                        is_history=False)
         self.assertEqual(undercut_true, True)

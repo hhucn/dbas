@@ -1,8 +1,10 @@
+import transaction
 import unittest
 
 from sqlalchemy import engine_from_config
 
 from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Argument
 from dbas import recommender_system
 from dbas.helper.tests import add_settings_to_appconfig
 
@@ -20,6 +22,13 @@ class RecommenerSystemTests(unittest.TestCase):
         results[16] = 'undermine'
         results[18] = 'undercut'
         restriction_on_arg_uids = []
+
+        db_all = DBDiscussionSession.query(Argument).all()
+        for arg in db_all:
+            arg.set_disable(False)
+            DBDiscussionSession.add(arg)
+        DBDiscussionSession.flush()
+        transaction.commit()
 
         for i in range(0, 4):
             attack_uid, key = recommender_system.get_attack_for_argument(argument_uid=2,
