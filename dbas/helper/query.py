@@ -895,7 +895,7 @@ def __revoke_statement(db_user, statement_uid, translator):
     :param translator:
     :return:
     """
-    logger('QueryHelper', 'revoke_content', 'Statement ' + str(statement_uid) + ' will be revoked (old author ' + str(db_user.uid) + ')')
+    logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' will be revoked (old author ' + str(db_user.uid) + ')')
     db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
     is_author = is_author_of_statement(db_user.nickname, statement_uid)
 
@@ -914,7 +914,9 @@ def __revoke_statement(db_user, statement_uid, translator):
     db_anonymous = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' will get a new author ' + str(db_anonymous.uid) + ' (old author ' + str(db_user.uid) + ')')
     db_statement.author_uid = db_anonymous.uid
-    __transfer_textversion_to_new_author(statement_uid, db_user.uid, db_anonymous.uid)
+    if not __transfer_textversion_to_new_author(statement_uid, db_user.uid, db_anonymous.uid):
+        return None, is_revoked, translator.get(_.userIsNotAuthorOfStatement)
+
     is_revoked = True
 
     # # transfer the responsibility to the next author (NOW ANONYMOUS), who used this statement
@@ -994,6 +996,9 @@ def __transfer_textversion_to_new_author(statement_uid, old_author, new_author):
     logger('QueryHelper', '__revoke_statement', 'Textversion of {} will change author from {} to {}'.format(statement_uid, old_author, new_author))
     db_textversion = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.statement_uid == statement_uid,
                                                                         TextVersion.author_uid == old_author)).all()
+    if not db_textversion:
+        return False
+
     for textversion in db_textversion:
         textversion.author_uid = new_author
         DBDiscussionSession.add(textversion)
@@ -1001,6 +1006,8 @@ def __transfer_textversion_to_new_author(statement_uid, old_author, new_author):
 
     DBDiscussionSession.flush()
     transaction.commit()
+
+    return True
 
 
 def __remove_user_from_arguments_with_statement(statement_uid, db_user, translator):
