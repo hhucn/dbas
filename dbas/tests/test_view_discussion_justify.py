@@ -100,9 +100,9 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         len_db_seen2 = len(DBDiscussionSession.query(StatementSeenBy).all())
         len_db_vote2 = len(DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.is_valid == True,
                                                                                    ClickedStatement.is_up_vote == False)).all())
-        from dbas.logger import logger
-        logger('X', 'X', str(response['items']))
-        count = sum([len(el['premises']) for el in response['items']['elements']])
+
+        # minus 1 for 'none of the above'
+        count = sum([len(el['premises']) for el in response['items']['elements']]) - 1
         self.assertEqual(len_db_seen1 + count, len_db_seen2)
         self.assertEqual(len_db_vote1 + 1, len_db_vote2)
         clear_seen_by_of('Tobias')

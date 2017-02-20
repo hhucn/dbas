@@ -124,6 +124,7 @@ class LibTests(unittest.TestCase):
         for argument in argument_list:
             self.assertTrue(argument.uid in [4, 5, 6, 7])
 
-        self.assertEqual(len(lib.get_all_arguments_by_statement(15)), 6)
-        self.assertEqual(len(lib.get_all_arguments_by_statement(12)), 1)
+        self.assertEqual(len(lib.get_all_arguments_by_statement(15, True)), 6)
+        self.assertEqual(len(lib.get_all_arguments_by_statement(15, False)), 5)
+        self.assertEqual(len(lib.get_all_arguments_by_statement(12, True)), 1)
         self.assertEqual(lib.get_all_arguments_by_statement(-1), None)
