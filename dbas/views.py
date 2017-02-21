@@ -1371,25 +1371,18 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
 
     lang = get_language(request)
     _tn = Translator(lang)
-    error = ''
 
     try:
         value = login_user(request, nickname, password, for_api, keep_login, _tn)
-        if type(value) == str:  # error
-            error = value
-        elif type(value) == dict:  # api
+        if type(value) == HTTPFound:  # success
             return value
-        elif type(value) == HTTPFound:  # success
-            return value
+        else:
+            return json.dumps(value)
 
     except KeyError as e:
-        error = _tn.get(_.internalKeyError)
+        return_dict = {'error': _tn.get(_.internalKeyError)}
         logger('user_login', 'error', repr(e))
-
-    return_dict = {'error': error}
-
-    logger('user_login', 'return', str(return_dict))
-    return json.dumps(return_dict)
+        return json.dumps(return_dict)
 
 
 # ajax - user logout
