@@ -42,6 +42,7 @@ class ItemDictHelper(object):
         self.issue_uid = issue_uid
         self.application_url = application_url
         self.for_api = for_api
+        self.LIMIT_SUPPORT_STEP = 0.35
         if for_api:
             self.path = path[len('/api/' + DBDiscussionSession.query(Issue).get(issue_uid).get_slug()):]
         else:
@@ -150,7 +151,7 @@ class ItemDictHelper(object):
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        support_step = random.uniform(0, 1) > 0.5
+        support_step = random.uniform(0, 1) > self.LIMIT_SUPPORT_STEP
 
         for argument in db_arguments:
             if db_user and argument.uid in uids:  # add seen by if the statement is visible
@@ -222,7 +223,7 @@ class ItemDictHelper(object):
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        support_step = random.uniform(0, 1) > 0.5
+        support_step = random.uniform(0, 1) > self.LIMIT_SUPPORT_STEP
 
         for argument in db_arguments:
             if db_user:  # add seen by if the statement is visible

@@ -489,7 +489,7 @@ class DiscussionDictHelper(object):
 
         self.__append_now_bubble(bubbles_array)
 
-        user_text = get_text_for_argument_uid(uid_user)
+        user_text = get_text_for_argument_uid(uid_user, nickname=nickname)
         bubble_user = create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid_user,
                                                is_supportive=db_arg_user.is_supportive, lang=self.lang, nickname=nickname)
         bubbles_array.append(bubble_user)

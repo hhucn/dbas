@@ -574,10 +574,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             // svg lines
             .enter().append("line")
             .attr({
-                class: "link",
-                id: function (d) {
-                    return 'link-' + d.id;
-                }
+                'class': "link",
+                'id': function (d) { return 'link-' + d.id; }
             })
             .style("stroke", function (d) {
                 return d.color;
@@ -601,10 +599,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             .data(force.nodes())
             .enter().append("g")
             .attr({
-                class: "node",
-                id: function (d) {
-                    return node_id_prefix + d.id;
-                }
+                'class': "node",
+                'id': function (d) { return node_id_prefix + d.id; }
             })
             .call(drag);
     }
@@ -618,15 +614,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function setNodeProperties(node) {
         return node.append("circle")
             .attr({
-                r: function (d) {
-                    return calculateNodeSize(d);
-                },
-                fill: function (d) {
-                    return d.color;
-                },
-                id: function (d) {
-                    return 'circle-' + d.id;
-                }
+                'r': function (d) { return calculateNodeSize(d); },
+                'fill': function (d) { return d.color; },
+                'id': function (d) { return 'circle-' + d.id; }
             });
     }
 
@@ -664,8 +654,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     d3.select(this).append("tspan")
                         .text(node_text[i])
                         .attr({
-                            dy: i ? '1.2em' : '0', x: '0',
-                            "text-anchor": "middle"
+                            'dy': i ? '1.2em' : '0',
+                            'x': '0',
+                            'text-anchor': "middle"
                         });
                 }
                 else {
@@ -696,11 +687,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 height = 0;
             }
             d3.select(this).attr({
-                width: width,
-                height: height,
-                x: pos[0],
-                y: pos[1],
-                id: 'rect-' + d.id
+                'width': width,
+                'height': height,
+                'x': pos[0],
+                'y': pos[1],
+                'id': 'rect-' + d.id
             });
             if (d.id.indexOf('statement') != -1 || d.id.indexOf('issue') != -1) {
                 box_sizes[d.id] = {'width': width, 'height': height};
@@ -724,11 +715,15 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function getLegendSvg() {
         d3.select('#graphViewLegendId').append("svg")
-            .attr({width: 200, height: 200, id: "graph-legend-svg"});
+            .attr({
+                'width': 200,
+                'height': 200,
+                'id': "graph-legend-svg"
+            });
         return d3.select("#graph-legend-svg").append("g")
             .attr({
-                id: "graphLegend",
-                transform: "translate(10,20)"
+                'id': "graphLegend",
+                'transform': "translate(10,20)"
             });
     }
 
@@ -817,10 +812,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 fill: function (d, i) {
                     return legendColorRect[i];
                 },
-                width: 15, height: 5,
-                x: -7, y: function (d, i) {
-                    return i * 40 + 118;
-                }
+                'width': 15,
+                'height': 5,
+                'x': -7, y: function (d, i) { return i * 40 + 118; }
             });
     }
 
@@ -848,7 +842,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Add listeners for buttons of sidebar.
      *
-     * @param jsonData
      * @param jsonData
      * @param label
      * @param rect
@@ -1478,10 +1471,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         edgesCircleId.forEach(function (d) {
             // add border to statements of user, if they are source or target of edge in edgesCircleId
             if(($.inArray(d.source.id, circleIds) != -1) && (d.is_undercut == 'none')){
-                d3.select('#circle-' + d.source.id).attr({fill: d.source.color, stroke: 'black'});
+                d3.select('#circle-' + d.source.id).attr({'fill': d.source.color, 'stroke': 'black'});
             }
             if(($.inArray(d.target.id, circleIds) != -1) && (d.is_undercut == 'none')){
-                d3.select('#circle-' + d.target.id).attr({fill: d.target.color, stroke: 'black'});
+                d3.select('#circle-' + d.target.id).attr({'fill': d.target.color, 'stroke': 'black'});
             }
             highlightElements(d);
         });

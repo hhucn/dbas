@@ -65,10 +65,11 @@ class AjaxGetInfosTest(unittest.TestCase):
         request = testing.DummyRequest(params={'url': 'https://dbas.cs.uni-duesseldorf.de'}, matchdict={})
         response = json.loads(ajax(request))
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(len(response['url']) != 0)
-        self.assertTrue(len(response['service']) != 0)
-        self.assertTrue(len(response['service_url']) != 0)
+        if len(response['error']) == 0:
+            self.assertTrue(len(response['error']) == 0)
+            self.assertTrue(len(response['url']) != 0)
+            self.assertTrue(len(response['service']) != 0)
+            self.assertTrue(len(response['service_url']) != 0)
 
     def test_get_shortened_url_failure(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)

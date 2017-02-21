@@ -1371,25 +1371,18 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
 
     lang = get_language(request)
     _tn = Translator(lang)
-    error = ''
 
     try:
         value = login_user(request, nickname, password, for_api, keep_login, _tn)
-        if type(value) == str:  # error
-            error = value
-        elif type(value) == dict:  # api
+        if type(value) == HTTPFound:  # success
             return value
-        elif type(value) == HTTPFound:  # success
-            return value
+        else:
+            return json.dumps(value)
 
     except KeyError as e:
-        error = _tn.get(_.internalKeyError)
+        return_dict = {'error': _tn.get(_.internalKeyError)}
         logger('user_login', 'error', repr(e))
-
-    return_dict = {'error': error}
-
-    logger('user_login', 'return', str(return_dict))
-    return json.dumps(return_dict)
+        return json.dumps(return_dict)
 
 
 # ajax - user logout
@@ -2023,7 +2016,7 @@ def mark_statement_or_argument(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('mark_statement_or_argument', 'def', 'main ' + str(request.params))
     return_dict = dict()
-    ui_locales = get_language(request)
+    ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
 
     try:
@@ -2114,7 +2107,7 @@ def get_shortened_url(request):
     except ReadTimeout as e:
         logger('get_shortened_url', 'read timeout error', repr(e))
         _tn = Translator(get_discussion_language(request))
-        return_dict['error'] = _tn.get(_.internalError)
+        return_dict['error'] = _tn.get(_.serviceNotAvailable)
 
     return json.dumps(return_dict)
 

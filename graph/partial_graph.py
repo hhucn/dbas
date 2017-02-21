@@ -78,10 +78,10 @@ def __return_d3_data(graph_arg_lists, issue, nickname):
 def __find_position_for_conclusion_of_argument(current_arg, list_todos, list_dones, positions):
     """
 
-    :param current_arg:
-    :param list_todos:
-    :param list_dones:
-    :param positions:
+    :param current_arg: Argument
+    :param list_todos: List of Arguments
+    :param list_dones: List of Argument.uids
+    :param positions: List of Statements - return value
     :return:
     """
     a = [arg.uid for arg in list_todos] if len(list_todos) > 0 else []
@@ -97,18 +97,19 @@ def __find_position_for_conclusion_of_argument(current_arg, list_todos, list_don
         db_statement = DBDiscussionSession.query(Statement).get(current_arg.conclusion_uid)
         if db_statement.is_startpoint:
             if db_statement not in positions:
-                logger('PartialGraph', '__find_position_for_conclusion_of_argument', 'conclusion of {} is a position ({})'.format(current_arg.uid, db_statement.uid))
+                logger('PartialGraph', '__find_position_for_conclusion_of_argument', 'conclusion of {} is a position (statement {})'.format(current_arg.uid, db_statement.uid))
                 positions.append(db_statement)
+        else:
+            # just append arguments, where the conclusion is in the premise
+            db_tmps = get_all_arguments_by_statement(current_arg.conclusion_uid)
+            db_arguments = [arg for arg in db_tmps if arg.conclusion_uid != current_arg.conclusion_uid]
+            for arg in db_arguments:
+                if arg.uid not in list_dones:
+                    if arg not in list_todos:
+                        list_todos.append(arg)
+                        logger('PartialGraph', '__find_position_for_conclusion_of_argument', 'append todo ' + str(arg.uid))
 
-        # just append arguments, where the conclusion is in the premise
-        db_tmps = get_all_arguments_by_statement(current_arg.conclusion_uid)
-        db_arguments = [arg for arg in db_tmps if arg.conclusion_uid != current_arg.conclusion_uid]
-        for arg in db_arguments:
-            if arg.uid not in list_dones:
-                if arg not in list_todos:
-                    list_todos.append(arg)
-                    logger('PartialGraph', '__find_position_for_conclusion_of_argument', 'append todo ' + str(arg.uid))
-
+        # next argument
         if len(list_todos) > 0:
             current_arg = list_todos[0]
             del list_todos[0]

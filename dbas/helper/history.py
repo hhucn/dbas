@@ -292,13 +292,19 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
     :param url: String
     :return: [dict()]
     """
-    logger('history_helper', '__reaction_step', 'def: ' + str(step) + ', ' + str(splitted_history))
+    logger('history_helper', 'get_bubble_from_reaction_step', 'def: ' + str(step) + ', ' + str(splitted_history))
     steps = step.split('/')
-    uid = int(steps[1])
-    additional_uid = int(steps[3])
-    attack = steps[2]
+    if 'reaction' in step:
+        uid = int(steps[1])
+        additional_uid = int(steps[3])
+        attack = steps[2]
+    else:
+        uid = int(steps[1])
+        additional_uid = int(steps[2])
+        attack = 'support'
 
     if not check_reaction(uid, additional_uid, attack, is_history=True):
+        logger('history_helper', 'get_bubble_from_reaction_step', 'wrong reaction')
         return None
 
     is_supportive = DBDiscussionSession.query(Argument).get(uid).is_supportive
@@ -312,6 +318,8 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
             support_counter_argument = 'reaction' in splitted_history[index - 1]
         except IndexError:
             support_counter_argument = False
+
+    color_steps = color_steps and attack != 'support'  # special case for the support round
     current_argument = get_text_for_argument_uid(uid, user_changed_opinion=user_changed_opinion,
                                                  support_counter_argument=support_counter_argument,
                                                  colored_position=color_steps, nickname=nickname,
@@ -331,14 +339,17 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
     user_is_attacking = not db_argument.is_supportive
 
     if lang != 'de':
-        current_argument = current_argument[0:1].upper() + current_argument[1:]
+        if current_argument.startswith('<'):
+            pos = current_argument.index('>')
+            current_argument = current_argument[0:pos] + current_argument[pos:pos + 1].upper() + current_argument[pos + 1:]
+        else:
+            current_argument = current_argument[0:1].upper() + current_argument[1:]
     premise = premise[0:1].lower() + premise[1:]
 
     _tn = Translator(lang)
     user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if last_relation == 'support' else ''
-    user_text += '<' + tag_type + '>'
-    user_text += current_argument if current_argument != '' else premise
-    user_text += '</' + tag_type + '>.'
+    user_text += '<{}>{}</{}>'.format(tag_type, current_argument if current_argument != '' else premise, tag_type)
+
     sys_text, tmp = get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, sys_conclusion, is_supportive,
                                                attack, confr, reply_for_argument, user_is_attacking, db_argument,
                                                db_confrontation, color_html=False)
