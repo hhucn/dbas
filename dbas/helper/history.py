@@ -292,7 +292,7 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
     :param url: String
     :return: [dict()]
     """
-    logger('history_helper', '__reaction_step', 'def: ' + str(step) + ', ' + str(splitted_history))
+    logger('history_helper', 'get_bubble_from_reaction_step', 'def: ' + str(step) + ', ' + str(splitted_history))
     steps = step.split('/')
     uid = int(steps[1])
     additional_uid = int(steps[3])
@@ -331,14 +331,17 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
     user_is_attacking = not db_argument.is_supportive
 
     if lang != 'de':
-        current_argument = current_argument[0:1].upper() + current_argument[1:]
+        if current_argument.startswith('<'):
+            pos = current_argument.index('>')
+            current_argument = current_argument[0:pos] + current_argument[pos:pos + 1].upper() + current_argument[pos + 1:]
+        else:
+            current_argument = current_argument[0:1].upper() + current_argument[1:]
     premise = premise[0:1].lower() + premise[1:]
 
     _tn = Translator(lang)
     user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if last_relation == 'support' else ''
-    user_text += '<' + tag_type + '>'
-    user_text += current_argument if current_argument != '' else premise
-    user_text += '</' + tag_type + '>.'
+    user_text += '<{}>{}</{}>'.format(tag_type, current_argument if current_argument != '' else premise, tag_type)
+
     sys_text, tmp = get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, sys_conclusion, is_supportive,
                                                attack, confr, reply_for_argument, user_is_attacking, db_argument,
                                                db_confrontation, color_html=False)

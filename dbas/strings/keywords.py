@@ -727,7 +727,7 @@ class Keywords(Enum):
     welcome = 'Welcome'
     welcomeMessage = 'Welcome to the novel dialog-based argumentation system.<br>We hope you enjoy using this system and happy arguing!'
     youAreInterestedIn = 'You are interested in'
-    youHaveTheOpinionThat = 'You have the opinion that'
+    youHaveTheOpinionThat = 'You have the opinion that {}'
     youAgreeWith = 'You agree with {}'
     youAgreeWithThatNow = 'Now you agree that'
     youDisagreeWith = 'You disagree with: {}'

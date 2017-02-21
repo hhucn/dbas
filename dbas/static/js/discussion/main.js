@@ -354,7 +354,6 @@ function Main () {
 		$('.' + checkAsUsersOpinion).click(function(){
 			var id = 'star-' + new Date().getTime();
 			$(this).attr('id', id);
-			console.log(id);
 			var info = $(this).parent().children().last();
 			var is_argument = info.data('type') == 'argument';
 			var uid = info.data(info.data('type') + '-uid');

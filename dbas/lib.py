@@ -450,6 +450,13 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         premises = sb + premises + se
         conclusion = sb_tmp + conclusion + se
 
+    marked_element = False
+    if author_uid:
+        db_marked = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.argument_uid == uid,
+                                                                     MarkedArgument.author_uid == author_uid).first()
+        marked_element = db_marked is not None
+    youHaveTheOpinionThat = _t.get(_.youHaveTheOpinionThat).format('').strip()
+
     if lang == 'de':
         if start_with_intro and not anonymous_style:
             if rearrange_intro:
@@ -460,13 +467,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
             ret_value = (sb_none if attack_type in ['dont_know'] else sb) + intro + se + ' '
         elif is_users_opinion and not anonymous_style:
             ret_value = sb_none
-            marked_element = False
-            if author_uid:
-                db_marked = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.argument_uid == uid,
-                                                                             MarkedArgument.author_uid == author_uid).first()
-                marked_element = db_marked is not None
-            tmp = _t.get(_.youHaveTheOpinionThat).format('').strip()
-            ret_value += _t.get(_.youAgreeWithThecounterargument) if support_counter_argument else (tmp if marked_element else _t.get(_.youArgue))
+            ret_value += _t.get(_.youAgreeWithThecounterargument) if support_counter_argument else (youHaveTheOpinionThat if marked_element else _t.get(_.youArgue))
             ret_value += se + ' '
         else:
             ret_value = sb_none + _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous) + se + ' '
@@ -476,7 +477,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         ret_value += sb_none + _t.get(_.because).lower() + se + ' ' + premises
     else:
         tmp = sb + ' ' + _t.get(_.isNotRight).lower() + se + ', ' + _t.get(_.because).lower() + ' '
-        ret_value = conclusion + ' '
+        ret_value = (youHaveTheOpinionThat + ' ' if marked_element else '') + conclusion + ' '
         ret_value += _t.get(_.because).lower() if db_argument.is_supportive else tmp
         ret_value += ' ' + premises
 

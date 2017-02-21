@@ -2023,7 +2023,7 @@ def mark_statement_or_argument(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('mark_statement_or_argument', 'def', 'main ' + str(request.params))
     return_dict = dict()
-    ui_locales = get_language(request)
+    ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
 
     try:
