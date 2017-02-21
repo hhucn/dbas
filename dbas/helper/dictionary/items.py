@@ -26,6 +26,8 @@ class ItemDictHelper(object):
     Provides all functions for creating the radio buttons.
     """
 
+    LIMIT_SUPPORT_STEP = 0.35
+
     def __init__(self, lang, issue_uid, application_url, for_api=False, path='', history=''):
         """
         Initialize default values
@@ -150,7 +152,7 @@ class ItemDictHelper(object):
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        support_step = random.uniform(0, 1) > 0.5
+        support_step = random.uniform(0, 1) > LIMIT_SUPPORT_STEP
 
         for argument in db_arguments:
             if db_user and argument.uid in uids:  # add seen by if the statement is visible
@@ -222,7 +224,7 @@ class ItemDictHelper(object):
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        support_step = random.uniform(0, 1) > 0.5
+        support_step = random.uniform(0, 1) > LIMIT_SUPPORT_STEP
 
         for argument in db_arguments:
             if db_user:  # add seen by if the statement is visible

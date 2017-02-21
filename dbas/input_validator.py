@@ -57,6 +57,9 @@ def check_reaction(attacked_arg_uid, attacking_arg_uid, relation, is_history=Fal
     elif relation == 'rebut':
         return related_with_rebut(attacked_arg_uid, attacking_arg_uid)
 
+    elif relation == 'support':
+        return related_with_support(attacked_arg_uid, attacking_arg_uid) or related_with_support(attacked_arg_uid, attacking_arg_uid, True)
+
     elif relation.startswith('end') and not is_history:
         if str(attacking_arg_uid) != '0':
             return False
@@ -195,7 +198,7 @@ def related_with_rebut(attacked_arg_uid, attacking_arg_uid):
     return True if same_conclusion and not_none and attacking else False
 
 
-def related_with_support(attacked_arg_uid, attacking_arg_uid):
+def related_with_support(attacked_arg_uid, attacking_arg_uid, is_attacking=False):
     """
 
     :param attacked_arg_uid: Argument.uid
@@ -209,7 +212,11 @@ def related_with_support(attacked_arg_uid, attacking_arg_uid):
 
     not_none = db_first_arg.conclusion_uid is not None
     same_conclusion = db_first_arg.conclusion_uid == db_second_arg.conclusion_uid
-    supportive = db_first_arg.is_supportive and db_second_arg.is_supportive
+    if not is_attacking:
+        supportive = db_first_arg.is_supportive and db_second_arg.is_supportive
+    else:
+        supportive = not (db_first_arg.is_supportive or db_second_arg.is_supportive)
+
     return True if same_conclusion and not_none and supportive else False
 
 

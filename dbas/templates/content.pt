@@ -72,7 +72,7 @@
                             <div tal:condition="bubble.is_user" class="line-wrapper-r">
                                 <p class="triangle-r" tal:attributes="id bubble.id">
                                     <div tal:omit-tag="" tal:condition="extras.logged_in">
-                                        <i class="fa fa-star user-star uncheck-as-users-opinion" aria-hidden="true" tal:attributes="title extras.title.unmark_as_opinion; data-is-users-opinion bubble.is_users_opinion" style="display:none;"></i>
+                                        <i class="fa fa-star user-star uncheck-as-users-opinion text-warning" aria-hidden="true" tal:attributes="title extras.title.unmark_as_opinion; data-is-users-opinion bubble.is_users_opinion" style="display:none;"></i>
                                         <i class="fa fa-star-o user-star check-as-users-opinion" aria-hidden="true" tal:attributes="title extras.title.mark_as_opinion; data-is-users-opinion bubble.is_users_opinion" style="display:none;"></i>
                                     </div>
                                     <!--<img class="triangle-gravatar-r" tal:attributes="src extras.users_avatar">-->
