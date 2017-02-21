@@ -2107,7 +2107,7 @@ def get_shortened_url(request):
     except ReadTimeout as e:
         logger('get_shortened_url', 'read timeout error', repr(e))
         _tn = Translator(get_discussion_language(request))
-        return_dict['error'] = _tn.get(_.internalError)
+        return_dict['error'] = _tn.get(_.serviceNotAvailable)
 
     return json.dumps(return_dict)
 

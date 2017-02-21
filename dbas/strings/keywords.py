@@ -586,6 +586,7 @@ class Keywords(Enum):
     rejecting = 'rejecting'
     strongerStatementEnd = '   '
 
+    serviceNotAvailable = 'Service currently not available'
     someoneArgued = 'Someone argued that'
     soYouEnteredMultipleReasons = 'So you entered multiple reasons'
     soYourOpinionIsThat = 'So your opinion is that'
