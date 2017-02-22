@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-02-17 12:50+0100\n"
+"POT-Creation-Date: 2017-02-22 21:48+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -112,6 +112,150 @@ msgstr ""
 "Ministerium für Innovation, Wissenschaft und Forschung des Landes Nordrhein-"
 "Westfalen"
 
+#. Default: Frequent Questions
+#: templates/faq.pt:7
+msgid "faq"
+msgstr "Häufige Fragen"
+
+#. Default: Simple answers to your most common questions
+#: templates/faq.pt:8
+msgid "simple_answers"
+msgstr "Schnelle Antworten auf die häufigsten Fragen"
+
+#. Default: How do we handle your login data?
+#: templates/faq.pt:11
+msgid "faq_question_ldap"
+msgstr "Wie wird meine Uni-Kennung behandelt?"
+
+#. Default: We are using the name information service of the University
+#. Düsseldorf. Your password is send from your computer, to our server (which
+#. is placed at the University) and then towards the service of the ZIM. Each
+#. transmission is secured and encrypted. Additionally we will never save, log
+#. or display your password anywhere!
+#: templates/faq.pt:12
+msgid "faq_answer_ldap"
+msgstr ""
+"Wir nutzen das zentrale Namensverzeichnis der Universität Düsseldorf. Ihr "
+"Passwort wird über eine verschlüsselte Verbindung zu unserem Server (der in "
+"der Universität steht) übertragen und dort intern zum Dienst des ZIMs "
+"weitergeleitet. Wir werden ihr Passwort zu keinem Zeitpunk speichern oder "
+"anzeigen!"
+
+#. Default: What is the difference between interest and opinion?
+#: templates/faq.pt:16
+msgid "faq_question_interest_opinion"
+msgstr "Was ist der Unterschied zwischen Interesse und Meinung?"
+
+#. Default: If you select any answer in D-BAS, you will be interested in this
+#. statement/reaction/... but we will never think, that this is your personal
+#. opinion. Only if you mark an statement or argument as your opinion, we will
+#. know, that you have the same opinion like the given text.
+#: templates/faq.pt:17
+msgid "faq_answer_interest_opinion"
+msgstr ""
+"Wenn Sie in D-BAS eine Aussage / Antwort auswählen, interessieren Sie sich "
+"zunächst nur dafür. Erst wenn Sie eine Aussage als Ihre Meinung markieren, "
+"werden wir auch denken, dass dies Ihrer Meinung entspricht."
+
+#. Default: Can I mark an statement or argument as my opinion?
+#: templates/faq.pt:21
+msgid "faq_question_mark_opinion"
+msgstr "Wie kann ich eine Aussage als meine Meinung markieren?"
+
+#. Default: Yes, you can! Please press the yellow star at the beginning of a
+#. green bubble to mark a statement or an argument as your opinon. For this you
+#. have to be logged in.
+#: templates/faq.pt:22
+msgid "faq_answer_mark_opinion"
+msgstr ""
+"Am Anfang von jeder grünen Sprechblase finden Sie einen kleinen Stern. Wenn "
+"Sie diesen klicken, markieren Sie den Text in der Sprechblase als Ihre "
+"Meinung."
+
+#. Default: Is there any overview about all given arguments and statements?
+#: templates/faq.pt:26
+msgid "faq_question_graph"
+msgstr "Gibt es eine Übersicht über alle Argumente und Aussagen?"
+
+#. Default: Yes, we have a graphical representation. Simply open the little
+#. sidebar in the discussion window and click on 'graph view'.
+#: templates/faq.pt:27
+msgid "faq_answer_graph"
+msgstr ""
+"Ja, wir haben eine graphische Darstellung aller Beiträge. Klicken Sie dazu "
+"in der Diskussionsbox auf das Menu-Icon und wählen 'Graphansicht'."
+
+#. Default: What are these little icons next to the statements?
+#: templates/faq.pt:31
+msgid "faq_question_buttons_next_to_statement"
+msgstr "Was sind das für kleine Symbole neben den Aussagen?"
+
+#. Default: These little icons will appear on each set of statements in the
+#. answer field, if you are logged in.
+#: templates/faq.pt:32
+msgid "faq_answer_buttons_next_to_statement"
+msgstr "Die Symbole tauchen nur auf, wenn Sie angemeldet sind."
+
+#. Default: The pencil allows you to submit proposals for edits.
+#: templates/faq.pt:34
+msgid "faq_answer_pencil_next_to_statement"
+msgstr ""
+"Der Stift erlaubt es Ihnen, sprachliche Verbesserungen für eine Aussage "
+"einzureichen."
+
+#. Default: With the help of the flag you can report statements, if there is
+#. something wrong.
+#: templates/faq.pt:35
+msgid "faq_answer_flag_next_to_statement"
+msgstr ""
+"Mit der Flagge können Sie Aussagen melden, wenn mit diesen etwas nicht "
+"stimmt."
+
+#. Default: You made an statement on your own and not happy with it? Let's
+#. unsubscribe yourself as author.
+#: templates/faq.pt:36
+msgid "faq_answer_trash_next_to_statement"
+msgstr ""
+"Sie haben eine Aussage gemacht und sind nicht mehr glücklich damit? Mit der "
+"Mülltonne sind Sie absofort nicht mehr Autor dieser Aussage."
+
+#. Default: You are reading an statement, which should be supporting your
+#. conclusion, but it is nonsense? Let's attack this one!
+#: templates/faq.pt:37
+msgid "faq_answer_bomb_next_to_statement"
+msgstr ""
+"Sie lesen eine Aussage und denken sich: 'Das ist aber nicht richtig!'. Dann "
+"klicken Sie auf die Bombe und greifen die Aussage an!"
+
+#. Default: There is this specific website with facts about an statement? With
+#. the link-icon you can add references for a statement / argument.
+#: templates/faq.pt:38
+msgid "faq_answer_link_next_to_statement"
+msgstr ""
+"Sie haben diese eine Webseite im Kopf, die eine Aussage unterstützt? Dann "
+"fügen Sie diese als Referenz zur Aussage hinzu."
+
+#. Default: What do I do if I found a bug or have other questions about D-BAS?
+#: templates/faq.pt:43
+msgid "faq_question_bug"
+msgstr "Sie haben einen Fehler gefunden oder weitere Fragen zu D-BAS?"
+
+#. Default: If you think you've found an issue or have any other questions not
+#. covered above, please email us at
+#: templates/faq.pt:44
+msgid "faq_answer_bug1"
+msgstr ""
+"Wenn Sie irgendwelche Fragen, die hier nicht abgedeckt sind, so schreiben "
+"Sie uns bitte an"
+
+#. Default: Please keep in mind that our current team is quite small and we'll
+#. do our very best to get back to you ASAP.
+#: templates/faq.pt:45
+msgid "faq_answer_bug2"
+msgstr ""
+"Bitte bedenken Sie, dass wir ein sehr kleines Team sind und wir unser Bestes "
+"versuchen werden, schnellstmöglich zu antworten."
+
 #. Default: Toggle navigation
 #: templates/snippet-header.pt:8
 msgid "Toggle Navigation"
@@ -173,7 +317,7 @@ msgstr "Angaben gemäß § 5 TMG"
 
 #. Default: Kontakt:
 #. Default: Contact
-#: templates/imprint.pt:11 templates/snippet-footer.pt:24
+#: templates/imprint.pt:11 templates/snippet-footer.pt:20
 msgid "contact"
 msgstr "Kontakt"
 
@@ -455,7 +599,7 @@ msgid "generated_with"
 msgstr "erstellt mit dem Pyramid Web Framework"
 
 #. Default: Changes
-#: templates/imprint.pt:92
+#: templates/imprint.pt:94
 msgid "changes"
 msgstr "Änderungen in der Version"
 
@@ -687,20 +831,20 @@ msgstr "Impressum und Urheberrecht"
 msgid "publications"
 msgstr "Publikationen"
 
-#. Default: Author
-#: templates/snippet-footer.pt:17 templates/snippet-popups.pt:681
-msgid "author"
-msgstr "Autor"
-
 #. Default: License
-#: templates/snippet-footer.pt:20
+#: templates/snippet-footer.pt:17
 msgid "license"
 msgstr "Lizenz"
 
 #. Default: RSS
-#: templates/snippet-footer.pt:28
+#: templates/snippet-footer.pt:24
 msgid "rss"
 msgstr "RSS"
+
+#. Default: Help
+#: templates/snippet-footer.pt:27
+msgid "Help"
+msgstr "Hilfe"
 
 #. Default: About me
 #: templates/snippet-popups.pt:10
@@ -1072,6 +1216,11 @@ msgstr "Fehler:"
 msgid "success:"
 msgstr "Erfolg:"
 
+#. Default: Author
+#: templates/snippet-popups.pt:681
+msgid "author"
+msgstr "Autor"
+
 #. Default: Date
 #: templates/snippet-popups.pt:683 templates/review_reputation.pt:25
 msgid "date"
@@ -1086,6 +1235,12 @@ msgstr "News abschicken"
 #: templates/snippet-popups.pt:742
 msgid "send_notification"
 msgstr "Nachricht senden"
+
+#. Default: Add Topic
+#. Default: Add a Topic
+#: templates/snippet-popups.pt:756 templates/content.pt:39
+msgid "add_topic"
+msgstr "Thema hinzufügen"
 
 #. Default: Please enter your title here:
 #: templates/snippet-popups.pt:759
@@ -1445,6 +1600,11 @@ msgstr "Stärke"
 #: templates/settings.pt:268
 msgid "password_changed"
 msgstr "Ihr Passwort wurde geändert"
+
+#. Default: Documentation
+#: templates/docs.pt:7
+msgid "docs"
+msgstr "Dokumentation"
 
 #. Default: Get In Touch With Us
 #: templates/contact.pt:8
@@ -1934,11 +2094,6 @@ msgstr "mehr Informationen"
 msgid "switch_topc"
 msgstr "Thema wechseln"
 
-#. Default: Add a Topic
-#: templates/content.pt:39
-msgid "add_topic"
-msgstr "Thema hinzufügen"
-
 #. Default: Restart
 #: templates/content.pt:46
 msgid "restart_discussion"
@@ -2284,9 +2439,6 @@ msgstr "Angriffe"
 #~ "zwischen den Blasen jeweils eine Andere Bedeutung. Dadurch bekommen auch "
 #~ "die Blasen eine andere Bedeutung. Daher eignet sich die Struktur sehr gut "
 #~ "für logische Aussagen."
-
-#~ msgid "simple_ui"
-#~ msgstr "Einfache Oberfläche"
 
 #~ msgid "simple_ui_content"
 #~ msgstr ""

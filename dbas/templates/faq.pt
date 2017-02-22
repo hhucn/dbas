@@ -41,7 +41,8 @@
                     <br>
                     <div>
                         <h6><strong i18n:translate="faq_question_bug">What do I do if I found a bug or have other questions about D-BAS?</strong></h6>
-                        <span i18n:translate="faq_answer_bug">If you think you've found an issue or have any other questions not covered above, please email us at <a href="mailto:dbas.hhu@gmail.com">dbas.hhu@gmail.com</a>. Please keep in mind that our current team is quite small and we'll do our very best to get back to you ASAP.</span>
+                        <span i18n:translate="faq_answer_bug1">If you think you've found an issue or have any other questions not covered above, please email us at </span><a href="mailto:dbas.hhu@gmail.com">dbas.hhu@gmail.com</a>.
+                        <span i18n:translate="faq_answer_bug2">Please keep in mind that our current team is quite small and we'll do our very best to get back to you ASAP.</span>
                     </div>
                 </div>
             </div>
