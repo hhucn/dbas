@@ -1,3 +1,5 @@
+from sqlalchemy import and_
+
 from dbas.database import DBDiscussionSession as session
 from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, \
     StatementReferences, StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, \
@@ -11,6 +13,9 @@ from sqlalchemy import engine_from_config, and_
 
 settings = add_settings_to_appconfig()
 session.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+
+top_count = 3
+flop_count = 5
 
 print(' ----------------- ')
 print('| D-BAS ANALYTICS |')
@@ -35,7 +40,11 @@ sorted_clicks = sorted(clicks.items(), key=lambda x: x[1])
 print('Users:')
 print('  - count:    {}'.format(len(db_users)))
 print('  - activity: {} per user'.format(len(db_clicked_statements) / len(db_users)))
-for tuple in sorted_clicks:
+print('  - Flop {}'.format(flop_count))
+for tuple in sorted_clicks[0:flop_count]:
+    print('    - {}: {}'.format(tuple[1], tuple[0]))
+print('  - Top {}'.format(top_count))
+for tuple in sorted_clicks[-top_count:]:
     print('    - {}: {}'.format(tuple[1], tuple[0]))
 print('')
 
@@ -54,8 +63,29 @@ db_disabled_arguments = db_arguments.filter_by(is_disabled=True).all()
 db_pro_arguments = db_arguments.filter_by(is_supportive=True).all()
 db_con_arguments = db_arguments.filter_by(is_supportive=False).all()
 print('Arguments:')
-print('  - count / disabled: {}'.format(len(db_arguments.all())), len(db_disabled_arguments))
-print('  - pro / con:        {}'.format(len(db_pro_arguments), len(db_con_arguments)))
+print('  - count / disabled: {} / {}'.format(len(db_arguments.all()), len(db_disabled_arguments)))
+print('  - pro / con:        {} / {}'.format(len(db_pro_arguments), len(db_con_arguments)))
+print('')
+
+db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).join(TextVersion, Statement.textversion_uid == TextVersion.uid).all()
+db_arguments = session.query(Argument).filter_by(issue_uid=db_issue.uid).all()
+author_list_statement = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([statement for statement in db_statements if statement.textversions.author_uid == user.uid]) for user in db_users}
+author_list_argument = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([argument for argument in db_arguments if argument.author_uid == user.uid]) for user in db_users}
+sorted_author_list_statement = sorted(author_list_statement.items(), key=lambda x: x[1])
+sorted_author_list_argument = sorted(author_list_argument.items(), key=lambda x: x[1])
+print('Top Authors:')
+print('  - Statement Flop{}'.format(flop_count))
+for tuple in sorted_author_list_statement[0:flop_count]:
+    print('    - {}: {}'.format(tuple[1], tuple[0]))
+print('  - Statement Top{}'.format(top_count))
+for tuple in sorted_author_list_statement[-top_count:]:
+    print('    - {}: {}'.format(tuple[1], tuple[0]))
+print('  - Argument Flop{}'.format(flop_count))
+for tuple in sorted_author_list_argument[0:flop_count]:
+    print('    - {}: {}'.format(tuple[1], tuple[0]))
+print('  - Argument Top{}'.format(top_count))
+for tuple in sorted_author_list_argument[-top_count:]:
+    print('    - {}: {}'.format(tuple[1], tuple[0]))
 print('')
 
 
@@ -104,6 +134,13 @@ print('  - edits:         {} / {} / {}'.format(len(db_review_edits), len([review
 print('  - deletes:       {} / {} / {}'.format(len(db_review_deletes), len([review for review in db_review_deletes if review.is_executed]), len([review for review in db_review_deletes if review.is_revoked])))
 print('  - optimizations: {} / {} / {}'.format(len(db_review_optimizations), len([review for review in db_review_optimizations if review.is_executed]), len([review for review in db_review_optimizations if review.is_revoked])))
 print('  - duplicates:    {} / {} / {}'.format(len(db_review_duplicates), len([review for review in db_review_duplicates if review.is_executed]), len([review for review in db_review_duplicates if review.is_revoked])))
+print('')
+
+db_history = session.query(History).all()
+author_list_history = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([history for history in db_history if history.author_uid == user.uid]) for user in db_users}
+sorted_author_list_history = sorted(author_list_history.items(), key=lambda x: x[1])
+print('History:')
+print('  - Steps: {}'.format(len(db_history)))
 print('')
 
 session.query(Issue).all()
