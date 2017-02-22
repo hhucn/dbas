@@ -65,6 +65,7 @@ dbas/static/rss/*
 startSession.py
 getMails.py
 dbas.js
+dbas.min.js
 
 # node
 node_modules/
