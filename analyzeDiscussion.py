@@ -1,3 +1,5 @@
+import arrow
+
 from dbas.database import DBDiscussionSession as session
 from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, \
     StatementReferences, StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, \
@@ -14,6 +16,14 @@ session.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
 top_count = 3
 flop_count = 5
+start = arrow.get('2017-01-26T00:00:00.000000+00:00')
+end = arrow.get('2017-02-06T23:59:59.000000+00:00')
+
+
+def get_weekday(arrow_time):
+    return {
+        0: 'Mo', 1: 'Tu', 2: 'We', 3: 'Th', 4: 'Fr', 5: 'Sa', 6: 'Su',
+    }[arrow_time.weekday()]
 
 print(' ----------------- ')
 print('| D-BAS ANALYTICS |')
@@ -28,7 +38,9 @@ elif db_issue.is_disabled:
     print('ISSUE DISABLED')
     exit()
 
-print(str(db_issue.title))
+print(str(db_issue.title).upper())
+print('')
+
 
 db_users = [user for user in session.query(User).filter(~User.nickname.in_(['anonymous', 'admin'])).all()]
 db_clicked_statements = [vote for vote in session.query(ClickedStatement).all() if session.query(Statement).get(vote.statement_uid).issue_uid == db_issue.uid]
@@ -39,20 +51,36 @@ print('Users:')
 print('  - count:    {}'.format(len(db_users)))
 print('  - activity: {} per user'.format(len(db_clicked_statements) / len(db_users)))
 print('  - Flop{}'.format(flop_count))
-for tuple in sorted_clicks[0:flop_count]:
-    print('    - {}: {}'.format(tuple[1], tuple[0]))
+for t in sorted_clicks[0:flop_count]:
+    print('    - {}: {}'.format(t[1], t[0]))
 print('  - Top{}'.format(top_count))
-for tuple in sorted_clicks[-top_count:]:
-    print('    - {}: {}'.format(tuple[1], tuple[0]))
+for t in sorted_clicks[-top_count:]:
+    print('    - {}: {}'.format(t[1], t[0]))
 print('')
 
 
 db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).all()
 db_disabled_statements = session.query(Statement).filter(and_(Statement.issue_uid == db_issue.uid,
                                                               Statement.is_disabled == True)).all()
+db_positions = [statement for statement in db_statements if statement.is_startpoint]
 print('Statements:')
 print('  - count / disabled: {}'.format(len(db_statements)), len(db_disabled_statements))
-print('  - positions:        {}'.format(len([statement for statement in db_statements if statement.is_startpoint])))
+print('  - positions:        {}'.format(len(db_positions)))
+print('  - position clicks per day (start {}):'.format(start.format('DD-MM')))
+pos_clicks = {}
+for pos in db_positions:
+    pos_row = []
+    for day in range(0, (end-start).days+1):
+        clicks = session.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == pos.uid,
+                                                             ClickedStatement.timestamp >= start.replace(days=+day),
+                                                             ClickedStatement.timestamp < start.replace(days=+day+1))).all()
+        pos_row.append(str(len(clicks)))
+    pos_clicks[str(pos.uid)] = pos_row
+sorted_pos_clicks = sorted(pos_clicks.items(), key=lambda x: x[0])
+days = range(0, (end-start).days+1)
+print('      Pos\t{}'.format('\t'.join([get_weekday(start.replace(days=+d)) for d in days])))
+for row in sorted_pos_clicks:
+    print('    - {} \t{}'.format(row[0], '\t'.join(row[1])))
 print('')
 
 
@@ -65,6 +93,7 @@ print('  - count / disabled: {} / {}'.format(len(db_arguments.all()), len(db_dis
 print('  - pro / con:        {} / {}'.format(len(db_pro_arguments), len(db_con_arguments)))
 print('')
 
+
 db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).join(TextVersion, Statement.textversion_uid == TextVersion.uid).all()
 db_arguments = session.query(Argument).filter_by(issue_uid=db_issue.uid).all()
 author_list_statement = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([statement for statement in db_statements if statement.textversions.author_uid == user.uid]) for user in db_users}
@@ -73,17 +102,17 @@ sorted_author_list_statement = sorted(author_list_statement.items(), key=lambda 
 sorted_author_list_argument = sorted(author_list_argument.items(), key=lambda x: x[1])
 print('Top Authors:')
 print('  - Statement: Flop{}'.format(flop_count))
-for tuple in sorted_author_list_statement[0:flop_count]:
-    print('    - {}: {}'.format(tuple[1], tuple[0]))
+for t in sorted_author_list_statement[0:flop_count]:
+    print('    - {}: {}'.format(t[1], t[0]))
 print('  - Statement: Top{}'.format(top_count))
-for tuple in sorted_author_list_statement[-top_count:]:
-    print('    - {}: {}'.format(tuple[1], tuple[0]))
+for t in sorted_author_list_statement[-top_count:]:
+    print('    - {}: {}'.format(t[1], t[0]))
 print('  - Argument: Flop{}'.format(flop_count))
-for tuple in sorted_author_list_argument[0:flop_count]:
-    print('    - {}: {}'.format(tuple[1], tuple[0]))
+for t in sorted_author_list_argument[0:flop_count]:
+    print('    - {}: {}'.format(t[1], t[0]))
 print('  - Argument: Top{}'.format(top_count))
-for tuple in sorted_author_list_argument[-top_count:]:
-    print('    - {}: {}'.format(tuple[1], tuple[0]))
+for t in sorted_author_list_argument[-top_count:]:
+    print('    - {}: {}'.format(t[1], t[0]))
 print('')
 
 
@@ -100,6 +129,7 @@ print('  - arguments:  {} / {} / {}'.format(len(db_clicked_arguments), len(db_cl
 print('  - statements: {} / {} / {}'.format(len(db_clicked_statements), len(db_clicked_statements_valid), len(db_clicked_statements_invalid)))
 print('')
 
+
 db_votes_arguments_valid_up = [vote for vote in db_clicked_arguments_valid if vote.is_up_vote]
 db_votes_statements_valid_up = [vote for vote in db_clicked_statements_valid if vote.is_up_vote]
 db_votes_arguments_valid_down = [vote for vote in db_clicked_arguments_valid if not vote.is_up_vote]
@@ -109,6 +139,7 @@ print('  - arguments:  {} / {}'.format(len(db_votes_arguments_valid_up), len(db_
 print('  - statements: {} / {}'.format(len(db_votes_statements_valid_up), len(db_votes_statements_valid_down)))
 print('')
 
+
 db_votes_arguments_invalid_up = [vote for vote in db_clicked_arguments_valid if vote.is_up_vote]
 db_votes_statements_invalid_up = [vote for vote in db_clicked_statements_valid if vote.is_up_vote]
 db_votes_arguments_invalid_down = [vote for vote in db_clicked_arguments_valid if not vote.is_up_vote]
@@ -116,6 +147,23 @@ db_votes_statements_invalid_down = [vote for vote in db_clicked_statements_valid
 print('Most up/down interests (invalid):')
 print('  - arguments:  {} / {}'.format(len(db_votes_arguments_invalid_up), len(db_votes_arguments_invalid_down)))
 print('  - statements: {} / {}'.format(len(db_votes_statements_invalid_up), len(db_votes_statements_invalid_down)))
+print('')
+
+
+db_marked_statements = session.query(MarkedStatement).all()
+db_marked_arguments = session.query(MarkedArgument).all()
+marked_statements_list = {statement.uid: len(session.query(MarkedStatement).filter_by(uid=statement.uid).all()) for statement in db_marked_statements}
+marked_arguments_list = {argument.uid: len(session.query(MarkedArgument).filter_by(uid=argument.uid).all()) for argument in db_marked_arguments}
+sorted_marked_statements_list = sorted(marked_statements_list.items(), key=lambda x: x[1])
+sorted_marked_arguments_list = sorted(marked_arguments_list.items(), key=lambda x: x[1])
+print('Most marked elements:')
+print('  - arguments / statements in total: {} / {}'.format(len(db_marked_statements), len(db_marked_arguments)))
+print('  - Argument Top{}'.format(top_count))
+for t in sorted_author_list_argument[-top_count:]:
+    print('    - {}: {}'.format(t[1], t[0]))
+print('  - Statement Top{}'.format(top_count))
+for t in sorted_author_list_argument[-top_count:]:
+    print('    - {}: {}'.format(t[1], t[0]))
 print('')
 
 
@@ -134,6 +182,7 @@ print('  - optimizations: {} / {} / {}'.format(len(db_review_optimizations), len
 print('  - duplicates:    {} / {} / {}'.format(len(db_review_duplicates), len([review for review in db_review_duplicates if review.is_executed]), len([review for review in db_review_duplicates if review.is_revoked])))
 print('')
 
+
 db_history = session.query(History).all()
 author_history_list = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([history for history in db_history if history.author_uid == user.uid]) for user in db_users}
 # sorted_author_history_list = sorted(author_history_list.items(), key=lambda x: x[1])
@@ -142,12 +191,24 @@ sorted_history_list = sorted(history_list.items(), key=lambda x: x[1])
 print('History:')
 print('  - Steps: {}'.format(len(db_history)))
 print('  - Flop{}'.format(10))
-for tuple in sorted_history_list[0:10]:
-    print('    - {}: {}'.format(tuple[1], tuple[0]))
+for t in sorted_history_list[0:10]:
+    print('    - {}: {}'.format(t[1], t[0]))
 print('  - Top{}'.format(10))
-for tuple in sorted_history_list[-(10):]:
-    print('    - {}: {}'.format(tuple[1], tuple[0]))
+for t in sorted_history_list[-10:]:
+    print('    - {}: {}'.format(t[1], t[0]))
 print('')
+
+
+print('User Specific History:')
+print('')
+
+
+print('Activity per Day:')
+for day in range(0, (end-start).days+1):
+    clicks = session.query(History).filter(and_(History.timestamp >= start.replace(days=+day), History.timestamp < start.replace(days=+day+1))).all()
+    print('  - {}, {}: Page calls = {}'.format(start.replace(days=+day).format('DD-MM-YYYY'), get_weekday(start.replace(days=+day)), len(clicks)))
+print('')
+
 
 session.query(Issue).all()
 session.query(Language).all()
