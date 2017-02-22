@@ -435,10 +435,13 @@ function AjaxDiscussionHandler() {
 	 *
 	 * @param uid
 	 * @param is_argument
+	 * @param is_supportive
 	 * @param should_mark
+	 * @param step
+	 * @param history
 	 * @param callback_id
 	 */
-	this.markStatementOrArgument = function(uid, is_argument, should_mark, callback_id){
+	this.markStatementOrArgument = function(uid, is_argument, is_supportive, should_mark, step, history, callback_id){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_mark_statement_or_argument',
@@ -447,7 +450,10 @@ function AjaxDiscussionHandler() {
 			data: {
 				uid: uid,
 				is_argument: is_argument,
-				should_mark: should_mark
+				is_supportive: is_supportive,
+				should_mark: should_mark,
+				step: step,
+				history: history
 			},
 			async: true,
 			headers: {

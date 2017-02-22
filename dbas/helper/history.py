@@ -15,6 +15,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support
 from dbas.strings.translator import Translator
 from dbas.database.initializedb import nick_of_anonymous_user
+from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement
 
 
 def save_issue_uid(issue_uid, nickname):
@@ -146,7 +147,7 @@ def __prepare_justify_statement_step(bubble_array, index, step, nickname, lang, 
 
 def __prepare_reaction_step(bubble_array, index, application_url, step, nickname, lang, splitted_history, url):
     logger('history_helper', '__prepare_reaction_step', str(index) + ': reaction case -> ' + step)
-    bubbles = __get_bubble_from_reaction_step(application_url, step, nickname, lang, splitted_history, url)
+    bubbles = get_bubble_from_reaction_step(application_url, step, nickname, lang, splitted_history, url)
     if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
         bubble_array += bubbles
 
@@ -177,20 +178,13 @@ def __get_bubble_from_justify_statement_step(step, nickname, lang, url):
     logger('history_helper', '__justify_statement_step', 'def')
     steps = step.split('/')
     uid = int(steps[1])
-    #  slug    = ''
     is_supportive = steps[2] == 't' or steps[2] == 'd'  # supportive = t(rue) or d(ont know) mode
 
     _tn = Translator(lang)
-    #  url     = UrlManager(application_url, slug).get_slug_url(False)
-    if lang == 'de':
-        intro = _tn.get(_.youAgreeWith if is_supportive else _.youDisagreeWith) + ' '
-    else:
-        intro = '' if is_supportive else _tn.get(_.youDisagreeWith) + ': '
     text = get_text_for_statement_uid(uid)
-    if lang != 'de':
-        text = text[0:1].upper() + text[1:]
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+    msg, tmp = get_user_bubble_text_for_justify_statement(uid, db_user, text, is_supportive, _tn)
 
-    msg = intro + '<' + tag_type + '>' + text + '</' + tag_type + '>'
     bubble_user = create_speechbubble_dict(is_user=True, message=msg, omit_url=False, statement_uid=uid,
                                            is_supportive=is_supportive, nickname=nickname, lang=lang, url=url)
     return [bubble_user]
@@ -287,7 +281,7 @@ def __get_bubble_from_dont_know_step(step, nickname, lang, url):
     return [user_bubble, sys_bubble]
 
 
-def __get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_history, url):
+def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_history, url, color_steps=False):
     """
     Creates bubbles for the reaction-keyword.
 
@@ -298,13 +292,19 @@ def __get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hi
     :param url: String
     :return: [dict()]
     """
-    logger('history_helper', '__reaction_step', 'def: ' + str(step) + ', ' + str(splitted_history))
+    logger('history_helper', 'get_bubble_from_reaction_step', 'def: ' + str(step) + ', ' + str(splitted_history))
     steps = step.split('/')
-    uid = int(steps[1])
-    additional_uid = int(steps[3])
-    attack = steps[2]
+    if 'reaction' in step:
+        uid = int(steps[1])
+        additional_uid = int(steps[3])
+        attack = steps[2]
+    else:
+        uid = int(steps[1])
+        additional_uid = int(steps[2])
+        attack = 'support'
 
     if not check_reaction(uid, additional_uid, attack, is_history=True):
+        logger('history_helper', 'get_bubble_from_reaction_step', 'wrong reaction')
         return None
 
     is_supportive = DBDiscussionSession.query(Argument).get(uid).is_supportive
@@ -318,8 +318,12 @@ def __get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hi
             support_counter_argument = 'reaction' in splitted_history[index - 1]
         except IndexError:
             support_counter_argument = False
+
+    color_steps = color_steps and attack != 'support'  # special case for the support round
     current_argument = get_text_for_argument_uid(uid, user_changed_opinion=user_changed_opinion,
-                                                 support_counter_argument=support_counter_argument)
+                                                 support_counter_argument=support_counter_argument,
+                                                 colored_position=color_steps, nickname=nickname,
+                                                 with_html_tag=color_steps)
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     db_confrontation = DBDiscussionSession.query(Argument).get(additional_uid)
     if db_argument.conclusion_uid is not None:
@@ -335,14 +339,17 @@ def __get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hi
     user_is_attacking = not db_argument.is_supportive
 
     if lang != 'de':
-        current_argument = current_argument[0:1].upper() + current_argument[1:]
+        if current_argument.startswith('<'):
+            pos = current_argument.index('>')
+            current_argument = current_argument[0:pos] + current_argument[pos:pos + 1].upper() + current_argument[pos + 1:]
+        else:
+            current_argument = current_argument[0:1].upper() + current_argument[1:]
     premise = premise[0:1].lower() + premise[1:]
 
     _tn = Translator(lang)
     user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if last_relation == 'support' else ''
-    user_text += '<' + tag_type + '>'
-    user_text += current_argument if current_argument != '' else premise
-    user_text += '</' + tag_type + '>.'
+    user_text += '<{}>{}</{}>'.format(tag_type, current_argument if current_argument != '' else premise, tag_type)
+
     sys_text, tmp = get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, sys_conclusion, is_supportive,
                                                attack, confr, reply_for_argument, user_is_attacking, db_argument,
                                                db_confrontation, color_html=False)
@@ -382,16 +389,16 @@ def save_path_in_database(nickname, path, history=''):  # TODO 322
     :return: Boolean
     """
 
-    if path.startswith('/discuss/'):
-        path = path[len('/discuss/'):]
-        path = path[path.index('/') if '/' in path else 0:]
-
     if not nickname:
         return []
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         return []
+
+    # if path.startswith('/discuss/'):
+    #     path = path[len('/discuss/'):]
+    #     path = path[path.index('/') if '/' in path else 0:]
 
     if len(history) > 0:
         history = '?history=' + history

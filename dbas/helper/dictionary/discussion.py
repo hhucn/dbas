@@ -3,19 +3,22 @@ Provides helping function for dictionaries, which are used in discussions.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+
 import dbas.helper.history as HistoryHelper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, User
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, \
     get_text_for_conclusion, create_speechbubble_dict, is_author_of_argument, bubbles_already_last_in_list
 from dbas.logger import logger
+from dbas.review.helper.queues import get_complete_review_count
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import tag_type, get_header_for_users_confrontation_response, \
     get_text_for_add_premise_container, get_text_for_confrontation, get_text_for_support, \
     get_name_link_of_arguments_author
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
-from dbas.review.helper.queues import get_complete_review_count
+from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement, \
+    get_system_bubble_text_for_justify_statement
 
 
 class DiscussionDictHelper(object):
@@ -112,10 +115,13 @@ class DiscussionDictHelper(object):
         tag_end = '</' + tag_type + '/>'
 
         # system bubble
-        system_question = self.get_system_bubble_for_justify_statement(is_supportive, _tn, tag_start, text, tag_end)
+        system_question = get_system_bubble_text_for_justify_statement(is_supportive, _tn, tag_start, text,
+                                                                       tag_end)
 
         # user bubble
-        user_text, add_premise_text = self.get_user_bubble_for_justify_statement(_tn, is_supportive, text)
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        user_text, add_premise_text = get_user_bubble_text_for_justify_statement(uid, db_user, text,
+                                                                                 is_supportive, _tn)
 
         # additional stuff
         splitted_history = self.history.split('-')
@@ -156,57 +162,6 @@ class DiscussionDictHelper(object):
                                                           message=msg + _tn.get(_.onlyOneItemWithLink),
                                                           omit_url=True, lang=self.lang))
         return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text, 'save_statement_url': save_statement_url, 'mode': '', 'is_supportive': is_supportive}
-
-    def get_user_bubble_for_justify_statement(self, _tn, is_supportive, text):
-        """
-
-        :param _tn:
-        :param is_supportive:
-        :param text:
-        :return:
-        """
-        if self.lang == 'de':
-            intro = _tn.get(_.itIsTrueThat if is_supportive else _.itIsFalseThat)
-            add_premise_text = intro[0:1].upper() + intro[1:] + ' ' + text
-        else:
-            add_premise_text = text + ' ' + _tn.get(_.holds if is_supportive else _.isNotAGoodIdea)
-        # add_premise_text += ', ' + _tn.get(_.because).lower() + '...'
-        add_premise_text += ', ' + '...'
-
-        if self.lang == 'de':
-            intro = _tn.get(_.youAgreeWith if is_supportive else _.youDisagreeWith) + ' '
-        else:
-            intro = '' if is_supportive else _tn.get(_.youDisagreeWith) + ': '
-        text = intro + text
-
-        return text, add_premise_text
-
-    def get_system_bubble_for_justify_statement(self, is_supportive, _tn, tag_start, text, tag_end):
-        """
-
-        :param is_supportive:
-        :param _tn:
-        :param tag_start:
-        :param text:
-        :param tag_end:
-        :return:
-        """
-        if self.lang == 'de':
-            if is_supportive:
-                question = _tn.get(_.whatIsYourMostImportantReasonWhyForInColor)
-            else:
-                question = _tn.get(_.whatIsYourMostImportantReasonWhyAgainstInColor)
-        else:
-            question = _tn.get(_.whatIsYourMostImportantReasonWhyFor)
-
-        question += ' ' + tag_start + text + tag_end
-
-        if self.lang != 'de':
-            question += ' ' + _tn.get(_.holdsInColor if is_supportive else _.isNotAGoodIdeaInColor)
-        because = _tn.get(_.because)[0:1].upper() + _tn.get(_.because)[1:].lower() + '...'
-        question += '?' + ' <br>' + because
-
-        return question
 
     def get_dict_for_justify_argument(self, uid, is_supportive, attack):
         """
@@ -407,7 +362,7 @@ class DiscussionDictHelper(object):
 
     def __get_dict_for_argumentation_end(self, argument_uid, user_changed_opinion, nickname, attack, _tn):
         #  user_text        = _tn.get(_.soYourOpinionIsThat) + ': '
-        text             = get_text_for_argument_uid(argument_uid, user_changed_opinion=user_changed_opinion, minimize_on_undercut=True)
+        text             = get_text_for_argument_uid(argument_uid, user_changed_opinion=user_changed_opinion, minimize_on_undercut=True, nickname=nickname)
         user_text        = text[0:1].upper() + text[1:]
         sys_text = (_tn.get(_.otherParticipantsDontHaveCounterForThat) + '.') if attack == 'end' else _tn.get(
             _.otherParticipantsDontHaveNewCounterForThat)
@@ -457,7 +412,7 @@ class DiscussionDictHelper(object):
         reply_for_argument = not (db_statement and db_statement.is_startpoint)
         support_counter_argument = 'reaction' in self.history.split('-')[-1]
 
-        current_argument   = get_text_for_argument_uid(db_argument.uid, with_html_tag=True, colored_position=True,
+        current_argument   = get_text_for_argument_uid(db_argument.uid, nickname=nickname, with_html_tag=True, colored_position=True,
                                                        user_changed_opinion=user_changed_opinion, attack_type=attack,
                                                        minimize_on_undercut=True, support_counter_argument=support_counter_argument)
 
@@ -534,7 +489,7 @@ class DiscussionDictHelper(object):
 
         self.__append_now_bubble(bubbles_array)
 
-        user_text = get_text_for_argument_uid(uid_user)
+        user_text = get_text_for_argument_uid(uid_user, nickname=nickname)
         bubble_user = create_speechbubble_dict(is_user=True, message=user_text, omit_url=True, argument_uid=uid_user,
                                                is_supportive=db_arg_user.is_supportive, lang=self.lang, nickname=nickname)
         bubbles_array.append(bubble_user)

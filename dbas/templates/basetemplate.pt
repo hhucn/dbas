@@ -22,7 +22,7 @@
     <input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 
 	<!-- Inlcuding this at top for references -->
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery/jquery-3.1.0.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery-3.1.0.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap/bootstrap-3.3.7.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap/bootstrap-toggle.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/bootstrap/bootstrap-tour-0.11.0.min.js')}"></script>
@@ -98,7 +98,7 @@
 	<!-- Placed at the end of the document so the pages load faster -->
 	<!--<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/pace.min.js')}"></script>-->
     <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/jquery/jquery.slimscroll-1.3.8.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery.slimscroll-1.3.8.min.js')}"></script>
 
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/main/ids.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/main/guided-tour.js')}"></script>

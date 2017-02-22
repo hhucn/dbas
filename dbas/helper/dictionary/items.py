@@ -42,6 +42,8 @@ class ItemDictHelper(object):
         self.issue_uid = issue_uid
         self.application_url = application_url
         self.for_api = for_api
+        self.LIMIT_SUPPORT_STEP = 0.35
+
         if for_api:
             self.path = path[len('/api/' + DBDiscussionSession.query(Issue).get(issue_uid).get_slug()):]
         else:
@@ -81,6 +83,10 @@ class ItemDictHelper(object):
                                                               is_visible=statement.uid in uids))
 
         _tn = Translator(self.lang)
+
+        if type(db_statements) is list and len(db_statements) > 0:
+            random.shuffle(statements_array)
+
         if nickname:
             title = _tn.get(_.newConclusionRadioButtonText) if len(db_statements) > 0 else _tn.get(_.newConclusionRadioButtonTextNewIdea)
             statements_array.append(self.__create_answer_dict('start_statement',
@@ -146,7 +152,7 @@ class ItemDictHelper(object):
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        support_step = random.uniform(0, 1) > 0.5
+        support_step = random.uniform(0, 1) > self.LIMIT_SUPPORT_STEP
 
         for argument in db_arguments:
             if db_user and argument.uid in uids:  # add seen by if the statement is visible
@@ -182,6 +188,9 @@ class ItemDictHelper(object):
                                                               is_visible=argument.uid in uids,
                                                               attack_url=_um.get_url_for_jump(False, argument.uid)))
 
+        if type(db_arguments) is list and len(db_arguments) > 0:
+            random.shuffle(statements_array)
+
         if nickname:
             statements_array.append(self.__create_answer_dict('start_premise',
                                                               [{'title': _tn.get(_.newPremiseRadioButtonText),
@@ -215,7 +224,7 @@ class ItemDictHelper(object):
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        support_step = random.uniform(0, 1) > 0.5
+        support_step = random.uniform(0, 1) > self.LIMIT_SUPPORT_STEP
 
         for argument in db_arguments:
             if db_user:  # add seen by if the statement is visible
@@ -255,6 +264,9 @@ class ItemDictHelper(object):
                                                               is_author=is_author_of_argument(nickname, argument.uid),
                                                               is_visible=argument.uid in uids,
                                                               attack_url=_um.get_url_for_jump(False, argument.uid)))
+
+        if type(db_arguments) is list and len(db_arguments) > 0:
+            random.shuffle(statements_array)
 
         if logged_in:
             if len(statements_array) == 0:

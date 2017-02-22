@@ -148,7 +148,7 @@ def handle_justification_step(request, for_api, ui_locales, nickname, history):
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_justify_statement(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales,
+def preparation_for_justify_statement(request, for_api, main_page, slug, statement_uid, supportive, ui_locales,
                                       request_authenticated_userid, mode, nickname, history):
     """
 
@@ -156,7 +156,7 @@ def preparation_for_justify_statement(request, for_api, main_page, slug, stateme
     :param for_api:
     :param main_page:
     :param slug:
-    :param statement_or_arg_id:
+    :param statement_uid:
     :param supportive:
     :param mode:
     :param ui_locales:
@@ -167,16 +167,16 @@ def preparation_for_justify_statement(request, for_api, main_page, slug, stateme
     logged_in = DBDiscussionSession.query(User).filter_by(nickname=nickname).first() is not None
     _ddh, _idh, _dh = __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, request)
 
-    VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive)
+    VotingHelper.add_vote_for_statement(statement_uid, nickname, supportive)
 
-    item_dict       = _idh.get_array_for_justify_statement(statement_or_arg_id, nickname, supportive, history)
-    discussion_dict = _ddh.get_dict_for_justify_statement(statement_or_arg_id, main_page, slug, supportive, len(item_dict['elements']), nickname)
+    item_dict       = _idh.get_array_for_justify_statement(statement_uid, nickname, supportive, history)
+    discussion_dict = _ddh.get_dict_for_justify_statement(statement_uid, main_page, slug, supportive, len(item_dict['elements']), nickname)
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, request_authenticated_userid, mode == 't',
                                               application_url=main_page, for_api=for_api)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0 or len(item_dict['elements']) == 1 and logged_in:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
-                                    current_premise=get_text_for_statement_uid(statement_or_arg_id),
+                                    current_premise=get_text_for_statement_uid(statement_uid),
                                     supportive=supportive)
     return item_dict, discussion_dict, extras_dict
 
@@ -362,25 +362,22 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
     if not db_user:  # check if the user exists
         msg = __login_user_not_existing(request, nickname, password, _tn, is_ldap)
         if msg is not None:
-            return msg
+            return {'error': msg}  # error
 
     else:
         error = __login_user_is_existing(request, nickname, password, _tn, is_ldap, db_user)
         if error is not None:
-            return error
+            return {'error': error}  # error
 
     headers, url = __refresh_headers_and_url(request, db_user, keep_login, url)
 
     if for_api:
         logger('ViewHelper', 'login_user', 'return for api: success')
-        return {'status': 'success'}
+        return {'status': 'success'}  # api
     else:
         logger('ViewHelper', 'login_user', 'return success: ' + url)
         sleep(0.5)
-        return HTTPFound(
-            location=url,
-            headers=headers,
-        )
+        return HTTPFound(location=url, headers=headers)  # success
 
 
 def __login_user_not_existing(request, nickname, password, _tn, is_ldap):

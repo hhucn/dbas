@@ -194,13 +194,19 @@ def __get_statements_of_path_step(step):
     #         statements.append([premise.statement_uid for premise in db_premises])
 
     elif 'reaction' in step:
+        collected_arguments = []
         db_argument = DBDiscussionSession.query(Argument).get(splitted[2])
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid)
+        collected_arguments.append(db_argument)
         while db_argument.argument_uid is not None:
             db_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
+            if db_argument not in collected_arguments:
+                collected_arguments.append(db_argument)
         target = db_argument.conclusion_uid
-        for premise in db_premises:
-            statements.append([premise.statement_uid, target])
+
+        for arg in collected_arguments:
+            db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=arg.premisesgroup_uid)
+            for premise in db_premises:
+                statements.append([premise.statement_uid, target])
 
     # reaction / {arg_id_user}
     # justify / {statement_or_arg_id}
