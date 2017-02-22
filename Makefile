@@ -3,6 +3,8 @@
 database = discussion
 writer = dbas
 reader = dolan
+writer_pw = gAjOVf8MHBgHwUH8NmyWqwQQ43En1b0Mk1wZbm2JOYzWJ8PrQbwEIoWRhz4zT6Wz
+reader_pw = jfsmkRr0govXJQhvpdr1cOGfdmQTohvXJQufsnsCXW9m
 
 users: clean_users
 	# Create group `writer`, has all table privileges in `public`
