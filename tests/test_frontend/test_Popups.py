@@ -14,7 +14,7 @@ class TestAuthorPopup:
         cls.browser.driver.implicitly_wait(10)
         cls.browser.driver.set_window_size(1920, 1080)
         cls.browser.visit(ROOT + '/ajax_switch_language?lang=en')
-        cls.browser.visit(ROOT)
+        cls.browser.visit(ROOT + '/imprint')
 
     @classmethod
     def teardown_class(cls):
