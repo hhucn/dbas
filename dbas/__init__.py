@@ -121,6 +121,8 @@ def main(global_config, **settings):
     config.add_route('main_imprint', '/imprint')
     config.add_route('main_publications', '/publications')
     config.add_route('main_rss', '/rss')
+    config.add_route('main_faq', '/faq')
+    config.add_route('main_docs', '/docs')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('ajax_user_login', '{url:.*}ajax_user_login')
