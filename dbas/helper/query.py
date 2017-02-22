@@ -250,7 +250,7 @@ def mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, nickname
     DBDiscussionSession.flush()
     transaction.commit()
 
-    return _t.get(_.everythingSaved), ''
+    return _t.get(_.opinionSaved), ''
 
 
 def get_text_for_bubble(uid, is_argument, is_supportive, nickname, step, history, _tn):

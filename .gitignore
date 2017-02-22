@@ -48,7 +48,6 @@ mergeDatabase.py
 db.txt
 *.sql
 requirementsUpdater.py
-analyzeDiscussion.py
 
 # Pycharm
 .idea/
@@ -65,6 +64,7 @@ dbas/static/rss/*
 startSession.py
 getMails.py
 dbas.js
+dbas.min.js
 
 # node
 node_modules/

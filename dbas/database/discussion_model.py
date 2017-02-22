@@ -738,6 +738,7 @@ class MarkedArgument(DiscussionBase):
     def __init__(self, argument, user, timestamp=get_now()):
         self.argument_uid = argument
         self.author_uid = user
+        self.timestamp = timestamp
 
 
 class MarkedStatement(DiscussionBase):
@@ -756,6 +757,7 @@ class MarkedStatement(DiscussionBase):
     def __init__(self, statement, user, timestamp=get_now()):
         self.statement_uid = statement
         self.author_uid = user
+        self.timestamp = timestamp
 
 
 class Message(DiscussionBase):

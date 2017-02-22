@@ -244,6 +244,7 @@ class Keywords(Enum):
     isNotRight = 'does not hold'
     isNoGoodJustification = 'is not a good justification'
     doNotHesitateToContact = 'Do not hesitate to <span style="cursor: pointer;" id="contact-on-error"><strong>contact us (click here)</strong></span>'
+    docs = 'Documentation'
     doesJustify = 'does justify that'
     doesNotJustify = 'does not justify that'
     doYouWantToEnterYourStatements = 'Do you want to enter your statement(s)?'

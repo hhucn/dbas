@@ -29,6 +29,13 @@ flake8:
     - flake8 .
   allow_failure: true
 
+jshint:
+  stage: build
+  script:
+    - npm install -g jshint
+    - jshint ./dbas/static/js/{main,ajax,discussion,review}/*.js
+  allow_failure: true
+
 unit:
   <<: *job-definition
   stage: test

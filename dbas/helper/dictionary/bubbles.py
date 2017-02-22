@@ -37,10 +37,10 @@ def get_user_bubble_text_for_justify_statement(uid, db_user, text, is_supportive
         outro = '' if is_supportive else (', ' + _tn.get(_.isNotAGoodIdea))
         text = intro.format(text) + outro
     else:
-        if _tn.get_lang() == 'de':
-            intro = _tn.get(_.youAgreeWith if is_supportive else _.youDisagreeWith)
+        if is_supportive:
+            intro = _tn.get(_.youAgreeWith) if _tn.get_lang() == 'de' else '{}'
         else:
-            intro = '{}: ' if is_supportive else _tn.get(_.youDisagreeWith)
+            intro = _tn.get(_.youDisagreeWith)
         text = intro.format(text)
 
     return text, add_premise_text

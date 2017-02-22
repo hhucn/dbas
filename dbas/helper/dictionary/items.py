@@ -5,6 +5,7 @@ Provides helping function for dictionaries, which are used for the radio buttons
 """
 
 import random
+import hashlib
 
 import dbas.recommender_system as rs
 from dbas.database import DBDiscussionSession
@@ -43,6 +44,7 @@ class ItemDictHelper(object):
         self.application_url = application_url
         self.for_api = for_api
         self.LIMIT_SUPPORT_STEP = 0.35
+
         if for_api:
             self.path = path[len('/api/' + DBDiscussionSession.query(Issue).get(issue_uid).get_slug()):]
         else:
@@ -84,6 +86,7 @@ class ItemDictHelper(object):
         _tn = Translator(self.lang)
 
         if type(db_statements) is list and len(db_statements) > 0:
+            random.seed(int(hashlib.md5(str.encode(str(nickname))).hexdigest(), 16))
             random.shuffle(statements_array)
 
         if nickname:
@@ -188,6 +191,7 @@ class ItemDictHelper(object):
                                                               attack_url=_um.get_url_for_jump(False, argument.uid)))
 
         if type(db_arguments) is list and len(db_arguments) > 0:
+            random.seed(int(hashlib.md5(str.encode(str(nickname))).hexdigest(), 16))
             random.shuffle(statements_array)
 
         if nickname:
@@ -265,6 +269,7 @@ class ItemDictHelper(object):
                                                               attack_url=_um.get_url_for_jump(False, argument.uid)))
 
         if type(db_arguments) is list and len(db_arguments) > 0:
+            random.seed(int(hashlib.md5(str.encode(str(nickname))).hexdigest(), 16))
             random.shuffle(statements_array)
 
         if logged_in:

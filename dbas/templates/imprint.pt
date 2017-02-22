@@ -9,7 +9,7 @@
 				<br>
 				<p>
 				<h5 i18n:translate="contact">Kontakt:</h5>
-                <a target="_blank" href="http://www.tsn.hhu.de/de/ourgroup/wissenschaftliche-mitarbeiter/tobias-krauthoff.html">Tobias Krauthoff</a>
+                <a id="link_popup_author" href="" data-toggle="modal" data-target="#popup_author">Tobias Krauthoff</a>
 				<br><span i18n:translate="department">Institut für Informatik</span>
 				<br>Universitätstraße 1
 				<br>40225 Düsseldorf
@@ -83,6 +83,8 @@
 					<ul>
 						<li><a target="_blank" href="http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/"><i class="fa fa-bookmark" aria-hidden="true">&thinsp;</i>Docs</a></li>
 						<li><a target="_blank" href="https://github.com/Pylons/pyramid"><i class="fa fa-cog" aria-hidden="true"></i>&thinsp;Github Project</a></li>
+					<ul>
+					</ul>
 						<li><a target="_blank" href="irc://irc.freenode.net#pyramid"><i class="fa fa-globe" aria-hidden="true"></i>&thinsp;IRC Channel</a></li>
 						<li><a target="_blank" href="http://pylonsproject.org"><i class="fa fa-home" aria-hidden="true"></i>&thinsp;Pylons Project</a></li>
 					</ul>

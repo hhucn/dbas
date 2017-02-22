@@ -259,8 +259,13 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	$('#' + popupLoginButtonLogin).show().click(function() {
-		new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false)
+		new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
+		Cookies.set(DBAS_DATA_DISCLAIMER, true, { expires: 30 });
 	}).keypress(function(e) { if (e.which == 13) { new AjaxMainHandler().ajaxRegistration() } });
+	// data disclaimer
+	if (Cookies.get(DBAS_DATA_DISCLAIMER) == 'true') {
+		$('#dbas-login-data-disclaimer').hide();
+	}
 
 	$('#' + popupLoginForgotPasswordText).click(function(){
 		var body = $('#' + popupLoginForgotPasswordBody);

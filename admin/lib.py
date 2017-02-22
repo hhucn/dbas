@@ -12,7 +12,7 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
     ReviewCanceled, RevokedContent, RevokedContentHistory, RSS, LastReviewerDuplicate, ReviewDuplicate,\
-    RevokedDuplicate, MarkedArgument, MarkedStatement  # , History
+    RevokedDuplicate, MarkedArgument, MarkedStatement, History
 from dbas.lib import is_user_admin, get_text_for_premisesgroup_uid, get_text_for_argument_uid, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -32,7 +32,7 @@ table_mapper = {
     'PremiseGroup'.lower(): {'table': PremiseGroup, 'name': 'PremiseGroup'},
     'Premise'.lower(): {'table': Premise, 'name': 'Premise'},
     'Argument'.lower(): {'table': Argument, 'name': 'Argument'},
-    # 'History'.lower(): {'table': History, 'name': 'History'},
+    'History'.lower(): {'table': History, 'name': 'History'},
     'ClickedArgument'.lower(): {'table': ClickedArgument, 'name': 'ClickedArgument'},
     'ClickedStatement'.lower(): {'table': ClickedStatement, 'name': 'ClickedStatement'},
     'MarkedArgument'.lower(): {'table': MarkedArgument, 'name': 'MarkedArgument'},
@@ -103,7 +103,6 @@ def get_overview(page):
     general = list()
     general.append(__get_dash_dict('Issue', page + 'Issue'))
     general.append(__get_dash_dict('Language', page + 'Language'))
-    # general.append(__get_dash_dict('History', page + 'History'))
     general.append(__get_dash_dict('RSS', page + 'RSS'))
 
     # all tables for the 'users' group
@@ -112,6 +111,7 @@ def get_overview(page):
     users.append(__get_dash_dict('User', page + 'User'))
     users.append(__get_dash_dict('Settings', page + 'Settings'))
     users.append(__get_dash_dict('Message', page + 'Message'))
+    general.append(__get_dash_dict('History', page + 'History'))
 
     # all tables for the 'content' group
     content = list()
