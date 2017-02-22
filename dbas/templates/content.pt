@@ -1,7 +1,7 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
     <tal:block metal:fill-slot="content_page">
 
-        <div class="container" id="header-container">
+        <div class="container colored-container" id="header-container">
             <div class="row cn">
                 <div class="col-md-8" tal:condition="len(issues.all)>1">
                     <p class="center">${structure:issues.intro}:</p>

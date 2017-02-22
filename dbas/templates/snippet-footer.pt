@@ -24,7 +24,7 @@
 					<a href="${request.application_url}/rss"><i class="fa fa-rss" aria-hidden="true"></i><span i18n:translate="rss">RSS</span></a>
 				</li>
 				<li>
-					<a id="restart_tutorial" href="" data-toggle="modal"><i class="fa fa-question" aria-hidden="true"></i><span i18n:translate="Help">Help</span></a>
+					<a href="${request.application_url}/faq" data-toggle="modal"><i class="fa fa-question" aria-hidden="true"></i><span i18n:translate="Help">Help</span></a>
 				</li>
 			</ul>
             <img id="roundhousekick" alt=".r" style="width: 25px; height: 25px; border: none; opacity: 0;" src="${request.static_url('dbas:static/images/transparent.gif')}">
