@@ -378,6 +378,12 @@ function Main () {
 		// styling
 		$('.fa-star[data-is-users-opinion="True"]').show();
 		$('.fa-star-o[data-is-users-opinion="False"]').show();
+		
+		// restart tutorial
+		$('#restart_tutorial').click(function(){
+			Cookies.remove(GUIDED_TOUR);
+			window.location.href = mainpage;
+		})
 	};
 	
 	/**
