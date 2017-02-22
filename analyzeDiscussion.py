@@ -1,5 +1,3 @@
-from sqlalchemy import and_
-
 from dbas.database import DBDiscussionSession as session
 from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, \
     StatementReferences, StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, \
@@ -40,10 +38,10 @@ sorted_clicks = sorted(clicks.items(), key=lambda x: x[1])
 print('Users:')
 print('  - count:    {}'.format(len(db_users)))
 print('  - activity: {} per user'.format(len(db_clicked_statements) / len(db_users)))
-print('  - Flop {}'.format(flop_count))
+print('  - Flop{}'.format(flop_count))
 for tuple in sorted_clicks[0:flop_count]:
     print('    - {}: {}'.format(tuple[1], tuple[0]))
-print('  - Top {}'.format(top_count))
+print('  - Top{}'.format(top_count))
 for tuple in sorted_clicks[-top_count:]:
     print('    - {}: {}'.format(tuple[1], tuple[0]))
 print('')
@@ -74,16 +72,16 @@ author_list_argument = {'{} {} ({})'.format(user.firstname, user.surname, user.n
 sorted_author_list_statement = sorted(author_list_statement.items(), key=lambda x: x[1])
 sorted_author_list_argument = sorted(author_list_argument.items(), key=lambda x: x[1])
 print('Top Authors:')
-print('  - Statement Flop{}'.format(flop_count))
+print('  - Statement: Flop{}'.format(flop_count))
 for tuple in sorted_author_list_statement[0:flop_count]:
     print('    - {}: {}'.format(tuple[1], tuple[0]))
-print('  - Statement Top{}'.format(top_count))
+print('  - Statement: Top{}'.format(top_count))
 for tuple in sorted_author_list_statement[-top_count:]:
     print('    - {}: {}'.format(tuple[1], tuple[0]))
-print('  - Argument Flop{}'.format(flop_count))
+print('  - Argument: Flop{}'.format(flop_count))
 for tuple in sorted_author_list_argument[0:flop_count]:
     print('    - {}: {}'.format(tuple[1], tuple[0]))
-print('  - Argument Top{}'.format(top_count))
+print('  - Argument: Top{}'.format(top_count))
 for tuple in sorted_author_list_argument[-top_count:]:
     print('    - {}: {}'.format(tuple[1], tuple[0]))
 print('')
@@ -137,10 +135,17 @@ print('  - duplicates:    {} / {} / {}'.format(len(db_review_duplicates), len([r
 print('')
 
 db_history = session.query(History).all()
-author_list_history = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([history for history in db_history if history.author_uid == user.uid]) for user in db_users}
-sorted_author_list_history = sorted(author_list_history.items(), key=lambda x: x[1])
+author_history_list = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([history for history in db_history if history.author_uid == user.uid]) for user in db_users}
+
+sorted_author_history_list = sorted(author_history_list.items(), key=lambda x: x[1])
 print('History:')
 print('  - Steps: {}'.format(len(db_history)))
+print('  - Flop{}'.format(flop_count))
+for tuple in sorted_author_history_list[0:flop_count]:
+    print('    - {}: {}'.format(tuple[1], tuple[0]))
+print('  - Top{}'.format(top_count))
+for tuple in sorted_author_history_list[-top_count:]:
+    print('    - {}: {}'.format(tuple[1], tuple[0]))
 print('')
 
 session.query(Issue).all()
