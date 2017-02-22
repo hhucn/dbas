@@ -35,21 +35,21 @@ elif db_issue.is_disabled:
     exit()
 
 
+print('')
 print('-' * len('| D-BAS ANALYTICS: {} |'.format(db_issue.title.upper())))
-print(' ----------------- ')
 print('| D-BAS ANALYTICS: {} |'.format(db_issue.title.upper()))
-print(' ----------------- ')
+print('-' * len('| D-BAS ANALYTICS: {} |'.format(db_issue.title.upper())))
 print('')
 
 
-db_users = [user for user in session.query(User).filter(~User.nickname.in_(['anonymous', 'admin'])).all()]
+db_users = [user for user in session.query(User).filter(~User.nickname.in_(['anonymous', 'admin', 'tobias'])).all()]
 db_clicked_statements = [vote for vote in session.query(ClickedStatement).all() if session.query(Statement).get(vote.statement_uid).issue_uid == db_issue.uid]
 clicks = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([click for click in db_clicked_statements if click.author_uid == user.uid]) for user in db_users}
 sorted_clicks = sorted(clicks.items(), key=lambda x: x[1])
 
 print('Users:')
 print('  - count:    {}'.format(len(db_users)))
-print('  - activity: {} per user'.format(len(db_clicked_statements) / len(db_users)))
+print('  - activity: {0:.2f} statement-clicks per user'.format(len(db_clicked_statements) / len(db_users)))
 print('  - Flop{}'.format(flop_count))
 for t in sorted_clicks[0:flop_count]:
     print('    - {}: {}'.format(t[1], t[0]))
@@ -63,9 +63,13 @@ db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).all()
 db_disabled_statements = session.query(Statement).filter(and_(Statement.issue_uid == db_issue.uid, Statement.is_disabled == True)).all()
 db_positions = [statement for statement in db_statements if statement.is_startpoint]
 print('Statements:')
-print('  - count / disabled: {}'.format(len(db_statements)), len(db_disabled_statements))
-print('  - positions:        {}'.format(len(db_positions)))
-print('  - position clicks per day (start {}):'.format(start.format('DD-MM')))
+print('  - count / disabled: {} / {}'.format(len(db_statements), len(db_disabled_statements)))
+print('')
+
+
+print('positions:')
+print('  - count: {}'.format(len(db_positions)))
+print('  - clicks per day (start {})'.format(start.format('DD-MM')))
 pos_clicks = {}
 for pos in db_positions:
     pos_row = []
