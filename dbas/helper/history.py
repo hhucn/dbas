@@ -396,9 +396,9 @@ def save_path_in_database(nickname, path, history=''):  # TODO 322
     if not db_user:
         return []
 
-    if path.startswith('/discuss/'):
-        path = path[len('/discuss/'):]
-        path = path[path.index('/') if '/' in path else 0:]
+    # if path.startswith('/discuss/'):
+    #     path = path[len('/discuss/'):]
+    #     path = path[path.index('/') if '/' in path else 0:]
 
     if len(history) > 0:
         history = '?history=' + history

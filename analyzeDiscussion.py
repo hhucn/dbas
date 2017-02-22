@@ -136,15 +136,16 @@ print('')
 
 db_history = session.query(History).all()
 author_history_list = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([history for history in db_history if history.author_uid == user.uid]) for user in db_users}
-
-sorted_author_history_list = sorted(author_history_list.items(), key=lambda x: x[1])
+# sorted_author_history_list = sorted(author_history_list.items(), key=lambda x: x[1])
+history_list = {'{}'.format(history.path): len(session.query(History).filter_by(path=history.path).all()) for history in db_history}
+sorted_history_list = sorted(history_list.items(), key=lambda x: x[1])
 print('History:')
 print('  - Steps: {}'.format(len(db_history)))
-print('  - Flop{}'.format(flop_count))
-for tuple in sorted_author_history_list[0:flop_count]:
+print('  - Flop{}'.format(10))
+for tuple in sorted_history_list[0:10]:
     print('    - {}: {}'.format(tuple[1], tuple[0]))
-print('  - Top{}'.format(top_count))
-for tuple in sorted_author_history_list[-top_count:]:
+print('  - Top{}'.format(10))
+for tuple in sorted_history_list[-(10):]:
     print('    - {}: {}'.format(tuple[1], tuple[0]))
 print('')
 
