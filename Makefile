@@ -4,7 +4,7 @@ database = discussion
 writer = dbas
 reader = dolan
 
-users:
+users: clean_users
 	# Create group `writer`, has all table privileges in `public`
 	psql -U postgres -c "CREATE ROLE writer;"
 	# `writer` gets all privileges on new tables in scheme `public`.
@@ -22,7 +22,7 @@ users:
 	# Create `read_only_discussion` user ${reader} (dolan)
 	psql -U postgres -c "CREATE USER ${reader} WITH PASSWORD '${reader_pw}' IN ROLE read_only_discussion INHERIT;"
 
-db:
+db: clean_db
 	createdb -U postgres ${database}
 	createdb -U postgres news
 	psql -U postgres -d news -c "CREATE SCHEMA IF NOT EXISTS news;"
@@ -67,11 +67,11 @@ refresh:
 	reload_discussion_sql development.ini
 	initialize_news_sql development.ini
 
-fieldtest: users db
+fieldtest: db users
 	init_field_test_sql development.ini
 	initialize_news_sql development.ini
 
-minimal_db: users db
+minimal_db: db users
 	init_empty_sql development.ini
 
 docker_dump_db:
