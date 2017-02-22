@@ -293,6 +293,9 @@
                         </label>
                         <!--<a id="popup-login-forgot-password-text" i18n:translate="forgot_password" style="cursor: pointer; float:right;">Forgot your password?</a>-->
                     </div>
+                    <div id="dbas-login-data-disclaimer" style="padding: 1em 0 0 1em;">
+                        <p class="text-info" i18n:translate="dbas_login_data_disclaimer">Wenn Sie sich bei D-BAS anmelden, erklären Sie sich damit einverstanden, dass Ihre Aktionen anonymisiert ausgewertet werden und Sie nach Abschluss des Experiments einen Fragebogen per E-Mail erhalten werden.</p>
+                    </div>
                     <!--<div id="popup-login-forgot-password-body" class="form-group" style="margin-top: 1em;">-->
                     <!--    <label for="mail-address" class="control-label" i18n:translate="fill_in_mail_for_password">Please fill in your e-mail below. A new password will be send this address:</label>-->
                     <!--    <div class="form-group">-->
