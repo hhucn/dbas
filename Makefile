@@ -2,32 +2,17 @@
 
 database = discussion
 writer = dbas
-writer_pw = gAjOVf8MHBgHwUH8NmyWqwQQ43En1b0Mk1wZbm2JOYzWJ8PrQbwEIoWRhz4zT6Wz
 reader = dolan
-reader_pw = jfsmkRr0govXJQhvpdr1cOGfdmQTohvXJQufsnsCXW9m
 
 users:
-	# Create group `writer`, has all table privileges in `public`
-	psql -U postgres -c "CREATE ROLE writer;"
-	# `writer` gets all privileges on new tables in scheme `public`.
-	psql -U postgres -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT all ON tables TO writer;"
-	# `writer` gets all privileges on existing tables in scheme `public`.
-	psql -U postgres -c "GRANT all ON all tables IN SCHEMA public TO writer;"
-	psql -d news -c "GRANT all ON SCHEMA news TO writer;"
-	# Create `writer` user ${writer} (dbas)
-	psql -U postgres -c "CREATE USER ${writer} WITH PASSWORD '${writer_pw}' IN ROLE writer INHERIT;"
-
-	## Create group `read_only_discussion` ##
-	psql -U postgres -c "CREATE ROLE read_only_discussion;"
-	psql -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO read_only_discussion;"
-	psql -d ${database} -c "GRANT CONNECT ON DATABASE ${database} TO read_only_discussion;"
-	# Create `read_only_discussion` user ${reader} (dolan)
-	psql -c "CREATE USER ${reader} WITH PASSWORD '${reader_pw}' IN ROLE read_only_discussion INHERIT;"
+	sudo -u postgres bash -c "psql -c \"CREATE USER $(writer) WITH PASSWORD 'DoimBomrylpOytAfVin0';\""
+	sudo -u postgres bash -c "psql -c \"CREATE USER $(reader) WITH PASSWORD 'jfsmkRr0govXJQhvpdr1cOGfdmQTohvXJQufsnsCXW9m';\""
+	sudo -u postgres bash -c "psql -c \"ALTER ROLE $(reader) WITH NOLOGIN;\""
 
 db:
-	createdb -U postgres ${database}
-	createdb -U postgres news
-	psql -d news -c "CREATE SCHEMA IF NOT EXISTS news;"
+	sudo -u postgres bash -c "createdb -O dbas discussion"
+	sudo -u postgres bash -c "createdb -O dbas news"
+	sudo -u postgres bash -c "psql -d ${database} -c \"ALTER DEFAULT PRIVILEGES FOR ROLE ${writer} IN SCHEMA public GRANT SELECT ON tables TO ${reader};\""
 
 dummy_discussion:
 	initialize_discussion_sql development.ini
@@ -47,7 +32,7 @@ dummys:
 merge_discussion:
 	merge_main_discussion development.ini
 
-all: db users dummy_discussion dummy_votes dummy_reviews
+all: users db dummy_discussion dummy_votes dummy_reviews
 
 
 clean_db:
@@ -64,11 +49,11 @@ refresh:
 	reload_discussion_sql development.ini
 	initialize_news_sql development.ini
 
-fieldtest: db users
+fieldtest: users db
 	init_field_test_sql development.ini
 	initialize_news_sql development.ini
 
-minimal_db: db users
+minimal_db: users db
 	init_empty_sql development.ini
 
 docker_dump_db:
