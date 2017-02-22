@@ -1,7 +1,7 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-		<div class="container first-container">
+		<div class="container">
             <div class="row">
                 <div class="col-md-offset-2 col-md-8">
                     <div class="form">

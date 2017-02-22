@@ -373,6 +373,63 @@ def main_imprint(request):
     }
 
 
+# faq
+@view_config(route_name='main_faq', renderer='templates/faq.pt', permission='everybody')
+def main_faq(request):
+    """
+    View configuration for the publications.
+
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('main_faq', 'def', 'main')
+    ui_locales = get_language(request)
+    request_authenticated_userid = request.authenticated_userid
+    session_expired = user_manager.update_last_action(request_authenticated_userid)
+    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
+    if session_expired:
+        return user_logout(request, True)
+
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+
+    return {
+        'layout': base_layout(),
+        'language': str(ui_locales),
+        'title': 'FAQ',
+        'project': project_name,
+        'extras': extras_dict
+    }
+
+
+# docs
+@view_config(route_name='main_docs', renderer='templates/docs.pt', permission='everybody')
+def main_docs(request):
+    """
+    View configuration for the publications.
+
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('main_docs', 'def', 'main')
+    ui_locales = get_language(request)
+    request_authenticated_userid = request.authenticated_userid
+    session_expired = user_manager.update_last_action(request_authenticated_userid)
+    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
+    _tn = Translator(ui_locales)
+    if session_expired:
+        return user_logout(request, True)
+
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+
+    return {
+        'layout': base_layout(),
+        'language': str(ui_locales),
+        'title': _tn.get(_.docs),
+        'project': project_name,
+        'extras': extras_dict
+    }
+
+
 # imprint
 @view_config(route_name='main_publications', renderer='templates/publications.pt', permission='everybody')
 def main_publications(request):

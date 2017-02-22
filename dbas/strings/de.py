@@ -199,6 +199,7 @@ de_lang = {
     _.completeViewTitle: 'Kompletten Graphen anzeigen',
     _.currentDiscussion: 'Die aktuelle Diskussion hat folgendes Thema',
     _.congratulation: 'Glückwunsch!',
+    _.docs: 'Dokumentation',
     _.dialogView: 'Dialog-Ansicht',
     _.dialogViewTitle: 'Dialog-Ansicht',
     _.dateString: 'Datum',

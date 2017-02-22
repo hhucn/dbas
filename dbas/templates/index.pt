@@ -9,7 +9,7 @@
             <span i18n:translate="login_again" style="padding-left: 0.5em; ">You have to log in again.</span>
 	    </div>
 
-		<div class="container colored-container first-container jumbotron" id="home-template">
+		<div class="container colored-container jumbotron" id="home-template">
 			<div class="content">
 				<img id="logo_dbas" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo" tal:condition="extras.lang_is_en" data-counter="0">
 				<img id="logo_dbas" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo_de.png')}" alt="dbas logo" tal:condition="extras.lang_is_de" data-counter="0">
