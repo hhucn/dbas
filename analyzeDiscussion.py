@@ -7,7 +7,7 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, \
     OptimizationReviewLocks, ReviewCanceled, RevokedContent, RevokedContentHistory, \
-    RSS, ClickedArgument, ClickedStatement, ReviewDuplicate
+    RSS, ClickedArgument, ClickedStatement, ReviewDuplicate, LastReviewerDuplicate
 from dbas.helper.tests import add_settings_to_appconfig
 from sqlalchemy import engine_from_config, and_
 
@@ -96,11 +96,11 @@ print('')
 
 
 db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).join(TextVersion, Statement.textversion_uid == TextVersion.uid).all()
-db_arguments = session.query(Argument).filter_by(issue_uid=db_issue.uid).all()
+db_arguments  = session.query(Argument).filter_by(issue_uid=db_issue.uid).all()
 author_list_statement = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([statement for statement in db_statements if statement.textversions.author_uid == user.uid]) for user in db_users}
-author_list_argument = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([argument for argument in db_arguments if argument.author_uid == user.uid]) for user in db_users}
+author_list_argument  = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([argument for argument in db_arguments if argument.author_uid == user.uid]) for user in db_users}
 sorted_author_list_statement = sorted(author_list_statement.items(), key=lambda x: x[1])
-sorted_author_list_argument = sorted(author_list_argument.items(), key=lambda x: x[1])
+sorted_author_list_argument  = sorted(author_list_argument.items(), key=lambda x: x[1])
 print('Top Authors:')
 print('  - Statement: Flop{}'.format(flop_count))
 for t in sorted_author_list_statement[0:flop_count]:
@@ -117,13 +117,13 @@ for t in sorted_author_list_argument[-top_count:]:
 print('')
 
 
-db_clicked_arguments = session.query(ClickedArgument).all()
+db_clicked_arguments  = session.query(ClickedArgument).all()
 db_clicked_statements = session.query(ClickedStatement).all()
-db_clicked_arguments = [vote for vote in db_clicked_arguments if session.query(Argument).get(vote.argument_uid).issue_uid == db_issue.uid]
+db_clicked_arguments  = [vote for vote in db_clicked_arguments if session.query(Argument).get(vote.argument_uid).issue_uid == db_issue.uid]
 db_clicked_statements = [vote for vote in db_clicked_statements if session.query(Statement).get(vote.statement_uid).issue_uid == db_issue.uid]
-db_clicked_arguments_valid = [vote for vote in db_clicked_arguments if vote.is_valid]
-db_clicked_statements_valid = [vote for vote in db_clicked_statements if vote.is_valid]
-db_clicked_arguments_invalid = [vote for vote in db_clicked_arguments if not vote.is_valid]
+db_clicked_arguments_valid    = [vote for vote in db_clicked_arguments if vote.is_valid]
+db_clicked_statements_valid   = [vote for vote in db_clicked_statements if vote.is_valid]
+db_clicked_arguments_invalid  = [vote for vote in db_clicked_arguments if not vote.is_valid]
 db_clicked_statements_invalid = [vote for vote in db_clicked_statements if not vote.is_valid]
 print('Interests (all/valid/invalid):')
 print('  - arguments:  {} / {} / {}'.format(len(db_clicked_arguments), len(db_clicked_arguments_valid), len(db_clicked_arguments_invalid)))
@@ -131,9 +131,9 @@ print('  - statements: {} / {} / {}'.format(len(db_clicked_statements), len(db_c
 print('')
 
 
-db_votes_arguments_valid_up = [vote for vote in db_clicked_arguments_valid if vote.is_up_vote]
-db_votes_statements_valid_up = [vote for vote in db_clicked_statements_valid if vote.is_up_vote]
-db_votes_arguments_valid_down = [vote for vote in db_clicked_arguments_valid if not vote.is_up_vote]
+db_votes_arguments_valid_up    = [vote for vote in db_clicked_arguments_valid if vote.is_up_vote]
+db_votes_statements_valid_up   = [vote for vote in db_clicked_statements_valid if vote.is_up_vote]
+db_votes_arguments_valid_down  = [vote for vote in db_clicked_arguments_valid if not vote.is_up_vote]
 db_votes_statements_valid_down = [vote for vote in db_clicked_statements_valid if not vote.is_up_vote]
 print('Most up/down interests (valid):')
 print('  - arguments:  {} / {}'.format(len(db_votes_arguments_valid_up), len(db_votes_arguments_valid_down)))
@@ -141,9 +141,9 @@ print('  - statements: {} / {}'.format(len(db_votes_statements_valid_up), len(db
 print('')
 
 
-db_votes_arguments_invalid_up = [vote for vote in db_clicked_arguments_valid if vote.is_up_vote]
-db_votes_statements_invalid_up = [vote for vote in db_clicked_statements_valid if vote.is_up_vote]
-db_votes_arguments_invalid_down = [vote for vote in db_clicked_arguments_valid if not vote.is_up_vote]
+db_votes_arguments_invalid_up    = [vote for vote in db_clicked_arguments_valid if vote.is_up_vote]
+db_votes_statements_invalid_up   = [vote for vote in db_clicked_statements_valid if vote.is_up_vote]
+db_votes_arguments_invalid_down  = [vote for vote in db_clicked_arguments_valid if not vote.is_up_vote]
 db_votes_statements_invalid_down = [vote for vote in db_clicked_statements_valid if not vote.is_up_vote]
 print('Most up/down interests (invalid):')
 print('  - arguments:  {} / {}'.format(len(db_votes_arguments_invalid_up), len(db_votes_arguments_invalid_down)))
@@ -152,11 +152,11 @@ print('')
 
 
 db_marked_statements = session.query(MarkedStatement).all()
-db_marked_arguments = session.query(MarkedArgument).all()
+db_marked_arguments  = session.query(MarkedArgument).all()
 marked_statements_list = {statement.uid: len(session.query(MarkedStatement).filter_by(uid=statement.uid).all()) for statement in db_marked_statements}
-marked_arguments_list = {argument.uid: len(session.query(MarkedArgument).filter_by(uid=argument.uid).all()) for argument in db_marked_arguments}
+marked_arguments_list  = {argument.uid: len(session.query(MarkedArgument).filter_by(uid=argument.uid).all()) for argument in db_marked_arguments}
 sorted_marked_statements_list = sorted(marked_statements_list.items(), key=lambda x: x[1])
-sorted_marked_arguments_list = sorted(marked_arguments_list.items(), key=lambda x: x[1])
+sorted_marked_arguments_list  = sorted(marked_arguments_list.items(), key=lambda x: x[1])
 print('Most marked elements:')
 print('  - arguments / statements in total: {} / {}'.format(len(db_marked_statements), len(db_marked_arguments)))
 print('  - Argument Top{}'.format(top_count))
@@ -168,19 +168,51 @@ for t in sorted_author_list_argument[-top_count:]:
 print('')
 
 
-db_review_edits = session.query(ReviewEdit).all()
-db_review_deletes = session.query(ReviewDelete).all()
+db_review_edits         = session.query(ReviewEdit).all()
+db_review_deletes       = session.query(ReviewDelete).all()
 db_review_optimizations = session.query(ReviewOptimization).all()
-db_review_duplicates = session.query(ReviewDuplicate).all()
-db_review_edits = [review for review in db_review_edits if (session.query(Statement).get(review.statement_uid).issue_uid == db_issue.uid if review.statement_uid is not None else session.query(Argument).get(review.argument_uid).issue_uid == db_issue.uid)]
-db_review_deletes = [review for review in db_review_deletes if (session.query(Statement).get(review.statement_uid).issue_uid == db_issue.uid if review.statement_uid is not None else session.query(Argument).get(review.argument_uid).issue_uid == db_issue.uid)]
+db_review_duplicates    = session.query(ReviewDuplicate).all()
+db_review_edits         = [review for review in db_review_edits if (session.query(Statement).get(review.statement_uid).issue_uid == db_issue.uid if review.statement_uid is not None else session.query(Argument).get(review.argument_uid).issue_uid == db_issue.uid)]
+db_review_deletes       = [review for review in db_review_deletes if (session.query(Statement).get(review.statement_uid).issue_uid == db_issue.uid if review.statement_uid is not None else session.query(Argument).get(review.argument_uid).issue_uid == db_issue.uid)]
 db_review_optimizations = [review for review in db_review_optimizations if (session.query(Statement).get(review.statement_uid).issue_uid == db_issue.uid if review.statement_uid is not None else session.query(Argument).get(review.argument_uid).issue_uid == db_issue.uid)]
-db_review_duplicates = [review for review in db_review_duplicates if (session.query(Statement).get(review.statement_uid).issue_uid == db_issue.uid if review.statement_uid is not None else session.query(Argument).get(review.argument_uid).issue_uid == db_issue.uid)]
+db_review_duplicates    = [review for review in db_review_duplicates if (session.query(Statement).get(review.statement_uid).issue_uid == db_issue.uid if review.statement_uid is not None else session.query(Argument).get(review.argument_uid).issue_uid == db_issue.uid)]
 print('Reviews (Queue/executed/revoked):')
 print('  - edits:         {} / {} / {}'.format(len(db_review_edits), len([review for review in db_review_edits if review.is_executed]), len([review for review in db_review_edits if review.is_revoked])))
 print('  - deletes:       {} / {} / {}'.format(len(db_review_deletes), len([review for review in db_review_deletes if review.is_executed]), len([review for review in db_review_deletes if review.is_revoked])))
 print('  - optimizations: {} / {} / {}'.format(len(db_review_optimizations), len([review for review in db_review_optimizations if review.is_executed]), len([review for review in db_review_optimizations if review.is_revoked])))
 print('  - duplicates:    {} / {} / {}'.format(len(db_review_duplicates), len([review for review in db_review_duplicates if review.is_executed]), len([review for review in db_review_duplicates if review.is_revoked])))
+print('')
+
+
+db_reviewer_edit            = session.query(LastReviewerEdit).all()
+db_reviewer_delete          = session.query(LastReviewerDelete).all()
+db_reviewer_optimization    = session.query(LastReviewerOptimization).all()
+db_reviewer_duplicate       = session.query(LastReviewerDuplicate).all()
+list_reviewer_edit          = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len(session.query(LastReviewerEdit).filter_by(reviewer_uid=user.uid).all()) for user in db_users}
+list_reviewer_delete        = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len(session.query(LastReviewerDelete).filter_by(reviewer_uid=user.uid).all()) for user in db_users}
+list_reviewer_optimization  = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len(session.query(LastReviewerOptimization).filter_by(reviewer_uid=user.uid).all()) for user in db_users}
+list_reviewer_duplicate     = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len(session.query(LastReviewerDuplicate).filter_by(reviewer_uid=user.uid).all()) for user in db_users}
+sorted_list_reviewer_edit         = sorted(list_reviewer_edit.items(), key=lambda x: x[1])
+sorted_list_reviewer_delete       = sorted(list_reviewer_delete.items(), key=lambda x: x[1])
+sorted_list_reviewer_optimization = sorted(list_reviewer_optimization.items(), key=lambda x: x[1])
+sorted_list_reviewer_duplicate    = sorted(list_reviewer_duplicate.items(), key=lambda x: x[1])
+print('Reviewer:')
+print('  - edits:         {}'.format(len(db_reviewer_edit)))
+print('  - deletes:       {}'.format(len(db_reviewer_delete)))
+print('  - optimizations: {}'.format(len(db_reviewer_optimization)))
+print('  - duplicates:    {}'.format(len(db_reviewer_duplicate)))
+print('  - Edit Top{}'.format(top_count))
+for t in sorted_list_reviewer_edit[-top_count:]:
+    print('    - {}: {}'.format(t[1], t[0]))
+print('  - Delete Top{}'.format(top_count))
+for t in sorted_list_reviewer_delete[-top_count:]:
+    print('    - {}: {}'.format(t[1], t[0]))
+print('  - Optimization Top{}'.format(top_count))
+for t in sorted_list_reviewer_optimization[-top_count:]:
+    print('    - {}: {}'.format(t[1], t[0]))
+print('  - Duplicate Top{}'.format(top_count))
+for t in sorted_list_reviewer_duplicate[-top_count:]:
+    print('    - {}: {}'.format(t[1], t[0]))
 print('')
 
 
