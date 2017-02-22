@@ -25,10 +25,6 @@ def get_weekday(arrow_time):
         0: 'Mo', 1: 'Tu', 2: 'We', 3: 'Th', 4: 'Fr', 5: 'Sa', 6: 'Su',
     }[arrow_time.weekday()]
 
-print(' ----------------- ')
-print('| D-BAS ANALYTICS |')
-print(' ----------------- ')
-print('')
 
 db_issue = session.query(Issue).filter_by(title='Verbesserung des Informatik-Studiengangs').first()
 if db_issue is None:
@@ -38,7 +34,11 @@ elif db_issue.is_disabled:
     print('ISSUE DISABLED')
     exit()
 
-print(str(db_issue.title).upper())
+
+print('-' * len('| D-BAS ANALYTICS: {} |'.format(db_issue.title.upper())))
+print(' ----------------- ')
+print('| D-BAS ANALYTICS: {} |'.format(db_issue.title.upper()))
+print(' ----------------- ')
 print('')
 
 
@@ -60,8 +60,7 @@ print('')
 
 
 db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).all()
-db_disabled_statements = session.query(Statement).filter(and_(Statement.issue_uid == db_issue.uid,
-                                                              Statement.is_disabled == True)).all()
+db_disabled_statements = session.query(Statement).filter(and_(Statement.issue_uid == db_issue.uid, Statement.is_disabled == True)).all()
 db_positions = [statement for statement in db_statements if statement.is_startpoint]
 print('Statements:')
 print('  - count / disabled: {}'.format(len(db_statements)), len(db_disabled_statements))
@@ -71,9 +70,7 @@ pos_clicks = {}
 for pos in db_positions:
     pos_row = []
     for day in range(0, (end-start).days+1):
-        clicks = session.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == pos.uid,
-                                                             ClickedStatement.timestamp >= start.replace(days=+day),
-                                                             ClickedStatement.timestamp < start.replace(days=+day+1))).all()
+        clicks = session.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == pos.uid, ClickedStatement.timestamp >= start.replace(days=+day), ClickedStatement.timestamp < start.replace(days=+day+1))).all()
         pos_row.append(str(len(clicks)))
     pos_clicks[str(pos.uid)] = pos_row
 sorted_pos_clicks = sorted(pos_clicks.items(), key=lambda x: x[0])
