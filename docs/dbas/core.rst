@@ -16,6 +16,13 @@ Input Validator
     :members:
 
 
+Lib
+===
+
+.. automodule:: dbas.lib
+    :members:
+
+
 Logger
 ======
 
@@ -23,17 +30,10 @@ Logger
     :members:
 
 
-News Handler
-============
+Query Wrapper
+=============
 
-.. automodule:: dbas.handler.news
-    :members:
-
-
-Opinion Handler
-===============
-
-.. automodule:: dbas.handler.opinion
+.. automodule:: dbas.query_wrapper
     :members:
 
 
@@ -51,21 +51,21 @@ Security
     :members:
 
 
-String Matcher / i18n
-=====================
+Opinion Handler
+===============
 
-.. automodule:: dbas.strings.matcher
+.. automodule:: dbas.handler.opinion
     :members:
 
 
-Text-Generator
-==============
+Security
+========
 
-.. automodule:: dbas.strings.text_generator
+.. automodule:: dbas.security
     :members:
 
 
-Url Manager
+URL Manager
 ===========
 
 .. automodule:: dbas.url_manager
@@ -83,6 +83,44 @@ Views
 =====
 
 .. automodule:: dbas.views
+    :members:
+
+
+=======
+Strings
+=======
+
+
+String Matcher / i18n
+=====================
+
+.. automodule:: dbas.strings.matcher
+    :members:
+
+
+Text-Generator
+==============
+
+.. automodule:: dbas.strings.text_generator
+    :members:
+
+
+Translator
+==========
+
+.. automodule:: dbas.strings.translator
+    :members:
+
+
+==============
+Authentication
+==============
+
+
+Authentication
+==============
+
+.. automodule:: dbas.auth.ldap
     :members:
 
 
@@ -112,6 +150,13 @@ Dictionary Helper for Item
     :members:
 
 
+Dictionary Helper for Speech Bubbles
+====================================
+
+.. automodule:: dbas.helper.dictionary.bubbles
+    :members:
+
+
 E-Mail
 ======
 
@@ -119,17 +164,17 @@ E-Mail
     :members:
 
 
-Helper for Issues
-=================
-
-.. automodule:: dbas.helper.issue
-    :members:
-
-
 Helper for History
 ==================
 
 .. automodule:: dbas.helper.history
+    :members:
+
+
+Helper for Issues
+=================
+
+.. automodule:: dbas.helper.issue
     :members:
 
 
@@ -147,10 +192,24 @@ Query Helper
     :members:
 
 
+References Helper
+=================
+
+.. automodule:: dbas.helper.references
+    :members:
+
+
 Relation Helper
 ===============
 
 .. automodule:: dbas.helper.relation
+    :members:
+
+
+View Helper
+===========
+
+.. automodule:: dbas.helper.views
     :members:
 
 
