@@ -3,6 +3,8 @@
  */
 
 function GuidedTour(){
+    'use strict';
+    
 	var lang_switcher = '';
 	var tour = '';
 		
@@ -37,10 +39,10 @@ function GuidedTour(){
 	var set_lang_click = function () {
 		setTimeout(function () {
 			// language switch
-			var switcher = getLanguage() == 'en' ? $('#switch-to-de') : $('#switch-to-en');
-			var lang = getLanguage() == 'en' ? 'de' : 'en';
-			switcher.click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang) });
-			switcher.find('img').click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang) });
+			var switcher = getLanguage() === 'en' ? $('#switch-to-de') : $('#switch-to-en');
+			var lang = getLanguage() === 'en' ? 'de' : 'en';
+			switcher.click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang); });
+			switcher.find('img').click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang); });
 		}, 500);
 	};
 		
@@ -55,16 +57,16 @@ function GuidedTour(){
 	// function on end
 	var end_fct = function(){
 		setLocalStorage(GUIDED_TOUR_RUNNING, false);
-		var url = window.location.href;
 		Cookies.set(GUIDED_TOUR, true, { expires: 180 });
-		if (url != mainpage && url.indexOf('#tour2') == -1) {
-			// window.location.href = mainpage;
-		}
+		// var url = window.location.href;
+		//if (url !== mainpage && url.indexOf('#tour2') === -1) {
+		//	 window.location.href = mainpage;
+		//}
 	};
 	
 	this.prepareSteps = function(){
 		// lang switcher
-		if (getLanguage() == 'en'){
+		if (getLanguage() === 'en'){
 			var de_flag = $('#' + translationLinkDe).find('img').attr('src');
 			lang_switcher = '<a id="switch-to-de" class="pull-right" style="cursor: pointer;"><img class="language_selector_img" src="' + de_flag + '" alt="flag_ge" style="width:25px;"></a>';
 		} else {
@@ -110,13 +112,13 @@ function GuidedTour(){
 			content: _t(tourMarkOpinionContent),
 			placement: 'bottom',
 			path: '/discuss',
-			onShow: function (tour) {
+			onShow: function () {
 				var element = '<div class="line-wrapper-r" id="some-element-bubble">' +
 					'<p class="triangle-r"><i class="fa fa-star-o" aria-hidden="true" style="padding-right: 0.5em"></i>' +
 					'<span class="triangle-content">' + _t(tourMarkOpinionText) + '</span></p></div>';
 				$('#dialog-speech-bubbles-space').prepend($.parseHTML(element));
 			},
-			onHide: function (tour) {
+			onHide: function () {
 				$('#some-element-bubble').remove();
 			},
 		};
@@ -173,9 +175,9 @@ function GuidedTour(){
 		
 		// params
 		var url = window.location.href;
-		var part0 = url == mainpage || url == location.origin;
-		var part1 = url.indexOf('/discuss') != -1;
-		var part2 = url == mainpage + '#tour2' || url == location.origin + '#tour2';
+		var part0 = url === mainpage || url === location.origin;
+		var part1 = url.indexOf('/discuss') !== -1;
+		var part2 = url === mainpage + '#tour2' || url === location.origin + '#tour2';
 		
 		// decision where we are
 		if (part0 && !part1 && !part2){ // first part on the start page, where we ask the user for a tour
@@ -184,31 +186,29 @@ function GuidedTour(){
 			var text = _t(welcomeDialogBody) + lang_switcher.replace('style="', 'style="display: none; ');
 			var dialog = $('#' + popupConfirmDialogId);
 			dialog.on('shown.bs.modal', function (){
-				var switcher = getLanguage() == 'en' ? $('#switch-to-de') : $('#switch-to-en');
+				var switcher = getLanguage() === 'en' ? $('#switch-to-de') : $('#switch-to-en');
 				switcher.detach();
 				switcher.removeClass('pull-right').addClass('pull-left');
 				switcher.insertBefore($('#' + popupConfirmDialogAcceptBtn)).show();
 			});
 			dialog.on('hide.bs.modal', function (){
-				var switcher = getLanguage() == 'en' ? $('#switch-to-de') : $('#switch-to-en');
+				var switcher = getLanguage() === 'en' ? $('#switch-to-de') : $('#switch-to-en');
 				switcher.remove();
 			});
 			displayConfirmationDialog(title, text, start_fct, end_fct, false);
 			dialog.find('#confirm-dialog-accept-btn').text(_t(yes));
 			dialog.find('#confirm-dialog-refuse-btn').text(_t(no));
 			set_lang_click();
-		} else if(!part0 && part1 && !part2 && getLocalStorage(GUIDED_TOUR_RUNNING) == 'true'){ // part 2: discussion
+		} else if(!part0 && part1 && !part2 && getLocalStorage(GUIDED_TOUR_RUNNING) === 'true'){ // part 2: discussion
 			tour.init();
 			tour.goTo(2);
 			set_lang_click();
 			setLocalStorage(GUIDED_TOUR_RUNNING, true);
-		} else if(!part0 && !part1 && part2 && getLocalStorage(GUIDED_TOUR_RUNNING) == 'true'){ // part 3, the end
+		} else if(!part0 && !part1 && part2 && getLocalStorage(GUIDED_TOUR_RUNNING) === 'true'){ // part 3, the end
 			tour.init();
 			tour.goTo(6);
 			set_lang_click();
 			setLocalStorage(GUIDED_TOUR_RUNNING, true);
 		}
-	}
-
-
+	};
 }

@@ -4,6 +4,7 @@
  */
 
 function AjaxReferenceHandler(){
+	'use strict';
 	
 	/**
 	 *
@@ -13,9 +14,6 @@ function AjaxReferenceHandler(){
 	 */
 	this.setReference = function(uid, reference, ref_source){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		console.log(uid);
-		console.log(reference);
-		console.log(ref_source);
 		
 		$.ajax({
 			url: 'ajax_set_references',
@@ -30,10 +28,11 @@ function AjaxReferenceHandler(){
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function (data) {
 			var parsedData = $.parseJSON(data);
-			if (parsedData.error.length > 0)
+			if (parsedData.error.length > 0) {
 				setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
-			else
+			} else {
 				setGlobalSuccessHandler('Yeah!', _t_discussion(dataAdded));
+			}
 			$('#' + popupReferences).modal('hide');
 		}).fail(function () {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));

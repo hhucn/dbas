@@ -67,11 +67,25 @@ def get_changelog(no):
 
 def is_usage_with_ldap(request):
     """
+    Returns true, if ldap usage is set to true in current ini file.
 
-    :return:
+    :param request:Request
+    :return: Boolean
     """
     if 'settings:ldap:usage' in request.registry.settings:
         return True if request.registry.settings['settings:ldap:usage'] == 'true' else False
+    return False
+
+
+def is_development_mode(request):
+    """
+    Returns true, if mode is set to development in current ini file.
+
+    :param request:Request
+    :return: Boolean
+    """
+    if 'mode' in request.registry.settings:
+        return True if request.registry.settings['mode'] == 'development' else False
     return False
 
 

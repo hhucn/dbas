@@ -11,6 +11,8 @@
  * @constructor
  */
 function Countdown(options) {
+    'use strict';
+    
 	var timer;
 	var instance = this;
 	var seconds = options.seconds;

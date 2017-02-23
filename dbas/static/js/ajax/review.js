@@ -4,6 +4,7 @@
  */
 
 function AjaxReviewHandler(){
+	'use strict';
 	
 	/**
 	 *
@@ -21,13 +22,15 @@ function AjaxReviewHandler(){
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function reviewDeleteArgumentDone(data) {
-			if (should_lock)
+			if (should_lock) {
 				new ReviewCallbacks().forReviewLock(data, review_instance);
-			else
+			} else {
 				new ReviewCallbacks().forReviewUnlock(data);
+			}
 		}).fail(function reviewDeleteArgumentFail() {
-			if (should_lock)
+			if (should_lock) {
 				setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			}
 		});
 	};
 	
@@ -158,6 +161,5 @@ function AjaxReviewHandler(){
 		}).fail(function reviewDeleteArgumentFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
-	}
-	
+	};
 }

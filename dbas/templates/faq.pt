@@ -34,7 +34,7 @@
                             <li><i style="width: 16px;" class="fa fa-pencil-square-o" aria-hidden="true"></i>: <span i18n:translate="faq_answer_pencil_next_to_statement">The pencil allows you to submit proposals for edits.</span>span></li>
                             <li><i style="width: 16px;" class="fa fa-flag" aria-hidden="true"></i>: <span i18n:translate="faq_answer_flag_next_to_statement">With the help of the flag you can report statements, if there is something wrong.</span>span></li>
                             <li><i style="width: 16px;" class="fa fa-trash-o" aria-hidden="true"></i>: <span i18n:translate="faq_answer_trash_next_to_statement">You made an statement on your own and not happy with it? Let's unsubscribe yourself as author.</span>span></li>
-                            <li><i style="width: 16px;" class="fa fa-bomb" aria-hidden="true"></i>: <span i18n:translate="faq_answer_bomb_next_to_statement">You are reading an statement, which should be supporting your conclusion, but it is nonsense? Let's attack this one!</span>span></li>
+                            <li><i style="width: 16px;" class="fa fa-bomb" aria-hidden="true"></i>: <span i18n:translate="faq_answer_bomb_next_to_statement">You are reading an statement, which should be supporting your conclusion, but it is nonsense? Let's attack this one!</span></li>
                             <li><i style="width: 16px;" class="fa fa-link" aria-hidden="true"></i>: <span i18n:translate="faq_answer_link_next_to_statement">There is this specific website with facts about an statement? With the link-icon you can add references for a statement / argument.</span>span></li>
                         </ul>
                     </div>

@@ -105,6 +105,5 @@
             </div>
         </div>
 
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/review/history.js')}"></script>
 	</tal:block>
 </tal:block>

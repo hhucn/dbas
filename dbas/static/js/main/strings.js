@@ -12,6 +12,8 @@ var mainpage = location.origin + '/'; //get_hostname(window.location.href);
  * @private
  */
 _t = function(id){
+    'use strict';
+    
     var lang_id = $('#' + languageDropdownId).find('.active a').attr('id');
     return get_it(lang_id, id);
 };
@@ -24,18 +26,23 @@ _t = function(id){
  * @private
  */
 _t_discussion = function(id){
+    'use strict';
+    
     var info = $('#issue_info');
-    if (info.length == 0)
-        return _t(id);
+    if (info.length === 0) {
+	    return _t(id);
+    }
     var lang = info.data('discussion-language');
     return get_it(lang, id);
 };
 
 var get_it = function(val, id){
+    'use strict';
+    
     var value = 'unknown value';
-    if (val.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){
+    if (val.indexOf('en') !== -1 && dbas_en.hasOwnProperty(id)){
         value = dbas_en[id];
-    } else if (val.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){
+    } else if (val.indexOf('de') !== -1 && dbas_de.hasOwnProperty(id)){
         value = dbas_de[id];
     }
     return value;
@@ -47,13 +54,15 @@ var get_it = function(val, id){
  * @returns {string} language tag
  */
 getLanguage = function(){
+    'use strict';
+    
     var this_id, value = 'unknown value';
     $('#' + languageDropdownId).children().each(function(){
         if ($(this).hasClass('active')){
             this_id = $(this).children().first().attr('id');
-            if (this_id.indexOf('en') != -1){           value = 'en';
-            } else if (this_id.indexOf('de') != -1){    value = 'de';
-            } else {                                    value = 'unknown value';
+            if (this_id.indexOf('en') !== -1){        value = 'en';
+            } else if (this_id.indexOf('de') !== -1){ value = 'de';
+            } else {                                  value = 'unknown value';
             }
         }
     });
@@ -65,10 +74,12 @@ getLanguage = function(){
  * @returns {string} language tag
  */
 getDiscussionLanguage = function(){
+    'use strict';
+    
     var lang = $('#issue_info').data('discussion-language'),
         value = 'unknown identifier';
-    if (lang.indexOf('en') != -1){          value = 'en';
-    } else if (lang.indexOf('de') != -1){    value = 'de';
+    if (lang.indexOf('en') !== -1){          value = 'en';
+    } else if (lang.indexOf('de') !== -1){    value = 'de';
     } else {                                value = 'unknown value';
     }
     return value;
@@ -150,7 +161,6 @@ var gender                          = 'gender';
 var generateSecurePassword          = 'generateSecurePassword';
 var goodPointTakeMeBackButtonText   = 'goodPointTakeMeBackButtonText';
 var group_uid                       = 'group_uid';
-var history                         = 'history';
 var haveALookAt                     = 'haveALookAt';
 var hidePasswordRequest             = 'hidePasswordRequest';
 var hideGenerator                   = 'hideGenerator';
@@ -293,7 +303,7 @@ var tourStartDiscussionTitle        = 'tourStartDiscussionTitle';
 var tourStartDiscussionContent      = 'tourStartDiscussionContent';
 var tourMarkOpinionTitle            = 'tourMarkOpinionTitle';
 var tourMarkOpinionContent          = 'tourMarkOpinionContent';
-var tourMarkOpinionText             = 'tourMarkOpinionText'
+var tourMarkOpinionText             = 'tourMarkOpinionText';
 var tourSelectAnswertTitle          = 'tourSelectAnswertTitle';
 var tourSelectAnswertContent        = 'tourSelectAnswertContent';
 var tourEnterStatementTitle         = 'tourEnterStatementTitle';

@@ -73,12 +73,12 @@ print('  - clicks per day (start {})'.format(start.format('DD-MM')))
 pos_clicks = {}
 for pos in db_positions:
     pos_row = []
-    for day in range(0, (end-start).days+1):
-        clicks = session.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == pos.uid, ClickedStatement.timestamp >= start.replace(days=+day), ClickedStatement.timestamp < start.replace(days=+day+1))).all()
+    for day in range(0, (end - start).days + 1):
+        clicks = session.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == pos.uid, ClickedStatement.timestamp >= start.replace(days=+day), ClickedStatement.timestamp < start.replace(days=+day + 1))).all()
         pos_row.append(str(len(clicks)))
     pos_clicks[str(pos.uid)] = pos_row
 sorted_pos_clicks = sorted(pos_clicks.items(), key=lambda x: x[0])
-days = range(0, (end-start).days+1)
+days = range(0, (end - start).days + 1)
 print('      Pos\t{}'.format('\t'.join([get_weekday(start.replace(days=+d)) for d in days])))
 for row in sorted_pos_clicks:
     print('    - {} \t{}'.format(row[0], '\t'.join(row[1])))
@@ -237,8 +237,8 @@ print('')
 
 
 print('Activity per Day:')
-for day in range(0, (end-start).days+1):
-    clicks = session.query(History).filter(and_(History.timestamp >= start.replace(days=+day), History.timestamp < start.replace(days=+day+1))).all()
+for day in range(0, (end - start).days + 1):
+    clicks = session.query(History).filter(and_(History.timestamp >= start.replace(days=+day), History.timestamp < start.replace(days=+day + 1))).all()
     print('  - {}, {}: Page calls = {}'.format(start.replace(days=+day).format('DD-MM-YYYY'), get_weekday(start.replace(days=+day)), len(clicks)))
 print('')
 

@@ -11,6 +11,8 @@
  * @returns {*}
  */
 function swapElements (from, to) {
+    'use strict';
+    
     var copy_to = $(to).clone(true),
 	    copy_from = $(from).clone(true);
 	$(to).replaceWith(copy_from);
@@ -23,6 +25,8 @@ function swapElements (from, to) {
  * @param s2
  */
 function levensthein (s1, s2){
+    'use strict';
+    
 	var row2=[];
 	if (s1 === s2) {
 		return 0;
@@ -30,8 +34,9 @@ function levensthein (s1, s2){
 		var s1_len = s1.length, s2_len = s2.length;
 		if (s1_len && s2_len) {
 			var i1 = 0, i2 = 0, a, b, c, c2, row = row2;
-			while (i1 < s1_len)
+			while (i1 < s1_len) {
 				row[i1] = ++i1;
+			}
 			while (i2 < s2_len) {
 				c2 = s2.charCodeAt(i2);
 				a = i2;
