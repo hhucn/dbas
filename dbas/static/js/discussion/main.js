@@ -528,7 +528,7 @@ function Main () {
 			}, 200);
 		});
 		
-		// autocompletion
+		// autocompletion by https://github.com/devbridge/jQuery-Autocomplete
 		var search = $("#navbar-search-statement");
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		search.autocomplete({

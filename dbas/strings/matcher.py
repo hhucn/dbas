@@ -20,6 +20,7 @@ from dbas.helper.views import get_nickname
 from dbas.strings.keywords import Keywords as _
 from dbas.query_wrapper import get_not_disabled_statement_as_query
 from dbas.url_manager import UrlManager
+import dbas.helper.issue as issue_helper
 
 list_length = 5
 max_count_zeros = 5
@@ -86,7 +87,8 @@ def get_all_strings_for(request, value):
     :param request: request
     :param value: string
     """
-    db_statements = get_not_disabled_statement_as_query().all()
+    issue_uid = issue_helper.get_issue_id(request)
+    db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue_uid).all()
     return_array = []
     for stat in db_statements:
         db_tv = DBDiscussionSession.query(TextVersion).get(stat.textversion_uid)
