@@ -52,18 +52,8 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
     elif mode == '2':  # start premise
         return_dict['distance_name'], return_dict['values'] = get_strings_for_start(value, issue, False)
     elif mode == '3':  # adding reasons
-        global mechanism
-        try:
-            extra = json.loads(extra) if extra is not None else ['', '']
-        except TypeError and json.JSONDecodeError:
-            extra = ['', '']
-        if isinstance(extra, list):
-            mechanism = 'SequenceMatcher'
-        else:
-            extra = ['', '']
-        count = 1000 if str(extra[0]) == 'all' else list_length
+        count = __get_vars_for_reasons(extra)
         return_dict['distance_name'], return_dict['values'] = get_strings_for_reasons(value, issue, count, extra[1])
-        mechanism = 'Levensthein'
     elif mode == '4':  # getting text
         return_dict = get_strings_for_search(value)
     elif mode == '5':  # getting public nicknames
@@ -71,13 +61,24 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
         return_dict['distance_name'], return_dict['values'] = get_strings_for_public_nickname(value, nickname)
     elif mode == '9':  # search everything
         tmp, suggstions = get_all_strings_for(request, value)
-        return_dict = {
-            'suggestions': suggstions
-        }
+        return_dict = {'suggestions': suggstions}
     else:
         return_dict = {'error': _tn.get(_.internalError)}
 
     return return_dict
+
+
+def __get_vars_for_reasons(extra):
+    global mechanism
+    try:
+        extra = json.loads(extra) if extra is not None else ['', '']
+    except TypeError and json.JSONDecodeError:
+        extra = ['', '']
+    if isinstance(extra, list):
+        mechanism = 'SequenceMatcher'
+    else:
+        extra = ['', '']
+    return 1000 if str(extra[0]) == 'all' else list_length
 
 
 def get_all_strings_for(request, value):

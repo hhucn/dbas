@@ -588,6 +588,7 @@ class Keywords(Enum):
     strongerStatementEnd = '   '
 
     search = 'Search'
+    searchForStatements = 'Search for statements'
     serviceNotAvailable = 'Service currently not available'
     someoneArgued = 'Someone argued that'
     soYouEnteredMultipleReasons = 'So you entered multiple reasons'
