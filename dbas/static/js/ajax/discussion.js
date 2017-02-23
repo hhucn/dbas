@@ -287,7 +287,7 @@ function AjaxDiscussionHandler() {
 			dataType: 'json',
 			data: {
 				value: value,
-				type:type,
+				type: type,
 				extra: JSON.stringify(['all', oem_text]),
 				issue: getCurrentIssueId()
 			},

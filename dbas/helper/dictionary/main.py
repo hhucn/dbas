@@ -127,6 +127,7 @@ class DictionaryHelper(object):
         return_dict = dict()
         return_dict['year']                          = datetime.datetime.now().year
         return_dict['restart_url']                   = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
+        return_dict['is_in_discussion']              = 'discuss' in request.path
         return_dict['logged_in']                     = is_logged_in
         return_dict['nickname']                      = nickname
         return_dict['add_premise_container_style']   = add_premise_container_style
@@ -521,5 +522,6 @@ class DictionaryHelper(object):
             'placeholder_lastname': _tn_sys.get(_.exampleLastname),
             'placeholder_mail': _tn_sys.get(_.exampleMail),
             'placeholder_statement': _tn_sys.get(_.exampleStatement),
-            'placeholder_source': _tn_sys.get(_.exampleSource)
+            'placeholder_source': _tn_sys.get(_.exampleSource),
+            'search': _tn_sys.get(_.search)
         }

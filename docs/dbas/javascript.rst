@@ -2,14 +2,7 @@
 JavaScript
 ==========
 
-Libraries
-=========
-
-* bootstrap
-* d3
-* eu-cookie-law-popup
-* jQuery
-* gremlins
+`Libraries <https://dbas.cs.uni-duesseldorf.de/imprint>`_
 
 
 D-BAS Stuff

@@ -4,15 +4,6 @@ Test Documentation
 
 Every module has his own test class.
 
-Requirements
-============
-
-Ensure that the following tools are installed:
-
-* Python >= 3.4
-* `pip <https://pip.pypa.io/en/stable/installing/>`_
-* `splinter <https://splinter.readthedocs.org/en/latest/>`_
-
 
 Backend with WebTest
 ====================
@@ -24,3 +15,8 @@ Webtests are end-to-end-full-stack tests.
 Execute these tests with::
 
     nosetests _modulename_
+
+
+Unit Test
+=========
+Unit test are suppored by Pyramid with http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/testing.html.

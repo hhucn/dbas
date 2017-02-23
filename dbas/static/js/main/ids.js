@@ -282,6 +282,7 @@ var fuzzy_statement_popup      = 1;
 var fuzzy_start_premise        = 2;
 var fuzzy_add_reason           = 3;
 var fuzzy_find_user            = 5;
+var fuzzy_find_statement       = 9;
 var attr_add                   = 'add';
 var attr_attack                = 'attack';
 var attr_argument_uid          = 'argument_uid';

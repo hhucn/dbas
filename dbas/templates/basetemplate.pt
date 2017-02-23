@@ -23,6 +23,7 @@
 
 	<!-- Inlcuding this at top for references -->
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery-3.1.0.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery.autocomplete.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-3.3.7.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-toggle.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-tour-0.11.0.min.js')}"></script>

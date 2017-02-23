@@ -1,5 +1,5 @@
 """
-Core component of D-BAS.
+Collection of all view registrations of the core component of D-BAS.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
@@ -2455,8 +2455,8 @@ def fuzzy_search(request, for_api=False, api_data=None):
     request_authenticated_userid = request.authenticated_userid
 
     try:
-        value = api_data['value'] if for_api else request.params['value']
         mode = str(api_data['mode']) if for_api else str(request.params['type'])
+        value = api_data['value'] if for_api else request.params['value']
         issue = api_data['issue'] if for_api else issue_helper.get_issue_id(request)
         extra = request.params['extra'] if 'extra' in request.params else None
 
@@ -2472,7 +2472,7 @@ def fuzzy_search(request, for_api=False, api_data=None):
         # except Exception as e:
         #     logger('fuzzy_search', 'def', 'Error grepping data via microservice: ' + str(e))
 
-        return_dict = fuzzy_string_matcher.get_prediction(_tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra)
+        return_dict = fuzzy_string_matcher.get_prediction(request, _tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra)
 
     except KeyError as e:
         return_dict = {'error': _tn.get(_.internalKeyError)}

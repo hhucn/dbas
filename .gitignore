@@ -1,14 +1,11 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
 *.mo
 *.pot
 
 # Distribution / packaging
 build/
 dist/
-lib64/
-sdist/
 *.egg
 *.egg-info/
 source/
@@ -28,9 +25,6 @@ coverage.xml
 *.log
 *.pid
 *.db
-*.sqlite
-*.sqlite-journal
-*.log
 
 # Sphinx documentation
 # docs/
@@ -39,10 +33,6 @@ coverage.xml
 # Misc
 .python-version
 *.bak
-pull*.sh
-gource.sh
-dbas_timelapse.mp4
-git-delete-history.sh
 *.jar
 mergeDatabase.py
 db.txt
@@ -59,7 +49,6 @@ dbas/static/css/main.css.map
 dbas/static/rss/*
 .sass-cache/
 .babelrc
-startSession.py
 getMails.py
 dbas.min.js
 

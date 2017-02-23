@@ -19,6 +19,8 @@ from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.helper.views import get_nickname
 from dbas.strings.keywords import Keywords as _
 from dbas.query_wrapper import get_not_disabled_statement_as_query
+from dbas.url_manager import UrlManager
+import dbas.helper.issue as issue_helper
 
 list_length = 5
 max_count_zeros = 5
@@ -28,7 +30,7 @@ mechanism = 'Levensthein'
 # mechanism = 'SequenceMatcher'
 
 
-def get_prediction(_tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra=None):
+def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra=None):
     """
 
     :param _tn:
@@ -67,10 +69,38 @@ def get_prediction(_tn, for_api, api_data, request_authenticated_userid, value, 
     elif mode == '5':  # getting public nicknames
         nickname = get_nickname(request_authenticated_userid, for_api, api_data)
         return_dict['distance_name'], return_dict['values'] = get_strings_for_public_nickname(value, nickname)
+    elif mode == '9':  # search everything
+        tmp, suggstions = get_all_strings_for(request, value)
+        return_dict = {
+            'suggestions': suggstions
+        }
     else:
         return_dict = {'error': _tn.get(_.internalError)}
 
     return return_dict
+
+
+def get_all_strings_for(request, value):
+    """
+    Checks all statements
+
+    :param request: request
+    :param value: string
+    """
+    issue_uid = issue_helper.get_issue_id(request)
+    db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue_uid).all()
+    return_array = []
+    for stat in db_statements:
+        db_tv = DBDiscussionSession.query(TextVersion).get(stat.textversion_uid)
+        if value.lower() in db_tv.content.lower():
+            slug = DBDiscussionSession.query(Issue).get(stat.issue_uid).get_slug()
+            _um = UrlManager(request.application_url, for_api=False, slug=slug)
+            url = _um.get_url_for_statement_attitude(False, db_tv.statement_uid)
+            return_array.append({'value': db_tv.content, 'data': url, 'distance': get_distance(value.lower(), db_tv.content.lower())})
+
+    return_array = __sort_array(return_array)
+
+    return mechanism, return_array[:list_length]
 
 
 def get_strings_for_start(value, issue, is_startpoint):
@@ -85,13 +115,11 @@ def get_strings_for_start(value, issue, is_startpoint):
     db_statements = get_not_disabled_statement_as_query().filter(and_(Statement.is_startpoint == is_startpoint,
                                                                       Statement.issue_uid == issue)).all()
     return_array = []
-    index = 1
     for stat in db_statements:
         db_tv = DBDiscussionSession.query(TextVersion).get(stat.textversion_uid)
         if value.lower() in db_tv.content.lower():
             rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
             return_array.append(rd)
-            index += 1
 
     return_array = __sort_array(return_array)
 
