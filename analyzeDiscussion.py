@@ -45,9 +45,10 @@ print('')
 db_users = [user for user in session.query(User).filter(~User.nickname.in_(['anonymous', 'admin', 'tobias'])).all()]
 db_clicked_statements = [vote for vote in session.query(ClickedStatement).all() if session.query(Statement).get(vote.statement_uid).issue_uid == db_issue.uid]
 clicks = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([click for click in db_clicked_statements if click.author_uid == user.uid]) for user in db_users}
-reputation = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([reputation for reputation in session.query(ReputationHistory).filter_by(reputator_uid=user.uid).join(ReputationReason).all()]) for user in db_users}
+reputation = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): [reputation for reputation in session.query(ReputationHistory).filter_by(reputator_uid=user.uid).join(ReputationReason).all()] for user in db_users}
+print(str(reputation))
 for rep in reputation:
-    reputation[rep] = sum([r.reputations.points for r in reputation.rep])
+    reputation[rep] = sum([r.reputations.points for r in reputation[rep]])
 sorted_clicks = sorted(clicks.items(), key=lambda x: x[1])
 sorted_reputation = sorted(reputation.items(), key=lambda x: x[1])
 print('Users:')
