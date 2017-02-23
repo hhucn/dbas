@@ -43,14 +43,6 @@ Recommender System
 .. automodule:: dbas.recommender_system
     :members:
 
-
-Security
-========
-
-.. automodule:: dbas.security
-    :members:
-
-
 Opinion Handler
 ===============
 

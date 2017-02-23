@@ -94,7 +94,7 @@ def get_overview(page):
     Returns a nested data structure with information about the database
 
     :param page: Name of the main page
-    :return:[[{'name': .., 'content': [{'name': .., 'count': .., 'href': ..}, ..] }], ..]
+    :return: [[{'name': .., 'content': [{'name': .., 'count': .., 'href': ..}, ..] }], ..]
     """
     logger('AdminLib', 'get_dashboard_infos', 'main')
     return_list = list()
