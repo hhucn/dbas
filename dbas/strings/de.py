@@ -590,6 +590,7 @@ de_lang = {
     _.rejecting: 'dagegen',
     _.strongerStatementEnd: 'davon, dass',
 
+    _.search: 'Suche',
     _.serviceNotAvailable: 'Dienst aktuell nicht verfügbar',
     _.someoneArgued: 'Es wurde gesagt, dass',
     _.soYouEnteredMultipleReasons: 'Sie haben mehrere Gründe eingegeben',

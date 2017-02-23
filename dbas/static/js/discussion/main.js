@@ -527,6 +527,27 @@ function Main () {
 				ajaxHandler.fuzzySearch(escapedText, addPremiseContainerMainInputId, fuzzy_add_reason, '');
 			}, 200);
 		});
+		
+		// autocompletion
+		var search = $("#navbar-search-statement");
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		search.autocomplete({
+			serviceUrl: 'ajax_fuzzy_search',
+			deferRequestBy: 300,
+			paramName: 'value',
+			params: {
+				value: search.val(),
+				type: fuzzy_find_statement,
+				issue: getCurrentIssueId()
+			},
+			dataType: 'json',
+			headers: {
+				'X-CSRF-Token': csrf_token
+			},
+            onSelect: function (suggestion) {
+				window.location.href = suggestion.data;
+            },
+		});
 	};
 	
 	/**
