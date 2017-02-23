@@ -3,7 +3,7 @@
 Components Documentation
 ========================
 
-Comprehensive reference material for every component exposed by `D-BAS`
+Comprehensive reference material for every component exposed by `D-BAS`.
 
 .. toctree::
    :maxdepth: 1

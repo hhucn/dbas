@@ -1,5 +1,5 @@
 """
-Core component of D-BAS.
+Collection of all view registrations of the core component of D-BAS.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """

@@ -1,7 +1,6 @@
 ======
 Docker
 ======
-
 ::
 
     ______________________________
@@ -18,6 +17,8 @@ Docker
           \______ o          __/
            \    \        __/
              \____\______/
+
+.. _docker:
 
 This is a small installation instruction to use D-BAS within some Docker containers. All instructions from the "normal"
 Installation section are dispensable if you choose this type of installation, because all tools are installed within
