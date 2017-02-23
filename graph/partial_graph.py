@@ -22,6 +22,9 @@ def get_partial_graph_for_statement(uid, issue, nickname):
     logger('PartialGraph', 'get_partial_graph_for_statement', str(uid))
     db_arguments = get_all_arguments_by_statement(uid)
 
+    if db_arguments is None or len(db_arguments) == 0:
+        return get_d3_data(issue, nickname, [DBDiscussionSession.query(Statement).get(uid)], [])
+
     current_arg = db_arguments[0]
     del db_arguments[0]
 
