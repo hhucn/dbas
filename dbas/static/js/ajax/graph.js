@@ -61,6 +61,7 @@ function AjaxGraphHandler(){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		var data = {'issue': getCurrentIssueId(), 'path': window.location.href};
 		var request_for_complete = uid === null;
+		var url;
 		
 		if (request_for_complete){
 			url = '/graph/complete';
