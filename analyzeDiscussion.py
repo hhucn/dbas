@@ -10,6 +10,7 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     RSS, ClickedArgument, ClickedStatement, ReviewDuplicate, LastReviewerDuplicate
 from dbas.helper.tests import add_settings_to_appconfig
 from sqlalchemy import engine_from_config, and_
+from dbas.lib import get_all_arguments_by_statement
 
 settings = add_settings_to_appconfig()
 session.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
@@ -35,11 +36,11 @@ elif db_issue.is_disabled:
     exit()
 
 
-print('')
+print('\n')
 print('-' * len('| D-BAS ANALYTICS: {} |'.format(db_issue.title.upper())))
 print('| D-BAS ANALYTICS: {} |'.format(db_issue.title.upper()))
 print('-' * len('| D-BAS ANALYTICS: {} |'.format(db_issue.title.upper())))
-print('')
+print('\n')
 
 
 db_users = [user for user in session.query(User).filter(~User.nickname.in_(['anonymous', 'admin', 'tobias'])).all()]
@@ -62,33 +63,38 @@ for t in sorted_clicks[-top_count:]:
 print('  - Top{} sorted by Reputation'.format(top_count))
 for t in sorted_reputation[-top_count:]:
     print('    - {}: {}'.format(t[1], t[0]))
-print('')
+print('\n')
 
 
 db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).all()
 db_disabled_statements = session.query(Statement).filter(and_(Statement.issue_uid == db_issue.uid, Statement.is_disabled == True)).all()
-db_positions = [statement for statement in db_statements if statement.is_startpoint]
 print('Statements:')
 print('  - count / disabled: {} / {}'.format(len(db_statements), len(db_disabled_statements)))
-print('')
+print('\n')
 
 
-print('positions:')
-print('  - count: {}'.format(len(db_positions)))
-print('  - clicks per day (start {})'.format(start.format('DD-MM')))
 pos_clicks = {}
+db_positions = [statement for statement in db_statements if statement.is_startpoint]
 for pos in db_positions:
     pos_row = []
     for day in range(0, (end - start).days + 1):
         clicks = session.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == pos.uid, ClickedStatement.timestamp >= start.replace(days=+day), ClickedStatement.timestamp < start.replace(days=+day + 1))).all()
         pos_row.append(str(len(clicks)))
-    pos_clicks[str(pos.uid)] = pos_row
+    pos_clicks[pos.uid] = pos_row
 sorted_pos_clicks = sorted(pos_clicks.items(), key=lambda x: x[0])
 days = range(0, (end - start).days + 1)
-print('      Pos\t{}'.format('\t'.join([get_weekday(start.replace(days=+d)) for d in days])))
+db_pos_arguments = {pos.uid: get_all_arguments_by_statement(pos.uid) if get_all_arguments_by_statement(pos.uid) else [None] for pos in db_positions}
+sorted_pos_arguments = sorted(db_pos_arguments.items(), key=lambda x: x[0])
+print('Positions:')
+print('  - Count: {}'.format(len(db_positions)))
+print('  - Clicks per day (start {}):'.format(start.format('DD-MM')))
+print('      Pos\t{}\tTotal'.format('\t'.join([get_weekday(start.replace(days=+d)) for d in days])))
 for row in sorted_pos_clicks:
-    print('    - {} \t{}'.format(row[0], '\t'.join(row[1])))
-print('')
+    print('    - {} \t{}\t{}'.format(row[0], '\t'.join(row[1]), sum([int(x) for x in row[1]])))
+print('  - Arguments per Position:')
+for row in sorted_pos_arguments:
+    print('    - Pos {}: {}  \tPro {}\tCon {}'.format(row[0], len(row[1]), len([arg for arg in row[1] if arg and arg.is_supportive]), len([arg for arg in row[1] if arg and not arg.is_supportive])))
+print('\n')
 
 
 db_arguments = session.query(Argument).filter_by(issue_uid=db_issue.uid)
@@ -98,7 +104,7 @@ db_con_arguments = db_arguments.filter_by(is_supportive=False).all()
 print('Arguments:')
 print('  - count / disabled: {} / {}'.format(len(db_arguments.all()), len(db_disabled_arguments)))
 print('  - pro / con:        {} / {}'.format(len(db_pro_arguments), len(db_con_arguments)))
-print('')
+print('\n')
 
 
 db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).join(TextVersion, Statement.textversion_uid == TextVersion.uid).all()
@@ -120,7 +126,7 @@ for t in sorted_author_list_argument[0:flop_count]:
 print('  - Argument: Top{}'.format(top_count))
 for t in sorted_author_list_argument[-top_count:]:
     print('    - {}: {}'.format(t[1], t[0]))
-print('')
+print('\n')
 
 
 db_clicked_arguments  = session.query(ClickedArgument).all()
@@ -134,7 +140,7 @@ db_clicked_statements_invalid = [vote for vote in db_clicked_statements if not v
 print('Interests (all/valid/invalid):')
 print('  - arguments:  {} / {} / {}'.format(len(db_clicked_arguments), len(db_clicked_arguments_valid), len(db_clicked_arguments_invalid)))
 print('  - statements: {} / {} / {}'.format(len(db_clicked_statements), len(db_clicked_statements_valid), len(db_clicked_statements_invalid)))
-print('')
+print('\n')
 
 
 db_votes_arguments_valid_up    = [vote for vote in db_clicked_arguments_valid if vote.is_up_vote]
@@ -144,7 +150,7 @@ db_votes_statements_valid_down = [vote for vote in db_clicked_statements_valid i
 print('Most up/down interests (valid):')
 print('  - arguments:  {} / {}'.format(len(db_votes_arguments_valid_up), len(db_votes_arguments_valid_down)))
 print('  - statements: {} / {}'.format(len(db_votes_statements_valid_up), len(db_votes_statements_valid_down)))
-print('')
+print('\n')
 
 
 db_votes_arguments_invalid_up    = [vote for vote in db_clicked_arguments_valid if vote.is_up_vote]
@@ -154,7 +160,7 @@ db_votes_statements_invalid_down = [vote for vote in db_clicked_statements_valid
 print('Most up/down interests (invalid):')
 print('  - arguments:  {} / {}'.format(len(db_votes_arguments_invalid_up), len(db_votes_arguments_invalid_down)))
 print('  - statements: {} / {}'.format(len(db_votes_statements_invalid_up), len(db_votes_statements_invalid_down)))
-print('')
+print('\n')
 
 
 db_marked_statements = session.query(MarkedStatement).all()
@@ -171,7 +177,7 @@ for t in sorted_author_list_argument[-top_count:]:
 print('  - Statement Top{}'.format(top_count))
 for t in sorted_author_list_argument[-top_count:]:
     print('    - {}: {}'.format(t[1], t[0]))
-print('')
+print('\n')
 
 
 db_review_edits         = session.query(ReviewEdit).all()
@@ -187,7 +193,7 @@ print('  - edits:         {} / {} / {}'.format(len(db_review_edits), len([review
 print('  - deletes:       {} / {} / {}'.format(len(db_review_deletes), len([review for review in db_review_deletes if review.is_executed]), len([review for review in db_review_deletes if review.is_revoked])))
 print('  - optimizations: {} / {} / {}'.format(len(db_review_optimizations), len([review for review in db_review_optimizations if review.is_executed]), len([review for review in db_review_optimizations if review.is_revoked])))
 print('  - duplicates:    {} / {} / {}'.format(len(db_review_duplicates), len([review for review in db_review_duplicates if review.is_executed]), len([review for review in db_review_duplicates if review.is_revoked])))
-print('')
+print('\n')
 
 
 db_reviewer_edit            = session.query(LastReviewerEdit).all()
@@ -219,7 +225,7 @@ for t in sorted_list_reviewer_optimization[-top_count:]:
 print('  - Duplicate Top{}'.format(top_count))
 for t in sorted_list_reviewer_duplicate[-top_count:]:
     print('    - {}: {}'.format(t[1], t[0]))
-print('')
+print('\n')
 
 
 db_history = session.query(History).all()
@@ -243,7 +249,7 @@ for t in sorted_history_user_list[0:flop_count]:
 print('  - User Top{}'.format(top_count))
 for t in sorted_history_user_list[-top_count:]:
     print('    - {}: {}'.format(t[1], t[0]))
-print('')
+print('\n')
 
 
 quit_count = 2
@@ -266,14 +272,14 @@ for quit_counter in quit_counters:
     for step in sorted_quit_after:
         if step[1] > quit_count:
             print('  - {} quits after step {}'.format(step[1], step[0]))
-    print('')
+    print('\n')
 
 
 print('Activity per Day:')
 for day in range(0, (end - start).days + 1):
     clicks = session.query(History).filter(and_(History.timestamp >= start.replace(days=+day), History.timestamp < start.replace(days=+day + 1))).all()
     print('  - {}, {}: Page calls = {}'.format(start.replace(days=+day).format('DD-MM-YYYY'), get_weekday(start.replace(days=+day)), len(clicks)))
-print('')
+print('\n')
 
 
 session.query(Issue).all()
