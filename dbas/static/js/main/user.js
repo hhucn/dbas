@@ -4,7 +4,9 @@
  */
 
 $(function () {
-	if (window.location.href.indexOf(mainpage + 'user/') == -1){
+    'use strict';
+    
+	if (window.location.href.indexOf(mainpage + 'user/') === -1){
 		return;
 	}
 
@@ -20,7 +22,7 @@ $(function () {
 				var url = window.location.href;
 				var splitted = url.split('/');
 				var recipient;
-				if (url.indexOf('/user/') != -1) {
+				if (url.indexOf('/user/') !== -1) {
 					recipient = splitted[splitted.length - 1];
 				} else {
 					recipient = _this.prev().text();
@@ -34,6 +36,8 @@ $(function () {
 });
 
 function User() {
+    'use strict';
+    
 	// https://www.google.com/design/spec/style/color.html#color-color-palette
 	// 0 is Blue
 	// 1 is Teal

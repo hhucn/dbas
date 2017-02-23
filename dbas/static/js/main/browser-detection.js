@@ -4,6 +4,8 @@
 
 // http://stackoverflow.com/a/5918791/2648872
 navigator.sayswho = (function(){
+    'use strict';
+    
     var ua= navigator.userAgent, tem,
     M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
     if(/trident/i.test(M[1])){
@@ -12,10 +14,14 @@ navigator.sayswho = (function(){
     }
     if(M[1]=== 'Chrome'){
         tem= ua.match(/\b(OPR|Edge)\/(\d+)/);
-        if(tem !== null) return tem.slice(1).join(' ').replace('OPR', 'Opera');
+        if(tem !== null){
+        	return tem.slice(1).join(' ').replace('OPR', 'Opera');
+        }
     }
     M= M[2]? [M[1], M[2]]: [navigator.appName, navigator.appVersion, '-?'];
-    if((tem= ua.match(/version\/(\d+)/i)) !== null) M.splice(1, 1, tem[1]);
+    if((tem= ua.match(/version\/(\d+)/i)) !== null){
+    	M.splice(1, 1, tem[1]);
+    }
     return M.join(' ');
 })();
 
@@ -23,9 +29,11 @@ navigator.sayswho = (function(){
  * Sets data for the global sucess field
  */
 function setGlobalErrorHandlerWithoutIds(){
+    'use strict';
+    
     var heading = 'Ohh!';
     var body;
-    if ((navigator.language || navigator.userLanguage).indexOf('de') != -1){
+    if ((navigator.language || navigator.userLanguage).indexOf('de') !== -1){
         body = 'Ihr Browser ist veraltet. D-BAS wird vermutlich nicht korrekt funtkionieren!';
     } else {
         body = 'Your browser is out of date and D-BAS will not be executed correctly!';

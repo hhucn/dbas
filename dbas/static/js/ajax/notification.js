@@ -4,6 +4,8 @@
  */
 
 function AjaxNotificationHandler(){
+	'use strict';
+	
 	/**
     *
     * @param id
@@ -89,7 +91,7 @@ function AjaxNotificationHandler(){
 			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function ajaxSendNewsDone(data) {
 			var parsedData = $.parseJSON(data);
-			if (parsedData.error.length == 0) {
+			if (parsedData.error.length === 0) {
 				$('#popup-writing-notification-success').show();
 				$('#popup-writing-notification-success-message').text(_t(notificationWasSend));
 				var out_counter = $('#total_out_counter');

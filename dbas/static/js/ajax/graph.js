@@ -4,6 +4,7 @@
  */
 
 function AjaxGraphHandler(){
+	'use strict';
 	
 	/**
 	 * Requests JSON-Object
@@ -33,7 +34,7 @@ function AjaxGraphHandler(){
 				return;
 		}
 		
-		dataString['lang'] = $('#issue_info').data('discussion-language');
+		dataString.lang = $('#issue_info').data('discussion-language');
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
 			type: 'POST',
@@ -59,14 +60,14 @@ function AjaxGraphHandler(){
 	this.getDiscussionGraphData = function (context, uid, is_argument) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		var data = {'issue': getCurrentIssueId(), 'path': window.location.href};
-		var request_for_complete = uid == null;
+		var request_for_complete = uid === null;
 		
 		if (request_for_complete){
 			url = '/graph/complete';
 		} else {
 			url = '/graph/partial';
-			data['uid'] = uid;
-			data['is_argument'] = is_argument;
+			data.uid = uid;
+			data.is_argument = is_argument;
 		}
 		
 		$.ajax({

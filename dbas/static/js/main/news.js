@@ -4,6 +4,8 @@
  */
 
 function News() {
+    'use strict';
+    
 	var BOOTSTRAP_COLLAPSE = 990;
 	
 	/**
@@ -191,8 +193,9 @@ function News() {
 
 		// add page limitation to each click
 		$('.pagination a').click(function(){
-			if (!$(this).hasClass('news-placeholder'))
+			if (!$(this).hasClass('news-placeholder')) {
 				_this.setPlaceholder($(this).data('counter'), pagecounter);
+			}
 		});
 
 		news_back.off('click').click(function () {
@@ -225,10 +228,12 @@ function News() {
 		$('#news-' + i).parent().show();
 		$('#news-' + s).parent().show();
 
-		if (p-3 > 0)
-			placeholder.insertAfter($('#news-' + (p-1)).parent());
-		if (pagecounter-2-s > 0)
+		if (p-3 > 0) {
+			placeholder.insertAfter($('#news-' + (p - 1)).parent());
+		}
+		if (pagecounter-2-s > 0) {
 			placeholder.insertAfter($('#news-' + s).parent());
+		}
 	};
 
 	/**
@@ -240,10 +245,11 @@ function News() {
 		var activeElement = $('#news-navigation').find('.active');
 		var counter = parseInt(activeElement.children().eq(0).data('counter'));
 		activeElement.removeClass('active');
-		if (isBack)
+		if (isBack) {
 			activeElement.prev().addClass('active');
-		else
+		} else {
 			activeElement.next().addClass('active');
+		}
 		var news_counter = $('.news-page-' + counter);
 		news_counter.hide();
 		counter = isBack ? counter-1 : counter+1;
@@ -257,12 +263,18 @@ function News() {
 	 * @param currentCounter
 	 * @param max
 	 */
-	this.checkNewsForthAndBackButtons = function(currentCounter, max){
-		if (currentCounter === 0)   $('#news-back').parent().addClass('disabled');
-		else                       $('#news-back').parent().removeClass('disabled');
-
-		if (currentCounter == max) $('#news-forth').parent().addClass('disabled');
-		else                       $('#news-forth').parent().removeClass('disabled');
+	this.checkNewsForthAndBackButtons = function(currentCounter, max) {
+		if (currentCounter === 0) {
+			$('#news-back').parent().addClass('disabled');
+		} else {
+			$('#news-back').parent().removeClass('disabled');
+		}
+		
+		if (currentCounter === max){
+			$('#news-forth').parent().addClass('disabled');
+		} else {
+			$('#news-forth').parent().removeClass('disabled');
+		}
 	};
 
 	// *********************
@@ -368,7 +380,9 @@ function News() {
 }
 
 $(document).ready(function () {
-	if (window.location.href.indexOf(mainpage + 'news') == -1){
+    'use strict';
+    
+	if (window.location.href.indexOf(mainpage + 'news') === -1){
 		return;
 	}
 	var news = new News();

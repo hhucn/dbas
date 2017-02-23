@@ -114,8 +114,9 @@ function InteractionHandler() {
 		
 		setGlobalSuccessHandler('Yeah!', parsedData.success);
 		var el = $('#' + callback_id);
-		if (parsedData.text.length > 0)
+		if (parsedData.text.length > 0) {
 			el.parent().find('.triangle-content').html(parsedData.text);
+		}
 		if (should_mark){
 			el.hide().prev().show();
 		} else {
@@ -285,10 +286,11 @@ function InteractionHandler() {
 		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		} else {
-			if (parsedData['is_deleted'])
+			if (parsedData.is_deleted) {
 				setGlobalSuccessHandler('Yeah!', _t_discussion(dataRemoved) + ' ' + _t_discussion(yourAreNotTheAuthorOfThisAnymore));
-			else
+			} else {
 				setGlobalSuccessHandler('Yeah!', _t_discussion(contentWillBeRevoked));
+			}
 		}
 	};
 
@@ -346,10 +348,11 @@ function InteractionHandler() {
 	this.callbackIfDoneForGettingReferences = function(data){
 		var parsedData = $.parseJSON(data);
 		
-		if (parsedData.error.length !== 0)
+		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
-		else
+		} else {
 			new PopupHandler().showReferencesPopup(parsedData);
+		}
 	};
 	
 	/**
@@ -364,7 +367,7 @@ function InteractionHandler() {
 	this.sendStatement = function (text, conclusion, supportive, arg, relation, type) {
 		// error on "no text"
 		if (text.length === 0) {
-			if (type==fuzzy_start_statement){
+			if (type === fuzzy_start_statement){
 				$('#' + addStatementErrorContainer).show();
 				$('#' + addStatementErrorMsg).text(_t(inputEmpty));
 			} else {
@@ -381,36 +384,41 @@ function InteractionHandler() {
 					// cutting all 'and ' and 'and'
 					while (text[i].indexOf((_t_discussion(and) + ' '), text[i].length - (_t_discussion(and) + ' ').length) !== -1 ||
 					text[i].indexOf((_t_discussion(and)), text[i].length - (_t_discussion(and) ).length) !== -1) {
-						if (text[i].indexOf((_t_discussion(and) + ' '), text[i].length - (_t_discussion(and) + ' ').length) !== -1)
+						if (text[i].indexOf((_t_discussion(and) + ' '), text[i].length - (_t_discussion(and) + ' ').length) !== -1) {
 							text[i] = text[i].substr(0, text[i].length - (_t_discussion(and) + ' ').length);
-						else
+						} else {
 							text[i] = text[i].substr(0, text[i].length - (_t_discussion(and)).length);
+						}
 					}
 
 					// whitespace at the end
-					while (text[i].indexOf((' '), text[i].length - (' ').length) !== -1)
+					while (text[i].indexOf((' '), text[i].length - (' ').length) !== -1) {
 						text[i] = text[i].substr(0, text[i].length - (' ').length);
+					}
 
 					// sorting the statements, whether they include the keyword 'AND'
-					if (text[i].toLocaleLowerCase().indexOf(' ' + _t_discussion(and) + ' ') !== -1)
+					if (text[i].toLocaleLowerCase().indexOf(' ' + _t_discussion(and) + ' ') !== -1) {
 						undecided_texts.push(text[i]);
-					else
+					} else {
 						decided_texts.push(text[i]);
+					}
 				}
 			}
 
 			if (undecided_texts.length > 0){
 				for (var j=0; j<undecided_texts.length; j++){
-					if (undecided_texts[j].match(/\.$/))
-						undecided_texts[j] = undecided_texts[j].substr(0, undecided_texts[j].length -1)
+					if (undecided_texts[j].match(/\.$/)) {
+						undecided_texts[j] = undecided_texts[j].substr(0, undecided_texts[j].length - 1);
+					}
 				}
 				new GuiHandler().showSetStatementContainer(undecided_texts, decided_texts, supportive, type, arg, relation, conclusion);
 			} else {
 				if (type === fuzzy_start_statement) {
-					if (decided_texts.length > 0)
+					if (decided_texts.length > 0) {
 						alert("TODO: more than one decided text");
-					else
+					} else {
 						new AjaxDiscussionHandler().sendNewStartStatement(text);
+					}
 				} else if (type === fuzzy_start_premise) {
 					new AjaxDiscussionHandler().sendNewStartPremise(text, conclusion, supportive);
 				} else  if (type === fuzzy_add_reason) {
@@ -418,5 +426,5 @@ function InteractionHandler() {
 				}
 			}
 		}
-	}
+	};
 }

@@ -4,6 +4,8 @@
  */
 
 $(document).ready(function () {
+    'use strict';
+    
 	// buttons
 	var optimization_ack = $('#opti_ack');
 	var optimization_nack = $('#opti_nack');
@@ -119,14 +121,15 @@ $(document).ready(function () {
 	});
 	
 	// extra info when user has already seen the complete queue
-	if ($('#stats-table').data('extra-info') == 'already_seen'){
+	if ($('#stats-table').data('extra-info') === 'already_seen'){
 		setGlobalInfoHandler('Info', _t(queueCompleteSeen));
 	}
 	
 	// unlock data on tab close/reload/...
 	$(window).bind('beforeunload',function(){
-		if (window.location.href.indexOf('review/optimiz') != -1)
+		if (window.location.href.indexOf('review/optimiz') !== -1) {
 			new Review().reloadPageAndUnlockData(true);
+		}
 	});
 });
 

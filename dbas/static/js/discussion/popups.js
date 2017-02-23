@@ -4,6 +4,7 @@
  */
 
 function PopupHandler() {
+	'use strict';
 	
 	/**
 	 * Opens the edit statements popup
@@ -64,7 +65,7 @@ function PopupHandler() {
 				$('#' + popupEditStatementInfoDescriptionId).text(levensthein < 5 ? tmp : '');
 				
 				var btn = $('#' + popupEditStatementSubmitButtonId);
-				if (now && oem && now.toLowerCase() == oem.toLowerCase()) {
+				if (now && oem && now.toLowerCase() === oem.toLowerCase()) {
 					btn.addClass('disabled');
 					btn.off('click');
 					
@@ -189,7 +190,7 @@ function PopupHandler() {
 				new PopupHandler().showPopupForSelectingDuplicateFromPrgroup(uid, reason);
 			} else {
 				// correct uid
-				var is_premisegroup = window.location.href.split('?')[0].indexOf('justify') != -1;
+				var is_premisegroup = window.location.href.split('?')[0].indexOf('justify') !== -1;
 				if (is_premisegroup) {
 					uid = $('label[for="item_' + uid + '"]').attr('id');
 				}
@@ -215,16 +216,18 @@ function PopupHandler() {
 		
 		// cut the author
 		var tmp = text.indexOf('</a>');
-		if (tmp != -1) {
+		if (tmp !== -1) {
 			var a = bubble.find('.triangle-content a').attr('title');
 			text = a + ' ' + text.substr(tmp + '</a>'.length);
 		}
 			
 		// cut all spans
-		while (text.indexOf('</span>') != -1)
+		while (text.indexOf('</span>') !== -1) {
 			text = text.replace('</span>', '');
-		while (text.indexOf('<span') != -1)
+		}
+		while (text.indexOf('<span') !== -1) {
 			text = text.substr(0, text.indexOf('<span')) + text.substr(text.indexOf('>') + 1);
+		}
 		
 		$('#popup-flag-argument-text').text(text);
 		popup.modal('show');
@@ -338,7 +341,7 @@ function PopupHandler() {
 		selects.on('change', function() {
 			var oem_uid = $(this).find("option:selected").data('uid');
 			var def = $(this).find('option[data-uid="0"]');
-			if (def.length == 1) {
+			if (def.length === 1) {
 				def.remove();
 				var btn = $('#popup-flag-statement-accept-btn');
 				btn.off('click').removeClass('disabled');

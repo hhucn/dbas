@@ -4,6 +4,8 @@
  */
 
 function Review() {
+    'use strict';
+    
 	var sec = parseInt($('#request-lock').data('lock_sec'));
 	var countdown;
 	var _this = this;
@@ -48,7 +50,7 @@ function Review() {
 		var edit_array = [];
 		// getting all edited values
 		$.each($('#argument-part-table').find('input'), function(){
-			if ($(this).val().length > 0 && $(this).val() != $(this).attr('placeholder')) {
+			if ($(this).val().length > 0 && $(this).val() !== $(this).attr('placeholder')) {
 				edit_array.push({
 					statement: $(this).data('statement'),
 					type: $(this).data('type'),
@@ -155,8 +157,9 @@ function Review() {
 	 *
 	 */
 	this.stopCountdown = function(){
-		if (countdown)
+		if (countdown){
 			countdown.stop();
+		}
 		var button = $('#request-lock');
 		button.hide();
 		new AjaxReviewHandler().un_lockOptimizationReview(button.data('id'), false, undefined);
@@ -168,8 +171,9 @@ function Review() {
 	 */
 	this.reloadPageAndUnlockData = function (only_unlock){
 		new AjaxReviewHandler().un_lockOptimizationReview($('#review-id').data('id'), false, undefined);
-		if (! only_unlock)
+		if (! only_unlock) {
 			location.reload();
+		}
 	};
 	
 }

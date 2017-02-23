@@ -4,6 +4,8 @@
  */
 
 function Sharing(){
+    'use strict';
+    
 
 	/**
 	 *
@@ -13,7 +15,6 @@ function Sharing(){
 	 * @param image
 	 */
 	this.facebookShare = function(url, title, descr, image) {
-		'use strict';
 		var winTop, winLeft, winWidth, winHeight;
 		winWidth = 520;
 		winHeight = 350;
@@ -29,7 +30,6 @@ function Sharing(){
 	 * @param link
 	 */
 	this.twitterShare = function(text, link){
-		'use strict';
 		var winWidth = 550,
 		winHeight = 420,
 		winTop = (screen.height / 2) - (winHeight / 2),
@@ -46,7 +46,6 @@ function Sharing(){
 	 * @param body
 	 */
 	this.emailShare = function(to, subject, body){
-		'use strict';
 		window.location.href = "mailto:" + to + "?subject=" + subject + "&body=" + body;
 	};
 
@@ -55,7 +54,6 @@ function Sharing(){
 	 * @param url
 	 */
 	this.googlePlusShare = function(url){
-		'use strict';
 		var winTop, winLeft, winWidth, winHeight;
 		winWidth = 600;
 		winHeight = 400;

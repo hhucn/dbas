@@ -4,7 +4,8 @@
  */
 
 function ReviewCallbacks() {
-	
+    'use strict';
+    	
 	/**
 	 *
 	 * @param jsonData
@@ -80,8 +81,8 @@ function ReviewCallbacks() {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		} else if (parsedData.info.length !== 0) {
 			setGlobalInfoHandler('Mhh!', parsedData.info);
-		} else {
-			//setGlobalSuccessHandler('Hurey', parsedData.success);
+		// } else {
+		//	setGlobalSuccessHandler('Hurey', parsedData.success);
 		}
 	};
 	

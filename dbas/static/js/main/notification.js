@@ -26,6 +26,8 @@ $(function () {
 });
 
 function Notifications() {
+    'use strict';
+    
 
 	/**
 	 *
@@ -98,7 +100,7 @@ function Notifications() {
 					var url = window.location.href;
 					var splitted = url.split('/');
 					var recipient;
-					if (url.indexOf('/user/') != -1){
+					if (url.indexOf('/user/') !== -1){
 						recipient = splitted[splitted.length - 1];
 					} else {
 						recipient = _this.prev().text();

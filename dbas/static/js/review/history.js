@@ -4,6 +4,8 @@
  */
 
 $(document).ready(function () {
+    'use strict';
+    
 	$('.review-undo').click(function(){
 		var queue = $(this).data('queue');
 		var id = $(this).data('id');
@@ -13,6 +15,8 @@ $(document).ready(function () {
 });
 
 function ReviewHistory(){
+    'use strict';
+    
 	
 	/**
 	 *
@@ -29,10 +33,11 @@ function ReviewHistory(){
 		$('#' + popupConfirmDialogId + ' div.modal-body').html(span + blockquote);
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
-			if (window.location.href.indexOf('history') != -1)
+			if (window.location.href.indexOf('history') !== -1) {
 				new AjaxReviewHandler().undoReview(queue, id);
-			else
+			} else {
 				new AjaxReviewHandler().cancelReview(queue, id);
+			}
 		});
 		$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
@@ -41,6 +46,7 @@ function ReviewHistory(){
 }
 
 function ReviewHistoryCallbacks(){
+    'use strict';
 	
 	/**
 	 *

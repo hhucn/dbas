@@ -4,6 +4,8 @@
  */
 
 function AjaxMainHandler(){
+	'use strict';
+	
 	/**
 	 * Sends a request for language change
 	 * @param new_lang is the shortcut for the language
@@ -28,9 +30,9 @@ function AjaxMainHandler(){
 				setPiwikOptOutLink(new_lang);
 			}
 		}).fail(function ajaxSwitchDisplayLanguageFail(xhr) {
-			if (xhr.status == 400) {
+			if (xhr.status === 400) {
 				setGlobalErrorHandler(_t(ohsnap), _t(requestFailedBadToken));
-			} else if (xhr.status == 500) {
+			} else if (xhr.status === 500) {
 				setGlobalErrorHandler(_t(ohsnap), _t(requestFailedInternalError));
 			} else {
 				setGlobalErrorHandler(_t(ohsnap), _t(languageCouldNotBeSwitched));
@@ -67,10 +69,10 @@ function AjaxMainHandler(){
 		}).fail(function ajaxLoginFail(xhr) {
 			var errorMsg = '';
 			
-			if (xhr.status == 200) {			location.reload(true);
-			} else if (xhr.status == 302) {		location.href = xhr.getResponseHeader('Location');
-			} else if (xhr.status == 400) {		errorMsg = _t(requestFailedBadToken);
-			} else if (xhr.status == 500) {		errorMsg = _t(requestFailedInternalError);
+			if (xhr.status === 200) {			location.reload(true);
+			} else if (xhr.status === 302) {		location.href = xhr.getResponseHeader('Location');
+			} else if (xhr.status === 400) {		errorMsg = _t(requestFailedBadToken);
+			} else if (xhr.status === 500) {		errorMsg = _t(requestFailedInternalError);
 			} else {            				errorMsg = _t(requestFailed);
 			}
 			
@@ -103,13 +105,13 @@ function AjaxMainHandler(){
 		}).done(function ajaxLogoutDone() {
 			location.reload();
 		}).fail(function ajaxLogoutFail(xhr) {
-			if (xhr.status == 200) {
+			if (xhr.status === 200) {
 				if (window.location.href.indexOf('settings') !== 0){
 					window.location.href = mainpage;
 				} else {
 					location.reload();
 				}
-			} else if (xhr.status == 403) {
+			} else if (xhr.status === 403) {
 				window.location.href = mainpage;
 			} else {
 				location.reload();
@@ -131,9 +133,9 @@ function AjaxMainHandler(){
 			spamanswer = $('#popup-login-spamanswer-input').val(),
 			gender = '';
 
-		if ($('#' + popupLoginInlineRadioGenderN).is(':checked')) gender = 'n';
-		if ($('#' + popupLoginInlineRadioGenderM).is(':checked')) gender = 'm';
-		if ($('#' + popupLoginInlineRadioGenderF).is(':checked')) gender = 'f';
+		if ($('#' + popupLoginInlineRadioGenderN).is(':checked')){ gender = 'n'; }
+		if ($('#' + popupLoginInlineRadioGenderM).is(':checked')){ gender = 'm'; }
+		if ($('#' + popupLoginInlineRadioGenderF).is(':checked')){ gender = 'f'; }
 
 		$.ajax({
 			url: 'ajax_user_registration',
@@ -156,8 +158,8 @@ function AjaxMainHandler(){
 			callbackIfDoneForRegistration(data);
 		}).fail(function ajaxRegistrationFail(xhr) {
 			$('#' + popupLoginRegistrationFailed).show();
-			if (xhr.status == 400) {		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedBadToken));
-			} else if (xhr.status == 500) {	$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedInternalError));
+			if (xhr.status === 400) {		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedBadToken));
+			} else if (xhr.status === 500) {	$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedInternalError));
 			} else {                		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
 			}
 		}).always(function ajaxLoginAlways(){
@@ -185,8 +187,8 @@ function AjaxMainHandler(){
 			callbackIfDoneForPasswordRequest(data);
 		}).fail(function ajaxPasswordRequestFail(xhr) {
 			$('#' + popupLoginRegistrationFailed).show();
-			if (xhr.status == 400) {		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedBadToken));
-			} else if (xhr.status == 500) {	$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedInternalError));
+			if (xhr.status === 400) {		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedBadToken));
+			} else if (xhr.status === 500) {	$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedInternalError));
 			} else {            			$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
 			}
 		});
@@ -207,7 +209,7 @@ function AjaxMainHandler(){
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxRoundhouseKickDone(data) {
-			if (data.type == 'success'){
+			if (data.type === 'success'){
 				displayConfirmationDialogWithoutCancelAndFunction('Chuck Norris Fact #' + data.value.id,
 					'<h5>' + data.value.joke + '</h5>\n\n' +
 					'<span style="float:right;">powered by <a href="http://www.icndb.com/" target="_blank">http://www.icndb.com/</a></span>');

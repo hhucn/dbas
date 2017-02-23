@@ -5,6 +5,7 @@
 
 function AjaxDiscussionHandler() {
 	'use strict';
+	
 	/**
 	 * Sends new premises to the server. Answer will be given to a callback
 	 * @param arg_uid
@@ -242,9 +243,9 @@ function AjaxDiscussionHandler() {
 	 * @param is_supportive
 	 */
 	this.getMoreInfosAboutOpinion = function(type, argument_uid, statement_uid, is_supportive){
-		var is_argument = type == 'argument';
-		var is_position = type == 'position' || type == 'statement';
-		var uid = argument_uid == 'None' ? statement_uid : argument_uid;
+		var is_argument = type === 'argument';
+		var is_position = type === 'position' || type === 'statement';
+		var uid = argument_uid === 'None' ? statement_uid : argument_uid;
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		
 		$.ajax({
@@ -313,7 +314,7 @@ function AjaxDiscussionHandler() {
 	this.fuzzySearch = function (value, callbackid, type, extra) {
 		var callback = $('#' + callbackid);
 		var pencil = '<i class="fa fa-pencil" aria-hidden="true"></i>';
-		var tmpid = callbackid.split('-').length == 6 ? callbackid.split('-')[5] : '0';
+		var tmpid = callbackid.split('-').length === 6 ? callbackid.split('-')[5] : '0';
 		var bubbleSpace = $('#' + discussionBubbleSpaceId);
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		// clear lists if input is empty
@@ -328,9 +329,9 @@ function AjaxDiscussionHandler() {
 			return;
 		}
 
-		if (type != fuzzy_find_user) {
+		if (type !== fuzzy_find_user) {
 			// add or remove bubble only iff we are not in an popup
-			if (type != fuzzy_statement_popup) {
+			if (type !== fuzzy_statement_popup) {
 				if (bubbleSpace.find('#current_' + tmpid).length === 0) {
 					var text = $('<p>').addClass('triangle-r').attr('id', 'current_' + tmpid).html(value + '...' + pencil);
 					var current = $('<div>').addClass('line-wrapper-r').append(text).hide().fadeIn();
@@ -462,6 +463,5 @@ function AjaxDiscussionHandler() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 			new PopupHandler().hideAndClearUrlSharingPopup();
 		});
-		
-	}
+	};
 }

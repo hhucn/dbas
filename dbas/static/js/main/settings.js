@@ -23,9 +23,9 @@ function HistoryHandler(){
 		$('#' + historyTableFailureId).fadeIn('slow');
 		setTimeout(function() { $('#' + historyTableFailureId).fadeOut(); }, 3000);
 
-		if (statuscode  ===  400) {		$('#' + historyFailureMessageId).html(_t(requestFailedBadToken));
+		if (statuscode  ===  400) {		    $('#' + historyFailureMessageId).html(_t(requestFailedBadToken));
 		} else if (statuscode  ===  500) {	$('#' + historyFailureMessageId).html(_t(requestFailedInternalError));
-		} else {                		$('#' + historyFailureMessageId).html(_t(requestFailed));
+		} else {                		    $('#' + historyFailureMessageId).html(_t(requestFailed));
 		}
 	};
 
@@ -106,6 +106,8 @@ function HistoryHandler(){
 }
 
 function PasswordHandler(){
+    'use strict';
+    
 	// check password strength
 	// based on http://git.aaronlumsden.com/strength.js/
 	var upperCase = new RegExp('[A-Z]');
@@ -115,7 +117,6 @@ function PasswordHandler(){
 	var specialchars = new RegExp('([!,%,&,@,#,$,^,*,?,_,~])');
 
 	this.set_total = function (total, passwordMeter, passwordStrength, passwordExtras) {
-		'use strict';
 		passwordMeter.removeClass().addClass('col-sm-9');
 		passwordStrength.text(_t(strength) + ': ' + _t(veryweak)).fadeIn("slow");
 
@@ -135,7 +136,6 @@ function PasswordHandler(){
 	 * @param passwordExtras
 	 */
 	this.check_strength = function (passwordInput, passwordMeter, passwordStrength, passwordExtras) {
-		'use strict';
 		var total = 0;
 		var pw = passwordInput.val();
 		if (pw.length > 8) {			total = total + 1;	}
@@ -151,7 +151,6 @@ function PasswordHandler(){
 	 * @param output
 	 */
 	this.generate_password = function (output) {
-		'use strict';
 		var password = '';
 		var i = 0;
 		while (!(upperCase.test(password) && lowerCase.test(password) && numbers.test(password) && specialchars.test(password))) {
@@ -165,6 +164,8 @@ function PasswordHandler(){
 }
 
 function SettingsHandler(){
+    'use strict';
+    
 
 	/**
 	 *
@@ -202,6 +203,8 @@ function SettingsHandler(){
 }
 
 function StatisticsHandler(){
+    'use strict';
+    
 
 	/**
 	 *
@@ -438,8 +441,12 @@ $(function () {
 
 	// ajax loading animation
 	$(document).on({
-		ajaxStart: function() { setTimeout("$('body').addClass('loading')", 0); },
-		ajaxStop: function() { setTimeout("$('body').removeClass('loading')", 0); }
+		ajaxStart: function() {
+			setTimeout("$('body').addClass('loading');", 0);
+		},
+		ajaxStop: function() {
+			setTimeout("$('body').removeClass('loading');", 0);
+		}
 	});
 
 	/**

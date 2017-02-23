@@ -4,6 +4,8 @@
  */
 
 $(document).ready(function () {
+    'use strict';
+    
 	var tabs = $('#review-tabs');
 	var id;
 	
@@ -26,6 +28,8 @@ $(document).ready(function () {
  *
  */
 function hideAll(){
+    'use strict';
+    
 	var tabs = $('#review-tabs');
 	var id;
 	$.each(tabs.find('a'), function(){

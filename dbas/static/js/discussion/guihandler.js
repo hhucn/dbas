@@ -7,6 +7,7 @@
 
 function GuiHandler() {
 	'use strict';
+	
 	var interactionHandler;
 	var maxHeightOfBubbleSpace = 300;
 	
@@ -300,8 +301,9 @@ function GuiHandler() {
 			for (page_no = 0; page_no < undecided_texts.length; page_no++) {
 				page = gh.getPageOfSetStatementContainer(page_no, undecided_texts[page_no]);
 				body.attr('data-text-' + page_no, undecided_texts[page_no]);
-				if (page_no > 0)
+				if (page_no > 0) {
 					page.hide();
+				}
 				body.append(page);
 				
 				page.find('input').each(function () {
@@ -402,7 +404,7 @@ function GuiHandler() {
 		$('#popup-set-premisegroups-body-intro-statements').text(text.trim());
 		
 		if (topic.match(/\.$/)) {
-			topic = topic.substr(0, topic.length - 1) + ', '
+			topic = topic.substr(0, topic.length - 1) + ', ';
 		}
 		
 		div_page.attr('id', id + page_no);
@@ -516,11 +518,11 @@ function GuiHandler() {
 				$('#' + proposalUserListGroupId).empty();
 			});
 			
-			if (type === fuzzy_start_premise)        $('#' + proposalStatementListGroupId).append(button);
-			else if (type === fuzzy_start_statement) $('#' + proposalStatementListGroupId).append(button);
-			else if (type === fuzzy_add_reason)      $('#' + proposalPremiseListGroupId).append(button);
-			else if (type === fuzzy_statement_popup) $('#' + proposalEditListGroupId).append(button);
-			else if (type === fuzzy_find_user)       $('#' + proposalUserListGroupId).append(button);
+			if (type === fuzzy_start_premise){        $('#' + proposalStatementListGroupId).append(button); }
+			else if (type === fuzzy_start_statement){ $('#' + proposalStatementListGroupId).append(button); }
+			else if (type === fuzzy_add_reason){      $('#' + proposalPremiseListGroupId).append(button); }
+			else if (type === fuzzy_statement_popup){ $('#' + proposalEditListGroupId).append(button); }
+			else if (type === fuzzy_find_user){       $('#' + proposalUserListGroupId).append(button); }
 		});
 	};
 	
