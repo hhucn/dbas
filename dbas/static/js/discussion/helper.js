@@ -16,7 +16,7 @@ function cutTextOnChar (text, maxTextWidth, pattern) {
 		i = 1;
 		l = text.length;
 	while (i * maxTextWidth < l) {
-		p = text.indexOf(pattern3, i * maxTextWidth);
+		p = text.indexOf(pattern, i * maxTextWidth);
 		text =  text.substr(0, p) + '<br>' + text.substr(p + pattern.length);
 		i = i + 1;
 	}

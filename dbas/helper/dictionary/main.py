@@ -15,7 +15,7 @@ from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.helper.query import get_every_attack_for_island_view
 from dbas.helper.notification import count_of_new_notifications, get_box_for
 from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, \
-    create_speechbubble_dict, get_profile_picture, get_public_profile_picture, is_usage_with_ldap
+    create_speechbubble_dict, get_profile_picture, get_public_profile_picture, is_usage_with_ldap, is_development_mode
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution
@@ -120,6 +120,7 @@ class DictionaryHelper(object):
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         is_logged_in = False if nickname == nick_of_anonymous_user else db_user is not None
         is_ldap = is_usage_with_ldap(request)
+        is_development = is_development_mode(request)
 
         rrs = request.registry.settings
 
@@ -136,6 +137,7 @@ class DictionaryHelper(object):
         return_dict['is_user_neutral']               = not return_dict['is_user_male'] and not return_dict['is_user_female']
         return_dict['broke_limit']                   = 'true' if broke_limit else 'false'
         return_dict['use_with_ldap']                 = is_ldap
+        return_dict['development_mode']              = is_development
         return_dict['is_development']                = rrs['mode'] == 'development' if 'mode' in rrs else ''
         return_dict['is_production']                 = rrs['mode'] == 'production' if 'mode' in rrs else ''
         return_dict['review_count']                  = get_complete_review_count(nickname)

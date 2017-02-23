@@ -39,8 +39,8 @@ function GuidedTour(){
 			// language switch
 			var switcher = getLanguage() == 'en' ? $('#switch-to-de') : $('#switch-to-en');
 			var lang = getLanguage() == 'en' ? 'de' : 'en';
-			switcher.click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang) });
-			switcher.find('img').click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang) });
+			switcher.click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang); });
+			switcher.find('img').click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang); });
 		}, 500);
 	};
 		
@@ -208,7 +208,5 @@ function GuidedTour(){
 			set_lang_click();
 			setLocalStorage(GUIDED_TOUR_RUNNING, true);
 		}
-	}
-
-
+	};
 }

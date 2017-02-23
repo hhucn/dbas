@@ -25,7 +25,7 @@ _t = function(id){
  */
 _t_discussion = function(id){
     var info = $('#issue_info');
-    if (info.length == 0)
+    if (info.length === 0)
         return _t(id);
     var lang = info.data('discussion-language');
     return get_it(lang, id);
@@ -293,7 +293,7 @@ var tourStartDiscussionTitle        = 'tourStartDiscussionTitle';
 var tourStartDiscussionContent      = 'tourStartDiscussionContent';
 var tourMarkOpinionTitle            = 'tourMarkOpinionTitle';
 var tourMarkOpinionContent          = 'tourMarkOpinionContent';
-var tourMarkOpinionText             = 'tourMarkOpinionText'
+var tourMarkOpinionText             = 'tourMarkOpinionText';
 var tourSelectAnswertTitle          = 'tourSelectAnswertTitle';
 var tourSelectAnswertContent        = 'tourSelectAnswertContent';
 var tourEnterStatementTitle         = 'tourEnterStatementTitle';

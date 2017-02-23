@@ -3,8 +3,6 @@
  * @email krauthoff@cs.uni-duesseldorf.de
  */
 
-"use strict";
-
 function dolan_translate(dictionary, inputText) {
     var translatedText;
     var replacement;

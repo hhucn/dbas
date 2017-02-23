@@ -9,7 +9,7 @@ $(document).ready(function () {
 		var id = $(this).data('id');
 		var revoked_argument = $('#' + queue + id + ' td:first-child').attr('title');
 		new ReviewHistory().showUndoPopup(queue, id, revoked_argument);
-	})
+	});
 });
 
 function ReviewHistory(){
@@ -37,7 +37,7 @@ function ReviewHistory(){
 		$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
 		});
-	}
+	};
 }
 
 function ReviewHistoryCallbacks(){
@@ -50,11 +50,11 @@ function ReviewHistoryCallbacks(){
 	 */
 	this.forUndoReview = function(jsonData, queue, uid){
 		var parsedData = $.parseJSON(jsonData);
-		if (parsedData.error.length != 0) {
+		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		} else {
 			setGlobalSuccessHandler('Yep!', parsedData.success);
 			$('#' + queue + uid).remove();
 		}
-	}
+	};
 }

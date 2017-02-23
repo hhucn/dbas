@@ -73,7 +73,7 @@ function PopupHandler() {
 					btn.off('click').click(function popupEditStatementSubmitButton() {
 						var elements = [];
 						$('#' + popupEditStatementInputSpaceId).find('input').each(function(){
-							elements.push({'text': $(this).val(), 'uid': $(this).data('statement-uid')})
+							elements.push({'text': $(this).val(), 'uid': $(this).data('statement-uid')});
 						});
 						new AjaxDiscussionHandler().sendCorrectionOfStatement(elements);
 					});
@@ -86,7 +86,7 @@ function PopupHandler() {
 						fuzzy_statement_popup,
 						statement_uid);
 				}, 200);
-			})
+			});
 		});
 	};
 	
@@ -445,7 +445,7 @@ function PopupHandler() {
 		
 		this.createReferencesPopupBody(data);
 		
-		if (references_body.children().length == 0) {
+		if (references_body.children().length === 0) {
 			references_body.append($('<p>').addClass('lead').text(_t_discussion(noReferencesButYouCanAdd)));
 			add_button.hide();
 			send_button.prop('disabled', false);

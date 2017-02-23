@@ -26,4 +26,8 @@
   <loc>https://dbas.cs.uni-duesseldorf.de/publications</loc>
   <changefreq>daily</changefreq>
 </url>
+<url>
+  <loc>https://dbas.cs.uni-duesseldorf.de/faq</loc>
+  <changefreq>daily</changefreq>
+</url>
 </urlset>

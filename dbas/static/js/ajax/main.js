@@ -21,7 +21,7 @@ function AjaxMainHandler(){
 			}
 		}).done(function ajaxSwitchDisplayLanguageDone(data) {
 			var parsedData = $.parseJSON(data);
-			if (parsedData.error.length != 0) {
+			if (parsedData.error.length !== 0) {
 				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 			} else {
 				location.reload(true);
@@ -37,7 +37,7 @@ function AjaxMainHandler(){
 			}
 		});
 	};
-
+	
 	/**
 	 *
 	 */
@@ -104,7 +104,7 @@ function AjaxMainHandler(){
 			location.reload();
 		}).fail(function ajaxLogoutFail(xhr) {
 			if (xhr.status == 200) {
-				if (window.location.href.indexOf('settings') != 0){
+				if (window.location.href.indexOf('settings') !== 0){
 					window.location.href = mainpage;
 				} else {
 					location.reload();
@@ -261,18 +261,18 @@ function AjaxMainHandler(){
 			}
 		}).done(function ajaxFlagArgumentDone(data) {
 			var parsedData = $.parseJSON(data);
-			if (parsedData['error'].length != 0){
-				setGlobalErrorHandler(_t(ohsnap), parsedData['error']);
-			} else if (parsedData['info'].length != 0) {
-				setGlobalInfoHandler('Ohh!', parsedData['info']);
+			if (parsedData.error.length !== 0){
+				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+			} else if (parsedData.info.length !== 0) {
+				setGlobalInfoHandler('Ohh!', parsedData.info);
 				$('#popup-duplicate-statement').modal('hide');
 			} else {
-				setGlobalSuccessHandler('Yeah!', parsedData['success']);
+				setGlobalSuccessHandler('Yeah!', parsedData.success);
 				$('#popup-duplicate-statement').modal('hide');
 			}
 			
 		}).fail(function ajaxFlagArgumentFail() {
 			setGlobalErrorHandler('', _t_discussion(requestFailed));
 		});
-	}
+	};
 }

@@ -32,7 +32,7 @@ function Review() {
 		// for each input in table
 		$.each(container.find('table').find('input'), function(){
 			$(this).focus(function(){
-				if ($(this).val().length == 0){
+				if ($(this).val().length === 0){
 					$(this).val($(this).attr('placeholder'));
 					$('#send_edit').removeClass('disabled');
 				}

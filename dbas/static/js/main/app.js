@@ -12,7 +12,7 @@
 function setLinkActive(linkname) {
 	'use strict';
 	$('#navbar-right').find('>li').each(function(){
-		$(this).removeClass('active')
+		$(this).removeClass('active');
 	});
 	$(linkname).addClass('active');
 }
@@ -64,7 +64,7 @@ function goBackToTop() {
 function setGravatarFallback() {
 	var body = $('body');
 	var img = body.find('.img-circle');
-	if (img.length == 0)
+	if (img.length === 0)
 		return true;
 	
 	var src = body.find('.img-circle')[0].src;
@@ -181,7 +181,7 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 		});
 		$('#' + popupConfirmChecbkoxDialogRefuseBtn).click( function () {
 			$('#' + popupConfirmChecbkoxDialogId).modal('hide');
-		})
+		});
 	}
 }
 
@@ -203,7 +203,7 @@ function setEasterEggs(){
 	$('#logo_dbas,#logo_dbas_s').click(function(){
 		var counter = parseInt($(this).data('counter'));
 		counter += 1;
-		if (counter == 7){
+		if (counter === 7){
 			$(this).attr('src', mainpage + 'static/images/dabas.png');
 			$('body').find('span').each(function(){
 				$(this).text(dolan_translate(dolan_dictionary, $(this).text()));
@@ -249,7 +249,7 @@ function prepareLoginRegistrationPopup(){
 		$('.tab-content > div').not(target).hide();
 		$(target).fadeIn(600);
 
-		if ($(this).attr('href').indexOf('signup') != -1){
+		if ($(this).attr('href').indexOf('signup') !== -1){
 			$('#' + popupLoginButtonLogin).hide();
 			$('#' + popupLoginButtonRegister).show();
 		} else {
@@ -261,9 +261,9 @@ function prepareLoginRegistrationPopup(){
 	$('#' + popupLoginButtonLogin).show().click(function() {
 		new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
 		Cookies.set(DBAS_DATA_DISCLAIMER, true, { expires: 30 });
-	}).keypress(function(e) { if (e.which == 13) { new AjaxMainHandler().ajaxRegistration() } });
+	}).keypress(function(e) { if (e.which === 13) { new AjaxMainHandler().ajaxRegistration(); } });
 	// data disclaimer
-	if (Cookies.get(DBAS_DATA_DISCLAIMER) == 'true') {
+	if (Cookies.get(DBAS_DATA_DISCLAIMER) === 'true') {
 		$('#dbas-login-data-disclaimer').hide();
 	}
 
@@ -323,7 +323,7 @@ function prepareLoginRegistrationPopup(){
 			}
 		}
 
-		if (text == '' ){
+		if (text === '' ){
 			$('#' + popupLoginWarningMessage).hide();
 			new AjaxMainHandler().ajaxRegistration();
 		} else {
@@ -334,15 +334,15 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	// bind enter key
-	$('#' + loginUserId).keypress(function(e) {							if (e.which == 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false) } });
-	$('#' + loginPwId).keypress(function(e) {							if (e.which == 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false) } });
-	$('#admin-login-user').keypress(function(e) {   					if (e.which == 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false) } });
-	$('#admin-login-pw').keypress(function(e) {							if (e.which == 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false) } });
-	$('#' + popupLoginUserfirstnameInputId).keypress(function(e) {		if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
-	$('#' + popupLoginUserlastnameInputId).keypress(function(e) {		if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
-	$('#' + popupLoginNickInputId).keypress(function(e) {				if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
-	$('#' + popupLoginEmailInputId).keypress(function(e) {				if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
-	$('#' + popupLoginPasswordconfirmInputId).keypress(function(e) {	if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
+	$('#' + loginUserId).keypress(function(e) {							if (e.which === 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
+	$('#' + loginPwId).keypress(function(e) {							if (e.which === 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
+	$('#admin-login-user').keypress(function(e) {   					if (e.which === 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
+	$('#admin-login-pw').keypress(function(e) {							if (e.which === 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
+	$('#' + popupLoginUserfirstnameInputId).keypress(function(e) {		if (e.which === 13) {	new AjaxMainHandler().ajaxRegistration();	}	});
+	$('#' + popupLoginUserlastnameInputId).keypress(function(e) {		if (e.which === 13) {	new AjaxMainHandler().ajaxRegistration();	}	});
+	$('#' + popupLoginNickInputId).keypress(function(e) {				if (e.which === 13) {	new AjaxMainHandler().ajaxRegistration();	}	});
+	$('#' + popupLoginEmailInputId).keypress(function(e) {				if (e.which === 13) {	new AjaxMainHandler().ajaxRegistration();	}	});
+	$('#' + popupLoginPasswordconfirmInputId).keypress(function(e) {	if (e.which === 13) {	new AjaxMainHandler().ajaxRegistration();	}	});
 
 	$('#' + popupLoginButtonRequest).click(function() {
 		new AjaxMainHandler().ajaxPasswordRequest();
@@ -372,10 +372,10 @@ function setTextWatcherInputLength(element, display_at_top){
 		var text = element.val().trim();
 		var current_length = text.length;
 		
-		if (current_length == 0){
+		if (current_length === 0){
 			field.addClass('text-info');
 			field.removeClass('text-danger');
-			field.text(msg)
+			field.text(msg);
 		} else if (current_length < min_length) {
 			field.removeClass('text-danger');
 			field.text((min_length - current_length) + ' ' + _t_discussion(textMinCountMessageDuringTyping));
@@ -475,7 +475,7 @@ function callbackIfDoneForLogin(data, showGlobalError){
 	try {
 		var parsedData = $.parseJSON(data);
 		
-		if (parsedData.error.length != 0) {
+		if (parsedData.error.length !== 0) {
 			if (showGlobalError) {
 					setGlobalErrorHandler('Ohh!', parsedData.error);
 			} else {
@@ -490,7 +490,7 @@ function callbackIfDoneForLogin(data, showGlobalError){
 		console.log('ERROR');
 		//console.log(err);
 		var url = location.href;
-		if (url.indexOf('?session_expired=true') != -1)
+		if (url.indexOf('?session_expired=true') !== -1)
 			url = url.substr(0, url.length - '?session_expired=true'.length);
 		location.href = url;
 	}
@@ -570,7 +570,7 @@ $(document).ready(function () {
 		},
 		ajaxStop: function ajaxStopFct() {
             clearTimeout(timer);
-            $('body').removeClass('loading')
+            $('body').removeClass('loading');
 		}
 	});
 	
@@ -585,14 +585,14 @@ $(document).ready(function () {
 	setGravatarFallback();
 
 	// set current file to active
-		 if (path.indexOf(urlContact) != -1){ 	setLinkActive('#' + contactLink);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf(urlLogin) != -1){		setLinkActive('#' + loginLinkId);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf(urlNews) != -1){		setLinkActive('#' + newsLink);		$('#' + navbarLeft).hide(); }
-	else if (path.indexOf(urlContent) != -1){ 	setLinkActive('#' + contentLink);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf(urlReview) != -1){ 	setLinkActive('#' + reviewLinkId);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf(urlSettings) != -1 ||
-			 path.indexOf(urlImprint) != -1 ||
-			 path.indexOf(urlLogout) != -1){										$('#' + navbarLeft).hide(); }
+		 if (path.indexOf(urlContact) !== -1){ 	setLinkActive('#' + contactLink);	$('#' + navbarLeft).hide(); }
+	else if (path.indexOf(urlLogin) !== -1){		setLinkActive('#' + loginLinkId);	$('#' + navbarLeft).hide(); }
+	else if (path.indexOf(urlNews) !== -1){		setLinkActive('#' + newsLink);		$('#' + navbarLeft).hide(); }
+	else if (path.indexOf(urlContent) !== -1){ 	setLinkActive('#' + contentLink);	$('#' + navbarLeft).hide(); }
+	else if (path.indexOf(urlReview) !== -1){ 	setLinkActive('#' + reviewLinkId);	$('#' + navbarLeft).hide(); }
+	else if (path.indexOf(urlSettings) !== -1 ||
+			 path.indexOf(urlImprint) !== -1 ||
+			 path.indexOf(urlLogout) !== -1){										$('#' + navbarLeft).hide(); }
 	else { 										setLinkActive(''); 					$('#' + navbarLeft).show(); }
 
 	// gui preperation
@@ -612,7 +612,7 @@ $(document).ready(function () {
 	});
 
 	// session expired popup
-	if ($('#' + sessionExpiredContainer).length == 1)
+	if ($('#' + sessionExpiredContainer).length === 1)
 		setTimeout(function(){
 			$('#' + sessionExpiredContainer).fadeOut();
 		}, 3000);
@@ -622,10 +622,10 @@ $(document).ready(function () {
 
 	// language switch
 	
-	$('#' + translationLinkDe).click(function(){ new GuiHandler().lang_switch('de') });
-	$('#' + translationLinkEn).click(function(){ new GuiHandler().lang_switch('en') });
-	$('#' + translationLinkDe + ' img').click(function(){ new GuiHandler().lang_switch('de') });
-	$('#' + translationLinkEn + ' img').click(function(){ new GuiHandler().lang_switch('en') });
+	$('#' + translationLinkDe).click(function(){ new GuiHandler().lang_switch('de'); });
+	$('#' + translationLinkEn).click(function(){ new GuiHandler().lang_switch('en'); });
+	$('#' + translationLinkDe + ' img').click(function(){ new GuiHandler().lang_switch('de'); });
+	$('#' + translationLinkEn + ' img').click(function(){ new GuiHandler().lang_switch('en'); });
 	$('#' + logoutLinkId).click(function(e){
 		e.preventDefault();
 		new AjaxMainHandler().ajaxLogout();

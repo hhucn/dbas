@@ -49,7 +49,7 @@ function User() {
 	 */
 	this.callbackDone = function(jsonData){
 		var parsedData = $.parseJSON(jsonData);
-		if (parsedData.error.length != 0) {
+		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		}
 		

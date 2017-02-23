@@ -20,7 +20,7 @@ function News() {
 		var row = 0;
 		var container = '';
 		for (counter = 0; counter < length; counter++) {
-			if (counter % 3 == 0) {
+			if (counter % 3 === 0) {
 				if (div !== '') {
 					$('#' + newsBodyId).append(container);
 				}
@@ -40,7 +40,7 @@ function News() {
 
 		// add last row
 		counter -= 1;
-		if (counter % 3 != 0) {
+		if (counter % 3 !== 0) {
 			$('#' + newsBodyId).append(container);
 		}
 
@@ -54,7 +54,7 @@ function News() {
 	 */
 	this.callbackIfDoneForSendingNews = function (data) {
 		var parsedData = $.parseJSON(data);
-		if (parsedData.error.length == 0) {
+		if (parsedData.error.length === 0) {
 			// $('#' + writingNewsSuccessId).show();
 			// $('#' + writingNewsSuccessMessageId).text(_t(addedEverything));
 			// $('#' + writingNewNewsTitleId).val('');
@@ -154,7 +154,7 @@ function News() {
 
 		// adding page classes to every news
 		for (counter = 0; counter < row; counter++) {
-			if (counter != 0 && counter % pagebreak == 0) {
+			if (counter !== 0 && counter % pagebreak === 0) {
 				pagecounter++;
 			}
 			$('#container_' + counter).addClass('news-page-' + pagecounter).hide();
@@ -258,7 +258,7 @@ function News() {
 	 * @param max
 	 */
 	this.checkNewsForthAndBackButtons = function(currentCounter, max){
-		if (currentCounter == 0)   $('#news-back').parent().addClass('disabled');
+		if (currentCounter === 0)   $('#news-back').parent().addClass('disabled');
 		else                       $('#news-back').parent().removeClass('disabled');
 
 		if (currentCounter == max) $('#news-forth').parent().addClass('disabled');
