@@ -45,16 +45,22 @@ print('')
 db_users = [user for user in session.query(User).filter(~User.nickname.in_(['anonymous', 'admin', 'tobias'])).all()]
 db_clicked_statements = [vote for vote in session.query(ClickedStatement).all() if session.query(Statement).get(vote.statement_uid).issue_uid == db_issue.uid]
 clicks = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([click for click in db_clicked_statements if click.author_uid == user.uid]) for user in db_users}
+reputation = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([reputation for reputation in session.query(ReputationHistory).filter_by(reputator_uid=user.uid).join(ReputationReason).all()]) for user in db_users}
+for rep in reputation:
+    reputation[rep] = sum([r.reputations.points for r in reputation.rep])
 sorted_clicks = sorted(clicks.items(), key=lambda x: x[1])
-
+sorted_reputation = sorted(reputation.items(), key=lambda x: x[1])
 print('Users:')
 print('  - count:    {}'.format(len(db_users)))
 print('  - activity: {0:.2f} statement-clicks per user'.format(len(db_clicked_statements) / len(db_users)))
-print('  - Flop{}'.format(flop_count))
+print('  - Flop{} sorted by Clicks'.format(flop_count))
 for t in sorted_clicks[0:flop_count]:
     print('    - {}: {}'.format(t[1], t[0]))
-print('  - Top{}'.format(top_count))
+print('  - Top{} sorted by Clicks'.format(top_count))
 for t in sorted_clicks[-top_count:]:
+    print('    - {}: {}'.format(t[1], t[0]))
+print('  - Top{} sorted by Reputation'.format(top_count))
+for t in sorted_reputation[-top_count:]:
     print('    - {}: {}'.format(t[1], t[0]))
 print('')
 
