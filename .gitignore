@@ -25,7 +25,6 @@ coverage.xml
 *.log
 *.pid
 *.db
-*.log
 
 # Sphinx documentation
 # docs/
