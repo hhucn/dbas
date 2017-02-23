@@ -241,33 +241,28 @@ print('')
 
 
 quit_count = 1
-quit_counter = 600
-print('User Specific History Quits (Quit Count > {}, Quit Counter = {}s):'.format(quit_count, quit_counter))
-history = {}
-for user in db_users:
-    history[user.nickname] = session.query(History).filter_by(author_uid=user.uid).all()
-    # print('  - {}: {}'.format(user.nickname, len(history[user.nickname])))
-quit_after = {}
-for user_nickname in history:
-    for i in range(0, len(history[user_nickname]) - 1):
-        step = history[user_nickname][i].path
-        if abs((history[user_nickname][i+1].timestamp - history[user_nickname][i].timestamp).seconds) > quit_counter \
-                and 'admin' not in step\
-                and 'rss' not in step\
-                and 'contact' not in step\
-                and 'finish' not in step\
-                and 'settings' not in step\
-                and 'finish' not in step\
-                and 'imprint' not in step\
-                and 'news' not in step\
-                and len(step) > 2:  # 10 Minutes
-            # print('  - User {} quit after {}'.format(user_nickname, step))
-            quit_after[step] = quit_after[step] + 1 if step in quit_after else 1
-sorted_quit_after = sorted(quit_after.items(), key=lambda x: x[1])
-for step in sorted_quit_after:
-    if step[1] > quit_count:
-        print('  - {} quits after step {}'.format(step[1], step[0]))
-print('')
+
+quit_counters = [300, 600, 900]
+for quit_counter in quit_counters:
+    print('User Specific History Quits (Quit Count > {}, Quit Counter = {}s):'.format(quit_count, quit_counter))
+    history = {}
+    for user in db_users:
+        history[user.nickname] = session.query(History).filter_by(author_uid=user.uid).all()
+        # print('  - {}: {}'.format(user.nickname, len(history[user.nickname])))
+    quit_after = {}
+    for user_nickname in history:
+        for i in range(0, len(history[user_nickname]) - 1):
+            step = history[user_nickname][i].path
+            if abs((history[user_nickname][i+1].timestamp - history[user_nickname][i].timestamp).seconds) > quit_counter \
+                    and not any(x in step for x in ['admin', 'rss', 'contact', 'finish', 'settings', 'finish', 'imprint', 'news'])\
+                    and len(step) > 2:  # 10 Minutes
+                # print('  - User {} quit after {}'.format(user_nickname, step))
+                quit_after[step] = quit_after[step] + 1 if step in quit_after else 1
+    sorted_quit_after = sorted(quit_after.items(), key=lambda x: x[1])
+    for step in sorted_quit_after:
+        if step[1] > quit_count:
+            print('  - {} quits after step {}'.format(step[1], step[0]))
+    print('')
 
 
 print('Activity per Day:')
