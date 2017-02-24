@@ -6,12 +6,13 @@ D-BAS database Model
 
 import arrow
 from cryptacular.bcrypt import BCRYPTPasswordManager
-from dbas.database import DBDiscussionSession, DiscussionBase
 from slugify import slugify
 from sqlalchemy import Integer, Text, Boolean, Column, ForeignKey
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
+
+from dbas.database import DBDiscussionSession, DiscussionBase
 
 
 def sql_timestamp_pretty_print(ts, lang, humanize=True, with_exact_time=False):
@@ -22,7 +23,7 @@ def sql_timestamp_pretty_print(ts, lang, humanize=True, with_exact_time=False):
     :param lang: language
     :param humanize: Boolean
     :param with_exact_time: Boolean
-    :return:
+    :return: String
     """
     ts = ts.replace(hours=-2)
     if humanize:
@@ -39,6 +40,11 @@ def sql_timestamp_pretty_print(ts, lang, humanize=True, with_exact_time=False):
 
 
 def get_now():
+    """
+    Returns local server time
+
+    :return: arrow data type
+    """
     return arrow.utcnow().to('local')
     # return arrow.get(datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'))
 
@@ -89,7 +95,7 @@ class Issue(DiscussionBase):
         """
 
         :param is_disabled:
-        :return:
+        :return: None
         """
         self.is_disabled = is_disabled
 
@@ -135,7 +141,6 @@ class Group(DiscussionBase):
 class User(DiscussionBase):
     """
     User-table with several columns.
-    Each user has a firstname, lastname, email, password, belongs to a group and has a last login date
     """
     __tablename__ = 'users'
     uid = Column(Integer, primary_key=True)
@@ -159,13 +164,13 @@ class User(DiscussionBase):
         """
         Initializes a row in current user-table
 
-        :param firstname:
-        :param surname:
-        :param nickname:
-        :param email:
-        :param password:
-        :param gender:
-        :param group_uid:
+        :param firstname: String
+        :param surname: String
+        :param nickname: String
+        :param email: String
+        :param password: String
+        :param gender: String
+        :param group_uid: int
         :param token:
         :param token_timestamp:
         """
@@ -183,32 +188,54 @@ class User(DiscussionBase):
         self.token = token
         self.token_timestamp = token_timestamp
 
-    @classmethod
-    def by_surname(cls):
-        """
-        Return a query of users sorted by surname.
-
-        :return:
-        """
-        return DBDiscussionSession.query(User).order_by(User.surname)
-
     def validate_password(self, password):
+        """
+        Validates given password with against the saved one
+
+        :param password: String
+        :return: Boolean
+        """
         manager = BCRYPTPasswordManager()
         return manager.check(self.password, password)
 
     def update_last_login(self):
+        """
+
+
+        :return: None
+        """
         self.last_login = get_now()
 
     def update_last_action(self):
+        """
+
+
+        :return: None
+        """
         self.last_action = get_now()
 
     def update_token_timestamp(self):
+        """
+
+
+        :return: None
+        """
         self.token_timestamp = get_now()
 
     def set_token(self, token):
+        """
+
+
+        :return: None
+        """
         self.token = token
 
     def set_public_nickname(self, nick):
+        """
+
+
+        :return: None
+        """
         self.public_nickname = nick
 
     def get_global_nickname(self):
@@ -254,21 +281,51 @@ class Settings(DiscussionBase):
         self.keep_logged_in = keep_logged_in
 
     def set_send_mails(self, send_mails):
+        """
+
+
+        :return: None
+        """
         self.should_send_mails = send_mails
 
     def set_send_notifications(self, send_notifications):
+        """
+
+
+        :return: None
+        """
         self.should_send_notifications = send_notifications
 
     def set_show_public_nickname(self, should_show_public_nickname):
+        """
+
+
+        :return: None
+        """
         self.should_show_public_nickname = should_show_public_nickname
 
     def set_last_topic_uid(self, uid):
+        """
+
+
+        :return: None
+        """
         self.last_topic_uid = uid
 
     def set_lang_uid(self, lang_uid):
+        """
+
+
+        :return: None
+        """
         self.lang_uid = lang_uid
 
     def should_hold_the_login(self, keep_logged_in):
+        """
+
+
+        :return: None
+        """
         self.keep_logged_in = keep_logged_in
 
 
@@ -301,13 +358,18 @@ class Statement(DiscussionBase):
         self.is_disabled = is_disabled
 
     def set_textversion(self, uid):
+        """
+
+
+        :return: None
+        """
         self.textversion_uid = uid
 
     def set_disable(self, is_disabled):
         """
 
         :param is_disabled:
-        :return:
+        :return: None
         """
         self.is_disabled = is_disabled
 
@@ -315,12 +377,16 @@ class Statement(DiscussionBase):
         """
 
         :param is_position:
-        :return:
+        :return: None
         """
         self.is_startpoint = is_position
 
     @hybrid_property
     def lang(self):
+        """
+
+        :return:
+        """
         return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
 
 
@@ -352,7 +418,7 @@ class StatementReferences(DiscussionBase):
         :param author_uid:
         :param statement_uid:
         :param issue_uid:
-        :return:
+        :return: None
         """
         self.reference = reference
         self.host = host
@@ -419,7 +485,7 @@ class TextVersion(DiscussionBase):
         Initializes a row in current text versions-table
         :param content:
         :param author:
-        :return:
+        :return: None
         """
         self.content = content
         self.author_uid = author
@@ -431,7 +497,7 @@ class TextVersion(DiscussionBase):
         """
 
         :param statement_uid:
-        :return:
+        :return: None
         """
         self.statement_uid = statement_uid
 
@@ -439,7 +505,7 @@ class TextVersion(DiscussionBase):
         """
 
         :param is_disabled:
-        :return:
+        :return: None
         """
         self.is_disabled = is_disabled
 
@@ -460,7 +526,7 @@ class PremiseGroup(DiscussionBase):
         Initializes a row in current premisesGroup-table
 
         :param author:
-        :return:
+        :return: None
         """
         self.author_uid = author
 
@@ -495,7 +561,7 @@ class Premise(DiscussionBase):
         :param author:
         :param issue:
         :param is_disabled:
-        :return:
+        :return: None
         """
         self.premisesgroup_uid = premisesgroup
         self.statement_uid = statement
@@ -508,15 +574,28 @@ class Premise(DiscussionBase):
     def set_disable(self, is_disabled):
         """
 
+
         :param is_disabled:
-        :return:
+        :return: None
         """
         self.is_disabled = is_disabled
 
     def set_statement(self, statement):
+        """
+
+
+        :param statement:
+        :return:
+        """
         self.statement_uid = statement
 
     def set_premisegroup(self, premisegroup):
+        """
+
+
+        :param premisegroup:
+        :return:
+        """
         self.premisesgroup_uid = premisegroup
 
 
@@ -546,6 +625,7 @@ class Argument(DiscussionBase):
     def __init__(self, premisegroup, issupportive, author, issue, conclusion=None, argument=None, is_disabled=False, timestamp=get_now()):
         """
         Initializes a row in current argument-table
+
         :param premisegroup:
         :param issupportive:
         :param author:
@@ -553,7 +633,8 @@ class Argument(DiscussionBase):
         :param conclusion: Default 0, which will be None
         :param argument: Default 0, which will be None
         :param: is_disabled
-        :return:
+        :param: timestamp
+        :return: None
         """
         self.premisesgroup_uid = premisegroup
         self.conclusion_uid = None if conclusion == 0 else conclusion
@@ -565,13 +646,26 @@ class Argument(DiscussionBase):
         self.is_disabled = is_disabled
 
     def set_conclusions_argument(self, argument):
+        """
+
+
+        :param argument:
+        :return:
+        """
         self.argument_uid = argument
 
     def set_conclusion(self, conclusion):
+        """
+
+
+        :param conclusion:
+        :return:
+        """
         self.conclusion_uid = conclusion
 
     def set_disable(self, is_disabled):
         """
+
 
         :param is_disabled:
         :return:
@@ -580,6 +674,11 @@ class Argument(DiscussionBase):
 
     @hybrid_property
     def lang(self):
+        """
+
+
+        :return:
+        """
         return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
 
 
@@ -601,7 +700,7 @@ class History(DiscussionBase):
 
         :param author_uid:
         :param path:
-        :return:
+        :return: None
         """
         self.author_uid = author_uid
         self.path = path
@@ -631,7 +730,7 @@ class ClickedArgument(DiscussionBase):
         :param author_uid:
         :param is_up_vote:
         :param is_valid:
-        :return:
+        :return: None
         """
         self.argument_uid = argument_uid
         self.author_uid = author_uid
@@ -688,7 +787,7 @@ class ClickedStatement(DiscussionBase):
         :param author_uid:
         :param is_up_vote:
         :param is_valid:
-        :return:
+        :return: None
         """
         self.statement_uid = statement_uid
         self.author_uid = author_uid
@@ -699,6 +798,7 @@ class ClickedStatement(DiscussionBase):
     def set_up_vote(self, is_up_vote):
         """
         Sets up/down vote of this record
+
         :param is_up_vote: boolean
         :return: None
         """
@@ -835,7 +935,7 @@ class ReviewDelete(DiscussionBase):
         """
 
         :param is_executed:
-        :return:
+        :return: None
         """
         self.is_executed = is_executed
 
@@ -843,11 +943,16 @@ class ReviewDelete(DiscussionBase):
         """
 
         :param is_revoked:
-        :return:
+        :return: None
         """
         self.is_revoked = is_revoked
 
     def update_timestamp(self):
+        """
+
+
+        :return:
+        """
         self.timestamp = get_now()
 
 
@@ -886,7 +991,7 @@ class ReviewEdit(DiscussionBase):
         """
 
         :param is_executed:
-        :return:
+        :return: None
         """
         self.is_executed = is_executed
 
@@ -894,11 +999,16 @@ class ReviewEdit(DiscussionBase):
         """
 
         :param is_revoked:
-        :return:
+        :return: None
         """
         self.is_revoked = is_revoked
 
     def update_timestamp(self):
+        """
+
+
+        :return:
+        """
         self.timestamp = get_now()
 
 
@@ -944,6 +1054,7 @@ class ReviewOptimization(DiscussionBase):
     def __init__(self, detector, argument=None, statement=None, is_executed=False, is_revoked=False, timestamp=get_now()):
         """
 
+
         :param detector:
         :param argument:
         :param is_executed:
@@ -958,16 +1069,18 @@ class ReviewOptimization(DiscussionBase):
     def set_executed(self, is_executed):
         """
 
+
         :param is_executed:
-        :return:
+        :return: None
         """
         self.is_executed = is_executed
 
     def set_revoked(self, is_revoked):
         """
 
+
         :param is_revoked:
-        :return:
+        :return: None
         """
         self.is_revoked = is_revoked
 
@@ -996,8 +1109,11 @@ class ReviewDuplicate(DiscussionBase):
         """
 
         :param detector:
-        :param argument:
+        :param duplicate_statement:
+        :param original_statement:
         :param is_executed:
+        :param is_revoked:
+        :param timestamp:
         """
         self.detector_uid = detector
         self.duplicate_statement_uid = duplicate_statement
@@ -1010,7 +1126,7 @@ class ReviewDuplicate(DiscussionBase):
         """
 
         :param is_executed:
-        :return:
+        :return: None
         """
         self.is_executed = is_executed
 
@@ -1018,11 +1134,15 @@ class ReviewDuplicate(DiscussionBase):
         """
 
         :param is_revoked:
-        :return:
+        :return: None
         """
         self.is_revoked = is_revoked
 
     def update_timestamp(self):
+        """
+
+        :return:
+        """
         self.timestamp = get_now()
 
 
@@ -1058,6 +1178,7 @@ class LastReviewerDelete(DiscussionBase):
         :param reviewer:
         :param review:
         :param is_okay:
+        :param timestamp:
         """
         self.reviewer_uid = reviewer
         self.review_uid = review
@@ -1085,6 +1206,7 @@ class LastReviewerDuplicate(DiscussionBase):
         :param reviewer:
         :param review:
         :param is_okay:
+        :param timestamp:
         """
         self.reviewer_uid = reviewer
         self.review_uid = review
@@ -1112,6 +1234,7 @@ class LastReviewerEdit(DiscussionBase):
         :param reviewer:
         :param review:
         :param is_okay:
+        :param timestamp:
         """
         self.reviewer_uid = reviewer
         self.review_uid = review
@@ -1139,6 +1262,7 @@ class LastReviewerOptimization(DiscussionBase):
         :param reviewer:
         :param review:
         :param is_okay:
+        :param timestamp:
         """
         self.reviewer_uid = reviewer
         self.review_uid = review
@@ -1163,6 +1287,8 @@ class ReputationHistory(DiscussionBase):
         """
 
         :param reputator:
+        :param reputation:
+        :param timestamp:
         """
         self.reputator_uid = reputator
         self.reputation_uid = reputation
@@ -1202,6 +1328,7 @@ class OptimizationReviewLocks(DiscussionBase):
 
         :param author:
         :param review_optimization:
+        :param timestamp:
         """
         self.author_uid = author
         self.review_optimization_uid = review_optimization
@@ -1232,6 +1359,9 @@ class ReviewCanceled(DiscussionBase):
         :param review_edit:
         :param review_delete:
         :param review_optimization:
+        :param review_duplicate:
+        :param was_ongoing:
+        :param timestamp:
         """
         self.author_uid = author
         self.review_edit_uid = review_edit
@@ -1243,6 +1373,9 @@ class ReviewCanceled(DiscussionBase):
 
 
 class RevokedContent(DiscussionBase):
+    """
+
+    """
     __tablename__ = 'revoked_content'
     uid = Column(Integer, primary_key=True)
     author_uid = Column(Integer, ForeignKey('users.uid'))
@@ -1255,6 +1388,14 @@ class RevokedContent(DiscussionBase):
     statements = relationship('Statement', foreign_keys=[statement_uid])
 
     def __init__(self, author, argument=None, statement=None, timestamp=get_now()):
+        """
+
+
+        :param author:
+        :param argument:
+        :param statement:
+        :param timestamp:
+        """
         self.author_uid = author
         self.argument_uid = argument
         self.statement_uid = statement
@@ -1262,6 +1403,9 @@ class RevokedContent(DiscussionBase):
 
 
 class RevokedContentHistory(DiscussionBase):
+    """
+
+    """
     __tablename__ = 'revoked_content_history'
     uid = Column(Integer, primary_key=True)
     old_author_uid = Column(Integer, ForeignKey('users.uid'))
@@ -1282,6 +1426,9 @@ class RevokedContentHistory(DiscussionBase):
 
 
 class RevokedDuplicate(DiscussionBase):
+    """
+
+    """
     __tablename__ = 'revoked_duplicate'
     uid = Column(Integer, primary_key=True)
     review_uid = Column(Integer, ForeignKey('review_duplicates.uid'))
@@ -1309,6 +1456,9 @@ class RevokedDuplicate(DiscussionBase):
 
 
 class RSS(DiscussionBase):
+    """
+
+    """
     __tablename__ = 'rss'
     uid = Column(Integer, primary_key=True)
     author_uid = Column(Integer, ForeignKey('users.uid'))
@@ -1321,6 +1471,14 @@ class RSS(DiscussionBase):
     issues = relationship('Issue', foreign_keys=[issue_uid])
 
     def __init__(self, author, issue, title, description, timestamp=get_now()):
+        """
+
+        :param author:
+        :param issue:
+        :param title:
+        :param description:
+        :param timestamp:
+        """
         self.author_uid = author
         self.issue_uid = issue
         self.title = title
