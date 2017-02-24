@@ -591,7 +591,7 @@ de_lang = {
     _.strongerStatementEnd: 'davon, dass',
 
     _.search: 'Suche',
-    _.searchForStatements: 'Aussagensuche',
+    _.searchForStatements: 'Suche von Aussagen',
     _.serviceNotAvailable: 'Dienst aktuell nicht verfügbar',
     _.someoneArgued: 'Es wurde gesagt, dass',
     _.soYouEnteredMultipleReasons: 'Sie haben mehrere Gründe eingegeben',

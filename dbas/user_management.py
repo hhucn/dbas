@@ -4,24 +4,25 @@ Handler for user-accounts
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import transaction
 import random
 from datetime import date, timedelta
 
 import arrow
+import transaction
+from sqlalchemy import and_
+
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, ClickedStatement, ClickedArgument, TextVersion, Settings, \
     ReviewEdit, ReviewDelete, ReviewOptimization, get_now, sql_timestamp_pretty_print, MarkedArgument, MarkedStatement
+from dbas.helper.email import send_mail
+from dbas.helper.notification import send_welcome_notification
 from dbas.lib import python_datetime_pretty_print, get_text_for_argument_uid,\
     get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from sqlalchemy import and_
-from dbas.helper.email import send_mail
-from dbas.helper.notification import send_welcome_notification
 
 # from https://moodlist.net/
 moodlist = ['Accepted', 'Accomplished', 'Aggravated', 'Alone', 'Amused', 'Angry', 'Annoyed', 'Anxious', 'Apathetic',
