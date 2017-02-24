@@ -198,7 +198,7 @@ function AjaxSettingsHandler(){
 	/**
 	 * Ajax request for getting all arguments, which the user voted for
 	 */
-	this.getArgumentVotes = function(){
+	this.getMarekdArguments = function(){
 		if ($('#' + discussionArgVoteCountId).text() === '0'){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 			return;
@@ -206,14 +206,14 @@ function AjaxSettingsHandler(){
 
 		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
-			url: 'ajax_get_all_argument_votes',
+			url: 'ajax_get_all_marked_arguments',
 			method: 'GET',
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function getArgumentVotesDone(data) {
+		}).done(function gertMarkedArgumentsDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), false);
-		}).fail(function getArgumentVotesFail() {
+		}).fail(function gertMarkedArgumentsFail() {
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
 		});
 	};
@@ -229,14 +229,14 @@ function AjaxSettingsHandler(){
 
 		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
-			url: 'ajax_get_all_statement_votes',
+			url: 'ajax_get_all_marked_statements',
 			method: 'GET',
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function getStatementVotesDone(data) {
+		}).done(function getMarkedStatementsDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), false);
-		}).fail(function getStatementVotesFail() {
+		}).fail(function getMarkedStatementsFail() {
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
 		});
 	};

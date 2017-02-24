@@ -396,7 +396,7 @@ $(function () {
 	});
 
 	$('#' + infoVoteArgumentsId).click(function (){
-		new AjaxSettingsHandler().getArgumentVotes();
+		new AjaxSettingsHandler().getMarekdArguments();
 	});
 
 	$('#' + infoVoteStatementsId).click(function (){

@@ -14,7 +14,7 @@ from sqlalchemy import and_
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, ClickedStatement, ClickedArgument, TextVersion, Settings, \
-    ReviewEdit, ReviewDelete, ReviewOptimization, get_now, sql_timestamp_pretty_print, MarkedArgument, MarkedStatement
+    ReviewEdit, ReviewDelete, ReviewOptimization, get_now, sql_timestamp_pretty_print, MarkedArgument, MarkedStatement, ReviewDuplicate
 from dbas.helper.email import send_mail
 from dbas.helper.notification import send_welcome_notification
 from dbas.lib import python_datetime_pretty_print, get_text_for_argument_uid,\
@@ -273,26 +273,30 @@ def get_public_information_data(nickname, lang):
 
 def get_reviews_of(user, only_today):
     """
+    Returns the sum of all reviews of the given user
 
-    :param user:
-    :param only_today:
-    :return:
+    :param user: User
+    :param only_today: Boolean
+    :return: Int
     """
     db_edits = DBDiscussionSession.query(ReviewEdit).filter_by(detector_uid=user.uid)
     db_deletes = DBDiscussionSession.query(ReviewDelete).filter_by(detector_uid=user.uid)
     db_optimizations = DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=user.uid)
+    db_duplicates = DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=user.uid)
 
     if only_today:
         today       = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
         db_edits = db_edits.filter(ReviewEdit.timestamp >= today)
         db_deletes = db_deletes.filter(ReviewDelete.timestamp >= today)
         db_optimizations = db_optimizations.filter(ReviewOptimization.timestamp >= today)
+        db_duplicates = ReviewDuplicate.filter(ReviewOptimization.timestamp >= today)
 
     db_edits = db_edits.all()
     db_deletes = db_deletes.all()
     db_optimizations = db_optimizations.all()
+    db_duplicates = db_duplicates.all()
 
-    return len(db_edits) + len(db_deletes) + len(db_optimizations)
+    return len(db_edits) + len(db_deletes) + len(db_optimizations) + len(db_duplicates)
 
 
 def get_count_of_statements_of_user(user, only_edits, limit_on_today=False):
@@ -302,7 +306,7 @@ def get_count_of_statements_of_user(user, only_edits, limit_on_today=False):
     :param user: User
     :param only_edits: Boolean
     :param limit_on_today: Boolean
-    :return:
+    :return: Int
     """
     if not user:
         return 0
@@ -327,11 +331,11 @@ def get_count_of_statements_of_user(user, only_edits, limit_on_today=False):
 
 def get_count_of_votes_of_user(user, limit_on_today=False):
     """
-    Returns the count of votes of the user
+    Returns the count of marked ones of the user
 
     :param user: User
     :param limit_on_today: Boolean
-    :return:
+    :return: Int, Int
     """
     if not user:
         return 0
@@ -352,11 +356,11 @@ def get_count_of_votes_of_user(user, limit_on_today=False):
 
 def get_count_of_clicks_of_user(user, limit_on_today=False):
     """
-    Returns the count of votes of the user
+    Returns the count of clicks of the user
 
     :param user: User
     :param limit_on_today: Boolean
-    :return:
+    :return: Int, Int
     """
     if not user:
         return 0
@@ -383,7 +387,7 @@ def get_textversions_of_user(public_nickname, lang, timestamp_after=None, timest
     :param lang: ui_locales
     :param timestamp_after: Arrow or None
     :param timestamp_before: Arrow or None
-    :return:
+    :return: [{},...], [{},...]
     """
     statement_array = []
     edit_array = []
@@ -419,13 +423,14 @@ def get_textversions_of_user(public_nickname, lang, timestamp_after=None, timest
     return statement_array, edit_array
 
 
-def get_votes_of_user(user, is_argument, lang):
+def get_marked_elements_of_user(user, is_argument, lang):
     """
+    Get all marked arguments/statements of the user
 
-    :param user:
-    :param is_argument:
-    :param lang:
-    :return:
+    :param user: User
+    :param is_argument: Boolean
+    :param lang: uid_locales
+    :return: [{},...]
     """
     return_array = []
 
@@ -455,11 +460,12 @@ def get_votes_of_user(user, is_argument, lang):
 
 def get_clicks_of_user(user, is_argument, lang):
     """
+    Returs array with all clicks done by the user
 
-    :param user:
-    :param is_argument:
-    :param lang:
-    :return:
+    :param user: user.nickname
+    :param is_argument: Boolean
+    :param lang: ui_locales
+    :return: [{},...]
     """
     return_array = []
 
@@ -495,7 +501,7 @@ def get_information_of(db_user, lang):
 
     :param db_user: User
     :param lang: ui_locales
-    :return:
+    :return: dict()
     """
     db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
     ret_dict = dict()
@@ -551,6 +557,7 @@ def get_summary_of_today(nickname):
 
 def change_password(user, old_pw, new_pw, confirm_pw, lang):
     """
+    Change password of given user
 
     :param user: current database user
     :param old_pw: old received password
@@ -604,26 +611,26 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
     return message, success
 
 
-def create_new_user(firstname, lastname, email, nickname, password, gender, db_group_uid, ui_locales):
+def __create_new_user(firstname, lastname, email, nickname, password, gender, db_group_uid, ui_locales):
     """
+    Insert a new user row
 
-    :param request:
-    :param firstname:
-    :param lastname:
-    :param email:
-    :param nickname:
-    :param password:
-    :param gender:
-    :param db_group_uid:
-    :param ui_locales:
-    :return:
+    :param firstname: String
+    :param lastname: String
+    :param email: String
+    :param nickname: String
+    :param password: String
+    :param gender: String
+    :param db_group_uid: Group.uid
+    :param ui_locales: Language.ui_locales
+    :return: String, String, User
     """
     success = ''
     info = ''
 
     _t = Translator(ui_locales)
     # creating a new user with hashed password
-    logger('UserManagement', 'create_new_user', 'Adding user ' + nickname)
+    logger('UserManagement', '__create_new_user', 'Adding user ' + nickname)
     hashed_password = password_handler.get_hashed_password(password)
     newuser = User(firstname=firstname,
                    surname=lastname,
@@ -645,17 +652,30 @@ def create_new_user(firstname, lastname, email, nickname, password, gender, db_g
     # sanity check, whether the user exists
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if db_user:
-        logger('UserManagement', 'create_new_user', 'New data was added with uid ' + str(db_user.uid))
+        logger('UserManagement', '__create_new_user', 'New data was added with uid ' + str(db_user.uid))
         success = _t.get(_.accountWasAdded).format(nickname)
 
     else:
-        logger('UserManagement', 'create_new_user', 'New data was not added')
+        logger('UserManagement', '__create_new_user', 'New data was not added')
         info = _t.get(_.accoutErrorTryLateOrContant)
 
     return success, info, db_user
 
 
 def set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn):
+    """
+    Let's create a new user
+
+    :param request: current request of web server
+    :param firstname: String
+    :param lastname: String
+    :param nickname: String
+    :param gender: String
+    :param email: String
+    :param password: String
+    :param _tn: Translaator
+    :return: Boolean, msg
+    """
     # getting the authors group
     db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
 
@@ -665,8 +685,8 @@ def set_new_user(request, firstname, lastname, nickname, gender, email, password
         logger('ViewHelper', 'set_new_user', 'Internal error occured')
         return False, info
 
-    success, info, db_new_user = create_new_user(firstname, lastname, email, nickname, password, gender,
-                                                 db_group.uid, _tn.get_lang())
+    success, info, db_new_user = __create_new_user(firstname, lastname, email, nickname, password, gender,
+                                                   db_group.uid, _tn.get_lang())
 
     if db_new_user:
         # sending an email and message

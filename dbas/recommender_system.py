@@ -21,9 +21,10 @@ max_count = 6
 
 def get_uids_of_best_positions(db_statements):
     """
+    Returns the uids of the n best positions
 
-    :param db_statements:
-    :return:
+    :param db_statements: [Statement]
+    :return: [Statement.uid]
     """
     if db_statements is None:
         return []
@@ -34,9 +35,10 @@ def get_uids_of_best_positions(db_statements):
 
 def get_uids_of_best_statements_for_justify_position(db_arguments):
     """
+    Get the best statements to justify the position
 
-    :param db_arguments:
-    :return:
+    :param db_arguments: [Statement]
+    :return: [Statement.uid]
     """
     if db_arguments is None:
         return []
@@ -47,9 +49,10 @@ def get_uids_of_best_statements_for_justify_position(db_arguments):
 
 def get_uids_of_best_statements_for_justify_argument(db_arguments):
     """
+    Get the best statements to support an argument
 
-    :param db_arguments:
-    :return:
+    :param db_arguments: [Argument]
+    :return: [Argument.uid]
     """
     if db_arguments is None:
         return []

@@ -49,7 +49,7 @@ from dbas.helper.views import preparation_for_view, get_nickname, try_to_contact
     try_to_register_new_user_via_ajax, prepare_parameter_for_justification, login_user
 from dbas.helper.voting import add_vote_for_argument, clear_vote_and_seen_values_of_user
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_argument, \
-    check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement, supports_for_same_conclusion
+    check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement, related_with_support
 from dbas.lib import get_language, escape_string, get_discussion_language, \
     get_user_by_private_or_public_nickname, is_user_author_or_admin, \
     get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid, get_profile_picture, \
@@ -859,7 +859,7 @@ def discussion_support(request, for_api=False, api_data=None):
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
-    if not check_belonging_of_argument(issue, arg_user_uid) or not check_belonging_of_argument(issue, arg_system_uid) or not supports_for_same_conclusion(arg_user_uid, arg_system_uid):
+    if not check_belonging_of_argument(issue, arg_user_uid) or not check_belonging_of_argument(issue, arg_system_uid) or not related_with_support(arg_user_uid, arg_system_uid):
         logger('discussion_support', 'def', 'no item dict', error=True)
         raise HTTPNotFound()
         # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
@@ -1325,8 +1325,8 @@ def get_all_edits_of_user(request):
 
 
 # ajax - getting all votes for arguments
-@view_config(route_name='ajax_get_all_argument_votes', renderer='json')
-def get_all_argument_votes(request):
+@view_config(route_name='ajax_get_all_marked_arguments', renderer='json')
+def get_all_marked_arguments(request):
     """
     Request for all marked arguments of the user
 
@@ -1336,15 +1336,15 @@ def get_all_argument_votes(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
-    logger('get_all_argument_votes', 'def', 'main')
+    logger('get_all_marked_arguments', 'def', 'main')
     ui_locales = get_language(request)
-    return_array = user_manager.get_votes_of_user(request_authenticated_userid, True, ui_locales)
+    return_array = user_manager.get_marked_elements_of_user(request_authenticated_userid, True, ui_locales)
     return json.dumps(return_array)
 
 
 # ajax - getting all votes for statements
-@view_config(route_name='ajax_get_all_statement_votes', renderer='json')
-def get_all_statement_votes(request):
+@view_config(route_name='ajax_get_all_marked_statements', renderer='json')
+def get_all_marked_statements(request):
     """
     Request for all marked statements of the user
 
@@ -1354,9 +1354,9 @@ def get_all_statement_votes(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
-    logger('get_all_statement_votes', 'def', 'main')
+    logger('get_all_marked_statements', 'def', 'main')
     ui_locales = get_language(request)
-    return_array = user_manager.get_votes_of_user(request_authenticated_userid, False, ui_locales)
+    return_array = user_manager.get_marked_elements_of_user(request_authenticated_userid, False, ui_locales)
     return json.dumps(return_array)
 
 

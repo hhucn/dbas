@@ -44,8 +44,9 @@ def get_global_url():
 
 def get_changelog(no):
     """
-    Returns the c last entries from the changelog
+    Returns the 'no' last entries from the changelog
 
+    :param no: int
     :return: list
     """
     path = str(os.path.realpath(__file__ + '/../../CHANGELOG.md'))
@@ -104,7 +105,6 @@ def get_language(request):
     Returns current ui locales code which is saved in current cookie or the registry.
 
     :param request: request
-    :param current_registry: get_current_registry()
     :return: ui_locales
     """
     try:
@@ -120,6 +120,7 @@ def get_discussion_language(request, current_issue_uid=1):
     CALL AFTER issue_helper.get_id_of_slug(..)!
 
     :param request: self.request
+    :param current_issue_uid: uid
     :return:
     """
     # first matchdict, then params, then session, afterwards fallback
@@ -135,11 +136,11 @@ def get_discussion_language(request, current_issue_uid=1):
 
 def python_datetime_pretty_print(ts, lang):
     """
+    Pretty print of a locale
 
-
-    :param ts:
-    :param lang:
-    :return:
+    :param ts:  Timestamp
+    :param lang: ui_locales
+    :return: String
     """
     formatter = '%d. %b.'
     if lang == 'de':
@@ -192,6 +193,13 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
 
 
 def __get_argument_of_premisegroup(premisesgroup_uid, include_disabled):
+    """
+    Returns all arguments with the given premisegroup
+
+    :param premisesgroup_uid: PremisgGroup.uid
+    :param include_disabled: Boolean
+    :return: list of Arguments
+    """
     if include_disabled:
         db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premisesgroup_uid).all()
     else:
@@ -202,6 +210,13 @@ def __get_argument_of_premisegroup(premisesgroup_uid, include_disabled):
 
 
 def __get_undercuts_of_argument(argument_uid, include_disabled):
+    """
+    Returns all undercuts fo the given argument
+
+    :param argument_uid: Argument.uid
+    :param include_disabled: boolean
+    :return: list of Arguments
+    """
     if include_disabled:
         db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument_uid).all()
     else:
@@ -213,6 +228,13 @@ def __get_undercuts_of_argument(argument_uid, include_disabled):
 
 
 def __get_arguments_of_conclusion(statement_uid, include_disabled):
+    """
+    Returns all arguments, where the statement is set as conclusion
+
+    :param statement_uid: Statement.uid
+    :param include_disabled: Boolean
+    :return: list of arguments
+    """
     if include_disabled:
         db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=statement_uid).all()
     else:
@@ -227,6 +249,8 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
                               support_counter_argument=False):
     """
     Returns current argument as string like "conclusion, because premise1 and premise2"
+
+    Please, do not touch this!
 
     :param uid: Integer
     :param with_html_tag: Boolean
@@ -338,9 +362,10 @@ def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanage
 
 def get_slug_by_statement_uid(uid):
     """
+    Returns slug for the given Issue.uid
 
-    :param uid:
-    :return:
+    :param uid: Issue.uid
+    :return: String
     """
     db_statement = DBDiscussionSession.query(Statement).get(uid)
     return resolve_issue_uid_to_slug(db_statement.issue_uid)
@@ -348,10 +373,11 @@ def get_slug_by_statement_uid(uid):
 
 def __build_argument_for_jump(arg_array, with_html_tag):
     """
+    Build tet for an argument, if we jump to this argument
 
-    :param arg_array:
-    :param with_html_tag:
-    :return:
+    :param arg_array: [Argument]
+    :param with_html_tag: Boolean
+    :return: String
     """
     tag_premise = ('<' + tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
     tag_conclusion = ('<' + tag_type + ' data-argumentation-type="argument">') if with_html_tag else ''
@@ -425,18 +451,22 @@ def __build_argument_for_jump(arg_array, with_html_tag):
 def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_position, attack_type, _t, start_with_intro,
                             is_users_opinion, anonymous_style, support_counter_argument=False, author_uid=None):
     """
+    Build up argument text for a single argument
 
-    :param uid:
-    :param rearrange_intro:
-    :param with_html_tag:
-    :param colored_position:
-    :param attack_type:
-    :param _t:
-    :param start_with_intro:
-    :param is_users_opinion:
-    :param anonymous_style:
-    :param support_counter_argument:
-    :return:
+    Please, do not touch this!
+
+    :param uid: Argument.uid
+    :param rearrange_intro: Boolean
+    :param with_html_tag: Boolean
+    :param colored_position: Boolean
+    :param attack_type: String
+    :param _t: Translator
+    :param start_with_intro: Boolean
+    :param is_users_opinion: Boolean
+    :param anonymous_style: Boolean
+    :param support_counter_argument: Boolean
+    :param author_uid: User.uid
+    :return: String
     """
     logger('DBAS.LIB', '__build_single_argument', 'main ' + str(uid))
     db_argument = DBDiscussionSession.query(Argument).get(uid)
@@ -507,10 +537,10 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     :param user_changed_opinion:
     :param with_html_tag:
     :param start_with_intro:
-    :param doesnt_hold_because:
     :param minimize_on_undercut:
-    :param _t:
     :param anonymous_style:
+    :param premisegroup_by_user:
+    :param _t:
     :return:
     """
     logger('DBAS.LIB', '__build_nested_argument', 'main ' + str(arg_array))
@@ -653,7 +683,6 @@ def get_text_for_conclusion(argument, start_with_intro=False, rearrange_intro=Fa
     Check the arguments conclusion whether it is an statement or an argument and returns the text
 
     :param argument: Argument
-    :param lang: ui_locales
     :param start_with_intro: Boolean
     :param rearrange_intro: Boolean
     :return: String
@@ -727,22 +756,32 @@ def get_user_by_private_or_public_nickname(nickname):
 
 def get_user_by_case_insensitive_nickname(nickname):
     """
-    :param nickname:
-    :return:
+    Returns user with given nickname
+
+    :param nickname: String
+    :return: User or None
     """
     return DBDiscussionSession.query(User).filter(func.lower(User.nickname) == func.lower(nickname)).first()
 
 
 def get_user_by_case_insensitive_public_nickname(public_nickname):
     """
-    :param public_nickname:
-    :return:
+    Returns user with given public nickname
+
+    :param public_nickname: String
+    :return: User or None
     """
     return DBDiscussionSession.query(User).filter(
         func.lower(User.public_nickname) == func.lower(public_nickname)).first()
 
 
 def pretty_print_options(message):
+    """
+    Some modifications for pretty printing
+
+    :param message: String
+    :return:  String
+    """
 
     # check for html
     if message[0:1] == '<':
@@ -820,14 +859,26 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
         'is_users_opinion': str(is_users_opinion),
     }
 
-    votecount_keys = __get_text_for_votecount(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang)
+    votecount_keys = __get_text_for_click_count(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang)
 
     speech['votecounts_message'] = votecount_keys[speech['votecounts']]
 
     return speech
 
 
-def __get_text_for_votecount(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang):
+def __get_text_for_click_count(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang):
+    """
+    Build text for a bubble, how many other participants have the same interest?
+
+    :param nickname: User.nickname
+    :param is_user: boolean
+    :param is_supportive: boolean
+    :param argument_uid: Argument.uid
+    :param statement_uid: Statement.uid
+    :param speech: dict()
+    :param lang: ui_locales
+    :return: [String]
+    """
     db_votecounts = None
 
     if is_supportive is None:
@@ -935,10 +986,11 @@ def is_argument_disabled_due_to_disabled_statements(argument):
 
 def is_author_of_statement(nickname, statement_uid):
     """
+    Is the user with given nickname author of the statement?
 
-    :param nickname:
-    :param statement_uid:
-    :return:
+    :param nickname: User.nickname
+    :param statement_uid: Statement.uid
+    :return: Boolean
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     if not db_user:
@@ -952,10 +1004,11 @@ def is_author_of_statement(nickname, statement_uid):
 
 def is_author_of_argument(nickname, argument_uid):
     """
+    Is the user with given nickname author of the argument?
 
-    :param nickname:
-    :param argument_uid:
-    :return:
+    :param nickname: User.nickname
+    :param argument_uid: Argument.uid
+    :return: Boolean
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     if not db_user:
@@ -1052,8 +1105,9 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
 
 def validate_recaptcha(recaptcha):
     """
+    Validates googles recaptcha
 
-    :param recaptcha:
+    :param recaptcha: Recaptcha
     :return:
     """
     logger('Lib', 'validate_recaptcha', 'recaptcha ' + str(recaptcha))
@@ -1086,6 +1140,13 @@ def validate_recaptcha(recaptcha):
 
 
 def bubbles_already_last_in_list(bubble_list, bubbles):
+    """
+    Are the given bubbles already at the end of the bubble list
+
+    :param bubble_list: list of Bubbles
+    :param bubbles:  list of bubbles
+    :return: Boolean
+    """
     if isinstance(bubbles, list):
         length = len(bubbles)
     else:
@@ -1116,6 +1177,12 @@ def bubbles_already_last_in_list(bubble_list, bubbles):
 
 
 def __cleanhtml(raw_html):
+    """
+    Strip out html code
+
+    :param raw_html: String
+    :return: String
+    """
     cleanr = re.compile('<.*?>')
     cleantext = re.sub(cleanr, '', raw_html)
     return cleantext

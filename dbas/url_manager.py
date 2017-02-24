@@ -7,14 +7,12 @@ Managing URLS can be done with a very hardcoded scheme. We are differentiating b
 * Getting confronted because the user clicked his first statement
 * Justify the reaction due to the confrontation
 * Choose an point for the discussion, when two or more statements we entered
+...
 
 Next to this we have a 404 page.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-
-
-# from .logger import logger
 
 
 class UrlManager(object):
