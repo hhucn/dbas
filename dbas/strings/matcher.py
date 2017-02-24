@@ -6,21 +6,21 @@ Provides methods for comparing strings.
 
 import difflib
 import json
+from collections import OrderedDict
 from itertools import islice
 
-from collections import OrderedDict
-from sqlalchemy import and_, func
 from Levenshtein import distance
+from sqlalchemy import and_, func
 
+import dbas.helper.issue as issue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue
-from dbas.lib import get_public_profile_picture
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.helper.views import get_nickname
-from dbas.strings.keywords import Keywords as _
+from dbas.lib import get_public_profile_picture
 from dbas.query_wrapper import get_not_disabled_statement_as_query
+from dbas.strings.keywords import Keywords as _
 from dbas.url_manager import UrlManager
-import dbas.helper.issue as issue_helper
 
 list_length = 5
 max_count_zeros = 5
@@ -32,37 +32,49 @@ mechanism = 'Levensthein'
 
 def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra=None):
     """
+    Get dictionary with matching words, based on the given mode
 
-    :param _tn:
-    :param for_api:
-    :param api_data:
-    :param request_authenticated_userid:
-    :param value:
-    :param mode:
-    :param issue:
-    :param extra:
-    :return:
+    :param _tn: Translator
+    :param for_api: Boolean
+    :param api_data: data from the api
+    :param request_authenticated_userid: users nickname
+    :param value: users value, which should be the base for searching
+    :param mode: int
+    :param issue: Issue.uid
+    :param extra: Array
+    :return: Dictionary
     """
 
     return_dict = {}
     if mode == '0':  # start statement
-        return_dict['distance_name'], return_dict['values'] = get_strings_for_start(value, issue, True)
+        return_dict['values'] = get_strings_for_start(value, issue, True)
+        return_dict['distance_name'] = mechanism
+
     elif mode == '1':  # edit statement popup
-        return_dict['distance_name'], return_dict['values'] = get_strings_for_edits(value, extra)
+        return_dict['values'] = get_strings_for_edits(value, extra)
+        return_dict['distance_name'] = mechanism
+
     elif mode == '2':  # start premise
-        return_dict['distance_name'], return_dict['values'] = get_strings_for_start(value, issue, False)
+        return_dict['values'] = get_strings_for_start(value, issue, False)
+        return_dict['distance_name'] = mechanism
+
     elif mode == '3':  # adding reasons
         global mechanism
         count, extra, mechanism = __get_vars_for_reasons(extra)
-        return_dict['distance_name'], return_dict['values'] = get_strings_for_reasons(value, issue, count, extra[1])
+        return_dict['values'] = get_strings_for_reasons(value, issue, count, extra[1])
+        return_dict['distance_name'] = mechanism
+
     elif mode == '4':  # getting text
         return_dict = get_strings_for_search(value)
+
     elif mode == '5':  # getting public nicknames
         nickname = get_nickname(request_authenticated_userid, for_api, api_data)
-        return_dict['distance_name'], return_dict['values'] = get_strings_for_public_nickname(value, nickname)
+        return_dict['values'] = get_strings_for_public_nickname(value, nickname)
+        return_dict['distance_name'] = mechanism
+
     elif mode == '9':  # search everything
-        tmp, suggstions = get_all_strings_for(request, value)
-        return_dict = {'suggestions': suggstions}
+        return_dict = {'suggestions': get_all_statements_with_value(request, value)}
+
     else:
         return_dict = {'error': _tn.get(_.internalError)}
 
@@ -71,9 +83,10 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
 
 def __get_vars_for_reasons(extra):
     """
+    Check if the extra is nen array and prepared for the 'reason search'
 
-    :param extra:
-    :return:
+    :param extra: unefined
+    :return: int, extra, string
     """
     global mechanism
     try:
@@ -88,12 +101,13 @@ def __get_vars_for_reasons(extra):
     return count, extra, mechanism
 
 
-def get_all_strings_for(request, value):
+def get_all_statements_with_value(request, value):
     """
-    Checks all statements
+    Returns all statements, where with the value
 
     :param request: request
     :param value: string
+    :return
     """
     issue_uid = issue_helper.get_issue_id(request)
     db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue_uid).all()
@@ -108,7 +122,7 @@ def get_all_strings_for(request, value):
 
     return_array = __sort_array(return_array)
 
-    return mechanism, return_array[:list_length]
+    return return_array[:list_length]
 
 
 def get_strings_for_start(value, issue, is_startpoint):
@@ -131,7 +145,7 @@ def get_strings_for_start(value, issue, is_startpoint):
 
     return_array = __sort_array(return_array)
 
-    return mechanism, return_array[:list_length]
+    return return_array[:list_length]
 
 
 def get_strings_for_edits(value, statement_uid):
@@ -139,7 +153,7 @@ def get_strings_for_edits(value, statement_uid):
     Checks different textversion-strings for a match with given value
 
     :param value: string
-    :param statement_uid:
+    :param statement_uid: Statement.uid
     :return: dict()
     """
 
@@ -155,7 +169,7 @@ def get_strings_for_edits(value, statement_uid):
 
     return_array = __sort_array(return_array)
 
-    return mechanism, return_array[:list_length]
+    return return_array[:list_length]
 
 
 def get_strings_for_reasons(value, issue, count=list_length, oem_value=''):
@@ -163,8 +177,9 @@ def get_strings_for_reasons(value, issue, count=list_length, oem_value=''):
     Checks different textversion-strings for a match with given value
 
     :param value: string
-    :param issue: int
-    :param issue: count
+    :param issue: Issue.uid
+    :param count: integer
+    :param oem_value: string
     :return: dict()
     """
     db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
@@ -181,15 +196,15 @@ def get_strings_for_reasons(value, issue, count=list_length, oem_value=''):
     # logger('fuzzy_string_matcher', 'get_strings_for_reasons', 'string: ' + value + ', issue: ' + str(issue) +
     #        ', dictionary length: ' + str(len(return_array)), debug=True)
 
-    return mechanism, return_array[:count]
+    return return_array[:count]
 
 
 def get_strings_for_issues(value):
     """
     Checks different issue-strings for a match with given value
 
-    :param value:
-    :return:
+    :param value: string
+    :return: dict()
     """
     db_issues = DBDiscussionSession.query(Issue).all()
     return_array = []
@@ -200,7 +215,7 @@ def get_strings_for_issues(value):
 
     return_array = __sort_array(return_array)
 
-    return mechanism, return_array[:list_length]
+    return return_array[:list_length]
 
 
 def get_strings_for_search(value):
@@ -228,12 +243,13 @@ def get_strings_for_search(value):
 
 def __get_fuzzy_string_dict(index=0, current_text='', return_text='', uid=0):
     """
+    Returns dictionary with index, distance, text and statement_uid as keys
 
-    :param index:
-    :param current_text:
-    :param return_text:
-    :param uid:
-    :return:
+    :param index: int
+    :param current_text: string
+    :param return_text: string
+    :param uid: int
+    :return: dict()
     """
     return {'index': index,
             'distance': get_distance(current_text.lower(), return_text.lower()),
@@ -243,10 +259,11 @@ def __get_fuzzy_string_dict(index=0, current_text='', return_text='', uid=0):
 
 def get_strings_for_public_nickname(value, nickname):
     """
+    Returns dictionaries with public nicknames of users, where the nickname containts the value
 
-    :param value:
-    :param nickname:
-    :return:
+    :param value: String
+    :param nickname: current users nickname
+    :return: dict()
     """
     db_user = DBDiscussionSession.query(User).filter(func.lower(User.public_nickname).contains(func.lower(value)),
                                                      ~User.public_nickname.in_([nickname, 'admin', nick_of_anonymous_user])).all()
@@ -260,14 +277,15 @@ def get_strings_for_public_nickname(value, nickname):
                              'avatar': get_public_profile_picture(user)})
 
     return_array = __sort_array(return_array)
-    return mechanism, return_array[:list_length]
+    return return_array[:list_length]
 
 
 def __sort_array(list):
     """
+    Returns sorted array, based on the distance
 
-    :param list:
-    :return:
+    :param list: Array
+    :return: Array
     """
     return_list = []
     newlist = sorted(list, key=lambda k: k['distance'])
@@ -285,9 +303,10 @@ def __sort_array(list):
 
 def __sort_dict(dictionary):
     """
+    Returns sorted dictionary, based on the distance
 
-    :param dictionary:
-    :return:
+    :param dictionary: dict()
+    :return: dict()
     """
     dictionary = OrderedDict(sorted(dictionary.items()))
     return_dict = OrderedDict()
@@ -304,10 +323,11 @@ def __sort_dict(dictionary):
 
 def get_distance(string_a, string_b):
     """
+    Returns the distance between two string. Distance is based on Levensthein or difflibs Sequence Matcher
 
-    :param string_a:
-    :param string_b:
-    :return:
+    :param string_a: String
+    :param string_b: String
+    :return: distance as zero filled string
     """
     # logger('fuzzy_string_matcher', 'get_distance', string_a + ' - ' + string_b)
     if mechanism == 'Levensthein':

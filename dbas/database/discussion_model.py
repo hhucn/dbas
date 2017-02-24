@@ -81,7 +81,11 @@ class Issue(DiscussionBase):
 
     @classmethod
     def by_text(cls):
-        """Return a query of positions sorted by text."""
+        """
+        Return a query of positions sorted by text.
+
+        :return: Query
+        """
         return DBDiscussionSession.query(Issue).order_by(Issue.text)
 
     def get_slug(self):
@@ -89,12 +93,18 @@ class Issue(DiscussionBase):
 
     @hybrid_property
     def lang(self):
+        """
+        Returns ui_locale abbreviation of current langauge
+
+        :return: String
+        """
         return DBDiscussionSession.query(Language).get(self.lang_uid).ui_locales
 
     def set_disable(self, is_disabled):
         """
+        Disabled current issue
 
-        :param is_disabled:
+        :param is_disabled: Boolean
         :return: None
         """
         self.is_disabled = is_disabled
@@ -200,7 +210,7 @@ class User(DiscussionBase):
 
     def update_last_login(self):
         """
-
+        Refreshed timestamp of last login
 
         :return: None
         """
@@ -208,7 +218,7 @@ class User(DiscussionBase):
 
     def update_last_action(self):
         """
-
+        Refreshed timestamp of last action
 
         :return: None
         """
@@ -216,7 +226,7 @@ class User(DiscussionBase):
 
     def update_token_timestamp(self):
         """
-
+        Refreshed tokens timestamp
 
         :return: None
         """
@@ -224,7 +234,7 @@ class User(DiscussionBase):
 
     def set_token(self, token):
         """
-
+        Set token
 
         :return: None
         """
@@ -232,7 +242,7 @@ class User(DiscussionBase):
 
     def set_public_nickname(self, nick):
         """
-
+        Set public nickname
 
         :return: None
         """
@@ -282,48 +292,54 @@ class Settings(DiscussionBase):
 
     def set_send_mails(self, send_mails):
         """
+        Set boolean value whether mails should be send
 
-
+        :param send_mails: Boolean
         :return: None
         """
         self.should_send_mails = send_mails
 
     def set_send_notifications(self, send_notifications):
         """
+        Set boolean value whether notifications should be send
 
-
+        :param send_notifications:
         :return: None
         """
         self.should_send_notifications = send_notifications
 
     def set_show_public_nickname(self, should_show_public_nickname):
         """
+        Set boolean value whether the users nickname should be public
 
-
+        :param should_show_public_nickname: Boolean
         :return: None
         """
         self.should_show_public_nickname = should_show_public_nickname
 
     def set_last_topic_uid(self, uid):
         """
+        Updates last used topic of user
 
-
+        :param uid: issue.uid
         :return: None
         """
         self.last_topic_uid = uid
 
     def set_lang_uid(self, lang_uid):
         """
+        Sets users preferred language
 
-
+        :param lang_uid: Language.uid
         :return: None
         """
         self.lang_uid = lang_uid
 
     def should_hold_the_login(self, keep_logged_in):
         """
+        Should we hold the login?
 
-
+        :param keep_logged_in: Boolean
         :return: None
         """
         self.keep_logged_in = keep_logged_in
@@ -367,8 +383,9 @@ class Statement(DiscussionBase):
 
     def set_disable(self, is_disabled):
         """
+        Disables current Statement
 
-        :param is_disabled:
+        :param is_disabled: Boolean
         :return: None
         """
         self.is_disabled = is_disabled
@@ -503,8 +520,9 @@ class TextVersion(DiscussionBase):
 
     def set_disable(self, is_disabled):
         """
+        Disables current textversion
 
-        :param is_disabled:
+        :param is_disabled: Boolean
         :return: None
         """
         self.is_disabled = is_disabled
@@ -573,9 +591,9 @@ class Premise(DiscussionBase):
 
     def set_disable(self, is_disabled):
         """
+        Disables current premise
 
-
-        :param is_disabled:
+        :param is_disabled: Boolean
         :return: None
         """
         self.is_disabled = is_disabled
@@ -665,9 +683,9 @@ class Argument(DiscussionBase):
 
     def set_disable(self, is_disabled):
         """
+        Disables current argument
 
-
-        :param is_disabled:
+        :param is_disabled: boolean
         :return:
         """
         self.is_disabled = is_disabled

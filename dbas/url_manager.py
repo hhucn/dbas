@@ -153,6 +153,7 @@ class UrlManager(object):
     def get_url_for_choosing_premisegroup(self, as_location_href, is_argument, is_supportive, statement_or_argument_id,
                                           pgroup_id_list):
         """
+        Returns url for choosing between various pgroups
 
         :param as_location_href: Set to True if you want to change the location using 'location.href'
         :type as_location_href: boolean
@@ -160,7 +161,7 @@ class UrlManager(object):
         :param is_supportive: Boolean
         :param statement_or_argument_id: Statement.uid or Argument.uid
         :param pgroup_id_list: int[]
-        :return:
+        :return discuss/{slug}/choose/{p1}/{p2}/...
         """
         is_arg = 't' if is_argument else 'f'
         is_sup = 't' if is_supportive else 'f'
@@ -170,31 +171,34 @@ class UrlManager(object):
 
     def get_url_for_jump(self, as_location_href, argument_uid):
         """
-        TODO
+        Return url for the jump step in the discussion
 
         :param as_location_href: Set to True if you want to change the location using 'location.href'
         :type as_location_href: boolean
         :param argument_uid: Argument.uid
+        :return discuss/{slug}/jump/{argument_uid}
         """
         url = self.slug + '/jump/' + str(argument_uid)
         return self.__return_discussion_url(as_location_href, url)
 
     def get_url_for_support_each_other(self, as_location_href, argument_uid_user, argument_uid_system):
         """
-        TODO
+        Returns url for supporting another argument with the same conclusion
 
-        :param as_location_href:
-        :param argument_uid_user:
-        :param argument_uid_system:
-        :return:
+        :param as_location_href: Boolean
+        :param argument_uid_user: Argument.uid
+        :param argument_uid_system: Argument.uid
+        :return discuss/{slug}/support/{argument_uid1}/{argument_uid2}
         """
         url = self.slug + '/support/' + str(argument_uid_user) + '/' + str(argument_uid_system)
         return self.__return_discussion_url(as_location_href, url)
 
     def get_last_valid_url_before_reaction(self, as_location_href):
         """
+        Parses the last valid step from the discussion before the last reaction step in history
 
-        :return:
+        :param as_location_href: Boolean
+        :return: String
         """
         splitted_history = self.history.split('-')
         # get last valid step
@@ -226,6 +230,7 @@ class UrlManager(object):
 
     def __return_discussion_url(self, as_location_href, url):
         """
+        Puts everything togeter
 
         :param as_location_href: Set to True if you want to change the location using 'location.href'
         :type as_location_href: boolean
@@ -243,6 +248,7 @@ class UrlManager(object):
 
     def __return_review_url(self, as_location_href, url):
         """
+        Returns some review url
 
         :param as_location_href: Set to True if you want to change the location using 'location.href'
         :type as_location_href: boolean

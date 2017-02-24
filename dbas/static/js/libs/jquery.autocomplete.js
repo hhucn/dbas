@@ -241,7 +241,8 @@
 
         setOptions: function (suppliedOptions) {
             var that = this,
-                options = that.options;
+                options = that.options,
+	            width = options.width + options.width !== 'auto' ? 'px' : '';
 
             $.extend(options, suppliedOptions);
 
@@ -256,7 +257,7 @@
             // Adjust height, width and z-index:
             $(that.suggestionsContainer).css({
                 'max-height': options.maxHeight + 'px',
-                'width': options.width + 'px',
+                'width': width,
                 'z-index': options.zIndex
             });
         },
@@ -338,7 +339,7 @@
             }
 
             if (that.options.width === 'auto') {
-                styles.width = that.el.outerWidth() + 'px';
+                styles.width = 'auto';
             }
 
             $container.css(styles);
