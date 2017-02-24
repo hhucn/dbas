@@ -15,26 +15,26 @@ class StringMatcherTest(unittest.TestCase):
     matcher.mechanism = 'Levensthein'
 
     def test_get_strings_for_start(self):
-        mechanism, return_array = matcher.get_strings_for_start('cat', 2, True)
+        return_array = matcher.get_strings_for_start('cat', 2, True)
         self.check_string_matcher_array(return_array)
 
-        mechanism, return_array = matcher.get_strings_for_start('cat', 2, False)
+        return_array = matcher.get_strings_for_start('cat', 2, False)
         self.check_string_matcher_array(return_array)
 
     def test_get_strings_for_reasons(self):
-        mechanism, return_array = matcher.get_strings_for_reasons('cat', 2)
+        return_array = matcher.get_strings_for_reasons('cat', 2)
         self.check_string_matcher_array(return_array)
 
     def test_get_strings_for_issues(self):
-        mechanism, return_array = matcher.get_strings_for_issues('cat')
-        self.assertGreater(len(DBDiscussionSession.query(Issue).all()), len(return_array))
+        return_array = matcher.get_strings_for_issues('cat')
+        self.assertEqual(len(DBDiscussionSession.query(Issue).all()), len(return_array))
         count = 0
         for entry in return_array:
             if 'cat' in entry['text'].lower():
                 count += 1
         self.assertEqual(count, 1)
 
-        mechanism, return_array = matcher.get_strings_for_issues('ccaatt')
+        return_array = matcher.get_strings_for_issues('ccaatt')
         count = 0
         for entry in return_array:
             if 'ccaatt' in entry['text'].lower():
