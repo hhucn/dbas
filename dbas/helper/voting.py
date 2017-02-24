@@ -7,15 +7,14 @@ We are not deleting opposite votes for detecting opinion changes!
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-
 import transaction
-
 from sqlalchemy import and_
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, ClickedArgument, ClickedStatement, User, \
-    StatementSeenBy, ArgumentSeenBy
-from dbas.logger import logger
+    StatementSeenBy, ArgumentSeenBy, MarkedArgument, MarkedStatement
 from dbas.input_validator import is_integer
+from dbas.logger import logger
 
 
 def add_vote_for_argument(argument_uid, nickname):
@@ -232,6 +231,7 @@ def clear_vote_and_seen_values_of_user(nickname):
 
     __clear_seen_by_values_of_user(db_user.uid)
     __clear_votes_of_user(db_user.uid)
+    __clear_clicks_of_user(db_user.uid)
 
     DBDiscussionSession.flush()
     transaction.commit()
@@ -239,6 +239,17 @@ def clear_vote_and_seen_values_of_user(nickname):
 
 
 def __clear_votes_of_user(user_uid):
+    """
+    Deletes all votes of given user
+
+    :param user_uid: User.uid
+    :return:
+    """
+    DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=user_uid).delete()
+    DBDiscussionSession.query(MarkedStatement).filter_by(author_uid=user_uid).delete()
+
+
+def __clear_clicks_of_user(user_uid):
     """
     Deletes all votes of given user
 

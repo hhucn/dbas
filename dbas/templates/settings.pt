@@ -183,7 +183,7 @@
 					<!--</div>-->
 				<!--</div>-->
 
-                <div class="col-md-4" style="font-size: 14px; margin-top: 5em">
+                <div class="col-md-4" style="font-size: 14px; margin-top: 3em">
                     <div class="center text-center" style="float:left; margin: 1em;">
                         <img id="user_gravatar" class="img-circle" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_public_url">
                         <br>
@@ -191,7 +191,7 @@
                     </div>
                     <span i18n:translate="change_gravatar">Change your profile picture on the</span>
                     <a style="color: #2196f3;" href="https://en.gravatar.com/site/login">Gravatar website</a>.
-                    <span i18n:translate="what_is_gravatar">A Gravatar is a globally recognized avatar. You upload it and create your profile just once, and then when you participate in any Gravatar-enabled site, your Gravatar image will automatically follow you there.</span>
+                    <span i18n:translate="what_is_gravatar">A Gravatar is a globally recognized avatar. You upload it and create your profile just once, and then when you participate in any Gravatar-enabled site, your Gravatar image will automatically follow you there, except your nickname is not public!</span>
                 </div>
 			</div>
 

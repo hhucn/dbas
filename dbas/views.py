@@ -5,6 +5,17 @@ Collection of all view registrations of the core component of D-BAS.
 """
 
 import json
+from subprocess import check_output, CalledProcessError
+
+import requests
+import transaction
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.renderers import get_renderer
+from pyramid.security import forget
+from pyramid.view import view_config, notfound_view_config, forbidden_view_config
+from pyshorteners.shorteners import Shortener, Shorteners
+from requests.exceptions import ReadTimeout
+from sqlalchemy import and_
 
 import dbas.handler.news as news_handler
 import dbas.helper.history as history_helper
@@ -17,14 +28,14 @@ import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
 import dbas.user_management as user_manager
-import requests
-import transaction
-from subprocess import check_output, CalledProcessError
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, sql_timestamp_pretty_print
+from dbas.database.initializedb import nick_of_anonymous_user, nick_of_admin
 from dbas.handler.opinion import get_infos_about_argument,  get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
     get_user_with_same_opinion_for_premisegroups, get_user_and_opinions_for_argument
+from dbas.handler.password import request_password
+from dbas.handler.rss import get_list_of_all_feeds
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -33,12 +44,12 @@ from dbas.helper.query import get_logfile_for_statements, revoke_content, insert
     process_input_of_premises_for_arguments_and_receive_url, process_input_of_start_premises_and_receive_url, \
     process_seen_statements, mark_or_unmark_statement_or_argument, get_text_for_bubble
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
+from dbas.helper.settings import set_settings
 from dbas.helper.views import preparation_for_view, get_nickname, try_to_contact, handle_justification_step, \
     try_to_register_new_user_via_ajax, prepare_parameter_for_justification, login_user
 from dbas.helper.voting import add_vote_for_argument, clear_vote_and_seen_values_of_user
-from dbas.handler.password import request_password
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_argument, \
-    check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement, supports_for_same_conclusion
+    check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement, related_with_support
 from dbas.lib import get_language, escape_string, get_discussion_language, \
     get_user_by_private_or_public_nickname, is_user_author_or_admin, \
     get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid, get_profile_picture, \
@@ -50,18 +61,9 @@ from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_p
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from pyramid.renderers import get_renderer
-from pyramid.security import forget
-from pyramid.view import view_config, notfound_view_config, forbidden_view_config
-from pyshorteners.shorteners import Shortener, Shorteners
-from requests.exceptions import ReadTimeout
-from sqlalchemy import and_
 from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
     send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio, \
     send_request_for_info_popup_to_socketio
-from dbas.database.initializedb import nick_of_anonymous_user, nick_of_admin
-from dbas.handler.rss import get_list_of_all_feeds
 
 name = 'D-BAS'
 version = '1.2.3'
@@ -84,6 +86,7 @@ def main_page(request):
     """
     View configuration for the main page
 
+    :param request: current request of the server
     :return: HTTP 200 with several information
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -116,6 +119,7 @@ def main_contact(request):
     """
     View configuration for the contact view.
 
+    :param request: current request of the server
     :return: dictionary with title and project username as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -173,8 +177,9 @@ def main_contact(request):
 @view_config(route_name='main_settings', renderer='templates/settings.pt', permission='use')
 def main_settings(request):
     """
-    View configuration for the content view. Only logged in user can reach this page.
+    View configuration for the personal settings view. Only logged in user can reach this page.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -226,8 +231,9 @@ def main_settings(request):
 @view_config(route_name='main_notification', renderer='templates/notifications.pt', permission='use')
 def main_notifications(request):
     """
-    View configuration for the content view. Only logged in user can reach this page.
+    View configuration for the notification view. Only logged in user can reach this page.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -257,6 +263,7 @@ def main_news(request):
     """
     View configuration for the news.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -287,8 +294,9 @@ def main_news(request):
 @view_config(route_name='main_user', renderer='templates/user.pt', permission='everybody')
 def main_user(request):
     """
-    View configuration for the public users.
+    View configuration for the public user page.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -342,6 +350,7 @@ def main_imprint(request):
     """
     View configuration for the imprint.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -377,8 +386,9 @@ def main_imprint(request):
 @view_config(route_name='main_faq', renderer='templates/faq.pt', permission='everybody')
 def main_faq(request):
     """
-    View configuration for the publications.
+    View configuration for FAQs.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -405,8 +415,9 @@ def main_faq(request):
 @view_config(route_name='main_docs', renderer='templates/docs.pt', permission='everybody')
 def main_docs(request):
     """
-    View configuration for the publications.
+    View configuration for the documentation.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -434,8 +445,9 @@ def main_docs(request):
 @view_config(route_name='main_publications', renderer='templates/publications.pt', permission='everybody')
 def main_publications(request):
     """
-    View configuration for the publications.
+    View configuration for the publications list.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -463,8 +475,9 @@ def main_publications(request):
 @view_config(route_name='main_rss', renderer='templates/rss.pt', permission='everybody')
 def main_rss(request):
     """
-    View configuration for the publications.
+    View configuration for the RSS feed.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -495,6 +508,7 @@ def notfound(request):
     """
     View configuration for the 404 page.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -539,7 +553,7 @@ def notfound(request):
 @view_config(route_name='discussion_init', renderer='templates/content.pt', permission='everybody')
 def discussion_init(request, for_api=False, api_data=None):
     """
-    View configuration for the content view.
+    View configuration for the initial discussion.
 
     :param request: request of the web server
     :param for_api: Boolean
@@ -609,7 +623,7 @@ def discussion_init(request, for_api=False, api_data=None):
 @view_config(route_name='discussion_attitude', renderer='templates/content.pt', permission='everybody')
 def discussion_attitude(request, for_api=False, api_data=None):
     """
-    View configuration for the content view.
+    View configuration for discussion step, where we will ask the user for her attitude towards a statement.
 
     :param request: request of the web server
     :param for_api: Boolean
@@ -680,7 +694,7 @@ def discussion_attitude(request, for_api=False, api_data=None):
 @view_config(route_name='discussion_justify', renderer='templates/content.pt', permission='everybody')
 def discussion_justify(request, for_api=False, api_data=None):
     """
-    View configuration for the content view.
+    View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
 
     :param request: request of the web server
     :param for_api: Boolean
@@ -728,7 +742,7 @@ def discussion_justify(request, for_api=False, api_data=None):
 @view_config(route_name='discussion_reaction', renderer='templates/content.pt', permission='everybody')
 def discussion_reaction(request, for_api=False, api_data=None):
     """
-    View configuration for the content view.
+    View configuration for discussion step, where we will ask the user for her reaction (support, undercut, rebut)...
 
     :param request: request of the web server
     :param for_api: Boolean
@@ -807,7 +821,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
 @view_config(route_name='discussion_support', renderer='templates/content.pt', permission='everybody')
 def discussion_support(request, for_api=False, api_data=None):
     """
-    View configuration for the jump view.
+    View configuration for discussion step, where we will present another supportive argument.
 
     :param request: request of the web server
     :param for_api: Boolean
@@ -845,7 +859,7 @@ def discussion_support(request, for_api=False, api_data=None):
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
-    if not check_belonging_of_argument(issue, arg_user_uid) or not check_belonging_of_argument(issue, arg_system_uid) or not supports_for_same_conclusion(arg_user_uid, arg_system_uid):
+    if not check_belonging_of_argument(issue, arg_user_uid) or not check_belonging_of_argument(issue, arg_system_uid) or not related_with_support(arg_user_uid, arg_system_uid):
         logger('discussion_support', 'def', 'no item dict', error=True)
         raise HTTPNotFound()
         # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
@@ -879,6 +893,7 @@ def discussion_support(request, for_api=False, api_data=None):
 @view_config(route_name='discussion_finish', renderer='templates/finish.pt', permission='everybody')
 def discussion_finish(request):
     """
+    View configuration for discussion step, where we present a small/daily summary on the end
 
     :param request: request of the web server
     :return:
@@ -913,7 +928,7 @@ def discussion_finish(request):
 @view_config(route_name='discussion_choose', renderer='templates/content.pt', permission='everybody')
 def discussion_choose(request, for_api=False, api_data=None):
     """
-    View configuration for the choosing view.
+    View configuration for discussion step, where the user has to choose between given statements.
 
     :param request: request of the web server
     :param for_api: Boolean
@@ -1063,16 +1078,12 @@ def discussion_jump(request, for_api=False, api_data=None):
 # ####################################
 
 # index page for reviews
-# ####################################
-# REVIEW                             #
-# ####################################
-
-# index page for reviews
 @view_config(route_name='review_index', renderer='templates/review.pt', permission='use')
 def main_review(request):
     """
     View configuration for the review index.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1114,6 +1125,7 @@ def review_content(request):
     """
     View configuration for the review content.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1163,6 +1175,7 @@ def review_history(request):
     """
     View configuration for the review history.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1193,6 +1206,7 @@ def ongoing_history(request):
     """
     View configuration for the current reviews.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1224,6 +1238,7 @@ def review_reputation(request):
     """
     View configuration for the review reputation_borders.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1261,6 +1276,7 @@ def get_user_history(request):
     """
     Request the complete user track.
 
+    :param request: current request of the server
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1276,8 +1292,10 @@ def get_user_history(request):
 @view_config(route_name='ajax_get_all_posted_statements', renderer='json')
 def get_all_posted_statements(request):
     """
+    Request for all statements of the user
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
@@ -1292,8 +1310,10 @@ def get_all_posted_statements(request):
 @view_config(route_name='ajax_get_all_edits', renderer='json')
 def get_all_edits_of_user(request):
     """
+    Request for all edits of the user
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
@@ -1305,34 +1325,38 @@ def get_all_edits_of_user(request):
 
 
 # ajax - getting all votes for arguments
-@view_config(route_name='ajax_get_all_argument_votes', renderer='json')
-def get_all_argument_votes(request):
+@view_config(route_name='ajax_get_all_marked_arguments', renderer='json')
+def get_all_marked_arguments(request):
     """
+    Request for all marked arguments of the user
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
-    logger('get_all_argument_votes', 'def', 'main')
+    logger('get_all_marked_arguments', 'def', 'main')
     ui_locales = get_language(request)
-    return_array = user_manager.get_votes_of_user(request_authenticated_userid, True, ui_locales)
+    return_array = user_manager.get_marked_elements_of_user(request_authenticated_userid, True, ui_locales)
     return json.dumps(return_array)
 
 
 # ajax - getting all votes for statements
-@view_config(route_name='ajax_get_all_statement_votes', renderer='json')
-def get_all_statement_votes(request):
+@view_config(route_name='ajax_get_all_marked_statements', renderer='json')
+def get_all_marked_statements(request):
     """
+    Request for all marked statements of the user
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
-    logger('get_all_statement_votes', 'def', 'main')
+    logger('get_all_marked_statements', 'def', 'main')
     ui_locales = get_language(request)
-    return_array = user_manager.get_votes_of_user(request_authenticated_userid, False, ui_locales)
+    return_array = user_manager.get_marked_elements_of_user(request_authenticated_userid, False, ui_locales)
     return json.dumps(return_array)
 
 
@@ -1340,8 +1364,10 @@ def get_all_statement_votes(request):
 @view_config(route_name='ajax_get_all_argument_clicks', renderer='json')
 def get_all_argument_clicks(request):
     """
+    Request for all clicked arguments of the user
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
@@ -1356,8 +1382,10 @@ def get_all_argument_clicks(request):
 @view_config(route_name='ajax_get_all_statement_clicks', renderer='json')
 def get_all_statement_clicks(request):
     """
+    Request for all clicked statements of the user
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
@@ -1372,7 +1400,7 @@ def get_all_statement_clicks(request):
 @view_config(route_name='ajax_delete_user_history', renderer='json')
 def delete_user_history(request):
     """
-    Request the complete user history.
+    Request to delete the users history.
 
     :param request: request of the web server
     :return: json-dict()
@@ -1393,7 +1421,7 @@ def delete_user_history(request):
 @view_config(route_name='ajax_delete_statistics', renderer='json')
 def delete_statistics(request):
     """
-    Request the complete user history.
+    Request to delete votes/clicks of the user.
 
     :param request: request of the web server
     :return: json-dict()
@@ -1472,6 +1500,7 @@ def user_registration(request):
     """
     Registers new user
 
+    :param request: current request of the server
     :return: dict() with success and message
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1509,6 +1538,7 @@ def user_password_request(request):
     """
     Sends an email, when the user requests his password
 
+    :param request: current request of the server
     :return: dict() with success and message
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1544,47 +1574,19 @@ def user_password_request(request):
 @view_config(route_name='ajax_set_user_setting', renderer='json')
 def set_user_settings(request):
     """
-    Will logout the user
+    Sets a specific setting of the user
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('set_user_settings', 'def', 'main, request.params: ' + str(request.params))
     _tn = Translator(get_language(request))
 
     try:
-        error = ''
-        public_nick = ''
-        public_page_url = ''
-        gravatar_url = ''
         settings_value = True if request.params['settings_value'] == 'True' else False
         service = request.params['service']
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
-        if db_user:
-            public_nick = db_user.public_nickname
-            db_setting = DBDiscussionSession.query(Settings).get(db_user.uid)
-
-            if service == 'mail':
-                db_setting.set_send_mails(settings_value)
-
-            elif service == 'notification':
-                db_setting.set_send_notifications(settings_value)
-
-            elif service == 'public_nick':
-                db_setting.set_show_public_nickname(settings_value)
-                if settings_value:
-                    db_user.set_public_nickname(db_user.nickname)
-                elif db_user.nickname == db_user.public_nickname:
-                    user_manager.refresh_public_nickname(db_user)
-                public_nick = db_user.public_nickname
-            else:
-                error = _tn.get(_.keyword)
-
-            transaction.commit()
-            public_page_url = request.application_url + '/user/' + (db_user.nickname if settings_value else public_nick)
-            gravatar_url = get_profile_picture(db_user, 80, ignore_privacy_settings=settings_value)
-        else:
-            error = _tn.get(_.checkNickname)
+        public_nick, public_page_url, gravatar_url, error = set_settings(request, service, settings_value, _tn)
     except KeyError as e:
         error = _tn.get(_.internalKeyError)
         public_nick = ''
@@ -1602,7 +1604,8 @@ def set_user_language(request):
     """
     Will logout the user
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('set_user_language', 'def', 'main, request.params: ' + str(request.params))
@@ -1643,6 +1646,7 @@ def send_some_notification(request):
     """
     Set a new message into the inbox of an recipient, and the outbox of the sender.
 
+    :param request: current request of the server
     :return: dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1897,6 +1901,7 @@ def set_correction_of_statement(request):
     """
     Sets a new textvalue for a statement
 
+    :param request: current request of the server
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1924,8 +1929,9 @@ def set_correction_of_statement(request):
 @view_config(route_name='ajax_notification_read', renderer='json')
 def set_notification_read(request):
     """
-    Set notification as read
+    Set a notification as read
 
+    :param request: current request of the server
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1961,6 +1967,7 @@ def set_notification_delete(request):
     """
     Request the removal of a notification
 
+    :param request: current request of the server
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -2003,6 +2010,11 @@ def set_notification_delete(request):
 # ajax - set new issue
 @view_config(route_name='ajax_set_new_issue', renderer='json')
 def set_new_issue(request):
+    """
+
+    :param request: current request of the server
+    :return:
+    """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
@@ -2037,6 +2049,7 @@ def set_seen_statements(request):
     """
     Set statements as seen, when they were hidden
 
+    :param request: current request of the server
     :return: json
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -2068,6 +2081,7 @@ def mark_statement_or_argument(request):
     """
     Set statements as seen, when they were hidden
 
+    :param request: current request of the server
     :return: json
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -2105,6 +2119,7 @@ def get_logfile_for_some_statements(request):
     """
     Returns the changelog of a statement
 
+    :param request: current request of the server
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -2136,6 +2151,7 @@ def get_shortened_url(request):
     """
     Shortens url with the help of a python lib
 
+    :param request: current request of the server
     :return: dictionary with shortend url
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -2175,6 +2191,7 @@ def get_news(request):
     """
     ajax interface for getting news
 
+    :param request: current request of the server
     :return: json-set with all news
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -2189,6 +2206,7 @@ def get_all_infos_about_argument(request):
     """
     ajax interface for getting a dump
 
+    :param request: current request of the server
     :return: json-set with everything
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -2216,6 +2234,8 @@ def get_all_infos_about_argument(request):
 def get_users_with_same_opinion(request):
     """
     ajax interface for getting a dump
+
+    :params reqeust: current request of the web  server
     :return: json-set with everything
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -2265,6 +2285,7 @@ def get_users_with_same_opinion(request):
 @view_config(route_name='ajax_get_public_user_data', renderer='json')
 def get_public_user_data(request):
     """
+    Returns dictionary with public user data
 
     :param request: request of the web server
     :return:
@@ -2289,6 +2310,12 @@ def get_public_user_data(request):
 
 @view_config(route_name='ajax_get_arguments_by_statement_uid', renderer='json')
 def get_arguments_by_statement_uid(request):
+    """
+    Returns all arguments, which use the given statement
+
+    :param request: current request of the server
+    :return: json-dict()
+    """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('get_arguments_by_statement_uid', 'def', 'main: ' + str(request.matchdict))
     ui_locales = get_language(request)
@@ -2314,6 +2341,13 @@ def get_arguments_by_statement_uid(request):
 
 @view_config(route_name='ajax_get_references', renderer='json')
 def get_references(request):
+    """
+    Returns all references for an argument or statement
+
+
+    :param request: current request of the server
+    :return: json-dict()
+    """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('get_references', 'def', 'main: ' + str(request.params))
     ui_locales = get_language(request)
@@ -2352,6 +2386,12 @@ def get_references(request):
 
 @view_config(route_name='ajax_set_references', renderer='json')
 def set_references(request):
+    """
+    Sets a reference for a statement or an arguments
+
+    :param request: current request of the server
+    :return: json-dict()
+    """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('set_references', 'def', 'main: ' + str(request.params))
     ui_locales = get_language(request)
@@ -2385,6 +2425,7 @@ def switch_language(request):
     """
     Switches the language
 
+    :param request: current request of the server
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -2418,6 +2459,7 @@ def send_news(request):
     """
     ajax interface for settings news
 
+    :param request: current request of the server
     :return: json-set with new news
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -2487,7 +2529,9 @@ def fuzzy_search(request, for_api=False, api_data=None):
 @view_config(route_name='ajax_additional_service', renderer='json')
 def additional_service(request):
     """
+    Easteregg O:-)
 
+    :param request: current request of the server
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -2519,8 +2563,10 @@ def additional_service(request):
 @view_config(route_name='ajax_flag_argument_or_statement', renderer='json')
 def flag_argument_or_statement(request):
     """
+    Flags an argument or statement for a specific reason
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('flag_argument_or_statement', 'def', 'main: ' + str(request.params))
@@ -2555,8 +2601,10 @@ def flag_argument_or_statement(request):
 @view_config(route_name='ajax_review_delete_argument', renderer='json')
 def review_delete_argument(request):
     """
+    Values for the review for an argument, which should be deleted
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('review_delete_argument', 'def', 'main: ' + str(request.params))
@@ -2587,8 +2635,10 @@ def review_delete_argument(request):
 @view_config(route_name='ajax_review_edit_argument', renderer='json')
 def review_edit_argument(request):
     """
+    Values for the review for an argument, which should be edited
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('review_edit_argument', 'def', 'main: ' + str(request.params))
@@ -2619,8 +2669,10 @@ def review_edit_argument(request):
 @view_config(route_name='ajax_review_duplicate_statement', renderer='json')
 def review_duplicate_statement(request):
     """
+    Values for the review for an argument, which is maybe a duplicate
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('review_duplicate_statement', 'def', 'main: ' + str(request.params) + ' ' + str(request.authenticated_userid))
@@ -2651,8 +2703,10 @@ def review_duplicate_statement(request):
 @view_config(route_name='ajax_review_optimization_argument', renderer='json')
 def review_optimization_argument(request):
     """
+    Values for the review for an argument, which should be optimized
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('review_optimization_argument', 'def', 'main: ' + str(request.params))
@@ -2687,8 +2741,10 @@ def review_optimization_argument(request):
 @view_config(route_name='ajax_undo_review', renderer='json')
 def undo_review(request):
     """
+    Trys to undo a done review process
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('undo_review', 'def', 'main: ' + str(request.params))
@@ -2719,8 +2775,10 @@ def undo_review(request):
 @view_config(route_name='ajax_cancel_review', renderer='json')
 def cancel_review(request):
     """
+    Trys to cancel an ongoing review
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('cancel_review', 'def', 'main: ' + str(request.params))
@@ -2751,8 +2809,10 @@ def cancel_review(request):
 @view_config(route_name='ajax_review_lock', renderer='json', require_csrf=False)
 def review_lock(request):
     """
+    Locks a review so that the user can do an edit
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('review_lock', 'def', 'main: ' + str(request.params))
@@ -2796,8 +2856,10 @@ def review_lock(request):
 @view_config(route_name='ajax_revoke_content', renderer='json', require_csrf=False)
 def revoke_some_content(request):
     """
+    Revokes the given user as author from a statement or an argument
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('revoke_some_content', 'def', 'main: ' + str(request.params))

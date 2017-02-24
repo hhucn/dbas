@@ -55,9 +55,10 @@ def get_review_queues_as_lists(main_page, translator, nickname):
 
 def get_complete_review_count(nickname):
     """
+    Sums up the review points of the user
 
-    :param nickname:
-    :return:
+    :param nickname: User.nickname
+    :return: int
     """
     count, all_rights = get_reputation_of(nickname)
 
@@ -298,11 +299,12 @@ def __get_last_reviewer_of(reviewer_type, main_page):
 
 def add_proposals_for_statement_corrections(elements, nickname, translator):
     """
+    Add a proposal to correct a statement
 
-    :param elements:
-    :param nickname:
-    :param translator:
-    :return:
+    :param elements: [Strings]
+    :param nickname: User.nickname
+    :param translator: Translator
+    :return: String, Boolean
     """
     logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -337,10 +339,11 @@ def add_proposals_for_statement_corrections(elements, nickname, translator):
 
 def __add_edit_reviews(element, db_user):
     """
+    Setup a new ReviewEdit row
 
-    :param element:
-    :param db_user:
-    :return:
+    :param element: String
+    :param db_user: User
+    :return: -1 if the statement of the element does not exists, -2 if this edit already exists, 1 on success, 0 otherwise
     """
     logger('ReviewQueues', '__add_edit_reviews', 'current element: ' + str(element))
     db_statement = DBDiscussionSession.query(Statement).get(element['uid'])
@@ -351,7 +354,7 @@ def __add_edit_reviews(element, db_user):
     db_already_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.statement_uid == element['uid'],
                                                                         ReviewEdit.is_executed == False)).all()
     if db_already_edit and len(db_already_edit) > 0:  # if we already have an edit, skip this
-        logger('ReviewQueues', '__add_edit_values_review', str(element['uid']) + ' already got an edit with ' + str(db_already_edit[0].uid))
+        logger('ReviewQueues', '__add_edit_reviews', str(element['uid']) + ' already got an edit with ' + str(db_already_edit[0].uid))
         return -2
 
     db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
@@ -365,10 +368,11 @@ def __add_edit_reviews(element, db_user):
 
 def __add_edit_values_review(element, db_user):
     """
+    Setup a new ReviewEditValue row
 
-    :param element:
-    :param db_user:
-    :return:
+    :param element: String
+    :param db_user: User
+    :return: 1 on success, 0 otherwise
     """
     logger('ReviewQueues', '__add_edit_values_review', 'current element: ' + str(element))
     db_statement = DBDiscussionSession.query(Statement).get(element['uid'])
@@ -391,11 +395,13 @@ def __add_edit_values_review(element, db_user):
 
 def lock_optimization_review(nickname, review_uid, translator):
     """
+    Locks a ReviewOptimization
 
-    :param nickname:
-    :param review_uid:
-    :param translator:
-    :return:
+    :param nickname: User.nickname
+    :param review_uid: ReviewOptimization.uid
+    :param translator: Translator
+    :return: success, info, error, is_locked
+    :rtype: String, String, String, Boolean
     """
     logger('ReviewQueues', 'lock_optimization_review', 'main')
     success = ''
@@ -442,9 +448,10 @@ def lock_optimization_review(nickname, review_uid, translator):
 
 def unlock_optimization_review(review_uid):
     """
+    Unlock the OptimizationReviewLocks
 
-    :param review_uid:
-    :return:
+    :param review_uid: OptimizationReviewLocks.uid
+    :return: True
     """
     tidy_up_optimization_locks()
     logger('ReviewQueues', 'unlock_optimization_review', 'main')
@@ -456,9 +463,10 @@ def unlock_optimization_review(review_uid):
 
 def is_review_locked(review_uid):
     """
+    Is the OptimizationReviewLocks set?
 
-    :param review_uid:
-    :return:
+    :param review_uid: OptimizationReviewLocks.uid
+    :return: Boolean
     """
     tidy_up_optimization_locks()
     logger('ReviewQueues', 'is_review_locked', 'main')
@@ -470,8 +478,9 @@ def is_review_locked(review_uid):
 
 def tidy_up_optimization_locks():
     """
+    Tidy up all expired locks
 
-    :return:
+    :return: None
     """
     logger('ReviewQueues', 'tidy_up_optimization_locks', 'main')
     db_locks = DBDiscussionSession.query(OptimizationReviewLocks).all()

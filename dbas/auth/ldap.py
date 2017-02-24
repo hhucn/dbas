@@ -3,11 +3,14 @@ from dbas.logger import logger
 
 def verify_ldap_user_data(request, nickname, password):
     """
+    Trys to authenticate the user with nickname and passowrd
 
-    :param nickname:
-    :param password:
-    :return:
+    :param request: current request of the webserver
+    :param nickname: users nickname for LDAP
+    :param password: users password for LDAP
+    :return: [firstname, lastname, gender, email] on success else None
     """
+    logger('ViewHelper', 'verify_ldap_user_data', 'main')
     import ldap
 
     try:

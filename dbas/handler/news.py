@@ -19,12 +19,12 @@ def set_news(request, title, text, user, lang, main_page):
     """
     Sets a new news into the news table
 
-    :param request:
+    :param request: current request of the webserver
     :param title: news title
     :param text: String news text
     :param user: User.nickname request.authenticated_userid
     :param lang: lang
-    :return: dictionary {title,date,author,news}
+    :return: dict(), Boolean
     """
     logger('NewsHelper', 'set_news', 'def')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
