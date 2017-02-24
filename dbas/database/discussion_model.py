@@ -51,7 +51,7 @@ def get_now():
 
 class Issue(DiscussionBase):
     """
-    issue-table with several column.
+    issue-table with several columns.
     Each issue has text and a creation date
     """
     __tablename__ = 'issues'
@@ -94,7 +94,7 @@ class Issue(DiscussionBase):
     @hybrid_property
     def lang(self):
         """
-        Returns ui_locale abbreviation of current langauge
+        Returns ui_locale abbreviation of current language
 
         :return: String
         """
@@ -112,7 +112,7 @@ class Issue(DiscussionBase):
 
 class Language(DiscussionBase):
     """
-    language-table with several column.
+    language-table with several columns.
     """
     __tablename__ = 'languages'
     uid = Column(Integer, primary_key=True)
@@ -129,7 +129,7 @@ class Language(DiscussionBase):
 
 class Group(DiscussionBase):
     """
-    group-table with several column.
+    group-table with several columns.
     Each group has a name
     """
     __tablename__ = 'groups'
@@ -362,11 +362,12 @@ class Statement(DiscussionBase):
 
     def __init__(self, textversion, is_position, issue, is_disabled=False):
         """
+        Inits a row in current statement table
 
-        :param textversion:
-        :param is_position:
-        :param issue:
-        :param is_disabled:
+        :param textversion: TextVersion.uid
+        :param is_position: boolean
+        :param issue: Issue.uid
+        :param is_disabled: Boolean
         """
         self.textversion_uid = textversion
         self.is_startpoint = is_position
@@ -375,8 +376,9 @@ class Statement(DiscussionBase):
 
     def set_textversion(self, uid):
         """
+        Sets given Textversion.uid
 
-
+        :param uid: Textversion.uid
         :return: None
         """
         self.textversion_uid = uid
@@ -392,8 +394,9 @@ class Statement(DiscussionBase):
 
     def set_position(self, is_position):
         """
+        Sets boolean whether this statement is a position
 
-        :param is_position:
+        :param is_position: boolean
         :return: None
         """
         self.is_startpoint = is_position
@@ -401,8 +404,9 @@ class Statement(DiscussionBase):
     @hybrid_property
     def lang(self):
         """
+        Returns ui_locale of Issues language
 
-        :return:
+        :return: string
         """
         return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
 
@@ -427,14 +431,14 @@ class StatementReferences(DiscussionBase):
 
     def __init__(self, reference, host, path, author_uid, statement_uid, issue_uid):
         """
-        Create Reference.
+        Inits a row in current statements reference table
 
-        :param reference:
-        :param host:
-        :param path:
-        :param author_uid:
-        :param statement_uid:
-        :param issue_uid:
+        :param reference: String
+        :param host: Host of URL
+        :param path: Path of URL
+        :param author_uid: User.uid
+        :param statement_uid: Statement.uid
+        :param issue_uid: Issue.uid
         :return: None
         """
         self.reference = reference
@@ -459,6 +463,12 @@ class StatementSeenBy(DiscussionBase):
     users = relationship('User', foreign_keys=[user_uid])
 
     def __init__(self, statement_uid, user_uid):
+        """
+        Inits a row in current statement seen by table
+
+        :param statement_uid: Statement.uid
+        :param user_uid: User.uid
+        """
         self.statement_uid = statement_uid
         self.user_uid = user_uid
 
@@ -477,6 +487,12 @@ class ArgumentSeenBy(DiscussionBase):
     users = relationship('User', foreign_keys=[user_uid])
 
     def __init__(self, argument_uid, user_uid):
+        """
+        Inits a row in current argument seen by table
+
+        :param argument_uid: Argument.uid
+        :param user_uid: User.uid
+        """
         self.argument_uid = argument_uid
         self.user_uid = user_uid
 
@@ -500,8 +516,9 @@ class TextVersion(DiscussionBase):
     def __init__(self, content, author, statement_uid=None, is_disabled=False, timestamp=get_now()):
         """
         Initializes a row in current text versions-table
-        :param content:
-        :param author:
+
+        :param content: String
+        :param author: User.uid
         :return: None
         """
         self.content = content
@@ -512,8 +529,9 @@ class TextVersion(DiscussionBase):
 
     def set_statement(self, statement_uid):
         """
+        Set the statement of the textversion
 
-        :param statement_uid:
+        :param statement_uid: Statement.uid
         :return: None
         """
         self.statement_uid = statement_uid
@@ -543,7 +561,7 @@ class PremiseGroup(DiscussionBase):
         """
         Initializes a row in current premisesGroup-table
 
-        :param author:
+        :param author: User.id
         :return: None
         """
         self.author_uid = author
@@ -573,12 +591,12 @@ class Premise(DiscussionBase):
         """
         Initializes a row in current premises-table
 
-        :param premisesgroup:
-        :param statement:
-        :param is_negated:
-        :param author:
-        :param issue:
-        :param is_disabled:
+        :param premisesgroup: PremiseGroup.uid
+        :param statement: Statement.uid
+        :param is_negated: Boolean
+        :param author: User.uid
+        :param issue: Issue.uid
+        :param is_disabled: Boolean
         :return: None
         """
         self.premisesgroup_uid = premisesgroup
@@ -600,19 +618,19 @@ class Premise(DiscussionBase):
 
     def set_statement(self, statement):
         """
+        Sets statement fot his Premise
 
-
-        :param statement:
-        :return:
+        :param statement: Statement.uid
+        :return: None
         """
         self.statement_uid = statement
 
     def set_premisegroup(self, premisegroup):
         """
+        Set premisegroup for this premise
 
-
-        :param premisegroup:
-        :return:
+        :param premisegroup: Premisegroup.uid
+        :return: None
         """
         self.premisesgroup_uid = premisegroup
 
@@ -644,10 +662,10 @@ class Argument(DiscussionBase):
         """
         Initializes a row in current argument-table
 
-        :param premisegroup:
-        :param issupportive:
-        :param author:
-        :param issue:
+        :param premisegroup: PremiseGroup.uid
+        :param issupportive: Boolean
+        :param author: User.uid
+        :param issue: Issue.uid
         :param conclusion: Default 0, which will be None
         :param argument: Default 0, which will be None
         :param: is_disabled
@@ -665,19 +683,19 @@ class Argument(DiscussionBase):
 
     def set_conclusions_argument(self, argument):
         """
+        Sets an argument as conclusion for this argument
 
-
-        :param argument:
+        :param argument: Argument.uid
         :return:
         """
         self.argument_uid = argument
 
     def set_conclusion(self, conclusion):
         """
+        Sets a conclusion for the argument
 
-
-        :param conclusion:
-        :return:
+        :param conclusion: Statement.uid
+        :return: None
         """
         self.conclusion_uid = conclusion
 
@@ -686,16 +704,16 @@ class Argument(DiscussionBase):
         Disables current argument
 
         :param is_disabled: boolean
-        :return:
+        :return: None
         """
         self.is_disabled = is_disabled
 
     @hybrid_property
     def lang(self):
         """
+        Returns ui_locales of current Argument
 
-
-        :return:
+        :return: String
         """
         return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
 
@@ -715,9 +733,10 @@ class History(DiscussionBase):
 
     def __init__(self, author_uid, path, timestamp=get_now()):
         """
+        Inits a row in current history table
 
-        :param author_uid:
-        :param path:
+        :param author_uid: User.uid
+        :param path: String
         :return: None
         """
         self.author_uid = author_uid
@@ -743,11 +762,12 @@ class ClickedArgument(DiscussionBase):
 
     def __init__(self, argument_uid, author_uid, is_up_vote=True, is_valid=True, timestamp=get_now()):
         """
+        Inits a row in current clicked argument table
 
-        :param argument_uid:
-        :param author_uid:
-        :param is_up_vote:
-        :param is_valid:
+        :param argument_uid: Argument.uid
+        :param author_uid: User.uid
+        :param is_up_vote: Boolean
+        :param is_valid: Boolean
         :return: None
         """
         self.argument_uid = argument_uid
@@ -777,6 +797,7 @@ class ClickedArgument(DiscussionBase):
     def update_timestamp(self):
         """
         Updates timestamp of this record
+
         :return: None
         """
         self.timestamp = get_now()
@@ -800,11 +821,12 @@ class ClickedStatement(DiscussionBase):
 
     def __init__(self, statement_uid, author_uid, is_up_vote=True, is_valid=True, timestamp=get_now()):
         """
+        Inits a row in current clicked statement table
 
-        :param statement_uid:
-        :param author_uid:
-        :param is_up_vote:
-        :param is_valid:
+        :param statement_uid: Statement.uid
+        :param author_uid: User.uid
+        :param is_up_vote: Boolean
+        :param is_valid: Boolean
         :return: None
         """
         self.statement_uid = statement_uid
@@ -842,7 +864,7 @@ class ClickedStatement(DiscussionBase):
 
 class MarkedArgument(DiscussionBase):
     """
-
+    MarkedArgument-table with several columns.
     """
     __tablename__ = 'marked_arguments'
     uid = Column(Integer, primary_key=True)
@@ -854,6 +876,13 @@ class MarkedArgument(DiscussionBase):
     users = relationship('User', foreign_keys=[author_uid])
 
     def __init__(self, argument, user, timestamp=get_now()):
+        """
+        Inits a row in current statement table
+
+        :param argument: Argument.uid
+        :param user: User.uid
+        :param timestamp: Arrow
+        """
         self.argument_uid = argument
         self.author_uid = user
         self.timestamp = timestamp
@@ -861,7 +890,7 @@ class MarkedArgument(DiscussionBase):
 
 class MarkedStatement(DiscussionBase):
     """
-
+    MarkedStatement-table with several columns.
     """
     __tablename__ = 'marked_statements'
     uid = Column(Integer, primary_key=True)
@@ -873,6 +902,13 @@ class MarkedStatement(DiscussionBase):
     users = relationship('User', foreign_keys=[author_uid])
 
     def __init__(self, statement, user, timestamp=get_now()):
+        """
+        Inits a row in current marked statement table
+
+        :param statement: Statement.uid
+        :param user: User.uid
+        :param timestamp: Arrow
+        """
         self.statement_uid = statement
         self.author_uid = user
         self.timestamp = timestamp
@@ -880,7 +916,7 @@ class MarkedStatement(DiscussionBase):
 
 class Message(DiscussionBase):
     """
-
+    Message-table with several columns.
     """
     __tablename__ = 'messages'
     uid = Column(Integer, primary_key=True)
@@ -896,6 +932,17 @@ class Message(DiscussionBase):
     to_users = relationship('User', foreign_keys=[to_author_uid])
 
     def __init__(self, from_author_uid, to_author_uid, topic, content, is_inbox=True, read=False, timestamp=get_now()):
+        """
+        Inits a row in current message table
+
+        :param from_author_uid: user.uid
+        :param to_author_uid: user.uid
+        :param topic: String
+        :param content: String
+        :param is_inbox: Boolean
+        :param read: Boolean
+        :param timestamp: Arrow
+        """
         self.from_author_uid = from_author_uid
         self.to_author_uid = to_author_uid
         self.topic = topic
@@ -916,7 +963,7 @@ class Message(DiscussionBase):
 
 class ReviewDelete(DiscussionBase):
     """
-
+    ReviewDelete-table with several columns.
     """
     __tablename__ = 'review_deletes'
     uid = Column(Integer, primary_key=True)
@@ -935,11 +982,12 @@ class ReviewDelete(DiscussionBase):
 
     def __init__(self, detector, argument=None, statement=None, reason='', is_executed=False, is_revoked=False, timestamp=get_now()):
         """
+        Inits a row in current review delete table
 
-        :param detector:
-        :param argument:
-        :param reason:
-        :param is_executed:
+        :param detector: User.uid
+        :param argument: Argument.uid
+        :param reason: ReviewDeleteReason.uid
+        :param is_executed: Boolean
         """
         self.detector_uid = detector
         self.argument_uid = argument
@@ -951,23 +999,25 @@ class ReviewDelete(DiscussionBase):
 
     def set_executed(self, is_executed):
         """
+        Set this review as executed
 
-        :param is_executed:
+        :param is_executed: Boolean
         :return: None
         """
         self.is_executed = is_executed
 
     def set_revoked(self, is_revoked):
         """
+        Set this review as revoked
 
-        :param is_revoked:
+        :param is_revoked: Boolean
         :return: None
         """
         self.is_revoked = is_revoked
 
     def update_timestamp(self):
         """
-
+        Updates timestamp of current row
 
         :return:
         """
@@ -976,7 +1026,7 @@ class ReviewDelete(DiscussionBase):
 
 class ReviewEdit(DiscussionBase):
     """
-
+    -table with several columns.
     """
     __tablename__ = 'review_edits'
     uid = Column(Integer, primary_key=True)
@@ -993,10 +1043,14 @@ class ReviewEdit(DiscussionBase):
 
     def __init__(self, detector, argument=None, statement=None, is_executed=False, is_revoked=False, timestamp=get_now()):
         """
+        Inits a row in current review edit table
 
-        :param detector:
-        :param argument:
-        :param is_executed:
+        :param detector: User.uid
+        :param argument: Argument.uid
+        :param statement: Statement.uid
+        :param is_executed: Boolean
+        :param is_revoked: Boolean
+        :param timestamp: Arrow
         """
         self.detector_uid = detector
         self.argument_uid = argument
@@ -1007,30 +1061,35 @@ class ReviewEdit(DiscussionBase):
 
     def set_executed(self, is_executed):
         """
+        Sets current review as executed
 
-        :param is_executed:
+        :param is_executed: Boolean
         :return: None
         """
         self.is_executed = is_executed
 
     def set_revoked(self, is_revoked):
         """
+        Sets current review as revoked
 
-        :param is_revoked:
+        :param is_revoked: Boolean
         :return: None
         """
         self.is_revoked = is_revoked
 
     def update_timestamp(self):
         """
+        Update timestamp
 
-
-        :return:
+        :return: None
         """
         self.timestamp = get_now()
 
 
 class ReviewEditValue(DiscussionBase):
+    """
+    ReviewEditValue-table with several columns.
+    """
     __tablename__ = 'review_edit_values'
     uid = Column(Integer, primary_key=True)
     review_edit_uid = Column(Integer, ForeignKey('review_edits.uid'))
@@ -1038,13 +1097,17 @@ class ReviewEditValue(DiscussionBase):
     typeof = Column(Text, nullable=False)
     content = Column(Text, nullable=False)
 
+    reviews = relationship('ReviewEdit', foreign_keys=[review_edit_uid])
+    statements = relationship('Statement', foreign_keys=[statement_uid])
+
     def __init__(self, review_edit, statement, typeof, content):
         """
+        Inits a row in current review edit value table
 
-        :param review_edit:
-        :param statement:
-        :param typeof:
-        :param content:
+        :param review_edit: ReviewEdit.uid
+        :param statement: Statement.uid
+        :param typeof: String
+        :param content: String
         """
         self.review_edit_uid = review_edit
         self.statement_uid = statement
@@ -1054,7 +1117,7 @@ class ReviewEditValue(DiscussionBase):
 
 class ReviewOptimization(DiscussionBase):
     """
-
+    ReviewOptimization-table with several columns.
     """
     __tablename__ = 'review_optimizations'
     uid = Column(Integer, primary_key=True)
@@ -1071,11 +1134,14 @@ class ReviewOptimization(DiscussionBase):
 
     def __init__(self, detector, argument=None, statement=None, is_executed=False, is_revoked=False, timestamp=get_now()):
         """
+        Inits a row in current review optimization table
 
-
-        :param detector:
-        :param argument:
-        :param is_executed:
+        :param detector: User.uid
+        :param argument: Argument.uid
+        :param statement: Statement.uid
+        :param is_executed: Boolean
+        :param is_revoked: Boolean
+        :param timestamp: Arrow
         """
         self.detector_uid = detector
         self.argument_uid = argument
@@ -1086,29 +1152,34 @@ class ReviewOptimization(DiscussionBase):
 
     def set_executed(self, is_executed):
         """
+        Sets current review as executed
 
-
-        :param is_executed:
+        :param is_executed: Boolean
         :return: None
         """
         self.is_executed = is_executed
 
     def set_revoked(self, is_revoked):
         """
+        Sets current review as revoked
 
-
-        :param is_revoked:
+        :param is_revoked: Boolean
         :return: None
         """
         self.is_revoked = is_revoked
 
     def update_timestamp(self):
+        """
+        Update timestamp
+
+        :return: None
+        """
         self.timestamp = get_now()
 
 
 class ReviewDuplicate(DiscussionBase):
     """
-
+    ReviewDuplicate-table with several columns.
     """
     __tablename__ = 'review_duplicates'
     uid = Column(Integer, primary_key=True)
@@ -1125,13 +1196,14 @@ class ReviewDuplicate(DiscussionBase):
 
     def __init__(self, detector, duplicate_statement=None, original_statement=None, is_executed=False, is_revoked=False, timestamp=get_now()):
         """
+        Inits a row in current review duplicate table
 
-        :param detector:
-        :param duplicate_statement:
-        :param original_statement:
-        :param is_executed:
-        :param is_revoked:
-        :param timestamp:
+        :param detector: User.uid
+        :param duplicate_statement: Statement.uid
+        :param original_statement: Statement.uid
+        :param is_executed: Boolean
+        :param is_revoked: Boolean
+        :param timestamp: Arrow
         """
         self.detector_uid = detector
         self.duplicate_statement_uid = duplicate_statement
@@ -1142,43 +1214,51 @@ class ReviewDuplicate(DiscussionBase):
 
     def set_executed(self, is_executed):
         """
+        Sets current review as executed
 
-        :param is_executed:
+        :param is_executed: Boolean
         :return: None
         """
         self.is_executed = is_executed
 
     def set_revoked(self, is_revoked):
         """
+        Sets current review as revoked
 
-        :param is_revoked:
+        :param is_revoked: Boolean
         :return: None
         """
         self.is_revoked = is_revoked
 
     def update_timestamp(self):
         """
+        Update timestamp
 
-        :return:
+        :return: None
         """
         self.timestamp = get_now()
 
 
 class ReviewDeleteReason(DiscussionBase):
     """
-
+    ReviewDeleteReason-table with several columns.
     """
     __tablename__ = 'review_delete_reasons'
     uid = Column(Integer, primary_key=True)
     reason = Column(Text, nullable=False, unique=True)
 
     def __init__(self, reason):
+        """
+        Inits a row in current review delete reason table
+
+        :param reason: String
+        """
         self.reason = reason
 
 
 class LastReviewerDelete(DiscussionBase):
     """
-
+    LastReviewerDelete-table with several columns.
     """
     __tablename__ = 'last_reviewers_delete'
     uid = Column(Integer, primary_key=True)
@@ -1192,11 +1272,12 @@ class LastReviewerDelete(DiscussionBase):
 
     def __init__(self, reviewer, review, is_okay, timestamp=get_now()):
         """
+        Inits a row in current last reviewer delete table
 
-        :param reviewer:
-        :param review:
-        :param is_okay:
-        :param timestamp:
+        :param reviewer: User.uid
+        :param review: ReviewDelete.uid
+        :param is_okay: Boolean
+        :param timestamp: Arrow
         """
         self.reviewer_uid = reviewer
         self.review_uid = review
@@ -1206,7 +1287,7 @@ class LastReviewerDelete(DiscussionBase):
 
 class LastReviewerDuplicate(DiscussionBase):
     """
-
+    LastReviewerDuplicate-table with several columns.
     """
     __tablename__ = 'last_reviewers_duplicates'
     uid = Column(Integer, primary_key=True)
@@ -1220,11 +1301,12 @@ class LastReviewerDuplicate(DiscussionBase):
 
     def __init__(self, reviewer, review, is_okay, timestamp=get_now()):
         """
+        Inits a row in current last reviewer duplicate table
 
-        :param reviewer:
-        :param review:
-        :param is_okay:
-        :param timestamp:
+        :param reviewer: User.uid
+        :param review: ReviewDuplicate.uid
+        :param is_okay: Boolean
+        :param timestamp: Arrow
         """
         self.reviewer_uid = reviewer
         self.review_uid = review
@@ -1234,7 +1316,7 @@ class LastReviewerDuplicate(DiscussionBase):
 
 class LastReviewerEdit(DiscussionBase):
     """
-
+    LastReviewerEdit-table with several columns.
     """
     __tablename__ = 'last_reviewers_edit'
     uid = Column(Integer, primary_key=True)
@@ -1249,10 +1331,10 @@ class LastReviewerEdit(DiscussionBase):
     def __init__(self, reviewer, review, is_okay, timestamp=get_now()):
         """
 
-        :param reviewer:
-        :param review:
-        :param is_okay:
-        :param timestamp:
+        :param reviewer: User.uid
+        :param review: ReviewEdit.uid
+        :param is_okay: Boolean
+        :param timestamp: Arrow
         """
         self.reviewer_uid = reviewer
         self.review_uid = review
@@ -1262,7 +1344,7 @@ class LastReviewerEdit(DiscussionBase):
 
 class LastReviewerOptimization(DiscussionBase):
     """
-
+    Inits a row in current last reviewer edit table
     """
     __tablename__ = 'last_reviewers_optimization'
     uid = Column(Integer, primary_key=True)
@@ -1276,11 +1358,12 @@ class LastReviewerOptimization(DiscussionBase):
 
     def __init__(self, reviewer, review, is_okay, timestamp=get_now()):
         """
-
-        :param reviewer:
-        :param review:
-        :param is_okay:
-        :param timestamp:
+        Inits a row in current last reviewer optimization  table
+        
+        :param reviewer: User.uid
+        :param review: ReviewOptimization.uid
+        :param is_okay: boolean
+        :param timestamp: arrow
         """
         self.reviewer_uid = reviewer
         self.review_uid = review
@@ -1290,7 +1373,7 @@ class LastReviewerOptimization(DiscussionBase):
 
 class ReputationHistory(DiscussionBase):
     """
-
+    ReputationHistory-table with several columns.
     """
     __tablename__ = 'reputation_history'
     uid = Column(Integer, primary_key=True)
@@ -1303,10 +1386,11 @@ class ReputationHistory(DiscussionBase):
 
     def __init__(self, reputator, reputation, timestamp=get_now()):
         """
+        Inits a row in current reputation history table
 
-        :param reputator:
-        :param reputation:
-        :param timestamp:
+        :param reputator: User.uid
+        :param reputation: ReputationReason.uid
+        :param timestamp: Arrow
         """
         self.reputator_uid = reputator
         self.reputation_uid = reputation
@@ -1315,7 +1399,7 @@ class ReputationHistory(DiscussionBase):
 
 class ReputationReason(DiscussionBase):
     """
-
+    ReputationReason-table with several columns.
     """
     __tablename__ = 'reputation_reasons'
     uid = Column(Integer, primary_key=True)
@@ -1324,15 +1408,19 @@ class ReputationReason(DiscussionBase):
 
     def __init__(self, reason, points):
         """
+        Inits a row in current reputation reason table
 
-        :param reason:
-        :param points:
+        :param reason: String
+        :param points: Ont
         """
         self.reason = reason
         self.points = points
 
 
 class OptimizationReviewLocks(DiscussionBase):
+    """
+    OptimizationReviewLocks-table with several columns.
+    """
     __tablename__ = 'optimization_review_locks'
     author_uid = Column(Integer, ForeignKey('users.uid'), primary_key=True)
     review_optimization_uid = Column(Integer, ForeignKey('review_optimizations.uid'))
@@ -1343,10 +1431,11 @@ class OptimizationReviewLocks(DiscussionBase):
 
     def __init__(self, author, review_optimization, timestamp=get_now()):
         """
+        Inits a row in current optimization review locks table
 
-        :param author:
-        :param review_optimization:
-        :param timestamp:
+        :param author: User.uid
+        :param review_optimization: ReviewOptimization.uid
+        :param timestamp: Arrow
         """
         self.author_uid = author
         self.review_optimization_uid = review_optimization
@@ -1354,6 +1443,9 @@ class OptimizationReviewLocks(DiscussionBase):
 
 
 class ReviewCanceled(DiscussionBase):
+    """
+    ReviewCanceled-table with several columns.
+    """
     __tablename__ = 'review_canceled'
     uid = Column(Integer, primary_key=True)
     author_uid = Column(Integer, ForeignKey('users.uid'))
@@ -1372,14 +1464,15 @@ class ReviewCanceled(DiscussionBase):
 
     def __init__(self, author, review_edit=None, review_delete=None, review_optimization=None, review_duplicate=None, was_ongoing=False, timestamp=get_now()):
         """
+        Inits a row in current review locks table
 
-        :param author:
-        :param review_edit:
-        :param review_delete:
-        :param review_optimization:
-        :param review_duplicate:
-        :param was_ongoing:
-        :param timestamp:
+        :param author: User.uid
+        :param review_edit: ReviewEdit.uid
+        :param review_delete: ReviewDelete.uid
+        :param review_optimization: ReviewOptimization.uid
+        :param review_duplicate: ReviewDuplicate.uid
+        :param was_ongoing: Boolean
+        :param timestamp: Arrow
         """
         self.author_uid = author
         self.review_edit_uid = review_edit
@@ -1392,7 +1485,7 @@ class ReviewCanceled(DiscussionBase):
 
 class RevokedContent(DiscussionBase):
     """
-
+    RevokedContent-table with several columns.
     """
     __tablename__ = 'revoked_content'
     uid = Column(Integer, primary_key=True)
@@ -1407,12 +1500,12 @@ class RevokedContent(DiscussionBase):
 
     def __init__(self, author, argument=None, statement=None, timestamp=get_now()):
         """
+        Inits a row in current revoked content table
 
-
-        :param author:
-        :param argument:
-        :param statement:
-        :param timestamp:
+        :param author: User.uid
+        :param argument: Argument.uid
+        :param statement: Statement.uid
+        :param timestamp: Arrow
         """
         self.author_uid = author
         self.argument_uid = argument
@@ -1422,7 +1515,7 @@ class RevokedContent(DiscussionBase):
 
 class RevokedContentHistory(DiscussionBase):
     """
-
+    RevokedContentHistory-table with several columns.
     """
     __tablename__ = 'revoked_content_history'
     uid = Column(Integer, primary_key=True)
@@ -1437,6 +1530,14 @@ class RevokedContentHistory(DiscussionBase):
     arguments = relationship('Argument', foreign_keys=[argument_uid])
 
     def __init__(self, old_author_uid, new_author_uid, textversion_uid=None, argument_uid=None):
+        """
+        Inits a row in current revoked content history table
+
+        :param old_author_uid: User.uid
+        :param new_author_uid: User.uid
+        :param textversion_uid: TextVersion.uid
+        :param argument_uid: Argument.uid
+        """
         self.old_author_uid = old_author_uid
         self.new_author_uid = new_author_uid
         self.textversion_uid = textversion_uid
@@ -1445,7 +1546,7 @@ class RevokedContentHistory(DiscussionBase):
 
 class RevokedDuplicate(DiscussionBase):
     """
-
+    RevokedDuplicate-table with several columns.
     """
     __tablename__ = 'revoked_duplicate'
     uid = Column(Integer, primary_key=True)
@@ -1459,12 +1560,21 @@ class RevokedDuplicate(DiscussionBase):
 
     timestamp = Column(ArrowType, default=get_now())
     review = relationship('ReviewDuplicate', foreign_keys=[review_uid])
-
     arguments = relationship('Argument', foreign_keys=[argument_uid])
     statements = relationship('Statement', foreign_keys=[statement_uid])
     premises = relationship('Premise', foreign_keys=[premise_uid])
 
     def __init__(self, review, bend_position=False, statement=None, conclusion_of_argument=None, premise=None, timestamp=get_now()):
+        """
+        Inits a row in current revoked duplicate table
+
+        :param review: ReviewDuplicate.uid
+        :param bend_position: Boolean
+        :param statement: Statement.uid
+        :param conclusion_of_argument: Argument.uid
+        :param premise: Premise.uid
+        :param timestamp: Arrow
+        """
         self.review_uid = review
         self.bend_position = bend_position
         self.statement_uid = statement
@@ -1475,7 +1585,7 @@ class RevokedDuplicate(DiscussionBase):
 
 class RSS(DiscussionBase):
     """
-
+    RSS-table with several columns.
     """
     __tablename__ = 'rss'
     uid = Column(Integer, primary_key=True)
@@ -1490,12 +1600,13 @@ class RSS(DiscussionBase):
 
     def __init__(self, author, issue, title, description, timestamp=get_now()):
         """
+        Inits a row in current RSS table
 
-        :param author:
-        :param issue:
-        :param title:
-        :param description:
-        :param timestamp:
+        :param author: User.uid
+        :param issue: issue.uid
+        :param title: String
+        :param description: String
+        :param timestamp: Arrow
         """
         self.author_uid = author
         self.issue_uid = issue
