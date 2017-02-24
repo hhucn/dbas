@@ -20,12 +20,28 @@ from sqlalchemy import and_
 
 
 def get_review_history(main_page, nickname, translator):
+    """
+    Returns the history of all reviews
+
+    :param main_page: Host URL
+    :param nickname: User.nickname
+    :param translator: Translator
+    :return: dict()
+    """
     if not DBDiscussionSession.query(User).filter_by(nickname=nickname).first():
         return dict()
     return __get_data(main_page, nickname, translator, True)
 
 
 def get_ongoing_reviews(main_page, nickname, translator):
+    """"
+    Returns the history of all reviews
+
+    :param main_page: Host URL
+    :param nickname: User.nickname
+    :param translator: Translator
+    :return: dict()
+    """
     if not DBDiscussionSession.query(User).filter_by(nickname=nickname).first():
         return dict()
     return __get_data(main_page, nickname, translator, False)
@@ -33,12 +49,13 @@ def get_ongoing_reviews(main_page, nickname, translator):
 
 def __get_data(main_page, nickname, translator, is_executed=False):
     """
+    Collects data for every review queue
 
-    :param main_page:
-    :param nickname:
-    :param translator:
-    :param is_executed:
-    :return:
+    :param main_page: Host URL
+    :param nickname: User.nickname
+    :param translator: Translator
+    :param is_executed: Boolean
+    :return: dict()
     """
     ret_dict = dict()
     if is_executed:
@@ -92,10 +109,11 @@ def __get_data(main_page, nickname, translator, is_executed=False):
 
 def get_reputation_history_of(nickname, translator):
     """
+    Returns the reputation history of an user
 
-    :param nickname:
-    :param translator:
-    :return:
+    :param nickname: User.nickname
+    :param translator: Translator
+    :return: dict()
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
@@ -232,9 +250,10 @@ def __get_user_dict_for_review(user_id, main_page):
 
 def __has_access_to_history(nickname):
     """
+    Does the user has access to the history?
 
-    :param nickname:
-    :return:
+    :param nickname: User.nickname
+    :return: Boolean
     """
     reputation_count, is_user_author = get_reputation_of(nickname)
     return is_user_author or reputation_count > reputation_borders['history']
@@ -242,12 +261,14 @@ def __has_access_to_history(nickname):
 
 def revoke_old_decision(queue, uid, lang, nickname):
     """
+    Trys to revoke an old decision
 
-    :param queue:
-    :param uid:
-    :param lang:
-    :param nickname:
-    :return:
+    :param queue: Type of review
+    :param uid: Review.uid
+    :param lang: Language.ui_locales
+    :param nickname: User.nickname
+    :return: success, error
+    :rtype: String, String
     """
     logger('review_history_helper', 'revoke_old_decision', 'queue: ' + queue + ', uid: ' + str(uid))
 
@@ -303,11 +324,13 @@ def revoke_old_decision(queue, uid, lang, nickname):
 
 def cancel_ongoing_decision(queue, uid, lang, nickname):
     """
+    Cancel an ongoing review
 
-    :param queue:
-    :param uid:
-    :param lang:
-    :return:
+    :param queue: Table of review
+    :param uid: Review.uid
+    :param lang: Translator.ui_locales
+    :return: Success, Error
+    :rtype: String, String
     """
     logger('review_history_helper', 'cancel_ongoing_decision', 'queue: ' + queue + ', uid: ' + str(uid))
     success = ''
@@ -351,12 +374,12 @@ def cancel_ongoing_decision(queue, uid, lang, nickname):
 
 def __revoke_decision_and_implications(type, reviewer_type, uid):
     """
+    Revokes the old decision and the implications
 
-    :param type:
-    :param reviewer_type:
-    :param uid:
-    :param transaction:
-    :return:
+    :param type: table of Review
+    :param reviewer_type: Table of LastReviewer
+    :param uid: Review.uid
+    :return: None
     """
     DBDiscussionSession.query(reviewer_type).filter_by(review_uid=uid).delete()
 
@@ -369,6 +392,12 @@ def __revoke_decision_and_implications(type, reviewer_type, uid):
 
 
 def __rebend_objects_of_duplicate_review(db_review):
+    """
+    If something was bend (due to duplicates), lets rebend this
+
+    :param db_review: Review
+    :return: None
+    """
     logger('review_history_helper', '__rebend_objects_of_duplicate_review', 'review: ' + str(db_review.uid))
 
     db_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)

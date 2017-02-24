@@ -98,12 +98,13 @@ def __get_flag_status(argument_uid, statement_uid, user_uid):
 
 def __is_argument_flagged_for_delete(argument_uid, statement_uid, is_executed=False, is_revoked=False):
     """
+    Check, if the argument is marked for delete by any user
 
-    :param argument_uid:
-    :param statement_uid:
-    :param is_executed:
-    :param is_revoked:
-    :return:
+    :param argument_uid: Argument.uid
+    :param statement_uid: Statement.uid
+    :param is_executed: Boolean
+    :param is_revoked: Boolean
+    :return: Boolean
     """
     db_review = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.argument_uid == argument_uid,
                                                                     ReviewDelete.statement_uid == statement_uid,
@@ -115,13 +116,14 @@ def __is_argument_flagged_for_delete(argument_uid, statement_uid, is_executed=Fa
 def __is_argument_flagged_for_delete_by_user(argument_uid, statement_uid, user_uid, is_executed=False,
                                              is_revoked=False):
     """
+    Check, if the argument is marked for delete by current user
 
-    :param argument_uid:
-    :param statement_uid:
-    :param user_uid:
-    :param is_executed:
-    :param is_revoked:
-    :return:
+    :param argument_uid: Argument.uid
+    :param statement_uid: Statement.uid
+    :param user_uid: User.uid
+    :param is_executed: Boolean
+    :param is_revoked: Boolean
+    :return: Boolean
     """
     db_review = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.argument_uid == argument_uid,
                                                                     ReviewDelete.statement_uid == statement_uid,
@@ -133,12 +135,13 @@ def __is_argument_flagged_for_delete_by_user(argument_uid, statement_uid, user_u
 
 def __is_argument_flagged_for_optimization(argument_uid, statement_uid, is_executed=False, is_revoked=False):
     """
+    Check, if the argument is marked for optimization by any user
 
-    :param argument_uid:
-    :param statement_uid:
-    :param is_executed:
-    :param is_revoked:
-    :return:
+    :param argument_uid: Argument.uid
+    :param statement_uid: Statement.uid
+    :param is_executed: Boolean
+    :param is_revoked: Boolean
+    :return: Boolean
     """
     db_review = DBDiscussionSession.query(ReviewOptimization).filter(
         and_(ReviewOptimization.argument_uid == argument_uid,
@@ -151,13 +154,14 @@ def __is_argument_flagged_for_optimization(argument_uid, statement_uid, is_execu
 def __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, user_uid, is_executed=False,
                                                    is_revoked=False):
     """
+    Check, if the argument is marked for optimization by current user
 
-    :param argument_uid:
-    :param statement_uid:
-    :param user_uid:
-    :param is_executed:
-    :param is_revoked:
-    :return:
+    :param argument_uid: Argument.uid
+    :param statement_uid: Statement.uid
+    :param user_uid: User.uid
+    :param is_executed: Boolean
+    :param is_revoked: Boolean
+    :return: Boolean
     """
     db_review = DBDiscussionSession.query(ReviewOptimization).filter(
         and_(ReviewOptimization.argument_uid == argument_uid,
@@ -170,11 +174,12 @@ def __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, 
 
 def __is_argument_flagged_for_duplication(statement_uid, is_executed=False, is_revoked=False):
     """
+    Check, if the argument is marked as duplicate by any user
 
-    :param statement_uid:
-    :param is_executed:
-    :param is_revoked:
-    :return:
+    :param statement_uid: Statement.uid
+    :param is_executed: Boolean
+    :param is_revoked: Boolean
+    :return: Boolean
     """
     db_review = DBDiscussionSession.query(ReviewDuplicate).filter(
         and_(ReviewDuplicate.duplicate_statement_uid == statement_uid,
@@ -185,9 +190,10 @@ def __is_argument_flagged_for_duplication(statement_uid, is_executed=False, is_r
 
 def __is_argument_flagged_for_duplication_by_user(statement_uid, user_uid, is_executed=False, is_revoked=False):
     """
+    Check, if the argument is marked as duplicate by current user
 
-    :param statement_uid:
-    :param user_uid:
+    :param statement_uid: Statement.uid
+    :param user_uid: User.uid
     :param is_executed:
     :param is_revoked:
     :return:
@@ -202,12 +208,13 @@ def __is_argument_flagged_for_duplication_by_user(statement_uid, user_uid, is_ex
 
 def __add_delete_review(argument_uid, statement_uid, user_uid, reason_uid):
     """
+    Adds a ReviewDelete row
 
-    :param argument_uid:
-    :param statement_uid:
-    :param user_uid:
-    :param reason_uid:
-    :return:
+    :param argument_uid: Argument.uid
+    :param statement_uid: Statement.uid
+    :param user_uid: User.uid
+    :param reason_uid: ReviewDeleteReason.uid
+    :return: None
     """
     logger('FlagingHelper', 'flag_element', 'Flag argument/statement {}/{} by user {} for delete'.format(argument_uid, statement_uid, user_uid))
     review_delete = ReviewDelete(detector=user_uid, argument=argument_uid, statement=statement_uid, reason=reason_uid)
@@ -218,11 +225,12 @@ def __add_delete_review(argument_uid, statement_uid, user_uid, reason_uid):
 
 def __add_optimization_review(argument_uid, statement_uid, user_uid):
     """
+    Adds a ReviewOptimization row
 
-    :param argument_uid:
-    :param statement_uid:
-    :param user_uid:
-    :return:
+    :param argument_uid: Argument.uid
+    :param statement_uid: Statement.uid
+    :param user_uid: User.uid
+    :return: None
     """
     logger('FlagingHelper', 'flag_element', 'Flag argument/statement {}/{} by user {} for optimization'.format(argument_uid, statement_uid, user_uid))
     review_optimization = ReviewOptimization(detector=user_uid, argument=argument_uid, statement=statement_uid)
@@ -233,12 +241,12 @@ def __add_optimization_review(argument_uid, statement_uid, user_uid):
 
 def __add_duplication_review(duplicate_statement_uid, original_statement_uid, user_uid):
     """
+    Adds a ReviewDuplicate row
 
-    :param duplicate_statement_uid:
-    :param original_statement_uid:
-    :param is_premisegroup:
-    :param user_uid:
-    :return:
+    :param duplicate_statement_uid: Statement.uid
+    :param original_statement_uid: Statement.uid
+    :param user_uid: User.uid
+    :return: None
     """
     logger('FlagingHelper', 'flag_element', 'Flag statement {} by user {} as duplicate of'.format(duplicate_statement_uid, user_uid, original_statement_uid))
     review_duplication = ReviewDuplicate(detector=user_uid, duplicate_statement=duplicate_statement_uid, original_statement=original_statement_uid)
