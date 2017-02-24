@@ -4,6 +4,8 @@ Provides helping function for getting some opinions.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+from sqlalchemy import and_
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, ClickedArgument, ClickedStatement, Premise, ArgumentSeenBy, StatementSeenBy, sql_timestamp_pretty_print
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undercuts_for_argument_uid, get_undermines_for_argument_uid, get_supports_for_argument_uid
@@ -13,7 +15,6 @@ from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_author_or_first_supporter_of_argument
 from dbas.strings.translator import Translator
-from sqlalchemy import and_
 
 
 def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page, path):
@@ -60,9 +61,6 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
         get_rebuts_for_argument_uid(argument_uids[0])
     ]
 
-    # getting the text of all reactions
-    relation = ['undermine', 'support', 'undercut', 'rebut']
-
     # get gender of counter user
     db_user = get_author_or_first_supporter_of_argument(argument_uids[1], db_user)
     gender = db_user.gender if db_user else 'n'
@@ -73,22 +71,25 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
         relation_text = get_relation_text_dict_with_substitution(lang, False, True, db_user_argument.is_supportive, gender=gender)
 
     # getting votes for every reaction
-    ret_list = __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, db_user_uid, _t, main_page)
+    ret_list = __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user_uid, _t, main_page)
 
     return {'opinions': ret_list, 'title': title[0:1].upper() + title[1:]}
 
 
-def __get_votes_for_reactions(relation, arg_uids_for_reactions, relation_text, db_user_uid, _t, main_page):
+def __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user_uid, _t, main_page):
     """
+    Returns all clicks for the current reaction
 
-    :param relation:
-    :param arg_uids_for_reactions:
-    :param relation_text:
-    :param db_user_uid:
-    :param _t:
-    :param main_page:
-    :return:
+    :param arg_uids_for_reactions: [[Undermines.uid, Supports.uid, Undercuts.uid, Rebuts.uid]
+    :param relation_text: String
+    :param db_user_uid: User.uid
+    :param _t: Translator
+    :param main_page: Host URL
+    :return: List of dict()
     """
+    # getting the text of all reactions
+    relation = ['undermine', 'support', 'undercut', 'rebut']
+
     ret_list = []
     user_query = DBDiscussionSession.query(User)
     db_user = DBDiscussionSession.query(User).get(db_user_uid)
@@ -196,15 +197,23 @@ def __get_opinions_for_uid(uid, is_supportive, db_user_uid, lang, _t, main_page)
         users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
         all_users.append(users_dict)
     statement_dict['users'] = all_users
-    statement_dict['message'] = __get_genered_text_for_votecount(db_votes, db_user_uid, _t)
+    statement_dict['message'] = __get_genered_text_for_clickcount(len(db_votes), db_user_uid, _t)
 
     db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=int(uid)).all()
     statement_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
     return statement_dict
 
 
-def __get_genered_text_for_votecount(db_votes, db_user_uid, _t):
-    if len(db_votes) == 0:
+def __get_genered_text_for_clickcount(len_db_votes, db_user_uid, _t):
+    """
+    Generate text for current click counter
+
+    :param len_db_votes: int
+    :param db_user_uid: User.uid
+    :param _t: Translator
+    :return: String
+    """
+    if len_db_votes == 0:
         db_user = DBDiscussionSession.query(User).get(db_user_uid)
         if db_user:
             if db_user.gender == 'm':
@@ -216,10 +225,10 @@ def __get_genered_text_for_votecount(db_votes, db_user_uid, _t):
         else:
             msg = _t.get(_.voteCountTextMayBeFirst)
         return msg + '.'
-    elif len(db_votes) == 1:
-        return str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
+    elif len_db_votes == 1:
+        return str(len_db_votes) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
     else:
-        return str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
+        return str(len_db_votes) + ' ' + _t.get(_.voteCountTextMore) + '.'
 
 
 def get_user_with_same_opinion_for_premisegroups(argument_uids, nickname, lang, main_page):
@@ -271,7 +280,7 @@ def get_user_with_same_opinion_for_premisegroups(argument_uids, nickname, lang, 
             users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
             all_users.append(users_dict)
         statement_dict['users'] = all_users
-        statement_dict['message'] = __get_genered_text_for_votecount(db_votes, db_user_uid, _t)
+        statement_dict['message'] = __get_genered_text_for_clickcount(len(db_votes), db_user_uid, _t)
 
         db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(uid)).all()
         statement_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
@@ -326,7 +335,7 @@ def get_user_with_same_opinion_for_argument(argument_uid, nickname, lang, main_p
         users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
         all_users.append(users_dict)
     opinions['users'] = all_users
-    opinions['message'] = __get_genered_text_for_votecount(db_votes, db_user_uid, _t)
+    opinions['message'] = __get_genered_text_for_clickcount(len(db_votes), db_user_uid, _t)
 
     db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(argument_uid)).all()
     opinions['seen_by'] = len(db_seen_by) if db_seen_by else 0
@@ -373,8 +382,8 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_user_uid = db_user.uid if db_user else 0
-    agree_dict    = __collect_pro_votes(statement_uid, db_user_uid, main_page, lang, _t)
-    disagree_dict = __collect_con_votes(statement_uid, db_user_uid, main_page, lang, _t)
+    agree_dict    = __collect_pro_clicks(statement_uid, db_user_uid, main_page, _t)
+    disagree_dict = __collect_con_clicks(statement_uid, db_user_uid, main_page, _t)
     ret_dict['agree'] = agree_dict
     ret_dict['disagree'] = disagree_dict
 
@@ -384,7 +393,16 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
     return ret_dict
 
 
-def __collect_pro_votes(statement_uid, user_uid, main_page, lang, _t):
+def __collect_pro_clicks(statement_uid, user_uid, main_page, _t):
+    """
+    List of all positive interest for the given statements
+
+    :param statement_uid: Statement.uid
+    :param user_uid: User.uid
+    :param main_page: Host URL
+    :param _t: Translator
+    :return: dict()
+    """
 
     db_pro_votes = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == statement_uid,
                                                                            ClickedStatement.is_up_vote == True,
@@ -394,7 +412,7 @@ def __collect_pro_votes(statement_uid, user_uid, main_page, lang, _t):
     agree_dict = {}
     for vote in db_pro_votes:
         voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
-        users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
+        users_dict = create_users_dict(voted_user, vote.timestamp, main_page, _t.get_lang())
         pro_array.append(users_dict)
     agree_dict['users'] = pro_array
     agree_dict['text'] = _t.get(_.iAgreeWith)
@@ -407,7 +425,16 @@ def __collect_pro_votes(statement_uid, user_uid, main_page, lang, _t):
     return agree_dict
 
 
-def __collect_con_votes(statement_uid, user_uid, main_page, lang, _t):
+def __collect_con_clicks(statement_uid, user_uid, main_page, _t):
+    """
+    List of all negative interest for the given statements
+
+    :param statement_uid: Statement.uid
+    :param user_uid: User.uid
+    :param main_page: Host URL
+    :param _t: Translator
+    :return: dict()
+    """
     db_con_votes = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == statement_uid,
                                                                            ClickedStatement.is_up_vote == False,
                                                                            ClickedStatement.is_valid == True,
@@ -417,7 +444,7 @@ def __collect_con_votes(statement_uid, user_uid, main_page, lang, _t):
     disagree_dict = {}
     for vote in db_con_votes:
         voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
-        users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
+        users_dict = create_users_dict(voted_user, vote.timestamp, main_page, _t.get_lang())
         con_array.append(users_dict)
     disagree_dict['users'] = con_array
     disagree_dict['text'] = _t.get(_.iDisagreeWith)
