@@ -478,10 +478,11 @@ def add_row(table_name, data, nickname, _tn):
 
 def update_badge(nickname, _tn):
     """
+    Returns the new count for the badge of every table
 
     :param nickname: Current nickname of the user
     :param _tn: Translator
-    :return:
+    :return: dict(), string
     """
     logger('AdminLib', 'update_badge', '')
     if not is_user_admin(nickname):

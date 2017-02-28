@@ -36,6 +36,12 @@ debug_data = Service(name='debug',
 
 @debug_data.get()
 def debug_function(request):
+    """
+    Minimal debug interface for the websocket
+
+    :param request: current webservers reqquest
+    :return: dict()
+    """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Websocket', 'socketio', 'debug_function')
 
