@@ -195,7 +195,7 @@ def __get_all_clicked_arguments(argument_uid_set):
     :param argument_uid_set: [Argument.uid]
     :return: dict()
     """
-    db_votes = DBDiscussionSession.query(ClickedArgument).filter_by(ClickedArgument.argument_uid.in_(argument_uid_set)).all()
+    db_votes = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.argument_uid.in_(argument_uid_set)).all()
     vote_dict = dict()
     for index, vote in enumerate(db_votes):
         tmp_dict = dict()
@@ -215,7 +215,7 @@ def __get_all_clicked_statements(statement_uid_set):
     :param statement_uid_set: [Statement.uid]
     :return: dict()
     """
-    db_votes = DBDiscussionSession.query(ClickedStatement).filter_by(ClickedStatement.statement_uid.in_(statement_uid_set)).all()
+    db_votes = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.statement_uid.in_(statement_uid_set)).all()
     vote_dict = dict()
     for index, vote in enumerate(db_votes):
         tmp_dict = dict()
