@@ -597,7 +597,7 @@ def drop_discussion_database(session):
     DROP IT
 
     :param session: current session
-    :return: 
+    :return: None
     """
     db_textversions = session.query(TextVersion).all()
     for tmp in db_textversions:
@@ -712,7 +712,7 @@ def set_up_settings(session, user0, user1, user2, user4, user6=None, user7=None,
     """
     Settings for all users
 
-    :param session: current session 
+    :param session: current session
     :param user0: User
     :param user1: User
     :param user2: User
@@ -910,7 +910,7 @@ def setup_dummy_seen_by(session):
     """
     Randomized ArgumentSeenBy and StatementSeenBy values
 
-    :param session: current session 
+    :param session: current session
     :return: None
     """
     db_users = DBDiscussionSession.query(User).all()
@@ -954,7 +954,7 @@ def setup_dummy_votes(session):
     """
     Randomized ClickedStatement and ClickedArgument values
 
-    :param session: current session 
+    :param session: current session
     :return: None
     """
     db_users = DBDiscussionSession.query(User).all()

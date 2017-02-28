@@ -173,8 +173,8 @@ def __get_all_premises(issue, premisegroup_uid_set, lang):
     :param lang:
     :return: dict()
     """
-    db_premises = DBDiscussionSession.query(Premise).filter_by(and_(Premise.issue_uid == issue,
-                                                                    Premise.premisesgroup_uid.in_(premisegroup_uid_set))).all()
+    db_premises = DBDiscussionSession.query(Premise).filter(and_(Premise.issue_uid == issue,
+                                                                 Premise.premisesgroup_uid.in_(premisegroup_uid_set))).all()
     premise_dict = dict()
     for index, premise in enumerate(db_premises):
         tmp_dict = dict()
