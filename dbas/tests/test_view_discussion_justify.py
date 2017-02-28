@@ -7,7 +7,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from dbas.database.discussion_model import StatementSeenBy, ClickedStatement, ArgumentSeenBy, ClickedArgument, ReputationHistory
 
 from dbas.database import DBDiscussionSession
-from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view, clear_seen_by_of, clear_votes_of
+from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of
 from sqlalchemy import engine_from_config
 
 settings = add_settings_to_appconfig()
@@ -19,9 +19,9 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
         clear_seen_by_of('Tobias')
-        clear_votes_of('Tobias')
+        clear_clicks_of('Tobias')
         clear_seen_by_of('Björn')
-        clear_votes_of('Björn')
+        clear_clicks_of('Björn')
 
     def tearDown(self):
         testing.tearDown()
@@ -78,7 +78,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.assertEqual(len_db_seen1 + count, len_db_seen2)
         self.assertEqual(len_db_vote1 + 1, len_db_vote2)
         clear_seen_by_of('Tobias')
-        clear_votes_of('Tobias')
+        clear_clicks_of('Tobias')
 
     def test_attack_statement_page(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
@@ -106,7 +106,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.assertEqual(len_db_seen1 + count, len_db_seen2)
         self.assertEqual(len_db_vote1 + 1, len_db_vote2)
         clear_seen_by_of('Tobias')
-        clear_votes_of('Tobias')
+        clear_clicks_of('Tobias')
 
     def test_dont_know_statement_page(self):
         from dbas.views import discussion_justify as d
@@ -196,7 +196,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.assertEqual(len_db_votes_a1, len_db_votes_a2)
         self.assertNotEqual(len_db_reputation1, len_db_reputation2)
         clear_seen_by_of('Björn')
-        clear_votes_of('Björn')
+        clear_clicks_of('Björn')
 
     def test_justify_argument_page_rep_not_twice(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
@@ -229,7 +229,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.assertEqual(len_db_votes_a1, len_db_votes_a2)
         self.assertEqual(len_db_reputation1, len_db_reputation2)
         clear_seen_by_of('Björn')
-        clear_votes_of('Björn')
+        clear_clicks_of('Björn')
 
     def test_false_page(self):
         from dbas.views import discussion_justify as d

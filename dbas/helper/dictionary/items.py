@@ -4,22 +4,23 @@ Provides helping function for dictionaries, which are used for the radio buttons
 .. codeauthor: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import random
 import hashlib
+import random
+
+from sqlalchemy import and_
 
 import dbas.recommender_system as rs
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User
+from dbas.helper.query import get_another_argument_with_same_conclusion
+from dbas.helper.voting import add_seen_argument, add_seen_statement
 from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, is_author_of_argument
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
-from dbas.helper.query import get_another_argument_with_same_conclusion
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, get_support_to_argument_text_list
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
-from dbas.helper.voting import add_seen_argument, add_seen_statement
-from sqlalchemy import and_
 
 
 class ItemDictHelper(object):
@@ -287,10 +288,11 @@ class ItemDictHelper(object):
 
     def __get_arguments_based_on_attack(self, attack_type, argument_uid):
         """
+        Returns list of statements, which attack the argument by the given attack
 
-        :param attack_type:
-        :param argument_uid:
-        :return:
+        :param attack_type: String
+        :param argument_uid: argument.uid
+        :return: [Argument]
         """
         db_argument = get_not_disabled_arguments_as_query().filter_by(uid=argument_uid).first()
 
@@ -307,11 +309,6 @@ class ItemDictHelper(object):
         elif attack_type == 'undercut':
             db_arguments = db_arguments_not_disabled.filter(and_(Argument.argument_uid == argument_uid,
                                                                  Argument.is_supportive == False,
-                                                                 Argument.issue_uid == self.issue_uid)).all()
-
-        elif attack_type == 'overbid':
-            db_arguments = db_arguments_not_disabled.filter(and_(Argument.argument_uid == argument_uid,
-                                                                 Argument.is_supportive == True,
                                                                  Argument.issue_uid == self.issue_uid)).all()
 
         elif attack_type == 'rebut':
@@ -381,28 +378,30 @@ class ItemDictHelper(object):
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
     @staticmethod
-    def __get_dont_know_item_for_undermine(db_argument, not_current_mode, _um):
+    def __get_dont_know_item_for_undermine(db_argument, is_not_supportive, _um):
         """
+        Returns a random undermine url
 
-        :param db_argument:
-        :param not_current_mode:
-        :param _um:
-        :return:
+        :param db_argument: Argument
+        :param is_not_supportive: Boolean
+        :param _um: UrlManager
+        :return: String
         """
         if db_argument.conclusion_uid is not None:
-            url = _um.get_url_for_justifying_statement(True, db_argument.conclusion_uid, not_current_mode)
+            url = _um.get_url_for_justifying_statement(True, db_argument.conclusion_uid, is_not_supportive)
         else:
-            url = _um.get_url_for_justifying_argument(True, db_argument.argument_uid, not_current_mode, 'undermine')
+            url = _um.get_url_for_justifying_argument(True, db_argument.argument_uid, is_not_supportive, 'undermine')
         return url
 
     @staticmethod
     def __get_dont_know_item_for_support(argument_uid, lang, _um):
         """
+        Returns a random support url
 
-        :param argument_uid:
-        :param lang:
-        :param _um:
-        :return:
+        :param argument_uid: Argument.uid
+        :param lang: Language.ui_locales
+        :param _um: UrlManager
+        :return: String
         """
         arg_id_sys, sys_attack = rs.get_attack_for_argument(argument_uid, lang)
         url = _um.get_url_for_reaction_on_argument(True, argument_uid, sys_attack, arg_id_sys)
@@ -411,27 +410,29 @@ class ItemDictHelper(object):
     @staticmethod
     def __get_dont_know_item_for_undercut(argument_uid, current_mode, _um):
         """
+        Returns a random undercut url
 
-        :param argument_uid:
-        :param current_mode:
-        :param _um:
-        :return:
+        :param argument_uid: Argument.uid
+        :param current_mode: Boolean
+        :param _um: UrlManager
+        :return: String
         """
         url = _um.get_url_for_justifying_argument(True, argument_uid, current_mode, 'undercut')
         return url
 
     @staticmethod
-    def __get_dont_know_item_for_rebut(db_argument, not_current_mode, _um):
+    def __get_dont_know_item_for_rebut(db_argument, is_not_supportive, _um):
         """
+        Returns a random rebut url
 
-        :param db_argument:
-        :param not_current_mode:
-        :param _um:
-        :return:
+        :param db_argument: Argument
+        :param is_not_supportive: Boolean
+        :param _um: UrlManager
+        :return: String
         """
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
         if len(db_premises) == 1:
-            url = _um.get_url_for_justifying_statement(True, db_premises[0].statement_uid, not_current_mode)
+            url = _um.get_url_for_justifying_statement(True, db_premises[0].statement_uid, is_not_supportive)
         else:
             uids = [db_argument.premisesgroup_uid]
             if db_argument.conclusion_uid is not None:
@@ -469,7 +470,7 @@ class ItemDictHelper(object):
 
         relations = ['undermine', 'support', 'undercut', 'rebut']
         for relation in relations:
-            url = self.__get_url_based_on_relation(relation, attack, _um, argument_uid_sys, mode, db_user_argument, db_sys_argument)
+            url = self.__get_url_based_on_relation(relation, attack, _um, mode, db_user_argument, db_sys_argument)
             # TODO PREVENT LOOPING
             # newStepInUrl = url[url.index('/reaction/') if url.index('/reaction/') < url.index('/justify/') else url.index('/justify/'):url.index('?')]
             # additionalText = (' (<em>' + _tn.get(_.youUsedThisEarlier) + '<em>)') if newStepInUrl in url[url.index('?'):] else ''
@@ -494,40 +495,40 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
-    def __get_url_based_on_relation(self, relation, attack, _um, argument_uid_sys, mode, db_user_argument, db_sys_argument):
+    def __get_url_based_on_relation(self, relation, attack, _um, mode, db_user_argument, db_sys_argument):
         """
+        Returns a url based on the given relation
 
-        :param relation:
-        :param attack:
-        :param _um:
-        :param argument_uid_sys:
-        :param mode:
-        :param db_user_argument:
-        :param db_sys_argument:
+        :param relation: String
+        :param attack: String
+        :param _um: UrlManager
+        :param mode: String
+        :param db_user_argument: Argument.uid
+        :param db_sys_argument: Argument.uid
         :return:
         """
         # special case, when the user selects the support, because this does not need to be justified!
         if relation == 'support':
-            return self.__get_url_for_support(attack, _um, argument_uid_sys, db_sys_argument)
+            return self.__get_url_for_support(attack, _um, db_sys_argument)
         elif relation == 'undermine' or relation == 'undercut':  # easy cases
-            return self.__get_url_for_undermine(relation, _um, argument_uid_sys, mode)
+            return self.__get_url_for_undermine(relation, _um, db_sys_argument.uid, mode)
         elif relation == 'rebut':  # if we are having an rebut, everything seems different
             return self.__get_url_for_rebut(attack, _um, mode, db_user_argument, db_sys_argument)
         else:  # undercut
-            return _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
+            return _um.get_url_for_justifying_argument(True, db_sys_argument.uid, mode, relation)
 
-    def __get_url_for_support(self, attack, _um, argument_uid_sys, db_sys_argument):
+    def __get_url_for_support(self, attack, _um, db_sys_argument):
         """
+        Returns url to support an argument
 
-        :param attack:
-        :param _um:
-        :param argument_uid_sys:
-        :param db_sys_argument:
-        :return:
+        :param attack: String
+        :param _um: UrlManager
+        :param db_sys_argument: Argument
+        :return: String
         """
         attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
         restriction_on_attacks = 'rebut' if attack == 'undercut' else None
-        arg_id_sys, sys_attack = rs.get_attack_for_argument(argument_uid_sys, self.lang,
+        arg_id_sys, sys_attack = rs.get_attack_for_argument(db_sys_argument.uid, self.lang,
                                                             restriction_on_arg_uids=attacking_arg_uids,
                                                             restriction_on_attacks=restriction_on_attacks)
         if sys_attack == 'rebut' and attack == 'undercut':
@@ -536,43 +537,33 @@ class ItemDictHelper(object):
             # because he supported it!
             url = _um.get_url_for_reaction_on_argument(True, arg_id_sys, sys_attack, db_sys_argument.argument_uid)
         else:
-            url = _um.get_url_for_reaction_on_argument(True, argument_uid_sys, sys_attack, arg_id_sys)
+            url = _um.get_url_for_reaction_on_argument(True, db_sys_argument.uid, sys_attack, arg_id_sys)
         return url
 
     @staticmethod
     def __get_url_for_undermine(relation, _um, argument_uid_sys, mode):
         """
+        Returns url to undermine an argument
 
-        :param relation:
-        :param _um:
-        :param argument_uid_sys:
-        :param mode:
-        :return:
+        :param relation: String
+        :param _um: UrlManager
+        :param argument_uid_sys: Argument
+        :param mode: String
+        :return: String
         """
         return _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
 
     @staticmethod
-    def __get_url_for_overbid(attack, _um, argument_uid_user, mode):
-        """
-
-        :param attack:
-        :param _um:
-        :param argument_uid_user:
-        :param mode:
-        :return:
-        """
-        return _um.get_url_for_justifying_argument(True, argument_uid_user, mode, attack)
-
-    @staticmethod
     def __get_url_for_rebut(attack, _um, mode, db_user_argument, db_sys_argument):
         """
+        Returns url to rebut an argument
 
-        :param attack:
-        :param _um:
-        :param mode:
-        :param db_user_argument:
-        :param db_sys_argument:
-        :return:
+        :param attack: String
+        :param _um: UrlManager
+        :param mode: String
+        :param db_user_argument: Argument
+        :param db_sys_argument: Argument
+        :return: String
         """
         url = ''
         if attack == 'undermine':  # rebutting an undermine will be a support for the initial argument
@@ -653,11 +644,12 @@ class ItemDictHelper(object):
 
     def get_array_for_jump(self, arg_uid, slug, for_api):
         """
+        Returns a dictionary with elements, when the user jumps into the discussion
 
-        :param arg_uid:
-        :param slug:
-        :param for_api:
-        :return:
+        :param arg_uid: Argument.uid
+        :param slug: String
+        :param for_api: Boolean
+        :return: dict()
         """
         item_text = get_jump_to_argument_text_list(self.lang)
         url = self.__get_url_for_jump_array(slug, for_api, arg_uid)
@@ -676,11 +668,12 @@ class ItemDictHelper(object):
 
     def get_array_for_support(self, arg_uid, slug, for_api):
         """
+        Returns dict() for supporting an argument
 
-        :param arg_uid:
-        :param slug:
-        :param for_api:
-        :return:
+        :param arg_uid: Argument.uid
+        :param slug: String
+        :param for_api: Boolean
+        :return: dict()
         """
         item_text = get_support_to_argument_text_list(self.lang)
         url = self.__get_url_for_jump_array(slug, for_api, arg_uid)
@@ -701,11 +694,12 @@ class ItemDictHelper(object):
 
     def __get_url_for_jump_array(self, slug, for_api, arg_uid):
         """
+        Returns urls for the answers to jump to an argument
 
-        :param slug:
-        :param for_api:
-        :param arg_uid:
-        :return:
+        :param slug: String
+        :param for_api: Boolean
+        :param arg_uid: Argument.uid
+        :return: dict()
         """
 
         db_argument = DBDiscussionSession.query(Argument).get(arg_uid)

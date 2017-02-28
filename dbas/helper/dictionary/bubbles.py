@@ -1,22 +1,25 @@
 from sqlalchemy import and_
 
-from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import MarkedStatement
+from dbas.lib import get_text_for_statement_uid
+from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 
 
-def get_user_bubble_text_for_justify_statement(uid, db_user, text, is_supportive, _tn):
+def get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn):
     """
+    Returns user text for a bubble when the user has to justify a statement and text for the add-premise-container
 
-    :param uid:
-    :param db_user:
-    :param text:
-    :param is_supportive:
-    :param _tn:
-    :return:
+    :param uid: Statement.uid
+    :param db_user: User
+    :param is_supportive: Boolean
+    :param _tn: Translator
+    :return: String, String
     """
     logger('BubbleHelper', 'get_user_bubble_text_for_justify_statement', '{} {}'.format(uid, is_supportive))
+    text = get_text_for_statement_uid(uid)
+
     if _tn.get_lang() == 'de':
         intro = _tn.get(_.itIsTrueThat if is_supportive else _.itIsFalseThat)
         add_premise_text = intro[0:1].upper() + intro[1:] + ' ' + text
@@ -48,13 +51,14 @@ def get_user_bubble_text_for_justify_statement(uid, db_user, text, is_supportive
 
 def get_system_bubble_text_for_justify_statement(is_supportive, _tn, tag_start, text, tag_end):
     """
+    Returns system text for a bubble when the user has to justify a statement and text for the add-premise-container
 
-    :param is_supportive:
-    :param _tn:
-    :param tag_start:
-    :param text:
-    :param tag_end:
-    :return:
+    :param is_supportive: Boolean
+    :param _tn: Translator
+    :param tag_start: String
+    :param text: String
+    :param tag_end: String
+    :return: String
     """
     if _tn.get_lang() == 'de':
         if is_supportive:

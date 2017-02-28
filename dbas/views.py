@@ -42,12 +42,12 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
 from dbas.helper.query import get_logfile_for_statements, revoke_content, insert_as_statements, \
     process_input_of_premises_for_arguments_and_receive_url, process_input_of_start_premises_and_receive_url, \
-    process_seen_statements, mark_or_unmark_statement_or_argument, get_text_for_bubble
+    process_seen_statements, mark_or_unmark_statement_or_argument, get_text_for_justification_or_reaction_bubble
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.helper.settings import set_settings
 from dbas.helper.views import preparation_for_view, get_nickname, try_to_contact, handle_justification_step, \
     try_to_register_new_user_via_ajax, prepare_parameter_for_justification, login_user
-from dbas.helper.voting import add_vote_for_argument, clear_vote_and_seen_values_of_user
+from dbas.helper.voting import add_click_for_argument, clear_vote_and_seen_values_of_user
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_argument, \
     check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement, related_with_support
 from dbas.lib import get_language, escape_string, get_discussion_language, \
@@ -786,7 +786,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
     # set votes and reputation
     add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_argument_click)
 
-    add_vote_for_argument(arg_id_user, nickname)
+    add_click_for_argument(arg_id_user, nickname)
 
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
@@ -2101,7 +2101,7 @@ def mark_statement_or_argument(request):
         success, error = mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, request.authenticated_userid, _t)
         return_dict['success'] = success
         return_dict['error'] = error
-        return_dict['text'] = get_text_for_bubble(uid, is_argument, is_supportive, request.authenticated_userid, step, history, _t)
+        return_dict['text'] = get_text_for_justification_or_reaction_bubble(uid, is_argument, is_supportive, request.authenticated_userid, step, history, _t)
     except KeyError as e:
         logger('set_seen_statements', 'error', repr(e))
         return_dict['error'] = _t.get(_.internalKeyError)
