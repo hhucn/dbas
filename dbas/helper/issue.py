@@ -198,9 +198,10 @@ def get_issue_id(request):
 
 def get_title_for_slug(slug):
     """
+    Returns the issues title for a given slug
 
-    :param slug:
-    :return:
+    :param slug: String
+    :return: String
     """
     db_issues = DBDiscussionSession.query(Issue).all()
     for issue in db_issues:

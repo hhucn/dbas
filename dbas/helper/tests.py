@@ -44,7 +44,7 @@ def verify_dictionary_of_view(_self, some_dict):
     Check for keys in the dict
 
     :param _self: Instance of unittest.TestCase
-    :param some_dict: a dictioary
+    :param some_dict: dict()
     :return: None
     :rtype: None
     """
@@ -56,13 +56,25 @@ def verify_dictionary_of_view(_self, some_dict):
 
 
 def clear_seen_by_of(nickname):
+    """
+    Clears every "SeenBy" rows of the user
+
+    :param nickname: User.nickname
+    :return: None
+    """
     db_user = dbs.query(User).filter_by(nickname=nickname).first()
     dbs.query(StatementSeenBy).filter_by(user_uid=db_user.uid).delete()
     dbs.query(ArgumentSeenBy).filter_by(user_uid=db_user.uid).delete()
     transaction.commit()
 
 
-def clear_votes_of(nickname):
+def clear_clicks_of(nickname):
+    """
+    Clears ever clicked elements of the user
+
+    :param nickname: User.nickname
+    :return: None
+    """
     db_user = dbs.query(User).filter_by(nickname=nickname).first()
     dbs.query(ClickedStatement).filter_by(author_uid=db_user.uid).delete()
     dbs.query(ClickedArgument).filter_by(author_uid=db_user.uid).delete()

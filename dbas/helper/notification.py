@@ -171,11 +171,12 @@ def send_add_text_notification(url, conclusion_id, user, request):
 
 def send_add_argument_notification(url, attacked_argument_uid, user, request):
     """
+    Sends an notification because an argument was added
 
-    :param url:
-    :param attacked_argument_uid:
-    :param user:
-    :param request:
+    :param url: String
+    :param attacked_argument_uid: Argument.uid
+    :param user: User
+    :param request: current webservers request
     :return:
     """
     # getting current argument, arguments author, current user and some settings
@@ -287,13 +288,13 @@ def count_of_new_notifications(user):
         return 0
 
 
-def get_box_for(user, lang, mainpage, is_inbox):
+def get_box_for(user, lang, main_page, is_inbox):
     """
     Returns all notifications for the user
 
     :param user: User.nickname
     :param lang: ui_locales
-    :param mainpage: URL
+    :param main_page: URL
     :param is_inbox: Boolean
     :return: [Notification]
     """
@@ -316,12 +317,12 @@ def get_box_for(user, lang, mainpage, is_inbox):
             tmp_dict['show_from_author']   = db_from_user.get_global_nickname() != 'admin'
             tmp_dict['from_author']        = db_from_user.get_global_nickname()
             tmp_dict['from_author_avatar'] = get_profile_picture(db_from_user, size=30)
-            tmp_dict['from_author_url']    = mainpage + '/user/' + str(db_from_user.uid)
+            tmp_dict['from_author_url']    = main_page + '/user/' + str(db_from_user.uid)
         else:
             db_to_user                   = DBDiscussionSession.query(User).get(message.to_author_uid)
             tmp_dict['to_author']        = db_to_user.get_global_nickname()
             tmp_dict['to_author_avatar'] = get_profile_picture(db_to_user, size=30)
-            tmp_dict['to_author_url']    = mainpage + '/user/' + str(db_to_user.uid)
+            tmp_dict['to_author_url']    = main_page + '/user/' + str(db_to_user.uid)
 
         tmp_dict['id']            = str(message.uid)
         tmp_dict['timestamp']     = sql_timestamp_pretty_print(message.timestamp, lang)

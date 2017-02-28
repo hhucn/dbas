@@ -7,7 +7,7 @@ from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementSeenBy, ClickedStatement, ArgumentSeenBy, ClickedArgument, User, ReputationHistory
-from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view, clear_seen_by_of, clear_votes_of
+from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of
 from sqlalchemy import engine_from_config
 
 settings = add_settings_to_appconfig()
@@ -19,16 +19,16 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
         clear_seen_by_of('Tobias')
-        clear_votes_of('Tobias')
+        clear_clicks_of('Tobias')
         clear_seen_by_of('Björn')
-        clear_votes_of('Björn')
+        clear_clicks_of('Björn')
 
     def tearDown(self):
         testing.tearDown()
         clear_seen_by_of('Tobias')
-        clear_votes_of('Tobias')
+        clear_clicks_of('Tobias')
         clear_seen_by_of('Björn')
-        clear_votes_of('Björn')
+        clear_clicks_of('Björn')
 
     def test_page(self):
         from dbas.views import discussion_reaction as d
@@ -96,7 +96,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.assertEqual(len_db_vote_arg1 + 1, len_db_vote_arg2)
 
         clear_seen_by_of('Tobias')
-        clear_votes_of('Tobias')
+        clear_clicks_of('Tobias')
 
     def test_page_rep(self):
         from dbas.views import discussion_reaction as d
@@ -141,7 +141,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.assertNotEqual(len_db_reputation1, len_db_reputation2)
 
         clear_seen_by_of('Björn')
-        clear_votes_of('Björn')
+        clear_clicks_of('Björn')
 
     def test_page_rep_not_twice(self):
         from dbas.views import discussion_reaction as d
@@ -186,7 +186,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.assertEqual(len_db_reputation1, len_db_reputation2)
 
         clear_seen_by_of('Björn')
-        clear_votes_of('Björn')
+        clear_clicks_of('Björn')
 
     def test_page_failure_slug(self):
         from dbas.views import discussion_reaction as d

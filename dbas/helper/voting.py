@@ -17,48 +17,49 @@ from dbas.input_validator import is_integer
 from dbas.logger import logger
 
 
-def add_vote_for_argument(argument_uid, nickname):
+def add_click_for_argument(argument_uid, nickname):
     """
-    Increases the votes of a given argument.
+    Increases clicks of a given argument.
 
     :param argument_uid: id of the argument
     :param nickname: request.authenticated_userid
-    :return: increased votes of the argument
+    :return: Boolean
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     if not db_user or not is_integer(argument_uid):
-        logger('VotingHelper', 'add_vote_for_argument', 'User or argument does not exists', error=True)
+        logger('VotingHelper', 'add_click_for_argument', 'User or argument does not exists', error=True)
         return False
 
-    logger('VotingHelper', 'add_vote_for_argument', 'increasing argument ' + str(argument_uid) + ' vote')
+    logger('VotingHelper', 'add_click_for_argument', 'increasing argument ' + str(argument_uid) + ' vote')
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
 
     if db_argument.argument_uid is None:
-        logger('VotingHelper', 'add_vote_for_argument', 'Undercut depth 0')
-        __add_vote_for_argument(db_user, db_argument)
+        logger('VotingHelper', 'add_click_for_argument', 'Undercut depth 0')
+        __add_click_for_argument(db_user, db_argument)
 
     else:
         db_undercuted_arg_step_1 = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
 
         if db_undercuted_arg_step_1.argument_uid is None:
-            logger('VotingHelper', 'add_vote_for_argument', 'Undercut depth 1')
-            __add_vote_for_undercut_step_1(db_argument, db_undercuted_arg_step_1, db_user)
+            logger('VotingHelper', 'add_click_for_argument', 'Undercut depth 1')
+            __add_click_for_undercut_step_1(db_argument, db_undercuted_arg_step_1, db_user)
 
         else:
-            logger('VotingHelper', 'add_vote_for_argument', 'Undercut depth 2')
-            __add_vote_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_user)
+            logger('VotingHelper', 'add_click_for_argument', 'Undercut depth 2')
+            __add_click_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_user)
 
     transaction.commit()
 
     return True
 
 
-def __add_vote_for_argument(db_user, db_argument):
+def __add_click_for_argument(db_user, db_argument):
     """
+    Add click for a specific argument
 
-    :param db_user:
-    :param db_argument:
-    :return:
+    :param db_user: User
+    :param db_argument: Argument
+    :return: None
     """
     db_conclusion = DBDiscussionSession.query(Statement).get(db_argument.conclusion_uid)
 
@@ -73,13 +74,14 @@ def __add_vote_for_argument(db_user, db_argument):
     # __statement_seen_by_user(db_user, db_argument.conclusion_uid)
 
 
-def __add_vote_for_undercut_step_1(db_argument, db_undercuted_arg_step_1, db_user):
+def __add_click_for_undercut_step_1(db_argument, db_undercuted_arg_step_1, db_user):
     """
+    Add clicks for an first order undercut
 
-    :param db_argument:
-    :param db_undercuted_arg_step_1:
-    :param db_user:
-    :return:
+    :param db_argument: Argument
+    :param db_undercuted_arg_step_1: Argument
+    :param db_user: User
+    :return: None
     """
 
     db_undercuted_arg_step_1_concl = DBDiscussionSession.query(Statement).get(db_undercuted_arg_step_1.conclusion_uid)
@@ -102,13 +104,14 @@ def __add_vote_for_undercut_step_1(db_argument, db_undercuted_arg_step_1, db_use
     # __statement_seen_by_user(db_user, db_undercuted_arg_step_1.conclusion_uid)
 
 
-def __add_vote_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_user):
+def __add_click_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_user):
     """
+    Add clicks for an second order undercut
 
-    :param db_argument:
-    :param db_undercuted_arg_step_1:
-    :param db_user:
-    :return:
+    :param db_argument: Argument
+    :param db_undercuted_arg_step_1: Argument
+    :param db_user: User
+    :return: None
     """
 
     # we are undercutting an undercut
@@ -134,9 +137,9 @@ def __add_vote_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_use
     # __statement_seen_by_user(db_user, db_undercuted_arg_step_2.conclusion_uid)
 
 
-def add_vote_for_statement(statement_uid, nickname, supportive):
+def add_click_for_statement(statement_uid, nickname, supportive):
     """
-    Adds a vote for the given statements
+    Adds a clicks for the given statements
 
     :param statement_uid: Statement.uid
     :param nickname: User.nickname
@@ -144,7 +147,7 @@ def add_vote_for_statement(statement_uid, nickname, supportive):
     :return: Boolean
     """
 
-    logger('VotingHelper', 'add_vote_for_statement', 'increasing {}vote for statement {}'.format('up' if supportive else 'down', str(statement_uid)))
+    logger('VotingHelper', 'add_click_for_statement', 'increasing {}vote for statement {}'.format('up' if supportive else 'down', str(statement_uid)))
     if not is_integer(statement_uid):
         return False
 
@@ -220,7 +223,7 @@ def add_seen_argument(argument_uid, db_user):
 
 def clear_vote_and_seen_values_of_user(nickname):
     """
-    Delete all votes and seen values
+    Delete all votes/clicks/mards
 
     :param nickname: User.nickname
     :return: Boolean
@@ -230,7 +233,7 @@ def clear_vote_and_seen_values_of_user(nickname):
         return False
 
     __clear_seen_by_values_of_user(db_user.uid)
-    __clear_votes_of_user(db_user.uid)
+    __clear_marks_of_user(db_user.uid)
     __clear_clicks_of_user(db_user.uid)
 
     DBDiscussionSession.flush()
@@ -238,9 +241,9 @@ def clear_vote_and_seen_values_of_user(nickname):
     return True
 
 
-def __clear_votes_of_user(user_uid):
+def __clear_marks_of_user(user_uid):
     """
-    Deletes all votes of given user
+    Deletes all marks of given user
 
     :param user_uid: User.uid
     :return:
@@ -364,7 +367,7 @@ def __vote_statement(statement, db_user, is_up_vote):
 
 def __vote_premisesgroup(premisesgroup_uid, user, is_up_vote):
     """
-    Calls statemens-methods for every premise.
+    Calls statements-methods for every premise.
 
     :param premisesgroup_uid: PremiseGroup.uid
     :param user: User

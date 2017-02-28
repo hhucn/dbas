@@ -20,10 +20,11 @@ from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_stat
 
 def save_issue_uid(issue_uid, nickname):
     """
+    Saves the Issue.uid for an user
 
-    :param issue_uid:
-    :param nickname:
-    :return:
+    :param issue_uid: Issue.uid
+    :param nickname: User.nickname
+    :return: Boolean
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
@@ -35,13 +36,15 @@ def save_issue_uid(issue_uid, nickname):
 
     db_settings.set_last_topic_uid(issue_uid)
     transaction.commit()
+    return True
 
 
 def get_saved_issue(nickname):
     """
+    Returns the last used issue of the user
 
-    :param nickname:
-    :return:
+    :param nickname: User.nickname
+    :return: Issue.uid
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
@@ -117,6 +120,15 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
 
 
 def __is_last_step_duplicate(index, step, splitted_history, main_url):
+    """
+    Check if the last step in the history are duplicates
+
+    :param index: int
+    :param step: String
+    :param splitted_history: [String]
+    :param main_url: String
+    :return: Boolean
+    """
     if step not in main_url:
         return False
 
@@ -127,6 +139,17 @@ def __is_last_step_duplicate(index, step, splitted_history, main_url):
 
 
 def __prepare_justify_statement_step(bubble_array, index, step, nickname, lang, url):
+    """
+    Preparation for creating the justification bubbles
+
+    :param bubble_array: [dict()]
+    :param index: int
+    :param step: String
+    :param nickname: User.nickname
+    :param lang: Language.ui_locales
+    :param url: String
+    :return: None
+    """
     logger('history_helper', '__prepare_justify_statement_step', str(index) + ': justify case -> ' + step)
     steps = step.split('/')
     if len(steps) < 3:
@@ -146,6 +169,19 @@ def __prepare_justify_statement_step(bubble_array, index, step, nickname, lang, 
 
 
 def __prepare_reaction_step(bubble_array, index, application_url, step, nickname, lang, splitted_history, url):
+    """
+    Preparation for creating the reaction bubbles
+
+    :param bubble_array: [dict()]
+    :param index: int
+    :param application_url: String
+    :param step: String
+    :param nickname: User.nickname
+    :param lang: Language.ui_locales
+    :param splitted_history:
+    :param url: String
+    :return: None
+    """
     logger('history_helper', '__prepare_reaction_step', str(index) + ': reaction case -> ' + step)
     bubbles = get_bubble_from_reaction_step(application_url, step, nickname, lang, splitted_history, url)
     if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
@@ -153,6 +189,17 @@ def __prepare_reaction_step(bubble_array, index, application_url, step, nickname
 
 
 def __prepare_support_step(bubble_array, index, step, nickname, lang, application_url):
+    """
+    Preparation for creating the support bubbles
+
+    :param bubble_array: [dict()]
+    :param index: int
+    :param step: String
+    :param nickname: User.nickname
+    :param lang: Language.ui_locales
+    :param application_url: String
+    :return: None
+    """
     logger('history_helper', '__prepare_support_step', str(index) + ': support case -> ' + step)
     steps = step.split('/')
     if len(steps) < 3:
@@ -181,7 +228,6 @@ def __get_bubble_from_justify_statement_step(step, nickname, lang, url):
     is_supportive = steps[2] == 't' or steps[2] == 'd'  # supportive = t(rue) or d(ont know) mode
 
     _tn = Translator(lang)
-    text = get_text_for_statement_uid(uid)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     msg, tmp = get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn)
 
@@ -192,13 +238,14 @@ def __get_bubble_from_justify_statement_step(step, nickname, lang, url):
 
 def __get_bubble_from_support_step(uid_user, uid_system, nickname, lang, application_url):
     """
+    Creates bubbles for the support-keyword for an statement.
 
-    :param uid_user:
-    :param uid_system:
-    :param nickname:
-    :param lang:
-    :param application_url:
-    :return:
+    :param uid_user: User.uid
+    :param uid_system: Argument.uid
+    :param nickname: User.nickname
+    :param lang: Language.ui_locales
+    :param application_url: String
+    :return: [dict()]
     """
     db_arg_user = DBDiscussionSession.query(Argument).get(uid_user)
     db_arg_system = DBDiscussionSession.query(Argument).get(uid_system)
@@ -290,6 +337,7 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
     :param lang: ui_locales
     :param splitted_history: [String].uid
     :param url: String
+    :param color_steps: Boolean
     :return: [dict()]
     """
     logger('history_helper', 'get_bubble_from_reaction_step', 'def: ' + str(step) + ', ' + str(splitted_history))
