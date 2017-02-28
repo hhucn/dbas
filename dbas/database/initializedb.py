@@ -302,7 +302,7 @@ def main_news(argv=sys.argv):
 def setup_news_db(session, ui_locale):
     """
     Fills news database
-    
+
     :param session: current session
     :param ui_locale: String
     :return:  None
@@ -711,7 +711,7 @@ def set_up_settings(session, user0, user1, user2, user4, user6=None, user7=None,
                     usert30=None, use_anonyme_nicks=False):
     """
     Settings for all users
-    
+
     :param session: current session 
     :param user0: User
     :param user1: User
@@ -909,7 +909,7 @@ def set_up_issue(session, lang1, lang2, is_field_test=False):
 def setup_dummy_seen_by(session):
     """
     Randomized ArgumentSeenBy and StatementSeenBy values
-    
+
     :param session: current session 
     :return: None
     """
@@ -953,7 +953,7 @@ def setup_dummy_seen_by(session):
 def setup_dummy_votes(session):
     """
     Randomized ClickedStatement and ClickedArgument values
-    
+
     :param session: current session 
     :return: None
     """

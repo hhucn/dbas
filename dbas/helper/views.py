@@ -391,7 +391,7 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
 def __login_user_not_existing(request, nickname, password, _tn, is_ldap):
     """
     First login of a user who is not registered
-    
+
     :param request: webservers request
     :param nickname: User.nickname
     :param password: String
@@ -418,7 +418,7 @@ def __login_user_not_existing(request, nickname, password, _tn, is_ldap):
 def __login_user_is_existing(request, nickname, password, _tn, is_ldap, db_user):
     """
     Login of a user who is already registered
-    
+
     :param request: webservers request
     :param nickname: User.nickname
     :param password: String
@@ -477,7 +477,7 @@ def __refresh_headers_and_url(request, db_user, keep_login, url):
     """
     Refreshed headers for the request. Returns a sequence of header tuples (e.g. ``[('Set-Cookie', 'foo=abc')]``)
     on this request's response.
-    
+
     :param request: webservers request
     :param db_user: User
     :param keep_login: Boolean
