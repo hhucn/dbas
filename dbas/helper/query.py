@@ -35,7 +35,7 @@ statement_min_length = 10
 
 
 def process_input_of_start_premises_and_receive_url(request, premisegroups, conclusion_id, supportive,
-                                                    issue, user, for_api, mainpage, discussion_lang):
+                                                    issue, user, for_api, main_page, discussion_lang):
     """
     Inserts the given text in premisegroups as new arguments in dependence of the input parameters and returns a URL for forwarding.
 
@@ -46,9 +46,9 @@ def process_input_of_start_premises_and_receive_url(request, premisegroups, conc
     :param issue: Issue.uid
     :param user: User.nickname
     :param for_api: Boolean
-    :param mainpage: URL
+    :param main_page: URL
     :param lang: ui_locales
-    :return: URL, [Statement.uids], String
+    :return: URL, [Statement.uid], String
     """
     logger('QueryHelper', 'process_input_of_start_premises_and_receive_url', 'count of new pgroups: ' + str(len(premisegroups)))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
@@ -79,8 +79,8 @@ def process_input_of_start_premises_and_receive_url(request, premisegroups, conc
     # #arguments=0: empty input
     # #arguments=1: deliver new url
     # #arguments>1: deliver url where the user has to choose between her inputs
-    _um = UrlManager(mainpage, slug, for_api, history)
-    _main_um = UrlManager(mainpage, slug, False, history)
+    _um = UrlManager(main_page, slug, for_api, history)
+    _main_um = UrlManager(main_page, slug, False, history)
     if len(new_argument_uids) == 0:
         error = __get_error_for_empty_argument_list(_tn)
 
@@ -102,7 +102,7 @@ def process_input_of_start_premises_and_receive_url(request, premisegroups, conc
 
 
 def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, attack_type, premisegroups,
-                                                            issue, user, for_api, mainpage, discussion_lang):
+                                                            issue, user, for_api, main_page, discussion_lang):
     """
     Inserts the given text in premisegroups as new arguments in dependence of the input parameters and returns a URL for forwarding.
 
@@ -117,7 +117,7 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
     :param issue: Issue.uid
     :param user: User.nickname
     :param for_api: Boolean
-    :param mainpage: URL
+    :param main_page: URL
     :param lang: ui_locales
     :return: URL, [Statement.uids], String
     """
@@ -161,7 +161,7 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
     # #arguments=0: empty input
     # #arguments=1: deliver new url
     # #arguments>1: deliver url where the user has to choose between her inputs
-    _um = url = UrlManager(mainpage, slug, for_api, history)
+    _um = url = UrlManager(main_page, slug, for_api, history)
     if len(new_argument_uids) == 0:
         error = __get_error_for_empty_argument_list(_tn)
 
@@ -183,15 +183,15 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
     return url, statement_uids, error
 
 
-def process_seen_statements(uids, nickname, translator, additional_argument=None):
+def process_seen_statements(uids, nickname, _tn, additional_argument=None):
     """
     Sets the given statement uids as seen by given user
 
-    :param uids:
-    :param nickname:
-    :param translator:
-    :param additional_argument: uid of an argument, where the uids are connected to
-    :return:
+    :param uids: [Statement.uid]
+    :param nickname: User.nickname
+    :param _tn: Translator
+    :param additional_argument: Argument.uid
+    :return: String
     """
     logger('QueryHelper', 'process_seen_statements', 'user ' + str(nickname) + ', statements ' + str(uids) +
            ', additional argument ' + str(additional_argument))
@@ -207,7 +207,7 @@ def process_seen_statements(uids, nickname, translator, additional_argument=None
     for uid in uids:
         # we get the premise group id's only
         if not is_integer(uid):
-            error = translator.get(_.internalKeyError)
+            error = _tn.get(_.internalKeyError)
             break
 
         add_seen_statement(uid, db_user)
@@ -217,13 +217,14 @@ def process_seen_statements(uids, nickname, translator, additional_argument=None
 
 def mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, nickname, _t):
     """
+    Marks or unmark an argument/statement, which represents the users opinion
 
-    :param uid:
-    :param is_argument:
-    :param should_mark:
-    :param nickname:
-    :param _t:
-    :return:
+    :param uid: Statement.uid / Argument.uid
+    :param is_argument: Boolean
+    :param should_mark: Boolean
+    :param nickname: User.nickname
+    :param _t: Translator
+    :return: String, String
     """
     logger('QueryHelper', 'mark_or_unmark_statement_or_argument', '{} {} {}'.format(uid, is_argument, nickname))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
@@ -253,17 +254,18 @@ def mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, nickname
     return _t.get(_.opinionSaved), ''
 
 
-def get_text_for_bubble(uid, is_argument, is_supportive, nickname, step, history, _tn):
+def get_text_for_justification_or_reaction_bubble(uid, is_argument, is_supportive, nickname, step, history, _tn):
     """
+    Returns text for an justification or reaction bubble of the user
 
-    :param uid:
-    :param is_argument:
-    :param is_supportive:
-    :param nickname:
-    :param step:
-    :param history:
-    :param _tn:
-    :return:
+    :param uid: Argumebt.uid / Statement.uid
+    :param is_argument: Boolean
+    :param is_supportive: Boolean
+    :param nickname: User.nickname
+    :param step: String
+    :param history: String
+    :param _tn: Translator
+    :return: String
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     if is_argument:
@@ -271,7 +273,7 @@ def get_text_for_bubble(uid, is_argument, is_supportive, nickname, step, history
         bubbles = get_bubble_from_reaction_step('', step, nickname, _tn.get_lang(), splitted_history, '', color_steps=True)
         text = bubbles[0]['message'] if bubbles else ''
     else:
-        text, tmp = get_user_bubble_text_for_justify_statement(uid, db_user, get_text_for_statement_uid(uid), is_supportive, _tn)
+        text, tmp = get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn)
         text = pretty_print_options(text)
 
     return text
@@ -279,13 +281,14 @@ def get_text_for_bubble(uid, is_argument, is_supportive, nickname, step, history
 
 def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type, arg_id, _um, supportive):
     """
+    Return the 'choose' url, when the user entered more than one premise for an argument
 
-    :param new_argument_uids:
-    :param attack_type:
-    :param arg_id:
-    :param _um:
-    :param supportive:
-    :return:
+    :param new_argument_uids: [Argument.uid]
+    :param attack_type: String
+    :param arg_id: Argument.uid
+    :param _um: UrlManager
+    :param supportive: Boolean
+    :return: String
     """
     pgroups = []
     url = ''
@@ -316,21 +319,31 @@ def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_ar
 
 def __get_error_for_empty_argument_list(_tn):
     """
+    Returns error text
 
-    :param _tn:
-    :return:
+    :param _tn: Translator
+    :return: String
     """
     return _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': ' + str(
         statement_min_length) + ')'
 
 
-def __get_url_for_new_argument(new_argument_uids, history, lang, urlmanager):
+def __get_url_for_new_argument(new_argument_uids, history, lang, url_manager):
+    """
+    Returns url for the reaction on a new argument
+
+    :param new_argument_uids: Argument.uid
+    :param history: String
+    :param lang: Language.ui_locales
+    :param url_manager: UrlManager
+    :return: String
+    """
     new_argument_uid = random.choice(new_argument_uids)  # TODO eliminate random
     attacking_arg_uids = get_all_attacking_arg_uids_from_history(history)
     arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, lang, restriction_on_arg_uids=attacking_arg_uids)
     if arg_id_sys == 0:
         attack = 'end'
-    url = urlmanager.get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+    url = url_manager.get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
     return url
 
 
@@ -343,7 +356,7 @@ def correct_statement(user, uid, corrected_text):
     :param corrected_text: new text
     :param url: current url
     :param request: current request
-    :return: True
+    :return: dict()
     """
     logger('QueryHelper', 'correct_statement', 'def ' + str(uid))
 
@@ -382,9 +395,9 @@ def correct_statement(user, uid, corrected_text):
 
 def insert_as_statements(request, text_list, user, issue, lang, is_start=False):
     """
-    Inserts the given texts as statements and returns the uids
+    Inserts the given texts as statements and returns the uid's
 
-    :param request:
+    :param request: current request of the webserver
     :param text_list: [String]
     :param user: User.nickname
     :param issue: Issue
@@ -510,10 +523,11 @@ def get_logfile_for_statements(uids, lang, main_page):
 
 def get_another_argument_with_same_conclusion(uid, history):
     """
+    Returns another supporting/attacking argument with the same conclusion as the given Argument.uid
 
-    :param uid:
-    :param history:
-    :return:
+    :param uid: Argument.uid
+    :param history: String
+    :return: Argument
     """
     logger('QueryHelper', 'get_another_argument_with_same_conclusion', str(uid))
     db_arg = DBDiscussionSession.query(Argument).get(uid)
@@ -537,6 +551,14 @@ def get_another_argument_with_same_conclusion(uid, history):
 
 
 def __get_logfile_dict(textversion, main_page, lang):
+    """
+    Returns dictionary with information about the given textversion
+
+    :param textversion: TextVersion
+    :param main_page: String
+    :param lang: Language.ui_locales
+    :return: dict()
+    """
     db_author = DBDiscussionSession.query(User).get(textversion.author_uid)
     corr_dict = dict()
     corr_dict['uid'] = str(textversion.uid)
@@ -550,13 +572,14 @@ def __get_logfile_dict(textversion, main_page, lang):
 
 def __insert_new_premises_for_argument(request, text, current_attack, arg_uid, issue, user, discussion_lang):
     """
+    Creates premises for a given argument
 
     :param text: String
     :param current_attack: String
     :param arg_uid: Argument.uid
     :param issue: Issue
     :param user: User.nickname
-    :return:
+    :return: Argument
     """
     logger('QueryHelper', '__insert_new_premises_for_argument', 'def')
 
@@ -641,10 +664,11 @@ def __set_statement(text, user, is_start, issue, lang):
 
 def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_supportive):
     """
+    Returns attacks or support for the reaction on an argument
 
     :param argument_uid: Argument.uid
     :param is_supportive: Boolean
-    :return:
+    :return: [dict()]
     """
     return_array = []
     logger('QueryHelper', '__get_attack_or_support_for_justification_of_argument_uid',
@@ -670,6 +694,7 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
 
 def __create_argument_by_raw_input(request, user, text, conclusion_id, is_supportive, issue, discussion_lang):
     """
+    Consumes the input to create a new argument
 
     :param user: User.nickname
     :param text: String
@@ -714,9 +739,10 @@ def __create_argument_by_raw_input(request, user, text, conclusion_id, is_suppor
 
 def __create_argument_by_uids(user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
     """
+    Connects the given id's to a new argument
 
     :param user: User.nickname
-    :param premisegroup_uid: PremseGroup.uid
+    :param premisegroup_uid: PremiseGroup.uid
     :param conclusion_uid: Statement.uid
     :param argument_uid: Argument.uid
     :param is_supportive: Boolean
@@ -760,11 +786,12 @@ def __create_argument_by_uids(user, premisegroup_uid, conclusion_uid, argument_u
 
 def __set_statements_as_new_premisegroup(statements, user, issue):
     """
+    Set the given statements together as new premise group
 
-    :param statements:
+    :param statements: [Statement.uid]
     :param user: User.nickname
     :param issue: Issue
-    :return:
+    :return: PremiseGroup.uid
     """
     logger('QueryHelper', '__set_statements_as_new_premisegroup', 'user: ' + str(user) +
            ', statement: ' + str(statements) + ', issue: ' + str(issue))
@@ -807,28 +834,29 @@ def __set_statements_as_new_premisegroup(statements, user, issue):
     return db_premisegroup.uid
 
 
-def revoke_content(uid, is_argument, nickname, translator):
+def revoke_content(uid, is_argument, nickname, _tn):
     """
+    Revokes the arguments/statements - e.g. the user is not the author anymore
 
-    :param uid:
-    :param is_argument:
-    :param nickname:
-    :param translator:
+    :param uid: Argument.uid / Statement.uid
+    :param is_argument: Boolean
+    :param nickname: User.nickname
+    :param _tn: Translator
     :return:
     """
     logger('QueryHelper', 'revoke_content', str(uid) + (' argument' if is_argument else ' statement'))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         logger('QueryHelper', 'revoke_content', 'User not found')
-        return translator.get(_.userNotFound), False
+        return _tn.get(_.userNotFound), False
 
     # get element, which should be revoked
     if is_argument:
-        db_element, is_deleted, error = __revoke_argument(db_user, uid, translator)
+        db_element, is_deleted, error = __revoke_argument(db_user, uid, _tn)
         if len(error) > 0:
             return error, False
     else:
-        db_element, is_deleted, error = __revoke_statement(db_user, uid, translator)
+        db_element, is_deleted, error = __revoke_statement(db_user, uid, _tn)
         if len(error) > 0:
             return error, False
 
@@ -844,13 +872,14 @@ def revoke_content(uid, is_argument, nickname, translator):
     return '', is_deleted
 
 
-def __revoke_argument(db_user, argument_uid, translator):
+def __revoke_argument(db_user, argument_uid, _tn):
     """
+    Revokes the user as author of the argument
 
-    :param db_user:
-    :param argument_uid:
-    :param translator:
-    :return:
+    :param db_user: User.uid
+    :param argument_uid: Argument.uid
+    :param _tn: Translator
+    :return: Argument, Boolean, String
     """
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
     is_author = is_author_of_argument(db_user.nickname, argument_uid)
@@ -858,11 +887,11 @@ def __revoke_argument(db_user, argument_uid, translator):
     # exists the argument
     if not db_argument:
         logger('QueryHelper', '__revoke_argument', 'Argument does not exists')
-        return None, False, translator.get(_.internalError)
+        return None, False, _tn.get(_.internalError)
 
     if not is_author:
         logger('QueryHelper', 'revoke_content', db_user.nickname + ' is not the author')
-        return None, False, translator.get(_.userIsNotAuthorOfArgument)
+        return None, False, _tn.get(_.userIsNotAuthorOfArgument)
 
     # does the argument has any attack or supports?
     relations = [get_undermines_for_argument_uid(argument_uid),
@@ -887,13 +916,14 @@ def __revoke_argument(db_user, argument_uid, translator):
     return db_argument, is_deleted, ''
 
 
-def __revoke_statement(db_user, statement_uid, translator):
+def __revoke_statement(db_user, statement_uid, _tn):
     """
+    Revokes the user as author of the statement
 
-    :param db_user:
-    :param statement_uid:
-    :param translator:
-    :return:
+    :param db_user: User
+    :param statement_uid: Statement.uid
+    :param _tn: Translator
+    :return: Statement, Boolean, String
     """
     logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' will be revoked (old author ' + str(db_user.uid) + ')')
     db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
@@ -903,19 +933,19 @@ def __revoke_statement(db_user, statement_uid, translator):
     # exists the statement
     if not db_statement:
         logger('QueryHelper', '__revoke_statement', 'Statement does not exists')
-        return None, is_revoked, translator.get(_.internalError)
+        return None, is_revoked, _tn.get(_.internalError)
 
     if not is_author and False:
         logger('QueryHelper', '__revoke_statement', db_user.nickname + ' is not the author')
-        return None, is_revoked, translator.get(_.userIsNotAuthorOfStatement)
+        return None, is_revoked, _tn.get(_.userIsNotAuthorOfStatement)
 
-    __remove_user_from_arguments_with_statement(statement_uid, db_user, translator)
+    __remove_user_from_arguments_with_statement(statement_uid, db_user, _tn)
 
     db_anonymous = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     logger('QueryHelper', '__revoke_statement', 'Statement ' + str(statement_uid) + ' will get a new author ' + str(db_anonymous.uid) + ' (old author ' + str(db_user.uid) + ')')
     db_statement.author_uid = db_anonymous.uid
     if not __transfer_textversion_to_new_author(statement_uid, db_user.uid, db_anonymous.uid):
-        return None, is_revoked, translator.get(_.userIsNotAuthorOfStatement)
+        return None, is_revoked, _tn.get(_.userIsNotAuthorOfStatement)
 
     is_revoked = True
 
@@ -939,7 +969,7 @@ def __revoke_statement(db_user, statement_uid, translator):
     #            'Statement ' + str(statement_uid) + ' will be revoked (old author ' + str(db_user.uid) + ') and all arguments with this statement, cause we have no new author')
     #     db_statement.set_disable(True)
     #     __disable_textversions(statement_uid, db_user.uid)
-    #     __disable_arguments_with_statement(db_user, statement_uid, translator)
+    #     __remove_user_from_arguments_with_statement(statement_uid, db_user, _tn)
     #     is_revoked = True
 
     DBDiscussionSession.add(db_statement)
@@ -949,15 +979,16 @@ def __revoke_statement(db_user, statement_uid, translator):
     return db_statement, is_revoked, ''
 
 
-def __disable_textversions(statement_uid, author):
+def __disable_textversions(statement_uid, author_uid):
     """
+    Disables the textversions of the given statement
 
-    :param statement_uid:
-    :param author:
-    :return:
+    :param statement_uid: Statement.uid
+    :param author_uid: User.uid
+    :return: None
     """
     db_textversion = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.statement_uid == statement_uid,
-                                                                        TextVersion.author_uid == author)).all()
+                                                                        TextVersion.author_uid == author_uid)).all()
     for textversion in db_textversion:
         logger('QueryHelper', '__disable_textversions', str(textversion.uid))
         textversion.set_disable(True)
@@ -967,42 +998,25 @@ def __disable_textversions(statement_uid, author):
     transaction.commit()
 
 
-def __disable_arguments_with_statement(db_user, statement_uid, translator):
+def __transfer_textversion_to_new_author(statement_uid, old_author_uid, new_author_uid):
     """
+    Sets a new author for the given textversion and creates a row in RevokedContentHistory
 
-    :param db_user:
-    :param statement_uid:
-    :param translator:
-    :return:
+    :param statement_uid: Statement.uid
+    :param old_author_uid: User.uid
+    :param new_author_uid: User.uid
+    :return: Boolean
     """
-    db_arguments = get_all_arguments_by_statement(statement_uid, True)
-    if db_arguments:
-        for argument in db_arguments:
-            __revoke_argument(db_user, argument.uid, translator)
-            # argument.set_disable(True)
-            # DBDiscussionSession.add(argument)
-
-    DBDiscussionSession.flush()
-
-
-def __transfer_textversion_to_new_author(statement_uid, old_author, new_author):
-    """
-
-    :param statement_uid:
-    :param old_author:
-    :param new_author:
-    :return:
-    """
-    logger('QueryHelper', '__revoke_statement', 'Textversion of {} will change author from {} to {}'.format(statement_uid, old_author, new_author))
+    logger('QueryHelper', '__revoke_statement', 'Textversion of {} will change author from {} to {}'.format(statement_uid, old_author_uid, new_author_uid))
     db_textversion = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.statement_uid == statement_uid,
-                                                                        TextVersion.author_uid == old_author)).all()
+                                                                        TextVersion.author_uid == old_author_uid)).all()
     if not db_textversion:
         return False
 
     for textversion in db_textversion:
-        textversion.author_uid = new_author
+        textversion.author_uid = new_author_uid
         DBDiscussionSession.add(textversion)
-        DBDiscussionSession.add(RevokedContentHistory(old_author, new_author, textversion_uid=textversion.uid))
+        DBDiscussionSession.add(RevokedContentHistory(old_author_uid, new_author_uid, textversion_uid=textversion.uid))
 
     DBDiscussionSession.flush()
     transaction.commit()
@@ -1010,9 +1024,17 @@ def __transfer_textversion_to_new_author(statement_uid, old_author, new_author):
     return True
 
 
-def __remove_user_from_arguments_with_statement(statement_uid, db_user, translator):
+def __remove_user_from_arguments_with_statement(statement_uid, db_user, _tn):
+    """
+    Calls revoke_content(...) for all arguments, where the Statement.uid is used
+
+    :param statement_uid: Statement.uid
+    :param db_user: User
+    :param _tn: Translator
+    :return: None
+    """
     logger('QueryHelper', '__remove_user_from_arguments_with_statement', '{} with user{}'.format(statement_uid, db_user.uid))
     db_arguments = get_all_arguments_by_statement(statement_uid, True)
     for arg in db_arguments:
         if arg.author_uid == db_user.uid:
-            revoke_content(arg.uid, True, db_user.nickname, translator)
+            revoke_content(arg.uid, True, db_user.nickname, _tn)

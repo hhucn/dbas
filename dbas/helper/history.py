@@ -183,7 +183,7 @@ def __get_bubble_from_justify_statement_step(step, nickname, lang, url):
     _tn = Translator(lang)
     text = get_text_for_statement_uid(uid)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
-    msg, tmp = get_user_bubble_text_for_justify_statement(uid, db_user, text, is_supportive, _tn)
+    msg, tmp = get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn)
 
     bubble_user = create_speechbubble_dict(is_user=True, message=msg, omit_url=False, statement_uid=uid,
                                            is_supportive=is_supportive, nickname=nickname, lang=lang, url=url)

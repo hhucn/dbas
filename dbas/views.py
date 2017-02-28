@@ -42,7 +42,7 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
 from dbas.helper.query import get_logfile_for_statements, revoke_content, insert_as_statements, \
     process_input_of_premises_for_arguments_and_receive_url, process_input_of_start_premises_and_receive_url, \
-    process_seen_statements, mark_or_unmark_statement_or_argument, get_text_for_bubble
+    process_seen_statements, mark_or_unmark_statement_or_argument, get_text_for_justification_or_reaction_bubble
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.helper.settings import set_settings
 from dbas.helper.views import preparation_for_view, get_nickname, try_to_contact, handle_justification_step, \
@@ -2101,7 +2101,7 @@ def mark_statement_or_argument(request):
         success, error = mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, request.authenticated_userid, _t)
         return_dict['success'] = success
         return_dict['error'] = error
-        return_dict['text'] = get_text_for_bubble(uid, is_argument, is_supportive, request.authenticated_userid, step, history, _t)
+        return_dict['text'] = get_text_for_justification_or_reaction_bubble(uid, is_argument, is_supportive, request.authenticated_userid, step, history, _t)
     except KeyError as e:
         logger('set_seen_statements', 'error', repr(e))
         return_dict['error'] = _t.get(_.internalKeyError)
