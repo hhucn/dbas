@@ -461,7 +461,6 @@ function GuiHandler() {
 	 */
 	this.setStatementsAsProposal = function (parsedData, callbackId, type) {
 		var callbackElement = $('#' + callbackId);
-		var non_edited_value;
 		$('#' + proposalPremiseListGroupId).empty();
 		$('#' + proposalStatementListGroupId).empty();
 		$('#' + proposalEditListGroupId).empty();
@@ -480,10 +479,9 @@ function GuiHandler() {
 			index = val.index;
 			
 			token = callbackElement.val();
-			//var pos = val.toLocaleLowerCase().indexOf(token.toLocaleLowerCase()), newpos = 0, start = 0;
 			
 			// make all tokens bold
-			non_edited_value = val.text;
+			var non_edited_value = val.text;
 			// replacement from http://stackoverflow.com/a/280805/2648872
 			text = val.text.replace(new RegExp("(" + (token + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "</strong>$1<strong>");
 			text = '<strong>' + text;
@@ -546,14 +544,13 @@ function GuiHandler() {
 				return true;
 			}
 
-			var table, tr, tbody, thead;
-			table = $('<table>');
+			var table = $('<table>');
 			table.attr('class', 'table table-condensed table-striped table-hover')
 				.attr('border', '0')
 				.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
-			tbody = $('<tbody>');
+			var tbody = $('<tbody>');
 			
-			thead = $('<thead>')
+			var thead = $('<thead>')
 				.append($('<td>').text(_t(text)))
 				.append($('<td>').text(_t(author)))
 				.append($('<td>').text(_t(date)));

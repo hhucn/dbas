@@ -839,6 +839,7 @@
                                 <small class="argument_text" i18n:translate="argument_optimization_description">This argument is acceptable but it needs correction for spelling/grammar.</small>
                             </label>
                             <br>
+                            <br>
                             <input type="radio" id="off" value="offtopic" name="flag-statement">
                             <label for="off">
                                 <span class="statement_text" i18n:translate="statement_offtopic_or_irrelevant">This statement is off topic or irrelevant.</span><br class="statement_text">
@@ -846,6 +847,7 @@
                                 <span class="argument_text" i18n:translate="argument_offtopic_or_irrelevant">This argument is off topic or irrelevant.</span><br class="argument_text">
                                 <small class="argument_text" i18n:translate="argument_offtopic_or_irrelevant_description">This argument does not belong to the topic under discussion.</small>
                             </label>
+                            <br>
                             <br>
                             <!--<input type="radio" id="sp" value="spam" name="flag-statement">-->
                             <!--<label for="sp">-->
@@ -856,13 +858,16 @@
                             <!--<br>-->
                             <input type="radio" id="bad" value="harmful" name="flag-statement">
                             <label for="bad">
-                                <span class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span>
-                                <span class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span>
+                                <span class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span><br class="statement_text">
+                                <span class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span><br class="argument_text">
+                                <small class="statement_text" i18n:translate="argument_statement_harmful_description">A reasonable person would find this content inappropriate for respectful discourse.</small>
                             </label>
+                            <br>
                             <br>
                             <input type="radio" id="dupl" value="duplicate" name="flag-statement">
                             <label for="dupl">
-                                <span class="statement_text" i18n:translate="this_statement_duplicate">This statement is a duplicate.</span>
+                                <span class="statement_text" i18n:translate="this_statement_duplicate">This statement is a duplicate.</span><br>
+                                <small class="statement_text" i18n:translate="this_statement_duplicate_description">This statement has been done before in a slightly different wording.</small>
                             </label>
                         </fieldset>
                     </form>

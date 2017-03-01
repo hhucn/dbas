@@ -15,7 +15,7 @@ function AjaxMainHandler(){
 		$.ajax({
 			url: mainpage + 'ajax_switch_language',
 			type: 'POST',
-			data: { lang: new_lang},
+			data: { '_LOCALE_': new_lang},
 			dataType: 'json',
 			async: true,
 			headers: {
@@ -26,8 +26,8 @@ function AjaxMainHandler(){
 			if (parsedData.error.length !== 0) {
 				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 			} else {
-				location.reload(true);
 				setPiwikOptOutLink(new_lang);
+				location.reload(true);
 			}
 		}).fail(function ajaxSwitchDisplayLanguageFail(xhr) {
 			if (xhr.status === 400) {
@@ -70,9 +70,9 @@ function AjaxMainHandler(){
 			var errorMsg = '';
 			
 			if (xhr.status === 200) {			location.reload(true);
-			} else if (xhr.status === 302) {		location.href = xhr.getResponseHeader('Location');
-			} else if (xhr.status === 400) {		errorMsg = _t(requestFailedBadToken);
-			} else if (xhr.status === 500) {		errorMsg = _t(requestFailedInternalError);
+			} else if (xhr.status === 302) {	location.href = xhr.getResponseHeader('Location');
+			} else if (xhr.status === 400) {	errorMsg = _t(requestFailedBadToken);
+			} else if (xhr.status === 500) {	errorMsg = _t(requestFailedInternalError);
 			} else {            				errorMsg = _t(requestFailed);
 			}
 			
