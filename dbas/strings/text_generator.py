@@ -849,12 +849,12 @@ def get_author_or_first_supporter_of_element(uid, current_user_uid, is_argument)
     db_anonymous_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     if is_argument:
         db_vote = DBDiscussionSession.query(MarkedArgument).filter(and_(
-            ~ClickedArgument.author_uid.in_[db_anonymous_user.uid, current_user_uid],
+            ~ClickedArgument.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
             ClickedArgument.argument_uid == uid,
         )).first()
     else:
         db_vote = DBDiscussionSession.query(MarkedStatement).filter(and_(
-            ~ClickedArgument.author_uid.in_[db_anonymous_user.uid, current_user_uid],
+            ~ClickedArgument.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
             ClickedArgument.statement_uid == uid,
         )).first()
 

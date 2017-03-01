@@ -182,21 +182,21 @@ class AjaxTest(unittest.TestCase):
         request = testing.DummyRequest(params={'lang': 'de'}, matchdict={})
         response = json.loads(ajax(request))
         self.assertIsNotNone(response)
-        self.assertTrue(response['ui_locales'] == 'de')
+        self.assertTrue(response['_LOCALE_'] == 'de')
 
     def test_switch_language_en(self):
         from dbas.views import switch_language as ajax
         request = testing.DummyRequest(params={'lang': 'en'}, matchdict={})
         response = json.loads(ajax(request))
         self.assertIsNotNone(response)
-        self.assertTrue(response['ui_locales'] == 'en')
+        self.assertTrue(response['_LOCALE_'] == 'en')
 
     def test_switch_language_failure(self):
         from dbas.views import switch_language as ajax
         request = testing.DummyRequest(params={'lang': 'sw'}, matchdict={})
         response = json.loads(ajax(request))
         self.assertIsNotNone(response)
-        self.assertTrue(response['ui_locales'] != 'sw')
+        self.assertTrue(response['_LOCALE_'] != 'sw')
 
     def test_additional_service(self):
         from dbas.views import additional_service as ajax

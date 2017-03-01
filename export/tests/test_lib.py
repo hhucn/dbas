@@ -13,9 +13,9 @@ DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-disc
 class LibTest(unittest.TestCase):
 
     def test_get_dump(self):
-        self.assertTrue(len(get_dump(0, 'en')) == 0)
+        self.assertTrue(len(get_dump(0)) == 0)
 
-        ret_dict = get_dump('1', 'en')
+        ret_dict = get_dump('1')
         self.assertTrue('issue' in ret_dict)
         self.assertTrue('user' in ret_dict)
         self.assertTrue('statement' in ret_dict)
