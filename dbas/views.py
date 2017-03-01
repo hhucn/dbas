@@ -2431,7 +2431,7 @@ def switch_language(request):
         request.cookies['_LOCALE_'] = ui_locales
         # we have to set 'ui_locales = get_language(request)' in each view again, because D-BAS is no object
         return_dict['error'] = ''
-        return_dict['ui_locales'] = ui_locales
+        return_dict['_LOCALE_'] = ui_locales
         logger('switch_language', 'def', 'switched to {}'.format(ui_locales))
 
     except KeyError as e:
