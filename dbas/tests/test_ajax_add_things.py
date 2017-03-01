@@ -7,7 +7,7 @@ from sqlalchemy import engine_from_config
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, TextVersion, Argument, Premise, PremiseGroup,\
-    ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement
+    ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement, MarkedArgument
 from dbas.helper.tests import add_settings_to_appconfig
 
 settings = add_settings_to_appconfig()
@@ -41,6 +41,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=tmp).delete()
         DBDiscussionSession.query(PremiseGroup).filter_by(uid=tmp).delete()
         # delete argument
+        DBDiscussionSession.query(MarkedArgument).filter_by(argument_uid=db_new_arg.uid).delete()
         DBDiscussionSession.query(Argument).filter_by(uid=db_new_arg.uid).delete()
 
     def test_set_new_start_statement(self):
