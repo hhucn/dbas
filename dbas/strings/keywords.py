@@ -496,6 +496,7 @@ class Keywords(Enum):
     opinionBarometer = 'Opinion Barometer'
     pleaseAddYourSuggestion = 'Please add your suggestion!'
     premiseGroup = 'PremiseGroup'
+    premisegroupPopupWarning = 'Warning: This step cannot be made undone!'
     previous = 'Previous Entry'
     publicNickTitle = 'Enables/Disables the real nickname on your public page.'
     passwordSubmit = 'Change Password'

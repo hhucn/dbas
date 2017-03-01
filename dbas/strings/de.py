@@ -502,6 +502,7 @@ de_lang = {
     _.pleaseAddYourSuggestion: 'Bitte geben Sie Ihren Vorschlag an!',
     _.previous: 'Vorheriger Eintrag',
     _.premiseGroup: 'Gruppe von Voraussetzung(en)',
+    _.premisegroupPopupWarning: 'Achtung: Dieser Schritt kann nicht rückgängig gemacht werden!',
     _.publicNickTitle: '(De-)Aktiviert Ihren richtigen Nickname auf Ihrer öffentlichen Seite',
     _.passwordSubmit: 'Passwort ändern',
     _.preferedLangTitle: 'Bevorzugte Sprache für alle Nachrichten/E-Mails',

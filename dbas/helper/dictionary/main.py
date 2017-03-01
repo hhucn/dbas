@@ -566,5 +566,6 @@ class DictionaryHelper(object):
             'placeholder_mail': _tn_sys.get(_.exampleMail),
             'placeholder_statement': _tn_sys.get(_.exampleStatement),
             'placeholder_source': _tn_sys.get(_.exampleSource),
-            'search': _tn_sys.get(_.searchForStatements)
+            'search': _tn_sys.get(_.searchForStatements),
+            'premisegroup_popup_warning': _tn_dis.get(_.premisegroupPopupWarning)
         }

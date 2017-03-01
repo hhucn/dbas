@@ -244,9 +244,7 @@ function GuiHandler() {
 		var counter = $('#' + popupSetPremiseGroupsCounter).hide();
 		var prefix = 'insert_statements_page_';
 		var popup = $('#' + popupSetPremiseGroups);
-		
-		console.log(undecided_texts);
-		console.log(decided_texts);
+		var warning = $('#' + popupSetPremiseGroupsWarningText).hide();
 		
 		send.click(function sendClick() {
 			var selections = body.find('input:checked'), i, j, splitted;
@@ -286,6 +284,7 @@ function GuiHandler() {
 			page.find('input').each(function () {
 				$(this).click(function inputClick() {
 					send.removeClass('disabled');
+					warning.show();
 				});
 			});
 			
@@ -357,6 +356,7 @@ function GuiHandler() {
 					next_btn.parent().addClass('disabled');
 				}
 			} else {
+				$('#' + popupSetPremiseGroupsWarningText).show();
 				$('#' + popupSetPremiseGroupsSendButton).removeClass('disabled');
 			}
 		}
@@ -410,7 +410,6 @@ function GuiHandler() {
 		div_page.attr('id', id + page_no);
 		div_page.attr('page', page_no);
 		div_page.show();
-		console.log('page id: ' + div_page.attr('id'));
 		div_page.find('#' + popupSetPremiseGroupsStatementCount).text(splitted.length);
 		list = div_page.find('#' + popupSetPremiseGroupsListMoreArguments);
 		bigTextSpan = div_page.find('#' + popupSetPremiseGroupsOneBigStatement);

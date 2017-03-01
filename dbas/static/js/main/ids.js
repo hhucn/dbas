@@ -179,6 +179,7 @@ var popupSetPremiseGroupsBodyContent          = 'popup-set-premisegroups-body-co
 var popupSetPremiseGroupsCounter              = 'popup-set-premisegroups-counter';
 var popupSetPremiseGroupsClose                = 'popup-set-premisegroups-close';
 var popupSetPremiseGroupsSendButton           = 'popup-set-premisegroups-send-button';
+var popupSetPremiseGroupsWarningText          = 'popup-set-premisegroups-warning-text';
 var popupSetPremiseGroupsPreviousButton       = 'popup-set-premisegroups-previous-button';
 var popupSetPremiseGroupsNextButton           = 'popup-set-premisegroups-next-button';
 var popupSetPremiseGroupsBodyIntro            = 'popup-set-premissegroups-body-intro';

@@ -631,11 +631,12 @@
     					<span>${extras.tag.forgot_input_radio}</span>
     				</div>
     	    		<div class="modal-footer">
-    	    			<ul class="pager" style="margin: 0;">
-    	    				<li class="previous"><a href="#" id="popup-set-premisegroups-previous-button" style="float: left;" tal:attributes="title extras.buttons.previous">←</a></li>
+    	    			<ul class="pager" style="float: left; margin: 0;">
+    	    				<li class="previous"><a href="#" id="popup-set-premisegroups-previous-button" tal:attributes="title extras.buttons.previous">←</a></li>
     	    				<li class="next"><a href="#" id="popup-set-premisegroups-next-button" style="float: left;" tal:attributes="title extras.buttons.next">→</a></li>
-    	    				<li><button type="button" class="btn btn-success" id="popup-set-premisegroups-send-button" style="float: right;" >${extras.buttons.save_my_statement}</button></li>
     	    			</ul>
+                        <span id="popup-set-premisegroups-warning-text" class="text-warning" style="padding-right: 1em;">${extras.tag.premisegroup_popup_warning}</span>
+                        <button type="button" class="btn btn-success" id="popup-set-premisegroups-send-button" style="float: right;" >${extras.buttons.save_my_statement}</button>
     	    		</div>
     			</div>
     		</div>
