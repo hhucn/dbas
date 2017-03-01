@@ -203,7 +203,7 @@ function InteractionHandler() {
 			tbody.append(value);
 		});
 		
-		var body = gh.closePrepareTableForOpinonDialog(parsedData.supporter, gh, text, tbody);
+		var body = gh.closePrepareTableForOpinionDialog(parsedData.supporter, gh, text, tbody);
 
 		displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), body);
 		$('#' + popupConfirmDialogId).find('.modal-dialog').addClass('modal-lg').on('hidden.bs.modal', function () {
@@ -321,7 +321,7 @@ function InteractionHandler() {
 			tbody.append(value);
 		});
 		
-		var body = gh.closePrepareTableForOpinonDialog(users_array, gh, span, tbody);
+		var body = gh.closePrepareTableForOpinionDialog(users_array, gh, span, tbody);
 
 		displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(usersWithSameOpinion), body);
 		$('#' + popupConfirmDialogId).find('.modal-dialog').addClass('modal-lg').on('hidden.bs.modal', function (e) {

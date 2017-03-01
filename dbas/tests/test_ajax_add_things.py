@@ -1,13 +1,14 @@
-import unittest
 import json
+import unittest
+
 import transaction
 from pyramid import testing
+from sqlalchemy import engine_from_config
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, TextVersion, Argument, Premise, PremiseGroup,\
-    ReviewEdit, ReviewEditValue, ReputationHistory, User
+    ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement, MarkedArgument
 from dbas.helper.tests import add_settings_to_appconfig
-from sqlalchemy import engine_from_config
 
 settings = add_settings_to_appconfig()
 DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
@@ -32,6 +33,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             premise.statement_uid = 1
             DBDiscussionSession.query(Statement).get(tmp).textversion_uid = 1
             DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tmp).delete()
+            DBDiscussionSession.query(MarkedStatement).filter_by(statement_uid=tmp).delete()
             DBDiscussionSession.query(Statement).filter_by(uid=tmp).delete()
         # delete premisegroup
         tmp = db_new_arg.premisesgroup_uid
@@ -39,6 +41,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=tmp).delete()
         DBDiscussionSession.query(PremiseGroup).filter_by(uid=tmp).delete()
         # delete argument
+        DBDiscussionSession.query(MarkedArgument).filter_by(argument_uid=db_new_arg.uid).delete()
         DBDiscussionSession.query(Argument).filter_by(uid=db_new_arg.uid).delete()
 
     def test_set_new_start_statement(self):
@@ -53,6 +56,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         for uid in response['statement_uids']:
             DBDiscussionSession.query(Statement).get(uid).textversion_uid = 1
             DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).delete()
+            DBDiscussionSession.query(MarkedStatement).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(Statement).filter_by(uid=uid).delete()
         transaction.commit()
 
@@ -68,6 +72,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         for uid in response['statement_uids']:
             DBDiscussionSession.query(Statement).get(uid).textversion_uid = 1
             DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).delete()
+            DBDiscussionSession.query(MarkedStatement).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(Statement).filter_by(uid=uid).delete()
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Björn').first()
         DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()

@@ -83,7 +83,8 @@ def main(global_config, **settings):
                           root_factory='dbas.security.RootFactory',
                           session_factory=session_factory
                           )
-    config.add_translation_dirs('dbas:locale', 'admin:locale')  # add this before the locale negotiator
+    config.add_translation_dirs('dbas:locale',
+                                'admin:locale')  # add this before the locale negotiator
     config.set_default_csrf_options(require_csrf=True)
 
     # config.set_authentication_policy(authn_policy)

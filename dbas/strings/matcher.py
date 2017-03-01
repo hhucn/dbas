@@ -107,7 +107,7 @@ def get_all_statements_with_value(request, value):
 
     :param request: request
     :param value: string
-    :return
+    :return: dict()
     """
     issue_uid = issue_helper.get_issue_id(request)
     db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue_uid).all()

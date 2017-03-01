@@ -111,6 +111,8 @@ def get_language(request):
         lang = request.cookies['_LOCALE_']
     except (KeyError, AttributeError):
         lang = request.registry.settings['pyramid.default_locale_name']
+    request._LOCALE_ = lang
+    # we have to set 'ui_locales = get_language(request)' in each view again, because D-BAS is no object
     return str(lang)
 
 

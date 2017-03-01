@@ -1,4 +1,4 @@
-## 1.3.0 (2017-02-??)
+## 1.3.0 (2017-03-??)
 - Perfomance tweaks
 - Partial graph instead of complete one
 - FAQs, Docs and Help-Page are online
