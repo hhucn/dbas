@@ -15,7 +15,7 @@ from sqlalchemy_utils import ArrowType
 from dbas.database import DBDiscussionSession, DiscussionBase
 
 
-def sql_timestamp_pretty_print(ts, lang, humanize=True, with_exact_time=False):
+def sql_timestamp_pretty_print(ts, lang='en', humanize=True, with_exact_time=False):
     """
     Pretty printing for sql timestamp in dependence of the language.
 
@@ -253,6 +253,17 @@ class User(DiscussionBase):
         db_settings = DBDiscussionSession.query(Settings).get(self.uid)
         return self.firstname if db_settings.should_show_public_nickname else self.public_nickname
 
+    def to_small_dict(self):
+        """
+        Returns some uid and nickname of the row as dictionary.
+
+        :return: dict()
+        """
+        return {
+            'uid': self.uid,
+            'nickname': self.nickname
+        }
+
 
 class Settings(DiscussionBase):
     """
@@ -410,6 +421,20 @@ class Statement(DiscussionBase):
         """
         return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
 
+    def to_dict(self):
+        """
+        Returns the row as dictionary.
+
+        :return: dict()
+        """
+        return {
+            'uid': self.uid,
+            'textversion_uid': self.textversion_uid,
+            'is_startpoint': self.is_startpoint,
+            'issue_uid': self.issue_uid,
+            'is_disabled': self.is_disabled
+        }
+
 
 class StatementReferences(DiscussionBase):
     """
@@ -545,6 +570,21 @@ class TextVersion(DiscussionBase):
         """
         self.is_disabled = is_disabled
 
+    def to_dict(self):
+        """
+        Returns the row as dictionary.
+
+        :return: dict()
+        """
+        return {
+            'uid': self.uid,
+            'statement_uid': self.statement_uid,
+            'content': self.content,
+            'author_uid': self.author_uid,
+            'timestamp': sql_timestamp_pretty_print(self.timestamp),
+            'is_disabled': self.is_disabled
+        }
+
 
 class PremiseGroup(DiscussionBase):
     """
@@ -634,6 +674,22 @@ class Premise(DiscussionBase):
         """
         self.premisesgroup_uid = premisegroup
 
+    def to_dict(self):
+        """
+        Returns the row as dictionary.
+
+        :return: dict()
+        """
+        return {
+            'premisesgroup_uid': self.premisesgroup_uid,
+            'statement_uid': self.statement_uid,
+            'is_negated': self.is_negated,
+            'author_uid': self.author_uid,
+            'timestamp': sql_timestamp_pretty_print(self.timestamp),
+            'issue_uid': self.issue_uid,
+            'is_disabled': self.is_disabled
+        }
+
 
 class Argument(DiscussionBase):
     """
@@ -668,8 +724,8 @@ class Argument(DiscussionBase):
         :param issue: Issue.uid
         :param conclusion: Default 0, which will be None
         :param argument: Default 0, which will be None
-        :param: is_disabled
-        :param: timestamp
+        :param is_disabled: Boolean
+        :param timestamp: Arrow
         :return: None
         """
         self.premisesgroup_uid = premisegroup
@@ -680,6 +736,7 @@ class Argument(DiscussionBase):
         self.argument_uid = argument
         self.issue_uid = issue
         self.is_disabled = is_disabled
+        self.timestamp = timestamp
 
     def set_conclusions_argument(self, argument):
         """
@@ -716,6 +773,24 @@ class Argument(DiscussionBase):
         :return: String
         """
         return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
+
+    def to_dict(self):
+        """
+        Returns the row as dictionary.
+
+        :return: dict()
+        """
+        return {
+            'uid': self.uid,
+            'premisesgroup_uid': self.premisesgroup_uid,
+            'conclusion_uid': self.conclusion_uid,
+            'argument_uid': self.argument_uid,
+            'is_supportive': self.is_supportive,
+            'author_uid': self.author_uid,
+            'timestamp': sql_timestamp_pretty_print(self.timestamp),
+            'issue_uid': self.issue_uid,
+            'is_disabled': self.is_disabled,
+        }
 
 
 class History(DiscussionBase):
@@ -887,6 +962,18 @@ class MarkedArgument(DiscussionBase):
         self.author_uid = user
         self.timestamp = timestamp
 
+    def to_dict(self):
+        """
+        Returns the row as dictionary.
+
+        :return: dict()
+        """
+        return {
+            'argument_uid': self.argument_uid,
+            'author_uid': self.author_uid,
+            'timestamp': sql_timestamp_pretty_print(self.timestamp)
+        }
+
 
 class MarkedStatement(DiscussionBase):
     """
@@ -912,6 +999,18 @@ class MarkedStatement(DiscussionBase):
         self.statement_uid = statement
         self.author_uid = user
         self.timestamp = timestamp
+
+    def to_dict(self):
+        """
+        Returns the row as dictionary.
+
+        :return: dict()
+        """
+        return {
+            'statement_uid': self.statement_uid,
+            'author_uid': self.author_uid,
+            'timestamp': sql_timestamp_pretty_print(self.timestamp)
+        }
 
 
 class Message(DiscussionBase):
