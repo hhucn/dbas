@@ -47,7 +47,7 @@ def process_input_of_start_premises_and_receive_url(request, premisegroups, conc
     :param user: User.nickname
     :param for_api: Boolean
     :param main_page: URL
-    :param lang: ui_locales
+    :param discussion_lang: ui_locales
     :return: URL, [Statement.uid], String
     """
     logger('QueryHelper', 'process_input_of_start_premises_and_receive_url', 'count of new pgroups: ' + str(len(premisegroups)))
@@ -118,7 +118,7 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
     :param user: User.nickname
     :param for_api: Boolean
     :param main_page: URL
-    :param lang: ui_locales
+    :param discussion_lang: ui_locales
     :return: URL, [Statement.uids], String
     """
     logger('QueryHelper', 'process_input_of_premises_for_arguments_and_receive_url', 'count of new pgroups: ' + str(len(premisegroups)))
@@ -173,6 +173,11 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
 
     # send notifications and mails
     if len(new_argument_uids) > 0:
+        # add marked arguments
+        DBDiscussionSession.add_all([MarkedArgument(argument=uid, user=db_user.uid) for uid in new_argument_uids])
+        DBDiscussionSession.flush()
+        transaction.commit()
+
         new_uid = random.choice(new_argument_uids)   # TODO eliminate random
         attack = get_relation_between_arguments(arg_id, new_uid)
 
@@ -354,8 +359,6 @@ def correct_statement(user, uid, corrected_text):
     :param user: User.nickname requesting user
     :param uid: requested statement uid
     :param corrected_text: new text
-    :param url: current url
-    :param request: current request
     :return: dict()
     """
     logger('QueryHelper', 'correct_statement', 'def ' + str(uid))
@@ -479,8 +482,8 @@ def get_every_attack_for_island_view(arg_uid):
     return_dict.update({'rebut': rebut})
 
     # pretty print
-    for dict in return_dict:
-        for entry in return_dict[dict]:
+    for d in return_dict:
+        for entry in return_dict[d]:
             has_entry = False if entry['id'] == 0 or lang == 'de' else True
             entry['text'] = (_t.get(_.because) + ' ' if has_entry else '') + entry['text']
 
@@ -488,7 +491,6 @@ def get_every_attack_for_island_view(arg_uid):
            str(len(undermine)) + ' undermines, ' +
            str(len(support)) + ' supports, ' +
            str(len(undercut)) + ' undercuts, ' +
-           # str(len(overbid)) + ' overbids, ' +
            str(len(rebut)) + ' rebuts')
 
     return return_dict
@@ -609,21 +611,21 @@ def __insert_new_premises_for_argument(request, text, current_attack, arg_uid, i
     return new_argument
 
 
-def __set_statement(text, user, is_start, issue, lang):
+def __set_statement(text, nickname, is_start, issue, lang):
     """
     Saves statement for user
 
     :param text: given statement
-    :param user: User.nickname given user
+    :param nickname: User.nickname of given user
     :param is_start: if it is a start statement
     :param issue: Issue
     :return: Statement, is_duplicate or -1, False on error
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         return None, False
 
-    logger('QueryHelper', 'set_statement', 'user: ' + str(user) + ', user_id: ' + str(db_user.uid) +
+    logger('QueryHelper', 'set_statement', 'user: ' + str(nickname) + ', user_id: ' + str(db_user.uid) +
            ', text: ' + str(text) + ', issue: ' + str(issue))
 
     # escaping and cleaning
@@ -649,14 +651,18 @@ def __set_statement(text, user, is_start, issue, lang):
     DBDiscussionSession.flush()
 
     # add text
-    text = Statement(textversion=textversion.uid, is_position=is_start, issue=issue)
-    DBDiscussionSession.add(text)
+    DBDiscussionSession.add(Statement(textversion=textversion.uid, is_position=is_start, issue=issue))
     DBDiscussionSession.flush()
 
     # get new text
     new_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.textversion_uid == textversion.uid,
                                                                      Statement.issue_uid == issue)).order_by(Statement.uid.desc()).first()
     textversion.set_statement(new_statement.uid)
+
+    # add marked statement
+    DBDiscussionSession.add(MarkedStatement(statement=new_statement.uid, user=db_user.uid))
+    DBDiscussionSession.flush()
+
     transaction.commit()
 
     return new_statement, False

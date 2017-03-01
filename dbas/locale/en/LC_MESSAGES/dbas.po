@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-02-22 22:26+0100\n"
+"POT-Creation-Date: 2017-02-28 15:19+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -47,7 +47,7 @@ msgid "go-home"
 msgstr "Go home"
 
 #. Default: or
-#: templates/404.pt:17 templates/imprint.pt:68
+#: templates/404.pt:17
 msgid "or"
 msgstr "oder"
 
@@ -261,45 +261,45 @@ msgid "Toggle Navigation"
 msgstr "Toggle navigation"
 
 #. Default: Let's go
-#: templates/snippet-header.pt:43
+#: templates/snippet-header.pt:51
 msgid "lets_go"
 msgstr "Let's go"
 
 #. Default: News
-#: templates/snippet-header.pt:49
+#: templates/snippet-header.pt:57
 msgid "news"
 msgstr "News"
 
 #. Default: Login
 #. Default: Log In
-#: templates/snippet-header.pt:55 templates/snippet-popups.pt:270
+#: templates/snippet-header.pt:63 templates/snippet-popups.pt:270
 #: templates/snippet-popups.pt:329 templates/snippet-popups.pt:345
 #: templates/snippet-popups.pt:540
 msgid "login"
 msgstr "Log In"
 
 #. Default: Settings
-#: templates/snippet-header.pt:69 templates/settings.pt:41
+#: templates/snippet-header.pt:77 templates/settings.pt:41
 msgid "settings"
 msgstr "Settings"
 
 #. Default: Notifications
-#: templates/snippet-header.pt:76
+#: templates/snippet-header.pt:84
 msgid "notifications"
 msgstr "Notifications"
 
 #. Default: Admin
-#: templates/snippet-header.pt:81
+#: templates/snippet-header.pt:89
 msgid "Admin"
 msgstr "Admin"
 
 #. Default: Logout
-#: templates/snippet-header.pt:86
+#: templates/snippet-header.pt:94
 msgid "logout"
 msgstr "Logout"
 
 #. Default: Review
-#: templates/snippet-header.pt:93 templates/review_history.pt:14
+#: templates/snippet-header.pt:101 templates/review_history.pt:14
 #: templates/review_reputation.pt:8 templates/review_content.pt:19
 msgid "review"
 msgstr "Review"
@@ -370,7 +370,7 @@ msgstr ""
 "immediately be deleted."
 
 #. Default: Haftung für Links
-#: templates/imprint.pt:25
+#: templates/imprint.pt:36
 msgid "disclaimer_links"
 msgstr "Liability for links"
 
@@ -384,7 +384,7 @@ msgstr "Liability for links"
 #. Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer
 #. Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen
 #. werden wir derartige Links umgehend entfernen.
-#: templates/imprint.pt:26
+#: templates/imprint.pt:37
 msgid "disclaimer_links_content"
 msgstr ""
 "Our offer contains links to external websites of third parties on the "
@@ -399,7 +399,7 @@ msgstr ""
 "links will immediately be removed."
 
 #. Default: Urheberrecht
-#: templates/imprint.pt:29
+#: templates/imprint.pt:49
 msgid "disclaimer_copyright"
 msgstr "Copyright"
 
@@ -415,7 +415,7 @@ msgstr "Copyright"
 #. aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei
 #. Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend
 #. entfernen.
-#: templates/imprint.pt:30
+#: templates/imprint.pt:50
 msgid "disclaimer_copyright_content"
 msgstr ""
 "The operator of the pages always endeavours to observe copyrights of others "
@@ -428,7 +428,7 @@ msgstr ""
 "exclusively allowed for private, but not commercial use."
 
 #. Default: Datenschutz
-#: templates/imprint.pt:33
+#: templates/imprint.pt:63
 msgid "disclaimer_dataprotection"
 msgstr "Data protection"
 
@@ -437,16 +437,16 @@ msgstr "Data protection"
 #. Daten (beispielsweise Name, oder eMail-Adressen) erhoben werden, erfolgt
 #. dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten werden ohne
 #. Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben. <dynamic
-#. element>Wir weisen darauf hin, dass die Datenübertragung im Internet (z.B.
+#. element> Wir weisen darauf hin, dass die Datenübertragung im Internet (z.B.
 #. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein
 #. lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.
-#. <dynamic element>Der Nutzung von im Rahmen der Impressumspflicht
+#. <dynamic element> Der Nutzung von im Rahmen der Impressumspflicht
 #. veröffentlichten Kontaktdaten durch Dritte zur Übersendung von nicht
 #. ausdrücklich angeforderter Werbung und Informationsmaterialien wird hiermit
 #. ausdrücklich widersprochen. Die Betreiber der Seiten behalten sich
 #. ausdrücklich rechtliche Schritte im Falle der unverlangten Zusendung von
 #. Werbeinformationen, etwa durch Spam-Mails, vor.
-#: templates/imprint.pt:34
+#: templates/imprint.pt:64
 msgid "disclaimer_dataprotection_content"
 msgstr ""
 "To the extent that personal data (e.g. name, address or email-addresses) are "
@@ -461,7 +461,7 @@ msgstr ""
 "takes place without request."
 
 #. Default: Session-Cookies
-#: templates/imprint.pt:39
+#: templates/imprint.pt:81
 msgid "disclaimer_session_cookie"
 msgstr "Session-Cookies"
 
@@ -471,7 +471,7 @@ msgstr "Session-Cookies"
 #. Datenübertragung hindurch des Internets zu minimieren. Sie werden nicht auf
 #. Ihrem Computer gespeichert und laufen ab, sobald Sie Ihre Browser-Sitzung
 #. beenden.
-#: templates/imprint.pt:40
+#: templates/imprint.pt:82
 msgid "disclaimer_session_cookie_content"
 msgstr ""
 "These cookies allow you to use necessary functions of our websites, such as "
@@ -479,7 +479,7 @@ msgstr ""
 "transmission through the world wide web."
 
 #. Default: Tracking-Cookies
-#: templates/imprint.pt:44
+#: templates/imprint.pt:91
 msgid "disclaimer_tracking_cookie"
 msgstr "Tracking-Cookies"
 
@@ -489,7 +489,7 @@ msgstr "Tracking-Cookies"
 #. Informationen festzuhalten, z.B. von Ihnen ausgewählte Seiten und Optionen
 #. und den Weg, den Sie durch unsere Website gewählt haben. Durch das
 #. Überwachen dieser Informationen können wir unsere Websites verbessern.
-#: templates/imprint.pt:45
+#: templates/imprint.pt:92
 msgid "disclaimer_tracking_cookie_content"
 msgstr ""
 "These allow us to identify you while doing repeated visits of our website . "
@@ -499,7 +499,7 @@ msgstr ""
 "capable to improve our site."
 
 #. Default: Piwik
-#: templates/imprint.pt:50
+#: templates/imprint.pt:102
 msgid "disclaimer_piwik"
 msgstr "Piwik"
 
@@ -514,7 +514,7 @@ msgstr "Piwik"
 #. Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch
 #. darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche
 #. Funktionen dieser Website vollumfänglich nutzen können.
-#: templates/imprint.pt:51
+#: templates/imprint.pt:103
 msgid "disclaimer_piwik_content"
 msgstr ""
 "Like most website operators, Piwik.org collects non-personally-identifying "
@@ -532,63 +532,53 @@ msgstr ""
 "identifying information, as described below."
 
 #. Default: Copyrights and used Software
-#: templates/imprint.pt:61
+#: templates/imprint.pt:123
 msgid "copyright_and_used_software"
 msgstr "Copyright and used Software"
 
 #. Default: for
-#: templates/imprint.pt:65 templates/imprint.pt:66 templates/imprint.pt:67
+#: templates/imprint.pt:127 templates/imprint.pt:128 templates/imprint.pt:129
 msgid "for"
 msgstr "for"
 
 #. Default: Icons by
-#: templates/imprint.pt:68
+#: templates/imprint.pt:130
 msgid "icons_by"
 msgstr "Icons by"
 
-#. Default: and
-#: templates/imprint.pt:68
-msgid "and"
-msgstr "and"
-
-#. Default: designed by
-#: templates/imprint.pt:68
-msgid "designed_by"
-msgstr "designed by"
-
 #. Default: Tracking by
-#: templates/imprint.pt:69
+#: templates/imprint.pt:131
 msgid "tracking_by"
 msgstr "Tracking by"
 
 #. Default: Avatare by
-#: templates/imprint.pt:70
+#: templates/imprint.pt:132
 msgid "avatare_by"
 msgstr "Avatare by"
 
 #. Default: Charts and Graphs by
-#: templates/imprint.pt:71
+#: templates/imprint.pt:133
 msgid "chart_and_graphs_by"
 msgstr "Charts and Graphs by"
 
 #. Default: by
 #.
-#: templates/imprint.pt:72 templates/imprint.pt:74 templates/imprint.pt:75
+#: templates/imprint.pt:134 templates/imprint.pt:136 templates/imprint.pt:137
 msgid "by"
 msgstr "by"
 
 #. Default: Cookie Manager by
-#: templates/imprint.pt:73
+#: templates/imprint.pt:135
 msgid "cookie_manager_by"
 msgstr "Cookie Manager by"
 
 #. Default: is generated with Pyramid Web Framework
-#: templates/imprint.pt:81
+#: templates/imprint.pt:144
 msgid "generated_with"
 msgstr "is generated with Pyramid Web Framework"
 
 #. Default: Changes
-#: templates/imprint.pt:94
+#: templates/imprint.pt:157
 msgid "changes"
 msgstr "Changes in Version"
 
@@ -1472,6 +1462,10 @@ msgstr "Change your profile picture on the"
 #. create your profile just once, and then when you participate in any
 #. Gravatar-enabled site, your Gravatar image will automatically follow you
 #. there.
+#. Default: A Gravatar is a globally recognized avatar. You upload it and
+#. create your profile just once, and then when you participate in any
+#. Gravatar-enabled site, your Gravatar image will automatically follow you
+#. there, except your nickname is not public!
 #: templates/settings.pt:95 templates/settings.pt:194
 msgid "what_is_gravatar"
 msgstr ""
@@ -2131,6 +2125,12 @@ msgstr "Supports"
 #: templates/content.pt:299 templates/content.pt:300
 msgid "attacks_on_my_statements"
 msgstr "Attacks"
+
+#~ msgid "and"
+#~ msgstr "and"
+
+#~ msgid "designed_by"
+#~ msgstr "designed by"
 
 #~ msgid "discussion_clicks_arguments"
 #~ msgstr "Clicked Statements"

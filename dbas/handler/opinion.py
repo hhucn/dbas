@@ -13,7 +13,7 @@ from dbas.lib import get_text_for_statement_uid, get_text_for_argument_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_author_or_first_supporter_of_argument
+from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_author_or_first_supporter_of_element
 from dbas.strings.translator import Translator
 
 
@@ -62,7 +62,7 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
     ]
 
     # get gender of counter user
-    db_user = get_author_or_first_supporter_of_argument(argument_uids[1], db_user)
+    db_user = get_author_or_first_supporter_of_element(argument_uids[1], db_user_uid, True)
     gender = db_user.gender if db_user else 'n'
 
     if '/d' in path.split('?')[0]:

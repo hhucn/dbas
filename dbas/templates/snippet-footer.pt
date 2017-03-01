@@ -5,14 +5,14 @@
 		<div class="row links">
 			<ul>
 				<li>
-                    &copy; 2015-<span tal:replace="extras.year"></span> Krauthoff
+                    <i class="fa fa-copyright" aria-hidden="true"></i><span tal:replace="extras.year"></span> Krauthoff
 				</li>
 				<li>
 					<a href="${request.application_url}/imprint"><i class="fa fa-copyright" aria-hidden="true"></i><span i18n:translate="imprint_copyright">Imprint and Copyrights</span></a>
 				</li>
-				<li>
-					<a href="${request.application_url}/publications"><i class="fa fa-book" aria-hidden="true"></i><span i18n:translate="publications">Publications</span></a>
-				</li>
+				<!--<li>-->
+					<!--<a href="${request.application_url}/publications"><i class="fa fa-book" aria-hidden="true"></i><span i18n:translate="publications">Publications</span></a>-->
+				<!--</li>-->
 				<li>
 					<a id="link_popup_license" href="" data-toggle="modal" data-target="#popup_license"><i class="fa fa-list" aria-hidden="true"></i><span i18n:translate="license">License</span></a>
 				</li>

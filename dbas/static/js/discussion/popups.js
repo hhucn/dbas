@@ -153,8 +153,8 @@ function PopupHandler() {
 	 * @param text of the statement
 	 */
 	this.showFlagStatementPopup = function (uid, is_argument, text) {
-		var popup = $('#popup-flag-statement');
-		$('#popup-flag-statement-text').text(text);
+		var popup = $('#' + popupFlagStatement);
+		$('#' + popupFlagStatementTextField).text(text);
 		if (is_argument) {
 			popup.find('.statement_text').hide();
 			popup.find('.argument_text').show();
@@ -183,7 +183,7 @@ function PopupHandler() {
 		popup.find('#dupl').click(function () {
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
-			var text = $('#popup-flag-statement-text').text();
+			var text = $('#' + popupFlagStatementTextField).text();
 			var reason = $(this).attr('value');
 			// check for premisegroup
 			if ($('#item_' + uid).parent().find('label').length > 1){

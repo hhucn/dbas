@@ -755,6 +755,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
     logger('discussion_reaction', 'def', 'main, request.matchdict: ' + str(match_dict))
     request_authenticated_userid = request.authenticated_userid
 
+    # get parameteres
     slug            = match_dict['slug'] if 'slug' in match_dict else ''
     arg_id_user     = match_dict['arg_id_user'] if 'arg_id_user' in match_dict else ''
     attack          = match_dict['mode'] if 'mode' in match_dict else ''
@@ -785,7 +786,6 @@ def discussion_reaction(request, for_api=False, api_data=None):
 
     # set votes and reputation
     add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_argument_click)
-
     add_click_for_argument(arg_id_user, nickname)
 
     disc_ui_locales = get_discussion_language(request, issue)
