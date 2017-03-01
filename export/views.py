@@ -40,6 +40,12 @@ doj = Service(name='export_doj',
 
 @dump.get()
 def get_database_dump(request):
+    """
+    Dumps dict() for D3
+
+    :param request: current webservers request
+    :return: dict()
+    """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Export', 'get_database_dump', 'main')
     issue = IssueHelper.get_issue_id(request)
@@ -53,7 +59,10 @@ def get_database_dump(request):
 @doj.get()
 def get_doj_dump(request):
     """
+    Returns necessary data for the DoJ
 
+    :param request: current webservers request
+    :return: dict()
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Export', 'main', 'def')

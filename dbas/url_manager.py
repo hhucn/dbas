@@ -7,7 +7,6 @@ Managing URLS can be done with a very hardcoded scheme. We are differentiating b
 * Getting confronted because the user clicked his first statement
 * Justify the reaction due to the confrontation
 * Choose an point for the discussion, when two or more statements we entered
-...
 
 Next to this we have a 404 page.
 
@@ -158,8 +157,8 @@ class UrlManager(object):
         :param is_argument: Boolean
         :param is_supportive: Boolean
         :param statement_or_argument_id: Statement.uid or Argument.uid
-        :param pgroup_id_list: int[]
-        :return discuss/{slug}/choose/{p1}/{p2}/...
+        :param pgroup_id_list: [int]
+        :return: discuss/{slug}/choose/{p1}/{p2}/...
         """
         is_arg = 't' if is_argument else 'f'
         is_sup = 't' if is_supportive else 'f'
@@ -174,7 +173,7 @@ class UrlManager(object):
         :param as_location_href: Set to True if you want to change the location using 'location.href'
         :type as_location_href: boolean
         :param argument_uid: Argument.uid
-        :return discuss/{slug}/jump/{argument_uid}
+        :return: discuss/{slug}/jump/{argument_uid}
         """
         url = self.slug + '/jump/' + str(argument_uid)
         return self.__return_discussion_url(as_location_href, url)
@@ -186,7 +185,7 @@ class UrlManager(object):
         :param as_location_href: Boolean
         :param argument_uid_user: Argument.uid
         :param argument_uid_system: Argument.uid
-        :return discuss/{slug}/support/{argument_uid1}/{argument_uid2}
+        :return: discuss/{slug}/support/{argument_uid1}/{argument_uid2}
         """
         url = self.slug + '/support/' + str(argument_uid_user) + '/' + str(argument_uid_system)
         return self.__return_discussion_url(as_location_href, url)

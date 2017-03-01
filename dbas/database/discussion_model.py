@@ -1359,7 +1359,7 @@ class LastReviewerOptimization(DiscussionBase):
     def __init__(self, reviewer, review, is_okay, timestamp=get_now()):
         """
         Inits a row in current last reviewer optimization  table
-        
+
         :param reviewer: User.uid
         :param review: ReviewOptimization.uid
         :param is_okay: boolean

@@ -9,20 +9,19 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 
 # from wsgiref.simple_server import make_server
 
+import logging
+import time
+from configparser import ConfigParser, NoSectionError
+
 from pyramid.authentication import AuthTktAuthenticationPolicy  # , SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
-from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
 from pyramid.static import QueryStringConstantCacheBuster
-
-from dbas.security import groupfinder
-
+from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
 from sqlalchemy import engine_from_config
-from dbas.database import load_discussion_database, load_news_database
-from configparser import ConfigParser, NoSectionError
 
-import logging
-import time
+from dbas.database import load_discussion_database, load_news_database
+from dbas.security import groupfinder
 
 
 def main(global_config, **settings):

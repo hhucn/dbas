@@ -77,6 +77,7 @@ def main_admin(request):
     """
     View configuration for the content view. Only logged in user can reach this page.
 
+    :param request: current webservers request
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -105,6 +106,7 @@ def main_table(request):
     """
     View configuration for the content view. Only logged in user can reach this page.
 
+    :param request: current webservers request
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -139,6 +141,12 @@ def main_table(request):
 
 @update_row.get()
 def main_update(request):
+    """
+    View configuration for updating any row
+
+    :param request: current webservers request
+    :return: dict()
+    """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Admin', 'main_update', 'def ' + str(request.params))
 
@@ -162,6 +170,12 @@ def main_update(request):
 
 @delete_row.get()
 def main_delete(request):
+    """
+    View configuration for deleting any row
+
+    :param request: current webservers request
+    :return: dict()
+    """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Admin', 'main_delete', 'def ' + str(request.params))
 
@@ -183,6 +197,12 @@ def main_delete(request):
 
 @add_row.get()
 def main_add(request):
+    """
+    View configuration for adding any row
+
+    :param request: current webservers request
+    :return: dict()
+    """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Admin', 'main_add', 'def ' + str(request.params))
 
@@ -204,6 +224,12 @@ def main_add(request):
 
 @update_badge.get()
 def main_update_badge(request):
+    """
+    View configuration for updating a badge
+
+    :param request: current webservers request
+    :return: dict()
+    """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Admin', 'main_update_badge', 'def ' + str(request.params))
 
