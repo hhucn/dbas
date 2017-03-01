@@ -226,14 +226,15 @@ function GuiHandler() {
 	};
 	
 	/**
+	 * Shows a modal where the user has to choose how the premisegroups should be treated
 	 *
-	 * @param undecided_texts
-	 * @param decided_texts
-	 * @param supportive
-	 * @param type
-	 * @param arg
-	 * @param relation
-	 * @param conclusion
+	 * @param undecided_texts, array of strings
+	 * @param decided_texts, array of strings
+	 * @param supportive, boolean
+	 * @param type, fuzzy_add_reason (adding an arguments reason) or fuzzy_start_premise for adding a positions premise
+	 * @param arg, current argument id, if the type is fuzzy_add_reason
+	 * @param relation, current relation as string, if the type is fuzzy_add_reason
+	 * @param conclusion, current conclusion uid, if the type is fuzzy_start_premise
 	 */
 	this.showSetStatementContainer = function (undecided_texts, decided_texts, supportive, type, arg, relation, conclusion) {
 		var gh = new GuiHandler(), page, page_no;
@@ -258,7 +259,7 @@ function GuiHandler() {
 						decided_texts.push([splitted[j]]);
 					}
 					
-				} else if (selections[i].id.indexOf(attr_one_arg) !== -1) { // one argument with big premisegroup
+				} else if (selections[i].id.indexOf(attr_one_arg) !== -1) { // one argument with big premise group
 					decided_texts.push(splitted);
 					
 				} else { // just take it!
@@ -455,12 +456,12 @@ function GuiHandler() {
 	/**
 	 *
 	 * @param parsedData
-	 * @param callbackid
+	 * @param callbackId
 	 * @param type
 	 */
-	this.setStatementsAsProposal = function (parsedData, callbackid, type) {
-		var callbackElement = $('#' + callbackid);
-		var uneditted_value;
+	this.setStatementsAsProposal = function (parsedData, callbackId, type) {
+		var callbackElement = $('#' + callbackId);
+		var non_edited_value;
 		$('#' + proposalPremiseListGroupId).empty();
 		$('#' + proposalStatementListGroupId).empty();
 		$('#' + proposalEditListGroupId).empty();
@@ -482,7 +483,7 @@ function GuiHandler() {
 			//var pos = val.toLocaleLowerCase().indexOf(token.toLocaleLowerCase()), newpos = 0, start = 0;
 			
 			// make all tokens bold
-			uneditted_value = val.text;
+			non_edited_value = val.text;
 			// replacement from http://stackoverflow.com/a/280805/2648872
 			text = val.text.replace(new RegExp("(" + (token + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "</strong>$1<strong>");
 			text = '<strong>' + text;
@@ -491,7 +492,7 @@ function GuiHandler() {
 				.attr('type', 'button')
 				.attr('class', 'list-group-item')
 				.attr('id', 'proposal_' + index)
-				.attr('text', uneditted_value)
+				.attr('text', non_edited_value)
 				.hover(function () {
 						$(this).addClass('active');
 					},
@@ -619,15 +620,6 @@ function GuiHandler() {
 	};
 	
 	/**
-	 * Updates an statement in the discussions list
-	 * @param jsonData
-	 */
-	this.updateOfStatementInDiscussion = function (jsonData) {
-		$('#td_' + jsonData.uid).text(jsonData.text);
-		$('#' + jsonData.uid).text(jsonData.text);
-	};
-	
-	/**
 	 * Sets style attributes to default
 	 */
 	this.resetChangeDisplayStyleBox = function () {
@@ -655,7 +647,7 @@ function GuiHandler() {
 	 * @param tbody
 	 * @returns {*|jQuery|HTMLElement}
 	 */
-	this.closePrepareTableForOpinonDialog = function (users_array, gh, element, tbody) {
+	this.closePrepareTableForOpinionDialog = function (users_array, gh, element, tbody) {
 		var body = $('<div>');
 		var table = $('<table>')
 			.attr('class', 'table table-condensed table-hover center')
@@ -819,7 +811,7 @@ function GuiHandler() {
 	this.lang_switch = function(lang){
 		if (!Cookies.get(LANG_SWITCH_WARNING)) {
 			displayConfirmationDialogWithoutCancelAndFunction(get_it(lang, languageSwitchModalTitle), get_it(lang, languageSwitchModalBody));
-			$('#' + popupConfirmDialogId).on('hide.bs.modal', function (e) {
+			$('#' + popupConfirmDialogId).on('hide.bs.modal', function () {
 				new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang);
 				Cookies.set(LANG_SWITCH_WARNING, true, {expires: 180});
 			});
