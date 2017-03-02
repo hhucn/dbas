@@ -1,14 +1,17 @@
+html
+  position: relative
+  min-height: 100%
+
+html, body
+  font-size: 14px
+  margin: 0
+  padding: 0
+
 body
   color: #000
   background: #EBEBEB
   line-height: 1.5
   // background-image: url('../images/bg4.png')
-
-html, body
-  margin: 0
-  padding: 0
-  height: 100%
-  font-size: 14px
 
 .ajaxloader
   display: none
@@ -208,44 +211,6 @@ body.loading
     transform-style: preserve-3d
   margin: auto
 
-.blue-button, .red-button, .green-button
-  font-size: 40px
-  height: 48px
-  width: 48px
-
-.blue-button-small, .red-button-small, .green-button-small
-  font-size: 20px
-  height: 24px
-  width: 24px
-
-.blue-button-middle, .red-button-middle, .green-button-middle
-  font-size: 30px
-  height: 36px
-  width: 36px
-
-.blue-button, .blue-button-small, .blue-button-middle,
-.red-button, .red-button-small, .red-button-middle,
-.green-button, .green-button-small, .green-button-middle
-  position: fixed
-  border-radius: 50%
-  margin: auto
-  padding: 0
-  overflow: hidden
-  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12), 0 1px 1px 0 rgba(0, 0, 0, 0.24)
-  line-height: normal
-  color: #fff
-  cursor: pointer
-  text-align: center
-
-.blue-button, .blue-button-small, .blue-button-middle
-  background: #2196f3
-
-.red-button, .red-button-small, .red-button-middle
-  background: #F44336
-
-.green-button, .green-button-small, .green-button-middle
-  background: #8BC34A
-
 .bottom-right
   bottom: 2em
   right: 0.5em
@@ -259,79 +224,6 @@ body.loading
 
 .table th
   text-align: center
-
-#additional-wrapper
-  min-height: 99%
-  position: relative
-
-#wrapper-content
-  padding-top: 80px
-  padding-bottom: 100px
-  /* Height of the footer element
-
-.share-icon
-  float: right
-  padding: 1.3em
-  opacity: 0.5
-  transition: 1s ease
-  cursor: pointer
-
-.share-icon-small
-  float: right
-  padding: 1.0em
-  opacity: 0.5
-  transition: 1s ease
-  cursor: pointer
-
-.share-icon:hover, .share-icon-small:hover
-  opacity: 1.0
-  transition: .2s ease
-
-.share-table
-  list-style-type: none
-  margin: 0
-  padding: 0
-  float: right
-  ul
-    list-style-type: none
-    margin: 0
-    padding: 0
-    float: right
-  li
-    ul
-      display: none
-      opacity: 0.5
-      li
-        display: inline
-        padding: 1em
-    &:hover ul
-      display: block
-      float: right
-      opacity: 1.0
-
-.share-facebook
-  background: url('../images/icon_fb.png') no-repeat 4px 4px
-
-.share-facebook-small
-  background: url('../images/icon_fb_s.png') no-repeat 1px 1px
-
-.share-google
-  background: url('../images/icon_googlep.png') no-repeat 4px 4px
-
-.share-google-small
-  background: url('../images/icon_googlep_s.png') no-repeat 1px 1px
-
-.share-twitter:hover
-  background: url('../images/icon_twitter.png') no-repeat 4px 4px
-
-.share-twitter-small
-  background: url('../images/icon_twitter_s.png') no-repeat 1px 1px
-
-.share-mail
-  background: url('../images/icon_mail.png') no-repeat 4px 4px
-
-.share-mail-small
-  background: url('../images/icon_mail_s.png') no-repeat 1px 1px
 
 #popup-login-body, #popup-write-text-body, #popup-generate-password-body, #popup-set-premisegroups-body, #popup-url-sharing-body
   padding: 1em
@@ -391,8 +283,6 @@ body.loading
     cursor: pointer
 
 @media (max-width: 768px)
-  #wrapper-content
-    padding-top: 50px
   .container
     margin-left: 0.5em
     margin-right: 0.5em

@@ -1,8 +1,10 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
-		<div class="row" style="width: 95%">
-			<div class="col-md-1"></div>
-			<div class="col-md-6 colored-container imprint-container">
+		<div class="container">
+
+		<div class="row">
+
+			<div class="col-md-6 colored-container">
 				<h4><span i18n:translate="imprint">Impressum</span> ${project}</h4>
 				<h6>Build <span tal:replace="extras.dbas_build"></span></h6>
 				<p i18n:translate="data_tmg">Angaben gemäß § 5 TMG</p>
@@ -118,8 +120,8 @@
 				<iframe id="piwik-opt-out-iframe" style="border: 0; height: 200px; width: 600px;" src="https://dbas.cs.uni-duesseldorf.de/piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=de"></iframe>
 			</div>
 
-			<div class="col-md-4">
-				<div class="colored-container imprint-container" style="margin-bottom: 15px;">
+			<div class="col-md-6">
+				<div class="colored-container" style="margin-bottom: 15px;">
 					<h4><span i18n:translate="copyright_and_used_software">Copyrights and used Software</span></h4>
 					<ul>
 						<li><a target="_blank" href="https://github.com/wimagguc/jquery-eu-cookie-law-popup">EU Cookie Popup</a></li>
@@ -139,7 +141,7 @@
 					</ul>
 				</div>
 
-				<div class="colored-container imprint-container row links">
+				<div class="colored-container links">
 					<h4><span >Pylons Pyramid</span></h4>
 					<span class="current-version project">${project}</span> <span i18n:translate="generated_with">is generated with Pyramid Web Framework </span> ${extras.pyramid_version}
 					<br>
@@ -153,7 +155,7 @@
 					</ul>
 				</div>
 
-				<div class="colored-container imprint-container">
+				<div class="colored-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>
 
 					<div tal:omit-tag="" tal:repeat="imp imprint">
@@ -165,10 +167,12 @@
 				</div>
 			</div>
 		</div>
+		</div>
 
 		<div class="container invisible">
 
 		</div>
+
 
 	</tal:block>
 </tal:block>
