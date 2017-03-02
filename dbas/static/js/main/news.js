@@ -85,12 +85,12 @@ function News() {
 
 		// find max height of each row and set it
 		for (counter = 0; counter < row; counter++) {
-			heights = $('#row_' + counter + ' div').children(':first-child').map(function () {
+			var children =$('#row_' + counter).children();
+			heights = children.map(function () {
 				return $(this).height();
 			}).get();
-			maxHeight = Math.max.apply(null, heights);
-
-			$.each($('#row_' + counter).children(), function () {
+			maxHeight = Math.max.apply(Math, heights);
+			$.each(children, function () {
 				$(this).children().eq(0).height(maxHeight);
 			});
 		}
@@ -210,7 +210,12 @@ function News() {
 			}
 		}).hide();
 	};
-
+	
+	/**
+	 *
+	 * @param index
+	 * @param pagecounter
+	 */
 	this.setPlaceholder = function(index, pagecounter){
 		var i, p, s,
 			placeholder = $('<li>').addClass('disabled').append($('<a>').addClass('news-placeholder').text('...'));
@@ -385,8 +390,10 @@ $(document).ready(function () {
 	if (window.location.href.indexOf(mainpage + 'news') === -1){
 		return;
 	}
+	
 	var news = new News();
 	news.setNewsInRow();
+	news.setMaxHeightOfNewsRows();
 	news.setSharingClickEvents();
 	news.setSlimscrollForNewsRows();
 	news.setPageNavigation();

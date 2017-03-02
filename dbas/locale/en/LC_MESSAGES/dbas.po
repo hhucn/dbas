@@ -580,7 +580,7 @@ msgstr "is generated with Pyramid Web Framework"
 #. Default: Changes
 #: templates/imprint.pt:157
 msgid "changes"
-msgstr "Changes in Version"
+msgstr "Changelog"
 
 #. Default: Queues
 #: templates/review.pt:7
