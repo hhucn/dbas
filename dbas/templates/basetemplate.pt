@@ -21,14 +21,6 @@
 	<input type="hidden" id="hidden_language" value="${language}">
 	<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 
-	<!-- Inlcuding this at top for references -->
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery-3.1.0.min.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery.autocomplete.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-3.3.7.min.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-toggle.min.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-tour-0.11.0.min.js')}"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/main/browser-detection.js')}" tal:condition="extras.development_mode"></script>
-
 	<!-- JS DISABLED -->
 	<noscript>
 		<div class="blocked jsdisabled">
@@ -77,6 +69,14 @@
     </div>
 
 	<div class="eupopup eupopup-bottomright"></div>
+
+	<!-- Inlcuding this at top for references -->
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery-3.1.0.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery.autocomplete.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-3.3.7.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-toggle.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-tour-0.11.0.min.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/main/browser-detection.js')}" tal:condition="extras.development_mode"></script>
 
 	<!-- Placed at the end of the document so the pages load faster -->
 	<!-- LIBS PART I -->
