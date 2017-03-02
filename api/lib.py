@@ -17,18 +17,6 @@ from webob import Response, exc
 # Other
 # =============================================================================
 
-def as_json(convert):
-    """
-    Convert input to json string.
-
-    :param convert: dict which should be converted
-    :return: json string
-    """
-    if convert:
-        return json.dumps(convert, True)
-    return json.dumps({"status": "error", "message": "Could not convert data to JSON"})
-
-
 def logger():
     """
     Create a logger.
@@ -85,24 +73,6 @@ def merge_dicts(d1, d2):
         merged.update(d2)
         return merged
     return None
-
-
-def debug_start():
-    """
-    Prepare for debug prints.
-
-    :return: Some hashes and linebreaks
-    """
-    print("\n\n\n##########\n")
-
-
-def debug_end():
-    """
-    End debug prints.
-
-    :return: Some hashes and linebreaks
-    """
-    print("\n##########\n\n\n")
 
 
 class HTTP204(exc.HTTPError):
