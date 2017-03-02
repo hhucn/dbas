@@ -1,5 +1,3 @@
-from nose.tools import *
-from splinter import Browser
 import logging
 from selenium.webdriver.remote.remote_connection import LOGGER
 

@@ -1,7 +1,7 @@
 """
 Unit tests for lib.py
 
-.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
+.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 
 from api.lib import flatten, merge_dicts, as_json

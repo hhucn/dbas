@@ -1,8 +1,8 @@
 """
 Logic for user login, token generation and validation
 
-.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
 import binascii
@@ -78,7 +78,7 @@ def valid_token(request):
 
 def validate_login(request, **kwargs):
     """
-    Takes token from request and validates it. Return true if logged in, else false.
+    Takes token from request and validates it.
 
     :param request:
     :return:
@@ -126,7 +126,7 @@ def validate_credentials(request, **kwargs):
     # Check in DB-AS' database, if the user's credentials are valid
     logged_in = user_login(request, nickname, password, for_api=True)
     if isinstance(logged_in, str):
-        logged_in = json.loads(logged_in)
+        logged_in = json.loads(logged_in)  # <-- I hate that this is necessary!
 
     if logged_in.get('status') == 'success':
         token = _create_token(nickname)

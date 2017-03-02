@@ -1,7 +1,7 @@
 """
 Provides helping function for handling reputation.
 
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
 import transaction
