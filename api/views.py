@@ -16,7 +16,7 @@ import dbas.views as dbas
 from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement, \
     get_all_arguments_with_text_by_statement_id, resolve_issue_uid_to_slug
 
-from .lib import HTTP204, flatten, json_bytes_to_dict, logger, merge_dicts, as_json
+from .lib import HTTP204, flatten, json_bytes_to_dict, logger, merge_dicts
 from .login import validate_credentials, validate_login
 from .references import store_reference, url_to_statement, get_references_for_url, get_all_references_by_reference_text, get_reference_by_id, \
     prepare_single_reference
