@@ -679,6 +679,14 @@ $(document).ready(function () {
 		new AjaxMainHandler().ajaxLogout();
 	});
 
+	$(window).scroll(function() {
+		if ($(document).scrollTop() > 50) {
+            $('nav').addClass('shrink');
+		} else {
+			$('nav').removeClass('shrink');
+		}
+	});
+	
 	// testing with gremlins
 	//var horde = gremlins.createHorde()
 	//	.gremlin(gremlins.species.formFiller())
