@@ -36,19 +36,6 @@
 			<strong i18n:translate="js_disabled2">Please enable JavaScript!</strong>
 		</div>
 	</noscript>
-	<!--
-	<div id="adblocker_message" class="blocked adblockenabled" style="display:none">
-		<strong i18n:translate="adblock_enabled1">AdBlocker is enabled:</strong><br>
-		<strong i18n:translate="adblock_enabled2">Please disable your AdBlocker!</strong>
-	</div>
-
-	<script type="text/javascript">
-	  if( window.canRunAds === undefined ){
-		// adblocker detected, show fallback
-		$('#adblocker_message').show();
-	  }
-	</script>
-	-->
 
 
 	<div class="blocked request_failed center alert-danger" id="request_failed_container" style="display:none;">
@@ -72,26 +59,22 @@
 		<button type="button" class="close" aria-label="Close"><span id="request_info_container_close" aria-hidden="true">×</span> </button>
 	</div>
 
-	<div id="additional-wrapper">
-		<div id="wrapper-header">
-			<div metal:use-macro="load: snippet-header.pt"></div>
-			<div metal:use-macro="load: snippet-popups.pt"></div>
-		</div>
+    <div id="wrapper-header">
+        <div metal:use-macro="load: snippet-header.pt"></div>
+        <div metal:use-macro="load: snippet-popups.pt"></div>
+    </div>
 
-		<div id="wrapper-content">
-			<div metal:define-slot="content_page"></div>
-		</div>
+    <div id="wrapper-content">
+        <div metal:define-slot="content_page"></div>
+    </div>
 
-		<div id="wrapper-footer">
-			<a href="#top" class="back-to-top"><img class="center" id="back-to-top-img" alt="back-to-top-img" src="${request.static_url('dbas:static/images/chevron_up.png')}"></a>
+    <a href="#top" class="back-to-top"><img class="center" id="back-to-top-img" alt="back-to-top-img" src="${request.static_url('dbas:static/images/chevron_up.png')}"></a>
 
-			<div metal:use-macro="load: snippet-footer.pt"></div>
-		</div>
+    <div metal:use-macro="load: snippet-footer.pt"></div>
 
-		<div class="ajaxloader">
-			<img class="center rotating" src="${request.static_url('dbas:static/images/icon.png')}">
-		</div>
-	</div>
+    <div class="ajaxloader">
+        <img class="center rotating" src="${request.static_url('dbas:static/images/icon.png')}">
+    </div>
 
 	<div class="eupopup eupopup-bottomright"></div>
 
