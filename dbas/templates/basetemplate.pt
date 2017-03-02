@@ -51,10 +51,8 @@
 		<button type="button" class="close" aria-label="Close"><span id="request_info_container_close" aria-hidden="true">×</span> </button>
 	</div>
 
-    <div id="wrapper-header">
-        <div metal:use-macro="load: snippet-header.pt"></div>
-        <div metal:use-macro="load: snippet-popups.pt"></div>
-    </div>
+    <div metal:use-macro="load: snippet-header.pt"></div>
+    <div metal:use-macro="load: snippet-popups.pt"></div>
 
     <div id="wrapper-content">
         <div metal:define-slot="content_page"></div>
