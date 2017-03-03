@@ -118,6 +118,7 @@ def validate_credentials(request, **kwargs):
     :return:
     """
     # Decode received data
+    # TODO use api.log.json_bytes_to_dict
     data = request.body.decode('utf-8')
     data = json.loads(data)
     nickname = data['nickname']

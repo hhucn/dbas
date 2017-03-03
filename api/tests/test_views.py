@@ -4,16 +4,11 @@ Testing the routes of the API.
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 from nose.tools import assert_true, assert_false, assert_equals
+from api.lib import json_bytes_to_dict
 import json
 import requests
 
 API = "http://localhost:4284/api/"
-
-
-def json_to_dict(data):
-    if isinstance(data, bytes):
-        data = data.decode('utf-8')
-    return json.loads(data)
 
 
 def get_response(route):
@@ -21,7 +16,7 @@ def get_response(route):
 
 
 def parse_status(content):
-    return json_to_dict(content).get("status")
+    return json_bytes_to_dict(content).get("status")
 
 
 def test_server_available():
@@ -31,7 +26,7 @@ def test_server_available():
     assert_equals("ok", status)
 
 
-def test_login_error():
+def test_login_invalid():
     credentials = json.dumps({"nickname": "foo",
                               "password": "bar"})
     response = requests.post(API + "login", data=credentials)
