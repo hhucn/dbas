@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 

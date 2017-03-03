@@ -34,8 +34,8 @@
             <!--
             </ul>
             -->
-            <form class="navbar-form navbar-left" role="search">
-                <div class="form-group" tal:condition="extras.is_in_discussion">
+            <form class="navbar-form navbar-left" role="search" tal:condition="extras.is_in_discussion">
+                <div class="form-group">
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-search" aria-hidden="true" style="padding: 6px 7px;"></i></span>
                         <input id="navbar-search-statement" type="text" class="form-control" tal:attributes="placeholder extras.tag.search">

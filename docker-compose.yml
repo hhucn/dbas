@@ -2,10 +2,19 @@ version: '2'
 services:
   db:
     image: hhucn/docker-dbas-postgres
+    tmpfs: /tmp
   notifications:
     image: hhucn/dbas-notifications
     ports:
       - "5222:5222"
+    tmpfs: /tmp
+  docs:
+    build:
+      context: ./dbas
+      dockerfile: Dockerfile.docs
+    ports:
+      - "8888:80"
+    tmpfs: /tmp
   web:
     build: .
     command: /bin/bash docker_init.sh
