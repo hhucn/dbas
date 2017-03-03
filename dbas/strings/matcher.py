@@ -119,8 +119,7 @@ def get_all_statements_with_value(request, value):
             slug = DBDiscussionSession.query(Issue).get(stat.issue_uid).get_slug()
             _um = UrlManager(request.application_url, for_api=False, slug=slug)
             url = _um.get_url_for_statement_attitude(False, db_tv.statement_uid)
-            rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
-            rd['url'] = url
+            rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid).update({'url': url})
             return_array.append(rd)
 
     return_array = __sort_array(return_array)

@@ -10,7 +10,7 @@ services:
     tmpfs: /tmp
   docs:
     build:
-      context: ./dbas
+      context: .
       dockerfile: Dockerfile.docs
     ports:
       - "8888:80"
