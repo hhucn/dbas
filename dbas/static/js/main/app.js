@@ -123,6 +123,8 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
     
 	// display dialog
 	var dialog = $('#' + popupConfirmDialogId);
+    dialog.find('#confirm-dialog-accept-btn').show();
+	dialog.find('#confirm-dialog-refuse-btn').show();
 	if (small_dialog) {
 		dialog.find('.modal-dialog').addClass('modal-sm');
 	}
@@ -140,8 +142,8 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
 	dialog.on('hidden.bs.modal', function () {
 		$('#' + popupConfirmDialogRefuseBtn).show();
 		dialog.find('.modal-dialog').removeClass('modal-sm');
-		dialog.find('confirm-dialog-accept-btn').text(_t(okay));
-		dialog.find('confirm-dialog-refuse-btn').text(_t(cancel));
+		dialog.find('#confirm-dialog-accept-btn').text(_t(okay));
+		dialog.find('#confirm-dialog-refuse-btn').text(_t(cancel));
 	});
 }
 

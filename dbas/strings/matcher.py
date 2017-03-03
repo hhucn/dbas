@@ -73,7 +73,8 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
         return_dict['distance_name'] = mechanism
 
     elif mode == '9':  # search everything
-        return_dict = {'suggestions': get_all_statements_with_value(request, value)}
+        return_dict['values'] = get_all_statements_with_value(request, value)
+        return_dict['distance_name'] = mechanism
 
     else:
         return_dict = {'error': _tn.get(_.internalError)}
@@ -118,7 +119,9 @@ def get_all_statements_with_value(request, value):
             slug = DBDiscussionSession.query(Issue).get(stat.issue_uid).get_slug()
             _um = UrlManager(request.application_url, for_api=False, slug=slug)
             url = _um.get_url_for_statement_attitude(False, db_tv.statement_uid)
-            return_array.append({'value': db_tv.content, 'data': url, 'distance': get_distance(value.lower(), db_tv.content.lower())})
+            rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
+            rd['url'] = url
+            return_array.append(rd)
 
     return_array = __sort_array(return_array)
 

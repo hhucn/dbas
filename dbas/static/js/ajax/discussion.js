@@ -317,12 +317,14 @@ function AjaxDiscussionHandler() {
 		var tmpid = callbackid.split('-').length === 6 ? callbackid.split('-')[5] : '0';
 		var bubbleSpace = $('#' + discussionBubbleSpaceId);
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		
 		// clear lists if input is empty
 		if(callback.val().length === 0) {
 			$('#' + proposalStatementListGroupId).empty();
 			$('#' + proposalPremiseListGroupId).empty();
 			$('#' + proposalEditListGroupId).empty();
 			$('#' + proposalUserListGroupId).empty();
+			$('#' + proposalStatementSearchGroupId).empty();
 			$('p[id^="current_"]').each(function() {
 				$(this).parent().remove();
 			});

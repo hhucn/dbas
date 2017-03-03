@@ -465,6 +465,7 @@ function GuiHandler() {
 		$('#' + proposalStatementListGroupId).empty();
 		$('#' + proposalEditListGroupId).empty();
 		$('#' + proposalUserListGroupId).empty();
+		$('#' + proposalStatementSearchGroupId).empty();
 		
 		// do we have values ?
 		if (parsedData.length === 0) {
@@ -497,6 +498,9 @@ function GuiHandler() {
 					function () {
 						$(this).removeClass('active');
 					});
+			if (type === fuzzy_find_statement){
+				button.attr('data-url', val.url);
+			}
 			// we do not want the "Levensthein badge"
 			span_dist = '';//$('<span>').attr('class', 'badge').text(parsedData.distance_name + ' ' + distance);
 			span_text = $('<span>').attr('id', 'proposal_' + index + '_text').html(text);
@@ -514,6 +518,10 @@ function GuiHandler() {
 				$('#' + proposalPremiseListGroupId).empty();
 				$('#' + proposalEditListGroupId).empty(); // list with elements should be after the callbacker
 				$('#' + proposalUserListGroupId).empty();
+				$('#' + proposalStatementSearchGroupId).empty();
+				if (type === fuzzy_find_statement){
+					window.location.href = $(this).data('url');
+				}
 			});
 			
 			if (type === fuzzy_start_premise){        $('#' + proposalStatementListGroupId).append(button); }
@@ -521,6 +529,7 @@ function GuiHandler() {
 			else if (type === fuzzy_add_reason){      $('#' + proposalPremiseListGroupId).append(button); }
 			else if (type === fuzzy_statement_popup){ $('#' + proposalEditListGroupId).append(button); }
 			else if (type === fuzzy_find_user){       $('#' + proposalUserListGroupId).append(button); }
+			else if (type === fuzzy_find_statement){  $('#' + proposalStatementSearchGroupId).append(button); }
 		});
 	};
 	

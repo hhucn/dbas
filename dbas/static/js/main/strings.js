@@ -233,6 +233,8 @@ var participantsSawArgumentsToThis  = 'participantsSawArgumentsToThis';
 var participantSawArgumentsToThis   = 'participantSawArgumentsToThis';
 var pinNavigation                   = 'pinNavigation';
 var pleaseEditAtLeast               = 'pleaseEditAtLeast';
+var pleaseEnterYourTextHere         = 'pleaseEnterYourTextHere';
+var pleaseEnterYourTextForSearchHere = 'pleaseEnterYourTextForSearchHere';
 var queueCompleteSeen               = 'queueCompleteSeen';
 var revokedArgument                 = 'revokedArgument';
 var registered                      = 'registered';
@@ -246,6 +248,8 @@ var requestFailedInternalError      = 'requestFailedInternalError';
 var restartOnError                  = 'restartOnError';
 var repuationChartSum               = 'repuationChartSum';
 var repuationChartDay               = 'repuationChartDay';
+var searchStatementPopupTitleText   = 'searchStatementPopupTitleText';
+var searchStatementPopupBodyText    = 'searchStatementPopupBodyText';
 var sawThis                         = 'saw this';
 var saveMyStatement                 = 'saveMyStatement';
 var saveMyStatements                = 'saveMyStatements';
@@ -476,6 +480,8 @@ var dbas_en = {
     'proposalsWereForwarded': 'Your proposals were forwarded!',
     'pinNavigation': 'Pin Navigation',
     'pleaseEditAtLeast': 'Please edit at least X chars to reduce noise!',
+    'pleaseEnterYourTextHere': 'Please enter your text here ...',
+    'pleaseEnterYourTextForSearchHere': 'Please enter your text for searching here ...',
     'queueCompleteSeen': 'You have seen every open task, so we will start from the beginning again.',
     'position': 'Position',
     'revokedArgument': 'revoked argument',
@@ -495,6 +501,8 @@ var dbas_en = {
     'sawThis': 'saw this',
     'saveMyStatement': 'Save my Statement!',
     'saveMyStatements': 'Save my Statements!',
+    'searchStatementPopupTitleText': 'Search a statement!',
+    'searchStatementPopupBodyText': 'If you select an statement, you will jump to this step in the discussion.',
     'showAllUsers': 'Show all users',
     'showAllArguments': 'Show all arguments',
     'showAllArgumentsTitle': 'Show all arguments, done by users',
@@ -706,6 +714,8 @@ var dbas_de = {
     'proposalsWereForwarded': 'Ihr Vorschlag wurde eingereicht!',
     'pinNavigation': 'Navigation anheften',
     'pleaseEditAtLeast': 'Bitte ändern Sie mindestens X Zeichen um unnötige Änderungen zu vermeiden.',
+    'pleaseEnterYourTextForSearchHere': 'Bitte geben Sie hier Ihren Suchtext ein ...',
+    'pleaseEnterYourTextHere': 'Bitte geben Sie hier Ihren Text ein ...',
     'queueCompleteSeen': 'Wir haben Ihnen schon leider alles gezeigt, also fangen wir nochmal von vorne an!',
     'position': 'Position',
     'report': 'Melden',
@@ -725,6 +735,8 @@ var dbas_de = {
     'sawThis': 'sahen dies!',
     'saveMyStatement': 'Aussage speichern!',
     'saveMyStatements': 'Aussagen speichern!',
+    'searchStatementPopupTitleText': 'Aussage suchen!',
+    'searchStatementPopupBodyText': 'Bei der Auswahl einer Aussage, springen Sie zu diesem Abschnitt in der Diskussion.',
     'showAllUsers': 'Zeig\' alle Benutzer',
     'showAllArguments': 'Zeig\' alle Argumente',
     'showAllArgumentsTitle': 'Zeigt alle Argumente',

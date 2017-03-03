@@ -282,6 +282,32 @@ function PopupHandler() {
 	
 	/**
 	 *
+	 */
+	this.showSearchStatementPop = function(){
+		var titleText = _t(searchStatementPopupTitleText);
+		var bodyText =
+			'<p>' + _t(searchStatementPopupBodyText) + '</p>' +
+			'<div class="form-group">' +
+			'<div class="input-group">' +
+			'<span class="input-group-addon"><i class="fa fa-search" aria-hidden="true" style="padding: 6px 7px;"></i></span>' +
+			'<input id="search-statement-input" type="text" class="form-control" placeholder="' + _t(pleaseEnterYourTextForSearchHere) + '">' +
+			'</div>' +
+			'</div>' +
+			'<div id="' + proposalStatementSearchGroupId + '"></div>';
+		
+		displayConfirmationDialog(titleText, bodyText, null, null, false);
+		$('#' + popupConfirmDialogId).find('#confirm-dialog-accept-btn').hide();
+		
+		$("#search-statement-input").keyup(function () {
+			var val = $('#search-statement-input').val();
+			setTimeout(function () {
+				new AjaxDiscussionHandler().fuzzySearch(escapeHtml(val), 'search-statement-input', fuzzy_find_statement, '');
+			}, 200);
+		});
+	};
+	
+	/**
+	 *
 	 * @param uid
 	 * @param reason
 	 */

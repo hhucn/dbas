@@ -386,6 +386,11 @@ function Main () {
 			Cookies.remove(GUIDED_TOUR);
 			window.location.href = mainpage;
 		});
+		
+		// search statement
+		$('#sidebar-search-statement').click(function() {
+			popupHandler.showSearchStatementPop();
+		});
 	};
 	
 	/**
@@ -526,27 +531,6 @@ function Main () {
 				var escapedText = escapeHtml($('#' + addPremiseContainerMainInputId).val());
 				ajaxHandler.fuzzySearch(escapedText, addPremiseContainerMainInputId, fuzzy_add_reason, '');
 			}, 200);
-		});
-		
-		// autocompletion by https://github.com/devbridge/jQuery-Autocomplete
-		var search = $("#navbar-search-statement");
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		search.autocomplete({
-			serviceUrl: 'ajax_fuzzy_search',
-			deferRequestBy: 300,
-			paramName: 'value',
-			params: {
-				value: search.val(),
-				type: fuzzy_find_statement,
-				issue: getCurrentIssueId()
-			},
-			dataType: 'json',
-			headers: {
-				'X-CSRF-Token': csrf_token
-			},
-            onSelect: function (suggestion) {
-				window.location.href = suggestion.data;
-            },
 		});
 	};
 	
