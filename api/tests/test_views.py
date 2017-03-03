@@ -16,7 +16,10 @@ def get_response(route):
 
 
 def parse_status(response):
-    return json.loads(response.content).get("status")
+    data = json.loads(response.content).get("status")
+    if isinstance(data, bytes):
+        data = data.decode('utf-8')
+    return data
 
 
 def test_server_available():

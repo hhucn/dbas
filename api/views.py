@@ -347,7 +347,7 @@ def get_references(request):
         if refs_db is not None:
             for ref in refs_db:
                 refs.append(prepare_single_reference(ref))
-            return as_json({"references": refs})
+            return {"references": refs}
         else:
             log.error("[API/Reference] Returned no references: Database error")
             return {"status": "error", "message": "Could not retrieve references"}
