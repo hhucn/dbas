@@ -4,7 +4,6 @@ Testing the routes of the API.
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 from nose.tools import assert_true, assert_false, assert_equals
-from pprint import pprint as pp
 import json
 import requests
 
@@ -13,7 +12,7 @@ API = "http://localhost:4284/api/"
 
 def json_to_dict(data):
     if isinstance(data, bytes):
-         data = data.decode('utf-8')
+        data = data.decode('utf-8')
     return json.loads(data)
 
 
