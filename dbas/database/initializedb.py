@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-TODO
+Init scripts for database
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
