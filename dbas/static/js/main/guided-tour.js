@@ -16,10 +16,10 @@ function GuidedTour(){
 			'<div class="popover-content"></div>' +
 			'<div class="popover-navigation">' +
 				'<div class="btn-group">' +
-					'<button class="btn btn-sm btn-default" data-role="prev">&#xab; ' + _t(prev) + '</button>' +
+					'<button class="btn btn-sm btn-secondary" data-role="prev">&#xab; ' + _t(prev) + '</button>' +
 					'<button class="btn btn-sm btn-success" data-role="next">' + _t(next) + ' &#xbb;</button>' +
 			'</div>' +
-			'<button class="btn btn-sm btn-default" data-role="end">' + _t(tourEnd) + '</button>' +
+			'<button class="btn btn-sm btn-secondary" data-role="end">' + _t(tourEnd) + '</button>' +
 		'</div>';
 	
 	var template_end =
@@ -29,8 +29,8 @@ function GuidedTour(){
 			'<div class="popover-content"></div>' +
 			'<div class="popover-navigation">' +
 				'<div class="btn-group">' +
-					'<button class="btn btn-sm btn-default" data-role="prev">&#xab; ' + _t(prev) + '</button>' +
-					'<button class="btn btn-sm btn-default" data-role="next">' + _t(next) + ' &#xbb;</button>' +
+					'<button class="btn btn-sm btn-secondary" data-role="prev">&#xab; ' + _t(prev) + '</button>' +
+					'<button class="btn btn-sm btn-secondary" data-role="next">' + _t(next) + ' &#xbb;</button>' +
 			'</div>' +
 			'<button class="btn btn-sm btn-success" data-role="end">' + _t(tourEnd) + '</button>' +
 		'</div>';

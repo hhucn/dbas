@@ -133,11 +133,15 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
 	$('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
 	$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
-		functionForAccept();
+		if (functionForRefuse) {
+			functionForAccept();
+		}
 	});
 	$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
-		functionForRefuse();
+		if (functionForRefuse) {
+			functionForRefuse();
+		}
 	});
 	dialog.on('hidden.bs.modal', function () {
 		$('#' + popupConfirmDialogRefuseBtn).show();
