@@ -20,7 +20,6 @@ function News() {
 		var div = '';
 		var counter;
 		var row = 0;
-		console.log(length);
 		var container = '';
 		for (counter = 0; counter < length; counter++) {
 			if (counter % 3 === 0) {
