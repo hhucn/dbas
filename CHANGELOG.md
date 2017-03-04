@@ -4,6 +4,7 @@
 - FAQs, Docs and Help-Page are online
 - Search function over all statements
 - Gui improvements
+- Dockerized!
 
 ## 1.2.3 (2017-02-08)
 - Queue for duplicates

@@ -12,36 +12,6 @@
         </div>
 
         <div class="collapse navbar-collapse navbar-menubuilder">
-            <!--
-            <ul id="navbar-left" class="nav navbar-nav navbar-left">
-                <li id="home-hook">
-                    <a href="#home-template" data-toggle="tooltip" data-placement="bottom">Home</a>
-                </li>
-                <li id="description-hook">
-                    <a href="#description-template" data-toggle="tooltip" data-placement="bottom" i18n:translate="description">Description</a>
-                </li>
-                <li id="features-hook">
-                    <a href="#features-template" data-toggle="tooltip" data-placement="bottom" i18n:translate="features">Features</a>
-                </li>
-                <li id="about-hook"><a href="#about-template" data-toggle="tooltip" data-placement="bottom" i18n:translate="about">About</a>
-                </li>
-                -->
-                <!--
-                <li id="research-hook">
-                    <a href="#research-template" data-toggle="tooltip" data-placement="bottom" i18n:translate="research">Research</a>
-                </li>
-                -->
-            <!--
-            </ul>
-            -->
-            <form class="navbar-form navbar-left" role="search">
-                <div class="form-group" tal:condition="extras.is_in_discussion">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-search" aria-hidden="true" style="padding: 6px 7px;"></i></span>
-                        <input id="navbar-search-statement" type="text" class="form-control" tal:attributes="placeholder extras.tag.search">
-                    </div>
-                </div>
-            </form>
 
             <ul id="navbar-right" class="nav navbar-nav navbar-right">
 

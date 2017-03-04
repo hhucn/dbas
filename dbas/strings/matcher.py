@@ -73,7 +73,8 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
         return_dict['distance_name'] = mechanism
 
     elif mode == '9':  # search everything
-        return_dict = {'suggestions': get_all_statements_with_value(request, value)}
+        return_dict['values'] = get_all_statements_with_value(request, value, issue)
+        return_dict['distance_name'] = mechanism
 
     else:
         return_dict = {'error': _tn.get(_.internalError)}
@@ -101,24 +102,26 @@ def __get_vars_for_reasons(extra):
     return count, extra, mechanism
 
 
-def get_all_statements_with_value(request, value):
+def get_all_statements_with_value(request, value, issue_uid):
     """
     Returns all statements, where with the value
 
     :param request: request
     :param value: string
+    :param issue_uid: Issue.uid
     :return: dict()
     """
     issue_uid = issue_helper.get_issue_id(request)
     db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue_uid).all()
     return_array = []
+    slug = DBDiscussionSession.query(Issue).get(issue_uid).get_slug()
+    _um = UrlManager(request.application_url, for_api=False, slug=slug)
     for stat in db_statements:
         db_tv = DBDiscussionSession.query(TextVersion).get(stat.textversion_uid)
         if value.lower() in db_tv.content.lower():
-            slug = DBDiscussionSession.query(Issue).get(stat.issue_uid).get_slug()
-            _um = UrlManager(request.application_url, for_api=False, slug=slug)
-            url = _um.get_url_for_statement_attitude(False, db_tv.statement_uid)
-            return_array.append({'value': db_tv.content, 'data': url, 'distance': get_distance(value.lower(), db_tv.content.lower())})
+            rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
+            rd['url'] = _um.get_url_for_statement_attitude(False, db_tv.statement_uid)
+            return_array.append(rd)
 
     return_array = __sort_array(return_array)
 

@@ -124,6 +124,7 @@ var proposalStatementListGroupId              = 'proposal-statement-list-group';
 var proposalPremiseListGroupId                = 'proposal-premise-list-group';
 var proposalEditListGroupId                   = 'proposal-edit-list-group';
 var proposalUserListGroupId                   = 'proposal-user-list-group';
+var proposalStatementSearchGroupId            = 'proposal-statement-search-list-group';
 var popupConfirmDialogId                      = 'confirm-dialog-popup';
 var popupConfirmDialogAcceptBtn               = 'confirm-dialog-accept-btn';
 var popupConfirmDialogRefuseBtn               = 'confirm-dialog-refuse-btn';
