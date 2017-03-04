@@ -13,8 +13,6 @@ variables:
     - cp $INIFILE development.ini
     - init_discussion_sql $INIFILE > /dev/null 2>&1
     - init_news_sql $INIFILE > /dev/null 2>&1
-    - init_discussion_testvotes $INIFILE > /dev/null 2>&1
-    - init_review_tests $INIFILE > /dev/null 2>&1
 
 start-server:
   <<: *job-definition
