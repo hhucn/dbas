@@ -13,9 +13,9 @@ import arrow
 import transaction
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
-    Message, Settings, ClickedArgument, ClickedStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy,\
+    Settings, ClickedArgument, ClickedStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy,\
     ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, ReputationReason, \
-    ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate, MarkedArgument, MarkedStatement
+    ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate
 from dbas.database.news_model import News
 from dbas.handler.rss import create_news_rss, create_initial_issue_rss
 from dbas.lib import get_global_url
@@ -837,8 +837,8 @@ def __setup_dummy_clicks(session):
     db_arguments = DBDiscussionSession.query(Argument).all()
     db_statements = DBDiscussionSession.query(Statement).all()
 
-    new_clicks_for_arguments, arg_up, arg_down = __add_clicks_for_arguments(db_arguments, first_names, users)
-    new_clicks_for_statements, stat_up, stat_down = __add_clicks_for_statements(db_statements, first_names, users)
+    new_clicks_for_arguments, arg_up, arg_down = __add_clicks_for_arguments(db_arguments, users)
+    new_clicks_for_statements, stat_up, stat_down = __add_clicks_for_statements(db_statements, users)
     argument_count = len(db_arguments)
     statement_count = len(db_statements)
 
@@ -874,12 +874,11 @@ def __setup_dummy_clicks(session):
         va.timestamp = arrow.utcnow().replace(days=-random.randint(0, 25))
 
 
-def __add_clicks_for_arguments(db_arguments, first_names, users):
+def __add_clicks_for_arguments(db_arguments, users):
     """
-    Set randomized clicks for the given arguments by the users with given first_names
+    Set randomized clicks for given arguments
 
     :param db_arguments: [Argument]
-    :param first_names: [Strings]
     :param users: [Users]
     :return: [ClickedArgument], int, int
     """
@@ -893,17 +892,16 @@ def __add_clicks_for_arguments(db_arguments, first_names, users):
         arg_up += up_votes
         arg_down += down_votes
 
-        new_clicks_for_arguments = __create_clicks_for_arguments(first_names, up_votes, argument.uid, users, True)
-        new_clicks_for_arguments += __create_clicks_for_arguments(first_names, down_votes, argument.uid, users, False)
+        new_clicks_for_arguments = __create_clicks_for_arguments(up_votes, argument.uid, users, True)
+        new_clicks_for_arguments += __create_clicks_for_arguments(down_votes, argument.uid, users, False)
 
     return new_clicks_for_arguments, arg_up, arg_down
 
 
-def __create_clicks_for_arguments(first_names, up_votes, argument_uid, users, is_up_vote):
+def __create_clicks_for_arguments(up_votes, argument_uid, users, is_up_vote):
     """
     Set clicks
 
-    :param first_names: [String]
     :param up_votes: Int]
     :param argument_uid: Argument.uid
     :param users: {Users.nickname: User}
@@ -919,12 +917,11 @@ def __create_clicks_for_arguments(first_names, up_votes, argument_uid, users, is
     return new_clicks_for_arguments
 
 
-def __add_clicks_for_statements(db_statements, first_names, users):
+def __add_clicks_for_statements(db_statements, users):
     """
-    Set randomized clicks for the given statement by the users with given first_names
+    Set randomized clicks for given statements
 
     :param db_statements: [Statement]
-    :param first_names: [Strings]
     :param users: [Users]
     :return: [ClickedStatement], int, int
     """
@@ -938,16 +935,15 @@ def __add_clicks_for_statements(db_statements, first_names, users):
         stat_up += up_votes
         stat_down += down_votes
 
-        new_clicks_for_statement = __create_clicks_for_statements(first_names, up_votes, statement.uid, users, True)
-        new_clicks_for_statement += __create_clicks_for_statements(first_names, down_votes, statement.uid, users, False)
+        new_clicks_for_statement = __create_clicks_for_statements(up_votes, statement.uid, users, True)
+        new_clicks_for_statement += __create_clicks_for_statements(down_votes, statement.uid, users, False)
 
     return new_clicks_for_statement, stat_up, stat_down
 
 
-def __create_clicks_for_statements(first_names, up_votes, statement_uid, users, is_up_vote):
+def __create_clicks_for_statements(up_votes, statement_uid, users, is_up_vote):
     """
 
-    :param first_names: [String]
     :param up_votes: Int
     :param statement_uid: Statement.uid
     :param users: {Users.nickname: User}
