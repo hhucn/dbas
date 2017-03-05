@@ -38,5 +38,6 @@
 
 .btn
   border-radius: 50px
-  -webkit-box-shadow: 0
-  box-shadow: 0 0 0
+  &:not(.toggle) // skip the toggles
+    -webkit-box-shadow: 0
+    box-shadow: 0 0 0

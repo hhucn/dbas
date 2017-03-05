@@ -168,8 +168,8 @@
     			<div class="modal-body">
     			</div>
     			<div class="modal-footer">
-    				<button id="confirm-dialog-accept-btn" type="button" class="btn btn-success btn-default" i18n:translate="okay">Okay</button>
-    				<button id="confirm-dialog-refuse-btn" type="button" class="btn btn-danger btn-default" i18n:translate="cancel">Cancel</button>
+    				<button id="confirm-dialog-accept-btn" type="button" class="btn btn-success btn-secondary" i18n:translate="okay">Okay</button>
+    				<button id="confirm-dialog-refuse-btn" type="button" class="btn btn-danger btn-secondary" i18n:translate="cancel">Cancel</button>
     			</div>
     		</div>
     	</div>
@@ -191,8 +191,8 @@
                     </div>
     			</div>
     			<div class="modal-footer">
-    				<button id="confirm-row-dialog-accept-btn" type="button" class="btn btn-success btn-default" i18n:translate="okay">Okay</button>
-    				<button id="confirm-row-dialog-refuse-btn" type="button" class="btn btn-danger btn-default" i18n:translate="cancel">Cancel</button>
+    				<button id="confirm-row-dialog-accept-btn" type="button" class="btn btn-success btn-secondary" i18n:translate="okay">Okay</button>
+    				<button id="confirm-row-dialog-refuse-btn" type="button" class="btn btn-danger btn-secondary" i18n:translate="cancel">Cancel</button>
     			</div>
     		</div>
     	</div>
@@ -216,8 +216,8 @@
 
     			</div>
     			<div class="modal-footer">
-    				<button id="confirm-dialog-checkbox-accept-btn" type="button" class="btn btn-success btn-default" i18n:translate="okay">Okay</button>
-    				<button id="confirm-dialog-checkbox-refuse-btn" type="button" class="btn btn-danger btn-default" i18n:translate="cancel">Cancel</button>
+    				<button id="confirm-dialog-checkbox-accept-btn" type="button" class="btn btn-success btn-secondary" i18n:translate="okay">Okay</button>
+    				<button id="confirm-dialog-checkbox-refuse-btn" type="button" class="btn btn-danger btn-secondary" i18n:translate="cancel">Cancel</button>
     			</div>
     		</div>
     	</div>
@@ -253,7 +253,7 @@
     				<a class="share-icon share-mail-small" id="share-url-mail" data-toggle="tooltip" data-placement="bottom" title="Mail"></a>
 
     				<button type="button" class="btn btn-success" id="popup-url-sharing-long-url-button" data-is-short-url="1">${structure:extras.tag.fetchurl}</button>
-    				<button type="button" class="btn btn-default" id="popup-url-sharing-close-button" >${structure:extras.tag.close}</button>
+    				<button type="button" class="btn btn-secondary" id="popup-url-sharing-close-button" >${structure:extras.tag.close}</button>
     			</div>
     		</div>
     	</div>
@@ -327,7 +327,7 @@
     			</div>
     			<div class="modal-footer">
     				<button id="popup-login-button-login" type="button" class="btn btn-primary" i18n:translate="login">Log In</button>
-    				<button type="button" class="btn btn-default" id="popup-login-close-button" i18n:translate="close">Close</button>
+    				<button type="button" class="btn btn-secondary" id="popup-login-close-button" i18n:translate="close">Close</button>
     			</div>
     		</div>
     	</div>
@@ -539,7 +539,7 @@
     			<div class="modal-footer">
     				<button id="popup-login-button-login" type="button" class="btn btn-primary" i18n:translate="login">Log In</button>
     				<button id="popup-login-button-register" type="button" class="btn btn-primary" i18n:translate="register">Register</button>
-    				<button type="button" class="btn btn-default" id="popup-login-close-button" i18n:translate="close">Close</button>
+    				<button type="button" class="btn btn-secondary" id="popup-login-close-button" i18n:translate="close">Close</button>
     			</div>
     		</div>
     	</div>
@@ -578,7 +578,7 @@
     				<br>
     			</div>
     			<div class="modal-footer">
-    				<button type="button" class="btn btn-default" id="popup-generate-password-close-button" i18n:translate="close">Close</button>
+    				<button type="button" class="btn btn-secondary" id="popup-generate-password-close-button" i18n:translate="close">Close</button>
     			</div>
     		</div>
     	</div>
@@ -690,7 +690,7 @@
                     </div>
 
     				<button type="button" class="btn btn-success" id="popup-writing-news-send" i18n:translate="send_news">Send News</button>
-    				<button type="button" class="btn btn-default" data-dismiss="modal" i18n:translate="close">Close</button>
+    				<button type="button" class="btn btn-secondary" data-dismiss="modal" i18n:translate="close">Close</button>
     			</div>
     		</div>
     	</div>
@@ -744,7 +744,7 @@
     			</div>
     			<div class="modal-footer">
     				<button type="button" class="btn btn-success" id="popup-writing-notification-send" i18n:translate="send_notification">Send Notifcation</button>
-    				<button type="button" class="btn btn-default" data-dismiss="modal" i18n:translate="close">Close</button>
+    				<button type="button" class="btn btn-secondary" data-dismiss="modal" i18n:translate="close">Close</button>
     			</div>
     		</div>
     	</div>
@@ -809,8 +809,8 @@
                     </div>
                 </div>
     			<div class="modal-footer">
-    				<button id="popup-add-topic-accept-btn" type="button" class="btn btn-success btn-default">${structure:extras.tag.save}</button>
-    				<button id="popup-add-topic-refuse-btn" type="button" class="btn btn-danger btn-default">${structure:extras.tag.cancel}</button>
+    				<button id="popup-add-topic-accept-btn" type="button" class="btn btn-success btn-secondary">${structure:extras.tag.save}</button>
+    				<button id="popup-add-topic-refuse-btn" type="button" class="btn btn-danger btn-secondary">${structure:extras.tag.cancel}</button>
     			</div>
     		</div>
     	</div>
@@ -952,7 +952,7 @@
                     </div>
     			</div>
     			<div class="modal-footer">
-    				<button id="popup-flag-statement-accept-btn" type="button" class="btn btn-success btn-default">${structure:extras.tag.submit}</button>
+    				<button id="popup-flag-statement-accept-btn" type="button" class="btn btn-success btn-secondary">${structure:extras.tag.submit}</button>
                 </div>
     		</div>
     	</div>
@@ -1086,11 +1086,17 @@
     			<div class="modal-footer">
                     <div style="float:left;">
                         <div id="chart-btn-div">
-                            <input id="chart-btn" class="fa fa-eye" data-toggle="toggle" data-on="<i class='fa fa-bar-chart fa-pull-left fa-2x'></i>" data-off="<i class='fa fa-pie-chart fa-2x'></i>" checked type="checkbox" data-onstyle="default" data-offstyle="default">
+                            <input id="chart-btn"
+                                   data-toggle="toggle"
+                                   data-on="<i class='fa fa-bar-chart fa-pull-left fa-2x'></i>"
+                                   data-off="<i class='fa fa-pie-chart fa-2x'></i>"
+                                   checked type="checkbox"
+                                   data-onstyle="default"
+                                   data-offstyle="default">
                         </div>
                     </div>
-    				<button id="barometer-popup-accept-btn" type="button" class="btn btn-success btn-default" i18n:translate="okay">Okay</button>
-    				<button id="barometer-popup-refuse-btn" type="button" class="btn btn-danger btn-default" i18n:translate="cancel">Cancel</button>
+    				<button id="barometer-popup-accept-btn" type="button" class="btn btn-success btn-secondary" i18n:translate="okay">Okay</button>
+    				<button id="barometer-popup-refuse-btn" type="button" class="btn btn-danger btn-secondary" i18n:translate="cancel">Cancel</button>
     			</div>
     		</div>
     	</div>

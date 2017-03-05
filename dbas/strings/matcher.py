@@ -73,7 +73,7 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
         return_dict['distance_name'] = mechanism
 
     elif mode == '9':  # search everything
-        return_dict['values'] = get_all_statements_with_value(request, value, issue)
+        return_dict['values'] = get_all_statements_with_value(request, value)
         return_dict['distance_name'] = mechanism
 
     else:
@@ -86,7 +86,7 @@ def __get_vars_for_reasons(extra):
     """
     Check if the extra is nen array and prepared for the 'reason search'
 
-    :param extra: unefined
+    :param extra: undefined
     :return: int, extra, string
     """
     global mechanism
@@ -102,13 +102,12 @@ def __get_vars_for_reasons(extra):
     return count, extra, mechanism
 
 
-def get_all_statements_with_value(request, value, issue_uid):
+def get_all_statements_with_value(request, value):
     """
     Returns all statements, where with the value
 
     :param request: request
     :param value: string
-    :param issue_uid: Issue.uid
     :return: dict()
     """
     issue_uid = issue_helper.get_issue_id(request)

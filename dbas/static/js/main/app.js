@@ -39,6 +39,25 @@ function jmpToChapter() {
 }
 
 /**
+ * Adds a small border to the active navbar element
+ */
+function addBorderToActiveNavbar(){
+    'use strict';
+	
+    // add border to the navbar element
+	var active_element = $('.navbar-right > .active');
+	var border_size = '2';
+	active_element.css('border-top', border_size + 'px solid #2196F3');
+	
+	// and recude padding of the inner element
+	var inner_element = active_element.find('a');
+	var pad_top = parseInt(inner_element.css('padding-top').replace('px', ''));
+	var pad_bottom = parseInt(inner_element.css('padding-bottom').replace('px', ''));
+	inner_element.css('padding-top', (pad_top - border_size / 2) + 'px');
+	inner_element.css('padding-bottom', (pad_bottom - border_size / 2) + 'px');
+}
+
+/**
  * Go back to top arrow
  */
 function goBackToTop() {
@@ -133,11 +152,15 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
 	$('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
 	$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
-		functionForAccept();
+		if (functionForRefuse) {
+			functionForAccept();
+		}
 	});
 	$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
-		functionForRefuse();
+		if (functionForRefuse) {
+			functionForRefuse();
+		}
 	});
 	dialog.on('hidden.bs.modal', function () {
 		$('#' + popupConfirmDialogRefuseBtn).show();
@@ -631,6 +654,9 @@ $(document).ready(function () {
 	setPiwikOptOutLink(lang);
 	setEasterEggs();
 	setGravatarFallback();
+	setTimeout(function(){
+		addBorderToActiveNavbar();
+	}, 250);
 
 	// set current file to active
 		 if (path.indexOf(urlContact) !== -1){ 	setLinkActive('#' + contactLink);	$('#' + navbarLeft).hide(); }

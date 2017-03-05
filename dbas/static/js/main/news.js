@@ -41,7 +41,6 @@ function News() {
 		});
 
 		// add last row
-		counter -= 1;
 		if (counter % 3 !== 0) {
 			$('#' + newsBodyId).append(container);
 		}
@@ -393,6 +392,7 @@ $(document).ready(function () {
 	
 	var news = new News();
 	news.setNewsInRow();
+	$('.panel-body').css('height', '');
 	news.setMaxHeightOfNewsRows();
 	news.setSharingClickEvents();
 	news.setSlimscrollForNewsRows();
@@ -416,6 +416,6 @@ $(document).ready(function () {
 
 	// make some things pretty
 	$(window).on('resize', function resizeWindow(){
-		new News().setMaxHeightOfNewsRows();
+		//new News().setMaxHeightOfNewsRows();
 	});
 });

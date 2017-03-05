@@ -30,24 +30,10 @@ db: clean_db
 	psql -U postgres -d news -c "CREATE SCHEMA IF NOT EXISTS news;"
 
 dummy_discussion:
-	initialize_discussion_sql development.ini
-	initialize_news_sql development.ini
+	init_discussion_sql development.ini
+	init_news_sql development.ini
 
-dummy_votes:
-	init_discussion_testvotes development.ini
-
-dummy_reviews:
-	init_review_tests development.ini
-
-dummys:
-	dummy_discussion
-	dummy_votes
-	dummy_reviews
-
-merge_discussion:
-	merge_main_discussion development.ini
-
-all: db users dummy_discussion dummy_votes dummy_reviews
+all: db users dummy_discussion
 
 clean_db:
 	dropdb -U postgres discussion --if-exists
@@ -65,16 +51,13 @@ clean_users:
 
 clean: clean_db clean_users
 
-refresh:
-	reload_discussion_sql development.ini
-	initialize_news_sql development.ini
-
 fieldtest: db users
 	init_field_test_sql development.ini
-	initialize_news_sql development.ini
+	init_news_sql development.ini
 
 minimal_db: db users
 	init_empty_sql development.ini
+	init_news_sql development.ini
 
 docker_dump_db:
 	docker-compose -f docker-compose-export-db.yml up --force-recreate --abort-on-container-exit
