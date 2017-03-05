@@ -7,10 +7,6 @@ from dbas.strings.translator import Translator
 from pyramid import testing
 from sqlalchemy import engine_from_config
 
-settings = add_settings_to_appconfig()
-
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-
 
 class ReviewPageHelperTest(unittest.TestCase):
 

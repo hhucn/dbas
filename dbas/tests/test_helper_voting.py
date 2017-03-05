@@ -9,9 +9,6 @@ from dbas.helper.voting import add_seen_argument, add_seen_statement, add_click_
 from dbas.helper.tests import add_settings_to_appconfig
 from sqlalchemy import engine_from_config, and_
 
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-
 
 class VotingHelperTest(unittest.TestCase):
 

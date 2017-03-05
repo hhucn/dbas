@@ -9,9 +9,6 @@ from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_vi
 from dbas.handler.password import get_hashed_password
 from sqlalchemy import engine_from_config
 
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-
 
 class MainSettingsViewTestsNotLoggedIn(unittest.TestCase):
     def setUp(self):

@@ -10,9 +10,6 @@ from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of
 from sqlalchemy import engine_from_config
 
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-
 
 class DiscussionJustifyViewTests(unittest.TestCase):
     def setUp(self):

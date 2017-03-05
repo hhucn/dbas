@@ -7,10 +7,6 @@ from dbas.helper.tests import add_settings_to_appconfig
 from datetime import date
 from dbas.database.discussion_model import Argument
 
-settings = add_settings_to_appconfig()
-
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-
 
 class LibTests(unittest.TestCase):
 

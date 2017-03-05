@@ -8,11 +8,6 @@ from dbas.database.discussion_model import Argument
 from dbas import recommender_system
 from dbas.helper.tests import add_settings_to_appconfig
 
-settings = add_settings_to_appconfig()
-
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-
-
 class RecommenerSystemTests(unittest.TestCase):
 
     def test_get_attack_for_argument(self):

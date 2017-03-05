@@ -5,9 +5,6 @@ from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig
 from dbas.input_validator import is_integer, check_reaction
 
-settings = add_settings_to_appconfig()
-
-
 class InputValidatorTests(unittest.TestCase):
     def test_check_for_integer(self):
         # conditions_response
@@ -41,7 +38,7 @@ class InputValidatorTests(unittest.TestCase):
         self.assertEqual(input_array_false, False)
 
     def test_check_reaction(self):
-        DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+        # DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
         # undermine
         undermine_true = check_reaction(attacked_arg_uid=3,

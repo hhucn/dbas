@@ -8,8 +8,8 @@ from dbas.database.discussion_model import Message
 from dbas.helper.tests import add_settings_to_appconfig
 from sqlalchemy import engine_from_config
 
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+#settings = add_settings_to_appconfig()
+#DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
 
 class AjaxNotificationTest(unittest.TestCase):

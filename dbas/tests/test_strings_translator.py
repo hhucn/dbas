@@ -6,10 +6,6 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from sqlalchemy import engine_from_config
 
-settings = add_settings_to_appconfig()
-
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-
 
 class TranslatorTest(unittest.TestCase):
 

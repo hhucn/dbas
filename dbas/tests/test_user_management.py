@@ -11,10 +11,6 @@ from dbas.helper.tests import add_settings_to_appconfig
 from dbas.strings.translator import Translator
 from dbas.strings import keywords as _
 
-settings = add_settings_to_appconfig()
-
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-
 
 class UserManagementTest(unittest.TestCase):
 

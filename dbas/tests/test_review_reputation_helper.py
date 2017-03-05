@@ -6,11 +6,6 @@ from dbas.helper.tests import add_settings_to_appconfig
 from dbas.strings.translator import Translator
 from sqlalchemy import engine_from_config
 
-settings = add_settings_to_appconfig()
-
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-
-
 class TestReviewReputationHelper(unittest.TestCase):
 
     def test_get_reputation_list(self):

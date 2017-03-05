@@ -12,11 +12,6 @@ from dbas.helper.tests import add_settings_to_appconfig
 from dbas.handler.password import get_hashed_password
 from sqlalchemy import engine_from_config
 
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-DBNewsSession.configure(bind=engine_from_config(settings, 'sqlalchemy-news.'))
-
-
 class AjaxTest(unittest.TestCase):
 
     def setUp(self):

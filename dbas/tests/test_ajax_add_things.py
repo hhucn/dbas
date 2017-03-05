@@ -10,8 +10,8 @@ from dbas.database.discussion_model import Issue, Statement, TextVersion, Argume
     ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement, MarkedArgument
 from dbas.helper.tests import add_settings_to_appconfig
 
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+#settings = add_settings_to_appconfig()
+#DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
 
 class AjaxAddThingsTest(unittest.TestCase):

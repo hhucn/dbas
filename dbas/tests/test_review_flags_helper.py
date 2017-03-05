@@ -9,11 +9,6 @@ from dbas.strings.keywords import Keywords as _
 from dbas.views import transaction
 from sqlalchemy import engine_from_config
 
-settings = add_settings_to_appconfig()
-
-DBDiscussionSession.remove()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-
 
 class TestReviewFlagHelper(unittest.TestCase):
 

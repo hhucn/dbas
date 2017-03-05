@@ -9,9 +9,6 @@ from sqlalchemy import engine_from_config
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.lib import get_text_for_statement_uid
 
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-
 
 class ReferenceHelperTest(unittest.TestCase):
 

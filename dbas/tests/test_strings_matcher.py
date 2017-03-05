@@ -6,10 +6,6 @@ from dbas.helper.tests import add_settings_to_appconfig
 from sqlalchemy import engine_from_config
 from dbas.strings import matcher
 
-settings = add_settings_to_appconfig()
-
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-
 
 class StringMatcherTest(unittest.TestCase):
     matcher.mechanism = 'Levensthein'

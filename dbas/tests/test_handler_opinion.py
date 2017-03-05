@@ -7,10 +7,6 @@ from dbas.handler.opinion import get_user_and_opinions_for_argument, get_user_wi
 from dbas.helper.tests import add_settings_to_appconfig
 from sqlalchemy import engine_from_config
 
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-
-
 class OpinionHandlerTests(unittest.TestCase):
     def test_get_user_and_opinions_for_argument(self):
         lang = 'en'
