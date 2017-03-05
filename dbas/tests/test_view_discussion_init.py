@@ -1,12 +1,11 @@
 import unittest
-import transaction
 
+import transaction
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementSeenBy, User
-from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view
-from sqlalchemy import engine_from_config
+from dbas.helper.tests import verify_dictionary_of_view
 
 
 class DiscussionInitViewTests(unittest.TestCase):

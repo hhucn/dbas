@@ -1,12 +1,11 @@
-import transaction
 import unittest
 
-from sqlalchemy import engine_from_config
+import transaction
 
+from dbas import recommender_system
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument
-from dbas import recommender_system
-from dbas.helper.tests import add_settings_to_appconfig
+
 
 class RecommenerSystemTests(unittest.TestCase):
 

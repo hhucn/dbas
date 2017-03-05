@@ -1,12 +1,12 @@
-import unittest
 import json
+import unittest
+
 import transaction
 from pyramid import testing
 
-from dbas.database import DBDiscussionSession, DBNewsSession
+from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import History
-from dbas.helper.tests import add_settings_to_appconfig
-from sqlalchemy import engine_from_config
+
 
 class AjaxGetInfosTest(unittest.TestCase):
 

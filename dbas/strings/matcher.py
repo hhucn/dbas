@@ -337,6 +337,7 @@ def get_distance(string_a, string_b):
     else:
         return get_difflib_distance(string_a, string_b)
 
+
 def get_lev_distance(a, b):
     """
     Returns the levensthein distance between to strings
@@ -347,6 +348,7 @@ def get_lev_distance(a, b):
     dist = distance(a.strip().lower(), b.strip().lower())
     #  logger('fuzzy_string_matcher', 'get_distance', 'levensthein: ' + str(dist) + ', value: ' + a.lower() + ' in: ' + b.lower())
     return str(dist).zfill(max_count_zeros)
+
 
 def get_difflib_distance(a, b):
     """

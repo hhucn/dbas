@@ -1,11 +1,11 @@
-import unittest
 import json
+import unittest
+
 from pyramid import testing
 
-from dbas.database import DBDiscussionSession, DBNewsSession
+from dbas.database import DBNewsSession
 from dbas.database.news_model import News
-from dbas.helper.tests import add_settings_to_appconfig
-from sqlalchemy import engine_from_config
+
 
 class AjaxNewsTest(unittest.TestCase):
 

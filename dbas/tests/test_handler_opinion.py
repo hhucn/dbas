@@ -1,11 +1,9 @@
 import unittest
 
-from dbas.database import DBDiscussionSession
 from dbas.handler.opinion import get_user_and_opinions_for_argument, get_user_with_same_opinion_for_statements, \
     get_user_with_same_opinion_for_premisegroups, get_user_with_same_opinion_for_argument, \
     get_user_with_opinions_for_attitude
-from dbas.helper.tests import add_settings_to_appconfig
-from sqlalchemy import engine_from_config
+
 
 class OpinionHandlerTests(unittest.TestCase):
     def test_get_user_and_opinions_for_argument(self):

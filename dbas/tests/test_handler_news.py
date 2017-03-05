@@ -1,9 +1,7 @@
 import unittest
 
-from dbas.database import DBNewsSession
-from dbas.helper.tests import add_settings_to_appconfig
 from dbas.handler import news
-from sqlalchemy import engine_from_config
+
 
 class NewsHandlerTests(unittest.TestCase):
     def test_get_news(self):

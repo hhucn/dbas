@@ -2,8 +2,6 @@ import unittest
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue
-from dbas.helper.tests import add_settings_to_appconfig
-from sqlalchemy import engine_from_config
 from dbas.strings import matcher
 
 

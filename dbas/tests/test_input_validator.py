@@ -1,9 +1,7 @@
 import unittest
 
-from sqlalchemy import engine_from_config
-from dbas.database import DBDiscussionSession
-from dbas.helper.tests import add_settings_to_appconfig
 from dbas.input_validator import is_integer, check_reaction
+
 
 class InputValidatorTests(unittest.TestCase):
     def test_check_for_integer(self):

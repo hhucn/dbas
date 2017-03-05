@@ -1,14 +1,13 @@
 import unittest
-import transaction
-from sqlalchemy import and_
 
+import transaction
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
-from dbas.database.discussion_model import StatementSeenBy, ClickedStatement, ArgumentSeenBy, ClickedArgument, ReputationHistory
+from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
-from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of
-from sqlalchemy import engine_from_config
+from dbas.database.discussion_model import StatementSeenBy, ClickedStatement, ArgumentSeenBy, ClickedArgument, ReputationHistory
+from dbas.helper.tests import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of
 
 
 class DiscussionJustifyViewTests(unittest.TestCase):

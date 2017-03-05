@@ -5,8 +5,8 @@ from pyramid.httpexceptions import HTTPNotFound
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Premise, StatementSeenBy
-from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view
-from sqlalchemy import engine_from_config
+from dbas.helper.tests import verify_dictionary_of_view
+
 
 class DiscussionChhoseViewTests(unittest.TestCase):
     def setUp(self):

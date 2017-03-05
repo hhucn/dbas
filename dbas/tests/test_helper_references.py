@@ -1,11 +1,10 @@
 import unittest
+
 import transaction
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences
-from dbas.helper.tests import add_settings_to_appconfig
-from sqlalchemy import engine_from_config
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.lib import get_text_for_statement_uid
 

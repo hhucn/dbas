@@ -1,11 +1,9 @@
 import unittest
 
-import dbas.review.helper.subpage as ReviewPageHelper
-from dbas.database import DBDiscussionSession
-from dbas.helper.tests import add_settings_to_appconfig
-from dbas.strings.translator import Translator
 from pyramid import testing
-from sqlalchemy import engine_from_config
+
+import dbas.review.helper.subpage as ReviewPageHelper
+from dbas.strings.translator import Translator
 
 
 class ReviewPageHelperTest(unittest.TestCase):

@@ -1,13 +1,12 @@
 import unittest
-import transaction
 
+import transaction
 from pyramid import testing
+from pyramid.httpexceptions import HTTPNotFound
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Settings
-from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view
-from sqlalchemy import engine_from_config
-from pyramid.httpexceptions import HTTPNotFound
+from dbas.helper.tests import verify_dictionary_of_view
 
 
 class MainUserView(unittest.TestCase):

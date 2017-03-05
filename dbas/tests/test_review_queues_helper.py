@@ -1,10 +1,8 @@
 import unittest
 
 import dbas.review.helper.queues as ReviewQueuesHelper
-from dbas.database import DBDiscussionSession
-from dbas.helper.tests import add_settings_to_appconfig
 from dbas.strings.translator import Translator
-from sqlalchemy import engine_from_config
+
 
 class ReviewQueuesHelperTest(unittest.TestCase):
 

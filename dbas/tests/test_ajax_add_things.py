@@ -3,15 +3,10 @@ import unittest
 
 import transaction
 from pyramid import testing
-from sqlalchemy import engine_from_config
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, TextVersion, Argument, Premise, PremiseGroup,\
     ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement, MarkedArgument
-from dbas.helper.tests import add_settings_to_appconfig
-
-#settings = add_settings_to_appconfig()
-#DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
 
 class AjaxAddThingsTest(unittest.TestCase):
