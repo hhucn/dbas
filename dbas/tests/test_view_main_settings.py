@@ -1,16 +1,12 @@
 import unittest
-import transaction
 
+import transaction
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
-from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view
 from dbas.handler.password import get_hashed_password
-from sqlalchemy import engine_from_config
-
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+from dbas.helper.tests import verify_dictionary_of_view
 
 
 class MainSettingsViewTestsNotLoggedIn(unittest.TestCase):

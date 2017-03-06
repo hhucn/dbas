@@ -2,12 +2,8 @@ import unittest
 
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
-from dbas.database import DBDiscussionSession
-from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view, clear_clicks_of, clear_seen_by_of
-from sqlalchemy import engine_from_config
 
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+from dbas.helper.tests import verify_dictionary_of_view, clear_clicks_of, clear_seen_by_of
 
 
 class ReviewContentViewTests(unittest.TestCase):

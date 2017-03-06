@@ -1,13 +1,6 @@
 import unittest
 
-from dbas.database import DBNewsSession
-from dbas.helper.tests import add_settings_to_appconfig
 from dbas.handler import news
-from sqlalchemy import engine_from_config
-
-settings = add_settings_to_appconfig()
-
-DBNewsSession.configure(bind=engine_from_config(settings, 'sqlalchemy-news.'))
 
 
 class NewsHandlerTests(unittest.TestCase):

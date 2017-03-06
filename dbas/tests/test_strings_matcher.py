@@ -2,13 +2,7 @@ import unittest
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue
-from dbas.helper.tests import add_settings_to_appconfig
-from sqlalchemy import engine_from_config
 from dbas.strings import matcher
-
-settings = add_settings_to_appconfig()
-
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
 
 class StringMatcherTest(unittest.TestCase):
@@ -48,9 +42,9 @@ class StringMatcherTest(unittest.TestCase):
             self.assertGreater(return_dict[key]['statement_uid'], 0)
 
     def test_get_distance(self):
-        self.assertEqual(3, int(matcher.get_distance('cat', 'dog')))
-        self.assertEqual(2, int(matcher.get_distance('cat', 'dag')))
-        self.assertEqual(2, int(matcher.get_distance('cat', 'doT')))
+        self.assertEqual(3, int(matcher.get_lev_distance('cat', 'dog')))
+        self.assertEqual(2, int(matcher.get_lev_distance('cat', 'dag')))
+        self.assertEqual(2, int(matcher.get_lev_distance('cat', 'doT')))
 
     def check_string_matcher_array(self, return_array):
         for entry in return_array:

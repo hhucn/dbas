@@ -1,19 +1,11 @@
 import unittest
 
-from dbas.lib import is_user_author_or_admin
-
-from sqlalchemy import engine_from_config
-
 from dbas import user_management
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
-from dbas.helper.tests import add_settings_to_appconfig
-from dbas.strings.translator import Translator
+from dbas.lib import is_user_author_or_admin
 from dbas.strings import keywords as _
-
-settings = add_settings_to_appconfig()
-
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+from dbas.strings.translator import Translator
 
 
 class UserManagementTest(unittest.TestCase):
