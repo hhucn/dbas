@@ -57,6 +57,9 @@ def parse_status(content):
 # ------------------------------------------------------------------------------
 # Tests
 
+# ------------------------------------------------------------------------------
+# Tests
+
 def test_server_available():
     response = get_response("hello")
     status = parse_status(response.content)

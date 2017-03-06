@@ -45,7 +45,6 @@ def json_to_dict(col):
     :type col: bytes
     :rtype: dict
     """
-
     if isinstance(col, dict):
         return col
     elif isinstance(col, bytes):
