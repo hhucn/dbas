@@ -4,7 +4,7 @@ Testing the routes of the API.
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 from nose.tools import assert_true, assert_false, assert_equals
-from api.lib import json_bytes_to_dict
+from api.lib import json_to_dict
 import json
 import requests
 
@@ -46,7 +46,7 @@ def parse_status(content):
     :returns: status
     :rtype: str
     """
-    return json_bytes_to_dict(content).get("status")
+    return json_to_dict(content).get("status")
 
 
 # ------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ def test_login_invalid():
     credentials = {"nickname": "foo",
                    "password": "bar"}
     response = post_request("login", credentials)
-    content = json_bytes_to_dict(response.content)
+    content = json_to_dict(response.content)
     assert_false(response.ok)
     assert_equals("error", content.get("status"))
     assert_false(content.get("token"))
@@ -74,7 +74,7 @@ def test_login_valid():
     credentials = {"nickname": "Walter",
                    "password": "iamatestuser2016"}
     response = post_request("login", credentials)
-    content = json_bytes_to_dict(response.content)
+    content = json_to_dict(response.content)
     assert_true(response.ok)
     assert_true(content.get("token"))
     assert_true(content.get("csrf"))

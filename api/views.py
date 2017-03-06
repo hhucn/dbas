@@ -16,7 +16,7 @@ import dbas.views as dbas
 from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement, \
     get_all_arguments_with_text_by_statement_id, resolve_issue_uid_to_slug
 
-from .lib import HTTP204, flatten, json_bytes_to_dict, logger, merge_dicts
+from .lib import HTTP204, flatten, json_to_dict, logger, merge_dicts
 from .login import validate_credentials, validate_login
 from .references import store_reference, url_to_statement, get_references_for_url, get_all_references_by_reference_text, get_reference_by_id, \
     prepare_single_reference
@@ -194,7 +194,7 @@ def prepare_data_assign_reference(request, func):
     """
     api_data = prepare_user_information(request)
     if api_data:
-        data = json_bytes_to_dict(request.body)
+        data = json_to_dict(request.body)
         api_data.update(data)
         return_dict_json = func(request, for_api=True, api_data=api_data)
         return_dict = json.loads(return_dict_json)

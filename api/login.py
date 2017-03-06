@@ -16,7 +16,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.views import user_login
 
-from .lib import HTTP401, logger, json_bytes_to_dict
+from .lib import HTTP401, logger, json_to_dict
 
 log = logger()
 
@@ -117,7 +117,7 @@ def validate_credentials(request, **kwargs):
     :param request:
     :return:
     """
-    data = json.loads(request.json_body)
+    data = json_to_dict(request.json_body)
     nickname = data['nickname']
     password = data['password']
 

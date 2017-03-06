@@ -37,7 +37,7 @@ def escape_html(evil):
     return escape(str(evil))
 
 
-def json_bytes_to_dict(col):
+def json_to_dict(col):
     """
     Given a json object as bytes, convert it to a Python dictionary.
 
@@ -45,6 +45,8 @@ def json_bytes_to_dict(col):
     :type col: bytes
     :rtype: dict
     """
+    if isinstance(col, dict):
+        return col
     if isinstance(col, bytes):
         col = col.decode("utf-8")
     return json.loads(col)
