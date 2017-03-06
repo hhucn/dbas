@@ -10,14 +10,47 @@ import requests
 
 API = "http://localhost:4284/api/"
 
+# ------------------------------------------------------------------------------
+# Helper functions
+
 
 def get_response(route):
+    """
+    Place get request to API.
+
+    :param route: route in API
+    :returns: response from API
+    :rtype: Response
+    """
     return requests.get(API + route)
 
 
+def post_request(route, payload):
+    """
+    Send post request to API with given payload. Adds json headers.
+
+    :param route: route in API
+    :param payload: data to be send
+    :type payload: dict
+    :returns: response from API
+    :rtype: Response
+    """
+    return requests.post(API + route, json=json.dumps(payload))
+
+
 def parse_status(content):
+    """
+    Extract :status field from JSON String.
+
+    :param content: json string
+    :returns: status
+    :rtype: str
+    """
     return json_bytes_to_dict(content).get("status")
 
+
+# ------------------------------------------------------------------------------
+# Tests
 
 def test_server_available():
     response = get_response("hello")
@@ -27,9 +60,21 @@ def test_server_available():
 
 
 def test_login_invalid():
-    credentials = json.dumps({"nickname": "foo",
-                              "password": "bar"})
-    response = requests.post(API + "login", data=credentials)
-    status = parse_status(response.content)
+    credentials = {"nickname": "foo",
+                   "password": "bar"}
+    response = post_request("login", credentials)
+    content = json_bytes_to_dict(response.content)
     assert_false(response.ok)
-    assert_equals("error", status)
+    assert_equals("error", content.get("status"))
+    assert_false(content.get("token"))
+    assert_false(content.get("csrf"))
+
+
+def test_login_valid():
+    credentials = {"nickname": "Walter",
+                   "password": "iamatestuser2016"}
+    response = post_request("login", credentials)
+    content = json_bytes_to_dict(response.content)
+    assert_true(response.ok)
+    assert_true(content.get("token"))
+    assert_true(content.get("csrf"))

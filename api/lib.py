@@ -45,7 +45,9 @@ def json_bytes_to_dict(col):
     :type col: bytes
     :rtype: dict
     """
-    return json.loads(col.decode("utf-8"))
+    if isinstance(col, bytes):
+        col = col.decode("utf-8")
+    return json.loads(col)
 
 
 def flatten(l):
