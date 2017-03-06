@@ -1,14 +1,7 @@
 import unittest
 
 import dbas.review.helper.history as ReviewHistoryHelper
-from dbas.database import DBDiscussionSession
-from dbas.helper.tests import add_settings_to_appconfig
 from dbas.strings.translator import Translator
-from sqlalchemy import engine_from_config
-
-settings = add_settings_to_appconfig()
-
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
 
 class TestReviewHistoryHelper(unittest.TestCase):

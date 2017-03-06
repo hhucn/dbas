@@ -1,20 +1,14 @@
-import unittest
 import json
+import unittest
+
 import transaction
-
 from pyramid import testing
-from pyramid.response import Response
 from pyramid.httpexceptions import HTTPFound
+from pyramid.response import Response
 
-from dbas.database import DBDiscussionSession, DBNewsSession
+from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
-from dbas.helper.tests import add_settings_to_appconfig
 from dbas.handler.password import get_hashed_password
-from sqlalchemy import engine_from_config
-
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-DBNewsSession.configure(bind=engine_from_config(settings, 'sqlalchemy-news.'))
 
 
 class AjaxTest(unittest.TestCase):
