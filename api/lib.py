@@ -45,9 +45,10 @@ def json_to_dict(col):
     :type col: bytes
     :rtype: dict
     """
+
     if isinstance(col, dict):
         return col
-    if isinstance(col, bytes):
+    elif isinstance(col, bytes):
         col = col.decode("utf-8")
     return json.loads(col)
 
