@@ -1,17 +1,13 @@
 import unittest
-import transaction
 
+import transaction
 from sqlalchemy import and_
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Argument, Premise
-from dbas.helper.tests import add_settings_to_appconfig
-from sqlalchemy import engine_from_config
 from dbas.helper.relation import get_undermines_for_argument_uid, get_undercuts_for_argument_uid, \
     get_rebuts_for_argument_uid, get_supports_for_argument_uid, set_new_undermine_or_support_for_pgroup, \
     set_new_undercut, set_new_rebut, set_new_support
-
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
 
 class RelationHelperTest(unittest.TestCase):

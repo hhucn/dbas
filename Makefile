@@ -14,6 +14,7 @@ users: clean_users
 	# `writer` gets all privileges on existing tables in scheme `public`.
 	psql -U postgres -c "GRANT all ON all tables IN SCHEMA public TO writer;"
 	psql -U postgres -d news -c "GRANT all ON SCHEMA news TO writer;"
+	psql -U postgres -d beaker -c "GRANT all ON SCHEMA beaker TO writer;"
 	# Create `writer` user ${writer} (dbas)
 	psql -U postgres -c "CREATE USER ${writer} WITH PASSWORD '${writer_pw}' IN ROLE writer INHERIT;"
 
@@ -27,7 +28,9 @@ users: clean_users
 db: clean_db
 	createdb -U postgres ${database}
 	createdb -U postgres news
+	createdb -U postgres beaker
 	psql -U postgres -d news -c "CREATE SCHEMA IF NOT EXISTS news;"
+	psql -U postgres -d beaker -c "CREATE SCHEMA IF NOT EXISTS beaker;"
 
 dummy_discussion:
 	init_discussion_sql development.ini
@@ -38,7 +41,9 @@ all: db users dummy_discussion
 clean_db:
 	dropdb -U postgres discussion --if-exists
 	dropdb -U postgres news --if-exists
+	dropdb -U postgres beaker --if-exists
 	psql -U postgres -c "DROP SCHEMA IF EXISTS news;"
+	psql -U postgres -c "DROP SCHEMA IF EXISTS beaker;"
 
 clean_users:
 	# There is no "IF EXISTS" flag for DROP OWNED the "|| true" is a cheap workaround

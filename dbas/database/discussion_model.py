@@ -293,11 +293,12 @@ class Settings(DiscussionBase):
         :param lang_uid:
         :param keep_logged_in:
         """
+        issue = DBDiscussionSession.query(Issue).first()
         self.author_uid = author_uid
         self.should_send_mails = send_mails
         self.should_send_notifications = send_notifications
         self.should_show_public_nickname = should_show_public_nickname
-        self.last_topic_uid = DBDiscussionSession.query(Issue).first().uid
+        self.last_topic_uid = issue.uid if issue else 1
         self.lang_uid = lang_uid
         self.keep_logged_in = keep_logged_in
 

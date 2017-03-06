@@ -333,11 +333,31 @@ def get_distance(string_a, string_b):
     """
     # logger('fuzzy_string_matcher', 'get_distance', string_a + ' - ' + string_b)
     if mechanism == 'Levensthein':
-        dist = distance(string_a.strip().lower(), string_b.strip().lower())
-        #  logger('fuzzy_string_matcher', 'get_distance', 'levensthein: ' + str(dist) + ', value: ' + string_a.lower() + ' in: ' + string_b.lower())
+        return get_lev_distance(string_a, string_b)
     else:
-        matcher = difflib.SequenceMatcher(lambda x: x == " ", string_a.lower(), string_b.lower())
-        dist = str(round(matcher.ratio() * 100, 1))[:-2]
-        # logger('fuzzy_string_matcher', 'get_distance', 'SequenceMatcher: ' + str(matcher.ratio()) + ', value: ' + string_a.lower() + ' in: ' +  string_b.lower())
+        return get_difflib_distance(string_a, string_b)
 
+
+def get_lev_distance(a, b):
+    """
+    Returns the levensthein distance between to strings
+    :param a: first string
+    :param b: second string
+    :return: distance between a and b
+    """
+    dist = distance(a.strip().lower(), b.strip().lower())
+    #  logger('fuzzy_string_matcher', 'get_distance', 'levensthein: ' + str(dist) + ', value: ' + a.lower() + ' in: ' + b.lower())
+    return str(dist).zfill(max_count_zeros)
+
+
+def get_difflib_distance(a, b):
+    """
+        Returns the difflib distance between to strings
+        :param a: first string
+        :param b: second string
+        :return: distance between a and b
+        """
+    matcher = difflib.SequenceMatcher(lambda x: x == " ", a.lower(), b.lower())
+    dist = str(round(matcher.ratio() * 100, 1))[:-2]
+    # logger('fuzzy_string_matcher', 'get_distance', 'SequenceMatcher: ' + str(matcher.ratio()) + ', value: ' + a.lower() + ' in: ' +  b.lower())
     return str(dist).zfill(max_count_zeros)

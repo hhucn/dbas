@@ -1,15 +1,12 @@
-import unittest
 import json
+import unittest
+
 import transaction
 from pyramid import testing
 from sqlalchemy import and_
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Message
-from dbas.helper.tests import add_settings_to_appconfig
-from sqlalchemy import engine_from_config
-
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
 
 class AjaxNotificationTest(unittest.TestCase):
