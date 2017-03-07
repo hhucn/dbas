@@ -122,6 +122,13 @@ function GuidedTour(){
 				$('#some-element-bubble').remove();
 			},
 		};
+		var sidebar = {
+			element: '.sidebar-wrapper',
+			title: _t(tourStartDiscussionTitle) + lang_switcher,
+			content: _t(tourStartDiscussionContent),
+			placement: 'bottom',
+			path: '/discuss'
+		};
 		var choose_answer = {
 			element: '#discussions-space-list',
 			title: _t(tourSelectAnswertTitle) + lang_switcher,
@@ -136,6 +143,20 @@ function GuidedTour(){
 			placement: 'bottom',
 			path: '/discuss'
 		};
+		var first_child = $('#discussions-space-list li:first');
+		var statement_action = {
+			element: '#discussions-space-list li:first',
+			title: _t(tourStatementActionTitle) + lang_switcher,
+			content: _t(tourStatementActionContent),
+			placement: 'bottom',
+			path: '/discuss',
+			onShow: function () {
+				first_child.trigger("mouseenter");
+			},
+			onHide: function () {
+				first_child.trigger("mouseleave");
+			}
+		};
 		var have_fun = {
 			element: '.jumbotron',
 			title: _t(tourHaveFunTitle) + lang_switcher,
@@ -148,15 +169,17 @@ function GuidedTour(){
 		//data-placement="bottom"
 		tour = new Tour({
 			steps: [
-				welcome,
-				start_button,
+				welcome,            // 0
+				start_button,       // 1
 				//login_button,
-				issue,
-				start_discussion,
-				mark_opinion,
-				choose_answer,
-				set_input,
-				have_fun,
+				issue,              // 2
+				start_discussion,   // 3
+				mark_opinion,       // 4
+				sidebar,            // 5
+				choose_answer,      // 6
+				set_input,          // 7
+				statement_action,   // 8
+				have_fun,           // 9
 				],
 			backdrop: true,
 			backdropPadding: 5,
@@ -206,7 +229,7 @@ function GuidedTour(){
 			setLocalStorage(GUIDED_TOUR_RUNNING, true);
 		} else if(!part0 && !part1 && part2 && getLocalStorage(GUIDED_TOUR_RUNNING) === 'true'){ // part 3, the end
 			tour.init();
-			tour.goTo(6);
+			tour.goTo(9);
 			set_lang_click();
 			setLocalStorage(GUIDED_TOUR_RUNNING, true);
 		}
