@@ -22,5 +22,5 @@ WORKDIR /dbas/docs/_build/html/
 RUN mkdir docs
 RUN (mv * docs; return 0)
 
-EXPOSE 80
-CMD ["python2", "-m", "SimpleHTTPServer", "80"]
+EXPOSE 8000
+CMD ["python2", "-m", "SimpleHTTPServer", "8000"]

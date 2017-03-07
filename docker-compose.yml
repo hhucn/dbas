@@ -13,7 +13,7 @@ services:
       context: .
       dockerfile: Dockerfile.docs
     ports:
-      - "8888:80"
+      - "8000:8000"
     tmpfs: /tmp
   web:
     build: .
