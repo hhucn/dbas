@@ -3,10 +3,12 @@ Testing the routes of the API.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
-from nose.tools import assert_true, assert_false, assert_equals
-from api.lib import json_to_dict
 import json
+
 import requests
+
+from api.lib import json_to_dict
+from nose.tools import assert_equals, assert_false, assert_true
 
 API = "http://localhost:4284/api/"
 

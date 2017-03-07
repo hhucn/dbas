@@ -16,7 +16,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.views import user_login
 
-from .lib import HTTP401, logger, json_to_dict
+from .lib import HTTP401, json_to_dict, logger
 
 log = logger()
 
