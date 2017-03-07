@@ -739,7 +739,7 @@ function Main () {
 			id = id.replace('item_', '');
 			
 			// if we have just one list element AND the list element has a special function AND we are logged in
-			if (children.length === 1 && ($.inArray(id, ids) !== -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) === -1)) {
+			if (children.length === 1 && $.inArray(id, ids) !== -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) === -1) {
 				var container = $('#' + discussionContainerId);
 				var sidebar = $('.sidebar-wrapper');
 				container.height(container.height() - 50);
