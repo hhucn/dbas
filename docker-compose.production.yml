@@ -7,6 +7,8 @@ services:
     image: hhucn/dbas-notifications
     ports:
       - "5222:5222"
+    volumes:
+      - /etc/letsencrypt/live/dbas.cs.uni-duesseldorf.de/:/code/:ro
     tmpfs: /tmp
   docs:
     build:
