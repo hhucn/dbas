@@ -59,6 +59,10 @@ attitude = Service(name='api_attitude',
                    path='/{slug}/attitude/*statement_id',
                    description="Discussion Attitude",
                    cors_policy=cors_policy)
+support = Service(name='api_support',
+                  path='/{slug}/support/{arg_id_user}/{arg_id_sys}',
+                  description="Coming from one argument, support another one",
+                  cors_policy=cors_policy)
 
 # Prefix with 'z' so it is added as the last route
 zinit = Service(name='api_init',
@@ -244,6 +248,18 @@ def discussion_attitude(request):
     """
     api_data = prepare_user_information(request)
     return dbas.discussion_attitude(request, for_api=True, api_data=api_data)
+
+
+@support.get(validators=validate_login)
+def discussion_support(request):
+    """
+    Return data from D-BAS discussion_support page.
+
+    :param request: request
+    :return: dbas.discussion_support(True)
+    """
+    api_data = prepare_user_information(request)
+    return dbas.discussion_support(request, for_api=True, api_data=api_data)
 
 
 @zinit.get(validators=validate_login)
