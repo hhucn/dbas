@@ -55,10 +55,7 @@ attitude = Service(name='api_attitude',
                    path='/{slug}/attitude/*statement_id',
                    description="Discussion Attitude",
                    cors_policy=cors_policy)
-issues = Service(name='get_issues',
-                 path='/get_issues',
-                 description="Issue Selector",
-                 cors_policy=cors_policy)
+
 # Prefix with 'z' so it is added as the last route
 zinit = Service(name='api_init',
                 path='/{slug}',
@@ -91,22 +88,22 @@ justify_premise = Service(name="justify_premise",
 # Get data from D-BAS' database
 #
 references = Service(name="references",
-                     path="/get/references",
+                     path="/references",
                      description="Query database to get stored references from site",
                      cors_policy=cors_policy)
 
 reference_usages = Service(name="reference_usages",
-                           path="/get/reference/usages/{ref_uid}",
+                           path="/reference/usages/{ref_uid}",
                            description="Return dict containing all information about the usages of this reference",
                            cors_policy=cors_policy)
 
 find_statements = Service(name="find_statements",
-                          path="/get/statements/{issue}/{type}/{value}",
+                          path="/statements/{issue}/{type}/{value}",
                           description="Query database to get closest statements",
                           cors_policy=cors_policy)
 
 statement_url_service = Service(name="statement_url",
-                                path="/get/statement/url/{issue_uid}/{statement_uid}/{agree}",
+                                path="/statement/url/{issue_uid}/{statement_uid}/{agree}",
                                 description="Get URL to a statement inside the discussion for direct jumping to it",
                                 cors_policy=cors_policy)
 
@@ -340,7 +337,8 @@ def get_references(request):
     :param request: request
     :return: References assigned to the queried URL
     """
-    host, path = parse_host_and_path(request)
+    host = request.GET.get("host")
+    path = request.GET.get("path")
     if host and path:
         refs = []
         refs_db = get_references_for_url(host, path)
@@ -349,9 +347,9 @@ def get_references(request):
                 refs.append(prepare_single_reference(ref))
             return {"references": refs}
         else:
-            log.error("[API/Reference] Returned no references: Database error")
+            log.info("[API/Reference] Returned no references: Database error")
             return {"status": "error", "message": "Could not retrieve references"}
-    log.error("[API/Reference] Could not parse host and / or path")
+    log.info("[API/Reference] Could not parse host and / or path")
     return {"status": "error", "message": "Could not parse your origin"}
 
 
