@@ -308,10 +308,14 @@ var tourStartDiscussionContent      = 'tourStartDiscussionContent';
 var tourMarkOpinionTitle            = 'tourMarkOpinionTitle';
 var tourMarkOpinionContent          = 'tourMarkOpinionContent';
 var tourMarkOpinionText             = 'tourMarkOpinionText';
+var tourSidebarTitle                = 'tourSidebarTitle';
+var tourSidebarContent              = 'tourSidebarContent';
 var tourSelectAnswertTitle          = 'tourSelectAnswertTitle';
 var tourSelectAnswertContent        = 'tourSelectAnswertContent';
 var tourEnterStatementTitle         = 'tourEnterStatementTitle';
 var tourEnterStatementContent       = 'tourEnterStatementContent';
+var tourStatementActionTitle        = 'tourStatementActionTitle';
+var tourStatementActionContent      = 'tourStatementActionContent';
 var tourHaveFunTitle                = 'tourHaveFunTitle';
 var tourHaveFunContent              = 'tourHaveFunContent';
 
@@ -562,10 +566,14 @@ var dbas_en = {
     'tourMarkOpinionTitle': 'Mark opinon',
     'tourMarkOpinionContent': 'With this little star you can mark your opinion.',
     'tourMarkOpinionText': 'We should shut down University Park.',
+    'tourSidebarTitle': 'Sidebar',
+    'tourSidebarContent': 'There are many more options hidden behind the menu icon.',
     'tourSelectAnswertTitle': 'First selection',
     'tourSelectAnswertContent': 'In the lower part you can choose your answers ...',
     'tourEnterStatementTitle': 'Your own response',
-    'tourEnterStatementContent': '... or enter new statement, if you are logged in.',
+    'tourEnterStatementContent': '... or enter new statement, if you are logged in ...',
+    'tourStatementActionTitle': 'Interaction',
+    'tourStatementActionContent': '... or would you like to interact with the already given statements?',
     'tourHaveFunTitle': 'And now ...',
     'tourHaveFunContent': '... have fun!',
 };
@@ -796,10 +804,14 @@ var dbas_de = {
     'tourMarkOpinionTitle': 'Meinung markieren',
     'tourMarkOpinionContent': 'Mit dem kleinen Stern können Sie Ihre eigene Meinung markieren.',
     'tourMarkOpinionText': 'Sie interessiert, dass der Park geschlossen werden soll.',
+    'tourSidebarTitle': 'Seitenleiste',
+    'tourSidebarContent': 'Hinter dem Menü-Icon sind noch weitere Optionen versteckt.',
     'tourSelectAnswertTitle': 'Erste Auswahl',
     'tourSelectAnswertContent': 'Im unteren Teil können Sie Antworten auswählen ...',
     'tourEnterStatementTitle': 'Eigene Antworten',
-    'tourEnterStatementContent': '... oder eigene Antworten eingeben, sofern Sie angemeldet sind.',
+    'tourEnterStatementContent': '... oder eigene Antworten eingeben, sofern Sie angemeldet sind ...',
+    'tourStatementActionTitle': 'Interaktionen',
+    'tourStatementActionContent': '... oder doch lieber mit den vorhanden Antworten agieren?',
     'tourHaveFunTitle': 'Und nun ...',
     'tourHaveFunContent': '... viel Spaß!',
 };

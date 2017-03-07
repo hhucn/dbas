@@ -67,7 +67,7 @@ from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
 
 name = 'D-BAS'
 version = '1.3.0'
-full_version = version + 'b'
+full_version = version
 project_name = name + ' ' + full_version
 
 # move this into the ini file when the time is right
