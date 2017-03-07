@@ -6,20 +6,24 @@ which can then be used in external websites.
 
 .. note:: Methods **must not** have the same name as their assigned Service.
 
-.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 import json
 
-from cornice import Service
 import dbas.views as dbas
-from dbas.lib import get_text_for_argument_uid, get_all_arguments_by_statement, \
-    get_all_arguments_with_text_by_statement_id, resolve_issue_uid_to_slug
+from cornice import Service
+from dbas.lib import (get_all_arguments_by_statement,
+                      get_all_arguments_with_text_by_statement_id,
+                      get_text_for_argument_uid, resolve_issue_uid_to_slug)
 
 from .lib import HTTP204, flatten, json_to_dict, logger, merge_dicts
 from .login import validate_credentials, validate_login
-from .references import store_reference, url_to_statement, get_references_for_url, get_all_references_by_reference_text, get_reference_by_id, \
-    prepare_single_reference
+from .references import (get_all_references_by_reference_text,
+                         get_reference_by_id, get_references_for_url,
+                         prepare_single_reference, store_reference,
+                         url_to_statement)
+from .templates import error
 
 log = logger()
 
@@ -160,8 +164,7 @@ def append_csrf_to_dict(request, return_dict):
     :return:
     """
     csrf = request.session.get_csrf_token()
-    csrf_dict = {"csrf": csrf}
-    return merge_dicts(csrf_dict, return_dict)
+    return merge_dicts({"csrf": csrf}, return_dict)
 
 
 def prepare_user_information(request):
@@ -201,32 +204,10 @@ def prepare_data_assign_reference(request, func):
             if type(statement_uids) is int:
                 statement_uids = [statement_uids]
             refs_db = list(map(lambda statement: store_reference(api_data, statement), statement_uids))
-            refs = list()  # Convert all references
-            for ref in refs_db:
-                refs.append(prepare_single_reference(ref))
-            return_dict["references"] = refs
+            return_dict["references"] = list(map(lambda ref: prepare_single_reference(ref), refs_db))
         return return_dict
     else:
         raise HTTP204()
-
-
-def parse_host_and_path(request):
-    """
-    Prepare provided host and path of external article.
-
-    :param request: request
-    :return: host and path parsed from request
-    :rtype: str
-    """
-    try:
-        host = request.headers["X-Host"]
-        path = request.headers["X-Path"]
-        return host, path
-    except AttributeError:
-        log.error("[API/Reference] Could not look up origin.")
-    except KeyError:
-        log.error("[API/Reference] Missing fields in HTTP header (X-Host / X-Path).")
-    return None, None
 
 
 @reaction.get(validators=validate_login)
@@ -340,17 +321,12 @@ def get_references(request):
     host = request.GET.get("host")
     path = request.GET.get("path")
     if host and path:
-        refs = []
         refs_db = get_references_for_url(host, path)
         if refs_db is not None:
-            for ref in refs_db:
-                refs.append(prepare_single_reference(ref))
-            return {"references": refs}
+            return {"references": list(map(lambda ref: prepare_single_reference(ref), refs_db))}
         else:
-            log.info("[API/Reference] Returned no references: Database error")
-            return {"status": "error", "message": "Could not retrieve references"}
-    log.info("[API/Reference] Could not parse host and / or path")
-    return {"status": "error", "message": "Could not parse your origin"}
+            return error("Could not retrieve references", "API/Reference")
+    return error("Could not parse your origin", "API/Reference")
 
 
 @reference_usages.get()
@@ -366,8 +342,9 @@ def get_reference_usages(request):
     db_ref = get_reference_by_id(ref_uid)
     if db_ref:
         return get_all_references_by_reference_text(db_ref.reference)
-    log.error("[API/GET Reference Usages] Error when trying to find matching reference for id " + ref_uid)
-    return {"status": "error", "message": "Reference could not be found"}
+    return error("Reference could not be found",
+                 "API/GET Reference Usages",
+                 "Error when trying to find matching reference for id")
 
 
 # =============================================================================
@@ -459,7 +436,7 @@ def jump_preparation(request):
 
 
 @jump_to_zargument.get()
-def fn_jump_to_argument(request):
+def jump_to_argument_fn(request):
     """
     Given a slug, arg_uid and a nickname, jump directly to an argument to
     provoke user interaction.
@@ -478,14 +455,8 @@ def fn_jump_to_argument(request):
 @text_for_argument.get()
 def get_text_for_argument(request):
     statement = int(request.matchdict["statement_uid"])
-
     args = get_all_arguments_by_statement(statement)
-    results = list()
-
-    for argument in args:
-        results.append({"uid": argument.uid,
-                        "text": get_text_for_argument_uid(argument.uid)})
-    return results
+    return list(map(lambda arg: {"uid": arg.uid, "text": get_text_for_argument_uid(arg.uid)}, args))
 
 
 # =============================================================================
@@ -504,5 +475,4 @@ def get_statement_url(request):
     issue_uid = request.matchdict["issue_uid"]
     statement_uid = request.matchdict["statement_uid"]
     agree = request.matchdict["agree"]
-    return_dict = {"url": url_to_statement(issue_uid, statement_uid, agree)}
-    return return_dict
+    return {"url": url_to_statement(issue_uid, statement_uid, agree)}
