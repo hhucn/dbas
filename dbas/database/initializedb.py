@@ -17,7 +17,7 @@ from dbas.database.discussion_model import User, Argument, Statement, TextVersio
     ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, ReputationReason, \
     ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate, MarkedArgument,\
     MarkedStatement, Message, LastReviewerEdit, RevokedContentHistory, RevokedContent, RevokedDuplicate, \
-    ReviewCanceled, RSS, OptimizationReviewLocks
+    ReviewCanceled, RSS, OptimizationReviewLocks, History
 from dbas.database.news_model import News
 from dbas.handler.rss import create_news_rss, create_initial_issue_rss
 from dbas.lib import get_global_url
@@ -143,9 +143,9 @@ def drop_it(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    news_engine = engine_from_config(settings, 'sqlalchemy-news.')
-    DBNewsSession.configure(bind=news_engine)
-    NewsBase.metadata.create_all(news_engine)
+    discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')
+    DBDiscussionSession.configure(bind=discussion_engine)
+    DiscussionBase.metadata.create_all(discussion_engine)
 
     with transaction.manager:
         db_textversions = DBDiscussionSession.query(TextVersion).all()
