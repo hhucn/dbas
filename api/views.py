@@ -1,13 +1,13 @@
-"""
-Introducing an API to enable external discussions.
+"""Introducing an API to enable external discussions.
 
-This is the entry point for the API. Here are views defined, which always return JSON objects
-which can then be used in external websites.
+This is the entry point for the API. Here are views defined, which always
+return JSON objects which can then be used in external websites.
 
 .. note:: Methods **must not** have the same name as their assigned Service.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
+
 """
 import json
 
@@ -189,12 +189,13 @@ def prepare_user_information(request):
 
 
 def prepare_data_assign_reference(request, func):
-    """
-    Collect user information, prepare submitted data and store references into database.
+    """Collect user information, prepare submitted data and store references into
+    database.
 
     :param request:
     :param func:
     :return:
+
     """
     api_data = prepare_user_information(request)
     if api_data:
@@ -216,11 +217,11 @@ def prepare_data_assign_reference(request, func):
 
 @reaction.get(validators=validate_login)
 def discussion_reaction(request):
-    """
-    Return data from DBas discussion_reaction page.
+    """Return data from DBas discussion_reaction page.
 
     :param request: request
     :return: dbas.discussion_reaction(True)
+
     """
     api_data = prepare_user_information(request)
     return dbas.discussion_reaction(request, for_api=True, api_data=api_data)
@@ -228,11 +229,11 @@ def discussion_reaction(request):
 
 @justify.get(validators=validate_login)
 def discussion_justify(request):
-    """
-    Return data from DBas discussion_justify page.
+    """Return data from DBas discussion_justify page.
 
     :param request: request
     :return: dbas.discussion_justify(True)
+
     """
     api_data = prepare_user_information(request)
     return dbas.discussion_justify(request, for_api=True, api_data=api_data)
@@ -240,11 +241,10 @@ def discussion_justify(request):
 
 @attitude.get(validators=validate_login)
 def discussion_attitude(request):
-    """
-    Return data from DBas discussion_attitude page.
+    """Return data from DBas discussion_attitude page.
 
-    :param request: request
-    :return: dbas.discussion_attitude(True)
+    :param request: request :return: dbas.discussion_attitude(True)
+
     """
     api_data = prepare_user_information(request)
     return dbas.discussion_attitude(request, for_api=True, api_data=api_data)
@@ -252,11 +252,10 @@ def discussion_attitude(request):
 
 @support.get(validators=validate_login)
 def discussion_support(request):
-    """
-    Return data from D-BAS discussion_support page.
+    """Return data from D-BAS discussion_support page.
 
-    :param request: request
-    :return: dbas.discussion_support(True)
+    :param request: request :return: dbas.discussion_support(True)
+
     """
     api_data = prepare_user_information(request)
     return dbas.discussion_support(request, for_api=True, api_data=api_data)
@@ -264,11 +263,10 @@ def discussion_support(request):
 
 @zinit.get(validators=validate_login)
 def discussion_init(request):
-    """
-    Return data from DBas discussion_init page.
+    """Return data from DBas discussion_init page.
 
-    :param request: request
-    :return: dbas.discussion_init(True)
+    :param request: request :return: dbas.discussion_init(True)
+
     """
     api_data = prepare_user_information(request)
     return dbas.discussion_init(request, for_api=True, api_data=api_data)
@@ -276,11 +274,11 @@ def discussion_init(request):
 
 @zinit_blank.get(validators=validate_login)
 def discussion_init_blank(request):
-    """
-    Return data from DBas discussion_init page.
+    """Return data from DBas discussion_init page.
 
     :param request: request
     :return: dbas.discussion_init(True)
+
     """
     api_data = prepare_user_information(request)
     return dbas.discussion_init(request, for_api=True, api_data=api_data)
@@ -291,33 +289,33 @@ def discussion_init_blank(request):
 #
 @start_statement.post(validators=validate_login, require_csrf=False)
 def add_start_statement(request):
-    """
-    Add new start statement to issue.
+    """Add new start statement to issue.
 
     :param request:
     :return:
+
     """
     return prepare_data_assign_reference(request, dbas.set_new_start_statement)
 
 
 @start_premise.post(validators=validate_login, require_csrf=False)
 def add_start_premise(request):
-    """
-    Add new premise group.
+    """Add new premise group.
 
     :param request:
     :return:
+
     """
     return prepare_data_assign_reference(request, dbas.set_new_start_premise)
 
 
 @justify_premise.post(validators=validate_login, require_csrf=False)
 def add_justify_premise(request):
-    """
-    Add new justifying premise group.
+    """Add new justifying premise group.
 
     :param request:
     :return:
+
     """
     return prepare_data_assign_reference(request, dbas.set_new_premises_for_argument)
 
@@ -328,18 +326,20 @@ def add_justify_premise(request):
 
 @references.get()
 def get_references(request):
-    """
-    Query database to get stored references from site. Generate a list with text versions of references.
+    """Query database to get stored references from site. Generate a list with
+    text versions of references.
 
     :param request: request
     :return: References assigned to the queried URL
+
     """
     host = request.GET.get("host")
     path = request.GET.get("path")
     if host and path:
         refs_db = get_references_for_url(host, path)
         if refs_db is not None:
-            return {"references": list(map(lambda ref: prepare_single_reference(ref), refs_db))}
+            return {"references": list(map(lambda ref:
+                                           prepare_single_reference(ref), refs_db))}
         else:
             return error("Could not retrieve references", "API/Reference")
     return error("Could not parse your origin", "API/Reference")
@@ -347,12 +347,13 @@ def get_references(request):
 
 @reference_usages.get()
 def get_reference_usages(request):
-    """
-    Return a JSON object containing all information about the stored reference and its usages.
+    """Return a JSON object containing all information about the stored reference
+    and its usages.
 
     :param request:
     :return: JSON with all information about the stored reference
     :rtype: list
+
     """
     ref_uid = request.matchdict["ref_uid"]
     db_ref = get_reference_by_id(ref_uid)
@@ -369,11 +370,12 @@ def get_reference_usages(request):
 
 @login.get()  # TODO test this permission='use'
 def get_csrf_token(request):
-    """
-    Test user's credentials, return success if valid token and username is provided.
+    """Test user's credentials, return success if valid token and username is
+    provided.
 
     :param request:
     :return:
+
     """
     log.debug("[API/CSRF] Returning CSRF token.")
     return append_csrf_to_dict(request, {})
@@ -381,12 +383,13 @@ def get_csrf_token(request):
 
 @login.post(validators=validate_credentials, require_csrf=False)
 def user_login(request):
-    """
-    Check provided credentials and return a token, if it is a valid user.
-    The function body is only executed, if the validator added a request.validated field.
+    """Check provided credentials and return a token, if it is a valid user. The
+    function body is only executed, if the validator added a request.validated
+    field.
 
     :param request:
     :return: token
+
     """
     user = request.validated['user']
     # Convert bytes to string
@@ -405,12 +408,12 @@ def user_login(request):
 
 @find_statements.get()
 def find_statements_fn(request):
-    """
-    Receives search requests, queries database to find all occurrences and returns these results
-    with the correct URL to get directly access to the location in the discussion.
+    """Receives search requests, queries database to find all occurrences and
+    returns these results with the correct URL to get directly access to the
+    location in the discussion.
 
-    :param request:
-    :return: json conform dictionary of all occurrences
+    :param request: :return: json conform dictionary of all occurrences
+
     """
     api_data = dict()
     api_data["issue"] = request.matchdict["issue"]
@@ -438,11 +441,11 @@ def find_statements_fn(request):
 # =============================================================================
 
 def jump_preparation(request):
-    """
-    Prepare api_data and extract all relevant information from the request.
+    """Prepare api_data and extract all relevant information from the request.
 
     :param request:
     :return:
+
     """
     slug = request.matchdict["slug"]
     arg_uid = int(request.matchdict["arg_uid"])
@@ -453,12 +456,12 @@ def jump_preparation(request):
 
 @jump_to_zargument.get()
 def jump_to_argument_fn(request):
-    """
-    Given a slug, arg_uid and a nickname, jump directly to an argument to
+    """Given a slug, arg_uid and a nickname, jump directly to an argument to
     provoke user interaction.
 
     :param request:
     :return: Argument with a list of possible interactions
+
     """
     api_data = jump_preparation(request)
     return dbas.discussion_jump(request, for_api=True, api_data=api_data)
@@ -481,12 +484,12 @@ def get_text_for_argument(request):
 
 @statement_url_service.get()
 def get_statement_url(request):
-    """
-    Given an issue, the statement_uid and an (dis-)agreement, produce a url to the statement inside
-    the corresponding discussion.
+    """Given an issue, the statement_uid and an (dis-)agreement, produce a url to
+    the statement inside the corresponding discussion.
 
     :param request:
     :return:
+
     """
     issue_uid = request.matchdict["issue_uid"]
     statement_uid = request.matchdict["statement_uid"]
