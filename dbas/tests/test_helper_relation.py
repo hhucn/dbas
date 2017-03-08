@@ -31,11 +31,11 @@ class RelationHelperTest(unittest.TestCase):
         val = get_undermines_for_argument_uid(100)
         self.assertEqual(len(val), 0)
 
-        val = get_undermines_for_argument_uid(3)
-        self.assertEqual(len(val), 2)
+        val = get_undermines_for_argument_uid(11)
+        self.assertEqual(len(val), 1)
 
-        val = get_undermines_for_argument_uid('3')
-        self.assertEqual(len(val), 2)
+        val = get_undermines_for_argument_uid('11')
+        self.assertEqual(len(val), 1)
 
     def test_get_undercuts_for_argument_uid(self):
         val = get_undercuts_for_argument_uid('a')
