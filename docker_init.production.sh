@@ -20,11 +20,15 @@ while true; do
     sass dbas/static/css/main.sass dbas/static/css/main.css --style compressed
     rm -r .sass-cache
 
-    printf "\n# Seeding discussion database...\n"
-    init_discussion_sql docker.ini > /dev/null 2>&1
+    #printf "\n# Seeding discussion database...\n"
+    #init_discussion_sql docker.ini > /dev/null 2>&1
+
+    printf "\n# Drop old database...\n"
+    psql -U postgres bash -c "dropdb -U postgres discussion --if-exists" > /dev/null 2>&1
+    psql -U postgres bash -c "dropdb -U postgres news --if-exists" > /dev/null 2>&1
 
     #printf "\n# Restoring previous discussion database...\n"
-    #psql -U postgres bash -c "psql discussion < db/recent_db.sql" > /dev/null 2>&1
+    psql -U postgres bash -c "psql discussion < db/recent_db.sql" > /dev/null 2>&1
 
     printf "\n# Seeding news database...\n"
     init_news_sql docker.ini > /dev/null 2>&1
