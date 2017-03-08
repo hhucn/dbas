@@ -39,7 +39,7 @@ dummy_discussion:
 all: db users dummy_discussion
 
 clean_db:
-	dropdb -U postgres discussion --if-exists
+	dropdb -U postgres ${database} --if-exists
 	dropdb -U postgres news --if-exists
 	dropdb -U postgres beaker --if-exists
 	psql -U postgres -c "DROP SCHEMA IF EXISTS news;"

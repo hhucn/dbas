@@ -22,8 +22,23 @@ while true; do
 
     # printf "\n# Seeding discussion database...\n"
     # init_discussion_sql docker.ini > /dev/null 2>&1
+
+    printf "\n# Clean database ...\n"
+	dropdb -U postgres discussion --if-exists
+	dropdb -U postgres news --if-exists
+	dropdb -U postgres beaker --if-exists
+	psql -U postgres -c "DROP SCHEMA IF EXISTS news;"
+	psql -U postgres -c "DROP SCHEMA IF EXISTS beaker;"
+
+    printf "\n# Create database ...\n"
+	createdb -U postgres discussion
+	createdb -U postgres news
+	createdb -U postgres beaker
+	psql -U postgres -d news -c "CREATE SCHEMA IF NOT EXISTS news;"
+	psql -U postgres -d beaker -c "CREATE SCHEMA IF NOT EXISTS beaker;"
+
     printf "\n# Restoring previous discussion database...\n"
-    sudo -u postgres bash -c "psql discussion < db/recent_db.sql" > /dev/null 2>&1
+    psql -U postgres bash -c "psql discussion < db/recent_db.sql" > /dev/null 2>&1
 
     printf "\n# Seeding news database...\n"
     init_news_sql docker.ini > /dev/null 2>&1
