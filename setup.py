@@ -63,5 +63,6 @@ setup(name='dbas',
       init_field_test_sql = dbas.database.initializedb:main_field_test
       init_news_sql = dbas.database.initializedb:main_news
       init_empty_sql = dbas.database.initializedb:blank_file
+      init_drop_sql = dbas.database.initializedb:drop_it
       """,
       )
