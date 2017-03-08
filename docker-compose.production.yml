@@ -3,6 +3,8 @@ services:
   db:
     image: hhucn/docker-dbas-postgres
     tmpfs: /tmp
+    volumes:
+      - ../db:/db
   notifications:
     image: hhucn/dbas-notifications
     ports:
