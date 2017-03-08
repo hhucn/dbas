@@ -24,6 +24,10 @@ Then follow these steps:
     docker-compose build
     docker-compose up
 
+Example for a fresh build and production mode:
+
+    docker-compose --file docker-compose.production.yml up --build
+
 After this you can hit localhost:4284 for D-BAS.
 
 
