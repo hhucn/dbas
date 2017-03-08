@@ -149,9 +149,11 @@ def drop_it(argv=sys.argv):
     DiscussionBase.metadata.create_all(discussion_engine)
 
     with transaction.manager:
-        db_textversions = DBDiscussionSession.query(TextVersion).all()
-        for tmp in db_textversions:
+        for tmp in DBDiscussionSession.query(TextVersion).all():
             tmp.set_statement(None)
+        for tmp in DBDiscussionSession.query(Statement).all():
+            tmp.set_textversion(None)
+
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(MarkedArgument).delete()) + ' in MarkedArgument')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(MarkedStatement).delete()) + ' in MarkedStatement')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ArgumentSeenBy).delete()) + ' in ArgumentSeenBy')
@@ -160,10 +162,7 @@ def drop_it(argv=sys.argv):
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ClickedStatement).delete()) + ' in VoteStatement')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Message).delete()) + ' in Message')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(StatementReferences).delete()) + ' in StatementReferences')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Argument).delete()) + ' in Argument')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Premise).delete()) + ' in Premise')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(PremiseGroup).delete()) + ' in PremiseGroup')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Statement).delete()) + ' in Statement')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(TextVersion).delete()) + ' in TextVersion')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Issue).delete()) + ' in Issue')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Language).delete()) + ' in Language')
@@ -184,6 +183,10 @@ def drop_it(argv=sys.argv):
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(RevokedContent).delete()) + ' in RevokedContent')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(RevokedContentHistory).delete()) + ' in RevokedContentHistory')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(RevokedDuplicate).delete()) + ' in RevokedDuplicate')
+
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Argument).delete()) + ' in Argument')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Statement).delete()) + ' in Statement')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(PremiseGroup).delete()) + ' in PremiseGroup')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(RSS).delete()) + ' in RSS')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Settings).delete()) + ' in Settings')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(User).delete()) + ' in User')
@@ -192,6 +195,7 @@ def drop_it(argv=sys.argv):
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Settings).delete()) + ' in Settings')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(History).delete()) + ' in History')
         DBDiscussionSession.flush()
+        transaction.commit()
 
 
 def blank_file(argv=sys.argv):
