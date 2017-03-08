@@ -8,8 +8,8 @@ Installation
 see* `docker installation instructions <docker/index.html>`_.
 
 
-Requirements
-============
+Requirements for development
+============================
 
 Ensure that the following tools are installed:
 
@@ -55,19 +55,26 @@ Then follow these steps:
 
 Makefile
 ========
-List of all commands of our Makefile.
-
-* make init
-    Creates a user for postgres as well as both databases (discussion and news).
-
-* make database
-    Will drop both databases, create them, assign them to the owner and fills them with data.
-
-* make refresh
-    Just drops all data, but keeps Users, Settings and Notifications. Afterwards default data will be set.
+List of all important commands of our Makefile.
 
 * make clean
     Drop it all!
+
+* make all
+    Creates a new database with and root and read-only user as well as dummy discussions and news.
+
+
+Tests
+=====
+
+* Unit, integration and view tests::
+
+    nosetests3
+
+* PEP 8 and Co.::
+
+    jshint ./dbas/static/js/{main,ajax,discussion,review}/*.js
+    flake8
 
 
 Mac OS specifc problems you may encounter
