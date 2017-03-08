@@ -8,7 +8,7 @@ services:
     ports:
       - "5222:5222"
     volumes:
-      - /etc/letsencrypt/live/dbas.cs.uni-duesseldorf.de/:/code/:ro
+      - /etc/letsencrypt/live/dbas.cs.uni-duesseldorf.de:/code:ro
     tmpfs: /tmp
   docs:
     build:
@@ -19,9 +19,10 @@ services:
     tmpfs: /tmp
   web:
     build: .
-    command: /bin/bash docker_init.sh
+    command: /bin/bash docker_init.production.sh
     volumes:
       - .:/code
+      - ../db:/db
     ports:
       - "4284:4284"
     links:
