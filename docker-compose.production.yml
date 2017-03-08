@@ -5,6 +5,7 @@ services:
     tmpfs: /tmp
     volumes:
       - ../db:/db
+    command: /bin/bash db/import.sh
   notifications:
     image: hhucn/dbas-notifications
     ports:

@@ -13,11 +13,11 @@ while true; do
     printf "\n# Deploying D-BAS...\n"
     python setup.py --quiet develop
 
-    printf "\n# Dropping old database...\n"
-    init_drop_sql docker.ini #> /dev/null 2>&1
+    #printf "\n# Dropping old database...\n"
+    #init_drop_sql docker.ini #> /dev/null 2>&1
 
-    printf "\n# Seeding discussion database...\n"
-    init_discussion_sql docker.ini #> /dev/null 2>&1
+    # printf "\n# Seeding discussion database...\n"
+    # init_discussion_sql docker.ini #> /dev/null 2>&1
 
     printf "\n# Seeding news database...\n"
     init_news_sql docker.ini #> /dev/null 2>&1
