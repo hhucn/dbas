@@ -4,8 +4,7 @@ services:
     image: hhucn/docker-dbas-postgres
     tmpfs: /tmp
     volumes:
-      - ../db:/db
-    command: /bin/bash db/import.sh
+      - ../db/recent_db.sql:/docker-entrypoint-initdb.d/seed.sql
   notifications:
     image: hhucn/dbas-notifications
     ports:
