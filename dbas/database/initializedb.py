@@ -148,6 +148,10 @@ def drop_it(argv=sys.argv):
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
+    news_engine = engine_from_config(settings, 'sqlalchemy-news.')
+    DBNewsSession.configure(bind=news_engine)
+    NewsBase.metadata.create_all(news_engine)
+
     with transaction.manager:
         for tmp in DBDiscussionSession.query(TextVersion).all():
             tmp.set_statement(None)
@@ -194,6 +198,8 @@ def drop_it(argv=sys.argv):
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(User).delete()) + ' in User')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Settings).delete()) + ' in Settings')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(History).delete()) + ' in History')
+
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBNewsSession.query(News).delete()) + ' in News')
         DBDiscussionSession.flush()
         transaction.commit()
 
@@ -552,11 +558,17 @@ def setup_news_db(session, ui_locale):
                        'very happy with the results and with the first, bigger argumentation map created by '
                        'inexperienced participants! Now we will fix a few smaller things and looking forward '
                        'to out first field test!')
+    news57 = News(title='Docker',
+                  date=arrow.get('2017-02-09'),
+                  author='Tobias Krauthoff',
+                  news='The last weeks we have spend to make D-BAS more stable, writing some analyzers as well as '
+                       'dockerize everything. The complete project can be found on https://github.com/hhucn/dbas '
+                       'soon.')
     news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,
                   news13, news14, news15, news16, news29, news18, news19, news20, news21, news22, news23, news24,
                   news25, news26, news27, news28, news30, news31, news32, news33, news34, news35, news36, news37,
                   news38, news39, news40, news41, news42, news43, news44, news45, news46, news47, news48, news49,
-                  news50, news51, news52, news53, news54, news55, news56]
+                  news50, news51, news52, news53, news54, news55, news56, news57]
     session.add_all(news_array[::-1])
     session.flush()
 

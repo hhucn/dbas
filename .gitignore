@@ -37,7 +37,6 @@ coverage.xml
 *.jar
 mergeDatabase.py
 db.txt
-*.sql
 requirementsUpdater.py
 
 # Pycharm
