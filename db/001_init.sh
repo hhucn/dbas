@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e
+
+DATABASE=discussion
+READER=dolan
+WRITER=dbas
+
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
+     CREATE USER ${WRITER} WITH SUPERUSER PASSWORD 'gAjOVf8MHBgHwUH8NmyWqwQQ43En1b0Mk1wZbm2JOYzWJ8PrQbwEIoWRhz4zT6Wz';
+     CREATE USER ${READER} WITH PASSWORD 'jfsmkRr0govXJQhvpdr1cOGfdmQTohvXJQufsnsCXW9m' NOLOGIN;
+EOSQL
+
+createdb -O ${WRITER} ${DATABASE}
+createdb -O ${WRITER} news
+createdb -O ${WRITER} beaker
+
+psql -d ${DATABASE} -c "ALTER DEFAULT PRIVILEGES FOR ROLE ${WRITER} IN SCHEMA public GRANT SELECT ON tables TO ${READER};"
