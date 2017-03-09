@@ -29,11 +29,11 @@ while true; do
     sass dbas/static/css/main.sass dbas/static/css/main.css --style compressed
     rm -r .sass-cache
 
-    printf "\n# Starting integrated web server -- for development use only!\n"
-    pserve docker.ini --reload
+    # printf "\n# Starting integrated web server -- for development use only!\n"
+    # pserve docker.ini --reload
 
-    # printf "\n# Starting uwsgi -- for production use only!\n"
-    # uwsgi --ini-paste docker.ini
+    printf "\n# Starting uwsgi -- for production use only!\n"
+    uwsgi --ini-paste docker.ini
 
     echo ""
     echo "      ---------------------------------------"
