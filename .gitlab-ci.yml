@@ -2,6 +2,12 @@ image: hhucn/dbas-build
 
 variables:
   INIFILE: "docker.ini"
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/pip-cache"
+
+cache:
+  paths:
+    - "$CI_PROJECT_DIR/pip-cache"
+  key: "$CI_PROJECT_ID"
 
 .job-template: &job-definition
   services:
