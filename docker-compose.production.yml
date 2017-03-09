@@ -1,10 +1,10 @@
 version: '2'
 services:
   db:
-    image: hhucn/docker-dbas-postgres
-    tmpfs: /tmp
+    image: postgres:9.6-alpine
     volumes:
-      - ../db/recent_db.sql:/docker-entrypoint-initdb.d/seed.sql
+      - ./docker/db:/docker-entrypoint-initdb.d
+    tmpfs: /tmp
   notifications:
     image: hhucn/dbas-notifications
     ports:

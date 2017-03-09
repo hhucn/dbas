@@ -1,13 +1,15 @@
 version: '2'
 services:
   db:
-    image: hhucn/docker-dbas-postgres
+    image: postgres:9.6-alpine
+    volumes:
+      - ./docker/db:/docker-entrypoint-initdb.d
     tmpfs: /tmp
-  notifications:
-    image: hhucn/dbas-notifications
-    ports:
-      - "5222:5222"
-    tmpfs: /tmp
+  # notifications:
+  #   image: hhucn/dbas-notifications
+  #   ports:
+  #     - "5222:5222"
+  #   tmpfs: /tmp
   web:
     build: .
     command: /bin/bash docker_init.sh
@@ -17,5 +19,7 @@ services:
       - "4284:4284"
     links:
       - db:hhucn__docker-dbas-postgres
-      - notifications:hhucn__docker-dbas-notifications
+      # - notifications:hhucn__docker-dbas-notifications
+    depends_on:
+      - db
     tmpfs: /tmp
