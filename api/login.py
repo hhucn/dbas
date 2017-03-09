@@ -29,21 +29,23 @@ def _create_salt(nickname):
 
 
 def _create_token(nickname, alg='sha512'):
-    """
-    Use the system's urandom function to generate a random token and convert it to ASCII.
+    """Use the system's urandom function to generate a random token and convert it
+    to ASCII.
 
     :return:
+
     """
     salt = _create_salt(nickname)
     return hashlib.new(alg, salt).hexdigest()
 
 
 def valid_token(request):
-    """
-    Validate the submitted token. Checks if a user is logged in and prepares a dictionary, which is then passed to DBAS.
+    """Validate the submitted token. Checks if a user is logged in and prepares a
+    dictionary, which is then passed to DBAS.
 
     :param request:
     :return:
+
     """
     header = 'X-Messaging-Token'
     htoken = request.headers.get(header)
@@ -77,11 +79,11 @@ def valid_token(request):
 
 
 def validate_login(request, **kwargs):
-    """
-    Takes token from request and validates it.
+    """Takes token from request and validates it.
 
     :param request:
     :return:
+
     """
     header = 'X-Messaging-Token'
     htoken = request.headers.get(header)
@@ -93,12 +95,12 @@ def validate_login(request, **kwargs):
 
 
 def token_to_database(nickname, token):
-    """
-    Store the newly created token in database.
+    """Store the newly created token in database.
 
     :param nickname: user's nickname
     :param token: new token to be stored
     :return:
+
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
@@ -111,11 +113,12 @@ def token_to_database(nickname, token):
 
 
 def validate_credentials(request, **kwargs):
-    """
-    Parse credentials from POST request and validate it against DBA-S' database.
+    """Parse credentials from POST request and validate it against DBA-S'
+    database.
 
     :param request:
     :return:
+
     """
     data = json_to_dict(request.json_body)
     nickname = data['nickname']

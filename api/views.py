@@ -243,7 +243,8 @@ def discussion_justify(request):
 def discussion_attitude(request):
     """Return data from DBas discussion_attitude page.
 
-    :param request: request :return: dbas.discussion_attitude(True)
+    :param request: request
+    :return: dbas.discussion_attitude(True)
 
     """
     api_data = prepare_user_information(request)
@@ -254,7 +255,8 @@ def discussion_attitude(request):
 def discussion_support(request):
     """Return data from D-BAS discussion_support page.
 
-    :param request: request :return: dbas.discussion_support(True)
+    :param request: request
+    :return: dbas.discussion_support(True)
 
     """
     api_data = prepare_user_information(request)
@@ -265,7 +267,8 @@ def discussion_support(request):
 def discussion_init(request):
     """Return data from DBas discussion_init page.
 
-    :param request: request :return: dbas.discussion_init(True)
+    :param request: request
+    :return: dbas.discussion_init(True)
 
     """
     api_data = prepare_user_information(request)
@@ -412,7 +415,8 @@ def find_statements_fn(request):
     returns these results with the correct URL to get directly access to the
     location in the discussion.
 
-    :param request: :return: json conform dictionary of all occurrences
+    :param request:
+    :return: json conform dictionary of all occurrences
 
     """
     api_data = dict()
