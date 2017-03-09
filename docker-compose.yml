@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:9.6-alpine
     volumes:
-      - ./db:/docker-entrypoint-initdb.d
+      - ./docker/db:/docker-entrypoint-initdb.d
     tmpfs: /tmp
   # notifications:
   #   image: hhucn/dbas-notifications
