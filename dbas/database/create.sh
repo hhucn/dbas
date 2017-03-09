@@ -1,5 +1,9 @@
 #!/bin/sh
 
+database="discussion"
+reader="dolan"
+writer="dbas"
+
 sudo -u postgres sh
 
 pg_ctl start -
