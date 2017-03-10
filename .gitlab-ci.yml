@@ -24,7 +24,7 @@ start-server:
   <<: *job-definition
   stage: build
   script:
-    - uwsgi --ini-paste $INIFILE
+    - uwsgi --ini-paste $INIFILE --daemonize uwsgi.daemon.log
 
 flake8:
   stage: build
@@ -99,12 +99,12 @@ unit:
   <<: *job-definition
   stage: test
   script:
-    - uwsgi --ini-paste $INIFILE
+    - uwsgi --ini-paste $INIFILE --daemonize uwsgi.daemon.log
     - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w $(pwd) dbas graph admin api export
 
 acceptance:
   <<: *job-definition
   stage: test
   script:
-    - uwsgi --ini-paste $INIFILE
+    - uwsgi --ini-paste $INIFILE --daemonize uwsgi.daemon.log
     - nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
