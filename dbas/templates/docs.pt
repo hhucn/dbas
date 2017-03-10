@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-md-offset-2 col-md-8">
                     <h3 i18n:translate="docs" class="text-center">Documentation</h3>
-                    <p class="lead">We will link our documentation (done with Sphinx) here.</p>
+                    <p class="lead">Docs are available via /docs/_build/html/index.pt</p>
                 </div>
             </div>
 		</div>
