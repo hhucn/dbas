@@ -13,12 +13,6 @@ while true; do
     printf "\n# Deploying D-BAS...\n"
     python setup.py --quiet develop
 
-    #printf "\n# Dropping old database...\n"
-    #init_drop_sql docker.ini #> /dev/null 2>&1
-
-    # printf "\n# Seeding discussion database...\n"
-    # init_discussion_sql docker.ini #> /dev/null 2>&1
-
     printf "\n# Seeding news database...\n"
     init_news_sql docker.ini #> /dev/null 2>&1
 
@@ -28,9 +22,6 @@ while true; do
     printf "\n# Compiling SASS files...\n"
     sass dbas/static/css/main.sass dbas/static/css/main.css --style compressed
     rm -r .sass-cache
-
-    # printf "\n# Starting integrated web server -- for development use only!\n"
-    # pserve docker.ini --reload
 
     printf "\n# Starting uwsgi -- for production use only!\n"
     uwsgi --ini-paste docker.ini
