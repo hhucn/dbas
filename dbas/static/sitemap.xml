@@ -8,26 +8,30 @@
 
 <url>
   <loc>https://dbas.cs.uni-duesseldorf.de/</loc>
-  <changefreq>daily</changefreq>
+  <changefreq>weekly</changefreq>
 </url>
 <url>
   <loc>https://dbas.cs.uni-duesseldorf.de/news</loc>
-  <changefreq>daily</changefreq>
+  <changefreq>weekly</changefreq>
 </url>
 <url>
   <loc>https://dbas.cs.uni-duesseldorf.de/contact</loc>
-  <changefreq>daily</changefreq>
+  <changefreq>weekly</changefreq>
 </url>
 <url>
   <loc>https://dbas.cs.uni-duesseldorf.de/imprint</loc>
-  <changefreq>daily</changefreq>
+  <changefreq>weekly</changefreq>
 </url>
 <url>
   <loc>https://dbas.cs.uni-duesseldorf.de/publications</loc>
-  <changefreq>daily</changefreq>
+  <changefreq>weekly</changefreq>
 </url>
 <url>
   <loc>https://dbas.cs.uni-duesseldorf.de/faq</loc>
-  <changefreq>daily</changefreq>
+  <changefreq>weekly</changefreq>
+</url>
+<url>
+  <loc>https://dbas.cs.uni-duesseldorf.de/docs</loc>
+  <changefreq>weekly</changefreq>
 </url>
 </urlset>

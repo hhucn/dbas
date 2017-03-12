@@ -82,10 +82,14 @@ this project, e.g.::
 The next call to `docker-compose up` will pull the latest image and create fresh
 containers.
 
+.. _entrypoint:
+
 Init script for the database entry point
 ________________________________________
 
-If you are handling an empty database without anything, please use the init script to create the database and it's users::
+D-BAS uses a seeded database at the beginning, which can be find in `docker/db/<your_seed.sql>`. Everytime docker,
+ starts this seed will be used. If you rather want an empty database at the beginning, remove the seed and use the init
+ script below to create an empty database. The script has to be saved in `docker/db/init.sh`::
 
     #!/bin/bash
     set -e
@@ -95,7 +99,7 @@ If you are handling an empty database without anything, please use the init scri
     reader_pw='SOME PASSWORD'
     writer=dbas
     writer_pw='ANOTHER PASSWORD'
-    #
+
     createdb ${database}
     createdb beaker
     createdb news
@@ -119,7 +123,6 @@ If you are handling an empty database without anything, please use the init scri
     # Add a user with login rights and the read_only_discussion 'group'.
     # IMPORTANT! use 'IN ROLE' not 'ROLE'!
     psql -c "CREATE USER ${reader} WITH PASSWORD '${reader_pw}' IN ROLE read_only_discussion INHERIT;"
-
 
 Docker Tips and Tricks
 ======================
@@ -153,3 +156,18 @@ Optimizations
 .. todo::
    Docker has its own `docker.ini`. I don't like this, reduce this to one file and merge it with
    `development.ini`.
+
+Save a database
+===============
+
+Current database can be saved via::
+
+    $ docker exec dbas_db_1 pg_dumpall -U postgres > /some/path/for/saving/database.sql
+
+To use this dump as entrypoint_, you have to remove the root user from the databse with::
+
+    $ sed -e '/CREATE ROLE postgres/d' \
+          -e '/ALTER ROLE postgres/d' \
+          -i /some/path/for/saving/database.sql
+
+
