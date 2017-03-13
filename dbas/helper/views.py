@@ -4,36 +4,36 @@ Helper for D-BAS Views
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, Settings
-from dbas.logger import logger
-from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape_string, get_user_by_case_insensitive_nickname, is_usage_with_ldap, validate_recaptcha
-from dbas.helper.dictionary.discussion import DiscussionDictHelper
-from dbas.helper.dictionary.items import ItemDictHelper
-from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.strings.translator import Translator
-from dbas.strings.keywords import Keywords as _
-from dbas.auth.ldap import verify_ldap_user_data
-from validate_email import validate_email
-from sqlalchemy import func
+from time import sleep
 
+import transaction
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.security import remember
-from dbas.review.helper.reputation import add_reputation_for
-from dbas.input_validator import is_integer, check_belonging_of_argument, check_belonging_of_statement
-from websocket.lib import send_request_for_info_popup_to_socketio
-from dbas.review.helper.reputation import rep_reason_first_confrontation
+from sqlalchemy import func
+from validate_email import validate_email
 
-import dbas.helper.issue as issue_helper
-import dbas.recommender_system as RecommenderSystem
 import dbas.helper.email as EmailHelper
 import dbas.helper.history as HistoryHelper
 import dbas.helper.issue as IssueHelper
-import dbas.user_management as UserHandler
+import dbas.helper.issue as issue_helper
 import dbas.helper.voting as VotingHelper
-import transaction
-
-from time import sleep
+import dbas.recommender_system as RecommenderSystem
+import dbas.user_management as UserHandler
+from dbas.auth.ldap import verify_ldap_user_data
+from dbas.auth.recaptcha import validate_recaptcha
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User, Group, Settings
+from dbas.helper.dictionary.discussion import DiscussionDictHelper
+from dbas.helper.dictionary.items import ItemDictHelper
+from dbas.helper.dictionary.main import DictionaryHelper
+from dbas.input_validator import is_integer, check_belonging_of_argument, check_belonging_of_statement
+from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape_string, get_user_by_case_insensitive_nickname, is_usage_with_ldap
+from dbas.logger import logger
+from dbas.review.helper.reputation import add_reputation_for
+from dbas.review.helper.reputation import rep_reason_first_confrontation
+from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
+from websocket.lib import send_request_for_info_popup_to_socketio
 
 
 def get_nickname(request_authenticated_userid, for_api=None, api_data=None):

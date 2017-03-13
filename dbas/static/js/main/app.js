@@ -701,7 +701,6 @@ $(document).ready(function () {
 	}
 
 	// language switch
-	
 	$('#' + translationLinkDe).click(function(){ new GuiHandler().lang_switch('de'); });
 	$('#' + translationLinkEn).click(function(){ new GuiHandler().lang_switch('en'); });
 	$('#' + translationLinkDe + ' img').click(function(){ new GuiHandler().lang_switch('de'); });

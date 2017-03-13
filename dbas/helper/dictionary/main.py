@@ -9,6 +9,7 @@ import random
 
 import arrow
 
+from dbas.auth.recaptcha import client_key as google_recaptcha_client_key
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Language, Group, Settings
 from dbas.database.initializedb import nick_of_anonymous_user
@@ -143,6 +144,7 @@ class DictionaryHelper(object):
         return_dict['is_development']                = rrs['mode'] == 'development' if 'mode' in rrs else ''
         return_dict['is_production']                 = rrs['mode'] == 'production' if 'mode' in rrs else ''
         return_dict['review_count']                  = get_complete_review_count(nickname)
+        return_dict['g_recaptcha_key']               = google_recaptcha_client_key
         self.add_language_options_for_extra_dict(return_dict)
 
         if not for_api:
@@ -204,16 +206,17 @@ class DictionaryHelper(object):
 
     def prepare_settings_dict(self, pw_change_success, old_pw, new_pw, confirm_pw, pw_change_error, message, db_user, main_page):
         """
+        Prepares the dictionary for settings.ow
 
-        :param success:
-        :param old_pw:
-        :param new_pw:
-        :param confirm_pw:
-        :param pw_change_error:
-        :param message:
-        :param db_user:
-        :param main_page:
-        :return:
+        :param pw_change_success: Boolean
+        :param old_pw: String
+        :param new_pw: String
+        :param confirm_pw: String
+        :param pw_change_error: Boolean
+        :param message: String
+        :param db_user: User
+        :param main_page: String
+        :return: dict()
         """
         _tn         = Translator(self.system_lang)
         edits       = get_count_of_statements_of_user(db_user, True) if db_user else 0
@@ -450,7 +453,7 @@ class DictionaryHelper(object):
 
     def add_button_text(self, return_dict):
         """
-        Adds string-map in the return dict with the key 'buttons'
+        Adds string-map in the return dict with the client_key 'buttons'
 
         :param return_dict: current dictionary
         :return: None
@@ -483,7 +486,7 @@ class DictionaryHelper(object):
 
     def add_title_text(self, return_dict):
         """
-        Adds string-map in the return dict with the key 'title'
+        Adds string-map in the return dict with the client_key 'title'
 
         :param return_dict: current dictionary
         :return: None
@@ -522,7 +525,7 @@ class DictionaryHelper(object):
 
     def add_tag_text(self, is_ldap, return_dict):
         """
-        Adds string-map in the return dict with the key 'tag'
+        Adds string-map in the return dict with the client_key 'tag'
 
         :param return_dict: current dictionary
         :return: None

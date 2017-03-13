@@ -303,10 +303,6 @@ function Main () {
 			}
 		});
 		
-		$('#' + contactSubmitButtonId).click(function () {
-			setTimeout("$('body').addClass('loading');", 0);
-		});
-		
 		$('#' + discussionSpaceShowItems).click(function(){
 			$(this).hide();
 			var hide_btn = $('#' + discussionSpaceHideItems);
@@ -874,4 +870,12 @@ $(document).ready(function mainDocumentReady() {
 		$('.open').removeClass('opened');
 		event.stopPropagation();
 	});
+	
+	// Google Recaptcha
+	if ($('.g-recaptcha').length !== 0) {
+		setTimeout(function () {
+			$('.grecaptcha-badge').css('bottom', $('#footer').outerHeight(true) + 'px');
+			grecaptcha.execute();
+		}, 1500);
+	}
 });
