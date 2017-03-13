@@ -480,7 +480,10 @@
     						</div>
     						<div class="form-group">
                                 <div class="col-md-12">
-                                    <div align="center" class="g-recaptcha" data-sitekey="6Lc0eQ4TAAAAAI9EAByXR8_6yBBc_Xy-lO2WJtAf"></div>
+                                    <div align="center"
+                                         class="g-recaptcha"
+                                         data-size="invisible"
+                                         tal:attributes="data-sitekey extras.g_recaptcha_key"></div>
                                 </div>
     						</div>
     						<div class="col-md-12" id="popup-login-registration-success" role="alert">

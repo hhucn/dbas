@@ -45,7 +45,8 @@
 
                             <div align="center"
                                  class="g-recaptcha"
-                                 data-sitekey="6Lc0eQ4TAAAAAI9EAByXR8_6yBBc_Xy-lO2WJtAf"></div>
+                                 data-size="invisible"
+                                 tal:attributes="data-sitekey extras.g_recaptcha_key"></div>
 
             				<!--
             			    <div id="alert-message" class="alert alert-danger alert-error">
