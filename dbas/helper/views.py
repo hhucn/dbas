@@ -20,7 +20,7 @@ import dbas.helper.voting as VotingHelper
 import dbas.recommender_system as RecommenderSystem
 import dbas.user_management as UserHandler
 from dbas.auth.ldap import verify_ldap_user_data
-from dbas.auth.recaptcha import validate_recaptcha, client_key
+from dbas.auth.recaptcha import validate_recaptcha
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Settings
 from dbas.helper.dictionary.discussion import DiscussionDictHelper

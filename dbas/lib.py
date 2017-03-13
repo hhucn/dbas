@@ -10,8 +10,6 @@ import time
 import os
 import re
 
-import requests
-
 from collections import defaultdict
 from datetime import datetime
 from html import escape
