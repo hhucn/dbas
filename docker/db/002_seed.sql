@@ -7778,4 +7778,3 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 --
 -- PostgreSQL database cluster dump complete
 --
-
