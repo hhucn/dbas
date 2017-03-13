@@ -44,7 +44,7 @@ class ItemDictHelper(object):
         self.issue_uid = issue_uid
         self.application_url = application_url
         self.for_api = for_api
-        self.LIMIT_SUPPORT_STEP = 0.35
+        self.LIMIT_SUPPORT_STEP = 0.30
 
         if for_api:
             self.path = path[len('/api/' + DBDiscussionSession.query(Issue).get(issue_uid).get_slug()):]
