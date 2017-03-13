@@ -30,7 +30,7 @@ def test_contact_page():
 
 def test_news_page():
     browser.visit(ROOT + '/news')
-    xpath = '//span[text()=" COMMA16 "]'
+    xpath = '//span[text()="Docker"]'
     description = browser.find_by_xpath(xpath).first
     assert_true(description is not None, error_text)
 
