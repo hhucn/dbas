@@ -133,11 +133,11 @@
 						<li><a target="_blank" href="http://fontawesome.io/icons/">Font Awesome Icon</a></li>
 						<li><a target="_blank" href="http://piwik.org/">Piwik Open-Source Analytics</a></li>
 						<li><a target="_blank" href="http://www.gravatar.com/">Gravatar</a></li>
-						<li><span i18n:translate="chart_and_graphs_by">Charts and Graphs by</span> <a target="_blank" href="http://d3js.org">D3.js</a></li>
-						<li>404-<a target="_blank" href="http://theoatmeal.com/comics/state_web_summer#tumblr">Tumbeasts</a> <span i18n:translate="by">by</span> Matthew Inman of The Oatmeal</li>
-						<li><span i18n:translate="cookie_manager_by">Cookie Manager by</span> <a target="_blank" href="https://github.com/js-cookie/js-cookie">js-cookie</a></li>
-						<li>reCAPTCHAs <span i18n:translate="">by</span> <a target="_blank" href="https://www.google.com/recaptcha">Google</a></li>
-						<li>Batman <span i18n:translate="">by</span> <a target="_blank" href=" http://codepen.io/imshubhamsingh/pen/dNQzmG">Shubham Singh</a></li>
+						<li><a target="_blank" href="http://d3js.org">D3.js</a></li>
+						<li><a target="_blank" href="http://theoatmeal.com/comics/state_web_summer#tumblr">404-Tumbeasts</a></li>
+						<li><a target="_blank" href="https://github.com/js-cookie/js-cookie">js-cookie</a></li>
+						<li><a target="_blank" href="https://www.google.com/recaptcha">Google reCAPTCHAs</a></li>
+						<li><a target="_blank" href=" http://codepen.io/imshubhamsingh/pen/dNQzmG">CSS Batman</a></li>
 						<!--<li><a target="_blank" href="https://github.com/devbridge/jQuery-Autocomplete">Autocomplete</a></li>-->
 					</ul>
 				</div>
