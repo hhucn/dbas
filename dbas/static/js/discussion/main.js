@@ -190,7 +190,8 @@ function Main () {
 		//$('[id^="' + questionBubbleId + '-"').click(function () {
 		var trianglel = $('.triangle-l');
 		var uid;
-		trianglel.find('.triangle-content :not(a)').click(function () {
+		console.log(trianglel.find('.triangle-content-text'));
+		trianglel.find('.triangle-content-text').click(function () {
 			var url = window.location.href;
 			if (url.indexOf('/d?history') !== -1) {
 				url = url.split('/d?history');
@@ -207,13 +208,13 @@ function Main () {
 		
 		// do not hover the other spans on hovering the name
 		trianglel.find('.triangle-content a').hover(function() {
-			trianglel.find('.triangle-content :not(a)').each(function(){
+			trianglel.find('.triangle-content-text').each(function(){
 				if (!('argumentationType' in $(this).data())){
 					$(this).css('color', '#000');
 				}
 			});
 		}, function() {
-			trianglel.find('.triangle-content :not(a)').each(function(){
+			trianglel.find('.triangle-content-text').each(function(){
 				if (!('argumentationType' in $(this).data())){
 					$(this).css('color', '');
 				}
@@ -536,7 +537,6 @@ function Main () {
 	 */
 	this.setStyleOptions = function (guiHandler) {
 		guiHandler.setMaxHeightForBubbleSpace();
-		
 		guiHandler.hideSuccessDescription();
 		guiHandler.hideErrorDescription();
 		
@@ -809,6 +809,7 @@ $(document).ready(function mainDocumentReady() {
 	var discussionContainer = $('#' + discussionContainerId);
 	
 	guiHandler.setHandler(interactionHandler);
+	return;
 	main.setStyleOptions(guiHandler);
 	main.setSidebarStyle(discussionContainer, tacked_sidebar);
 	main.setSidebarClicks(discussionContainer, tacked_sidebar);
