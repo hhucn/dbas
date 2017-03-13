@@ -3,20 +3,22 @@
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
 
+from sqlalchemy import and_
+
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, MarkedArgument,\
+    MarkedStatement, Issue
 from dbas.input_validator import is_integer
 from dbas.logger import logger
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, ClickedArgument,\
-    ClickedStatement, Issue, sql_timestamp_pretty_print
 from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
 
 
-def get_dump(issue, lang):
+def get_dump(issue):
     """
+    Dump of D-BAS main tables
 
     :param issue: current issue
-    :param lang: current lang
-    :return: dictionary labeled with enumerated integeres, whereby these dicts are named by their table
+    :return: dictionary labeled with enumerated integers, whereby these dicts are named by their table
     """
     ret_dict = dict()
     logger('ExportLib', 'get_dump', 'main')
@@ -34,90 +36,81 @@ def get_dump(issue, lang):
     ret_dict['statement'], statement_uid_set = __get_all_statements(issue)
 
     # getting all textversions
-    ret_dict['textversion'] = __get_all_textversions(statement_uid_set, lang)
+    ret_dict['textversion'] = __get_all_textversions(statement_uid_set)
 
     # getting all arguments
-    ret_dict['argument'], argument_uid_set, argument_prgoup_set = __get_all_arguments(issue, lang)
+    ret_dict['argument'], argument_uid_set, argument_prgoup_set = __get_all_arguments(issue)
 
     # getting all premisegroups
     ret_dict['premisegroup'], premisegroup_uid_set = __get_all_premisegroups(argument_prgoup_set)
 
     # getting all premises
-    ret_dict['premise'] = __get_all_premises(issue, premisegroup_uid_set, lang)
+    ret_dict['premise'] = __get_all_premises(issue, premisegroup_uid_set)
 
     # getting all votes
-    ret_dict['vote_argument'] = __get_all_votearguments(argument_uid_set)
+    ret_dict['marked_argument'] = __get_all_marked_arguments(argument_uid_set)
 
     # getting all votes
-    ret_dict['vote_statement'] = __get_all_votestatements(statement_uid_set)
+    ret_dict['marked_statement'] = __get_all_marked_statements(statement_uid_set)
 
     return ret_dict
 
 
 def __get_all_users():
+    """
+    Returns all users
+
+    :return: dict()
+    """
     db_users = DBDiscussionSession.query(User).all()
-    user_dict = dict()
-    for index, user in enumerate(db_users):
-        tmp_dict = dict()
-        tmp_dict['uid']         = user.uid
-        tmp_dict['nickname']    = user.nickname
-        user_dict[str(index)]   = tmp_dict
-    return user_dict
+    return [user.to_small_dict() for user in db_users]
 
 
 def __get_all_statements(issue):
+    """
+    Returns all statements for the issue
+
+    :param issue: Issue.uid
+    :return: dict()
+    """
     db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all()
-    statement_uid_set = set()
-    statement_dict = dict()
-    for index, statement in enumerate(db_statements):
-        tmp_dict = dict()
-        statement_uid_set.add(statement.uid)
-        tmp_dict['uid']             = statement.uid
-        tmp_dict['textversion_uid'] = statement.textversion_uid
-        tmp_dict['is_startpoint']   = statement.is_startpoint
-        tmp_dict['is_disabled']     = statement.is_disabled
-        statement_dict[str(index)]  = tmp_dict
+    statement_uid_set = {statement.uid for statement in db_statements}
+    statement_dict = [statement.to_dict() for statement in db_statements]
     return statement_dict, statement_uid_set
 
 
-def __get_all_textversions(statement_uid_set, lang):
-    db_textversions = DBDiscussionSession.query(TextVersion).all()
-    textversion_dict = dict()
-    for index, textversion in enumerate(db_textversions):
-        if textversion.uid in statement_uid_set:
-            tmp_dict = dict()
-            tmp_dict['uid']              = textversion.uid
-            tmp_dict['statement_uid']    = textversion.statement_uid
-            tmp_dict['content']          = textversion.content
-            tmp_dict['author_uid']       = textversion.author_uid
-            tmp_dict['is_disabled']      = textversion.is_disabled
-            tmp_dict['timestamp']        = sql_timestamp_pretty_print(textversion.timestamp, lang)
-            textversion_dict[str(index)] = tmp_dict
-    return textversion_dict
+def __get_all_textversions(statement_uid_set):
+    """
+    Returns all statements for the issue
+
+    :param statement_uid_set:
+    :return: [dict()]
+    """
+    db_textversions = DBDiscussionSession.query(TextVersion).filter(TextVersion.uid.in_(statement_uid_set)).all()
+    return [tv.to_dict() for tv in db_textversions]
 
 
-def __get_all_arguments(issue, lang):
+def __get_all_arguments(issue):
+    """
+    Returns all statements for the issue
+
+    :param issue: Issue.uid
+    :return: [dict()], [dict()], [dict()]
+    """
     db_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all()
-    argument_dict = dict()
-    argument_uid_set = set()
-    argument_prgoup_set = set()
-    for index, argument in enumerate(db_arguments):
-        tmp_dict = dict()
-        argument_uid_set.add(argument.uid)
-        argument_prgoup_set.add(argument.premisesgroup_uid)
-        tmp_dict['uid']                 = argument.uid
-        tmp_dict['premisesgroup_uid']   = argument.premisesgroup_uid
-        tmp_dict['conclusion_uid']      = argument.conclusion_uid if argument.conclusion_uid else 0
-        tmp_dict['argument_uid']        = argument.argument_uid if argument.argument_uid else 0
-        tmp_dict['is_supportive']       = argument.is_supportive
-        tmp_dict['is_disabled']         = argument.is_disabled
-        tmp_dict['author_uid']          = argument.author_uid
-        tmp_dict['timestamp']           = sql_timestamp_pretty_print(argument.timestamp, lang)
-        argument_dict[str(index)]       = tmp_dict
+    argument_dict = [arg.to_dict() for arg in db_arguments]
+    argument_uid_set = {arg.uid for arg in db_arguments}
+    argument_prgoup_set = {arg.premisesgroup_uid for arg in db_arguments}
     return argument_dict, argument_uid_set, argument_prgoup_set
 
 
 def __get_all_premisegroups(argument_prgoup_set):
+    """
+    Returns all pgroups for the issue
+
+    :param argument_prgoup_set: [Premisegroup.uid
+    :return: [dict()], [dict()]
+    """
     db_premisegroups = DBDiscussionSession.query(PremiseGroup).all()
     premisegroup_dict = dict()
     premisegroup_uid_set = set()
@@ -131,57 +124,46 @@ def __get_all_premisegroups(argument_prgoup_set):
     return premisegroup_dict, premisegroup_uid_set
 
 
-def __get_all_premises(issue, premisegroup_uid_set, lang):
-    db_premises = DBDiscussionSession.query(Premise).filter_by(issue_uid=issue).all()
-    premise_dict = dict()
-    for index, premise in enumerate(db_premises):
-        if premise.premisesgroup_uid in premisegroup_uid_set:
-            tmp_dict = dict()
-            tmp_dict['premisesgroup_uid'] = premise.premisesgroup_uid
-            tmp_dict['statement_uid']     = premise.statement_uid
-            tmp_dict['is_negated']        = premise.is_negated
-            tmp_dict['is_disabled']       = premise.is_disabled
-            tmp_dict['author_uid']        = premise.author_uid
-            tmp_dict['timestamp']         = sql_timestamp_pretty_print(premise.timestamp, lang)
-            premise_dict[str(index)]      = tmp_dict
-    return premise_dict
+def __get_all_premises(issue, premisegroup_uid_set):
+    """
+    Returns all statements for the issue
+
+    :param issue: Issue.uid
+    :param premisegroup_uid_set: [PremiseGroup.uid]
+    :return: [dict()]
+    """
+    db_premises = DBDiscussionSession.query(Premise).filter(and_(Premise.issue_uid == issue,
+                                                                 Premise.premisesgroup_uid.in_(premisegroup_uid_set))).all()
+    return [premise.to_dict() for premise in db_premises]
 
 
-def __get_all_votearguments(argument_uid_set):
-    db_votes = DBDiscussionSession.query(ClickedArgument).all()
-    vote_dict = dict()
-    for index, vote in enumerate(db_votes):
-        if vote.argument_uid in argument_uid_set:
-            tmp_dict = dict()
-            tmp_dict['uid']          = vote.uid
-            tmp_dict['argument_uid'] = vote.argument_uid
-            tmp_dict['author_uid']   = vote.author_uid
-            tmp_dict['is_up_vote']   = vote.is_up_vote
-            tmp_dict['is_valid']     = vote.is_valid
-            vote_dict[str(index)]    = tmp_dict
-    return vote_dict
+def __get_all_marked_arguments(argument_uid_set):
+    """
+    Returns all marked arguments
+
+    :param argument_uid_set: [Argument.uid]
+    :return: [dict()]
+    """
+    db_votes = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.argument_uid.in_(argument_uid_set)).all()
+    return [vote.to_dict() for vote in db_votes]
 
 
-def __get_all_votestatements(statement_uid_set):
-    db_votes = DBDiscussionSession.query(ClickedStatement).all()
-    vote_dict = dict()
-    for index, vote in enumerate(db_votes):
-        if vote.statement_uid in statement_uid_set:
-            tmp_dict = dict()
-            tmp_dict['uid']           = vote.uid
-            tmp_dict['statement_uid'] = vote.statement_uid
-            tmp_dict['author_uid']    = vote.author_uid
-            tmp_dict['is_up_vote']    = vote.is_up_vote
-            tmp_dict['is_valid']      = vote.is_valid
-            vote_dict[str(index)]     = tmp_dict
-    return vote_dict
+def __get_all_marked_statements(statement_uid_set):
+    """
+    Returns all marked statements
+
+    :param statement_uid_set: [Statement.uid]
+    :return: [dict()]
+    """
+    db_votes = DBDiscussionSession.query(MarkedStatement).filter(MarkedStatement.statement_uid.in_(statement_uid_set)).all()
+    return [vote.to_dict() for vote in db_votes]
 
 
 def get_minimal_graph_export(issue):
     """
     Returns type of tables column
 
-    :param issue: current issue
+    :param issue: Issue.uid
     :return: String or raise NameError
     """
     if is_integer(issue):

@@ -1,6 +1,10 @@
-## 1.3.0 (2017-02-??)
+## 1.3.0 (2017-03-10)
 - Perfomance tweaks
 - Partial graph instead of complete one
+- FAQs, Docs and Help-Page are online
+- Search function over all statements
+- Many sneaky ui improvements
+- Dockerization
 
 ## 1.2.3 (2017-02-08)
 - Queue for duplicates

@@ -21,10 +21,11 @@ from dbas.strings.translator import Translator
 
 def create_news_rss(main_page, ui_locale):
     """
+    Creates a new news rss
 
-    :param main_page:
-    :param ui_locale:
-    :return:
+    :param main_page: Host URL
+    :param ui_locale: Language.ui_locale
+    :return: Boolean
     """
     logger('RSS-Handler', 'create_news_rss', 'def')
     db_news = DBNewsSession.query(News).order_by(News.date.desc()).all()
@@ -56,10 +57,11 @@ def create_news_rss(main_page, ui_locale):
 
 def create_initial_issue_rss(main_page, ui_locale):
     """
+    Creates the initial RSS entry for an issue
 
-    :param main_page:
-    :param ui_locale:
-    :return:
+    :param main_page: Host URL
+    :param ui_locale: Language.ui_locale
+    :return: Boolean
     """
     logger('RSS-Handler', 'create_initial_issue_rss', 'def')
     db_issues = DBDiscussionSession.query(Issue).all()
@@ -89,14 +91,15 @@ def create_initial_issue_rss(main_page, ui_locale):
 
 def append_action_to_issue_rss(issue_uid, author_uid, title, description, ui_locale, url):
     """
+    Appends a new action in D-BAS to the RSS
 
-    :param issue_uid:
-    :param author_uid:
-    :param title:
-    :param description:
-    :param ui_locale:
-    :param url:
-    :return:
+    :param issue_uid: Issue.uid
+    :param author_uid: User.uid
+    :param title: String
+    :param description: String
+    :param ui_locale: Language.ui_locale
+    :param url: url of this event
+    :return: Boolean
     """
     logger('RSS-Handler', 'append_action_to_issue_rss', 'issue_uid ' + str(issue_uid))
     db_issue = DBDiscussionSession.query(Issue).get(issue_uid)
@@ -137,9 +140,10 @@ def append_action_to_issue_rss(issue_uid, author_uid, title, description, ui_loc
 
 def get_list_of_all_feeds(ui_locale):
     """
+    Returns list of all feeds
 
-    :param ui_locale:
-    :return:
+    :param ui_locale: Language.ui_locale
+    :return: list
     """
     logger('RSS-Handler', 'get_list_of_all_feeds', 'def with ' + str(ui_locale))
 
@@ -162,12 +166,13 @@ def get_list_of_all_feeds(ui_locale):
 
 def __get_issue_rss_gen(main_page, issue, items, ui_locale):
     """
+    Creates RSS object
 
-    :param main_page:
-    :param issue:
-    :param items:
-    :param ui_locale:
-    :return:
+    :param main_page: Host URL
+    :param issue: Issue
+    :param items: [PyRSS2Gen.RSSItem]
+    :param ui_locale: Language.ui_locale
+    :return: PyRSS2Gen.RSS2
     """
     _tn = Translator(ui_locale)
     return PyRSS2Gen.RSS2(

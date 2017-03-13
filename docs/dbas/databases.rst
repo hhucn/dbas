@@ -2,6 +2,8 @@
 Database
 ========
 
+More information about handling of the database can be find in the Docker's entrypoint_.
+
 Steps for creating a new database
 =================================
 

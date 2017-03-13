@@ -12,11 +12,12 @@
  * @returns {String}
  */
 function cutTextOnChar (text, maxTextWidth, pattern) {
+	'use strict';
 	var i, p, l;
 		i = 1;
 		l = text.length;
 	while (i * maxTextWidth < l) {
-		p = text.indexOf(pattern3, i * maxTextWidth);
+		p = text.indexOf(pattern, i * maxTextWidth);
 		text =  text.substr(0, p) + '<br>' + text.substr(p + pattern.length);
 		i = i + 1;
 	}
@@ -31,6 +32,7 @@ function cutTextOnChar (text, maxTextWidth, pattern) {
  * @returns {*} escaped string
  */
 function escapeHtml (text) {
+	'use strict';
 	var div = document.createElement('div');
     div.appendChild(document.createTextNode(text));
     return div.innerHTML;
@@ -42,9 +44,11 @@ function escapeHtml (text) {
  * @returns {number}
  */
 function getCurrentIssueId (){
+	'use strict';
 	var issue = $('#' + issueDropdownButtonID).attr('issue');
-	if (!issue)
+	if (!issue) {
 		issue = $('#issue_info').data('issue');
+	}
 	return issue;
 }
 
@@ -54,6 +58,7 @@ function getCurrentIssueId (){
  * @param params dictionary with at least {'name': ?, 'content': ?}
  */
 function redirectInNewTabForContact (params){
+	'use strict';
 	var csrfToken = $('#' + hiddenCSRFTokenId).val();
 	var csrfField = '<input type="hidden" name="csrf_token" value="' + csrfToken + '">';
 	var f = $("<form target='_blank' method='POST' style='display:none;'>" + csrfField + "</form>").attr('action', mainpage + 'contact');
@@ -74,6 +79,7 @@ function redirectInNewTabForContact (params){
  * @returns {boolean}
  */
 function setLocalStorage (key, value){
+	'use strict';
 	try {
 		localStorage.setItem(key, value);
 		return true;
@@ -90,6 +96,7 @@ function setLocalStorage (key, value){
  * @returns {undefined}
  */
 function getLocalStorage (key){
+	'use strict';
 	try {
 		return localStorage.getItem(key);
 	} catch(err){
@@ -104,6 +111,7 @@ function getLocalStorage (key){
  * @param anchor string
  */
 function setAnchor (anchor){
+	'use strict';
 	location.hash = anchor;
 }
 
@@ -111,6 +119,7 @@ function setAnchor (anchor){
  * Clears all anchors in the location
  */
 function clearAnchor (){
+	'use strict';
 	location.hash = '';
 }
 
@@ -120,5 +129,6 @@ function clearAnchor (){
  * @returns {boolean}
  */
 function isMobileAgent(){
-	return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+	'use strict';
+	return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }

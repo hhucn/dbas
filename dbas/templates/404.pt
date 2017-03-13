@@ -1,7 +1,7 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-		<div class="container first-container center">
+		<div class="container center">
 			<div class="row">
 				<div class="col-md-8 center colored-container" style="float: none; height: 230px;">
                     <img style="height: 200px;" align="right" src="${request.static_url('dbas:static/images/404_monster.png')}"/>

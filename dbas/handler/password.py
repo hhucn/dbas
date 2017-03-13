@@ -4,19 +4,19 @@ Class for handling passwords.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-
 import random
+
 import transaction
 from cryptacular.bcrypt import BCRYPTPasswordManager
+from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Settings, Language
-from dbas.logger import logger
-from dbas.lib import escape_string
-from dbas.strings.translator import Translator
-from dbas.strings.keywords import Keywords as _
-from sqlalchemy import func
 from dbas.helper.email import send_mail
+from dbas.lib import escape_string
+from dbas.logger import logger
+from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
 
 
 # http://interactivepython.org/runestone/static/everyday/2013/01/3_password.html
@@ -61,10 +61,11 @@ def get_hashed_password(password):
 
 def request_password(request, ui_locales):
     """
+    Request for a new password
 
-    :param request:
-    :param ui_locales:
-    :return:
+    :param request: current webserver request
+    :param ui_locales: Language.ui_locales
+    :return: Success-, Error-, Info-String
     """
     success = ''
     error = ''

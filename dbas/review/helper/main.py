@@ -5,19 +5,19 @@ Provides helping function for the adding task in the review queuees or en-/disab
 """
 
 import transaction
-
 from sqlalchemy import and_
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, Argument, Premise, Statement, \
     LastReviewerOptimization, ReviewOptimization, ReviewEdit, ReviewEditValue, LastReviewerEdit, LastReviewerDuplicate,\
     ReviewDuplicate, RevokedDuplicate
+from dbas.helper.query import correct_statement
+from dbas.lib import get_all_arguments_by_statement
+from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_success_flag, rep_reason_bad_flag, \
     rep_reason_success_duplicate, rep_reason_bad_duplicate, rep_reason_success_edit, rep_reason_bad_edit
-from dbas.helper.query import correct_statement
-from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from websocket.lib import send_request_for_info_popup_to_socketio
-from dbas.lib import get_all_arguments_by_statement
 
 max_votes = 5
 min_difference = 3
@@ -25,12 +25,13 @@ min_difference = 3
 
 def __add_vote_for(user, review, is_okay, review_type):
     """
+    Add vote for a specific review
 
-    :param user:
-    :param review:
-    :param is_okay:
-    :param review_type:
-    :return:
+    :param user: User
+    :param review: one table ouf of the Reviews
+    :param is_okay: Boolean
+    :param review_type: one table out of the LastReviews
+    :return: None
     """
     msg = '...'
     if review_type == LastReviewerDelete:
@@ -57,10 +58,11 @@ def __add_vote_for(user, review, is_okay, review_type):
 
 def __get_review_count(review_type, review_uid):
     """
+    Get review count of specific review
 
-    :param review_type:
-    :param review_uid:
-    :return:
+    :param review_type: Table of Review
+    :param review_uid: uid of review
+    :return: count of okay, count fo not okay
     """
     db_reviews = DBDiscussionSession.query(review_type).filter_by(review_uid=review_uid)
     count_of_okay = len(db_reviews.filter_by(is_okay=True).all())
@@ -70,13 +72,14 @@ def __get_review_count(review_type, review_uid):
 
 def add_review_opinion_for_delete(nickname, should_delete, review_uid, _t, application_url):
     """
+    Adds row the delete review
 
-    :param nickname:
-    :param should_delete:
-    :param review_uid:
-    :param _t:
-    :param application_url:
-    :return:
+    :param nickname: User.nickname
+    :param should_delete: Boolean
+    :param review_uid: ReviewDelete.uid
+    :param _t: Translator
+    :param application_url: URL
+    :return: String
     """
     logger('review_main_helper', 'add_review_opinion_for_delete', 'main')
 
@@ -138,13 +141,14 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, _t, appli
 
 def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t, application_url):
     """
+    Adds row the edit review
 
-    :param nickname:
-    :param is_edit_okay:
-    :param review_uid:
-    :param _t:
-    :param application_url:
-    :return:
+    :param nickname: User.nickname
+    :param is_edit_okay: Boolean
+    :param review_uid: ReviewEdit.uid
+    :param _t: Translator
+    :param application_url: URL
+    :return: String
     """
     logger('review_main_helper', 'add_review_opinion_for_edit', 'main')
 
@@ -202,14 +206,15 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t, applicat
 
 def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, data, _t, application_url):
     """
+    Adds row the optimization review
 
-    :param nickname:
-    :param should_optimized:
-    :param review_uid:
-    :param data:
-    :param _t:
-    :param application_url:
-    :return:
+    :param nickname: User.nickname
+    :param should_optimized: Boolean
+    :param review_uid: ReviewOptimization
+    :param data: String
+    :param _t: Translator
+    :param application_url: URL
+    :return: String
     """
     logger('review_main_helper', 'add_review_opinion_for_optimization',
            'main ' + str(review_uid) + ', optimize ' + str(should_optimized))
@@ -230,7 +235,7 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     transaction.commit()
 
     if not should_optimized:
-        __keep_the_element(db_review, application_url, _t)
+        __keep_the_element_of_optimization_review(db_review, application_url, _t)
     else:
         __proposal_for_the_element(db_review, data, db_user)
 
@@ -244,12 +249,14 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
 def add_review_opinion_for_duplicate(nickname, is_duplicate, review_uid, _t, application_url):
     """
 
-    :param nickname:
-    :param is_duplicate:
-    :param review_uid:
-    :param _t:
-    :param application_url:
-    :return:
+    Adds row the duplicate review
+
+    :param nickname: User.nickname
+    :param is_duplicate: Boolean
+    :param review_uid: ReviewDuplicate.uid
+    :param _t: Translator
+    :param application_url: URL
+    :return: String
     """
     logger('review_main_helper', 'add_review_opinion_for_duplicate', 'main ' + str(review_uid) + ', duplicate ' + str(is_duplicate))
 
@@ -309,13 +316,14 @@ def add_review_opinion_for_duplicate(nickname, is_duplicate, review_uid, _t, app
     return ''
 
 
-def __keep_the_element(db_review, application_url, _t):
+def __keep_the_element_of_optimization_review(db_review, application_url, _t):
     """
+    Adds row for LastReviewerOptimization
 
-    :param db_review:
-    :param application_url:
-    :param _t:
-    :return:
+    :param db_review: ReviewOptimization
+    :param application_url: URL
+    :param _t: Translator
+    :return: None
     """
     # add new vote
     db_user_who_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
@@ -340,11 +348,12 @@ def __keep_the_element(db_review, application_url, _t):
 
 def __proposal_for_the_element(db_review, data, db_user):
     """
+    Adds proposal for the ReviewEdit
 
-    :param db_review:
-    :param data:
-    :param db_user:
-    :return:
+    :param db_review: ReviewEdit
+    :param data: String
+    :param db_user: User
+    :return: None
     """
     # add new edit
     argument_dict = {}
@@ -414,10 +423,11 @@ def __proposal_for_the_element(db_review, data, db_user):
 
 def en_or_disable_object_of_review(review, is_disabled):
     """
+    En- or -disable a specific review, this affects all the statements and arguments
 
-    :param review:
-    :param is_disabled:
-    :return:
+    :param review: Review
+    :param is_disabled: boolean
+    :return: None
     """
     logger('review_main_helper', 'en_or_disable_object_of_review', str(review.uid) + ' ' + str(is_disabled))
     if review.statement_uid is not None:
@@ -428,10 +438,11 @@ def en_or_disable_object_of_review(review, is_disabled):
 
 def __en_or_disable_statement_and_premise_of_review(review, is_disabled):
     """
+    En- or -disable a specific review, this affects all the statements
 
-    :param review:
-    :param is_disabled:
-    :return:
+    :param review: Review
+    :param is_disabled: boolean
+    :return: None
     """
     logger('review_main_helper', '__en_or_disable_statement_and_premise_of_review', str(review.uid) + ' ' + str(is_disabled))
     db_statement = DBDiscussionSession.query(Statement).get(review.statement_uid)
@@ -449,10 +460,11 @@ def __en_or_disable_statement_and_premise_of_review(review, is_disabled):
 
 def __en_or_disable_arguments_and_premise_of_review(review, is_disabled):
     """
+    En- or -disable a specific review, this affects all the arguments
 
-    :param review:
-    :param is_disabled:
-    :return:
+    :param review: Review
+    :param is_disabled: boolean
+    :return: None
     """
     logger('review_main_helper', '__en_or_disable_arguments_and_premise_of_review', str(review.uid) + ' ' + str(is_disabled))
     db_argument = DBDiscussionSession.query(Argument).get(review.argument_uid)
@@ -477,10 +489,11 @@ def __en_or_disable_arguments_and_premise_of_review(review, is_disabled):
 
 def __bend_objects_of_duplicate_review(db_review):
     """
+    If an argument is a duplicate, we have to bend the objects of argument, which are no duplicates
 
-    :param db_review:
-    :param db_user:
-    :return:
+    :param db_review: Review
+    :param db_user: User
+    :return: None
     """
     logger('review_main_helper', '__bend_objects_of_duplicate_review', 'Review {} with dupl {} and oem {}'.format(db_review.uid, db_review.duplicate_statement_uid, db_review.original_statement_uid))
     db_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)
@@ -532,10 +545,11 @@ def __bend_objects_of_duplicate_review(db_review):
 
 def __accept_edit_review(review, db_user_created_flag):
     """
+    Add correction fot each value affected by the review
 
-    :param review:
-    :param db_user_created_flag:
-    :return:
+    :param review: Review
+    :param db_user_created_flag: User
+    :return: None
     """
     db_values = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=review.uid).all()
     db_user = DBDiscussionSession.query(User).get(review.detector_uid)

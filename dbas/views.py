@@ -1,10 +1,21 @@
 """
-Core component of D-BAS.
+Collection of all view registrations of the core component of D-BAS.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
 import json
+from subprocess import check_output, CalledProcessError
+
+import requests
+import transaction
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.renderers import get_renderer
+from pyramid.security import forget
+from pyramid.view import view_config, notfound_view_config, forbidden_view_config
+from pyshorteners.shorteners import Shortener, Shorteners
+from requests.exceptions import ReadTimeout
+from sqlalchemy import and_
 
 import dbas.handler.news as news_handler
 import dbas.helper.history as history_helper
@@ -17,28 +28,28 @@ import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
 import dbas.user_management as user_manager
-import requests
-import transaction
-from subprocess import check_output, CalledProcessError
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, sql_timestamp_pretty_print
+from dbas.database.initializedb import nick_of_anonymous_user, nick_of_admin
 from dbas.handler.opinion import get_infos_about_argument,  get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
     get_user_with_same_opinion_for_premisegroups, get_user_and_opinions_for_argument
+from dbas.handler.password import request_password
+from dbas.handler.rss import get_list_of_all_feeds
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
 from dbas.helper.query import get_logfile_for_statements, revoke_content, insert_as_statements, \
     process_input_of_premises_for_arguments_and_receive_url, process_input_of_start_premises_and_receive_url, \
-    process_seen_statements, mark_or_unmark_statement_or_argument
+    process_seen_statements, mark_or_unmark_statement_or_argument, get_text_for_justification_or_reaction_bubble
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
+from dbas.helper.settings import set_settings
 from dbas.helper.views import preparation_for_view, get_nickname, try_to_contact, handle_justification_step, \
     try_to_register_new_user_via_ajax, prepare_parameter_for_justification, login_user
-from dbas.helper.voting import add_vote_for_argument, clear_vote_and_seen_values_of_user
-from dbas.handler.password import request_password
+from dbas.helper.voting import add_click_for_argument, clear_vote_and_seen_values_of_user
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_argument, \
-    check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement, supports_for_same_conclusion
+    check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement, related_with_support
 from dbas.lib import get_language, escape_string, get_discussion_language, \
     get_user_by_private_or_public_nickname, is_user_author_or_admin, \
     get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid, get_profile_picture, \
@@ -50,22 +61,13 @@ from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_p
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from pyramid.renderers import get_renderer
-from pyramid.security import forget
-from pyramid.view import view_config, notfound_view_config, forbidden_view_config
-from pyshorteners.shorteners import Shortener, Shorteners
-from requests.exceptions import ReadTimeout
-from sqlalchemy import and_
 from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
     send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio, \
     send_request_for_info_popup_to_socketio
-from dbas.database.initializedb import nick_of_anonymous_user, nick_of_admin
-from dbas.handler.rss import get_list_of_all_feeds
 
 name = 'D-BAS'
-version = '1.2.3'
-full_version = version + 'b'
+version = '1.3.0'
+full_version = version
 project_name = name + ' ' + full_version
 
 # move this into the ini file when the time is right
@@ -84,13 +86,14 @@ def main_page(request):
     """
     View configuration for the main page
 
+    :param request: current request of the server
     :return: HTTP 200 with several information
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('main_page', 'def', 'main, request.params: ' + str(request.params))
+    logger('main_page', 'def', 'main, request.params: {}'.format(request.params))
+
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     if session_expired:
         return user_logout(request, True)
 
@@ -116,13 +119,13 @@ def main_contact(request):
     """
     View configuration for the contact view.
 
+    :param request: current request of the server
     :return: dictionary with title and project username as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('main_contact', 'def', 'main, request.params: ' + str(request.params))
+    logger('main_contact', 'def', 'main, request.params: {}'.format(request.params))
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     if session_expired:
         return user_logout(request, True)
 
@@ -173,15 +176,15 @@ def main_contact(request):
 @view_config(route_name='main_settings', renderer='templates/settings.pt', permission='use')
 def main_settings(request):
     """
-    View configuration for the content view. Only logged in user can reach this page.
+    View configuration for the personal settings view. Only logged in user can reach this page.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('main_settings', 'def', 'main, request.params: ' + str(request.params))
+    logger('main_settings', 'def', 'main, request.params: {}'.format(request.params))
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    #  history_helper.save_path_set_sin_database(request_authenticated_userid, request.path)  # TODO 322
     if session_expired:
         return user_logout(request, True)
 
@@ -226,8 +229,9 @@ def main_settings(request):
 @view_config(route_name='main_notification', renderer='templates/notifications.pt', permission='use')
 def main_notifications(request):
     """
-    View configuration for the content view. Only logged in user can reach this page.
+    View configuration for the notification view. Only logged in user can reach this page.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -235,7 +239,6 @@ def main_notifications(request):
     ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
 
     if session_expired:
         return user_logout(request, True)
@@ -257,13 +260,13 @@ def main_news(request):
     """
     View configuration for the news.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_news', 'def', 'main')
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     if session_expired:
         return user_logout(request, True)
 
@@ -279,7 +282,7 @@ def main_news(request):
         'project': project_name,
         'extras': extras_dict,
         'is_author': is_author,
-        'news': news_handler.get_news(get_language(request))
+        'news': news_handler.get_news(ui_locales)
     }
 
 
@@ -287,31 +290,31 @@ def main_news(request):
 @view_config(route_name='main_user', renderer='templates/user.pt', permission='everybody')
 def main_user(request):
     """
-    View configuration for the public users.
+    View configuration for the public user page.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     match_dict = request.matchdict
     params = request.params
     request_authenticated_userid = request.authenticated_userid
-    logger('main_user', 'def', 'main, request.matchdict: ' + str(match_dict))
-    logger('main_user', 'def', 'main, request.params: ' + str(params))
+    logger('main_user', 'def', 'main, request.matchdict: {}'.format(match_dict))
+    logger('main_user', 'def', 'main, request.params: {}'.format(params))
 
     uid = match_dict['uid'] if 'uid' in match_dict else 0
-    logger('main_user', 'def', 'uid: ' + str(uid))
+    logger('main_user', 'def', 'uid: {}'.format(uid))
 
     if not is_integer(uid):
         raise HTTPNotFound
 
     current_user = DBDiscussionSession.query(User).get(uid)
     if current_user is None or current_user.nickname == nick_of_anonymous_user or current_user.nickname == nick_of_admin:
-        logger('main_user', 'def', 'no user: ' + str(uid), error=True)
+        logger('main_user', 'def', 'no user: {}'.format(uid), error=True)
         raise HTTPNotFound()
         # return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
 
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     if session_expired:
         return user_logout(request, True)
 
@@ -342,6 +345,7 @@ def main_imprint(request):
     """
     View configuration for the imprint.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -349,7 +353,6 @@ def main_imprint(request):
     ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -373,12 +376,70 @@ def main_imprint(request):
     }
 
 
+# faq
+@view_config(route_name='main_faq', renderer='templates/faq.pt', permission='everybody')
+def main_faq(request):
+    """
+    View configuration for FAQs.
+
+    :param request: current request of the server
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('main_faq', 'def', 'main')
+    ui_locales = get_language(request)
+    request_authenticated_userid = request.authenticated_userid
+    session_expired = user_manager.update_last_action(request_authenticated_userid)
+    if session_expired:
+        return user_logout(request, True)
+
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+
+    return {
+        'layout': base_layout(),
+        'language': str(ui_locales),
+        'title': 'FAQ',
+        'project': project_name,
+        'extras': extras_dict
+    }
+
+
+# docs
+@view_config(route_name='main_docs', renderer='templates/docs.pt', permission='everybody')
+def main_docs(request):
+    """
+    View configuration for the documentation.
+
+    :param request: current request of the server
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
+    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('main_docs', 'def', 'main')
+    ui_locales = get_language(request)
+    request_authenticated_userid = request.authenticated_userid
+    session_expired = user_manager.update_last_action(request_authenticated_userid)
+    _tn = Translator(ui_locales)
+    if session_expired:
+        return user_logout(request, True)
+
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+
+    return {
+        'layout': base_layout(),
+        'language': str(ui_locales),
+        'title': _tn.get(_.docs),
+        'project': project_name,
+        'extras': extras_dict
+    }
+
+
 # imprint
 @view_config(route_name='main_publications', renderer='templates/publications.pt', permission='everybody')
 def main_publications(request):
     """
-    View configuration for the publications.
+    View configuration for the publications list.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -386,7 +447,6 @@ def main_publications(request):
     ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -406,8 +466,9 @@ def main_publications(request):
 @view_config(route_name='main_rss', renderer='templates/rss.pt', permission='everybody')
 def main_rss(request):
     """
-    View configuration for the publications.
+    View configuration for the RSS feed.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -415,7 +476,6 @@ def main_rss(request):
     ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     if session_expired:
         return user_logout(request, True)
 
@@ -438,15 +498,16 @@ def notfound(request):
     """
     View configuration for the 404 page.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
-    logger('notfound', 'def', 'main in ' + str(request.method) + '-request' +
+    logger('notfound', 'def', 'main in {}'.format(request.method) + '-request' +
            ', path: ' + request.path +
            ', view name: ' + request.view_name +
-           ', params: ' + str(request.params))
+           ', params: {}'.format(request.params))
     path = request.path
     if path.startswith('/404/'):
         path = path[4:]
@@ -482,7 +543,7 @@ def notfound(request):
 @view_config(route_name='discussion_init', renderer='templates/content.pt', permission='everybody')
 def discussion_init(request, for_api=False, api_data=None):
     """
-    View configuration for the content view.
+    View configuration for the initial discussion.
 
     :param request: request of the web server
     :param for_api: Boolean
@@ -493,11 +554,12 @@ def discussion_init(request, for_api=False, api_data=None):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     match_dict = request.matchdict
     params = request.params
-    logger('discussion_init', 'def', 'main, request.matchdict: ' + str(match_dict))
-    logger('discussion_init', 'def', 'main, request.params: ' + str(params))
+    logger('discussion_init', 'def', 'main, request.matchdict: {}'.format(match_dict))
+    logger('discussion_init', 'def', 'main, request.params: {}'.format(params))
     request_authenticated_userid = request.authenticated_userid
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    history_helper.save_path_in_database(nickname, request.path, history)
     if session_expired:
         return user_logout(request, True)
 
@@ -551,7 +613,7 @@ def discussion_init(request, for_api=False, api_data=None):
 @view_config(route_name='discussion_attitude', renderer='templates/content.pt', permission='everybody')
 def discussion_attitude(request, for_api=False, api_data=None):
     """
-    View configuration for the content view.
+    View configuration for discussion step, where we will ask the user for her attitude towards a statement.
 
     :param request: request of the web server
     :param for_api: Boolean
@@ -563,10 +625,11 @@ def discussion_attitude(request, for_api=False, api_data=None):
     match_dict = request.matchdict
     params = request.params
     request_authenticated_userid = request.authenticated_userid
-    logger('discussion_attitude', 'def', 'main, request.matchdict: ' + str(match_dict))
-    logger('discussion_attitude', 'def', 'main, request.params: ' + str(params))
+    logger('discussion_attitude', 'def', 'main, request.matchdict: {}'.format(match_dict))
+    logger('discussion_attitude', 'def', 'main, request.params: {}'.format(params))
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    history_helper.save_path_in_database(nickname, request.path, history)
     if session_expired:
         return user_logout(request, True)
 
@@ -621,7 +684,7 @@ def discussion_attitude(request, for_api=False, api_data=None):
 @view_config(route_name='discussion_justify', renderer='templates/content.pt', permission='everybody')
 def discussion_justify(request, for_api=False, api_data=None):
     """
-    View configuration for the content view.
+    View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
 
     :param request: request of the web server
     :param for_api: Boolean
@@ -630,11 +693,12 @@ def discussion_justify(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation'
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('discussion_justify', 'def', 'main, request.matchdict: ' + str(request.matchdict))
-    logger('discussion_justify', 'def', 'main, request.params: ' + str(request.params))
+    logger('discussion_justify', 'def', 'main, request.matchdict: {}'.format(request.matchdict))
+    logger('discussion_justify', 'def', 'main, request.params: {}'.format(request.params))
     request_authenticated_userid = request.authenticated_userid
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    history_helper.save_path_in_database(nickname, request.path, history)
     if session_expired:
         return user_logout(request, True)
 
@@ -668,7 +732,7 @@ def discussion_justify(request, for_api=False, api_data=None):
 @view_config(route_name='discussion_reaction', renderer='templates/content.pt', permission='everybody')
 def discussion_reaction(request, for_api=False, api_data=None):
     """
-    View configuration for the content view.
+    View configuration for discussion step, where we will ask the user for her reaction (support, undercut, rebut)...
 
     :param request: request of the web server
     :param for_api: Boolean
@@ -678,9 +742,10 @@ def discussion_reaction(request, for_api=False, api_data=None):
     # '/discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys'
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     match_dict = request.matchdict
-    logger('discussion_reaction', 'def', 'main, request.matchdict: ' + str(match_dict))
+    logger('discussion_reaction', 'def', 'main, request.matchdict: {}'.format(match_dict))
     request_authenticated_userid = request.authenticated_userid
 
+    # get parameters
     slug            = match_dict['slug'] if 'slug' in match_dict else ''
     arg_id_user     = match_dict['arg_id_user'] if 'arg_id_user' in match_dict else ''
     attack          = match_dict['mode'] if 'mode' in match_dict else ''
@@ -698,6 +763,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
 
     supportive = tmp_argument.is_supportive
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    history_helper.save_path_in_database(nickname, request.path, history)
     if session_expired:
         return user_logout(request, True)
 
@@ -710,8 +776,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
 
     # set votes and reputation
     add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_argument_click)
-
-    add_vote_for_argument(arg_id_user, nickname)
+    add_click_for_argument(arg_id_user, nickname)
 
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
@@ -746,7 +811,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
 @view_config(route_name='discussion_support', renderer='templates/content.pt', permission='everybody')
 def discussion_support(request, for_api=False, api_data=None):
     """
-    View configuration for the jump view.
+    View configuration for discussion step, where we will present another supportive argument.
 
     :param request: request of the web server
     :param for_api: Boolean
@@ -758,8 +823,8 @@ def discussion_support(request, for_api=False, api_data=None):
     match_dict = request.matchdict
     params = request.params
     request_authenticated_userid = request.authenticated_userid
-    logger('discussion_support', 'def', 'main, request.matchdict: ' + str(match_dict))
-    logger('discussion_support', 'def', 'main, request.params: ' + str(params))
+    logger('discussion_support', 'def', 'main, request.matchdict: {}'.format(match_dict))
+    logger('discussion_support', 'def', 'main, request.params: {}'.format(params))
 
     nickname = get_nickname(request_authenticated_userid, for_api, api_data)
     history = params['history'] if 'history' in params else ''
@@ -774,7 +839,7 @@ def discussion_support(request, for_api=False, api_data=None):
         arg_system_uid = match_dict['arg_id_sys'] if 'arg_id_sys' in match_dict else ''
 
     session_expired = user_manager.update_last_action(nickname)
-    #  history_helper.save_path_in_database(nickname, request.path, history)  # TODO 322
+    history_helper.save_path_in_database(nickname, request.path, history)
     history_helper.save_history_in_cookie(request, request.path, history)
     if session_expired:
         return user_logout(request, True)
@@ -784,8 +849,8 @@ def discussion_support(request, for_api=False, api_data=None):
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
-    if not check_belonging_of_argument(issue, arg_user_uid) or not check_belonging_of_argument(issue, arg_system_uid) or not supports_for_same_conclusion(arg_user_uid, arg_system_uid):
-        logger('discussion_choose', 'def', 'no item dict', error=True)
+    if not check_belonging_of_argument(issue, arg_user_uid) or not check_belonging_of_argument(issue, arg_system_uid) or not related_with_support(arg_user_uid, arg_system_uid):
+        logger('discussion_support', 'def', 'no item dict', error=True)
         raise HTTPNotFound()
         # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
@@ -818,6 +883,7 @@ def discussion_support(request, for_api=False, api_data=None):
 @view_config(route_name='discussion_finish', renderer='templates/finish.pt', permission='everybody')
 def discussion_finish(request):
     """
+    View configuration for discussion step, where we present a small/daily summary on the end
 
     :param request: request of the web server
     :return:
@@ -825,12 +891,12 @@ def discussion_finish(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     match_dict = request.matchdict
     params = request.params
-    logger('discussion_finish', 'def', 'main, request.matchdict: ' + str(match_dict))
-    logger('discussion_finish', 'def', 'main, request.params: ' + str(params))
+    logger('discussion_finish', 'def', 'main, request.matchdict: {}'.format(match_dict))
+    logger('discussion_finish', 'def', 'main, request.params: {}'.format(params))
     ui_locales      = get_language(request)
     nickname        = request.authenticated_userid
     session_expired = user_manager.update_last_action(nickname)
-    #  history_helper.save_path_in_database(nickname, request.path)  # TODO 322
+    history_helper.save_path_in_database(nickname, request.path)
     if session_expired:
         return user_logout(request, True)
 
@@ -852,7 +918,7 @@ def discussion_finish(request):
 @view_config(route_name='discussion_choose', renderer='templates/content.pt', permission='everybody')
 def discussion_choose(request, for_api=False, api_data=None):
     """
-    View configuration for the choosing view.
+    View configuration for discussion step, where the user has to choose between given statements.
 
     :param request: request of the web server
     :param for_api: Boolean
@@ -863,8 +929,8 @@ def discussion_choose(request, for_api=False, api_data=None):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     match_dict = request.matchdict
     params = request.params
-    logger('discussion_choose', 'def', 'main, request.matchdict: ' + str(match_dict))
-    logger('discussion_choose', 'def', 'main, request.params: ' + str(params))
+    logger('discussion_choose', 'def', 'main, request.matchdict: {}'.format(match_dict))
+    logger('discussion_choose', 'def', 'main, request.params: {}'.format(params))
 
     request_authenticated_userid = request.authenticated_userid
     slug            = match_dict['slug'] if 'slug' in match_dict else ''
@@ -893,6 +959,7 @@ def discussion_choose(request, for_api=False, api_data=None):
         # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    history_helper.save_path_in_database(nickname, request.path, history)
     if session_expired:
         return user_logout(request, True)
 
@@ -942,8 +1009,8 @@ def discussion_jump(request, for_api=False, api_data=None):
     match_dict = request.matchdict
     params = request.params
     request_authenticated_userid = request.authenticated_userid
-    logger('discussion_jump', 'def', 'main, request.matchdict: ' + str(match_dict))
-    logger('discussion_jump', 'def', 'main, request.params: ' + str(params))
+    logger('discussion_jump', 'def', 'main, request.matchdict: {}'.format(match_dict))
+    logger('discussion_jump', 'def', 'main, request.params: {}'.format(params))
 
     nickname = get_nickname(request_authenticated_userid, for_api, api_data)
     history = params['history'] if 'history' in params else ''
@@ -956,7 +1023,7 @@ def discussion_jump(request, for_api=False, api_data=None):
         arg_uid = match_dict['arg_id'] if 'arg_id' in match_dict else ''
 
     session_expired = user_manager.update_last_action(nickname)
-    #  history_helper.save_path_in_database(nickname, request.path, history)  # TODO 322
+    history_helper.save_path_in_database(nickname, request.path, history)
     history_helper.save_history_in_cookie(request, request.path, history)
     if session_expired:
         return user_logout(request, True)
@@ -1001,24 +1068,19 @@ def discussion_jump(request, for_api=False, api_data=None):
 # ####################################
 
 # index page for reviews
-# ####################################
-# REVIEW                             #
-# ####################################
-
-# index page for reviews
 @view_config(route_name='review_index', renderer='templates/review.pt', permission='use')
 def main_review(request):
     """
     View configuration for the review index.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('main_review', 'main', 'def ' + str(request.matchdict))
+    logger('main_review', 'main', 'def {}'.format(request.matchdict))
     ui_locales = get_language(request)
     nickname = request.authenticated_userid
     session_expired = user_manager.update_last_action(nickname)
-    #  history_helper.save_path_in_database(nickname, request.path)  # TODO 322
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -1052,14 +1114,14 @@ def review_content(request):
     """
     View configuration for the review content.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('review_content', 'main', 'def ' + str(request.matchdict))
+    logger('review_content', 'main', 'def {}'.format(request.matchdict))
     ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -1101,14 +1163,14 @@ def review_history(request):
     """
     View configuration for the review history.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('review_history', 'main', 'def ' + str(request.matchdict))
+    logger('review_history', 'main', 'def {}'.format(request.matchdict))
     ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -1131,14 +1193,14 @@ def ongoing_history(request):
     """
     View configuration for the current reviews.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('ongoing_history', 'main', 'def ' + str(request.matchdict))
+    logger('ongoing_history', 'main', 'def {}'.format(request.matchdict))
     ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -1162,14 +1224,14 @@ def review_reputation(request):
     """
     View configuration for the review reputation_borders.
 
+    :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('review_reputation', 'main', 'def ' + str(request.matchdict))
+    logger('review_reputation', 'main', 'def {}'.format(request.matchdict))
     ui_locales = get_language(request)
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
-    #  history_helper.save_path_in_database(request_authenticated_userid, request.path)  # TODO 322
     _tn = Translator(ui_locales)
     if session_expired:
         return user_logout(request, True)
@@ -1199,6 +1261,7 @@ def get_user_history(request):
     """
     Request the complete user track.
 
+    :param request: current request of the server
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -1214,8 +1277,10 @@ def get_user_history(request):
 @view_config(route_name='ajax_get_all_posted_statements', renderer='json')
 def get_all_posted_statements(request):
     """
+    Request for all statements of the user
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
@@ -1230,8 +1295,10 @@ def get_all_posted_statements(request):
 @view_config(route_name='ajax_get_all_edits', renderer='json')
 def get_all_edits_of_user(request):
     """
+    Request for all edits of the user
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
@@ -1243,34 +1310,38 @@ def get_all_edits_of_user(request):
 
 
 # ajax - getting all votes for arguments
-@view_config(route_name='ajax_get_all_argument_votes', renderer='json')
-def get_all_argument_votes(request):
+@view_config(route_name='ajax_get_all_marked_arguments', renderer='json')
+def get_all_marked_arguments(request):
     """
+    Request for all marked arguments of the user
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
-    logger('get_all_argument_votes', 'def', 'main')
+    logger('get_all_marked_arguments', 'def', 'main')
     ui_locales = get_language(request)
-    return_array = user_manager.get_votes_of_user(request_authenticated_userid, True, ui_locales)
+    return_array = user_manager.get_marked_elements_of_user(request_authenticated_userid, True, ui_locales)
     return json.dumps(return_array)
 
 
 # ajax - getting all votes for statements
-@view_config(route_name='ajax_get_all_statement_votes', renderer='json')
-def get_all_statement_votes(request):
+@view_config(route_name='ajax_get_all_marked_statements', renderer='json')
+def get_all_marked_statements(request):
     """
+    Request for all marked statements of the user
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
-    logger('get_all_statement_votes', 'def', 'main')
+    logger('get_all_marked_statements', 'def', 'main')
     ui_locales = get_language(request)
-    return_array = user_manager.get_votes_of_user(request_authenticated_userid, False, ui_locales)
+    return_array = user_manager.get_marked_elements_of_user(request_authenticated_userid, False, ui_locales)
     return json.dumps(return_array)
 
 
@@ -1278,8 +1349,10 @@ def get_all_statement_votes(request):
 @view_config(route_name='ajax_get_all_argument_clicks', renderer='json')
 def get_all_argument_clicks(request):
     """
+    Request for all clicked arguments of the user
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
@@ -1294,8 +1367,10 @@ def get_all_argument_clicks(request):
 @view_config(route_name='ajax_get_all_statement_clicks', renderer='json')
 def get_all_statement_clicks(request):
     """
+    Request for all clicked statements of the user
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
@@ -1310,7 +1385,7 @@ def get_all_statement_clicks(request):
 @view_config(route_name='ajax_delete_user_history', renderer='json')
 def delete_user_history(request):
     """
-    Request the complete user history.
+    Request to delete the users history.
 
     :param request: request of the web server
     :return: json-dict()
@@ -1331,7 +1406,7 @@ def delete_user_history(request):
 @view_config(route_name='ajax_delete_statistics', renderer='json')
 def delete_statistics(request):
     """
-    Request the complete user history.
+    Request to delete votes/clicks of the user.
 
     :param request: request of the web server
     :return: json-dict()
@@ -1362,29 +1437,22 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
     :return: dict() with error
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('user_login', 'def', 'main, request.params: ' + str(request.params))
+    logger('user_login', 'def', 'main, request.params: {}'.format(request.params))
 
     lang = get_language(request)
     _tn = Translator(lang)
-    error = ''
 
     try:
         value = login_user(request, nickname, password, for_api, keep_login, _tn)
-        if type(value) == str:  # error
-            error = value
-        elif type(value) == dict:  # api
+        if type(value) == HTTPFound:  # success
             return value
-        elif type(value) == HTTPFound:  # success
-            return value
+        else:
+            return json.dumps(value)
 
     except KeyError as e:
-        error = _tn.get(_.internalKeyError)
+        return_dict = {'error': _tn.get(_.internalKeyError)}
         logger('user_login', 'error', repr(e))
-
-    return_dict = {'error': error}
-
-    logger('user_login', 'return', str(return_dict))
-    return json.dumps(return_dict)
+        return json.dumps(return_dict)
 
 
 # ajax - user logout
@@ -1398,7 +1466,7 @@ def user_logout(request, redirect_to_main=False):
     :return: HTTPFound with forgotten headers
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('user_logout', 'def', 'main, user: ' + str(request.authenticated_userid) + ', redirect_to_main: ' + str(redirect_to_main))
+    logger('user_logout', 'def', 'main, user: {}, redirect_to_main: {}'.format(request.authenticated_userid, redirect_to_main))
     request.session.invalidate()
     headers = forget(request)
     if redirect_to_main:
@@ -1417,10 +1485,11 @@ def user_registration(request):
     """
     Registers new user
 
+    :param request: current request of the server
     :return: dict() with success and message
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('user_registration', 'def', 'main, request.params: ' + str(request.params))
+    logger('user_registration', 'def', 'main, request.params: {}'.format(request.params))
 
     # default values
     success = ''
@@ -1454,10 +1523,11 @@ def user_password_request(request):
     """
     Sends an email, when the user requests his password
 
+    :param request: current request of the server
     :return: dict() with success and message
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('user_password_request', 'def', 'main, request.params: ' + str(request.params))
+    logger('user_password_request', 'def', 'main, request.params: {}'.format(request.params))
 
     success = ''
     info = ''
@@ -1489,47 +1559,19 @@ def user_password_request(request):
 @view_config(route_name='ajax_set_user_setting', renderer='json')
 def set_user_settings(request):
     """
-    Will logout the user
+    Sets a specific setting of the user
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('set_user_settings', 'def', 'main, request.params: ' + str(request.params))
+    logger('set_user_settings', 'def', 'main, request.params: {}'.format(request.params))
     _tn = Translator(get_language(request))
 
     try:
-        error = ''
-        public_nick = ''
-        public_page_url = ''
-        gravatar_url = ''
         settings_value = True if request.params['settings_value'] == 'True' else False
         service = request.params['service']
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
-        if db_user:
-            public_nick = db_user.public_nickname
-            db_setting = DBDiscussionSession.query(Settings).get(db_user.uid)
-
-            if service == 'mail':
-                db_setting.set_send_mails(settings_value)
-
-            elif service == 'notification':
-                db_setting.set_send_notifications(settings_value)
-
-            elif service == 'public_nick':
-                db_setting.set_show_public_nickname(settings_value)
-                if settings_value:
-                    db_user.set_public_nickname(db_user.nickname)
-                elif db_user.nickname == db_user.public_nickname:
-                    user_manager.refresh_public_nickname(db_user)
-                public_nick = db_user.public_nickname
-            else:
-                error = _tn.get(_.keyword)
-
-            transaction.commit()
-            public_page_url = request.application_url + '/user/' + (db_user.nickname if settings_value else public_nick)
-            gravatar_url = get_profile_picture(db_user, 80, ignore_privacy_settings=settings_value)
-        else:
-            error = _tn.get(_.checkNickname)
+        public_nick, public_page_url, gravatar_url, error = set_settings(request, service, settings_value, _tn)
     except KeyError as e:
         error = _tn.get(_.internalKeyError)
         public_nick = ''
@@ -1547,10 +1589,11 @@ def set_user_language(request):
     """
     Will logout the user
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('set_user_language', 'def', 'main, request.params: ' + str(request.params))
+    logger('set_user_language', 'def', 'main, request.params: {}'.format(request.params))
     _tn = Translator(get_language(request))
 
     try:
@@ -1588,10 +1631,11 @@ def send_some_notification(request):
     """
     Set a new message into the inbox of an recipient, and the outbox of the sender.
 
+    :param request: current request of the server
     :return: dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('send_some_notification', 'def', 'main, request.params: ' + str(request.params))
+    logger('send_some_notification', 'def', 'main, request.params: {}'.format(request.params))
 
     error = ''
     ts = ''
@@ -1645,7 +1689,7 @@ def set_new_start_statement(request, for_api=False, api_data=None):
     :return: a status code, if everything was successful
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('set_new_start_statement', 'def', 'ajax, request.params: ' + str(request.params))
+    logger('set_new_start_statement', 'def', 'ajax, request.params: {}'.format(request.params))
 
     logger('set_new_start_statement', 'def', 'main')
 
@@ -1714,7 +1758,7 @@ def set_new_start_premise(request, for_api=False, api_data=None):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('set_new_start_premise', 'def', 'main, request.params: ' + str(request.params))
+    logger('set_new_start_premise', 'def', 'main, request.params: {}'.format(request.params))
 
     return_dict = dict()
     lang = get_discussion_language(request)
@@ -1778,7 +1822,7 @@ def set_new_premises_for_argument(request, for_api=False, api_data=None):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('set_new_premises_for_argument', 'def', 'main, request.params: ' + str(request.params))
+    logger('set_new_premises_for_argument', 'def', 'main, request.params: {}'.format(request.params))
 
     return_dict = dict()
     lang = get_language(request)
@@ -1832,7 +1876,7 @@ def set_new_premises_for_argument(request, for_api=False, api_data=None):
         logger('set_new_premises_for_argument', 'error', repr(e))
         return_dict['error'] = _tn.get(_.notInsertedErrorBecauseInternal)
 
-    logger('set_new_premises_for_argument', 'def', 'returning ' + str(return_dict))
+    logger('set_new_premises_for_argument', 'def', 'returning {}'.format(return_dict))
     return json.dumps(return_dict)
 
 
@@ -1842,10 +1886,11 @@ def set_correction_of_statement(request):
     """
     Sets a new textvalue for a statement
 
+    :param request: current request of the server
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('set_correction_of_statement', 'def', 'main, request.params: ' + str(request.params))
+    logger('set_correction_of_statement', 'def', 'main, request.params: {}'.format(request.params))
     nickname = request.authenticated_userid
     user_manager.update_last_action(nickname)
 
@@ -1869,15 +1914,16 @@ def set_correction_of_statement(request):
 @view_config(route_name='ajax_notification_read', renderer='json')
 def set_notification_read(request):
     """
-    Set notification as read
+    Set a notification as read
 
+    :param request: current request of the server
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
 
-    logger('set_notification_read', 'def', 'main ' + str(request.params))
+    logger('set_notification_read', 'def', 'main {}'.format(request.params))
     return_dict = dict()
     ui_locales = get_language(request)
     _t = Translator(ui_locales)
@@ -1906,13 +1952,14 @@ def set_notification_delete(request):
     """
     Request the removal of a notification
 
+    :param request: current request of the server
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
 
-    logger('set_notification_delete', 'def', 'main ' + str(request.params))
+    logger('set_notification_delete', 'def', 'main {}'.format(request.params))
     return_dict = dict()
     ui_locales = get_language(request)
     _t = Translator(ui_locales)
@@ -1948,11 +1995,16 @@ def set_notification_delete(request):
 # ajax - set new issue
 @view_config(route_name='ajax_set_new_issue', renderer='json')
 def set_new_issue(request):
+    """
+
+    :param request: current request of the server
+    :return:
+    """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
 
-    logger('set_new_issue', 'def', 'main ' + str(request.params))
+    logger('set_new_issue', 'def', 'main {}'.format(request.params))
     return_dict = dict()
     ui_locales = get_language(request)
     _tn = Translator(ui_locales)
@@ -1982,10 +2034,11 @@ def set_seen_statements(request):
     """
     Set statements as seen, when they were hidden
 
+    :param request: current request of the server
     :return: json
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('set_seen_statements', 'def', 'main ' + str(request.params))
+    logger('set_seen_statements', 'def', 'main {}'.format(request.params))
     return_dict = dict()
     ui_locales = get_language(request)
     _t = Translator(ui_locales)
@@ -2013,22 +2066,27 @@ def mark_statement_or_argument(request):
     """
     Set statements as seen, when they were hidden
 
+    :param request: current request of the server
     :return: json
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('mark_statement_or_argument', 'def', 'main ' + str(request.params))
+    logger('mark_statement_or_argument', 'def', 'main {}'.format(request.params))
     return_dict = dict()
-    ui_locales = get_language(request)
+    ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
 
     try:
         uid = request.params['uid']
-        is_argument = request.params['is_argument'] == 'true'
-        should_mark = request.params['should_mark'] == 'true'
+        step = request.params['step']
+        is_argument = str(request.params['is_argument']).lower() == 'true'
+        is_supportive = str(request.params['is_supportive']).lower() == 'true'
+        should_mark = str(request.params['should_mark']).lower() == 'true'
+        history = request.params['history'] if 'history' in request.params else ''
 
         success, error = mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, request.authenticated_userid, _t)
         return_dict['success'] = success
         return_dict['error'] = error
+        return_dict['text'] = get_text_for_justification_or_reaction_bubble(uid, is_argument, is_supportive, request.authenticated_userid, step, history, _t)
     except KeyError as e:
         logger('set_seen_statements', 'error', repr(e))
         return_dict['error'] = _t.get(_.internalKeyError)
@@ -2046,10 +2104,11 @@ def get_logfile_for_some_statements(request):
     """
     Returns the changelog of a statement
 
+    :param request: current request of the server
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('get_logfile_for_statements', 'def', 'main, request.params: ' + str(request.params))
+    logger('get_logfile_for_statements', 'def', 'main, request.params: {}'.format(request.params))
     user_manager.update_last_action(request.authenticated_userid)
 
     return_dict = dict()
@@ -2077,6 +2136,7 @@ def get_shortened_url(request):
     """
     Shortens url with the help of a python lib
 
+    :param request: current request of the server
     :return: dictionary with shortend url
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -2105,7 +2165,7 @@ def get_shortened_url(request):
     except ReadTimeout as e:
         logger('get_shortened_url', 'read timeout error', repr(e))
         _tn = Translator(get_discussion_language(request))
-        return_dict['error'] = _tn.get(_.internalError)
+        return_dict['error'] = _tn.get(_.serviceNotAvailable)
 
     return json.dumps(return_dict)
 
@@ -2116,6 +2176,7 @@ def get_news(request):
     """
     ajax interface for getting news
 
+    :param request: current request of the server
     :return: json-set with all news
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
@@ -2130,10 +2191,11 @@ def get_all_infos_about_argument(request):
     """
     ajax interface for getting a dump
 
+    :param request: current request of the server
     :return: json-set with everything
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('get_all_infos_about_argument', 'def', 'main, request.params: ' + str(request.params))
+    logger('get_all_infos_about_argument', 'def', 'main, request.params: {}'.format(request.params))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
     return_dict = dict()
@@ -2157,10 +2219,12 @@ def get_all_infos_about_argument(request):
 def get_users_with_same_opinion(request):
     """
     ajax interface for getting a dump
+
+    :params reqeust: current request of the web  server
     :return: json-set with everything
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('get_users_with_same_opinion', 'def', 'main: ' + str(request.params))
+    logger('get_users_with_same_opinion', 'def', 'main: {}'.format(request.params))
     nickname = request.authenticated_userid
     ui_locales = get_language(request)
     _tn = Translator(ui_locales)
@@ -2206,12 +2270,13 @@ def get_users_with_same_opinion(request):
 @view_config(route_name='ajax_get_public_user_data', renderer='json')
 def get_public_user_data(request):
     """
+    Returns dictionary with public user data
 
     :param request: request of the web server
     :return:
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('get_public_user_data', 'def', 'main: ' + str(request.params))
+    logger('get_public_user_data', 'def', 'main: {}'.format(request.params))
     ui_locales = get_language(request)
     _tn = Translator(ui_locales)
 
@@ -2230,8 +2295,14 @@ def get_public_user_data(request):
 
 @view_config(route_name='ajax_get_arguments_by_statement_uid', renderer='json')
 def get_arguments_by_statement_uid(request):
+    """
+    Returns all arguments, which use the given statement
+
+    :param request: current request of the server
+    :return: json-dict()
+    """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('get_arguments_by_statement_uid', 'def', 'main: ' + str(request.matchdict))
+    logger('get_arguments_by_statement_uid', 'def', 'main: {}'.format(request.matchdict))
     ui_locales = get_language(request)
     _tn = Translator(ui_locales)
 
@@ -2255,8 +2326,15 @@ def get_arguments_by_statement_uid(request):
 
 @view_config(route_name='ajax_get_references', renderer='json')
 def get_references(request):
+    """
+    Returns all references for an argument or statement
+
+
+    :param request: current request of the server
+    :return: json-dict()
+    """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('get_references', 'def', 'main: ' + str(request.params))
+    logger('get_references', 'def', 'main: {}'.format(request.params))
     ui_locales = get_language(request)
     _tn = Translator(ui_locales)
     data = ''
@@ -2293,8 +2371,14 @@ def get_references(request):
 
 @view_config(route_name='ajax_set_references', renderer='json')
 def set_references(request):
+    """
+    Sets a reference for a statement or an arguments
+
+    :param request: current request of the server
+    :return: json-dict()
+    """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('set_references', 'def', 'main: ' + str(request.params))
+    logger('set_references', 'def', 'main: {}'.format(request.params))
     ui_locales = get_language(request)
     _tn = Translator(ui_locales)
 
@@ -2326,23 +2410,30 @@ def switch_language(request):
     """
     Switches the language
 
+    :param request: current request of the server
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     user_manager.update_last_action(request.authenticated_userid)
-    logger('switch_language', 'def', 'main, request.params: ' + str(request.params))
+    logger('switch_language', 'def', 'main, request.params: {}'.format(request.params))
 
     return_dict = dict()
     ui_locales = None
     try:
-        ui_locales = request.params['lang'] if 'lang' in request.params else None
+        ui_locales = request.params['_LOCALE_'] if '_LOCALE_' in request.params else None
         db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
         if not db_lang or not ui_locales:
             ui_locales = get_language(request)
-        request.response.set_cookie('_LOCALE_', str(ui_locales))
+
+        logger('switch_language', 'def', 'setting lang to: {}'.format(ui_locales))
         request._LOCALE_ = ui_locales
+        request.response.set_cookie('_LOCALE_', str(ui_locales))
+        request.cookies['_LOCALE_'] = ui_locales
+        # we have to set 'ui_locales = get_language(request)' in each view again, because D-BAS is no object
         return_dict['error'] = ''
-        return_dict['ui_locales'] = ui_locales
+        return_dict['_LOCALE_'] = ui_locales
+        logger('switch_language', 'def', 'switched to {}'.format(ui_locales))
+
     except KeyError as e:
         logger('swich_language', 'error', repr(e))
         if not ui_locales:
@@ -2359,10 +2450,11 @@ def send_news(request):
     """
     ajax interface for settings news
 
+    :param request: current request of the server
     :return: json-set with new news
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('send_news', 'def', 'main, request.params: ' + str(request.params))
+    logger('send_news', 'def', 'main, request.params: {}'.format(request.params))
     _tn = Translator(get_language(request))
 
     try:
@@ -2390,14 +2482,14 @@ def fuzzy_search(request, for_api=False, api_data=None):
     :return: json-set with all matched strings
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('fuzzy_search', 'def', 'main, for_api: ' + str(for_api) + ', request.params: ' + str(request.params))
+    logger('fuzzy_search', 'def', 'main, for_api: {}, request.params: {}'.format(for_api, request.params))
 
     _tn = Translator(get_language(request))
     request_authenticated_userid = request.authenticated_userid
 
     try:
-        value = api_data['value'] if for_api else request.params['value']
         mode = str(api_data['mode']) if for_api else str(request.params['type'])
+        value = api_data['value'] if for_api else request.params['value']
         issue = api_data['issue'] if for_api else issue_helper.get_issue_id(request)
         extra = request.params['extra'] if 'extra' in request.params else None
 
@@ -2411,9 +2503,9 @@ def fuzzy_search(request, for_api=False, api_data=None):
         #         return json.dumps(return_dict)
 
         # except Exception as e:
-        #     logger('fuzzy_search', 'def', 'Error grepping data via microservice: ' + str(e))
+        #     logger('fuzzy_search', 'def', 'Error grepping data via microservice: {}'.format(e))
 
-        return_dict = fuzzy_string_matcher.get_prediction(_tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra)
+        return_dict = fuzzy_string_matcher.get_prediction(request, _tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra)
 
     except KeyError as e:
         return_dict = {'error': _tn.get(_.internalKeyError)}
@@ -2428,11 +2520,13 @@ def fuzzy_search(request, for_api=False, api_data=None):
 @view_config(route_name='ajax_additional_service', renderer='json')
 def additional_service(request):
     """
+    Easteregg O:-)
 
+    :param request: current request of the server
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('additional_service', 'def', 'main, request.params: ' + str(request.params))
+    logger('additional_service', 'def', 'main, request.params: {}'.format(request.params))
 
     try:
         rtype = request.params['type']
@@ -2442,7 +2536,7 @@ def additional_service(request):
             data = requests.get('http://api.yomomma.info/')
 
         for a in data.json():
-            logger('additional_service', 'main', str(a) + ': ' + str(data.json()[a]))
+            logger('additional_service', 'main', str(a) + ': {}'.format(data.json()[a]))
 
     except KeyError as e:
         logger('additional_service', 'error', repr(e))
@@ -2460,11 +2554,13 @@ def additional_service(request):
 @view_config(route_name='ajax_flag_argument_or_statement', renderer='json')
 def flag_argument_or_statement(request):
     """
+    Flags an argument or statement for a specific reason
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('flag_argument_or_statement', 'def', 'main: ' + str(request.params))
+    logger('flag_argument_or_statement', 'def', 'main: {}'.format(request.params))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
     return_dict = {'error': _t.get(_.internalError), 'info': '', 'success': ''}
@@ -2496,11 +2592,13 @@ def flag_argument_or_statement(request):
 @view_config(route_name='ajax_review_delete_argument', renderer='json')
 def review_delete_argument(request):
     """
+    Values for the review for an argument, which should be deleted
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('review_delete_argument', 'def', 'main: ' + str(request.params))
+    logger('review_delete_argument', 'def', 'main: {}'.format(request.params))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
     return_dict = dict()
@@ -2528,11 +2626,13 @@ def review_delete_argument(request):
 @view_config(route_name='ajax_review_edit_argument', renderer='json')
 def review_edit_argument(request):
     """
+    Values for the review for an argument, which should be edited
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('review_edit_argument', 'def', 'main: ' + str(request.params))
+    logger('review_edit_argument', 'def', 'main: {}'.format(request.params))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
     return_dict = dict()
@@ -2560,11 +2660,13 @@ def review_edit_argument(request):
 @view_config(route_name='ajax_review_duplicate_statement', renderer='json')
 def review_duplicate_statement(request):
     """
+    Values for the review for an argument, which is maybe a duplicate
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('review_duplicate_statement', 'def', 'main: ' + str(request.params) + ' ' + str(request.authenticated_userid))
+    logger('review_duplicate_statement', 'def', 'main: {} - {}'.format(request.params, request.authenticated_userid))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
     return_dict = dict()
@@ -2592,11 +2694,13 @@ def review_duplicate_statement(request):
 @view_config(route_name='ajax_review_optimization_argument', renderer='json')
 def review_optimization_argument(request):
     """
+    Values for the review for an argument, which should be optimized
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('review_optimization_argument', 'def', 'main: ' + str(request.params))
+    logger('review_optimization_argument', 'def', 'main: {}'.format(request.params))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
     return_dict = dict()
@@ -2628,11 +2732,13 @@ def review_optimization_argument(request):
 @view_config(route_name='ajax_undo_review', renderer='json')
 def undo_review(request):
     """
+    Trys to undo a done review process
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('undo_review', 'def', 'main: ' + str(request.params))
+    logger('undo_review', 'def', 'main: {}'.format(request.params))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
     return_dict = dict()
@@ -2660,11 +2766,13 @@ def undo_review(request):
 @view_config(route_name='ajax_cancel_review', renderer='json')
 def cancel_review(request):
     """
+    Trys to cancel an ongoing review
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('cancel_review', 'def', 'main: ' + str(request.params))
+    logger('cancel_review', 'def', 'main: {}'.format(request.params))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
     return_dict = dict()
@@ -2692,11 +2800,13 @@ def cancel_review(request):
 @view_config(route_name='ajax_review_lock', renderer='json', require_csrf=False)
 def review_lock(request):
     """
+    Locks a review so that the user can do an edit
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('review_lock', 'def', 'main: ' + str(request.params))
+    logger('review_lock', 'def', 'main: {}'.format(request.params))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
     return_dict = dict()
@@ -2737,11 +2847,13 @@ def review_lock(request):
 @view_config(route_name='ajax_revoke_content', renderer='json', require_csrf=False)
 def revoke_some_content(request):
     """
+    Revokes the given user as author from a statement or an argument
 
-    :return:
+    :param request: current request of the server
+    :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('revoke_some_content', 'def', 'main: ' + str(request.params))
+    logger('revoke_some_content', 'def', 'main: {}'.format(request.params))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
     return_dict = dict()

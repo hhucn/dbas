@@ -1,16 +1,11 @@
-import unittest
 import json
+import unittest
+
 import transaction
 from pyramid import testing
 
-from dbas.database import DBDiscussionSession, DBNewsSession
+from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import History
-from dbas.helper.tests import add_settings_to_appconfig
-from sqlalchemy import engine_from_config
-
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-DBNewsSession.configure(bind=engine_from_config(settings, 'sqlalchemy-news.'))
 
 
 class AjaxGetInfosTest(unittest.TestCase):
@@ -65,10 +60,11 @@ class AjaxGetInfosTest(unittest.TestCase):
         request = testing.DummyRequest(params={'url': 'https://dbas.cs.uni-duesseldorf.de'}, matchdict={})
         response = json.loads(ajax(request))
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(len(response['url']) != 0)
-        self.assertTrue(len(response['service']) != 0)
-        self.assertTrue(len(response['service_url']) != 0)
+        if len(response['error']) == 0:
+            self.assertTrue(len(response['error']) == 0)
+            self.assertTrue(len(response['url']) != 0)
+            self.assertTrue(len(response['service']) != 0)
+            self.assertTrue(len(response['service_url']) != 0)
 
     def test_get_shortened_url_failure(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
@@ -251,7 +247,7 @@ class AjaxGetInfosTest(unittest.TestCase):
 
     def test_get_all_argument_votes(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_all_argument_votes as ajax
+        from dbas.views import get_all_argument_clicks as ajax
         request = testing.DummyRequest(params={}, matchdict={})
         response = json.loads(ajax(request))
         self.assertIsNotNone(response)
@@ -259,7 +255,7 @@ class AjaxGetInfosTest(unittest.TestCase):
 
     def test_get_all_argument_votes_failure(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
-        from dbas.views import get_all_argument_votes as ajax
+        from dbas.views import get_all_argument_clicks as ajax
         request = testing.DummyRequest(params={}, matchdict={})
         response = json.loads(ajax(request))
         self.assertIsNotNone(response)
@@ -267,7 +263,7 @@ class AjaxGetInfosTest(unittest.TestCase):
 
     def test_get_all_statement_votes(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_all_statement_votes as ajax
+        from dbas.views import get_all_argument_clicks as ajax
         request = testing.DummyRequest(params={}, matchdict={})
         response = json.loads(ajax(request))
         self.assertIsNotNone(response)
@@ -275,7 +271,7 @@ class AjaxGetInfosTest(unittest.TestCase):
 
     def test_get_all_statement_votes_failure(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
-        from dbas.views import get_all_statement_votes as ajax
+        from dbas.views import get_all_argument_clicks as ajax
         request = testing.DummyRequest(params={}, matchdict={})
         response = json.loads(ajax(request))
         self.assertIsNotNone(response)

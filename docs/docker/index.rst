@@ -1,7 +1,6 @@
 ======
 Docker
 ======
-
 ::
 
     ______________________________
@@ -83,6 +82,47 @@ this project, e.g.::
 The next call to `docker-compose up` will pull the latest image and create fresh
 containers.
 
+.. _entrypoint:
+
+Init script for the database entry point
+________________________________________
+
+D-BAS uses a seeded database at the beginning, which can be find in `docker/db/<your_seed.sql>`. Everytime docker,
+ starts this seed will be used. If you rather want an empty database at the beginning, remove the seed and use the init
+ script below to create an empty database. The script has to be saved in `docker/db/init.sh`::
+
+    #!/bin/bash
+    set -e
+
+    database=discussion
+    reader=dolan
+    reader_pw='SOME PASSWORD'
+    writer=dbas
+    writer_pw='ANOTHER PASSWORD'
+
+    createdb ${database}
+    createdb beaker
+    createdb news
+
+    psql -d news -c "CREATE SCHEMA IF NOT EXISTS news;"
+
+    # Create writer role
+    psql -c "CREATE ROLE writer;"
+    psql -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT all ON tables TO writer;"
+    psql -c "GRANT all ON all tables IN SCHEMA public TO writer;"
+    psql -d news -c "GRANT all ON SCHEMA news TO writer;"
+    psql -c "CREATE USER ${writer} WITH PASSWORD '${writer_pw}' IN ROLE writer INHERIT;"
+
+    # Create 'group' for users which only can read 'discussion'.
+    psql -c "CREATE ROLE read_only_discussion;"
+
+    # Set privileges for this 'group'.
+    psql -d ${database} -c "GRANT CONNECT ON DATABASE ${database} TO read_only_discussion;"
+    psql -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO read_only_discussion;"
+
+    # Add a user with login rights and the read_only_discussion 'group'.
+    # IMPORTANT! use 'IN ROLE' not 'ROLE'!
+    psql -c "CREATE USER ${reader} WITH PASSWORD '${reader_pw}' IN ROLE read_only_discussion INHERIT;"
 
 Docker Tips and Tricks
 ======================
@@ -116,3 +156,18 @@ Optimizations
 .. todo::
    Docker has its own `docker.ini`. I don't like this, reduce this to one file and merge it with
    `development.ini`.
+
+Save a database
+===============
+
+Current database can be saved via::
+
+    $ docker exec dbas_db_1 pg_dumpall -U postgres > /some/path/for/saving/database.sql
+
+To use this dump as entrypoint_, you have to remove the root user from the databse with::
+
+    $ sed -e '/CREATE ROLE postgres/d' \
+          -e '/ALTER ROLE postgres/d' \
+          -i /some/path/for/saving/database.sql
+
+

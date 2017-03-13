@@ -4,15 +4,19 @@
  */
 
 $(document).ready(function () {
+    'use strict';
+    
 	$('.review-undo').click(function(){
 		var queue = $(this).data('queue');
 		var id = $(this).data('id');
 		var revoked_argument = $('#' + queue + id + ' td:first-child').attr('title');
 		new ReviewHistory().showUndoPopup(queue, id, revoked_argument);
-	})
+	});
 });
 
 function ReviewHistory(){
+    'use strict';
+    
 	
 	/**
 	 *
@@ -29,18 +33,20 @@ function ReviewHistory(){
 		$('#' + popupConfirmDialogId + ' div.modal-body').html(span + blockquote);
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
-			if (window.location.href.indexOf('history') != -1)
+			if (window.location.href.indexOf('history') !== -1) {
 				new AjaxReviewHandler().undoReview(queue, id);
-			else
+			} else {
 				new AjaxReviewHandler().cancelReview(queue, id);
+			}
 		});
 		$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
 		});
-	}
+	};
 }
 
 function ReviewHistoryCallbacks(){
+    'use strict';
 	
 	/**
 	 *
@@ -50,11 +56,11 @@ function ReviewHistoryCallbacks(){
 	 */
 	this.forUndoReview = function(jsonData, queue, uid){
 		var parsedData = $.parseJSON(jsonData);
-		if (parsedData.error.length != 0) {
+		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		} else {
 			setGlobalSuccessHandler('Yep!', parsedData.success);
 			$('#' + queue + uid).remove();
 		}
-	}
+	};
 }

@@ -4,36 +4,36 @@ Helper for D-BAS Views
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, Settings
-from dbas.logger import logger
-from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape_string, get_user_by_case_insensitive_nickname, is_usage_with_ldap, validate_recaptcha
-from dbas.helper.dictionary.discussion import DiscussionDictHelper
-from dbas.helper.dictionary.items import ItemDictHelper
-from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.strings.translator import Translator
-from dbas.strings.keywords import Keywords as _
-from dbas.auth.ldap import verify_ldap_user_data
-from validate_email import validate_email
-from sqlalchemy import func
+from time import sleep
 
+import transaction
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.security import remember
-from dbas.review.helper.reputation import add_reputation_for
-from dbas.input_validator import is_integer, check_belonging_of_argument, check_belonging_of_statement
-from websocket.lib import send_request_for_info_popup_to_socketio
-from dbas.review.helper.reputation import rep_reason_first_confrontation
+from sqlalchemy import func
+from validate_email import validate_email
 
-import dbas.helper.issue as issue_helper
-import dbas.recommender_system as RecommenderSystem
 import dbas.helper.email as EmailHelper
 import dbas.helper.history as HistoryHelper
 import dbas.helper.issue as IssueHelper
-import dbas.user_management as UserHandler
+import dbas.helper.issue as issue_helper
 import dbas.helper.voting as VotingHelper
-import transaction
-
-from time import sleep
+import dbas.recommender_system as RecommenderSystem
+import dbas.user_management as UserHandler
+from dbas.auth.ldap import verify_ldap_user_data
+from dbas.auth.recaptcha import validate_recaptcha
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User, Group, Settings
+from dbas.helper.dictionary.discussion import DiscussionDictHelper
+from dbas.helper.dictionary.items import ItemDictHelper
+from dbas.helper.dictionary.main import DictionaryHelper
+from dbas.input_validator import is_integer, check_belonging_of_argument, check_belonging_of_statement
+from dbas.lib import get_text_for_statement_uid, get_discussion_language, escape_string, get_user_by_case_insensitive_nickname, is_usage_with_ldap
+from dbas.logger import logger
+from dbas.review.helper.reputation import add_reputation_for
+from dbas.review.helper.reputation import rep_reason_first_confrontation
+from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
+from websocket.lib import send_request_for_info_popup_to_socketio
 
 
 def get_nickname(request_authenticated_userid, for_api=None, api_data=None):
@@ -41,7 +41,7 @@ def get_nickname(request_authenticated_userid, for_api=None, api_data=None):
     Given data from api, return nickname and session_id.
 
     :param request_authenticated_userid:
-    :param for_api:
+    :param for_api: Boolean
     :param api_data:
     :return:
     """
@@ -51,12 +51,12 @@ def get_nickname(request_authenticated_userid, for_api=None, api_data=None):
 
 def preparation_for_view(for_api, api_data, request, request_authenticated_userid):
     """
-    Does some elementary things like: getting nickname, session id and history. Additionally boolean, if the sesseion is expired
+    Does some elementary things like: getting nickname, session id and history. Additionally boolean, if the session is expired
 
     :param for_api: True, if the values are for the api
     :param api_data: Array with api data
     :param request: Current request
-    :param request_authenticated_userid:
+    :param request_authenticated_userid: User.nickname
     :return: nickname, session_id, session_expired, history
     """
     nickname = get_nickname(request_authenticated_userid, for_api, api_data)
@@ -69,10 +69,11 @@ def preparation_for_view(for_api, api_data, request, request_authenticated_useri
 
 def prepare_parameter_for_justification(request, for_api):
     """
+    Prepares some paramater for the justification step
 
-    :param request:
-    :param for_api:
-    :return:
+    :param request: webservers request
+    :param for_api: Boolean
+    :return: String, Statement.uid/Argument.uid, String, Boolean, String, Issue.uid, Language.ui_locales, dict()
     """
     slug                = request.matchdict['slug'] if 'slug' in request.matchdict else ''
     statement_or_arg_id = request.matchdict['statement_or_arg_id'] if 'statement_or_arg_id' in request.matchdict else ''
@@ -88,13 +89,14 @@ def prepare_parameter_for_justification(request, for_api):
 
 def handle_justification_step(request, for_api, ui_locales, nickname, history):
     """
+    Handles the justification step
 
-    :param request:
-    :param for_api:
-    :param ui_locales:
-    :param nickname:
-    :param history:
-    :return:
+    :param request: webserver's request
+    :param for_api: Boolean
+    :param ui_locales: Language.ui_locales
+    :param nickname: User.nickname
+    :param history: string
+    :return: dict(), dict(), dict()
     """
     slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict = prepare_parameter_for_justification(request, for_api)
     main_page = request.application_url
@@ -148,53 +150,55 @@ def handle_justification_step(request, for_api, ui_locales, nickname, history):
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_justify_statement(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales,
+def preparation_for_justify_statement(request, for_api, main_page, slug, statement_uid, supportive, ui_locales,
                                       request_authenticated_userid, mode, nickname, history):
     """
+    Prepares some paramater for the justification step for an statement
 
-    :param request:
-    :param for_api:
-    :param main_page:
-    :param slug:
-    :param statement_or_arg_id:
-    :param supportive:
-    :param mode:
-    :param ui_locales:
-    :return:
+    :param request: webserver's request
+    :param for_api: Boolean
+    :param main_page: string
+    :param slug: String
+    :param statement_uid: Statement.uid
+    :param supportive: Boolean
+    :param mode: String
+    :param ui_locales: Language.ui_locales
+    :return: dict(), dict(), dict()
     """
     logger('ViewHelper', 'preparation_for_justify_statement', 'main')
 
     logged_in = DBDiscussionSession.query(User).filter_by(nickname=nickname).first() is not None
     _ddh, _idh, _dh = __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, request)
 
-    VotingHelper.add_vote_for_statement(statement_or_arg_id, nickname, supportive)
+    VotingHelper.add_click_for_statement(statement_uid, nickname, supportive)
 
-    item_dict       = _idh.get_array_for_justify_statement(statement_or_arg_id, nickname, supportive, history)
-    discussion_dict = _ddh.get_dict_for_justify_statement(statement_or_arg_id, main_page, slug, supportive, len(item_dict['elements']), nickname)
+    item_dict       = _idh.get_array_for_justify_statement(statement_uid, nickname, supportive, history)
+    discussion_dict = _ddh.get_dict_for_justify_statement(statement_uid, main_page, slug, supportive, len(item_dict['elements']), nickname)
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, request_authenticated_userid, mode == 't',
                                               application_url=main_page, for_api=for_api)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0 or len(item_dict['elements']) == 1 and logged_in:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
-                                    current_premise=get_text_for_statement_uid(statement_or_arg_id),
+                                    current_premise=get_text_for_statement_uid(statement_uid),
                                     supportive=supportive)
     return item_dict, discussion_dict, extras_dict
 
 
 def preparation_for_dont_know_statement(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, nickname, history):
     """
+    Prepares some paramater for the "don't know" step
 
-    :param request:
-    :param for_api:
-    :param main_page:
-    :param slug:
-    :param statement_or_arg_id:
-    :param supportive:
-    :param ui_locales:
-    :param request_authenticated_userid:
-    :param nickname:
-    :param history:
-    :return:
+    :param request: webserver's request
+    :param for_api: Boolean
+    :param main_page: string
+    :param slug: String
+    :param statement_or_arg_id: Argument.uid / Statement.uid
+    :param supportive: Boolean
+    :param ui_locales: Language.ui_locales
+    :param request_authenticated_userid: User.nickname
+    :param nickname: User.nickname
+    :param history: string
+    :return: dict(), dict(), dict()
     """
     logger('ViewHelper', 'preparation_for_dont_know_statement', 'main')
 
@@ -221,16 +225,17 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, state
 def preparation_for_justify_argument(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales,
                                      request_authenticated_userid, relation, nickname, history):
     """
+    Prepares some paramater for the justification step for an argument
 
-    :param request:
-    :param for_api:
-    :param main_page:
-    :param slug:
-    :param statement_or_arg_id:
-    :param supportive:
-    :param relation:
-    :param ui_locales:
-    :return:
+    :param request: webserver's request
+    :param for_api: Boolean
+    :param main_page: string
+    :param slug: String
+    :param statement_or_arg_id: Argument.uid / Statement.uid
+    :param supportive: Boolean
+    :param relation: String
+    :param ui_locales: Language.ui_locales
+    :return: dict(), dict(), dict()
     """
     logger('ViewHelper', 'preparation_for_justify_argument', 'main')
 
@@ -254,15 +259,16 @@ def preparation_for_justify_argument(request, for_api, main_page, slug, statemen
 
 def __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, request):
     """
+    Prepares helper objects
 
-    :param ui_locales:
-    :param nickname:
-    :param history:
-    :param main_page:
-    :param slug:
-    :param for_api:
-    :param request:
-    :return:
+    :param ui_locales: Language.ui_locales
+    :param nickname: User.nickname
+    :param history: string
+    :param main_page: string
+    :param slug: String
+    :param for_api: Boolean
+    :param request: webserver's request
+    :return: dict(), dict(), dict()
     """
     issue           = IssueHelper.get_id_of_slug(slug, request, True) if len(slug) > 0 else IssueHelper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
@@ -274,15 +280,16 @@ def __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, re
 
 def try_to_contact(request, name, email, phone, content, ui_locales, recaptcha):
     """
+    Trys to send an contact mail
 
-    :param request:
-    :param name:
-    :param email:
-    :param phone:
-    :param content:
-    :param ui_locales:
-    :param recaptcha:
-    :return:
+    :param request: webserver's request
+    :param name: String
+    :param email: String
+    :param phone: String
+    :param content: String
+    :param ui_locales: Language.ui_locales
+    :param recaptcha: Googles Recaptcha
+    :return: Boolean, String, Boolean
     """
     logger('ViewHelper', 'try_to_contact', 'name: ' + name + ', email: ' + email + ', phone: ' + phone + ', content: ' + content)
     _t = Translator(ui_locales)
@@ -334,14 +341,15 @@ def try_to_contact(request, name, email, phone, content, ui_locales, recaptcha):
 
 def login_user(request, nickname, password, for_api, keep_login, _tn):
     """
+    A try to login the user
 
-    :param request:
-    :param nickname:
-    :param password:
-    :param for_api:
-    :param keep_login:
-    :param _tn:
-    :return:
+    :param request: webserver's request
+    :param nickname: User.nickname
+    :param password: String
+    :param for_api: Boolean
+    :param keep_login: Boolean
+    :param _tn: Translator
+    :return: dict() or HTTPFound if the user is logged in an it is not the api
     """
 
     # getting params from request or api
@@ -362,28 +370,35 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
     if not db_user:  # check if the user exists
         msg = __login_user_not_existing(request, nickname, password, _tn, is_ldap)
         if msg is not None:
-            return msg
+            return {'error': msg}  # error
 
     else:
         error = __login_user_is_existing(request, nickname, password, _tn, is_ldap, db_user)
         if error is not None:
-            return error
+            return {'error': error}  # error
 
     headers, url = __refresh_headers_and_url(request, db_user, keep_login, url)
 
     if for_api:
         logger('ViewHelper', 'login_user', 'return for api: success')
-        return {'status': 'success'}
+        return {'status': 'success'}  # api
     else:
         logger('ViewHelper', 'login_user', 'return success: ' + url)
         sleep(0.5)
-        return HTTPFound(
-            location=url,
-            headers=headers,
-        )
+        return HTTPFound(location=url, headers=headers)  # success
 
 
 def __login_user_not_existing(request, nickname, password, _tn, is_ldap):
+    """
+    First login of a user who is not registered
+
+    :param request: webservers request
+    :param nickname: User.nickname
+    :param password: String
+    :param _tn: Translator
+    :param is_ldap: Boolean
+    :return: String or None on success
+    """
     logger('ViewHelper', 'login_user', 'user \'' + nickname + '\' does not exists')
 
     # if the user does not exists and we are using LDAP, we'll grep the user
@@ -401,6 +416,17 @@ def __login_user_not_existing(request, nickname, password, _tn, is_ldap):
 
 
 def __login_user_is_existing(request, nickname, password, _tn, is_ldap, db_user):
+    """
+    Login of a user who is already registered
+
+    :param request: webservers request
+    :param nickname: User.nickname
+    :param password: String
+    :param _tn: Translator
+    :param is_ldap: Boolean
+    :param db_user: User
+    :return: String or None on success
+    """
     logger('ViewHelper', 'login_user', 'user \'' + nickname + '\' exists')
     if is_ldap:
         local_login = db_user.validate_password(password)
@@ -421,6 +447,15 @@ def __login_user_is_existing(request, nickname, password, _tn, is_ldap, db_user)
 
 
 def __login_user_ldap(request, nickname, password, _tn):
+    """
+    Login the user via LDAP
+
+    :param request: webservers request
+    :param nickname: User.nickname
+    :param password: String
+    :param _tn: Translator
+    :return: String, User
+    """
     logger('ViewHelper', '__login_user_ldap', nickname)
     user_data = verify_ldap_user_data(request, nickname, password)
 
@@ -439,6 +474,16 @@ def __login_user_ldap(request, nickname, password, _tn):
 
 
 def __refresh_headers_and_url(request, db_user, keep_login, url):
+    """
+    Refreshed headers for the request. Returns a sequence of header tuples (e.g. ``[('Set-Cookie', 'foo=abc')]``)
+    on this request's response.
+
+    :param request: webservers request
+    :param db_user: User
+    :param keep_login: Boolean
+    :param url: String
+    :return: Headers, String
+    """
     logger('ViewHelper', 'user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
     db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
     db_settings.should_hold_the_login(keep_login)
@@ -460,10 +505,11 @@ def __refresh_headers_and_url(request, db_user, keep_login, url):
 
 def try_to_register_new_user_via_ajax(request, _tn):
     """
+    Consume the ajax data for an login attempt
 
-    :param request:
-    :param _tn:
-    :return:
+    :param request: webserver's request
+    :param _tn: Translator
+    :return: Boolean, String, User
     """
     success = ''
     params          = request.params

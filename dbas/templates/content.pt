@@ -71,15 +71,15 @@
                         <div tal:repeat="bubble discussion.bubbles" tal:omit-tag="">
                             <div tal:condition="bubble.is_user" class="line-wrapper-r">
                                 <p class="triangle-r" tal:attributes="id bubble.id">
+                                    <div tal:omit-tag="" tal:condition="extras.logged_in">
+                                        <i class="fa fa-star user-star uncheck-as-users-opinion text-warning" aria-hidden="true" tal:attributes="title extras.title.unmark_as_opinion; data-is-users-opinion bubble.is_users_opinion" style="display:none;"></i>
+                                        <i class="fa fa-star-o user-star check-as-users-opinion" aria-hidden="true" tal:attributes="title extras.title.mark_as_opinion; data-is-users-opinion bubble.is_users_opinion" style="display:none;"></i>
+                                    </div>
                                     <!--<img class="triangle-gravatar-r" tal:attributes="src extras.users_avatar">-->
                                     <a tal:omit-tag="bubble.omit_url" tal:attributes="href bubble.url; title extras.buttons.lets_go_back" data-toggle="tooltip" data-placement="bottom">
                                         <span class="triangle-content">${structure:bubble.message}</span>
                                     </a>
                                     <br>
-                                    <div tal:omit-tag="" tal:condition="extras.logged_in">
-                                        <i class="fa fa-star user-star uncheck-as-users-opinion" aria-hidden="true" tal:attributes="title extras.title.unmark_as_opinion; data-is-users-opinion bubble.is_users_opinion" style="display:none;"></i>
-                                        <i class="fa fa-star-o user-star check-as-users-opinion" aria-hidden="true" tal:attributes="title extras.title.mark_as_opinion; data-is-users-opinion bubble.is_users_opinion" style="display:none;"></i>
-                                    </div>
                                     <em class="triangle-r-info" tal:attributes="data-type bubble.data_type; data-argument-uid bubble.data_argument_uid; data-statement-uid bubble.data_statement_uid; data-votecount bubble.votecounts; data-is-supportive bubble.data_is_supportive">${bubble.votecounts_message}</em>
                                 </p>
                             </div>
@@ -159,6 +159,7 @@
                     <li id="opinion-barometer-img" tal:attributes="titel extras.title.barometer" tal:condition="extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true"></i><span class="sidebar-element">${extras.title.barometer}</span></li>
                     <li id="display-style-icon-island-img" tal:attributes="titel extras.title.island_view"  tal:condition="extras.show_island_icon and False"><i class="fa fa-map-o" aria-hidden="true"></i><span class="sidebar-element">${extras.title.island_view}</span></li>
                     <li id="display-style-icon-graph-img" tal:attributes="titel extras.title.graph_view" tal:condition="extras.show_graph_icon"><i class="fa fa-sitemap" aria-hidden="true"></i><span class="sidebar-element">${extras.title.graph_view}</span></li>
+                    <li id="sidebar-search-statement" tal:attributes="title extras.tag.search"><i class="fa fa-search" aria-hidden="true"></i><span class="sidebar-element">${extras.tag.search}</span></li>
                     <li id="finish-button" tal:attributes="titel extras.title.finish_title" onclick="window.location='/discuss/finish'"><i class="fa fa-sign-out" aria-hidden="true"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
                 </ul>
 
@@ -367,12 +368,6 @@
                 <input id="send-new-premise" type="button" name="" value="Save my Statement!" class="btn btn-primary" data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" tal:attributes="value extras.buttons.save_my_statement; name discussion.mode"/>
             </div>
         </div>
-
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/interactionhandler.js')}"></script>
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/main.js')}"></script>
-        <script tal:condition="extras.show_bar_icon" type="text/javascript" src="${request.static_url('dbas:static/js/d3/barometer.js')}"></script>
-        <script tal:condition="extras.show_graph_icon" type="text/javascript" src="${request.static_url('dbas:static/js/d3/graph.js')}"></script>
-        <script tal:condition="extras.show_graph_icon or extras.show_bar_icon" type="text/javascript" src="${request.static_url('dbas:static/js/libs/d3.min.js')}"></script>
 
     </tal:block>
 </tal:block>

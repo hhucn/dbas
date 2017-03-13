@@ -59,13 +59,10 @@ setup(name='dbas',
       [paste.app_factory]
       main = dbas:main
       [console_scripts]
-      initialize_discussion_sql = dbas.database.initializedb:main_discussion
-      reload_discussion_sql = dbas.database.initializedb:main_discussion_reload
-      init_discussion_testvotes = dbas.database.initializedb:main_dummy_votes
-      init_review_tests = dbas.database.initializedb:main_dummy_reviews
-      initialize_news_sql = dbas.database.initializedb:main_news
-      init_field_test_sql = dbas.database.initializedb:field_test
+      init_discussion_sql = dbas.database.initializedb:main_discussion
+      init_field_test_sql = dbas.database.initializedb:main_field_test
+      init_news_sql = dbas.database.initializedb:main_news
       init_empty_sql = dbas.database.initializedb:blank_file
-      merge_main_discussion = dbas.database.initializedb:merge_discussion
+      init_drop_sql = dbas.database.initializedb:drop_it
       """,
       )

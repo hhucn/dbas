@@ -1,17 +1,13 @@
 import unittest
-import transaction
-from sqlalchemy import and_
 
+import transaction
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
-from dbas.database.discussion_model import StatementSeenBy, ClickedStatement, ArgumentSeenBy, ClickedArgument, ReputationHistory
+from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
-from dbas.helper.tests import add_settings_to_appconfig, verify_dictionary_of_view, clear_seen_by_of, clear_votes_of
-from sqlalchemy import engine_from_config
-
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+from dbas.database.discussion_model import StatementSeenBy, ClickedStatement, ArgumentSeenBy, ClickedArgument, ReputationHistory
+from dbas.helper.tests import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of
 
 
 class DiscussionJustifyViewTests(unittest.TestCase):
@@ -19,9 +15,9 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
         clear_seen_by_of('Tobias')
-        clear_votes_of('Tobias')
+        clear_clicks_of('Tobias')
         clear_seen_by_of('Björn')
-        clear_votes_of('Björn')
+        clear_clicks_of('Björn')
 
     def tearDown(self):
         testing.tearDown()
@@ -78,7 +74,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.assertEqual(len_db_seen1 + count, len_db_seen2)
         self.assertEqual(len_db_vote1 + 1, len_db_vote2)
         clear_seen_by_of('Tobias')
-        clear_votes_of('Tobias')
+        clear_clicks_of('Tobias')
 
     def test_attack_statement_page(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
@@ -92,7 +88,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 2,
             'mode': 'f',
-            'relation': '',
+            'relation': ''
         }
         response = d(request)
         transaction.commit()
@@ -101,11 +97,12 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         len_db_vote2 = len(DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.is_valid == True,
                                                                                    ClickedStatement.is_up_vote == False)).all())
 
-        count = sum([len(el['premises']) for el in response['items']['elements']])
+        # minus 1 for 'none of the above'
+        count = sum([len(el['premises']) for el in response['items']['elements']]) - 1
         self.assertEqual(len_db_seen1 + count, len_db_seen2)
         self.assertEqual(len_db_vote1 + 1, len_db_vote2)
         clear_seen_by_of('Tobias')
-        clear_votes_of('Tobias')
+        clear_clicks_of('Tobias')
 
     def test_dont_know_statement_page(self):
         from dbas.views import discussion_justify as d
@@ -195,7 +192,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.assertEqual(len_db_votes_a1, len_db_votes_a2)
         self.assertNotEqual(len_db_reputation1, len_db_reputation2)
         clear_seen_by_of('Björn')
-        clear_votes_of('Björn')
+        clear_clicks_of('Björn')
 
     def test_justify_argument_page_rep_not_twice(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
@@ -228,7 +225,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.assertEqual(len_db_votes_a1, len_db_votes_a2)
         self.assertEqual(len_db_reputation1, len_db_reputation2)
         clear_seen_by_of('Björn')
-        clear_votes_of('Björn')
+        clear_clicks_of('Björn')
 
     def test_false_page(self):
         from dbas.views import discussion_justify as d

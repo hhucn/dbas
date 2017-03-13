@@ -10,8 +10,6 @@ import time
 import os
 import re
 
-import requests
-
 from collections import defaultdict
 from datetime import datetime
 from html import escape
@@ -19,7 +17,7 @@ from urllib import parse
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, \
-    ClickedArgument, ClickedStatement, Group, MarkedArgument, MarkedStatement
+    ClickedArgument, ClickedStatement, Group, MarkedArgument, MarkedStatement, PremiseGroup
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from sqlalchemy import and_, func
@@ -44,8 +42,9 @@ def get_global_url():
 
 def get_changelog(no):
     """
-    Returns the c last entries from the changelog
+    Returns the 'no' last entries from the changelog
 
+    :param no: int
     :return: list
     """
     path = str(os.path.realpath(__file__ + '/../../CHANGELOG.md'))
@@ -67,11 +66,25 @@ def get_changelog(no):
 
 def is_usage_with_ldap(request):
     """
+    Returns true, if ldap usage is set to true in current ini file.
 
-    :return:
+    :param request:Request
+    :return: Boolean
     """
     if 'settings:ldap:usage' in request.registry.settings:
         return True if request.registry.settings['settings:ldap:usage'] == 'true' else False
+    return False
+
+
+def is_development_mode(request):
+    """
+    Returns true, if mode is set to development in current ini file.
+
+    :param request:Request
+    :return: Boolean
+    """
+    if 'mode' in request.registry.settings:
+        return True if request.registry.settings['mode'] == 'development' else False
     return False
 
 
@@ -90,13 +103,14 @@ def get_language(request):
     Returns current ui locales code which is saved in current cookie or the registry.
 
     :param request: request
-    :param current_registry: get_current_registry()
     :return: ui_locales
     """
     try:
         lang = request.cookies['_LOCALE_']
     except (KeyError, AttributeError):
         lang = request.registry.settings['pyramid.default_locale_name']
+    request._LOCALE_ = lang
+    # we have to set 'ui_locales = get_language(request)' in each view again, because D-BAS is no object
     return str(lang)
 
 
@@ -106,6 +120,7 @@ def get_discussion_language(request, current_issue_uid=1):
     CALL AFTER issue_helper.get_id_of_slug(..)!
 
     :param request: self.request
+    :param current_issue_uid: uid
     :return:
     """
     # first matchdict, then params, then session, afterwards fallback
@@ -121,11 +136,11 @@ def get_discussion_language(request, current_issue_uid=1):
 
 def python_datetime_pretty_print(ts, lang):
     """
+    Pretty print of a locale
 
-
-    :param ts:
-    :param lang:
-    :return:
+    :param ts:  Timestamp
+    :param lang: ui_locales
+    :return: String
     """
     formatter = '%d. %b.'
     if lang == 'de':
@@ -178,6 +193,13 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
 
 
 def __get_argument_of_premisegroup(premisesgroup_uid, include_disabled):
+    """
+    Returns all arguments with the given premisegroup
+
+    :param premisesgroup_uid: PremisgGroup.uid
+    :param include_disabled: Boolean
+    :return: list of Arguments
+    """
     if include_disabled:
         db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premisesgroup_uid).all()
     else:
@@ -188,6 +210,13 @@ def __get_argument_of_premisegroup(premisesgroup_uid, include_disabled):
 
 
 def __get_undercuts_of_argument(argument_uid, include_disabled):
+    """
+    Returns all undercuts fo the given argument
+
+    :param argument_uid: Argument.uid
+    :param include_disabled: boolean
+    :return: list of Arguments
+    """
     if include_disabled:
         db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument_uid).all()
     else:
@@ -199,6 +228,13 @@ def __get_undercuts_of_argument(argument_uid, include_disabled):
 
 
 def __get_arguments_of_conclusion(statement_uid, include_disabled):
+    """
+    Returns all arguments, where the statement is set as conclusion
+
+    :param statement_uid: Statement.uid
+    :param include_disabled: Boolean
+    :return: list of arguments
+    """
     if include_disabled:
         db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=statement_uid).all()
     else:
@@ -207,12 +243,14 @@ def __get_arguments_of_conclusion(statement_uid, include_disabled):
     return db_arguments if db_arguments else []
 
 
-def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
+def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
                               user_changed_opinion=False, rearrange_intro=False, colored_position=False,
                               attack_type=None, minimize_on_undercut=False, is_users_opinion=True, anonymous_style=False,
                               support_counter_argument=False):
     """
     Returns current argument as string like "conclusion, because premise1 and premise2"
+
+    Please, do not touch this!
 
     :param uid: Integer
     :param with_html_tag: Boolean
@@ -236,6 +274,17 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
     # catch error
 
     _t = Translator(lang)
+    premisegroup_by_user = False
+    author_uid = None
+    if nickname is not None:
+
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+        if db_user:
+            author_uid = db_user.uid
+            pgroup = DBDiscussionSession.query(PremiseGroup).get(db_argument.premisesgroup_uid)
+            marked_argument = DBDiscussionSession.query(MarkedArgument).filter(and_(MarkedArgument.argument_uid == uid,
+                                                                                    MarkedArgument.author_uid == db_user.uid)).first()
+            premisegroup_by_user = pgroup.author_uid == db_user.uid or marked_argument is not None
 
     # getting all argument id
     arg_array = [db_argument.uid]
@@ -249,12 +298,12 @@ def get_text_for_argument_uid(uid, with_html_tag=False, start_with_intro=False, 
     if len(arg_array) == 1:
         # build one argument only
         return __build_single_argument(arg_array[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t,
-                                       start_with_intro, is_users_opinion, anonymous_style, support_counter_argument)
+                                       start_with_intro, is_users_opinion, anonymous_style, support_counter_argument, author_uid)
 
     else:
         # get all pgroups and at last, the conclusion
         return __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag,
-                                       start_with_intro, minimize_on_undercut, anonymous_style, _t)
+                                       start_with_intro, minimize_on_undercut, anonymous_style, premisegroup_by_user, _t)
 
 
 def get_all_arguments_with_text_by_statement_id(statement_uid):
@@ -313,9 +362,10 @@ def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanage
 
 def get_slug_by_statement_uid(uid):
     """
+    Returns slug for the given Issue.uid
 
-    :param uid:
-    :return:
+    :param uid: Issue.uid
+    :return: String
     """
     db_statement = DBDiscussionSession.query(Statement).get(uid)
     return resolve_issue_uid_to_slug(db_statement.issue_uid)
@@ -323,10 +373,11 @@ def get_slug_by_statement_uid(uid):
 
 def __build_argument_for_jump(arg_array, with_html_tag):
     """
+    Build tet for an argument, if we jump to this argument
 
-    :param arg_array:
-    :param with_html_tag:
-    :return:
+    :param arg_array: [Argument]
+    :param with_html_tag: Boolean
+    :return: String
     """
     tag_premise = ('<' + tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
     tag_conclusion = ('<' + tag_type + ' data-argumentation-type="argument">') if with_html_tag else ''
@@ -398,20 +449,24 @@ def __build_argument_for_jump(arg_array, with_html_tag):
 
 
 def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_position, attack_type, _t, start_with_intro,
-                            is_users_opinion, anonymous_style, support_counter_argument=False):
+                            is_users_opinion, anonymous_style, support_counter_argument=False, author_uid=None):
     """
+    Build up argument text for a single argument
 
-    :param uid:
-    :param rearrange_intro:
-    :param with_html_tag:
-    :param colored_position:
-    :param attack_type:
-    :param _t:
-    :param start_with_intro:
-    :param is_users_opinion:
-    :param anonymous_style:
-    :param support_counter_argument:
-    :return:
+    Please, do not touch this!
+
+    :param uid: Argument.uid
+    :param rearrange_intro: Boolean
+    :param with_html_tag: Boolean
+    :param colored_position: Boolean
+    :param attack_type: String
+    :param _t: Translator
+    :param start_with_intro: Boolean
+    :param is_users_opinion: Boolean
+    :param anonymous_style: Boolean
+    :param support_counter_argument: Boolean
+    :param author_uid: User.uid
+    :return: String
     """
     logger('DBAS.LIB', '__build_single_argument', 'main ' + str(uid))
     db_argument = DBDiscussionSession.query(Argument).get(uid)
@@ -423,26 +478,28 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         # conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
         premises = premises[0:1].lower() + premises[1:]  # pretty print
 
-    sb_tmp = ''
     sb_none = '<' + tag_type + '>' if with_html_tag else ''
     se = '</' + tag_type + '>' if with_html_tag else ''
     if attack_type not in ['dont_know', 'jump']:
         sb = '<' + tag_type + '>' if with_html_tag else ''
         if colored_position:
             sb = '<' + tag_type + ' data-argumentation-type="position">' if with_html_tag else ''
-    else:
-        sb = '<' + tag_type + ' data-argumentation-type="argument">' if with_html_tag else ''
-        sb_tmp = '<' + tag_type + ' data-argumentation-type="attack">' if with_html_tag else ''
-
-    # color_everything = attack_type == 'undercut' and False
-    if attack_type not in ['dont_know', 'jump']:
         if attack_type == 'undermine':
             premises = sb + premises + se
         else:
             conclusion = sb + conclusion + se
     else:
+        sb = '<' + tag_type + ' data-argumentation-type="argument">' if with_html_tag else ''
+        sb_tmp = '<' + tag_type + ' data-argumentation-type="attack">' if with_html_tag else ''
         premises = sb + premises + se
         conclusion = sb_tmp + conclusion + se
+
+    marked_element = False
+    if author_uid:
+        db_marked = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.argument_uid == uid,
+                                                                     MarkedArgument.author_uid == author_uid).first()
+        marked_element = db_marked is not None
+    youHaveTheOpinionThat = _t.get(_.youHaveTheOpinionThat).format('').strip()
 
     if lang == 'de':
         if start_with_intro and not anonymous_style:
@@ -454,7 +511,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
             ret_value = (sb_none if attack_type in ['dont_know'] else sb) + intro + se + ' '
         elif is_users_opinion and not anonymous_style:
             ret_value = sb_none
-            ret_value += _t.get(_.youAgreeWithThecounterargument) if support_counter_argument else _t.get(_.youArgue)
+            ret_value += _t.get(_.youAgreeWithThecounterargument) if support_counter_argument else (youHaveTheOpinionThat if marked_element else _t.get(_.youArgue))
             ret_value += se + ' '
         else:
             ret_value = sb_none + _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous) + se + ' '
@@ -464,7 +521,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         ret_value += sb_none + _t.get(_.because).lower() + se + ' ' + premises
     else:
         tmp = sb + ' ' + _t.get(_.isNotRight).lower() + se + ', ' + _t.get(_.because).lower() + ' '
-        ret_value = conclusion + ' '
+        ret_value = (youHaveTheOpinionThat + ' ' if marked_element else '') + conclusion + ' '
         ret_value += _t.get(_.because).lower() if db_argument.is_supportive else tmp
         ret_value += ' ' + premises
 
@@ -472,7 +529,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
 
 
 def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro,
-                            minimize_on_undercut, anonymous_style, _t):
+                            minimize_on_undercut, anonymous_style, premisegroup_by_user, _t):
     """
 
     :param arg_array:
@@ -480,10 +537,10 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     :param user_changed_opinion:
     :param with_html_tag:
     :param start_with_intro:
-    :param doesnt_hold_because:
     :param minimize_on_undercut:
-    :param _t:
     :param anonymous_style:
+    :param premisegroup_by_user:
+    :param _t:
     :return:
     """
     logger('DBAS.LIB', '__build_nested_argument', 'main ' + str(arg_array))
@@ -530,12 +587,16 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     # just display the last premise group on undercuts, because the story is always saved in all bubbles
 
     if minimize_on_undercut and not user_changed_opinion and len(pgroups) > 2:
-        return _t.get(_.butYouCounteredWith) + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
+        if premisegroup_by_user:
+            return _t.get(_.butYouCounteredWith).strip() + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
+        else:
+            return _t.get(_.butYouCounteredWith).strip() + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
 
     for i, pgroup in enumerate(pgroups):
         ret_value += ' '
         if tmp_users_opinion and not anonymous_style:
-            ret_value += _t.get(_.otherParticipantsConvincedYouThat if user_changed_opinion else _.butYouCounteredWith)
+            tmp = _.butYouCounteredWithArgument if premisegroup_by_user else _.butYouCounteredWithInterest
+            ret_value += _t.get(_.otherParticipantsConvincedYouThat if user_changed_opinion else tmp)
         elif not anonymous_style:
             ret_value += _t.get(_.youAgreeWithThatNow)
         else:
@@ -622,7 +683,6 @@ def get_text_for_conclusion(argument, start_with_intro=False, rearrange_intro=Fa
     Check the arguments conclusion whether it is an statement or an argument and returns the text
 
     :param argument: Argument
-    :param lang: ui_locales
     :param start_with_intro: Boolean
     :param rearrange_intro: Boolean
     :return: String
@@ -696,19 +756,50 @@ def get_user_by_private_or_public_nickname(nickname):
 
 def get_user_by_case_insensitive_nickname(nickname):
     """
-    :param nickname:
-    :return:
+    Returns user with given nickname
+
+    :param nickname: String
+    :return: User or None
     """
     return DBDiscussionSession.query(User).filter(func.lower(User.nickname) == func.lower(nickname)).first()
 
 
 def get_user_by_case_insensitive_public_nickname(public_nickname):
     """
-    :param public_nickname:
-    :return:
+    Returns user with given public nickname
+
+    :param public_nickname: String
+    :return: User or None
     """
     return DBDiscussionSession.query(User).filter(
         func.lower(User.public_nickname) == func.lower(public_nickname)).first()
+
+
+def pretty_print_options(message):
+    """
+    Some modifications for pretty printing
+
+    :param message: String
+    :return:  String
+    """
+
+    # check for html
+    if message[0:1] == '<':
+        pos = message.index('>')
+        message = message[0:pos + 1] + message[pos + 1:pos + 2].upper() + message[pos + 2:]
+    else:
+        message = message[0:1].upper() + message[1:]
+
+    # check for html
+    if message[-1] == '>':
+        pos = message.rfind('<')
+        if message[pos - 1:pos] not in ['.', '?', '!']:
+            message = message[0:pos] + '.' + message[pos:]
+    else:
+        if not message.endswith(tuple(['.', '?', '!'])) and id is not 'now':
+            message += '.'
+
+    return message
 
 
 def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_flagable=False,
@@ -734,61 +825,60 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     :param lang: String
     :return: dict()
     """
-
-    # check for html
-    if message[0:1] == '<':
-        pos = message.index('>')
-        message = message[0:pos + 1] + message[pos + 1:pos + 2].upper() + message[pos + 2:]
-    else:
-        message = message[0:1].upper() + message[1:]
-
-    # check for html
-    if message[-1] == '>':
-        pos = message.rfind('<')
-        if message[pos - 1:pos] not in ['.', '?', '!']:
-            message = message[0:pos] + '.' + message[pos:]
-    else:
-        if not message.endswith(tuple(['.', '?', '!'])) and id is not 'now':
-            message += '.'
+    message = pretty_print_options(message)
 
     # check for users opinion
     if is_user and nickname != 'anonymous':
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        db_el = None
+        db_marked = None
         if argument_uid is not None and db_user is not None:
-            db_el = DBDiscussionSession.query(MarkedArgument).filter(and_(MarkedArgument.argument_uid == argument_uid,
-                                                                          MarkedArgument.author_uid == db_user.uid)).first()
+            db_marked = DBDiscussionSession.query(MarkedArgument).filter(and_(MarkedArgument.argument_uid == argument_uid,
+                                                                              MarkedArgument.author_uid == db_user.uid)).first()
 
         if statement_uid is not None and db_user is not None:
-            db_el = DBDiscussionSession.query(MarkedStatement).filter(and_(MarkedStatement.statement_uid == statement_uid,
-                                                                           MarkedStatement.author_uid == db_user.uid)).first()
+            db_marked = DBDiscussionSession.query(MarkedStatement).filter(and_(MarkedStatement.statement_uid == statement_uid,
+                                                                               MarkedStatement.author_uid == db_user.uid)).first()
 
-        is_users_opinion = db_el is not None
+        is_users_opinion = db_marked is not None
 
-    speech = {'is_user': is_user,
-              'is_system': is_system,
-              'is_status': is_status,
-              'is_info': is_info,
-              'is_flagable': is_flagable,
-              'is_author': is_author,
-              'id': id if len(str(id)) > 0 else str(time.time()),
-              'url': url if len(str(url)) > 0 else 'None',
-              'message': message,
-              'omit_url': omit_url,
-              'data_type': 'argument' if argument_uid else 'statement' if statement_uid else 'None',
-              'data_argument_uid': str(argument_uid), 'data_statement_uid': str(statement_uid),
-              'data_is_supportive': str(is_supportive),
-              'is_users_opinion': str(is_users_opinion)
-              }
+    speech = {
+        'is_user': is_user,
+        'is_system': is_system,
+        'is_status': is_status,
+        'is_info': is_info,
+        'is_flagable': is_flagable,
+        'is_author': is_author,
+        'id': id if len(str(id)) > 0 else str(time.time()),
+        'url': url if len(str(url)) > 0 else 'None',
+        'message': message,
+        'omit_url': omit_url,
+        'data_type': 'argument' if argument_uid else 'statement' if statement_uid else 'None',
+        'data_argument_uid': str(argument_uid),
+        'data_statement_uid': str(statement_uid),
+        'data_is_supportive': str(is_supportive),
+        'is_users_opinion': str(is_users_opinion),
+    }
 
-    votecount_keys = __get_text_for_votecount(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang)
+    votecount_keys = __get_text_for_click_count(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang)
 
     speech['votecounts_message'] = votecount_keys[speech['votecounts']]
 
     return speech
 
 
-def __get_text_for_votecount(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang):
+def __get_text_for_click_count(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang):
+    """
+    Build text for a bubble, how many other participants have the same interest?
+
+    :param nickname: User.nickname
+    :param is_user: boolean
+    :param is_supportive: boolean
+    :param argument_uid: Argument.uid
+    :param statement_uid: Statement.uid
+    :param speech: dict()
+    :param lang: ui_locales
+    :return: [String]
+    """
     db_votecounts = None
 
     if is_supportive is None:
@@ -896,10 +986,11 @@ def is_argument_disabled_due_to_disabled_statements(argument):
 
 def is_author_of_statement(nickname, statement_uid):
     """
+    Is the user with given nickname author of the statement?
 
-    :param nickname:
-    :param statement_uid:
-    :return:
+    :param nickname: User.nickname
+    :param statement_uid: Statement.uid
+    :return: Boolean
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     if not db_user:
@@ -913,10 +1004,11 @@ def is_author_of_statement(nickname, statement_uid):
 
 def is_author_of_argument(nickname, argument_uid):
     """
+    Is the user with given nickname author of the argument?
 
-    :param nickname:
-    :param argument_uid:
-    :return:
+    :param nickname: User.nickname
+    :param argument_uid: Argument.uid
+    :return: Boolean
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     if not db_user:
@@ -1011,42 +1103,14 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
         return db_user, link_begin + img + ' ' + nick + link_end, True
 
 
-def validate_recaptcha(recaptcha):
-    """
-
-    :param recaptcha:
-    :return:
-    """
-    logger('Lib', 'validate_recaptcha', 'recaptcha ' + str(recaptcha))
-    try:
-        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data={'secret': '6Lc0eQ4TAAAAAJBcq97lYwM8byadNWmUYuTZaPzz',
-                                                                                   'response': recaptcha})
-        json = r.json()
-    except:
-        logger('Lib', 'validate_recaptcha', 'Unexpected error', error=True)
-        return False, True
-
-    logger('Lib', 'validate_recaptcha', 'answer ' + str(json))
-    error = False
-
-    if 'error-codes' in json:
-        if 'missing-input-secret' in json['error-codes']:
-            logger('Lib', 'validate_recaptcha', 'The secret parameter is missing.', error=True)
-            error = True
-        if 'invalid-input-secret' in json['error-codes']:
-            logger('Lib', 'validate_recaptcha', 'The secret parameter is invalid or malformed.', error=True)
-            error = True
-        if 'missing-input-response' in json['error-codes']:
-            logger('Lib', 'validate_recaptcha', 'The response parameter is missing.', error=True)
-            error = True
-        if 'invalid-input-response' in json['error-codes']:
-            logger('Lib', 'validate_recaptcha', 'The response parameter is invalid or malformed.', error=True)
-            error = True
-
-    return json['success'], error
-
-
 def bubbles_already_last_in_list(bubble_list, bubbles):
+    """
+    Are the given bubbles already at the end of the bubble list
+
+    :param bubble_list: list of Bubbles
+    :param bubbles:  list of bubbles
+    :return: Boolean
+    """
     if isinstance(bubbles, list):
         length = len(bubbles)
     else:
@@ -1077,6 +1141,12 @@ def bubbles_already_last_in_list(bubble_list, bubbles):
 
 
 def __cleanhtml(raw_html):
+    """
+    Strip out html code
+
+    :param raw_html: String
+    :return: String
+    """
     cleanr = re.compile('<.*?>')
     cleantext = re.sub(cleanr, '', raw_html)
     return cleantext

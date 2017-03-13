@@ -5,6 +5,7 @@
 
 function AjaxDiscussionHandler() {
 	'use strict';
+	
 	/**
 	 * Sends new premises to the server. Answer will be given to a callback
 	 * @param arg_uid
@@ -120,8 +121,7 @@ function AjaxDiscussionHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewIssue(data);
 		}).fail(function ajaxSendStartStatementFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
-			$('#' + addTopicPopupErrorText).text(_t(requestFailed) + ' (' + _t(errorCode) + ' 9). '
-				 + _t(doNotHesitateToContact) + '. ');
+			$('#' + addTopicPopupErrorText).text(_t(requestFailed) + ' (' + _t(errorCode) + ' 9). ' + _t(doNotHesitateToContact) + '. ');
 			$('#' + addTopicPopupContainer).show();
 			setTimeout(function(){
 				$('#' + addTopicPopupContainer).hide();
@@ -152,8 +152,7 @@ function AjaxDiscussionHandler() {
 		}).fail(function ajaxGetLogfileForPremisegroupFail() {
 			// $('#' + popupEditStatementErrorDescriptionId).html('Unfortunately, the log file could not be requested (server offline or csrf check' +
 			// 	' failed. Sorry!');
-			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 15). '
-				 + _t(doNotHesitateToContact) + '. ');
+			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 15). ' + _t(doNotHesitateToContact) + '. ');
 		});
 	};
 
@@ -179,8 +178,7 @@ function AjaxDiscussionHandler() {
 		}).fail(function ajaxSendCorrectureOfStatementFail() {
 			// $('#' + popupEditStatementErrorDescriptionId).html('Unfortunately, the correcture could not be send (server offline or csrf check' +
 			// 	' failed. Sorry!');
-			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 13). '
-				 + _t(doNotHesitateToContact) + '. ');
+			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 13). ' + _t(doNotHesitateToContact) + '. ');
 		});
 	};
 
@@ -245,9 +243,9 @@ function AjaxDiscussionHandler() {
 	 * @param is_supportive
 	 */
 	this.getMoreInfosAboutOpinion = function(type, argument_uid, statement_uid, is_supportive){
-		var is_argument = type == 'argument';
-		var is_position = type == 'position' || type == 'statement';
-		var uid = argument_uid == 'None' ? statement_uid : argument_uid;
+		var is_argument = type === 'argument';
+		var is_position = type === 'position' || type === 'statement';
+		var uid = argument_uid === 'None' ? statement_uid : argument_uid;
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		
 		$.ajax({
@@ -289,7 +287,7 @@ function AjaxDiscussionHandler() {
 			dataType: 'json',
 			data: {
 				value: value,
-				type:type,
+				type: type,
 				extra: JSON.stringify(['all', oem_text]),
 				issue: getCurrentIssueId()
 			},
@@ -316,25 +314,27 @@ function AjaxDiscussionHandler() {
 	this.fuzzySearch = function (value, callbackid, type, extra) {
 		var callback = $('#' + callbackid);
 		var pencil = '<i class="fa fa-pencil" aria-hidden="true"></i>';
-		var tmpid = callbackid.split('-').length == 6 ? callbackid.split('-')[5] : '0';
+		var tmpid = callbackid.split('-').length === 6 ? callbackid.split('-')[5] : '0';
 		var bubbleSpace = $('#' + discussionBubbleSpaceId);
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		
 		// clear lists if input is empty
-		if(callback.val().length==0) {
+		if(callback.val().length === 0) {
 			$('#' + proposalStatementListGroupId).empty();
 			$('#' + proposalPremiseListGroupId).empty();
 			$('#' + proposalEditListGroupId).empty();
 			$('#' + proposalUserListGroupId).empty();
+			$('#' + proposalStatementSearchGroupId).empty();
 			$('p[id^="current_"]').each(function() {
 				$(this).parent().remove();
 			});
 			return;
 		}
 
-		if (type != fuzzy_find_user) {
+		if (type !== fuzzy_find_user) {
 			// add or remove bubble only iff we are not in an popup
-			if (type != fuzzy_statement_popup) {
-				if (bubbleSpace.find('#current_' + tmpid).length == 0) {
+			if (type !== fuzzy_statement_popup) {
+				if (bubbleSpace.find('#current_' + tmpid).length === 0) {
 					var text = $('<p>').addClass('triangle-r').attr('id', 'current_' + tmpid).html(value + '...' + pencil);
 					var current = $('<div>').addClass('line-wrapper-r').append(text).hide().fadeIn();
 					current.insertAfter(bubbleSpace.find('div:last-child'));
@@ -423,7 +423,7 @@ function AjaxDiscussionHandler() {
 		}).done(function (data) {
 			var parsedData = $.parseJSON(data);
 			// note that we already send data
-			if (parsedData.error.length == 0){
+			if (parsedData.error.length === 0){
 				$('#' + discussionSpaceShowItems).attr('data-send-request', 'true');
 				$('#' + discussionSpaceHideItems).attr('data-send-request', 'true');
 			}
@@ -435,10 +435,13 @@ function AjaxDiscussionHandler() {
 	 *
 	 * @param uid
 	 * @param is_argument
+	 * @param is_supportive
 	 * @param should_mark
+	 * @param step
+	 * @param history
 	 * @param callback_id
 	 */
-	this.markStatementOrArgument = function(uid, is_argument, should_mark, callback_id){
+	this.markStatementOrArgument = function(uid, is_argument, is_supportive, should_mark, step, history, callback_id){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_mark_statement_or_argument',
@@ -447,7 +450,10 @@ function AjaxDiscussionHandler() {
 			data: {
 				uid: uid,
 				is_argument: is_argument,
-				should_mark: should_mark
+				is_supportive: is_supportive,
+				should_mark: should_mark,
+				step: step,
+				history: history
 			},
 			async: true,
 			headers: {
@@ -459,6 +465,5 @@ function AjaxDiscussionHandler() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 			new PopupHandler().hideAndClearUrlSharingPopup();
 		});
-		
-	}
+	};
 }

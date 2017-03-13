@@ -1,125 +1,101 @@
 <div i18n:domain="dbas" metal:define-macro="layout">
-<div id="header">
-	<div id="custom-bootstrap-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="/" data-toggle="tooltip" data-placement="right"></a>
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder">
-					<span class="sr-only" i18n:translate="Toggle Navigation">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-			</div>
+<nav id="custom-bootstrap-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/" data-toggle="tooltip" data-placement="right"></a>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder">
+                <span class="sr-only" i18n:translate="Toggle Navigation">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
 
-			<div class="collapse navbar-collapse navbar-menubuilder">
-                <!--
-				<ul id="navbar-left" class="nav navbar-nav navbar-left">
-					<li id="home-hook">
-						<a href="#home-template" data-toggle="tooltip" data-placement="bottom">Home</a>
-					</li>
-					<li id="description-hook">
-						<a href="#description-template" data-toggle="tooltip" data-placement="bottom" i18n:translate="description">Description</a>
-					</li>
-					<li id="features-hook">
-						<a href="#features-template" data-toggle="tooltip" data-placement="bottom" i18n:translate="features">Features</a>
-					</li>
-					<li id="about-hook"><a href="#about-template" data-toggle="tooltip" data-placement="bottom" i18n:translate="about">About</a>
-					</li>
-                    -->
-					<!--
-					<li id="research-hook">
-						<a href="#research-template" data-toggle="tooltip" data-placement="bottom" i18n:translate="research">Research</a>
-					</li>
-					-->
-                <!--
-				</ul>
-				-->
+        <div class="collapse navbar-collapse navbar-menubuilder">
 
-				<ul id="navbar-right" class="nav navbar-nav navbar-right">
+            <ul id="navbar-right" class="nav navbar-nav navbar-right">
 
-					<li id="content-link">
-						<a href="${request.application_url}/discuss" data-toggle="tooltip" data-placement="left">
-                            <i class="fa fa-play" aria-hidden="true"></i>&thinsp;<span i18n:translate="lets_go">Let's go</span>
-						</a>
-					</li>
+                <li id="content-link">
+                    <a href="${request.application_url}/discuss" data-toggle="tooltip" data-placement="left">
+                        <i class="fa fa-play" aria-hidden="true"></i>&thinsp;<span i18n:translate="lets_go">Let's go</span>
+                    </a>
+                </li>
 
-					<li id="news-link">
-						<a href="${request.application_url}/news" data-toggle="tooltip" data-placement="left">
-							<i class="fa fa-newspaper-o" aria-hidden="true"></i><span i18n:translate="news">News</span>
-						</a>
-					</li>
+                <li id="news-link">
+                    <a href="${request.application_url}/news" data-toggle="tooltip" data-placement="left">
+                        <i class="fa fa-newspaper-o" aria-hidden="true"></i><span i18n:translate="news">News</span>
+                    </a>
+                </li>
 
-					<li id="login-link" tal:condition="not:extras.logged_in">
-						<a id="link_popup_login" href="" data-toggle="modal" data-target="#popup-login" data-placement="left">
-							<i class="fa fa-sign-in" aria-hidden="true"></i><span i18n:translate="login">Login</span>
-						</a>
-					</li>
+                <li id="login-link" tal:condition="not:extras.logged_in">
+                    <a id="link_popup_login" href="" data-toggle="modal" data-target="#popup-login" data-placement="left">
+                        <i class="fa fa-sign-in" aria-hidden="true"></i><span i18n:translate="login">Login</span>
+                    </a>
+                </li>
 
-					<li tal:condition="extras.logged_in" class="dropdown" data-toggle="tooltip" data-placement="left">
-						<a class="dropdown-toggle" name="user-options-toggle" data-toggle="dropdown" href="#user" id="user-menu-dropdown" aria-haspopup="true" aria-expanded="true">
-                            <img tal:attributes="src extras.users_avatar" class="img-circle" alt="gravatar" style="width: 25px;">
-                            <span id="header_nickname">${extras.nickname}</span>
-                            <span id="header_badge_count_notifications" tal:condition="extras.notifications.has_unread" class="label label-primary label-as-badge">${extras.notifications.new_count}</span>
-							<span class="caret"></span>
-						</a>
-						<ul class="dropdown-menu" aria-labelledby="user-menu-dropdown">
-							<li>
-								<a href="${request.application_url}/settings" data-toggle="tooltip" data-placement="right">
-									<i class="fa fa-cogs" aria-hidden="true"></i><span i18n:translate="settings">Settings</span>
-								</a>
-							</li>
-							<li>
-								<a href="${request.application_url}/notifications" data-toggle="tooltip" data-placement="right">
-									<i class="fa fa-envelope" aria-hidden="true" tal:condition="extras.notifications.has_unread"></i>
-									<i class="fa fa-envelope-o" aria-hidden="true" tal:condition="not:extras.notifications.has_unread"></i>
-                                    <span i18n:translate="notifications">Notifications</span><span id="menu_badge_count_notifications" tal:condition="extras.notifications.has_unread" class="badge" style="margin-left: 1em">${extras.notifications.new_count}</span>
-								</a>
-							</li>
-							<li tal:condition="extras.is_admin">
-								<a href="${request.application_url}/admin/" data-toggle="tooltip" data-placement="right">
-									<i class="fa fa-sliders" aria-hidden="true"></i><span i18n:translate="Admin">Admin</span>
-								</a>
-							</li>
-							<li>
-								<a id="logout-link" href="" data-toggle="tooltip" data-placement="right">
-									<i class="fa fa-sign-out" aria-hidden="true"></i><span i18n:translate="logout">Logout</span>
-								</a>
-							</li>
-						</ul>
-					</li>
-					<li id="review-link" tal:condition="extras.logged_in" tal:attributes="data-broke-limit extras.broke_limit">
-						<a href="${request.application_url}/review" data-toggle="tooltip" data-placement="left">
-							<i class="fa fa-pencil" aria-hidden="true"></i><span i18n:translate="review">Review</span>
-                            <span tal:condition="extras.review_count > 0" class="label label-primary label-as-badge">${extras.review_count}</span>
-						</a>
-					</li>
-					<li class="dropdown">
-						<a id="switch-lang" class="dropdown-toggle" data-toggle="dropdown" href="#language">
-							<img id="switch-lang-indicator-en" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" tal:condition="extras.lang_is_en" alt="flag-us-gb">
-							<img id="switch-lang-indicator-de" src="${request.static_url('dbas:static/images/flag-de-24.png')}" tal:condition="extras.lang_is_de" alt="flag-de">
-							<!--
-                            <i class="fa fa-language" aria-hidden="true"></i>
-							<img id="switch-lang-indicator-es" src="${request.static_url('dbas:static/images/flag-es-24.png')}">
-							<img id="switch-lang-indicator-sw" src="${request.static_url('dbas:static/images/flag-sw-24.png')}">
-							-->
-                            ${extras.lang}
-							<span class="caret"></span>
-						</a>
-						<ul class="dropdown-menu" id="language-dropdown">
-							<li tal:attributes="class extras.link_de_class"><a id="link-trans-de" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_ge"><span>Deutsch</span></a></li>
-							<li tal:attributes="class extras.link_en_class"><a id="link-trans-en" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en"><span>Englisch</span></a></li>
-							<!--
-							<li tal:attributes="class extras.link_es_class"><a id="link-trans-es" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sp-24.png')}" alt="flag_es">Espa&ntilde;ol</a></li>
-							<li tal:attributes="class extras.link_sw_class"><a id="link-trans-sw" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sw-32.png')}" alt="flag_sw">Svensk</a></li>
-							-->
-						</ul>
-					</li>
+                <li tal:condition="extras.logged_in" class="dropdown" data-toggle="tooltip" data-placement="left">
+                    <a class="dropdown-toggle" name="user-options-toggle" data-toggle="dropdown" href="#user" id="user-menu-dropdown" aria-haspopup="true" aria-expanded="true">
+                        <img tal:attributes="src extras.users_avatar" class="img-circle" alt="gravatar" style="width: 25px;">
+                        <span id="header_nickname">${extras.nickname}</span>
+                        <span id="header_badge_count_notifications" tal:condition="extras.notifications.has_unread" class="label label-primary label-as-badge">${extras.notifications.new_count}</span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="user-menu-dropdown">
+                        <li>
+                            <a href="${request.application_url}/settings" data-toggle="tooltip" data-placement="right">
+                                <i class="fa fa-cogs" aria-hidden="true"></i><span i18n:translate="settings">Settings</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="${request.application_url}/notifications" data-toggle="tooltip" data-placement="right">
+                                <i class="fa fa-envelope" aria-hidden="true" tal:condition="extras.notifications.has_unread"></i>
+                                <i class="fa fa-envelope-o" aria-hidden="true" tal:condition="not:extras.notifications.has_unread"></i>
+                                <span i18n:translate="notifications">Notifications</span><span id="menu_badge_count_notifications" tal:condition="extras.notifications.has_unread" class="badge" style="margin-left: 1em">${extras.notifications.new_count}</span>
+                            </a>
+                        </li>
+                        <li tal:condition="extras.is_admin">
+                            <a href="${request.application_url}/admin/" data-toggle="tooltip" data-placement="right">
+                                <i class="fa fa-sliders" aria-hidden="true"></i><span i18n:translate="Admin">Admin</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a id="logout-link" href="" data-toggle="tooltip" data-placement="right">
+                                <i class="fa fa-sign-out" aria-hidden="true"></i><span i18n:translate="logout">Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li id="review-link" tal:condition="extras.logged_in" tal:attributes="data-broke-limit extras.broke_limit">
+                    <a href="${request.application_url}/review" data-toggle="tooltip" data-placement="left">
+                        <i class="fa fa-pencil" aria-hidden="true"></i><span i18n:translate="review">Review</span>
+                        <span tal:condition="extras.review_count > 0" class="label label-primary label-as-badge">${extras.review_count}</span>
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a id="switch-lang" class="dropdown-toggle" data-toggle="dropdown" href="#language">
+                        <img id="switch-lang-indicator-en" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" tal:condition="extras.lang_is_en" alt="flag-us-gb">
+                        <img id="switch-lang-indicator-de" src="${request.static_url('dbas:static/images/flag-de-24.png')}" tal:condition="extras.lang_is_de" alt="flag-de">
+                        <!--
+                        <i class="fa fa-language" aria-hidden="true"></i>
+                        <img id="switch-lang-indicator-es" src="${request.static_url('dbas:static/images/flag-es-24.png')}">
+                        <img id="switch-lang-indicator-sw" src="${request.static_url('dbas:static/images/flag-sw-24.png')}">
+                        -->
+                        ${extras.lang}
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" id="language-dropdown">
+                        <li tal:attributes="class extras.link_de_class"><a id="link-trans-de" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_ge"><span>Deutsch</span></a></li>
+                        <li tal:attributes="class extras.link_en_class"><a id="link-trans-en" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en"><span>Englisch</span></a></li>
+                        <!--
+                        <li tal:attributes="class extras.link_es_class"><a id="link-trans-es" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sp-24.png')}" alt="flag_es">Espa&ntilde;ol</a></li>
+                        <li tal:attributes="class extras.link_sw_class"><a id="link-trans-sw" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sw-32.png')}" alt="flag_sw">Svensk</a></li>
+                        -->
+                    </ul>
+                </li>
 
-				</ul>
-			</div>
-		</div>
-	</div>
-</div>
+            </ul>
+        </div>
+    </div>
+</nav>
 
 </div>

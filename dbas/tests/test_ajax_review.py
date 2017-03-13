@@ -1,19 +1,15 @@
-import unittest
 import json
-import transaction
+import unittest
 
+import transaction
 from pyramid import testing
 from sqlalchemy import and_
+
 from dbas.database import DBDiscussionSession
-from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.database.discussion_model import ReviewDelete, ReviewOptimization, RevokedContentHistory, ReviewCanceled, \
     LastReviewerDelete, ReviewEdit, Statement, ReputationHistory, ReviewEditValue, LastReviewerOptimization, \
     LastReviewerEdit, LastReviewerDuplicate, ReviewDuplicate
-from dbas.helper.tests import add_settings_to_appconfig
-from sqlalchemy import engine_from_config
-
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+from dbas.database.initializedb import nick_of_anonymous_user
 
 
 class AjaxReviewTest(unittest.TestCase):

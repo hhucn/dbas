@@ -1,15 +1,8 @@
 import unittest
-
-from sqlalchemy import engine_from_config
-from dbas import lib
-from dbas.database import DBDiscussionSession
-from dbas.helper.tests import add_settings_to_appconfig
 from datetime import date
+
+from dbas import lib
 from dbas.database.discussion_model import Argument
-
-settings = add_settings_to_appconfig()
-
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
 
 class LibTests(unittest.TestCase):
@@ -124,6 +117,6 @@ class LibTests(unittest.TestCase):
         for argument in argument_list:
             self.assertTrue(argument.uid in [4, 5, 6, 7])
 
-        self.assertEqual(len(lib.get_all_arguments_by_statement(5)), 6)
-        self.assertEqual(len(lib.get_all_arguments_by_statement(12)), 1)
+        self.assertEqual(len(lib.get_all_arguments_by_statement(17, True)), 2)
+        self.assertEqual(len(lib.get_all_arguments_by_statement(12, True)), 1)
         self.assertEqual(lib.get_all_arguments_by_statement(-1), None)

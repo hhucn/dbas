@@ -1,11 +1,12 @@
+/*global $, _t */
 /**
  * @author Tobias Krauthoff
  * @email krauthoff@cs.uni-duesseldorf.de
  */
-'use strict';
 
 
 function Main () {
+	'use strict';
 	
 	/**
 	 * Sets all click functions
@@ -91,7 +92,7 @@ function Main () {
 		$('#' + popupEditStatementSubmitButtonId).click(function popupEditStatementSubmitButton() {
 			var elements = [];
 			$('#' + popupEditStatementInputSpaceId).find('input').each(function(){
-				elements.push({'text': $(this).val(), 'uid': $(this).data('statement-uid')})
+				elements.push({'text': $(this).val(), 'uid': $(this).data('statement-uid')});
 			});
 			new AjaxDiscussionHandler().sendCorrectionOfStatement(elements);
 		});
@@ -107,7 +108,7 @@ function Main () {
 		$('#' + popupUrlSharingLongUrlButtonID).click(function () {
 			var input_field = $('#' + popupUrlSharingInputId);
 			
-			if ($(this).data('is-short-url') == '0') {
+			if ($(this).data('is-short-url') === '0') {
 				input_field.val(input_field.data('short-url'));
 				$(this).data('is-short-url', '1').text(_t_discussion(fetchLongUrl));
 			} else {
@@ -188,16 +189,18 @@ function Main () {
 		// get infos about the author
 		//$('[id^="' + questionBubbleId + '-"').click(function () {
 		var trianglel = $('.triangle-l');
-		trianglel.find('.triangle-content :not(a)').click(function () {
+		var uid;
+		console.log(trianglel.find('.triangle-content-text'));
+		trianglel.find('.triangle-content-text').click(function () {
 			var url = window.location.href;
-			if (url.indexOf('/d?history') != -1) {
+			if (url.indexOf('/d?history') !== -1) {
 				url = url.split('/d?history');
 				url = url[0].split('/');
-				var uid = url[url.length - 1];
+				uid = url[url.length - 1];
 				ajaxHandler.getMoreInfosAboutArgument(uid, true);
 			} else {
-				if ($(this).closest('p').attr('id').indexOf(questionBubbleId) != -1) {
-					var uid = $(this).closest('p').attr('id').replace(questionBubbleId + '-', '');
+				if ($(this).closest('p').attr('id').indexOf(questionBubbleId) !== -1) {
+					uid = $(this).closest('p').attr('id').replace(questionBubbleId + '-', '');
 					ajaxHandler.getMoreInfosAboutArgument(uid, true);
 				}
 			}
@@ -205,13 +208,13 @@ function Main () {
 		
 		// do not hover the other spans on hovering the name
 		trianglel.find('.triangle-content a').hover(function() {
-			trianglel.find('.triangle-content :not(a)').each(function(){
+			trianglel.find('.triangle-content-text').each(function(){
 				if (!('argumentationType' in $(this).data())){
 					$(this).css('color', '#000');
 				}
 			});
 		}, function() {
-			trianglel.find('.triangle-content :not(a)').each(function(){
+			trianglel.find('.triangle-content-text').each(function(){
 				if (!('argumentationType' in $(this).data())){
 					$(this).css('color', '');
 				}
@@ -220,7 +223,7 @@ function Main () {
 		
 		var splitted_url = window.location.href.split('/');
 		if (splitted_url.length > 5) {
-			if (window.location.href.split('/')[5].indexOf('jump') != -1) {
+			if (window.location.href.split('/')[5].indexOf('jump') !== -1) {
 				trianglel.find('.triangle-content').hover(function () {
 					$(this).css('color', '#000').css('cursor', 'default');
 					
@@ -231,7 +234,7 @@ function Main () {
 		}
 		
 		// remove hover on start
-		if (trianglel.length == 1 && trianglel.attr('id') == 'start'){
+		if (trianglel.length === 1 && trianglel.attr('id') === 'start'){
 			trianglel.html(trianglel.text().trim());
 		}
 		
@@ -263,7 +266,7 @@ function Main () {
 		list.find('.item-edit').click(function () {
 			var uids = [];
 			$(this).parent().find('label:nth-child(even)').each(function(){
-				uids.push($(this).attr('id'))
+				uids.push($(this).attr('id'));
 			});
 			popupHandler.showEditStatementsPopup(uids);
 		});
@@ -276,7 +279,7 @@ function Main () {
 		list.find('.item-reference').click(function () {
 			var uids = [];
 			$(this).parent().find('label:nth-child(even)').each(function(){
-				uids.push($(this).attr('id'))
+				uids.push($(this).attr('id'));
 			});
 			new AjaxReferenceHandler().getReferences(uids, false);
 		});
@@ -301,10 +304,6 @@ function Main () {
 			}
 		});
 		
-		$('#' + contactSubmitButtonId).click(function () {
-			setTimeout("$('body').addClass('loading')", 0);
-		});
-		
 		$('#' + discussionSpaceShowItems).click(function(){
 			$(this).hide();
 			var hide_btn = $('#' + discussionSpaceHideItems);
@@ -316,7 +315,7 @@ function Main () {
 				$.each(space.find('li:not(:visible)'), function(){
 					$.each($(this).find('label:even'), function(){
 						uids.push($(this).attr('id'));
-					})
+					});
 				});
 				new AjaxDiscussionHandler().setSeenStatements(uids);
 			}
@@ -354,24 +353,41 @@ function Main () {
 		$('.' + checkAsUsersOpinion).click(function(){
 			var id = 'star-' + new Date().getTime();
 			$(this).attr('id', id);
-			var info = $(this).next();
-			var is_argument = info.data('type') == 'argument';
+			var info = $(this).parent().children().last();
+			var is_argument = info.data('type') === 'argument';
 			var uid = info.data(info.data('type') + '-uid');
-			ajaxHandler.markStatementOrArgument(uid, is_argument, true, id);
+			var is_supportive = info.data('is-supportive');
+			var step = location.href.split('#')[0].split('?')[0].split('/').slice(5).join('/');
+			var current_history = location.href.split('#')[0].split('?')[1];
+			ajaxHandler.markStatementOrArgument(uid, is_argument, is_supportive, true, step, current_history, id);
 		});
 		
 		$('.' + uncheckAsUsersOpinion).click(function(){
 			var id = 'star-' + new Date().getTime();
 			$(this).attr('id', id);
-			var info = $(this).next().next();
-			var is_argument = info.data('type') == 'argument';
+			var info = $(this).parent().children().last();
+			var is_argument = info.data('type') === 'argument';
 			var uid = info.data(info.data('type') + '-uid');
-			ajaxHandler.markStatementOrArgument(uid, is_argument, false, id);
+			var is_supportive = info.data('is-supportive');
+			var step = location.href.split('#')[0].split('?')[0].split('/').slice(5).join('/');
+			var current_history = location.href.split('#')[0].split('?')[1];
+			ajaxHandler.markStatementOrArgument(uid, is_argument, is_supportive, false, step, current_history, id);
 		});
 		
 		// styling
 		$('.fa-star[data-is-users-opinion="True"]').show();
 		$('.fa-star-o[data-is-users-opinion="False"]').show();
+		
+		// restart tutorial
+		$('#restart_tutorial').click(function(){
+			Cookies.remove(GUIDED_TOUR);
+			window.location.href = mainpage;
+		});
+		
+		// search statement
+		$('#sidebar-search-statement').click(function() {
+			popupHandler.showSearchStatementPop();
+		});
 	};
 	
 	/**
@@ -422,7 +438,7 @@ function Main () {
 		
 		// action for tacking the sidebar
 		tackwrapper.click(function () {
-			var shouldShowSidebar = getLocalStorage(localStorageId) == 'true';
+			var shouldShowSidebar = getLocalStorage(localStorageId) === 'true';
 			if (shouldShowSidebar) {
 				gui.rotateElement(tack, '0');
 				setLocalStorage(localStorageId, 'false');
@@ -449,7 +465,7 @@ function Main () {
 	 */
 	this.setSidebarStyle = function (maincontainer, localStorageId) {
 		// read local storage for pinning the bar / set title
-		var shouldShowSidebar = getLocalStorage(localStorageId) == 'true';
+		var shouldShowSidebar = getLocalStorage(localStorageId) === 'true';
 		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
 		var wrapper = maincontainer.find('.' + contentWrapperClass);
 		var tackwrapper = sidebarwrapper.find('.' + sidebarTackWrapperClass);
@@ -496,7 +512,7 @@ function Main () {
 		$('#' + addStatementContainerMainInputId).keyup(function () {
 			setTimeout(function () {
 				var escapedText = escapeHtml($('#' + addStatementContainerMainInputId).val());
-				if ($('#' + discussionBubbleSpaceId).find('.triangle-l:last-child').text().indexOf(_t_discussion(initialPositionInterest)) != -1) {
+				if ($('#' + discussionBubbleSpaceId).find('.triangle-l:last-child').text().indexOf(_t_discussion(initialPositionInterest)) !== -1) {
 					// here we have our start statement
 					ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
 				} else {
@@ -521,7 +537,6 @@ function Main () {
 	 */
 	this.setStyleOptions = function (guiHandler) {
 		guiHandler.setMaxHeightForBubbleSpace();
-		
 		guiHandler.hideSuccessDescription();
 		guiHandler.hideErrorDescription();
 		
@@ -537,7 +552,7 @@ function Main () {
 		// no hover action on the systems bubble during the attitude question
 		var trianglel = $('.triangle-l');
 		var url = window.location.href.split('?')[0];
-		if (url.indexOf('attitude') != -1 || url.indexOf('justify') != -1) {
+		if (url.indexOf('attitude') !== -1 || url.indexOf('justify') !== -1) {
 			trianglel.find('.triangle-content').each(function () {
 				$(this).hover(function () {
 					$(this).css({'color': '#000', 'cursor': 'auto'});
@@ -568,7 +583,7 @@ function Main () {
 				function () {
 					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
 						.css({'color': new_color, 'background-color': '#edf3e6', 'border-radius': '2px'});
-					if ($(this).attr(data) == 'argument') {
+					if ($(this).attr(data) === 'argument') {
 						trianglel_last.find('span[data-attitude="pro"]').addClass('text-success').css({'background-color': '#edf3e6', 'border-radius': '2px'});
 						trianglel_last.find('span[data-attitude="con"]').addClass('text-danger').css({'background-color': '#edf3e6', 'border-radius': '2px'});
 					}
@@ -592,7 +607,7 @@ function Main () {
 				$(this).find('.fa').parent().show();
 			}, function(){
 				$(this).find('.fa').parent().hide();
-			})
+			});
 		});
 	};
 	
@@ -628,15 +643,16 @@ function Main () {
 	this.setGuiOptions = function () {
 		$('#' + popupLogin).on('hidden.bs.modal', function () {// uncheck login button on hide
 			var login_item = $('#' + discussionSpaceListId).find('#item_login');
-			if (login_item.length > 0)
-				login_item.prop('checked', false)
+			if (login_item.length > 0) {
+				login_item.prop('checked', false);
+			}
 		}).on('shown.bs.modal', function () {
 			$('#' + loginUserId).focus();
 		});
 		
 		// highlight edited statement
 		var pos = window.location.href.indexOf('edited_statement=');
-		if (pos != -1) {
+		if (pos !== -1) {
 			var ids = window.location.href.substr(pos + 'edited_statement='.length);
 			var splitted = ids.split(',');
 			$.each(splitted, function (index, value) {
@@ -662,31 +678,33 @@ function Main () {
 		};
 		var sendStartPremise = function () {
 			conclusion = splits[splits.length - 2];
-			supportive = splits[splits.length - 1] == 't';
+			supportive = splits[splits.length - 1] === 't';
 			text = [];
 			$('#' + addPremiseContainerBodyId + ' input').each(function () {
-				if ($(this).val().length > 0)
+				if ($(this).val().length > 0) {
 					text.push($(this).val());
+				}
 			});
 			interactionHandler.sendStatement(text, conclusion, supportive, '', '', fuzzy_start_premise);
 		};
 		var sendArgumentsPremise = function () {
 			text = [];
 			$('#' + addPremiseContainerBodyId + ' input').each(function () {
-				if ($(this).val().length > 0)
+				if ($(this).val().length > 0) {
 					text.push($(this).val());
+				}
 			});
-			var add = window.location.href.indexOf('support') != -1 ? 1 : 0;
+			var add = window.location.href.indexOf('support') !== -1 ? 1 : 0;
 			arg = splits[splits.length - 3 - add];
-			supportive = splits[splits.length - 2 - add] == 't';
+			supportive = splits[splits.length - 2 - add] === 't';
 			relation = splits[splits.length - 1 - add];
 			interactionHandler.sendStatement(text, '', supportive, arg, relation, fuzzy_add_reason);
 		};
 		
-		if (window.location.href.indexOf('/r/') != -1) {
+		if (window.location.href.indexOf('/r/') !== -1) {
 			$('#' + discussionSpaceId + ' label').each(function () {
 				$(this).css('width', '95%');
-			})
+			});
 		}
 		
 		//$('#' + discussionSpaceId + ' input').each(function () {
@@ -694,29 +712,30 @@ function Main () {
 		//});
 		
 		$('#' + sendNewStatementId).off("click").click(function () {
-			if ($(this).attr('name').indexOf('start') != -1) {
+			if ($(this).attr('name').indexOf('start') !== -1) {
 				sendStartStatement();
 			}
 		});
 		$('#' + sendNewPremiseId).off("click").click(function () {
-			if (input.attr('id').indexOf('start_statement') != -1) {
+			if (input.attr('id').indexOf('start_statement') !== -1) {
 				sendStartStatement();
-			} else if (input.attr('id').indexOf('start_premise') != -1) {
+			} else if (input.attr('id').indexOf('start_premise') !== -1) {
 				sendStartPremise();
-			} else if (input.attr('id').indexOf('justify_premise') != -1) {
+			} else if (input.attr('id').indexOf('justify_premise') !== -1) {
 				sendArgumentsPremise();
 			}
 		});
 		
 		// hide one line options
 		var children = spaceList.find('input');
+		var ids = ['start_statement', 'start_premise', 'justify_premise', 'login'];
+		var id;
 		if (children.length > 0) {
-			var id = children.eq(0).attr('id');
+			id = children.eq(0).attr('id');
 			id = id.replace('item_', '');
-			var ids = ['start_statement', 'start_premise', 'justify_premise', 'login'];
 			
 			// if we have just one list element AND the list element has a special function AND we are logged in
-			if (children.length == 1 && ($.inArray(id, ids) != -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) == -1)) {
+			if (children.length === 1 && $.inArray(id, ids) !== -1 && $('#link_popup_login').text().trim().indexOf(_t(login)) === -1) {
 				var container = $('#' + discussionContainerId);
 				var sidebar = $('.sidebar-wrapper');
 				container.height(container.height() - 50);
@@ -726,22 +745,22 @@ function Main () {
 		}
 		
 		// options for the extra buttons, where the user can add input!
-		if (input.length == 0) {
+		if (input.length === 0) {
 			var el = $('.line-wrapper-l').last().find('span');
 			el.hover(function () {
 				$(this).css('color', '#000').css('pointer', 'default');
 			});
 			el.off('click');
 		} else {
-			if (spaceList.find('li').length == 1 && input.data('url') == 'add'){
+			if (spaceList.find('li').length === 1 && input.data('url') === 'add'){
 				input.prop('checked', true);
 			}
-			id = input.attr('id').indexOf('item_' == 0) ? input.attr('id').substr('item_'.length) : input.attr('id');
-			if ($.inArray(id, ids) != -1) {
+			id = input.attr('id').indexOf('item_' === 0) ? input.attr('id').substr('item_'.length) : input.attr('id');
+			if ($.inArray(id, ids) !== -1) {
 				input.attr('onclick', '');
 				input.click(function () {
 					// new position at start
-					if (input.attr('id').indexOf('start_statement') != -1) {
+					if (input.attr('id').indexOf('start_statement') !== -1) {
 						// guiHandler.showHowToWriteTextPopup();
 						guiHandler.showAddPositionContainer();
 						$('#' + sendNewStatementId).off("click").click(function () {
@@ -749,7 +768,7 @@ function Main () {
 						});
 					}
 					// new premise for the start
-					else if (input.attr('id').indexOf('start_premise') != -1) {
+					else if (input.attr('id').indexOf('start_premise') !== -1) {
 						// guiHandler.showHowToWriteTextPopup();
 						guiHandler.showAddPremiseContainer();
 						$('#' + sendNewPremiseId).off("click").click(function () {
@@ -757,7 +776,7 @@ function Main () {
 						});
 					}
 					// new premise while judging
-					else if (input.attr('id').indexOf('justify_premise') != -1) {
+					else if (input.attr('id').indexOf('justify_premise') !== -1) {
 						// guiHandler.showHowToWriteTextPopup();
 						guiHandler.showAddPremiseContainer();
 						$('#' + sendNewPremiseId).off("click").click(function () {
@@ -765,7 +784,7 @@ function Main () {
 						});
 					}
 					// login
-					else if (input.attr('id').indexOf('login') != -1) {
+					else if (input.attr('id').indexOf('login') !== -1) {
 						$('#' + popupLogin).modal('show');
 					}
 				});
@@ -778,6 +797,8 @@ function Main () {
  * main function
  */
 $(document).ready(function mainDocumentReady() {
+	'use strict';
+	
 	var tacked_sidebar = 'tacked_sidebar';
 	var guiHandler = new GuiHandler();
 	var ajaxHandler = new AjaxDiscussionHandler();
@@ -802,14 +823,17 @@ $(document).ready(function mainDocumentReady() {
 
 	// some extras
 	// get restart url and cut the quotes
-	tmp = $('#discussion-restart-btn').attr('onclick').substr('location.href='.length);
-	tmp = tmp.substr(1, tmp.length - 2);
-	$('#' + discussionEndRestart).attr('href', tmp);
-	$('#' + discussionEndReview).attr('href', mainpage + 'review');
+	var btn = $('#discussion-restart-btn');
+	if (window.location.href.indexOf('/discuss') !== -1 && typeof element !== "undefined") {
+		tmp = btn.attr('onclick').substr('location.href='.length);
+		tmp = tmp.substr(1, tmp.length - 2);
+		$('#' + discussionEndRestart).attr('href', tmp);
+		$('#' + discussionEndReview).attr('href', mainpage + 'review');
+	}
 
 	//
 	tmp = window.location.href.split('?');
-	if (tmp[0].indexOf('/reaction/') != -1){
+	if (tmp[0].indexOf('/reaction/') !== -1){
 		$('#island-view-undermine-button').attr('onclick', $('#item_undermine').attr('onclick'));
 		$('#island-view-support-button').attr('onclick', $('#item_support').attr('onclick'));
 		$('#island-view-undercut-button').attr('onclick', $('#item_undercut').attr('onclick'));
@@ -818,21 +842,21 @@ $(document).ready(function mainDocumentReady() {
 	
 	// check anchors
 	// console.log('read hash: ' + location.hash);
-	if (location.hash.indexOf('graph') != -1){
+	if (location.hash.indexOf('graph') !== -1){
 		guiHandler.setDisplayStyleAsGraphView();
 	}
-	if (location.hash.indexOf('island') != -1){
+	if (location.hash.indexOf('island') !== -1){
 		guiHandler.setDisplayStyleAsIsland();
 	}
-	if (location.hash.indexOf('barometer') != -1){
+	if (location.hash.indexOf('barometer') !== -1){
 		new DiscussionBarometer().showBarometer();
 	}
-	if (location.hash.indexOf('sharing') != -1){
+	if (location.hash.indexOf('sharing') !== -1){
 		new PopupHandler().showUrlSharingPopup();
 	}
-	if (location.hash.indexOf('access-review') != -1 || $('#review-link').attr('data-broke-limit') == 'true'){
+	if (location.hash.indexOf('access-review') !== -1 || $('#review-link').attr('data-broke-limit') === 'true'){
 		var link = '<a href="' + mainpage + 'review">'  + _t(youAreAbleToReviewNow) + '</a>';
-		setGlobalInfoHandler('Hey!', link)
+		setGlobalInfoHandler('Hey!', link);
 	}
 
 	$(document).delegate('.open', 'click', function(event){
@@ -846,4 +870,12 @@ $(document).ready(function mainDocumentReady() {
 		$('.open').removeClass('opened');
 		event.stopPropagation();
 	});
+	
+	// Google Recaptcha
+	if ($('.g-recaptcha').length !== 0) {
+		setTimeout(function () {
+			$('.grecaptcha-badge').css('bottom', $('#footer').outerHeight(true) + 'px');
+			grecaptcha.execute();
+		}, 1500);
+	}
 });

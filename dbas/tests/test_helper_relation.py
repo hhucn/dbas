@@ -1,17 +1,13 @@
 import unittest
-import transaction
 
+import transaction
 from sqlalchemy import and_
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Argument, Premise
-from dbas.helper.tests import add_settings_to_appconfig
-from sqlalchemy import engine_from_config
 from dbas.helper.relation import get_undermines_for_argument_uid, get_undercuts_for_argument_uid, \
     get_rebuts_for_argument_uid, get_supports_for_argument_uid, set_new_undermine_or_support_for_pgroup, \
     set_new_undercut, set_new_rebut, set_new_support
-
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
 
 
 class RelationHelperTest(unittest.TestCase):
@@ -35,11 +31,11 @@ class RelationHelperTest(unittest.TestCase):
         val = get_undermines_for_argument_uid(100)
         self.assertEqual(len(val), 0)
 
-        val = get_undermines_for_argument_uid(3)
-        self.assertEqual(len(val), 2)
+        val = get_undermines_for_argument_uid(11)
+        self.assertEqual(len(val), 1)
 
-        val = get_undermines_for_argument_uid('3')
-        self.assertEqual(len(val), 2)
+        val = get_undermines_for_argument_uid('11')
+        self.assertEqual(len(val), 1)
 
     def test_get_undercuts_for_argument_uid(self):
         val = get_undercuts_for_argument_uid('a')
@@ -51,11 +47,11 @@ class RelationHelperTest(unittest.TestCase):
         val = get_undercuts_for_argument_uid(0)
         self.assertIsNone(val)
 
-        val = get_undercuts_for_argument_uid(2)
-        self.assertEqual(len(val), 1)
+        val = get_undercuts_for_argument_uid(36)
+        self.assertGreaterEqual(len(val), 1)
 
-        val = get_undercuts_for_argument_uid('2')
-        self.assertEqual(len(val), 1)
+        val = get_undercuts_for_argument_uid('36')
+        self.assertGreaterEqual(len(val), 1)
 
     def test_get_rebuts_for_argument_uid(self):
         val = get_rebuts_for_argument_uid('a')

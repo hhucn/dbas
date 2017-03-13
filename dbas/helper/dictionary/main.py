@@ -4,25 +4,27 @@ Provides helping function for dictionaries.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import random
-import arrow
 import datetime
+import random
 
-from dbas.user_management import is_user_in_group, get_count_of_statements_of_user, get_count_of_votes_of_user, get_count_of_clicks_of_user
+import arrow
+
+from dbas.auth.recaptcha import client_key as google_recaptcha_client_key
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Language, Group, Settings
 from dbas.database.initializedb import nick_of_anonymous_user
-from dbas.helper.query import get_every_attack_for_island_view
 from dbas.helper.notification import count_of_new_notifications, get_box_for
+from dbas.helper.query import get_every_attack_for_island_view
 from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, \
-    create_speechbubble_dict, get_profile_picture, get_public_profile_picture, is_usage_with_ldap
+    create_speechbubble_dict, get_profile_picture, get_public_profile_picture, is_usage_with_ldap, is_development_mode
 from dbas.logger import logger
+from dbas.review.helper.queues import get_complete_review_count
+from dbas.review.helper.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
-from dbas.review.helper.reputation import get_reputation_of
-from dbas.review.helper.queues import get_complete_review_count
+from dbas.user_management import is_user_in_group, get_count_of_statements_of_user, get_count_of_votes_of_user, get_count_of_clicks_of_user
 
 
 class DictionaryHelper(object):
@@ -120,12 +122,14 @@ class DictionaryHelper(object):
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         is_logged_in = False if nickname == nick_of_anonymous_user else db_user is not None
         is_ldap = is_usage_with_ldap(request)
+        is_development = is_development_mode(request)
 
         rrs = request.registry.settings
 
         return_dict = dict()
         return_dict['year']                          = datetime.datetime.now().year
         return_dict['restart_url']                   = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
+        return_dict['is_in_discussion']              = 'discuss' in request.path
         return_dict['logged_in']                     = is_logged_in
         return_dict['nickname']                      = nickname
         return_dict['add_premise_container_style']   = add_premise_container_style
@@ -136,9 +140,11 @@ class DictionaryHelper(object):
         return_dict['is_user_neutral']               = not return_dict['is_user_male'] and not return_dict['is_user_female']
         return_dict['broke_limit']                   = 'true' if broke_limit else 'false'
         return_dict['use_with_ldap']                 = is_ldap
+        return_dict['development_mode']              = is_development
         return_dict['is_development']                = rrs['mode'] == 'development' if 'mode' in rrs else ''
         return_dict['is_production']                 = rrs['mode'] == 'production' if 'mode' in rrs else ''
         return_dict['review_count']                  = get_complete_review_count(nickname)
+        return_dict['g_recaptcha_key']               = google_recaptcha_client_key
         self.add_language_options_for_extra_dict(return_dict)
 
         if not for_api:
@@ -200,16 +206,17 @@ class DictionaryHelper(object):
 
     def prepare_settings_dict(self, pw_change_success, old_pw, new_pw, confirm_pw, pw_change_error, message, db_user, main_page):
         """
+        Prepares the dictionary for settings.ow
 
-        :param success:
-        :param old_pw:
-        :param new_pw:
-        :param confirm_pw:
-        :param pw_change_error:
-        :param message:
-        :param db_user:
-        :param main_page:
-        :return:
+        :param pw_change_success: Boolean
+        :param old_pw: String
+        :param new_pw: String
+        :param confirm_pw: String
+        :param pw_change_error: Boolean
+        :param message: String
+        :param db_user: User
+        :param main_page: String
+        :return: dict()
         """
         _tn         = Translator(self.system_lang)
         edits       = get_count_of_statements_of_user(db_user, True) if db_user else 0
@@ -263,7 +270,7 @@ class DictionaryHelper(object):
     def add_discussion_end_text(self, discussion_dict, extras_dict, nickname, at_start=False, at_dont_know=False,
                                 at_justify_argumentation=False, at_justify=False, current_premise='', supportive=False):
         """
-        Adds a speicif text when the discussion is at the end
+        Adds a specific text when the discussion is at the end
 
         :param discussion_dict: dict()
         :param extras_dict: dict()
@@ -291,7 +298,7 @@ class DictionaryHelper(object):
             self.__add_discussion_end_text_at_dont_know(discussion_dict, current_premise, gender, _tn, nickname)
 
         elif at_justify:
-            self.__add_discussion_end_text_at_at_justify(discussion_dict, extras_dict, nickname, current_premise, supportive, gender, _tn)
+            self.__add_discussion_end_text_at_justify_statement(discussion_dict, extras_dict, nickname, current_premise, supportive, gender, _tn)
 
         else:
             mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkTextLoggedIn if nickname else _.feelFreeToLogin)
@@ -299,6 +306,16 @@ class DictionaryHelper(object):
                 create_speechbubble_dict(is_info=True, message=mid_text, lang=self.system_lang, nickname=nickname))
 
     def __add_discussion_end_text_at_start(self, discussion_dict, extras_dict, nickname, gender, _tn):
+        """
+        Replaced some text parts in the discussion dict() when the discussion ends in the beginning
+
+        :param discussion_dict: dict()
+        :param extras_dict: dict()
+        :param nickname: User.nickname
+        :param gender: User.gender
+        :param _tn: Translator
+        :return: None
+        """
         discussion_dict['mode'] = 'start'
         if gender == 'f':
             user_text = _tn.get(_.firstPositionTextF).rstrip()
@@ -320,6 +337,16 @@ class DictionaryHelper(object):
         extras_dict['is_reportable']      = False
 
     def __add_discussion_end_text_at_justify_argumentation(self, discussion_dict, extras_dict, nickname, gender, _tn):
+        """
+        Replaced some text parts in the discussion dict() when the discussion ends during the justification
+
+        :param discussion_dict: dict()
+        :param extras_dict: dict()
+        :param nickname: User.nickname
+        :param gender: User.gender
+        :param _tn: Translator
+        :return: None
+        """
         discussion_dict['mode'] = 'justify_argumentation'
         if nickname:
             extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
@@ -338,6 +365,16 @@ class DictionaryHelper(object):
             #     mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin)
 
     def __add_discussion_end_text_at_dont_know(self, discussion_dict, current_premise, gender, _tn, nickname):
+        """
+        Replaced some text parts in the discussion dict() when the discussion ends during the don't know step
+
+        :param discussion_dict: dict()
+        :param current_premise: String
+        :param gender: User.gender
+        :param _tn: Translator
+        :param nickname: User.nickname
+        :return: None
+        """
         discussion_dict['mode'] = 'dont_know'
         if gender == 'f':
             sys_text = _tn.get(_.firstOneInformationTextF).rstrip()
@@ -353,7 +390,19 @@ class DictionaryHelper(object):
         discussion_dict['bubbles'].append(
             create_speechbubble_dict(is_info=True, id='end', message=mid_text, lang=self.system_lang, nickname=nickname))
 
-    def __add_discussion_end_text_at_at_justify(self, discussion_dict, extras_dict, nickname, current_premise, supportive, gender, _tn):
+    def __add_discussion_end_text_at_justify_statement(self, discussion_dict, extras_dict, nickname, current_premise, supportive, gender, _tn):
+        """
+        Replaced some text parts in the discussion dict() when the discussion ends during the justification
+
+        :param discussion_dict: dict()
+        :param extras_dict: dict()
+        :param nickname: User.nickname
+        :param current_premise: String
+        :param supportive: Boolean
+        :param gender: User.gender
+        :param _tn: Translator
+        :return: None
+        """
         discussion_dict['mode'] = 'justify'
         current_premise = current_premise[0:1].lower() + current_premise[1:]
         if gender == 'f':
@@ -404,7 +453,7 @@ class DictionaryHelper(object):
 
     def add_button_text(self, return_dict):
         """
-        Adds string-map in the return dict with the key 'buttons'
+        Adds string-map in the return dict with the client_key 'buttons'
 
         :param return_dict: current dictionary
         :return: None
@@ -437,7 +486,7 @@ class DictionaryHelper(object):
 
     def add_title_text(self, return_dict):
         """
-        Adds string-map in the return dict with the key 'title'
+        Adds string-map in the return dict with the client_key 'title'
 
         :param return_dict: current dictionary
         :return: None
@@ -476,7 +525,7 @@ class DictionaryHelper(object):
 
     def add_tag_text(self, is_ldap, return_dict):
         """
-        Adds string-map in the return dict with the key 'tag'
+        Adds string-map in the return dict with the client_key 'tag'
 
         :param return_dict: current dictionary
         :return: None
@@ -519,5 +568,7 @@ class DictionaryHelper(object):
             'placeholder_lastname': _tn_sys.get(_.exampleLastname),
             'placeholder_mail': _tn_sys.get(_.exampleMail),
             'placeholder_statement': _tn_sys.get(_.exampleStatement),
-            'placeholder_source': _tn_sys.get(_.exampleSource)
+            'placeholder_source': _tn_sys.get(_.exampleSource),
+            'search': _tn_sys.get(_.searchForStatements),
+            'premisegroup_popup_warning': _tn_dis.get(_.premisegroupPopupWarning)
         }

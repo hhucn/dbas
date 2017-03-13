@@ -2,9 +2,9 @@
 Websockets
 ==========
 
-Websockets with Node.Js and Socket.io. Have a look at http://localhost:4284/ws/debug.
-The server side can be fetched here: https://gitlab.cs.uni-duesseldorf.de/project/dbas-notifications
-Port of the websockrt: 5222
+Websockets with Node.Js and Socket.io. Have a look at http://dbas.cs.uni-duesseldorf.de/ws/debug.
+The server side can be fetched here: https://gitlab.cs.uni-duesseldorf.de/dbas/notifications
+Port of the websocket: 5222
 
 Description
 ===========
@@ -16,4 +16,10 @@ Views
 =====
 
 .. automodule:: websocket.views
+    :members:
+
+Lib
+===
+
+.. automodule:: websocket.lib
     :members:

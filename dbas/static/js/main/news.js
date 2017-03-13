@@ -4,6 +4,8 @@
  */
 
 function News() {
+    'use strict';
+    
 	var BOOTSTRAP_COLLAPSE = 990;
 	
 	/**
@@ -20,7 +22,7 @@ function News() {
 		var row = 0;
 		var container = '';
 		for (counter = 0; counter < length; counter++) {
-			if (counter % 3 == 0) {
+			if (counter % 3 === 0) {
 				if (div !== '') {
 					$('#' + newsBodyId).append(container);
 				}
@@ -39,8 +41,7 @@ function News() {
 		});
 
 		// add last row
-		counter -= 1;
-		if (counter % 3 != 0) {
+		if (counter % 3 !== 0) {
 			$('#' + newsBodyId).append(container);
 		}
 
@@ -54,7 +55,7 @@ function News() {
 	 */
 	this.callbackIfDoneForSendingNews = function (data) {
 		var parsedData = $.parseJSON(data);
-		if (parsedData.error.length == 0) {
+		if (parsedData.error.length === 0) {
 			// $('#' + writingNewsSuccessId).show();
 			// $('#' + writingNewsSuccessMessageId).text(_t(addedEverything));
 			// $('#' + writingNewNewsTitleId).val('');
@@ -83,12 +84,12 @@ function News() {
 
 		// find max height of each row and set it
 		for (counter = 0; counter < row; counter++) {
-			heights = $('#row_' + counter + ' div').children(':first-child').map(function () {
+			var children =$('#row_' + counter).children();
+			heights = children.map(function () {
 				return $(this).height();
 			}).get();
-			maxHeight = Math.max.apply(null, heights);
-
-			$.each($('#row_' + counter).children(), function () {
+			maxHeight = Math.max.apply(Math, heights);
+			$.each(children, function () {
 				$(this).children().eq(0).height(maxHeight);
 			});
 		}
@@ -154,7 +155,7 @@ function News() {
 
 		// adding page classes to every news
 		for (counter = 0; counter < row; counter++) {
-			if (counter != 0 && counter % pagebreak == 0) {
+			if (counter !== 0 && counter % pagebreak === 0) {
 				pagecounter++;
 			}
 			$('#container_' + counter).addClass('news-page-' + pagecounter).hide();
@@ -191,8 +192,9 @@ function News() {
 
 		// add page limitation to each click
 		$('.pagination a').click(function(){
-			if (!$(this).hasClass('news-placeholder'))
+			if (!$(this).hasClass('news-placeholder')) {
 				_this.setPlaceholder($(this).data('counter'), pagecounter);
+			}
 		});
 
 		news_back.off('click').click(function () {
@@ -207,7 +209,12 @@ function News() {
 			}
 		}).hide();
 	};
-
+	
+	/**
+	 *
+	 * @param index
+	 * @param pagecounter
+	 */
 	this.setPlaceholder = function(index, pagecounter){
 		var i, p, s,
 			placeholder = $('<li>').addClass('disabled').append($('<a>').addClass('news-placeholder').text('...'));
@@ -225,10 +232,12 @@ function News() {
 		$('#news-' + i).parent().show();
 		$('#news-' + s).parent().show();
 
-		if (p-3 > 0)
-			placeholder.insertAfter($('#news-' + (p-1)).parent());
-		if (pagecounter-2-s > 0)
+		if (p-3 > 0) {
+			placeholder.insertAfter($('#news-' + (p - 1)).parent());
+		}
+		if (pagecounter-2-s > 0) {
 			placeholder.insertAfter($('#news-' + s).parent());
+		}
 	};
 
 	/**
@@ -240,10 +249,11 @@ function News() {
 		var activeElement = $('#news-navigation').find('.active');
 		var counter = parseInt(activeElement.children().eq(0).data('counter'));
 		activeElement.removeClass('active');
-		if (isBack)
+		if (isBack) {
 			activeElement.prev().addClass('active');
-		else
+		} else {
 			activeElement.next().addClass('active');
+		}
 		var news_counter = $('.news-page-' + counter);
 		news_counter.hide();
 		counter = isBack ? counter-1 : counter+1;
@@ -257,12 +267,18 @@ function News() {
 	 * @param currentCounter
 	 * @param max
 	 */
-	this.checkNewsForthAndBackButtons = function(currentCounter, max){
-		if (currentCounter == 0)   $('#news-back').parent().addClass('disabled');
-		else                       $('#news-back').parent().removeClass('disabled');
-
-		if (currentCounter == max) $('#news-forth').parent().addClass('disabled');
-		else                       $('#news-forth').parent().removeClass('disabled');
+	this.checkNewsForthAndBackButtons = function(currentCounter, max) {
+		if (currentCounter === 0) {
+			$('#news-back').parent().addClass('disabled');
+		} else {
+			$('#news-back').parent().removeClass('disabled');
+		}
+		
+		if (currentCounter === max){
+			$('#news-forth').parent().addClass('disabled');
+		} else {
+			$('#news-forth').parent().removeClass('disabled');
+		}
 	};
 
 	// *********************
@@ -368,11 +384,16 @@ function News() {
 }
 
 $(document).ready(function () {
-	if (window.location.href.indexOf(mainpage + 'news') == -1){
+    'use strict';
+    
+	if (window.location.href.indexOf(mainpage + 'news') === -1){
 		return;
 	}
+	
 	var news = new News();
 	news.setNewsInRow();
+	$('.panel-body').css('height', '');
+	news.setMaxHeightOfNewsRows();
 	news.setSharingClickEvents();
 	news.setSlimscrollForNewsRows();
 	news.setPageNavigation();
@@ -395,6 +416,6 @@ $(document).ready(function () {
 
 	// make some things pretty
 	$(window).on('resize', function resizeWindow(){
-		new News().setMaxHeightOfNewsRows();
+		//new News().setMaxHeightOfNewsRows();
 	});
 });

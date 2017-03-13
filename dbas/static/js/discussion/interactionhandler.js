@@ -57,12 +57,12 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data);
 		// status is the length of the content
 		var description = $('#' + popupEditStatementErrorDescriptionId);
-		if (parsedData.error.length != 0) {
+		if (parsedData.error.length !== 0) {
 			description.text(parsedData.error);
 			description.addClass('text-danger');
 			description.removeClass('text-info');
 			$('#' + popupEditStatementLogfileSpaceId).prev().hide();
-		} else if (parsedData.info.length != 0) {
+		} else if (parsedData.info.length !== 0) {
 			description.text(parsedData.error);
 			description.removeClass('text-danger');
 			description.addClass('text-info');
@@ -78,9 +78,9 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneForSendCorrectureOfStatement = function (data) {
 		var parsedData = $.parseJSON(data);
-		if (parsedData.error.length != 0) {
+		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
-		} else if (parsedData.info.length != 0) {
+		} else if (parsedData.info.length !== 0) {
 			setGlobalInfoHandler('Ohh!', parsedData.info);
 		} else {
 			setGlobalSuccessHandler('Yeah!', _t_discussion(proposalsWereForwarded));
@@ -95,7 +95,7 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneForShortenUrl = function (data, long_url) {
 		var parsedData = $.parseJSON(data), service;
-		if (parsedData.error.length == 0) {
+		if (parsedData.error.length === 0) {
 			service = '<a href="' + parsedData.service_url + '" title="' + parsedData.service + '" target="_blank">' + parsedData.service + '</a>';
 			$('#' + popupUrlSharingDescriptionPId).html(_t_discussion(feelFreeToShareUrl) + ' (' + _t_discussion(shortenedBy) + ' ' + service + '):');
 			$('#' + popupUrlSharingInputId).val(parsedData.url).data('short-url', parsedData.url);
@@ -107,17 +107,20 @@ function InteractionHandler() {
 	
 	this.callbackForMarkedStatementOrArgument = function (data, should_mark, callback_id){
 		var parsedData = $.parseJSON(data);
-		if (parsedData.error.length != 0) {
+		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
 			return;
 		}
 		
 		setGlobalSuccessHandler('Yeah!', parsedData.success);
+		var el = $('#' + callback_id);
+		if (parsedData.text.length > 0) {
+			el.parent().find('.triangle-content').html(parsedData.text);
+		}
 		if (should_mark){
-			$('#' + callback_id).hide().prev().show();
+			el.hide().prev().show();
 		} else {
-			$('#' + callback_id).hide().next().show();
-			
+			el.hide().next().show();
 		}
 	};
 
@@ -131,7 +134,7 @@ function InteractionHandler() {
 		var parsedData = $.parseJSON(data);
 		// if there is no returned data, we will clean the list
 
-		if (Object.keys(parsedData).length == 0) {
+		if (Object.keys(parsedData).length === 0) {
 			$('#' + proposalStatementListGroupId).empty();
 			$('#' + proposalPremiseListGroupId).empty();
 			$('#' + proposalEditListGroupId).empty();
@@ -150,7 +153,7 @@ function InteractionHandler() {
 		// if there is no returned data, we will clean the list
 
 		var ph = new PopupHandler();
-		if (Object.keys(parsedData).length == 0) {
+		if (Object.keys(parsedData).length === 0) {
 			ph.setDefaultOfSelectionOfDuplicatePopup();
 		} else {
 			ph.setSelectsOfDuplicatePopup(parsedData);
@@ -164,7 +167,7 @@ function InteractionHandler() {
 	this.callbackIfDoneForGettingInfosAboutArgument = function(data){
 		var parsedData = $.parseJSON(data), text, element;
 		// status is the length of the content
-		if (parsedData.error.length != 0) {
+		if (parsedData.error.length !== 0) {
 			text = parsedData.error;
 			element = $('<p>').html(text);
 			displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), element);
@@ -173,7 +176,7 @@ function InteractionHandler() {
 
 		// supporters = parsedData.supporter.join(', ');
 		var author = parsedData.author;
-		if (parsedData.author != 'anonymous'){
+		if (parsedData.author !== 'anonymous'){
 			var img = '<img class="img-circle" style="height: 1em;" src="' + parsedData.gravatar + '">';
 			author = '<a href="' + parsedData.author_url + '">' + img + ' ' + parsedData.author + '</a>';
 		} else {
@@ -200,7 +203,7 @@ function InteractionHandler() {
 			tbody.append(value);
 		});
 		
-		var body = gh.closePrepareTableForOpinonDialog(parsedData.supporter, gh, text, tbody);
+		var body = gh.closePrepareTableForOpinionDialog(parsedData.supporter, gh, text, tbody);
 
 		displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), body);
 		$('#' + popupConfirmDialogId).find('.modal-dialog').addClass('modal-lg').on('hidden.bs.modal', function () {
@@ -227,7 +230,7 @@ function InteractionHandler() {
 	this.callbackIfDoneForSendNewIssue = function(data){
 		var parsedData = $.parseJSON(data);
 
-		if (parsedData.error.length != 0) {
+		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		} else {
 			$('#popup-add-topic').modal('hide');
@@ -251,7 +254,7 @@ function InteractionHandler() {
 	this.callbackIfDoneForSendNewIssueTable = function(data){
 	var parsedData = $.parseJSON(data);
 
-        if (parsedData.error.length == 0) {
+        if (parsedData.error.length === 0) {
 			$('#popup-add-topic').modal('hide');
 
 			var space = $('#issue-table');
@@ -280,13 +283,14 @@ function InteractionHandler() {
 	this.callbackIfDoneRevokeContent = function(data) {
 		var parsedData = $.parseJSON(data);
 		
-		if (parsedData.error.length != 0) {
+		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		} else {
-			if (parsedData['is_deleted'])
+			if (parsedData.is_deleted) {
 				setGlobalSuccessHandler('Yeah!', _t_discussion(dataRemoved) + ' ' + _t_discussion(yourAreNotTheAuthorOfThisAnymore));
-			else
+			} else {
 				setGlobalSuccessHandler('Yeah!', _t_discussion(contentWillBeRevoked));
+			}
 		}
 	};
 
@@ -298,11 +302,11 @@ function InteractionHandler() {
 	this.callbackIfDoneForGettingMoreInfosAboutOpinion = function(data, is_argument){
 		var parsedData = $.parseJSON(data), users_array, popup_table;
 
-		if (parsedData.error.length != 0) {
+		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 			return;
 		}
-		if (parsedData.info.length != 0) {
+		if (parsedData.info.length !== 0) {
 			setGlobalInfoHandler('Hey', parsedData.info);
 			return;
 		}
@@ -317,7 +321,7 @@ function InteractionHandler() {
 			tbody.append(value);
 		});
 		
-		var body = gh.closePrepareTableForOpinonDialog(users_array, gh, span, tbody);
+		var body = gh.closePrepareTableForOpinionDialog(users_array, gh, span, tbody);
 
 		displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(usersWithSameOpinion), body);
 		$('#' + popupConfirmDialogId).find('.modal-dialog').addClass('modal-lg').on('hidden.bs.modal', function (e) {
@@ -344,10 +348,11 @@ function InteractionHandler() {
 	this.callbackIfDoneForGettingReferences = function(data){
 		var parsedData = $.parseJSON(data);
 		
-		if (parsedData.error.length != 0)
+		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
-		else
+		} else {
 			new PopupHandler().showReferencesPopup(parsedData);
+		}
 	};
 	
 	/**
@@ -361,8 +366,8 @@ function InteractionHandler() {
 	 */
 	this.sendStatement = function (text, conclusion, supportive, arg, relation, type) {
 		// error on "no text"
-		if (text.length == 0) {
-			if (type==fuzzy_start_statement){
+		if (text.length === 0) {
+			if (type === fuzzy_start_statement){
 				$('#' + addStatementErrorContainer).show();
 				$('#' + addStatementErrorMsg).text(_t(inputEmpty));
 			} else {
@@ -379,42 +384,47 @@ function InteractionHandler() {
 					// cutting all 'and ' and 'and'
 					while (text[i].indexOf((_t_discussion(and) + ' '), text[i].length - (_t_discussion(and) + ' ').length) !== -1 ||
 					text[i].indexOf((_t_discussion(and)), text[i].length - (_t_discussion(and) ).length) !== -1) {
-						if (text[i].indexOf((_t_discussion(and) + ' '), text[i].length - (_t_discussion(and) + ' ').length) !== -1)
+						if (text[i].indexOf((_t_discussion(and) + ' '), text[i].length - (_t_discussion(and) + ' ').length) !== -1) {
 							text[i] = text[i].substr(0, text[i].length - (_t_discussion(and) + ' ').length);
-						else
+						} else {
 							text[i] = text[i].substr(0, text[i].length - (_t_discussion(and)).length);
+						}
 					}
 
 					// whitespace at the end
-					while (text[i].indexOf((' '), text[i].length - (' ').length) !== -1)
+					while (text[i].indexOf((' '), text[i].length - (' ').length) !== -1) {
 						text[i] = text[i].substr(0, text[i].length - (' ').length);
+					}
 
 					// sorting the statements, whether they include the keyword 'AND'
-					if (text[i].toLocaleLowerCase().indexOf(' ' + _t_discussion(and) + ' ') != -1)
+					if (text[i].toLocaleLowerCase().indexOf(' ' + _t_discussion(and) + ' ') !== -1) {
 						undecided_texts.push(text[i]);
-					else
+					} else {
 						decided_texts.push(text[i]);
+					}
 				}
 			}
 
 			if (undecided_texts.length > 0){
 				for (var j=0; j<undecided_texts.length; j++){
-					if (undecided_texts[j].match(/\.$/))
-						undecided_texts[j] = undecided_texts[j].substr(0, undecided_texts[j].length -1)
+					if (undecided_texts[j].match(/\.$/)) {
+						undecided_texts[j] = undecided_texts[j].substr(0, undecided_texts[j].length - 1);
+					}
 				}
 				new GuiHandler().showSetStatementContainer(undecided_texts, decided_texts, supportive, type, arg, relation, conclusion);
 			} else {
-				if (type == fuzzy_start_statement) {
-					if (decided_texts.length > 0)
+				if (type === fuzzy_start_statement) {
+					if (decided_texts.length > 0) {
 						alert("TODO: more than one decided text");
-					else
+					} else {
 						new AjaxDiscussionHandler().sendNewStartStatement(text);
-				} else if (type == fuzzy_start_premise) {
+					}
+				} else if (type === fuzzy_start_premise) {
 					new AjaxDiscussionHandler().sendNewStartPremise(text, conclusion, supportive);
-				} else  if (type == fuzzy_add_reason) {
+				} else  if (type === fuzzy_add_reason) {
 					new AjaxDiscussionHandler().sendNewPremiseForArgument(arg, relation, text);
 				}
 			}
 		}
-	}
+	};
 }

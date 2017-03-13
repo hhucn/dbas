@@ -9,20 +9,19 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 
 # from wsgiref.simple_server import make_server
 
+import logging
+import time
+from configparser import ConfigParser, NoSectionError
+
 from pyramid.authentication import AuthTktAuthenticationPolicy  # , SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
-from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
 from pyramid.static import QueryStringConstantCacheBuster
-
-from dbas.security import groupfinder
-
+from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
 from sqlalchemy import engine_from_config
-from dbas.database import load_discussion_database, load_news_database
-from configparser import ConfigParser, NoSectionError
 
-import logging
-import time
+from dbas.database import load_discussion_database, load_news_database
+from dbas.security import groupfinder
 
 
 def main(global_config, **settings):
@@ -84,7 +83,8 @@ def main(global_config, **settings):
                           root_factory='dbas.security.RootFactory',
                           session_factory=session_factory
                           )
-    config.add_translation_dirs('dbas:locale', 'admin:locale')  # add this before the locale negotiator
+    config.add_translation_dirs('dbas:locale',
+                                'admin:locale')  # add this before the locale negotiator
     config.set_default_csrf_options(require_csrf=True)
 
     # config.set_authentication_policy(authn_policy)
@@ -121,6 +121,8 @@ def main(global_config, **settings):
     config.add_route('main_imprint', '/imprint')
     config.add_route('main_publications', '/publications')
     config.add_route('main_rss', '/rss')
+    config.add_route('main_faq', '/faq')
+    config.add_route('main_docs', '/docs')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('ajax_user_login', '{url:.*}ajax_user_login')
@@ -145,8 +147,8 @@ def main(global_config, **settings):
     config.add_route('ajax_get_all_posted_statements', 'ajax_get_all_posted_statements')
     config.add_route('ajax_get_all_argument_clicks', 'ajax_get_all_argument_clicks')
     config.add_route('ajax_get_all_statement_clicks', 'ajax_get_all_statement_clicks')
-    config.add_route('ajax_get_all_argument_votes', 'ajax_get_all_argument_votes')
-    config.add_route('ajax_get_all_statement_votes', 'ajax_get_all_statement_votes')
+    config.add_route('ajax_get_all_marked_arguments', 'ajax_get_all_marked_arguments')
+    config.add_route('ajax_get_all_marked_statements', 'ajax_get_all_marked_statements')
     config.add_route('ajax_set_user_setting', 'ajax_set_user_setting')
     config.add_route('ajax_set_user_language', 'ajax_set_user_language')
     config.add_route('ajax_delete_user_history', 'ajax_delete_user_history')

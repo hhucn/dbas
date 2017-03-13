@@ -4,11 +4,12 @@
  */
 
 function AjaxSettingsHandler(){
+	"use strict";
+	
 	/**
 	 * Ajax request for getting the users history
 	 */
 	this.getUserHistoryData = function(){
-		'use strict';
 		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_get_user_history',
@@ -27,7 +28,6 @@ function AjaxSettingsHandler(){
 	 * Ajax request for deleting the users history
 	 */
 	this.deleteUserHistoryData = function(){
-		'use strict';
 		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
 			url: 'ajax_delete_user_history',
@@ -82,14 +82,14 @@ function AjaxSettingsHandler(){
 		}).done(function setUserSettingDone(data) {
 			var parsedData = $.parseJSON(data);
 
-			if (parsedData.error.length == 0){
+			if (parsedData.error.length === 0){
 				var lang_image = $('#current-lang-images');
 				$('#' + settingsSuccessDialog).fadeIn();
 				setTimeout(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
 				$.each($('#settings-language-dropdown').find('li'), function(){
 					$(this).removeClass('active');
 				});
-				$.each(lang_image.find('img'), function(){ $(this).hide()});
+				$.each(lang_image.find('img'), function(){ $(this).hide();});
 				$('#link-settings-' + parsedData.ui_locales).addClass('active');
 				$('#indicator-' + parsedData.ui_locales).show();
 				lang_image.find('span').eq(0).text(parsedData.current_lang);
@@ -107,7 +107,7 @@ function AjaxSettingsHandler(){
 	 * Ajax request for getting all edits done by the user
 	 */
 	this.getEditsDone = function() {
-		if ($('#' + editsDoneCountId).text() == '0'){
+		if ($('#' + editsDoneCountId).text() === '0'){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 			return;
 		}
@@ -130,7 +130,7 @@ function AjaxSettingsHandler(){
 	 * Ajax request for getting all statements send by the user
 	 */
 	this.getStatementsSend = function() {
-		if ($('#' + statementsDoneCountId).text() == '0'){
+		if ($('#' + statementsDoneCountId).text() === '0'){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 			return;
 		}
@@ -153,7 +153,7 @@ function AjaxSettingsHandler(){
 	 * Ajax request for getting all arguments, which the user voted for
 	 */
 	this.getArgumentClicks = function(){
-		if ($('#' + discussionArgClickCountId).text() == '0'){
+		if ($('#' + discussionArgClickCountId).text() === '0'){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 			return;
 		}
@@ -176,7 +176,7 @@ function AjaxSettingsHandler(){
 	 * Ajax request for getting all edits done by the user
 	 */
 	this.getStatementClicks = function(){
-		if ($('#' + discussionStatVoteCountId).text() == '0'){
+		if ($('#' + discussionStatVoteCountId).text() === '0'){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 			return;
 		}
@@ -198,22 +198,22 @@ function AjaxSettingsHandler(){
 	/**
 	 * Ajax request for getting all arguments, which the user voted for
 	 */
-	this.getArgumentVotes = function(){
-		if ($('#' + discussionArgVoteCountId).text() == '0'){
+	this.getMarekdArguments = function(){
+		if ($('#' + discussionArgVoteCountId).text() === '0'){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 			return;
 		}
 
 		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
-			url: 'ajax_get_all_argument_votes',
+			url: 'ajax_get_all_marked_arguments',
 			method: 'GET',
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function getArgumentVotesDone(data) {
+		}).done(function gertMarkedArgumentsDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), false);
-		}).fail(function getArgumentVotesFail() {
+		}).fail(function gertMarkedArgumentsFail() {
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
 		});
 	};
@@ -222,21 +222,21 @@ function AjaxSettingsHandler(){
 	 * Ajax request for getting all edits done by the user
 	 */
 	this.getStatementVotes = function(){
-		if ($('#' + discussionStatVoteCountId).text() == '0'){
+		if ($('#' + discussionStatVoteCountId).text() === '0'){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 			return;
 		}
 
 		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
-			url: 'ajax_get_all_statement_votes',
+			url: 'ajax_get_all_marked_statements',
 			method: 'GET',
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function getStatementVotesDone(data) {
+		}).done(function getMarkedStatementsDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), false);
-		}).fail(function getStatementVotesFail() {
+		}).fail(function getMarkedStatementsFail() {
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
 		});
 	};

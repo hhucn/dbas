@@ -13,9 +13,9 @@ DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-disc
 class LibTest(unittest.TestCase):
 
     def test_get_dump(self):
-        self.assertTrue(len(get_dump(0, 'en')) == 0)
+        self.assertTrue(len(get_dump(0)) == 0)
 
-        ret_dict = get_dump('1', 'en')
+        ret_dict = get_dump('1')
         self.assertTrue('issue' in ret_dict)
         self.assertTrue('user' in ret_dict)
         self.assertTrue('statement' in ret_dict)
@@ -23,8 +23,8 @@ class LibTest(unittest.TestCase):
         self.assertTrue('argument' in ret_dict)
         self.assertTrue('premisegroup' in ret_dict)
         self.assertTrue('premise' in ret_dict)
-        self.assertTrue('vote_argument' in ret_dict)
-        self.assertTrue('vote_statement' in ret_dict)
+        self.assertTrue('marked_argument' in ret_dict)
+        self.assertTrue('marked_statement' in ret_dict)
         self.assertTrue(len(ret_dict['issue']) > 0)
         self.assertTrue(len(ret_dict['user']) > 0)
         self.assertTrue(len(ret_dict['statement']) > 0)
@@ -32,8 +32,8 @@ class LibTest(unittest.TestCase):
         self.assertTrue(len(ret_dict['argument']) > 0)
         self.assertTrue(len(ret_dict['premisegroup']) > 0)
         self.assertTrue(len(ret_dict['premise']) > 0)
-        self.assertTrue(len(ret_dict['vote_argument']) >= 0)
-        self.assertTrue(len(ret_dict['vote_statement']) >= 0)
+        self.assertTrue(len(ret_dict['marked_argument']) >= 0)
+        self.assertTrue(len(ret_dict['marked_statement']) >= 0)
 
     def test_get_minimal_graph_export(self):
         ret_dict = get_minimal_graph_export(1)

@@ -1,7 +1,7 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-		<div class="container first-container">
+		<div class="container">
             <div class="row">
                 <div class="col-md-offset-2 col-md-8">
                     <div class="form">
@@ -45,7 +45,8 @@
 
                             <div align="center"
                                  class="g-recaptcha"
-                                 data-sitekey="6Lc0eQ4TAAAAAI9EAByXR8_6yBBc_Xy-lO2WJtAf"></div>
+                                 data-size="invisible"
+                                 tal:attributes="data-sitekey extras.g_recaptcha_key"></div>
 
             				<!--
             			    <div id="alert-message" class="alert alert-danger alert-error">

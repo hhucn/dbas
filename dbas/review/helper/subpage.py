@@ -4,32 +4,34 @@ Provides helping function for displaying subpages like the edit queue.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import random
 import difflib
+import random
+
+from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument,\
     Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue, Statement, \
     sql_timestamp_pretty_print, ReviewDuplicate, LastReviewerDuplicate
+from dbas.lib import get_all_arguments_by_statement
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture
 from dbas.logger import logger
-from dbas.lib import get_all_arguments_by_statement
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders
 from dbas.strings.keywords import Keywords as _
-from sqlalchemy import and_
 
 pages = ['deletes', 'optimizations', 'edits', 'duplicates']
 
 
 def get_subpage_elements_for(request, subpage_name, nickname, translator):
     """
+    Returns subpage for a specific review queue
 
-    :param request:
-    :param subpage_name:
-    :param nickname:
-    :param translator:
-    :return:
+    :param request: current webserver request
+    :param subpage_name: String
+    :param nickname: User.nickname
+    :param translator: Translator
+    :return: dict()
     """
     logger('ReviewSubpagerHelper', 'get_subpage_elements_for', subpage_name)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -100,12 +102,13 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
 
 def __get_subpage_dict(ret_dict, has_access, no_arguments_to_review, button_set):
     """
+    Set up dict()
 
-    :param ret_dict:
-    :param has_access:
-    :param no_arguments_to_review:
-    :param button_set:
-    :return:
+    :param ret_dict: dict()
+    :param has_access: Boolean
+    :param no_arguments_to_review: Boolean
+    :param button_set: dict()
+    :return: dict()
     """
     return {'elements': ret_dict,
             'has_access': has_access,
@@ -151,12 +154,13 @@ def __get_all_allowed_reviews_for_user(request, session_keyword, db_user, review
 
 def __get_subpage_dict_for_deletes(request, db_user, translator, main_page):
     """
+    Setup the subpage for the delete queue
 
-    :param request:
-    :param db_user:
-    :param translator:
-    :param main_page:
-    :return:
+    :param request: current webserver request
+    :param db_user: User
+    :param translator: Translator
+    :param main_page: Host URL
+    :return: dict()
     """
     logger('ReviewSubpagerHelper', '__get_subpage_dict_for_deletes', 'main')
     db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request, 'already_seen_deletes', db_user, ReviewDelete, LastReviewerDelete)
@@ -211,12 +215,13 @@ def __get_subpage_dict_for_deletes(request, db_user, translator, main_page):
 
 def __get_subpage_dict_for_optimization(request, db_user, translator, main_page):
     """
+    Setup the subpage for the optimization queue
 
-    :param request:
-    :param db_user:
-    :param translator:
-    :param main_page:
-    :return:
+    :param request: current webserver request
+    :param db_user: User
+    :param translator: Translator
+    :param main_page: Host URL
+    :return: dict()
     """
     logger('ReviewSubpagerHelper', '__get_subpage_dict_for_optimization', 'main')
     db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request,
@@ -278,12 +283,13 @@ def __get_subpage_dict_for_optimization(request, db_user, translator, main_page)
 
 def __get_subpage_dict_for_edits(request, db_user, translator, main_page):
     """
+    Setup the subpage for the edits queue
 
-    :param request:
-    :param db_user:
-    :param translator:
-    :param main_page:
-    :return:
+    :param request: current webserver request
+    :param db_user: User
+    :param translator: Translator
+    :param main_page: Host URL
+    :return: dict()
     """
     logger('ReviewSubpagerHelper', '__get_subpage_dict_for_edits', 'main')
     db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request,
@@ -352,12 +358,13 @@ def __get_subpage_dict_for_edits(request, db_user, translator, main_page):
 
 def __get_subpage_dict_for_duplicates(request, db_user, translator, main_page):
     """
+    Setup the subpage for the duplicates queue
 
-    :param request:
-    :param db_user:
-    :param translator:
-    :param main_page:
-    :return:
+    :param request: current webserver request
+    :param db_user: User
+    :param translator: Translator
+    :param main_page: Host URL
+    :return: dict()
     """
     logger('ReviewSubpagerHelper', '__get_subpage_dict_for_duplicates', 'main')
     db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request,
@@ -427,11 +434,12 @@ def __difference_between_string(a, b, correction_list):
 
 def __get_stats_for_review(review, ui_locales, main_page):
     """
+    Get statistics for the current review
 
-    :param argument_uid:
-    :param review:
-    :param ui_locales:
-    :return:
+    :param review: Review-Row
+    :param ui_locales: Language.ui_locales
+    :param main_page: Host URL
+    :return: dict()
     """
     logger('ReviewSubpagerHelper', '__get_stats_for_review', 'main')
     # viewed = len(DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=argument_uid).all())
@@ -465,9 +473,10 @@ def __get_stats_for_review(review, ui_locales, main_page):
 
 def __get_text_parts_of_argument(argument):
     """
+    Get all parts of ana rgument as string
 
-    :param argument:
-    :return:
+    :param argument: Argument.uid
+    :return: list of strings
     """
     logger('ReviewSubpagerHelper', '__get_text_parts_of_argument', 'main')
     ret_list = list()
@@ -505,17 +514,18 @@ def __get_text_parts_of_argument(argument):
     return ret_list[::-1]
 
 
-def __get_part_dict(typeof, text, argument, uid):
+def __get_part_dict(typeof, text, argument_uid, conclusion_uid):
     """
+    Collects the aprts of the argument-string and builds up a little dict
 
-    :param typeof:
-    :param text:
-    :param argument:
-    :param uid:
-    :return:
+    :param typeof: String
+    :param text: String
+    :param argument_uid: Argument.uid
+    :param uid: Statement.uid
+    :return: dict()
     """
-    logger('ReviewSubpagerHelper', '__get_part_dict', 'type: ' + str(typeof) + ', text: ' + str(text) + ', arg: ' + str(argument) + ', uid: ' + str(uid))
+    logger('ReviewSubpagerHelper', '__get_part_dict', 'type: ' + str(typeof) + ', text: ' + str(text) + ', arg: ' + str(argument_uid) + ', uid: ' + str(conclusion_uid))
     return {'type': typeof,
             'text': text,
-            'argument_uid': argument,
-            'statement_uid': uid}
+            'argument_uid': argument_uid,
+            'statement_uid': conclusion_uid}

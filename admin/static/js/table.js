@@ -4,6 +4,7 @@
  */
 
 function AdminGui() {
+	'use strict';
 	
 	/**
 	 * Colors text of the element, specified by the class
@@ -13,7 +14,7 @@ function AdminGui() {
 	 * @param text_class class which should be added
 	 */
 	this.activateElement = function(_this, elements_class, text_class) {
-		const element = $(_this).parents('td:first').find('.' + elements_class);
+		var element = $(_this).parents('td:first').find('.' + elements_class);
 		element.removeClass('text-muted').addClass(text_class);
 		element.parent().css('pointer-events', '');
 	};
@@ -26,7 +27,7 @@ function AdminGui() {
 	 * @param text_class class which should be removed
 	 */
 	this.deactivateElement = function(_this, elements_class, text_class) {
-		const element = $(_this).parents('td:first').find('.' + elements_class);
+		var element = $(_this).parents('td:first').find('.' + elements_class);
 		element.addClass('text-muted').removeClass(text_class);
 		element.parent().css('pointer-events', 'none');
 	};
@@ -35,11 +36,11 @@ function AdminGui() {
 	 * Open a dialog with every column for adding a new row
 	 */
 	this.setAddClickEvent = function() {
-		const _this = this;
+		var _this = this;
 		$('body').find('.add').each(function () {
 			$(this).click(function () {
-				const dialog = $('#' + popupConfirmRowDialogId);
-				let body = dialog.find('.modal-body');
+				var dialog = $('#' + popupConfirmRowDialogId);
+				var body = dialog.find('.modal-body');
 				body.children().remove();
 				body.append($('<span>').addClass('col-sm-5').addClass('lead').text('Column'));
 				body.append($('<span>').addClass('col-sm-7').addClass('lead').text('Value'));
@@ -53,13 +54,13 @@ function AdminGui() {
 					dialog.modal('hide');
 				});
 				dialog.find('.btn-success').off('click').click(function (){
-					const data = {};
+					var data = {};
 					body.find('input').each(function (){
 						data[$(this).data('for')] = $(this).val();
 					});
 					new AdminAjaxHandler().addSomething(data);
 				});
-			})
+			});
 		});
 	};
 	
@@ -69,10 +70,10 @@ function AdminGui() {
 	 * @param table: current html table as element
 	 */
 	this.setEditClickEvent = function(table) {
-		const _this = this;
+		var _this = this;
 		table.find('.pencil').each(function () {
 			$(this).click(function () {
-				const parent = $(this).parents('tr:first');
+				var parent = $(this).parents('tr:first');
 				// var uid = parent.find('td:first').text();
 				_this.activateElement(this, 'floppy', 'text-success');
 				_this.activateElement(this, 'square', 'text-danger');
@@ -81,7 +82,7 @@ function AdminGui() {
 					$(this).append($('<input>').attr({'class': 'form-control', 'placeholder': $(this).text().trim()}).val($(this).text().trim()));
 					$(this).find('span').hide();
 				});
-			})
+			});
 		});
 	};
 	
@@ -91,12 +92,12 @@ function AdminGui() {
 	 * @param table: current html table as element
 	 */
 	this.setDeleteClickEvent = function(table) {
-		const _this = this;
+		var _this = this;
 		table.find('.trash').each(function () {
 			$(this).click(function () {
-				const uids = _this.getUids($(this).parents('tr:first'));
+				var uids = _this.getUids($(this).parents('tr:first'));
 				new AdminAjaxHandler().deleteSomething(uids, $(this).parents('tr:first'));
-			})
+			});
 		});
 	};
 	
@@ -106,13 +107,13 @@ function AdminGui() {
 	 * @param table: current html table as element
 	 */
 	this.setSaveClickEvent = function(table) {
-		const _this = this;
+		var _this = this;
 		table.find('.floppy').each(function () {
 			$(this).click(function () {
-				const tmp = $(this).parents('tr:first');
-				const uids = _this.getUids(tmp);
-				const keys = [];
-				const values = [];
+				var tmp = $(this).parents('tr:first');
+				var uids = _this.getUids(tmp);
+				var keys = [];
+				var values = [];
 				tmp.find('input').each(function (){
 					values.push($(this).val());
 				});
@@ -122,7 +123,7 @@ function AdminGui() {
 				new AdminAjaxHandler().updateSomething(this, uids, keys, values);
 				tmp.find('input').remove();
 				tmp.find('span').show();
-			})
+			});
 		});
 	};
 	
@@ -132,17 +133,17 @@ function AdminGui() {
 	 * @param table: current html table as element
 	 */
 	this.setCancelClickEvent = function(table) {
-		const _this = this;
+		var _this = this;
 		table.find('.square').each(function () {
 			$(this).click(function () {
-				const tmp = $(this).parents('tr:first');
+				var tmp = $(this).parents('tr:first');
 				// var uid = tmp.find('td:first').text();
 				_this.deactivateElement(this, 'floppy', 'text-success');
 				_this.deactivateElement(this, 'square', 'text-danger');
 				_this.activateElement(this, 'pencil', '');
 				tmp.find('input').remove();
 				tmp.find('span').show();
-			})
+			});
 		});
 	};
 	
@@ -153,7 +154,7 @@ function AdminGui() {
 	 * @returns {Array}
 	 */
 	this.getUids = function(element){
-		const uids = [];
+		var uids = [];
 		// Premise has two columns as PK
 		if ($('#table_name').text().toLowerCase() === 'premise'){
 			uids.push(element.find('td:nth-child(1)').text().trim());
@@ -170,16 +171,16 @@ function AdminGui() {
 	 */
 	this.createRowForAddModal = function(body, column){
 		// skip columns, that we do not need!
-		if ($.inArray(column, ['uid', 'last_action', 'last_login', 'registered', 'public_nickname']) != -1) {
+		if ($.inArray(column, ['uid', 'last_action', 'last_login', 'registered', 'public_nickname']) !== -1) {
 			return body;
 		}
-		const form = $('<div>').addClass('form-group');
-		const label = $('<label>')
+		var form = $('<div>').addClass('form-group');
+		var label = $('<label>')
 			.addClass('col-sm-5')
 			.addClass('control-label')
 			.attr('for', column)
 			.text(column);
-		const div = $('<div>')
+		var div = $('<div>')
 			.addClass('col-sm-7')
 			.append($('<input>').attr({
 				'class': 'form-control',
@@ -188,17 +189,19 @@ function AdminGui() {
 		form.append(label).append(div);
 		body.append(form);
 		return body;
-	}
+	};
 }
 
 // main function
 $(document).ready(function () {
+	'use strict';
+	
 	$('#admin-login-button').click(function(){
 		new AjaxMainHandler().ajaxLogin($('#admin-login-user').val(), $('#admin-login-pw').val(), true);
 	});
 	
-	const data = $('#data');
-	const gui = new AdminGui();
+	var data = $('#data');
+	var gui = new AdminGui();
 	
 	// events for edit, delete, save, cancel, add
 	gui.setEditClickEvent(data);

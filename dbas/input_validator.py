@@ -57,6 +57,9 @@ def check_reaction(attacked_arg_uid, attacking_arg_uid, relation, is_history=Fal
     elif relation == 'rebut':
         return related_with_rebut(attacked_arg_uid, attacking_arg_uid)
 
+    elif relation == 'support':
+        return related_with_support(attacked_arg_uid, attacking_arg_uid) or related_with_support(attacked_arg_uid, attacking_arg_uid, True)
+
     elif relation.startswith('end') and not is_history:
         if str(attacking_arg_uid) != '0':
             return False
@@ -120,24 +123,9 @@ def is_position(statement_uid):
     return True if db_statement.is_startpoint else False
 
 
-def supports_for_same_conclusion(arg_uid1, arg_uid2):
-    """
-
-    :param arg_uid1:
-    :param arg_uid2:
-    :return:
-    """
-    db_arg1 = DBDiscussionSession.query(Argument).get(arg_uid1)
-    db_arg2 = DBDiscussionSession.query(Argument).get(arg_uid2)
-
-    if not db_arg1 or not arg_uid2:
-        return False
-
-    return db_arg1.conclusion_uid == db_arg2.conclusion_uid
-
-
 def related_with_undermine(attacked_arg_uid, attacking_arg_uid):
     """
+    Check if first argument is undermines by the second one
 
     :param attacked_arg_uid: Argument.uid
     :param attacking_arg_uid: Argument.uid
@@ -164,6 +152,7 @@ def related_with_undermine(attacked_arg_uid, attacking_arg_uid):
 
 def related_with_undercut(attacked_arg_uid, attacking_arg_uid):
     """
+    Check if first argument is undercutted by the second one
 
     :param attacked_arg_uid: Argument.uid
     :param attacking_arg_uid: Argument.uid
@@ -176,6 +165,7 @@ def related_with_undercut(attacked_arg_uid, attacking_arg_uid):
 
 def related_with_rebut(attacked_arg_uid, attacking_arg_uid):
     """
+    Check if first argument is rebutted by the second one
 
     :param attacked_arg_uid: Argument.uid
     :param attacking_arg_uid: Argument.uid
@@ -195,11 +185,13 @@ def related_with_rebut(attacked_arg_uid, attacking_arg_uid):
     return True if same_conclusion and not_none and attacking else False
 
 
-def related_with_support(attacked_arg_uid, attacking_arg_uid):
+def related_with_support(attacked_arg_uid, attacking_arg_uid, is_attacking=False):
     """
+    Check if both arguments support/attack the same conclusion
 
     :param attacked_arg_uid: Argument.uid
     :param attacking_arg_uid: Argument.uid
+    :param is_attacking: Boolean
     :return: Boolean
     """
     db_first_arg = DBDiscussionSession.query(Argument).get(attacking_arg_uid)
@@ -209,12 +201,17 @@ def related_with_support(attacked_arg_uid, attacking_arg_uid):
 
     not_none = db_first_arg.conclusion_uid is not None
     same_conclusion = db_first_arg.conclusion_uid == db_second_arg.conclusion_uid
-    supportive = db_first_arg.is_supportive and db_second_arg.is_supportive
+    if not is_attacking:
+        supportive = db_first_arg.is_supportive and db_second_arg.is_supportive
+    else:
+        supportive = not (db_first_arg.is_supportive or db_second_arg.is_supportive)
+
     return True if same_conclusion and not_none and supportive else False
 
 
 def get_relation_between_arguments(arg1_uid, arg2_uid):
     """
+    Get the relation between given arguments
 
     :param arg1_uid: Argument.uid
     :param arg2_uid: Argument.uid
@@ -243,9 +240,10 @@ def get_relation_between_arguments(arg1_uid, arg2_uid):
 
 def is_argument_forbidden(uid):
     """
+    Is the given argument disabled?
 
-    :param uid:
-    :return:
+    :param uid: Argument.uid
+    :return: Boolean
     """
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     if not db_argument:
@@ -255,9 +253,10 @@ def is_argument_forbidden(uid):
 
 def is_statement_forbidden(uid):
     """
+    Is the given statement disabled?
 
-    :param uid:
-    :return:
+    :param uid: Statement.uid
+    :return: Boolean
     """
     db_statement = DBDiscussionSession.query(Statement).get(uid)
     if not db_statement:

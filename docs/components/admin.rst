@@ -2,9 +2,6 @@
 Admin
 =====
 
-Note for tables with more than one row as PK:
- * Add a new table in admin/lib and nothing more!
-
 Description
 ===========
 
@@ -17,7 +14,7 @@ Views
 .. automodule:: admin.views
     :members:
 
-Lis
+Lib
 ===
 
 .. automodule:: admin.lib

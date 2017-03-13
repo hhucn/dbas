@@ -17,13 +17,14 @@ port = 5222
 
 def send_request_for_info_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
     """
+    Sends request to the socketio server for an info popup
 
-    :param nickname:
-    :param main_page:
-    :param message:
-    :param url:
+    :param nickname: User.nickname
+    :param main_page: String
+    :param message: String
+    :param url: Issue.uid
     :param increase_counter:
-    :return:
+    :return: Status code of the request
     """
     logger('Websocket.lib', 'send_request_for_info_popup_to_socketio', 'main')
     if url:
@@ -33,13 +34,14 @@ def send_request_for_info_popup_to_socketio(nickname, message='', url=None, incr
 
 def send_request_for_info_popup_to_socketio_with_delay(nickname, message='', url=None, increase_counter=False, delay=5):
     """
+    Sends request to the socketio server for an info popup with a specific delay
 
-    :param nickname:
-    :param message:
-    :param url:
-    :param increase_counter:
-    :param delay:
-    :return:
+    :param nickname: User.nickname
+    :param message: String
+    :param url: String
+    :param increase_counter: Boolean
+    :param delay: int
+    :return: Status code of the request
     """
     logger('Websocket.lib', 'send_request_for_info_popup_to_socketio_with_delay', 'main sleeping for ' + str(delay))
     time.sleep(delay)
@@ -53,13 +55,14 @@ def send_request_for_info_popup_to_socketio_with_delay(nickname, message='', url
 
 def send_request_for_success_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
     """
+    Sends request to the socketio server for a success popup
 
-    :param nickname:
-    :param main_page:
-    :param message:
-    :param url:
+    :param nickname: User.nickname
+    :param main_page: String
+    :param message: String
+    :param url: String
     :param increase_counter:
-    :return:
+    :return: Status code of the request
     """
     logger('Websocket.lib', 'send_request_for_success_popup_to_socketio', 'main')
     if url:
@@ -69,12 +72,13 @@ def send_request_for_success_popup_to_socketio(nickname, message='', url=None, i
 
 def send_request_for_warning_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
     """
+    Sends request to the socketio server for a warning popup
 
-    :param nickname:
-    :param message:
-    :param url:
+    :param nickname: User.nickname
+    :param message: String
+    :param url: String
     :param increase_counter:
-    :return:
+    :return: Status code of the request
     """
     logger('Websocket.lib', 'send_request_for_warning_popup_to_socketio', 'main')
     __send_request_for_popup_to_socketio(nickname, 'warning', message, url, increase_counter)
@@ -117,9 +121,10 @@ def __send_request_for_popup_to_socketio(nickname, type, message='', url=None, i
 
 def send_request_for_recent_delete_review_to_socketio(nickname, main_page):
     """
+    Sends request to the socketio server for updating the last reviewer view
 
-    :param nickname:
-    :return:
+    :param nickname: User.nickname
+    :return: Status code of the request
     """
     logger('Websocket.lib', 'send_request_for_recent_delete_review_to_socketio', 'main - nickname ' + str(nickname))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -131,9 +136,10 @@ def send_request_for_recent_delete_review_to_socketio(nickname, main_page):
 
 def send_request_for_recent_edit_review_to_socketio(nickname, main_page):
     """
+    Sends request to the socketio server for updating the last reviewer view
 
-    :param nickname:
-    :return:
+    :param nickname: User.nickname
+    :return: Status code of the request
     """
     logger('Websocket.lib', 'send_request_for_recent_edit_review_to_socketio', 'main - nickname ' + str(nickname))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -145,10 +151,11 @@ def send_request_for_recent_edit_review_to_socketio(nickname, main_page):
 
 def send_request_for_recent_optimization_review_to_socketio(nickname, main_page):
     """
+    Sends request to the socketio server for updating the last reviewer view
 
-    :param nickname:
-    :param main_page:
-    :return:
+    :param nickname: User.nickname
+    :param main_page: String
+    :return: Status code of the request
     """
     logger('Websocket.lib', 'send_request_for_recent_optimization_review_to_socketio', 'main - nickname ' + str(nickname))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -160,11 +167,12 @@ def send_request_for_recent_optimization_review_to_socketio(nickname, main_page)
 
 def __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, queue, use_https):
     """
+    Sends request to the socketio server for updating the last reviewer view
 
-    :param reviewer_name:
-    :param reviewer_image_url:
-    :param queue
-    :param use_https
+    :param reviewer_name: User.nickname
+    :param reviewer_image_url: String
+    :param queue: String
+    :param use_https: Boolean
     :return: Status code of the request
     """
     logger('Websocket.lib', '__send_request_for_recent_review_to_socketio', 'main')

@@ -2,32 +2,12 @@
 More
 ====
 
-A Dialogue Game in D-BAS
-========================
-
-Describing one round in D-BAS here!
+Please have a look at our publications.
 
 
-Additional functionality in D-BAS: News
----------------------------------------
+Google reCAPTCHA
+----------------
 
-Write something here!
-
-
-Additional functionality in D-BAS: Notifications
-------------------------------------------------
-
-Write something here!
-
-
-Additional functionality in D-BAS: Reviews
-------------------------------------------
-
-Write something here!
-
-
-
-Pitfalls with Pyramid / SQLAlchemy / ...
-========================================
-
-* Always add edited data to the discussion session
+D-BAS uses Googles reCAPTCHAs to protect forms from bots. To enable this feature on your server, please create an
+account for yourself via https://www.google.com/recaptcha/admin and copy the client as well as the server key to
+`dbas/auth/recaptcha.py`.

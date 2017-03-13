@@ -23,9 +23,9 @@ function HistoryHandler(){
 		$('#' + historyTableFailureId).fadeIn('slow');
 		setTimeout(function() { $('#' + historyTableFailureId).fadeOut(); }, 3000);
 
-		if (statuscode == 400) {		$('#' + historyFailureMessageId).html(_t(requestFailedBadToken));
-		} else if (statuscode == 500) {	$('#' + historyFailureMessageId).html(_t(requestFailedInternalError));
-		} else {                		$('#' + historyFailureMessageId).html(_t(requestFailed));
+		if (statuscode  ===  400) {		    $('#' + historyFailureMessageId).html(_t(requestFailedBadToken));
+		} else if (statuscode  ===  500) {	$('#' + historyFailureMessageId).html(_t(requestFailedInternalError));
+		} else {                		    $('#' + historyFailureMessageId).html(_t(requestFailed));
 		}
 	};
 
@@ -46,7 +46,6 @@ function HistoryHandler(){
 	 * @param jsonData
 	 */
 	this.setDataInHistoryTable = function (jsonData) {
-		'use strict';
 		var tableElement, trElement, tElement, i, parsedData, thead, tbody, breaked_url;
 		tElement = ['', ''];
 		tableElement = $('<table>');
@@ -107,6 +106,8 @@ function HistoryHandler(){
 }
 
 function PasswordHandler(){
+    'use strict';
+    
 	// check password strength
 	// based on http://git.aaronlumsden.com/strength.js/
 	var upperCase = new RegExp('[A-Z]');
@@ -116,13 +117,12 @@ function PasswordHandler(){
 	var specialchars = new RegExp('([!,%,&,@,#,$,^,*,?,_,~])');
 
 	this.set_total = function (total, passwordMeter, passwordStrength, passwordExtras) {
-		'use strict';
 		passwordMeter.removeClass().addClass('col-sm-9');
 		passwordStrength.text(_t(strength) + ': ' + _t(veryweak)).fadeIn("slow");
 
-		if (total === 1) {			passwordMeter.addClass('veryweak');	passwordStrength.text(_t(strength) + ': ' + _t(veryweak));
-		} else if (total === 2) {	passwordMeter.addClass('weak');		passwordStrength.text(_t(strength) + ': ' + _t(weak));
-		} else if (total === 3) {	passwordMeter.addClass('medium');	passwordStrength.text(_t(strength) + ': ' + _t(medium));
+		if (total  === 1) {			passwordMeter.addClass('veryweak');	passwordStrength.text(_t(strength) + ': ' + _t(veryweak));
+		} else if (total  === 2) {	passwordMeter.addClass('weak');		passwordStrength.text(_t(strength) + ': ' + _t(weak));
+		} else if (total  === 3) {	passwordMeter.addClass('medium');	passwordStrength.text(_t(strength) + ': ' + _t(medium));
 		} else if (total > 3) {		passwordMeter.addClass('strong');	passwordStrength.text(_t(strength) + ': ' + _t(strong));
 		} else if (passwordExtras){	passwordExtras.fadeOut('slow');
 		}
@@ -136,7 +136,6 @@ function PasswordHandler(){
 	 * @param passwordExtras
 	 */
 	this.check_strength = function (passwordInput, passwordMeter, passwordStrength, passwordExtras) {
-		'use strict';
 		var total = 0;
 		var pw = passwordInput.val();
 		if (pw.length > 8) {			total = total + 1;	}
@@ -152,7 +151,6 @@ function PasswordHandler(){
 	 * @param output
 	 */
 	this.generate_password = function (output) {
-		'use strict';
 		var password = '';
 		var i = 0;
 		while (!(upperCase.test(password) && lowerCase.test(password) && numbers.test(password) && specialchars.test(password))) {
@@ -166,6 +164,8 @@ function PasswordHandler(){
 }
 
 function SettingsHandler(){
+    'use strict';
+    
 
 	/**
 	 *
@@ -176,7 +176,7 @@ function SettingsHandler(){
 	 */
 	this.callbackDone = function (jsonData, toggle_element, settings_value, service){
 		var parsedData = $.parseJSON(jsonData);
-		if (parsedData.error.length == 0){
+		if (parsedData.error.length  ===  0){
 			$('#' + settingsSuccessDialog).fadeIn();
 			$('#value_public_nickname').text(parsedData.public_nick);
 			$('#value_public_page').attr('href', parsedData.public_page_url);
@@ -199,19 +199,20 @@ function SettingsHandler(){
 		toggle_element.off('change').bootstrapToggle(settings_value ? 'off' : 'on').change(function() {
 			new AjaxSettingsHandler().setUserSetting(toggle_element, service);
 		});
-	}
-
+	};
 }
 
 function StatisticsHandler(){
+    'use strict';
+    
 
 	/**
 	 *
 	 */
 	this.deleteStatistics = function(){
-		if ($('#' + editsDoneCountId).text() == '0' &&
-			$('#' + discussionArgVoteCountId).text() == '0' &&
-			$('#' + discussionStatVoteCountId).text() == '0'){
+		if ($('#' + editsDoneCountId).text()  ===  '0' &&
+			$('#' + discussionArgVoteCountId).text()  ===  '0' &&
+			$('#' + discussionStatVoteCountId).text()  ===  '0'){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 			return;
 		}
@@ -221,7 +222,7 @@ function StatisticsHandler(){
 		$('#' + popupConfirmDialogId + ' div.modal-body').html(_t(deleteStatisticsBody));
 		$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
-			new AjaxSettingsHandler().deleteStatisticsRequest()
+			new AjaxSettingsHandler().deleteStatisticsRequest();
 		});
 		$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 			$('#' + popupConfirmDialogId).modal('hide');
@@ -236,7 +237,7 @@ function StatisticsHandler(){
 	 */
 	this.callbackGetStatisticsDone = function(jsonData, titleText, is_clicked_element){
 		var parsedData = $.parseJSON(jsonData);
-		if (parsedData.length == 0){
+		if (parsedData.length  ===  0){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 			return;
 		}
@@ -269,7 +270,7 @@ function StatisticsHandler(){
 			table.append(tr);
 		});
 		
-		this.setGuiOfCallbackStatisticsModal(table, titleText)
+		this.setGuiOfCallbackStatisticsModal(table, titleText);
 	};
 	
 	this.setGuiOfCallbackStatisticsModal = function(table, titleText){
@@ -315,7 +316,7 @@ function StatisticsHandler(){
 	 */
 	this.callbackDeleteStatisticsDone = function(jsonData) {
 		var parsedData = $.parseJSON(jsonData);
-		if (parsedData.removed_data == 'true') {
+		if (parsedData.removed_data  ===  'true') {
 			$('#' + statisticsSuccessDialog).fadeIn();
 			$('#' + statisticsSuccessMessage).text(_t(statisticsDeleted));
 			setTimeout(function () {
@@ -395,7 +396,7 @@ $(function () {
 	});
 
 	$('#' + infoVoteArgumentsId).click(function (){
-		new AjaxSettingsHandler().getArgumentVotes();
+		new AjaxSettingsHandler().getMarekdArguments();
 	});
 
 	$('#' + infoVoteStatementsId).click(function (){
@@ -440,8 +441,12 @@ $(function () {
 
 	// ajax loading animation
 	$(document).on({
-		ajaxStart: function ajaxStartFct () { setTimeout("$('body').addClass('loading')", 0); },
-		ajaxStop: function ajaxStopFct () { setTimeout("$('body').removeClass('loading')", 0); }
+		ajaxStart: function() {
+			setTimeout("$('body').addClass('loading');", 0);
+		},
+		ajaxStop: function() {
+			setTimeout("$('body').removeClass('loading');", 0);
+		}
 	});
 
 	/**

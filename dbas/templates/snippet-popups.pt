@@ -168,8 +168,8 @@
     			<div class="modal-body">
     			</div>
     			<div class="modal-footer">
-    				<button id="confirm-dialog-accept-btn" type="button" class="btn btn-success btn-default" i18n:translate="okay">Okay</button>
-    				<button id="confirm-dialog-refuse-btn" type="button" class="btn btn-danger btn-default" i18n:translate="cancel">Cancel</button>
+    				<button id="confirm-dialog-accept-btn" type="button" class="btn btn-success btn-secondary" i18n:translate="okay">Okay</button>
+    				<button id="confirm-dialog-refuse-btn" type="button" class="btn btn-danger btn-secondary" i18n:translate="cancel">Cancel</button>
     			</div>
     		</div>
     	</div>
@@ -191,8 +191,8 @@
                     </div>
     			</div>
     			<div class="modal-footer">
-    				<button id="confirm-row-dialog-accept-btn" type="button" class="btn btn-success btn-default" i18n:translate="okay">Okay</button>
-    				<button id="confirm-row-dialog-refuse-btn" type="button" class="btn btn-danger btn-default" i18n:translate="cancel">Cancel</button>
+    				<button id="confirm-row-dialog-accept-btn" type="button" class="btn btn-success btn-secondary" i18n:translate="okay">Okay</button>
+    				<button id="confirm-row-dialog-refuse-btn" type="button" class="btn btn-danger btn-secondary" i18n:translate="cancel">Cancel</button>
     			</div>
     		</div>
     	</div>
@@ -216,8 +216,8 @@
 
     			</div>
     			<div class="modal-footer">
-    				<button id="confirm-dialog-checkbox-accept-btn" type="button" class="btn btn-success btn-default" i18n:translate="okay">Okay</button>
-    				<button id="confirm-dialog-checkbox-refuse-btn" type="button" class="btn btn-danger btn-default" i18n:translate="cancel">Cancel</button>
+    				<button id="confirm-dialog-checkbox-accept-btn" type="button" class="btn btn-success btn-secondary" i18n:translate="okay">Okay</button>
+    				<button id="confirm-dialog-checkbox-refuse-btn" type="button" class="btn btn-danger btn-secondary" i18n:translate="cancel">Cancel</button>
     			</div>
     		</div>
     	</div>
@@ -253,7 +253,7 @@
     				<a class="share-icon share-mail-small" id="share-url-mail" data-toggle="tooltip" data-placement="bottom" title="Mail"></a>
 
     				<button type="button" class="btn btn-success" id="popup-url-sharing-long-url-button" data-is-short-url="1">${structure:extras.tag.fetchurl}</button>
-    				<button type="button" class="btn btn-default" id="popup-url-sharing-close-button" >${structure:extras.tag.close}</button>
+    				<button type="button" class="btn btn-secondary" id="popup-url-sharing-close-button" >${structure:extras.tag.close}</button>
     			</div>
     		</div>
     	</div>
@@ -293,6 +293,9 @@
                         </label>
                         <!--<a id="popup-login-forgot-password-text" i18n:translate="forgot_password" style="cursor: pointer; float:right;">Forgot your password?</a>-->
                     </div>
+                    <div id="dbas-login-data-disclaimer" style="padding: 1em 0 0 1em;">
+                        <p class="text-info" i18n:translate="dbas_login_data_disclaimer">Wenn Sie sich bei D-BAS anmelden, erklären Sie sich damit einverstanden, dass Ihre Aktionen anonymisiert ausgewertet werden und Sie nach Abschluss des Experiments einen Fragebogen per E-Mail erhalten werden.</p>
+                    </div>
                     <!--<div id="popup-login-forgot-password-body" class="form-group" style="margin-top: 1em;">-->
                     <!--    <label for="mail-address" class="control-label" i18n:translate="fill_in_mail_for_password">Please fill in your e-mail below. A new password will be send this address:</label>-->
                     <!--    <div class="form-group">-->
@@ -324,7 +327,7 @@
     			</div>
     			<div class="modal-footer">
     				<button id="popup-login-button-login" type="button" class="btn btn-primary" i18n:translate="login">Log In</button>
-    				<button type="button" class="btn btn-default" id="popup-login-close-button" i18n:translate="close">Close</button>
+    				<button type="button" class="btn btn-secondary" id="popup-login-close-button" i18n:translate="close">Close</button>
     			</div>
     		</div>
     	</div>
@@ -477,7 +480,10 @@
     						</div>
     						<div class="form-group">
                                 <div class="col-md-12">
-                                    <div align="center" class="g-recaptcha" data-sitekey="6Lc0eQ4TAAAAAI9EAByXR8_6yBBc_Xy-lO2WJtAf"></div>
+                                    <div align="center"
+                                         class="g-recaptcha"
+                                         data-size="invisible"
+                                         tal:attributes="data-sitekey extras.g_recaptcha_key"></div>
                                 </div>
     						</div>
     						<div class="col-md-12" id="popup-login-registration-success" role="alert">
@@ -536,7 +542,7 @@
     			<div class="modal-footer">
     				<button id="popup-login-button-login" type="button" class="btn btn-primary" i18n:translate="login">Log In</button>
     				<button id="popup-login-button-register" type="button" class="btn btn-primary" i18n:translate="register">Register</button>
-    				<button type="button" class="btn btn-default" id="popup-login-close-button" i18n:translate="close">Close</button>
+    				<button type="button" class="btn btn-secondary" id="popup-login-close-button" i18n:translate="close">Close</button>
     			</div>
     		</div>
     	</div>
@@ -575,7 +581,7 @@
     				<br>
     			</div>
     			<div class="modal-footer">
-    				<button type="button" class="btn btn-default" id="popup-generate-password-close-button" i18n:translate="close">Close</button>
+    				<button type="button" class="btn btn-secondary" id="popup-generate-password-close-button" i18n:translate="close">Close</button>
     			</div>
     		</div>
     	</div>
@@ -628,11 +634,12 @@
     					<span>${extras.tag.forgot_input_radio}</span>
     				</div>
     	    		<div class="modal-footer">
-    	    			<ul class="pager" style="margin: 0;">
-    	    				<li class="previous"><a href="#" id="popup-set-premisegroups-previous-button" style="float: left;" tal:attributes="title extras.buttons.previous">←</a></li>
+    	    			<ul class="pager" style="float: left; margin: 0;">
+    	    				<li class="previous"><a href="#" id="popup-set-premisegroups-previous-button" tal:attributes="title extras.buttons.previous">←</a></li>
     	    				<li class="next"><a href="#" id="popup-set-premisegroups-next-button" style="float: left;" tal:attributes="title extras.buttons.next">→</a></li>
-    	    				<li><button type="button" class="btn btn-success" id="popup-set-premisegroups-send-button" style="float: right;" >${extras.buttons.save_my_statement}</button></li>
     	    			</ul>
+                        <span id="popup-set-premisegroups-warning-text" class="text-warning" style="padding-right: 1em;">${extras.tag.premisegroup_popup_warning}</span>
+                        <button type="button" class="btn btn-success" id="popup-set-premisegroups-send-button" style="float: right;" >${extras.buttons.save_my_statement}</button>
     	    		</div>
     			</div>
     		</div>
@@ -686,7 +693,7 @@
                     </div>
 
     				<button type="button" class="btn btn-success" id="popup-writing-news-send" i18n:translate="send_news">Send News</button>
-    				<button type="button" class="btn btn-default" data-dismiss="modal" i18n:translate="close">Close</button>
+    				<button type="button" class="btn btn-secondary" data-dismiss="modal" i18n:translate="close">Close</button>
     			</div>
     		</div>
     	</div>
@@ -740,7 +747,7 @@
     			</div>
     			<div class="modal-footer">
     				<button type="button" class="btn btn-success" id="popup-writing-notification-send" i18n:translate="send_notification">Send Notifcation</button>
-    				<button type="button" class="btn btn-default" data-dismiss="modal" i18n:translate="close">Close</button>
+    				<button type="button" class="btn btn-secondary" data-dismiss="modal" i18n:translate="close">Close</button>
     			</div>
     		</div>
     	</div>
@@ -753,7 +760,7 @@
     			<div class="modal-header">
     				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
     				</button>
-    				<h4 id="myModalLabelAddTopic" class="modal-title">${structure:extras.tag.add_a_topic}</h4>
+    				<h4 id="myModalLabelAddTopic" i18n:translate="add_topic">Add Topic</h4>
     			</div>
     			<div class="modal-body">
                     <p i18n:translate="please_enter_title">Please enter your title here:</p>
@@ -805,8 +812,8 @@
                     </div>
                 </div>
     			<div class="modal-footer">
-    				<button id="popup-add-topic-accept-btn" type="button" class="btn btn-success btn-default">${structure:extras.tag.save}</button>
-    				<button id="popup-add-topic-refuse-btn" type="button" class="btn btn-danger btn-default">${structure:extras.tag.cancel}</button>
+    				<button id="popup-add-topic-accept-btn" type="button" class="btn btn-success btn-secondary">${structure:extras.tag.save}</button>
+    				<button id="popup-add-topic-refuse-btn" type="button" class="btn btn-danger btn-secondary">${structure:extras.tag.cancel}</button>
     			</div>
     		</div>
     	</div>
@@ -835,6 +842,7 @@
                                 <small class="argument_text" i18n:translate="argument_optimization_description">This argument is acceptable but it needs correction for spelling/grammar.</small>
                             </label>
                             <br>
+                            <br>
                             <input type="radio" id="off" value="offtopic" name="flag-statement">
                             <label for="off">
                                 <span class="statement_text" i18n:translate="statement_offtopic_or_irrelevant">This statement is off topic or irrelevant.</span><br class="statement_text">
@@ -842,6 +850,7 @@
                                 <span class="argument_text" i18n:translate="argument_offtopic_or_irrelevant">This argument is off topic or irrelevant.</span><br class="argument_text">
                                 <small class="argument_text" i18n:translate="argument_offtopic_or_irrelevant_description">This argument does not belong to the topic under discussion.</small>
                             </label>
+                            <br>
                             <br>
                             <!--<input type="radio" id="sp" value="spam" name="flag-statement">-->
                             <!--<label for="sp">-->
@@ -852,13 +861,16 @@
                             <!--<br>-->
                             <input type="radio" id="bad" value="harmful" name="flag-statement">
                             <label for="bad">
-                                <span class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span>
-                                <span class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span>
+                                <span class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span><br class="statement_text">
+                                <span class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span><br class="argument_text">
+                                <small class="statement_text" i18n:translate="argument_statement_harmful_description">A reasonable person would find this content inappropriate for respectful discourse.</small>
                             </label>
+                            <br>
                             <br>
                             <input type="radio" id="dupl" value="duplicate" name="flag-statement">
                             <label for="dupl">
-                                <span class="statement_text" i18n:translate="this_statement_duplicate">This statement is a duplicate.</span>
+                                <span class="statement_text" i18n:translate="this_statement_duplicate">This statement is a duplicate.</span><br>
+                                <small class="statement_text" i18n:translate="this_statement_duplicate_description">This statement has been done before in a slightly different wording.</small>
                             </label>
                         </fieldset>
                     </form>
@@ -943,7 +955,7 @@
                     </div>
     			</div>
     			<div class="modal-footer">
-    				<button id="popup-flag-statement-accept-btn" type="button" class="btn btn-success btn-default">${structure:extras.tag.submit}</button>
+    				<button id="popup-flag-statement-accept-btn" type="button" class="btn btn-success btn-secondary">${structure:extras.tag.submit}</button>
                 </div>
     		</div>
     	</div>
@@ -1077,11 +1089,17 @@
     			<div class="modal-footer">
                     <div style="float:left;">
                         <div id="chart-btn-div">
-                            <input id="chart-btn" class="fa fa-eye" data-toggle="toggle" data-on="<i class='fa fa-bar-chart fa-pull-left fa-2x'></i>" data-off="<i class='fa fa-pie-chart fa-2x'></i>" checked type="checkbox" data-onstyle="default" data-offstyle="default">
+                            <input id="chart-btn"
+                                   data-toggle="toggle"
+                                   data-on="<i class='fa fa-bar-chart fa-pull-left fa-2x'></i>"
+                                   data-off="<i class='fa fa-pie-chart fa-2x'></i>"
+                                   checked type="checkbox"
+                                   data-onstyle="default"
+                                   data-offstyle="default">
                         </div>
                     </div>
-    				<button id="barometer-popup-accept-btn" type="button" class="btn btn-success btn-default" i18n:translate="okay">Okay</button>
-    				<button id="barometer-popup-refuse-btn" type="button" class="btn btn-danger btn-default" i18n:translate="cancel">Cancel</button>
+    				<button id="barometer-popup-accept-btn" type="button" class="btn btn-success btn-secondary" i18n:translate="okay">Okay</button>
+    				<button id="barometer-popup-refuse-btn" type="button" class="btn btn-danger btn-secondary" i18n:translate="cancel">Cancel</button>
     			</div>
     		</div>
     	</div>

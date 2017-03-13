@@ -4,6 +4,7 @@
  */
 
 function AjaxUserHandler(){
+	"use strict";
 	/**
 	 * Ajax call for user data
 	 */

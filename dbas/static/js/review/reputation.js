@@ -9,7 +9,8 @@ var strokeColorSet = ['#4CAF50', '#F44336', '#2196F3', '#795548']; // 500
 var pointStrokeColorSet = ['#2E7D32', '#C62828', '#1565C0', '#4E342E']; // 800
 
 $(document).ready(function () {
-	
+    'use strict';
+    	
 	var labels = collectLabels();
 	var absoluteData = collectAbsoluteDataset();
 	var relativeData = collectRelativeDataset();
@@ -19,8 +20,8 @@ $(document).ready(function () {
 	var collectedAbsoluteData = collected[1];
 	var collectedRelativeData = collected[2];
 	
-	createChart(_t('repuationChartSum'), collectedLabels,  collectedAbsoluteData, $('#reputation_absolute_graph_summary'), '#absolute_graph_summary', 0);
-	createChart(_t('repuationChartDay'), collectedLabels,  collectedRelativeData, $('#reputation_relative_graph_summary'), '#relative_graph_summary', 2);
+	createChart(_t('repuationChartSum'), collectedLabels,  collectedAbsoluteData, $('#reputation_absolute_graph_summary'), 'absolute_graph_summary', 0);
+	createChart(_t('repuationChartDay'), collectedLabels,  collectedRelativeData, $('#reputation_relative_graph_summary'), 'relative_graph_summary', 2);
 	// createChart('Absolute View', labels, absoluteData, $('#reputation_absolute_graph'), '#absolute_graph', 2);
 	// createChart('Relative View', labels, relativeData, $('#reputation_relative_graph'), '#relative_graph', 3);
 	setLegendCSS();
@@ -32,6 +33,8 @@ $(document).ready(function () {
  * @returns {Array}
  */
 function collectLabels(){
+    'use strict';
+    
 	var labels = [];
 	$.each($('#reputation_table').find('.rep_date'), function(){
 		labels.push($(this).text());
@@ -44,6 +47,8 @@ function collectLabels(){
  * @returns {number[]}
  */
 function collectAbsoluteDataset() {
+    'use strict';
+    
 	var data = [0];
 	$.each($('#reputation_table').find('.points'), function (index) {
 		data.push(data[index] + parseInt($(this).text()));
@@ -57,6 +62,8 @@ function collectAbsoluteDataset() {
  * @returns {Array}
  */
 function collectRelativeDataset(){
+    'use strict';
+    
 	var data = [];
 	$.each($('#reputation_table').find('.points'), function(){
 		data.push(parseInt($(this).text()));
@@ -72,11 +79,13 @@ function collectRelativeDataset(){
  * @returns {*[]} labels, absoluteDataset, relativeDataset
  */
 function collectDates(labels, absoluteDataset, relativeDataset){
+    'use strict';
+    
 	var newLabels = [];
 	var newAbsolute = [];
 	var newRelative = [];
 	$.each(labels, function(index){
-		if (labels[index] == newLabels[newLabels.length - 1]){
+		if (labels[index] === newLabels[newLabels.length - 1]){
 			newAbsolute[newAbsolute.length - 1] = newAbsolute[newAbsolute.length - 1] + relativeDataset[index];
 			newRelative[newRelative.length - 1] = newRelative[newRelative.length - 1] + relativeDataset[index];
 		} else {
@@ -100,6 +109,8 @@ function collectDates(labels, absoluteDataset, relativeDataset){
  * @param count int for the color array
  */
 function createChart (label, labels, displaydata, space, id, count){
+    'use strict';
+    
 	space.append('<canvas id="' + id + '" width="' + space.width() + 'px" height="300" style= "display: block; margin: 0 auto;"></canvas>');
 	var data = {
 		labels : labels,
@@ -115,16 +126,21 @@ function createChart (label, labels, displaydata, space, id, count){
 			steppedLine: true,
 			data : displaydata,
 			hover: {mode: 'single'}
-		}]};
-	var chart = new Chart(document.getElementById(id).getContext('2d')).Line(data);
-	var div_legend = $('<div>').addClass('chart-legend').append(chart.generateLegend());
-	space.prepend(div_legend);
+		}]
+	};
+	if (typeof($('#' + id)) !== 'undefined' && document.getElementById(id) !== null) {
+		var chart = new Chart(document.getElementById(id).getContext('2d')).Line(data);
+		var div_legend = $('<div>').addClass('chart-legend').append(chart.generateLegend());
+		space.prepend(div_legend);
+	}
 }
 
 /**
  * Beautifies CSS attributes of .chart-legend
  */
 function setLegendCSS () {
+    'use strict';
+    
 	var legend = $('.chart-legend');
 
 	legend.find('ul').css({

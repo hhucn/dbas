@@ -12,6 +12,8 @@ var mainpage = location.origin + '/'; //get_hostname(window.location.href);
  * @private
  */
 _t = function(id){
+    'use strict';
+    
     var lang_id = $('#' + languageDropdownId).find('.active a').attr('id');
     return get_it(lang_id, id);
 };
@@ -24,18 +26,23 @@ _t = function(id){
  * @private
  */
 _t_discussion = function(id){
+    'use strict';
+    
     var info = $('#issue_info');
-    if (info.length == 0)
-        return _t(id);
+    if (info.length === 0) {
+	    return _t(id);
+    }
     var lang = info.data('discussion-language');
     return get_it(lang, id);
 };
 
 var get_it = function(val, id){
+    'use strict';
+    
     var value = 'unknown value';
-    if (val.indexOf('en') != -1 && dbas_en.hasOwnProperty(id)){
+    if (val.indexOf('en') !== -1 && dbas_en.hasOwnProperty(id)){
         value = dbas_en[id];
-    } else if (val.indexOf('de') != -1 && dbas_de.hasOwnProperty(id)){
+    } else if (val.indexOf('de') !== -1 && dbas_de.hasOwnProperty(id)){
         value = dbas_de[id];
     }
     return value;
@@ -47,13 +54,15 @@ var get_it = function(val, id){
  * @returns {string} language tag
  */
 getLanguage = function(){
+    'use strict';
+    
     var this_id, value = 'unknown value';
     $('#' + languageDropdownId).children().each(function(){
         if ($(this).hasClass('active')){
             this_id = $(this).children().first().attr('id');
-            if (this_id.indexOf('en') != -1){           value = 'en';
-            } else if (this_id.indexOf('de') != -1){    value = 'de';
-            } else {                                    value = 'unknown value';
+            if (this_id.indexOf('en') !== -1){        value = 'en';
+            } else if (this_id.indexOf('de') !== -1){ value = 'de';
+            } else {                                  value = 'unknown value';
             }
         }
     });
@@ -65,10 +74,12 @@ getLanguage = function(){
  * @returns {string} language tag
  */
 getDiscussionLanguage = function(){
+    'use strict';
+    
     var lang = $('#issue_info').data('discussion-language'),
         value = 'unknown identifier';
-    if (lang.indexOf('en') != -1){          value = 'en';
-    } else if (lang.indexOf('de') != -1){    value = 'de';
+    if (lang.indexOf('en') !== -1){          value = 'en';
+    } else if (lang.indexOf('de') !== -1){    value = 'de';
     } else {                                value = 'unknown value';
     }
     return value;
@@ -150,7 +161,6 @@ var gender                          = 'gender';
 var generateSecurePassword          = 'generateSecurePassword';
 var goodPointTakeMeBackButtonText   = 'goodPointTakeMeBackButtonText';
 var group_uid                       = 'group_uid';
-var history                         = 'history';
 var haveALookAt                     = 'haveALookAt';
 var hidePasswordRequest             = 'hidePasswordRequest';
 var hideGenerator                   = 'hideGenerator';
@@ -223,6 +233,8 @@ var participantsSawArgumentsToThis  = 'participantsSawArgumentsToThis';
 var participantSawArgumentsToThis   = 'participantSawArgumentsToThis';
 var pinNavigation                   = 'pinNavigation';
 var pleaseEditAtLeast               = 'pleaseEditAtLeast';
+var pleaseEnterYourTextHere         = 'pleaseEnterYourTextHere';
+var pleaseEnterYourTextForSearchHere = 'pleaseEnterYourTextForSearchHere';
 var queueCompleteSeen               = 'queueCompleteSeen';
 var revokedArgument                 = 'revokedArgument';
 var registered                      = 'registered';
@@ -236,6 +248,8 @@ var requestFailedInternalError      = 'requestFailedInternalError';
 var restartOnError                  = 'restartOnError';
 var repuationChartSum               = 'repuationChartSum';
 var repuationChartDay               = 'repuationChartDay';
+var searchStatementPopupTitleText   = 'searchStatementPopupTitleText';
+var searchStatementPopupBodyText    = 'searchStatementPopupBodyText';
 var sawThis                         = 'saw this';
 var saveMyStatement                 = 'saveMyStatement';
 var saveMyStatements                = 'saveMyStatements';
@@ -291,10 +305,17 @@ var tourIssueTitle                  = 'tourIssueTitle';
 var tourIssueContent                = 'tourIssueContent';
 var tourStartDiscussionTitle        = 'tourStartDiscussionTitle';
 var tourStartDiscussionContent      = 'tourStartDiscussionContent';
+var tourMarkOpinionTitle            = 'tourMarkOpinionTitle';
+var tourMarkOpinionContent          = 'tourMarkOpinionContent';
+var tourMarkOpinionText             = 'tourMarkOpinionText';
+var tourSidebarTitle                = 'tourSidebarTitle';
+var tourSidebarContent              = 'tourSidebarContent';
 var tourSelectAnswertTitle          = 'tourSelectAnswertTitle';
 var tourSelectAnswertContent        = 'tourSelectAnswertContent';
 var tourEnterStatementTitle         = 'tourEnterStatementTitle';
 var tourEnterStatementContent       = 'tourEnterStatementContent';
+var tourStatementActionTitle        = 'tourStatementActionTitle';
+var tourStatementActionContent      = 'tourStatementActionContent';
 var tourHaveFunTitle                = 'tourHaveFunTitle';
 var tourHaveFunContent              = 'tourHaveFunContent';
 
@@ -305,6 +326,7 @@ var GUIDED_TOUR = 'DID_GUIDED_TOUR';
 var GUIDED_TOUR_RUNNING = 'GUIDED_TOUR_RUNNING';
 var ADMIN_WARNING = 'hide-admin-caution-warning';
 var LANG_SWITCH_WARNING = 'LANG_SWITCH_WARNING';
+var DBAS_DATA_DISCLAIMER = 'DBAS_DATA_DISCLAIMER';
 
 /**
  * URL's
@@ -462,6 +484,8 @@ var dbas_en = {
     'proposalsWereForwarded': 'Your proposals were forwarded!',
     'pinNavigation': 'Pin Navigation',
     'pleaseEditAtLeast': 'Please edit at least X chars to reduce noise!',
+    'pleaseEnterYourTextHere': 'Please enter your text here ...',
+    'pleaseEnterYourTextForSearchHere': 'Please enter your text for searching here ...',
     'queueCompleteSeen': 'You have seen every open task, so we will start from the beginning again.',
     'position': 'Position',
     'revokedArgument': 'revoked argument',
@@ -481,6 +505,8 @@ var dbas_en = {
     'sawThis': 'saw this',
     'saveMyStatement': 'Save my Statement!',
     'saveMyStatements': 'Save my Statements!',
+    'searchStatementPopupTitleText': 'Search a statement!',
+    'searchStatementPopupBodyText': 'If you select an statement, you will jump to this step in the discussion.',
     'showAllUsers': 'Show all users',
     'showAllArguments': 'Show all arguments',
     'showAllArgumentsTitle': 'Show all arguments, done by users',
@@ -537,10 +563,17 @@ var dbas_en = {
     'tourIssueContent': 'Here you can the topic, which the current discussion is about.',
     'tourStartDiscussionTitle': 'First steps',
     'tourStartDiscussionContent': 'On the left side there are messages of the system and on the right side there are your answers.',
+    'tourMarkOpinionTitle': 'Mark opinon',
+    'tourMarkOpinionContent': 'With this little star you can mark your opinion.',
+    'tourMarkOpinionText': 'We should shut down University Park.',
+    'tourSidebarTitle': 'Sidebar',
+    'tourSidebarContent': 'There are many more options hidden behind the menu icon.',
     'tourSelectAnswertTitle': 'First selection',
     'tourSelectAnswertContent': 'In the lower part you can choose your answers ...',
     'tourEnterStatementTitle': 'Your own response',
-    'tourEnterStatementContent': '... or enter new statement, if you are logged in.',
+    'tourEnterStatementContent': '... or enter new statement, if you are logged in ...',
+    'tourStatementActionTitle': 'Interaction',
+    'tourStatementActionContent': '... or would you like to interact with the already given statements?',
     'tourHaveFunTitle': 'And now ...',
     'tourHaveFunContent': '... have fun!',
 };
@@ -689,6 +722,8 @@ var dbas_de = {
     'proposalsWereForwarded': 'Ihr Vorschlag wurde eingereicht!',
     'pinNavigation': 'Navigation anheften',
     'pleaseEditAtLeast': 'Bitte ändern Sie mindestens X Zeichen um unnötige Änderungen zu vermeiden.',
+    'pleaseEnterYourTextForSearchHere': 'Bitte geben Sie hier Ihren Suchtext ein ...',
+    'pleaseEnterYourTextHere': 'Bitte geben Sie hier Ihren Text ein ...',
     'queueCompleteSeen': 'Wir haben Ihnen schon leider alles gezeigt, also fangen wir nochmal von vorne an!',
     'position': 'Position',
     'report': 'Melden',
@@ -708,6 +743,8 @@ var dbas_de = {
     'sawThis': 'sahen dies!',
     'saveMyStatement': 'Aussage speichern!',
     'saveMyStatements': 'Aussagen speichern!',
+    'searchStatementPopupTitleText': 'Aussagensuchen!',
+    'searchStatementPopupBodyText': 'Bei der Auswahl einer Aussage, springen Sie zu diesem Abschnitt in der Diskussion.',
     'showAllUsers': 'Zeig\' alle Benutzer',
     'showAllArguments': 'Zeig\' alle Argumente',
     'showAllArgumentsTitle': 'Zeigt alle Argumente',
@@ -764,10 +801,17 @@ var dbas_de = {
     'tourIssueContent': 'Hier sehen Sie das aktuelle Diskussionsthema.',
     'tourStartDiscussionTitle': 'Erste Schritte',
     'tourStartDiscussionContent': 'In diesem Abschnitt sehen Sie links Nachrichten des System und rechts Ihre eigenen Nachrichten.',
+    'tourMarkOpinionTitle': 'Meinung markieren',
+    'tourMarkOpinionContent': 'Mit dem kleinen Stern können Sie Ihre eigene Meinung markieren.',
+    'tourMarkOpinionText': 'Sie interessiert, dass der Park geschlossen werden soll.',
+    'tourSidebarTitle': 'Seitenleiste',
+    'tourSidebarContent': 'Hinter dem Menü-Icon sind noch weitere Optionen versteckt.',
     'tourSelectAnswertTitle': 'Erste Auswahl',
     'tourSelectAnswertContent': 'Im unteren Teil können Sie Antworten auswählen ...',
     'tourEnterStatementTitle': 'Eigene Antworten',
-    'tourEnterStatementContent': '... oder eigene Antworten eingeben, sofern Sie angemeldet sind.',
+    'tourEnterStatementContent': '... oder eigene Antworten eingeben, sofern Sie angemeldet sind ...',
+    'tourStatementActionTitle': 'Interaktionen',
+    'tourStatementActionContent': '... oder doch lieber mit den vorhanden Antworten agieren?',
     'tourHaveFunTitle': 'Und nun ...',
     'tourHaveFunContent': '... viel Spaß!',
 };

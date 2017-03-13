@@ -76,7 +76,7 @@
 
             <div id="howto" class="center review-wrapper" style="display: none;">
                 <div class="left row">
-                    <div class="col-md-offset-2 col-md-8" style="margin-top: 1em;">
+                    <div class="col-md-offset-2 col-md-8 col-xs-offset-1 col-cs-10" style="margin-top: 1em;">
                         <h4 i18n:translate="what_is_reputation">What is reputation? How do I earn (and lose) it?</h4>
                         <span i18n:translate="what_is_reputation_def">Reputation is a rough measurement of how work you are doing for the discussion and the community;</span>
                         <span i18n:translate="what_is_reputation_earn">you can earn it by using D-BAS and all of its great functions.</span>
@@ -130,8 +130,6 @@
             </div>
 
         </div>
-
-        <script type="text/javascript" src="${request.static_url('dbas:static/js/review/index.js')}"></script>
 
 	</tal:block>
 </tal:block>

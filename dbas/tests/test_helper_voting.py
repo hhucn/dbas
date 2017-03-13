@@ -1,16 +1,12 @@
 import unittest
+
 import transaction
 from pyramid import testing
+from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ClickedArgument, ClickedStatement, StatementSeenBy, ArgumentSeenBy
-from dbas.helper.voting import add_seen_argument, add_seen_statement, add_vote_for_argument, add_vote_for_statement
-
-from dbas.helper.tests import add_settings_to_appconfig
-from sqlalchemy import engine_from_config, and_
-
-settings = add_settings_to_appconfig()
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+from dbas.helper.voting import add_seen_argument, add_seen_statement, add_click_for_argument, add_click_for_statement
 
 
 class VotingHelperTest(unittest.TestCase):
@@ -138,37 +134,37 @@ class VotingHelperTest(unittest.TestCase):
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
-        val = add_vote_for_argument([], 1100)
+        val = add_click_for_argument([], 1100)
         self.assertFalse(val)
 
-        val = add_vote_for_argument([], self.user.nickname)
+        val = add_click_for_argument([], self.user.nickname)
         self.assertFalse(val)
 
-        val = add_vote_for_argument([0], self.user.nickname)
+        val = add_click_for_argument([0], self.user.nickname)
         self.assertFalse(val)
 
-        val = add_vote_for_argument([1], self.user.nickname)
+        val = add_click_for_argument([1], self.user.nickname)
         self.assertFalse(val)
 
-        val = add_vote_for_argument(None, self.user.nickname)
+        val = add_click_for_argument(None, self.user.nickname)
         self.assertFalse(val)
 
-        val = add_vote_for_argument('a', self.user.nickname)
+        val = add_click_for_argument('a', self.user.nickname)
         self.assertFalse(val)
 
-        val = add_vote_for_argument(1, self.user.nickname + '#')
+        val = add_click_for_argument(1, self.user.nickname + '#')
         self.assertFalse(val)
 
-        val = add_vote_for_argument(0, 1)
+        val = add_click_for_argument(0, 1)
         self.assertFalse(val)
 
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
-        val = add_vote_for_argument(1, self.user.nickname)
+        val = add_click_for_argument(1, self.user.nickname)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 2, 1, 0, 1)
 
-        val = add_vote_for_argument(2, self.user.nickname)
+        val = add_click_for_argument(2, self.user.nickname)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 4, 2, 0, 2)
 
@@ -182,7 +178,7 @@ class VotingHelperTest(unittest.TestCase):
         self.assertEquals(len(db_votes_sta_con), 1)
 
         # double
-        val = add_vote_for_argument(2, self.user.nickname)
+        val = add_click_for_argument(2, self.user.nickname)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 4, 2, 0, 2)
 
@@ -196,7 +192,7 @@ class VotingHelperTest(unittest.TestCase):
         self.assertEquals(len(db_votes_sta_con), 1)
 
         # vote for undercut
-        val = add_vote_for_argument(18, self.user.nickname)
+        val = add_click_for_argument(18, self.user.nickname)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 5, 4, 0, 3)
 
@@ -224,57 +220,57 @@ class VotingHelperTest(unittest.TestCase):
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
-        val = add_vote_for_statement([], 1100, True)
+        val = add_click_for_statement([], 1100, True)
         self.assertFalse(val)
 
-        val = add_vote_for_statement([], self.user.nickname, True)
+        val = add_click_for_statement([], self.user.nickname, True)
         self.assertFalse(val)
 
-        val = add_vote_for_statement([0], self.user.nickname, True)
+        val = add_click_for_statement([0], self.user.nickname, True)
         self.assertFalse(val)
 
-        val = add_vote_for_statement([1], self.user.nickname, True)
+        val = add_click_for_statement([1], self.user.nickname, True)
         self.assertFalse(val)
 
-        val = add_vote_for_statement(None, self.user.nickname, True)
+        val = add_click_for_statement(None, self.user.nickname, True)
         self.assertFalse(val)
 
-        val = add_vote_for_statement('a', self.user.nickname, True)
+        val = add_click_for_statement('a', self.user.nickname, True)
         self.assertFalse(val)
 
-        val = add_vote_for_statement(1, self.user.nickname + '#', True)
+        val = add_click_for_statement(1, self.user.nickname + '#', True)
         self.assertFalse(val)
 
-        val = add_vote_for_statement(0, 1, True)
+        val = add_click_for_statement(0, 1, True)
         self.assertFalse(val)
 
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
-        val = add_vote_for_statement(1, self.user.nickname, True)
+        val = add_click_for_statement(1, self.user.nickname, True)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 1, 0, 1, 0)
 
-        val = add_vote_for_statement(2, self.user.nickname, True)
+        val = add_click_for_statement(2, self.user.nickname, True)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 2, 0, 2, 0)
 
         # duplicate
-        val = add_vote_for_statement(2, self.user.nickname, True)
+        val = add_click_for_statement(2, self.user.nickname, True)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 2, 0, 2, 0)
 
         # opinion change
-        val = add_vote_for_statement(2, self.user.nickname, False)
+        val = add_click_for_statement(2, self.user.nickname, False)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 3, 0, 2, 0)
 
         # duplicate
-        val = add_vote_for_statement(2, self.user.nickname, False)
+        val = add_click_for_statement(2, self.user.nickname, False)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 3, 0, 2, 0)
 
         # opinion change
-        val = add_vote_for_statement(2, self.user.nickname, True)
+        val = add_click_for_statement(2, self.user.nickname, True)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 4, 0, 2, 0)
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-TODO
+Init scripts for database
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
@@ -13,9 +13,11 @@ import arrow
 import transaction
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
-    Message, Settings, ClickedArgument, ClickedStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy,\
+    Settings, ClickedArgument, ClickedStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy,\
     ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, ReputationReason, \
-    ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate
+    ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate, MarkedArgument,\
+    MarkedStatement, Message, LastReviewerEdit, RevokedContentHistory, RevokedContent, RevokedDuplicate, \
+    ReviewCanceled, RSS, OptimizationReviewLocks, History
 from dbas.database.news_model import News
 from dbas.handler.rss import create_news_rss, create_initial_issue_rss
 from dbas.lib import get_global_url
@@ -33,9 +35,10 @@ nick_of_admin = 'admin'
 
 def usage(argv):
     """
+    Initialize the usage for the database by the given ini-file
 
-    :param argv:
-    :return:
+    :param argv: standard argv
+    :return: None
     """
     cmd = os.path.basename(argv[0])
     print('usage: %s <config_uri>\n(example: "%s development.ini")' % (cmd, cmd))
@@ -44,9 +47,10 @@ def usage(argv):
 
 def main_discussion(argv=sys.argv):
     """
+    Inits the main dummy discussion
 
-    :param argv:
-    :return:
+    :param argv: standard argv
+    :return: None
     """
     if len(argv) != 2:
         usage(argv)
@@ -59,47 +63,27 @@ def main_discussion(argv=sys.argv):
     DiscussionBase.metadata.create_all(discussion_engine)
 
     with transaction.manager:
-        user0, user1, user2, user4, user6, user7, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, user8, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30 = set_up_users(DBDiscussionSession)
-        lang1, lang2 = set_up_language(DBDiscussionSession)
-        issue1, issue2, issue3, issue4, issue5, issue6 = set_up_issue(DBDiscussionSession, lang1, lang2)
-        set_up_settings(DBDiscussionSession, user0, user1, user2, user4, user6, user7, user8, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30, use_anonyme_nicks=False)
+        users = __set_up_users(DBDiscussionSession)
+        lang1, lang2 = __set_up_language(DBDiscussionSession)
+        issue1, issue2, issue3, issue4, issue5, issue6 = __set_up_issue(DBDiscussionSession, lang1, lang2)
+        transaction.commit()
+        __set_up_settings(DBDiscussionSession, users)
         main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-        setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
-        add_reputation_and_delete_reason(DBDiscussionSession)
+        __setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
+        __add_reputation_and_delete_reason(DBDiscussionSession)
+        __setup_dummy_seen_by(DBDiscussionSession)
+        __setup_dummy_clicks(DBDiscussionSession)
+        __setup_review_dummy_database(DBDiscussionSession)
         transaction.commit()
         create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
 
-def merge_discussion(argv=sys.argv):
+def main_field_test(argv=sys.argv):
     """
+    Inits discussion for the field test about computer science studies
 
-    :param argv:
-    :return:
-    """
-    if len(argv) != 2:
-        usage(argv)
-    config_uri = argv[1]
-    setup_logging(config_uri)
-    settings = get_appsettings(config_uri)
-
-    discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')
-    DBDiscussionSession.configure(bind=discussion_engine)
-    DiscussionBase.metadata.create_all(discussion_engine)
-
-    with transaction.manager:
-        lang1 = DBDiscussionSession.query(Language).filter_by(ui_locales='en').first()
-        lang2 = DBDiscussionSession.query(Language).filter_by(ui_locales='de').first()
-        issue1, issue2, issue3, issue4, issue5, issue6 = set_up_issue(DBDiscussionSession, lang1, lang2)
-        main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-        setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
-        transaction.commit()
-
-
-def field_test(argv=sys.argv):
-    """
-
-    :param argv:
-    :return:
+    :param argv: standard argv
+    :return: None
     """
     if len(argv) != 2:
         usage(argv)
@@ -112,25 +96,120 @@ def field_test(argv=sys.argv):
     DiscussionBase.metadata.create_all(discussion_engine)
 
     with transaction.manager:
-        user0, user1, user2, user4 = set_up_users(DBDiscussionSession, include_dummy_users=False)
-        lang1, lang2 = set_up_language(DBDiscussionSession)
-        issue6 = set_up_issue(DBDiscussionSession, lang1, lang2, is_field_test=True)
-        set_up_settings(DBDiscussionSession, user0, user1, user2, user4, use_anonyme_nicks=False)
-        setup_fieltest_discussion_database(DBDiscussionSession, issue6)
+        users = __set_up_users(DBDiscussionSession, include_dummy_users=False)
+        lang1, lang2 = __set_up_language(DBDiscussionSession)
+        issue6 = __set_up_issue(DBDiscussionSession, lang1, lang2, is_field_test=True)
+        __set_up_settings(DBDiscussionSession, users)
+        __setup_fieltest_discussion_database(DBDiscussionSession, issue6)
         transaction.commit()
         # main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-        # setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
-        add_reputation_and_delete_reason(DBDiscussionSession)
+        # __setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
+        __add_reputation_and_delete_reason(DBDiscussionSession)
         transaction.commit()
         create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
+
+
+def main_news(argv=sys.argv):
+    """
+    Inits news database
+
+    :param argv: standard argv
+    :return: None
+    """
+    if len(argv) != 2:
+        usage(argv)
+    config_uri = argv[1]
+    setup_logging(config_uri)
+    settings = get_appsettings(config_uri)
+
+    news_engine = engine_from_config(settings, 'sqlalchemy-news.')
+    DBNewsSession.configure(bind=news_engine)
+    NewsBase.metadata.create_all(news_engine)
+
+    with transaction.manager:
+        setup_news_db(DBNewsSession, settings['pyramid.default_locale_name'])
+        transaction.commit()
+
+
+def drop_it(argv=sys.argv):
+    """
+    Just drop it
+
+    :param argv: standard argv
+    :return: None
+    """
+    if len(argv) != 2:
+        usage(argv)
+    config_uri = argv[1]
+    setup_logging(config_uri)
+    settings = get_appsettings(config_uri)
+
+    discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')
+    DBDiscussionSession.configure(bind=discussion_engine)
+    DiscussionBase.metadata.create_all(discussion_engine)
+
+    news_engine = engine_from_config(settings, 'sqlalchemy-news.')
+    DBNewsSession.configure(bind=news_engine)
+    NewsBase.metadata.create_all(news_engine)
+
+    with transaction.manager:
+        for tmp in DBDiscussionSession.query(TextVersion).all():
+            tmp.set_statement(None)
+        for tmp in DBDiscussionSession.query(Statement).all():
+            tmp.set_textversion(None)
+
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(MarkedArgument).delete()) + ' in MarkedArgument')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(MarkedStatement).delete()) + ' in MarkedStatement')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ArgumentSeenBy).delete()) + ' in ArgumentSeenBy')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(StatementSeenBy).delete()) + ' in StatementSeenBy')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ClickedArgument).delete()) + ' in VoteArgument')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ClickedStatement).delete()) + ' in VoteStatement')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Message).delete()) + ' in Message')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(StatementReferences).delete()) + ' in StatementReferences')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Premise).delete()) + ' in Premise')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(TextVersion).delete()) + ' in TextVersion')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Issue).delete()) + ' in Issue')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Language).delete()) + ' in Language')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReviewDelete).delete()) + ' in ReviewDelete')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReviewEdit).delete()) + ' in ReviewEdit')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReviewEditValue).delete()) + ' in ReviewEditValue')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReviewOptimization).delete()) + ' in ReviewOptimization')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReviewDuplicate).delete()) + ' in ReviewDuplicate')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReviewDeleteReason).delete()) + ' in ReviewDeleteReason')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(LastReviewerDelete).delete()) + ' in LastReviewerDelete')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(LastReviewerEdit).delete()) + ' in LastReviewerEdit')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(LastReviewerOptimization).delete()) + ' in LastReviewerOptimization')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(LastReviewerDuplicate).delete()) + ' in LastReviewerDuplicate')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReputationHistory).delete()) + ' in ReputationHistory')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReputationReason).delete()) + ' in ReputationReason')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(OptimizationReviewLocks).delete()) + ' in OptimizationReviewLocks')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReviewCanceled).delete()) + ' in ReviewCanceled')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(RevokedContent).delete()) + ' in RevokedContent')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(RevokedContentHistory).delete()) + ' in RevokedContentHistory')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(RevokedDuplicate).delete()) + ' in RevokedDuplicate')
+
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Argument).delete()) + ' in Argument')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Statement).delete()) + ' in Statement')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(PremiseGroup).delete()) + ' in PremiseGroup')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(RSS).delete()) + ' in RSS')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Settings).delete()) + ' in Settings')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(User).delete()) + ' in User')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Group).delete()) + ' in Group')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(User).delete()) + ' in User')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Settings).delete()) + ' in Settings')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(History).delete()) + ' in History')
+
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBNewsSession.query(News).delete()) + ' in News')
+        DBDiscussionSession.flush()
+        transaction.commit()
 
 
 def blank_file(argv=sys.argv):
     """
     Minimal database
 
-    :param argv:
-    :return:
+    :param argv: standard argv
+    :return: None
     """
     if len(argv) != 2:
         usage(argv)
@@ -173,12 +252,13 @@ def blank_file(argv=sys.argv):
         DBDiscussionSession.add_all([user0, user1])
         DBDiscussionSession.flush()
 
-        lang1, lang2 = set_up_language(DBDiscussionSession)
+        lang1, lang2 = __set_up_language(DBDiscussionSession)
 
         issue1 = Issue(title='ONE TITLE',
                        info='A INFO TO RULE THEM ALL',
                        author_uid=user1.uid,
-                       lang_uid=lang2.uid)
+                       lang_uid=lang2.uid,
+                       long_info='I AM A LONG CAT')
         DBDiscussionSession.add_all([issue1])
         DBDiscussionSession.flush()
 
@@ -196,105 +276,13 @@ def blank_file(argv=sys.argv):
         create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
 
-def main_discussion_reload(argv=sys.argv):
-    """
-
-    :param argv:
-    :return:
-    """
-    if len(argv) != 2:
-        usage(argv)
-    config_uri = argv[1]
-    setup_logging(config_uri)
-    settings = get_appsettings(config_uri)
-
-    discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')
-    DBDiscussionSession.configure(bind=discussion_engine)
-    DiscussionBase.metadata.create_all(discussion_engine)
-
-    with transaction.manager:
-        drop_discussion_database(DBDiscussionSession)
-        main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-        lang1, lang2 = set_up_language(DBDiscussionSession)
-        issue1, issue2, issue3, issue4, issue5, issue6 = set_up_issue(DBDiscussionSession, lang1, lang2)
-        setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
-        add_reputation_and_delete_reason(DBDiscussionSession)
-        setup_review_database(DBDiscussionSession)
-        setup_dummy_seen_by(DBDiscussionSession)
-        setup_dummy_votes(DBDiscussionSession)
-        transaction.commit()
-        create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
-
-
-def main_dummy_votes(argv=sys.argv):
-    """
-
-    :param argv:
-    :return:
-    """
-    if len(argv) != 2:
-        usage(argv)
-    config_uri = argv[1]
-    setup_logging(config_uri)
-    settings = get_appsettings(config_uri)
-
-    discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')
-    DBDiscussionSession.configure(bind=discussion_engine)
-    DiscussionBase.metadata.create_all(discussion_engine)
-
-    with transaction.manager:
-        setup_dummy_seen_by(DBDiscussionSession)
-        setup_dummy_votes(DBDiscussionSession)
-        transaction.commit()
-
-
-def main_dummy_reviews(argv=sys.argv):
-    """
-
-    :param argv:
-    :return:
-    """
-    if len(argv) != 2:
-        usage(argv)
-    config_uri = argv[1]
-    setup_logging(config_uri)
-    settings = get_appsettings(config_uri)
-
-    discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')
-    DBDiscussionSession.configure(bind=discussion_engine)
-    DiscussionBase.metadata.create_all(discussion_engine)
-
-    with transaction.manager:
-        setup_review_database(DBDiscussionSession)
-        transaction.commit()
-
-
-def main_news(argv=sys.argv):
-    """
-
-    :param argv:
-    :return:
-    """
-    if len(argv) != 2:
-        usage(argv)
-    config_uri = argv[1]
-    setup_logging(config_uri)
-    settings = get_appsettings(config_uri)
-
-    news_engine = engine_from_config(settings, 'sqlalchemy-news.')
-    DBNewsSession.configure(bind=news_engine)
-    NewsBase.metadata.create_all(news_engine)
-
-    with transaction.manager:
-        setup_news_db(DBNewsSession, settings['pyramid.default_locale_name'])
-        transaction.commit()
-
-
 def setup_news_db(session, ui_locale):
     """
+    Fills news database
 
-    :param session:
-    :return:
+    :param session: current session
+    :param ui_locale: String
+    :return:  None
     """
     news01 = News(title='Anonymous users after vacation',
                   date=arrow.get('2015-09-24'),
@@ -570,49 +558,29 @@ def setup_news_db(session, ui_locale):
                        'very happy with the results and with the first, bigger argumentation map created by '
                        'inexperienced participants! Now we will fix a few smaller things and looking forward '
                        'to out first field test!')
+    news57 = News(title='Docker',
+                  date=arrow.get('2017-02-09'),
+                  author='Tobias Krauthoff',
+                  news='The last weeks we have spend to make D-BAS more stable, writing some analyzers as well as '
+                       'dockerize everything. The complete project can be found on https://github.com/hhucn/dbas '
+                       'soon.')
     news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,
                   news13, news14, news15, news16, news29, news18, news19, news20, news21, news22, news23, news24,
                   news25, news26, news27, news28, news30, news31, news32, news33, news34, news35, news36, news37,
                   news38, news39, news40, news41, news42, news43, news44, news45, news46, news47, news48, news49,
-                  news50, news51, news52, news53, news54, news55, news56]
+                  news50, news51, news52, news53, news54, news55, news56, news57]
     session.add_all(news_array[::-1])
     session.flush()
 
     create_news_rss(get_global_url(), ui_locale)
 
 
-def drop_discussion_database(session):
-    """
-
-    :param session:
-    :return:
-    """
-    db_textversions = session.query(TextVersion).all()
-    for tmp in db_textversions:
-        tmp.set_statement(None)
-
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(ClickedArgument).delete()) + ' in ClickedArgument')
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(ClickedStatement).delete()) + ' in ClickedStatement')
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(ArgumentSeenBy).delete()) + ' in ClickedArgument')
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(StatementSeenBy).delete()) + ' in ClickedStatement')
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Message).delete()) + ' in Message')
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(StatementReferences).delete()) + ' in StatementReferences')
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Argument).delete()) + ' in Argument')
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Premise).delete()) + ' in Premise')
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(PremiseGroup).delete()) + ' in PremiseGroup')
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Statement).delete()) + ' in Statement')
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(TextVersion).delete()) + ' in TextVersion')
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Issue).delete()) + ' in Issue')
-    logger('INIT_DB', 'DROP', 'deleted ' + str(session.query(Language).delete()) + ' in Language')
-    session.flush()
-
-
-def set_up_users(session, include_dummy_users=True):
+def __set_up_users(session, include_dummy_users=True):
     """
     Creates all users
 
     :param session: database session
-    :return: User
+    :return: [User]
     """
 
     # adding groups
@@ -640,7 +608,7 @@ def set_up_users(session, include_dummy_users=True):
     session.flush()
 
     if not include_dummy_users:
-        return user0, user1, user2, user4
+        return [user0, user1, user2, user4]
 
     user6 = User(firstname='Björn', surname='Ebbinghaus', nickname='Björn', email='bjoern.ebbinghaus@uni-duesseldorf.de', password=pw8, group_uid=group0.uid, gender='m')
     user7 = User(firstname='Teresa', surname='Uebber', nickname='Teresa', email='teresa.uebber@uni-duesseldorf.de', password=pw9, group_uid=group0.uid, gender='f')
@@ -686,93 +654,38 @@ def set_up_users(session, include_dummy_users=True):
 
     session.flush()
 
-    return user0, user1, user2, user4, user6, user7, user8, usert00, usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17, usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29, usert30
+    return [user0, user1, user2, user4, user6, user7, user8, usert00, usert01, usert02, usert03, usert04, usert05,
+            usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17,
+            usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29,
+            usert30]
 
 
-def set_up_settings(session, user0, user1, user2, user4, user6=None, user7=None, user8=None, usert00=None, usert01=None,
-                    usert02=None, usert03=None, usert04=None, usert05=None, usert06=None, usert07=None, usert08=None,
-                    usert09=None, usert10=None, usert11=None, usert12=None, usert13=None, usert14=None, usert15=None,
-                    usert16=None, usert17=None, usert18=None, usert19=None, usert20=None, usert21=None, usert22=None,
-                    usert23=None, usert24=None, usert25=None, usert26=None, usert27=None, usert28=None, usert29=None,
-                    usert30=None, use_anonyme_nicks=False):
-    # adding settings
-    settings0 = Settings(author_uid=user0.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settings1 = Settings(author_uid=user1.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    settings2 = Settings(author_uid=user2.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True, lang_uid=2)
-    settings4 = Settings(author_uid=user4.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-    session.add_all([settings0, settings1, settings2, settings4])
-    session.flush()
-
-    if usert00 is not None:
-        settings6 = Settings(author_uid=user6.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-        settings7 = Settings(author_uid=user7.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-        settings8 = Settings(author_uid=user8.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True, lang_uid=2)
-        settingst00 = Settings(author_uid=usert00.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-        settingst01 = Settings(author_uid=usert01.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-        settingst02 = Settings(author_uid=usert02.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-        settingst03 = Settings(author_uid=usert03.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-        settingst04 = Settings(author_uid=usert04.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-        settingst05 = Settings(author_uid=usert05.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-        settingst06 = Settings(author_uid=usert06.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-        settingst07 = Settings(author_uid=usert07.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-        settingst08 = Settings(author_uid=usert08.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-        settingst09 = Settings(author_uid=usert09.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-        settingst10 = Settings(author_uid=usert10.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-        settingst11 = Settings(author_uid=usert11.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-        settingst12 = Settings(author_uid=usert12.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-        settingst13 = Settings(author_uid=usert13.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-        settingst14 = Settings(author_uid=usert14.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-        settingst15 = Settings(author_uid=usert15.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-        settingst16 = Settings(author_uid=usert16.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-        settingst17 = Settings(author_uid=usert17.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-        settingst18 = Settings(author_uid=usert18.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-        settingst19 = Settings(author_uid=usert19.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-        settingst20 = Settings(author_uid=usert20.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-        settingst21 = Settings(author_uid=usert21.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-        settingst22 = Settings(author_uid=usert22.uid, send_mails=False, send_notifications=True, should_show_public_nickname=False)
-        settingst23 = Settings(author_uid=usert23.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-        settingst24 = Settings(author_uid=usert24.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-        settingst25 = Settings(author_uid=usert25.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-        settingst26 = Settings(author_uid=usert26.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-        settingst27 = Settings(author_uid=usert27.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-        settingst28 = Settings(author_uid=usert28.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-        settingst29 = Settings(author_uid=usert29.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-        settingst30 = Settings(author_uid=usert30.uid, send_mails=False, send_notifications=True, should_show_public_nickname=True)
-
-        session.add_all([settingst00, settingst01, settingst02, settingst03, settingst04, settingst05, settingst06])
-        session.add_all([settingst07, settingst08, settingst09, settingst10, settingst11, settingst12, settingst13])
-        session.add_all([settingst14, settingst15, settingst16, settingst17, settingst18, settingst19, settingst20])
-        session.add_all([settingst21, settingst22, settingst23, settingst24, settingst25, settingst26, settingst27])
-        session.add_all([settingst28, settingst29, settingst30, settings6, settings7, settings8])
-        session.flush()
-
-        if use_anonyme_nicks:
-            import dbas.user_management as user_hander
-            user_hander.refresh_public_nickname(usert07)
-            user_hander.refresh_public_nickname(usert08)
-            user_hander.refresh_public_nickname(usert09)
-            user_hander.refresh_public_nickname(usert10)
-            user_hander.refresh_public_nickname(usert11)
-            user_hander.refresh_public_nickname(usert12)
-            user_hander.refresh_public_nickname(usert13)
-            user_hander.refresh_public_nickname(usert14)
-            user_hander.refresh_public_nickname(usert15)
-            user_hander.refresh_public_nickname(usert16)
-            user_hander.refresh_public_nickname(usert17)
-            user_hander.refresh_public_nickname(usert18)
-            user_hander.refresh_public_nickname(usert19)
-            user_hander.refresh_public_nickname(usert20)
-            user_hander.refresh_public_nickname(usert21)
-            user_hander.refresh_public_nickname(usert22)
-
-    session.flush()
-
-
-def set_up_language(session):
+def __set_up_settings(session, users):
     """
+    Settings for all users
 
-    :param session:
-    :return:
+    :param session: current session
+    :param users: [User]
+    :return: None
+    """
+    # adding settings
+    import dbas.user_management as user_hander
+    for user in users:
+        new_public_nick = 10 <= users.index(user) <= 20
+        setting = Settings(author_uid=user.uid, send_mails=False, send_notifications=True, should_show_public_nickname=not new_public_nick)
+        session.add(setting)
+        if new_public_nick:
+            user_hander.refresh_public_nickname(user)
+
+    session.flush()
+
+
+def __set_up_language(session):
+    """
+    Set up german and englisch language
+
+    :param session: Current session
+    :return: None
     """
     # adding languages
     lang1 = Language(name='English', ui_locales='en')
@@ -782,14 +695,15 @@ def set_up_language(session):
     return lang1, lang2
 
 
-def set_up_issue(session, lang1, lang2, is_field_test=False):
+def __set_up_issue(session, lang1, lang2, is_field_test=False):
     """
+    Setup all issues
 
-    :param session:
-    :param lang1:
-    :param lang2:
-    :param is_field_test:
-    :return:
+    :param session: current session
+    :param lang1: Englisch language row
+    :param lang2: German language row
+    :param is_field_test: Boolean
+    :return: None
     """
     # adding our main issue
     db_user = session.query(User).filter_by(nickname=nick_of_admin).first()
@@ -845,7 +759,13 @@ def set_up_issue(session, lang1, lang2, is_field_test=False):
         return issue1, issue2, issue3, issue4, issue5, issue6
 
 
-def setup_dummy_seen_by(session):
+def __setup_dummy_seen_by(session):
+    """
+    Randomized ArgumentSeenBy and StatementSeenBy values
+
+    :param session: current session
+    :return: None
+    """
     db_users = DBDiscussionSession.query(User).all()
     users = {user.nickname: user for user in db_users}
     DBDiscussionSession.query(ArgumentSeenBy).delete()
@@ -883,12 +803,12 @@ def setup_dummy_seen_by(session):
     logger('INIT_DB', 'Dummy Seen By', 'Created ' + str(statement_count) + ' seen-by entries for ' + str(len(db_statements)) + ' statements')
 
 
-def setup_dummy_votes(session):
+def __setup_dummy_clicks(session):
     """
-    Drops all votes and init new dummy votes
+    Randomized ClickedStatement and ClickedArgument values
 
-    :param session: DBDiscussionSession
-    :return:
+    :param session: current session
+    :return: None
     """
     db_users = DBDiscussionSession.query(User).all()
     users = {user.nickname: user for user in db_users}
@@ -898,9 +818,8 @@ def setup_dummy_votes(session):
     db_arguments = DBDiscussionSession.query(Argument).all()
     db_statements = DBDiscussionSession.query(Statement).all()
 
-    new_votes_for_arguments, arg_up, arg_down = __set_votes_for_arguments(db_arguments, first_names, users)
-    new_votes_for_statements, stat_up, stat_down = __set_votes_for_statements(db_statements, first_names, users)
-
+    new_clicks_for_arguments, arg_up, arg_down = __add_clicks_for_arguments(db_arguments, users)
+    new_clicks_for_statements, stat_up, stat_down = __add_clicks_for_statements(db_statements, users)
     argument_count = len(db_arguments)
     statement_count = len(db_statements)
 
@@ -913,17 +832,17 @@ def setup_dummy_votes(session):
     rat_stat_up = stat_up / statement_count
     rat_stat_down = stat_down / statement_count
 
-    logger('INIT_DB', 'Dummy Votes',
-           'Created {} up votes for {} arguments ({:.2f} votes/argument)'.format(arg_up, argument_count, rat_arg_up))
-    logger('INIT_DB', 'Dummy Votes',
-           'Created {} down votes for {} arguments ({:.2f} votes/argument)'.format(arg_down, argument_count, rat_arg_down))
-    logger('INIT_DB', 'Dummy Votes',
-           'Created {} up votes for {} statements ({:.2f} votes/statement)'.format(stat_up, statement_count, rat_stat_up))
-    logger('INIT_DB', 'Dummy Votes',
-           'Created {} down votes for {} statements ({:.2f} votes/statement)'.format(stat_down, statement_count, rat_stat_down))
+    logger('INIT_DB', 'Dummy Clicks',
+           'Created {} up clicks for {} arguments ({:.2f} clicks/argument)'.format(arg_up, argument_count, rat_arg_up))
+    logger('INIT_DB', 'Dummy Clicks',
+           'Created {} down clicks for {} arguments ({:.2f} clicks/argument)'.format(arg_down, argument_count, rat_arg_down))
+    logger('INIT_DB', 'Dummy Clicks',
+           'Created {} up clicks for {} statements ({:.2f} clicks/statement)'.format(stat_up, statement_count, rat_stat_up))
+    logger('INIT_DB', 'Dummy Clicks',
+           'Created {} down clicks for {} statements ({:.2f} clicks/statement)'.format(stat_down, statement_count, rat_stat_down))
 
-    session.add_all(new_votes_for_arguments)
-    session.add_all(new_votes_for_statements)
+    session.add_all(new_clicks_for_arguments)
+    session.add_all(new_clicks_for_statements)
     session.flush()
 
     # random timestamps
@@ -936,17 +855,17 @@ def setup_dummy_votes(session):
         va.timestamp = arrow.utcnow().replace(days=-random.randint(0, 25))
 
 
-def __set_votes_for_arguments(db_arguments, firstnames, users):
+def __add_clicks_for_arguments(db_arguments, users):
     """
+    Set randomized clicks for given arguments
 
-    :param db_arguments:
-    :param firstnames:
-    :param users:
-    :return:
+    :param db_arguments: [Argument]
+    :param users: [Users]
+    :return: [ClickedArgument], int, int
     """
     arg_up = 0
     arg_down = 0
-    new_votes_for_arguments = list()
+    new_clicks_for_arguments = list()
     for argument in db_arguments:
         max_interval = len(DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=argument.uid).all())
         up_votes = random.randint(1, max_interval - 1)
@@ -954,58 +873,42 @@ def __set_votes_for_arguments(db_arguments, firstnames, users):
         arg_up += up_votes
         arg_down += down_votes
 
-        new_votes_for_arguments = __set_upvotes_for_arguments(firstnames, up_votes, argument.uid, new_votes_for_arguments, users)
-        new_votes_for_arguments = __set_downvotes_for_arguments(firstnames, down_votes, argument.uid, new_votes_for_arguments, users)
+        new_clicks_for_arguments = __create_clicks_for_arguments(up_votes, argument.uid, users, True)
+        new_clicks_for_arguments += __create_clicks_for_arguments(down_votes, argument.uid, users, False)
 
-    return new_votes_for_arguments, arg_up, arg_down
+    return new_clicks_for_arguments, arg_up, arg_down
 
 
-def __set_upvotes_for_arguments(firstnames, up_votes, argument_uid, new_votes_for_arguments, users):
+def __create_clicks_for_arguments(up_votes, argument_uid, users, is_up_vote):
     """
+    Set clicks
 
-    :param firstnames:
-    :param up_votes:
-    :param argument_uid:
-    :param new_votes_for_arguments:
-    :param users:
-    :return:
+    :param up_votes: Int]
+    :param argument_uid: Argument.uid
+    :param users: {Users.nickname: User}
+    :param is_up_vote: Boolean
+    :return: [ClickedArgument]
     """
-    tmp_firstname = list(firstnames)
+    new_clicks_for_arguments = list()
+    tmp_firstname = list(first_names)
     for i in range(1, up_votes):
         nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
-        new_votes_for_arguments.append(ClickedArgument(argument_uid=argument_uid, author_uid=users[nick].uid, is_up_vote=True, is_valid=True))
+        new_clicks_for_arguments.append(ClickedArgument(argument_uid=argument_uid, author_uid=users[nick].uid, is_up_vote=is_up_vote, is_valid=True))
         tmp_firstname.remove(nick)
-    return new_votes_for_arguments
+    return new_clicks_for_arguments
 
 
-def __set_downvotes_for_arguments(firstnames, down_votes, argument_uid, new_votes_for_arguments, users):
+def __add_clicks_for_statements(db_statements, users):
     """
+    Set randomized clicks for given statements
 
-    :param firstnames:
-    :param down_votes:
-    :param argument_uid:
-    :param new_votes_for_arguments:
-    :param users:
-    :return:
-    """
-    tmp_firstname = list(firstnames)
-    for i in range(1, down_votes):
-        nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
-        new_votes_for_arguments.append(ClickedArgument(argument_uid=argument_uid, author_uid=users[nick].uid, is_up_vote=False, is_valid=True))
-    return new_votes_for_arguments
-
-
-def __set_votes_for_statements(db_statements, firstnames, users):
-    """
-
-    :param db_statements:
-    :param firstnames:
-    :param users:
-    :return:
+    :param db_statements: [Statement]
+    :param users: [Users]
+    :return: [ClickedStatement], int, int
     """
     stat_up = 0
     stat_down = 0
-    new_votes_for_statement = list()
+    new_clicks_for_statement = list()
     for statement in db_statements:
         max_interval = len(DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=statement.uid).all())
         up_votes = random.randint(1, max_interval - 1)
@@ -1013,51 +916,35 @@ def __set_votes_for_statements(db_statements, firstnames, users):
         stat_up += up_votes
         stat_down += down_votes
 
-        new_votes_for_statement = __set_upvotes_for_statements(firstnames, up_votes, statement.uid, new_votes_for_statement, users)
-        new_votes_for_statement = __set_downvotes_for_statements(firstnames, down_votes, statement.uid, new_votes_for_statement, users)
+        new_clicks_for_statement = __create_clicks_for_statements(up_votes, statement.uid, users, True)
+        new_clicks_for_statement += __create_clicks_for_statements(down_votes, statement.uid, users, False)
 
-    return new_votes_for_statement, stat_up, stat_down
+    return new_clicks_for_statement, stat_up, stat_down
 
 
-def __set_upvotes_for_statements(firstnames, up_votes, statement_uid, new_votes_for_statement, users):
+def __create_clicks_for_statements(up_votes, statement_uid, users, is_up_vote):
     """
 
-    :param firstnames:
-    :param up_votes:
-    :param statement_uid:
-    :param new_votes_for_statement:
-    :param users:
-    :return:
+    :param up_votes: Int
+    :param statement_uid: Statement.uid
+    :param users: {Users.nickname: User}
+    :return: [ClickedStatement]
+    :param is_up_vote: Boolean
     """
-    tmp_firstname = list(firstnames)
+    tmp_firstname = list(first_names)
+    new_clicks_for_statement = list()
     for i in range(1, up_votes):
         nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
-        new_votes_for_statement.append(ClickedStatement(statement_uid=statement_uid, author_uid=users[nick].uid, is_up_vote=True, is_valid=True))
-    return new_votes_for_statement
+        new_clicks_for_statement.append(ClickedStatement(statement_uid=statement_uid, author_uid=users[nick].uid, is_up_vote=is_up_vote, is_valid=True))
+    return new_clicks_for_statement
 
 
-def __set_downvotes_for_statements(firstnames, down_votes, statement_uid, new_votes_for_statement, users):
-    """
-
-    :param firstnames:
-    :param down_votes:
-    :param statement_uid:
-    :param new_votes_for_statement:
-    :param users:
-    :return:
-    """
-    tmp_firstname = list(firstnames)
-    for i in range(0, down_votes):
-        nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
-        new_votes_for_statement.append(ClickedStatement(statement_uid=statement_uid, author_uid=users[nick].uid, is_up_vote=False, is_valid=True))
-    return new_votes_for_statement
-
-
-def setup_fieltest_discussion_database(session, db_issue):
+def __setup_fieltest_discussion_database(session, db_issue):
     """
     Minimal discussion for a field test
-    :param session:
-    :return:
+
+    :param session: current session
+    :return: None
     """
     db_user = session.query(User).filter_by(nickname='Tobias').first()
 
@@ -1112,7 +999,7 @@ def setup_fieltest_discussion_database(session, db_issue):
     session.flush()
 
 
-def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
+def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     """
     Fills the database with dummy date, created by given user
 
@@ -1122,7 +1009,7 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     :param issue2: issue2
     :param issue4: issue4
     :param issue5: issue5
-    :return:
+    :return: None
     """
 
     # Adding all textversions
@@ -1708,7 +1595,13 @@ def setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.flush()
 
 
-def add_reputation_and_delete_reason(session):
+def __add_reputation_and_delete_reason(session):
+    """
+    Fill the reputation and review tables
+
+    :param session: current session
+    :return:  None
+    """
     reputation01 = ReputationReason(reason='rep_reason_first_position', points=10)
     reputation02 = ReputationReason(reason='rep_reason_first_justification', points=10)
     reputation03 = ReputationReason(reason='rep_reason_first_argument_click', points=10)
@@ -1731,7 +1624,13 @@ def add_reputation_and_delete_reason(session):
     session.flush()
 
 
-def setup_review_database(session):
+def __setup_review_dummy_database(session):
+    """
+    Some dummy reviews
+
+    :param session: current session
+    :return: None
+    """
     reason1 = session.query(ReviewDeleteReason).filter_by(reason='offtopic').first()
     # reason2 = session.query(ReviewDeleteReason).filter_by(reason='harmful').first()
 

@@ -11,8 +11,9 @@
  */
 function setLinkActive(linkname) {
 	'use strict';
+	
 	$('#navbar-right').find('>li').each(function(){
-		$(this).removeClass('active')
+		$(this).removeClass('active');
 	});
 	$(linkname).addClass('active');
 }
@@ -21,6 +22,8 @@ function setLinkActive(linkname) {
  * Jumps to clicked chapter, which is defined in the header
  */
 function jmpToChapter() {
+    'use strict';
+    
 	// jump to chapter-function
 	$('a[href^="#"]').on('click', function (e) {
 		try {
@@ -36,9 +39,34 @@ function jmpToChapter() {
 }
 
 /**
+ * Adds a small border to the active navbar element
+ */
+function addBorderToActiveNavbar(){
+    'use strict';
+	
+	var active_element = $('.navbar-right > .active');
+	if (active_element.length === 0){
+		return;
+	}
+	var border_size = '2';
+	
+	// replace padding of the inner element
+	var inner_element = active_element.find('a');
+	var pad_top = parseInt(inner_element.css('padding-top').replace('px', ''));
+	var pad_bottom = parseInt(inner_element.css('padding-bottom').replace('px', ''));
+	inner_element.css('padding-top', (pad_top - border_size / 2) + 'px');
+	inner_element.css('padding-bottom', (pad_bottom - border_size / 2) + 'px');
+	
+    // add border to the navbar element
+	active_element.css('border-top', border_size + 'px solid #2196F3');
+}
+
+/**
  * Go back to top arrow
  */
 function goBackToTop() {
+    'use strict';
+    
 	$(window).scroll(function () {
 		if (jQuery(this).scrollTop() > 500) {
 			$('.back-to-top').fadeIn('slow');
@@ -62,10 +90,13 @@ function goBackToTop() {
  * Display smiley as fallback on (connection) errors
  */
 function setGravatarFallback() {
+    'use strict';
+    
 	var body = $('body');
 	var img = body.find('.img-circle');
-	if (img.length == 0)
+	if (img.length === 0) {
 		return true;
+	}
 	
 	var src = body.find('.img-circle')[0].src;
 	var jqxhr = $.get(src, function() {
@@ -80,6 +111,8 @@ function setGravatarFallback() {
  * @param only_on_error
  */
 function replace_gravtar_with_default_image(only_on_error){
+    'use strict';
+    
 	$('body').find('.img-circle').each(function (){
 		var icons =
 			[  { 'name': 'faces', 'length': 98
@@ -91,10 +124,11 @@ function replace_gravtar_with_default_image(only_on_error){
 		var src = mainpage + 'static/images/fallback-' + icons[t].name + '/' +  no + '.svg';
 		
 		var width = $(this).width();
-		if (only_on_error)
+		if (only_on_error) {
 			$(this).attr('onerror', 'this.src="' + src + '"');
-		else
+		} else {
 			$(this).attr('src', src);
+		}
 		$(this).css('width', width + 'px');
 	});
 }
@@ -108,26 +142,35 @@ function replace_gravtar_with_default_image(only_on_error){
  * @param small_dialog
  */
 function displayConfirmationDialog(titleText, bodyText, functionForAccept, functionForRefuse, small_dialog) {
+    'use strict';
+    
 	// display dialog
 	var dialog = $('#' + popupConfirmDialogId);
-	if (small_dialog)
+    dialog.find('#confirm-dialog-accept-btn').show();
+	dialog.find('#confirm-dialog-refuse-btn').show();
+	if (small_dialog) {
 		dialog.find('.modal-dialog').addClass('modal-sm');
+	}
 	dialog.modal('show');
 	$('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
 	$('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
 	$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
-		functionForAccept();
+		if (functionForRefuse) {
+			functionForAccept();
+		}
 	});
 	$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
 		$('#' + popupConfirmDialogId).modal('hide');
-		functionForRefuse();
+		if (functionForRefuse) {
+			functionForRefuse();
+		}
 	});
 	dialog.on('hidden.bs.modal', function () {
 		$('#' + popupConfirmDialogRefuseBtn).show();
 		dialog.find('.modal-dialog').removeClass('modal-sm');
-		dialog.find('confirm-dialog-accept-btn').text(_t(okay));
-		dialog.find('confirm-dialog-refuse-btn').text(_t(cancel));
+		dialog.find('#confirm-dialog-accept-btn').text(_t(okay));
+		dialog.find('#confirm-dialog-refuse-btn').text(_t(cancel));
 	});
 }
 
@@ -138,6 +181,8 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
  * @param bodyText
  */
 function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) {
+    'use strict';
+    
 	// display dialog
 	$('#' + popupConfirmDialogId).modal('show');
 	$('#' + popupConfirmDialogId + ' h4.modal-title').html(titleText);
@@ -157,6 +202,8 @@ function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) 
  * @param isRestartingDiscussion
  */
 function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText, functionForAccept, isRestartingDiscussion) {
+    'use strict';
+    
 	// display dialog only if the cookie was not set yet
 	if (Cookies.get(WARNING_CHANGE_DISCUSSION_POPUP)){
 		window.location.href = functionForAccept;
@@ -181,7 +228,7 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
 		});
 		$('#' + popupConfirmChecbkoxDialogRefuseBtn).click( function () {
 			$('#' + popupConfirmChecbkoxDialogId).modal('hide');
-		})
+		});
 	}
 }
 
@@ -190,6 +237,8 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
  * @param lang
  */
 function setPiwikOptOutLink(lang){
+    'use strict';
+    
 	var src = mainpage + 'piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=' + lang;
 	$('#piwik-opt-out-iframe').attr('src', src);
 }
@@ -198,12 +247,14 @@ function setPiwikOptOutLink(lang){
  *
  */
 function setEasterEggs(){
+    'use strict';
+    
 	$('#roundhousekick').click(function(){ new AjaxMainHandler().ajaxRoundhouseKick(); });
 	//$('#yomamma').click(function(){ new AjaxMainHandler().ajaxMama(); });
 	$('#logo_dbas,#logo_dbas_s').click(function(){
 		var counter = parseInt($(this).data('counter'));
 		counter += 1;
-		if (counter == 7){
+		if (counter === 7){
 			$(this).attr('src', mainpage + 'static/images/dabas.png');
 			$('body').find('span').each(function(){
 				$(this).text(dolan_translate(dolan_dictionary, $(this).text()));
@@ -218,6 +269,8 @@ function setEasterEggs(){
  *
  */
 function hideExtraViewsOfLoginPopup(){
+    'use strict';
+    
 	$('#' + popupLoginWarningMessage).hide();
 	$('#' + popupLoginFailed).hide();
 	$('#' + popupLoginSuccess).hide();
@@ -235,6 +288,8 @@ function hideExtraViewsOfLoginPopup(){
  * Prepares the login popup
  */
 function prepareLoginRegistrationPopup(){
+    'use strict';
+    
 	var popupLoginGeneratePasswordBody = $('#' + popupLoginGeneratePasswordBodyId);
 	// hide on startup
 	hideExtraViewsOfLoginPopup();
@@ -249,7 +304,7 @@ function prepareLoginRegistrationPopup(){
 		$('.tab-content > div').not(target).hide();
 		$(target).fadeIn(600);
 
-		if ($(this).attr('href').indexOf('signup') != -1){
+		if ($(this).attr('href').indexOf('signup') !== -1){
 			$('#' + popupLoginButtonLogin).hide();
 			$('#' + popupLoginButtonRegister).show();
 		} else {
@@ -259,8 +314,13 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	$('#' + popupLoginButtonLogin).show().click(function() {
-		new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false)
-	}).keypress(function(e) { if (e.which == 13) { new AjaxMainHandler().ajaxRegistration() } });
+		new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
+		Cookies.set(DBAS_DATA_DISCLAIMER, true, { expires: 30 });
+	}).keypress(function(e) { if (e.which === 13) { new AjaxMainHandler().ajaxRegistration(); } });
+	// data disclaimer
+	if (Cookies.get(DBAS_DATA_DISCLAIMER) === 'true') {
+		$('#dbas-login-data-disclaimer').hide();
+	}
 
 	$('#' + popupLoginForgotPasswordText).click(function(){
 		var body = $('#' + popupLoginForgotPasswordBody);
@@ -318,7 +378,7 @@ function prepareLoginRegistrationPopup(){
 			}
 		}
 
-		if (text == '' ){
+		if (text === '' ){
 			$('#' + popupLoginWarningMessage).hide();
 			new AjaxMainHandler().ajaxRegistration();
 		} else {
@@ -329,15 +389,15 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	// bind enter key
-	$('#' + loginUserId).keypress(function(e) {							if (e.which == 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false) } });
-	$('#' + loginPwId).keypress(function(e) {							if (e.which == 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false) } });
-	$('#admin-login-user').keypress(function(e) {   					if (e.which == 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false) } });
-	$('#admin-login-pw').keypress(function(e) {							if (e.which == 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false) } });
-	$('#' + popupLoginUserfirstnameInputId).keypress(function(e) {		if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
-	$('#' + popupLoginUserlastnameInputId).keypress(function(e) {		if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
-	$('#' + popupLoginNickInputId).keypress(function(e) {				if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
-	$('#' + popupLoginEmailInputId).keypress(function(e) {				if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
-	$('#' + popupLoginPasswordconfirmInputId).keypress(function(e) {	if (e.which == 13) {	new AjaxMainHandler().ajaxRegistration()	}	});
+	$('#' + loginUserId).keypress(function(e) {							if (e.which === 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
+	$('#' + loginPwId).keypress(function(e) {							if (e.which === 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
+	$('#admin-login-user').keypress(function(e) {   					if (e.which === 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
+	$('#admin-login-pw').keypress(function(e) {							if (e.which === 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
+	$('#' + popupLoginUserfirstnameInputId).keypress(function(e) {		if (e.which === 13) {	new AjaxMainHandler().ajaxRegistration();	}	});
+	$('#' + popupLoginUserlastnameInputId).keypress(function(e) {		if (e.which === 13) {	new AjaxMainHandler().ajaxRegistration();	}	});
+	$('#' + popupLoginNickInputId).keypress(function(e) {				if (e.which === 13) {	new AjaxMainHandler().ajaxRegistration();	}	});
+	$('#' + popupLoginEmailInputId).keypress(function(e) {				if (e.which === 13) {	new AjaxMainHandler().ajaxRegistration();	}	});
+	$('#' + popupLoginPasswordconfirmInputId).keypress(function(e) {	if (e.which === 13) {	new AjaxMainHandler().ajaxRegistration();	}	});
 
 	$('#' + popupLoginButtonRequest).click(function() {
 		new AjaxMainHandler().ajaxPasswordRequest();
@@ -350,10 +410,13 @@ function prepareLoginRegistrationPopup(){
  * @param display_at_top
  */
 function setTextWatcherInputLength(element, display_at_top){
+    'use strict';
+    
 	var min_length = element.data('min-length');
 	var max_length = element.data('max-length');
-	if (!max_length)
+	if (!max_length) {
 		max_length = 1000;
+	}
 	var id = element.attr('id') + '-text-counter';
 	var msg = _t_discussion(textMinCountMessageBegin1) + ' ' + min_length + ' ' + _t_discussion(textMinCountMessageBegin2);
 	var field = $('<span>').text(msg).attr('id', id).addClass('text-info').addClass('text-counter-input');
@@ -367,10 +430,10 @@ function setTextWatcherInputLength(element, display_at_top){
 		var text = element.val().trim();
 		var current_length = text.length;
 		
-		if (current_length == 0){
+		if (current_length === 0){
 			field.addClass('text-info');
 			field.removeClass('text-danger');
-			field.text(msg)
+			field.text(msg);
 		} else if (current_length < min_length) {
 			field.removeClass('text-danger');
 			field.text((min_length - current_length) + ' ' + _t_discussion(textMinCountMessageDuringTyping));
@@ -399,6 +462,8 @@ function setTextWatcherInputLength(element, display_at_top){
  * @param body text
  */
 function setGlobalErrorHandler(heading, body){
+    'use strict';
+    
 	$('#' + requestFailedContainer).fadeIn();
 	$('#' + requestFailedContainerClose).click(function(){
 		$('#' + requestFailedContainer).fadeOut();
@@ -417,6 +482,8 @@ function setGlobalErrorHandler(heading, body){
  * @param body text
  */
 function setGlobalSuccessHandler(heading, body){
+    'use strict';
+    
 	$('#' + requestSuccessContainer).fadeIn();
 	$('#' + requestSuccessContainerClose).click(function(){
 		$('#' + requestSuccessContainer).fadeOut();
@@ -435,6 +502,8 @@ function setGlobalSuccessHandler(heading, body){
  * @param body text
  */
 function setGlobalInfoHandler(heading, body){
+    'use strict';
+    
 	$('#' + requestInfoContainer).fadeIn();
 	$('#' + requestInfoContainerClose).click(function(){
 		$('#' + requestInfoContainer).fadeOut();
@@ -451,6 +520,8 @@ function setGlobalInfoHandler(heading, body){
  * @param encodedString
  */
 function decodeString(encodedString){
+    'use strict';
+    
 	// var textArea = document.createElement('textarea');
     // textArea.innerHTML = encodedString;
     // return textArea.value;
@@ -467,10 +538,12 @@ function decodeString(encodedString){
  * @param showGlobalError
  */
 function callbackIfDoneForLogin(data, showGlobalError){
+    'use strict';
+    
 	try {
 		var parsedData = $.parseJSON(data);
 		
-		if (parsedData.error.length != 0) {
+		if (parsedData.error.length !== 0) {
 			if (showGlobalError) {
 					setGlobalErrorHandler('Ohh!', parsedData.error);
 			} else {
@@ -485,8 +558,9 @@ function callbackIfDoneForLogin(data, showGlobalError){
 		console.log('ERROR');
 		//console.log(err);
 		var url = location.href;
-		if (url.indexOf('?session_expired=true') != -1)
+		if (url.indexOf('?session_expired=true') !== -1) {
 			url = url.substr(0, url.length - '?session_expired=true'.length);
+		}
 		location.href = url;
 	}
 
@@ -497,6 +571,8 @@ function callbackIfDoneForLogin(data, showGlobalError){
  * @param data
  */
 function callbackIfDoneForRegistration(data){
+    'use strict';
+    
 	var parsedData = $.parseJSON(data);
 	var success = $('#' + popupLoginSuccess); //popupLoginRegistrationSuccess);
 	var failed = $('#' + popupLoginRegistrationFailed);
@@ -527,6 +603,8 @@ function callbackIfDoneForRegistration(data){
  * @param data
  */
 function callbackIfDoneForPasswordRequest(data){
+    'use strict';
+    
 	var parsedData = $.parseJSON(data);
 	var success = $('#' + popupLoginSuccess);
 	var failed = $('#' + popupLoginFailed);
@@ -554,6 +632,8 @@ function callbackIfDoneForPasswordRequest(data){
 //	MAIN
 // *********************
 $(document).ready(function () {
+    'use strict';
+    
 	// ajax loading animation
 	var timer;
 	$(document).on({
@@ -565,7 +645,7 @@ $(document).ready(function () {
 		},
 		ajaxStop: function ajaxStopFct() {
             clearTimeout(timer);
-            $('body').removeClass('loading')
+            $('body').removeClass('loading');
 		}
 	});
 	
@@ -578,16 +658,19 @@ $(document).ready(function () {
 	setPiwikOptOutLink(lang);
 	setEasterEggs();
 	setGravatarFallback();
+	setTimeout(function(){
+		addBorderToActiveNavbar();
+	}, 150);
 
 	// set current file to active
-		 if (path.indexOf(urlContact) != -1){ 	setLinkActive('#' + contactLink);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf(urlLogin) != -1){		setLinkActive('#' + loginLinkId);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf(urlNews) != -1){		setLinkActive('#' + newsLink);		$('#' + navbarLeft).hide(); }
-	else if (path.indexOf(urlContent) != -1){ 	setLinkActive('#' + contentLink);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf(urlReview) != -1){ 	setLinkActive('#' + reviewLinkId);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf(urlSettings) != -1 ||
-			 path.indexOf(urlImprint) != -1 ||
-			 path.indexOf(urlLogout) != -1){										$('#' + navbarLeft).hide(); }
+		 if (path.indexOf(urlContact) !== -1){ 	setLinkActive('#' + contactLink);	$('#' + navbarLeft).hide(); }
+	else if (path.indexOf(urlLogin) !== -1){	setLinkActive('#' + loginLinkId);	$('#' + navbarLeft).hide(); }
+	else if (path.indexOf(urlNews) !== -1){		setLinkActive('#' + newsLink);		$('#' + navbarLeft).hide(); }
+	else if (path.indexOf(urlContent) !== -1){ 	setLinkActive('#' + contentLink);	$('#' + navbarLeft).hide(); }
+	else if (path.indexOf(urlReview) !== -1){ 	setLinkActive('#' + reviewLinkId);	$('#' + navbarLeft).hide(); }
+	else if (path.indexOf(urlSettings) !== -1 ||
+			 path.indexOf(urlImprint) !== -1 ||
+			 path.indexOf(urlLogout) !== -1){										$('#' + navbarLeft).hide(); }
 	else { 										setLinkActive(''); 					$('#' + navbarLeft).show(); }
 
 	// gui preperation
@@ -607,25 +690,34 @@ $(document).ready(function () {
 	});
 
 	// session expired popup
-	if ($('#' + sessionExpiredContainer).length == 1)
-		setTimeout(function(){
+	if ($('#' + sessionExpiredContainer).length === 1) {
+		setTimeout(function () {
 			$('#' + sessionExpiredContainer).fadeOut();
 		}, 3000);
+	}
 	
-	if (!Cookies.get(GUIDED_TOUR))
+	if (!Cookies.get(GUIDED_TOUR)){
 		new GuidedTour().start();
+	}
 
 	// language switch
-	
-	$('#' + translationLinkDe).click(function(){ new GuiHandler().lang_switch('de') });
-	$('#' + translationLinkEn).click(function(){ new GuiHandler().lang_switch('en') });
-	$('#' + translationLinkDe + ' img').click(function(){ new GuiHandler().lang_switch('de') });
-	$('#' + translationLinkEn + ' img').click(function(){ new GuiHandler().lang_switch('en') });
+	$('#' + translationLinkDe).click(function(){ new GuiHandler().lang_switch('de'); });
+	$('#' + translationLinkEn).click(function(){ new GuiHandler().lang_switch('en'); });
+	$('#' + translationLinkDe + ' img').click(function(){ new GuiHandler().lang_switch('de'); });
+	$('#' + translationLinkEn + ' img').click(function(){ new GuiHandler().lang_switch('en'); });
 	$('#' + logoutLinkId).click(function(e){
 		e.preventDefault();
 		new AjaxMainHandler().ajaxLogout();
 	});
 
+	$(window).scroll(function() {
+		if ($(document).scrollTop() > 50) {
+            $('nav').addClass('shrink');
+		} else {
+			$('nav').removeClass('shrink');
+		}
+	});
+	
 	// testing with gremlins
 	//var horde = gremlins.createHorde()
 	//	.gremlin(gremlins.species.formFiller())

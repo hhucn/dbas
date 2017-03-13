@@ -7,8 +7,6 @@ __pycache__/
 # Distribution / packaging
 build/
 dist/
-lib64/
-sdist/
 *.egg
 *.egg-info/
 source/
@@ -28,9 +26,6 @@ coverage.xml
 *.log
 *.pid
 *.db
-*.sqlite
-*.sqlite-journal
-*.log
 
 # Sphinx documentation
 # docs/
@@ -39,32 +34,24 @@ coverage.xml
 # Misc
 .python-version
 *.bak
-pull*.sh
-gource.sh
-dbas_timelapse.mp4
-git-delete-history.sh
 *.jar
 mergeDatabase.py
 db.txt
 *.sql
 requirementsUpdater.py
-analyzeDiscussion.py
 
 # Pycharm
 .idea/
 data/
 
-# Deployment
+# Deploym
 dbas/static/css/main.css
 dbas/static/css/main.css.map
-dbas/static/js/compiled/*
-dbas/static/js/min/*
 dbas/static/rss/*
 .sass-cache/
 .babelrc
-startSession.py
 getMails.py
-dbas.js
+dbas.min.js
 
 # node
 node_modules/

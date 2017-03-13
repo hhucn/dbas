@@ -1,3 +1,5 @@
+/* global $*/
+
 /**
  * @author Tobias Krauthoff
  * @email krauthoff@cs.uni-duesseldorf.de
@@ -5,6 +7,7 @@
 
 function GuiHandler() {
 	'use strict';
+	
 	var interactionHandler;
 	var maxHeightOfBubbleSpace = 300;
 	
@@ -42,12 +45,12 @@ function GuiHandler() {
 			$(this).click(function () {
 				// removing bubble
 				var id = $(this).parent().parent().find('input').attr('id'),
-					tmpid = id.split('-').length == 6 ? id.split('-')[5] : '0';
+					tmpid = id.split('-').length === 6 ? id.split('-')[5] : '0';
 				$('#current_' + tmpid).fadeOut().remove();
 				$(this).parent().parent().remove();
 				body.find('div').children().last().show();
 				// hide minus icon, when there is only one child
-				if (body.find('.container-three-divs').length == 1) {
+				if (body.find('.container-three-divs').length === 1) {
 					body.find('.icon-rem-premise').hide();
 					send.val(_t_discussion(saveMyStatement));
 				} else {
@@ -100,9 +103,9 @@ function GuiHandler() {
 	 */
 	this.setDisplayStyleAsGraphView = function () {
 		var graphViewContainer = $('#' + graphViewContainerId);
-		var main = new Main();
 		var tacked_sidebar = 'tacked_graph_sidebar';
 		var header = $('#' + graphViewContainerHeaderId);
+		var main = new Main();
 		
 		// this.setActivityOfImage($('#' + displayStyleIconGuidedId), true);
 		// this.setActivityOfImage($('#' + displayStyleIconIslandId), true);
@@ -152,17 +155,18 @@ function GuiHandler() {
 		$.each(speechBubbles.find('div p'), function () {
 			height += $(this).outerHeight(true);
 			// clear unnecessary a tags
-			if ($(this).parent().attr('href') == '?breadcrumb=true') {
+			if ($(this).parent().attr('href') === '?breadcrumb=true') {
 				$(this).insertAfter($(this).parent());
 				$(this).prev().remove();
 			}
 		});
 		
-		start = nowBubble.length == 0 ? 'bottom' : nowBubble;
+		start = nowBubble.length === 0 ? 'bottom' : nowBubble;
 		// scroll to now bubble on mobile devices and do not enable slimscroll
 		if (isMobileAgent()){
-			if (nowBubble.length != 0)
+			if (nowBubble.length !== 0) {
 				$('html, body').animate({scrollTop: nowBubble.offset().top - 75}, 500);
+			}
 			speechBubbles.css({'background': '#fff'});
 			return;
 		}
@@ -181,10 +185,11 @@ function GuiHandler() {
 			});
 		} else {
 			height += 60;
-			if (height < 50)
+			if (height < 50) {
 				speechBubbles.css('min-height', '100px');
-			else
+			} else {
 				speechBubbles.css('height', height + 'px').css('min-height', '200px');
+			}
 			speechBubbles.css('min-height', '100px').css('max-height', maxHeight + 'px');
 		}
 		return speechBubbles.height() - oldSize;
@@ -221,14 +226,15 @@ function GuiHandler() {
 	};
 	
 	/**
+	 * Shows a modal where the user has to choose how the premisegroups should be treated
 	 *
-	 * @param undecided_texts
-	 * @param decided_texts
-	 * @param supportive
-	 * @param type
-	 * @param arg
-	 * @param relation
-	 * @param conclusion
+	 * @param undecided_texts, array of strings
+	 * @param decided_texts, array of strings
+	 * @param supportive, boolean
+	 * @param type, fuzzy_add_reason (adding an arguments reason) or fuzzy_start_premise for adding a positions premise
+	 * @param arg, current argument id, if the type is fuzzy_add_reason
+	 * @param relation, current relation as string, if the type is fuzzy_add_reason
+	 * @param conclusion, current conclusion uid, if the type is fuzzy_start_premise
 	 */
 	this.showSetStatementContainer = function (undecided_texts, decided_texts, supportive, type, arg, relation, conclusion) {
 		var gh = new GuiHandler(), page, page_no;
@@ -239,9 +245,7 @@ function GuiHandler() {
 		var counter = $('#' + popupSetPremiseGroupsCounter).hide();
 		var prefix = 'insert_statements_page_';
 		var popup = $('#' + popupSetPremiseGroups);
-		
-		console.log(undecided_texts);
-		console.log(decided_texts);
+		var warning = $('#' + popupSetPremiseGroupsWarningText).hide();
 		
 		send.click(function sendClick() {
 			var selections = body.find('input:checked'), i, j, splitted;
@@ -250,11 +254,12 @@ function GuiHandler() {
 			for (i = 0; i < undecided_texts.length; i++) {
 				splitted = undecided_texts[i].split(' ' + _t_discussion(and) + ' ');
 				
-				if (selections[i].id.indexOf(attr_more_args) != -1) { // each splitted text part is one argument
-					for (j = 0; j < splitted.length; j++)
+				if (selections[i].id.indexOf(attr_more_args) !== -1) { // each splitted text part is one argument
+					for (j = 0; j < splitted.length; j++) {
 						decided_texts.push([splitted[j]]);
+					}
 					
-				} else if (selections[i].id.indexOf(attr_one_arg) != -1) { // one argument with big premisegroup
+				} else if (selections[i].id.indexOf(attr_one_arg) !== -1) { // one argument with big premise group
 					decided_texts.push(splitted);
 					
 				} else { // just take it!
@@ -262,17 +267,17 @@ function GuiHandler() {
 				}
 			}
 			
-			if (type == fuzzy_add_reason) {
+			if (type === fuzzy_add_reason) {
 				new AjaxDiscussionHandler().sendNewPremiseForArgument(arg, relation, decided_texts);
-			} else if (type == fuzzy_start_premise) {
+			} else if (type === fuzzy_start_premise) {
 				new AjaxDiscussionHandler().sendNewStartPremise(decided_texts, conclusion, supportive);
 			} else {
-				alert("Todo: unknown type")
+				alert("Todo: unknown type");
 			}
 			$('#' + popupSetPremiseGroups).modal('hide');
 		});
 		
-		if (undecided_texts.length == 1) { // we only need one page div
+		if (undecided_texts.length === 1) { // we only need one page div
 			page = gh.getPageOfSetStatementContainer(0, undecided_texts[0]);
 			body.append(page);
 			send.text(_t_discussion(saveMyStatement));
@@ -280,6 +285,7 @@ function GuiHandler() {
 			page.find('input').each(function () {
 				$(this).click(function inputClick() {
 					send.removeClass('disabled');
+					warning.show();
 				});
 			});
 			
@@ -295,14 +301,15 @@ function GuiHandler() {
 			for (page_no = 0; page_no < undecided_texts.length; page_no++) {
 				page = gh.getPageOfSetStatementContainer(page_no, undecided_texts[page_no]);
 				body.attr('data-text-' + page_no, undecided_texts[page_no]);
-				if (page_no > 0)
+				if (page_no > 0) {
 					page.hide();
+				}
 				body.append(page);
 				
 				page.find('input').each(function () {
 					$(this).click(function inputClick() {
 						new GuiHandler().displayNextPageOffSetStatementContainer(body, prev, next, counter, prefix);
-					})
+					});
 				});
 			}
 			
@@ -335,7 +342,7 @@ function GuiHandler() {
 		var input = tmp_el.find('input:checked');
 		
 		// is current page filled?
-		if (input.length == 0) {
+		if (input.length === 0) {
 			$('#insert_statements_page_error').fadeIn();
 		} else {
 			$('#insert_statements_page_error').fadeOut();
@@ -346,9 +353,11 @@ function GuiHandler() {
 				counter_text.show().text((tmp_id + 2) + '/' + next_btn.attr('max'));
 
 				$('#' + popupSetPremiseGroups).find('strong').text(body.data('text-' + (tmp_id + 1)));
-				if ((tmp_id + 2) == parseInt(next_btn.attr('max')))
+				if ((tmp_id + 2) === parseInt(next_btn.attr('max'))) {
 					next_btn.parent().addClass('disabled');
+				}
 			} else {
+				$('#' + popupSetPremiseGroupsWarningText).show();
 				$('#' + popupSetPremiseGroupsSendButton).removeClass('disabled');
 			}
 		}
@@ -372,8 +381,9 @@ function GuiHandler() {
 			counter_text.show().text((tmp_id) + '/' + prev_btn.attr('max'));
 
 			$('#' + popupSetPremiseGroups).find('strong').text(body.data('text-' + (tmp_id - 1)));
-			if (tmp_id == 1)
+			if (tmp_id === 1) {
 				prev_btn.parent().addClass('disabled');
+			}
 		}
 	};
 	
@@ -395,13 +405,12 @@ function GuiHandler() {
 		$('#popup-set-premisegroups-body-intro-statements').text(text.trim());
 		
 		if (topic.match(/\.$/)) {
-			topic = topic.substr(0, topic.length - 1) + ', '
+			topic = topic.substr(0, topic.length - 1) + ', ';
 		}
 		
 		div_page.attr('id', id + page_no);
 		div_page.attr('page', page_no);
 		div_page.show();
-		console.log('page id: ' + div_page.attr('id'));
 		div_page.find('#' + popupSetPremiseGroupsStatementCount).text(splitted.length);
 		list = div_page.find('#' + popupSetPremiseGroupsListMoreArguments);
 		bigTextSpan = div_page.find('#' + popupSetPremiseGroupsOneBigStatement);
@@ -422,10 +431,11 @@ function GuiHandler() {
 		//connection = supportive ? _t_discussion(isItTrueThat) : _t_discussion(isItFalseThat);
 		connection = _t_discussion(isItTrueThat);
 		
-		if (getDiscussionLanguage() == 'de')
+		if (getDiscussionLanguage() === 'de') {
 			bigText = topic;
-		else
+		} else {
 			bigText = topic + ' ' + connection; //supportive ? _t_discussion(itIsTrueThat) : _t_discussion(itIsFalseThat);
+		}
 		
 		list.append($('<br>'));
 		for (i = 0; i < splitted.length; i++) {
@@ -434,7 +444,7 @@ function GuiHandler() {
 			var tmp = $('<span>').html(line_text).css('margin-left', '1em');
 			// list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
 			list.append(tmp);
-			infix = i == 0 ? '' : ('<em><u>' + _t_discussion(andAtTheSameTime) + '</u></em> ' + connection + ' ');
+			infix = i === 0 ? '' : ('<em><u>' + _t_discussion(andAtTheSameTime) + '</u></em> ' + connection + ' ');
 			bigText += ' ' + infix + splitted[i];
 		}
 		
@@ -446,19 +456,19 @@ function GuiHandler() {
 	/**
 	 *
 	 * @param parsedData
-	 * @param callbackid
+	 * @param callbackId
 	 * @param type
 	 */
-	this.setStatementsAsProposal = function (parsedData, callbackid, type) {
-		var callbackElement = $('#' + callbackid);
-		var uneditted_value;
+	this.setStatementsAsProposal = function (parsedData, callbackId, type) {
+		var callbackElement = $('#' + callbackId);
 		$('#' + proposalPremiseListGroupId).empty();
 		$('#' + proposalStatementListGroupId).empty();
 		$('#' + proposalEditListGroupId).empty();
 		$('#' + proposalUserListGroupId).empty();
+		$('#' + proposalStatementSearchGroupId).empty();
 		
 		// do we have values ?
-		if (parsedData.length == 0) {
+		if (parsedData.length === 0) {
 			return;
 		}
 		
@@ -470,10 +480,9 @@ function GuiHandler() {
 			index = val.index;
 			
 			token = callbackElement.val();
-			//var pos = val.toLocaleLowerCase().indexOf(token.toLocaleLowerCase()), newpos = 0, start = 0;
 			
 			// make all tokens bold
-			uneditted_value = val.text;
+			var non_edited_value = val.text;
 			// replacement from http://stackoverflow.com/a/280805/2648872
 			text = val.text.replace(new RegExp("(" + (token + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "</strong>$1<strong>");
 			text = '<strong>' + text;
@@ -482,22 +491,26 @@ function GuiHandler() {
 				.attr('type', 'button')
 				.attr('class', 'list-group-item')
 				.attr('id', 'proposal_' + index)
-				.attr('text', uneditted_value)
+				.attr('text', non_edited_value)
 				.hover(function () {
 						$(this).addClass('active');
 					},
 					function () {
 						$(this).removeClass('active');
 					});
+			if (type === fuzzy_find_statement){
+				button.attr('data-url', val.url);
+			}
 			// we do not want the "Levensthein badge"
 			span_dist = '';//$('<span>').attr('class', 'badge').text(parsedData.distance_name + ' ' + distance);
 			span_text = $('<span>').attr('id', 'proposal_' + index + '_text').html(text);
 			img = $('<img>').addClass('preload-image').addClass('img-circle').attr('style', 'height: 20pt; margin-right: 1em;').attr('src', val.avatar);
 			
-			if (type == fuzzy_find_user)
+			if (type === fuzzy_find_user) {
 				button.append(img).append(span_text);
-			else
+			} else {
 				button.append(img).append(span_dist).append(span_text);
+			}
 			
 			button.click(function () {
 				callbackElement.val($(this).attr('text'));
@@ -505,13 +518,18 @@ function GuiHandler() {
 				$('#' + proposalPremiseListGroupId).empty();
 				$('#' + proposalEditListGroupId).empty(); // list with elements should be after the callbacker
 				$('#' + proposalUserListGroupId).empty();
+				$('#' + proposalStatementSearchGroupId).empty();
+				if (type === fuzzy_find_statement){
+					window.location.href = $(this).data('url');
+				}
 			});
 			
-			if (type == fuzzy_start_premise)        $('#' + proposalStatementListGroupId).append(button);
-			else if (type == fuzzy_start_statement) $('#' + proposalStatementListGroupId).append(button);
-			else if (type == fuzzy_add_reason)      $('#' + proposalPremiseListGroupId).append(button);
-			else if (type == fuzzy_statement_popup) $('#' + proposalEditListGroupId).append(button);
-			else if (type == fuzzy_find_user)       $('#' + proposalUserListGroupId).append(button);
+			if (type === fuzzy_start_premise){        $('#' + proposalStatementListGroupId).append(button); }
+			else if (type === fuzzy_start_statement){ $('#' + proposalStatementListGroupId).append(button); }
+			else if (type === fuzzy_add_reason){      $('#' + proposalPremiseListGroupId).append(button); }
+			else if (type === fuzzy_statement_popup){ $('#' + proposalEditListGroupId).append(button); }
+			else if (type === fuzzy_find_user){       $('#' + proposalUserListGroupId).append(button); }
+			else if (type === fuzzy_find_statement){  $('#' + proposalStatementSearchGroupId).append(button); }
 		});
 	};
 	
@@ -531,18 +549,17 @@ function GuiHandler() {
 		
 		var at_least_one_history = false;
 		$.each(jsonData, function (key, value) {
-			if (key == 'error' || key == 'info') {
+			if (key === 'error' || key === 'info') {
 				return true;
 			}
 
-			var table, tr, tbody, thead;
-			table = $('<table>');
+			var table = $('<table>');
 			table.attr('class', 'table table-condensed table-striped table-hover')
 				.attr('border', '0')
 				.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
-			tbody = $('<tbody>');
+			var tbody = $('<tbody>');
 			
-			thead = $('<thead>')
+			var thead = $('<thead>')
 				.append($('<td>').text(_t(text)))
 				.append($('<td>').text(_t(author)))
 				.append($('<td>').text(_t(date)));
@@ -609,15 +626,6 @@ function GuiHandler() {
 	};
 	
 	/**
-	 * Updates an statement in the discussions list
-	 * @param jsonData
-	 */
-	this.updateOfStatementInDiscussion = function (jsonData) {
-		$('#td_' + jsonData.uid).text(jsonData.text);
-		$('#' + jsonData.uid).text(jsonData.text);
-	};
-	
-	/**
 	 * Sets style attributes to default
 	 */
 	this.resetChangeDisplayStyleBox = function () {
@@ -645,17 +653,18 @@ function GuiHandler() {
 	 * @param tbody
 	 * @returns {*|jQuery|HTMLElement}
 	 */
-	this.closePrepareTableForOpinonDialog = function (users_array, gh, element, tbody) {
+	this.closePrepareTableForOpinionDialog = function (users_array, gh, element, tbody) {
 		var body = $('<div>');
 		var table = $('<table>')
 			.attr('class', 'table table-condensed table-hover center')
 			.attr('border', '0')
 			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
 		
-		if (Object.keys(users_array).length == 0)
+		if (Object.keys(users_array).length === 0) {
 			body.append(gh.getNoDecisionsAlert());
-		else
+		} else {
 			body.append(element).append(table.append(tbody));
+		}
 		return body;
 	};
 	
@@ -681,23 +690,25 @@ function GuiHandler() {
 			}).append(span).append(img));
 			
 			// three elements per row (store middle and left element, append later)
-			if (j == 0) {
+			if (j === 0) {
 				left = link;
-			} else if (j == 1) {
+			} else if (j === 1) {
 				middle = link;
-			} else if (j == 2) {
+			} else if (j === 2) {
 				rows.push($('<tr>').append(left).append(middle).append(link));
 			}
 			j = (j + 1) % 3;
 		});
 		
 		// append the last row
-		if (j == 1)
+		if (j === 1) {
 			rows.push($('<tr>').append(left));
-		if (j == 2)
+		}
+		if (j === 2) {
 			rows.push($('<tr>').append(left).append(middle));
+		}
 		
-		return rows
+		return rows;
 	};
 	
 	/**
@@ -714,7 +725,7 @@ function GuiHandler() {
 				if (!($('#' + addPremiseContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
 					$(this).prop('checked', false);
 				}
-			})
+			});
 		});
 		list.find('label').each(function () {
 			$(this).hover(function () {
@@ -725,7 +736,7 @@ function GuiHandler() {
 				if (!($('#' + addPremiseContainerId).is(':visible') || $('#' + addStatementContainerId).is(':visible'))) {
 					$(this).prev().prop('checked', false);
 				}
-			})
+			});
 		});
 	};
 	
@@ -767,7 +778,13 @@ function GuiHandler() {
 	 * @returns {number}
 	 */
 	this.getPaddingOfElement = function (element){
-		return parseInt(element.css('padding-top').replace('px','')) + parseInt(element.css('padding-bottom').replace('px',''))
+		if (typeof element !== "undefined" && typeof element.css('padding') !== "undefined") {
+			var pt = parseInt(element.css('padding-top').replace('px', ''));
+			var pb = parseInt(element.css('padding-bottom').replace('px', ''));
+			return pt + pb;
+		} else {
+			return 0;
+		}
 	};
 	
 	/**
@@ -800,7 +817,7 @@ function GuiHandler() {
 	this.lang_switch = function(lang){
 		if (!Cookies.get(LANG_SWITCH_WARNING)) {
 			displayConfirmationDialogWithoutCancelAndFunction(get_it(lang, languageSwitchModalTitle), get_it(lang, languageSwitchModalBody));
-			$('#' + popupConfirmDialogId).on('hide.bs.modal', function (e) {
+			$('#' + popupConfirmDialogId).on('hide.bs.modal', function () {
 				new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang);
 				Cookies.set(LANG_SWITCH_WARNING, true, {expires: 180});
 			});

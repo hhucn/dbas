@@ -4,14 +4,15 @@
  */
 
 function ReviewCallbacks() {
-	
+    'use strict';
+    	
 	/**
 	 *
 	 * @param jsonData
 	 */
 	this.forReviewArgumentOrStatement = function(jsonData){
 		var parsedData = $.parseJSON(jsonData);
-		if (parsedData.error.length != 0) {
+		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		} else {
 			// reload, when the user is still in the review page
@@ -28,9 +29,9 @@ function ReviewCallbacks() {
 	 */
 	this.forReviewLock = function(jsonData, review_instance){
 		var parsedData = $.parseJSON(jsonData);
-		if (parsedData.error.length != 0) {
+		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
-		} else if (parsedData.info.length != 0) {
+		} else if (parsedData.info.length !== 0) {
 			setGlobalInfoHandler('Mhh!', parsedData.info);
 		} else {
 			if (parsedData.is_locked) {
@@ -76,12 +77,12 @@ function ReviewCallbacks() {
 	 */
 	this.forReviewUnlock = function(jsonData){
 		var parsedData = $.parseJSON(jsonData);
-		if (parsedData.error.length != 0) {
+		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
-		} else if (parsedData.info.length != 0) {
+		} else if (parsedData.info.length !== 0) {
 			setGlobalInfoHandler('Mhh!', parsedData.info);
-		} else {
-			//setGlobalSuccessHandler('Hurey', parsedData.success);
+		// } else {
+		//	setGlobalSuccessHandler('Hurey', parsedData.success);
 		}
 	};
 	

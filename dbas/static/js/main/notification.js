@@ -26,6 +26,8 @@ $(function () {
 });
 
 function Notifications() {
+    'use strict';
+    
 
 	/**
 	 *
@@ -34,7 +36,7 @@ function Notifications() {
 		$.each($('.panel-title-link'), function ajaxLinksRead() {
 			$(this).click(function(){
 				var id = $(this).parent().parent().parent().attr('id');
-				if ($(this).html().indexOf('<strong') != -1) {
+				if ($(this).html().indexOf('<strong') !== -1) {
 					new AjaxNotificationHandler().sendAjaxForReadMessage(id, this);
 				}
 			});
@@ -98,7 +100,7 @@ function Notifications() {
 					var url = window.location.href;
 					var splitted = url.split('/');
 					var recipient;
-					if (url.indexOf('/user/') != -1){
+					if (url.indexOf('/user/') !== -1){
 						recipient = splitted[splitted.length - 1];
 					} else {
 						recipient = _this.prev().text();
@@ -122,7 +124,7 @@ function Notifications() {
     * @param counter
     */
 	this.setNewBadgeCounter = function(counter){
-		if (counter == 0){
+		if (counter === 0){
 			$('#header_badge_count_notifications').remove();
 		} else {
 			$('#header_badge_count_notifications').text(counter);

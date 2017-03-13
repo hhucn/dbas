@@ -1,0 +1,14 @@
+<tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
+	<tal:block metal:fill-slot="content_page">
+
+		<div class="container colored-container">
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8">
+                    <h3 i18n:translate="docs" class="text-center">Documentation</h3>
+                    <p class="lead">Docs are available via /docs/_build/html/index.pt</p>
+                </div>
+            </div>
+		</div>
+		
+	</tal:block>
+</tal:block>

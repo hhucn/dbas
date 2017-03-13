@@ -5,6 +5,8 @@
 
 // main function
 $(document).ready(function () {
+	'use strict';
+	
 	$('#admin-login-button').click(function(){
 		var user = $('#admin-login-user').val();
 		var pw = $('#admin-login-pw').val();

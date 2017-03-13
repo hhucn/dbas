@@ -94,10 +94,11 @@ def get_rebuts_for_argument_uid(argument_uid):
 
 def __get_rebuts_for_arguments_conclusion_uid(db_argument):
     """
+    Returns a list with dict(). They contain id and text of the rebuttal's pgroups
 
     :return argument_uid: UID of the argument
-    :param db_argument:
-    :return:
+    :param db_argument: Argument
+    :return: [dict()]
     """
     return_array = []
     given_rebuts = set()

@@ -3,22 +3,21 @@
  * @email krauthoff@cs.uni-duesseldorf.de
  */
 
-"use strict";
-
 function dolan_translate(dictionary, inputText) {
+    'use strict';
+    
     var translatedText;
     var replacement;
-    var key;
     var regex;
 
     translatedText = inputText;
 
-    for (key in dictionary) {
+    $.each(dictionary, function(key, value){
         replacement = dictionary[key][Math.floor(Math.random() * dictionary[key].length)];
         regex = new RegExp("\\b("+key+")\\b", 'gi');
         translatedText = translatedText.replace(regex, replacement);
-    }
-
+    });
+        
     return translatedText;
 }
 

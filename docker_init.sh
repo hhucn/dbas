@@ -13,18 +13,18 @@ while true; do
     printf "\n# Deploying D-BAS...\n"
     python setup.py --quiet develop
 
+    printf "\n# Compiling JS files...\n"
+    google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./dbas/static/js/{main,ajax,discussion,review}/*.js > dbas/static/js/dbas.min.js
+
     printf "\n# Compiling SASS files...\n"
     sass dbas/static/css/main.sass dbas/static/css/main.css --style compressed
     rm -r .sass-cache
 
     printf "\n# Seeding discussion database...\n"
-    initialize_discussion_sql docker.ini > /dev/null 2>&1
+    init_discussion_sql docker.ini > /dev/null 2>&1
 
     printf "\n# Seeding news database...\n"
-    initialize_news_sql docker.ini > /dev/null 2>&1
-
-    printf "\n# Seeding dummy votes...\n"
-    init_discussion_testvotes docker.ini > /dev/null 2>&1
+    init_news_sql docker.ini > /dev/null 2>&1
 
     printf "\n# Starting integrated web server -- for development use only!\n"
     pserve docker.ini --reload
