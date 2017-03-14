@@ -3,7 +3,7 @@
 """
 TODO
 
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 from .de import de_lang
 from .keywords import Keywords
