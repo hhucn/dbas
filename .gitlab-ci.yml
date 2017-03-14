@@ -28,7 +28,10 @@ start-server:
 
 flake8:
   stage: build
-  script:image: hhucn/dbas-build
+  script:
+    - pip install --quiet flake8
+    - flake8 .
+  allow_failure: true
 
 jshint:
   stage: build
