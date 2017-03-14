@@ -144,7 +144,7 @@ msgstr ""
 #. Default: What is the difference between interest and opinion?
 #: templates/faq.pt:16
 msgid "faq_question_interest_opinion"
-msgstr "Was ist der Unterschied zwischen Interesse und Meinung?"
+msgstr "Was ist der Unterschied zwischen Interessen und Meinungen?"
 
 #. Default: If you select any answer in D-BAS, you will be interested in this
 #. statement/reaction/... but we will never think, that this is your personal

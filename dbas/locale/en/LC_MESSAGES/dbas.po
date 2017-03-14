@@ -139,10 +139,10 @@ msgstr ""
 "secured and encrypted. Additionally we will never save, log or display your "
 "password anywhere!"
 
-#. Default: What is the difference between interest and opinion?
+#. Default: What is the difference between interests and opinions?
 #: templates/faq.pt:16
 msgid "faq_question_interest_opinion"
-msgstr "What is the difference between interest and opinion?"
+msgstr "What is the difference between interests and opinions?"
 
 #. Default: If you select any answer in D-BAS, you will be interested in this
 #. statement/reaction/... but we will never think, that this is your personal
