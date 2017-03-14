@@ -4,14 +4,14 @@
 		<div id="news-body">
             <div id="dummy-news" class="container">
                 <div class="row">
-                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}" alt="dummy"></div>
-                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}" alt="dummy"></div>
-                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}" alt="dummy"></div>
+                    <div metal:use-macro="load: dummy-news.pt"></div>
+                    <div metal:use-macro="load: dummy-news.pt"></div>
+                    <div metal:use-macro="load: dummy-news.pt"></div>
                 </div>
                 <div class="row">
-                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}" alt="dummy"></div>
-                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}" alt="dummy"></div>
-                    <div class="col-md-4"><img src="${request.static_url('dbas:static/images/dummy_news.png')}" alt="dummy"></div>
+                    <div metal:use-macro="load: dummy-news.pt"></div>
+                    <div metal:use-macro="load: dummy-news.pt"></div>
+                    <div metal:use-macro="load: dummy-news.pt"></div>
                 </div>
             </div>
         </div>
@@ -21,10 +21,11 @@
             <div class="col-md-4" tal:repeat="n news">
                 <div class="panel panel-default">
                     <div class="panel-heading" tal:attributes="id n.uid">
-                        <a class="share-icon-small share-mail-small" data-toggle="tooltip" data-placement="bottom" title="Mail"></a>
-                        <a class="share-icon-small share-twitter-small" data-toggle="tooltip" data-placement="bottom" title="Twitter"></a>
-                        <a class="share-icon-small share-google-small" data-toggle="tooltip" data-placement="bottom" title="Google+"></a>
-                        <a class="share-icon-small share-facebook-small" data-toggle="tooltip" data-placement="bottom" title="Facebook"></a>
+
+	                    <a class="social-wrapper share-mail" data-toggle="tooltip" data-placement="bottom" title="Mail"><i class="social-em fa fa-envelope social"></i></a>
+	                    <a class="social-wrapper share-twitter" data-toggle="tooltip" data-placement="bottom" title="Twitter"><i class="social-tw fa fa-twitter social"></i></a>
+	                    <a class="social-wrapper share-google" data-toggle="tooltip" data-placement="bottom" title="Google+"><i class="social-gp fa fa-google-plus social"></i></a>
+                        <a class="social-wrapper share-facebook" data-toggle="tooltip" data-placement="bottom" title="Facebook"><i class="social-fb fa fa-facebook social"></i></a>
                         <h5>
                             <span class="font-semi-bold" tal:attributes="id n.title_id"> ${n.title} </span>
                         </h5>
