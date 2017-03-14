@@ -9,7 +9,7 @@ cache:
     - "$CI_PROJECT_DIR/pip-cache"
   key: "$CI_PROJECT_ID"
 
-.job-template: &job-definition
+.job-template: &run-server
   services:
     - hhucn/docker-dbas-postgres
   before_script:
@@ -21,37 +21,7 @@ cache:
     - init_news_sql $INIFILE > /dev/null 2>&1
 
 start-server:
-  <<: *job-definition
-  stage: build
-  script:
-    - uwsgi --ini-paste $INIFILE --daemonize uwsgi.daemon.log
-
-flake8:
-  stage: build
-  script:image: hhucn/dbas-build
-
-variables:
-  INIFILE: "docker.ini"
-  PIP_CACHE_DIR: "$CI_PROJECT_DIR/pip-cache"
-
-cache:
-  paths:
-    - "$CI_PROJECT_DIR/pip-cache"
-  key: "$CI_PROJECT_ID"
-
-.job-template: &job-definition
-  services:
-    - hhucn/docker-dbas-postgres
-  before_script:
-    - pip install --quiet -U pip
-    - pip install --quiet -r requirements.txt
-    - python setup.py --quiet develop
-    - cp $INIFILE development.ini
-    - init_discussion_sql $INIFILE > /dev/null 2>&1
-    - init_news_sql $INIFILE > /dev/null 2>&1
-
-start-server:
-  <<: *job-definition
+  <<: *run-server
   stage: build
   script:
     - uwsgi --ini-paste $INIFILE --daemonize uwsgi.daemon.log
@@ -71,40 +41,18 @@ jshint:
   allow_failure: true
 
 unit:
-  <<: *job-definition
+  <<: *run-server
   stage: test
   script:
     - uwsgi --ini-paste $INIFILE --daemonize uwsgi.daemon.log
     - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w $(pwd) dbas graph admin api export
 
 acceptance:
-  <<: *job-definition
+  <<: *run-server
   stage: test
   script:
     - uwsgi --ini-paste $INIFILE --daemonize uwsgi.daemon.log
     - nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
-
     - pip install --quiet flake8
     - flake8 .
   allow_failure: true
-
-jshint:
-  stage: build
-  script:
-    - npm install -g jshint
-    - jshint ./dbas/static/js/{main,ajax,discussion,review}/*.js
-  allow_failure: true
-
-unit:
-  <<: *job-definition
-  stage: test
-  script:
-    - uwsgi --ini-paste $INIFILE --daemonize uwsgi.daemon.log
-    - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w $(pwd) dbas graph admin api export
-
-acceptance:
-  <<: *job-definition
-  stage: test
-  script:
-    - uwsgi --ini-paste $INIFILE --daemonize uwsgi.daemon.log
-    - nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
