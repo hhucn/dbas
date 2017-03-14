@@ -172,14 +172,9 @@ To ensure consistency throughout the source code, keep these rules in mind as yo
 * All features or bug fixes **must be tested** by one or more.
 * All public API methods **must be documented** with sphinx.
 * With the exceptions listed below, we follow the rules contained in
-  [Google's JavaScript Style Guide][js-style-guide]:
-    * **Do not use namespaces**: Instead,  wrap the entire angular code base in an anonymous closure and
-      export our API explicitly rather than implicitly.
-    * Wrap all code at **100 characters**.
-    * Instead of complex inheritance hierarchies, we **prefer simple objects**.al API
+* Instead of complex inheritance hierarchies, we **prefer simple objects**.al API
 
 ## <a name="commit"></a> Git Commit Guidelines
 
 We have very precise rules over how our git commit messages can be formatted.  This leads to **more
-readable messages** that are easy to follow when looking through the **project history**.  But also,
-we use the git commit messages to **generate the AngularJS change log**.
+readable messages** that are easy to follow when looking through the **project history**.

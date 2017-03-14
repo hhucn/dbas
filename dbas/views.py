@@ -1,7 +1,7 @@
 """
 Collection of all view registrations of the core component of D-BAS.
 
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
 import json
@@ -1109,7 +1109,7 @@ def main_review(request):
 
 
 # content page for reviews
-@view_config(route_name='review_content', renderer='templates/review_content.pt', permission='use')
+@view_config(route_name='review_content', renderer='templates/review-content.pt', permission='use')
 def review_content(request):
     """
     View configuration for the review content.
@@ -1158,7 +1158,7 @@ def review_content(request):
 
 
 # history page for reviews
-@view_config(route_name='review_history', renderer='templates/review_history.pt', permission='use')
+@view_config(route_name='review_history', renderer='templates/review-history.pt', permission='use')
 def review_history(request):
     """
     View configuration for the review history.
@@ -1188,7 +1188,7 @@ def review_history(request):
 
 
 # history page for reviews
-@view_config(route_name='review_ongoing', renderer='templates/review_history.pt', permission='use')
+@view_config(route_name='review_ongoing', renderer='templates/review-history.pt', permission='use')
 def ongoing_history(request):
     """
     View configuration for the current reviews.
@@ -1219,7 +1219,7 @@ def ongoing_history(request):
 
 
 # reputation_borders page for reviews
-@view_config(route_name='review_reputation', renderer='templates/review_reputation.pt', permission='use')
+@view_config(route_name='review_reputation', renderer='templates/review-reputation.pt', permission='use')
 def review_reputation(request):
     """
     View configuration for the review reputation_borders.
