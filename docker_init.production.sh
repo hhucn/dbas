@@ -14,7 +14,7 @@ while true; do
     python setup.py --quiet develop
 
     printf "\n# Seeding news database...\n"
-    init_news_sql docker.ini #> /dev/null 2>&1
+    init_news_sql production.ini #> /dev/null 2>&1
 
     printf "\n# Compiling JS files...\n"
     google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./dbas/static/js/{main,ajax,discussion,review}/*.js > dbas/static/js/dbas.min.js
@@ -24,7 +24,7 @@ while true; do
     rm -r .sass-cache
 
     printf "\n# Starting uwsgi -- for production use only!\n"
-    uwsgi --ini-paste docker.ini
+    uwsgi --ini-paste production.ini
 
     echo ""
     echo "      ---------------------------------------"
