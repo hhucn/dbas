@@ -1,17 +1,8 @@
 version: '2'
 services:
-  db:
-    image: postgres:9.6-alpine
-    volumes:
-      - ./docker/db:/docker-entrypoint-initdb.d
-    tmpfs: /tmp
   notifications:
-    image: hhucn/dbas-notifications
-    ports:
-      - "5222:5222"
     volumes:
       - /etc/letsencrypt:/cert:ro
-    tmpfs: /tmp
   docs:
     build:
       context: .
@@ -20,14 +11,8 @@ services:
       - "8000:8000"
     tmpfs: /tmp
   web:
-    build: .
     command: /bin/bash docker_init.production.sh
     volumes:
-      - .:/code
       - ../db:/db
     ports:
       - "4284:4284"
-    links:
-      - db:hhucn__docker-dbas-postgres
-      - notifications:hhucn__docker-dbas-notifications
-    tmpfs: /tmp
