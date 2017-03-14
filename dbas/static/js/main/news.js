@@ -292,17 +292,11 @@ function News() {
 		$('.' + shareButtonMail).click(function () {
 			news.mailShare(this);
 		});
-		$('.' + shareButtonMailSmall).click(function () {
-			news.mailShare(this);
-		});
 
 		/**
-		 * Sharing shortened url on twitteer
+		 * Sharing shortened url on twitter
 		 */
 		$('.' + shareButtonTwitter).click(function () {
-			news.twitterShare(this);
-		});
-		$('.' + shareButtonTwitterSmall).click(function () {
 			news.twitterShare(this);
 		});
 
@@ -312,17 +306,11 @@ function News() {
 		$('.' + shareButtonGoogle).click(function () {
 			news.googleShare(this);
 		});
-		$('.' + shareButtonGoogleSmall).click(function () {
-			news.googleShare(this);
-		});
 
 		/**
 		 * Sharing shortened url on facebook
 		 */
 		$('.' + shareButtonFacebook).click(function () {
-			news.facebookShare(this);
-		});
-		$('.' + shareButtonFacebookSmall).click(function () {
 			news.facebookShare(this);
 		});
 	};
@@ -377,7 +365,7 @@ function News() {
 			return;
 		}
 		var id = $(_this).parent().attr('id'),
-				title = $('#' + id + '_title').text();
+			title = $('#' + id + '_title').text();
 		new Sharing().twitterShare(title, window.location.href);
 	};
 

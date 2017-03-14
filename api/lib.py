@@ -17,18 +17,6 @@ from webob import Response, exc
 # Other
 # =============================================================================
 
-def as_json(convert):
-    """
-    Convert input to json string.
-
-    :param convert: dict which should be converted
-    :return: json string
-    """
-    if convert:
-        return json.dumps(convert, True)
-    return json.dumps({"status": "error", "message": "Could not convert data to JSON"})
-
-
 def logger():
     """
     Create a logger.
@@ -49,7 +37,7 @@ def escape_html(evil):
     return escape(str(evil))
 
 
-def json_bytes_to_dict(col):
+def json_to_dict(col):
     """
     Given a json object as bytes, convert it to a Python dictionary.
 
@@ -57,7 +45,11 @@ def json_bytes_to_dict(col):
     :type col: bytes
     :rtype: dict
     """
-    return json.loads(col.decode("utf-8"))
+    if isinstance(col, dict):
+        return col
+    elif isinstance(col, bytes):
+        col = col.decode("utf-8")
+    return json.loads(col)
 
 
 def flatten(l):
@@ -85,24 +77,6 @@ def merge_dicts(d1, d2):
         merged.update(d2)
         return merged
     return None
-
-
-def debug_start():
-    """
-    Prepare for debug prints.
-
-    :return: Some hashes and linebreaks
-    """
-    print("\n\n\n##########\n")
-
-
-def debug_end():
-    """
-    End debug prints.
-
-    :return: Some hashes and linebreaks
-    """
-    print("\n##########\n\n\n")
 
 
 class HTTP204(exc.HTTPError):

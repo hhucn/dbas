@@ -247,10 +247,13 @@
     			</div>
     			<div class="modal-footer">
 
-    				<a class="share-icon share-facebook-small" id="share-url-facebook" data-toggle="tooltip" data-placement="bottom" title="Facebook"></a>
-    				<a class="share-icon share-google-small" id="share-url-google" data-toggle="tooltip" data-placement="bottom" title="Google+"></a>
-    				<a class="share-icon share-twitter-small" id="share-url-twitter" data-toggle="tooltip" data-placement="bottom" title="Twitter"></a>
-    				<a class="share-icon share-mail-small" id="share-url-mail" data-toggle="tooltip" data-placement="bottom" title="Mail"></a>
+                    <div class="pull-left">
+                        <a class="social-wrapper share-mail" id="share-url-mail" data-toggle="tooltip" data-placement="bottom" title="Mail"><i class="social-em fa fa-envelope social fa-2x"></i></a>
+                        <a class="social-wrapper share-twitter" id="share-url-twitter" data-toggle="tooltip" data-placement="bottom" title="Twitter"><i class="social-tw fa fa-twitter social fa-2x"></i></a>
+	                    <a class="social-wrapper share-google" id="share-url-google" data-toggle="tooltip" data-placement="bottom" title="Google+"><i class="social-gp fa fa-google-plus social fa-2x"></i></a>
+                        <a class="social-wrapper share-facebook" id="share-url-facebook" data-toggle="tooltip" data-placement="bottom" title="Facebook"><i class="social-fb fa fa-facebook social fa-2x"></i></a>
+                    </div>
+
 
     				<button type="button" class="btn btn-success" id="popup-url-sharing-long-url-button" data-is-short-url="1">${structure:extras.tag.fetchurl}</button>
     				<button type="button" class="btn btn-secondary" id="popup-url-sharing-close-button" >${structure:extras.tag.close}</button>
