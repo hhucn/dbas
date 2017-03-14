@@ -1,7 +1,7 @@
 image: hhucn/dbas-build
 
 variables:
-  INIFILE: "docker.ini"
+  INIFILE: "development.ini"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/pip-cache"
 
 cache:
