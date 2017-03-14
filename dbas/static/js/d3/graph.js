@@ -9,6 +9,14 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     var isVisible;
     var colors;
     var rescaleGraph;
+    var box_sizes = box_sizes_for_rescaling; // needed for rescaling
+    var force;
+    var edges;
+    var link;
+    var circle;
+    var rect;
+    var label;
+    var node;
     var statement_size = 6; // base node size of an statement
     var node_factor_size = 10; // additional size for the doj, which is in [0,1]
     var rel_node_factor;
@@ -60,6 +68,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         setRescaleGraphDict();
     }
 
+    /**
+     * Initialize dict "isVisible".
+     */
     function setIsVisibleDict() {
         isVisible = {'position': false,
                      'content': false,
@@ -69,6 +80,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                      'defaultView': false};
     }
 
+    /**
+     * Initialize dict "colors".
+     */
     function setColorsDict() {
         colors = {'light_grey': '#E0E0E0',
                   'grey': '#848484',
@@ -80,17 +94,18 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                   'dark_grey': '#424242'};
     }
 
+    /**
+     * Initialize dict "rescaleGraph".
+     */
     function setRescaleGraphDict() {
         rescaleGraph = {
             'font_size': 14, // needed for rescaling
             'line_height': 1.5, // needed for rescaling
-            'box_sizes': box_sizes_for_rescaling, // needed for rescaling
             'node_id_prefix': 'node_', // needed for rescaling
             'old_scale': 1.0, // needed for rescaling
             'zoom_scale': 0
         };
     }
-
 
     /**
      * Callback if ajax request was successful.
@@ -106,7 +121,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         	new GuiHandler().setDisplayStyleAsDiscussion();
         	return;
         }
-        s = new DiscussionGraph(rescaleGraph.box_sizes, isPartialGraphMode).setDefaultViewParams(true, jsonData, null, request_for_complete);
+        s = new DiscussionGraph(box_sizes, isPartialGraphMode).setDefaultViewParams(true, jsonData, null, request_for_complete);
     };
 
     /**
@@ -162,7 +177,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param request_for_complete
      */
     this.setDefaultViewParams = function (startD3, jsonData, d3, request_for_complete) {
-    	var dg = new DiscussionGraph(rescaleGraph.box_sizes, isPartialGraphMode);
+    	var dg = new DiscussionGraph(box_sizes, isPartialGraphMode);
 	    $('#global-view').attr('data-global-view-loaded', jsonData['type'] == 'complete');
         dg.setButtonDefaultSettings(jsonData, request_for_complete);
         initialDicts();
@@ -229,39 +244,63 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         var height = container.outerHeight() - offset;
 
         var svg = getGraphSvg(width, height);
-        var force = getForce(width, height, jsonData);
+        force = getForce(width, height);
 
         // zoom and pan
         var zoom = d3.behavior.zoom();
         zoomAndPan(zoom);
-        var drag = enableDrag(force);
+        var drag = enableDrag();
 
         // resize
-        resizeGraph(container, force);
+        resizeGraph(container);
 
-        // edge
-        var edges = createEdgeDict(jsonData);
-        setNodeColorsForData(jsonData);
-        // create arrays of links, nodes and move layout forward one step
-        force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
-        var edgesTypeArrow = createArrowDict(edges);
-        var marker = createArrows(svg, edgesTypeArrow);
-        var link = createLinks(svg, edges, marker);
+        setEdges(jsonData, svg);
 
         // node
-        var node = createNodes(svg, force, drag);
-        var circle = setNodeProperties(node).attr('class', 'circle');
+        node = createNodes(svg, drag);
+        circle = setNodeProperties().attr('class', 'circle');
 
+        setTooltip();
+
+        setLegend();
+
+        // buttons of sidebar
+        addListenersForSidebarButtons(jsonData, zoom);
+        // add listener to show/hide tooltip on mouse over
+        addListenerForTooltip();
+
+        force.start();
+
+        // highlight nodes and edges
+        addListenerForNodes();
+
+        return true;
+    };
+
+    function setEdges(jsonData, svg){
+        // edge
+        edges = createEdgeDict(jsonData);
+        setNodeColorsForData(jsonData);
+        setPositionOfGraphElements(jsonData);
+        var edgesTypeArrow = createArrowDict();
+        var marker = createArrows(svg, edgesTypeArrow);
+        link = createLinks(svg, marker);
+    }
+
+    function setTooltip(){
         // tooltip
         // rect as background of label
         var tooltip = node.append('g');
-        var rect = tooltip.append('rect').attr('class', 'labelBox');
-        var label = createLabel(tooltip);
+        rect = tooltip.append('rect').attr('class', 'labelBox');
+        label = createLabel(tooltip);
 
         // reorder the elements so that the tooltips appear in front of the nodes
         tooltip.order();
+        setRectProperties();
+    }
 
-        setRectProperties(rect);
+    function setLegend() {
+        var container = $('#' + graphViewContainerSpaceId);
 
         // legend
         createLegend();
@@ -271,10 +310,14 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         container.append("<div id = 'graphViewLegendId'></div>");
         getLegendSvg().call(legend);
 
-        // buttons of sidebar
-        addListenersForSidebarButtons(jsonData, label, rect, edges, force, zoom);
-        // add listener to show/hide tooltip on mouse over
-        addListenerForTooltip();
+    }
+
+    /**
+     * Set position of graph elements.
+     */
+    function setPositionOfGraphElements(jsonData){
+        // create arrays of links, nodes and move layout forward one step
+        force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
 
         // update force layout calculations
         function forceTick() {
@@ -287,10 +330,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     return d.source.y;
                 },
                 x2: function (d) {
-                    return getPositionOfLink("x2", d.target.x, edges, d);
+                    return getPositionOfLink("x2", d.target.x, d);
                 },
                 y2: function (d) {
-                    return getPositionOfLink("y2", d.target.y, edges, d);
+                    return getPositionOfLink("y2", d.target.y, d);
                 }
             });
 
@@ -315,26 +358,17 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             });
         }
 
-        force.start();
-
-
-        //////////////////////////////////////////////////////////////////////////////
-        // highlight nodes and edges
-        addListenerForNodes(circle, edges);
-
-        return true;
-    };
+    }
 
     /**
      * Calculate coordinate of link for undercuts.
      *
      * @param linkTargetCoordinate
      * @param nodeCoordinate
-     * @param edges
      * @param d
      * @returns {*}
      */
-    function getPositionOfLink(linkTargetCoordinate, nodeCoordinate, edges, d) {
+    function getPositionOfLink(linkTargetCoordinate, nodeCoordinate, d) {
         var position;
         var edge;
         if (d.is_undercut === true && d.target_edge != 'none') {
@@ -380,7 +414,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param jsonData
      * @return force layout
      */
-    function getForce(width, height, jsonData) {
+    function getForce(width, height) {
         //var factor = jsonData.nodes.length/5 * 100;
         var factor = 800;
         return d3.layout.force()
@@ -412,7 +446,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 isVisible.defaultView = false;
             }
             else{
-                zoom_scale = zoom.scale();
+                rescaleGraph.zoom_scale = zoom.scale();
                 change_scale = Math.abs(rescaleGraph.old_scale - rescaleGraph.zoom_scale) > 0.02;
             }
 
@@ -429,9 +463,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                             'font-size': rescaleGraph.font_size / rescaleGraph.zoom_scale + 'px',
                             'line-height': rescaleGraph.line_height / rescaleGraph.zoom_scale
                         });
-                        var width = rescaleGraph.box_sizes[id].width / rescaleGraph.zoom_scale;
-                        var height = rescaleGraph.box_sizes[id].height / rescaleGraph.zoom_scale;
-                        var pos = calculateRectPos(rescaleGraph.box_sizes[id].width, rescaleGraph.box_sizes[id].height);
+                        var width = box_sizes[id].width / rescaleGraph.zoom_scale;
+                        var height = box_sizes[id].height / rescaleGraph.zoom_scale;
+                        var pos = calculateRectPos(box_sizes[id].width, box_sizes[id].height);
                         $('#rect-' + id).attr({
                             'width': width,
                             'height': height,
@@ -464,7 +498,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param force
      * @return drag functionality
      */
-    function enableDrag(force) {
+    function enableDrag() {
         return force.drag()
             .on("dragstart", function () {
                 d3.event.sourceEvent.stopPropagation();
@@ -475,9 +509,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * Resize graph on window event.
      *
      * @param container
-     * @param force
      */
-    function resizeGraph(container, force) {
+    function resizeGraph(container) {
         d3.select(window).on("resize", resize);
         function resize() {
             var graphSvg = $('#graph-svg');
@@ -538,10 +571,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Select edges with type of arrow.
      *
-     * @param edges: edges of graph
      * @return Array array, which contains edges of type arrow
      */
-    function createArrowDict(edges) {
+    function createArrowDict() {
         var edgesTypeArrow = [];
         edges.forEach(function (d) {
             if (d.edge_type === 'arrow') {
@@ -589,10 +621,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      *
      * @param svg
      * @param marker: arrow
-     * @param edges
      * @return links
      */
-    function createLinks(svg, edges, marker) {
+    function createLinks(svg, marker) {
         return svg.selectAll(".path")
             .data(edges)
             // svg lines
@@ -614,11 +645,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * Create node as svg circle and enable drag functionality.
      *
      * @param svg
-     * @param force
      * @param drag
      * @return nodes
      */
-    function createNodes(svg, force, drag) {
+    function createNodes(svg, drag) {
         return svg.selectAll(".node")
             .data(force.nodes())
             .enter().append("g")
@@ -632,10 +662,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Define properties for nodes.
      *
-     * @param node
      * @return circle
      */
-    function setNodeProperties(node) {
+    function setNodeProperties() {
         return node.append("circle")
             .attr({
                 'r': function (d) { return calculateNodeSize(d); },
@@ -696,10 +725,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
     /**
      * Set properties for rect.
-     *
-     * @param rect: background of label
      */
-    function setRectProperties(rect) {
+    function setRectProperties() {
         rect.each(function (d) {
             var element = $("#label-" + d.id);
             var width = element.width() + 24;
@@ -718,7 +745,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 'id': 'rect-' + d.id
             });
             if (d.id.indexOf('statement') != -1 || d.id.indexOf('issue') != -1) {
-                rescaleGraph.box_sizes[d.id] = {'width': width, 'height': height};
+                box_sizes[d.id] = {'width': width, 'height': height};
             }
         });
     }
@@ -753,16 +780,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
     /**
      * Listen whether a node is clicked.
-     *
-     * @param circle
-     * @param edges
      */
-    function addListenerForNodes(circle, edges) {
+    function addListenerForNodes() {
         circle.on("click", function (d) {
             // distinguish between click and drag event
             if (d3.event.defaultPrevented) return;
             var circleId = this.id;
-            showPartOfGraph(edges, circleId);
+            showPartOfGraph(circleId);
             selectedCircleId = d.id;
         });
         circle.on("dblclick", function (d) {
@@ -771,7 +795,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             // show modal when node clicked twice
             showModal(d);
             var circleId = this.id;
-            showPartOfGraph(edges, circleId);
+            showPartOfGraph(circleId);
             selectedCircleId = d.id;
         });
     }
@@ -867,30 +891,26 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * Add listeners for buttons of sidebar.
      *
      * @param jsonData
-     * @param label
-     * @param rect
-     * @param edges
-     * @param force
      * @param zoom
      */
-    function addListenersForSidebarButtons(jsonData, label, rect, edges, force, zoom) {
+    function addListenersForSidebarButtons(jsonData, zoom) {
         $('#default-view').off('click').click(function () {
         	if ($('#global-view').attr('data-global-view-loaded') == 'true' && $('#global-view:hidden').length == 0)
-	            new DiscussionGraph(rescaleGraph.box_sizes, isPartialGraphMode).showGraph(false);
+	            new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(false);
 	        else
-	            showDefaultView(jsonData, force, edges, label, rect, zoom);
+	            showDefaultView(jsonData, zoom);
         });
         $('#global-view').off('click').click(function () {
         	if ($(this).attr('data-global-view-loaded') == 'true')
-        		showDefaultView(jsonData, force, edges, label, rect, zoom);
+        		showDefaultView(jsonData, zoom);
 	        else
-                new DiscussionGraph(rescaleGraph.box_sizes, isPartialGraphMode).showGraph(true);
+                new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(true);
         });
         $('#show-labels').off('click').click(function () {
-            showLabels(label, rect);
+            showLabels();
         });
         $('#hide-labels').off('click').click(function () {
-            hideLabels(label, rect);
+            hideLabels();
         });
         $('#show-positions').off('click').click(function () {
             showPositions();
@@ -899,28 +919,28 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             hidePositions();
         });
         $('#show-my-path').off('click').click(function () {
-            showPath(jsonData, edges);
+            showPath(jsonData);
         });
         $('#hide-my-path').off('click').click(function () {
-            hidePath(edges);
+            hidePath();
         });
         $('#show-my-statements').off('click').click(function () {
-            showMyStatements(edges, force);
+            showMyStatements();
         });
         $('#hide-my-statements').off('click').click(function () {
-            hideMyStatements(edges, force);
+            hideMyStatements();
         });
         $('#show-supports-on-my-statements').off('click').click(function () {
-            showSupportsOnMyStatements(edges, force);
+            showSupportsOnMyStatements();
         });
         $('#hide-supports-on-my-statements').off('click').click(function () {
-            hideSupportsOnMyStatements(edges, force);
+            hideSupportsOnMyStatements();
         });
         $('#show-attacks-on-my-statements').off('click').click(function () {
-            showAttacksOnMyStatements(edges, force);
+            showAttacksOnMyStatements();
         });
         $('#hide-attacks-on-my-statements').off('click').click(function () {
-            hideAttacksOnMyStatements(edges, force);
+            hideAttacksOnMyStatements();
         });
     }
 	
@@ -928,17 +948,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * Restore initial state of graph.
 	 *
 	 * @param jsonData
-	 * @param force
-	 * @param edges
-	 * @param label
-	 * @param rect
 	 * @param zoom
 	 */
-    function showDefaultView(jsonData, force, edges, label, rect, zoom) {
+    function showDefaultView(jsonData, zoom) {
         isVisible.defaultView = true;
 
         // reset buttons
-        new DiscussionGraph(rescaleGraph.box_sizes, isPartialGraphMode).setButtonDefaultSettings(jsonData);
+        new DiscussionGraph(box_sizes, isPartialGraphMode).setButtonDefaultSettings(jsonData);
 
         // set position of graph and set scale
         d3.selectAll("g.zoom").attr("transform", "translate(" + 0 + ")" + " scale(" + 1 + ")");
@@ -950,39 +966,31 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         var zoomDefaultView = d3.behavior.zoom();
         zoomAndPan(zoomDefaultView);
 
-        resetButtons(label, rect, edges, force);
+        resetButtons();
     }
 
     /**
      * Reset graph if button default view is clicked.
-     *
-     * @param label
-     * @param rect
-     * @param edges
-     * @param force
      */
-    function resetButtons(label, rect, edges, force) {
+    function resetButtons() {
         isVisible.position = true;
         isVisible.content = true;
         isVisible.statement = true;
         isVisible.support = true;
         isVisible.attack = true;
 
-        hideLabels(label, rect);
+        hideLabels();
         hidePositions();
-        hidePath(edges);
-        hideMyStatements(edges, force);
-        hideSupportsOnMyStatements(edges, force);
-        hideAttacksOnMyStatements(edges, force);
+        hidePath();
+        hideMyStatements();
+        hideSupportsOnMyStatements();
+        hideAttacksOnMyStatements();
     }
 
     /**
      * Show all labels of graph.
-     *
-     * @param label
-     * @param rect
      */
-    function showLabels(label, rect) {
+    function showLabels() {
         isVisible.content = true;
         isVisible.position = true;
 
@@ -1013,11 +1021,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
     /**
      * Hide all labels of graph.
-     *
-     * @param label
-     * @param rect
      */
-    function hideLabels(label, rect) {
+    function hideLabels() {
         isVisible.content = false;
         label.style("display", 'none');
         rect.style("display", 'none');
@@ -1058,9 +1063,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * Show current path.
      *
      * @param jsonData
-     * @param edges
      */
-    function showPath(jsonData, edges) {
+    function showPath(jsonData) {
         $('#show-my-path').hide();
         $('#hide-my-path').show();
 
@@ -1069,7 +1073,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         });
 
         if(jsonData.path.length != 0) { // if jsonData.path is not empty highlight path
-            highlightPath(jsonData, edges);
+            highlightPath(jsonData);
         } else{ // if jsonData.path is empty color issue
             d3.select('#circle-issue').attr('fill', colors.grey);
         }
@@ -1079,9 +1083,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * Highlight path.
      *
      * @param jsonData
-     * @param edges
      */
-    function highlightPath(jsonData, edges) {
+    function highlightPath(jsonData) {
         let edgesCircleId = [];
 
         // run through all values in jsonData.path
@@ -1093,7 +1096,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 }
                 // edge with virtual node
                 else if(edge.source.id == getId(d[0]) && edge.target.label == ''){
-                    findEdgesVirtualNode(edges, edge, edgesCircleId, d);
+                    findEdgesVirtualNode(edge, edgesCircleId, d);
                 }
             });
         });
@@ -1107,11 +1110,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Find two edges which connect source and target.
      *
-     * @param edges
      * @param edge
      * @param edgesCircleId
      */
-    function findEdgesVirtualNode(edges, edge, edgesCircleId, d){
+    function findEdgesVirtualNode(edge, edgesCircleId, d){
         // edge from virtual node to statement
         edges.forEach(function (e) {
             if (e.source.id == edge.target.id && e.target.id == getId(d[1])) {
@@ -1136,10 +1138,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
     /**
      * Hide current path.
-     *
-     * @param edges
      */
-    function hidePath(edges) {
+    function hidePath() {
         $('#show-my-path').show();
         $('#hide-my-path').hide();
         edges.forEach(function (d) {
@@ -1149,11 +1149,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
     /**
      * Show all statements, which the current user has created.
-     *
-     * @param edges
-     * @param force
      */
-    function showMyStatements(edges, force) {
+    function showMyStatements() {
         isVisible.statement = true;
 
         // hide supports and attacks on statements
@@ -1173,7 +1170,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             grayingElements(d);
         });
 
-        selectSupportsAttacks(edges, force);
+        selectSupportsAttacks();
 
         $('#show-my-statements').hide();
         $('#hide-my-statements').show();
@@ -1181,11 +1178,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
     /**
      * Hide all statements, which the current user has created.
-     *
-     * @param edges
-     * @param force
      */
-    function hideMyStatements(edges, force) {
+    function hideMyStatements() {
         isVisible.statement = false;
 
         // hide supports and attacks on statements
@@ -1200,10 +1194,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             isVisible.attack = false;
         }
 
-        highlightAllElements(edges);
+        highlightAllElements();
 
         // delete border of nodes
-        deleteBorderOfCircle(force);
+        deleteBorderOfCircle();
 
         $('#show-my-statements').show();
         $('#hide-my-statements').hide();
@@ -1211,16 +1205,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
     /**
      * Show all supports on the statements, which the current user has created.
-     *
-     * @param edges
-     * @param force
      */
-    function showSupportsOnMyStatements(edges, force) {
+    function showSupportsOnMyStatements() {
         isVisible.support = true;
 
         // hide statements
         // delete border of nodes
-        deleteBorderOfCircle(force);
+        deleteBorderOfCircle();
         $('#show-my-statements').show();
         $('#hide-my-statements').hide();
         isVisible.statement = false;
@@ -1233,7 +1224,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             });
         }
 
-        selectSupportsAttacks(edges, force);
+        selectSupportsAttacks();
 
         $('#show-supports-on-my-statements').hide();
         $('#hide-supports-on-my-statements').show();
@@ -1241,22 +1232,19 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
     /**
      * Hide all supports on the statements, which the current user has created.
-     *
-     * @param edges
-     * @param force
      */
-    function hideSupportsOnMyStatements(edges, force) {
+    function hideSupportsOnMyStatements() {
         isVisible.support = false;
 
-        deleteBorderOfCircle(force);
+        deleteBorderOfCircle();
 
         // if attacks are not visible, show the default view of the graph
         // else make them visible
         if (!isVisible.attack) {
-            highlightAllElements(edges);
+            highlightAllElements();
         }
         else {
-            showAttacksOnMyStatements(edges, force);
+            showAttacksOnMyStatements();
         }
 
         $('#show-supports-on-my-statements').show();
@@ -1265,16 +1253,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
     /**
      * Show all attacks on the statements, which the current user has created.
-     *
-     * @param edges
-     * @param force
      */
-    function showAttacksOnMyStatements(edges, force) {
+    function showAttacksOnMyStatements() {
         isVisible.attack = true;
 
         // hide statements
         // delete border of nodes
-        deleteBorderOfCircle(force);
+        deleteBorderOfCircle();
         $('#show-my-statements').show();
         $('#hide-my-statements').hide();
         isVisible.statement = false;
@@ -1287,7 +1272,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             });
         }
 
-        selectSupportsAttacks(edges, force);
+        selectSupportsAttacks();
 
         $('#show-attacks-on-my-statements').hide();
         $('#hide-attacks-on-my-statements').show();
@@ -1295,20 +1280,17 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
     /**
      * Hide all attacks on the statements, which the current user has created.
-     *
-     * @param edges
-     * @param force
      */
-    function hideAttacksOnMyStatements(edges, force) {
+    function hideAttacksOnMyStatements() {
         isVisible.attack = false;
 
-        deleteBorderOfCircle(force);
+        deleteBorderOfCircle();
 
         if (!isVisible.support) {
-            highlightAllElements(edges);
+            highlightAllElements();
         }
         else {
-            showSupportsOnMyStatements(edges, force);
+            showSupportsOnMyStatements();
         }
         $('#show-attacks-on-my-statements').show();
         $('#hide-attacks-on-my-statements').hide();
@@ -1316,10 +1298,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
     /**
      * Highlight all elements of graph.
-     *
-     * @param edges
      */
-    function highlightAllElements(edges) {
+    function highlightAllElements() {
         edges.forEach(function (d) {
             highlightElements(d);
         });
@@ -1327,11 +1307,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
     /**
      * Select supports or attacks on statements of current user.
-     *
-     * @param edges
-     * @param force
      */
-    function selectSupportsAttacks(edges, force) {
+    function selectSupportsAttacks() {
         let circleIds = [];
         // highlight supports or attacks on statements, which the current user has created
         force.nodes().forEach(function (d) {
@@ -1342,7 +1319,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // show attacks or supports on statements of current user
         // if button "show statements" is not selected
         if(!isVisible.statement){
-            showAttacksSupports(edges, circleIds);
+            showAttacksSupports(circleIds);
         }
         else{
             // highlight all statements of current user
@@ -1356,10 +1333,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
     /**
      * Delete border of circle.
-     *
-     * @param force
      */
-    function deleteBorderOfCircle(force){
+    function deleteBorderOfCircle(){
         // delete border of nodes
         force.nodes().forEach(function (d) {
             d3.select('#circle-' + d.id).attr('stroke', 'none');
@@ -1486,10 +1461,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Highlight incoming and outgoing edges of selected nodes.
      *
-     * @param edges: all edges of graph
      * @param circleIds: id of selected node
      */
-    function showAttacksSupports(edges, circleIds) {
+    function showAttacksSupports(circleIds) {
         // edges with selected statement as target
         let edgesCircleId = [];
 
@@ -1500,20 +1474,20 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     // if supports and attacks is clicked
                     if (isVisible.support && isVisible.attack) {
                         edgesCircleId.push(e);
-                        findVirtualNodes(edges, edgesCircleId, e);
+                        findVirtualNodes(edgesCircleId, e);
                     }
                     // if attacks is clicked
                     else if (isVisible.attack && (e.color === colors.red)) {
                         if (!(e.is_undercut == true)) {
                             edgesCircleId.push(e);
-                            findUndercutsForEdge(edges, edgesCircleId, e);
-                            findVirtualNodes(edges, edgesCircleId, e);
+                            findUndercutsForEdge(edgesCircleId, e);
+                            findVirtualNodes(edgesCircleId, e);
                         }
                     }
                     // if supports is clicked
                     else if (isVisible.support && (e.color === colors.green)) {
                         edgesCircleId.push(e);
-                        findVirtualNodes(edges, edgesCircleId, e);
+                        findVirtualNodes(edgesCircleId, e);
                     }
                 }
             });
@@ -1538,7 +1512,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param edges: all edges of graph
      * @param circleId: id of selected node
      */
-    function showPartOfGraph(edges, circleId) {
+    function showPartOfGraph(circleId) {
         // edges with selected circle as source or as target
         var edgesCircleId = [];
         var circleUid = selectUid(circleId);
@@ -1562,11 +1536,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         else {
             // edge is an undercut
             edgesWithSourceCircleUid.forEach(function (edge) {
-                testEdgeUndercut(edges, edgesCircleId, edge);
+                testEdgeUndercut(edgesCircleId, edge);
             });
 
             // undercuts on edge of circleUid to target or of source to circleUid
-            findUndercuts(edges, edgesCircleId, circleUid);
+            findUndercuts(edgesCircleId, circleUid);
         }
 
         // if isMyStatementsClicked is false gray all elements at each function call,
@@ -1584,26 +1558,25 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Test if edge is an undercut.
      *
-     * @param edges
      * @param edgesCircleId
      * @param edge
      */
-    function testEdgeUndercut(edges, edgesCircleId, edge) {
+    function testEdgeUndercut(edgesCircleId, edge) {
         if (edge.is_undercut == true) {
             // highlight undercut on edge
             edges.forEach(function (e) {
                 if (e.target_edge === edge.id) {
                     edgesCircleId.push(e);
-                    findVirtualNodes(edges, edgesCircleId, e);
+                    findVirtualNodes(edgesCircleId, e);
                 }
             });
             // target edge of undercut
-            var targetEdge = getTargetEdgeOfEdge(edges, edgesCircleId, edge);
+            var targetEdge = getTargetEdgeOfEdge(edgesCircleId, edge);
 
             // edge is an undercut on an undercut
             if (targetEdge.is_undercut === true) {
                 // find target edge of target edge of edge
-                getTargetEdgeOfEdge(edges, edgesCircleId, targetEdge);
+                getTargetEdgeOfEdge(edgesCircleId, targetEdge);
             }
         }
     }
@@ -1611,11 +1584,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Find all undercuts on edges.
      *
-     * @param edges
      * @param edgesCircleId
      * @param circleUid
      */
-    function findUndercuts(edges, edgesCircleId, circleUid){
+    function findUndercuts(edgesCircleId, circleUid){
         // incoming or outgoing edges of node
         var sourceTargetEdges = [];
         // undercuts
@@ -1624,30 +1596,29 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             if((e.target.id == circleUid) || (e.source.id == circleUid)) {
                 sourceTargetEdges.push(e);
                 // test if source or target of e is a virtual node
-                findVirtualNodes(edges, edgesCircleId, e);
+                findVirtualNodes(edgesCircleId, e);
                 edgesCircleId.push(e);
             }
         });
         sourceTargetEdges.forEach(function (k) {
-            findUndercutsForEdge(edges, edgesCircleId, k);
+            findUndercutsForEdge(edgesCircleId, k);
         });
     }
 
     /**
      * Highlight all undercuts on given edge.
      *
-     * @param edges
      * @param edgesCircleId
      * @param edge
      */
-    function findUndercutsForEdge(edges, edgesCircleId, edge){
+    function findUndercutsForEdge(edgesCircleId, edge){
         var undercuts = [];
         // undercuts on edge
         edges.forEach(function (e) {
             if ((e.is_undercut == true) && (e.target_edge === edge.id)) {
                 undercuts.push(e);
                 edgesCircleId.push(e);
-                findVirtualNodes(edges, edgesCircleId, e);
+                findVirtualNodes(edgesCircleId, e);
             }
         });
         // undercuts on undercuts on edge
@@ -1655,7 +1626,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             edges.forEach(function (e) {
                 if ((e.is_undercut == true) && (e.target_edge === k.id)) {
                     edgesCircleId.push(e);
-                    findVirtualNodes(edges, edgesCircleId, e);
+                    findVirtualNodes(edgesCircleId, e);
                 }
             });
         });
@@ -1665,25 +1636,24 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Test if target or source of edge is a virtual node.
      *
-     * @param edges
      * @param edgesCircleId
      * @param edge
      */
-    function findVirtualNodes(edges, edgesCircleId, edge){
+    function findVirtualNodes(edgesCircleId, edge){
         if(edge.target.label === '' || edge.source.label === '') {
             edges.forEach(function (e) {
                 // source of edge is virtual node or target of edge is virtual node
                 if (((e.source.id === edge.target.id) || (e.target.id === edge.target.id)) && (edge.target.label === '')) {
                     if(!isVisible.support){
-                        findUndercutsForEdge(edges, edgesCircleId, e);
+                        findUndercutsForEdge(edgesCircleId, e);
                         // check if e is an Undercut
-                        testEdgeUndercut(edges, edgesCircleId, e);
+                        testEdgeUndercut(edgesCircleId, e);
                     }
                     edgesCircleId.push(e);
                 }
                 if (((e.source.id === edge.source.id) || (e.target.id === edge.source.id)) && (edge.source.label === '')) {
                     if(!isVisible.support){
-                        findUndercutsForEdge(edges, edgesCircleId, e);
+                        findUndercutsForEdge(edgesCircleId, e);
                     }
                     edgesCircleId.push(e);
                 }
@@ -1694,11 +1664,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Find target edge of edge and add it to array edgesCircleId.
      *
-     * @param edges
      * @param edgesCircleId
      * @param d
      */
-    function getTargetEdgeOfEdge(edges, edgesCircleId, d){
+    function getTargetEdgeOfEdge(edgesCircleId, d){
         var targetEdge;
         edges.forEach(function (e) {
             // highlight all undercuts on undercut d
@@ -1707,7 +1676,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             }
             if (e.id === d.target_edge) {
                 targetEdge = e;
-                findVirtualNodes(edges, edgesCircleId, targetEdge);
+                findVirtualNodes(edgesCircleId, targetEdge);
                 edgesCircleId.push(e);
             }
         });
