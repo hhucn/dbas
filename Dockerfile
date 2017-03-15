@@ -16,4 +16,5 @@ RUN python setup.py --quiet develop \
     && sass dbas/static/css/main.sass dbas/static/css/main.css --style compressed \
     && rm -r .sass-cache
 
+EXPOSE 4284
 CMD ["pserve", "development.ini", "--reload"]
