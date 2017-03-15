@@ -14,7 +14,7 @@ while true; do
     python setup.py --quiet develop
 
     printf "\n# Compiling JS files...\n"
-    google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./dbas/static/js/{main,ajax,discussion,review}/*.js > dbas/static/js/dbas.min.js
+    google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./dbas/static/js/{main,ajax,discussion,review,d3}/*.js > dbas/static/js/dbas.min.js
 
     printf "\n# Compiling SASS files...\n"
     sass dbas/static/css/main.sass dbas/static/css/main.css --style compressed

@@ -3,10 +3,12 @@
  * @email krauthoff@cs.uni-duesseldorf.de
  */
 
-let socket = undefined;
-const port = 5222;
+var socket;
+var port = 5222;
 
 $(document).ready(function() {
+	'use strict';
+	
 	
 	// try to connect
 	try {
@@ -17,8 +19,9 @@ $(document).ready(function() {
 	
 	// delete subscription on page unload events
 	$(window).bind('beforeunload',function(){
-		if (socket)
+		if (socket) {
 			socket.emit('remove_name', $('#' + headerNicknameId).text());
+		}
 	});
 	
 });
@@ -27,12 +30,14 @@ $(document).ready(function() {
  * Connects the sockets and enables publishing
  */
 function doConnect(){
+	'use strict';
+	
 	// switch between a local (http) and a global (https) mode
-	let dict = {query: 'nickname=' + $('#' + headerNicknameId).text(), secure: true};
-	let address =  'http://localhost';
-	if (mainpage.indexOf('localhost') == -1) {
+	var dict = {query: 'nickname=' + $('#' + headerNicknameId).text(), secure: true};
+	var address =  'http://localhost';
+	if (mainpage.indexOf('localhost') === -1) {
 		address = location.origin;
-		dict['secure'] = true;
+		dict.secure = true;
 	}
 
 	socket = io.connect(address + ':' + port, dict);
@@ -54,9 +59,11 @@ function doConnect(){
  * @param data dict
  */
 function doPublish(data){
-	if (data.type == 'success') {	        handleMessage(data, 'Huray!', doSuccess);
-	} else if (data.type == 'warning') {	handleMessage(data, 'Uhh!', doWarning);
-	} else if (data.type == 'info') {	    handleMessage(data, 'Ooh!', doInfo);
+	'use strict';
+	
+	if (data.type === 'success') {	        handleMessage(data, 'Huray!', doSuccess);
+	} else if (data.type === 'warning') {	handleMessage(data, 'Uhh!', doWarning);
+	} else if (data.type === 'info') {	    handleMessage(data, 'Ooh!', doInfo);
 	} else {                                setGlobalInfoHandler('Mhhh!', data.msg);
 	}
 	// console.log('publish ' + data.type + ' ' + data.msg);
@@ -69,7 +76,9 @@ function doPublish(data){
  * @param func
  */
 function handleMessage(data, intro, func){
-	let msg = 'url' in data ? '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>' : data.msg;
+	'use strict';
+	
+	var msg = 'url' in data ? '<a target="_blank" href="' + data.url + '">' + data.msg + '</a>' : data.msg;
 	func(intro, msg);
 	if ('increase_counter' in data) {
 		incrementCounter($('#' + headerBadgeCountNotificationsId));
@@ -83,6 +92,8 @@ function handleMessage(data, intro, func){
  * @param msg String
  */
 function doSuccess(intro, msg){
+	'use strict';
+	
 	setGlobalSuccessHandler(intro, msg);
 }
 
@@ -92,6 +103,8 @@ function doSuccess(intro, msg){
  * @param msg String
  */
 function doWarning(intro, msg){
+	'use strict';
+	
 	setGlobalErrorHandler(intro, msg);
 }
 
@@ -101,6 +114,8 @@ function doWarning(intro, msg){
  * @param msg String
  */
 function doInfo(intro, msg){
+	'use strict';
+	
 	setGlobalInfoHandler(intro, msg);
 }
 
@@ -109,21 +124,25 @@ function doInfo(intro, msg){
  * @param data
  */
 function doRecentReview(data){
-	if (window.location.href.indexOf('review') == -1)
-		return;
+	'use strict';
 	
-	let queue = $('#' + data.queue);
-	if (queue.length != 0){
+	if (window.location.href.indexOf('review') === -1) {
+		return;
+	}
+	
+	var queue = $('#' + data.queue);
+	if (queue.length !== 0){
 		// just push, if given user is not the last reviwer
 		console.log(data.img_url);
-		if (queue.find('a:last-child').length == 0){
-			queue.find('span').remove()
+		if (queue.find('a:last-child').length === 0){
+			queue.find('span').remove();
 		}
-		if (queue.find('img[src^="' + data.img_url + '"]').length == 0) {
+		
+		if (queue.find('img[src^="' + data.img_url + '"]').length === 0) {
 			console.log(data.reviewer_name + ' is a new reviewer');
 			queue.find('a:last-child').remove();
-			let link = $('<a>').attr('target', '_blank').attr('title', data.reviewer_name).attr('href', '/user/' + data.reviewer_name);
-			let img = $('<img>').addClass('img-circle').attr('src', data.img_url + '?d=wavatar&s=40').css('width', '40px').css('margin', '2px');
+			var link = $('<a>').attr('target', '_blank').attr('title', data.reviewer_name).attr('href', '/user/' + data.reviewer_name);
+			var img = $('<img>').addClass('img-circle').attr('src', data.img_url + '?d=wavatar&s=40').css('width', '40px').css('margin', '2px');
 			link.append(img);
 			queue.prepend(link);
 		} else {
@@ -137,6 +156,8 @@ function doRecentReview(data){
  * @param element DOM-Element
  */
 function incrementCounter(element){
+	'use strict';
+	
 	element.text(parseInt(element.text()) + 1);
 }
 
@@ -144,25 +165,31 @@ function incrementCounter(element){
  * Enables testing for the main page
  */
 function enableTesting(){
+	'use strict';
+	
 	socket.on('connect', function() {
-		let field = $('#socketStatus');
-		if (field)
+		var field = $('#socketStatus');
+		if (field) {
 			field.text('Connected!');
+		}
 	});
 
     socket.on('disconnect', function() {
-		let field = $('#socketStatus');
-		if (field)
+		var field = $('#socketStatus');
+		if (field) {
 			field.text('Disconnected!');
+		}
     });
 
     socket.on('pong', function(ms){
-    	let testCount = $('#testCount');
-		let latency = $('#latency');
-		if (latency)
+    	var testCount = $('#testCount');
+		var latency = $('#latency');
+		if (latency) {
 			latency.text(ms + 'ms');
-	    if (testCount)
-			testCount.text(parseInt(testCount.text()) + 1);
+		}
+	    if (testCount) {
+		    testCount.text(parseInt(testCount.text()) + 1);
+	    }
     });
 	
 	setInterval(function(){
@@ -170,19 +197,20 @@ function enableTesting(){
 	}, 100);
 	
 	socket.on('push_test', function(data) {
-		if (data.type == 'success') {	        handleMessage(data, 'TEST!', doSuccess);
-		} else if (data.type == 'warning') {	handleMessage(data, 'TEST!', doWarning);
-		} else if (data.type == 'info') {	    handleMessage(data, 'TEST!', doInfo);
+		if (data.type === 'success') {	        handleMessage(data, 'TEST!', doSuccess);
+		} else if (data.type === 'warning') {	handleMessage(data, 'TEST!', doWarning);
+		} else if (data.type === 'info') {	    handleMessage(data, 'TEST!', doInfo);
 		} else {                                console.log('unknown test type');
 		}
 	});
 	
 	// getting socket id from server
 	socket.on('push_socketid', function(id){
-		let field = $('#socketioId');
+		var field = $('#socketioId');
 		
-		if (field)
+		if (field) {
 			field.text(id);
+		}
 	});
 	
 	$('#test_success_btn,#test_danger_btn,#test_info_btn').click(function(){

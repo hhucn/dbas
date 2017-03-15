@@ -4,6 +4,8 @@ services:
     image: postgres:9.6-alpine
     volumes:
       - ./docker/db:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
     tmpfs: /tmp
   notifications:
     image: hhucn/dbas-notifications
@@ -19,7 +21,6 @@ services:
       - "4284:4284"
     links:
       - db:hhucn__docker-dbas-postgres
-      - notifications:hhucn__docker-dbas-notifications
     depends_on:
       - db
     tmpfs: /tmp
