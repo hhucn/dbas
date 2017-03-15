@@ -1,23 +1,17 @@
 image: docker
 
-variables:
-  INIFILE: "development.ini"
-
 .job-template: &run-server
   before_script:
-#    - apk add --no-cache python3 && python3 -m ensurepip && pip3 install --quiet -U pip setuptools && pip3 install --quiet docker-compose
-    - docker build -t dbas_web .
-    - docker build -t dbas_db docker/db
+    - docker build -t dbas_web_$CI_BUILD_ID .
+    - docker build -t dbas_db_$CI_BUILD_ID docker/db
+    - docker run -d --rm --name db_$CI_BUILD_ID dbas_db_$CI_BUILD_ID
+    - sleep 10
+    - docker run -d --rm --name web_$CI_BUILD_ID --link dbas_db_$CI_BUILD_ID:db dbas_web_$CI_BUILD_ID
 
 after_script:
   - docker stop web_$CI_BUILD_ID
   - docker stop db_$CI_BUILD_ID
-
-# start-server:
-#   <<: *run-server
-#   stage: build
-#   script:
-#     - docker-compose up -d
+  - docker rmi dbas_web_$CI_BUILD_ID db_$CI_BUILD_ID
 
 flake8:
   stage: build
@@ -35,23 +29,14 @@ jshint:
     - bash -c "jshint ./dbas/static/js/{main,ajax,discussion,review}/*.js"
   allow_failure: true
 
-# unit:
-#   <<: *run-server
-#   stage: build
-#   script:
-#     - echo $CI_BUILD_ID
-#     - docker run -d --rm --name db_$CI_BUILD_ID dbas_db
-#     - docker run -d --rm --name web_$CI_BUILD_ID --link db_$CI_BUILD_ID:hhucn__docker-dbas-postgres dbas_web
-#     - docker exec web_$CI_BUILD_ID sh -c 'while ! ((>/dev/tcp/localhost/4284) &>/dev/null); do echo "$(date) - waiting for dbas"; sleep 1; done'
-#     - docker exec web_$CI_BUILD_ID cp $INIFILE development.ini
-#     - docker exec web_$CI_BUILD_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w . dbas graph admin api export
+unit:
+  <<: *run-server
+  stage: test
+  script:
+    - docker exec web_$CI_BUILD_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w . dbas graph admin api export
 
-# acceptance:
-#   <<: *run-server
-#   stage: test
-#   script:
-#     - uwsgi --ini-paste $INIFILE --daemonize uwsgi.daemon.log
-#     - nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
-#     - pip install --quiet flake8
-#     - flake8 .
-#   allow_failure: true
+acceptance:
+  <<: *run-server
+  stage: test
+  script:
+    - docker exec web_$CI_BUILD_ID nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
