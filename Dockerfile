@@ -9,7 +9,7 @@ COPY requirements.txt /dbas/
 RUN pip install -q -U pip \
     && pip install -q -r requirements.txt
 
-COPY . /code/
+COPY . /dbas/
 
 RUN python setup.py --quiet develop \
     && bash -c 'google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./dbas/static/js/{main,ajax,discussion,review}/*.js > dbas/static/js/dbas.min.js' \
