@@ -6,7 +6,8 @@ from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, TextVersion, Argument, Premise, PremiseGroup,\
-    ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement, MarkedArgument
+    ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement, MarkedArgument, ClickedArgument, ClickedStatement,\
+    StatementSeenBy, ArgumentSeenBy
 
 
 class AjaxAddThingsTest(unittest.TestCase):
@@ -29,6 +30,8 @@ class AjaxAddThingsTest(unittest.TestCase):
             DBDiscussionSession.query(Statement).get(tmp).textversion_uid = 1
             DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tmp).delete()
             DBDiscussionSession.query(MarkedStatement).filter_by(statement_uid=tmp).delete()
+            DBDiscussionSession.query(ClickedStatement).filter_by(statement_uid=tmp).delete()
+            DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=tmp).delete()
             DBDiscussionSession.query(Statement).filter_by(uid=tmp).delete()
         # delete premisegroup
         tmp = db_new_arg.premisesgroup_uid
@@ -37,6 +40,8 @@ class AjaxAddThingsTest(unittest.TestCase):
         DBDiscussionSession.query(PremiseGroup).filter_by(uid=tmp).delete()
         # delete argument
         DBDiscussionSession.query(MarkedArgument).filter_by(argument_uid=db_new_arg.uid).delete()
+        DBDiscussionSession.query(ClickedArgument).filter_by(argument_uid=db_new_arg.uid).delete()
+        DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=db_new_arg.uid).delete()
         DBDiscussionSession.query(Argument).filter_by(uid=db_new_arg.uid).delete()
 
     def test_set_new_start_statement(self):
