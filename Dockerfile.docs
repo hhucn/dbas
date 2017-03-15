@@ -1,26 +1,25 @@
 # For more easy access in a composed environment, you have to access the docs at http://localhost/docs
-
 FROM hhucn/dbas-build
 MAINTAINER Tobias Krauhoff <krauthoff@cs.uni-duesseldorf.de>
 
 RUN mkdir /dbas
-
 WORKDIR /dbas
 
-ADD requirements.txt /dbas/
-RUN pip install -U pip && \
-    pip install -r requirements.txt
+COPY requirements.txt /dbas/
+RUN pip install -q -U pip \
+    && pip install -q -r requirements.txt
 
-ADD . /dbas/
+COPY . /dbas/
 
 RUN python setup.py develop
 
 WORKDIR /dbas/docs
+
 RUN make html
 
 WORKDIR /dbas/docs/_build/html/
-RUN mkdir docs
-RUN (mv * docs; return 0)
+RUN mkdir -p docs \
+    && mv * docs || true
 
 EXPOSE 8000
 CMD ["python2", "-m", "SimpleHTTPServer", "8000"]
