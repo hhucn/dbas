@@ -14,5 +14,3 @@ services:
     command: /bin/bash docker_init.production.sh
     volumes:
       - ../db:/db
-    ports:
-      - "4284:4284"
