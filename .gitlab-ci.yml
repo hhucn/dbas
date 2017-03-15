@@ -6,7 +6,7 @@ image: docker
     - docker build -t dbas_db_$CI_BUILD_ID docker/db
     - docker run -d --rm --name db_$CI_BUILD_ID dbas_db_$CI_BUILD_ID
     - sleep 10
-    - docker run -d --rm --name web_$CI_BUILD_ID --link dbas_db_$CI_BUILD_ID:db dbas_web_$CI_BUILD_ID
+    - docker run -d --rm --name web_$CI_BUILD_ID --link db_$CI_BUILD_ID:db dbas_web_$CI_BUILD_ID
 
 after_script:
   - docker stop web_$CI_BUILD_ID
