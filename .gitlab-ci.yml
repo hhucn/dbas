@@ -1,58 +1,57 @@
-image: hhucn/dbas-build
+image: docker
 
 variables:
-  INIFILE: "production.ini"
-  PIP_CACHE_DIR: "$CI_PROJECT_DIR/pip-cache"
-
-cache:
-  paths:
-    - "$CI_PROJECT_DIR/pip-cache"
-  key: "$CI_PROJECT_ID"
+  INIFILE: "development.ini"
 
 .job-template: &run-server
-  services:
-    - hhucn/docker-dbas-postgres
   before_script:
-    - pip install --quiet -U pip
-    - pip install --quiet -r requirements.txt
-    - python setup.py --quiet develop
-    - cp $INIFILE development.ini
-    - init_discussion_sql $INIFILE
-    - init_news_sql $INIFILE
+#    - apk add --no-cache python3 && python3 -m ensurepip && pip3 install --quiet -U pip setuptools && pip3 install --quiet docker-compose
+    - docker build -t dbas_web .
+    - docker build -t dbas_db docker/db
 
-start-server:
-  <<: *run-server
-  stage: build
-  script:
-    - uwsgi --ini-paste $INIFILE --daemonize uwsgi.daemon.log
+after_script:
+  - docker stop web_$CI_BUILD_ID
+  - docker stop db_$CI_BUILD_ID
+
+# start-server:
+#   <<: *run-server
+#   stage: build
+#   script:
+#     - docker-compose up -d
 
 flake8:
   stage: build
   script:
-    - pip install --quiet flake8
+    - apk add --no-cache python3 && python3 -m ensurepip
+    - pip3 install --quiet flake8
     - flake8 .
   allow_failure: true
 
 jshint:
   stage: build
   script:
+    - apk add --no-cache nodejs bash
     - npm install -g jshint
-    - jshint ./dbas/static/js/{main,ajax,discussion,review}/*.js
+    - bash -c "jshint ./dbas/static/js/{main,ajax,discussion,review}/*.js"
   allow_failure: true
 
-unit:
-  <<: *run-server
-  stage: test
-  script:
-    - uwsgi --ini-paste $INIFILE --daemonize uwsgi.daemon.log
-    - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w $(pwd) dbas graph admin api export
+# unit:
+#   <<: *run-server
+#   stage: build
+#   script:
+#     - echo $CI_BUILD_ID
+#     - docker run -d --rm --name db_$CI_BUILD_ID dbas_db
+#     - docker run -d --rm --name web_$CI_BUILD_ID --link db_$CI_BUILD_ID:hhucn__docker-dbas-postgres dbas_web
+#     - docker exec web_$CI_BUILD_ID sh -c 'while ! ((>/dev/tcp/localhost/4284) &>/dev/null); do echo "$(date) - waiting for dbas"; sleep 1; done'
+#     - docker exec web_$CI_BUILD_ID cp $INIFILE development.ini
+#     - docker exec web_$CI_BUILD_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w . dbas graph admin api export
 
-acceptance:
-  <<: *run-server
-  stage: test
-  script:
-    - uwsgi --ini-paste $INIFILE --daemonize uwsgi.daemon.log
-    - nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
-    - pip install --quiet flake8
-    - flake8 .
-  allow_failure: true
+# acceptance:
+#   <<: *run-server
+#   stage: test
+#   script:
+#     - uwsgi --ini-paste $INIFILE --daemonize uwsgi.daemon.log
+#     - nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
+#     - pip install --quiet flake8
+#     - flake8 .
+#   allow_failure: true
