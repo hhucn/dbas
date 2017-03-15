@@ -21,13 +21,13 @@ while true; do
     rm -r .sass-cache
 
     printf "\n# Seeding discussion database...\n"
-    init_discussion_sql docker.ini > /dev/null 2>&1
+    init_discussion_sql production.ini > /dev/null 2>&1
 
     printf "\n# Seeding news database...\n"
-    init_news_sql docker.ini > /dev/null 2>&1
+    init_news_sql production.ini > /dev/null 2>&1
 
     printf "\n# Starting integrated web server -- for development use only!\n"
-    pserve docker.ini --reload
+    pserve production.ini --reload
 
     echo ""
     echo "      ---------------------------------------"
