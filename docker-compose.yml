@@ -21,7 +21,6 @@ services:
       - "4284:4284"
     links:
       - db:hhucn__docker-dbas-postgres
-      - notifications:hhucn__docker-dbas-notifications
     depends_on:
       - db
     tmpfs: /tmp
