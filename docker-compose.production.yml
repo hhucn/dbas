@@ -11,8 +11,4 @@ services:
       - "8000:8000"
     tmpfs: /tmp
   web:
-    command: /bin/bash docker_init.production.sh
-    volumes:
-      - ../db:/db
-    ports:
-      - "4284:4284"
+    command: uwsgi --ini-paste production.ini

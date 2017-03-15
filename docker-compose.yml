@@ -12,14 +12,13 @@ services:
     tmpfs: /tmp
   web:
     build: .
-    command: /bin/bash docker_init.sh
+    restart: always
     volumes:
       - .:/code
     ports:
       - "4284:4284"
     links:
-      - db:hhucn__docker-dbas-postgres
-      - notifications:hhucn__docker-dbas-notifications
+      - db:db
     depends_on:
       - db
     tmpfs: /tmp
