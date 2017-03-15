@@ -59,10 +59,9 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
         return_dict['distance_name'] = mechanism
 
     elif mode == '3':  # adding reasons
-        global mechanism
-        count, extra, mechanism = __get_vars_for_reasons(extra)
+        count, extra, m = __get_vars_for_reasons(extra, mechanism)
         return_dict['values'] = get_strings_for_reasons(value, issue, count, extra[1])
-        return_dict['distance_name'] = mechanism
+        return_dict['distance_name'] = m
 
     elif mode == '4':  # getting text
         return_dict = get_strings_for_search(value)
@@ -82,24 +81,25 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
     return return_dict
 
 
-def __get_vars_for_reasons(extra):
+def __get_vars_for_reasons(extra, mechanism):
     """
     Check if the extra is nen array and prepared for the 'reason search'
 
     :param extra: undefined
+    :param mechanism: String
     :return: int, extra, string
     """
-    global mechanism
+    m = mechanism
     try:
         extra = json.loads(extra) if extra is not None else ['', '']
     except TypeError and json.JSONDecodeError:
         extra = ['', '']
     if isinstance(extra, list):
-        mechanism = 'SequenceMatcher'
+        m = 'SequenceMatcher'
     else:
         extra = ['', '']
     count = 1000 if str(extra[0]) == 'all' else list_length
-    return count, extra, mechanism
+    return count, extra, m
 
 
 def get_all_statements_with_value(request, value):
