@@ -1,7 +1,7 @@
 image: hhucn/dbas-build
 
 variables:
-  INIFILE: "development.ini"
+  INIFILE: "docker.ini"
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/pip-cache"
 
 cache:
@@ -16,6 +16,7 @@ cache:
     - pip install --quiet -U pip
     - pip install --quiet -r requirements.txt
     - python setup.py --quiet develop
+    - cp $INIFILE development.ini
     - init_discussion_sql $INIFILE > /dev/null 2>&1
     - init_news_sql $INIFILE > /dev/null 2>&1
 
