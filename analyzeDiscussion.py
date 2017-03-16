@@ -2,7 +2,7 @@ import arrow
 
 from dbas.database import DBDiscussionSession as session
 from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, \
-    StatementReferences, StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, \
+    StatementReferences, SeenStatement, SeenArgument, TextVersion, PremiseGroup, Premise, \
     Argument, History, MarkedArgument, MarkedStatement, Message, ReviewDelete, ReviewEdit, \
     ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, \
@@ -289,8 +289,8 @@ session.query(User).all()
 session.query(Settings).all()
 session.query(Statement).all()
 session.query(StatementReferences).all()
-session.query(StatementSeenBy).all()
-session.query(ArgumentSeenBy).all()
+session.query(SeenStatement).all()
+session.query(SeenArgument).all()
 session.query(TextVersion).all()
 session.query(PremiseGroup).all()
 session.query(Premise).all()

@@ -12,7 +12,7 @@ from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, ClickedArgument, ClickedStatement, User, \
-    StatementSeenBy, ArgumentSeenBy, MarkedArgument, MarkedStatement
+    SeenStatement, SeenArgument, MarkedArgument, MarkedStatement
 from dbas.input_validator import is_integer
 from dbas.logger import logger
 
@@ -270,8 +270,8 @@ def __clear_seen_by_values_of_user(user_uid):
     :param user_uid: User.uid
     :return:
     """
-    DBDiscussionSession.query(StatementSeenBy).filter_by(user_uid=user_uid).delete()
-    DBDiscussionSession.query(ArgumentSeenBy).filter_by(user_uid=user_uid).delete()
+    DBDiscussionSession.query(SeenStatement).filter_by(user_uid=user_uid).delete()
+    DBDiscussionSession.query(SeenArgument).filter_by(user_uid=user_uid).delete()
 
 
 def __vote_argument(argument, user, is_up_vote):
@@ -396,10 +396,10 @@ def __argument_seen_by_user(db_user, argument_uid):
     """
 
     logger('VotingHelper', '__argument_seen_by_user', 'argument ' + str(argument_uid) + ', for user ' + str(db_user.uid))
-    db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter(and_(ArgumentSeenBy.argument_uid == argument_uid,
-                                                                       ArgumentSeenBy.user_uid == db_user.uid)).first()
+    db_seen_by = DBDiscussionSession.query(SeenArgument).filter(and_(SeenArgument.argument_uid == argument_uid,
+                                                                     SeenArgument.user_uid == db_user.uid)).first()
     if not db_seen_by:
-        DBDiscussionSession.add(ArgumentSeenBy(argument_uid=argument_uid, user_uid=db_user.uid))
+        DBDiscussionSession.add(SeenArgument(argument_uid=argument_uid, user_uid=db_user.uid))
         DBDiscussionSession.flush()
         return True
 
@@ -415,11 +415,11 @@ def __statement_seen_by_user(db_user, statement_uid):
     :param statement_uid: uid of the statement
     :return: True if the statement was not seen by the user (until now), false otherwise
     """
-    db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter(and_(StatementSeenBy.statement_uid == statement_uid,
-                                                                        StatementSeenBy.user_uid == db_user.uid)).first()
+    db_seen_by = DBDiscussionSession.query(SeenStatement).filter(and_(SeenStatement.statement_uid == statement_uid,
+                                                                      SeenStatement.user_uid == db_user.uid)).first()
     if not db_seen_by:
         logger('VotingHelper', '__statement_seen_by_user', 'statement ' + str(statement_uid) + ', for user ' + str(db_user.uid) + ' is now marked as seen')
-        DBDiscussionSession.add(StatementSeenBy(statement_uid=statement_uid, user_uid=db_user.uid))
+        DBDiscussionSession.add(SeenStatement(statement_uid=statement_uid, user_uid=db_user.uid))
         DBDiscussionSession.flush()
         return True
 

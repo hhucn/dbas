@@ -8,7 +8,7 @@ import arrow
 import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, StatementReferences, \
-    StatementSeenBy, ArgumentSeenBy, TextVersion, PremiseGroup, Premise, Argument, ClickedArgument, ClickedStatement, \
+    SeenStatement, SeenArgument, TextVersion, PremiseGroup, Premise, Argument, ClickedArgument, ClickedStatement, \
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
     ReviewCanceled, RevokedContent, RevokedContentHistory, RSS, LastReviewerDuplicate, ReviewDuplicate,\
@@ -26,8 +26,8 @@ table_mapper = {
     'Settings'.lower(): {'table': Settings, 'name': 'Settings'},
     'Statement'.lower(): {'table': Statement, 'name': 'Statement'},
     'StatementReferences'.lower(): {'table': StatementReferences, 'name': 'StatementReferences'},
-    'StatementSeenBy'.lower(): {'table': StatementSeenBy, 'name': 'StatementSeenBy'},
-    'ArgumentSeenBy'.lower(): {'table': ArgumentSeenBy, 'name': 'ArgumentSeenBy'},
+    'SeenStatement'.lower(): {'table': SeenStatement, 'name': 'SeenStatement'},
+    'SeenArgument'.lower(): {'table': SeenArgument, 'name': 'SeenArgument'},
     'TextVersion'.lower(): {'table': TextVersion, 'name': 'TextVersion'},
     'PremiseGroup'.lower(): {'table': PremiseGroup, 'name': 'PremiseGroup'},
     'Premise'.lower(): {'table': Premise, 'name': 'Premise'},
@@ -128,8 +128,8 @@ def get_overview(page):
     voting.append(__get_dash_dict('ClickedStatement', page + 'ClickedStatement'))
     voting.append(__get_dash_dict('MarkedArgument', page + 'MarkedArgument'))
     voting.append(__get_dash_dict('MarkedStatement', page + 'MarkedStatement'))
-    voting.append(__get_dash_dict('ArgumentSeenBy', page + 'ArgumentSeenBy'))
-    voting.append(__get_dash_dict('StatementSeenBy', page + 'StatementSeenBy'))
+    voting.append(__get_dash_dict('SeenArgument', page + 'SeenArgument'))
+    voting.append(__get_dash_dict('SeenStatement', page + 'SeenStatement'))
 
     # all tables for the 'reviews' group
     reviews = list()
