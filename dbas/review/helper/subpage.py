@@ -442,7 +442,7 @@ def __get_stats_for_review(review, ui_locales, main_page):
     :return: dict()
     """
     logger('ReviewSubpagerHelper', '__get_stats_for_review', 'main')
-    # viewed = len(DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=argument_uid).all())
+    # viewed = len(DBDiscussionSession.query(SeenArgument3).filter_by(argument_uid=argument_uid).all())
 
     # _rh = RelationHelper(argument_uid)
     # undermines = _rh.get_undermines_for_argument_uid()
@@ -524,7 +524,7 @@ def __get_part_dict(typeof, text, argument_uid, conclusion_uid):
     :param uid: Statement.uid
     :return: dict()
     """
-    logger('ReviewSubpagerHelper', '__get_part_dict', 'type: ' + str(typeof) + ', text: ' + str(text) + ', arg: ' + str(argument_uid) + ', uid: ' + str(conclusion_uid))
+    logger('ReviewSubpageHelper', '__get_part_dict', 'type: ' + str(typeof) + ', text: ' + str(text) + ', arg: ' + str(argument_uid) + ', uid: ' + str(conclusion_uid))
     return {'type': typeof,
             'text': text,
             'argument_uid': argument_uid,
