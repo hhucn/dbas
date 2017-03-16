@@ -100,7 +100,7 @@ def main_page(request):
     session_expired = True if 'session_expired' in request.params and request.params['session_expired'] == 'true' else False
     ui_locales      = get_language(request)
     _dh             = DictionaryHelper(ui_locales, ui_locales)
-    extras_dict     = _dh.prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict     = _dh.prepare_extras_dict_for_normal_page(request)
     _dh.add_language_options_for_extra_dict(extras_dict)
 
     return {
@@ -144,7 +144,7 @@ def main_contact(request):
     if 'form.contact.submitted' in request.params:
         contact_error, message, send_message = try_to_contact(request, username, email, phone, content, ui_locales, recaptcha)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     ui_locales = get_language(request)
     _t = Translator(ui_locales)
     placeholder = {
@@ -212,7 +212,7 @@ def main_settings(request):
         error = not success
 
     _dh = DictionaryHelper(ui_locales)
-    extras_dict = _dh.prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict = _dh.prepare_extras_dict_for_normal_page(request)
     settings_dict = _dh.prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user, request.application_url)
 
     return {
@@ -243,7 +243,7 @@ def main_notifications(request):
     if session_expired:
         return user_logout(request, True)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid, append_notifications=True)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, append_notifications=True)
 
     return {
         'layout': base_layout(),
@@ -273,7 +273,7 @@ def main_news(request):
     ui_locales = get_language(request)
     is_author = is_user_author_or_admin(request_authenticated_userid)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     return {
         'layout': base_layout(),
@@ -319,7 +319,7 @@ def main_user(request):
         return user_logout(request, True)
 
     ui_locales = get_language(request)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     user_dict = user_manager.get_information_of(current_user, ui_locales)
 
@@ -357,7 +357,7 @@ def main_imprint(request):
     if session_expired:
         return user_logout(request, True)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     import pkg_resources
     extras_dict.update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
     try:
@@ -393,7 +393,7 @@ def main_faq(request):
     if session_expired:
         return user_logout(request, True)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     return {
         'layout': base_layout(),
@@ -422,7 +422,7 @@ def main_docs(request):
     if session_expired:
         return user_logout(request, True)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     return {
         'layout': base_layout(),
@@ -451,7 +451,7 @@ def main_publications(request):
     if session_expired:
         return user_logout(request, True)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     return {
         'layout': base_layout(),
@@ -479,7 +479,7 @@ def main_rss(request):
     if session_expired:
         return user_logout(request, True)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     rss = get_list_of_all_feeds(ui_locales)
 
     return {
@@ -518,7 +518,7 @@ def notfound(request):
     request.response.status = 404
     ui_locales = get_language(request)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     # return HTTPFound(location=UrlManager(request.application_url, for_api=False).get_404([request.path[1:]]))
 
@@ -900,7 +900,7 @@ def discussion_finish(request):
     if session_expired:
         return user_logout(request, True)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, nickname)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     summary_dict = user_manager.get_summary_of_today(nickname)
 
     return {
@@ -1088,7 +1088,7 @@ def main_review(request):
     issue = issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, False)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, nickname)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     review_dict = review_queue_helper.get_review_queues_as_lists(request.application_url, _tn, nickname)
     count, all_rights = review_reputation_helper.get_reputation_of(nickname)
@@ -1134,7 +1134,7 @@ def review_content(request):
         raise HTTPNotFound()
         # return HTTPFound(location=UrlManager(request.application_url, for_api=False).get_404([request.path[1:]]))
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     title = _tn.get(_.review)
     if subpage_name == 'deletes':
@@ -1176,7 +1176,7 @@ def review_history(request):
         return user_logout(request, True)
 
     history = review_history_helper.get_review_history(request.application_url, request_authenticated_userid, _tn)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
@@ -1206,7 +1206,7 @@ def ongoing_history(request):
         return user_logout(request, True)
 
     history = review_history_helper.get_ongoing_reviews(request.application_url, request_authenticated_userid, _tn)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     return {
         'layout': base_layout(),
@@ -1236,7 +1236,7 @@ def review_reputation(request):
     if session_expired:
         return user_logout(request, True)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     reputation_dict = review_history_helper.get_reputation_history_of(request_authenticated_userid, _tn)
 

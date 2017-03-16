@@ -117,7 +117,7 @@ def main_table(request):
         return user_logout(request, True)
 
     ui_locales = get_language(request)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     table = request.matchdict['table']
     try:
         table_dict = lib.get_table_dict(table, request.application_url)
