@@ -112,9 +112,7 @@ class DictionaryHelper(object):
         request_authenticated_userid = nickname
         nickname = ''
 
-        logger('DictionaryHelper', 'prepare_extras_dict', str(nickname))
         is_logged_in = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first() is not None
-        logger('DictionaryHelper', 'prepare_extras_dict', str(is_logged_in))
         if request_authenticated_userid:
             nickname = request_authenticated_userid if request_authenticated_userid else nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
