@@ -475,7 +475,7 @@ class StatementReferences(DiscussionBase):
         self.issue_uid = issue_uid
 
 
-class StatementSeenBy(DiscussionBase):
+class SeenStatement(DiscussionBase):
     """
     List of users, which have seen a statement
     A statement is marked as seen, if it is/was selectable during the justification steps
@@ -499,7 +499,7 @@ class StatementSeenBy(DiscussionBase):
         self.user_uid = user_uid
 
 
-class ArgumentSeenBy(DiscussionBase):
+class SeenArgument(DiscussionBase):
     """
     List of users, which have seen a argument
     An argument is marked as seen, if the user has vote for it or if the argument is presented as attack

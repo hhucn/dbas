@@ -5,7 +5,7 @@ from pyramid import testing
 from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, ClickedArgument, ClickedStatement, StatementSeenBy, ArgumentSeenBy
+from dbas.database.discussion_model import User, ClickedArgument, ClickedStatement, SeenStatement, SeenArgument
 from dbas.helper.voting import add_seen_argument, add_seen_statement, add_click_for_argument, add_click_for_statement
 
 
@@ -289,8 +289,8 @@ class VotingHelperTest(unittest.TestCase):
         """
         db_vote_argument = DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=user.uid).all()
         db_vote_statement = DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=user.uid).all()
-        db_seen_statements = DBDiscussionSession.query(StatementSeenBy).filter_by(user_uid=user.uid).all()
-        db_seen_arguments = DBDiscussionSession.query(ArgumentSeenBy).filter_by(user_uid=user.uid).all()
+        db_seen_statements = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=user.uid).all()
+        db_seen_arguments = DBDiscussionSession.query(SeenArgument).filter_by(user_uid=user.uid).all()
         self.assertEquals(len(db_vote_statement), count_of_vote_statement)
         self.assertEquals(len(db_vote_argument), count_of_vote_argument)
         self.assertEquals(len(db_seen_statements), count_of_seen_statements)
@@ -299,7 +299,7 @@ class VotingHelperTest(unittest.TestCase):
     def clear_every_vote(self):
         DBDiscussionSession.query(ClickedArgument).delete()
         DBDiscussionSession.query(ClickedStatement).delete()
-        DBDiscussionSession.query(StatementSeenBy).delete()
-        DBDiscussionSession.query(ArgumentSeenBy).delete()
+        DBDiscussionSession.query(SeenStatement).delete()
+        DBDiscussionSession.query(SeenArgument).delete()
         DBDiscussionSession.flush()
         transaction.commit()

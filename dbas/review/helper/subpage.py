@@ -442,7 +442,7 @@ def __get_stats_for_review(review, ui_locales, main_page):
     :return: dict()
     """
     logger('ReviewSubpagerHelper', '__get_stats_for_review', 'main')
-    # viewed = len(DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=argument_uid).all())
+    # viewed = len(DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=argument_uid).all())
 
     # _rh = RelationHelper(argument_uid)
     # undermines = _rh.get_undermines_for_argument_uid()

@@ -10,7 +10,7 @@ from sqlalchemy import and_
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, ClickedStatement, Statement, \
-    StatementSeenBy
+    SeenStatement
 from dbas.lib import get_profile_picture
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_statement_as_query
 from dbas.database.initializedb import nick_of_anonymous_user
@@ -94,7 +94,7 @@ def get_opinion_data(issue):
     :return:
     """
     db_statements = DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all()
-    db_all_seen = DBDiscussionSession.query(StatementSeenBy)
+    db_all_seen = DBDiscussionSession.query(SeenStatement)
     db_all_votes = DBDiscussionSession.query(ClickedStatement)
     ret_dict = dict()
     for statement in db_statements:

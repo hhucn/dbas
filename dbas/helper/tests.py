@@ -9,7 +9,7 @@ import transaction
 
 from paste.deploy import appconfig
 from dbas.database import DBDiscussionSession as dbs
-from dbas.database.discussion_model import StatementSeenBy, ClickedStatement, ArgumentSeenBy, ClickedArgument, User
+from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, User
 
 
 def path_to_settings(ini_file):
@@ -63,8 +63,8 @@ def clear_seen_by_of(nickname):
     :return: None
     """
     db_user = dbs.query(User).filter_by(nickname=nickname).first()
-    dbs.query(StatementSeenBy).filter_by(user_uid=db_user.uid).delete()
-    dbs.query(ArgumentSeenBy).filter_by(user_uid=db_user.uid).delete()
+    dbs.query(SeenStatement).filter_by(user_uid=db_user.uid).delete()
+    dbs.query(SeenArgument).filter_by(user_uid=db_user.uid).delete()
     transaction.commit()
 
 

@@ -6,7 +6,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import StatementSeenBy, ClickedStatement, ArgumentSeenBy, ClickedArgument, User, ReputationHistory
+from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, User, ReputationHistory
 from dbas.helper.tests import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of
 
 
@@ -29,9 +29,9 @@ class DiscussionReactionViewTests(unittest.TestCase):
     def test_page(self):
         from dbas.views import discussion_reaction as d
 
-        len_db_seen_s1 = len(DBDiscussionSession.query(StatementSeenBy).all())
+        len_db_seen_s1 = len(DBDiscussionSession.query(SeenStatement).all())
         len_db_votes_s1 = len(DBDiscussionSession.query(ClickedStatement).all())
-        len_db_seen_a1 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
+        len_db_seen_a1 = len(DBDiscussionSession.query(SeenArgument).all())
         len_db_votes_a1 = len(DBDiscussionSession.query(ClickedArgument).all())
 
         request = testing.DummyRequest(matchdict={
@@ -43,9 +43,9 @@ class DiscussionReactionViewTests(unittest.TestCase):
         response = d(request)
         verify_dictionary_of_view(self, response)
 
-        len_db_seen_s2 = len(DBDiscussionSession.query(StatementSeenBy).all())
+        len_db_seen_s2 = len(DBDiscussionSession.query(SeenStatement).all())
         len_db_votes_s2 = len(DBDiscussionSession.query(ClickedStatement).all())
-        len_db_seen_a2 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
+        len_db_seen_a2 = len(DBDiscussionSession.query(SeenArgument).all())
         len_db_votes_a2 = len(DBDiscussionSession.query(ClickedArgument).all())
         self.assertEqual(len_db_seen_s1, len_db_seen_s2)  # no more cause we are not logged in
         self.assertEqual(len_db_votes_s1, len_db_votes_s2)
@@ -57,9 +57,9 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
-        len_db_seen_s1 = len(DBDiscussionSession.query(StatementSeenBy).all())
+        len_db_seen_s1 = len(DBDiscussionSession.query(SeenStatement).all())
         len_db_votes_s1 = len(DBDiscussionSession.query(ClickedStatement).all())
-        len_db_seen_a1 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
+        len_db_seen_a1 = len(DBDiscussionSession.query(SeenArgument).all())
         len_db_votes_a1 = len(DBDiscussionSession.query(ClickedArgument).all())
         len_db_vote_arg1 = len(DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == db_user.uid,
                                                                                       ClickedArgument.argument_uid == 2,
@@ -76,9 +76,9 @@ class DiscussionReactionViewTests(unittest.TestCase):
         transaction.commit()
         verify_dictionary_of_view(self, response)
 
-        len_db_seen_s2 = len(DBDiscussionSession.query(StatementSeenBy).all())
+        len_db_seen_s2 = len(DBDiscussionSession.query(SeenStatement).all())
         len_db_votes_s2 = len(DBDiscussionSession.query(ClickedStatement).all())
-        len_db_seen_a2 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
+        len_db_seen_a2 = len(DBDiscussionSession.query(SeenArgument).all())
         len_db_votes_a2 = len(DBDiscussionSession.query(ClickedArgument).all())
         len_db_vote_arg2 = len(DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == db_user.uid,
                                                                                       ClickedArgument.argument_uid == 2,
@@ -99,9 +99,9 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Björn').first()
 
-        len_db_seen_s1 = len(DBDiscussionSession.query(StatementSeenBy).all())
+        len_db_seen_s1 = len(DBDiscussionSession.query(SeenStatement).all())
         len_db_votes_s1 = len(DBDiscussionSession.query(ClickedStatement).all())
-        len_db_seen_a1 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
+        len_db_seen_a1 = len(DBDiscussionSession.query(SeenArgument).all())
         len_db_votes_a1 = len(DBDiscussionSession.query(ClickedArgument).all())
         len_db_vote_arg1 = len(DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == db_user.uid,
                                                                                       ClickedArgument.argument_uid == 2,
@@ -119,9 +119,9 @@ class DiscussionReactionViewTests(unittest.TestCase):
         transaction.commit()
         verify_dictionary_of_view(self, response)
 
-        len_db_seen_s2 = len(DBDiscussionSession.query(StatementSeenBy).all())
+        len_db_seen_s2 = len(DBDiscussionSession.query(SeenStatement).all())
         len_db_votes_s2 = len(DBDiscussionSession.query(ClickedStatement).all())
-        len_db_seen_a2 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
+        len_db_seen_a2 = len(DBDiscussionSession.query(SeenArgument).all())
         len_db_votes_a2 = len(DBDiscussionSession.query(ClickedArgument).all())
         len_db_vote_arg2 = len(DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == db_user.uid,
                                                                                       ClickedArgument.argument_uid == 2,
@@ -144,9 +144,9 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Björn').first()
 
-        len_db_seen_s1 = len(DBDiscussionSession.query(StatementSeenBy).all())
+        len_db_seen_s1 = len(DBDiscussionSession.query(SeenStatement).all())
         len_db_votes_s1 = len(DBDiscussionSession.query(ClickedStatement).all())
-        len_db_seen_a1 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
+        len_db_seen_a1 = len(DBDiscussionSession.query(SeenArgument).all())
         len_db_votes_a1 = len(DBDiscussionSession.query(ClickedArgument).all())
         len_db_vote_arg1 = len(DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == db_user.uid,
                                                                                       ClickedArgument.argument_uid == 2,
@@ -164,9 +164,9 @@ class DiscussionReactionViewTests(unittest.TestCase):
         transaction.commit()
         verify_dictionary_of_view(self, response)
 
-        len_db_seen_s2 = len(DBDiscussionSession.query(StatementSeenBy).all())
+        len_db_seen_s2 = len(DBDiscussionSession.query(SeenStatement).all())
         len_db_votes_s2 = len(DBDiscussionSession.query(ClickedStatement).all())
-        len_db_seen_a2 = len(DBDiscussionSession.query(ArgumentSeenBy).all())
+        len_db_seen_a2 = len(DBDiscussionSession.query(SeenArgument).all())
         len_db_votes_a2 = len(DBDiscussionSession.query(ClickedArgument).all())
         len_db_vote_arg2 = len(DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == db_user.uid,
                                                                                       ClickedArgument.argument_uid == 2,

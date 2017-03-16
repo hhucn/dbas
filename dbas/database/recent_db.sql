@@ -2502,7 +2502,7 @@ COPY history (uid, author_uid, path, "timestamp") FROM stdin;
 315	12	/justify/1/t	2017-01-27 10:11:15
 318	4	/justify/6/t	2017-01-27 10:11:23
 319	4	/justify/6/t	2017-01-27 10:11:23
-294	4	/admin/StatementSeenBy	2017-01-27 10:00:36
+294	4	/admin/SeenStatement	2017-01-27 10:00:36
 297	12	/justify/4/f/undercut	2017-01-27 10:05:12
 303	12	/reaction/11/end/0	2017-01-27 10:09:27
 313	12	/attitude/1	2017-01-27 10:11:09
