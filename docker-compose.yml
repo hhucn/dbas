@@ -6,7 +6,7 @@ services:
       - ./docker/db:/docker-entrypoint-initdb.d
     tmpfs: /tmp
   notifications:
-    image: hhucn/dbas-notifications
+    image: gitlab.cs.uni-duesseldorf.de:5001/dbas/notifications
     ports:
       - "5222:5222"
     tmpfs: /tmp
