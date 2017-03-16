@@ -20,10 +20,10 @@ class TestLoginLogout:
     def test_wrong_login(self):
         # assert that the user is not logged in
         assert_false(self.browser.is_text_present('Pascal'), 'String \'Pascal\' present')
-        # login via loginpage
+        # login via login page
         self.browser.visit(login_url.format('Pascal', 'wrong password', ROOT))
         # assert that the user is now logged in
-        assert_true(self.browser.is_text_present('do not match'))
+        assert_in("error", self.browser.html)  # <-- contains JSON response
 
     def test_01_right_login(self):
         assert_false(self.browser.is_text_present('Pascal'), 'String \'Pascal\' present')

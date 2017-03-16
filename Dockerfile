@@ -1,14 +1,20 @@
 FROM hhucn/dbas-build
 MAINTAINER Christian Meter <meter@cs.uni-duesseldorf.de>
 
-RUN mkdir /code
+RUN mkdir /dbas
 
-WORKDIR /code
+WORKDIR /dbas
 
-ADD requirements.txt /code/
-RUN pip install -U pip && \
-    pip install -r requirements.txt
+COPY requirements.txt /dbas/
+RUN pip install -q -U pip \
+    && pip install -q -r requirements.txt
 
-ADD . /code/
+COPY . /dbas/
 
-RUN python setup.py develop
+RUN python setup.py --quiet develop \
+    && bash -c 'google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./dbas/static/js/{main,ajax,discussion,review}/*.js > dbas/static/js/dbas.min.js' \
+    && sass dbas/static/css/main.sass dbas/static/css/main.css --style compressed \
+    && rm -r .sass-cache
+
+EXPOSE 4284
+CMD ["pserve", "development.ini", "--reload"]
