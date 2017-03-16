@@ -4,14 +4,13 @@ image: docker
   before_script:
     - docker build -t dbas_web_$CI_BUILD_ID .
     - docker build -t dbas_db_$CI_BUILD_ID docker/db
-    - docker run -d --rm --name db_$CI_BUILD_ID dbas_db_$CI_BUILD_ID
+    - docker run -d --rm --name dbas_db_$CI_BUILD_ID dbas_db_$CI_BUILD_ID
     - sleep 10
-    - docker run -d --rm --name web_$CI_BUILD_ID --link db_$CI_BUILD_ID:db dbas_web_$CI_BUILD_ID
+    - docker run -d --rm --name dbas_web_$CI_BUILD_ID --link dbas_db_$CI_BUILD_ID:db dbas_web_$CI_BUILD_ID
 
 after_script:
-  - docker stop web_$CI_BUILD_ID
-  - docker stop db_$CI_BUILD_ID
-  - docker rmi dbas_web_$CI_BUILD_ID db_$CI_BUILD_ID
+  - docker stop dbas_web_$CI_BUILD_ID dbas_db_$CI_BUILD_ID
+  - docker rmi dbas_web_$CI_BUILD_ID dbas_db_$CI_BUILD_ID
 
 flake8:
   stage: build
@@ -33,10 +32,10 @@ unit:
   <<: *run-server
   stage: test
   script:
-    - docker exec web_$CI_BUILD_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w . dbas graph admin api export
+    - docker exec dbas_web_$CI_BUILD_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w . dbas graph admin api export
 
 acceptance:
   <<: *run-server
   stage: test
   script:
-    - docker exec web_$CI_BUILD_ID nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
+    - docker exec dbas_web_$CI_BUILD_ID nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
