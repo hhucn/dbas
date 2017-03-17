@@ -4,13 +4,14 @@ Provides functions
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import requests
 import time
 
-from dbas.lib import get_profile_picture, get_global_url
-from dbas.logger import logger
+import requests
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
+from dbas.lib import get_profile_picture, get_global_url
+from dbas.logger import logger
 
 port = 5222
 
@@ -20,7 +21,6 @@ def send_request_for_info_popup_to_socketio(nickname, message='', url=None, incr
     Sends request to the socketio server for an info popup
 
     :param nickname: User.nickname
-    :param main_page: String
     :param message: String
     :param url: Issue.uid
     :param increase_counter:
@@ -46,8 +46,6 @@ def send_request_for_info_popup_to_socketio_with_delay(nickname, message='', url
     logger('Websocket.lib', 'send_request_for_info_popup_to_socketio_with_delay', 'main sleeping for ' + str(delay))
     time.sleep(delay)
     logger('Websocket.lib', 'send_request_for_info_popup_to_socketio_with_delay', 'enough sleep')
-    logger('Websocket.lib', 'send_request_for_info_popup_to_socketio_with_delay', 'enough sleep')
-    logger('Websocket.lib', 'send_request_for_info_popup_to_socketio_with_delay', 'enough sleep')
     if url:
         use_https = 'dbas.cs' in url
         __send_request_for_popup_to_socketio(nickname, 'info', message, url, increase_counter, use_https)
@@ -58,7 +56,6 @@ def send_request_for_success_popup_to_socketio(nickname, message='', url=None, i
     Sends request to the socketio server for a success popup
 
     :param nickname: User.nickname
-    :param main_page: String
     :param message: String
     :param url: String
     :param increase_counter:
@@ -84,11 +81,11 @@ def send_request_for_warning_popup_to_socketio(nickname, message='', url=None, i
     __send_request_for_popup_to_socketio(nickname, 'warning', message, url, increase_counter)
 
 
-def __send_request_for_popup_to_socketio(nickname, type, message='', url=None, increase_counter=False, use_https=False):
+def __send_request_for_popup_to_socketio(nickname, popup_type, message='', url=None, increase_counter=False, use_https=False):
     """
     Sends an request to the socket io server
 
-    :param type: String (success, warning, info)
+    :param popup_type: String (success, warning, info)
     :param nickname: nickname of the user
     :param message: Some message
     :param url: URL for the event, what happened
@@ -97,10 +94,10 @@ def __send_request_for_popup_to_socketio(nickname, type, message='', url=None, i
     :return: Status code of the request
     """
     logger('Websocket.lib', '__send_request_for_popup_to_socketio', 'main')
-    if type not in ['success', 'warning', 'info']:
-        type = 'info'
+    if popup_type not in ['success', 'warning', 'info']:
+        popup_type = 'info'
 
-    params = '?type=' + type + '&nickname=' + nickname + '&'
+    params = '?type=' + popup_type + '&nickname=' + nickname + '&'
     if message:
         params += 'msg=' + message + '&'
     if url:
@@ -124,6 +121,7 @@ def send_request_for_recent_delete_review_to_socketio(nickname, main_page):
     Sends request to the socketio server for updating the last reviewer view
 
     :param nickname: User.nickname
+    :param main_page: String
     :return: Status code of the request
     """
     logger('Websocket.lib', 'send_request_for_recent_delete_review_to_socketio', 'main - nickname ' + str(nickname))
@@ -139,6 +137,7 @@ def send_request_for_recent_edit_review_to_socketio(nickname, main_page):
     Sends request to the socketio server for updating the last reviewer view
 
     :param nickname: User.nickname
+    :param main_page: String
     :return: Status code of the request
     """
     logger('Websocket.lib', 'send_request_for_recent_edit_review_to_socketio', 'main - nickname ' + str(nickname))

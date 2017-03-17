@@ -7,7 +7,7 @@ Provides helping function for getting some opinions.
 from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User, ClickedArgument, ClickedStatement, Premise, ArgumentSeenBy, StatementSeenBy, sql_timestamp_pretty_print
+from dbas.database.discussion_model import Argument, Statement, User, ClickedArgument, ClickedStatement, Premise, SeenArgument, SeenStatement, sql_timestamp_pretty_print
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undercuts_for_argument_uid, get_undermines_for_argument_uid, get_supports_for_argument_uid
 from dbas.lib import get_text_for_statement_uid, get_text_for_argument_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture
@@ -133,7 +133,7 @@ def __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user_ui
             else:
                 message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
 
-            db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(uid['id'])).all()
+            db_seen_by = DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=int(uid['id'])).all()
             seen_by += len(db_seen_by) if db_seen_by else 0
 
         ret_list.append({'users': all_users,
@@ -199,7 +199,7 @@ def __get_opinions_for_uid(uid, is_supportive, db_user_uid, lang, _t, main_page)
     statement_dict['users'] = all_users
     statement_dict['message'] = __get_genered_text_for_clickcount(len(db_votes), db_user_uid, _t)
 
-    db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=int(uid)).all()
+    db_seen_by = DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=int(uid)).all()
     statement_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
     return statement_dict
 
@@ -282,7 +282,7 @@ def get_user_with_same_opinion_for_premisegroups(argument_uids, nickname, lang, 
         statement_dict['users'] = all_users
         statement_dict['message'] = __get_genered_text_for_clickcount(len(db_votes), db_user_uid, _t)
 
-        db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(uid)).all()
+        db_seen_by = DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=int(uid)).all()
         statement_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
 
         opinions.append(statement_dict)
@@ -337,7 +337,7 @@ def get_user_with_same_opinion_for_argument(argument_uid, nickname, lang, main_p
     opinions['users'] = all_users
     opinions['message'] = __get_genered_text_for_clickcount(len(db_votes), db_user_uid, _t)
 
-    db_seen_by = DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=int(argument_uid)).all()
+    db_seen_by = DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=int(argument_uid)).all()
     opinions['seen_by'] = len(db_seen_by) if db_seen_by else 0
 
     return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
@@ -387,7 +387,7 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
     ret_dict['agree'] = agree_dict
     ret_dict['disagree'] = disagree_dict
 
-    db_seen_by = DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=int(statement_uid)).all()
+    db_seen_by = DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=int(statement_uid)).all()
     ret_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
 
     return ret_dict

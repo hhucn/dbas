@@ -2,7 +2,7 @@
 """
 Init scripts for database
 
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
 import os
@@ -13,7 +13,7 @@ import arrow
 import transaction
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
-    Settings, ClickedArgument, ClickedStatement, StatementReferences, Language, ArgumentSeenBy, StatementSeenBy,\
+    Settings, ClickedArgument, ClickedStatement, StatementReferences, Language, SeenArgument, SeenStatement,\
     ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, ReputationReason, \
     ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate, MarkedArgument,\
     MarkedStatement, Message, LastReviewerEdit, RevokedContentHistory, RevokedContent, RevokedDuplicate, \
@@ -160,8 +160,8 @@ def drop_it(argv=sys.argv):
 
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(MarkedArgument).delete()) + ' in MarkedArgument')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(MarkedStatement).delete()) + ' in MarkedStatement')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ArgumentSeenBy).delete()) + ' in ArgumentSeenBy')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(StatementSeenBy).delete()) + ' in StatementSeenBy')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(SeenArgument).delete()) + ' in SeenArgument')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(SeenStatement).delete()) + ' in SeenStatement')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ClickedArgument).delete()) + ' in VoteArgument')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ClickedStatement).delete()) + ' in VoteStatement')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Message).delete()) + ' in Message')
@@ -761,15 +761,15 @@ def __set_up_issue(session, lang1, lang2, is_field_test=False):
 
 def __setup_dummy_seen_by(session):
     """
-    Randomized ArgumentSeenBy and StatementSeenBy values
+    Randomized SeenArgument and SeenStatement values
 
     :param session: current session
     :return: None
     """
     db_users = DBDiscussionSession.query(User).all()
     users = {user.nickname: user for user in db_users}
-    DBDiscussionSession.query(ArgumentSeenBy).delete()
-    DBDiscussionSession.query(StatementSeenBy).delete()
+    DBDiscussionSession.query(SeenArgument).delete()
+    DBDiscussionSession.query(SeenStatement).delete()
 
     db_arguments = DBDiscussionSession.query(Argument).all()
     db_statements = DBDiscussionSession.query(Statement).all()
@@ -783,7 +783,7 @@ def __setup_dummy_seen_by(session):
         max_interval = random.randint(5, len(tmp_first_names) - 1)
         for i in range(1, max_interval):
             nick = tmp_first_names[random.randint(0, len(tmp_first_names) - 1)]
-            elements.append(ArgumentSeenBy(argument_uid=argument.uid, user_uid=users[nick].uid))
+            elements.append(SeenArgument(argument_uid=argument.uid, user_uid=users[nick].uid))
             tmp_first_names.remove(nick)
             argument_count += 1
 
@@ -793,7 +793,7 @@ def __setup_dummy_seen_by(session):
         max_interval = random.randint(5, len(tmp_first_names) - 1)
         for i in range(1, max_interval):
             nick = tmp_first_names[random.randint(0, len(tmp_first_names) - 1)]
-            elements.append(StatementSeenBy(statement_uid=statement.uid, user_uid=users[nick].uid))
+            elements.append(SeenStatement(statement_uid=statement.uid, user_uid=users[nick].uid))
             tmp_first_names.remove(nick)
             statement_count += 1
     session.add_all(elements)
@@ -867,7 +867,7 @@ def __add_clicks_for_arguments(db_arguments, users):
     arg_down = 0
     new_clicks_for_arguments = list()
     for argument in db_arguments:
-        max_interval = len(DBDiscussionSession.query(ArgumentSeenBy).filter_by(argument_uid=argument.uid).all())
+        max_interval = len(DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=argument.uid).all())
         up_votes = random.randint(1, max_interval - 1)
         down_votes = random.randint(1, max_interval - 1)
         arg_up += up_votes
@@ -910,7 +910,7 @@ def __add_clicks_for_statements(db_statements, users):
     stat_down = 0
     new_clicks_for_statement = list()
     for statement in db_statements:
-        max_interval = len(DBDiscussionSession.query(StatementSeenBy).filter_by(statement_uid=statement.uid).all())
+        max_interval = len(DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=statement.uid).all())
         up_votes = random.randint(1, max_interval - 1)
         down_votes = random.randint(1, max_interval - 1)
         stat_up += up_votes
@@ -1559,10 +1559,10 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     values = []
     db_statements = DBDiscussionSession.query(Statement).all()
     for statement in db_statements:
-        values.append(StatementSeenBy(statement.uid, user.uid))
+        values.append(SeenStatement(statement.uid, user.uid))
     db_arguments = DBDiscussionSession.query(Argument).all()
     for argument in db_arguments:
-        values.append(ArgumentSeenBy(argument.uid, user.uid))
+        values.append(SeenArgument(argument.uid, user.uid))
     session.add_all(values)
     session.flush()
 

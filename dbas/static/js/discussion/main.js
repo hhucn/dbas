@@ -190,7 +190,6 @@ function Main () {
 		//$('[id^="' + questionBubbleId + '-"').click(function () {
 		var trianglel = $('.triangle-l');
 		var uid;
-		console.log(trianglel.find('.triangle-content-text'));
 		trianglel.find('.triangle-content-text').click(function () {
 			var url = window.location.href;
 			if (url.indexOf('/d?history') !== -1) {

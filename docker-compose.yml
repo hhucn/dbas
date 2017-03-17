@@ -4,22 +4,24 @@ services:
     image: postgres:9.6-alpine
     volumes:
       - ./docker/db:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
     tmpfs: /tmp
-  # notifications:
-  #   image: hhucn/dbas-notifications
-  #   ports:
-  #     - "5222:5222"
-  #   tmpfs: /tmp
+  notifications:
+    image: gitlab.cs.uni-duesseldorf.de:5001/dbas/notifications
+    ports:
+      - "5222:5222"
+    tmpfs: /tmp
   web:
     build: .
-    command: /bin/bash docker_init.sh
+    command: bash -c "sleep 8 && pserve development.ini --reload"
+    restart: always
     volumes:
-      - .:/code
+      - .:/dbas
     ports:
       - "4284:4284"
     links:
-      - db:hhucn__docker-dbas-postgres
-      # - notifications:hhucn__docker-dbas-notifications
+      - db:db
     depends_on:
       - db
     tmpfs: /tmp

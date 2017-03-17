@@ -1,7 +1,7 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-        <div class="container colored-container">
+        <div class="container colored-container" tal:condition="extras.logged_in">
             <div class="col-md-6">
                 <input id="test-input" type="text" class="form-control" placeholder="..." value="Test input text" style="width: 100%;"><br>
                 <button id="test_success_btn" data-type="success" type="submit" class="btn btn-success" style="width: 25%; margin: 0.5em;">Success</button>
@@ -18,6 +18,9 @@
             <div class="col-md-2">
                 <small>Every text is send to the server, which responds asynchronously!</small>
             </div>
+        </div>
+        <div class="container colored-container" tal:condition="not:extras.logged_in">
+            <p class="lead center">Please log in for testing!</p>
         </div>
 
 	</tal:block>

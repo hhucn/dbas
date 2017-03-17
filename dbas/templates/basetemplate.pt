@@ -119,8 +119,8 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/review/callbacks.js')}" tal:condition="extras.development_mode"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/review/history.js')}" tal:condition="extras.development_mode"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/review/index.js')}" tal:condition="extras.development_mode"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/d3/barometer.js')}" tal:condition="extras.development_mode and extras.show_bar_icon"></script>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/d3/graph.js')}" tal:condition="extras.development_mode and extras.show_graph_icon"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/d3/barometer.js')}" tal:condition="extras.development_mode"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/d3/graph.js')}" tal:condition="extras.development_mode"></script>
 	<script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.js')}"></script>
 	<!--<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/gremlins.min.js')}"></script>-->
 

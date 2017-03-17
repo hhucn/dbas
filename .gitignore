@@ -39,6 +39,7 @@ mergeDatabase.py
 db.txt
 *.sql
 requirementsUpdater.py
+.#*
 
 # Pycharm
 .idea/

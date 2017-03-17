@@ -1,8 +1,8 @@
 """
 Logic for user login, token generation and validation
 
-.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
 import binascii
@@ -16,7 +16,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.views import user_login
 
-from .lib import HTTP401, logger
+from .lib import HTTP401, json_to_dict, logger
 
 log = logger()
 
@@ -29,21 +29,23 @@ def _create_salt(nickname):
 
 
 def _create_token(nickname, alg='sha512'):
-    """
-    Use the system's urandom function to generate a random token and convert it to ASCII.
+    """Use the system's urandom function to generate a random token and convert it
+    to ASCII.
 
     :return:
+
     """
     salt = _create_salt(nickname)
     return hashlib.new(alg, salt).hexdigest()
 
 
 def valid_token(request):
-    """
-    Validate the submitted token. Checks if a user is logged in and prepares a dictionary, which is then passed to DBAS.
+    """Validate the submitted token. Checks if a user is logged in and prepares a
+    dictionary, which is then passed to DBAS.
 
     :param request:
     :return:
+
     """
     header = 'X-Messaging-Token'
     htoken = request.headers.get(header)
@@ -77,11 +79,11 @@ def valid_token(request):
 
 
 def validate_login(request, **kwargs):
-    """
-    Takes token from request and validates it. Return true if logged in, else false.
+    """Takes token from request and validates it.
 
     :param request:
     :return:
+
     """
     header = 'X-Messaging-Token'
     htoken = request.headers.get(header)
@@ -93,12 +95,12 @@ def validate_login(request, **kwargs):
 
 
 def token_to_database(nickname, token):
-    """
-    Store the newly created token in database.
+    """Store the newly created token in database.
 
     :param nickname: user's nickname
     :param token: new token to be stored
     :return:
+
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
@@ -111,27 +113,27 @@ def token_to_database(nickname, token):
 
 
 def validate_credentials(request, **kwargs):
-    """
-    Parse credentials from POST request and validate it against DBA-S' database.
+    """Parse credentials from POST request and validate it against DBA-S'
+    database.
 
     :param request:
     :return:
+
     """
-    # Decode received data
-    data = request.body.decode('utf-8')
-    data = json.loads(data)
+    data = json_to_dict(request.json_body)
     nickname = data['nickname']
     password = data['password']
 
     # Check in DB-AS' database, if the user's credentials are valid
     logged_in = user_login(request, nickname, password, for_api=True)
+    if isinstance(logged_in, str):
+        logged_in = json.loads(logged_in)  # <-- I hate that this is necessary!
 
-    try:
-        if logged_in['status'] == 'success':
-            token = _create_token(nickname)
-            user = {'nickname': nickname, 'token': token}
-            token_to_database(nickname, token)
-            request.validated['user'] = user
-    except (TypeError, KeyError):
-        log.error('API Not logged in: %s' % logged_in)
-        request.errors.add(logged_in)
+    if logged_in.get('status') == 'success':
+        token = _create_token(nickname)
+        user = {'nickname': nickname, 'token': token}
+        token_to_database(nickname, token)
+        request.validated['user'] = user
+    else:
+        log.info('API Not logged in: %s' % logged_in)
+        request.errors.add('body', logged_in.get("error"))

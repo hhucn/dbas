@@ -11,4 +11,4 @@ final_file=$path$file
 # remove old file
 [ -e $final_file ] && rm $final_file
 # create final file
-google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE $path"/"{main,ajax,discussion,review}/*.js > $final_file
+google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE $path"/"{main,ajax,discussion,review,d3}/*.js > $final_file

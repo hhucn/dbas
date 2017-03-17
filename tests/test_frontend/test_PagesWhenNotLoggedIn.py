@@ -35,10 +35,10 @@ def test_contact_page():
 #     assert_true(description is not None, error_text)
 
 
-def test_imprint_page():
-    browser.visit(ROOT + '/imprint')
-    disclaimer_text = browser.is_text_present('Disclaimer') or browser.is_text_present('Haftung')
-    assert_true(disclaimer_text, error_text)
+# def test_imprint_page():
+#     browser.visit(ROOT + '/imprint')
+#     disclaimer_text = browser.is_text_present('Disclaimer') or browser.is_text_present('Haftung')
+#     assert_true(disclaimer_text, error_text)
 
 
 def test_discuss_page():
