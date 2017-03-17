@@ -17,7 +17,7 @@ services:
     command: bash -c "sleep 8 && pserve development.ini --reload"
     restart: always
     volumes:
-      - .:/code
+      - .:/dbas
     ports:
       - "4284:4284"
     links:
