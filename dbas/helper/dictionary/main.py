@@ -107,12 +107,12 @@ class DictionaryHelper(object):
         :param add_statement_container_style: style string, default 'display:none;'
         :return: dict()
         """
-        logger('DictionaryHelper', 'prepare_extras_dict', 'def')
-        db_user = None
+        logger('DictionaryHelper', 'prepare_extras_dict', 'def user ' + str(nickname))
         request_authenticated_userid = nickname
         nickname = ''
 
-        is_logged_in = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first() is not None
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=str(request_authenticated_userid)).first()
+        is_logged_in = db_user is not None
         if request_authenticated_userid:
             nickname = request_authenticated_userid if request_authenticated_userid else nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -131,7 +131,7 @@ class DictionaryHelper(object):
         return_dict['restart_url']                   = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
         return_dict['is_in_discussion']              = 'discuss' in request.path
         return_dict['logged_in']                     = is_logged_in
-        return_dict['nickname']                      = nickname
+        return_dict['nickname']                      = request_authenticated_userid
         return_dict['add_premise_container_style']   = add_premise_container_style
         return_dict['add_statement_container_style'] = add_statement_container_style
         return_dict['users_avatar']                  = get_profile_picture(db_user, 25)
