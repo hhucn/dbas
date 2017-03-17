@@ -1437,7 +1437,7 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
     :return: dict() with error
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('user_login', 'def', 'main, request.params: {}'.format(request.params))
+    logger('user_login', 'def', 'main, request.params: {} (api: {})'.format(request.params, str(for_api)))
 
     lang = get_language(request)
     _tn = Translator(lang)
