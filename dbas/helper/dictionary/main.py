@@ -74,15 +74,14 @@ class DictionaryHelper(object):
 
         return return_dict
 
-    def prepare_extras_dict_for_normal_page(self, request, nickname, append_notifications=False):
+    def prepare_extras_dict_for_normal_page(self, request, append_notifications=False):
         """
         Calls self.prepare_extras_dict('', False, False, False, False, False, nickname)
         :param request: Request
-        :param nickname: request_authenticated_userid
         :param append_notifications: Boolean
         :return: dict()
         """
-        return self.prepare_extras_dict('', False, False, False, False, request, append_notifications=append_notifications, nickname=nickname)
+        return self.prepare_extras_dict('', False, False, False, False, request, append_notifications=append_notifications, nickname=request.authenticated_userid)
 
     def prepare_extras_dict(self, current_slug, is_reportable, show_bar_icon, show_island_icon,
                             show_graph_icon, request, nickname, argument_id=0, argument_for_island=0, application_url='',
@@ -108,11 +107,12 @@ class DictionaryHelper(object):
         :param add_statement_container_style: style string, default 'display:none;'
         :return: dict()
         """
-        logger('DictionaryHelper', 'prepare_extras_dict', 'def')
-        db_user = None
+        logger('DictionaryHelper', 'prepare_extras_dict', 'def user ' + str(nickname))
         request_authenticated_userid = nickname
         nickname = ''
 
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=str(request_authenticated_userid)).first()
+        is_logged_in = db_user is not None
         if request_authenticated_userid:
             nickname = request_authenticated_userid if request_authenticated_userid else nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -120,7 +120,7 @@ class DictionaryHelper(object):
         if not db_user or request_authenticated_userid is None:
             nickname = nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-        is_logged_in = False if nickname == nick_of_anonymous_user else db_user is not None
+
         is_ldap = is_usage_with_ldap(request)
         is_development = is_development_mode(request)
 
@@ -131,7 +131,7 @@ class DictionaryHelper(object):
         return_dict['restart_url']                   = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
         return_dict['is_in_discussion']              = 'discuss' in request.path
         return_dict['logged_in']                     = is_logged_in
-        return_dict['nickname']                      = nickname
+        return_dict['nickname']                      = request_authenticated_userid
         return_dict['add_premise_container_style']   = add_premise_container_style
         return_dict['add_statement_container_style'] = add_statement_container_style
         return_dict['users_avatar']                  = get_profile_picture(db_user, 25)

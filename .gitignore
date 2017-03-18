@@ -40,12 +40,13 @@ db.txt
 *.sql
 requirementsUpdater.py
 .#*
+pserve.ini
 
 # Pycharm
 .idea/
 data/
 
-# Deploym
+# Deployment
 dbas/static/css/main.css
 dbas/static/css/main.css.map
 dbas/static/rss/*

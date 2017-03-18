@@ -343,7 +343,7 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
     """
     A try to login the user
 
-    :param request: webserver's request
+    :param request: web servers request
     :param nickname: User.nickname
     :param password: String
     :param for_api: Boolean
@@ -364,6 +364,8 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
         password = escape_string(password)
         url = ''
 
+    logger('ViewHelper', 'login_user', 'user {}, api '.format(nickname, for_api))
+
     is_ldap = is_usage_with_ldap(request)
 
     db_user = get_user_by_case_insensitive_nickname(nickname)
@@ -377,12 +379,11 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
         if error is not None:
             return {'error': error}  # error
 
-    headers, url = __refresh_headers_and_url(request, db_user, keep_login, url)
-
     if for_api:
         logger('ViewHelper', 'login_user', 'return for api: success')
         return {'status': 'success'}  # api
     else:
+        headers, url = __refresh_headers_and_url(request, db_user, keep_login, url)
         logger('ViewHelper', 'login_user', 'return success: ' + url)
         sleep(0.5)
         return HTTPFound(location=url, headers=headers)  # success
@@ -399,7 +400,7 @@ def __login_user_not_existing(request, nickname, password, _tn, is_ldap):
     :param is_ldap: Boolean
     :return: String or None on success
     """
-    logger('ViewHelper', 'login_user', 'user \'' + nickname + '\' does not exists')
+    logger('ViewHelper', '__login_user_not_existing', 'user \'' + nickname + '\' does not exists')
 
     # if the user does not exists and we are using LDAP, we'll grep the user
     if is_ldap:
@@ -427,21 +428,22 @@ def __login_user_is_existing(request, nickname, password, _tn, is_ldap, db_user)
     :param db_user: User
     :return: String or None on success
     """
-    logger('ViewHelper', 'login_user', 'user \'' + nickname + '\' exists')
+    logger('ViewHelper', '__login_user_is_existing', 'user \'' + nickname + '\' exists')
     if is_ldap:
         local_login = db_user.validate_password(password)
+        logger('ViewHelper', '__login_user_is_existing', 'password is {}'.format('right' if local_login else 'wrong'))
 
         user_data = None
         if not local_login:
             user_data = verify_ldap_user_data(request, nickname, password)
 
         if user_data is None and not local_login:  # check password
-            logger('ViewHelper', 'login_user', 'wrong password')
+            logger('ViewHelper', '__login_user_is_existing', 'wrong password')
             error = _tn.get(_.userPasswordNotMatch)
             return error
     else:
         if not db_user.validate_password(password):  # check password
-            logger('ViewHelper', 'user_login', 'wrong password')
+            logger('ViewHelper', '__login_user_is_existing', 'wrong password')
             error = _tn.get(_.userPasswordNotMatch)
             return error
 
@@ -484,13 +486,14 @@ def __refresh_headers_and_url(request, db_user, keep_login, url):
     :param url: String
     :return: Headers, String
     """
-    logger('ViewHelper', 'user_login', 'login', 'login successful / keep_login: ' + str(keep_login))
+    logger('ViewHelper', '__refresh_headers_and_url', 'login', 'login successful / keep_login: ' + str(keep_login))
     db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
     db_settings.should_hold_the_login(keep_login)
+    logger('ViewHelper', '__refresh_headers_and_url', 'remembering headers for {}'.format(db_user.nickname))
     headers = remember(request, db_user.nickname)
 
     # update timestamp
-    logger('ViewHelper', 'user_login', 'update login timestamp')
+    logger('ViewHelper', '__refresh_headers_and_url', 'update login timestamp')
     db_user.update_last_login()
     db_user.update_last_action()
     transaction.commit()
