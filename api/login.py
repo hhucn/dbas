@@ -12,6 +12,8 @@ import os
 from datetime import datetime
 
 import transaction
+from beaker.cache import cache_region
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.views import user_login
@@ -39,6 +41,15 @@ def _create_token(nickname, alg='sha512'):
     return hashlib.new(alg, salt).hexdigest()
 
 
+@cache_region("short_term")
+def _get_user_by_nickname(nickname):
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
+        log.error("[API] Invalid user")
+        raise HTTP401()
+    return db_user
+
+
 def valid_token(request):
     """Validate the submitted token. Checks if a user is logged in and prepares a
     dictionary, which is then passed to DBAS.
@@ -60,11 +71,7 @@ def valid_token(request):
 
     log.debug("[API] Login Attempt: %s: %s" % (user, token))
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-
-    if not db_user:
-        log.error("[API] Invalid user")
-        raise HTTP401()
+    db_user = _get_user_by_nickname(user)
 
     if not db_user.token == token:
         log.error("[API] Invalid Token")
@@ -102,11 +109,7 @@ def token_to_database(nickname, token):
     :return:
 
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-
-    if not db_user:
-        raise HTTP401()
-
+    db_user = _get_user_by_nickname(nickname)
     db_user.set_token(token)
     db_user.update_token_timestamp()
     transaction.commit()
