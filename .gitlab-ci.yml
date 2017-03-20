@@ -13,13 +13,13 @@ after_script:
 # Start Docker containers and wait some time to seed the database
 .job-template: &run-server
   variables:
-    DB_URL: db:5432
-    DB_USER: dbas
-    DB_PW: gAjOVf8MHBgHwUH8NmyWqwQQ43En1b0Mk1wZbm2JOYzWJ8PrQbwEIoWRhz4zT6Wz
+    DB_URL: "db:5432"
+    DB_USER: "dbas"
+    DB_PW: "gAjOVf8MHBgHwUH8NmyWqwQQ43En1b0Mk1wZbm2JOYzWJ8PrQbwEIoWRhz4zT6Wz"
   before_script:
     - docker run -d --rm --name dbas_db_$CI_BUILD_ID dbas_db_$CI_PIPELINE_ID
     - sleep 10
-    - docker run -d --rm --name dbas_web_$CI_BUILD_ID --link dbas_db_$CI_BUILD_ID:db dbas_web_$CI_PIPELINE_ID
+    - docker run -d --rm --env "DB_URL=db:5432 DB_USER=dbas DB_PW=gAjOVf8MHBgHwUH8NmyWqwQQ43En1b0Mk1wZbm2JOYzWJ8PrQbwEIoWRhz4zT6Wz" --name dbas_web_$CI_BUILD_ID --link dbas_db_$CI_BUILD_ID:db dbas_web_$CI_PIPELINE_ID
 
 
 # ------------------------------------------------------------------------------
