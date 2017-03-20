@@ -4,6 +4,7 @@
  */
 
 function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
+    'use strict';
     var s;
     var isPartialGraphMode = is_partial_graph_mode;
     var isVisible;
@@ -38,19 +39,19 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         var tmp = url.split('/');
         isPartialGraphMode = override_cases;
         if (!override_cases) {
-	        if (url.indexOf('attitude') != -1) {
+	        if (url.indexOf('attitude') !== -1) {
 		        uid = tmp[tmp.indexOf('attitude') + 1];
 		        is_argument = false;
 		        isPartialGraphMode = true;
-	        } else if (url.indexOf('justify') != -1) {
+	        } else if (url.indexOf('justify') !== -1) {
 		        uid = tmp[tmp.indexOf('justify') + 1];
 		        is_argument = false;
 		        isPartialGraphMode = true;
-	        } else if (url.indexOf('reaction') != -1) {
+	        } else if (url.indexOf('reaction') !== -1) {
 		        uid = tmp[tmp.indexOf('reaction') + 1];
 		        is_argument = true;
 		        isPartialGraphMode = true;
-	        } else if (url.indexOf('support') != -1) {
+	        } else if (url.indexOf('support') !== -1) {
 		        uid = tmp[tmp.indexOf('support') + 1];
 		        is_argument = true;
 		        isPartialGraphMode = true;
@@ -116,7 +117,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     this.callbackIfDoneForDiscussionGraph = function (data, request_for_complete) {
         var jsonData = $.parseJSON(data);
         console.log(jsonData);
-        if (jsonData.error.length != 0){
+        if (jsonData.error.length !== 0){
         	setGlobalErrorHandler('Ohh!', jsonData.error);
         	new GuiHandler().setDisplayStyleAsDiscussion();
         	return;
@@ -178,15 +179,15 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     this.setDefaultViewParams = function (startD3, jsonData, d3, request_for_complete) {
     	var dg = new DiscussionGraph(box_sizes, isPartialGraphMode);
-	    $('#global-view').attr('data-global-view-loaded', jsonData['type'] == 'complete');
+	    $('#global-view').attr('data-global-view-loaded', jsonData.type === 'complete');
         dg.setButtonDefaultSettings(jsonData, request_for_complete);
         initialDicts();
         var container = $('#' + graphViewContainerSpaceId);
         container.empty();
 
         if (startD3) {
-            if (!this.getD3Graph(jsonData))
-                dg.setDefaultViewParams(false, null, d3, request_for_complete);
+            if (!this.getD3Graph(jsonData)){
+                dg.setDefaultViewParams(false, null, d3, request_for_complete);}
         } else {
             container.empty();
         }
@@ -218,7 +219,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         
         // show or hide my path
 	    $('#hide-my-path').hide();
-        if (jsonData.path.length == 0) {
+        if (jsonData.path.length === 0) {
             $('#show-my-path').addClass('hidden');
         } else {
             $('#show-my-path').show();
@@ -371,7 +372,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function getPositionOfLink(linkTargetCoordinate, nodeCoordinate, d) {
         var position;
         var edge;
-        if (d.is_undercut === true && d.target_edge != 'none') {
+        if (d.is_undercut === true && d.target_edge !== 'none') {
             edges.forEach(function (e) {
                 if (e.id === d.target_edge) {
                     edge = e;
@@ -411,7 +412,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      *
      * @param width: width of container, which contains graph
      * @param height: height of container
-     * @param jsonData
      * @return force layout
      */
     function getForce(width, height) {
@@ -458,7 +458,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 // resizing of font size, line height and the complete rectangle
                 $('#graph-svg').find('.node').each(function () {
                     var id = $(this).attr('id').replace(rescaleGraph.node_id_prefix, '');
-                    if (id.indexOf('statement') != -1 || id.indexOf('issue') != -1) {
+                    if (id.indexOf('statement') !== -1 || id.indexOf('issue') !== -1) {
                         $('#label-' + id).css({
                             'font-size': rescaleGraph.font_size / rescaleGraph.zoom_scale + 'px',
                             'line-height': rescaleGraph.line_height / rescaleGraph.zoom_scale
@@ -495,7 +495,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Enable drag functionality, because pan functionality overrides drag.
      *
-     * @param force
      * @return drag functionality
      */
     function enableDrag() {
@@ -528,10 +527,18 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function setNodeColorsForData(jsonData) {
         jsonData.nodes.forEach(function (e) {
-            if (e.type === 'position')       e.color = colors.blue;
-            else if (e.type === 'statement') e.color = colors.yellow;
-            else if (e.type === 'issue')     e.color = colors.grey;
-            else                             e.color = colors.black;
+            if (e.type === 'position') {
+                e.color = colors.blue;
+            }
+            else if (e.type === 'statement') {
+                e.color = colors.yellow;
+            }
+            else if (e.type === 'issue') {
+                e.color = colors.grey;
+            }
+            else {
+                e.color = colors.black;
+            }
         });
     }
 
@@ -654,7 +661,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             .enter().append("g")
             .attr({
                 'class': "node",
-                'id': function (d) { return rescaleGraph.node_id_prefix + d.id; }
+                'id': function (d) {
+                    return rescaleGraph.node_id_prefix + d.id;
+                }
             })
             .call(drag);
     }
@@ -667,9 +676,15 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function setNodeProperties() {
         return node.append("circle")
             .attr({
-                'r': function (d) { return calculateNodeSize(d); },
-                'fill': function (d) { return d.color; },
-                'id': function (d) { return 'circle-' + d.id; }
+                'r': function (d) {
+                    return calculateNodeSize(d);
+                },
+                'fill': function (d) {
+                    return d.color;
+                },
+                'id': function (d) {
+                    return 'circle-' + d.id;
+                }
             });
     }
 
@@ -680,15 +695,18 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @returns {*}
      */
     function calculateNodeSize(node) {
-        if (node.id.indexOf('statement_') != -1) {
+        if (node.id.indexOf('statement_') !== -1) {
             var id = node.id.replace('statement_', '');
-            if (id in rel_node_factor)
+            if (id in rel_node_factor) {
                 return node_size + node_factor_size * rel_node_factor[id];
-            else
+            }
+            else {
                 return node_size;
+            }
         }
-        if (node.id.indexOf('argument_') != -1)
+        if (node.id.indexOf('argument_') !== -1) {
             return 0;
+        }
         return issue_size;
     }
 
@@ -703,7 +721,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         	var text = $("<div>").html(d.label).text();
             var node_text = text.split(" ");
             for (var i = 0; i < node_text.length; i++) {
-                if ((i % 4) == 0) {
+                if ((i % 4) === 0) {
                     d3.select(this).append("tspan")
                         .text(node_text[i])
                         .attr({
@@ -744,7 +762,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 'y': pos[1],
                 'id': 'rect-' + d.id
             });
-            if (d.id.indexOf('statement') != -1 || d.id.indexOf('issue') != -1) {
+            if (d.id.indexOf('statement') !== -1 || d.id.indexOf('issue') !== -1) {
                 box_sizes[d.id] = {'width': width, 'height': height};
             }
         });
@@ -784,14 +802,18 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function addListenerForNodes() {
         circle.on("click", function (d) {
             // distinguish between click and drag event
-            if (d3.event.defaultPrevented) return;
+            if (d3.event.defaultPrevented) {
+                return;
+            }
             var circleId = this.id;
             showPartOfGraph(circleId);
             selectedCircleId = d.id;
         });
         circle.on("dblclick", function (d) {
             // distinguish between click and drag event
-            if (d3.event.defaultPrevented) return;
+            if (d3.event.defaultPrevented) {
+                return;
+            }
             // show modal when node clicked twice
             showModal(d);
             var circleId = this.id;
@@ -811,7 +833,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             legendColorRect = [colors.green, colors.red];
 
         // set properties for legend
-        return d3.svg.legend = function () {
+        d3.svg.legend = function () {
             function legend(selection) {
                 createNodeSymbols(selection, legendLabelCircle, legendColorCircle);
                 createEdgeSymbols(selection, legendLabelRect, legendColorRect);
@@ -895,16 +917,16 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function addListenersForSidebarButtons(jsonData, zoom) {
         $('#default-view').off('click').click(function () {
-        	if ($('#global-view').attr('data-global-view-loaded') == 'true' && $('#global-view:hidden').length == 0)
-	            new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(false);
-	        else
-	            showDefaultView(jsonData, zoom);
+        	if ($('#global-view').attr('data-global-view-loaded') === 'true' && $('#global-view:hidden').length === 0) {
+	            new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(false);}
+	        else {
+	            showDefaultView(jsonData, zoom);}
         });
         $('#global-view').off('click').click(function () {
-        	if ($(this).attr('data-global-view-loaded') == 'true')
-        		showDefaultView(jsonData, zoom);
-	        else
-                new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(true);
+        	if ($(this).attr('data-global-view-loaded') === 'true') {
+        		showDefaultView(jsonData, zoom);}
+	        else {
+                new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(true);}
         });
         $('#show-labels').off('click').click(function () {
             showLabels();
@@ -1012,7 +1034,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function hideLabelsOfNotSelectedNodes() {
         // hide labels of nodes which are not selected
         d3.selectAll(".node").each(function (d) {
-            if (d3.select('#circle-' + d.id).attr('fill') == colors.light_grey) {
+            if (d3.select('#circle-' + d.id).attr('fill') === colors.light_grey) {
                 d3.select('#label-' + d.id).style("display", 'none');
                 d3.select("#rect-" + d.id).style("display", 'none');
             }
@@ -1072,7 +1094,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             grayingElements(d);
         });
 
-        if(jsonData.path.length != 0) { // if jsonData.path is not empty highlight path
+        if(jsonData.path.length !== 0) { // if jsonData.path is not empty highlight path
             highlightPath(jsonData);
         } else{ // if jsonData.path is empty color issue
             d3.select('#circle-issue').attr('fill', colors.grey);
@@ -1085,7 +1107,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param jsonData
      */
     function highlightPath(jsonData) {
-        let edgesCircleId = [];
+        var edgesCircleId = [];
 
         // run through all values in jsonData.path
         jsonData.path.forEach(function (d) {
@@ -1095,7 +1117,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     edgesCircleId.push(edge);
                 }
                 // edge with virtual node
-                else if(edge.source.id == getId(d[0]) && edge.target.label == ''){
+                else if(edge.source.id === getId(d[0]) && edge.target.label === ''){
                     findEdgesVirtualNode(edge, edgesCircleId, d);
                 }
             });
@@ -1116,7 +1138,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function findEdgesVirtualNode(edge, edgesCircleId, d){
         // edge from virtual node to statement
         edges.forEach(function (e) {
-            if (e.source.id == edge.target.id && e.target.id == getId(d[1])) {
+            if (e.source.id === edge.target.id && e.target.id === getId(d[1])) {
                 edgesCircleId.push(edge);
                 edgesCircleId.push(e);
             }
@@ -1130,7 +1152,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @returns {*}
      */
     function getId(node) {
-        if(node == "issue"){
+        if(node === "issue"){
             return node;
         }
         return "statement_" + node;
@@ -1309,7 +1331,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * Select supports or attacks on statements of current user.
      */
     function selectSupportsAttacks() {
-        let circleIds = [];
+        var circleIds = [];
         // highlight supports or attacks on statements, which the current user has created
         force.nodes().forEach(function (d) {
             if (d.author.name === $('#header_nickname')[0].innerText) {
@@ -1324,7 +1346,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         else{
             // highlight all statements of current user
             force.nodes().forEach(function (d) {
-                if($.inArray(d.id, circleIds) != -1) {
+                if($.inArray(d.id, circleIds) !== -1) {
                     d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
                 }
             });
@@ -1351,7 +1373,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         d3.selectAll(".node").each(function (d) {
             d3.selectAll(".link").each(function (e) {
                 // only show labels of highlighted nodes
-                if (e.source.id === d.id && e.target.id === 'issue' && d3.select('#circle-' + d.id).attr('fill') != colors.light_grey) {
+                if (e.source.id === d.id && e.target.id === 'issue' && d3.select('#circle-' + d.id).attr('fill') !== colors.light_grey) {
                     // set display style of positions
                     d3.select('#label-' + d.id).style("display", style);
                     d3.select("#rect-" + d.id).style("display", style);
@@ -1379,9 +1401,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function determineShowOrHideTooltip(d, mouseover) {
         var isPosition = testNodePosition(d);
-        if(isVisible.position && isVisible.content){
-        }
-        else if(!isVisible.position && !isVisible.content){
+        if(!isVisible.position && !isVisible.content){
             showHideTooltip(d, mouseover);
         }
         else if(!isPosition && isVisible.position){
@@ -1442,7 +1462,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function showModal(d) {
         var popup = $('#popup-jump-graph');
-        if (d.id != 'issue') {
+        if (d.id !== 'issue') {
             popup.modal('show');
             var splitted = d.id.split('_'),
                 uid = splitted[splitted.length - 1];
@@ -1465,7 +1485,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function showAttacksSupports(circleIds) {
         // edges with selected statement as target
-        let edgesCircleId = [];
+        var edgesCircleId = [];
 
         // edge with circleUid as target
         circleIds.forEach(function (circleId) {
@@ -1478,7 +1498,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     }
                     // if attacks is clicked
                     else if (isVisible.attack && (e.color === colors.red)) {
-                        if (!(e.is_undercut == true)) {
+                        if (!(e.is_undercut === true)) {
                             edgesCircleId.push(e);
                             findUndercutsForEdge(edgesCircleId, e);
                             findVirtualNodes(edgesCircleId, e);
@@ -1496,10 +1516,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // highlight incoming edges
         edgesCircleId.forEach(function (d) {
             // add border to statements of user, if they are source or target of edge in edgesCircleId
-            if(($.inArray(d.source.id, circleIds) != -1) && (d.is_undercut == 'none')){
+            if(($.inArray(d.source.id, circleIds) !== -1) && (d.is_undercut === 'none')){
                 d3.select('#circle-' + d.source.id).attr({'fill': d.source.color, 'stroke': 'black'});
             }
-            if(($.inArray(d.target.id, circleIds) != -1) && (d.is_undercut == 'none')){
+            if(($.inArray(d.target.id, circleIds) !== -1) && (d.is_undercut === 'none')){
                 d3.select('#circle-' + d.target.id).attr({'fill': d.target.color, 'stroke': 'black'});
             }
             highlightElements(d);
@@ -1509,7 +1529,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Highlight incoming and outgoing edges of selected node.
      *
-     * @param edges: all edges of graph
      * @param circleId: id of selected node
      */
     function showPartOfGraph(circleId) {
@@ -1525,7 +1544,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             }
         });
 
-        if(circleUid == 'issue'){
+        if(circleUid === 'issue'){
             // circleUid is equal to 'issue'
             edges.forEach(function (e) {
                 if (e.target.id === circleUid) {
@@ -1562,7 +1581,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param edge
      */
     function testEdgeUndercut(edgesCircleId, edge) {
-        if (edge.is_undercut == true) {
+        if (edge.is_undercut === true) {
             // highlight undercut on edge
             edges.forEach(function (e) {
                 if (e.target_edge === edge.id) {
@@ -1593,7 +1612,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // undercuts
         // highlight all incoming and outgoing edges
         edges.forEach(function (e) {
-            if((e.target.id == circleUid) || (e.source.id == circleUid)) {
+            if((e.target.id === circleUid) || (e.source.id === circleUid)) {
                 sourceTargetEdges.push(e);
                 // test if source or target of e is a virtual node
                 findVirtualNodes(edgesCircleId, e);
@@ -1615,7 +1634,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         var undercuts = [];
         // undercuts on edge
         edges.forEach(function (e) {
-            if ((e.is_undercut == true) && (e.target_edge === edge.id)) {
+            if ((e.is_undercut === true) && (e.target_edge === edge.id)) {
                 undercuts.push(e);
                 edgesCircleId.push(e);
                 findVirtualNodes(edgesCircleId, e);
@@ -1624,7 +1643,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // undercuts on undercuts on edge
         undercuts.forEach(function (k) {
             edges.forEach(function (e) {
-                if ((e.is_undercut == true) && (e.target_edge === k.id)) {
+                if ((e.is_undercut === true) && (e.target_edge === k.id)) {
                     edgesCircleId.push(e);
                     findVirtualNodes(edgesCircleId, e);
                 }
