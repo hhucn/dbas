@@ -18,7 +18,7 @@ from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.static import QueryStringConstantCacheBuster
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
-from sqlalchemy import engine_from_config
+from dbas.helper.database import dbas_configuration
 
 from dbas.helper.database import dbas_configuration
 from dbas.database import load_discussion_database, load_news_database

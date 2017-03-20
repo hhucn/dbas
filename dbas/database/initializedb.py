@@ -23,7 +23,7 @@ from dbas.handler.rss import create_news_rss, create_initial_issue_rss
 from dbas.lib import get_global_url
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
-from sqlalchemy import engine_from_config
+from dbas.helper.database import dbas_configuration
 from dbas.handler.password import get_hashed_password
 from dbas.helper.database import dbas_configuration
 

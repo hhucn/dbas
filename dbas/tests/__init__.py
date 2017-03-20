@@ -1,7 +1,8 @@
-from sqlalchemy import engine_from_config
+from dbas.helper.database import dbas_configuration
 
 from dbas.database import DBDiscussionSession, DBNewsSession
 from dbas.helper.tests import add_settings_to_appconfig
+from dbas.helper.database import dbas_configuration
 
 
 def setup_package():

@@ -2,7 +2,7 @@ import unittest
 
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig
-from sqlalchemy import engine_from_config
+from dbas.helper.database import dbas_configuration
 from graph.lib import get_d3_data
 
 settings = add_settings_to_appconfig()

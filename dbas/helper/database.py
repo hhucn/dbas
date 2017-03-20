@@ -1,4 +1,4 @@
-from sqlalchemy import engine_from_config
+from dbas.helper.database import dbas_configuration
 import os
 
 def dbas_configuration(settings, prefix):
