@@ -20,6 +20,7 @@ from pyramid.static import QueryStringConstantCacheBuster
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
 from sqlalchemy import engine_from_config
 
+from dbas.helper.database import dbas_configuration
 from dbas.database import load_discussion_database, load_news_database
 from dbas.security import groupfinder
 
@@ -41,8 +42,8 @@ def main(global_config, **settings):
         log.debug('__init__() '.upper() + 'main() <' + str(k) + ' : ' + str(v) + '>')
 
     # load database
-    discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')  # , connect_args={'client_encoding': 'utf8'}
-    news_engine       = engine_from_config(settings, 'sqlalchemy-news.')  # , connect_args={'client_encoding': 'utf8'}
+    discussion_engine = dbas_configuration(settings, 'sqlalchemy-discussion.')  # , connect_args={'client_encoding': 'utf8'}
+    news_engine       = dbas_configuration(settings, 'sqlalchemy-news.')  # , connect_args={'client_encoding': 'utf8'}
     load_discussion_database(discussion_engine)
     load_news_database(news_engine)
 

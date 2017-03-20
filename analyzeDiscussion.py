@@ -11,9 +11,10 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
 from dbas.helper.tests import add_settings_to_appconfig
 from sqlalchemy import engine_from_config, and_
 from dbas.lib import get_all_arguments_by_statement
+from dbas.helper.database import dbas_configuration
 
 settings = add_settings_to_appconfig()
-session.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+session.configure(bind=dbas_configuration(settings, 'sqlalchemy-discussion.'))
 
 top_count = 3
 flop_count = 5

@@ -16,7 +16,7 @@ from dbas.database.initializedb import nick_of_anonymous_user
 
 settings = add_settings_to_appconfig()
 
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+DBDiscussionSession.configure(bind=dbas_configuration(settings, 'sqlalchemy-discussion.'))
 
 new_user = {
     'firstname': 'new',

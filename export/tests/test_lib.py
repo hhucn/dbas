@@ -7,7 +7,7 @@ from export.lib import get_dump, get_minimal_graph_export
 
 settings = add_settings_to_appconfig()
 
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+DBDiscussionSession.configure(bind=dbas_configuration(settings, 'sqlalchemy-discussion.'))
 
 
 class LibTest(unittest.TestCase):
