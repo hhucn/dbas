@@ -12,6 +12,6 @@ def dbas_configuration(settings, prefix):
     url = "postgresql+psycopg2://{}:{}@{}/{}?client_encoding=utf8".format(
         os.environ["DB_USER"],
         os.environ["DB_PW"],
-        os.environ["DB_URL"],
+        os.environ["DB_HOST"],
         database)
     return engine_from_config(settings, prefix, url=url)
