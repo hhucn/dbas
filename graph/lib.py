@@ -81,6 +81,7 @@ def get_d3_data(issue, nickname, all_statements=None, all_arguments=None):
 
     # for each argument edges will be added as well as the premises
     all_ids, nodes, edges, extras = __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type)
+    print(edges)
     all_node_ids += all_ids
     nodes_array += nodes
     edges_array += edges
@@ -277,6 +278,7 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type):
     nodes = []
     edges = []
     extras = {}
+
     # for each argument edges will be added as well as the premises
     for argument in db_arguments:
         counter = 1
@@ -294,6 +296,7 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type):
         #  2) with at least two premises  one conclusion or an undercut is done on this argument
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
         db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument.uid).all()
+        print(db_undercuts)
         # target of the edge (case 1) or last edge (case 2)
         if argument.conclusion_uid is not None:
             target = 'statement_' + str(argument.conclusion_uid)
@@ -326,7 +329,7 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type):
                                         edge_type=edge_type)
             edges.append(edge_dict)
 
-            return all_ids, nodes, edges, extras
+    return all_ids, nodes, edges, extras
 
 
 def __sanity_check_of_d3_data(all_node_ids, edges_array):
