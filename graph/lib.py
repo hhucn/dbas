@@ -81,7 +81,6 @@ def get_d3_data(issue, nickname, all_statements=None, all_arguments=None):
 
     # for each argument edges will be added as well as the premises
     all_ids, nodes, edges, extras = __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type)
-    print(edges)
     all_node_ids += all_ids
     nodes_array += nodes
     edges_array += edges
@@ -282,21 +281,11 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type):
     # for each argument edges will be added as well as the premises
     for argument in db_arguments:
         counter = 1
-        # add invisible point in the middle of the edge (to enable pgroups and undercuts)
-        node_dict = __get_node_dict(id='argument_' + str(argument.uid),
-                                    label='',
-                                    x=x,
-                                    y=y)
-        x = (x + 1) % 10
-        y += 1 if x == 0 else 0
-        nodes.append(node_dict)
-        all_ids.append('argument_' + str(argument.uid))
         # we have an argument with:
         #  1) with one premise and no undercut is done on this argument
         #  2) with at least two premises  one conclusion or an undercut is done on this argument
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
         db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument.uid).all()
-        print(db_undercuts)
         # target of the edge (case 1) or last edge (case 2)
         if argument.conclusion_uid is not None:
             target = 'statement_' + str(argument.conclusion_uid)
@@ -311,6 +300,7 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type):
                                         edge_type=edge_type)
             edges.append(edge_dict)
         else:
+            edge_source = []
             # edge from premisegroup to the middle point
             for premise in db_premises:
                 edge_dict = __get_edge_dict(id='edge_' + str(argument.uid) + '_' + str(counter),
@@ -319,6 +309,7 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type):
                                             color=green if argument.is_supportive else red,
                                             edge_type='')
                 edges.append(edge_dict)
+                edge_source.append('statement_' + str(premise.statement_uid))
                 counter += 1
 
             # edge from the middle point to the conclusion/argument
@@ -328,6 +319,18 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type):
                                         color=green if argument.is_supportive else red,
                                         edge_type=edge_type)
             edges.append(edge_dict)
+
+            # add invisible point in the middle of the edge (to enable pgroups and undercuts)
+            node_dict = __get_node_dict(id='argument_' + str(argument.uid),
+                                        label='',
+                                        x=x,
+                                        y=y,
+                                        edge_source=edge_source,
+                                        edge_target=target)
+            x = (x + 1) % 10
+            y += 1 if x == 0 else 0
+        nodes.append(node_dict)
+        all_ids.append('argument_' + str(argument.uid))
 
     return all_ids, nodes, edges, extras
 
@@ -391,7 +394,7 @@ def __get_editor_of_statement(uid, db_user):
     return {'name': name, 'gravatar': gravatar}
 
 
-def __get_node_dict(id, label, x, y, type='', author=dict(), editor=dict()):
+def __get_node_dict(id, label, x, y, type='', author=dict(), editor=dict(), edge_source=[], edge_target=[]):
     """
     Create dictionary for nodes
 
@@ -410,7 +413,10 @@ def __get_node_dict(id, label, x, y, type='', author=dict(), editor=dict()):
             'y': y,
             'type': type,
             'author': author,
-            'editor': editor}
+            'editor': editor,
+            # for virtual nodes
+            'edge_source': edge_source,
+            'edge_target': edge_target}
 
 
 def __get_edge_dict(id, source, target, color, edge_type):

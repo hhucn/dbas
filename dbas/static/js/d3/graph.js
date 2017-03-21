@@ -26,6 +26,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     var node_size = 6;
     var issue_size = 8;
     var edge_size = 90;
+    var edge_size_virtual_node = 10;
 
     /**
      * Displays a graph of current discussion
@@ -319,38 +320,57 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function setPositionOfGraphElements(jsonData){
         // create arrays of links, nodes and move layout forward one step
         force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
-
         // update force layout calculations
         function forceTick() {
+            var edgeTargetVirtualNode;
+            var edgeSourceVirtualNode;
+            var position;
+
+            // update position of nodes
+            circle.attr({
+                cx: function (d) {
+                    if((d.label === "") && (d.edge_source.length === 1)) {
+                        var edge_source = jsonData.nodes.filter(function (node) { return node.id === d.edge_source[0];})[0];
+                        var edge_target = jsonData.nodes.filter(function (node) { return node.id === d.edge_target;})[0];
+                        position = (edge_source.x + edge_target.x) / 2;
+                    }
+                    else {
+                        position = d.x;
+                    }
+                    return position;
+                },
+                cy: function (d) {
+                    if((d.label === "") && (d.edge_source.length === 1)) {
+                        var edge_source = jsonData.nodes.filter(function (node) { return node.id === d.edge_source[0];})[0];
+                        var edge_target = jsonData.nodes.filter(function (node) { return node.id === d.edge_target;})[0];
+                        position = (edge_source.y + edge_target.y) / 2;
+                    }
+                    else {
+                        position = d.y;
+                    }
+                    return position;
+                }
+            });
+
             // update position of edges
             link.attr({
                 x1: function (d) {
-                    return d.source.x;
+                    return d3.select('#circle-' + d.source.id).attr('cx');
                 },
                 y1: function (d) {
-                    return d.source.y;
+                    return d3.select('#circle-' + d.source.id).attr('cy');
                 },
                 x2: function (d) {
-                    return getPositionOfLink("x2", d.target.x, d);
+                    return d3.select('#circle-' + d.target.id).attr('cx');
                 },
                 y2: function (d) {
-                    return getPositionOfLink("y2", d.target.y, d);
+                    return d3.select('#circle-' + d.target.id).attr('cy');
                 }
             });
 
             // update position of rect
             rect.attr("transform", function (d) {
                 return "translate(" + d.x + "," + (d.y - 50) + ")";
-            });
-
-            // update position of nodes
-            circle.attr({
-                cx: function (d) {
-                    return d.x;
-                },
-                cy: function (d) {
-                    return d.y;
-                }
             });
 
             // update position of label
@@ -422,7 +442,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             // nodes push each other away
             .charge(-factor)
             .linkDistance(function (d) {
-                  return d.size;
+                if((d.source.label == '') || ((d.target.label == '') && (d.edge_type == ''))){
+                    return edge_size_virtual_node;
+                }
+                return edge_size;
             });
     }
 
@@ -559,17 +582,12 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     return d.id === e.target;
                 })[0];
             // add edge, color, type, size and id to array
-            var color = e.is_attacking === 'none' ? colors.dark_grey : e.is_attacking ? colors.red : colors.green;
             edges.push({
                 source: sourceNode,
                 target: targetNode,
-                color: color,
+                color: e.color,
                 edge_type: e.edge_type,
-                size: edge_size,
-                id: e.id,
-                is_attacking: e.is_attacking,
-                target_edge: e.target_edge,
-                is_undercut: e.is_undercut
+                id: e.id
             });
         });
         return edges;
@@ -838,7 +856,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 createNodeSymbols(selection, legendLabelCircle, legendColorCircle);
                 createEdgeSymbols(selection, legendLabelRect, legendColorRect);
                 createLabelsForSymbols(selection, legendLabelCircle, legendLabelRect);
-                return this;
             }
 
             return legend;
@@ -1498,7 +1515,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     }
                     // if attacks is clicked
                     else if (isVisible.attack && (e.color === colors.red)) {
-                        if (!(e.is_undercut === true)) {
+                        if (e.is_undercut !== true) {
                             edgesCircleId.push(e);
                             findUndercutsForEdge(edgesCircleId, e);
                             findVirtualNodes(edgesCircleId, e);
