@@ -9,5 +9,9 @@ def dbas_configuration(settings, prefix):
     elif prefix.startswith("sqlalchemy-news."):
         database = "news"
 
-    url = "postgresql+psycopg2://{}:{}@{}/{}?client_encoding=utf8".format(os.environ["DB_USER"], os.environ["DB_PW"], os.environ["DB_URL"], database)
+    url = "postgresql+psycopg2://{}:{}@{}/{}?client_encoding=utf8".format(
+        os.environ["DB_USER"],
+        os.environ["DB_PW"],
+        os.environ["DB_URL"],
+        database)
     return engine_from_config(settings, prefix, url=url)
