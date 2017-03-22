@@ -12,9 +12,9 @@ from nose.tools import assert_equals, assert_false, assert_true
 
 API = "http://localhost:4284/api/"
 
+
 # ------------------------------------------------------------------------------
 # Helper functions
-
 
 def get_response(route):
     """
