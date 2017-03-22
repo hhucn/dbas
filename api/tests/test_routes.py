@@ -12,7 +12,7 @@ def test_discussion_support():
 
 
 def test_discussion_reactions():
-    json_response_ok("town-has-to-cut-spending/reaction/39/rebut/65?history=/attitude/37-/justify/37/t-/support/40/39")
+    json_response_ok("cat-or-dog/reaction/4/rebut/5?history=/attitude/3-/justify/3/t")
     json_response_ok("cat-or-dog/reaction/8/undermine/10?history=/attitude/4-/justify/4/t")
 
 
