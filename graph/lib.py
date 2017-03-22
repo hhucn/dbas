@@ -329,8 +329,8 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type):
                                         edge_target=target)
             x = (x + 1) % 10
             y += 1 if x == 0 else 0
-        nodes.append(node_dict)
-        all_ids.append('argument_' + str(argument.uid))
+            nodes.append(node_dict)
+            all_ids.append('argument_' + str(argument.uid))
 
     return all_ids, nodes, edges, extras
 
