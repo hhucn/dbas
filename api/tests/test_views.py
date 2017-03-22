@@ -3,52 +3,10 @@ Testing the routes of the API.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
-import json
-
-import requests
-
-from api.lib import json_to_dict
 from nose.tools import assert_equals, assert_false, assert_true
 
-API = "http://localhost:4284/api/"
-
-
-# ------------------------------------------------------------------------------
-# Helper functions
-
-def get_response(route):
-    """
-    Place get request to API.
-
-    :param route: route in API
-    :returns: response from API
-    :rtype: Response
-    """
-    return requests.get(API + route)
-
-
-def post_request(route, payload):
-    """
-    Send post request to API with given payload. Adds json headers.
-
-    :param route: route in API
-    :param payload: data to be send
-    :type payload: dict
-    :returns: response from API
-    :rtype: Response
-    """
-    return requests.post(API + route, json=json.dumps(payload))
-
-
-def parse_status(content):
-    """
-    Extract :status field from JSON String.
-
-    :param content: json string
-    :returns: status
-    :rtype: str
-    """
-    return json_to_dict(content).get("status")
+from api.lib import json_to_dict
+from api.tests.lib import get_response, parse_status, post_request
 
 
 # ------------------------------------------------------------------------------
