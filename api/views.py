@@ -260,6 +260,8 @@ def discussion_support(request):
 
     """
     api_data = prepare_user_information(request)
+    if not api_data:
+        api_data = dict()
     api_data["slug"] = request.matchdict["slug"]
     api_data["arg_user_uid"] = request.matchdict["arg_user_uid"]
     api_data["arg_system_uid"] = request.matchdict["arg_system_uid"]
