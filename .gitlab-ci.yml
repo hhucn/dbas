@@ -75,5 +75,5 @@ deploy_dev_image:
 cleanup_images:
   stage: cleanup
   script:
-    - docker rmi dbas_web_$CI_PIPELINE_ID dbas_db_$CI_PIPELINE_ID
+    - docker rmi -f dbas_web_$CI_PIPELINE_ID dbas_db_$CI_PIPELINE_ID
   when: always
