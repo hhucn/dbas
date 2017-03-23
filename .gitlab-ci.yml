@@ -29,7 +29,7 @@ flake8:
     - apk add --no-cache python3 && python3 -m ensurepip
     - pip3 install --quiet flake8
     - flake8 .
-  when: always
+  allow_failure: true
 
 jshint:
   stage: test
@@ -37,7 +37,7 @@ jshint:
     - apk add --no-cache nodejs bash
     - npm install -g jshint
     - bash -c "jshint ./dbas/static/js/{main,ajax,discussion,review,d3}/*.js"
-  when: always
+  allow_failure: true
 
 unit:
   <<: *run-server
@@ -62,9 +62,18 @@ deploy_image:
   only:
     - master
 
+deploy_dev_image:
+  stage: deploy
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE .
+    - docker tag $CI_REGISTRY_IMAGE $CI_REGISTRY_IMAGE:development
+    - docker push $CI_REGISTRY_IMAGE:development
+  only:
+    - development
+
 cleanup_images:
   stage: cleanup
   script:
     - docker rmi dbas_web_$CI_PIPELINE_ID dbas_db_$CI_PIPELINE_ID
-    - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
   when: always
