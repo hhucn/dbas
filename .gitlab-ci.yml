@@ -2,8 +2,8 @@ image: docker
 
 stages:
   - build
-  - analyze
   - test
+  - deploy
   - cleanup
 
 # Start Docker containers and wait some time to seed the database
@@ -24,27 +24,26 @@ build_images:
     - docker build -t dbas_db_$CI_PIPELINE_ID docker/db
 
 flake8:
-  stage: analyze
+  stage: test
   script:
     - apk add --no-cache python3 && python3 -m ensurepip
     - pip3 install --quiet flake8
     - flake8 .
-  allow_failure: true
+  when: always
 
 jshint:
-  stage: analyze
+  stage: test
   script:
     - apk add --no-cache nodejs bash
     - npm install -g jshint
     - bash -c "jshint ./dbas/static/js/{main,ajax,discussion,review,d3}/*.js"
-  allow_failure: true
+  when: always
 
 unit:
   <<: *run-server
   stage: test
   script:
     - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w . dbas graph admin api export
-  after_script:
     - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
 
 acceptance:
@@ -52,13 +51,20 @@ acceptance:
   stage: test
   script:
     - docker exec dbas_web_$CI_JOB_ID nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
-  after_script:
     - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
+
+deploy_image:
+  stage: deploy
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE .
+    - docker push $CI_REGISTRY_IMAGE
+  only:
+    - master
 
 cleanup_images:
   stage: cleanup
   script:
     - docker rmi dbas_web_$CI_PIPELINE_ID dbas_db_$CI_PIPELINE_ID
-  after_script:
     - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
   when: always
