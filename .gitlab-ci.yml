@@ -8,14 +8,14 @@ stages:
 
 # Stop all running containers after each job, although they were not always started
 after_script:
-  - docker stop dbas_web_$CI_BUILD_ID dbas_db_$CI_BUILD_ID
+  - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
 
 # Start Docker containers and wait some time to seed the database
 .job-template: &run-server
   before_script:
-    - docker run -d --rm --name dbas_db_$CI_BUILD_ID dbas_db_$CI_PIPELINE_ID
+    - docker run -d --rm --name dbas_db_$CI_JOB_ID dbas_db_$CI_PIPELINE_ID
     - sleep 10
-    - docker run -d --rm --name dbas_web_$CI_BUILD_ID --link dbas_db_$CI_BUILD_ID:db dbas_web_$CI_PIPELINE_ID
+    - docker run -d --rm --name dbas_web_$CI_JOB_ID --link dbas_db_$CI_JOB_ID:db dbas_web_$CI_PIPELINE_ID
 
 
 # ------------------------------------------------------------------------------
@@ -47,13 +47,13 @@ unit:
   <<: *run-server
   stage: test
   script:
-    - docker exec dbas_web_$CI_BUILD_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w . dbas graph admin api export
+    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w . dbas graph admin api export
 
 acceptance:
   <<: *run-server
   stage: test
   script:
-    - docker exec dbas_web_$CI_BUILD_ID nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
+    - docker exec dbas_web_$CI_JOB_ID nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
 
 cleanup_images:
   stage: cleanup
