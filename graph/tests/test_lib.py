@@ -2,12 +2,12 @@ import unittest
 
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig
-from dbas.helper.database import dbas_configuration
+from dbas.helper.database import dbas_db_configuration
 from graph.lib import get_d3_data
 
 settings = add_settings_to_appconfig()
 
-DBDiscussionSession.configure(bind=dbas_configuration(settings, 'sqlalchemy-discussion.'))
+DBDiscussionSession.configure(bind=dbas_db_configuration(settings, 'sqlalchemy.discussion.'))
 
 
 class LibTest(unittest.TestCase):

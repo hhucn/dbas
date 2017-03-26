@@ -45,7 +45,7 @@ def get_nickname(request_authenticated_userid, for_api=None, api_data=None):
     :param api_data:
     :return:
     """
-    nickname = api_data["nickname"] if api_data and for_api else request_authenticated_userid
+    nickname = api_data.get("nickname") if api_data and for_api else request_authenticated_userid
     return nickname
 
 

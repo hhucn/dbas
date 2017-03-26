@@ -24,7 +24,7 @@ from dbas.lib import get_global_url
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
 from dbas.handler.password import get_hashed_password
-from dbas.helper.database import dbas_configuration
+from dbas.helper.database import dbas_db_configuration
 
 first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin',
                'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
@@ -58,7 +58,7 @@ def main_discussion(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    discussion_engine = dbas_configuration(settings, 'sqlalchemy-discussion.')
+    discussion_engine = dbas_db_configuration(settings, 'sqlalchemy.discussion.')
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -91,7 +91,7 @@ def main_field_test(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    discussion_engine = dbas_configuration(settings, 'sqlalchemy-discussion.')
+    discussion_engine = dbas_db_configuration(settings, 'sqlalchemy.discussion.')
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -122,7 +122,7 @@ def main_news(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    news_engine = dbas_configuration(settings, 'sqlalchemy-news.')
+    news_engine = dbas_db_configuration(settings, 'sqlalchemy.news.')
     DBNewsSession.configure(bind=news_engine)
     NewsBase.metadata.create_all(news_engine)
 
@@ -144,11 +144,11 @@ def drop_it(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    discussion_engine = dbas_configuration(settings, 'sqlalchemy-discussion.')
+    discussion_engine = dbas_db_configuration(settings, 'sqlalchemy.discussion.')
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
-    news_engine = dbas_configuration(settings, 'sqlalchemy-news.')
+    news_engine = dbas_db_configuration(settings, 'sqlalchemy.news.')
     DBNewsSession.configure(bind=news_engine)
     NewsBase.metadata.create_all(news_engine)
 
@@ -217,7 +217,7 @@ def blank_file(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    discussion_engine = dbas_configuration(settings, 'sqlalchemy-discussion.')
+    discussion_engine = dbas_db_configuration(settings, 'sqlalchemy.discussion.')
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 

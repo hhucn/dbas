@@ -9,12 +9,12 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     OptimizationReviewLocks, ReviewCanceled, RevokedContent, RevokedContentHistory, \
     RSS, ClickedArgument, ClickedStatement, ReviewDuplicate, LastReviewerDuplicate
 from dbas.helper.tests import add_settings_to_appconfig
-from dbas.helper.database import dbas_configuration, and_
+from dbas.helper.database import dbas_db_configuration, and_
 from dbas.lib import get_all_arguments_by_statement
-from dbas.helper.database import dbas_configuration
+from dbas.helper.database import dbas_db_configuration
 
 settings = add_settings_to_appconfig()
-session.configure(bind=dbas_configuration(settings, 'sqlalchemy-discussion.'))
+session.configure(bind=dbas_db_configuration(settings, 'sqlalchemy.discussion.'))
 
 top_count = 3
 flop_count = 5

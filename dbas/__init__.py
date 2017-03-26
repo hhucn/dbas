@@ -18,9 +18,8 @@ from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.static import QueryStringConstantCacheBuster
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
-from dbas.helper.database import dbas_configuration
-
-from dbas.helper.database import dbas_configuration
+from dbas.helper.database import dbas_db_configuration
+from sqlalchemy import engine_from_config
 from dbas.database import load_discussion_database, load_news_database
 from dbas.security import groupfinder
 
@@ -29,6 +28,7 @@ def main(global_config, **settings):
     """
     This function returns a Pyramid WSGI application.
     """
+    settings.update(get_dbas_environs())
 
     # authentication and authorization
     authn_policy = AuthTktAuthenticationPolicy('89#s3cr3t_15', callback=groupfinder, hashalg='sha512')
@@ -39,17 +39,18 @@ def main(global_config, **settings):
     development = False
     for k, v in settings.items():
         development = development or 'testing' in str(v)
-        log.debug('__init__() '.upper() + 'main() <' + str(k) + ' : ' + str(v) + '>')
+        log.debug('__INIT__() main() <{} : {}>'.format(str(k), str(v)))
 
     # load database
-    discussion_engine = dbas_configuration(settings, 'sqlalchemy-discussion.')  # , connect_args={'client_encoding': 'utf8'}
-    news_engine       = dbas_configuration(settings, 'sqlalchemy-news.')  # , connect_args={'client_encoding': 'utf8'}
+    discussion_engine = dbas_db_configuration(settings, 'sqlalchemy.discussion.')  # , connect_args={'client_encoding': 'utf8'}
+    news_engine       = dbas_db_configuration(settings, 'sqlalchemy.news.')  # , connect_args={'client_encoding': 'utf8'}
     load_discussion_database(discussion_engine)
     load_news_database(news_engine)
 
     # session management and cache region support
     session_factory = session_factory_from_settings(settings)
     set_cache_regions_from_settings(settings)
+
 
     # creating the configurator
     mail_settings = {'mail.host': 'imap.googlemail.com',
@@ -194,3 +195,14 @@ def main(global_config, **settings):
 
     config.scan()
     return config.make_wsgi_app()
+
+
+def get_dbas_environs(prefix="DBAS_"):
+    import os
+    dbas_keys = list(filter(lambda x: x.startswith(prefix), os.environ))
+    return dict([(_environs_to_keys(k, prefix), os.environ[k]) for k in dbas_keys])
+
+def _environs_to_keys(key, prefix="DBAS_"):
+    import re
+    pat = '^{prefix}'.format(prefix=prefix)
+    return re.sub(pat, "", key).replace('_', '.')
