@@ -51,19 +51,7 @@ def main(global_config, **settings):
     session_factory = session_factory_from_settings(settings)
     set_cache_regions_from_settings(settings)
 
-
-    # creating the configurator
-    mail_settings = {'mail.host': 'imap.googlemail.com',
-                     'mail.port': '465',
-                     'mail.username': 'dbas.hhu@gmail.com',
-                     'mail.password': 'orpcihtyuecxhoup',
-                     'mail.ssl': 'True',
-                     'mail.tls': 'False',
-                     'mail.default_sender': 'dbas.hhu@gmail.com'
-                     }
-
     all_settings = settings
-    all_settings.update(mail_settings)
     # all_settings = {**settings, **mail_settings}
 
     # include custom parts
