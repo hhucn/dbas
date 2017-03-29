@@ -19,7 +19,6 @@ from pyramid.config import Configurator
 from pyramid.static import QueryStringConstantCacheBuster
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
 from dbas.helper.database import dbas_db_configuration
-from sqlalchemy import engine_from_config
 from dbas.database import load_discussion_database, load_news_database
 from dbas.security import groupfinder
 
@@ -186,9 +185,23 @@ def main(global_config, **settings):
 
 
 def get_dbas_environs(prefix="DBAS_"):
+    """
+    Fetches all environment variables beginning with `prefix` (default: "DBAS_").
+    Returns a dictionary where the keys are substituted versions of their corresponding environment variables.
+    Substitution rules:
+    1. The prefix will be stripped.
+    2. All single underscores will be substituted with a dot.
+    3. All double underscores will be substututed with a single underscore.
+    Example:
+    "DBAS_TEST_FOO__BAR" ==> "TEST.FOO_BAR"
+
+    :param prefix: The prefix of the environment variables.
+    :return: The dictionary of parsed environment variables and their values.
+    """
     import os
     dbas_keys = list(filter(lambda x: x.startswith(prefix), os.environ))
     return dict([(_environs_to_keys(k, prefix), os.environ[k]) for k in dbas_keys])
+
 
 def _environs_to_keys(key, prefix="DBAS_"):
     import re
