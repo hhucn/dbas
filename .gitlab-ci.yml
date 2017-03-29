@@ -48,6 +48,7 @@ unit:
   stage: test
   script:
     - docker exec dbas_web_$CI_BUILD_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w . dbas graph admin api export
+  coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
 
 acceptance:
   <<: *run-server
