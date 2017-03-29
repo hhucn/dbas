@@ -1,5 +1,3 @@
-from dbas.helper.database import dbas_db_configuration
-
 from dbas.database import DBDiscussionSession, DBNewsSession
 from dbas.helper.tests import add_settings_to_appconfig
 from dbas.helper.database import dbas_db_configuration

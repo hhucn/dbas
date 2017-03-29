@@ -1,6 +1,7 @@
 from dbas import _environs_to_keys
 from nose.tools import assert_equal
 
+
 def test_parse_env_name():
     assert_equal("TEST", _environs_to_keys("DBAS_TEST", prefix="DBAS_"))
     assert_equal("TEST", _environs_to_keys("TEST", prefix=""))

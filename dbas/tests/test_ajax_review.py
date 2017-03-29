@@ -444,7 +444,7 @@ class AjaxReviewTest(unittest.TestCase):
         db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(db_reviews1 + 1, db_reviews2) # FIXME and the other ones!
+        self.assertTrue(db_reviews1 + 1, db_reviews2)  # FIXME and the other ones!
         self.assertNotEqual(db_reputation1, db_reputation2)
         self.config.testing_securitypolicy(userid='Friedrich', permissive=True)
         db_reviews1 = len(DBDiscussionSession.query(LastReviewerDuplicate).filter_by(review_uid=db_review.uid).all())

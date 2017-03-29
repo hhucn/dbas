@@ -11,7 +11,6 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
 from dbas.helper.tests import add_settings_to_appconfig
 from dbas.helper.database import dbas_db_configuration, and_
 from dbas.lib import get_all_arguments_by_statement
-from dbas.helper.database import dbas_db_configuration
 
 settings = add_settings_to_appconfig()
 session.configure(bind=dbas_db_configuration(settings, 'sqlalchemy.discussion.'))

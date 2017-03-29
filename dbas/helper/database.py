@@ -1,6 +1,7 @@
 from sqlalchemy import engine_from_config
 import os
 
+
 def dbas_db_configuration(settings, prefix):
 
     database = "discussion"
