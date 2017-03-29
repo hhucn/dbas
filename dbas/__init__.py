@@ -192,5 +192,9 @@ def get_dbas_environs(prefix="DBAS_"):
 
 def _environs_to_keys(key, prefix="DBAS_"):
     import re
-    pat = '^{prefix}'.format(prefix=prefix)
-    return re.sub(pat, "", key).replace('_', '.')
+    prefix_patttern = '^{prefix}'.format(prefix=prefix)
+    single_underscore_pattern = r'(?<!_)_(?!_)'
+
+    striped_of_prefix = re.sub(prefix_patttern, "", key)
+
+    return re.sub(single_underscore_pattern, ".", striped_of_prefix).replace('__', '_')
