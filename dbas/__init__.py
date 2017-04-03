@@ -186,14 +186,18 @@ def main(global_config, **settings):
 
 def get_dbas_environs(prefix="DBAS_"):
     """
-    Fetches all environment variables beginning with `prefix` (default: "DBAS_").
+    Fetches all environment variables beginning with `prefix` (default: `DBAS_`).
+    
     Returns a dictionary where the keys are substituted versions of their corresponding environment variables.
     Substitution rules:
+    
     1. The prefix will be stripped.
     2. All single underscores will be substituted with a dot.
-    3. All double underscores will be substututed with a single underscore.
-    Example:
-    "DBAS_TEST_FOO__BAR" ==> "TEST.FOO_BAR"
+    3. All double underscores will be substituted with a single underscore.
+    
+    Example::
+    
+        "DBAS_TEST_FOO__BAR" ==> "TEST.FOO_BAR"
 
     :param prefix: The prefix of the environment variables.
     :return: The dictionary of parsed environment variables and their values.
@@ -205,9 +209,9 @@ def get_dbas_environs(prefix="DBAS_"):
 
 def _environs_to_keys(key, prefix="DBAS_"):
     import re
-    prefix_patttern = '^{prefix}'.format(prefix=prefix)
+    prefix_pattern = '^{prefix}'.format(prefix=prefix)
     single_underscore_pattern = r'(?<!_)_(?!_)'
 
-    striped_of_prefix = re.sub(prefix_patttern, "", key)
+    striped_of_prefix = re.sub(prefix_pattern, "", key)
 
     return re.sub(single_underscore_pattern, ".", striped_of_prefix).replace('__', '_')
