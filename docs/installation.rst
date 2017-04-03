@@ -60,7 +60,7 @@ You may want to configure options as environment variables instead of config ent
 DBAS
 ----
 You can configure all entrys in the ``app:main`` section of the ini-file in environment variables.
-By default DBAS takes all environment variables with prefix ``DBAS_` and adds them to the configuration, after parsing the .ini file itself.
+By default DBAS takes all environment variables with prefix ``DBAS_`` and adds them to the configuration, after parsing the .ini file itself.
 The name of the environment variable will be the key of the new configuration entry, after some transformations.
 
 1. The prefix will be stripped.
