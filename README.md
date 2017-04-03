@@ -2,6 +2,7 @@
 
 [![build status](https://gitlab.cs.uni-duesseldorf.de/dbas/dbas/badges/master/build.svg)](https://gitlab.cs.uni-duesseldorf.de/project/dbas/commits/master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![coverage report](https://gitlab.cs.uni-duesseldorf.de/dbas/dbas/badges/master/coverage.svg)](https://gitlab.cs.uni-duesseldorf.de/dbas/dbas/commits/master)
 
 D-BAS is based on [Pyramid](http://www.pylonsproject.org/), [Bootstrap](http://getbootstrap.com/),
 [jQuery](https://jquery.com/) and shipped via [Docker Containers](https://www.docker.com/). It is a novel approach to online
@@ -24,9 +25,13 @@ Then follow these steps:
     docker-compose build
     docker-compose up
 
-Example for a fresh build and production mode:
+Example for a fresh build
 
-    docker-compose --file docker-compose.production.yml up --build
+    docker-compose up --build
+
+Production mode:
+
+    docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build
 
 After this you can hit [http://localhost:4284](http://localhost:4284) for D-BAS.
 
