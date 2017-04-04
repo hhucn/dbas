@@ -187,16 +187,16 @@ def main(global_config, **settings):
 def get_dbas_environs(prefix="DBAS_"):
     """
     Fetches all environment variables beginning with `prefix` (default: `DBAS_`).
-    
+
     Returns a dictionary where the keys are substituted versions of their corresponding environment variables.
     Substitution rules:
-    
+
     1. The prefix will be stripped.
     2. All single underscores will be substituted with a dot.
     3. All double underscores will be substituted with a single underscore.
-    
+
     Example::
-    
+
         "DBAS_TEST_FOO__BAR" ==> "TEST.FOO_BAR"
 
     :param prefix: The prefix of the environment variables.
