@@ -27,7 +27,8 @@ def dbas_db_configuration(settings, prefix):
             errors += "DBAS_DB_PW"
         if not db_host:
             errors += "DBAS_DB_HOST"
-        if not db_host_port:errors += "DBAS_DB_PORT"
+        if not db_host_port:
+            errors += "DBAS_DB_PORT"
 
         raise EnvironmentError("Misconfigured environment variables for database. Result the installation instructions.\n" + errors)
 
