@@ -66,6 +66,7 @@ The name of the environment variable will be the key of the new configuration en
 1. The prefix will be stripped.
 2. All single underscores will be substituted with a dot.
 3. All double underscores will be substituted with a single underscore.
+4. uppercase will be lowered.
 
 Example::
 

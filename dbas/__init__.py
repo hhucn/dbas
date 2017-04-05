@@ -194,6 +194,7 @@ def get_dbas_environs(prefix="DBAS_"):
     1. The prefix will be stripped.
     2. All single underscores will be substituted with a dot.
     3. All double underscores will be substituted with a single underscore.
+    4. uppercase will be lowered.
 
     Example::
 
@@ -214,4 +215,4 @@ def _environs_to_keys(key, prefix="DBAS_"):
 
     striped_of_prefix = re.sub(prefix_pattern, "", key)
 
-    return re.sub(single_underscore_pattern, ".", striped_of_prefix).replace('__', '_')
+    return str(re.sub(single_underscore_pattern, ".", striped_of_prefix).replace('__', '_')).lower()
