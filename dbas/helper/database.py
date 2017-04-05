@@ -1,7 +1,6 @@
 from sqlalchemy import engine_from_config
 import os
 
-
 def dbas_db_configuration(settings, prefix):
 
     database = "discussion"
@@ -20,15 +19,15 @@ def dbas_db_configuration(settings, prefix):
             {'sqlalchemy.{}.url'.format(database): "postgresql+psycopg2://{}:{}@{}:{}/{}?client_encoding=utf8".format(
                 db_user, db_pw, db_host, db_host_port, database)})
     else:
-        errors = "Following variables are missing:\n\n"
+        errors = "Following variables are missing:\n"
         if not db_user:
-            errors += "DBAS_DB_USER"
+            errors += "DBAS_DB_USER\n"
         if not db_pw:
-            errors += "DBAS_DB_PW"
+            errors += "DBAS_DB_PW\n"
         if not db_host:
-            errors += "DBAS_DB_HOST"
+            errors += "DBAS_DB_HOST\n"
         if not db_host_port:
-            errors += "DBAS_DB_PORT"
+            errors += "DBAS_DB_PORT\n"
 
         raise EnvironmentError("Misconfigured environment variables for database. Result the installation instructions.\n" + errors)
 
