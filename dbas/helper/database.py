@@ -6,7 +6,7 @@ def dbas_db_configuration(db_name, settings={}):
     """
     Gets a database name and settings and looks up database connection configurations in four environment variables
     These are:
-    
+
     +--------------+------------------------------------------------------------------+
     | DBAS_DB_HOST | The hostname of the database (example: localhost, db, 10.0.0.2). |
     +--------------+------------------------------------------------------------------+
@@ -33,7 +33,7 @@ def dbas_db_configuration(db_name, settings={}):
         settings.update(
             {prefix + '.url': "postgresql+psycopg2://{}:{}@{}:{}/{}?client_encoding=utf8".format(
                 db_user, db_pw, db_host, db_host_port, db_name)})
-        return engine_from_config(settings, 'sqlalchemy.{}')
+        return engine_from_config(settings, prefix)
 
     else:
         errors = "Following variables are missing:\n"
