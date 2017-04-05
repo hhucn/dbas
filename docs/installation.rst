@@ -58,7 +58,7 @@ Environment variables
 You may want to configure options as environment variables instead of config entries.
 
 D-BAS
-----
+-----
 You can configure all entries in the ``app:main`` section of the ini-file in environment variables.
 By default D-BAS takes all environment variables with prefix ``DBAS_`` and adds them to the configuration, after parsing the .ini file itself.
 The name of the environment variable will be the key of the new configuration entry, after some transformations.
@@ -72,7 +72,7 @@ Example::
     export DBAS_FOO_BAR__BAZ=fizz
     => FOO.BAR_BAZ = fizz
 
-
+The variables ``DBAS_DB_HOST``
 Pyramid
 -------
 For pyramid and UWSGI specific options you may want to consult the official docs.

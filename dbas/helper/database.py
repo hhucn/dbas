@@ -1,13 +1,28 @@
 from sqlalchemy import engine_from_config
 import os
 
-def dbas_db_configuration(settings, prefix):
 
-    database = "discussion"
-    if prefix.startswith("sqlalchemy.discussion."):
-        database = "discussion"
-    elif prefix.startswith("sqlalchemy.news."):
-        database = "news"
+def dbas_db_configuration(db_name, settings={}):
+    """
+    Gets a database name and settings and looks up database connection configurations in four environment variables
+    These are:
+    
+    +--------------+------------------------------------------------------------------+
+    | DBAS_DB_HOST | The hostname of the database (example: localhost, db, 10.0.0.2). |
+    +--------------+------------------------------------------------------------------+
+    | DBAS_DB_PORT | The port of the database (example: 5432).                        |
+    +--------------+------------------------------------------------------------------+
+    | DBAS_DB_USER | The database username. (example: dbas)                           |
+    +--------------+------------------------------------------------------------------+
+    | DBAS_DB_PW   | The passwort of the DBAS_DB_USER (example: passw0rt123)          |
+    +--------------+------------------------------------------------------------------+
+
+
+    :param db_name: The name of the database, as a string
+    :param settings: A dict containing settings for the database connection. (optional)
+    :return: A sqlalchemy engine from environment variables and settings.
+    """
+    prefix = 'sqlalchemy.{}'.format(db_name)
 
     db_user = os.environ.get("DBAS_DB_USER", None)
     db_pw = os.environ.get("DBAS_DB_PW", None)
@@ -16,8 +31,10 @@ def dbas_db_configuration(settings, prefix):
 
     if all([db_user, db_pw, db_host, db_host_port]):
         settings.update(
-            {'sqlalchemy.{}.url'.format(database): "postgresql+psycopg2://{}:{}@{}:{}/{}?client_encoding=utf8".format(
-                db_user, db_pw, db_host, db_host_port, database)})
+            {prefix + '.url': "postgresql+psycopg2://{}:{}@{}:{}/{}?client_encoding=utf8".format(
+                db_user, db_pw, db_host, db_host_port, db_name)})
+        return engine_from_config(settings, 'sqlalchemy.{}')
+
     else:
         errors = "Following variables are missing:\n"
         if not db_user:
@@ -30,5 +47,3 @@ def dbas_db_configuration(settings, prefix):
             errors += "DBAS_DB_PORT\n"
 
         raise EnvironmentError("Misconfigured environment variables for database. Result the installation instructions.\n" + errors)
-
-    return engine_from_config(settings, prefix)

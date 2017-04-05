@@ -169,6 +169,11 @@ Helper for Issues
 .. automodule:: dbas.helper.issue
     :members:
 
+Helper for Database
+===================
+.. automodule:: dbas.helper.database
+    :members:
+
 
 Notification Helper
 ===================

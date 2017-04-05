@@ -13,7 +13,7 @@ from dbas.helper.database import dbas_db_configuration, and_
 from dbas.lib import get_all_arguments_by_statement
 
 settings = add_settings_to_appconfig()
-session.configure(bind=dbas_db_configuration(settings, 'sqlalchemy.discussion.'))
+session.configure(bind=dbas_db_configuration('discussion', settings))
 
 top_count = 3
 flop_count = 5

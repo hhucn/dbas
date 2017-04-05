@@ -41,8 +41,8 @@ def main(global_config, **settings):
         log.debug('__INIT__() main() <{} : {}>'.format(str(k), str(v)))
 
     # load database
-    discussion_engine = dbas_db_configuration(settings, 'sqlalchemy.discussion.')  # , connect_args={'client_encoding': 'utf8'}
-    news_engine       = dbas_db_configuration(settings, 'sqlalchemy.news.')  # , connect_args={'client_encoding': 'utf8'}
+    discussion_engine = dbas_db_configuration('discussion', settings)  # , connect_args={'client_encoding': 'utf8'}
+    news_engine       = dbas_db_configuration('news', settings)  # , connect_args={'client_encoding': 'utf8'}
     load_discussion_database(discussion_engine)
     load_news_database(news_engine)
 

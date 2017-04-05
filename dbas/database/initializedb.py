@@ -58,7 +58,7 @@ def main_discussion(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    discussion_engine = dbas_db_configuration(settings, 'sqlalchemy.discussion.')
+    discussion_engine = dbas_db_configuration('discussion', settings)
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -91,7 +91,7 @@ def main_field_test(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    discussion_engine = dbas_db_configuration(settings, 'sqlalchemy.discussion.')
+    discussion_engine = dbas_db_configuration('discussion', settings)
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -122,7 +122,7 @@ def main_news(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    news_engine = dbas_db_configuration(settings, 'sqlalchemy.news.')
+    news_engine = dbas_db_configuration('news', settings)
     DBNewsSession.configure(bind=news_engine)
     NewsBase.metadata.create_all(news_engine)
 
@@ -144,11 +144,11 @@ def drop_it(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    discussion_engine = dbas_db_configuration(settings, 'sqlalchemy.discussion.')
+    discussion_engine = dbas_db_configuration('discussion', settings)
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
-    news_engine = dbas_db_configuration(settings, 'sqlalchemy.news.')
+    news_engine = dbas_db_configuration('news', settings)
     DBNewsSession.configure(bind=news_engine)
     NewsBase.metadata.create_all(news_engine)
 
@@ -217,7 +217,7 @@ def blank_file(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    discussion_engine = dbas_db_configuration(settings, 'sqlalchemy.discussion.')
+    discussion_engine = dbas_db_configuration('discussion', settings)
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 

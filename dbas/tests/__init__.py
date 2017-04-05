@@ -5,8 +5,8 @@ from dbas.helper.database import dbas_db_configuration
 
 def setup_package():
     settings = add_settings_to_appconfig()
-    DBDiscussionSession.configure(bind=dbas_db_configuration(settings, 'sqlalchemy.discussion.'))
-    DBNewsSession.configure(bind=dbas_db_configuration(settings, 'sqlalchemy.news.'))
+    DBDiscussionSession.configure(bind=dbas_db_configuration('discussion', settings))
+    DBNewsSession.configure(bind=dbas_db_configuration('news', settings))
 
 
 def teardown_package():
