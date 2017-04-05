@@ -36,7 +36,7 @@ class InputValidatorTests(unittest.TestCase):
         self.assertEqual(input_array_false, False)
 
     def test_check_reaction(self):
-        # DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+        # DBDiscussionSession.configure(bind=dbas_db_configuration(settings, 'sqlalchemy.discussion.'))
 
         # undermine
         undermine_true = check_reaction(attacked_arg_uid=3,

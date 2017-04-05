@@ -53,6 +53,54 @@ Then follow these steps:
 8. If you are running Mac OS X, please install portmap *https://codingmonkeys.de/portmap/*
 
 
+Environment variables
+=====================
+You may want to configure options as environment variables instead of config entries.
+
+D-BAS
+-----
+You can configure all entries in the ``app:main`` section of the ini-file in environment variables.
+By default D-BAS takes all environment variables with prefix ``DBAS_`` and adds them to the configuration, after parsing the .ini file itself.
+The name of the environment variable will be the key of the new configuration entry, after some transformations.
+
+1. The prefix will be stripped.
+2. All single underscores will be substituted with a dot.
+3. All double underscores will be substituted with a single underscore.
+4. uppercase will be lowered.
+
+Example::
+
+    export DBAS_FOO_BAR__BAZ=fizz
+    => foo.bar_baz = fizz
+
+
+Special variables
+-----------------
+
+There are some special variables for the database connection.
+These **have** to be set, otherwise an error will be raised explaning which variables aren't configured.
+
++--------------+------------------------------------------------------------------+
+| DBAS_DB_HOST | The hostname of the database (example: localhost, db, 10.0.0.2). |
++--------------+------------------------------------------------------------------+
+| DBAS_DB_PORT | The port of the database (example: 5432).                        |
++--------------+------------------------------------------------------------------+
+| DBAS_DB_USER | The database username. (example: dbas)                           |
++--------------+------------------------------------------------------------------+
+| DBAS_DB_PW   | The passwort of the DBAS_DB_USER (example: passw0rt123)          |
++--------------+------------------------------------------------------------------+
+
+These variables are accessible like any other via the normal substitutions (DB.HOST, ...)
+
+
+Pyramid & UWSGI
+---------------
+For pyramid and UWSGI specific options you may want to consult the official docs.
+
+:pyramid: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
+:uwsgi: http://uwsgi-docs.readthedocs.io/en/latest/Configuration.html#environment-variables
+
+
 Makefile
 ========
 List of all important commands of our Makefile.
@@ -77,10 +125,9 @@ Tests
     flake8
 
 
-Mac OS specifc problems you may encounter
-=========================================
-psycopg2 fails 'library not found for -lssl with on install
------------------------------------------------------------
+Mac OS specifc installation problems
+====================================
+psycopg2 install fails with ``library not found for -lssl with on install``
+---------------------------------------------------------------------------
 
     $ env LDFLAGS="-I/usr/local/opt/openssl/include -L/usr/local/opt/openssl/lib" pip install psycopg2
-

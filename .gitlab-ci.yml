@@ -11,7 +11,7 @@ stages:
   before_script:
     - docker run -d --rm --name dbas_db_$CI_JOB_ID dbas_db_$CI_PIPELINE_ID
     - sleep 10
-    - docker run -d --rm --name dbas_web_$CI_JOB_ID --link dbas_db_$CI_JOB_ID:db dbas_web_$CI_PIPELINE_ID
+    - docker run -d --rm --env-file development.env --name dbas_web_$CI_JOB_ID --link dbas_db_$CI_JOB_ID:db dbas_web_$CI_PIPELINE_ID
 
 
 # ------------------------------------------------------------------------------
