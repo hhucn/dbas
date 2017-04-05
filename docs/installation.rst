@@ -71,7 +71,7 @@ The name of the environment variable will be the key of the new configuration en
 Example::
 
     export DBAS_FOO_BAR__BAZ=fizz
-    => FOO.BAR_BAZ = fizz
+    => foo.bar_baz = fizz
 
 
 Special variables
