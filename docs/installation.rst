@@ -72,9 +72,28 @@ Example::
     export DBAS_FOO_BAR__BAZ=fizz
     => FOO.BAR_BAZ = fizz
 
-The variables ``DBAS_DB_HOST``
-Pyramid
--------
+
+Special variables
+-----------------
+
+There are some special variables for the database connection.
+These **have** to be set, otherwise an error will be raised explaning which variables aren't configured.
+
++--------------+------------------------------------------------------------------+
+| DBAS_DB_HOST | The hostname of the database (example: localhost, db, 10.0.0.2). |
++--------------+------------------------------------------------------------------+
+| DBAS_DB_PORT | The port of the database (example: 5432).                        |
++--------------+------------------------------------------------------------------+
+| DBAS_DB_USER | The database username. (example: dbas)                           |
++--------------+------------------------------------------------------------------+
+| DBAS_DB_PW   | The passwort of the DBAS_DB_USER (example: passw0rt123)          |
++--------------+------------------------------------------------------------------+
+
+These variables are accessible like any other via the normal substitutions (DB.HOST, ...)
+
+
+Pyramid & UWSGI
+---------------
 For pyramid and UWSGI specific options you may want to consult the official docs.
 
 :pyramid: http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/environment.html
