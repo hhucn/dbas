@@ -198,7 +198,7 @@ def get_dbas_environs(prefix="DBAS_"):
 
     Example::
 
-        "DBAS_TEST_FOO__BAR" ==> "TEST.FOO_BAR"
+        "DBAS_TEST_FOO__BAR" ==> "test.foo_bar"
 
     :param prefix: The prefix of the environment variables.
     :return: The dictionary of parsed environment variables and their values.
