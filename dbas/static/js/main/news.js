@@ -91,7 +91,7 @@ function News() {
 			maxHeight = Math.max.apply(Math, heights);
 			
 			$.each(children, function () {
-				$(this).children().eq(0).css({'height': maxHeight + 'px'});
+				$(this).children().eq(0).css({'min-height': maxHeight + 'px'});
 			});
 		}
 	};
