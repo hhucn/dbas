@@ -22,10 +22,8 @@ services:
       - "4284:4284"
     links:
       - db:db
-    environment:
-      - "DB_HOST=${DB_HOST}"
-      - "DB_USER=${DB_USER}"
-      - "DB_PW=${DB_PW}"
+    env_file:
+      - development.env
     depends_on:
       - db
     tmpfs: /tmp
