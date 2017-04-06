@@ -41,7 +41,7 @@
 
         </div>
 
-		<div id="news-navigation-container" class="container">
+		<div style="display:none;" id="news-navigation-container" class="container">
 			<div class="row">
 				<div class="col-md-12 text-center">
 
