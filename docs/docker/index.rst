@@ -88,8 +88,8 @@ Init script for the database entry point
 ________________________________________
 
 D-BAS uses a seeded database at the beginning, which can be find in `docker/db/<your_seed.sql>`. Everytime docker,
- starts this seed will be used. If you rather want an empty database at the beginning, remove the seed and use the init
- script below to create an empty database. The script has to be saved in `docker/db/init.sh`::
+starts this seed will be used. If you rather want an empty database at the beginning, remove the seed and use the init
+script below to create an empty database. The script has to be saved in `docker/db/init.sh`::
 
     #!/bin/bash
     set -e
@@ -149,13 +149,6 @@ This provides a full bash inside the container::
     CHANGELOG.md  LICENSE      Makefile   README.rst  api   dbas           dbasrequest.log  docker              docker.ini      docs    graph    production.ini    run.sh    tests
     Dockerfile    MANIFEST.in  README.md  admin       data  dbas.egg-info  development.ini  docker-compose.yml  docker_init.sh  export  i18n.sh  requirements.txt  setup.py
     $ root@20190f09319e:/code#
-
-Optimizations
-=============
-
-.. todo::
-   Docker has its own `docker.ini`. I don't like this, reduce this to one file and merge it with
-   `development.ini`.
 
 Save a database
 ===============
