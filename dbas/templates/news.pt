@@ -22,10 +22,10 @@
                 <div class="panel panel-default">
                     <div class="panel-heading" tal:attributes="id n.uid">
 
-	                    <a class="social-wrapper share-mail" data-toggle="tooltip" data-placement="bottom" title="Mail"><i class="social-em fa fa-envelope social"></i></a>
-	                    <a class="social-wrapper share-twitter" data-toggle="tooltip" data-placement="bottom" title="Twitter"><i class="social-tw fa fa-twitter social"></i></a>
-	                    <a class="social-wrapper share-google" data-toggle="tooltip" data-placement="bottom" title="Google+"><i class="social-gp fa fa-google-plus social"></i></a>
-                        <a class="social-wrapper share-facebook" data-toggle="tooltip" data-placement="bottom" title="Facebook"><i class="social-fb fa fa-facebook social"></i></a>
+	                    <a class="social-wrapper share-mail" title="Mail"><i class="social-em fa fa-envelope social"></i></a>
+	                    <a class="social-wrapper share-twitter" title="Twitter"><i class="social-tw fa fa-twitter social"></i></a>
+	                    <a class="social-wrapper share-google" title="Google+"><i class="social-gp fa fa-google-plus social"></i></a>
+                        <a class="social-wrapper share-facebook" title="Facebook"><i class="social-fb fa fa-facebook social"></i></a>
                         <h5>
                             <span class="font-semi-bold" tal:attributes="id n.title_id"> ${n.title} </span>
                         </h5>

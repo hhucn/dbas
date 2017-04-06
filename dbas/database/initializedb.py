@@ -559,9 +559,9 @@ def setup_news_db(session, ui_locale):
                        'inexperienced participants! Now we will fix a few smaller things and looking forward '
                        'to out first field test!')
     news57 = News(title='Docker',
-                  date=arrow.get('2017-02-09'),
+                  date=arrow.get('2017-03-09'),
                   author='Tobias Krauthoff',
-                  news='The last weeks we have spend to make D-BAS more stable, writing some analyzers as well as '
+                  news='Last weeks we have spend to make D-BAS more stable, writing some analyzers as well as '
                        'dockerize everything. The complete project can be found on https://github.com/hhucn/dbas '
                        'soon.')
     news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,

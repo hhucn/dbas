@@ -823,7 +823,7 @@ $(document).ready(function mainDocumentReady() {
 	// some extras
 	// get restart url and cut the quotes
 	var btn = $('#discussion-restart-btn');
-	if (window.location.href.indexOf('/discuss') !== -1 && typeof element !== "undefined") {
+	if (window.location.href.indexOf('/discuss') !== -1) {
 		tmp = btn.attr('onclick').substr('location.href='.length);
 		tmp = tmp.substr(1, tmp.length - 2);
 		$('#' + discussionEndRestart).attr('href', tmp);
