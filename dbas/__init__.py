@@ -87,7 +87,6 @@ def main(global_config, **settings):
     config.include('export', route_prefix='/export')
     config.include('admin', route_prefix='/admin')
     config.include('websocket', route_prefix='/ws')
-    config.include('webhook', route_prefix='/deploy')
 
     # more includes are in the config
     config.include('pyramid_chameleon')
