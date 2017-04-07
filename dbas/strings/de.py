@@ -565,7 +565,7 @@ de_lang = {
     _.rep_reason_bad_edit: 'Sie haben einen schlechten Editierungsvorschlag gemacht',
     _.rep_reason_bad_duplicate: 'Sie haben ein Duplikat gemeldet, obwohl es keines ist',
 
-    _.reaction_text_undermine: 'Ich halte {} für falsch und möchte wiedersprechen.',
+    _.reaction_text_undermine: 'Ich halte {} für falsch und möchte widersprechen.',
     _.reaction_text_support: 'Ich halte {} für richtig und finde sie überzeugend.',
     # _.reaction_text_undercut: 'Ich halte {} für richtig, aber sie widerspricht nicht {}.',
     _.reaction_text_undercut: 'Ich halte {} für richtig, aber sie stützt nicht {}.',
