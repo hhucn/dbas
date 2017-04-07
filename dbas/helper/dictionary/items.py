@@ -509,7 +509,7 @@ class ItemDictHelper(object):
         """
         # special case, when the user selects the support, because this does not need to be justified!
         if relation == 'support':
-            return self.__get_url_for_support(attack, _um, db_sys_argument)
+            return self.__get_url_for_support(attack, _um, db_user_argument, db_sys_argument)
         elif relation == 'undermine' or relation == 'undercut':  # easy cases
             return self.__get_url_for_undermine(relation, _um, db_sys_argument.uid, mode)
         elif relation == 'rebut':  # if we are having an rebut, everything seems different
@@ -517,20 +517,25 @@ class ItemDictHelper(object):
         else:  # undercut
             return _um.get_url_for_justifying_argument(True, db_sys_argument.uid, mode, relation)
 
-    def __get_url_for_support(self, attack, _um, db_sys_argument):
+    def __get_url_for_support(self, attack, _um, db_user_argument, db_sys_argument):
         """
         Returns url to support an argument
 
         :param attack: String
         :param _um: UrlManager
+        :param db_user_argument: Argument
         :param db_sys_argument: Argument
         :return: String
         """
         attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
         restriction_on_attacks = 'rebut' if attack == 'undercut' else None
+        # if the user did rebutted A with B, the system shall not rebut B with A
+        history = '{}/rebut/{}'.format(db_sys_argument.uid, db_user_argument.uid) if attack == 'rebut' else ''
+
         arg_id_sys, sys_attack = rs.get_attack_for_argument(db_sys_argument.uid, self.lang,
                                                             restriction_on_arg_uids=attacking_arg_uids,
-                                                            restriction_on_attacks=restriction_on_attacks)
+                                                            restriction_on_attacks=restriction_on_attacks,
+                                                            history=history)
         if sys_attack == 'rebut' and attack == 'undercut':
             # case: system makes an undercut and the user supports this new attack can be an rebut, so another
             # undercut for the users argument therefore now the users opinion is the new undercut (e.g. rebut)
@@ -538,6 +543,7 @@ class ItemDictHelper(object):
             url = _um.get_url_for_reaction_on_argument(True, arg_id_sys, sys_attack, db_sys_argument.argument_uid)
         else:
             url = _um.get_url_for_reaction_on_argument(True, db_sys_argument.uid, sys_attack, arg_id_sys)
+
         return url
 
     @staticmethod
