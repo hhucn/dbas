@@ -571,7 +571,7 @@ function GuiHandler() {
 			
 			var counter = 0;
 			$.each(value.content, function (key, val) {
-				tr = $('<tr>')
+				var tr = $('<tr>')
 					.append($('<td>').text(val.text))
 					.append($('<td>')
 						.append($('<img>').attr('src', val.author_gravatar).css('margin-right', '1em').addClass('img-circle'))

@@ -314,7 +314,7 @@ def add_proposals_for_statement_corrections(elements, nickname, translator):
     review_count = len(elements)
     added_reviews = [__add_edit_reviews(element, db_user) for element in elements]
 
-    if added_reviews.count(0) > 0:  # no edits set
+    if added_reviews.count(0) == 0:  # no edits set
         if added_reviews.count(-1) > 0:
             return translator.get(_.internalKeyError), True
         if added_reviews.count(-2) > 0:
@@ -354,7 +354,7 @@ def __add_edit_reviews(element, db_user):
     db_already_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.statement_uid == element['uid'],
                                                                         ReviewEdit.is_executed == False)).all()
     if db_already_edit and len(db_already_edit) > 0:  # if we already have an edit, skip this
-        logger('ReviewQueues', '__add_edit_reviews', str(element['uid']) + ' already got an edit with ' + str(db_already_edit[0].uid))
+        logger('ReviewQueues', '__add_edit_reviews', str(element['uid']) + ' already got an edit: ' + str(db_already_edit[0].uid))
         return -2
 
     db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
