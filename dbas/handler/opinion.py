@@ -35,19 +35,23 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
     db_user_uid = db_user.uid if db_user else 0
 
     # preparation
-    all_users = []
     _t = Translator(lang)
     try:
         db_user_argument = DBDiscussionSession.query(Argument).get(argument_uids[0])
     except TypeError:
-        return None
+        ret_dict = dict()
+        ret_dict['message'] = _t.get(_.internalError) + '.'
+        ret_dict['users'] = []
+        ret_dict['opinions'] = dict()
+        ret_dict['title'] = _t.get(_.internalError)
+        return ret_dict
 
     # sanity check
     if not db_user_argument:
         ret_dict = dict()
         ret_dict['message'] = _t.get(_.internalError) + '.'
-        ret_dict['users'] = all_users
-        ret_dict['opinions'] = ret_dict
+        ret_dict['users'] = []
+        ret_dict['opinions'] = dict()
         ret_dict['title'] = _t.get(_.internalError)
         return ret_dict
 

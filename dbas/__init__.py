@@ -18,8 +18,7 @@ from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.static import QueryStringConstantCacheBuster
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
-from sqlalchemy import engine_from_config
-
+from dbas.helper.database import dbas_db_configuration
 from dbas.database import load_discussion_database, load_news_database
 from dbas.security import groupfinder
 
@@ -28,6 +27,7 @@ def main(global_config, **settings):
     """
     This function returns a Pyramid WSGI application.
     """
+    settings.update(get_dbas_environs())
 
     # authentication and authorization
     authn_policy = AuthTktAuthenticationPolicy('89#s3cr3t_15', callback=groupfinder, hashalg='sha512')
@@ -38,11 +38,11 @@ def main(global_config, **settings):
     development = False
     for k, v in settings.items():
         development = development or 'testing' in str(v)
-        log.debug('__init__() '.upper() + 'main() <' + str(k) + ' : ' + str(v) + '>')
+        log.debug('__INIT__() main() <{} : {}>'.format(str(k), str(v)))
 
     # load database
-    discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')  # , connect_args={'client_encoding': 'utf8'}
-    news_engine       = engine_from_config(settings, 'sqlalchemy-news.')  # , connect_args={'client_encoding': 'utf8'}
+    discussion_engine = dbas_db_configuration('discussion', settings)  # , connect_args={'client_encoding': 'utf8'}
+    news_engine       = dbas_db_configuration('news', settings)  # , connect_args={'client_encoding': 'utf8'}
     load_discussion_database(discussion_engine)
     load_news_database(news_engine)
 
@@ -50,18 +50,7 @@ def main(global_config, **settings):
     session_factory = session_factory_from_settings(settings)
     set_cache_regions_from_settings(settings)
 
-    # creating the configurator
-    mail_settings = {'mail.host': 'imap.googlemail.com',
-                     'mail.port': '465',
-                     'mail.username': 'dbas.hhu@gmail.com',
-                     'mail.password': 'orpcihtyuecxhoup',
-                     'mail.ssl': 'True',
-                     'mail.tls': 'False',
-                     'mail.default_sender': 'dbas.hhu@gmail.com'
-                     }
-
     all_settings = settings
-    all_settings.update(mail_settings)
     # all_settings = {**settings, **mail_settings}
 
     # include custom parts
@@ -98,7 +87,6 @@ def main(global_config, **settings):
     config.include('export', route_prefix='/export')
     config.include('admin', route_prefix='/admin')
     config.include('websocket', route_prefix='/ws')
-    config.include('webhook', route_prefix='/deploy')
 
     # more includes are in the config
     config.include('pyramid_chameleon')
@@ -193,3 +181,37 @@ def main(global_config, **settings):
 
     config.scan()
     return config.make_wsgi_app()
+
+
+def get_dbas_environs(prefix="DBAS_"):
+    """
+    Fetches all environment variables beginning with `prefix` (default: `DBAS_`).
+
+    Returns a dictionary where the keys are substituted versions of their corresponding environment variables.
+    Substitution rules:
+
+    1. The prefix will be stripped.
+    2. All single underscores will be substituted with a dot.
+    3. All double underscores will be substituted with a single underscore.
+    4. uppercase will be lowered.
+
+    Example::
+
+        "DBAS_TEST_FOO__BAR" ==> "test.foo_bar"
+
+    :param prefix: The prefix of the environment variables.
+    :return: The dictionary of parsed environment variables and their values.
+    """
+    import os
+    dbas_keys = list(filter(lambda x: x.startswith(prefix), os.environ))
+    return dict([(_environs_to_keys(k, prefix), os.environ[k]) for k in dbas_keys])
+
+
+def _environs_to_keys(key, prefix="DBAS_"):
+    import re
+    prefix_pattern = '^{prefix}'.format(prefix=prefix)
+    single_underscore_pattern = r'(?<!_)_(?!_)'
+
+    striped_of_prefix = re.sub(prefix_pattern, "", key)
+
+    return str(re.sub(single_underscore_pattern, ".", striped_of_prefix).replace('__', '_')).lower()

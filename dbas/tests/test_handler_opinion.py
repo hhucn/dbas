@@ -27,10 +27,15 @@ class OpinionHandlerTests(unittest.TestCase):
         # none id
         response_single_id = get_user_and_opinions_for_argument(argument_uids=1, nickname=nickname, lang=lang,
                                                                 main_page=main_page, path='')
-        self.assertEqual(response_single_id, None)
+        self.assertNotEqual(response_single_id, None)
+        self.assertEqual(len(response_single_id['users']), 0)
+        self.assertEqual(len(response_single_id['opinions']), 0)
+
         response_none_id = get_user_and_opinions_for_argument(argument_uids=None, nickname=nickname,
                                                               lang=lang, main_page=main_page, path='')
-        self.assertEqual(response_none_id, None)
+        self.assertNotEqual(response_none_id, None)
+        self.assertEqual(len(response_none_id['users']), 0)
+        self.assertEqual(len(response_none_id['opinions']), 0)
 
     def test_get_user_with_same_opinion_for_statements(self):
         lang = 'en'

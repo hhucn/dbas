@@ -23,8 +23,8 @@ from dbas.handler.rss import create_news_rss, create_initial_issue_rss
 from dbas.lib import get_global_url
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
-from sqlalchemy import engine_from_config
 from dbas.handler.password import get_hashed_password
+from dbas.helper.database import dbas_db_configuration
 
 first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin',
                'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
@@ -58,7 +58,7 @@ def main_discussion(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')
+    discussion_engine = dbas_db_configuration('discussion', settings)
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -91,7 +91,7 @@ def main_field_test(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')
+    discussion_engine = dbas_db_configuration('discussion', settings)
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -122,7 +122,7 @@ def main_news(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    news_engine = engine_from_config(settings, 'sqlalchemy-news.')
+    news_engine = dbas_db_configuration('news', settings)
     DBNewsSession.configure(bind=news_engine)
     NewsBase.metadata.create_all(news_engine)
 
@@ -144,11 +144,11 @@ def drop_it(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')
+    discussion_engine = dbas_db_configuration('discussion', settings)
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
-    news_engine = engine_from_config(settings, 'sqlalchemy-news.')
+    news_engine = dbas_db_configuration('news', settings)
     DBNewsSession.configure(bind=news_engine)
     NewsBase.metadata.create_all(news_engine)
 
@@ -217,7 +217,7 @@ def blank_file(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    discussion_engine = engine_from_config(settings, 'sqlalchemy-discussion.')
+    discussion_engine = dbas_db_configuration('discussion', settings)
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -559,9 +559,9 @@ def setup_news_db(session, ui_locale):
                        'inexperienced participants! Now we will fix a few smaller things and looking forward '
                        'to out first field test!')
     news57 = News(title='Docker',
-                  date=arrow.get('2017-02-09'),
+                  date=arrow.get('2017-03-09'),
                   author='Tobias Krauthoff',
-                  news='The last weeks we have spend to make D-BAS more stable, writing some analyzers as well as '
+                  news='Last weeks we have spend to make D-BAS more stable, writing some analyzers as well as '
                        'dockerize everything. The complete project can be found on https://github.com/hhucn/dbas '
                        'soon.')
     news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,

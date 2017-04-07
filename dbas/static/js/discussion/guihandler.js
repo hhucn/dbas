@@ -136,9 +136,13 @@ function GuiHandler() {
 	 */
 	this.setMaxHeightForDiscussionContainer = function(resize){
 		var maincontainer = $('#' + discussionContainerId);
-		var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
-		maincontainer.css('max-height', maincontainer.outerHeight() + resize + 'px');
-		sidebarwrapper.css('height', maincontainer.outerHeight() + 'px');
+		if ($('#dialog-wrapper').height() > maincontainer.outerHeight()) {
+			var sidebarwrapper = maincontainer.find('.' + sidebarWrapperClass);
+			maincontainer.css({'height': maincontainer.outerHeight(true) + resize + 'px',
+				'max-height': maincontainer.outerHeight(true) + resize + 'px'
+			});
+			sidebarwrapper.css('height', maincontainer.outerHeight() + 'px');
+		}
 	};
 	
 	/**

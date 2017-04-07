@@ -11,4 +11,4 @@ services:
       - "8000:8000"
     tmpfs: /tmp
   web:
-    command: uwsgi --ini-paste production.ini
+    command: bash -c "sleep 10 && uwsgi --ini-paste production.ini"

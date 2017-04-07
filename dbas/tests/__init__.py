@@ -1,13 +1,12 @@
-from sqlalchemy import engine_from_config
-
 from dbas.database import DBDiscussionSession, DBNewsSession
 from dbas.helper.tests import add_settings_to_appconfig
+from dbas.helper.database import dbas_db_configuration
 
 
 def setup_package():
     settings = add_settings_to_appconfig()
-    DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
-    DBNewsSession.configure(bind=engine_from_config(settings, 'sqlalchemy-news.'))
+    DBDiscussionSession.configure(bind=dbas_db_configuration('discussion', settings))
+    DBNewsSession.configure(bind=dbas_db_configuration('news', settings))
 
 
 def teardown_package():

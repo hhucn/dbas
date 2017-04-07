@@ -11,12 +11,12 @@ from dbas.database.discussion_model import User
 from dbas.helper.tests import add_settings_to_appconfig
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from sqlalchemy import engine_from_config
+from dbas.helper.database import dbas_db_configuration
 from dbas.database.initializedb import nick_of_anonymous_user
 
 settings = add_settings_to_appconfig()
 
-DBDiscussionSession.configure(bind=engine_from_config(settings, 'sqlalchemy-discussion.'))
+DBDiscussionSession.configure(bind=dbas_db_configuration('discussion', settings))
 
 new_user = {
     'firstname': 'new',

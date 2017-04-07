@@ -22,6 +22,8 @@ services:
       - "4284:4284"
     links:
       - db:db
+    env_file:
+      - development.env
     depends_on:
       - db
     tmpfs: /tmp

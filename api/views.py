@@ -60,7 +60,7 @@ attitude = Service(name='api_attitude',
                    description="Discussion Attitude",
                    cors_policy=cors_policy)
 support = Service(name='api_support',
-                  path='/{slug}/support/{arg_id_user}/{arg_id_sys}',
+                  path='/{slug}/support/{arg_user_uid}/{arg_system_uid}',
                   description="Coming from one argument, support another one",
                   cors_policy=cors_policy)
 
@@ -260,6 +260,11 @@ def discussion_support(request):
 
     """
     api_data = prepare_user_information(request)
+    if not api_data:
+        api_data = dict()
+    api_data["slug"] = request.matchdict["slug"]
+    api_data["arg_user_uid"] = request.matchdict["arg_user_uid"]
+    api_data["arg_system_uid"] = request.matchdict["arg_system_uid"]
     return dbas.discussion_support(request, for_api=True, api_data=api_data)
 
 
