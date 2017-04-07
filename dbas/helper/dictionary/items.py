@@ -471,9 +471,6 @@ class ItemDictHelper(object):
         relations = ['undermine', 'support', 'undercut', 'rebut']
         for relation in relations:
             url = self.__get_url_based_on_relation(relation, attack, _um, mode, db_user_argument, db_sys_argument)
-            # TODO PREVENT LOOPING
-            # newStepInUrl = url[url.index('/reaction/') if url.index('/reaction/') < url.index('/justify/') else url.index('/justify/'):url.index('?')]
-            # additionalText = (' (<em>' + _tn.get(_.youUsedThisEarlier) + '<em>)') if newStepInUrl in url[url.index('?'):] else ''
 
             statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
