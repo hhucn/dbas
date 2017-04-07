@@ -49,7 +49,7 @@
             </div>
         </div>
 
-        <div class="container colored-container" id="discussion-container">
+        <div class="container colored-container" id="discussion-container" style="min-height: 200px;">
             <div id="dialog-wrapper" class="content-wrapper pull-left">
 
                 <div id="discussion-error-description-space" class="alert alert-danger alert-dismissible hidden">
@@ -146,7 +146,7 @@
                 </div>
             </div>
 
-            <div class="pull-right sidebar-wrapper">
+            <div class="pull-right sidebar-wrapper" style="min-height: 200px;">
                 <div class="hamburger">
                     <span></span>
                     <span></span>
