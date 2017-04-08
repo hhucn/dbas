@@ -158,7 +158,7 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
     :param is_executed
     :return: Array with all decision per table
     """
-    logger('History', '__get_executed_reviews_of', 'Table: {}'.format(table))
+    logger('History', '__get_executed_reviews_of', 'Table: {} ({})'.format(table, table_type))
     some_list = list()
     db_reviews = DBDiscussionSession.query(table_type).filter(table_type.is_executed == is_executed).order_by(table_type.uid.desc()).all()
 
