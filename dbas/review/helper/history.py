@@ -158,6 +158,7 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
     :param is_executed
     :return: Array with all decision per table
     """
+    logger('History', '__get_executed_reviews_of', 'Table: {}'.format(table))
     some_list = list()
     db_reviews = DBDiscussionSession.query(table_type).filter(table_type.is_executed == is_executed).order_by(table_type.uid.desc()).all()
 
@@ -206,6 +207,7 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
         entry['row_id'] = table + str(review.uid)
         entry['argument_shorttext'] = short_text
         entry['argument_fulltext'] = full_text
+
         if table == 'edits':
             if is_executed:
                 db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=review.statement_uid).order_by(TextVersion.uid.desc()).all()
@@ -217,10 +219,12 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
                 entry['argument_oem_fulltext'] = full_text
                 entry['argument_shorttext'] = short_text.replace(short_text, (db_edit_value.content[0:length] + '...') if len(full_text) > length else db_edit_value.content)
                 entry['argument_fulltext'] = db_edit_value.content
+
         if table == 'duplicates':
             text = get_text_for_statement_uid(review.original_statement_uid)
             entry['statement_duplicate_shorttext'] = text[0:length] + ('...' if len(text) > length else '')
             entry['statement_duplicate_fulltext'] = text
+
         entry['pro'] = pro_list
         entry['con'] = con_list
         entry['timestamp'] = sql_timestamp_pretty_print(review.timestamp, translator.get_lang())
