@@ -214,24 +214,31 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
                 entry['argument_oem_shorttext'] = db_textversions[1].content[0:length]
                 entry['argument_oem_fulltext'] = db_textversions[1].content
             else:
+                logger('History', '__get_executed_reviews_of', 'ReviewEditValue {} {}'.format(review.uid, review.statement_uid))
+                logger('History', '__get_executed_reviews_of', 'ReviewEditValue {} {}'.format(review.uid, review.statement_uid))
+                logger('History', '__get_executed_reviews_of', 'ReviewEditValue {} {}'.format(review.uid, review.statement_uid))
                 db_edit_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=review.uid).first()
-                entry['argument_oem_shorttext'] = short_text
-                entry['argument_oem_fulltext'] = full_text
-                entry['argument_shorttext'] = short_text.replace(short_text, (db_edit_value.content[0:length] + '...') if len(full_text) > length else db_edit_value.content)
-                entry['argument_fulltext'] = db_edit_value.content
+                if not db_edit_value:
+                    entry = None
+                else:
+                    entry['argument_oem_shorttext'] = short_text
+                    entry['argument_oem_fulltext'] = full_text
+                    entry['argument_shorttext'] = short_text.replace(short_text, (db_edit_value.content[0:length] + '...') if len(full_text) > length else db_edit_value.content)
+                    entry['argument_fulltext'] = db_edit_value.content
 
         if table == 'duplicates':
             text = get_text_for_statement_uid(review.original_statement_uid)
             entry['statement_duplicate_shorttext'] = text[0:length] + ('...' if len(text) > length else '')
             entry['statement_duplicate_fulltext'] = text
 
-        entry['pro'] = pro_list
-        entry['con'] = con_list
-        entry['timestamp'] = sql_timestamp_pretty_print(review.timestamp, translator.get_lang())
-        entry['votes_pro'] = pro_list
-        entry['votes_con'] = con_list
-        entry['reporter'] = __get_user_dict_for_review(review.detector_uid, main_page)
-        some_list.append(entry)
+        if entry:
+            entry['pro'] = pro_list
+            entry['con'] = con_list
+            entry['timestamp'] = sql_timestamp_pretty_print(review.timestamp, translator.get_lang())
+            entry['votes_pro'] = pro_list
+            entry['votes_con'] = con_list
+            entry['reporter'] = __get_user_dict_for_review(review.detector_uid, main_page)
+            some_list.append(entry)
 
     return some_list
 
