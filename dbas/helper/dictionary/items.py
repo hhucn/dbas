@@ -155,7 +155,7 @@ class ItemDictHelper(object):
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        support_step = random.uniform(0, 1) > self.LIMIT_SUPPORT_STEP
+        # support_step = random.uniform(0, 1) > self.LIMIT_SUPPORT_STEP
 
         for argument in db_arguments:
             if db_user and argument.uid in uids:  # add seen by if the statement is visible
@@ -175,12 +175,12 @@ class ItemDictHelper(object):
 
             new_arg = None
             url = None
-            if support_step or 'end' in attack:  # TODO 343
+            if 'end' in attack:  # TODO 343
                 new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
                 if new_arg:
                     url = _um.get_url_for_support_each_other(True, argument.uid, new_arg.uid)
 
-            if not (support_step or 'end' in attack) or new_arg is None or url is None:
+            if 'end' not in attack or new_arg is None or url is None:
                 url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
 
             statements_array.append(self.__create_answer_dict(str(argument.uid), premise_array, 'justify', url,
@@ -228,7 +228,7 @@ class ItemDictHelper(object):
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        support_step = random.uniform(0, 1) > self.LIMIT_SUPPORT_STEP
+        # support_step = random.uniform(0, 1) > self.LIMIT_SUPPORT_STEP
 
         for argument in db_arguments:
             if db_user:  # add seen by if the statement is visible
@@ -253,8 +253,8 @@ class ItemDictHelper(object):
             url = ''
 
             # with a chance of 50% or at the end we will seed the new "support step"
-            logger('ItemDictHelper', 'get_array_for_justify_argument', 'take support? is end: {} or rnd: {}'.format('end' in attack, support_step))
-            if 'end' in attack or support_step:  # TODO 343
+            logger('ItemDictHelper', 'get_array_for_justify_argument', 'take support? is end: {} or rnd: {}'.format('end' in attack, 'NOO'))  # support_step))
+            if 'end' in attack:  # TODO 343
                 new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
                 the_other_one = new_arg is None
                 if new_arg:
