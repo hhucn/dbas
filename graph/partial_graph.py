@@ -11,19 +11,22 @@ from dbas.logger import logger
 from graph.lib import get_d3_data
 
 
-def get_partial_graph_for_statement(uid, issue, nickname):
+def get_partial_graph_for_statement(uid, issue, request, path):
     """
-
-    :param uid:
-    :param issue:
-    :param nickname:
-    :return:
+    
+    :param uid: 
+    :param issue: 
+    :param request: 
+    :param path: 
+    :return: 
     """
     logger('PartialGraph', 'get_partial_graph_for_statement', 'premise of argument {}'.format(str(uid)))
+    nickname = request.authenticated_userid
 
-    db_argument = DBDiscussionSession.query(Argument).get(uid)
-    db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).first()
-    uid = db_premise.statement_uid
+    if 'justify' not in path.split('?')[0]:
+        db_argument = DBDiscussionSession.query(Argument).get(uid)
+        db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).first()
+        uid = db_premise.statement_uid
     db_arguments = get_all_arguments_by_statement(uid)
 
     if db_arguments is None or len(db_arguments) == 0:
@@ -40,15 +43,17 @@ def get_partial_graph_for_statement(uid, issue, nickname):
     return __return_d3_data(graph_arg_lists, issue, nickname)
 
 
-def get_partial_graph_for_argument(uid, issue, nickname):
+def get_partial_graph_for_argument(uid, issue, request):
     """
 
     :param uid:
     :param issue:
-    :param nickname:
+    :param request:
     :return:
     """
     logger('PartialGraph', 'get_partial_graph_for_argument', str(uid))
+    nickname = request.authenticated_userid
+
     # get argument for the uid
     db_argument = DBDiscussionSession.query(Argument).get(uid)
 

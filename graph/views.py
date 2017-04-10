@@ -72,9 +72,9 @@ def get_d3_partial_dump(request):
             return_dict = graph
     else:
         if is_argument:
-            graph, error = get_partial_graph_for_argument(uid, issue, request.authenticated_userid)
+            graph, error = get_partial_graph_for_argument(uid, issue, request)
         else:
-            graph, error = get_partial_graph_for_statement(uid, issue, request.authenticated_userid)
+            graph, error = get_partial_graph_for_statement(uid, issue, request, path)
         if not error:
             return_dict.update(graph)
             return_dict.update({'node_doj_factors': get_doj_data(issue)})
