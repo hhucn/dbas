@@ -81,7 +81,6 @@ def get_d3_partial_dump(request):
             return_dict.update({'node_opinion_factors': get_opinion_data(issue)})
             return_dict.update({'path': get_path_of_user(request.application_url, path, issue)})
             return_dict.update({'error': ''})
-            return_dict.update()
 
     if error:
         ui_locales = get_language(request)

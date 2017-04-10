@@ -19,7 +19,11 @@ def get_partial_graph_for_statement(uid, issue, nickname):
     :param nickname:
     :return:
     """
-    logger('PartialGraph', 'get_partial_graph_for_statement', str(uid))
+    logger('PartialGraph', 'get_partial_graph_for_statement', 'premise of argument {}'.format(str(uid)))
+
+    db_argument = DBDiscussionSession.query(Argument).get(uid)
+    db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).first()
+    uid = db_premise.statement_uid
     db_arguments = get_all_arguments_by_statement(uid)
 
     if db_arguments is None or len(db_arguments) == 0:
