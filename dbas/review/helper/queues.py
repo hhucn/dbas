@@ -314,11 +314,14 @@ def add_proposals_for_statement_corrections(elements, nickname, translator):
     review_count = len(elements)
     added_reviews = [__add_edit_reviews(element, db_user) for element in elements]
 
-    if added_reviews.count(0) == 0:  # no edits set
+    if added_reviews.count(0) > 0:  # no edits set
         if added_reviews.count(-1) > 0:
+            logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'internal key error')
             return translator.get(_.internalKeyError), True
         if added_reviews.count(-2) > 0:
+            logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'already edit proposals')
             return translator.get(_.alreadyEditProposals), True
+        logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'no corrections given')
         return translator.get(_.noCorrections), True
 
     DBDiscussionSession.flush()
@@ -345,21 +348,23 @@ def __add_edit_reviews(element, db_user):
     :param db_user: User
     :return: -1 if the statement of the element does not exists, -2 if this edit already exists, 1 on success, 0 otherwise
     """
-    logger('ReviewQueues', '__add_edit_reviews', 'current element: ' + str(element))
+    logger('ReviewQueues', '__add_edit_reviews', 'current element: {}'.format(element))
     db_statement = DBDiscussionSession.query(Statement).get(element['uid'])
     if not db_statement:
+        logger('ReviewQueues', '__add_edit_reviews', 'statement {} not found (return -1)'.format(element['uid']))
         return -1
 
     # already set an correction for this?
     db_already_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.statement_uid == element['uid'],
                                                                         ReviewEdit.is_executed == False)).all()
+
     if db_already_edit and len(db_already_edit) > 0:  # if we already have an edit, skip this
-        logger('ReviewQueues', '__add_edit_reviews', str(element['uid']) + ' already got an edit: ' + str(db_already_edit[0].uid))
+        logger('ReviewQueues', '__add_edit_reviews', '{} already got an edit with uid {} (return -2)'.format(element['uid'], db_already_edit[0].uid))
         return -2
 
     db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
     if len(element['text']) > 0 and db_textversion.content.lower().strip() != element['text'].lower().strip():
-        logger('ReviewQueues', '__add_edit_reviews', 'added review element for: ' + str(element['uid']))
+        logger('ReviewQueues', '__add_edit_reviews', 'added review element for {}  (return 1)'.format(element['uid']))
         DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=element['uid']))
         return 1
 

@@ -187,7 +187,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         from dbas.views import set_correction_of_statement as ajax
         db_review1 = len(DBDiscussionSession.query(ReviewEdit).all())
         db_value1 = len(DBDiscussionSession.query(ReviewEditValue).all())
-        elements = {'text': 'some new text for a correction', 'uid': 17}
+        elements = {'text': 'some new text for a correction', 'uid': 19}
         request = testing.DummyRequest(params={
             'elements': json.dumps([elements])
         }, matchdict={})
