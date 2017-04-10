@@ -28,7 +28,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     var node_size = 6;
     var issue_size = 8;
     var edge_size = 90;
-    var edge_size_virtual_node = 10;
+    var edge_size_virtual_node = 45;
     var circleIds;
 
     /**
@@ -416,16 +416,18 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Create force-directed network diagram and define properties.
      *
+     * @param jsonData
      * @param width: width of container, which contains graph
      * @param height: height of container
      * @return force layout
      */
     function getForce(width, height) {
-        var factor = 800;
+        var chargeFactor = 700;
         return d3.layout.force()
             .size([width, height])
             // nodes push each other away
-            .charge(-factor)
+            .charge(-chargeFactor)
+            .gravity(.2)
             .linkDistance(function (d) {
                 if((d.source.label === '') || ((d.target.label === '') && (d.edge_type === ''))){
                     return edge_size_virtual_node;
