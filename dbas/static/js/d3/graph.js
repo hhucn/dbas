@@ -11,12 +11,14 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     var colors;
     var rescaleGraph;
     var box_sizes = box_sizes_for_rescaling; // needed for rescaling
+
     var force;
     var edges;
     var link;
     var circle;
     var rect;
     var label;
+
     var node;
     var statement_size = 6; // base node size of an statement
     var node_factor_size = 10; // additional size for the doj, which is in [0,1]
@@ -118,7 +120,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     this.callbackIfDoneForDiscussionGraph = function (data, request_for_complete) {
         var jsonData = $.parseJSON(data);
-        console.log(jsonData);
         if (jsonData.error.length !== 0){
         	setGlobalErrorHandler('Ohh!', jsonData.error);
         	new GuiHandler().setDisplayStyleAsDiscussion();
@@ -196,7 +197,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     };
 
     /**
-     * Set default settings of buttons.
+     * Set default settings of buttons in sidebar.
+     *
+     * @param jsonData
+     * @param request_for_complete
      */
     this.setButtonDefaultSettings = function (jsonData, request_for_complete) {
     	$('#graph-view-container').find('.sidebar').find('li').each(function(){
@@ -213,6 +217,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         $('#hide-supports-on-my-statements').hide();
         $('#show-positions').show();
         $('#hide-positions').hide();
+
         if ((request_for_complete || typeof request_for_complete === 'undefined') && !isPartialGraphMode){
         	$('#global-view').hide();
         } else {
@@ -280,6 +285,12 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         return true;
     };
 
+    /**
+     * Set edges of graph.
+     *
+     * @param jsonData
+     * @param svg
+     */
     function setEdges(jsonData, svg){
         // edge
         edges = createEdgeDict(jsonData);
@@ -290,6 +301,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         link = createLinks(svg, marker);
     }
 
+    /**
+     * Set tooltip.
+     */
     function setTooltip(){
         // tooltip
         // rect as background of label
@@ -302,6 +316,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         setRectProperties();
     }
 
+    /**
+     * Set legend.
+     */
     function setLegend() {
         var container = $('#' + graphViewContainerSpaceId);
 
@@ -317,6 +334,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
     /**
      * Set position of graph elements.
+     *
+     * @param jsonData
      */
     function setPositionOfGraphElements(jsonData){
         // create arrays of links, nodes and move layout forward one step
@@ -402,7 +421,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @return force layout
      */
     function getForce(width, height) {
-        //var factor = jsonData.nodes.length/5 * 100;
         var factor = 800;
         return d3.layout.force()
             .size([width, height])
@@ -513,7 +531,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Sets the color in the json Data
      *
-     * @param jsonData: dict with data for nodes and edges
+     * @jsonData
      */
     function setNodeColorsForData(jsonData) {
         jsonData.nodes.forEach(function (e) {
@@ -536,7 +554,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * Create dictionary for edges.
      *
      * @param jsonData: dict with data for nodes and edges
-     * @return edges: array, which contains dicts for edges
+     * @return Array array, which contains dicts for edges
      */
     function createEdgeDict(jsonData) {
         var edges = [];
@@ -866,9 +884,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 fill: function (d, i) {
                     return legendColorRect[i];
                 },
-                'width': 15,
-                'height': 5,
-                'x': -7, y: function (d, i) { return i * 40 + 118; }
+                width: 15,
+                height: 5,
+                x: -7, y: function (d, i) {
+                    return i * 40 + 118;
+                }
             });
     }
 
@@ -1467,10 +1487,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function showPartOfGraph(circleId) {
         // edges with selected circle as source or as target
-        let edgesCircleId = [];
+        var edgesCircleId = [];
         // select all incoming and outgoing edges of selected circle
         edges.forEach(function (d) {
-            let circleUid = selectUid(circleId);
+            var circleUid = selectUid(circleId);
             if (isVisible.support && selectUid(d.target.id) === circleUid && d.color === colors.green) {
                 edgesCircleId.push(d);
             }
@@ -1505,11 +1525,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function highlightElementsVirtualNodes(edges, edgesVirtualNodes) {
         // array with edges from last loop pass
-        let edgesVirtualNodesLast = edgesVirtualNodes;
-        let isVirtualNodeLeft;
+        var edgesVirtualNodesLast = edgesVirtualNodes;
+        var isVirtualNodeLeft;
         do {
             // virtual nodes
-            let virtualNodes = createVirtualNodesArray(edgesVirtualNodes);
+            var virtualNodes = createVirtualNodesArray(edgesVirtualNodes);
             // edges with a virtual node as source or as target
             edgesVirtualNodes = createVirtualNodesEdgesArray(edges, virtualNodes);
             isVirtualNodeLeft = testVirtualNodesLeft(edgesVirtualNodes, edgesVirtualNodesLast);
@@ -1527,7 +1547,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @return Array
      */
     function createVirtualNodesArray(edgesVirtualNodes) {
-        let virtualNodes = [];
+        var virtualNodes = [];
         edgesVirtualNodes.forEach(function (d) {
             if (d.source.label === '') {
                 virtualNodes.push(d.source);
@@ -1547,7 +1567,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @return Array
      */
     function createVirtualNodesEdgesArray(edges, virtualNodes) {
-        let edgesVirtualNodes = [];
+        var edgesVirtualNodes = [];
         edges.forEach(function (d) {
             virtualNodes.forEach(function (e) {
                 if (d.source.id === e.id || d.target.id === e.id) {
@@ -1575,7 +1595,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @return boolean
      */
     function testVirtualNodesLeft(edgesVirtualNodes, edgesVirtualNodesLast) {
-        let isVirtualNodeLeft = false;
+        var isVirtualNodeLeft = false;
         edgesVirtualNodes.forEach(function (d) {
             if (d.source.label === '') {
                 isVirtualNodeLeft = true;

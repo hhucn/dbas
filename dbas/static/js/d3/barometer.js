@@ -49,15 +49,15 @@ function DiscussionBarometer(){
         var inputs = $('#discussions-space-list').find('li:visible:not(:last-child) input');
 
         // parse url
-        if (url.indexOf('/attitude/') != -1){
+        if (url.indexOf('/attitude/') !== -1){
             address = 'attitude';
             uid = splitted[splitted.length-1];
             new AjaxGraphHandler().getUserGraphData(uid, address);
-        } else if (url.indexOf('/justify/') != -1 || url.indexOf('/choose/') != -1) {
+        } else if (url.indexOf('/justify/') !== -1 || url.indexOf('/choose/') !== -1) {
             address = 'justify';
             // dont know step
             var tmp = url.split('/');
-            if (tmp[tmp.length - 1] == 'd'){
+            if (tmp[tmp.length - 1] === 'd'){
                 address = 'dont_know';
                 uid_array.push(tmp[tmp.length - 2]);
             } else {
@@ -66,7 +66,7 @@ function DiscussionBarometer(){
                 });
             }
             new AjaxGraphHandler().getUserGraphData(uid_array, address);
-        } else if (url.indexOf('/reaction/') != -1){
+        } else if (url.indexOf('/reaction/') !== -1){
             address = 'argument';
             uid_array.push(splitted[splitted.length - 3]);
             uid_array.push(splitted[splitted.length - 1]);
@@ -97,11 +97,11 @@ function DiscussionBarometer(){
             return;
         }
 
-		if (jsonData.error.length != 0) {
+		if (jsonData.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), jsonData.error);
 			return;
 		}
-		if (jsonData.info.length != 0) {
+		if (jsonData.info.length !== 0) {
 			setGlobalInfoHandler('Hey', jsonData.info);
 			return;
 		}
@@ -118,7 +118,7 @@ function DiscussionBarometer(){
         global_dialog.modal('show').on('hidden.bs.modal', function () {
             clearAnchor();
         });
-        
+
         $('#' + popupBarometerAcceptBtn).show().click( function () {
             global_dialog.modal('hide');
         }).removeClass('btn-success');
@@ -162,7 +162,7 @@ function DiscussionBarometer(){
         global_dialog.find('.col-md-6').append('<div id="barometer-div"></div>');
         // width and height of chart
         var width = 400;
-        var height = mode == modeEnum.attitude ? 300 : 400;
+        var height = mode === modeEnum.attitude ? 300 : 400;
         var barChartSvg = getSvg(width+70, height+50).attr("id", "barometer-svg");
 
         var usersDict = [];
@@ -171,7 +171,7 @@ function DiscussionBarometer(){
         // create bars of chart
         // selector = inner-rect: clicks on statement relative to seen_by value
         createBar(usersDict, width, height-50, barChartSvg, "inner-rect");
-        if(address != 'argument' && address != 'attitude'){
+        if(address !== 'argument' && address !== 'attitude'){
             createBar(usersDict, width, height-50, barChartSvg, "outer-rect");
         }
 
@@ -201,10 +201,10 @@ function DiscussionBarometer(){
     function getUsersDict(usersDict) {
         // create dictionary depending on address
         is_attitude = address === 'attitude';
-        if(is_attitude)
-            usersDict = createDictForAttitude(usersDict);
-        else
-            usersDict = createDictForArgumentAndStatement(usersDict);
+        if(is_attitude) {
+            usersDict = createDictForAttitude(usersDict);}
+        else {
+            usersDict = createDictForArgumentAndStatement(usersDict);}
         return usersDict;
     }
 
@@ -432,8 +432,8 @@ function DiscussionBarometer(){
         if(address === "argument" || address === "attitude"){
             return barWidth;
         }
-        if (selector === 'inner-rect')
-            return divideWrapperIfZero(usersNumber, seenBy) * height;
+        if (selector === 'inner-rect'){
+            return divideWrapperIfZero(usersNumber, seenBy) * height;}
         return height - (divideWrapperIfZero(usersNumber, seenBy) * height);
     }
 
@@ -466,8 +466,8 @@ function DiscussionBarometer(){
         if(address === "argument" || address === "attitude"){
             return i * barWidth + y_offset_height + i * 10;
         }
-        if (selector === 'inner-rect')
-           return height - (divideWrapperIfZero(usersNumber, seenBy) * height - 50);
+        if (selector === 'inner-rect'){
+           return height - (divideWrapperIfZero(usersNumber, seenBy) * height - 50);}
         return 50;
     }
 
@@ -479,13 +479,13 @@ function DiscussionBarometer(){
      * @returns {*}
      */
     function getRectColor(i, selector){
-        if (selector === 'inner-rect')
-            return getNormalColorFor(i);
+        if (selector === 'inner-rect'){
+            return getNormalColorFor(i);}
         return getLightColorFor(i);
     }
 
     function divideWrapperIfZero(numerator, denominator){
-        return denominator == 0 || numerator == 0 ? 0.005 : numerator / denominator;
+        return denominator === 0 || numerator === 0 ? 0.005 : numerator / denominator;
     }
 
     // doughnut chart
@@ -533,7 +533,7 @@ function DiscussionBarometer(){
 
         var data = [];
         // if there is no argument create donut-chart with one sector with small radius
-        if(usersDict.length == 0){
+        if(usersDict.length === 0){
             data.push({
                 usersNumber: 0,
                 seenBy: 0
@@ -629,7 +629,7 @@ function DiscussionBarometer(){
             .attr({
                 'fill': function (d, i) { return getNormalColorFor(i); },
                 'transform': "translate(240,230)",
-                'id': function (d, i) {return "inner-path-" + i},
+                'id': function (d, i) {return "inner-path-" + i;},
                 'class': "chart-sector"});
     }
 
@@ -649,7 +649,7 @@ function DiscussionBarometer(){
                 'fill': function (d, i) { return getLightColorFor(i); },
                 'stroke': "gray", d: outerCircle,
                 'transform': "translate(240,230)",
-                'id': function (d, i) {return "outer-path-" + i},
+                'id': function (d, i) {return "outer-path-" + i;},
                 'class': "chart-sector"});
     }
 
@@ -704,7 +704,7 @@ function DiscussionBarometer(){
             // sector of doughnut chart and part which represents the seen-by-value should have the same index
             elementIndex = index % usersDict.length;
             if (isClicked){
-                if (_index != elementIndex){
+                if (_index !== elementIndex){
                     hideTooltip(selector, _index);
                     showTooltip(usersDict, elementIndex, chartSvg, selector);
                     isClicked = true;
@@ -837,14 +837,14 @@ function DiscussionBarometer(){
      */
     function createTooltipContent(usersDict, index){
         // append list elements to div
-        
-        var message_list = usersDict[index].message != null ? $('<li>').html(usersDict[index].message) : '';
+
+        var message_list = usersDict[index].message !== null ? $('<li>').html(usersDict[index].message) : '';
         var text_keyword = '';
-        if (address == 'argument')
-            text_keyword = usersDict[index].seenBy == 1 ? participantSawArgumentsToThis : participantsSawArgumentsToThis;
-        else
-            text_keyword = usersDict[index].seenBy == 1 ? participantSawThisStatement : participantsSawThisStatement;
-        
+        if (address === 'argument'){
+            text_keyword = usersDict[index].seenBy === 1 ? participantSawArgumentsToThis : participantsSawArgumentsToThis;}
+        else{
+            text_keyword = usersDict[index].seenBy === 1 ? participantSawThisStatement : participantsSawThisStatement;}
+
         var seenByList = $('<li>').html(usersDict[index].seenBy + ' ' + _t_discussion(text_keyword));
 
         var list = !is_attitude ? seenByList.append(message_list):  message_list;
