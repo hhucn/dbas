@@ -188,6 +188,7 @@ def __get_statements_of_path_step(step):
     splitted = step.split('/')
 
     if 'attitude' in step:
+        logger('Graph.lib', '__get_statements_of_path_step', 'append {} -> {}'.format(splitted[2], 'issue'))
         statements.append([int(splitted[2]), 'issue'])
 
     # elif 'justify' in step:
@@ -212,6 +213,7 @@ def __get_statements_of_path_step(step):
             db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=arg.premisesgroup_uid)
             for premise in db_premises:
                 statements.append([premise.statement_uid, target])
+            logger('Graph.lib', '__get_statements_of_path_step', 'append {} -> {}'.format(premise.statement_uid, target))
 
     # reaction / {arg_id_user}
     # justify / {statement_or_arg_id}

@@ -19,7 +19,11 @@ def get_partial_graph_for_statement(uid, issue, nickname):
     :param nickname:
     :return:
     """
-    logger('PartialGraph', 'get_partial_graph_for_statement', str(uid))
+    logger('PartialGraph', 'get_partial_graph_for_statement', 'premise of argument {}'.format(str(uid)))
+
+    db_argument = DBDiscussionSession.query(Argument).get(uid)
+    db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).first()
+    uid = db_premise.statement_uid
     db_arguments = get_all_arguments_by_statement(uid)
 
     if db_arguments is None or len(db_arguments) == 0:
@@ -191,10 +195,11 @@ def __append_todos_for_getting_argument_net_with_conclusion(uid, db_argument, li
     :return:
     """
     if db_argument.conclusion_uid is not None:
-        db_concl_args = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_argument.conclusion_uid).all()
+        db_concl_args = DBDiscussionSession.query(Argument).filter(Argument.conclusion_uid == db_argument.conclusion_uid,
+                                                                   Argument.is_disabled == False).all()
 
         # get new todos
-        logger('PartialGraph', '__get_argument_net', 'conclusi ({}) args: {}'.format(db_argument.conclusion_uid, [arg.uid for arg in db_concl_args]))
+        logger('PartialGraph', '__get_argument_net', 'conclusion ({}) args: {}'.format(db_argument.conclusion_uid, [arg.uid for arg in db_concl_args]))
         for arg in db_concl_args:
             if arg.uid not in list_todos + list_dones + [uid]:
                 list_todos.append(arg.uid)
