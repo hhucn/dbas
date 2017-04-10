@@ -41,7 +41,6 @@ def _create_token(nickname, alg='sha512'):
     return hashlib.new(alg, salt).hexdigest()
 
 
-@cache_region("short_term")
 def _get_user_by_nickname(nickname):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
