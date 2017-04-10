@@ -13,6 +13,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     var box_sizes = box_sizes_for_rescaling; // needed for rescaling
     var force;
     var size;
+    var change;
 
     // edges
     var edges;
@@ -653,7 +654,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     return 6 + calculateNodeSize(d.target) / 2;
                 },
                 refY: 0,
-                markerWidth: 10, markerHeight: 10,
+                markerWidth: 10,
+                markerHeight: 10,
                 viewBox: '0 -5 10 10',
                 orient: "auto",
                 fill: function (d) {
@@ -1160,9 +1162,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         });
 
         force.nodes().forEach(function (d) {
-            if (d.author.name === $('#header_nickname')[0].innerText) {
+            //if (d.author.name === $('#header_nickname')[0].innerText) {
                 d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
-            }
+            //}
         });
 
         $('#show-my-statements').hide();
@@ -1296,15 +1298,15 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         circleIds = [];
 
         force.nodes().forEach(function (d) {
-            if (d.author.name === $('#header_nickname')[0].innerText) {
+            //if (d.author.name === $('#header_nickname')[0].innerText) {
                 circleIds.push(d.id);
-            }
+            //}
         });
 
         force.nodes().forEach(function (d) {
-            if (d.author.name === $('#header_nickname')[0].innerText) {
+            //if (d.author.name === $('#header_nickname')[0].innerText) {
                 showPartOfGraph(d.id);
-            }
+            //}
         });
     }
 
@@ -1517,7 +1519,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         return splitted[splitted.length - 1];
     }
 
-     /**
+    /**
      * Highlight incoming and outgoing edges of selected node.
      *
      * @param edges: all edges of graph
@@ -1529,9 +1531,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // select all incoming and outgoing edges of selected circle
         edges.forEach(function (d) {
             var circleUid = selectUid(circleId);
+            // supports
             if (isVisible.support && selectUid(d.target.id) === circleUid && d.color === colors.green) {
                 edgesCircleId.push(d);
             }
+            // attacks
             else if (isVisible.attack && selectUid(d.target.id) === circleUid && d.color === colors.red) {
                 edgesCircleId.push(d);
             }
@@ -1548,53 +1552,55 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 grayingElements(d);
             });
         }
+        highlightElementsVirtualNodes(edges, edgesCircleId);
         edgesCircleId.forEach(function (d) {
             highlightElements(d);
         });
-
-        highlightElementsVirtualNodes(edges, edgesCircleId);
     }
 
     /**
      * Highlight incoming and outgoing edges of virtual node.
      *
      * @param edges
-     * @param edgesVirtualNodes
+     * @param edgesCircleId
      */
-    function highlightElementsVirtualNodes(edges, edgesVirtualNodes) {
-        // array with edges from last loop pass
-        var edgesVirtualNodesLast = edgesVirtualNodes;
-        var isVirtualNodeLeft;
+    function highlightElementsVirtualNodes(edges, edgesCircleId) {
+        var virtualNodes = [];
+        var virtualNodesIds = [];
         do {
+            change = false;
             // virtual nodes
-            var virtualNodes = createVirtualNodesArray(edgesVirtualNodes);
+            createVirtualNodesArray(edgesCircleId, virtualNodes, virtualNodesIds);
             // edges with a virtual node as source or as target
-            edgesVirtualNodes = createVirtualNodesEdgesArray(edges, virtualNodes);
-            isVirtualNodeLeft = testVirtualNodesLeft(edgesVirtualNodes, edgesVirtualNodesLast);
-            // save array with edges for next loop pass
-            edgesVirtualNodesLast = edgesVirtualNodes;
-
+            createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId);
         }
-        while (isVirtualNodeLeft);
+        while (change);
     }
 
     /**
      * Create array with virtual nodes.
      *
-     * @param edgesVirtualNodes
+     * @param edgesCircleId
+     * @param virtualNodes
      * @return Array
      */
-    function createVirtualNodesArray(edgesVirtualNodes) {
-        var virtualNodes = [];
-        edgesVirtualNodes.forEach(function (d) {
+    function createVirtualNodesArray(edgesCircleId, virtualNodes, virtualNodesIds) {
+        edgesCircleId.forEach(function (d) {
             if (d.source.label === '') {
-                virtualNodes.push(d.source);
+                if($.inArray(d.source.id, virtualNodesIds) == -1){
+                    change = true;
+                    virtualNodesIds.push(d.source.id);
+                    virtualNodes.push(d.source);
+                }
             }
             if (d.target.label === '') {
-                virtualNodes.push(d.target);
+                if($.inArray(d.target.id, virtualNodesIds) == -1){
+                    change = true;
+                    virtualNodesIds.push(d.target.id);
+                    virtualNodes.push(d.target);
+                }
             }
         });
-        return virtualNodes;
     }
 
     /**
@@ -1602,50 +1608,17 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      *
      * @param edges
      * @param virtualNodes
+     * @param edgesCircleId
      * @return Array
      */
-    function createVirtualNodesEdgesArray(edges, virtualNodes) {
-        var edgesVirtualNodes = [];
+    function createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId) {
         edges.forEach(function (d) {
             virtualNodes.forEach(function (e) {
                 if (d.source.id === e.id || d.target.id === e.id) {
-                    if ((isVisible.support && d.color === colors.green) || (isVisible.attack && d.color === colors.red)) {
-                        edgesVirtualNodes.push(d);
-                    }
-                    // if button supports or attacks is clicked do not highlight supports or attacks on premise groups
-                    if (!((isVisible.support || isVisible.attack) && (d.edge_type === 'arrow') && !isVisible.statement)) {
-                        edgesVirtualNodes.push(d);
-                    }
+                    edgesCircleId.push(d);
                 }
             });
         });
-        edgesVirtualNodes.forEach(function (d) {
-            highlightElements(d);
-        });
-        return edgesVirtualNodes;
-    }
-
-    /**
-     * Test whether virtual nodes are left, where not all incoming and outgoing edges are highlighted.
-     *
-     * @param edgesVirtualNodes
-     * @param edgesVirtualNodesLast
-     * @return boolean
-     */
-    function testVirtualNodesLeft(edgesVirtualNodes, edgesVirtualNodesLast) {
-        var isVirtualNodeLeft = false;
-        edgesVirtualNodes.forEach(function (d) {
-            if (d.source.label === '') {
-                isVirtualNodeLeft = true;
-                // if the edge is already highlighted terminate loop
-                edgesVirtualNodesLast.forEach(function (e) {
-                    if (d.id === e.id) {
-                        isVirtualNodeLeft = false;
-                    }
-                });
-            }
-        });
-        return isVirtualNodeLeft;
     }
 
     /**
