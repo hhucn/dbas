@@ -26,8 +26,8 @@ psql -c "CREATE ROLE read_only_discussion;"
 
 # Set privileges for this 'group'.
 psql -d ${database} -c "GRANT CONNECT ON DATABASE ${database} TO read_only_discussion;"
-psql -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON ALL TABLES TO read_only_discussion;"
-# psql -c "GRANT SELECT ON ALL TABLES IN PUBLIC TO read_only_discussion;" # There are no tables in public by now
+psql -d ${database} -c "ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT SELECT ON TABLES TO read_only_discussion;"
+psql -d ${database} -c "ALTER DEFAULT PRIVILEGES FOR ROLE ${writer} IN SCHEMA public GRANT SELECT ON TABLES TO read_only_discussion;"
 
 # Add a user with login rights and the read_only_discussion 'group'.
 # IMPORTANT! use 'IN ROLE' not 'ROLE'!

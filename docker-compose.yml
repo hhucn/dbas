@@ -7,6 +7,8 @@ services:
     ports:
       - "5432:5432"
     tmpfs: /tmp
+    env_file: # Needed in 001_init.sh
+      - development.env
   notifications:
     image: gitlab.cs.uni-duesseldorf.de:5001/dbas/notifications
     ports:
