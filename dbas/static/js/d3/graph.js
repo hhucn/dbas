@@ -417,13 +417,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         if((d.label === "") && (d.edge_source.length === 1)) {
             var edge_source = jsonData.nodes.filter(function (node) { return node.id === d.edge_source[0];})[0];
             var edge_target = jsonData.nodes.filter(function (node) { return node.id === d.edge_target;})[0];
-            if(coordinate == 'x'){
+            if(coordinate === 'x'){
                 return (edge_source.x + edge_target.x) / 2;
             }
             return (edge_source.y + edge_target.y) / 2;
         }
 
-        if(coordinate == 'x'){
+        if(coordinate === 'x'){
             return d.x;
         }
         return d.y;
@@ -464,7 +464,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             .size([width, height])
             // nodes push each other away
             .charge(-chargeFactor)
-            .gravity(.2)
+            .gravity(0.2)
             .linkDistance(function (d) {
                 if((d.source.label === '') || ((d.target.label === '') && (d.edge_type === ''))){
                     return size.edge_virtual_node;
@@ -1539,8 +1539,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             else if (isVisible.attack && selectUid(d.target.id) === circleUid && d.color === colors.red) {
                 edgesCircleId.push(d);
             }
-            else if ((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid)
-                && ((!isVisible.attack && !isVisible.support) || isVisible.statement)) {
+            else if ((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid) && ((!isVisible.attack && !isVisible.support) || isVisible.statement)) {
                 edgesCircleId.push(d);
             }
         });
@@ -1587,14 +1586,14 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function createVirtualNodesArray(edgesCircleId, virtualNodes, virtualNodesIds) {
         edgesCircleId.forEach(function (d) {
             if (d.source.label === '') {
-                if($.inArray(d.source.id, virtualNodesIds) == -1){
+                if($.inArray(d.source.id, virtualNodesIds) === -1){
                     change = true;
                     virtualNodesIds.push(d.source.id);
                     virtualNodes.push(d.source);
                 }
             }
             if (d.target.label === '') {
-                if($.inArray(d.target.id, virtualNodesIds) == -1){
+                if($.inArray(d.target.id, virtualNodesIds) === -1){
                     change = true;
                     virtualNodesIds.push(d.target.id);
                     virtualNodes.push(d.target);
