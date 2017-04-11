@@ -61,5 +61,5 @@ restorePostgres.sh
 
 # DB Files
 *.sql
-!docker/db/001_init.sh.bak
-!docker/db/002_seed.sql
+!001_init.sh.bak
+!002_seed.sql
