@@ -53,7 +53,7 @@ class DiscussionDictHelper(object):
         logger('DictionaryHelper', 'get_dict_for_start', 'at_start with positions: ' + str(position_count))
         _tn                    = Translator(self.lang)
         add_premise_text = _tn.get(_.whatIsYourIdea)
-        intro = _tn.get(_.initialPositionInterest)
+        intro = _tn.get(_.initialPositionInterest) + (' ...' if self.lang == 'en' else '')
         save_statement_url  = 'ajax_set_new_start_premise'
 
         start_bubble = create_speechbubble_dict(is_system=True, id='start', message=intro, omit_url=True, lang=self.lang)
