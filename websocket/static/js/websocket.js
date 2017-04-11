@@ -34,11 +34,12 @@ function doConnect(){
 	
 	// switch between a local (http) and a global (https) mode
 	var dict = {query: 'nickname=' + $('#' + headerNicknameId).text(), secure: true};
-	var address =  'ws://localhost';
+	var address =  'http://localhost';
 	if (mainpage.indexOf('localhost') === -1) {
-		address = location.origin.replace('https', 'ws').replace('http', 'ws');
+		address = location.origin;
 		dict.secure = true;
 	}
+	address = address.replace('https', 'wss').replace('http', 'ws');
 
 	socket = io.connect(address + ':' + port, dict);
 	
