@@ -159,8 +159,9 @@ function AjaxDiscussionHandler() {
 	/**
 	 * Sends a correction of statements
 	 * @param elements
+	 * @param statements_uids
 	 */
-	this.sendCorrectionOfStatement = function (elements) {
+	this.sendCorrectionOfStatement = function (elements, statements_uids) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_correction_of_statement',
@@ -174,7 +175,7 @@ function AjaxDiscussionHandler() {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSendCorrectureOfStatementDone(data) {
-			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data);
+			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, statements_uids);
 		}).fail(function ajaxSendCorrectureOfStatementFail() {
 			// $('#' + popupEditStatementErrorDescriptionId).html('Unfortunately, the correcture could not be send (server offline or csrf check' +
 			// 	' failed. Sorry!');

@@ -21,6 +21,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, get_support_to_argument_text_list
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
+from dbas.review.helper.queues import is_statement_in_edit_queue, is_arguments_premise_in_edit_queue
 
 
 class ItemDictHelper(object):
@@ -80,7 +81,8 @@ class ItemDictHelper(object):
                                                                   'id': statement.uid}],
                                                               'start',
                                                               _um.get_url_for_statement_attitude(True, statement.uid),
-                                                              is_flagable=True,
+                                                              is_editable=not is_statement_in_edit_queue(statement.uid),
+                                                              is_markable=True,
                                                               is_author=is_author_of_statement(nickname, statement.uid),
                                                               is_visible=statement.uid in uids))
 
@@ -186,7 +188,8 @@ class ItemDictHelper(object):
             statements_array.append(self.__create_answer_dict(str(argument.uid), premise_array, 'justify', url,
                                                               already_used=already_used,
                                                               already_used_text=additional_text,
-                                                              is_flagable=True,
+                                                              is_editable=not is_arguments_premise_in_edit_queue(argument.uid),
+                                                              is_markable=True,
                                                               is_author=is_author_of_argument(nickname, argument.uid),
                                                               is_visible=argument.uid in uids,
                                                               attack_url=_um.get_url_for_jump(False, argument.uid)))
@@ -264,7 +267,8 @@ class ItemDictHelper(object):
             if the_other_one:
                 url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
             statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
-                                                              is_flagable=True,
+                                                              is_markable=True,
+                                                              is_editable=not is_arguments_premise_in_edit_queue(argument.uid),
                                                               is_author=is_author_of_argument(nickname, argument.uid),
                                                               is_visible=argument.uid in uids,
                                                               attack_url=_um.get_url_for_jump(False, argument.uid)))
@@ -641,7 +645,7 @@ class ItemDictHelper(object):
 
             is_author = is_author_of_argument(nickname, argument) if is_argument else is_author_of_statement(nickname, conclusion)
             statements_array.append(self.__create_answer_dict(str(db_argument.uid), premise_array, 'choose', url,
-                                                              is_flagable=True, is_author=is_author))
+                                                              is_markable=True, is_editable=True, is_author=is_author))
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
@@ -752,7 +756,7 @@ class ItemDictHelper(object):
 
     @staticmethod
     def __create_answer_dict(uid, premises, attitude, url, attack_url='', already_used=False, already_used_text='',
-                             is_flagable=False, is_author=False, is_visible=True):
+                             is_markable=False, is_editable=False, is_author=False, is_visible=True):
         """
         Return dictionary
 
@@ -763,7 +767,8 @@ class ItemDictHelper(object):
         :param attack_url: String
         :param already_used: Boolean
         :param already_used_text: String
-        :param is_flagable: Boolean
+        :param is_markable: Boolean
+        :param is_editable: Boolean
         :param is_author: Boolean
         :param is_visible: Boolean
         :return: dict()
@@ -776,8 +781,8 @@ class ItemDictHelper(object):
             'attack_url': attack_url,
             'already_used': already_used,
             'already_used_text': already_used_text,
-            'is_flagable': is_flagable,
-            'is_editable': is_flagable,
+            'is_markable': is_markable,
+            'is_editable': is_editable,
             'is_deletable': is_author,
             'is_attackable': len(attack_url) > 0,
             'style': '' if is_visible else 'display: none;'}

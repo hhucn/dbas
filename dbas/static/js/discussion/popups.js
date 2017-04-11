@@ -76,7 +76,7 @@ function PopupHandler() {
 						$('#' + popupEditStatementInputSpaceId).find('input').each(function(){
 							elements.push({'text': $(this).val(), 'uid': $(this).data('statement-uid')});
 						});
-						new AjaxDiscussionHandler().sendCorrectionOfStatement(elements);
+						new AjaxDiscussionHandler().sendCorrectionOfStatement(elements, statements_uids);
 					});
 				}
 				
