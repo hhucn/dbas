@@ -285,6 +285,7 @@ class Keywords(Enum):
     error_code = 'Error code'
     edit = 'Edit'
     editTitle = 'Edit statement'
+    editAlreadyTitle = 'This statement was already edited and will be reviewed by the crowd.'
     feelFreeToLogin = 'If you want to proceed, please feel free to <a  data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">login</a>.'
     forText = 'for'
     forThat = 'accept that'

@@ -802,7 +802,7 @@ def pretty_print_options(message):
     return message
 
 
-def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_flagable=False,
+def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_markable=False,
                              is_author=False, id='', url='', message='', omit_url=False, argument_uid=None,
                              statement_uid=None, is_supportive=None, nickname='anonymous', lang='en',
                              is_users_opinion=False):
@@ -813,7 +813,7 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     :param is_system: Boolean
     :param is_status: Boolean
     :param is_info: Boolean
-    :param is_flagable: Boolean
+    :param is_markable: Boolean
     :param id: id of bubble
     :param url: URL
     :param message: String
@@ -846,7 +846,7 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
         'is_system': is_system,
         'is_status': is_status,
         'is_info': is_info,
-        'is_flagable': is_flagable,
+        'is_markable': is_markable,
         'is_author': is_author,
         'id': id if len(str(id)) > 0 else str(time.time()),
         'url': url if len(str(url)) > 0 else 'None',

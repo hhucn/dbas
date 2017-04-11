@@ -8,7 +8,7 @@ import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, TextVersion, \
     LastReviewerOptimization, ReviewEdit, LastReviewerEdit, OptimizationReviewLocks, ReviewEditValue, get_now, \
-    Statement, ReviewDuplicate, LastReviewerDuplicate
+    Statement, ReviewDuplicate, LastReviewerDuplicate, Argument, Premise
 from dbas.lib import get_profile_picture, is_user_author_or_admin
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of, reputation_icons
@@ -314,7 +314,7 @@ def add_proposals_for_statement_corrections(elements, nickname, translator):
     review_count = len(elements)
     added_reviews = [__add_edit_reviews(element, db_user) for element in elements]
 
-    if added_reviews.count(0) > 0:  # no edits set
+    if added_reviews.count(1) == 0:  # no edits set
         if added_reviews.count(-1) > 0:
             logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'internal key error')
             return translator.get(_.internalKeyError), True
@@ -355,11 +355,8 @@ def __add_edit_reviews(element, db_user):
         return -1
 
     # already set an correction for this?
-    db_already_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.statement_uid == element['uid'],
-                                                                        ReviewEdit.is_executed == False)).all()
-
-    if db_already_edit and len(db_already_edit) > 0:  # if we already have an edit, skip this
-        logger('ReviewQueues', '__add_edit_reviews', '{} already got an edit with uid {} (return -2)'.format(element['uid'], db_already_edit[0].uid))
+    if is_statement_in_edit_queue(element['uid']):  # if we already have an edit, skip this
+        logger('ReviewQueues', '__add_edit_reviews', '{} already got an edit (return -2)'.format(element['uid']))
         return -2
 
     db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
@@ -369,6 +366,34 @@ def __add_edit_reviews(element, db_user):
         return 1
 
     return 0
+
+
+def is_statement_in_edit_queue(uid):
+    """
+    Returns true if the statement is not in the edit queue
+    
+    :param uid: Statement.uid
+    :return: Boolean
+    """
+    db_already_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.statement_uid == uid,
+                                                                        ReviewEdit.is_executed == False)).all()
+    return db_already_edit and len(db_already_edit) > 0
+
+
+def is_arguments_premise_in_edit_queue(uid):
+    """
+    Returns true if the premises of an argument are not in the edit queue
+    
+    :param uid: Argument.uid
+    :return: Boolean
+    """
+    db_argument = DBDiscussionSession.query(Argument).get(uid)
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+    db_already_edit = []
+    for premise in db_premises:
+        db_already_edit += DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.statement_uid == premise.statement_uid,
+                                                                             ReviewEdit.is_executed == False)).all()
+    return db_already_edit and len(db_already_edit) > 0
 
 
 def __add_edit_values_review(element, db_user):

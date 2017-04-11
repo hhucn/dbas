@@ -275,6 +275,7 @@ de_lang = {
     _.edit: 'Bearbeiten',
     _.error_code: 'Fehler-Code',
     _.editTitle: 'Aussage bearbeiten',
+    _.editAlreadyTitle: 'Diese Aussage wurde schon bearbeiten und nun durch Community begutachtet.',
     _.exampleName: 'Beispiel: Tobias Krauthoff',
     _.exampleMail: 'Beispiel: krauthoff@cs.uni-duesseldorf.de',
     _.examplePhone: 'Beispiel: +49 (0)211 81-13461',

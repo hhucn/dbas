@@ -75,8 +75,9 @@ function InteractionHandler() {
 	/**
 	 * Callback, when a correcture could be send
 	 * @param data of the ajax request
+	 * @param statements_uids
 	 */
-	this.callbackIfDoneForSendCorrectureOfStatement = function (data) {
+	this.callbackIfDoneForSendCorrectureOfStatement = function (data, statements_uids) {
 		var parsedData = $.parseJSON(data);
 		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
@@ -85,6 +86,10 @@ function InteractionHandler() {
 		} else {
 			setGlobalSuccessHandler('Yeah!', _t_discussion(proposalsWereForwarded));
 			new PopupHandler().hideAndClearEditStatementsPopup();
+			// find the list element and manipulate the edit buttons
+			var parent_statement = $('#' + statements_uids[0]).parent();
+			parent_statement.find('#item-edit-disabled-hidden-wrapper').show();
+			parent_statement.find('.item-edit').remove();
 		}
 	};
 
