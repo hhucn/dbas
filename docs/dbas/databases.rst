@@ -2,10 +2,37 @@
 Database
 ========
 
-More information about handling of the database can be find in the Docker's entrypoint_.
+
+Init script for the database entrypoint
+=======================================
+
+D-BAS uses a initialization scripts at the beginning, which can be found in `docker/db`. Everytime Docker
+starts, these scripts and sql files will be used. If you rather want an empty database at the beginning, remove the seed
+and use the init script to create an empty database.
+
+All files in `docker/db` ending on `.sh` or `.sql` will be executed in the concrete order, in which they would appear
+when you type `ls` in the directory. Therefore, `001_foo` will be executed before `002_bar` or solely `baz.sql` etc.
+
+
+Dump a database
+===============
+
+Current database can be saved via::
+
+    $ docker exec dbas_db_1 pg_dumpall -U postgres > /some/path/for/saving/database.sql
+
+To use this dump as an entrypoint, you have to remove the root user from the database with::
+
+    $ sed -e '/CREATE ROLE postgres/d' \
+          -e '/ALTER ROLE postgres/d' \
+          -i /some/path/for/saving/database.sql
 
 Steps for creating a new database
 =================================
+
+.. deprecated:: 1.3.1
+   This comes from the good ol' times where we manually set up a database. We are now using Docker and its entrypoint
+   scripts simplify the seeding process.
 
 1. Add a console script under console_scripts in setup.py.
 2. Specify path for the database in development.ini and production.ini.

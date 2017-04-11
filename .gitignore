@@ -59,6 +59,7 @@ node_modules/
 /builds/
 restorePostgres.sh
 
-# SQL files
+# DB Files
 *.sql
+!001_init.sh.bak
 !002_seed.sql
