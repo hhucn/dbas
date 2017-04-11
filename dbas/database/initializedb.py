@@ -276,6 +276,29 @@ def blank_file(argv=sys.argv):
         create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
 
+def init_dummy_votes(argv=sys.argv):
+    """
+    Dummy votes
+
+    :param argv: standard argv
+    :return: None
+    """
+    if len(argv) != 2:
+        usage(argv)
+    config_uri = argv[1]
+    setup_logging(config_uri)
+    settings = get_appsettings(config_uri)
+
+    discussion_engine = dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.configure(bind=discussion_engine)
+    DiscussionBase.metadata.create_all(discussion_engine)
+
+    with transaction.manager:
+        __setup_dummy_seen_by(DBDiscussionSession)
+        __setup_dummy_clicks(DBDiscussionSession)
+        __setup_review_dummy_database(DBDiscussionSession)
+
+
 def setup_news_db(session, ui_locale):
     """
     Fills news database
@@ -873,7 +896,7 @@ def __add_clicks_for_arguments(db_arguments, users):
         arg_up += up_votes
         arg_down += down_votes
 
-        new_clicks_for_arguments = __create_clicks_for_arguments(up_votes, argument.uid, users, True)
+        new_clicks_for_arguments += __create_clicks_for_arguments(up_votes, argument.uid, users, True)
         new_clicks_for_arguments += __create_clicks_for_arguments(down_votes, argument.uid, users, False)
 
     return new_clicks_for_arguments, arg_up, arg_down
@@ -916,7 +939,7 @@ def __add_clicks_for_statements(db_statements, users):
         stat_up += up_votes
         stat_down += down_votes
 
-        new_clicks_for_statement = __create_clicks_for_statements(up_votes, statement.uid, users, True)
+        new_clicks_for_statement += __create_clicks_for_statements(up_votes, statement.uid, users, True)
         new_clicks_for_statement += __create_clicks_for_statements(down_votes, statement.uid, users, False)
 
     return new_clicks_for_statement, stat_up, stat_down
