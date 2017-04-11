@@ -896,7 +896,7 @@ def __add_clicks_for_arguments(db_arguments, users):
         arg_up += up_votes
         arg_down += down_votes
 
-        new_clicks_for_arguments = __create_clicks_for_arguments(up_votes, argument.uid, users, True)
+        new_clicks_for_arguments += __create_clicks_for_arguments(up_votes, argument.uid, users, True)
         new_clicks_for_arguments += __create_clicks_for_arguments(down_votes, argument.uid, users, False)
 
     return new_clicks_for_arguments, arg_up, arg_down
@@ -939,7 +939,7 @@ def __add_clicks_for_statements(db_statements, users):
         stat_up += up_votes
         stat_down += down_votes
 
-        new_clicks_for_statement = __create_clicks_for_statements(up_votes, statement.uid, users, True)
+        new_clicks_for_statement += __create_clicks_for_statements(up_votes, statement.uid, users, True)
         new_clicks_for_statement += __create_clicks_for_statements(down_votes, statement.uid, users, False)
 
     return new_clicks_for_statement, stat_up, stat_down
