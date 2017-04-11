@@ -64,5 +64,7 @@ setup(name='dbas',
       init_news_sql = dbas.database.initializedb:main_news
       init_empty_sql = dbas.database.initializedb:blank_file
       init_drop_sql = dbas.database.initializedb:drop_it
+      init_dummy_votes = dbas.database.initializedb:init_dummy_votes
+      
       """,
       )

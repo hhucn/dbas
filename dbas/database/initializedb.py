@@ -276,6 +276,29 @@ def blank_file(argv=sys.argv):
         create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
 
+def init_dummy_votes(argv=sys.argv):
+    """
+    Dummy votes
+
+    :param argv: standard argv
+    :return: None
+    """
+    if len(argv) != 2:
+        usage(argv)
+    config_uri = argv[1]
+    setup_logging(config_uri)
+    settings = get_appsettings(config_uri)
+
+    discussion_engine = dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.configure(bind=discussion_engine)
+    DiscussionBase.metadata.create_all(discussion_engine)
+
+    with transaction.manager:
+        __setup_dummy_seen_by(DBDiscussionSession)
+        __setup_dummy_clicks(DBDiscussionSession)
+        __setup_review_dummy_database(DBDiscussionSession)
+
+
 def setup_news_db(session, ui_locale):
     """
     Fills news database
