@@ -39,6 +39,7 @@ function doConnect(){
 		address = location.origin;
 		dict.secure = true;
 	}
+	address = address.replace('https', 'wss').replace('http', 'ws');
 
 	socket = io.connect(address + ':' + port, dict);
 	
