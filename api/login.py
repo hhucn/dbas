@@ -12,7 +12,6 @@ import os
 from datetime import datetime
 
 import transaction
-from beaker.cache import cache_region
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
