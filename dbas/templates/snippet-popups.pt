@@ -617,7 +617,7 @@
     						</li>
     						<li>
     							<label class="bs-callout bs-callout-primary">
-    								<input type="radio" name="insert_statements" id="insert_one_argument">${extras.tag.insert_one_argument}
+    								<input type="radio" name="insert_statements" id="insert_one_argument"><span>${extras.tag.insert_one_argument}</span>
     							    <br>
     							    <span id="insert_statements_one_argument" style="font-weight: 300;"></span>
     							</label>
