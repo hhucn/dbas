@@ -70,9 +70,9 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
     gender = db_user.gender if db_user else 'n'
 
     if '/d' in path.split('?')[0]:
-        relation_text = get_relation_text_dict_with_substitution(lang, False, False, False, is_dont_know=True, gender=gender)
+        relation_text = get_relation_text_dict_with_substitution(lang, False, is_dont_know=True, gender=gender)
     else:
-        relation_text = get_relation_text_dict_with_substitution(lang, False, True, db_user_argument.is_supportive, gender=gender)
+        relation_text = get_relation_text_dict_with_substitution(lang, True, gender=gender)
 
     # getting votes for every reaction
     ret_list = __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user_uid, _t, main_page)

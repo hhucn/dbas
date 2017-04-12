@@ -188,10 +188,7 @@ class DictionaryHelper(object):
                     island_dict['conclusion'] = conclusion[0:1].lower() + conclusion[1:]
                     db_argument = DBDiscussionSession.query(Argument).get(argument_for_island)
                     _tn = Translator(self.discussion_lang)
-                    text_dict = get_relation_text_dict_with_substitution(db_argument.lang, False, True,
-                                                                         db_argument.is_supportive,
-                                                                         first_conclusion=_tn.get(_.myPosition),
-                                                                         attack_type=attack)
+                    text_dict = get_relation_text_dict_with_substitution(db_argument.lang, True, attack_type=attack)
                     for t in text_dict:
                         text_dict[t] = text_dict[t][:-1] + ', ' + _tn.get(_.because).lower() + ' ...'
 
