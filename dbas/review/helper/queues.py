@@ -371,7 +371,7 @@ def __add_edit_reviews(element, db_user):
 def is_statement_in_edit_queue(uid):
     """
     Returns true if the statement is not in the edit queue
-    
+
     :param uid: Statement.uid
     :return: Boolean
     """
@@ -383,7 +383,7 @@ def is_statement_in_edit_queue(uid):
 def is_arguments_premise_in_edit_queue(uid):
     """
     Returns true if the premises of an argument are not in the edit queue
-    
+
     :param uid: Argument.uid
     :return: Boolean
     """

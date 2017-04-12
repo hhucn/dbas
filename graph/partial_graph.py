@@ -13,12 +13,13 @@ from graph.lib import get_d3_data
 
 def get_partial_graph_for_statement(uid, issue, request, path):
     """
-    
-    :param uid: 
-    :param issue: 
-    :param request: 
-    :param path: 
-    :return: 
+    Returns the partial graph where the statement is embedded
+
+    :param uid: Statement.uid
+    :param issue: Issue.uid
+    :param request: Current request object
+    :param path: Users history
+    :return: dict()
     """
     logger('PartialGraph', 'get_partial_graph_for_statement', 'premise of argument {}'.format(str(uid)))
     nickname = request.authenticated_userid
@@ -45,11 +46,12 @@ def get_partial_graph_for_statement(uid, issue, request, path):
 
 def get_partial_graph_for_argument(uid, issue, request):
     """
+    Returns the partial graph where the argument is embedded
 
-    :param uid:
-    :param issue:
-    :param request:
-    :return:
+    :param uid: Argument.uid
+    :param issue: Issue.uid
+    :param request: Current request object
+    :return: dict()
     """
     logger('PartialGraph', 'get_partial_graph_for_argument', str(uid))
     nickname = request.authenticated_userid
