@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-03-14 10:59+0100\n"
+"POT-Creation-Date: 2017-04-12 17:07+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -1183,11 +1183,11 @@ msgstr "MIT Lizenz"
 msgid "mit_license_part1"
 msgstr ""
 "Hiermit wird unentgeltlich jeder Person, die eine Kopie der Software und der "
-"zugehörigen Dokumentationen (die \"Software\") erhält, die Erlaubnis erteilt, "
-"sie uneingeschränkt zu benutzen, inklusive und ohne Ausnahme dem Recht, sie "
-"zu verwenden, kopieren, ändern, fusionieren, verlegen, verbreiten, "
-"unterlizenzieren und/oder zu verkaufen, und Personen, die diese Software "
-"erhalten, diese Rechte zu geben, unter den folgenden Bedingungen:"
+"zugehörigen Dokumentationen (die \"Software\") erhält, die Erlaubnis "
+"erteilt, sie uneingeschränkt zu benutzen, inklusive und ohne Ausnahme dem "
+"Recht, sie zu verwenden, kopieren, ändern, fusionieren, verlegen, "
+"verbreiten, unterlizenzieren und/oder zu verkaufen, und Personen, die diese "
+"Software erhalten, diese Rechte zu geben, unter den folgenden Bedingungen:"
 
 #. Default: The above copyright notice and this permission notice shall be
 #. included in all copies or substantial portions of the Software.
@@ -1249,9 +1249,10 @@ msgstr "Angemeldet bleiben"
 msgid "dbas_login_data_disclaimer"
 msgstr ""
 "Wenn Sie sich bei D-BAS anmelden, erklären Sie sich damit einverstanden, "
-"dass Ihre Aktionen anonymisiert ausgewertet und Sie nach Abschluss des "
-"Experiments einen Fragebogen per E-Mail erhalten werden. Bei weiteren Fragen "
-"nehmen Sie gerne Kontakt mit uns  über das Kontaktformulat auf."
+"dass Ihre Aktionen anonymisiert ausgewertet werden und wir Sie nach "
+"Abschluss des Experiments per E-Mail zu einer Befragung einladen dürfen. Bei "
+"weiteren Fragen nehmen Sie gerne Kontakt mit uns über das Kontaktformular "
+"auf."
 
 #. Default: Error:
 #: templates/snippet-popups.pt:315 templates/snippet-popups.pt:393
@@ -2083,52 +2084,52 @@ msgid "restart_discussion"
 msgstr "Neustart"
 
 #. Default: Show all statements
-#: templates/content.pt:143
+#: templates/content.pt:153
 msgid "show_all_statements"
 msgstr "Alle Aussagen anzeigen"
 
 #. Default: Hide statements
-#: templates/content.pt:144
+#: templates/content.pt:154
 msgid "hide_statements"
 msgstr "Aussage ausblenden"
 
 #. Default: Complete View
-#: templates/content.pt:288
+#: templates/content.pt:298
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
 #. Default: Default View
-#: templates/content.pt:289
+#: templates/content.pt:299
 msgid "default_view"
 msgstr "Standardansicht"
 
 #. Default: Labels
-#: templates/content.pt:290 templates/content.pt:291
+#: templates/content.pt:300 templates/content.pt:301
 msgid "labels"
 msgstr "Beschriftungen"
 
 #. Default: Positions
-#: templates/content.pt:292 templates/content.pt:293
+#: templates/content.pt:302 templates/content.pt:303
 msgid "positions"
 msgstr "Positionen"
 
 #. Default: My path
-#: templates/content.pt:294 templates/content.pt:295
+#: templates/content.pt:304 templates/content.pt:305
 msgid "my_path"
 msgstr "Mein Pfad"
 
 #. Default: My statements
-#: templates/content.pt:296 templates/content.pt:297
+#: templates/content.pt:306 templates/content.pt:307
 msgid "my_statements"
 msgstr "Meine Aussagen"
 
 #. Default: Supports
-#: templates/content.pt:298 templates/content.pt:299
+#: templates/content.pt:308 templates/content.pt:309
 msgid "supports_on_my_statements"
 msgstr "Unterstützungen"
 
 #. Default: Attacks
-#: templates/content.pt:300 templates/content.pt:301
+#: templates/content.pt:310 templates/content.pt:311
 msgid "attacks_on_my_statements"
 msgstr "Angriffe"
 

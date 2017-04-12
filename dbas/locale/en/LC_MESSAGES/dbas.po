@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-03-14 10:59+0100\n"
+"POT-Creation-Date: 2017-04-12 17:07+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -139,7 +139,7 @@ msgstr ""
 "secured and encrypted. Additionally we will never save, log or display your "
 "password anywhere!"
 
-#. Default: What is the difference between interests and opinions?
+#. Default: What is the difference between interest and opinion?
 #: templates/faq.pt:16
 msgid "faq_question_interest_opinion"
 msgstr "What is the difference between interests and opinions?"
@@ -2055,52 +2055,52 @@ msgid "restart_discussion"
 msgstr "Restart"
 
 #. Default: Show all statements
-#: templates/content.pt:143
+#: templates/content.pt:153
 msgid "show_all_statements"
 msgstr "Show all statements"
 
 #. Default: Hide statements
-#: templates/content.pt:144
+#: templates/content.pt:154
 msgid "hide_statements"
 msgstr "Hide statements"
 
 #. Default: Complete View
-#: templates/content.pt:288
+#: templates/content.pt:298
 msgid "complete_view"
 msgstr "Complete View"
 
 #. Default: Default View
-#: templates/content.pt:289
+#: templates/content.pt:299
 msgid "default_view"
 msgstr "Default View"
 
 #. Default: Labels
-#: templates/content.pt:290 templates/content.pt:291
+#: templates/content.pt:300 templates/content.pt:301
 msgid "labels"
 msgstr "Lables"
 
 #. Default: Positions
-#: templates/content.pt:292 templates/content.pt:293
+#: templates/content.pt:302 templates/content.pt:303
 msgid "positions"
 msgstr "Positions"
 
 #. Default: My path
-#: templates/content.pt:294 templates/content.pt:295
+#: templates/content.pt:304 templates/content.pt:305
 msgid "my_path"
 msgstr "My path"
 
 #. Default: My statements
-#: templates/content.pt:296 templates/content.pt:297
+#: templates/content.pt:306 templates/content.pt:307
 msgid "my_statements"
 msgstr "My statements"
 
 #. Default: Supports
-#: templates/content.pt:298 templates/content.pt:299
+#: templates/content.pt:308 templates/content.pt:309
 msgid "supports_on_my_statements"
 msgstr "Supports"
 
 #. Default: Attacks
-#: templates/content.pt:300 templates/content.pt:301
+#: templates/content.pt:310 templates/content.pt:311
 msgid "attacks_on_my_statements"
 msgstr "Attacks"
 
