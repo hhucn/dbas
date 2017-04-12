@@ -11,4 +11,5 @@ services:
       - "8000:8000"
     tmpfs: /tmp
   web:
+    image: gitlab.cs.uni-duesseldorf.de:5001/dbas/dbas:master
     command: bash -c "sleep 10 && uwsgi --ini-paste production.ini"
