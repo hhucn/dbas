@@ -214,37 +214,28 @@ def __get_user_msg_for_users_rebut_response(premise, conclusion, right, is_suppo
     return '{}' + user_msg + '{}'
 
 
-def get_relation_text_dict_without_substitution(lang, start_lower_case, with_no_opinion_text, is_attacking, premise,
-                                                conclusion, is_dont_know=False, first_conclusion=None, attack_type=None):
+def get_relation_text_dict_without_substitution(lang, with_no_opinion_text, premise, conclusion, is_dont_know=False, attack_type=None):
     """
     Returns the four different reaction possibilities without any replacement based on the gender of the confrontation
 
     :param lang: Language.ui_locales
-    :param start_lower_case: Boolean
     :param with_no_opinion_text: Boolean
-    :param is_attacking: Boolean
     :param premise: String
     :param conclusion: String
     :param is_dont_know: Boolean
-    :param first_conclusion: String
     :param attack_type: String
     :return: dict()
     """
-    return __get_relation_text_dict(lang, start_lower_case, with_no_opinion_text, is_attacking, premise, conclusion,
-                                    is_dont_know, first_conclusion, attack_type)
+    return __get_relation_text_dict(lang, with_no_opinion_text, premise, conclusion, is_dont_know, attack_type)
 
 
-def get_relation_text_dict_with_substitution(lang, start_lower_case, with_no_opinion_text, is_attacking,
-                                             is_dont_know=False, first_conclusion=None, attack_type=None, gender=''):
+def get_relation_text_dict_with_substitution(lang, with_no_opinion_text, is_dont_know=False, attack_type=None, gender=''):
     """
     Returns the four different reaction possibilities with replacements based on the gender of the confrontation
 
     :param lang: Language.ui_locales
-    :param start_lower_case: Boolean
     :param with_no_opinion_text: Boolean
-    :param is_attacking: Boolean
     :param is_dont_know: Boolean
-    :param first_conclusion: String
     :param attack_type: String
     :param gender: String
     :return: dict()
@@ -262,7 +253,7 @@ def get_relation_text_dict_with_substitution(lang, start_lower_case, with_no_opi
             conclusion = _t.get(_.herAssertion) if gender is 'f' else (_t.get(_.hisAssertion) if gender is 'm' else _t.get(_.theirAssertion))
 
     else:
-        premise = _t.get(_.herArgument) if gender is 'f' else (_t.get(_.hisArgument) if gender is 'm' else _t.get(_.theirArgument))
+        premise = _t.get(_.herStatement) if gender is 'f' else (_t.get(_.hisStatement) if gender is 'm' else _t.get(_.theirStatement))
 
         if not is_dont_know:
             if attack_type == 'undermine' or attack_type == 'rebut':
@@ -272,117 +263,35 @@ def get_relation_text_dict_with_substitution(lang, start_lower_case, with_no_opi
         else:
             conclusion = _t.get(_.opinion_her) if gender is 'f' else (_t.get(_.opinion_his) if gender is 'm' else _t.get(_.opinion))
 
-    return __get_relation_text_dict(lang, start_lower_case, with_no_opinion_text, is_attacking, premise, conclusion,
-                                    is_dont_know, first_conclusion, attack_type)
+    return __get_relation_text_dict(lang, with_no_opinion_text, premise, conclusion, is_dont_know)
 
 
-def __get_relation_text_dict(lang, start_lower_case, with_no_opinion_text, is_attacking, premise, conclusion,
-                             is_dont_know=False, first_conclusion=None, attack_type=None):
+def __get_relation_text_dict(lang, with_no_opinion_text, premise, conclusion, is_dont_know=False):
     """
     Text of the different reaction types for an given argument
 
     :param lang: Language.ui_locales
-    :param start_lower_case: Boolean
     :param with_no_opinion_text: Boolean
-    :param is_attacking: Boolean
     :param premise: String
     :param conclusion: String
     :param is_dont_know: Boolean
-    :param first_conclusion: String
-    :param attack_type: String
     :return: dict()
     """
     _t = Translator(lang)
 
-    if first_conclusion and first_conclusion[-1] == '.':
-        first_conclusion = first_conclusion[:-1]
-
     # adding tags
-    start_attack = '<' + tag_type + ' data-argumentation-type="attack">'
-    start_argument = '<' + tag_type + ' data-argumentation-type="argument">'
-    start_position = '<' + tag_type + ' data-argumentation-type="position">'
-    end_tag = '</' + tag_type + '>'
+    start_attack = '<{} data-argumentation-type="attack">'.format(tag_type)
+    start_argument = '<{} data-argumentation-type="argument">'.format(tag_type)
+    start_position = '<{} data-argumentation-type="position">'.format(tag_type)
+    end_tag = '</{}>'.format(tag_type)
     premise = start_attack + premise + end_tag
     conclusion = start_argument + conclusion + end_tag
 
-    w = (_t.get(_.wrong)[0:1].lower() if start_lower_case else _t.get(_.wrong)[0:1].upper()) + _t.get(_.wrong)[1:] + ', ' + _t.get(_.itIsFalse1) + ' '
-    r = (_t.get(_.right)[0:1].lower() if start_lower_case else _t.get(_.right)[0:1].upper()) + _t.get(_.right)[1:] + ', ' + _t.get(_.itIsTrue1) + ' '
-
-    if lang == 'de':
-        ret_dict = __get_relation_text_dict_for_de(premise, conclusion, start_argument, start_position, end_tag,
-                                                   is_dont_know, _t,)
-    else:
-        ret_dict = __get_relation_text_dict_for_en(r, w, premise, conclusion, start_argument, start_position, end_tag,
-                                                   first_conclusion, is_dont_know, is_attacking, attack_type, _t)
+    ret_dict = dict()
 
     if with_no_opinion_text:
         ret_dict['step_back_text'] = _t.get(_.goStepBack) + '. (' + _t.get(_.noOtherAttack) + ')'
         ret_dict['no_opinion_text'] = _t.get(_.showMeAnotherArgument) + '.'
-
-    return ret_dict
-
-
-def __get_relation_text_dict_for_en(right, wrong, premise, conclusion, start_argument, start_position, end_tag,
-                                    first_conclusion, is_dont_know, is_attacking, attack_type, _t):
-    """
-    Returns the answer dict() for the english language
-
-    :param right: String
-    :param wrong: String
-    :param premise: String
-    :param conclusion: String
-    :param start_argument: String
-    :param start_position: String
-    :param end_tag: String
-    :param first_conclusion: String
-    :param is_dont_know: Boolean
-    :param is_attacking: Boolean
-    :param attack_type: String
-    :param _t: Translator
-    :return: dict()
-    """
-    ret_dict = dict()
-
-    ret_dict['undermine_text'] = wrong + premise + ' ' + _t.get(_.itIsFalse2) + '.'
-
-    ret_dict['support_text'] = right + premise + _t.get(_.itIsTrue2) + '.'
-
-    ret_dict['undercut_text'] = right + premise + _t.get(_.itIsTrue2) + '. '
-    if is_dont_know:
-        ret_dict['undercut_text'] += _t.get(_.butIDoNotBelieveArgumentFor).format(conclusion) + '.'
-    elif not is_attacking or not attack_type == 'undercut':
-        ret_dict['undercut_text'] += _t.get(_.butIDoNotBelieveArgument).format(conclusion) + '.'
-    else:
-        ret_dict['undercut_text'] += _t.get(_.butIDoNotBelieveCounter).format(conclusion) + '.'
-
-    ret_dict['rebut_text'] = right + premise + _t.get(_.itIsTrue2) + ' '
-    # ret_dict['rebut_text'] += (_t.get(_.iAcceptCounter) if is_attacking else _t.get(_.iAcceptArgument))
-    ret_dict['rebut_text'] += _t.get(_.iAcceptArgument) if not is_attacking or not attack_type == 'undercut' else _t.get(_.iAcceptCounter)
-    ret_dict['rebut_text'] += ' ' + conclusion + '. '
-    ret_dict['rebut_text'] += _t.get(_.howeverIHaveMuchStrongerArgumentTo if is_dont_know else _.howeverIHaveMuchStrongerArgument) + ' '
-    ret_dict['rebut_text'] += start_argument if is_dont_know else start_position
-    ret_dict['rebut_text'] += _t.get(_.reject if is_dont_know else _.forText)
-    # ret_dict['rebut_text'] += _t.get(_.accept if is_attacking else _.reject)
-    ret_dict['rebut_text'] += ' ' + (first_conclusion if first_conclusion else conclusion) + end_tag + '.'
-    # + (_t.get(_.doesNotHold) if is_attacking else _t.get(_.hold)) + '.'
-
-    return ret_dict
-
-
-def __get_relation_text_dict_for_de(premise, conclusion, start_argument, start_position, end_tag, is_dont_know, _t):
-    """
-    Returns the answer dict() for the german language
-
-    :param premise: String
-    :param conclusion: String
-    :param start_argument: String
-    :param start_position: String
-    :param end_tag: String
-    :param is_dont_know: Boolean
-    :param _t: Translator
-    :return: dict()
-    """
-    ret_dict = dict()
 
     ret_dict['undermine_text'] = _t.get(_.reaction_text_undermine).format(premise)
 

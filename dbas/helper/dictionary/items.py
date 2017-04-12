@@ -355,7 +355,7 @@ class ItemDictHelper(object):
         if db_user:  # add seen by if the statement is visible
             add_seen_argument(argument_uid, db_user)
 
-        rel_dict     = get_relation_text_dict_with_substitution(self.lang, False, False, False, is_dont_know=True, gender=gender)
+        rel_dict     = get_relation_text_dict_with_substitution(self.lang, False, is_dont_know=True, gender=gender)
         current_mode = 't' if is_supportive else 'f'
         not_current_mode = 'f' if is_supportive else 't'
 
@@ -466,9 +466,7 @@ class ItemDictHelper(object):
         if not db_sys_argument or not db_user_argument:
             return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
-        rel_dict = get_relation_text_dict_with_substitution(self.lang, False, True, db_user_argument.is_supportive,
-                                                            first_conclusion=_tn.get(_.myPosition),
-                                                            attack_type=attack, gender=gender)
+        rel_dict = get_relation_text_dict_with_substitution(self.lang, True, attack_type=attack, gender=gender)
         mode = 't' if is_supportive else 'f'
         _um  = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
