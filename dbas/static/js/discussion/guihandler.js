@@ -452,7 +452,7 @@ function GuiHandler() {
 			var tmp = $('<span>').html(line_text).css('margin-left', '1em');
 			// list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
 			list.append(tmp);
-			infix = i === 0 ? '' : ('<em><u>' + _t_discussion(andAtTheSameTime) + '</u></em> ' + connection + ' ');
+			infix = i === 0 ? _t_discussion(because) + ' ' : ('<u>' + _t_discussion(and) + ' ' + _t_discussion(because) + '</u> ' );
 			bigText += ' ' + infix + splitted[i];
 		}
 		
