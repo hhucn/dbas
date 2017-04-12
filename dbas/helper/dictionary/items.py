@@ -457,7 +457,6 @@ class ItemDictHelper(object):
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_reaction', 'def')
-        _tn  = Translator(self.lang)
         slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()
 
         db_sys_argument = DBDiscussionSession.query(Argument).get(argument_uid_sys)
