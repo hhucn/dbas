@@ -561,12 +561,12 @@ class Keywords(Enum):
     rep_reason_bad_edit = 'You made a bad edit'
     rep_reason_bad_duplicate = 'You reported an argument as duplicate, but it is not'
 
-    reaction_text_undermine = 'In my opinion, {} is wrong and I want to contradict.'
-    reaction_text_support = 'In my opinion, {} is true and I am convinced.'
-    reaction_text_undercut = 'In my opinion, {} is true, but it does not support {}.'
-    reaction_text_undercut_for_dont_know = 'In my opinion, {} is true, but it is not supported by the {}.'
-    reaction_text_rebut = 'In my opinion, {} is true and it supports {}. However I want to defend {}.'
-    reaction_text_rebut_for_dont_know = 'In my opinion, {} is true and it supports {}. However I want to attack {}.'
+    reaction_text_undermine = 'In my opinion, {} is wrong and I would like to argue against it.'
+    reaction_text_support = 'In my opinion, {} is correct and it convinced me.'
+    reaction_text_undercut = 'In my opinion, {} is correct, but it does not support {}.'
+    reaction_text_undercut_for_dont_know = 'In my opinion, {} is correct, but it is not supported by the {}.'
+    reaction_text_rebut = 'In my opinion, {} is correct and it supports {}. However I want to defend {}.'
+    reaction_text_rebut_for_dont_know = 'In my opinion, {} is correct and it supports {}. However I want to attack {}.'
 
     questionTitle = 'Get more information about the statement!'
     saveMyStatement = 'Save my Statement!'
