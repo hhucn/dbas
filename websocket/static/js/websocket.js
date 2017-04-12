@@ -39,6 +39,7 @@ function doConnect(){
 		address = location.origin;
 		dict.secure = true;
 	}
+	address = address.replace('https', 'wss').replace('http', 'ws');
 
 	socket = io.connect(address + ':' + port, dict);
 	
@@ -132,7 +133,7 @@ function doRecentReview(data){
 	
 	var queue = $('#' + data.queue);
 	if (queue.length !== 0){
-		// just push, if given user is not the last reviwer
+		// just push, if given user is not the last reviewer
 		console.log(data.img_url);
 		if (queue.find('a:last-child').length === 0){
 			queue.find('span').remove();

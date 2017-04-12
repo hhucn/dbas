@@ -58,7 +58,7 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
         ret_text += (_t.get(_.iAcceptCounterThat) if is_supportive else _t.get(_.iAcceptArgumentThat))
         ret_text += ' ' + conclusion
 
-    return ret_text + ', ' + _t.get(_.because).lower() + '...'
+    return ret_text + ' ...'  # + ', ' + _t.get(_.because).lower() + '...'
 
 
 def get_header_for_users_confrontation_response(db_argument, lang, premise, attack_type, conclusion, start_lower_case,

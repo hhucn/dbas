@@ -105,7 +105,6 @@ function News() {
 		var h = this.getMaxHeight();
 
 		$('.panel-body').each(function() {
-			console.log($(this).height() + ' ' + h + '   ' + $(this).prev().height());
 			if ($(this).height() <= h - $(this).prev().height()) {
 				$(this).height(h);
 				return true;

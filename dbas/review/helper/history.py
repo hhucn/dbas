@@ -158,78 +158,126 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
     :param is_executed
     :return: Array with all decision per table
     """
+    logger('History', '__get_executed_reviews_of', 'Table: {} ({})'.format(table, table_type))
     some_list = list()
     db_reviews = DBDiscussionSession.query(table_type).filter(table_type.is_executed == is_executed).order_by(table_type.uid.desc()).all()
 
     for review in db_reviews:
-        length = 35
-        # getting text
-        if table == 'duplicates':
-            full_text = get_text_for_statement_uid(review.duplicate_statement_uid)
-        elif review.statement_uid is None:
-            full_text = get_text_for_argument_uid(review.argument_uid)
-        else:
-            full_text = get_text_for_statement_uid(review.statement_uid)
+        entry = __get_executed_review_element_of(table, main_page, review, last_review_type, translator, is_executed)
+        if entry:
+            some_list.append(entry)
 
-        # pretty print
-        intro = translator.get(_.otherUsersSaidThat) + ' '
-        if full_text.startswith(intro):
-            short_text = full_text[len(intro):len(intro) + 1].upper() + full_text[len(intro) + 1:len(intro) + length]
-        else:
-            short_text = full_text[0:length]
+    return some_list
 
-        short_text += '...' if len(full_text) > length else '.'
-        short_text = '<span class="text-primary">' + short_text + '</span>'
 
-        is_okay = False if table == 'optimizations' else True
-        # getting all pro and contra votes for this review
-        all_votes = DBDiscussionSession.query(last_review_type).filter_by(review_uid=review.uid)
-        pro_votes = all_votes.filter_by(is_okay=is_okay).all()
-        con_votes = all_votes.filter(and_(last_review_type.is_okay != is_okay)).all()
+def __get_executed_review_element_of(table, main_page, review, last_review_type, translator, is_executed):
+    """
 
-        # getting the users which have voted
-        pro_list = [__get_user_dict_for_review(pro.reviewer_uid, main_page) for pro in pro_votes]
-        con_list = [__get_user_dict_for_review(con.reviewer_uid, main_page) for con in con_votes]
+    :param table: Shortcut for the table
+    :param main_page: Main page of D-BAS
+    :param review: Element
+    :param last_review_type: Type of the last reviewer of the table
+    :param translator: current ui_locales
+    :param is_executed
+    :return: Element
+    """
 
-        if table == 'duplicates':
-            # switch it, because contra is: it should not be there!
-            tmp_list = pro_list
-            pro_list = con_list
-            con_list = tmp_list
+    length = 35
+    # getting text
+    if table == 'duplicates':
+        full_text = get_text_for_statement_uid(review.duplicate_statement_uid)
+    elif review.statement_uid is None:
+        full_text = get_text_for_argument_uid(review.argument_uid)
+    else:
+        full_text = get_text_for_statement_uid(review.statement_uid)
 
-        # and build up some dict
-        entry = dict()
-        entry['entry_id'] = review.uid
-        if table == 'deletes':
-            db_reason = DBDiscussionSession.query(ReviewDeleteReason).get(review.reason_uid)
-            entry['reason'] = db_reason.reason
-        entry['row_id'] = table + str(review.uid)
-        entry['argument_shorttext'] = short_text
-        entry['argument_fulltext'] = full_text
-        if table == 'edits':
-            if is_executed:
-                db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=review.statement_uid).order_by(TextVersion.uid.desc()).all()
-                entry['argument_oem_shorttext'] = db_textversions[1].content[0:length]
-                entry['argument_oem_fulltext'] = db_textversions[1].content
-            else:
-                db_edit_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=review.uid).first()
-                entry['argument_oem_shorttext'] = short_text
-                entry['argument_oem_fulltext'] = full_text
-                entry['argument_shorttext'] = short_text.replace(short_text, (db_edit_value.content[0:length] + '...') if len(full_text) > length else db_edit_value.content)
-                entry['argument_fulltext'] = db_edit_value.content
-        if table == 'duplicates':
-            text = get_text_for_statement_uid(review.original_statement_uid)
-            entry['statement_duplicate_shorttext'] = text[0:length] + ('...' if len(text) > length else '')
-            entry['statement_duplicate_fulltext'] = text
+    # pretty print
+    intro = translator.get(_.otherUsersSaidThat) + ' '
+    if full_text.startswith(intro):
+        short_text = full_text[len(intro):len(intro) + 1].upper() + full_text[len(intro) + 1:len(intro) + length]
+    else:
+        short_text = full_text[0:length]
+
+    short_text += '...' if len(full_text) > length else '.'
+    short_text = '<span class="text-primary">' + short_text + '</span>'
+
+    is_okay = False if table == 'optimizations' else True
+    # getting all pro and contra votes for this review
+    all_votes = DBDiscussionSession.query(last_review_type).filter_by(review_uid=review.uid)
+    pro_votes = all_votes.filter_by(is_okay=is_okay).all()
+    con_votes = all_votes.filter(and_(last_review_type.is_okay != is_okay)).all()
+
+    # getting the users which have voted
+    pro_list = [__get_user_dict_for_review(pro.reviewer_uid, main_page) for pro in pro_votes]
+    con_list = [__get_user_dict_for_review(con.reviewer_uid, main_page) for con in con_votes]
+
+    if table == 'duplicates':
+        # switch it, because contra is: it should not be there!
+        tmp_list = pro_list
+        pro_list = con_list
+        con_list = tmp_list
+
+    # and build up some dict
+    entry = dict()
+    entry['entry_id'] = review.uid
+    tmp = __handle_table_of_review_element(table, entry, review, short_text, full_text, length, is_executed)
+    if not tmp:
+        entry = None
+    else:
+        entry.update(tmp)
         entry['pro'] = pro_list
         entry['con'] = con_list
         entry['timestamp'] = sql_timestamp_pretty_print(review.timestamp, translator.get_lang())
         entry['votes_pro'] = pro_list
         entry['votes_con'] = con_list
         entry['reporter'] = __get_user_dict_for_review(review.detector_uid, main_page)
-        some_list.append(entry)
 
-    return some_list
+    return entry
+
+
+def __handle_table_of_review_element(table, entry, review, short_text, full_text, length, is_executed):
+    """
+
+    :param table:
+    :param entry:
+    :param review:
+    :param short_text:
+    :param full_text:
+    :param length:
+    :param is_executed:
+    :return:
+    """
+    if table == 'deletes':
+        db_reason = DBDiscussionSession.query(ReviewDeleteReason).get(review.reason_uid)
+        entry['reason'] = db_reason.reason
+    entry['row_id'] = table + str(review.uid)
+    entry['argument_shorttext'] = short_text
+    entry['argument_fulltext'] = full_text
+
+    if table == 'edits':
+        if is_executed:
+            db_textversions = DBDiscussionSession.query(TextVersion).filter_by(
+                statement_uid=review.statement_uid).order_by(TextVersion.uid.desc()).all()
+            entry['argument_oem_shorttext'] = db_textversions[1].content[0:length]
+            entry['argument_oem_fulltext'] = db_textversions[1].content
+        else:
+            db_edit_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=review.uid).first()
+            if not db_edit_value:
+                entry = None
+            else:
+                entry['argument_oem_shorttext'] = short_text
+                entry['argument_oem_fulltext'] = full_text
+                entry['argument_shorttext'] = short_text.replace(short_text,
+                                                                 (db_edit_value.content[0:length] + '...') if len(
+                                                                     full_text) > length else db_edit_value.content)
+                entry['argument_fulltext'] = db_edit_value.content
+
+    if table == 'duplicates':
+        text = get_text_for_statement_uid(review.original_statement_uid)
+        entry['statement_duplicate_shorttext'] = text[0:length] + ('...' if len(text) > length else '')
+        entry['statement_duplicate_fulltext'] = text
+
+    return entry
 
 
 def __get_user_dict_for_review(user_id, main_page):

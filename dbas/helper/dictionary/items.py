@@ -21,6 +21,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, get_support_to_argument_text_list
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
+from dbas.review.helper.queues import is_statement_in_edit_queue, is_arguments_premise_in_edit_queue
 
 
 class ItemDictHelper(object):
@@ -80,7 +81,8 @@ class ItemDictHelper(object):
                                                                   'id': statement.uid}],
                                                               'start',
                                                               _um.get_url_for_statement_attitude(True, statement.uid),
-                                                              is_flagable=True,
+                                                              is_editable=not is_statement_in_edit_queue(statement.uid),
+                                                              is_markable=True,
                                                               is_author=is_author_of_statement(nickname, statement.uid),
                                                               is_visible=statement.uid in uids))
 
@@ -155,7 +157,7 @@ class ItemDictHelper(object):
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        support_step = random.uniform(0, 1) > self.LIMIT_SUPPORT_STEP
+        # support_step = random.uniform(0, 1) > self.LIMIT_SUPPORT_STEP
 
         for argument in db_arguments:
             if db_user and argument.uid in uids:  # add seen by if the statement is visible
@@ -175,18 +177,19 @@ class ItemDictHelper(object):
 
             new_arg = None
             url = None
-            if support_step or 'end' in attack:  # TODO 343
+            if 'end' in attack:  # TODO 343
                 new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
                 if new_arg:
                     url = _um.get_url_for_support_each_other(True, argument.uid, new_arg.uid)
 
-            if not (support_step or 'end' in attack) or new_arg is None or url is None:
+            if 'end' not in attack or new_arg is None or url is None:
                 url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
 
             statements_array.append(self.__create_answer_dict(str(argument.uid), premise_array, 'justify', url,
                                                               already_used=already_used,
                                                               already_used_text=additional_text,
-                                                              is_flagable=True,
+                                                              is_editable=not is_arguments_premise_in_edit_queue(argument.uid),
+                                                              is_markable=True,
                                                               is_author=is_author_of_argument(nickname, argument.uid),
                                                               is_visible=argument.uid in uids,
                                                               attack_url=_um.get_url_for_jump(False, argument.uid)))
@@ -228,7 +231,7 @@ class ItemDictHelper(object):
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        support_step = random.uniform(0, 1) > self.LIMIT_SUPPORT_STEP
+        # support_step = random.uniform(0, 1) > self.LIMIT_SUPPORT_STEP
 
         for argument in db_arguments:
             if db_user:  # add seen by if the statement is visible
@@ -253,8 +256,8 @@ class ItemDictHelper(object):
             url = ''
 
             # with a chance of 50% or at the end we will seed the new "support step"
-            logger('ItemDictHelper', 'get_array_for_justify_argument', 'take support? is end: {} or rnd: {}'.format('end' in attack, support_step))
-            if 'end' in attack or support_step:  # TODO 343
+            logger('ItemDictHelper', 'get_array_for_justify_argument', 'take support? is end: {} or rnd: {}'.format('end' in attack, 'NOO'))  # support_step))
+            if 'end' in attack:  # TODO 343
                 new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
                 the_other_one = new_arg is None
                 if new_arg:
@@ -264,7 +267,8 @@ class ItemDictHelper(object):
             if the_other_one:
                 url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
             statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
-                                                              is_flagable=True,
+                                                              is_markable=True,
+                                                              is_editable=not is_arguments_premise_in_edit_queue(argument.uid),
                                                               is_author=is_author_of_argument(nickname, argument.uid),
                                                               is_visible=argument.uid in uids,
                                                               attack_url=_um.get_url_for_jump(False, argument.uid)))
@@ -471,9 +475,6 @@ class ItemDictHelper(object):
         relations = ['undermine', 'support', 'undercut', 'rebut']
         for relation in relations:
             url = self.__get_url_based_on_relation(relation, attack, _um, mode, db_user_argument, db_sys_argument)
-            # TODO PREVENT LOOPING
-            # newStepInUrl = url[url.index('/reaction/') if url.index('/reaction/') < url.index('/justify/') else url.index('/justify/'):url.index('?')]
-            # additionalText = (' (<em>' + _tn.get(_.youUsedThisEarlier) + '<em>)') if newStepInUrl in url[url.index('?'):] else ''
 
             statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
 
@@ -509,7 +510,7 @@ class ItemDictHelper(object):
         """
         # special case, when the user selects the support, because this does not need to be justified!
         if relation == 'support':
-            return self.__get_url_for_support(attack, _um, db_sys_argument)
+            return self.__get_url_for_support(attack, _um, db_user_argument, db_sys_argument)
         elif relation == 'undermine' or relation == 'undercut':  # easy cases
             return self.__get_url_for_undermine(relation, _um, db_sys_argument.uid, mode)
         elif relation == 'rebut':  # if we are having an rebut, everything seems different
@@ -517,20 +518,25 @@ class ItemDictHelper(object):
         else:  # undercut
             return _um.get_url_for_justifying_argument(True, db_sys_argument.uid, mode, relation)
 
-    def __get_url_for_support(self, attack, _um, db_sys_argument):
+    def __get_url_for_support(self, attack, _um, db_user_argument, db_sys_argument):
         """
         Returns url to support an argument
 
         :param attack: String
         :param _um: UrlManager
+        :param db_user_argument: Argument
         :param db_sys_argument: Argument
         :return: String
         """
         attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
         restriction_on_attacks = 'rebut' if attack == 'undercut' else None
+        # if the user did rebutted A with B, the system shall not rebut B with A
+        history = '{}/rebut/{}'.format(db_sys_argument.uid, db_user_argument.uid) if attack == 'rebut' else ''
+
         arg_id_sys, sys_attack = rs.get_attack_for_argument(db_sys_argument.uid, self.lang,
                                                             restriction_on_arg_uids=attacking_arg_uids,
-                                                            restriction_on_attacks=restriction_on_attacks)
+                                                            restriction_on_attacks=restriction_on_attacks,
+                                                            history=history)
         if sys_attack == 'rebut' and attack == 'undercut':
             # case: system makes an undercut and the user supports this new attack can be an rebut, so another
             # undercut for the users argument therefore now the users opinion is the new undercut (e.g. rebut)
@@ -538,6 +544,7 @@ class ItemDictHelper(object):
             url = _um.get_url_for_reaction_on_argument(True, arg_id_sys, sys_attack, db_sys_argument.argument_uid)
         else:
             url = _um.get_url_for_reaction_on_argument(True, db_sys_argument.uid, sys_attack, arg_id_sys)
+
         return url
 
     @staticmethod
@@ -638,7 +645,7 @@ class ItemDictHelper(object):
 
             is_author = is_author_of_argument(nickname, argument) if is_argument else is_author_of_statement(nickname, conclusion)
             statements_array.append(self.__create_answer_dict(str(db_argument.uid), premise_array, 'choose', url,
-                                                              is_flagable=True, is_author=is_author))
+                                                              is_markable=True, is_editable=True, is_author=is_author))
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
@@ -749,7 +756,7 @@ class ItemDictHelper(object):
 
     @staticmethod
     def __create_answer_dict(uid, premises, attitude, url, attack_url='', already_used=False, already_used_text='',
-                             is_flagable=False, is_author=False, is_visible=True):
+                             is_markable=False, is_editable=False, is_author=False, is_visible=True):
         """
         Return dictionary
 
@@ -760,7 +767,8 @@ class ItemDictHelper(object):
         :param attack_url: String
         :param already_used: Boolean
         :param already_used_text: String
-        :param is_flagable: Boolean
+        :param is_markable: Boolean
+        :param is_editable: Boolean
         :param is_author: Boolean
         :param is_visible: Boolean
         :return: dict()
@@ -773,8 +781,8 @@ class ItemDictHelper(object):
             'attack_url': attack_url,
             'already_used': already_used,
             'already_used_text': already_used_text,
-            'is_flagable': is_flagable,
-            'is_editable': is_flagable,
+            'is_markable': is_markable,
+            'is_editable': is_editable,
             'is_deletable': is_author,
             'is_attackable': len(attack_url) > 0,
             'style': '' if is_visible else 'display: none;'}

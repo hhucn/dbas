@@ -53,7 +53,7 @@ class DiscussionDictHelper(object):
         logger('DictionaryHelper', 'get_dict_for_start', 'at_start with positions: ' + str(position_count))
         _tn                    = Translator(self.lang)
         add_premise_text = _tn.get(_.whatIsYourIdea)
-        intro = _tn.get(_.initialPositionInterest)
+        intro = _tn.get(_.initialPositionInterest) + (' ...' if self.lang == 'en' else '')
         save_statement_url  = 'ajax_set_new_start_premise'
 
         start_bubble = create_speechbubble_dict(is_system=True, id='start', message=intro, omit_url=True, lang=self.lang)
@@ -344,7 +344,7 @@ class DiscussionDictHelper(object):
             user_text, sys_text, gender_of_counter_arg, db_confrontation = self.__get_dict_for_argumentation(db_argument, additional_uid, history, attack, nickname, is_supportive, _tn)
             quid = 'question-bubble-' + str(additional_uid) if int(additional_uid) > 0 else ''
             bubble_sys  = create_speechbubble_dict(is_system=True, id=quid, message=sys_text, omit_url=True,
-                                                   lang=self.lang, is_flagable=True,
+                                                   lang=self.lang, is_markable=True,
                                                    is_author=is_author_of_argument(nickname, db_confrontation.uid))
             statement_list = self.__get_all_statement_texts_by_argument(db_confrontation)
 

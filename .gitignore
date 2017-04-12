@@ -37,7 +37,6 @@ coverage.xml
 *.jar
 mergeDatabase.py
 db.txt
-*.sql
 requirementsUpdater.py
 .#*
 pserve.ini
@@ -59,3 +58,8 @@ dbas.min.js
 node_modules/
 /builds/
 restorePostgres.sh
+
+# DB Files
+*.sql
+!001_init.sh.bak
+!002_seed.sql

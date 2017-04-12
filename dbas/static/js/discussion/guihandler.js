@@ -416,8 +416,12 @@ function GuiHandler() {
 		div_page.attr('page', page_no);
 		div_page.show();
 		div_page.find('#' + popupSetPremiseGroupsStatementCount).text(splitted.length);
+		
+		var tmp_span = div_page.find('#insert_one_argument').next();
+		tmp_span.text(tmp_span.text().replace('xx', splitted.length));
 		list = div_page.find('#' + popupSetPremiseGroupsListMoreArguments);
 		bigTextSpan = div_page.find('#' + popupSetPremiseGroupsOneBigStatement);
+		
 		// rename the id-, for- and name-tags of all radio button groups
 		input1 = div_page.find('#insert_more_arguments');
 		input2 = div_page.find('#insert_one_argument');
@@ -444,11 +448,11 @@ function GuiHandler() {
 		list.append($('<br>'));
 		for (i = 0; i < splitted.length; i++) {
 			var nl = i < splitted.length - 1 ? '<br>' : '';
-			var line_text = '&#9900;   ' + topic + ' ' + _t(because) + ' ' + splitted[i] + '.' + nl;
+			var line_text = '&#9900;   ' + topic + ' ' + _t_discussion(because) + ' ' + splitted[i] + '.' + nl;
 			var tmp = $('<span>').html(line_text).css('margin-left', '1em');
 			// list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
 			list.append(tmp);
-			infix = i === 0 ? '' : ('<em><u>' + _t_discussion(andAtTheSameTime) + '</u></em> ' + connection + ' ');
+			infix = i === 0 ? _t_discussion(because) + ' ' : ('<u>' + _t_discussion(and) + ' ' + _t_discussion(because) + '</u> ' );
 			bigText += ' ' + infix + splitted[i];
 		}
 		
@@ -571,7 +575,7 @@ function GuiHandler() {
 			
 			var counter = 0;
 			$.each(value.content, function (key, val) {
-				tr = $('<tr>')
+				var tr = $('<tr>')
 					.append($('<td>').text(val.text))
 					.append($('<td>')
 						.append($('<img>').attr('src', val.author_gravatar).css('margin-right', '1em').addClass('img-circle'))

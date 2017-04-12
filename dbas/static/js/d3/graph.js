@@ -12,22 +12,21 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     var rescaleGraph;
     var box_sizes = box_sizes_for_rescaling; // needed for rescaling
     var force;
+    var size;
+    var change;
+
+    // edges
     var edges;
     var link;
-    var circle;
     var rect;
     var label;
+
+    // nodes
     var node;
-    var statement_size = 6; // base node size of an statement
-    var node_factor_size = 10; // additional size for the doj, which is in [0,1]
-    var rel_node_factor;
-    var currentColorOfCircle;
+    var circle;
     var selectedCircleId;
-    var node_size = 6;
-    var issue_size = 8;
-    var edge_size = 90;
-    var edge_size_virtual_node = 10;
     var circleIds;
+    var currentColorOfCircle;
 
     /**
      * Displays a graph of current discussion
@@ -69,6 +68,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         setIsVisibleDict();
         setColorsDict();
         setRescaleGraphDict();
+        setSizeDict();
     }
 
     /**
@@ -101,13 +101,26 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * Initialize dict "rescaleGraph".
      */
     function setRescaleGraphDict() {
-        rescaleGraph = {
-            'font_size': 14, // needed for rescaling
-            'line_height': 1.5, // needed for rescaling
-            'node_id_prefix': 'node_', // needed for rescaling
-            'old_scale': 1.0, // needed for rescaling
-            'zoom_scale': 0
+        rescaleGraph = {'font_size': 14, // needed for rescaling
+                        'line_height': 1.5, // needed for rescaling
+                        'node_id_prefix': 'node_', // needed for rescaling
+                        'old_scale': 1.0, // needed for rescaling
+                        'zoom_scale': 0
         };
+    }
+
+    /**
+     * Initialize dict "size".
+     */
+    function setSizeDict(){
+         size = {'statement': 6, // base node size of an statement
+                 'node_factor': 10, // additional size for the doj, which is in [0,1]
+                 'node': 6,
+                 'issue': 8,
+                 'rel_node_factor': {},
+                 'edge': 90,
+                 'edge_virtual_node': 45
+         };
     }
 
     /**
@@ -118,7 +131,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     this.callbackIfDoneForDiscussionGraph = function (data, request_for_complete) {
         var jsonData = $.parseJSON(data);
-        console.log(jsonData);
         if (jsonData.error.length !== 0){
         	setGlobalErrorHandler('Ohh!', jsonData.error);
         	new GuiHandler().setDisplayStyleAsDiscussion();
@@ -196,7 +208,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     };
 
     /**
-     * Set default settings of buttons.
+     * Set default settings of buttons in sidebar.
+     *
+     * @param jsonData
+     * @param request_for_complete
      */
     this.setButtonDefaultSettings = function (jsonData, request_for_complete) {
     	$('#graph-view-container').find('.sidebar').find('li').each(function(){
@@ -213,6 +228,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         $('#hide-supports-on-my-statements').hide();
         $('#show-positions').show();
         $('#hide-positions').hide();
+
         if ((request_for_complete || typeof request_for_complete === 'undefined') && !isPartialGraphMode){
         	$('#global-view').hide();
         } else {
@@ -236,9 +252,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     this.getD3Graph = function (jsonData) {
         var container = $('#' + graphViewContainerSpaceId);
         container.empty();
-        rel_node_factor = {};
-        //rel_node_factor = 'node_doj_factors' in jsonData ? jsonData.node_doj_factors : {};
-        //rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
+        size.rel_node_factor = {};
+        //size.rel_node_factor = 'node_doj_factors' in jsonData ? jsonData.node_doj_factors : {};
+        //size.rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
 
         // height of the header (offset per line count)
         var offset = ($('#' + graphViewContainerHeaderId).outerHeight() / 26 - 1 ) * 26;
@@ -247,7 +263,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         var height = container.outerHeight() - offset;
 
         var svg = getGraphSvg(width, height);
-        force = getForce(width, height);
+        force = getForce(jsonData, width, height);
 
         // zoom and pan
         var zoom = d3.behavior.zoom();
@@ -280,6 +296,12 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         return true;
     };
 
+    /**
+     * Set edges of graph.
+     *
+     * @param jsonData
+     * @param svg
+     */
     function setEdges(jsonData, svg){
         // edge
         edges = createEdgeDict(jsonData);
@@ -290,6 +312,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         link = createLinks(svg, marker);
     }
 
+    /**
+     * Create tooltip.
+     */
     function setTooltip(){
         // tooltip
         // rect as background of label
@@ -302,6 +327,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         setRectProperties();
     }
 
+    /**
+     * Create legend.
+     */
     function setLegend() {
         var container = $('#' + graphViewContainerSpaceId);
 
@@ -317,67 +345,88 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
     /**
      * Set position of graph elements.
+     *
+     * @param jsonData
      */
     function setPositionOfGraphElements(jsonData){
         // create arrays of links, nodes and move layout forward one step
         force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
         // update force layout calculations
         function forceTick() {
-            var position;
-
             // update position of nodes
-            circle.attr({
-                cx: function (d) {
-                    if((d.label === "") && (d.edge_source.length === 1)) {
-                        var edge_source = jsonData.nodes.filter(function (node) { return node.id === d.edge_source[0];})[0];
-                        var edge_target = jsonData.nodes.filter(function (node) { return node.id === d.edge_target;})[0];
-                        position = (edge_source.x + edge_target.x) / 2;
-                    }
-                    else {
-                        position = d.x;
-                    }
-                    return position;
-                },
-                cy: function (d) {
-                    if((d.label === "") && (d.edge_source.length === 1)) {
-                        var edge_source = jsonData.nodes.filter(function (node) { return node.id === d.edge_source[0];})[0];
-                        var edge_target = jsonData.nodes.filter(function (node) { return node.id === d.edge_target;})[0];
-                        position = (edge_source.y + edge_target.y) / 2;
-                    }
-                    else {
-                        position = d.y;
-                    }
-                    return position;
-                }
-            });
-
+            setPositionOfCircles(jsonData);
             // update position of edges
-            link.attr({
-                x1: function (d) {
-                    return d3.select('#circle-' + d.source.id).attr('cx');
-                },
-                y1: function (d) {
-                    return d3.select('#circle-' + d.source.id).attr('cy');
-                },
-                x2: function (d) {
-                    return d3.select('#circle-' + d.target.id).attr('cx');
-                },
-                y2: function (d) {
-                    return d3.select('#circle-' + d.target.id).attr('cy');
-                }
-            });
-
+            setPositionOfLinks(jsonData);
             // update position of rect
             rect.attr("transform", function (d) {
                 return "translate(" + d.x + "," + (d.y - 50) + ")";
             });
-
             // update position of label
             label.attr("transform", function (d) {
                 return "translate(" + d.x + "," + (d.y - 50) + ")";
             });
         }
 
+    }
+
+    /**
+     * Calculate position of circles.
+     *
+     * @param jsonData
+     */
+    function setPositionOfCircles(jsonData){
+        circle.attr({
+            cx: function (d) {
+                return getCirclePosition(jsonData, d, 'x');
+            },
+            cy: function (d) {
+                return getCirclePosition(jsonData, d, 'y');
+            }
+        });
+    }
+
+    /**
+     * Calculate position of links.
+     */
+    function setPositionOfLinks(){
+        link.attr({
+            x1: function (d) {
+                return d3.select('#circle-' + d.source.id).attr('cx');
+            },
+            y1: function (d) {
+                return d3.select('#circle-' + d.source.id).attr('cy');
+            },
+            x2: function (d) {
+                return d3.select('#circle-' + d.target.id).attr('cx');
+            },
+            y2: function (d) {
+                return d3.select('#circle-' + d.target.id).attr('cy');
+            }
+        });
+    }
+
+    /**
+     * Get position of nodes.
+     *
+     * @param jsonData
+     * @param d: circle
+     * @param coordinate
+     */
+    function getCirclePosition(jsonData, d, coordinate){
+        // virtual nodes
+        if((d.label === "") && (d.edge_source.length === 1)) {
+            var edge_source = jsonData.nodes.filter(function (node) { return node.id === d.edge_source[0];})[0];
+            var edge_target = jsonData.nodes.filter(function (node) { return node.id === d.edge_target;})[0];
+            if(coordinate === 'x'){
+                return (edge_source.x + edge_target.x) / 2;
+            }
+            return (edge_source.y + edge_target.y) / 2;
+        }
+
+        if(coordinate === 'x'){
+            return d.x;
+        }
+        return d.y;
     }
 
     /**
@@ -397,22 +446,30 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Create force-directed network diagram and define properties.
      *
+     * @param jsonData
      * @param width: width of container, which contains graph
      * @param height: height of container
      * @return force layout
      */
-    function getForce(width, height) {
-        //var factor = jsonData.nodes.length/5 * 100;
-        var factor = 800;
+    function getForce(jsonData, width, height) {
+        var chargeFactor;
+        // set chargeFactor dependent on number of nodes
+        if(jsonData.nodes.length <= 10){
+            chargeFactor = 1000;
+        }
+        else{
+            chargeFactor = 700;
+        }
         return d3.layout.force()
             .size([width, height])
             // nodes push each other away
-            .charge(-factor)
+            .charge(-chargeFactor)
+            .gravity(0.2)
             .linkDistance(function (d) {
                 if((d.source.label === '') || ((d.target.label === '') && (d.edge_type === ''))){
-                    return edge_size_virtual_node;
+                    return size.edge_virtual_node;
                 }
-                return edge_size;
+                return size.edge;
             });
     }
 
@@ -513,7 +570,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Sets the color in the json Data
      *
-     * @param jsonData: dict with data for nodes and edges
+     * @jsonData
      */
     function setNodeColorsForData(jsonData) {
         jsonData.nodes.forEach(function (e) {
@@ -536,7 +593,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * Create dictionary for edges.
      *
      * @param jsonData: dict with data for nodes and edges
-     * @return edges: array, which contains dicts for edges
+     * @return Array array, which contains dicts for edges
      */
     function createEdgeDict(jsonData) {
         var edges = [];
@@ -597,7 +654,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     return 6 + calculateNodeSize(d.target) / 2;
                 },
                 refY: 0,
-                markerWidth: 10, markerHeight: 10,
+                markerWidth: 10,
+                markerHeight: 10,
                 viewBox: '0 -5 10 10',
                 orient: "auto",
                 fill: function (d) {
@@ -682,17 +740,17 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function calculateNodeSize(node) {
         if (node.id.indexOf('statement_') !== -1) {
             var id = node.id.replace('statement_', '');
-            if (id in rel_node_factor) {
-                return node_size + node_factor_size * rel_node_factor[id];
+            if (id in size.rel_node_factor) {
+                return size.node + size.node_factor * size.rel_node_factor[id];
             }
             else {
-                return node_size;
+                return size.node;
             }
         }
         if (node.id.indexOf('argument_') !== -1) {
             return 0;
         }
-        return issue_size;
+        return size.issue;
     }
 
     /**
@@ -844,7 +902,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 fill: function (d, i) {
                     return legendColorCircle[i];
                 },
-                r: statement_size,
+                r: size.statement,
                 cy: function (d, i) {
                     return i * 40;
                 }
@@ -866,9 +924,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 fill: function (d, i) {
                     return legendColorRect[i];
                 },
-                'width': 15,
-                'height': 5,
-                'x': -7, y: function (d, i) { return i * 40 + 118; }
+                width: 15,
+                height: 5,
+                x: -7, y: function (d, i) {
+                    return i * 40 + 118;
+                }
             });
     }
 
@@ -1066,70 +1126,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     }
 
     /**
-     * Show current path.
-     *
-     * @param jsonData
-     */
-    function showPath(jsonData) {
-        $('#show-my-path').hide();
-        $('#hide-my-path').show();
-
-        edges.forEach(function (d) {
-            grayingElements(d);
-        });
-
-        if(jsonData.path.length !== 0) { // if jsonData.path is not empty highlight path
-            highlightPath(jsonData);
-        } else{ // if jsonData.path is empty color issue
-            d3.select('#circle-issue').attr('fill', colors.grey);
-        }
-    }
-
-    /**
-     * Highlight path.
-     *
-     * @param jsonData
-     */
-    function highlightPath(jsonData) {
-        var edgesCircleId = [];
-
-        // run through all values in jsonData.path
-        jsonData.path.forEach(function (d) {
-            edges.forEach(function (edge) {
-                // edge without virtual node
-                if((edge.source.id === getId(d[0])) && (edge.target.id === getId(d[1]))) {
-                    edgesCircleId.push(edge);
-                }
-                // edge with virtual node
-                else if(edge.source.id === getId(d[0]) && edge.target.label === ''){
-                    findEdgesVirtualNode(edge, edgesCircleId, d);
-                }
-            });
-        });
-
-        // highlight path
-        edgesCircleId.forEach(function (d) {
-            highlightElements(d);
-        });
-    }
-
-    /**
-     * Find two edges which connect source and target.
-     *
-     * @param edge
-     * @param edgesCircleId
-     */
-    function findEdgesVirtualNode(edge, edgesCircleId, d){
-        // edge from virtual node to statement
-        edges.forEach(function (e) {
-            if (e.source.id === edge.target.id && e.target.id === getId(d[1])) {
-                edgesCircleId.push(edge);
-                edgesCircleId.push(e);
-            }
-        });
-    }
-
-    /**
      * Get id of node.
      *
      * @param node
@@ -1140,17 +1136,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             return node;
         }
         return "statement_" + node;
-    }
-
-    /**
-     * Hide current path.
-     */
-    function hidePath() {
-        $('#show-my-path').show();
-        $('#hide-my-path').hide();
-        edges.forEach(function (d) {
-            highlightElements(d);
-        });
     }
 
     /**
@@ -1177,9 +1162,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         });
 
         force.nodes().forEach(function (d) {
-            if (d.author.name === $('#header_nickname')[0].innerText) {
+            //if (d.author.name === $('#header_nickname')[0].innerText) {
                 d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
-            }
+            //}
         });
 
         $('#show-my-statements').hide();
@@ -1313,14 +1298,89 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         circleIds = [];
 
         force.nodes().forEach(function (d) {
-            if (d.author.name === $('#header_nickname')[0].innerText) {
+            //if (d.author.name === $('#header_nickname')[0].innerText) {
                 circleIds.push(d.id);
-            }
+            //}
         });
 
         force.nodes().forEach(function (d) {
-            if (d.author.name === $('#header_nickname')[0].innerText) {
+            //if (d.author.name === $('#header_nickname')[0].innerText) {
                 showPartOfGraph(d.id);
+            //}
+        });
+    }
+
+    /**
+     * Show current path.
+     *
+     * @param jsonData
+     */
+    function showPath(jsonData) {
+        $('#show-my-path').hide();
+        $('#hide-my-path').show();
+
+        edges.forEach(function (d) {
+            grayingElements(d);
+        });
+
+        if(jsonData.path.length !== 0) { // if jsonData.path is not empty highlight path
+            highlightPath(jsonData);
+        } else{ // if jsonData.path is empty color issue
+            d3.select('#circle-issue').attr('fill', colors.grey);
+        }
+    }
+
+    /**
+     * Hide current path.
+     */
+    function hidePath() {
+        $('#show-my-path').show();
+        $('#hide-my-path').hide();
+        edges.forEach(function (d) {
+            highlightElements(d);
+        });
+    }
+
+    /**
+     * Highlight path.
+     *
+     * @param jsonData
+     */
+    function highlightPath(jsonData) {
+        var edgesCircleId = [];
+
+        // run through all values in jsonData.path
+        jsonData.path.forEach(function (d) {
+            edges.forEach(function (edge) {
+                // edge without virtual node
+                if((edge.source.id === getId(d[0])) && (edge.target.id === getId(d[1]))) {
+                    edgesCircleId.push(edge);
+                }
+                // edge with virtual node
+                else if(edge.source.id === getId(d[0]) && edge.target.label === ''){
+                    findEdgesVirtualNode(edge, edgesCircleId, d);
+                }
+            });
+        });
+
+        // highlight path
+        edgesCircleId.forEach(function (d) {
+            highlightElements(d);
+        });
+    }
+
+    /**
+     * Find two edges which connect source and target.
+     *
+     * @param edge
+     * @param edgesCircleId
+     */
+    function findEdgesVirtualNode(edge, edgesCircleId, d){
+        // edge from virtual node to statement
+        edges.forEach(function (e) {
+            if (e.source.id === edge.target.id && e.target.id === getId(d[1])) {
+                edgesCircleId.push(edge);
+                edgesCircleId.push(e);
             }
         });
     }
@@ -1459,7 +1519,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         return splitted[splitted.length - 1];
     }
 
-     /**
+    /**
      * Highlight incoming and outgoing edges of selected node.
      *
      * @param edges: all edges of graph
@@ -1467,18 +1527,19 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function showPartOfGraph(circleId) {
         // edges with selected circle as source or as target
-        let edgesCircleId = [];
+        var edgesCircleId = [];
         // select all incoming and outgoing edges of selected circle
         edges.forEach(function (d) {
-            let circleUid = selectUid(circleId);
+            var circleUid = selectUid(circleId);
+            // supports
             if (isVisible.support && selectUid(d.target.id) === circleUid && d.color === colors.green) {
                 edgesCircleId.push(d);
             }
+            // attacks
             else if (isVisible.attack && selectUid(d.target.id) === circleUid && d.color === colors.red) {
                 edgesCircleId.push(d);
             }
-            else if ((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid)
-                && ((!isVisible.attack && !isVisible.support) || isVisible.statement)) {
+            else if ((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid) && ((!isVisible.attack && !isVisible.support) || isVisible.statement)) {
                 edgesCircleId.push(d);
             }
         });
@@ -1490,53 +1551,55 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 grayingElements(d);
             });
         }
+        highlightElementsVirtualNodes(edges, edgesCircleId);
         edgesCircleId.forEach(function (d) {
             highlightElements(d);
         });
-
-        highlightElementsVirtualNodes(edges, edgesCircleId);
     }
 
     /**
      * Highlight incoming and outgoing edges of virtual node.
      *
      * @param edges
-     * @param edgesVirtualNodes
+     * @param edgesCircleId
      */
-    function highlightElementsVirtualNodes(edges, edgesVirtualNodes) {
-        // array with edges from last loop pass
-        let edgesVirtualNodesLast = edgesVirtualNodes;
-        let isVirtualNodeLeft;
+    function highlightElementsVirtualNodes(edges, edgesCircleId) {
+        var virtualNodes = [];
+        var virtualNodesIds = [];
         do {
+            change = false;
             // virtual nodes
-            let virtualNodes = createVirtualNodesArray(edgesVirtualNodes);
+            createVirtualNodesArray(edgesCircleId, virtualNodes, virtualNodesIds);
             // edges with a virtual node as source or as target
-            edgesVirtualNodes = createVirtualNodesEdgesArray(edges, virtualNodes);
-            isVirtualNodeLeft = testVirtualNodesLeft(edgesVirtualNodes, edgesVirtualNodesLast);
-            // save array with edges for next loop pass
-            edgesVirtualNodesLast = edgesVirtualNodes;
-
+            createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId);
         }
-        while (isVirtualNodeLeft);
+        while (change);
     }
 
     /**
      * Create array with virtual nodes.
      *
-     * @param edgesVirtualNodes
+     * @param edgesCircleId
+     * @param virtualNodes
      * @return Array
      */
-    function createVirtualNodesArray(edgesVirtualNodes) {
-        let virtualNodes = [];
-        edgesVirtualNodes.forEach(function (d) {
+    function createVirtualNodesArray(edgesCircleId, virtualNodes, virtualNodesIds) {
+        edgesCircleId.forEach(function (d) {
             if (d.source.label === '') {
-                virtualNodes.push(d.source);
+                if($.inArray(d.source.id, virtualNodesIds) === -1){
+                    change = true;
+                    virtualNodesIds.push(d.source.id);
+                    virtualNodes.push(d.source);
+                }
             }
             if (d.target.label === '') {
-                virtualNodes.push(d.target);
+                if($.inArray(d.target.id, virtualNodesIds) === -1){
+                    change = true;
+                    virtualNodesIds.push(d.target.id);
+                    virtualNodes.push(d.target);
+                }
             }
         });
-        return virtualNodes;
     }
 
     /**
@@ -1544,50 +1607,17 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      *
      * @param edges
      * @param virtualNodes
+     * @param edgesCircleId
      * @return Array
      */
-    function createVirtualNodesEdgesArray(edges, virtualNodes) {
-        let edgesVirtualNodes = [];
+    function createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId) {
         edges.forEach(function (d) {
             virtualNodes.forEach(function (e) {
                 if (d.source.id === e.id || d.target.id === e.id) {
-                    if ((isVisible.support && d.color === colors.green) || (isVisible.attack && d.color === colors.red)) {
-                        edgesVirtualNodes.push(d);
-                    }
-                    // if button supports or attacks is clicked do not highlight supports or attacks on premise groups
-                    if (!((isVisible.support || isVisible.attack) && (d.edge_type === 'arrow') && !isVisible.statement)) {
-                        edgesVirtualNodes.push(d);
-                    }
+                    edgesCircleId.push(d);
                 }
             });
         });
-        edgesVirtualNodes.forEach(function (d) {
-            highlightElements(d);
-        });
-        return edgesVirtualNodes;
-    }
-
-    /**
-     * Test whether virtual nodes are left, where not all incoming and outgoing edges are highlighted.
-     *
-     * @param edgesVirtualNodes
-     * @param edgesVirtualNodesLast
-     * @return boolean
-     */
-    function testVirtualNodesLeft(edgesVirtualNodes, edgesVirtualNodesLast) {
-        let isVirtualNodeLeft = false;
-        edgesVirtualNodes.forEach(function (d) {
-            if (d.source.label === '') {
-                isVirtualNodeLeft = true;
-                // if the edge is already highlighted terminate loop
-                edgesVirtualNodesLast.forEach(function (e) {
-                    if (d.id === e.id) {
-                        isVirtualNodeLeft = false;
-                    }
-                });
-            }
-        });
-        return isVirtualNodeLeft;
     }
 
     /**

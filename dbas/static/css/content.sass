@@ -167,11 +167,18 @@ span[data-argumentation-type^="position"]
     color: lightblue
     text-decoration: underline
 
-#discussions-space-list .fa
+#discussions-space-list .item-actions
+  .fa
+    font-size: 12px
+    color: #000
+  &:not(.item-disabled)
+    .fa
+      &:hover
+        color: $error-color
+
+#discussions-space-list .item-disabled .fa
   font-size: 12px
-  color: #000
-  &:hover
-    color: $error-color
+  color: grey!important
 
 .indented-button
   padding-left: 2em !important

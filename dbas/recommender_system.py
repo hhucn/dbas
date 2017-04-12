@@ -83,9 +83,14 @@ def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, res
     :param restriction_on_arg_uids: Argument.uid
     :param last_attack: String
     :param history: History
+    :param redirected_from_jump: Boolean
     :return: Argument.uid, String, Boolean if no new attacks are found
     """
     # getting undermines or undercuts or rebuts
+    logger('RecommenderSystem', 'get_attack_for_argument', 'main ' + str(argument_uid) + ' (reststriction: ' +
+           str(restriction_on_attacks) + ', ' + str(restriction_on_arg_uids) + ')')
+    logger('RecommenderSystem', 'get_attack_for_argument', 'main ' + str(argument_uid) + ' (reststriction: ' +
+           str(restriction_on_attacks) + ', ' + str(restriction_on_arg_uids) + ')')
     logger('RecommenderSystem', 'get_attack_for_argument', 'main ' + str(argument_uid) + ' (reststriction: ' +
            str(restriction_on_attacks) + ', ' + str(restriction_on_arg_uids) + ')')
 

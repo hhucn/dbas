@@ -72,16 +72,15 @@ def get_d3_partial_dump(request):
             return_dict = graph
     else:
         if is_argument:
-            graph, error = get_partial_graph_for_argument(uid, issue, request.authenticated_userid)
+            graph, error = get_partial_graph_for_argument(uid, issue, request)
         else:
-            graph, error = get_partial_graph_for_statement(uid, issue, request.authenticated_userid)
+            graph, error = get_partial_graph_for_statement(uid, issue, request, path)
         if not error:
             return_dict.update(graph)
             return_dict.update({'node_doj_factors': get_doj_data(issue)})
             return_dict.update({'node_opinion_factors': get_opinion_data(issue)})
             return_dict.update({'path': get_path_of_user(request.application_url, path, issue)})
             return_dict.update({'error': ''})
-            return_dict.update()
 
     if error:
         ui_locales = get_language(request)

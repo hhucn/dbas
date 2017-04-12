@@ -498,6 +498,7 @@ class DictionaryHelper(object):
                                 'island_view': _tn_sys.get(_.displayControlDialogIslandTitle),
                                 'graph_view': _tn_sys.get(_.displayControlDialogGraphTitle),
                                 'edit_statement': _tn_dis.get(_.editTitle),
+                                'edit_statement_already': _tn_dis.get(_.editAlreadyTitle),
                                 'view_changelog': _tn_dis.get(_.viewChangelog),
                                 'report_statement': _tn_dis.get(_.reportStatement),
                                 'report_argument': _tn_dis.get(_.reportArgument),
