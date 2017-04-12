@@ -416,6 +416,8 @@ function GuiHandler() {
 		div_page.attr('page', page_no);
 		div_page.show();
 		div_page.find('#' + popupSetPremiseGroupsStatementCount).text(splitted.length);
+		var tmp_span = div_page.find('#insert_one_argument').next();
+		tmp_span.text(tmp_span.text().replace('xx', splitted.length));
 		list = div_page.find('#' + popupSetPremiseGroupsListMoreArguments);
 		bigTextSpan = div_page.find('#' + popupSetPremiseGroupsOneBigStatement);
 		// rename the id-, for- and name-tags of all radio button groups

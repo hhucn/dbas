@@ -11,7 +11,7 @@ de_lang = {
     _.arguments: 'Argumente',
     _.error: 'Fehler',
     _.iActuallyHave: 'Ich habe',
-    _.insertOneArgument: 'Ich habe ein Argument mit mehreren Begründungen:',
+    _.insertOneArgument: 'Ich habe ein Argument mit xx Begründungen:',
     _.insertDontCare: 'Übernehme es so, wie es ist!',
     _.forgotInputRadio: 'Sie haben eine Auswahl vergessen',
     _.needHelpToUnderstandStatement: 'Wir brauchen Hilfe zum Verständnis Ihrer Aussage!',
