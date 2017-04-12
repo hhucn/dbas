@@ -1,3 +1,8 @@
+## 1.3.2 (2017-04-12)
+- Minor bug fixes
+- Language fixes for the feedback options
+- Improved the popup for the use of the "and"-keyword
+
 ## 1.3.1 (2017-04-07)
 - Minor bug fixes
 - More planar graph

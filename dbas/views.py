@@ -66,7 +66,7 @@ from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
     send_request_for_info_popup_to_socketio
 
 name = 'D-BAS'
-version = '1.3.1'
+version = '1.3.2'
 full_version = version
 project_name = name + ' ' + full_version
 
