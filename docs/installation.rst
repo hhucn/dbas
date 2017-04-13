@@ -4,12 +4,43 @@
 Installation
 ============
 
-*This is the classical way to install D-BAS on your local machine. If you want to use docker,
-see* `docker installation instructions <docker/index.html>`_.
+The preferred way to install D-BAS is via Docker. You can find some installation
+instructions `on this site <docker/index.html>`_.
+
+
+The Docker Way
+==============
+
+Currently, there are two docker-compose definitions which can be used to deploy
+D-BAS. Both rely on our registry server, which means, that you need to have
+access to our registry server as long as this is hosted in our institute.
+
+Development Mode
+----------------
+
+To start D-BAS with interactive development mode (the webserver sees your
+changes and automatically restarts itself to show the changes in the browser),
+use the default compose file::
+
+    $ docker-compose up
+
+Production Mode
+---------------
+
+Use a different compose file::
+
+    $ docker-compose -f docker-compose.production.yml up
+
+This mode uses the pre-built images from our registry server and uses "uwsgi".
 
 
 Requirements for development
 ============================
+
+.. note::
+
+   No longer maintained. We are now using Docker. Check the Dockerfiles if
+   you want to install it directly on your machine.
 
 Ensure that the following tools are installed:
 

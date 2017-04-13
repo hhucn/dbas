@@ -31,7 +31,7 @@ Example for a fresh build
 
 Production mode:
 
-    docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build
+    docker-compose -f docker-compose.production.yml up --build
 
 After this you can hit [http://localhost:4284](http://localhost:4284) for D-BAS.
 
