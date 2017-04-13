@@ -53,9 +53,9 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
 
     db_user = get_user_by_case_insensitive_nickname(nickname)
     if not db_user:  # check if the user exists
-        msg = __login_user_not_existing(request, nickname, password, _tn, is_ldap)
-        if msg is not None:
-            return {'error': msg}  # error
+        error, db_user = __login_user_not_existing(request, nickname, password, _tn, is_ldap)
+        if error is not None:
+            return {'error': error}  # error
 
     else:
         error = __login_user_is_existing(request, nickname, password, _tn, is_ldap, db_user)
@@ -156,16 +156,16 @@ def __login_user_not_existing(request, nickname, password, _tn, is_ldap):
 
     # if the user does not exists and we are using LDAP, we'll grep the user
     if is_ldap:
-        msg, db_user = __login_user_ldap(request, nickname, password, _tn)
-        if msg is not None:
-            return msg
+        error, db_user = __login_user_ldap(request, nickname, password, _tn)
+        if error is not None:
+            return error, db_user
 
     else:
-        success, msg, db_user = register_with_ajax_data(request, _tn)
+        success, error, db_user = register_with_ajax_data(request, _tn)
         if not success:
-            return msg
+            return error, db_user
 
-    return None
+    return error, db_user
 
 
 def __login_user_is_existing(request, nickname, password, _tn, is_ldap, db_user):
