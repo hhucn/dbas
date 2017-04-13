@@ -2426,7 +2426,7 @@ def switch_language(request):
         if not db_lang or not ui_locales:
             ui_locales = get_language(request)
 
-        logger('switch_language', 'def', 'setting lang to: {}'.format(ui_locales))
+        logger('switch_language', 'def', 'setting lang to {}'.format(ui_locales))
         request._LOCALE_ = ui_locales
         request.response.set_cookie('_LOCALE_', str(ui_locales))
         request.cookies['_LOCALE_'] = ui_locales
