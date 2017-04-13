@@ -46,7 +46,8 @@ from dbas.helper.query import get_logfile_for_statements, revoke_content, insert
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
 from dbas.helper.settings import set_settings
 from dbas.helper.views import preparation_for_view, get_nickname, try_to_contact, handle_justification_step, \
-    try_to_register_new_user_via_ajax, prepare_parameter_for_justification, login_user
+    prepare_parameter_for_justification
+from dbas.auth.login import login_user, register_with_ajax_data
 from dbas.helper.voting import add_click_for_argument, clear_vote_and_seen_values_of_user
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_argument, \
     check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement, related_with_support
@@ -1483,7 +1484,7 @@ def user_logout(request, redirect_to_main=False):
 @view_config(route_name='ajax_user_registration', renderer='json')
 def user_registration(request):
     """
-    Registers new user
+    Registers new user with data given in the ajax requesst
 
     :param request: current request of the server
     :return: dict() with success and message
@@ -1504,7 +1505,7 @@ def user_registration(request):
 
     # getting params
     try:
-        success, info = try_to_register_new_user_via_ajax(request, ui_locales)
+        success, info = register_with_ajax_data(request, ui_locales)
 
     except KeyError as e:
         logger('user_registration', 'error', repr(e))

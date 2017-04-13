@@ -501,6 +501,7 @@ de_lang = {
     _.thenOtherUsersSaidThat: 'Dann haben andere Teilnehmer noch gesagt, dass',
     _.opinionBarometer: 'Stimmungsbarometer',
     _.pleaseAddYourSuggestion: 'Bitte geben Sie Ihren Vorschlag an!',
+    _.pleaseTryAgainLaterOrContactUs: 'Bitte versuchen Sie es später noch einmal oder schreiben Sie uns über das Kontakformular.',
     _.previous: 'Vorheriger Eintrag',
     _.premiseGroup: 'Gruppe von Voraussetzung(en)',
     _.premisegroupPopupWarning: 'Achtung: Dieser Schritt kann nicht rückgängig gemacht werden!',

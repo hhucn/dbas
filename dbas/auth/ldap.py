@@ -1,13 +1,15 @@
 from dbas.logger import logger
+from dbas.strings.keywords import Keywords as _
 
 
-def verify_ldap_user_data(request, nickname, password):
+def verify_ldap_user_data(request, nickname, password, _tn):
     """
     Trys to authenticate the user with nickname and password
 
     :param request: current request of the webserver
     :param nickname: users nickname for LDAP
     :param password: users password for LDAP
+    :param _tn: Translator
     :return: [firstname, lastname, gender, email] on success else None
     """
     logger('ldap', 'verify_ldap_user_data', 'main')
@@ -25,13 +27,13 @@ def verify_ldap_user_data(request, nickname, password):
         email = r['settings:ldap:account.email']
         logger('ldap', 'verify_ldap_user_data', 'parsed data')
 
-        logger('ldap', 'verify_ldap_user_data', 'ldap.initialize(\'' + server + '\')')
+        logger('ldap', 'verify_ldap_user_data', 'ldap.initialize(\'{}\')'.format(server))
         l = ldap.initialize(server)
         l.set_option(ldap.OPT_NETWORK_TIMEOUT, 5.0)
-        logger('ldap', 'verify_ldap_user_data', 'ldap.simple_bind_s(\'' + nickname + scope + '\', \'***\')')
+        logger('ldap', 'verify_ldap_user_data', 'ldap.simple_bind_s(\'{}{}\', \'***\')'.format(nickname, scope))
         l.simple_bind_s(nickname + scope, password)
         logger('ldap', 'verify_ldap_user_data',
-               'l.search_s(' + base + ', ldap.SCOPE_SUBTREE, (\'' + filter + '=' + nickname + '\'))[0][1]')
+               'l.search_s({}, ldap.SCOPE_SUBTREE, (\'{}={}\'))[0][1]'.format(base, filter, nickname))
         user = l.search_s(base, ldap.SCOPE_SUBTREE, (filter + '=' + nickname))[0][1]
 
         firstname = user[firstname][0].decode('utf-8')
@@ -41,16 +43,16 @@ def verify_ldap_user_data(request, nickname, password):
         email = user[email][0].decode('utf-8')
         logger('ldap', 'verify_ldap_user_data', 'success')
 
-        return [firstname, lastname, gender, email]
+        return [firstname, lastname, gender, email], None
 
     except ldap.INVALID_CREDENTIALS as e:
         logger('ldap', 'verify_ldap_user_data', 'ldap credential error: ' + str(e))
-        return None
+        return None, _tn.get(_.userPasswordNotMatch)
 
     except ldap.SERVER_DOWN as e:
         logger('ldap', 'verify_ldap_user_data', 'can\'t reach server within 5s: ' + str(e))
-        return None
+        return None, _tn.get(_.serviceNotAvailable) + '. ' + _tn.get(_.pleaseTryAgainLaterOrContactUs)
 
     except ldap.OPERATIONS_ERROR as e:
         logger('ldap', 'verify_ldap_user_data', 'OPERATIONS_ERROR: ' + str(e))
-        return None
+        return None, _tn.get(_.internalKeyError) + ' ' + _tn.get(_.pleaseTryAgainLaterOrContactUs)
