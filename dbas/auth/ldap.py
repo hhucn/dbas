@@ -28,7 +28,7 @@ def verify_ldap_user_data(request, nickname, password):
         logger('ldap', 'verify_ldap_user_data', 'ldap.initialize(\'' + server + '\')')
         l = ldap.initialize(server)
         l.set_option(ldap.OPT_NETWORK_TIMEOUT, 5.0)
-        logger('ldap', 'verify_ldap_user_data', 'simple_bind_s(\'' + nickname + scope + '\', \'***\')')
+        logger('ldap', 'verify_ldap_user_data', 'ldap.simple_bind_s(\'' + nickname + scope + '\', \'***\')')
         l.simple_bind_s(nickname + scope, password)
         logger('ldap', 'verify_ldap_user_data',
                'l.search_s(' + base + ', ldap.SCOPE_SUBTREE, (\'' + filter + '=' + nickname + '\'))[0][1]')
