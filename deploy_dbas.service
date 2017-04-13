@@ -6,7 +6,7 @@ After=docker.service
 [Service]
 Restart=on-failure
 WorkingDirectory=/home/krauthoff/dbas
-ExecStart=/usr/local/bin/docker-compose -f docker-compose.yml -f docker-compose.production.yml up --build
+ExecStart=/usr/local/bin/docker-compose -f docker-compose.production.yml up --build
 ExecStop=/usr/local/bin/docker-compose stop
 
 [Install]
