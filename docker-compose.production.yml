@@ -1,6 +1,18 @@
 version: '2'
 services:
+  db:
+    image: postgres:9.6-alpine
+    volumes:
+      - ./docker/db:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    tmpfs: /tmp
+    env_file: # Needed in 001_init.sh
+      - development.env
   notifications:
+    image: gitlab.cs.uni-duesseldorf.de:5001/dbas/notifications
+    ports:
+      - "5222:5222"
     volumes:
       - /etc/letsencrypt:/cert:ro
   docs:
@@ -11,5 +23,15 @@ services:
       - "8000:8000"
     tmpfs: /tmp
   web:
-    image: gitlab.cs.uni-duesseldorf.de:5001/dbas/dbas:master
+    image: gitlab.cs.uni-duesseldorf.de:5001/dbas/dbas
     command: bash -c "sleep 10 && uwsgi --ini-paste production.ini"
+    restart: always
+    ports:
+      - "4284:4284"
+    links:
+      - db:db
+    env_file:
+      - development.env
+    depends_on:
+      - db
+    tmpfs: /tmp
