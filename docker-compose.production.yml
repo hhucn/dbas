@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   db:
     image: postgres:9.6-alpine
@@ -16,9 +16,7 @@ services:
     volumes:
       - /etc/letsencrypt:/cert:ro
   docs:
-    build:
-      context: .
-      dockerfile: Dockerfile.docs
+    image: gitlab.cs.uni-duesseldorf.de:5001/dbas/dbas:docs
     ports:
       - "8000:8000"
     tmpfs: /tmp
