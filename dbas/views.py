@@ -71,10 +71,6 @@ version = '1.3.2'
 full_version = version
 project_name = name + ' ' + full_version
 
-# move this into the ini file when the time is right
-auto_completion_url = 'http://localhost:5103'
-recommender_system_url = 'http://localhost:5104'
-
 
 def base_layout():
     return get_renderer('templates/basetemplate.pt').implementation().macros['layout']
