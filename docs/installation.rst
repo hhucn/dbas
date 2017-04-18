@@ -102,7 +102,7 @@ Tests
 
 * PEP 8 and Co.::
 
-    jshint ./dbas/static/js/{main,ajax,discussion,review}/*.js
+    jshint ./dbas/static/js/{main,ajax,discussion,review,d3}/*.js
     flake8
 
 
