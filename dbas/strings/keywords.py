@@ -35,7 +35,7 @@ class Keywords(Enum):
     emptyEmail = 'Your e-mail is empty!'
     emtpyContent = 'Your content is empty!'
     maliciousAntiSpam = 'Your anti-spam message is empty or wrong!'
-    nonValidCSRF = 'CSRF-Token is not valid'
+    nonValidCSRF = 'Your session is not valid'
     name = 'Name'
     mail = 'Mail'
     phone = 'Phone'

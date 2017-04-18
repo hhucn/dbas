@@ -42,7 +42,7 @@ de_lang = {
     _.emptyEmail: 'Ihre E-Mail ist leer!',
     _.emtpyContent: 'Ihr Inhalt ist leer!',
     _.maliciousAntiSpam: 'Ihr Anti-Spam-Nachricht ist leer oder falsch!',
-    _.nonValidCSRF: 'CSRF-Token ist nicht valide',
+    _.nonValidCSRF: 'Ihre Sitzung ist abgelaufen',
     _.name: 'Name',
     _.mail: 'Mail',
     _.phone: 'Telefon',
