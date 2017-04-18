@@ -46,7 +46,7 @@ def set_settings(request, service, settings_value, _tn):
         error = _tn.get(_.keyword)
 
     transaction.commit()
-    public_page_url = request.application_url + '/user/' + (db_user.nickname if settings_value else public_nick)
+    public_page_url = '{}/user/{}'.format(request.application_url, db_user.uid)
     gravatar_url = get_profile_picture(db_user, 80, ignore_privacy_settings=settings_value)
 
     return public_nick, public_page_url, gravatar_url, error

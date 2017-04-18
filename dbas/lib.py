@@ -1049,7 +1049,7 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
     unknown = 'unknown@' + url
     email = (user.email + additional_id).encode('utf-8') if user else unknown.encode('utf-8')
 
-    gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
+    gravatar_url = 'https://secure.gravatar.com/avatar/{}?'.format(hashlib.md5(email.lower()).hexdigest())
     gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
     return gravatar_url
 
@@ -1070,7 +1070,7 @@ def get_public_profile_picture(user, size=80):
     url = get_global_url()
     url = url[url.index('//') + 2:]
     email = (user.email + additional_id).encode('utf-8') if user else ('unknown@' + url).encode('utf-8')
-    gravatar_url = 'https://secure.gravatar.com/avatar/' + hashlib.md5(email.lower()).hexdigest() + "?"
+    gravatar_url = 'https://secure.gravatar.com/avatar/{}?'.format(hashlib.md5(email.lower()).hexdigest())
     gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
     return gravatar_url
 
@@ -1092,15 +1092,15 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
         return 'Missing author with uid ' + str(uid), False
     if not db_settings:
         return 'Missing settings of author with uid ' + str(uid), False
-    img = '<img class="img-circle" src="' + get_profile_picture(db_user, profile_picture_size) + '">'
+    img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, profile_picture_size))
 
     nick = db_user.get_global_nickname()
-    link_begin = ('<a href="' + main_page + '/user/' + str(db_user.uid) + ' " title="' + nick + '">') if linked_with_users_page else ''
+    link_begin = '<a href="{}/user/{}" title="{}">'.format(main_page, db_user.uid, nick) if linked_with_users_page else ''
     link_end = '</a>' if linked_with_users_page else ''
     if gravatar_on_right_side:
-        return db_user, link_begin + nick + ' ' + img + link_end, True
+        return db_user, '{}{} {}{}'.format(link_begin, nick, img, link_end), True
     else:
-        return db_user, link_begin + img + ' ' + nick + link_end, True
+        return db_user, '{}{} {}{}'.format(link_begin, img, nick, link_end), True
 
 
 def bubbles_already_last_in_list(bubble_list, bubbles):
