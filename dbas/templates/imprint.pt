@@ -21,7 +21,7 @@
 				    <br>E-Mail: <a target="_blank" href='mailto:krauthoff@cs.uni-duesseldorf.de'>krauthoff@cs.uni-duesseldorf.de</a>
 				    <br>
 				    <br>
-                    <a href="http://www.uni-duesseldorf.de/home/footer/impressum.html"><span>Weiteres auf dem Impressum der HHU</span></a>
+                    <a href="http://www.uni-duesseldorf.de/home/footer/impressum.html"><span i18n:translate="imprint_hhu">Weiteres auf dem Impressum der HHU</span></a>
 				    <!--<h4 style="margin-bottom: 1em;"><span i18n:translate="disclaimer">Haftungsausschluss:</span></h4>-->
 				    <!--<h5><span i18n:translate="disclaimer_content">Haftung für Inhalte</span></h5>-->
 				    <!--<span i18n:translate="disclaimer_content_content">-->
