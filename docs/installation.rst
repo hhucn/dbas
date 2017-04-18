@@ -4,56 +4,37 @@
 Installation
 ============
 
-*This is the classical way to install D-BAS on your local machine. If you want to use docker,
-see* `docker installation instructions <docker/index.html>`_.
+The preferred way to install D-BAS is via Docker. You can find some installation
+instructions `on this site <docker/index.html>`_.
 
 
-Requirements for development
-============================
+The Docker Way
+==============
 
-Ensure that the following tools are installed:
+Currently, there are two docker-compose definitions which can be used to deploy
+D-BAS. Both rely on our registry server, which means, that you need to have
+access to our registry server as long as this is hosted in our institute.
 
-* Python >= 3.4
-* `pip <https://pip.pypa.io/en/stable/installing/>`_
-* `virtualenv <http://virtualenv.readthedocs.org/en/latest/installation.html>`_
-* `virtualenvwrapper <http://virtualenvwrapper.readthedocs.org/en/latest/install.html>`_
-* PostgreSQL and libpq-dev
+Development Mode
+----------------
 
-Then follow these steps:
+To start D-BAS with interactive development mode (the webserver sees your
+changes and automatically restarts itself to show the changes in the browser),
+use the default compose file::
 
-1. Create virtualenv with python3::
+    $ docker-compose up
 
-    $ mkvirtualenv "--python=$(which python3)" dbas
+Production Mode
+---------------
 
-2. Install PostgreSQL and configure it::
+Use a different compose file::
 
-    $ apt-get install libpq-dev python-dev postgresql
+    $ docker-compose -f docker-compose.production.yml up
 
-3. Install all requirements::
-
-    $ pip install -r requirements.txt
-
-4. Develop application::
-
-    $ python setup.py develop
-
-5. Create database::
-
-    $ make init
-    $ make all
-
-6. Deploy Sass::
-
-    $ sass static/css/main.sass  static/css/main.css --style compressed --no-cache
-
-7. Start development web server::
-
-    $ pserve development.ini --reload
-
-8. If you are running Mac OS X, please install portmap *https://codingmonkeys.de/portmap/*
+This mode uses the pre-built images from our registry server and uses "uwsgi".
 
 
-Environment variables
+Environment Variables
 =====================
 You may want to configure options as environment variables instead of config entries.
 
@@ -74,7 +55,7 @@ Example::
     => foo.bar_baz = fizz
 
 
-Special variables
+Special Variables
 -----------------
 
 There are some special variables for the database connection.
@@ -121,12 +102,63 @@ Tests
 
 * PEP 8 and Co.::
 
-    jshint ./dbas/static/js/{main,ajax,discussion,review}/*.js
+    jshint ./dbas/static/js/{main,ajax,discussion,review,d3}/*.js
     flake8
+
+
+Manual Installation
+===================
+
+.. note::
+
+   No longer maintained. We are now using Docker. Check the Dockerfiles if
+   you want to install it directly on your machine.
+
+Ensure that the following tools are installed:
+
+* Python >= 3.4
+* `pip <https://pip.pypa.io/en/stable/installing/>`_
+* `virtualenv <http://virtualenv.readthedocs.org/en/latest/installation.html>`_
+* `virtualenvwrapper <http://virtualenvwrapper.readthedocs.org/en/latest/install.html>`_
+* PostgreSQL and libpq-dev
+
+Then follow these steps:
+
+1. Create virtualenv with python3::
+
+    $ mkvirtualenv "--python=$(which python3)" dbas
+
+2. Install PostgreSQL and configure it::
+
+    $ apt-get install libpq-dev python-dev postgresql
+
+3. Install all requirements::
+
+    $ pip install -r requirements.txt
+
+4. Develop application::
+
+    $ python setup.py develop
+
+5. Create database::
+
+    $ make init
+    $ make all
+
+6. Deploy Sass::
+
+    $ sass static/css/main.sass  static/css/main.css --style compressed --no-cache
+
+7. Start development web server::
+
+    $ pserve development.ini --reload
+
+8. If you are running Mac OS X, please install portmap *https://codingmonkeys.de/portmap/*
 
 
 Mac OS specifc installation problems
 ====================================
+
 psycopg2 install fails with ``library not found for -lssl with on install``
 ---------------------------------------------------------------------------
 
