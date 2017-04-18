@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-04-13 07:17+0200\n"
+"POT-Creation-Date: 2017-04-18 15:42+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -585,201 +585,38 @@ msgid "logout"
 msgstr "Logout"
 
 #. Default: Impressum
-#: templates/imprint.pt:8
+#: templates/imprint.pt:9
 msgid "imprint"
 msgstr "Imprint"
 
 #. Default: Angaben gemäß § 5 TMG
-#: templates/imprint.pt:10
+#: templates/imprint.pt:11
 msgid "data_tmg"
 msgstr "Information according to § 5 TMG "
 
 #. Default: Kontakt:
 #. Default: Contact
-#: templates/imprint.pt:13 templates/snippet-footer.pt:18
+#: templates/imprint.pt:14 templates/snippet-footer.pt:18
 msgid "contact"
 msgstr "Contact"
 
 #. Default: Institut für Informatik
-#: templates/imprint.pt:15
+#: templates/imprint.pt:16
 msgid "department"
 msgstr "Department of Computer Science"
 
 #. Default: Telefon:
-#: templates/imprint.pt:19
+#: templates/imprint.pt:20
 msgid "phone"
 msgstr "Phone Number:"
 
-#. Default: Haftungsausschluss:
-#: templates/imprint.pt:22
-msgid "disclaimer"
-msgstr "Disclaimer:"
-
-#. Default: Haftung für Inhalte
-#: templates/imprint.pt:23
-msgid "disclaimer_content"
-msgstr "Liability for content"
-
-#. Default: Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt.
-#. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir
-#. jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1
-#. TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen
-#. verantwortlich. Nach § 8 bis 10 TMG sind wir als Diensteanbieter jedoch
-#. nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu
-#. überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige
-#. Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der
-#. Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon
-#. unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der
-#. Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von
-#. entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend
-#. entfernen.
+#. Default: Weiteres auf dem Impressum der HHU
 #: templates/imprint.pt:24
-msgid "disclaimer_content_content"
-msgstr ""
-"Although the contents of our pages were created with utmost care, we reserve "
-"the right not to be responsible for the correctness, completeness and "
-"topicality of the contents. According to $ 6 par.1 MDStV and $ 8 par.1 TDG "
-"we, as a service provider, according to general law are responsible for own "
-"contributions contained in the contents of these pages. Service providers "
-"are, however, not obliged, to check foreign information transmitted or "
-"stored by them or to search for circumstances pointing to any illegal "
-"activity. Obligations to remove or block information according to general "
-"law remain unaffected hereof. Liability claims in this respect will only be "
-"possible from the point a definite infringement of law becomes known. If "
-"corresponding infringements of law become known, these contents will "
-"immediately be deleted."
-
-#. Default: Haftung für Links
-#: templates/imprint.pt:38
-msgid "disclaimer_links"
-msgstr "Liability for links"
-
-#. Default: Unser Angebot enthält Links zu externen Webseiten Dritter, auf
-#. deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese
-#. fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten
-#. Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten
-#. verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung
-#. auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum
-#. Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche
-#. Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer
-#. Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen
-#. werden wir derartige Links umgehend entfernen.
-#: templates/imprint.pt:39
-msgid "disclaimer_links_content"
-msgstr ""
-"Our offer contains links to external websites of third parties on the "
-"contents of which we do not have any influence. Therefore, we cannot be held "
-"responsible for any foreign contents linked or referred to. It is always the "
-"respective author or operator of the pages who is responsible for the "
-"contents of the linked pages. At the time of linking the linked pages were "
-"checked for possible infringements of law. Unlawful contents could not be "
-"recognized at the time of linking. A permanent control as regards content of "
-"the linked pages without a definite indication for an infringement of law "
-"is, however, not reasonable. If any infringements of law become known, such "
-"links will immediately be removed."
-
-#. Default: Urheberrecht
-#: templates/imprint.pt:51
-msgid "disclaimer_copyright"
-msgstr "Copyright"
-
-#. Default: Die durch die Seitenbetreiber erstellten Inhalte und Werke auf
-#. diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung,
-#. Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen
-#. des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen
-#. Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den
-#. privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf
-#. dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte
-#. Dritter beachtet. Insbesondere werden Inhalte Dritter als solche
-#. gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung
-#. aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei
-#. Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend
-#. entfernen.
-#: templates/imprint.pt:52
-msgid "disclaimer_copyright_content"
-msgstr ""
-"The operator of the pages always endeavours to observe copyrights of others "
-"and to use materials created by him or license-free material. The contents "
-"and materials on these pages created by the operator of the page are subject "
-"to German copyright. Contributions of third parties are marked as such. "
-"Duplication, processing, distribution and any kind of utilization outside "
-"the boundaries of the copyright require the written agreement of the "
-"respective author or creator. Downloads and copies of this page are "
-"exclusively allowed for private, but not commercial use."
-
-#. Default: Datenschutz
-#: templates/imprint.pt:65
-msgid "disclaimer_dataprotection"
-msgstr "Data protection"
-
-#. Default: Die Nutzung unserer Webseite ist in der Regel ohne Angabe
-#. personenbezogener Daten möglich. Soweit auf unseren Seiten personenbezogene
-#. Daten (beispielsweise Name, oder eMail-Adressen) erhoben werden, erfolgt
-#. dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten werden ohne
-#. Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben. <dynamic
-#. element> Wir weisen darauf hin, dass die Datenübertragung im Internet (z.B.
-#. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein
-#. lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.
-#. <dynamic element> Der Nutzung von im Rahmen der Impressumspflicht
-#. veröffentlichten Kontaktdaten durch Dritte zur Übersendung von nicht
-#. ausdrücklich angeforderter Werbung und Informationsmaterialien wird hiermit
-#. ausdrücklich widersprochen. Die Betreiber der Seiten behalten sich
-#. ausdrücklich rechtliche Schritte im Falle der unverlangten Zusendung von
-#. Werbeinformationen, etwa durch Spam-Mails, vor.
-#: templates/imprint.pt:66
-msgid "disclaimer_dataprotection_content"
-msgstr ""
-"To the extent that personal data (e.g. name, address or email-addresses) are "
-"published in our pages, these have been indicated voluntarily, as far as "
-"this is under our control. The utilization of offers and services, as far as "
-"possible, always takes place without having to indicate personal data. The "
-"utilization by third parties of contact data published within the scope of "
-"the imprint obligation for transmission of not expressly solicited "
-"advertising and information materials are herewith expressly objected. The "
-"author of these pages expressly reserves the right to take legal action, in "
-"case the transmission of advertising information, e.g. through Spam-mails, "
-"takes place without request."
-
-#. Default: Session-Cookies
-#: templates/imprint.pt:83
-msgid "disclaimer_session_cookie"
-msgstr "Session-Cookies"
-
-#. Default: Diese erlauben Ihnen notwendige Funktionen auf unseren Websites
-#. auszuführen, wie das Aufrechterhalten von Log-in Informationen für Ihre
-#. Sitzung oder einer Überweisung. Ebenfalls helfen sie dabei die
-#. Datenübertragung hindurch des Internets zu minimieren. Sie werden nicht auf
-#. Ihrem Computer gespeichert und laufen ab, sobald Sie Ihre Browser-Sitzung
-#. beenden.
-#: templates/imprint.pt:84
-msgid "disclaimer_session_cookie_content"
-msgstr ""
-"These cookies allow you to use necessary functions of our websites, such as "
-"the maintenance of log in information. They also help to minimize the data "
-"transmission through the world wide web."
-
-#. Default: Tracking-Cookies
-#: templates/imprint.pt:93
-msgid "disclaimer_tracking_cookie"
-msgstr "Tracking-Cookies"
-
-#. Default: Diese erlauben uns Ihre wiederholten Besuche unserer Website
-#. wahrzunehmen. Durch die Übereinstimmung von anononymen, willkürlichen
-#. Identifizierungszeichen, sind wir dazu in der Lage spezielle Browsing-
-#. Informationen festzuhalten, z.B. von Ihnen ausgewählte Seiten und Optionen
-#. und den Weg, den Sie durch unsere Website gewählt haben. Durch das
-#. Überwachen dieser Informationen können wir unsere Websites verbessern.
-#: templates/imprint.pt:94
-msgid "disclaimer_tracking_cookie_content"
-msgstr ""
-"These allow us to identify you while doing repeated visits of our website . "
-"By agreement of an anonymous, arbitrary identifier, we are ableto hold "
-"specific browsing information, e.g. your selected pages or the path that "
-"you  have chosen on our website. While monitoring this information, we are "
-"capable to improve our site."
+msgid "imprint_hhu"
+msgstr "More on the imprint of the Heinrich-Heine-University Duesseldorf"
 
 #. Default: Piwik
-#: templates/imprint.pt:104
+#: templates/imprint.pt:107
 msgid "disclaimer_piwik"
 msgstr "Piwik"
 
@@ -794,7 +631,7 @@ msgstr "Piwik"
 #. Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch
 #. darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche
 #. Funktionen dieser Website vollumfänglich nutzen können.
-#: templates/imprint.pt:105
+#: templates/imprint.pt:108
 msgid "disclaimer_piwik_content"
 msgstr ""
 "Like most website operators, Piwik.org collects non-personally-identifying "
@@ -811,18 +648,18 @@ msgstr ""
 "under the same circumstances that it uses and discloses personally-"
 "identifying information, as described below."
 
-#. Default: Copyrights and used Software
-#: templates/imprint.pt:125
-msgid "copyright_and_used_software"
-msgstr "Copyright and used Software"
-
 #. Default: is generated with Pyramid Web Framework
-#: templates/imprint.pt:147
+#: templates/imprint.pt:128
 msgid "generated_with"
 msgstr "is generated with Pyramid Web Framework"
 
+#. Default: Copyrights and used Software
+#: templates/imprint.pt:143
+msgid "copyright_and_used_software"
+msgstr "Copyright and used Software"
+
 #. Default: Changes
-#: templates/imprint.pt:160
+#: templates/imprint.pt:164
 msgid "changes"
 msgstr "Changelog"
 
@@ -2103,6 +1940,93 @@ msgstr "Supports"
 #: templates/content.pt:310 templates/content.pt:311
 msgid "attacks_on_my_statements"
 msgstr "Attacks"
+
+#~ msgid "disclaimer"
+#~ msgstr "Disclaimer:"
+
+#~ msgid "disclaimer_content"
+#~ msgstr "Liability for content"
+
+#~ msgid "disclaimer_content_content"
+#~ msgstr ""
+#~ "Although the contents of our pages were created with utmost care, we "
+#~ "reserve the right not to be responsible for the correctness, completeness "
+#~ "and topicality of the contents. According to $ 6 par.1 MDStV and $ 8 "
+#~ "par.1 TDG we, as a service provider, according to general law are "
+#~ "responsible for own contributions contained in the contents of these "
+#~ "pages. Service providers are, however, not obliged, to check foreign "
+#~ "information transmitted or stored by them or to search for circumstances "
+#~ "pointing to any illegal activity. Obligations to remove or block "
+#~ "information according to general law remain unaffected hereof. Liability "
+#~ "claims in this respect will only be possible from the point a definite "
+#~ "infringement of law becomes known. If corresponding infringements of law "
+#~ "become known, these contents will immediately be deleted."
+
+#~ msgid "disclaimer_links"
+#~ msgstr "Liability for links"
+
+#~ msgid "disclaimer_links_content"
+#~ msgstr ""
+#~ "Our offer contains links to external websites of third parties on the "
+#~ "contents of which we do not have any influence. Therefore, we cannot be "
+#~ "held responsible for any foreign contents linked or referred to. It is "
+#~ "always the respective author or operator of the pages who is responsible "
+#~ "for the contents of the linked pages. At the time of linking the linked "
+#~ "pages were checked for possible infringements of law. Unlawful contents "
+#~ "could not be recognized at the time of linking. A permanent control as "
+#~ "regards content of the linked pages without a definite indication for an "
+#~ "infringement of law is, however, not reasonable. If any infringements of "
+#~ "law become known, such links will immediately be removed."
+
+#~ msgid "disclaimer_copyright"
+#~ msgstr "Copyright"
+
+#~ msgid "disclaimer_copyright_content"
+#~ msgstr ""
+#~ "The operator of the pages always endeavours to observe copyrights of "
+#~ "others and to use materials created by him or license-free material. The "
+#~ "contents and materials on these pages created by the operator of the page "
+#~ "are subject to German copyright. Contributions of third parties are "
+#~ "marked as such. Duplication, processing, distribution and any kind of "
+#~ "utilization outside the boundaries of the copyright require the written "
+#~ "agreement of the respective author or creator. Downloads and copies of "
+#~ "this page are exclusively allowed for private, but not commercial use."
+
+#~ msgid "disclaimer_dataprotection"
+#~ msgstr "Data protection"
+
+#~ msgid "disclaimer_dataprotection_content"
+#~ msgstr ""
+#~ "To the extent that personal data (e.g. name, address or email-addresses) "
+#~ "are published in our pages, these have been indicated voluntarily, as far "
+#~ "as this is under our control. The utilization of offers and services, as "
+#~ "far as possible, always takes place without having to indicate personal "
+#~ "data. The utilization by third parties of contact data published within "
+#~ "the scope of the imprint obligation for transmission of not expressly "
+#~ "solicited advertising and information materials are herewith expressly "
+#~ "objected. The author of these pages expressly reserves the right to take "
+#~ "legal action, in case the transmission of advertising information, e.g. "
+#~ "through Spam-mails, takes place without request."
+
+#~ msgid "disclaimer_session_cookie"
+#~ msgstr "Session-Cookies"
+
+#~ msgid "disclaimer_session_cookie_content"
+#~ msgstr ""
+#~ "These cookies allow you to use necessary functions of our websites, such "
+#~ "as the maintenance of log in information. They also help to minimize the "
+#~ "data transmission through the world wide web."
+
+#~ msgid "disclaimer_tracking_cookie"
+#~ msgstr "Tracking-Cookies"
+
+#~ msgid "disclaimer_tracking_cookie_content"
+#~ msgstr ""
+#~ "These allow us to identify you while doing repeated visits of our "
+#~ "website . By agreement of an anonymous, arbitrary identifier, we are "
+#~ "ableto hold specific browsing information, e.g. your selected pages or "
+#~ "the path that you  have chosen on our website. While monitoring this "
+#~ "information, we are capable to improve our site."
 
 #~ msgid "for"
 #~ msgstr "for"
