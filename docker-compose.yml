@@ -10,7 +10,7 @@ services:
     env_file: # Needed in 001_init.sh
       - development.env
   notifications:
-    image: gitlab.cs.uni-duesseldorf.de:5001/dbas/notifications
+    image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/notifications
     ports:
       - "5222:5222"
     tmpfs: /tmp
