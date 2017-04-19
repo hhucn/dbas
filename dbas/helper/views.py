@@ -120,7 +120,7 @@ def handle_justification_step(request, for_api, ui_locales, nickname, history):
                                                                                       supportive, ui_locales,
                                                                                       nickname, nickname, history)
 
-    elif [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid') if c in relation]:
+    elif [c for c in ('undermine', 'rebut', 'undercut', 'support') if c in relation]:
         logger('ViewHelper', 'handle_justification_step', 'justify argument')
         if not check_belonging_of_argument(issue, statement_or_arg_id):
             raise HTTPNotFound()

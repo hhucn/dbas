@@ -63,7 +63,7 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
         return_dict['values'] = get_strings_for_reasons(value, issue, count, extra[1])
         return_dict['distance_name'] = m
 
-    elif mode == '4':  # getting text
+    elif mode == '4':  # getting text # MAYBE deprecated ?! TK will have a look!
         return_dict = get_strings_for_search(value)
 
     elif mode == '5':  # getting public nicknames
@@ -341,6 +341,7 @@ def get_distance(string_a, string_b):
 def get_lev_distance(a, b):
     """
     Returns the levensthein distance between to strings
+    
     :param a: first string
     :param b: second string
     :return: distance between a and b
@@ -352,11 +353,12 @@ def get_lev_distance(a, b):
 
 def get_difflib_distance(a, b):
     """
-        Returns the difflib distance between to strings
-        :param a: first string
-        :param b: second string
-        :return: distance between a and b
-        """
+    Returns the difflib distance between to strings
+    
+    :param a: first string
+    :param b: second string
+    :return: distance between a and b
+    """
     matcher = difflib.SequenceMatcher(lambda x: x == " ", a.lower(), b.lower())
     dist = str(round(matcher.ratio() * 100, 1))[:-2]
     # logger('fuzzy_string_matcher', 'get_distance', 'SequenceMatcher: ' + str(matcher.ratio()) + ', value: ' + a.lower() + ' in: ' +  b.lower())
