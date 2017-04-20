@@ -70,7 +70,7 @@ def __get_review_count(review_type, review_uid):
     return count_of_okay, count_of_not_okay
 
 
-def add_review_opinion_for_delete(nickname, should_delete, review_uid, _t, application_url):
+def add_review_opinion_for_delete(request, nickname, should_delete, review_uid, _t, application_url):
     """
     Adds row the delete review
 
@@ -133,13 +133,13 @@ def add_review_opinion_for_delete(nickname, should_delete, review_uid, _t, appli
     transaction.commit()
 
     if broke_limit:
-        send_request_for_info_popup_to_socketio(db_user_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
+        send_request_for_info_popup_to_socketio(request, db_user_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
                                                 application_url + '/review')
 
     return ''
 
 
-def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t, application_url):
+def add_review_opinion_for_edit(request, nickname, is_edit_okay, review_uid, _t, application_url):
     """
     Adds row the edit review
 
@@ -198,13 +198,13 @@ def add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t, applicat
     transaction.commit()
 
     if broke_limit:
-        send_request_for_info_popup_to_socketio(db_user_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
+        send_request_for_info_popup_to_socketio(request, db_user_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
                                                 application_url + '/review')
 
     return ''
 
 
-def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, data, _t, application_url):
+def add_review_opinion_for_optimization(request, nickname, should_optimized, review_uid, data, _t, application_url):
     """
     Adds row the optimization review
 
@@ -235,7 +235,7 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     transaction.commit()
 
     if not should_optimized:
-        __keep_the_element_of_optimization_review(db_review, application_url, _t)
+        __keep_the_element_of_optimization_review(request, db_review, application_url, _t)
     else:
         __proposal_for_the_element(db_review, data, db_user)
 
@@ -246,7 +246,7 @@ def add_review_opinion_for_optimization(nickname, should_optimized, review_uid, 
     return ''
 
 
-def add_review_opinion_for_duplicate(nickname, is_duplicate, review_uid, _t, application_url):
+def add_review_opinion_for_duplicate(request, nickname, is_duplicate, review_uid, _t, application_url):
     """
 
     Adds row the duplicate review
@@ -310,13 +310,13 @@ def add_review_opinion_for_duplicate(nickname, is_duplicate, review_uid, _t, app
     transaction.commit()
 
     if broke_limit:
-        send_request_for_info_popup_to_socketio(db_user_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
+        send_request_for_info_popup_to_socketio(request, db_user_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
                                                 application_url + '/review')
 
     return ''
 
 
-def __keep_the_element_of_optimization_review(db_review, application_url, _t):
+def __keep_the_element_of_optimization_review(request, db_review, application_url, _t):
     """
     Adds row for LastReviewerOptimization
 
@@ -336,7 +336,7 @@ def __keep_the_element_of_optimization_review(db_review, application_url, _t):
     if len(db_keep_version) > max_votes:
         add_rep, broke_limit = add_reputation_for(db_user_who_created_flag, rep_reason_bad_flag)
         if broke_limit:
-            send_request_for_info_popup_to_socketio(db_user_who_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
+            send_request_for_info_popup_to_socketio(request, db_user_who_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
                                                     application_url + '/review')
 
         db_review.set_executed(True)
