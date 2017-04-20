@@ -2247,6 +2247,9 @@ def get_users_with_same_opinion(request):
         from websocket.lib import send_request_for_info_popup_to_socketio
         send_request_for_info_popup_to_socketio(request, 'Tobias', 'asd', request.application_url)
 
+        from websocket.lib import send_request_for_info_popup_to_socketio
+        send_request_for_info_popup_to_socketio(request, 'Tobias', 'asd', request.application_url)
+
         if is_arg:
             if is_rea:
                 uids = json.loads(uids)
