@@ -169,7 +169,7 @@ def preparation_for_justify_statement(request, for_api, main_page, slug, stateme
     item_dict       = _idh.get_array_for_justify_statement(statement_uid, nickname, supportive, history)
     discussion_dict = _ddh.get_dict_for_justify_statement(statement_uid, main_page, slug, supportive, len(item_dict['elements']), nickname)
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, request_authenticated_userid, mode == 't',
-                                              application_url=main_page, for_api=for_api)
+                                              for_api=for_api)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0 or len(item_dict['elements']) == 1 and logged_in:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
