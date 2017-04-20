@@ -22,8 +22,6 @@ def logger(who, when, what, warning=False, error=False, debug=False):
     :param debug: Boolean, default False
     :return: None
     """
-    if 'XX' not in who:
-        return
 
     info = not(warning or error or debug)
     logger = logging.getLogger(__name__)

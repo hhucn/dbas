@@ -438,7 +438,7 @@ def save_path_in_database(nickname, slug, path, history=''):
     :param history: String
     :return: None
     """
-    logger('XX HistoryHelper', 'save_path_in_database', 'path: {}, history: {}, slug: {}'.format(path, history, slug))
+    logger('HistoryHelper', 'save_path_in_database', 'path: {}, history: {}, slug: {}'.format(path, history, slug))
 
     if not nickname:
         return None
