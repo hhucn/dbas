@@ -6,20 +6,32 @@ Provides functions
 
 import time
 
-import requests
+import urllib.request
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.lib import get_profile_picture, get_global_url
 from dbas.logger import logger
 
-port = 5222
+fallback_port = 5222
 
 
-def send_request_for_info_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
+def __get_port(request):
+    """
+    
+    :param request: 
+    :return: 
+    """
+    if 'settings:services:websocket_port' in request.registry.settings:
+        return request.registry.settings['settings:services:websocket_port']
+    return fallback_port
+
+
+def send_request_for_info_popup_to_socketio(request, nickname, message='', url=None, increase_counter=False):
     """
     Sends request to the socketio server for an info popup
 
+    :param request: Current webservers request
     :param nickname: User.nickname
     :param message: String
     :param url: Issue.uid
@@ -29,13 +41,14 @@ def send_request_for_info_popup_to_socketio(nickname, message='', url=None, incr
     logger('Websocket.lib', 'send_request_for_info_popup_to_socketio', 'main')
     if url:
         use_https = 'dbas.cs' in url
-        __send_request_for_popup_to_socketio(nickname, 'info', message, url, increase_counter, use_https)
+        __send_request_for_popup_to_socketio(request, nickname, 'info', message, url, increase_counter, use_https)
 
 
-def send_request_for_info_popup_to_socketio_with_delay(nickname, message='', url=None, increase_counter=False, delay=5):
+def send_request_for_info_popup_to_socketio_with_delay(request, nickname, message='', url=None, increase_counter=False, delay=5):
     """
     Sends request to the socketio server for an info popup with a specific delay
 
+    :param request: Current webservers request
     :param nickname: User.nickname
     :param message: String
     :param url: String
@@ -48,13 +61,14 @@ def send_request_for_info_popup_to_socketio_with_delay(nickname, message='', url
     logger('Websocket.lib', 'send_request_for_info_popup_to_socketio_with_delay', 'enough sleep')
     if url:
         use_https = 'dbas.cs' in url
-        __send_request_for_popup_to_socketio(nickname, 'info', message, url, increase_counter, use_https)
+        __send_request_for_popup_to_socketio(request, nickname, 'info', message, url, increase_counter, use_https)
 
 
-def send_request_for_success_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
+def send_request_for_success_popup_to_socketio(request, nickname, message='', url=None, increase_counter=False):
     """
     Sends request to the socketio server for a success popup
 
+    :param request: Current webservers request
     :param nickname: User.nickname
     :param message: String
     :param url: String
@@ -64,13 +78,14 @@ def send_request_for_success_popup_to_socketio(nickname, message='', url=None, i
     logger('Websocket.lib', 'send_request_for_success_popup_to_socketio', 'main')
     if url:
         use_https = 'dbas.cs' in url
-        __send_request_for_popup_to_socketio(nickname, 'success', message, url, increase_counter, use_https)
+        __send_request_for_popup_to_socketio(request, nickname, 'success', message, url, increase_counter, use_https)
 
 
-def send_request_for_warning_popup_to_socketio(nickname, message='', url=None, increase_counter=False):
+def send_request_for_warning_popup_to_socketio(request, nickname, message='', url=None, increase_counter=False):
     """
     Sends request to the socketio server for a warning popup
 
+    :param request: Current webservers request
     :param nickname: User.nickname
     :param message: String
     :param url: String
@@ -78,13 +93,14 @@ def send_request_for_warning_popup_to_socketio(nickname, message='', url=None, i
     :return: Status code of the request
     """
     logger('Websocket.lib', 'send_request_for_warning_popup_to_socketio', 'main')
-    __send_request_for_popup_to_socketio(nickname, 'warning', message, url, increase_counter)
+    __send_request_for_popup_to_socketio(request, nickname, 'warning', message, url, increase_counter)
 
 
-def __send_request_for_popup_to_socketio(nickname, popup_type, message='', url=None, increase_counter=False, use_https=False):
+def __send_request_for_popup_to_socketio(request, nickname, popup_type, message='', url=None, increase_counter=False, use_https=False):
     """
     Sends an request to the socket io server
 
+    :param request: Current webservers request
     :param popup_type: String (success, warning, info)
     :param nickname: nickname of the user
     :param message: Some message
@@ -106,20 +122,27 @@ def __send_request_for_popup_to_socketio(nickname, popup_type, message='', url=N
         params += 'increase_counter=True&'
     params = params[:-1]
 
+    rurl = ''
     try:
-        https = 'https' if use_https else 'http'
-        resp = requests.get(https + '://localhost:' + str(port) + '/publish' + params)
-    except:
+        if use_https:
+            link = '{}:{}/'.format(get_global_url(), __get_port(request))
+        else:
+            link = 'http://localhost:{}/'.format(__get_port(request))
+        rurl = '{}publish{}'.format(link, params)
+        resp = urllib.request.urlopen(rurl)
+    except Exception as e:
+        logger('Websocket.lib', '__send_request_for_popup_to_socketio', 'Error {} by calling {}'.format(e, rurl), error=True)
         return None
-    logger('Websocket.lib', '__send_request_for_popup_to_socketio', 'status code for request ' + str(resp.status_code) + ' (msg=' + str(message) + ')')
+    logger('Websocket.lib', '__send_request_for_popup_to_socketio', 'status code for request {} (msg: {})'.format(resp.read(), message))
 
-    return resp.status_code
+    return resp.read()
 
 
-def send_request_for_recent_delete_review_to_socketio(nickname, main_page):
+def send_request_for_recent_delete_review_to_socketio(request, nickname, main_page):
     """
     Sends request to the socketio server for updating the last reviewer view
 
+    :param request: Current webservers request
     :param nickname: User.nickname
     :param main_page: String
     :return: Status code of the request
@@ -129,13 +152,14 @@ def send_request_for_recent_delete_review_to_socketio(nickname, main_page):
     reviewer_name = db_user.get_global_nickname()
     reviewer_image_url = get_profile_picture(db_user)
     use_https = 'dbas' in main_page
-    return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, 'deletes', use_https)
+    return __send_request_for_recent_review_to_socketio(request, reviewer_name, reviewer_image_url, 'deletes', use_https)
 
 
-def send_request_for_recent_edit_review_to_socketio(nickname, main_page):
+def send_request_for_recent_edit_review_to_socketio(request, nickname, main_page):
     """
     Sends request to the socketio server for updating the last reviewer view
 
+    :param request: Current webservers request
     :param nickname: User.nickname
     :param main_page: String
     :return: Status code of the request
@@ -145,29 +169,30 @@ def send_request_for_recent_edit_review_to_socketio(nickname, main_page):
     reviewer_name = db_user.get_global_nickname()
     reviewer_image_url = get_profile_picture(db_user)
     use_https = 'dbas' in main_page
-    return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, 'edits', use_https)
+    return __send_request_for_recent_review_to_socketio(request, reviewer_name, reviewer_image_url, 'edits', use_https)
 
 
-def send_request_for_recent_optimization_review_to_socketio(nickname, main_page):
+def send_request_for_recent_optimization_review_to_socketio(request, nickname):
     """
     Sends request to the socketio server for updating the last reviewer view
 
+    :param request: Current webservers request
     :param nickname: User.nickname
-    :param main_page: String
     :return: Status code of the request
     """
     logger('Websocket.lib', 'send_request_for_recent_optimization_review_to_socketio', 'main - nickname ' + str(nickname))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     reviewer_name = db_user.get_global_nickname()
     reviewer_image_url = get_profile_picture(db_user)
-    use_https = 'dbas' in main_page
-    return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, 'optimizations', use_https)
+    use_https = 'dbas' in request.application_url
+    return __send_request_for_recent_review_to_socketio(request, reviewer_name, reviewer_image_url, 'optimizations', use_https)
 
 
-def __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, queue, use_https):
+def __send_request_for_recent_review_to_socketio(request, reviewer_name, reviewer_image_url, queue, use_https):
     """
     Sends request to the socketio server for updating the last reviewer view
 
+    :param request: Current webservers request
     :param reviewer_name: User.nickname
     :param reviewer_image_url: String
     :param queue: String
@@ -177,15 +202,17 @@ def __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_u
     logger('Websocket.lib', '__send_request_for_recent_review_to_socketio', 'main')
     params = '?reviewer_name=' + reviewer_name + '&img_url=' + reviewer_image_url + '&queue=' + queue
 
+    rurl = ''
     try:
         if use_https:
-            link = get_global_url() + ':' + str(port) + '/'
+            link = '{}:{}/'.format(get_global_url(), __get_port(request))
         else:
-            link = 'http://localhost:' + str(port) + '/'
-        resp = requests.get(link + 'recent_review' + params)
+            link = 'http://localhost:{}/'.format(__get_port(request))
+        rurl = '{}recent_review{}'.format(link, params)
+        resp = urllib.request.urlopen(rurl)
     except Exception as e:
-        logger('Websocket.lib', 'send_request_for_popup_to_socketio', 'Error: ' + str(e), error=True)
+        logger('Websocket.lib', '__send_request_for_recent_review_to_socketio', 'Error {} by calling {}'.format(e, rurl), error=True)
         return None
-    logger('Websocket.lib', 'send_request_for_popup_to_socketio', 'status code for request ' + str(resp.status_code))
+    logger('Websocket.lib', '__send_request_for_recent_review_to_socketio', 'status code for request {}'.format(resp.read()))
 
-    return resp.status_code
+    return resp.read()
