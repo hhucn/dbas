@@ -122,20 +122,13 @@ def __send_request_for_popup_to_socketio(request, nickname, popup_type, message=
         params += 'increase_counter=True&'
     params = params[:-1]
 
-    rurl = ''
-    try:
-        if use_https:
-            link = '{}:{}/'.format(get_global_url(), __get_port(request))
-        else:
-            link = 'http://localhost:{}/'.format(__get_port(request))
-        rurl = '{}publish{}'.format(link, params)
-        resp = urllib.request.urlopen(rurl)
-    except Exception as e:
-        logger('Websocket.lib', '__send_request_for_popup_to_socketio', 'Error {} by calling {}'.format(e, rurl), error=True)
-        return None
-    logger('Websocket.lib', '__send_request_for_popup_to_socketio', 'status code for request {} (msg: {})'.format(resp.read(), message))
+    if use_https:
+        link = '{}:{}/'.format(get_global_url(), __get_port(request))
+    else:
+        link = 'http://localhost:{}/'.format(__get_port(request))
+    rurl = '{}publish{}'.format(link, params)
 
-    return resp.read()
+    return __open_url(rurl)
 
 
 def send_request_for_recent_delete_review_to_socketio(request, nickname, main_page):
@@ -202,17 +195,27 @@ def __send_request_for_recent_review_to_socketio(request, reviewer_name, reviewe
     logger('Websocket.lib', '__send_request_for_recent_review_to_socketio', 'main')
     params = '?reviewer_name=' + reviewer_name + '&img_url=' + reviewer_image_url + '&queue=' + queue
 
-    rurl = ''
-    try:
-        if use_https:
-            link = '{}:{}/'.format(get_global_url(), __get_port(request))
-        else:
-            link = 'http://localhost:{}/'.format(__get_port(request))
-        rurl = '{}recent_review{}'.format(link, params)
-        resp = urllib.request.urlopen(rurl)
-    except Exception as e:
-        logger('Websocket.lib', '__send_request_for_recent_review_to_socketio', 'Error {} by calling {}'.format(e, rurl), error=True)
-        return None
-    logger('Websocket.lib', '__send_request_for_recent_review_to_socketio', 'status code for request {}'.format(resp.read()))
+    if use_https:
+        link = '{}:{}/'.format(get_global_url(), __get_port(request))
+    else:
+        link = 'http://localhost:{}/'.format(__get_port(request))
+    rurl = '{}recent_review{}'.format(link, params)
 
-    return resp.read()
+    return __open_url(rurl)
+
+
+def __open_url(url):
+    """
+    Calls url via urllib and returns status code on success or none on error
+    
+    :param url: String
+    :return: None or HTTP status code
+    """
+    try:
+        resp = urllib.request.urlopen(url)
+        logger('Websocket.lib', '__open_url', 'Content of request {}'.format(resp.read()))
+    except Exception as e:
+        logger('Websocket.lib', '__open_url', 'Error {} by calling {}'.format(e, url), error=True)
+        return None
+    logger('Websocket.lib', '__open_url', 'Status code of request {}'.format(resp.getcode()))
+    return resp.getcode()
