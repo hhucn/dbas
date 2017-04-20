@@ -241,6 +241,7 @@ class UrlManager(object):
         else:
             prefix = 'location.href="' if as_location_href else ''
             suffix = '"' if as_location_href else ''
+            from dbas.logger import logger
             return prefix + self.discussion_url + url + history + suffix
 
     def __return_review_url(self, as_location_href, url):

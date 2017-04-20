@@ -43,7 +43,7 @@ def test_contact_page():
 
 def test_discuss_page():
     browser.visit(ROOT + '/discuss')
-    assert_true(browser.is_text_present('discussion is about'), error_text)
+    assert_true(browser.is_text_present('Die aktuelle Diskussion'), error_text)
 
 
 def test_settings_page():

@@ -577,6 +577,8 @@ def discussion_init(request, for_api=False, api_data=None):
     issue      = last_topic if len(slug) == 0 and last_topic != 0 else issue_helper.get_id_of_slug(slug, request, True)
 
     slug = resolve_issue_uid_to_slug(last_topic)
+    if not slug:
+        slug = ''
     history_helper.save_path_in_database(nickname, slug, request.path, history)
     if session_expired:
         return user_logout(request, True)
@@ -590,7 +592,6 @@ def discussion_init(request, for_api=False, api_data=None):
         .get_dict_for_start(position_count=(len(item_dict['elements'])))
     extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
                                                                                         False, True, request,
-                                                                                        application_url=request.application_url,
                                                                                         for_api=for_api, nickname=request_authenticated_userid)
 
     if len(item_dict['elements']) == 1:
@@ -667,7 +668,6 @@ def discussion_attitude(request, for_api=False, api_data=None):
         .prepare_item_dict_for_attitude(statement_id)
     extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(issue_dict['slug'], False, True,
                                                                                     False, True, request,
-                                                                                    application_url=request.application_url,
                                                                                     for_api=for_api, nickname=request_authenticated_userid)
     return_dict = dict()
     return_dict['issues'] = issue_dict
@@ -795,8 +795,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
     discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history, nickname)
     item_dict       = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack, discussion_dict['gender'])
     extras_dict     = _dh.prepare_extras_dict(slug, True, True, True, True, request, argument_id=arg_id_sys,
-                                              application_url=request.application_url, for_api=for_api,
-                                              argument_for_island=arg_id_user, attack=attack,
+                                              for_api=for_api, argument_for_island=arg_id_user, attack=attack,
                                               nickname=request_authenticated_userid, broke_limit=broke_limit)
 
     return_dict = dict()
@@ -869,7 +868,6 @@ def discussion_support(request, for_api=False, api_data=None):
     item_dict = _idh.get_array_for_support(arg_system_uid, slug, for_api)
     extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
                                                                                     True, True, request,
-                                                                                    application_url=request.application_url,
                                                                                     for_api=for_api, nickname=request_authenticated_userid)
 
     return_dict = dict()
@@ -986,7 +984,6 @@ def discussion_choose(request, for_api=False, api_data=None):
 
     extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
                                                                                         True, True, request,
-                                                                                        application_url=request.application_url,
                                                                                         for_api=for_api, nickname=request_authenticated_userid)
 
     return_dict = dict()
@@ -1057,7 +1054,6 @@ def discussion_jump(request, for_api=False, api_data=None):
     item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
     extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
                                                                                     True, True, request,
-                                                                                    application_url=request.application_url,
                                                                                     for_api=for_api, nickname=request_authenticated_userid)
 
     return_dict = dict()
