@@ -428,14 +428,17 @@ def save_history_in_cookie(request, path, history):
         request.response.set_cookie('_HISTORY_', history + '-' + path)
 
 
-def save_path_in_database(nickname, path, history=''):
+def save_path_in_database(nickname, slug, path, history=''):
     """
     Saves a path into the database
 
     :param nickname: User.nickname
+    :param slug: Issue.slug
     :param path: String
-    :return: Boolean
+    :param history: String
+    :return: None
     """
+    logger('XX HistoryHelper', 'save_path_in_database', 'path: {}, history: {}, slug: {}'.format(path, history, slug))
 
     if not nickname:
         return None
@@ -444,12 +447,18 @@ def save_path_in_database(nickname, path, history=''):
     if not db_user:
         return None
 
-    # if path.startswith('/discuss/'):
-    #     path = path[len('/discuss/'):]
-    #     path = path[path.index('/') if '/' in path else 0:]
+    if path.startswith('/discuss'):
+        path = path[len('/discuss'):]
+        path = path[path.index('/') if '/' in path else 0:]
+
+    if slug not in path:
+        path = '/{}/{}'.format(slug, path)
 
     if len(history) > 0:
         history = '?history=' + history
+
+    logger('XX HistoryHelper', 'save_path_in_database', 'saving {}{}'.format(path, history))
+
     DBDiscussionSession.add(History(author_uid=db_user.uid, path=path + history))
     DBDiscussionSession.flush()
     # transaction.commit()  # 207

@@ -54,7 +54,7 @@ from dbas.input_validator import is_integer, is_statement_forbidden, check_belon
 from dbas.lib import get_language, escape_string, get_discussion_language, \
     get_user_by_private_or_public_nickname, is_user_author_or_admin, \
     get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid, get_profile_picture, \
-    get_changelog
+    get_changelog, resolve_issue_uid_to_slug
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, \
     rep_reason_first_justification, rep_reason_first_argument_click, \
@@ -560,9 +560,6 @@ def discussion_init(request, for_api=False, api_data=None):
     request_authenticated_userid = request.authenticated_userid
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
-    history_helper.save_path_in_database(nickname, request.path, history)
-    if session_expired:
-        return user_logout(request, True)
 
     count_of_slugs = len(match_dict['slug']) if 'slug' in match_dict and isinstance(match_dict['slug'], ()) else 1
     if count_of_slugs > 1:
@@ -578,6 +575,11 @@ def discussion_init(request, for_api=False, api_data=None):
 
     last_topic = history_helper.get_saved_issue(nickname)
     issue      = last_topic if len(slug) == 0 and last_topic != 0 else issue_helper.get_id_of_slug(slug, request, True)
+
+    slug = resolve_issue_uid_to_slug(last_topic)
+    history_helper.save_path_in_database(nickname, slug, request.path, history)
+    if session_expired:
+        return user_logout(request, True)
 
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
@@ -630,14 +632,15 @@ def discussion_attitude(request, for_api=False, api_data=None):
     logger('discussion_attitude', 'def', 'main, request.params: {}'.format(params))
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
-    history_helper.save_path_in_database(nickname, request.path, history)
-    if session_expired:
-        return user_logout(request, True)
 
     ui_locales      = get_language(request)
     slug            = match_dict['slug'] if 'slug' in match_dict else ''
     statement_id    = match_dict['statement_id'][0] if 'statement_id' in match_dict else ''
     issue           = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
+
+    history_helper.save_path_in_database(nickname, slug, request.path, history)
+    if session_expired:
+        return user_logout(request, True)
 
     if not is_integer(statement_id, True) \
             or not check_belonging_of_statement(issue, statement_id):
@@ -651,6 +654,7 @@ def discussion_attitude(request, for_api=False, api_data=None):
 
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+    history_helper.save_issue_uid(issue, nickname)
 
     discussion_dict = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)\
         .get_dict_for_attitude(statement_id)
@@ -699,12 +703,14 @@ def discussion_justify(request, for_api=False, api_data=None):
     request_authenticated_userid = request.authenticated_userid
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
-    history_helper.save_path_in_database(nickname, request.path, history)
-    if session_expired:
-        return user_logout(request, True)
 
     ui_locales = get_language(request)
     slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict = prepare_parameter_for_justification(request, for_api)
+    history_helper.save_issue_uid(issue, nickname)
+
+    history_helper.save_path_in_database(nickname, slug, request.path, history)
+    if session_expired:
+        return user_logout(request, True)
 
     try:
         item_dict, discussion_dict, extras_dict = handle_justification_step(request, for_api, ui_locales, nickname, history)
@@ -764,7 +770,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
 
     supportive = tmp_argument.is_supportive
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
-    history_helper.save_path_in_database(nickname, request.path, history)
+    history_helper.save_path_in_database(nickname, slug, request.path, history)
     if session_expired:
         return user_logout(request, True)
 
@@ -778,6 +784,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
     # set votes and reputation
     add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_argument_click)
     add_click_for_argument(arg_id_user, nickname)
+    history_helper.save_issue_uid(issue, nickname)
 
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
@@ -840,7 +847,7 @@ def discussion_support(request, for_api=False, api_data=None):
         arg_system_uid = match_dict['arg_id_sys'] if 'arg_id_sys' in match_dict else ''
 
     session_expired = user_manager.update_last_action(nickname)
-    history_helper.save_path_in_database(nickname, request.path, history)
+    history_helper.save_path_in_database(nickname, slug, request.path, history)
     history_helper.save_history_in_cookie(request, request.path, history)
     if session_expired:
         return user_logout(request, True)
@@ -849,6 +856,7 @@ def discussion_support(request, for_api=False, api_data=None):
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+    history_helper.save_issue_uid(issue, nickname)
 
     if not check_belonging_of_argument(issue, arg_user_uid) or not check_belonging_of_argument(issue, arg_system_uid) or not related_with_support(arg_user_uid, arg_system_uid):
         logger('discussion_support', 'def', 'no item dict', error=True)
@@ -897,7 +905,9 @@ def discussion_finish(request):
     ui_locales      = get_language(request)
     nickname        = request.authenticated_userid
     session_expired = user_manager.update_last_action(nickname)
-    history_helper.save_path_in_database(nickname, request.path)
+    slug = resolve_issue_uid_to_slug(history_helper.get_saved_issue(nickname))
+
+    history_helper.save_path_in_database(nickname, slug, request.path)
     if session_expired:
         return user_logout(request, True)
 
@@ -960,7 +970,8 @@ def discussion_choose(request, for_api=False, api_data=None):
         # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
-    history_helper.save_path_in_database(nickname, request.path, history)
+    history_helper.save_path_in_database(nickname, slug, request.path, history)
+    history_helper.save_issue_uid(issue, nickname)
     if session_expired:
         return user_logout(request, True)
 
@@ -1024,7 +1035,7 @@ def discussion_jump(request, for_api=False, api_data=None):
         arg_uid = match_dict['arg_id'] if 'arg_id' in match_dict else ''
 
     session_expired = user_manager.update_last_action(nickname)
-    history_helper.save_path_in_database(nickname, request.path, history)
+    history_helper.save_path_in_database(nickname, slug, request.path, history)
     history_helper.save_history_in_cookie(request, request.path, history)
     if session_expired:
         return user_logout(request, True)
@@ -1033,6 +1044,7 @@ def discussion_jump(request, for_api=False, api_data=None):
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+    history_helper.save_issue_uid(issue, nickname)
 
     if not check_belonging_of_argument(issue, arg_uid):
         logger('discussion_choose', 'def', 'no item dict', error=True)
