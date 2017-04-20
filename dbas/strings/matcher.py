@@ -341,7 +341,7 @@ def get_distance(string_a, string_b):
 def get_lev_distance(a, b):
     """
     Returns the levensthein distance between to strings
-    
+
     :param a: first string
     :param b: second string
     :return: distance between a and b
@@ -354,7 +354,7 @@ def get_lev_distance(a, b):
 def get_difflib_distance(a, b):
     """
     Returns the difflib distance between to strings
-    
+
     :param a: first string
     :param b: second string
     :return: distance between a and b
