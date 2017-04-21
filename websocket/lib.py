@@ -18,9 +18,10 @@ fallback_port = 5222
 
 def __get_port(request):
     """
-    
-    :param request: 
-    :return: 
+    Lets have a loko into the settings if there is a websocket port, otherwise 5222 will be returned
+
+    :param request: currenet request
+    :return: int
     """
     if 'settings:services:websocket_port' in request.registry.settings:
         return request.registry.settings['settings:services:websocket_port']
@@ -207,7 +208,7 @@ def __send_request_for_recent_review_to_socketio(request, reviewer_name, reviewe
 def __open_url(url):
     """
     Calls url via urllib and returns status code on success or none on error
-    
+
     :param url: String
     :return: None or HTTP status code
     """
