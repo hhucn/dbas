@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-04-21 13:45+0200\n"
+"POT-Creation-Date: 2017-04-21 15:54+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -84,29 +84,46 @@ msgstr "kontaktieren"
 msgid "welcome_text3"
 msgstr "Sie uns bitte."
 
-#. Default: Click here to start now!
-#: templates/index.pt:28
-msgid "lets_start_now"
-msgstr "Hier klicken um zu starten"
+#. Default: Aktuell haben wir neben dem Feldversuch (nur auf Deutsch) auch eine
+#. Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres
+#. Browsers, vermuten wir, dass Sie sich für den Feldversuch interessieren.
+#. Dennoch wählen Sie bitte Ihre Diskussion:
+#: templates/index.pt:30
+msgid "choose_fieldtest_reviewer_text"
+msgstr ""
+"Aktuell haben wir neben dem Feldversuch (nur auf Deutsch) auch eine Demo-"
+"Version (nur auf Englisch). Basierend auf den Einstellungen Ihres Browsers, "
+"vermuten wir, dass Sie sich für den Feldversuch interessieren. Dennoch "
+"wählen Sie bitte Ihre Diskussion:"
+
+#. Default: Zum Feldversuch
+#: templates/index.pt:34
+msgid "fieldtest"
+msgstr "Zum Feldversuch"
+
+#. Default: Zum Review
+#: templates/index.pt:37
+msgid "reviewer"
+msgstr "Zur Demo"
 
 #. Default: This work is part of the graduate school on
-#: templates/index.pt:34
+#: templates/index.pt:45
 msgid "work_based_on"
 msgstr "Dieses Projekt ist Teil des Graduierten-Kollegs"
 
 #. Default: Online-Participation
-#: templates/index.pt:34
+#: templates/index.pt:45
 msgid "online_participation"
 msgstr "Online-Partizipation"
 
 #. Default: It is funded by the
-#: templates/index.pt:35
+#: templates/index.pt:46
 msgid "funded_by"
 msgstr "Es wird finanziert vom"
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: templates/index.pt:35
+#: templates/index.pt:46
 msgid "ministry_of_innovation"
 msgstr ""
 "Ministerium für Innovation, Wissenschaft und Forschung des Landes Nordrhein-"
@@ -1959,6 +1976,9 @@ msgstr "Unterstützungen"
 #: templates/content.pt:310 templates/content.pt:311
 msgid "attacks_on_my_statements"
 msgstr "Angriffe"
+
+#~ msgid "lets_start_now"
+#~ msgstr "Hier klicken um zu starten"
 
 #~ msgid "disclaimer"
 #~ msgstr "Haftungsausschluss:"
