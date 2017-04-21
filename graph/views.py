@@ -6,7 +6,7 @@ Introducing an graph manager.
 
 import json
 import dbas.helper.issue as IssueHelper
-from dbas.lib import get_language
+from dbas.helper.language import get_language_from_cookie
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from cornice import Service
@@ -48,7 +48,7 @@ def get_d3_complete_dump(request):
         return_dict.update({'path': get_path_of_user(request.application_url, path, issue)})
         return_dict.update({'error': ''})
     else:
-        ui_locales = get_language(request)
+        ui_locales = get_language_from_cookie(request)
         _t = Translator(ui_locales)
         error = _t.get(_.internalKeyError)
         return_dict = {'error': error}
@@ -83,7 +83,7 @@ def get_d3_partial_dump(request):
             return_dict.update({'error': ''})
 
     if error:
-        ui_locales = get_language(request)
+        ui_locales = get_language_from_cookie(request)
         _t = Translator(ui_locales)
         error = _t.get(_.internalKeyError)
         return_dict = {'error': error}

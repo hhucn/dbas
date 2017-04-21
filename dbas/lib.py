@@ -6,22 +6,22 @@ Common, pure functions used by the D-BAS.
 """
 import hashlib
 import locale
-import time
 import os
 import re
-
+import time
 from collections import defaultdict
 from datetime import datetime
 from html import escape
 from urllib import parse
 
+from sqlalchemy import and_, func
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, \
     ClickedArgument, ClickedStatement, Group, MarkedArgument, MarkedStatement, PremiseGroup
+from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from sqlalchemy import and_, func
-from dbas.logger import logger
 
 fallback_lang = 'en'
 tag_type = 'span'
@@ -96,22 +96,6 @@ def escape_string(text):
     :return: html.escape(text)
     """
     return escape(text)
-
-
-def get_language(request):
-    """
-    Returns current ui locales code which is saved in current cookie or the registry.
-
-    :param request: request
-    :return: ui_locales
-    """
-    try:
-        lang = request.cookies['_LOCALE_']
-    except (KeyError, AttributeError):
-        lang = request.registry.settings['pyramid.default_locale_name']
-    request._LOCALE_ = lang
-    # we have to set 'ui_locales = get_language(request)' in each view again, because D-BAS is no object
-    return str(lang)
 
 
 def get_discussion_language(request, current_issue_uid=1):

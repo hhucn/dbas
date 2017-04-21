@@ -9,6 +9,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print
 from dbas.lib import is_user_author_or_admin
 from dbas.logger import logger
+from dbas.helper.language import get_language_from_header
 from dbas.query_wrapper import get_not_disabled_issues_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -165,6 +166,7 @@ def get_id_of_slug(slug, request, save_id_in_session):
     :param save_id_in_session: Boolean
     :return: uid
     """
+    logger('IssueHelper', 'get_id_of_slug', 'slug: {}'.format(slug))
     db_issues = get_not_disabled_issues_as_query().all()
     for issue in db_issues:
         if str(slugify(issue.title)) == str(slug):
@@ -176,24 +178,34 @@ def get_id_of_slug(slug, request, save_id_in_session):
 
 def get_issue_id(request):
     """
-    Returns issue uid
+    Returns issue uid saved in request. If there is no uid, we will choose an 
+    issue based on the language from the requests header
 
     :param request: self.request
     :return: uid
     """
-    # first matchdict, then params, then session, afterwards fallback
-    issue = request.matchdict['issue'] if 'issue' in request.matchdict \
+    logger('IssueHelper', 'get_issue_id', 'def')
+    # first matchdict, then params, then session
+    issue_uid = request.matchdict['issue'] if 'issue' in request.matchdict \
         else request.params['issue'] if 'issue' in request.params \
         else request.session['issue'] if 'issue' in request.session \
-        else False
-    if issue is False:
-        db_issues = get_not_disabled_issues_as_query().all()
-        issue = db_issues[1].uid if len(db_issues) > 1 else db_issues[0].uid
+        else None
+
+    # no issue found
+    if not issue_uid:
+        logger('IssueHelper', 'get_issue_id', 'no saved issue found')
+        ui_locales = get_language_from_header(request)
+        db_issues = get_not_disabled_issues_as_query()
+        db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
+        db_issue = db_issues.filter_by(lang_uid=db_lang.uid).first()
+        if not db_issue:
+            db_issue = db_issues.first()
+        issue_uid = db_issue.uid
 
     # save issue in session
-    request.session['issue'] = 1 if str(issue) is 'undefined' else issue
+    request.session['issue'] = issue_uid
 
-    return issue
+    return issue_uid
 
 
 def get_title_for_slug(slug):
