@@ -41,10 +41,10 @@ def save_issue_uid(issue_uid, nickname):
 
 def get_saved_issue(nickname):
     """
-    Returns the last used issue of the user
+    Returns the last used issue of the user or 0
 
     :param nickname: User.nickname
-    :return: Issue.uid
+    :return: Issue.uid or 0
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
@@ -58,6 +58,7 @@ def get_saved_issue(nickname):
     db_issue = DBDiscussionSession.query(Issue).get(val)
     if not db_issue:
         return 0
+
     return 0 if db_issue.is_disabled else val
 
 
@@ -457,7 +458,7 @@ def save_path_in_database(nickname, slug, path, history=''):
     if len(history) > 0:
         history = '?history=' + history
 
-    logger('XX HistoryHelper', 'save_path_in_database', 'saving {}{}'.format(path, history))
+    logger('HistoryHelper', 'save_path_in_database', 'saving {}{}'.format(path, history))
 
     DBDiscussionSession.add(History(author_uid=db_user.uid, path=path + history))
     DBDiscussionSession.flush()
