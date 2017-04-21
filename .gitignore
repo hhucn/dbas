@@ -53,6 +53,7 @@ dbas/static/rss/*
 .babelrc
 getMails.py
 dbas.min.js
+production.env
 
 # node
 node_modules/
@@ -62,4 +63,4 @@ restorePostgres.sh
 # DB Files
 *.sql
 !001_init.sh.bak
-!002_seed.sql
+!002_development_seed.sql

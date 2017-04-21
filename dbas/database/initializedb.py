@@ -13,9 +13,10 @@ import arrow
 import transaction
 from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
-    Settings, ClickedArgument, ClickedStatement, StatementReferences, Language, SeenArgument, SeenStatement,\
-    ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, ReputationReason, \
-    ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate, MarkedArgument,\
+    Settings, ClickedArgument, ClickedStatement, StatementReferences, Language, SeenArgument, SeenStatement, \
+    ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, \
+    ReputationReason, \
+    ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate, MarkedArgument, \
     MarkedStatement, Message, LastReviewerEdit, RevokedContentHistory, RevokedContent, RevokedDuplicate, \
     ReviewCanceled, RSS, OptimizationReviewLocks, History
 from dbas.database.news_model import News
@@ -98,9 +99,9 @@ def main_field_test(argv=sys.argv):
     with transaction.manager:
         users = __set_up_users(DBDiscussionSession, include_dummy_users=False)
         lang1, lang2 = __set_up_language(DBDiscussionSession)
-        issue6 = __set_up_issue(DBDiscussionSession, lang1, lang2, is_field_test=True)
+        issue6, issue1 = __set_up_issue(DBDiscussionSession, lang1, lang2, is_field_test=True)
         __set_up_settings(DBDiscussionSession, users)
-        __setup_fieltest_discussion_database(DBDiscussionSession, issue6)
+        __setup_fieltest_discussion_database(DBDiscussionSession, issue6, issue1)
         transaction.commit()
         # main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         # __setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
@@ -158,39 +159,65 @@ def drop_it(argv=sys.argv):
         for tmp in DBDiscussionSession.query(Statement).all():
             tmp.set_textversion(None)
 
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(MarkedArgument).delete()) + ' in MarkedArgument')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(MarkedStatement).delete()) + ' in MarkedStatement')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(SeenArgument).delete()) + ' in SeenArgument')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(SeenStatement).delete()) + ' in SeenStatement')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ClickedArgument).delete()) + ' in VoteArgument')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ClickedStatement).delete()) + ' in VoteStatement')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(MarkedArgument).delete()) + ' in MarkedArgument')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(MarkedStatement).delete()) + ' in MarkedStatement')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(SeenArgument).delete()) + ' in SeenArgument')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(SeenStatement).delete()) + ' in SeenStatement')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(ClickedArgument).delete()) + ' in VoteArgument')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(ClickedStatement).delete()) + ' in VoteStatement')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Message).delete()) + ' in Message')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(StatementReferences).delete()) + ' in StatementReferences')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(StatementReferences).delete()) + ' in StatementReferences')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Premise).delete()) + ' in Premise')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(TextVersion).delete()) + ' in TextVersion')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(TextVersion).delete()) + ' in TextVersion')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Issue).delete()) + ' in Issue')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Language).delete()) + ' in Language')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReviewDelete).delete()) + ' in ReviewDelete')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReviewEdit).delete()) + ' in ReviewEdit')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReviewEditValue).delete()) + ' in ReviewEditValue')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReviewOptimization).delete()) + ' in ReviewOptimization')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReviewDuplicate).delete()) + ' in ReviewDuplicate')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReviewDeleteReason).delete()) + ' in ReviewDeleteReason')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(LastReviewerDelete).delete()) + ' in LastReviewerDelete')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(LastReviewerEdit).delete()) + ' in LastReviewerEdit')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(LastReviewerOptimization).delete()) + ' in LastReviewerOptimization')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(LastReviewerDuplicate).delete()) + ' in LastReviewerDuplicate')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReputationHistory).delete()) + ' in ReputationHistory')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReputationReason).delete()) + ' in ReputationReason')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(OptimizationReviewLocks).delete()) + ' in OptimizationReviewLocks')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(ReviewCanceled).delete()) + ' in ReviewCanceled')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(RevokedContent).delete()) + ' in RevokedContent')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(RevokedContentHistory).delete()) + ' in RevokedContentHistory')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(RevokedDuplicate).delete()) + ' in RevokedDuplicate')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(ReviewDelete).delete()) + ' in ReviewDelete')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(ReviewEdit).delete()) + ' in ReviewEdit')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(ReviewEditValue).delete()) + ' in ReviewEditValue')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(ReviewOptimization).delete()) + ' in ReviewOptimization')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(ReviewDuplicate).delete()) + ' in ReviewDuplicate')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(ReviewDeleteReason).delete()) + ' in ReviewDeleteReason')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(LastReviewerDelete).delete()) + ' in LastReviewerDelete')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(LastReviewerEdit).delete()) + ' in LastReviewerEdit')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(
+            DBDiscussionSession.query(LastReviewerOptimization).delete()) + ' in LastReviewerOptimization')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(
+            DBDiscussionSession.query(LastReviewerDuplicate).delete()) + ' in LastReviewerDuplicate')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(ReputationHistory).delete()) + ' in ReputationHistory')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(ReputationReason).delete()) + ' in ReputationReason')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(
+            DBDiscussionSession.query(OptimizationReviewLocks).delete()) + ' in OptimizationReviewLocks')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(ReviewCanceled).delete()) + ' in ReviewCanceled')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(RevokedContent).delete()) + ' in RevokedContent')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(
+            DBDiscussionSession.query(RevokedContentHistory).delete()) + ' in RevokedContentHistory')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(RevokedDuplicate).delete()) + ' in RevokedDuplicate')
 
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Argument).delete()) + ' in Argument')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Statement).delete()) + ' in Statement')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(PremiseGroup).delete()) + ' in PremiseGroup')
+        logger('INIT_DB', 'DROP IT',
+               'deleted ' + str(DBDiscussionSession.query(PremiseGroup).delete()) + ' in PremiseGroup')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(RSS).delete()) + ' in RSS')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Settings).delete()) + ' in Settings')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(User).delete()) + ' in User')
@@ -222,7 +249,6 @@ def blank_file(argv=sys.argv):
     DiscussionBase.metadata.create_all(discussion_engine)
 
     with transaction.manager:
-
         # adding groups
         group0 = Group(name='admins')
         group1 = Group(name='authors')
@@ -587,11 +613,18 @@ def setup_news_db(session, ui_locale):
                   news='Last weeks we have spend to make D-BAS more stable, writing some analyzers as well as '
                        'dockerize everything. The complete project can be found on https://github.com/hhucn/dbas '
                        'soon.')
+    news58 = News(title='Great Test',
+                  date=arrow.get('2017-03-09'),
+                  author='Tobias Krauthoff',
+                  news='LFinally we have a version of D-BAS which can be used during a large fieldtest at our '
+                       'university. Nevertheless the same version is capable to be viewed by some reviewers of our '
+                       'latest paper. Stay tuned!')
+
     news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,
                   news13, news14, news15, news16, news29, news18, news19, news20, news21, news22, news23, news24,
                   news25, news26, news27, news28, news30, news31, news32, news33, news34, news35, news36, news37,
                   news38, news39, news40, news41, news42, news43, news44, news45, news46, news47, news48, news49,
-                  news50, news51, news52, news53, news54, news55, news56, news57]
+                  news50, news51, news52, news53, news54, news55, news56, news57, news58]
     session.add_all(news_array[::-1])
     session.flush()
 
@@ -622,10 +655,14 @@ def __set_up_users(session, include_dummy_users=True):
     pw8 = get_hashed_password('bjoern')
     pw9 = get_hashed_password('teresa')
 
-    user0 = User(firstname=nick_of_anonymous_user, surname=nick_of_anonymous_user, nickname=nick_of_anonymous_user, email='', password=pw0, group_uid=group2.uid, gender='m')
-    user1 = User(firstname='admin', surname='admin', nickname=nick_of_admin, email='dbas.hhu@gmail.com', password=pw1, group_uid=group0.uid, gender='m')
-    user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de', password=pw2, group_uid=group0.uid, gender='m')
-    user4 = User(firstname='Christian', surname='Meter', nickname='Christian', email='meter@cs.uni-duesseldorf.de', password=pw4, group_uid=group0.uid, gender='m')
+    user0 = User(firstname=nick_of_anonymous_user, surname=nick_of_anonymous_user, nickname=nick_of_anonymous_user,
+                 email='', password=pw0, group_uid=group2.uid, gender='m')
+    user1 = User(firstname='admin', surname='admin', nickname=nick_of_admin, email='dbas.hhu@gmail.com', password=pw1,
+                 group_uid=group0.uid, gender='m')
+    user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de',
+                 password=pw2, group_uid=group0.uid, gender='m')
+    user4 = User(firstname='Christian', surname='Meter', nickname='Christian', email='meter@cs.uni-duesseldorf.de',
+                 password=pw4, group_uid=group0.uid, gender='m')
 
     session.add_all([user0, user1, user2, user4])
     session.flush()
@@ -633,42 +670,76 @@ def __set_up_users(session, include_dummy_users=True):
     if not include_dummy_users:
         return [user0, user1, user2, user4]
 
-    user6 = User(firstname='Björn', surname='Ebbinghaus', nickname='Björn', email='bjoern.ebbinghaus@uni-duesseldorf.de', password=pw8, group_uid=group0.uid, gender='m')
-    user7 = User(firstname='Teresa', surname='Uebber', nickname='Teresa', email='teresa.uebber@uni-duesseldorf.de', password=pw9, group_uid=group0.uid, gender='f')
-    user8 = User(firstname='Bob', surname='Bubbles', nickname='Bob', email='tobias.krauthoff+dbas.usert31@gmail.com', password=pwt, group_uid=group0.uid, gender='n')
+    user6 = User(firstname='Björn', surname='Ebbinghaus', nickname='Björn',
+                 email='bjoern.ebbinghaus@uni-duesseldorf.de', password=pw8, group_uid=group0.uid, gender='m')
+    user7 = User(firstname='Teresa', surname='Uebber', nickname='Teresa', email='teresa.uebber@uni-duesseldorf.de',
+                 password=pw9, group_uid=group0.uid, gender='f')
+    user8 = User(firstname='Bob', surname='Bubbles', nickname='Bob', email='tobias.krauthoff+dbas.usert31@gmail.com',
+                 password=pwt, group_uid=group0.uid, gender='n')
     session.add_all([user6, user7, user8])
 
-    usert00 = User(firstname='Pascal', surname='Lux', nickname='Pascal', email='tobias.krauthoff+dbas.usert00@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
-    usert01 = User(firstname='Kurt', surname='Hecht', nickname='Kurt', email='tobias.krauthoff+dbas.usert01@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
-    usert02 = User(firstname='Torben', surname='Hartl', nickname='Torben', email='tobias.krauthoff+dbas.usert02@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
-    usert03 = User(firstname='Thorsten', surname='Scherer', nickname='Thorsten', email='tobias.krauthoff+dbas.usert03@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
-    usert04 = User(firstname='Friedrich', surname='Schutte', nickname='Friedrich', email='tobias.krauthoff+dbas.usert04@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
-    usert05 = User(firstname='Aayden', surname='Westermann', nickname='Aayden', email='tobias.krauthoff+dbas.usert05@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
-    usert06 = User(firstname='Hermann', surname='Grasshoff', nickname='Hermann', email='tobias.krauthoff+dbas.usert06@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
-    usert07 = User(firstname='Wolf', surname='Himmler', nickname='Wolf', email='tobias.krauthoff+dbas.usert07@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
-    usert08 = User(firstname='Jakob', surname='Winter', nickname='Jakob', email='tobias.krauthoff+dbas.usert08@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
-    usert09 = User(firstname='Alwin', surname='Wechter', nickname='Alwin', email='tobias.krauthoff+dbas.usert09@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
-    usert10 = User(firstname='Walter', surname='Weisser', nickname='Walter', email='tobias.krauthoff+dbas.usert10@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
-    usert11 = User(firstname='Volker', surname='Keitel', nickname='Volker', email='tobias.krauthoff+dbas.usert11@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
-    usert12 = User(firstname='Benedikt', surname='Feuerstein', nickname='Benedikt', email='tobias.krauthoff+dbas.usert12@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
-    usert13 = User(firstname='Engelbert', surname='Gottlieb', nickname='Engelbert', email='tobias.krauthoff+dbas.usert13@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
-    usert14 = User(firstname='Elias', surname='Auerbach', nickname='Elias', email='tobias.krauthoff+dbas.usert14@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
-    usert15 = User(firstname='Rupert', surname='Wenz', nickname='Rupert', email='tobias.krauthoff+dbas.usert15@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
-    usert16 = User(firstname='Marga', surname='Wegscheider', nickname='Marga', email='tobias.krauthoff+dbas.usert16@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
-    usert17 = User(firstname='Larissa', surname='Clauberg', nickname='Larissa', email='tobias.krauthoff+dbas.usert17@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
-    usert18 = User(firstname='Emmi', surname='Rosch', nickname='Emmi', email='tobias.krauthoff+dbas.usert18@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
-    usert19 = User(firstname='Konstanze', surname='Krebs', nickname='Konstanze', email='tobias.krauthoff+dbas.usert19@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
-    usert20 = User(firstname='Catrin', surname='Fahnrich', nickname='Catrin', email='tobias.krauthoff+dbas.usert20@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
-    usert21 = User(firstname='Antonia', surname='Bartram', nickname='Antonia', email='tobias.krauthoff+dbas.usert21@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
-    usert22 = User(firstname='Nora', surname='Kempf', nickname='Nora', email='tobias.krauthoff+dbas.usert22@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
-    usert23 = User(firstname='Julia', surname='Wetter', nickname='Julia', email='tobias.krauthoff+dbas.usert23@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
-    usert24 = User(firstname='Jutta', surname='Munch', nickname='Jutta', email='tobias.krauthoff+dbas.usert24@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
-    usert25 = User(firstname='Helga', surname='Heilmann', nickname='Helga', email='tobias.krauthoff+dbas.usert25@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
-    usert26 = User(firstname='Denise', surname='Tietjen', nickname='Denise', email='tobias.krauthoff+dbas.usert26@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
-    usert27 = User(firstname='Hanne', surname='Beckmann', nickname='Hanne', email='tobias.krauthoff+dbas.usert27@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
-    usert28 = User(firstname='Elly', surname='Landauer', nickname='Elly', email='tobias.krauthoff+dbas.usert28@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
-    usert29 = User(firstname='Sybille', surname='Redlich', nickname='Sybille', email='tobias.krauthoff+dbas.usert29@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
-    usert30 = User(firstname='Ingeburg', surname='Fischer', nickname='Ingeburg', email='tobias.krauthoff+dbas.usert30@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
+    usert00 = User(firstname='Pascal', surname='Lux', nickname='Pascal',
+                   email='tobias.krauthoff+dbas.usert00@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
+    usert01 = User(firstname='Kurt', surname='Hecht', nickname='Kurt', email='tobias.krauthoff+dbas.usert01@gmail.com',
+                   password=pwt, group_uid=group2.uid, gender='m')
+    usert02 = User(firstname='Torben', surname='Hartl', nickname='Torben',
+                   email='tobias.krauthoff+dbas.usert02@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
+    usert03 = User(firstname='Thorsten', surname='Scherer', nickname='Thorsten',
+                   email='tobias.krauthoff+dbas.usert03@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
+    usert04 = User(firstname='Friedrich', surname='Schutte', nickname='Friedrich',
+                   email='tobias.krauthoff+dbas.usert04@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
+    usert05 = User(firstname='Aayden', surname='Westermann', nickname='Aayden',
+                   email='tobias.krauthoff+dbas.usert05@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
+    usert06 = User(firstname='Hermann', surname='Grasshoff', nickname='Hermann',
+                   email='tobias.krauthoff+dbas.usert06@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
+    usert07 = User(firstname='Wolf', surname='Himmler', nickname='Wolf',
+                   email='tobias.krauthoff+dbas.usert07@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
+    usert08 = User(firstname='Jakob', surname='Winter', nickname='Jakob',
+                   email='tobias.krauthoff+dbas.usert08@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
+    usert09 = User(firstname='Alwin', surname='Wechter', nickname='Alwin',
+                   email='tobias.krauthoff+dbas.usert09@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
+    usert10 = User(firstname='Walter', surname='Weisser', nickname='Walter',
+                   email='tobias.krauthoff+dbas.usert10@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
+    usert11 = User(firstname='Volker', surname='Keitel', nickname='Volker',
+                   email='tobias.krauthoff+dbas.usert11@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
+    usert12 = User(firstname='Benedikt', surname='Feuerstein', nickname='Benedikt',
+                   email='tobias.krauthoff+dbas.usert12@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
+    usert13 = User(firstname='Engelbert', surname='Gottlieb', nickname='Engelbert',
+                   email='tobias.krauthoff+dbas.usert13@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
+    usert14 = User(firstname='Elias', surname='Auerbach', nickname='Elias',
+                   email='tobias.krauthoff+dbas.usert14@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
+    usert15 = User(firstname='Rupert', surname='Wenz', nickname='Rupert',
+                   email='tobias.krauthoff+dbas.usert15@gmail.com', password=pwt, group_uid=group2.uid, gender='m')
+    usert16 = User(firstname='Marga', surname='Wegscheider', nickname='Marga',
+                   email='tobias.krauthoff+dbas.usert16@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
+    usert17 = User(firstname='Larissa', surname='Clauberg', nickname='Larissa',
+                   email='tobias.krauthoff+dbas.usert17@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
+    usert18 = User(firstname='Emmi', surname='Rosch', nickname='Emmi', email='tobias.krauthoff+dbas.usert18@gmail.com',
+                   password=pwt, group_uid=group2.uid, gender='f')
+    usert19 = User(firstname='Konstanze', surname='Krebs', nickname='Konstanze',
+                   email='tobias.krauthoff+dbas.usert19@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
+    usert20 = User(firstname='Catrin', surname='Fahnrich', nickname='Catrin',
+                   email='tobias.krauthoff+dbas.usert20@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
+    usert21 = User(firstname='Antonia', surname='Bartram', nickname='Antonia',
+                   email='tobias.krauthoff+dbas.usert21@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
+    usert22 = User(firstname='Nora', surname='Kempf', nickname='Nora', email='tobias.krauthoff+dbas.usert22@gmail.com',
+                   password=pwt, group_uid=group2.uid, gender='f')
+    usert23 = User(firstname='Julia', surname='Wetter', nickname='Julia',
+                   email='tobias.krauthoff+dbas.usert23@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
+    usert24 = User(firstname='Jutta', surname='Munch', nickname='Jutta',
+                   email='tobias.krauthoff+dbas.usert24@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
+    usert25 = User(firstname='Helga', surname='Heilmann', nickname='Helga',
+                   email='tobias.krauthoff+dbas.usert25@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
+    usert26 = User(firstname='Denise', surname='Tietjen', nickname='Denise',
+                   email='tobias.krauthoff+dbas.usert26@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
+    usert27 = User(firstname='Hanne', surname='Beckmann', nickname='Hanne',
+                   email='tobias.krauthoff+dbas.usert27@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
+    usert28 = User(firstname='Elly', surname='Landauer', nickname='Elly',
+                   email='tobias.krauthoff+dbas.usert28@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
+    usert29 = User(firstname='Sybille', surname='Redlich', nickname='Sybille',
+                   email='tobias.krauthoff+dbas.usert29@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
+    usert30 = User(firstname='Ingeburg', surname='Fischer', nickname='Ingeburg',
+                   email='tobias.krauthoff+dbas.usert30@gmail.com', password=pwt, group_uid=group2.uid, gender='f')
 
     session.add_all([usert00])
     session.add_all([usert01, usert02, usert03, usert04, usert05, usert06, usert07, usert08, usert09, usert10])
@@ -695,7 +766,8 @@ def __set_up_settings(session, users):
     import dbas.user_management as user_hander
     for user in users:
         new_public_nick = 10 <= users.index(user) <= 20
-        setting = Settings(author_uid=user.uid, send_mails=False, send_notifications=True, should_show_public_nickname=not new_public_nick)
+        setting = Settings(author_uid=user.uid, send_mails=False, send_notifications=True,
+                           should_show_public_nickname=not new_public_nick)
         session.add(setting)
         if new_public_nick:
             user_hander.refresh_public_nickname(user)
@@ -735,7 +807,7 @@ def __set_up_issue(session, lang1, lang2, is_field_test=False):
                    long_info='',
                    author_uid=db_user.uid,
                    lang_uid=lang1.uid,
-                   is_disabled=is_field_test)
+                   is_disabled=not is_field_test)
     issue2 = Issue(title='Cat or Dog',
                    info='Your family argues about whether to buy a cat or dog as pet. Now your opinion matters!',
                    long_info='',
@@ -764,18 +836,18 @@ def __set_up_issue(session, lang1, lang2, is_field_test=False):
                    info='Wie können der Informatik-Studiengang verbessert und die Probleme, die durch die '
                         'große Anzahl der Studierenden entstanden sind, gelöst werden?',
                    long_info='Die Anzahl der Studierenden in der Informatik hat sich in den letzten Jahren stark '
-                        'erhöht. Dadurch treten zahlreiche Probleme auf, wie z.B. Raumknappheit, überfüllte '
-                        'Lehrveranstaltungen und ein Mangel an Plätzen zum Lernen. Wir möchten Sie gerne dazu '
-                        'einladen, gemeinsam mit den Dozierenden der Informatik über Lösungsmöglichkeiten zu '
-                        'diskutieren: Wie können der Studiengang verbessert und die Probleme, die durch die '
-                        'große Anzahl der Studierenden entstanden sind, gelöst werden?',
+                             'erhöht. Dadurch treten zahlreiche Probleme auf, wie z.B. Raumknappheit, überfüllte '
+                             'Lehrveranstaltungen und ein Mangel an Plätzen zum Lernen. Wir möchten Sie gerne dazu '
+                             'einladen, gemeinsam mit den Dozierenden der Informatik über Lösungsmöglichkeiten zu '
+                             'diskutieren: Wie können der Studiengang verbessert und die Probleme, die durch die '
+                             'große Anzahl der Studierenden entstanden sind, gelöst werden?',
                    author_uid=db_user.uid,
                    lang_uid=lang2.uid,
                    is_disabled=not is_field_test)
     if is_field_test:
-        session.add_all([issue6])
+        session.add_all([issue6, issue1])
         session.flush()
-        return issue6
+        return issue6, issue1
     else:
         session.add_all([issue1, issue2, issue3, issue4, issue5, issue6])
         session.flush()
@@ -822,8 +894,10 @@ def __setup_dummy_seen_by(session):
     session.add_all(elements)
     session.flush()
 
-    logger('INIT_DB', 'Dummy Seen By', 'Created ' + str(argument_count) + ' seen-by entries for ' + str(len(db_arguments)) + ' arguments')
-    logger('INIT_DB', 'Dummy Seen By', 'Created ' + str(statement_count) + ' seen-by entries for ' + str(len(db_statements)) + ' statements')
+    logger('INIT_DB', 'Dummy Seen By',
+           'Created ' + str(argument_count) + ' seen-by entries for ' + str(len(db_arguments)) + ' arguments')
+    logger('INIT_DB', 'Dummy Seen By',
+           'Created ' + str(statement_count) + ' seen-by entries for ' + str(len(db_statements)) + ' statements')
 
 
 def __setup_dummy_clicks(session):
@@ -858,11 +932,14 @@ def __setup_dummy_clicks(session):
     logger('INIT_DB', 'Dummy Clicks',
            'Created {} up clicks for {} arguments ({:.2f} clicks/argument)'.format(arg_up, argument_count, rat_arg_up))
     logger('INIT_DB', 'Dummy Clicks',
-           'Created {} down clicks for {} arguments ({:.2f} clicks/argument)'.format(arg_down, argument_count, rat_arg_down))
+           'Created {} down clicks for {} arguments ({:.2f} clicks/argument)'.format(arg_down, argument_count,
+                                                                                     rat_arg_down))
     logger('INIT_DB', 'Dummy Clicks',
-           'Created {} up clicks for {} statements ({:.2f} clicks/statement)'.format(stat_up, statement_count, rat_stat_up))
+           'Created {} up clicks for {} statements ({:.2f} clicks/statement)'.format(stat_up, statement_count,
+                                                                                     rat_stat_up))
     logger('INIT_DB', 'Dummy Clicks',
-           'Created {} down clicks for {} statements ({:.2f} clicks/statement)'.format(stat_down, statement_count, rat_stat_down))
+           'Created {} down clicks for {} statements ({:.2f} clicks/statement)'.format(stat_down, statement_count,
+                                                                                       rat_stat_down))
 
     session.add_all(new_clicks_for_arguments)
     session.add_all(new_clicks_for_statements)
@@ -916,7 +993,9 @@ def __create_clicks_for_arguments(up_votes, argument_uid, users, is_up_vote):
     tmp_firstname = list(first_names)
     for i in range(1, up_votes):
         nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
-        new_clicks_for_arguments.append(ClickedArgument(argument_uid=argument_uid, author_uid=users[nick].uid, is_up_vote=is_up_vote, is_valid=True))
+        new_clicks_for_arguments.append(
+            ClickedArgument(argument_uid=argument_uid, author_uid=users[nick].uid, is_up_vote=is_up_vote,
+                            is_valid=True))
         tmp_firstname.remove(nick)
     return new_clicks_for_arguments
 
@@ -958,21 +1037,38 @@ def __create_clicks_for_statements(up_votes, statement_uid, users, is_up_vote):
     new_clicks_for_statement = list()
     for i in range(1, up_votes):
         nick = tmp_firstname[random.randint(0, len(tmp_firstname) - 1)]
-        new_clicks_for_statement.append(ClickedStatement(statement_uid=statement_uid, author_uid=users[nick].uid, is_up_vote=is_up_vote, is_valid=True))
+        new_clicks_for_statement.append(
+            ClickedStatement(statement_uid=statement_uid, author_uid=users[nick].uid, is_up_vote=is_up_vote,
+                             is_valid=True))
     return new_clicks_for_statement
 
 
-def __setup_fieltest_discussion_database(session, db_issue):
+def __setup_fieltest_discussion_database(session, db_issue_de, db_issue_en):
     """
     Minimal discussion for a field test
 
     :param session: current session
     :return: None
     """
+    __setup_fieltests_de_discussion_database(session, db_issue_de)
+    __setup_fieltests_en_discussion_database(session, db_issue_en)
+
+
+def __setup_fieltests_de_discussion_database(session, db_issue):
+    """
+
+    Initializes the discussion about 'Verbesserung des Studiengangs'
+
+    :param session: current session
+    :param db_issue: Issue
+    :return: None
+    """
     db_user = session.query(User).filter_by(nickname='Tobias').first()
 
     textversion0 = TextVersion(content="eine Zulassungsbeschränkung eingeführt werden soll", author=db_user.uid)
-    textversion1 = TextVersion(content="die Nachfrage nach dem Fach zu groß ist, sodass eine Beschränkung eingeführt werden muss", author=db_user.uid)
+    textversion1 = TextVersion(
+        content="die Nachfrage nach dem Fach zu groß ist, sodass eine Beschränkung eingeführt werden muss",
+        author=db_user.uid)
     textversion2 = TextVersion(content="die Vergleichbarkeit des Abiturschnitts nicht gegeben ist", author=db_user.uid)
     session.add_all([textversion0, textversion1, textversion2])
     session.flush()
@@ -995,30 +1091,246 @@ def __setup_fieltest_discussion_database(session, db_issue):
     session.add_all([premisegroup1, premisegroup2])
     session.flush()
 
-    premise1 = Premise(premisesgroup=premisegroup1.uid, statement=statement1.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
-    premise2 = Premise(premisesgroup=premisegroup2.uid, statement=statement2.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise1 = Premise(premisesgroup=premisegroup1.uid, statement=statement1.uid, is_negated=False, author=db_user.uid,
+                       issue=db_issue.uid)
+    premise2 = Premise(premisesgroup=premisegroup2.uid, statement=statement2.uid, is_negated=False, author=db_user.uid,
+                       issue=db_issue.uid)
     session.add_all([premise1, premise2])
     session.flush()
 
     # adding all arguments and set the adjacency list
-    argument1 = Argument(premisegroup=premisegroup1.uid, issupportive=True, author=db_user.uid, conclusion=statement0.uid, issue=db_issue.uid)
-    argument2 = Argument(premisegroup=premisegroup2.uid, issupportive=False, author=db_user.uid, conclusion=statement0.uid, issue=db_issue.uid)
+    argument1 = Argument(premisegroup=premisegroup1.uid, issupportive=True, author=db_user.uid,
+                         conclusion=statement0.uid, issue=db_issue.uid)
+    argument2 = Argument(premisegroup=premisegroup2.uid, issupportive=False, author=db_user.uid,
+                         conclusion=statement0.uid, issue=db_issue.uid)
     session.add_all([argument1, argument2])
     session.flush()
 
-    reference1 = StatementReferences(reference="In anderen Fächern übersteigt das Interesse bei den Abiturientinnen und Abiturienten das Angebot an Studienplätzen, in manchen Fällen um ein Vielfaches.",
-                                     host="http://www.faz.net/",
-                                     path="aktuell/beruf-chance/campus/pro-und-contra-brauchen-wir-den-numerus-clausus-13717801.html",
-                                     author_uid=db_user.uid,
-                                     statement_uid=statement1.uid,
-                                     issue_uid=db_issue.uid)
-    reference2 = StatementReferences(reference="Kern der Kritik am Numerus clausus ist seit jeher die mangelnde Vergleichbarkeit des Abiturschnitts",
-                                     host="http://www.faz.net/",
-                                     path="aktuell/beruf-chance/campus/pro-und-contra-brauchen-wir-den-numerus-clausus-13717801.html",
-                                     author_uid=db_user.uid,
-                                     statement_uid=statement2.uid,
-                                     issue_uid=db_issue.uid)
+    reference1 = StatementReferences(
+        reference="In anderen Fächern übersteigt das Interesse bei den Abiturientinnen und Abiturienten das Angebot an Studienplätzen, in manchen Fällen um ein Vielfaches.",
+        host="http://www.faz.net/",
+        path="aktuell/beruf-chance/campus/pro-und-contra-brauchen-wir-den-numerus-clausus-13717801.html",
+        author_uid=db_user.uid,
+        statement_uid=statement1.uid,
+        issue_uid=db_issue.uid)
+    reference2 = StatementReferences(
+        reference="Kern der Kritik am Numerus clausus ist seit jeher die mangelnde Vergleichbarkeit des Abiturschnitts",
+        host="http://www.faz.net/",
+        path="aktuell/beruf-chance/campus/pro-und-contra-brauchen-wir-den-numerus-clausus-13717801.html",
+        author_uid=db_user.uid,
+        statement_uid=statement2.uid,
+        issue_uid=db_issue.uid)
     session.add_all([reference1, reference2])
+    session.flush()
+
+
+def __setup_fieltests_en_discussion_database(session, db_issue):
+    """
+    Initializes the discussion about 'city has to cut costs'
+
+    :param session: current session
+    :param db_issue: Issue
+    :return: None
+    """
+    db_user = session.query(User).filter_by(nickname='Tobias').first()
+
+    # Adding all textversions
+    textversion101 = TextVersion(content="the city should reduce the number of street festivals", author=db_user.uid)
+    textversion102 = TextVersion(content="we should shut down University Park", author=db_user.uid)
+    textversion103 = TextVersion(content="we should close public swimming pools", author=db_user.uid)
+    textversion105 = TextVersion(content="reducing the number of street festivals can save up to $50.000 a year",
+                                 author=db_user.uid)
+    textversion106 = TextVersion(content="every street festival is funded by large companies", author=db_user.uid)
+    textversion107 = TextVersion(content="then we will have more money to expand out pedestrian zone",
+                                 author=db_user.uid)
+    textversion108 = TextVersion(content="our city will get more attractive for shopping", author=db_user.uid)
+    textversion109 = TextVersion(content="street festivals attract many people, which will increase the citys income",
+                                 author=db_user.uid)
+    textversion110 = TextVersion(content="spending of the city for these festivals are higher than the earnings",
+                                 author=db_user.uid)
+    textversion111 = TextVersion(content="money does not solve problems of our society", author=db_user.uid)
+    textversion112 = TextVersion(content="criminals use University Park to sell drugs", author=db_user.uid)
+    textversion113 = TextVersion(content="shutting down University Park will save $100.000 a year", author=db_user.uid)
+    textversion114 = TextVersion(content="we should not give in to criminals", author=db_user.uid)
+    textversion115 = TextVersion(content="the number of police patrols has been increased recently", author=db_user.uid)
+    textversion116 = TextVersion(content="this is the only park in our city", author=db_user.uid)
+    textversion117 = TextVersion(content="there are many parks in neighbouring towns", author=db_user.uid)
+    textversion118 = TextVersion(content="the city is planing a new park in the upcoming month", author=db_user.uid)
+    textversion119 = TextVersion(content="parks are very important for our climate", author=db_user.uid)
+    textversion120 = TextVersion(
+        content="our swimming pools are very old and it would take a major investment to repair them",
+        author=db_user.uid)
+    textversion121 = TextVersion(content="schools need the swimming pools for their sports lessons", author=db_user.uid)
+    textversion122 = TextVersion(content="the rate of non-swimmers is too high", author=db_user.uid)
+    textversion123 = TextVersion(content="the police cannot patrol in the park for 24/7", author=db_user.uid)
+    session.add_all([textversion101, textversion102, textversion103, textversion105])
+    session.add_all([textversion106, textversion107, textversion108, textversion109, textversion110, textversion111])
+    session.add_all([textversion112, textversion113, textversion114, textversion115, textversion116, textversion117])
+    session.add_all([textversion118, textversion119, textversion120, textversion121, textversion122, textversion123])
+    session.flush()
+
+    # adding all statements
+    statement101 = Statement(textversion=textversion101.uid, is_position=True, issue=db_issue.uid)
+    statement102 = Statement(textversion=textversion102.uid, is_position=True, issue=db_issue.uid)
+    statement103 = Statement(textversion=textversion103.uid, is_position=True, issue=db_issue.uid)
+    statement105 = Statement(textversion=textversion105.uid, is_position=False, issue=db_issue.uid)
+    statement106 = Statement(textversion=textversion106.uid, is_position=False, issue=db_issue.uid)
+    statement107 = Statement(textversion=textversion107.uid, is_position=False, issue=db_issue.uid)
+    statement108 = Statement(textversion=textversion108.uid, is_position=False, issue=db_issue.uid)
+    statement109 = Statement(textversion=textversion109.uid, is_position=False, issue=db_issue.uid)
+    statement110 = Statement(textversion=textversion110.uid, is_position=False, issue=db_issue.uid)
+    statement111 = Statement(textversion=textversion111.uid, is_position=False, issue=db_issue.uid)
+    statement112 = Statement(textversion=textversion112.uid, is_position=False, issue=db_issue.uid)
+    statement113 = Statement(textversion=textversion113.uid, is_position=False, issue=db_issue.uid)
+    statement114 = Statement(textversion=textversion114.uid, is_position=False, issue=db_issue.uid)
+    statement115 = Statement(textversion=textversion115.uid, is_position=False, issue=db_issue.uid)
+    statement116 = Statement(textversion=textversion116.uid, is_position=False, issue=db_issue.uid)
+    statement117 = Statement(textversion=textversion117.uid, is_position=False, issue=db_issue.uid)
+    statement118 = Statement(textversion=textversion118.uid, is_position=False, issue=db_issue.uid)
+    statement119 = Statement(textversion=textversion119.uid, is_position=False, issue=db_issue.uid)
+    statement120 = Statement(textversion=textversion120.uid, is_position=False, issue=db_issue.uid)
+    statement121 = Statement(textversion=textversion121.uid, is_position=False, issue=db_issue.uid)
+    statement122 = Statement(textversion=textversion122.uid, is_position=False, issue=db_issue.uid)
+    statement123 = Statement(textversion=textversion123.uid, is_position=False, issue=db_issue.uid)
+    session.add_all([statement101, statement102, statement103, statement105, statement106, statement107, statement108])
+    session.add_all([statement109, statement110, statement111, statement112, statement113, statement114, statement115])
+    session.add_all([statement116, statement117, statement118, statement119, statement120, statement121, statement122])
+    session.add_all([statement123])
+    session.flush()
+
+    # set textversions
+    textversion101.set_statement(statement101.uid)
+    textversion102.set_statement(statement102.uid)
+    textversion103.set_statement(statement103.uid)
+    textversion105.set_statement(statement105.uid)
+    textversion106.set_statement(statement106.uid)
+    textversion107.set_statement(statement107.uid)
+    textversion108.set_statement(statement108.uid)
+    textversion109.set_statement(statement109.uid)
+    textversion110.set_statement(statement110.uid)
+    textversion111.set_statement(statement111.uid)
+    textversion112.set_statement(statement112.uid)
+    textversion113.set_statement(statement113.uid)
+    textversion114.set_statement(statement114.uid)
+    textversion115.set_statement(statement115.uid)
+    textversion116.set_statement(statement116.uid)
+    textversion117.set_statement(statement117.uid)
+    textversion118.set_statement(statement118.uid)
+    textversion119.set_statement(statement119.uid)
+    textversion120.set_statement(statement120.uid)
+    textversion121.set_statement(statement121.uid)
+    textversion122.set_statement(statement122.uid)
+    textversion123.set_statement(statement123.uid)
+
+    # adding all premisegroups
+    premisegroup105 = PremiseGroup(author=db_user.uid)
+    premisegroup106 = PremiseGroup(author=db_user.uid)
+    premisegroup107 = PremiseGroup(author=db_user.uid)
+    premisegroup108 = PremiseGroup(author=db_user.uid)
+    premisegroup109 = PremiseGroup(author=db_user.uid)
+    premisegroup110 = PremiseGroup(author=db_user.uid)
+    premisegroup111 = PremiseGroup(author=db_user.uid)
+    premisegroup112 = PremiseGroup(author=db_user.uid)
+    premisegroup113 = PremiseGroup(author=db_user.uid)
+    premisegroup114 = PremiseGroup(author=db_user.uid)
+    premisegroup115 = PremiseGroup(author=db_user.uid)
+    premisegroup116 = PremiseGroup(author=db_user.uid)
+    premisegroup117 = PremiseGroup(author=db_user.uid)
+    premisegroup118 = PremiseGroup(author=db_user.uid)
+    premisegroup119 = PremiseGroup(author=db_user.uid)
+    premisegroup120 = PremiseGroup(author=db_user.uid)
+    premisegroup121 = PremiseGroup(author=db_user.uid)
+    premisegroup122 = PremiseGroup(author=db_user.uid)
+    premisegroup123 = PremiseGroup(author=db_user.uid)
+    session.flush()
+
+    premise105 = Premise(premisesgroup=premisegroup105.uid, statement=statement105.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise106 = Premise(premisesgroup=premisegroup106.uid, statement=statement106.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise107 = Premise(premisesgroup=premisegroup107.uid, statement=statement107.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise108 = Premise(premisesgroup=premisegroup108.uid, statement=statement108.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise109 = Premise(premisesgroup=premisegroup109.uid, statement=statement109.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise110 = Premise(premisesgroup=premisegroup110.uid, statement=statement110.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise111 = Premise(premisesgroup=premisegroup111.uid, statement=statement111.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise112 = Premise(premisesgroup=premisegroup112.uid, statement=statement112.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise113 = Premise(premisesgroup=premisegroup113.uid, statement=statement113.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise114 = Premise(premisesgroup=premisegroup114.uid, statement=statement114.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise115 = Premise(premisesgroup=premisegroup115.uid, statement=statement115.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise116 = Premise(premisesgroup=premisegroup116.uid, statement=statement116.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise117 = Premise(premisesgroup=premisegroup117.uid, statement=statement117.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise118 = Premise(premisesgroup=premisegroup118.uid, statement=statement118.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise119 = Premise(premisesgroup=premisegroup119.uid, statement=statement119.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise120 = Premise(premisesgroup=premisegroup120.uid, statement=statement120.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise121 = Premise(premisesgroup=premisegroup121.uid, statement=statement121.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise122 = Premise(premisesgroup=premisegroup122.uid, statement=statement122.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    premise123 = Premise(premisesgroup=premisegroup123.uid, statement=statement123.uid, is_negated=False,
+                         author=db_user.uid, issue=db_issue.uid)
+    session.add_all([premise105, premise106, premise107, premise108, premise109, premise110, premise111, premise112])
+    session.add_all([premise113, premise114, premise115, premise116, premise117, premise118, premise119, premise120])
+    session.add_all([premise121, premise122, premise123])
+    session.flush()
+
+    # adding all arguments and set the adjacency list
+    argument101 = Argument(premisegroup=premisegroup105.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement101.uid)
+    argument102 = Argument(premisegroup=premisegroup106.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
+    argument103 = Argument(premisegroup=premisegroup107.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement105.uid)
+    argument104 = Argument(premisegroup=premisegroup108.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement107.uid)
+    argument105 = Argument(premisegroup=premisegroup109.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement101.uid)
+    argument106 = Argument(premisegroup=premisegroup110.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
+    argument107 = Argument(premisegroup=premisegroup111.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
+    argument108 = Argument(premisegroup=premisegroup112.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement102.uid)
+    argument109 = Argument(premisegroup=premisegroup113.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement102.uid)
+    argument110 = Argument(premisegroup=premisegroup115.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement112.uid)
+    argument111 = Argument(premisegroup=premisegroup114.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
+    argument112 = Argument(premisegroup=premisegroup116.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement102.uid)
+    argument113 = Argument(premisegroup=premisegroup117.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
+    argument114 = Argument(premisegroup=premisegroup118.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement116.uid)
+    argument115 = Argument(premisegroup=premisegroup119.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement116.uid)
+    argument116 = Argument(premisegroup=premisegroup120.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement103.uid)
+    argument117 = Argument(premisegroup=premisegroup121.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
+    argument118 = Argument(premisegroup=premisegroup122.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement103.uid)
+    argument119 = Argument(premisegroup=premisegroup123.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid,
+                           conclusion=statement115.uid)
+    session.add_all([argument101, argument102, argument103, argument104, argument105, argument106, argument107])
+    session.add_all([argument108, argument109, argument110, argument112, argument113, argument114, argument111])
+    session.add_all([argument115, argument116, argument117, argument118, argument119])
+    session.flush()
+
+    argument102.set_conclusions_argument(argument101.uid)
+    argument106.set_conclusions_argument(argument105.uid)
+    argument107.set_conclusions_argument(argument105.uid)
+    argument111.set_conclusions_argument(argument108.uid)
+    argument113.set_conclusions_argument(argument112.uid)
+    argument117.set_conclusions_argument(argument116.uid)
     session.flush()
 
 
@@ -1043,29 +1355,40 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     textversion4 = TextVersion(content="cats are very independent", author=user.uid)
     textversion5 = TextVersion(content="cats are capricious", author=user.uid)
     textversion6 = TextVersion(content="dogs can act as watch dogs", author=user.uid)
-    textversion7 = TextVersion(content="you have to take the dog for a walk every day, which is tedious", author=user.uid)
+    textversion7 = TextVersion(content="you have to take the dog for a walk every day, which is tedious",
+                               author=user.uid)
     textversion8 = TextVersion(content="we have no use for a watch dog", author=user.uid)
-    textversion9 = TextVersion(content="going for a walk with the dog every day is good for social interaction and physical exercise", author=user.uid)
+    textversion9 = TextVersion(
+        content="going for a walk with the dog every day is good for social interaction and physical exercise",
+        author=user.uid)
     textversion10 = TextVersion(content="it would be no problem", author=user.uid)
     textversion11 = TextVersion(content="a cat and a dog will generally not get along well", author=user.uid)
     textversion12 = TextVersion(content="we do not have enough money for two pets", author=user.uid)
     textversion13 = TextVersion(content="a dog costs taxes and will be more expensive than a cat", author=user.uid)
     textversion14 = TextVersion(content="cats are fluffy", author=user.uid)
     textversion15 = TextVersion(content="cats are small", author=user.uid)
-    textversion16 = TextVersion(content="fluffy animals losing much hair and I'm allergic to animal hair", author=user.uid)
+    textversion16 = TextVersion(content="fluffy animals losing much hair and I'm allergic to animal hair",
+                                author=user.uid)
     textversion17 = TextVersion(content="you could use a automatic vacuum cleaner", author=user.uid)
-    textversion18 = TextVersion(content="cats ancestors are animals in wildlife, who are hunting alone and not in groups", author=user.uid)
+    textversion18 = TextVersion(
+        content="cats ancestors are animals in wildlife, who are hunting alone and not in groups", author=user.uid)
     textversion19 = TextVersion(content="this is not true for overbred races", author=user.uid)
     textversion20 = TextVersion(content="this lies in their the natural conditions", author=user.uid)
     textversion21 = TextVersion(content="the purpose of a pet is to have something to take care of", author=user.uid)
     textversion22 = TextVersion(content="several cats of friends of mine are real as*holes", author=user.uid)
-    textversion23 = TextVersion(content="the fact, that cats are capricious, is based on the cats race", author=user.uid)
+    textversion23 = TextVersion(content="the fact, that cats are capricious, is based on the cats race",
+                                author=user.uid)
     textversion24 = TextVersion(content="not every cat is capricious", author=user.uid)
-    textversion25 = TextVersion(content="this is based on the cats race and a little bit on the breeding", author=user.uid)
-    textversion26 = TextVersion(content="next to the taxes you will need equipment like a dog lead, anti-flea-spray, and so on", author=user.uid)
-    textversion27 = TextVersion(content="the equipment for running costs of cats and dogs are nearly the same", author=user.uid)
+    textversion25 = TextVersion(content="this is based on the cats race and a little bit on the breeding",
+                                author=user.uid)
+    textversion26 = TextVersion(
+        content="next to the taxes you will need equipment like a dog lead, anti-flea-spray, and so on",
+        author=user.uid)
+    textversion27 = TextVersion(content="the equipment for running costs of cats and dogs are nearly the same",
+                                author=user.uid)
     textversion29 = TextVersion(content="this is just a claim without any justification", author=user.uid)
-    textversion30 = TextVersion(content="in Germany you have to pay for your second dog even more taxes!", author=user.uid)
+    textversion30 = TextVersion(content="in Germany you have to pay for your second dog even more taxes!",
+                                author=user.uid)
     textversion31 = TextVersion(content="it is important, that pets are small and fluffy!", author=user.uid)
     textversion32 = TextVersion(content="cats are little, sweet and innocent cuddle toys", author=user.uid)
     textversion33 = TextVersion(content="do you have ever seen a sphinx cat or savannah cats?", author=user.uid)
@@ -1077,12 +1400,15 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     textversion101 = TextVersion(content="the city should reduce the number of street festivals", author=3)
     textversion102 = TextVersion(content="we should shut down University Park", author=3)
     textversion103 = TextVersion(content="we should close public swimming pools", author=user.uid)
-    textversion105 = TextVersion(content="reducing the number of street festivals can save up to $50.000 a year", author=user.uid)
+    textversion105 = TextVersion(content="reducing the number of street festivals can save up to $50.000 a year",
+                                 author=user.uid)
     textversion106 = TextVersion(content="every street festival is funded by large companies", author=user.uid)
     textversion107 = TextVersion(content="then we will have more money to expand out pedestrian zone", author=user.uid)
     textversion108 = TextVersion(content="our city will get more attractive for shopping", author=user.uid)
-    textversion109 = TextVersion(content="street festivals attract many people, which will increase the citys income", author=user.uid)
-    textversion110 = TextVersion(content="spending of the city for these festivals are higher than the earnings", author=user.uid)
+    textversion109 = TextVersion(content="street festivals attract many people, which will increase the citys income",
+                                 author=user.uid)
+    textversion110 = TextVersion(content="spending of the city for these festivals are higher than the earnings",
+                                 author=user.uid)
     textversion111 = TextVersion(content="money does not solve problems of our society", author=user.uid)
     textversion112 = TextVersion(content="criminals use University Park to sell drugs", author=user.uid)
     textversion113 = TextVersion(content="shutting down University Park will save $100.000 a year", author=user.uid)
@@ -1092,17 +1418,22 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     textversion117 = TextVersion(content="there are many parks in neighbouring towns", author=user.uid)
     textversion118 = TextVersion(content="the city is planing a new park in the upcoming month", author=3)
     textversion119 = TextVersion(content="parks are very important for our climate", author=3)
-    textversion120 = TextVersion(content="our swimming pools are very old and it would take a major investment to repair them", author=3)
+    textversion120 = TextVersion(
+        content="our swimming pools are very old and it would take a major investment to repair them", author=3)
     textversion121 = TextVersion(content="schools need the swimming pools for their sports lessons", author=user.uid)
     textversion122 = TextVersion(content="the rate of non-swimmers is too high", author=user.uid)
     textversion123 = TextVersion(content="the police cannot patrol in the park for 24/7", author=user.uid)
 
     textversion200 = TextVersion(content="E-Autos \"optimal\" für den Stadtverkehr sind", author=user.uid)
     textversion201 = TextVersion(content="dadurch die Lärmbelästigung in der Stadt sinkt", author=user.uid)
-    textversion202 = TextVersion(content="die Anzahl an Ladestationen in der Stadt nicht ausreichend ist", author=user.uid)
-    textversion203 = TextVersion(content="das Unfallrisiko steigt, da die Autos kaum Geräusche verursachen", author=user.uid)
-    textversion204 = TextVersion(content="die Autos auch zuhause geladen werden können und das pro Tag ausreichen sollte", author=user.uid)
-    textversion205 = TextVersion(content="Elektroautos keine lauten Geräusche beim Anfahren produzieren", author=user.uid)
+    textversion202 = TextVersion(content="die Anzahl an Ladestationen in der Stadt nicht ausreichend ist",
+                                 author=user.uid)
+    textversion203 = TextVersion(content="das Unfallrisiko steigt, da die Autos kaum Geräusche verursachen",
+                                 author=user.uid)
+    textversion204 = TextVersion(
+        content="die Autos auch zuhause geladen werden können und das pro Tag ausreichen sollte", author=user.uid)
+    textversion205 = TextVersion(content="Elektroautos keine lauten Geräusche beim Anfahren produzieren",
+                                 author=user.uid)
     textversion206 = TextVersion(content="Lärmbelästigung kein wirkliches Problem in den Städten ist", author=user.uid)
     textversion207 = TextVersion(content="nicht jede normale Tankstelle auch Stromtankstellen hat", author=user.uid)
     textversion208 = TextVersion(content="die Länder und Kommunen den Ausbau nun stark fördern wollen", author=user.uid)
@@ -1110,13 +1441,23 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     textversion212 = TextVersion(content="E-Autos das autonome Fahren vorantreiben", author=5)
     textversion213 = TextVersion(content="Tesla mutig bestehende Techniken einsetzt und zeigt was sie können", author=5)
 
-    textversion301 = TextVersion(content="durch rücksichtsvolle Verhaltensanpassungen der wissenschaftlichen Mitarbeitenden der Arbeitsaufwand der Sekretärinnen gesenkt werden könnte", author=user.uid)
-    textversion302 = TextVersion(content="wir Standard-Formulare, wie Urlaubsanträge, selbst faxen können", author=user.uid)
-    textversion303 = TextVersion(content="etliche Abläufe durch ein besseres Zusammenarbeiten optimiert werden können. Dies sollte auch schriftlich als Anleitungen festgehalten werden, damit neue Angestellt einen leichten Einstieg finden", author=user.uid)
-    textversion304 = TextVersion(content="viele Arbeiten auch durch die Mitarbeiter erledigt werden können", author=user.uid)
-    textversion305 = TextVersion(content="\"rücksichtsvolle Verhaltensanpassungen\" viel zu allgemein gehalten ist", author=user.uid)
-    textversion306 = TextVersion(content="das Faxgerät nicht immer zugänglich ist, wenn die Sekretärinnen nicht anwesend sind", author=user.uid)
-    textversion307 = TextVersion(content="wir keine eigenen Faxgeräte haben und so oder so entweder bei Martin stören müssten oder doch bei Sabine im Büro landen würden", author=user.uid)
+    textversion301 = TextVersion(
+        content="durch rücksichtsvolle Verhaltensanpassungen der wissenschaftlichen Mitarbeitenden der Arbeitsaufwand der Sekretärinnen gesenkt werden könnte",
+        author=user.uid)
+    textversion302 = TextVersion(content="wir Standard-Formulare, wie Urlaubsanträge, selbst faxen können",
+                                 author=user.uid)
+    textversion303 = TextVersion(
+        content="etliche Abläufe durch ein besseres Zusammenarbeiten optimiert werden können. Dies sollte auch schriftlich als Anleitungen festgehalten werden, damit neue Angestellt einen leichten Einstieg finden",
+        author=user.uid)
+    textversion304 = TextVersion(content="viele Arbeiten auch durch die Mitarbeiter erledigt werden können",
+                                 author=user.uid)
+    textversion305 = TextVersion(content="\"rücksichtsvolle Verhaltensanpassungen\" viel zu allgemein gehalten ist",
+                                 author=user.uid)
+    textversion306 = TextVersion(
+        content="das Faxgerät nicht immer zugänglich ist, wenn die Sekretärinnen nicht anwesend sind", author=user.uid)
+    textversion307 = TextVersion(
+        content="wir keine eigenen Faxgeräte haben und so oder so entweder bei Martin stören müssten oder doch bei Sabine im Büro landen würden",
+        author=user.uid)
 
     session.add_all([textversion1, textversion2, textversion3, textversion4, textversion5, textversion6])
     session.add_all([textversion7, textversion8, textversion9, textversion10, textversion11, textversion12])
@@ -1380,7 +1721,8 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     premisegroup306 = PremiseGroup(author=user.uid)
     premisegroup307 = PremiseGroup(author=user.uid)
 
-    session.add_all([premisegroup0, premisegroup1, premisegroup2, premisegroup3, premisegroup4, premisegroup5, premisegroup6])
+    session.add_all(
+        [premisegroup0, premisegroup1, premisegroup2, premisegroup3, premisegroup4, premisegroup5, premisegroup6])
     session.add_all([premisegroup7, premisegroup8, premisegroup9, premisegroup10, premisegroup11, premisegroup12])
     session.add_all([premisegroup13, premisegroup14, premisegroup15, premisegroup16, premisegroup17, premisegroup18])
     session.add_all([premisegroup19, premisegroup20, premisegroup21, premisegroup22, premisegroup23, premisegroup24])
@@ -1395,74 +1737,140 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.add_all([premisegroup303, premisegroup304, premisegroup305, premisegroup306, premisegroup307])
     session.flush()
 
-    premise0 = Premise(premisesgroup=premisegroup0.uid, statement=statement0.uid, is_negated=False, author=user.uid, issue=issue2.uid, is_disabled=True)
-    premise1 = Premise(premisesgroup=premisegroup1.uid, statement=statement4.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise2 = Premise(premisesgroup=premisegroup2.uid, statement=statement5.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise3 = Premise(premisesgroup=premisegroup3.uid, statement=statement6.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise4 = Premise(premisesgroup=premisegroup4.uid, statement=statement7.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise5 = Premise(premisesgroup=premisegroup5.uid, statement=statement8.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise6 = Premise(premisesgroup=premisegroup6.uid, statement=statement9.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise7 = Premise(premisesgroup=premisegroup7.uid, statement=statement10.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise8 = Premise(premisesgroup=premisegroup8.uid, statement=statement11.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise9 = Premise(premisesgroup=premisegroup9.uid, statement=statement12.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise10 = Premise(premisesgroup=premisegroup10.uid, statement=statement13.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise11 = Premise(premisesgroup=premisegroup11.uid, statement=statement14.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise12 = Premise(premisesgroup=premisegroup11.uid, statement=statement15.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise13 = Premise(premisesgroup=premisegroup12.uid, statement=statement16.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise14 = Premise(premisesgroup=premisegroup13.uid, statement=statement17.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise15 = Premise(premisesgroup=premisegroup14.uid, statement=statement18.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise16 = Premise(premisesgroup=premisegroup15.uid, statement=statement19.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise17 = Premise(premisesgroup=premisegroup16.uid, statement=statement20.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise18 = Premise(premisesgroup=premisegroup17.uid, statement=statement21.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise19 = Premise(premisesgroup=premisegroup18.uid, statement=statement22.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise20 = Premise(premisesgroup=premisegroup19.uid, statement=statement23.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise21 = Premise(premisesgroup=premisegroup20.uid, statement=statement24.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise22 = Premise(premisesgroup=premisegroup21.uid, statement=statement25.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise23 = Premise(premisesgroup=premisegroup22.uid, statement=statement26.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise24 = Premise(premisesgroup=premisegroup23.uid, statement=statement27.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise25 = Premise(premisesgroup=premisegroup24.uid, statement=statement29.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise26 = Premise(premisesgroup=premisegroup25.uid, statement=statement30.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise27 = Premise(premisesgroup=premisegroup26.uid, statement=statement31.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise28 = Premise(premisesgroup=premisegroup27.uid, statement=statement32.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise29 = Premise(premisesgroup=premisegroup28.uid, statement=statement33.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise30 = Premise(premisesgroup=premisegroup29.uid, statement=statement36.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise31 = Premise(premisesgroup=premisegroup8.uid, statement=statement34.uid, is_negated=False, author=user.uid, issue=issue2.uid)
-    premise105 = Premise(premisesgroup=premisegroup105.uid, statement=statement105.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise106 = Premise(premisesgroup=premisegroup106.uid, statement=statement106.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise107 = Premise(premisesgroup=premisegroup107.uid, statement=statement107.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise108 = Premise(premisesgroup=premisegroup108.uid, statement=statement108.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise109 = Premise(premisesgroup=premisegroup109.uid, statement=statement109.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise110 = Premise(premisesgroup=premisegroup110.uid, statement=statement110.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise111 = Premise(premisesgroup=premisegroup111.uid, statement=statement111.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise112 = Premise(premisesgroup=premisegroup112.uid, statement=statement112.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise113 = Premise(premisesgroup=premisegroup113.uid, statement=statement113.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise114 = Premise(premisesgroup=premisegroup114.uid, statement=statement114.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise115 = Premise(premisesgroup=premisegroup115.uid, statement=statement115.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise116 = Premise(premisesgroup=premisegroup116.uid, statement=statement116.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise117 = Premise(premisesgroup=premisegroup117.uid, statement=statement117.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise118 = Premise(premisesgroup=premisegroup118.uid, statement=statement118.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise119 = Premise(premisesgroup=premisegroup119.uid, statement=statement119.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise120 = Premise(premisesgroup=premisegroup120.uid, statement=statement120.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise121 = Premise(premisesgroup=premisegroup121.uid, statement=statement121.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise122 = Premise(premisesgroup=premisegroup122.uid, statement=statement122.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise123 = Premise(premisesgroup=premisegroup123.uid, statement=statement123.uid, is_negated=False, author=user.uid, issue=issue1.uid)
-    premise201 = Premise(premisesgroup=premisegroup201.uid, statement=statement201.uid, is_negated=False, author=user.uid, issue=issue4.uid)
-    premise202 = Premise(premisesgroup=premisegroup202.uid, statement=statement202.uid, is_negated=False, author=user.uid, issue=issue4.uid)
-    premise203 = Premise(premisesgroup=premisegroup203.uid, statement=statement203.uid, is_negated=False, author=user.uid, issue=issue4.uid)
-    premise204 = Premise(premisesgroup=premisegroup204.uid, statement=statement204.uid, is_negated=False, author=user.uid, issue=issue4.uid)
-    premise205 = Premise(premisesgroup=premisegroup205.uid, statement=statement205.uid, is_negated=False, author=user.uid, issue=issue4.uid)
-    premise206 = Premise(premisesgroup=premisegroup206.uid, statement=statement206.uid, is_negated=False, author=user.uid, issue=issue4.uid)
-    premise207 = Premise(premisesgroup=premisegroup207.uid, statement=statement207.uid, is_negated=False, author=user.uid, issue=issue4.uid)
-    premise208 = Premise(premisesgroup=premisegroup208.uid, statement=statement208.uid, is_negated=False, author=user.uid, issue=issue4.uid)
-    premise213 = Premise(premisesgroup=premisegroup213.uid, statement=statement213.uid, is_negated=False, author=5, issue=issue4.uid)
+    premise0 = Premise(premisesgroup=premisegroup0.uid, statement=statement0.uid, is_negated=False, author=user.uid,
+                       issue=issue2.uid, is_disabled=True)
+    premise1 = Premise(premisesgroup=premisegroup1.uid, statement=statement4.uid, is_negated=False, author=user.uid,
+                       issue=issue2.uid)
+    premise2 = Premise(premisesgroup=premisegroup2.uid, statement=statement5.uid, is_negated=False, author=user.uid,
+                       issue=issue2.uid)
+    premise3 = Premise(premisesgroup=premisegroup3.uid, statement=statement6.uid, is_negated=False, author=user.uid,
+                       issue=issue2.uid)
+    premise4 = Premise(premisesgroup=premisegroup4.uid, statement=statement7.uid, is_negated=False, author=user.uid,
+                       issue=issue2.uid)
+    premise5 = Premise(premisesgroup=premisegroup5.uid, statement=statement8.uid, is_negated=False, author=user.uid,
+                       issue=issue2.uid)
+    premise6 = Premise(premisesgroup=premisegroup6.uid, statement=statement9.uid, is_negated=False, author=user.uid,
+                       issue=issue2.uid)
+    premise7 = Premise(premisesgroup=premisegroup7.uid, statement=statement10.uid, is_negated=False, author=user.uid,
+                       issue=issue2.uid)
+    premise8 = Premise(premisesgroup=premisegroup8.uid, statement=statement11.uid, is_negated=False, author=user.uid,
+                       issue=issue2.uid)
+    premise9 = Premise(premisesgroup=premisegroup9.uid, statement=statement12.uid, is_negated=False, author=user.uid,
+                       issue=issue2.uid)
+    premise10 = Premise(premisesgroup=premisegroup10.uid, statement=statement13.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise11 = Premise(premisesgroup=premisegroup11.uid, statement=statement14.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise12 = Premise(premisesgroup=premisegroup11.uid, statement=statement15.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise13 = Premise(premisesgroup=premisegroup12.uid, statement=statement16.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise14 = Premise(premisesgroup=premisegroup13.uid, statement=statement17.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise15 = Premise(premisesgroup=premisegroup14.uid, statement=statement18.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise16 = Premise(premisesgroup=premisegroup15.uid, statement=statement19.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise17 = Premise(premisesgroup=premisegroup16.uid, statement=statement20.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise18 = Premise(premisesgroup=premisegroup17.uid, statement=statement21.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise19 = Premise(premisesgroup=premisegroup18.uid, statement=statement22.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise20 = Premise(premisesgroup=premisegroup19.uid, statement=statement23.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise21 = Premise(premisesgroup=premisegroup20.uid, statement=statement24.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise22 = Premise(premisesgroup=premisegroup21.uid, statement=statement25.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise23 = Premise(premisesgroup=premisegroup22.uid, statement=statement26.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise24 = Premise(premisesgroup=premisegroup23.uid, statement=statement27.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise25 = Premise(premisesgroup=premisegroup24.uid, statement=statement29.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise26 = Premise(premisesgroup=premisegroup25.uid, statement=statement30.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise27 = Premise(premisesgroup=premisegroup26.uid, statement=statement31.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise28 = Premise(premisesgroup=premisegroup27.uid, statement=statement32.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise29 = Premise(premisesgroup=premisegroup28.uid, statement=statement33.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise30 = Premise(premisesgroup=premisegroup29.uid, statement=statement36.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise31 = Premise(premisesgroup=premisegroup8.uid, statement=statement34.uid, is_negated=False, author=user.uid,
+                        issue=issue2.uid)
+    premise105 = Premise(premisesgroup=premisegroup105.uid, statement=statement105.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise106 = Premise(premisesgroup=premisegroup106.uid, statement=statement106.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise107 = Premise(premisesgroup=premisegroup107.uid, statement=statement107.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise108 = Premise(premisesgroup=premisegroup108.uid, statement=statement108.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise109 = Premise(premisesgroup=premisegroup109.uid, statement=statement109.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise110 = Premise(premisesgroup=premisegroup110.uid, statement=statement110.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise111 = Premise(premisesgroup=premisegroup111.uid, statement=statement111.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise112 = Premise(premisesgroup=premisegroup112.uid, statement=statement112.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise113 = Premise(premisesgroup=premisegroup113.uid, statement=statement113.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise114 = Premise(premisesgroup=premisegroup114.uid, statement=statement114.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise115 = Premise(premisesgroup=premisegroup115.uid, statement=statement115.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise116 = Premise(premisesgroup=premisegroup116.uid, statement=statement116.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise117 = Premise(premisesgroup=premisegroup117.uid, statement=statement117.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise118 = Premise(premisesgroup=premisegroup118.uid, statement=statement118.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise119 = Premise(premisesgroup=premisegroup119.uid, statement=statement119.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise120 = Premise(premisesgroup=premisegroup120.uid, statement=statement120.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise121 = Premise(premisesgroup=premisegroup121.uid, statement=statement121.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise122 = Premise(premisesgroup=premisegroup122.uid, statement=statement122.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise123 = Premise(premisesgroup=premisegroup123.uid, statement=statement123.uid, is_negated=False,
+                         author=user.uid, issue=issue1.uid)
+    premise201 = Premise(premisesgroup=premisegroup201.uid, statement=statement201.uid, is_negated=False,
+                         author=user.uid, issue=issue4.uid)
+    premise202 = Premise(premisesgroup=premisegroup202.uid, statement=statement202.uid, is_negated=False,
+                         author=user.uid, issue=issue4.uid)
+    premise203 = Premise(premisesgroup=premisegroup203.uid, statement=statement203.uid, is_negated=False,
+                         author=user.uid, issue=issue4.uid)
+    premise204 = Premise(premisesgroup=premisegroup204.uid, statement=statement204.uid, is_negated=False,
+                         author=user.uid, issue=issue4.uid)
+    premise205 = Premise(premisesgroup=premisegroup205.uid, statement=statement205.uid, is_negated=False,
+                         author=user.uid, issue=issue4.uid)
+    premise206 = Premise(premisesgroup=premisegroup206.uid, statement=statement206.uid, is_negated=False,
+                         author=user.uid, issue=issue4.uid)
+    premise207 = Premise(premisesgroup=premisegroup207.uid, statement=statement207.uid, is_negated=False,
+                         author=user.uid, issue=issue4.uid)
+    premise208 = Premise(premisesgroup=premisegroup208.uid, statement=statement208.uid, is_negated=False,
+                         author=user.uid, issue=issue4.uid)
+    premise213 = Premise(premisesgroup=premisegroup213.uid, statement=statement213.uid, is_negated=False, author=5,
+                         issue=issue4.uid)
 
-    premise303 = Premise(premisesgroup=premisegroup303.uid, statement=statement303.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-    premise304 = Premise(premisesgroup=premisegroup304.uid, statement=statement304.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-    premise305 = Premise(premisesgroup=premisegroup305.uid, statement=statement305.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-    premise306 = Premise(premisesgroup=premisegroup306.uid, statement=statement306.uid, is_negated=False, author=user.uid, issue=issue5.uid)
-    premise307 = Premise(premisesgroup=premisegroup307.uid, statement=statement307.uid, is_negated=False, author=user.uid, issue=issue5.uid)
+    premise303 = Premise(premisesgroup=premisegroup303.uid, statement=statement303.uid, is_negated=False,
+                         author=user.uid, issue=issue5.uid)
+    premise304 = Premise(premisesgroup=premisegroup304.uid, statement=statement304.uid, is_negated=False,
+                         author=user.uid, issue=issue5.uid)
+    premise305 = Premise(premisesgroup=premisegroup305.uid, statement=statement305.uid, is_negated=False,
+                         author=user.uid, issue=issue5.uid)
+    premise306 = Premise(premisesgroup=premisegroup306.uid, statement=statement306.uid, is_negated=False,
+                         author=user.uid, issue=issue5.uid)
+    premise307 = Premise(premisesgroup=premisegroup307.uid, statement=statement307.uid, is_negated=False,
+                         author=user.uid, issue=issue5.uid)
 
-    session.add_all([premise0, premise1, premise2, premise3, premise4, premise5, premise6, premise7, premise8, premise9])
+    session.add_all(
+        [premise0, premise1, premise2, premise3, premise4, premise5, premise6, premise7, premise8, premise9])
     session.add_all([premise10, premise11, premise12, premise13, premise14, premise15, premise16, premise17])
     session.add_all([premise18, premise19, premise20, premise21, premise22, premise23, premise24, premise25])
     session.add_all([premise26, premise27, premise28, premise29, premise30, premise31])
@@ -1475,76 +1883,123 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.flush()
 
     # adding all arguments and set the adjacency list
-    argument0 = Argument(premisegroup=premisegroup0.uid, issupportive=False, author=user.uid, conclusion=statement1.uid, issue=issue2.uid, is_disabled=True)
-    argument1 = Argument(premisegroup=premisegroup1.uid, issupportive=True, author=user.uid, conclusion=statement1.uid, issue=issue2.uid)
-    argument2 = Argument(premisegroup=premisegroup2.uid, issupportive=False, author=user.uid, conclusion=statement1.uid, issue=issue2.uid)
-    argument3 = Argument(premisegroup=premisegroup3.uid, issupportive=True, author=user.uid, conclusion=statement2.uid, issue=issue2.uid)
-    argument4 = Argument(premisegroup=premisegroup4.uid, issupportive=False, author=user.uid, conclusion=statement2.uid, issue=issue2.uid)
+    argument0 = Argument(premisegroup=premisegroup0.uid, issupportive=False, author=user.uid, conclusion=statement1.uid,
+                         issue=issue2.uid, is_disabled=True)
+    argument1 = Argument(premisegroup=premisegroup1.uid, issupportive=True, author=user.uid, conclusion=statement1.uid,
+                         issue=issue2.uid)
+    argument2 = Argument(premisegroup=premisegroup2.uid, issupportive=False, author=user.uid, conclusion=statement1.uid,
+                         issue=issue2.uid)
+    argument3 = Argument(premisegroup=premisegroup3.uid, issupportive=True, author=user.uid, conclusion=statement2.uid,
+                         issue=issue2.uid)
+    argument4 = Argument(premisegroup=premisegroup4.uid, issupportive=False, author=user.uid, conclusion=statement2.uid,
+                         issue=issue2.uid)
     argument5 = Argument(premisegroup=premisegroup5.uid, issupportive=False, author=user.uid, issue=issue2.uid)
     argument6 = Argument(premisegroup=premisegroup6.uid, issupportive=False, author=user.uid, issue=issue2.uid)
-    argument7 = Argument(premisegroup=premisegroup7.uid, issupportive=True, author=user.uid, conclusion=statement3.uid, issue=issue2.uid)
+    argument7 = Argument(premisegroup=premisegroup7.uid, issupportive=True, author=user.uid, conclusion=statement3.uid,
+                         issue=issue2.uid)
     argument8 = Argument(premisegroup=premisegroup8.uid, issupportive=False, author=user.uid, issue=issue2.uid)
-    argument9 = Argument(premisegroup=premisegroup9.uid, issupportive=False, author=user.uid, conclusion=statement10.uid, issue=issue2.uid)
-    argument10 = Argument(premisegroup=premisegroup10.uid, issupportive=True, author=user.uid, conclusion=statement1.uid, issue=issue2.uid)
-    argument11 = Argument(premisegroup=premisegroup11.uid, issupportive=True, author=user.uid, conclusion=statement1.uid, issue=issue2.uid)
+    argument9 = Argument(premisegroup=premisegroup9.uid, issupportive=False, author=user.uid,
+                         conclusion=statement10.uid, issue=issue2.uid)
+    argument10 = Argument(premisegroup=premisegroup10.uid, issupportive=True, author=user.uid,
+                          conclusion=statement1.uid, issue=issue2.uid)
+    argument11 = Argument(premisegroup=premisegroup11.uid, issupportive=True, author=user.uid,
+                          conclusion=statement1.uid, issue=issue2.uid)
     argument12 = Argument(premisegroup=premisegroup12.uid, issupportive=False, author=user.uid, issue=issue2.uid)
     argument13 = Argument(premisegroup=premisegroup13.uid, issupportive=False, author=user.uid, issue=issue2.uid)
-    argument14 = Argument(premisegroup=premisegroup14.uid, issupportive=True, author=user.uid, conclusion=statement4.uid, issue=issue2.uid)
-    argument15 = Argument(premisegroup=premisegroup15.uid, issupportive=False, author=user.uid, conclusion=statement4.uid, issue=issue2.uid)
-    argument16 = Argument(premisegroup=premisegroup16.uid, issupportive=True, author=user.uid, conclusion=statement4.uid, issue=issue2.uid)
+    argument14 = Argument(premisegroup=premisegroup14.uid, issupportive=True, author=user.uid,
+                          conclusion=statement4.uid, issue=issue2.uid)
+    argument15 = Argument(premisegroup=premisegroup15.uid, issupportive=False, author=user.uid,
+                          conclusion=statement4.uid, issue=issue2.uid)
+    argument16 = Argument(premisegroup=premisegroup16.uid, issupportive=True, author=user.uid,
+                          conclusion=statement4.uid, issue=issue2.uid)
     argument17 = Argument(premisegroup=premisegroup17.uid, issupportive=False, author=user.uid, issue=issue2.uid)
-    argument18 = Argument(premisegroup=premisegroup18.uid, issupportive=True, author=user.uid, conclusion=statement5.uid, issue=issue2.uid)
-    argument19 = Argument(premisegroup=premisegroup19.uid, issupportive=False, author=user.uid, conclusion=statement5.uid, issue=issue2.uid)
-    argument20 = Argument(premisegroup=premisegroup20.uid, issupportive=False, author=user.uid, conclusion=statement5.uid, issue=issue2.uid)
+    argument18 = Argument(premisegroup=premisegroup18.uid, issupportive=True, author=user.uid,
+                          conclusion=statement5.uid, issue=issue2.uid)
+    argument19 = Argument(premisegroup=premisegroup19.uid, issupportive=False, author=user.uid,
+                          conclusion=statement5.uid, issue=issue2.uid)
+    argument20 = Argument(premisegroup=premisegroup20.uid, issupportive=False, author=user.uid,
+                          conclusion=statement5.uid, issue=issue2.uid)
     argument21 = Argument(premisegroup=premisegroup21.uid, issupportive=False, author=user.uid, issue=issue2.uid)
-    argument22 = Argument(premisegroup=premisegroup22.uid, issupportive=False, author=user.uid, conclusion=statement13.uid, issue=issue2.uid)
-    argument23 = Argument(premisegroup=premisegroup23.uid, issupportive=True, author=user.uid, conclusion=statement13.uid, issue=issue2.uid)
+    argument22 = Argument(premisegroup=premisegroup22.uid, issupportive=False, author=user.uid,
+                          conclusion=statement13.uid, issue=issue2.uid)
+    argument23 = Argument(premisegroup=premisegroup23.uid, issupportive=True, author=user.uid,
+                          conclusion=statement13.uid, issue=issue2.uid)
     argument24 = Argument(premisegroup=premisegroup24.uid, issupportive=False, author=user.uid, issue=issue2.uid)
-    argument25 = Argument(premisegroup=premisegroup25.uid, issupportive=True, author=user.uid, conclusion=statement13.uid, issue=issue2.uid)
-    argument26 = Argument(premisegroup=premisegroup26.uid, issupportive=True, author=user.uid, conclusion=statement14.uid, issue=issue2.uid)
-    argument27 = Argument(premisegroup=premisegroup26.uid, issupportive=True, author=user.uid, conclusion=statement15.uid, issue=issue2.uid)
-    argument28 = Argument(premisegroup=premisegroup27.uid, issupportive=True, author=user.uid, conclusion=statement14.uid, issue=issue2.uid)
+    argument25 = Argument(premisegroup=premisegroup25.uid, issupportive=True, author=user.uid,
+                          conclusion=statement13.uid, issue=issue2.uid)
+    argument26 = Argument(premisegroup=premisegroup26.uid, issupportive=True, author=user.uid,
+                          conclusion=statement14.uid, issue=issue2.uid)
+    argument27 = Argument(premisegroup=premisegroup26.uid, issupportive=True, author=user.uid,
+                          conclusion=statement15.uid, issue=issue2.uid)
+    argument28 = Argument(premisegroup=premisegroup27.uid, issupportive=True, author=user.uid,
+                          conclusion=statement14.uid, issue=issue2.uid)
     # argument28 = Argument(premisegroup=premisegroup27.uid, issupportive=True, author=user.uid, conclusion=statement15.uid, issue=issue2.uid)
-    argument29 = Argument(premisegroup=premisegroup28.uid, issupportive=False, author=user.uid, conclusion=statement14.uid, issue=issue2.uid)
+    argument29 = Argument(premisegroup=premisegroup28.uid, issupportive=False, author=user.uid,
+                          conclusion=statement14.uid, issue=issue2.uid)
     # argument30 = Argument(premisegroup=premisegroup28.uid, issupportive=False, author=user.uid, conclusion=statement15.uid, issue=issue2.uid)
     argument31 = Argument(premisegroup=premisegroup29.uid, issupportive=False, author=user.uid, issue=issue2.uid)
     ####
-    argument101 = Argument(premisegroup=premisegroup105.uid, issupportive=True, author=3, issue=issue1.uid, conclusion=statement101.uid)
+    argument101 = Argument(premisegroup=premisegroup105.uid, issupportive=True, author=3, issue=issue1.uid,
+                           conclusion=statement101.uid)
     argument102 = Argument(premisegroup=premisegroup106.uid, issupportive=False, author=3, issue=issue1.uid)
-    argument103 = Argument(premisegroup=premisegroup107.uid, issupportive=True, author=3, issue=issue1.uid, conclusion=statement105.uid)
-    argument104 = Argument(premisegroup=premisegroup108.uid, issupportive=True, author=user.uid, issue=issue1.uid, conclusion=statement107.uid)
-    argument105 = Argument(premisegroup=premisegroup109.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement101.uid)
+    argument103 = Argument(premisegroup=premisegroup107.uid, issupportive=True, author=3, issue=issue1.uid,
+                           conclusion=statement105.uid)
+    argument104 = Argument(premisegroup=premisegroup108.uid, issupportive=True, author=user.uid, issue=issue1.uid,
+                           conclusion=statement107.uid)
+    argument105 = Argument(premisegroup=premisegroup109.uid, issupportive=False, author=user.uid, issue=issue1.uid,
+                           conclusion=statement101.uid)
     argument106 = Argument(premisegroup=premisegroup110.uid, issupportive=False, author=user.uid, issue=issue1.uid)
     argument107 = Argument(premisegroup=premisegroup111.uid, issupportive=False, author=user.uid, issue=issue1.uid)
-    argument108 = Argument(premisegroup=premisegroup112.uid, issupportive=True, author=user.uid, issue=issue1.uid, conclusion=statement102.uid)
-    argument109 = Argument(premisegroup=premisegroup113.uid, issupportive=True, author=user.uid, issue=issue1.uid, conclusion=statement102.uid)
-    argument110 = Argument(premisegroup=premisegroup115.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement112.uid)
+    argument108 = Argument(premisegroup=premisegroup112.uid, issupportive=True, author=user.uid, issue=issue1.uid,
+                           conclusion=statement102.uid)
+    argument109 = Argument(premisegroup=premisegroup113.uid, issupportive=True, author=user.uid, issue=issue1.uid,
+                           conclusion=statement102.uid)
+    argument110 = Argument(premisegroup=premisegroup115.uid, issupportive=False, author=user.uid, issue=issue1.uid,
+                           conclusion=statement112.uid)
     argument111 = Argument(premisegroup=premisegroup114.uid, issupportive=False, author=user.uid, issue=issue1.uid)
-    argument112 = Argument(premisegroup=premisegroup116.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement102.uid)
+    argument112 = Argument(premisegroup=premisegroup116.uid, issupportive=False, author=user.uid, issue=issue1.uid,
+                           conclusion=statement102.uid)
     argument113 = Argument(premisegroup=premisegroup117.uid, issupportive=False, author=user.uid, issue=issue1.uid)
-    argument114 = Argument(premisegroup=premisegroup118.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement116.uid)
-    argument115 = Argument(premisegroup=premisegroup119.uid, issupportive=True, author=user.uid, issue=issue1.uid, conclusion=statement116.uid)
-    argument116 = Argument(premisegroup=premisegroup120.uid, issupportive=True, author=user.uid, issue=issue1.uid, conclusion=statement103.uid)
+    argument114 = Argument(premisegroup=premisegroup118.uid, issupportive=False, author=user.uid, issue=issue1.uid,
+                           conclusion=statement116.uid)
+    argument115 = Argument(premisegroup=premisegroup119.uid, issupportive=True, author=user.uid, issue=issue1.uid,
+                           conclusion=statement116.uid)
+    argument116 = Argument(premisegroup=premisegroup120.uid, issupportive=True, author=user.uid, issue=issue1.uid,
+                           conclusion=statement103.uid)
     argument117 = Argument(premisegroup=premisegroup121.uid, issupportive=False, author=user.uid, issue=issue1.uid)
-    argument118 = Argument(premisegroup=premisegroup122.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement103.uid)
-    argument119 = Argument(premisegroup=premisegroup123.uid, issupportive=False, author=user.uid, issue=issue1.uid, conclusion=statement115.uid)
+    argument118 = Argument(premisegroup=premisegroup122.uid, issupportive=False, author=user.uid, issue=issue1.uid,
+                           conclusion=statement103.uid)
+    argument119 = Argument(premisegroup=premisegroup123.uid, issupportive=False, author=user.uid, issue=issue1.uid,
+                           conclusion=statement115.uid)
     ####
-    argument200 = Argument(premisegroup=premisegroup201.uid, issupportive=True, author=user.uid, issue=issue4.uid, conclusion=statement200.uid)
-    argument201 = Argument(premisegroup=premisegroup202.uid, issupportive=False, author=user.uid, issue=issue4.uid, conclusion=statement200.uid)
+    argument200 = Argument(premisegroup=premisegroup201.uid, issupportive=True, author=user.uid, issue=issue4.uid,
+                           conclusion=statement200.uid)
+    argument201 = Argument(premisegroup=premisegroup202.uid, issupportive=False, author=user.uid, issue=issue4.uid,
+                           conclusion=statement200.uid)
     argument202 = Argument(premisegroup=premisegroup203.uid, issupportive=False, author=user.uid, issue=issue4.uid)
     argument203 = Argument(premisegroup=premisegroup204.uid, issupportive=False, author=user.uid, issue=issue4.uid)
-    argument204 = Argument(premisegroup=premisegroup205.uid, issupportive=True, author=user.uid, issue=issue4.uid, conclusion=statement201.uid)
-    argument205 = Argument(premisegroup=premisegroup206.uid, issupportive=False, author=user.uid, issue=issue4.uid, conclusion=statement201.uid)
-    argument206 = Argument(premisegroup=premisegroup207.uid, issupportive=True, author=user.uid, issue=issue4.uid, conclusion=statement202.uid)
-    argument207 = Argument(premisegroup=premisegroup208.uid, issupportive=False, author=user.uid, issue=issue4.uid, conclusion=statement202.uid)
+    argument204 = Argument(premisegroup=premisegroup205.uid, issupportive=True, author=user.uid, issue=issue4.uid,
+                           conclusion=statement201.uid)
+    argument205 = Argument(premisegroup=premisegroup206.uid, issupportive=False, author=user.uid, issue=issue4.uid,
+                           conclusion=statement201.uid)
+    argument206 = Argument(premisegroup=premisegroup207.uid, issupportive=True, author=user.uid, issue=issue4.uid,
+                           conclusion=statement202.uid)
+    argument207 = Argument(premisegroup=premisegroup208.uid, issupportive=False, author=user.uid, issue=issue4.uid,
+                           conclusion=statement202.uid)
 
-    argument210 = Argument(premisegroup=premisegroup213.uid, issupportive=True, author=user.uid, issue=issue4.uid, conclusion=statement212.uid)
+    argument210 = Argument(premisegroup=premisegroup213.uid, issupportive=True, author=user.uid, issue=issue4.uid,
+                           conclusion=statement212.uid)
     ####
-    argument303 = Argument(premisegroup=premisegroup303.uid, issupportive=True, author=user.uid, issue=issue5.uid, conclusion=statement301.uid)
-    argument304 = Argument(premisegroup=premisegroup304.uid, issupportive=True, author=user.uid, issue=issue5.uid, conclusion=statement301.uid)
-    argument305 = Argument(premisegroup=premisegroup305.uid, issupportive=False, author=user.uid, issue=issue5.uid, conclusion=statement301.uid)
-    argument306 = Argument(premisegroup=premisegroup306.uid, issupportive=False, author=user.uid, issue=issue5.uid, conclusion=statement302.uid)
-    argument307 = Argument(premisegroup=premisegroup307.uid, issupportive=False, author=user.uid, issue=issue5.uid, conclusion=statement302.uid)
+    argument303 = Argument(premisegroup=premisegroup303.uid, issupportive=True, author=user.uid, issue=issue5.uid,
+                           conclusion=statement301.uid)
+    argument304 = Argument(premisegroup=premisegroup304.uid, issupportive=True, author=user.uid, issue=issue5.uid,
+                           conclusion=statement301.uid)
+    argument305 = Argument(premisegroup=premisegroup305.uid, issupportive=False, author=user.uid, issue=issue5.uid,
+                           conclusion=statement301.uid)
+    argument306 = Argument(premisegroup=premisegroup306.uid, issupportive=False, author=user.uid, issue=issue5.uid,
+                           conclusion=statement302.uid)
+    argument307 = Argument(premisegroup=premisegroup307.uid, issupportive=False, author=user.uid, issue=issue5.uid,
+                           conclusion=statement302.uid)
 
     session.add_all([argument0, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8])
     session.add_all([argument9, argument10, argument11, argument12, argument13, argument14, argument15])
@@ -1590,18 +2045,20 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.flush()
 
     # Add references
-    reference200 = StatementReferences(reference="Ein Radar überwacht den Abstand, eine Frontkamera erkennt Fahrspuren und andere Verkehrsteilnehmer, und je sechs Ultraschallsensoren vorne und hinten helfen beim Einparken und messen während der Fahrt Distanzen im Zentimeterbereich",
-                                       host="localhost:3449",
-                                       path="/devcards/index.html",
-                                       author_uid=5,
-                                       statement_uid=statement213.uid,
-                                       issue_uid=issue4.uid)
-    reference201 = StatementReferences(reference="Zunächst einmal unterscheidet sich die Hardware für den Autopiloten nicht oder nur marginal von dem, was selbst für einen VW Polo erhältlich ist",
-                                       host="localhost:3449",
-                                       path="/",
-                                       author_uid=5,
-                                       statement_uid=statement213.uid,
-                                       issue_uid=issue4.uid)
+    reference200 = StatementReferences(
+        reference="Ein Radar überwacht den Abstand, eine Frontkamera erkennt Fahrspuren und andere Verkehrsteilnehmer, und je sechs Ultraschallsensoren vorne und hinten helfen beim Einparken und messen während der Fahrt Distanzen im Zentimeterbereich",
+        host="localhost:3449",
+        path="/devcards/index.html",
+        author_uid=5,
+        statement_uid=statement213.uid,
+        issue_uid=issue4.uid)
+    reference201 = StatementReferences(
+        reference="Zunächst einmal unterscheidet sich die Hardware für den Autopiloten nicht oder nur marginal von dem, was selbst für einen VW Polo erhältlich ist",
+        host="localhost:3449",
+        path="/",
+        author_uid=5,
+        statement_uid=statement213.uid,
+        issue_uid=issue4.uid)
     reference014 = StatementReferences(reference="Katzen sind kleine Tiger",
                                        host="http://www.iflscience.com/",
                                        path="plants-and-animals/no-your-cat-isnt-plotting-kill-youbut-it-has-lions-personality/",
@@ -1669,12 +2126,17 @@ def __setup_review_dummy_database(session):
     review16 = ReviewOptimization(detector=user[3], statement=random.randint(int_start, int_end))
     review04 = ReviewOptimization(detector=user[4], argument=random.randint(int_start, int_end))
     review05 = ReviewOptimization(detector=user[5], argument=random.randint(int_start, int_end))
-    review06 = ReviewDelete(detector=user[6], argument=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
-    review07 = ReviewDelete(detector=user[7], argument=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
-    review08 = ReviewDelete(detector=user[8], statement=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
+    review06 = ReviewDelete(detector=user[6], argument=random.randint(int_start, int_end), reason=random.randint(1, 2),
+                            is_executed=True)
+    review07 = ReviewDelete(detector=user[7], argument=random.randint(int_start, int_end), reason=random.randint(1, 2),
+                            is_executed=True)
+    review08 = ReviewDelete(detector=user[8], statement=random.randint(int_start, int_end), reason=random.randint(1, 2),
+                            is_executed=True)
     review09 = ReviewDelete(detector=user[9], statement=random.randint(int_start, int_end), reason=random.randint(1, 2))
-    review10 = ReviewDelete(detector=user[10], statement=random.randint(int_start, int_end), reason=random.randint(1, 2))
-    review11 = ReviewDelete(detector=user[11], statement=random.randint(int_start, int_end), reason=random.randint(1, 2))
+    review10 = ReviewDelete(detector=user[10], statement=random.randint(int_start, int_end),
+                            reason=random.randint(1, 2))
+    review11 = ReviewDelete(detector=user[11], statement=random.randint(int_start, int_end),
+                            reason=random.randint(1, 2))
     review12 = ReviewDelete(detector=user[12], argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
     review13 = ReviewDelete(detector=user[13], argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
     review14 = ReviewDelete(detector=user[14], argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
