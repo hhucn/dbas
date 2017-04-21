@@ -4,7 +4,7 @@ Introducing websockets.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 from cornice import Service
-from dbas.lib import get_language
+from dbas.helper.language import get_language_from_cookie
 from dbas.logger import logger
 from dbas.views import base_layout
 from dbas.views import project_name
@@ -45,7 +45,7 @@ def debug_function(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Websocket', 'socketio', 'debug_function')
 
-    ui_locales = get_language(request)
+    ui_locales = get_language_from_cookie(request)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     return {

@@ -40,12 +40,6 @@ def test_contact_page():
 #     disclaimer_text = browser.is_text_present('Disclaimer') or browser.is_text_present('Haftung')
 #     assert_true(disclaimer_text, error_text)
 
-
-def test_discuss_page():
-    browser.visit(ROOT + '/discuss')
-    assert_true(browser.is_text_present('discussion is about'), error_text)
-
-
 def test_settings_page():
     browser.visit(ROOT + '/settings')
     assert_true(browser.is_text_present('part of the graduate school'), error_text)
@@ -62,5 +56,5 @@ def test_admin_pages():
 
 
 def test_user_pages():
-    browser.visit(ROOT + '/user/Tobias')
+    browser.visit(ROOT + '/user/3')
     assert_true(browser.is_text_present('Tobias'), error_text)

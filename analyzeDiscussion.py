@@ -9,8 +9,9 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     OptimizationReviewLocks, ReviewCanceled, RevokedContent, RevokedContentHistory, \
     RSS, ClickedArgument, ClickedStatement, ReviewDuplicate, LastReviewerDuplicate
 from dbas.helper.tests import add_settings_to_appconfig
-from dbas.helper.database import dbas_db_configuration, and_
+from dbas.helper.database import dbas_db_configuration
 from dbas.lib import get_all_arguments_by_statement
+from sqlalchemy import and_
 
 settings = add_settings_to_appconfig()
 session.configure(bind=dbas_db_configuration('discussion', settings))

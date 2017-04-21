@@ -22,6 +22,7 @@ def logger(who, when, what, warning=False, error=False, debug=False):
     :param debug: Boolean, default False
     :return: None
     """
+
     info = not(warning or error or debug)
     logger = logging.getLogger(__name__)
     try:

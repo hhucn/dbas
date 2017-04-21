@@ -158,7 +158,7 @@ def get_user_with_same_opinion_for_statements(statement_uids, is_supportive, nic
     :param main_page: url
     :return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
     """
-    logger('OpinionHandler', 'get_user_with_same_opinion_for_statements', 'Statement ' + str(statement_uids))
+    logger('OpinionHandler', 'get_user_with_same_opinion_for_statements', 'Statement {} ({})'.format(statement_uids, is_supportive))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_user_uid = db_user.uid if db_user else 0
 
@@ -193,8 +193,7 @@ def __get_opinions_for_uid(uid, is_supportive, db_user_uid, lang, _t, main_page)
     is_supportive = (True if str(is_supportive) == 'True' else False) if is_supportive is not None else False
     db_votes = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == uid,
                                                                        ClickedStatement.is_up_vote == is_supportive,
-                                                                       ClickedStatement.is_valid == True,
-                                                                       ClickedStatement.author_uid != db_user_uid)).all()
+                                                                       ClickedStatement.is_valid == True)).all()
 
     for vote in db_votes:
         voted_user = DBDiscussionSession.query(User).get(vote.author_uid)

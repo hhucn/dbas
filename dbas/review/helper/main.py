@@ -284,7 +284,7 @@ def add_review_opinion_for_duplicate(nickname, is_duplicate, review_uid, _t, app
     if reached_max:
         if count_of_reset > count_of_keep:  # disable the flagged part
             logger('review_main_helper', 'add_review_opinion_for_duplicate', 'max reached / bend for review ' + str(review_uid))
-            __bend_objects_of_duplicate_review(db_review, db_user)
+            __bend_objects_of_duplicate_review(db_review)
             add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_duplicate)
         else:  # just close the review
             logger('review_main_helper', 'add_review_opinion_for_duplicate', 'max reached / forget about review ' + str(review_uid))

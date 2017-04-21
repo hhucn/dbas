@@ -84,7 +84,7 @@ class DictionaryHelper(object):
         return self.prepare_extras_dict('', False, False, False, False, request, append_notifications=append_notifications, nickname=request.authenticated_userid)
 
     def prepare_extras_dict(self, current_slug, is_reportable, show_bar_icon, show_island_icon,
-                            show_graph_icon, request, nickname, argument_id=0, argument_for_island=0, application_url='',
+                            show_graph_icon, request, nickname, argument_id=0, argument_for_island=0,
                             for_api=False, append_notifications=False, attack=None, broke_limit=False,
                             add_premise_container_style='display: none', add_statement_container_style='display: none'):
         """
@@ -98,7 +98,6 @@ class DictionaryHelper(object):
         :param request: Request
         :param argument_id: Argument.uid, default is 0
         :param argument_for_island: Argument.uid, default is 0
-        :param application_url: String
         :param for_api: Boolean
         :param append_notifications: Boolean
         :param attack: String
@@ -125,6 +124,10 @@ class DictionaryHelper(object):
         is_development = is_development_mode(request)
 
         rrs = request.registry.settings
+        application_url = request.application_url
+        if application_url is None:
+            application_url = ''
+            logger('DictionaryHelper', 'prepare_extras_dict', 'application_url is None', error=True)
 
         return_dict = dict()
         return_dict['year']                          = datetime.datetime.now().year

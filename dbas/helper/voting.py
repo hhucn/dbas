@@ -64,9 +64,9 @@ def __add_click_for_argument(db_user, db_argument):
     db_conclusion = DBDiscussionSession.query(Statement).get(db_argument.conclusion_uid)
 
     # set vote for the argument (relation), its premisegroup and conclusion
-    __vote_argument(db_argument, db_user, True)
+    __click_argument(db_argument, db_user, True)
     __vote_premisesgroup(db_argument.premisesgroup_uid, db_user, True)
-    __vote_statement(db_conclusion, db_user, db_argument.is_supportive)
+    __click_statement(db_conclusion, db_user, db_argument.is_supportive)
 
     # add seen values
     __argument_seen_by_user(db_user, db_argument.uid)
@@ -87,14 +87,14 @@ def __add_click_for_undercut_step_1(db_argument, db_undercuted_arg_step_1, db_us
     db_undercuted_arg_step_1_concl = DBDiscussionSession.query(Statement).get(db_undercuted_arg_step_1.conclusion_uid)
 
     # vote for the current argument
-    __vote_argument(db_argument, db_user, True)
+    __click_argument(db_argument, db_user, True)
     __vote_premisesgroup(db_argument.premisesgroup_uid, db_user, True)
 
     # vote against the undercutted argument
-    __vote_argument(db_undercuted_arg_step_1, db_user, db_argument.is_supportive)
+    __click_argument(db_undercuted_arg_step_1, db_user, db_argument.is_supportive)
     __vote_premisesgroup(db_undercuted_arg_step_1.premisesgroup_uid, db_user, True)
     # if the conclusion of the undercutted argument was supported, we will attack it and vice versa
-    __vote_statement(db_undercuted_arg_step_1_concl, db_user, not db_argument.is_supportive)
+    __click_statement(db_undercuted_arg_step_1_concl, db_user, not db_argument.is_supportive)
 
     # add seen values
     __argument_seen_by_user(db_user, db_argument.uid)
@@ -119,10 +119,10 @@ def __add_click_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_us
 
     # vote for the current argument
     __vote_premisesgroup(db_argument.premisesgroup_uid, db_user, True)
-    __vote_argument(db_argument, db_user, True)
+    __click_argument(db_argument, db_user, True)
 
     # vote against the undercutted argument
-    __vote_argument(db_undercuted_arg_step_1, db_user, False)
+    __click_argument(db_undercuted_arg_step_1, db_user, False)
     __vote_premisesgroup(db_undercuted_arg_step_1.premisesgroup_uid, db_user, False)
 
     # vote NOT for the undercutted undercut
@@ -147,7 +147,7 @@ def add_click_for_statement(statement_uid, nickname, supportive):
     :return: Boolean
     """
 
-    logger('VotingHelper', 'add_click_for_statement', 'increasing {}vote for statement {}'.format('up' if supportive else 'down', str(statement_uid)))
+    logger('VotingHelper', 'add_click_for_statement', 'increasing {} vote for statement {}'.format('up' if supportive else 'down', str(statement_uid)))
     if not is_integer(statement_uid):
         return False
 
@@ -156,7 +156,7 @@ def add_click_for_statement(statement_uid, nickname, supportive):
     if not db_user or not db_statement:
         return False
 
-    __vote_statement(db_statement, db_user, supportive)
+    __click_statement(db_statement, db_user, supportive)
     __statement_seen_by_user(db_user, statement_uid)
     transaction.commit()
     return True
@@ -274,7 +274,7 @@ def __clear_seen_by_values_of_user(user_uid):
     DBDiscussionSession.query(SeenArgument).filter_by(user_uid=user_uid).delete()
 
 
-def __vote_argument(argument, user, is_up_vote):
+def __click_argument(argument, user, is_up_vote):
     """
     Check if there is a vote for the argument. If not, we will create a new one, otherwise the current one will be
     invalid an we will create a new entry.
@@ -285,10 +285,10 @@ def __vote_argument(argument, user, is_up_vote):
     :return: None
     """
     if argument is None:
-        logger('VotingHelper', '__vote_argument', 'argument is None')
+        logger('VotingHelper', '__click_argument', 'argument is None')
         return
 
-    logger('VotingHelper', '__vote_argument', 'argument ' + str(argument.uid) + ', user ' + user.nickname)
+    logger('VotingHelper', '__click_argument', 'argument ' + str(argument.uid) + ', user ' + user.nickname)
 
     db_all_valid_votes = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.argument_uid == argument.uid,
                                                                                 ClickedArgument.author_uid == user.uid,
@@ -301,13 +301,13 @@ def __vote_argument(argument, user, is_up_vote):
         db_old_votes.remove(db_current_vote)
 
     for old_vote in db_old_votes:
-        logger('VotingHelper', '__vote_argument', 'setting old vote ' + str(old_vote.uid) + ' as invalid')
+        logger('VotingHelper', '__click_argument', 'setting old vote ' + str(old_vote.uid) + ' as invalid')
         old_vote.set_valid(False)
     DBDiscussionSession.flush()
 
     db_new_vote = None
     if not db_current_vote:
-        logger('VotingHelper', '__vote_argument', 'add vote for argument ' + str(argument.uid))
+        logger('VotingHelper', '__click_argument', 'add vote for argument ' + str(argument.uid))
         db_new_vote = ClickedArgument(argument_uid=argument.uid, author_uid=user.uid, is_up_vote=is_up_vote, is_valid=True)
         DBDiscussionSession.add(db_new_vote)
         DBDiscussionSession.flush()
@@ -327,7 +327,7 @@ def __vote_argument(argument, user, is_up_vote):
     DBDiscussionSession.flush()
 
 
-def __vote_statement(statement, db_user, is_up_vote):
+def __click_statement(statement, db_user, is_up_vote):
     """
     Check if there is a vote for the statement. If not, we will create a new one, otherwise the current one will be
     invalid an we will create a new entry.
@@ -338,10 +338,10 @@ def __vote_statement(statement, db_user, is_up_vote):
     :return: None
     """
     if statement is None:
-        logger('VotingHelper', '__vote_statement', 'statement is None')
+        logger('VotingHelper', '__click_statement', 'statement is None')
         return
 
-    logger('VotingHelper', '__vote_statement', 'statement ' + str(statement.uid) + ', db_user ' + db_user.nickname)
+    logger('VotingHelper', '__click_statement', 'statement ' + str(statement.uid) + ', db_user ' + db_user.nickname)
 
     db_all_valid_votes = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == statement.uid,
                                                                                  ClickedStatement.author_uid == db_user.uid,
@@ -354,12 +354,12 @@ def __vote_statement(statement, db_user, is_up_vote):
         db_old_votes.remove(db_current_vote)
 
     for old_vote in db_old_votes:
-        logger('VotingHelper', '__vote_statement', 'setting old vote' + str(old_vote.uid) + 'as invalid')
+        logger('VotingHelper', '__click_statement', 'setting old vote' + str(old_vote.uid) + 'as invalid')
         old_vote.set_valid(False)
     DBDiscussionSession.flush()
 
     if not db_current_vote:
-        logger('VotingHelper', '__vote_statement', 'add vote for statement ' + str(statement.uid))
+        logger('VotingHelper', '__click_statement', 'add vote for statement ' + str(statement.uid))
         db_new_vote = ClickedStatement(statement_uid=statement.uid, author_uid=db_user.uid, is_up_vote=is_up_vote, is_valid=True)
         DBDiscussionSession.add(db_new_vote)
         DBDiscussionSession.flush()
@@ -383,7 +383,7 @@ def __vote_premisesgroup(premisesgroup_uid, user, is_up_vote):
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisesgroup_uid).all()
     for premise in db_premises:
         db_statement = DBDiscussionSession.query(Statement).get(premise.statement_uid)
-        __vote_statement(db_statement, user, is_up_vote)
+        __click_statement(db_statement, user, is_up_vote)
 
 
 def __argument_seen_by_user(db_user, argument_uid):
