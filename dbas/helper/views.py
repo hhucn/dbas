@@ -208,7 +208,7 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, state
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid, main_page, request_authenticated_userid)
     item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, nickname, discussion_dict['gender'])
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, argument_id=argument_uid,
-                                              application_url=main_page, for_api=for_api, nickname=request_authenticated_userid)
+                                              for_api=for_api, nickname=request_authenticated_userid)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_dont_know=True,
@@ -242,7 +242,7 @@ def preparation_for_justify_argument(request, for_api, main_page, slug, statemen
     item_dict       = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in, nickname, history)
     discussion_dict = _ddh.get_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
     extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request,
-                                              argument_id=statement_or_arg_id, application_url=main_page, for_api=for_api,
+                                              argument_id=statement_or_arg_id, for_api=for_api,
                                               nickname=request_authenticated_userid)
     # is the discussion at the end?
     if not logged_in and len(item_dict['elements']) == 1 or logged_in and len(item_dict['elements']) == 1:
