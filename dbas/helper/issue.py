@@ -178,7 +178,7 @@ def get_id_of_slug(slug, request, save_id_in_session):
 
 def get_issue_id(request):
     """
-    Returns issue uid saved in request. If there is no uid, we will choose an 
+    Returns issue uid saved in request. If there is no uid, we will choose an
     issue based on the language from the requests header
 
     :param request: self.request

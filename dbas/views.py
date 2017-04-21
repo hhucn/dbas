@@ -72,10 +72,6 @@ version = '1.3.2'
 full_version = version
 project_name = name + ' ' + full_version
 
-# move this into the ini file when the time is right
-auto_completion_url = 'http://localhost:5103'
-recommender_system_url = 'http://localhost:5104'
-
 
 def base_layout():
     return get_renderer('templates/basetemplate.pt').implementation().macros['layout']
@@ -1676,7 +1672,7 @@ def send_some_notification(request):
             if db_author.uid == db_recipient.uid:
                 error = _tn.get(_.senderReceiverSame)
             else:
-                db_notification = send_notification(db_author, db_recipient, title, text, request.application_url)
+                db_notification = send_notification(request, db_author, db_recipient, title, text, request.application_url)
                 uid = db_notification.uid
                 ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
                 gravatar = get_profile_picture(db_recipient, 20)
@@ -1812,7 +1808,7 @@ def set_new_start_premise(request, for_api=False, api_data=None):
         if broke_limit:
             ui_locales = get_language_from_cookie(request)
             _t = Translator(ui_locales)
-            send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow),  request.application_url + '/review')
+            send_request_for_info_popup_to_socketio(request, nickname, _t.get(_.youAreAbleToReviewNow),  request.application_url + '/review')
             return_dict['url'] = str(url) + str('#access-review')
 
         if url == -1:
@@ -2614,9 +2610,9 @@ def review_delete_argument(request):
             logger('review_delete_argument', 'def', 'invalid uid', error=True)
             error = _t.get(_.internalKeyError)
         else:
-            error = review_main_helper.add_review_opinion_for_delete(nickname, should_delete, review_uid, _t, request.application_url)
+            error = review_main_helper.add_review_opinion_for_delete(request, nickname, should_delete, review_uid, _t, request.application_url)
             if len(error) == 0:
-                send_request_for_recent_delete_review_to_socketio(nickname, request.application_url)
+                send_request_for_recent_delete_review_to_socketio(request, nickname, request.application_url)
     except KeyError as e:
         logger('review_delete_argument', 'error', repr(e))
         error = _t.get(_.internalKeyError)
@@ -2648,9 +2644,9 @@ def review_edit_argument(request):
             logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
             error = _t.get(_.internalKeyError)
         else:
-            error = review_main_helper.add_review_opinion_for_edit(nickname, is_edit_okay, review_uid, _t, request.application_url)
+            error = review_main_helper.add_review_opinion_for_edit(request, nickname, is_edit_okay, review_uid, _t, request.application_url)
             if len(error) == 0:
-                send_request_for_recent_edit_review_to_socketio(nickname, request.application_url)
+                send_request_for_recent_edit_review_to_socketio(request, nickname, request.application_url)
     except KeyError as e:
         logger('review_delete_argument', 'error', repr(e))
         error = _t.get(_.internalKeyError)
@@ -2682,9 +2678,9 @@ def review_duplicate_statement(request):
             logger('review_duplicate_statement', 'error', str(review_uid) + ' is no int')
             error = _t.get(_.internalKeyError)
         else:
-            error = review_main_helper.add_review_opinion_for_duplicate(nickname, is_duplicate, review_uid, _t, request.application_url)
+            error = review_main_helper.add_review_opinion_for_duplicate(request, nickname, is_duplicate, review_uid, _t, request.application_url)
             if len(error) == 0:
-                send_request_for_recent_edit_review_to_socketio(nickname, request.application_url)
+                send_request_for_recent_edit_review_to_socketio(request, nickname, request.application_url)
     except KeyError as e:
         logger('review_duplicate_statement', 'error', repr(e))
         error = _t.get(_.internalKeyError)
@@ -2718,10 +2714,10 @@ def review_optimization_argument(request):
             logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
             error = _t.get(_.internalKeyError)
         else:
-            error = review_main_helper.add_review_opinion_for_optimization(nickname, should_optimized, review_uid, new_data, _t, request.application_url)
+            error = review_main_helper.add_review_opinion_for_optimization(request, nickname, should_optimized, review_uid, new_data, _t, request.application_url)
 
             if len(error) == 0:
-                send_request_for_recent_optimization_review_to_socketio(nickname, request.application_url)
+                send_request_for_recent_optimization_review_to_socketio(request, nickname)
 
     except KeyError as e:
         logger('review_optimization_argument', 'error', repr(e))

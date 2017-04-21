@@ -54,16 +54,18 @@ def main(global_config, **settings):
     # all_settings = {**settings, **mail_settings}
 
     # include custom parts
-    try:
-        parser = ConfigParser()
-        parser.read(global_config['__file__'])
-        custom_settings = dict()
-        for k, v in parser.items('settings:ldap'):
-            log.debug('__init__() '.upper() + 'main() <settings:ldap:' + str(k) + ' : ' + str(v) + '>')
-            custom_settings['settings:ldap:' + k] = v
-        all_settings.update(custom_settings)
-    except NoSectionError as e:
-        log.debug('__init__() '.upper() + 'main() <No LDAP-Section> ' + str(e))
+    sections = ['ldap', 'service']
+    for s in sections:
+        try:
+            parser = ConfigParser()
+            parser.read(global_config['__file__'])
+            custom_settings = dict()
+            for k, v in parser.items('settings:{}'.format(s)):
+                log.debug('__init__() '.upper() + 'main() <settings:' + str(s) + ':' + str(k) + ' : ' + str(v) + '>')
+                custom_settings['settings:{}:{}'.format(s, k)] = v
+            all_settings.update(custom_settings)
+        except NoSectionError as e:
+            log.debug('__init__() '.upper() + 'main() <No ' + s + '-Section> ' + str(e))
 
     # creating the configurator
     config = Configurator(settings=all_settings,

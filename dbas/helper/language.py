@@ -13,7 +13,7 @@ from dbas.logger import logger
 def set_language(request, ui_locales=None):
     """
     Saves the new language in the request
-    
+
     :param request: current request
     :param ui_locales: Language.ui_locales
     :return: dict(), ui_locales
@@ -41,7 +41,7 @@ def set_language(request, ui_locales=None):
 def get_language_from_header(request):
     """
     Returns 'de' if 'de' is in requests headers else 'en'
-    
+
     :param request: current request
     :return: String
     """
@@ -69,7 +69,7 @@ def get_language_from_cookie(request):
 def set_language_for_first_visit(request):
     """
     Sets language and issue uid based on the requests header if there is no _LOCALE_ attribute in the cookie
-    
+
     :param request: request
     :return: None
     """
