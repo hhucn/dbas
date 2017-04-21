@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-04-21 15:19+0200\n"
+"POT-Creation-Date: 2017-04-21 15:54+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -84,15 +84,17 @@ msgstr "kontaktieren"
 msgid "welcome_text3"
 msgstr "Sie uns bitte."
 
-#. Default: Aktuell haben wir neben dem Feldversuch auch einige Besucher hier,
-#. die das System begutachten möchten. Zwar vermuten wir, dass Sie zum
-#. Feldversuch möchten, dennoch wählen Sie bitte, wohin Sie möchten:
+#. Default: Aktuell haben wir neben dem Feldversuch (nur auf Deutsch) auch eine
+#. Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres
+#. Browsers, vermuten wir, dass Sie sich für den Feldversuch interessieren.
+#. Dennoch wählen Sie bitte Ihre Diskussion:
 #: templates/index.pt:30
 msgid "choose_fieldtest_reviewer_text"
 msgstr ""
-"Aktuell haben wir neben dem Feldversuch auch einige Besucher hier, die das "
-"System begutachten möchten. Zwar vermuten wir, dass Sie zum Feldversuch "
-"möchten, dennoch wählen Sie bitte Ihre Diskussion"
+"Aktuell haben wir neben dem Feldversuch (nur auf Deutsch) auch eine Demo-"
+"Version (nur auf Englisch). Basierend auf den Einstellungen Ihres Browsers, "
+"vermuten wir, dass Sie sich für den Feldversuch interessieren. Dennoch "
+"wählen Sie bitte Ihre Diskussion:"
 
 #. Default: Zum Feldversuch
 #: templates/index.pt:34
@@ -102,7 +104,7 @@ msgstr "Zum Feldversuch"
 #. Default: Zum Review
 #: templates/index.pt:37
 msgid "reviewer"
-msgstr "Zum Review"
+msgstr "Zur Demo"
 
 #. Default: This work is part of the graduate school on
 #: templates/index.pt:45

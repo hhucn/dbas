@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-04-21 15:19+0200\n"
+"POT-Creation-Date: 2017-04-21 15:54+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -84,24 +84,27 @@ msgstr "contact"
 msgid "welcome_text3"
 msgstr "us to report bugs or provide feedback."
 
-#. Default: Aktuell haben wir neben dem Feldversuch auch einige Besucher hier,
-#. die das System begutachten möchten. Zwar vermuten wir, dass Sie zum
-#. Feldversuch möchten, dennoch wählen Sie bitte, wohin Sie möchten:
+#. Default: Aktuell haben wir neben dem Feldversuch (nur auf Deutsch) auch eine
+#. Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres
+#. Browsers, vermuten wir, dass Sie sich für den Feldversuch interessieren.
+#. Dennoch wählen Sie bitte Ihre Diskussion:
 #: templates/index.pt:30
 msgid "choose_fieldtest_reviewer_text"
 msgstr ""
-"Next to the review version we currently have a field test running. We "
-"assume, that you are a reviewer, but please choose your discussion:"
+"We are currently hosting both a demo version (english only) and a real-world "
+"deployment of D-BAS (german only). Based on your browser, we assume that you "
+"are interested in the demo version. However, you can switch to the real-"
+"world deployment if you like:"
 
 #. Default: Zum Feldversuch
 #: templates/index.pt:34
 msgid "fieldtest"
-msgstr "Go to the fieldtest"
+msgstr "Real-World"
 
 #. Default: Zum Review
 #: templates/index.pt:37
 msgid "reviewer"
-msgstr "Go to the review"
+msgstr "Demo"
 
 #. Default: This work is part of the graduate school on
 #: templates/index.pt:45
