@@ -8,7 +8,7 @@ services:
       - "5432:5432"
     tmpfs: /tmp
     env_file: # Needed in 001_init.sh
-      - development.env
+      - production.env
   notifications:
     image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/notifications
     ports:
@@ -29,7 +29,7 @@ services:
     links:
       - db:db
     env_file:
-      - development.env
+      - production.env
     depends_on:
       - db
     tmpfs: /tmp
