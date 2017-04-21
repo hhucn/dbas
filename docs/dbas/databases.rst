@@ -30,6 +30,21 @@ To use this dump as an entrypoint, you have to remove the root user from the dat
 Steps for creating a new database
 =================================
 
+1. Remove all `*.sql`-files in `docker/db`.
+2. Remove the `.bak` ending of the `001_init`-script in `docker/db`. This will create a fresh and empty database.
+3. Be sure, that you deleted your old `dbas_db_1`-container.
+4. Run `docker-compose up`.
+5. Execute some initialization methods which are already given, like creating an englisch and german discussion as well as news:
+
+.. code-block:: console
+
+    $ docker exec dbas_web_1 init_field_test_sql development.ini
+    $ docker exec dbas_web_1 init_news_sql development.ini
+
+6. Dump your like in the section above.
+7. Undo 1. and 2. and maybe set your fresh dump as your new seed.
+
+
 .. deprecated:: 1.3.1
    This comes from the good ol' times where we manually set up a database. We are now using Docker and its entrypoint
    scripts simplify the seeding process.
