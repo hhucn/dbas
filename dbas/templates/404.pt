@@ -17,7 +17,6 @@
                         <span i18n:translate="or">or</span>
                         <a href="javascript:window.history.back();" i18n:translate="go_back_to_the_discussion">go back to the discussion</a>
                         </span>
-                        !
 					</p>
 				</div>
 			</div>

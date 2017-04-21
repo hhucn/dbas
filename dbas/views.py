@@ -110,8 +110,8 @@ def main_page(request):
     db_issue_de = db_issues.filter_by(lang_uid=db_de.uid).first()
     db_issue_en = db_issues.filter_by(lang_uid=db_en.uid).first()
 
-    extras_dict.update({'de_discussion_link': '{}/{}'.format(request.application_url, db_issue_de.get_slug())})
-    extras_dict.update({'en_discussion_link': '{}/{}'.format(request.application_url, db_issue_en.get_slug())})
+    extras_dict.update({'de_discussion_link': '{}/discuss/{}'.format(request.application_url, db_issue_de.get_slug())})
+    extras_dict.update({'en_discussion_link': '{}/discuss/{}'.format(request.application_url, db_issue_en.get_slug())})
 
     return {
         'layout': base_layout(),
