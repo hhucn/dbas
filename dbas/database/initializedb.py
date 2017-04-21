@@ -1061,7 +1061,7 @@ def __setup_fieltests_de_discussion_database(session, db_issue):
 
     :param session: current session
     :param db_issue: Issue
-    :return: None 
+    :return: None
     """
     db_user = session.query(User).filter_by(nickname='Tobias').first()
 
