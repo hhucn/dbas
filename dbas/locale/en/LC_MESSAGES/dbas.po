@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-04-21 13:45+0200\n"
+"POT-Creation-Date: 2017-04-21 15:19+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -84,29 +84,43 @@ msgstr "contact"
 msgid "welcome_text3"
 msgstr "us to report bugs or provide feedback."
 
-#. Default: Click here to start now!
-#: templates/index.pt:28
-msgid "lets_start_now"
-msgstr "Click here to start now!"
+#. Default: Aktuell haben wir neben dem Feldversuch auch einige Besucher hier,
+#. die das System begutachten möchten. Zwar vermuten wir, dass Sie zum
+#. Feldversuch möchten, dennoch wählen Sie bitte, wohin Sie möchten:
+#: templates/index.pt:30
+msgid "choose_fieldtest_reviewer_text"
+msgstr ""
+"Next to the review version we currently have a field test running. We "
+"assume, that you are a reviewer, but please choose your discussion:"
+
+#. Default: Zum Feldversuch
+#: templates/index.pt:34
+msgid "fieldtest"
+msgstr "Go to the fieldtest"
+
+#. Default: Zum Review
+#: templates/index.pt:37
+msgid "reviewer"
+msgstr "Go to the review"
 
 #. Default: This work is part of the graduate school on
-#: templates/index.pt:34
+#: templates/index.pt:45
 msgid "work_based_on"
 msgstr "This work is part of the graduate school on"
 
 #. Default: Online-Participation
-#: templates/index.pt:34
+#: templates/index.pt:45
 msgid "online_participation"
 msgstr "Online-Participation"
 
 #. Default: It is funded by the
-#: templates/index.pt:35
+#: templates/index.pt:46
 msgid "funded_by"
 msgstr "It is funded by the"
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: templates/index.pt:35
+#: templates/index.pt:46
 msgid "ministry_of_innovation"
 msgstr "Ministry of Innovation, Science and Research in North Rhine-Westphalia"
 
@@ -1942,6 +1956,9 @@ msgstr "Supports"
 #: templates/content.pt:310 templates/content.pt:311
 msgid "attacks_on_my_statements"
 msgstr "Attacks"
+
+#~ msgid "lets_start_now"
+#~ msgstr "Click here to start now!"
 
 #~ msgid "disclaimer"
 #~ msgstr "Disclaimer:"
