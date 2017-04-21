@@ -103,6 +103,16 @@ def main_page(request):
     extras_dict     = _dh.prepare_extras_dict_for_normal_page(request)
     _dh.add_language_options_for_extra_dict(extras_dict)
 
+    # add german and english discussion links
+    db_issues = DBDiscussionSession.query(Issue).filter_by(is_disabled=False)
+    db_de = DBDiscussionSession.query(Language).filter_by(ui_locales='de').first()
+    db_en = DBDiscussionSession.query(Language).filter_by(ui_locales='en').first()
+    db_issue_de = db_issues.filter_by(lang_uid=db_de.uid).first()
+    db_issue_en = db_issues.filter_by(lang_uid=db_en.uid).first()
+
+    extras_dict.update({'de_discussion_link': '{}/{}'.format(request.application_url, db_issue_de.get_slug())})
+    extras_dict.update({'en_discussion_link': '{}/{}'.format(request.application_url, db_issue_en.get_slug())})
+
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
