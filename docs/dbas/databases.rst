@@ -34,9 +34,7 @@ Steps for creating a new database
 2. Remove the `.bak` ending of the `001_init`-script in `docker/db`. This will create a fresh and empty database.
 3. Be sure, that you deleted your old `dbas_db_1`-container.
 4. Run `docker-compose up`.
-5. Execute some initialization methods which are already given, like creating an englisch and german discussion as well as news:
-
-.. code-block:: console
+5. Execute some initialization methods which are already given, like creating an englisch and german discussion as well as news::
 
     $ docker exec dbas_web_1 init_field_test_sql development.ini
     $ docker exec dbas_web_1 init_news_sql development.ini
