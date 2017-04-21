@@ -23,10 +23,35 @@
 				</p>
 
 				<br>
-                <div class="text-center">
-                <a class="btn btn-lg btn-primary" href="${request.application_url}/discuss" id="start-discussion-button" data-toggle="tooltip" data-placement="bottom">
-                    <span i18n:translate="lets_start_now">Click here to start now!</span>
-                </a>
+                <div class="row">
+                    <div class="col-md-offset-1 col-md-5 text-center">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Version für den Feldtest
+                            </div>
+                            <div class="panel-body">
+                                <p>skldjf asölakfbaerhfölsncaskdnv aerh gkasdf askdnfasklnfa</p>
+                                <br>
+                                <a class="btn btn-lg btn-primary" href="${request.application_url}/discuss" id="start-discussion-button" data-toggle="tooltip" data-placement="bottom">
+                                    <span i18n:translate="lets_start_now">Weee!</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5 text-center">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Version für die Reviewer
+                            </div>
+                            <div class="panel-body">
+                                <p>sldjfa sfhaeirfw,em rtb4k5jth9ug80xc7by dBSVAKLJFDÖLFJGSDKLFG SLDKJFHG AIOSHFDASDF</p>
+                                <br>
+                                <a class="btn btn-lg btn-primary" href="${request.application_url}/discuss" id="start-discussion-button" data-toggle="tooltip" data-placement="bottom">
+                                    <span i18n:translate="lets_start_now">Click here to start now!</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 				<br>
 				<br>
