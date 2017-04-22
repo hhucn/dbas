@@ -58,7 +58,7 @@ def check_reaction(attacked_arg_uid, attacking_arg_uid, relation, is_history=Fal
         return related_with_rebut(attacked_arg_uid, attacking_arg_uid)
 
     elif relation == 'support':
-        return related_with_support(attacked_arg_uid, attacking_arg_uid) or related_with_support(attacked_arg_uid, attacking_arg_uid, True)
+        return related_with_support(attacked_arg_uid, attacking_arg_uid)
 
     elif relation.startswith('end') and not is_history:
         if str(attacking_arg_uid) != '0':
@@ -185,13 +185,12 @@ def related_with_rebut(attacked_arg_uid, attacking_arg_uid):
     return True if same_conclusion and not_none and attacking else False
 
 
-def related_with_support(attacked_arg_uid, attacking_arg_uid, is_attacking=False):
+def related_with_support(attacked_arg_uid, attacking_arg_uid):
     """
     Check if both arguments support/attack the same conclusion
 
     :param attacked_arg_uid: Argument.uid
     :param attacking_arg_uid: Argument.uid
-    :param is_attacking: Boolean
     :return: Boolean
     """
     db_first_arg = DBDiscussionSession.query(Argument).get(attacking_arg_uid)
@@ -201,12 +200,9 @@ def related_with_support(attacked_arg_uid, attacking_arg_uid, is_attacking=False
 
     not_none = db_first_arg.conclusion_uid is not None
     same_conclusion = db_first_arg.conclusion_uid == db_second_arg.conclusion_uid
-    if not is_attacking:
-        supportive = db_first_arg.is_supportive and db_second_arg.is_supportive
-    else:
-        supportive = not (db_first_arg.is_supportive or db_second_arg.is_supportive)
+    supportive = db_first_arg.is_supportive is db_second_arg.is_supportive
 
-    return True if same_conclusion and not_none and supportive else False
+    return same_conclusion and not_none and supportive
 
 
 def get_relation_between_arguments(arg1_uid, arg2_uid):
