@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-04-22 13:08+0200\n"
+"POT-Creation-Date: 2017-04-22 13:28+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -704,22 +704,22 @@ msgstr "Help improve the dialog"
 msgid "dbas_is_moderated_by"
 msgstr ""
 "D-BAS is moderated by you. Help your discussion members learn to argue and "
-"raise the quality of argumenty by:"
+"raise the quality of arguments by:"
 
 #. Default: Evaluate new statements
 #: templates/review.pt:18
 msgid "evaluate_new_statements"
-msgstr "Evaluate new statements"
+msgstr "evaluating new statements"
 
 #. Default: Reviewing suspicious statements
 #: templates/review.pt:19
 msgid "reviewing_suspicious_statements"
-msgstr "Reviewing suspicious statements"
+msgstr "reviewing suspicious statements"
 
 #. Default: Voting to close or reopen statements
 #: templates/review.pt:20
 msgid "voting_to_close"
-msgstr "Voting to close or reopen statements"
+msgstr "vote to close or reopen statements"
 
 #. Default: Choose a task to get started.
 #: templates/review.pt:22
