@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-04-21 15:54+0200\n"
+"POT-Creation-Date: 2017-04-22 13:28+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -84,10 +84,11 @@ msgstr "contact"
 msgid "welcome_text3"
 msgstr "us to report bugs or provide feedback."
 
-#. Default: Aktuell haben wir neben dem Feldversuch (nur auf Deutsch) auch eine
-#. Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres
-#. Browsers, vermuten wir, dass Sie sich für den Feldversuch interessieren.
-#. Dennoch wählen Sie bitte Ihre Diskussion:
+#. Default: Derzeit läuft D-BAS sowohl im Produktivbetrieb zur Diskussion von
+#. Verbesserungen im Studiengang Informatik (nur auf Deutsch) als auch in einer
+#. eine Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres
+#. Browsers vermuten wir, dass Sie sich für den Produktivbetrieb interessieren.
+#. Welche Version von D-BAS wollen Sie nutzen:
 #: templates/index.pt:30
 msgid "choose_fieldtest_reviewer_text"
 msgstr ""
@@ -703,22 +704,22 @@ msgstr "Help improve the dialog"
 msgid "dbas_is_moderated_by"
 msgstr ""
 "D-BAS is moderated by you. Help your discussion members learn to argue and "
-"raise the quality of argumenty by:"
+"raise the quality of arguments by:"
 
 #. Default: Evaluate new statements
 #: templates/review.pt:18
 msgid "evaluate_new_statements"
-msgstr "Evaluate new statements"
+msgstr "evaluating new statements"
 
 #. Default: Reviewing suspicious statements
 #: templates/review.pt:19
 msgid "reviewing_suspicious_statements"
-msgstr "Reviewing suspicious statements"
+msgstr "reviewing suspicious statements"
 
 #. Default: Voting to close or reopen statements
 #: templates/review.pt:20
 msgid "voting_to_close"
-msgstr "Voting to close or reopen statements"
+msgstr "vote to close or reopen statements"
 
 #. Default: Choose a task to get started.
 #: templates/review.pt:22

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-04-21 15:54+0200\n"
+"POT-Creation-Date: 2017-04-22 13:28+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -84,17 +84,19 @@ msgstr "kontaktieren"
 msgid "welcome_text3"
 msgstr "Sie uns bitte."
 
-#. Default: Aktuell haben wir neben dem Feldversuch (nur auf Deutsch) auch eine
-#. Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres
-#. Browsers, vermuten wir, dass Sie sich für den Feldversuch interessieren.
-#. Dennoch wählen Sie bitte Ihre Diskussion:
+#. Default: Derzeit läuft D-BAS sowohl im Produktivbetrieb zur Diskussion von
+#. Verbesserungen im Studiengang Informatik (nur auf Deutsch) als auch in einer
+#. eine Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres
+#. Browsers vermuten wir, dass Sie sich für den Produktivbetrieb interessieren.
+#. Welche Version von D-BAS wollen Sie nutzen:
 #: templates/index.pt:30
 msgid "choose_fieldtest_reviewer_text"
 msgstr ""
-"Aktuell haben wir neben dem Feldversuch (nur auf Deutsch) auch eine Demo-"
-"Version (nur auf Englisch). Basierend auf den Einstellungen Ihres Browsers, "
-"vermuten wir, dass Sie sich für den Feldversuch interessieren. Dennoch "
-"wählen Sie bitte Ihre Diskussion:"
+"Derzeit läuft D-BAS sowohl im Produktivbetrieb zur Diskussion von "
+"Verbesserungen im Studiengang Informatik (nur auf Deutsch) als auch in einer "
+"eine Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres "
+"Browsers vermuten wir, dass Sie sich für den Produktivbetrieb interessieren. "
+"Welche Version von D-BAS wollen Sie nutzen:"
 
 #. Default: Zum Feldversuch
 #: templates/index.pt:34
@@ -665,7 +667,7 @@ msgstr ""
 "sofort nach der Verarbeitung und vor deren Speicherung anonymisiert. Nutzer "
 "können die Installation der Cookies durch eine entsprechende Einstellung "
 "Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch "
-"darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche "
+"darauf hin, dass Sie in diesem Fall gegebenenfalls nicht sämtliche "
 "Funktionen dieser Website vollumfänglich nutzen können."
 
 #. Default: is generated with Pyramid Web Framework
@@ -709,17 +711,17 @@ msgstr ""
 #. Default: Evaluate new statements
 #: templates/review.pt:18
 msgid "evaluate_new_statements"
-msgstr "Bewertung neuer Aussagen"
+msgstr "neuer Aussagen bewerten"
 
 #. Default: Reviewing suspicious statements
 #: templates/review.pt:19
 msgid "reviewing_suspicious_statements"
-msgstr "Verdächtige Aussagen werten"
+msgstr "verdächtige Aussagen melden"
 
 #. Default: Voting to close or reopen statements
 #: templates/review.pt:20
 msgid "voting_to_close"
-msgstr "Abstimmen, ob Aussagen gelöscht werden sollen"
+msgstr "abstimmen, ob Aussagen gelöscht werden sollen"
 
 #. Default: Choose a task to get started.
 #: templates/review.pt:22
@@ -815,7 +817,7 @@ msgstr "Auf diese Seite haben Sie keinen Zugriff"
 #. Default: History
 #: templates/review-history.pt:15
 msgid "history"
-msgstr "Vergangene Entscheidungen-History"
+msgstr "Frühere Entscheidungen"
 
 #. Default: Current Decisions
 #. Default: Current decisions
@@ -1465,7 +1467,7 @@ msgstr "Achtung"
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 "Möchten Sie wirklich von diesem Inhalt distanzieren? Dieser Schritt kann "
-"nicht zurückgenommen werden! Anschließend sind sie nicht mehr Autor von "
+"nicht zurückgenommen werden! Anschließend sind Sie nicht mehr Autor von "
 "diesem Statements."
 
 #. Default: Please choose a step to jump in
