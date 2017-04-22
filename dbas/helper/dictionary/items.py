@@ -177,7 +177,7 @@ class ItemDictHelper(object):
 
             new_arg = None
             url = None
-            if 'end' in attack and is_supportive:  # TODO 343
+            if 'end' in attack:  # TODO 343
                 new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
                 if new_arg:
                     url = _um.get_url_for_support_each_other(True, argument.uid, new_arg.uid)
@@ -257,7 +257,7 @@ class ItemDictHelper(object):
 
             # with a chance of 50% or at the end we will seed the new "support step"
             logger('ItemDictHelper', 'get_array_for_justify_argument', 'take support? is end: {} or rnd: {}'.format('end' in attack, 'NOO'))  # support_step))
-            if 'end' in attack and argument.is_supportive:  # TODO 343
+            if 'end' in attack:  # TODO 343
                 new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
                 the_other_one = new_arg is None
                 if new_arg:
