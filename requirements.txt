@@ -34,6 +34,7 @@ pyramid-debugtoolbar==3.0.5
 pyramid-hsts==1.2.3
 pyramid-mailer==0.14.1
 pyramid-mako==1.0.2
+pyramid-redis-sessions==1.0.1
 pyramid-tm==1.1.1
 PyRSS2Gen==1.1
 pyshorteners==0.6
