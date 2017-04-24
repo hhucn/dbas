@@ -349,18 +349,18 @@ def __sanity_check_of_d3_data(all_node_ids, edges_array):
         err1 = edge['source'] not in all_node_ids
         err2 = edge['target'] not in all_node_ids
         if err1:
-            logger('Graph.lib', 'get_d3_data', 'Source of {} is not valid'.format(edge))
-            # logger('Graph.lib', 'get_d3_data', '{} is not in dict of all node ids'.format(edge['source']))
+            logger('Graph.lib', '__sanity_check_of_d3_data', 'Source of {} is not valid'.format(edge))
+            # logger('Graph.lib', '__sanity_check_of_d3_data', '{} is not in dict of all node ids'.format(edge['source']))
         if err2:
-            logger('Graph.lib', 'get_d3_data', 'Target of {} is not valid'.format(edge))
-            # logger('Graph.lib', 'get_d3_data', '{} is not in dict of all node ids'.format(edge['target']))
+            logger('Graph.lib', '__sanity_check_of_d3_data', 'Target of {} is not valid'.format(edge))
+            # logger('Graph.lib', '__sanity_check_of_d3_data', '{} is not in dict of all node ids'.format(edge['target']))
         error = error or err1 or err2
     if error:
-        logger('Graph.lib', 'get_d3_data', 'At least one edge has invalid source or target!', error=True)
-        logger('Graph.lib', 'get_d3_data', 'List of all node ids: ' + str(all_node_ids))
+        logger('Graph.lib', '__sanity_check_of_d3_data', 'At least one edge has invalid source or target!', error=True)
+        logger('Graph.lib', '__sanity_check_of_d3_data', 'List of all node ids: ' + str(all_node_ids))
         return True
     else:
-        logger('Graph.lib', 'get_d3_data', 'All nodes are connected well')
+        logger('Graph.lib', '__sanity_check_of_d3_data', 'All nodes are connected well')
         return False
 
 

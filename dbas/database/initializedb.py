@@ -1242,84 +1242,56 @@ def __setup_fieltests_en_discussion_database(session, db_issue):
     premisegroup121 = PremiseGroup(author=db_user.uid)
     premisegroup122 = PremiseGroup(author=db_user.uid)
     premisegroup123 = PremiseGroup(author=db_user.uid)
+    session.add_all([premisegroup105, premisegroup106, premisegroup107, premisegroup108, premisegroup109])
+    session.add_all([premisegroup110, premisegroup111, premisegroup112, premisegroup113, premisegroup114])
+    session.add_all([premisegroup115, premisegroup116, premisegroup117, premisegroup118, premisegroup119])
+    session.add_all([premisegroup120, premisegroup121, premisegroup122, premisegroup123])
     session.flush()
 
-    premise105 = Premise(premisesgroup=premisegroup105.uid, statement=statement105.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise106 = Premise(premisesgroup=premisegroup106.uid, statement=statement106.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise107 = Premise(premisesgroup=premisegroup107.uid, statement=statement107.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise108 = Premise(premisesgroup=premisegroup108.uid, statement=statement108.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise109 = Premise(premisesgroup=premisegroup109.uid, statement=statement109.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise110 = Premise(premisesgroup=premisegroup110.uid, statement=statement110.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise111 = Premise(premisesgroup=premisegroup111.uid, statement=statement111.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise112 = Premise(premisesgroup=premisegroup112.uid, statement=statement112.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise113 = Premise(premisesgroup=premisegroup113.uid, statement=statement113.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise114 = Premise(premisesgroup=premisegroup114.uid, statement=statement114.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise115 = Premise(premisesgroup=premisegroup115.uid, statement=statement115.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise116 = Premise(premisesgroup=premisegroup116.uid, statement=statement116.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise117 = Premise(premisesgroup=premisegroup117.uid, statement=statement117.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise118 = Premise(premisesgroup=premisegroup118.uid, statement=statement118.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise119 = Premise(premisesgroup=premisegroup119.uid, statement=statement119.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise120 = Premise(premisesgroup=premisegroup120.uid, statement=statement120.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise121 = Premise(premisesgroup=premisegroup121.uid, statement=statement121.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise122 = Premise(premisesgroup=premisegroup122.uid, statement=statement122.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
-    premise123 = Premise(premisesgroup=premisegroup123.uid, statement=statement123.uid, is_negated=False,
-                         author=db_user.uid, issue=db_issue.uid)
+    premise105 = Premise(premisesgroup=premisegroup105.uid, statement=statement105.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise106 = Premise(premisesgroup=premisegroup106.uid, statement=statement106.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise107 = Premise(premisesgroup=premisegroup107.uid, statement=statement107.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise108 = Premise(premisesgroup=premisegroup108.uid, statement=statement108.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise109 = Premise(premisesgroup=premisegroup109.uid, statement=statement109.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise110 = Premise(premisesgroup=premisegroup110.uid, statement=statement110.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise111 = Premise(premisesgroup=premisegroup111.uid, statement=statement111.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise112 = Premise(premisesgroup=premisegroup112.uid, statement=statement112.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise113 = Premise(premisesgroup=premisegroup113.uid, statement=statement113.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise114 = Premise(premisesgroup=premisegroup114.uid, statement=statement114.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise115 = Premise(premisesgroup=premisegroup115.uid, statement=statement115.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise116 = Premise(premisesgroup=premisegroup116.uid, statement=statement116.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise117 = Premise(premisesgroup=premisegroup117.uid, statement=statement117.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise118 = Premise(premisesgroup=premisegroup118.uid, statement=statement118.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise119 = Premise(premisesgroup=premisegroup119.uid, statement=statement119.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise120 = Premise(premisesgroup=premisegroup120.uid, statement=statement120.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise121 = Premise(premisesgroup=premisegroup121.uid, statement=statement121.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise122 = Premise(premisesgroup=premisegroup122.uid, statement=statement122.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
+    premise123 = Premise(premisesgroup=premisegroup123.uid, statement=statement123.uid, is_negated=False, author=db_user.uid, issue=db_issue.uid)
     session.add_all([premise105, premise106, premise107, premise108, premise109, premise110, premise111, premise112])
     session.add_all([premise113, premise114, premise115, premise116, premise117, premise118, premise119, premise120])
     session.add_all([premise121, premise122, premise123])
     session.flush()
 
     # adding all arguments and set the adjacency list
-    argument101 = Argument(premisegroup=premisegroup105.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid,
-                           conclusion=statement101.uid)
+    argument101 = Argument(premisegroup=premisegroup105.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid, conclusion=statement101.uid)
     argument102 = Argument(premisegroup=premisegroup106.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
-    argument103 = Argument(premisegroup=premisegroup107.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid,
-                           conclusion=statement105.uid)
-    argument104 = Argument(premisegroup=premisegroup108.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid,
-                           conclusion=statement107.uid)
-    argument105 = Argument(premisegroup=premisegroup109.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid,
-                           conclusion=statement101.uid)
+    argument103 = Argument(premisegroup=premisegroup107.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid, conclusion=statement105.uid)
+    argument104 = Argument(premisegroup=premisegroup108.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid, conclusion=statement107.uid)
+    argument105 = Argument(premisegroup=premisegroup109.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid, conclusion=statement101.uid)
     argument106 = Argument(premisegroup=premisegroup110.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
     argument107 = Argument(premisegroup=premisegroup111.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
-    argument108 = Argument(premisegroup=premisegroup112.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid,
-                           conclusion=statement102.uid)
-    argument109 = Argument(premisegroup=premisegroup113.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid,
-                           conclusion=statement102.uid)
-    argument110 = Argument(premisegroup=premisegroup115.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid,
-                           conclusion=statement112.uid)
+    argument108 = Argument(premisegroup=premisegroup112.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid, conclusion=statement102.uid)
+    argument109 = Argument(premisegroup=premisegroup113.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid, conclusion=statement102.uid)
+    argument110 = Argument(premisegroup=premisegroup115.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid, conclusion=statement112.uid)
     argument111 = Argument(premisegroup=premisegroup114.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
-    argument112 = Argument(premisegroup=premisegroup116.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid,
-                           conclusion=statement102.uid)
+    argument112 = Argument(premisegroup=premisegroup116.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid, conclusion=statement102.uid)
     argument113 = Argument(premisegroup=premisegroup117.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
-    argument114 = Argument(premisegroup=premisegroup118.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid,
-                           conclusion=statement116.uid)
-    argument115 = Argument(premisegroup=premisegroup119.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid,
-                           conclusion=statement116.uid)
-    argument116 = Argument(premisegroup=premisegroup120.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid,
-                           conclusion=statement103.uid)
+    argument114 = Argument(premisegroup=premisegroup118.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid, conclusion=statement116.uid)
+    argument115 = Argument(premisegroup=premisegroup119.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid, conclusion=statement116.uid)
+    argument116 = Argument(premisegroup=premisegroup120.uid, issupportive=True, author=db_user.uid, issue=db_issue.uid, conclusion=statement103.uid)
     argument117 = Argument(premisegroup=premisegroup121.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid)
-    argument118 = Argument(premisegroup=premisegroup122.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid,
-                           conclusion=statement103.uid)
-    argument119 = Argument(premisegroup=premisegroup123.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid,
-                           conclusion=statement115.uid)
+    argument118 = Argument(premisegroup=premisegroup122.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid, conclusion=statement103.uid)
+    argument119 = Argument(premisegroup=premisegroup123.uid, issupportive=False, author=db_user.uid, issue=db_issue.uid, conclusion=statement115.uid)
     session.add_all([argument101, argument102, argument103, argument104, argument105, argument106, argument107])
     session.add_all([argument108, argument109, argument110, argument112, argument113, argument114, argument111])
     session.add_all([argument115, argument116, argument117, argument118, argument119])
