@@ -1041,7 +1041,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function resetButtons() {
         isVisible.position = true;
         isVisible.content = true;
-        isVisible.statement = true;
         isVisible.support = true;
         isVisible.attack = true;
 
@@ -1142,18 +1141,19 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * Show all statements, which the current user has created.
      */
     function showMyStatements() {
-        isVisible.statement = true;
+        isVisible.attack = true;
+        isVisible.support = true;
 
-        // hide supports and attacks on statements
+        // show supports and attacks on statements
         if (isVisible.support) {
-            $('#show-supports-on-my-statements').show();
-            $('#hide-supports-on-my-statements').hide();
-            isVisible.support = false;
+            $('#show-supports-on-my-statements').hide();
+            $('#hide-supports-on-my-statements').show();
+            isVisible.support = true;
         }
         if (isVisible.attack) {
-            $('#show-attacks-on-my-statements').show();
-            $('#hide-attacks-on-my-statements').hide();
-            isVisible.attack = false;
+            $('#show-attacks-on-my-statements').hide();
+            $('#hide-attacks-on-my-statements').show();
+            isVisible.attack = true;
         }
 
         // graying all elements of graph
@@ -1161,11 +1161,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             grayingElements(d);
         });
 
-        force.nodes().forEach(function (d) {
-            //if (d.author.name === $('#header_nickname')[0].innerText) {
-                d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
-            //}
-        });
+        selectSupportsAttacks();
 
         $('#show-my-statements').hide();
         $('#hide-my-statements').show();
@@ -1175,19 +1171,16 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * Hide all statements, which the current user has created.
      */
     function hideMyStatements() {
-        isVisible.statement = false;
+        isVisible.attack = false;
+        isVisible.support = false;
 
         // hide supports and attacks on statements
-        if (isVisible.support) {
-            $('#show-supports-on-my-statements').show();
-            $('#hide-supports-on-my-statements').hide();
-            isVisible.support = false;
-        }
-        if (isVisible.attack) {
-            $('#show-attacks-on-my-statements').show();
-            $('#hide-attacks-on-my-statements').hide();
-            isVisible.attack = false;
-        }
+        $('#show-supports-on-my-statements').show();
+        $('#hide-supports-on-my-statements').hide();
+        isVisible.support = false;
+        $('#show-attacks-on-my-statements').show();
+        $('#hide-attacks-on-my-statements').hide();
+        isVisible.attack = false;
 
         highlightAllElements();
 
@@ -1207,9 +1200,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // hide statements
         // delete border of nodes
         deleteBorderOfCircle();
-        $('#show-my-statements').show();
-        $('#hide-my-statements').hide();
-        isVisible.statement = false;
 
         // if attacks on statements of current user are visible, highlight additionally the supports
         if (!isVisible.attack) {
@@ -1217,6 +1207,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             edges.forEach(function (d) {
                 grayingElements(d);
             });
+        }
+        else{
+            $('#show-my-statements').hide();
+            $('#hide-my-statements').show();
         }
 
         selectSupportsAttacks();
@@ -1257,7 +1251,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         deleteBorderOfCircle();
         $('#show-my-statements').show();
         $('#hide-my-statements').hide();
-        isVisible.statement = false;
 
         // if supports on statements of current user are visible, highlight additionally the attacks
         if (!isVisible.support) {
@@ -1265,6 +1258,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             edges.forEach(function (d) {
                 grayingElements(d);
             });
+        }
+        else{
+            $('#show-my-statements').hide();
+            $('#hide-my-statements').show();
         }
 
         selectSupportsAttacks();
@@ -1298,15 +1295,15 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         circleIds = [];
 
         force.nodes().forEach(function (d) {
-            //if (d.author.name === $('#header_nickname')[0].innerText) {
+            if (d.author.name === $('#header_nickname')[0].innerText) {
                 circleIds.push(d.id);
-            //}
+            }
         });
 
         force.nodes().forEach(function (d) {
-            //if (d.author.name === $('#header_nickname')[0].innerText) {
+            if (d.author.name === $('#header_nickname')[0].innerText) {
                 showPartOfGraph(d.id);
-            //}
+            }
         });
     }
 
@@ -1539,7 +1536,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             else if (isVisible.attack && selectUid(d.target.id) === circleUid && d.color === colors.red) {
                 edgesCircleId.push(d);
             }
-            else if ((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid) && ((!isVisible.attack && !isVisible.support) || isVisible.statement)) {
+            else if ((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid) && (!isVisible.attack && !isVisible.support)) {
                 edgesCircleId.push(d);
             }
         });
