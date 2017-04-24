@@ -1581,7 +1581,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      *
      * @param edgesCircleId
      * @param virtualNodes
-     * @return Array
+     * @param virtualNodesIds
      */
     function createVirtualNodesArray(edgesCircleId, virtualNodes, virtualNodesIds) {
         edgesCircleId.forEach(function (d) {
@@ -1614,7 +1614,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         edges.forEach(function (d) {
             virtualNodes.forEach(function (e) {
                 if (d.source.id === e.id || d.target.id === e.id) {
-                    edgesCircleId.push(d);
+                    if ((isVisible.support && d.color === colors.green) || (isVisible.attack && d.color === colors.red) || (!isVisible.support && !isVisible.attack)) {
+                        edgesCircleId.push(d);
+                    }
                 }
             });
         });
