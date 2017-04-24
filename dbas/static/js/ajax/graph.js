@@ -56,11 +56,12 @@ function AjaxGraphHandler(){
 	 * @param context
 	 * @param uid
 	 * @param is_argument
+	 * @param show_partial_graph
 	 */
-	this.getDiscussionGraphData = function (context, uid, is_argument) {
+	this.getDiscussionGraphData = function (context, uid, is_argument, show_partial_graph) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		var data = {'issue': getCurrentIssueId(), 'path': window.location.href};
-		var request_for_complete = uid === null;
+		var request_for_complete = uid === null || !show_partial_graph;
 		var url;
 		
 		if (request_for_complete){
