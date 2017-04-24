@@ -38,6 +38,7 @@ coverage.xml
 mergeDatabase.py
 db.txt
 requirementsUpdater.py
+analyzeDiscussion.py
 .#*
 pserve.ini
 

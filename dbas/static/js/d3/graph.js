@@ -58,6 +58,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 		        isPartialGraphMode = true;
 	        }
         }
+        console.log(override_cases + ': ' + uid + ' ' + is_argument + ' ' + isPartialGraphMode);
 	    new AjaxGraphHandler().getDiscussionGraphData(this, uid, is_argument, isPartialGraphMode);
     };
 
