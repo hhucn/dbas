@@ -152,7 +152,10 @@ def main_contact(request):
     recaptcha       = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
 
     if 'form.contact.submitted' in request.params:
-        contact_error, message, send_message = try_to_contact(request, username, email, phone, content, ui_locales, recaptcha)
+        import time
+        time.sleep(2)
+        contact_error, message, send_message = False, 'Hello', True
+        # contact_error, message, send_message = try_to_contact(request, username, email, phone, content, ui_locales, recaptcha)
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     ui_locales = get_language_from_cookie(request)
