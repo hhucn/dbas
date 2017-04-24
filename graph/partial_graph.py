@@ -30,6 +30,7 @@ def get_partial_graph_for_statement(uid, issue, request, path):
         if not db_argument:
             return get_d3_data(issue, request.authenticated_userid)
         uid = db_argument.uid
+        # this id will be used for the next if clause
 
     if 'justify' not in path.split('?')[0]:
         db_argument = DBDiscussionSession.query(Argument).get(uid)
