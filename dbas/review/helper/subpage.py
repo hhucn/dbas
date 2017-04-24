@@ -330,15 +330,21 @@ def __get_subpage_dict_for_edits(request, db_user, translator, main_page):
     # build correction
     db_edit_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=rnd_review.uid).first()
     stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
-    if not db_edit_value:
-        correction = translator.get(_.internalKeyError)
 
-        return {'stats': stats,
-                'text': text,
-                'correction': correction,
-                'reason': reason,
-                'issue': issue,
-                'extra_info': extra_info}
+    if not db_edit_value:
+        logger('ReviewSubpagerHelper', '__get_subpage_dict_for_edits', 'ReviewEdit {} has no edit value!'.format(rnd_review.uid), error=True)
+        # get all valid reviews
+        db_allowed_reviews = DBDiscussionSession.query(ReviewEdit).filter(
+            ReviewEdit.uid.in_(DBDiscussionSession.query(ReviewEditValue.review_edit_uid))).all()
+
+        if len(db_allowed_reviews) > 0:
+            return __get_subpage_dict_for_edits(request, db_user, translator, main_page)
+        else:
+            return {'stats': None,
+                    'text': None,
+                    'reason': None,
+                    'issue': None,
+                    'extra_info': None}
 
     correction_list = [char for char in text]
     __difference_between_string(text, db_edit_value.content, correction_list)
