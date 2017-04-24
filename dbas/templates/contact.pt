@@ -55,7 +55,7 @@
             			    </div>
             			    -->
 
-            				<div tal:condition="contact_error" id="warning-message" class="alert alert-warning alert-dismissible">
+            				<div tal:condition="contact_error" id="warning-message" class="alert alert-warning alert-dismissible col-md-offset2 col-md-8">
             					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
             						<span aria-hidden="true">&times;</span>
             					</button>
@@ -64,13 +64,14 @@
             				</div>
 
 
-            				<div tal:condition="was_message_send" class="alert alert-success" role="alert">
+            				<div tal:condition="was_message_send" class="alert alert-success col-md-offset-2 col-md-8 col-md-offset-2" role="alert">
             					<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
             					<span class="sr-only" i18n:translate="great">Great:</span> <span i18n:translate="message_sent">Your message was sent.</span>
             				</div>
 
             				<div class="text-center">
-            				    <input id="contact-submit" type="submit" name="form.contact.submitted" value="Submit Your message" class="button button-block btn-lg btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.contact_submit"/>
+            				    <input id="contact-submit" type="submit" name="form.contact.submitted" value="Submit Your message"
+                                       class="button button-block btn-lg btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.contact_submit"/>
             				</div>
             			</form>
                     </div>

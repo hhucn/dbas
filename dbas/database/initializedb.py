@@ -616,7 +616,7 @@ def setup_news_db(session, ui_locale):
     news58 = News(title='Great Test',
                   date=arrow.get('2017-03-09'),
                   author='Tobias Krauthoff',
-                  news='LFinally we have a version of D-BAS which can be used during a large fieldtest at our '
+                  news='Finally we have a version of D-BAS which can be used during a large fieldtest at our '
                        'university. Nevertheless the same version is capable to be viewed by some reviewers of our '
                        'latest paper. Stay tuned!')
 
