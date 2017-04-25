@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-04-22 13:28+0200\n"
+"POT-Creation-Date: 2017-04-25 13:18+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -89,7 +89,7 @@ msgstr "us to report bugs or provide feedback."
 #. eine Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres
 #. Browsers vermuten wir, dass Sie sich für den Produktivbetrieb interessieren.
 #. Welche Version von D-BAS wollen Sie nutzen:
-#: templates/index.pt:30
+#: templates/index.pt:31
 msgid "choose_fieldtest_reviewer_text"
 msgstr ""
 "We are currently hosting both a demo version (english only) and a real-world "
@@ -98,33 +98,33 @@ msgstr ""
 "world deployment if you like:"
 
 #. Default: Zum Feldversuch
-#: templates/index.pt:34
+#: templates/index.pt:36
 msgid "fieldtest"
 msgstr "Real-World"
 
 #. Default: Zum Review
-#: templates/index.pt:37
+#: templates/index.pt:39
 msgid "reviewer"
 msgstr "Demo"
 
 #. Default: This work is part of the graduate school on
-#: templates/index.pt:45
+#: templates/index.pt:47
 msgid "work_based_on"
 msgstr "This work is part of the graduate school on"
 
 #. Default: Online-Participation
-#: templates/index.pt:45
+#: templates/index.pt:47
 msgid "online_participation"
 msgstr "Online-Participation"
 
 #. Default: It is funded by the
-#: templates/index.pt:46
+#: templates/index.pt:48
 msgid "funded_by"
 msgstr "It is funded by the"
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: templates/index.pt:46
+#: templates/index.pt:48
 msgid "ministry_of_innovation"
 msgstr "Ministry of Innovation, Science and Research in North Rhine-Westphalia"
 
@@ -195,12 +195,12 @@ msgid "faq_question_graph"
 msgstr "Is there any overview about all given arguments and statements?"
 
 #. Default: Yes, we have a graphical representation. Simply open the little
-#. sidebar in the discussion window and click on 'graph view'.
+#. sidebar in the discussion window and click on 'graph view'
 #: templates/faq.pt:27
 msgid "faq_answer_graph"
 msgstr ""
 "Yes, we have a graphical representation. Simply open the little sidebar in "
-"the discussion window and click on 'graph view'."
+"the discussion window and click on 'graph view'"
 
 #. Default: What are these little icons next to the statements?
 #: templates/faq.pt:31
@@ -258,12 +258,17 @@ msgid "faq_question_bug"
 msgstr "What do I do if I found a bug or have other questions about D-BAS?"
 
 #. Default: If you think you've found an issue or have any other questions not
-#. covered above, please email us at
+#. covered above, please email us via the
 #: templates/faq.pt:44
 msgid "faq_answer_bug1"
 msgstr ""
 "If you think you've found an issue or have any other questions not covered "
 "above, please email us at "
+
+#. Default: contact page
+#: templates/faq.pt:44
+msgid "contact_page"
+msgstr "contact page"
 
 #. Default: Please keep in mind that our current team is quite small and we'll
 #. do our very best to get back to you ASAP.
@@ -1847,27 +1852,27 @@ msgid "to"
 msgstr "To:"
 
 #. Default: JavaScript is not enabled:
-#: templates/basetemplate.pt:31
+#: templates/basetemplate.pt:26
 msgid "js_disabled1"
 msgstr "JavaScript is not enabled:"
 
 #. Default: Please enable JavaScript!
-#: templates/basetemplate.pt:32
+#: templates/basetemplate.pt:27
 msgid "js_disabled2"
 msgstr "Please enable JavaScript!"
 
 #. Default: Your request failed!
-#: templates/basetemplate.pt:39
+#: templates/basetemplate.pt:34
 msgid "request_failed"
 msgstr "Your request failed!"
 
 #. Default: Please reload the page.
-#: templates/basetemplate.pt:40
+#: templates/basetemplate.pt:35
 msgid "please_reload"
 msgstr "Please reload the page."
 
 #. Default: Your request succeded!
-#: templates/basetemplate.pt:46 templates/basetemplate.pt:47
+#: templates/basetemplate.pt:41 templates/basetemplate.pt:42
 msgid "request_success"
 msgstr "Your request succeded!"
 
