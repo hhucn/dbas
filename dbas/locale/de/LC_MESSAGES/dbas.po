@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-04-22 13:28+0200\n"
+"POT-Creation-Date: 2017-04-25 13:18+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -89,7 +89,7 @@ msgstr "Sie uns bitte."
 #. eine Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres
 #. Browsers vermuten wir, dass Sie sich für den Produktivbetrieb interessieren.
 #. Welche Version von D-BAS wollen Sie nutzen:
-#: templates/index.pt:30
+#: templates/index.pt:31
 msgid "choose_fieldtest_reviewer_text"
 msgstr ""
 "Derzeit läuft D-BAS sowohl im Produktivbetrieb zur Diskussion von "
@@ -99,33 +99,33 @@ msgstr ""
 "Welche Version von D-BAS wollen Sie nutzen:"
 
 #. Default: Zum Feldversuch
-#: templates/index.pt:34
+#: templates/index.pt:36
 msgid "fieldtest"
 msgstr "Zum Feldversuch"
 
 #. Default: Zum Review
-#: templates/index.pt:37
+#: templates/index.pt:39
 msgid "reviewer"
 msgstr "Zur Demo"
 
 #. Default: This work is part of the graduate school on
-#: templates/index.pt:45
+#: templates/index.pt:47
 msgid "work_based_on"
 msgstr "Dieses Projekt ist Teil des Graduierten-Kollegs"
 
 #. Default: Online-Participation
-#: templates/index.pt:45
+#: templates/index.pt:47
 msgid "online_participation"
 msgstr "Online-Partizipation"
 
 #. Default: It is funded by the
-#: templates/index.pt:46
+#: templates/index.pt:48
 msgid "funded_by"
 msgstr "Es wird finanziert vom"
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: templates/index.pt:46
+#: templates/index.pt:48
 msgid "ministry_of_innovation"
 msgstr ""
 "Ministerium für Innovation, Wissenschaft und Forschung des Landes Nordrhein-"
@@ -157,7 +157,7 @@ msgstr ""
 "Wir nutzen das zentrale Namensverzeichnis der Universität Düsseldorf. Ihr "
 "Passwort wird über eine verschlüsselte Verbindung zu unserem Server in der "
 "Universität Düsseldorf übertragen und dort intern zum Dienst des ZIMs "
-"weitergeleitet. Wir werden ihr Passwort zu keinem Zeitpunk speichern oder "
+"weitergeleitet. Wir werden ihr Passwort zu keinem Zeitpunkt speichern oder "
 "anzeigen!"
 
 #. Default: What is the difference between interest and opinion?
@@ -172,9 +172,10 @@ msgstr "Was ist der Unterschied zwischen Interessen und Meinungen?"
 #: templates/faq.pt:17
 msgid "faq_answer_interest_opinion"
 msgstr ""
-"Wenn Sie in D-BAS eine Aussage / Antwort auswählen, interessieren Sie sich "
-"zunächst nur dafür. Erst wenn Sie eine Aussage als Ihre Meinung markieren, "
-"werden wir auch denken, dass dies Ihrer Meinung entspricht."
+"Wenn Sie in D-BAS eine Aussage bzw. Antwort auswählen, interessieren Sie "
+"sich zunächst nur dafür. Erst wenn Sie eine Aussage als Ihre Meinung "
+"markieren, nimmt das System an, dass die Aussage bzw. Antwort Ihrer Meinung "
+"entspricht."
 
 #. Default: Can I mark an statement or argument as my opinion?
 #: templates/faq.pt:21
@@ -187,9 +188,8 @@ msgstr "Wie kann ich eine Aussage als meine Meinung markieren?"
 #: templates/faq.pt:22
 msgid "faq_answer_mark_opinion"
 msgstr ""
-"Am Anfang von jeder grünen Sprechblase finden Sie einen kleinen Stern. Wenn "
-"Sie diesen klicken, markieren Sie den Text in der Sprechblase als Ihre "
-"Meinung."
+"Vor jeder grünen Sprechblase finden Sie einen kleinen Stern. Wenn Sie diesen "
+"klicken, markieren Sie den Text in der Sprechblase als Ihre Meinung."
 
 #. Default: Is there any overview about all given arguments and statements?
 #: templates/faq.pt:26
@@ -197,12 +197,12 @@ msgid "faq_question_graph"
 msgstr "Gibt es eine Übersicht über alle Argumente und Aussagen?"
 
 #. Default: Yes, we have a graphical representation. Simply open the little
-#. sidebar in the discussion window and click on 'graph view'.
+#. sidebar in the discussion window and click on 'graph view'
 #: templates/faq.pt:27
 msgid "faq_answer_graph"
 msgstr ""
 "Ja, wir haben eine graphische Darstellung aller Beiträge. Klicken Sie dazu "
-"in der Diskussionsbox auf das Menu-Icon und wählen 'Graphansicht'."
+"in der Diskussionsbox auf das Menu-Icon und wählen 'Graphansicht'"
 
 #. Default: What are these little icons next to the statements?
 #: templates/faq.pt:31
@@ -260,12 +260,16 @@ msgid "faq_question_bug"
 msgstr "Sie haben einen Fehler gefunden oder weitere Fragen zu D-BAS?"
 
 #. Default: If you think you've found an issue or have any other questions not
-#. covered above, please email us at
+#. covered above, please email us via the
 #: templates/faq.pt:44
 msgid "faq_answer_bug1"
 msgstr ""
-"Wenn Sie irgendwelche Fragen, die hier nicht abgedeckt sind, so schreiben "
-"Sie uns bitte an"
+"Wenn Sie irgendwelche Fragen, die hier gelistet, so nutzen Sie bitte die "
+
+#. Default: contact page
+#: templates/faq.pt:44
+msgid "contact_page"
+msgstr "Kontaktseite"
 
 #. Default: Please keep in mind that our current team is quite small and we'll
 #. do our very best to get back to you ASAP.
@@ -1865,27 +1869,27 @@ msgid "to"
 msgstr "An:"
 
 #. Default: JavaScript is not enabled:
-#: templates/basetemplate.pt:31
+#: templates/basetemplate.pt:26
 msgid "js_disabled1"
 msgstr "JavaScript ist nicht aktiviert:"
 
 #. Default: Please enable JavaScript!
-#: templates/basetemplate.pt:32
+#: templates/basetemplate.pt:27
 msgid "js_disabled2"
 msgstr "Bitte JavaScript aktivieren!"
 
 #. Default: Your request failed!
-#: templates/basetemplate.pt:39
+#: templates/basetemplate.pt:34
 msgid "request_failed"
 msgstr "Ihre Anfrage ist fehlgeschlagen!"
 
 #. Default: Please reload the page.
-#: templates/basetemplate.pt:40
+#: templates/basetemplate.pt:35
 msgid "please_reload"
 msgstr "Bitte laden Sie die Seite erneut."
 
 #. Default: Your request succeded!
-#: templates/basetemplate.pt:46 templates/basetemplate.pt:47
+#: templates/basetemplate.pt:41 templates/basetemplate.pt:42
 msgid "request_success"
 msgstr "Anfrage wurde erfolgreich verarbeitet."
 
