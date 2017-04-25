@@ -4,6 +4,10 @@ Analytics
 
 D-BAS uses `Piwik <https://piwik.org/>`_ as free and open source analytics platform. However the last 16 Bit of each IP are masked.
 
+Piwiks URL has to be hardcoded in:
+ - `dbas/templates/imprint.pt`
+ - `dbas/templates/basetemplate.pt`
+
 Useful Links for the Geo-IP-Plugin
 ----------------------------------
 - http://piwik.org/faq/how-to/faq_166/

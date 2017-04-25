@@ -48,10 +48,10 @@
 					<span i18n:translate="funded_by">It is funded by the</span> <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaere-forschung/fortschrittskolleg-online-partizipation/" target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.
 				</p>
 				<div class="list-logos center">
-						<a href="https://www.hhu.de/" title="www.hhu.de" target="_blank"><img class="logo_hhu" alt="logo_hhu" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}"/></a>
-						<a href="http://www.fortschrittskolleg.de/" title="www.fortschrittskolleg.de" target="_blank"><img id="logo_kolleg" alt="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}"/><img id="logo_kolleg_s" alt="logo_kolleg_s" src="${request.static_url('dbas:static/images/logo_kolleg_s.jpg')}"/></a>
-						<a href="https://www.diid.hhu.de/" title="www.diid.hhu.de" target="_blank"><img id="logo_diid" alt="logo_diid" src="${request.static_url('dbas:static/images/logo_diid.jpg')}"/><img id="logo_diid_s" alt="logo_diid_s" src="${request.static_url('dbas:static/images/logo_diid_s.jpg')}"/></a>
-                    	<a href="https://www.fhoev.nrw.de/" title="www.fhoev.nrw.de" target="_blank"><img id="logo_fhoev" alt="logo_fhoev" src="${request.static_url('dbas:static/images/logo_fhoev.png')}" /><img id="logo_fhoev_s" alt="logo_fhoev_s" src="${request.static_url('dbas:static/images/logo_fhoev_s.png')}"/></a>
+					<a href="https://www.hhu.de/" title="www.hhu.de" target="_blank"><img class="logo_hhu" alt="logo_hhu" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}"/></a>
+					<a href="http://www.fortschrittskolleg.de/" title="www.fortschrittskolleg.de" target="_blank"><img id="logo_kolleg" alt="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}"/><img id="logo_kolleg_s" alt="logo_kolleg_s" src="${request.static_url('dbas:static/images/logo_kolleg_s.jpg')}"/></a>
+					<a href="https://www.diid.hhu.de/" title="www.diid.hhu.de" target="_blank"><img id="logo_diid" alt="logo_diid" src="${request.static_url('dbas:static/images/logo_diid.jpg')}"/><img id="logo_diid_s" alt="logo_diid_s" src="${request.static_url('dbas:static/images/logo_diid_s.jpg')}"/></a>
+                    <a href="https://www.fhoev.nrw.de/" title="www.fhoev.nrw.de" target="_blank"><img id="logo_fhoev" alt="logo_fhoev" src="${request.static_url('dbas:static/images/logo_fhoev.png')}" /><img id="logo_fhoev_s" alt="logo_fhoev_s" src="${request.static_url('dbas:static/images/logo_fhoev_s.png')}"/></a>
 				</div>
 			</div>
 		</div>

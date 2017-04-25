@@ -11,14 +11,9 @@
 	<meta name="author" content="Tobias Krauthoff">
 	<link rel="shortcut icon" href="${request.static_url('dbas:static/images/favicon-16x16.png')}">
 	<title>${title}</title>
-	<!-- Bootstrap core CSS -->
+	<!-- Bootstrap core CSS/JS -->
 	<link type="text/css" href="${request.static_url('dbas:static/css/main.css')}" rel="stylesheet">
 	<link type="text/css" href="${request.static_url('dbas:static/fontawesome/css/font-awesome.min.css')}" rel="stylesheet">
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/pace.min.js')}"></script>
-	<script src='https://www.google.com/recaptcha/api.js'></script>
-
-	<!-- Inlcuding this at top for references -->
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery-3.1.0.min.js')}"></script>
 </head>
 
 <body>
@@ -71,7 +66,9 @@
     </div>
 
 	<div class="eupopup eupopup-bottomright"></div>
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery.autocomplete.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/pace.min.js')}"></script>
+	<script src='https://www.google.com/recaptcha/api.js'></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery-3.1.0.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-3.3.7.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-toggle.min.js')}"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-tour-0.11.0.min.js')}"></script>
@@ -122,11 +119,12 @@
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/review/index.js')}" tal:condition="extras.development_mode"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/d3/barometer.js')}" tal:condition="extras.development_mode"></script>
 	<script type="text/javascript" src="${request.static_url('dbas:static/js/d3/graph.js')}" tal:condition="extras.development_mode"></script>
-	<script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.js')}"></script>
-	<!--<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/gremlins.min.js')}"></script>-->
+	<script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.js')}" tal:condition="extras.development_mode"></script>
+	<script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.js')}" tal:condition="not:extras.development_mode"></script>
 
 	<!-- LIBS PART II -->
-	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.js')}"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.js')}" tal:condition="extras.development_mode"></script>
+	<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.js')}" tal:condition="not:extras.development_mode"></script>
 
 	<!-- Piwik -->
 	<script type="text/javascript">
