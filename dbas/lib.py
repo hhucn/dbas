@@ -1026,8 +1026,10 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
     :param ignore_privacy_settings:
     :return: String
     """
-    db_settings = DBDiscussionSession.query(Settings).get(user.uid)
-    additional_id = '' if db_settings.should_show_public_nickname or ignore_privacy_settings else 'x'
+    additional_id = ''
+    if user:
+        db_settings = DBDiscussionSession.query(Settings).get(user.uid)
+        additional_id = '' if db_settings.should_show_public_nickname or ignore_privacy_settings else 'x'
     url = get_global_url()
     url = url[url.index('//') + 2:]
     unknown = 'unknown@' + url
@@ -1041,7 +1043,7 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
 def get_public_profile_picture(user, size=80):
     """
     Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
-    If the user doesn want an public profile, an anoynmous image will be returned
+    If the user doesn't want an public profile, an anonymous image will be returned
 
     :param user: User
     :param size: Integer, default 80
