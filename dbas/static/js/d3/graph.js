@@ -1233,20 +1233,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         isVisible.support = false;
 
         // hide supports and attacks on statements
-        $('#show-supports-on-my-statements').show();
-        $('#hide-supports-on-my-statements').hide();
-        isVisible.support = false;
-        $('#show-attacks-on-my-statements').show();
-        $('#hide-attacks-on-my-statements').hide();
-        isVisible.attack = false;
+        $('#supports-on-my-statements i').removeClass().addClass("fa fa-square-o");
+        $('#attacks-on-my-statements i').removeClass().addClass("fa fa-square-o");
 
         highlightAllElements();
 
         // delete border of nodes
         deleteBorderOfCircle();
-
-        $('#show-my-statements').show();
-        $('#hide-my-statements').hide();
     }
 
     /**
@@ -1261,20 +1254,17 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
         // if attacks on statements of current user are visible, highlight additionally the supports
         if (!isVisible.attack) {
+            $('#my-statements i').removeClass().addClass("fa fa-minus-square-o");
             // graying all elements of graph
             edges.forEach(function (d) {
                 grayingElements(d);
             });
         }
         else{
-            $('#show-my-statements').hide();
-            $('#hide-my-statements').show();
+            $('#my-statements i').removeClass().addClass("fa fa-check-square-o");
         }
 
         selectSupportsAttacks();
-
-        $('#show-supports-on-my-statements').hide();
-        $('#hide-supports-on-my-statements').show();
     }
 
     /**
@@ -1288,14 +1278,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // if attacks are not visible, show the default view of the graph
         // else make them visible
         if (!isVisible.attack) {
+            $('#my-statements i').removeClass().addClass("fa fa-square-o");
             highlightAllElements();
         }
         else {
+            $('#my-statements i').removeClass().addClass("fa fa-minus-square-o");
             showAttacksOnMyStatements();
         }
-
-        $('#show-supports-on-my-statements').show();
-        $('#hide-supports-on-my-statements').hide();
     }
 
     /**
@@ -1307,25 +1296,20 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // hide statements
         // delete border of nodes
         deleteBorderOfCircle();
-        $('#show-my-statements').show();
-        $('#hide-my-statements').hide();
 
         // if supports on statements of current user are visible, highlight additionally the attacks
         if (!isVisible.support) {
+            $('#my-statements i').removeClass().addClass("fa fa-minus-square-o");
             // graying all elements of graph
             edges.forEach(function (d) {
                 grayingElements(d);
             });
         }
         else{
-            $('#show-my-statements').hide();
-            $('#hide-my-statements').show();
+            $('#my-statements i').removeClass().addClass("fa fa-check-square-o");
         }
 
         selectSupportsAttacks();
-
-        $('#show-attacks-on-my-statements').hide();
-        $('#hide-attacks-on-my-statements').show();
     }
 
     /**
@@ -1337,13 +1321,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         deleteBorderOfCircle();
 
         if (!isVisible.support) {
+            $('#my-statements i').removeClass().addClass("fa fa-square-o");
             highlightAllElements();
         }
         else {
+            $('#my-statements i').removeClass().addClass("fa fa-minus-square-o");
             showSupportsOnMyStatements();
         }
-        $('#show-attacks-on-my-statements').show();
-        $('#hide-attacks-on-my-statements').hide();
     }
 
     /**
@@ -1371,8 +1355,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param jsonData
      */
     function showPath(jsonData) {
-        $('#show-my-path').hide();
-        $('#hide-my-path').show();
+        $('#my-path i').removeClass().addClass("fa fa-check-square-o");
 
         edges.forEach(function (d) {
             grayingElements(d);
@@ -1593,11 +1576,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         edges.forEach(function (d) {
             var circleUid = selectUid(circleId);
             // supports
-            if (isVisible.support && selectUid(d.target.id) === circleUid && d.color === colors.green) {
-                edgesCircleId.push(d);
-            }
-            // attacks
-            else if (isVisible.attack && selectUid(d.target.id) === circleUid && d.color === colors.red) {
+            if ((isVisible.support || isVisible.attack) && selectUid(d.target.id) === circleUid) {
                 edgesCircleId.push(d);
             }
             else if ((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid) && (!isVisible.attack && !isVisible.support)) {
@@ -1614,7 +1593,15 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         }
         highlightElementsVirtualNodes(edges, edgesCircleId);
         edgesCircleId.forEach(function (d) {
-            highlightElements(d);
+            if(isVisible.attack && d.color == colors.red){
+                highlightElements(d);
+            }
+            if(isVisible.support && d.color == colors.green){
+                highlightElements(d);
+            }
+            else if (!isVisible.attack && !isVisible.support){
+                highlightElements(d);
+            }
         });
     }
 
@@ -1669,15 +1656,12 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param edges
      * @param virtualNodes
      * @param edgesCircleId
-     * @return Array
      */
     function createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId) {
         edges.forEach(function (d) {
             virtualNodes.forEach(function (e) {
                 if (d.source.id === e.id || d.target.id === e.id) {
-                    if ((isVisible.support && d.color === colors.green) || (isVisible.attack && d.color === colors.red) || (!isVisible.support && !isVisible.attack)) {
-                        edgesCircleId.push(d);
-                    }
+                    edgesCircleId.push(d);
                 }
             });
         });
