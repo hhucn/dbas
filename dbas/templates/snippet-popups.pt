@@ -610,9 +610,8 @@
     						<li>
     							<label class="bs-callout bs-callout-primary">
     								<input type="radio" name="insert_statements" id="insert_more_arguments">
-    								<span>${extras.tag.i_actually_have}</span>&#160;<span id="insert_statements_count"></span>&#160;<span>${extras.tag.seperated}&#160;<span>${extras.tag.arguments}:</span>
-    							    <span id="insert_statements_list_more_arguments" style="font-weight: 300;">
-    							    </span>
+                                    <span>${extras.tag.i_actually_have}</span>&#160;<span id="insert_statements_count"></span>&#160;<span>${extras.tag.seperated}</span>&#160;<span>${extras.tag.arguments}:</span>
+    							    <span id="insert_statements_list_more_arguments" style="font-weight: 300;"></span>
     							</label>
     						</li>
     						<li>
@@ -924,7 +923,7 @@
     </div>
 
     <!-- DUPLICATED STATEMENT -->
-    <div class="modal fade" id="popup-duplicate-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelFlagArgument" aria-hidden="true">
+    <div class="modal fade" id="popup-duplicate-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelDuplicateStatement" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
@@ -940,7 +939,7 @@
                     <div class="form-group">
                         <div class="col-md-12 input-group">
                             <div class="input-group-addon">
-                                <i class="fa fa-2x fa-search" aria-hidden="&quot;true&quot;"></i>
+                                <i class="fa fa-2x fa-search" aria-hidden="true"></i>
                             </div>
                             <input class="form-control" id="popup-duplicate-statement-text-search" type="text" placeholder="...">
                         </div>
@@ -949,7 +948,7 @@
                     <div class="form-group">
                         <div class="col-md-12 input-group">
                             <div class="input-group-addon">
-                                <i class="fa fa-2x fa-files-o" aria-hidden="&quot;true&quot;"></i>
+                                <i class="fa fa-2x fa-files-o" aria-hidden="true"></i>
                             </div>
                             <select id="popup-duplicate-statement-text-selects" class="form-control">
                                 <option data-uid="0">${extras.title.no_data_selected}</option>
@@ -965,7 +964,7 @@
     </div>
 
     <!-- CHOOSE STATEMENT -->
-    <div class="modal fade" id="popup-choose-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelFlagArgument" aria-hidden="true">
+    <div class="modal fade" id="popup-choose-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelChooseStatement" aria-hidden="true">
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">

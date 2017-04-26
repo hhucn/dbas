@@ -263,7 +263,6 @@ var sidebarTackClass                          = 'tack';
 var sidebarWrapperClass                       = 'sidebar-wrapper';
 var sidebarTackWrapperClass                   = 'tack-wrapper';
 var switchLangIndicatorEnId                   = 'switch-lang-indicator-en';
-var startDiscussionButtonId                   = 'start-discussion-button';
 var switchLangIndicatorDeId                   = 'switch-lang-indicator-de';
 var supportPositionButtonId                   = 'support-position';
 var popupLoginUserfirstnameInputId            = 'userfirstname-input';
