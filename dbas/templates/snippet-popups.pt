@@ -68,7 +68,7 @@
     						</div>
 
     						<div class="col-md-2">
-    							<img class="popup_author_img" src="${request.static_url('dbas:static/images/author.jpg')}" alt="image of the author" style="border-radius: 5px; width: 100%">
+    							<img class="popup_author_img" src="${request.static_url('dbas:static/images/author.jpg')}" alt="image of the author" style="border-radius: 5px; width: 100%; max-width: 200px;">
     						</div>
     					</div>
     				</div>

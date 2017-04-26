@@ -51,11 +51,12 @@
 	</div>
 
     <div metal:use-macro="load: snippet-header.pt"></div>
-    <div metal:use-macro="load: snippet-popups.pt"></div>
 
     <div id="wrapper-content">
         <div metal:define-slot="content_page"></div>
     </div>
+    
+    <div metal:use-macro="load: snippet-popups.pt"></div>
 
     <a href="#top" class="back-to-top"><img class="center" id="back-to-top-img" alt="back-to-top-img" src="${request.static_url('dbas:static/images/chevron_up.png')}"></a>
 
