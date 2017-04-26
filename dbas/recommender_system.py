@@ -89,10 +89,6 @@ def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, res
     # getting undermines or undercuts or rebuts
     logger('RecommenderSystem', 'get_attack_for_argument', 'main ' + str(argument_uid) + ' (reststriction: ' +
            str(restriction_on_attacks) + ', ' + str(restriction_on_arg_uids) + ')')
-    logger('RecommenderSystem', 'get_attack_for_argument', 'main ' + str(argument_uid) + ' (reststriction: ' +
-           str(restriction_on_attacks) + ', ' + str(restriction_on_arg_uids) + ')')
-    logger('RecommenderSystem', 'get_attack_for_argument', 'main ' + str(argument_uid) + ' (reststriction: ' +
-           str(restriction_on_attacks) + ', ' + str(restriction_on_arg_uids) + ')')
 
     if history:
         history = history.split('-')

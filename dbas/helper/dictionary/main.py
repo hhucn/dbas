@@ -11,7 +11,7 @@ import arrow
 
 from dbas.auth.recaptcha import client_key as google_recaptcha_client_key
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, Language, Group, Settings
+from dbas.database.discussion_model import Argument, User, Language, Group, Settings, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.helper.notification import count_of_new_notifications, get_box_for
 from dbas.helper.query import get_every_attack_for_island_view
@@ -148,6 +148,17 @@ class DictionaryHelper(object):
         return_dict['is_production']                 = rrs['mode'] == 'production' if 'mode' in rrs else ''
         return_dict['review_count']                  = get_complete_review_count(nickname)
         return_dict['g_recaptcha_key']               = google_recaptcha_client_key
+
+        # add german and english discussion links
+        db_issues = DBDiscussionSession.query(Issue).filter_by(is_disabled=False)
+        db_de = DBDiscussionSession.query(Language).filter_by(ui_locales='de').first()
+        db_en = DBDiscussionSession.query(Language).filter_by(ui_locales='en').first()
+        db_issue_de = db_issues.filter_by(lang_uid=db_de.uid).first()
+        db_issue_en = db_issues.filter_by(lang_uid=db_en.uid).first()
+
+        return_dict['de_discussion_link'] = '{}/discuss/{}'.format(request.application_url, db_issue_de.get_slug())
+        return_dict['en_discussion_link'] = '{}/discuss/{}'.format(request.application_url, db_issue_en.get_slug())
+
         self.add_language_options_for_extra_dict(return_dict)
 
         if not for_api:

@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
@@ -32,10 +31,10 @@
                                         Derzeit läuft D-BAS sowohl im Produktivbetrieb zur Diskussion von Verbesserungen im Studiengang Informatik (nur auf Deutsch) als auch in einer eine Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres Browsers vermuten wir, dass Sie sich für den Produktivbetrieb interessieren. Welche Version von D-BAS wollen Sie nutzen:
                                     </span>
                                 </p>
-                                <a class="btn btn-lg btn-warning" href="" tal:attributes="href extras.de_discussion_link" id="start-discussion-button" data-toggle="tooltip" data-placement="bottom" style="margin-right: 1em; margin-left: 1em;">
+                                <a class="btn btn-lg btn-warning" href="" tal:attributes="href extras.de_discussion_link" data-toggle="tooltip" data-placement="bottom" style="margin-right: 1em; margin-left: 1em;">
                                     <span i18n:translate="fieldtest">Zum Feldversuch</span>
                                 </a>
-                                <a class="btn btn-lg btn-info" href="" tal:attributes="href extras.en_discussion_link" id="start-discussion-button" data-toggle="tooltip" data-placement="bottom" style="margin-right: 1em; margin-left: 1em;">
+                                <a class="btn btn-lg btn-info" href="" tal:attributes="href extras.en_discussion_link" data-toggle="tooltip" data-placement="bottom" style="margin-right: 1em; margin-left: 1em;">
                                     <span i18n:translate="reviewer">Zum Review</span>
                                 </a>
                             </div>
