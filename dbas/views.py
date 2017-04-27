@@ -100,6 +100,7 @@ def main_page(request):
 
     session_expired = True if 'session_expired' in request.params and request.params['session_expired'] == 'true' else False
     ui_locales      = get_language_from_cookie(request)
+    logger('main_page', 'def', 'main, request.params: {}'.format(request.params))
     _dh             = DictionaryHelper(ui_locales, ui_locales)
     extras_dict     = _dh.prepare_extras_dict_for_normal_page(request)
     _dh.add_language_options_for_extra_dict(extras_dict)

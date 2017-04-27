@@ -80,7 +80,8 @@
                         <img id="switch-lang-indicator-es" src="${request.static_url('dbas:static/images/flag-es-24.png')}">
                         <img id="switch-lang-indicator-sw" src="${request.static_url('dbas:static/images/flag-sw-24.png')}">
                         -->
-                        ${extras.lang}
+                        <span tal:condition="extras.lang_is_en">Englisch</span>
+                        <span tal:condition="extras.lang_is_de">Deutsch</span>
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu" id="language-dropdown">

@@ -1027,7 +1027,7 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
     :return: String
     """
     additional_id = ''
-    if user:
+    if user and isinstance(user, User):
         db_settings = DBDiscussionSession.query(Settings).get(user.uid)
         additional_id = '' if db_settings.should_show_public_nickname or ignore_privacy_settings else 'x'
     url = get_global_url()
