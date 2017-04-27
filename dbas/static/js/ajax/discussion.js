@@ -332,7 +332,7 @@ function AjaxDiscussionHandler() {
 			return;
 		}
 
-		if (type !== fuzzy_find_user) {
+		if (type !== fuzzy_find_user && type !== fuzzy_find_statement) {
 			var opener = $('#' + addPremiseContainerMainInputIntroId).text().replace('...', _t_discussion(because) + ' ' );
 			// add or remove bubble only iff we are not in an popup
 			if (type !== fuzzy_statement_popup) {
