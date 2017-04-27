@@ -106,6 +106,13 @@ function DiscussionBarometer(){
 			return;
 		}
 
+        // fetch zero users
+        var usersDict = getUsersDict([]);
+        if (isEverythingZero(usersDict)){
+            setGlobalInfoHandler('Hey', _t_discussion(otherParticipantsDontHaveOpinionForThis));
+            return -1;
+        }
+
         removeContentOfModal();
 
         // change status of toggle
@@ -165,8 +172,7 @@ function DiscussionBarometer(){
         var height = mode === modeEnum.attitude ? 300 : 400;
         var barChartSvg = getSvg(width+70, height+50).attr("id", "barometer-svg");
 
-        var usersDict = [];
-        usersDict = getUsersDict(usersDict);
+        var usersDict = getUsersDict([]);
 
         // create bars of chart
         // selector = inner-rect: clicks on statement relative to seen_by value
@@ -191,6 +197,24 @@ function DiscussionBarometer(){
             addListenerForTooltip(usersDict, barChartSvg, "rect");
         }
     }
+	
+	/**
+     *
+	 * @param usersDict
+	 */
+	function isEverythingZero(usersDict){
+        // counting depends on address
+        is_attitude = address === 'attitude';
+        var count = 0;
+        if(is_attitude) {
+            count = usersDict[0].seenBy + usersDict[1].seenBy;
+        } else {
+            $.each(usersDict, function( index, value ) {
+                count += value.seenBy;
+            });
+        }
+        return count === 0 || true;
+    }
 
     /**
      * Create users dict depending on address
@@ -202,9 +226,10 @@ function DiscussionBarometer(){
         // create dictionary depending on address
         is_attitude = address === 'attitude';
         if(is_attitude) {
-            usersDict = createDictForAttitude(usersDict);}
-        else {
-            usersDict = createDictForArgumentAndStatement(usersDict);}
+            usersDict = createDictForAttitude(usersDict);
+        } else {
+            usersDict = createDictForArgumentAndStatement(usersDict);
+        }
         return usersDict;
     }
 

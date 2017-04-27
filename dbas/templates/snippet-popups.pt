@@ -329,6 +329,7 @@
 
     <!-- LOGIN POPUP without LDAP-->
     <div tal:condition="not:extras.use_with_ldap" class="modal fade" id="popup-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLogin" aria-hidden="true">
+        <script src='https://www.google.com/recaptcha/api.js'></script>
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">

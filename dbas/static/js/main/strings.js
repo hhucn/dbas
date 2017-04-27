@@ -221,6 +221,7 @@ var notificationWasSend             = 'notificationWasSend';
 var noEditsInOptimization           = 'noEditsInOptimization';
 var opinionBarometer                = 'opinionBarometer';
 var okay                            = 'okay';
+var otherParticipantsDontHaveOpinionForThis = 'otherParticipantsDontHaveOpinionForThis';
 var option                          = 'option';
 var ohsnap                          = 'ohsnap';
 var report                          = 'report';
@@ -476,6 +477,7 @@ var dbas_en = {
     'option': 'Options',
     'ohsnap': 'Oh snap!',
     'okay': 'Okay',
+    'otherParticipantsDontHaveOpinionForThis': 'Other participants do not have any opinion for this statement.',
     'participantsSawThisStatement': 'participants saw this statement.',
     'participantSawThisStatement': 'participant saw this statement.',
     'participantsSawArgumentsToThis': 'participants saw an argument for this opinition.',
@@ -714,6 +716,7 @@ var dbas_de = {
     'option': 'Optionen',
     'ohsnap': 'Mist!',
     'okay': 'Okay',
+    'otherParticipantsDontHaveOpinionForThis': 'Andere Teilnehmer haben bisher keine Meinung dazu.',
     'participantsSawThisStatement': 'Teilnehmer/innen sahen diese Aussage.',
     'participantSawThisStatement': 'Teilnehmer/in sah diese Aussage.',
     'participantsSawArgumentsToThis': 'Teilnehmer/innen sahen Argumente für diese Aussage.',
