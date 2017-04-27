@@ -628,6 +628,7 @@ function DiscussionBarometer(){
             .enter().append("path")
             .attr({
                 'fill': function (d, i) { return getNormalColorFor(i); },
+                'stroke': "gray", d: innerCircle,
                 'transform': "translate(240,230)",
                 'id': function (d, i) {return "inner-path-" + i;},
                 'class': "chart-sector"});
