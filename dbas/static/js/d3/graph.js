@@ -963,6 +963,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(true);
         	}
         });
+        
         $('#labels').off('click').click(function () {
             if($('#labels').find('i').attr('class') === "fa fa-square-o"){
                 $('#labels').find('i').removeClass().addClass("fa fa-check-square-o");
@@ -973,6 +974,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 hideLabels();
             }
         });
+        
         $('#positions').off('click').click(function () {
             if($('#positions').find('i').attr('class') === "fa fa-square-o"){
                 $('#positions').find('i').removeClass().addClass("fa fa-check-square-o");
@@ -983,6 +985,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 hidePositions();
             }
         });
+        
         $('#statements').off('click').click(function () {
             if($('#statements').find('i').attr('class') === "fa fa-square-o"){
                 $('#statements').find('i').removeClass().addClass("fa fa-check-square-o");
@@ -993,16 +996,15 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 hideStatements();
             }
         });
-        $('#my-path').off('click').click(function () {
-            if($('#my-path').find('i').attr('class') === "fa fa-square-o"){
-                $('#my-path').find('i').removeClass().addClass("fa fa-check-square-o");
-                showPath();
-            }
-            else{
-                $('#my-path').find('i').removeClass().addClass("fa fa-square-o");
-                hidePath();
-            }
+        
+        $('#show-my-path').click(function(){
+            showPath();
         });
+        
+        $('#hide-my-path').click(function(){
+            showPath()
+        });
+        
         $('#my-statements').off('click').click(function () {
             if($('#my-statements').find('i').attr('class') === "fa fa-square-o"){
                 $('#my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
@@ -1013,6 +1015,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 hideMyStatements();
             }
         });
+        
         $('#supports-on-my-statements').off('click').click(function () {
             if($('#supports-on-my-statements').find('i').attr('class') === "fa fa-square-o"){
                 $('#supports-on-my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
@@ -1023,6 +1026,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 hideSupportsOnMyStatements();
             }
         });
+        
         $('#attacks-on-my-statements').off('click').click(function () {
             if($('#attacks-on-my-statements').find('i').attr('class') === "fa fa-square-o"){
                 $('#attacks-on-my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
