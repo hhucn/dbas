@@ -272,13 +272,13 @@
     				<br>
                     <h4 id="myModalLabelLoginLDAP" class="text-primary center" i18n:translate="login">Log In</h4>
     			</div>
-    			<div id="popup-login-body">
+    			<div class="modal-body" id="popup-login-body">
                     <form autocomplete="on">
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="login-user"><span i18n:translate="your_ldap_nickname">Your University-ID</span><i class="fa fa-info-circle" data-placement="bottom" data-toggle="tooltip" tal:attributes="title extras.buttons.ldap_info" style="padding-left: 1em"></i></label>
                             <div class="col-md-9 input-group">
                                 <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-                                <input id="login-user" type="text" class="form-control" tal:attributes="placeholder extras.tag.placeholder_nickname" placeholder="" autocomplete="on" autofocus>
+                                <input id="login-user" type="text" class="form-control" tal:attributes="placeholder extras.tag.placeholder_nickname" placeholder="" autocomplete="on">
                             </div>
                         </div>
                         <div class="form-group">
@@ -299,16 +299,7 @@
                     <div id="dbas-login-data-disclaimer" style="padding: 1em 0 0 1em;">
                         <p class="text-info" i18n:translate="dbas_login_data_disclaimer">Wenn Sie sich bei D-BAS anmelden, erklären Sie sich damit einverstanden, dass Ihre Aktionen anonymisiert ausgewertet werden und Sie nach Abschluss des Experiments einen Fragebogen per E-Mail erhalten werden.</p>
                     </div>
-                    <!--<div id="popup-login-forgot-password-body" class="form-group" style="margin-top: 1em;">-->
-                    <!--    <label for="mail-address" class="control-label" i18n:translate="fill_in_mail_for_password">Please fill in your e-mail below. A new password will be send this address:</label>-->
-                    <!--    <div class="form-group">-->
-                    <!--        <div class="col-md-12 input-group">-->
-                    <!--            <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>-->
-                    <!--            <input id="password-request-email-input" type="email" class="form-control" tal:attributes="placeholder extras.tag.placeholder_mail" placeholder="" autocomplete="on">-->
-                    <!--        </div>-->
-                    <!--    </div>-->
-                    <!--    <input id="popup-login-button-request" type="submit" onclick="$('body').addClass('loading')" name="form.passwordrequest.submitted" value="Request Password" class="btn btn-primary" tal:attributes="value extras.buttons.request_password"/>-->
-                    <!--</div>-->
+
                     <div class="col-md-12" id="popup-login-failed">
                         <div class="alert alert-danger" role="alert">
                             <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
@@ -359,7 +350,7 @@
     						    	<label class="col-md-3 control-label" for="login-user" i18n:translate="your_nickname">Your Nickname</label>
     						    	<div class="col-md-9 input-group">
                                         <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-    						    		<input id="login-user" type="text" class="form-control" tal:attributes="placeholder extras.tag.placeholder_nickname" placeholder="" autocomplete="on" autofocus>
+    						    		<input id="login-user" type="text" class="form-control" tal:attributes="placeholder extras.tag.placeholder_nickname" placeholder="" autocomplete="on">
     						    	</div>
     						    </div>
     						    <div class="form-group">
@@ -647,6 +638,7 @@
     		</div>
     	</div>
     </div>
+
 
     <!-- WRITE NEWS -->
     <div class="modal fade" id="popup-writing-news" tabindex="-1" role="dialog" aria-labelledby="myModalLabelNews" aria-hidden="true">
@@ -1106,4 +1098,5 @@
     		</div>
     	</div>
     </div>
+
 </div>

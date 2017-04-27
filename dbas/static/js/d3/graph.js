@@ -964,68 +964,72 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         	}
         });
         $('#labels').off('click').click(function () {
-            if($('#labels i').attr('class') === "fa fa-square-o"){
-                $('#labels i').removeClass().addClass("fa fa-check-square-o");
+            if($('#labels').find('i').attr('class') === "fa fa-square-o"){
+                $('#labels').find('i').removeClass().addClass("fa fa-check-square-o");
                 showLabels();
             }
             else{
-                $('#labels i').removeClass().addClass("fa fa-square-o");
+                $('#labels').find('i').removeClass().addClass("fa fa-square-o");
                 hideLabels();
             }
         });
         $('#positions').off('click').click(function () {
-            if($('#positions i').attr('class') === "fa fa-square-o"){
-                $('#positions i').removeClass().addClass("fa fa-check-square-o");
+            if($('#positions').find('i').attr('class') === "fa fa-square-o"){
+                $('#positions').find('i').removeClass().addClass("fa fa-check-square-o");
                 showPositions();
             }
             else{
-                $('#positions i').removeClass().addClass("fa fa-square-o");
+                $('#positions').find('i').removeClass().addClass("fa fa-square-o");
                 hidePositions();
             }
         });
         $('#statements').off('click').click(function () {
-            if($('#statements i').attr('class') === "fa fa-square-o"){
-                $('#statements i').removeClass().addClass("fa fa-check-square-o");
+            if($('#statements').find('i').attr('class') === "fa fa-square-o"){
+                $('#statements').find('i').removeClass().addClass("fa fa-check-square-o");
                 showStatements();
             }
             else{
-                $('#statements i').removeClass().addClass("fa fa-square-o");
+                $('#statements').find('i').removeClass().addClass("fa fa-square-o");
                 hideStatements();
             }
         });
-        $('#show-my-path').off('click').click(function () {
-            showPath();
-        });
-        $('#hide-my-path').off('click').click(function () {
-            hidePath();
+        $('#my-path').off('click').click(function () {
+            if($('#my-path').find('i').attr('class') === "fa fa-square-o"){
+                $('#my-path').find('i').removeClass().addClass("fa fa-check-square-o");
+                showPath();
+            }
+            else{
+                $('#my-path').find('i').removeClass().addClass("fa fa-square-o");
+                hidePath();
+            }
         });
         $('#my-statements').off('click').click(function () {
-            if($('#my-statements i').attr('class') === "fa fa-square-o"){
-                $('#my-statements i').removeClass().addClass("fa fa-check-square-o");
+            if($('#my-statements').find('i').attr('class') === "fa fa-square-o"){
+                $('#my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
                 showMyStatements();
             }
             else{
-                $('#my-statements i').removeClass().addClass("fa fa-square-o");
+                $('#my-statements').find('i').removeClass().addClass("fa fa-square-o");
                 hideMyStatements();
             }
         });
         $('#supports-on-my-statements').off('click').click(function () {
-            if($('#supports-on-my-statements i').attr('class') === "fa fa-square-o"){
-                $('#supports-on-my-statements i').removeClass().addClass("fa fa-check-square-o");
+            if($('#supports-on-my-statements').find('i').attr('class') === "fa fa-square-o"){
+                $('#supports-on-my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
                 showSupportsOnMyStatements();
             }
             else{
-                $('#supports-on-my-statements i').removeClass().addClass("fa fa-square-o");
+                $('#supports-on-my-statements').find('i').removeClass().addClass("fa fa-square-o");
                 hideSupportsOnMyStatements();
             }
         });
         $('#attacks-on-my-statements').off('click').click(function () {
-            if($('#attacks-on-my-statements i').attr('class') === "fa fa-square-o"){
-                $('#attacks-on-my-statements i').removeClass().addClass("fa fa-check-square-o");
+            if($('#attacks-on-my-statements').find('i').attr('class') === "fa fa-square-o"){
+                $('#attacks-on-my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
                 showAttacksOnMyStatements();
             }
             else{
-                $('#attacks-on-my-statements i').removeClass().addClass("fa fa-square-o");
+                $('#attacks-on-my-statements').find('i').removeClass().addClass("fa fa-square-o");
                 hideAttacksOnMyStatements();
             }
         });
@@ -1087,8 +1091,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         hideLabelsOfNotSelectedNodes();
 
         // also show content of positions and statements
-        $('#positions i').removeClass().addClass("fa fa-check-square-o");
-        $('#statements i').removeClass().addClass("fa fa-check-square-o");
+        $('#positions').find('i').removeClass().addClass("fa fa-check-square-o");
+        $('#statements').find('i').removeClass().addClass("fa fa-check-square-o");
     }
 
     /**
@@ -1113,8 +1117,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         rect.style("display", 'none');
         addListenerForTooltip();
         if (isVisible.position || isVisible.statements) {
-            $('#positions i').removeClass().addClass("fa fa-square-o");
-            $('#statements i').removeClass().addClass("fa fa-square-o");
+            $('#positions').find('i').removeClass().addClass("fa fa-square-o");
+            $('#statements').find('i').removeClass().addClass("fa fa-square-o");
         }
         isVisible.position = false;
         isVisible.statements = false;
@@ -1127,11 +1131,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         isVisible.position = true;
         // select positions
         if(isVisible.statements){
-            $('#labels i').removeClass().addClass("fa fa-check-square-o");
+            $('#labels').find('i').removeClass().addClass("fa fa-check-square-o");
             setDisplayStyleOfNodes('inline', 'inline');
         }
         else{
-            $('#labels i').removeClass().addClass("fa fa-minus-square-o");
+            $('#labels').find('i').removeClass().addClass("fa fa-minus-square-o");
             setDisplayStyleOfNodes('inline', 'none');
         }
     }
@@ -1143,11 +1147,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         isVisible.position = false;
         addListenerForTooltip();
         if(!isVisible.statements){
-            $('#labels i').removeClass().addClass("fa fa-square-o");
+            $('#labels').find('i').removeClass().addClass("fa fa-square-o");
             setDisplayStyleOfNodes('none', 'none');
         }
         else{
-            $('#labels i').removeClass().addClass("fa fa-minus-square-o");
+            $('#labels').find('i').removeClass().addClass("fa fa-minus-square-o");
             setDisplayStyleOfNodes('none', 'inline');
         }
     }
@@ -1158,11 +1162,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function showStatements() {
         isVisible.statements = true;
         if(isVisible.position){
-            $('#labels i').removeClass().addClass("fa fa-check-square-o");
+            $('#labels').find('i').removeClass().addClass("fa fa-check-square-o");
             setDisplayStyleOfNodes('inline', 'inline');
         }
         else{
-            $('#labels i').removeClass().addClass("fa fa-minus-square-o");
+            $('#labels').find('i').removeClass().addClass("fa fa-minus-square-o");
             setDisplayStyleOfNodes('none', 'inline');
         }
     }
@@ -1174,11 +1178,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         isVisible.statements = false;
         addListenerForTooltip();
         if(!isVisible.position){
-            $('#labels i').removeClass().addClass("fa fa-square-o");
+            $('#labels').find('i').removeClass().addClass("fa fa-square-o");
             setDisplayStyleOfNodes('none', 'none');
         }
         else{
-            $('#labels i').removeClass().addClass("fa fa-minus-square-o");
+            $('#labels').find('i').removeClass().addClass("fa fa-minus-square-o");
             setDisplayStyleOfNodes('inline', 'none');
         }
     }
@@ -1205,11 +1209,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
         // show supports and attacks on statements
         if (isVisible.support) {
-            $('#supports-on-my-statements i').removeClass().addClass("fa fa-check-square-o");
+            $('#supports-on-my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
             isVisible.support = true;
         }
         if (isVisible.attack) {
-            $('#attacks-on-my-statements i').removeClass().addClass("fa fa-check-square-o");
+            $('#attacks-on-my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
             isVisible.attack = true;
         }
 
@@ -1229,8 +1233,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         isVisible.support = false;
 
         // hide supports and attacks on statements
-        $('#supports-on-my-statements i').removeClass().addClass("fa fa-square-o");
-        $('#attacks-on-my-statements i').removeClass().addClass("fa fa-square-o");
+        $('#supports-on-my-statements').find('i').removeClass().addClass("fa fa-square-o");
+        $('#attacks-on-my-statements').find('i').removeClass().addClass("fa fa-square-o");
 
         highlightAllElements();
 
@@ -1250,14 +1254,14 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
         // if attacks on statements of current user are visible, highlight additionally the supports
         if (!isVisible.attack) {
-            $('#my-statements i').removeClass().addClass("fa fa-minus-square-o");
+            $('#my-statements').find('i').removeClass().addClass("fa fa-minus-square-o");
             // graying all elements of graph
             edges.forEach(function (d) {
                 grayingElements(d);
             });
         }
         else{
-            $('#my-statements i').removeClass().addClass("fa fa-check-square-o");
+            $('#my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
         }
 
         selectSupportsAttacks();
@@ -1274,11 +1278,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // if attacks are not visible, show the default view of the graph
         // else make them visible
         if (!isVisible.attack) {
-            $('#my-statements i').removeClass().addClass("fa fa-square-o");
+            $('#my-statements').find('i').removeClass().addClass("fa fa-square-o");
             highlightAllElements();
         }
         else {
-            $('#my-statements i').removeClass().addClass("fa fa-minus-square-o");
+            $('#my-statements').find('i').removeClass().addClass("fa fa-minus-square-o");
             showAttacksOnMyStatements();
         }
     }
@@ -1295,14 +1299,14 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
         // if supports on statements of current user are visible, highlight additionally the attacks
         if (!isVisible.support) {
-            $('#my-statements i').removeClass().addClass("fa fa-minus-square-o");
+            $('#my-statements').find('i').removeClass().addClass("fa fa-minus-square-o");
             // graying all elements of graph
             edges.forEach(function (d) {
                 grayingElements(d);
             });
         }
         else{
-            $('#my-statements i').removeClass().addClass("fa fa-check-square-o");
+            $('#my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
         }
 
         selectSupportsAttacks();
@@ -1317,11 +1321,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         deleteBorderOfCircle();
 
         if (!isVisible.support) {
-            $('#my-statements i').removeClass().addClass("fa fa-square-o");
+            $('#my-statements').find('i').removeClass().addClass("fa fa-square-o");
             highlightAllElements();
         }
         else {
-            $('#my-statements i').removeClass().addClass("fa fa-minus-square-o");
+            $('#my-statements').find('i').removeClass().addClass("fa fa-minus-square-o");
             showSupportsOnMyStatements();
         }
     }
@@ -1409,6 +1413,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      *
      * @param edge
      * @param edgesCircleId
+     * @param d
      */
     function findEdgesVirtualNode(edge, edgesCircleId, d){
         // edge from virtual node to statement
@@ -1563,7 +1568,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Highlight incoming and outgoing edges of selected node.
      *
-     * @param edges: all edges of graph
      * @param circleId: id of selected node
      */
     function showPartOfGraph(circleId) {
@@ -1590,10 +1594,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         }
         highlightElementsVirtualNodes(edges, edgesCircleId);
         edgesCircleId.forEach(function (d) {
-            if(isVisible.attack && d.color == colors.red){
+            if(isVisible.attack && d.color === colors.red){
                 highlightElements(d);
             }
-            if(isVisible.support && d.color == colors.green){
+            if(isVisible.support && d.color === colors.green){
                 highlightElements(d);
             }
             else if (!isVisible.attack && !isVisible.support){

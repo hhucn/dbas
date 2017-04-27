@@ -452,10 +452,8 @@ class DictionaryHelper(object):
         logger('DictionaryHelper', 'add_language_options_for_extra_dict', 'def')
         lang_is_en = (self.system_lang != 'de')
         lang_is_de = (self.system_lang == 'de')
-        dblang = DBDiscussionSession.query(Language).filter_by(ui_locales=self.system_lang).first()
         extras_dict.update({
             'ui_locales': self.system_lang,
-            'lang': dblang.name,
             'lang_is_de': lang_is_de,
             'lang_is_en': lang_is_en,
             'link_de_class': ('active' if lang_is_de else ''),
