@@ -67,24 +67,27 @@
   </div>
 
   <div class="eupopup eupopup-bottomright"></div>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/pace.min.js')}"></script>
+  <!--<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/pace.min.js')}"></script>-->
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery-3.1.0.min.js')}"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-3.3.7.min.js')}"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-toggle.min.js')}"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-tour-0.11.0.min.js')}"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/browser-detection.js')}" tal:condition="extras.development_mode"></script>
+  <!--<script type="text/javascript" src="${request.static_url('dbas:static/js/main/browser-detection.js')}"></script>-->
 
   <!-- Placed at the end of the document so the pages load faster -->
-  <!-- LIBS PART I -->
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery.slimscroll-1.3.8.min.js')}"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/cookie-2.1.3.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/cookie-2.1.3.min.js')}" tal:condition="not:extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/socket.io-1.4.5.js')}"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/chart.min.js')}"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/d3.min.js')}"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.min.js')}" tal:condition="not:extras.development_mode"></script>
 
-  <!-- DEVELOPMENT -->
+  <!-- PRODUCTION -->
   <script type="text/javascript" src="${request.static_url('dbas:static/js/dbas.min.js')}" tal:condition="not:extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.min.js')}" tal:condition="not:extras.development_mode"></script>
+  <!-- DEVELOPMENT -->
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/ids.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/guided-tour.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/app.js')}" tal:condition="extras.development_mode"></script>
@@ -121,11 +124,6 @@
   <script type="text/javascript" src="${request.static_url('dbas:static/js/d3/barometer.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/d3/graph.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.min.js')}" tal:condition="not:extras.development_mode"></script>
-
-  <!-- LIBS PART II -->
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.min.js')}" tal:condition="not:extras.development_mode"></script>
 
   <!-- Piwik -->
   <script type="text/javascript">
