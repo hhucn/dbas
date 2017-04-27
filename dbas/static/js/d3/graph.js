@@ -226,9 +226,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         }
         
         // show or hide my path
-	    $('#my-path').hide();
-        if (!(jsonData.path.length === 0)) {
-            $('#my-path').show();
+	    $('#hide-my-path').hide();
+        if (jsonData.path.length === 0) {
+            $('#show-my-path').addClass('hidden');
+        } else {
+            $('#show-my-path').show();
         }
     };
 
@@ -991,15 +993,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 hideStatements();
             }
         });
-        $('#my-path').off('click').click(function () {
-            if($('#my-path i').attr('class') === "fa fa-square-o"){
-                $('#my-path i').removeClass().addClass("fa fa-check-square-o");
-                showPath();
-            }
-            else{
-                $('#my-path i').removeClass().addClass("fa fa-square-o");
-                hidePath();
-            }
+        $('#show-my-path').off('click').click(function () {
+            showPath();
+        });
+        $('#hide-my-path').off('click').click(function () {
+            hidePath();
         });
         $('#my-statements').off('click').click(function () {
             if($('#my-statements i').attr('class') === "fa fa-square-o"){
@@ -1337,13 +1335,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         circleIds = [];
 
         force.nodes().forEach(function (d) {
-            if (d.author.name === $('#header_nickname')[0].innerText) {
+            if (d.author.name === /*$('#header_nickname')[0].innerText*/'anonymous') {
                 circleIds.push(d.id);
             }
         });
 
         force.nodes().forEach(function (d) {
-            if (d.author.name === $('#header_nickname')[0].innerText) {
+            if (d.author.name === /*$('#header_nickname')[0].innerText*/'anonymous') {
                 showPartOfGraph(d.id);
             }
         });
@@ -1355,7 +1353,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param jsonData
      */
     function showPath(jsonData) {
-        $('#my-path i').removeClass().addClass("fa fa-check-square-o");
+        $('#show-my-path').hide();
+        $('#hide-my-path').show();
 
         edges.forEach(function (d) {
             grayingElements(d);
