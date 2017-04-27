@@ -964,36 +964,30 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         	}
         });
         
-        $('#labels').off('click').click(function () {
-            if($('#labels').find('i').attr('class') === "fa fa-square-o"){
-                $('#labels').find('i').removeClass().addClass("fa fa-check-square-o");
-                showLabels();
-            }
-            else{
-                $('#labels').find('i').removeClass().addClass("fa fa-square-o");
-                hideLabels();
-            }
-        });
+        var mapper = {
+            'labels': [showLabels, hideLabels],
+            'positions': [showPositions, hidePositions],
+            'statements': [showStatements, hideStatements],
+            'my-statements': [showMyStatements, hideMyStatements],
+            'supports-on-my-statements': [showSupportsOnMyStatements, hideSupportsOnMyStatements],
+            'attacks-on-my-statements': [showAttacksOnMyStatements, hideAttacksOnMyStatements],
+        };
         
-        $('#positions').off('click').click(function () {
-            if($('#positions').find('i').attr('class') === "fa fa-square-o"){
-                $('#positions').find('i').removeClass().addClass("fa fa-check-square-o");
-                showPositions();
-            }
-            else{
-                $('#positions').find('i').removeClass().addClass("fa fa-square-o");
-                hidePositions();
-            }
-        });
-        
-        $('#statements').off('click').click(function () {
-            if($('#statements').find('i').attr('class') === "fa fa-square-o"){
-                $('#statements').find('i').removeClass().addClass("fa fa-check-square-o");
-                showStatements();
-            }
-            else{
-                $('#statements').find('i').removeClass().addClass("fa fa-square-o");
-                hideStatements();
+        // get all buttons in the sidebar
+        $('#graph-view-container').find('.sidebar').find('li').each(function(index, element){
+            var id =  $(element).attr('id');
+            // check if the button is mentioned in mapper array
+            if (id in mapper) {
+	            $('#' + id).off('click').click(function () {
+                    console.log(id);
+		            if ($(this).find('i').attr('class') === "fa fa-square-o") {
+			            $(this).find('i').removeClass().addClass("fa fa-check-square-o");
+			            mapper[id][0]();
+		            } else {
+			            $(this).find('i').removeClass().addClass("fa fa-square-o");
+			            mapper[id][1]();
+		            }
+	            });
             }
         });
         
@@ -1003,39 +997,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         
         $('#hide-my-path').click(function(){
             showPath();
-        });
-        
-        $('#my-statements').off('click').click(function () {
-            if($('#my-statements').find('i').attr('class') === "fa fa-square-o"){
-                $('#my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
-                showMyStatements();
-            }
-            else{
-                $('#my-statements').find('i').removeClass().addClass("fa fa-square-o");
-                hideMyStatements();
-            }
-        });
-        
-        $('#supports-on-my-statements').off('click').click(function () {
-            if($('#supports-on-my-statements').find('i').attr('class') === "fa fa-square-o"){
-                $('#supports-on-my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
-                showSupportsOnMyStatements();
-            }
-            else{
-                $('#supports-on-my-statements').find('i').removeClass().addClass("fa fa-square-o");
-                hideSupportsOnMyStatements();
-            }
-        });
-        
-        $('#attacks-on-my-statements').off('click').click(function () {
-            if($('#attacks-on-my-statements').find('i').attr('class') === "fa fa-square-o"){
-                $('#attacks-on-my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
-                showAttacksOnMyStatements();
-            }
-            else{
-                $('#attacks-on-my-statements').find('i').removeClass().addClass("fa fa-square-o");
-                hideAttacksOnMyStatements();
-            }
         });
     }
 	
