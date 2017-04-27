@@ -1002,7 +1002,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         });
         
         $('#hide-my-path').click(function(){
-            showPath()
+            showPath();
         });
         
         $('#my-statements').off('click').click(function () {
