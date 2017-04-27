@@ -226,9 +226,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         }
         
         // show or hide my path
-	    $('#my-path').hide();
-        if (jsonData.path.length !== 0) {
-            $('#my-path').show();
+	    $('#hide-my-path').hide();
+        if (jsonData.path.length === 0) {
+            $('#show-my-path').addClass('hidden');
+        } else {
+            $('#show-my-path').show();
         }
     };
 
@@ -1113,8 +1115,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         isVisible.content = false;
         label.style("display", 'none');
         rect.style("display", 'none');
-        $('#show-labels').show();
-        $('#hide-labels').hide();
         addListenerForTooltip();
         if (isVisible.position || isVisible.statements) {
             $('#positions').find('i').removeClass().addClass("fa fa-square-o");
@@ -1355,7 +1355,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param jsonData
      */
     function showPath(jsonData) {
-        $('#my-path').find('i').removeClass().addClass("fa fa-check-square-o");
+        $('#show-my-path').hide();
+        $('#hide-my-path').show();
 
         edges.forEach(function (d) {
             grayingElements(d);
