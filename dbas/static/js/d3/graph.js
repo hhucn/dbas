@@ -1111,8 +1111,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         isVisible.content = false;
         label.style("display", 'none');
         rect.style("display", 'none');
-        $('#show-labels').show();
-        $('#hide-labels').hide();
         addListenerForTooltip();
         if (isVisible.position || isVisible.statements) {
             $('#positions i').removeClass().addClass("fa fa-square-o");
@@ -1335,13 +1333,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         circleIds = [];
 
         force.nodes().forEach(function (d) {
-            if (d.author.name === /*$('#header_nickname')[0].innerText*/'anonymous') {
+            if (d.author.name === $('#header_nickname')[0].innerText) {
                 circleIds.push(d.id);
             }
         });
 
         force.nodes().forEach(function (d) {
-            if (d.author.name === /*$('#header_nickname')[0].innerText*/'anonymous') {
+            if (d.author.name === $('#header_nickname')[0].innerText) {
                 showPartOfGraph(d.id);
             }
         });
