@@ -132,7 +132,7 @@
 						<li><a target="_blank" href="https://github.com/Pylons/pyramid"><i class="fa fa-cog" aria-hidden="true"></i>&thinsp;Github Project</a></li>
 					</ul>
 					<ul>
-						<li><a target="_blank" href="irc://irc.freenode.net#pyramid"><i class="fa fa-globe" aria-hidden="true"></i>&thinsp;IRC Channel</a></li>
+						<li><a target="_blank" href="https://webchat.freenode.net/?channels=pyramid"><i class="fa fa-globe" aria-hidden="true"></i>&thinsp;IRC Channel</a></li>
 						<li><a target="_blank" href="http://pylonsproject.org"><i class="fa fa-home" aria-hidden="true"></i>&thinsp;Pylons Project</a></li>
 					</ul>
 				</div>
