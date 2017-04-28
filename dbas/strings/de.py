@@ -429,7 +429,7 @@ de_lang = {
     _.langNotFound: 'Sprache nicht gefunden',
     _.latestNewsFromDiscussion: 'Die aktuellen Neuigkeit aus der Diskussion über',
     _.latestNewsFromDBAS: 'Die aktuellen Neugkeiten von D-BAS, einem Dialog-Basierten Argumentationssystem',
-    _.ldapInfo: 'Wir benutzen das Personenverzeichnug der Uni Düsseldorf. Alle Daten und Informationen werden natürlich SSL-verschlüsselt gesendet und nach Erhalt unter keinen Umständen an Dritte weitergegeben.',
+    _.ldapInfo: 'Wir benutzen das Personenverzeichnis der Uni Düsseldorf. Alle Daten und Informationen werden natürlich SSL-verschlüsselt gesendet und nach Erhalt unter keinen Umständen an Dritte weitergegeben.',
     _.more: 'Mehr',
     _.medium: 'mittel',
     _.minLength: 'Mindestlänge',
