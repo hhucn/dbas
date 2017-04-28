@@ -13,10 +13,11 @@ $(document).ready(function () {
 		new AjaxMainHandler().ajaxLogin(user, pw, true);
 	});
 	
-	if ($('.batman').length == 0)
+	if ($('.batman').length === 0) {
 		new AdminAjaxHandler().updateCountBadges();
+	}
 	
-	const data = $('#data');
+	var data = $('#data');
 	
 	// gui modification for the caution row
 	if (!Cookies.get(ADMIN_WARNING)) {
@@ -33,6 +34,6 @@ $(document).ready(function () {
 		$(this).click(function (){
 			window.location.href = $(this).data('href');
 		});
-	})
+	});
 	
 });
