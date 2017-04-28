@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-04-27 21:10+0200\n"
+"POT-Creation-Date: 2017-04-28 08:05+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -101,12 +101,12 @@ msgstr ""
 #. Default: Zum Feldversuch
 #: templates/index.pt:35
 msgid "fieldtest"
-msgstr "Zum Feldversuch"
+msgstr "Zum Produktivbetrieb"
 
 #. Default: Zum Review
 #: templates/index.pt:38
 msgid "reviewer"
-msgstr "Zur Demo"
+msgstr "Zur Demoversion"
 
 #. Default: This work is part of the graduate school on
 #: templates/index.pt:46
@@ -710,7 +710,7 @@ msgstr "Helfen Sie, den Dialog zu verbessern"
 msgid "dbas_is_moderated_by"
 msgstr ""
 "D-BAS wird durch Sie moderiert. Helfen Sie weiteren Teilnehmern, besser zu "
-"argumenten und heben Sie Diskussionsqualität, indem Sie"
+"argumentieren und verbessern Sie die Diskussionsqualität, indem Sie"
 
 #. Default: Evaluate new statements
 #: templates/review.pt:18
