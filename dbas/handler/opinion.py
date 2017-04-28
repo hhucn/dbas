@@ -99,13 +99,13 @@ def __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user_ui
     db_user = DBDiscussionSession.query(User).get(db_user_uid)
     if db_user:
         if db_user.gender == 'm':
-            msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+            msg = _t.get(_.voteCountTextMayBeFirst).rstrip() + '.'
         elif db_user.gender == 'f':
-            msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
+            msg = _t.get(_.voteCountTextMayBeFirstF).rstrip() + '.'
         else:
-            msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+            msg = _t.get(_.voteCountTextMayBeFirst).rstrip() + '.'
     else:
-        msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+        msg = _t.get(_.voteCountTextMayBeFirst).rstrip() + '.'
 
     for rel in relation:
         all_users       = []
@@ -133,9 +133,9 @@ def __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user_ui
             if len(db_votes) == 0:
                 message = msg
             elif len(db_votes) == 1:
-                message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
+                message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore).rstrip() + '.'
             else:
-                message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
+                message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore).rstrip() + '.'
 
             db_seen_by = DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=int(uid['id'])).all()
             seen_by += len(db_seen_by) if db_seen_by else 0
@@ -220,18 +220,18 @@ def __get_genered_text_for_clickcount(len_db_votes, db_user_uid, _t):
         db_user = DBDiscussionSession.query(User).get(db_user_uid)
         if db_user:
             if db_user.gender == 'm':
-                msg = _t.get(_.voteCountTextMayBeFirst)
+                msg = _t.get(_.voteCountTextMayBeFirst).rstrip()
             elif db_user.gender == 'f':
-                msg = _t.get(_.voteCountTextMayBeFirstF)
+                msg = _t.get(_.voteCountTextMayBeFirstF).rstrip()
             else:
-                msg = _t.get(_.voteCountTextMayBeFirst)
+                msg = _t.get(_.voteCountTextMayBeFirst).rstrip()
         else:
-            msg = _t.get(_.voteCountTextMayBeFirst)
+            msg = _t.get(_.voteCountTextMayBeFirst).rstrip()
         return msg + '.'
     elif len_db_votes == 1:
-        return str(len_db_votes) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
+        return str(len_db_votes) + ' ' + _t.get(_.voteCountTextOneMore).rstrip() + '.'
     else:
-        return str(len_db_votes) + ' ' + _t.get(_.voteCountTextMore) + '.'
+        return str(len_db_votes) + ' ' + _t.get(_.voteCountTextMore).rstrip() + '.'
 
 
 def get_user_with_same_opinion_for_premisegroups(argument_uids, nickname, lang, main_page):

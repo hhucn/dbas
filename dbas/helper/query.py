@@ -460,13 +460,13 @@ def get_every_attack_for_island_view(arg_uid):
     db_user = DBDiscussionSession.query(User).get(db_argument.author_uid)
     if db_user:
         if db_user.gender == 'm':
-            msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+            msg = _t.get(_.voteCountTextMayBeFirst).rstrip() + '.'
         elif db_user.gender == 'f':
-            msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
+            msg = _t.get(_.voteCountTextMayBeFirstF).rstrip() + '.'
         else:
-            msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+            msg = _t.get(_.voteCountTextMayBeFirst).rstrip() + '.'
     else:
-        msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+        msg = _t.get(_.voteCountTextMayBeFirst).rstrip() + '.'
 
     no_entry_text = _t.get(_.no_arguments) + '. ' + msg
     undermine = undermine if undermine else [{'id': 0, 'text': no_entry_text}]
