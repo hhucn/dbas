@@ -149,13 +149,13 @@ class DiscussionDictHelper(object):
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
             if db_user:
                 if db_user.gender == 'm':
-                    msg = _t.get(_.voteCountTextFirstM).rstrip() + '.'
+                    msg = _t.get(_.voteCountTextFirstM) + '.'
                 elif db_user.gender == 'f':
-                    msg = _t.get(_.voteCountTextFirstF).rstrip() + '.'
+                    msg = _t.get(_.voteCountTextFirstF) + '.'
                 else:
-                    msg = _t.get(_.voteCountTextFirst).rstrip() + '.'
+                    msg = _t.get(_.voteCountTextFirst) + '.'
             else:
-                msg = _t.get(_.voteCountTextFirst).rstrip() + '.'
+                msg = _t.get(_.voteCountTextFirst) + '.'
 
             bubbles_array.append(create_speechbubble_dict(is_info=True, id='now',
                                                           message=msg + _tn.get(_.onlyOneItemWithLink),

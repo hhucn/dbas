@@ -900,12 +900,12 @@ def __get_text_for_click_count(nickname, is_user, is_supportive, argument_uid, s
     logger('X', str(is_user), str(db_user.gender if db_user else 'X'))
 
     if is_user and db_user.gender == 'm':
-        votecount_keys[0] = '{}.'.format(_t.get(_.voteCountTextFirstM).rstrip())
+        votecount_keys[0] = '{}.'.format(_t.get(_.voteCountTextFirstM))
     elif is_user and db_user.gender == 'f':
-        votecount_keys[0] = '{}.'.format(_t.get(_.voteCountTextFirstF).rstrip())
+        votecount_keys[0] = '{}.'.format(_t.get(_.voteCountTextFirstF))
     else:
-        votecount_keys[0] = '{}.'.format(_t.get(_.voteCountTextFirst).rstrip())
-    votecount_keys[1] = _t.get(_.voteCountTextOneOther).rstrip() + '.'
+        votecount_keys[0] = '{}.'.format(_t.get(_.voteCountTextFirst))
+    votecount_keys[1] = _t.get(_.voteCountTextOneOther) + '.'
 
     return votecount_keys
 

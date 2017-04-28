@@ -329,11 +329,11 @@ class DictionaryHelper(object):
         """
         discussion_dict['mode'] = 'start'
         if gender == 'f':
-            user_text = _tn.get(_.firstPositionTextF).rstrip()
+            user_text = _tn.get(_.firstPositionTextF)
         elif gender == 'm':
-            user_text = _tn.get(_.firstPositionTextM).rstrip()
+            user_text = _tn.get(_.firstPositionTextM)
         else:
-            user_text = _tn.get(_.firstPositionText).rstrip()
+            user_text = _tn.get(_.firstPositionText)
         user_text += '<br>' + (_tn.get(_.pleaseAddYourSuggestion if nickname else _.feelFreeToLogin))
         discussion_dict['bubbles'].append(
             create_speechbubble_dict(is_status=True, id='end', message=user_text, lang=self.system_lang, nickname=nickname))
@@ -365,11 +365,11 @@ class DictionaryHelper(object):
         extras_dict['show_display_style'] = False
         if nickname:
             if gender == 'f':
-                mid_text = _tn.get(_.firstOneReasonF).rstrip()
+                mid_text = _tn.get(_.firstOneReasonF)
             elif gender == 'm':
-                mid_text = _tn.get(_.firstOneReasonM).rstrip()
+                mid_text = _tn.get(_.firstOneReasonM)
             else:
-                mid_text = _tn.get(_.firstOneReason).rstrip()
+                mid_text = _tn.get(_.firstOneReason)
             sdict = create_speechbubble_dict(is_info=True, id='end', message=mid_text, lang=self.system_lang, nickname=nickname)
             discussion_dict['bubbles'].append(sdict)
         # else:
@@ -388,11 +388,11 @@ class DictionaryHelper(object):
         """
         discussion_dict['mode'] = 'dont_know'
         if gender == 'f':
-            sys_text = _tn.get(_.firstOneInformationTextF).rstrip()
+            sys_text = _tn.get(_.firstOneInformationTextF)
         elif gender == 'm':
-            sys_text = _tn.get(_.firstOneInformationTextM).rstrip()
+            sys_text = _tn.get(_.firstOneInformationTextM)
         else:
-            sys_text = _tn.get(_.firstOneInformationText).rstrip()
+            sys_text = _tn.get(_.firstOneInformationText)
         sys_text = sys_text.format('<em>' + current_premise + '</em>') + ' '
         sys_text += _tn.get(_.untilNowThereAreNoMoreInformation)
         mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkTextLoggedIn if gender else _.discussionEndLinkTextNotLoggedIn)
@@ -417,11 +417,11 @@ class DictionaryHelper(object):
         discussion_dict['mode'] = 'justify'
         current_premise = current_premise[0:1].lower() + current_premise[1:]
         if gender == 'f':
-            mid_text = _tn.get(_.firstPremiseText1F).rstrip()
+            mid_text = _tn.get(_.firstPremiseText1F)
         elif gender == 'm':
-            mid_text = _tn.get(_.firstPremiseText1M).rstrip()
+            mid_text = _tn.get(_.firstPremiseText1M)
         else:
-            mid_text = _tn.get(_.firstOneInformationText).rstrip()
+            mid_text = _tn.get(_.firstOneInformationText)
         mid_text = mid_text.format('<em>{}</em>'.format(current_premise))
 
         if not supportive:
