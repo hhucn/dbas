@@ -1093,7 +1093,7 @@ def __setup_fieltests_de_discussion_database(session, db_issue):
     statement2 = Statement(textversion=textversion2.uid, is_position=False, issue=db_issue.uid)
     statement3 = Statement(textversion=textversion3.uid, is_position=False, issue=db_issue.uid)
     statement4 = Statement(textversion=textversion4.uid, is_position=False, issue=db_issue.uid)
-    statement5 = Statement(textversion=textversion5.uid, is_position=False, issue=db_issue.uid)
+    statement5 = Statement(textversion=textversion5.uid, is_position=True, issue=db_issue.uid)
     statement6 = Statement(textversion=textversion6.uid, is_position=False, issue=db_issue.uid)
     statement7 = Statement(textversion=textversion7.uid, is_position=False, issue=db_issue.uid)
     statement8 = Statement(textversion=textversion8.uid, is_position=False, issue=db_issue.uid)
