@@ -6,10 +6,12 @@ TODO
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 from .de import de_lang
+from .en import en_lang
 from .keywords import Keywords
 
 languages = {
     'de': de_lang,
+    'en': en_lang,
 }
 
 
