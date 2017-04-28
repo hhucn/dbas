@@ -152,8 +152,6 @@ en_lang = {
     _.breadcrumbsReplyForArgument: 'Reply for argument',
     _.butIDoNotBelieveCounterFor: 'But I do not believe that this is a counter-argument for {}',
     _.butIDoNotBelieveArgumentFor: 'But I do not believe that this is a argument for {}',
-    _.butIDoNotBelieveCounter: 'But I do not believe that this is a counter-argument for {}',
-    _.butIDoNotBelieveArgument: 'But I do not believe that this is a argument for {}',
     _.butIDoNotBelieveReasonForReject: 'But I do not believe that this is a reason for reject',
     _.butTheyDoNotBelieveCounter: 'But they do {}not{} believe that this is {}a good counter-argument for{}',
     _.butSheDoesNotBelieveCounter: 'But she does {}not{} believe that this is {}a good counter-argument for{}',

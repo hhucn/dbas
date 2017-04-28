@@ -146,8 +146,6 @@ class Keywords(Enum):
     breadcrumbsReplyForArgument = 'breadcrumbsReplyForArgument'
     butIDoNotBelieveCounterFor = 'butIDoNotBelieveCounterFor'
     butIDoNotBelieveArgumentFor = 'butIDoNotBelieveArgumentFor'
-    butIDoNotBelieveCounter = 'butIDoNotBelieveCounter'
-    butIDoNotBelieveArgument = 'butIDoNotBelieveArgument'
     butIDoNotBelieveReasonForReject = 'butIDoNotBelieveReasonForReject'
     butTheyDoNotBelieveCounter = 'butTheyDoNotBelieveCounter'
     butSheDoesNotBelieveCounter = 'butSheDoesNotBelieveCounter'

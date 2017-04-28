@@ -215,14 +215,16 @@ class DiscussionDictHelper(object):
 
         if attack == 'undercut':
             sys_msg = _tn.get(_.whatIsYourMostImportantReasonForArgument).rstrip().format(pro_tag, end_tag) + ': '
+            dot = '.'
         else:
+            dot = '?'
             if attack == 'undermine':
                 sys_msg = _tn.get(_.whatIsYourMostImportantReasonAgainstStatement).rstrip().format(con_tag, end_tag)
                 sys_msg += ', ' if self.lang == 'de' else ' '
             else:
                 sys_msg = _tn.get(_.whatIsYourMostImportantReasonForStatement).rstrip().format(pro_tag, end_tag) + ': '
 
-        sys_msg += user_msg + '?<br>' + _tn.get(_.because) + '...'
+        sys_msg += user_msg + dot + '<br>' + _tn.get(_.because) + '...'
         # bubble_user = history_helper.create_speechbubble_dict(is_user=True, message=user_msg[0:1].upper() +
         # user_msg[1:], omit_url=True, lang=self.lang)
 
