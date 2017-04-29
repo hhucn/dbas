@@ -770,6 +770,11 @@ class ItemDictHelper(object):
         :param is_visible: Boolean
         :return: dict()
         """
+        # check punctuation
+        for premise in premises:
+            if 'title' in premise:
+                premise['title'] += '.' if not premise['title'].endswith(('.', '?', '!')) else ''
+
         return {
             'id': 'item_' + str(uid),
             'premises': premises,

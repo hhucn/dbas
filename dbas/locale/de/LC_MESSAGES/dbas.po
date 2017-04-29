@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-04-28 08:05+0200\n"
+"POT-Creation-Date: 2017-04-29 16:44+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -71,8 +71,8 @@ msgstr "Sie müssen sich erneut anmelden."
 #: templates/index.pt:19
 msgid "welcome_text1"
 msgstr ""
-"Willkommen bei D-BAS! Dies ist ein Prototyp unseres Dialogbasierten "
-"Argumentationssystem. Falls Fehler auftreten, "
+"Willkommen bei D-BAS! Dies ist ein Prototyp unseres dialogbasierten "
+"Argumentationssystems. Falls Fehler auftreten, "
 
 #. Default: contact
 #: templates/index.pt:20
@@ -93,8 +93,8 @@ msgstr "Sie uns bitte."
 msgid "choose_fieldtest_reviewer_text"
 msgstr ""
 "Derzeit läuft D-BAS sowohl im Produktivbetrieb zur Diskussion von "
-"Verbesserungen im Studiengang Informatik (nur auf Deutsch) als auch in einer "
-"eine Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres "
+"Verbesserungen im Studiengang Informatik (nur auf Deutsch), als auch in "
+"einer Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres "
 "Browsers vermuten wir, dass Sie sich für den Produktivbetrieb interessieren. "
 "Welche Version von D-BAS möchten Sie nutzen:"
 
@@ -157,7 +157,7 @@ msgstr ""
 "Wir nutzen das zentrale Namensverzeichnis der Universität Düsseldorf. Ihr "
 "Passwort wird über eine verschlüsselte Verbindung zu unserem Server in der "
 "Universität Düsseldorf übertragen und dort intern zum Dienst des ZIMs "
-"weitergeleitet. Wir werden ihr Passwort zu keinem Zeitpunkt speichern oder "
+"weitergeleitet. Wir werden Ihr Passwort zu keinem Zeitpunkt speichern oder "
 "anzeigen!"
 
 #. Default: What is the difference between interest and opinion?
@@ -202,7 +202,7 @@ msgstr "Gibt es eine Übersicht über alle Argumente und Aussagen?"
 msgid "faq_answer_graph"
 msgstr ""
 "Ja, wir haben eine graphische Darstellung aller Beiträge. Klicken Sie dazu "
-"in der Diskussionsbox auf das Menu-Icon und wählen 'Graphansicht'"
+"in der Diskussionsbox auf das Menü-Icon und wählen 'Graphansicht'"
 
 #. Default: What are these little icons next to the statements?
 #: templates/faq.pt:31
@@ -236,7 +236,7 @@ msgstr ""
 msgid "faq_answer_trash_next_to_statement"
 msgstr ""
 "Sie haben eine Aussage gemacht und sind nicht mehr glücklich damit? Mit der "
-"Mülltonne sind Sie absofort nicht mehr Autor dieser Aussage."
+"Mülltonne sind Sie ab sofort nicht mehr Autor dieser Aussage."
 
 #. Default: You are reading an statement, which should be supporting your
 #. conclusion, but it is nonsense? Let's attack this one!
@@ -264,7 +264,8 @@ msgstr "Sie haben einen Fehler gefunden oder weitere Fragen zu D-BAS?"
 #: templates/faq.pt:44
 msgid "faq_answer_bug1"
 msgstr ""
-"Wenn Sie irgendwelche Fragen, die hier gelistet, so nutzen Sie bitte die "
+"Wenn Sie irgendwelche Fragen haben, die hier nicht gelistet sind, so nutzen "
+"Sie bitte die "
 
 #. Default: contact page
 #: templates/faq.pt:44
@@ -1581,7 +1582,7 @@ msgstr "Profilbild"
 #. Default: Change your profile picture on the
 #: templates/settings.pt:93 templates/settings.pt:192
 msgid "change_gravatar"
-msgstr "Änderen Sie Ihren Ihren Gravatar auf der"
+msgstr "Änderen Sie Ihren Gravatar auf der"
 
 #. Default: A Gravatar is a globally recognized avatar. You upload it and
 #. create your profile just once, and then when you participate in any
@@ -1719,7 +1720,7 @@ msgstr "Dokumentation"
 #. Default: Get In Touch With Us
 #: templates/contact.pt:9
 msgid "contact_header_1"
-msgstr "Treten Sie mit uns in den Kontakt"
+msgstr "Treten Sie mit uns in Kontakt"
 
 #. Default: Feel free to drop us a line and we’ll try to get back to you in 48
 #. hours max!
@@ -1727,7 +1728,7 @@ msgstr "Treten Sie mit uns in den Kontakt"
 msgid "contact_header_2"
 msgstr ""
 "Wenn Sie uns eine Nachricht hinterlassen, werden wir uns zeitnah bei Ihnen "
-"melden"
+"melden."
 
 #. Default: Your Name (required)
 #: templates/contact.pt:16
@@ -1812,6 +1813,11 @@ msgstr "Reputations-Punktzahl"
 msgid "action"
 msgstr "Aktion"
 
+#. Default: Notification Board
+#: templates/notifications.pt:7
+msgid "notification_board"
+msgstr "Benachrichtigungen"
+
 #. Default: You have got
 #: templates/notifications.pt:8
 msgid "youHaveGot"
@@ -1869,27 +1875,27 @@ msgid "to"
 msgstr "An:"
 
 #. Default: JavaScript is not enabled:
-#: templates/basetemplate.pt:27
+#: templates/basetemplate.pt:28
 msgid "js_disabled1"
 msgstr "JavaScript ist nicht aktiviert:"
 
 #. Default: Please enable JavaScript!
-#: templates/basetemplate.pt:28
+#: templates/basetemplate.pt:29
 msgid "js_disabled2"
 msgstr "Bitte JavaScript aktivieren!"
 
 #. Default: Your request failed!
-#: templates/basetemplate.pt:34
+#: templates/basetemplate.pt:35
 msgid "request_failed"
 msgstr "Ihre Anfrage ist fehlgeschlagen!"
 
 #. Default: Please reload the page.
-#: templates/basetemplate.pt:35
+#: templates/basetemplate.pt:36
 msgid "please_reload"
 msgstr "Bitte laden Sie die Seite erneut."
 
 #. Default: Your request succeded!
-#: templates/basetemplate.pt:41 templates/basetemplate.pt:42
+#: templates/basetemplate.pt:42 templates/basetemplate.pt:43
 msgid "request_success"
 msgstr "Anfrage wurde erfolgreich verarbeitet."
 

@@ -4,7 +4,7 @@
 
 		<div class="row">
 
-			<div class="col-md-6">
+			<div class="col-md-7">
                 <div class="colored-container" style="margin-bottom: 1em;">
 				    <h4><span i18n:translate="imprint">Impressum</span> ${project}</h4>
 				    <h6>Build <span tal:replace="extras.dbas_build"></span></h6>
@@ -138,7 +138,7 @@
 				</div>
 			</div>
 
-			<div class="col-md-6">
+			<div class="col-md-5">
 				<div class="colored-container" style="margin-bottom: 1em">
 					<h4><span i18n:translate="copyright_and_used_software">Copyrights and used Software</span></h4>
 					<ul>

@@ -4,7 +4,7 @@
 		<div class="container colored-container">
 			<div class="row">
 				<div class="col-md-12" id="message-space">
-                    <h3>Notification Board</h3>
+                    <h3 i18n:translate="notification_board">Notification Board</h3>
                     <span class="lead" style="margin-bottom: 1em;" i18n:translate="youHaveGot">You have got</span>
                     <span id="unread_counter" class="lead" style="margin-bottom: 1em;"> ${structure:extras.notifications.new_count} </span>
                     <span class="lead" style="margin-bottom: 1em;" i18n:translate="unreadNotificationAnd">unread notifications and</span>
