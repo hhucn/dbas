@@ -252,7 +252,7 @@ function DiscussionBarometer(){
      * @param width
      * @param height
      */
-     function createXAxis(usersDict, svg, width, height){
+    function createXAxis(usersDict, svg, width, height){
         var maxUsersNumber = getMaximum(usersDict);
         // add offset on scale
         var offset = 5/100 * maxUsersNumber;
@@ -508,8 +508,15 @@ function DiscussionBarometer(){
             return getNormalColorFor(i);}
         return getLightColorFor(i);
     }
-
-    function divideWrapperIfZero(numerator, denominator){
+	
+	/**
+     * Wrapper for division
+     *
+	 * @param numerator int
+	 * @param denominator int
+	 * @returns {number}
+	 */
+	function divideWrapperIfZero(numerator, denominator){
         return denominator === 0 || numerator === 0 ? 0.005 : numerator / denominator;
     }
 

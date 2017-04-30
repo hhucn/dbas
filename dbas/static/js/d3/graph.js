@@ -442,14 +442,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @return force layout
      */
     function getForce(jsonData, width, height) {
-        var chargeFactor;
         // set chargeFactor dependent on number of nodes
-        if(jsonData.nodes.length <= 10){
-            chargeFactor = 1000;
-        }
-        else{
-            chargeFactor = 700;
-        }
+        var chargeFactor = jsonData.nodes.length <= 10 ? 1200 : 700;
         return d3.layout.force()
             .size([width, height])
             // nodes push each other away
