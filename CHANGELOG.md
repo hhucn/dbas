@@ -1,3 +1,7 @@
+## 1.3.4 (2017-05-01)
+- Corrections for the user interface
+- Language fixes
+
 ## 1.3.3 (2017-04-25)
 - Fixed graph view during the attitude-step
 - Improved buttons in the graph view
