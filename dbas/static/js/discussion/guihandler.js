@@ -134,7 +134,6 @@ function GuiHandler() {
 		main.setSidebarClicks(graphViewContainer, tacked_sidebar);
 		// this.hideAddPositionContainer();
 		// this.hideAddPremiseContainer();
-		console.log('a');
 	};
 	
 	/**
