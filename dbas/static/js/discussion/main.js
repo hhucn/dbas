@@ -729,6 +729,7 @@ function Main () {
 		var children = spaceList.find('input');
 		var ids = ['start_statement', 'start_premise', 'justify_premise', 'login'];
 		var id;
+		var ctx = this;
 		if (children.length > 0) {
 			id = children.eq(0).attr('id');
 			id = id.replace('item_', '');
@@ -758,6 +759,7 @@ function Main () {
 			if ($.inArray(id, ids) !== -1) {
 				input.attr('onclick', '');
 				input.click(function () {
+					ctx.setInputExtraBox(input, guiHandler);
 					// new position at start
 					if (input.attr('id').indexOf('start_statement') !== -1) {
 						// guiHandler.showHowToWriteTextPopup();
@@ -788,6 +790,42 @@ function Main () {
 					}
 				});
 			}
+		}
+	};
+	
+	/**
+	 *
+	 * @param input
+	 * @param guiHandler
+	 */
+	this.setInputExtraBox = function (input, guiHandler) {
+		// new position at start
+		if (input.attr('id').indexOf('start_statement') !== -1) {
+			// guiHandler.showHowToWriteTextPopup();
+			guiHandler.showAddPositionContainer();
+			$('#' + sendNewStatementId).off("click").click(function () {
+				sendStartStatement();
+			});
+		}
+		// new premise for the start
+		else if (input.attr('id').indexOf('start_premise') !== -1) {
+			// guiHandler.showHowToWriteTextPopup();
+			guiHandler.showAddPremiseContainer();
+			$('#' + sendNewPremiseId).off("click").click(function () {
+				sendStartPremise();
+			});
+		}
+		// new premise while judging
+		else if (input.attr('id').indexOf('justify_premise') !== -1) {
+			// guiHandler.showHowToWriteTextPopup();
+			guiHandler.showAddPremiseContainer();
+			$('#' + sendNewPremiseId).off("click").click(function () {
+				sendArgumentsPremise();
+			});
+		}
+		// login
+		else if (input.attr('id').indexOf('login') !== -1) {
+			$('#' + popupLogin).modal('show');
 		}
 	};
 }
