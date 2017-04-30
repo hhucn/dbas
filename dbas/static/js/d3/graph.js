@@ -76,8 +76,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function setIsVisibleDict() {
         isVisible = {'position': false,
+                     'statements': false,
                      'content': false,
-                     'statement': false,
+                     'my_statements': false,
                      'support': false,
                      'attack': false,
                      'defaultView': false};
@@ -217,17 +218,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     	$('#graph-view-container').find('.sidebar').find('li').each(function(){
     		$(this).removeClass('hidden');
 	    });
-    	
-        $('#show-labels').show();
-        $('#hide-labels').hide();
-        $('#show-my-statements').show();
-        $('#hide-my-statements').hide();
-        $('#show-attacks-on-my-statements').show();
-        $('#hide-attacks-on-my-statements').hide();
-        $('#show-supports-on-my-statements').show();
-        $('#hide-supports-on-my-statements').hide();
-        $('#show-positions').show();
-        $('#hide-positions').hide();
 
         if ((request_for_complete || typeof request_for_complete === 'undefined') && !isPartialGraphMode){
         	$('#global-view').hide();
@@ -452,14 +442,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @return force layout
      */
     function getForce(jsonData, width, height) {
-        var chargeFactor;
         // set chargeFactor dependent on number of nodes
-        if(jsonData.nodes.length <= 10){
-            chargeFactor = 1000;
-        }
-        else{
-            chargeFactor = 700;
-        }
+        var chargeFactor = jsonData.nodes.length <= 10 ? 1200 : 700;
         return d3.layout.force()
             .size([width, height])
             // nodes push each other away
@@ -970,43 +954,43 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         	if ($(this).attr('data-global-view-loaded') === 'true') {
         		showDefaultView(jsonData, zoom);}
 	        else {
-                new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(true);}
+                new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(true);
+        	}
         });
-        $('#show-labels').off('click').click(function () {
-            showLabels();
+        
+        var mapper = {
+            'labels': [showLabels, hideLabels],
+            'positions': [showPositions, hidePositions],
+            'statements': [showStatements, hideStatements],
+            'my-statements': [showMyStatements, hideMyStatements],
+            'supports-on-my-statements': [showSupportsOnMyStatements, hideSupportsOnMyStatements],
+            'attacks-on-my-statements': [showAttacksOnMyStatements, hideAttacksOnMyStatements],
+        };
+        
+        // get all buttons in the sidebar
+        $('#graph-view-container').find('.sidebar').find('li').each(function(index, element){
+            var id =  $(element).attr('id');
+            // check if the button is mentioned in mapper array
+            if (id in mapper) {
+	            $('#' + id).off('click').click(function () {
+                    console.log(id);
+		            if ($(this).find('i').attr('class') === "fa fa-square-o") {
+			            $(this).find('i').removeClass().addClass("fa fa-check-square-o");
+			            mapper[id][0]();
+		            } else {
+			            $(this).find('i').removeClass().addClass("fa fa-square-o");
+			            mapper[id][1]();
+		            }
+	            });
+            }
         });
-        $('#hide-labels').off('click').click(function () {
-            hideLabels();
+        
+        $('#show-my-path').click(function(){
+            showPath();
         });
-        $('#show-positions').off('click').click(function () {
-            showPositions();
-        });
-        $('#hide-positions').off('click').click(function () {
-            hidePositions();
-        });
-        $('#show-my-path').off('click').click(function () {
-            showPath(jsonData);
-        });
-        $('#hide-my-path').off('click').click(function () {
-            hidePath();
-        });
-        $('#show-my-statements').off('click').click(function () {
-            showMyStatements();
-        });
-        $('#hide-my-statements').off('click').click(function () {
-            hideMyStatements();
-        });
-        $('#show-supports-on-my-statements').off('click').click(function () {
-            showSupportsOnMyStatements();
-        });
-        $('#hide-supports-on-my-statements').off('click').click(function () {
-            hideSupportsOnMyStatements();
-        });
-        $('#show-attacks-on-my-statements').off('click').click(function () {
-            showAttacksOnMyStatements();
-        });
-        $('#hide-attacks-on-my-statements').off('click').click(function () {
-            hideAttacksOnMyStatements();
+        
+        $('#hide-my-path').click(function(){
+            showPath();
         });
     }
 	
@@ -1041,7 +1025,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function resetButtons() {
         isVisible.position = true;
         isVisible.content = true;
-        isVisible.statement = true;
         isVisible.support = true;
         isVisible.attack = true;
 
@@ -1059,17 +1042,16 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function showLabels() {
         isVisible.content = true;
         isVisible.position = true;
+        isVisible.statements = true;
 
         label.style("display", 'inline');
         rect.style("display", 'inline');
 
         hideLabelsOfNotSelectedNodes();
 
-        $('#show-labels').hide();
-        $('#hide-labels').show();
-        // also show content of positions
-        $('#show-positions').hide();
-        $('#hide-positions').show();
+        // also show content of positions and statements
+        $('#positions').find('i').removeClass().addClass("fa fa-check-square-o");
+        $('#statements').find('i').removeClass().addClass("fa fa-check-square-o");
     }
 
     /**
@@ -1092,14 +1074,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         isVisible.content = false;
         label.style("display", 'none');
         rect.style("display", 'none');
-        $('#show-labels').show();
-        $('#hide-labels').hide();
         addListenerForTooltip();
-        if (isVisible.position) {
-            $('#show-positions').show();
-            $('#hide-positions').hide();
+        if (isVisible.position || isVisible.statements) {
+            $('#positions').find('i').removeClass().addClass("fa fa-square-o");
+            $('#statements').find('i').removeClass().addClass("fa fa-square-o");
         }
         isVisible.position = false;
+        isVisible.statements = false;
     }
 
     /**
@@ -1108,9 +1089,14 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function showPositions() {
         isVisible.position = true;
         // select positions
-        setDisplayStyleOfNodes('inline');
-        $('#show-positions').hide();
-        $('#hide-positions').show();
+        if(isVisible.statements){
+            $('#labels').find('i').removeClass().addClass("fa fa-check-square-o");
+            setDisplayStyleOfNodes('inline', 'inline');
+        }
+        else{
+            $('#labels').find('i').removeClass().addClass("fa fa-minus-square-o");
+            setDisplayStyleOfNodes('inline', 'none');
+        }
     }
 
     /**
@@ -1119,10 +1105,45 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function hidePositions() {
         isVisible.position = false;
         addListenerForTooltip();
-        // select positions
-        setDisplayStyleOfNodes('none');
-        $('#show-positions').show();
-        $('#hide-positions').hide();
+        if(!isVisible.statements){
+            $('#labels').find('i').removeClass().addClass("fa fa-square-o");
+            setDisplayStyleOfNodes('none', 'none');
+        }
+        else{
+            $('#labels').find('i').removeClass().addClass("fa fa-minus-square-o");
+            setDisplayStyleOfNodes('none', 'inline');
+        }
+    }
+
+    /**
+     * Show labels for statements.
+     */
+    function showStatements() {
+        isVisible.statements = true;
+        if(isVisible.position){
+            $('#labels').find('i').removeClass().addClass("fa fa-check-square-o");
+            setDisplayStyleOfNodes('inline', 'inline');
+        }
+        else{
+            $('#labels').find('i').removeClass().addClass("fa fa-minus-square-o");
+            setDisplayStyleOfNodes('none', 'inline');
+        }
+    }
+
+    /**
+     * Hide labels for statements.
+     */
+    function hideStatements() {
+        isVisible.statements = false;
+        addListenerForTooltip();
+        if(!isVisible.position){
+            $('#labels').find('i').removeClass().addClass("fa fa-square-o");
+            setDisplayStyleOfNodes('none', 'none');
+        }
+        else{
+            $('#labels').find('i').removeClass().addClass("fa fa-minus-square-o");
+            setDisplayStyleOfNodes('inline', 'none');
+        }
     }
 
     /**
@@ -1142,18 +1163,17 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * Show all statements, which the current user has created.
      */
     function showMyStatements() {
-        isVisible.statement = true;
+        isVisible.attack = true;
+        isVisible.support = true;
 
-        // hide supports and attacks on statements
+        // show supports and attacks on statements
         if (isVisible.support) {
-            $('#show-supports-on-my-statements').show();
-            $('#hide-supports-on-my-statements').hide();
-            isVisible.support = false;
+            $('#supports-on-my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
+            isVisible.support = true;
         }
         if (isVisible.attack) {
-            $('#show-attacks-on-my-statements').show();
-            $('#hide-attacks-on-my-statements').hide();
-            isVisible.attack = false;
+            $('#attacks-on-my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
+            isVisible.attack = true;
         }
 
         // graying all elements of graph
@@ -1161,41 +1181,24 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             grayingElements(d);
         });
 
-        force.nodes().forEach(function (d) {
-            //if (d.author.name === $('#header_nickname')[0].innerText) {
-                d3.select('#circle-' + d.id).attr({fill: d.color, stroke: 'black'});
-            //}
-        });
-
-        $('#show-my-statements').hide();
-        $('#hide-my-statements').show();
+        selectSupportsAttacks();
     }
 
     /**
      * Hide all statements, which the current user has created.
      */
     function hideMyStatements() {
-        isVisible.statement = false;
+        isVisible.attack = false;
+        isVisible.support = false;
 
         // hide supports and attacks on statements
-        if (isVisible.support) {
-            $('#show-supports-on-my-statements').show();
-            $('#hide-supports-on-my-statements').hide();
-            isVisible.support = false;
-        }
-        if (isVisible.attack) {
-            $('#show-attacks-on-my-statements').show();
-            $('#hide-attacks-on-my-statements').hide();
-            isVisible.attack = false;
-        }
+        $('#supports-on-my-statements').find('i').removeClass().addClass("fa fa-square-o");
+        $('#attacks-on-my-statements').find('i').removeClass().addClass("fa fa-square-o");
 
         highlightAllElements();
 
         // delete border of nodes
         deleteBorderOfCircle();
-
-        $('#show-my-statements').show();
-        $('#hide-my-statements').hide();
     }
 
     /**
@@ -1207,22 +1210,20 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // hide statements
         // delete border of nodes
         deleteBorderOfCircle();
-        $('#show-my-statements').show();
-        $('#hide-my-statements').hide();
-        isVisible.statement = false;
 
         // if attacks on statements of current user are visible, highlight additionally the supports
         if (!isVisible.attack) {
+            $('#my-statements').find('i').removeClass().addClass("fa fa-minus-square-o");
             // graying all elements of graph
             edges.forEach(function (d) {
                 grayingElements(d);
             });
         }
+        else{
+            $('#my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
+        }
 
         selectSupportsAttacks();
-
-        $('#show-supports-on-my-statements').hide();
-        $('#hide-supports-on-my-statements').show();
     }
 
     /**
@@ -1236,14 +1237,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // if attacks are not visible, show the default view of the graph
         // else make them visible
         if (!isVisible.attack) {
+            $('#my-statements').find('i').removeClass().addClass("fa fa-square-o");
             highlightAllElements();
         }
         else {
+            $('#my-statements').find('i').removeClass().addClass("fa fa-minus-square-o");
             showAttacksOnMyStatements();
         }
-
-        $('#show-supports-on-my-statements').show();
-        $('#hide-supports-on-my-statements').hide();
     }
 
     /**
@@ -1255,22 +1255,20 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // hide statements
         // delete border of nodes
         deleteBorderOfCircle();
-        $('#show-my-statements').show();
-        $('#hide-my-statements').hide();
-        isVisible.statement = false;
 
         // if supports on statements of current user are visible, highlight additionally the attacks
         if (!isVisible.support) {
+            $('#my-statements').find('i').removeClass().addClass("fa fa-minus-square-o");
             // graying all elements of graph
             edges.forEach(function (d) {
                 grayingElements(d);
             });
         }
+        else{
+            $('#my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
+        }
 
         selectSupportsAttacks();
-
-        $('#show-attacks-on-my-statements').hide();
-        $('#hide-attacks-on-my-statements').show();
     }
 
     /**
@@ -1282,13 +1280,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         deleteBorderOfCircle();
 
         if (!isVisible.support) {
+            $('#my-statements').find('i').removeClass().addClass("fa fa-square-o");
             highlightAllElements();
         }
         else {
+            $('#my-statements').find('i').removeClass().addClass("fa fa-minus-square-o");
             showSupportsOnMyStatements();
         }
-        $('#show-attacks-on-my-statements').show();
-        $('#hide-attacks-on-my-statements').hide();
     }
 
     /**
@@ -1298,15 +1296,15 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         circleIds = [];
 
         force.nodes().forEach(function (d) {
-            //if (d.author.name === $('#header_nickname')[0].innerText) {
+            if (d.author.name === $('#header_nickname')[0].innerText) {
                 circleIds.push(d.id);
-            //}
+            }
         });
 
         force.nodes().forEach(function (d) {
-            //if (d.author.name === $('#header_nickname')[0].innerText) {
+            if (d.author.name === $('#header_nickname')[0].innerText) {
                 showPartOfGraph(d.id);
-            //}
+            }
         });
     }
 
@@ -1374,6 +1372,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      *
      * @param edge
      * @param edgesCircleId
+     * @param d
      */
     function findEdgesVirtualNode(edge, edgesCircleId, d){
         // edge from virtual node to statement
@@ -1407,17 +1406,23 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Set display style of nodes.
      *
-     * @param style
+     * @param positionStyle
+     * @param statementStyle
      */
-    function setDisplayStyleOfNodes(style) {
+    function setDisplayStyleOfNodes(positionStyle, statementStyle) {
         // select edges with position as source and issue as target
         d3.selectAll(".node").each(function (d) {
+            // set display style of statements
+            if(d3.select('#circle-' + d.id).attr('fill') !== colors.light_grey){
+                d3.select('#label-' + d.id).style("display", statementStyle);
+                d3.select("#rect-" + d.id).style("display", statementStyle);
+            }
             d3.selectAll(".link").each(function (e) {
                 // only show labels of highlighted nodes
                 if (e.source.id === d.id && e.target.id === 'issue' && d3.select('#circle-' + d.id).attr('fill') !== colors.light_grey) {
                     // set display style of positions
-                    d3.select('#label-' + d.id).style("display", style);
-                    d3.select("#rect-" + d.id).style("display", style);
+                    d3.select('#label-' + d.id).style("display", positionStyle);
+                    d3.select("#rect-" + d.id).style("display", positionStyle);
                 }
             });
         });
@@ -1522,7 +1527,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Highlight incoming and outgoing edges of selected node.
      *
-     * @param edges: all edges of graph
      * @param circleId: id of selected node
      */
     function showPartOfGraph(circleId) {
@@ -1532,28 +1536,32 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         edges.forEach(function (d) {
             var circleUid = selectUid(circleId);
             // supports
-            if (isVisible.support && selectUid(d.target.id) === circleUid && d.color === colors.green) {
+            if ((isVisible.support || isVisible.attack) && selectUid(d.target.id) === circleUid) {
                 edgesCircleId.push(d);
             }
-            // attacks
-            else if (isVisible.attack && selectUid(d.target.id) === circleUid && d.color === colors.red) {
-                edgesCircleId.push(d);
-            }
-            else if ((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid) && ((!isVisible.attack && !isVisible.support) || isVisible.statement)) {
+            else if ((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid) && (!isVisible.attack && !isVisible.support)) {
                 edgesCircleId.push(d);
             }
         });
 
         // if isMyStatementsClicked is false gray all elements at each function call,
         // else the graph is colored once gray
-        if (!isVisible.statement && !isVisible.support && !isVisible.attack) {
+        if (!isVisible.my_statements && !isVisible.support && !isVisible.attack) {
             edges.forEach(function (d) {
                 grayingElements(d);
             });
         }
         highlightElementsVirtualNodes(edges, edgesCircleId);
         edgesCircleId.forEach(function (d) {
-            highlightElements(d);
+            if(isVisible.attack && d.color === colors.red){
+                highlightElements(d);
+            }
+            if(isVisible.support && d.color === colors.green){
+                highlightElements(d);
+            }
+            else if (!isVisible.attack && !isVisible.support){
+                highlightElements(d);
+            }
         });
     }
 
@@ -1581,7 +1589,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      *
      * @param edgesCircleId
      * @param virtualNodes
-     * @return Array
+     * @param virtualNodesIds
      */
     function createVirtualNodesArray(edgesCircleId, virtualNodes, virtualNodesIds) {
         edgesCircleId.forEach(function (d) {
@@ -1608,7 +1616,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param edges
      * @param virtualNodes
      * @param edgesCircleId
-     * @return Array
      */
     function createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId) {
         edges.forEach(function (d) {

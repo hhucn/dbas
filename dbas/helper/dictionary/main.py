@@ -11,7 +11,7 @@ import arrow
 
 from dbas.auth.recaptcha import client_key as google_recaptcha_client_key
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, Language, Group, Settings
+from dbas.database.discussion_model import Argument, User, Language, Group, Settings, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.helper.notification import count_of_new_notifications, get_box_for
 from dbas.helper.query import get_every_attack_for_island_view
@@ -148,6 +148,17 @@ class DictionaryHelper(object):
         return_dict['is_production']                 = rrs['mode'] == 'production' if 'mode' in rrs else ''
         return_dict['review_count']                  = get_complete_review_count(nickname)
         return_dict['g_recaptcha_key']               = google_recaptcha_client_key
+
+        # add german and english discussion links
+        db_issues = DBDiscussionSession.query(Issue).filter_by(is_disabled=False)
+        db_de = DBDiscussionSession.query(Language).filter_by(ui_locales='de').first()
+        db_en = DBDiscussionSession.query(Language).filter_by(ui_locales='en').first()
+        db_issue_de = db_issues.filter_by(lang_uid=db_de.uid).first()
+        db_issue_en = db_issues.filter_by(lang_uid=db_en.uid).first()
+
+        return_dict['de_discussion_link'] = '{}/discuss/{}'.format(request.application_url, db_issue_de.get_slug())
+        return_dict['en_discussion_link'] = '{}/discuss/{}'.format(request.application_url, db_issue_en.get_slug())
+
         self.add_language_options_for_extra_dict(return_dict)
 
         if not for_api:
@@ -318,11 +329,11 @@ class DictionaryHelper(object):
         """
         discussion_dict['mode'] = 'start'
         if gender == 'f':
-            user_text = _tn.get(_.firstPositionTextF).rstrip()
+            user_text = _tn.get(_.firstPositionTextF)
         elif gender == 'm':
-            user_text = _tn.get(_.firstPositionTextM).rstrip()
+            user_text = _tn.get(_.firstPositionTextM)
         else:
-            user_text = _tn.get(_.firstPositionText).rstrip()
+            user_text = _tn.get(_.firstPositionText)
         user_text += '<br>' + (_tn.get(_.pleaseAddYourSuggestion if nickname else _.feelFreeToLogin))
         discussion_dict['bubbles'].append(
             create_speechbubble_dict(is_status=True, id='end', message=user_text, lang=self.system_lang, nickname=nickname))
@@ -354,11 +365,11 @@ class DictionaryHelper(object):
         extras_dict['show_display_style'] = False
         if nickname:
             if gender == 'f':
-                mid_text = _tn.get(_.firstOneReasonF).rstrip()
+                mid_text = _tn.get(_.firstOneReasonF)
             elif gender == 'm':
-                mid_text = _tn.get(_.firstOneReasonM).rstrip()
+                mid_text = _tn.get(_.firstOneReasonM)
             else:
-                mid_text = _tn.get(_.firstOneReason).rstrip()
+                mid_text = _tn.get(_.firstOneReason)
             sdict = create_speechbubble_dict(is_info=True, id='end', message=mid_text, lang=self.system_lang, nickname=nickname)
             discussion_dict['bubbles'].append(sdict)
         # else:
@@ -377,11 +388,11 @@ class DictionaryHelper(object):
         """
         discussion_dict['mode'] = 'dont_know'
         if gender == 'f':
-            sys_text = _tn.get(_.firstOneInformationTextF).rstrip()
+            sys_text = _tn.get(_.firstOneInformationTextF)
         elif gender == 'm':
-            sys_text = _tn.get(_.firstOneInformationTextM).rstrip()
+            sys_text = _tn.get(_.firstOneInformationTextM)
         else:
-            sys_text = _tn.get(_.firstOneInformationText).rstrip()
+            sys_text = _tn.get(_.firstOneInformationText)
         sys_text = sys_text.format('<em>' + current_premise + '</em>') + ' '
         sys_text += _tn.get(_.untilNowThereAreNoMoreInformation)
         mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkTextLoggedIn if gender else _.discussionEndLinkTextNotLoggedIn)
@@ -406,11 +417,11 @@ class DictionaryHelper(object):
         discussion_dict['mode'] = 'justify'
         current_premise = current_premise[0:1].lower() + current_premise[1:]
         if gender == 'f':
-            mid_text = _tn.get(_.firstPremiseText1F).rstrip()
+            mid_text = _tn.get(_.firstPremiseText1F)
         elif gender == 'm':
-            mid_text = _tn.get(_.firstPremiseText1M).rstrip()
+            mid_text = _tn.get(_.firstPremiseText1M)
         else:
-            mid_text = _tn.get(_.firstOneInformationText).rstrip()
+            mid_text = _tn.get(_.firstOneInformationText)
         mid_text = mid_text.format('<em>{}</em>'.format(current_premise))
 
         if not supportive:
@@ -441,10 +452,8 @@ class DictionaryHelper(object):
         logger('DictionaryHelper', 'add_language_options_for_extra_dict', 'def')
         lang_is_en = (self.system_lang != 'de')
         lang_is_de = (self.system_lang == 'de')
-        dblang = DBDiscussionSession.query(Language).filter_by(ui_locales=self.system_lang).first()
         extras_dict.update({
             'ui_locales': self.system_lang,
-            'lang': dblang.name,
             'lang_is_de': lang_is_de,
             'lang_is_en': lang_is_en,
             'link_de_class': ('active' if lang_is_de else ''),

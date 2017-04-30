@@ -239,7 +239,6 @@ function PopupHandler() {
 				$('#item_undercut').click();
 				
 			} else if ($(this).data('special') === 'argument') {
-				console.log('a');
 				new PopupHandler().showFlagStatementPopup(uid, true, text);
 				
 			} else {

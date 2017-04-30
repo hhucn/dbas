@@ -24,6 +24,14 @@ def get_partial_graph_for_statement(uid, issue, request, path):
     logger('PartialGraph', 'get_partial_graph_for_statement', 'premise of argument {}'.format(str(uid)))
     nickname = request.authenticated_userid
 
+    if 'attitude' in path.split('?')[0]:
+        db_statement = DBDiscussionSession.query(Statement).get(uid)
+        db_argument = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_statement.uid).first()
+        if not db_argument:
+            return get_d3_data(issue, request.authenticated_userid)
+        uid = db_argument.uid
+        # this id will be used for the next if clause
+
     if 'justify' not in path.split('?')[0]:
         db_argument = DBDiscussionSession.query(Argument).get(uid)
         db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).first()

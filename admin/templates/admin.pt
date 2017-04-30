@@ -28,7 +28,7 @@
                             <label class="col-md-3 control-label" for="login-user" i18n:translate="your_nickname">Your Nickname</label>
                             <div class="col-md-9 input-group">
                                 <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-                                <input id="admin-login-user" type="text" class="form-control" autocomplete="on" placeholder="Bruce Wayne" autofocus>
+                                <input id="admin-login-user" type="text" class="form-control" autocomplete="on" placeholder="Bruce Wayne">
                             </div>
                         </div>
                         <div class="form-group">

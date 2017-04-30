@@ -6,14 +6,16 @@ TODO
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 from .de import de_lang
+from .en import en_lang
 from .keywords import Keywords
 
 languages = {
     'de': de_lang,
+    'en': en_lang,
 }
 
 
-def get_translation(sid, lang='default'):
+def get_translation(sid, lang='en'):
     """
     Returns an localized string
 
@@ -25,7 +27,7 @@ def get_translation(sid, lang='default'):
         if lang in languages:
             return languages[lang][sid]
         else:
-            return sid.value
+            return languages['en'][sid]
     else:
         return get_translation(Keywords.get_key_by_string(sid), lang)
 

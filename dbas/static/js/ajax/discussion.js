@@ -332,11 +332,12 @@ function AjaxDiscussionHandler() {
 			return;
 		}
 
-		if (type !== fuzzy_find_user) {
+		if (type !== fuzzy_find_user && type !== fuzzy_find_statement) {
+			var opener = $('#' + addPremiseContainerMainInputIntroId).text().replace('...', _t_discussion(because) + ' ' );
 			// add or remove bubble only iff we are not in an popup
 			if (type !== fuzzy_statement_popup) {
 				if (bubbleSpace.find('#current_' + tmpid).length === 0) {
-					var text = $('<p>').addClass('triangle-r').attr('id', 'current_' + tmpid).html(value + '...' + pencil);
+					var text = $('<p>').addClass('triangle-r').attr('id', 'current_' + tmpid).html(opener + value + '...' + pencil);
 					var current = $('<div>').addClass('line-wrapper-r').append(text).hide().fadeIn();
 					current.insertAfter(bubbleSpace.find('div:last-child'));
 					setInterval(function () { // fading pencil
@@ -346,7 +347,7 @@ function AjaxDiscussionHandler() {
 						});
 					}, 1000);
 				} else {
-					$('#current_' + tmpid).html(value + '...' + pencil);
+					$('#current_' + tmpid).html(opener + value + '...' + pencil);
 				}
 			}
 			var gh = new GuiHandler();

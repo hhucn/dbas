@@ -427,8 +427,8 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
                                                                         confrontation, premise, conclusion,
                                                                         start_argument, sys_arg)
 
-    b = '<' + tag_type + '>'
-    e = '</' + tag_type + '>'
+    b = '<{}>'.format(tag_type)
+    e = '</{}>'.format(tag_type)
     sys_text = confrontation_text + b + '.<br><br>' + _t.get(_.whatDoYouThinkAboutThat) + '?' + e
     return sys_text, gender
 
@@ -444,8 +444,8 @@ def get_text_for_support(db_arg, argument_text, nickname, main_page, _t):
     :param _t: translator
     :return: string
     """
-    b = '<' + tag_type + '>'
-    e = '</' + tag_type + '>'
+    b = '<{}>'.format(tag_type)
+    e = '</{}>'.format(tag_type)
     db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(main_page, db_arg, nickname)
     if is_okay:
         if gender == 'm':
@@ -456,7 +456,7 @@ def get_text_for_support(db_arg, argument_text, nickname, main_page, _t):
     else:
         intro = _t.get(_.goodPointAndOtherParticipantsIsInterestedToo).format(b, e, argument_text)
 
-    question = '<br><br>' + _t.get(_.whatDoYouThinkAboutThat) + '?'
+    question = '<br><br>{}?'.format(_t.get(_.whatDoYouThinkAboutThat))
 
     return intro + question
 

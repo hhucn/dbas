@@ -221,6 +221,7 @@ var notificationWasSend             = 'notificationWasSend';
 var noEditsInOptimization           = 'noEditsInOptimization';
 var opinionBarometer                = 'opinionBarometer';
 var okay                            = 'okay';
+var otherParticipantsDontHaveOpinionForThis = 'otherParticipantsDontHaveOpinionForThis';
 var option                          = 'option';
 var ohsnap                          = 'ohsnap';
 var report                          = 'report';
@@ -476,6 +477,7 @@ var dbas_en = {
     'option': 'Options',
     'ohsnap': 'Oh snap!',
     'okay': 'Okay',
+    'otherParticipantsDontHaveOpinionForThis': 'Other participants do not have any opinion for this statement.',
     'participantsSawThisStatement': 'participants saw this statement.',
     'participantSawThisStatement': 'participant saw this statement.',
     'participantsSawArgumentsToThis': 'participants saw an argument for this opinition.',
@@ -564,7 +566,7 @@ var dbas_en = {
     'tourStartDiscussionTitle': 'First steps',
     'tourStartDiscussionContent': 'On the left side there are messages of the system and on the right side there are your answers.',
     'tourMarkOpinionTitle': 'Mark opinon',
-    'tourMarkOpinionContent': 'With this little star you can mark your opinion.',
+    'tourMarkOpinionContent': 'With this little star you can mark your own opinion.',
     'tourMarkOpinionText': 'We should shut down University Park.',
     'tourSidebarTitle': 'Sidebar',
     'tourSidebarContent': 'There are many more options hidden behind the menu icon.',
@@ -714,6 +716,7 @@ var dbas_de = {
     'option': 'Optionen',
     'ohsnap': 'Mist!',
     'okay': 'Okay',
+    'otherParticipantsDontHaveOpinionForThis': 'Andere Teilnehmer haben bisher keine Meinung dazu.',
     'participantsSawThisStatement': 'Teilnehmer/innen sahen diese Aussage.',
     'participantSawThisStatement': 'Teilnehmer/in sah diese Aussage.',
     'participantsSawArgumentsToThis': 'Teilnehmer/innen sahen Argumente für diese Aussage.',
@@ -788,7 +791,7 @@ var dbas_de = {
     'prev': 'Zurück',
     'yes': 'Ja',
     'tourEnd': 'Beenden',
-    'welcomeDialogBody': 'Es scheint, dass Sie zum ersten mal hier sind. Möchten Sie eine kurze Einführung sehen?',
+    'welcomeDialogBody': 'Es scheint, dass Sie zum ersten Mal hier sind. Möchten Sie eine kurze Einführung sehen?',
     'tourWelcomeTitle': 'Willkommen!',
     'tourWelcomeContent': 'Willkommen bei D-BAS! Sie werden nun eine kurze Einführung bekommen.',
     'tourStartButtonTitle': 'Diskussion starten',
@@ -800,9 +803,9 @@ var dbas_de = {
     'tourIssueTitle': 'Thema',
     'tourIssueContent': 'Hier sehen Sie das aktuelle Diskussionsthema.',
     'tourStartDiscussionTitle': 'Erste Schritte',
-    'tourStartDiscussionContent': 'In diesem Abschnitt sehen Sie links Nachrichten des System und rechts Ihre eigenen Nachrichten.',
+    'tourStartDiscussionContent': 'In diesem Abschnitt sehen Sie links Nachrichten des Systems und rechts später Ihre eigenen Nachrichten.',
     'tourMarkOpinionTitle': 'Meinung markieren',
-    'tourMarkOpinionContent': 'Mit dem kleinen Stern können Sie Ihre eigene Meinung markieren.',
+    'tourMarkOpinionContent': 'Mit dem kleinen Stern neben dem Text können Sie Ihre eigene Meinung markieren.',
     'tourMarkOpinionText': 'Sie interessiert, dass der Park geschlossen werden soll.',
     'tourSidebarTitle': 'Seitenleiste',
     'tourSidebarContent': 'Hinter dem Menü-Icon sind noch weitere Optionen versteckt.',
@@ -811,7 +814,7 @@ var dbas_de = {
     'tourEnterStatementTitle': 'Eigene Antworten',
     'tourEnterStatementContent': '... oder eigene Antworten eingeben, sofern Sie angemeldet sind ...',
     'tourStatementActionTitle': 'Interaktionen',
-    'tourStatementActionContent': '... oder doch lieber mit den vorhanden Antworten agieren?',
+    'tourStatementActionContent': '... oder doch lieber mit den vorhandenen Antworten agieren (kleine Symbole am Ende der Zeile)?',
     'tourHaveFunTitle': 'Und nun ...',
     'tourHaveFunContent': '... viel Spaß!',
 };

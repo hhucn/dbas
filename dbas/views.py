@@ -11,6 +11,7 @@ import requests
 import transaction
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.renderers import get_renderer
+from pyramid.response import Response
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyshorteners.shorteners import Shortener, Shorteners
@@ -68,13 +69,13 @@ from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
     send_request_for_info_popup_to_socketio
 
 name = 'D-BAS'
-version = '1.3.2'
+version = '1.3.4'
 full_version = version
 project_name = name + ' ' + full_version
 
 
 def base_layout():
-    return get_renderer('templates/basetemplate.pt').implementation().macros['layout']
+    return get_renderer('templates/basetemplate.pt').implementation()
 
 
 # main page
@@ -99,6 +100,7 @@ def main_page(request):
 
     session_expired = True if 'session_expired' in request.params and request.params['session_expired'] == 'true' else False
     ui_locales      = get_language_from_cookie(request)
+    logger('main_page', 'def', 'main, request.params: {}'.format(request.params))
     _dh             = DictionaryHelper(ui_locales, ui_locales)
     extras_dict     = _dh.prepare_extras_dict_for_normal_page(request)
     _dh.add_language_options_for_extra_dict(extras_dict)
@@ -501,7 +503,9 @@ def notfound(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    if request.path.startswith('/api'):
+        return api_notfound(request)
+
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
     logger('notfound', 'def', 'main in {}'.format(request.method) + '-request' +
@@ -512,15 +516,13 @@ def notfound(request):
     if path.startswith('/404/'):
         path = path[4:]
 
-    param_error = True if 'param_error' in request.params and request.params['param_error'] == 'true' else False
-    revoked_content = True if 'revoked_content' in request.params and request.params['revoked_content'] == 'true' else False
+    param_error = 'param_error' in request.params and request.params['param_error'] == 'true'
+    revoked_content = 'revoked_content' in request.params and request.params['revoked_content'] == 'true'
 
     request.response.status = 404
     ui_locales = get_language_from_cookie(request)
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
-
-    # return HTTPFound(location=UrlManager(request.application_url, for_api=False).get_404([request.path[1:]]))
 
     return {
         'layout': base_layout(),
@@ -533,6 +535,16 @@ def notfound(request):
         'revoked_content': revoked_content
     }
 
+
+def api_notfound(request):
+    body = {
+        'requested_path': request.path,
+        'message': "Not Found",
+    }
+    response = Response(json.dumps(body).encode("utf-8"))
+    response.status_int = 404
+    response.content_type = 'application/json'
+    return response
 
 # ####################################
 # DISCUSSION                         #

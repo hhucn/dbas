@@ -17,6 +17,8 @@ requires = [
     'pyramid',
     'pyramid_tm',
     'pyramid_mailer',
+    'pyramid_redis_sessions',
+    'pyramid_beaker',
     'waitress',
     'SQLAlchemy',
     'transaction',
@@ -26,13 +28,11 @@ requires = [
     'cryptacular',
     'validate_email',
     'splinter',
-    'pyramid_beaker',
     'lingua',
     'requests',
     'pyshorteners',
     'python-slugify',
     'db-psycopg2',
-    'pyramid_redis_sessions',
 ]
 
 setup(name='dbas',

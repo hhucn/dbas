@@ -893,12 +893,13 @@ def __get_text_for_click_count(nickname, is_user, is_supportive, argument_uid, s
     speech['votecounts'] = len(db_votecounts) if db_votecounts else 0
 
     votecount_keys = defaultdict(lambda: "{} {}.".format(speech['votecounts'], _t.get(_.voteCountTextMore)))
+
     if is_user and db_user.gender == 'm':
-        votecount_keys[0] = _t.get(_.voteCountTextFirstM) + '.'
+        votecount_keys[0] = '{}.'.format(_t.get(_.voteCountTextFirstM))
     elif is_user and db_user.gender == 'f':
-        votecount_keys[0] = _t.get(_.voteCountTextFirstF) + '.'
+        votecount_keys[0] = '{}.'.format(_t.get(_.voteCountTextFirstF))
     else:
-        votecount_keys[0] = _t.get(_.voteCountTextFirst) + '.'
+        votecount_keys[0] = '{}.'.format(_t.get(_.voteCountTextFirst))
     votecount_keys[1] = _t.get(_.voteCountTextOneOther) + '.'
 
     return votecount_keys
@@ -1026,8 +1027,10 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
     :param ignore_privacy_settings:
     :return: String
     """
-    db_settings = DBDiscussionSession.query(Settings).get(user.uid)
-    additional_id = '' if db_settings.should_show_public_nickname or ignore_privacy_settings else 'x'
+    additional_id = ''
+    if user and isinstance(user, User):
+        db_settings = DBDiscussionSession.query(Settings).get(user.uid)
+        additional_id = '' if db_settings.should_show_public_nickname or ignore_privacy_settings else 'x'
     url = get_global_url()
     url = url[url.index('//') + 2:]
     unknown = 'unknown@' + url
@@ -1041,7 +1044,7 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
 def get_public_profile_picture(user, size=80):
     """
     Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
-    If the user doesn want an public profile, an anoynmous image will be returned
+    If the user doesn't want an public profile, an anonymous image will be returned
 
     :param user: User
     :param size: Integer, default 80

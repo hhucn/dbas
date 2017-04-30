@@ -179,7 +179,6 @@ function AdminCallbackHandler(){
 	this.doUpdateBadges = function(data){
         var jsonData = $.parseJSON(data);
         if (jsonData.error.length === 0) {
-        	console.log(jsonData);
         	$.each(jsonData.data, function(index, element){
         		$('#' + element.name).find('.badge').text(element.count);
 	        });

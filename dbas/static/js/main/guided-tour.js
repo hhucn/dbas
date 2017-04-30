@@ -107,7 +107,7 @@ function GuidedTour(){
 			path: '/discuss'
 		};
 		var mark_opinion = {
-			element: '#some-element-bubble',
+			element: '#some-element-bubble .triangle-r',
 			title: _t(tourMarkOpinionTitle) + lang_switcher,
 			content: _t(tourMarkOpinionContent),
 			placement: 'bottom',
@@ -232,6 +232,19 @@ function GuidedTour(){
 			tour.goTo(9);
 			set_lang_click();
 			setLocalStorage(GUIDED_TOUR_RUNNING, true);
+			
+			var btn1 = $('.btn-warning');
+			var btn2 = $('.btn-info');
+			var url1 = btn1.attr('href');
+			var url2 = btn2.attr('href');
+			btn1.click(function(){
+				end_fct();
+				window.location.href = url1;
+			}).attr('href', '#');
+			btn2.click(function(){
+				end_fct();
+				window.location.href = url2;
+			}).attr('href', '#');
 		}
 	};
 }

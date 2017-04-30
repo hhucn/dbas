@@ -1,5 +1,5 @@
 <div i18n:domain="dbas" metal:define-macro="layout">
-<nav id="custom-bootstrap-menu" class="navbar navbar-default navbar-fixed-top" role="navigation">
+<nav id="custom-bootstrap-menu" class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand" href="/" data-toggle="tooltip" data-placement="right"></a>
@@ -34,7 +34,7 @@
                 </li>
 
                 <li tal:condition="extras.logged_in" class="dropdown" data-toggle="tooltip" data-placement="left">
-                    <a class="dropdown-toggle" name="user-options-toggle" data-toggle="dropdown" href="#user" id="user-menu-dropdown" aria-haspopup="true" aria-expanded="true">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#user" id="user-menu-dropdown" aria-haspopup="true" aria-expanded="true">
                         <img tal:attributes="src extras.users_avatar" class="img-circle" alt="gravatar" style="width: 25px;">
                         <span id="header_nickname">${extras.nickname}</span>
                         <span id="header_badge_count_notifications" tal:condition="extras.notifications.has_unread" class="label label-primary label-as-badge">${extras.notifications.new_count}</span>
@@ -80,7 +80,8 @@
                         <img id="switch-lang-indicator-es" src="${request.static_url('dbas:static/images/flag-es-24.png')}">
                         <img id="switch-lang-indicator-sw" src="${request.static_url('dbas:static/images/flag-sw-24.png')}">
                         -->
-                        ${extras.lang}
+                        <span tal:condition="extras.lang_is_en">Englisch</span>
+                        <span tal:condition="extras.lang_is_de">Deutsch</span>
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu" id="language-dropdown">

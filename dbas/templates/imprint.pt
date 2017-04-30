@@ -4,7 +4,7 @@
 
 		<div class="row">
 
-			<div class="col-md-6">
+			<div class="col-md-7">
                 <div class="colored-container" style="margin-bottom: 1em;">
 				    <h4><span i18n:translate="imprint">Impressum</span> ${project}</h4>
 				    <h6>Build <span tal:replace="extras.dbas_build"></span></h6>
@@ -132,13 +132,13 @@
 						<li><a target="_blank" href="https://github.com/Pylons/pyramid"><i class="fa fa-cog" aria-hidden="true"></i>&thinsp;Github Project</a></li>
 					</ul>
 					<ul>
-						<li><a target="_blank" href="irc://irc.freenode.net#pyramid"><i class="fa fa-globe" aria-hidden="true"></i>&thinsp;IRC Channel</a></li>
+						<li><a target="_blank" href="https://webchat.freenode.net/?channels=pyramid"><i class="fa fa-globe" aria-hidden="true"></i>&thinsp;IRC Channel</a></li>
 						<li><a target="_blank" href="http://pylonsproject.org"><i class="fa fa-home" aria-hidden="true"></i>&thinsp;Pylons Project</a></li>
 					</ul>
 				</div>
 			</div>
 
-			<div class="col-md-6">
+			<div class="col-md-5">
 				<div class="colored-container" style="margin-bottom: 1em">
 					<h4><span i18n:translate="copyright_and_used_software">Copyrights and used Software</span></h4>
 					<ul>

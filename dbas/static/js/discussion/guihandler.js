@@ -82,6 +82,12 @@ function GuiHandler() {
 		$('#' + discussionContainerId).show();
 		$('#' + headerContainerId).show();
 		clearAnchor();
+		
+		// check for single input
+		var elements = $('#' + discussionSpaceListId).find('li');
+		if (elements.length === 1){
+			new Main().setInputExtraBox(elements.find('input'), new GuiHandler());
+		}
 	};
 	
 	/**
@@ -126,8 +132,8 @@ function GuiHandler() {
 		new DiscussionGraph({}, false).showGraph(false);
 		main.setSidebarStyle(graphViewContainer, tacked_sidebar);
 		main.setSidebarClicks(graphViewContainer, tacked_sidebar);
-		this.hideAddPositionContainer();
-		this.hideAddPremiseContainer();
+		// this.hideAddPositionContainer();
+		// this.hideAddPremiseContainer();
 	};
 	
 	/**
@@ -217,6 +223,7 @@ function GuiHandler() {
 	 * Hides the 'add position'-container
 	 */
 	this.hideAddPositionContainer = function () {
+		console.log('b');
 		$('#' + addStatementContainerId).hide();
 		$('#' + discussionSpaceListId).find('li:last-child input').prop('checked', false);
 	};
@@ -225,6 +232,7 @@ function GuiHandler() {
 	 * Hides the 'add premise'-container
 	 */
 	this.hideAddPremiseContainer = function () {
+		console.log('c');
 		$('#' + addPremiseContainerId).hide();
 		$('#' + discussionSpaceListId).find('li:last-child input').prop('checked', false);
 	};

@@ -106,6 +106,13 @@ function DiscussionBarometer(){
 			return;
 		}
 
+        // fetch zero users
+        var usersDict = getUsersDict([]);
+        if (isEverythingZero(usersDict)){
+            setGlobalInfoHandler('Hey', _t_discussion(otherParticipantsDontHaveOpinionForThis));
+            return -1;
+        }
+
         removeContentOfModal();
 
         // change status of toggle
@@ -165,8 +172,7 @@ function DiscussionBarometer(){
         var height = mode === modeEnum.attitude ? 300 : 400;
         var barChartSvg = getSvg(width+70, height+50).attr("id", "barometer-svg");
 
-        var usersDict = [];
-        usersDict = getUsersDict(usersDict);
+        var usersDict = getUsersDict([]);
 
         // create bars of chart
         // selector = inner-rect: clicks on statement relative to seen_by value
@@ -191,6 +197,24 @@ function DiscussionBarometer(){
             addListenerForTooltip(usersDict, barChartSvg, "rect");
         }
     }
+	
+	/**
+     *
+	 * @param usersDict
+	 */
+	function isEverythingZero(usersDict){
+        // counting depends on address
+        is_attitude = address === 'attitude';
+        var count = 0;
+        if(is_attitude) {
+            count = usersDict[0].seenBy + usersDict[1].seenBy;
+        } else {
+            $.each(usersDict, function( index, value ) {
+                count += value.seenBy;
+            });
+        }
+        return count === 0 || true;
+    }
 
     /**
      * Create users dict depending on address
@@ -202,9 +226,10 @@ function DiscussionBarometer(){
         // create dictionary depending on address
         is_attitude = address === 'attitude';
         if(is_attitude) {
-            usersDict = createDictForAttitude(usersDict);}
-        else {
-            usersDict = createDictForArgumentAndStatement(usersDict);}
+            usersDict = createDictForAttitude(usersDict);
+        } else {
+            usersDict = createDictForArgumentAndStatement(usersDict);
+        }
         return usersDict;
     }
 
@@ -227,7 +252,7 @@ function DiscussionBarometer(){
      * @param width
      * @param height
      */
-     function createXAxis(usersDict, svg, width, height){
+    function createXAxis(usersDict, svg, width, height){
         var maxUsersNumber = getMaximum(usersDict);
         // add offset on scale
         var offset = 5/100 * maxUsersNumber;
@@ -483,8 +508,15 @@ function DiscussionBarometer(){
             return getNormalColorFor(i);}
         return getLightColorFor(i);
     }
-
-    function divideWrapperIfZero(numerator, denominator){
+	
+	/**
+     * Wrapper for division
+     *
+	 * @param numerator int
+	 * @param denominator int
+	 * @returns {number}
+	 */
+	function divideWrapperIfZero(numerator, denominator){
         return denominator === 0 || numerator === 0 ? 0.005 : numerator / denominator;
     }
 
@@ -628,6 +660,7 @@ function DiscussionBarometer(){
             .enter().append("path")
             .attr({
                 'fill': function (d, i) { return getNormalColorFor(i); },
+                'stroke': "gray", d: innerCircle,
                 'transform': "translate(240,230)",
                 'id': function (d, i) {return "inner-path-" + i;},
                 'class': "chart-sector"});

@@ -19,7 +19,7 @@
                                 <li i18n:translate="reviewing_suspicious_statements">Reviewing suspicious statements</li>
                                 <li i18n:translate="voting_to_close">Voting to close or reopen statements</li>
                             </ul>
-                            <span><strong i18n:translate="choose_task">Choose a task to get started.</strong></span>
+                            <span><strong i18n:translate="choose_task">Choose a task to get started.</strong>!</span>
                         </div>
                     </div>
                 </div>

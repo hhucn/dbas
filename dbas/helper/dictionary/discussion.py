@@ -215,14 +215,16 @@ class DiscussionDictHelper(object):
 
         if attack == 'undercut':
             sys_msg = _tn.get(_.whatIsYourMostImportantReasonForArgument).rstrip().format(pro_tag, end_tag) + ': '
+            dot = '.'
         else:
+            dot = '?'
             if attack == 'undermine':
                 sys_msg = _tn.get(_.whatIsYourMostImportantReasonAgainstStatement).rstrip().format(con_tag, end_tag)
                 sys_msg += ', ' if self.lang == 'de' else ' '
             else:
                 sys_msg = _tn.get(_.whatIsYourMostImportantReasonForStatement).rstrip().format(pro_tag, end_tag) + ': '
 
-        sys_msg += user_msg + '?<br>' + _tn.get(_.because) + '...'
+        sys_msg += user_msg + dot + '<br>' + _tn.get(_.because) + '...'
         # bubble_user = history_helper.create_speechbubble_dict(is_user=True, message=user_msg[0:1].upper() +
         # user_msg[1:], omit_url=True, lang=self.lang)
 
@@ -521,7 +523,7 @@ class DiscussionDictHelper(object):
         while argument_text[:-offset].endswith(('.', '?', '!')):
             argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
 
-        text = get_text_for_support(db_arg_system, argument_text, nickname, main_page, _tn)
+        sys_text = get_text_for_support(db_arg_system, argument_text, nickname, main_page, _tn)
 
         self.__append_now_bubble(bubbles_array)
 
@@ -530,7 +532,7 @@ class DiscussionDictHelper(object):
                                                is_supportive=db_arg_user.is_supportive, lang=self.lang, nickname=nickname)
         bubbles_array.append(bubble_user)
 
-        bubble = create_speechbubble_dict(is_system=True, id='question-bubble-' + str(uid_system_arg), message=text, omit_url=True, lang=self.lang)
+        bubble = create_speechbubble_dict(is_system=True, id='question-bubble-' + str(uid_system_arg), message=sys_text, omit_url=True, lang=self.lang)
         bubbles_array.append(bubble)
 
         return {'bubbles': bubbles_array, 'add_premise_text': '', 'save_statement_url': '', 'mode': ''}
