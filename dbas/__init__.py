@@ -12,7 +12,7 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 import logging
 import time
 from configparser import ConfigParser, NoSectionError
-
+from .helper.database import get_db_environs
 import os
 from pyramid.authentication import AuthTktAuthenticationPolicy  # , SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
@@ -218,28 +218,3 @@ def _environs_to_keys(key, prefix="DBAS_"):
     striped_of_prefix = re.sub(prefix_pattern, "", key)
 
     return str(re.sub(single_underscore_pattern, ".", striped_of_prefix).replace('__', '_')).lower()
-
-
-def get_db_environs(prefix, db_name, settings={}):
-    db_user = os.environ.get("DBAS_DB_USER", None)
-    db_pw = os.environ.get("DBAS_DB_PW", None)
-    db_host = os.environ.get("DBAS_DB_HOST", None)
-    db_host_port = os.environ.get("DBAS_DB_PORT", None)
-
-    if all([db_user, db_pw, db_host, db_host_port]):
-        settings.update(
-            {prefix: "postgresql+psycopg2://{}:{}@{}:{}/{}?client_encoding=utf8".format(
-                db_user, db_pw, db_host, db_host_port, db_name)})
-        return settings
-    else:
-        errors = "Following variables are missing:\n"
-        if not db_user:
-            errors += "DBAS_DB_USER\n"
-        if not db_pw:
-            errors += "DBAS_DB_PW\n"
-        if not db_host:
-            errors += "DBAS_DB_HOST\n"
-        if not db_host_port:
-            errors += "DBAS_DB_PORT\n"
-
-        raise EnvironmentError("Misconfigured environment variables for database. Result the installation instructions.\n" + errors)
