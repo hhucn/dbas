@@ -1,6 +1,7 @@
 from sqlalchemy import engine_from_config
 import os
 
+
 def dbas_db_configuration(db_name, settings={}):
     """
     Gets a database name and settings and looks up database connection configurations in four environment variables
@@ -21,9 +22,10 @@ def dbas_db_configuration(db_name, settings={}):
     :param settings: A dict containing settings for the database connection. (optional)
     :return: A sqlalchemy engine from environment variables and settings.
     """
-    prefix = 'sqlalchemy.{}.url'.format(db_name)
+    prefix = 'sqlalchemy.{}.'.format(db_name)
 
-    engine_from_config(get_db_environs(prefix, db_name, settings), prefix)
+    engine_from_config(get_db_environs(prefix + "url", db_name, settings), prefix)
+
 
 def get_db_environs(prefix, db_name, settings={}):
     db_user = os.environ.get("DBAS_DB_USER", None)
