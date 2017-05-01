@@ -21,6 +21,6 @@ def dbas_db_configuration(db_name, settings={}):
     :param settings: A dict containing settings for the database connection. (optional)
     :return: A sqlalchemy engine from environment variables and settings.
     """
-    prefix = 'sqlalchemy.{}.'.format(db_name)
+    prefix = 'sqlalchemy.{}.url'.format(db_name)
 
     engine_from_config(get_db_environs(prefix, db_name, settings), prefix)

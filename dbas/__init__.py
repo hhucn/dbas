@@ -33,7 +33,7 @@ def main(global_config, **settings):
     settings.update(get_dbas_environs())
 
     # Patch in beaker url
-    settings.update(get_db_environs(prefix="session.", db_name="beaker"))
+    settings.update(get_db_environs(prefix="session.url", db_name="beaker"))
 
     # log settings
     log = logging.getLogger(__name__)
@@ -47,8 +47,8 @@ def main(global_config, **settings):
     authz_policy = ACLAuthorizationPolicy()
 
     # load database
-    discussion_engine = engine_from_config(get_db_environs("sqlalchemy.discussion.", db_name="discussion"), "sqlalchemy.discussion.")
-    news_engine = engine_from_config(get_db_environs("sqlalchemy.news.", db_name="news"), "sqlalchemy.news.")
+    discussion_engine = engine_from_config(get_db_environs("sqlalchemy.discussion.url", db_name="discussion"), "sqlalchemy.discussion.")
+    news_engine = engine_from_config(get_db_environs("sqlalchemy.news.url", db_name="news"), "sqlalchemy.news.")
     load_discussion_database(discussion_engine)
     load_news_database(news_engine)
 
@@ -228,7 +228,7 @@ def get_db_environs(prefix, db_name, settings={}):
 
     if all([db_user, db_pw, db_host, db_host_port]):
         settings.update(
-            {prefix + 'url': "postgresql+psycopg2://{}:{}@{}:{}/{}?client_encoding=utf8".format(
+            {prefix: "postgresql+psycopg2://{}:{}@{}:{}/{}?client_encoding=utf8".format(
                 db_user, db_pw, db_host, db_host_port, db_name)})
         return settings
     else:
