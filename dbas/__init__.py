@@ -47,8 +47,11 @@ def main(global_config, **settings):
     authz_policy = ACLAuthorizationPolicy()
 
     # load database
-    discussion_engine = engine_from_config(get_db_environs("sqlalchemy.discussion.url", db_name="discussion"), "sqlalchemy.discussion.")
-    news_engine = engine_from_config(get_db_environs("sqlalchemy.news.url", db_name="news"), "sqlalchemy.news.")
+    settings.update(get_db_environs("sqlalchemy.discussion.url", db_name="discussion"))
+    settings.update(get_db_environs("sqlalchemy.news.url", db_name="news"))
+
+    discussion_engine = engine_from_config(settings, "sqlalchemy.discussion.")
+    news_engine = engine_from_config(settings, "sqlalchemy.news.")
     load_discussion_database(discussion_engine)
     load_news_database(news_engine)
 
