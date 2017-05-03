@@ -1,6 +1,8 @@
 FROM python:3.6
 MAINTAINER Christian Meter <meter@cs.uni-duesseldorf.de>
 
+ENV locs /etc/locale.gen
+
 RUN mkdir /dbas
 WORKDIR /dbas
 COPY . /dbas/
@@ -11,7 +13,11 @@ RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
     (yes | gem install sass) && \
     npm install bower phantomjs-prebuilt google-closure-compiler-js -g && \
     pip install -q -U pip && \
-    pip install -q -r requirements.txt
+    pip install -q -r requirements.txt && \
+    touch $locs && \
+    echo "de_DE.UTF-8 UTF-8" >> $locs && \
+    echo "en_US.UTF-8 UTF-8" >> $locs && \
+    locale-gen
 
 
 RUN python setup.py --quiet develop \
