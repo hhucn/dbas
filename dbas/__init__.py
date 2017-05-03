@@ -33,7 +33,7 @@ def main(global_config, **settings):
     settings.update(get_dbas_environs())
 
     # Patch in beaker url
-    settings.update(get_db_environs(prefix="session.url", db_name="beaker"))
+    settings.update(get_db_environs(key="session.url", db_name="beaker"))
 
     # log settings
     log = logging.getLogger(__name__)
