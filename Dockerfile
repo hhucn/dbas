@@ -5,16 +5,13 @@ RUN mkdir /dbas
 WORKDIR /dbas
 COPY . /dbas/
 
-RUN apt-get update -qq && \
-    apt-get install -yqq rubygems nodejs && \
+RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
+    apt-get update -qq && \
+    apt-get install -yqq rubygems nodejs locales libsasl2-dev python-dev libldap2-dev libssl-dev gettext && \
     (yes | gem install sass) && \
-    npm install bower phantomjs-prebuilt google-closure-compiler-js -g
-
-RUN pip install -q -U pip \
-    && pip install -q -r requirements.txt \
-    && apt-get update \
-    && apt-get install -yqq gettext
-
+    npm install bower phantomjs-prebuilt google-closure-compiler-js -g && \
+    pip install -q -U pip && \
+    pip install -q -r requirements.txt
 
 
 RUN python setup.py --quiet develop \
