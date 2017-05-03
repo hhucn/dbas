@@ -29,8 +29,8 @@ _t_discussion = function(id){
     'use strict';
     
     var info = $('#issue_info');
-    if (info.length === 0) {
-	    return _t(id);
+    if (typeof info === 'undefined') {
+	    return get_it('en', id);
     }
     var lang = info.data('discussion-language');
     return get_it(lang, id);
@@ -38,12 +38,11 @@ _t_discussion = function(id){
 
 var get_it = function(val, id){
     'use strict';
-    
     var value = 'unknown value';
-    if (val.indexOf('en') !== -1 && dbas_en.hasOwnProperty(id)){
-        value = dbas_en[id];
-    } else if (val.indexOf('de') !== -1 && dbas_de.hasOwnProperty(id)){
+    if (typeof val !== 'undefined' && val.indexOf('de') !== -1 && dbas_de.hasOwnProperty(id)){
         value = dbas_de[id];
+    } else if (dbas_en.hasOwnProperty(id)){
+        value = dbas_en[id];
     }
     return value;
     

@@ -27,8 +27,8 @@
     									<td>
     										<span i18n:translate="role_value_1">Doctoral Student</span>
     										<br>
-                                            <a tal:condition="not:extras.lang_is_en" href="www.tsn.hhu.de/ourgroup/scientists/tobias-krauthoff.html" i18n:translate="lab_tsn">Lab for Technology of Social Networks</a>
-    										<a tal:condition="extras.lang_is_en" href="www.tsn.hhu.de/en/ourgroup/scientists/tobias-krauthoff.html" i18n:translate="lab_tsn">Lab for Technology of Social Networks</a>
+                                            <a tal:condition="not:extras.lang_is_en" href="http://www.tsn.hhu.de/ourgroup/scientists/tobias-krauthoff.html" i18n:translate="lab_tsn">Lab for Technology of Social Networks</a>
+    										<a tal:condition="extras.lang_is_en" href="http://www.tsn.hhu.de/en/ourgroup/scientists/tobias-krauthoff.html" i18n:translate="lab_tsn">Lab for Technology of Social Networks</a>
     										<br><span i18n:translate="role_value_2">Member of the graduation school</span> <a tal:condition="extras.lang_is_en" href="http://www.fortschrittskolleg.de/en/participants/phd-students/#krauthoff" target="_blank"><span i18n:translate="role_value_3">Online Participation</span></a><a tal:condition="not:extras.lang_is_en" href="http://www.fortschrittskolleg.de/beteiligte/kollegiatinnen/#krauthoff" target="_blank"><span i18n:translate="role_value_3">Online Participation</span></a>
                                             <br><span i18n:translate="role_value_4">Vorstandsmitglied des DIID - Düsseldorfer Institut für Internet und Demokratie</span>
 

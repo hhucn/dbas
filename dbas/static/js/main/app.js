@@ -251,7 +251,10 @@ function setEasterEggs(){
     
 	$('#roundhousekick').click(function(){ new AjaxMainHandler().ajaxRoundhouseKick(); });
 	//$('#yomamma').click(function(){ new AjaxMainHandler().ajaxMama(); });
-	$('#logo_dbas,#logo_dbas_s').click(function(){
+	$('#logo_dbas, #logo_dbas_s').click(function(){
+		if (!$(this)){
+			return;
+		}
 		var counter = parseInt($(this).data('counter'));
 		counter += 1;
 		if (counter === 7){

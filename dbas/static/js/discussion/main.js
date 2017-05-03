@@ -641,13 +641,17 @@ function Main () {
 	 */
 	this.setGuiOptions = function () {
 		$('#' + popupLogin).on('hidden.bs.modal', function () {// uncheck login button on hide
-			var login_item = $('#' + discussionSpaceListId).find('#item_login');
-			if (login_item.length > 0) {
-				login_item.prop('checked', false);
+			var list = $('#' + discussionSpaceListId);
+			if (list) {
+				var login_item = list.find('#item_login');
+				if (login_item.length > 0) {
+					login_item.prop('checked', false);
+				}
 			}
 		}).on('shown.bs.modal', function () {
 			$('#' + loginUserId).focus();
 		});
+		
 		
 		// highlight edited statement
 		var pos = window.location.href.indexOf('edited_statement=');
@@ -824,7 +828,7 @@ function Main () {
 			});
 		}
 		// login
-		else if (input.attr('id').indexOf('login') !== -1) {
+		else if (input.attr('id').indexOf('login') !== -1 && typeof $('#' + popupLogin) !== undefined) {
 			$('#' + popupLogin).modal('show');
 		}
 	};
@@ -901,11 +905,16 @@ $(document).ready(function mainDocumentReady() {
 		event.stopPropagation();
 	});
 	$(document).delegate('body', 'click', function() {
-		$('.open').removeClass('opened');
+		var open = $('.open');
+		if (open) {
+			open.removeClass('opened');
+		}
 	});
 	$(document).delegate('.cls', 'click', function(event){
-		$('.open').removeClass('opened');
-		event.stopPropagation();
+		var open = $('.open');
+		if (open) {
+			event.stopPropagation();
+		}
 	});
 	
 	// Google Recaptcha
@@ -915,4 +924,7 @@ $(document).ready(function mainDocumentReady() {
 			grecaptcha.execute();
 		}, 1500);
 	}
+	
+	// unleash the beast
+	// gremlins.createHorde().gremlin(gremlins.species.formFiller()).gremlin(gremlins.species.clicker().clickTypes(['click'])).gremlin(gremlins.species.typer()).gremlin(function() {window.$ = function() {};}).unleash();
 });

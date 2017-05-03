@@ -328,6 +328,9 @@ function News() {
 	 * Sharing shortened url via mail
 	 */
 	this.mailShare = function (_this) {
+		if (typeof $(_this) === undefined){
+			return;
+		}
 		if ($(_this).attr('id') === shareUrlButtonMail) {
 			return;
 		}
@@ -343,6 +346,9 @@ function News() {
 	 * Sharing shortened url on google
 	 */
 	this.googleShare = function (_this) {
+		if (typeof $(_this) === undefined){
+			return;
+		}
 		if ($(_this).attr('id') === shareUrlButtonGoogle) {
 			return;
 		}
@@ -354,6 +360,9 @@ function News() {
 	 * Sharing shortened url on facebook
 	 */
 	this.facebookShare = function (_this) {
+		if (typeof $(_this) === undefined){
+			return;
+		}
 		if ($(_this).attr('id') === shareUrlButtonFacebook) {
 			return;
 		}
@@ -370,6 +379,9 @@ function News() {
 	 * Sharing shortened url on twitter
 	 */
 	this.twitterShare = function (_this) {
+		if (typeof $(_this) === undefined){
+			return;
+		}
 		if ($(_this).attr('id') === shareUrlButtonTwitter) {
 			return;
 		}

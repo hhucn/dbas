@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="dialog based discussion online participation">
+  <meta name="description" content="dialog based discussion online participation tool argumentation argument">
   <meta name="author" content="Tobias Krauthoff">
   <link rel="shortcut icon" href="${request.static_url('dbas:static/images/favicon-16x16.png')}">
   <title>${title}</title>
@@ -124,6 +124,7 @@
   <script type="text/javascript" src="${request.static_url('dbas:static/js/d3/barometer.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/d3/graph.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/gremlins.min.js')}" tal:condition="extras.development_mode"></script>
 
   <!-- Piwik -->
   <script type="text/javascript">
