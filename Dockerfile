@@ -1,17 +1,21 @@
-FROM hhucn/dbas-build
+FROM python:3.6
 MAINTAINER Christian Meter <meter@cs.uni-duesseldorf.de>
 
 RUN mkdir /dbas
-
 WORKDIR /dbas
+COPY . /dbas/
 
-COPY requirements.txt /dbas/
+RUN apt-get update -qq && \
+    apt-get install -yqq rubygems nodejs && \
+    (yes | gem install sass) && \
+    npm install bower phantomjs-prebuilt google-closure-compiler-js -g
+
 RUN pip install -q -U pip \
     && pip install -q -r requirements.txt \
     && apt-get update \
     && apt-get install -yqq gettext
 
-COPY . /dbas/
+
 
 RUN python setup.py --quiet develop \
     && bash -c 'google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./dbas/static/js/{main,ajax,d3,discussion,review}/*.js > dbas/static/js/dbas.min.js' \
