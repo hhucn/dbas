@@ -1031,14 +1031,8 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
     if user and isinstance(user, User):
         db_settings = DBDiscussionSession.query(Settings).get(user.uid)
         additional_id = '' if db_settings.should_show_public_nickname or ignore_privacy_settings else 'x'
-    url = get_global_url()
-    url = url[url.index('//') + 2:]
-    unknown = 'unknown@' + url
-    email = (user.email + additional_id).encode('utf-8') if user else unknown.encode('utf-8')
 
-    gravatar_url = 'https://secure.gravatar.com/avatar/{}?'.format(hashlib.md5(email.lower()).hexdigest())
-    gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
-    return gravatar_url
+    return __get_gravatar(user, additional_id, size)
 
 
 def get_public_profile_picture(user, size=80):
@@ -1050,15 +1044,22 @@ def get_public_profile_picture(user, size=80):
     :param size: Integer, default 80
     :return: String
     """
-    if user:
+    if user and isinstance(user, User):
         additional_id = '' if DBDiscussionSession.query(Settings).get(user.uid).should_show_public_nickname else 'x'
     else:
         additional_id = 'y'
+
+    return __get_gravatar(user, additional_id, size)
+
+
+def __get_gravatar(user, additional_id, size):
     url = get_global_url()
     url = url[url.index('//') + 2:]
     email = (user.email + additional_id).encode('utf-8') if user else ('unknown@' + url).encode('utf-8')
+
     gravatar_url = 'https://secure.gravatar.com/avatar/{}?'.format(hashlib.md5(email.lower()).hexdigest())
     gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
+
     return gravatar_url
 
 
