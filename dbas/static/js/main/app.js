@@ -666,15 +666,15 @@ $(document).ready(function () {
 	}, 150);
 
 	// set current file to active
-		 if (path.indexOf(urlContact) !== -1){ 	setLinkActive('#' + contactLink);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf(urlLogin) !== -1){	setLinkActive('#' + loginLinkId);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf(urlNews) !== -1){		setLinkActive('#' + newsLink);		$('#' + navbarLeft).hide(); }
-	else if (path.indexOf(urlContent) !== -1){ 	setLinkActive('#' + contentLink);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf(urlReview) !== -1){ 	setLinkActive('#' + reviewLinkId);	$('#' + navbarLeft).hide(); }
-	else if (path.indexOf(urlSettings) !== -1 ||
-			 path.indexOf(urlImprint) !== -1 ||
-			 path.indexOf(urlLogout) !== -1){										$('#' + navbarLeft).hide(); }
-	else { 										setLinkActive(''); 					$('#' + navbarLeft).show(); }
+		 if (path.indexOf(urlContact) !== -1){ 	setLinkActive('#' + contactLink); }
+	else if (path.indexOf(urlLogin) !== -1){	setLinkActive('#' + loginLinkId); }
+	else if (path.indexOf(urlNews) !== -1){		setLinkActive('#' + newsLink); }
+	else if (path.indexOf(urlContent) !== -1){ 	setLinkActive('#' + contentLink); }
+	else if (path.indexOf(urlReview) !== -1){ 	setLinkActive('#' + reviewLinkId); }
+	// else if (path.indexOf(urlSettings) !== -1 ||
+	// 		 path.indexOf(urlImprint) !== -1 ||
+	// 		 path.indexOf(urlLogout) !== -1){}
+	else { 										setLinkActive(''); }
 
 	// gui preperation
 	prepareLoginRegistrationPopup();
