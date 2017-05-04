@@ -210,5 +210,7 @@ $(document).ready(function () {
 	gui.setCancelClickEvent(data);
 	gui.setAddClickEvent();
 	
-	data.DataTable();
+	if (data) {
+		data.DataTable();
+	}
 });
