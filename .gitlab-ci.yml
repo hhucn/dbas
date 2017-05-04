@@ -37,7 +37,7 @@ jshint:
     - apk add --no-cache nodejs bash
     - npm install -g jshint
     - bash -c "jshint ./dbas/static/js/{main,ajax,discussion,review,d3}/*.js"
-    - bash -c "jshint ./admin/static/js/*.js"
+    - bash -c "jshint ./admin/static/js/main/*.js"
     - bash -c "jshint ./websocket/static/js/*.js"
   allow_failure: true
 

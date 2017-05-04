@@ -18,6 +18,7 @@ RUN python setup.py --quiet develop \
     && bash -c 'google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./dbas/static/js/libs/cookie-2.1.3.js > dbas/static/js/libs/cookie-2.1.3.min.js' \
     && bash -c 'google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./dbas/static/js/libs/eu-cookie-law-popup.js > dbas/static/js/libs/eu-cookie-law-popup.min.js' \
     && bash -c 'google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./websocket/static/js/*.js > websocket/static/js/websocket.min.js' \
+    && bash -c 'google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./admin/static/js/main/*.js > websocket/static/js/admin.min.js' \
     && sass dbas/static/css/main.sass dbas/static/css/main.css --style compressed \
     && rm -r .sass-cache \
     && cd dbas && ./i18n.sh \
