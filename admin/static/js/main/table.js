@@ -210,7 +210,9 @@ $(document).ready(function () {
 	gui.setCancelClickEvent(data);
 	gui.setAddClickEvent();
 	
-	if (data) {
+	try{
 		data.DataTable();
+	} catch(e){
+		console.log(e.name + ': ' + e.message);
 	}
 });
