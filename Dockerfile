@@ -1,11 +1,12 @@
-FROM python:3.6
+FROM python:3.6-slim
 MAINTAINER Christian Meter <meter@cs.uni-duesseldorf.de>
 
 ENV locs /etc/locale.gen
 
-RUN curl -sL https://deb.nodesource.com/setup_7.x | bash - && \
-    apt-get update -qq && \
-    apt-get install -yqq rubygems nodejs locales libsasl2-dev python-dev libldap2-dev libssl-dev gettext && \
+RUN apt-get update -qq && \
+    apt-get install -yqq curl && \
+    curl -sL https://deb.nodesource.com/setup_7.x | bash - && \
+    apt-get install -yqq rubygems nodejs locales libsasl2-dev python-dev libldap2-dev libssl-dev gettext bzip2 && \
     (yes | gem install sass) && \
     npm install bower phantomjs-prebuilt google-closure-compiler-js -g && \
     touch $locs && \
@@ -21,8 +22,10 @@ WORKDIR /dbas
 
 COPY requirements.txt /dbas/
 
-RUN pip install -q -U pip && \
-    pip install -q -r requirements.txt
+RUN apt-get install -y build-essential && \
+    pip install -q -U pip && \
+    pip install -r requirements.txt && \
+    apt-get clean
 
 COPY . /dbas/
 
