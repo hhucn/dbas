@@ -57,7 +57,7 @@ function GuidedTour(){
 	// function on end
 	var end_fct = function(){
 		setLocalStorage(GUIDED_TOUR_RUNNING, false);
-		Cookies.set(GUIDED_TOUR, true, { expires: 180 });
+		Cookies.set(GUIDED_TOUR, true, { expires: 60 });
 		// var url = window.location.href;
 		//if (url !== mainpage && url.indexOf('#tour2') === -1) {
 		//	 window.location.href = mainpage;
