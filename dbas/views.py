@@ -362,11 +362,7 @@ def main_imprint(request):
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     import pkg_resources
     extras_dict.update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
-    try:
-        # extras_dict.update({'dbas_build': check_output(['git', 'rev-parse', '--short', 'HEAD'])})  # hash only
-        extras_dict.update({'dbas_build': check_output(["git", "describe"])})
-    except CalledProcessError:
-        extras_dict.update({'dbas_build': full_version})
+    extras_dict.update({'dbas_build': full_version})
 
     return {
         'layout': base_layout(),
