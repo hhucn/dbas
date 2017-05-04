@@ -3,22 +3,28 @@ MAINTAINER Christian Meter <meter@cs.uni-duesseldorf.de>
 
 ENV locs /etc/locale.gen
 
-RUN mkdir /dbas
-WORKDIR /dbas
-COPY . /dbas/
-
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
+RUN curl -sL https://deb.nodesource.com/setup_7.x | bash - && \
     apt-get update -qq && \
     apt-get install -yqq rubygems nodejs locales libsasl2-dev python-dev libldap2-dev libssl-dev gettext && \
     (yes | gem install sass) && \
     npm install bower phantomjs-prebuilt google-closure-compiler-js -g && \
-    pip install -q -U pip && \
-    pip install -q -r requirements.txt && \
     touch $locs && \
     echo "de_DE.UTF-8 UTF-8" >> $locs && \
     echo "en_US.UTF-8 UTF-8" >> $locs && \
-    locale-gen
+    locale-gen && \
+    apt-get clean && \
+    npm cache clean && \
+    gem cleanup && \
+    mkdir /dbas
 
+WORKDIR /dbas
+
+COPY requirements.txt /dbas/
+
+RUN pip install -q -U pip && \
+    pip install -q -r requirements.txt
+
+COPY . /dbas/
 
 RUN python setup.py --quiet develop \
     && bash -c 'google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./dbas/static/js/{main,ajax,d3,discussion,review}/*.js > dbas/static/js/dbas.min.js' \
