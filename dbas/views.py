@@ -5,7 +5,6 @@ Collection of all view registrations of the core component of D-BAS.
 """
 
 import json
-from subprocess import check_output, CalledProcessError
 
 import requests
 import transaction
