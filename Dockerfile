@@ -13,6 +13,8 @@ RUN apt-get update -qq && \
     echo "de_DE.UTF-8 UTF-8" >> $locs && \
     echo "en_US.UTF-8 UTF-8" >> $locs && \
     locale-gen && \
+    apt-get remove -y --purge curl bzip2 && \
+    apt-get autoremove -y && \
     apt-get clean && \
     npm cache clean && \
     gem cleanup && \
@@ -22,10 +24,12 @@ WORKDIR /dbas
 
 COPY requirements.txt /dbas/
 
-RUN apt-get install -y build-essential && \
+RUN apt-get install -y build-essential libfontconfig && \
     pip install -q -U pip && \
-    pip install -r requirements.txt && \
-    apt-get clean
+    pip install -q -r requirements.txt && \
+    apt-get remove -y --purge build-essential && \
+    apt-get autoremove -y && \
+    apt-get clean -y
 
 COPY . /dbas/
 
