@@ -215,12 +215,10 @@ function GuidedTour(){
 			this.__startTour();
 		} else if(!part0 && part1 && !part2 || startOnDiscussionPage){
 			if (getLocalStorage(GUIDED_TOUR_RUNNING_START) === 'true') {
-				console.log(0);
 				this.__continueIndexTourOnDiscussionPage();
 			} else if (startOnDiscussionPage){
 				start_from_index = false;
 				this.prepareSteps(false);
-				console.log(1);
 				this.__startTour();
 			}
 			
@@ -229,6 +227,10 @@ function GuidedTour(){
 		}
 	};
 	
+	/**
+	 * Starts tour from the beginning
+	 * @private
+	 */
 	this.__startTour = function(){
 		// build dialog
 		var title = _t(tourWelcomeTitle);
@@ -246,12 +248,18 @@ function GuidedTour(){
 			var switcher = getLanguage() === 'en' ? $('#switch-to-de') : $('#switch-to-en');
 			switcher.remove();
 		});
+		
+		// display dialog and set click events
 		displayConfirmationDialog(title, text, start_fct, end_fct, false);
 		dialog.find('#confirm-dialog-accept-btn').text(_t(yes));
 		dialog.find('#confirm-dialog-refuse-btn').text(_t(no));
 		set_lang_click();
 	};
 	
+	/**
+	 * Continues with the second part of the tripartite introduction
+	 * @private
+	 */
 	this.__continueIndexTourOnDiscussionPage = function(){
 		tour.init();
 		tour.goTo(1);
@@ -259,6 +267,10 @@ function GuidedTour(){
 		setLocalStorage(GUIDED_TOUR_RUNNING_START, true);
 	};
 	
+	/**
+	 * Starts the last part of the tripartite introduction
+	 * @private
+	 */
 	this.__endIndexTourOnDiscussionPage = function(){
 		tour.init();
 		tour.goTo(step_list.length - 1);
