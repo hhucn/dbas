@@ -5,7 +5,7 @@ Collection of all view registrations of the core component of D-BAS.
 """
 
 import json
-from subprocess import check_output, CalledProcessError
+import subprocess
 
 import requests
 import transaction
@@ -360,12 +360,26 @@ def main_imprint(request):
         return user_logout(request, True)
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+
+    # add version of pyramid
     import pkg_resources
     extras_dict.update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
+
+    # try to get current commit hash
     try:
-        # extras_dict.update({'dbas_build': check_output(['git', 'rev-parse', '--short', 'HEAD'])})  # hash only
-        extras_dict.update({'dbas_build': check_output(["git", "describe"])})
-    except CalledProcessError:
+        extras_dict.update({'dbas_build': subprocess.check_output(['git', 'describe'])})
+    except FileNotFoundError:
+        # try to get hash of container
+        try:
+            ps = subprocess.Popen(('docker', 'images'), stdout=subprocess.PIPE)
+            output = subprocess.check_output(('grep', 'dbas_web'), stdin=ps.stdout)
+            ps.terminate()
+            extras_dict.update({'dbas_build': str(output).split()[2]})
+        except subprocess.CalledProcessError:
+            # fallback
+            extras_dict.update({'dbas_build': full_version})
+    except:
+        # fallback
         extras_dict.update({'dbas_build': full_version})
 
     return {
