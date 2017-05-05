@@ -700,6 +700,7 @@ $(document).ready(function () {
 		}, 3000);
 	}
 	
+	// start guided tour, if the cookie is not set
 	if (!Cookies.get(GUIDED_TOUR)){
 		new GuidedTour().start();
 	}
