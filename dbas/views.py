@@ -369,7 +369,7 @@ def main_imprint(request):
     try:
         extras_dict.update({'dbas_build': subprocess.check_output(['git', 'describe'])})
     except FileNotFoundError:
-        # try to get hash of container
+        # try to get hash of docker image
         try:
             ps = subprocess.Popen(('docker', 'images'), stdout=subprocess.PIPE)
             output = subprocess.check_output(('grep', 'dbas_web'), stdin=ps.stdout)
