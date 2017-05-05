@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-04-29 16:44+0200\n"
+"POT-Creation-Date: 2017-05-05 10:02+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -286,7 +286,7 @@ msgid "no_arguments_to_review"
 msgstr "Keine Argumente zum begutachten!"
 
 #. Default: Review
-#: templates/review-content.pt:19 templates/snippet-header.pt:70
+#: templates/review-content.pt:19 templates/snippet-header.pt:76
 #: templates/review-history.pt:14 templates/review-reputation.pt:8
 msgid "review"
 msgstr "Prüfen"
@@ -578,36 +578,41 @@ msgstr "Navigation umstellen"
 msgid "lets_go"
 msgstr "Los geht's"
 
-#. Default: News
+#. Default: Bug Tracker
 #: templates/snippet-header.pt:26
+msgid "Bugtracker"
+msgstr "Bugtracker"
+
+#. Default: News
+#: templates/snippet-header.pt:31
 msgid "news"
 msgstr "Neuigkeiten"
 
 #. Default: Login
 #. Default: Log In
-#: templates/snippet-header.pt:32 templates/snippet-popups.pt:273
+#: templates/snippet-header.pt:37 templates/snippet-popups.pt:273
 #: templates/snippet-popups.pt:323 templates/snippet-popups.pt:340
 #: templates/snippet-popups.pt:538
 msgid "login"
 msgstr "Login"
 
 #. Default: Settings
-#: templates/snippet-header.pt:46 templates/settings.pt:41
+#: templates/snippet-header.pt:51 templates/settings.pt:41
 msgid "settings"
 msgstr "Einstellungen"
 
 #. Default: Notifications
-#: templates/snippet-header.pt:53
+#: templates/snippet-header.pt:58
 msgid "notifications"
 msgstr "Benachrichtigungen"
 
 #. Default: Admin
-#: templates/snippet-header.pt:58
+#: templates/snippet-header.pt:63
 msgid "Admin"
 msgstr "Admin"
 
 #. Default: Logout
-#: templates/snippet-header.pt:63
+#: templates/snippet-header.pt:68
 msgid "logout"
 msgstr "Abmelden"
 
