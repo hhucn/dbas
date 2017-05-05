@@ -318,8 +318,9 @@ function prepareLoginRegistrationPopup(){
 
 	$('#' + popupLoginButtonLogin).show().click(function() {
 		new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
-		Cookies.set(DBAS_DATA_DISCLAIMER, true, { expires: 30 });
+		Cookies.set(DBAS_DATA_DISCLAIMER, true, { expires: 180 });
 	}).keypress(function(e) { if (e.which === 13) { new AjaxMainHandler().ajaxRegistration(); } });
+	
 	// data disclaimer
 	if (Cookies.get(DBAS_DATA_DISCLAIMER) === 'true') {
 		$('#dbas-login-data-disclaimer').hide();
@@ -699,6 +700,7 @@ $(document).ready(function () {
 		}, 3000);
 	}
 	
+	// start guided tour, if the cookie is not set
 	if (!Cookies.get(GUIDED_TOUR)){
 		new GuidedTour().start();
 	}

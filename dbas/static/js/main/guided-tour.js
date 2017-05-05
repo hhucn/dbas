@@ -234,7 +234,7 @@ function GuidedTour(){
 	this.__startTour = function(){
 		// build dialog
 		var title = _t(tourWelcomeTitle);
-		var text = _t(welcomeDialogBody) + lang_switcher.replace('style="', 'style="display: none; ');
+		var text = '<p class="lead">' + _t(welcomeDialogBody) + '</p>' + lang_switcher.replace('style="', 'style="display: none; ');
 		var dialog = $('#' + popupConfirmDialogId);
 		
 		// add language switcher

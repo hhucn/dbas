@@ -159,7 +159,7 @@ $.fn.euCookieLawPopup = (function() {
 				$(".eupopup-markup").html(), settings);
 
 			// No need to display this if user already accepted the policy
-			if (userAlreadyAcceptedCookies()) {
+			if (userAlreadyAcceptedCookies() || true) { // TODO: THIS HIDES THE COOKIE POPUP
 				return;
 			}
 
