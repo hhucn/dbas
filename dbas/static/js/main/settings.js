@@ -431,6 +431,8 @@ $(function () {
 		} else {
 			Cookies.set(GUIDED_TOUR, true, { expires: 180 });
 		}
+		Cookies.remove(GUIDED_TOUR_RUNNING_START);
+		Cookies.remove(GUIDED_TOUR_RUNNING_DISCUSSION);
 	});
 
 	$.each($('#settings-language-dropdown').find('a'), function(){

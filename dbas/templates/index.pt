@@ -25,7 +25,7 @@
                 <div class="row">
                     <div class="col-md-offset-1 col-md-10">
                         <div class="well well-sm">
-                            <div class="text-center">
+                            <div class="text-center" id="start-text">
                                 <p class="lead">
                                     <span i18n:translate="choose_fieldtest_reviewer_text">
                                         Derzeit läuft D-BAS sowohl im Produktivbetrieb zur Diskussion von Verbesserungen im Studiengang Informatik (nur auf Deutsch) als auch in einer eine Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres Browsers vermuten wir, dass Sie sich für den Produktivbetrieb interessieren. Welche Version von D-BAS wollen Sie nutzen:
@@ -43,8 +43,11 @@
                 </div>
 				<br>
 				<p class="lead">
-					<span i18n:translate="work_based_on">This work is part of the graduate school on</span> <a href="http://www.fortschrittskolleg.de/" target="_blank"><span i18n:translate="online_participation">Online-Participation</span></a>.
-					<span i18n:translate="funded_by">It is funded by the</span> <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaere-forschung/fortschrittskolleg-online-partizipation/" target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.
+					<span i18n:translate="work_based_on">This work is part of the graduate school on</span>
+                    <a href="http://www.fortschrittskolleg.de/en/" target="_blank" tal:condition="extras.lang_is_en"><span i18n:translate="online_participation">Online-Participation</span></a>
+                    <a href="http://www.fortschrittskolleg.de/" target="_blank" tal:condition="not:extras.lang_is_en"><span i18n:translate="online_participation">Online-Participation</span></a>.
+					<span i18n:translate="funded_by">It is funded by the</span>
+                    <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaere-forschung/fortschrittskolleg-online-partizipation/" target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.
 				</p>
 				<div class="list-logos center">
 					<a href="https://www.hhu.de/" title="www.hhu.de" target="_blank"><img class="logo_hhu" alt="logo_hhu" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}"/></a>

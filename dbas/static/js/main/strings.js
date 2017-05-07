@@ -322,8 +322,9 @@ var tourHaveFunContent              = 'tourHaveFunContent';
 // cookies
 var WARNING_CHANGE_DISCUSSION_POPUP = 'WARNING_CHANGE_DISCUSSION_POPUP';
 var BUBBLE_INFOS = 'SPEECH_BUBBLE_INFOS';
-var GUIDED_TOUR = 'DID_GUIDED_TOUR';
-var GUIDED_TOUR_RUNNING = 'GUIDED_TOUR_RUNNING';
+var GUIDED_TOUR = 'PASSED_GUIDED_TOUR';
+var GUIDED_TOUR_RUNNING_START = 'GUIDED_TOUR_RUNNING_FROM_START';
+var GUIDED_TOUR_RUNNING_DISCUSSION = 'GUIDED_TOUR_RUNNING_FROM_DISCUSSION';
 var ADMIN_WARNING = 'hide-admin-caution-warning';
 var LANG_SWITCH_WARNING = 'LANG_SWITCH_WARNING';
 var DBAS_DATA_DISCLAIMER = 'DBAS_DATA_DISCLAIMER';
@@ -391,7 +392,7 @@ var dbas_en = {
     'doNotHesitateToContact': 'Do not hesitate to <b><span style="cursor: pointer;" id="contact_on_error">contact us (click here)</span></b>',
     'deleteStatisticsTitle': 'Delete Statistics',
     'deleteStatisticsBody': 'Are you sure? This will delete all stored information about clicks respectively votes you have done.',
-    'euCookiePopupTitle': 'This website uses cookies and Piwik.',
+    'euCookiePopupTitle': 'This website uses cookies.',
     'euCookiePopupText': 'We use them to give you the best experience. If you continue using our website, we\'ll assume that you are happy to receive all cookies on this website and beeing tracked for academic purpose. All tracked data are saved anonymously with reduced masked IP-adresses.',
     'euCookiePopoupButton1': 'Okay',
     'euCookiePopoupButton2': 'Learn&nbsp;more',
@@ -628,7 +629,7 @@ var dbas_de = {
     'doNotHesitateToContact': 'Bitte zögern Sie bei Fehlern nicht, <b><span style="cursor: pointer;" id="contact_on_error">uns zu kontaktieren (hier klicken)</span></b>',
     'deleteStatisticsTitle': 'Statistik löschen',
     'deleteStatisticsBody': 'Dies löscht die Statstik. Dadurch werden alle Klicks, die von Ihnen getätigt wurden, wieder entfernt.',
-    'euCookiePopupTitle': 'Diese Seite nutzt Cookies und Piwik.',
+    'euCookiePopupTitle': 'Diese Seite nutzt Cookies.',
     'euCookiePopupText': 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen, nehmen Sie alle Cookies unserer Seite an und sind glücklich damit. Zusätzlich tracken wir Ihre Aktionen und speichern diese anonym ab. Dabei wird Ihre IP-Adresse maskiert.',
     'euCookiePopoupButton1': 'Okay',
     'euCookiePopoupButton2': 'Mehr&nbsp;Infos',

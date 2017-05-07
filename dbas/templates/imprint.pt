@@ -7,131 +7,54 @@
 			<div class="col-md-7">
                 <div class="colored-container" style="margin-bottom: 1em;">
 				    <h4><span i18n:translate="imprint">Impressum</span> ${project}</h4>
-				    <h6>Build <span tal:replace="extras.dbas_build"></span></h6>
+				    <p>Build <span tal:replace="extras.dbas_build"></span></p>
 				    <p i18n:translate="data_tmg">Angaben gemäß § 5 TMG</p>
-				    <br>
-				    <p>
+                    <p style="margin-top: 1em; margin-bottom: 2em;">
+                        <a id="link_popup_license" href="" data-toggle="modal" data-target="#popup_license">
+                            <span i18n:translate="details_license">Details concerning the license</span>
+                        </a>
+                    </p>
 				    <h5 i18n:translate="contact">Kontakt:</h5>
-				    <a id="link_popup_author" href="" data-toggle="modal" data-target="#popup_author">Tobias Krauthoff</a>
+				    <a tal:condition="not:extras.lang_is_en" href="http://www.tsn.hhu.de/ourgroup/scientists/tobias-krauthoff.html" target="_blank">Tobias Krauthoff</a>
+				    <a tal:condition="extras.lang_is_en" href="http://www.tsn.hhu.de/en/ourgroup/scientists/tobias-krauthoff.html" target="_blank">Tobias Krauthoff</a>
 				    <br><span i18n:translate="department">Institut für Informatik</span>
-				    <br>Universitätstraße 1
-				    <br>40225 Düsseldorf
+                    <br><span>Universitätstraße 1</span>
+                    <br><span>40225 Düsseldorf</span>
 				    <br>
-				    <br><span i18n:translate="phone">Telefon:</span> 0211-8113461
-				    <br>E-Mail: <a target="_blank" href='mailto:krauthoff@cs.uni-duesseldorf.de'>krauthoff@cs.uni-duesseldorf.de</a>
+				    <br><span i18n:translate="phone">Telefon:</span> <span>0211-8113461</span>
+				    <br><span>E-Mail: </span><a target="_blank" href='mailto:krauthoff@cs.uni-duesseldorf.de'>krauthoff@cs.uni-duesseldorf.de</a>
 				    <br>
 				    <br>
                     <a href="http://www.uni-duesseldorf.de/home/footer/impressum.html"><span i18n:translate="imprint_hhu">Weiteres auf dem Impressum der HHU</span></a>
-				    <!--<h4 style="margin-bottom: 1em;"><span i18n:translate="disclaimer">Haftungsausschluss:</span></h4>-->
-				    <!--<h5><span i18n:translate="disclaimer_content">Haftung für Inhalte</span></h5>-->
-				    <!--<span i18n:translate="disclaimer_content_content">-->
-                    <!--    Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit,-->
-                    <!--    Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Als-->
-                    <!--    Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den-->
-                    <!--    allgemeinen Gesetzen verantwortlich. Nach § 8 bis 10 TMG sind wir als Diensteanbieter jedoch nicht-->
-                    <!--    verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen-->
-                    <!--    zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder-->
-                    <!--    Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt.-->
-                    <!--    Eine diesbezügliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten-->
-                    <!--    Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese-->
-                    <!--    Inhalte umgehend entfernen.-->
-                    <!--</span>-->
-				    <!--<br>-->
-				    <!--<br>-->
-				    <!--<h5><span i18n:translate="disclaimer_links">Haftung für Links</span></h5>-->
-				    <!--<span i18n:translate="disclaimer_links_content">-->
-                    <!--    Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss-->
-                    <!--    haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte-->
-                    <!--    der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.-->
-                    <!--    Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft.-->
-                    <!--    Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente-->
-                    <!--    inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer-->
-                    <!--    Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige-->
-                    <!--    Links umgehend entfernen.-->
-                    <!--</span>-->
-				    <!--<br>-->
-				    <!--<br>-->
-				    <!--<h5><span i18n:translate="disclaimer_copyright">Urheberrecht</span></h5>-->
-				    <!--<span i18n:translate="disclaimer_copyright_content">-->
-                    <!--    Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem-->
-                    <!--    deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung-->
-                    <!--    außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen-->
-                    <!--    Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht-->
-                    <!--    kommerziellen Gebrauch gestattet. Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt-->
-                    <!--    wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche-->
-                    <!--    gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir-->
-                    <!--    um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige-->
-                    <!--    Inhalte umgehend entfernen.-->
-                    <!--</span>-->
-				    <!--<br>-->
-				    <!--<br>-->
-				    <!--<h5><span i18n:translate="disclaimer_dataprotection">Datenschutz</span></h5>-->
-				    <!--<span i18n:translate="disclaimer_dataprotection_content">-->
-                    <!--    Die Nutzung unserer Webseite ist in der Regel ohne Angabe personenbezogener Daten möglich. Soweit-->
-                    <!--    auf unseren Seiten personenbezogene Daten (beispielsweise Name, oder eMail-Adressen) erhoben-->
-                    <!--    werden, erfolgt dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten werden ohne Ihre-->
-                    <!--    ausdrückliche Zustimmung nicht an Dritte weitergegeben.-->
-                    <!--    <br>-->
-                    <!--    Wir weisen darauf hin, dass die Datenübertragung im Internet (z.B. bei der Kommunikation per E-Mail)-->
-                    <!--    Sicherheitslücken aufweisen kann. Ein lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist-->
-                    <!--    nicht möglich.-->
-				    <!--    <br>-->
-                    <!--    Der Nutzung von im Rahmen der Impressumspflicht veröffentlichten Kontaktdaten durch Dritte zur-->
-                    <!--    Übersendung von nicht ausdrücklich angeforderter Werbung und Informationsmaterialien wird hiermit-->
-                    <!--    ausdrücklich widersprochen. Die Betreiber der Seiten behalten sich ausdrücklich rechtliche Schritte-->
-                    <!--    im Falle der unverlangten Zusendung von Werbeinformationen, etwa durch Spam-Mails, vor.-->
-                    <!--</span>-->
-				    <!--<br>-->
-				    <!--<br>-->
-				    <!--<h5><span i18n:translate="disclaimer_session_cookie">Session-Cookies</span></h5>-->
-				    <!--<span i18n:translate="disclaimer_session_cookie_content">-->
-                    <!--    Diese erlauben Ihnen notwendige Funktionen auf unseren Websites auszuführen, wie das-->
-                    <!--    Aufrechterhalten von Log-in Informationen für Ihre Sitzung oder einer Überweisung. Ebenfalls-->
-                    <!--    helfen sie dabei die Datenübertragung hindurch des Internets zu minimieren. Sie werden nicht-->
-                    <!--    auf Ihrem Computer gespeichert und laufen ab, sobald Sie Ihre Browser-Sitzung beenden.-->
-                    <!--</span>-->
-				    <!--<br>-->
-				    <!--<br>-->
-				    <!--<br>-->
-				    <!--<h5><span i18n:translate="disclaimer_tracking_cookie">Tracking-Cookies</span></h5>-->
-				    <!--<span i18n:translate="disclaimer_tracking_cookie_content">-->
-                    <!--    Diese erlauben uns Ihre wiederholten Besuche unserer Website wahrzunehmen. Durch die-->
-                    <!--    Übereinstimmung  von anononymen, willkürlichen Identifizierungszeichen, sind wir dazu in der Lage-->
-                    <!--    spezielle  Browsing-Informationen festzuhalten, z.B. von Ihnen ausgewählte Seiten und Optionen und-->
-                    <!--    den Weg,  den Sie durch unsere Website gewählt haben. Durch das Überwachen dieser Informationen-->
-                    <!--    können wir  unsere Websites verbessern.-->
-				    <!--</span>-->
-				    <!--<br>-->
-				    <!--<br>-->
-				    <br>
-				    <h5><span i18n:translate="disclaimer_piwik">Piwik</span></h5>
-				    <span i18n:translate="disclaimer_piwik_content">
-                        Dieses Angebot benutzt Piwik.org, eine Open-Source-Software zur statistischen Auswertung der
-                        Nutzerzugriffe. Piwik verwendet sog. “Cookies”, Textdateien, die auf dem Computer der Nutzer
-                        gespeichert werden und die eine Analyse der Benutzung der Website durch die Nutzer ermöglichen.
-                        Die durch den Cookie erzeugten Informationen über die Benutzung dieses Agebotes werden auf dem
-                        Server des Anbieters in Deutschland gespeichert. Die IP-Adresse wird sofort nach der Verarbeitung
-                        und vor deren Speicherung anonymisiert. Nutzer können die Installation der Cookies durch eine
-                        entsprechende Einstellung Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch
-                        darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche Funktionen dieser Website
-                        vollumfänglich nutzen können.
-                    </span>
-				    <br>
-				    <br>
-				    <br>
-				    <h5><span>Piwik Opt-Out</span></h5>
-				    <iframe id="piwik-opt-out-iframe" style="border: 0; height: 200px; width: 600px;" src="https://dbas.cs.uni-duesseldorf.de/piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=de"></iframe>
+				    <div tal:omit-tag="" tal:condition="not:extras.development_mode">
+				        <br>
+				        <h5><span i18n:translate="disclaimer_piwik">Piwik</span></h5>
+				        <span i18n:translate="disclaimer_piwik_content">
+                            Dieses Angebot benutzt Piwik.org, eine Open-Source-Software zur statistischen Auswertung der
+                            Nutzerzugriffe. Piwik verwendet sog. “Cookies”, Textdateien, die auf dem Computer der Nutzer
+                            gespeichert werden und die eine Analyse der Benutzung der Website durch die Nutzer ermöglichen.
+                            Die durch den Cookie erzeugten Informationen über die Benutzung dieses Agebotes werden auf dem
+                            Server des Anbieters in Deutschland gespeichert. Die IP-Adresse wird sofort nach der Verarbeitung
+                            und vor deren Speicherung anonymisiert. Nutzer können die Installation der Cookies durch eine
+                            entsprechende Einstellung Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch
+                            darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche Funktionen dieser Website
+                            vollumfänglich nutzen können.
+                        </span>
+				        <br>
+				        <br>
+				        <br>
+				        <h5><span>Piwik Opt-Out</span></h5>
+				        <iframe id="piwik-opt-out-iframe" style="border: 0; height: 200px; width: 600px;" src="https://dbas.cs.uni-duesseldorf.de/piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=de"></iframe>
+                    </div>
                 </div>
 
 				<div class="colored-container links">
-					<h4><span >Pylons Pyramid</span></h4>
+					<h4><span>Pylons Pyramid</span></h4>
 					<span class="current-version project">${project}</span> <span i18n:translate="generated_with">is generated with Pyramid Web Framework </span> ${extras.pyramid_version}
 					<br>
 					<ul>
 						<li><a target="_blank" href="http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/"><i class="fa fa-bookmark" aria-hidden="true">&thinsp;</i>Docs</a></li>
 						<li><a target="_blank" href="https://github.com/Pylons/pyramid"><i class="fa fa-cog" aria-hidden="true"></i>&thinsp;Github Project</a></li>
-					</ul>
-					<ul>
 						<li><a target="_blank" href="https://webchat.freenode.net/?channels=pyramid"><i class="fa fa-globe" aria-hidden="true"></i>&thinsp;IRC Channel</a></li>
 						<li><a target="_blank" href="http://pylonsproject.org"><i class="fa fa-home" aria-hidden="true"></i>&thinsp;Pylons Project</a></li>
 					</ul>

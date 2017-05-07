@@ -209,4 +209,10 @@ $(document).ready(function () {
 	gui.setSaveClickEvent(data);
 	gui.setCancelClickEvent(data);
 	gui.setAddClickEvent();
+	
+	try{
+		data.DataTable();
+	} catch(e){
+		console.log(e.name + ': ' + e.message);
+	}
 });

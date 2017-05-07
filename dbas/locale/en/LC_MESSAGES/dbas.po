@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-04-29 16:44+0200\n"
+"POT-Creation-Date: 2017-05-05 13:43+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -284,7 +284,7 @@ msgid "no_arguments_to_review"
 msgstr "No arguments to review in this queue!"
 
 #. Default: Review
-#: templates/review-content.pt:19 templates/snippet-header.pt:70
+#: templates/review-content.pt:19 templates/snippet-header.pt:76
 #: templates/review-history.pt:14 templates/review-reputation.pt:8
 msgid "review"
 msgstr "Review"
@@ -574,36 +574,41 @@ msgstr "Toggle navigation"
 msgid "lets_go"
 msgstr "Let's go"
 
-#. Default: News
+#. Default: Report Issues
 #: templates/snippet-header.pt:26
+msgid "report_issue"
+msgstr "Report Issue"
+
+#. Default: News
+#: templates/snippet-header.pt:31
 msgid "news"
 msgstr "News"
 
 #. Default: Login
 #. Default: Log In
-#: templates/snippet-header.pt:32 templates/snippet-popups.pt:273
+#: templates/snippet-header.pt:37 templates/snippet-popups.pt:273
 #: templates/snippet-popups.pt:323 templates/snippet-popups.pt:340
 #: templates/snippet-popups.pt:538
 msgid "login"
 msgstr "Log In"
 
 #. Default: Settings
-#: templates/snippet-header.pt:46 templates/settings.pt:41
+#: templates/snippet-header.pt:51 templates/settings.pt:41
 msgid "settings"
 msgstr "Settings"
 
 #. Default: Notifications
-#: templates/snippet-header.pt:53
+#: templates/snippet-header.pt:58
 msgid "notifications"
 msgstr "Notifications"
 
 #. Default: Admin
-#: templates/snippet-header.pt:58
+#: templates/snippet-header.pt:63
 msgid "Admin"
 msgstr "Admin"
 
 #. Default: Logout
-#: templates/snippet-header.pt:63
+#: templates/snippet-header.pt:68
 msgid "logout"
 msgstr "Logout"
 
@@ -617,31 +622,36 @@ msgstr "Imprint"
 msgid "data_tmg"
 msgstr "Information according to § 5 TMG "
 
+#. Default: Details concerning the license
+#: templates/imprint.pt:14
+msgid "details_license"
+msgstr "Details concerning the license"
+
 #. Default: Kontakt:
 #. Default: Contact
-#: templates/imprint.pt:14 templates/snippet-footer.pt:18
+#: templates/imprint.pt:17 templates/snippet-footer.pt:18
 msgid "contact"
 msgstr "Contact"
 
 #. Default: Institut für Informatik
-#: templates/imprint.pt:16
+#: templates/imprint.pt:20
 msgid "department"
 msgstr "Department of Computer Science"
 
 #. Default: Telefon:
-#: templates/imprint.pt:20
+#: templates/imprint.pt:24
 msgid "phone"
 msgstr "Phone Number:"
 
 #. Default: Weiteres auf dem Impressum der HHU
-#: templates/imprint.pt:24
+#: templates/imprint.pt:28
 msgid "imprint_hhu"
 msgstr ""
 "For more details please see the imprint of the Heinrich-Heine-University "
 "Duesseldorf"
 
 #. Default: Piwik
-#: templates/imprint.pt:107
+#: templates/imprint.pt:31
 msgid "disclaimer_piwik"
 msgstr "Piwik"
 
@@ -656,7 +666,7 @@ msgstr "Piwik"
 #. Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch
 #. darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche
 #. Funktionen dieser Website vollumfänglich nutzen können.
-#: templates/imprint.pt:108
+#: templates/imprint.pt:32
 msgid "disclaimer_piwik_content"
 msgstr ""
 "Like most website operators, Piwik.org collects non-personally-identifying "
@@ -674,17 +684,17 @@ msgstr ""
 "identifying information, as described below."
 
 #. Default: is generated with Pyramid Web Framework
-#: templates/imprint.pt:128
+#: templates/imprint.pt:53
 msgid "generated_with"
 msgstr "is generated with Pyramid Web Framework"
 
 #. Default: Copyrights and used Software
-#: templates/imprint.pt:143
+#: templates/imprint.pt:66
 msgid "copyright_and_used_software"
-msgstr "Copyright and used Software"
+msgstr "Used Software"
 
 #. Default: Changes
-#: templates/imprint.pt:164
+#: templates/imprint.pt:87
 msgid "changes"
 msgstr "Changelog"
 
@@ -904,11 +914,6 @@ msgstr "Cancel"
 #: templates/snippet-footer.pt:9
 msgid "imprint_copyright"
 msgstr "Imprint and Copyright"
-
-#. Default: License
-#: templates/snippet-footer.pt:15
-msgid "license"
-msgstr "License"
 
 #. Default: RSS
 #: templates/snippet-footer.pt:22
@@ -1975,6 +1980,9 @@ msgstr "Supports"
 #: templates/content.pt:307
 msgid "attacks_on_my_statements"
 msgstr "Attacks"
+
+#~ msgid "license"
+#~ msgstr "License"
 
 #~ msgid "lets_start_now"
 #~ msgstr "Click here to start now!"

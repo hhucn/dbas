@@ -13,7 +13,7 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
     ReviewCanceled, RevokedContent, RevokedContentHistory, RSS, LastReviewerDuplicate, ReviewDuplicate,\
     RevokedDuplicate, MarkedArgument, MarkedStatement, History
-from dbas.lib import is_user_admin, get_text_for_premisesgroup_uid, get_text_for_argument_uid, get_text_for_statement_uid
+from dbas.lib import is_user_admin, get_text_for_premisesgroup_uid, get_text_for_argument_uid, get_text_for_statement_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from sqlalchemy.exc import IntegrityError, ProgrammingError
@@ -245,12 +245,8 @@ def __get_author_data(uid, query, main_page):
     if not db_settings:
         return 'Missing settings of author with uid ' + str(uid), False
 
-    # img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 20, True))
-    img = ''
-
-    link_begin = '<a href="{}/user/{}">'.format(main_page, db_user.uid)
-    link_end = '</a>'
-    return link_begin + db_user.nickname + ' ' + img + link_end, True
+    img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 20, True))
+    return '<a href="{}/user/{}">{} {}</a> ({})'.format(main_page, db_user.uid, img, db_user.nickname, db_user.uid), True
 
 
 def __get_dash_dict(name, href):
@@ -289,7 +285,7 @@ def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tm
     if column in _user_columns:
         text, success = __get_author_data(attribute, db_users, main_page)
         text = str(text) if success else ''
-        tmp.append(str(attribute) + ' - ' + text)
+        tmp.append(text)
 
     elif column == 'lang_uid':
         tmp.append(__get_language(attribute, db_languages))
@@ -317,48 +313,15 @@ def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tm
         tmp.append(str(attribute) + ' - ' + str(text))
 
     elif column == 'path':
-        url = __build_url_from_attribute(main_page, attribute)
-        link = '<a href={}>{}</a>'
-        tmp.append(link.format(url, str(attribute)))
+        tmp.append('<a href="{}/{}{}" target="_blank">{}</a>'.format(main_page, 'discuss', attribute, attribute))
+
+    elif column == 'email':
+        db_user = DBDiscussionSession.query(User).filter_by(email=str(attribute)).first()
+        img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 25))
+        tmp.append('{} {}'.format(img, attribute))
 
     else:
         tmp.append(str(attribute))
-
-
-def __build_url_from_attribute(main_page, attribute):
-    try:
-        # main_page + slug + discuss + ...
-        splitted_attribute = attribute.split('/')
-        keywords = ['attitude', 'choose', 'justify', 'reaction']
-        if len(splitted_attribute) < 2:
-            return main_page + '/' + attribute
-
-        if splitted_attribute[1] not in keywords:
-            if 'discuss' in attribute:
-                return main_page + '/discuss'
-            return main_page
-
-        if 'attitude' in attribute:
-            table_type = Statement
-            index = 2
-        elif 'choose' in attribute:
-            table_type = Statement
-            index = 4
-        elif 'justify' in attribute:
-            table_type = Statement
-            index = 2
-        elif 'reaction' in attribute:
-            table_type = Argument
-            index = 2
-        else:
-            return main_page + '/' + attribute
-
-        db_val = DBDiscussionSession.query(table_type).get(splitted_attribute[index])
-        slug = DBDiscussionSession.query(Issue).get(db_val.issue_uid).get_slug()
-        return main_page + '/' + slug  + '/discuss/' + attribute
-    except:
-        logger('ADMIN LIB', 'Exception URL Build', str(attribute), error=True)
-        return main_page + '/discuss'
 
 
 def update_row(table_name, uids, keys, values, nickname, _tn):
