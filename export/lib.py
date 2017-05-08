@@ -221,6 +221,10 @@ def get_table_rows(nickname, table_name, ids):
     db_lang = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
     _t = Translator(db_lang.ui_locales)
 
+    # admin rights?
+    if db_user.groups.uid != 1:
+        return {'error': _t.get(_.noRights), 'group': str(db_user.groups.uid)}
+
     # catch empty input
     if table_name is None or ids is None or len(ids) == 0:
         return {'error': _t.get(_.inputEmpty)}
@@ -232,7 +236,7 @@ def get_table_rows(nickname, table_name, ids):
     # catch empty table
     table = table_mapper[table_name.lower()]['table']
     db_elements = DBDiscussionSession.query(table)
-    if len(db_elements.all()) == 0:
+    if len(db_elements.all()) == 1:
         return {'error': _t.get(_.internalKeyError), 'table': table_mapper[table_name.lower()]['name']}
 
     columns = [r.key for r in table.__table__.columns]
