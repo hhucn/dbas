@@ -649,7 +649,7 @@ def __set_up_users(session, include_dummy_users=True):
     # adding some dummy users
     pwt = get_hashed_password('iamatestuser2016')
     pw0 = get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
-    pw1 = get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
+    # pw1 = get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
     pw2 = '$2a$10$9P5biPvyX2xVeMcCLm82tO0XFQhmdMFwgAhPaUkCHoVL1F5kEAjIa'
     pw4 = '$2a$10$Ou/pHV1MoZRqvt5U8cV09up0qqbIz70ZjwEeanRkyyfR/rrMHcBfe'
     pw8 = get_hashed_password('bjoern')
@@ -657,18 +657,17 @@ def __set_up_users(session, include_dummy_users=True):
 
     user0 = User(firstname=nick_of_anonymous_user, surname=nick_of_anonymous_user, nickname=nick_of_anonymous_user,
                  email='', password=pw0, group_uid=group2.uid, gender='m')
-    user1 = User(firstname='admin', surname='admin', nickname=nick_of_admin, email='dbas.hhu@gmail.com', password=pw1,
-                 group_uid=group0.uid, gender='m')
+    # user1 = User(firstname='admin', surname='admin', nickname=nick_of_admin, email='dbas.hhu@gmail.com', password=pw1,  group_uid=group0.uid, gender='m')
     user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de',
                  password=pw2, group_uid=group0.uid, gender='m')
     user4 = User(firstname='Christian', surname='Meter', nickname='Christian', email='meter@cs.uni-duesseldorf.de',
                  password=pw4, group_uid=group0.uid, gender='m')
 
-    session.add_all([user0, user1, user2, user4])
+    session.add_all([user0, user2, user4])
     session.flush()
 
     if not include_dummy_users:
-        return [user0, user1, user2, user4]
+        return [user0, user2, user4]
 
     user6 = User(firstname='Björn', surname='Ebbinghaus', nickname='Björn',
                  email='bjoern.ebbinghaus@uni-duesseldorf.de', password=pw8, group_uid=group0.uid, gender='m')
@@ -748,7 +747,7 @@ def __set_up_users(session, include_dummy_users=True):
 
     session.flush()
 
-    return [user0, user1, user2, user4, user6, user7, user8, usert00, usert01, usert02, usert03, usert04, usert05,
+    return [user0, user2, user4, user6, user7, user8, usert00, usert01, usert02, usert03, usert04, usert05,
             usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17,
             usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29,
             usert30]
