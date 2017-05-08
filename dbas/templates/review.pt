@@ -78,7 +78,7 @@
                 <div class="left row">
                     <div class="col-md-offset-2 col-md-8 col-xs-offset-1 col-cs-10" style="margin-top: 1em;">
                         <h4 i18n:translate="what_is_reputation">What is reputation? How do I earn (and lose) it?</h4>
-                        <span i18n:translate="what_is_reputation_def">Reputation is a rough measurement of how work you are doing for the discussion and the community;</span>
+                        <span i18n:translate="what_is_reputation_def">Reputation is a rough measurement of how work you are doing for the discussion and the community.</span>
                         <span i18n:translate="what_is_reputation_earn">you can earn it by using D-BAS and all of its great functions.</span>
                         <span i18n:translate="what_is_reputation_use">Basic use of D-BAS, does not require any reputation at all.</span>
                         <div class="row" style="margin-top: 1em;">

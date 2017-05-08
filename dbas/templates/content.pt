@@ -302,9 +302,9 @@
                     <li id="statements" class="hidden indented-button"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="statements">Statements</span></li>
                     <li id="show-my-path" class="hidden"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_path">My path</span></li>
                     <li id="hide-my-path" class="hidden"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_path">My path</span></li>
-                    <li id="my-statements" class="hidden"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_statements">My statements</span></li>
-                    <li id="supports-on-my-statements" class="hidden indented-button"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="supports_on_my_statements">Supports</span></li>
-                    <li id="attacks-on-my-statements" class="hidden indented-button"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="attacks_on_my_statements">Attacks</span></li>
+                    <li id="my-statements" tal:condition="extras.logged_in" class="hidden"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_statements">My statements</span></li>
+                    <li id="supports-on-my-statements" tal:condition="extras.logged_in" class="hidden indented-button"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="supports_on_my_statements">Supports</span></li>
+                    <li id="attacks-on-my-statements" tal:condition="extras.logged_in" class="hidden indented-button"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="attacks_on_my_statements">Attacks</span></li>
                 </ul>
 
                 <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
