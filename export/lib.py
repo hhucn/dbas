@@ -7,10 +7,13 @@ from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, MarkedArgument,\
-    MarkedStatement, Issue
+    MarkedStatement, Issue, Settings, Language
 from dbas.input_validator import is_integer
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
+from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
+from admin.lib import table_mapper, get_rows_of
 
 
 def get_dump(issue):
@@ -199,3 +202,45 @@ def get_minimal_graph_export(issue):
     return {'nodes': nodes,
             'inferences': inferences,
             'undercuts': undercuts}
+
+
+def get_table_rows(nickname, table_name, ids):
+    """
+    
+    :param nickname: 
+    :param table_name: 
+    :param ids: 
+    :return: 
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
+        _t = Translator('en')
+        return {'error': _t.get(_.notLoggedIn)}
+
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_user.uid).first()
+    db_lang = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
+    _t = Translator(db_lang.ui_locales)
+
+    # catch empty input
+    if table_name is None or ids is None or len(ids) == 0:
+        return {'error': _t.get(_.inputEmpty)}
+
+    # catch wrong table
+    if table_name.lower() not in table_mapper:
+        return {'error': _t.get(_.internalKeyError)}
+
+    # catch empty table
+    table = table_mapper[table_name.lower()]['table']
+    db_elements = DBDiscussionSession.query(table)
+    if len(db_elements.all()) == 0:
+        return {'error': _t.get(_.internalKeyError), 'table': table_mapper[table_name.lower()]['name']}
+
+    columns = [r.key for r in table.__table__.columns]
+    row = db_elements.filter(table.uid.in_(ids))
+    try:
+        ret_list = get_rows_of(columns, row, '')
+    except:
+        return {'error': _t.get(_.internalKeyError),
+                'table': table_mapper[table_name.lower()]['name']}
+
+    return ret_list

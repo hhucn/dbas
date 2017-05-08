@@ -204,7 +204,7 @@ def get_table_dict(table_name, main_page):
 
     # getting data
     # data = [[str(getattr(row, c.name)) for c in row.__table__.columns] for row in db_elements]
-    data = __get_rows_of(columns, db_elements, main_page)
+    data = get_rows_of(columns, db_elements, main_page)
 
     # save it
     return {
@@ -260,7 +260,7 @@ def __get_dash_dict(name, href):
     return {'name': name, 'href': href}
 
 
-def __get_rows_of(columns, db_elements, main_page):
+def get_rows_of(columns, db_elements, main_page):
     """
     Returns array with all data of a table
 

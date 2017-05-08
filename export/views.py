@@ -10,7 +10,7 @@ from cornice import Service
 
 import dbas.helper.issue as IssueHelper
 from dbas.logger import logger
-from export.lib import get_dump, get_minimal_graph_export
+from export.lib import get_dump, get_minimal_graph_export, get_table_rows
 
 #
 # CORS configuration
@@ -31,6 +31,10 @@ dump = Service(name='export_dump',
 doj = Service(name='export_doj',
               path='/doj*issue',
               description='Export for DoJ')
+
+table_row = Service(name='export_table_row',
+                    path='/{table}/*ids',
+                    description='Export several columns from a table')
 
 
 # =============================================================================
@@ -63,8 +67,25 @@ def get_doj_dump(request):
     :return: dict()
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Export', 'main', 'def')
+    logger('Export', 'get_doj_dump', 'def')
     m = request.matchdict
     issue = m['issue'][0] if 'issue' in m and len(m['issue']) > 0 else None
 
     return json.dumps(get_minimal_graph_export(issue), True)
+
+
+@table_row.get()
+def get_table_row(request):
+    """
+    Coming soon
+
+    :param request: current webservers request
+    :return: dict()
+    """
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Export', 'get_table_row', 'def: {}'.format(request.matchdict))
+    matchdict = request.matchdict
+    table = matchdict['table'] if 'table' in matchdict else None
+    ids = matchdict['ids'] if 'table' in matchdict else None
+
+    return json.dumps(get_table_rows(request.authenticated_userid, table, ids))
