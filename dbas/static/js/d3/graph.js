@@ -973,7 +973,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             // check if the button is mentioned in mapper array
             if (id in mapper) {
 	            $('#' + id).off('click').click(function () {
-                    console.log(id);
 		            if ($(this).find('i').attr('class') === "fa fa-square-o") {
 			            $(this).find('i').removeClass().addClass("fa fa-check-square-o");
 			            mapper[id][0]();
@@ -986,11 +985,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         });
         
         $('#show-my-path').click(function(){
-            showPath();
+            showPath(jsonData);
         });
         
         $('#hide-my-path').click(function(){
-            showPath();
+            hidePath();
         });
     }
 	
