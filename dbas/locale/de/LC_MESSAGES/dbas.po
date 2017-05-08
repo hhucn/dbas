@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-05-08 16:02+0200\n"
+"POT-Creation-Date: 2017-05-08 21:31+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -779,22 +779,22 @@ msgid "what_is_reputation"
 msgstr "Was ist Reputation? Wie bekomme (verliere) ich diese?"
 
 #. Default: Reputation is a rough measurement of how work you are doing for the
-#. discussion and the community;
+#. discussion and the community.
 #: templates/review.pt:81
 msgid "what_is_reputation_def"
 msgstr ""
 "Reputation ist eine grobe Messung, wieviel Arbeit Sie in die Diskussion und "
-"die Communty stecken;"
+"die Communty stecken."
 
 #. Default: you can earn it by using D-BAS and all of its great functions.
 #: templates/review.pt:82
 msgid "what_is_reputation_earn"
-msgstr "Sie können mehr Reputation durch die Nutzung von D-BAS verdienen"
+msgstr "Sie können mehr Reputation durch die Nutzung von D-BAS verdienen."
 
 #. Default: Basic use of D-BAS, does not require any reputation at all.
 #: templates/review.pt:83
 msgid "what_is_reputation_use"
-msgstr "Normale Nutzung von D-BAS bedarf keiner Reputation."
+msgstr "Bei der alltägliche Nutzung von D-BAS bedarf es keiner Reputation."
 
 #. Default: You gain reputation when:
 #: templates/review.pt:86
@@ -1729,54 +1729,54 @@ msgstr "Treten Sie mit uns in Kontakt"
 
 #. Default: Feel free to drop us a line and we’ll try to get back to you in 48
 #. hours max!
-#: templates/contact.pt:11
+#: templates/contact.pt:12
 msgid "feel_free_to_drop_line"
 msgstr ""
 "Wenn Sie uns eine Nachricht hinterlassen, werden wir uns zeitnah bei Ihnen "
 "melden."
 
 #. Default: You have found a bug?
-#: templates/contact.pt:14
+#: templates/contact.pt:16
 msgid "you_found_bug"
 msgstr "Sie haben einen Fehler gefunden?"
 
 #. Default: Please open a new issue on our project page at
-#: templates/contact.pt:16
+#: templates/contact.pt:18
 msgid "send_mail_or_github"
 msgstr "Bitte eröffnen Sie ein neues Problem auf unserer Projektseite auf"
 
 #. Default: Otherwise feel free to drop us a line
-#: templates/contact.pt:18
+#: templates/contact.pt:20
 msgid "otherwise_drop_a_line"
 msgstr "Ansonsten können Sie uns auch eine Nachricht hinterlassen"
 
 #. Default: Your Name (required)
-#: templates/contact.pt:27
+#: templates/contact.pt:29
 msgid "name_req"
 msgstr "Ihr Name (notwendig)"
 
 #. Default: Your E-Mail (required)
-#: templates/contact.pt:35
+#: templates/contact.pt:37
 msgid "mail_req"
 msgstr "Ihre E-Mail (notwendig)"
 
 #. Default: Your Notification (required)
-#: templates/contact.pt:43
+#: templates/contact.pt:45
 msgid "message_req"
 msgstr "Ihre Nachricht (notwendig)"
 
 #. Default: Warning!
-#: templates/contact.pt:59
+#: templates/contact.pt:61
 msgid "warning"
 msgstr "Warnung!"
 
 #. Default: Great:
-#: templates/contact.pt:65
+#: templates/contact.pt:67
 msgid "great"
 msgstr "Großartig:"
 
 #. Default: Your message was sent.
-#: templates/contact.pt:65
+#: templates/contact.pt:67
 msgid "message_sent"
 msgstr "Ihre Nachricht wurde gesendet"
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-05-08 16:02+0200\n"
+"POT-Creation-Date: 2017-05-08 21:31+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -777,22 +777,22 @@ msgid "what_is_reputation"
 msgstr "What is reputation? How do I earn (and lose) it?"
 
 #. Default: Reputation is a rough measurement of how work you are doing for the
-#. discussion and the community;
+#. discussion and the community.
 #: templates/review.pt:81
 msgid "what_is_reputation_def"
 msgstr ""
 "Reputation is a rough measurement of how work you are doing for the "
-"discussion and the community;"
+"discussion and the community."
 
 #. Default: you can earn it by using D-BAS and all of its great functions.
 #: templates/review.pt:82
 msgid "what_is_reputation_earn"
-msgstr "you can earn it by using D-BAS and all of its great functions."
+msgstr "You can earn it by using D-BAS and all of its great functions."
 
 #. Default: Basic use of D-BAS, does not require any reputation at all.
 #: templates/review.pt:83
 msgid "what_is_reputation_use"
-msgstr "Basic use of D-BAS, does not require any reputation at all."
+msgstr "Basic use of D-BAS does not require any reputation at all."
 
 #. Default: You gain reputation when:
 #: templates/review.pt:86
@@ -1712,53 +1712,53 @@ msgstr "Get In Touch With Us"
 
 #. Default: Feel free to drop us a line and we’ll try to get back to you in 48
 #. hours max!
-#: templates/contact.pt:11
+#: templates/contact.pt:12
 msgid "feel_free_to_drop_line"
 msgstr ""
 "Feel free to drop us a line and we’ll try to get back to you in 48 hours max!"
 
 #. Default: You have found a bug?
-#: templates/contact.pt:14
+#: templates/contact.pt:16
 msgid "you_found_bug"
 msgstr "You have found a bug?"
 
 #. Default: Please open a new issue on our project page at
-#: templates/contact.pt:16
+#: templates/contact.pt:18
 msgid "send_mail_or_github"
 msgstr "Please open a new issue on our project page at"
 
 #. Default: Otherwise feel free to drop us a line
-#: templates/contact.pt:18
+#: templates/contact.pt:20
 msgid "otherwise_drop_a_line"
 msgstr "Otherwise feel free to drop us a line"
 
 #. Default: Your Name (required)
-#: templates/contact.pt:27
+#: templates/contact.pt:29
 msgid "name_req"
 msgstr "Your Name (required)"
 
 #. Default: Your E-Mail (required)
-#: templates/contact.pt:35
+#: templates/contact.pt:37
 msgid "mail_req"
 msgstr "Your E-Mail (required)"
 
 #. Default: Your Notification (required)
-#: templates/contact.pt:43
+#: templates/contact.pt:45
 msgid "message_req"
 msgstr "Your Notification (required)"
 
 #. Default: Warning!
-#: templates/contact.pt:59
+#: templates/contact.pt:61
 msgid "warning"
 msgstr "Warning!"
 
 #. Default: Great:
-#: templates/contact.pt:65
+#: templates/contact.pt:67
 msgid "great"
 msgstr "Great:"
 
 #. Default: Your message was sent.
-#: templates/contact.pt:65
+#: templates/contact.pt:67
 msgid "message_sent"
 msgstr "Your message was sent."
 
