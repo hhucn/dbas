@@ -562,7 +562,7 @@ var dbas_en = {
     'tourLoginTitle': 'Login',
     'tourLoginContent': 'In every case you should register yourself for enter your own statements.',
     'tourIssueTitle': 'Topic',
-    'tourIssueContent': 'Here you can the topic, which the current discussion is about.',
+    'tourIssueContent': 'Here you can see the topic about current discussion.',
     'tourStartDiscussionTitle': 'First steps',
     'tourStartDiscussionContent': 'On the left side there are messages of the system and on the right side there are your answers.',
     'tourMarkOpinionTitle': 'Mark opinon',
@@ -814,7 +814,7 @@ var dbas_de = {
     'tourEnterStatementTitle': 'Eigene Antworten',
     'tourEnterStatementContent': '... oder eigene Antworten eingeben, sofern Sie angemeldet sind ...',
     'tourStatementActionTitle': 'Interaktionen',
-    'tourStatementActionContent': '... oder doch lieber mit den vorhandenen Antworten agieren (kleine Symbole am Ende der Zeile)?',
+    'tourStatementActionContent': '... oder doch lieber mit den vorhandenen Antworten agieren?',
     'tourHaveFunTitle': 'Und nun ...',
     'tourHaveFunContent': '... viel Spaß!',
 };
