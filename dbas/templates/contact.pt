@@ -41,13 +41,6 @@
                                  data-size="invisible"
                                  tal:attributes="data-sitekey extras.g_recaptcha_key"></div>
 
-            				<!--
-            			    <div id="alert-message" class="alert alert-danger alert-error">
-            				    <a href="" class="close" data-dismiss="alert">&times;</a>
-            				    <strong>Error!</strong> A problem has been occurred with your anti-spam message.
-            			    </div>
-            			    -->
-
             				<div tal:condition="contact_error" id="warning-message" class="alert alert-warning alert-dismissible col-md-12">
             					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
             						<span aria-hidden="true">&times;</span>
