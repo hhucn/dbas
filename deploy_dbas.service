@@ -2,7 +2,6 @@
 Description=Deploy D-BAS
 Requires=docker.service
 After=docker.service
-OnFailure=unit-status-mail@%n.service
 
 [Service]
 Restart=on-failure
