@@ -1634,14 +1634,14 @@ msgstr "Clicked Statements"
 #: templates/settings.pt:157 templates/settings.pt:308 templates/finish.pt:38
 #: templates/user.pt:49
 msgid "discussion_votes_statements"
-msgstr "Votes for Arguments"
+msgstr "Marked Arguments"
 
 #. Default: Votes for Arguments
 #. Default: Votes for Statements
 #: templates/settings.pt:164 templates/settings.pt:315 templates/finish.pt:42
 #: templates/user.pt:53
 msgid "discussion_votes_arguments"
-msgstr "Votes for Statements"
+msgstr "Marked Statements"
 
 #. Default: Reputation
 #: templates/settings.pt:171 templates/settings.pt:322

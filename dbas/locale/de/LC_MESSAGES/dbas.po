@@ -1632,7 +1632,7 @@ msgstr "Aussagen hinzugefügt"
 #: templates/settings.pt:132 templates/settings.pt:287 templates/finish.pt:30
 #: templates/user.pt:45
 msgid "edits_done"
-msgstr "Änderungen"
+msgstr "Vorgeschlagene Änderungen"
 
 #. Default: Clicks for Arguments
 #: templates/settings.pt:139 templates/settings.pt:294 templates/finish.pt:46

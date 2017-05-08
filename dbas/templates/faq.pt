@@ -6,29 +6,28 @@
                 <div class="col-md-offset-2 col-md-8">
                     <h3 i18n:translate="faq" class="text-center">Frequent Questions</h3>
                     <p i18n:translate="simple_answers" class="lead text-center">Simple answers to your most common questions</p>
-                    <br>
                     <div tal:condition="extras.use_with_ldap">
-                        <h6><strong i18n:translate="faq_question_ldap">How do we handle your login data?</strong></h6>
+                        <h5><span i18n:translate="faq_question_ldap">How do we handle your login data?</span></h5>
                         <span i18n:translate="faq_answer_ldap">We are using the name information service of the University Düsseldorf. Your password is send from your computer, to our server (which is placed at the University) and then towards the service of the ZIM. Each transmission is secured and encrypted. Additionally we will never save, log or display your password anywhere!</span>
                     </div>
-                    <br>
+                    <br tal:condition="extras.use_with_ldap">
                     <div>
-                        <h6><strong i18n:translate="faq_question_interest_opinion">What is the difference between interest and opinion?</strong></h6>
+                        <h5><span i18n:translate="faq_question_interest_opinion">What is the difference between interest and opinion?</span></h5>
                         <span i18n:translate="faq_answer_interest_opinion">If you select any answer in D-BAS, you will be interested in this statement/reaction/... but we will never think, that this is your personal opinion. Only if you mark an statement or argument as your opinion, we will know, that you have the same opinion like the given text.</span>
                     </div>
                     <br>
                     <div>
-                        <h6><strong i18n:translate="faq_question_mark_opinion">Can I mark an statement or argument as my opinion?</strong></h6>
+                        <h5><span i18n:translate="faq_question_mark_opinion">Can I mark an statement or argument as my opinion?</span></h5>
                         <span i18n:translate="faq_answer_mark_opinion">Yes, you can! Please press the yellow star at the beginning of a green bubble to mark a statement or an argument as your opinon. For this you have to be logged in.</span>
                     </div>
                     <br>
                     <div>
-                        <h6><strong i18n:translate="faq_question_graph">Is there any overview about all given arguments and statements?</strong></h6>
+                        <h5><span i18n:translate="faq_question_graph">Is there any overview about all given arguments and statements?</span></h5>
                         <span i18n:translate="faq_answer_graph">Yes, we have a graphical representation. Simply open the little sidebar in the discussion window and click on 'graph view'</span> <i class="fa fa-sitemap" aria-hidden="true"></i>.
                     </div>
                     <br>
                     <div>
-                        <h6><strong i18n:translate="faq_question_buttons_next_to_statement">What are these little icons next to the statements?</strong></h6>
+                        <h5><span i18n:translate="faq_question_buttons_next_to_statement">What are these little icons next to the statements?</span></h5>
                         <span i18n:translate="faq_answer_buttons_next_to_statement">These little icons will appear on each set of statements in the answer field, if you are logged in.</span>
                         <ul>
                             <li><i style="width: 16px;" class="fa fa-pencil-square-o" aria-hidden="true"></i>: <span i18n:translate="faq_answer_pencil_next_to_statement">The pencil allows you to submit proposals for edits.</span></li>
@@ -40,7 +39,7 @@
                     </div>
                     <br>
                     <div>
-                        <h6><strong i18n:translate="faq_question_bug">What do I do if I found a bug or have other questions about D-BAS?</strong></h6>
+                        <h5><span i18n:translate="faq_question_bug">What do I do if I found a bug or have other questions about D-BAS?</span></h5>
                         <span i18n:translate="faq_answer_bug1">If you think you've found an issue or have any other questions not covered above, please email us via the</span> <a href="${request.application_url}/contact"><span i18n:translate="contact_page">contact page</span></a>.
                         <span i18n:translate="faq_answer_bug2">Please keep in mind that our current team is quite small and we'll do our very best to get back to you ASAP.</span>
                     </div>
