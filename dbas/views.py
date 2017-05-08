@@ -139,6 +139,12 @@ def main_contact(request):
     content   = escape_string(request.params['content']) if 'content' in request.params else ''
     recaptcha = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
 
+    # check for user data
+    if len(name) == 0 or len(email) == 0:
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=str(request.authenticated_userid)).first()
+        username = '{} {}'.format(db_user.firstname, db_user.surname) if db_user else ''
+        email = db_user.email if db_user else ''
+
     if 'form.contact.submitted' in request.params:
         contact_error, message, send_message = try_to_contact(request, username, email, content, ui_locales, recaptcha)
 
