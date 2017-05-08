@@ -12,26 +12,28 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 import logging
 import time
 from configparser import ConfigParser, NoSectionError
-
+from .helper.database import get_db_environs
+import os
 from pyramid.authentication import AuthTktAuthenticationPolicy  # , SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.static import QueryStringConstantCacheBuster
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
-from dbas.helper.database import dbas_db_configuration
-from dbas.database import load_discussion_database, load_news_database
-from dbas.security import groupfinder
+import re
+from sqlalchemy import engine_from_config
+from .database import load_discussion_database, load_news_database
+from .security import groupfinder
 
 
 def main(global_config, **settings):
     """
     This function returns a Pyramid WSGI application.
     """
+    # Patch in all environment variables
     settings.update(get_dbas_environs())
 
-    # authentication and authorization
-    authn_policy = AuthTktAuthenticationPolicy('89#s3cr3t_15', callback=groupfinder, hashalg='sha512')
-    authz_policy = ACLAuthorizationPolicy()
+    # Patch in beaker url
+    settings.update(get_db_environs(key="session.url", db_name="beaker"))
 
     # log settings
     log = logging.getLogger(__name__)
@@ -40,18 +42,22 @@ def main(global_config, **settings):
         development = development or 'testing' in str(v)
         log.debug('__INIT__() main() <{} : {}>'.format(str(k), str(v)))
 
+    # authentication and authorization
+    authn_policy = AuthTktAuthenticationPolicy(settings["authn.secret"], callback=groupfinder, hashalg='sha512')
+    authz_policy = ACLAuthorizationPolicy()
+
     # load database
-    discussion_engine = dbas_db_configuration('discussion', settings)  # , connect_args={'client_encoding': 'utf8'}
-    news_engine       = dbas_db_configuration('news', settings)  # , connect_args={'client_encoding': 'utf8'}
+    settings.update(get_db_environs("sqlalchemy.discussion.url", db_name="discussion"))
+    settings.update(get_db_environs("sqlalchemy.news.url", db_name="news"))
+
+    discussion_engine = engine_from_config(settings, "sqlalchemy.discussion.")
+    news_engine = engine_from_config(settings, "sqlalchemy.news.")
     load_discussion_database(discussion_engine)
     load_news_database(news_engine)
 
     # session management and cache region support
     session_factory = session_factory_from_settings(settings)
     set_cache_regions_from_settings(settings)
-
-    all_settings = settings
-    # all_settings = {**settings, **mail_settings}
 
     # include custom parts
     sections = ['ldap', 'service']
@@ -63,12 +69,12 @@ def main(global_config, **settings):
             for k, v in parser.items('settings:{}'.format(s)):
                 log.debug('__init__() '.upper() + 'main() <settings:' + str(s) + ':' + str(k) + ' : ' + str(v) + '>')
                 custom_settings['settings:{}:{}'.format(s, k)] = v
-            all_settings.update(custom_settings)
+            settings.update(custom_settings)
         except NoSectionError as e:
             log.debug('__init__() '.upper() + 'main() <No ' + s + '-Section> ' + str(e))
 
     # creating the configurator
-    config = Configurator(settings=all_settings,
+    config = Configurator(settings=settings,
                           authentication_policy=authn_policy,
                           authorization_policy=authz_policy,
                           root_factory='dbas.security.RootFactory',
@@ -204,13 +210,11 @@ def get_dbas_environs(prefix="DBAS_"):
     :param prefix: The prefix of the environment variables.
     :return: The dictionary of parsed environment variables and their values.
     """
-    import os
     dbas_keys = list(filter(lambda x: x.startswith(prefix), os.environ))
     return dict([(_environs_to_keys(k, prefix), os.environ[k]) for k in dbas_keys])
 
 
 def _environs_to_keys(key, prefix="DBAS_"):
-    import re
     prefix_pattern = '^{prefix}'.format(prefix=prefix)
     single_underscore_pattern = r'(?<!_)_(?!_)'
 
