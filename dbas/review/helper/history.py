@@ -141,7 +141,7 @@ def get_reputation_history_of(nickname, translator):
                          'action': action,
                          'points': points})
 
-    ret_dict['history'] = rep_list
+    ret_dict['history'] = list(reversed(rep_list))
 
     return ret_dict
 

@@ -36,4 +36,11 @@ function hideAll(){
 		id = $(this).attr('href');
 		$(id).hide();
 	});
+	
+	var table = $('#reputation_table');
+	if (table.length > 0){
+		var dict = getLanguage() === 'de'? dataTables_german_lang : dataTables_english_lang;
+		table.find('table').DataTable({"language": dict});
+		table.show();
+	}
 }

@@ -818,3 +818,52 @@ var dbas_de = {
     'tourHaveFunTitle': 'Und nun ...',
     'tourHaveFunContent': '... viel Spaß!',
 };
+
+
+var dataTables_german_lang = {
+    "sEmptyTable":      "Keine Daten in der Tabelle vorhanden",
+    "sInfo":            "_START_ bis _END_ von _TOTAL_ Einträgen",
+    "sInfoEmpty":       "0 bis 0 von 0 Einträgen",
+    "sInfoFiltered":    "(gefiltert von _MAX_ Einträgen)",
+    "sInfoPostFix":     "",
+    "sInfoThousands":   ".",
+    "sLengthMenu":      "_MENU_ Einträge anzeigen",
+    "sLoadingRecords":  "Wird geladen...",
+    "sProcessing":      "Bitte warten...",
+    "sSearch":          "Suchen",
+    "sZeroRecords":     "Keine Einträge vorhanden.",
+    "oPaginate": {
+        "sFirst":       "Erste",
+        "sPrevious":    "Zurück",
+        "sNext":        "Nächste",
+        "sLast":        "Letzte"
+    },
+    "oAria": {
+        "sSortAscending":  ": aktivieren, um Spalte aufsteigend zu sortieren",
+        "sSortDescending": ": aktivieren, um Spalte absteigend zu sortieren"
+    }
+};
+
+var dataTables_english_lang = {
+    "sEmptyTable":     "No data available in table",
+    "sInfo":           "Showing _START_ to _END_ of _TOTAL_ entries",
+    "sInfoEmpty":      "Showing 0 to 0 of 0 entries",
+    "sInfoFiltered":   "(filtered from _MAX_ total entries)",
+    "sInfoPostFix":    "",
+    "sInfoThousands":  ",",
+    "sLengthMenu":     "Show _MENU_ entries",
+    "sLoadingRecords": "Loading...",
+    "sProcessing":     "Processing...",
+    "sSearch":         "Search:",
+    "sZeroRecords":    "No matching records found",
+    "oPaginate": {
+        "sFirst":    "First",
+        "sLast":     "Last",
+        "sNext":     "Next",
+        "sPrevious": "Previous"
+    },
+    "oAria": {
+        "sSortAscending":  ": activate to sort column ascending",
+        "sSortDescending": ": activate to sort column descending"
+    }
+};
