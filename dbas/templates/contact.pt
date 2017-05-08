@@ -57,7 +57,7 @@
 
             				<div class="text-center">
             				    <input id="contact-submit" type="submit" name="form.contact.submitted" value="Submit Your message"
-                                       class="button button-block btn-lg btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.contact_submit"/>
+                                       class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.contact_submit"/>
             				</div>
             			</form>
                     </div>
