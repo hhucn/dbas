@@ -365,21 +365,9 @@ def main_imprint(request):
     import pkg_resources
     extras_dict.update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
 
-    # try to get current commit hash
-    try:
+    try:  # try to get current commit hash
         extras_dict.update({'dbas_build': subprocess.check_output(['git', 'describe'])})
-    except FileNotFoundError:
-        # try to get hash of docker image
-        try:
-            ps = subprocess.Popen(('docker', 'images'), stdout=subprocess.PIPE)
-            output = subprocess.check_output(('grep', 'dbas_web'), stdin=ps.stdout)
-            ps.terminate()
-            extras_dict.update({'dbas_build': str(output).split()[2]})
-        except subprocess.CalledProcessError:
-            # fallback
-            extras_dict.update({'dbas_build': full_version})
-    except:
-        # fallback
+    except:  # fallback
         extras_dict.update({'dbas_build': full_version})
 
     return {
