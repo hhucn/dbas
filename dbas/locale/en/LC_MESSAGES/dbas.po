@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-05-05 13:43+0200\n"
+"POT-Creation-Date: 2017-05-08 16:02+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -113,18 +113,18 @@ msgid "work_based_on"
 msgstr "This work is part of the graduate school on"
 
 #. Default: Online-Participation
-#: templates/index.pt:46
+#: templates/index.pt:47 templates/index.pt:48
 msgid "online_participation"
 msgstr "Online-Participation"
 
 #. Default: It is funded by the
-#: templates/index.pt:47
+#: templates/index.pt:49
 msgid "funded_by"
 msgstr "It is funded by the"
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: templates/index.pt:47
+#: templates/index.pt:50
 msgid "ministry_of_innovation"
 msgstr "Ministry of Innovation, Science and Research in North Rhine-Westphalia"
 
@@ -139,7 +139,7 @@ msgid "simple_answers"
 msgstr "Simple answers to your most common questions"
 
 #. Default: How do we handle your login data?
-#: templates/faq.pt:11
+#: templates/faq.pt:10
 msgid "faq_question_ldap"
 msgstr "How do we handle your login data?"
 
@@ -148,7 +148,7 @@ msgstr "How do we handle your login data?"
 #. is placed at the University) and then towards the service of the ZIM. Each
 #. transmission is secured and encrypted. Additionally we will never save, log
 #. or display your password anywhere!
-#: templates/faq.pt:12
+#: templates/faq.pt:11
 msgid "faq_answer_ldap"
 msgstr ""
 "We are using the name information service of the University Düsseldorf. Your "
@@ -158,7 +158,7 @@ msgstr ""
 "password anywhere!"
 
 #. Default: What is the difference between interest and opinion?
-#: templates/faq.pt:16
+#: templates/faq.pt:15
 msgid "faq_question_interest_opinion"
 msgstr "What is the difference between interests and opinions?"
 
@@ -166,7 +166,7 @@ msgstr "What is the difference between interests and opinions?"
 #. statement/reaction/... but we will never think, that this is your personal
 #. opinion. Only if you mark an statement or argument as your opinion, we will
 #. know, that you have the same opinion like the given text.
-#: templates/faq.pt:17
+#: templates/faq.pt:16
 msgid "faq_answer_interest_opinion"
 msgstr ""
 "If you select any answer in D-BAS, you will be interested in this statement/"
@@ -175,14 +175,14 @@ msgstr ""
 "that you have the same opinion like the given text."
 
 #. Default: Can I mark an statement or argument as my opinion?
-#: templates/faq.pt:21
+#: templates/faq.pt:20
 msgid "faq_question_mark_opinion"
 msgstr "Can I mark an statement or argument as my opinion?"
 
 #. Default: Yes, you can! Please press the yellow star at the beginning of a
 #. green bubble to mark a statement or an argument as your opinon. For this you
 #. have to be logged in.
-#: templates/faq.pt:22
+#: templates/faq.pt:21
 msgid "faq_answer_mark_opinion"
 msgstr ""
 "Yes, you can! Please press the yellow star at the beginning of a green "
@@ -190,39 +190,39 @@ msgstr ""
 "to be logged in."
 
 #. Default: Is there any overview about all given arguments and statements?
-#: templates/faq.pt:26
+#: templates/faq.pt:25
 msgid "faq_question_graph"
 msgstr "Is there any overview about all given arguments and statements?"
 
 #. Default: Yes, we have a graphical representation. Simply open the little
 #. sidebar in the discussion window and click on 'graph view'
-#: templates/faq.pt:27
+#: templates/faq.pt:26
 msgid "faq_answer_graph"
 msgstr ""
 "Yes, we have a graphical representation. Simply open the little sidebar in "
 "the discussion window and click on 'graph view'"
 
 #. Default: What are these little icons next to the statements?
-#: templates/faq.pt:31
+#: templates/faq.pt:30
 msgid "faq_question_buttons_next_to_statement"
 msgstr "What are these little icons next to the statements?"
 
 #. Default: These little icons will appear on each set of statements in the
 #. answer field, if you are logged in.
-#: templates/faq.pt:32
+#: templates/faq.pt:31
 msgid "faq_answer_buttons_next_to_statement"
 msgstr ""
 "These little icons will appear on each set of statements in the answer "
 "field, if you are logged in."
 
 #. Default: The pencil allows you to submit proposals for edits.
-#: templates/faq.pt:34
+#: templates/faq.pt:33
 msgid "faq_answer_pencil_next_to_statement"
 msgstr "The pencil allows you to submit proposals for edits."
 
 #. Default: With the help of the flag you can report statements, if there is
 #. something wrong.
-#: templates/faq.pt:35
+#: templates/faq.pt:34
 msgid "faq_answer_flag_next_to_statement"
 msgstr ""
 "With the help of the flag you can report statements, if there is something "
@@ -230,7 +230,7 @@ msgstr ""
 
 #. Default: You made an statement on your own and not happy with it? Let's
 #. unsubscribe yourself as author.
-#: templates/faq.pt:36
+#: templates/faq.pt:35
 msgid "faq_answer_trash_next_to_statement"
 msgstr ""
 "You made an statement on your own and not happy with it? Let's unsubscribe "
@@ -238,7 +238,7 @@ msgstr ""
 
 #. Default: You are reading an statement, which should be supporting your
 #. conclusion, but it is nonsense? Let's attack this one!
-#: templates/faq.pt:37
+#: templates/faq.pt:36
 msgid "faq_answer_bomb_next_to_statement"
 msgstr ""
 "You are reading an statement, which should be supporting your conclusion, "
@@ -246,33 +246,33 @@ msgstr ""
 
 #. Default: There is this specific website with facts about an statement? With
 #. the link-icon you can add references for a statement / argument.
-#: templates/faq.pt:38
+#: templates/faq.pt:37
 msgid "faq_answer_link_next_to_statement"
 msgstr ""
 "There is this specific website with facts about an statement? With the link-"
 "icon you can add references for a statement / argument."
 
 #. Default: What do I do if I found a bug or have other questions about D-BAS?
-#: templates/faq.pt:43
+#: templates/faq.pt:42
 msgid "faq_question_bug"
 msgstr "What do I do if I found a bug or have other questions about D-BAS?"
 
 #. Default: If you think you've found an issue or have any other questions not
 #. covered above, please email us via the
-#: templates/faq.pt:44
+#: templates/faq.pt:43
 msgid "faq_answer_bug1"
 msgstr ""
 "If you think you've found an issue or have any other questions not covered "
 "above, please email us at "
 
 #. Default: contact page
-#: templates/faq.pt:44
+#: templates/faq.pt:43
 msgid "contact_page"
 msgstr "contact page"
 
 #. Default: Please keep in mind that our current team is quite small and we'll
 #. do our very best to get back to you ASAP.
-#: templates/faq.pt:45
+#: templates/faq.pt:44
 msgid "faq_answer_bug2"
 msgstr ""
 "Please keep in mind that our current team is quite small and we'll do our "
@@ -1706,49 +1706,59 @@ msgid "docs"
 msgstr "Documentation"
 
 #. Default: Get In Touch With Us
-#: templates/contact.pt:9
-msgid "contact_header_1"
+#: templates/contact.pt:10
+msgid "get_in_touch_with_us"
 msgstr "Get In Touch With Us"
 
 #. Default: Feel free to drop us a line and we’ll try to get back to you in 48
 #. hours max!
-#: templates/contact.pt:10
-msgid "contact_header_2"
+#: templates/contact.pt:11
+msgid "feel_free_to_drop_line"
 msgstr ""
 "Feel free to drop us a line and we’ll try to get back to you in 48 hours max!"
 
-#. Default: Your Name (required)
+#. Default: You have found a bug?
+#: templates/contact.pt:14
+msgid "you_found_bug"
+msgstr "You have found a bug?"
+
+#. Default: Please open a new issue on our project page at
 #: templates/contact.pt:16
+msgid "send_mail_or_github"
+msgstr "Please open a new issue on our project page at"
+
+#. Default: Otherwise feel free to drop us a line
+#: templates/contact.pt:18
+msgid "otherwise_drop_a_line"
+msgstr "Otherwise feel free to drop us a line"
+
+#. Default: Your Name (required)
+#: templates/contact.pt:27
 msgid "name_req"
 msgstr "Your Name (required)"
 
 #. Default: Your E-Mail (required)
-#: templates/contact.pt:24
+#: templates/contact.pt:35
 msgid "mail_req"
 msgstr "Your E-Mail (required)"
 
-#. Default: Your Phone Number
-#: templates/contact.pt:32
-msgid "phone_no"
-msgstr "Your Phone Number"
-
 #. Default: Your Notification (required)
-#: templates/contact.pt:40
+#: templates/contact.pt:43
 msgid "message_req"
 msgstr "Your Notification (required)"
 
 #. Default: Warning!
-#: templates/contact.pt:63
+#: templates/contact.pt:59
 msgid "warning"
 msgstr "Warning!"
 
 #. Default: Great:
-#: templates/contact.pt:70
+#: templates/contact.pt:65
 msgid "great"
 msgstr "Great:"
 
 #. Default: Your message was sent.
-#: templates/contact.pt:70
+#: templates/contact.pt:65
 msgid "message_sent"
 msgstr "Your message was sent."
 
@@ -1980,6 +1990,17 @@ msgstr "Supports"
 #: templates/content.pt:307
 msgid "attacks_on_my_statements"
 msgstr "Attacks"
+
+#~ msgid "contact_header_1"
+#~ msgstr "Get In Touch With Us"
+
+#~ msgid "contact_header_2"
+#~ msgstr ""
+#~ "Feel free to drop us a line and we’ll try to get back to you in 48 hours "
+#~ "max!"
+
+#~ msgid "phone_no"
+#~ msgstr "Your Phone Number"
 
 #~ msgid "license"
 #~ msgstr "License"
