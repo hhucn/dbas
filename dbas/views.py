@@ -370,7 +370,7 @@ def main_imprint(request):
 
     try:  # try to get current commit hash
         extras_dict.update({'dbas_build': subprocess.check_output(['git', 'describe'])})
-    except:  # fallback
+    except FileNotFoundError:  # fallback
         extras_dict.update({'dbas_build': full_version})
 
     return {
