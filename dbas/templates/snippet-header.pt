@@ -22,7 +22,7 @@
                 </li>
 
                 <li id="bug-link">
-                    <a href="${request.application_url}/contact&bug=true" data-toggle="tooltip" data-placement="left" target="_blank">
+                    <a href="${request.application_url}/contact&bug=true" data-toggle="tooltip" data-placement="left">
                         <i class="fa fa-bug" aria-hidden="true"></i><span i18n:translate="report_issue">Report Issues</span></a>
                 </li>
 
