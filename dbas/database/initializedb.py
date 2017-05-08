@@ -619,12 +619,20 @@ def setup_news_db(session, ui_locale):
                   news='Finally we have a version of D-BAS which can be used during a large fieldtest at our '
                        'university. Nevertheless the same version is capable to be viewed by some reviewers of our '
                        'latest paper. Stay tuned!')
+    news59 = News(title='First fieldtest',
+                  date=arrow.get('2017-05-09'),
+                  author='Tobias Krauthoff',
+                  news='Today we have started our first, real fieldtest, where we invited every student of computer '
+                       'science to talk about improvements of our study programme. Our number of students drastic '
+                       'increased during the last years, therefore we have to manage some problems like a shortage of '
+                       'space for working places and a lack of place classrooms. Our fieldtest will be supported by '
+                       'sociology students, who will also do an survey based on our metrics we invented mid 2015.')
 
     news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,
                   news13, news14, news15, news16, news29, news18, news19, news20, news21, news22, news23, news24,
                   news25, news26, news27, news28, news30, news31, news32, news33, news34, news35, news36, news37,
                   news38, news39, news40, news41, news42, news43, news44, news45, news46, news47, news48, news49,
-                  news50, news51, news52, news53, news54, news55, news56, news57, news58]
+                  news50, news51, news52, news53, news54, news55, news56, news57, news58, news59]
     session.add_all(news_array[::-1])
     session.flush()
 
