@@ -29,14 +29,6 @@
             				</div>
 
             				<div class="form-group">
-            					<label class="col-sm-3 control-label" i18n:translate="phone_no">Your Phone Number</label>
-            					<div class="col-sm-9 input-group">
-                                    <div class="input-group-addon"><i class="fa fa-phone fa-2x" aria-hidden="true"></i></div>
-            						<input type="tel" id="phone-input" name="phone" class="form-control" autocomplete="on" tal:attributes="placeholder placeholder.phone" placeholder="" value="${phone}">
-            					</div>
-            				</div>
-
-            				<div class="form-group">
             					<label class="col-sm-3 control-label" i18n:translate="message_req">Your Notification (required)</label>
             					<div class="col-sm-9 input-group">
                                     <div class="input-group-addon"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></div>
@@ -56,7 +48,7 @@
             			    </div>
             			    -->
 
-            				<div tal:condition="contact_error" id="warning-message" class="alert alert-warning alert-dismissible col-md-offset2 col-md-8">
+            				<div tal:condition="contact_error" id="warning-message" class="alert alert-warning alert-dismissible col-md-12">
             					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
             						<span aria-hidden="true">&times;</span>
             					</button>
@@ -65,7 +57,7 @@
             				</div>
 
 
-            				<div tal:condition="was_message_send" class="alert alert-success col-md-offset-2 col-md-8 col-md-offset-2" role="alert">
+            				<div tal:condition="was_message_send" class="alert alert-success col-md-12" role="alert">
             					<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
             					<span class="sr-only" i18n:translate="great">Great:</span> <span i18n:translate="message_sent">Your message was sent.</span>
             				</div>

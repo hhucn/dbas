@@ -272,20 +272,19 @@ def __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, re
     return ddh, idh, dh
 
 
-def try_to_contact(request, name, email, phone, content, ui_locales, recaptcha):
+def try_to_contact(request, name, email, content, ui_locales, recaptcha):
     """
     Trys to send an contact mail
 
     :param request: webserver's request
     :param name: String
     :param email: String
-    :param phone: String
     :param content: String
     :param ui_locales: Language.ui_locales
     :param recaptcha: Googles Recaptcha
     :return: Boolean, String, Boolean
     """
-    logger('ViewHelper', 'try_to_contact', 'name: ' + name + ', email: ' + email + ', phone: ' + phone + ', content: ' + content)
+    logger('ViewHelper', 'try_to_contact', 'name: ' + name + ', email: ' + email + ', content: ' + content)
     _t = Translator(ui_locales)
     send_message = False
 
@@ -322,7 +321,6 @@ def try_to_contact(request, name, email, phone, content, ui_locales, recaptcha):
         subject = _t.get(_.contact) + ' D-BAS'
         body = _t.get(_.name) + ': ' + name + '\n'
         body += _t.get(_.mail) + ': ' + email + '\n'
-        body += _t.get(_.phone) + ': ' + phone + '\n'
         body += _t.get(_.message) + ':\n' + content
         EmailHelper.send_mail(request, subject, body, 'dbas.hhu@gmail.com', ui_locales)
         body = '* ' + _t.get(_.thisIsACopyOfMail).upper() + ' *\n\n' + body

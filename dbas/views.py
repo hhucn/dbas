@@ -139,12 +139,11 @@ def main_contact(request):
 
     username        = escape_string(request.params['name']) if 'name' in request.params else ''
     email           = escape_string(request.params['mail']) if 'mail' in request.params else ''
-    phone           = escape_string(request.params['phone']) if 'phone' in request.params else ''
     content         = escape_string(request.params['content']) if 'content' in request.params else ''
     recaptcha       = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
 
     if 'form.contact.submitted' in request.params:
-        contact_error, message, send_message = try_to_contact(request, username, email, phone, content, ui_locales, recaptcha)
+        contact_error, message, send_message = try_to_contact(request, username, email, content, ui_locales, recaptcha)
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     ui_locales = get_language_from_cookie(request)
@@ -152,7 +151,6 @@ def main_contact(request):
     placeholder = {
         'name': _t.get(_.exampleName),
         'mail': _t.get(_.exampleMail),
-        'phone': _t.get(_.examplePhone),
         'message': _t.get(_.exampleMessage)
     }
 
@@ -167,7 +165,6 @@ def main_contact(request):
         'message': message,
         'name': username,
         'mail': email,
-        'phone': phone,
         'content': content,
         'spamanswer': '',
         'placeholder': placeholder
