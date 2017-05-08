@@ -131,16 +131,13 @@ def main_contact(request):
     if session_expired:
         return user_logout(request, True)
 
-    contact_error = False
-    send_message = False
-    message = ''
-
+    contact_error, send_message, message = False, False, ''
     ui_locales = get_language_from_cookie(request)
 
-    username        = escape_string(request.params['name']) if 'name' in request.params else ''
-    email           = escape_string(request.params['mail']) if 'mail' in request.params else ''
-    content         = escape_string(request.params['content']) if 'content' in request.params else ''
-    recaptcha       = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
+    username  = escape_string(request.params['name']) if 'name' in request.params else ''
+    email     = escape_string(request.params['mail']) if 'mail' in request.params else ''
+    content   = escape_string(request.params['content']) if 'content' in request.params else ''
+    recaptcha = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
 
     if 'form.contact.submitted' in request.params:
         contact_error, message, send_message = try_to_contact(request, username, email, content, ui_locales, recaptcha)
