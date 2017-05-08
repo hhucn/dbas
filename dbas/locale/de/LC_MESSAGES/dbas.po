@@ -1743,7 +1743,7 @@ msgstr "Sie haben einen Fehler gefunden?"
 #. Default: Please open a new issue on our project page at
 #: templates/contact.pt:16
 msgid "send_mail_or_github"
-msgstr "Bitte eröffnen Sie ein neues Problem auf unserer Projektseite unter"
+msgstr "Bitte eröffnen Sie ein neues Problem auf unserer Projektseite auf"
 
 #. Default: Otherwise feel free to drop us a line
 #: templates/contact.pt:18

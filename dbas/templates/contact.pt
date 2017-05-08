@@ -8,13 +8,15 @@
                     <div class="form">
                         <div tal:condition="not:bug_view" class="text-center">
 			                <h4 i18n:translate="get_in_touch_with_us">Get In Touch With Us</h4>
-			                <p class="lead" i18n:translate="feel_free_to_drop_line">Feel free to drop us a line and we’ll try to get back to you in 48 hours max!</p>
+			                <p class="lead center" style="max-width: 80%">
+                                <span i18n:translate="feel_free_to_drop_line">Feel free to drop us a line and we’ll try to get back to you in 48 hours max!</span>
+                            </p>
                         </div>
                         <div tal:condition="bug_view" class="text-center">
 			                <h4><span i18n:translate="you_found_bug">You have found a bug?</span> <i class="fa fa-bug" aria-hidden="true"></i></h4>
-			                <p class="lead">
+			                <p class="lead center" style="max-width: 80%">
                                 <span i18n:translate="send_mail_or_github">Please open a new issue on our project page at</span>
-                                <a href="https://github.com/hhucn/dbas"><i class="fa fa-github" aria-hidden="true"></i> Github</a>.
+                                <a class="btn btn-primary btn-xs" target="_blank" href="https://github.com/hhucn/dbas"><i class="fa fa-github" aria-hidden="true"></i> Github</a>.
                                 <span i18n:translate="otherwise_drop_a_line">Otherwise feel free to drop us a line</span>.
                             </p>
                         </div>

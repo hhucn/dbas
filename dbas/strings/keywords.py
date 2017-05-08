@@ -529,6 +529,7 @@ class Keywords(Enum):
     report = 'report'
     reportStatement = 'reportStatement'
     reportArgument = 'reportArgument'
+    reportIssue = 'reportIssue'
     review = 'review'
     review_history = 'review_history'
     review_ongoing = 'review_ongoing'

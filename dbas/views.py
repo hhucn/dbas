@@ -153,13 +153,13 @@ def main_contact(request):
     placeholder = {
         'name': _t.get(_.exampleName),
         'mail': _t.get(_.exampleMail),
-        'message': _t.get(_.exampleMessageBug) if bug_view else _t.get(_.exampleMessage)
+        'message': _t.get(_.exampleMessageBug if bug_view else _.exampleMessage)
     }
 
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
-        'title': _t.get(_.contact),
+        'title': _t.get(_.reportIssue if bug_view else _.contact),
         'project': project_name,
         'extras': extras_dict,
         'was_message_send': send_message,

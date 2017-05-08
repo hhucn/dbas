@@ -206,11 +206,12 @@ def get_minimal_graph_export(issue):
 
 def get_table_rows(nickname, table_name, ids):
     """
-    
-    :param nickname: 
-    :param table_name: 
-    :param ids: 
-    :return: 
+    Returns the rows with given ids from given table
+
+    :param nickname: User.nickname
+    :param table_name: Some Table from out database
+    :param ids: FK's
+    :return: list with table rows
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
@@ -223,11 +224,14 @@ def get_table_rows(nickname, table_name, ids):
 
     # admin rights?
     if db_user.groups.uid != 1:
-        return {'error': _t.get(_.noRights), 'group': str(db_user.groups.uid)}
+        return {'error': _t.get(_.noRights),
+                'group': str(db_user.groups.uid)}
 
     # catch empty input
     if table_name is None or ids is None or len(ids) == 0:
-        return {'error': _t.get(_.inputEmpty)}
+        return {'error': _t.get(_.inputEmpty),
+                'table': str(table_name),
+                'ids': str(ids)}
 
     # catch wrong table
     if table_name.lower() not in table_mapper:
@@ -237,7 +241,8 @@ def get_table_rows(nickname, table_name, ids):
     table = table_mapper[table_name.lower()]['table']
     db_elements = DBDiscussionSession.query(table)
     if len(db_elements.all()) == 1:
-        return {'error': _t.get(_.internalKeyError), 'table': table_mapper[table_name.lower()]['name']}
+        return {'error': _t.get(_.internalKeyError),
+                'table': table_mapper[table_name.lower()]['name']}
 
     columns = [r.key for r in table.__table__.columns]
     row = db_elements.filter(table.uid.in_(ids))

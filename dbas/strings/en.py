@@ -535,6 +535,7 @@ en_lang = {
     _.report: 'Report',
     _.reportStatement: 'Report statement',
     _.reportArgument: 'Report argument',
+    _.reportIssue: 'Report Issue',
     _.review: 'Review',
     _.review_history: 'Review History',
     _.review_ongoing: 'Current Reviews',
