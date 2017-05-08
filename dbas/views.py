@@ -125,7 +125,7 @@ def main_contact(request):
     :return: dictionary with title and project username as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('main_contact', 'def', 'main, request.params: {}'.format(request.params))
+    logger('main_contact', 'def', 'main, request.params: {}, request.matchdict: {}'.format(request.params, request.matchdict))
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
     if session_expired:
@@ -145,13 +145,15 @@ def main_contact(request):
     if 'form.contact.submitted' in request.params:
         contact_error, message, send_message = try_to_contact(request, username, email, content, ui_locales, recaptcha)
 
+    bug_view = 'reason' in request.matchdict and len(request.matchdict['reason']) > 0 and 'bug=true' in request.matchdict['reason'][0].lower()
+
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     ui_locales = get_language_from_cookie(request)
     _t = Translator(ui_locales)
     placeholder = {
         'name': _t.get(_.exampleName),
         'mail': _t.get(_.exampleMail),
-        'message': _t.get(_.exampleMessage)
+        'message': _t.get(_.exampleMessageBug) if bug_view else _t.get(_.exampleMessage)
     }
 
     return {
@@ -167,7 +169,8 @@ def main_contact(request):
         'mail': email,
         'content': content,
         'spamanswer': '',
-        'placeholder': placeholder
+        'placeholder': placeholder,
+        'bug_view': bug_view
     }
 
 

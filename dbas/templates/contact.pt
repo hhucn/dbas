@@ -6,8 +6,19 @@
             <div class="row">
                 <div class="col-md-offset-2 col-md-8">
                     <div class="form">
-			            <h3 i18n:translate="contact_header_1" class="text-center">Get In Touch With Us</h3>
-			            <p i18n:translate="contact_header_2" class="text-center">Feel free to drop us a line and we’ll try to get back to you in 48 hours max!</p>
+                        <div tal:condition="not:bug_view" class="text-center">
+			                <h4 i18n:translate="get_in_touch_with_us">Get In Touch With Us</h4>
+			                <p class="lead" i18n:translate="feel_free_to_drop_line">Feel free to drop us a line and we’ll try to get back to you in 48 hours max!</p>
+                        </div>
+                        <div tal:condition="bug_view" class="text-center">
+			                <h4><span i18n:translate="you_found_bug">You have found a bug?</span> <i class="fa fa-bug" aria-hidden="true"></i></h4>
+			                <p class="lead">
+                                <span i18n:translate="send_mail_or_github">Please open a new issue on our project page at</span>
+                                <a href="https://github.com/hhucn/dbas"><i class="fa fa-github" aria-hidden="true"></i> Github</a>.
+                                <span i18n:translate="otherwise_drop_a_line">Otherwise feel free to drop us a line</span>.
+                            </p>
+                        </div>
+
 			            <br>
 			            <form action="/contact" method="post" class="form-horizontal">
                             <input type="hidden" name="csrf_token" value="${request.session.get_csrf_token()}">
@@ -45,8 +56,7 @@
             					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
             						<span aria-hidden="true">&times;</span>
             					</button>
-            					<strong i18n:translate="warning">Warning!</strong>
-                                <div id="warning-message-text"><span tal:replace="message">..</span></div>
+            					<strong i18n:translate="warning">Warning!</strong> <span id="warning-message-text"><span tal:content="message">..</span></span>
             				</div>
 
 
@@ -56,8 +66,10 @@
             				</div>
 
             				<div class="text-center">
-            				    <input id="contact-submit" type="submit" name="form.contact.submitted" value="Submit Your message"
+            				    <input id="contact-submit" type="submit" name="form.contact.submitted" value="Submit Your message" tal:condition="not:bug_view"
                                        class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.contact_submit"/>
+            				    <input id="contact-submit" type="submit" name="form.contact.submitted" value="Submit Your message" tal:condition="bug_view"
+                                       class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.bug_submit"/>
             				</div>
             			</form>
                     </div>

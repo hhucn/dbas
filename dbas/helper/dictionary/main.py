@@ -477,6 +477,7 @@ class DictionaryHelper(object):
                                   'request_history': _tn_sys.get(_.requestHistory),
                                   'password_submit': _tn_sys.get(_.passwordSubmit),
                                   'contact_submit': _tn_sys.get(_.contactSubmit),
+                                  'bug_submit': _tn_sys.get(_.bugSubmit),
                                   'previous': _tn_sys.get(_.previous),
                                   'next': _tn_sys.get(_.next),
                                   'clear_statistics': _tn_sys.get(_.clearStatistics),
