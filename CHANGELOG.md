@@ -1,3 +1,9 @@
+## 1.4.0 (2017-05-08)
+- Corrections for the user interface
+- Language fixes
+- Improvements on many smaller details
+- Base version for our fieldtest
+
 ## 1.3.4 (2017-05-01)
 - Corrections for the user interface
 - Language fixes
