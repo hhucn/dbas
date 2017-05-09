@@ -41,7 +41,7 @@ de_lang = {
     _.emptyName: 'Ihr Name ist leer!',
     _.emptyEmail: 'Ihre E-Mail ist leer!',
     _.emtpyContent: 'Ihr Inhalt ist leer!',
-    _.maliciousAntiSpam: 'Ihr Anti-Spam-Nachricht ist leer oder falsch!',
+    _.maliciousAntiSpam: 'Ihr Anti-Spam-Nachricht ist falsch. Bitte laden Sie die Seite neu.',
     _.nonValidCSRF: 'Ihre Sitzung ist abgelaufen',
     _.name: 'Name',
     _.mail: 'Mail',
