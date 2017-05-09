@@ -314,7 +314,7 @@ def main_user(request):
         raise HTTPNotFound
 
     current_user = DBDiscussionSession.query(User).get(uid)
-    if current_user is None or current_user.nickname == nick_of_anonymous_user or current_user.nickname == nick_of_admin:
+    if current_user is None or current_user.nickname == nick_of_anonymous_user:
         logger('main_user', 'def', 'no user: {}'.format(uid), error=True)
         raise HTTPNotFound()
         # return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
