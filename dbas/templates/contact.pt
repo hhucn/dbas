@@ -28,7 +28,7 @@
                              <div class="form-group">
                                  <label class="col-sm-3 control-label" i18n:translate="name_req">Your Name (required)</label>
                                  <div class="col-sm-9 input-group">
-                                     <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
+                                     <div class="input-group-addon"><i class="fa fa-user-o fa-2x" aria-hidden="true"></i></div>
                                      <input type="text" class="form-control" name="name" id="name-input" tal:attributes="placeholder placeholder.name" placeholder="" value="${name}" required>
                                  </div>
                              </div>
@@ -36,7 +36,7 @@
             				<div class="form-group">
             					<label class="col-sm-3 control-label" i18n:translate="mail_req">Your E-Mail (required)</label>
             					<div class="col-sm-9 input-group">
-                                    <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
+                                    <div class="input-group-addon"><i class="fa fa-envelope-o fa-2x" aria-hidden="true"></i></div>
             						<input type="email" id="email-input" name="mail" class="form-control" tal:attributes="placeholder placeholder.mail" placeholder="" autocomplete="on" value="${mail}" required>
             					</div>
             				</div>
@@ -45,7 +45,7 @@
             					<label class="col-sm-3 control-label" i18n:translate="message_req">Your Notification (required)</label>
             					<div class="col-sm-9 input-group">
                                     <div class="input-group-addon"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></div>
-            						<textarea id="msg-input" name="content" class="form-control" autocomplete="on" tal:attributes="placeholder placeholder.message" placeholder=""><span tal:replace="content"/></textarea>
+                                    <textarea id="msg-input" rows="3" name="content" class="form-control" autocomplete="on" tal:attributes="placeholder placeholder.message" placeholder=""><span tal:replace="content"></span></textarea>
             					</div>
             				</div>
 
