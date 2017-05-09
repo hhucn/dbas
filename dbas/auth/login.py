@@ -35,10 +35,12 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
     :return: dict() or HTTPFound if the user is logged in an it is not the api
     """
 
+    is_ldap = is_usage_with_ldap(request)
+
     # getting params from request or api
     if not nickname and not password:
         nickname = escape_string(request.params['user'])
-        password = escape_string(request.params['password'])
+        password = request.params['password'] if is_ldap else escape_string(request.params['password'])
         keep_login = escape_string(request.params['keep_login'])
         keep_login = True if keep_login == 'true' else False
         url = request.params['url']
@@ -48,8 +50,6 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
         url = ''
 
     logger('Auth.Login', 'login_user', 'user {}, api '.format(nickname, for_api))
-
-    is_ldap = is_usage_with_ldap(request)
 
     db_user = get_user_by_case_insensitive_nickname(nickname)
     if not db_user:  # check if the user exists
