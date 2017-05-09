@@ -56,5 +56,5 @@ def test_admin_pages():
 
 
 def test_user_pages():
-    browser.visit(ROOT + '/user/3')
+    browser.visit(ROOT + '/user/2')
     assert_true(browser.is_text_present('Tobias'), error_text)
