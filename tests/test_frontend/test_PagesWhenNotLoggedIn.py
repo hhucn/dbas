@@ -1,6 +1,4 @@
 from . import *
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User
 
 ROOT = 'http://localhost:4284'
 error_text = 'test string not present on website'
@@ -58,6 +56,5 @@ def test_admin_pages():
 
 
 def test_user_pages():
-    db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-    browser.visit('{}/user/{}'.format(ROOT, db_user.uid))
+    browser.visit('{}/user/{}'.format(ROOT, 2))
     assert_true(browser.is_text_present('Tobias'), error_text)

@@ -31,7 +31,7 @@ import dbas.strings.matcher as fuzzy_string_matcher
 import dbas.user_management as user_manager
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, sql_timestamp_pretty_print
-from dbas.database.initializedb import nick_of_anonymous_user, nick_of_admin
+from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.opinion import get_infos_about_argument,  get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
     get_user_with_same_opinion_for_premisegroups, get_user_and_opinions_for_argument
