@@ -771,8 +771,8 @@ class ItemDictHelper(object):
         :return: dict()
         """
         # check punctuation
-        for premise in premises:
-            if 'title' in premise:
+        for index, premise in enumerate(premises):
+            if 'title' in premise and index == len(premises) - 1:
                 premise['title'] += '.' if not premise['title'].endswith(('.', '?', '!')) else ''
 
         return {
