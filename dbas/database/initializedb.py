@@ -31,7 +31,7 @@ first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'H
                'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
                'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
 nick_of_anonymous_user = 'anonymous'
-nick_of_admin = 'admin'
+nick_of_admin = 'Tobias'
 
 
 def usage(argv):
