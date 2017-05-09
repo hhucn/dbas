@@ -770,14 +770,14 @@ def __set_up_settings(session, users):
     :return: None
     """
     # adding settings
-    import dbas.user_management as user_hander
+    import dbas.user_management as user_handler
     for user in users:
         new_public_nick = 10 <= users.index(user) <= 20
         setting = Settings(author_uid=user.uid, send_mails=False, send_notifications=True,
                            should_show_public_nickname=not new_public_nick)
         session.add(setting)
         if new_public_nick:
-            user_hander.refresh_public_nickname(user)
+            user_handler.refresh_public_nickname(user)
 
     session.flush()
 
@@ -808,7 +808,7 @@ def __set_up_issue(session, lang1, lang2, is_field_test=False):
     :return: None
     """
     # adding our main issue
-    db_user = session.query(User).filter_by(nickname=nick_of_admin).first()
+    db_user = session.query(User).filter_by(nickname='Tobias').first()
     issue1 = Issue(title='Town has to cut spending ',
                    info='Our town needs to cut spending. Please discuss ideas how this should be done.',
                    long_info='',
@@ -2217,17 +2217,17 @@ def __setup_review_dummy_database(session):
     reputation11 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_edit').first()
     reputation12 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_duplicate').first()
 
-    admin = session.query(User).filter_by(nickname=nick_of_admin).first()
+    # admin = session.query(User).filter_by(nickname=nick_of_admin).first()
     christian = session.query(User).filter_by(nickname='Christian').first()
     tobias = session.query(User).filter_by(nickname='Tobias').first()
 
     today = arrow.utcnow()
     yesterday = today.replace(days=-1)
     day_before_yesterday = yesterday.replace(days=-1)
-    history01 = ReputationHistory(reputator=admin.uid, reputation=reputation01.uid, timestamp=day_before_yesterday)
-    history02 = ReputationHistory(reputator=admin.uid, reputation=reputation02.uid, timestamp=yesterday)
-    history03 = ReputationHistory(reputator=admin.uid, reputation=reputation03.uid, timestamp=today)
-    history04 = ReputationHistory(reputator=admin.uid, reputation=reputation08.uid, timestamp=today)
+    history01 = ReputationHistory(reputator=christian.uid, reputation=reputation01.uid, timestamp=day_before_yesterday)
+    history02 = ReputationHistory(reputator=christian.uid, reputation=reputation02.uid, timestamp=yesterday)
+    history03 = ReputationHistory(reputator=christian.uid, reputation=reputation03.uid, timestamp=today)
+    history04 = ReputationHistory(reputator=christian.uid, reputation=reputation08.uid, timestamp=today)
     history05 = ReputationHistory(reputator=christian.uid, reputation=reputation03.uid, timestamp=day_before_yesterday)
     history06 = ReputationHistory(reputator=christian.uid, reputation=reputation04.uid, timestamp=day_before_yesterday)
     history07 = ReputationHistory(reputator=christian.uid, reputation=reputation05.uid, timestamp=yesterday)
