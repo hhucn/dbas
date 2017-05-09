@@ -140,7 +140,7 @@ def send_add_text_notification(url, conclusion_id, user, request):
                                                 increase_counter=True)
 
     # find admin
-    db_admin = DBDiscussionSession.query(User).filter(public_nickname=nick_of_admin).first()
+    db_admin = DBDiscussionSession.query(User).filter(nickname=nick_of_admin).first()
 
     # get topic and content for messages to both authors
     topic1 = _t_root.get(_.statementAdded)
@@ -195,7 +195,7 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request):
         EmailHelper.send_mail_due_to_added_text(user_lang, url, db_author, request)
 
     # find admin
-    db_admin = DBDiscussionSession.query(User).filter(public_nickname=nick_of_admin).first()
+    db_admin = DBDiscussionSession.query(User).filter(nickname=nick_of_admin).first()
 
     topic = _t_user.get(_.argumentAdded)
     content = get_text_for_add_argument_message(db_author.firstname, user_lang, url, True)
