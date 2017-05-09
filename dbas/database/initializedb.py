@@ -2224,31 +2224,53 @@ def __setup_review_dummy_database(session):
     today = arrow.utcnow()
     yesterday = today.replace(days=-1)
     day_before_yesterday = yesterday.replace(days=-1)
-    history01 = ReputationHistory(reputator=christian.uid, reputation=reputation01.uid, timestamp=day_before_yesterday)
-    history02 = ReputationHistory(reputator=christian.uid, reputation=reputation02.uid, timestamp=yesterday)
-    history03 = ReputationHistory(reputator=christian.uid, reputation=reputation03.uid, timestamp=today)
-    history04 = ReputationHistory(reputator=christian.uid, reputation=reputation08.uid, timestamp=today)
-    history05 = ReputationHistory(reputator=christian.uid, reputation=reputation03.uid, timestamp=day_before_yesterday)
-    history06 = ReputationHistory(reputator=christian.uid, reputation=reputation04.uid, timestamp=day_before_yesterday)
-    history07 = ReputationHistory(reputator=christian.uid, reputation=reputation05.uid, timestamp=yesterday)
-    history08 = ReputationHistory(reputator=christian.uid, reputation=reputation06.uid, timestamp=yesterday)
-    history09 = ReputationHistory(reputator=christian.uid, reputation=reputation09.uid, timestamp=today)
-    history10 = ReputationHistory(reputator=christian.uid, reputation=reputation08.uid, timestamp=today)
-    history11 = ReputationHistory(reputator=tobias.uid, reputation=reputation04.uid, timestamp=day_before_yesterday)
-    history12 = ReputationHistory(reputator=tobias.uid, reputation=reputation05.uid, timestamp=day_before_yesterday)
-    history13 = ReputationHistory(reputator=tobias.uid, reputation=reputation06.uid, timestamp=yesterday)
-    history14 = ReputationHistory(reputator=tobias.uid, reputation=reputation09.uid, timestamp=yesterday)
-    history15 = ReputationHistory(reputator=tobias.uid, reputation=reputation07.uid, timestamp=today)
-    history16 = ReputationHistory(reputator=tobias.uid, reputation=reputation10.uid, timestamp=today)
-    history17 = ReputationHistory(reputator=tobias.uid, reputation=reputation08.uid, timestamp=today)
-    history18 = ReputationHistory(reputator=tobias.uid, reputation=reputation11.uid, timestamp=today)
-    history19 = ReputationHistory(reputator=tobias.uid, reputation=reputation12.uid, timestamp=today)
+    history01 = ReputationHistory(reputator=christian.uid, reputation=reputation01.uid)
+    history02 = ReputationHistory(reputator=christian.uid, reputation=reputation02.uid)
+    history03 = ReputationHistory(reputator=christian.uid, reputation=reputation03.uid)
+    history04 = ReputationHistory(reputator=christian.uid, reputation=reputation08.uid)
+    history05 = ReputationHistory(reputator=christian.uid, reputation=reputation03.uid)
+    history06 = ReputationHistory(reputator=christian.uid, reputation=reputation04.uid)
+    history07 = ReputationHistory(reputator=christian.uid, reputation=reputation05.uid)
+    history08 = ReputationHistory(reputator=christian.uid, reputation=reputation06.uid)
+    history09 = ReputationHistory(reputator=christian.uid, reputation=reputation09.uid)
+    history10 = ReputationHistory(reputator=christian.uid, reputation=reputation08.uid)
+    history11 = ReputationHistory(reputator=tobias.uid, reputation=reputation04.uid)
+    history12 = ReputationHistory(reputator=tobias.uid, reputation=reputation05.uid)
+    history13 = ReputationHistory(reputator=tobias.uid, reputation=reputation06.uid)
+    history14 = ReputationHistory(reputator=tobias.uid, reputation=reputation09.uid)
+    history15 = ReputationHistory(reputator=tobias.uid, reputation=reputation07.uid)
+    history16 = ReputationHistory(reputator=tobias.uid, reputation=reputation10.uid)
+    history17 = ReputationHistory(reputator=tobias.uid, reputation=reputation08.uid)
+    history18 = ReputationHistory(reputator=tobias.uid, reputation=reputation11.uid)
+    history19 = ReputationHistory(reputator=tobias.uid, reputation=reputation12.uid)
+    history01.timestamp = day_before_yesterday
+    history02.timestamp = yesterday
+    history03.timestamp = today
+    history04.timestamp = today
+    history05.timestamp = day_before_yesterday
+    history06.timestamp = day_before_yesterday
+    history07.timestamp = yesterday
+    history08.timestamp = yesterday
+    history09.timestamp = today
+    history10.timestamp = today
+    history11.timestamp = day_before_yesterday
+    history12.timestamp = day_before_yesterday
+    history13.timestamp = yesterday
+    history14.timestamp = yesterday
+    history15.timestamp = today
+    history16.timestamp = today
+    history17.timestamp = today
+    history18.timestamp = today
+    history19.timestamp = today
 
     for name in ['Marga', 'Emmi', 'Rupert', 'Hanne']:
         db_user = session.query(User).filter_by(nickname=name).first()
-        history1 = ReputationHistory(reputator=db_user.uid, reputation=reputation01.uid, timestamp=day_before_yesterday)
-        history2 = ReputationHistory(reputator=db_user.uid, reputation=reputation02.uid, timestamp=yesterday)
-        history3 = ReputationHistory(reputator=db_user.uid, reputation=reputation03.uid, timestamp=today)
+        history1 = ReputationHistory(reputator=db_user.uid, reputation=reputation01.uid)
+        history2 = ReputationHistory(reputator=db_user.uid, reputation=reputation02.uid)
+        history3 = ReputationHistory(reputator=db_user.uid, reputation=reputation03.uid)
+        history1.timestamp = day_before_yesterday
+        history2.timestamp = yesterday
+        history3.timestamp = today
         session.add_all([history1, history2, history3])
 
     session.add_all([history01, history02, history03, history04, history05, history06, history07, history08, history09,

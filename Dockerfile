@@ -9,7 +9,9 @@ COPY requirements.txt /dbas/
 RUN pip install -q -U pip \
     && pip install -q -r requirements.txt \
     && apt-get update \
-    && apt-get install -yqq gettext
+    && apt-get install -yqq gettext \
+    && echo 'Europe/Berlin' > /etc/timezone  \
+    && dpkg-reconfigure -f noninteractive tzdata
 
 COPY . /dbas/
 
