@@ -102,7 +102,9 @@ def send_mail(request, subject, body, recipient, lang):
 
     # try sending an catching errors
     try:
-        mailer.send_immediately(message, fail_silently=False)
+        from threading import Thread
+        t = Thread(target=__thread_to_send_mail, args=(mailer, message,))
+        t.start()
         send_message = True
         message = _t.get(_.emailWasSent)
     except smtplib.SMTPConnectError as exception:
@@ -115,3 +117,9 @@ def send_mail(request, subject, body, recipient, lang):
         message = _t.get(_.emailWasNotSent)
 
     return send_message, message
+
+
+def __thread_to_send_mail(mailer, message):
+    logger('email_helper', '__thread_to_send_mail', 'Start thread for message {}'.format(message[:30]))
+    mailer.send_immediately(message, fail_silently=False)
+    logger('email_helper', '__thread_to_send_mail', 'End thread with message {}'.format(message[:30]))
