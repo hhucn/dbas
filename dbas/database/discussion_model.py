@@ -880,8 +880,8 @@ class ClickedArgument(DiscussionBase):
 
 class ClickedStatement(DiscussionBase):
     """
-    Vote-table with several columns for statements. 
-    A statement will be voted, if the user has selected the statement as justification 
+    Vote-table with several columns for statements.
+    A statement will be voted, if the user has selected the statement as justification
     or if the statement is used as part of an argument.
     """
     __tablename__ = 'clicked_statements'
