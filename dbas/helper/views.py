@@ -12,7 +12,6 @@ import dbas.helper.history as HistoryHelper
 import dbas.helper.issue as IssueHelper
 import dbas.helper.issue as issue_helper
 import dbas.helper.voting as VotingHelper
-import dbas.recommender_system as RecommenderSystem
 import dbas.user_management as UserHandler
 from dbas.auth.recaptcha import validate_recaptcha
 from dbas.database import DBDiscussionSession
