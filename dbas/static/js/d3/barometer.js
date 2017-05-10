@@ -213,7 +213,7 @@ function DiscussionBarometer(){
                 count += value.seenBy;
             });
         }
-        return count === 0 || true;
+        return count === 0;
     }
 
     /**
