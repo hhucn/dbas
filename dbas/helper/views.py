@@ -209,7 +209,7 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, argum
     # is the discussion at the end?
     if len(item_dict['elements']) == 0:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_dont_know=True,
-                                    current_premise=get_text_for_statement_uid(statement_or_arg_id))
+                                    current_premise=get_text_for_statement_uid(argument_uid))
     return item_dict, discussion_dict, extras_dict
 
 
