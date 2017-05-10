@@ -103,7 +103,7 @@ def send_mail(request, subject, body, recipient, lang):
     # try sending an catching errors
     try:
         from threading import Thread
-        t = Thread(target=__thread_to_send_mail, args=(mailer, message,))
+        t = Thread(target=__thread_to_send_mail, args=(mailer, message, recipient, body,))
         t.start()
         send_message = True
         message = _t.get(_.emailWasSent)
@@ -119,7 +119,7 @@ def send_mail(request, subject, body, recipient, lang):
     return send_message, message
 
 
-def __thread_to_send_mail(mailer, message):
-    logger('email_helper', '__thread_to_send_mail', 'Start thread for message {}'.format(message[:30]))
+def __thread_to_send_mail(mailer, message, recipient, body):
+    logger('email_helper', '__thread_to_send_mail', 'Start thread to send mail to {} with {}'.format(recipient, body[:30]))
     mailer.send_immediately(message, fail_silently=False)
-    logger('email_helper', '__thread_to_send_mail', 'End thread with message {}'.format(message[:30]))
+    logger('email_helper', '__thread_to_send_mail', 'End thread to send mail to {} with {}'.format(recipient, body[:30]))
