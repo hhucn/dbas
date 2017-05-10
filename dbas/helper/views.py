@@ -178,7 +178,7 @@ def preparation_for_justify_statement(request, for_api, main_page, slug, stateme
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_dont_know_statement(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, nickname, history):
+def preparation_for_dont_know_statement(request, for_api, main_page, slug, argument_uid, supportive, ui_locales, request_authenticated_userid, nickname, history):
     """
     Prepares some paramater for the "don't know" step
 
@@ -186,7 +186,7 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, state
     :param for_api: Boolean
     :param main_page: string
     :param slug: String
-    :param statement_or_arg_id: Argument.uid / Statement.uid
+    :param argument_uid: Argument.uid
     :param supportive: Boolean
     :param ui_locales: Language.ui_locales
     :param request_authenticated_userid: User.nickname
@@ -201,9 +201,6 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, state
     _ddh                = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=main_page, slug=slug)
     _idh                = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=request.path, history=history)
     _dh                 = DictionaryHelper(ui_locales, disc_ui_locales)
-
-    # dont know
-    argument_uid    = RecommenderSystem.get_argument_by_conclusion(statement_or_arg_id, supportive)
 
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid, main_page, request_authenticated_userid)
     item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, nickname, discussion_dict['gender'])
