@@ -38,6 +38,15 @@ def get_references_for_argument(uid, main_page):
         references_array = __get_references_for_statement(tmp_uid, main_page)[tmp_uid]
         data[premise.statement_uid] = references_array
         text[premise.statement_uid] = get_text_for_statement_uid(premise.statement_uid)
+
+    if db_argument.conclusion_uid != None:
+        tmp_uid = db_argument.conclusion_uid
+        references_array = __get_references_for_statement(tmp_uid, main_page)[tmp_uid]
+        data[tmp_uid] = references_array
+        text[tmp_uid] = get_text_for_statement_uid(tmp_uid)
+    else:
+        data, text = get_references_for_argument(db_argument.argument_uid, main_page)
+
     return data, text
 
 
