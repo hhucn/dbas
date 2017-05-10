@@ -572,7 +572,7 @@ en_lang = {
     _.reaction_text_undercut: 'In my opinion, {} is correct, but it does not support {}.',
     _.reaction_text_undercut_for_dont_know: 'In my opinion, {} is correct, but it is not supported by the {}.',
     _.reaction_text_rebut: 'In my opinion, {} is correct and it supports {}. However I want to defend {}.',
-    _.reaction_text_rebut_for_dont_know: 'In my opinion, {} is correct and it supports {}. However I want to attack {}.',
+    _.reaction_text_rebut_for_dont_know: 'In my opinion, {} is wrong and I would like to argue against it.',
 
     _.questionTitle: 'Get more information about the statement!',
     _.saveMyStatement: 'Save my Statement!',
