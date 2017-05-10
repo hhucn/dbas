@@ -305,8 +305,8 @@ def __get_relation_text_dict(lang, with_no_opinion_text, premise, conclusion, is
         ret_dict['undercut_text'] = _t.get(_.reaction_text_undercut).format(premise, conclusion)
 
     if is_dont_know:
-        conclusion_genitiv = conclusion.replace('ihre', 'ihrer').replace('seine', 'seiner')
-        ret_dict['rebut_text'] = _t.get(_.reaction_text_rebut_for_dont_know).format(conclusion_genitiv)
+        # conclusion_genitiv = conclusion.replace('ihre', 'ihrer').replace('seine', 'seiner')
+        ret_dict['rebut_text'] = _t.get(_.reaction_text_rebut_for_dont_know).format(conclusion)
     else:
         conclusion_user = start_position + _t.get(_.myPosition) + end_tag
         ret_dict['rebut_text'] = _t.get(_.reaction_text_rebut).format(premise, conclusion, conclusion_user)

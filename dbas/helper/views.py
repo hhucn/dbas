@@ -207,7 +207,7 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, state
 
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid, main_page, request_authenticated_userid)
     item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, nickname, discussion_dict['gender'])
-    extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, argument_id=argument_uid,
+    extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, request, argument_id=argument_uid,
                                               for_api=for_api, nickname=request_authenticated_userid)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0:
