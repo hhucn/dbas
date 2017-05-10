@@ -148,7 +148,13 @@ def main_contact(request):
     if 'form.contact.submitted' in request.params:
         contact_error, message, send_message = try_to_contact(request, username, email, content, ui_locales, recaptcha)
 
-    bug_view = 'reason' in request.matchdict and len(request.matchdict['reason']) > 0 and 'bug=true' in request.matchdict['reason'][0].lower()
+    bug_view = False
+    if 'reason' in request.matchdict and len(request.matchdict['reason']) > 0:
+        if request.matchdict['reason'].lower() == '&bug=true':
+            bug_view = True
+        else:
+            logger('main_contact', 'def', 'wrong reason: {}'.format(request.matchdict['reason']), error=True)
+            raise HTTPNotFound()
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     ui_locales = get_language_from_cookie(request)
