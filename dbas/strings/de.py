@@ -573,7 +573,7 @@ de_lang = {
     _.reaction_text_undercut: 'Ich halte {} für richtig, aber sie stützt nicht {}.',
     _.reaction_text_undercut_for_dont_know: 'Ich halte {} für richtig, aber sie wird nicht von der {} gestützt.',
     _.reaction_text_rebut: 'Ich halte {} für richtig und sie stützt auch {}, aber ich möchte {} trotzdem verteidigen.',
-    _.reaction_text_rebut_for_dont_know: 'Ich halte {} für richtig und sie wird auch durch {} unterstützt, aber ich möchte {} trotzdem widersprechen.',
+    _.reaction_text_rebut_for_dont_know: 'Ich halte {} für falsch und möchte widersprechen.',
 
     _.questionTitle: 'Erhalten Sie mehr Informationen über die Aussage!',
     _.saveMyStatement: 'Aussage speichern!',
