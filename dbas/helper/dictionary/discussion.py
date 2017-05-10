@@ -291,6 +291,7 @@ class DiscussionDictHelper(object):
         gender = ''
         b = '<' + tag_type + '>'
         e = '</' + tag_type + '>'
+        statement_list = list()
 
         if uid != 0:
             text = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know', with_html_tag=True, start_with_intro=True)
@@ -304,14 +305,18 @@ class DiscussionDictHelper(object):
                 intro = b + _tn.get(_.otherParticipantsThinkThat) + e
             sys_text = intro + ' ' + text[0:1].lower() + text[1:] + '. '
             sys_text += '<br><br>' + b + _tn.get(_.whatDoYouThinkAboutThat) + '?' + e
-            bubble_sys = create_speechbubble_dict(is_system=True, message=sys_text)
+            bubble_sys = create_speechbubble_dict(is_system=True, message=sys_text, id=uid, is_markable=True)
             if not bubbles_already_last_in_list(bubbles_array, bubble_sys):
                 bubbles_array.append(bubble_sys)
+
+            # add statements of discussion to report them
+            statement_list = self.__get_all_statement_texts_by_argument(db_argument)
 
         return {'bubbles': bubbles_array,
                 'add_premise_text': add_premise_text,
                 'save_statement_url': save_statement_url,
                 'mode': '',
+                'extras': statement_list,
                 'gender': gender}
 
     def get_dict_for_argumentation(self, uid, is_supportive, additional_uid, attack, history, nickname):
@@ -459,8 +464,8 @@ class DiscussionDictHelper(object):
         user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if user_changed_opinion else ''
         user_text += current_argument if current_argument != '' else premise
 
-        sys_text, gender = get_text_for_confrontation(self.main_page, self.lang, nickname, premise, conclusion, sys_conclusion,
-                                                      is_supportive, attack, confr, reply_for_argument,
+        sys_text, gender = get_text_for_confrontation(self.main_page, self.lang, nickname, premise, conclusion,
+                                                      sys_conclusion, is_supportive, attack, confr, reply_for_argument,
                                                       not user_arg.is_supportive, user_arg, db_confrontation)
         gender_of_counter_arg = gender
 

@@ -691,12 +691,15 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
             else:
                 confrontation_text = author + ' ' + bs + _t.get(_.otherUserDoesntHaveOpinionForThisStatement) + ' '
             confrontation_text += _t.get(_.strongerStatementM) if gender is 'm' else _t.get(_.strongerStatementF)
+
         else:
             confrontation_text = bs + _t.get(_.otherParticipantsDontHaveOpinion) + ' {}. '
             confrontation_text += _t.get(_.strongerStatementP)
 
         tag = tag_pro_start if user_is_attacking else tag_con_start
-        tmp = _t.get(_.accepting) if user_is_attacking else _t.get(_.rejecting)
+        tmp = '<{} data-argumentation-type="argument">'.format(tag_type)
+        tmp += _t.get(_.accepting) if user_is_attacking else _t.get(_.rejecting)
+        tmp += '</{}>'.format(tag_type)
         confrontation_text = confrontation_text.format(premise, tag, tmp, ' ' + e)
 
         tmp = _t.get(_.strongerStatementEnd)
