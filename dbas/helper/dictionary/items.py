@@ -122,13 +122,16 @@ class ItemDictHelper(object):
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
-        # colon = ' ' if self.lang == 'de' else ': '
-        title_t = _tn.get(_.iAgreeWithInColor) + '.'  # + colon + text
-        title_f = _tn.get(_.iDisagreeWithInColor) + '.'  # + colon + text
-        title_d = _tn.get(_.iHaveNoOpinionYetInColor) + '.'  # + colon + text
+        db_arguments = DBDiscussionSession.query(Argument).filter(Argument.conclusion_uid == statement_uid,
+                                                                  Argument.is_supportive == True).all()
+        uid = random.choice(db_arguments).uid if len(db_arguments) > 0 else 0
+
+        title_t = _tn.get(_.iAgreeWithInColor) + '.'
+        title_f = _tn.get(_.iDisagreeWithInColor) + '.'
+        title_d = _tn.get(_.iHaveNoOpinionYetInColor) + '.'
         url_t = _um.get_url_for_justifying_statement(True, statement_uid, 't')
         url_f = _um.get_url_for_justifying_statement(True, statement_uid, 'f')
-        url_d = _um.get_url_for_justifying_statement(True, statement_uid, 'd')
+        url_d = _um.get_url_for_justifying_statement(True, uid, 'd')
         d_t = self.__create_answer_dict('agree', [{'title': title_t, 'id': 'agree'}], 'agree', url_t)
         d_f = self.__create_answer_dict('disagree', [{'title': title_f, 'id': 'disagree'}], 'disagree', url_f)
         d_d = self.__create_answer_dict('dontknow', [{'title': title_d, 'id': 'dontknow'}], 'dontknow', url_d)
