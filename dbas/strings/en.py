@@ -615,6 +615,8 @@ en_lang = {
     _.statementIsAbout: 'Statement is about',
     _.statementAbout: 'Statement about',
     _.statementIsDuplicate: 'Statement is duplicate',
+    _.statementsShowAll: 'Show all answers',
+    _.statementsHideAll: 'Hide all answers',
     _.settings: 'Settings',
     _.senderReceiverSame: 'Sender and reveicer are equal',
     _.seperated: 'seperated',

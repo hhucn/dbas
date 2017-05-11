@@ -150,8 +150,8 @@
                         </li>
                     </ul>
                     <div tal:condition="items.extras.cropped_list" style="padding-left: 40px;">
-                        <a id="show-all-elements-in-discussion-space" href="#" class="btn btn-primary btn-xs"><span i18n:translate="show_all_statements">Show all statements</span></a>
-                        <a id="hide-elements-in-discussion-space" href="#" class="btn btn-primary btn-xs" style="display:none;"><span i18n:translate="hide_statements">Hide statements</span></a>
+                        <a id="show-all-elements-in-discussion-space" href="#" class="btn btn-primary btn-xs">${extras.buttons.show_all_statements}</a>
+                        <a id="hide-elements-in-discussion-space" href="#" class="btn btn-primary btn-xs" style="display:none;">${extras.buttons.hide_statements}</a>
                     </div>
                 </div>
             </div>

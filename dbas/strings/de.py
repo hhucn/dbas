@@ -619,6 +619,8 @@ de_lang = {
     _.statementAbout: 'Die Aussage, dass',
     _.statementAdded: 'Aussage wurde hinzugefügt',
     _.statementIsDuplicate: 'Aussage ist ein Duplikat',
+    _.statementsShowAll: 'Alle Antworten anzeigen',
+    _.statementsHideAll: 'Antworten ausblenden',
     _.argumentAdded: 'Argument wurde hinzugefügt',
     _.positionAdded: 'Position wurde hinzugefügt',
     _.statementAddedMessageContent: 'Hey {},\n\njemand hat eine Meinung zu Ihrer Aussage hinzugefügt!',

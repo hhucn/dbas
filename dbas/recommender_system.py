@@ -16,7 +16,7 @@ from dbas.query_wrapper import get_not_disabled_arguments_as_query
 
 # Millers Magic Number are 6 (https://en.wikipedia.org/wiki/The_Magical_Number_Seven,_Plus_or_Minus_Two)
 # Buddeley says 3-4
-max_count = 6
+max_count = 5
 
 
 def get_uids_of_best_positions(db_statements):
@@ -69,6 +69,7 @@ def __select_random(some_list):
     :return: list, boolean
     """
     return some_list  # TODO 166 currently disabled
+    # return some_list[:max_count] # we do not need to shuffle cause we everything is randomized based on the users nick
     # return [some_list[i] for i in sorted(random.sample(range(len(some_list)), max_count))]
 
 

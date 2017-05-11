@@ -614,6 +614,8 @@ class Keywords(Enum):
     argumentAddedMessageContent = 'argumentAddedMessageContent'
     statementIndex = 'statementIndex'
     statementIndexInfo = 'statementIndexInfo'
+    statementsShowAll = 'statementsShowAll'
+    statementsHideAll = 'statementsHideAll'
     sureThat = 'sureThat'
     surname = 'surname'
     myStatement = 'myStatement'
