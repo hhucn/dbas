@@ -1295,13 +1295,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         circleIds = [];
 
         force.nodes().forEach(function (d) {
-            if (d.author.name === $('#header_nickname')[0].innerText) {
-                circleIds.push(d.id);
-            }
-        });
-
-        force.nodes().forEach(function (d) {
-            if (d.author.name === $('#header_nickname')[0].innerText) {
+            var nick = $('#header_nickname').data('public-nickname');
+            var author = d.author.name;
+            nick = typeof nick === 'undefined' ? nick : nick.toLocaleLowerCase();
+            author = typeof author === 'undefined' ? author : author.toLocaleLowerCase();
+            if (author === nick) {
                 showPartOfGraph(d.id);
             }
         });

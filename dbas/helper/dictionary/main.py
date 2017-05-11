@@ -108,6 +108,7 @@ class DictionaryHelper(object):
         """
         logger('DictionaryHelper', 'prepare_extras_dict', 'def user ' + str(nickname))
         request_authenticated_userid = nickname
+        public_nickname = nickname
         nickname = ''
 
         db_user = DBDiscussionSession.query(User).filter_by(nickname=str(request_authenticated_userid)).first()
@@ -115,9 +116,11 @@ class DictionaryHelper(object):
         if request_authenticated_userid:
             nickname = request_authenticated_userid if request_authenticated_userid else nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+            public_nickname = db_user.get_global_nickname()
 
         if not db_user or request_authenticated_userid is None:
             nickname = nick_of_anonymous_user
+            public_nickname = nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
 
         is_ldap = is_usage_with_ldap(request)
@@ -135,6 +138,7 @@ class DictionaryHelper(object):
         return_dict['is_in_discussion']              = 'discuss' in request.path
         return_dict['logged_in']                     = is_logged_in
         return_dict['nickname']                      = request_authenticated_userid
+        return_dict['public_nickname']               = public_nickname
         return_dict['add_premise_container_style']   = add_premise_container_style
         return_dict['add_statement_container_style'] = add_statement_container_style
         return_dict['users_avatar']                  = get_profile_picture(db_user, 25)
