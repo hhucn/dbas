@@ -245,6 +245,11 @@ def get_table_rows(nickname, table_name, ids):
                 'table': table_mapper[table_name.lower()]['name']}
 
     columns = [r.key for r in table.__table__.columns]
+
+    for bad in ['firstname', 'surname', 'token', 'token_timestamp', 'password', 'email']:
+        if bad in columns:
+            columns.remove(bad)
+
     row = db_elements.filter(table.uid.in_(ids))
     try:
         ret_list = get_rows_of(columns, row, '')
