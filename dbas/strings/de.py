@@ -238,7 +238,7 @@ de_lang = {
     _.disagreeToThis0: 'keiner widerspricht der Aussage',
     _.disagreeToThis1: 'widerspricht der Aussage',
     _.disagreeToThis2: 'widersprechen der Aussage',
-    _.doesNotHold: 'ist keine gute Idee',
+    _.doesNotHold: 'keine gute Idee ist',
     _.isNotRight: 'nicht richtig ist',
     _.isNoGoodJustification: 'keine gute Begründung ist',
     _.doesJustify: 'gerechtfertigen, dass',
