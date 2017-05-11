@@ -10,7 +10,7 @@ from cornice import Service
 
 import dbas.helper.issue as IssueHelper
 from dbas.logger import logger
-from export.lib import get_dump, get_minimal_graph_export, get_table_rows
+from export.lib import get_dump, get_doj_data, get_table_rows
 
 #
 # CORS configuration
@@ -53,9 +53,7 @@ def get_database_dump(request):
     logger('Export', 'get_database_dump', 'main')
     issue = IssueHelper.get_issue_id(request)
 
-    return_dict = get_dump(issue)
-
-    return json.dumps(return_dict, True)
+    return get_dump(issue)
 
 
 @doj.get()
@@ -71,7 +69,7 @@ def get_doj_dump(request):
     m = request.matchdict
     issue = m['issue'][0] if 'issue' in m and len(m['issue']) > 0 else None
 
-    return json.dumps(get_minimal_graph_export(issue), True)
+    return get_doj_data(issue)
 
 
 @table_row.get()
@@ -88,4 +86,4 @@ def get_table_row(request):
     table = matchdict['table'] if 'table' in matchdict else None
     ids = matchdict['ids'] if 'table' in matchdict else None
 
-    return json.dumps(get_table_rows(request.authenticated_userid, table, ids))
+    return get_table_rows(request.authenticated_userid, table, ids)

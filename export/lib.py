@@ -162,7 +162,7 @@ def __get_all_marked_statements(statement_uid_set):
     return [vote.to_dict() for vote in db_votes]
 
 
-def get_minimal_graph_export(issue):
+def get_doj_data(issue):
     """
     Returns type of tables column
 
@@ -246,7 +246,7 @@ def get_table_rows(nickname, table_name, ids):
 
     columns = [r.key for r in table.__table__.columns]
 
-    for bad in ['firstname', 'surname', 'token', 'token_timestamp', 'password', 'email']:
+    for bad in ['firstname', 'surname', 'token', 'token_timestamp', 'password', 'email', 'nickname']:
         if bad in columns:
             columns.remove(bad)
 
