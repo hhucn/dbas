@@ -547,6 +547,8 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sys
     b = '<' + tag_type + '>'
     bs = '<{} class="triangle-content-text">'.format(tag_type)
     e = '</' + tag_type + '>'
+    start_argument = '<{} data-argumentation-type="argument">'.format(tag_type)
+
     move_end_tag = False
     if tag_type not in premise:
         premise = b + premise + e
@@ -563,7 +565,9 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sys
     confrontation_text += e + ' ' + premise
     # confrontation_text += start_position if attack != 'undermine' else start_argument
     confrontation_text += '<{} data-attitude="{}">'.format(tag_type, 'pro' if system_argument.is_supportive else 'con')
-    confrontation_text += b + ' ' + (_t.get(_.hold) if system_argument.is_supportive else _t.get(_.doesNotHold)) + e
+    confrontation_text += b + ' ' + start_argument
+    confrontation_text += _t.get(_.hold) if system_argument.is_supportive else _t.get(_.doesNotHold)
+    confrontation_text += end_tag + e
     confrontation_text += end_tag
     # confrontation_text += end_tag if not move_end_tag else ''
     confrontation_text += b + ', ' + _t.get(_.because).lower() + e + ' ' + confrontation
