@@ -6,7 +6,7 @@ from dbas.lib import get_profile_picture
 from dbas.strings.keywords import Keywords as _
 
 
-def set_settings(request, service, settings_value, _tn):
+def set_settings(userid, service, settings_value, _tn):
     """
     Edits a user specific setting
 
@@ -21,7 +21,7 @@ def set_settings(request, service, settings_value, _tn):
     public_nick = ''
     public_page_url = ''
     gravatar_url = ''
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=userid).first()
     if not db_user:
         error = _tn.get(_.checkNickname)
         return public_nick, public_page_url, gravatar_url, error
