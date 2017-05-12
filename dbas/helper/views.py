@@ -42,17 +42,16 @@ def get_nickname(request_authenticated_userid, for_api=None, api_data=None):
     return nickname
 
 
-def preparation_for_view(for_api, api_data, request, request_authenticated_userid):
+def preparation_for_view(for_api, api_data, request):
     """
     Does some elementary things like: getting nickname, session id and history. Additionally boolean, if the session is expired
 
     :param for_api: True, if the values are for the api
     :param api_data: Array with api data
     :param request: Current request
-    :param request_authenticated_userid: User.nickname
     :return: nickname, session_id, session_expired, history
     """
-    nickname = get_nickname(request_authenticated_userid, for_api, api_data)
+    nickname = get_nickname(request.authenticated_userid, for_api, api_data)
     session_expired = UserHandler.update_last_action(nickname)
     history         = request.params['history'] if 'history' in request.params else ''
     #  HistoryHelper.save_path_in_database(nickname, request.path, history)  # TODO 322

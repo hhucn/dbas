@@ -587,7 +587,7 @@ def discussion_init(request, for_api=False, api_data=None):
         logger('discussion_init', 'def', 'to many slugs', error=True)
         raise HTTPNotFound()
 
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request.authenticated_userid)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
     if session_expired:
         return user_logout(request, True)
 
