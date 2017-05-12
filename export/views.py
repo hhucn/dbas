@@ -31,7 +31,7 @@ doj_nodes = Service(name='export_doj',
                     description='Export for DoJ Nodes')
 
 doj_users = Service(name='export_doj',
-                    path='/doj_user/{user}',
+                    path='/doj_user/{user}/{discussion}',
                     description='Export for DoJ User')
 
 table_row = Service(name='export_table_row',
@@ -84,9 +84,10 @@ def get_doj_dump_for_users(request):
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Export', 'get_doj_user', 'def ' + str(request))
-    issue = request.matchdict['user'] if 'user' in request.matchdict else None
+    user = request.matchdict['user'] if 'user' in request.matchdict else None
+    discussion = request.matchdict['discussion'] if 'discussion' in request.matchdict else None
 
-    return get_doj_user(issue)
+    return get_doj_user(user, discussion)
 
 
 @table_row.get()
