@@ -1363,7 +1363,7 @@ def get_all_marked_statements(request):
     logger('get_all_marked_statements', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
     return_array = user_manager.get_marked_elements_of_user(request_authenticated_userid, False, ui_locales)
-    return return_array
+    return call_from_request(request, user_manager.get_arg_clicks_of_user)
 
 
 # ajax - getting all votes for arguments
