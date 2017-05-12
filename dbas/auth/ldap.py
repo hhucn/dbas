@@ -2,11 +2,11 @@ from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 
 
-def verify_ldap_user_data(request, nickname, password, _tn):
+def verify_ldap_user_data(registry_settings, nickname, password, _tn):
     """
     Trys to authenticate the user with nickname and password
 
-    :param request: current request of the webserver
+    :param registry_settings: Registry settings from ini file
     :param nickname: users nickname for LDAP
     :param password: users password for LDAP
     :param _tn: Translator
@@ -16,7 +16,7 @@ def verify_ldap_user_data(request, nickname, password, _tn):
     import ldap
 
     try:
-        r = request.registry.settings
+        r = registry_settings
         server = r['settings:ldap:server']
         base = r['settings:ldap:base']
         scope = r['settings:ldap:account.scope']

@@ -209,7 +209,7 @@ def __login_user_ldap(request, nickname, password, _tn):
     :return: String, User
     """
     logger('Auth.Login', '__login_user_ldap', nickname)
-    user_data, error = verify_ldap_user_data(request, nickname, password, _tn)
+    user_data, error = verify_ldap_user_data(request.registry.settings, nickname, password, _tn)
 
     if error is not None:
         return error, ''
