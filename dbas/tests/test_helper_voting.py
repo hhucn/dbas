@@ -105,7 +105,7 @@ class VotingHelperTest(unittest.TestCase):
         val = add_seen_statement(1, db_user)
         self.assertFalse(val)
 
-        db_user = DBDiscussionSession.query(User).get(1)
+        DBDiscussionSession.query(User).get(1)
         val = add_seen_statement(0, 1)
         self.assertFalse(val)
 

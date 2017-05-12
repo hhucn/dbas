@@ -175,7 +175,7 @@ def add_review_opinion_for_edit(request, nickname, is_edit_okay, review_uid, _t,
     reached_max = max(count_of_edit, count_of_dont_edit) >= max_votes
     if reached_max:
         if count_of_dont_edit < count_of_edit:  # accept the edit
-            __accept_edit_review(db_review, db_user_created_flag)
+            __accept_edit_review(db_review)
             add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_edit)
         else:  # just close the review
             add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_edit)
@@ -183,7 +183,7 @@ def add_review_opinion_for_edit(request, nickname, is_edit_okay, review_uid, _t,
         db_review.update_timestamp()
 
     elif count_of_edit - count_of_dont_edit >= min_difference:  # accept the edit
-        __accept_edit_review(db_review, db_user_created_flag)
+        __accept_edit_review(db_review)
         add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_edit)
         db_review.set_executed(True)
         db_review.update_timestamp()
@@ -543,9 +543,9 @@ def __bend_objects_of_duplicate_review(db_review):
     transaction.commit()
 
 
-def __accept_edit_review(review, db_user_created_flag):
+def __accept_edit_review(review):
     """
-    Add correction fot each value affected by the review
+    Add correction for each value affected by the review
 
     :param review: Review
     :param db_user_created_flag: User
@@ -555,6 +555,3 @@ def __accept_edit_review(review, db_user_created_flag):
     db_user = DBDiscussionSession.query(User).get(review.detector_uid)
     for value in db_values:
         correct_statement(db_user.nickname, value.statement_uid, value.content)
-        # val = QueryHelper.correct_statement(transaction, db_user.nickname, value.statement_uid, value.content)
-        # db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=val['text']).order_by(TextVersion.uid.desc()).first()
-        # send_edit_text_notification(db_user_created_flag, db_textversion, None, None)
