@@ -215,6 +215,13 @@ def prepare_data_assign_reference(request, func):
         raise HTTP204()
 
 
+def __init(request):
+    api_data = prepare_user_information(request)
+    nickname = api_data["nickname"] if api_data else None
+    history = request.params['history'] if 'history' in request.params else ''
+    return dbas.discussion.init(request, history, nickname, for_api=True)
+
+
 @reaction.get(validators=validate_login)
 def discussion_reaction(request):
     """Return data from DBas discussion_reaction page.
@@ -276,8 +283,7 @@ def discussion_init(request):
     :return: dbas.discussion_init(True)
 
     """
-    api_data = prepare_user_information(request)
-    return dbas.discussion_init(request, for_api=True, api_data=api_data)
+    return __init(request)
 
 
 @zinit_blank.get(validators=validate_login)
@@ -288,8 +294,7 @@ def discussion_init_blank(request):
     :return: dbas.discussion_init(True)
 
     """
-    api_data = prepare_user_information(request)
-    return dbas.discussion_init(request, for_api=True, api_data=api_data)
+    return __init(request)
 
 
 #
