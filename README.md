@@ -42,6 +42,7 @@ We thank all contributors to this project! In order of appearance:
 
 * Teresa Uebber
 * Björn Ebbinghaus
+* Alexander Schneider
 
 
 ## Maintainers and Main Contributors
