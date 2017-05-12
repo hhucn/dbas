@@ -1,11 +1,11 @@
+import dbas.helper.history as history_helper
+import dbas.helper.issue as issue_helper
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.helper.language import set_language_for_first_visit, get_language_from_cookie
+from dbas.helper.language import (get_language_from_cookie,
+                                  set_language_for_first_visit)
 from dbas.lib import get_discussion_language, resolve_issue_uid_to_slug
-
-import dbas.helper.history as history_helper
-import dbas.helper.issue as issue_helper
 
 
 def init(request, nickname, history, for_api=False) -> dict:
