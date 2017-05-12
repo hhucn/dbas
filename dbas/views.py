@@ -78,6 +78,20 @@ def base_layout():
     return get_renderer('templates/basetemplate.pt').implementation()
 
 
+def check_authentication(request):
+    """
+    The entry routine performed by a bulk of functions.
+    Checks whether the user is authenticated and if not logs user out.
+
+    This function is not pure!
+    :param request: current request of the server
+    :return: HTTP response or None if no change in session
+    """
+    session_expired = user_manager.update_last_action(request.authenticated_userid)
+    if session_expired:
+        return user_logout(request, True)
+
+
 # main page
 @view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
 @forbidden_view_config(renderer='templates/index.pt')
@@ -92,11 +106,9 @@ def main_page(request):
     logger('main_page', 'def', 'main, request.params: {}'.format(request.params))
 
     set_language_for_first_visit(request)
-
-    request_authenticated_userid = request.authenticated_userid
-    session_expired = user_manager.update_last_action(request_authenticated_userid)
-    if session_expired:
-        return user_logout(request, True)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     session_expired = True if 'session_expired' in request.params and request.params['session_expired'] == 'true' else False
     ui_locales      = get_language_from_cookie(request)
@@ -126,10 +138,9 @@ def main_contact(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_contact', 'def', 'main, request.params: {}, request.matchdict: {}'.format(request.params, request.matchdict))
-    request_authenticated_userid = request.authenticated_userid
-    session_expired = user_manager.update_last_action(request_authenticated_userid)
-    if session_expired:
-        return user_logout(request, True)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     contact_error, send_message, message = False, False, ''
     ui_locales = get_language_from_cookie(request)
@@ -194,10 +205,9 @@ def main_settings(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_settings', 'def', 'main, request.params: {}'.format(request.params))
-    request_authenticated_userid = request.authenticated_userid
-    session_expired = user_manager.update_last_action(request_authenticated_userid)
-    if session_expired:
-        return user_logout(request, True)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     ui_locales  = get_language_from_cookie(request)
     old_pw      = ''
@@ -206,7 +216,7 @@ def main_settings(request):
     message     = ''
     success     = False
     error       = False
-    db_user     = DBDiscussionSession.query(User).filter_by(nickname=str(request_authenticated_userid)).join(Group).first()
+    db_user     = DBDiscussionSession.query(User).filter_by(nickname=str(request.authenticated_userid)).join(Group).first()
     _uh         = user_manager
     _t          = Translator(ui_locales)
 
@@ -248,11 +258,9 @@ def main_notifications(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_notifications', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
-    request_authenticated_userid = request.authenticated_userid
-    session_expired = user_manager.update_last_action(request_authenticated_userid)
-
-    if session_expired:
-        return user_logout(request, True)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, append_notifications=True)
 
@@ -276,13 +284,12 @@ def main_news(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_news', 'def', 'main')
-    request_authenticated_userid = request.authenticated_userid
-    session_expired = user_manager.update_last_action(request_authenticated_userid)
-    if session_expired:
-        return user_logout(request, True)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     ui_locales = get_language_from_cookie(request)
-    is_author = is_user_author_or_admin(request_authenticated_userid)
+    is_author = is_user_author_or_admin(request.authenticated_userid)
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
@@ -309,7 +316,6 @@ def main_user(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     match_dict = request.matchdict
     params = request.params
-    request_authenticated_userid = request.authenticated_userid
     logger('main_user', 'def', 'main, request.matchdict: {}'.format(match_dict))
     logger('main_user', 'def', 'main, request.params: {}'.format(params))
 
@@ -325,16 +331,16 @@ def main_user(request):
         raise HTTPNotFound()
         # return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
 
-    session_expired = user_manager.update_last_action(request_authenticated_userid)
-    if session_expired:
-        return user_logout(request, True)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     ui_locales = get_language_from_cookie(request)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     user_dict = user_manager.get_information_of(current_user, ui_locales)
 
-    db_user_of_request = DBDiscussionSession.query(User).filter_by(nickname=request_authenticated_userid).first()
+    db_user_of_request = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
     can_send_notification = False
     if db_user_of_request:
         can_send_notification = current_user.uid != db_user_of_request.uid
@@ -362,11 +368,11 @@ def main_imprint(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_imprint', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
-    request_authenticated_userid = request.authenticated_userid
-    session_expired = user_manager.update_last_action(request_authenticated_userid)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
+
     _tn = Translator(ui_locales)
-    if session_expired:
-        return user_logout(request, True)
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
@@ -401,10 +407,9 @@ def main_faq(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_faq', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
-    request_authenticated_userid = request.authenticated_userid
-    session_expired = user_manager.update_last_action(request_authenticated_userid)
-    if session_expired:
-        return user_logout(request, True)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
@@ -429,11 +434,11 @@ def main_docs(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_docs', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
-    request_authenticated_userid = request.authenticated_userid
-    session_expired = user_manager.update_last_action(request_authenticated_userid)
     _tn = Translator(ui_locales)
-    if session_expired:
-        return user_logout(request, True)
+
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
@@ -458,11 +463,11 @@ def main_publications(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_publications', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
-    request_authenticated_userid = request.authenticated_userid
-    session_expired = user_manager.update_last_action(request_authenticated_userid)
     _tn = Translator(ui_locales)
-    if session_expired:
-        return user_logout(request, True)
+
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
@@ -487,10 +492,9 @@ def main_rss(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('main_rss', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
-    request_authenticated_userid = request.authenticated_userid
-    session_expired = user_manager.update_last_action(request_authenticated_userid)
-    if session_expired:
-        return user_logout(request, True)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     rss = get_list_of_all_feeds(ui_locales)
@@ -517,8 +521,7 @@ def notfound(request):
     if request.path.startswith('/api'):
         return api_notfound(request)
 
-    request_authenticated_userid = request.authenticated_userid
-    user_manager.update_last_action(request_authenticated_userid)
+    user_manager.update_last_action(request.authenticated_userid)
     logger('notfound', 'def', 'main in {}'.format(request.method) + '-request' +
            ', path: ' + request.path +
            ', view name: ' + request.view_name +
