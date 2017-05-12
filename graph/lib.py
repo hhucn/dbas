@@ -187,7 +187,7 @@ def __get_statements_of_path_step(step):
     statements = []
     splitted = step.split('/')
 
-    if 'attitude' in step:
+    if 'justify' in step and len(splitted) > 2:
         logger('Graph.lib', '__get_statements_of_path_step', 'append {} -> {}'.format(splitted[2], 'issue'))
         statements.append([int(splitted[2]), 'issue'])
 
