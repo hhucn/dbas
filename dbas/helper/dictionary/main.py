@@ -116,7 +116,8 @@ class DictionaryHelper(object):
         if request_authenticated_userid:
             nickname = request_authenticated_userid if request_authenticated_userid else nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-            public_nickname = db_user.get_global_nickname()
+            if db_user:
+                public_nickname = db_user.get_global_nickname()
 
         if not db_user or request_authenticated_userid is None:
             nickname = nick_of_anonymous_user
