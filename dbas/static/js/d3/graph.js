@@ -1533,10 +1533,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         edges.forEach(function (d) {
             var circleUid = selectUid(circleId);
             // supports
-            if ((isVisible.support || isVisible.attack) && selectUid(d.target.id) === circleUid) {
-                edgesCircleId.push(d);
-            }
-            else if ((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid) && (!isVisible.attack && !isVisible.support)) {
+            if ((isVisible.support || isVisible.attack) && (selectUid(d.target.id) === circleUid || selectUid(d.source.id) === circleUid)) {
                 edgesCircleId.push(d);
             }
         });

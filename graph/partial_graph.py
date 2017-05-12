@@ -11,18 +11,16 @@ from dbas.logger import logger
 from graph.lib import get_d3_data
 
 
-def get_partial_graph_for_statement(uid, issue, request, path):
+def get_partial_graph_for_statement(uid, issue, path):
     """
     Returns the partial graph where the statement is embedded
 
     :param uid: Statement.uid
     :param issue: Issue.uid
-    :param request: Current request object
     :param path: Users history
     :return: dict()
     """
     logger('PartialGraph', 'get_partial_graph_for_statement', 'premise of argument {}'.format(str(uid)))
-    nickname = request.authenticated_userid
 
     if 'attitude' in path.split('?')[0]:
         db_statement = DBDiscussionSession.query(Statement).get(uid)
@@ -52,7 +50,7 @@ def get_partial_graph_for_statement(uid, issue, request, path):
     return __return_d3_data(graph_arg_lists, issue)
 
 
-def get_partial_graph_for_argument(uid, issue, request):
+def get_partial_graph_for_argument(uid, issue):
     """
     Returns the partial graph where the argument is embedded
 
@@ -62,7 +60,6 @@ def get_partial_graph_for_argument(uid, issue, request):
     :return: dict()
     """
     logger('PartialGraph', 'get_partial_graph_for_argument', str(uid))
-    nickname = request.authenticated_userid
 
     # get argument for the uid
     db_argument = DBDiscussionSession.query(Argument).get(uid)
