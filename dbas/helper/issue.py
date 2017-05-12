@@ -82,15 +82,16 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
     logger('issueHelper', 'prepare_json_of_issue', 'main')
     db_issue = DBDiscussionSession.query(Issue).get(uid)
 
-    slug        = slugify(db_issue.title) if db_issue else 'none'
-    title       = db_issue.title if db_issue else 'none'
-    info        = db_issue.info if db_issue else 'none'
-    long_info   = db_issue.long_info if db_issue else 'none'
-    stat_count  = get_number_of_statements(uid)
-    date        = sql_timestamp_pretty_print(db_issue.date, lang) if db_issue else 'none'
-    duration    = (arrow.utcnow() - db_issue.date ) if db_issue else 0
+    slug = slugify(db_issue.title) if db_issue else 'none'
+    title = db_issue.title if db_issue else 'none'
+    info = db_issue.info if db_issue else 'none'
+    long_info = db_issue.long_info if db_issue else 'none'
+    stat_count = get_number_of_statements(uid)
+    date = sql_timestamp_pretty_print(db_issue.date, lang) if db_issue else 'none'
+    duration = (arrow.utcnow() - db_issue.date) if db_issue else 0
     days, seconds = (duration.days, duration.seconds) if db_issue else (0, 0)
-    duration    = ceil(days * 24 + seconds / 3600)
+    duration = ceil(days * 24 + seconds / 3600)
+    date_ms = int((db_issue.date.format('X') if db_issue else arrow.utcnow().format('X'))) * 1000
 
     db_issues = get_not_disabled_issues_as_query().all()
     all_array = []
@@ -110,6 +111,7 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
             'uid': uid,
             'stat_count': stat_count,
             'date': date,
+            'date_ms': date_ms,
             'all': all_array,
             'tooltip': tooltip,
             'intro': _t.get(_.currentDiscussion),

@@ -14,7 +14,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     var force;
     var size;
     var change;
-    var start_date;
 
     // edges
     var edges;
@@ -70,7 +69,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         setColorsDict();
         setRescaleGraphDict();
         setSizeDict();
-        setSlider();
     }
 
     /**
@@ -127,13 +125,12 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     }
     
     function setSlider(){
-    	$('#graph-slider').slider({
-		    formatter: function(value) {
-		    	if (start_date) {
-				    console.log('Start: ' + start_date + ' , Current value: ' + start_date);
-				    var tmp = moment(start_date).add(value, 'hours');
-				    console.log(tmp);
-			    }
+        var slider = $('#graph-slider');
+        var start_date_ms = slider.data('start-ms');
+    	slider.slider({}).on('slideStop', function(value) {
+		    if (typeof start_date_ms !== 'undefined') {
+		        var add_ms = value.value * 3600 * 1000;
+			    showNodesUntilMoment(start_date_ms + add_ms);
 		    }
     	});
     }
@@ -259,14 +256,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         size.rel_node_factor = {};
         //size.rel_node_factor = 'node_doj_factors' in jsonData ? jsonData.node_doj_factors : {};
         //size.rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
-	    
-	    $.each(jsonData.nodes, function(index, element){
-	    	if (element.id === 'issue'){
-	    	    start_date = element.timestamp;
-	    	    $('#graph-slider').parent().removeClass('hidden');
-		    }
-	    });
-
+        
         // height of the header (offset per line count)
         var offset = ($('#' + graphViewContainerHeaderId).outerHeight() / 26 - 1 ) * 26;
 
@@ -377,7 +367,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 return "translate(" + d.x + "," + (d.y - 50) + ")";
             });
         }
-
+	    
+        setSlider();
     }
 
     /**
@@ -1308,13 +1299,29 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             showSupportsOnMyStatements();
         }
     }
+	
+	/**
+     *
+	 * @param new_limit
+	 */
+	function showNodesUntilMoment(new_limit){
+	    //deleteBorderOfCircle();
+	    //highlightAllElements();
+        var c = '';
+        force.nodes().forEach(function (d) {
+        	if (moment(d.timestamp).valueOf() >= new_limit) {
+        		c += d.id + ' ';
+        		showPartOfGraph(d.id);
+	        }
+        });
+        console.log(c);
+    }
 
     /**
      * Select supports or attacks on statements of current user.
      */
     function selectSupportsAttacks(){
         circleIds = [];
-
         force.nodes().forEach(function (d) {
             var nick = $('#header_nickname').data('public-nickname');
             var author = d.author.name;
