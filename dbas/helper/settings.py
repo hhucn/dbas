@@ -6,7 +6,7 @@ from dbas.lib import get_profile_picture
 from dbas.strings.keywords import Keywords as _
 
 
-def set_settings(userid, service, settings_value, _tn):
+def set_settings(url, userid, service, settings_value, _tn):
     """
     Edits a user specific setting
 
@@ -46,7 +46,7 @@ def set_settings(userid, service, settings_value, _tn):
         error = _tn.get(_.keyword)
 
     transaction.commit()
-    public_page_url = '{}/user/{}'.format(request.application_url, db_user.uid)
+    public_page_url = '{}/user/{}'.format(url, db_user.uid)
     gravatar_url = get_profile_picture(db_user, 80, ignore_privacy_settings=settings_value)
 
     return public_nick, public_page_url, gravatar_url, error

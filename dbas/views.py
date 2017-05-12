@@ -1543,7 +1543,7 @@ def set_user_settings(request):
     try:
         settings_value = True if request.params['settings_value'] == 'True' else False
         service = request.params['service']
-        public_nick, public_page_url, gravatar_url, error = set_settings(request.authenticated_userid, service, settings_value, _tn)
+        public_nick, public_page_url, gravatar_url, error = set_settings(request.application_url, request.authenticated_userid, service, settings_value, _tn)
     except KeyError as e:
         error = _tn.get(_.internalKeyError)
         public_nick = ''
