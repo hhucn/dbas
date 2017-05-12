@@ -75,8 +75,7 @@ function HistoryHandler(){
 
 		// adding the historys
 		var has_data = false;
-		parsedData = $.parseJSON(jsonData);
-		$.each(parsedData, function setDataInHistoryTableEach(index, history) {
+		$.each(jsonData, function setDataInHistoryTableEach(index, history) {
 			has_data = true;
 			breaked_url = cutTextOnChar(history.path, 120, '/');
 			tElement[0] = $('<td>').text(index);
@@ -236,8 +235,7 @@ function StatisticsHandler(){
 	 * @param is_clicked_element
 	 */
 	this.callbackGetStatisticsDone = function(jsonData, titleText, is_clicked_element){
-		var parsedData = $.parseJSON(jsonData);
-		if (parsedData.length  ===  0){
+		if (jsonData.length  ===  0){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 			return;
 		}
@@ -259,7 +257,7 @@ function StatisticsHandler(){
 		span_up = $('<i>').addClass('fa').addClass('fa-thumbs-o-up').attr('aria-hidden', 'true');
 		span_down = $('<i>').addClass('fa').addClass('fa-thumbs-o-down').attr('aria-hidden', 'true');
 
-		$.each(parsedData, function callbackGetStatisticsDoneTableEach(key, val) {
+		$.each(jsonData, function callbackGetStatisticsDoneTableEach(key, val) {
 			tr = $('<tr>')
 				.append($('<td>').text(val.timestamp))
 				.append($('<td>').html(val.content));

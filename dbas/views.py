@@ -1289,6 +1289,14 @@ def review_reputation(request):
 # ADDITIONAL AJAX STUFF # USER THINGS #
 # #####################################
 
+def call_from_request(request, f):
+    logger(f.__name__, 'def', 'main')
+    userid = request.authenticated_userid
+    user_manager.update_last_action(userid)
+    ui_locales = get_language_from_cookie(request)
+
+    return f(userid, ui_locales)
+
 
 # ajax - getting complete track of the user
 @view_config(route_name='ajax_get_user_history', renderer='json')
@@ -1299,13 +1307,7 @@ def get_user_history(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    request_authenticated_userid = request.authenticated_userid
-    user_manager.update_last_action(request_authenticated_userid)
-    logger('get_user_history', 'def', 'main')
-    ui_locales = get_language_from_cookie(request)
-    return_list = history_helper.get_history_from_database(request_authenticated_userid, ui_locales)
-    return json.dumps(return_list)
+    return call_from_request(request, history_helper.get_history_from_database)
 
 
 # ajax - getting all text edits
@@ -1317,13 +1319,7 @@ def get_all_posted_statements(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    request_authenticated_userid = request.authenticated_userid
-    user_manager.update_last_action(request_authenticated_userid)
-    logger('get_all_posted_statements', 'def', 'main')
-    ui_locales = get_language_from_cookie(request)
-    return_array, edits = user_manager.get_textversions_of_user(request_authenticated_userid, ui_locales)
-    return json.dumps(return_array)
+    return call_from_request(request, user_manager.get_textversions_of_user)
 
 
 # ajax - getting all text edits
@@ -1335,13 +1331,8 @@ def get_all_edits_of_user(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    request_authenticated_userid = request.authenticated_userid
-    user_manager.update_last_action(request_authenticated_userid)
-    logger('get_all_edits_of_user', 'def', 'main')
-    ui_locales = get_language_from_cookie(request)
-    statements, return_array = user_manager.get_textversions_of_user(request_authenticated_userid, ui_locales)
-    return json.dumps(return_array)
+    _, return_array = call_from_request(request, user_manager.get_textversions_of_user)
+    return return_array
 
 
 # ajax - getting all votes for arguments
@@ -1353,13 +1344,7 @@ def get_all_marked_arguments(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    request_authenticated_userid = request.authenticated_userid
-    user_manager.update_last_action(request_authenticated_userid)
-    logger('get_all_marked_arguments', 'def', 'main')
-    ui_locales = get_language_from_cookie(request)
-    return_array = user_manager.get_marked_elements_of_user(request_authenticated_userid, True, ui_locales)
-    return json.dumps(return_array)
+    return call_from_request(request, user_manager.get_marked_elements_of_user)
 
 
 # ajax - getting all votes for statements
@@ -1377,7 +1362,7 @@ def get_all_marked_statements(request):
     logger('get_all_marked_statements', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
     return_array = user_manager.get_marked_elements_of_user(request_authenticated_userid, False, ui_locales)
-    return json.dumps(return_array)
+    return return_array
 
 
 # ajax - getting all votes for arguments
@@ -1389,13 +1374,7 @@ def get_all_argument_clicks(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    request_authenticated_userid = request.authenticated_userid
-    user_manager.update_last_action(request_authenticated_userid)
-    logger('get_all_argument_clicks', 'def', 'main')
-    ui_locales = get_language_from_cookie(request)
-    return_array = user_manager.get_clicks_of_user(request_authenticated_userid, True, ui_locales)
-    return json.dumps(return_array)
+    return call_from_request(request, user_manager.get_arg_clicks_of_user)
 
 
 # ajax - getting all votes for statements
@@ -1407,13 +1386,7 @@ def get_all_statement_clicks(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    request_authenticated_userid = request.authenticated_userid
-    user_manager.update_last_action(request_authenticated_userid)
-    logger('get_all_statement_clicks', 'def', 'main')
-    ui_locales = get_language_from_cookie(request)
-    return_array = user_manager.get_clicks_of_user(request_authenticated_userid, False, ui_locales)
-    return json.dumps(return_array)
+    return call_from_request(request, user_manager.get_stmt_clicks_of_user)
 
 
 # ajax - deleting complete history of the user
