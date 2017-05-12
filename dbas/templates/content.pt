@@ -282,9 +282,11 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 id="graph-view-container-header" class="center"></h4>
+                <div style="position: absolute;">
+                    <input id="graph-slider" type="text" data-slider-min="0" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide" tal:attributes="data-slider-max issues.duration; data-start-ms issues.date_ms; data-slider-value issues.duration"/>
+                </div>
                 <div id="graph-view-container-space" style="height:95%;">
                 </div>
-                <input id="graph-slider" type="text" data-slider-min="0" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide" tal:attributes="data-slider-max issues.duration; data-start-ms issues.date_ms"/>
             </div>
 
             <div class="pull-right sidebar-wrapper">

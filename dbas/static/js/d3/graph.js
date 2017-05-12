@@ -127,9 +127,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function setSlider(){
         var slider = $('#graph-slider');
         var start_date_ms = slider.data('start-ms');
+        console.log(start_date_ms);
     	slider.slider({}).on('slideStop', function(value) {
 		    if (typeof start_date_ms !== 'undefined') {
 		        var add_ms = value.value * 3600 * 1000;
+		        add_ms += value.value === 0 ? 1800 : 0;
 			    showNodesUntilMoment(start_date_ms + add_ms);
 		    }
     	});
@@ -1307,14 +1309,22 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 	function showNodesUntilMoment(new_limit){
 	    //deleteBorderOfCircle();
 	    //highlightAllElements();
-        var c = '';
-        force.nodes().forEach(function (d) {
-        	if (moment(d.timestamp).valueOf() >= new_limit) {
-        		c += d.id + ' ';
-        		showPartOfGraph(d.id);
+        var tmp_edges = edges;
+        edges.forEach(function (edge) {
+        	if (moment(edge.source.timestamp).valueOf() >= new_limit || moment(edge.target.timestamp).valueOf() >= new_limit) {
+        		tmp_edges = $.grep(tmp_edges, function(value) {
+                    return value !== edge;
+				});
+        		highlightElements(edge);
 	        }
         });
-        console.log(c);
+		edges.forEach(function (edge) {
+			grayingElements(edge);
+		});
+		tmp_edges.forEach(function (edge) {
+        		console.log(moment(edge.source.timestamp).valueOf());
+			highlightElements(edge);
+		});
     }
 
     /**
