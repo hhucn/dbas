@@ -32,6 +32,7 @@ import dbas.user_management as user_manager
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, sql_timestamp_pretty_print
 from dbas.database.initializedb import nick_of_anonymous_user
+import dbas.discussion.core as discussion
 from dbas.handler.opinion import get_infos_about_argument,  get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
     get_user_with_same_opinion_for_premisegroups, get_user_and_opinions_for_argument
@@ -576,70 +577,24 @@ def discussion_init(request, for_api=False, api_data=None):
     :param api_data: Dictionary, containing data of a user who logged in via API
     :return: dictionary
     """
-    # '/a*slug'
-    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     match_dict = request.matchdict
-    params = request.params
     logger('discussion_init', 'def', 'main, request.matchdict: {}'.format(match_dict))
-    logger('discussion_init', 'def', 'main, request.params: {}'.format(params))
-    request_authenticated_userid = request.authenticated_userid
-    set_language_for_first_visit(request)
-
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    logger('discussion_init', 'def', 'main, request.params: {}'.format(request.params))
 
     count_of_slugs = len(match_dict['slug']) if 'slug' in match_dict and isinstance(match_dict['slug'], ()) else 1
     if count_of_slugs > 1:
         logger('discussion_init', 'def', 'to many slugs', error=True)
         raise HTTPNotFound()
-        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
 
-    ui_locales = get_language_from_cookie(request)
-    if for_api:
-        slug = match_dict['slug'] if 'slug' in match_dict else ''
-    else:
-        slug = match_dict['slug'][0] if 'slug' in match_dict and len(match_dict['slug']) > 0 else ''
-
-    last_topic = history_helper.get_saved_issue(nickname)
-    if len(slug) == 0 and last_topic != 0:
-        issue = last_topic
-    else:
-        issue = issue_helper.get_id_of_slug(slug, request, True)
-
-    slug = resolve_issue_uid_to_slug(last_topic)
-    if not slug:
-        slug = ''
-    history_helper.save_path_in_database(nickname, slug, request.path, history)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request.authenticated_userid)
     if session_expired:
         return user_logout(request, True)
 
-    disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
-    item_dict       = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api).get_array_for_start(nickname)
-    history_helper.save_issue_uid(issue, nickname)
-
-    discussion_dict = DiscussionDictHelper(disc_ui_locales, nickname=nickname, main_page=request.application_url, slug=slug)\
-        .get_dict_for_start(position_count=(len(item_dict['elements'])))
-    extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
-                                                                                        False, True, request,
-                                                                                        for_api=for_api, nickname=request_authenticated_userid)
-
-    if len(item_dict['elements']) == 1:
-        DictionaryHelper(disc_ui_locales, disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict, nickname, at_start=True)
-
-    return_dict = dict()
-    return_dict['issues'] = issue_dict
-    return_dict['discussion'] = discussion_dict
-    return_dict['items'] = item_dict
-    return_dict['extras'] = extras_dict
-
-    if for_api:
-        return return_dict
-    else:
-        return_dict['layout'] = base_layout()
-        return_dict['language'] = str(ui_locales)
-        return_dict['title'] = issue_dict['title']
-        return_dict['project'] = project_name
-        return return_dict
+    prepared_discussion = discussion.init(request, nickname, history, for_api)
+    prepared_discussion['layout'] = base_layout()
+    prepared_discussion['language'] = str(get_language_from_cookie(request))
+    prepared_discussion['project'] = project_name
+    return prepared_discussion
 
 
 # attitude page
