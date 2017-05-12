@@ -256,7 +256,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         size.rel_node_factor = {};
         //size.rel_node_factor = 'node_doj_factors' in jsonData ? jsonData.node_doj_factors : {};
         //size.rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
-        
+	    
         // height of the header (offset per line count)
         var offset = ($('#' + graphViewContainerHeaderId).outerHeight() / 26 - 1 ) * 26;
 
@@ -1332,7 +1332,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             }
         });
     }
-
+	
     /**
      * Show current path.
      *
