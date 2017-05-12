@@ -65,6 +65,7 @@ from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_p
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
+from typing import Callable, Any
 from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
     send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio, \
     send_request_for_info_popup_to_socketio
@@ -1247,7 +1248,8 @@ def review_reputation(request):
 # ADDITIONAL AJAX STUFF # USER THINGS #
 # #####################################
 
-def call_from_request(request, f):
+
+def call_from_request(request, f: Callable[[Any, Any], Any]):
     """
     Calls f with the authenticated_userid and ui_locales from request.
     
