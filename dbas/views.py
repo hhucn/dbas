@@ -1248,6 +1248,13 @@ def review_reputation(request):
 # #####################################
 
 def call_from_request(request, f):
+    """
+    Calls f with the authenticated_userid and ui_locales from request.
+    
+    :param request: A pyramid request
+    :param f: A function with two arguments
+    :return: Return value of f
+    """
     logger(f.__name__, 'def', 'main')
     userid = request.authenticated_userid
     user_manager.update_last_action(userid)
