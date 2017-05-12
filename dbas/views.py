@@ -1319,7 +1319,8 @@ def get_all_posted_statements(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    return call_from_request(request, user_manager.get_textversions_of_user)
+    return_array, _ = call_from_request(request, user_manager.get_textversions_of_user)
+    return return_array
 
 
 # ajax - getting all text edits
