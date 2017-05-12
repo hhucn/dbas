@@ -4,13 +4,11 @@ Introducing an export manager.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import json
-
 from cornice import Service
 
 import dbas.helper.issue as IssueHelper
 from dbas.logger import logger
-from export.lib import get_dump, get_doj_data, get_table_rows
+from export.lib import get_dump, get_doj_nodes, get_doj_user, get_table_rows
 
 #
 # CORS configuration
@@ -28,9 +26,13 @@ dump = Service(name='export_dump',
                path='/dump',
                description='Database Dump')
 
-doj = Service(name='export_doj',
-              path='/doj*issue',
-              description='Export for DoJ')
+doj_nodes = Service(name='export_doj',
+                    path='/doj*issue',
+                    description='Export for DoJ Nodes')
+
+doj_users = Service(name='export_doj',
+                    path='/doj_user/{user}',
+                    description='Export for DoJ User')
 
 table_row = Service(name='export_table_row',
                     path='/{table}/*ids',
@@ -56,8 +58,8 @@ def get_database_dump(request):
     return get_dump(issue)
 
 
-@doj.get()
-def get_doj_dump(request):
+@doj_nodes.get()
+def get_doj_dump_for_nodes(request):
     """
     Returns necessary data for the DoJ
 
@@ -69,7 +71,22 @@ def get_doj_dump(request):
     m = request.matchdict
     issue = m['issue'][0] if 'issue' in m and len(m['issue']) > 0 else None
 
-    return get_doj_data(issue)
+    return get_doj_nodes(issue)
+
+
+@doj_users.get()
+def get_doj_dump_for_users(request):
+    """
+    Returns necessary user data for the DoJ
+
+    :param request: current webservers request
+    :return: dict()
+    """
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Export', 'get_doj_user', 'def ' + str(request))
+    issue = request.matchdict['user'] if 'user' in request.matchdict else None
+
+    return get_doj_user(issue)
 
 
 @table_row.get()

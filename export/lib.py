@@ -7,7 +7,7 @@ from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, Premise, PremiseGroup, MarkedArgument,\
-    MarkedStatement, Issue, Settings, Language
+    MarkedStatement, Issue, Settings, Language, ClickedArgument, ClickedStatement
 from dbas.input_validator import is_integer
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
@@ -162,12 +162,12 @@ def __get_all_marked_statements(statement_uid_set):
     return [vote.to_dict() for vote in db_votes]
 
 
-def get_doj_data(issue):
+def get_doj_nodes(issue):
     """
     Returns type of tables column
 
     :param issue: Issue.uid
-    :return: String or raise NameError
+    :return: dict()
     """
     if is_integer(issue):
         db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
@@ -202,6 +202,60 @@ def get_doj_data(issue):
     return {'nodes': nodes,
             'inferences': inferences,
             'undercuts': undercuts}
+
+
+def get_doj_user(user_id):
+    """
+    Returns user data for the DoJ
+    
+    :param user_id: User.id 
+    :return: dict()
+    """
+    if not user_id or not is_integer(user_id):
+        return {}
+
+    db_user = DBDiscussionSession.query(User).get(int(user_id))
+    if not db_user:
+        return {}
+
+    # arguments and statements with a star
+    db_star_stat = DBDiscussionSession.query(MarkedStatement).filter_by(author_uid=user_id).all()
+    db_star_arg = DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=user_id).all()
+
+    # clicked and valid statements and arguments
+    db_click_stat = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == user_id,
+                                                                       ClickedStatement.is_valid is True)
+    db_click_args = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == user_id,
+                                                                      ClickedArgument.is_valid is True)
+    db_click_acc_stat = db_click_stat.filter(ClickedStatement.is_up_vote is True).all()
+    db_click_acc_arg = db_click_args.filter(ClickedArgument.is_up_vote is True).all()
+    db_click_rej_stat = db_click_stat.filter(ClickedStatement.is_up_vote is False).all()
+    db_click_rej_arg = db_click_args.filter(ClickedArgument.is_up_vote is False).all()
+
+    # clicked arguments, which are undercuts
+    db_rej_arg = DBDiscussionSession.query(Argument).filter(Argument.uid.in_([s.uid for s in db_click_acc_arg]),
+                                                            Argument.author_uid == user_id,
+                                                            Argument.argument_uid is not None,
+                                                            Argument.is_supportive == False).all()
+
+    # acceptd/rejected statements
+    accepted_statements = [s.uid for s in db_click_acc_stat]
+    rejected_statements = [s.uid for s in db_click_rej_stat]
+
+    # acceptd/rejected conclusions
+    for el in db_click_acc_arg:
+        db_arg = DBDiscussionSession.query(Argument).filter(Argument.uid == el.uid, Argument.conclusion_uid is not None).first()
+        if db_arg.is_supportive:
+            accepted_statements += [db_arg.conclusion_uid]
+        else:
+            accepted_statements += [db_arg.conclusion_uid]
+
+    return {'marked_statements': list(set([s.uid for s in db_star_stat])),
+            'marked_arguments': list(set([s.uid for s in db_star_arg])),
+            'rejected_arguments': list(set([s.uid for s in db_rej_arg] + [s.uid for s in db_click_rej_arg])),
+            'accepted_statements': list(set(accepted_statements)),
+            'rejected_statements': list(set(rejected_statements)),
+            }
 
 
 def get_table_rows(nickname, table_name, ids):
