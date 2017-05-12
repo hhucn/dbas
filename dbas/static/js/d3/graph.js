@@ -127,7 +127,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function setSlider(){
         var slider = $('#graph-slider');
         var start_date_ms = slider.data('start-ms');
-        console.log(start_date_ms);
     	slider.slider({}).on('slideStop', function(value) {
 		    if (typeof start_date_ms !== 'undefined') {
 		        var add_ms = value.value * 3600 * 1000;
