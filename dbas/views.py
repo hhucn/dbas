@@ -617,7 +617,7 @@ def discussion_attitude(request, for_api=False, api_data=None):
     logger('discussion_attitude', 'def', 'main, request.matchdict: {}'.format(match_dict))
     logger('discussion_attitude', 'def', 'main, request.params: {}'.format(params))
 
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
 
     ui_locales      = get_language_from_cookie(request)
     slug            = match_dict['slug'] if 'slug' in match_dict else ''
@@ -687,7 +687,7 @@ def discussion_justify(request, for_api=False, api_data=None):
     logger('discussion_justify', 'def', 'main, request.params: {}'.format(request.params))
     request_authenticated_userid = request.authenticated_userid
 
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
 
     ui_locales = get_language_from_cookie(request)
     slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict = prepare_parameter_for_justification(request, for_api)
@@ -754,7 +754,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
         # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     supportive = tmp_argument.is_supportive
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
     history_helper.save_path_in_database(nickname, slug, request.path, history)
     if session_expired:
         return user_logout(request, True)
@@ -952,7 +952,7 @@ def discussion_choose(request, for_api=False, api_data=None):
         raise HTTPNotFound()
         # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request, request_authenticated_userid)
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
     history_helper.save_path_in_database(nickname, slug, request.path, history)
     history_helper.save_issue_uid(issue, nickname)
     if session_expired:
