@@ -1360,12 +1360,6 @@ def get_all_marked_statements(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    request_authenticated_userid = request.authenticated_userid
-    user_manager.update_last_action(request_authenticated_userid)
-    logger('get_all_marked_statements', 'def', 'main')
-    ui_locales = get_language_from_cookie(request)
-    return_array = user_manager.get_marked_elements_of_user(request_authenticated_userid, False, ui_locales)
     return call_from_request(request, user_manager.get_arg_clicks_of_user)
 
 
