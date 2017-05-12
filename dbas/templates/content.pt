@@ -284,6 +284,9 @@
                 <h4 id="graph-view-container-header" class="center"></h4>
                 <div id="graph-view-container-space" style="height:95%;">
                 </div>
+                <div class="hidden">
+                <input id="graph-slider" type="text" data-slider-min="0" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide" tal:attributes="data-slider-max issues.duration"/>
+                </div>
             </div>
 
             <div class="pull-right sidebar-wrapper">

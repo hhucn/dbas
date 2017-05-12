@@ -5,6 +5,7 @@ Provides helping function for issues.
 """
 
 import transaction
+import arrow
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print
 from dbas.lib import is_user_author_or_admin
@@ -15,6 +16,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 from slugify import slugify
+from math import ceil
 
 
 def set_issue(info, long_info, title, lang, nickname, ui_locales):
@@ -86,6 +88,9 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
     long_info   = db_issue.long_info if db_issue else 'none'
     stat_count  = get_number_of_statements(uid)
     date        = sql_timestamp_pretty_print(db_issue.date, lang) if db_issue else 'none'
+    duration    = (arrow.utcnow() - db_issue.date ) if db_issue else 0
+    days, seconds = (duration.days, duration.seconds) if db_issue else (0, 0)
+    duration    = ceil(days * 24 + seconds / 3600)
 
     db_issues = get_not_disabled_issues_as_query().all()
     all_array = []
@@ -107,7 +112,8 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
             'date': date,
             'all': all_array,
             'tooltip': tooltip,
-            'intro': _t.get(_.currentDiscussion)}
+            'intro': _t.get(_.currentDiscussion),
+            'duration': duration}
 
 
 def get_number_of_arguments(issue):

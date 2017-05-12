@@ -413,6 +413,14 @@ class Statement(DiscussionBase):
         """
         self.is_startpoint = is_position
 
+    def get_timestamp(self):
+        """
+        Return timestamp
+        
+        :return: Timestamp 
+        """
+        return DBDiscussionSession.query(TextVersion).get(self.textversion_uid).timestamp
+
     @hybrid_property
     def lang(self):
         """

@@ -14,6 +14,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     var force;
     var size;
     var change;
+    var start_date;
 
     // edges
     var edges;
@@ -69,6 +70,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         setColorsDict();
         setRescaleGraphDict();
         setSizeDict();
+        setSlider();
     }
 
     /**
@@ -122,6 +124,18 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                  'edge': 90,
                  'edge_virtual_node': 45
          };
+    }
+    
+    function setSlider(){
+    	$('#graph-slider').slider({
+		    formatter: function(value) {
+		    	if (start_date) {
+				    console.log('Start: ' + start_date + ' , Current value: ' + start_date);
+				    var tmp = moment(start_date).add(value, 'hours');
+				    console.log(tmp);
+			    }
+		    }
+    	});
     }
 
     /**
@@ -245,6 +259,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         size.rel_node_factor = {};
         //size.rel_node_factor = 'node_doj_factors' in jsonData ? jsonData.node_doj_factors : {};
         //size.rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
+	    
+	    $.each(jsonData.nodes, function(index, element){
+	    	if (element.id === 'issue'){
+	    	    start_date = element.timestamp;
+	    	    $('#graph-slider').parent().removeClass('hidden');
+		    }
+	    });
 
         // height of the header (offset per line count)
         var offset = ($('#' + graphViewContainerHeaderId).outerHeight() / 26 - 1 ) * 26;
