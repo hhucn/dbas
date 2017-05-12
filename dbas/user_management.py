@@ -458,6 +458,14 @@ def get_marked_elements_of_user(user, is_argument, lang):
     return return_array
 
 
+def get_arg_clicks_of_user(user, lang):
+    return get_clicks_of_user(user, True, lang)
+
+
+def get_stmt_clicks_of_user(user, lang):
+    return get_clicks_of_user(user, False, lang)
+
+
 def get_clicks_of_user(user, is_argument, lang):
     """
     Returs array with all clicks done by the user
