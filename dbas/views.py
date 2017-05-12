@@ -830,11 +830,11 @@ def discussion_support(request, for_api=False, api_data=None):
         arg_user_uid = match_dict['arg_id_user'] if 'arg_id_user' in match_dict else ''
         arg_system_uid = match_dict['arg_id_sys'] if 'arg_id_sys' in match_dict else ''
 
-    session_expired = user_manager.update_last_action(nickname)
     history_helper.save_path_in_database(nickname, slug, request.path, history)
     history_helper.save_history_in_cookie(request, request.path, history)
-    if session_expired:
-        return user_logout(request, True)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     ui_locales = get_language_from_cookie(request)
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
@@ -885,14 +885,14 @@ def discussion_finish(request):
     params = request.params
     logger('discussion_finish', 'def', 'main, request.matchdict: {}'.format(match_dict))
     logger('discussion_finish', 'def', 'main, request.params: {}'.format(params))
-    ui_locales      = get_language_from_cookie(request)
-    nickname        = request.authenticated_userid
-    session_expired = user_manager.update_last_action(nickname)
+    ui_locales = get_language_from_cookie(request)
+    nickname = request.authenticated_userid
     slug = resolve_issue_uid_to_slug(history_helper.get_saved_issue(nickname))
 
     history_helper.save_path_in_database(nickname, slug, request.path)
-    if session_expired:
-        return user_logout(request, True)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     summary_dict = user_manager.get_summary_of_today(nickname)
@@ -1002,11 +1002,10 @@ def discussion_jump(request, for_api=False, api_data=None):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     match_dict = request.matchdict
     params = request.params
-    request_authenticated_userid = request.authenticated_userid
     logger('discussion_jump', 'def', 'main, request.matchdict: {}'.format(match_dict))
     logger('discussion_jump', 'def', 'main, request.params: {}'.format(params))
 
-    nickname = get_nickname(request_authenticated_userid, for_api, api_data)
+    nickname = get_nickname(request.authenticated_userid, for_api, api_data)
     history = params['history'] if 'history' in params else ''
 
     if for_api and api_data:
@@ -1016,11 +1015,11 @@ def discussion_jump(request, for_api=False, api_data=None):
         slug = match_dict['slug'] if 'slug' in match_dict else ''
         arg_uid = match_dict['arg_id'] if 'arg_id' in match_dict else ''
 
-    session_expired = user_manager.update_last_action(nickname)
     history_helper.save_path_in_database(nickname, slug, request.path, history)
     history_helper.save_history_in_cookie(request, request.path, history)
-    if session_expired:
-        return user_logout(request, True)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     ui_locales = get_language_from_cookie(request)
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
@@ -1039,7 +1038,7 @@ def discussion_jump(request, for_api=False, api_data=None):
     item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
     extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
                                                                                     True, True, request,
-                                                                                    for_api=for_api, nickname=request_authenticated_userid)
+                                                                                    for_api=for_api, nickname=request.authenticated_userid)
 
     return_dict = dict()
     return_dict['issues'] = issue_dict
@@ -1074,10 +1073,11 @@ def main_review(request):
     logger('main_review', 'main', 'def {}'.format(request.matchdict))
     ui_locales = get_language_from_cookie(request)
     nickname = request.authenticated_userid
-    session_expired = user_manager.update_last_action(nickname)
     _tn = Translator(ui_locales)
-    if session_expired:
-        return user_logout(request, True)
+
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     issue = issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
@@ -1115,10 +1115,11 @@ def review_content(request):
     logger('review_content', 'main', 'def {}'.format(request.matchdict))
     ui_locales = get_language_from_cookie(request)
     request_authenticated_userid = request.authenticated_userid
-    session_expired = user_manager.update_last_action(request_authenticated_userid)
     _tn = Translator(ui_locales)
-    if session_expired:
-        return user_logout(request, True)
+
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     subpage_name = request.matchdict['queue']
     subpage_dict = review_page_helper.get_subpage_elements_for(request, subpage_name,
@@ -1164,10 +1165,11 @@ def review_history(request):
     logger('review_history', 'main', 'def {}'.format(request.matchdict))
     ui_locales = get_language_from_cookie(request)
     request_authenticated_userid = request.authenticated_userid
-    session_expired = user_manager.update_last_action(request_authenticated_userid)
     _tn = Translator(ui_locales)
-    if session_expired:
-        return user_logout(request, True)
+
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     history = review_history_helper.get_review_history(request.application_url, request_authenticated_userid, _tn)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
@@ -1193,13 +1195,13 @@ def ongoing_history(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('ongoing_history', 'main', 'def {}'.format(request.matchdict))
     ui_locales = get_language_from_cookie(request)
-    request_authenticated_userid = request.authenticated_userid
-    session_expired = user_manager.update_last_action(request_authenticated_userid)
     _tn = Translator(ui_locales)
-    if session_expired:
-        return user_logout(request, True)
 
-    history = review_history_helper.get_ongoing_reviews(request.application_url, request_authenticated_userid, _tn)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
+
+    history = review_history_helper.get_ongoing_reviews(request.application_url, request.authenticated_userid, _tn)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     return {
@@ -1224,15 +1226,15 @@ def review_reputation(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('review_reputation', 'main', 'def {}'.format(request.matchdict))
     ui_locales = get_language_from_cookie(request)
-    request_authenticated_userid = request.authenticated_userid
-    session_expired = user_manager.update_last_action(request_authenticated_userid)
     _tn = Translator(ui_locales)
-    if session_expired:
-        return user_logout(request, True)
+
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
-    reputation_dict = review_history_helper.get_reputation_history_of(request_authenticated_userid, _tn)
+    reputation_dict = review_history_helper.get_reputation_history_of(request.authenticated_userid, _tn)
 
     return {
         'layout': base_layout(),
