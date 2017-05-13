@@ -283,7 +283,9 @@
                 </button>
                 <h4 id="graph-view-container-header" class="center"></h4>
                 <div style="position: absolute;">
-                    <span i18n:translate="start">Start</span>: <span style="margin-right: 1em;">${issues.date}</span><input id="graph-slider" type="text" data-slider-min="0" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide" tal:attributes="data-slider-max issues.duration; data-start-ms issues.date_ms; data-slider-value issues.duration"/><span i18n:translate="now" style="margin-left: 1em;">Now</span>
+                    <span i18n:translate="start">Start</span>: <span style="margin-right: 1em;">${issues.date}</span>
+                    <input id="graph-slider" type="text" data-slider-min="0" data-slider-step="1" data-slider-value="0" tal:attributes="data-slider-max issues.duration; data-start-ms issues.date_ms; data-slider-value issues.duration"/>
+                    <span i18n:translate="now" style="margin-left: 1em;">Now</span>
                 </div>
                 <div id="graph-view-container-space" style="height:95%;">
                 </div>
