@@ -416,8 +416,8 @@ class Statement(DiscussionBase):
     def get_timestamp(self):
         """
         Return timestamp
-        
-        :return: Timestamp 
+
+        :return: Textversions Timestamp
         """
         return DBDiscussionSession.query(TextVersion).get(self.textversion_uid).timestamp
 

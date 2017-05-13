@@ -392,18 +392,19 @@ def __get_editor_of_statement(uid):
 
 def __get_node_dict(id, label, x, y, type='', author=dict(), editor=dict(), edge_source=[], edge_target=[], timestamp=''):
     """
-    
-    :param id: 
-    :param label: 
-    :param x: 
-    :param y: 
-    :param type: 
-    :param author: 
-    :param editor: 
-    :param edge_source: 
-    :param edge_target: 
-    :param timestamp: 
-    :return: 
+    Create node dict for D3
+
+    :param id:
+    :param label:
+    :param x:
+    :param y:
+    :param type:
+    :param author:
+    :param editor:
+    :param edge_source:
+    :param edge_target:
+    :param timestamp:
+    :return: dict()
     """
     return {'id': id,
             'label': label,
