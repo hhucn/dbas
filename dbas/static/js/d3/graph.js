@@ -128,6 +128,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         var slider = $('#graph-slider');
         var start_date_ms = slider.data('start-ms');
     	slider.slider({}).on('slideStop', function(value) {
+		    resetButtons();
 		    if (typeof start_date_ms !== 'undefined') {
 		        var add_ms = value.value * 3600 * 1000;
 		        add_ms += value.value === 0 ? 1800 : 0;
@@ -499,8 +500,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             d3.selectAll("g.zoom").attr("transform", "translate(" + zoom.translate() + ")" + " scale(" + rescaleGraph.zoom_scale + ")");
 
             if (change_scale) {
+            	var svg = $('#graph-svg');
                 // resizing of font size, line height and the complete rectangle
-                $('#graph-svg').find('.node').each(function () {
+                svg.find('.node').each(function () {
                     var id = $(this).attr('id').replace(rescaleGraph.node_id_prefix, '');
                     if (id.indexOf('statement') !== -1 || id.indexOf('issue') !== -1) {
                         $('#label-' + id).css({
@@ -520,7 +522,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 });
 
                 // dirty hack to accept new line height and label position
-                $('#graph-svg').css({'line-height': '1.0'});
+                svg.css({'line-height': '1.0'});
                 setTimeout(function () {
                     $('#graph-svg').css({'line-height': '1.5'});
                     $('#' + graphViewContainerSpaceId).find('.node').each(function () {
@@ -958,6 +960,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function addListenersForSidebarButtons(jsonData, zoom) {
         $('#default-view').off('click').click(function () {
+        	resetSlider();
         	if ($('#global-view').attr('data-global-view-loaded') === 'true' && $('#global-view:hidden').length === 0) {
 	            new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(false);}
 	        else {
@@ -977,7 +980,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             'statements': [showStatements, hideStatements],
             'my-statements': [showMyStatements, hideMyStatements],
             'supports-on-my-statements': [showSupportsOnMyStatements, hideSupportsOnMyStatements],
-            'attacks-on-my-statements': [showAttacksOnMyStatements, hideAttacksOnMyStatements],
+            'attacks-on-my-statements': [showAttacksOnMyStatements, hideAttacksOnMyStatements]
         };
         
         // get all buttons in the sidebar
@@ -986,6 +989,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             // check if the button is mentioned in mapper array
             if (id in mapper) {
 	            $('#' + id).off('click').click(function () {
+	            	if ($(this).hasClass('reset-slider')){
+			            resetSlider();
+		            }
 		            if ($(this).find('i').attr('class') === "fa fa-square-o") {
 			            $(this).find('i').removeClass().addClass("fa fa-check-square-o");
 			            mapper[id][0]();
@@ -1046,6 +1052,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         hideMyStatements();
         hideSupportsOnMyStatements();
         hideAttacksOnMyStatements();
+    }
+    
+    function resetSlider(){
+        var slider = $('#graph-slider');
+        slider.slider('setValue', slider.data('slider-max'));
     }
 
     /**
@@ -1321,7 +1332,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 			grayingElements(edge);
 		});
 		tmp_edges.forEach(function (edge) {
-        		console.log(moment(edge.source.timestamp).valueOf());
 			highlightElements(edge);
 		});
     }

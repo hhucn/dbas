@@ -283,7 +283,7 @@
                 </button>
                 <h4 id="graph-view-container-header" class="center"></h4>
                 <div style="position: absolute;">
-                    <input id="graph-slider" type="text" data-slider-min="0" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide" tal:attributes="data-slider-max issues.duration; data-start-ms issues.date_ms; data-slider-value issues.duration"/>
+                    <span i18n:translate="start">Start</span>: <span style="margin-right: 1em;">${issues.date}</span><input id="graph-slider" type="text" data-slider-min="0" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide" tal:attributes="data-slider-max issues.duration; data-start-ms issues.date_ms; data-slider-value issues.duration"/><span i18n:translate="now" style="margin-left: 1em;">Now</span>
                 </div>
                 <div id="graph-view-container-space" style="height:95%;">
                 </div>
@@ -303,11 +303,11 @@
                     <li id="labels" class="hidden"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="labels">Labels</span></li>
                     <li id="positions" class="hidden indented-button"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="positions">Positions</span></li>
                     <li id="statements" class="hidden indented-button"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="statements">Statements</span></li>
-                    <li id="show-my-path" class="hidden"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_path">My path</span></li>
-                    <li id="hide-my-path" class="hidden"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_path">My path</span></li>
+                    <li id="show-my-path" class="hidden reset-slider"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_path">My path</span></li>
+                    <li id="hide-my-path" class="hidden reset-slider"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_path">My path</span></li>
                     <li id="my-statements" tal:condition="extras.logged_in" class="hidden"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_statements">My statements</span></li>
-                    <li id="supports-on-my-statements" tal:condition="extras.logged_in" class="hidden indented-button"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="supports_on_my_statements">Supports</span></li>
-                    <li id="attacks-on-my-statements" tal:condition="extras.logged_in" class="hidden indented-button"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="attacks_on_my_statements">Attacks</span></li>
+                    <li id="supports-on-my-statements" tal:condition="extras.logged_in" class="hidden indented-button reset-slider"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="supports_on_my_statements">Supports</span></li>
+                    <li id="attacks-on-my-statements" tal:condition="extras.logged_in" class="hidden indented-button reset-slider"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="attacks_on_my_statements">Attacks</span></li>
                 </ul>
 
                 <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
