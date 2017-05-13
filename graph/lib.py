@@ -13,7 +13,6 @@ from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue
     SeenStatement
 from dbas.lib import get_profile_picture
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_statement_as_query
-from dbas.database.initializedb import nick_of_anonymous_user
 
 
 green = '#64DD17'
@@ -21,7 +20,7 @@ red = '#F44336'
 grey = '#424242'
 
 
-def get_d3_data(issue, nickname, all_statements=None, all_arguments=None):
+def get_d3_data(issue, all_statements=None, all_arguments=None):
     """
     Given an issue, create an dictionary and return it
 
@@ -34,7 +33,6 @@ def get_d3_data(issue, nickname, all_statements=None, all_arguments=None):
     a = [a.uid for a in all_statements] if all_statements is not None else 'all'
     b = [b.uid for b in all_arguments] if all_arguments is not None else 'all'
     logger('Graph.lib', 'get_d3_data', 'main - statements: {}, arguments: {}'.format(a, b))
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
     # default values
     x = 0
@@ -188,7 +186,7 @@ def __get_statements_of_path_step(step):
     statements = []
     splitted = step.split('/')
 
-    if 'attitude' in step:
+    if 'justify' in step and len(splitted) > 2:
         logger('Graph.lib', '__get_statements_of_path_step', 'append {} -> {}'.format(splitted[2], 'issue'))
         statements.append([int(splitted[2]), 'issue'])
 

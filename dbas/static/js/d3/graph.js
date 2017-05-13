@@ -848,7 +848,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 return;
             }
             var circleId = this.id;
-            showPartOfGraph(circleId);
+            showPartOfGraph([circleId]);
             selectedCircleId = d.id;
         });
         circle.on("dblclick", function (d) {
@@ -859,7 +859,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             // show modal when node clicked twice
             showModal(d);
             var circleId = this.id;
-            showPartOfGraph(circleId);
+            showPartOfGraph([circleId]);
             selectedCircleId = d.id;
         });
     }
@@ -1347,9 +1347,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             nick = typeof nick === 'undefined' ? nick : nick.toLocaleLowerCase();
             author = typeof author === 'undefined' ? author : author.toLocaleLowerCase();
             if (author === nick) {
-                showPartOfGraph(d.id);
+                circleIds.push(selectUid(d.id));
             }
         });
+        
+        showPartOfGraph(circleIds);
     }
 	
     /**
@@ -1571,20 +1573,21 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Highlight incoming and outgoing edges of selected node.
      *
-     * @param circleId: id of selected node
+     * @param circleIds: ids of selected node
      */
-    function showPartOfGraph(circleId) {
+    function showPartOfGraph(circleIds) {
         // edges with selected circle as source or as target
-        var edgesCircleId = [];
+        var edgesIds = [];
+        var nodeId = [];
         // select all incoming and outgoing edges of selected circle
         edges.forEach(function (d) {
-            var circleUid = selectUid(circleId);
-            // supports
-            if ((isVisible.support || isVisible.attack) && selectUid(d.target.id) === circleUid) {
-                edgesCircleId.push(d);
+            // add source for supports/attacks
+            if ((isVisible.support || isVisible.attack) && $.inArray(d.source.id, circleIds) !== -1){
+                edgesIds.push(d);
             }
-            else if ((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid) && (!isVisible.attack && !isVisible.support)) {
-                edgesCircleId.push(d);
+	        // get all targets of the edges without the edge itself
+            if ((!(isVisible.support || isVisible.attack) || d.target.type === 'position') && $.inArray(d.target.id, circleIds) !== -1) {
+			    nodeId.push(d);
             }
         });
 
@@ -1595,16 +1598,28 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 grayingElements(d);
             });
         }
-        highlightElementsVirtualNodes(edges, edgesCircleId);
-        edgesCircleId.forEach(function (d) {
+        highlightElementsVirtualNodes(edges, edgesIds);
+        edgesIds.forEach(function (d) {
             if(isVisible.attack && d.color === colors.red){
-                highlightElements(d);
+    	        hightlghtEdge(d);
+	            highlightEdgeSource(d);
             }
             if(isVisible.support && d.color === colors.green){
-                highlightElements(d);
+    	        hightlghtEdge(d);
+	            highlightEdgeSource(d);
+            } else if (!isVisible.attack && !isVisible.support){
+    	        hightlghtEdge(d);
+	            highlightEdgeSource(d);
             }
-            else if (!isVisible.attack && !isVisible.support){
-                highlightElements(d);
+        });
+        nodeId.forEach(function (d) {
+            if(isVisible.attack && d.color === colors.red){
+                hightlightEdgeTarget(d);
+            }
+            if(isVisible.support && d.color === colors.green){
+                hightlightEdgeTarget(d);
+            } else if (!isVisible.attack && !isVisible.support){
+                hightlightEdgeTarget(d);
             }
         });
     }
@@ -1637,7 +1652,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function createVirtualNodesArray(edgesCircleId, virtualNodes, virtualNodesIds) {
         edgesCircleId.forEach(function (d) {
-            if (d.source.label === '') {
+        	if (d.source.label === '') {
                 if($.inArray(d.source.id, virtualNodesIds) === -1){
                     change = true;
                     virtualNodesIds.push(d.source.id);
@@ -1664,7 +1679,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId) {
         edges.forEach(function (d) {
             virtualNodes.forEach(function (e) {
-                if (d.source.id === e.id || d.target.id === e.id) {
+                if (d.source.id === e.id) {//} || d.target.id === e.id) {
+            	    console.log(d.source.id + ' ' + d.target.id + ' ' + e.id);
                     edgesCircleId.push(d);
                 }
             });
@@ -1677,20 +1693,40 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param edge: edge that should be highlighted
      */
     function highlightElements(edge) {
-        // edges
+    	hightlghtEdge(edge);
+	    highlightEdgeSource(edge);
+	    hightlightEdgeTarget(edge);
+    }
+	
+	/**
+	 *
+	 * @param edge
+	 */
+	function hightlghtEdge(edge){
         d3.select('#link-' + edge.id).style('stroke', edge.color);
-        // nodes
-        // add border if button support or attack is clicked
+        d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
+    }
+	
+	/**
+	 *
+	 * @param edge
+	 */
+    function highlightEdgeSource(edge){
         d3.select('#circle-' + edge.source.id).attr('fill', edge.source.color);
         if((isVisible.support || isVisible.attack) && $.inArray(edge.source.id, circleIds) !== -1) {
             d3.select('#circle-' + edge.source.id).attr({fill: edge.source.color, stroke: 'black'});
         }
+    }
+	
+	/**
+	 *
+	 * @param edge
+	 */
+    function hightlightEdgeTarget(edge){
         d3.select('#circle-' + edge.target.id).attr('fill', edge.target.color);
         if((isVisible.support || isVisible.attack) && $.inArray(edge.target.id, circleIds) !== -1) {
             d3.select('#circle-' + edge.target.id).attr({fill: edge.target.color, stroke: 'black'});
         }
-        // arrows
-        d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
     }
 
     /**
