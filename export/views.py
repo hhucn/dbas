@@ -4,8 +4,6 @@ Introducing an export manager.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import json
-
 from cornice import Service
 
 import dbas.helper.issue as IssueHelper
