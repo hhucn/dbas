@@ -1526,32 +1526,23 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Highlight incoming and outgoing edges of selected node.
      *
-     * @param circleId: id of selected node
+     * @param circleIds: ids of selected node
      */
     function showPartOfGraph(circleIds) {
         // edges with selected circle as source or as target
-        var edgesId = [];
+        var edgesIds = [];
         var nodeId = [];
         // select all incoming and outgoing edges of selected circle
         edges.forEach(function (d) {
             // add source for supports/attacks
             if ((isVisible.support || isVisible.attack) && $.inArray(d.source.id, circleIds) !== -1){
-                edgesId.push(d);
-			    nodeId.push(d.source.id);
+                edgesIds.push(d);
             }
-            // add target
-            if (!(isVisible.support || isVisible.attack) && $.inArray(d.target.id, circleIds) !== -1) {
-                edgesId.push(d);
-			    nodeId.push(d.source.id);
+	        // get all targets of the edges without the edge itself
+            if ((!(isVisible.support || isVisible.attack) || d.target.type === 'position') && $.inArray(d.target.id, circleIds) !== -1) {
+			    nodeId.push(d);
             }
         });
-        
-	    node[0].forEach(function (d){
-	    	if ($.inArray(d.id.replace('node_', ''), circleIds) !== 1) {
-			    nodeId.push(d.id.replace('node_', ''));
-			    
-		    }
-	    });
 
         // if isMyStatementsClicked is false gray all elements at each function call,
         // else the graph is colored once gray
@@ -1560,19 +1551,29 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 grayingElements(d);
             });
         }
-        highlightElementsVirtualNodes(edges, edgesId);
-        edgesId.forEach(function (d) {
+        highlightElementsVirtualNodes(edges, edgesIds);
+        edgesIds.forEach(function (d) {
             if(isVisible.attack && d.color === colors.red){
-                highlightElements(d);
+    	        hightlghtEdge(d);
+	            highlightEdgeSource(d);
             }
             if(isVisible.support && d.color === colors.green){
-                highlightElements(d);
-            }
-            else if (!isVisible.attack && !isVisible.support){
-                highlightElements(d);
+    	        hightlghtEdge(d);
+	            highlightEdgeSource(d);
+            } else if (!isVisible.attack && !isVisible.support){
+    	        hightlghtEdge(d);
+	            highlightEdgeSource(d);
             }
         });
-        edgesId.forEach(function (d) {
+        nodeId.forEach(function (d) {
+            if(isVisible.attack && d.color === colors.red){
+                hightlightEdgeTarget(d);
+            }
+            if(isVisible.support && d.color === colors.green){
+                hightlightEdgeTarget(d);
+            } else if (!isVisible.attack && !isVisible.support){
+                hightlightEdgeTarget(d);
+            }
         });
     }
 
@@ -1604,7 +1605,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function createVirtualNodesArray(edgesCircleId, virtualNodes, virtualNodesIds) {
         edgesCircleId.forEach(function (d) {
-            if (d.source.label === '') {
+        	if (d.source.label === '') {
                 if($.inArray(d.source.id, virtualNodesIds) === -1){
                     change = true;
                     virtualNodesIds.push(d.source.id);
@@ -1631,7 +1632,8 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId) {
         edges.forEach(function (d) {
             virtualNodes.forEach(function (e) {
-                if (d.source.id === e.id || d.target.id === e.id) {
+                if (d.source.id === e.id) {//} || d.target.id === e.id) {
+            	    console.log(d.source.id + ' ' + d.target.id + ' ' + e.id);
                     edgesCircleId.push(d);
                 }
             });
@@ -1648,19 +1650,31 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 	    highlightEdgeSource(edge);
 	    hightlightEdgeTarget(edge);
     }
-    
-    function hightlghtEdge(edge){
+	
+	/**
+	 *
+	 * @param edge
+	 */
+	function hightlghtEdge(edge){
         d3.select('#link-' + edge.id).style('stroke', edge.color);
         d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
     }
-    
+	
+	/**
+	 *
+	 * @param edge
+	 */
     function highlightEdgeSource(edge){
         d3.select('#circle-' + edge.source.id).attr('fill', edge.source.color);
         if((isVisible.support || isVisible.attack) && $.inArray(edge.source.id, circleIds) !== -1) {
             d3.select('#circle-' + edge.source.id).attr({fill: edge.source.color, stroke: 'black'});
         }
     }
-    
+	
+	/**
+	 *
+	 * @param edge
+	 */
     function hightlightEdgeTarget(edge){
         d3.select('#circle-' + edge.target.id).attr('fill', edge.target.color);
         if((isVisible.support || isVisible.attack) && $.inArray(edge.target.id, circleIds) !== -1) {
