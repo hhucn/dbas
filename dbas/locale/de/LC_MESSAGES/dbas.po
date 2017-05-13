@@ -283,7 +283,7 @@ msgstr ""
 #. Default: No arguments to review in this queue!
 #: templates/review-content.pt:10
 msgid "no_arguments_to_review"
-msgstr "Keine Argumente zum begutachten!"
+msgstr "Keine Argumente zum Begutachten!"
 
 #. Default: Review
 #: templates/review-content.pt:19 templates/snippet-header.pt:76
