@@ -66,7 +66,8 @@ def get_d3_data(issue, nickname, all_statements=None, all_arguments=None):
                                 label=db_issue.info,
                                 x=x,
                                 y=y,
-                                type='issue')
+                                type='issue',
+                                timestamp=db_issue.date.for_json())
     x = (x + 1) % 10
     y += (1 if x == 0 else 0)
     nodes_array.append(node_dict)
@@ -247,7 +248,8 @@ def __prepare_statements_for_d3_data(db_statements, db_textversions, x, y, edge_
                                     y=y,
                                     type='position' if statement.is_startpoint else 'statement',
                                     author=__get_author_of_statement(statement.uid),
-                                    editor=__get_editor_of_statement(statement.uid))
+                                    editor=__get_editor_of_statement(statement.uid),
+                                    timestamp=statement.get_timestamp().for_json())
         extras[node_dict['id']] = node_dict
         all_ids.append('statement_' + str(statement.uid))
         x = (x + 1) % 10
@@ -327,7 +329,8 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type):
                                         x=x,
                                         y=y,
                                         edge_source=edge_source,
-                                        edge_target=target)
+                                        edge_target=target,
+                                        timestamp=argument.timestamp.for_json())
             x = (x + 1) % 10
             y += 1 if x == 0 else 0
             nodes.append(node_dict)
@@ -389,18 +392,20 @@ def __get_editor_of_statement(uid):
     return {'name': name, 'gravatar': gravatar}
 
 
-def __get_node_dict(id, label, x, y, type='', author=dict(), editor=dict(), edge_source=[], edge_target=[]):
+def __get_node_dict(id, label, x, y, type='', author=dict(), editor=dict(), edge_source=[], edge_target=[], timestamp=''):
     """
-    Create dictionary for nodes
-
-    :param id:
-    :param label:
-    :param x:
-    :param y:
-    :param type:
-    :param author:
-    :param editor:
-    :return:
+    
+    :param id: 
+    :param label: 
+    :param x: 
+    :param y: 
+    :param type: 
+    :param author: 
+    :param editor: 
+    :param edge_source: 
+    :param edge_target: 
+    :param timestamp: 
+    :return: 
     """
     return {'id': id,
             'label': label,
@@ -411,7 +416,8 @@ def __get_node_dict(id, label, x, y, type='', author=dict(), editor=dict(), edge
             'editor': editor,
             # for virtual nodes
             'edge_source': edge_source,
-            'edge_target': edge_target}
+            'edge_target': edge_target,
+            'timestamp': timestamp}
 
 
 def __get_edge_dict(id, source, target, color, edge_type):
