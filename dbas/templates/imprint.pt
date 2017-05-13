@@ -71,6 +71,7 @@
 						<li><a target="_blank" href="http://www.bootstraptoggle.com/">BootstrapsToogle Button</a></li>
 						<li><a target="_blank" href="https://bootswatch.com/paper/">Bootswatch Paper Theme</a></li>
 						<li><a target="_blank" href="http://bootstraptour.com/">Bootstrap Tour</a></li>
+                        <li><a target="_blank" href="https://github.com/seiyria/bootstrap-slider">Bootstrap Slider</a>
 						<li><a target="_blank" href="http://fontawesome.io/icons/">Font Awesome Icon</a></li>
 						<li><a target="_blank" href="http://piwik.org/">Piwik Open-Source Analytics</a></li>
 						<li><a target="_blank" href="http://www.gravatar.com/">Gravatar</a></li>
@@ -78,7 +79,7 @@
 						<li><a target="_blank" href="http://theoatmeal.com/comics/state_web_summer#tumblr">404-Tumbeasts</a></li>
 						<li><a target="_blank" href="https://github.com/js-cookie/js-cookie">js-cookie</a></li>
 						<li><a target="_blank" href="https://www.google.com/recaptcha">Google reCAPTCHAs</a></li>
-						<li><a target="_blank" href=" http://codepen.io/imshubhamsingh/pen/dNQzmG">CSS Batman</a></li>
+						<li><a target="_blank" href="http://codepen.io/imshubhamsingh/pen/dNQzmG">CSS Batman</a></li>
 						<!--<li><a target="_blank" href="https://github.com/devbridge/jQuery-Autocomplete">Autocomplete</a></li>-->
 					</ul>
 				</div>
