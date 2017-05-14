@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-05-08 21:31+0200\n"
+"POT-Creation-Date: 2017-05-14 15:28+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -694,7 +694,7 @@ msgid "copyright_and_used_software"
 msgstr "Used Software"
 
 #. Default: Changes
-#: templates/imprint.pt:87
+#: templates/imprint.pt:88
 msgid "changes"
 msgstr "Changelog"
 
@@ -1872,27 +1872,27 @@ msgid "to"
 msgstr "To:"
 
 #. Default: JavaScript is not enabled:
-#: templates/basetemplate.pt:28
+#: templates/basetemplate.pt:29
 msgid "js_disabled1"
 msgstr "JavaScript is not enabled:"
 
 #. Default: Please enable JavaScript!
-#: templates/basetemplate.pt:29
+#: templates/basetemplate.pt:30
 msgid "js_disabled2"
 msgstr "Please enable JavaScript!"
 
 #. Default: Your request failed!
-#: templates/basetemplate.pt:35
+#: templates/basetemplate.pt:36
 msgid "request_failed"
 msgstr "Your request failed!"
 
 #. Default: Please reload the page.
-#: templates/basetemplate.pt:36
+#: templates/basetemplate.pt:37
 msgid "please_reload"
 msgstr "Please reload the page."
 
 #. Default: Your request succeded!
-#: templates/basetemplate.pt:42 templates/basetemplate.pt:43
+#: templates/basetemplate.pt:43 templates/basetemplate.pt:44
 msgid "request_success"
 msgstr "Your request succeded!"
 
@@ -1936,60 +1936,66 @@ msgstr "Switch Topic"
 msgid "restart_discussion"
 msgstr "Restart"
 
-#. Default: Show all statements
-#: templates/content.pt:153
-msgid "show_all_statements"
-msgstr "Show all statements"
+#. Default: Start
+#: templates/content.pt:286
+msgid "start"
+msgstr "Start"
 
-#. Default: Hide statements
-#: templates/content.pt:154
-msgid "hide_statements"
-msgstr "Hide statements"
+#. Default: Now
+#: templates/content.pt:288
+msgid "now"
+msgstr "Now"
 
 #. Default: Complete View
-#: templates/content.pt:298
+#: templates/content.pt:303
 msgid "complete_view"
 msgstr "Complete View"
 
 #. Default: Default View
-#: templates/content.pt:299
+#: templates/content.pt:304
 msgid "default_view"
 msgstr "Default View"
 
 #. Default: Labels
-#: templates/content.pt:300
+#: templates/content.pt:305
 msgid "labels"
 msgstr "Lables"
 
 #. Default: Positions
-#: templates/content.pt:301
+#: templates/content.pt:306
 msgid "positions"
 msgstr "Positions"
 
 #. Default: Statements
-#: templates/content.pt:302
+#: templates/content.pt:307
 msgid "statements"
 msgstr "Statements"
 
 #. Default: My path
-#: templates/content.pt:303 templates/content.pt:304
+#: templates/content.pt:308 templates/content.pt:309
 msgid "my_path"
 msgstr "My path"
 
 #. Default: My statements
-#: templates/content.pt:305
+#: templates/content.pt:310
 msgid "my_statements"
 msgstr "My statements"
 
 #. Default: Supports
-#: templates/content.pt:306
+#: templates/content.pt:311
 msgid "supports_on_my_statements"
 msgstr "Supports"
 
 #. Default: Attacks
-#: templates/content.pt:307
+#: templates/content.pt:312
 msgid "attacks_on_my_statements"
 msgstr "Attacks"
+
+#~ msgid "show_all_statements"
+#~ msgstr "Show all statements"
+
+#~ msgid "hide_statements"
+#~ msgstr "Hide statements"
 
 #~ msgid "contact_header_1"
 #~ msgstr "Get In Touch With Us"
@@ -2487,9 +2493,6 @@ msgstr "Attacks"
 #~ "definesargument relations in terms of locigo- sematical relations between "
 #~ "propositionsand thus gives rise to a new computational approach to the "
 #~ "reconstruction ofcomplex debates."
-
-#~ msgid "startet_at"
-#~ msgstr "The discussion was started at"
 
 #~ msgid "already_has"
 #~ msgstr "and already has"

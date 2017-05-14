@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-05-08 21:31+0200\n"
+"POT-Creation-Date: 2017-05-14 15:28+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -696,7 +696,7 @@ msgid "copyright_and_used_software"
 msgstr "Verwendete Software"
 
 #. Default: Changes
-#: templates/imprint.pt:87
+#: templates/imprint.pt:88
 msgid "changes"
 msgstr "Versionsänderungen"
 
@@ -1890,27 +1890,27 @@ msgid "to"
 msgstr "An:"
 
 #. Default: JavaScript is not enabled:
-#: templates/basetemplate.pt:28
+#: templates/basetemplate.pt:29
 msgid "js_disabled1"
 msgstr "JavaScript ist nicht aktiviert:"
 
 #. Default: Please enable JavaScript!
-#: templates/basetemplate.pt:29
+#: templates/basetemplate.pt:30
 msgid "js_disabled2"
 msgstr "Bitte JavaScript aktivieren!"
 
 #. Default: Your request failed!
-#: templates/basetemplate.pt:35
+#: templates/basetemplate.pt:36
 msgid "request_failed"
 msgstr "Ihre Anfrage ist fehlgeschlagen!"
 
 #. Default: Please reload the page.
-#: templates/basetemplate.pt:36
+#: templates/basetemplate.pt:37
 msgid "please_reload"
 msgstr "Bitte laden Sie die Seite erneut."
 
 #. Default: Your request succeded!
-#: templates/basetemplate.pt:42 templates/basetemplate.pt:43
+#: templates/basetemplate.pt:43 templates/basetemplate.pt:44
 msgid "request_success"
 msgstr "Anfrage wurde erfolgreich verarbeitet."
 
@@ -1954,60 +1954,66 @@ msgstr "Thema wechseln"
 msgid "restart_discussion"
 msgstr "Neustart"
 
-#. Default: Show all statements
-#: templates/content.pt:153
-msgid "show_all_statements"
-msgstr "Alle Aussagen anzeigen"
+#. Default: Start
+#: templates/content.pt:286
+msgid "start"
+msgstr "Start"
 
-#. Default: Hide statements
-#: templates/content.pt:154
-msgid "hide_statements"
-msgstr "Aussage ausblenden"
+#. Default: Now
+#: templates/content.pt:288
+msgid "now"
+msgstr "Jetzt"
 
 #. Default: Complete View
-#: templates/content.pt:298
+#: templates/content.pt:303
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
 #. Default: Default View
-#: templates/content.pt:299
+#: templates/content.pt:304
 msgid "default_view"
 msgstr "Standardansicht"
 
 #. Default: Labels
-#: templates/content.pt:300
+#: templates/content.pt:305
 msgid "labels"
 msgstr "Beschriftungen"
 
 #. Default: Positions
-#: templates/content.pt:301
+#: templates/content.pt:306
 msgid "positions"
 msgstr "Positionen"
 
 #. Default: Statements
-#: templates/content.pt:302
+#: templates/content.pt:307
 msgid "statements"
 msgstr "Aussagen"
 
 #. Default: My path
-#: templates/content.pt:303 templates/content.pt:304
+#: templates/content.pt:308 templates/content.pt:309
 msgid "my_path"
 msgstr "Mein Pfad"
 
 #. Default: My statements
-#: templates/content.pt:305
+#: templates/content.pt:310
 msgid "my_statements"
 msgstr "Meine Aussagen"
 
 #. Default: Supports
-#: templates/content.pt:306
+#: templates/content.pt:311
 msgid "supports_on_my_statements"
 msgstr "Unterstützungen"
 
 #. Default: Attacks
-#: templates/content.pt:307
+#: templates/content.pt:312
 msgid "attacks_on_my_statements"
 msgstr "Angriffe"
+
+#~ msgid "show_all_statements"
+#~ msgstr "Alle Aussagen anzeigen"
+
+#~ msgid "hide_statements"
+#~ msgstr "Aussage ausblenden"
 
 #~ msgid "contact_header_1"
 #~ msgstr "Treten Sie mit uns in Kontakt"
@@ -2506,9 +2512,6 @@ msgstr "Angriffe"
 #~ "Die Arbeitsgruppe Funktionalität des Graduierten-Kollegs arbeitet eng mit "
 #~ "dem Institut für Technikfolgenabschätzung und  Systemanalyse (ITAS) des "
 #~ "Karlsruher Institut der Technologie zusammen"
-
-#~ msgid "startet_at"
-#~ msgstr "Die Diskussion wurde gestartet: "
 
 #~ msgid "already_has"
 #~ msgstr "und verfügt über "
