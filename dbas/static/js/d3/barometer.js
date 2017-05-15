@@ -184,8 +184,7 @@ function DiscussionBarometer(){
         // create axis
         if(address === 'argument' || address === 'attitude'){
             createXAxis(usersDict, barChartSvg, width, height+10);
-        }
-        else{
+        } else {
             createYAxis(barChartSvg, height-50);
         }
 
@@ -437,8 +436,7 @@ function DiscussionBarometer(){
         // height in percent: length/seen_by = x/height
         if(address === "argument" || address === "attitude"){
             return divideWrapperIfZero(usersNumber, maxUsersNumber) * width;
-        }
-        else{
+        } else {
             return barWidth;
         }
     }
@@ -570,8 +568,7 @@ function DiscussionBarometer(){
                 usersNumber: 0,
                 seenBy: 0
             });
-        }
-        else{
+        } else {
             data = usersDict;
         }
 
@@ -699,8 +696,7 @@ function DiscussionBarometer(){
         var tooltipText;
         if(address === "attitude"){
             tooltipText = usersDict[index].usersNumber;
-        }
-        else{
+        } else {
             tooltipText = usersDict[index].usersNumber + "/" + usersDict[index].seenBy;
         }
         doughnutChartSvg.append("text")
@@ -799,17 +795,16 @@ function DiscussionBarometer(){
     function showTooltip(usersDict, index, chartSvg, selector){
         getTooltip(usersDict, index);
         // if doughnut chart is selected add short tooltip in middle of chart
+         var el = '';
         if(selector === ".chart-sector"){
             createShortTooltipDoughnutChart(chartSvg, usersDict, index);
-            // highlight whole sector on hover
-            d3.select("#inner-path-" + index).attr('fill', getDarkColorFor(index));
-            d3.select("#outer-path-" + index).attr('fill', google_colors[index % google_colors.length][3]);
+            el = 'path'; // highlight whole sector on hover
+        } else {
+            el = 'rect'; // highlight sector on hover
         }
-        else{
-            // highlight sector on hover
-            d3.select("#inner-rect-" + index).attr('fill', getDarkColorFor(index));
-            d3.select("#outer-rect-" + index).attr('fill', google_colors[index % google_colors.length][3]);
-        }
+        d3.select('#inner-' + el + '-' + index).attr('fill', getDarkColorFor(index));
+        d3.select('#outer-' + el + '-' + index).attr('fill', google_colors[index % google_colors.length][3]);
+        $('#legendLi_' + index).css('background', '#CFD8DC');
     }
 
     /**
@@ -819,22 +814,23 @@ function DiscussionBarometer(){
      * @param index
      */
     function hideTooltip(selector, index){
-        $('.chartTooltip').remove();
+        var el = '';
+        var chartTooltip = $('.chartTooltip');
+        chartTooltip.remove();
         // hide tooltip with detailed information
-        $('.chartTooltip').css("opacity", 0);
+        chartTooltip.css("opacity", 0);
+        
+        $('#legendLi_' + index).css('background', '');
 
         // if doughnut chart is selected hide text in middle of doughnut
         if(selector === ".chart-sector") {
             $('.doughnut-chart-text-tooltip').text("");
-            // fill chart element with originally color
-            d3.select("#inner-path-" + index).attr('fill', getNormalColorFor(index));
-            d3.select("#outer-path-" + index).attr('fill', getLightColorFor(index));
+            el = 'path'; // fill chart element with originally color
+        } else {
+            el = 'rect'; // fill chart element with originally color
         }
-        else{
-            // fill chart element with originally color
-            d3.select("#inner-rect-" + index).attr('fill', getNormalColorFor(index));
-            d3.select("#outer-rect-" + index).attr('fill', getLightColorFor(index));
-        }
+        d3.select('#inner-' + el + '-' + index).attr('fill', getNormalColorFor(index));
+        d3.select('#outer-' + el + '-' + index).attr('fill', getLightColorFor(index));
     }
 
      /**
@@ -844,15 +840,13 @@ function DiscussionBarometer(){
      * @param index
      */
     function getTooltip(usersDict, index){
-        var div = $('<div>').attr("class", "chartTooltip");
+        var tooltip = $('<div>').attr("class", "chartTooltip");
         var append_left = global_dialog.find('.col-md-5').outerHeight() > global_dialog.find('.col-md-6').outerHeight() + 100;
         var col = append_left ? '.col-md-6' : '.col-md-5';
-        global_dialog.find(col).append(div);
-
-        var tooltip = $(".chartTooltip");
+        global_dialog.find(col).append(tooltip);
 
         // make tooltip visible
-        tooltip.css("opacity", 1);
+        tooltip.css("opacity", 1).css('border-radius', '0.2em');
 
         createTooltipContent(usersDict, index);
 
@@ -874,9 +868,10 @@ function DiscussionBarometer(){
         var message_list = usersDict[index].message !== null ? $('<li>').html(usersDict[index].message) : '';
         var text_keyword = '';
         if (address === 'argument'){
-            text_keyword = usersDict[index].seenBy === 1 ? participantSawArgumentsToThis : participantsSawArgumentsToThis;}
-        else{
-            text_keyword = usersDict[index].seenBy === 1 ? participantSawThisStatement : participantsSawThisStatement;}
+            text_keyword = usersDict[index].seenBy === 1 ? participantSawArgumentsToThis : participantsSawArgumentsToThis;
+        } else {
+            text_keyword = usersDict[index].seenBy === 1 ? participantSawThisStatement : participantsSawThisStatement;
+        }
 
         var seenByList = $('<li>').html(usersDict[index].seenBy + ' ' + _t_discussion(text_keyword));
 
@@ -898,13 +893,14 @@ function DiscussionBarometer(){
      * @param usersDict
      */
     function createLegend(usersDict){
-        var div, label, element;
+        var div, label, ul;
+        ul = $('<ul>').attr({'class': 'legendUl', 'style': 'padding-left: 0em; list-style-type: none;'});
         $.each(usersDict, function(key, value) {
-            div = $('<div>').attr('class', 'legendSymbolDiv').css('background-color', getNormalColorFor(key));
+            div = $('<div>').attr('class', 'legendSymbolDiv').css('background-color', getNormalColorFor(key)).css('border-radius', '0.2em');
             label = $('<label>').attr('class', 'legendLabel').html(value.text);
-            element = $('<ul>').attr('class', 'legendUl').append(div).append(label);
-            global_dialog.find('.col-md-5').append(element);
+            ul.append($('<li>').attr('id', 'legendLi_' + key).css('border-radius', '0.2em').append(div).append(label));
         });
+        global_dialog.find('.col-md-5').append(ul);
     }
 
     function getNormalColorFor(index){ return google_colors[index % google_colors.length][0]; }
