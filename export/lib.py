@@ -239,9 +239,13 @@ def get_doj_user(user_id, discussion_id):
                                                                       ClickedArgument.author_uid == user_id,
                                                                       ClickedArgument.is_valid is True)
     db_click_acc_stat = db_click_stat.filter(ClickedStatement.is_up_vote is True).all()
-    db_click_acc_arg = db_click_args.filter(ClickedArgument.is_up_vote is True).all()
     db_click_rej_stat = db_click_stat.filter(ClickedStatement.is_up_vote is False).all()
+    db_click_acc_arg = db_click_args.filter(ClickedArgument.is_up_vote is True).all()
     db_click_rej_arg = db_click_args.filter(ClickedArgument.is_up_vote is False).all()
+
+    # acceptd/rejected statements
+    accepted_statements = [s.uid for s in db_click_acc_stat]
+    rejected_statements = [s.uid for s in db_click_rej_stat]
 
     # clicked arguments, which are undercuts
     db_rej_arg = DBDiscussionSession.query(Argument).filter(Argument.uid.in_([s.uid for s in db_click_acc_arg]),
@@ -250,24 +254,22 @@ def get_doj_user(user_id, discussion_id):
                                                             Argument.is_supportive == False,
                                                             Argument.issue_uid == discussion_id).all()
 
-    # acceptd/rejected statements
-    accepted_statements = [s.uid for s in db_click_acc_stat]
-    rejected_statements = [s.uid for s in db_click_rej_stat]
-
     # acceptd/rejected conclusions
     for el in db_click_acc_arg:
-        db_arg = DBDiscussionSession.query(Argument).filter(Argument.uid == el.uid, Argument.conclusion_uid is not None).first()
+        db_arg = DBDiscussionSession.query(Argument).filter(Argument.uid == el.uid,
+                                                            Argument.conclusion_uid is not None).first()
         if db_arg.is_supportive:
             accepted_statements += [db_arg.conclusion_uid]
         else:
-            accepted_statements += [db_arg.conclusion_uid]
+            rejected_statements += [db_arg.conclusion_uid]
 
-    return {'marked_statements': list(set([s.uid for s in db_star_stat])),
-            'marked_arguments': list(set([s.uid for s in db_star_arg])),
-            'rejected_arguments': list(set([s.uid for s in db_rej_arg] + [s.uid for s in db_click_rej_arg])),
-            'accepted_statements': list(set(accepted_statements)),
-            'rejected_statements': list(set(rejected_statements)),
-            }
+    return {
+        'marked_statements': list(set([s.uid for s in db_star_stat])),
+        'marked_arguments': list(set([s.uid for s in db_star_arg])),
+        'rejected_arguments': list(set([s.uid for s in db_rej_arg] + [s.uid for s in db_click_rej_arg])),
+        'accepted_statements_via_click': list(set(accepted_statements)),
+        'rejected_statements_via_click': list(set(rejected_statements)),
+    }
 
 
 def get_table_rows(nickname, table_name, ids):
