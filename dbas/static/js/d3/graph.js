@@ -848,7 +848,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 return;
             }
             var circleId = this.id;
-            showPartOfGraph([circleId]);
+            showArgumentsOfIdInGraph(circleId);
             selectedCircleId = d.id;
         });
         circle.on("dblclick", function (d) {
@@ -859,7 +859,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             // show modal when node clicked twice
             showModal(d);
             var circleId = this.id;
-            showPartOfGraph([circleId]);
+            showArgumentsOfIdInGraph(circleId);
             selectedCircleId = d.id;
         });
     }
@@ -1570,6 +1570,49 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         return splitted[splitted.length - 1];
     }
 
+    
+    /**
+     * Highlight incoming and outgoing edges of selected node.
+     *
+     * @param circleId: id of selected node
+     */
+    function showArgumentsOfIdInGraph(circleId) {
+        // edges with selected circle as source or as target
+        var edgesCircleId = [];
+        // select all incoming and outgoing edges of selected circle
+        edges.forEach(function (d) {
+            var circleUid = selectUid(circleId);
+            // supports
+            if ((isVisible.support || isVisible.attack) && selectUid(d.target.id) === circleUid) {
+                edgesCircleId.push(d);
+            }
+            else if ((selectUid(d.source.id) === circleUid || selectUid(d.target.id) === circleUid) && (!isVisible.attack && !isVisible.support)) {
+                edgesCircleId.push(d);
+            }
+        });
+
+        // if isMyStatementsClicked is false gray all elements at each function call,
+        // else the graph is colored once gray
+        if (!isVisible.my_statements && !isVisible.support && !isVisible.attack) {
+            edges.forEach(function (d) {
+                grayingElements(d);
+            });
+        }
+        highlightElementsVirtualNodes(edges, edgesCircleId, true);
+        edgesCircleId.forEach(function (d) {
+            if(isVisible.attack && d.color === colors.red){
+                highlightElements(d);
+            }
+            if(isVisible.support && d.color === colors.green){
+                highlightElements(d);
+            }
+            else if (!isVisible.attack && !isVisible.support){
+                highlightElements(d);
+            }
+        });
+    }
+
+    
     /**
      * Highlight incoming and outgoing edges of selected node.
      *
@@ -1598,7 +1641,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 grayingElements(d);
             });
         }
-        highlightElementsVirtualNodes(edges, edgesIds);
+        highlightElementsVirtualNodes(edges, edgesIds, false);
         edgesIds.forEach(function (d) {
             if(isVisible.attack && d.color === colors.red){
     	        hightlghtEdge(d);
@@ -1630,7 +1673,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param edges
      * @param edgesCircleId
      */
-    function highlightElementsVirtualNodes(edges, edgesCircleId) {
+    function highlightElementsVirtualNodes(edges, edgesCircleId, highlightCompleteArgument) {
         var virtualNodes = [];
         var virtualNodesIds = [];
         do {
@@ -1638,7 +1681,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             // virtual nodes
             createVirtualNodesArray(edgesCircleId, virtualNodes, virtualNodesIds);
             // edges with a virtual node as source or as target
-            createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId);
+            createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId, highlightCompleteArgument);
         }
         while (change);
     }
@@ -1676,11 +1719,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param virtualNodes
      * @param edgesCircleId
      */
-    function createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId) {
+    function createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId, highlightCompleteArgument) {
         edges.forEach(function (d) {
             virtualNodes.forEach(function (e) {
-                if (d.source.id === e.id) {//} || d.target.id === e.id) {
-            	    console.log(d.source.id + ' ' + d.target.id + ' ' + e.id);
+                if (d.source.id === e.id  || (d.target.id === e.id & highlightCompleteArgument)) {
                     edgesCircleId.push(d);
                 }
             });
