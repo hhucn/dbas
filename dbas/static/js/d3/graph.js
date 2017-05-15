@@ -127,7 +127,14 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function setSlider(){
         var slider = $('#graph-slider');
         var start_date_ms = slider.data('start-ms');
-    	slider.slider({}).on('slideStop', function(value) {
+    	slider.slider({
+            formatter: function(value) {
+		        var add_ms = value * 3600 * 1000;
+		        var cval = start_date_ms + add_ms;
+		        var date = new Date(cval);
+                return date.toLocaleString();
+            }
+    	}).on('slideStop', function(value) {
 		    resetButtons();
 		    if (typeof start_date_ms !== 'undefined') {
 		        var add_ms = value.value * 3600 * 1000;
