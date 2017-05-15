@@ -1672,6 +1672,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      *
      * @param edges
      * @param edgesCircleId
+     * @param highlightCompleteArgument
      */
     function highlightElementsVirtualNodes(edges, edgesCircleId, highlightCompleteArgument) {
         var virtualNodes = [];
@@ -1718,11 +1719,12 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param edges
      * @param virtualNodes
      * @param edgesCircleId
+     * @param highlightCompleteArgument
      */
     function createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId, highlightCompleteArgument) {
         edges.forEach(function (d) {
             virtualNodes.forEach(function (e) {
-                if (d.source.id === e.id  || (d.target.id === e.id & highlightCompleteArgument)) {
+                if (d.source.id === e.id  || (d.target.id === e.id && highlightCompleteArgument)) {
                     edgesCircleId.push(d);
                 }
             });
