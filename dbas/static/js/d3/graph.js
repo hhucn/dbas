@@ -1328,7 +1328,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 	    //highlightAllElements();
         var tmp_edges = edges;
         edges.forEach(function (edge) {
-        	if (moment(edge.source.timestamp).valueOf() >= new_limit || moment(edge.target.timestamp).valueOf() >= new_limit) {
+            var edge_source_timestamp = parseInt(edge.source.timestamp) * 1000;
+            var edge_target_timestamp = parseInt(edge.target.timestamp) * 1000;
+            new_limit = parseInt(new_limit);
+        	if (edge_source_timestamp >= new_limit || edge_target_timestamp >= new_limit) {
         		tmp_edges = $.grep(tmp_edges, function(value) {
                     return value !== edge;
 				});

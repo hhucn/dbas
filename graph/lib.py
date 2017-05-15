@@ -65,7 +65,7 @@ def get_d3_data(issue, all_statements=None, all_arguments=None):
                                 x=x,
                                 y=y,
                                 type='issue',
-                                timestamp=db_issue.date.for_json())
+                                timestamp=db_issue.date.timestamp)
     x = (x + 1) % 10
     y += (1 if x == 0 else 0)
     nodes_array.append(node_dict)
@@ -247,7 +247,7 @@ def __prepare_statements_for_d3_data(db_statements, db_textversions, x, y, edge_
                                     type='position' if statement.is_startpoint else 'statement',
                                     author=__get_author_of_statement(statement.uid),
                                     editor=__get_editor_of_statement(statement.uid),
-                                    timestamp=statement.get_timestamp().for_json())
+                                    timestamp=statement.get_timestamp().timestamp)
         extras[node_dict['id']] = node_dict
         all_ids.append('statement_' + str(statement.uid))
         x = (x + 1) % 10
@@ -328,7 +328,7 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type):
                                         y=y,
                                         edge_source=edge_source,
                                         edge_target=target,
-                                        timestamp=argument.timestamp.for_json())
+                                        timestamp=argument.timestamp.timestamp)
             x = (x + 1) % 10
             y += 1 if x == 0 else 0
             nodes.append(node_dict)
