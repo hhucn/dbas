@@ -289,7 +289,7 @@ def get_reviews_of(user, only_today):
         db_edits = db_edits.filter(ReviewEdit.timestamp >= today)
         db_deletes = db_deletes.filter(ReviewDelete.timestamp >= today)
         db_optimizations = db_optimizations.filter(ReviewOptimization.timestamp >= today)
-        db_duplicates = ReviewDuplicate.filter(ReviewOptimization.timestamp >= today)
+        db_duplicates = DBDiscussionSession.query(ReviewDuplicate).filter(ReviewOptimization.timestamp >= today)
 
     db_edits = db_edits.all()
     db_deletes = db_deletes.all()
