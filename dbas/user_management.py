@@ -544,13 +544,14 @@ def get_summary_of_today(nickname):
     arg_vote, stat_vote = get_count_of_votes_of_user(db_user, True)
     arg_clicks, stat_clicks = get_count_of_clicks_of_user(db_user, True)
 
-    ret_dict['statements_posted']      = get_count_of_statements_of_user(db_user, False, True)
-    ret_dict['edits_done']             = get_count_of_statements_of_user(db_user, True, True)
-    ret_dict['discussion_arg_votes']   = arg_vote
-    ret_dict['discussion_stat_votes']  = stat_vote
-    ret_dict['discussion_arg_clicks']  = arg_clicks
+    ret_dict['firstname'] = db_user.firstname
+    ret_dict['statements_posted'] = get_count_of_statements_of_user(db_user, False, True)
+    ret_dict['edits_done'] = get_count_of_statements_of_user(db_user, True, True)
+    ret_dict['discussion_arg_votes'] = arg_vote
+    ret_dict['discussion_stat_votes'] = stat_vote
+    ret_dict['discussion_arg_clicks'] = arg_clicks
     ret_dict['discussion_stat_clicks'] = stat_clicks
-    ret_dict['statements_reported']    = get_reviews_of(db_user, True)
+    ret_dict['statements_reported'] = get_reviews_of(db_user, True)
 
     return ret_dict
 
