@@ -278,6 +278,7 @@ class Keywords(Enum):
     exampleLastname = 'exampleLastname'
     exampleStatement = 'exampleStatement'
     exampleSource = 'exampleSource'
+    exampleSearchDuplicate = 'exampleSearchDuplicate'
     everythingSaved = 'everythingSaved'
     opinionSaved = 'opinionSaved'
     error_code = 'error_code'

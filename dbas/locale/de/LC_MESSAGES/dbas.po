@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-05-16 08:08+0200\n"
+"POT-Creation-Date: 2017-05-16 16:54+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -908,7 +908,7 @@ msgstr "Rückgängig machen"
 #. Default: Cancel
 #: templates/review-history.pt:96 templates/snippet-popups.pt:172
 #: templates/snippet-popups.pt:195 templates/snippet-popups.pt:220
-#: templates/snippet-popups.pt:1097
+#: templates/snippet-popups.pt:1094
 msgid "cancel"
 msgstr "Abbrechen"
 
@@ -1074,7 +1074,7 @@ msgstr ""
 
 #. Default: Okay
 #: templates/snippet-popups.pt:171 templates/snippet-popups.pt:194
-#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1096
+#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1093
 msgid "okay"
 msgstr "Okay"
 
@@ -1371,7 +1371,7 @@ msgid "statement_under_consideration_is"
 msgstr "Die aktuelle Aussage ist"
 
 #. Default: The argument under consideration is as follows
-#: templates/snippet-popups.pt:828 templates/snippet-popups.pt:887
+#: templates/snippet-popups.pt:828 templates/snippet-popups.pt:884
 msgid "argument_under_consideration_is"
 msgstr "Das aktuelle Argument ist"
 
@@ -1397,83 +1397,83 @@ msgstr ""
 "werden."
 
 #. Default: This statement is off topic or irrelevant.
-#: templates/snippet-popups.pt:843
+#: templates/snippet-popups.pt:842
 msgid "statement_offtopic_or_irrelevant"
 msgstr "Die Aussage ist nicht themenbezogen/Spam."
 
 #. Default: This statement does not belong to the topic under discussion.
-#: templates/snippet-popups.pt:844
+#: templates/snippet-popups.pt:843
 msgid "statement_offtopic_or_irrelevant_description"
 msgstr "Die Beudeutung der Aussage ist nicht themenbezogen oder Spam."
 
 #. Default: This argument is off topic or irrelevant.
-#: templates/snippet-popups.pt:845
+#: templates/snippet-popups.pt:844
 msgid "argument_offtopic_or_irrelevant"
 msgstr "Das Argument ist nicht themenbezogen/Spam."
 
 #. Default: This argument does not belong to the topic under discussion.
-#: templates/snippet-popups.pt:846
+#: templates/snippet-popups.pt:845
 msgid "argument_offtopic_or_irrelevant_description"
 msgstr "Die Bedeutung des Arguments ist nicht themenbezogen oder Spam."
 
 #. Default: This statement is harmful or abusive.
-#: templates/snippet-popups.pt:859
+#: templates/snippet-popups.pt:857
 msgid "statement_harmful"
 msgstr "Die Aussage ist verletzend, schädigend oder missbräuchlich."
 
 #. Default: This argument is harmful or abusive.
-#: templates/snippet-popups.pt:860
+#: templates/snippet-popups.pt:858
 msgid "argument_harmful"
 msgstr "Die Argument ist verletzend, schädigend oder missbräuchlich."
 
 #. Default: A reasonable person would find this content inappropriate for
 #. respectful discourse.
-#: templates/snippet-popups.pt:861
+#: templates/snippet-popups.pt:859
 msgid "argument_statement_harmful_description"
 msgstr ""
-"Bestimme Personen würden diesen Inhalt nicht passend für eine respektvolle "
+"Bestimmte Personen würden diesen Inhalt nicht passend für eine respektvolle "
 "Diskussion halten."
 
 #. Default: This statement is a duplicate.
-#: templates/snippet-popups.pt:867
+#: templates/snippet-popups.pt:864
 msgid "this_statement_duplicate"
 msgstr "Diese Aussage ist ein Duplikat."
 
 #. Default: This statement has been done before in a slightly different
 #. wording.
-#: templates/snippet-popups.pt:868
+#: templates/snippet-popups.pt:865
 msgid "this_statement_duplicate_description"
 msgstr "Diese Aussage ist schon leicht verändert im System vorhanden."
 
 #. Default: Reporting (parts of) an argument
-#: templates/snippet-popups.pt:884
+#: templates/snippet-popups.pt:881
 msgid "reporting_parts_argument"
 msgstr "Melden eines Arguments (oder Teile davon)"
 
 #. Default: Please choose which part of the argument you want to report
-#: templates/snippet-popups.pt:889
+#: templates/snippet-popups.pt:886
 msgid "please_choose_part_to_report"
 msgstr "Bitte wählen Sie einen Teil des Arguments, der gemeldet werden soll"
 
 #. Default: Report
-#: templates/snippet-popups.pt:896
+#: templates/snippet-popups.pt:893
 msgid "report"
 msgstr "Melden"
 
 #. Default: Report the whole argument.
-#: templates/snippet-popups.pt:908
+#: templates/snippet-popups.pt:905
 msgid "report_whole_argument"
 msgstr "Komplettes Argument melden."
 
 #. Default: Caution
-#: templates/snippet-popups.pt:984
+#: templates/snippet-popups.pt:981
 msgid "caution"
 msgstr "Achtung"
 
 #. Default: Do you really want to disassociate yourself from your content? This
 #. step is irreversible! Subsequently you will not be the author of this
 #. statement anymore!
-#: templates/snippet-popups.pt:989
+#: templates/snippet-popups.pt:986
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 "Möchten Sie wirklich von diesem Inhalt distanzieren? Dieser Schritt kann "
@@ -1481,46 +1481,46 @@ msgstr ""
 "diesem Statements."
 
 #. Default: Please choose a step to jump in
-#: templates/snippet-popups.pt:1006
+#: templates/snippet-popups.pt:1003
 msgid "choose_a_step_to_jump_in"
 msgstr "Bitte wählen Sie eine Stelle für den Sprung"
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: templates/snippet-popups.pt:1009
+#: templates/snippet-popups.pt:1006
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr "Hier finden Sie alle Stellen, in denen die Aussage verwendet wird:"
 
 #. Default: References
-#: templates/snippet-popups.pt:1026
+#: templates/snippet-popups.pt:1023
 msgid "refereces"
 msgstr "Referenzen"
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: templates/snippet-popups.pt:1034
+#: templates/snippet-popups.pt:1031
 msgid "statement_reference_definition"
 msgstr ""
 "Die Aussage ist ein Zitat von einer Nachrichtenseite o.Ä., welche Ihre "
 "Meinung untersützt. Die Quelle ist die Website."
 
 #. Default: Statement
-#: templates/snippet-popups.pt:1037 templates/snippet-popups.pt:1058
+#: templates/snippet-popups.pt:1034 templates/snippet-popups.pt:1055
 msgid "statement"
 msgstr "Aussage"
 
 #. Default: Source
-#: templates/snippet-popups.pt:1043
+#: templates/snippet-popups.pt:1040
 msgid "source"
 msgstr "Quelle"
 
 #. Default: Please choose a statement for your reference!
-#: templates/snippet-popups.pt:1048
+#: templates/snippet-popups.pt:1045
 msgid "please_choose_a_reference"
 msgstr "Bitte wählen Sie eine Aussage für Ihre Referenz!"
 
 #. Default: Add reference
-#: templates/snippet-popups.pt:1063
+#: templates/snippet-popups.pt:1060
 msgid "add_reference"
 msgstr "Referenzen hinzufügen"
 

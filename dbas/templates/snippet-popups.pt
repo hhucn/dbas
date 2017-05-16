@@ -830,22 +830,20 @@
                     <p class="well well-sm" id="popup-flag-statement-text"></p>
                     <form>
                         <fieldset>
-                            <input type="radio" id="opt" value="optimization" name="flag-statement">
-                            <label for="opt">
+                            <input type="radio" id="opt" value="optimization" name="flag-statement" style="margin-bottom: 1em;">
+                            <label for="opt" style="margin-bottom: 1em;">
                                 <span i18n:translate="text_need_to_be_revised">The text needs to be revised.</span><br>
                                 <small class="statement_text" i18n:translate="statement_optimization_description">This statement is acceptable but it needs correction for spelling/grammar.</small>
                                 <small class="argument_text" i18n:translate="argument_optimization_description">This argument is acceptable but it needs correction for spelling/grammar.</small>
                             </label>
                             <br>
-                            <br>
-                            <input type="radio" id="off" value="offtopic" name="flag-statement">
-                            <label for="off">
+                            <input type="radio" id="off" value="offtopic" name="flag-statement" style="margin-bottom: 1em;">
+                            <label for="off" style="margin-bottom: 1em;">
                                 <span class="statement_text" i18n:translate="statement_offtopic_or_irrelevant">This statement is off topic or irrelevant.</span><br class="statement_text">
                                 <small class="statement_text" i18n:translate="statement_offtopic_or_irrelevant_description">This statement does not belong to the topic under discussion.</small>
                                 <span class="argument_text" i18n:translate="argument_offtopic_or_irrelevant">This argument is off topic or irrelevant.</span><br class="argument_text">
                                 <small class="argument_text" i18n:translate="argument_offtopic_or_irrelevant_description">This argument does not belong to the topic under discussion.</small>
                             </label>
-                            <br>
                             <br>
                             <!--<input type="radio" id="sp" value="spam" name="flag-statement">-->
                             <!--<label for="sp">-->
@@ -854,16 +852,15 @@
 <!--                                <small class="argument_text" i18n:translate="argument_spam_description">This argument does not belong to any topic under discussion.</small>-->
                             <!--</label>-->
                             <!--<br>-->
-                            <input type="radio" id="bad" value="harmful" name="flag-statement">
-                            <label for="bad">
+                            <input type="radio" id="bad" value="harmful" name="flag-statement" style="margin-bottom: 1em;">
+                            <label for="bad" style="margin-bottom: 1em;">
                                 <span class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span><br class="statement_text">
                                 <span class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span><br class="argument_text">
                                 <small class="statement_text" i18n:translate="argument_statement_harmful_description">A reasonable person would find this content inappropriate for respectful discourse.</small>
                             </label>
                             <br>
-                            <br>
-                            <input type="radio" id="dupl" value="duplicate" name="flag-statement">
-                            <label for="dupl">
+                            <input type="radio" id="dupl" value="duplicate" name="flag-statement" style="margin-bottom: 1em;">
+                            <label for="dupl" style="margin-bottom: 1em;">
                                 <span class="statement_text" i18n:translate="this_statement_duplicate">This statement is a duplicate.</span><br>
                                 <small class="statement_text" i18n:translate="this_statement_duplicate_description">This statement has been done before in a slightly different wording.</small>
                             </label>
@@ -934,7 +931,7 @@
                             <div class="input-group-addon">
                                 <i class="fa fa-2x fa-search" aria-hidden="true"></i>
                             </div>
-                            <input class="form-control" id="popup-duplicate-statement-text-search" type="text" placeholder="...">
+                            <input class="form-control" id="popup-duplicate-statement-text-search" type="text" placeholder="..." tal:attributes="placeholder extras.tag.placeholder_search_duplicate">
                         </div>
                     </div>
 

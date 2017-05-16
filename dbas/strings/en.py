@@ -284,6 +284,7 @@ en_lang = {
     _.exampleLastname: 'example: Krauthoff',
     _.exampleStatement: 'Please enter the source here',
     _.exampleSource: 'Please enter the cite here',
+    _.exampleSearchDuplicate: 'Enter parts of the statement to search',
     _.everythingSaved: 'Everything saved!',
     _.opinionSaved: 'Your opinion was saved!',
     _.error_code: 'Error code',
