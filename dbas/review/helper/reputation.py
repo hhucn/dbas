@@ -4,6 +4,7 @@ Provides helping function for handling reputation.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
+import arrow
 import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason
@@ -81,11 +82,12 @@ def get_reputation_list(translator):
     return {'gains': gains, 'looses': looses}
 
 
-def get_reputation_of(nickname):
+def get_reputation_of(nickname, only_today=False):
     """
     Return the total sum of reputation_borders points for the given nickname
 
     :param nickname: Nickname of the user
+    :param only_today: Boolean
     :return: Integer and Boolean, if the user is author
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -93,13 +95,18 @@ def get_reputation_of(nickname):
 
     if not db_user:
         return count, False
-    db_reputation = DBDiscussionSession.query(ReputationHistory) \
-        .filter_by(reputator_uid=db_user.uid) \
+
+    db_reputation = DBDiscussionSession.query(ReputationHistory)
+
+    if only_today:
+        today = arrow.utcnow().to('Europe/Berlin')
+        db_reputation = db_reputation.filter(ReputationHistory.timestamp >= today)
+
+    db_reputation = db_reputation.filter_by(reputator_uid=db_user.uid) \
         .join(ReputationReason, ReputationReason.uid == ReputationHistory.reputation_uid) \
         .all()
 
-    for reputation in db_reputation:
-        count += reputation.reputations.points
+    count = sum([r.reputations.points for r in db_reputation])
 
     return count, is_user_author_or_admin(nickname)
 

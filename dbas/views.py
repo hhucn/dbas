@@ -936,7 +936,7 @@ def discussion_finish(request):
         return user_logout(request, True)
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
-    summary_dict = user_manager.get_summary_of_today(nickname)
+    summary_dict = user_manager.get_summary_of_today(nickname, ui_locales)
 
     return {
         'layout': base_layout(),
