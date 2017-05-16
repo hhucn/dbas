@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-05-14 15:28+0200\n"
+"POT-Creation-Date: 2017-05-16 07:24+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -1780,10 +1780,10 @@ msgstr "Großartig:"
 msgid "message_sent"
 msgstr "Ihre Nachricht wurde gesendet"
 
-#. Default: Thank you!
+#. Default: Thank you
 #: templates/finish.pt:7
 msgid "thank_you"
-msgstr "Vielen Dank!"
+msgstr "Vielen Dank"
 
 #. Default: Your participation in this discussion was saved and will be used
 #. for evaluation later. If you have any questions, please do not hesitat to
