@@ -169,6 +169,7 @@ def get_doj_nodes(issue):
     :param issue: Issue.uid
     :return: dict()
     """
+    logger('Export', 'lib', 'get_doj_nodes for {}'.format(issue))
     if is_integer(issue):
         db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
         db_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=issue).all()
@@ -212,6 +213,7 @@ def get_doj_user(user_id, discussion_id):
     :param user_id: Issue.id 
     :return: dict()
     """
+    logger('Export', 'lib', 'get_doj_user for {} {}'.format(user_id, discussion_id))
     if not user_id or not is_integer(user_id) or not discussion_id or not is_integer(discussion_id):
         return {}
 

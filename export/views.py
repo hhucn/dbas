@@ -26,16 +26,16 @@ dump = Service(name='export_dump',
                path='/dump',
                description='Database Dump')
 
-doj_nodes = Service(name='export_doj',
-                    path='/doj*issue',
+doj_nodes = Service(name='export_doj_nodes',
+                    path='/doj{issue:.*}',
                     description='Export for DoJ Nodes')
 
-doj_users = Service(name='export_doj',
+doj_users = Service(name='export_doj_users',
                     path='/doj_user/{user}/{discussion}',
                     description='Export for DoJ User')
 
 table_row = Service(name='export_table_row',
-                    path='/{table}/*ids',
+                    path='/table/{table}/*ids',
                     description='Export several columns from a table')
 
 
@@ -67,9 +67,10 @@ def get_doj_dump_for_nodes(request):
     :return: dict()
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Export', 'get_doj_dump', 'def')
-    m = request.matchdict
-    issue = m['issue'][0] if 'issue' in m and len(m['issue']) > 0 else None
+    logger('Export', 'get_doj_dump', 'def {} {}'.format(request.matchdict, request.params))
+    issue = None
+    if len(request.matchdict['issue']) > 0:
+        issue = request.matchdict['issue'][1:]
 
     return get_doj_nodes(issue)
 
