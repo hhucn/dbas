@@ -200,9 +200,11 @@ def get_doj_nodes(issue):
                                'is_supportive': arg.is_supportive,
                                'conclusion': arg.conclusion_uid})
 
-    return {'nodes': nodes,
-            'inferences': inferences,
-            'undercuts': undercuts}
+    return {
+        'nodes': nodes,
+        'inferences': inferences,
+        'undercuts': undercuts
+    }
 
 
 def get_doj_user(user_id, discussion_id):
@@ -226,6 +228,11 @@ def get_doj_user(user_id, discussion_id):
     db_all_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=discussion_id).all()
     all_statements_ids = [s.uid for s in db_all_statements]
     all_arguments_ids = [s.uid for s in db_all_arguments]
+    logger('X', 'X', str(all_arguments_ids))
+
+    asd = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == user_id,
+                                                                      ClickedArgument.is_valid == True)
+    logger('X', 'X', str(all_arguments_ids))
 
     # arguments and statements with a star
     db_star_stat = DBDiscussionSession.query(MarkedStatement).filter(MarkedStatement.uid.in_(all_statements_ids),
@@ -236,14 +243,14 @@ def get_doj_user(user_id, discussion_id):
     # clicked and valid statements and arguments
     db_click_stat = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.statement_uid.in_(all_statements_ids),
                                                                        ClickedStatement.author_uid == user_id,
-                                                                       ClickedStatement.is_valid is True)
+                                                                       ClickedStatement.is_valid == True)
     db_click_args = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.argument_uid.in_(all_arguments_ids),
                                                                       ClickedArgument.author_uid == user_id,
-                                                                      ClickedArgument.is_valid is True)
-    db_click_acc_stat = db_click_stat.filter(ClickedStatement.is_up_vote is True).all()
-    db_click_rej_stat = db_click_stat.filter(ClickedStatement.is_up_vote is False).all()
-    db_click_acc_arg = db_click_args.filter(ClickedArgument.is_up_vote is True).all()
-    db_click_rej_arg = db_click_args.filter(ClickedArgument.is_up_vote is False).all()
+                                                                      ClickedArgument.is_valid == True)
+    db_click_acc_stat = db_click_stat.filter(ClickedStatement.is_up_vote == True).all()
+    db_click_rej_stat = db_click_stat.filter(ClickedStatement.is_up_vote == False).all()
+    db_click_acc_arg = db_click_args.filter(ClickedArgument.is_up_vote == True).all()
+    db_click_rej_arg = db_click_args.filter(ClickedArgument.is_up_vote == False).all()
 
     # acceptd/rejected statements
     accepted_statements = [s.uid for s in db_click_acc_stat]
@@ -258,12 +265,13 @@ def get_doj_user(user_id, discussion_id):
 
     # acceptd/rejected conclusions
     for el in db_click_acc_arg:
-        db_arg = DBDiscussionSession.query(Argument).filter(Argument.uid == el.uid,
-                                                            Argument.conclusion_uid is not None).first()
-        if db_arg.is_supportive:
-            accepted_statements += [db_arg.conclusion_uid]
-        else:
-            rejected_statements += [db_arg.conclusion_uid]
+        db_arg = DBDiscussionSession.query(Argument).filter(Argument.uid == el.argument_uid,
+                                                            Argument.argument_uid == None).first()
+        if db_arg:
+            if db_arg.is_supportive:
+                accepted_statements += [db_arg.conclusion_uid]
+            else:
+                rejected_statements += [db_arg.conclusion_uid]
 
     return {
         'marked_statements': list(set([s.uid for s in db_star_stat])),

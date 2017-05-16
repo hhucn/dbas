@@ -26,11 +26,11 @@ dump = Service(name='export_dump',
                path='/dump',
                description='Database Dump')
 
-doj_nodes = Service(name='export_doj_nodes',
+b_doj_nodes = Service(name='export_doj_nodes',
                     path='/doj{issue:.*}',
                     description='Export for DoJ Nodes')
 
-doj_users = Service(name='export_doj_users',
+a_doj_users = Service(name='export_doj_users',
                     path='/doj_user/{user}/{discussion}',
                     description='Export for DoJ User')
 
@@ -58,7 +58,7 @@ def get_database_dump(request):
     return get_dump(issue)
 
 
-@doj_nodes.get()
+@b_doj_nodes.get()
 def get_doj_dump_for_nodes(request):
     """
     Returns necessary data for the DoJ
@@ -75,7 +75,7 @@ def get_doj_dump_for_nodes(request):
     return get_doj_nodes(issue)
 
 
-@doj_users.get()
+@a_doj_users.get()
 def get_doj_dump_for_users(request):
     """
     Returns necessary user data for the DoJ
