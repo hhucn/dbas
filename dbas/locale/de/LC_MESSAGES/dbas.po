@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-05-16 16:54+0200\n"
+"POT-Creation-Date: 2017-05-17 08:35+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -349,7 +349,7 @@ msgstr "Das ist okay so"
 #. Default: Let me correct it
 #: templates/review-content.pt:43 templates/review-content.pt:82
 msgid "correct_it"
-msgstr "Lass mich eine Verbesserungen angeben"
+msgstr "Verbesserungen angeben"
 
 #. Default: Reject it
 #: templates/review-content.pt:47 templates/review-content.pt:88
