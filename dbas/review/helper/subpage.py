@@ -91,7 +91,7 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
     else:
         subpage_dict = {'stats': stats, 'text': text, 'reason': reason, 'issue': issue}
 
-    logger('ReviewSubpagerHelper', 'get_subpage_elements_for', 'subpage_dict ' + str(subpage_dict))
+    # logger('ReviewSubpagerHelper', 'get_subpage_elements_for', 'subpage_dict ' + str(subpage_dict))
     ret_dict['reviewed_argument'] = subpage_dict
     if subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict['stats'] is None:
         no_arguments_to_review = True

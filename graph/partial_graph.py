@@ -5,7 +5,7 @@
 
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Statement, Argument, Premise
+from dbas.database.discussion_model import Statement, Argument, Premise, Issue
 from dbas.lib import get_all_arguments_by_statement
 from dbas.logger import logger
 from graph.lib import get_d3_data
@@ -21,9 +21,13 @@ def get_partial_graph_for_statement(uid, issue, path):
     :return: dict()
     """
     logger('PartialGraph', 'get_partial_graph_for_statement', 'main with uid {} and path {}'.format(uid, path.split('?')[0]))
+    path = path.split('?')[0]
+    db_issue = DBDiscussionSession.query(Issue).get(issue)
+    if db_issue:
+        path = path.split(db_issue.get_slug())[1]
 
     # if we have a attitude, we are asking for supporting/attacking a conclusion
-    if 'attitude' in path.split('?')[0]:
+    if 'attitude' in path:
         db_statement = DBDiscussionSession.query(Statement).get(uid)
         db_argument = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_statement.uid).first()
         if not db_argument:
@@ -31,13 +35,13 @@ def get_partial_graph_for_statement(uid, issue, path):
         uid = db_argument.uid
 
     # special case - dont know branche
-    if 'justify' in path.split('?')[0] and '/d' in path.split('?')[0]:
+    if 'justify' in path and '/d' in path:
         db_argument = DBDiscussionSession.query(Argument).get(uid)
         db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).first()
         uid = db_premise.statement_uid
 
     # if there is no justify, we have an argument
-    if 'justify' not in path.split('?')[0]:
+    if 'justify' not in path:
         db_argument = DBDiscussionSession.query(Argument).get(uid)
         db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).first()
         uid = db_premise.statement_uid
@@ -52,7 +56,6 @@ def get_partial_graph_for_statement(uid, issue, path):
     db_positions = __find_position_for_conclusion_of_argument(current_arg, db_arguments, [], [])
     logger('PartialGraph', 'get_partial_graph_for_statement', 'positions are: ' + str([pos.uid for pos in db_positions]))
     graph_arg_lists = __climb_graph_down(db_positions)
-    # return __get_all_nodes_for_pos_dict(graph_arg_lists)
 
     return __return_d3_data(graph_arg_lists, issue)
 
