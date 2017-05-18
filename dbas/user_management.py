@@ -20,7 +20,6 @@ from dbas.helper.notification import send_welcome_notification
 from dbas.lib import python_datetime_pretty_print, get_text_for_argument_uid,\
     get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture
 from dbas.logger import logger
-from dbas.review.helper.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.review.helper.reputation import get_reputation_of
@@ -534,7 +533,7 @@ def get_summary_of_today(nickname, lang):
     Returns summary of todays actions
 
     :param nickname: User.nickname
-    :param lang: 
+    :param lang: ui_locales
     :return: dict()
     """
     ret_dict = dict()
