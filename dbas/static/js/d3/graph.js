@@ -40,23 +40,22 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         var tmp = url.split('/');
         isPartialGraphMode = override_cases;
         if (!override_cases) {
-	        if (url.indexOf('attitude') !== -1) {
-		        uid = tmp[tmp.indexOf('attitude') + 1];
-		        is_argument = false;
-		        isPartialGraphMode = true;
-	        } else if (url.indexOf('justify') !== -1) {
-		        uid = tmp[tmp.indexOf('justify') + 1];
-		        is_argument = false;
-		        isPartialGraphMode = true;
-	        } else if (url.indexOf('reaction') !== -1) {
-		        uid = tmp[tmp.indexOf('reaction') + 1];
-		        is_argument = true;
-		        isPartialGraphMode = true;
-	        } else if (url.indexOf('support') !== -1) {
-		        uid = tmp[tmp.indexOf('support') + 1];
-		        is_argument = true;
-		        isPartialGraphMode = true;
-	        }
+            var keys = { // mapping of keyword and boolean for 'is_argumentÄ
+                'attitude': false,
+                'justify': false,
+                'reaction': true,
+                'support': true,
+                'jump': true
+            };
+            $.each(keys, function(key, bool){
+                if (url.indexOf(key) !== -1) {
+		            uid = tmp[tmp.indexOf(key) + 1];
+		            is_argument = bool;
+		            isPartialGraphMode = true;
+		            return false;
+	            }
+            });
+            console.log(uid + ' ' + is_argument + ' ' + is_partial_graph_mode);
         }
 	    new AjaxGraphHandler().getDiscussionGraphData(this, uid, is_argument, isPartialGraphMode);
     };
