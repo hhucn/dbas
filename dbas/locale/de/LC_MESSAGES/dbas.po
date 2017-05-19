@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-05-17 08:35+0200\n"
+"POT-Creation-Date: 2017-05-19 15:03+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -1647,21 +1647,21 @@ msgstr "Geklickte Argumente"
 #. Default: Votes for Statements
 #. Default: Votes for Arguments
 #: templates/settings.pt:157 templates/settings.pt:308 templates/finish.pt:50
-#: templates/user.pt:49
+#: templates/user.pt:53
 msgid "discussion_votes_statements"
 msgstr "Markierte Aussagen"
 
 #. Default: Votes for Arguments
 #. Default: Votes for Statements
 #: templates/settings.pt:164 templates/settings.pt:315 templates/finish.pt:54
-#: templates/user.pt:53
+#: templates/user.pt:57
 msgid "discussion_votes_arguments"
 msgstr "Markierte Argumente"
 
 #. Default: Reputation
 #: templates/settings.pt:171 templates/settings.pt:322
 #: templates/review-reputation.pt:9 templates/review-reputation.pt:27
-#: templates/user.pt:57
+#: templates/user.pt:61
 msgid "reputation"
 msgstr "Reputation"
 
@@ -1943,6 +1943,11 @@ msgstr "Registierung"
 #: templates/user.pt:33
 msgid "profile_picture_of"
 msgstr "Profilbild von"
+
+#. Default: Reviews proposed
+#: templates/user.pt:49
+msgid "reviews_proposed"
+msgstr "Änderungen vorgeschlagen"
 
 #. Default: more infos
 #: templates/content.pt:11 templates/content.pt:18
