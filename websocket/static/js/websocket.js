@@ -134,20 +134,19 @@ function doRecentReview(data){
 	var queue = $('#' + data.queue);
 	if (queue.length !== 0){
 		// just push, if given user is not the last reviewer
-		console.log(data.img_url);
 		if (queue.find('a:last-child').length === 0){
 			queue.find('span').remove();
 		}
 		
 		if (queue.find('img[src^="' + data.img_url + '"]').length === 0) {
-			console.log(data.reviewer_name + ' is a new reviewer');
+			// console.log(data.reviewer_name + ' is a new reviewer');
 			queue.find('a:last-child').remove();
 			var link = $('<a>').attr('target', '_blank').attr('title', data.reviewer_name).attr('href', '/user/' + data.reviewer_name);
 			var img = $('<img>').addClass('img-circle').attr('src', data.img_url + '?d=wavatar&s=40').css('width', '40px').css('margin', '2px');
 			link.append(img);
 			queue.prepend(link);
 		} else {
-			console.log(data.reviewer_name + ' is already in the list');
+			// console.log(data.reviewer_name + ' is already in the list');
 		}
 	}
 }

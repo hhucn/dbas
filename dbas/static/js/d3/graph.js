@@ -55,7 +55,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 		            return false;
 	            }
             });
-            console.log(uid + ' ' + is_argument + ' ' + is_partial_graph_mode);
         }
 	    new AjaxGraphHandler().getDiscussionGraphData(this, uid, is_argument, isPartialGraphMode);
     };

@@ -93,7 +93,6 @@ function DiscussionBarometer(){
             mode = modeEnum[address];
         } catch(e) {
             setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(internalError));
-            alert('parsing-json: ' + e);
             return;
         }
 

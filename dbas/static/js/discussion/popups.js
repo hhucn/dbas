@@ -320,7 +320,6 @@ function PopupHandler() {
 	 * @param reason
 	 */
 	this.showPopupForSelectingDuplicateFromPrgroup = function(uid, reason){
-		console.log(reason);
 		var popup = $('#popup-choose-statement');
 		var body = $('#popup-choose-statement-radios');
 		body.empty();
