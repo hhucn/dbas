@@ -516,10 +516,16 @@ def get_information_of(db_user, lang):
     ret_dict['is_neutral'] = db_user.gender != 'm' and db_user.gender != 'f'
 
     arg_vote, stat_vote = get_count_of_votes_of_user(db_user, True)
+    db_reviews_duplicate = DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=db_user.uid).all()
+    db_reviews_edit = DBDiscussionSession.query(ReviewEdit).filter_by(detector_uid=db_user.uid).all()
+    db_reviews_delete = DBDiscussionSession.query(ReviewDelete).filter_by(detector_uid=db_user.uid).all()
+    db_reviews_optimization = DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=db_user.uid).all()
+    db_reviews = db_reviews_duplicate + db_reviews_edit + db_reviews_delete + db_reviews_optimization
 
     statements, edits = get_textversions_of_user(db_user.public_nickname, lang)
     ret_dict['statements_posted'] = len(statements)
     ret_dict['edits_done'] = len(edits)
+    ret_dict['reviews_proposed'] = len(db_reviews)
     ret_dict['discussion_arg_votes'] = arg_vote
     ret_dict['discussion_stat_votes'] = stat_vote
     ret_dict['avatar_url'] = get_profile_picture(db_user, 120)
