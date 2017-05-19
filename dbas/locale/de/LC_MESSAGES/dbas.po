@@ -1348,12 +1348,12 @@ msgstr "Bitte geben Sie Ihr Thema an:"
 #. Default: Please enter a short-description or question here:
 #: templates/snippet-popups.pt:764
 msgid "please_enter_info"
-msgstr "Bitte geben Sie eine Kurzform oder Frage zu Ihrem Themas an:"
+msgstr "Bitte geben Sie eine Kurzform oder Frage zu Ihrem Thema an:"
 
 #. Default: Please enter the full description here:
 #: templates/snippet-popups.pt:767
 msgid "please_enter_long_info"
-msgstr "Bitte geben Sie alle notwendigen Informationen zu Ihrem Themas an:"
+msgstr "Bitte geben Sie alle notwendigen Informationen zu Ihrem Thema an:"
 
 #. Default: Please select the language of the new discussion here:
 #: templates/snippet-popups.pt:770
