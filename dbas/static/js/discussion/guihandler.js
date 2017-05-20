@@ -180,7 +180,7 @@ function GuiHandler() {
 			speechBubbles.css({'background': '#fff'});
 			return;
 		}
-		if (height > maxHeight) {
+		if (height > maxHeight && maxHeight > 0) {
 			if (maxHeight < maxHeightOfBubbleSpace) {
 				maxHeight = maxHeightOfBubbleSpace;
 			}
@@ -195,6 +195,7 @@ function GuiHandler() {
 			});
 		} else {
 			height += 60;
+			console.log(height);
 			if (height < 50) {
 				speechBubbles.css('min-height', '100px');
 			} else {
