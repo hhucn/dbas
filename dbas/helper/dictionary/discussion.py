@@ -104,10 +104,10 @@ class DiscussionDictHelper(object):
         logger('DictionaryHelper', 'get_dict_for_justify_statement', 'at_justify')
         _tn = Translator(self.lang)
 
-        bubbles_array       = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.main_page, self.slug)
+        bubbles_array = HistoryHelper.create_bubbles_from_history(self.history, self.nickname, self. lang, self.main_page, self.slug)
 
-        save_statement_url  = 'ajax_set_new_start_statement'
-        text                = get_text_for_statement_uid(uid)
+        save_statement_url = 'ajax_set_new_start_statement'
+        text = get_text_for_statement_uid(uid)
         if not text:
             return None
 
