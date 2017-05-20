@@ -145,8 +145,8 @@ function doRecentReview(data){
 			var img = $('<img>').addClass('img-circle').attr('src', data.img_url + '?d=wavatar&s=40').css('width', '40px').css('margin', '2px');
 			link.append(img);
 			queue.prepend(link);
-		} else {
-			// console.log(data.reviewer_name + ' is already in the list');
+//		} else {
+//			console.log(data.reviewer_name + ' is already in the list');
 		}
 	}
 }

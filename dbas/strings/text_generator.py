@@ -37,9 +37,6 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
 
     confrontation = confrontation[0:1].upper() + confrontation[1:]
 
-    premise = premise[0:1].lower() + premise[1:]
-    conclusion = conclusion[0:1].lower() + conclusion[1:]
-
     # different cases
     ret_text = ''
     if attack_type == 'undermine':
