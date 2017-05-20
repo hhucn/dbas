@@ -137,7 +137,7 @@ function DiscussionBarometer(){
      * Remove content of barometer-modal.
      */
     function removeContentOfModal(){
-        global_dialog.find('.col-md-6').empty();
+        $('#modal-body-chart-place').empty();
         global_dialog.find('.col-md-5').empty();
     }
 
@@ -165,7 +165,7 @@ function DiscussionBarometer(){
         removeContentOfModal();
 
         // create div for barometer
-        global_dialog.find('.col-md-6').append('<div id="barometer-div"></div>');
+        $('#modal-body-chart-place').append('<div id="barometer-div"></div>');
         // width and height of chart
         var width = 400;
         var height = mode === modeEnum.attitude ? 300 : 400;
@@ -527,7 +527,7 @@ function DiscussionBarometer(){
         removeContentOfModal();
 
         // create div for barometer
-        global_dialog.find('.col-md-6').append('<div id="barometer-div"></div>');
+        $('#modal-body-chart-place').append('<div id="barometer-div"></div>');
 
         // width and height of chart
         var width = 500, height = 410;
