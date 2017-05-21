@@ -209,7 +209,7 @@ def get_strings_for_reasons(value, issue, count=list_length, oem_value=''):
     return return_array[:count]
 
 
-def get_strings_for_duplicate(value, issue, count=list_length, oem_value=''): # TODO DUPLICATE OF get_strings_for_reasons
+def get_strings_for_duplicate(value, issue, count=list_length, oem_value=''):  # TODO DUPLICATE OF get_strings_for_reasons
     """
     Checks different textversion-strings for a match with given value
 
