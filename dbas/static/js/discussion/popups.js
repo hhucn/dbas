@@ -366,7 +366,7 @@ function PopupHandler() {
 		var input = $('#popup-duplicate-statement-text-search');
 		input.on('keyup', function(){
 			var escapedText = escapeHtml($(this).val());
-			new AjaxDiscussionHandler().fuzzySearchForDuplicate(escapedText, fuzzy_add_reason, text);
+			new AjaxDiscussionHandler().fuzzySearchForDuplicate(escapedText, fuzzy_duplicate, text);
 		});
 		
 		// dropdown
