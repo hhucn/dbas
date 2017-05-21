@@ -195,7 +195,6 @@ function GuiHandler() {
 			});
 		} else {
 			height += 60;
-			console.log(height);
 			if (height < 50) {
 				speechBubbles.css('min-height', '100px');
 			} else {
