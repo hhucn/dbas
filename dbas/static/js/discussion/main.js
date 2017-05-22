@@ -822,7 +822,7 @@ function Main () {
 			});
 		}
 		// login
-		else if (input.attr('id').indexOf('login') !== -1 && typeof $('#' + popupLogin) !== undefined) {
+		else if (input.attr('id').indexOf('login') !== -1 && typeof $('#' + popupLogin) !== 'undefined') {
 			$('#' + popupLogin).modal('show');
 		}
 	};
