@@ -67,7 +67,7 @@ def get_d3_data(issue, all_statements=None, all_arguments=None):
                                 type='issue',
                                 timestamp=db_issue.date.timestamp)
     x = (x + 1) % 10
-    y += (1 if x == 0 else 0)
+    y += 1 if x == 0 else 0
     nodes_array.append(node_dict)
     all_node_ids = ['issue']
 
@@ -251,7 +251,7 @@ def __prepare_statements_for_d3_data(db_statements, db_textversions, x, y, edge_
         extras[node_dict['id']] = node_dict
         all_ids.append('statement_' + str(statement.uid))
         x = (x + 1) % 10
-        y += (1 if x == 0 else 0)
+        y += 1 if x == 0 else 0
         nodes.append(node_dict)
         if statement.is_startpoint:
             edge_dict = __get_edge_dict(id='edge_' + str(statement.uid) + '_issue',

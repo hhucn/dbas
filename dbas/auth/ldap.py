@@ -34,7 +34,7 @@ def verify_ldap_user_data(request, nickname, password, _tn):
         l.simple_bind_s(nickname + scope, password)
         logger('ldap', 'verify_ldap_user_data',
                'l.search_s({}, ldap.SCOPE_SUBTREE, (\'{}={}\'))[0][1]'.format(base, filter, nickname))
-        user = l.search_s(base, ldap.SCOPE_SUBTREE, (filter + '=' + nickname))[0][1]
+        user = l.search_s(base, ldap.SCOPE_SUBTREE, filter + '=' + nickname)[0][1]
 
         firstname = user[firstname][0].decode('utf-8')
         lastname = user[lastname][0].decode('utf-8')
