@@ -753,7 +753,7 @@ function Main () {
 			if (spaceList.find('li').length === 1 && input.data('url') === 'add'){
 				input.prop('checked', true);
 			}
-			id = input.attr('id').indexOf('item_' === 0) ? input.attr('id').substr('item_'.length) : input.attr('id');
+			id = input.attr('id').indexOf('item_') === 0 ? input.attr('id').substr('item_'.length) : input.attr('id');
 			if ($.inArray(id, ids) !== -1) {
 				input.attr('onclick', '');
 				input.click(function () {
