@@ -133,11 +133,9 @@ def __find_position_for_conclusion_of_argument(current_arg, list_todos, list_don
             db_tmps = get_all_arguments_by_statement(current_arg.conclusion_uid)
             db_arguments = [arg for arg in db_tmps if arg.conclusion_uid != current_arg.conclusion_uid]
             for arg in db_arguments:
-                if arg.uid not in list_dones:
-                    if arg not in list_todos:
-                        list_todos.append(arg)
-                        logger('PartialGraph', '__find_position_for_conclusion_of_argument', 'append todo ' + str(arg.uid))
-
+                if arg.uid not in list_dones and arg not in list_todos:
+                    list_todos.append(arg)
+                    logger('PartialGraph', '__find_position_for_conclusion_of_argument', 'append todo ' + str(arg.uid))
         # next argument
         if len(list_todos) > 0:
             current_arg = list_todos[0]

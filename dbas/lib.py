@@ -916,11 +916,7 @@ def is_user_author_or_admin(nickname):
     db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
     db_author_group = DBDiscussionSession.query(Group).filter_by(name='authors').first()
     #  logger('Lib', 'is_user_author_or_admin', 'main')
-    if db_user:
-        if db_user.group_uid == db_author_group.uid or db_user.group_uid == db_admin_group.uid:
-            return True
-
-    return False
+    return db_user and (db_user.group_uid == db_author_group.uid or db_user.group_uid == db_admin_group.uid)
 
 
 def is_user_admin(nickname):
