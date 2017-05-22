@@ -506,7 +506,7 @@ def __update_row_dict(table, values, keys, _tn):
         # if current type is date
         elif value_type == 'ARROWTYPE':
             update_dict[key] = arrow.get(str(values[index]))
-            
+
         else:
             update_dict[key] = values[index]
 
