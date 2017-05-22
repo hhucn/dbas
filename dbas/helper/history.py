@@ -343,12 +343,12 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
     """
     logger('history_helper', 'get_bubble_from_reaction_step', 'def: ' + str(step) + ', ' + str(splitted_history))
     steps = step.split('/')
+    uid = int(steps[1])
+
     if 'reaction' in step:
-        uid = int(steps[1])
         additional_uid = int(steps[3])
         attack = steps[2]
     else:
-        uid = int(steps[1])
         additional_uid = int(steps[2])
         attack = 'support'
 
@@ -361,12 +361,9 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
 
     user_changed_opinion = len(splitted_history) > 1 and '/undercut/' in splitted_history[-2]
     support_counter_argument = False
-    if step in splitted_history:
+    if step in splitted_history and step is not splitted_history[0]:
         index = splitted_history.index(step)
-        try:
-            support_counter_argument = 'reaction' in splitted_history[index - 1]
-        except IndexError:
-            support_counter_argument = False
+        support_counter_argument = 'reaction' in splitted_history[index - 1]
 
     color_steps = color_steps and attack != 'support'  # special case for the support round
     current_argument = get_text_for_argument_uid(uid, user_changed_opinion=user_changed_opinion,

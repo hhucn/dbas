@@ -133,7 +133,8 @@ def __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user_ui
                 message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
 
             db_seen_by = DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=int(uid['id'])).all()
-            seen_by += len(db_seen_by) if db_seen_by else 0
+            if db_seen_by:
+                seen_by += len(db_seen_by)
 
         ret_list.append({'users': all_users,
                          'message': message,
