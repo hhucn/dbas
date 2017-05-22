@@ -84,6 +84,7 @@ google_colors = [
 # list of all columns with FK of users/statement table
 _user_columns = ['author_uid', 'reputator_uid', 'reviewer_uid', 'from_author_uid', 'to_author_uid', 'detector_uid']
 _statement_columns = ['conclusion_uid', 'duplicate_statement_uid', 'original_statement_uid']
+_arrow_columns = ['timestamp', 'date', 'last_login', 'last_action', 'registered']
 
 # list of all columns, which will not be displayed
 _forbidden_columns = ['token', 'token_timestamp']
@@ -204,7 +205,7 @@ def get_table_dict(table_name, main_page):
 
     # getting data
     # data = [[str(getattr(row, c.name)) for c in row.__table__.columns] for row in db_elements]
-    data = __get_rows_of(columns, db_elements, main_page)
+    data = get_rows_of(columns, db_elements, main_page)
 
     # save it
     return {
@@ -260,7 +261,7 @@ def __get_dash_dict(name, href):
     return {'name': name, 'href': href}
 
 
-def __get_rows_of(columns, db_elements, main_page):
+def get_rows_of(columns, db_elements, main_page):
     """
     Returns array with all data of a table
 
@@ -319,6 +320,9 @@ def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tm
         db_user = DBDiscussionSession.query(User).filter_by(email=str(attribute)).first()
         img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 25))
         tmp.append('{} {}'.format(img, attribute))
+
+    elif column in _arrow_columns:
+        tmp.append(attribute.format('YYYY-MM-DD HH:mm:ss'))
 
     else:
         tmp.append(str(attribute))

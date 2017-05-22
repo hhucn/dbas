@@ -13,7 +13,6 @@ from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue
     SeenStatement
 from dbas.lib import get_profile_picture
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_statement_as_query
-from dbas.database.initializedb import nick_of_anonymous_user
 
 
 green = '#64DD17'
@@ -21,7 +20,7 @@ red = '#F44336'
 grey = '#424242'
 
 
-def get_d3_data(issue, nickname, all_statements=None, all_arguments=None):
+def get_d3_data(issue, all_statements=None, all_arguments=None):
     """
     Given an issue, create an dictionary and return it
 
@@ -34,7 +33,6 @@ def get_d3_data(issue, nickname, all_statements=None, all_arguments=None):
     a = [a.uid for a in all_statements] if all_statements is not None else 'all'
     b = [b.uid for b in all_arguments] if all_arguments is not None else 'all'
     logger('Graph.lib', 'get_d3_data', 'main - statements: {}, arguments: {}'.format(a, b))
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
     # default values
     x = 0
@@ -66,14 +64,15 @@ def get_d3_data(issue, nickname, all_statements=None, all_arguments=None):
                                 label=db_issue.info,
                                 x=x,
                                 y=y,
-                                type='issue')
+                                type='issue',
+                                timestamp=db_issue.date.timestamp)
     x = (x + 1) % 10
     y += (1 if x == 0 else 0)
     nodes_array.append(node_dict)
     all_node_ids = ['issue']
 
     # for each statement a node will be added
-    all_ids, nodes, edges, extras = __prepare_statements_for_d3_data(db_user, db_statements, db_textversions, x, y, edge_type)
+    all_ids, nodes, edges, extras = __prepare_statements_for_d3_data(db_statements, db_textversions, x, y, edge_type)
     all_node_ids += all_ids
     nodes_array += nodes
     edges_array += edges
@@ -187,7 +186,7 @@ def __get_statements_of_path_step(step):
     statements = []
     splitted = step.split('/')
 
-    if 'attitude' in step:
+    if 'justify' in step and len(splitted) > 2:
         logger('Graph.lib', '__get_statements_of_path_step', 'append {} -> {}'.format(splitted[2], 'issue'))
         statements.append([int(splitted[2]), 'issue'])
 
@@ -213,7 +212,7 @@ def __get_statements_of_path_step(step):
             db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=arg.premisesgroup_uid)
             for premise in db_premises:
                 statements.append([premise.statement_uid, target])
-            logger('Graph.lib', '__get_statements_of_path_step', 'append {} -> {}'.format(premise.statement_uid, target))
+                logger('Graph.lib', '__get_statements_of_path_step', 'append {} -> {}'.format(premise.statement_uid, target))
 
     # reaction / {arg_id_user}
     # justify / {statement_or_arg_id}
@@ -224,10 +223,9 @@ def __get_statements_of_path_step(step):
     return statements if len(statements) > 0 else None
 
 
-def __prepare_statements_for_d3_data(db_user, db_statements, db_textversions, x, y, edge_type):
+def __prepare_statements_for_d3_data(db_statements, db_textversions, x, y, edge_type):
     """
 
-    :param db_user:
     :param db_statements:
     :param db_textversions:
     :param x:
@@ -247,8 +245,9 @@ def __prepare_statements_for_d3_data(db_user, db_statements, db_textversions, x,
                                     x=x,
                                     y=y,
                                     type='position' if statement.is_startpoint else 'statement',
-                                    author=__get_author_of_statement(statement.uid, db_user),
-                                    editor=__get_editor_of_statement(statement.uid, db_user))
+                                    author=__get_author_of_statement(statement.uid),
+                                    editor=__get_editor_of_statement(statement.uid),
+                                    timestamp=statement.get_timestamp().timestamp)
         extras[node_dict['id']] = node_dict
         all_ids.append('statement_' + str(statement.uid))
         x = (x + 1) % 10
@@ -328,7 +327,8 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type):
                                         x=x,
                                         y=y,
                                         edge_source=edge_source,
-                                        edge_target=target)
+                                        edge_target=target,
+                                        timestamp=argument.timestamp.timestamp)
             x = (x + 1) % 10
             y += 1 if x == 0 else 0
             nodes.append(node_dict)
@@ -364,41 +364,35 @@ def __sanity_check_of_d3_data(all_node_ids, edges_array):
         return False
 
 
-def __get_author_of_statement(uid, db_user):
+def __get_author_of_statement(uid):
     """
 
     :param uid:
-    :param db_user:
     :return:
     """
-    if not db_user:
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).first()
     db_author = DBDiscussionSession.query(User).get(db_tv.author_uid)
     gravatar = get_profile_picture(db_author, 40)
-    name = db_author.get_global_nickname() if db_user.uid != db_author.uid else db_user.nickname
+    name = db_author.get_global_nickname()
     return {'name': name, 'gravatar_url': gravatar}
 
 
-def __get_editor_of_statement(uid, db_user):
+def __get_editor_of_statement(uid):
     """
 
     :param uid:
-    :param db_user:
     :return:
     """
-    if not db_user:
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.desc()).first()
     db_editor = DBDiscussionSession.query(User).get(db_statement.author_uid)
     gravatar = get_profile_picture(db_editor, 40)
-    name = db_editor.get_global_nickname() if db_user.uid != db_editor.uid else db_user.nickname
+    name = db_editor.get_global_nickname()
     return {'name': name, 'gravatar': gravatar}
 
 
-def __get_node_dict(id, label, x, y, type='', author=dict(), editor=dict(), edge_source=[], edge_target=[]):
+def __get_node_dict(id, label, x, y, type='', author=dict(), editor=dict(), edge_source=[], edge_target=[], timestamp=''):
     """
-    Create dictionary for nodes
+    Create node dict for D3
 
     :param id:
     :param label:
@@ -407,7 +401,10 @@ def __get_node_dict(id, label, x, y, type='', author=dict(), editor=dict(), edge
     :param type:
     :param author:
     :param editor:
-    :return:
+    :param edge_source:
+    :param edge_target:
+    :param timestamp:
+    :return: dict()
     """
     return {'id': id,
             'label': label,
@@ -418,7 +415,8 @@ def __get_node_dict(id, label, x, y, type='', author=dict(), editor=dict(), edge
             'editor': editor,
             # for virtual nodes
             'edge_source': edge_source,
-            'edge_target': edge_target}
+            'edge_target': edge_target,
+            'timestamp': timestamp}
 
 
 def __get_edge_dict(id, source, target, color, edge_type):

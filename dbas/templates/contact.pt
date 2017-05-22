@@ -6,8 +6,21 @@
             <div class="row">
                 <div class="col-md-offset-2 col-md-8">
                     <div class="form">
-			            <h3 i18n:translate="contact_header_1" class="text-center">Get In Touch With Us</h3>
-			            <p i18n:translate="contact_header_2" class="text-center">Feel free to drop us a line and we’ll try to get back to you in 48 hours max!</p>
+                        <div tal:condition="not:bug_view" class="text-center">
+			                <h4 i18n:translate="get_in_touch_with_us">Get In Touch With Us</h4>
+			                <p class="lead center" style="max-width: 80%">
+                                <span i18n:translate="feel_free_to_drop_line">Feel free to drop us a line and we’ll try to get back to you in 48 hours max!</span>
+                            </p>
+                        </div>
+                        <div tal:condition="bug_view" class="text-center">
+			                <h4><span i18n:translate="you_found_bug">You have found a bug?</span> <i class="fa fa-bug" aria-hidden="true"></i></h4>
+			                <p class="lead center" style="max-width: 80%">
+                                <span i18n:translate="send_mail_or_github">Please open a new issue on our project page at</span>
+                                <a class="btn btn-primary btn-xs" target="_blank" href="https://github.com/hhucn/dbas"><i class="fa fa-github" aria-hidden="true"></i> Github</a>.
+                                <span i18n:translate="otherwise_drop_a_line">Otherwise feel free to drop us a line</span>.
+                            </p>
+                        </div>
+
 			            <br>
 			            <form action="/contact" method="post" class="form-horizontal">
                             <input type="hidden" name="csrf_token" value="${request.session.get_csrf_token()}">
@@ -15,7 +28,7 @@
                              <div class="form-group">
                                  <label class="col-sm-3 control-label" i18n:translate="name_req">Your Name (required)</label>
                                  <div class="col-sm-9 input-group">
-                                     <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
+                                     <div class="input-group-addon"><i class="fa fa-user-o fa-2x" aria-hidden="true"></i></div>
                                      <input type="text" class="form-control" name="name" id="name-input" tal:attributes="placeholder placeholder.name" placeholder="" value="${name}" required>
                                  </div>
                              </div>
@@ -23,16 +36,8 @@
             				<div class="form-group">
             					<label class="col-sm-3 control-label" i18n:translate="mail_req">Your E-Mail (required)</label>
             					<div class="col-sm-9 input-group">
-                                    <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
+                                    <div class="input-group-addon"><i class="fa fa-envelope-o fa-2x" aria-hidden="true"></i></div>
             						<input type="email" id="email-input" name="mail" class="form-control" tal:attributes="placeholder placeholder.mail" placeholder="" autocomplete="on" value="${mail}" required>
-            					</div>
-            				</div>
-
-            				<div class="form-group">
-            					<label class="col-sm-3 control-label" i18n:translate="phone_no">Your Phone Number</label>
-            					<div class="col-sm-9 input-group">
-                                    <div class="input-group-addon"><i class="fa fa-phone fa-2x" aria-hidden="true"></i></div>
-            						<input type="tel" id="phone-input" name="phone" class="form-control" autocomplete="on" tal:attributes="placeholder placeholder.phone" placeholder="" value="${phone}">
             					</div>
             				</div>
 
@@ -40,7 +45,7 @@
             					<label class="col-sm-3 control-label" i18n:translate="message_req">Your Notification (required)</label>
             					<div class="col-sm-9 input-group">
                                     <div class="input-group-addon"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></div>
-            						<textarea id="msg-input" name="content" class="form-control" autocomplete="on" tal:attributes="placeholder placeholder.message" placeholder=""><span tal:replace="content"/></textarea>
+                                    <textarea id="msg-input" rows="3" name="content" class="form-control" autocomplete="on" tal:attributes="placeholder placeholder.message" placeholder=""><span tal:replace="content"></span></textarea>
             					</div>
             				</div>
 
@@ -49,30 +54,24 @@
                                  data-size="invisible"
                                  tal:attributes="data-sitekey extras.g_recaptcha_key"></div>
 
-            				<!--
-            			    <div id="alert-message" class="alert alert-danger alert-error">
-            				    <a href="" class="close" data-dismiss="alert">&times;</a>
-            				    <strong>Error!</strong> A problem has been occurred with your anti-spam message.
-            			    </div>
-            			    -->
-
-            				<div tal:condition="contact_error" id="warning-message" class="alert alert-warning alert-dismissible col-md-offset2 col-md-8">
+            				<div tal:condition="contact_error" id="warning-message" class="alert alert-warning alert-dismissible col-md-12">
             					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
             						<span aria-hidden="true">&times;</span>
             					</button>
-            					<strong i18n:translate="warning">Warning!</strong>
-                                <div id="warning-message-text"><span tal:replace="message">..</span></div>
+            					<strong i18n:translate="warning">Warning!</strong> <span id="warning-message-text"><span tal:content="message">..</span></span>
             				</div>
 
 
-            				<div tal:condition="was_message_send" class="alert alert-success col-md-offset-2 col-md-8 col-md-offset-2" role="alert">
+            				<div tal:condition="was_message_send" class="alert alert-success col-md-12" role="alert">
             					<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
             					<span class="sr-only" i18n:translate="great">Great:</span> <span i18n:translate="message_sent">Your message was sent.</span>
             				</div>
 
             				<div class="text-center">
-            				    <input id="contact-submit" type="submit" name="form.contact.submitted" value="Submit Your message"
-                                       class="button button-block btn-lg btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.contact_submit"/>
+            				    <input id="contact-submit" type="submit" name="form.contact.submitted" value="Submit Your message" tal:condition="not:bug_view"
+                                       class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.contact_submit"/>
+            				    <input id="contact-submit" type="submit" name="form.contact.submitted" value="Submit Your message" tal:condition="bug_view"
+                                       class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.bug_submit"/>
             				</div>
             			</form>
                     </div>

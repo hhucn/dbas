@@ -373,8 +373,7 @@ def __proposal_for_the_element(db_review, data, db_user):
             else:
                 statement_dict[d['statement']] = [d]
 
-    logger('review_main_helper', 'add_review_opinion_for_optimization',
-           'statements ' + str(statement_dict) + ', argument ' + str(argument_dict))
+    logger('review_main_helper', 'add_review_opinion_for_optimization', 'detector {}, statements {}, arguments {}'.format(db_user.uid, statement_dict, argument_dict))
 
     # add reviews
     new_edits = list()

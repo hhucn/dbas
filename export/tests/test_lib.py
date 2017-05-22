@@ -3,7 +3,7 @@ import unittest
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig
 from dbas.helper.database import dbas_db_configuration
-from export.lib import get_dump, get_minimal_graph_export
+from export.lib import get_dump, get_doj_data
 
 settings = add_settings_to_appconfig()
 
@@ -36,7 +36,7 @@ class LibTest(unittest.TestCase):
         self.assertTrue(len(ret_dict['marked_statement']) >= 0)
 
     def test_get_minimal_graph_export(self):
-        ret_dict = get_minimal_graph_export(1)
+        ret_dict = get_doj_data(1)
         self.assertTrue('nodes' in ret_dict)
         self.assertTrue('inferences' in ret_dict)
         self.assertTrue('undercuts' in ret_dict)

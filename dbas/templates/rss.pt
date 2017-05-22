@@ -3,7 +3,7 @@
 
 		<div class="container" tal:repeat="r rss">
 			<div class="row">
-				<div class="col-md-offset-2 col-md-8 colored-container col-md-offset-2">
+				<div class="col-md-offset-2 col-md-8 colored-container">
                     <p class="lead"><a href="" tal:attributes="href r.link">${r.title}</a></p>
                     <p>${structure:r.description}</p>
 				</div>

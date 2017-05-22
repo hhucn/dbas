@@ -31,7 +31,7 @@ import dbas.strings.matcher as fuzzy_string_matcher
 import dbas.user_management as user_manager
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, sql_timestamp_pretty_print
-from dbas.database.initializedb import nick_of_anonymous_user, nick_of_admin
+from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.opinion import get_infos_about_argument,  get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
     get_user_with_same_opinion_for_premisegroups, get_user_and_opinions_for_argument
@@ -69,7 +69,7 @@ from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
     send_request_for_info_popup_to_socketio
 
 name = 'D-BAS'
-version = '1.3.4'
+version = '1.4.1'
 full_version = version
 project_name = name + ' ' + full_version
 
@@ -125,26 +125,36 @@ def main_contact(request):
     :return: dictionary with title and project username as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('main_contact', 'def', 'main, request.params: {}'.format(request.params))
+    logger('main_contact', 'def', 'main, request.params: {}, request.matchdict: {}'.format(request.params, request.matchdict))
     request_authenticated_userid = request.authenticated_userid
     session_expired = user_manager.update_last_action(request_authenticated_userid)
     if session_expired:
         return user_logout(request, True)
 
-    contact_error = False
-    send_message = False
-    message = ''
-
+    contact_error, send_message, message = False, False, ''
     ui_locales = get_language_from_cookie(request)
 
-    username        = escape_string(request.params['name']) if 'name' in request.params else ''
-    email           = escape_string(request.params['mail']) if 'mail' in request.params else ''
-    phone           = escape_string(request.params['phone']) if 'phone' in request.params else ''
-    content         = escape_string(request.params['content']) if 'content' in request.params else ''
-    recaptcha       = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
+    username  = escape_string(request.params['name']) if 'name' in request.params else ''
+    email     = escape_string(request.params['mail']) if 'mail' in request.params else ''
+    content   = escape_string(request.params['content']) if 'content' in request.params else ''
+    recaptcha = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
+
+    # check for user data
+    if len(name) == 0 or len(email) == 0:
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=str(request.authenticated_userid)).first()
+        username = '{} {}'.format(db_user.firstname, db_user.surname) if db_user else ''
+        email = db_user.email if db_user else ''
 
     if 'form.contact.submitted' in request.params:
-        contact_error, message, send_message = try_to_contact(request, username, email, phone, content, ui_locales, recaptcha)
+        contact_error, message, send_message = try_to_contact(request, username, email, content, ui_locales, recaptcha)
+
+    bug_view = False
+    if 'reason' in request.matchdict and len(request.matchdict['reason']) > 0:
+        if request.matchdict['reason'].lower() == '&bug=true':
+            bug_view = True
+        else:
+            logger('main_contact', 'def', 'wrong reason: {}'.format(request.matchdict['reason']), error=True)
+            raise HTTPNotFound()
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
     ui_locales = get_language_from_cookie(request)
@@ -152,14 +162,13 @@ def main_contact(request):
     placeholder = {
         'name': _t.get(_.exampleName),
         'mail': _t.get(_.exampleMail),
-        'phone': _t.get(_.examplePhone),
-        'message': _t.get(_.exampleMessage)
+        'message': _t.get(_.exampleMessageBug if bug_view else _.exampleMessage)
     }
 
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
-        'title': _t.get(_.contact),
+        'title': _t.get(_.reportIssue if bug_view else _.contact),
         'project': project_name,
         'extras': extras_dict,
         'was_message_send': send_message,
@@ -167,10 +176,10 @@ def main_contact(request):
         'message': message,
         'name': username,
         'mail': email,
-        'phone': phone,
         'content': content,
         'spamanswer': '',
-        'placeholder': placeholder
+        'placeholder': placeholder,
+        'bug_view': bug_view
     }
 
 
@@ -311,7 +320,7 @@ def main_user(request):
         raise HTTPNotFound
 
     current_user = DBDiscussionSession.query(User).get(uid)
-    if current_user is None or current_user.nickname == nick_of_anonymous_user or current_user.nickname == nick_of_admin:
+    if current_user is None or current_user.nickname == nick_of_anonymous_user:
         logger('main_user', 'def', 'no user: {}'.format(uid), error=True)
         raise HTTPNotFound()
         # return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
@@ -365,21 +374,9 @@ def main_imprint(request):
     import pkg_resources
     extras_dict.update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
 
-    # try to get current commit hash
-    try:
+    try:  # try to get current commit hash
         extras_dict.update({'dbas_build': subprocess.check_output(['git', 'describe'])})
-    except FileNotFoundError:
-        # try to get hash of docker image
-        try:
-            ps = subprocess.Popen(('docker', 'images'), stdout=subprocess.PIPE)
-            output = subprocess.check_output(('grep', 'dbas_web'), stdin=ps.stdout)
-            ps.terminate()
-            extras_dict.update({'dbas_build': str(output).split()[2]})
-        except subprocess.CalledProcessError:
-            # fallback
-            extras_dict.update({'dbas_build': full_version})
-    except:
-        # fallback
+    except FileNotFoundError:  # fallback
         extras_dict.update({'dbas_build': full_version})
 
     return {
@@ -939,7 +936,7 @@ def discussion_finish(request):
         return user_logout(request, True)
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
-    summary_dict = user_manager.get_summary_of_today(nickname)
+    summary_dict = user_manager.get_summary_of_today(nickname, ui_locales)
 
     return {
         'layout': base_layout(),

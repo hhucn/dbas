@@ -31,7 +31,7 @@ first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'H
                'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
                'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
 nick_of_anonymous_user = 'anonymous'
-nick_of_admin = 'admin'
+nick_of_admin = 'Tobias'
 
 
 def usage(argv):
@@ -619,12 +619,20 @@ def setup_news_db(session, ui_locale):
                   news='Finally we have a version of D-BAS which can be used during a large fieldtest at our '
                        'university. Nevertheless the same version is capable to be viewed by some reviewers of our '
                        'latest paper. Stay tuned!')
+    news59 = News(title='First fieldtest',
+                  date=arrow.get('2017-05-09'),
+                  author='Tobias Krauthoff',
+                  news='Today we have started our first, real fieldtest, where we invited every student of computer '
+                       'science to talk about improvements of our study programme. Our number of students drastic '
+                       'increased during the last years, therefore we have to manage some problems like a shortage of '
+                       'space for working places and a lack of place classrooms. Our fieldtest will be supported by '
+                       'sociology students, who will also do an survey based on our metrics we invented mid 2015.')
 
     news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,
                   news13, news14, news15, news16, news29, news18, news19, news20, news21, news22, news23, news24,
                   news25, news26, news27, news28, news30, news31, news32, news33, news34, news35, news36, news37,
                   news38, news39, news40, news41, news42, news43, news44, news45, news46, news47, news48, news49,
-                  news50, news51, news52, news53, news54, news55, news56, news57, news58]
+                  news50, news51, news52, news53, news54, news55, news56, news57, news58, news59]
     session.add_all(news_array[::-1])
     session.flush()
 
@@ -649,7 +657,7 @@ def __set_up_users(session, include_dummy_users=True):
     # adding some dummy users
     pwt = get_hashed_password('iamatestuser2016')
     pw0 = get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
-    pw1 = get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
+    # pw1 = get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
     pw2 = '$2a$10$9P5biPvyX2xVeMcCLm82tO0XFQhmdMFwgAhPaUkCHoVL1F5kEAjIa'
     pw4 = '$2a$10$Ou/pHV1MoZRqvt5U8cV09up0qqbIz70ZjwEeanRkyyfR/rrMHcBfe'
     pw8 = get_hashed_password('bjoern')
@@ -657,18 +665,17 @@ def __set_up_users(session, include_dummy_users=True):
 
     user0 = User(firstname=nick_of_anonymous_user, surname=nick_of_anonymous_user, nickname=nick_of_anonymous_user,
                  email='', password=pw0, group_uid=group2.uid, gender='m')
-    user1 = User(firstname='admin', surname='admin', nickname=nick_of_admin, email='dbas.hhu@gmail.com', password=pw1,
-                 group_uid=group0.uid, gender='m')
+    # user1 = User(firstname='admin', surname='admin', nickname=nick_of_admin, email='dbas.hhu@gmail.com', password=pw1,  group_uid=group0.uid, gender='m')
     user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de',
                  password=pw2, group_uid=group0.uid, gender='m')
     user4 = User(firstname='Christian', surname='Meter', nickname='Christian', email='meter@cs.uni-duesseldorf.de',
                  password=pw4, group_uid=group0.uid, gender='m')
 
-    session.add_all([user0, user1, user2, user4])
+    session.add_all([user0, user2, user4])
     session.flush()
 
     if not include_dummy_users:
-        return [user0, user1, user2, user4]
+        return [user0, user2, user4]
 
     user6 = User(firstname='Björn', surname='Ebbinghaus', nickname='Björn',
                  email='bjoern.ebbinghaus@uni-duesseldorf.de', password=pw8, group_uid=group0.uid, gender='m')
@@ -748,7 +755,7 @@ def __set_up_users(session, include_dummy_users=True):
 
     session.flush()
 
-    return [user0, user1, user2, user4, user6, user7, user8, usert00, usert01, usert02, usert03, usert04, usert05,
+    return [user0, user2, user4, user6, user7, user8, usert00, usert01, usert02, usert03, usert04, usert05,
             usert06, usert07, usert08, usert09, usert10, usert11, usert12, usert13, usert14, usert15, usert16, usert17,
             usert18, usert19, usert20, usert21, usert22, usert23, usert24, usert25, usert26, usert27, usert28, usert29,
             usert30]
@@ -763,14 +770,14 @@ def __set_up_settings(session, users):
     :return: None
     """
     # adding settings
-    import dbas.user_management as user_hander
+    import dbas.user_management as user_handler
     for user in users:
         new_public_nick = 10 <= users.index(user) <= 20
         setting = Settings(author_uid=user.uid, send_mails=False, send_notifications=True,
                            should_show_public_nickname=not new_public_nick)
         session.add(setting)
         if new_public_nick:
-            user_hander.refresh_public_nickname(user)
+            user_handler.refresh_public_nickname(user)
 
     session.flush()
 
@@ -801,7 +808,7 @@ def __set_up_issue(session, lang1, lang2, is_field_test=False):
     :return: None
     """
     # adding our main issue
-    db_user = session.query(User).filter_by(nickname=nick_of_admin).first()
+    db_user = session.query(User).filter_by(nickname='Tobias').first()
     issue1 = Issue(title='Town has to cut spending ',
                    info='Our town needs to cut spending. Please discuss ideas how this should be done.',
                    long_info='',
@@ -2210,38 +2217,60 @@ def __setup_review_dummy_database(session):
     reputation11 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_edit').first()
     reputation12 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_duplicate').first()
 
-    admin = session.query(User).filter_by(nickname=nick_of_admin).first()
+    # admin = session.query(User).filter_by(nickname=nick_of_admin).first()
     christian = session.query(User).filter_by(nickname='Christian').first()
     tobias = session.query(User).filter_by(nickname='Tobias').first()
 
     today = arrow.utcnow()
     yesterday = today.replace(days=-1)
     day_before_yesterday = yesterday.replace(days=-1)
-    history01 = ReputationHistory(reputator=admin.uid, reputation=reputation01.uid, timestamp=day_before_yesterday)
-    history02 = ReputationHistory(reputator=admin.uid, reputation=reputation02.uid, timestamp=yesterday)
-    history03 = ReputationHistory(reputator=admin.uid, reputation=reputation03.uid, timestamp=today)
-    history04 = ReputationHistory(reputator=admin.uid, reputation=reputation08.uid, timestamp=today)
-    history05 = ReputationHistory(reputator=christian.uid, reputation=reputation03.uid, timestamp=day_before_yesterday)
-    history06 = ReputationHistory(reputator=christian.uid, reputation=reputation04.uid, timestamp=day_before_yesterday)
-    history07 = ReputationHistory(reputator=christian.uid, reputation=reputation05.uid, timestamp=yesterday)
-    history08 = ReputationHistory(reputator=christian.uid, reputation=reputation06.uid, timestamp=yesterday)
-    history09 = ReputationHistory(reputator=christian.uid, reputation=reputation09.uid, timestamp=today)
-    history10 = ReputationHistory(reputator=christian.uid, reputation=reputation08.uid, timestamp=today)
-    history11 = ReputationHistory(reputator=tobias.uid, reputation=reputation04.uid, timestamp=day_before_yesterday)
-    history12 = ReputationHistory(reputator=tobias.uid, reputation=reputation05.uid, timestamp=day_before_yesterday)
-    history13 = ReputationHistory(reputator=tobias.uid, reputation=reputation06.uid, timestamp=yesterday)
-    history14 = ReputationHistory(reputator=tobias.uid, reputation=reputation09.uid, timestamp=yesterday)
-    history15 = ReputationHistory(reputator=tobias.uid, reputation=reputation07.uid, timestamp=today)
-    history16 = ReputationHistory(reputator=tobias.uid, reputation=reputation10.uid, timestamp=today)
-    history17 = ReputationHistory(reputator=tobias.uid, reputation=reputation08.uid, timestamp=today)
-    history18 = ReputationHistory(reputator=tobias.uid, reputation=reputation11.uid, timestamp=today)
-    history19 = ReputationHistory(reputator=tobias.uid, reputation=reputation12.uid, timestamp=today)
+    history01 = ReputationHistory(reputator=christian.uid, reputation=reputation01.uid)
+    history02 = ReputationHistory(reputator=christian.uid, reputation=reputation02.uid)
+    history03 = ReputationHistory(reputator=christian.uid, reputation=reputation03.uid)
+    history04 = ReputationHistory(reputator=christian.uid, reputation=reputation08.uid)
+    history05 = ReputationHistory(reputator=christian.uid, reputation=reputation03.uid)
+    history06 = ReputationHistory(reputator=christian.uid, reputation=reputation04.uid)
+    history07 = ReputationHistory(reputator=christian.uid, reputation=reputation05.uid)
+    history08 = ReputationHistory(reputator=christian.uid, reputation=reputation06.uid)
+    history09 = ReputationHistory(reputator=christian.uid, reputation=reputation09.uid)
+    history10 = ReputationHistory(reputator=christian.uid, reputation=reputation08.uid)
+    history11 = ReputationHistory(reputator=tobias.uid, reputation=reputation04.uid)
+    history12 = ReputationHistory(reputator=tobias.uid, reputation=reputation05.uid)
+    history13 = ReputationHistory(reputator=tobias.uid, reputation=reputation06.uid)
+    history14 = ReputationHistory(reputator=tobias.uid, reputation=reputation09.uid)
+    history15 = ReputationHistory(reputator=tobias.uid, reputation=reputation07.uid)
+    history16 = ReputationHistory(reputator=tobias.uid, reputation=reputation10.uid)
+    history17 = ReputationHistory(reputator=tobias.uid, reputation=reputation08.uid)
+    history18 = ReputationHistory(reputator=tobias.uid, reputation=reputation11.uid)
+    history19 = ReputationHistory(reputator=tobias.uid, reputation=reputation12.uid)
+    history01.timestamp = day_before_yesterday
+    history02.timestamp = yesterday
+    history03.timestamp = today
+    history04.timestamp = today
+    history05.timestamp = day_before_yesterday
+    history06.timestamp = day_before_yesterday
+    history07.timestamp = yesterday
+    history08.timestamp = yesterday
+    history09.timestamp = today
+    history10.timestamp = today
+    history11.timestamp = day_before_yesterday
+    history12.timestamp = day_before_yesterday
+    history13.timestamp = yesterday
+    history14.timestamp = yesterday
+    history15.timestamp = today
+    history16.timestamp = today
+    history17.timestamp = today
+    history18.timestamp = today
+    history19.timestamp = today
 
     for name in ['Marga', 'Emmi', 'Rupert', 'Hanne']:
         db_user = session.query(User).filter_by(nickname=name).first()
-        history1 = ReputationHistory(reputator=db_user.uid, reputation=reputation01.uid, timestamp=day_before_yesterday)
-        history2 = ReputationHistory(reputator=db_user.uid, reputation=reputation02.uid, timestamp=yesterday)
-        history3 = ReputationHistory(reputator=db_user.uid, reputation=reputation03.uid, timestamp=today)
+        history1 = ReputationHistory(reputator=db_user.uid, reputation=reputation01.uid)
+        history2 = ReputationHistory(reputator=db_user.uid, reputation=reputation02.uid)
+        history3 = ReputationHistory(reputator=db_user.uid, reputation=reputation03.uid)
+        history1.timestamp = day_before_yesterday
+        history2.timestamp = yesterday
+        history3.timestamp = today
         session.add_all([history1, history2, history3])
 
     session.add_all([history01, history02, history03, history04, history05, history06, history07, history08, history09,

@@ -211,7 +211,8 @@ $(document).ready(function () {
 	gui.setAddClickEvent();
 	
 	try{
-		data.DataTable();
+		var dict = getLanguage() === 'de'? dataTables_german_lang : dataTables_english_lang;
+		data.DataTable({"language": dict});
 	} catch(e){
 		console.log(e.name + ': ' + e.message);
 	}

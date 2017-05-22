@@ -116,7 +116,7 @@ function GuidedTour(){
 			placement: 'bottom',
 			onShow: function () {
 				var element = '<div class="line-wrapper-r" id="some-element-bubble">' +
-					'<p class="triangle-r"><i class="fa fa-star-o" aria-hidden="true" style="padding-right: 0.5em"></i>' +
+					'<p class="triangle-r"><i class="fa fa-star text-warning" aria-hidden="true" style="padding-right: 0.5em;"></i>' +
 					'<span class="triangle-content">' + _t(tourMarkOpinionText) + '</span></p></div>';
 				$('#dialog-speech-bubbles-space').prepend($.parseHTML(element));
 			},
@@ -137,16 +137,23 @@ function GuidedTour(){
 			placement: 'bottom',
 		};
 		var first_child = $('#discussions-space-list li:first');
+    
 		var statement_action = {
 			element: '#discussions-space-list li:first',
 			title: _t(tourStatementActionTitle) + lang_switcher,
 			content: _t(tourStatementActionContent),
 			placement: 'bottom',
 			onShow: function () {
-				first_child.trigger("mouseenter");
+				var elements = '<span class="fa-fufu">' +
+					'<i class="text-danger fa fa-pencil-square-o" aria-hidden="true" style="margin-left: 0.3em;"></i>' +
+					'<i class="text-danger fa fa-flag" aria-hidden="true" style="margin-left: 0.3em;"></i>' +
+					'<i class="text-danger fa fa-trash-o" aria-hidden="true" style="margin-left: 0.3em;"></i>' +
+					'<i class="text-danger fa fa-bomb" aria-hidden="true" style="margin-left: 0.3em;"></i>' +
+					'<i class="text-danger fa fa-link" aria-hidden="true" style="margin-left: 0.3em;"></i>' + '</span>';
+				first_child.append($.parseHTML(elements));
 			},
 			onHide: function () {
-				first_child.trigger("mouseleave");
+				$('.fa-fufu').remove();
 			}
 		};
 		var have_fun = {
@@ -177,7 +184,8 @@ function GuidedTour(){
 				mark_opinion,       // 2
 				choose_answer,      // 3
 				set_input,          // 4
-				have_fun,           // 5
+				statement_action,   // 5
+				have_fun,           // 6
 			];
 		}
 		//data-placement="bottom"

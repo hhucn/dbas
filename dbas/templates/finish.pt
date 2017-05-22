@@ -4,53 +4,67 @@
 		<div class="container center">
 			<div class="row">
 				<div class="col-md-7 center colored-container" style="float: none">
-					<h3 class="text-center" i18n:translate="thank_you">Thank you!</h3>
+                    <h3><span class="text-center" i18n:translate="thank_you">Thank you</span><span tal:condition="show_summary">, ${summary.firstname}</span>!</h3>
 					<span class="lead" i18n:translate="finish_text">Your participation in this discussion was saved and will be used for evaluation later. If you have any questions, please do not hesitat to</span>
 					<span class="lead"><a href="/contact" i18n:translate="contact_us">contact us (click here)</a>.</span>
 
                     <div class="row" style="margin-top: 2em" tal:condition="show_summary">
-                        <div class="col-md-5 text-center">
+                        <div class="col-md-4 text-center">
                             <!--
                             <img style="margin-top: 3em" class="icon-badge" src="${request.static_url('dbas:static/images/icon_trophy.png')}" />
                             -->
                             <i class="fa fa-flag-checkered" aria-hidden="true" style="font-size: 180px;"></i>
                         </div>
 
-                        <div class="col-md-7">
+                        <div class="col-md-8">
                             <h5>
                                 <i class="fa fa-bar-chart" aria-hidden="true" style="margin-right: 0.5em;"></i>
-                                <span i18n:translate="todays_summary">Todays Summary</span>
+                                <span i18n:translate="todays_summary">Todays Summary</span>: <span>${summary.date}</span>
+                                <i class="fa fa-calendar" aria-hidden="true"></i>
                             </h5>
-					        <table class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
-					        	<tr>
-					        		<td><span class="lead" i18n:translate="statements_posted">Statements posted</span></td>
-					        		<td style="text-align: right">${summary.statements_posted}</td>
-					        	</tr>
-					        	<tr>
-					        		<td><span class="lead" i18n:translate="edits_done">Edits done</span></td>
-					        		<td style="text-align: right">${summary.edits_done}</td>
-					        	</tr>
-					        	<tr>
-					        		<td><span class="lead" i18n:translate="statements_reported">Statements reported</span></td>
-					        		<td style="text-align: right">${summary.statements_reported}</td>
-					        	</tr>
-					        	<tr>
-					        		<td><span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span></td>
-					        		<td style="text-align: right">${summary.discussion_arg_votes}</td>
-					        	</tr>
-					        	<tr>
-					        		<td><span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span></td>
-					        		<td style="text-align: right">${summary.discussion_stat_votes}</td>
-					        	</tr>
-					        	<tr>
-					        		<td><span class="lead" i18n:translate="discussion_clicked_statements">Clicks for Arguments</span></td>
-					        		<td style="text-align: right">${summary.discussion_arg_clicks}</td>
-					        	</tr>
-					        	<tr>
-					        		<td><span class="lead" i18n:translate="discussion_clicked_arguments">Clicks for Statements</span></td>
-					        		<td style="text-align: right">${summary.discussion_stat_clicks}</td>
-					        	</tr>
-					        </table>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <table class="table table-condensed finish-summary-table" style="border-collapse: separate; border-spacing: 5px 5px;">
+                                        <tr>
+                                            <td><span class="lead" i18n:translate="statements_posted">Statements posted</span></td>
+                                            <td>${summary.statements_posted}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="lead" i18n:translate="edits_done">Edits done</span></td>
+                                            <td>${summary.edits_done}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="lead" i18n:translate="statements_reported">Statements reported</span></td>
+                                            <td>${summary.statements_reported}</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td><span class="lead" i18n:translate="reputation_colltected">Collected reputation</span></td>
+                                            <td>${summary.reputation_colltected}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-6">
+                                    <table class="table table-condensed finish-summary-table" style="border-collapse: separate; border-spacing: 5px 5px;">
+                                        <tr>
+                                            <td><span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span></td>
+                                            <td>${summary.discussion_arg_votes}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span></td>
+                                            <td>${summary.discussion_stat_votes}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="lead" i18n:translate="discussion_clicked_statements">Clicks for Arguments</span></td>
+                                            <td>${summary.discussion_arg_clicks}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="lead" i18n:translate="discussion_clicked_arguments">Clicks for Statements</span></td>
+                                            <td>${summary.discussion_stat_clicks}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

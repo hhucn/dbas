@@ -13,6 +13,8 @@ RUN apt-get update -qq && \
     echo "de_DE.UTF-8 UTF-8" >> $locs && \
     echo "en_US.UTF-8 UTF-8" >> $locs && \
     locale-gen && \
+    echo 'Europe/Berlin' > /etc/timezone && \
+    dpkg-reconfigure -f noninteractive tzdata && \
     apt-get remove -y --purge curl bzip2 && \
     apt-get autoremove -y && \
     apt-get clean && \

@@ -562,7 +562,7 @@ var dbas_en = {
     'tourLoginTitle': 'Login',
     'tourLoginContent': 'In every case you should register yourself for enter your own statements.',
     'tourIssueTitle': 'Topic',
-    'tourIssueContent': 'Here you can the topic, which the current discussion is about.',
+    'tourIssueContent': 'Here you can see the topic about current discussion.',
     'tourStartDiscussionTitle': 'First steps',
     'tourStartDiscussionContent': 'On the left side there are messages of the system and on the right side there are your answers.',
     'tourMarkOpinionTitle': 'Mark opinon',
@@ -814,7 +814,56 @@ var dbas_de = {
     'tourEnterStatementTitle': 'Eigene Antworten',
     'tourEnterStatementContent': '... oder eigene Antworten eingeben, sofern Sie angemeldet sind ...',
     'tourStatementActionTitle': 'Interaktionen',
-    'tourStatementActionContent': '... oder doch lieber mit den vorhandenen Antworten agieren (kleine Symbole am Ende der Zeile)?',
+    'tourStatementActionContent': '... oder doch lieber mit den vorhandenen Antworten agieren?',
     'tourHaveFunTitle': 'Und nun ...',
     'tourHaveFunContent': '... viel Spaß!',
+};
+
+
+var dataTables_german_lang = {
+    "sEmptyTable":      "Keine Daten in der Tabelle vorhanden",
+    "sInfo":            "_START_ bis _END_ von _TOTAL_ Einträgen",
+    "sInfoEmpty":       "0 bis 0 von 0 Einträgen",
+    "sInfoFiltered":    "(gefiltert von _MAX_ Einträgen)",
+    "sInfoPostFix":     "",
+    "sInfoThousands":   ".",
+    "sLengthMenu":      "_MENU_ Einträge anzeigen",
+    "sLoadingRecords":  "Wird geladen...",
+    "sProcessing":      "Bitte warten...",
+    "sSearch":          "Suchen",
+    "sZeroRecords":     "Keine Einträge vorhanden.",
+    "oPaginate": {
+        "sFirst":       "Erste",
+        "sPrevious":    "Zurück",
+        "sNext":        "Nächste",
+        "sLast":        "Letzte"
+    },
+    "oAria": {
+        "sSortAscending":  ": aktivieren, um Spalte aufsteigend zu sortieren",
+        "sSortDescending": ": aktivieren, um Spalte absteigend zu sortieren"
+    }
+};
+
+var dataTables_english_lang = {
+    "sEmptyTable":     "No data available in table",
+    "sInfo":           "Showing _START_ to _END_ of _TOTAL_ entries",
+    "sInfoEmpty":      "Showing 0 to 0 of 0 entries",
+    "sInfoFiltered":   "(filtered from _MAX_ total entries)",
+    "sInfoPostFix":    "",
+    "sInfoThousands":  ",",
+    "sLengthMenu":     "Show _MENU_ entries",
+    "sLoadingRecords": "Loading...",
+    "sProcessing":     "Processing...",
+    "sSearch":         "Search:",
+    "sZeroRecords":    "No matching records found",
+    "oPaginate": {
+        "sFirst":    "First",
+        "sLast":     "Last",
+        "sNext":     "Next",
+        "sPrevious": "Previous"
+    },
+    "oAria": {
+        "sSortAscending":  ": activate to sort column ascending",
+        "sSortDescending": ": activate to sort column descending"
+    }
 };

@@ -15,11 +15,11 @@
                             <h5><strong i18n:translate="help_to_improve">Help improve the dialog</strong></h5>
                             <span i18n:translate="dbas_is_moderated_by">D-BAS is moderated by you. Help your discussion members learn to argue and raise the quality of argumenty by:</span>
                             <ul class="left">
-                                <li i18n:translate="evaluate_new_statements">Evaluate new statements</li>
-                                <li i18n:translate="reviewing_suspicious_statements">Reviewing suspicious statements</li>
-                                <li i18n:translate="voting_to_close">Voting to close or reopen statements</li>
+                                <li><span i18n:translate="evaluate_new_statements">Evaluate new statements</span>,</li>
+                                <li><span i18n:translate="reviewing_suspicious_statements">Reviewing suspicious statements</span>,</li>
+                                <li><span i18n:translate="voting_to_close">Voting to close or reopen statements</span>.</li>
                             </ul>
-                            <span><strong i18n:translate="choose_task">Choose a task to get started.</strong>!</span>
+                            <strong><span i18n:translate="choose_task">Choose a task to get started.</span>!</strong>
                         </div>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                 <div class="left row">
                     <div class="col-md-offset-2 col-md-8 col-xs-offset-1 col-cs-10" style="margin-top: 1em;">
                         <h4 i18n:translate="what_is_reputation">What is reputation? How do I earn (and lose) it?</h4>
-                        <span i18n:translate="what_is_reputation_def">Reputation is a rough measurement of how work you are doing for the discussion and the community;</span>
+                        <span i18n:translate="what_is_reputation_def">Reputation is a rough measurement of how work you are doing for the discussion and the community.</span>
                         <span i18n:translate="what_is_reputation_earn">you can earn it by using D-BAS and all of its great functions.</span>
                         <span i18n:translate="what_is_reputation_use">Basic use of D-BAS, does not require any reputation at all.</span>
                         <div class="row" style="margin-top: 1em;">

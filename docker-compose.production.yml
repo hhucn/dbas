@@ -4,6 +4,7 @@ services:
     image: postgres:9.6-alpine
     volumes:
       - ./docker/db:/docker-entrypoint-initdb.d
+      - /home/krauthoff/postgres_db:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     tmpfs: /tmp

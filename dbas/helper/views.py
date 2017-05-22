@@ -12,7 +12,6 @@ import dbas.helper.history as HistoryHelper
 import dbas.helper.issue as IssueHelper
 import dbas.helper.issue as issue_helper
 import dbas.helper.voting as VotingHelper
-import dbas.recommender_system as RecommenderSystem
 import dbas.user_management as UserHandler
 from dbas.auth.recaptcha import validate_recaptcha
 from dbas.database import DBDiscussionSession
@@ -178,7 +177,7 @@ def preparation_for_justify_statement(request, for_api, main_page, slug, stateme
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_dont_know_statement(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales, request_authenticated_userid, nickname, history):
+def preparation_for_dont_know_statement(request, for_api, main_page, slug, argument_uid, supportive, ui_locales, request_authenticated_userid, nickname, history):
     """
     Prepares some paramater for the "don't know" step
 
@@ -186,7 +185,7 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, state
     :param for_api: Boolean
     :param main_page: string
     :param slug: String
-    :param statement_or_arg_id: Argument.uid / Statement.uid
+    :param argument_uid: Argument.uid
     :param supportive: Boolean
     :param ui_locales: Language.ui_locales
     :param request_authenticated_userid: User.nickname
@@ -202,17 +201,14 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, state
     _idh                = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=request.path, history=history)
     _dh                 = DictionaryHelper(ui_locales, disc_ui_locales)
 
-    # dont know
-    argument_uid    = RecommenderSystem.get_argument_by_conclusion(statement_or_arg_id, supportive)
-
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid, main_page, request_authenticated_userid)
     item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, nickname, discussion_dict['gender'])
-    extras_dict     = _dh.prepare_extras_dict(slug, False, True, False, True, request, argument_id=argument_uid,
+    extras_dict     = _dh.prepare_extras_dict(slug, True, True, False, True, request, argument_id=argument_uid,
                                               for_api=for_api, nickname=request_authenticated_userid)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_dont_know=True,
-                                    current_premise=get_text_for_statement_uid(statement_or_arg_id))
+                                    current_premise=get_text_for_statement_uid(argument_uid))
     return item_dict, discussion_dict, extras_dict
 
 
@@ -272,20 +268,19 @@ def __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, re
     return ddh, idh, dh
 
 
-def try_to_contact(request, name, email, phone, content, ui_locales, recaptcha):
+def try_to_contact(request, name, email, content, ui_locales, recaptcha):
     """
     Trys to send an contact mail
 
     :param request: webserver's request
     :param name: String
     :param email: String
-    :param phone: String
     :param content: String
     :param ui_locales: Language.ui_locales
     :param recaptcha: Googles Recaptcha
     :return: Boolean, String, Boolean
     """
-    logger('ViewHelper', 'try_to_contact', 'name: ' + name + ', email: ' + email + ', phone: ' + phone + ', content: ' + content)
+    logger('ViewHelper', 'try_to_contact', 'name: ' + name + ', email: ' + email + ', content: ' + content)
     _t = Translator(ui_locales)
     send_message = False
 
@@ -322,7 +317,6 @@ def try_to_contact(request, name, email, phone, content, ui_locales, recaptcha):
         subject = _t.get(_.contact) + ' D-BAS'
         body = _t.get(_.name) + ': ' + name + '\n'
         body += _t.get(_.mail) + ': ' + email + '\n'
-        body += _t.get(_.phone) + ': ' + phone + '\n'
         body += _t.get(_.message) + ':\n' + content
         EmailHelper.send_mail(request, subject, body, 'dbas.hhu@gmail.com', ui_locales)
         body = '* ' + _t.get(_.thisIsACopyOfMail).upper() + ' *\n\n' + body

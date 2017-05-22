@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-05-05 13:43+0200\n"
+"POT-Creation-Date: 2017-05-19 15:03+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -114,18 +114,18 @@ msgid "work_based_on"
 msgstr "Dieses Projekt ist Teil des Graduierten-Kollegs"
 
 #. Default: Online-Participation
-#: templates/index.pt:46
+#: templates/index.pt:47 templates/index.pt:48
 msgid "online_participation"
 msgstr "Online-Partizipation"
 
 #. Default: It is funded by the
-#: templates/index.pt:47
+#: templates/index.pt:49
 msgid "funded_by"
 msgstr "Es wird finanziert vom"
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: templates/index.pt:47
+#: templates/index.pt:50
 msgid "ministry_of_innovation"
 msgstr ""
 "Ministerium für Innovation, Wissenschaft und Forschung des Landes Nordrhein-"
@@ -142,7 +142,7 @@ msgid "simple_answers"
 msgstr "Kurze Antworten auf die häufigsten Fragen"
 
 #. Default: How do we handle your login data?
-#: templates/faq.pt:11
+#: templates/faq.pt:10
 msgid "faq_question_ldap"
 msgstr "Wie wird meine Uni-Kennung behandelt?"
 
@@ -151,7 +151,7 @@ msgstr "Wie wird meine Uni-Kennung behandelt?"
 #. is placed at the University) and then towards the service of the ZIM. Each
 #. transmission is secured and encrypted. Additionally we will never save, log
 #. or display your password anywhere!
-#: templates/faq.pt:12
+#: templates/faq.pt:11
 msgid "faq_answer_ldap"
 msgstr ""
 "Wir nutzen das zentrale Namensverzeichnis der Universität Düsseldorf. Ihr "
@@ -161,7 +161,7 @@ msgstr ""
 "anzeigen!"
 
 #. Default: What is the difference between interest and opinion?
-#: templates/faq.pt:16
+#: templates/faq.pt:15
 msgid "faq_question_interest_opinion"
 msgstr "Was ist der Unterschied zwischen Interessen und Meinungen?"
 
@@ -169,7 +169,7 @@ msgstr "Was ist der Unterschied zwischen Interessen und Meinungen?"
 #. statement/reaction/... but we will never think, that this is your personal
 #. opinion. Only if you mark an statement or argument as your opinion, we will
 #. know, that you have the same opinion like the given text.
-#: templates/faq.pt:17
+#: templates/faq.pt:16
 msgid "faq_answer_interest_opinion"
 msgstr ""
 "Wenn Sie in D-BAS eine Aussage bzw. Antwort auswählen, interessieren Sie "
@@ -178,45 +178,45 @@ msgstr ""
 "entspricht."
 
 #. Default: Can I mark an statement or argument as my opinion?
-#: templates/faq.pt:21
+#: templates/faq.pt:20
 msgid "faq_question_mark_opinion"
 msgstr "Wie kann ich eine Aussage als meine Meinung markieren?"
 
 #. Default: Yes, you can! Please press the yellow star at the beginning of a
 #. green bubble to mark a statement or an argument as your opinon. For this you
 #. have to be logged in.
-#: templates/faq.pt:22
+#: templates/faq.pt:21
 msgid "faq_answer_mark_opinion"
 msgstr ""
 "Vor jeder grünen Sprechblase finden Sie einen kleinen Stern. Wenn Sie diesen "
 "klicken, markieren Sie den Text in der Sprechblase als Ihre Meinung."
 
 #. Default: Is there any overview about all given arguments and statements?
-#: templates/faq.pt:26
+#: templates/faq.pt:25
 msgid "faq_question_graph"
 msgstr "Gibt es eine Übersicht über alle Argumente und Aussagen?"
 
 #. Default: Yes, we have a graphical representation. Simply open the little
 #. sidebar in the discussion window and click on 'graph view'
-#: templates/faq.pt:27
+#: templates/faq.pt:26
 msgid "faq_answer_graph"
 msgstr ""
 "Ja, wir haben eine graphische Darstellung aller Beiträge. Klicken Sie dazu "
 "in der Diskussionsbox auf das Menü-Icon und wählen 'Graphansicht'"
 
 #. Default: What are these little icons next to the statements?
-#: templates/faq.pt:31
+#: templates/faq.pt:30
 msgid "faq_question_buttons_next_to_statement"
 msgstr "Was sind das für kleine Symbole neben den Aussagen?"
 
 #. Default: These little icons will appear on each set of statements in the
 #. answer field, if you are logged in.
-#: templates/faq.pt:32
+#: templates/faq.pt:31
 msgid "faq_answer_buttons_next_to_statement"
 msgstr "Die Symbole tauchen nur auf, wenn Sie angemeldet sind."
 
 #. Default: The pencil allows you to submit proposals for edits.
-#: templates/faq.pt:34
+#: templates/faq.pt:33
 msgid "faq_answer_pencil_next_to_statement"
 msgstr ""
 "Der Stift erlaubt es Ihnen, sprachliche Verbesserungen für eine Aussage "
@@ -224,7 +224,7 @@ msgstr ""
 
 #. Default: With the help of the flag you can report statements, if there is
 #. something wrong.
-#: templates/faq.pt:35
+#: templates/faq.pt:34
 msgid "faq_answer_flag_next_to_statement"
 msgstr ""
 "Mit der Flagge können Sie Aussagen melden, wenn mit diesen etwas nicht "
@@ -232,7 +232,7 @@ msgstr ""
 
 #. Default: You made an statement on your own and not happy with it? Let's
 #. unsubscribe yourself as author.
-#: templates/faq.pt:36
+#: templates/faq.pt:35
 msgid "faq_answer_trash_next_to_statement"
 msgstr ""
 "Sie haben eine Aussage gemacht und sind nicht mehr glücklich damit? Mit der "
@@ -240,7 +240,7 @@ msgstr ""
 
 #. Default: You are reading an statement, which should be supporting your
 #. conclusion, but it is nonsense? Let's attack this one!
-#: templates/faq.pt:37
+#: templates/faq.pt:36
 msgid "faq_answer_bomb_next_to_statement"
 msgstr ""
 "Sie lesen eine Aussage und denken sich: 'Das ist aber nicht richtig!'. Dann "
@@ -248,33 +248,33 @@ msgstr ""
 
 #. Default: There is this specific website with facts about an statement? With
 #. the link-icon you can add references for a statement / argument.
-#: templates/faq.pt:38
+#: templates/faq.pt:37
 msgid "faq_answer_link_next_to_statement"
 msgstr ""
 "Sie haben diese eine Webseite im Kopf, die eine Aussage unterstützt? Dann "
 "fügen Sie diese als Referenz zur Aussage hinzu."
 
 #. Default: What do I do if I found a bug or have other questions about D-BAS?
-#: templates/faq.pt:43
+#: templates/faq.pt:42
 msgid "faq_question_bug"
 msgstr "Sie haben einen Fehler gefunden oder weitere Fragen zu D-BAS?"
 
 #. Default: If you think you've found an issue or have any other questions not
 #. covered above, please email us via the
-#: templates/faq.pt:44
+#: templates/faq.pt:43
 msgid "faq_answer_bug1"
 msgstr ""
 "Wenn Sie irgendwelche Fragen haben, die hier nicht gelistet sind, so nutzen "
 "Sie bitte die "
 
 #. Default: contact page
-#: templates/faq.pt:44
+#: templates/faq.pt:43
 msgid "contact_page"
 msgstr "Kontaktseite"
 
 #. Default: Please keep in mind that our current team is quite small and we'll
 #. do our very best to get back to you ASAP.
-#: templates/faq.pt:45
+#: templates/faq.pt:44
 msgid "faq_answer_bug2"
 msgstr ""
 "Bitte bedenken Sie, dass wir ein sehr kleines Team sind und wir unser Bestes "
@@ -283,7 +283,7 @@ msgstr ""
 #. Default: No arguments to review in this queue!
 #: templates/review-content.pt:10
 msgid "no_arguments_to_review"
-msgstr "Keine Argumente zum begutachten!"
+msgstr "Keine Argumente zum Begutachten!"
 
 #. Default: Review
 #: templates/review-content.pt:19 templates/snippet-header.pt:76
@@ -349,7 +349,7 @@ msgstr "Das ist okay so"
 #. Default: Let me correct it
 #: templates/review-content.pt:43 templates/review-content.pt:82
 msgid "correct_it"
-msgstr "Lass mich eine Verbesserungen angeben"
+msgstr "Verbesserungen angeben"
 
 #. Default: Reject it
 #: templates/review-content.pt:47 templates/review-content.pt:88
@@ -696,7 +696,7 @@ msgid "copyright_and_used_software"
 msgstr "Verwendete Software"
 
 #. Default: Changes
-#: templates/imprint.pt:87
+#: templates/imprint.pt:88
 msgid "changes"
 msgstr "Versionsänderungen"
 
@@ -779,22 +779,22 @@ msgid "what_is_reputation"
 msgstr "Was ist Reputation? Wie bekomme (verliere) ich diese?"
 
 #. Default: Reputation is a rough measurement of how work you are doing for the
-#. discussion and the community;
+#. discussion and the community.
 #: templates/review.pt:81
 msgid "what_is_reputation_def"
 msgstr ""
 "Reputation ist eine grobe Messung, wieviel Arbeit Sie in die Diskussion und "
-"die Communty stecken;"
+"die Communty stecken."
 
 #. Default: you can earn it by using D-BAS and all of its great functions.
 #: templates/review.pt:82
 msgid "what_is_reputation_earn"
-msgstr "Sie können mehr Reputation durch die Nutzung von D-BAS verdienen"
+msgstr "Sie können mehr Reputation durch die Nutzung von D-BAS verdienen."
 
 #. Default: Basic use of D-BAS, does not require any reputation at all.
 #: templates/review.pt:83
 msgid "what_is_reputation_use"
-msgstr "Normale Nutzung von D-BAS bedarf keiner Reputation."
+msgstr "Bei der alltägliche Nutzung von D-BAS bedarf es keiner Reputation."
 
 #. Default: You gain reputation when:
 #: templates/review.pt:86
@@ -908,7 +908,7 @@ msgstr "Rückgängig machen"
 #. Default: Cancel
 #: templates/review-history.pt:96 templates/snippet-popups.pt:172
 #: templates/snippet-popups.pt:195 templates/snippet-popups.pt:220
-#: templates/snippet-popups.pt:1097
+#: templates/snippet-popups.pt:1094
 msgid "cancel"
 msgstr "Abbrechen"
 
@@ -1074,7 +1074,7 @@ msgstr ""
 
 #. Default: Okay
 #: templates/snippet-popups.pt:171 templates/snippet-popups.pt:194
-#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1096
+#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1093
 msgid "okay"
 msgstr "Okay"
 
@@ -1348,12 +1348,12 @@ msgstr "Bitte geben Sie Ihr Thema an:"
 #. Default: Please enter a short-description or question here:
 #: templates/snippet-popups.pt:764
 msgid "please_enter_info"
-msgstr "Bitte geben Sie eine Kurzform oder Frage zu Ihrem Themas an:"
+msgstr "Bitte geben Sie eine Kurzform oder Frage zu Ihrem Thema an:"
 
 #. Default: Please enter the full description here:
 #: templates/snippet-popups.pt:767
 msgid "please_enter_long_info"
-msgstr "Bitte geben Sie alle notwendigen Informationen zu Ihrem Themas an:"
+msgstr "Bitte geben Sie alle notwendigen Informationen zu Ihrem Thema an:"
 
 #. Default: Please select the language of the new discussion here:
 #: templates/snippet-popups.pt:770
@@ -1371,7 +1371,7 @@ msgid "statement_under_consideration_is"
 msgstr "Die aktuelle Aussage ist"
 
 #. Default: The argument under consideration is as follows
-#: templates/snippet-popups.pt:828 templates/snippet-popups.pt:887
+#: templates/snippet-popups.pt:828 templates/snippet-popups.pt:884
 msgid "argument_under_consideration_is"
 msgstr "Das aktuelle Argument ist"
 
@@ -1397,83 +1397,83 @@ msgstr ""
 "werden."
 
 #. Default: This statement is off topic or irrelevant.
-#: templates/snippet-popups.pt:843
+#: templates/snippet-popups.pt:842
 msgid "statement_offtopic_or_irrelevant"
 msgstr "Die Aussage ist nicht themenbezogen/Spam."
 
 #. Default: This statement does not belong to the topic under discussion.
-#: templates/snippet-popups.pt:844
+#: templates/snippet-popups.pt:843
 msgid "statement_offtopic_or_irrelevant_description"
 msgstr "Die Beudeutung der Aussage ist nicht themenbezogen oder Spam."
 
 #. Default: This argument is off topic or irrelevant.
-#: templates/snippet-popups.pt:845
+#: templates/snippet-popups.pt:844
 msgid "argument_offtopic_or_irrelevant"
 msgstr "Das Argument ist nicht themenbezogen/Spam."
 
 #. Default: This argument does not belong to the topic under discussion.
-#: templates/snippet-popups.pt:846
+#: templates/snippet-popups.pt:845
 msgid "argument_offtopic_or_irrelevant_description"
 msgstr "Die Bedeutung des Arguments ist nicht themenbezogen oder Spam."
 
 #. Default: This statement is harmful or abusive.
-#: templates/snippet-popups.pt:859
+#: templates/snippet-popups.pt:857
 msgid "statement_harmful"
 msgstr "Die Aussage ist verletzend, schädigend oder missbräuchlich."
 
 #. Default: This argument is harmful or abusive.
-#: templates/snippet-popups.pt:860
+#: templates/snippet-popups.pt:858
 msgid "argument_harmful"
 msgstr "Die Argument ist verletzend, schädigend oder missbräuchlich."
 
 #. Default: A reasonable person would find this content inappropriate for
 #. respectful discourse.
-#: templates/snippet-popups.pt:861
+#: templates/snippet-popups.pt:859
 msgid "argument_statement_harmful_description"
 msgstr ""
-"Bestimme Personen würden diesen Inhalt nicht passend für eine respektvolle "
+"Bestimmte Personen würden diesen Inhalt nicht passend für eine respektvolle "
 "Diskussion halten."
 
 #. Default: This statement is a duplicate.
-#: templates/snippet-popups.pt:867
+#: templates/snippet-popups.pt:864
 msgid "this_statement_duplicate"
 msgstr "Diese Aussage ist ein Duplikat."
 
 #. Default: This statement has been done before in a slightly different
 #. wording.
-#: templates/snippet-popups.pt:868
+#: templates/snippet-popups.pt:865
 msgid "this_statement_duplicate_description"
 msgstr "Diese Aussage ist schon leicht verändert im System vorhanden."
 
 #. Default: Reporting (parts of) an argument
-#: templates/snippet-popups.pt:884
+#: templates/snippet-popups.pt:881
 msgid "reporting_parts_argument"
 msgstr "Melden eines Arguments (oder Teile davon)"
 
 #. Default: Please choose which part of the argument you want to report
-#: templates/snippet-popups.pt:889
+#: templates/snippet-popups.pt:886
 msgid "please_choose_part_to_report"
 msgstr "Bitte wählen Sie einen Teil des Arguments, der gemeldet werden soll"
 
 #. Default: Report
-#: templates/snippet-popups.pt:896
+#: templates/snippet-popups.pt:893
 msgid "report"
 msgstr "Melden"
 
 #. Default: Report the whole argument.
-#: templates/snippet-popups.pt:908
+#: templates/snippet-popups.pt:905
 msgid "report_whole_argument"
 msgstr "Komplettes Argument melden."
 
 #. Default: Caution
-#: templates/snippet-popups.pt:984
+#: templates/snippet-popups.pt:981
 msgid "caution"
 msgstr "Achtung"
 
 #. Default: Do you really want to disassociate yourself from your content? This
 #. step is irreversible! Subsequently you will not be the author of this
 #. statement anymore!
-#: templates/snippet-popups.pt:989
+#: templates/snippet-popups.pt:986
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 "Möchten Sie wirklich von diesem Inhalt distanzieren? Dieser Schritt kann "
@@ -1481,46 +1481,46 @@ msgstr ""
 "diesem Statements."
 
 #. Default: Please choose a step to jump in
-#: templates/snippet-popups.pt:1006
+#: templates/snippet-popups.pt:1003
 msgid "choose_a_step_to_jump_in"
 msgstr "Bitte wählen Sie eine Stelle für den Sprung"
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: templates/snippet-popups.pt:1009
+#: templates/snippet-popups.pt:1006
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr "Hier finden Sie alle Stellen, in denen die Aussage verwendet wird:"
 
 #. Default: References
-#: templates/snippet-popups.pt:1026
+#: templates/snippet-popups.pt:1023
 msgid "refereces"
 msgstr "Referenzen"
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: templates/snippet-popups.pt:1034
+#: templates/snippet-popups.pt:1031
 msgid "statement_reference_definition"
 msgstr ""
 "Die Aussage ist ein Zitat von einer Nachrichtenseite o.Ä., welche Ihre "
 "Meinung untersützt. Die Quelle ist die Website."
 
 #. Default: Statement
-#: templates/snippet-popups.pt:1037 templates/snippet-popups.pt:1058
+#: templates/snippet-popups.pt:1034 templates/snippet-popups.pt:1055
 msgid "statement"
 msgstr "Aussage"
 
 #. Default: Source
-#: templates/snippet-popups.pt:1043
+#: templates/snippet-popups.pt:1040
 msgid "source"
 msgstr "Quelle"
 
 #. Default: Please choose a statement for your reference!
-#: templates/snippet-popups.pt:1048
+#: templates/snippet-popups.pt:1045
 msgid "please_choose_a_reference"
 msgstr "Bitte wählen Sie eine Aussage für Ihre Referenz!"
 
 #. Default: Add reference
-#: templates/snippet-popups.pt:1063
+#: templates/snippet-popups.pt:1060
 msgid "add_reference"
 msgstr "Referenzen hinzufügen"
 
@@ -1623,45 +1623,45 @@ msgid "discussion_stat"
 msgstr "Diskussionsstatistik"
 
 #. Default: Statements posted
-#: templates/settings.pt:125 templates/settings.pt:280 templates/finish.pt:26
+#: templates/settings.pt:125 templates/settings.pt:280 templates/finish.pt:29
 #: templates/user.pt:41
 msgid "statements_posted"
 msgstr "Aussagen hinzugefügt"
 
 #. Default: Edits done
-#: templates/settings.pt:132 templates/settings.pt:287 templates/finish.pt:30
+#: templates/settings.pt:132 templates/settings.pt:287 templates/finish.pt:33
 #: templates/user.pt:45
 msgid "edits_done"
-msgstr "Änderungen"
+msgstr "Aussagen geändert"
 
 #. Default: Clicks for Arguments
-#: templates/settings.pt:139 templates/settings.pt:294 templates/finish.pt:46
+#: templates/settings.pt:139 templates/settings.pt:294 templates/finish.pt:58
 msgid "discussion_clicked_statements"
 msgstr "Geklickte Aussagen"
 
 #. Default: Clicks for Statements
-#: templates/settings.pt:146 templates/settings.pt:301 templates/finish.pt:50
+#: templates/settings.pt:146 templates/settings.pt:301 templates/finish.pt:62
 msgid "discussion_clicked_arguments"
 msgstr "Geklickte Argumente"
 
 #. Default: Votes for Statements
 #. Default: Votes for Arguments
-#: templates/settings.pt:157 templates/settings.pt:308 templates/finish.pt:38
-#: templates/user.pt:49
+#: templates/settings.pt:157 templates/settings.pt:308 templates/finish.pt:50
+#: templates/user.pt:53
 msgid "discussion_votes_statements"
 msgstr "Markierte Aussagen"
 
 #. Default: Votes for Arguments
 #. Default: Votes for Statements
-#: templates/settings.pt:164 templates/settings.pt:315 templates/finish.pt:42
-#: templates/user.pt:53
+#: templates/settings.pt:164 templates/settings.pt:315 templates/finish.pt:54
+#: templates/user.pt:57
 msgid "discussion_votes_arguments"
 msgstr "Markierte Argumente"
 
 #. Default: Reputation
 #: templates/settings.pt:171 templates/settings.pt:322
 #: templates/review-reputation.pt:9 templates/review-reputation.pt:27
-#: templates/user.pt:57
+#: templates/user.pt:61
 msgid "reputation"
 msgstr "Reputation"
 
@@ -1723,57 +1723,67 @@ msgid "docs"
 msgstr "Dokumentation"
 
 #. Default: Get In Touch With Us
-#: templates/contact.pt:9
-msgid "contact_header_1"
+#: templates/contact.pt:10
+msgid "get_in_touch_with_us"
 msgstr "Treten Sie mit uns in Kontakt"
 
 #. Default: Feel free to drop us a line and we’ll try to get back to you in 48
 #. hours max!
-#: templates/contact.pt:10
-msgid "contact_header_2"
+#: templates/contact.pt:12
+msgid "feel_free_to_drop_line"
 msgstr ""
 "Wenn Sie uns eine Nachricht hinterlassen, werden wir uns zeitnah bei Ihnen "
 "melden."
 
-#. Default: Your Name (required)
+#. Default: You have found a bug?
 #: templates/contact.pt:16
+msgid "you_found_bug"
+msgstr "Sie haben einen Fehler gefunden?"
+
+#. Default: Please open a new issue on our project page at
+#: templates/contact.pt:18
+msgid "send_mail_or_github"
+msgstr "Bitte eröffnen Sie ein neues Problem auf unserer Projektseite auf"
+
+#. Default: Otherwise feel free to drop us a line
+#: templates/contact.pt:20
+msgid "otherwise_drop_a_line"
+msgstr "Ansonsten können Sie uns auch eine Nachricht hinterlassen"
+
+#. Default: Your Name (required)
+#: templates/contact.pt:29
 msgid "name_req"
 msgstr "Ihr Name (notwendig)"
 
 #. Default: Your E-Mail (required)
-#: templates/contact.pt:24
+#: templates/contact.pt:37
 msgid "mail_req"
 msgstr "Ihre E-Mail (notwendig)"
 
-#. Default: Your Phone Number
-#: templates/contact.pt:32
-msgid "phone_no"
-msgstr "Ihre Telefon-Nr."
-
 #. Default: Your Notification (required)
-#: templates/contact.pt:40
+#: templates/contact.pt:45
 msgid "message_req"
 msgstr "Ihre Nachricht (notwendig)"
 
 #. Default: Warning!
-#: templates/contact.pt:63
+#: templates/contact.pt:61
 msgid "warning"
 msgstr "Warnung!"
 
 #. Default: Great:
-#: templates/contact.pt:70
+#: templates/contact.pt:67
 msgid "great"
 msgstr "Großartig:"
 
 #. Default: Your message was sent.
-#: templates/contact.pt:70
+#: templates/contact.pt:67
 msgid "message_sent"
 msgstr "Ihre Nachricht wurde gesendet"
 
-#. Default: Thank you!
+#. Default: Thank you
 #: templates/finish.pt:7
 msgid "thank_you"
-msgstr "Vielen Dank!"
+msgstr "Vielen Dank"
 
 #. Default: Your participation in this discussion was saved and will be used
 #. for evaluation later. If you have any questions, please do not hesitat to
@@ -1794,19 +1804,24 @@ msgid "todays_summary"
 msgstr "Heutige Zusammenfassung"
 
 #. Default: Statements reported
-#: templates/finish.pt:34
+#: templates/finish.pt:37
 msgid "statements_reported"
 msgstr "Aussagen gemeldet"
 
+#. Default: Collected reputation
+#: templates/finish.pt:42
+msgid "reputation_colltected"
+msgstr "Gesammelte Reputation"
+
 #. Default: Let's go home!
-#: templates/finish.pt:64
+#: templates/finish.pt:78
 msgid "lets_go_home"
-msgstr "Zur Startseite!"
+msgstr "Zur Startseite"
 
 #. Default: Back to the discussion!
-#: templates/finish.pt:67
+#: templates/finish.pt:81
 msgid "back_to_the_discussion"
-msgstr "Zurück zur Diskussion!"
+msgstr "Zurück zur Diskussion"
 
 #. Default: Reputation count
 #: templates/review-reputation.pt:15
@@ -1880,27 +1895,27 @@ msgid "to"
 msgstr "An:"
 
 #. Default: JavaScript is not enabled:
-#: templates/basetemplate.pt:28
+#: templates/basetemplate.pt:29
 msgid "js_disabled1"
 msgstr "JavaScript ist nicht aktiviert:"
 
 #. Default: Please enable JavaScript!
-#: templates/basetemplate.pt:29
+#: templates/basetemplate.pt:30
 msgid "js_disabled2"
 msgstr "Bitte JavaScript aktivieren!"
 
 #. Default: Your request failed!
-#: templates/basetemplate.pt:35
+#: templates/basetemplate.pt:36
 msgid "request_failed"
 msgstr "Ihre Anfrage ist fehlgeschlagen!"
 
 #. Default: Please reload the page.
-#: templates/basetemplate.pt:36
+#: templates/basetemplate.pt:37
 msgid "please_reload"
 msgstr "Bitte laden Sie die Seite erneut."
 
 #. Default: Your request succeded!
-#: templates/basetemplate.pt:42 templates/basetemplate.pt:43
+#: templates/basetemplate.pt:43 templates/basetemplate.pt:44
 msgid "request_success"
 msgstr "Anfrage wurde erfolgreich verarbeitet."
 
@@ -1929,6 +1944,11 @@ msgstr "Registierung"
 msgid "profile_picture_of"
 msgstr "Profilbild von"
 
+#. Default: Reviews proposed
+#: templates/user.pt:49
+msgid "reviews_proposed"
+msgstr "Änderungen vorgeschlagen"
+
 #. Default: more infos
 #: templates/content.pt:11 templates/content.pt:18
 msgid "more_infos"
@@ -1944,60 +1964,77 @@ msgstr "Thema wechseln"
 msgid "restart_discussion"
 msgstr "Neustart"
 
-#. Default: Show all statements
-#: templates/content.pt:153
-msgid "show_all_statements"
-msgstr "Alle Aussagen anzeigen"
+#. Default: Start
+#: templates/content.pt:286
+msgid "start"
+msgstr "Start"
 
-#. Default: Hide statements
-#: templates/content.pt:154
-msgid "hide_statements"
-msgstr "Aussage ausblenden"
+#. Default: Now
+#: templates/content.pt:288
+msgid "now"
+msgstr "Jetzt"
 
 #. Default: Complete View
-#: templates/content.pt:298
+#: templates/content.pt:303
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
 #. Default: Default View
-#: templates/content.pt:299
+#: templates/content.pt:304
 msgid "default_view"
 msgstr "Standardansicht"
 
 #. Default: Labels
-#: templates/content.pt:300
+#: templates/content.pt:305
 msgid "labels"
 msgstr "Beschriftungen"
 
 #. Default: Positions
-#: templates/content.pt:301
+#: templates/content.pt:306
 msgid "positions"
 msgstr "Positionen"
 
 #. Default: Statements
-#: templates/content.pt:302
+#: templates/content.pt:307
 msgid "statements"
 msgstr "Aussagen"
 
 #. Default: My path
-#: templates/content.pt:303 templates/content.pt:304
+#: templates/content.pt:308 templates/content.pt:309
 msgid "my_path"
 msgstr "Mein Pfad"
 
 #. Default: My statements
-#: templates/content.pt:305
+#: templates/content.pt:310
 msgid "my_statements"
 msgstr "Meine Aussagen"
 
 #. Default: Supports
-#: templates/content.pt:306
+#: templates/content.pt:311
 msgid "supports_on_my_statements"
 msgstr "Unterstützungen"
 
 #. Default: Attacks
-#: templates/content.pt:307
+#: templates/content.pt:312
 msgid "attacks_on_my_statements"
 msgstr "Angriffe"
+
+#~ msgid "show_all_statements"
+#~ msgstr "Alle Aussagen anzeigen"
+
+#~ msgid "hide_statements"
+#~ msgstr "Aussage ausblenden"
+
+#~ msgid "contact_header_1"
+#~ msgstr "Treten Sie mit uns in Kontakt"
+
+#~ msgid "contact_header_2"
+#~ msgstr ""
+#~ "Wenn Sie uns eine Nachricht hinterlassen, werden wir uns zeitnah bei "
+#~ "Ihnen melden."
+
+#~ msgid "phone_no"
+#~ msgstr "Ihre Telefon-Nr."
 
 #~ msgid "license"
 #~ msgstr "Lizenz"
@@ -2485,9 +2522,6 @@ msgstr "Angriffe"
 #~ "Die Arbeitsgruppe Funktionalität des Graduierten-Kollegs arbeitet eng mit "
 #~ "dem Institut für Technikfolgenabschätzung und  Systemanalyse (ITAS) des "
 #~ "Karlsruher Institut der Technologie zusammen"
-
-#~ msgid "startet_at"
-#~ msgstr "Die Diskussion wurde gestartet: "
 
 #~ msgid "already_has"
 #~ msgstr "und verfügt über "

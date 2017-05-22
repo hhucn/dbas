@@ -191,7 +191,7 @@ def add_seen_argument(argument_uid, db_user):
     """
     if not is_integer(argument_uid) or not isinstance(db_user, User):
         return False
-    logger('VotingHelper', 'add_seen_argument', 'argument ' + str(argument_uid) + ', for user ' + str(db_user))
+    logger('VotingHelper', 'add_seen_argument', 'argument ' + str(argument_uid) + ', for user ' + str(db_user.uid))
 
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
     if not db_argument:

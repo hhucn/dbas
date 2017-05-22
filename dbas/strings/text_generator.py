@@ -37,9 +37,6 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
 
     confrontation = confrontation[0:1].upper() + confrontation[1:]
 
-    premise = premise[0:1].lower() + premise[1:]
-    conclusion = conclusion[0:1].lower() + conclusion[1:]
-
     # different cases
     ret_text = ''
     if attack_type == 'undermine':
@@ -305,8 +302,8 @@ def __get_relation_text_dict(lang, with_no_opinion_text, premise, conclusion, is
         ret_dict['undercut_text'] = _t.get(_.reaction_text_undercut).format(premise, conclusion)
 
     if is_dont_know:
-        conclusion_genitiv = conclusion.replace('ihre', 'ihrer').replace('seine', 'seiner')
-        ret_dict['rebut_text'] = _t.get(_.reaction_text_rebut_for_dont_know).format(premise, conclusion, conclusion_genitiv)
+        # conclusion_genitiv = conclusion.replace('ihre', 'ihrer').replace('seine', 'seiner')
+        ret_dict['rebut_text'] = _t.get(_.reaction_text_rebut_for_dont_know).format(conclusion)
     else:
         conclusion_user = start_position + _t.get(_.myPosition) + end_tag
         ret_dict['rebut_text'] = _t.get(_.reaction_text_rebut).format(premise, conclusion, conclusion_user)
@@ -547,6 +544,8 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sys
     b = '<' + tag_type + '>'
     bs = '<{} class="triangle-content-text">'.format(tag_type)
     e = '</' + tag_type + '>'
+    start_argument = '<{} data-argumentation-type="argument">'.format(tag_type)
+
     move_end_tag = False
     if tag_type not in premise:
         premise = b + premise + e
@@ -563,7 +562,9 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sys
     confrontation_text += e + ' ' + premise
     # confrontation_text += start_position if attack != 'undermine' else start_argument
     confrontation_text += '<{} data-attitude="{}">'.format(tag_type, 'pro' if system_argument.is_supportive else 'con')
-    confrontation_text += b + ' ' + (_t.get(_.hold) if system_argument.is_supportive else _t.get(_.doesNotHold)) + e
+    confrontation_text += b + ' ' + start_argument
+    confrontation_text += _t.get(_.hold) if system_argument.is_supportive else _t.get(_.doesNotHold)
+    confrontation_text += end_tag + e
     confrontation_text += end_tag
     # confrontation_text += end_tag if not move_end_tag else ''
     confrontation_text += b + ', ' + _t.get(_.because).lower() + e + ' ' + confrontation
@@ -691,12 +692,15 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
             else:
                 confrontation_text = author + ' ' + bs + _t.get(_.otherUserDoesntHaveOpinionForThisStatement) + ' '
             confrontation_text += _t.get(_.strongerStatementM) if gender is 'm' else _t.get(_.strongerStatementF)
+
         else:
             confrontation_text = bs + _t.get(_.otherParticipantsDontHaveOpinion) + ' {}. '
             confrontation_text += _t.get(_.strongerStatementP)
 
         tag = tag_pro_start if user_is_attacking else tag_con_start
-        tmp = _t.get(_.accepting) if user_is_attacking else _t.get(_.rejecting)
+        tmp = '<{} data-argumentation-type="argument">'.format(tag_type)
+        tmp += _t.get(_.accepting) if user_is_attacking else _t.get(_.rejecting)
+        tmp += '</{}>'.format(tag_type)
         confrontation_text = confrontation_text.format(premise, tag, tmp, ' ' + e)
 
         tmp = _t.get(_.strongerStatementEnd)

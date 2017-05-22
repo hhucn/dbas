@@ -207,7 +207,9 @@ function PopupHandler() {
 	this.showFlagArgumentPopup = function (uid) {
 		var popup = $('#popup-flag-argument');
 		var bubble = $('#question-bubble-' + uid);
-		// var text = $('.triangle-l:last-child .triangle-content').text();
+		if (bubble.length === 0){
+			bubble = $('#' + uid.replace('.', '\\.'));
+		}
 		
 		// clean text
 		// cut the part after <br><br>
@@ -234,17 +236,24 @@ function PopupHandler() {
 		popup.on('hide.bs.modal', function () {
 			popup.find('input').off('click').unbind('click');
 		});
-		popup.find('input').click(function () {
-			if ($(this).data('special') === 'undercut') {
+		popup.find('input,label').off('click').click(function () {
+			var special = $(this).data('special');
+			var id = $(this).attr('id');
+			var next = $(this).next();
+			if ($(this).is('label')){  // gettin the <input>
+				special = $(this).prev().data('special');
+				id = $(this).prev().attr('id');
+				next = $(this);
+			}
+			if (special === 'undercut') {
 				$('#item_undercut').click();
 				
-			} else if ($(this).data('special') === 'argument') {
+			} else if (special === 'argument') {
 				new PopupHandler().showFlagStatementPopup(uid, true, text);
 				
 			} else {
-				console.log('b');
-				var tmp = $(this).next().find('em').text();
-				new PopupHandler().showFlagStatementPopup($(this).attr('id'), false, tmp);
+				var tmp = next.find('em').text();
+				new PopupHandler().showFlagStatementPopup(id, false, tmp);
 			}
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
@@ -311,7 +320,6 @@ function PopupHandler() {
 	 * @param reason
 	 */
 	this.showPopupForSelectingDuplicateFromPrgroup = function(uid, reason){
-		console.log(reason);
 		var popup = $('#popup-choose-statement');
 		var body = $('#popup-choose-statement-radios');
 		body.empty();
@@ -461,7 +469,9 @@ function PopupHandler() {
 				dropdown.show();
 				info_text.show();
 			}
-			send_button.prop('disabled', false);
+			if (dropdown_list.find('li').length < 2) {
+				send_button.prop('disabled', false);
+			}
 		});
 		
 		send_button.off('click').click(function () {
@@ -484,8 +494,16 @@ function PopupHandler() {
 			} else {
 				dropdown.show();
 				info_text.show();
+				send_button.prop('disabled', true);
 			}
 		}
+		
+		dropdown_list.find('li').each(function() {
+			$(this).off('click').click(function(){
+				send_button.attr('data-id', $(this).data('id'));
+				send_button.prop('disabled', false);
+			});
+		});
 	};
 	
 	/**

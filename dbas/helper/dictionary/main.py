@@ -108,6 +108,7 @@ class DictionaryHelper(object):
         """
         logger('DictionaryHelper', 'prepare_extras_dict', 'def user ' + str(nickname))
         request_authenticated_userid = nickname
+        public_nickname = nickname
         nickname = ''
 
         db_user = DBDiscussionSession.query(User).filter_by(nickname=str(request_authenticated_userid)).first()
@@ -115,9 +116,11 @@ class DictionaryHelper(object):
         if request_authenticated_userid:
             nickname = request_authenticated_userid if request_authenticated_userid else nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+            public_nickname = db_user.get_global_nickname()
 
         if not db_user or request_authenticated_userid is None:
             nickname = nick_of_anonymous_user
+            public_nickname = nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
 
         is_ldap = is_usage_with_ldap(request)
@@ -135,6 +138,7 @@ class DictionaryHelper(object):
         return_dict['is_in_discussion']              = 'discuss' in request.path
         return_dict['logged_in']                     = is_logged_in
         return_dict['nickname']                      = request_authenticated_userid
+        return_dict['public_nickname']               = public_nickname
         return_dict['add_premise_container_style']   = add_premise_container_style
         return_dict['add_statement_container_style'] = add_statement_container_style
         return_dict['users_avatar']                  = get_profile_picture(db_user, 25)
@@ -477,6 +481,7 @@ class DictionaryHelper(object):
                                   'request_history': _tn_sys.get(_.requestHistory),
                                   'password_submit': _tn_sys.get(_.passwordSubmit),
                                   'contact_submit': _tn_sys.get(_.contactSubmit),
+                                  'bug_submit': _tn_sys.get(_.bugSubmit),
                                   'previous': _tn_sys.get(_.previous),
                                   'next': _tn_sys.get(_.next),
                                   'clear_statistics': _tn_sys.get(_.clearStatistics),
@@ -491,7 +496,10 @@ class DictionaryHelper(object):
                                   'go_forward': _tn_sys.get(_.goForward),
                                   'resume_here': _tn_sys.get(_.resumeHere),
                                   'request_password': _tn_sys.get(_.requestPassword),
-                                  'ldap_info': _tn_sys.get(_.ldapInfo)}
+                                  'ldap_info': _tn_sys.get(_.ldapInfo),
+                                  'show_all_statements': _tn_dis.get(_.statementsShowAll),
+                                  'hide_statements': _tn_dis.get(_.statementsHideAll),
+                                  }
 
     def add_title_text(self, return_dict):
         """
@@ -579,6 +587,7 @@ class DictionaryHelper(object):
             'placeholder_mail': _tn_sys.get(_.exampleMail),
             'placeholder_statement': _tn_sys.get(_.exampleStatement),
             'placeholder_source': _tn_sys.get(_.exampleSource),
+            'placeholder_search_duplicate': _tn_sys.get(_.exampleSearchDuplicate),
             'search': _tn_sys.get(_.searchForStatements),
             'premisegroup_popup_warning': _tn_dis.get(_.premisegroupPopupWarning)
         }

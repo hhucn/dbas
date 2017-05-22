@@ -4,13 +4,11 @@ Introducing an export manager.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import json
-
 from cornice import Service
 
 import dbas.helper.issue as IssueHelper
 from dbas.logger import logger
-from export.lib import get_dump, get_minimal_graph_export
+from export.lib import get_dump, get_doj_data, get_table_rows
 
 #
 # CORS configuration
@@ -32,6 +30,10 @@ doj = Service(name='export_doj',
               path='/doj*issue',
               description='Export for DoJ')
 
+table_row = Service(name='export_table_row',
+                    path='/{table}/*ids',
+                    description='Export several columns from a table')
+
 
 # =============================================================================
 # EXPORT-RELATED REQUESTS
@@ -49,9 +51,7 @@ def get_database_dump(request):
     logger('Export', 'get_database_dump', 'main')
     issue = IssueHelper.get_issue_id(request)
 
-    return_dict = get_dump(issue)
-
-    return json.dumps(return_dict, True)
+    return get_dump(issue)
 
 
 @doj.get()
@@ -63,8 +63,25 @@ def get_doj_dump(request):
     :return: dict()
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Export', 'main', 'def')
+    logger('Export', 'get_doj_dump', 'def')
     m = request.matchdict
     issue = m['issue'][0] if 'issue' in m and len(m['issue']) > 0 else None
 
-    return json.dumps(get_minimal_graph_export(issue), True)
+    return get_doj_data(issue)
+
+
+@table_row.get()
+def get_table_row(request):
+    """
+    Coming soon
+
+    :param request: current webservers request
+    :return: dict()
+    """
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Export', 'get_table_row', 'def: {}'.format(request.matchdict))
+    matchdict = request.matchdict
+    table = matchdict['table'] if 'table' in matchdict else None
+    ids = matchdict['ids'] if 'table' in matchdict else None
+
+    return get_table_rows(request.authenticated_userid, table, ids)

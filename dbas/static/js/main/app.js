@@ -171,6 +171,10 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
 		dialog.find('.modal-dialog').removeClass('modal-sm');
 		dialog.find('#confirm-dialog-accept-btn').text(_t(okay));
 		dialog.find('#confirm-dialog-refuse-btn').text(_t(cancel));
+		// unload buttons
+		$('#' + popupConfirmDialogAcceptBtn).off('click');
+		$('#' + popupConfirmDialogRefuseBtn).off('click');
+		
 	});
 }
 
@@ -559,7 +563,6 @@ function callbackIfDoneForLogin(data, showGlobalError){
 			location.reload(true);
 		}
 	} catch(err){
-		console.log('ERROR');
 		//console.log(err);
 		var url = location.href;
 		if (url.indexOf('?session_expired=true') !== -1) {

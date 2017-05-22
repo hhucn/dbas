@@ -23,7 +23,12 @@ def dbas_db_configuration(db_name, settings={}):
     :return: A sqlalchemy engine from environment variables and settings.
     """
     prefix = 'sqlalchemy.{}.'.format(db_name)
+    settings.update(get_db_environs(prefix + 'url', db_name))
 
+    return engine_from_config(settings, prefix)
+
+
+def get_db_environs(key, db_name, settings={}):
     db_user = os.environ.get("DBAS_DB_USER", None)
     db_pw = os.environ.get("DBAS_DB_PW", None)
     db_host = os.environ.get("DBAS_DB_HOST", None)
@@ -31,10 +36,9 @@ def dbas_db_configuration(db_name, settings={}):
 
     if all([db_user, db_pw, db_host, db_host_port]):
         settings.update(
-            {prefix + 'url': "postgresql+psycopg2://{}:{}@{}:{}/{}?client_encoding=utf8".format(
+            {key: "postgresql+psycopg2://{}:{}@{}:{}/{}?client_encoding=utf8".format(
                 db_user, db_pw, db_host, db_host_port, db_name)})
-        return engine_from_config(settings, prefix)
-
+        return settings
     else:
         errors = "Following variables are missing:\n"
         if not db_user:
