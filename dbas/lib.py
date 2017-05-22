@@ -571,10 +571,7 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     # just display the last premise group on undercuts, because the story is always saved in all bubbles
 
     if minimize_on_undercut and not user_changed_opinion and len(pgroups) > 2:
-        if premisegroup_by_user:
-            return _t.get(_.butYouCounteredWith).strip() + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
-        else:
-            return _t.get(_.butYouCounteredWith).strip() + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
+        return _t.get(_.butYouCounteredWith).strip() + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
 
     for i, pgroup in enumerate(pgroups):
         ret_value += ' '

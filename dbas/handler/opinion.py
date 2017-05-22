@@ -97,13 +97,8 @@ def __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user_ui
     ret_list = []
     user_query = DBDiscussionSession.query(User)
     db_user = DBDiscussionSession.query(User).get(db_user_uid)
-    if db_user:
-        if db_user.gender == 'm':
-            msg = _t.get(_.voteCountTextMayBeFirst) + '.'
-        elif db_user.gender == 'f':
-            msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
-        else:
-            msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+    if db_user and db_user.gender == 'f':
+        msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
     else:
         msg = _t.get(_.voteCountTextMayBeFirst) + '.'
 
@@ -218,16 +213,11 @@ def __get_genered_text_for_clickcount(len_db_votes, db_user_uid, _t):
     """
     if len_db_votes == 0:
         db_user = DBDiscussionSession.query(User).get(db_user_uid)
-        if db_user:
-            if db_user.gender == 'm':
-                msg = _t.get(_.voteCountTextMayBeFirst)
-            elif db_user.gender == 'f':
-                msg = _t.get(_.voteCountTextMayBeFirstF)
-            else:
-                msg = _t.get(_.voteCountTextMayBeFirst)
+        if db_user and db_user.gener == 'f':
+            msg = _.voteCountTextMayBeFirstF
         else:
-            msg = _t.get(_.voteCountTextMayBeFirst)
-        return msg + '.'
+            msg = _.voteCountTextMayBeFirst
+        return _t.get(msg) + '.'
     elif len_db_votes == 1:
         return str(len_db_votes) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
     else:
