@@ -247,7 +247,7 @@ def __prepare_statements_for_d3_data(db_statements, db_textversions, x, y, edge_
                                     type='position' if statement.is_startpoint else 'statement',
                                     author=__get_author_of_statement(statement.uid),
                                     editor=__get_editor_of_statement(statement.uid),
-                                    timestamp=statement.get_timestamp().timestamp)
+                                    timestamp=statement.get_first_timestamp().timestamp)
         extras[node_dict['id']] = node_dict
         all_ids.append('statement_' + str(statement.uid))
         x = (x + 1) % 10
