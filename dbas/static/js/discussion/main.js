@@ -243,7 +243,7 @@ function Main () {
 		});
 		
 		trianglel.find('.triangle-reference').click(function () {
-			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
+			var uid = $(this).parent().parent().attr('id').replace(questionBubbleId + '-', '');
 			new AjaxReferenceHandler().getReferences(uid, true);
 		});
 		
