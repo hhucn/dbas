@@ -476,8 +476,9 @@ def __update_row_dict(table, values, keys, _tn):
     """
     update_dict = dict()
     for index, key in enumerate(keys):
+        value_type = str(__find_type(table, key))
         # if current type is int
-        if str(__find_type(table, key)) == 'INTEGER':
+        if value_type == 'INTEGER':
             # check for foreign key of author or language
             if key in _user_columns:
                 db_user = DBDiscussionSession.query(User).filter_by(nickname=values[index]).first()
@@ -495,15 +496,15 @@ def __update_row_dict(table, values, keys, _tn):
                 update_dict[key] = int(values[index])
 
         # if current type is bolean
-        elif str(__find_type(table, key)) == 'BOOLEAN':
-            update_dict[key] = True if values[index].lower() == 'true' else False
+        elif value_type == 'BOOLEAN':
+            update_dict[key] = values[index].lower() == 'true'
 
         # if current type is text
-        elif str(__find_type(table, key)) == 'TEXT':
+        elif value_type == 'TEXT':
             update_dict[key] = str(values[index])
 
         # if current type is date
-        elif str(__find_type(table, key)) == 'ARROWTYPE':
+        elif value_type == 'ARROWTYPE':
             update_dict[key] = arrow.get(str(values[index]))
 
         else:

@@ -458,13 +458,8 @@ def get_every_attack_for_island_view(arg_uid):
     rebut = get_rebuts_for_argument_uid(arg_uid)
 
     db_user = DBDiscussionSession.query(User).get(db_argument.author_uid)
-    if db_user:
-        if db_user.gender == 'm':
-            msg = _t.get(_.voteCountTextMayBeFirst) + '.'
-        elif db_user.gender == 'f':
-            msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
-        else:
-            msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+    if db_user and db_user.gender == 'f':
+        msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
     else:
         msg = _t.get(_.voteCountTextMayBeFirst) + '.'
 

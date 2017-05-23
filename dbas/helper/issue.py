@@ -91,7 +91,7 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
     duration = (arrow.utcnow() - db_issue.date) if db_issue else 0
     days, seconds = (duration.days, duration.seconds) if db_issue else (0, 0)
     duration = ceil(days * 24 + seconds / 3600)
-    date_ms = int((db_issue.date.format('X') if db_issue else arrow.utcnow().format('X'))) * 1000
+    date_ms = int(db_issue.date.format('X') if db_issue else arrow.utcnow().format('X')) * 1000
     date = db_issue.date.replace(hours=2).format('DD.MM. HH:mm') if db_issue else 'none'
 
     db_issues = get_not_disabled_issues_as_query().all()
@@ -103,7 +103,7 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
     _t = Translator(lang)
     tooltip = _t.get(_.discussionInfoTooltip1) + ' ' + date + ' '
     tooltip += _t.get(_.discussionInfoTooltip2) + ' ' + str(stat_count) + ' '
-    tooltip += (_t.get(_.discussionInfoTooltip3sg if stat_count == 1 else _.discussionInfoTooltip3pl))
+    tooltip += _t.get(_.discussionInfoTooltip3sg if stat_count == 1 else _.discussionInfoTooltip3pl)
 
     return {'slug': slug,
             'info': info,

@@ -37,7 +37,7 @@ def get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn)
 
     if is_users_opinion:
         intro = _tn.get(_.youHaveTheOpinionThat)
-        outro = '' if is_supportive else (', ' + _tn.get(_.isNotAGoodIdea))
+        outro = '' if is_supportive else ', ' + _tn.get(_.isNotAGoodIdea)
         text = intro.format(text) + outro
     else:
         if is_supportive:

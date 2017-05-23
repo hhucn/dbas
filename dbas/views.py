@@ -610,15 +610,15 @@ def discussion_init(request, for_api=False, api_data=None):
         return user_logout(request, True)
 
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
-    item_dict       = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api).get_array_for_start(nickname)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+    item_dict = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api).get_array_for_start(nickname)
     history_helper.save_issue_uid(issue, nickname)
 
     discussion_dict = DiscussionDictHelper(disc_ui_locales, nickname=nickname, main_page=request.application_url, slug=slug)\
-        .get_dict_for_start(position_count=(len(item_dict['elements'])))
-    extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
-                                                                                        False, True, request,
-                                                                                        for_api=for_api, nickname=request_authenticated_userid)
+        .get_dict_for_start(position_count=len(item_dict['elements']))
+    extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True, False, True,
+                                                                                    request, for_api=for_api,
+                                                                                    nickname=request_authenticated_userid)
 
     if len(item_dict['elements']) == 1:
         DictionaryHelper(disc_ui_locales, disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict, nickname, at_start=True)

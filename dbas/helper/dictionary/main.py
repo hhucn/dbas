@@ -181,7 +181,7 @@ class DictionaryHelper(object):
 
             message_dict = dict()
             message_dict['new_count']    = count_of_new_notifications(nickname)
-            message_dict['has_unread']   = (message_dict['new_count'] > 0)
+            message_dict['has_unread']   = message_dict['new_count'] > 0
             inbox = get_box_for(nickname, self.system_lang, application_url, True)
             outbox = get_box_for(nickname, self.system_lang, application_url, False)
             if append_notifications:
@@ -454,14 +454,14 @@ class DictionaryHelper(object):
         :return: dict()
         """
         logger('DictionaryHelper', 'add_language_options_for_extra_dict', 'def')
-        lang_is_en = (self.system_lang != 'de')
-        lang_is_de = (self.system_lang == 'de')
+        lang_is_en = self.system_lang != 'de'
+        lang_is_de = self.system_lang == 'de'
         extras_dict.update({
             'ui_locales': self.system_lang,
             'lang_is_de': lang_is_de,
             'lang_is_en': lang_is_en,
-            'link_de_class': ('active' if lang_is_de else ''),
-            'link_en_class': ('active' if lang_is_en else '')
+            'link_de_class': 'active' if lang_is_de else '',
+            'link_en_class': 'active' if lang_is_en else ''
         })
 
     def add_button_text(self, return_dict):
