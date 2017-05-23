@@ -234,7 +234,7 @@ def get_public_information_data(nickname, lang):
 
     for days_diff in range(30, -1, -1):
         date_begin = date.today() - timedelta(days=days_diff)
-        date_end = date.today() - timedelta(days=(days_diff - 1))
+        date_end = date.today() - timedelta(days=days_diff - 1)
         begin = arrow.get(date_begin.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
         end = arrow.get(date_end.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
 

@@ -124,11 +124,10 @@ class DiscussionDictHelper(object):
 
         # additional stuff
         splitted_history = self.history.split('-')
-        if len(splitted_history) > 0:
-            if '/undercut' in splitted_history[-1] or '/undermine' in splitted_history[-1] or '/rebut' in splitted_history[-1]:
-                intro = _tn.get(_.youHaveMuchStrongerArgumentForAccepting) if is_supportive else _tn.get(
-                    _.youHaveMuchStrongerArgumentForRejecting)
-                intro += ': '
+        if len(splitted_history) > 0 and ('/undercut' in splitted_history[-1] or '/undermine' in splitted_history[-1] or '/rebut' in splitted_history[-1]):
+            intro = _tn.get(_.youHaveMuchStrongerArgumentForAccepting) if is_supportive else _tn.get(
+                _.youHaveMuchStrongerArgumentForRejecting)
+            intro += ': '
 
         url = UrlManager(application_url, slug).get_slug_url(False)
         question_bubble = create_speechbubble_dict(is_system=True, message=system_question, omit_url=True, lang=self.lang)

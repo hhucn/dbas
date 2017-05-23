@@ -483,7 +483,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         db_marked = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.argument_uid == uid,
                                                                      MarkedArgument.author_uid == author_uid).first()
         marked_element = db_marked is not None
-    youHaveTheOpinionThat = _t.get(_.youHaveTheOpinionThat).format('').strip()
+    you_have_the_opinion_that = _t.get(_.youHaveTheOpinionThat).format('').strip()
 
     if lang == 'de':
         if start_with_intro and not anonymous_style:
@@ -495,7 +495,12 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
             ret_value = (sb_none if attack_type in ['dont_know'] else sb) + intro + se + ' '
         elif is_users_opinion and not anonymous_style:
             ret_value = sb_none
-            ret_value += _t.get(_.youAgreeWithThecounterargument) if support_counter_argument else (youHaveTheOpinionThat if marked_element else _t.get(_.youArgue))
+            if support_counter_argument:
+                ret_value += _t.get(_.youAgreeWithThecounterargument)
+            elif marked_element:
+                ret_value += you_have_the_opinion_that
+            else:
+                ret_value += _t.get(_.youArgue)
             ret_value += se + ' '
         else:
             ret_value = sb_none + _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous) + se + ' '
@@ -505,7 +510,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         ret_value += sb_none + _t.get(_.because).lower() + se + ' ' + premises
     else:
         tmp = sb + ' ' + _t.get(_.isNotRight).lower() + se + ', ' + _t.get(_.because).lower() + ' '
-        ret_value = (youHaveTheOpinionThat + ' ' if marked_element else '') + conclusion + ' '
+        ret_value = (you_have_the_opinion_that + ' ' if marked_element else '') + conclusion + ' '
         ret_value += _t.get(_.because).lower() if db_argument.is_supportive else tmp
         ret_value += ' ' + premises
 
@@ -571,10 +576,7 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     # just display the last premise group on undercuts, because the story is always saved in all bubbles
 
     if minimize_on_undercut and not user_changed_opinion and len(pgroups) > 2:
-        if premisegroup_by_user:
-            return _t.get(_.butYouCounteredWith).strip() + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
-        else:
-            return _t.get(_.butYouCounteredWith).strip() + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
+        return _t.get(_.butYouCounteredWith).strip() + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
 
     for i, pgroup in enumerate(pgroups):
         ret_value += ' '
@@ -916,11 +918,7 @@ def is_user_author_or_admin(nickname):
     db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
     db_author_group = DBDiscussionSession.query(Group).filter_by(name='authors').first()
     #  logger('Lib', 'is_user_author_or_admin', 'main')
-    if db_user:
-        if db_user.group_uid == db_author_group.uid or db_user.group_uid == db_admin_group.uid:
-            return True
-
-    return False
+    return db_user and (db_user.group_uid == db_author_group.uid or db_user.group_uid == db_admin_group.uid)
 
 
 def is_user_admin(nickname):

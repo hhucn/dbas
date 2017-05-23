@@ -188,7 +188,7 @@ def add_review_opinion_for_edit(request, nickname, is_edit_okay, review_uid, _t,
         db_review.set_executed(True)
         db_review.update_timestamp()
 
-    elif count_of_dont_edit - count_of_dont_edit >= min_difference:  # decline edit
+    elif count_of_dont_edit - count_of_edit >= min_difference:  # decline edit
         add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_edit)
         db_review.set_executed(True)
         db_review.update_timestamp()
