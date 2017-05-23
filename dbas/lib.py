@@ -845,14 +845,14 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
         'is_users_opinion': str(is_users_opinion),
     }
 
-    votecount_keys = __get_text_for_click_count(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang)
+    votecount_keys = __get_text_for_click_and_mark_count(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang)
 
     speech['votecounts_message'] = votecount_keys[speech['votecounts']]
 
     return speech
 
 
-def __get_text_for_click_count(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang):
+def __get_text_for_click_and_mark_count(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang):
     """
     Build text for a bubble, how many other participants have the same interest?
 
@@ -865,7 +865,8 @@ def __get_text_for_click_count(nickname, is_user, is_supportive, argument_uid, s
     :param lang: ui_locales
     :return: [String]
     """
-    db_votecounts = None
+    db_clicks = None
+    db_marks = None
 
     if is_supportive is None:
         is_supportive = False
@@ -877,22 +878,29 @@ def __get_text_for_click_count(nickname, is_user, is_supportive, argument_uid, s
         db_user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
 
     if argument_uid:
-        db_votecounts = DBDiscussionSession.query(ClickedArgument). \
+        db_clicks = DBDiscussionSession.query(ClickedArgument). \
             filter(and_(ClickedArgument.argument_uid == argument_uid,
                         ClickedArgument.is_up_vote == is_supportive,
                         ClickedArgument.is_valid,
-                        ClickedArgument.author_uid != db_user.uid)). \
-            all()
+                        ClickedArgument.author_uid != db_user.uid)).all()
+        db_marks = DBDiscussionSession.query(MarkedArgument). \
+            filter(MarkedArgument.argument_uid == argument_uid,
+                   MarkedArgument.author_uid != db_user.uid).all()
 
     elif statement_uid:
-        db_votecounts = DBDiscussionSession.query(ClickedStatement). \
+        db_clicks = DBDiscussionSession.query(ClickedStatement). \
             filter(and_(ClickedStatement.statement_uid == statement_uid,
                         ClickedStatement.is_up_vote == is_supportive,
                         ClickedStatement.is_valid,
-                        ClickedStatement.author_uid != db_user.uid)). \
-            all()
+                        ClickedStatement.author_uid != db_user.uid)).all()
+        db_marks = DBDiscussionSession.query(MarkedStatement). \
+            filter(MarkedStatement.statement_uid == statement_uid,
+                   MarkedStatement.author_uid != db_user.uid).all()
+
     _t = Translator(lang)
-    speech['votecounts'] = len(db_votecounts) if db_votecounts else 0
+    speech['votecounts'] = len(db_clicks) if db_clicks else 0
+    if db_marks:
+        speech['votecounts'] += len(db_marks)
 
     votecount_keys = defaultdict(lambda: "{} {}.".format(speech['votecounts'], _t.get(_.voteCountTextMore)))
 
