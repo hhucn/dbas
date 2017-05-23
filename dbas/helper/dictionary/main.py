@@ -391,15 +391,21 @@ class DictionaryHelper(object):
         :return: None
         """
         discussion_dict['mode'] = 'dont_know'
-        if gender == 'f':
-            sys_text = _tn.get(_.firstOneInformationTextF)
-        elif gender == 'm':
-            sys_text = _tn.get(_.firstOneInformationTextM)
+
+        if len(current_premise) != 0:
+            if gender == 'f':
+                sys_text = _tn.get(_.firstOneInformationTextF)
+            elif gender == 'm':
+                sys_text = _tn.get(_.firstOneInformationTextM)
+            else:
+                sys_text = _tn.get(_.firstOneInformationText)
+            sys_text = sys_text.format('<em>' + current_premise + ' </em>') + ' '
+            sys_text += _tn.get(_.untilNowThereAreNoMoreInformation)
+            mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkTextLoggedIn if gender else _.discussionEndLinkTextNotLoggedIn)
         else:
-            sys_text = _tn.get(_.firstOneInformationText)
-        sys_text = sys_text.format('<em>' + current_premise + '</em>') + ' '
-        sys_text += _tn.get(_.untilNowThereAreNoMoreInformation)
-        mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkTextLoggedIn if gender else _.discussionEndLinkTextNotLoggedIn)
+            sys_text = _tn.get(_.untilNowThereAreNoMoreInformation)
+            mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkTextLoggedIn if gender else _.discussionEndLinkTextNotLoggedIn)
+
         discussion_dict['bubbles'].append(
             create_speechbubble_dict(is_system=True, id='end', message=sys_text, lang=self.system_lang, nickname=nickname))
         discussion_dict['bubbles'].append(

@@ -109,8 +109,9 @@ def handle_justification_step(request, for_api, ui_locales, nickname, history):
                                                                                     nickname, history)
 
     elif 'd' in mode and relation == '':
-        logger('ViewHelper', 'handle_justification_step', 'do not know')
-        if not check_belonging_of_argument(issue, statement_or_arg_id) and \
+        logger('ViewHelper', 'handle_justification_step', 'do not know for {}'.format(statement_or_arg_id))
+        if int(statement_or_arg_id) != 0 and \
+                not check_belonging_of_argument(issue, statement_or_arg_id) and \
                 not check_belonging_of_statement(issue, statement_or_arg_id):
             raise HTTPNotFound()
             # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id])), None, None
@@ -195,11 +196,11 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, argum
     """
     logger('ViewHelper', 'preparation_for_dont_know_statement', 'main')
 
-    issue               = IssueHelper.get_id_of_slug(slug, request, True) if len(slug) > 0 else IssueHelper.get_issue_id(request)
-    disc_ui_locales     = get_discussion_language(request, issue)
-    _ddh                = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=main_page, slug=slug)
-    _idh                = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=request.path, history=history)
-    _dh                 = DictionaryHelper(ui_locales, disc_ui_locales)
+    issue           = IssueHelper.get_id_of_slug(slug, request, True) if len(slug) > 0 else IssueHelper.get_issue_id(request)
+    disc_ui_locales = get_discussion_language(request, issue)
+    _ddh            = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=main_page, slug=slug)
+    _idh            = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=request.path, history=history)
+    _dh             = DictionaryHelper(ui_locales, disc_ui_locales)
 
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid, main_page, request_authenticated_userid)
     item_dict       = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, nickname, discussion_dict['gender'])
@@ -207,8 +208,16 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, argum
                                               for_api=for_api, nickname=request_authenticated_userid)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0:
-        _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_dont_know=True,
-                                    current_premise=get_text_for_statement_uid(argument_uid))
+        if int(argument_uid) == 0:
+            argument_uid = history.split('/')[-1]
+            if not is_integer(argument_uid):
+                argument_uid = 0
+
+        text = ''
+        if int(argument_uid) != 0:
+            text = get_text_for_statement_uid(argument_uid)
+
+        _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_dont_know=True, current_premise=text)
     return item_dict, discussion_dict, extras_dict
 
 
