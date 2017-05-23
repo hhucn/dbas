@@ -293,7 +293,7 @@ class DiscussionDictHelper(object):
         e = '</' + tag_type + '>'
         statement_list = list()
 
-        if uid != 0:
+        if int(uid) != 0:
             text = get_text_for_argument_uid(uid, rearrange_intro=True, attack_type='dont_know', with_html_tag=True, start_with_intro=True)
             db_argument = DBDiscussionSession.query(Argument).get(uid)
             if not db_argument:
