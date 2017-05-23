@@ -19,8 +19,10 @@ session.configure(bind=dbas_db_configuration('discussion', settings))
 top_count = 5
 flop_count = 5
 start = arrow.get('2017-05-09T05:35:00.000000+00:00')
-end = arrow.get('2017-05-16T07:54:00.000000+00:00')
-
+end = arrow.get('2017-05-23T14:00:00.000000+00:00')
+user_colleagues = ['anonymous', 'Tobias', 'Christian', 'ansel101', 'mamau002', 'chmet101', 'jurom100', 'tokra100',
+                   'luhim001', 'toamf100', 'daneu102', 'hisch100', 'rabio100', 'alsch132']
+db_colleagues = session.query(User).filter(User.nickname.in_(user_colleagues))
 
 def get_weekday(arrow_time):
     return {
@@ -52,6 +54,8 @@ for rep in reputation:
     reputation[rep] = sum([r.reputations.points for r in reputation[rep]])
 sorted_clicks = sorted(clicks.items(), key=lambda x: x[1])
 sorted_reputation = sorted(reputation.items(), key=lambda x: x[1])
+colleagues = sum([1 for user in db_users if user.nickname not in user_colleagues])
+
 print('Users:')
 print('  - count:    {}'.format(len(db_users)))
 print('  - activity: {0:.2f} statement-clicks per user'.format(len(db_clicked_statements) / len(db_users)))
@@ -64,13 +68,22 @@ for t in sorted_clicks[-top_count:]:
 print('  - Top{} sorted by Reputation'.format(top_count))
 for t in sorted_reputation[-top_count:]:
     print('    - {}: {}'.format(t[1], t[0]))
+print('  - Students: {}'.format(colleagues))
+print('  - Colleagues: {}'.format(len(user_colleagues) - 3))
 print('\n')
 
 
 db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).all()
 db_disabled_statements = session.query(Statement).filter(and_(Statement.issue_uid == db_issue.uid, Statement.is_disabled == True)).all()
+db_statements_students =            [statement for statement in db_statements if statement.is_disabled == False and statement.textversions.author_uid not in [user.uid for user in db_colleagues]]
+db_statements_students_disabled =   [statement for statement in db_statements if statement.is_disabled == True and statement.textversions.author_uid not in [user.uid for user in db_colleagues]]
+db_statements_colleagues =          [statement for statement in db_statements if statement.is_disabled == False and statement.textversions.author_uid in [user.uid for user in db_colleagues]]
+db_statements_colleagues_disabled = [statement for statement in db_statements if statement.is_disabled == True and statement.textversions.author_uid in [user.uid for user in db_colleagues]]
 print('Statements:')
-print('  - count / disabled: {} / {}'.format(len(db_statements), len(db_disabled_statements)))
+print('  - count / disabled')
+print('  - by all: {} / {}'.format(len(db_statements), len(db_disabled_statements)))
+print('  - by student: {} / {}'.format(len(db_statements_students), len(db_statements_students_disabled)))
+print('  - by colleagues: {} / {}'.format(len(db_statements_colleagues), len(db_statements_colleagues_disabled)))
 print('\n')
 
 
@@ -279,7 +292,7 @@ for quit_counter in quit_counters:
 print('Activity per Day:')
 for day in range(0, (end - start).days + 1):
     clicks = session.query(History).filter(and_(History.timestamp >= start.replace(days=+day), History.timestamp < start.replace(days=+day + 1))).all()
-    print('  - {}, {}: Page calls = {}'.format(start.replace(days=+day).format('DD-MM-YYYY'), get_weekday(start.replace(days=+day)), len(clicks)))
+    print('  - {}, {}: Page clicks = {}'.format(start.replace(days=+day).format('DD-MM-YYYY'), get_weekday(start.replace(days=+day)), len(clicks)))
 print('\n')
 
 
