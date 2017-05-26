@@ -253,8 +253,8 @@ def get_doj_user(user_id, discussion_id):
     db_click_rej_arg = db_click_args.filter(ClickedArgument.is_up_vote == False).all()
 
     # acceptd/rejected statements
-    accepted_statements = [s.uid for s in db_click_acc_stat]
-    rejected_statements = [s.uid for s in db_click_rej_stat]
+    accepted_statements = [s.statement_uid for s in db_click_acc_stat]
+    rejected_statements = [s.statement_uid for s in db_click_rej_stat]
 
     # clicked arguments, which are undercuts
     db_rej_arg = DBDiscussionSession.query(Argument).filter(Argument.uid.in_([s.uid for s in db_click_acc_arg]),
@@ -274,9 +274,9 @@ def get_doj_user(user_id, discussion_id):
                 rejected_statements += [db_arg.conclusion_uid]
 
     return {
-        'marked_statements': list(set([s.uid for s in db_star_stat])),
-        'marked_arguments': list(set([s.uid for s in db_star_arg])),
-        'rejected_arguments': list(set([s.uid for s in db_rej_arg] + [s.uid for s in db_click_rej_arg])),
+        'marked_statements': list(set([s.statement_uid for s in db_star_stat])),
+        'marked_arguments': list(set([s.argument_uid for s in db_star_arg])),
+        'rejected_arguments': list(set([s.uid for s in db_rej_arg] + [s.argument_uid for s in db_click_rej_arg])),
         'accepted_statements_via_click': list(set(accepted_statements)),
         'rejected_statements_via_click': list(set(rejected_statements)),
     }
