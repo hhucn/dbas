@@ -24,6 +24,7 @@ user_colleagues = ['anonymous', 'Tobias', 'Christian', 'ansel101', 'mamau002', '
                    'luhim001', 'toamf100', 'daneu102', 'hisch100', 'rabio100', 'alsch132']
 db_colleagues = session.query(User).filter(User.nickname.in_(user_colleagues))
 
+
 def get_weekday(arrow_time):
     return {
         0: 'Mo', 1: 'Tu', 2: 'We', 3: 'Th', 4: 'Fr', 5: 'Sa', 6: 'Su',
@@ -75,9 +76,9 @@ print('\n')
 
 db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).all()
 db_disabled_statements = session.query(Statement).filter(and_(Statement.issue_uid == db_issue.uid, Statement.is_disabled == True)).all()
-db_statements_students =            [statement for statement in db_statements if statement.is_disabled == False and statement.textversions.author_uid not in [user.uid for user in db_colleagues]]
-db_statements_students_disabled =   [statement for statement in db_statements if statement.is_disabled == True and statement.textversions.author_uid not in [user.uid for user in db_colleagues]]
-db_statements_colleagues =          [statement for statement in db_statements if statement.is_disabled == False and statement.textversions.author_uid in [user.uid for user in db_colleagues]]
+db_statements_students = [statement for statement in db_statements if statement.is_disabled == False and statement.textversions.author_uid not in [user.uid for user in db_colleagues]]
+db_statements_students_disabled = [statement for statement in db_statements if statement.is_disabled == True and statement.textversions.author_uid not in [user.uid for user in db_colleagues]]
+db_statements_colleagues = [statement for statement in db_statements if statement.is_disabled == False and statement.textversions.author_uid in [user.uid for user in db_colleagues]]
 db_statements_colleagues_disabled = [statement for statement in db_statements if statement.is_disabled == True and statement.textversions.author_uid in [user.uid for user in db_colleagues]]
 print('Statements:')
 print('  - count / disabled')
