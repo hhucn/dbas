@@ -121,7 +121,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                  'edge_virtual_node': 45
          };
     }
-    
+
     function setSlider(){
         var slider = $('#graph-slider');
         var start_date_ms = slider.data('start-ms');
@@ -242,7 +242,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         } else {
         	$('#global-view').show();
         }
-        
+
         // show or hide my path
 	    $('#hide-my-path').hide();
         if (jsonData.path.length === 0) {
@@ -263,7 +263,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         size.rel_node_factor = {};
         //size.rel_node_factor = 'node_doj_factors' in jsonData ? jsonData.node_doj_factors : {};
         //size.rel_node_factor = 'node_opinion_factors' in jsonData? jsonData.node_opinion_factors : {};
-	    
+
         // height of the header (offset per line count)
         var offset = ($('#' + graphViewContainerHeaderId).outerHeight() / 26 - 1 ) * 26;
 
@@ -364,7 +364,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             // update position of nodes
             setPositionOfCircles(jsonData);
             // update position of edges
-            setPositionOfLinks(jsonData);
+            setPositionOfLinks();
             // update position of rect
             rect.attr("transform", function (d) {
                 return "translate(" + d.x + "," + (d.y - 50) + ")";
@@ -374,7 +374,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 return "translate(" + d.x + "," + (d.y - 50) + ")";
             });
         }
-	    
+
         setSlider();
     }
 
@@ -978,7 +978,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(true);
         	}
         });
-        
+
         var mapper = {
             'labels': [showLabels, hideLabels],
             'positions': [showPositions, hidePositions],
@@ -987,7 +987,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             'supports-on-my-statements': [showSupportsOnMyStatements, hideSupportsOnMyStatements],
             'attacks-on-my-statements': [showAttacksOnMyStatements, hideAttacksOnMyStatements]
         };
-        
+
         // get all buttons in the sidebar
         $('#graph-view-container').find('.sidebar').find('li').each(function(index, element){
             var id =  $(element).attr('id');
@@ -1007,16 +1007,16 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 	            });
             }
         });
-        
+
         $('#show-my-path').click(function(){
             showPath(jsonData);
         });
-        
+
         $('#hide-my-path').click(function(){
             hidePath();
         });
     }
-	
+
     /**
      * Restore initial state of graph.
      *
@@ -1058,7 +1058,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         hideSupportsOnMyStatements();
         hideAttacksOnMyStatements();
     }
-    
+
     function resetSlider(){
         var slider = $('#graph-slider');
         slider.slider('setValue', slider.data('slider-max'));
@@ -1316,14 +1316,12 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             showSupportsOnMyStatements();
         }
     }
-	
+
 	/**
      *
 	 * @param new_limit
 	 */
 	function showNodesUntilMoment(new_limit){
-	    //deleteBorderOfCircle();
-	    //highlightAllElements();
         var tmp_edges = edges;
         edges.forEach(function (edge) {
             var edge_source_timestamp = parseInt(edge.source.timestamp) * 1000;
@@ -1358,10 +1356,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 circleIds.push(selectUid(d.id));
             }
         });
-        
+
         showPartOfGraph(circleIds);
     }
-	
+
     /**
      * Show current path.
      *
@@ -1578,7 +1576,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         return splitted[splitted.length - 1];
     }
 
-    
+
     /**
      * Highlight incoming and outgoing edges of selected node.
      *
@@ -1620,7 +1618,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         });
     }
 
-    
+
     /**
      * Highlight incoming and outgoing edges of selected node.
      *
@@ -1749,7 +1747,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 	    highlightEdgeSource(edge);
 	    hightlightEdgeTarget(edge);
     }
-	
+
 	/**
 	 *
 	 * @param edge
@@ -1758,7 +1756,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         d3.select('#link-' + edge.id).style('stroke', edge.color);
         d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
     }
-	
+
 	/**
 	 *
 	 * @param edge
@@ -1769,7 +1767,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             d3.select('#circle-' + edge.source.id).attr({fill: edge.source.color, stroke: 'black'});
         }
     }
-	
+
 	/**
 	 *
 	 * @param edge
