@@ -691,7 +691,8 @@ function Main () {
 					text.push($(this).val());
 				}
 			});
-			var add = window.location.href.indexOf('support') !== -1 ? 1 : 0;
+			var url = window.location.href.split('?')[0];
+			var add = url.indexOf('support') !== -1 ? 1 : 0;
 			arg = splits[splits.length - 3 - add];
 			supportive = splits[splits.length - 2 - add] === 't';
 			relation = splits[splits.length - 1 - add];
