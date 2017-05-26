@@ -43,7 +43,7 @@ def get_d3_complete_dump(request):
     return_dict = graph
     return_dict.update({'type': 'complete'})
     if not error:
-        # return_dict.update({'node_doj_factors': get_doj_data(issue)})
+        # return_dict.update({'node_doj_factors': get_doj_nodes(issue)})
         # return_dict.update({'node_opinion_factors': get_opinion_data(issue)})
         return_dict.update({'path': get_path_of_user(request.application_url, path, issue)})
         return_dict.update({'error': ''})

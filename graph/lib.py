@@ -117,21 +117,21 @@ def get_doj_data(issue):
     :param issue:
     :return:
     """
-    logger('Graph.lib', 'get_doj_data', 'main')
+    logger('Graph.lib', 'get_doj_nodes', 'main')
     url = 'http://localhost:5101/evaluate/dojs?issue=' + str(issue)
     try:
         resp = requests.get(url)
     except Exception as e:
-        logger('Graph.lib', 'get_doj_data', 'Error: ' + str(e), error=True)
-        logger('Graph.lib', 'get_doj_data', 'return empty doj')
+        logger('Graph.lib', 'get_doj_nodes', 'Error: ' + str(e), error=True)
+        logger('Graph.lib', 'get_doj_nodes', 'return empty doj')
         return {}
 
     if resp.status_code == 200:
         doj = json.loads(resp.text)
         return doj['dojs'] if 'dojs' in doj else {}
     else:
-        logger('Graph.lib', 'get_doj_data', 'status ' + str(resp.status_code), error=True)
-        logger('Graph.lib', 'get_doj_data', 'return empty doj')
+        logger('Graph.lib', 'get_doj_nodes', 'status ' + str(resp.status_code), error=True)
+        logger('Graph.lib', 'get_doj_nodes', 'return empty doj')
         return {}
 
 
