@@ -180,7 +180,7 @@ function GuiHandler() {
 			speechBubbles.css({'background': '#fff'});
 			return;
 		}
-		if (height > maxHeight) {
+		if (height > maxHeight && maxHeight > 0) {
 			if (maxHeight < maxHeightOfBubbleSpace) {
 				maxHeight = maxHeightOfBubbleSpace;
 			}
@@ -223,7 +223,6 @@ function GuiHandler() {
 	 * Hides the 'add position'-container
 	 */
 	this.hideAddPositionContainer = function () {
-		console.log('b');
 		$('#' + addStatementContainerId).hide();
 		$('#' + discussionSpaceListId).find('li:last-child input').prop('checked', false);
 	};
@@ -232,7 +231,6 @@ function GuiHandler() {
 	 * Hides the 'add premise'-container
 	 */
 	this.hideAddPremiseContainer = function () {
-		console.log('c');
 		$('#' + addPremiseContainerId).hide();
 		$('#' + discussionSpaceListId).find('li:last-child input').prop('checked', false);
 	};
@@ -284,7 +282,7 @@ function GuiHandler() {
 			} else if (type === fuzzy_start_premise) {
 				new AjaxDiscussionHandler().sendNewStartPremise(decided_texts, conclusion, supportive);
 			} else {
-				alert("Todo: unknown type");
+				console.log("Todo: unknown type");
 			}
 			$('#' + popupSetPremiseGroups).modal('hide');
 		});

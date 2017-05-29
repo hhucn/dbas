@@ -328,7 +328,7 @@ function News() {
 	 * Sharing shortened url via mail
 	 */
 	this.mailShare = function (_this) {
-		if (typeof $(_this) === undefined){
+		if (typeof $(_this) === 'undefined'){
 			return;
 		}
 		if ($(_this).attr('id') === shareUrlButtonMail) {
@@ -346,7 +346,7 @@ function News() {
 	 * Sharing shortened url on google
 	 */
 	this.googleShare = function (_this) {
-		if (typeof $(_this) === undefined){
+		if (typeof $(_this) === 'undefined'){
 			return;
 		}
 		if ($(_this).attr('id') === shareUrlButtonGoogle) {
@@ -360,7 +360,7 @@ function News() {
 	 * Sharing shortened url on facebook
 	 */
 	this.facebookShare = function (_this) {
-		if (typeof $(_this) === undefined){
+		if (typeof $(_this) === 'undefined'){
 			return;
 		}
 		if ($(_this).attr('id') === shareUrlButtonFacebook) {
@@ -379,7 +379,7 @@ function News() {
 	 * Sharing shortened url on twitter
 	 */
 	this.twitterShare = function (_this) {
-		if (typeof $(_this) === undefined){
+		if (typeof $(_this) === 'undefined'){
 			return;
 		}
 		if ($(_this).attr('id') === shareUrlButtonTwitter) {

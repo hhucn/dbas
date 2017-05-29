@@ -188,7 +188,7 @@ def add_review_opinion_for_edit(request, nickname, is_edit_okay, review_uid, _t,
         db_review.set_executed(True)
         db_review.update_timestamp()
 
-    elif count_of_dont_edit - count_of_dont_edit >= min_difference:  # decline edit
+    elif count_of_dont_edit - count_of_edit >= min_difference:  # decline edit
         add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_edit)
         db_review.set_executed(True)
         db_review.update_timestamp()
@@ -373,8 +373,7 @@ def __proposal_for_the_element(db_review, data, db_user):
             else:
                 statement_dict[d['statement']] = [d]
 
-    logger('review_main_helper', 'add_review_opinion_for_optimization',
-           'statements ' + str(statement_dict) + ', argument ' + str(argument_dict))
+    logger('review_main_helper', 'add_review_opinion_for_optimization', 'detector {}, statements {}, arguments {}'.format(db_user.uid, statement_dict, argument_dict))
 
     # add reviews
     new_edits = list()

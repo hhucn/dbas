@@ -16,10 +16,10 @@ from sqlalchemy import and_
 settings = add_settings_to_appconfig()
 session.configure(bind=dbas_db_configuration('discussion', settings))
 
-top_count = 3
+top_count = 5
 flop_count = 5
-start = arrow.get('2017-01-26T00:00:00.000000+00:00')
-end = arrow.get('2017-02-06T23:59:59.000000+00:00')
+start = arrow.get('2017-05-09T05:35:00.000000+00:00')
+end = arrow.get('2017-05-16T07:54:00.000000+00:00')
 
 
 def get_weekday(arrow_time):
@@ -188,7 +188,7 @@ db_review_duplicates    = session.query(ReviewDuplicate).all()
 db_review_edits         = [review for review in db_review_edits if (session.query(Statement).get(review.statement_uid).issue_uid == db_issue.uid if review.statement_uid is not None else session.query(Argument).get(review.argument_uid).issue_uid == db_issue.uid)]
 db_review_deletes       = [review for review in db_review_deletes if (session.query(Statement).get(review.statement_uid).issue_uid == db_issue.uid if review.statement_uid is not None else session.query(Argument).get(review.argument_uid).issue_uid == db_issue.uid)]
 db_review_optimizations = [review for review in db_review_optimizations if (session.query(Statement).get(review.statement_uid).issue_uid == db_issue.uid if review.statement_uid is not None else session.query(Argument).get(review.argument_uid).issue_uid == db_issue.uid)]
-db_review_duplicates    = [review for review in db_review_duplicates if (session.query(Statement).get(review.statement_uid).issue_uid == db_issue.uid if review.statement_uid is not None else session.query(Argument).get(review.argument_uid).issue_uid == db_issue.uid)]
+db_review_duplicates    = [review for review in db_review_duplicates if (session.query(Statement).get(review.original_statement_uid).issue_uid == db_issue.uid if review.original_statement_uid is not None else session.query(Argument).get(review.argument_uid).issue_uid == db_issue.uid)]
 print('Reviews (Queue/executed/revoked):')
 print('  - edits:         {} / {} / {}'.format(len(db_review_edits), len([review for review in db_review_edits if review.is_executed]), len([review for review in db_review_edits if review.is_revoked])))
 print('  - deletes:       {} / {} / {}'.format(len(db_review_deletes), len([review for review in db_review_deletes if review.is_executed]), len([review for review in db_review_deletes if review.is_revoked])))
@@ -283,6 +283,7 @@ for day in range(0, (end - start).days + 1):
 print('\n')
 
 
+# use tables to suppress Flake8
 session.query(Issue).all()
 session.query(Language).all()
 session.query(Group).all()

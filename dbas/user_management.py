@@ -20,9 +20,9 @@ from dbas.helper.notification import send_welcome_notification
 from dbas.lib import python_datetime_pretty_print, get_text_for_argument_uid,\
     get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture
 from dbas.logger import logger
-from dbas.review.helper.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+from dbas.review.helper.reputation import get_reputation_of
 
 # from https://moodlist.net/
 moodlist = ['Accepted', 'Accomplished', 'Aggravated', 'Alone', 'Amused', 'Angry', 'Annoyed', 'Anxious', 'Apathetic',
@@ -233,10 +233,10 @@ def get_public_information_data(nickname, lang):
     return_dict['labelinfo4'] = _tn.get(_.editIndexInfo)
 
     for days_diff in range(30, -1, -1):
-        date_begin  = date.today() - timedelta(days=days_diff)
-        date_end    = date.today() - timedelta(days=(days_diff - 1))
-        begin       = arrow.get(date_begin.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
-        end         = arrow.get(date_end.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
+        date_begin = date.today() - timedelta(days=days_diff)
+        date_end = date.today() - timedelta(days=days_diff - 1)
+        begin = arrow.get(date_begin.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
+        end = arrow.get(date_end.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
 
         ts = python_datetime_pretty_print(date_begin, lang)
         labels_decision_30.append(ts)
@@ -285,11 +285,11 @@ def get_reviews_of(user, only_today):
     db_duplicates = DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=user.uid)
 
     if only_today:
-        today       = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
+        today = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
         db_edits = db_edits.filter(ReviewEdit.timestamp >= today)
         db_deletes = db_deletes.filter(ReviewDelete.timestamp >= today)
         db_optimizations = db_optimizations.filter(ReviewOptimization.timestamp >= today)
-        db_duplicates = ReviewDuplicate.filter(ReviewOptimization.timestamp >= today)
+        db_duplicates = DBDiscussionSession.query(ReviewDuplicate).filter(ReviewOptimization.timestamp >= today)
 
     db_edits = db_edits.all()
     db_deletes = db_deletes.all()
@@ -311,11 +311,11 @@ def get_count_of_statements_of_user(user, only_edits, limit_on_today=False):
     if not user:
         return 0
 
-    edit_count      = 0
+    edit_count = 0
     statement_count = 0
     db_textversions = DBDiscussionSession.query(TextVersion).filter_by(author_uid=user.uid)
     if limit_on_today:
-        today       = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
+        today = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
         db_textversions = db_textversions.filter(TextVersion.timestamp >= today)
     db_textversions = db_textversions.all()
 
@@ -344,7 +344,7 @@ def get_count_of_votes_of_user(user, limit_on_today=False):
     db_stat = DBDiscussionSession.query(MarkedStatement).filter(ClickedStatement.author_uid == user.uid)
 
     if limit_on_today:
-        today       = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
+        today = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
         db_arg = db_arg.filter(ClickedArgument.timestamp >= today)
         db_stat = db_stat.filter(ClickedStatement.timestamp >= today)
 
@@ -369,7 +369,7 @@ def get_count_of_clicks_of_user(user, limit_on_today=False):
     db_stat = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == user.uid)
 
     if limit_on_today:
-        today       = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
+        today = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
         db_arg = db_arg.filter(ClickedArgument.timestamp >= today)
         db_stat = db_stat.filter(ClickedStatement.timestamp >= today)
 
@@ -515,32 +515,39 @@ def get_information_of(db_user, lang):
     ret_dict = dict()
     ret_dict['public_nick'] = db_user.get_global_nickname()
     ret_dict['last_action'] = sql_timestamp_pretty_print(db_user.last_action, lang)
-    ret_dict['last_login']  = sql_timestamp_pretty_print(db_user.last_login, lang)
-    ret_dict['registered']  = sql_timestamp_pretty_print(db_user.registered, lang)
-    ret_dict['group']       = db_group.name[0:1].upper() + db_group.name[1:-1]
+    ret_dict['last_login'] = sql_timestamp_pretty_print(db_user.last_login, lang)
+    ret_dict['registered'] = sql_timestamp_pretty_print(db_user.registered, lang)
+    ret_dict['group'] = db_group.name[0:1].upper() + db_group.name[1:-1]
 
-    ret_dict['is_male']     = db_user.gender == 'm'
-    ret_dict['is_female']   = db_user.gender == 'f'
-    ret_dict['is_neutral']  = db_user.gender != 'm' and db_user.gender != 'f'
+    ret_dict['is_male'] = db_user.gender == 'm'
+    ret_dict['is_female'] = db_user.gender == 'f'
+    ret_dict['is_neutral'] = db_user.gender != 'm' and db_user.gender != 'f'
 
     arg_vote, stat_vote = get_count_of_votes_of_user(db_user, True)
+    db_reviews_duplicate = DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=db_user.uid).all()
+    db_reviews_edit = DBDiscussionSession.query(ReviewEdit).filter_by(detector_uid=db_user.uid).all()
+    db_reviews_delete = DBDiscussionSession.query(ReviewDelete).filter_by(detector_uid=db_user.uid).all()
+    db_reviews_optimization = DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=db_user.uid).all()
+    db_reviews = db_reviews_duplicate + db_reviews_edit + db_reviews_delete + db_reviews_optimization
 
-    statements, edits                       = get_textversions_of_user(db_user.public_nickname, lang)
-    ret_dict['statements_posted']           = len(statements)
-    ret_dict['edits_done']                  = len(edits)
-    ret_dict['discussion_arg_votes']        = arg_vote
-    ret_dict['discussion_stat_votes']       = stat_vote
-    ret_dict['avatar_url']                  = get_profile_picture(db_user, 120)
-    ret_dict['discussion_stat_rep'], trash  = get_reputation_of(db_user.nickname)
+    statements, edits = get_textversions_of_user(db_user.public_nickname, lang)
+    ret_dict['statements_posted'] = len(statements)
+    ret_dict['edits_done'] = len(edits)
+    ret_dict['reviews_proposed'] = len(db_reviews)
+    ret_dict['discussion_arg_votes'] = arg_vote
+    ret_dict['discussion_stat_votes'] = stat_vote
+    ret_dict['avatar_url'] = get_profile_picture(db_user, 120)
+    ret_dict['discussion_stat_rep'], trash = get_reputation_of(db_user.nickname)
 
     return ret_dict
 
 
-def get_summary_of_today(nickname):
+def get_summary_of_today(nickname, lang):
     """
     Returns summary of todays actions
 
     :param nickname: User.nickname
+    :param lang: ui_locales
     :return: dict()
     """
     ret_dict = dict()
@@ -551,14 +558,19 @@ def get_summary_of_today(nickname):
 
     arg_vote, stat_vote = get_count_of_votes_of_user(db_user, True)
     arg_clicks, stat_clicks = get_count_of_clicks_of_user(db_user, True)
+    reputation, tmp = get_reputation_of(nickname, True)
+    timestamp = arrow.utcnow().to('Europe/Berlin')
 
-    ret_dict['statements_posted']      = get_count_of_statements_of_user(db_user, False, True)
-    ret_dict['edits_done']             = get_count_of_statements_of_user(db_user, True, True)
-    ret_dict['discussion_arg_votes']   = arg_vote
-    ret_dict['discussion_stat_votes']  = stat_vote
-    ret_dict['discussion_arg_clicks']  = arg_clicks
+    ret_dict['firstname'] = db_user.firstname
+    ret_dict['date'] = timestamp.format('YYYY-MM-DD') if lang == 'en' else timestamp.format('DD.MM.')
+    ret_dict['statements_posted'] = get_count_of_statements_of_user(db_user, False, True)
+    ret_dict['edits_done'] = get_count_of_statements_of_user(db_user, True, True)
+    ret_dict['discussion_arg_votes'] = arg_vote
+    ret_dict['discussion_stat_votes'] = stat_vote
+    ret_dict['discussion_arg_clicks'] = arg_clicks
     ret_dict['discussion_stat_clicks'] = stat_clicks
-    ret_dict['statements_reported']    = get_reviews_of(db_user, True)
+    ret_dict['statements_reported'] = get_reviews_of(db_user, True)
+    ret_dict['reputation_colltected'] = reputation
 
     return ret_dict
 

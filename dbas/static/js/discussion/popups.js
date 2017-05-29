@@ -162,6 +162,11 @@ function PopupHandler() {
 			popup.find('#dupl').prev().hide();
 			popup.find('#dupl').next().hide();
 			popup.find('#dupl').hide();
+			
+			// do not mark arguments for optimizations
+			popup.find('fieldset').children().eq(0).hide();
+			popup.find('fieldset').children().eq(1).hide();
+			popup.find('fieldset').children().eq(2).hide();
 		} else {
 			popup.find('.statement_text').show();
 			popup.find('.argument_text').hide();
@@ -170,16 +175,29 @@ function PopupHandler() {
 			popup.find('#dupl').next().show();
 			popup.find('#dupl').show();
 		}
+		
 		popup.modal('show');
 		popup.on('hide.bs.modal', function () {
 			popup.find('input').off('click').unbind('click');
 		});
+		
+		popup.on('hidden.bs.modal', function () {
+			popup.find('fieldset').children().eq(0).show();
+			popup.find('fieldset').children().eq(1).show();
+			popup.find('fieldset').children().eq(2).show();
+		});
+		
 		popup.find('input').not('#dupl').click(function () {
 			var reason = $(this).attr('value');
+			if (reason === 'optimization' && is_argument){
+				// do not mark arguments for optimizations
+				return false;
+			}
 			new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, is_argument, null);
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
 		});
+		
 		popup.find('#dupl').click(function () {
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
@@ -320,7 +338,6 @@ function PopupHandler() {
 	 * @param reason
 	 */
 	this.showPopupForSelectingDuplicateFromPrgroup = function(uid, reason){
-		console.log(reason);
 		var popup = $('#popup-choose-statement');
 		var body = $('#popup-choose-statement-radios');
 		body.empty();
@@ -367,7 +384,7 @@ function PopupHandler() {
 		var input = $('#popup-duplicate-statement-text-search');
 		input.on('keyup', function(){
 			var escapedText = escapeHtml($(this).val());
-			new AjaxDiscussionHandler().fuzzySearchForDuplicate(escapedText, fuzzy_add_reason, text);
+			new AjaxDiscussionHandler().fuzzySearchForDuplicate(escapedText, fuzzy_duplicate, text);
 		});
 		
 		// dropdown

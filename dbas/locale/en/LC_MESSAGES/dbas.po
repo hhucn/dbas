@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-05-08 21:31+0200\n"
+"POT-Creation-Date: 2017-05-19 15:03+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -694,7 +694,7 @@ msgid "copyright_and_used_software"
 msgstr "Used Software"
 
 #. Default: Changes
-#: templates/imprint.pt:87
+#: templates/imprint.pt:88
 msgid "changes"
 msgstr "Changelog"
 
@@ -906,7 +906,7 @@ msgstr "Undo"
 #. Default: Cancel
 #: templates/review-history.pt:96 templates/snippet-popups.pt:172
 #: templates/snippet-popups.pt:195 templates/snippet-popups.pt:220
-#: templates/snippet-popups.pt:1097
+#: templates/snippet-popups.pt:1094
 msgid "cancel"
 msgstr "Cancel"
 
@@ -1070,7 +1070,7 @@ msgstr ""
 
 #. Default: Okay
 #: templates/snippet-popups.pt:171 templates/snippet-popups.pt:194
-#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1096
+#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1093
 msgid "okay"
 msgstr "Okay"
 
@@ -1362,7 +1362,7 @@ msgid "statement_under_consideration_is"
 msgstr "The statement under consideration is as follows"
 
 #. Default: The argument under consideration is as follows
-#: templates/snippet-popups.pt:828 templates/snippet-popups.pt:887
+#: templates/snippet-popups.pt:828 templates/snippet-popups.pt:884
 msgid "argument_under_consideration_is"
 msgstr "The argument under consideration is as follows"
 
@@ -1385,130 +1385,130 @@ msgstr ""
 "This argument is acceptable but it needs correction for spelling/grammar."
 
 #. Default: This statement is off topic or irrelevant.
-#: templates/snippet-popups.pt:843
+#: templates/snippet-popups.pt:842
 msgid "statement_offtopic_or_irrelevant"
 msgstr "This statement is off topic or irrelevant."
 
 #. Default: This statement does not belong to the topic under discussion.
-#: templates/snippet-popups.pt:844
+#: templates/snippet-popups.pt:843
 msgid "statement_offtopic_or_irrelevant_description"
 msgstr "This statement does not belong to the topic under discussion."
 
 #. Default: This argument is off topic or irrelevant.
-#: templates/snippet-popups.pt:845
+#: templates/snippet-popups.pt:844
 msgid "argument_offtopic_or_irrelevant"
 msgstr "This argument is off topic or irrelevant."
 
 #. Default: This argument does not belong to the topic under discussion.
-#: templates/snippet-popups.pt:846
+#: templates/snippet-popups.pt:845
 msgid "argument_offtopic_or_irrelevant_description"
 msgstr "This argument does not belong to the topic under discussion."
 
 #. Default: This statement is harmful or abusive.
-#: templates/snippet-popups.pt:859
+#: templates/snippet-popups.pt:857
 msgid "statement_harmful"
 msgstr "This statement is harmful or abusive."
 
 #. Default: This argument is harmful or abusive.
-#: templates/snippet-popups.pt:860
+#: templates/snippet-popups.pt:858
 msgid "argument_harmful"
 msgstr "This argument is harmful or abusive."
 
 #. Default: A reasonable person would find this content inappropriate for
 #. respectful discourse.
-#: templates/snippet-popups.pt:861
+#: templates/snippet-popups.pt:859
 msgid "argument_statement_harmful_description"
 msgstr ""
 "A reasonable person would find this content inappropriate for respectful "
 "discourse."
 
 #. Default: This statement is a duplicate.
-#: templates/snippet-popups.pt:867
+#: templates/snippet-popups.pt:864
 msgid "this_statement_duplicate"
 msgstr "This statement is a duplicate."
 
 #. Default: This statement has been done before in a slightly different
 #. wording.
-#: templates/snippet-popups.pt:868
+#: templates/snippet-popups.pt:865
 msgid "this_statement_duplicate_description"
 msgstr "This statement has been done before in a slightly different wording."
 
 #. Default: Reporting (parts of) an argument
-#: templates/snippet-popups.pt:884
+#: templates/snippet-popups.pt:881
 msgid "reporting_parts_argument"
 msgstr "Reporting (parts of) an argument"
 
 #. Default: Please choose which part of the argument you want to report
-#: templates/snippet-popups.pt:889
+#: templates/snippet-popups.pt:886
 msgid "please_choose_part_to_report"
 msgstr "Please choose which part of the argument you want to report"
 
 #. Default: Report
-#: templates/snippet-popups.pt:896
+#: templates/snippet-popups.pt:893
 msgid "report"
 msgstr "Report"
 
 #. Default: Report the whole argument.
-#: templates/snippet-popups.pt:908
+#: templates/snippet-popups.pt:905
 msgid "report_whole_argument"
 msgstr "Report the whole argument."
 
 #. Default: Caution
-#: templates/snippet-popups.pt:984
+#: templates/snippet-popups.pt:981
 msgid "caution"
 msgstr "Caution"
 
 #. Default: Do you really want to disassociate yourself from your content? This
 #. step is irreversible! Subsequently you will not be the author of this
 #. statement anymore!
-#: templates/snippet-popups.pt:989
+#: templates/snippet-popups.pt:986
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 "Do you really want to disassociate yourself from your content? This step is "
 "irreversible! Subsequently you will not be the author of this"
 
 #. Default: Please choose a step to jump in
-#: templates/snippet-popups.pt:1006
+#: templates/snippet-popups.pt:1003
 msgid "choose_a_step_to_jump_in"
 msgstr "Please choose a step to jump in"
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: templates/snippet-popups.pt:1009
+#: templates/snippet-popups.pt:1006
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr ""
 "Below you find a list with all arguments, where your selected text is used:"
 
 #. Default: References
-#: templates/snippet-popups.pt:1026
+#: templates/snippet-popups.pt:1023
 msgid "refereces"
 msgstr "References"
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: templates/snippet-popups.pt:1034
+#: templates/snippet-popups.pt:1031
 msgid "statement_reference_definition"
 msgstr ""
 "Statement is a cite from a website like a newspaper article, which underpins "
 "the opinion. The source is the website as link."
 
 #. Default: Statement
-#: templates/snippet-popups.pt:1037 templates/snippet-popups.pt:1058
+#: templates/snippet-popups.pt:1034 templates/snippet-popups.pt:1055
 msgid "statement"
 msgstr "Statement"
 
 #. Default: Source
-#: templates/snippet-popups.pt:1043
+#: templates/snippet-popups.pt:1040
 msgid "source"
 msgstr "Source"
 
 #. Default: Please choose a statement for your reference!
-#: templates/snippet-popups.pt:1048
+#: templates/snippet-popups.pt:1045
 msgid "please_choose_a_reference"
 msgstr "Please choose a statement for your reference!"
 
 #. Default: Add reference
-#: templates/snippet-popups.pt:1063
+#: templates/snippet-popups.pt:1060
 msgid "add_reference"
 msgstr "Add reference"
 
@@ -1608,45 +1608,45 @@ msgid "discussion_stat"
 msgstr "Discussion Statistics"
 
 #. Default: Statements posted
-#: templates/settings.pt:125 templates/settings.pt:280 templates/finish.pt:26
+#: templates/settings.pt:125 templates/settings.pt:280 templates/finish.pt:29
 #: templates/user.pt:41
 msgid "statements_posted"
 msgstr "Statements posted"
 
 #. Default: Edits done
-#: templates/settings.pt:132 templates/settings.pt:287 templates/finish.pt:30
+#: templates/settings.pt:132 templates/settings.pt:287 templates/finish.pt:33
 #: templates/user.pt:45
 msgid "edits_done"
 msgstr "Edits done"
 
 #. Default: Clicks for Arguments
-#: templates/settings.pt:139 templates/settings.pt:294 templates/finish.pt:46
+#: templates/settings.pt:139 templates/settings.pt:294 templates/finish.pt:58
 msgid "discussion_clicked_statements"
 msgstr "Clicked Arguments"
 
 #. Default: Clicks for Statements
-#: templates/settings.pt:146 templates/settings.pt:301 templates/finish.pt:50
+#: templates/settings.pt:146 templates/settings.pt:301 templates/finish.pt:62
 msgid "discussion_clicked_arguments"
 msgstr "Clicked Statements"
 
 #. Default: Votes for Statements
 #. Default: Votes for Arguments
-#: templates/settings.pt:157 templates/settings.pt:308 templates/finish.pt:38
-#: templates/user.pt:49
+#: templates/settings.pt:157 templates/settings.pt:308 templates/finish.pt:50
+#: templates/user.pt:53
 msgid "discussion_votes_statements"
 msgstr "Marked Arguments"
 
 #. Default: Votes for Arguments
 #. Default: Votes for Statements
-#: templates/settings.pt:164 templates/settings.pt:315 templates/finish.pt:42
-#: templates/user.pt:53
+#: templates/settings.pt:164 templates/settings.pt:315 templates/finish.pt:54
+#: templates/user.pt:57
 msgid "discussion_votes_arguments"
 msgstr "Marked Statements"
 
 #. Default: Reputation
 #: templates/settings.pt:171 templates/settings.pt:322
 #: templates/review-reputation.pt:9 templates/review-reputation.pt:27
-#: templates/user.pt:57
+#: templates/user.pt:61
 msgid "reputation"
 msgstr "Reputation"
 
@@ -1762,10 +1762,10 @@ msgstr "Great:"
 msgid "message_sent"
 msgstr "Your message was sent."
 
-#. Default: Thank you!
+#. Default: Thank you
 #: templates/finish.pt:7
 msgid "thank_you"
-msgstr "Thank you!"
+msgstr "Thank you"
 
 #. Default: Your participation in this discussion was saved and will be used
 #. for evaluation later. If you have any questions, please do not hesitat to
@@ -1786,19 +1786,24 @@ msgid "todays_summary"
 msgstr "Todays Summary"
 
 #. Default: Statements reported
-#: templates/finish.pt:34
+#: templates/finish.pt:37
 msgid "statements_reported"
 msgstr "Statements reported"
 
+#. Default: Collected reputation
+#: templates/finish.pt:42
+msgid "reputation_colltected"
+msgstr "Collected reputation"
+
 #. Default: Let's go home!
-#: templates/finish.pt:64
+#: templates/finish.pt:78
 msgid "lets_go_home"
-msgstr "Let's go home!"
+msgstr "Let's go home"
 
 #. Default: Back to the discussion!
-#: templates/finish.pt:67
+#: templates/finish.pt:81
 msgid "back_to_the_discussion"
-msgstr "Back to the discussion!"
+msgstr "Back to the discussion"
 
 #. Default: Reputation count
 #: templates/review-reputation.pt:15
@@ -1872,27 +1877,27 @@ msgid "to"
 msgstr "To:"
 
 #. Default: JavaScript is not enabled:
-#: templates/basetemplate.pt:28
+#: templates/basetemplate.pt:29
 msgid "js_disabled1"
 msgstr "JavaScript is not enabled:"
 
 #. Default: Please enable JavaScript!
-#: templates/basetemplate.pt:29
+#: templates/basetemplate.pt:30
 msgid "js_disabled2"
 msgstr "Please enable JavaScript!"
 
 #. Default: Your request failed!
-#: templates/basetemplate.pt:35
+#: templates/basetemplate.pt:36
 msgid "request_failed"
 msgstr "Your request failed!"
 
 #. Default: Please reload the page.
-#: templates/basetemplate.pt:36
+#: templates/basetemplate.pt:37
 msgid "please_reload"
 msgstr "Please reload the page."
 
 #. Default: Your request succeded!
-#: templates/basetemplate.pt:42 templates/basetemplate.pt:43
+#: templates/basetemplate.pt:43 templates/basetemplate.pt:44
 msgid "request_success"
 msgstr "Your request succeded!"
 
@@ -1921,6 +1926,11 @@ msgstr "Registered"
 msgid "profile_picture_of"
 msgstr "Profile Picture of"
 
+#. Default: Reviews proposed
+#: templates/user.pt:49
+msgid "reviews_proposed"
+msgstr "Reviews proposed"
+
 #. Default: more infos
 #: templates/content.pt:11 templates/content.pt:18
 msgid "more_infos"
@@ -1936,60 +1946,66 @@ msgstr "Switch Topic"
 msgid "restart_discussion"
 msgstr "Restart"
 
-#. Default: Show all statements
-#: templates/content.pt:153
-msgid "show_all_statements"
-msgstr "Show all statements"
+#. Default: Start
+#: templates/content.pt:286
+msgid "start"
+msgstr "Start"
 
-#. Default: Hide statements
-#: templates/content.pt:154
-msgid "hide_statements"
-msgstr "Hide statements"
+#. Default: Now
+#: templates/content.pt:288
+msgid "now"
+msgstr "Now"
 
 #. Default: Complete View
-#: templates/content.pt:298
+#: templates/content.pt:303
 msgid "complete_view"
 msgstr "Complete View"
 
 #. Default: Default View
-#: templates/content.pt:299
+#: templates/content.pt:304
 msgid "default_view"
 msgstr "Default View"
 
 #. Default: Labels
-#: templates/content.pt:300
+#: templates/content.pt:305
 msgid "labels"
 msgstr "Lables"
 
 #. Default: Positions
-#: templates/content.pt:301
+#: templates/content.pt:306
 msgid "positions"
 msgstr "Positions"
 
 #. Default: Statements
-#: templates/content.pt:302
+#: templates/content.pt:307
 msgid "statements"
 msgstr "Statements"
 
 #. Default: My path
-#: templates/content.pt:303 templates/content.pt:304
+#: templates/content.pt:308 templates/content.pt:309
 msgid "my_path"
 msgstr "My path"
 
 #. Default: My statements
-#: templates/content.pt:305
+#: templates/content.pt:310
 msgid "my_statements"
 msgstr "My statements"
 
 #. Default: Supports
-#: templates/content.pt:306
+#: templates/content.pt:311
 msgid "supports_on_my_statements"
 msgstr "Supports"
 
 #. Default: Attacks
-#: templates/content.pt:307
+#: templates/content.pt:312
 msgid "attacks_on_my_statements"
 msgstr "Attacks"
+
+#~ msgid "show_all_statements"
+#~ msgstr "Show all statements"
+
+#~ msgid "hide_statements"
+#~ msgstr "Hide statements"
 
 #~ msgid "contact_header_1"
 #~ msgstr "Get In Touch With Us"
@@ -2487,9 +2503,6 @@ msgstr "Attacks"
 #~ "definesargument relations in terms of locigo- sematical relations between "
 #~ "propositionsand thus gives rise to a new computational approach to the "
 #~ "reconstruction ofcomplex debates."
-
-#~ msgid "startet_at"
-#~ msgstr "The discussion was started at"
 
 #~ msgid "already_has"
 #~ msgstr "and already has"

@@ -46,6 +46,10 @@
 							<td id="edits-done-count" style="text-align: right">${user.edits_done}</td>
 						</tr>
 						<tr>
+							<td><span class="lead" i18n:translate="reviews_proposed">Reviews proposed</span></td>
+							<td id="edits-done-count" style="text-align: right">${user.reviews_proposed}</td>
+						</tr>
+						<tr>
 							<td><span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span></td>
 							<td id="discussion-arg-votes-count" style="text-align: right">${user.discussion_arg_votes}</td>
 						</tr>

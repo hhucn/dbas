@@ -65,6 +65,8 @@ def flag_element(uid, reason, nickname, is_argument, extra_uid=None):
         # and another reason for duplicates
         elif reason == 'duplicate':
             # flagged for the first time
+            if statement_uid == extra_uid:
+                return '', '', _.internalKeyError
             __add_duplication_review(statement_uid, extra_uid, db_user.uid)
 
         return _.thxForFlagText, '', ''

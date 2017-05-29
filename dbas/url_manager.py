@@ -47,7 +47,7 @@ class UrlManager(object):
         :param path: String
         :return:
         """
-        return path if self.for_api else (self.url + path)
+        return path if self.for_api else self.url + path
 
     def get_404(self, params, is_param_error=False, revoked_content=False):
         """

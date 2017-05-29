@@ -37,9 +37,6 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
 
     confrontation = confrontation[0:1].upper() + confrontation[1:]
 
-    premise = premise[0:1].lower() + premise[1:]
-    conclusion = conclusion[0:1].lower() + conclusion[1:]
-
     # different cases
     ret_text = ''
     if attack_type == 'undermine':
@@ -55,7 +52,7 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
     # + '.' + _t.get(_.howeverIHaveEvenStrongerArgumentAccepting) + ' ' + longConclusion + '.'
     if attack_type == 'rebut':
         ret_text = confrontation + ' '
-        ret_text += (_t.get(_.iAcceptCounterThat) if is_supportive else _t.get(_.iAcceptArgumentThat))
+        ret_text += _t.get(_.iAcceptCounterThat) if is_supportive else _t.get(_.iAcceptArgumentThat)
         ret_text += ' ' + conclusion
 
     return ret_text + ' ...'  # + ', ' + _t.get(_.because).lower() + '...'
@@ -243,25 +240,25 @@ def get_relation_text_dict_with_substitution(lang, with_no_opinion_text, is_dont
     _t = Translator(lang)
     if lang == 'de':
         if is_dont_know:
-            premise = _t.get(_.herAssertion) if gender is 'f' else (_t.get(_.hisAssertion) if gender is 'm' else _t.get(_.theirAssertion))
+            premise = _t.get(_.herAssertion) if gender is 'f' else _t.get(_.hisAssertion) if gender is 'm' else _t.get(_.theirAssertion)
         else:
-            premise = _t.get(_.herStatement) if gender is 'f' else (_t.get(_.hisStatement) if gender is 'm' else _t.get(_.theirStatement))
+            premise = _t.get(_.herStatement) if gender is 'f' else _t.get(_.hisStatement) if gender is 'm' else _t.get(_.theirStatement)
 
         if is_dont_know:
-            conclusion = _t.get(_.herReason) if gender is 'f' else (_t.get(_.hisReason) if gender is 'm' else _t.get(_.theirReason))
+            conclusion = _t.get(_.herReason) if gender is 'f' else _t.get(_.hisReason) if gender is 'm' else _t.get(_.theirReason)
         else:
-            conclusion = _t.get(_.herAssertion) if gender is 'f' else (_t.get(_.hisAssertion) if gender is 'm' else _t.get(_.theirAssertion))
+            conclusion = _t.get(_.herAssertion) if gender is 'f' else _t.get(_.hisAssertion) if gender is 'm' else _t.get(_.theirAssertion)
 
     else:
-        premise = _t.get(_.herStatement) if gender is 'f' else (_t.get(_.hisStatement) if gender is 'm' else _t.get(_.theirStatement))
+        premise = _t.get(_.herStatement) if gender is 'f' else _t.get(_.hisStatement) if gender is 'm' else _t.get(_.theirStatement)
 
         if not is_dont_know:
             if attack_type == 'undermine' or attack_type == 'rebut':
-                conclusion = _t.get(_.herPosition) if gender is 'f' else ((_t.get(_.hisPosition) if gender is 'm' else _t.get(_.theirPosition)))
+                conclusion = _t.get(_.herPosition) if gender is 'f' else (_t.get(_.hisPosition) if gender is 'm' else _t.get(_.theirPosition))
             else:
                 conclusion = _t.get(_.myArgument)
         else:
-            conclusion = _t.get(_.opinion_her) if gender is 'f' else (_t.get(_.opinion_his) if gender is 'm' else _t.get(_.opinion))
+            conclusion = _t.get(_.opinion_her) if gender is 'f' else _t.get(_.opinion_his) if gender is 'm' else _t.get(_.opinion)
 
     return __get_relation_text_dict(lang, with_no_opinion_text, premise, conclusion, is_dont_know)
 

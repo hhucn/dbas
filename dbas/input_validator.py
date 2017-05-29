@@ -20,9 +20,8 @@ def is_integer(variable, ignore_empty_case=False):
     """
     if variable is None:
         return False
-    if ignore_empty_case:
-        if len(str(variable)) == 0:
-            return True
+    if ignore_empty_case and len(str(variable)) == 0:
+        return True
     try:
         int(variable)
         return True

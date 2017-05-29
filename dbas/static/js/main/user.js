@@ -118,7 +118,6 @@ function User() {
 	 *
 	 */
 	this.getPublicUserDataFail = function(){
-		alert('fail');
 	};
 
 

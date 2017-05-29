@@ -84,6 +84,7 @@ google_colors = [
 # list of all columns with FK of users/statement table
 _user_columns = ['author_uid', 'reputator_uid', 'reviewer_uid', 'from_author_uid', 'to_author_uid', 'detector_uid']
 _statement_columns = ['conclusion_uid', 'duplicate_statement_uid', 'original_statement_uid']
+_arrow_columns = ['timestamp', 'date', 'last_login', 'last_action', 'registered']
 
 # list of all columns, which will not be displayed
 _forbidden_columns = ['token', 'token_timestamp']
@@ -320,6 +321,9 @@ def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tm
         img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 25))
         tmp.append('{} {}'.format(img, attribute))
 
+    elif column in _arrow_columns:
+        tmp.append(attribute.format('YYYY-MM-DD HH:mm:ss'))
+
     else:
         tmp.append(str(attribute))
 
@@ -472,8 +476,9 @@ def __update_row_dict(table, values, keys, _tn):
     """
     update_dict = dict()
     for index, key in enumerate(keys):
+        value_type = str(__find_type(table, key))
         # if current type is int
-        if str(__find_type(table, key)) == 'INTEGER':
+        if value_type == 'INTEGER':
             # check for foreign key of author or language
             if key in _user_columns:
                 db_user = DBDiscussionSession.query(User).filter_by(nickname=values[index]).first()
@@ -491,15 +496,15 @@ def __update_row_dict(table, values, keys, _tn):
                 update_dict[key] = int(values[index])
 
         # if current type is bolean
-        elif str(__find_type(table, key)) == 'BOOLEAN':
-            update_dict[key] = True if values[index].lower() == 'true' else False
+        elif value_type == 'BOOLEAN':
+            update_dict[key] = values[index].lower() == 'true'
 
         # if current type is text
-        elif str(__find_type(table, key)) == 'TEXT':
+        elif value_type == 'TEXT':
             update_dict[key] = str(values[index])
 
         # if current type is date
-        elif str(__find_type(table, key)) == 'ARROWTYPE':
+        elif value_type == 'ARROWTYPE':
             update_dict[key] = arrow.get(str(values[index]))
 
         else:

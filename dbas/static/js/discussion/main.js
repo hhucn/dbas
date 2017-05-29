@@ -243,7 +243,7 @@ function Main () {
 		});
 		
 		trianglel.find('.triangle-reference').click(function () {
-			var uid = $(this).parent().attr('id').replace(questionBubbleId + '-', '');
+			var uid = $(this).parent().parent().attr('id').replace(questionBubbleId + '-', '');
 			new AjaxReferenceHandler().getReferences(uid, true);
 		});
 		
@@ -574,14 +574,14 @@ function Main () {
 			tmp.remove();
 			$(this).hover(
 				function () {
-					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
+					$('#' + discussionBubbleSpaceId).find('span[' + data + '="' + attr + '"]')
 						.css({'color': new_color, 'background-color': '#edf3e6', 'border-radius': '2px'});
 					if ($(this).attr(data) === 'argument') {
 						trianglel_last.find('span[data-attitude="pro"]').addClass('text-success').css({'background-color': '#edf3e6', 'border-radius': '2px'});
 						trianglel_last.find('span[data-attitude="con"]').addClass('text-danger').css({'background-color': '#edf3e6', 'border-radius': '2px'});
 					}
 				}, function () {
-					$('#dialog-speech-bubbles-space').find('span[' + data + '="' + attr + '"]')
+					$('#' + discussionBubbleSpaceId).find('span[' + data + '="' + attr + '"]')
 						.css({'color': old_color, 'background-color': '', 'border-radius': ''});
 					trianglel_last.find('span[data-attitude="pro"]').removeClass('text-success').css({'background-color': '', 'border-radius': ''});
 					trianglel_last.find('span[data-attitude="con"]').removeClass('text-danger').css({'background-color': '', 'border-radius': ''});
@@ -753,7 +753,7 @@ function Main () {
 			if (spaceList.find('li').length === 1 && input.data('url') === 'add'){
 				input.prop('checked', true);
 			}
-			id = input.attr('id').indexOf('item_' === 0) ? input.attr('id').substr('item_'.length) : input.attr('id');
+			id = input.attr('id').indexOf('item_') === 0 ? input.attr('id').substr('item_'.length) : input.attr('id');
 			if ($.inArray(id, ids) !== -1) {
 				input.attr('onclick', '');
 				input.click(function () {
@@ -822,7 +822,7 @@ function Main () {
 			});
 		}
 		// login
-		else if (input.attr('id').indexOf('login') !== -1 && typeof $('#' + popupLogin) !== undefined) {
+		else if (input.attr('id').indexOf('login') !== -1 && typeof $('#' + popupLogin) !== 'undefined') {
 			$('#' + popupLogin).modal('show');
 		}
 	};
@@ -859,7 +859,7 @@ $(document).ready(function mainDocumentReady() {
 	// some extras
 	// get restart url and cut the quotes
 	var btn = $('#discussion-restart-btn');
-	if (window.location.href.indexOf('/discuss') !== -1) {
+	if (window.location.href.indexOf('/discuss') !== -1 && btn.length !== 0) {
 		tmp = btn.attr('onclick').substr('location.href='.length);
 		tmp = tmp.substr(1, tmp.length - 2);
 		$('#' + discussionEndRestart).attr('href', tmp);
