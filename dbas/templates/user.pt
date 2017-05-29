@@ -50,11 +50,11 @@
 							<td id="edits-done-count" style="text-align: right">${user.reviews_proposed}</td>
 						</tr>
 						<tr>
-							<td><span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span></td>
+							<td><span class="lead" i18n:translate="discussion_votes_arguments">Votes for Arguments</span></td>
 							<td id="discussion-arg-votes-count" style="text-align: right">${user.discussion_arg_votes}</td>
 						</tr>
 						<tr>
-							<td><span class="lead" i18n:translate="discussion_votes_arguments">Votes for Statements</span></td>
+							<td><span class="lead" i18n:translate="discussion_votes_statements">Votes for Statements</span></td>
 							<td id="discussion-stat-votes-count" style="text-align: right">${user.discussion_stat_votes}</td>
 						</tr>
 						<tr>
