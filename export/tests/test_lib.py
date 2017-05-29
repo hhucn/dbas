@@ -3,7 +3,7 @@ import unittest
 from dbas.database import DBDiscussionSession
 from dbas.helper.tests import add_settings_to_appconfig
 from dbas.helper.database import dbas_db_configuration
-from export.lib import get_dump, get_doj_data
+from export.lib import get_dump, get_doj_nodes, get_doj_user
 
 settings = add_settings_to_appconfig()
 
@@ -35,8 +35,8 @@ class LibTest(unittest.TestCase):
         self.assertTrue(len(ret_dict['marked_argument']) >= 0)
         self.assertTrue(len(ret_dict['marked_statement']) >= 0)
 
-    def test_get_minimal_graph_export(self):
-        ret_dict = get_doj_data(1)
+    def test_get_doj_nodes(self):
+        ret_dict = get_doj_nodes(1)
         self.assertTrue('nodes' in ret_dict)
         self.assertTrue('inferences' in ret_dict)
         self.assertTrue('undercuts' in ret_dict)
@@ -50,3 +50,25 @@ class LibTest(unittest.TestCase):
             self.assertTrue('id' in element)
             self.assertTrue('premises' in element)
             self.assertTrue('conclusion' in element)
+
+    def get_doj_user(self):
+        ret_dict = get_doj_user(1)
+        self.assertTrue('marked_statements' in ret_dict)
+        self.assertTrue('marked_arguments' in ret_dict)
+        self.assertTrue('rejected_arguments' in ret_dict)
+        self.assertTrue('accepted_statements' in ret_dict)
+        self.assertTrue('rejected_statements' in ret_dict)
+
+        ret_dict = get_doj_user(0)
+        self.assertFalse('marked_statements' in ret_dict)
+        self.assertFalse('marked_arguments' in ret_dict)
+        self.assertFalse('rejected_arguments' in ret_dict)
+        self.assertFalse('accepted_statements' in ret_dict)
+        self.assertFalse('rejected_statements' in ret_dict)
+
+        ret_dict = get_doj_user('a')
+        self.assertFalse('marked_statements' in ret_dict)
+        self.assertFalse('marked_arguments' in ret_dict)
+        self.assertFalse('rejected_arguments' in ret_dict)
+        self.assertFalse('accepted_statements' in ret_dict)
+        self.assertFalse('rejected_statements' in ret_dict)

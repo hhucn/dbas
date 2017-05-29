@@ -8,7 +8,7 @@ from cornice import Service
 
 import dbas.helper.issue as IssueHelper
 from dbas.logger import logger
-from export.lib import get_dump, get_doj_data, get_table_rows
+from export.lib import get_dump, get_doj_nodes, get_doj_user, get_table_rows
 
 #
 # CORS configuration
@@ -26,12 +26,16 @@ dump = Service(name='export_dump',
                path='/dump',
                description='Database Dump')
 
-doj = Service(name='export_doj',
-              path='/doj*issue',
-              description='Export for DoJ')
+b_doj_nodes = Service(name='export_doj_nodes',
+                    path='/doj{issue:.*}',
+                    description='Export for DoJ Nodes')
+
+a_doj_users = Service(name='export_doj_users',
+                    path='/doj_user/{user}/{discussion}',
+                    description='Export for DoJ User')
 
 table_row = Service(name='export_table_row',
-                    path='/{table}/*ids',
+                    path='/table/{table}/*ids',
                     description='Export several columns from a table')
 
 
@@ -54,8 +58,8 @@ def get_database_dump(request):
     return get_dump(issue)
 
 
-@doj.get()
-def get_doj_dump(request):
+@b_doj_nodes.get()
+def get_doj_dump_for_nodes(request):
     """
     Returns necessary data for the DoJ
 
@@ -63,11 +67,28 @@ def get_doj_dump(request):
     :return: dict()
     """
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Export', 'get_doj_dump', 'def')
-    m = request.matchdict
-    issue = m['issue'][0] if 'issue' in m and len(m['issue']) > 0 else None
+    logger('Export', 'get_doj_dump', 'def {} {}'.format(request.matchdict, request.params))
+    issue = None
+    if len(request.matchdict['issue']) > 0:
+        issue = request.matchdict['issue'][1:]
 
-    return get_doj_data(issue)
+    return get_doj_nodes(issue)
+
+
+@a_doj_users.get()
+def get_doj_dump_for_users(request):
+    """
+    Returns necessary user data for the DoJ
+
+    :param request: current webservers request
+    :return: dict()
+    """
+    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
+    logger('Export', 'get_doj_user', 'def ' + str(request))
+    user = request.matchdict['user'] if 'user' in request.matchdict else None
+    discussion = request.matchdict['discussion'] if 'discussion' in request.matchdict else None
+
+    return get_doj_user(user, discussion)
 
 
 @table_row.get()
