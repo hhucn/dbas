@@ -13,6 +13,7 @@ for user in session.query(User).all():
     user.nickname = 'nickname_{}'.format(user.uid)
     user.public_nickname = 'public_nickname_{}'.format(user.uid)
     user.email = 'email_{}'.format(user.uid)
+    user.password = 'password_{}'.format(user.uid)
 
 session.flush()
 transaction.commit()
