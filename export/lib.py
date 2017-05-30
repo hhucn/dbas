@@ -210,9 +210,9 @@ def get_doj_nodes(issue):
 def get_doj_user(user_id, discussion_id):
     """
     Returns user data for the DoJ
-    
-    :param user_id: User.id 
-    :param user_id: Issue.id 
+
+    :param user_id: User.id
+    :param user_id: Issue.id
     :return: dict()
     """
     logger('Export', 'lib', 'get_doj_user for {} {}'.format(user_id, discussion_id))
@@ -228,11 +228,6 @@ def get_doj_user(user_id, discussion_id):
     db_all_arguments = DBDiscussionSession.query(Argument).filter_by(issue_uid=discussion_id).all()
     all_statements_ids = [s.uid for s in db_all_statements]
     all_arguments_ids = [s.uid for s in db_all_arguments]
-    logger('X', 'X', str(all_arguments_ids))
-
-    asd = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == user_id,
-                                                                      ClickedArgument.is_valid == True)
-    logger('X', 'X', str(all_arguments_ids))
 
     # arguments and statements with a star
     db_star_stat = DBDiscussionSession.query(MarkedStatement).filter(MarkedStatement.uid.in_(all_statements_ids),
@@ -266,7 +261,7 @@ def get_doj_user(user_id, discussion_id):
     # acceptd/rejected conclusions
     for el in db_click_acc_arg:
         db_arg = DBDiscussionSession.query(Argument).filter(Argument.uid == el.argument_uid,
-                                                            Argument.argument_uid == None).first()
+                                                            Argument.argument_uid is None).first()
         if db_arg:
             if db_arg.is_supportive:
                 accepted_statements += [db_arg.conclusion_uid]
