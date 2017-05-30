@@ -80,9 +80,7 @@ function AjaxSettingsHandler(){
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function setUserSettingDone(data) {
-			var parsedData = $.parseJSON(data);
-
-			if (parsedData.error.length === 0){
+			if (data.error.length === 0){
 				var lang_image = $('#current-lang-images');
 				$('#' + settingsSuccessDialog).fadeIn();
 				setTimeout(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
@@ -90,9 +88,9 @@ function AjaxSettingsHandler(){
 					$(this).removeClass('active');
 				});
 				$.each(lang_image.find('img'), function(){ $(this).hide();});
-				$('#link-settings-' + parsedData.ui_locales).addClass('active');
-				$('#indicator-' + parsedData.ui_locales).show();
-				lang_image.find('span').eq(0).text(parsedData.current_lang);
+				$('#link-settings-' + data.ui_locales).addClass('active');
+				$('#indicator-' + data.ui_locales).show();
+				lang_image.find('span').eq(0).text(data.current_lang);
 			} else {
 				$('#' + settingsAlertDialog).fadeIn();
 				setTimeout(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);

@@ -1582,7 +1582,7 @@ def set_user_language(request):
         logger('set_user_settings', 'error', repr(e))
 
     return_dict = {'error': error, 'ui_locales': ui_locales, 'current_lang': current_lang}
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - sending notification
