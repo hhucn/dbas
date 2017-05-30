@@ -336,6 +336,7 @@ def evaluate_graph():
     print('  - Depth of Branches')
     for t in sorted_depth[-top_count:]:
         print('    - Depth of {} for position {}'.format(t[1], t[0]))
+    print('    - Average {}'.format(sum(t[1] for t in sorted_depth) / len(sorted_depth)))
     print('\n')
 
 
@@ -373,13 +374,13 @@ if __name__ == '__main__':
     print('-' * len('| D-BAS ANALYTICS: {} |'.format(db_issue.title.upper())))
     print('\n')
 
-    evaluate_users()
+    # evaluate_users()
     # evaluate_statements()
     # evaluate_positions()
     # evaluate_arguments()
     # evaluate_authors()
     # evaluate_interests()
-    # evaluate_reviews()
+    evaluate_reviews()
     # evaluate_history()
     # evaluate_quits()
     # evaluate_activity()
