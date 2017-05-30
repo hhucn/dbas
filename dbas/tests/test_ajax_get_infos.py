@@ -26,7 +26,7 @@ class AjaxGetInfosTest(unittest.TestCase):
             'uids': [1, 2, 3],
             'issue': 1
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response) == 3)
         self.assertTrue(len(response['error']) == 0)
@@ -38,7 +38,7 @@ class AjaxGetInfosTest(unittest.TestCase):
             'uids': [1, 2, 300],
             'issue': 1
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response) == 2)
         self.assertTrue(len(response['error']) == 0)
@@ -50,7 +50,7 @@ class AjaxGetInfosTest(unittest.TestCase):
             'uid': [1, 2],
             'issue': 1
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -58,7 +58,7 @@ class AjaxGetInfosTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_shortened_url as ajax
         request = testing.DummyRequest(params={'url': 'https://dbas.cs.uni-duesseldorf.de'}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         if len(response['error']) == 0:
             self.assertTrue(len(response['error']) == 0)
@@ -70,7 +70,7 @@ class AjaxGetInfosTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_shortened_url as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -79,7 +79,7 @@ class AjaxGetInfosTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_arguments_by_statement_uid as ajax
         request = testing.DummyRequest(params={}, matchdict={'uid': 3})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         self.assertIn('arguments', response)
@@ -92,7 +92,7 @@ class AjaxGetInfosTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_arguments_by_statement_uid as ajax
         request = testing.DummyRequest(params={}, matchdict={'uids': 1})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
         self.assertNotIn('arguments', response)
@@ -101,7 +101,7 @@ class AjaxGetInfosTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_arguments_by_statement_uid as ajax
         request = testing.DummyRequest(params={}, matchdict={'uid': 'a'})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
         self.assertNotIn('arguments', response)
@@ -110,7 +110,7 @@ class AjaxGetInfosTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_all_infos_about_argument as ajax
         request = testing.DummyRequest(params={'uid': 1}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(len(response) > 1)
@@ -126,7 +126,7 @@ class AjaxGetInfosTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_all_infos_about_argument as ajax
         request = testing.DummyRequest(params={'uid': 100}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(len(response) == 1)
@@ -135,7 +135,7 @@ class AjaxGetInfosTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_all_infos_about_argument as ajax
         request = testing.DummyRequest(params={'uids': 1}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
         self.assertTrue(len(response) == 1)
@@ -144,7 +144,7 @@ class AjaxGetInfosTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_users_with_same_opinion as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         # self.assertTrue(len(response['error']) == 0)
 
@@ -161,7 +161,7 @@ class AjaxGetInfosTest(unittest.TestCase):
             'is_position': 'true',
             'is_supporti': 'true',
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -190,7 +190,7 @@ class AjaxGetInfosTest(unittest.TestCase):
         transaction.commit()
         from dbas.views import delete_user_history as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         transaction.commit()
         self.assertIsNotNone(response)
         self.assertTrue(response['removed_data'] == 'true')
@@ -201,7 +201,7 @@ class AjaxGetInfosTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import delete_statistics as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(response['removed_data'] == 'true')
 
@@ -209,7 +209,7 @@ class AjaxGetInfosTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import delete_statistics as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(response['removed_data'] == 'false')
 
