@@ -30,7 +30,7 @@ class AjaxTest(unittest.TestCase):
             'keep_login': 'false',
             'url': ''
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -42,7 +42,7 @@ class AjaxTest(unittest.TestCase):
             'keep_login': 'false',
             'url': ''
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -80,7 +80,7 @@ class AjaxTest(unittest.TestCase):
     #         'passwordconfirm': 'somepassword',
     #         'spamanswer': ''
     #     }, matchdict={})
-    #     response = json.loads(ajax(request))
+    #     response = ajax(request)
     #     self.assertIsNotNone(response)
     #     self.assertTrue(len(response['success']) != 0)
     #     self.assertTrue(len(response['error']) == 0)
@@ -90,7 +90,7 @@ class AjaxTest(unittest.TestCase):
     def test_user_password_request_failure1(self):
         from dbas.views import user_password_request as ajax
         request = testing.DummyRequest(params={'email': 'krauthof@cs.uni-duesseldorf.de'}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['success']) == 0)
         self.assertTrue(len(response['error']) == 0)
@@ -99,7 +99,7 @@ class AjaxTest(unittest.TestCase):
     def test_user_password_request_failure2(self):
         from dbas.views import user_password_request as ajax
         request = testing.DummyRequest(params={'emai': 'krauthoff@cs.uni-duesseldorf.de'}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['success']) == 0)
         self.assertTrue(len(response['error']) != 0)
@@ -109,7 +109,7 @@ class AjaxTest(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         from dbas.views import user_password_request as ajax
         request = testing.DummyRequest(params={'email': 'krauthoff@cs.uni-duesseldorf.de'}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(db_user.password != get_hashed_password('tobias'))
         db_user.password = get_hashed_password('tobias')
@@ -118,95 +118,95 @@ class AjaxTest(unittest.TestCase):
     def test_fuzzy_search_mode_0(self):
         from dbas.views import fuzzy_search as ajax
         request = testing.DummyRequest(params={'value': 'cat', 'type': 0}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertNotIn('error', response)
 
     def test_fuzzy_search_mode_1(self):
         from dbas.views import fuzzy_search as ajax
         request = testing.DummyRequest(params={'value': 'cat', 'type': 1, 'extra': 1}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertNotIn('error', response)
 
     def test_fuzzy_search_mode_2(self):
         from dbas.views import fuzzy_search as ajax
         request = testing.DummyRequest(params={'value': 'cat', 'type': 2}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertNotIn('error', response)
 
     def test_fuzzy_search_mode_3(self):
         from dbas.views import fuzzy_search as ajax
         request = testing.DummyRequest(params={'value': 'cat', 'type': 3}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertNotIn('error', response)
 
     def test_fuzzy_search_mode_4(self):
         from dbas.views import fuzzy_search as ajax
         request = testing.DummyRequest(params={'value': 'cat', 'type': 4}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertNotIn('error', response)
 
     def test_fuzzy_search_mode_5(self):
         from dbas.views import fuzzy_search as ajax
         request = testing.DummyRequest(params={'value': 'cat', 'type': 5}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertNotIn('error', response)
 
     def test_fuzzy_search_mode_9(self):
         from dbas.views import fuzzy_search as ajax
         request = testing.DummyRequest(params={'value': 'cat', 'type': 9}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertNotIn('error', response)
 
     def test_fuzzy_search_failure_mode(self):
         from dbas.views import fuzzy_search as ajax
         request = testing.DummyRequest(params={'value': 'cat', 'type': 6}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
     def test_switch_language_de(self):
         from dbas.views import switch_language as ajax
         request = testing.DummyRequest(params={'_LOCALE_': 'de'}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(response['_LOCALE_'] == 'de')
 
     def test_switch_language_en(self):
         from dbas.views import switch_language as ajax
         request = testing.DummyRequest(params={'_LOCALE_': 'en'}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(response['_LOCALE_'] == 'en')
 
     def test_switch_language_failure(self):
         from dbas.views import switch_language as ajax
         request = testing.DummyRequest(params={'_LOCALE_': 'sw'}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(response['_LOCALE_'] != 'sw')
 
     def test_additional_service(self):
         from dbas.views import additional_service as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
 
     def test_set_user_language(self):
         from dbas.views import set_user_language as ajax
         request = testing.DummyRequest(params={'ui_locales': 'en'})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertTrue(len(response['error']) > 0)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = testing.DummyRequest(params={'ui_locales': 'en'})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('ui_locales', response)
         self.assertIn('current_lang', response)
@@ -214,7 +214,7 @@ class AjaxTest(unittest.TestCase):
         self.assertTrue(response['ui_locales'] == 'en')
         self.assertTrue(response['current_lang'] == 'English')
         request = testing.DummyRequest(params={'ui_locales': 'de'})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('ui_locales', response)
         self.assertIn('current_lang', response)
@@ -222,7 +222,7 @@ class AjaxTest(unittest.TestCase):
         self.assertTrue(response['ui_locales'] == 'de')
         self.assertTrue(response['current_lang'] == 'Deutsch')
         request = testing.DummyRequest(params={'ui_locales': 'li'})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('ui_locales', response)
         self.assertIn('current_lang', response)
@@ -233,12 +233,12 @@ class AjaxTest(unittest.TestCase):
     def test_set_user_setting_mail(self):
         from dbas.views import set_user_settings as ajax
         request = testing.DummyRequest(params={'ui_locales': 'en'})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertTrue(len(response['error']) > 0)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = testing.DummyRequest(params={'service': 'mail', 'settings_value': False})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('public_nick', response)
         self.assertIn('public_page_url', response)
@@ -251,12 +251,12 @@ class AjaxTest(unittest.TestCase):
     def test_set_user_setting_notification(self):
         from dbas.views import set_user_settings as ajax
         request = testing.DummyRequest(params={'ui_locales': 'en'})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertTrue(len(response['error']) > 0)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = testing.DummyRequest(params={'service': 'notification', 'settings_value': True})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('public_nick', response)
         self.assertIn('public_page_url', response)
@@ -269,12 +269,12 @@ class AjaxTest(unittest.TestCase):
     def test_set_user_setting_nick(self):
         from dbas.views import set_user_settings as ajax
         request = testing.DummyRequest(params={'ui_locales': 'en'})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertTrue(len(response['error']) > 0)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = testing.DummyRequest(params={'service': 'public_nick', 'settings_value': False})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('public_nick', response)
         self.assertIn('public_page_url', response)
@@ -287,12 +287,12 @@ class AjaxTest(unittest.TestCase):
     def test_set_user_setting_no_service(self):
         from dbas.views import set_user_settings as ajax
         request = testing.DummyRequest(params={'ui_locales': 'en'})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertTrue(len(response['error']) > 0)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = testing.DummyRequest(params={'service': 'oha', 'settings_value': False})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('public_nick', response)
         self.assertIn('public_page_url', response)
@@ -305,29 +305,29 @@ class AjaxTest(unittest.TestCase):
     def test_mark_statement_or_argument(self):
         from dbas.views import mark_statement_or_argument as ajax
         request = testing.DummyRequest(params={'ui_locales': 'en'})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertTrue(len(response['error']) > 0)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = testing.DummyRequest(params={'uid': 4, 'is_argument': False, 'should_mark': True, 'step': '', 'is_supportive': True})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(len(response['success']) != 0)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = testing.DummyRequest(params={'uid': 4, 'is_argument': False, 'should_mark': True, 'step': '', 'is_supportive': True})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(len(response['success']) != 0)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = testing.DummyRequest(params={'uid': 4, 'is_argument': False, 'should_mark': False, 'step': '', 'is_supportive': True})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(len(response['success']) != 0)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         request = testing.DummyRequest(params={'uid': 4, 'is_argument': False, 'should_mark': False, 'step': '', 'is_supportive': True})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(len(response['success']) != 0)
