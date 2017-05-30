@@ -24,7 +24,7 @@ function DiscussionBarometer(){
     'use strict';
     var is_attitude = false;
     var global_dialog = $('#' + popupBarometerId);
-    var jsonData = [];
+    var data = [];
     var address = 'position';
     var barWidth;
     var modeEnum = {
@@ -89,19 +89,18 @@ function DiscussionBarometer(){
     this.callbackIfDoneForGetDictionary = function(data, addressUrl){
         address = addressUrl;
         try{
-            jsonData = JSON.parse(data);
             mode = modeEnum[address];
         } catch(e) {
             setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(internalError));
             return;
         }
 
-		if (jsonData.error.length !== 0) {
-			setGlobalErrorHandler(_t(ohsnap), jsonData.error);
+		if (data.error.length !== 0) {
+			setGlobalErrorHandler(_t(ohsnap), data.error);
 			return;
 		}
-		if (jsonData.info.length !== 0) {
-			setGlobalInfoHandler('Hey', jsonData.info);
+		if (data.info.length !== 0) {
+			setGlobalInfoHandler('Hey', data.info);
 			return;
 		}
 
@@ -130,7 +129,7 @@ function DiscussionBarometer(){
         }).removeClass('btn-success');
         $('#' + popupBarometerRefuseBtn).hide();
 
-        global_dialog.find('.modal-title').html(jsonData.title).css({'line-height': '1.0'});
+        global_dialog.find('.modal-title').html(data.title).css({'line-height': '1.0'});
     };
 
     /**
@@ -306,18 +305,18 @@ function DiscussionBarometer(){
      */
     function createDictForAttitude(usersDict){
         usersDict.push({
-            usersNumber: jsonData.agree.users.length,
-            seenBy: jsonData.seen_by,
-            text: jsonData.agree.text,
-            users: jsonData.agree.users,
-            message: jsonData.agree.message
+            usersNumber: data.agree.users.length,
+            seenBy: data.seen_by,
+            text: data.agree.text,
+            users: data.agree.users,
+            message: data.agree.message
         });
         usersDict.push({
-            usersNumber: jsonData.disagree.users.length,
-            seenBy: jsonData.seen_by,
-            text: jsonData.disagree.text,
-            users: jsonData.disagree.users,
-            message: jsonData.disagree.message
+            usersNumber: data.disagree.users.length,
+            seenBy: data.seen_by,
+            text: data.disagree.text,
+            users: data.disagree.users,
+            message: data.disagree.message
         });
         return usersDict;
     }
@@ -328,7 +327,7 @@ function DiscussionBarometer(){
      * @returns usersDict
      */
     function createDictForArgumentAndStatement(usersDict){
-        $.each(jsonData.opinions, function(key, value) {
+        $.each(data.opinions, function(key, value) {
             usersDict.push({
                 usersNumber: value.users.length,
                 seenBy: value.seen_by,

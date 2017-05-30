@@ -173,13 +173,12 @@ function SettingsHandler(){
 	 * @param settings_value
 	 * @param service
 	 */
-	this.callbackDone = function (jsonData, toggle_element, settings_value, service){
-		var parsedData = $.parseJSON(jsonData);
-		if (parsedData.error.length  ===  0){
+	this.callbackDone = function (data, toggle_element, settings_value, service){
+		if (data.error.length  ===  0){
 			$('#' + settingsSuccessDialog).fadeIn();
-			$('#value_public_nickname').text(parsedData.public_nick);
-			$('#value_public_page').attr('href', parsedData.public_page_url);
-			$('#user_gravatar').attr('src', parsedData.gravatar_url);
+			$('#value_public_nickname').text(data.public_nick);
+			$('#value_public_page').attr('href', data.public_page_url);
+			$('#user_gravatar').attr('src', data.gravatar_url);
 			setTimeout(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
 		} else {
 			new SettingsHandler().callbackFail(toggle_element, settings_value, service);
@@ -313,8 +312,7 @@ function StatisticsHandler(){
 	 * @param jsonData
 	 */
 	this.callbackDeleteStatisticsDone = function(jsonData) {
-		var parsedData = $.parseJSON(jsonData);
-		if (parsedData.removed_data  ===  'true') {
+		if (jsonData.removed_data  ===  'true') {
 			$('#' + statisticsSuccessDialog).fadeIn();
 			$('#' + statisticsSuccessMessage).text(_t(statisticsDeleted));
 			setTimeout(function () {

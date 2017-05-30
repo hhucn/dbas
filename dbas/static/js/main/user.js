@@ -52,15 +52,14 @@ function User() {
 	 * @param jsonData
 	 */
 	this.callbackDone = function(jsonData){
-		var parsedData = $.parseJSON(jsonData);
-		if (parsedData.error.length !== 0) {
-			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+		if (data.error.length !== 0) {
+			setGlobalErrorHandler(_t(ohsnap), data.error);
 		}
 		
-		// this.createChart(parsedData, $('#user-activity-chart-space'), 'user-activity-canvas', 0);
-		// this.createChart(parsedData, $('#user-vote-chart-space'), 'user-vote-canvas', 1);
-		// this.createChart(parsedData, $('#user-statement-chart-space'), 'user-statement-canvas', 2);
-		// this.createChart(parsedData, $('#user-edit-chart-space'), 'user-edit-canvas', 3);
+		// this.createChart(data, $('#user-activity-chart-space'), 'user-activity-canvas', 0);
+		// this.createChart(data, $('#user-vote-chart-space'), 'user-vote-canvas', 1);
+		// this.createChart(data, $('#user-statement-chart-space'), 'user-statement-canvas', 2);
+		// this.createChart(data, $('#user-edit-chart-space'), 'user-edit-canvas', 3);
 		// this.setLegendCSS();
 	};
 

@@ -35,8 +35,8 @@ function AjaxSettingsHandler(){
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function ajaxGetUserHistoryDone(data) {
-			new HistoryHandler().removeUserHistoryDataDone(data);
+		}).done(function ajaxGetUserHistoryDone() {
+			new HistoryHandler().removeUserHistoryDataDone();
 		}).fail(function ajaxGetUserHistoryFail(xhr) {
 			new HistoryHandler().getDataFail(xhr.status);
 		});

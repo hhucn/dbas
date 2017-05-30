@@ -54,19 +54,18 @@ function News() {
 	 * @param data
 	 */
 	this.callbackIfDoneForSendingNews = function (data) {
-		var parsedData = $.parseJSON(data);
-		if (parsedData.error.length === 0) {
+		if (data.error.length === 0) {
 			// $('#' + writingNewsSuccessId).show();
 			// $('#' + writingNewsSuccessMessageId).text(_t(addedEverything));
 			// $('#' + writingNewNewsTitleId).val('');
 			// $('#' + writingNewNewsTextId).val('');
-			// $('#' + newsBodyId).prepend(new News().getNewsContainerAsHtml(parsedData.title, parsedData.date, parsedData.author, parsedData.news));
+			// $('#' + newsBodyId).prepend(new News().getNewsContainerAsHtml(data.title, data.date, data.author, data.news));
 			// new News().setSharingClickEvents();
 			// window.scrollTo(0, 0);
 			location.reload();
 		} else {
 			$('#' + writingNewsFailedId).show();
-			$('#' + writingNewsFailedMessageId).html(parsedData.error);
+			$('#' + writingNewsFailedMessageId).html(data.error);
 		}
 
 	};
