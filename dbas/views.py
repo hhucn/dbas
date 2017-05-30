@@ -2841,4 +2841,3 @@ def revoke_some_content(request):
     transaction.commit()
 
     return json.dumps(return_dict)
-    

@@ -23,7 +23,7 @@ def get_partial_graph_for_statement(uid, issue, path):
     logger('PartialGraph', 'get_partial_graph_for_statement', 'main with uid {} and path {}'.format(uid, path.split('?')[0]))
     path = path.split('?')[0]
     db_issue = DBDiscussionSession.query(Issue).get(issue)
-    if db_issue:
+    if db_issue and len(path) > 1:
         path = path.split(db_issue.get_slug())[1]
 
     # if we have a attitude, we are asking for supporting/attacking a conclusion
@@ -41,7 +41,7 @@ def get_partial_graph_for_statement(uid, issue, path):
         uid = db_premise.statement_uid
 
     # if there is no justify, we have an argument
-    if 'justify' not in path:
+    if 'justify' not in path and len(path) > 1:
         db_argument = DBDiscussionSession.query(Argument).get(uid)
         db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).first()
         uid = db_premise.statement_uid

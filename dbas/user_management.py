@@ -345,8 +345,8 @@ def get_count_of_votes_of_user(user, limit_on_today=False):
 
     if limit_on_today:
         today = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
-        db_arg = db_arg.filter(ClickedArgument.timestamp >= today)
-        db_stat = db_stat.filter(ClickedStatement.timestamp >= today)
+        db_arg = db_arg.filter(MarkedArgument.timestamp >= today)
+        db_stat = db_stat.filter(MarkedStatement.timestamp >= today)
 
     db_arg = db_arg.all()
     db_stat = db_stat.all()
@@ -523,7 +523,7 @@ def get_information_of(db_user, lang):
     ret_dict['is_female'] = db_user.gender == 'f'
     ret_dict['is_neutral'] = db_user.gender != 'm' and db_user.gender != 'f'
 
-    arg_vote, stat_vote = get_count_of_votes_of_user(db_user, True)
+    arg_vote, stat_vote = get_count_of_votes_of_user(db_user, False)
     db_reviews_duplicate = DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=db_user.uid).all()
     db_reviews_edit = DBDiscussionSession.query(ReviewEdit).filter_by(detector_uid=db_user.uid).all()
     db_reviews_delete = DBDiscussionSession.query(ReviewDelete).filter_by(detector_uid=db_user.uid).all()

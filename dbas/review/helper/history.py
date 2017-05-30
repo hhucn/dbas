@@ -253,13 +253,19 @@ def __handle_table_of_review_element(table, entry, review, short_text, full_text
     entry['row_id'] = table + str(review.uid)
     entry['argument_shorttext'] = short_text
     entry['argument_fulltext'] = full_text
+    entry['is_innocent'] = True
 
     if table == 'edits':
         if is_executed:
-            db_textversions = DBDiscussionSession.query(TextVersion).filter_by(
-                statement_uid=review.statement_uid).order_by(TextVersion.uid.desc()).all()
-            entry['argument_oem_shorttext'] = db_textversions[1].content[0:length]
-            entry['argument_oem_fulltext'] = db_textversions[1].content
+            db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=review.statement_uid).order_by(TextVersion.uid.desc()).all()
+            if len(db_textversions) == 0:
+                entry['is_innocent'] = False
+                text = 'Review {} is malicious / no text for statement'.format(review.uid)
+                entry['argument_oem_shorttext'] = '<span class="text-danger">{}</span>'.format(text)
+                entry['argument_oem_fulltext'] = text
+            else:
+                entry['argument_oem_shorttext'] = db_textversions[1].content[0:length]
+                entry['argument_oem_fulltext'] = db_textversions[1].content
         else:
             db_edit_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=review.uid).first()
             if not db_edit_value:

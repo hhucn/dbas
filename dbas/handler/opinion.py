@@ -65,8 +65,12 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
         get_rebuts_for_argument_uid(argument_uids[0])
     ]
 
-    # get gender of counter user
-    db_user = get_author_or_first_supporter_of_element(argument_uids[1], db_user_uid, True)
+    # get gender of counter use
+    if len(argument_uids) == 1:
+        tmp_uid = 0
+    else:
+        tmp_uid = 1
+    db_user = get_author_or_first_supporter_of_element(argument_uids[tmp_uid], db_user_uid, True)
     gender = db_user.gender if db_user else 'n'
 
     if '/d' in path.split('?')[0]:

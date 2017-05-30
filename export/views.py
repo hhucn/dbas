@@ -27,12 +27,12 @@ dump = Service(name='export_dump',
                description='Database Dump')
 
 b_doj_nodes = Service(name='export_doj_nodes',
-                    path='/doj{issue:.*}',
-                    description='Export for DoJ Nodes')
+                      path='/doj{issue:.*}',
+                      description='Export for DoJ Nodes')
 
 a_doj_users = Service(name='export_doj_users',
-                    path='/doj_user/{user}/{discussion}',
-                    description='Export for DoJ User')
+                      path='/doj_user/{user}/{discussion}',
+                      description='Export for DoJ User')
 
 table_row = Service(name='export_table_row',
                     path='/table/{table}/*ids',
