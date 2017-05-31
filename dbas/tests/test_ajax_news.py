@@ -1,4 +1,3 @@
-import json
 import unittest
 
 from pyramid import testing
@@ -21,7 +20,7 @@ class AjaxNewsTest(unittest.TestCase):
     def test_get_news(self):
         from dbas.views import get_news as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response) > 0)
 
@@ -32,7 +31,7 @@ class AjaxNewsTest(unittest.TestCase):
             'title': 'some new title',
             'text': 'some new text'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
 
@@ -44,7 +43,7 @@ class AjaxNewsTest(unittest.TestCase):
             'title': 'some new title',
             'text': 'some new text'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 

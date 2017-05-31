@@ -26,7 +26,7 @@ class AjaxReferencesTest(unittest.TestCase):
             'uid': json.dumps([14]),
             'is_argument': 'false'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         for uid in response['data']:
@@ -39,7 +39,7 @@ class AjaxReferencesTest(unittest.TestCase):
             'uid': json.dumps([15]),
             'is_argument': 'false'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         for uid in response['data']:
@@ -52,7 +52,7 @@ class AjaxReferencesTest(unittest.TestCase):
             'uid': json.dumps('ab'),
             'is_argument': 'false'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
         self.assertTrue(len(response['data']) == 0)
@@ -66,7 +66,7 @@ class AjaxReferencesTest(unittest.TestCase):
             'reference': json.dumps('This is a source'),
             'ref_source': json.dumps('http://www.google.de/some_source'),
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
 
@@ -75,7 +75,7 @@ class AjaxReferencesTest(unittest.TestCase):
             'uid': json.dumps([17]),
             'is_argument': 'false'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         for uid in response['data']:

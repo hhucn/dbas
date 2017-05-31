@@ -27,9 +27,8 @@ function AjaxReferenceHandler(){
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function (data) {
-			var parsedData = $.parseJSON(data);
-			if (parsedData.error.length > 0) {
-				setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
+			if (data.error.length > 0) {
+				setGlobalErrorHandler(_t_discussion(ohsnap), data.error);
 			} else {
 				setGlobalSuccessHandler('Yeah!', _t_discussion(dataAdded));
 			}

@@ -45,7 +45,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_new_start_statement as ajax
         request = testing.DummyRequest(params={'statement': 'New statement for an issue'}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(len(response['url']) != 0)
@@ -61,7 +61,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
         from dbas.views import set_new_start_statement as ajax
         request = testing.DummyRequest(params={'statement': 'New statement for an issue'}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(len(response['url']) != 0)
@@ -79,7 +79,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import set_new_start_statement as ajax
         request = testing.DummyRequest(params={'statement': 'New statement for an issue'}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -87,7 +87,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_new_start_statement as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -102,7 +102,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'issue': 2,
             'supportive': 'true'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         transaction.commit()
         db_arg2 = len(DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).all())
         len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
@@ -125,7 +125,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'issue': 2,
             'supportive': 'true'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         transaction.commit()
         db_arg2 = len(DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).all())
         len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
@@ -141,7 +141,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import set_new_start_premise as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -149,7 +149,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_new_start_premise as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -164,7 +164,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'attack_type': 'support',
             'issue': 2
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         db_arg2 = len(DBDiscussionSession.query(Argument).filter_by(uid=2).all())
         db_pgroups2 = len(DBDiscussionSession.query(PremiseGroup).all())
         self.assertIsNotNone(response)
@@ -178,7 +178,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import set_new_premises_for_argument as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -191,7 +191,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         request = testing.DummyRequest(params={
             'elements': json.dumps([elements])
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         db_review2 = len(DBDiscussionSession.query(ReviewEdit).all())
         db_value2 = len(DBDiscussionSession.query(ReviewEditValue).all())
         self.assertIsNotNone(response)
@@ -210,7 +210,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         request = testing.DummyRequest(params={
             'elements': json.dumps([{}])
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -223,7 +223,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'title': 'Some new title',
             'lang': 'en'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         DBDiscussionSession.query(Issue).filter_by(title='Some new title').delete()
@@ -238,7 +238,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'long_info': 'Some new long info',
             'lang': 'en'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -252,7 +252,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'long_info': 'Some new long info',
             'lang': 'en'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -266,7 +266,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'long_info': 'Some new long info',
             'lang': 'en'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -280,7 +280,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'long_info': 'Some new long info',
             'lang': 'sw'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -294,7 +294,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'long_info': 'Some new long info',
             'lang': 'en'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -302,14 +302,14 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_seen_statements as ajax
         request = testing.DummyRequest(params={'uids': json.dumps([40, 41])}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
 
     def test_set_seen_statements_failure1(self):
         from dbas.views import set_seen_statements as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -317,6 +317,6 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_seen_statements as ajax
         request = testing.DummyRequest(params={'uids': json.dumps(['a'])}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
