@@ -496,7 +496,8 @@ def delete_history_in_database(nickname):
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else '').first()
     if not nickname or not db_user:
-        return []
+        return False
     DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).delete()
     DBDiscussionSession.flush()
     transaction.commit()
+    return True

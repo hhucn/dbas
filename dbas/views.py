@@ -1081,15 +1081,9 @@ def delete_user_history(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    request_authenticated_userid = request.authenticated_userid
-    user_manager.update_last_action(request_authenticated_userid)
-
     logger('delete_user_history', 'def', 'main')
-    history_helper.delete_history_in_database(request_authenticated_userid)
-    return_dict = dict()
-    return_dict['removed_data'] = 'true'  # necessary
-
-    return return_dict
+    user_manager.update_last_action(request.authenticated_userid)
+    return {'removed_data': str(history_helper.delete_history_in_database(request.authenticated_userid)).lower()}
 
 
 # ajax - deleting complete history of the user
@@ -1102,15 +1096,9 @@ def delete_statistics(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    request_authenticated_userid = request.authenticated_userid
-    user_manager.update_last_action(request_authenticated_userid)
-
     logger('delete_statistics', 'def', 'main')
-
-    return_dict = dict()
-    return_dict['removed_data'] = 'true' if clear_vote_and_seen_values_of_user(request_authenticated_userid) else 'false'
-
-    return return_dict
+    user_manager.update_last_action(request.authenticated_userid)
+    return {'removed_data': str(clear_vote_and_seen_values_of_user(request.authenticated_userid)).lower()}
 
 
 # ajax - user login
@@ -1135,9 +1123,8 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
     try:
         return login_user(request, nickname, password, for_api, keep_login, _tn)
     except KeyError as e:
-        return_dict = {'error': _tn.get(_.internalKeyError)}
         logger('user_login', 'error', repr(e))
-        return return_dict
+        return {'error': _tn.get(_.internalKeyError)}
 
 
 # ajax - user logout
@@ -1184,7 +1171,6 @@ def user_registration(request):
     ui_locales = request.params['lang'] if 'lang' in request.params else get_language_from_cookie(request)
     _t = Translator(ui_locales)
 
-    # getting params
     try:
         success, info = register_with_ajax_data(request, ui_locales)
 
