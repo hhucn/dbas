@@ -7,9 +7,9 @@ from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.language import get_language_from_cookie, set_language_for_first_visit
-from dbas.helper.views import handle_justification_step, prepare_parameter_for_justification
+from dbas.helper.views import handle_justification_step
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_statement,\
-    check_belonging_of_argument, check_belonging_of_premisegroups
+    check_belonging_of_argument, check_belonging_of_premisegroups, related_with_support
 from dbas.logger import logger
 from dbas.lib import get_discussion_language, resolve_issue_uid_to_slug
 from dbas.strings.translator import Translator
@@ -170,12 +170,71 @@ def justify(request, nickname, for_api=False) -> dict:
 
 
 def reaction(request, nickname, for_api=False) -> dict:
+    """
+    Initialize the reaction step for a position in a discussion. Creates helper and returns a dictionary containing
+    different feedback options for the confrontation with an argument in a discussion.
+
+    :param request: pyramid's request object
+    :param nickname: the user's nickname creating the request
+    :param for_api: boolean if requests came via the API
+    :param api_data: dict if requests came via the API
+    :rtype: dict
+    :return: prepared collection with first elements for the discussion
+    """
+    logger('Core', 'discussion.reaction', 'main')
     prepared_discussion = dict()
     return prepared_discussion
 
 
-def support(request, nickname, for_api=False) -> dict:
+def support(request, nickname, for_api=False, api_data=None) -> dict:
+    """
+    Initialize the attitude step for a position in a discussion. Creates helper and returns a dictionary containing
+    the first elements needed for the discussion.
+
+    :param request: pyramid's request object
+    :param nickname: the user's nickname creating the request
+    :param for_api: boolean if requests came via the API
+    :param api_data: dict if requests came via the API
+    :rtype: dict
+    :return: prepared collection with first elements for the discussion
+    """
+    logger('Core', 'discussion.support', 'main')
+
+    if for_api and api_data:
+        slug = api_data['slug']
+        arg_user_uid = api_data['arg_user_uid']
+        arg_system_uid = api_data['arg_system_uid']
+    else:
+        slug = request.matchdict['slug'] if 'slug' in request.matchdict else ''
+        arg_user_uid = request.matchdict['arg_id_user'] if 'arg_id_user' in request.matchdict else ''
+        arg_system_uid = request.matchdict['arg_id_sys'] if 'arg_id_sys' in request.matchdict else ''
+
+    ui_locales = get_language_from_cookie(request)
+    issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
+    disc_ui_locales = get_discussion_language(request, issue)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+
+    if not check_belonging_of_argument(issue, arg_user_uid) or \
+            not check_belonging_of_argument(issue, arg_system_uid) or \
+            not related_with_support(arg_user_uid, arg_system_uid):
+        logger('Core', 'discussion.support', 'no item dict', error=True)
+        return None
+
+    history = __handle_history(request, nickname, slug, issue)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
+    _dh = DictionaryHelper(ui_locales, disc_ui_locales)
+    discussion_dict = _ddh.get_dict_for_supporting_each_other(arg_system_uid, arg_user_uid, nickname, request.application_url)
+    item_dict = _idh.get_array_for_support(arg_system_uid, slug, for_api)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, True, request, for_api=for_api, nickname=nickname)
+
     prepared_discussion = dict()
+    prepared_discussion['issues'] = issue_dict
+    prepared_discussion['discussion'] = discussion_dict
+    prepared_discussion['items'] = item_dict
+    prepared_discussion['extras'] = extras_dict
+    prepared_discussion['title'] = issue_dict['title']
+
     return prepared_discussion
 
 
@@ -246,6 +305,7 @@ def jump(request, nickname, for_api=False, api_data=None) -> dict:
     :param request: pyramid's request object
     :param nickname: the user's nickname creating the request
     :param for_api: boolean if requests came via the API
+    :param api_data: dict if requests came via the API
     :rtype: dict
     :return: prepared collection with first elements for the discussion
     """

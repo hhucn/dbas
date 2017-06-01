@@ -748,61 +748,24 @@ def discussion_support(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/jump/{arg_id}'
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    match_dict = request.matchdict
-    params = request.params
-    request_authenticated_userid = request.authenticated_userid
-    logger('discussion_support', 'def', 'main, request.matchdict: {}'.format(match_dict))
-    logger('discussion_support', 'def', 'main, request.params: {}'.format(params))
+    logger('views', 'discussion_support', 'main, request.matchdict: {}'.format(request.matchdict))
+    logger('views', 'discussion_support', 'main, request.params: {}'.format(request.params))
 
-    nickname = get_nickname(request_authenticated_userid, for_api, api_data)
-    history = params['history'] if 'history' in params else ''
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
+    if session_expired:
+        return user_logout(request, True)
 
-    if for_api and api_data:
-        slug = api_data["slug"]
-        arg_user_uid = api_data["arg_user_uid"]
-        arg_system_uid = api_data["arg_system_uid"]
-    else:
-        slug = match_dict['slug'] if 'slug' in match_dict else ''
-        arg_user_uid = match_dict['arg_id_user'] if 'arg_id_user' in match_dict else ''
-        arg_system_uid = match_dict['arg_id_sys'] if 'arg_id_sys' in match_dict else ''
-
-    history_helper.save_path_in_database(nickname, slug, request.path, history)
-    history_helper.save_history_in_cookie(request, request.path, history)
     unauthenticated = check_authentication(request)
     if unauthenticated:
         return unauthenticated
 
-    ui_locales = get_language_from_cookie(request)
-    issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
-    disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
-    history_helper.save_issue_uid(issue, nickname)
-
-    if not check_belonging_of_argument(issue, arg_user_uid) or not check_belonging_of_argument(issue, arg_system_uid) or not related_with_support(arg_user_uid, arg_system_uid):
-        logger('discussion_support', 'def', 'no item dict', error=True)
+    prepared_discussion = discussion.support(request, nickname, for_api)
+    if not prepared_discussion:
         raise HTTPNotFound()
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
-    discussion_dict = _ddh.get_dict_for_supporting_each_other(arg_system_uid, arg_user_uid, nickname, request.application_url)
-    item_dict = _idh.get_array_for_support(arg_system_uid, slug, for_api)
-    extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
-                                                                                    True, True, request,
-                                                                                    for_api=for_api, nickname=request_authenticated_userid)
-
-    return_dict = dict()
-    return_dict['issues'] = issue_dict
-    return_dict['discussion'] = discussion_dict
-    return_dict['items'] = item_dict
-    return_dict['extras'] = extras_dict
-
-    if for_api:
-        return return_dict
-    else:
-        return_dict['layout'] = base_layout()
-        return_dict['language'] = str(ui_locales)
-        return_dict['title'] = issue_dict['title']
-        return return_dict
+    prepared_discussion['layout'] = base_layout()
+    prepared_discussion['language'] = str(get_language_from_cookie(request))
+    return prepared_discussion
 
 
 # finish page
