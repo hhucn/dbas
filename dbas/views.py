@@ -55,7 +55,7 @@ from dbas.helper.views import preparation_for_view, get_nickname, try_to_contact
     prepare_parameter_for_justification
 from dbas.helper.voting import add_click_for_argument, clear_vote_and_seen_values_of_user
 from dbas.input_validator import is_integer, check_belonging_of_argument, \
-    check_reaction, check_belonging_of_premisegroups, related_with_support
+    check_reaction, related_with_support
 from dbas.lib import escape_string, get_discussion_language, \
     get_user_by_private_or_public_nickname, is_user_author_or_admin, \
     get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid, get_profile_picture, \
@@ -641,7 +641,6 @@ def discussion_justify(request, for_api=False, api_data=None):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('discussion_justify', 'def', 'main, request.matchdict: {}'.format(request.matchdict))
     logger('discussion_justify', 'def', 'main, request.params: {}'.format(request.params))
-    request_authenticated_userid = request.authenticated_userid
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
 
@@ -868,7 +867,6 @@ def discussion_choose(request, for_api=False, api_data=None):
     params = request.params
     logger('discussion_choose', 'def', 'main, request.matchdict: {}'.format(match_dict))
     logger('discussion_choose', 'def', 'main, request.params: {}'.format(params))
-
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
     if session_expired:

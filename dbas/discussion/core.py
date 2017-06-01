@@ -19,8 +19,8 @@ from dbas.strings.keywords import Keywords as _
 def init(request, nickname, for_api=False) -> dict:
     """
     Initialize the discussion. Creates helper and returns a dictionary containing the first elements needed for the
-    discussion. 
-    
+    discussion.
+
     :param request: pyramid's request object
     :param nickname: the user's nickname creating the request
     :param for_api: boolean if requests came via the API
@@ -268,15 +268,15 @@ def finish(request) -> dict:
 def __handle_history(request, nickname, slug, issue) -> str:
     """
 
-    :param request:
-    :param nickname:
-    :param slug:
-    :param issue:
+    :param request: pyramid's request object
+    :param nickname: the user's nickname creating the request
+    :param slug: the discussion's slugified title
+    :param issue: the discussion's issue od
     :rtype: str
-    :return:
+    :return: current user's history
     """
     history = request.params['history'] if 'history' in request.params else ''
     history_helper.save_path_in_database(nickname, slug, request.path, history)
     history_helper.save_history_in_cookie(request, request.path, history)
-    history_helper.save_issue_uid(issue, nickname)#
+    history_helper.save_issue_uid(issue, nickname)
     return history
