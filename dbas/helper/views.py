@@ -53,10 +53,7 @@ def preparation_for_view(for_api, api_data, request):
     """
     nickname = get_nickname(request.authenticated_userid, for_api, api_data)
     session_expired = UserHandler.update_last_action(nickname)
-    history         = request.params['history'] if 'history' in request.params else ''
-    #  HistoryHelper.save_path_in_database(nickname, request.path, history)  # TODO 322
-    HistoryHelper.save_history_in_cookie(request, request.path, history)
-    return nickname, session_expired, history
+    return nickname, session_expired
 
 
 def prepare_parameter_for_justification(request, for_api):

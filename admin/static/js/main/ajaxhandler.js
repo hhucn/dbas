@@ -34,7 +34,6 @@ function AdminAjaxHandler(){
 	 * @param new_data
 	 */
 	this.addSomething = function(new_data){
-		console.log(JSON.stringify(new_data));
 		var table = $('#table_name').text();
 		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({

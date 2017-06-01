@@ -112,7 +112,7 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any], for_
     :param api_data: dict if requests came via the API
     :return: prepared collection for the discussion
     """
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
+    nickname, session_expired = preparation_for_view(for_api, api_data, request)
     if session_expired:
         return user_logout(request, True)
 
