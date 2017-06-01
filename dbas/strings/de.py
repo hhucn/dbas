@@ -315,6 +315,7 @@ de_lang = {
     _.firstPremiseText2: 'Bitte begründen Sie Ihre Aussage.',
     _.firstname: 'Vorname',
     _.fromm: 'von',
+    _.finish: 'Ende',
     _.finishTitle: 'Diskussion beenden',
     _.hold: 'stimmen',
     _.gender: 'Geschlecht',

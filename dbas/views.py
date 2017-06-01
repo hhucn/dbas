@@ -6,6 +6,7 @@ Collection of all view registrations of the core component of D-BAS.
 
 import json
 import subprocess
+from typing import Callable, Any
 
 import requests
 import transaction
@@ -18,6 +19,7 @@ from pyshorteners.shorteners import Shortener, Shorteners
 from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
 
+import dbas.discussion.core as discussion
 import dbas.handler.news as news_handler
 import dbas.helper.history as history_helper
 import dbas.helper.issue as issue_helper
@@ -28,12 +30,13 @@ import dbas.review.helper.queues as review_queue_helper
 import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
-import dbas.user_management as user_manager
+from dbas import user_management as user_manager
+from dbas.auth.login import login_user, register_with_ajax_data
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, sql_timestamp_pretty_print
+from dbas.database.discussion_model import User, Group, Issue, Argument, Message, Settings, Language, \
+    sql_timestamp_pretty_print
 from dbas.database.initializedb import nick_of_anonymous_user
-import dbas.discussion.core as discussion
-from dbas.handler.opinion import get_infos_about_argument,  get_user_with_same_opinion_for_argument, \
+from dbas.handler.opinion import get_infos_about_argument, get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
     get_user_with_same_opinion_for_premisegroups, get_user_and_opinions_for_argument
 from dbas.handler.password import request_password
@@ -50,10 +53,9 @@ from dbas.helper.references import get_references_for_argument, get_references_f
 from dbas.helper.settings import set_settings
 from dbas.helper.views import preparation_for_view, get_nickname, try_to_contact, handle_justification_step, \
     prepare_parameter_for_justification
-from dbas.auth.login import login_user, register_with_ajax_data
 from dbas.helper.voting import add_click_for_argument, clear_vote_and_seen_values_of_user
-from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_argument, \
-    check_reaction, check_belonging_of_premisegroups, check_belonging_of_statement, related_with_support
+from dbas.input_validator import is_integer, check_belonging_of_argument, \
+    check_reaction, check_belonging_of_premisegroups, related_with_support
 from dbas.lib import escape_string, get_discussion_language, \
     get_user_by_private_or_public_nickname, is_user_author_or_admin, \
     get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid, get_profile_picture, \
@@ -65,7 +67,6 @@ from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_p
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
-from typing import Callable, Any
 from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
     send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio, \
     send_request_for_info_popup_to_socketio
@@ -589,7 +590,6 @@ def discussion_init(request, for_api=False, api_data=None):
 
     prepared_discussion['layout'] = base_layout()
     prepared_discussion['language'] = str(get_language_from_cookie(request))
-    prepared_discussion['project'] = project_name
     return prepared_discussion
 
 
@@ -622,7 +622,6 @@ def discussion_attitude(request, for_api=False, api_data=None):
 
     prepared_discussion['layout'] = base_layout()
     prepared_discussion['language'] = str(get_language_from_cookie(request))
-    prepared_discussion['project'] = project_name
     return prepared_discussion
 
 
@@ -672,7 +671,6 @@ def discussion_justify(request, for_api=False, api_data=None):
         return_dict['layout'] = base_layout()
         return_dict['language'] = str(ui_locales)
         return_dict['title'] = issue_dict['title']
-        return_dict['project'] = project_name
         return return_dict
 
 
@@ -749,7 +747,6 @@ def discussion_reaction(request, for_api=False, api_data=None):
         return_dict['layout'] = base_layout()
         return_dict['language'] = str(ui_locales)
         return_dict['title'] = issue_dict['title']
-        return_dict['project'] = project_name
         return return_dict
 
 
@@ -820,7 +817,6 @@ def discussion_support(request, for_api=False, api_data=None):
         return_dict['layout'] = base_layout()
         return_dict['language'] = str(ui_locales)
         return_dict['title'] = issue_dict['title']
-        return_dict['project'] = project_name
         return return_dict
 
 
@@ -836,9 +832,9 @@ def discussion_finish(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     match_dict = request.matchdict
     params = request.params
-    logger('discussion_finish', 'def', 'main, request.matchdict: {}'.format(match_dict))
-    logger('discussion_finish', 'def', 'main, request.params: {}'.format(params))
-    ui_locales = get_language_from_cookie(request)
+    logger('views', 'discussion.finish', 'request.matchdict: {}'.format(match_dict))
+    logger('views', 'discussion.finish', 'request.params: {}'.format(params))
+
     nickname = request.authenticated_userid
     slug = resolve_issue_uid_to_slug(history_helper.get_saved_issue(nickname))
 
@@ -847,18 +843,11 @@ def discussion_finish(request):
     if unauthenticated:
         return unauthenticated
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
-    summary_dict = user_manager.get_summary_of_today(nickname, ui_locales)
-
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': 'Finish',
-        'project': project_name,
-        'extras': extras_dict,
-        'summary': summary_dict,
-        'show_summary': len(summary_dict) != 0
-    }
+    prepared_discussion = discussion.finish(request)
+    prepared_discussion['layout'] = base_layout()
+    prepared_discussion['language'] = str(get_language_from_cookie(request))
+    prepared_discussion['show_summary'] = len(prepared_discussion['summary']) != 0
+    return prepared_discussion
 
 
 # choosing page
@@ -933,7 +922,6 @@ def discussion_choose(request, for_api=False, api_data=None):
         return_dict['layout'] = base_layout()
         return_dict['language'] = str(ui_locales)
         return_dict['title'] = issue_dict['title']
-        return_dict['project'] = project_name
         return return_dict
 
 
@@ -1001,7 +989,6 @@ def discussion_jump(request, for_api=False, api_data=None):
         return_dict['layout'] = base_layout()
         return_dict['language'] = str(ui_locales)
         return_dict['title'] = issue_dict['title']
-        return_dict['project'] = project_name
         return return_dict
 
 

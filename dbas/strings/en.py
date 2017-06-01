@@ -315,6 +315,7 @@ en_lang = {
     _.firstPremiseText2: 'Please enter your reason for your statement.',
     _.firstname: 'First name',
     _.fillLine: 'Please, fill this this line with your report',
+    _.finish: 'Finish',
     _.finishTitle: 'Leave the discussion!',
     _.fromm: 'from',
     _.gender: 'Gender',

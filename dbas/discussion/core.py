@@ -1,5 +1,6 @@
 import dbas.helper.history as history_helper
 import dbas.helper.issue as issue_helper
+import dbas.user_management as user_manager
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -7,6 +8,8 @@ from dbas.helper.language import get_language_from_cookie, set_language_for_firs
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_statement
 from dbas.logger import logger
 from dbas.lib import get_discussion_language, resolve_issue_uid_to_slug
+from dbas.strings.translator import Translator
+from dbas.strings.keywords import Keywords as _
 
 # TODO: FIX API
 # TODO: REQUEST AND NICKNAME AS PARAMS?
@@ -136,11 +139,6 @@ def support(request, nickname, history, for_api=False) -> dict:
     return prepared_discussion
 
 
-def finish(request, nickname, history, for_api=False) -> dict:
-    prepared_discussion = dict()
-    return prepared_discussion
-
-
 def choose(request, nickname, history, for_api=False) -> dict:
     prepared_discussion = dict()
     return prepared_discussion
@@ -148,4 +146,25 @@ def choose(request, nickname, history, for_api=False) -> dict:
 
 def jump(request, nickname, history, for_api=False) -> dict:
     prepared_discussion = dict()
+    return prepared_discussion
+
+
+def finish(request) -> dict:
+    """
+    Exit the discussion. Creates helper and returns a dictionary containing the summary of today.
+
+    :param request: pyramid's request object
+    :rtype: dict
+    :return: prepared collection with summary of current day's actions of the user
+    """
+    ui_locales = get_language_from_cookie(request)
+    _t = Translator(ui_locales)
+
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    summary_dict = user_manager.get_summary_of_today(request.authenticated_userid, ui_locales)
+
+    prepared_discussion = dict()
+    prepared_discussion['title'] = _t.get(_.finishTitle)
+    prepared_discussion['extras'] = extras_dict
+    prepared_discussion['summary'] = summary_dict
     return prepared_discussion
