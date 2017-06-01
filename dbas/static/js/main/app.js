@@ -549,14 +549,12 @@ function callbackIfDoneForLogin(data, showGlobalError){
     'use strict';
     
 	try {
-		var parsedData = $.parseJSON(data);
-		
-		if (parsedData.error.length !== 0) {
+		if (data.error.length !== 0) {
 			if (showGlobalError) {
-					setGlobalErrorHandler('Ohh!', parsedData.error);
+					setGlobalErrorHandler('Ohh!', data.error);
 			} else {
 				$('#' + popupLoginFailed).show();
-				$('#' + popupLoginFailed + '-message').html(parsedData.error);
+				$('#' + popupLoginFailed + '-message').html(data.error);
 			}
 		} else {
 			$('#' + popupLogin).modal('hide');
@@ -580,7 +578,6 @@ function callbackIfDoneForLogin(data, showGlobalError){
 function callbackIfDoneForRegistration(data){
     'use strict';
     
-	var parsedData = $.parseJSON(data);
 	var success = $('#' + popupLoginSuccess); //popupLoginRegistrationSuccess);
 	var failed = $('#' + popupLoginRegistrationFailed);
 	var info = $('#' + popupLoginRegistrationInfo);
@@ -588,20 +585,20 @@ function callbackIfDoneForRegistration(data){
 	failed.hide();
 	info.hide();
 
-	if (parsedData.success.length > 0) {
+	if (data.success.length > 0) {
 		// trigger click
 		$('a[href="#login"]').trigger('click');
 		success.show();
-		$('#' + popupLoginSuccess + '-message').text(parsedData.success);
+		$('#' + popupLoginSuccess + '-message').text(data.success);
 	}
-	if (parsedData.error.length > 0) {
+	if (data.error.length > 0) {
 		failed.show();
-		$('#' + popupLoginRegistrationFailed + '-message').text(parsedData.error);
+		$('#' + popupLoginRegistrationFailed + '-message').text(data.error);
 	}
-	if (parsedData.info.length > 0) {
+	if (data.info.length > 0) {
 		info.show();
-		$('#' + popupLoginRegistrationInfo + '-message').text(parsedData.info);
-		$('#popup-login-spamanswer-input').attr('placeholder', parsedData.spamquestion).val('');
+		$('#' + popupLoginRegistrationInfo + '-message').text(data.info);
+		$('#popup-login-spamanswer-input').attr('placeholder', data.spamquestion).val('');
 	}
 }
 
@@ -612,26 +609,25 @@ function callbackIfDoneForRegistration(data){
 function callbackIfDoneForPasswordRequest(data){
     'use strict';
     
-	var parsedData = $.parseJSON(data);
 	var success = $('#' + popupLoginSuccess);
 	var failed = $('#' + popupLoginFailed);
 	var info = $('#' + popupLoginInfo);
 	success.hide();
 	failed.hide();
 	info.hide();
-	if (parsedData.success.length > 0) {
+	if (data.success.length > 0) {
 		$('#' + popupLoginForgotPasswordBody).hide();
 		$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
 		success.show();
-		$('#' + popupLoginSuccess + '-message').text(parsedData.success);
+		$('#' + popupLoginSuccess + '-message').text(data.success);
 	}
-	if (parsedData.error.length > 0) {
+	if (data.error.length > 0) {
 		failed.show();
-		$('#' + popupLoginFailed + '-message').text(parsedData.error);
+		$('#' + popupLoginFailed + '-message').text(data.error);
 	}
-	if (parsedData.info.length > 0) {
+	if (data.info.length > 0) {
 		info.show();
-		$('#' + popupLoginInfo + '-message').text(parsedData.info);
+		$('#' + popupLoginInfo + '-message').text(data.info);
 	}
 }
 

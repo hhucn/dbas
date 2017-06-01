@@ -1189,7 +1189,7 @@ def review_reputation(request):
 def call_from_request(request, f: Callable[[Any, Any], Any]):
     """
     Calls f with the authenticated_userid and ui_locales from request.
-    
+
     :param request: A pyramid request
     :param f: A function with two arguments
     :return: Return value of f
@@ -1306,7 +1306,7 @@ def delete_user_history(request):
     return_dict = dict()
     return_dict['removed_data'] = 'true'  # necessary
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - deleting complete history of the user
@@ -1327,7 +1327,7 @@ def delete_statistics(request):
     return_dict = dict()
     return_dict['removed_data'] = 'true' if clear_vote_and_seen_values_of_user(request_authenticated_userid) else 'false'
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - user login
@@ -1350,16 +1350,11 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
     _tn = Translator(lang)
 
     try:
-        value = login_user(request, nickname, password, for_api, keep_login, _tn)
-        if type(value) == HTTPFound:  # success
-            return value
-        else:
-            return json.dumps(value)
-
+        return login_user(request, nickname, password, for_api, keep_login, _tn)
     except KeyError as e:
         return_dict = {'error': _tn.get(_.internalKeyError)}
         logger('user_login', 'error', repr(e))
-        return json.dumps(return_dict)
+        return return_dict
 
 
 # ajax - user logout
@@ -1402,11 +1397,8 @@ def user_registration(request):
     success = ''
     error = ''
     info = ''
-    return_dict = dict()
 
-    ui_locales = request.params['lang'] if 'lang' in request.params else None
-    if not ui_locales:
-        ui_locales = get_language_from_cookie(request)
+    ui_locales = request.params['lang'] if 'lang' in request.params else get_language_from_cookie(request)
     _t = Translator(ui_locales)
 
     # getting params
@@ -1417,11 +1409,9 @@ def user_registration(request):
         logger('user_registration', 'error', repr(e))
         error = _t.get(_.internalKeyError)
 
-    return_dict['success']      = str(success)
-    return_dict['error']        = str(error)
-    return_dict['info']         = str(info)
-
-    return json.dumps(return_dict)
+    return {'success': str(success),
+            'error': str(error),
+            'info': str(info)}
 
 
 # ajax - password requests
@@ -1439,9 +1429,7 @@ def user_password_request(request):
     success = ''
     info = ''
     return_dict = dict()
-    ui_locales = request.params['lang'] if 'lang' in request.params else None
-    if not ui_locales:
-        ui_locales = get_language_from_cookie(request)
+    ui_locales = request.params['lang'] if 'lang' in request.params else get_language_from_cookie(request)
     _t = Translator(ui_locales)
 
     try:
@@ -1459,7 +1447,7 @@ def user_password_request(request):
     logger('user_password_request', 'error', str(error))
     logger('user_password_request', 'info', str(info))
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - set boolean for receiving information
@@ -1476,7 +1464,7 @@ def set_user_settings(request):
     _tn = Translator(get_language_from_cookie(request))
 
     try:
-        settings_value = True if request.params['settings_value'] == 'True' else False
+        settings_value = request.params['settings_value'] == 'True'
         service = request.params['service']
         public_nick, public_page_url, gravatar_url, error = set_settings(request.application_url, request.authenticated_userid, service, settings_value, _tn)
     except KeyError as e:
@@ -1487,7 +1475,7 @@ def set_user_settings(request):
         logger('set_user_settings', 'error', repr(e))
 
     return_dict = {'error': error, 'public_nick': public_nick, 'public_page_url': public_page_url, 'gravatar_url': gravatar_url}
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - set boolean for receiving information
@@ -1529,7 +1517,7 @@ def set_user_language(request):
         logger('set_user_settings', 'error', repr(e))
 
     return_dict = {'error': error, 'ui_locales': ui_locales, 'current_lang': current_lang}
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - sending notification
@@ -1575,8 +1563,7 @@ def send_some_notification(request):
     except (KeyError, AttributeError):
         error = _tn.get(_.internalKeyError)
 
-    return_dict = {'error': error, 'timestamp': ts, 'uid': uid, 'recipient_avatar': gravatar}
-    return json.dumps(return_dict)
+    return {'error': error, 'timestamp': ts, 'uid': uid, 'recipient_avatar': gravatar}
 
 
 # #######################################
@@ -1650,7 +1637,7 @@ def set_new_start_statement(request, for_api=False, api_data=None):
         logger('set_new_start_statement', 'error', repr(e))
         return_dict['error'] = _tn.get(_.notInsertedErrorBecauseInternal)
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - send new start premise
@@ -1707,14 +1694,14 @@ def set_new_start_premise(request, for_api=False, api_data=None):
             return_dict['url'] = str(url) + str('#access-review')
 
         if url == -1:
-            return json.dumps(return_dict)
+            return return_dict
 
         return_dict['url'] = url
     except KeyError as e:
         logger('set_new_start_premise', 'error', repr(e))
         return_dict['error'] = _tn.get(_.notInsertedErrorBecauseInternal)
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - send new premises
@@ -1775,7 +1762,7 @@ def set_new_premises_for_argument(request, for_api=False, api_data=None):
             return_dict['url'] = url
 
         if url == -1:
-            return json.dumps(return_dict)
+            return return_dict
 
         return_dict['url'] = url
 
@@ -1784,7 +1771,7 @@ def set_new_premises_for_argument(request, for_api=False, api_data=None):
         return_dict['error'] = _tn.get(_.notInsertedErrorBecauseInternal)
 
     logger('set_new_premises_for_argument', 'def', 'returning {}'.format(return_dict))
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - set new textvalue for a statement
@@ -1814,7 +1801,7 @@ def set_correction_of_statement(request):
         return_dict['info'] = ''
         logger('set_correction_of_statement', 'error', repr(e))
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - set notification as read
@@ -1850,7 +1837,7 @@ def set_notification_read(request):
         logger('set_message_read', 'error', repr(e))
         return_dict['error'] = _t.get(_.internalKeyError)
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - deletes a notification
@@ -1896,7 +1883,7 @@ def set_notification_delete(request):
         return_dict['error'] = _t.get(_.internalKeyError)
         return_dict['success'] = ''
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - set new issue
@@ -1932,7 +1919,7 @@ def set_new_issue(request):
         error = _tn.get(_.notInsertedErrorBecauseInternal)
 
     return_dict['error'] = '' if was_set else error
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - set seen premisegroup
@@ -1964,7 +1951,7 @@ def set_seen_statements(request):
         logger('set_seen_statements', 'error', repr(e))
         return_dict['error'] = _t.get(_.internalKeyError)
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - set users opinion
@@ -1998,7 +1985,7 @@ def mark_statement_or_argument(request):
         logger('set_seen_statements', 'error', repr(e))
         return_dict['error'] = _t.get(_.internalKeyError)
 
-    return json.dumps(return_dict)
+    return return_dict
 
 # ###################################
 # ADDTIONAL AJAX STUFF # GET THINGS #
@@ -2018,7 +2005,7 @@ def get_logfile_for_some_statements(request):
     logger('get_logfile_for_statements', 'def', 'main, request.params: {}'.format(request.params))
     user_manager.update_last_action(request.authenticated_userid)
 
-    return_dict = dict()
+    return_dict = {'info': ''}
     ui_locales = get_language_from_cookie(request)
 
     try:
@@ -2027,14 +2014,12 @@ def get_logfile_for_some_statements(request):
         ui_locales = get_discussion_language(request, issue)
         return_dict = get_logfile_for_statements(uids, ui_locales, request.application_url)
         return_dict['error'] = ''
-        return_dict['info'] = ''
     except KeyError as e:
         logger('get_logfile_for_premisegroup', 'error', repr(e))
         _tn = Translator(ui_locales)
         return_dict['error'] = _tn.get(_.noCorrections)
-        return_dict['info'] = ''
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - for shorten url
@@ -2074,7 +2059,7 @@ def get_shortened_url(request):
         _tn = Translator(get_discussion_language(request))
         return_dict['error'] = _tn.get(_.serviceNotAvailable)
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - for getting all news
@@ -2088,8 +2073,7 @@ def get_news(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('get_news', 'def', 'main')
-    return_dict = news_handler.get_news(get_language_from_cookie(request))
-    return json.dumps(return_dict)
+    return news_handler.get_news(get_language_from_cookie(request))
 
 
 # ajax - for getting argument infos
@@ -2118,7 +2102,7 @@ def get_all_infos_about_argument(request):
         logger('get_infos_about_argument', 'error', repr(e))
         return_dict['error'] = _t.get(_.internalKeyError)
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - for getting all users with the same opinion
@@ -2139,8 +2123,8 @@ def get_users_with_same_opinion(request):
     return_dict = dict()
     try:
         params = request.params
-        ui_locales  = params['lang'] if 'lang' in params else 'en'
-        uids        = params['uids']
+        ui_locales = params['lang'] if 'lang' in params else 'en'
+        uids = params['uids']
         is_arg = params['is_argument'] == 'true' if 'is_argument' in params else False
         is_att = params['is_attitude'] == 'true' if 'is_attitude' in params else False
         is_rea = params['is_reaction'] == 'true' if 'is_reaction' in params else False
@@ -2169,7 +2153,7 @@ def get_users_with_same_opinion(request):
         logger('get_users_with_same_opinion', 'error', repr(e))
         return_dict['error'] = _tn.get(_.internalKeyError)
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - for getting all users with the same opinion
@@ -2196,7 +2180,7 @@ def get_public_user_data(request):
         logger('get_public_user_data', 'error', repr(e))
         return_dict['error'] = _tn.get(_.internalKeyError)
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 @view_config(route_name='ajax_get_arguments_by_statement_uid', renderer='json')
@@ -2227,7 +2211,7 @@ def get_arguments_by_statement_uid(request):
         logger('get_arguments_by_statement_uid', 'error', repr(e))
         return_dict['error'] = _tn.get(_.internalKeyError)
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 @view_config(route_name='ajax_get_references', renderer='json')
@@ -2249,7 +2233,7 @@ def get_references(request):
     try:
         # uid is an integer if it is an argument and a list otherwise
         uid = json.loads(request.params['uid'])
-        is_argument = True if str(request.params['is_argument']) == 'true' else False
+        is_argument = str(request.params['is_argument']) == 'true'
         are_all_integer = all(is_integer(tmp) for tmp in uid) if isinstance(uid, list) else is_integer(uid)
 
         error = ''
@@ -2272,7 +2256,7 @@ def get_references(request):
                    'data': data,
                    'text': text}
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 @view_config(route_name='ajax_set_references', renderer='json')
@@ -2302,7 +2286,7 @@ def set_references(request):
         logger('set_references', 'error', repr(e))
         return_dict = {'error': _tn.get(_.internalKeyError)}
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ########################################
@@ -2335,7 +2319,7 @@ def switch_language(request):
         _t = Translator(ui_locales)
         return_dict['error'] = _t.get(_.internalError)
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - for sending news
@@ -2361,7 +2345,7 @@ def send_news(request):
         logger('send_news', 'error', repr(e))
         return_dict['error'] = _tn.get(_.internalKeyError)
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - for fuzzy search
@@ -2405,9 +2389,7 @@ def fuzzy_search(request, for_api=False, api_data=None):
         return_dict = {'error': _tn.get(_.internalKeyError)}
         logger('fuzzy_search', 'error', repr(e))
 
-    if for_api:
-        return return_dict
-    return json.dumps(return_dict)
+    return return_dict
 
 
 # ajax - for additional service
