@@ -67,14 +67,14 @@ def prepare_parameter_for_justification(request, for_api):
     :param for_api: Boolean
     :return: String, Statement.uid/Argument.uid, String, Boolean, String, Issue.uid, Language.ui_locales, dict()
     """
-    slug                = request.matchdict['slug'] if 'slug' in request.matchdict else ''
+    slug = request.matchdict['slug'] if 'slug' in request.matchdict else ''
     statement_or_arg_id = request.matchdict['statement_or_arg_id'] if 'statement_or_arg_id' in request.matchdict else ''
-    mode                = request.matchdict['mode'] if 'mode' in request.matchdict else ''
-    supportive          = mode == 't' or mode == 'd'  # supportive = t or do not know mode
-    relation            = request.matchdict['relation'][0] if len(request.matchdict['relation']) > 0 else ''
-    issue               = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
-    disc_ui_locales     = get_discussion_language(request, issue)
-    issue_dict          = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+    mode = request.matchdict['mode'] if 'mode' in request.matchdict else ''
+    supportive = mode == 't' or mode == 'd'  # supportive = t or do not know mode
+    relation = request.matchdict['relation'][0] if len(request.matchdict['relation']) > 0 else ''
+    issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
+    disc_ui_locales = get_discussion_language(request, issue)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
     return slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict
 

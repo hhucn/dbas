@@ -1,3 +1,5 @@
+from pyramid.httpexceptions import HTTPNotFound
+
 import dbas.helper.history as history_helper
 import dbas.helper.issue as issue_helper
 import dbas.user_management as user_manager
@@ -5,6 +7,7 @@ from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.language import get_language_from_cookie, set_language_for_first_visit
+from dbas.helper.views import handle_justification_step, prepare_parameter_for_justification
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_statement,\
     check_belonging_of_argument, check_belonging_of_premisegroups
 from dbas.logger import logger
@@ -90,12 +93,14 @@ def attitude(request, nickname, for_api=False) -> dict:
     :rtype: dict
     :return: prepared collection with first elements for the discussion
     """
-    logger('Core', 'discussion.attitude', 'main')
 
     ui_locales = get_language_from_cookie(request)
     statement_id = request.matchdict['statement_id'][0] if 'statement_id' in request.matchdict else ''
     slug = request.matchdict['slug'] if 'slug' in request.matchdict else ''
-    issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
+    if len(slug) > 0:
+        issue = issue_helper.get_id_of_slug(slug, request, True)
+    else:
+        issue = issue_helper.get_issue_id(request)
 
     if not is_integer(statement_id, True) \
             or not check_belonging_of_statement(issue, statement_id):
@@ -120,6 +125,39 @@ def attitude(request, nickname, for_api=False) -> dict:
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     item_dict = _idh.prepare_item_dict_for_attitude(statement_id)
     extras_dict = _dh.prepare_extras_dict(issue_dict['slug'], False, True, False, True, request, for_api=for_api, nickname=nickname)
+
+    prepared_discussion = dict()
+    prepared_discussion['issues'] = issue_dict
+    prepared_discussion['discussion'] = discussion_dict
+    prepared_discussion['items'] = item_dict
+    prepared_discussion['extras'] = extras_dict
+    prepared_discussion['title'] = issue_dict['title']
+
+    return prepared_discussion
+
+
+def justify(request, nickname, for_api=False) -> dict:
+    logger('Core', 'discussion.justify', 'main')
+
+    ui_locales = get_language_from_cookie(request)
+
+    slug = request.matchdict['slug'] if 'slug' in request.matchdict else ''
+    if len(slug) > 0:
+        issue = issue_helper.get_id_of_slug(slug, request, True)
+    else:
+        issue = issue_helper.get_issue_id(request)
+    disc_ui_locales = get_discussion_language(request, issue)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+
+    history = __handle_history(request, nickname, slug, issue)
+
+    try:
+        item_dict, discussion_dict, extras_dict = handle_justification_step(request, for_api, ui_locales, nickname, history)
+    except HTTPNotFound:
+        return None
+
+    if type(item_dict) is HTTPNotFound:
+        return None
 
     prepared_discussion = dict()
     prepared_discussion['issues'] = issue_dict

@@ -639,39 +639,24 @@ def discussion_justify(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation'
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('discussion_justify', 'def', 'main, request.matchdict: {}'.format(request.matchdict))
-    logger('discussion_justify', 'def', 'main, request.params: {}'.format(request.params))
+    logger('views', 'discussion_justify', 'main, request.matchdict: {}'.format(request.matchdict))
+    logger('views', 'discussion_justify', 'main, request.params: {}'.format(request.params))
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
-
-    ui_locales = get_language_from_cookie(request)
-    slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict = prepare_parameter_for_justification(request, for_api)
-    history_helper.save_issue_uid(issue, nickname)
-
-    history_helper.save_path_in_database(nickname, slug, request.path, history)
     if session_expired:
         return user_logout(request, True)
 
-    try:
-        item_dict, discussion_dict, extras_dict = handle_justification_step(request, for_api, ui_locales, nickname, history)
-    except HTTPNotFound:
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
+
+    prepared_discussion = discussion.justify(request, nickname, for_api)
+    if not prepared_discussion:
         raise HTTPNotFound()
 
-    if type(item_dict) is HTTPNotFound:
-        raise HTTPNotFound()
-
-    return_dict = dict()
-    return_dict['issues'] = issue_dict
-    return_dict['discussion'] = discussion_dict
-    return_dict['items'] = item_dict
-    return_dict['extras'] = extras_dict
-    if for_api:
-        return return_dict
-    else:
-        return_dict['layout'] = base_layout()
-        return_dict['language'] = str(ui_locales)
-        return_dict['title'] = issue_dict['title']
-        return return_dict
+    prepared_discussion['layout'] = base_layout()
+    prepared_discussion['language'] = str(get_language_from_cookie(request))
+    return prepared_discussion
 
 
 # reaction page
