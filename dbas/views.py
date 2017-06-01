@@ -586,7 +586,7 @@ def discussion_init(request, for_api=False, api_data=None):
 
     prepared_discussion = discussion.init(request, nickname, for_api)
     if not prepared_discussion:
-        return HTTPNotFound()
+        raise HTTPNotFound()
 
     prepared_discussion['layout'] = base_layout()
     prepared_discussion['language'] = str(get_language_from_cookie(request))
@@ -619,7 +619,7 @@ def discussion_attitude(request, for_api=False, api_data=None):
 
     prepared_discussion = discussion.attitude(request, nickname, for_api)
     if not prepared_discussion:
-        return HTTPNotFound()
+        raise HTTPNotFound()
 
     prepared_discussion['layout'] = base_layout()
     prepared_discussion['language'] = str(get_language_from_cookie(request))
@@ -878,7 +878,7 @@ def discussion_choose(request, for_api=False, api_data=None):
 
     prepared_discussion = discussion.choose(request, nickname, for_api)
     if not prepared_discussion:
-        return HTTPNotFound()
+        raise HTTPNotFound()
 
     prepared_discussion['layout'] = base_layout()
     prepared_discussion['language'] = str(get_language_from_cookie(request))
@@ -911,7 +911,7 @@ def discussion_jump(request, for_api=False, api_data=None):
 
     prepared_discussion = discussion.jump(request, nickname, for_api)
     if not prepared_discussion:
-        return HTTPNotFound()
+        raise HTTPNotFound()
 
     prepared_discussion['layout'] = base_layout()
     prepared_discussion['language'] = str(get_language_from_cookie(request))
