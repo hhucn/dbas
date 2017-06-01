@@ -5,24 +5,24 @@ from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.language import get_language_from_cookie, set_language_for_first_visit
-from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_statement
+from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_statement,\
+    check_belonging_of_argument
 from dbas.logger import logger
 from dbas.lib import get_discussion_language, resolve_issue_uid_to_slug
 from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
 
-# TODO: FIX API
+# TODO: FIX API / CONSIDER API_DATA
 # TODO: REQUEST AND NICKNAME AS PARAMS?
 
 
-def init(request, nickname, history, for_api=False) -> dict:
+def init(request, nickname, for_api=False) -> dict:
     """
     Initialize the discussion. Creates helper and returns a dictionary containing the first elements needed for the
     discussion. 
     
     :param request: pyramid's request object
     :param nickname: the user's nickname creating the request
-    :param history: get user's history
     :param for_api: boolean if requests came via the API
     :rtype: dict
     :return: prepared collection with first elements for the discussion
@@ -52,16 +52,15 @@ def init(request, nickname, history, for_api=False) -> dict:
     slug = resolve_issue_uid_to_slug(last_topic)
     if not slug:
         slug = ''
-    history_helper.save_path_in_database(nickname, slug, request.path, history)
+    __handle_history(request, nickname, slug, issue)
 
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
     item_dict = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api).get_array_for_start(nickname)
-    history_helper.save_issue_uid(issue, nickname)
 
     discussion_dict = DiscussionDictHelper(disc_ui_locales, nickname=nickname, main_page=request.application_url, slug=slug).get_dict_for_start(position_count=(len(item_dict['elements'])))
     extras_dict = DictionaryHelper(get_language_from_cookie(request), disc_ui_locales).prepare_extras_dict(slug, False, True, False, True,
-                                                                                                           request, for_api=for_api, nickname=request.authenticated_userid)
+                                                                                                           request, for_api=for_api, nickname=nickname)
 
     if len(item_dict['elements']) == 1:
         DictionaryHelper(disc_ui_locales, disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict,
@@ -77,14 +76,13 @@ def init(request, nickname, history, for_api=False) -> dict:
     return prepared_discussion
 
 
-def attitude(request, nickname, history, for_api=False) -> dict:
+def attitude(request, nickname, for_api=False) -> dict:
     """
     Initialize the attitude step for a position in a discussion. Creates helper and returns a dictionary containing
     the first elements needed for the discussion.
 
     :param request: pyramid's request object
     :param nickname: the user's nickname creating the request
-    :param history: get user's history
     :param for_api: boolean if requests came via the API
     :rtype: dict
     :return: prepared collection with first elements for the discussion
@@ -105,7 +103,7 @@ def attitude(request, nickname, history, for_api=False) -> dict:
 
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
-    history_helper.save_issue_uid(issue, nickname)
+    history = __handle_history(request, nickname, slug, issue)
 
     discussion_dict = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)\
         .get_dict_for_attitude(statement_id)
@@ -117,7 +115,7 @@ def attitude(request, nickname, history, for_api=False) -> dict:
         .prepare_item_dict_for_attitude(statement_id)
     extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(issue_dict['slug'], False, True,
                                                                                     False, True, request,
-                                                                                    for_api=for_api, nickname=request.authenticated_userid)
+                                                                                    for_api=for_api, nickname=nickname)
 
     prepared_discussion = dict()
     prepared_discussion['issues'] = issue_dict
@@ -144,8 +142,52 @@ def choose(request, nickname, history, for_api=False) -> dict:
     return prepared_discussion
 
 
-def jump(request, nickname, history, for_api=False) -> dict:
+def jump(request, nickname, for_api=False, api_data=None) -> dict:
+    """
+    Initialize the jump step for an argument in a discussion. Creates helper and returns a dictionary containing
+    several feedback options regarding this argument.
+
+    :param request: pyramid's request object
+    :param nickname: the user's nickname creating the request
+    :param for_api: boolean if requests came via the API
+    :rtype: dict
+    :return: prepared collection with first elements for the discussion
+    """
+
+    ui_locales = get_language_from_cookie(request)
+    slug = request.matchdict['slug'] if 'slug' in request.matchdict else ''
+
+    issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
+    disc_ui_locales = get_discussion_language(request, issue)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+    history = __handle_history(request, nickname, slug, issue)
+
+    if for_api and api_data:
+        slug = api_data["slug"]
+        arg_uid = api_data["arg_uid"]
+    else:
+        slug = request.matchdict['slug'] if 'slug' in request.matchdict else ''
+        arg_uid = request.matchdict['arg_id'] if 'arg_id' in request.matchdict else ''
+
+    if not check_belonging_of_argument(issue, arg_uid):
+        logger('Core', 'discussion.choose', 'no item dict', error=True)
+        return None
+
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
+    discussion_dict = _ddh.get_dict_for_jump(arg_uid, nickname, history)
+    item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
+    extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
+                                                                                    True, True, request,
+                                                                                    for_api=for_api, nickname=nickname)
+
     prepared_discussion = dict()
+    prepared_discussion['issues'] = issue_dict
+    prepared_discussion['discussion'] = discussion_dict
+    prepared_discussion['items'] = item_dict
+    prepared_discussion['extras'] = extras_dict
+    prepared_discussion['title'] = issue_dict['title']
+
     return prepared_discussion
 
 
@@ -168,3 +210,20 @@ def finish(request) -> dict:
     prepared_discussion['extras'] = extras_dict
     prepared_discussion['summary'] = summary_dict
     return prepared_discussion
+
+
+def __handle_history(request, nickname, slug, issue) -> str:
+    """
+
+    :param request:
+    :param nickname:
+    :param slug:
+    :param issue:
+    :rtype: str
+    :return:
+    """
+    history = request.params['history'] if 'history' in request.params else ''
+    history_helper.save_path_in_database(nickname, slug, request.path, history)
+    history_helper.save_history_in_cookie(request, request.path, history)
+    history_helper.save_issue_uid(issue, nickname)#
+    return history

@@ -218,8 +218,7 @@ def prepare_data_assign_reference(request, func):
 def __init(request):
     api_data = prepare_user_information(request)
     nickname = api_data["nickname"] if api_data else None
-    history = request.params['history'] if 'history' in request.params else ''
-    return dbas.discussion.init(request, history, nickname, for_api=True)
+    return dbas.discussion.init(request, nickname, for_api=True)
 
 
 @reaction.get(validators=validate_login)
