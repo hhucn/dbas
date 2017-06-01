@@ -224,7 +224,6 @@ def main_settings(request):
 
     if not db_user:
         raise HTTPNotFound()
-        # return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
 
     if db_user and 'form.passwordchange.submitted' in request.params:
         old_pw = escape_string(request.params['passwordold'])
@@ -331,7 +330,6 @@ def main_user(request):
     if current_user is None or current_user.nickname == nick_of_anonymous_user:
         logger('main_user', 'def', 'no user: {}'.format(uid), error=True)
         raise HTTPNotFound()
-        # return HTTPFound(location=UrlManager(request.application_url).get_404([request.path[1:]]))
 
     unauthenticated = check_authentication(request)
     if unauthenticated:
@@ -578,20 +576,17 @@ def discussion_init(request, for_api=False, api_data=None):
     :param api_data: Dictionary, containing data of a user who logged in via API
     :return: dictionary
     """
-    match_dict = request.matchdict
-    logger('discussion_init', 'def', 'main, request.matchdict: {}'.format(match_dict))
-    logger('discussion_init', 'def', 'main, request.params: {}'.format(request.params))
-
-    count_of_slugs = len(match_dict['slug']) if 'slug' in match_dict and isinstance(match_dict['slug'], ()) else 1
-    if count_of_slugs > 1:
-        logger('discussion_init', 'def', 'to many slugs', error=True)
-        raise HTTPNotFound()
+    logger('Views', 'discussion_init', 'main, request.matchdict: {}'.format(request.matchdict))
+    logger('Views', 'discussion_init', 'main, request.params: {}'.format(request.params))
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
     if session_expired:
         return user_logout(request, True)
 
     prepared_discussion = discussion.init(request, nickname, history, for_api)
+    if not prepared_discussion:
+        return HTTPNotFound()
+
     prepared_discussion['layout'] = base_layout()
     prepared_discussion['language'] = str(get_language_from_cookie(request))
     prepared_discussion['project'] = project_name
@@ -611,63 +606,24 @@ def discussion_attitude(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/attitude/{statement_id}'
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    match_dict = request.matchdict
-    params = request.params
-    request_authenticated_userid = request.authenticated_userid
-    logger('discussion_attitude', 'def', 'main, request.matchdict: {}'.format(match_dict))
-    logger('discussion_attitude', 'def', 'main, request.params: {}'.format(params))
+    logger('Views', 'discussion_attitude', 'main, request.matchdict: {}'.format(request.matchdict))
+    logger('Views', 'discussion_attitude', 'main, request.params: {}'.format(request.params))
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
-
-    ui_locales      = get_language_from_cookie(request)
-    slug            = match_dict['slug'] if 'slug' in match_dict else ''
-    statement_id    = match_dict['statement_id'][0] if 'statement_id' in match_dict else ''
-    issue           = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
+    slug = request.matchdict['slug'] if 'slug' in request.matchdict else ''
 
     history_helper.save_path_in_database(nickname, slug, request.path, history)
     if session_expired:
         return user_logout(request, True)
 
-    if not is_integer(statement_id, True) \
-            or not check_belonging_of_statement(issue, statement_id):
-        logger('discussion_attitude', 'def', 'param error', error=True)
-        raise HTTPNotFound()
-        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
-    if is_statement_forbidden(statement_id):
-        logger('discussion_attitude', 'def', 'forbidden statement', error=True)
-        raise HTTPNotFound()
-        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], revoked_content=True))
+    prepared_discussion = discussion.attitude(request, nickname, history, for_api)
+    if not prepared_discussion:
+        return HTTPNotFound()
 
-    disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
-    history_helper.save_issue_uid(issue, nickname)
-
-    discussion_dict = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)\
-        .get_dict_for_attitude(statement_id)
-    if not discussion_dict:
-        logger('discussion_attitude', 'def', 'no discussion dict', error=True)
-        raise HTTPNotFound()
-        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_id]))
-
-    item_dict = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)\
-        .prepare_item_dict_for_attitude(statement_id)
-    extras_dict = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(issue_dict['slug'], False, True,
-                                                                                    False, True, request,
-                                                                                    for_api=for_api, nickname=request_authenticated_userid)
-    return_dict = dict()
-    return_dict['issues'] = issue_dict
-    return_dict['discussion'] = discussion_dict
-    return_dict['items'] = item_dict
-    return_dict['extras'] = extras_dict
-
-    if for_api:
-        return return_dict
-    else:
-        return_dict['layout'] = base_layout()
-        return_dict['language'] = str(ui_locales)
-        return_dict['title'] = issue_dict['title']
-        return_dict['project'] = project_name
-        return return_dict
+    prepared_discussion['layout'] = base_layout()
+    prepared_discussion['language'] = str(get_language_from_cookie(request))
+    prepared_discussion['project'] = project_name
+    return prepared_discussion
 
 
 # justify page
@@ -751,7 +707,6 @@ def discussion_reaction(request, for_api=False, api_data=None):
             or not valid_reaction and not check_belonging_of_argument(issue, arg_id_sys):
         logger('discussion_reaction', 'def', 'wrong belonging of arguments', error=True)
         raise HTTPNotFound()
-        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     supportive = tmp_argument.is_supportive
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
@@ -763,7 +718,6 @@ def discussion_reaction(request, for_api=False, api_data=None):
     if not [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid', 'end') if c in attack]:
         logger('discussion_reaction', 'def', 'wrong value in attack', error=True)
         raise HTTPNotFound()
-        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]], True))
     ui_locales      = get_language_from_cookie(request)
 
     # set votes and reputation
@@ -845,7 +799,6 @@ def discussion_support(request, for_api=False, api_data=None):
     if not check_belonging_of_argument(issue, arg_user_uid) or not check_belonging_of_argument(issue, arg_system_uid) or not related_with_support(arg_user_uid, arg_system_uid):
         logger('discussion_support', 'def', 'no item dict', error=True)
         raise HTTPNotFound()
-        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
@@ -945,12 +898,10 @@ def discussion_choose(request, for_api=False, api_data=None):
         if not is_integer(pgroup):
             logger('discussion_choose', 'def', 'integer error', error=True)
             raise HTTPNotFound()
-            # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     if not check_belonging_of_premisegroups(issue, pgroup_ids) or not is_integer(uid):
         logger('discussion_choose', 'def', 'wrong belonging of pgroup', error=True)
         raise HTTPNotFound()
-        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
     history_helper.save_path_in_database(nickname, slug, request.path, history)
@@ -965,7 +916,6 @@ def discussion_choose(request, for_api=False, api_data=None):
     if not item_dict:
         logger('discussion_choose', 'def', 'no item dict', error=True)
         raise HTTPNotFound()
-        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
                                                                                         True, True, request,
@@ -1030,7 +980,6 @@ def discussion_jump(request, for_api=False, api_data=None):
     if not check_belonging_of_argument(issue, arg_uid):
         logger('discussion_choose', 'def', 'no item dict', error=True)
         raise HTTPNotFound()
-        # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([request.path[1:]]))
 
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
@@ -1127,7 +1076,6 @@ def review_content(request):
     if not subpage_dict['elements'] and not subpage_dict['has_access'] and not subpage_dict['no_arguments_to_review']:
         logger('review_content', 'def', 'subpage error', error=True)
         raise HTTPNotFound()
-        # return HTTPFound(location=UrlManager(request.application_url, for_api=False).get_404([request.path[1:]]))
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
