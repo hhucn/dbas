@@ -109,7 +109,7 @@ def attitude(request, nickname, for_api=False) -> dict:
     if not is_integer(statement_id, True) \
             or not check_belonging_of_statement(issue, statement_id):
         logger('Core', 'discussion.attitude', 'param error', error=True)
-        raise None
+        return None
 
     if is_statement_forbidden(statement_id):
         logger('Core', 'discussion.attitude', 'forbidden statement', error=True)
@@ -269,6 +269,9 @@ def support(request, nickname, for_api=False, api_data=None) -> dict:
         slug = request.matchdict['slug'] if 'slug' in request.matchdict else ''
         arg_user_uid = request.matchdict['arg_id_user'] if 'arg_id_user' in request.matchdict else ''
         arg_system_uid = request.matchdict['arg_id_sys'] if 'arg_id_sys' in request.matchdict else ''
+
+    logger('X', 'X', '.{}.'.format(arg_user_uid))
+    logger('X', 'X', '.{}.'.format(arg_system_uid))
 
     ui_locales = get_language_from_cookie(request)
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)

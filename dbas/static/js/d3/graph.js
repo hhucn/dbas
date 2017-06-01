@@ -164,12 +164,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param data
      */
     this.callbackIfDoneForGetJumpDataForGraph = function (data) {
-        var jsonData = $.parseJSON(data);
         var popup = $('#popup-jump-graph');
-        if (jsonData.error.length === 0) {
+        if (data.error.length === 0) {
             var list = $('<ul>');
             popup.find('div.modal-body div').empty();
-            createContentOfModalBody(jsonData, list);
+            createContentOfModalBody(data, list);
             popup.find('div.modal-body div').append(list);
 
             // jump to url

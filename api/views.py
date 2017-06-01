@@ -230,7 +230,8 @@ def discussion_reaction(request):
 
     """
     api_data = prepare_user_information(request)
-    return dbas.discussion_reaction(request, for_api=True, api_data=api_data)
+    nickname = api_data["nickname"] if api_data else None
+    return dbas.discussion.reaction(request, nickname, for_api=True)
 
 
 @justify.get(validators=validate_login)
@@ -242,7 +243,8 @@ def discussion_justify(request):
 
     """
     api_data = prepare_user_information(request)
-    return dbas.discussion_justify(request, for_api=True, api_data=api_data)
+    nickname = api_data["nickname"] if api_data else None
+    return dbas.discussion.justify(request, nickname, for_api=True)
 
 
 @attitude.get(validators=validate_login)
@@ -254,7 +256,8 @@ def discussion_attitude(request):
 
     """
     api_data = prepare_user_information(request)
-    return dbas.discussion_attitude(request, for_api=True, api_data=api_data)
+    nickname = api_data["nickname"] if api_data else None
+    return dbas.discussion.attitude(request, nickname, for_api=True)
 
 
 @support.get(validators=validate_login)
@@ -266,12 +269,13 @@ def discussion_support(request):
 
     """
     api_data = prepare_user_information(request)
+    nickname = api_data["nickname"] if api_data else None
     if not api_data:
         api_data = dict()
     api_data["slug"] = request.matchdict["slug"]
     api_data["arg_user_uid"] = request.matchdict["arg_user_uid"]
     api_data["arg_system_uid"] = request.matchdict["arg_system_uid"]
-    return dbas.discussion_support(request, for_api=True, api_data=api_data)
+    return dbas.discussion.support(request, nickname, for_api=True, api_data=api_data)
 
 
 @zinit.get(validators=validate_login)
@@ -477,7 +481,8 @@ def jump_to_argument_fn(request):
 
     """
     api_data = jump_preparation(request)
-    return dbas.discussion_jump(request, for_api=True, api_data=api_data)
+    nickname = api_data["nickname"] if api_data else None
+    return dbas.discussion.jump(request, nickname, for_api=True, api_data=api_data)
 
 
 # =============================================================================

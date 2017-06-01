@@ -153,17 +153,17 @@ def get_issue_dict_for(issue, application_url, for_api, uid, lang):
     """
     _um = UrlManager(application_url, issue.get_slug(), for_api)
     issue_dict = dict()
-    issue_dict['uid']               = str(issue.uid)
-    issue_dict['slug']              = issue.get_slug()
-    issue_dict['title']             = issue.title
-    issue_dict['url']               = _um.get_slug_url(False) if str(uid) != str(issue.uid) else ''
-    issue_dict['review_url']        = _um.get_review_url(False) if str(uid) != str(issue.uid) else ''
-    issue_dict['info']              = issue.info
-    issue_dict['stat_count']        = get_number_of_statements(issue.uid)
-    issue_dict['date']              = sql_timestamp_pretty_print(issue.date, lang)
-    issue_dict['author']            = issue.users.public_nickname
-    issue_dict['author_url']        = application_url + '/user/' + str(issue.users.public_nickname)
-    issue_dict['enabled']           = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
+    issue_dict['uid'] = str(issue.uid)
+    issue_dict['slug'] = issue.get_slug()
+    issue_dict['title'] = issue.title
+    issue_dict['url'] = _um.get_slug_url(False) if str(uid) != str(issue.uid) else ''
+    issue_dict['review_url'] = _um.get_review_url(False) if str(uid) != str(issue.uid) else ''
+    issue_dict['info'] = issue.info
+    issue_dict['stat_count'] = get_number_of_statements(issue.uid)
+    issue_dict['date'] = sql_timestamp_pretty_print(issue.date, lang)
+    issue_dict['author'] = issue.users.public_nickname
+    issue_dict['author_url'] = application_url + '/user/' + str(issue.users.public_nickname)
+    issue_dict['enabled'] = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
     return issue_dict
 
 
