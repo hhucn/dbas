@@ -86,7 +86,7 @@ function DiscussionBarometer(){
      * @param data: unparsed data of request
      * @param addressUrl: step of discussion
      */
-    this.callbackIfDoneForGetDictionary = function(data, addressUrl){
+    this.callbackIfDoneForGetDictionary = function(jdata, addressUrl){
         address = addressUrl;
         try{
             mode = modeEnum[address];
@@ -95,21 +95,21 @@ function DiscussionBarometer(){
             return;
         }
 
-		if (data.error.length !== 0) {
-			setGlobalErrorHandler(_t(ohsnap), data.error);
+		if (jdata.error.length !== 0) {
+			setGlobalErrorHandler(_t(ohsnap), jdata.error);
 			return;
 		}
-		if (data.info.length !== 0) {
-			setGlobalInfoHandler('Hey', data.info);
+		if (jdata.info.length !== 0) {
+			setGlobalInfoHandler('Hey', jdata.info);
 			return;
 		}
 
         // fetch zero users
-        var usersDict = getUsersDict([]);
-        if (isEverythingZero(usersDict)){
+        if (isEverythingZero(jdata.opinions)){
             setGlobalInfoHandler('Hey', _t_discussion(otherParticipantsDontHaveOpinionForThis));
             return -1;
         }
+        data = jdata;
 
         removeContentOfModal();
 
@@ -129,7 +129,7 @@ function DiscussionBarometer(){
         }).removeClass('btn-success');
         $('#' + popupBarometerRefuseBtn).hide();
 
-        global_dialog.find('.modal-title').html(data.title).css({'line-height': '1.0'});
+        global_dialog.find('.modal-title').html(jdata.title).css({'line-height': '1.0'});
     };
 
     /**
@@ -559,21 +559,21 @@ function DiscussionBarometer(){
 
         var doughnut = getDoughnut(usersDict);
 
-        var data = [];
+        var ldata = [];
         // if there is no argument create donut-chart with one sector with small radius
         if(usersDict.length === 0){
-            data.push({
+            ldata.push({
                 usersNumber: 0,
                 seenBy: 0
             });
         } else {
-            data = usersDict;
+            ldata = usersDict;
         }
 
-        var innerCircle = getInnerCircle(innerRadius, outerRadius, data);
+        var innerCircle = getInnerCircle(innerRadius, outerRadius, ldata);
         var outerCircle = getOuterCircle(innerRadius, outerRadius);
-        createOuterPath(doughnutChartSvg, outerCircle, doughnut, data);
-        createInnerPath(doughnutChartSvg, innerCircle, doughnut, data);
+        createOuterPath(doughnutChartSvg, outerCircle, doughnut, ldata);
+        createInnerPath(doughnutChartSvg, innerCircle, doughnut, ldata);
     }
 
     /**
