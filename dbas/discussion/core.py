@@ -3,15 +3,19 @@ from pyramid.httpexceptions import HTTPNotFound
 import dbas.helper.history as history_helper
 import dbas.helper.issue as issue_helper
 import dbas.user_management as user_manager
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Argument
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.language import get_language_from_cookie, set_language_for_first_visit
 from dbas.helper.views import handle_justification_step
+from dbas.helper.voting import add_click_for_argument
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_statement,\
-    check_belonging_of_argument, check_belonging_of_premisegroups, related_with_support
+    check_belonging_of_argument, check_belonging_of_premisegroups, related_with_support, check_reaction
 from dbas.logger import logger
 from dbas.lib import get_discussion_language, resolve_issue_uid_to_slug
+from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_argument_click
 from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
 
@@ -32,21 +36,21 @@ def init(request, nickname, for_api=False) -> dict:
     """
     logger('Core', 'discussion.init', 'main')
 
-    match_dict = request.matchdict
+    matchdict = request.matchdict
     set_language_for_first_visit(request)
 
     count_of_slugs = 1
-    if 'slug' in match_dict and isinstance(match_dict['slug'], ()):
-        count_of_slugs = len(match_dict['slug'])
+    if 'slug' in matchdict and isinstance(matchdict['slug'], ()):
+        count_of_slugs = len(matchdict['slug'])
 
     if count_of_slugs > 1:
         logger('Core', 'discussion.init', 'to many slugs', error=True)
         raise None
 
     if for_api:
-        slug = match_dict['slug'] if 'slug' in match_dict else ''
+        slug = matchdict['slug'] if 'slug' in matchdict else ''
     else:
-        slug = match_dict['slug'][0] if 'slug' in match_dict and len(match_dict['slug']) > 0 else ''
+        slug = matchdict['slug'][0] if 'slug' in matchdict and len(matchdict['slug']) > 0 else ''
 
     last_topic = history_helper.get_saved_issue(nickname)
     if len(slug) == 0 and last_topic != 0:
@@ -137,6 +141,16 @@ def attitude(request, nickname, for_api=False) -> dict:
 
 
 def justify(request, nickname, for_api=False) -> dict:
+    """
+    Initialize the justification step for a statement or an argument in a discussion. Creates helper and
+    returns a dictionary containing the necessary elements needed for the discussion.
+
+    :param request: pyramid's request object
+    :param nickname: the user's nickname creating the request
+    :param for_api: boolean if requests came via the API
+    :rtype: dict
+    :return: prepared collection with first elements for the discussion
+    """
     logger('Core', 'discussion.justify', 'main')
 
     ui_locales = get_language_from_cookie(request)
@@ -182,14 +196,61 @@ def reaction(request, nickname, for_api=False) -> dict:
     :return: prepared collection with first elements for the discussion
     """
     logger('Core', 'discussion.reaction', 'main')
+
+    # get parameters
+    slug = request.matchdict['slug'] if 'slug' in request.matchdict else ''
+    arg_id_user = request.matchdict['arg_id_user'] if 'arg_id_user' in request.matchdict else ''
+    attack = request.matchdict['mode'] if 'mode' in request.matchdict else ''
+    arg_id_sys = request.matchdict['arg_id_sys'] if 'arg_id_sys' in request.matchdict else ''
+    tmp_argument = DBDiscussionSession.query(Argument).get(arg_id_user)
+    issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
+
+    valid_reaction = check_reaction(arg_id_user, arg_id_sys, attack)
+    if not tmp_argument or not valid_reaction\
+            or not valid_reaction and not check_belonging_of_argument(issue, arg_id_user)\
+            or not valid_reaction and not check_belonging_of_argument(issue, arg_id_sys):
+        logger('discussion_reaction', 'def', 'wrong belonging of arguments', error=True)
+        raise HTTPNotFound()
+
+    supportive = tmp_argument.is_supportive
+
+    # sanity check
+    if not [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid', 'end') if c in attack]:
+        logger('core', 'discussion.reaction', 'wrong value in attack', error=True)
+        return None
+    ui_locales = get_language_from_cookie(request)
+
+    # set votes and reputation
+    add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_argument_click)
+    add_click_for_argument(arg_id_user, nickname)
+
+    disc_ui_locales = get_discussion_language(request, issue)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+
+    history = __handle_history(request, nickname, slug, issue)
+    _dh = DictionaryHelper(ui_locales, disc_ui_locales)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
+    discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history, nickname)
+    item_dict = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack, discussion_dict['gender'])
+    extras_dict = _dh.prepare_extras_dict(slug, True, True, True, True, request, argument_id=arg_id_sys,
+                                          for_api=for_api, argument_for_island=arg_id_user, attack=attack,
+                                          nickname=nickname, broke_limit=broke_limit)
+
     prepared_discussion = dict()
+    prepared_discussion['issues'] = issue_dict
+    prepared_discussion['discussion'] = discussion_dict
+    prepared_discussion['items'] = item_dict
+    prepared_discussion['extras'] = extras_dict
+    prepared_discussion['title'] = issue_dict['title']
+
     return prepared_discussion
 
 
 def support(request, nickname, for_api=False, api_data=None) -> dict:
     """
-    Initialize the attitude step for a position in a discussion. Creates helper and returns a dictionary containing
-    the first elements needed for the discussion.
+    Initialize the support step for the end of a branch in a discussion. Creates helper and returns a dictionary
+    containing the first elements needed for the discussion.
 
     :param request: pyramid's request object
     :param nickname: the user's nickname creating the request
