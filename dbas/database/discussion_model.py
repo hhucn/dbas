@@ -429,6 +429,14 @@ class Statement(DiscussionBase):
         """
         return DBDiscussionSession.query(TextVersion).filter_by(statement_uid=self.uid).first().timestamp
 
+    def get_first_author(self):
+        """
+        Return timestamp
+
+        :return: Textversions Timestamp
+        """
+        return DBDiscussionSession.query(TextVersion).filter_by(statement_uid=self.uid).first().author_uid
+
     @hybrid_property
     def lang(self):
         """
