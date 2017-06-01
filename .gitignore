@@ -40,6 +40,7 @@ db.txt
 requirementsUpdater.py
 .#*
 pserve.ini
+evaluation/
 
 # Pycharm
 .idea/
