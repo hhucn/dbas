@@ -613,6 +613,10 @@ def discussion_attitude(request, for_api=False, api_data=None):
     if session_expired:
         return user_logout(request, True)
 
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
+
     prepared_discussion = discussion.attitude(request, nickname, for_api)
     if not prepared_discussion:
         return HTTPNotFound()
@@ -865,61 +869,22 @@ def discussion_choose(request, for_api=False, api_data=None):
     logger('discussion_choose', 'def', 'main, request.matchdict: {}'.format(match_dict))
     logger('discussion_choose', 'def', 'main, request.params: {}'.format(params))
 
-    request_authenticated_userid = request.authenticated_userid
-    slug            = match_dict['slug'] if 'slug' in match_dict else ''
-    is_argument     = match_dict['is_argument'] if 'is_argument' in match_dict else ''
-    is_supportive   = match_dict['supportive'] if 'supportive' in match_dict else ''
-    uid             = match_dict['id'] if 'id' in match_dict else ''
-    pgroup_ids      = match_dict['pgroup_ids'] if 'id' in match_dict else ''
-
-    is_argument = True if is_argument is 't' else False
-    is_supportive = True if is_supportive is 't' else False
-
-    ui_locales      = get_language_from_cookie(request)
-    issue           = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
-    disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict      = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
-
-    for pgroup in pgroup_ids:
-        if not is_integer(pgroup):
-            logger('discussion_choose', 'def', 'integer error', error=True)
-            raise HTTPNotFound()
-
-    if not check_belonging_of_premisegroups(issue, pgroup_ids) or not is_integer(uid):
-        logger('discussion_choose', 'def', 'wrong belonging of pgroup', error=True)
-        raise HTTPNotFound()
 
     nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
-    history_helper.save_path_in_database(nickname, slug, request.path, history)
-    history_helper.save_issue_uid(issue, nickname)
     if session_expired:
         return user_logout(request, True)
 
-    discussion_dict = DiscussionDictHelper(ui_locales, nickname, history, main_page=request.application_url, slug=slug)\
-        .get_dict_for_choosing(uid, is_argument, is_supportive)
-    item_dict       = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)\
-        .get_array_for_choosing(uid, pgroup_ids, is_argument, is_supportive, nickname)
-    if not item_dict:
-        logger('discussion_choose', 'def', 'no item dict', error=True)
-        raise HTTPNotFound()
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
-    extras_dict     = DictionaryHelper(ui_locales, disc_ui_locales).prepare_extras_dict(slug, False, True,
-                                                                                        True, True, request,
-                                                                                        for_api=for_api, nickname=request_authenticated_userid)
+    prepared_discussion = discussion.choose(request, nickname, for_api)
+    if not prepared_discussion:
+        return HTTPNotFound()
 
-    return_dict = dict()
-    return_dict['issues'] = issue_dict
-    return_dict['discussion'] = discussion_dict
-    return_dict['items'] = item_dict
-    return_dict['extras'] = extras_dict
-
-    if for_api:
-        return return_dict
-    else:
-        return_dict['layout'] = base_layout()
-        return_dict['language'] = str(ui_locales)
-        return_dict['title'] = issue_dict['title']
-        return return_dict
+    prepared_discussion['layout'] = base_layout()
+    prepared_discussion['language'] = str(get_language_from_cookie(request))
+    return prepared_discussion
 
 
 # jump page

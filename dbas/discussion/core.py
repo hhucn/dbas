@@ -6,7 +6,7 @@ from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.language import get_language_from_cookie, set_language_for_first_visit
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_statement,\
-    check_belonging_of_argument
+    check_belonging_of_argument, check_belonging_of_premisegroups
 from dbas.logger import logger
 from dbas.lib import get_discussion_language, resolve_issue_uid_to_slug
 from dbas.strings.translator import Translator
@@ -127,18 +127,71 @@ def attitude(request, nickname, for_api=False) -> dict:
     return prepared_discussion
 
 
-def reaction(request, nickname, history, for_api=False) -> dict:
+def reaction(request, nickname, for_api=False) -> dict:
     prepared_discussion = dict()
     return prepared_discussion
 
 
-def support(request, nickname, history, for_api=False) -> dict:
+def support(request, nickname, for_api=False) -> dict:
     prepared_discussion = dict()
     return prepared_discussion
 
 
-def choose(request, nickname, history, for_api=False) -> dict:
+def choose(request, nickname, for_api=False) -> dict:
+    """
+    Initialize the choose step for more than one premise in a discussion. Creates helper and returns a dictionary
+    containing several feedback options regarding this argument.
+
+    :param request: pyramid's request object
+    :param nickname: the user's nickname creating the request
+    :param for_api: boolean if requests came via the API
+    :rtype: dict
+    :return: prepared collection with first elements for the discussion
+    """
+
+    slug = request.matchdict['slug'] if 'slug' in request.matchdict else ''
+    is_argument = request.matchdict['is_argument'] if 'is_argument' in request.matchdict else ''
+    is_supportive = request.matchdict['supportive'] if 'supportive' in request.matchdict else ''
+    uid = request.matchdict['id'] if 'id' in request.matchdict else ''
+    pgroup_ids = request.matchdict['pgroup_ids'] if 'id' in request.matchdict else ''
+
+    is_argument = True if is_argument is 't' else False
+    is_supportive = True if is_supportive is 't' else False
+
+    ui_locales = get_language_from_cookie(request)
+    issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
+    disc_ui_locales = get_discussion_language(request, issue)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+    history = __handle_history(request, nickname, slug, issue)
+
+    for pgroup in pgroup_ids:
+        if not is_integer(pgroup):
+            logger('core', 'discussion.choose', 'integer error', error=True)
+        return None
+
+    if not check_belonging_of_premisegroups(issue, pgroup_ids) or not is_integer(uid):
+        logger('core', 'discussion.choose', 'wrong belonging of pgroup', error=True)
+        return None
+
+    _ddh = DiscussionDictHelper(ui_locales, nickname, history, main_page=request.application_url, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
+    discussion_dict = _ddh.get_dict_for_choosing(uid, is_argument, is_supportive)
+    item_dict = _idh.get_array_for_choosing(uid, pgroup_ids, is_argument, is_supportive, nickname)
+
+    if not item_dict:
+        logger('discussion_choose', 'def', 'no item dict', error=True)
+        return None
+
+    _dh = DictionaryHelper(ui_locales, disc_ui_locales)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, True, request, for_api=for_api, nickname=nickname)
+
     prepared_discussion = dict()
+    prepared_discussion['issues'] = issue_dict
+    prepared_discussion['discussion'] = discussion_dict
+    prepared_discussion['items'] = item_dict
+    prepared_discussion['extras'] = extras_dict
+    prepared_discussion['title'] = issue_dict['title']
+
     return prepared_discussion
 
 
