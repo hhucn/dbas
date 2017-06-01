@@ -95,7 +95,7 @@ def attitude(request, nickname, for_api=False) -> dict:
     :param nickname: the user's nickname creating the request
     :param for_api: boolean if requests came via the API
     :rtype: dict
-    :return: prepared collection with first elements for the discussion
+    :return: prepared collection matchdictfor the discussion
     """
 
     ui_locales = get_language_from_cookie(request)
@@ -149,7 +149,7 @@ def justify(request, nickname, for_api=False) -> dict:
     :param nickname: the user's nickname creating the request
     :param for_api: boolean if requests came via the API
     :rtype: dict
-    :return: prepared collection with first elements for the discussion
+    :return: prepared collection matchdictfor the discussion
     """
     logger('Core', 'discussion.justify', 'main')
 
@@ -193,7 +193,7 @@ def reaction(request, nickname, for_api=False) -> dict:
     :param for_api: boolean if requests came via the API
     :param api_data: dict if requests came via the API
     :rtype: dict
-    :return: prepared collection with first elements for the discussion
+    :return: prepared collection matchdictfor the discussion
     """
     logger('Core', 'discussion.reaction', 'main')
 
@@ -257,7 +257,7 @@ def support(request, nickname, for_api=False, api_data=None) -> dict:
     :param for_api: boolean if requests came via the API
     :param api_data: dict if requests came via the API
     :rtype: dict
-    :return: prepared collection with first elements for the discussion
+    :return: prepared collection matchdictfor the discussion
     """
     logger('Core', 'discussion.support', 'main')
 
@@ -308,7 +308,7 @@ def choose(request, nickname, for_api=False) -> dict:
     :param nickname: the user's nickname creating the request
     :param for_api: boolean if requests came via the API
     :rtype: dict
-    :return: prepared collection with first elements for the discussion
+    :return: prepared collection matchdictfor the discussion
     """
     logger('Core', 'discussion.choose', 'main')
 
@@ -368,7 +368,7 @@ def jump(request, nickname, for_api=False, api_data=None) -> dict:
     :param for_api: boolean if requests came via the API
     :param api_data: dict if requests came via the API
     :rtype: dict
-    :return: prepared collection with first elements for the discussion
+    :return: prepared collection matchdictfor the discussion
     """
     logger('Core', 'discussion.jump', 'main')
 

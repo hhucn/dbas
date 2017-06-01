@@ -90,6 +90,44 @@ def check_authentication(request):
         return user_logout(request, True)
 
 
+def api_notfound(request):
+    body = {
+        'requested_path': request.path,
+        'message': "Not Found",
+    }
+    response = Response(json.dumps(body).encode("utf-8"))
+    response.status_int = 404
+    response.content_type = 'application/json'
+    return response
+
+
+def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any], for_api=False, api_data=None):
+    """
+    Checks for an expired session, the authentication and calls f with for_api, api_data and the users nickname.
+    On error an HTTPNotFound-Error is raised, otherwise the discussion dict is returned.
+
+    :param request: A pyramid request
+    :param f: A function with three arguments
+    :param for_api: boolean if requests came via the API
+    :param api_data: dict if requests came via the API
+    :return: prepared collection for the discussion
+    """
+    nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
+    if session_expired:
+        return user_logout(request, True)
+
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
+
+    prepared_discussion = f(request, nickname, for_api)
+    if prepared_discussion:
+        prepared_discussion['layout'] = base_layout()
+        prepared_discussion['language'] = str(get_language_from_cookie(request))
+
+    return prepared_discussion
+
+
 # main page
 @view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
 @forbidden_view_config(renderer='templates/index.pt')
@@ -545,17 +583,6 @@ def notfound(request):
         'revoked_content': revoked_content
     }
 
-
-def api_notfound(request):
-    body = {
-        'requested_path': request.path,
-        'message': "Not Found",
-    }
-    response = Response(json.dumps(body).encode("utf-8"))
-    response.status_int = 404
-    response.content_type = 'application/json'
-    return response
-
 # ####################################
 # DISCUSSION                         #
 # ####################################
@@ -575,16 +602,10 @@ def discussion_init(request, for_api=False, api_data=None):
     logger('Views', 'discussion_init', 'main, request.matchdict: {}'.format(request.matchdict))
     logger('Views', 'discussion_init', 'main, request.params: {}'.format(request.params))
 
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
-    if session_expired:
-        return user_logout(request, True)
-
-    prepared_discussion = discussion.init(request, nickname, for_api)
+    prepared_discussion = __call_from_discussion_step(request, discussion.init, for_api, api_data)
     if not prepared_discussion:
         raise HTTPNotFound()
 
-    prepared_discussion['layout'] = base_layout()
-    prepared_discussion['language'] = str(get_language_from_cookie(request))
     return prepared_discussion
 
 
@@ -604,20 +625,10 @@ def discussion_attitude(request, for_api=False, api_data=None):
     logger('Views', 'discussion_attitude', 'main, request.matchdict: {}'.format(request.matchdict))
     logger('Views', 'discussion_attitude', 'main, request.params: {}'.format(request.params))
 
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
-    if session_expired:
-        return user_logout(request, True)
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
-    prepared_discussion = discussion.attitude(request, nickname, for_api)
+    prepared_discussion = __call_from_discussion_step(request, discussion.attitude, for_api, api_data)
     if not prepared_discussion:
         raise HTTPNotFound()
 
-    prepared_discussion['layout'] = base_layout()
-    prepared_discussion['language'] = str(get_language_from_cookie(request))
     return prepared_discussion
 
 
@@ -637,20 +648,10 @@ def discussion_justify(request, for_api=False, api_data=None):
     logger('views', 'discussion_justify', 'main, request.matchdict: {}'.format(request.matchdict))
     logger('views', 'discussion_justify', 'main, request.params: {}'.format(request.params))
 
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
-    if session_expired:
-        return user_logout(request, True)
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
-    prepared_discussion = discussion.justify(request, nickname, for_api)
+    prepared_discussion = __call_from_discussion_step(request, discussion.justify, for_api, api_data)
     if not prepared_discussion:
         raise HTTPNotFound()
 
-    prepared_discussion['layout'] = base_layout()
-    prepared_discussion['language'] = str(get_language_from_cookie(request))
     return prepared_discussion
 
 
@@ -670,20 +671,10 @@ def discussion_reaction(request, for_api=False, api_data=None):
     logger('views', 'discussion_reaction', 'main, request.matchdict: {}'.format(request.matchdict))
     logger('views', 'discussion_reaction', 'main, request.params: {}'.format(request.params))
 
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
-    if session_expired:
-        return user_logout(request, True)
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
-    prepared_discussion = discussion.reaction(request, nickname, for_api)
+    prepared_discussion = __call_from_discussion_step(request, discussion.reaction, for_api, api_data)
     if not prepared_discussion:
         raise HTTPNotFound()
 
-    prepared_discussion['layout'] = base_layout()
-    prepared_discussion['language'] = str(get_language_from_cookie(request))
     return prepared_discussion
 
 
@@ -703,20 +694,10 @@ def discussion_support(request, for_api=False, api_data=None):
     logger('views', 'discussion_support', 'main, request.matchdict: {}'.format(request.matchdict))
     logger('views', 'discussion_support', 'main, request.params: {}'.format(request.params))
 
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
-    if session_expired:
-        return user_logout(request, True)
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
-    prepared_discussion = discussion.support(request, nickname, for_api)
+    prepared_discussion = __call_from_discussion_step(request, discussion.support, for_api, api_data)
     if not prepared_discussion:
         raise HTTPNotFound()
 
-    prepared_discussion['layout'] = base_layout()
-    prepared_discussion['language'] = str(get_language_from_cookie(request))
     return prepared_discussion
 
 
@@ -735,10 +716,6 @@ def discussion_finish(request):
     logger('views', 'discussion.finish', 'request.matchdict: {}'.format(match_dict))
     logger('views', 'discussion.finish', 'request.params: {}'.format(params))
 
-    nickname = request.authenticated_userid
-    slug = resolve_issue_uid_to_slug(history_helper.get_saved_issue(nickname))
-
-    history_helper.save_path_in_database(nickname, slug, request.path)
     unauthenticated = check_authentication(request)
     if unauthenticated:
         return unauthenticated
@@ -768,20 +745,10 @@ def discussion_choose(request, for_api=False, api_data=None):
     logger('discussion_choose', 'def', 'main, request.matchdict: {}'.format(match_dict))
     logger('discussion_choose', 'def', 'main, request.params: {}'.format(params))
 
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
-    if session_expired:
-        return user_logout(request, True)
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
-    prepared_discussion = discussion.choose(request, nickname, for_api)
+    prepared_discussion = __call_from_discussion_step(request, discussion.choose, for_api, api_data)
     if not prepared_discussion:
         raise HTTPNotFound()
 
-    prepared_discussion['layout'] = base_layout()
-    prepared_discussion['language'] = str(get_language_from_cookie(request))
     return prepared_discussion
 
 
@@ -801,20 +768,10 @@ def discussion_jump(request, for_api=False, api_data=None):
     logger('views', 'discussion_jump', 'main, request.matchdict: {}'.format(request.matchdict))
     logger('views', 'discussion_jump', 'main, request.params: {}'.format(request.params))
 
-    nickname, session_expired, history = preparation_for_view(for_api, api_data, request)
-    if session_expired:
-        return user_logout(request, True)
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
-    prepared_discussion = discussion.jump(request, nickname, for_api)
+    prepared_discussion = __call_from_discussion_step(request, discussion.jump, for_api, api_data)
     if not prepared_discussion:
         raise HTTPNotFound()
 
-    prepared_discussion['layout'] = base_layout()
-    prepared_discussion['language'] = str(get_language_from_cookie(request))
     return prepared_discussion
 
 
