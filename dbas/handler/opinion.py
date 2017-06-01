@@ -218,7 +218,7 @@ def __get_genered_text_for_clickcount(len_db_votes, db_user_uid, _t):
     """
     if len_db_votes == 0:
         db_user = DBDiscussionSession.query(User).get(db_user_uid)
-        if db_user and db_user.gener == 'f':
+        if db_user and db_user.gender == 'f':
             msg = _.voteCountTextMayBeFirstF
         else:
             msg = _.voteCountTextMayBeFirst
