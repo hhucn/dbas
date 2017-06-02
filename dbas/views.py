@@ -20,6 +20,7 @@ from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
 
 import dbas.discussion.core as discussion
+import dbas.discussion.additives as add
 import dbas.handler.news as news_handler
 import dbas.helper.history as history_helper
 import dbas.helper.issue as issue_helper
@@ -33,8 +34,7 @@ import dbas.strings.matcher as fuzzy_string_matcher
 from dbas import user_management as user_manager
 from dbas.auth.login import login_user, register_with_ajax_data
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, Issue, Message, Settings, Language, \
-    sql_timestamp_pretty_print
+from dbas.database.discussion_model import User, Group, Issue, Message
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.opinion import get_infos_about_argument, get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
@@ -43,7 +43,7 @@ from dbas.handler.password import request_password
 from dbas.handler.rss import get_list_of_all_feeds
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.language import set_language, get_language_from_cookie, set_language_for_first_visit
-from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
+from dbas.helper.notification import count_of_new_notifications, get_box_for
 from dbas.helper.query import get_logfile_for_statements, revoke_content, insert_as_statements, \
     process_input_of_premises_for_arguments_and_receive_url, process_input_of_start_premises_and_receive_url, \
     process_seen_statements, mark_or_unmark_statement_or_argument, get_text_for_justification_or_reaction_bubble
@@ -52,10 +52,8 @@ from dbas.helper.settings import set_settings
 from dbas.helper.views import preparation_for_view, try_to_contact
 from dbas.helper.voting import clear_vote_and_seen_values_of_user
 from dbas.input_validator import is_integer
-from dbas.lib import escape_string, get_discussion_language, \
-    get_user_by_private_or_public_nickname, is_user_author_or_admin, \
-    get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid, get_profile_picture, \
-    get_changelog, resolve_issue_uid_to_slug
+from dbas.lib import escape_string, get_discussion_language, get_changelog,is_user_author_or_admin,\
+    get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, \
     rep_reason_first_justification, rep_reason_first_new_argument, rep_reason_new_statement
@@ -1257,36 +1255,19 @@ def set_user_language(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('set_user_language', 'def', 'main, request.params: {}'.format(request.params))
-    _tn = Translator(get_language_from_cookie(request))
+    logger('views', 'set_user_language', 'main, request.params: {}'.format(request.params))
 
     try:
-        error = ''
-        current_lang = ''
-        ui_locales = request.params['ui_locales']
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
-        if db_user:
-            db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
-            if db_settings:
-                db_language = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
-                if db_language:
-                    current_lang = db_language.name
-                    db_settings.set_lang_uid(db_language.uid)
-                    transaction.commit()
-                else:
-                    error = _tn.get(_.internalError)
-            else:
-                error = _tn.get(_.checkNickname)
-        else:
-            error = _tn.get(_.checkNickname)
+        ui_locales = request.params['ui_locales'] if 'ui_locales' in request.params else None
+        prepared_dict = add.set_user_language(request.authenticated_userid, ui_locales)
     except KeyError as e:
-        error = _tn.get(_.internalKeyError)
-        ui_locales = ''
-        current_lang = ''
-        logger('set_user_settings', 'error', repr(e))
-
-    return_dict = {'error': error, 'ui_locales': ui_locales, 'current_lang': current_lang}
-    return return_dict
+        logger('views', 'set_user_settings', repr(e), error=True)
+        _tn = Translator(get_language_from_cookie(request))
+        prepared_dict = {}
+        prepared_dict['error'] = _tn.get(_.internalKeyError)
+        prepared_dict['ui_locales'] = ''
+        prepared_dict['current_lang'] = ''
+    return prepared_dict
 
 
 # ajax - sending notification
@@ -1301,38 +1282,20 @@ def send_some_notification(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('send_some_notification', 'def', 'main, request.params: {}'.format(request.params))
 
-    error = ''
-    ts = ''
-    uid = ''
-    gravatar = ''
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
     try:
-        recipient = str(request.params['recipient']).replace('%20', ' ')
-        title     = request.params['title']
-        text      = request.params['text']
-        db_recipient = get_user_by_private_or_public_nickname(recipient)
-        if len(title) < 5 or len(text) < 5:
-            error = _tn.get(_.empty_notification_input) + ' (' + _tn.get(_.minLength) + ': 5)'
-        elif not db_recipient or recipient == 'admin' or recipient == nick_of_anonymous_user:
-            error = _tn.get(_.recipientNotFound)
-        else:
-            db_author = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
-            if not db_author:
-                error = _tn.get(_.notLoggedIn)
-            if db_author.uid == db_recipient.uid:
-                error = _tn.get(_.senderReceiverSame)
-            else:
-                db_notification = send_notification(request, db_author, db_recipient, title, text, request.application_url)
-                uid = db_notification.uid
-                ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
-                gravatar = get_profile_picture(db_recipient, 20)
+        prepared_dict = add.send_some_notification(request)
 
     except (KeyError, AttributeError):
-        error = _tn.get(_.internalKeyError)
+        prepared_dict = {}
+        prepared_dict['error'] = _tn.get(_.internalKeyError)
+        prepared_dict['timestamp'] =''
+        prepared_dict['uid'] = ''
+        prepared_dict['recipient_avatar'] = ''
 
-    return {'error': error, 'timestamp': ts, 'uid': uid, 'recipient_avatar': gravatar}
+    return prepared_dict
 
 
 # #######################################
