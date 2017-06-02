@@ -1,5 +1,7 @@
+import json
 import transaction
 import dbas.review.helper.flags as review_flag_helper
+import dbas.review.helper.main as review_main_helper
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import sql_timestamp_pretty_print, User, Settings, Language
@@ -8,9 +10,11 @@ from dbas.logger import logger
 from dbas.helper.language import get_language_from_cookie
 from dbas.helper.notification import send_notification
 from dbas.input_validator import is_integer
-from dbas.lib import get_user_by_private_or_public_nickname, get_profile_picture
+from dbas.lib import get_user_by_private_or_public_nickname, get_profile_picture, get_discussion_language
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+from websocket.lib import send_request_for_recent_delete_review_to_socketio,\
+    send_request_for_recent_edit_review_to_socketio, send_request_for_recent_optimization_review_to_socketio
 
 
 def set_user_language(nickname, ui_locales) -> dict:
@@ -117,4 +121,105 @@ def flag_argument_or_statement(uid, reason, extra_uid, is_argument, nickname, ui
         prepared_dict['info'] = '' if isinstance(info, str) else _t.get(info)
         prepared_dict['error'] = '' if isinstance(error, str) else _t.get(error)
 
+    return prepared_dict
+
+
+def review_delete_argument(request) -> dict:
+    """
+    Sets feedback for an review element of the delete-queue
+
+    :param request: pyramid's request object
+    :rtype: dict
+    :return: collection with error key
+    """
+    review_uid = request.params['review_uid'] if 'review_uid' in request.params else None
+    ui_locales = get_discussion_language(request)
+    _t = Translator(ui_locales)
+
+    if not is_integer(review_uid):
+        logger('additives', 'review_delete_argument', 'invalid uid', error=True)
+        error = _t.get(_.internalKeyError)
+    else:
+        error = review_main_helper.add_review_opinion_for_delete(request, review_uid, _t)
+        if len(error) == 0:
+            send_request_for_recent_delete_review_to_socketio(request)
+
+    prepared_dict = {'error': error}
+    return prepared_dict
+
+
+def review_edit_argument(request) -> dict:
+    """
+    Sets feedback for an review element of the edit-queue
+
+    :param request: pyramid's request object
+    :rtype: dict
+    :return: collection with error key
+    """
+    review_uid = request.params['review_uid'] if 'review_uid' in request.params else None
+    is_edit_okay = True if str(request.params['is_edit_okay']) == 'true' else False
+    ui_locales = get_discussion_language(request)
+    _t = Translator(ui_locales)
+
+    if not is_integer(review_uid):
+        logger('additives', 'review_edit_argument', 'invalid uid', error=True)
+        error = _t.get(_.internalKeyError)
+    else:
+        error = review_main_helper.add_review_opinion_for_edit(request, is_edit_okay, review_uid, _t)
+        if len(error) == 0:
+            send_request_for_recent_edit_review_to_socketio(request)
+
+    prepared_dict = {'error': error}
+    return prepared_dict
+
+
+def review_duplicate_statement(request) -> dict:
+    """
+    Sets feedback for an review element of the duplicate-queue
+
+    :param request: pyramid's request object
+    :rtype: dict
+    :return: collection with error key
+    """
+    is_duplicate = True if str(request.params['is_duplicate']) == 'true' else False
+    review_uid = request.params['review_uid']
+    ui_locales = get_discussion_language(request)
+    _t = Translator(ui_locales)
+
+    if not is_integer(review_uid):
+        logger('additives', 'review_duplicate_statement', 'invalid uid', error=True)
+        error = _t.get(_.internalKeyError)
+    else:
+        error = review_main_helper.add_review_opinion_for_duplicate(request, is_duplicate, review_uid, _t)
+        if len(error) == 0:
+            send_request_for_recent_edit_review_to_socketio(request)
+
+    prepared_dict = {'error': error}
+    return prepared_dict
+
+
+def review_optimization_argument(request) -> dict:
+    """
+    Sets feedback for an review element of the optimization-queue
+
+    :param request: pyramid's request object
+    :rtype: dict
+    :return: collection with error key
+    """
+    should_optimized = True if str(request.params['should_optimized']) == 'true' else False
+    review_uid = request.params['review_uid'] if 'review_uid' in request.params else None
+    new_data = json.loads(request.params['new_data']) if 'new_data' in request.params else None
+
+    ui_locales = get_discussion_language(request)
+    _t = Translator(ui_locales)
+
+    if not is_integer(review_uid):
+        logger('additives', 'review_optimization_argument', 'invalid uid', error=True)
+        error = _t.get(_.internalKeyError)
+    else:
+        error = review_main_helper.add_review_opinion_for_optimization(request, should_optimized, review_uid, new_data, _t)
+        if len(error) == 0:
+            send_request_for_recent_optimization_review_to_socketio(request)
+
+    prepared_dict = {'error': error}
     return prepared_dict

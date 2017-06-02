@@ -64,14 +64,12 @@ def send_edit_text_notification(db_user, textversion, path, request):
     if settings_root_author.should_send_notifications and root_author != db_user.uid:
         _t_user = Translator(user_lang1)
         db_root_author = DBDiscussionSession.query(User).get(root_author)
-        send_request_for_info_popup_to_socketio(request, db_root_author.nickname, _t_user.get(_.textChange), path,
-                                                increase_counter=True)
+        send_request_for_info_popup_to_socketio(request, _t_user.get(_.textChange), path, increase_counter=True, nickname=db_root_author.nickname)
 
     if last_author != root_author and last_author != new_author and last_author != db_user.uid and settings_last_author.should_send_notifications:
         _t_user = Translator(user_lang2)
         db_last_author = DBDiscussionSession.query(User).get(last_author)
-        send_request_for_info_popup_to_socketio(request, db_last_author.nickname, _t_user.get(_.textChange), path,
-                                                increase_counter=True)
+        send_request_for_info_popup_to_socketio(request, _t_user.get(_.textChange), path, increase_counter=True, nickname=db_last_author.nickname)
 
     _t1 = Translator(user_lang1)
     topic1 = _t1.get(_.textversionChangedTopic)
@@ -131,13 +129,12 @@ def send_add_text_notification(url, conclusion_id, user, request):
 
     # send notification via websocket to main author
     if db_root_author_settings.should_send_notifications and db_root_author != db_current_user:
-        send_request_for_info_popup_to_socketio(request, db_root_author.nickname, _t_root.get(_.statementAdded), url,
-                                                increase_counter=True)
+        send_request_for_info_popup_to_socketio(request, _t_root.get(_.statementAdded), url, increase_counter=True,
+                                                nickname=db_root_author.nickname)
 
     # send notification via websocket to last author
     if db_last_editor_settings.should_send_notifications and db_last_editor != db_root_author and db_last_editor != db_current_user:
-        send_request_for_info_popup_to_socketio(request, db_last_editor.nickname, _t_editor.get(_.statementAdded), url,
-                                                increase_counter=True)
+        send_request_for_info_popup_to_socketio(request, _t_editor.get(_.statementAdded), url, increase_counter=True, nickname=db_last_editor.nickname)
 
     # find admin
     db_admin = DBDiscussionSession.query(User).filter_by(nickname=nick_of_admin).first()
@@ -188,7 +185,7 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request):
     # send notification via websocket to last author
     _t_user = Translator(user_lang)
     if db_author_settings.should_send_notifications:
-        send_request_for_info_popup_to_socketio(request, db_author.nickname, _t_user.get(_.argumentAdded), url)
+        send_request_for_info_popup_to_socketio(request, _t_user.get(_.argumentAdded), url, nickname=db_author.nickname)
 
     # send mail to last author
     if db_author_settings.should_send_mails:
@@ -253,8 +250,7 @@ def send_notification(request, from_user, to_user, topic, content, mainpage):
     if db_settings.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).get(db_settings.lang_uid).ui_locales
         _t_user = Translator(user_lang)
-        send_request_for_info_popup_to_socketio(request, to_user.nickname, _t_user.get(_.newNotification),
-                                                mainpage + '/notifications', increase_counter=True)
+        send_request_for_info_popup_to_socketio(request, _t_user.get(_.newNotification), mainpage + '/notifications', increase_counter=True, nickname=to_user.nickname)
 
     db_inserted_notification = DBDiscussionSession.query(Message).filter(and_(Message.from_author_uid == from_user.uid,
                                                                               Message.to_author_uid == to_user.uid,

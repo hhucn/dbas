@@ -70,18 +70,17 @@ def __get_review_count(review_type, review_uid):
     return count_of_okay, count_of_not_okay
 
 
-def add_review_opinion_for_delete(request, nickname, should_delete, review_uid, _t, application_url):
+def add_review_opinion_for_delete(request, review_uid, _t):
     """
     Adds row the delete review
 
-    :param nickname: User.nickname
-    :param should_delete: Boolean
     :param review_uid: ReviewDelete.uid
     :param _t: Translator
-    :param application_url: URL
     :return: String
     """
     logger('review_main_helper', 'add_review_opinion_for_delete', 'main')
+    should_delete = True if str(request.params['should_delete']) == 'true' else False
+    nickname = request.authenticated_userid
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_review = DBDiscussionSession.query(ReviewDelete).get(review_uid)
@@ -134,23 +133,23 @@ def add_review_opinion_for_delete(request, nickname, should_delete, review_uid, 
 
     if broke_limit:
         send_request_for_info_popup_to_socketio(request, db_user_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
-                                                application_url + '/review')
+                                                request.application_url + '/review')
 
     return ''
 
 
-def add_review_opinion_for_edit(request, nickname, is_edit_okay, review_uid, _t, application_url):
+def add_review_opinion_for_edit(request, is_edit_okay, review_uid, _t):
     """
     Adds row the edit review
 
-    :param nickname: User.nickname
     :param is_edit_okay: Boolean
     :param review_uid: ReviewEdit.uid
     :param _t: Translator
-    :param application_url: URL
     :return: String
     """
     logger('review_main_helper', 'add_review_opinion_for_edit', 'main')
+    nickname = request.authenticated_userid
+    application_url = request.application_url
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_review = DBDiscussionSession.query(ReviewEdit).get(review_uid)
@@ -204,18 +203,19 @@ def add_review_opinion_for_edit(request, nickname, is_edit_okay, review_uid, _t,
     return ''
 
 
-def add_review_opinion_for_optimization(request, nickname, should_optimized, review_uid, data, _t, application_url):
+def add_review_opinion_for_optimization(request, should_optimized, review_uid, data, _t):
     """
     Adds row the optimization review
 
-    :param nickname: User.nickname
     :param should_optimized: Boolean
     :param review_uid: ReviewOptimization
     :param data: String
     :param _t: Translator
-    :param application_url: URL
     :return: String
     """
+    nickname = request.authenticated_userid
+    application_url = request.application_url
+
     logger('review_main_helper', 'add_review_opinion_for_optimization',
            'main ' + str(review_uid) + ', optimize ' + str(should_optimized))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -246,19 +246,19 @@ def add_review_opinion_for_optimization(request, nickname, should_optimized, rev
     return ''
 
 
-def add_review_opinion_for_duplicate(request, nickname, is_duplicate, review_uid, _t, application_url):
+def add_review_opinion_for_duplicate(request, is_duplicate, review_uid, _t):
     """
 
     Adds row the duplicate review
 
-    :param nickname: User.nickname
     :param is_duplicate: Boolean
     :param review_uid: ReviewDuplicate.uid
     :param _t: Translator
-    :param application_url: URL
     :return: String
     """
     logger('review_main_helper', 'add_review_opinion_for_duplicate', 'main ' + str(review_uid) + ', duplicate ' + str(is_duplicate))
+    nickname = request.authenticated_userid
+    application_url = request.application_url
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_review = DBDiscussionSession.query(ReviewDuplicate).get(review_uid)

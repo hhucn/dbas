@@ -129,7 +129,7 @@ def handle_justification_step(request, for_api, ui_locales, nickname, history):
         # send message if the user is now able to review
         if broke_limit:
             _t = Translator(ui_locales)
-            send_request_for_info_popup_to_socketio(request, nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
+            send_request_for_info_popup_to_socketio(request, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
 
     else:
         logger('ViewHelper', 'handle_justification_step', '404')

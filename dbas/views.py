@@ -1419,7 +1419,7 @@ def set_new_start_premise(request, for_api=False, api_data=None):
         if broke_limit:
             ui_locales = get_language_from_cookie(request)
             _t = Translator(ui_locales)
-            send_request_for_info_popup_to_socketio(request, nickname, _t.get(_.youAreAbleToReviewNow),  request.application_url + '/review')
+            send_request_for_info_popup_to_socketio(request, _t.get(_.youAreAbleToReviewNow),  request.application_url + '/review')
             return_dict['url'] = str(url) + str('#access-review')
 
         if url == -1:
@@ -2170,28 +2170,17 @@ def review_delete_argument(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('review_delete_argument', 'def', 'main: {}'.format(request.params))
-    ui_locales = get_discussion_language(request)
-    _t = Translator(ui_locales)
-    return_dict = dict()
+    logger('views', 'review_delete_argument', 'main: {}'.format(request.params))
 
     try:
-        should_delete = True if str(request.params['should_delete']) == 'true' else False
-        review_uid = request.params['review_uid']
-        nickname = request.authenticated_userid
-        if not is_integer(review_uid):
-            logger('review_delete_argument', 'def', 'invalid uid', error=True)
-            error = _t.get(_.internalKeyError)
-        else:
-            error = review_main_helper.add_review_opinion_for_delete(request, nickname, should_delete, review_uid, _t, request.application_url)
-            if len(error) == 0:
-                send_request_for_recent_delete_review_to_socketio(request, nickname, request.application_url)
+        prepared_dict = add.review_delete_argument(request)
     except KeyError as e:
-        logger('review_delete_argument', 'error', repr(e))
-        error = _t.get(_.internalKeyError)
+        logger('views', 'review_delete_argument', repr(e), error=True)
+        ui_locales = get_discussion_language(request)
+        _t = Translator(ui_locales)
+        prepared_dict = {'error': _t.get(_.internalKeyError)}
 
-    return_dict['error'] = error
-    return json.dumps(return_dict)
+    return json.dumps(prepared_dict)
 
 
 # ajax - for feedback on flagged arguments
@@ -2204,28 +2193,17 @@ def review_edit_argument(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('review_edit_argument', 'def', 'main: {}'.format(request.params))
-    ui_locales = get_discussion_language(request)
-    _t = Translator(ui_locales)
-    return_dict = dict()
+    logger('view', 'review_edit_argument', 'main: {} - {}'.format(request.params, request.authenticated_userid))
 
     try:
-        is_edit_okay = True if str(request.params['is_edit_okay']) == 'true' else False
-        review_uid = request.params['review_uid']
-        nickname = request.authenticated_userid
-        if not is_integer(review_uid):
-            logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
-            error = _t.get(_.internalKeyError)
-        else:
-            error = review_main_helper.add_review_opinion_for_edit(request, nickname, is_edit_okay, review_uid, _t, request.application_url)
-            if len(error) == 0:
-                send_request_for_recent_edit_review_to_socketio(request, nickname, request.application_url)
+        prepared_dict = add.review_edit_argument(request)
     except KeyError as e:
-        logger('review_delete_argument', 'error', repr(e))
-        error = _t.get(_.internalKeyError)
+        logger('view', 'review_edit_argument', repr(e), error=True)
+        ui_locales = get_discussion_language(request)
+        _t = Translator(ui_locales)
+        prepared_dict = {'error': _t.get(_.internalKeyError)}
 
-    return_dict['error'] = error
-    return json.dumps(return_dict)
+    return json.dumps(prepared_dict)
 
 
 # ajax - for feedback on duplicated statements
@@ -2238,28 +2216,16 @@ def review_duplicate_statement(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('review_duplicate_statement', 'def', 'main: {} - {}'.format(request.params, request.authenticated_userid))
-    ui_locales = get_discussion_language(request)
-    _t = Translator(ui_locales)
-    return_dict = dict()
-
+    logger('view', 'review_duplicate_statement', 'main: {} - {}'.format(request.params, request.authenticated_userid))
     try:
-        is_duplicate = True if str(request.params['is_duplicate']) == 'true' else False
-        review_uid = request.params['review_uid']
-        nickname = request.authenticated_userid
-        if not is_integer(review_uid):
-            logger('review_duplicate_statement', 'error', str(review_uid) + ' is no int')
-            error = _t.get(_.internalKeyError)
-        else:
-            error = review_main_helper.add_review_opinion_for_duplicate(request, nickname, is_duplicate, review_uid, _t, request.application_url)
-            if len(error) == 0:
-                send_request_for_recent_edit_review_to_socketio(request, nickname, request.application_url)
+        prepared_dict = add.review_duplicate_statement(request)
     except KeyError as e:
-        logger('review_duplicate_statement', 'error', repr(e))
-        error = _t.get(_.internalKeyError)
+        logger('view', 'review_duplicate_statement', repr(e), error=True)
+        ui_locales = get_discussion_language(request)
+        _t = Translator(ui_locales)
+        prepared_dict = {'error': _t.get(_.internalKeyError)}
 
-    return_dict['error'] = error
-    return json.dumps(return_dict)
+    return json.dumps(prepared_dict)
 
 
 # ajax - for feedback on optimization arguments
@@ -2272,32 +2238,17 @@ def review_optimization_argument(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('review_optimization_argument', 'def', 'main: {}'.format(request.params))
-    ui_locales = get_discussion_language(request)
-    _t = Translator(ui_locales)
-    return_dict = dict()
+    logger('views', 'review_optimization_argument', 'main: {}'.format(request.params))
 
     try:
-        should_optimized = True if str(request.params['should_optimized']) == 'true' else False
-        review_uid = request.params['review_uid']
-        new_data = json.loads(request.params['new_data']) if 'new_data' in request.params else None
-        nickname = request.authenticated_userid
-
-        if not is_integer(review_uid):
-            logger('review_delete_argument', 'error', str(review_uid) + ' is no int')
-            error = _t.get(_.internalKeyError)
-        else:
-            error = review_main_helper.add_review_opinion_for_optimization(request, nickname, should_optimized, review_uid, new_data, _t, request.application_url)
-
-            if len(error) == 0:
-                send_request_for_recent_optimization_review_to_socketio(request, nickname)
-
+        prepared_dict = add.review_optimization_argument(request)
     except KeyError as e:
-        logger('review_optimization_argument', 'error', repr(e))
-        error = _t.get(_.internalKeyError)
+        logger('view', 'review_optimization_argument', repr(e), error=True)
+        ui_locales = get_discussion_language(request)
+        _t = Translator(ui_locales)
+        prepared_dict = {'error': _t.get(_.internalKeyError)}
 
-    return_dict['error'] = error
-    return json.dumps(return_dict)
+    return json.dumps(prepared_dict)
 
 
 # ajax - for undoing reviews
