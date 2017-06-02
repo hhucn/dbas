@@ -95,7 +95,7 @@ def attitude(request, nickname, for_api=False) -> dict:
     :param nickname: the user's nickname creating the request
     :param for_api: boolean if requests came via the API
     :rtype: dict
-    :return: prepared collection matchdictfor the discussion
+    :return: prepared collection matchdict for the discussion
     """
 
     ui_locales = get_language_from_cookie(request)

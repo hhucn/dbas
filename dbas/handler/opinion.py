@@ -380,7 +380,7 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_user_uid = db_user.uid if db_user else 0
-    agree_dict    = __collect_pro_clicks(statement_uid, db_user_uid, main_page, _t)
+    agree_dict = __collect_pro_clicks(statement_uid, db_user_uid, main_page, _t)
     disagree_dict = __collect_con_clicks(statement_uid, db_user_uid, main_page, _t)
     ret_dict['agree'] = agree_dict
     ret_dict['disagree'] = disagree_dict

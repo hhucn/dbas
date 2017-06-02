@@ -14,11 +14,10 @@ from pyramid.renderers import get_renderer
 from pyramid.response import Response
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
-from pyshorteners.shorteners import Shortener, Shorteners
-from requests.exceptions import ReadTimeout
 
 import dbas.discussion.core as discussion
 import dbas.discussion.setter as setter
+import dbas.discussion.getter as getter
 import dbas.discussion.review as review
 import dbas.handler.news as news_handler
 import dbas.helper.history as history_helper
@@ -33,25 +32,18 @@ from dbas.auth.login import login_user, register_with_ajax_data
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group
 from dbas.database.initializedb import nick_of_anonymous_user
-from dbas.handler.opinion import get_infos_about_argument, get_user_with_same_opinion_for_argument, \
-    get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
-    get_user_with_same_opinion_for_premisegroups, get_user_and_opinions_for_argument
 from dbas.handler.password import request_password
 from dbas.handler.rss import get_list_of_all_feeds
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.language import set_language, get_language_from_cookie, set_language_for_first_visit
-from dbas.helper.query import get_logfile_for_statements
-from dbas.helper.references import get_references_for_argument, get_references_for_statements
 from dbas.helper.settings import set_settings
 from dbas.helper.views import preparation_for_view, try_to_contact
 from dbas.helper.voting import clear_vote_and_seen_values_of_user
 from dbas.input_validator import is_integer
-from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin, \
-    get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid
+from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.url_manager import UrlManager
 
 name = 'D-BAS'
 version = '1.4.1'
@@ -1400,24 +1392,9 @@ def get_logfile_for_some_statements(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('get_logfile_for_statements', 'def', 'request.params: {}'.format(request.params))
-    user_manager.update_last_action(request.authenticated_userid)
-
-    return_dict = {'info': ''}
-    ui_locales = get_language_from_cookie(request)
-
-    try:
-        uids = json.loads(request.params['uids'])
-        issue = request.params['issue']
-        ui_locales = get_discussion_language(request, issue)
-        return_dict = get_logfile_for_statements(uids, ui_locales, request.application_url)
-        return_dict['error'] = ''
-    except KeyError as e:
-        logger('get_logfile_for_premisegroup', 'error', repr(e))
-        _tn = Translator(ui_locales)
-        return_dict['error'] = _tn.get(_.noCorrections)
-
-    return return_dict
+    logger('views', 'get_logfile_for_statements', 'request.params: {}'.format(request.params))
+    prepared_dict = getter.logfile_for_some_statements
+    return prepared_dict
 
 
 # ajax - for shorten url
@@ -1429,34 +1406,9 @@ def get_shortened_url(request):
     :param request: current request of the server
     :return: dictionary with shortend url
     """
-    user_manager.update_last_action(request.authenticated_userid)
-
-    logger('get_shortened_url', 'def', 'main')
-
-    return_dict = dict()
-
-    try:
-        url = request.params['url']
-        service = Shorteners.TINYURL
-        service_url = 'http://tinyurl.com/'
-        shortener = Shortener(service)
-
-        short_url = format(shortener.short(url))
-        return_dict['url'] = short_url
-        return_dict['service'] = service
-        return_dict['service_url'] = service_url
-
-        return_dict['error'] = ''
-    except KeyError as e:
-        logger('get_shortened_url', 'error', repr(e))
-        _tn = Translator(get_discussion_language(request))
-        return_dict['error'] = _tn.get(_.internalKeyError)
-    except ReadTimeout as e:
-        logger('get_shortened_url', 'read timeout error', repr(e))
-        _tn = Translator(get_discussion_language(request))
-        return_dict['error'] = _tn.get(_.serviceNotAvailable)
-
-    return return_dict
+    logger('views', 'get_shortened_url', 'main')
+    prepared_dict = getter.shortened_url(request)
+    return prepared_dict
 
 
 # ajax - for getting all news
@@ -1468,7 +1420,7 @@ def get_news(request):
     :param request: current request of the server
     :return: json-set with all news
     """
-    logger('get_news', 'def', 'main')
+    logger('views', 'get_news', 'main')
     return news_handler.get_news(get_language_from_cookie(request))
 
 
@@ -1481,23 +1433,9 @@ def get_all_infos_about_argument(request):
     :param request: current request of the server
     :return: json-set with everything
     """
-    logger('get_all_infos_about_argument', 'def', 'request.params: {}'.format(request.params))
-    ui_locales = get_discussion_language(request)
-    _t = Translator(ui_locales)
-    return_dict = dict()
-
-    try:
-        uid = request.params['uid']
-        if not is_integer(uid):
-            return_dict['error'] = _t.get(_.internalError)
-        else:
-            return_dict = get_infos_about_argument(uid, request.application_url, request.authenticated_userid, _t)
-            return_dict['error'] = ''
-    except KeyError as e:
-        logger('get_infos_about_argument', 'error', repr(e))
-        return_dict['error'] = _t.get(_.internalKeyError)
-
-    return return_dict
+    logger('views', 'get_all_infos_about_argument', 'request.params: {}'.format(request.params))
+    prepared_dict = getter.all_infos_about_argument(request)
+    return prepared_dict
 
 
 # ajax - for getting all users with the same opinion
@@ -1509,45 +1447,9 @@ def get_users_with_same_opinion(request):
     :params reqeust: current request of the web  server
     :return: json-set with everything
     """
-    logger('get_users_with_same_opinion', 'def', 'main: {}'.format(request.params))
-    nickname = request.authenticated_userid
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    return_dict = dict()
-    try:
-        params = request.params
-        ui_locales = params['lang'] if 'lang' in params else 'en'
-        uids = params['uids']
-        is_arg = params['is_argument'] == 'true' if 'is_argument' in params else False
-        is_att = params['is_attitude'] == 'true' if 'is_attitude' in params else False
-        is_rea = params['is_reaction'] == 'true' if 'is_reaction' in params else False
-        is_pos = params['is_position'] == 'true' if 'is_position' in params else False
-
-        if is_arg:
-            if is_rea:
-                uids = json.loads(uids)
-                return_dict = get_user_and_opinions_for_argument(uids, nickname, ui_locales, request.application_url, request.path)
-            else:
-                return_dict = get_user_with_same_opinion_for_argument(uids, nickname, ui_locales, request.application_url)
-        elif is_pos:
-            uids = json.loads(uids)
-            uids = uids if isinstance(uids, list) else [uids]
-            return_dict = get_user_with_same_opinion_for_statements(uids, True, nickname, ui_locales, request.application_url)
-        else:
-            if is_att:
-                return_dict = get_user_with_opinions_for_attitude(uids, nickname, ui_locales, request.application_url)
-            else:
-                uids = json.loads(uids)
-                uids = uids if isinstance(uids, list) else [uids]
-                return_dict = get_user_with_same_opinion_for_premisegroups(uids, nickname, ui_locales, request.application_url)
-        return_dict['info'] = _tn.get(_.otherParticipantsDontHaveOpinionForThisStatement) if len(uids) == 0 else ''
-        return_dict['error'] = ''
-    except KeyError as e:
-        logger('get_users_with_same_opinion', 'error', repr(e))
-        return_dict['error'] = _tn.get(_.internalKeyError)
-
-    return return_dict
+    logger('views', 'get_users_with_same_opinion', 'main: {}'.format(request.params))
+    prepared_dict = getter.all_infos_about_argument(request)
+    return prepared_dict
 
 
 # ajax - for getting all users with the same opinion
@@ -1559,21 +1461,9 @@ def get_public_user_data(request):
     :param request: request of the web server
     :return:
     """
-    logger('get_public_user_data', 'def', 'main: {}'.format(request.params))
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    return_dict = dict()
-    try:
-        nickname = request.params['nickname']
-        return_dict = user_manager.get_public_information_data(nickname, ui_locales)
-        return_dict['error'] = '' if len(return_dict) != 0 else _tn.get(_.internalKeyError)
-
-    except KeyError as e:
-        logger('get_public_user_data', 'error', repr(e))
-        return_dict['error'] = _tn.get(_.internalKeyError)
-
-    return return_dict
+    logger('getter', 'get_public_user_data', 'main: {}'.format(request.params))
+    prepared_dict = getter.public_user_data(request)
+    return prepared_dict
 
 
 @view_config(route_name='ajax_get_arguments_by_statement_uid', renderer='json')
@@ -1585,25 +1475,8 @@ def get_arguments_by_statement_uid(request):
     :return: json-dict()
     """
     logger('get_arguments_by_statement_uid', 'def', 'main: {}'.format(request.matchdict))
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    return_dict = dict()
-    try:
-        uid = request.matchdict['uid']
-        if not is_integer(uid):
-            return_dict['error'] = _tn.get(_.internalKeyError)
-        else:
-            slug = get_slug_by_statement_uid(uid)
-            _um = UrlManager(request.application_url, slug)
-            return_dict['arguments'] = get_all_arguments_with_text_and_url_by_statement_id(uid, _um, True, is_jump=True)
-            return_dict['error'] = ''
-
-    except KeyError as e:
-        logger('get_arguments_by_statement_uid', 'error', repr(e))
-        return_dict['error'] = _tn.get(_.internalKeyError)
-
-    return return_dict
+    prepared_dict = getter.arguments_by_statement_uid(request)
+    return prepared_dict
 
 
 @view_config(route_name='ajax_get_references', renderer='json')
@@ -1615,39 +1488,9 @@ def get_references(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('get_references', 'def', 'main: {}'.format(request.params))
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-    data = ''
-    text = ''
-
-    try:
-        # uid is an integer if it is an argument and a list otherwise
-        uid = json.loads(request.params['uid'])
-        is_argument = str(request.params['is_argument']) == 'true'
-        are_all_integer = all(is_integer(tmp) for tmp in uid) if isinstance(uid, list) else is_integer(uid)
-
-        error = ''
-        if are_all_integer:
-            if is_argument:
-                data, text = get_references_for_argument(uid, request.application_url)
-            else:
-                data, text = get_references_for_statements(uid, request.application_url)
-        else:
-            logger('get_references', 'def', 'uid is not an integer')
-            data = ''
-            text = ''
-            error = _tn.get(_.internalKeyError)
-
-    except KeyError as e:
-        logger('get_references', 'error', repr(e))
-        error = _tn.get(_.internalKeyError)
-
-    return_dict = {'error': error,
-                   'data': data,
-                   'text': text}
-
-    return return_dict
+    logger('views', 'get_references', 'main: {}'.format(request.params))
+    prepared_dict = getter.references(request)
+    return prepared_dict
 
 
 @view_config(route_name='ajax_set_references', renderer='json')
@@ -1719,7 +1562,7 @@ def fuzzy_search(request, for_api=False, api_data=None):
     :param api_data: data
     :return: json-set with all matched strings
     """
-    logger('fuzzy_search', 'def', 'for_api: {}, request.params: {}'.format(for_api, request.params))
+    logger('views', 'fuzzy_search', 'for_api: {}, request.params: {}'.format(for_api, request.params))
 
     _tn = Translator(get_language_from_cookie(request))
     request_authenticated_userid = request.authenticated_userid
@@ -1729,12 +1572,12 @@ def fuzzy_search(request, for_api=False, api_data=None):
         value = api_data['value'] if for_api else request.params['value']
         issue = api_data['issue'] if for_api else issue_helper.get_issue_id(request)
         extra = request.params['extra'] if 'extra' in request.params else None
-
-        return_dict = fuzzy_string_matcher.get_prediction(request, _tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra)
-
     except KeyError as e:
-        return_dict = {'error': _tn.get(_.internalKeyError)}
-        logger('fuzzy_search', 'error', repr(e))
+        logger('views', 'fuzzy_search', repr(e), error=True)
+        return {'error': _tn.get(_.internalKeyError)}
+
+    return_dict = fuzzy_string_matcher.get_prediction(request, _tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra)
+
 
     return return_dict
 

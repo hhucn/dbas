@@ -168,12 +168,13 @@ def position(request, for_api, api_data) -> dict:
 
 def positions_premise(request, for_api, api_data) -> dict:
     """
+    Set new premise for a given position and returns dictionary with url for the next step of the discussion
 
     :param request: pyramid's request object
     :param for_api: boolean if requests came via the API
     :param api_data: dict if requests came via the API
     :rtype: dict
-    :return:
+    :return: Prepared collection with statement_uids of the new premises and next url or an error
     """
     prepared_dict = dict()
     lang = get_discussion_language(request)
@@ -227,12 +228,13 @@ def positions_premise(request, for_api, api_data) -> dict:
 
 def arguments_premises(request, for_api, api_data) -> dict:
     """
+    Set new premise for a given conclusion and returns dictionary with url for the next step of the discussion
 
     :param request: pyramid's request object
     :param for_api: boolean if requests came via the API
     :param api_data: dict if requests came via the API
     :rtype: dict
-    :return:
+    :return: Prepared collection with statement_uids of the new premises and next url or an error
     """
     prepared_dict = dict()
     lang = get_language_from_cookie(request)
@@ -290,10 +292,11 @@ def arguments_premises(request, for_api, api_data) -> dict:
 
 def correction_of_statement(request) -> dict:
     """
+    Adds a proposol for a statements correction and returns info if the proposal could be set
 
     :param request: pyramid's request object
     :rtype: dict
-    :return:
+    :return: Dictionary with info and/or error
     """
     prepared_dict = dict()
     nickname = request.authenticated_userid
@@ -315,10 +318,11 @@ def correction_of_statement(request) -> dict:
 
 def notification_read(request) -> dict:
     """
+    Simply marks a notification as read
 
     :param request: pyramid's request object
     :rtype: dict
-    :return:
+    :return: Dictionary with info and/or error
     """
     prepared_dict = dict()
     ui_locales = get_language_from_cookie(request)
@@ -346,10 +350,11 @@ def notification_read(request) -> dict:
 
 def notification_delete(request) -> dict:
     """
+    Simply deletes a specific notification
 
     :param request: pyramid's request object
     :rtype: dict
-    :return:
+    :return: Dictionary with info and/or error
     """
     prepared_dict = dict()
 
@@ -392,15 +397,16 @@ def notification_delete(request) -> dict:
 
 def issue(request) -> dict:
     """
+    Sets new issue, which will be a new discussion
 
     :param request: pyramid's request object
     :rtype: dict
-    :return:
+    :return: Collection with information about the new issue
     """
     request_authenticated_userid = request.authenticated_userid
     user_manager.update_last_action(request_authenticated_userid)
 
-    logger('set_new_issue', 'def', 'main {}'.format(request.params))
+    logger('setter', 'set_new_issue', 'main {}'.format(request.params))
     prepared_dict = dict()
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
@@ -426,10 +432,11 @@ def issue(request) -> dict:
 
 def seen_statements(request) -> dict:
     """
+    Marks several statements as already seen.
 
     :param request: pyramid's request object
     :rtype: dict
-    :return:
+    :return: Dictionary with an error field
     """
     prepared_dict = dict()
     ui_locales = get_language_from_cookie(request)
@@ -454,10 +461,11 @@ def seen_statements(request) -> dict:
 
 def mark_statement_or_argument(request) -> dict:
     """
+    Marks statement or argument as current users opinion and returns status about the action
 
     :param request: pyramid's request object
     :rtype: dict
-    :return:
+    :return: Dictionary with new text for the current bubble, where the user marked her opinion
     """
     prepared_dict = dict()
     ui_locales = get_discussion_language(request)
@@ -486,10 +494,11 @@ def mark_statement_or_argument(request) -> dict:
 
 def references(request) -> dict:
     """
+    Sets new reference
 
     :param request: pyramid's request object
     :rtype: dict
-    :return:
+    :return: Dictionary with an error field
     """
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
