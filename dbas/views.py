@@ -20,7 +20,7 @@ from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
 
 import dbas.discussion.core as discussion
-import dbas.discussion.additives as additives
+import dbas.discussion.setter as setter
 import dbas.discussion.review as review
 import dbas.handler.news as news_handler
 import dbas.helper.history as history_helper
@@ -1156,21 +1156,20 @@ def user_registration(request):
     :return: dict() with success and message
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('user_registration', 'def', 'request.params: {}'.format(request.params))
+    logger('view', 'user_registration', 'request.params: {}'.format(request.params))
 
     # default values
     success = ''
     error = ''
     info = ''
 
-    ui_locales = request.params['lang'] if 'lang' in request.params else get_language_from_cookie(request)
-    _t = Translator(ui_locales)
-
     try:
-        success, info = register_with_ajax_data(request, ui_locales)
+        success, info = register_with_ajax_data(request)
 
     except KeyError as e:
-        logger('user_registration', 'error', repr(e))
+        logger('view', 'user_registration', repr(e), error=True)
+        ui_locales = request.params['lang'] if 'lang' in request.params else get_language_from_cookie(request)
+        _t = Translator(ui_locales)
         error = _t.get(_.internalKeyError)
 
     return {'success': str(success),
@@ -1188,7 +1187,7 @@ def user_password_request(request):
     :return: dict() with success and message
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('user_password_request', 'def', 'request.params: {}'.format(request.params))
+    logger('view', 'user_password_request', 'request.params: {}'.format(request.params))
 
     success = ''
     info = ''
@@ -1197,19 +1196,15 @@ def user_password_request(request):
     _t = Translator(ui_locales)
 
     try:
-        success, error, info = request_password(request, ui_locales)
+        success, error, info = request_password(request)
 
     except KeyError as e:
-        logger('user_password_request', 'error', repr(e))
+        logger('iew', 'user_password_request', repr(e), error=True)
         error = _t.get(_.internalKeyError)
 
     return_dict['success'] = str(success)
-    return_dict['error']   = str(error)
-    return_dict['info']    = str(info)
-
-    logger('user_password_request', 'success', str(success))
-    logger('user_password_request', 'error', str(error))
-    logger('user_password_request', 'info', str(info))
+    return_dict['error'] = str(error)
+    return_dict['info'] = str(info)
 
     return return_dict
 
@@ -1224,7 +1219,7 @@ def set_user_settings(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('set_user_settings', 'def', 'request.params: {}'.format(request.params))
+    logger('view', 'set_user_settings', 'request.params: {}'.format(request.params))
     _tn = Translator(get_language_from_cookie(request))
 
     try:
@@ -1236,7 +1231,7 @@ def set_user_settings(request):
         public_nick = ''
         public_page_url = ''
         gravatar_url = ''
-        logger('set_user_settings', 'error', repr(e))
+        logger('view', 'set_user_settings', repr(e), error=True)
 
     return_dict = {'error': error, 'public_nick': public_nick, 'public_page_url': public_page_url, 'gravatar_url': gravatar_url}
     return return_dict
@@ -1252,11 +1247,11 @@ def set_user_language(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('views', 'set_user_language', 'request.params: {}'.format(request.params))
+    logger('views', 'user_language', 'request.params: {}'.format(request.params))
 
     try:
         ui_locales = request.params['ui_locales'] if 'ui_locales' in request.params else None
-        prepared_dict = additives.set_user_language(request.authenticated_userid, ui_locales)
+        prepared_dict = setter.user_language(request.authenticated_userid, ui_locales)
     except KeyError as e:
         logger('views', 'set_user_settings', repr(e), error=True)
         _tn = Translator(get_language_from_cookie(request))
@@ -1277,13 +1272,13 @@ def send_some_notification(request):
     :return: dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('send_some_notification', 'def', 'request.params: {}'.format(request.params))
+    logger('notification', 'def', 'request.params: {}'.format(request.params))
 
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
     try:
-        prepared_dict = additives.send_some_notification(request)
+        prepared_dict = setter.send_some_notification(request)
 
     except (KeyError, AttributeError):
         prepared_dict = {}

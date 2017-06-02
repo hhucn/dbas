@@ -13,6 +13,7 @@ from sqlalchemy import func
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Settings, Language
 from dbas.helper.email import send_mail
+from dbas.helper.language import get_language_from_cookie
 from dbas.lib import escape_string
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -59,7 +60,7 @@ def get_hashed_password(password):
     return manager.encode(password)
 
 
-def request_password(request, ui_locales):
+def request_password(request):
     """
     Request for a new password
 
@@ -70,6 +71,7 @@ def request_password(request, ui_locales):
     success = ''
     error = ''
     info = ''
+    ui_locales = request.params['lang'] if 'lang' in request.params else get_language_from_cookie(request)
 
     _t = Translator(ui_locales)
     email = escape_string(request.params['email'])
