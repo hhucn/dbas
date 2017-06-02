@@ -298,7 +298,7 @@ def review_lock(request) -> dict:
     _t = Translator(ui_locales)
     prepared_dict = dict()
 
-    review_uid = request.params['review_uid'] if 'review_uid' in request else None
+    review_uid = request.params['review_uid'] if 'review_uid' in request.params else None
     lock = True if request.params['lock'] == 'true' else False
 
     if not is_integer(review_uid):
