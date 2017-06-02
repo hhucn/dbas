@@ -1,10 +1,13 @@
 import transaction
+import dbas.review.helper.flags as review_flag_helper
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import sql_timestamp_pretty_print, User, Settings, Language
 from dbas.database.initializedb import nick_of_anonymous_user
+from dbas.logger import logger
 from dbas.helper.language import get_language_from_cookie
 from dbas.helper.notification import send_notification
+from dbas.input_validator import is_integer
 from dbas.lib import get_user_by_private_or_public_nickname, get_profile_picture
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -83,4 +86,31 @@ def send_some_notification(request) -> dict:
     prepared_dict['timestamp'] = ts
     prepared_dict['uid'] = uid
     prepared_dict['recipient_avatar'] = gravatar
+    return prepared_dict
+
+
+def flag_argument_or_statement(uid, reason, extra_uid, is_argument, nickname, ui_locales) -> dict:
+    """
+
+    :param uid:
+    :param reason:
+    :param extra_uid:
+    :param is_argument:
+    :param nickname:
+    :param ui_locales:
+    :rtype: dict
+    :return:
+    """
+    _t = Translator(ui_locales)
+
+    if not is_integer(uid):
+        logger('additives', 'flag_argument_or_statement', 'invalid uid', error=True)
+        return {'error': _t.get(_.internalError), 'info': '', 'success': ''}
+    else:
+        success, info, error = review_flag_helper.flag_element(uid, reason, nickname, is_argument, extra_uid)
+        prepared_dict = {}
+        prepared_dict['success'] = '' if isinstance(success, str) else _t.get(success)
+        prepared_dict['info'] = '' if isinstance(info, str) else _t.get(info)
+        prepared_dict['error'] = '' if isinstance(error, str) else _t.get(error)
+
     return prepared_dict

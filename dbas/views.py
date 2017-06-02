@@ -24,7 +24,6 @@ import dbas.discussion.additives as add
 import dbas.handler.news as news_handler
 import dbas.helper.history as history_helper
 import dbas.helper.issue as issue_helper
-import dbas.review.helper.flags as review_flag_helper
 import dbas.review.helper.history as review_history_helper
 import dbas.review.helper.main as review_main_helper
 import dbas.review.helper.queues as review_queue_helper
@@ -137,7 +136,7 @@ def main_page(request):
     :return: HTTP 200 with several information
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('main_page', 'def', 'main, request.params: {}'.format(request.params))
+    logger('main_page', 'def', 'request.params: {}'.format(request.params))
 
     set_language_for_first_visit(request)
     unauthenticated = check_authentication(request)
@@ -146,7 +145,7 @@ def main_page(request):
 
     session_expired = True if 'session_expired' in request.params and request.params['session_expired'] == 'true' else False
     ui_locales      = get_language_from_cookie(request)
-    logger('main_page', 'def', 'main, request.params: {}'.format(request.params))
+    logger('main_page', 'def', 'request.params: {}'.format(request.params))
     _dh             = DictionaryHelper(ui_locales, ui_locales)
     extras_dict     = _dh.prepare_extras_dict_for_normal_page(request)
     _dh.add_language_options_for_extra_dict(extras_dict)
@@ -171,7 +170,7 @@ def main_contact(request):
     :return: dictionary with title and project username as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('main_contact', 'def', 'main, request.params: {}, request.matchdict: {}'.format(request.params, request.matchdict))
+    logger('main_contact', 'def', 'request.params: {}, request.matchdict: {}'.format(request.params, request.matchdict))
     unauthenticated = check_authentication(request)
     if unauthenticated:
         return unauthenticated
@@ -238,7 +237,7 @@ def main_settings(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('main_settings', 'def', 'main, request.params: {}'.format(request.params))
+    logger('main_settings', 'def', 'request.params: {}'.format(request.params))
     unauthenticated = check_authentication(request)
     if unauthenticated:
         return unauthenticated
@@ -349,8 +348,8 @@ def main_user(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     match_dict = request.matchdict
     params = request.params
-    logger('main_user', 'def', 'main, request.matchdict: {}'.format(match_dict))
-    logger('main_user', 'def', 'main, request.params: {}'.format(params))
+    logger('main_user', 'def', 'request.matchdict: {}'.format(match_dict))
+    logger('main_user', 'def', 'request.params: {}'.format(params))
 
     uid = match_dict['uid'] if 'uid' in match_dict else 0
     logger('main_user', 'def', 'uid: {}'.format(uid))
@@ -597,8 +596,8 @@ def discussion_init(request, for_api=False, api_data=None):
     :param api_data: Dictionary, containing data of a user who logged in via API
     :return: dictionary
     """
-    logger('Views', 'discussion_init', 'main, request.matchdict: {}'.format(request.matchdict))
-    logger('Views', 'discussion_init', 'main, request.params: {}'.format(request.params))
+    logger('Views', 'discussion_init', 'request.matchdict: {}'.format(request.matchdict))
+    logger('Views', 'discussion_init', 'request.params: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.init, for_api, api_data)
     if not prepared_discussion:
@@ -620,8 +619,8 @@ def discussion_attitude(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/attitude/{statement_id}'
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Views', 'discussion_attitude', 'main, request.matchdict: {}'.format(request.matchdict))
-    logger('Views', 'discussion_attitude', 'main, request.params: {}'.format(request.params))
+    logger('Views', 'discussion_attitude', 'request.matchdict: {}'.format(request.matchdict))
+    logger('Views', 'discussion_attitude', 'request.params: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.attitude, for_api, api_data)
     if not prepared_discussion:
@@ -643,8 +642,8 @@ def discussion_justify(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation'
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('views', 'discussion_justify', 'main, request.matchdict: {}'.format(request.matchdict))
-    logger('views', 'discussion_justify', 'main, request.params: {}'.format(request.params))
+    logger('views', 'discussion_justify', 'request.matchdict: {}'.format(request.matchdict))
+    logger('views', 'discussion_justify', 'request.params: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.justify, for_api, api_data)
     if not prepared_discussion:
@@ -666,8 +665,8 @@ def discussion_reaction(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys'
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('views', 'discussion_reaction', 'main, request.matchdict: {}'.format(request.matchdict))
-    logger('views', 'discussion_reaction', 'main, request.params: {}'.format(request.params))
+    logger('views', 'discussion_reaction', 'request.matchdict: {}'.format(request.matchdict))
+    logger('views', 'discussion_reaction', 'request.params: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.reaction, for_api, api_data)
     if not prepared_discussion:
@@ -689,8 +688,8 @@ def discussion_support(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/jump/{arg_id}'
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('views', 'discussion_support', 'main, request.matchdict: {}'.format(request.matchdict))
-    logger('views', 'discussion_support', 'main, request.params: {}'.format(request.params))
+    logger('views', 'discussion_support', 'request.matchdict: {}'.format(request.matchdict))
+    logger('views', 'discussion_support', 'request.params: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.support, for_api, api_data)
     if not prepared_discussion:
@@ -740,8 +739,8 @@ def discussion_choose(request, for_api=False, api_data=None):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     match_dict = request.matchdict
     params = request.params
-    logger('discussion_choose', 'def', 'main, request.matchdict: {}'.format(match_dict))
-    logger('discussion_choose', 'def', 'main, request.params: {}'.format(params))
+    logger('discussion_choose', 'def', 'request.matchdict: {}'.format(match_dict))
+    logger('discussion_choose', 'def', 'request.params: {}'.format(params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.choose, for_api, api_data)
     if not prepared_discussion:
@@ -763,8 +762,8 @@ def discussion_jump(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/jump/{arg_id}'
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('views', 'discussion_jump', 'main, request.matchdict: {}'.format(request.matchdict))
-    logger('views', 'discussion_jump', 'main, request.params: {}'.format(request.params))
+    logger('views', 'discussion_jump', 'request.matchdict: {}'.format(request.matchdict))
+    logger('views', 'discussion_jump', 'request.params: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.jump, for_api, api_data)
     if not prepared_discussion:
@@ -1113,7 +1112,7 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
     :return: dict() with error
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('user_login', 'def', 'main, request.params: {} (api: {})'.format(request.params, str(for_api)))
+    logger('user_login', 'def', 'request.params: {} (api: {})'.format(request.params, str(for_api)))
 
     lang = get_language_from_cookie(request)
     _tn = Translator(lang)
@@ -1136,7 +1135,7 @@ def user_logout(request, redirect_to_main=False):
     :return: HTTPFound with forgotten headers
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('user_logout', 'def', 'main, user: {}, redirect_to_main: {}'.format(request.authenticated_userid, redirect_to_main))
+    logger('user_logout', 'def', 'user: {}, redirect_to_main: {}'.format(request.authenticated_userid, redirect_to_main))
     request.session.invalidate()
     headers = forget(request)
     if redirect_to_main:
@@ -1159,7 +1158,7 @@ def user_registration(request):
     :return: dict() with success and message
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('user_registration', 'def', 'main, request.params: {}'.format(request.params))
+    logger('user_registration', 'def', 'request.params: {}'.format(request.params))
 
     # default values
     success = ''
@@ -1191,7 +1190,7 @@ def user_password_request(request):
     :return: dict() with success and message
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('user_password_request', 'def', 'main, request.params: {}'.format(request.params))
+    logger('user_password_request', 'def', 'request.params: {}'.format(request.params))
 
     success = ''
     info = ''
@@ -1227,7 +1226,7 @@ def set_user_settings(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('set_user_settings', 'def', 'main, request.params: {}'.format(request.params))
+    logger('set_user_settings', 'def', 'request.params: {}'.format(request.params))
     _tn = Translator(get_language_from_cookie(request))
 
     try:
@@ -1255,7 +1254,7 @@ def set_user_language(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('views', 'set_user_language', 'main, request.params: {}'.format(request.params))
+    logger('views', 'set_user_language', 'request.params: {}'.format(request.params))
 
     try:
         ui_locales = request.params['ui_locales'] if 'ui_locales' in request.params else None
@@ -1280,7 +1279,7 @@ def send_some_notification(request):
     :return: dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('send_some_notification', 'def', 'main, request.params: {}'.format(request.params))
+    logger('send_some_notification', 'def', 'request.params: {}'.format(request.params))
 
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
@@ -1315,9 +1314,7 @@ def set_new_start_statement(request, for_api=False, api_data=None):
     :return: a status code, if everything was successful
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('set_new_start_statement', 'def', 'ajax, request.params: {}'.format(request.params))
-
-    logger('set_new_start_statement', 'def', 'main')
+    logger('views', 'set_new_start_statement', 'request.params: {}'.format(request.params))
 
     discussion_lang = get_discussion_language(request)
     _tn = Translator(discussion_lang)
@@ -1384,7 +1381,7 @@ def set_new_start_premise(request, for_api=False, api_data=None):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('set_new_start_premise', 'def', 'main, request.params: {}'.format(request.params))
+    logger('set_new_start_premise', 'def', 'request.params: {}'.format(request.params))
 
     return_dict = dict()
     lang = get_discussion_language(request)
@@ -1448,7 +1445,7 @@ def set_new_premises_for_argument(request, for_api=False, api_data=None):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('set_new_premises_for_argument', 'def', 'main, request.params: {}'.format(request.params))
+    logger('set_new_premises_for_argument', 'def', 'request.params: {}'.format(request.params))
 
     return_dict = dict()
     lang = get_language_from_cookie(request)
@@ -1516,7 +1513,7 @@ def set_correction_of_statement(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('set_correction_of_statement', 'def', 'main, request.params: {}'.format(request.params))
+    logger('set_correction_of_statement', 'def', 'request.params: {}'.format(request.params))
     nickname = request.authenticated_userid
     user_manager.update_last_action(nickname)
 
@@ -1734,7 +1731,7 @@ def get_logfile_for_some_statements(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('get_logfile_for_statements', 'def', 'main, request.params: {}'.format(request.params))
+    logger('get_logfile_for_statements', 'def', 'request.params: {}'.format(request.params))
     user_manager.update_last_action(request.authenticated_userid)
 
     return_dict = {'info': ''}
@@ -1818,7 +1815,7 @@ def get_all_infos_about_argument(request):
     :return: json-set with everything
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('get_all_infos_about_argument', 'def', 'main, request.params: {}'.format(request.params))
+    logger('get_all_infos_about_argument', 'def', 'request.params: {}'.format(request.params))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
     return_dict = dict()
@@ -2037,19 +2034,9 @@ def switch_language(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     user_manager.update_last_action(request.authenticated_userid)
-    logger('switch_language', 'def', 'main, request.params: {}'.format(request.params))
+    logger('switch_language', 'def', 'request.params: {}'.format(request.params))
 
-    return_dict = dict()
-    ui_locales = None
-    try:
-        return_dict, ui_locales = set_language(request)
-
-    except KeyError as e:
-        logger('swich_language', 'error', repr(e))
-        if not ui_locales:
-            ui_locales = 'en'
-        _t = Translator(ui_locales)
-        return_dict['error'] = _t.get(_.internalError)
+    return_dict = set_language(request)
 
     return return_dict
 
@@ -2064,7 +2051,7 @@ def send_news(request):
     :return: json-set with new news
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('views', 'send_news', 'main, request.params: {}'.format(request.params))
+    logger('views', 'send_news', 'request.params: {}'.format(request.params))
     _tn = Translator(get_language_from_cookie(request))
 
     try:
@@ -2090,7 +2077,7 @@ def fuzzy_search(request, for_api=False, api_data=None):
     :return: json-set with all matched strings
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('fuzzy_search', 'def', 'main, for_api: {}, request.params: {}'.format(for_api, request.params))
+    logger('fuzzy_search', 'def', 'for_api: {}, request.params: {}'.format(for_api, request.params))
 
     _tn = Translator(get_language_from_cookie(request))
     request_authenticated_userid = request.authenticated_userid
@@ -2120,7 +2107,7 @@ def additional_service(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('views', 'additional_service', 'main, request.params: {}'.format(request.params))
+    logger('views', 'additional_service', 'request.params: {}'.format(request.params))
 
     try:
         rtype = request.params['type']
@@ -2154,10 +2141,8 @@ def flag_argument_or_statement(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('flag_argument_or_statement', 'def', 'main: {}'.format(request.params))
+    logger('views', 'flag_argument_or_statement', 'request.params: {}'.format(request.params))
     ui_locales = get_discussion_language(request)
-    _t = Translator(ui_locales)
-    return_dict = {'error': _t.get(_.internalError), 'info': '', 'success': ''}
 
     try:
         uid = request.params['uid']
@@ -2166,20 +2151,13 @@ def flag_argument_or_statement(request):
         is_argument = True if request.params['is_argument'] == 'true' else False
         nickname = request.authenticated_userid
 
-        if not is_integer(uid):
-            logger('flag_argument_or_statement', 'def', 'invalid uid', error=True)
-        else:
-            success, info, error = review_flag_helper.flag_element(uid, reason, nickname, is_argument, extra_uid)
-            return_dict = {
-                'success': '' if isinstance(success, str) else _t.get(success),
-                'info': '' if isinstance(info, str) else _t.get(info),
-                'error': '' if isinstance(error, str) else _t.get(error)
-            }
+        prepared_dict = flag_argument_or_statement(uid, reason, extra_uid, is_argument, nickname, ui_locales)
     except KeyError as e:
-        logger('flag_element', 'error', repr(e))
-        return_dict['error'] = _t.get(_.internalKeyError)
+        _t = Translator(ui_locales)
+        logger('views', 'flag_argument_or_statement', repr(e), error=True)
+        prepared_dict = {'error': _t.get(_.internalKeyError), 'info': '', 'success': ''}
 
-    return json.dumps(return_dict)
+    return json.dumps(prepared_dict)
 
 
 # ajax - for feedback on flagged arguments
