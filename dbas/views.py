@@ -25,7 +25,6 @@ import dbas.handler.news as news_handler
 import dbas.helper.history as history_helper
 import dbas.helper.issue as issue_helper
 import dbas.review.helper.history as review_history_helper
-import dbas.review.helper.main as review_main_helper
 import dbas.review.helper.queues as review_queue_helper
 import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
@@ -59,9 +58,7 @@ from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_p
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
-from websocket.lib import send_request_for_recent_delete_review_to_socketio, \
-    send_request_for_recent_optimization_review_to_socketio, send_request_for_recent_edit_review_to_socketio, \
-    send_request_for_info_popup_to_socketio
+from websocket.lib import send_request_for_info_popup_to_socketio
 
 name = 'D-BAS'
 version = '1.4.1'
@@ -2261,28 +2258,17 @@ def undo_review(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('undo_review', 'def', 'main: {}'.format(request.params))
-    ui_locales = get_discussion_language(request)
-    _t = Translator(ui_locales)
-    return_dict = dict()
+    logger('views', 'undo_review', 'main: {}'.format(request.params))
 
     try:
-        queue = request.params['queue']
-        uid = request.params['uid']
-        nickname = request.authenticated_userid
-
-        if is_user_author_or_admin(nickname):
-            success, error = review_history_helper.revoke_old_decision(queue, uid, ui_locales, nickname)
-            return_dict['success'] = success
-            return_dict['error'] = error
-        else:
-            return_dict['info'] = _t.get(_.justLookDontTouch)
-
+        prepared_dict = add.undo_review(request)
     except KeyError as e:
-        logger('undo_review', 'error', repr(e))
-        return_dict['error'] = _t.get(_.internalKeyError)
+        logger('views', 'undo_review', repr(e), error=True)
+        ui_locales = get_discussion_language(request)
+        _t = Translator(ui_locales)
+        prepared_dict = {'error': _t.get(_.internalKeyError)}
 
-    return json.dumps(return_dict)
+    return json.dumps(prepared_dict)
 
 
 # ajax - for canceling reviews
@@ -2295,28 +2281,17 @@ def cancel_review(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('cancel_review', 'def', 'main: {}'.format(request.params))
-    ui_locales = get_discussion_language(request)
-    _t = Translator(ui_locales)
-    return_dict = dict()
+    logger('views', 'cancel_review', 'main: {}'.format(request.params))
 
     try:
-        queue = request.params['queue']
-        uid = request.params['uid']
-        nickname = request.authenticated_userid
-
-        if is_user_author_or_admin(nickname):
-            success, error = review_history_helper.cancel_ongoing_decision(queue, uid, ui_locales, nickname)
-            return_dict['success'] = success
-            return_dict['error'] = error
-        else:
-            return_dict['info'] = _t.get(_.justLookDontTouch)
-
+        prepared_dict = add.cancel_review(request)
     except KeyError as e:
-        logger('undo_review', 'error', repr(e))
-        return_dict['error'] = _t.get(_.internalKeyError)
+        logger('views', 'cancel_review', repr(e), error=True)
+        ui_locales = get_discussion_language(request)
+        _t = Translator(ui_locales)
+        prepared_dict = {'error': _t.get(_.internalKeyError)}
 
-    return json.dumps(return_dict)
+    return json.dumps(prepared_dict)
 
 
 # ajax - for undoing reviews
@@ -2329,7 +2304,7 @@ def review_lock(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('review_lock', 'def', 'main: {}'.format(request.params))
+    logger('views', 'review_lock', 'main: {}'.format(request.params))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
     return_dict = dict()
@@ -2355,7 +2330,7 @@ def review_lock(request):
                 success = _t.get(_.dataUnlocked)
 
     except KeyError as e:
-        logger('review_lock', 'error', repr(e))
+        logger('views', 'review_lock', repr(e), error=True)
         error = _t.get(_.internalKeyError)
 
     return_dict['info'] = info
@@ -2376,7 +2351,7 @@ def revoke_some_content(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('revoke_some_content', 'def', 'main: {}'.format(request.params))
+    logger('views', 'revoke_some_content', 'main: {}'.format(request.params))
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
     return_dict = dict()
@@ -2395,7 +2370,7 @@ def revoke_some_content(request):
             error, is_deleted = revoke_content(uid, is_argument, request.authenticated_userid, _t)
 
     except KeyError as e:
-        logger('review_lock', 'error', repr(e))
+        logger('views', 'revoke_some_content', repr(e), error=True)
         error = _t.get(_.internalKeyError)
 
     return_dict['info'] = info

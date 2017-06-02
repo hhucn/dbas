@@ -1,6 +1,7 @@
 import json
 import transaction
 import dbas.review.helper.flags as review_flag_helper
+import dbas.review.helper.history as review_history_helper
 import dbas.review.helper.main as review_main_helper
 
 from dbas.database import DBDiscussionSession
@@ -10,7 +11,7 @@ from dbas.logger import logger
 from dbas.helper.language import get_language_from_cookie
 from dbas.helper.notification import send_notification
 from dbas.input_validator import is_integer
-from dbas.lib import get_user_by_private_or_public_nickname, get_profile_picture, get_discussion_language
+from dbas.lib import get_user_by_private_or_public_nickname, get_profile_picture, get_discussion_language, is_user_author_or_admin
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_recent_delete_review_to_socketio,\
@@ -222,4 +223,96 @@ def review_optimization_argument(request) -> dict:
             send_request_for_recent_optimization_review_to_socketio(request)
 
     prepared_dict = {'error': error}
+    return prepared_dict
+
+
+def undo_review(request) -> dict:
+    """
+    Tries to undo a review process.
+
+    :param request: pyramid's request object
+    :rtype: dict
+    :return: collection with error, success, info key
+    """
+    uid = request.params['uid']
+    ui_locales = get_discussion_language(request)
+    _t = Translator(ui_locales)
+
+    if not is_integer(uid):
+        logger('additives', 'undo_review', 'invalid uid', error=True)
+        return {'error': _t.get(_.internalKeyError)}
+
+    prepared_dict = {}
+    nickname = request.authenticated_userid
+    queue = request.params['queue']
+    if is_user_author_or_admin(nickname):
+        success, error = review_history_helper.revoke_old_decision(queue, uid, ui_locales, nickname)
+        prepared_dict['success'] = success
+        prepared_dict['error'] = error
+    else:
+        prepared_dict['info'] = _t.get(_.justLookDontTouch)
+
+    return prepared_dict
+
+
+def cancel_review(request) -> dict:
+    """
+    Tries to cancel a review process.
+
+    :param request: pyramid's request object
+    :rtype: dict
+    :return: collection with error key
+    """
+    uid = request.params['uid']
+    ui_locales = get_discussion_language(request)
+    _t = Translator(ui_locales)
+
+    if not is_integer(uid):
+        logger('additives', 'cancel_review', 'invalid uid', error=True)
+        return {'error': _t.get(_.internalKeyError)}
+
+    prepared_dict = {}
+    nickname = request.authenticated_userid
+    queue = request.params['queue']
+    if is_user_author_or_admin(nickname):
+        success, error = review_history_helper.cancel_ongoing_decision(queue, uid, ui_locales, nickname)
+        prepared_dict['success'] = success
+        prepared_dict['error'] = error
+    else:
+        prepared_dict['info'] = _t.get(_.justLookDontTouch)
+
+    return prepared_dict
+
+
+def review_lock(request) -> dict:
+    """
+    Sets feedback for an review element of the optimization-queue
+
+    :param request: pyramid's request object
+    :rtype: dict
+    :return: collection with error key
+    """
+    prepared_dict = {}
+
+    if not is_integer(uid):
+        logger('additives', 'undo_review', 'invalid uid', error=True)
+        return {'error': _t.get(_.internalKeyError)}
+
+    return prepared_dict
+
+
+def revoke_some_content(request) -> dict:
+    """
+    Sets feedback for an review element of the optimization-queue
+
+    :param request: pyramid's request object
+    :rtype: dict
+    :return: collection with error key
+    """
+    prepared_dict = {}
+
+    if not is_integer(uid):
+        logger('additives', 'undo_review', 'invalid uid', error=True)
+        return {'error': _t.get(_.internalKeyError)}
+
     return prepared_dict
