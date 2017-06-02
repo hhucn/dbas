@@ -2331,7 +2331,7 @@ def revoke_some_content(request):
     logger('views', 'revoke_some_content', 'main: {}'.format(request.params))
 
     try:
-        prepared_dict = add.review_lock(request)
+        prepared_dict = add.revoke_content(request)
 
     except KeyError as e:
         ui_locales = get_discussion_language(request)
