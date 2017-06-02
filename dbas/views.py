@@ -40,8 +40,7 @@ from dbas.handler.password import request_password
 from dbas.handler.rss import get_list_of_all_feeds
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.language import set_language, get_language_from_cookie, set_language_for_first_visit
-from dbas.helper.query import get_logfile_for_statements,\
-    process_seen_statements, mark_or_unmark_statement_or_argument, get_text_for_justification_or_reaction_bubble
+from dbas.helper.query import get_logfile_for_statements
 from dbas.helper.references import get_references_for_argument, get_references_for_statements
 from dbas.helper.settings import set_settings
 from dbas.helper.views import preparation_for_view, try_to_contact
@@ -1369,26 +1368,9 @@ def set_seen_statements(request):
     :param request: current request of the server
     :return: json
     """
-    logger('set_seen_statements', 'def', 'main {}'.format(request.params))
-    return_dict = dict()
-    ui_locales = get_language_from_cookie(request)
-    _t = Translator(ui_locales)
-
-    try:
-        uids = json.loads(request.params['uids'])
-        # are the statements connected to an argument?
-        additional_argument = None
-        if 'justify' in request.path:
-            url = request.path[request.path.index('justify/') + len('justify/'):]
-            additional_argument = int(url[:url.index('/')])
-
-        error = process_seen_statements(uids, request.authenticated_userid, _t, additional_argument=additional_argument)
-        return_dict['error'] = error
-    except KeyError as e:
-        logger('set_seen_statements', 'error', repr(e))
-        return_dict['error'] = _t.get(_.internalKeyError)
-
-    return return_dict
+    logger('views', 'set_seen_statements', 'main {}'.format(request.params))
+    prepared_dict = setter.seen_statements(request)
+    return prepared_dict
 
 
 # ajax - set users opinion
@@ -1400,28 +1382,9 @@ def mark_statement_or_argument(request):
     :param request: current request of the server
     :return: json
     """
-    logger('mark_statement_or_argument', 'def', 'main {}'.format(request.params))
-    return_dict = dict()
-    ui_locales = get_discussion_language(request)
-    _t = Translator(ui_locales)
-
-    try:
-        uid = request.params['uid']
-        step = request.params['step']
-        is_argument = str(request.params['is_argument']).lower() == 'true'
-        is_supportive = str(request.params['is_supportive']).lower() == 'true'
-        should_mark = str(request.params['should_mark']).lower() == 'true'
-        history = request.params['history'] if 'history' in request.params else ''
-
-        success, error = mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, request.authenticated_userid, _t)
-        return_dict['success'] = success
-        return_dict['error'] = error
-        return_dict['text'] = get_text_for_justification_or_reaction_bubble(uid, is_argument, is_supportive, request.authenticated_userid, step, history, _t)
-    except KeyError as e:
-        logger('set_seen_statements', 'error', repr(e))
-        return_dict['error'] = _t.get(_.internalKeyError)
-
-    return return_dict
+    logger('views', 'mark_statement_or_argument', 'main {}'.format(request.params))
+    prepared_dict = setter.mark_statement_or_argument(request)
+    return prepared_dict
 
 # ###################################
 # ADDTIONAL AJAX STUFF # GET THINGS #

@@ -12,7 +12,8 @@ from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.helper.language import get_language_from_cookie
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
 from dbas.helper.query import insert_as_statements, process_input_of_start_premises_and_receive_url, \
-    process_input_of_premises_for_arguments_and_receive_url
+    process_input_of_premises_for_arguments_and_receive_url, process_seen_statements,\
+    mark_or_unmark_statement_or_argument, get_text_for_justification_or_reaction_bubble
 from dbas.helper.references import set_reference
 from dbas.lib import get_user_by_private_or_public_nickname, get_profile_picture, get_discussion_language, escape_string
 from dbas.logger import logger
@@ -105,12 +106,13 @@ def notification(request) -> dict:
 
 def position(request, for_api, api_data) -> dict:
     """
+    Set new position for current discussion and returns collection with the next url for the discussion.
 
     :param request: pyramid's request object
     :param for_api: boolean if requests came via the API
     :param api_data: dict if requests came via the API
     :rtype: dict
-    :return:
+    :return: Prepared collection with statement_uids of the new positions and next url or an error
     """
     discussion_lang = get_discussion_language(request)
     _tn = Translator(discussion_lang)
@@ -430,10 +432,27 @@ def seen_statements(request) -> dict:
     :return:
     """
     prepared_dict = dict()
+    ui_locales = get_language_from_cookie(request)
+    _t = Translator(ui_locales)
+
+    try:
+        uids = json.loads(request.params['uids'])
+        # are the statements connected to an argument?
+        additional_argument = None
+        if 'justify' in request.path:
+            url = request.path[request.path.index('justify/') + len('justify/'):]
+            additional_argument = int(url[:url.index('/')])
+
+        error = process_seen_statements(uids, request.authenticated_userid, _t, additional_argument=additional_argument)
+        prepared_dict['error'] = error
+    except KeyError as e:
+        logger('setter', 'set_seen_statements', repr(e), error=True)
+        prepared_dict['error'] = _t.get(_.internalKeyError)
+
     return prepared_dict
 
 
-def mark_statement_or_argument0(request) -> dict:
+def mark_statement_or_argument(request) -> dict:
     """
 
     :param request: pyramid's request object
@@ -441,6 +460,27 @@ def mark_statement_or_argument0(request) -> dict:
     :return:
     """
     prepared_dict = dict()
+    ui_locales = get_discussion_language(request)
+    _t = Translator(ui_locales)
+
+    try:
+        uid = request.params['uid']
+        step = request.params['step']
+        is_argument = str(request.params['is_argument']).lower() == 'true'
+        is_supportive = str(request.params['is_supportive']).lower() == 'true'
+        should_mark = str(request.params['should_mark']).lower() == 'true'
+        history = request.params['history'] if 'history' in request.params else ''
+
+        success, error = mark_or_unmark_statement_or_argument(uid, is_argument, should_mark,
+                                                              request.authenticated_userid, _t)
+        prepared_dict['success'] = success
+        prepared_dict['error'] = error
+        prepared_dict['text'] = get_text_for_justification_or_reaction_bubble(uid, is_argument, is_supportive,
+                                                                              request.authenticated_userid, step,
+                                                                              history, _t)
+    except KeyError as e:
+        logger('setter', 'mark_statement_or_argument', repr(e), error=True)
+        prepared_dict['error'] = _t.get(_.internalKeyError)
     return prepared_dict
 
 
