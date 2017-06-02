@@ -124,11 +124,11 @@ def main_page(request):
     if unauthenticated:
         return unauthenticated
 
-    session_expired = True if 'session_expired' in request.params and request.params['session_expired'] == 'true' else False
-    ui_locales      = get_language_from_cookie(request)
+    session_expired = 'session_expired' in request.params and request.params['session_expired'] == 'true'
+    ui_locales = get_language_from_cookie(request)
     logger('main_page', 'def', 'request.params: {}'.format(request.params))
-    _dh             = DictionaryHelper(ui_locales, ui_locales)
-    extras_dict     = _dh.prepare_extras_dict_for_normal_page(request)
+    _dh = DictionaryHelper(ui_locales, ui_locales)
+    extras_dict = _dh.prepare_extras_dict_for_normal_page(request)
     _dh.add_language_options_for_extra_dict(extras_dict)
 
     return {
@@ -158,9 +158,9 @@ def main_contact(request):
     contact_error, send_message, message = False, False, ''
     ui_locales = get_language_from_cookie(request)
 
-    username  = escape_string(request.params['name']) if 'name' in request.params else ''
-    email     = escape_string(request.params['mail']) if 'mail' in request.params else ''
-    content   = escape_string(request.params['content']) if 'content' in request.params else ''
+    username = escape_string(request.params['name']) if 'name' in request.params else ''
+    email = escape_string(request.params['mail']) if 'mail' in request.params else ''
+    content = escape_string(request.params['content']) if 'content' in request.params else ''
     recaptcha = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
 
     # check for user data
@@ -221,16 +221,16 @@ def main_settings(request):
     if unauthenticated:
         return unauthenticated
 
-    ui_locales  = get_language_from_cookie(request)
-    old_pw      = ''
-    new_pw      = ''
-    confirm_pw  = ''
-    message     = ''
-    success     = False
-    error       = False
-    db_user     = DBDiscussionSession.query(User).filter_by(nickname=str(request.authenticated_userid)).join(Group).first()
-    _uh         = user_manager
-    _t          = Translator(ui_locales)
+    ui_locales = get_language_from_cookie(request)
+    old_pw = ''
+    new_pw = ''
+    confirm_pw = ''
+    message = ''
+    success = False
+    error = False
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(request.authenticated_userid)).join(Group).first()
+    _uh = user_manager
+    _t = Translator(ui_locales)
 
     if not db_user:
         raise HTTPNotFound()
@@ -245,7 +245,8 @@ def main_settings(request):
 
     _dh = DictionaryHelper(ui_locales)
     extras_dict = _dh.prepare_extras_dict_for_normal_page(request)
-    settings_dict = _dh.prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user, request.application_url)
+    settings_dict = _dh.prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user,
+                                              request.application_url)
 
     return {
         'layout': base_layout(),
@@ -1068,7 +1069,7 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
     :param keep_login: Manually provide boolean (e.g. from API)
     :return: dict() with error
     """
-    logger('user_login', 'def', 'request.params: {} (api: {})'.format(request.params, str(for_api)))
+    logger('views', 'user_login', 'request.params: {} (api: {})'.format(request.params, str(for_api)))
 
     lang = get_language_from_cookie(request)
     _tn = Translator(lang)
@@ -1090,7 +1091,7 @@ def user_logout(request, redirect_to_main=False):
     :param redirect_to_main: Boolean
     :return: HTTPFound with forgotten headers
     """
-    logger('user_logout', 'def', 'user: {}, redirect_to_main: {}'.format(request.authenticated_userid, redirect_to_main))
+    logger('views', 'user_logout', 'user: {}, redirect main: {}'.format(request.authenticated_userid, redirect_to_main))
     request.session.invalidate()
     headers = forget(request)
     if redirect_to_main:
@@ -1112,7 +1113,7 @@ def user_registration(request):
     :param request: current request of the server
     :return: dict() with success and message
     """
-    logger('view', 'user_registration', 'request.params: {}'.format(request.params))
+    logger('Views', 'user_registration', 'request.params: {}'.format(request.params))
 
     # default values
     success = ''
@@ -1123,7 +1124,7 @@ def user_registration(request):
         success, info = register_with_ajax_data(request)
 
     except KeyError as e:
-        logger('view', 'user_registration', repr(e), error=True)
+        logger('Views', 'user_registration', repr(e), error=True)
         ui_locales = request.params['lang'] if 'lang' in request.params else get_language_from_cookie(request)
         _t = Translator(ui_locales)
         error = _t.get(_.internalKeyError)
@@ -1142,7 +1143,7 @@ def user_password_request(request):
     :param request: current request of the server
     :return: dict() with success and message
     """
-    logger('view', 'user_password_request', 'request.params: {}'.format(request.params))
+    logger('Views', 'user_password_request', 'request.params: {}'.format(request.params))
 
     success = ''
     info = ''
@@ -1173,21 +1174,28 @@ def set_user_settings(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('view', 'set_user_settings', 'request.params: {}'.format(request.params))
+    logger('Views', 'set_user_settings', 'request.params: {}'.format(request.params))
     _tn = Translator(get_language_from_cookie(request))
 
     try:
         settings_value = request.params['settings_value'] == 'True'
         service = request.params['service']
-        public_nick, public_page_url, gravatar_url, error = set_settings(request.application_url, request.authenticated_userid, service, settings_value, _tn)
+        public_nick, public_page_url, gravatar_url, error = set_settings(request.application_url,
+                                                                         request.authenticated_userid,
+                                                                         service, settings_value, _tn)
     except KeyError as e:
         error = _tn.get(_.internalKeyError)
         public_nick = ''
         public_page_url = ''
         gravatar_url = ''
-        logger('view', 'set_user_settings', repr(e), error=True)
+        logger('Views', 'set_user_settings', repr(e), error=True)
 
-    return_dict = {'error': error, 'public_nick': public_nick, 'public_page_url': public_page_url, 'gravatar_url': gravatar_url}
+    return_dict = {
+        'error': error,
+        'public_nick': public_nick,
+        'public_page_url': public_page_url,
+        'gravatar_url': gravatar_url
+    }
     return return_dict
 
 
@@ -1208,10 +1216,11 @@ def set_user_language(request):
     except KeyError as e:
         logger('views', 'set_user_settings', repr(e), error=True)
         _tn = Translator(get_language_from_cookie(request))
-        prepared_dict = {}
-        prepared_dict['error'] = _tn.get(_.internalKeyError)
-        prepared_dict['ui_locales'] = ''
-        prepared_dict['current_lang'] = ''
+        prepared_dict = {
+            'error': _tn.get(_.internalKeyError),
+            'ui_locales': '',
+            'current_lang': ''
+        }
     return prepared_dict
 
 
@@ -1233,11 +1242,12 @@ def send_some_notification(request):
         prepared_dict = setter.notification(request)
 
     except (KeyError, AttributeError):
-        prepared_dict = {}
-        prepared_dict['error'] = _tn.get(_.internalKeyError)
-        prepared_dict['timestamp'] = ''
-        prepared_dict['uid'] = ''
-        prepared_dict['recipient_avatar'] = ''
+        prepared_dict = {
+            'error': _tn.get(_.internalKeyError),
+            'timestamp': '',
+            'uid': '',
+            'recipient_avatar': ''
+        }
 
     return prepared_dict
 
@@ -1576,7 +1586,8 @@ def fuzzy_search(request, for_api=False, api_data=None):
         logger('views', 'fuzzy_search', repr(e), error=True)
         return {'error': _tn.get(_.internalKeyError)}
 
-    return_dict = fuzzy_string_matcher.get_prediction(request, _tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra)
+    return_dict = fuzzy_string_matcher.get_prediction(request, _tn, for_api, api_data, request_authenticated_userid,
+                                                      value, mode, issue, extra)
 
     return return_dict
 
@@ -1673,12 +1684,12 @@ def review_edit_argument(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('view', 'review_edit_argument', 'main: {} - {}'.format(request.params, request.authenticated_userid))
+    logger('Views', 'review_edit_argument', 'main: {} - {}'.format(request.params, request.authenticated_userid))
 
     try:
         prepared_dict = review.edit_argument(request)
     except KeyError as e:
-        logger('view', 'review_edit_argument', repr(e), error=True)
+        logger('Views', 'review_edit_argument', repr(e), error=True)
         ui_locales = get_discussion_language(request)
         _t = Translator(ui_locales)
         prepared_dict = {'error': _t.get(_.internalKeyError)}
@@ -1695,11 +1706,11 @@ def review_duplicate_statement(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('view', 'review_duplicate_statement', 'main: {} - {}'.format(request.params, request.authenticated_userid))
+    logger('Views', 'review_duplicate_statement', 'main: {} - {}'.format(request.params, request.authenticated_userid))
     try:
         prepared_dict = review.duplicate_statement(request)
     except KeyError as e:
-        logger('view', 'review_duplicate_statement', repr(e), error=True)
+        logger('Views', 'review_duplicate_statement', repr(e), error=True)
         ui_locales = get_discussion_language(request)
         _t = Translator(ui_locales)
         prepared_dict = {'error': _t.get(_.internalKeyError)}
@@ -1721,7 +1732,7 @@ def review_optimization_argument(request):
     try:
         prepared_dict = review.optimization_argument(request)
     except KeyError as e:
-        logger('view', 'review_optimization_argument', repr(e), error=True)
+        logger('Views', 'review_optimization_argument', repr(e), error=True)
         ui_locales = get_discussion_language(request)
         _t = Translator(ui_locales)
         prepared_dict = {'error': _t.get(_.internalKeyError)}
