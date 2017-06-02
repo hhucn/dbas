@@ -1578,7 +1578,6 @@ def fuzzy_search(request, for_api=False, api_data=None):
 
     return_dict = fuzzy_string_matcher.get_prediction(request, _tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra)
 
-
     return return_dict
 
 
