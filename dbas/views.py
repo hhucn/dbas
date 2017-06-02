@@ -20,7 +20,7 @@ from requests.exceptions import ReadTimeout
 from sqlalchemy import and_
 
 import dbas.discussion.core as discussion
-import dbas.discussion.additives as add
+import dbas.discussion.additives as additives
 import dbas.handler.news as news_handler
 import dbas.helper.history as history_helper
 import dbas.helper.issue as issue_helper
@@ -1255,7 +1255,7 @@ def set_user_language(request):
 
     try:
         ui_locales = request.params['ui_locales'] if 'ui_locales' in request.params else None
-        prepared_dict = add.set_user_language(request.authenticated_userid, ui_locales)
+        prepared_dict = additives.set_user_language(request.authenticated_userid, ui_locales)
     except KeyError as e:
         logger('views', 'set_user_settings', repr(e), error=True)
         _tn = Translator(get_language_from_cookie(request))
@@ -1282,7 +1282,7 @@ def send_some_notification(request):
     _tn = Translator(ui_locales)
 
     try:
-        prepared_dict = add.send_some_notification(request)
+        prepared_dict = additives.send_some_notification(request)
 
     except (KeyError, AttributeError):
         prepared_dict = {}
@@ -2148,7 +2148,7 @@ def flag_argument_or_statement(request):
         is_argument = True if request.params['is_argument'] == 'true' else False
         nickname = request.authenticated_userid
 
-        prepared_dict = add.flag_argument_or_statement(uid, reason, extra_uid, is_argument, nickname, ui_locales)
+        prepared_dict = additives.flag_argument_or_statement(uid, reason, extra_uid, is_argument, nickname, ui_locales)
     except KeyError as e:
         _t = Translator(ui_locales)
         logger('views', 'flag_argument_or_statement', repr(e), error=True)
@@ -2170,7 +2170,7 @@ def review_delete_argument(request):
     logger('views', 'review_delete_argument', 'main: {}'.format(request.params))
 
     try:
-        prepared_dict = add.review_delete_argument(request)
+        prepared_dict = additives.review_delete_argument(request)
     except KeyError as e:
         logger('views', 'review_delete_argument', repr(e), error=True)
         ui_locales = get_discussion_language(request)
@@ -2193,7 +2193,7 @@ def review_edit_argument(request):
     logger('view', 'review_edit_argument', 'main: {} - {}'.format(request.params, request.authenticated_userid))
 
     try:
-        prepared_dict = add.review_edit_argument(request)
+        prepared_dict = additives.review_edit_argument(request)
     except KeyError as e:
         logger('view', 'review_edit_argument', repr(e), error=True)
         ui_locales = get_discussion_language(request)
@@ -2215,7 +2215,7 @@ def review_duplicate_statement(request):
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('view', 'review_duplicate_statement', 'main: {} - {}'.format(request.params, request.authenticated_userid))
     try:
-        prepared_dict = add.review_duplicate_statement(request)
+        prepared_dict = additives.review_duplicate_statement(request)
     except KeyError as e:
         logger('view', 'review_duplicate_statement', repr(e), error=True)
         ui_locales = get_discussion_language(request)
@@ -2238,7 +2238,7 @@ def review_optimization_argument(request):
     logger('views', 'review_optimization_argument', 'main: {}'.format(request.params))
 
     try:
-        prepared_dict = add.review_optimization_argument(request)
+        prepared_dict = additives.review_optimization_argument(request)
     except KeyError as e:
         logger('view', 'review_optimization_argument', repr(e), error=True)
         ui_locales = get_discussion_language(request)
@@ -2261,7 +2261,7 @@ def undo_review(request):
     logger('views', 'undo_review', 'main: {}'.format(request.params))
 
     try:
-        prepared_dict = add.undo_review(request)
+        prepared_dict = additives.undo_review(request)
     except KeyError as e:
         logger('views', 'undo_review', repr(e), error=True)
         ui_locales = get_discussion_language(request)
@@ -2284,7 +2284,7 @@ def cancel_review(request):
     logger('views', 'cancel_review', 'main: {}'.format(request.params))
 
     try:
-        prepared_dict = add.cancel_review(request)
+        prepared_dict = additives.cancel_review(request)
     except KeyError as e:
         logger('views', 'cancel_review', repr(e), error=True)
         ui_locales = get_discussion_language(request)
@@ -2307,7 +2307,7 @@ def review_lock(request):
     logger('views', 'review_lock', 'main: {}'.format(request.params))
 
     try:
-        prepared_dict = add.review_lock(request)
+        prepared_dict = additives.review_lock(request)
 
     except KeyError as e:
         ui_locales = get_discussion_language(request)
@@ -2331,7 +2331,7 @@ def revoke_some_content(request):
     logger('views', 'revoke_some_content', 'main: {}'.format(request.params))
 
     try:
-        prepared_dict = add.revoke_content(request)
+        prepared_dict = additives.revoke_some_content(request)
 
     except KeyError as e:
         ui_locales = get_discussion_language(request)
