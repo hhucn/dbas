@@ -1278,7 +1278,7 @@ def send_some_notification(request):
     _tn = Translator(ui_locales)
 
     try:
-        prepared_dict = setter.send_some_notification(request)
+        prepared_dict = setter.notification(request)
 
     except (KeyError, AttributeError):
         prepared_dict = {}
