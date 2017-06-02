@@ -20,7 +20,8 @@ from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
 
 # TODO: FIX API / CONSIDER API_DATA
-# TODO: REQUEST AND NICKNAME AS PARAMS?
+
+# TODO: REQUEST AND NICKNAME AS PARAMS? (LETS KILL REQUESTS)
 
 
 def init(request, nickname, for_api=False) -> dict:
