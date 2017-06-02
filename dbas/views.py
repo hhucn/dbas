@@ -42,7 +42,7 @@ from dbas.handler.rss import get_list_of_all_feeds
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.language import set_language, get_language_from_cookie, set_language_for_first_visit
 from dbas.helper.notification import count_of_new_notifications, get_box_for
-from dbas.helper.query import get_logfile_for_statements, revoke_content, insert_as_statements, \
+from dbas.helper.query import get_logfile_for_statements, insert_as_statements, \
     process_input_of_premises_for_arguments_and_receive_url, process_input_of_start_premises_and_receive_url, \
     process_seen_statements, mark_or_unmark_statement_or_argument, get_text_for_justification_or_reaction_bubble
 from dbas.helper.references import get_references_for_argument, get_references_for_statements, set_reference
@@ -2305,40 +2305,17 @@ def review_lock(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('views', 'review_lock', 'main: {}'.format(request.params))
-    ui_locales = get_discussion_language(request)
-    _t = Translator(ui_locales)
-    return_dict = dict()
-
-    info = ''
-    error = ''
-    success = ''
-    is_locked = False
 
     try:
-        review_uid = request.params['review_uid']
-        lock = True if request.params['lock'] == 'true' else False
-        is_locked = True
-
-        if not is_integer(review_uid):
-            error = _t.get(_.internalKeyError)
-        else:
-            if lock:
-                success, info, error, is_locked = review_queue_helper.lock_optimization_review(request.authenticated_userid, review_uid, _t)
-            else:
-                review_queue_helper.unlock_optimization_review(review_uid)
-                is_locked = False
-                success = _t.get(_.dataUnlocked)
+        prepared_dict = add.review_lock(request)
 
     except KeyError as e:
+        ui_locales = get_discussion_language(request)
+        _t = Translator(ui_locales)
         logger('views', 'review_lock', repr(e), error=True)
-        error = _t.get(_.internalKeyError)
+        prepared_dict = {'info': '', 'error': _t.get(_.internalKeyError), 'success': '', 'is_locked': False}
 
-    return_dict['info'] = info
-    return_dict['error'] = error
-    return_dict['success'] = success
-    return_dict['is_locked'] = is_locked
-
-    return json.dumps(return_dict)
+    return json.dumps(prepared_dict)
 
 
 # ajax - for revoking content
@@ -2352,31 +2329,14 @@ def revoke_some_content(request):
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('views', 'revoke_some_content', 'main: {}'.format(request.params))
-    ui_locales = get_discussion_language(request)
-    _t = Translator(ui_locales)
-    return_dict = dict()
-
-    info = ''
-    success = ''
-    is_deleted = False
 
     try:
-        uid = request.params['uid']
-        is_argument = True if request.params['is_argument'] == 'true' else False
-
-        if not is_integer(uid):
-            error = _t.get(_.internalKeyError)
-        else:
-            error, is_deleted = revoke_content(uid, is_argument, request.authenticated_userid, _t)
+        prepared_dict = add.review_lock(request)
 
     except KeyError as e:
+        ui_locales = get_discussion_language(request)
+        _t = Translator(ui_locales)
         logger('views', 'revoke_some_content', repr(e), error=True)
-        error = _t.get(_.internalKeyError)
+        prepared_dict = {'success': False, 'error': _t.get(_.internalKeyError)}
 
-    return_dict['info'] = info
-    return_dict['error'] = error
-    return_dict['success'] = success
-    return_dict['is_deleted'] = is_deleted
-    transaction.commit()
-
-    return json.dumps(return_dict)
+    return json.dumps(prepared_dict)

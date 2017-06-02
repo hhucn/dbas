@@ -3,6 +3,7 @@ import transaction
 import dbas.review.helper.flags as review_flag_helper
 import dbas.review.helper.history as review_history_helper
 import dbas.review.helper.main as review_main_helper
+import dbas.review.helper.queues as review_queue_helper
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import sql_timestamp_pretty_print, User, Settings, Language
@@ -10,6 +11,7 @@ from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.helper.language import get_language_from_cookie
 from dbas.helper.notification import send_notification
+from dbas.helper.query import revoke_content
 from dbas.input_validator import is_integer
 from dbas.lib import get_user_by_private_or_public_nickname, get_profile_picture, get_discussion_language, is_user_author_or_admin
 from dbas.strings.keywords import Keywords as _
@@ -286,33 +288,67 @@ def cancel_review(request) -> dict:
 
 def review_lock(request) -> dict:
     """
-    Sets feedback for an review element of the optimization-queue
+    Tries to lock an optimization element, so the user can propose an edit
 
     :param request: pyramid's request object
     :rtype: dict
-    :return: collection with error key
+    :return: collection with error, success, info key
     """
-    prepared_dict = {}
+    ui_locales = get_discussion_language(request)
+    _t = Translator(ui_locales)
+    prepared_dict = dict()
 
-    if not is_integer(uid):
-        logger('additives', 'undo_review', 'invalid uid', error=True)
-        return {'error': _t.get(_.internalKeyError)}
+    review_uid = request.params['review_uid'] if 'review_uid' in request else None
+    lock = True if request.params['lock'] == 'true' else False
+
+    if not is_integer(review_uid):
+        info = ''
+        success = ''
+        error = _t.get(_.internalKeyError)
+        is_locked = False
+    else:
+        if lock:
+            success, info, error, is_locked = review_queue_helper.lock_optimization_review(request.authenticated_userid, review_uid, _t)
+        else:
+            review_queue_helper.unlock_optimization_review(review_uid)
+            is_locked = False
+            success = _t.get(_.dataUnlocked)
+            error = ''
+            info = ''
+
+
+    prepared_dict['info'] = info
+    prepared_dict['error'] = error
+    prepared_dict['success'] = success
+    prepared_dict['is_locked'] = is_locked
 
     return prepared_dict
 
 
 def revoke_some_content(request) -> dict:
     """
-    Sets feedback for an review element of the optimization-queue
+    Tries to revoke content from an review element
 
     :param request: pyramid's request object
     :rtype: dict
-    :return: collection with error key
+    :return: collection with error success key
     """
-    prepared_dict = {}
+
+    ui_locales = get_discussion_language(request)
+    _t = Translator(ui_locales)
+    uid = request.params['uid'] if 'uid' in request.params else None
+
+    is_argument = True if request.params['is_argument'] == 'true' else False
 
     if not is_integer(uid):
         logger('additives', 'undo_review', 'invalid uid', error=True)
-        return {'error': _t.get(_.internalKeyError)}
+        error = _t.get(_.internalKeyError)
+        success = False
+    else:
+        error, success = revoke_content(uid, is_argument, request.authenticated_userid, _t)
+
+    prepared_dict = dict()
+    prepared_dict['error'] = error
+    prepared_dict['success'] = success
 
     return prepared_dict
