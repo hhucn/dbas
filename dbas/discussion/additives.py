@@ -316,7 +316,6 @@ def review_lock(request) -> dict:
             error = ''
             info = ''
 
-
     prepared_dict['info'] = info
     prepared_dict['error'] = error
     prepared_dict['success'] = success
