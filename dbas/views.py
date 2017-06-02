@@ -2151,7 +2151,7 @@ def flag_argument_or_statement(request):
         is_argument = True if request.params['is_argument'] == 'true' else False
         nickname = request.authenticated_userid
 
-        prepared_dict = flag_argument_or_statement(uid, reason, extra_uid, is_argument, nickname, ui_locales)
+        prepared_dict = add.flag_argument_or_statement(uid, reason, extra_uid, is_argument, nickname, ui_locales)
     except KeyError as e:
         _t = Translator(ui_locales)
         logger('views', 'flag_argument_or_statement', repr(e), error=True)
