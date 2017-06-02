@@ -2064,17 +2064,15 @@ def send_news(request):
     :return: json-set with new news
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('send_news', 'def', 'main, request.params: {}'.format(request.params))
+    logger('views', 'send_news', 'main, request.params: {}'.format(request.params))
     _tn = Translator(get_language_from_cookie(request))
 
     try:
-        title = escape_string(request.params['title'])
-        text = escape_string(request.params['text'])
-        return_dict, success = news_handler.set_news(request, title, text, request.authenticated_userid, get_language_from_cookie(request), request.application_url)
+        return_dict, success = news_handler.set_news(request)
         return_dict['error'] = '' if success else _tn.get(_.noRights)
     except KeyError as e:
         return_dict = dict()
-        logger('send_news', 'error', repr(e))
+        logger('views', 'send_news', repr(e), error=True)
         return_dict['error'] = _tn.get(_.internalKeyError)
 
     return return_dict
@@ -2103,18 +2101,6 @@ def fuzzy_search(request, for_api=False, api_data=None):
         issue = api_data['issue'] if for_api else issue_helper.get_issue_id(request)
         extra = request.params['extra'] if 'extra' in request.params else None
 
-        # try:
-        #     url = auto_completion_url + '?issue={}&mode={}&value={}'.format(str(issue), str(mode), str(value))
-        #     resp = requests.get(url)
-        #     if resp.status_code == 200:
-        #         return_dict = json.loads(resp.text)
-        #         if for_api:
-        #             return return_dict
-        #         return json.dumps(return_dict)
-
-        # except Exception as e:
-        #     logger('fuzzy_search', 'def', 'Error grepping data via microservice: {}'.format(e))
-
         return_dict = fuzzy_string_matcher.get_prediction(request, _tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra)
 
     except KeyError as e:
@@ -2134,7 +2120,7 @@ def additional_service(request):
     :return: json-dict()
     """
     #  logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('additional_service', 'def', 'main, request.params: {}'.format(request.params))
+    logger('views', 'additional_service', 'main, request.params: {}'.format(request.params))
 
     try:
         rtype = request.params['type']
@@ -2144,10 +2130,10 @@ def additional_service(request):
             data = requests.get('http://api.yomomma.info/')
 
         for a in data.json():
-            logger('additional_service', 'main', str(a) + ': {}'.format(data.json()[a]))
+            logger('views', 'additional_service', str(a) + ': {}'.format(data.json()[a]))
 
     except KeyError as e:
-        logger('additional_service', 'error', repr(e))
+        logger('views', 'additional_service', repr(e), error=True)
         return json.dumps(dict())
 
     return data.json()
