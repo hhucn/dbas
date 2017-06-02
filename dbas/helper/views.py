@@ -8,7 +8,6 @@ from pyramid.httpexceptions import HTTPNotFound
 from validate_email import validate_email
 
 import dbas.helper.email as EmailHelper
-import dbas.helper.history as HistoryHelper
 import dbas.helper.issue as IssueHelper
 import dbas.helper.issue as issue_helper
 import dbas.helper.voting as VotingHelper

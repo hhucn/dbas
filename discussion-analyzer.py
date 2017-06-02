@@ -86,9 +86,9 @@ def evaluate_statements():
     db_statements_colleagues_disabled = [s for s in db_statements if s.is_disabled == True and
                                          s.textversions.author_uid in [u.uid for u in db_colleagues]]
     db_statements_admins = [s for s in db_statements if s.is_disabled == False and
-                                s.textversions.author_uid in [u.uid for u in db_admins]]
+                            s.textversions.author_uid in [u.uid for u in db_admins]]
     db_statements_admins_disabled = [s for s in db_statements if s.is_disabled == True and
-                                         s.textversions.author_uid in [u.uid for u in db_admins]]
+                                     s.textversions.author_uid in [u.uid for u in db_admins]]
     print('Statements:')
     print('  - count / disabled')
     print('  - by all: {} / {}'.format(len(db_statements), len(db_disabled_statements)))

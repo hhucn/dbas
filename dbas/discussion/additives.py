@@ -12,13 +12,15 @@ from dbas.lib import get_user_by_private_or_public_nickname, get_profile_picture
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
+
 def set_user_language(nickname, ui_locales) -> dict:
     """
+    Changes the users language of the web frontend
 
-    :param nickname:
-    :param ui_locales:
+    :param nickname: the user's nickname creating the request
+    :param ui_locales: current ui_locales
     :rtype: dict
-    :return:
+    :return: prepared collection with status information
     """
     _tn = Translator(ui_locales)
     error = ''
@@ -49,10 +51,11 @@ def set_user_language(nickname, ui_locales) -> dict:
 
 def send_some_notification(request) -> dict:
     """
+    Send a notification from user a to user b
 
-    :param request:
+    :param request: pyramid's request object
     :rtype: dict
-    :return:
+    :return: prepared collection with status information
     """
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
@@ -91,15 +94,16 @@ def send_some_notification(request) -> dict:
 
 def flag_argument_or_statement(uid, reason, extra_uid, is_argument, nickname, ui_locales) -> dict:
     """
+    Flags and argument or statement for the review system
 
-    :param uid:
-    :param reason:
-    :param extra_uid:
-    :param is_argument:
-    :param nickname:
-    :param ui_locales:
+    :param uid: ID of the argument of statement, which should be flagged
+    :param reason: Reason, why the id should be flagged
+    :param extra_uid: Statement.id if the reason is a duplicate, otherwise none
+    :param is_argument: Boolean if the uid for is an argument
+    :param nickname: the user's nickname creating the request
+    :param ui_locales: current ui_locales
     :rtype: dict
-    :return:
+    :return: collection with success, info and error key
     """
     _t = Translator(ui_locales)
 

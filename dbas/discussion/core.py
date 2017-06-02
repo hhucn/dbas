@@ -371,7 +371,7 @@ def jump(request, nickname, for_api=False, api_data=None) -> dict:
     :param for_api: boolean if requests came via the API
     :param api_data: dict if requests came via the API
     :rtype: dict
-    :return: prepared collection matchdictfor the discussion
+    :return: prepared collection matchdict for the discussion
     """
     logger('Core', 'discussion.jump', 'main')
 

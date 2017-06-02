@@ -149,23 +149,23 @@ def print_user_activity():
     # reviews
     f = []
     e = []
-    af = len(session.query(ReviewEdit).all()) +\
-         len(session.query(ReviewDelete).all()) +\
-         len(session.query(ReviewOptimization).all()) +\
-         len(session.query(ReviewDuplicate).all())
-    ae = len(session.query(LastReviewerEdit).all()) + \
-         len(session.query(LastReviewerDelete).all()) + \
-         len(session.query(LastReviewerOptimization).all()) + \
-         len(session.query(LastReviewerDuplicate).all())
+    af = len(session.query(ReviewEdit).all())
+    af += len(session.query(ReviewDelete).all())
+    af += len(session.query(ReviewOptimization).all())
+    af += len(session.query(ReviewDuplicate).all())
+    ae = len(session.query(LastReviewerEdit).all())
+    ae += len(session.query(LastReviewerDelete).all())
+    ae += len(session.query(LastReviewerOptimization).all())
+    ae += len(session.query(LastReviewerDuplicate).all())
     for t in sorted_author_dict:
-        flags = len(session.query(ReviewEdit).filter_by(detector_uid=t[0]).all()) +\
-                len(session.query(ReviewDelete).filter_by(detector_uid=t[0]).all()) +\
-                len(session.query(ReviewOptimization).filter_by(detector_uid=t[0]).all()) +\
-                len(session.query(ReviewDuplicate).filter_by(detector_uid=t[0]).all())
-        executed = len(session.query(LastReviewerEdit).filter_by(reviewer_uid=t[0]).all()) + \
-                   len(session.query(LastReviewerDelete).filter_by(reviewer_uid=t[0]).all()) + \
-                   len(session.query(LastReviewerOptimization).filter_by(reviewer_uid=t[0]).all()) + \
-                   len(session.query(LastReviewerDuplicate).filter_by(reviewer_uid=t[0]).all())
+        flags = len(session.query(ReviewEdit).filter_by(detector_uid=t[0]).all())
+        flags += len(session.query(ReviewDelete).filter_by(detector_uid=t[0]).all())
+        flags += len(session.query(ReviewOptimization).filter_by(detector_uid=t[0]).all())
+        flags += len(session.query(ReviewDuplicate).filter_by(detector_uid=t[0]).all())
+        executed = len(session.query(LastReviewerEdit).filter_by(reviewer_uid=t[0]).all())
+        executed += len(session.query(LastReviewerDelete).filter_by(reviewer_uid=t[0]).all())
+        executed += len(session.query(LastReviewerOptimization).filter_by(reviewer_uid=t[0]).all())
+        executed += len(session.query(LastReviewerDuplicate).filter_by(reviewer_uid=t[0]).all())
         f.append(str(flags / af * 100))
         e.append(str(executed / ae * 100))
 

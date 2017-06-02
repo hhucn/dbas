@@ -51,7 +51,7 @@ from dbas.helper.settings import set_settings
 from dbas.helper.views import preparation_for_view, try_to_contact
 from dbas.helper.voting import clear_vote_and_seen_values_of_user
 from dbas.input_validator import is_integer
-from dbas.lib import escape_string, get_discussion_language, get_changelog,is_user_author_or_admin,\
+from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin, \
     get_all_arguments_with_text_and_url_by_statement_id, get_slug_by_statement_uid
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position, \
@@ -1290,7 +1290,7 @@ def send_some_notification(request):
     except (KeyError, AttributeError):
         prepared_dict = {}
         prepared_dict['error'] = _tn.get(_.internalKeyError)
-        prepared_dict['timestamp'] =''
+        prepared_dict['timestamp'] = ''
         prepared_dict['uid'] = ''
         prepared_dict['recipient_avatar'] = ''
 
