@@ -54,7 +54,7 @@ def user_language(nickname, ui_locales) -> dict:
     return {'error': '', 'ui_locales': ui_locales, 'current_lang': current_lang}
 
 
-def notification(port, recipient, title , text, nickname, ui_locales) -> dict:
+def notification(port, recipient, title, text, nickname, ui_locales) -> dict:
     """
     Send a notification from user a to user b
 
@@ -363,7 +363,7 @@ def notification_delete(uid, nickname, ui_locales, application_url) -> dict:
     prepared_dict['total_in_messages'] = str(len(get_box_for(nickname, ui_locales, application_url, True)))
     prepared_dict['total_out_messages'] = str(len(get_box_for(nickname, ui_locales, application_url, False)))
     prepared_dict['error'] = ''
-    prepared_dict['success'] = _t.get(_.messageDeleted)
+    prepared_dict['success'] = _tn.get(_.messageDeleted)
 
     return prepared_dict
 
@@ -416,7 +416,7 @@ def seen_statements(uids, path, nickname, ui_locales) -> dict:
         additional_argument = int(url[:url.index('/')])
 
     errorCode = process_seen_statements(uids, nickname, additional_argument=additional_argument)
-    error = _tn.get(errorCode) if len(errorCode) > 0 else ''
+    error = '' if errorCode is None else _tn.get(errorCode)
     return {'error': error}
 
 

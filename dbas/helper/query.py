@@ -202,7 +202,7 @@ def process_seen_statements(uids, nickname, additional_argument=None):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
     if not db_user:
-        return ''
+        return None
 
     if additional_argument:
         add_seen_argument(additional_argument, db_user)
@@ -214,7 +214,7 @@ def process_seen_statements(uids, nickname, additional_argument=None):
 
         add_seen_statement(uid, db_user)
 
-    return ''
+    return None
 
 
 def mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, nickname, _t):

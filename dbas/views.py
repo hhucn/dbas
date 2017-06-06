@@ -1250,7 +1250,7 @@ def send_some_notification(request):
         prepared_dict = {'error': _tn.get(_.internalKeyError), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
         return prepared_dict
 
-    prepared_dict = setter.notification(get_port(request), recipient, title , text, request.authenticated_userid, ui_locales)
+    prepared_dict = setter.notification(get_port(request), recipient, title, text, request.authenticated_userid, ui_locales)
 
     return prepared_dict
 
@@ -1289,6 +1289,19 @@ def set_new_start_premise(request, for_api=False, api_data=None):
     :return: json-dict()
     """
     logger('views', 'set_new_start_premise', 'request.params: {}'.format(request.params))
+    data = {}
+    lang = get_discussion_language(request)
+    _tn = Translator(lang)
+    try:
+        data['nickname'] = request.authenticated_userid
+        data['issue'] = issue_helper.get_issue_id(request)
+        data['premisegroups'] = json.loads(request.params['premisegroups'])
+        data['conclusion_id'] = request.params['conclusion_id']
+        data['supportive'] = True if request.params['supportive'].lower() == 'true' else False
+    except KeyError as e:
+        logger('views', 'set_new_start_premise', repr(e), error=True)
+        return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
+
     prepared_dict = setter.positions_premise(request, for_api, api_data)
     return prepared_dict
 
@@ -1399,7 +1412,7 @@ def set_new_issue(request):
         logger('setter', 'set_new_issue', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
-    prepared_dict = setter.issue(request.nickname, info, long_info, title, lang, request.application_url, ui_locales)
+    prepared_dict = setter.issue(request.authenticated_userid, info, long_info, title, lang, request.application_url, ui_locales)
     return prepared_dict
 
 
@@ -1496,7 +1509,7 @@ def get_shortened_url(request):
     logger('views', 'get_shortened_url', 'main')
     try:
         url = request.params['url']
-        prepared_dict = getter.shortened_url(url, request.unauthenticated_userid,get_discussion_language(request))
+        prepared_dict = getter.shortened_url(url, request.unauthenticated_userid, get_discussion_language(request))
     except KeyError as e:
         logger('views', 'get_shortened_url', repr(e), error=True)
         _tn = Translator(get_discussion_language(request))

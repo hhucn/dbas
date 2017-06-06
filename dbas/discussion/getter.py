@@ -5,7 +5,6 @@ from dbas.lib import get_all_arguments_with_text_and_url_by_statement_id, get_sl
 from dbas.handler.opinion import get_infos_about_argument, get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
     get_user_with_same_opinion_for_premisegroups, get_user_and_opinions_for_argument
-from dbas.helper.language import get_language_from_cookie
 from dbas.helper.references import get_references_for_argument, get_references_for_statements
 from dbas.input_validator import is_integer
 from dbas.logger import logger

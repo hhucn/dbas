@@ -99,8 +99,7 @@ def handle_justification_step(request, for_api, ui_locales, nickname, history):
             # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id])), None, None
         item_dict, discussion_dict, extras_dict = preparation_for_justify_statement(request, for_api, main_page, slug,
                                                                                     statement_or_arg_id, supportive,
-                                                                                    ui_locales, nickname,
-                                                                                    nickname, history)
+                                                                                    ui_locales, nickname, history)
 
     elif 'd' in mode and relation == '':
         logger('ViewHelper', 'handle_justification_step', 'do not know for {}'.format(statement_or_arg_id))
@@ -112,7 +111,7 @@ def handle_justification_step(request, for_api, ui_locales, nickname, history):
         item_dict, discussion_dict, extras_dict = preparation_for_dont_know_statement(request, for_api, main_page,
                                                                                       slug, statement_or_arg_id,
                                                                                       supportive, ui_locales,
-                                                                                      nickname, nickname, history)
+                                                                                      nickname, history)
 
     elif [c for c in ('undermine', 'rebut', 'undercut', 'support') if c in relation]:
         logger('ViewHelper', 'handle_justification_step', 'justify argument')
@@ -122,7 +121,7 @@ def handle_justification_step(request, for_api, ui_locales, nickname, history):
         item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(request, for_api, main_page, slug,
                                                                                    statement_or_arg_id, supportive,
                                                                                    ui_locales, nickname, relation,
-                                                                                   nickname, history)
+                                                                                   history)
         # add reputation
         add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_confrontation)
         # send message if the user is now able to review
@@ -130,7 +129,8 @@ def handle_justification_step(request, for_api, ui_locales, nickname, history):
             _t = Translator(ui_locales)
             nickname = request.authenticated_userid
             port = get_port(request)
-            send_request_for_info_popup_to_socketio(nickname, port, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
+            send_request_for_info_popup_to_socketio(nickname, port, _t.get(_.youAreAbleToReviewNow),
+                                                    request.application_url + '/review')
 
     else:
         logger('ViewHelper', 'handle_justification_step', '404')
@@ -140,7 +140,7 @@ def handle_justification_step(request, for_api, ui_locales, nickname, history):
 
 
 def preparation_for_justify_statement(request, for_api, main_page, slug, statement_uid, supportive, ui_locales,
-                                      request_authenticated_userid, nickname, history):
+                                      nickname, history):
     """
     Prepares some paramater for the justification step for an statement
 
@@ -150,7 +150,6 @@ def preparation_for_justify_statement(request, for_api, main_page, slug, stateme
     :param slug: String
     :param statement_uid: Statement.uid
     :param supportive: Boolean
-    :param mode: String
     :param ui_locales: Language.ui_locales
     :return: dict(), dict(), dict()
     """
@@ -163,7 +162,7 @@ def preparation_for_justify_statement(request, for_api, main_page, slug, stateme
 
     item_dict = _idh.get_array_for_justify_statement(statement_uid, nickname, supportive, history)
     discussion_dict = _ddh.get_dict_for_justify_statement(statement_uid, main_page, slug, supportive, len(item_dict['elements']), nickname)
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, False, request, request_authenticated_userid, for_api=for_api)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, False, request, nickname, for_api=for_api)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0 or len(item_dict['elements']) == 1 and logged_in:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
@@ -172,7 +171,7 @@ def preparation_for_justify_statement(request, for_api, main_page, slug, stateme
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_dont_know_statement(request, for_api, main_page, slug, argument_uid, supportive, ui_locales, request_authenticated_userid, nickname, history):
+def preparation_for_dont_know_statement(request, for_api, main_page, slug, argument_uid, supportive, ui_locales, nickname, history):
     """
     Prepares some paramater for the "don't know" step
 
@@ -183,7 +182,6 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, argum
     :param argument_uid: Argument.uid
     :param supportive: Boolean
     :param ui_locales: Language.ui_locales
-    :param request_authenticated_userid: User.nickname
     :param nickname: User.nickname
     :param history: string
     :return: dict(), dict(), dict()
@@ -196,10 +194,10 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, argum
     _idh = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=request.path, history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
 
-    discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid, main_page, request_authenticated_userid)
+    discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid, main_page, nickname)
     item_dict = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, nickname, discussion_dict['gender'])
-    extras_dict = _dh.prepare_extras_dict(slug, True, True, False, request,
-                                              for_api=for_api, nickname=request_authenticated_userid)
+    extras_dict = _dh.prepare_extras_dict(slug, True, True, False, request, for_api=for_api,
+                                          nickname=nickname)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0:
         if int(argument_uid) == 0:
@@ -216,7 +214,7 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, argum
 
 
 def preparation_for_justify_argument(request, for_api, main_page, slug, statement_or_arg_id, supportive, ui_locales,
-                                     request_authenticated_userid, relation, nickname, history):
+                                     relation, nickname, history):
     """
     Prepares some paramater for the justification step for an argument
 
@@ -240,7 +238,7 @@ def preparation_for_justify_argument(request, for_api, main_page, slug, statemen
     # is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
     item_dict = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in, nickname, history)
     discussion_dict = _ddh.get_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, False, request, for_api=for_api, nickname=request_authenticated_userid)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, False, request, for_api=for_api, nickname=nickname)
     # is the discussion at the end?
     if not logged_in and len(item_dict['elements']) == 1 or logged_in and len(item_dict['elements']) == 1:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)

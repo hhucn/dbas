@@ -289,8 +289,8 @@ class DictionaryHelper(object):
         else:
             endtext = _tn.get(_.discussionEndLinkTextLoggedIn if nickname else _.feelFreeToLogin)
             mid_text = _tn.get(_.discussionEnd) + ' ' + endtext
-            discussion_dict['bubbles'].append( create_speechbubble_dict(BubbleTypes.INFO, message=mid_text, id='end',
-                                                                        lang=self.system_lang, nickname=nickname))
+            discussion_dict['bubbles'].append(create_speechbubble_dict(BubbleTypes.INFO, message=mid_text, id='end',
+                                                                       lang=self.system_lang, nickname=nickname))
 
     def __add_discussion_end_text_at_start(self, discussion_dict, extras_dict, nickname, gender, _tn):
         """
