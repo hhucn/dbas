@@ -46,6 +46,7 @@ from dbas.lib import escape_string, get_discussion_language, get_changelog, is_u
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+from pyramid_mailer import get_mailer
 from websocket.lib import get_port
 
 name = 'D-BAS'
@@ -1309,6 +1310,7 @@ def set_new_start_premise(request):
         data['conclusion_id'] = request.params['conclusion_id']
         data['supportive'] = True if request.params['supportive'].lower() == 'true' else False
         data['port'] = get_port(request)
+        data['mailer'] = get_mailer(request)
         data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
     except KeyError as e:
         logger('views', 'set_new_start_premise', repr(e), error=True)
@@ -1337,6 +1339,7 @@ def set_new_premises_for_argument(request):
         data['issue_id'] = issue_helper.get_issue_id(request)
         data['arg_uid'] = request.params['arg_uid']
         data['attack_type'] = request.params['attack_type']
+        data['mailer'] = get_mailer(request)
         data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
     except KeyError as e:
         logger('views', 'set_new_premises_for_argument', repr(e), error=True)

@@ -41,7 +41,7 @@ def send_mail_due_to_added_argument(lang, url, recipient, mailer):
     :param lang: ui_locales
     :param url: current url
     :param recipient: User
-    :param request: self.request
+    :param mailer: Instance of pyramid mailer
     :return: duple with boolean for sent message, message-string
     """
     _t = Translator(lang)
@@ -94,6 +94,10 @@ def send_mail(mailer, subject, body, recipient, lang):
     """
     logger('email_helper', 'send_mail', 'sending mail with subject \'' + subject + '\' to ' + recipient)
     _t = Translator(lang)
+    if not mailer:
+        logger('email_helper', 'send_mail', 'mailer is none', error=True)
+        return False, _t.get(_.internalKeyError)
+
     send_message = False
     body = body + '\n\n---\n' + _t.get(_.emailBodyText).format(get_global_url())
     message = Message(subject=subject, sender='dbas.hhu@gmail.com', recipients=[recipient], body=body)
@@ -108,10 +112,10 @@ def send_mail(mailer, subject, body, recipient, lang):
     except smtplib.SMTPConnectError as exception:
         code = str(exception.smtp_code)
         error = str(exception.smtp_error)
-        logger('email_helper', 'send_mail', 'exception smtplib.SMTPConnectError smtp code / error ' + code + '/' + error)
+        logger('email_helper', 'send_mail', 'exception smtplib.SMTPConnectError smtp code / error ' + code + '/' + error, error=True)
         message = _t.get(_.emailWasNotSent)
     except socket_error as serr:
-        logger('email_helper', 'send_mail', 'socket error while sending ' + str(serr))
+        logger('email_helper', 'send_mail', 'socket error while sending ' + str(serr), error=True)
         message = _t.get(_.emailWasNotSent)
 
     return send_message, message
