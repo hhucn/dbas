@@ -188,23 +188,21 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
     return url, statement_uids, error
 
 
-def process_seen_statements(uids, nickname, _tn, additional_argument=None):
+def process_seen_statements(uids, nickname, additional_argument=None):
     """
     Sets the given statement uids as seen by given user
 
     :param uids: [Statement.uid]
     :param nickname: User.nickname
-    :param _tn: Translator
     :param additional_argument: Argument.uid
     :return: String
     """
     logger('QueryHelper', 'process_seen_statements', 'user ' + str(nickname) + ', statements ' + str(uids) +
            ', additional argument ' + str(additional_argument))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    error = ''
 
     if not db_user:
-        return error
+        return ''
 
     if additional_argument:
         add_seen_argument(additional_argument, db_user)
@@ -212,12 +210,11 @@ def process_seen_statements(uids, nickname, _tn, additional_argument=None):
     for uid in uids:
         # we get the premise group id's only
         if not is_integer(uid):
-            error = _tn.get(_.internalKeyError)
-            break
+            return _.internalKeyError
 
         add_seen_statement(uid, db_user)
 
-    return error
+    return ''
 
 
 def mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, nickname, _t):

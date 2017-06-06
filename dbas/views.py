@@ -1359,7 +1359,19 @@ def set_new_issue(request):
     :return:
     """
     logger('views', 'set_new_issue', 'main {}'.format(request.params))
-    prepared_dict = setter.issue(request)
+    ui_locales = get_language_from_cookie(request)
+
+    try:
+        info = escape_string(request.params['info'])
+        long_info = escape_string(request.params['long_info'])
+        title = escape_string(request.params['title'])
+        lang = escape_string(request.params['lang'])
+    except KeyError as e:
+        _tn = Translator(ui_locales)
+        logger('setter', 'set_new_issue', repr(e), error=True)
+        return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
+
+    prepared_dict = setter.issue(nickname, info, long_info, title, lang, application_url, ui_locales)
     return prepared_dict
 
 
@@ -1373,7 +1385,16 @@ def set_seen_statements(request):
     :return: json
     """
     logger('views', 'set_seen_statements', 'main {}'.format(request.params))
-    prepared_dict = setter.seen_statements(request)
+    ui_locales = get_language_from_cookie(request)
+    _tn = Translator(ui_locales)
+
+    try:
+        uids = json.loads(request.params['uids'])
+    except KeyError as e:
+        logger('views', 'set_seen_statements', repr(e), error=True)
+        return {'error': _tn.get(_.internalKeyError)}
+
+    prepared_dict = setter.seen_statements(uids, request.path, request.authenticated_userid, ui_locales)
     return prepared_dict
 
 
@@ -1401,7 +1422,8 @@ def mark_statement_or_argument(request):
         _t = Translator(ui_locales)
         return {'succes': '', 'text': '', 'error': _t.get(_.internalKeyError)}
 
-    prepared_dict = setter.mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history, ui_locales, nickname)
+    prepared_dict = setter.mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history,
+                                                      ui_locales, request.authenticated_userid)
     return prepared_dict
 
 # ###################################

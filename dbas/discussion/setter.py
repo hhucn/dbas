@@ -396,68 +396,56 @@ def notification_delete(request) -> dict:
     return prepared_dict
 
 
-def issue(request) -> dict:
+def issue(nickname, info, long_info, title, lang, application_url, ui_locales) -> dict:
     """
     Sets new issue, which will be a new discussion
 
-    :param request: pyramid's request object
+    :param nickname: Users nickname
+    :param info: Short information about the new issue
+    :param long_info: Long information about the new issue
+    :param title: Title of the new issue
+    :param lang: Language of the new issue
+    :param application_url: Url of the app itself
+    :param ui_locales: Current language
     :rtype: dict
     :return: Collection with information about the new issue
     """
-    request_authenticated_userid = request.authenticated_userid
-    user_manager.update_last_action(request_authenticated_userid)
+    user_manager.update_last_action(nickname)
 
-    logger('setter', 'set_new_issue', 'main {}'.format(request.params))
+    logger('setter', 'set_new_issue', 'main')
     prepared_dict = dict()
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-    was_set = False
 
-    try:
-        info = escape_string(request.params['info'])
-        long_info = escape_string(request.params['long_info'])
-        title = escape_string(request.params['title'])
-        lang = escape_string(request.params['lang'])
-        was_set, error = issue_helper.set_issue(info, long_info, title, lang, request_authenticated_userid, ui_locales)
-        if was_set:
-            db_issue = DBDiscussionSession.query(Issue).filter(and_(Issue.title == title,
-                                                                    Issue.info == info)).first()
-            prepared_dict['issue'] = issue_helper.get_issue_dict_for(db_issue, request.application_url, False, 0, ui_locales)
-    except KeyError as e:
-        logger('setter', 'set_new_issue', repr(e), error=True)
-        error = _tn.get(_.notInsertedErrorBecauseInternal)
-
+    was_set, error = issue_helper.set_issue(info, long_info, title, lang, nickname, ui_locales)
+    if was_set:
+        db_issue = DBDiscussionSession.query(Issue).filter(and_(Issue.title == title,
+                                                                Issue.info == info)).first()
+        prepared_dict['issue'] = issue_helper.get_issue_dict_for(db_issue, application_url, False, 0, ui_locales)
     prepared_dict['error'] = '' if was_set else error
+
     return prepared_dict
 
 
-def seen_statements(request) -> dict:
+def seen_statements(uids, path, nickname, ui_locales) -> dict:
     """
     Marks several statements as already seen.
 
-    :param request: pyramid's request object
+    :param uids: Uids of statements which should be marked as seen
+    :param path: Current path of the user
+    :param nickname: Users nickname
+    :param ui_locales: Current language
     :rtype: dict
     :return: Dictionary with an error field
     """
-    prepared_dict = dict()
-    ui_locales = get_language_from_cookie(request)
-    _t = Translator(ui_locales)
+    # are the statements connected to an argument?
+    additional_argument = None
+    _tn = Translator(ui_locales)
+    if 'justify' in path:
+        url = path[path.index('justify/') + len('justify/'):]
+        additional_argument = int(url[:url.index('/')])
 
-    try:
-        uids = json.loads(request.params['uids'])
-        # are the statements connected to an argument?
-        additional_argument = None
-        if 'justify' in request.path:
-            url = request.path[request.path.index('justify/') + len('justify/'):]
-            additional_argument = int(url[:url.index('/')])
-
-        error = process_seen_statements(uids, request.authenticated_userid, _t, additional_argument=additional_argument)
-        prepared_dict['error'] = error
-    except KeyError as e:
-        logger('setter', 'set_seen_statements', repr(e), error=True)
-        prepared_dict['error'] = _t.get(_.internalKeyError)
-
-    return prepared_dict
+    errorCode = process_seen_statements(uids, nickname, additional_argument=additional_argument)
+    error = _tn.get(errorCode) if len(errorCode) > 0 else ''
+    return {'error': error}
 
 
 def mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history, ui_locales, nickname) -> dict:
