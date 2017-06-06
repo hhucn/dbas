@@ -54,11 +54,11 @@ def user_language(nickname, ui_locales) -> dict:
     return {'error': '', 'ui_locales': ui_locales, 'current_lang': current_lang}
 
 
-def notification(request, recipient, title , text, nickname, ui_locales) -> dict:
+def notification(port, recipient, title , text, nickname, ui_locales) -> dict:
     """
     Send a notification from user a to user b
 
-    :param request: pyramid's request object
+    :param port: Port of the notification server
     :üaram recipient: Nickname of the recipient
     :üaram title: Title of the notification
     :üaram text: Text of the notification
@@ -84,7 +84,7 @@ def notification(request, recipient, title , text, nickname, ui_locales) -> dict
     if db_author.uid == db_recipient.uid:
         return {'error': _tn.get(_.senderReceiverSame), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
 
-    db_notification = send_notification(request, db_author, db_recipient, title, text, nickname)
+    db_notification = send_notification(db_author, db_recipient, title, text, nickname, port)
     prepared_dict = {}
     prepared_dict['error'] = ''
     prepared_dict['timestamp'] = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)

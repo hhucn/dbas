@@ -226,7 +226,7 @@ def send_welcome_notification(user, translator):
     transaction.commit()
 
 
-def send_notification(request, from_user, to_user, topic, content, mainpage):
+def send_notification(from_user, to_user, topic, content, mainpage, port):
     """
     Sends message to an user and places a copy in the outbox of current user. Returns the uid and timestamp
 
@@ -235,6 +235,7 @@ def send_notification(request, from_user, to_user, topic, content, mainpage):
     :param to_user: User
     :param topic: String
     :param content: String
+    :param port: Port of the notification server
     :return:
     """
     content = escape_string(content)
@@ -248,7 +249,6 @@ def send_notification(request, from_user, to_user, topic, content, mainpage):
     if db_settings.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).get(db_settings.lang_uid).ui_locales
         _t_user = Translator(user_lang)
-        port = get_port(request)
         send_request_for_info_popup_to_socketio(to_user.nickname, port, _t_user.get(_.newNotification), mainpage + '/notifications', increase_counter=True)
 
     db_inserted_notification = DBDiscussionSession.query(Message).filter(and_(Message.from_author_uid == from_user.uid,

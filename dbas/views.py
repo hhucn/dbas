@@ -46,6 +46,7 @@ from dbas.lib import escape_string, get_discussion_language, get_changelog, is_u
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+from websocket.lib import get_port
 
 name = 'D-BAS'
 version = '1.4.1'
@@ -1249,7 +1250,7 @@ def send_some_notification(request):
         prepared_dict = {'error': _tn.get(_.internalKeyError), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
         return prepared_dict
 
-    prepared_dict = setter.notification(request, recipient, title , text, request.authenticated_userid, ui_locales)
+    prepared_dict = setter.notification(get_port(request), recipient, title , text, request.authenticated_userid, ui_locales)
 
     return prepared_dict
 
