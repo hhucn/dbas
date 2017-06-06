@@ -1279,13 +1279,11 @@ def set_new_start_statement(request, for_api=False, api_data=None):
 
 # ajax - send new start premise
 @view_config(route_name='ajax_set_new_start_premise', renderer='json')
-def set_new_start_premise(request, for_api=False, api_data=None):
+def set_new_start_premise(request):
     """
     Sets new premise for the start
 
     :param request: request of the web server
-    :param for_api: boolean
-    :param api_data:
     :return: json-dict()
     """
     logger('views', 'set_new_start_premise', 'request.params: {}'.format(request.params))
@@ -1303,7 +1301,7 @@ def set_new_start_premise(request, for_api=False, api_data=None):
         logger('views', 'set_new_start_premise', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
-    prepared_dict = setter.positions_premise(request, for_api, api_data)
+    prepared_dict = setter.positions_premise(request, False, data)
     return prepared_dict
 
 

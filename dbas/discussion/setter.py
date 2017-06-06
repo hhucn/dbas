@@ -167,6 +167,7 @@ def positions_premise(request, for_api, data) -> dict:
     """
     prepared_dict = dict()
     lang = get_discussion_language(request)
+    ui_locales = get_language_from_cookie(request)
     _tn = Translator(lang)
     try:
         nickname = data['nickname']
@@ -196,11 +197,9 @@ def positions_premise(request, for_api, data) -> dict:
         add_rep, broke_limit = add_reputation_for(nickname, rep_reason_new_statement)
         # send message if the user is now able to review
     if broke_limit:
-        ui_locales = get_language_from_cookie(request)
         _t = Translator(ui_locales)
-        nickname = request.authenticated_userid
         port = get_port(request)
-        send_request_for_info_popup_to_socketio(nickname, port, _t.get(_.youAreAbleToReviewNow),  request.application_url + '/review')
+        send_request_for_info_popup_to_socketio(nickname, port, _t.get(_.youAreAbleToReviewNow),  application_url + '/review')
         prepared_dict['url'] = str(url) + str('#access-review')
 
     if url == -1:
