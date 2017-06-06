@@ -14,28 +14,27 @@ from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_text_for_add_text_message, get_text_for_edit_text_message, get_text_for_add_argument_message
 from dbas.strings.translator import Translator
-from pyramid_mailer import get_mailer
 from pyramid_mailer.message import Message
 
 
-def send_mail_due_to_added_text(lang, url, recipient, request):
+def send_mail_due_to_added_text(lang, url, recipient, mailer):
     """
     Will send an email to the recipient
 
     :param lang: ui_locales
     :param url: current url
     :param recipient: User
-    :param request: self.request
+    :param mailer: current mailer
     :return: duple with boolean for sent message, message-string
     """
     _t = Translator(lang)
     subject = _t.get(_.statementAdded)
     body = get_text_for_add_text_message(recipient.firstname, lang, url, False)
 
-    return send_mail(request, subject, body, recipient.email, lang)
+    return send_mail(mailer, subject, body, recipient.email, lang)
 
 
-def send_mail_due_to_added_argument(lang, url, recipient, request):
+def send_mail_due_to_added_argument(lang, url, recipient, mailer):
     """
     Will send an email to the recipient
 
@@ -49,10 +48,10 @@ def send_mail_due_to_added_argument(lang, url, recipient, request):
     subject = _t.get(_.argumentAdded)
     body = get_text_for_add_argument_message(recipient.firstname, lang, url, False)
 
-    return send_mail(request, subject, body, recipient.email, lang)
+    return send_mail(mailer, subject, body, recipient.email, lang)
 
 
-def send_mail_due_to_edit_text(statement_uid, previous_author, current_author, url, request):
+def send_mail_due_to_edit_text(statement_uid, previous_author, current_author, url, mailer):
     """
     Will send an email to the author of the statement.
 
@@ -60,7 +59,7 @@ def send_mail_due_to_edit_text(statement_uid, previous_author, current_author, u
     :param previous_author: User
     :param current_author: User
     :param url: current url
-    :param request: self.request
+    :param mailer: current mailer
     :return: duple with boolean for sent message, message-string
     """
     db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
@@ -79,14 +78,14 @@ def send_mail_due_to_edit_text(statement_uid, previous_author, current_author, u
                                           db_textversion_old.content, db_textversion_new.content, url, False)
     recipient = db_previous_author.email
 
-    return send_mail(request, subject, body, recipient, db_language.ui_locales)
+    return send_mail(mailer, subject, body, recipient, db_language.ui_locales)
 
 
-def send_mail(request, subject, body, recipient, lang):
+def send_mail(mailer, subject, body, recipient, lang):
     """
     Try except block for sending an email
 
-    :param request: current request
+    :param mailer: current mailer
     :param subject: subject text of the mail
     :param body: body text of the mail
     :param recipient: recipient of the mail
@@ -96,7 +95,6 @@ def send_mail(request, subject, body, recipient, lang):
     logger('email_helper', 'send_mail', 'sending mail with subject \'' + subject + '\' to ' + recipient)
     _t = Translator(lang)
     send_message = False
-    mailer = get_mailer(request)
     body = body + '\n\n---\n' + _t.get(_.emailBodyText).format(get_global_url())
     message = Message(subject=subject, sender='dbas.hhu@gmail.com', recipients=[recipient], body=body)
 

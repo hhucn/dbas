@@ -1308,8 +1308,8 @@ def set_new_start_premise(request):
         data['statement'] = json.loads(request.params['premisegroups'])
         data['conclusion_id'] = request.params['conclusion_id']
         data['supportive'] = True if request.params['supportive'].lower() == 'true' else False
-        # data['port'] = get_port(request)
-        # data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
+        data['port'] = get_port(request)
+        data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
     except KeyError as e:
         logger('views', 'set_new_start_premise', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
@@ -1337,6 +1337,7 @@ def set_new_premises_for_argument(request):
         data['issue_id'] = issue_helper.get_issue_id(request)
         data['arg_uid'] = request.params['arg_uid']
         data['attack_type'] = request.params['attack_type']
+        data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
     except KeyError as e:
         logger('views', 'set_new_premises_for_argument', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}

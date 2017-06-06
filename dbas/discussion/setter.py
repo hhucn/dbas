@@ -11,7 +11,7 @@ from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.helper.language import get_language_from_cookie
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
 from dbas.helper.query import insert_as_statements, process_input_of_start_premises_and_receive_url, \
-    process_input_of_premises_for_arguments_and_receive_url, process_seen_statements,\
+    process_input_of_premises_for_arguments_and_receive_url, process_seen_statements, get_default_locale_name,\
     mark_or_unmark_statement_or_argument, get_text_for_justification_or_reaction_bubble
 from dbas.lib import get_user_by_private_or_public_nickname, get_profile_picture, get_discussion_language
 from dbas.logger import logger
@@ -20,6 +20,7 @@ from dbas.strings.translator import Translator
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position,\
     rep_reason_first_justification, rep_reason_new_statement, rep_reason_first_new_argument
 from dbas.url_manager import UrlManager
+from pyramid_mailer import get_mailer
 from websocket.lib import send_request_for_info_popup_to_socketio, get_port
 
 
@@ -105,19 +106,21 @@ def position(request, for_api, data) -> dict:
     """
     discussion_lang = get_discussion_language(request)
     _tn = Translator(discussion_lang)
+    application_url = request.application_url
+    default_locale_name = get_default_locale_name(request)
 
     try:
-        nickname = data["nickname"]
-        statement = data["statement"]
-        issue_id = data["issue_id"]
-        slug = data["slug"]
+        nickname = data['nickname']
+        statement = data['statement']
+        issue_id = data['issue_id']
+        slug = data['slug']
     except KeyError as e:
         logger('setter', 'position', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
     # escaping will be done in QueryHelper().set_statement(...)
     user_manager.update_last_action(nickname)
-    new_statement = insert_as_statements(request, statement, nickname, issue_id, discussion_lang, is_start=True)
+    new_statement = insert_as_statements(application_url, default_locale_name, statement, nickname, issue_id, discussion_lang, is_start=True)
     prepared_dict = {'error': '', 'statement_uids': ''}
 
     if new_statement == -1:
@@ -132,7 +135,7 @@ def position(request, for_api, data) -> dict:
         prepared_dict['error'] = _tn.get(_.noRights)
         return prepared_dict
 
-    url = UrlManager(request.application_url, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
+    url = UrlManager(application_url, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
     prepared_dict['url'] = url
     prepared_dict['statement_uids'] = [new_statement[0].uid]
 
@@ -161,6 +164,8 @@ def positions_premise(request, for_api, data) -> dict:
     prepared_dict = dict()
     lang = get_discussion_language(request)
     ui_locales = get_language_from_cookie(request)
+    default_locale_name = get_default_locale_name(request)
+    mailer = get_mailer(request)
     _tn = Translator(lang)
 
     try:
@@ -170,6 +175,8 @@ def positions_premise(request, for_api, data) -> dict:
         conclusion_id = data['conclusion_id']
         supportive = data['supportive']
         application_url = data['application_url']
+        history = data['history'] if '_HISTORY_' in data else None
+        port = data['port'] if 'port' in data else None
     except KeyError as e:
         logger('setter', 'positions_premise', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
@@ -177,9 +184,10 @@ def positions_premise(request, for_api, data) -> dict:
     # escaping will be done in QueryHelper().set_statement(...)
     user_manager.update_last_action(nickname)
 
-    url, statement_uids, error = process_input_of_start_premises_and_receive_url(request, premisegroups, conclusion_id,
-                                                                                 supportive, issue_id, nickname,
-                                                                                 for_api, application_url, lang)
+    url, statement_uids, error = process_input_of_start_premises_and_receive_url(default_locale_name, premisegroups,
+                                                                                 conclusion_id, supportive, issue_id,
+                                                                                 nickname, for_api, application_url,
+                                                                                 lang, history, port, mailer)
 
     prepared_dict['error'] = error
     prepared_dict['statement_uids'] = statement_uids
@@ -217,6 +225,9 @@ def arguments_premises(request, for_api, data) -> dict:
     discussion_lang = get_discussion_language(request)
     application_url = request.application_url
     _tn = Translator(discussion_lang)
+    default_locale_name = get_default_locale_name(request)
+    port = get_port(request)
+    mailer = get_mailer(request)
 
     try:
         nickname = data['nickname']
@@ -224,16 +235,18 @@ def arguments_premises(request, for_api, data) -> dict:
         issue_id = data['issue_id']
         arg_uid = data['arg_uid']
         attack_type = data['attack_type']
+        history = data['history'] if '_HISTORY_' in data else None
     except KeyError as e:
         logger('setter', 'arguments_premises', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
     # escaping will be done in QueryHelper().set_statement(...)
-    url, statement_uids, error = process_input_of_premises_for_arguments_and_receive_url(request, arg_uid, attack_type,
-                                                                                         premisegroups, issue_id,
-                                                                                         nickname, for_api,
+    url, statement_uids, error = process_input_of_premises_for_arguments_and_receive_url(default_locale_name, arg_uid,
+                                                                                         attack_type, premisegroups,
+                                                                                         issue_id, nickname, for_api,
                                                                                          application_url,
-                                                                                         discussion_lang)
+                                                                                         discussion_lang, history,
+                                                                                         port, mailer)
     user_manager.update_last_action(nickname)
 
     prepared_dict['error'] = error

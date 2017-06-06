@@ -25,6 +25,7 @@ from dbas.review.helper.reputation import add_reputation_for
 from dbas.review.helper.reputation import rep_reason_first_confrontation
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+from pyramid_mailer import get_mailer
 from websocket.lib import send_request_for_info_popup_to_socketio, get_port
 
 
@@ -317,10 +318,10 @@ def try_to_contact(request, name, email, content, ui_locales, recaptcha):
         body = _t.get(_.name) + ': ' + name + '\n'
         body += _t.get(_.mail) + ': ' + email + '\n'
         body += _t.get(_.message) + ':\n' + content
-        EmailHelper.send_mail(request, subject, body, 'dbas.hhu@gmail.com', ui_locales)
+        EmailHelper.send_mail(get_mailer(request), subject, body, 'dbas.hhu@gmail.com', ui_locales)
         body = '* ' + _t.get(_.thisIsACopyOfMail).upper() + ' *\n\n' + body
         subject = '[D-BAS INFO] ' + subject
-        send_message, message = EmailHelper.send_mail(request, subject, body, email, ui_locales)
+        send_message, message = EmailHelper.send_mail(get_mailer(request), subject, body, email, ui_locales)
         contact_error = not send_message
 
     return contact_error, message, send_message

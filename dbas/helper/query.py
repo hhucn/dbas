@@ -34,20 +34,24 @@ from dbas.helper.history import get_bubble_from_reaction_step, get_splitted_hist
 statement_min_length = 10
 
 
-def process_input_of_start_premises_and_receive_url(request, premisegroups, conclusion_id, supportive,
-                                                    issue, user, for_api, main_page, discussion_lang):
+def process_input_of_start_premises_and_receive_url(default_locale_name, premisegroups, conclusion_id, supportive,
+                                                    issue, user, for_api, application_url, discussion_lang, history,
+                                                    port, mailer):
     """
     Inserts the given text in premisegroups as new arguments in dependence of the input parameters and returns a URL for forwarding.
 
-    :param request: request
+    :param default_locale_name: Default lang of the app
     :param premisegroups: [String]
     :param conclusion_id: Statement.uid
     :param supportive: Boolean
     :param issue: Issue.uid
     :param user: User.nickname
     :param for_api: Boolean
-    :param main_page: URL
+    :param application_url: URL
     :param discussion_lang: ui_locales
+    :param history: History of the user
+    :param port: Port of the notification server
+    :param mailer: Instance of pyramid mailer
     :return: URL, [Statement.uid], String
     """
     logger('QueryHelper', 'process_input_of_start_premises_and_receive_url', 'count of new pgroups: ' + str(len(premisegroups)))
@@ -59,17 +63,16 @@ def process_input_of_start_premises_and_receive_url(request, premisegroups, conc
     slug = DBDiscussionSession.query(Issue).get(issue).get_slug()
     error = ''
     url = ''
-    history = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
 
     # insert all premise groups into our database
     # all new arguments are collected in a list
     new_argument_uids = []
     new_statement_uids = []  # all statement uids are stored in this list to create the link to a possible reference
     for group in premisegroups:  # premise groups is a list of lists
-        new_argument, statement_uids = __create_argument_by_raw_input(request, user, group, conclusion_id, supportive, issue, discussion_lang)
+        new_argument, statement_uids = __create_argument_by_raw_input(application_url, default_locale_name, user, group, conclusion_id, supportive, issue, discussion_lang)
         if not isinstance(new_argument, Argument):  # break on error
-            error = _tn.get(_.notInsertedErrorBecauseEmpty) + ' (' + _tn.get(_.minLength) + ': ' + str(
-                statement_min_length) + ')'
+            error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength),
+                                         statement_min_length)
             return -1, None, error
 
         new_argument_uids.append(new_argument.uid)
@@ -79,8 +82,8 @@ def process_input_of_start_premises_and_receive_url(request, premisegroups, conc
     # #arguments=0: empty input
     # #arguments=1: deliver new url
     # #arguments>1: deliver url where the user has to choose between her inputs
-    _um = UrlManager(main_page, slug, for_api, history)
-    _main_um = UrlManager(main_page, slug, False, history)
+    _um = UrlManager(application_url, slug, for_api, history)
+    _main_um = UrlManager(application_url, slug, False, history)
     if len(new_argument_uids) == 0:
         error = __get_error_for_empty_argument_list(_tn)
 
@@ -96,13 +99,14 @@ def process_input_of_start_premises_and_receive_url(request, premisegroups, conc
     # send notifications and mails
     if len(new_argument_uids) > 0:
         email_url = _main_um.get_url_for_justifying_statement(False, conclusion_id, 't' if supportive else 'f')
-        NotificationHelper.send_add_text_notification(email_url, conclusion_id, user, request)
+        NotificationHelper.send_add_text_notification(email_url, conclusion_id, user, port, mailer)
 
     return url, new_statement_uids, error
 
 
-def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, attack_type, premisegroups,
-                                                            issue, user, for_api, main_page, discussion_lang):
+def process_input_of_premises_for_arguments_and_receive_url(default_locale_name, arg_id, attack_type, premisegroups,
+                                                            issue, user, for_api, application_url, discussion_lang,
+                                                            history, port, mailer):
     """
     Inserts the given text in premisegroups as new arguments in dependence of the input parameters and returns a URL for forwarding.
 
@@ -110,15 +114,18 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
 
         Optimize the "for_api" part
 
-    :param request: request
+    :param default_locale_name: Default lang of the app
     :param arg_id: Argument.uid
     :param attack_type: String
     :param premisegroups: [Strings]
     :param issue: Issue.uid
     :param user: User.nickname
     :param for_api: Boolean
-    :param main_page: URL
+    :param application_url: URL
     :param discussion_lang: ui_locales
+    :param history: History of the user
+    :param port: Port of notification server
+    :param mailer: Instance of pyramid mailer
     :return: URL, [Statement.uids], String
     """
     logger('QueryHelper', 'process_input_of_premises_for_arguments_and_receive_url', 'count of new pgroups: ' + str(len(premisegroups)))
@@ -129,14 +136,13 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
 
     slug = DBDiscussionSession.query(Issue).get(issue).get_slug()
     error = ''
-    history = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
     supportive = attack_type == 'support' or attack_type == 'overbid'
 
     # insert all premise groups into our database
     # all new arguments are collected in a list
     new_argument_uids = []
     for group in premisegroups:  # premise groups is a list of lists
-        new_argument = __insert_new_premises_for_argument(request, group, attack_type, arg_id, issue, user, discussion_lang)
+        new_argument = __insert_new_premises_for_argument(application_url, default_locale_name, group, attack_type, arg_id, issue, user, discussion_lang)
         if not isinstance(new_argument, Argument):  # break on error
             a = _tn.get(_.notInsertedErrorBecauseEmpty)
             b = _tn.get(_.minLength)
@@ -161,7 +167,7 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
     # #arguments=0: empty input
     # #arguments=1: deliver new url
     # #arguments>1: deliver url where the user has to choose between her inputs
-    _um = url = UrlManager(main_page, slug, for_api, history)
+    _um = url = UrlManager(application_url, slug, for_api, history)
     if len(new_argument_uids) == 0:
         error = __get_error_for_empty_argument_list(_tn)
 
@@ -183,7 +189,7 @@ def process_input_of_premises_for_arguments_and_receive_url(request, arg_id, att
 
         tmp_url = _um.get_url_for_reaction_on_argument(False, arg_id, attack, new_uid)
 
-        NotificationHelper.send_add_argument_notification(tmp_url, arg_id, user, request)
+        NotificationHelper.send_add_argument_notification(tmp_url, arg_id, user, port, mailer)
 
     return url, statement_uids, error
 
@@ -393,11 +399,12 @@ def correct_statement(user, uid, corrected_text):
     return return_dict
 
 
-def insert_as_statements(request, text_list, user, issue, lang, is_start=False):
+def insert_as_statements(application_url, default_locale_name, text_list, user, issue, lang, is_start=False):
     """
     Inserts the given texts as statements and returns the uid's
 
-    :param request: current request of the webserver
+    :param application_url: Url of the app itself
+    :param default_locale_name: default lang of the app
     :param text_list: [String]
     :param user: User.nickname
     :param issue: Issue
@@ -414,21 +421,21 @@ def insert_as_statements(request, text_list, user, issue, lang, is_start=False):
     for text in input_list:
         if len(text) < statement_min_length:
             return -1
-        else:
-            new_statement, is_duplicate = __set_statement(text, user, is_start, issue, lang)
-            if new_statement:
-                statements.append(new_statement)
 
-                if not is_duplicate:
-                    _tn = Translator(new_statement.lang) if _tn is None else _tn
-                    db_issue = DBDiscussionSession.query(Issue).get(issue)
-                    _um = UrlManager(request.application_url, db_issue.get_slug())
-                    append_action_to_issue_rss(issue_uid=issue,
-                                               author_uid=db_user.uid,
-                                               title=_tn.get(_.positionAdded if is_start else _.statementAdded),
-                                               description='...' + get_text_for_statement_uid(new_statement.uid) + '...',
-                                               ui_locale=request.registry.settings['pyramid.default_locale_name'],
-                                               url=_um.get_url_for_statement_attitude(False, new_statement.uid))
+        new_statement, is_duplicate = __set_statement(text, user, is_start, issue, lang)
+        if new_statement:
+            statements.append(new_statement)
+
+            if not is_duplicate:
+                _tn = Translator(new_statement.lang) if _tn is None else _tn
+                db_issue = DBDiscussionSession.query(Issue).get(issue)
+                _um = UrlManager(application_url, db_issue.get_slug())
+                append_action_to_issue_rss(issue_uid=issue,
+                                           author_uid=db_user.uid,
+                                           title=_tn.get(_.positionAdded if is_start else _.statementAdded),
+                                           description='...' + get_text_for_statement_uid(new_statement.uid) + '...',
+                                           ui_locale=default_locale_name,
+                                           url=_um.get_url_for_statement_attitude(False, new_statement.uid))
 
     return statements
 
@@ -564,10 +571,12 @@ def __get_logfile_dict(textversion, main_page, lang):
     return corr_dict
 
 
-def __insert_new_premises_for_argument(request, text, current_attack, arg_uid, issue, user, discussion_lang):
+def __insert_new_premises_for_argument(application_url, default_locale_name, text, current_attack, arg_uid, issue, user, discussion_lang):
     """
     Creates premises for a given argument
 
+    :param application_url: Url of the app itself
+    :param default_locale_name: default lang of the app
     :param text: String
     :param current_attack: String
     :param arg_uid: Argument.uid
@@ -577,7 +586,7 @@ def __insert_new_premises_for_argument(request, text, current_attack, arg_uid, i
     """
     logger('QueryHelper', '__insert_new_premises_for_argument', 'def')
 
-    statements = insert_as_statements(request, text, user, issue, discussion_lang)
+    statements = insert_as_statements(application_url, default_locale_name, text, user, issue, discussion_lang)
     if statements == -1:
         return -1
 
@@ -690,10 +699,12 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
     return return_array
 
 
-def __create_argument_by_raw_input(request, user, text, conclusion_id, is_supportive, issue, discussion_lang):
+def __create_argument_by_raw_input(application_url, default_locale_name, user, text, conclusion_id, is_supportive, issue, discussion_lang):
     """
     Consumes the input to create a new argument
 
+    :param application_url: Url of the app itself
+    :param default_locale_name: default lang of the app
     :param user: User.nickname
     :param text: String
     :param conclusion_id:
@@ -706,7 +717,7 @@ def __create_argument_by_raw_input(request, user, text, conclusion_id, is_suppor
     # current conclusion
     db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
                                                                      Statement.issue_uid == issue)).first()
-    statements = insert_as_statements(request, text, user, issue, discussion_lang)
+    statements = insert_as_statements(application_url, default_locale_name, text, user, issue, discussion_lang)
     if statements == -1:
         return -1, None
 
@@ -722,14 +733,14 @@ def __create_argument_by_raw_input(request, user, text, conclusion_id, is_suppor
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     if new_argument and db_user:
-        _tn = Translator(request.registry.settings['pyramid.default_locale_name'])
+        _tn = Translator(default_locale_name)
         db_issue = DBDiscussionSession.query(Issue).get(issue)
-        _um = UrlManager(request.application_url, db_issue.get_slug())
+        _um = UrlManager(application_url, db_issue.get_slug())
         append_action_to_issue_rss(issue_uid=issue,
                                    author_uid=db_user.uid,
                                    title=_tn.get(_.argumentAdded),
                                    description='...' + get_text_for_argument_uid(new_argument.uid, anonymous_style=True) + '...',
-                                   ui_locale=request.registry.settings['pyramid.default_locale_name'],
+                                   ui_locale=default_locale_name,
                                    url=_um.get_url_for_justifying_statement(False, new_argument.uid, 'd'))
 
     return new_argument, statement_uids
@@ -1036,3 +1047,12 @@ def __remove_user_from_arguments_with_statement(statement_uid, db_user, _tn):
     for arg in db_arguments:
         if arg.author_uid == db_user.uid:
             revoke_content(arg.uid, True, db_user.nickname, _tn)
+
+
+def get_default_locale_name(request):
+    try:
+        if request and 'pyramid.default_locale_name' in request.registry.settings:
+            return request.registry.settings['pyramid.default_locale_name']
+    except KeyError:
+        return 'en'
+    return 'en'

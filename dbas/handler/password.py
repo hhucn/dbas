@@ -18,6 +18,7 @@ from dbas.lib import escape_string
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+from pyramid_mailer import get_mailer
 
 
 # http://interactivepython.org/runestone/static/everyday/2013/01/3_password.html
@@ -95,7 +96,7 @@ def request_password(request):
         body += _t.get(_.newPwdIs) + pwd + '\n\n'
         body += _t.get(_.newPwdInfo)
         subject = _t.get(_.dbasPwdRequest)
-        reg_success, message = send_mail(request, subject, body, email, db_language.ui_locales)
+        reg_success, message = send_mail(get_mailer(request), subject, body, email, db_language.ui_locales)
 
         if reg_success:
             success = message

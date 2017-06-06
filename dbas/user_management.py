@@ -23,6 +23,7 @@ from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.review.helper.reputation import get_reputation_of
+from pyramid_mailer import get_mailer
 
 # from https://moodlist.net/
 moodlist = ['Accepted', 'Accomplished', 'Aggravated', 'Alone', 'Amused', 'Angry', 'Annoyed', 'Anxious', 'Apathetic',
@@ -712,7 +713,7 @@ def set_new_user(request, firstname, lastname, nickname, gender, email, password
         # sending an email and message
         subject = _tn.get(_.accountRegistration)
         body = _tn.get(_.accountWasRegistered).format(firstname, lastname, email)
-        send_mail(request, subject, body, email, _tn.get_lang())
+        send_mail(get_mailer(request), subject, body, email, _tn.get_lang())
         send_welcome_notification(db_new_user.uid, _tn)
 
         logger('ViewHelper', 'set_new_user', 'set new user in db')

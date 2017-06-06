@@ -14,17 +14,18 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_text_for_edit_text_message, get_text_for_add_text_message, get_text_for_add_argument_message
 from dbas.strings.translator import Translator
 from sqlalchemy import and_
-from websocket.lib import send_request_for_info_popup_to_socketio, get_port
+from websocket.lib import send_request_for_info_popup_to_socketio
 
 
-def send_edit_text_notification(db_user, textversion, path, request):
+def send_edit_text_notification(db_user, textversion, path, port, mailer):
     """
     Sends an notification to the root-author and last author, when their text was edited.
 
     :param db_user: Current User
     :param textversion: new Textversion
     :param path: curren path
-    :param request: curren request
+    :param port: Port of notification server
+    :param mailer: Instance of pyramid mailer
     :return: None
     """
     all_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=textversion.statement_uid).order_by(TextVersion.uid.desc()).all()
@@ -39,17 +40,16 @@ def send_edit_text_notification(db_user, textversion, path, request):
     db_editor = DBDiscussionSession.query(User).get(new_author)
     db_settings = DBDiscussionSession.query(Settings).get(db_editor.uid)
     db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
-    port = get_port(request)
 
     # add some information for highlights
     if path is not None:
         path += '?edited_statement=' + str(textversion.statement_uid)
 
     if settings_root_author.should_send_mails is True and root_author != db_user.uid and path is not None:
-        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, root_author, db_editor, path, request)
+        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, root_author, db_editor, path, mailer)
 
     if new_author != last_author and settings_last_author.should_send_mails is True and new_author != db_user.uid and path is not None:
-        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, last_author, db_editor, path, request)
+        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, last_author, db_editor, path, mailer)
 
     # check for different authors
     if root_author == new_author:
@@ -94,14 +94,15 @@ def send_edit_text_notification(db_user, textversion, path, request):
         DBDiscussionSession.flush()
 
 
-def send_add_text_notification(url, conclusion_id, user, request):
+def send_add_text_notification(url, conclusion_id, user, port, mailer):
     """
     Send notifications and mails to related users.
 
     :param url: current url
     :param conclusion_id: Statement.uid
     :param user: current users nickname
-    :param request: self.request
+    :param port: Port of notification server
+    :param mailer: Instance of pyramid mailer
     :return: None
     """
     # getting all text versions, the main author, last editor and settings ob both authors as well as their languages
@@ -115,15 +116,14 @@ def send_add_text_notification(url, conclusion_id, user, request):
     editor_lang             = DBDiscussionSession.query(Language).get(db_last_editor_settings.lang_uid).ui_locales
     _t_editor               = Translator(editor_lang)
     _t_root                 = Translator(root_lang)
-    port = get_port(request)
 
     # send mail to main author
     if db_root_author_settings.should_send_mails and db_current_user != db_root_author:
-        EmailHelper.send_mail_due_to_added_text(root_lang, url, db_root_author, request)
+        EmailHelper.send_mail_due_to_added_text(root_lang, url, db_root_author, mailer)
 
     # send mail to last author
     if db_last_editor_settings.should_send_mails and db_last_editor != db_root_author and db_last_editor != db_current_user:
-        EmailHelper.send_mail_due_to_added_text(editor_lang, url, db_last_editor, request)
+        EmailHelper.send_mail_due_to_added_text(editor_lang, url, db_last_editor, mailer)
 
     # send notification via websocket to main author
     if db_root_author_settings.should_send_notifications and db_root_author != db_current_user:
@@ -159,14 +159,15 @@ def send_add_text_notification(url, conclusion_id, user, request):
     transaction.commit()
 
 
-def send_add_argument_notification(url, attacked_argument_uid, user, request):
+def send_add_argument_notification(url, attacked_argument_uid, user, port, mailer):
     """
     Sends an notification because an argument was added
 
     :param url: String
     :param attacked_argument_uid: Argument.uid
     :param user: User
-    :param request: current webservers request
+    :param port: Port of notification server
+    :param mailer: Instance of pyramid mailer
     :return:
     """
     # getting current argument, arguments author, current user and some settings
@@ -182,12 +183,11 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request):
     # send notification via websocket to last author
     _t_user = Translator(user_lang)
     if db_author_settings.should_send_notifications:
-        port = get_port(request)
         send_request_for_info_popup_to_socketio(db_author.nickname, port, _t_user.get(_.argumentAdded), url)
 
     # send mail to last author
     if db_author_settings.should_send_mails:
-        EmailHelper.send_mail_due_to_added_text(user_lang, url, db_author, request)
+        EmailHelper.send_mail_due_to_added_text(user_lang, url, db_author, mailer)
 
     # find admin
     db_admin = DBDiscussionSession.query(User).filter_by(nickname=nick_of_admin).first()
@@ -230,11 +230,11 @@ def send_notification(from_user, to_user, topic, content, mainpage, port):
     """
     Sends message to an user and places a copy in the outbox of current user. Returns the uid and timestamp
 
-    :param request: Current webservers request
     :param from_user: User
     :param to_user: User
     :param topic: String
     :param content: String
+    :param mainpage: String
     :param port: Port of the notification server
     :return:
     """
