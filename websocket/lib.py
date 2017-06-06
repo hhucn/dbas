@@ -16,11 +16,12 @@ from dbas.logger import logger
 fallback_port = 5222
 
 
-def send_request_for_info_popup_to_socketio(request, message='', url=None, increase_counter=False):
+def send_request_for_info_popup_to_socketio(nickname, port, message='', url=None, increase_counter=False):
     """
     Sends request to the socketio server for an info popup
 
-    :param request: Current webservers request
+    :param nickname: Current users nickname
+    :param port: Port of the notification server
     :param message: String
     :param url: Issue.uid
     :param increase_counter: Boolean
@@ -29,14 +30,15 @@ def send_request_for_info_popup_to_socketio(request, message='', url=None, incre
     logger('Websocket.lib', 'send_request_for_info_popup_to_socketio', 'main')
     if url:
         use_https = 'dbas.cs' in url
-        __send_request_for_popup_to_socketio(request.authenticated_userid, get_port(request), 'info', message, url, increase_counter, use_https)
+        __send_request_for_popup_to_socketio(nickname, port, 'info', message, url, increase_counter, use_https)
 
 
-def send_request_for_info_popup_to_socketio_with_delay(request, message='', url=None, increase_counter=False, delay=5):
+def send_request_for_info_popup_to_socketio_with_delay(nickname, port, message='', url=None, increase_counter=False, delay=5):
     """
     Sends request to the socketio server for an info popup with a specific delay
 
-    :param request: Current webservers request
+    :param nickname: Current users nickname
+    :param port: Port of the notification server
     :param message: String
     :param url: String
     :param increase_counter: Boolean
@@ -48,14 +50,15 @@ def send_request_for_info_popup_to_socketio_with_delay(request, message='', url=
     logger('Websocket.lib', 'send_request_for_info_popup_to_socketio_with_delay', 'enough sleep')
     if url:
         use_https = 'dbas.cs' in url
-        __send_request_for_popup_to_socketio(request.authenticated_userid, get_port(request), 'info', message, url, increase_counter, use_https)
+        __send_request_for_popup_to_socketio(nickname, port, 'info', message, url, increase_counter, use_https)
 
 
-def send_request_for_success_popup_to_socketio(request, message='', url=None, increase_counter=False):
+def send_request_for_success_popup_to_socketio(nickname, port, message='', url=None, increase_counter=False):
     """
     Sends request to the socketio server for a success popup
 
-    :param request: Current webservers request
+    :param nickname: Current users nickname
+    :param port: Port of the notification server
     :param message: String
     :param url: String
     :param increase_counter:
@@ -64,22 +67,22 @@ def send_request_for_success_popup_to_socketio(request, message='', url=None, in
     logger('Websocket.lib', 'send_request_for_success_popup_to_socketio', 'main')
     if url:
         use_https = 'dbas.cs' in url
-        __send_request_for_popup_to_socketio(request.authenticated_userid, get_port(request), 'success', message, url, increase_counter, use_https)
+        __send_request_for_popup_to_socketio(nickname, port, 'success', message, url, increase_counter, use_https)
 
 
-def send_request_for_warning_popup_to_socketio(request, message='', url=None, increase_counter=False):
+def send_request_for_warning_popup_to_socketio(nickname, port, message='', url=None, increase_counter=False):
     """
     Sends request to the socketio server for a warning popup
 
-    :param request: Current webservers request
-    :param nickname: User.nickname
+    :param nickname: Current users nickname
+    :param port: Port of the notification server
     :param message: String
     :param url: String
     :param increase_counter:
     :return: Status code of the request
     """
     logger('Websocket.lib', 'send_request_for_warning_popup_to_socketio', 'main')
-    __send_request_for_popup_to_socketio(request.authenticated_userid, get_port(request), 'warning', message, url, increase_counter)
+    __send_request_for_popup_to_socketio(nickname, port, 'warning', message, url, increase_counter)
 
 
 def __send_request_for_popup_to_socketio(nickname, port, popup_type, message='', url=None, increase_counter=False, use_https=False):

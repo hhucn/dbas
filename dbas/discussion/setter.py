@@ -14,14 +14,14 @@ from dbas.helper.notification import send_notification, count_of_new_notificatio
 from dbas.helper.query import insert_as_statements, process_input_of_start_premises_and_receive_url, \
     process_input_of_premises_for_arguments_and_receive_url, process_seen_statements,\
     mark_or_unmark_statement_or_argument, get_text_for_justification_or_reaction_bubble
-from dbas.lib import get_user_by_private_or_public_nickname, get_profile_picture, get_discussion_language, escape_string
+from dbas.lib import get_user_by_private_or_public_nickname, get_profile_picture, get_discussion_language
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position,\
     rep_reason_first_justification, rep_reason_new_statement, rep_reason_first_new_argument
 from dbas.url_manager import UrlManager
-from websocket.lib import send_request_for_info_popup_to_socketio
+from websocket.lib import send_request_for_info_popup_to_socketio, get_port
 
 
 def user_language(nickname, ui_locales) -> dict:
@@ -204,7 +204,9 @@ def positions_premise(request, for_api, api_data) -> dict:
     if broke_limit:
         ui_locales = get_language_from_cookie(request)
         _t = Translator(ui_locales)
-        send_request_for_info_popup_to_socketio(request, _t.get(_.youAreAbleToReviewNow),  request.application_url + '/review')
+        nickname = request.authenticated_userid
+        port = get_port(request)
+        send_request_for_info_popup_to_socketio(nickname, port, _t.get(_.youAreAbleToReviewNow),  request.application_url + '/review')
         prepared_dict['url'] = str(url) + str('#access-review')
 
     if url == -1:

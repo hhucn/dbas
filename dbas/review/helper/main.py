@@ -17,7 +17,7 @@ from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_success_flag, rep_reason_bad_flag, \
     rep_reason_success_duplicate, rep_reason_bad_duplicate, rep_reason_success_edit, rep_reason_bad_edit
 from dbas.strings.keywords import Keywords as _
-from websocket.lib import send_request_for_info_popup_to_socketio
+from websocket.lib import send_request_for_info_popup_to_socketio, get_port
 
 max_votes = 5
 min_difference = 3
@@ -132,7 +132,8 @@ def add_review_opinion_for_delete(request, review_uid, _t):
     transaction.commit()
 
     if broke_limit:
-        send_request_for_info_popup_to_socketio(request, db_user_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
+        port = get_port(request)
+        send_request_for_info_popup_to_socketio(db_user_created_flag.nickname, port, _t.get(_.youAreAbleToReviewNow),
                                                 request.application_url + '/review')
 
     return ''
@@ -197,7 +198,8 @@ def add_review_opinion_for_edit(request, is_edit_okay, review_uid, _t):
     transaction.commit()
 
     if broke_limit:
-        send_request_for_info_popup_to_socketio(request, db_user_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
+        port = get_port(request)
+        send_request_for_info_popup_to_socketio(db_user_created_flag.nickname, port, _t.get(_.youAreAbleToReviewNow),
                                                 application_url + '/review')
 
     return ''
@@ -310,7 +312,8 @@ def add_review_opinion_for_duplicate(request, is_duplicate, review_uid, _t):
     transaction.commit()
 
     if broke_limit:
-        send_request_for_info_popup_to_socketio(request, db_user_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
+        port = get_port(request)
+        send_request_for_info_popup_to_socketio(db_user_created_flag.nickname, port, _t.get(_.youAreAbleToReviewNow),
                                                 application_url + '/review')
 
     return ''
@@ -336,7 +339,8 @@ def __keep_the_element_of_optimization_review(request, db_review, application_ur
     if len(db_keep_version) > max_votes:
         add_rep, broke_limit = add_reputation_for(db_user_who_created_flag, rep_reason_bad_flag)
         if broke_limit:
-            send_request_for_info_popup_to_socketio(request, db_user_who_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
+            port = get_port(request)
+            send_request_for_info_popup_to_socketio(db_user_who_created_flag.nickname, port, _t.get(_.youAreAbleToReviewNow),
                                                     application_url + '/review')
 
         db_review.set_executed(True)
