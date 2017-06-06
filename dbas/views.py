@@ -1617,7 +1617,7 @@ def get_users_with_same_opinion(request):
 
     path = request.path
     application_url = request.application_url
-    nickname = request.nickname
+    nickname = request.authenticated_userid
     prepared_dict = getter.users_with_same_opinion(uids, application_url, path, nickname, is_arg, is_att, is_rea,
                                                    is_pos, ui_locales)
     return prepared_dict
