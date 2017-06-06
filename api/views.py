@@ -313,7 +313,7 @@ def add_start_statement(request):
     :return:
 
     """
-    return prepare_data_assign_reference(request, dbas.set_new_start_statement)
+    return prepare_data_assign_reference(request, setter.position)
 
 
 @start_premise.post(validators=validate_login, require_csrf=False)
@@ -335,7 +335,7 @@ def add_justify_premise(request):
     :return:
 
     """
-    return prepare_data_assign_reference(request, dbas.set_new_premises_for_argument)
+    return prepare_data_assign_reference(request, setter.arguments_premises)
 
 
 # =============================================================================

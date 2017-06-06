@@ -1,5 +1,4 @@
 import transaction
-import json
 
 import dbas.helper.issue as issue_helper
 import dbas.review.helper.queues as review_queue_helper
@@ -59,11 +58,11 @@ def notification(port, recipient, title, text, nickname, ui_locales) -> dict:
     Send a notification from user a to user b
 
     :param port: Port of the notification server
-    :üaram recipient: Nickname of the recipient
-    :üaram title: Title of the notification
-    :üaram text: Text of the notification
-    :üaram nickname: Users nickname
-    :üaram ui_locales: Current used language
+    :param recipient: Nickname of the recipient
+    :param title: Title of the notification
+    :param text: Text of the notification
+    :param nickname: Users nickname
+    :param ui_locales: Current used language
     :rtype: dict
     :return: prepared collection with status information
     """
@@ -85,50 +84,41 @@ def notification(port, recipient, title, text, nickname, ui_locales) -> dict:
         return {'error': _tn.get(_.senderReceiverSame), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
 
     db_notification = send_notification(db_author, db_recipient, title, text, nickname, port)
-    prepared_dict = {}
-    prepared_dict['error'] = ''
-    prepared_dict['timestamp'] = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
-    prepared_dict['uid'] = db_notification.uid
-    prepared_dict['recipient_avatar'] = get_profile_picture(db_recipient, 20)
+    prepared_dict = {
+        'error': '',
+        'timestamp': sql_timestamp_pretty_print(db_notification.timestamp, ui_locales),
+        'uid': db_notification.uid,
+        'recipient_avatar': get_profile_picture(db_recipient, 20)
+    }
     return prepared_dict
 
 
-def position(request, for_api, api_data) -> dict:
+def position(request, for_api, data) -> dict:
     """
     Set new position for current discussion and returns collection with the next url for the discussion.
 
     :param request: pyramid's request object
     :param for_api: boolean if requests came via the API
-    :param api_data: dict if requests came via the API
+    :param data: dict of requests data
     :rtype: dict
     :return: Prepared collection with statement_uids of the new positions and next url or an error
     """
     discussion_lang = get_discussion_language(request)
     _tn = Translator(discussion_lang)
-    prepared_dict = dict()
-    prepared_dict['error'] = ''
-    prepared_dict['statement_uids'] = []
 
     try:
-        if for_api and api_data:
-            nickname = api_data["nickname"]
-            statement = api_data["statement"]
-            issue = api_data["issue_id"]
-            slug = api_data["slug"]
-        else:
-            nickname = request.authenticated_userid
-            statement = request.params['statement']
-            issue = issue_helper.get_issue_id(request)
-            slug = DBDiscussionSession.query(Issue).get(issue).get_slug()
-
+        nickname = data["nickname"]
+        statement = data["statement"]
+        issue_id = data["issue_id"]
+        slug = data["slug"]
     except KeyError as e:
-        logger('setter', 'set_new_start_statement', repr(e), error=True)
-        prepared_dict['error'] = _tn.get(_.notInsertedErrorBecauseInternal)
-        return prepared_dict
+        logger('setter', 'position', repr(e), error=True)
+        return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
     # escaping will be done in QueryHelper().set_statement(...)
     user_manager.update_last_action(nickname)
-    new_statement = insert_as_statements(request, statement, nickname, issue, discussion_lang, is_start=True)
+    new_statement = insert_as_statements(request, statement, nickname, issue_id, discussion_lang, is_start=True)
+    prepared_dict = {'error': '', 'statement_uids': ''}
 
     if new_statement == -1:
         a = _tn.get(_.notInsertedErrorBecauseEmpty)
@@ -136,21 +126,24 @@ def position(request, for_api, api_data) -> dict:
         c = _tn.get(_.eachStatement)
         error = '{} ({}: {} {})'.format(a, b, 10, c)
         prepared_dict['error'] = error
-    elif new_statement == -2:
-        prepared_dict['error'] = _tn.get(_.noRights)
-    else:
-        url = UrlManager(request.application_url, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
-        prepared_dict['url'] = url
-        prepared_dict['statement_uids'].append(new_statement[0].uid)
+        return prepared_dict
 
-        # add reputation
-        add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_position)
-        if not add_rep:
-            add_rep, broke_limit = add_reputation_for(nickname, rep_reason_new_statement)
-            # send message if the user is now able to review
-        if broke_limit:
-            url += '#access-review'
-            prepared_dict['url'] = url
+    if new_statement == -2:
+        prepared_dict['error'] = _tn.get(_.noRights)
+        return prepared_dict
+
+    url = UrlManager(request.application_url, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
+    prepared_dict['url'] = url
+    prepared_dict['statement_uids'].append(new_statement[0].uid)
+
+    # add reputation
+    add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_position)
+    if not add_rep:
+        add_rep, broke_limit = add_reputation_for(nickname, rep_reason_new_statement)
+        # send message if the user is now able to review
+    if broke_limit:
+        url += '#access-review'
+        prepared_dict['url'] = url
 
     return prepared_dict
 
@@ -169,24 +162,24 @@ def positions_premise(request, for_api, data) -> dict:
     lang = get_discussion_language(request)
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(lang)
+
     try:
         nickname = data['nickname']
         premisegroups = data['statement']
-        issue = data['issue_id']
+        issue_id = data['issue_id']
         conclusion_id = data['conclusion_id']
         supportive = data['supportive']
         application_url = data['application_url']
     except KeyError as e:
         logger('setter', 'positions_premise', repr(e), error=True)
-        prepared_dict['error'] = _tn.get(_.notInsertedErrorBecauseInternal)
-        return prepared_dict
+        return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
     # escaping will be done in QueryHelper().set_statement(...)
     user_manager.update_last_action(nickname)
 
     url, statement_uids, error = process_input_of_start_premises_and_receive_url(request, premisegroups, conclusion_id,
-                                                                                 supportive, issue, nickname, for_api,
-                                                                                 application_url, lang)
+                                                                                 supportive, issue_id, nickname,
+                                                                                 for_api, application_url, lang)
 
     prepared_dict['error'] = error
     prepared_dict['statement_uids'] = statement_uids
@@ -199,7 +192,8 @@ def positions_premise(request, for_api, data) -> dict:
     if broke_limit:
         _t = Translator(ui_locales)
         port = get_port(request)
-        send_request_for_info_popup_to_socketio(nickname, port, _t.get(_.youAreAbleToReviewNow),  '{}/review'.format(application_url))
+        send_request_for_info_popup_to_socketio(nickname, port, _t.get(_.youAreAbleToReviewNow),
+                                                '{}/review'.format(application_url))
         prepared_dict['url'] = '{}{}'.format(url, '#access-review')
 
     if url == -1:
@@ -209,45 +203,36 @@ def positions_premise(request, for_api, data) -> dict:
     return prepared_dict
 
 
-def arguments_premises(request, for_api, api_data) -> dict:
+def arguments_premises(request, for_api, data) -> dict:
     """
     Set new premise for a given conclusion and returns dictionary with url for the next step of the discussion
 
     :param request: pyramid's request object
     :param for_api: boolean if requests came via the API
-    :param api_data: dict if requests came via the API
+    :param data: dict if requests came via the API
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and next url or an error
     """
     prepared_dict = dict()
-    lang = get_language_from_cookie(request)
+    discussion_lang = get_discussion_language(request)
     application_url = request.application_url
-    _tn = Translator(lang)
+    _tn = Translator(discussion_lang)
 
     try:
-        if for_api and api_data:
-            nickname      = api_data['nickname']
-            premisegroups = api_data['statement']
-            issue         = api_data['issue_id']
-            arg_uid       = api_data['arg_uid']
-            attack_type   = api_data['attack_type']
-        else:
-            nickname = request.authenticated_userid
-            premisegroups = json.loads(request.params['premisegroups'])
-            issue = issue_helper.get_issue_id(request)
-            arg_uid = request.params['arg_uid']
-            attack_type = request.params['attack_type']
-
+        nickname = data['nickname']
+        premisegroups = data['statement']
+        issue_id = data['issue_id']
+        arg_uid = data['arg_uid']
+        attack_type = data['attack_type']
     except KeyError as e:
-        logger('setter', 'set_new_premises_for_argument', repr(e), error=True)
-        prepared_dict['error'] = _tn.get(_.notInsertedErrorBecauseInternal)
-        return prepared_dict
+        logger('setter', 'arguments_premises', repr(e), error=True)
+        return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
     # escaping will be done in QueryHelper().set_statement(...)
-    discussion_lang = get_discussion_language(request)
     url, statement_uids, error = process_input_of_premises_for_arguments_and_receive_url(request, arg_uid, attack_type,
-                                                                                         premisegroups, issue, nickname,
-                                                                                         for_api, application_url,
+                                                                                         premisegroups, issue_id,
+                                                                                         nickname, for_api,
+                                                                                         application_url,
                                                                                          discussion_lang)
     user_manager.update_last_action(nickname)
 
@@ -260,7 +245,6 @@ def arguments_premises(request, for_api, api_data) -> dict:
         add_rep, broke_limit = add_reputation_for(nickname, rep_reason_new_statement)
         # send message if the user is now able to review
     if broke_limit:
-        # send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), request.application_url + '/review')
         url += '#access-review'
         prepared_dict['url'] = url
 
@@ -298,7 +282,6 @@ def notification_read(uid, nickname, ui_locales) -> dict:
     """
     Simply marks a notification as read
 
-    :param request: pyramid's request object
     :param uid: Id of the notification which should be marked as read
     :param nickname: Nickname of current user
     :param ui_locales: Language of current users session
@@ -407,12 +390,12 @@ def seen_statements(uids, path, nickname, ui_locales) -> dict:
         url = path[path.index('justify/') + len('justify/'):]
         additional_argument = int(url[:url.index('/')])
 
-    errorCode = process_seen_statements(uids, nickname, additional_argument=additional_argument)
-    error = '' if errorCode is None else _tn.get(errorCode)
+    error_code = process_seen_statements(uids, nickname, additional_argument=additional_argument)
+    error = '' if error_code is None else _tn.get(error_code)
     return {'error': error}
 
 
-def mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history, ui_locales, nickname) -> dict:
+def mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history, ui_loc, nickname) -> dict:
     """
     Marks statement or argument as current users opinion and returns status about the action
 
@@ -422,13 +405,13 @@ def mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mar
     :param is_supportive: Boolean if the mark is supportive
     :param should_mark: Boolean if it should be (un-)marked
     :param history: Users history
-    :param ui_locales: Current language
+    :param ui_loc: Current language
     :param nickname: Users nickname
     :rtype: dict
     :return: Dictionary with new text for the current bubble, where the user marked her opinion
     """
     prepared_dict = dict()
-    _t = Translator(ui_locales)
+    _t = Translator(ui_loc)
 
     success, error = mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, nickname, _t)
     prepared_dict['success'] = success

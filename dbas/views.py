@@ -30,7 +30,7 @@ import dbas.strings.matcher as fuzzy_string_matcher
 from dbas import user_management as user_manager
 from dbas.auth.login import login_user, register_with_ajax_data
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group
+from dbas.database.discussion_model import User, Group, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.password import request_password
 from dbas.handler.rss import get_list_of_all_feeds
@@ -1262,17 +1262,28 @@ def send_some_notification(request):
 
 # ajax - send new start statement
 @view_config(route_name='ajax_set_new_start_statement', renderer='json')
-def set_new_start_statement(request, for_api=False, api_data=None):
+def set_new_start_statement(request):
     """
     Inserts a new statement into the database, which should be available at the beginning
 
     :param request: request of the web server
-    :param for_api: boolean
-    :param api_data: api_data
     :return: a status code, if everything was successful
     """
     logger('views', 'set_new_start_statement', 'request.params: {}'.format(request.params))
-    prepared_dict = setter.position(request, for_api, api_data)
+    discussion_lang = get_discussion_language(request)
+    _tn = Translator(discussion_lang)
+    try:
+        data = {}
+        data['nickname'] = request.authenticated_userid
+        data['statement'] = request.params['statement']
+        issue = issue_helper.get_issue_id(request)
+        data['issue_id'] = issue
+        data['slug'] = DBDiscussionSession.query(Issue).get(issue).get_slug()
+    except KeyError as e:
+        logger('views', 'set_new_start_statement', repr(e), error=True)
+        return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
+
+    prepared_dict = setter.position(request, False, data)
 
     return prepared_dict
 
@@ -1309,17 +1320,28 @@ def set_new_start_premise(request):
 
 # ajax - send new premises
 @view_config(route_name='ajax_set_new_premises_for_argument', renderer='json')
-def set_new_premises_for_argument(request, for_api=False, api_data=None):
+def set_new_premises_for_argument(request):
     """
     Sets a new premise for an argument
 
     :param request: request of the web server
-    :param api_data:
-    :param for_api: boolean
     :return: json-dict()
     """
     logger('views', 'set_new_premises_for_argument', 'request.params: {}'.format(request.params))
-    prepared_dict = setter.arguments_premises(request, for_api, api_data)
+    lang = get_discussion_language(request)
+    _tn = Translator(lang)
+    try:
+        data = {}
+        data['nickname'] = request.authenticated_userid
+        data['statement'] = json.loads(request.params['premisegroups'])
+        data['issue_id'] = issue_helper.get_issue_id(request)
+        data['arg_uid'] = request.params['arg_uid']
+        data['attack_type'] = request.params['attack_type']
+    except KeyError as e:
+        logger('views', 'set_new_premises_for_argument', repr(e), error=True)
+        return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
+
+    prepared_dict = setter.arguments_premises(request, False, data)
     return prepared_dict
 
 
