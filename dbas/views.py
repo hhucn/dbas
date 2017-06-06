@@ -1294,6 +1294,7 @@ def set_new_start_premise(request, for_api=False, api_data=None):
     _tn = Translator(lang)
     try:
         data['nickname'] = request.authenticated_userid
+        data['application_url'] = request.application_url
         data['issue'] = issue_helper.get_issue_id(request)
         data['premisegroups'] = json.loads(request.params['premisegroups'])
         data['conclusion_id'] = request.params['conclusion_id']

@@ -155,13 +155,13 @@ def position(request, for_api, api_data) -> dict:
     return prepared_dict
 
 
-def positions_premise(request, for_api, api_data) -> dict:
+def positions_premise(request, for_api, data) -> dict:
     """
     Set new premise for a given position and returns dictionary with url for the next step of the discussion
 
     :param request: pyramid's request object
     :param for_api: boolean if requests came via the API
-    :param api_data: dict if requests came via the API
+    :param data: dict of requests data
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and next url or an error
     """
@@ -169,18 +169,12 @@ def positions_premise(request, for_api, api_data) -> dict:
     lang = get_discussion_language(request)
     _tn = Translator(lang)
     try:
-        if for_api and api_data:
-            nickname = api_data['nickname']
-            premisegroups = api_data['statement']
-            issue = api_data['issue_id']
-            conclusion_id = api_data['conclusion_id']
-            supportive = api_data['supportive']
-        else:
-            nickname = request.authenticated_userid
-            issue = issue_helper.get_issue_id(request)
-            premisegroups = json.loads(request.params['premisegroups'])
-            conclusion_id = request.params['conclusion_id']
-            supportive = True if request.params['supportive'].lower() == 'true' else False
+        nickname = data['nickname']
+        premisegroups = data['statement']
+        issue = data['issue_id']
+        conclusion_id = data['conclusion_id']
+        supportive = data['supportive']
+        application_url = data['application_url']
     except KeyError as e:
         logger('setter', 'set_new_start_premise', repr(e), error=True)
         prepared_dict['error'] = _tn.get(_.notInsertedErrorBecauseInternal)
@@ -191,7 +185,7 @@ def positions_premise(request, for_api, api_data) -> dict:
 
     url, statement_uids, error = process_input_of_start_premises_and_receive_url(request, premisegroups, conclusion_id,
                                                                                  supportive, issue, nickname, for_api,
-                                                                                 request.application_url, lang)
+                                                                                 application_url, lang)
 
     prepared_dict['error'] = error
     prepared_dict['statement_uids'] = statement_uids
@@ -229,6 +223,7 @@ def arguments_premises(request, for_api, api_data) -> dict:
     """
     prepared_dict = dict()
     lang = get_language_from_cookie(request)
+    application_url = request.application_url
     _tn = Translator(lang)
 
     try:
@@ -254,8 +249,7 @@ def arguments_premises(request, for_api, api_data) -> dict:
     discussion_lang = get_discussion_language(request)
     url, statement_uids, error = process_input_of_premises_for_arguments_and_receive_url(request, arg_uid, attack_type,
                                                                                          premisegroups, issue, nickname,
-                                                                                         for_api,
-                                                                                         request.application_url,
+                                                                                         for_api, application_url,
                                                                                          discussion_lang)
     user_manager.update_last_action(nickname)
 

@@ -39,6 +39,7 @@ def init(request, nickname, for_api=False) -> dict:
 
     matchdict = request.matchdict
     set_language_for_first_visit(request)
+    application_url = request.application_url
 
     count_of_slugs = 1
     if 'slug' in matchdict and isinstance(matchdict['slug'], ()):
@@ -65,10 +66,10 @@ def init(request, nickname, for_api=False) -> dict:
     __handle_history(request, nickname, slug, issue)
 
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
-    item_dict = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api).get_array_for_start(nickname)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api)
+    item_dict = ItemDictHelper(disc_ui_locales, issue, application_url, for_api).get_array_for_start(nickname)
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname=nickname, main_page=request.application_url, slug=slug)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname=nickname, main_page=application_url, slug=slug)
     _dh = DictionaryHelper(get_language_from_cookie(request), disc_ui_locales)
     discussion_dict = _ddh.get_dict_for_start(position_count=(len(item_dict['elements'])))
     extras_dict = _dh.prepare_extras_dict(slug, False, True, False, request, for_api=for_api, nickname=nickname)
@@ -102,6 +103,7 @@ def attitude(request, nickname, for_api=False) -> dict:
     ui_locales = get_language_from_cookie(request)
     statement_id = request.matchdict['statement_id'][0] if 'statement_id' in request.matchdict else ''
     slug = request.matchdict['slug'] if 'slug' in request.matchdict else ''
+    application_url = request.application_url
     if len(slug) > 0:
         issue = issue_helper.get_id_of_slug(slug, request, True)
     else:
@@ -117,16 +119,16 @@ def attitude(request, nickname, for_api=False) -> dict:
         raise None
 
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api)
     history = __handle_history(request, nickname, slug, issue)
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=application_url, slug=slug)
     discussion_dict = _ddh.get_dict_for_attitude(statement_id)
     if not discussion_dict:
         logger('Core', 'discussion.attitude', 'no discussion dict', error=True)
         return None
 
-    _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
+    _idh = ItemDictHelper(disc_ui_locales, issue, application_url, for_api, path=request.path, history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     item_dict = _idh.prepare_item_dict_for_attitude(statement_id)
     extras_dict = _dh.prepare_extras_dict(issue_dict['slug'], False, True, False, request, for_api=for_api, nickname=nickname)
@@ -155,6 +157,7 @@ def justify(request, nickname, for_api=False) -> dict:
     logger('Core', 'discussion.justify', 'main')
 
     ui_locales = get_language_from_cookie(request)
+    application_url = request.application_url
 
     slug = request.matchdict['slug'] if 'slug' in request.matchdict else ''
     if len(slug) > 0:
@@ -162,7 +165,7 @@ def justify(request, nickname, for_api=False) -> dict:
     else:
         issue = issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api)
 
     history = __handle_history(request, nickname, slug, issue)
 
@@ -201,6 +204,7 @@ def reaction(request, nickname, for_api=False) -> dict:
     arg_id_sys = request.matchdict['arg_id_sys'] if 'arg_id_sys' in request.matchdict else ''
     tmp_argument = DBDiscussionSession.query(Argument).get(arg_id_user)
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
+    application_url = request.application_url
 
     valid_reaction = check_reaction(arg_id_user, arg_id_sys, attack)
     if not tmp_argument or not valid_reaction\
@@ -222,12 +226,12 @@ def reaction(request, nickname, for_api=False) -> dict:
     add_click_for_argument(arg_id_user, nickname)
 
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api)
 
     history = __handle_history(request, nickname, slug, issue)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=application_url, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, issue, application_url, for_api, path=request.path, history=history)
     discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history, nickname)
     item_dict = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack, discussion_dict['gender'])
     extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request, for_api=for_api, nickname=nickname, broke_limit=broke_limit)
@@ -265,13 +269,11 @@ def support(request, nickname, for_api=False, api_data=None) -> dict:
         arg_user_uid = request.matchdict['arg_id_user'] if 'arg_id_user' in request.matchdict else ''
         arg_system_uid = request.matchdict['arg_id_sys'] if 'arg_id_sys' in request.matchdict else ''
 
-    logger('X', 'X', '.{}.'.format(arg_user_uid))
-    logger('X', 'X', '.{}.'.format(arg_system_uid))
-
+    application_url = request.application_url
     ui_locales = get_language_from_cookie(request)
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api)
 
     if not check_belonging_of_argument(issue, arg_user_uid) or \
             not check_belonging_of_argument(issue, arg_system_uid) or \
@@ -280,10 +282,10 @@ def support(request, nickname, for_api=False, api_data=None) -> dict:
         return None
 
     history = __handle_history(request, nickname, slug, issue)
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=application_url, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, issue, application_url, for_api, path=request.path, history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
-    discussion_dict = _ddh.get_dict_for_supporting_each_other(arg_system_uid, arg_user_uid, nickname, request.application_url)
+    discussion_dict = _ddh.get_dict_for_supporting_each_other(arg_system_uid, arg_user_uid, nickname, application_url)
     item_dict = _idh.get_array_for_support(arg_system_uid, slug, for_api)
     extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request, for_api=for_api, nickname=nickname)
 
@@ -315,6 +317,7 @@ def choose(request, nickname, for_api=False) -> dict:
     is_supportive = request.matchdict['supportive'] if 'supportive' in request.matchdict else ''
     uid = request.matchdict['id'] if 'id' in request.matchdict else ''
     pgroup_ids = request.matchdict['pgroup_ids'] if 'id' in request.matchdict else ''
+    application_url = request.application_url
 
     is_argument = True if is_argument is 't' else False
     is_supportive = True if is_supportive is 't' else False
@@ -322,7 +325,7 @@ def choose(request, nickname, for_api=False) -> dict:
     ui_locales = get_language_from_cookie(request)
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api)
 
     for pgroup in pgroup_ids:
         if not is_integer(pgroup):
@@ -334,8 +337,8 @@ def choose(request, nickname, for_api=False) -> dict:
         return None
 
     history = __handle_history(request, nickname, slug, issue)
-    _ddh = DiscussionDictHelper(ui_locales, nickname, history, main_page=request.application_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
+    _ddh = DiscussionDictHelper(ui_locales, nickname, history, main_page=application_url, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, issue, application_url, for_api, path=request.path, history=history)
     discussion_dict = _ddh.get_dict_for_choosing(uid, is_argument, is_supportive)
     item_dict = _idh.get_array_for_choosing(uid, pgroup_ids, is_argument, is_supportive, nickname)
 
@@ -372,10 +375,11 @@ def jump(request, nickname, for_api=False, api_data=None) -> dict:
 
     ui_locales = get_language_from_cookie(request)
     slug = request.matchdict['slug'] if 'slug' in request.matchdict else ''
+    application_url = request.application_url
 
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api)
     history = __handle_history(request, nickname, slug, issue)
 
     if for_api and api_data:
@@ -389,8 +393,8 @@ def jump(request, nickname, for_api=False, api_data=None) -> dict:
         logger('Core', 'discussion.choose', 'no item dict', error=True)
         return None
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=request.application_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=application_url, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, issue, application_url, for_api, path=request.path, history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     discussion_dict = _ddh.get_dict_for_jump(arg_uid, nickname, history)
     item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
