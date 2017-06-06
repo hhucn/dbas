@@ -15,7 +15,7 @@ from dbas.database.discussion_model import Argument, User, Language, Group, Sett
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.helper.notification import count_of_new_notifications, get_box_for
 from dbas.helper.query import get_every_attack_for_island_view
-from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, \
+from dbas.lib import get_text_for_argument_uid, get_text_for_premisesgroup_uid, get_text_for_conclusion, BubbleTypes,\
     create_speechbubble_dict, get_profile_picture, get_public_profile_picture, is_usage_with_ldap, is_development_mode
 from dbas.logger import logger
 from dbas.review.helper.queues import get_complete_review_count
@@ -319,7 +319,7 @@ class DictionaryHelper(object):
         else:
             mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkTextLoggedIn if nickname else _.feelFreeToLogin)
             discussion_dict['bubbles'].append(
-                create_speechbubble_dict(is_info=True, message=mid_text, lang=self.system_lang, nickname=nickname))
+                create_speechbubble_dict(BubbleTypes.is_info, message=mid_text, lang=self.system_lang, nickname=nickname))
 
     def __add_discussion_end_text_at_start(self, discussion_dict, extras_dict, nickname, gender, _tn):
         """
@@ -341,16 +341,16 @@ class DictionaryHelper(object):
             user_text = _tn.get(_.firstPositionText)
         user_text += '<br>' + (_tn.get(_.pleaseAddYourSuggestion if nickname else _.feelFreeToLogin))
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(is_status=True, id='end', message=user_text, lang=self.system_lang, nickname=nickname))
+            create_speechbubble_dict(BubbleTypes.is_status, id='end', message=user_text, lang=self.system_lang, nickname=nickname))
 
         if nickname:
             extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
             extras_dict['close_statement_container'] = False
 
         extras_dict['show_display_style'] = False
-        extras_dict['show_bar_icon']      = False
-        extras_dict['is_editable']        = False
-        extras_dict['is_reportable']      = False
+        extras_dict['show_bar_icon'] = False
+        extras_dict['is_editable'] = False
+        extras_dict['is_reportable'] = False
 
     def __add_discussion_end_text_at_justify_argumentation(self, discussion_dict, extras_dict, nickname, gender, _tn):
         """
@@ -375,7 +375,7 @@ class DictionaryHelper(object):
                 mid_text = _tn.get(_.firstOneReasonM)
             else:
                 mid_text = _tn.get(_.firstOneReason)
-            sdict = create_speechbubble_dict(is_info=True, id='end', message=mid_text, lang=self.system_lang, nickname=nickname)
+            sdict = create_speechbubble_dict(BubbleTypes.is_info, id='end', message=mid_text, lang=self.system_lang, nickname=nickname)
             discussion_dict['bubbles'].append(sdict)
         # else:
             #     mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin)
@@ -408,9 +408,9 @@ class DictionaryHelper(object):
             mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkTextLoggedIn if gender else _.discussionEndLinkTextNotLoggedIn)
 
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(is_system=True, id='end', message=sys_text, lang=self.system_lang, nickname=nickname))
+            create_speechbubble_dict(BubbleTypes.is_system, id='end', message=sys_text, lang=self.system_lang, nickname=nickname))
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(is_info=True, id='end', message=mid_text, lang=self.system_lang, nickname=nickname))
+            create_speechbubble_dict(BubbleTypes.is_info, id='end', message=mid_text, lang=self.system_lang, nickname=nickname))
 
     def __add_discussion_end_text_at_justify_statement(self, discussion_dict, extras_dict, nickname, current_premise, supportive, gender, _tn):
         """
@@ -446,7 +446,7 @@ class DictionaryHelper(object):
             mid_text += _tn.get(_.discussionEnd) + ' ' + _tn.get(_.discussionEndLinkTextLoggedIn if gender else _.discussionEndLinkTextNotLoggedIn)
 
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(is_info=True, id='end', message=mid_text, lang=self.system_lang, nickname=nickname))
+            create_speechbubble_dict(BubbleTypes.is_info, id='end', message=mid_text, lang=self.system_lang, nickname=nickname))
         extras_dict['close_premise_container'] = False
         extras_dict['show_display_style']      = False
         extras_dict['show_bar_icon']           = False

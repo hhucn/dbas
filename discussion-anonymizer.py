@@ -7,7 +7,7 @@ from dbas.helper.database import dbas_db_configuration
 settings = add_settings_to_appconfig()
 session.configure(bind=dbas_db_configuration('discussion', settings))
 
-for user in session.query(User).all():
+for user in session.query(User).filter(~User.nickname.in_(['anonymous'])).all():
     user.firstname = 'firstname_{}'.format(user.uid)
     user.surname = 'surname_{}'.format(user.uid)
     user.nickname = 'nickname_{}'.format(user.uid)
