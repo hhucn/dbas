@@ -38,6 +38,7 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.language import set_language, get_language_from_cookie, set_language_for_first_visit
 from dbas.helper.settings import set_settings
 from dbas.helper.query import get_logfile_for_statements
+from dbas.helper.references import set_reference
 from dbas.helper.views import preparation_for_view, try_to_contact
 from dbas.helper.voting import clear_vote_and_seen_values_of_user
 from dbas.input_validator import is_integer
@@ -1234,21 +1235,21 @@ def send_some_notification(request):
     :param request: current request of the server
     :return: dict()
     """
-    logger('notification', 'def', 'request.params: {}'.format(request.params))
+    logger('views', 'send_some_notification', 'request.params: {}'.format(request.params))
 
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
     try:
-        prepared_dict = setter.notification(request)
+        recipient = str(request.params['recipient']).replace('%20', ' ')
+        title = request.params['title']
+        text = request.params['text']
+    except KeyError as e:
+        logger('views', 'send_some_notification', repr(e), error=True)
+        prepared_dict = {'error': _tn.get(_.internalKeyError), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
+        return prepared_dict
 
-    except (KeyError, AttributeError):
-        prepared_dict = {
-            'error': _tn.get(_.internalKeyError),
-            'timestamp': '',
-            'uid': '',
-            'recipient_avatar': ''
-        }
+    prepared_dict = setter.notification(request, recipient, title , text, request.authenticated_userid, ui_locales)
 
     return prepared_dict
 
@@ -1386,7 +1387,21 @@ def mark_statement_or_argument(request):
     :return: json
     """
     logger('views', 'mark_statement_or_argument', 'main {}'.format(request.params))
-    prepared_dict = setter.mark_statement_or_argument(request)
+    ui_locales = get_discussion_language(request)
+
+    try:
+        uid = request.params['uid']
+        step = request.params['step']
+        is_argument = str(request.params['is_argument']).lower() == 'true'
+        is_supportive = str(request.params['is_supportive']).lower() == 'true'
+        should_mark = str(request.params['should_mark']).lower() == 'true'
+        history = request.params['history'] if 'history' in request.params else ''
+    except KeyError as e:
+        logger('views', 'mark_statement_or_argument', repr(e), error=True)
+        _t = Translator(ui_locales)
+        return {'succes': '', 'text': '', 'error': _t.get(_.internalKeyError)}
+
+    prepared_dict = setter.mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history, ui_locales, nickname)
     return prepared_dict
 
 # ###################################
@@ -1597,8 +1612,23 @@ def set_references(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('set_references', 'def', 'main: {}'.format(request.params))
-    prepared_dict = setter.references(request)
+    logger('views', 'set_references', 'main: {}'.format(request.params))
+    ui_locales = get_language_from_cookie(request)
+    _tn = Translator(ui_locales)
+    issue_uid = issue_helper.get_issue_id(request)
+
+    try:
+        uid = request.params['uid']
+        reference = escape_string(json.loads(request.params['reference']))
+        source = escape_string(json.loads(request.params['ref_source']))
+    except KeyError as e:
+        logger('views', 'set_references', repr(e), error=True)
+        prepared_dict = {'error': _tn.get(_.internalKeyError)}
+        return prepared_dict
+
+    success = set_reference(reference, source, request.authenticated_userid, uid, issue_uid)
+    prepared_dict = {'error': '' if success else _tn.get(_.internalKeyError)}
+
     return prepared_dict
 
 

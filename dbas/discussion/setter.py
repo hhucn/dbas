@@ -14,7 +14,6 @@ from dbas.helper.notification import send_notification, count_of_new_notificatio
 from dbas.helper.query import insert_as_statements, process_input_of_start_premises_and_receive_url, \
     process_input_of_premises_for_arguments_and_receive_url, process_seen_statements,\
     mark_or_unmark_statement_or_argument, get_text_for_justification_or_reaction_bubble
-from dbas.helper.references import set_reference
 from dbas.lib import get_user_by_private_or_public_nickname, get_profile_picture, get_discussion_language, escape_string
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -35,69 +34,71 @@ def user_language(nickname, ui_locales) -> dict:
     :return: prepared collection with status information
     """
     _tn = Translator(ui_locales)
-    error = ''
-    current_lang = ''
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if db_user:
-        db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
-        if db_settings:
-            db_language = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
-            if db_language:
-                current_lang = db_language.name
-                db_settings.set_lang_uid(db_language.uid)
-                transaction.commit()
-            else:
-                error = _tn.get(_.internalError)
-        else:
-            error = _tn.get(_.checkNickname)
-    else:
-        error = _tn.get(_.checkNickname)
+    if not db_user:
+        return {'error': _tn.get(_.checkNickname), 'ui_locales': ui_locales, 'current_lang': ''}
 
-    prepared_dict = {}
-    prepared_dict['error'] = error
-    prepared_dict['ui_locales'] = ui_locales
-    prepared_dict['current_lang'] = current_lang
-    return prepared_dict
+    db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
+    if not db_settings:
+        return {'error': _tn.get(_.checkNickname), 'ui_locales': ui_locales, 'current_lang': ''}
+
+    db_language = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
+    if not db_language:
+        return {'error': _tn.get(_.internalError), 'ui_locales': ui_locales, 'current_lang': ''}
+
+    current_lang = db_language.name
+    db_settings.set_lang_uid(db_language.uid)
+    transaction.commit()
+
+    return {'error': '', 'ui_locales': ui_locales, 'current_lang': current_lang}
 
 
-def notification(request) -> dict:
+def notification(request, recipient, title , text, nickname, ui_locales) -> dict:
     """
     Send a notification from user a to user b
 
     :param request: pyramid's request object
+    :üaram recipient: Nickname of the recipient
+    :üaram title: Title of the notification
+    :üaram text: Text of the notification
+    :üaram nickname: Users nickname
+    :üaram ui_locales: Current used language
     :rtype: dict
     :return: prepared collection with status information
     """
-    ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
-    recipient = str(request.params['recipient']).replace('%20', ' ')
-    title = request.params['title']
-    text = request.params['text']
-    error = ''
-    ts = ''
-    uid = ''
-    gravatar = ''
 
     db_recipient = get_user_by_private_or_public_nickname(recipient)
     if len(title) < 5 or len(text) < 5:
         error = '{} ({}: 5)'.format(_tn.get(_.empty_notification_input), _tn.get(_.minLength))
-    elif not db_recipient or recipient == 'admin' or recipient == nick_of_anonymous_user:
+        prepared_dict = {'error': error, 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
+        return prepared_dict
+
+    if not db_recipient or recipient == 'admin' or recipient == nick_of_anonymous_user:
         error = _tn.get(_.recipientNotFound)
+        prepared_dict = {'error': error, 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
+        return prepared_dict
+
+    db_author = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_author:
+        error = _tn.get(_.notLoggedIn)
+        prepared_dict = {'error': error, 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
+        return prepared_dict
+
+    if db_author.uid == db_recipient.uid:
+        error = _tn.get(_.senderReceiverSame)
+        prepared_dict = {'error': error, 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
+        return prepared_dict
+
     else:
-        db_author = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
-        if not db_author:
-            error = _tn.get(_.notLoggedIn)
-        if db_author.uid == db_recipient.uid:
-            error = _tn.get(_.senderReceiverSame)
-        else:
-            db_notification = send_notification(request, db_author, db_recipient, title, text, request.application_url)
-            uid = db_notification.uid
-            ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
-            gravatar = get_profile_picture(db_recipient, 20)
+        db_notification = send_notification(request, db_author, db_recipient, title, text, nickname)
+        uid = db_notification.uid
+        ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
+        gravatar = get_profile_picture(db_recipient, 20)
 
     prepared_dict = {}
-    prepared_dict['error'] = error
+    prepared_dict['error'] = ''
     prepared_dict['timestamp'] = ts
     prepared_dict['uid'] = uid
     prepared_dict['recipient_avatar'] = gravatar
@@ -459,64 +460,27 @@ def seen_statements(request) -> dict:
     return prepared_dict
 
 
-def mark_statement_or_argument(request) -> dict:
+def mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history, ui_locales, nickname) -> dict:
     """
     Marks statement or argument as current users opinion and returns status about the action
 
-    :param request: pyramid's request object
+    :param uid: ID of statement or argument
+    :param step: kind of step in current discussion
+    :param is_argument: Boolean if the id is for an argument
+    :param is_supportive: Boolean if the mark is supportive
+    :param should_mark: Boolean if it should be (un-)marked
+    :param history: Users history
+    :param ui_locales: Current language
+    :param nickname: Users nickname
     :rtype: dict
     :return: Dictionary with new text for the current bubble, where the user marked her opinion
     """
     prepared_dict = dict()
-    ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
 
-    try:
-        uid = request.params['uid']
-        step = request.params['step']
-        is_argument = str(request.params['is_argument']).lower() == 'true'
-        is_supportive = str(request.params['is_supportive']).lower() == 'true'
-        should_mark = str(request.params['should_mark']).lower() == 'true'
-        history = request.params['history'] if 'history' in request.params else ''
-
-        success, error = mark_or_unmark_statement_or_argument(uid, is_argument, should_mark,
-                                                              request.authenticated_userid, _t)
-        prepared_dict['success'] = success
-        prepared_dict['error'] = error
-        prepared_dict['text'] = get_text_for_justification_or_reaction_bubble(uid, is_argument, is_supportive,
-                                                                              request.authenticated_userid, step,
-                                                                              history, _t)
-    except KeyError as e:
-        logger('setter', 'mark_statement_or_argument', repr(e), error=True)
-        prepared_dict['error'] = _t.get(_.internalKeyError)
-    return prepared_dict
-
-
-def references(request) -> dict:
-    """
-    Sets new reference
-
-    :param request: pyramid's request object
-    :rtype: dict
-    :return: Dictionary with an error field
-    """
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-    issue_uid = issue_helper.get_issue_id(request)
-    nickname = request.authenticated_userid
-
-    try:
-
-        uid = request.params['uid']
-        reference = escape_string(json.loads(request.params['reference']))
-        source = escape_string(json.loads(request.params['ref_source']))
-
-    except KeyError as e:
-        logger('setter', 'set_references', repr(e), error=True)
-        prepared_dict = {'error': _tn.get(_.internalKeyError)}
-        return prepared_dict
-
-    success = set_reference(reference, source, nickname, uid, issue_uid)
-    prepared_dict = {'error': '' if success else _tn.get(_.internalKeyError)}
-
+    success, error = mark_or_unmark_statement_or_argument(uid, is_argument, should_mark, nickname, _t)
+    prepared_dict['success'] = success
+    prepared_dict['error'] = error
+    prepared_dict['text'] = get_text_for_justification_or_reaction_bubble(uid, is_argument, is_supportive,
+                                                                          nickname, step, history, _t)
     return prepared_dict
