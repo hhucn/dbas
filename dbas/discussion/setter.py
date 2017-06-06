@@ -134,7 +134,7 @@ def position(request, for_api, data) -> dict:
 
     url = UrlManager(request.application_url, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
     prepared_dict['url'] = url
-    prepared_dict['statement_uids'] = new_statement[0].uid
+    prepared_dict['statement_uids'] = [new_statement[0].uid]
 
     # add reputation
     add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_position)
