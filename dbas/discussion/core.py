@@ -71,7 +71,7 @@ def init(request, nickname, for_api=False) -> dict:
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname=nickname, main_page=request.application_url, slug=slug)
     _dh = DictionaryHelper(get_language_from_cookie(request), disc_ui_locales)
     discussion_dict = _ddh.get_dict_for_start(position_count=(len(item_dict['elements'])))
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, False, True, request, for_api=for_api, nickname=nickname)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, False, request, for_api=for_api, nickname=nickname)
 
     if len(item_dict['elements']) == 1:
         DictionaryHelper(disc_ui_locales, disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict,
@@ -129,7 +129,7 @@ def attitude(request, nickname, for_api=False) -> dict:
     _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     item_dict = _idh.prepare_item_dict_for_attitude(statement_id)
-    extras_dict = _dh.prepare_extras_dict(issue_dict['slug'], False, True, False, True, request, for_api=for_api, nickname=nickname)
+    extras_dict = _dh.prepare_extras_dict(issue_dict['slug'], False, True, False, request, for_api=for_api, nickname=nickname)
 
     prepared_discussion = dict()
     prepared_discussion['issues'] = issue_dict
@@ -234,9 +234,7 @@ def reaction(request, nickname, for_api=False) -> dict:
     _idh = ItemDictHelper(disc_ui_locales, issue, request.application_url, for_api, path=request.path, history=history)
     discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history, nickname)
     item_dict = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack, discussion_dict['gender'])
-    extras_dict = _dh.prepare_extras_dict(slug, True, True, True, True, request, argument_id=arg_id_sys,
-                                          for_api=for_api, argument_for_island=arg_id_user, attack=attack,
-                                          nickname=nickname, broke_limit=broke_limit)
+    extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request, for_api=for_api, nickname=nickname, broke_limit=broke_limit)
 
     prepared_discussion = dict()
     prepared_discussion['issues'] = issue_dict
@@ -291,7 +289,7 @@ def support(request, nickname, for_api=False, api_data=None) -> dict:
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     discussion_dict = _ddh.get_dict_for_supporting_each_other(arg_system_uid, arg_user_uid, nickname, request.application_url)
     item_dict = _idh.get_array_for_support(arg_system_uid, slug, for_api)
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, True, request, for_api=for_api, nickname=nickname)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request, for_api=for_api, nickname=nickname)
 
     prepared_discussion = dict()
     prepared_discussion['issues'] = issue_dict
@@ -350,7 +348,7 @@ def choose(request, nickname, for_api=False) -> dict:
         return None
 
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, True, request, for_api=for_api, nickname=nickname)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request, for_api=for_api, nickname=nickname)
 
     prepared_discussion = dict()
     prepared_discussion['issues'] = issue_dict
@@ -400,7 +398,7 @@ def jump(request, nickname, for_api=False, api_data=None) -> dict:
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     discussion_dict = _ddh.get_dict_for_jump(arg_uid, nickname, history)
     item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, True, request, for_api=for_api, nickname=nickname)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request, for_api=for_api, nickname=nickname)
 
     prepared_discussion = dict()
     prepared_discussion['issues'] = issue_dict
