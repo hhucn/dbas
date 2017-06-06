@@ -1293,10 +1293,12 @@ def set_new_start_premise(request):
     try:
         data['nickname'] = request.authenticated_userid
         data['application_url'] = request.application_url
-        data['issue'] = issue_helper.get_issue_id(request)
-        data['premisegroups'] = json.loads(request.params['premisegroups'])
+        data['issue_id'] = issue_helper.get_issue_id(request)
+        data['statement'] = json.loads(request.params['premisegroups'])
         data['conclusion_id'] = request.params['conclusion_id']
         data['supportive'] = True if request.params['supportive'].lower() == 'true' else False
+        # data['port'] = get_port(request)
+        # data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
     except KeyError as e:
         logger('views', 'set_new_start_premise', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}

@@ -177,7 +177,7 @@ def positions_premise(request, for_api, data) -> dict:
         supportive = data['supportive']
         application_url = data['application_url']
     except KeyError as e:
-        logger('setter', 'set_new_start_premise', repr(e), error=True)
+        logger('setter', 'positions_premise', repr(e), error=True)
         prepared_dict['error'] = _tn.get(_.notInsertedErrorBecauseInternal)
         return prepared_dict
 
@@ -199,14 +199,13 @@ def positions_premise(request, for_api, data) -> dict:
     if broke_limit:
         _t = Translator(ui_locales)
         port = get_port(request)
-        send_request_for_info_popup_to_socketio(nickname, port, _t.get(_.youAreAbleToReviewNow),  application_url + '/review')
-        prepared_dict['url'] = str(url) + str('#access-review')
+        send_request_for_info_popup_to_socketio(nickname, port, _t.get(_.youAreAbleToReviewNow),  '{}/review'.format(application_url))
+        prepared_dict['url'] = '{}{}'.format(url, '#access-review')
 
     if url == -1:
         return prepared_dict
 
     prepared_dict['url'] = url
-
     return prepared_dict
 
 

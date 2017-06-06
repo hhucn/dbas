@@ -113,6 +113,9 @@ def __send_request_for_popup_to_socketio(nickname, port, popup_type, message='',
         params += 'increase_counter=True&'
     params = params[:-1]
 
+    if not port:
+        port = fallback_port
+
     if use_https:
         link = '{}:{}/'.format(get_global_url(), port)
     else:
@@ -188,6 +191,9 @@ def __send_request_for_recent_review_to_socketio(port, reviewer_name, reviewer_i
     logger('Websocket.lib', '__send_request_for_recent_review_to_socketio', 'main')
     params = '?reviewer_name=' + reviewer_name + '&img_url=' + reviewer_image_url + '&queue=' + queue
 
+    if not port:
+        port = fallback_port
+
     if use_https:
         link = '{}:{}/'.format(get_global_url(), port)
     else:
@@ -218,11 +224,11 @@ def get_port(request):
     """
     Lets have a loko into the settings if there is a websocket port, otherwise 5222 will be returned
 
-    :param request: currenet request
+    :param request: pyramid's request object
     :return: int
     """
     try:
-        if 'settings:services:websocket_port' in request.registry.settings:
+        if request and 'settings:services:websocket_port' in request.registry.settings:
             return request.registry.settings['settings:services:websocket_port']
     except KeyError as e:
         logger('Websocket.lib', 'get_port', 'error while reading port: {}'.format(repr(e)), error=True)
