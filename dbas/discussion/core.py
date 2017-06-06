@@ -166,12 +166,8 @@ def justify(request, nickname, for_api=False) -> dict:
 
     history = __handle_history(request, nickname, slug, issue)
 
-    try:
-        item_dict, discussion_dict, extras_dict = handle_justification_step(request, for_api, ui_locales, nickname, history)
-    except HTTPNotFound:
-        return None
-
-    if type(item_dict) is HTTPNotFound:
+    item_dict, discussion_dict, extras_dict = handle_justification_step(request, for_api, ui_locales, nickname, history)
+    if item_dict is None or discussion_dict is None or extras_dict is None:
         return None
 
     prepared_discussion = dict()

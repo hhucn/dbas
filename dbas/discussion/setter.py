@@ -502,18 +502,21 @@ def references(request) -> dict:
     """
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
+    issue_uid = issue_helper.get_issue_id(request)
+    nickname = request.authenticated_userid
 
     try:
-        nickname = request.authenticated_userid
-        issue_uid = issue_helper.get_issue_id(request)
 
         uid = request.params['uid']
         reference = escape_string(json.loads(request.params['reference']))
         source = escape_string(json.loads(request.params['ref_source']))
-        success = set_reference(reference, source, nickname, uid, issue_uid)
-        prepared_dict = {'error': '' if success else _tn.get(_.internalKeyError)}
 
     except KeyError as e:
         logger('setter', 'set_references', repr(e), error=True)
         prepared_dict = {'error': _tn.get(_.internalKeyError)}
+        return prepared_dict
+
+    success = set_reference(reference, source, nickname, uid, issue_uid)
+    prepared_dict = {'error': '' if success else _tn.get(_.internalKeyError)}
+
     return prepared_dict
