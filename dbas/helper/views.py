@@ -120,7 +120,7 @@ def handle_justification_step(request, for_api, ui_locales, nickname, history):
             # return HTTPFound(location=UrlManager(request.application_url, for_api=for_api).get_404([slug, statement_or_arg_id])), None, None
         item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(request, for_api, main_page, slug,
                                                                                    statement_or_arg_id, supportive,
-                                                                                   ui_locales, nickname, relation,
+                                                                                   ui_locales, relation, nickname,
                                                                                    history)
         # add reputation
         add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_confrontation)

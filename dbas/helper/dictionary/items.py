@@ -224,7 +224,7 @@ class ItemDictHelper(object):
         :param history:
         :return:
         """
-        logger('ItemDictHelper', 'get_array_for_justify_argument', 'def: arg ' + str(argument_uid) + ', attack ' + attack_type)
+        logger('ItemDictHelper', 'get_array_for_justify_argument', 'def: arg {}, attack {}'.format(argument_uid, attack_type))
         statements_array = []
         _tn = Translator(self.lang)
         slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()
