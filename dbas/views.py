@@ -1314,7 +1314,7 @@ def set_new_start_premise(request):
         data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
         try:
             data['mailer'] = get_mailer(request)
-        except ComponentLookupError:
+        except ComponentLookupError as e:
             logger('views', 'set_new_start_premise', repr(e), error=True)
     except KeyError as e:
         logger('views', 'set_new_start_premise', repr(e), error=True)
@@ -1343,11 +1343,12 @@ def set_new_premises_for_argument(request):
         data['issue_id'] = issue_helper.get_issue_id(request)
         data['arg_uid'] = request.params['arg_uid']
         data['attack_type'] = request.params['attack_type']
+        data['port'] = get_port(request)
         data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
         try:
             data['mailer'] = get_mailer(request)
-        except ComponentLookupError:
-            logger('views', 'set_new_start_premise', repr(e), error=True)
+        except ComponentLookupError as e:
+            logger('views', 'set_new_premises_for_argument', repr(e), error=True)
     except KeyError as e:
         logger('views', 'set_new_premises_for_argument', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}

@@ -142,7 +142,8 @@ def process_input_of_premises_for_arguments_and_receive_url(default_locale_name,
     # all new arguments are collected in a list
     new_argument_uids = []
     for group in premisegroups:  # premise groups is a list of lists
-        new_argument = __insert_new_premises_for_argument(application_url, default_locale_name, group, attack_type, arg_id, issue, user, discussion_lang)
+        new_argument = __insert_new_premises_for_argument(application_url, default_locale_name, group, attack_type,
+                                                          arg_id, issue, user, discussion_lang)
         if not isinstance(new_argument, Argument):  # break on error
             a = _tn.get(_.notInsertedErrorBecauseEmpty)
             b = _tn.get(_.minLength)
@@ -175,7 +176,8 @@ def process_input_of_premises_for_arguments_and_receive_url(default_locale_name,
         url = __get_url_for_new_argument(new_argument_uids, history, discussion_lang, _um)
 
     else:
-        url = __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type, arg_id, _um, supportive)
+        url = __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type,
+                                                                                    arg_id, _um, supportive)
 
     # send notifications and mails
     if len(new_argument_uids) > 0:

@@ -8,7 +8,6 @@ from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import sql_timestamp_pretty_print, User, Settings, Language, Issue, Message
 from dbas.database.initializedb import nick_of_anonymous_user
-from dbas.helper.language import get_language_from_cookie
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
 from dbas.helper.query import insert_as_statements, process_input_of_start_premises_and_receive_url, \
     process_input_of_premises_for_arguments_and_receive_url, process_seen_statements, get_default_locale_name,\
@@ -104,9 +103,9 @@ def position(request, for_api, data) -> dict:
     :return: Prepared collection with statement_uids of the new positions and next url or an error
     """
     discussion_lang = get_discussion_language(request)
-    _tn = Translator(discussion_lang)
     application_url = request.application_url
     default_locale_name = get_default_locale_name(request)
+    _tn = Translator(discussion_lang)
 
     try:
         nickname = data['nickname']
@@ -119,7 +118,8 @@ def position(request, for_api, data) -> dict:
 
     # escaping will be done in QueryHelper().set_statement(...)
     user_manager.update_last_action(nickname)
-    new_statement = insert_as_statements(application_url, default_locale_name, statement, nickname, issue_id, discussion_lang, is_start=True)
+    new_statement = insert_as_statements(application_url, default_locale_name, statement, nickname, issue_id,
+                                         discussion_lang, is_start=True)
     prepared_dict = {'error': '', 'statement_uids': ''}
 
     if new_statement == -1:
@@ -161,10 +161,9 @@ def positions_premise(request, for_api, data) -> dict:
     :return: Prepared collection with statement_uids of the new premises and next url or an error
     """
     prepared_dict = dict()
-    lang = get_discussion_language(request)
-    ui_locales = get_language_from_cookie(request)
+    discussion_lang = get_discussion_language(request)
     default_locale_name = get_default_locale_name(request)
-    _tn = Translator(lang)
+    _tn = Translator(discussion_lang)
 
     try:
         nickname = data['nickname']
@@ -186,7 +185,7 @@ def positions_premise(request, for_api, data) -> dict:
     url, statement_uids, error = process_input_of_start_premises_and_receive_url(default_locale_name, premisegroups,
                                                                                  conclusion_id, supportive, issue_id,
                                                                                  nickname, for_api, application_url,
-                                                                                 lang, history, port, mailer)
+                                                                                 discussion_lang, history, port, mailer)
 
     prepared_dict['error'] = error
     prepared_dict['statement_uids'] = statement_uids
@@ -197,7 +196,7 @@ def positions_premise(request, for_api, data) -> dict:
         add_rep, broke_limit = add_reputation_for(nickname, rep_reason_new_statement)
         # send message if the user is now able to review
     if broke_limit:
-        _t = Translator(ui_locales)
+        _t = Translator(discussion_lang)
         port = get_port(request)
         send_request_for_info_popup_to_socketio(nickname, port, _t.get(_.youAreAbleToReviewNow),
                                                 '{}/review'.format(application_url))
@@ -223,9 +222,8 @@ def arguments_premises(request, for_api, data) -> dict:
     prepared_dict = dict()
     discussion_lang = get_discussion_language(request)
     application_url = request.application_url
-    _tn = Translator(discussion_lang)
     default_locale_name = get_default_locale_name(request)
-    port = get_port(request)
+    _tn = Translator(discussion_lang)
 
     try:
         nickname = data['nickname']
@@ -235,6 +233,7 @@ def arguments_premises(request, for_api, data) -> dict:
         attack_type = data['attack_type']
         history = data['history'] if '_HISTORY_' in data else None
         mailer = data['mailer'] if 'mailer' in data else None
+        port = data['port'] if 'port' in data else None
     except KeyError as e:
         logger('setter', 'arguments_premises', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
