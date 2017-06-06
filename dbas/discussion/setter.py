@@ -317,66 +317,52 @@ def correction_of_statement(request) -> dict:
     return prepared_dict
 
 
-def notification_read(request) -> dict:
+def notification_read(uid, nickname, ui_locales) -> dict:
     """
     Simply marks a notification as read
 
     :param request: pyramid's request object
-    :rtype: dict
+    :param uid: Id of the notification which should be marked as read
+    :param nickname: Nickname of current user
+    :param ui_locales: Language of current users session
     :return: Dictionary with info and/or error
     """
     prepared_dict = dict()
-    ui_locales = get_language_from_cookie(request)
-    _t = Translator(ui_locales)
-    request_authenticated_userid = request.authenticated_userid
-    user_manager.update_last_action(request_authenticated_userid)
+    _tn = Translator(ui_locales)
+    user_manager.update_last_action(nickname)
 
-    try:
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=request_authenticated_userid).first()
-        if db_user:
-            DBDiscussionSession.query(Message).filter(and_(Message.uid == request.params['id'],
-                                                           Message.to_author_uid == db_user.uid,
-                                                           Message.is_inbox == True)).first().set_read(True)
-            transaction.commit()
-            prepared_dict['unread_messages'] = count_of_new_notifications(request_authenticated_userid)
-            prepared_dict['error'] = ''
-        else:
-            prepared_dict['error'] = _t.get(_.noRights)
-    except KeyError as e:
-        logger('setter', 'set_message_read', repr(e), error=True)
-        prepared_dict['error'] = _t.get(_.internalKeyError)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
+        return {'error': _tn.get(_.noRights), 'success': ''}
+
+    DBDiscussionSession.query(Message).filter(and_(Message.uid == uid,
+                                                   Message.to_author_uid == db_user.uid,
+                                                   Message.is_inbox == True)).first().set_read(True)
+    transaction.commit()
+    prepared_dict['unread_messages'] = count_of_new_notifications(nickname)
+    prepared_dict['error'] = ''
 
     return prepared_dict
 
 
-def notification_delete(request) -> dict:
+def notification_delete(uid, nickname, ui_locales, application_url) -> dict:
     """
     Simply deletes a specific notification
 
-    :param request: pyramid's request object
+    :param uid: Id of the notification which should be deleted
+    :param nickname: Nickname of current user
+    :param ui_locales: Language of current users session
+    :param application_url Url of the App
     :rtype: dict
     :return: Dictionary with info and/or error
     """
-    prepared_dict = dict()
 
-    ui_locales = get_language_from_cookie(request)
-    _t = Translator(ui_locales)
-    request_authenticated_userid = request.authenticated_userid
-    user_manager.update_last_action(request_authenticated_userid)
+    user_manager.update_last_action(nickname)
+    _tn = Translator(ui_locales)
 
-    try:
-        uid = request.params['id']
-    except KeyError as e:
-        logger('setter', 'set_notification_delete', repr(e), error=True)
-        prepared_dict['error'] = _t.get(_.internalKeyError)
-        prepared_dict['success'] = ''
-        return prepared_dict
-
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=request_authenticated_userid).first()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
-        prepared_dict['error'] = _t.get(_.noRights)
-        prepared_dict['success'] = ''
-        return prepared_dict
+        return {'error': _tn.get(_.noRights), 'success': ''}
 
     # inbox
     DBDiscussionSession.query(Message).filter(and_(Message.uid == uid,
@@ -387,9 +373,10 @@ def notification_delete(request) -> dict:
                                                    Message.from_author_uid == db_user.uid,
                                                    Message.is_inbox == False)).delete()
     transaction.commit()
-    prepared_dict['unread_messages'] = count_of_new_notifications(request_authenticated_userid)
-    prepared_dict['total_in_messages'] = str(len(get_box_for(request_authenticated_userid, ui_locales, request.application_url, True)))
-    prepared_dict['total_out_messages'] = str(len(get_box_for(request_authenticated_userid, ui_locales, request.application_url, False)))
+    prepared_dict = dict()
+    prepared_dict['unread_messages'] = count_of_new_notifications(nickname)
+    prepared_dict['total_in_messages'] = str(len(get_box_for(nickname, ui_locales, application_url, True)))
+    prepared_dict['total_out_messages'] = str(len(get_box_for(nickname, ui_locales, application_url, False)))
     prepared_dict['error'] = ''
     prepared_dict['success'] = _t.get(_.messageDeleted)
 

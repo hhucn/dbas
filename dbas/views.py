@@ -1332,7 +1332,16 @@ def set_notification_read(request):
     :return: json-dict()
     """
     logger('views', 'set_notification_read', 'main {}'.format(request.params))
-    prepared_dict = setter.notification_read(request)
+    ui_locales = get_language_from_cookie(request)
+
+    try:
+        uid = request.params['id']
+    except KeyError as e:
+        logger('setter', 'set_message_read', repr(e), error=True)
+        _tn = Translator(ui_locales)
+        return {'error': _tn.get(_.internalKeyError), 'success': ''}
+
+    prepared_dict = setter.notification_read(uid, request.authenticated_userid, ui_locales)
     return prepared_dict
 
 
@@ -1346,7 +1355,16 @@ def set_notification_delete(request):
     :return: json-dict()
     """
     logger('views', 'set_notification_delete', 'main {}'.format(request.params))
-    prepared_dict = setter.notification_delete(request)
+    ui_locales = get_language_from_cookie(request)
+
+    try:
+        uid = request.params['id']
+    except KeyError as e:
+        logger('views', 'set_notification_delete', repr(e), error=True)
+        _tn = Translator(ui_locales)
+        return {'error': _tn.get(_.internalKeyError), 'success': ''}
+
+    prepared_dict = setter.notification_delete(uid, request.authenticated_userid, ui_locales, request.application_url)
     return prepared_dict
 
 
@@ -1371,7 +1389,7 @@ def set_new_issue(request):
         logger('setter', 'set_new_issue', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
-    prepared_dict = setter.issue(nickname, info, long_info, title, lang, application_url, ui_locales)
+    prepared_dict = setter.issue(request.nickname, info, long_info, title, lang, request.application_url, ui_locales)
     return prepared_dict
 
 
