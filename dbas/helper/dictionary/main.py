@@ -75,7 +75,8 @@ class DictionaryHelper(object):
 
     def prepare_extras_dict_for_normal_page(self, request, append_notifications=False):
         """
-        Calls self.prepare_extras_dict('', False, False, False, False, False, nickname)
+        Calls self.prepare_extras_dict('', False, False, False, False, append_notifications, nickname)
+
         :param request: Request
         :param append_notifications: Boolean
         :return: dict()
@@ -145,8 +146,8 @@ class DictionaryHelper(object):
         return_dict['broke_limit'] = 'true' if broke_limit else 'false'
         return_dict['use_with_ldap'] = is_ldap
         return_dict['development_mode'] = is_development
-        return_dict['is_development'] = rrs['mode'] == 'development' if 'mode' in rrs else ''
-        return_dict['is_production'] = rrs['mode'] == 'production' if 'mode' in rrs else ''
+        return_dict['is_development'] = rrs['mode'] == 'development' if 'mode' in rrs else False
+        return_dict['is_production'] = rrs['mode'] == 'production' if 'mode' in rrs else False
         return_dict['review_count'] = get_complete_review_count(nickname)
         return_dict['g_recaptcha_key'] = google_recaptcha_client_key
 

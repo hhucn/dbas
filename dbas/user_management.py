@@ -195,7 +195,7 @@ def is_user_admin(nickname):
     return db_user and db_user.groups.name == 'admins'
 
 
-def get_public_information_data(nickname, lang):
+def get_users_public_data(nickname, lang):
     """
     Fetch some public information about the user with given nickname
 

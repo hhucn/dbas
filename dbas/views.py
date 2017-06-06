@@ -37,6 +37,7 @@ from dbas.handler.rss import get_list_of_all_feeds
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.language import set_language, get_language_from_cookie, set_language_for_first_visit
 from dbas.helper.settings import set_settings
+from dbas.helper.query import get_logfile_for_statements
 from dbas.helper.views import preparation_for_view, try_to_contact
 from dbas.helper.voting import clear_vote_and_seen_values_of_user
 from dbas.input_validator import is_integer
@@ -1403,7 +1404,18 @@ def get_logfile_for_some_statements(request):
     :return: json-dict()
     """
     logger('views', 'get_logfile_for_statements', 'request.params: {}'.format(request.params))
-    prepared_dict = getter.logfile_for_some_statements
+
+    try:
+        uids = json.loads(request.params['uids'])
+        issue = request.params['issue']
+        ui_locales = get_discussion_language(request, issue)
+        prepared_dict = get_logfile_for_statements(uids, ui_locales, request.application_url)
+        prepared_dict['error'] = ''
+    except KeyError as e:
+        logger('views', 'get_logfile_for_statements', repr(e), error=True)
+        _tn = Translator(get_discussion_language(request))
+        prepared_dict = {'error': _tn.get(_.noCorrections)}
+
     return prepared_dict
 
 
@@ -1417,7 +1429,14 @@ def get_shortened_url(request):
     :return: dictionary with shortend url
     """
     logger('views', 'get_shortened_url', 'main')
-    prepared_dict = getter.shortened_url(request)
+    try:
+        url = request.params['url']
+        prepared_dict = getter.shortened_url(url, request.unauthenticated_userid,get_discussion_language(request))
+    except KeyError as e:
+        logger('views', 'get_shortened_url', repr(e), error=True)
+        _tn = Translator(get_discussion_language(request))
+        return {'error': _tn.get(_.internalKeyError)}
+
     return prepared_dict
 
 
@@ -1444,7 +1463,17 @@ def get_all_infos_about_argument(request):
     :return: json-set with everything
     """
     logger('views', 'get_all_infos_about_argument', 'request.params: {}'.format(request.params))
-    prepared_dict = getter.all_infos_about_argument(request)
+    ui_locales = get_discussion_language(request)
+
+    try:
+        uid = request.params['uid']
+    except KeyError as e:
+        logger('views', 'get_all_infos_about_argument', repr(e), error=True)
+        _tn = Translator(ui_locales)
+        return {'error': _tn.get(_.internalKeyError)}
+
+    prepared_dict = getter.all_infos_about_argument(uid, request.application_url, request.authenticated_userid,
+                                                    ui_locales)
     return prepared_dict
 
 
@@ -1458,7 +1487,26 @@ def get_users_with_same_opinion(request):
     :return: json-set with everything
     """
     logger('views', 'get_users_with_same_opinion', 'main: {}'.format(request.params))
-    prepared_dict = getter.all_infos_about_argument(request)
+
+    try:
+        params = request.params
+        ui_locales = params['lang'] if 'lang' in params else 'en'
+        uids = params['uids']
+        is_arg = params['is_argument'] == 'true' if 'is_argument' in params else False
+        is_att = params['is_attitude'] == 'true' if 'is_attitude' in params else False
+        is_rea = params['is_reaction'] == 'true' if 'is_reaction' in params else False
+        is_pos = params['is_position'] == 'true' if 'is_position' in params else False
+    except KeyError as e:
+        logger('views', 'get_users_with_same_opinion', repr(e), error=True)
+        ui_locales = get_discussion_language(request)
+        _tn = Translator(ui_locales)
+        return {'error': _tn.get(_.internalKeyError)}
+
+    path = request.path
+    application_url = request.application_url
+    nickname = request.nickname
+    prepared_dict = getter.users_with_same_opinion(uids, application_url, path, nickname, is_arg, is_att, is_rea,
+                                                   is_pos, ui_locales)
     return prepared_dict
 
 
@@ -1472,7 +1520,18 @@ def get_public_user_data(request):
     :return:
     """
     logger('getter', 'get_public_user_data', 'main: {}'.format(request.params))
-    prepared_dict = getter.public_user_data(request)
+    ui_locales = get_language_from_cookie(request)
+    _tn = Translator(ui_locales)
+
+    try:
+        nickname = request.params['nickname']
+    except KeyError as e:
+        logger('getter', 'get_public_user_data', repr(e), error=True)
+        return {'error': _tn.get(_.internalKeyError)}
+
+    prepared_dict = user_manager.get_users_public_data(nickname, ui_locales)
+    prepared_dict['error'] = '' if len(prepared_dict) != 0 else _tn.get(_.internalKeyError)
+
     return prepared_dict
 
 
@@ -1484,8 +1543,18 @@ def get_arguments_by_statement_uid(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('get_arguments_by_statement_uid', 'def', 'main: {}'.format(request.matchdict))
-    prepared_dict = getter.arguments_by_statement_uid(request)
+    logger('views', 'get_arguments_by_statement_uid', 'main: {}'.format(request.matchdict))
+
+    ui_locales = get_language_from_cookie(request)
+    try:
+        uid = request.matchdict['uid']
+
+    except KeyError as e:
+        logger('views', 'get_arguments_by_statement_uid', repr(e), error=True)
+        _tn = Translator(ui_locales)
+        return {'error': _tn.get(_.internalKeyError)}
+
+    prepared_dict = getter.arguments_by_statement_uid(uid, request.application_url, ui_locales)
     return prepared_dict
 
 
@@ -1499,7 +1568,24 @@ def get_references(request):
     :return: json-dict()
     """
     logger('views', 'get_references', 'main: {}'.format(request.params))
-    prepared_dict = getter.references(request)
+    ui_locales = get_language_from_cookie(request)
+    _tn = Translator(ui_locales)
+
+    try:
+        # uid is an integer if it is an argument and a list otherwise
+        uids = json.loads(request.params['uid'])
+        is_argument = str(request.params['is_argument']) == 'true'
+        are_all_integer = all(is_integer(tmp) for tmp in uids) if isinstance(uids, list) else is_integer(uids)
+
+        if not are_all_integer:
+            logger('views', 'get_references', 'uid is not an integer', error=True)
+            return {'data': '', 'text': '', 'error': _tn.get(_.internalKeyError)}
+
+    except KeyError as e:
+        logger('views', 'get_references', repr(e), error=True)
+        return {'data': '', 'text': '', 'error': _tn.get(_.internalKeyError)}
+
+    prepared_dict = getter.references(uids, is_argument, request.application_url)
     return prepared_dict
 
 
