@@ -10,7 +10,7 @@ from dbas.lib import get_discussion_language, is_user_author_or_admin
 from dbas.helper.query import revoke_content
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from websocket.lib import send_request_for_recent_delete_review_to_socketio,\
+from websocket.lib import send_request_for_recent_delete_review_to_socketio, get_port,\
     send_request_for_recent_edit_review_to_socketio, send_request_for_recent_optimization_review_to_socketio
 
 
@@ -60,7 +60,10 @@ def delete_argument(request) -> dict:
     else:
         error = review_main_helper.add_review_opinion_for_delete(request, review_uid, _t)
         if len(error) == 0:
-            send_request_for_recent_delete_review_to_socketio(request)
+            nickname = request.authenticated_userid
+            main_page = request.application_url
+            port = get_port(request)
+            send_request_for_recent_delete_review_to_socketio(nickname, main_page, port)
 
     prepared_dict = {'error': error}
     return prepared_dict
@@ -85,7 +88,10 @@ def edit_argument(request) -> dict:
     else:
         error = review_main_helper.add_review_opinion_for_edit(request, is_edit_okay, review_uid, _t)
         if len(error) == 0:
-            send_request_for_recent_edit_review_to_socketio(request)
+            nickname = request.authenticated_userid
+            main_page = request.application_url
+            port = get_port(request)
+            send_request_for_recent_edit_review_to_socketio(nickname, main_page, port)
 
     prepared_dict = {'error': error}
     return prepared_dict
@@ -110,7 +116,10 @@ def duplicate_statement(request) -> dict:
     else:
         error = review_main_helper.add_review_opinion_for_duplicate(request, is_duplicate, review_uid, _t)
         if len(error) == 0:
-            send_request_for_recent_edit_review_to_socketio(request)
+            nickname = request.authenticated_userid
+            main_page = request.application_url
+            port = get_port(request)
+            send_request_for_recent_edit_review_to_socketio(nickname, main_page, port)
 
     prepared_dict = {'error': error}
     return prepared_dict
@@ -137,7 +146,10 @@ def optimization_argument(request) -> dict:
     else:
         error = review_main_helper.add_review_opinion_for_optimization(request, should_optimized, review_uid, new_data, _t)
         if len(error) == 0:
-            send_request_for_recent_optimization_review_to_socketio(request)
+            nickname = request.authenticated_userid
+            main_page = request.application_url
+            port = get_port(request)
+            send_request_for_recent_optimization_review_to_socketio(nickname, main_page, port)
 
     prepared_dict = {'error': error}
     return prepared_dict

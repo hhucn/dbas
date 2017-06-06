@@ -72,36 +72,24 @@ def notification(request, recipient, title , text, nickname, ui_locales) -> dict
     db_recipient = get_user_by_private_or_public_nickname(recipient)
     if len(title) < 5 or len(text) < 5:
         error = '{} ({}: 5)'.format(_tn.get(_.empty_notification_input), _tn.get(_.minLength))
-        prepared_dict = {'error': error, 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
-        return prepared_dict
+        return {'error': error, 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
 
     if not db_recipient or recipient == 'admin' or recipient == nick_of_anonymous_user:
-        error = _tn.get(_.recipientNotFound)
-        prepared_dict = {'error': error, 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
-        return prepared_dict
+        return {'error': _tn.get(_.recipientNotFound), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
 
     db_author = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_author:
-        error = _tn.get(_.notLoggedIn)
-        prepared_dict = {'error': error, 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
-        return prepared_dict
+        return {'error': _tn.get(_.notLoggedIn), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
 
     if db_author.uid == db_recipient.uid:
-        error = _tn.get(_.senderReceiverSame)
-        prepared_dict = {'error': error, 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
-        return prepared_dict
+        return {'error': _tn.get(_.senderReceiverSame), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
 
-    else:
-        db_notification = send_notification(request, db_author, db_recipient, title, text, nickname)
-        uid = db_notification.uid
-        ts = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
-        gravatar = get_profile_picture(db_recipient, 20)
-
+    db_notification = send_notification(request, db_author, db_recipient, title, text, nickname)
     prepared_dict = {}
     prepared_dict['error'] = ''
-    prepared_dict['timestamp'] = ts
-    prepared_dict['uid'] = uid
-    prepared_dict['recipient_avatar'] = gravatar
+    prepared_dict['timestamp'] = sql_timestamp_pretty_print(db_notification.timestamp, ui_locales)
+    prepared_dict['uid'] = db_notification.uid
+    prepared_dict['recipient_avatar'] = get_profile_picture(db_recipient, 20)
     return prepared_dict
 
 
