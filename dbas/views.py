@@ -1318,7 +1318,16 @@ def set_correction_of_statement(request):
     :return: json-dict()
     """
     logger('views', 'set_correction_of_statement', 'request.params: {}'.format(request.params))
-    prepared_dict = setter.correction_of_statement(request)
+    ui_locales = get_language_from_cookie(request)
+    _tn = Translator(ui_locales)
+
+    try:
+        elements = json.loads(request.params['elements'])
+    except KeyError as e:
+        logger('views', 'set_correction_of_statement', repr(e), error=True)
+        return {'error': _tn.get(_.internalError), 'info': ''}
+
+    prepared_dict = setter.correction_of_statement(elements, request.authenticated_userid, ui_locales)
     return prepared_dict
 
 

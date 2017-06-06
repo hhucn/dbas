@@ -291,28 +291,23 @@ def arguments_premises(request, for_api, api_data) -> dict:
     return prepared_dict
 
 
-def correction_of_statement(request) -> dict:
+def correction_of_statement(elements, nickname, ui_locales) -> dict:
     """
     Adds a proposol for a statements correction and returns info if the proposal could be set
 
-    :param request: pyramid's request object
+    :param elements: List of dicts with text and uids for proposals of edits for new statements
+    :param nickname: Nickname of current user
+    :param ui_locales: Language of current users session
     :rtype: dict
     :return: Dictionary with info and/or error
     """
     prepared_dict = dict()
-    nickname = request.authenticated_userid
     user_manager.update_last_action(nickname)
+    _tn = Translator(ui_locales)
 
-    _tn = Translator(get_language_from_cookie(request))
-    try:
-        elements = json.loads(request.params['elements'])
-        msg, error = review_queue_helper.add_proposals_for_statement_corrections(elements, nickname, _tn)
-        prepared_dict['error'] = msg if error else ''
-        prepared_dict['info'] = msg if len(msg) > 0 else ''
-    except KeyError as e:
-        prepared_dict['error'] = _tn.get(_.internalError)
-        prepared_dict['info'] = ''
-        logger('setter', 'set_correction_of_statement', repr(e), error=True)
+    msg, error = review_queue_helper.add_proposals_for_statement_corrections(elements, nickname, _tn)
+    prepared_dict['error'] = msg if error else ''
+    prepared_dict['info'] = msg if len(msg) > 0 else ''
 
     return prepared_dict
 
