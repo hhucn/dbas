@@ -4,7 +4,7 @@ Helper for D-BAS Views
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-from dbas.handler import user 
+from dbas.handler import user
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid_mailer import get_mailer
 from validate_email import validate_email

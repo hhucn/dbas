@@ -392,7 +392,7 @@ def get_default_locale_name(request):
     return 'en'
 
 
-def get_shortened_url(url, nickname, ui_locales) -> dict:
+def get_short_url(url, nickname, ui_locales) -> dict:
     """
     Shortens the url via external service.
 
@@ -410,7 +410,7 @@ def get_shortened_url(url, nickname, ui_locales) -> dict:
         shortener = Shortener(service)
         short_url = format(shortener.short(url))
     except ReadTimeout as e:
-        logger('getter', 'get_shortened_url', repr(e), error=True)
+        logger('getter', 'get_short_url', repr(e), error=True)
         _tn = Translator(ui_locales)
         prepared_dict = {'error': _tn.get(_.serviceNotAvailable)}
         return prepared_dict

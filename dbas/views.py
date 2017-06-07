@@ -41,7 +41,7 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.language import set_language, get_language_from_cookie, set_language_for_first_visit
 from dbas.helper.notification import read_notification, delete_notification, send_users_notification
 from dbas.helper.query import get_default_locale_name, set_user_language, \
-    mark_statement_or_argument
+    mark_statement_or_argument, get_short_url
 from dbas.helper.references import set_reference, get_references
 from dbas.helper.settings import set_settings
 from dbas.helper.views import preparation_for_view, try_to_contact
@@ -1212,20 +1212,20 @@ def set_user_settings(request):
 
 # ajax - set boolean for receiving information
 @view_config(route_name='ajax_set_user_language', renderer='json')
-def set_language(request):
+def set_user_lang(request):
     """
     Will logout the user
 
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_language', 'request.params: {}'.format(request.params))
+    logger('views', 'set_user_lang', 'request.params: {}'.format(request.params))
 
     try:
         ui_locales = request.params['ui_locales'] if 'ui_locales' in request.params else None
         prepared_dict = set_user_language(request.authenticated_userid, ui_locales)
     except KeyError as e:
-        logger('views', 'set_language', repr(e), error=True)
+        logger('views', 'set_user_lang', repr(e), error=True)
         _tn = Translator(get_language_from_cookie(request))
         prepared_dict = {
             'error': _tn.get(_.internalKeyError),
@@ -1373,21 +1373,21 @@ def set_new_premises_for_argument(request):
 
 # ajax - set new textvalue for a statement
 @view_config(route_name='ajax_set_correction_of_statement', renderer='json')
-def set_correction_of_statement(request):
+def set_correction_of_some_statements(request):
     """
     Sets a new textvalue for a statement
 
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_correction_of_statement', 'request.params: {}'.format(request.params))
+    logger('views', 'set_correction_of_some_statements', 'request.params: {}'.format(request.params))
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
     try:
         elements = json.loads(request.params['elements'])
     except KeyError as e:
-        logger('views', 'set_correction_of_statement', repr(e), error=True)
+        logger('views', 'set_correction_of_some_statements', repr(e), error=True)
         return {'error': _tn.get(_.internalError), 'info': ''}
 
     prepared_dict = set_correction_of_statement(elements, request.authenticated_userid, ui_locales)
@@ -1467,21 +1467,21 @@ def set_new_issue(request):
 
 # ajax - set seen premisegroup
 @view_config(route_name='ajax_set_seen_statements', renderer='json')
-def set_seen_statements(request):
+def set_statements_as_seen(request):
     """
     Set statements as seen, when they were hidden
 
     :param request: current request of the server
     :return: json
     """
-    logger('views', 'set_seen_statements', 'main {}'.format(request.params))
+    logger('views', 'set_statements_as_seen', 'main {}'.format(request.params))
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
     try:
         uids = json.loads(request.params['uids'])
     except KeyError as e:
-        logger('views', 'set_seen_statements', repr(e), error=True)
+        logger('views', 'set_statements_as_seen', repr(e), error=True)
         return {'error': _tn.get(_.internalKeyError)}
 
     prepared_dict = set_seen_statements(uids, request.path, request.authenticated_userid, ui_locales)
@@ -1490,14 +1490,14 @@ def set_seen_statements(request):
 
 # ajax - set users opinion
 @view_config(route_name='ajax_mark_statement_or_argument', renderer='json')
-def mark_statement_or_argument(request):
+def mark_or_unmark_statement_or_argument(request):
     """
     Set statements as seen, when they were hidden
 
     :param request: current request of the server
     :return: json
     """
-    logger('views', 'mark_statement_or_argument', 'main {}'.format(request.params))
+    logger('views', 'mark_or_unmark_statement_or_argument', 'main {}'.format(request.params))
     ui_locales = get_discussion_language(request)
 
     try:
@@ -1508,12 +1508,12 @@ def mark_statement_or_argument(request):
         should_mark = str(request.params['should_mark']).lower() == 'true'
         history = request.params['history'] if 'history' in request.params else ''
     except KeyError as e:
-        logger('views', 'mark_statement_or_argument', repr(e), error=True)
+        logger('views', 'mark_or_unmark_statement_or_argument', repr(e), error=True)
         _t = Translator(ui_locales)
         return {'succes': '', 'text': '', 'error': _t.get(_.internalKeyError)}
 
-    prepared_dict = mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history,
-                                                      ui_locales, request.authenticated_userid)
+    prepared_dict = mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history, ui_locales,
+                                               request.authenticated_userid)
     return prepared_dict
 
 # ###################################
@@ -1558,7 +1558,7 @@ def get_shortened_url(request):
     logger('views', 'get_shortened_url', 'main')
     try:
         url = request.params['url']
-        prepared_dict = get_shortened_url(url, request.unauthenticated_userid, get_discussion_language(request))
+        prepared_dict = get_short_url(url, request.unauthenticated_userid, get_discussion_language(request))
     except KeyError as e:
         logger('views', 'get_shortened_url', repr(e), error=True)
         _tn = Translator(get_discussion_language(request))
@@ -1582,20 +1582,20 @@ def get_news(request):
 
 # ajax - for getting argument infos
 @view_config(route_name='ajax_get_infos_about_argument', renderer='json')
-def get_all_infos_about_argument(request):
+def get_infos_about_argument(request):
     """
     ajax interface for getting a dump
 
     :param request: current request of the server
     :return: json-set with everything
     """
-    logger('views', 'get_all_infos_about_argument', 'request.params: {}'.format(request.params))
+    logger('views', 'get_infos_about_argument', 'request.params: {}'.format(request.params))
     ui_locales = get_discussion_language(request)
 
     try:
         uid = request.params['uid']
     except KeyError as e:
-        logger('views', 'get_all_infos_about_argument', repr(e), error=True)
+        logger('views', 'get_infos_about_argument', repr(e), error=True)
         _tn = Translator(ui_locales)
         return {'error': _tn.get(_.internalKeyError)}
 
@@ -1661,15 +1661,15 @@ def get_public_user_data(request):
     return prepared_dict
 
 
-@view_config(route_name='ajax_get_arguments_by_statement_uid', renderer='json')
-def get_arguments_by_statement_uid(request):
+@view_config(route_name='get_arguments_by_statement_id', renderer='json')
+def get_arguments_by_statement_id(request):
     """
     Returns all arguments, which use the given statement
 
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'get_arguments_by_statement_uid', 'main: {}'.format(request.matchdict))
+    logger('views', 'get_arguments_by_statement_id', 'main: {}'.format(request.matchdict))
 
     ui_locales = get_language_from_cookie(request)
     try:
