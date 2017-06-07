@@ -70,7 +70,7 @@ class AjaxReferencesTest(unittest.TestCase):
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
 
-        from dbas.views import get_references as ajax
+        from dbas.views import get_reference as ajax
         request = testing.DummyRequest(params={
             'uid': json.dumps([17]),
             'is_argument': 'false'
