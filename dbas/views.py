@@ -1134,9 +1134,11 @@ def user_registration(request):
         _t = Translator(ui_locales)
         error = _t.get(_.internalKeyError)
 
-    return {'success': str(success),
-            'error': str(error),
-            'info': str(info)}
+    return {
+        'success': str(success),
+        'error': str(error),
+        'info': str(info)
+    }
 
 
 # ajax - password requests
@@ -1152,7 +1154,6 @@ def user_password_request(request):
 
     success = ''
     info = ''
-    return_dict = dict()
     ui_locales = request.params['lang'] if 'lang' in request.params else get_language_from_cookie(request)
     _t = Translator(ui_locales)
 
@@ -1163,9 +1164,11 @@ def user_password_request(request):
         logger('iew', 'user_password_request', repr(e), error=True)
         error = _t.get(_.internalKeyError)
 
-    return_dict['success'] = str(success)
-    return_dict['error'] = str(error)
-    return_dict['info'] = str(info)
+    return_dict = {
+        'success': str(success),
+        'error': str(error),
+        'info': str(info)
+    }
 
     return return_dict
 
@@ -1403,7 +1406,7 @@ def set_notification_read(request):
     try:
         uid = request.params['id']
     except KeyError as e:
-        logger('setter', 'set_message_read', repr(e), error=True)
+        logger('views', 'set_notification_read', repr(e), error=True)
         _tn = Translator(ui_locales)
         return {'error': _tn.get(_.internalKeyError), 'success': ''}
 
@@ -1452,7 +1455,7 @@ def set_new_issue(request):
         lang = escape_string(request.params['lang'])
     except KeyError as e:
         _tn = Translator(ui_locales)
-        logger('setter', 'set_new_issue', repr(e), error=True)
+        logger('views', 'set_new_issue', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
     prepared_dict = setter.issue(request.authenticated_userid, info, long_info, title, lang, request.application_url, ui_locales)
