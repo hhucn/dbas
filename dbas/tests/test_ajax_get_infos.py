@@ -21,36 +21,36 @@ class AjaxGetInfosTest(unittest.TestCase):
 
     def get_logfile_for_statements1(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_logfile_for_some_statements as ajax
+        from dbas.views import get_logfile_for_some_statements
         request = testing.DummyRequest(params={
             'uids': [1, 2, 3],
             'issue': 1
         }, matchdict={})
-        response = ajax(request)
+        response = get_logfile_for_some_statements(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response) == 3)
         self.assertTrue(len(response['error']) == 0)
 
     def get_logfile_for_statements2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_logfile_for_some_statements as ajax
+        from dbas.views import get_logfile_for_some_statements
         request = testing.DummyRequest(params={
             'uids': [1, 2, 300],
             'issue': 1
         }, matchdict={})
-        response = ajax(request)
+        response = get_logfile_for_some_statements(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response) == 2)
         self.assertTrue(len(response['error']) == 0)
 
     def get_logfile_for_statements_failure(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_logfile_for_some_statements as ajax
+        from dbas.views import get_logfile_for_some_statements
         request = testing.DummyRequest(params={
             'uid': [1, 2],
             'issue': 1
         }, matchdict={})
-        response = ajax(request)
+        response = get_logfile_for_some_statements(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -77,7 +77,7 @@ class AjaxGetInfosTest(unittest.TestCase):
     def test_get_arguments_by_statement_uid(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_arguments_by_statement_uid as ajax
+        from dbas.views import get_arguments_by_statement_id as ajax
         request = testing.DummyRequest(params={}, matchdict={'uid': 3})
         response = ajax(request)
         self.assertIsNotNone(response)
@@ -90,7 +90,7 @@ class AjaxGetInfosTest(unittest.TestCase):
 
     def test_get_arguments_by_statement_uid_failure1(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_arguments_by_statement_uid as ajax
+        from dbas.views import get_arguments_by_statement_id as ajax
         request = testing.DummyRequest(params={}, matchdict={'uids': 1})
         response = ajax(request)
         self.assertIsNotNone(response)
@@ -99,7 +99,7 @@ class AjaxGetInfosTest(unittest.TestCase):
 
     def test_get_arguments_by_statement_uid_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_arguments_by_statement_uid as ajax
+        from dbas.views import get_arguments_by_statement_id as ajax
         request = testing.DummyRequest(params={}, matchdict={'uid': 'a'})
         response = ajax(request)
         self.assertIsNotNone(response)
@@ -108,7 +108,7 @@ class AjaxGetInfosTest(unittest.TestCase):
 
     def test_get_infos_about_argument(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_all_infos_about_argument as ajax
+        from dbas.views import get_infos_about_argument as ajax
         request = testing.DummyRequest(params={'uid': 1}, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
@@ -124,7 +124,7 @@ class AjaxGetInfosTest(unittest.TestCase):
 
     def test_get_infos_about_argument_failure1(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_all_infos_about_argument as ajax
+        from dbas.views import get_infos_about_argument as ajax
         request = testing.DummyRequest(params={'uid': 100}, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
@@ -133,7 +133,7 @@ class AjaxGetInfosTest(unittest.TestCase):
 
     def test_get_infos_about_argument_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_all_infos_about_argument as ajax
+        from dbas.views import get_infos_about_argument as ajax
         request = testing.DummyRequest(params={'uids': 1}, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
@@ -142,7 +142,7 @@ class AjaxGetInfosTest(unittest.TestCase):
 
     def test_get_user_with_same_opinion(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_users_with_same_opinion as ajax
+        from dbas.views import get_users_with_opinion as ajax
         request = testing.DummyRequest(params={}, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)

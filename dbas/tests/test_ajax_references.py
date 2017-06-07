@@ -21,7 +21,7 @@ class AjaxReferencesTest(unittest.TestCase):
         testing.tearDown()
 
     def test_get_references_empty(self):
-        from dbas.views import get_references as ajax
+        from dbas.views import get_reference as ajax
         request = testing.DummyRequest(params={
             'uid': json.dumps([14]),
             'is_argument': 'false'
@@ -34,7 +34,7 @@ class AjaxReferencesTest(unittest.TestCase):
             self.assertTrue(len(response['text'][uid]) != 0)
 
     def test_get_references(self):
-        from dbas.views import get_references as ajax
+        from dbas.views import get_reference as ajax
         request = testing.DummyRequest(params={
             'uid': json.dumps([15]),
             'is_argument': 'false'
@@ -47,7 +47,7 @@ class AjaxReferencesTest(unittest.TestCase):
             self.assertTrue(len(response['text'][uid]) != 0)
 
     def test_get_references_failure(self):
-        from dbas.views import get_references as ajax
+        from dbas.views import get_reference as ajax
         request = testing.DummyRequest(params={
             'uid': json.dumps('ab'),
             'is_argument': 'false'

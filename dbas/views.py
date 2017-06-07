@@ -1661,7 +1661,7 @@ def get_public_user_data(request):
     return prepared_dict
 
 
-@view_config(route_name='get_arguments_by_statement_id', renderer='json')
+@view_config(route_name='ajax_get_arguments_by_statement_uid', renderer='json')
 def get_arguments_by_statement_id(request):
     """
     Returns all arguments, which use the given statement

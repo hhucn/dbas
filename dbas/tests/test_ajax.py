@@ -198,7 +198,7 @@ class AjaxTest(unittest.TestCase):
         self.assertIsNotNone(response)
 
     def test_set_user_language(self):
-        from dbas.views import set_user_language as ajax
+        from dbas.views import set_user_lang as ajax
         request = testing.DummyRequest(params={'ui_locales': 'en'})
         response = ajax(request)
         self.assertTrue(len(response['error']) > 0)
@@ -302,7 +302,7 @@ class AjaxTest(unittest.TestCase):
         self.assertTrue(response['gravatar_url'] != '')
 
     def test_mark_statement_or_argument(self):
-        from dbas.views import mark_statement_or_argument as ajax
+        from dbas.views import mark_or_unmark_statement_or_argument as ajax
         request = testing.DummyRequest(params={'ui_locales': 'en'})
         response = ajax(request)
         self.assertTrue(len(response['error']) > 0)

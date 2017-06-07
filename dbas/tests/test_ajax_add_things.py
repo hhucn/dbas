@@ -184,7 +184,7 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_correction_of_statement(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_correction_of_statement as ajax
+        from dbas.views import set_correction_of_some_statements as ajax
         db_review1 = len(DBDiscussionSession.query(ReviewEdit).all())
         db_value1 = len(DBDiscussionSession.query(ReviewEditValue).all())
         elements = {'text': 'some new text for a correction', 'uid': 19}
@@ -206,7 +206,7 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_correction_of_statement_failure(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
-        from dbas.views import set_correction_of_statement as ajax
+        from dbas.views import set_correction_of_some_statements as ajax
         request = testing.DummyRequest(params={
             'elements': json.dumps([{}])
         }, matchdict={})
@@ -300,14 +300,14 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_seen_statements(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_seen_statements as ajax
+        from dbas.views import set_statements_as_seen as ajax
         request = testing.DummyRequest(params={'uids': json.dumps([40, 41])}, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
 
     def test_set_seen_statements_failure1(self):
-        from dbas.views import set_seen_statements as ajax
+        from dbas.views import set_statements_as_seen as ajax
         request = testing.DummyRequest(params={}, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
@@ -315,7 +315,7 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_seen_statements_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_seen_statements as ajax
+        from dbas.views import set_statements_as_seen as ajax
         request = testing.DummyRequest(params={'uids': json.dumps(['a'])}, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
