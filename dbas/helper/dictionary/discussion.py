@@ -645,5 +645,4 @@ class DiscussionDictHelper(object):
                                               message=_tn.get(_.now),
                                               lang=self.lang,
                                               omit_url=True)
-            logger('X', 'X', str(bubble))
             bubbles_array.append(bubble)
