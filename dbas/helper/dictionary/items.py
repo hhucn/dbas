@@ -12,7 +12,7 @@ from sqlalchemy import and_
 import dbas.recommender_system as rs
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User
-from dbas.helper.query import get_another_argument_with_same_conclusion
+from dbas.handler.arguments import get_another_argument_with_same_conclusion
 from dbas.helper.voting import add_seen_argument, add_seen_statement
 from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, is_author_of_argument
 from dbas.logger import logger
@@ -224,7 +224,7 @@ class ItemDictHelper(object):
         :param history:
         :return:
         """
-        logger('ItemDictHelper', 'get_array_for_justify_argument', 'def: arg ' + str(argument_uid) + ', attack ' + attack_type)
+        logger('ItemDictHelper', 'get_array_for_justify_argument', 'def: arg {}, attack {}'.format(argument_uid, attack_type))
         statements_array = []
         _tn = Translator(self.lang)
         slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()

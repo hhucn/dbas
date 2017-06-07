@@ -11,6 +11,7 @@ import re
 import time
 from collections import defaultdict
 from datetime import datetime
+from enum import Enum
 from html import escape
 from urllib import parse
 
@@ -25,6 +26,13 @@ from dbas.strings.translator import Translator
 
 fallback_lang = 'en'
 tag_type = 'span'
+
+
+class BubbleTypes(Enum):
+    USER = 1
+    SYSTEM = 2
+    STATUS = 3
+    INFO = 4
 
 
 def get_global_url():
@@ -788,18 +796,15 @@ def pretty_print_options(message):
     return message
 
 
-def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_markable=False,
-                             is_author=False, id='', url='', message='', omit_url=False, argument_uid=None,
-                             statement_uid=None, is_supportive=None, nickname='anonymous', lang='en',
-                             is_users_opinion=False):
+def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, id='', url='', message='',
+                             omit_url=False, argument_uid=None, statement_uid=None, is_supportive=None,
+                             nickname='anonymous', lang='en', is_users_opinion=False):
     """
     Creates an dictionary which includes every information needed for a bubble.
 
-    :param is_user: Boolean
-    :param is_system: Boolean
-    :param is_status: Boolean
-    :param is_info: Boolean
+    :param bubble_type: BubbleTypes
     :param is_markable: Boolean
+    :param is_author: Boolean
     :param id: id of bubble
     :param url: URL
     :param message: String
@@ -808,13 +813,14 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     :param statement_uid: Statement.uid
     :param is_supportive: Boolean
     :param nickname: String
-    :param lang: String
+    :param omit_url: Boolean
+    :param lang: is_users_opinion
     :return: dict()
     """
     message = pretty_print_options(message)
 
     # check for users opinion
-    if is_user and nickname != 'anonymous':
+    if bubble_type is BubbleTypes.USER and nickname != 'anonymous':
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         db_marked = None
         if argument_uid is not None and db_user is not None:
@@ -828,10 +834,10 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
         is_users_opinion = db_marked is not None
 
     speech = {
-        'is_user': is_user,
-        'is_system': is_system,
-        'is_status': is_status,
-        'is_info': is_info,
+        'is_user': bubble_type is BubbleTypes.USER,
+        'is_system': bubble_type is BubbleTypes.SYSTEM,
+        'is_status': bubble_type is BubbleTypes.STATUS,
+        'is_info': bubble_type is BubbleTypes.INFO,
         'is_markable': is_markable,
         'is_author': is_author,
         'id': id if len(str(id)) > 0 else str(time.time()),
@@ -845,7 +851,7 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
         'is_users_opinion': str(is_users_opinion),
     }
 
-    votecount_keys = __get_text_for_click_and_mark_count(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang)
+    votecount_keys = __get_text_for_click_and_mark_count(nickname, bubble_type is BubbleTypes.USER, is_supportive, argument_uid, statement_uid, speech, lang)
 
     speech['votecounts_message'] = votecount_keys[speech['votecounts']]
 

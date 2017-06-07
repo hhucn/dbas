@@ -6,7 +6,7 @@ Introducing an export manager.
 
 from cornice import Service
 
-import dbas.helper.issue as IssueHelper
+import dbas.handler.issue as IssueHelper
 from dbas.logger import logger
 from export.lib import get_dump, get_doj_nodes, get_doj_user, get_table_rows
 

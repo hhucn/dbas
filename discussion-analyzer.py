@@ -2,19 +2,18 @@ import arrow
 import os
 import shutil
 
-from dbas.database import DBDiscussionSession as session
+from dbas.database import DBDiscussionSession as session, get_dbas_db_configuration
 from dbas.database.discussion_model import Issue,  User, Statement, TextVersion, Premise, Argument, History, \
     MarkedArgument, MarkedStatement, ReviewDelete, ReviewEdit, ReviewOptimization, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, ClickedArgument, \
     ClickedStatement, ReviewDuplicate, LastReviewerDuplicate
 from dbas.helper.tests import add_settings_to_appconfig
-from dbas.helper.database import dbas_db_configuration
 from dbas.lib import get_all_arguments_by_statement
 from graph.partial_graph import get_partial_graph_for_statement
 from sqlalchemy import and_
 
 settings = add_settings_to_appconfig()
-session.configure(bind=dbas_db_configuration('discussion', settings))
+session.configure(bind=get_dbas_db_configuration('discussion', settings))
 
 top_count = 5
 flop_count = 5
@@ -22,11 +21,14 @@ start = arrow.get('2017-05-09T05:35:00.000000+00:00')
 end = arrow.get('2017-05-28T23:59:00.000000+00:00')
 path = './evaluation'
 
-user_admin = ['anonymous', 'Tobias', 'Christian', ]
-user_colleagues = ['ansel101', 'mamau002', 'chmet101', 'jurom100', 'tokra100', 'luhim001', 'toamf100',
-                   'daneu102', 'hisch100', 'rabio100', 'alsch132']
+user_admin = ['anonymous', 'Tobias', 'Christian']
+user_colleagues = ['ansel101', 'mamau002', 'chmet101', 'jurom100', 'tokra100', 'luhim001', 'toamf100', 'daneu102',
+                   'hisch100', 'rabio100', 'alsch132']
 
-db_colleagues = session.query(User).filter(User.nickname.in_(user_colleagues + user_admin))
+db_phds = session.query(User).filter(User.nickname.in_(user_colleagues))
+db_colleagues = session.query(User).filter(User.nickname.in_(user_colleagues + user_admin)).all()
+db_admins = session.query(User).filter(User.nickname.in_(user_admin)).all()
+db_students = session.query(User).filter(~User.nickname.in_(user_colleagues + user_admin)).all()
 
 
 def get_weekday(arrow_time):
@@ -45,18 +47,16 @@ elif db_issue.is_disabled:
 
 
 def evaluate_users():
-    db_users = [user for user in session.query(User).filter(~User.nickname.in_(user_admin)).all()]
     db_clicked_statements = [v for v in session.query(ClickedStatement).all() if session.query(Statement).get(v.statement_uid).issue_uid == db_issue.uid]
-    clicks = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([click for click in db_clicked_statements if click.author_uid == user.uid]) for user in db_users}
-    reputation = {'{} {} ({})'.format(u.firstname, u.surname, u.nickname): [r for r in session.query(ReputationHistory).filter_by(reputator_uid=u.uid).join(ReputationReason).all()] for u in db_users}
+    clicks = {'{} {} ({})'.format(user.firstname, user.surname, user.nickname): len([click for click in db_clicked_statements if click.author_uid == user.uid]) for user in db_students + db_colleagues}
+    reputation = {'{} {} ({})'.format(u.firstname, u.surname, u.nickname): [r for r in session.query(ReputationHistory).filter_by(reputator_uid=u.uid).join(ReputationReason).all()] for u in db_students + db_colleagues}
     for rep in reputation:
         reputation[rep] = sum([r.reputations.points for r in reputation[rep]])
     sorted_clicks = sorted(clicks.items(), key=lambda x: x[1])
     sorted_reputation = sorted(reputation.items(), key=lambda x: x[1])
-    colleagues = sum([1 for user in db_users if user.nickname not in user_colleagues + user_admin])
     print('Users:')
-    print('  - count:    {}'.format(len(db_users)))
-    print('  - activity: {0:.2f} statement-clicks per user'.format(len(db_clicked_statements) / len(db_users)))
+    print('  - count:    {}'.format(len(db_students) + len(db_colleagues)))
+    print('  - activity: {0:.2f} statement-clicks per user'.format(len(db_clicked_statements) / (len(db_students) + len(db_colleagues))))
     print('  - Flop{} sorted by Clicks'.format(flop_count))
     for t in sorted_clicks[0:flop_count]:
         print('    - {}: {}'.format(t[1], t[0]))
@@ -66,8 +66,9 @@ def evaluate_users():
     print('  - Top{} sorted by Reputation'.format(top_count))
     for t in sorted_reputation[-top_count:]:
         print('    - {}: {}'.format(t[1], t[0]))
-    print('  - Students: {}'.format(colleagues))
-    print('  - Colleagues: {}'.format(len(user_colleagues) - len(user_admin)))
+    print('  - Students: {}'.format(len(db_students)))
+    print('  - Colleagues: {}'.format(len(db_colleagues)))
+    print('  - Admins: {}'.format(len(db_admins)))
     print('\n')
 
 
@@ -76,18 +77,25 @@ def evaluate_statements():
     db_disabled_statements = session.query(Statement).filter(and_(Statement.issue_uid == db_issue.uid,
                                                                   Statement.is_disabled == True)).all()
     db_statements_students = [s for s in db_statements if s.is_disabled == False and
-                              s.textversions.author_uid not in [u.uid for u in db_colleagues]]
+                              s.textversions.author_uid not in [u.uid for u in db_students]]
     db_statements_students_disabled = [s for s in db_statements if s.is_disabled == True and
-                                       s.textversions.author_uid not in [u.uid for u in db_colleagues]]
+                                       s.textversions.author_uid not in [u.uid for u in db_students]]
     db_statements_colleagues = [s for s in db_statements if s.is_disabled == False and
                                 s.textversions.author_uid in [u.uid for u in db_colleagues]]
     db_statements_colleagues_disabled = [s for s in db_statements if s.is_disabled == True and
                                          s.textversions.author_uid in [u.uid for u in db_colleagues]]
+    db_statements_admins = [s for s in db_statements if s.is_disabled == False and
+                            s.textversions.author_uid in [u.uid for u in db_admins]]
+    db_statements_admins_disabled = [s for s in db_statements if s.is_disabled == True and
+                                     s.textversions.author_uid in [u.uid for u in db_admins]]
     print('Statements:')
     print('  - count / disabled')
     print('  - by all: {} / {}'.format(len(db_statements), len(db_disabled_statements)))
+    print('  - by admin: {} / {}'.format(len(db_statements_admins), len(db_statements_admins_disabled)))
     print('  - by student: {} / {}'.format(len(db_statements_students), len(db_statements_students_disabled)))
     print('  - by colleagues: {} / {}'.format(len(db_statements_colleagues), len(db_statements_colleagues_disabled)))
+    print('TextVersions: {}'.format(len(session.query(TextVersion).filter(TextVersion.statement_uid.in_([x.uid for x in db_statements])).all())))
+    print('Positions: {}'.format(len(session.query(Statement).filter(Statement.issue_uid == db_issue.uid, Statement.is_startpoint == True).all())))
     print('\n')
 
 
@@ -374,14 +382,14 @@ if __name__ == '__main__':
     print('-' * len('| D-BAS ANALYTICS: {} |'.format(db_issue.title.upper())))
     print('\n')
 
-    # evaluate_users()
-    # evaluate_statements()
+    evaluate_users()
+    evaluate_statements()
     # evaluate_positions()
     # evaluate_arguments()
     # evaluate_authors()
     # evaluate_interests()
-    evaluate_reviews()
+    # evaluate_reviews()
     # evaluate_history()
     # evaluate_quits()
     # evaluate_activity()
-    evaluate_graph()
+    # evaluate_graph()

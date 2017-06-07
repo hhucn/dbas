@@ -1,4 +1,3 @@
-import json
 import unittest
 
 import transaction
@@ -54,7 +53,7 @@ class AjaxNotificationTest(unittest.TestCase):
         db_unread1 = len(DBDiscussionSession.query(Message).filter_by(read=False).all())
         from dbas.views import set_notification_read as ajax
         request = testing.DummyRequest(params={'id': self.new_inbox}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         db_unread2 = len(DBDiscussionSession.query(Message).filter_by(read=False).all())
         self.assertIsNotNone(response)
         self.assertTrue(db_unread1 - 1, db_unread2)
@@ -67,7 +66,7 @@ class AjaxNotificationTest(unittest.TestCase):
         db_message1 = len(DBDiscussionSession.query(Message).filter_by(to_author_uid=3).all())
         db_message1 += len(DBDiscussionSession.query(Message).filter_by(from_author_uid=3).all())
         request = testing.DummyRequest(params={'id': self.new_inbox}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         transaction.commit()
         db_message2 = len(DBDiscussionSession.query(Message).filter_by(to_author_uid=3).all())
         db_message2 += len(DBDiscussionSession.query(Message).filter_by(from_author_uid=3).all())
@@ -86,7 +85,7 @@ class AjaxNotificationTest(unittest.TestCase):
             'title': 'Some text for a message',
             'text': 'Some text for a message',
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         db_len2 = len(DBDiscussionSession.query(Message).filter(and_(Message.topic == 'Some text for a message',
                                                                      Message.content == 'Some text for a message')).all())
         self.assertIsNotNone(response)
@@ -99,7 +98,7 @@ class AjaxNotificationTest(unittest.TestCase):
     def test_notification_read_failure1(self):
         from dbas.views import set_notification_read as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -107,21 +106,21 @@ class AjaxNotificationTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import send_some_notification as ajax
         request = testing.DummyRequest(params={'id': 2}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
     def test_notification_delete_failure(self):
         from dbas.views import set_notification_delete as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
     def test_send_notification_failure1(self):
         from dbas.views import send_some_notification as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -133,6 +132,6 @@ class AjaxNotificationTest(unittest.TestCase):
             'title': 'Some new text for a message',
             'text': 'Some new text for a message',
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)

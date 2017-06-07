@@ -16,7 +16,7 @@ def set_language(request, ui_locales=None):
 
     :param request: current request
     :param ui_locales: Language.ui_locales
-    :return: dict(), ui_locales
+    :return: dict()
     """
     return_dict = dict()
 
@@ -35,7 +35,7 @@ def set_language(request, ui_locales=None):
     return_dict['_LOCALE_'] = ui_locales
     logger('LanguageHelper', 'set_language', 'switched to {}'.format(ui_locales))
 
-    return return_dict, ui_locales
+    return return_dict
 
 
 def get_language_from_header(request):

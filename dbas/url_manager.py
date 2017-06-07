@@ -12,6 +12,10 @@ Next to this we have a 404 page.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+import random
+
+from dbas import recommender_system as RecommenderSystem
+from dbas.lib import get_all_attacking_arg_uids_from_history
 
 
 class UrlManager(object):
@@ -255,3 +259,22 @@ class UrlManager(object):
         prefix = 'location.href="' if as_location_href else ''
         suffix = '"' if as_location_href else ''
         return prefix + self.review_url + url + suffix
+
+
+def get_url_for_new_argument(new_argument_uids, history, lang, url_manager):
+    """
+    Returns url for the reaction on a new argument
+
+    :param new_argument_uids: Argument.uid
+    :param history: String
+    :param lang: Language.ui_locales
+    :param url_manager: UrlManager
+    :return: String
+    """
+    new_argument_uid = random.choice(new_argument_uids)  # TODO eliminate random
+    attacking_arg_uids = get_all_attacking_arg_uids_from_history(history)
+    arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, lang, restriction_on_arg_uids=attacking_arg_uids)
+    if arg_id_sys == 0:
+        attack = 'end'
+    url = url_manager.get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
+    return url

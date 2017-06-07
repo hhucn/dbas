@@ -645,7 +645,7 @@ class AjaxReviewTest(unittest.TestCase):
         db_content2 = len(DBDiscussionSession.query(RevokedContentHistory).all())
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(response['is_deleted'])
+        self.assertTrue(response['success'])
         self.assertNotEqual(db_content1, db_content2)
 
     def test_revoke_content_uid_error1(self):
@@ -660,7 +660,7 @@ class AjaxReviewTest(unittest.TestCase):
         db_content2 = len(DBDiscussionSession.query(RevokedContentHistory).all())
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
-        self.assertFalse(response['is_deleted'])
+        self.assertFalse(response['success'])
         self.assertEqual(db_content1, db_content2)
 
     def test_revoke_content_uid_error2(self):
@@ -675,7 +675,7 @@ class AjaxReviewTest(unittest.TestCase):
         db_content2 = len(DBDiscussionSession.query(RevokedContentHistory).all())
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
-        self.assertFalse(response['is_deleted'])
+        self.assertFalse(response['success'])
         self.assertEqual(db_content1, db_content2)
 
     def test_revoke_content_author_error1(self):
@@ -690,7 +690,7 @@ class AjaxReviewTest(unittest.TestCase):
         db_content2 = len(DBDiscussionSession.query(RevokedContentHistory).all())
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
-        self.assertFalse(response['is_deleted'])
+        self.assertFalse(response['success'])
         self.assertEqual(db_content1, db_content2)
 
     def test_revoke_content_author_error2(self):
@@ -705,7 +705,7 @@ class AjaxReviewTest(unittest.TestCase):
         db_content2 = len(DBDiscussionSession.query(RevokedContentHistory).all())
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
-        self.assertFalse(response['is_deleted'])
+        self.assertFalse(response['success'])
         self.assertEqual(db_content1, db_content2)
 
     def test_duplicate_statement_review(self):

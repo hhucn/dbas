@@ -24,7 +24,7 @@ function DiscussionBarometer(){
     'use strict';
     var is_attitude = false;
     var global_dialog = $('#' + popupBarometerId);
-    var jsonData = [];
+    var data = [];
     var address = 'position';
     var barWidth;
     var modeEnum = {
@@ -86,31 +86,30 @@ function DiscussionBarometer(){
      * @param data: unparsed data of request
      * @param addressUrl: step of discussion
      */
-    this.callbackIfDoneForGetDictionary = function(data, addressUrl){
+    this.callbackIfDoneForGetDictionary = function(jdata, addressUrl){
         address = addressUrl;
         try{
-            jsonData = JSON.parse(data);
             mode = modeEnum[address];
         } catch(e) {
             setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(internalError));
             return;
         }
 
-		if (jsonData.error.length !== 0) {
-			setGlobalErrorHandler(_t(ohsnap), jsonData.error);
+		if (jdata.error.length !== 0) {
+			setGlobalErrorHandler(_t(ohsnap), jdata.error);
 			return;
 		}
-		if (jsonData.info.length !== 0) {
-			setGlobalInfoHandler('Hey', jsonData.info);
+		if (jdata.info.length !== 0) {
+			setGlobalInfoHandler('Hey', jdata.info);
 			return;
 		}
 
         // fetch zero users
-        var usersDict = getUsersDict([]);
-        if (isEverythingZero(usersDict)){
+        if (isEverythingZero(jdata)){
             setGlobalInfoHandler('Hey', _t_discussion(otherParticipantsDontHaveOpinionForThis));
             return -1;
         }
+        data = jdata;
 
         removeContentOfModal();
 
@@ -130,7 +129,7 @@ function DiscussionBarometer(){
         }).removeClass('btn-success');
         $('#' + popupBarometerRefuseBtn).hide();
 
-        global_dialog.find('.modal-title').html(jsonData.title).css({'line-height': '1.0'});
+        global_dialog.find('.modal-title').html(jdata.title).css({'line-height': '1.0'});
     };
 
     /**
@@ -205,9 +204,10 @@ function DiscussionBarometer(){
         is_attitude = address === 'attitude';
         var count = 0;
         if(is_attitude) {
-            count = usersDict[0].seenBy + usersDict[1].seenBy;
+            console.log(usersDict);
+            count = usersDict.agree.seenBy + usersDict.disagree.seenBy;
         } else {
-            $.each(usersDict, function( index, value ) {
+            $.each(usersDict.opinions, function( index, value ) {
                 count += value.seenBy;
             });
         }
@@ -306,18 +306,18 @@ function DiscussionBarometer(){
      */
     function createDictForAttitude(usersDict){
         usersDict.push({
-            usersNumber: jsonData.agree.users.length,
-            seenBy: jsonData.seen_by,
-            text: jsonData.agree.text,
-            users: jsonData.agree.users,
-            message: jsonData.agree.message
+            usersNumber: data.agree.users.length,
+            seenBy: data.seen_by,
+            text: data.agree.text,
+            users: data.agree.users,
+            message: data.agree.message
         });
         usersDict.push({
-            usersNumber: jsonData.disagree.users.length,
-            seenBy: jsonData.seen_by,
-            text: jsonData.disagree.text,
-            users: jsonData.disagree.users,
-            message: jsonData.disagree.message
+            usersNumber: data.disagree.users.length,
+            seenBy: data.seen_by,
+            text: data.disagree.text,
+            users: data.disagree.users,
+            message: data.disagree.message
         });
         return usersDict;
     }
@@ -328,7 +328,7 @@ function DiscussionBarometer(){
      * @returns usersDict
      */
     function createDictForArgumentAndStatement(usersDict){
-        $.each(jsonData.opinions, function(key, value) {
+        $.each(data.opinions, function(key, value) {
             usersDict.push({
                 usersNumber: value.users.length,
                 seenBy: value.seen_by,
@@ -560,21 +560,21 @@ function DiscussionBarometer(){
 
         var doughnut = getDoughnut(usersDict);
 
-        var data = [];
+        var ldata = [];
         // if there is no argument create donut-chart with one sector with small radius
         if(usersDict.length === 0){
-            data.push({
+            ldata.push({
                 usersNumber: 0,
                 seenBy: 0
             });
         } else {
-            data = usersDict;
+            ldata = usersDict;
         }
 
-        var innerCircle = getInnerCircle(innerRadius, outerRadius, data);
+        var innerCircle = getInnerCircle(innerRadius, outerRadius, ldata);
         var outerCircle = getOuterCircle(innerRadius, outerRadius);
-        createOuterPath(doughnutChartSvg, outerCircle, doughnut, data);
-        createInnerPath(doughnutChartSvg, innerCircle, doughnut, data);
+        createOuterPath(doughnutChartSvg, outerCircle, doughnut, ldata);
+        createInnerPath(doughnutChartSvg, innerCircle, doughnut, ldata);
     }
 
     /**

@@ -11,34 +11,36 @@ from dbas.database import DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, sql_timestamp_pretty_print
 from dbas.database.news_model import News
 from dbas.logger import logger
-from dbas.user_management import is_user_in_group
+from dbas.handler import user
 from dbas.handler.rss import create_news_rss
+from dbas.helper.language import get_language_from_cookie
+from dbas.lib import escape_string
 
 
-def set_news(request, title, text, user, lang, main_page):
+def set_news(request):
     """
     Sets a new news into the news table
 
     :param request: current request of the webserver
-    :param title: news title
-    :param text: String news text
-    :param user: User.nickname request.authenticated_userid
-    :param lang: lang
     :return: dict(), Boolean
     """
     logger('NewsHelper', 'set_news', 'def')
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
-    if not db_user or is_user_in_group(user, 'author'):
+    title = escape_string(request.params['title']) if 'title' in request.params else None
+    text = escape_string(request.params['text']) if 'text' in request.params else None
+    nickname = request.authenticated_userid
+    lang = get_language_from_cookie(request)
+    main_page = request.application_url
+
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+
+    if not db_user or user.is_in_group(nickname, 'author') or not title or not text:
         return {}, False
 
     author = db_user.firstname
     if db_user.firstname != 'admin':
         author += db_user.surname
-    # now = datetime.now()
-    # day = str(now.day) if now.day > 9 else ('0' + str(now.day))
-    # month = str(now.month) if now.month > 9 else ('0' + str(now.month))
-    # date = day + '.' + month + '.' + str(now.year)
+
     date = arrow.now()
     news = News(title=title, author=author, date=date, news=text)
 

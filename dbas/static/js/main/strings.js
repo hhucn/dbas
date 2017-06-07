@@ -746,7 +746,7 @@ var dbas_de = {
     'sawThis': 'sahen dies!',
     'saveMyStatement': 'Aussage speichern!',
     'saveMyStatements': 'Aussagen speichern!',
-    'searchStatementPopupTitleText': 'Aussagensuchen!',
+    'searchStatementPopupTitleText': 'Aussagensuche!',
     'searchStatementPopupBodyText': 'Bei der Auswahl einer Aussage, springen Sie zu diesem Abschnitt in der Diskussion.',
     'showAllUsers': 'Zeig\' alle Benutzer',
     'showAllArguments': 'Zeig\' alle Argumente',

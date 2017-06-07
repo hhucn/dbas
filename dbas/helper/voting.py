@@ -378,7 +378,7 @@ def __vote_premisesgroup(premisesgroup_uid, user, is_up_vote):
         logger('VotingHelper', '__vote_premisesgroup', 'premisegroup_uid is None')
         return
 
-    logger('VotingHelper', '__vote_premisesgroup', 'premisegroup_uid ' + str(premisesgroup_uid) + ', user ' + user.nickname)
+    logger('VotingHelper', '__vote_premisesgroup', 'premisegroup_uid {}, user {}'.format(premisesgroup_uid, user.nickname))
 
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisesgroup_uid).all()
     for premise in db_premises:
@@ -395,15 +395,15 @@ def __argument_seen_by_user(db_user, argument_uid):
     :return: True if the argument was not seen by the user (until now), false otherwise
     """
 
-    logger('VotingHelper', '__argument_seen_by_user', 'argument ' + str(argument_uid) + ', for user ' + str(db_user.uid))
     db_seen_by = DBDiscussionSession.query(SeenArgument).filter(and_(SeenArgument.argument_uid == argument_uid,
                                                                      SeenArgument.user_uid == db_user.uid)).first()
     if not db_seen_by:
+        # logger('VotingHelper', '__argument_seen_by_user', 'argument {}, for user {} is now marked as seen'.format(argument_uid, db_user.uid))
         DBDiscussionSession.add(SeenArgument(argument_uid=argument_uid, user_uid=db_user.uid))
         DBDiscussionSession.flush()
         return True
 
-    logger('VotingHelper', '__argument_seen_by_user', 'argument ' + str(argument_uid) + ', for user ' + str(db_user.uid) + ' was already seen')
+    # logger('VotingHelper', '__argument_seen_by_user', 'argument {}, for user {} was already seen'.format(argument_uid, db_user.uid))
     return False
 
 
@@ -418,12 +418,12 @@ def __statement_seen_by_user(db_user, statement_uid):
     db_seen_by = DBDiscussionSession.query(SeenStatement).filter(and_(SeenStatement.statement_uid == statement_uid,
                                                                       SeenStatement.user_uid == db_user.uid)).first()
     if not db_seen_by:
-        logger('VotingHelper', '__statement_seen_by_user', 'statement ' + str(statement_uid) + ', for user ' + str(db_user.uid) + ' is now marked as seen')
+        # logger('VotingHelper', '__statement_seen_by_user', 'statement {}, for user {} is now marked as seen'.format(statement_uid, db_user.uid))
         DBDiscussionSession.add(SeenStatement(statement_uid=statement_uid, user_uid=db_user.uid))
         DBDiscussionSession.flush()
         return True
 
-    logger('VotingHelper', '__statement_seen_by_user', 'statement ' + str(statement_uid) + ', for user ' + str(db_user.uid) + ' was already seen')
+    # logger('VotingHelper', '__statement_seen_by_user', 'statement {}, for user {} was already seen'.format(statement_uid, db_user.uid))
     return False
 
 
@@ -435,7 +435,7 @@ def __premisegroup_seen_by_user(db_user, premisesgroup_uid):
     :param premisesgroup_uid: uid of the premisesgroup
     :return: True if the statement was not seen by the user (until now), false otherwise
     """
-    logger('VotingHelper', '__premisegroup_seen_by_user', 'Check premises of group ' + str(premisesgroup_uid))
+    logger('VotingHelper', '__premisegroup_seen_by_user', 'Check premises of group {}'.format(premisesgroup_uid))
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisesgroup_uid).all()
     for premise in db_premises:
         __statement_seen_by_user(db_user, premise.statement_uid)

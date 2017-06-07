@@ -5,26 +5,71 @@ Provides functions for te internal messaging system
 """
 
 import transaction
+from sqlalchemy import and_
+
 import dbas.helper.email as EmailHelper
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument, sql_timestamp_pretty_print
+from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument, \
+    sql_timestamp_pretty_print
 from dbas.database.initializedb import nick_of_anonymous_user, nick_of_admin
-from dbas.lib import escape_string, get_profile_picture
+from dbas.handler import user
+from dbas.lib import escape_string, get_profile_picture, get_user_by_private_or_public_nickname
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.text_generator import get_text_for_edit_text_message, get_text_for_add_text_message, get_text_for_add_argument_message
+from dbas.strings.text_generator import get_text_for_edit_text_message, get_text_for_add_text_message, \
+    get_text_for_add_argument_message
 from dbas.strings.translator import Translator
-from sqlalchemy import and_
 from websocket.lib import send_request_for_info_popup_to_socketio
 
 
-def send_edit_text_notification(db_user, textversion, path, request):
+def send_users_notification(port, recipient, title, text, nickname, ui_locales) -> dict:
+    """
+    Send a notification from user a to user b
+
+    :param port: Port of the notification server
+    :param recipient: Nickname of the recipient
+    :param title: Title of the notification
+    :param text: Text of the notification
+    :param nickname: Users nickname
+    :param ui_locales: Current used language
+    :rtype: dict
+    :return: prepared collection with status information
+    """
+    _tn = Translator(ui_locales)
+
+    db_recipient = get_user_by_private_or_public_nickname(recipient)
+    if len(title) < 5 or len(text) < 5:
+        error = '{} ({}: 5)'.format(_tn.get(_.empty_notification_input), _tn.get(_.minLength))
+        return {'error': error, 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
+
+    if not db_recipient or recipient == 'admin' or recipient == nick_of_anonymous_user:
+        return {'error': _tn.get(_.recipientNotFound), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
+
+    db_author = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_author:
+        return {'error': _tn.get(_.notLoggedIn), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
+
+    if db_author.uid == db_recipient.uid:
+        return {'error': _tn.get(_.senderReceiverSame), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
+
+    db_notification = send_notification(db_author, db_recipient, title, text, nickname, port)
+    prepared_dict = {
+        'error': '',
+        'timestamp': sql_timestamp_pretty_print(db_notification.timestamp, ui_locales),
+        'uid': db_notification.uid,
+        'recipient_avatar': get_profile_picture(db_recipient, 20)
+    }
+    return prepared_dict
+
+
+def send_edit_text_notification(db_user, textversion, path, port, mailer):
     """
     Sends an notification to the root-author and last author, when their text was edited.
 
     :param db_user: Current User
     :param textversion: new Textversion
     :param path: curren path
-    :param request: curren request
+    :param port: Port of notification server
+    :param mailer: Instance of pyramid mailer
     :return: None
     """
     all_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=textversion.statement_uid).order_by(TextVersion.uid.desc()).all()
@@ -40,19 +85,15 @@ def send_edit_text_notification(db_user, textversion, path, request):
     db_settings = DBDiscussionSession.query(Settings).get(db_editor.uid)
     db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
 
-    # logger('NotificationHelper', 'send_edit_text_notification', 'root author: ' + str(oem.author_uid))
-    # logger('NotificationHelper', 'send_edit_text_notification', 'last author: ' + str(last_author))
-    # logger('NotificationHelper', 'send_edit_text_notification', 'current author: ' + str(new_author))
-
     # add some information for highlights
     if path is not None:
         path += '?edited_statement=' + str(textversion.statement_uid)
 
     if settings_root_author.should_send_mails is True and root_author != db_user.uid and path is not None:
-        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, root_author, db_editor, path, request)
+        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, root_author, db_editor, path, mailer)
 
     if new_author != last_author and settings_last_author.should_send_mails is True and new_author != db_user.uid and path is not None:
-        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, last_author, db_editor, path, request)
+        EmailHelper.send_mail_due_to_edit_text(textversion.statement_uid, last_author, db_editor, path, mailer)
 
     # check for different authors
     if root_author == new_author:
@@ -64,14 +105,12 @@ def send_edit_text_notification(db_user, textversion, path, request):
     if settings_root_author.should_send_notifications and root_author != db_user.uid:
         _t_user = Translator(user_lang1)
         db_root_author = DBDiscussionSession.query(User).get(root_author)
-        send_request_for_info_popup_to_socketio(request, db_root_author.nickname, _t_user.get(_.textChange), path,
-                                                increase_counter=True)
+        send_request_for_info_popup_to_socketio(db_root_author.nickname, port, _t_user.get(_.textChange), path, increase_counter=True)
 
     if last_author != root_author and last_author != new_author and last_author != db_user.uid and settings_last_author.should_send_notifications:
         _t_user = Translator(user_lang2)
         db_last_author = DBDiscussionSession.query(User).get(last_author)
-        send_request_for_info_popup_to_socketio(request, db_last_author.nickname, _t_user.get(_.textChange), path,
-                                                increase_counter=True)
+        send_request_for_info_popup_to_socketio(db_last_author.nickname, port, _t_user.get(_.textChange), path, increase_counter=True)
 
     _t1 = Translator(user_lang1)
     topic1 = _t1.get(_.textversionChangedTopic)
@@ -99,14 +138,15 @@ def send_edit_text_notification(db_user, textversion, path, request):
         DBDiscussionSession.flush()
 
 
-def send_add_text_notification(url, conclusion_id, user, request):
+def send_add_text_notification(url, conclusion_id, user, port, mailer):
     """
     Send notifications and mails to related users.
 
     :param url: current url
     :param conclusion_id: Statement.uid
     :param user: current users nickname
-    :param request: self.request
+    :param port: Port of notification server
+    :param mailer: Instance of pyramid mailer
     :return: None
     """
     # getting all text versions, the main author, last editor and settings ob both authors as well as their languages
@@ -123,21 +163,19 @@ def send_add_text_notification(url, conclusion_id, user, request):
 
     # send mail to main author
     if db_root_author_settings.should_send_mails and db_current_user != db_root_author:
-        EmailHelper.send_mail_due_to_added_text(root_lang, url, db_root_author, request)
+        EmailHelper.send_mail_due_to_added_text(root_lang, url, db_root_author, mailer)
 
     # send mail to last author
     if db_last_editor_settings.should_send_mails and db_last_editor != db_root_author and db_last_editor != db_current_user:
-        EmailHelper.send_mail_due_to_added_text(editor_lang, url, db_last_editor, request)
+        EmailHelper.send_mail_due_to_added_text(editor_lang, url, db_last_editor, mailer)
 
     # send notification via websocket to main author
     if db_root_author_settings.should_send_notifications and db_root_author != db_current_user:
-        send_request_for_info_popup_to_socketio(request, db_root_author.nickname, _t_root.get(_.statementAdded), url,
-                                                increase_counter=True)
+        send_request_for_info_popup_to_socketio(db_root_author.nickname, port, _t_root.get(_.statementAdded), url, increase_counter=True)
 
     # send notification via websocket to last author
     if db_last_editor_settings.should_send_notifications and db_last_editor != db_root_author and db_last_editor != db_current_user:
-        send_request_for_info_popup_to_socketio(request, db_last_editor.nickname, _t_editor.get(_.statementAdded), url,
-                                                increase_counter=True)
+        send_request_for_info_popup_to_socketio(db_last_editor.nickname, port, _t_editor.get(_.statementAdded), url, increase_counter=True)
 
     # find admin
     db_admin = DBDiscussionSession.query(User).filter_by(nickname=nick_of_admin).first()
@@ -165,14 +203,15 @@ def send_add_text_notification(url, conclusion_id, user, request):
     transaction.commit()
 
 
-def send_add_argument_notification(url, attacked_argument_uid, user, request):
+def send_add_argument_notification(url, attacked_argument_uid, user, port, mailer):
     """
     Sends an notification because an argument was added
 
     :param url: String
     :param attacked_argument_uid: Argument.uid
     :param user: User
-    :param request: current webservers request
+    :param port: Port of notification server
+    :param mailer: Instance of pyramid mailer
     :return:
     """
     # getting current argument, arguments author, current user and some settings
@@ -188,11 +227,11 @@ def send_add_argument_notification(url, attacked_argument_uid, user, request):
     # send notification via websocket to last author
     _t_user = Translator(user_lang)
     if db_author_settings.should_send_notifications:
-        send_request_for_info_popup_to_socketio(request, db_author.nickname, _t_user.get(_.argumentAdded), url)
+        send_request_for_info_popup_to_socketio(db_author.nickname, port, _t_user.get(_.argumentAdded), url)
 
     # send mail to last author
     if db_author_settings.should_send_mails:
-        EmailHelper.send_mail_due_to_added_text(user_lang, url, db_author, request)
+        EmailHelper.send_mail_due_to_added_text(user_lang, url, db_author, mailer)
 
     # find admin
     db_admin = DBDiscussionSession.query(User).filter_by(nickname=nick_of_admin).first()
@@ -231,15 +270,16 @@ def send_welcome_notification(user, translator):
     transaction.commit()
 
 
-def send_notification(request, from_user, to_user, topic, content, mainpage):
+def send_notification(from_user, to_user, topic, content, mainpage, port):
     """
     Sends message to an user and places a copy in the outbox of current user. Returns the uid and timestamp
 
-    :param request: Current webservers request
     :param from_user: User
     :param to_user: User
     :param topic: String
     :param content: String
+    :param mainpage: String
+    :param port: Port of the notification server
     :return:
     """
     content = escape_string(content)
@@ -253,8 +293,7 @@ def send_notification(request, from_user, to_user, topic, content, mainpage):
     if db_settings.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).get(db_settings.lang_uid).ui_locales
         _t_user = Translator(user_lang)
-        send_request_for_info_popup_to_socketio(request, to_user.nickname, _t_user.get(_.newNotification),
-                                                mainpage + '/notifications', increase_counter=True)
+        send_request_for_info_popup_to_socketio(to_user.nickname, port, _t_user.get(_.newNotification), mainpage + '/notifications', increase_counter=True)
 
     db_inserted_notification = DBDiscussionSession.query(Message).filter(and_(Message.from_author_uid == from_user.uid,
                                                                               Message.to_author_uid == to_user.uid,
@@ -327,3 +366,68 @@ def get_box_for(user, lang, main_page, is_inbox):
         message_array.append(tmp_dict)
 
     return message_array[::-1]
+
+
+def read_notification(uid, nickname, ui_locales) -> dict:
+    """
+    Simply marks a notification as read
+
+    :param uid: Id of the notification which should be marked as read
+    :param nickname: Nickname of current user
+    :param ui_locales: Language of current users session
+    :return: Dictionary with info and/or error
+    """
+    prepared_dict = dict()
+    _tn = Translator(ui_locales)
+    user.update_last_action(nickname)
+
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
+        return {'error': _tn.get(_.noRights), 'success': ''}
+
+    DBDiscussionSession.query(Message).filter(and_(Message.uid == uid,
+                                                   Message.to_author_uid == db_user.uid,
+                                                   Message.is_inbox == True)).first().set_read(True)
+    transaction.commit()
+    prepared_dict['unread_messages'] = count_of_new_notifications(nickname)
+    prepared_dict['error'] = ''
+
+    return prepared_dict
+
+
+def delete_notification(uid, nickname, ui_locales, application_url) -> dict:
+    """
+    Simply deletes a specific notification
+
+    :param uid: Id of the notification which should be deleted
+    :param nickname: Nickname of current user
+    :param ui_locales: Language of current users session
+    :param application_url Url of the App
+    :rtype: dict
+    :return: Dictionary with info and/or error
+    """
+
+    user.update_last_action(nickname)
+    _tn = Translator(ui_locales)
+
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
+        return {'error': _tn.get(_.noRights), 'success': ''}
+
+    # inbox
+    DBDiscussionSession.query(Message).filter(and_(Message.uid == uid,
+                                                   Message.to_author_uid == db_user.uid,
+                                                   Message.is_inbox == True)).delete()
+    # send
+    DBDiscussionSession.query(Message).filter(and_(Message.uid == uid,
+                                                   Message.from_author_uid == db_user.uid,
+                                                   Message.is_inbox == False)).delete()
+    transaction.commit()
+    prepared_dict = dict()
+    prepared_dict['unread_messages'] = count_of_new_notifications(nickname)
+    prepared_dict['total_in_messages'] = str(len(get_box_for(nickname, ui_locales, application_url, True)))
+    prepared_dict['total_out_messages'] = str(len(get_box_for(nickname, ui_locales, application_url, False)))
+    prepared_dict['error'] = ''
+    prepared_dict['success'] = _tn.get(_.messageDeleted)
+
+    return prepared_dict

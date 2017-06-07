@@ -21,12 +21,12 @@ class AjaxReferencesTest(unittest.TestCase):
         testing.tearDown()
 
     def test_get_references_empty(self):
-        from dbas.views import get_references as ajax
+        from dbas.views import get_reference as ajax
         request = testing.DummyRequest(params={
             'uid': json.dumps([14]),
             'is_argument': 'false'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         for uid in response['data']:
@@ -34,12 +34,12 @@ class AjaxReferencesTest(unittest.TestCase):
             self.assertTrue(len(response['text'][uid]) != 0)
 
     def test_get_references(self):
-        from dbas.views import get_references as ajax
+        from dbas.views import get_reference as ajax
         request = testing.DummyRequest(params={
             'uid': json.dumps([15]),
             'is_argument': 'false'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         for uid in response['data']:
@@ -47,12 +47,12 @@ class AjaxReferencesTest(unittest.TestCase):
             self.assertTrue(len(response['text'][uid]) != 0)
 
     def test_get_references_failure(self):
-        from dbas.views import get_references as ajax
+        from dbas.views import get_reference as ajax
         request = testing.DummyRequest(params={
             'uid': json.dumps('ab'),
             'is_argument': 'false'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
         self.assertTrue(len(response['data']) == 0)
@@ -66,16 +66,16 @@ class AjaxReferencesTest(unittest.TestCase):
             'reference': json.dumps('This is a source'),
             'ref_source': json.dumps('http://www.google.de/some_source'),
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
 
-        from dbas.views import get_references as ajax
+        from dbas.views import get_reference as ajax
         request = testing.DummyRequest(params={
             'uid': json.dumps([17]),
             'is_argument': 'false'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         for uid in response['data']:

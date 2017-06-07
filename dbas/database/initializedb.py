@@ -11,7 +11,7 @@ import sys
 
 import arrow
 import transaction
-from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession
+from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession, get_dbas_db_configuration
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
     Settings, ClickedArgument, ClickedStatement, StatementReferences, Language, SeenArgument, SeenStatement, \
     ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, \
@@ -25,7 +25,6 @@ from dbas.lib import get_global_url
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
 from dbas.handler.password import get_hashed_password
-from dbas.helper.database import dbas_db_configuration
 
 first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin',
                'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
@@ -59,7 +58,7 @@ def main_discussion(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    discussion_engine = dbas_db_configuration('discussion', settings)
+    discussion_engine = get_dbas_db_configuration('discussion', settings)
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -92,7 +91,7 @@ def main_field_test(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    discussion_engine = dbas_db_configuration('discussion', settings)
+    discussion_engine = get_dbas_db_configuration('discussion', settings)
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -123,7 +122,7 @@ def main_news(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    news_engine = dbas_db_configuration('news', settings)
+    news_engine = get_dbas_db_configuration('news', settings)
     DBNewsSession.configure(bind=news_engine)
     NewsBase.metadata.create_all(news_engine)
 
@@ -145,11 +144,11 @@ def drop_it(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    discussion_engine = dbas_db_configuration('discussion', settings)
+    discussion_engine = get_dbas_db_configuration('discussion', settings)
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
-    news_engine = dbas_db_configuration('news', settings)
+    news_engine = get_dbas_db_configuration('news', settings)
     DBNewsSession.configure(bind=news_engine)
     NewsBase.metadata.create_all(news_engine)
 
@@ -244,7 +243,7 @@ def blank_file(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    discussion_engine = dbas_db_configuration('discussion', settings)
+    discussion_engine = get_dbas_db_configuration('discussion', settings)
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -315,7 +314,7 @@ def init_dummy_votes(argv=sys.argv):
     setup_logging(config_uri)
     settings = get_appsettings(config_uri)
 
-    discussion_engine = dbas_db_configuration('discussion', settings)
+    discussion_engine = get_dbas_db_configuration('discussion', settings)
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -770,14 +769,14 @@ def __set_up_settings(session, users):
     :return: None
     """
     # adding settings
-    import dbas.user_management as user_handler
+    from dbas.handler import user as userh
     for user in users:
         new_public_nick = 10 <= users.index(user) <= 20
         setting = Settings(author_uid=user.uid, send_mails=False, send_notifications=True,
                            should_show_public_nickname=not new_public_nick)
         session.add(setting)
         if new_public_nick:
-            user_handler.refresh_public_nickname(user)
+            userh.refresh_public_nickname(user)
 
     session.flush()
 

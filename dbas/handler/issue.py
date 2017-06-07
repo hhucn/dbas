@@ -4,22 +4,55 @@ Provides helping function for issues.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import transaction
+from math import ceil
+
 import arrow
+import transaction
+from slugify import slugify
+from sqlalchemy import and_
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print
+from dbas.handler import user
+from dbas.helper.language import get_language_from_header
 from dbas.lib import is_user_author_or_admin
 from dbas.logger import logger
-from dbas.helper.language import get_language_from_header
 from dbas.query_wrapper import get_not_disabled_issues_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
-from slugify import slugify
-from math import ceil
 
 
-def set_issue(info, long_info, title, lang, nickname, ui_locales):
+def set_issue(nickname, info, long_info, title, lang, application_url, ui_locales) -> dict:
+    """
+    Sets new issue, which will be a new discussion
+
+    :param nickname: Users nickname
+    :param info: Short information about the new issue
+    :param long_info: Long information about the new issue
+    :param title: Title of the new issue
+    :param lang: Language of the new issue
+    :param application_url: Url of the app itself
+    :param ui_locales: Current language
+    :rtype: dict
+    :return: Collection with information about the new issue
+    """
+    user.update_last_action(nickname)
+
+    logger('setter', 'set_new_issue', 'main')
+    prepared_dict = dict()
+
+    was_set, error = __set_issue(info, long_info, title, lang, nickname, ui_locales)
+    if was_set:
+        db_issue = DBDiscussionSession.query(Issue).filter(and_(Issue.title == title,
+                                                                Issue.info == info)).first()
+        prepared_dict['issue'] = get_issue_dict_for(db_issue, application_url, False, 0, ui_locales)
+    prepared_dict['error'] = '' if was_set else error
+
+    return prepared_dict
+
+
+def __set_issue(info, long_info, title, lang, nickname, ui_locales):
     """
     Inserts new issue into database
 
@@ -153,17 +186,17 @@ def get_issue_dict_for(issue, application_url, for_api, uid, lang):
     """
     _um = UrlManager(application_url, issue.get_slug(), for_api)
     issue_dict = dict()
-    issue_dict['uid']               = str(issue.uid)
-    issue_dict['slug']              = issue.get_slug()
-    issue_dict['title']             = issue.title
-    issue_dict['url']               = _um.get_slug_url(False) if str(uid) != str(issue.uid) else ''
-    issue_dict['review_url']        = _um.get_review_url(False) if str(uid) != str(issue.uid) else ''
-    issue_dict['info']              = issue.info
-    issue_dict['stat_count']        = get_number_of_statements(issue.uid)
-    issue_dict['date']              = sql_timestamp_pretty_print(issue.date, lang)
-    issue_dict['author']            = issue.users.public_nickname
-    issue_dict['author_url']        = application_url + '/user/' + str(issue.users.public_nickname)
-    issue_dict['enabled']           = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
+    issue_dict['uid'] = str(issue.uid)
+    issue_dict['slug'] = issue.get_slug()
+    issue_dict['title'] = issue.title
+    issue_dict['url'] = _um.get_slug_url(False) if str(uid) != str(issue.uid) else ''
+    issue_dict['review_url'] = _um.get_review_url(False) if str(uid) != str(issue.uid) else ''
+    issue_dict['info'] = issue.info
+    issue_dict['stat_count'] = get_number_of_statements(issue.uid)
+    issue_dict['date'] = sql_timestamp_pretty_print(issue.date, lang)
+    issue_dict['author'] = issue.users.public_nickname
+    issue_dict['author_url'] = application_url + '/user/' + str(issue.users.public_nickname)
+    issue_dict['enabled'] = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
     return issue_dict
 
 

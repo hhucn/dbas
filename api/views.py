@@ -16,6 +16,8 @@ from cornice import Service
 from dbas.lib import (get_all_arguments_by_statement,
                       get_all_arguments_with_text_by_statement_id,
                       get_text_for_argument_uid, resolve_issue_uid_to_slug)
+from dbas.handler.statements import set_positions_premise, set_position
+from dbas.handler.arguments import set_arguments_premises
 
 from .lib import HTTP204, flatten, json_to_dict, logger, merge_dicts
 from .login import validate_credentials, validate_login
@@ -201,7 +203,8 @@ def prepare_data_assign_reference(request, func):
     if api_data:
         data = json_to_dict(request.body)
         api_data.update(data)
-        return_dict_json = func(request, for_api=True, api_data=api_data)
+        api_data.update({'application_url': request.application_url})
+        return_dict_json = func(for_api=True, api_data=api_data)
         return_dict = json.loads(return_dict_json)
         statement_uids = return_dict["statement_uids"]
         if statement_uids:
@@ -215,6 +218,12 @@ def prepare_data_assign_reference(request, func):
         raise HTTP204()
 
 
+def __init(request):
+    api_data = prepare_user_information(request)
+    nickname = api_data["nickname"] if api_data else None
+    return dbas.discussion.init(request, nickname, for_api=True)
+
+
 @reaction.get(validators=validate_login)
 def discussion_reaction(request):
     """Return data from DBas discussion_reaction page.
@@ -224,7 +233,8 @@ def discussion_reaction(request):
 
     """
     api_data = prepare_user_information(request)
-    return dbas.discussion_reaction(request, for_api=True, api_data=api_data)
+    nickname = api_data["nickname"] if api_data else None
+    return dbas.discussion.reaction(request, nickname, for_api=True)
 
 
 @justify.get(validators=validate_login)
@@ -236,7 +246,8 @@ def discussion_justify(request):
 
     """
     api_data = prepare_user_information(request)
-    return dbas.discussion_justify(request, for_api=True, api_data=api_data)
+    nickname = api_data["nickname"] if api_data else None
+    return dbas.discussion.justify(request, nickname, for_api=True)
 
 
 @attitude.get(validators=validate_login)
@@ -248,7 +259,8 @@ def discussion_attitude(request):
 
     """
     api_data = prepare_user_information(request)
-    return dbas.discussion_attitude(request, for_api=True, api_data=api_data)
+    nickname = api_data["nickname"] if api_data else None
+    return dbas.discussion.attitude(request, nickname, for_api=True)
 
 
 @support.get(validators=validate_login)
@@ -260,12 +272,13 @@ def discussion_support(request):
 
     """
     api_data = prepare_user_information(request)
+    nickname = api_data["nickname"] if api_data else None
     if not api_data:
         api_data = dict()
     api_data["slug"] = request.matchdict["slug"]
     api_data["arg_user_uid"] = request.matchdict["arg_user_uid"]
     api_data["arg_system_uid"] = request.matchdict["arg_system_uid"]
-    return dbas.discussion_support(request, for_api=True, api_data=api_data)
+    return dbas.discussion.support(request, nickname, for_api=True, api_data=api_data)
 
 
 @zinit.get(validators=validate_login)
@@ -276,8 +289,7 @@ def discussion_init(request):
     :return: dbas.discussion_init(True)
 
     """
-    api_data = prepare_user_information(request)
-    return dbas.discussion_init(request, for_api=True, api_data=api_data)
+    return __init(request)
 
 
 @zinit_blank.get(validators=validate_login)
@@ -288,8 +300,7 @@ def discussion_init_blank(request):
     :return: dbas.discussion_init(True)
 
     """
-    api_data = prepare_user_information(request)
-    return dbas.discussion_init(request, for_api=True, api_data=api_data)
+    return __init(request)
 
 
 #
@@ -303,7 +314,7 @@ def add_start_statement(request):
     :return:
 
     """
-    return prepare_data_assign_reference(request, dbas.set_new_start_statement)
+    return prepare_data_assign_reference(request, set_position)
 
 
 @start_premise.post(validators=validate_login, require_csrf=False)
@@ -314,7 +325,7 @@ def add_start_premise(request):
     :return:
 
     """
-    return prepare_data_assign_reference(request, dbas.set_new_start_premise)
+    return prepare_data_assign_reference(request, set_positions_premise)
 
 
 @justify_premise.post(validators=validate_login, require_csrf=False)
@@ -325,7 +336,7 @@ def add_justify_premise(request):
     :return:
 
     """
-    return prepare_data_assign_reference(request, dbas.set_new_premises_for_argument)
+    return prepare_data_assign_reference(request, set_arguments_premises)
 
 
 # =============================================================================
@@ -473,7 +484,8 @@ def jump_to_argument_fn(request):
 
     """
     api_data = jump_preparation(request)
-    return dbas.discussion_jump(request, for_api=True, api_data=api_data)
+    nickname = api_data["nickname"] if api_data else None
+    return dbas.discussion.jump(request, nickname, for_api=True, api_data=api_data)
 
 
 # =============================================================================

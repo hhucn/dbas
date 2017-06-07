@@ -8,7 +8,7 @@ from dbas.database.discussion_model import Premise, SeenStatement
 from dbas.helper.tests import verify_dictionary_of_view
 
 
-class DiscussionChhoseViewTests(unittest.TestCase):
+class DiscussionChoseViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')

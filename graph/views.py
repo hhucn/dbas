@@ -5,12 +5,14 @@ Introducing an graph manager.
 """
 
 import json
-import dbas.helper.issue as IssueHelper
+
+from cornice import Service
+
+import dbas.handler.issue as IssueHelper
 from dbas.helper.language import get_language_from_cookie
+from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from cornice import Service
-from dbas.logger import logger
 from graph.lib import get_d3_data, get_doj_data, get_opinion_data, get_path_of_user
 from graph.partial_graph import get_partial_graph_for_argument, get_partial_graph_for_statement
 

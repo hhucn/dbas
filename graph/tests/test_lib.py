@@ -1,13 +1,12 @@
 import unittest
 
-from dbas.database import DBDiscussionSession
+from dbas.database import DBDiscussionSession, get_dbas_db_configuration
 from dbas.helper.tests import add_settings_to_appconfig
-from dbas.helper.database import dbas_db_configuration
 from graph.lib import get_d3_data
 
 settings = add_settings_to_appconfig()
 
-DBDiscussionSession.configure(bind=dbas_db_configuration('discussion', settings))
+DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
 
 
 class LibTest(unittest.TestCase):
