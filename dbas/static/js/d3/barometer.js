@@ -105,7 +105,7 @@ function DiscussionBarometer(){
 		}
 
         // fetch zero users
-        if (isEverythingZero(jdata.opinions)){
+        if (isEverythingZero(jdata)){
             setGlobalInfoHandler('Hey', _t_discussion(otherParticipantsDontHaveOpinionForThis));
             return -1;
         }
@@ -204,9 +204,10 @@ function DiscussionBarometer(){
         is_attitude = address === 'attitude';
         var count = 0;
         if(is_attitude) {
-            count = usersDict[0].seenBy + usersDict[1].seenBy;
+            console.log(usersDict);
+            count = usersDict.agree.seenBy + usersDict.disagree.seenBy;
         } else {
-            $.each(usersDict, function( index, value ) {
+            $.each(usersDict.opinions, function( index, value ) {
                 count += value.seenBy;
             });
         }
