@@ -37,7 +37,7 @@ from dbas.handler.rss import get_list_of_all_feeds
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.language import set_language, get_language_from_cookie, set_language_for_first_visit
 from dbas.helper.settings import set_settings
-from dbas.helper.query import get_logfile_for_statements
+from dbas.helper.query import get_logfile_for_statements, get_default_locale_name
 from dbas.helper.references import set_reference
 from dbas.helper.views import preparation_for_view, try_to_contact
 from dbas.helper.voting import clear_vote_and_seen_values_of_user
@@ -1281,11 +1281,14 @@ def set_new_start_statement(request):
         issue = issue_helper.get_issue_id(request)
         data['issue_id'] = issue
         data['slug'] = DBDiscussionSession.query(Issue).get(issue).get_slug()
+        data['discussion_lang'] = get_discussion_language(request)
+        data['default_locale_name'] = get_default_locale_name(request)
+        data['application_url'] = request.application_url
     except KeyError as e:
         logger('views', 'set_new_start_statement', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
-    prepared_dict = setter.position(request, False, data)
+    prepared_dict = setter.position(False, data)
 
     return prepared_dict
 
@@ -1312,6 +1315,8 @@ def set_new_start_premise(request):
         data['supportive'] = True if request.params['supportive'].lower() == 'true' else False
         data['port'] = get_port(request)
         data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
+        data['discussion_lang'] = get_discussion_language(request)
+        data['default_locale_name'] = get_default_locale_name(request)
         try:
             data['mailer'] = get_mailer(request)
         except ComponentLookupError as e:
@@ -1320,7 +1325,7 @@ def set_new_start_premise(request):
         logger('views', 'set_new_start_premise', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
-    prepared_dict = setter.positions_premise(request, False, data)
+    prepared_dict = setter.positions_premise(False, data)
     return prepared_dict
 
 
@@ -1345,6 +1350,9 @@ def set_new_premises_for_argument(request):
         data['attack_type'] = request.params['attack_type']
         data['port'] = get_port(request)
         data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
+        data['discussion_lang'] = get_discussion_language(request)
+        data['default_locale_name'] = get_default_locale_name(request)
+        data['application_url'] = request.application_url
         try:
             data['mailer'] = get_mailer(request)
         except ComponentLookupError as e:
@@ -1353,7 +1361,7 @@ def set_new_premises_for_argument(request):
         logger('views', 'set_new_premises_for_argument', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
-    prepared_dict = setter.arguments_premises(request, False, data)
+    prepared_dict = setter.arguments_premises(False, data)
     return prepared_dict
 
 

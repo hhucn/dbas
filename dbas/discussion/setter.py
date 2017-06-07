@@ -10,16 +10,16 @@ from dbas.database.discussion_model import sql_timestamp_pretty_print, User, Set
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.helper.notification import send_notification, count_of_new_notifications, get_box_for
 from dbas.helper.query import insert_as_statements, process_input_of_start_premises_and_receive_url, \
-    process_input_of_premises_for_arguments_and_receive_url, process_seen_statements, get_default_locale_name,\
+    process_input_of_premises_for_arguments_and_receive_url, process_seen_statements,\
     mark_or_unmark_statement_or_argument, get_text_for_justification_or_reaction_bubble
-from dbas.lib import get_user_by_private_or_public_nickname, get_profile_picture, get_discussion_language
+from dbas.lib import get_user_by_private_or_public_nickname, get_profile_picture
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_position,\
     rep_reason_first_justification, rep_reason_new_statement, rep_reason_first_new_argument
 from dbas.url_manager import UrlManager
-from websocket.lib import send_request_for_info_popup_to_socketio, get_port
+from websocket.lib import send_request_for_info_popup_to_socketio
 
 
 def user_language(nickname, ui_locales) -> dict:
@@ -92,32 +92,31 @@ def notification(port, recipient, title, text, nickname, ui_locales) -> dict:
     return prepared_dict
 
 
-def position(request, for_api, data) -> dict:
+def position(for_api, data) -> dict:
     """
     Set new position for current discussion and returns collection with the next url for the discussion.
 
-    :param request: pyramid's request object
     :param for_api: boolean if requests came via the API
     :param data: dict of requests data
     :rtype: dict
     :return: Prepared collection with statement_uids of the new positions and next url or an error
     """
-    discussion_lang = get_discussion_language(request)
-    application_url = request.application_url
-    default_locale_name = get_default_locale_name(request)
-    _tn = Translator(discussion_lang)
-
     try:
         nickname = data['nickname']
         statement = data['statement']
         issue_id = data['issue_id']
         slug = data['slug']
+        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else DBDiscussionSession.query(Issue).get(issue_id).lang
+        default_locale_name = data['default_locale_name'] if 'default_locale_name' in data else discussion_lang
+        application_url = data['application_url']
     except KeyError as e:
         logger('setter', 'position', repr(e), error=True)
+        _tn = Translator('en')
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
     # escaping will be done in QueryHelper().set_statement(...)
     user_manager.update_last_action(nickname)
+    _tn = Translator(discussion_lang)
     new_statement = insert_as_statements(application_url, default_locale_name, statement, nickname, issue_id,
                                          discussion_lang, is_start=True)
     prepared_dict = {'error': '', 'statement_uids': ''}
@@ -150,20 +149,16 @@ def position(request, for_api, data) -> dict:
     return prepared_dict
 
 
-def positions_premise(request, for_api, data) -> dict:
+def positions_premise(for_api, data) -> dict:
     """
     Set new premise for a given position and returns dictionary with url for the next step of the discussion
 
-    :param request: pyramid's request object
     :param for_api: boolean if requests came via the API
     :param data: dict of requests data
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and next url or an error
     """
     prepared_dict = dict()
-    discussion_lang = get_discussion_language(request)
-    default_locale_name = get_default_locale_name(request)
-    _tn = Translator(discussion_lang)
 
     try:
         nickname = data['nickname']
@@ -175,8 +170,11 @@ def positions_premise(request, for_api, data) -> dict:
         history = data['history'] if '_HISTORY_' in data else None
         port = data['port'] if 'port' in data else None
         mailer = data['mailer'] if 'mailer' in data else None
+        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else DBDiscussionSession.query(Issue).get(issue_id).lang
+        default_locale_name = data['default_locale_name'] if 'default_locale_name' in data else discussion_lang
     except KeyError as e:
         logger('setter', 'positions_premise', repr(e), error=True)
+        _tn = Translator('en')
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
     # escaping will be done in QueryHelper().set_statement(...)
@@ -197,7 +195,6 @@ def positions_premise(request, for_api, data) -> dict:
         # send message if the user is now able to review
     if broke_limit:
         _t = Translator(discussion_lang)
-        port = get_port(request)
         send_request_for_info_popup_to_socketio(nickname, port, _t.get(_.youAreAbleToReviewNow),
                                                 '{}/review'.format(application_url))
         prepared_dict['url'] = '{}{}'.format(url, '#access-review')
@@ -209,22 +206,15 @@ def positions_premise(request, for_api, data) -> dict:
     return prepared_dict
 
 
-def arguments_premises(request, for_api, data) -> dict:
+def arguments_premises(for_api, data) -> dict:
     """
     Set new premise for a given conclusion and returns dictionary with url for the next step of the discussion
 
-    :param request: pyramid's request object
     :param for_api: boolean if requests came via the API
     :param data: dict if requests came via the API
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and next url or an error
     """
-    prepared_dict = dict()
-    discussion_lang = get_discussion_language(request)
-    application_url = request.application_url
-    default_locale_name = get_default_locale_name(request)
-    _tn = Translator(discussion_lang)
-
     try:
         nickname = data['nickname']
         premisegroups = data['statement']
@@ -234,8 +224,12 @@ def arguments_premises(request, for_api, data) -> dict:
         history = data['history'] if '_HISTORY_' in data else None
         mailer = data['mailer'] if 'mailer' in data else None
         port = data['port'] if 'port' in data else None
+        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else DBDiscussionSession.query(Issue).get(issue_id).lang
+        default_locale_name = data['default_locale_name'] if 'default_locale_name' in data else discussion_lang
+        application_url = data['application_url']
     except KeyError as e:
         logger('setter', 'arguments_premises', repr(e), error=True)
+        _tn = Translator('en')
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
     # escaping will be done in QueryHelper().set_statement(...)
@@ -247,6 +241,7 @@ def arguments_premises(request, for_api, data) -> dict:
                                                                                          port, mailer)
     user_manager.update_last_action(nickname)
 
+    prepared_dict = dict()
     prepared_dict['error'] = error
     prepared_dict['statement_uids'] = statement_uids
 
