@@ -7,8 +7,10 @@ Provides helping function for getting some opinions.
 from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User, ClickedArgument, ClickedStatement, Premise, SeenArgument, SeenStatement, sql_timestamp_pretty_print
-from dbas.helper.relation import get_rebuts_for_argument_uid, get_undercuts_for_argument_uid, get_undermines_for_argument_uid, get_supports_for_argument_uid
+from dbas.database.discussion_model import Argument, Statement, User, ClickedArgument, ClickedStatement, Premise,\
+    SeenArgument, SeenStatement, sql_timestamp_pretty_print
+from dbas.helper.relation import get_rebuts_for_argument_uid, get_undercuts_for_argument_uid,\
+    get_undermines_for_argument_uid, get_supports_for_argument_uid
 from dbas.lib import get_text_for_statement_uid, get_text_for_argument_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture
 from dbas.logger import logger
@@ -470,49 +472,3 @@ def create_users_dict(db_user, timestamp, main_page, lang):
             'public_profile_url': main_page + '/user/' + str(db_user.uid),
             'avatar_url': get_profile_picture(db_user),
             'vote_timestamp': sql_timestamp_pretty_print(timestamp, lang)}
-
-
-def get_infos_about_argument(uid, main_page, nickname, _t):
-    """
-    Returns several infos about the argument.
-
-    :param uid: Argument.uid
-    :param main_page: url
-    :param nickname: current nickname
-    :param _t: Translator
-    :return: dict()
-    """
-    return_dict = dict()
-    db_votes = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.argument_uid == uid,
-                                                                      ClickedArgument.is_valid == True,
-                                                                      ClickedStatement.is_up_vote == True)).all()
-    db_argument = DBDiscussionSession.query(Argument).get(uid)
-    if not db_argument:
-        return return_dict
-
-    db_author = DBDiscussionSession.query(User).get(db_argument.author_uid)
-    return_dict['vote_count'] = str(len(db_votes))
-    return_dict['author'] = db_author.get_global_nickname()
-    return_dict['author_url'] = main_page + '/user/' + str(db_author.uid)
-    return_dict['gravatar'] = get_profile_picture(db_author)
-    return_dict['timestamp'] = sql_timestamp_pretty_print(db_argument.timestamp, db_argument.lang)
-    text = get_text_for_argument_uid(uid)
-    return_dict['text'] = text[0:1].upper() + text[1:] + '.'
-
-    supporters = []
-    gravatars = dict()
-    public_page = dict()
-    for vote in db_votes:
-        db_user = DBDiscussionSession.query(User).get(vote.author_uid)
-        name = db_user.get_global_nickname()
-        if db_user.nickname == nickname:
-            name += ' (' + _t.get(_.itsYou) + ')'
-        supporters.append(name)
-        gravatars[name] = get_profile_picture(db_user)
-        public_page[name] = main_page + '/user/' + str(db_user.uid)
-
-    return_dict['supporter'] = supporters
-    return_dict['gravatars'] = gravatars
-    return_dict['public_page'] = public_page
-
-    return return_dict

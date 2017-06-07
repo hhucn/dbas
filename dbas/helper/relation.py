@@ -302,7 +302,7 @@ def __set_argument(user, premisegroup_uid, conclusion_uid, argument_uid, is_supp
     :param issue: Issue.uid
     :return: Argument.uid or None
     """
-    # logger('RelationHelper', '__create_argument_by_uids', 'main with user: ' + str(user) +
+    # logger('RelationHelper', 'create_argument_by_uids', 'main with user: ' + str(user) +
     #        ', premisegroup_uid: ' + str(premisegroup_uid) +
     #        ', conclusion_uid: ' + str(conclusion_uid) +
     #        ', argument_uid: ' + str(argument_uid) +
@@ -330,10 +330,10 @@ def __set_argument(user, premisegroup_uid, conclusion_uid, argument_uid, is_supp
                                                                        Argument.issue_uid == issue)).first()
     transaction.commit()
     if new_argument:
-        # logger('RelationHelper', '__create_argument_by_uids', 'argument was inserted')
+        # logger('RelationHelper', 'create_argument_by_uids', 'argument was inserted')
         return new_argument.uid
     else:
-        # logger('RelationHelper', '__create_argument_by_uids', 'argument was not inserted')
+        # logger('RelationHelper', 'create_argument_by_uids', 'argument was not inserted')
         return None
 
 

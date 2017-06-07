@@ -1,4 +1,4 @@
-import dbas.user_management as user_manager
+from dbas.handler import user
 import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Settings
@@ -40,7 +40,7 @@ def set_settings(url, userid, service, settings_value, _tn):
         if settings_value:
             db_user.set_public_nickname(db_user.nickname)
         elif db_user.nickname == db_user.public_nickname:
-            user_manager.refresh_public_nickname(db_user)
+            user.refresh_public_nickname(db_user)
         public_nick = db_user.public_nickname
     else:
         error = _tn.get(_.keyword)

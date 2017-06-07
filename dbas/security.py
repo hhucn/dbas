@@ -5,7 +5,7 @@ TODO
 """
 
 from pyramid.security import Allow, Everyone
-from dbas.views import logger
+from dbas.logger import logger
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group
 from sqlalchemy.exc import InternalError

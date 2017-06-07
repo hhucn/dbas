@@ -770,14 +770,14 @@ def __set_up_settings(session, users):
     :return: None
     """
     # adding settings
-    import dbas.user_management as user_handler
+    from dbas.handler import user as userh
     for user in users:
         new_public_nick = 10 <= users.index(user) <= 20
         setting = Settings(author_uid=user.uid, send_mails=False, send_notifications=True,
                            should_show_public_nickname=not new_public_nick)
         session.add(setting)
         if new_public_nick:
-            user_handler.refresh_public_nickname(user)
+            userh.refresh_public_nickname(user)
 
     session.flush()
 

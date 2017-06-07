@@ -5,16 +5,60 @@ Provides functions for te internal messaging system
 """
 
 import transaction
+from sqlalchemy import and_
+
 import dbas.helper.email as EmailHelper
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument, sql_timestamp_pretty_print
+from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument, \
+    sql_timestamp_pretty_print
 from dbas.database.initializedb import nick_of_anonymous_user, nick_of_admin
-from dbas.lib import escape_string, get_profile_picture
+from dbas.handler import user
+from dbas.lib import escape_string, get_profile_picture, get_user_by_private_or_public_nickname
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.text_generator import get_text_for_edit_text_message, get_text_for_add_text_message, get_text_for_add_argument_message
+from dbas.strings.text_generator import get_text_for_edit_text_message, get_text_for_add_text_message, \
+    get_text_for_add_argument_message
 from dbas.strings.translator import Translator
-from sqlalchemy import and_
 from websocket.lib import send_request_for_info_popup_to_socketio
+
+
+def send_users_notification(port, recipient, title, text, nickname, ui_locales) -> dict:
+    """
+    Send a notification from user a to user b
+
+    :param port: Port of the notification server
+    :param recipient: Nickname of the recipient
+    :param title: Title of the notification
+    :param text: Text of the notification
+    :param nickname: Users nickname
+    :param ui_locales: Current used language
+    :rtype: dict
+    :return: prepared collection with status information
+    """
+    _tn = Translator(ui_locales)
+
+    db_recipient = get_user_by_private_or_public_nickname(recipient)
+    if len(title) < 5 or len(text) < 5:
+        error = '{} ({}: 5)'.format(_tn.get(_.empty_notification_input), _tn.get(_.minLength))
+        return {'error': error, 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
+
+    if not db_recipient or recipient == 'admin' or recipient == nick_of_anonymous_user:
+        return {'error': _tn.get(_.recipientNotFound), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
+
+    db_author = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_author:
+        return {'error': _tn.get(_.notLoggedIn), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
+
+    if db_author.uid == db_recipient.uid:
+        return {'error': _tn.get(_.senderReceiverSame), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
+
+    db_notification = send_notification(db_author, db_recipient, title, text, nickname, port)
+    prepared_dict = {
+        'error': '',
+        'timestamp': sql_timestamp_pretty_print(db_notification.timestamp, ui_locales),
+        'uid': db_notification.uid,
+        'recipient_avatar': get_profile_picture(db_recipient, 20)
+    }
+    return prepared_dict
 
 
 def send_edit_text_notification(db_user, textversion, path, port, mailer):
@@ -322,3 +366,68 @@ def get_box_for(user, lang, main_page, is_inbox):
         message_array.append(tmp_dict)
 
     return message_array[::-1]
+
+
+def read_notification(uid, nickname, ui_locales) -> dict:
+    """
+    Simply marks a notification as read
+
+    :param uid: Id of the notification which should be marked as read
+    :param nickname: Nickname of current user
+    :param ui_locales: Language of current users session
+    :return: Dictionary with info and/or error
+    """
+    prepared_dict = dict()
+    _tn = Translator(ui_locales)
+    user.update_last_action(nickname)
+
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
+        return {'error': _tn.get(_.noRights), 'success': ''}
+
+    DBDiscussionSession.query(Message).filter(and_(Message.uid == uid,
+                                                   Message.to_author_uid == db_user.uid,
+                                                   Message.is_inbox == True)).first().set_read(True)
+    transaction.commit()
+    prepared_dict['unread_messages'] = count_of_new_notifications(nickname)
+    prepared_dict['error'] = ''
+
+    return prepared_dict
+
+
+def delete_notification(uid, nickname, ui_locales, application_url) -> dict:
+    """
+    Simply deletes a specific notification
+
+    :param uid: Id of the notification which should be deleted
+    :param nickname: Nickname of current user
+    :param ui_locales: Language of current users session
+    :param application_url Url of the App
+    :rtype: dict
+    :return: Dictionary with info and/or error
+    """
+
+    user.update_last_action(nickname)
+    _tn = Translator(ui_locales)
+
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
+        return {'error': _tn.get(_.noRights), 'success': ''}
+
+    # inbox
+    DBDiscussionSession.query(Message).filter(and_(Message.uid == uid,
+                                                   Message.to_author_uid == db_user.uid,
+                                                   Message.is_inbox == True)).delete()
+    # send
+    DBDiscussionSession.query(Message).filter(and_(Message.uid == uid,
+                                                   Message.from_author_uid == db_user.uid,
+                                                   Message.is_inbox == False)).delete()
+    transaction.commit()
+    prepared_dict = dict()
+    prepared_dict['unread_messages'] = count_of_new_notifications(nickname)
+    prepared_dict['total_in_messages'] = str(len(get_box_for(nickname, ui_locales, application_url, True)))
+    prepared_dict['total_out_messages'] = str(len(get_box_for(nickname, ui_locales, application_url, False)))
+    prepared_dict['error'] = ''
+    prepared_dict['success'] = _tn.get(_.messageDeleted)
+
+    return prepared_dict

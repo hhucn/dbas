@@ -5,6 +5,7 @@ Handler for user-accounts
 """
 
 import random
+import json
 from datetime import date, timedelta
 
 import arrow
@@ -15,6 +16,9 @@ import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, ClickedStatement, ClickedArgument, TextVersion, Settings, \
     ReviewEdit, ReviewDelete, ReviewOptimization, get_now, sql_timestamp_pretty_print, MarkedArgument, MarkedStatement, ReviewDuplicate
+from dbas.handler.opinion import get_user_with_same_opinion_for_argument, \
+    get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
+    get_user_with_same_opinion_for_premisegroups, get_user_and_opinions_for_argument
 from dbas.helper.email import send_mail
 from dbas.helper.notification import send_welcome_notification
 from dbas.lib import python_datetime_pretty_print, get_text_for_argument_uid,\
@@ -44,8 +48,8 @@ moodlist = ['Accepted', 'Accomplished', 'Aggravated', 'Alone', 'Amused', 'Angry'
             'Uncomfortable', 'Weird', 'Sexy', 'Aggressive']
 
 # https://en.wikipedia.org/wiki/List_of_animal_names
-# list = '';
-# $.each($($('table')[3]).find('tbody td:first-child'), function(){if ($(this).text().length > 2 ) list += ', ' + '"' + $(this).text().replace(' (list) ', '') + '"'});
+# list = ';
+# $.each($($('table')[3]).find('tbody td:first-child'), function(){if ($(this).text().length > 2 ) list += ', ' + '"' + $(this).text().replace(' (list) ', ') + '"'});
 # console.log(list)
 animallist = ['Aardvark', 'Albatross', 'Alligator', 'Alpaca', 'Ant', 'Anteater', 'Antelope', 'Ape', 'Armadillo',
               'Badger', 'Barracuda', 'Bat', 'Bear', 'Beaver', 'Bee', 'Bird', 'Bison', 'Boar', 'Buffalo', 'Butterfly',
@@ -127,7 +131,7 @@ def update_last_action(nick):
     :param nick: User.nickname
     :return: Boolean
     """
-    logger('UserManager', 'update_last_action', 'main')
+    logger('User', 'update_last_action', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
     if not db_user:
         return False
@@ -165,13 +169,13 @@ def refresh_public_nickname(user):
         second = biglist[random.randint(0, len(biglist) - 1)]
         nick = first + ' ' + second
 
-    logger('UserHandler', 'refresh_public_nickname', user.public_nickname + ' -> ' + nick)
+    logger('User', 'refresh_public_nickname', user.public_nickname + ' -> ' + nick)
     user.set_public_nickname(nick)
 
     return nick
 
 
-def is_user_in_group(nickname, groupname):
+def is_in_group(nickname, groupname):
     """
     Returns boolean if the user is in the group
 
@@ -180,11 +184,11 @@ def is_user_in_group(nickname, groupname):
     :return: Boolean
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
-    logger('UserHandler', 'is user in: ' + groupname, 'main')
+    logger('User', 'is user in: ' + groupname, 'main')
     return db_user and db_user.groups.name == groupname
 
 
-def is_user_admin(nickname):
+def is_admin(nickname):
     """
     Check, if the given uid has admin rights or is admin
 
@@ -192,11 +196,11 @@ def is_user_admin(nickname):
     :return: true, if user is admin, false otherwise
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
-    logger('UserHandler', 'is_user_admin', 'main')
+    logger('User', 'is_admin', 'main')
     return db_user and db_user.groups.name == 'admins'
 
 
-def get_users_public_data(nickname, lang):
+def get_public_data(nickname, lang):
     """
     Fetch some public information about the user with given nickname
 
@@ -256,7 +260,7 @@ def get_users_public_data(nickname, lang):
             labels_decision_7.append(ts)
             data_decision_7.append(votes)
 
-        statements, edits = get_textversions_of_user(nickname, lang, begin, end)
+        statements, edits = get_textversions(nickname, lang, begin, end)
         data_statement_30.append(len(statements))
         data_edit_30.append(len(edits))
 
@@ -300,7 +304,7 @@ def get_reviews_of(user, only_today):
     return len(db_edits) + len(db_deletes) + len(db_optimizations) + len(db_duplicates)
 
 
-def get_count_of_statements_of_user(user, only_edits, limit_on_today=False):
+def get_count_of_statements(user, only_edits, limit_on_today=False):
     """
     Returns the count of statements of the user
 
@@ -355,7 +359,7 @@ def get_count_of_votes_of_user(user, limit_on_today=False):
     return len(db_arg), len(db_stat)
 
 
-def get_count_of_clicks_of_user(user, limit_on_today=False):
+def get_count_of_clicks(user, limit_on_today=False):
     """
     Returns the count of clicks of the user
 
@@ -380,7 +384,7 @@ def get_count_of_clicks_of_user(user, limit_on_today=False):
     return len(db_arg), len(db_stat)
 
 
-def get_textversions_of_user(public_nickname, lang, timestamp_after=None, timestamp_before=None):
+def get_textversions(public_nickname, lang, timestamp_after=None, timestamp_before=None):
     """
     Returns all textversions, were the user was author
 
@@ -396,7 +400,7 @@ def get_textversions_of_user(public_nickname, lang, timestamp_after=None, timest
     db_user = get_user_by_private_or_public_nickname(public_nickname)
 
     if not db_user:
-        logger('UserManagement', 'get_textversions_of_user', 'no user found', error=True)
+        logger('User', 'get_textversions', 'no user found', error=True)
         return statement_array, edit_array
 
     if not timestamp_after:
@@ -408,7 +412,7 @@ def get_textversions_of_user(public_nickname, lang, timestamp_after=None, timest
                                                                   TextVersion.timestamp >= timestamp_after,
                                                                   TextVersion.timestamp < timestamp_before)).all()
 
-    logger('UserManagement', 'get_textversions_of_user', 'count of edits: ' + str(len(db_edits)))
+    logger('User', 'get_textversions', 'count of edits: ' + str(len(db_edits)))
     for edit in db_edits:
         db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=edit.statement_uid).first()
         edit_dict = dict()
@@ -531,7 +535,7 @@ def get_information_of(db_user, lang):
     db_reviews_optimization = DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=db_user.uid).all()
     db_reviews = db_reviews_duplicate + db_reviews_edit + db_reviews_delete + db_reviews_optimization
 
-    statements, edits = get_textversions_of_user(db_user.public_nickname, lang)
+    statements, edits = get_textversions(db_user.public_nickname, lang)
     ret_dict['statements_posted'] = len(statements)
     ret_dict['edits_done'] = len(edits)
     ret_dict['reviews_proposed'] = len(db_reviews)
@@ -558,14 +562,14 @@ def get_summary_of_today(nickname, lang):
         return dict()
 
     arg_vote, stat_vote = get_count_of_votes_of_user(db_user, True)
-    arg_clicks, stat_clicks = get_count_of_clicks_of_user(db_user, True)
+    arg_clicks, stat_clicks = get_count_of_clicks(db_user, True)
     reputation, tmp = get_reputation_of(nickname, True)
     timestamp = arrow.utcnow().to('Europe/Berlin')
 
     ret_dict['firstname'] = db_user.firstname
     ret_dict['date'] = timestamp.format('YYYY-MM-DD') if lang == 'en' else timestamp.format('DD.MM.')
-    ret_dict['statements_posted'] = get_count_of_statements_of_user(db_user, False, True)
-    ret_dict['edits_done'] = get_count_of_statements_of_user(db_user, True, True)
+    ret_dict['statements_posted'] = get_count_of_statements(db_user, False, True)
+    ret_dict['edits_done'] = get_count_of_statements(db_user, True, True)
     ret_dict['discussion_arg_votes'] = arg_vote
     ret_dict['discussion_stat_votes'] = stat_vote
     ret_dict['discussion_arg_clicks'] = arg_clicks
@@ -587,35 +591,35 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
     :param lang: current language
     :return: an message and boolean for error and success
     """
-    logger('UserHandler', 'change_password', 'def')
+    logger('User', 'change_password', 'def')
     _t = Translator(lang)
 
     success = False
 
     # is the old password given?
     if not old_pw:
-        logger('UserHandler', 'change_password', 'old pwd is empty')
+        logger('User', 'change_password', 'old pwd is empty')
         message = _t.get(_.oldPwdEmpty)  # 'The old password field is empty.'
     # is the new password given?
     elif not new_pw:
-        logger('UserHandler', 'change_password', 'new pwd is empty')
+        logger('User', 'change_password', 'new pwd is empty')
         message = _t.get(_.newPwdEmtpy)  # 'The new password field is empty.'
     # is the confirmation password given?
     elif not confirm_pw:
-        logger('UserHandler', 'change_password', 'confirm pwd is empty')
+        logger('User', 'change_password', 'confirm pwd is empty')
         message = _t.get(_.confPwdEmpty)  # 'The password confirmation field is empty.'
     # is new password equals the confirmation?
     elif not new_pw == confirm_pw:
-        logger('UserHandler', 'change_password', 'new pwds not equal')
+        logger('User', 'change_password', 'new pwds not equal')
         message = _t.get(_.newPwdNotEqual)  # 'The new passwords are not equal'
     # is new old password equals the new one?
     elif old_pw == new_pw:
-        logger('UserHandler', 'change_password', 'pwds are the same')
+        logger('User', 'change_password', 'pwds are the same')
         message = _t.get(_.pwdsSame)  # 'The new and old password are the same'
     else:
         # is the old password valid?
         if not user.validate_password(old_pw):
-            logger('UserHandler', 'change_password', 'old password is wrong')
+            logger('User', 'change_password', 'old password is wrong')
             message = _t.get(_.oldPwdWrong)  # 'Your old password is wrong.'
         else:
             hashed_pw = password_handler.get_hashed_password(new_pw)
@@ -625,7 +629,7 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
             DBDiscussionSession.add(user)
             transaction.commit()
 
-            logger('UserHandler', 'change_password', 'password was changed')
+            logger('User', 'change_password', 'password was changed')
             message = _t.get(_.pwdChanged)  # 'Your password was changed'
             success = True
 
@@ -651,7 +655,7 @@ def __create_new_user(firstname, lastname, email, nickname, password, gender, db
 
     _t = Translator(ui_locales)
     # creating a new user with hashed password
-    logger('UserManagement', '__create_new_user', 'Adding user ' + nickname)
+    logger('User', '__create_new_user', 'Adding user ' + nickname)
     hashed_password = password_handler.get_hashed_password(password)
     newuser = User(firstname=firstname,
                    surname=lastname,
@@ -673,11 +677,11 @@ def __create_new_user(firstname, lastname, email, nickname, password, gender, db
     # sanity check, whether the user exists
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if db_user:
-        logger('UserManagement', '__create_new_user', 'New data was added with uid ' + str(db_user.uid))
+        logger('User', '__create_new_user', 'New data was added with uid ' + str(db_user.uid))
         success = _t.get(_.accountWasAdded).format(nickname)
 
     else:
-        logger('UserManagement', '__create_new_user', 'New data was not added')
+        logger('User', '__create_new_user', 'New data was not added')
         info = _t.get(_.accoutErrorTryLateOrContant)
 
     return success, info, db_user
@@ -703,7 +707,7 @@ def set_new_user(request, firstname, lastname, nickname, gender, email, password
     # does the group exists?
     if not db_group:
         info = _tn.get(_.errorTryLateOrContant)
-        logger('ViewHelper', 'set_new_user', 'Internal error occured')
+        logger('User', 'set_new_user', 'Internal error occured')
         return False, info
 
     success, info, db_new_user = __create_new_user(firstname, lastname, email, nickname, password, gender,
@@ -716,8 +720,49 @@ def set_new_user(request, firstname, lastname, nickname, gender, email, password
         send_mail(get_mailer(request), subject, body, email, _tn.get_lang())
         send_welcome_notification(db_new_user.uid, _tn)
 
-        logger('ViewHelper', 'set_new_user', 'set new user in db')
+        logger('User', 'set_new_user', 'set new user in db')
         return success, db_new_user
 
-    logger('ViewHelper', 'set_new_user', 'new user not found in db')
+    logger('User', 'set_new_user', 'new user not found in db')
     return False, _tn.get(_.errorTryLateOrContant)
+
+
+def get_users_with_same_opinion(uids, application_url, path, nickname, is_argument, is_attitude, is_reaction,
+                                is_position, ui_locales) -> dict:
+    """
+    Based on current discussion step information about other users will be given
+
+    :param uids: IDs of statements or argument for the information request
+    :param application_url: url of the application
+    :param path: current path of the user
+    :param nickname: users nickname
+    :param is_argument: boolean, if the request is for an argument
+    :param is_attitude: boolean, if the request is during the attitude step
+    :param is_reaction: boolean, if the request is during the attitude step
+    :param is_position: boolean, if the request is for a position
+    :param ui_locales: language of the discussion
+    :rtype: dict
+    :return: prepared collection with information about other users with the same opinion or an error
+    """
+    prepared_dict = dict()
+    _tn = Translator(ui_locales)
+
+    if is_argument and is_reaction:
+        uids = json.loads(uids)
+        prepared_dict = get_user_and_opinions_for_argument(uids, nickname, ui_locales, application_url, path)
+    elif is_argument and not is_reaction:
+        prepared_dict = get_user_with_same_opinion_for_argument(uids, nickname, ui_locales, application_url)
+    elif is_position:
+        uids = json.loads(uids)
+        uids = uids if isinstance(uids, list) else [uids]
+        prepared_dict = get_user_with_same_opinion_for_statements(uids, True, nickname, ui_locales, application_url)
+    elif is_attitude:
+            prepared_dict = get_user_with_opinions_for_attitude(uids, nickname, ui_locales, application_url)
+    elif not is_attitude:
+        uids = json.loads(uids)
+        uids = uids if isinstance(uids, list) else [uids]
+        prepared_dict = get_user_with_same_opinion_for_premisegroups(uids, nickname, ui_locales, application_url)
+    prepared_dict['info'] = _tn.get(_.otherParticipantsDontHaveOpinionForThisStatement) if len(uids) == 0 else ''
+    prepared_dict['error'] = ''
+
+    return prepared_dict

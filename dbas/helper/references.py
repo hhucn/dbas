@@ -132,3 +132,27 @@ def set_reference(reference, url, nickname, statement_uid, issue_uid):
     transaction.commit()
 
     return True
+
+
+def get_references(uids, is_argument, application_url) -> dict:
+    """
+    Returns references for an argument or statement.
+
+    :param uids: IDs of statements or arguments as list
+    :param is_argument: boolean if the ids are for arguments
+    :param application_url: url of the application
+    :rtype: dict
+    :return: prepared collection with error, data and text field
+    """
+    if is_argument:
+        data, text = get_references_for_argument(uids, application_url)
+    else:
+        data, text = get_references_for_statements(uids, application_url)
+
+    prepared_dict = {
+        'error': '',
+        'data': data,
+        'text': text
+    }
+
+    return prepared_dict

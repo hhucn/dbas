@@ -4,14 +4,15 @@ Helper for D-BAS Views
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+from dbas.handler import user 
 from pyramid.httpexceptions import HTTPNotFound
+from pyramid_mailer import get_mailer
 from validate_email import validate_email
 
+import dbas.handler.issue as IssueHelper
+import dbas.handler.issue as issue_helper
 import dbas.helper.email as EmailHelper
-import dbas.helper.issue as IssueHelper
-import dbas.helper.issue as issue_helper
 import dbas.helper.voting as VotingHelper
-import dbas.user_management as UserHandler
 from dbas.auth.recaptcha import validate_recaptcha
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
@@ -25,7 +26,6 @@ from dbas.review.helper.reputation import add_reputation_for
 from dbas.review.helper.reputation import rep_reason_first_confrontation
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from pyramid_mailer import get_mailer
 from websocket.lib import send_request_for_info_popup_to_socketio, get_port
 
 
@@ -52,7 +52,7 @@ def preparation_for_view(for_api, api_data, request):
     :return: nickname, session_id, session_expired, history
     """
     nickname = get_nickname(request.authenticated_userid, for_api, api_data)
-    session_expired = UserHandler.update_last_action(nickname)
+    session_expired = user.update_last_action(nickname)
     return nickname, session_expired
 
 

@@ -1,23 +1,24 @@
 from pyramid.httpexceptions import HTTPNotFound
 
+import dbas.handler.issue as issue_helper
 import dbas.helper.history as history_helper
-import dbas.helper.issue as issue_helper
-import dbas.user_management as user_manager
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument
+from dbas.handler import user
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.language import get_language_from_cookie, set_language_for_first_visit
 from dbas.helper.views import handle_justification_step
 from dbas.helper.voting import add_click_for_argument
-from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_statement,\
+from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_statement, \
     check_belonging_of_argument, check_belonging_of_premisegroups, related_with_support, check_reaction
-from dbas.logger import logger
 from dbas.lib import get_discussion_language, resolve_issue_uid_to_slug
+from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_argument_click
-from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
+
 
 # TODO: REQUEST AND NICKNAME AS PARAMS? (LETS KILL REQUESTS)
 
@@ -420,7 +421,7 @@ def finish(request) -> dict:
     _t = Translator(ui_locales)
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
-    summary_dict = user_manager.get_summary_of_today(request.authenticated_userid, ui_locales)
+    summary_dict = user.get_summary_of_today(request.authenticated_userid, ui_locales)
 
     prepared_discussion = dict()
     prepared_discussion['title'] = _t.get(_.finishTitle)

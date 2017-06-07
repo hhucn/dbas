@@ -11,7 +11,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, Argument, Premise, Statement, \
     LastReviewerOptimization, ReviewOptimization, ReviewEdit, ReviewEditValue, LastReviewerEdit, LastReviewerDuplicate,\
     ReviewDuplicate, RevokedDuplicate
-from dbas.helper.query import correct_statement
+from dbas.handler.statements import correct_statement
 from dbas.lib import get_all_arguments_by_statement
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_success_flag, rep_reason_bad_flag, \

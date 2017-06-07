@@ -22,8 +22,7 @@ from dbas.review.helper.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
-from dbas.user_management import is_user_in_group, get_count_of_statements_of_user, get_count_of_votes_of_user,\
-    get_count_of_clicks_of_user
+from dbas.handler import user
 
 
 class DictionaryHelper(object):
@@ -163,8 +162,8 @@ class DictionaryHelper(object):
         self.add_language_options_for_extra_dict(return_dict)
 
         return_dict['is_reportable'] = is_reportable
-        return_dict['is_admin'] = is_user_in_group(nickname, 'admins')
-        return_dict['is_author'] = is_user_in_group(nickname, 'authors')
+        return_dict['is_admin'] = user.is_in_group(nickname, 'admins')
+        return_dict['is_author'] = user.is_in_group(nickname, 'authors')
         return_dict['show_bar_icon'] = show_bar_icon
         return_dict['show_graph_icon'] = show_graph_icon
         return_dict['close_premise_container'] = True
@@ -204,10 +203,10 @@ class DictionaryHelper(object):
         :return: dict()
         """
         _tn = Translator(self.system_lang)
-        edits = get_count_of_statements_of_user(db_user, True) if db_user else 0
-        statements = get_count_of_statements_of_user(db_user, False) if db_user else 0
-        arg_vote, stat_vote = get_count_of_votes_of_user(db_user) if db_user else (0, 0)
-        arg_clicks, stat_clicks = get_count_of_clicks_of_user(db_user) if db_user else (0, 0)
+        edits = user.get_count_of_statements(db_user, True) if db_user else 0
+        statements = user.get_count_of_statements(db_user, False) if db_user else 0
+        arg_vote, stat_vote = user.get_count_of_votes_of_user(db_user) if db_user else (0, 0)
+        arg_clicks, stat_clicks = user.get_count_of_clicks(db_user) if db_user else (0, 0)
         public_nick = db_user.get_global_nickname() if db_user else ''
         db_group = DBDiscussionSession.query(Group).get(db_user.group_uid) if db_user else None
         group = db_group.name if db_group else '-'

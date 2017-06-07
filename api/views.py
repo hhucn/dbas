@@ -16,7 +16,8 @@ from cornice import Service
 from dbas.lib import (get_all_arguments_by_statement,
                       get_all_arguments_with_text_by_statement_id,
                       get_text_for_argument_uid, resolve_issue_uid_to_slug)
-from dbas.discussion import setter
+from dbas.handler.statements import set_positions_premise, set_position
+from dbas.handler.arguments import set_arguments_premises
 
 from .lib import HTTP204, flatten, json_to_dict, logger, merge_dicts
 from .login import validate_credentials, validate_login
@@ -313,7 +314,7 @@ def add_start_statement(request):
     :return:
 
     """
-    return prepare_data_assign_reference(request, setter.position)
+    return prepare_data_assign_reference(request, set_position)
 
 
 @start_premise.post(validators=validate_login, require_csrf=False)
@@ -324,7 +325,7 @@ def add_start_premise(request):
     :return:
 
     """
-    return prepare_data_assign_reference(request, setter.positions_premise)
+    return prepare_data_assign_reference(request, set_positions_premise)
 
 
 @justify_premise.post(validators=validate_login, require_csrf=False)
@@ -335,7 +336,7 @@ def add_justify_premise(request):
     :return:
 
     """
-    return prepare_data_assign_reference(request, setter.arguments_premises)
+    return prepare_data_assign_reference(request, set_arguments_premises)
 
 
 # =============================================================================

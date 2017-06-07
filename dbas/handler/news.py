@@ -11,7 +11,7 @@ from dbas.database import DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, sql_timestamp_pretty_print
 from dbas.database.news_model import News
 from dbas.logger import logger
-from dbas.user_management import is_user_in_group
+from dbas.handler import user
 from dbas.handler.rss import create_news_rss
 from dbas.helper.language import get_language_from_cookie
 from dbas.lib import escape_string
@@ -34,7 +34,7 @@ def set_news(request):
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
-    if not db_user or is_user_in_group(nickname, 'author') or not title or not text:
+    if not db_user or user.is_in_group(nickname, 'author') or not title or not text:
         return {}, False
 
     author = db_user.firstname

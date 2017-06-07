@@ -176,23 +176,29 @@ def print_user_activity():
 def print_textversion_history():
     target = open(path + '/textversion_history.csv', 'w')
     db_st = [s.uid for s in session.query(Statement).filter_by(issue_uid=db_issue.uid).all()]
-    db_h = session.query(History).all()
+    db_h = session.query(History).filter(
+        History.timestamp >= start,
+        History.timestamp <= end
+    ).all()
     his_count = len([h for h in db_h if db_issue.get_slug() in h.path])
     count_tv = 0
+    st = []
     count_h = 0
-    target.write('# day, count, user activity\n')
+    target.write('# day, tv_count, st_count, user_activity\n')
     for day in range(0, (end - start).days + 1):
         tvs = session.query(TextVersion).filter(and_(
             TextVersion.statement_uid.in_(db_st),
             TextVersion.timestamp >= start.replace(days=+day),
             TextVersion.timestamp < start.replace(days=+day + 1))).all()
+        st = list(set(st + list(set([tv.statement_uid for tv in tvs]))))
         his = session.query(History).filter(and_(
             History.path.contains(db_issue.get_slug()),
             History.timestamp >= start.replace(days=+day),
             History.timestamp < start.replace(days=+day + 1))).all()
         count_tv += len(tvs)
+        count_st = len(st)
         count_h += len(his)
-        target.write('{}, {}, {}\n'.format(day, count_tv, count_h / his_count))
+        target.write('{}, {}, {}, {}\n'.format(day, count_tv, count_st, count_h / his_count))
 
     target.close()
 
@@ -216,5 +222,5 @@ if __name__ == '__main__':
     # print_opitions_for_positions()
     # print_summary()
     # print_activity_per_day()
-    print_user_activity()
+    # print_user_activity()
     print_textversion_history()

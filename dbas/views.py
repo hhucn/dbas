@@ -14,31 +14,36 @@ from pyramid.renderers import get_renderer
 from pyramid.response import Response
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
+from pyramid_mailer import get_mailer
+from zope.interface.interfaces import ComponentLookupError
 
 import dbas.discussion.core as discussion
-import dbas.discussion.setter as setter
-import dbas.discussion.getter as getter
-import dbas.discussion.review as review
+import dbas.handler.issue as issue_helper
 import dbas.handler.news as news_handler
 import dbas.helper.history as history_helper
-import dbas.helper.issue as issue_helper
+import dbas.review.helper.core as review
 import dbas.review.helper.history as review_history_helper
 import dbas.review.helper.queues as review_queue_helper
 import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
-from dbas import user_management as user_manager
 from dbas.auth.login import login_user, register_with_ajax_data
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
+from dbas.handler import user
+from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement_uid
 from dbas.handler.password import request_password
 from dbas.handler.rss import get_list_of_all_feeds
+from dbas.handler.statements import set_correction_of_statement, set_position, set_positions_premise, \
+    set_seen_statements, get_logfile_for_statements
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.language import set_language, get_language_from_cookie, set_language_for_first_visit
+from dbas.helper.notification import read_notification, delete_notification, send_users_notification
+from dbas.helper.query import get_default_locale_name, set_user_language, \
+    mark_statement_or_argument
+from dbas.helper.references import set_reference, get_references
 from dbas.helper.settings import set_settings
-from dbas.helper.query import get_logfile_for_statements, get_default_locale_name
-from dbas.helper.references import set_reference
 from dbas.helper.views import preparation_for_view, try_to_contact
 from dbas.helper.voting import clear_vote_and_seen_values_of_user
 from dbas.input_validator import is_integer
@@ -46,9 +51,7 @@ from dbas.lib import escape_string, get_discussion_language, get_changelog, is_u
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from pyramid_mailer import get_mailer
 from websocket.lib import get_port
-from zope.interface.interfaces import ComponentLookupError
 
 name = 'D-BAS'
 version = '1.4.1'
@@ -69,7 +72,7 @@ def check_authentication(request):
     :param request: current request of the server
     :return: HTTP response or None if no change in session
     """
-    session_expired = user_manager.update_last_action(request.authenticated_userid)
+    session_expired = user.update_last_action(request.authenticated_userid)
     if session_expired:
         return user_logout(request, True)
 
@@ -234,7 +237,7 @@ def main_settings(request):
     success = False
     error = False
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(request.authenticated_userid)).join(Group).first()
-    _uh = user_manager
+    _uh = user
     _t = Translator(ui_locales)
 
     if not db_user:
@@ -351,7 +354,7 @@ def main_user(request):
     ui_locales = get_language_from_cookie(request)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
-    user_dict = user_manager.get_information_of(current_user, ui_locales)
+    user_dict = user.get_information_of(current_user, ui_locales)
 
     db_user_of_request = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
     can_send_notification = False
@@ -529,7 +532,7 @@ def notfound(request):
     if request.path.startswith('/api'):
         return api_notfound(request)
 
-    user_manager.update_last_action(request.authenticated_userid)
+    user.update_last_action(request.authenticated_userid)
     logger('notfound', 'def', 'main in {}'.format(request.method) + '-request' +
            ', path: ' + request.path +
            ', view name: ' + request.view_name +
@@ -941,7 +944,7 @@ def call_from_request(request, f: Callable[[Any, Any], Any]):
     """
     logger(f.__name__, 'def', 'main')
     userid = request.authenticated_userid
-    user_manager.update_last_action(userid)
+    user.update_last_action(userid)
     ui_locales = get_language_from_cookie(request)
 
     return f(userid, ui_locales)
@@ -968,7 +971,7 @@ def get_all_posted_statements(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    return_array, _ = call_from_request(request, user_manager.get_textversions_of_user)
+    return_array, _ = call_from_request(request, user.get_textversions)
     return return_array
 
 
@@ -981,7 +984,7 @@ def get_all_edits_of_user(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    _, return_array = call_from_request(request, user_manager.get_textversions_of_user)
+    _, return_array = call_from_request(request, user.get_textversions)
     return return_array
 
 
@@ -994,7 +997,7 @@ def get_all_marked_arguments(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    return call_from_request(request, user_manager.get_marked_elements_of_user)
+    return call_from_request(request, user.get_marked_elements_of_user)
 
 
 # ajax - getting all votes for statements
@@ -1006,7 +1009,7 @@ def get_all_marked_statements(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    return call_from_request(request, user_manager.get_arg_clicks_of_user)
+    return call_from_request(request, user.get_arg_clicks_of_user)
 
 
 # ajax - getting all votes for arguments
@@ -1018,7 +1021,7 @@ def get_all_argument_clicks(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    return call_from_request(request, user_manager.get_arg_clicks_of_user)
+    return call_from_request(request, user.get_arg_clicks_of_user)
 
 
 # ajax - getting all votes for statements
@@ -1030,7 +1033,7 @@ def get_all_statement_clicks(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    return call_from_request(request, user_manager.get_stmt_clicks_of_user)
+    return call_from_request(request, user.get_stmt_clicks_of_user)
 
 
 # ajax - deleting complete history of the user
@@ -1043,7 +1046,7 @@ def delete_user_history(request):
     :return: json-dict()
     """
     logger('delete_user_history', 'def', 'main')
-    user_manager.update_last_action(request.authenticated_userid)
+    user.update_last_action(request.authenticated_userid)
     return {'removed_data': str(history_helper.delete_history_in_database(request.authenticated_userid)).lower()}
 
 
@@ -1057,7 +1060,7 @@ def delete_statistics(request):
     :return: json-dict()
     """
     logger('delete_statistics', 'def', 'main')
-    user_manager.update_last_action(request.authenticated_userid)
+    user.update_last_action(request.authenticated_userid)
     return {'removed_data': str(clear_vote_and_seen_values_of_user(request.authenticated_userid)).lower()}
 
 
@@ -1209,20 +1212,20 @@ def set_user_settings(request):
 
 # ajax - set boolean for receiving information
 @view_config(route_name='ajax_set_user_language', renderer='json')
-def set_user_language(request):
+def set_language(request):
     """
     Will logout the user
 
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'user_language', 'request.params: {}'.format(request.params))
+    logger('views', 'set_language', 'request.params: {}'.format(request.params))
 
     try:
         ui_locales = request.params['ui_locales'] if 'ui_locales' in request.params else None
-        prepared_dict = setter.user_language(request.authenticated_userid, ui_locales)
+        prepared_dict = set_user_language(request.authenticated_userid, ui_locales)
     except KeyError as e:
-        logger('views', 'set_user_settings', repr(e), error=True)
+        logger('views', 'set_language', repr(e), error=True)
         _tn = Translator(get_language_from_cookie(request))
         prepared_dict = {
             'error': _tn.get(_.internalKeyError),
@@ -1255,7 +1258,7 @@ def send_some_notification(request):
         prepared_dict = {'error': _tn.get(_.internalKeyError), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
         return prepared_dict
 
-    prepared_dict = setter.notification(get_port(request), recipient, title, text, request.authenticated_userid, ui_locales)
+    prepared_dict = send_users_notification(get_port(request), recipient, title, text, request.authenticated_userid, ui_locales)
 
     return prepared_dict
 
@@ -1291,7 +1294,7 @@ def set_new_start_statement(request):
         logger('views', 'set_new_start_statement', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
-    prepared_dict = setter.position(False, data)
+    prepared_dict = set_position(False, data)
 
     return prepared_dict
 
@@ -1328,7 +1331,7 @@ def set_new_start_premise(request):
         logger('views', 'set_new_start_premise', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
-    prepared_dict = setter.positions_premise(False, data)
+    prepared_dict = set_positions_premise(False, data)
     return prepared_dict
 
 
@@ -1364,7 +1367,7 @@ def set_new_premises_for_argument(request):
         logger('views', 'set_new_premises_for_argument', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
-    prepared_dict = setter.arguments_premises(False, data)
+    prepared_dict = set_arguments_premises(False, data)
     return prepared_dict
 
 
@@ -1387,7 +1390,7 @@ def set_correction_of_statement(request):
         logger('views', 'set_correction_of_statement', repr(e), error=True)
         return {'error': _tn.get(_.internalError), 'info': ''}
 
-    prepared_dict = setter.correction_of_statement(elements, request.authenticated_userid, ui_locales)
+    prepared_dict = set_correction_of_statement(elements, request.authenticated_userid, ui_locales)
     return prepared_dict
 
 
@@ -1410,7 +1413,7 @@ def set_notification_read(request):
         _tn = Translator(ui_locales)
         return {'error': _tn.get(_.internalKeyError), 'success': ''}
 
-    prepared_dict = setter.notification_read(uid, request.authenticated_userid, ui_locales)
+    prepared_dict = read_notification(uid, request.authenticated_userid, ui_locales)
     return prepared_dict
 
 
@@ -1433,7 +1436,7 @@ def set_notification_delete(request):
         _tn = Translator(ui_locales)
         return {'error': _tn.get(_.internalKeyError), 'success': ''}
 
-    prepared_dict = setter.notification_delete(uid, request.authenticated_userid, ui_locales, request.application_url)
+    prepared_dict = delete_notification(uid, request.authenticated_userid, ui_locales, request.application_url)
     return prepared_dict
 
 
@@ -1458,7 +1461,7 @@ def set_new_issue(request):
         logger('views', 'set_new_issue', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
-    prepared_dict = setter.issue(request.authenticated_userid, info, long_info, title, lang, request.application_url, ui_locales)
+    prepared_dict = issue_helper.set_issue(request.authenticated_userid, info, long_info, title, lang, request.application_url, ui_locales)
     return prepared_dict
 
 
@@ -1481,7 +1484,7 @@ def set_seen_statements(request):
         logger('views', 'set_seen_statements', repr(e), error=True)
         return {'error': _tn.get(_.internalKeyError)}
 
-    prepared_dict = setter.seen_statements(uids, request.path, request.authenticated_userid, ui_locales)
+    prepared_dict = set_seen_statements(uids, request.path, request.authenticated_userid, ui_locales)
     return prepared_dict
 
 
@@ -1509,7 +1512,7 @@ def mark_statement_or_argument(request):
         _t = Translator(ui_locales)
         return {'succes': '', 'text': '', 'error': _t.get(_.internalKeyError)}
 
-    prepared_dict = setter.mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history,
+    prepared_dict = mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history,
                                                       ui_locales, request.authenticated_userid)
     return prepared_dict
 
@@ -1555,7 +1558,7 @@ def get_shortened_url(request):
     logger('views', 'get_shortened_url', 'main')
     try:
         url = request.params['url']
-        prepared_dict = getter.shortened_url(url, request.unauthenticated_userid, get_discussion_language(request))
+        prepared_dict = get_shortened_url(url, request.unauthenticated_userid, get_discussion_language(request))
     except KeyError as e:
         logger('views', 'get_shortened_url', repr(e), error=True)
         _tn = Translator(get_discussion_language(request))
@@ -1596,21 +1599,20 @@ def get_all_infos_about_argument(request):
         _tn = Translator(ui_locales)
         return {'error': _tn.get(_.internalKeyError)}
 
-    prepared_dict = getter.all_infos_about_argument(uid, request.application_url, request.authenticated_userid,
-                                                    ui_locales)
+    prepared_dict = get_all_infos_about_argument(uid, request.application_url, request.authenticated_userid, ui_locales)
     return prepared_dict
 
 
 # ajax - for getting all users with the same opinion
 @view_config(route_name='ajax_get_user_with_same_opinion', renderer='json')
-def get_users_with_same_opinion(request):
+def get_users_with_opinion(request):
     """
     ajax interface for getting a dump
 
     :params reqeust: current request of the web  server
     :return: json-set with everything
     """
-    logger('views', 'get_users_with_same_opinion', 'main: {}'.format(request.params))
+    logger('views', 'get_users_with_opinion', 'main: {}'.format(request.params))
 
     try:
         params = request.params
@@ -1621,7 +1623,7 @@ def get_users_with_same_opinion(request):
         is_rea = params['is_reaction'] == 'true' if 'is_reaction' in params else False
         is_pos = params['is_position'] == 'true' if 'is_position' in params else False
     except KeyError as e:
-        logger('views', 'get_users_with_same_opinion', repr(e), error=True)
+        logger('views', 'get_users_with_opinion', repr(e), error=True)
         ui_locales = get_discussion_language(request)
         _tn = Translator(ui_locales)
         return {'error': _tn.get(_.internalKeyError)}
@@ -1629,8 +1631,8 @@ def get_users_with_same_opinion(request):
     path = request.path
     application_url = request.application_url
     nickname = request.authenticated_userid
-    prepared_dict = getter.users_with_same_opinion(uids, application_url, path, nickname, is_arg, is_att, is_rea,
-                                                   is_pos, ui_locales)
+    prepared_dict = user.get_users_with_same_opinion(uids, application_url, path, nickname, is_arg, is_att, is_rea,
+                                                     is_pos, ui_locales)
     return prepared_dict
 
 
@@ -1643,17 +1645,17 @@ def get_public_user_data(request):
     :param request: request of the web server
     :return:
     """
-    logger('getter', 'get_public_user_data', 'main: {}'.format(request.params))
+    logger('views', 'get_public_user_data', 'main: {}'.format(request.params))
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
     try:
         nickname = request.params['nickname']
     except KeyError as e:
-        logger('getter', 'get_public_user_data', repr(e), error=True)
+        logger('views', 'get_public_user_data', repr(e), error=True)
         return {'error': _tn.get(_.internalKeyError)}
 
-    prepared_dict = user_manager.get_users_public_data(nickname, ui_locales)
+    prepared_dict = user.get_public_data(nickname, ui_locales)
     prepared_dict['error'] = '' if len(prepared_dict) != 0 else _tn.get(_.internalKeyError)
 
     return prepared_dict
@@ -1678,12 +1680,12 @@ def get_arguments_by_statement_uid(request):
         _tn = Translator(ui_locales)
         return {'error': _tn.get(_.internalKeyError)}
 
-    prepared_dict = getter.arguments_by_statement_uid(uid, request.application_url, ui_locales)
+    prepared_dict = get_arguments_by_statement_uid(uid, request.application_url, ui_locales)
     return prepared_dict
 
 
 @view_config(route_name='ajax_get_references', renderer='json')
-def get_references(request):
+def get_reference(request):
     """
     Returns all references for an argument or statement
 
@@ -1691,7 +1693,7 @@ def get_references(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'get_references', 'main: {}'.format(request.params))
+    logger('views', 'get_reference', 'main: {}'.format(request.params))
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
@@ -1702,14 +1704,14 @@ def get_references(request):
         are_all_integer = all(is_integer(tmp) for tmp in uids) if isinstance(uids, list) else is_integer(uids)
 
         if not are_all_integer:
-            logger('views', 'get_references', 'uid is not an integer', error=True)
+            logger('views', 'get_reference', 'uid is not an integer', error=True)
             return {'data': '', 'text': '', 'error': _tn.get(_.internalKeyError)}
 
     except KeyError as e:
-        logger('views', 'get_references', repr(e), error=True)
+        logger('views', 'get_reference', repr(e), error=True)
         return {'data': '', 'text': '', 'error': _tn.get(_.internalKeyError)}
 
-    prepared_dict = getter.references(uids, is_argument, request.application_url)
+    prepared_dict = get_references(uids, is_argument, request.application_url)
     return prepared_dict
 
 
@@ -1755,7 +1757,7 @@ def switch_language(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    user_manager.update_last_action(request.authenticated_userid)
+    user.update_last_action(request.authenticated_userid)
     logger('switch_language', 'def', 'request.params: {}'.format(request.params))
 
     return_dict = set_language(request)
