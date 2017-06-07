@@ -2,19 +2,18 @@ import arrow
 import os
 import shutil
 
-from dbas.database import DBDiscussionSession as session
+from dbas.database import DBDiscussionSession as session, get_dbas_db_configuration
 from dbas.database.discussion_model import Issue,  User, Statement, TextVersion, Premise, Argument, History, \
     MarkedArgument, MarkedStatement, ReviewDelete, ReviewEdit, ReviewOptimization, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, ClickedArgument, \
     ClickedStatement, ReviewDuplicate, LastReviewerDuplicate
 from dbas.helper.tests import add_settings_to_appconfig
-from dbas.helper.database import dbas_db_configuration
 from dbas.lib import get_all_arguments_by_statement
 from graph.partial_graph import get_partial_graph_for_statement
 from sqlalchemy import and_
 
 settings = add_settings_to_appconfig()
-session.configure(bind=dbas_db_configuration('discussion', settings))
+session.configure(bind=get_dbas_db_configuration('discussion', settings))
 
 top_count = 5
 flop_count = 5

@@ -12,7 +12,7 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 import logging
 import time
 from configparser import ConfigParser, NoSectionError
-from .helper.database import get_db_environs
+from dbas.database import get_db_environs
 import os
 from pyramid.authentication import AuthTktAuthenticationPolicy  # , SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy

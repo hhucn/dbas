@@ -2,18 +2,17 @@ import arrow
 import os
 import shutil
 
-from dbas.database import DBDiscussionSession as session
+from dbas.database import DBDiscussionSession as session, get_dbas_db_configuration
 from dbas.database.discussion_model import Issue, User, Statement, Argument, ClickedStatement, History, TextVersion, \
     ReviewEdit, ReviewOptimization, ReviewDelete, ReviewDuplicate, LastReviewerDelete, LastReviewerDuplicate, \
     LastReviewerEdit, LastReviewerOptimization
 from dbas.helper.tests import add_settings_to_appconfig
-from dbas.helper.database import dbas_db_configuration
 from dbas.lib import get_text_for_statement_uid, get_text_for_premisesgroup_uid
 from sqlalchemy import and_
 from dbas.handler.opinion import get_user_with_same_opinion_for_statements, get_user_with_same_opinion_for_premisegroups
 
 settings = add_settings_to_appconfig()
-session.configure(bind=dbas_db_configuration('discussion', settings))
+session.configure(bind=get_dbas_db_configuration('discussion', settings))
 
 top_count = 5
 flop_count = 5
