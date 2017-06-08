@@ -233,6 +233,7 @@ def __prepare_statements_for_d3_data(db_statements, db_textversions, x, y, edge_
     :param edge_type:
     :return:
     """
+    logger('Graph.lib', '__prepare_statements_for_d3_data', 'def')
     all_ids = []
     nodes = []
     edges = []
@@ -278,6 +279,7 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type):
     nodes = []
     edges = []
     extras = {}
+    logger('Graph.lib', '__prepare_arguments_for_d3_data', 'def')
 
     # for each argument edges will be added as well as the premises
     for argument in db_arguments:
