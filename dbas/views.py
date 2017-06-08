@@ -1258,7 +1258,8 @@ def send_some_notification(request):
         prepared_dict = {'error': _tn.get(_.internalKeyError), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
         return prepared_dict
 
-    prepared_dict = send_users_notification(get_port(request), recipient, title, text, request.authenticated_userid, ui_locales)
+    prepared_dict = send_users_notification(get_port(request), recipient, title, text, request.authenticated_userid,
+                                            ui_locales)
 
     return prepared_dict
 
@@ -1280,11 +1281,11 @@ def set_new_start_statement(request):
     logger('views', 'set_new_start_statement', 'request.params: {}'.format(request.params))
     discussion_lang = get_discussion_language(request)
     _tn = Translator(discussion_lang)
+    data = {}
     try:
-        data = {}
+        issue = issue_helper.get_issue_id(request)
         data['nickname'] = request.authenticated_userid
         data['statement'] = request.params['statement']
-        issue = issue_helper.get_issue_id(request)
         data['issue_id'] = issue
         data['slug'] = DBDiscussionSession.query(Issue).get(issue).get_slug()
         data['discussion_lang'] = get_discussion_language(request)
@@ -1347,8 +1348,8 @@ def set_new_premises_for_argument(request):
     logger('views', 'set_new_premises_for_argument', 'request.params: {}'.format(request.params))
     lang = get_discussion_language(request)
     _tn = Translator(lang)
+    data = {}
     try:
-        data = {}
         data['nickname'] = request.authenticated_userid
         data['statement'] = json.loads(request.params['premisegroups'])
         data['issue_id'] = issue_helper.get_issue_id(request)
@@ -1461,7 +1462,8 @@ def set_new_issue(request):
         logger('views', 'set_new_issue', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
-    prepared_dict = issue_helper.set_issue(request.authenticated_userid, info, long_info, title, lang, request.application_url, ui_locales)
+    prepared_dict = issue_helper.set_issue(request.authenticated_userid, info, long_info, title, lang,
+                                           request.application_url, ui_locales)
     return prepared_dict
 
 
