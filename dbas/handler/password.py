@@ -8,17 +8,17 @@ import random
 
 import transaction
 from cryptacular.bcrypt import BCRYPTPasswordManager
+from pyramid_mailer import get_mailer
 from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Settings, Language
-from dbas.helper.email import send_mail
-from dbas.helper.language import get_language_from_cookie
+from dbas.handler.email import send_mail
+from dbas.handler.language import get_language_from_cookie
 from dbas.lib import escape_string
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from pyramid_mailer import get_mailer
 
 
 # http://interactivepython.org/runestone/static/everyday/2013/01/3_password.html

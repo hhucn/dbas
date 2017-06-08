@@ -6,9 +6,8 @@ from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Argument, Premise, MarkedArgument, ClickedArgument, \
     sql_timestamp_pretty_print, ClickedStatement, Statement
-from dbas.handler import user
+from dbas.handler import user, notification as NotificationHelper
 from dbas.handler.statements import insert_new_premises_for_argument
-from dbas.helper import notification as NotificationHelper
 from dbas.helper.query import statement_min_length
 from dbas.input_validator import get_relation_between_arguments
 from dbas.input_validator import is_integer

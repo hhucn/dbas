@@ -13,15 +13,17 @@ import dbas.recommender_system as rs
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User
 from dbas.handler.arguments import get_another_argument_with_same_conclusion
-from dbas.helper.voting import add_seen_argument, add_seen_statement
-from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, is_author_of_argument
+from dbas.handler.voting import add_seen_argument, add_seen_statement
+from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, \
+    is_author_of_argument
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
+from dbas.review.helper.queues import is_statement_in_edit_queue, is_arguments_premise_in_edit_queue
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, get_support_to_argument_text_list
+from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, \
+    get_support_to_argument_text_list
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
-from dbas.review.helper.queues import is_statement_in_edit_queue, is_arguments_premise_in_edit_queue
 
 
 class ItemDictHelper(object):

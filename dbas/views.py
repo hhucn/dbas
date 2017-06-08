@@ -18,9 +18,9 @@ from pyramid_mailer import get_mailer
 from zope.interface.interfaces import ComponentLookupError
 
 import dbas.discussion.core as discussion
+import dbas.handler.history as history_helper
 import dbas.handler.issue as issue_helper
 import dbas.handler.news as news_handler
-import dbas.helper.history as history_helper
 import dbas.review.helper.core as review
 import dbas.review.helper.history as review_history_helper
 import dbas.review.helper.queues as review_queue_helper
@@ -33,19 +33,19 @@ from dbas.database.discussion_model import User, Group, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
 from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement_uid
+from dbas.handler.language import set_language, get_language_from_cookie, set_language_for_first_visit
+from dbas.handler.notification import read_notification, delete_notification, send_users_notification
 from dbas.handler.password import request_password
+from dbas.handler.references import set_reference, get_references
 from dbas.handler.rss import get_list_of_all_feeds
+from dbas.handler.settings import set_settings
 from dbas.handler.statements import set_correction_of_statement, set_position, set_positions_premise, \
     set_seen_statements, get_logfile_for_statements
+from dbas.handler.voting import clear_vote_and_seen_values_of_user
 from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.helper.language import set_language, get_language_from_cookie, set_language_for_first_visit
-from dbas.helper.notification import read_notification, delete_notification, send_users_notification
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
-from dbas.helper.references import set_reference, get_references
-from dbas.helper.settings import set_settings
 from dbas.helper.views import preparation_for_view, try_to_contact
-from dbas.helper.voting import clear_vote_and_seen_values_of_user
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
 from dbas.logger import logger

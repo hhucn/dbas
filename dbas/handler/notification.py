@@ -7,7 +7,7 @@ Provides functions for te internal messaging system
 import transaction
 from sqlalchemy import and_
 
-import dbas.helper.email as EmailHelper
+import dbas.handler.email as EmailHelper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument, \
     sql_timestamp_pretty_print
