@@ -1,16 +1,16 @@
 from pyramid.httpexceptions import HTTPNotFound
 
+import dbas.handler.history as history_helper
 import dbas.handler.issue as issue_helper
-import dbas.helper.history as history_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument
 from dbas.handler import user
+from dbas.handler.language import get_language_from_cookie, set_language_for_first_visit
+from dbas.handler.voting import add_click_for_argument
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.helper.language import get_language_from_cookie, set_language_for_first_visit
 from dbas.helper.views import handle_justification_step
-from dbas.helper.voting import add_click_for_argument
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_statement, \
     check_belonging_of_argument, check_belonging_of_premisegroups, related_with_support, check_reaction
 from dbas.lib import get_discussion_language, resolve_issue_uid_to_slug

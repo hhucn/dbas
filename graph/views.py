@@ -9,7 +9,7 @@ import json
 from cornice import Service
 
 import dbas.handler.issue as IssueHelper
-from dbas.helper.language import get_language_from_cookie
+from dbas.handler.language import get_language_from_cookie
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator

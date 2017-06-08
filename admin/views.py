@@ -6,11 +6,12 @@ Introducing an admin interface to enable easy database management.
 
 import json
 
+from cornice import Service
+
 import admin.lib as lib
 from dbas.handler import user
-from cornice import Service
+from dbas.handler.language import get_language_from_cookie
 from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.helper.language import get_language_from_cookie
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator

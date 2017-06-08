@@ -4,17 +4,17 @@ Provides helping function round about the news.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import transaction
 import arrow
+import transaction
 
 from dbas.database import DBDiscussionSession, DBNewsSession
 from dbas.database.discussion_model import User, sql_timestamp_pretty_print
 from dbas.database.news_model import News
-from dbas.logger import logger
 from dbas.handler import user
+from dbas.handler.language import get_language_from_cookie
 from dbas.handler.rss import create_news_rss
-from dbas.helper.language import get_language_from_cookie
 from dbas.lib import escape_string
+from dbas.logger import logger
 
 
 def set_news(request):

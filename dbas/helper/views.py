@@ -4,18 +4,17 @@ Helper for D-BAS Views
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-from dbas.handler import user
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid_mailer import get_mailer
 from validate_email import validate_email
 
+import dbas.handler.email as EmailHelper
 import dbas.handler.issue as IssueHelper
-import dbas.handler.issue as issue_helper
-import dbas.helper.email as EmailHelper
-import dbas.helper.voting as VotingHelper
+import dbas.handler.voting as VotingHelper
 from dbas.auth.recaptcha import validate_recaptcha
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
+from dbas.handler import user
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -69,9 +68,9 @@ def prepare_parameter_for_justification(request, for_api):
     mode = request.matchdict['mode'] if 'mode' in request.matchdict else ''
     supportive = mode == 't' or mode == 'd'  # supportive = t or do not know mode
     relation = request.matchdict['relation'][0] if len(request.matchdict['relation']) > 0 else ''
-    issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
+    issue = IssueHelper.get_id_of_slug(slug, request, True) if len(slug) > 0 else IssueHelper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+    issue_dict = IssueHelper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
     return slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict
 

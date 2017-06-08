@@ -6,7 +6,7 @@ from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ClickedArgument, ClickedStatement, SeenStatement, SeenArgument
-from dbas.helper.voting import add_seen_argument, add_seen_statement, add_click_for_argument, add_click_for_statement
+from dbas.handler.voting import add_seen_argument, add_seen_statement, add_click_for_argument, add_click_for_statement
 
 
 class VotingHelperTest(unittest.TestCase):
