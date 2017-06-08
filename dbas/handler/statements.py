@@ -5,13 +5,12 @@ import dbas.review.helper.queues as review_queue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
     sql_timestamp_pretty_print, Argument, Premise, PremiseGroup
-from dbas.handler import user
+from dbas.handler import user, notification as NotificationHelper
 from dbas.handler.rss import append_action_to_issue_rss
-from dbas.helper import notification as NotificationHelper
+from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.query import statement_min_length
 from dbas.helper.relation import set_new_undermine_or_support_for_pgroup, set_new_support, set_new_undercut, \
     set_new_rebut
-from dbas.helper.voting import add_seen_argument, add_seen_statement
 from dbas.input_validator import is_integer
 from dbas.lib import get_text_for_statement_uid, get_profile_picture, escape_string, get_text_for_argument_uid
 from dbas.logger import logger

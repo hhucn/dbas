@@ -14,7 +14,7 @@ from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print
 from dbas.handler import user
-from dbas.helper.language import get_language_from_header
+from dbas.handler.language import get_language_from_header
 from dbas.lib import is_user_author_or_admin
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_issues_as_query

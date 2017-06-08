@@ -4,7 +4,7 @@ Provides helping function for dictionaries, which are used in discussions.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import dbas.helper.history as HistoryHelper
+import dbas.handler.history as HistoryHelper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, User
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement, \

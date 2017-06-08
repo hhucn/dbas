@@ -12,16 +12,16 @@ from pyramid.security import remember
 from sqlalchemy import func
 from validate_email import validate_email
 
-from dbas.handler import user
 from dbas.auth.ldap import verify_ldap_user_data
 from dbas.auth.recaptcha import validate_recaptcha
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Settings
-from dbas.helper.language import get_language_from_cookie
+from dbas.handler import user
+from dbas.handler.language import get_language_from_cookie
 from dbas.lib import escape_string, get_user_by_case_insensitive_nickname, is_usage_with_ldap
 from dbas.logger import logger
-from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
 
 
 def login_user(request, nickname, password, for_api, keep_login, _tn):
