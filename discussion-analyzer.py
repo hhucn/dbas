@@ -54,8 +54,12 @@ def evaluate_users():
         reputation[rep] = sum([r.reputations.points for r in reputation[rep]])
     sorted_clicks = sorted(clicks.items(), key=lambda x: x[1])
     sorted_reputation = sorted(reputation.items(), key=lambda x: x[1])
+    m = [s for s in db_students + db_colleagues if s.gender == 'm']
+    f = [s for s in db_students + db_colleagues if s.gender == 'f']
+    n = [s for s in db_students + db_colleagues if s.gender == 'n']
     print('Users:')
-    print('  - count:    {}'.format(len(db_students) + len(db_colleagues)))
+    print('  - count:    {}'.format(len(db_students + db_colleagues)))
+    print('  - m/w/n:    {}/{}/{}'.format(len(m), len(f), len(n)))
     print('  - activity: {0:.2f} statement-clicks per user'.format(len(db_clicked_statements) / (len(db_students) + len(db_colleagues))))
     print('  - Flop{} sorted by Clicks'.format(flop_count))
     for t in sorted_clicks[0:flop_count]:
