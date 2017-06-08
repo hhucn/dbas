@@ -50,14 +50,10 @@ def get_d3_data(issue, all_statements=None, all_arguments=None):
 
     db_textversions = DBDiscussionSession.query(TextVersion).all()
     if all_statements is None:
-        db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).order_by(Statement.uid.asc()).all()
-    else:
-        db_statements = all_statements
+        all_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).order_by(Statement.uid.asc()).all()
 
     if all_arguments is None:
-        db_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=issue).order_by(Argument.uid.asc()).all()
-    else:
-        db_arguments = all_arguments
+        all_arguments = get_not_disabled_arguments_as_query().filter_by(issue_uid=issue).order_by(Argument.uid.asc()).all()
 
     # issue
     node_dict = __get_node_dict(id='issue',
@@ -72,14 +68,14 @@ def get_d3_data(issue, all_statements=None, all_arguments=None):
     all_node_ids = ['issue']
 
     # for each statement a node will be added
-    all_ids, nodes, edges, extras = __prepare_statements_for_d3_data(db_statements, db_textversions, x, y, edge_type)
+    all_ids, nodes, edges, extras = __prepare_statements_for_d3_data(all_statements, db_textversions, x, y, edge_type)
     all_node_ids += all_ids
     nodes_array += nodes
     edges_array += edges
     extras_dict.update(extras)
 
     # for each argument edges will be added as well as the premises
-    all_ids, nodes, edges, extras = __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type)
+    all_ids, nodes, edges, extras = __prepare_arguments_for_d3_data(all_arguments, x, y, edge_type)
     all_node_ids += all_ids
     nodes_array += nodes
     edges_array += edges
@@ -242,7 +238,7 @@ def __prepare_statements_for_d3_data(db_statements, db_textversions, x, y, edge_
         text = next((tv for tv in db_textversions if tv.uid == statement.textversion_uid), None)
         text = text.content if text else 'None'
         node_dict = __get_node_dict(id='statement_' + str(statement.uid),
-                                    label=text,
+                                    label=str(statement.uid) + ' - ' + text,
                                     x=x,
                                     y=y,
                                     type='position' if statement.is_startpoint else 'statement',
@@ -287,7 +283,8 @@ def __prepare_arguments_for_d3_data(db_arguments, x, y, edge_type):
         # we have an argument with:
         #  1) with one premise and no undercut is done on this argument
         #  2) with at least two premises  one conclusion or an undercut is done on this argument
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
+        db_premises = DBDiscussionSession.query(Premise).filter(Premise.premisesgroup_uid == argument.premisesgroup_uid,
+                                                                Premise.is_disabled == False).all()
         db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument.uid).all()
         # target of the edge (case 1) or last edge (case 2)
         if argument.conclusion_uid is not None:
@@ -347,15 +344,15 @@ def __sanity_check_of_d3_data(all_node_ids, edges_array):
     :return:
     """
     error = False
-    for edge in edges_array:
-        err1 = edge['source'] not in all_node_ids
-        err2 = edge['target'] not in all_node_ids
+    for e in edges_array:
+        err1 = e['source'] not in all_node_ids
+        err2 = e['target'] not in all_node_ids
         if err1:
-            logger('Graph.lib', '__sanity_check_of_d3_data', 'Source of {} is not valid'.format(edge))
-            # logger('Graph.lib', '__sanity_check_of_d3_data', '{} is not in dict of all node ids'.format(edge['source']))
+            logger('Graph.lib', '__sanity_check_of_d3_data', 'Source of {} is not valid'.format(e))
+            # logger('Graph.lib', '__sanity_check_of_d3_data', '{} is not in dict of all node ids'.format(e['source']))
         if err2:
-            logger('Graph.lib', '__sanity_check_of_d3_data', 'Target of {} is not valid'.format(edge))
-            # logger('Graph.lib', '__sanity_check_of_d3_data', '{} is not in dict of all node ids'.format(edge['target']))
+            logger('Graph.lib', '__sanity_check_of_d3_data', 'Target of {} is not valid'.format(e))
+            # logger('Graph.lib', '__sanity_check_of_d3_data', '{} is not in dict of all node ids'.format(e['target']))
         error = error or err1 or err2
     if error:
         logger('Graph.lib', '__sanity_check_of_d3_data', 'At least one edge has invalid source or target!', error=True)
