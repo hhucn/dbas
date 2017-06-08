@@ -54,7 +54,7 @@ from dbas.strings.translator import Translator
 from websocket.lib import get_port
 
 name = 'D-BAS'
-version = '1.4.1'
+version = '1.4.2'
 full_version = version
 project_name = name + ' ' + full_version
 

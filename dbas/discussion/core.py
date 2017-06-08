@@ -71,7 +71,7 @@ def init(request, nickname, for_api=False) -> dict:
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname=nickname, main_page=application_url, slug=slug)
     _dh = DictionaryHelper(get_language_from_cookie(request), disc_ui_locales)
     discussion_dict = _ddh.get_dict_for_start(position_count=(len(item_dict['elements'])))
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, False, request, for_api=for_api, nickname=nickname)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request, for_api=for_api, nickname=nickname)
 
     if len(item_dict['elements']) == 1:
         DictionaryHelper(disc_ui_locales, disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict,
@@ -130,7 +130,7 @@ def attitude(request, nickname, for_api=False) -> dict:
     _idh = ItemDictHelper(disc_ui_locales, issue, application_url, for_api, path=request.path, history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     item_dict = _idh.prepare_item_dict_for_attitude(statement_id)
-    extras_dict = _dh.prepare_extras_dict(issue_dict['slug'], False, True, False, request, for_api=for_api, nickname=nickname)
+    extras_dict = _dh.prepare_extras_dict(issue_dict['slug'], False, True, True, request, for_api=for_api, nickname=nickname)
 
     prepared_discussion = dict()
     prepared_discussion['issues'] = issue_dict
