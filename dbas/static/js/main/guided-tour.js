@@ -220,6 +220,9 @@ function GuidedTour(){
 		var part0 = url === mainpage || url === location.origin;
 		var part1 = url.indexOf('/discuss') !== -1;
 		var part2 = url === mainpage + '#tour2' || url === location.origin + '#tour2';
+		var tour_index = getLocalStorage(GUIDED_TOUR_RUNNING_START) === 'true';
+		var tour_discussion = getLocalStorage(GUIDED_TOUR_RUNNING_DISCUSSION) === 'false';
+		var end_on_discussion = !part0 && !part1 && part2 && tour_index && tour_discussion;
 		
 		// decision where we are
 		if (part0 && !part1 && !part2){
@@ -234,7 +237,7 @@ function GuidedTour(){
 				this.__startTour();
 			}
 			
-		} else if(!part0 && !part1 && part2 && getLocalStorage(GUIDED_TOUR_RUNNING_START) === 'true' && getLocalStorage(GUIDED_TOUR_RUNNING_DISCUSSION) === 'false'){
+		} else if(end_on_discussion){
 			this.__endIndexTourOnDiscussionPage();
 		}
 	};
