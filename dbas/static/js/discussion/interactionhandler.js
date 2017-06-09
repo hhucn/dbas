@@ -407,7 +407,7 @@ function InteractionHandler() {
 			} else {
 				if (type === fuzzy_start_statement) {
 					if (decided_texts.length > 0) {
-						alert("TODO: more than one decided text");
+						setGlobalErrorHandler('Oha', 'More than one decided text!');
 					} else {
 						new AjaxDiscussionHandler().sendNewStartStatement(text);
 					}
