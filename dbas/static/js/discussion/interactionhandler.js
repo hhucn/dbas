@@ -171,7 +171,7 @@ function InteractionHandler() {
 		}
 
 		// supporters = data.supporter.join(', ');
-		var author = data.author;
+		var author;
 		if (data.author !== 'anonymous'){
 			var img = '<img class="img-circle" style="height: 1em;" src="' + data.gravatar + '">';
 			author = '<a href="' + data.author_url + '">' + img + ' ' + data.author + '</a>';

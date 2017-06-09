@@ -532,7 +532,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     $('#' + graphViewContainerSpaceId).find('.node').each(function () {
                         var id = $(this).attr('id').replace(rescaleGraph.node_id_prefix, '');
                         var label = $('#label-' + id);
-                        var rect = $('#rect-' + id);
+                        // var rect = $('#rect-' + id);
                         label.attr({
                             'y': -label.height() / rescaleGraph.zoom_scale + 45 / rescaleGraph.zoom_scale
                         });
@@ -1648,14 +1648,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         }
         highlightElementsVirtualNodes(edges, edgesIds, false);
         edgesIds.forEach(function (d) {
-            if(isVisible.attack && d.color === colors.red){
-    	        hightlghtEdge(d);
-	            highlightEdgeSource(d);
-            }
-            if(isVisible.support && d.color === colors.green){
-    	        hightlghtEdge(d);
-	            highlightEdgeSource(d);
-            } else if (!isVisible.attack && !isVisible.support){
+            var attack = isVisible.attack && d.color === colors.red;
+            var support = isVisible.support && d.color === colors.green;
+            var other = !isVisible.attack && !isVisible.support;
+            if(attack || support || other){
     	        hightlghtEdge(d);
 	            highlightEdgeSource(d);
             }

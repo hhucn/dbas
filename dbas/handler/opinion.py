@@ -262,7 +262,6 @@ def get_user_with_same_opinion_for_premisegroups(argument_uids, nickname, lang, 
         text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
         statement_dict['text'] = '... {} {}'.format(_t.get(_.because).lower(), text)
 
-
         premise_statement_uids = [p.statement_uid for p in db_premises]
         db_clicks = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid.in_(premise_statement_uids),
                                                                             ClickedStatement.is_up_vote == True,
@@ -348,7 +347,7 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
 
     if not db_statement:
         empty_dict = {'users': [], 'text': None, 'message': ''}
-        return {'text': None, 'agree': empty_dict, 'disagree': empty_dict, 'title': tile}
+        return {'text': None, 'agree': empty_dict, 'disagree': empty_dict, 'title': title}
 
     title += ' ' + get_text_for_statement_uid(statement_uid)
 
