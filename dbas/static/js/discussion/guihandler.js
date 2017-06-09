@@ -281,8 +281,6 @@ function GuiHandler() {
 				new AjaxDiscussionHandler().sendNewPremiseForArgument(arg, relation, decided_texts);
 			} else if (type === fuzzy_start_premise) {
 				new AjaxDiscussionHandler().sendNewStartPremise(decided_texts, conclusion, supportive);
-			} else {
-				console.log("Todo: unknown type");
 			}
 			$('#' + popupSetPremiseGroups).modal('hide');
 		});

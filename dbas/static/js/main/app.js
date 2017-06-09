@@ -561,7 +561,6 @@ function callbackIfDoneForLogin(data, showGlobalError){
 			location.reload(true);
 		}
 	} catch(err){
-		//console.log(err);
 		var url = location.href;
 		if (url.indexOf('?session_expired=true') !== -1) {
 			url = url.substr(0, url.length - '?session_expired=true'.length);

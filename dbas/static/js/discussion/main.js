@@ -877,7 +877,6 @@ $(document).ready(function mainDocumentReady() {
 	}
 	
 	// check anchors
-	// console.log('read hash: ' + location.hash);
 	if (location.hash.indexOf('graph') !== -1){
 		guiHandler.setDisplayStyleAsGraphView();
 	}
