@@ -68,9 +68,6 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
         return_dict['values'] = get_strings_for_duplicate(value, issue, count, extra[1])
         return_dict['distance_name'] = m
 
-    elif mode == '4':  # getting text # MAYBE deprecated ?! TK will have a look!
-        return_dict = get_strings_for_search(value)
-
     elif mode == '5':  # getting public nicknames
         nickname = get_nickname(request_authenticated_userid, for_api, api_data)
         return_dict['values'] = get_strings_for_public_nickname(value, nickname)
