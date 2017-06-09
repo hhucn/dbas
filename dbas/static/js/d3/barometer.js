@@ -204,7 +204,6 @@ function DiscussionBarometer(){
         is_attitude = address === 'attitude';
         var count = 0;
         if(is_attitude) {
-            console.log(usersDict);
             count = usersDict.agree.seenBy + usersDict.disagree.seenBy;
         } else {
             $.each(usersDict.opinions, function( index, value ) {
