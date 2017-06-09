@@ -99,7 +99,7 @@ function setGravatarFallback() {
 	}
 	
 	var src = body.find('.img-circle')[0].src;
-	var jqxhr = $.get(src, function() {
+	$.get(src, function() {
     	replace_gravtar_with_default_image(true);
     }).fail(function() {
     	replace_gravtar_with_default_image(false);

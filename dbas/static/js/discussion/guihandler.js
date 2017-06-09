@@ -8,16 +8,7 @@
 function GuiHandler() {
 	'use strict';
 	
-	var interactionHandler;
 	var maxHeightOfBubbleSpace = 300;
-	
-	/**
-	 *
-	 * @param externInteractionHandler
-	 */
-	this.setHandler = function (externInteractionHandler) {
-		interactionHandler = externInteractionHandler;
-	};
 	
 	/**
 	 * Adds a premise row in the 'add premise'-container
@@ -484,11 +475,11 @@ function GuiHandler() {
 			return;
 		}
 		
-		var token, button, span_dist, span_text, distance, index, text, img;
+		var token, button, span_dist, span_text, index, text, img;
 		callbackElement.focus();
 		
 		$.each(parsedData.values, function (key, val) {
-			distance = parseInt(val.distance);
+			// distance = parseInt(val.distance);
 			index = val.index;
 			
 			token = callbackElement.val();

@@ -844,7 +844,6 @@ $(document).ready(function mainDocumentReady() {
 	var tmp;
 	var discussionContainer = $('#' + discussionContainerId);
 	
-	guiHandler.setHandler(interactionHandler);
 	main.setStyleOptions(guiHandler);
 	main.setSidebarStyle(discussionContainer, tacked_sidebar);
 	main.setSidebarClicks(discussionContainer, tacked_sidebar);
