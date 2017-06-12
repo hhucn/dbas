@@ -68,3 +68,5 @@ restorePostgres.sh
 *.sql
 !001_init.sh.bak
 !002_development_seed.sql
+
+.scannerwork/
