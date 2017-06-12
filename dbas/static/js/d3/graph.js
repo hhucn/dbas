@@ -1644,7 +1644,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 
         // if isMyStatementsClicked is false gray all elements at each function call,
         // else the graph is colored once gray
-        var nothing = !isVisible.my_statements && !isVisible.support && !isVisible.attack
+        var nothing = !isVisible.my_statements && !isVisible.support && !isVisible.attack;
         if (nothing) {
             edges.forEach(function (d) {
                 grayingElements(d);
