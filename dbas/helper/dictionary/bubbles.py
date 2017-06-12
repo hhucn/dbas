@@ -25,7 +25,7 @@ def get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn)
         add_premise_text = intro[0:1].upper() + intro[1:] + ' ' + text
     else:
         add_premise_text = text + ' ' + _tn.get(_.holds if is_supportive else _.isNotAGoodIdea).strip()
-    add_premise_text += ', ' + '...'
+    add_premise_text += ', ...'
 
     is_users_opinion = False
     if db_user:
@@ -73,6 +73,6 @@ def get_system_bubble_text_for_justify_statement(is_supportive, _tn, tag_start, 
     if _tn.get_lang() != 'de':
         question += ' ' + _tn.get(_.holdsInColor if is_supportive else _.isNotAGoodIdeaInColor)
     because = _tn.get(_.because)[0:1].upper() + _tn.get(_.because)[1:].lower() + '...'
-    question += '?' + ' <br>' + because
+    question += '? <br>' + because
 
     return question

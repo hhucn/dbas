@@ -116,8 +116,7 @@ def __find_position_for_conclusion_of_argument(current_arg, list_todos, list_don
     a = [arg.uid for arg in list_todos] if len(list_todos) > 0 else []
     b = [p.uid for p in positions] if len(positions) > 0 else []
 
-    logger('PartialGraph', '__find_position_for_conclusion_of_argument',
-           'current_arg: {}, list_todos: {}, list_dones: {}, positions: {}'.format(current_arg.uid, a, list_dones, b))
+    logger('PartialGraph', '__find_position_for_conclusion_of_argument', 'current_arg: {}, list_todos: {}, list_dones: {}, positions: {}'.format(current_arg.uid, a, list_dones, b))
 
     list_dones.append(current_arg.uid)
     logger('PartialGraph', '__find_position_for_conclusion_of_argument', 'done ' + str(current_arg.uid))
@@ -219,7 +218,7 @@ def __append_todos_for_getting_argument_net_with_conclusion(uid, db_argument, li
                                                                    Argument.is_disabled == False).all()
 
         # get new todos
-        logger('PartialGraph', '__get_argument_net', 'conclusion ({}) args: {}'.format(db_argument.conclusion_uid, [arg.uid for arg in db_concl_args]))
+        logger('PartialGraph', '__append_todos_for_getting_argument_net_with_conclusion', 'conclusion ({}) args: {}'.format(db_argument.conclusion_uid, [arg.uid for arg in db_concl_args]))
         for arg in db_concl_args:
             if arg.uid not in list_todos + list_dones + [uid]:
                 list_todos.append(arg.uid)
@@ -234,14 +233,15 @@ def __append_todos_for_getting_argument_net_with_premises(uid, db_argument, list
     :param list_dones:
     :return:
     """
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+    db_premises = DBDiscussionSession.query(Premise).filter(Premise.premisesgroup_uid == db_argument.premisesgroup_uid,
+                                                            Premise.is_disabled == False).all()
     db_premise_args = []
     for premise in db_premises:
         args = get_all_arguments_by_statement(premise.statement_uid)
         db_premise_args += args if args is not None else []
 
     # get new todos
-    logger('PartialGraph', '__get_argument_net', 'premises args: {}'.format([arg.uid for arg in db_premise_args]))
+    logger('PartialGraph', '__append_todos_for_getting_argument_net_with_premises', 'premises args: {}'.format([arg.uid for arg in db_premise_args]))
     for arg in db_premise_args:
         if arg.uid not in list_todos and arg.uid not in list_dones and arg.uid != uid:
             list_todos.append(arg.uid)
@@ -256,7 +256,7 @@ def __append_todos_for_getting_argument_net_with_undercuts(uid, list_todos, list
     :return:
     """
     db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=uid).all()
-    logger('PartialGraph', '__get_argument_net', 'undercut args: {}'.format([arg.uid for arg in db_undercuts]))
+    logger('PartialGraph', '__append_todos_for_getting_argument_net_with_undercuts', 'undercut args: {}'.format([arg.uid for arg in db_undercuts]))
     if db_undercuts is not None:
         for arg in db_undercuts:
             if arg.uid not in list_todos + list_dones + [uid]:
@@ -274,10 +274,12 @@ def __get_all_statements_for_args(graph_arg_list):
 
     for arg in graph_arg_list:
         # save all premises
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=arg.premisesgroup_uid).all()
+        db_premises = DBDiscussionSession.query(Premise).filter(Premise.premisesgroup_uid == arg.premisesgroup_uid,
+                                                                Premise.is_disabled == False).all()
 
-        # save conclusion
+        # save premises
         nodes += [premise.statement_uid for premise in db_premises]
+        # save conclusion
         while arg.conclusion_uid is None:
             arg = DBDiscussionSession.query(Argument).get(arg.argument_uid)
         nodes.append(arg.conclusion_uid)

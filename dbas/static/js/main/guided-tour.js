@@ -78,36 +78,40 @@ function GuidedTour(){
 		}
 		
 		// steps
+		/*
 		var welcome = {
 			element: '#logo_dbas',
 			title: _t(tourWelcomeTitle) + lang_switcher,
 			content: _t(tourWelcomeContent),
-			placement: 'bottom',
+			placement: 'bottom'
 		};
+		*/
 		var start_button = {
 			element: '#start-text',
 			title: _t(tourStartButtonTitle) + lang_switcher,
 			content: _t(tourStartButtonContent),
-			placement: 'bottom',
+			placement: 'bottom'
 		};
+		/*
 		var login_button = {
 			element: '#login-link',
 			title: _t(tourLoginTitle),
 			content: _t(tourLoginContent),
-			placement: 'bottom',
+			placement: 'bottom'
 		};
+		*/
 		var issue = {
 			element: '#header-container',
 			title: _t(tourIssueTitle) + lang_switcher,
 			content: _t(tourIssueContent),
 			placement: 'bottom',
-			path: '/discuss',
+			path: '/discuss'
 		};
 		var start_discussion = {
 			element: '#dialog-speech-bubbles-space',
 			title: _t(tourStartDiscussionTitle) + lang_switcher,
 			content: _t(tourStartDiscussionContent),
-			placement: 'bottom',
+			placement: 'bottom'
 		};
 		var mark_opinion = {
 			element: '#some-element-bubble .triangle-r',
@@ -122,19 +126,19 @@ function GuidedTour(){
 			},
 			onHide: function () {
 				$('#some-element-bubble').remove();
-			},
+			}
 		};
 		var choose_answer = {
 			element: '#discussions-space-list',
 			title: _t(tourSelectAnswertTitle) + lang_switcher,
 			content: _t(tourSelectAnswertContent),
-			placement: 'bottom',
+			placement: 'bottom'
 		};
 		var set_input = {
 			element: '#discussions-space-list li:last-child',
 			title: _t(tourEnterStatementTitle) + lang_switcher,
 			content: _t(tourEnterStatementContent),
-			placement: 'bottom',
+			placement: 'bottom'
 		};
 		var first_child = $('#discussions-space-list li:first');
     
@@ -175,7 +179,7 @@ function GuidedTour(){
 				choose_answer,      // 5
 				set_input,          // 6
 				statement_action,   // 7
-				have_fun,           // 8
+				have_fun            // 8
 				];
 		} else {
 			step_list = [
@@ -185,7 +189,7 @@ function GuidedTour(){
 				choose_answer,      // 3
 				set_input,          // 4
 				statement_action,   // 5
-				have_fun,           // 6
+				have_fun            // 6
 			];
 		}
 		//data-placement="bottom"
@@ -194,7 +198,7 @@ function GuidedTour(){
 			backdrop: true,
 			backdropPadding: 5,
 			template: template,
-			onEnd: end_fct,
+			onEnd: end_fct
 		});
 		
 	};
@@ -216,6 +220,9 @@ function GuidedTour(){
 		var part0 = url === mainpage || url === location.origin;
 		var part1 = url.indexOf('/discuss') !== -1;
 		var part2 = url === mainpage + '#tour2' || url === location.origin + '#tour2';
+		var tour_index = getLocalStorage(GUIDED_TOUR_RUNNING_START) === 'true';
+		var tour_discussion = getLocalStorage(GUIDED_TOUR_RUNNING_DISCUSSION) === 'false';
+		var end_on_discussion = !part0 && !part1 && part2 && tour_index && tour_discussion;
 		
 		// decision where we are
 		if (part0 && !part1 && !part2){
@@ -230,7 +237,7 @@ function GuidedTour(){
 				this.__startTour();
 			}
 			
-		} else if(!part0 && !part1 && part2 && getLocalStorage(GUIDED_TOUR_RUNNING_START) === 'true' && getLocalStorage(GUIDED_TOUR_RUNNING_DISCUSSION) === 'false'){
+		} else if(end_on_discussion){
 			this.__endIndexTourOnDiscussionPage();
 		}
 	};

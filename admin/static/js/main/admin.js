@@ -17,8 +17,6 @@ $(document).ready(function () {
 		new AdminAjaxHandler().updateCountBadges();
 	}
 	
-	var data = $('#data');
-	
 	// gui modification for the caution row
 	if (!Cookies.get(ADMIN_WARNING)) {
 		$('#close-warning').fadeIn();

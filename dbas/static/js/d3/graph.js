@@ -493,8 +493,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             if(isVisible.defaultView){
                 rescaleGraph.zoom_scale = 1;
                 isVisible.defaultView = false;
-            }
-            else{
+            } else {
                 rescaleGraph.zoom_scale = zoom.scale();
                 change_scale = Math.abs(rescaleGraph.old_scale - rescaleGraph.zoom_scale) > 0.02;
             }
@@ -532,7 +531,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                     $('#' + graphViewContainerSpaceId).find('.node').each(function () {
                         var id = $(this).attr('id').replace(rescaleGraph.node_id_prefix, '');
                         var label = $('#label-' + id);
-                        var rect = $('#rect-' + id);
+                        // var rect = $('#rect-' + id);
                         label.attr({
                             'y': -label.height() / rescaleGraph.zoom_scale + 45 / rescaleGraph.zoom_scale
                         });
@@ -1630,43 +1629,42 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // select all incoming and outgoing edges of selected circle
         edges.forEach(function (d) {
             // add source for supports/attacks
-            if ((isVisible.support || isVisible.attack) && $.inArray(d.source.id, circleIds) !== -1){
+            var relation = isVisible.support || isVisible.attack;
+            var selected = $.inArray(d.source.id, circleIds) !== -1;
+            if (relation && selected){
                 edgesIds.push(d);
             }
 	        // get all targets of the edges without the edge itself
-            if ((!(isVisible.support || isVisible.attack) || d.target.type === 'position') && $.inArray(d.target.id, circleIds) !== -1) {
+            relation = !(isVisible.support || isVisible.attack) || d.target.type === 'position';
+            selected = $.inArray(d.target.id, circleIds) !== -1;
+            if (relation && selected) {
 			    nodeId.push(d);
             }
         });
 
         // if isMyStatementsClicked is false gray all elements at each function call,
         // else the graph is colored once gray
-        if (!isVisible.my_statements && !isVisible.support && !isVisible.attack) {
+        var nothing = !isVisible.my_statements && !isVisible.support && !isVisible.attack
+        if (nothing) {
             edges.forEach(function (d) {
                 grayingElements(d);
             });
         }
         highlightElementsVirtualNodes(edges, edgesIds, false);
         edgesIds.forEach(function (d) {
-            if(isVisible.attack && d.color === colors.red){
-    	        hightlghtEdge(d);
-	            highlightEdgeSource(d);
-            }
-            if(isVisible.support && d.color === colors.green){
-    	        hightlghtEdge(d);
-	            highlightEdgeSource(d);
-            } else if (!isVisible.attack && !isVisible.support){
+            var attack = isVisible.attack && d.color === colors.red;
+            var support = isVisible.support && d.color === colors.green;
+            var other = !isVisible.attack && !isVisible.support;
+            if(attack || support || other){
     	        hightlghtEdge(d);
 	            highlightEdgeSource(d);
             }
         });
         nodeId.forEach(function (d) {
-            if(isVisible.attack && d.color === colors.red){
-                hightlightEdgeTarget(d);
-            }
-            if(isVisible.support && d.color === colors.green){
-                hightlightEdgeTarget(d);
-            } else if (!isVisible.attack && !isVisible.support){
+            var attack = isVisible.attack && d.color === colors.red;
+            var support = isVisible.support && d.color === colors.green;
+            var other = !isVisible.attack && !isVisible.support;
+            if(attack || support || other){
                 hightlightEdgeTarget(d);
             }
         });

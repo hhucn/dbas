@@ -171,7 +171,7 @@ function InteractionHandler() {
 		}
 
 		// supporters = data.supporter.join(', ');
-		var author = data.author;
+		var author;
 		if (data.author !== 'anonymous'){
 			var img = '<img class="img-circle" style="height: 1em;" src="' + data.gravatar + '">';
 			author = '<a href="' + data.author_url + '">' + img + ' ' + data.author + '</a>';
@@ -407,7 +407,7 @@ function InteractionHandler() {
 			} else {
 				if (type === fuzzy_start_statement) {
 					if (decided_texts.length > 0) {
-						alert("TODO: more than one decided text");
+						setGlobalErrorHandler('Oha', 'More than one decided text!');
 					} else {
 						new AjaxDiscussionHandler().sendNewStartStatement(text);
 					}

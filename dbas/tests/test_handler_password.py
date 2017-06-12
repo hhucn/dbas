@@ -9,5 +9,4 @@ class PasswordHandlerTests(unittest.TestCase):
         self.assertEqual(len(password.get_rnd_passwd()), 10)
 
         # Test, whether 2 passwords are equal.
-        is_equal = password.get_rnd_passwd() is password.get_rnd_passwd()
-        self.assertFalse(is_equal)
+        self.assertNotEqual(password.get_rnd_passwd(), password.get_rnd_passwd())
