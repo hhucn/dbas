@@ -58,14 +58,9 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
         return_dict['values'] = get_strings_for_start(value, issue, False)
         return_dict['distance_name'] = mechanism
 
-    elif mode == '3':  # adding reasons
+    elif mode == '3' or mode == '4':  # adding reasons / duplicates
         count, extra, m = __get_vars_for_reasons(extra, mechanism)
-        return_dict['values'] = get_strings_for_reasons(value, issue, count, extra[1])
-        return_dict['distance_name'] = m
-
-    elif mode == '4':  # duplicate
-        count, extra, m = __get_vars_for_reasons(extra, mechanism)
-        return_dict['values'] = get_strings_for_duplicate(value, issue, count, extra[1])
+        return_dict['values'] = get_strings_for_duplicates_or_reasons(value, issue, count, extra[1])
         return_dict['distance_name'] = m
 
     elif mode == '5':  # getting public nicknames
@@ -176,7 +171,7 @@ def get_strings_for_edits(value, statement_uid):
     return return_array[:list_length]
 
 
-def get_strings_for_reasons(value, issue, count=list_length, oem_value=''):
+def get_strings_for_duplicates_or_reasons(value, issue, count=list_length, oem_value=''):
     """
     Checks different textversion-strings for a match with given value
 
@@ -200,38 +195,8 @@ def get_strings_for_reasons(value, issue, count=list_length, oem_value=''):
 
     return_array = __sort_array(return_array)
 
-    # logger('fuzzy_string_matcher', 'get_strings_for_reasons', 'string: ' + value + ', issue: ' + str(issue) +
-    #        ', dictionary length: ' + str(len(return_array)), debug=True)
-
-    return return_array[:count]
-
-
-def get_strings_for_duplicate(value, issue, count=list_length, oem_value=''):  # TODO DUPLICATE OF get_strings_for_reasons
-    """
-    Checks different textversion-strings for a match with given value
-
-    :param value: string
-    :param issue: Issue.uid
-    :param count: integer
-    :param oem_value: string
-    :return: dict()
-    """
-    db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
-    return_array = []
-
-    while oem_value.endswith((',', '.', '?')):
-        oem_value = oem_value[:-1]
-
-    for stat in db_statements:
-        db_tv = DBDiscussionSession.query(TextVersion).get(stat.textversion_uid)
-        if value.lower() in db_tv.content.lower() and db_tv.content.lower() != oem_value.lower():
-            rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
-            return_array.append(rd)
-
-    return_array = __sort_array(return_array)
-
-    # logger('fuzzy_string_matcher', 'get_strings_for_reasons', 'string: ' + value + ', issue: ' + str(issue) +
-    #        ', dictionary length: ' + str(len(return_array)), debug=True)
+    # logger('fuzzy_string_matcher', 'get_strings_for_duplicates_or_reasons',
+    # 'string: {}, issue {}, len(dict): '.format(value, issue, len(return_array))
 
     return return_array[:count]
 
