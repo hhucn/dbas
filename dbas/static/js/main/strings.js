@@ -59,9 +59,12 @@ getLanguage = function(){
     $('#' + languageDropdownId).children().each(function(){
         if ($(this).hasClass('active')){
             this_id = $(this).children().first().attr('id');
-            if (this_id.indexOf('en') !== -1){        value = 'en';
-            } else if (this_id.indexOf('de') !== -1){ value = 'de';
-            } else {                                  value = 'unknown value';
+            if (this_id.indexOf('en') !== -1){
+                value = 'en';
+            } else if (this_id.indexOf('de') !== -1){
+                value = 'de';
+            } else {
+                value = 'unknown value';
             }
         }
     });
@@ -75,11 +78,13 @@ getLanguage = function(){
 getDiscussionLanguage = function(){
     'use strict';
     
-    var lang = $('#issue_info').data('discussion-language'),
-        value = 'unknown identifier';
-    if (lang.indexOf('en') !== -1){          value = 'en';
-    } else if (lang.indexOf('de') !== -1){    value = 'de';
-    } else {                                value = 'unknown value';
+    var lang = $('#issue_info').data('discussion-language'), value;
+    if (lang.indexOf('en') !== -1){
+        value = 'en';
+    } else if (lang.indexOf('de') !== -1){
+        value = 'de';
+    } else {
+        value = 'unknown value';
     }
     return value;
 };

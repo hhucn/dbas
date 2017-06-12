@@ -89,78 +89,41 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
+    def __exec_request_and_check_reviewes(self, db_review, ajax, keyword, bool, nickname, reviewer_type):
+        self.config.testing_securitypolicy(userid=nickname, permissive=True)
+        db_reviews1 = len(DBDiscussionSession.query(reviewer_type).filter_by(review_uid=db_review.uid).all())
+        request = testing.DummyRequest(params={
+            keyword: 'true' if bool else 'false',
+            'review_uid': db_review.uid
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        db_reviews2 = len(DBDiscussionSession.query(reviewer_type).filter_by(review_uid=db_review.uid).all())
+        self.assertIsNotNone(response)
+        self.assertTrue(len(response['error']) == 0)
+        self.assertTrue(db_reviews1 + 1, db_reviews2)
+
     def test_review_delete_argument(self):
         db_review = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.statement_uid is not None,
                                                                         ReviewDelete.is_executed == False)).first()
         from dbas.views import review_delete_argument as ajax
 
         # 1:0
-        self.config.testing_securitypolicy(userid='Pascal', permissive=True)
-        db_reviews1 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
-        request = testing.DummyRequest(params={
-            'should_delete': 'true',
-            'review_uid': db_review.uid
-        }, matchdict={})
-        response = json.loads(ajax(request))
-        db_reviews2 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(db_reviews1 + 1, db_reviews2)
+        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_delete', True, 'Pascal', LastReviewerDelete)
 
         # 1:1
-        self.config.testing_securitypolicy(userid='Kurt', permissive=True)
-        db_reviews1 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
-        request = testing.DummyRequest(params={
-            'should_delete': 'false',
-            'review_uid': db_review.uid
-        }, matchdict={})
-        response = json.loads(ajax(request))
-        transaction.commit()
-        db_reviews2 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(db_reviews1 + 1, db_reviews2)
+        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_delete', False, 'Kurt', LastReviewerDelete)
 
         # 2:1
-        self.config.testing_securitypolicy(userid='Torben', permissive=True)
-        db_reviews1 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
-        request = testing.DummyRequest(params={
-            'should_delete': 'true',
-            'review_uid': db_review.uid
-        }, matchdict={})
-        response = json.loads(ajax(request))
-        transaction.commit()
-        db_reviews2 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(db_reviews1 + 1, db_reviews2)
+        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_delete', True, 'Torben', LastReviewerDelete)
 
         # 3:1
-        self.config.testing_securitypolicy(userid='Friedrich', permissive=True)
-        db_reviews1 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
-        request = testing.DummyRequest(params={
-            'should_delete': 'true',
-            'review_uid': db_review.uid
-        }, matchdict={})
-        response = json.loads(ajax(request))
-        transaction.commit()
-        db_reviews2 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(db_reviews1 + 1, db_reviews2)
+        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_delete', True, 'Friedrich', LastReviewerDelete)
 
         # 4:1
-        self.config.testing_securitypolicy(userid='Thorsten', permissive=True)
         db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
-        request = testing.DummyRequest(params={
-            'should_delete': 'true',
-            'review_uid': db_review.uid
-        }, matchdict={})
-        response = json.loads(ajax(request))
+        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_delete', True, 'Thorsten', LastReviewerDelete)
         transaction.commit()
         db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
         db_statement = DBDiscussionSession.query(Statement).get(db_review.statement_uid)
         self.assertTrue(db_statement.is_disabled)
         self.assertEquals(db_reputation1 + 1, db_reputation2)
@@ -182,18 +145,7 @@ class AjaxReviewTest(unittest.TestCase):
                                                                         ReviewDelete.is_executed == False)).first()
         from dbas.views import review_delete_argument as ajax
 
-        # 1:0
-        self.config.testing_securitypolicy(userid='Pascal', permissive=True)
-        db_reviews1 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
-        request = testing.DummyRequest(params={
-            'should_delete': 'true',
-            'review_uid': db_review.uid
-        }, matchdict={})
-        response = json.loads(ajax(request))
-        db_reviews2 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(db_reviews1 + 1, db_reviews2)
+        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_delete', True, 'Pascal', LastReviewerDelete)
 
     def test_review_optimization_argument(self):  # TODO check the voting method
         db_review = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.statement_uid is not None,
@@ -201,48 +153,16 @@ class AjaxReviewTest(unittest.TestCase):
         from dbas.views import review_optimization_argument as ajax
 
         # 0:1
-        self.config.testing_securitypolicy(userid='Kurt', permissive=True)
-        db_reviews1 = len(DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=db_review.uid).all())
-        request = testing.DummyRequest(params={
-            'should_optimized': 'false',
-            'review_uid': db_review.uid
-        }, matchdict={})
-        response = json.loads(ajax(request))
-        transaction.commit()
-        db_reviews2 = len(DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=db_review.uid).all())
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(db_reviews1 + 1, db_reviews2)
+        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_optimized', False, 'Kurt', LastReviewerOptimization)
 
         # 0:2
-        self.config.testing_securitypolicy(userid='Pascal', permissive=True)
-        db_reviews1 = len(DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=db_review.uid).all())
-        request = testing.DummyRequest(params={
-            'should_optimized': 'false',
-            'review_uid': db_review.uid
-        }, matchdict={})
-        response = json.loads(ajax(request))
-        transaction.commit()
-        db_reviews2 = len(DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=db_review.uid).all())
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(db_reviews1 + 1, db_reviews2)
+        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_optimized', False, 'Pascal', LastReviewerOptimization)
 
         # 0:3
-        self.config.testing_securitypolicy(userid='Torben', permissive=True)
-        db_reviews1 = len(DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=db_review.uid).all())
         db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
-        request = testing.DummyRequest(params={
-            'should_optimized': 'false',
-            'review_uid': db_review.uid
-        }, matchdict={})
-        response = json.loads(ajax(request))
+        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_optimized', False, 'Torben', LastReviewerOptimization)
         transaction.commit()
-        db_reviews2 = len(DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=db_review.uid).all())
         db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(db_reviews1 + 1, db_reviews2)
         self.assertEqual(db_reputation1, db_reputation2)
 
     def test_review_optimization_argument_for_edit(self):  # TODO how to accept new corrections
@@ -444,7 +364,7 @@ class AjaxReviewTest(unittest.TestCase):
         db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(db_reviews1 + 1, db_reviews2)  # FIXME and the other ones!
+        self.assertTrue(db_reviews1 + 1, db_reviews2)
         self.assertNotEqual(db_reputation1, db_reputation2)
         self.config.testing_securitypolicy(userid='Friedrich', permissive=True)
         db_reviews1 = len(DBDiscussionSession.query(LastReviewerDuplicate).filter_by(review_uid=db_review.uid).all())

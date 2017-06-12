@@ -99,7 +99,7 @@ function setGravatarFallback() {
 	}
 	
 	var src = body.find('.img-circle')[0].src;
-	var jqxhr = $.get(src, function() {
+	$.get(src, function() {
     	replace_gravtar_with_default_image(true);
     }).fail(function() {
     	replace_gravtar_with_default_image(false);
@@ -561,7 +561,6 @@ function callbackIfDoneForLogin(data, showGlobalError){
 			location.reload(true);
 		}
 	} catch(err){
-		//console.log(err);
 		var url = location.href;
 		if (url.indexOf('?session_expired=true') !== -1) {
 			url = url.substr(0, url.length - '?session_expired=true'.length);

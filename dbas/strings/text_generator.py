@@ -238,27 +238,34 @@ def get_relation_text_dict_with_substitution(lang, with_no_opinion_text, is_dont
     :return: dict()
     """
     _t = Translator(lang)
+
+    assertion = _t.get(_.herAssertion) if gender is 'f' else _t.get(_.hisAssertion) if gender is 'm' else _t.get(_.theirAssertion)
+    reason = _t.get(_.herReason) if gender is 'f' else _t.get(_.hisReason) if gender is 'm' else _t.get(_.theirReason)
+    statement = _t.get(_.herStatement) if gender is 'f' else _t.get(_.hisStatement) if gender is 'm' else _t.get(_.theirStatement)
+    position = _t.get(_.herPosition) if gender is 'f' else (_t.get(_.hisPosition) if gender is 'm' else _t.get(_.theirPosition))
+    opinion = _t.get(_.opinion_her) if gender is 'f' else _t.get(_.opinion_his) if gender is 'm' else _t.get(_.opinion)
+
     if lang == 'de':
         if is_dont_know:
-            premise = _t.get(_.herAssertion) if gender is 'f' else _t.get(_.hisAssertion) if gender is 'm' else _t.get(_.theirAssertion)
+            premise = assertion
         else:
-            premise = _t.get(_.herStatement) if gender is 'f' else _t.get(_.hisStatement) if gender is 'm' else _t.get(_.theirStatement)
+            premise = statement
 
         if is_dont_know:
-            conclusion = _t.get(_.herReason) if gender is 'f' else _t.get(_.hisReason) if gender is 'm' else _t.get(_.theirReason)
+            conclusion = reason
         else:
-            conclusion = _t.get(_.herAssertion) if gender is 'f' else _t.get(_.hisAssertion) if gender is 'm' else _t.get(_.theirAssertion)
+            conclusion = assertion
 
     else:
-        premise = _t.get(_.herStatement) if gender is 'f' else _t.get(_.hisStatement) if gender is 'm' else _t.get(_.theirStatement)
+        premise = statement
 
         if not is_dont_know:
             if attack_type == 'undermine' or attack_type == 'rebut':
-                conclusion = _t.get(_.herPosition) if gender is 'f' else (_t.get(_.hisPosition) if gender is 'm' else _t.get(_.theirPosition))
+                conclusion = position
             else:
                 conclusion = _t.get(_.myArgument)
         else:
-            conclusion = _t.get(_.opinion_her) if gender is 'f' else _t.get(_.opinion_his) if gender is 'm' else _t.get(_.opinion)
+            conclusion = opinion
 
     return __get_relation_text_dict(lang, with_no_opinion_text, premise, conclusion, is_dont_know)
 

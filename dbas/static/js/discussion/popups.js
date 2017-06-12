@@ -530,7 +530,6 @@ function PopupHandler() {
 	 * @param data in json-format
 	 */
 	this.createReferencesPopupBody = function (data) {
-		var popup = $('#' + popupReferences);
 		var references_body = $('#popup-references-body');
 		var send_button = $('#popup-reference-send-btn');
 		var dropdown = $('#popup-references-cite-dropdown');

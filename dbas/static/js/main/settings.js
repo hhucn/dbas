@@ -46,7 +46,7 @@ function HistoryHandler(){
 	 * @param jsonData
 	 */
 	this.setDataInHistoryTable = function (jsonData) {
-		var tableElement, trElement, tElement, i, parsedData, thead, tbody, breaked_url;
+		var tableElement, trElement, tElement, i, thead, tbody;
 		tElement = ['', ''];
 		tableElement = $('<table>');
 		tableElement
@@ -77,7 +77,7 @@ function HistoryHandler(){
 		var has_data = false;
 		$.each(jsonData, function setDataInHistoryTableEach(index, history) {
 			has_data = true;
-			breaked_url = cutTextOnChar(history.path, 120, '/');
+			// breaked_url = cutTextOnChar(history.path, 120, '/');
 			tElement[0] = $('<td>').text(index);
 			tElement[1] = $('<td>').html('<a href="' + history.path + '">' + history.path + '</a>');
 			tElement[2] = $('<td>').text(history.timestamp);
