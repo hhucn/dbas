@@ -89,11 +89,11 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
-    def __exec_request_and_check_reviewes(self, db_review, ajax, keyword, should_delete, nickname, reviewer_type):
+    def __exec_request_and_check_reviewes(self, db_review, ajax, keyword, bool, nickname, reviewer_type):
         self.config.testing_securitypolicy(userid=nickname, permissive=True)
         db_reviews1 = len(DBDiscussionSession.query(reviewer_type).filter_by(review_uid=db_review.uid).all())
         request = testing.DummyRequest(params={
-            keyword: 'true' if should_delete else 'false',
+            keyword: 'true' if bool else 'false',
             'review_uid': db_review.uid
         }, matchdict={})
         response = json.loads(ajax(request))
@@ -153,14 +153,14 @@ class AjaxReviewTest(unittest.TestCase):
         from dbas.views import review_optimization_argument as ajax
 
         # 0:1
-        self.__exec_request_and_check_reviewes(db_review, ajax,' should_optimized', False, 'Kurt', LastReviewerOptimization)
+        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_optimized', False, 'Kurt', LastReviewerOptimization)
 
         # 0:2
-        self.__exec_request_and_check_reviewes(db_review, ajax,' should_optimized', False, 'Pascal', LastReviewerOptimization)
+        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_optimized', False, 'Pascal', LastReviewerOptimization)
 
         # 0:3
         db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
-        self.__exec_request_and_check_reviewes(db_review, ajax,' should_optimized', False, 'Torben', LastReviewerOptimization)
+        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_optimized', False, 'Torben', LastReviewerOptimization)
         transaction.commit()
         db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
         self.assertEqual(db_reputation1, db_reputation2)
