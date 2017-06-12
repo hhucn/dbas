@@ -58,14 +58,9 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
         return_dict['values'] = get_strings_for_start(value, issue, False)
         return_dict['distance_name'] = mechanism
 
-    elif mode == '3':  # adding reasons
+    elif mode == '3':  # adding reasons / duplicates
         count, extra, m = __get_vars_for_reasons(extra, mechanism)
         return_dict['values'] = get_strings_for_duplicates_or_reasons(value, issue, count, extra[1])
-        return_dict['distance_name'] = m
-
-    elif mode == '4':  # duplicate
-        count, extra, m = __get_vars_for_reasons(extra, mechanism)
-        return_dict['values'] = get_strings_for_duplicate(value, issue, count, extra[1])
         return_dict['distance_name'] = m
 
     elif mode == '5':  # getting public nicknames

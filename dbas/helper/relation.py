@@ -9,7 +9,7 @@ import transaction
 
 from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Premise, PremiseGroup, User
+from dbas.database.discussion_model import Argument, Premise, PremiseGroup
 from dbas.lib import get_text_for_premisesgroup_uid
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
 from dbas.input_validator import is_integer

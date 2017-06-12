@@ -42,12 +42,8 @@ def mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mar
     :rtype: dict
     :return: Dictionary with new text for the current bubble, where the user marked her opinion
     """
-    prepared_dict = dict()
     _t = Translator(ui_loc)
-
-    success, error = __mark_or_unmark_it(uid, is_argument, should_mark, nickname, _t)
-    prepared_dict['success'] = success
-    prepared_dict['error'] = error
+    prepared_dict = __mark_or_unmark_it(uid, is_argument, should_mark, nickname, _t)
     prepared_dict['text'] = get_text_for_justification_or_reaction_bubble(uid, is_argument, is_supportive,
                                                                           nickname, step, history, _t)
     return prepared_dict
@@ -64,10 +60,10 @@ def __mark_or_unmark_it(uid, is_argument, should_mark, nickname, _t):
     :param _t: Translator
     :return: String, String
     """
-    logger('QueryHelper', 'mark_or_unmark_statement_or_argument', '{} {} {}'.format(uid, is_argument, nickname))
+    logger('QueryHelper', '__mark_or_unmark_it', '{} {} {}'.format(uid, is_argument, nickname))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     if not db_user:
-        return '', _t.get(_.internalError)
+        return {'success': '', 'error': _t.get(_.internalError)}
 
     base_type = Argument if is_argument else Statement
     table = MarkedArgument if is_argument else MarkedStatement
@@ -75,21 +71,22 @@ def __mark_or_unmark_it(uid, is_argument, should_mark, nickname, _t):
 
     db_base = DBDiscussionSession.query(base_type).get(uid)
     if not db_base:
-        return '', _t.get(_.internalError)
+        return {'success': '', 'error': _t.get(_.internalError)}
 
     if should_mark:
         db_el = DBDiscussionSession.query(table).filter(column == uid).first()
-        logger('QueryHelper', 'mark_or_unmark_statement_or_argument', 'Element {}is present'.format('yet ' if db_el else ''))
+        logger('QueryHelper', '__mark_or_unmark_it', 'Element is present{}'.format(' now' if db_el else ''))
         if not db_el:
             new_el = MarkedArgument(argument=uid, user=db_user.uid) if is_argument else MarkedStatement(statement=uid, user=db_user.uid)
             DBDiscussionSession.add(new_el)
     else:
+        logger('QueryHelper', '__mark_or_unmark_it', 'Element is deleted')
         DBDiscussionSession.query(table).filter(column == uid).delete()
 
     DBDiscussionSession.flush()
     transaction.commit()
 
-    return _t.get(_.opinionSaved), ''
+    return {'success': _t.get(_.opinionSaved), 'error': ''}
 
 
 def set_user_language(nickname, ui_locales) -> dict:
