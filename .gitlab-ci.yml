@@ -45,7 +45,7 @@ unit:
   <<: *run-server
   stage: test
   script:
-    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w . dbas graph admin api export
+    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . dbas graph admin api export
     - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
   coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
 
@@ -55,6 +55,15 @@ acceptance:
   script:
     - docker exec dbas_web_$CI_JOB_ID nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
     - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
+
+sonar:
+  image: hhucn/sonar-scanner
+  stage: deploy
+  script:
+    - sonar-scanner -D sonar.host.url=https://sonarqube.cs.uni-duesseldorf.de -D sonar.login=$SONARQUBE_LOGIN -D sonar.projectKey=dbas:development -D sonar.projectName=D-BAS -D sonar.projectVersion=1.4 -D sonar.sources=. -D sonar.python.coverage.reportPath=coverage.xml
+  only:
+    - development
+  when: always
 
 deploy_image:
   stage: deploy
