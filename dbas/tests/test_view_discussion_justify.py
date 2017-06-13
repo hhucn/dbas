@@ -189,7 +189,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
     def test_false_page(self):
         from dbas.views import discussion_justify as d
 
-        vote_dict = self.__get_meta_clicks()
+        vote_dict = self.__get_meta_clicks(False)
 
         request = testing.DummyRequest()
         request.matchdict = {
