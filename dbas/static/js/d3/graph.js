@@ -5,7 +5,6 @@
 
 function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     'use strict';
-    var s;
     var isPartialGraphMode = is_partial_graph_mode;
     var isVisible;
     var colors;
@@ -155,7 +154,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         	new GuiHandler().setDisplayStyleAsDiscussion();
         	return;
         }
-        s = new DiscussionGraph(box_sizes, isPartialGraphMode).setDefaultViewParams(true, jsonData, null, request_for_complete);
+        new DiscussionGraph(box_sizes, isPartialGraphMode).setDefaultViewParams(true, jsonData, null, request_for_complete);
     };
 
     /**
