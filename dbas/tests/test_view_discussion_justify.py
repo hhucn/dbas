@@ -147,7 +147,6 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
         from dbas.views import discussion_justify as d
         vote_dict = self.__get_meta_clicks(True)
-        len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
@@ -157,21 +156,19 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         }
         response = d(request)
         verify_dictionary_of_view(self, response)
-        len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
         self.assertNotEqual(vote_dict['seen_s'], len(DBDiscussionSession.query(SeenStatement).all()))
         self.assertEqual(vote_dict['click_s'], len(DBDiscussionSession.query(ClickedStatement).all()))
         self.assertNotEqual(vote_dict['seen_a'], len(DBDiscussionSession.query(SeenArgument).all()))
         self.assertEqual(vote_dict['click_a'], len(DBDiscussionSession.query(ClickedArgument).all()))
-        self.assertNotEqual(len_db_reputation1, len_db_reputation2)
-        # clear_seen_by_of('Björn')
-        # clear_clicks_of('Björn')
+        self.assertEqual(vote_dict['rep_h'], len(DBDiscussionSession.query(ReputationHistory).all()))
+        clear_seen_by_of('Björn')
+        clear_clicks_of('Björn')
 
     def test_justify_argument_page_rep_not_twice(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
         from dbas.views import discussion_justify as d
 
         vote_dict = self.__get_meta_clicks(True)
-        len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
 
         request = testing.DummyRequest()
         request.matchdict = {
@@ -182,10 +179,11 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         }
         response = d(request)
         verify_dictionary_of_view(self, response)
-
-        len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
-        self.__check_meta_clicks(vote_dict)
-        self.assertEqual(len_db_reputation1, len_db_reputation2)
+        self.assertNotEqual(vote_dict['seen_s'], len(DBDiscussionSession.query(SeenStatement).all()))
+        self.assertEqual(vote_dict['click_s'], len(DBDiscussionSession.query(ClickedStatement).all()))
+        self.assertNotEqual(vote_dict['seen_a'], len(DBDiscussionSession.query(SeenArgument).all()))
+        self.assertEqual(vote_dict['click_a'], len(DBDiscussionSession.query(ClickedArgument).all()))
+        self.assertEqual(vote_dict['rep_h'], len(DBDiscussionSession.query(ReputationHistory).all()))
         clear_seen_by_of('Björn')
         clear_clicks_of('Björn')
 
