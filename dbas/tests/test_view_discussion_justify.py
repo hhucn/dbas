@@ -22,23 +22,28 @@ class DiscussionJustifyViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def __get_meta_clicks(self):
-        return {
+    def __get_meta_clicks(self, include_history):
+        d = {
             'seen_s': len(DBDiscussionSession.query(SeenStatement).all()),
-            'votes_s': len(DBDiscussionSession.query(ClickedStatement).all()),
+            'click_s': len(DBDiscussionSession.query(ClickedStatement).all()),
             'seen_a': len(DBDiscussionSession.query(SeenArgument).all()),
-            'votes_a': len(DBDiscussionSession.query(ClickedArgument).all())
+            'click_a': len(DBDiscussionSession.query(ClickedArgument).all())
         }
-    
+        if include_history:
+            d['rep_h'] = len(DBDiscussionSession.query(ReputationHistory).all())
+        return d
+
     def __check_meta_clicks(self, vote_dict):
-        self.assertEqual(vote_dict['seen_s'], len(DBDiscussionSession.query(SeenStatement).all()))  # no more cause we are not logged in
-        self.assertEqual(vote_dict['votes_s'], len(DBDiscussionSession.query(ClickedStatement).all()))
+        self.assertEqual(vote_dict['seen_s'], len(DBDiscussionSession.query(SeenStatement).all()))
+        self.assertEqual(vote_dict['click_s'], len(DBDiscussionSession.query(ClickedStatement).all()))
         self.assertEqual(vote_dict['seen_a'], len(DBDiscussionSession.query(SeenArgument).all()))
-        self.assertEqual(vote_dict['votes_a'], len(DBDiscussionSession.query(ClickedArgument).all()))
+        self.assertEqual(vote_dict['click_a'], len(DBDiscussionSession.query(ClickedArgument).all()))
+        if 'rep_h' in vote_dict:
+            self.assertEqual(vote_dict['rep_h'], len(DBDiscussionSession.query(ReputationHistory).all()))
 
     def test_justify_statement_page(self):
         from dbas.views import discussion_justify as d
-        vote_dict = self.__get_meta_clicks()
+        vote_dict = self.__get_meta_clicks(False)
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
@@ -108,7 +113,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
 
     def test_dont_know_statement_page(self):
         from dbas.views import discussion_justify as d
-        vote_dict = self.__get_meta_clicks()
+        vote_dict = self.__get_meta_clicks(False)
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
@@ -122,7 +127,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
 
     def test_justify_argument_page_no_rep(self):
         from dbas.views import discussion_justify as d
-        vote_dict = self.__get_meta_clicks()
+        vote_dict = self.__get_meta_clicks(True)
         len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
         request = testing.DummyRequest()
         request.matchdict = {
@@ -141,7 +146,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
     def test_justify_argument_page_rep(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
         from dbas.views import discussion_justify as d
-        vote_dict = self.__get_meta_clicks()
+        vote_dict = self.__get_meta_clicks(True)
         len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
         request = testing.DummyRequest()
         request.matchdict = {
@@ -162,7 +167,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
         from dbas.views import discussion_justify as d
 
-        vote_dict = self.__get_meta_clicks()
+        vote_dict = self.__get_meta_clicks(True)
         len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
 
         request = testing.DummyRequest()
