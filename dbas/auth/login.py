@@ -188,13 +188,15 @@ def __login_user_is_existing(request, nickname, password, _tn, is_ldap, db_user)
     """
     logger('Auth.Login', '__login_user_is_existing', 'user \'' + nickname + '\' exists')
     if is_ldap:
-        # local_login = db_user.validate_password(password)
+        local_login = db_user.validate_password(password)
         # logger('Auth.Login', '__login_user_is_existing', 'password is {}'.format('right' if local_login else 'wrong'))
 
         # if not local_login:
-        user_data, error = verify_ldap_user_data(request.registry.settings, nickname, password, _tn)
+        error = _tn.get(_.userPasswordNotMatch)
+        if not local_login:
+            user_data, error = verify_ldap_user_data(request.registry.settings, nickname, password, _tn)
 
-        if error is not None:
+        if error is not None and not local_login:
             logger('Auth.Login', '__login_user_is_existing', 'Error ' + error)
             return error
     else:
