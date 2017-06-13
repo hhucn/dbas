@@ -163,8 +163,8 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.assertNotEqual(vote_dict['seen_a'], len(DBDiscussionSession.query(SeenArgument).all()))
         self.assertEqual(vote_dict['click_a'], len(DBDiscussionSession.query(ClickedArgument).all()))
         self.assertNotEqual(len_db_reputation1, len_db_reputation2)
-        clear_seen_by_of('Björn')
-        clear_clicks_of('Björn')
+        # clear_seen_by_of('Björn')
+        # clear_clicks_of('Björn')
 
     def test_justify_argument_page_rep_not_twice(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
