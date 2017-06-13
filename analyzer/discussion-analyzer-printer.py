@@ -18,7 +18,7 @@ top_count = 5
 flop_count = 5
 start = arrow.get('2017-05-09T05:35:00.000000+00:00')
 end = arrow.get('2017-05-28T23:59:00.000000+00:00')
-path = './evaluation'
+path = './analyzer/evaluation'
 
 user_admin = ['anonymous', 'Tobias', 'Christian', ]
 user_colleagues = ['ansel101', 'mamau002', 'chmet101', 'jurom100', 'tokra100',
@@ -201,6 +201,18 @@ def print_textversion_history():
 
     target.close()
 
+def print_textversions_audit():
+    target = open(path + '/textversions.csv', 'w')
+    db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid)
+    statement_uids = [s.uid for s in db_statements.all()]
+    target.write('Kürzel;Audit;ID;Position;Content;Opener;Translation\n')
+    for tv in session.query(TextVersion).filter(TextVersion.statement_uid.in_(statement_uids)).order_by(TextVersion.uid.asc()).all():
+        is_position = db_statements.filter_by(uid=tv.statement_uid).first().is_startpoint
+        mark = '✓' if is_position else '×'
+        opener = 'I want to talk about the position that ...' if is_position else '...because...'
+        content = tv.content.replace('&quot;', '"').replace('&#x27;', '\'')
+        target.write(';;{};{};{};{}\n'.format(tv.uid,mark , content, opener))
+    target.close()
 
 if __name__ == '__main__':
     # mk dir
@@ -222,4 +234,5 @@ if __name__ == '__main__':
     # print_summary()
     # print_activity_per_day()
     # print_user_activity()
-    print_textversion_history()
+    # print_textversion_history()
+    print_textversions_audit()
