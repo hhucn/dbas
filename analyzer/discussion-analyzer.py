@@ -138,9 +138,11 @@ def evaluate_arguments():
     db_disabled_arguments = db_arguments.filter_by(is_disabled=True).all()
     db_pro_arguments = db_arguments.filter_by(is_supportive=True).all()
     db_con_arguments = db_arguments.filter_by(is_supportive=False).all()
+    db_pro_not_pos = [arg for arg in db_pro_arguments if not session.query(Statement).get(arg.conclusion_uid).is_startpoint]
     print('Arguments:')
-    print('  - count / disabled: {} / {}'.format(len(db_arguments.all()), len(db_disabled_arguments)))
-    print('  - pro / con:        {} / {}'.format(len(db_pro_arguments), len(db_con_arguments)))
+    print('  - count / disabled:  {} / {}'.format(len(db_arguments.all()), len(db_disabled_arguments)))
+    print('  - pro / con:         {} / {}'.format(len(db_pro_arguments), len(db_con_arguments)))
+    print('  - pro, not for pos:  {}'.format(len(db_pro_not_pos)))
     print('\n')
 
 
@@ -352,6 +354,21 @@ def evaluate_graph():
     print('\n')
 
 
+def evaluate_measurements():
+    print('Several Measurements:')
+    db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).order_by(Statement.uid.asc())
+    db_positions = db_statements.filter_by(is_startpoint=True).all()
+    print('  - Argumentation Index 1/2')
+    for pos in db_positions:
+        graph, error = get_partial_graph_for_statement(pos.uid, db_issue.uid, '')
+        statements_uids = [int(node['id'].split('statement_')[1]) for node in graph['nodes'] if 'statement' in node['id']]
+        without_self = [uid for uid in statements_uids if session.query(Statement).get(uid).textversions.author_uid != pos.textversions.author_uid]
+        # print('{} {}'.format(len(statements_uids), len(without_self)))
+        arg_index1 = round(len(statements_uids) / len(db_statements.all()) , 3)
+        arg_index2 = round(len(without_self) / len(db_statements.all()) , 3)
+        print('    - Position: {}\t->  {}\t{}'.format(pos.uid, arg_index1, arg_index2))
+
+
 def __get_depth_of_branch(statement_uid, todos=[], dones=[], depth=0):
     arguments = get_all_arguments_by_statement(statement_uid)
     dones = list(set(dones + [statement_uid]))
@@ -386,8 +403,8 @@ if __name__ == '__main__':
     print('-' * len('| D-BAS ANALYTICS: {} |'.format(db_issue.title.upper())))
     print('\n')
 
-    evaluate_users()
-    evaluate_statements()
+    # evaluate_users()
+    # evaluate_statements()
     # evaluate_positions()
     # evaluate_arguments()
     # evaluate_authors()
@@ -397,3 +414,4 @@ if __name__ == '__main__':
     # evaluate_quits()
     # evaluate_activity()
     # evaluate_graph()
+    evaluate_measurements()

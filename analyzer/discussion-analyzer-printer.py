@@ -10,6 +10,7 @@ from dbas.helper.tests import add_settings_to_appconfig
 from dbas.lib import get_text_for_statement_uid, get_text_for_premisesgroup_uid
 from sqlalchemy import and_
 from dbas.handler.opinion import get_user_with_same_opinion_for_statements, get_user_with_same_opinion_for_premisegroups
+from graph.partial_graph import get_partial_graph_for_statement
 
 settings = add_settings_to_appconfig()
 session.configure(bind=get_dbas_db_configuration('discussion', settings))
@@ -214,6 +215,20 @@ def print_textversions_audit():
         target.write(';;{};{};{};{}\n'.format(tv.uid,mark , content, opener))
     target.close()
 
+def print_argumentation_index():
+    target = open(path + '/argumentation_index.csv', 'w')
+    db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).order_by(Statement.uid.asc())
+    db_positions = db_statements.filter_by(is_startpoint=True).all()
+    for pos in db_positions:
+        graph, error = get_partial_graph_for_statement(pos.uid, db_issue.uid, '')
+        statements_uids = [int(node['id'].split('statement_')[1]) for node in graph['nodes'] if 'statement' in node['id']]
+        without_self = [uid for uid in statements_uids if session.query(Statement).get(uid).textversions.author_uid != pos.textversions.author_uid]
+        # print('{} {}'.format(len(statements_uids), len(without_self)))
+        arg_index1 = len(statements_uids) / len(db_statements.all())
+        arg_index2 = len(without_self) / len(db_statements.all())
+        target.write('{},{},{}\n'.format(pos.uid, arg_index1, arg_index2))
+    target.close()
+
 if __name__ == '__main__':
     # mk dir
     try:
@@ -236,3 +251,4 @@ if __name__ == '__main__':
     # print_user_activity()
     # print_textversion_history()
     print_textversions_audit()
+    print_argumentation_index()
