@@ -709,7 +709,7 @@ def set_new_user(request, firstname, lastname, nickname, gender, email, password
     if not db_group:
         info = _tn.get(_.errorTryLateOrContant)
         logger('User', 'set_new_user', 'Internal error occured')
-        return False, info
+        return {'sucess': False, 'message': info, 'user': None}
 
     success, info, db_new_user = __create_new_user(firstname, lastname, email, nickname, password, gender,
                                                    db_group.uid, _tn.get_lang())
@@ -722,10 +722,10 @@ def set_new_user(request, firstname, lastname, nickname, gender, email, password
         send_welcome_notification(db_new_user.uid, _tn)
 
         logger('User', 'set_new_user', 'set new user in db')
-        return success, db_new_user
+        return {'sucess': success, 'message': '', 'user': db_new_user}
 
     logger('User', 'set_new_user', 'new user not found in db')
-    return False, _tn.get(_.errorTryLateOrContant)
+    return {'sucess': False, 'message': _tn.get(_.errorTryLateOrContant), 'user': None}
 
 
 def get_users_with_same_opinion(uids, application_url, path, nickname, is_argument, is_attitude, is_reaction,

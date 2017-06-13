@@ -134,12 +134,15 @@ def register_with_ajax_data(request):
             logger('Auth.Login', 'user_registration', 'Error occured')
             return success, msg, db_new_user
 
-        success, tmp = user.set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn)
+        ret_dict = user.set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn)
+        success = ret_dict['success']
+        error = ret_dict['message']
+        db_new_user = ret_dict['user']
+
         if success:
             msg = _tn.get(_.accountWasAdded).format(nickname)
-            db_new_user = db_new_user
         else:
-            msg = tmp
+            msg = error
 
     return success, msg, db_new_user
 
@@ -185,15 +188,15 @@ def __login_user_is_existing(request, nickname, password, _tn, is_ldap, db_user)
     """
     logger('Auth.Login', '__login_user_is_existing', 'user \'' + nickname + '\' exists')
     if is_ldap:
-        local_login = db_user.validate_password(password)
-        logger('Auth.Login', '__login_user_is_existing', 'password is {}'.format('right' if local_login else 'wrong'))
+        # local_login = db_user.validate_password(password)
+        # logger('Auth.Login', '__login_user_is_existing', 'password is {}'.format('right' if local_login else 'wrong'))
 
-        if not local_login:
-            user_data, error = verify_ldap_user_data(request, nickname, password, _tn)
+        # if not local_login:
+        user_data, error = verify_ldap_user_data(request.registry.settings, nickname, password, _tn)
 
-            if error is not None:
-                logger('Auth.Login', '__login_user_is_existing', 'Error ' + error)
-                return error
+        if error is not None:
+            logger('Auth.Login', '__login_user_is_existing', 'Error ' + error)
+            return error
     else:
         if not db_user.validate_password(password):  # check password
             logger('Auth.Login', '__login_user_is_existing', 'wrong password')
@@ -221,13 +224,13 @@ def __login_user_ldap(request, nickname, password, _tn):
     lastname = user_data[1]
     gender = user_data[2]
     email = user_data[3]
-    success, db_user = user.set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn)
+    ret_dict = user.set_new_user(request, firstname, lastname, nickname, gender, email, 'NO_PW_BECAUSE_LDAP', _tn)
 
-    if not success:
+    if not ret_dict['success']:
         error = _tn.get(_.userPasswordNotMatch)
-        return error, db_user
+        return error, None
 
-    return None, db_user
+    return None, ret_dict['user']
 
 
 def __refresh_headers_and_url(request, db_user, keep_login, url):
