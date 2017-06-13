@@ -160,7 +160,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.assertEqual(vote_dict['click_s'], len(DBDiscussionSession.query(ClickedStatement).all()))
         self.assertNotEqual(vote_dict['seen_a'], len(DBDiscussionSession.query(SeenArgument).all()))
         self.assertEqual(vote_dict['click_a'], len(DBDiscussionSession.query(ClickedArgument).all()))
-        self.assertEqual(vote_dict['rep_h'], len(DBDiscussionSession.query(ReputationHistory).all()))
+        self.assertNotEqual(vote_dict['rep_h'], len(DBDiscussionSession.query(ReputationHistory).all()))
         clear_seen_by_of('Björn')
         clear_clicks_of('Björn')
 
