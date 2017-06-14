@@ -364,8 +364,8 @@ def evaluate_measurements():
         statements_uids = [int(node['id'].split('statement_')[1]) for node in graph['nodes'] if 'statement' in node['id']]
         without_self = [uid for uid in statements_uids if session.query(Statement).get(uid).textversions.author_uid != pos.textversions.author_uid]
         # print('{} {}'.format(len(statements_uids), len(without_self)))
-        arg_index1 = round(len(statements_uids) / len(db_statements.all()) , 3)
-        arg_index2 = round(len(without_self) / len(db_statements.all()) , 3)
+        arg_index1 = round(len(statements_uids) / len(db_statements.all()), 3)
+        arg_index2 = round(len(without_self) / len(db_statements.all()), 3)
         print('    - Position: {}\t->  {}\t{}'.format(pos.uid, arg_index1, arg_index2))
 
 

@@ -202,6 +202,7 @@ def print_textversion_history():
 
     target.close()
 
+
 def print_textversions_audit():
     target = open(path + '/textversions.csv', 'w')
     db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid)
@@ -212,8 +213,9 @@ def print_textversions_audit():
         mark = '✓' if is_position else '×'
         opener = 'I want to talk about the position that ...' if is_position else '...because...'
         content = tv.content.replace('&quot;', '"').replace('&#x27;', '\'')
-        target.write(';;{};{};{};{}\n'.format(tv.uid,mark , content, opener))
+        target.write(';;{};{};{};{}\n'.format(tv.uid, mark, content, opener))
     target.close()
+
 
 def print_argumentation_index():
     target = open(path + '/argumentation_index.csv', 'w')
@@ -228,6 +230,7 @@ def print_argumentation_index():
         arg_index2 = len(without_self) / len(db_statements.all())
         target.write('{},{},{}\n'.format(pos.uid, arg_index1, arg_index2))
     target.close()
+
 
 if __name__ == '__main__':
     # mk dir
