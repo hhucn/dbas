@@ -49,6 +49,10 @@ unit:
     - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
     - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
   coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
+  artifacts:
+    paths:
+      - coverage.xml
+    expire_in: 10 mins
 
 acceptance:
   <<: *run-server
@@ -61,14 +65,10 @@ sonar:
   image: hhucn/sonar-scanner
   stage: deploy
   script:
-    - sonar-scanner -D sonar.host.url=https://sonarqube.cs.uni-duesseldorf.de -D sonar.login=$SONARQUBE_LOGIN -D sonar.projectKey=$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME -D sonar.projectName=$CI_PROJECT_NAME -D sonar.projectVersion=1.4 -D sonar.branch=$CI_COMMIT_REF_NAME-D sonar.sources=. -D sonar.python.coverage.reportPath=coverage.xml
+    - sonar-scanner -D sonar.host.url=https://sonarqube.cs.uni-duesseldorf.de -D sonar.login=$SONARQUBE_LOGIN -D sonar.projectKey=$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME -D sonar.projectName=$CI_PROJECT_NAME -D sonar.projectVersion=1.4 -D sonar.branch=$CI_COMMIT_REF_NAME -D sonar.sources=. -D sonar.python.coverage.reportPath=coverage.xml
   only:
     - development
   when: always
-  artifacts:
-    paths:
-      - coverage.xml
-    expire_in: 10 mins
 
 deploy_image:
   stage: deploy
