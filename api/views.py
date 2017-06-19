@@ -154,7 +154,8 @@ def hello(_):
     :return: dbas.discussion_reaction(True)
     """
     return {"status": "ok",
-            "message": "Connection established. \"Back when PHP had less than 100 functions and the function hashing mechanism was strlen()\" -- Author of PHP"}
+            "message": "Connection established. \"Back when PHP had less than 100 functions and the function hashing "
+                       "mechanism was strlen()\" -- Author of PHP"} 
 
 
 # =============================================================================
