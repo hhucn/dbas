@@ -117,6 +117,10 @@ statement_url_service = Service(name="statement_url",
                                 description="Get URL to a statement inside the discussion for direct jumping to it",
                                 cors_policy=cors_policy)
 
+issues = Service(name="issues",
+                 path="/issues",
+                 description="Get issues",
+                 cors_policy=cors_policy)
 #
 # Build text-blocks
 #
@@ -517,3 +521,23 @@ def get_statement_url(request):
     statement_uid = request.matchdict["statement_uid"]
     agree = request.matchdict["agree"]
     return {"url": url_to_statement(issue_uid, statement_uid, agree)}
+
+@issues.get()
+def get_issues(request):
+    """
+    Returns a list of active issues.
+
+    :param request:
+    :return:
+    """
+
+    def enabled(issue):
+        """
+        :param issue:
+        :return: True if issue is enabled.
+        """
+        return issue["enabled"] == "enabled"
+
+    issues = list(filter(enabled, __init(request)["issues"]["all"]))
+    return {"status": "ok",
+            "data": {"issues": issues}}
