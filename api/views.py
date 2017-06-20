@@ -159,7 +159,7 @@ def hello(_):
     """
     return {"status": "ok",
             "message": "Connection established. \"Back when PHP had less than 100 functions and the function hashing "
-                       "mechanism was strlen()\" -- Author of PHP"} 
+                       "mechanism was strlen()\" -- Author of PHP"}
 
 
 # =============================================================================
@@ -521,6 +521,7 @@ def get_statement_url(request):
     statement_uid = request.matchdict["statement_uid"]
     agree = request.matchdict["agree"]
     return {"url": url_to_statement(issue_uid, statement_uid, agree)}
+
 
 @issues.get()
 def get_issues(request):
