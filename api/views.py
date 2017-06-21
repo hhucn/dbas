@@ -533,10 +533,6 @@ def get_issues(request):
     """
 
     def enabled(issue):
-        """
-        :param issue:
-        :return: True if issue is enabled.
-        """
         return issue["enabled"] == "enabled"
 
     issues = list(filter(enabled, __init(request)["issues"]["all"]))
