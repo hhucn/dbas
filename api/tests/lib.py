@@ -30,17 +30,20 @@ def get_response(route):
     return response
 
 
-def post_request(route, payload):
+def post_request(route, payload, headers=None):
     """
     Send post request to API with given payload. Adds json headers.
 
+    :param headers: Additional dictionary of headers
     :param route: route in API
     :param payload: data to be send
     :type payload: dict
     :returns: response from API
     :rtype: Response
     """
-    response = requests.post(API + route, json=json.dumps(payload))
+    if headers is None:
+        headers = dict()
+    response = requests.post(API + route, json=payload, headers=headers)
     has_json_header(response)
     return response
 
