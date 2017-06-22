@@ -1,6 +1,5 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 var mainpage = location.origin + '/'; //get_hostname(window.location.href);

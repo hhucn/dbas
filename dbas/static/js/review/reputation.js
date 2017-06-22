@@ -1,6 +1,5 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 	
 // https://www.google.com/design/spec/style/color.html#color-color-palette

@@ -1,7 +1,6 @@
 /*global $, _t */
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 
