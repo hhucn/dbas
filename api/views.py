@@ -208,8 +208,9 @@ def prepare_data_assign_reference(request, func):
         data = json_to_dict(request.body)
         api_data.update(data)
         api_data.update({'application_url': request.application_url})
-        return_dict_json = func(for_api=True, api_data=api_data)
-        return_dict = json.loads(return_dict_json)
+        return_dict = func(True, api_data)
+        if isinstance(return_dict, str):
+            return_dict = json.loads(return_dict)
         statement_uids = return_dict["statement_uids"]
         if statement_uids:
             statement_uids = flatten(statement_uids)
