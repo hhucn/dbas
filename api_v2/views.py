@@ -1,9 +1,13 @@
 import graphene
 from cornice import Service
 from graphene_sqlalchemy import SQLAlchemyObjectType
+from graphene_sqlalchemy import converter
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Statement as StatementModel
+from dbas.database.discussion_model import \
+    Statement as StatementModel, \
+    Issue as IssueModel, \
+    TextVersion as TextVersionModel
 
 #
 # CORS configuration
@@ -31,11 +35,32 @@ class Statement(SQLAlchemyObjectType):
         model = StatementModel
 
 
+class Issue(SQLAlchemyObjectType):
+    class Meta:
+        model = IssueModel
+        exclude_fields = 'date'
+
+
+class TextVersion(SQLAlchemyObjectType):
+    class Meta:
+        model = TextVersionModel
+
+
 class Query(graphene.ObjectType):
     statements = graphene.List(Statement)
+    issues = graphene.List(Issue)
+    text_versions = graphene.List(TextVersion)
 
     def resolve_statements(self, args, context, info):
         query = Statement.get_query(context)  # SQLAlchemy query
+        return query.all()
+
+    def resolve_issues(self, args, context, info):
+        query = Issue.get_query(context)
+        return query.all()
+
+    def resolve_text_versions(self, args, context, info):
+        query = TextVersion.get_query(context)
         return query.all()
 
 
