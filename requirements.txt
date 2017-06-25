@@ -16,6 +16,7 @@ db==0.1.1
 db-psycopg2==0.0.7
 docutils==0.13.1
 flake8==3.3.0
+graphene-sqlalchemy>=1
 hupper==0.4.4
 imagesize==0.7.1
 iso8601==0.1.11
