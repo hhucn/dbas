@@ -44,6 +44,7 @@ class Issue(SQLAlchemyObjectType):
 class TextVersion(SQLAlchemyObjectType):
     class Meta:
         model = TextVersionModel
+        exclude_fields = 'timestamp'
 
 
 class Query(graphene.ObjectType):
