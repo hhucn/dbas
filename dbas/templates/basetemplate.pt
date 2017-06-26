@@ -88,7 +88,7 @@
 
   <!-- PRODUCTION -->
   <script type="text/javascript" src="${request.static_url('dbas:static/js/dbas.min.js')}" tal:condition="not:extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.min.js')}" tal:condition="not:extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('webhook:static/js/websocket.min.js')}" tal:condition="not:extras.development_mode"></script>
   <!-- DEVELOPMENT -->
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/ids.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/guided-tour.js')}" tal:condition="extras.development_mode"></script>
@@ -125,7 +125,7 @@
   <script type="text/javascript" src="${request.static_url('dbas:static/js/review/index.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/d3/barometer.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/d3/graph.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('webhook:static/js/websocket.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/gremlins.min.js')}" tal:condition="extras.development_mode"></script>
 
   <!-- Piwik -->

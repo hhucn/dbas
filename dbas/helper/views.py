@@ -25,7 +25,7 @@ from dbas.review.helper.reputation import add_reputation_for
 from dbas.review.helper.reputation import rep_reason_first_confrontation
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from websocket.lib import send_request_for_info_popup_to_socketio, get_port
+from webhook.lib import send_request_for_info_popup_to_socketio, get_port
 
 
 def get_nickname(request_authenticated_userid, for_api=None, api_data=None):

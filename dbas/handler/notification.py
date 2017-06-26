@@ -18,7 +18,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_text_for_edit_text_message, get_text_for_add_text_message, \
     get_text_for_add_argument_message
 from dbas.strings.translator import Translator
-from websocket.lib import send_request_for_info_popup_to_socketio
+from webhook.lib import send_request_for_info_popup_to_socketio
 
 
 def send_users_notification(port, recipient, title, text, nickname, ui_locales) -> dict:
