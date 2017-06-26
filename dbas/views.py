@@ -51,7 +51,7 @@ from dbas.lib import escape_string, get_discussion_language, get_changelog, is_u
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from websocket.lib import get_port
+from webhook.lib import get_port
 
 name = 'D-BAS'
 version = '1.4.2'
