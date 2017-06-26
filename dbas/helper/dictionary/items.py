@@ -50,9 +50,9 @@ class ItemDictHelper(object):
         self.LIMIT_SUPPORT_STEP = 0.30
 
         if for_api:
-            self.path = path[len('/api/' + DBDiscussionSession.query(Issue).get(issue_uid).get_slug()):]
+            self.path = path[len('/api/' + DBDiscussionSession.query(Issue).get(issue_uid).slug):]
         else:
-            self.path = path[len('/discuss/' + DBDiscussionSession.query(Issue).get(issue_uid).get_slug()):]
+            self.path = path[len('/discuss/' + DBDiscussionSession.query(Issue).get(issue_uid).slug):]
         if len(history) > 0:
             self.path = history + '-' + self.path
 
@@ -69,7 +69,7 @@ class ItemDictHelper(object):
                                                   Statement.issue_uid == self.issue_uid)).all()
 
         uids = rs.get_uids_of_best_positions(db_statements)  # TODO # 166
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()
+        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
 
         statements_array = []
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
@@ -118,7 +118,7 @@ class ItemDictHelper(object):
         logger('ItemDictHelper', 'prepare_item_dict_for_attitude', 'def')
         _tn = Translator(self.lang)
 
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()
+        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
         # text = get_text_for_statement_uid(statement_uid)
         statements_array = []
 
@@ -156,7 +156,7 @@ class ItemDictHelper(object):
         logger('ItemDictHelper', 'get_array_for_justify_statement', 'def')
         statements_array = []
         _tn = Translator(self.lang)
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()
+        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
         db_arguments = rs.get_arguments_by_conclusion(statement_uid, is_supportive)
         uids = rs.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
 
@@ -229,7 +229,7 @@ class ItemDictHelper(object):
         logger('ItemDictHelper', 'get_array_for_justify_argument', 'def: arg {}, attack {}'.format(argument_uid, attack_type))
         statements_array = []
         _tn = Translator(self.lang)
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()
+        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
         # description in docs: dbas/logic
         db_arguments = self.__get_arguments_based_on_attack(attack_type, argument_uid)
         uids = rs.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
@@ -344,7 +344,7 @@ class ItemDictHelper(object):
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_dont_know_reaction', 'def')
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()
+        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
         statements_array = []
 
         db_arguments = get_not_disabled_arguments_as_query()
@@ -462,7 +462,7 @@ class ItemDictHelper(object):
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_reaction', 'def')
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()
+        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
 
         db_sys_argument = DBDiscussionSession.query(Argument).get(argument_uid_sys)
         db_user_argument = DBDiscussionSession.query(Argument).get(argument_uid_user)
@@ -613,7 +613,7 @@ class ItemDictHelper(object):
         """
         logger('ItemDictHelper', 'get_array_for_choosing', 'def')
         statements_array = []
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()
+        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         conclusion = argument_or_statement_id if not is_argument else None
         argument = argument_or_statement_id if is_argument else None

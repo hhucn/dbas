@@ -53,6 +53,7 @@ dbas/static/rss/*
 .sass-cache/
 .babelrc
 getMails.py
+createUser.py
 dbas.min.js
 cookie-2.1.3.min.js
 eu-cookie-law-popup.min.js

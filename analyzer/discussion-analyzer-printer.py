@@ -180,7 +180,7 @@ def print_textversion_history():
         History.timestamp >= start,
         History.timestamp <= end
     ).all()
-    his_count = len([h for h in db_h if db_issue.get_slug() in h.path])
+    his_count = len([h for h in db_h if db_issue.slug in h.path])
     count_tv = 0
     st = []
     count_h = 0
@@ -192,7 +192,7 @@ def print_textversion_history():
             TextVersion.timestamp < start.replace(days=+day + 1))).all()
         st = list(set(st + list(set([tv.statement_uid for tv in tvs]))))
         his = session.query(History).filter(and_(
-            History.path.contains(db_issue.get_slug()),
+            History.path.contains(db_issue.slug),
             History.timestamp >= start.replace(days=+day),
             History.timestamp < start.replace(days=+day + 1))).all()
         count_tv += len(tvs)

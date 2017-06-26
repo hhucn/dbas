@@ -24,7 +24,7 @@ def get_partial_graph_for_statement(uid, issue, path):
     path = path.split('?')[0]
     db_issue = DBDiscussionSession.query(Issue).get(issue)
     if db_issue and len(path) > 1:
-        path = path.split(db_issue.get_slug())[1]
+        path = path.split(db_issue.slug)[1]
 
     # if we have a attitude, we are asking for supporting/attacking a conclusion
     if 'attitude' in path:
