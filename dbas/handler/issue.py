@@ -184,10 +184,10 @@ def get_issue_dict_for(issue, application_url, for_api, uid, lang):
     :param lang: ui_locales
     :return: dict()
     """
-    _um = UrlManager(application_url, issue.get_slug(), for_api)
+    _um = UrlManager(application_url, issue.slug, for_api)
     issue_dict = dict()
     issue_dict['uid'] = str(issue.uid)
-    issue_dict['slug'] = issue.get_slug()
+    issue_dict['slug'] = issue.slug
     issue_dict['title'] = issue.title
     issue_dict['url'] = _um.get_slug_url(False) if str(uid) != str(issue.uid) else ''
     issue_dict['review_url'] = _um.get_review_url(False) if str(uid) != str(issue.uid) else ''

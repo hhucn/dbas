@@ -697,7 +697,7 @@ def resolve_issue_uid_to_slug(uid):
     :rtype: str
     """
     issue = DBDiscussionSession.query(Issue).get(uid)
-    return issue.get_slug() if issue else None
+    return issue.slug if issue else None
 
 
 def get_all_attacking_arg_uids_from_history(history):

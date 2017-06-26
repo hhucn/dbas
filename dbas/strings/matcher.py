@@ -110,7 +110,7 @@ def get_all_statements_with_value(request, value):
     issue_uid = issue_helper.get_issue_id(request)
     db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue_uid).all()
     return_array = []
-    slug = DBDiscussionSession.query(Issue).get(issue_uid).get_slug()
+    slug = DBDiscussionSession.query(Issue).get(issue_uid).slug
     _um = UrlManager(request.application_url, for_api=False, slug=slug)
     for stat in db_statements:
         db_tv = DBDiscussionSession.query(TextVersion).get(stat.textversion_uid)
