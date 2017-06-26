@@ -57,6 +57,7 @@ class Issue(DiscussionBase):
     __tablename__ = 'issues'
     uid = Column(Integer, primary_key=True)
     title = Column(Text, nullable=False)
+    slug = Column(Text, nullable=False, unique=True)
     info = Column(Text, nullable=False)
     long_info = Column(Text, nullable=False)
     date = Column(ArrowType, default=get_now())
@@ -72,6 +73,7 @@ class Issue(DiscussionBase):
         Initializes a row in current position-table
         """
         self.title = title
+        self.slug = slugify(self.title)
         self.info = info
         self.long_info = long_info
         self.author_uid = author_uid
