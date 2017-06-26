@@ -130,7 +130,7 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
     db_issues = get_not_disabled_issues_as_query().all()
     all_array = []
     for issue in db_issues:
-        if not issue.slug is 'hhu-stern-verlag':
+        if issue.uid != 3:
             issue_dict = get_issue_dict_for(issue, application_url, for_api, uid, lang)
             all_array.append(issue_dict)
 
