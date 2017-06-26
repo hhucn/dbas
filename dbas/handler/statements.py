@@ -331,7 +331,7 @@ def insert_as_statements(application_url, default_locale_name, text_list, user, 
             if not is_duplicate:
                 _tn = Translator(new_statement.lang) if _tn is None else _tn
                 db_issue = DBDiscussionSession.query(Issue).get(issue)
-                _um = UrlManager(application_url, db_issue.get_slug())
+                _um = UrlManager(application_url, db_issue.slug)
                 append_action_to_issue_rss(issue_uid=issue,
                                            author_uid=db_user.uid,
                                            title=_tn.get(_.positionAdded if is_start else _.statementAdded),
@@ -425,7 +425,7 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     if not db_user:
         return '', '', _tn.get(_.userNotFound)
 
-    slug = DBDiscussionSession.query(Issue).get(issue).get_slug()
+    slug = DBDiscussionSession.query(Issue).get(issue).slug
     error = ''
     url = ''
 
@@ -597,7 +597,7 @@ def __create_argument_by_raw_input(application_url, default_locale_name, user, t
     if new_argument and db_user:
         _tn = Translator(default_locale_name)
         db_issue = DBDiscussionSession.query(Issue).get(issue)
-        _um = UrlManager(application_url, db_issue.get_slug())
+        _um = UrlManager(application_url, db_issue.slug)
         append_action_to_issue_rss(issue_uid=issue,
                                    author_uid=db_user.uid,
                                    title=_tn.get(_.argumentAdded),

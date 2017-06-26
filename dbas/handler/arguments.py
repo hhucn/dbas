@@ -199,7 +199,7 @@ def __process_input_of_premises_for_arguments_and_receive_url(default_locale_nam
     if not db_user:
         return '', '', _tn.get(_.userNotFound)
 
-    slug = DBDiscussionSession.query(Issue).get(issue).get_slug()
+    slug = DBDiscussionSession.query(Issue).get(issue).slug
     error = ''
     supportive = attack_type == 'support' or attack_type == 'overbid'
 
