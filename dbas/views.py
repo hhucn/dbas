@@ -1287,7 +1287,7 @@ def set_new_start_statement(request):
         data['nickname'] = request.authenticated_userid
         data['statement'] = request.params['statement']
         data['issue_id'] = issue
-        data['slug'] = DBDiscussionSession.query(Issue).get(issue).get_slug()
+        data['slug'] = DBDiscussionSession.query(Issue).get(issue).slug
         data['discussion_lang'] = get_discussion_language(request)
         data['default_locale_name'] = get_default_locale_name(request)
         data['application_url'] = request.application_url

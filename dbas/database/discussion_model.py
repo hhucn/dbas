@@ -90,9 +90,6 @@ class Issue(DiscussionBase):
         """
         return DBDiscussionSession.query(Issue).order_by(Issue.text)
 
-    def get_slug(self):
-        return slugify(self.title)
-
     @hybrid_property
     def lang(self):
         """
