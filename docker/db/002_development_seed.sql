@@ -3664,12 +3664,12 @@ SELECT pg_catalog.setval('history_uid_seq', 1, true);
 --
 
 COPY issues (uid, title, slug, info, long_info, date, author_uid, lang_uid, is_disabled) FROM stdin;
-1	Town has to cut spending 	town-has-to-cut-spending	Our town needs to cut spending. Please discuss ideas how this should be done.		2017-03-15 17:08:24.289974	2	1	f
-2	Cat or Dog	cat-or-dog	Your family argues about whether to buy a cat or dog as pet. Now your opinion matters!		2017-03-15 17:08:24.289974	2	1	f
-3	Make the world better	make-the-world-better	How can we make this world a better place?		2017-03-15 17:08:24.289974	2	1	f
-4	Elektroautos	elektroautos	Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.		2017-03-15 17:08:24.289974	2	2	f
-5	Unterstützung der Sekretariate	unterstuetzung-der-sekretariate Unsere Sekretariate in der Informatik sind arbeitsmäßig stark überlastet. Bitte diskutieren Sie Möglichkeiten um dies zu verbessern.		2017-03-15 17:08:24.289974	2	2	f
-6	Verbesserung des Informatik-Studiengangs	verbesserung-des-informatik-studiengangs	Wie können der Informatik-Studiengang verbessert und die Probleme, die durch die große Anzahl der Studierenden entstanden sind, gelöst werden?	Die Anzahl der Studierenden in der Informatik hat sich in den letzten Jahren stark erhöht. Dadurch treten zahlreiche Probleme auf, wie z.B. Raumknappheit, überfüllte Lehrveranstaltungen und ein Mangel an Plätzen zum Lernen. Wir möchten Sie gerne dazu einladen, gemeinsam mit den Dozierenden der Informatik über Lösungsmöglichkeiten zu diskutieren: Wie können der Studiengang verbessert und die Probleme, die durch die große Anzahl der Studierenden entstanden sind, gelöst werden?	2017-03-15 17:08:24.289974	2	2	t
+1	Town has to cut spending	town-has-to-cut-spending	Our town needs to cut spending. Please discuss ideas how this should be done.		2017-03-15 17:08:24.289974	2	1	f
+2	Cat or Dog	cat-or-dof 	Your family argues about whether to buy a cat or dog as pet. Now your opinion matters!		2017-03-15 17:08:24.289974	2	1	f
+3	Make the world better	make-the-world-better 	How can we make this world a better place?		2017-03-15 17:08:24.289974	2	1	f
+4	Elektroautos	elektroautos 	Elektroautos - Die Autos der Zukunft? Bitte diskutieren Sie dazu.		2017-03-15 17:08:24.289974	2	2	f
+5	Unterstützung der Sekretariate	unterstuetzung-der-sekretariate 	Unsere Sekretariate in der Informatik sind arbeitsmäßig stark überlastet. Bitte diskutieren Sie Möglichkeiten um dies zu verbessern.		2017-03-15 17:08:24.289974	2	2	f
+6	Verbesserung des Informatik-Studiengangs	verbesserung des-informatik-studiengangs 	Wie können der Informatik-Studiengang verbessert und die Probleme, die durch die große Anzahl der Studierenden entstanden sind, gelöst werden?	Die Anzahl der Studierenden in der Informatik hat sich in den letzten Jahren stark erhöht. Dadurch treten zahlreiche Probleme auf, wie z.B. Raumknappheit, überfüllte Lehrveranstaltungen und ein Mangel an Plätzen zum Lernen. Wir möchten Sie gerne dazu einladen, gemeinsam mit den Dozierenden der Informatik über Lösungsmöglichkeiten zu diskutieren: Wie können der Studiengang verbessert und die Probleme, die durch die große Anzahl der Studierenden entstanden sind, gelöst werden?	2017-03-15 17:08:24.289974	2	2	t
 \.
 
 
