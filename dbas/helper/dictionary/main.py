@@ -149,7 +149,7 @@ class DictionaryHelper(object):
         return_dict['is_production'] = rrs['mode'] == 'production' if 'mode' in rrs else False
         return_dict['review_count'] = get_complete_review_count(nickname)
         return_dict['g_recaptcha_key'] = google_recaptcha_client_key
-        return_dict['show_issue_dropdown'] = current_slug != 'hhu-stern-verlag'
+        return_dict['show_issue_dropdown'] = not current_slug is 'hhu-stern-verlag'
 
         # add german and english discussion links
         db_issues = DBDiscussionSession.query(Issue).filter_by(is_disabled=False)

@@ -17,7 +17,7 @@
                     <br tal:condition="len(issues.long_info)>0">
                     <a tal:condition="len(issues.long_info)>0" id="issue-long-info-link" href="#" tal:attributes="data-info issues.tooltip; data-long-info issues.long_info">(<span i18n:translate="more_infos">more infos</span>)</a>
                 </div>
-                <div class="col-md-2 center inner" tal:condition="len(issues.all)>1 and extas.show_issue_dropdown">
+                <div class="col-md-2 center inner" tal:condition="len(issues.all)>1 and extras.show_issue_dropdown">
                     <div class="dropdown">
                         <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="issue-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" tal:attributes="issue issues.uid">
                             <span i18n:translate="switch_topc">Switch Topic</span>&#160;&#160;<span class="caret"></span>
