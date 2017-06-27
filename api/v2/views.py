@@ -1,7 +1,7 @@
 import graphene
 from cornice import Service
 
-from api_v2.graphql.core import Query
+from api.v2.graphql.core import Query
 from dbas.database import DBDiscussionSession
 
 #

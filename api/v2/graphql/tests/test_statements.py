@@ -1,6 +1,6 @@
 from nose.tools import assert_true, assert_is_not_none
 
-from api_v2.graphql.tests.lib import graphql_query
+from api.v2.graphql.tests.lib import graphql_query
 
 
 def test_statements_with_textversions():

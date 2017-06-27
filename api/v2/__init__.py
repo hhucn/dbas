@@ -28,7 +28,7 @@ if ENABLE_DOCKER_PRINT:
 
 def init(config):
     config.include("cornice")
-    config.scan("api_v2.views")
+    config.scan("api.v2.views")
 
 
 def main(global_config, **settings):
