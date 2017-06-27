@@ -5,6 +5,7 @@ Helper functions for tests.
 """
 import requests
 from nose.tools import assert_equals, assert_true
+from requests import Response
 
 from api.lib import json_to_dict
 
@@ -15,15 +16,20 @@ def has_json_header(response):
     assert_equals("application/json", response.headers['content-type'])
 
 
-def get_response(route):
+def get_response(route: str, api: str = API, params: dict = None) -> Response:
     """
     Place get request to API.
 
     :param route: route in API
+    :param api: route to API
+    :param params: parameters, which can be sent via the GET request
+    :type params: dict
     :returns: response from API
     :rtype: Response
     """
-    response = requests.get(API + route)
+    if params is None:
+        params = dict()
+    response = requests.get(api + route, params)
     has_json_header(response)
     return response
 
