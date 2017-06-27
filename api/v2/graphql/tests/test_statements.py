@@ -30,4 +30,8 @@ def test_query_single_statement():
         }
     """
     content = graphql_query(query)
-    assert_is_not_none(content)
+    statement = content.get("statement")
+    assert_is_not_none(statement)
+    assert_is_not_none(statement.get("uid"))
+    assert_is_not_none(statement.get("textversions"))
+    assert_is_not_none(statement.get("textversions").get("content"))
