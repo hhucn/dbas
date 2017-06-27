@@ -12,6 +12,13 @@ def resolve_statements_query(args, context, graph, model):
     return query.all()
 
 
+def resolve_list_query(args, context, graph, model):
+    query = graph.get_query(context).filter(model.is_disabled == False)
+    if args:
+        query = query.filter_by(**args)
+    return query.all()
+
+
 def resolve_field_query(args, context, graph):
     """
     Query database fields based on fields.

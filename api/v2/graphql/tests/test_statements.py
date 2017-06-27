@@ -35,23 +35,3 @@ def test_query_single_statement():
     assert_is_not_none(statement.get("uid"))
     assert_is_not_none(statement.get("textversions"))
     assert_is_not_none(statement.get("textversions").get("content"))
-
-
-def test_query_statement_reference():
-    query = """
-        query {
-            statementReferences {
-                uid
-                users {
-                    publicNickname
-                }
-            }
-        }
-    """
-    content = graphql_query(query)
-    references = content.get("statementReferences")
-    ref = references[0]
-    assert_is_not_none(ref)
-    assert_is_not_none(ref.get("uid"))
-    assert_is_not_none(ref.get("users"))
-    assert_is_not_none(ref.get("users").get("publicNickname"))
