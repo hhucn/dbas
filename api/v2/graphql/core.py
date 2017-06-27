@@ -1,6 +1,7 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
 
+from api.v2.graphql.resolve import resolve_statements_query, resolve_field_query
 from dbas.database.discussion_model import Statement, Issue, TextVersion
 
 
@@ -30,26 +31,18 @@ class TextVersionGraph(SQLAlchemyObjectType):
 class Query(graphene.ObjectType):
     statement = graphene.Field(StatementGraph, uid=graphene.Int())
     statements = graphene.List(StatementGraph, is_startpoint=graphene.Boolean())
-    issue = graphene.Field(IssueGraph, uid=graphene.Int(), title=graphene.String(), slug=graphene.String())
+    issue = graphene.Field(IssueGraph, uid=graphene.Int(), slug=graphene.String(), title=graphene.String())
     issues = graphene.List(IssueGraph)
     textversions = graphene.List(TextVersionGraph)
 
     def resolve_statement(self, args, context, info):
-        query = StatementGraph.get_query(context)
-        query = query.get(args.get("uid"))
-        if not query.is_disabled:
-            return query
+        return resolve_field_query(args, context, StatementGraph)
 
     def resolve_statements(self, args, context, info):
-        query = StatementGraph.get_query(context).filter(Statement.is_disabled == False)
-        if args.get("is_startpoint"):
-            query = query.filter(Statement.is_startpoint)
-        return query.all()
+        return resolve_statements_query(args, context, StatementGraph, Statement)
 
     def resolve_issue(self, args, context, info):
-        query = IssueGraph.get_query(context).filter(Issue.is_disabled == False)
-
-        return query
+        return resolve_field_query(args, context, IssueGraph)
 
     def resolve_issues(self, args, context, info):
         return IssueGraph.get_query(context).all()
