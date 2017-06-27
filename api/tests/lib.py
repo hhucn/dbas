@@ -15,15 +15,19 @@ def has_json_header(response):
     assert_equals("application/json", response.headers['content-type'])
 
 
-def get_response(route):
+def get_response(route, params=None):
     """
     Place get request to API.
 
     :param route: route in API
+    :param params: parameters, which can be sent via the GET request
+    :type params: dict
     :returns: response from API
     :rtype: Response
     """
-    response = requests.get(API + route)
+    if params is None:
+        params = dict()
+    response = requests.get(API + route, params)
     has_json_header(response)
     return response
 
