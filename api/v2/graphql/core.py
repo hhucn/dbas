@@ -1,7 +1,13 @@
+"""
+GraphQL Core. Here are the models listed, which can be queried by GraphQl.
+
+.. sectionauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
+"""
+
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
 
-from api.v2.graphql.resolve import resolve_statements_query, resolve_field_query, resolve_list_query
+from api.v2.graphql.resolve import resolve_field_query, resolve_list_query
 from dbas.database.discussion_model import Statement, Issue, TextVersion, User, Language, StatementReferences, \
     PremiseGroup, Premise, Argument
 
