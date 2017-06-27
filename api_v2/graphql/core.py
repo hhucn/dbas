@@ -30,7 +30,7 @@ class TextVersionGraph(SQLAlchemyObjectType):
 class Query(graphene.ObjectType):
     statement = graphene.Field(StatementGraph, uid=graphene.Int())
     statements = graphene.List(StatementGraph, is_startpoint=graphene.Boolean())
-    issue = graphene.Field(IssueGraph, uid=graphene.Int(),title=graphene.String(), slug=graphene.String())
+    issue = graphene.Field(IssueGraph, uid=graphene.Int(), title=graphene.String(), slug=graphene.String())
     issues = graphene.List(IssueGraph)
     textversions = graphene.List(TextVersionGraph)
 
