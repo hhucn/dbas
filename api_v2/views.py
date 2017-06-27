@@ -1,13 +1,8 @@
 import graphene
 from cornice import Service
-from graphene_sqlalchemy import SQLAlchemyObjectType
-from graphene_sqlalchemy import converter
 
+from api_v2.graphql.core import Query
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import \
-    Statement as StatementModel, \
-    Issue as IssueModel, \
-    TextVersion as TextVersionModel
 
 #
 # CORS configuration
@@ -28,47 +23,6 @@ query = Service(name='query',
 
 
 # -----------------------------------------------------------------------------
-# GraphQL
-
-class Statement(SQLAlchemyObjectType):
-    class Meta:
-        model = StatementModel
-
-
-class Issue(SQLAlchemyObjectType):
-    class Meta:
-        model = IssueModel
-        exclude_fields = 'date'
-
-
-class TextVersion(SQLAlchemyObjectType):
-    class Meta:
-        model = TextVersionModel
-        exclude_fields = 'timestamp'
-
-
-class Query(graphene.ObjectType):
-    statements = graphene.List(Statement)
-    issues = graphene.List(Issue)
-    text_versions = graphene.List(TextVersion)
-
-    def resolve_statements(self, args, context, info):
-        query = Statement.get_query(context)  # SQLAlchemy query
-        return query.all()
-
-    def resolve_issues(self, args, context, info):
-        query = Issue.get_query(context)
-        return query.all()
-
-    def resolve_text_versions(self, args, context, info):
-        query = TextVersion.get_query(context)
-        return query.all()
-
-
-schema = graphene.Schema(query=Query)
-
-
-# -----------------------------------------------------------------------------
 # Routes
 
 @query.get()
@@ -82,6 +36,9 @@ def query_route(request):
     """
     q = request.params.get("q")
     if q:
+        schema = graphene.Schema(query=Query)
         result = schema.execute(q, context_value={'session': DBDiscussionSession})
+        from pprint import pprint
+        pprint(result.errors)
         return result.data
     return {"errors": {"message": "No valid query provided."}}
