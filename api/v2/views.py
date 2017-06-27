@@ -38,10 +38,9 @@ def query_route(request):
     if q:
         schema = graphene.Schema(query=Query)
         result = schema.execute(q, context_value={'session': DBDiscussionSession})
-        from pprint import pprint
-        pprint(result.errors)
         if result.errors:
             return {"errors": {"message": "Not all requested parameters could be queried. Some fields are not "
-                                          "allowed, e.g. the password."}}
+                                          "allowed, e.g. the password.",
+                               "exception": str(result.errors)}}
         return result.data
     return {"errors": {"message": "No valid query provided."}}
