@@ -5,8 +5,8 @@ from api.v2.graphql.tests.lib import graphql_query
 
 def test_statements_with_textversions():
     query = """
-        query { 
-            statements { 
+        query {
+            statements {
                 uid
                 textversions {
                     content
@@ -20,8 +20,8 @@ def test_statements_with_textversions():
 
 def test_query_single_statement():
     query = """
-        query { 
-            statement (uid: 2) { 
+        query {
+            statement (uid: 2) {
                 uid
                 textversions {
                     content
