@@ -69,3 +69,22 @@ def test_query_single_issue_by_title_and_slug():
     issue = content.get("issue")
     assert_is_not_none(issue)
     assert_is_not_none(issue.get("uid"))
+
+
+def test_query_single_issue_and_resolve_user():
+    query = """
+        query {
+            issue (slug: "cat-or-dog", title: "Cat or Dog") {
+                uid
+                users {
+                    public_nickname
+                }
+            }
+        }
+    """
+    content = graphql_query(query)
+    issue = content.get("issue")
+    assert_is_not_none(issue)
+    assert_is_not_none(issue.get("uid"))
+    assert_is_not_none(issue.get("users"))
+    assert_is_not_none(issue.get("users").get("public_nickname"))

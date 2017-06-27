@@ -40,5 +40,8 @@ def query_route(request):
         result = schema.execute(q, context_value={'session': DBDiscussionSession})
         from pprint import pprint
         pprint(result.errors)
+        if result.errors:
+            return {"errors": {"message": "Not all requested parameters could be queried. Some fields are not "
+                                          "allowed, e.g. the password."}}
         return result.data
     return {"errors": {"message": "No valid query provided."}}
