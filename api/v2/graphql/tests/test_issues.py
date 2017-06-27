@@ -77,7 +77,7 @@ def test_query_single_issue_and_resolve_user():
             issue (slug: "cat-or-dog", title: "Cat or Dog") {
                 uid
                 users {
-                    public_nickname
+                    publicNickname
                 }
             }
         }
@@ -87,4 +87,4 @@ def test_query_single_issue_and_resolve_user():
     assert_is_not_none(issue)
     assert_is_not_none(issue.get("uid"))
     assert_is_not_none(issue.get("users"))
-    assert_is_not_none(issue.get("users").get("public_nickname"))
+    assert_is_not_none(issue.get("users").get("publicNickname"))
