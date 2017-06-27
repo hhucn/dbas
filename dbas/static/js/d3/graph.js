@@ -139,6 +139,12 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 			    showNodesUntilMoment(start_date_ms + add_ms);
 		    }
     	});
+        var w = $('#' + graphViewContainerHeaderId).width();
+        w -= slider.parent().width() - slider.parent().find('.slider').width();
+        console.log($('#' + graphViewContainerHeaderId).width());
+        console.log(slider.parent().width());
+        console.log(slider.parent().find('.slider').width());
+        slider.prev().css('width', w);
     }
 
     /**
