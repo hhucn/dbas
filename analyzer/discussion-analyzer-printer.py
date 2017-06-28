@@ -81,7 +81,7 @@ def print_positions_history():
 
 def print_opitions_for_positions():
     # barometer der positionen
-    target = open(path + '/positions_opionions.csv', 'w')
+    target = open(path + '/analyze_positions_opionions.csv', 'w')
     target.write('#uid,usercount,seen_by\n')
     for opinion in user_with_same_opinion['opinions']:
         target.write('{},{},{}\n'.format(opinion['uid'], len(opinion['users']), opinion['seen_by']))
@@ -90,7 +90,7 @@ def print_opitions_for_positions():
 
 def print_summary():
     # schriftliche zusammenfassung
-    target = open(path + '/positions_summary.txt', 'w')
+    target = open(path + '/analyze_positions_summary.txt', 'w')
     for el in reversed(sorted_positions):
         key = el[0]
         uid = ('  {}' if key < 10 else ' {}' if key < 100 else '{}').format(key)
@@ -126,7 +126,7 @@ def print_summary():
 
 def print_activity_per_day():
     # action per day
-    target = open(path + '/day_clicks.csv', 'w')
+    target = open(path + '/analyze_day_clicks.csv', 'w')
     for day in range(0, (end - start).days + 1):
         clicks = session.query(History).filter(and_(History.timestamp >= start.replace(days=+day),
                                                     History.timestamp < start.replace(days=+day + 1))).all()
@@ -135,7 +135,7 @@ def print_activity_per_day():
 
 
 def print_user_activity():
-    target = open(path + '/users_activity.csv', 'w')
+    target = open(path + '/analyze_users_activity.csv', 'w')
     db_users = session.query(User).all()
     db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).all()
     author_dict = {user.uid: len([s for s in db_statements if s.get_first_author() == user.uid]) for user in db_users}
@@ -174,7 +174,7 @@ def print_user_activity():
 
 
 def print_textversion_history():
-    target = open(path + '/textversion_history.csv', 'w')
+    target = open(path + '/analyze_textversion_history.csv', 'w')
     db_st = [s.uid for s in session.query(Statement).filter_by(issue_uid=db_issue.uid).all()]
     db_h = session.query(History).filter(
         History.timestamp >= start,
@@ -182,29 +182,42 @@ def print_textversion_history():
     ).all()
     his_count = len([h for h in db_h if db_issue.slug in h.path])
     count_tv = 0
-    st = []
     count_h = 0
-    target.write('# day, tv_count, st_count, user_activity\n')
+    count_r = 0
+    statements = []
+    target.write('# day, tv_count, st_count, user_activity, review_count\n')
     for day in range(0, (end - start).days + 1):
-        tvs = session.query(TextVersion).filter(and_(
+        textversions = session.query(TextVersion).filter(and_(
             TextVersion.statement_uid.in_(db_st),
             TextVersion.timestamp >= start.replace(days=+day),
             TextVersion.timestamp < start.replace(days=+day + 1))).all()
-        st = list(set(st + list(set([tv.statement_uid for tv in tvs]))))
-        his = session.query(History).filter(and_(
+        statements = list(set(statements + list(set([tv.statement_uid for tv in textversions]))))
+        history = session.query(History).filter(and_(
             History.path.contains(db_issue.slug),
             History.timestamp >= start.replace(days=+day),
             History.timestamp < start.replace(days=+day + 1))).all()
-        count_tv += len(tvs)
-        count_st = len(st)
-        count_h += len(his)
-        target.write('{}, {}, {}, {}\n'.format(day, count_tv, count_st, count_h / his_count))
+        count_r += len(session.query(ReviewEdit).filter(
+            ReviewEdit.timestamp >= start.replace(days=+day),
+            ReviewEdit.timestamp < start.replace(days=+day + 1)).all())
+        count_r += len(session.query(ReviewDelete).filter(
+            ReviewDelete.timestamp >= start.replace(days=+day),
+            ReviewDelete.timestamp < start.replace(days=+day + 1)).all())
+        count_r += len(session.query(ReviewOptimization).filter(
+            ReviewOptimization.timestamp >= start.replace(days=+day),
+            ReviewOptimization.timestamp < start.replace(days=+day + 1)).all())
+        count_r += len(session.query(ReviewDuplicate).filter(
+            ReviewDuplicate.timestamp >= start.replace(days=+day),
+            ReviewDuplicate.timestamp < start.replace(days=+day + 1)).all())
+        count_tv += len(textversions)
+        count_st = len(statements)
+        count_h += len(history)
+        target.write('{}, {}, {}, {}, {}\n'.format(day, count_tv, count_st, count_h / his_count, count_r))
 
     target.close()
 
 
 def print_textversions_audit():
-    target = open(path + '/textversions.csv', 'w')
+    target = open(path + '/analyze_textversions.csv', 'w')
     db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid)
     statement_uids = [s.uid for s in db_statements.all()]
     target.write('Kürzel;Audit;ID;Position;Content;Opener;Translation\n')
@@ -218,7 +231,7 @@ def print_textversions_audit():
 
 
 def print_argumentation_index():
-    target = open(path + '/argumentation_index.csv', 'w')
+    target = open(path + '/analyze_argumentation_index.csv', 'w')
     db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).order_by(Statement.uid.asc())
     db_positions = db_statements.filter_by(is_startpoint=True).all()
     for pos in db_positions:
@@ -231,6 +244,75 @@ def print_argumentation_index():
         target.write('{},{},{}\n'.format(pos.uid, arg_index1, arg_index2))
     target.close()
 
+
+def print_review_summary():
+    reviews = [
+        session.query(LastReviewerEdit).all(),
+        session.query(LastReviewerDelete).all(),
+        # session.query(LastReviewerOptimization).all(),
+        session.query(LastReviewerDuplicate).all()
+        ]
+    keys = [
+        'LastReviewerEdit',
+        'LastReviewerDelete',
+        # 'LastReviewerOptimization',
+        'LastReviewerDuplicate'
+    ]
+    summary = {k:{} for k in keys}
+    for index, query in enumerate(reviews):
+        summary[keys[index]] = {last.review_uid: [0,0] for last in query}
+        for last in query:
+            key = str(type(last))[39:-2]
+            i = 0 if last.is_okay else 1
+            summary[key][last.review_uid][i] += 1
+
+    votes = {
+        '00': 0,
+        '10': 0,
+        '11': 0,
+        '20': 0,
+        '21': 0,
+        '22': 0,
+        '30': 0,
+        '31': 0,
+        '32': 0,
+        '33': 0,
+        '40': 0,
+        '41': 0,
+        '52': 0,
+        '53': 0,
+        '54': 0
+    }
+    for key in keys:
+        target = open(path + '/analyze_reviews_{}.csv'.format(key.lower()), 'w')
+        target.write('id, okay, not_okay\n')
+        for row in summary[key]:
+            target.write('{},{},{}\n'.format(row, summary[key][row][0], summary[key][row][1]))
+            vote_key = '{}{}'.format(summary[key][row][0], summary[key][row][1])
+            if vote_key not in votes:
+                vote_key = vote_key[::-1]
+            if vote_key in votes:
+                votes[vote_key] += 1
+            else:
+                print('Error with key {}:{}'.format(summary[key][row][0], summary[key][row][1]))
+        target.close()
+
+    # check zero votes
+
+    from collections import OrderedDict
+    votes = OrderedDict(sorted(votes.items(), key=lambda t: t[0]))
+    target = open(path + '/analyze_reviews_summary.csv', 'w')
+    target.write('vote,result\n')
+    index = 0
+    votes['00'] = 0
+    votes['00'] += len([row for row in session.query(ReviewEdit).all() if len(session.query(LastReviewerEdit).filter_by(review_uid=row.uid).all()) == 0])
+    votes['00'] += len([row for row in session.query(ReviewDelete).all() if len(session.query(LastReviewerDelete).filter_by(review_uid=row.uid).all()) == 0])
+    # votes['00'] += len([row for row in session.query(ReviewOptimization).all() if len(session.query(LastReviewerOptimization).filter_by(review_uid=row.uid).all()) == 0])
+    votes['00'] += len([row for row in session.query(ReviewDuplicate).all() if len(session.query(LastReviewerDuplicate).filter_by(review_uid=row.uid).all()) == 0])
+    for v in votes:
+        if votes[v] > 0:
+            target.write('{},{}:{},{}\n'.format(index, v[0], v[1], votes[v]))
+            index += 1
 
 if __name__ == '__main__':
     # mk dir
@@ -253,5 +335,6 @@ if __name__ == '__main__':
     # print_activity_per_day()
     # print_user_activity()
     # print_textversion_history()
-    print_textversions_audit()
-    print_argumentation_index()
+    # print_textversions_audit()
+    # print_argumentation_index()
+    print_review_summary()

@@ -138,11 +138,12 @@ def evaluate_arguments():
     db_disabled_arguments = db_arguments.filter_by(is_disabled=True).all()
     db_pro_arguments = db_arguments.filter_by(is_supportive=True).all()
     db_con_arguments = db_arguments.filter_by(is_supportive=False).all()
+    db_undercuts = db_arguments.filter(Argument.argument_uid != None).all()
     db_pro_not_pos = [arg for arg in db_pro_arguments if not session.query(Statement).get(arg.conclusion_uid).is_startpoint]
     print('Arguments:')
-    print('  - count / disabled:  {} / {}'.format(len(db_arguments.all()), len(db_disabled_arguments)))
-    print('  - pro / con:         {} / {}'.format(len(db_pro_arguments), len(db_con_arguments)))
-    print('  - pro, not for pos:  {}'.format(len(db_pro_not_pos)))
+    print('  - count / disabled: {} / {}'.format(len(db_arguments.all()), len(db_disabled_arguments)))
+    print('  - pro / con / ucut: {} / {} / {}'.format(len(db_pro_arguments), len(db_con_arguments), len(db_undercuts)))
+    print('  - pro, not for pos: {}'.format(len(db_pro_not_pos)))
     print('\n')
 
 
@@ -231,11 +232,25 @@ def evaluate_reviews():
     db_review_deletes = [r for r in db_review_deletes if (session.query(Statement).get(r.statement_uid).issue_uid == db_issue.uid if r.statement_uid is not None else session.query(Argument).get(r.argument_uid).issue_uid == db_issue.uid)]
     db_review_optimizations = [r for r in db_review_optimizations if (session.query(Statement).get(r.statement_uid).issue_uid == db_issue.uid if r.statement_uid is not None else session.query(Argument).get(r.argument_uid).issue_uid == db_issue.uid)]
     db_review_duplicates = [r for r in db_review_duplicates if (session.query(Statement).get(r.original_statement_uid).issue_uid == db_issue.uid if r.original_statement_uid is not None else session.query(Argument).get(r.argument_uid).issue_uid == db_issue.uid)]
+    detectors = list(set([r.detector_uid for r in db_review_edits + db_review_deletes + db_review_optimizations + db_review_duplicates]))
+    map_detector = {d:0 for d in detectors}
+    total = 0
+    for d in detectors:
+        count = 0
+        count +=len([r for r in db_review_edits if (session.query(Statement).get(r.statement_uid).issue_uid == db_issue.uid if r.statement_uid is not None else session.query(Argument).get(r.argument_uid).issue_uid == db_issue.uid) and r.detector_uid == d])
+        count +=len([r for r in db_review_deletes if (session.query(Statement).get(r.statement_uid).issue_uid == db_issue.uid if r.statement_uid is not None else session.query(Argument).get(r.argument_uid).issue_uid == db_issue.uid) and r.detector_uid == d])
+        count +=len([r for r in db_review_optimizations if (session.query(Statement).get(r.statement_uid).issue_uid == db_issue.uid if r.statement_uid is not None else session.query(Argument).get(r.argument_uid).issue_uid == db_issue.uid) and r.detector_uid == d])
+        count +=len([r for r in db_review_duplicates if (session.query(Statement).get( r.original_statement_uid).issue_uid == db_issue.uid if r.original_statement_uid is not None else session.query( Argument).get(r.argument_uid).issue_uid == db_issue.uid) and r.detector_uid == d])
+        map_detector[d] = count
+        total += count
+
     print('Reviews (Queue/executed/revoked):')
-    print('  - edits:         {} / {} / {}'.format(len(db_review_edits), len([r for r in db_review_edits if r.is_executed]), len([r for r in db_review_edits if r.is_revoked])))
-    print('  - deletes:       {} / {} / {}'.format(len(db_review_deletes), len([r for r in db_review_deletes if r.is_executed]), len([r for r in db_review_deletes if r.is_revoked])))
-    print('  - optimizations: {} / {} / {}'.format(len(db_review_optimizations), len([r for r in db_review_optimizations if r.is_executed]), len([r for r in db_review_optimizations if r.is_revoked])))
-    print('  - duplicates:    {} / {} / {}'.format(len(db_review_duplicates), len([r for r in db_review_duplicates if r.is_executed]), len([r for r in db_review_duplicates if r.is_revoked])))
+    print('  - edits:                {} / {} / {}'.format(len(db_review_edits), len([r for r in db_review_edits if r.is_executed]), len([r for r in db_review_edits if r.is_revoked])))
+    print('  - deletes:              {} / {} / {}'.format(len(db_review_deletes), len([r for r in db_review_deletes if r.is_executed]), len([r for r in db_review_deletes if r.is_revoked])))
+    print('  - optimizations:        {} / {} / {}'.format(len(db_review_optimizations), len([r for r in db_review_optimizations if r.is_executed]), len([r for r in db_review_optimizations if r.is_revoked])))
+    print('  - duplicates:           {} / {} / {}'.format(len(db_review_duplicates), len([r for r in db_review_duplicates if r.is_executed]), len([r for r in db_review_duplicates if r.is_revoked])))
+    print('  - count of detector:    {}'.format(len(detectors)))
+    print('  - average per detector: {}'.format(total / len(detectors)))
     print('\n')
 
     db_users = [user for user in session.query(User).filter(~User.nickname.in_(user_admin)).all()]
@@ -251,11 +266,30 @@ def evaluate_reviews():
     sorted_list_reviewer_delete = sorted(list_reviewer_delete.items(), key=lambda x: x[1])
     sorted_list_reviewer_optimization = sorted(list_reviewer_optimization.items(), key=lambda x: x[1])
     sorted_list_reviewer_duplicate = sorted(list_reviewer_duplicate.items(), key=lambda x: x[1])
+
+    # get one big reviewer list
+    tmp = [list_reviewer_edit, list_reviewer_delete, list_reviewer_optimization, list_reviewer_duplicate]
+    big_map = {}
+    big_user_list = []
+    c = 0
+    for l in tmp:
+        for user in l:
+            if l[user] > 0:
+                c += l[user]
+                big_user_list.append(session.query(User).filter_by(nickname=user[user.index('(')+1:-1]).first().uid)
+                if user in big_map:
+                    big_map[user] += l[user]
+                else:
+                    big_map[user] = l[user]
+
     print('Reviewer:')
-    print('  - edits:         {}'.format(len(db_reviewer_edit)))
-    print('  - deletes:       {}'.format(len(db_reviewer_delete)))
-    print('  - optimizations: {}'.format(len(db_reviewer_optimization)))
-    print('  - duplicates:    {}'.format(len(db_reviewer_duplicate)))
+    print('  - edits:          {}'.format(len(db_reviewer_edit)))
+    print('  - deletes:        {}'.format(len(db_reviewer_delete)))
+    print('  - optimizations:  {}'.format(len(db_reviewer_optimization)))
+    print('  - duplicates:     {}'.format(len(db_reviewer_duplicate)))
+    print('  - total reviewer: {}'.format(len(big_map)))
+    print('  - total votes:    {}'.format(c))
+    print('  - average votes:  {}'.format(c/len(big_map)))
     print('  - Edit Top{}'.format(top_count))
     for t in sorted_list_reviewer_edit[-top_count:]:
         print('    - {}: {}'.format(t[1], t[0]))
@@ -269,6 +303,10 @@ def evaluate_reviews():
     for t in sorted_list_reviewer_duplicate[-top_count:]:
         print('    - {}: {}'.format(t[1], t[0]))
     print('\n')
+
+    big_user_list = list(set(big_user_list))
+    print('Detectors, who are no reviewer: {}'.format(len([r for r in detectors if r not in big_user_list])))
+    print('Reviewer, who are no detector: {}'.format(len([r for r in big_user_list if r not in detectors])))
 
 
 def evaluate_history():
@@ -409,9 +447,9 @@ if __name__ == '__main__':
     # evaluate_arguments()
     # evaluate_authors()
     # evaluate_interests()
-    # evaluate_reviews()
+    evaluate_reviews()
     # evaluate_history()
     # evaluate_quits()
     # evaluate_activity()
     # evaluate_graph()
-    evaluate_measurements()
+    # evaluate_measurements()
