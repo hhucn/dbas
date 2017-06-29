@@ -108,7 +108,7 @@ class Query(graphene.ObjectType):
         return resolve_field_query(args, context, IssueGraph)
 
     def resolve_issues(self, args, context, info):
-        return IssueGraph.get_query(context).all()
+        return resolve_list_query(args, context, IssueGraph, Issue)
 
     def resolve_premise(self, args, context, info):
         return resolve_field_query(args, context, PremiseGraph)
