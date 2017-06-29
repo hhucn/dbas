@@ -57,7 +57,7 @@ function InteractionHandler() {
 			description.addClass('text-danger');
 			description.removeClass('text-info');
 			$('#' + popupEditStatementLogfileSpaceId).prev().hide();
-		} else if (data.info.length !== 0) {
+		} else if ('info' in data && data.info.length !== 0) {
 			description.text(data.error);
 			description.removeClass('text-danger');
 			description.addClass('text-info');
