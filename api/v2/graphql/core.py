@@ -72,7 +72,7 @@ class PremiseGraph(SQLAlchemyObjectType):
 
 class Query(graphene.ObjectType):
     statement = graphene.Field(StatementGraph, uid=graphene.Int(), is_startpoint=graphene.Boolean())
-    statements = graphene.List(StatementGraph, is_startpoint=graphene.Boolean())
+    statements = graphene.List(StatementGraph, is_startpoint=graphene.Boolean(), issue_uid=graphene.Int())
     argument = graphene.Field(ArgumentGraph, uid=graphene.Int(), is_supportive=graphene.Boolean())
     arguments = graphene.List(ArgumentGraph, is_supportive=graphene.Boolean())
     statement_reference = graphene.Field(StatementReferencesGraph, uid=graphene.Int())
