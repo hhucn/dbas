@@ -92,14 +92,21 @@ def evaluate_statements():
                             s.textversions.author_uid in [u.uid for u in db_admins]]
     db_statements_admins_disabled = [s for s in db_statements if s.is_disabled == True and
                                      s.textversions.author_uid in [u.uid for u in db_admins]]
+    tvs = session.query(TextVersion).filter(TextVersion.statement_uid.in_([x.uid for x in db_statements])).all()
     print('Statements:')
     print('  - count / disabled')
     print('  - by all: {} / {}'.format(len(db_statements), len(db_disabled_statements)))
     print('  - by admin: {} / {}'.format(len(db_statements_admins), len(db_statements_admins_disabled)))
     print('  - by student: {} / {}'.format(len(db_statements_students), len(db_statements_students_disabled)))
     print('  - by colleagues: {} / {}'.format(len(db_statements_colleagues), len(db_statements_colleagues_disabled)))
-    print('TextVersions: {}'.format(len(session.query(TextVersion).filter(TextVersion.statement_uid.in_([x.uid for x in db_statements])).all())))
+    print('TextVersions: {}'.format(len(tvs)))
     print('Positions: {}'.format(len(session.query(Statement).filter(Statement.issue_uid == db_issue.uid, Statement.is_startpoint == True).all())))
+    print('Average length: {}'.format( sum([len(tv.content) for tv in tvs]) / len(tvs)))
+    #import numpy as np
+    #print('25% Quantil: {}'.format(np.percentile([len(tv.content) for tv in tvs], 25)))
+    #print('50% Quantil: {}'.format(np.percentile([len(tv.content) for tv in tvs], 50)))
+    #print('75% Quantil: {}'.format(np.percentile([len(tv.content) for tv in tvs], 75)))
+
     print('\n')
 
 
@@ -442,7 +449,7 @@ if __name__ == '__main__':
     print('\n')
 
     # evaluate_users()
-    # evaluate_statements()
+    evaluate_statements()
     # evaluate_positions()
     # evaluate_arguments()
     # evaluate_authors()

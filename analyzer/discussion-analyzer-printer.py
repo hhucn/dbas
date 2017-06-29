@@ -5,7 +5,7 @@ import shutil
 from dbas.database import DBDiscussionSession as session, get_dbas_db_configuration
 from dbas.database.discussion_model import Issue, User, Statement, Argument, ClickedStatement, History, TextVersion, \
     ReviewEdit, ReviewOptimization, ReviewDelete, ReviewDuplicate, LastReviewerDelete, LastReviewerDuplicate, \
-    LastReviewerEdit, LastReviewerOptimization
+    LastReviewerEdit, LastReviewerOptimization, Premise
 from dbas.helper.tests import add_settings_to_appconfig
 from dbas.lib import get_text_for_statement_uid, get_text_for_premisesgroup_uid
 from sqlalchemy import and_
@@ -34,7 +34,7 @@ def get_weekday(arrow_time):
     }[arrow_time.weekday()]
 
 
-db_issue = session.query(Issue).filter_by(title='Verbesserung des Informatik-Studiengangs').first()
+db_issue = session.query(Issue).filter_by(title='HHU Stern-Verlag').first()
 if db_issue is None:
     print('WRONG DATABASE')
     exit()
@@ -93,36 +93,49 @@ def print_summary():
     target = open(path + '/analyze_positions_summary.txt', 'w')
     for el in reversed(sorted_positions):
         key = el[0]
-        uid = ('  {}' if key < 10 else ' {}' if key < 100 else '{}').format(key)
-        target.write('{}: {} möchten darüber reden, dass {}.\n'.format(uid, opinions[key],
-                                                                       get_text_for_statement_uid(key)))
+        author = session.query(User).get(session.query(TextVersion).filter_by(statement_uid=key).order_by(TextVersion.uid.desc()).first().author_uid).nickname
+        target.write('{} möchte darüber reden, dass {}.\n'.format(author, get_text_for_statement_uid(key)))
 
         db_pro = session.query(Argument).filter(Argument.conclusion_uid == key, Argument.is_supportive == True).all()
         db_con = session.query(Argument).filter(Argument.conclusion_uid == key, Argument.is_supportive == False).all()
 
-        for pro in db_pro:
-            users = get_user_with_same_opinion_for_premisegroups([pro.uid], '', 'de', 'url')
-            d = users['opinions'][0]
-            s = (' {}' if d['seen_by'] < 10 else '{}').format(d['seen_by'])
-            u = (' {}' if len(d['users']) < 10 else '{}').format(len(d['users']))
-            text, tmp = get_text_for_premisesgroup_uid(pro.premisesgroup_uid)
-            target.write('\t+ {} von {} denken, dass es richtig sei, weil {}\n'.format(u, s, text))
-        if len(db_pro) == 0:
-            target.write('\t+ Niemand hat eine Unterstützung eingeben.\n')
-
-        for con in db_con:
-            users = get_user_with_same_opinion_for_premisegroups([con.uid], '', 'de', 'url')
-            d = users['opinions'][0]
-            s = (' {}' if d['seen_by'] < 10 else '{}').format(d['seen_by'])
-            u = (' {}' if len(d['users']) < 10 else '{}').format(len(d['users']))
-            text, tmp = get_text_for_premisesgroup_uid(con.premisesgroup_uid)
-            target.write('\t- {} von {} denken, dass es falsch sei,  weil {}\n'.format(u, s, text))
-        if len(db_con) == 0:
-            target.write('\t- Niemand hat einen Angriff eingeben.\n')
+        __print_pros(target, db_pro, '\t')
+        __print_cons(target, db_con, '\t')
 
         target.write('\n')
     target.close()
 
+def __print_pros(target, db_pro, t):
+    for pro in db_pro:
+        author = session.query(User).get(pro.author_uid).nickname
+        text, tmp = get_text_for_premisesgroup_uid(pro.premisesgroup_uid)
+        target.write('\t+ {} meint, dass es ist richtig, weil {}\n'.format(author, text))
+        __print_more_for(target, pro, t + '\t')
+    #if len(db_pro) == 0:
+    #    target.write(t + '+ Niemand hat eine Unterstützung eingeben.\n')
+
+def __print_cons(target, db_con, t, is_undercut=False):
+    for con in db_con:
+        author = session.query(User).get(con.author_uid).nickname
+        text, tmp = get_text_for_premisesgroup_uid(con.premisesgroup_uid)
+        if is_undercut:
+            target.write(t + '- {} meint, dass die Begründung von gerade nicht zur Behauptung passt, weil {}\n'.format(author, text))
+        else:
+            target.write(t + '- {} meint, dass es ist falsch,  weil {}\n'.format(author, text))
+        __print_more_for(target, con, t + '\t')
+    #if len(db_con) == 0:
+    #    target.write('\t- Niemand hat einen Angriff eingeben.\n')
+
+def __print_more_for(target, arg, t):
+    db_premises = session.query(Premise).filter_by(premisesgroup_uid=arg.premisesgroup_uid).all()
+    ids = [p.statement_uid for p in db_premises]
+    db_args1 = session.query(Argument).filter(Argument.conclusion_uid.in_(ids))
+    db_args2 = session.query(Argument).filter_by(argument_uid=arg.uid).all()
+    db_pros = db_args1.filter_by(is_supportive=True).all()
+    db_cons = db_args1.filter_by(is_supportive=False).all()
+    __print_pros(target, db_pros, t)
+    __print_cons(target, db_cons, t)
+    __print_cons(target, db_args2, t, is_undercut=True)
 
 def print_activity_per_day():
     # action per day
@@ -331,10 +344,10 @@ if __name__ == '__main__':
 
     # print_positions_history()
     # print_opitions_for_positions()
-    # print_summary()
+    print_summary()
     # print_activity_per_day()
     # print_user_activity()
     # print_textversion_history()
     # print_textversions_audit()
     # print_argumentation_index()
-    print_review_summary()
+    # print_review_summary()
