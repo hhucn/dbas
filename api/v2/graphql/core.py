@@ -72,7 +72,7 @@ class PremiseGraph(SQLAlchemyObjectType):
 
 class Query(graphene.ObjectType):
     statement = graphene.Field(StatementGraph, uid=graphene.Int(), is_startpoint=graphene.Boolean())
-    statements = graphene.List(StatementGraph, is_startpoint=graphene.Boolean())
+    statements = graphene.List(StatementGraph, is_startpoint=graphene.Boolean(), issue_uid=graphene.Int())
     argument = graphene.Field(ArgumentGraph, uid=graphene.Int(), is_supportive=graphene.Boolean())
     arguments = graphene.List(ArgumentGraph, is_supportive=graphene.Boolean())
     statement_reference = graphene.Field(StatementReferencesGraph, uid=graphene.Int())
@@ -108,7 +108,7 @@ class Query(graphene.ObjectType):
         return resolve_field_query(args, context, IssueGraph)
 
     def resolve_issues(self, args, context, info):
-        return IssueGraph.get_query(context).all()
+        return resolve_list_query(args, context, IssueGraph, Issue)
 
     def resolve_premise(self, args, context, info):
         return resolve_field_query(args, context, PremiseGraph)
