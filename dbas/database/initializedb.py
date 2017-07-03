@@ -66,11 +66,11 @@ def main_discussion(argv=sys.argv):
     with transaction.manager:
         users = __set_up_users(DBDiscussionSession)
         lang1, lang2 = __set_up_language(DBDiscussionSession)
-        issue1, issue2, issue3, issue4, issue5, issue6 = __set_up_issue(DBDiscussionSession, lang1, lang2)
+        issue1, issue2, issue3, issue4, issue5, issue6, issue7 = __set_up_issue(DBDiscussionSession, lang1, lang2)
         transaction.commit()
         __set_up_settings(DBDiscussionSession, users)
         main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-        __setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
+        __setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5, issue7)
         __add_reputation_and_delete_reason(DBDiscussionSession)
         __setup_dummy_seen_by(DBDiscussionSession)
         __setup_dummy_clicks(DBDiscussionSession)
@@ -851,14 +851,20 @@ def __set_up_issue(session, lang1, lang2, is_field_test=False):
                    author_uid=db_user.uid,
                    lang_uid=lang2.uid,
                    is_disabled=not is_field_test)
+    issue7 = Issue(title='Bürgerbeteiligung in der Kommune',
+                   info='Es werden Vorschläge zur Verbesserung des Zusammenlebens in unserer Kommune gesammelt.',
+                   long_info='',
+                   author_uid=db_user.uid,
+                   lang_uid=lang2.uid,
+                   is_disabled=is_field_test)
     if is_field_test:
         session.add_all([issue6, issue1])
         session.flush()
         return issue6, issue1
     else:
-        session.add_all([issue1, issue2, issue3, issue4, issue5, issue6])
+        session.add_all([issue1, issue2, issue3, issue4, issue5, issue6, issue7])
         session.flush()
-        return issue1, issue2, issue3, issue4, issue5, issue6
+        return issue1, issue2, issue3, issue4, issue5, issue6, issue7
 
 
 def __setup_dummy_seen_by(session):
@@ -1357,7 +1363,7 @@ def __setup_fieltests_en_discussion_database(session, db_issue):
     session.flush()
 
 
-def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
+def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5, issue7):
     """
     Fills the database with dummy date, created by given user
 
@@ -1482,6 +1488,21 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
         content="wir keine eigenen Faxgeräte haben und so oder so entweder bei Martin stören müssten oder doch bei Sabine im Büro landen würden",
         author=user.uid)
 
+    textversion401 = TextVersion(content="Die Anzahl der Straßenfeste sollte reduziert werden",
+                                 author=user.uid)
+    textversion402 = TextVersion(content="Straßenfeste viel Lärm verursachen",
+                                 author=user.uid)
+    textversion403 = TextVersion(content="Straßenfeste ein wichtiger Bestandteil unserer Kultur sind",
+                                 author=user.uid)
+    textversion404 = TextVersion(content="Straßenfeste der Kommune Geld einbringen",
+                                 author=user.uid)
+    textversion405 = TextVersion(content="die Einnahmen der Kommune durch Straßenfeste nur gering sind",
+                                 author=user.uid)
+    textversion406 = TextVersion(content="Straßenfeste der Kommune hohe Kosten verursachen durch Polizeieinsätze, Säuberung, etc.",
+                                 author=user.uid)
+    textversion407 = TextVersion(content="die Innenstadt ohnehin sehr laut ist",
+                                 author=user.uid)
+
     session.add_all([textversion1, textversion2, textversion3, textversion4, textversion5, textversion6])
     session.add_all([textversion7, textversion8, textversion9, textversion10, textversion11, textversion12])
     session.add_all([textversion13, textversion14, textversion15, textversion16, textversion17, textversion18])
@@ -1496,6 +1517,8 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.add_all([textversion206, textversion207, textversion208, textversion212, textversion213])
     session.add_all([textversion301, textversion302, textversion303, textversion304, textversion305, textversion306])
     session.add_all([textversion307, textversion0])
+    session.add_all([textversion401, textversion402, textversion403, textversion404, textversion405, textversion406,
+                     textversion407])
     session.flush()
 
     # random timestamps
@@ -1582,6 +1605,14 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     statement306 = Statement(textversion=textversion306.uid, is_position=False, issue=issue5.uid)
     statement307 = Statement(textversion=textversion307.uid, is_position=False, issue=issue5.uid)
 
+    statement401 = Statement(textversion=textversion401.uid, is_position=True, issue=issue7.uid)
+    statement402 = Statement(textversion=textversion402.uid, is_position=False, issue=issue7.uid)
+    statement403 = Statement(textversion=textversion403.uid, is_position=False, issue=issue7.uid)
+    statement404 = Statement(textversion=textversion404.uid, is_position=False, issue=issue7.uid)
+    statement405 = Statement(textversion=textversion405.uid, is_position=False, issue=issue7.uid)
+    statement406 = Statement(textversion=textversion406.uid, is_position=False, issue=issue7.uid)
+    statement407 = Statement(textversion=textversion407.uid, is_position=False, issue=issue7.uid)
+
     session.add_all([statement0, statement1, statement2, statement3, statement4, statement5, statement6, statement7])
     session.add_all([statement8, statement9, statement10, statement11, statement12, statement13, statement14])
     session.add_all([statement15, statement16, statement17, statement18, statement19, statement20, statement21])
@@ -1594,6 +1625,7 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.add_all([statement200, statement201, statement202, statement203, statement204, statement205, statement206])
     session.add_all([statement207, statement208, statement212, statement213])
     session.add_all([statement301, statement302, statement303, statement304, statement305, statement306, statement307])
+    session.add_all([statement401, statement402, statement403, statement404, statement405, statement406, statement407])
 
     session.flush()
 
@@ -1675,6 +1707,13 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     textversion305.set_statement(statement305.uid)
     textversion306.set_statement(statement306.uid)
     textversion307.set_statement(statement307.uid)
+    textversion401.set_statement(statement401.uid)
+    textversion402.set_statement(statement402.uid)
+    textversion403.set_statement(statement403.uid)
+    textversion404.set_statement(statement404.uid)
+    textversion405.set_statement(statement405.uid)
+    textversion406.set_statement(statement406.uid)
+    textversion407.set_statement(statement407.uid)
 
     # adding all premisegroups
     premisegroup0 = PremiseGroup(author=user.uid)
@@ -1743,6 +1782,11 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     premisegroup305 = PremiseGroup(author=user.uid)
     premisegroup306 = PremiseGroup(author=user.uid)
     premisegroup307 = PremiseGroup(author=user.uid)
+    premisegroup402 = PremiseGroup(author=user.uid)
+    premisegroup403 = PremiseGroup(author=user.uid)
+    premisegroup404 = PremiseGroup(author=user.uid)
+    premisegroup405 = PremiseGroup(author=user.uid)
+    premisegroup407 = PremiseGroup(author=user.uid)
 
     session.add_all(
         [premisegroup0, premisegroup1, premisegroup2, premisegroup3, premisegroup4, premisegroup5, premisegroup6])
@@ -1758,6 +1802,7 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.add_all([premisegroup206, premisegroup207, premisegroup208, premisegroup209, premisegroup210])
     session.add_all([premisegroup211, premisegroup213])
     session.add_all([premisegroup303, premisegroup304, premisegroup305, premisegroup306, premisegroup307])
+    session.add_all([premisegroup402, premisegroup403, premisegroup404, premisegroup405, premisegroup407])
     session.flush()
 
     premise0 = Premise(premisesgroup=premisegroup0.uid, statement=statement0.uid, is_negated=False, author=user.uid,
@@ -1892,6 +1937,19 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     premise307 = Premise(premisesgroup=premisegroup307.uid, statement=statement307.uid, is_negated=False,
                          author=user.uid, issue=issue5.uid)
 
+    premise402 = Premise(premisesgroup=premisegroup402.uid, statement=statement402.uid, is_negated=False,
+                         author=user.uid, issue=issue7.uid)
+    premise403 = Premise(premisesgroup=premisegroup403.uid, statement=statement403.uid, is_negated=False,
+                         author=user.uid, issue=issue7.uid)
+    premise404 = Premise(premisesgroup=premisegroup404.uid, statement=statement404.uid, is_negated=False,
+                         author=user.uid, issue=issue7.uid)
+    premise405 = Premise(premisesgroup=premisegroup405.uid, statement=statement405.uid, is_negated=False,
+                         author=user.uid, issue=issue7.uid)
+    premise406 = Premise(premisesgroup=premisegroup405.uid, statement=statement406.uid, is_negated=False,
+                         author=user.uid, issue=issue7.uid)
+    premise407 = Premise(premisesgroup=premisegroup407.uid, statement=statement407.uid, is_negated=False,
+                         author=user.uid, issue=issue7.uid)
+
     session.add_all(
         [premise0, premise1, premise2, premise3, premise4, premise5, premise6, premise7, premise8, premise9])
     session.add_all([premise10, premise11, premise12, premise13, premise14, premise15, premise16, premise17])
@@ -1903,6 +1961,7 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.add_all([premise203, premise204, premise205, premise206, premise207, premise208, premise201, premise202])
     session.add_all([premise213])
     session.add_all([premise303, premise304, premise305, premise306, premise307])
+    session.add_all([premise402, premise403, premise404, premise405, premise406, premise407])
     session.flush()
 
     # adding all arguments and set the adjacency list
@@ -2024,6 +2083,16 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     argument307 = Argument(premisegroup=premisegroup307.uid, issupportive=False, author=user.uid, issue=issue5.uid,
                            conclusion=statement302.uid)
 
+    argument402 = Argument(premisegroup=premisegroup402.uid, issupportive=True, author=user.uid, issue=issue7.uid,
+                           conclusion=statement401.uid)
+    argument403 = Argument(premisegroup=premisegroup403.uid, issupportive=False, author=user.uid, issue=issue7.uid,
+                           conclusion=statement401.uid)
+    argument404 = Argument(premisegroup=premisegroup404.uid, issupportive=False, author=user.uid, issue=issue7.uid,
+                           conclusion=statement401.uid)
+    argument405 = Argument(premisegroup=premisegroup405.uid, issupportive=False, author=user.uid, issue=issue7.uid,
+                           conclusion=statement404.uid)
+    argument407 = Argument(premisegroup=premisegroup407.uid, issupportive=False, author=user.uid, issue=issue7.uid)
+
     session.add_all([argument0, argument1, argument2, argument3, argument4, argument5, argument6, argument7, argument8])
     session.add_all([argument9, argument10, argument11, argument12, argument13, argument14, argument15])
     session.add_all([argument16, argument17, argument18, argument19, argument20, argument21, argument22])
@@ -2035,6 +2104,8 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     session.add_all([argument201, argument202, argument203, argument204, argument205, argument206, argument207])
     session.add_all([argument200, argument210])
     session.add_all([argument303, argument304, argument305, argument306, argument307])
+
+    session.add_all([argument402, argument403, argument404, argument405, argument407])
     session.flush()
 
     argument5.set_conclusions_argument(argument3.uid)
@@ -2054,6 +2125,8 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5):
     argument117.set_conclusions_argument(argument116.uid)
     argument202.set_conclusions_argument(argument200.uid)
     argument203.set_conclusions_argument(argument201.uid)
+
+    argument407.set_conclusions_argument(argument402.uid)
     session.flush()
 
     # Add seen-by values
