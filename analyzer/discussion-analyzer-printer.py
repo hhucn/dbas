@@ -34,7 +34,7 @@ def get_weekday(arrow_time):
     }[arrow_time.weekday()]
 
 
-db_issue = session.query(Issue).filter_by(title='HHU Stern-Verlag').first()
+db_issue = session.query(Issue).filter_by(slug='verbesserung-des-informatik-studiengangs').first()
 if db_issue is None:
     print('WRONG DATABASE')
     exit()
@@ -189,6 +189,7 @@ def print_user_activity():
 def print_textversion_history():
     target = open(path + '/analyze_textversion_history.csv', 'w')
     db_st = [s.uid for s in session.query(Statement).filter_by(issue_uid=db_issue.uid).all()]
+    db_p = [s.uid for s in session.query(Statement).filter(Statement.issue_uid == db_issue.uid, Statement.is_startpoint == True).all()]
     db_h = session.query(History).filter(
         History.timestamp >= start,
         History.timestamp <= end
@@ -197,14 +198,20 @@ def print_textversion_history():
     count_tv = 0
     count_h = 0
     count_r = 0
+    count_p = 0
     statements = []
-    target.write('# day, tv_count, st_count, user_activity, review_count\n')
+    positions = []
+    target.write('# day, tv_count, st_count, user_activity, review_count, position\n')
     for day in range(0, (end - start).days + 1):
         textversions = session.query(TextVersion).filter(and_(
-            TextVersion.statement_uid.in_(db_st),
             TextVersion.timestamp >= start.replace(days=+day),
-            TextVersion.timestamp < start.replace(days=+day + 1))).all()
-        statements = list(set(statements + list(set([tv.statement_uid for tv in textversions]))))
+            TextVersion.timestamp < start.replace(days=+day + 1)))
+        textversions_s = textversions.filter(TextVersion.statement_uid.in_(db_st)).all()
+        textversions_p = textversions.filter(TextVersion.statement_uid.in_(db_p)).all()
+        print('{} {} {}'.format(len(textversions_p), len([tv.statement_uid for tv in textversions_p]), count_p))
+        statements = list(set(statements + list(set([tv.statement_uid for tv in textversions_s]))))
+        positions = list(set(positions + list(set([tv.statement_uid for tv in textversions_p]))))
+
         history = session.query(History).filter(and_(
             History.path.contains(db_issue.slug),
             History.timestamp >= start.replace(days=+day),
@@ -221,10 +228,13 @@ def print_textversion_history():
         count_r += len(session.query(ReviewDuplicate).filter(
             ReviewDuplicate.timestamp >= start.replace(days=+day),
             ReviewDuplicate.timestamp < start.replace(days=+day + 1)).all())
-        count_tv += len(textversions)
+
+        count_tv += len(textversions_s)
         count_st = len(statements)
         count_h += len(history)
-        target.write('{}, {}, {}, {}, {}\n'.format(day, count_tv, count_st, count_h / his_count, count_r))
+        count_p = len(positions)
+
+        target.write('{}, {}, {}, {}, {}, {}\n'.format(day, count_tv, count_st, count_h / his_count, count_r, count_p))
 
     target.close()
 
@@ -344,10 +354,11 @@ if __name__ == '__main__':
 
     # print_positions_history()
     # print_opitions_for_positions()
-    print_summary()
+    # print_summary()
     # print_activity_per_day()
     # print_user_activity()
-    # print_textversion_history()
+    print_textversion_history()
     # print_textversions_audit()
     # print_argumentation_index()
     # print_review_summary()
+{
