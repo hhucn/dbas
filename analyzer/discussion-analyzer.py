@@ -101,11 +101,11 @@ def evaluate_statements():
     print('  - by colleagues: {} / {}'.format(len(db_statements_colleagues), len(db_statements_colleagues_disabled)))
     print('TextVersions: {}'.format(len(tvs)))
     print('Positions: {}'.format(len(session.query(Statement).filter(Statement.issue_uid == db_issue.uid, Statement.is_startpoint == True).all())))
-    print('Average length: {}'.format( sum([len(tv.content) for tv in tvs]) / len(tvs)))
-    #import numpy as np
-    #print('25% Quantil: {}'.format(np.percentile([len(tv.content) for tv in tvs], 25)))
-    #print('50% Quantil: {}'.format(np.percentile([len(tv.content) for tv in tvs], 50)))
-    #print('75% Quantil: {}'.format(np.percentile([len(tv.content) for tv in tvs], 75)))
+    print('Average length: {}'.format(sum([len(tv.content) for tv in tvs]) / len(tvs)))
+    # import numpy as np
+    # print('25% Quantil: {}'.format(np.percentile([len(tv.content) for tv in tvs], 25)))
+    # print('50% Quantil: {}'.format(np.percentile([len(tv.content) for tv in tvs], 50)))
+    # print('75% Quantil: {}'.format(np.percentile([len(tv.content) for tv in tvs], 75)))
 
     print('\n')
 
@@ -145,7 +145,7 @@ def evaluate_arguments():
     db_disabled_arguments = db_arguments.filter_by(is_disabled=True).all()
     db_pro_arguments = db_arguments.filter_by(is_supportive=True).all()
     db_con_arguments = db_arguments.filter_by(is_supportive=False).all()
-    db_undercuts = db_arguments.filter(Argument.argument_uid != None).all()
+    db_undercuts = db_arguments.filter(Argument.argument_uid is not None).all()
     db_pro_not_pos = [arg for arg in db_pro_arguments if not session.query(Statement).get(arg.conclusion_uid).is_startpoint]
     print('Arguments:')
     print('  - count / disabled: {} / {}'.format(len(db_arguments.all()), len(db_disabled_arguments)))
@@ -240,14 +240,14 @@ def evaluate_reviews():
     db_review_optimizations = [r for r in db_review_optimizations if (session.query(Statement).get(r.statement_uid).issue_uid == db_issue.uid if r.statement_uid is not None else session.query(Argument).get(r.argument_uid).issue_uid == db_issue.uid)]
     db_review_duplicates = [r for r in db_review_duplicates if (session.query(Statement).get(r.original_statement_uid).issue_uid == db_issue.uid if r.original_statement_uid is not None else session.query(Argument).get(r.argument_uid).issue_uid == db_issue.uid)]
     detectors = list(set([r.detector_uid for r in db_review_edits + db_review_deletes + db_review_optimizations + db_review_duplicates]))
-    map_detector = {d:0 for d in detectors}
+    map_detector = {d: 0 for d in detectors}
     total = 0
     for d in detectors:
         count = 0
-        count +=len([r for r in db_review_edits if (session.query(Statement).get(r.statement_uid).issue_uid == db_issue.uid if r.statement_uid is not None else session.query(Argument).get(r.argument_uid).issue_uid == db_issue.uid) and r.detector_uid == d])
-        count +=len([r for r in db_review_deletes if (session.query(Statement).get(r.statement_uid).issue_uid == db_issue.uid if r.statement_uid is not None else session.query(Argument).get(r.argument_uid).issue_uid == db_issue.uid) and r.detector_uid == d])
-        count +=len([r for r in db_review_optimizations if (session.query(Statement).get(r.statement_uid).issue_uid == db_issue.uid if r.statement_uid is not None else session.query(Argument).get(r.argument_uid).issue_uid == db_issue.uid) and r.detector_uid == d])
-        count +=len([r for r in db_review_duplicates if (session.query(Statement).get( r.original_statement_uid).issue_uid == db_issue.uid if r.original_statement_uid is not None else session.query( Argument).get(r.argument_uid).issue_uid == db_issue.uid) and r.detector_uid == d])
+        count += len([r for r in db_review_edits if (session.query(Statement).get(r.statement_uid).issue_uid == db_issue.uid if r.statement_uid is not None else session.query(Argument).get(r.argument_uid).issue_uid == db_issue.uid) and r.detector_uid == d])
+        count += len([r for r in db_review_deletes if (session.query(Statement).get(r.statement_uid).issue_uid == db_issue.uid if r.statement_uid is not None else session.query(Argument).get(r.argument_uid).issue_uid == db_issue.uid) and r.detector_uid == d])
+        count += len([r for r in db_review_optimizations if (session.query(Statement).get(r.statement_uid).issue_uid == db_issue.uid if r.statement_uid is not None else session.query(Argument).get(r.argument_uid).issue_uid == db_issue.uid) and r.detector_uid == d])
+        count += len([r for r in db_review_duplicates if (session.query(Statement).get(r.original_statement_uid).issue_uid == db_issue.uid if r.original_statement_uid is not None else session.query(Argument).get(r.argument_uid).issue_uid == db_issue.uid) and r.detector_uid == d])
         map_detector[d] = count
         total += count
 
@@ -283,7 +283,7 @@ def evaluate_reviews():
         for user in l:
             if l[user] > 0:
                 c += l[user]
-                big_user_list.append(session.query(User).filter_by(nickname=user[user.index('(')+1:-1]).first().uid)
+                big_user_list.append(session.query(User).filter_by(nickname=user[user.index('(') + 1:-1]).first().uid)
                 if user in big_map:
                     big_map[user] += l[user]
                 else:
@@ -296,7 +296,7 @@ def evaluate_reviews():
     print('  - duplicates:     {}'.format(len(db_reviewer_duplicate)))
     print('  - total reviewer: {}'.format(len(big_map)))
     print('  - total votes:    {}'.format(c))
-    print('  - average votes:  {}'.format(c/len(big_map)))
+    print('  - average votes:  {}'.format(c / len(big_map)))
     print('  - Edit Top{}'.format(top_count))
     for t in sorted_list_reviewer_edit[-top_count:]:
         print('    - {}: {}'.format(t[1], t[0]))

@@ -9,7 +9,7 @@ from dbas.database.discussion_model import Issue, User, Statement, Argument, Cli
 from dbas.helper.tests import add_settings_to_appconfig
 from dbas.lib import get_text_for_statement_uid, get_text_for_premisesgroup_uid
 from sqlalchemy import and_
-from dbas.handler.opinion import get_user_with_same_opinion_for_statements, get_user_with_same_opinion_for_premisegroups
+from dbas.handler.opinion import get_user_with_same_opinion_for_statements
 from graph.partial_graph import get_partial_graph_for_statement
 
 settings = add_settings_to_appconfig()
@@ -105,14 +105,16 @@ def print_summary():
         target.write('\n')
     target.close()
 
+
 def __print_pros(target, db_pro, t):
     for pro in db_pro:
         author = session.query(User).get(pro.author_uid).nickname
         text, tmp = get_text_for_premisesgroup_uid(pro.premisesgroup_uid)
         target.write('\t+ {} meint, dass es ist richtig, weil {}\n'.format(author, text))
         __print_more_for(target, pro, t + '\t')
-    #if len(db_pro) == 0:
+    # if len(db_pro) == 0:
     #    target.write(t + '+ Niemand hat eine Unterstützung eingeben.\n')
+
 
 def __print_cons(target, db_con, t, is_undercut=False):
     for con in db_con:
@@ -123,8 +125,9 @@ def __print_cons(target, db_con, t, is_undercut=False):
         else:
             target.write(t + '- {} meint, dass es ist falsch,  weil {}\n'.format(author, text))
         __print_more_for(target, con, t + '\t')
-    #if len(db_con) == 0:
+    # if len(db_con) == 0:
     #    target.write('\t- Niemand hat einen Angriff eingeben.\n')
+
 
 def __print_more_for(target, arg, t):
     db_premises = session.query(Premise).filter_by(premisesgroup_uid=arg.premisesgroup_uid).all()
@@ -136,6 +139,7 @@ def __print_more_for(target, arg, t):
     __print_pros(target, db_pros, t)
     __print_cons(target, db_cons, t)
     __print_cons(target, db_args2, t, is_undercut=True)
+
 
 def print_activity_per_day():
     # action per day
@@ -274,18 +278,18 @@ def print_review_summary():
         session.query(LastReviewerDelete).all(),
         # session.query(LastReviewerOptimization).all(),
         session.query(LastReviewerDuplicate).all()
-        ]
+    ]
     keys = [
         'LastReviewerEdit',
         'LastReviewerDelete',
         # 'LastReviewerOptimization',
         'LastReviewerDuplicate'
     ]
-    summary = {k:{} for k in keys}
+    summary = {k: {} for k in keys}
     for index, query in enumerate(reviews):
-        summary[keys[index]] = {last.review_uid: [0,0] for last in query}
+        summary[keys[index]] = {last.review_uid: [0, 0] for last in query}
         for last in query:
-            key = str(type(last))[39:-2]
+            key = str(type(last))[37779:-2]
             i = 0 if last.is_okay else 1
             summary[key][last.review_uid][i] += 1
 
@@ -337,6 +341,7 @@ def print_review_summary():
             target.write('{},{}:{},{}\n'.format(index, v[0], v[1], votes[v]))
             index += 1
 
+
 if __name__ == '__main__':
     # mk dir
     try:
@@ -361,4 +366,3 @@ if __name__ == '__main__':
     # print_textversions_audit()
     # print_argumentation_index()
     # print_review_summary()
-{
