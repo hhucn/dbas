@@ -229,7 +229,7 @@ def __prepare_statements_for_d3_data(db_statements, db_textversions, edge_type):
         text = next((tv for tv in db_textversions if tv.uid == statement.textversion_uid), None)
         text = text.content if text else 'None'
         node_dict = __get_node_dict(uid='statement_' + str(statement.uid),
-                                    label=str(statement.uid) + ' - ' + text,
+                                    label=text,
                                     node_type='position' if statement.is_startpoint else 'statement',
                                     author=__get_author_of_statement(statement.uid),
                                     editor=__get_editor_of_statement(statement.uid),

@@ -5,11 +5,11 @@ import shutil
 from dbas.database import DBDiscussionSession as session, get_dbas_db_configuration
 from dbas.database.discussion_model import Issue, User, Statement, Argument, ClickedStatement, History, TextVersion, \
     ReviewEdit, ReviewOptimization, ReviewDelete, ReviewDuplicate, LastReviewerDelete, LastReviewerDuplicate, \
-    LastReviewerEdit, LastReviewerOptimization
+    LastReviewerEdit, LastReviewerOptimization, Premise
 from dbas.helper.tests import add_settings_to_appconfig
 from dbas.lib import get_text_for_statement_uid, get_text_for_premisesgroup_uid
 from sqlalchemy import and_
-from dbas.handler.opinion import get_user_with_same_opinion_for_statements, get_user_with_same_opinion_for_premisegroups
+from dbas.handler.opinion import get_user_with_same_opinion_for_statements
 from graph.partial_graph import get_partial_graph_for_statement
 
 settings = add_settings_to_appconfig()
@@ -34,7 +34,7 @@ def get_weekday(arrow_time):
     }[arrow_time.weekday()]
 
 
-db_issue = session.query(Issue).filter_by(title='Verbesserung des Informatik-Studiengangs').first()
+db_issue = session.query(Issue).filter_by(slug='verbesserung-des-informatik-studiengangs').first()
 if db_issue is None:
     print('WRONG DATABASE')
     exit()
@@ -93,35 +93,52 @@ def print_summary():
     target = open(path + '/analyze_positions_summary.txt', 'w')
     for el in reversed(sorted_positions):
         key = el[0]
-        uid = ('  {}' if key < 10 else ' {}' if key < 100 else '{}').format(key)
-        target.write('{}: {} möchten darüber reden, dass {}.\n'.format(uid, opinions[key],
-                                                                       get_text_for_statement_uid(key)))
+        author = session.query(User).get(session.query(TextVersion).filter_by(statement_uid=key).order_by(TextVersion.uid.desc()).first().author_uid).nickname
+        target.write('{} möchte darüber reden, dass {}.\n'.format(author, get_text_for_statement_uid(key)))
 
         db_pro = session.query(Argument).filter(Argument.conclusion_uid == key, Argument.is_supportive == True).all()
         db_con = session.query(Argument).filter(Argument.conclusion_uid == key, Argument.is_supportive == False).all()
 
-        for pro in db_pro:
-            users = get_user_with_same_opinion_for_premisegroups([pro.uid], '', 'de', 'url')
-            d = users['opinions'][0]
-            s = (' {}' if d['seen_by'] < 10 else '{}').format(d['seen_by'])
-            u = (' {}' if len(d['users']) < 10 else '{}').format(len(d['users']))
-            text, tmp = get_text_for_premisesgroup_uid(pro.premisesgroup_uid)
-            target.write('\t+ {} von {} denken, dass es richtig sei, weil {}\n'.format(u, s, text))
-        if len(db_pro) == 0:
-            target.write('\t+ Niemand hat eine Unterstützung eingeben.\n')
-
-        for con in db_con:
-            users = get_user_with_same_opinion_for_premisegroups([con.uid], '', 'de', 'url')
-            d = users['opinions'][0]
-            s = (' {}' if d['seen_by'] < 10 else '{}').format(d['seen_by'])
-            u = (' {}' if len(d['users']) < 10 else '{}').format(len(d['users']))
-            text, tmp = get_text_for_premisesgroup_uid(con.premisesgroup_uid)
-            target.write('\t- {} von {} denken, dass es falsch sei,  weil {}\n'.format(u, s, text))
-        if len(db_con) == 0:
-            target.write('\t- Niemand hat einen Angriff eingeben.\n')
+        __print_pros(target, db_pro, '\t')
+        __print_cons(target, db_con, '\t')
 
         target.write('\n')
     target.close()
+
+
+def __print_pros(target, db_pro, t):
+    for pro in db_pro:
+        author = session.query(User).get(pro.author_uid).nickname
+        text, tmp = get_text_for_premisesgroup_uid(pro.premisesgroup_uid)
+        target.write('\t+ {} meint, dass es ist richtig, weil {}\n'.format(author, text))
+        __print_more_for(target, pro, t + '\t')
+    # if len(db_pro) == 0:
+    #    target.write(t + '+ Niemand hat eine Unterstützung eingeben.\n')
+
+
+def __print_cons(target, db_con, t, is_undercut=False):
+    for con in db_con:
+        author = session.query(User).get(con.author_uid).nickname
+        text, tmp = get_text_for_premisesgroup_uid(con.premisesgroup_uid)
+        if is_undercut:
+            target.write(t + '- {} meint, dass die Begründung von gerade nicht zur Behauptung passt, weil {}\n'.format(author, text))
+        else:
+            target.write(t + '- {} meint, dass es ist falsch,  weil {}\n'.format(author, text))
+        __print_more_for(target, con, t + '\t')
+    # if len(db_con) == 0:
+    #    target.write('\t- Niemand hat einen Angriff eingeben.\n')
+
+
+def __print_more_for(target, arg, t):
+    db_premises = session.query(Premise).filter_by(premisesgroup_uid=arg.premisesgroup_uid).all()
+    ids = [p.statement_uid for p in db_premises]
+    db_args1 = session.query(Argument).filter(Argument.conclusion_uid.in_(ids))
+    db_args2 = session.query(Argument).filter_by(argument_uid=arg.uid).all()
+    db_pros = db_args1.filter_by(is_supportive=True).all()
+    db_cons = db_args1.filter_by(is_supportive=False).all()
+    __print_pros(target, db_pros, t)
+    __print_cons(target, db_cons, t)
+    __print_cons(target, db_args2, t, is_undercut=True)
 
 
 def print_activity_per_day():
@@ -176,6 +193,7 @@ def print_user_activity():
 def print_textversion_history():
     target = open(path + '/analyze_textversion_history.csv', 'w')
     db_st = [s.uid for s in session.query(Statement).filter_by(issue_uid=db_issue.uid).all()]
+    db_p = [s.uid for s in session.query(Statement).filter(Statement.issue_uid == db_issue.uid, Statement.is_startpoint == True).all()]
     db_h = session.query(History).filter(
         History.timestamp >= start,
         History.timestamp <= end
@@ -184,14 +202,20 @@ def print_textversion_history():
     count_tv = 0
     count_h = 0
     count_r = 0
+    count_p = 0
     statements = []
-    target.write('# day, tv_count, st_count, user_activity, review_count\n')
+    positions = []
+    target.write('# day, tv_count, st_count, user_activity, review_count, position\n')
     for day in range(0, (end - start).days + 1):
         textversions = session.query(TextVersion).filter(and_(
-            TextVersion.statement_uid.in_(db_st),
             TextVersion.timestamp >= start.replace(days=+day),
-            TextVersion.timestamp < start.replace(days=+day + 1))).all()
-        statements = list(set(statements + list(set([tv.statement_uid for tv in textversions]))))
+            TextVersion.timestamp < start.replace(days=+day + 1)))
+        textversions_s = textversions.filter(TextVersion.statement_uid.in_(db_st)).all()
+        textversions_p = textversions.filter(TextVersion.statement_uid.in_(db_p)).all()
+        print('{} {} {}'.format(len(textversions_p), len([tv.statement_uid for tv in textversions_p]), count_p))
+        statements = list(set(statements + list(set([tv.statement_uid for tv in textversions_s]))))
+        positions = list(set(positions + list(set([tv.statement_uid for tv in textversions_p]))))
+
         history = session.query(History).filter(and_(
             History.path.contains(db_issue.slug),
             History.timestamp >= start.replace(days=+day),
@@ -208,10 +232,13 @@ def print_textversion_history():
         count_r += len(session.query(ReviewDuplicate).filter(
             ReviewDuplicate.timestamp >= start.replace(days=+day),
             ReviewDuplicate.timestamp < start.replace(days=+day + 1)).all())
-        count_tv += len(textversions)
+
+        count_tv += len(textversions_s)
         count_st = len(statements)
         count_h += len(history)
-        target.write('{}, {}, {}, {}, {}\n'.format(day, count_tv, count_st, count_h / his_count, count_r))
+        count_p = len(positions)
+
+        target.write('{}, {}, {}, {}, {}, {}\n'.format(day, count_tv, count_st, count_h / his_count, count_r, count_p))
 
     target.close()
 
@@ -251,18 +278,18 @@ def print_review_summary():
         session.query(LastReviewerDelete).all(),
         # session.query(LastReviewerOptimization).all(),
         session.query(LastReviewerDuplicate).all()
-        ]
+    ]
     keys = [
         'LastReviewerEdit',
         'LastReviewerDelete',
         # 'LastReviewerOptimization',
         'LastReviewerDuplicate'
     ]
-    summary = {k:{} for k in keys}
+    summary = {k: {} for k in keys}
     for index, query in enumerate(reviews):
-        summary[keys[index]] = {last.review_uid: [0,0] for last in query}
+        summary[keys[index]] = {last.review_uid: [0, 0] for last in query}
         for last in query:
-            key = str(type(last))[39:-2]
+            key = str(type(last))[37779:-2]
             i = 0 if last.is_okay else 1
             summary[key][last.review_uid][i] += 1
 
@@ -314,6 +341,7 @@ def print_review_summary():
             target.write('{},{}:{},{}\n'.format(index, v[0], v[1], votes[v]))
             index += 1
 
+
 if __name__ == '__main__':
     # mk dir
     try:
@@ -334,7 +362,7 @@ if __name__ == '__main__':
     # print_summary()
     # print_activity_per_day()
     # print_user_activity()
-    # print_textversion_history()
+    print_textversion_history()
     # print_textversions_audit()
     # print_argumentation_index()
-    print_review_summary()
+    # print_review_summary()
