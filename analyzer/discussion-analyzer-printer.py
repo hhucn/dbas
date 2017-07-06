@@ -243,6 +243,17 @@ def print_textversion_history():
     target.close()
 
 
+def print_textversion_length():
+    target = open(path + '/analyze_textversion_length.csv', 'w')
+    db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).all()
+    tvs = session.query(TextVersion).filter(TextVersion.statement_uid.in_([x.uid for x in db_statements])).all()
+    l = [len(tv.content) for tv in tvs]
+    import numpy as np
+    for i in range(0,101):
+        target.write('{},{}\n'.format(i/100, np.percentile(l, i)))
+    target.close()
+
+
 def print_textversions_audit():
     target = open(path + '/analyze_textversions.csv', 'w')
     db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid)
@@ -362,7 +373,8 @@ if __name__ == '__main__':
     # print_summary()
     # print_activity_per_day()
     # print_user_activity()
-    print_textversion_history()
+    # print_textversion_history()
+    print_textversion_length()
     # print_textversions_audit()
     # print_argumentation_index()
     # print_review_summary()
