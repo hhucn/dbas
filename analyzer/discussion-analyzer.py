@@ -102,10 +102,10 @@ def evaluate_statements():
     print('TextVersions: {}'.format(len(tvs)))
     print('Positions: {}'.format(len(session.query(Statement).filter(Statement.issue_uid == db_issue.uid, Statement.is_startpoint == True).all())))
     print('Average length: {}'.format(sum([len(tv.content) for tv in tvs]) / len(tvs)))
-    # import numpy as np
-    # print('25% Quantil: {}'.format(np.percentile([len(tv.content) for tv in tvs], 25)))
-    # print('50% Quantil: {}'.format(np.percentile([len(tv.content) for tv in tvs], 50)))
-    # print('75% Quantil: {}'.format(np.percentile([len(tv.content) for tv in tvs], 75)))
+    import numpy as np
+    print('25% Quantil: {}'.format(np.percentile([len(tv.content) for tv in tvs], 25)))
+    print('50% Quantil: {}'.format(np.percentile([len(tv.content) for tv in tvs], 50)))
+    print('75% Quantil: {}'.format(np.percentile([len(tv.content) for tv in tvs], 75)))
 
     print('\n')
 
@@ -449,14 +449,14 @@ if __name__ == '__main__':
     print('\n')
 
     # evaluate_users()
-    evaluate_statements()
+    # evaluate_statements()
     # evaluate_positions()
     # evaluate_arguments()
     # evaluate_authors()
     # evaluate_interests()
-    evaluate_reviews()
+    # evaluate_reviews()
     # evaluate_history()
     # evaluate_quits()
     # evaluate_activity()
-    # evaluate_graph()
+    evaluate_graph()
     # evaluate_measurements()
