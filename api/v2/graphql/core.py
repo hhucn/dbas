@@ -19,6 +19,9 @@ class StatementGraph(SQLAlchemyObjectType):
     class Meta:
         model = Statement
 
+    def plural():
+        return graphene.List(StatementGraph, is_startpoint=graphene.Boolean(), issue_uid=graphene.Int())
+
 
 class ArgumentGraph(SQLAlchemyObjectType):
     class Meta:
@@ -33,6 +36,11 @@ class StatementReferencesGraph(SQLAlchemyObjectType):
 
 
 class IssueGraph(SQLAlchemyObjectType):
+    statements = StatementGraph.plural()
+
+    def resolve_statements(self, args, context, info):
+        return resolve_list_query({**args, "issue_uid": self.uid}, context, StatementGraph, Statement)
+
     class Meta:
         model = Issue
         exclude_fields = "date"
@@ -72,7 +80,7 @@ class PremiseGraph(SQLAlchemyObjectType):
 
 class Query(graphene.ObjectType):
     statement = graphene.Field(StatementGraph, uid=graphene.Int(), is_startpoint=graphene.Boolean())
-    statements = graphene.List(StatementGraph, is_startpoint=graphene.Boolean(), issue_uid=graphene.Int())
+    statements = StatementGraph.plural()
     argument = graphene.Field(ArgumentGraph, uid=graphene.Int(), is_supportive=graphene.Boolean())
     arguments = graphene.List(ArgumentGraph, is_supportive=graphene.Boolean())
     statement_reference = graphene.Field(StatementReferencesGraph, uid=graphene.Int())
