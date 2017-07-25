@@ -13,8 +13,9 @@ new_issue_uid = None
 statement_from_old_to_new = {}
 statement_from_new_to_old = {}
 pgroups_from_old_to_new = {}
+
 data = {
-    1: 'we should introduce an admission restriction',
+    1: 'we should introduce an admission restriction ',
     2: 'the demand for the course is too large, so that a restriction must be introduced',
     3: 'many students register themselves without having the necessary skills',
     4: 'a comparability of the high school grades is not given',
@@ -47,7 +48,7 @@ data = {
     56: 'thus also the majority in the lectures',
     57: 'professors do not neccesarily have to be taken from computer science, but also from mathematics',
     58: 'one could also use alternative admission indicators like internships or special grades in subjects of natural science',
-    59: 'students often have no way of acquiring the abilities required in the qualitifaction test by themselves',
+    59: 'students often have no way of acquiring the abilities required in the qualification test by themselves',
     60: 'the acquisition of such skills is the task of the study',
     61: 'students often have no or only bad opportunities to acquire the abilities required in the qualitifaction test by themselves',
     62: 'the rising number of freshmen necessitates a form of restriction',
@@ -58,7 +59,7 @@ data = {
     67: 'there are probably many students who are not aware of their competencies and therefore they need an orientation',
     68: 'The compulsory mathematics lectures contain the necessary foundations for later studies, which are difficult to combine with didactic correctness into a single module',
     69: 'many students have a minor subject that is either very mathematical or mathematics itself, and therefore need the knowledge conveyed in the compulsory mathematics lectures',
-    70: 'the mathematics lectures are already adjusted through low admission criteria',
+    70: 'the mathematics lectures are already adjusted through low admission criteria ',
     71: 'passing the course without grade already exists for computer scientists',
     72: 'this lecture is also attended by mathematicians and is actually intended for them and therefore can not be adapted to the computer scientists',
     73: 'the current examination regulations provide for about one third of the study for secondary subjects and compulsory subjects, and thus contain too few computer science lectures for a computer science study',
@@ -109,7 +110,7 @@ data = {
     121: 'the demand for computer scientists is also great',
     122: 'the reputation of the university will increase as a result of the skills of its graduates',
     123: 'many students start the study with false expectations of the requirements',
-    124: 'sample study schedules are there to show the students how their studies might look. If students find this good',
+    124: 'sample study schedules are there to show the students how their studies might look. If students find this good ',
     125: 'stick to them or use them as orientation it should not incur any difficulties. In my current semester, almost 6 courses are offered for the mandatory section, I would have liked to take four of them',
     126: 'find that this is absolutely irresponsible towards the students',
     127: 'the reputation of the university is also considerably damaged. Unorganized',
@@ -155,8 +156,8 @@ data = {
     172: 'the proportion of points required to pass exams should only depend on the requirements imposed on the students',
     173: 'one can achieve a good secondary school certificate also with (many) tutoring lessons, which depends on the parents\' financial situation',
     174: 'basic tutorials should be offered for the base lectures, where students can ask questions about the lecture material',
-    175: 'especially the elective subjects and main modules are overlapping with math lectures. The professors should have coordinated this',
-    176: 'especially the elective subjects and main modules are overlapping with math lectures. The professors should have coordinated this',
+    175: 'especially the elective subjects and main modules are overlapping with math lectures. The professors should have coordinated this ',
+    176: 'especially the elective subjects and main modules are overlapping with math lectures. The professors should have coordinated this ',
     177: 'The courses covering the fundamentals should be based on the same script, if they are held by different lecturers in different years',
     178: 'repeaters, who are only allowed to passively participate in the exercises due to capacity reasons, have the same chances as the other students',
     179: 'lecturers of subsequent courses then can rely on their students to master certain basic principles',
@@ -204,7 +205,7 @@ data = {
     221: 'the allocation of CP sometimes does not correspond with the workload',
     222: 'the allocation of CP sometimes does not correspond with the workload',
     223: 'I myself have experienced that, for example, an elaboration worth 2.5 points required much more effort. An increase of the CP for these cases would be very reasonable',
-    224: 'which would complicate the combination of subjects for bachelor students of two degrees',
+    224: 'which would complicate the combination of subjects for bachelor students of two degrees ',
     225: 'it would be helpful for students to get an assessment at the beginning. You could design the aptitude test such that students can still start the study',
     226: 'usually the 90 minutes for the exercises will not suffice, if one is concerned with the student questions about the exercises or alternative ways of solution',
     227: 'this construct will not be found later in the profession of an academician (m/f). Depending on your work later, you will be the only expert in your field and/or work in a team. Therefore, learning groups are better during the study',
@@ -224,7 +225,7 @@ data = {
     242: 'the computer science degree was not designed as a part-time study in general and therefore would have to be completely revised',
     243: 'uniform grading criteria for seminar papers and seminar lectures should be introduced',
     244: 'thus students take seminars more seriously',
-    245: 'a seminar only makes sense if the number of participants (due to the presentation scheduling) is rather small, which is only the case in a few Bachelor\'s events',
+    245: 'a seminar only makes sense if the number of participants (due to the presentation scheduling) is rather small, which is only the case in a few Bachelor\'s courses',
     246: 'a presence obligation can not legally be enforced here',
     247: 'the other event forms are not equally suitable for all students, either',
     248: 'a suitability test for the computer science studies should be introduced, since a lack of computer science in schools makes the secondary school degree irrelevant for an admission restriction',
@@ -233,7 +234,7 @@ data = {
     251: 'during exercises questions about the current lecture material can be asked already',
     252: 'this is a normal learning group and no learning group organized by the university with tutors',
     253: 'the effort for the exercise is not worthwhile if only a handful of students register for this form of the activity',
-    254: 'students are adults who should recognize their own strengths and weaknesses themselves and should determine their own learning behavior. One has the possibility to ask the questions of the content in the lecture and in the exercise. For other questions one can contact the mentoring team',
+    254: 'students are adults who should recognize their strengths and weaknesses themselves and should determine their own learning behavior. One has the possibility to ask the questions about content in the lecture and in the exercise. For other questions  one can contact the mentoring team',
     255: 'one should first examine the factors that determine the success of computer science studies',
     256: 'in the subjects which I supervised, for years the workloads have always been clearly below the 75h for 2.5CP when querying the data',
     257: 'a lecture offers more than just reading the script. You usually get more background information and have the opportunity to ask questions',
@@ -299,11 +300,18 @@ data = {
     317: 'it should be possible to reach at least 30 CP\'s in each semester without overlaps',
     318: 'example schedules are there to show students how their studies might look like. If students find this to be good and stick to it or orientate on it, there should be no difficulties. In my current semester, almost 6 elective courses are overlapping. I would have liked to attend four of them and think that this is completely irresponsible against the students and also the reputation of the university takes considerable damage.',
     319: 'also the technical equipment of the rooms counts to the capacities and does not provide sufficient resources for the number of students',
-    320: 'the students often do not have the opportunity to gain the skills needed in the aptitude tests and the acquiring of such skills should be the goal of university study',
+    320: 'the students often do not have the opportunity to gain the skills needed in the aptitude tests and the acquiring of such skills should be the goal of university study ',
     321: 'freshmen are not fully accustomed to university and thus a suitability can not be determined',
     322: 'we are currently provided two lectures and one of those could be used to only teach computer scientists, since we are the second biggest degree programm and have a majority in the lectures',
     323: 'the mathematics lectures are already adjusted for computer science students by requiring softer admission criteria and by passing the course without a grade',
 }
+
+def sanity_check():
+    s_uids = [s.uid for s in session.query(Statement).filter_by(issue_uid=old_issue_uid).all()]
+    db_textversions = session.query(TextVersion).filter(TextVersion.statement_uid.in_(s_uids)).all()
+    for tv in db_textversions:
+        if tv.uid not in data:
+            print('Error: no translation for statement {}'.format(tv.uid))
 
 def add_issue():
     title = 'Improve the Course of Computer-Science Studies'
@@ -449,6 +457,7 @@ def add_arguments():
         argument_from_old_to_new[argument.uid] = uid
 
 if __name__ == "__main__":
+    sanity_check()
     add_issue()
     if new_issue_uid == 0:
         exit(1)

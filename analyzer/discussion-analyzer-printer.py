@@ -11,6 +11,7 @@ from dbas.lib import get_text_for_statement_uid, get_text_for_premisesgroup_uid
 from sqlalchemy import and_
 from dbas.handler.opinion import get_user_with_same_opinion_for_statements
 from graph.partial_graph import get_partial_graph_for_statement
+from dbas.lib import get_all_arguments_by_statement
 
 settings = add_settings_to_appconfig()
 session.configure(bind=get_dbas_db_configuration('discussion', settings))
@@ -300,7 +301,7 @@ def print_review_summary():
     for index, query in enumerate(reviews):
         summary[keys[index]] = {last.review_uid: [0, 0] for last in query}
         for last in query:
-            key = str(type(last))[37779:-2]
+            key = str(type(last))[39:-2]
             i = 0 if last.is_okay else 1
             summary[key][last.review_uid][i] += 1
 
@@ -353,6 +354,47 @@ def print_review_summary():
             index += 1
 
 
+def print_graph_data():
+    from collections import OrderedDict
+    target = open(path + '/graph_data.csv', 'w')
+    db_positions = session.query(Statement).filter(Statement.issue_uid == db_issue.uid,
+                                                   Statement.is_startpoint == True,
+                                                   Statement.is_disabled == False).order_by(Statement.uid.asc()).all()
+    max = OrderedDict()
+    for pos in db_positions:
+        graph, error = get_partial_graph_for_statement(pos.uid, db_issue.uid, '')
+        for n in graph['nodes']:
+            if len(n['label']) is 0 or len(n['type']) is 0:
+                graph['nodes'].remove(n)
+        max[pos.uid] = len(graph['nodes']) - 1 # minus issue
+
+    depth = OrderedDict()
+    for pos in db_positions:
+        d = __get_depth_of_branch(pos.uid) + 1
+        depth[pos.uid] = d
+    target.write('index,uid,size,depth\n')
+    for index,pos in enumerate(db_positions):
+        target.write('{},{},{},{}\n'.format(index, pos.uid, max[pos.uid], depth[pos.uid]))
+    target.close()
+
+
+def __get_depth_of_branch(statement_uid, todos=[], dones=[], depth=0):
+    arguments = get_all_arguments_by_statement(statement_uid)
+    dones = list(set(dones + [statement_uid]))
+    if not arguments or len(arguments) == 0:
+        return 1
+
+    statements = []
+    db_premises = session.query(Premise).filter(Premise.premisesgroup_uid.in_([a.premisesgroup_uid for a in arguments])).all()
+    statements += [premise.statement_uid for premise in db_premises]
+    statements = list(set([x for x in statements if x not in dones and x not in todos and x != statement_uid]))
+    if len(statements) == 0:
+        return 1
+
+    todo = statements[0]
+    todos = list(set(todos + (statements[1:] if len(statements) > 1 else [])))
+    return __get_depth_of_branch(todo, todos, dones, depth) + 1
+
 if __name__ == '__main__':
     # mk dir
     try:
@@ -374,7 +416,8 @@ if __name__ == '__main__':
     # print_activity_per_day()
     # print_user_activity()
     # print_textversion_history()
-    print_textversion_length()
+    # print_textversion_length()
     # print_textversions_audit()
     # print_argumentation_index()
     # print_review_summary()
+    print_graph_data()
