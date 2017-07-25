@@ -4,7 +4,7 @@ from sqlalchemy import and_, func
 import dbas.review.helper.queues as review_queue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
-    sql_timestamp_pretty_print, Argument, Premise, PremiseGroup
+    sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement
 from dbas.handler import user, notification as NotificationHelper
 from dbas.handler.rss import append_action_to_issue_rss
 from dbas.handler.voting import add_seen_argument, add_seen_statement
@@ -328,6 +328,11 @@ def insert_as_statements(application_url, default_locale_name, text_list, user, 
         if new_statement:
             statements.append(new_statement)
 
+            # add marked statement
+            DBDiscussionSession.add(MarkedStatement(statement=new_statement.uid, user=db_user.uid))
+            DBDiscussionSession.add(SeenStatement(statement_uid=new_statement.uid, user_uid=db_user.uid))
+            DBDiscussionSession.flush()
+
             if not is_duplicate:
                 _tn = Translator(new_statement.lang) if _tn is None else _tn
                 db_issue = DBDiscussionSession.query(Issue).get(issue)
@@ -389,11 +394,6 @@ def __set_statement(text, nickname, is_start, issue, lang):
     new_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.textversion_uid == textversion.uid,
                                                                      Statement.issue_uid == issue)).order_by(Statement.uid.desc()).first()
     textversion.set_statement(new_statement.uid)
-
-    # add marked statement
-    DBDiscussionSession.add(MarkedStatement(statement=new_statement.uid, user=db_user.uid))
-    DBDiscussionSession.flush()
-
     transaction.commit()
 
     return new_statement, False

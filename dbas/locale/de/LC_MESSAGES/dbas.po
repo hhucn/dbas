@@ -92,11 +92,7 @@ msgstr "Sie uns bitte."
 #: templates/index.pt:30
 msgid "choose_fieldtest_reviewer_text"
 msgstr ""
-"Derzeit läuft D-BAS sowohl im Produktivbetrieb zur Diskussion von "
-"Verbesserungen im Studiengang Informatik (nur auf Deutsch), als auch in "
-"einer Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres "
-"Browsers vermuten wir, dass Sie sich für den Produktivbetrieb interessieren. "
-"Welche Version von D-BAS möchten Sie nutzen:"
+"Derzeit läuft D-BAS sowohl im Produktivbetrieb zur Diskussion von Verbesserungen im Studiengang Informatik (original nur auf Deutsch, aber mit einer manuellen, englischen Übersetzung), als auch in einer Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres Browsers vermuten wir, dass Sie sich für den Produktivbetrieb interessieren. Welche Version von D-BAS möchten Sie nutzen:"
 
 #. Default: Zum Feldversuch
 #: templates/index.pt:35

@@ -342,6 +342,71 @@ def evaluate_history():
     print('\n')
 
 
+def evaluate_reactions():
+    db_users = [user for user in session.query(User).filter(~User.nickname.in_(user_admin)).all()]
+    user_histories = [session.query(History).filter_by(author_uid=user.uid).order_by(History.uid.asc()).all() for user in db_users]
+    undermine, support, undercut, rebut, dontknow = 0, 0, 0, 0, 0
+    reaction_step = False
+    tmp_uid = 0
+    last = ''
+
+    for user_history in user_histories:
+        for index, history in enumerate(user_history):
+            path = history.path.split('?')[0]
+            # print(path)
+
+            if '/reaction/' in path and not reaction_step:
+                reaction_step = True
+                tmp_uid = path.split('/')[5]
+                last = path
+                continue
+
+            if reaction_step:
+
+                # re_reaction = '/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}' # discussion_reaction
+                # re_reaction = '\W?([a-z]+-?)+\W[a-z]+\W\d*\W[a-z]*\W\d*'
+                # re_justify = '/{slug}/justify/{statement_or_arg_id}/{mode}*relation' # discussion_justify
+                # re_justify = '\W?([a-z]+-?)+\W[a-z]+\W\d*\W[a-z]*\W[a-z]*'
+                # pattern_reaction = re.compile(re_reaction)
+                # pattern_justify = re.compile(re_justify)
+                # print('{} {} {}'.format(pattern_reaction.match(path), pattern_justify.match(path), path))
+
+                _undermine = tmp_uid in path and 'undermine' in path
+                _undercut = tmp_uid in path and 'undercut' in path
+                _support = 'reaction' in path and last != path
+                _rebut = len(path.split('/')) == 5
+                if len(path.split('/')) > 5 and path != last and RepresentsInt(path.split('/')[5]):
+                    _dontknow = path.split('/')[5] is not tmp_uid
+                    print('{} {}'.format(path.split('/')[5], tmp_uid))
+                else:
+                    _dontknow = False
+                s = 'M' if _undermine else 'S' if _support else 'C' if _undercut else 'R' if _rebut else 'D' if _dontknow else '-'
+                print('{} - {}: {} -> {}'.format(s, tmp_uid, last, path))
+
+                undermine += 1 if _undermine else 0
+                support += 1 if _support else 0
+                undercut += 1 if _undercut else 0
+                rebut += 1 if _rebut else 0
+                dontknow += 1 if _dontknow else 0
+
+                reaction_step = False
+
+    print('Reactions:')
+    print('  - Undermine: {}'.format(undermine))
+    print('  - Support: {}'.format(support))
+    print('  - Undercut: {}'.format(undercut))
+    print('  - Rebut: {}'.format(rebut))
+    print('  - Dont know: {}'.format(dontknow))
+
+
+def RepresentsInt(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
+
+
 def evaluate_quits():
     quit_count = 2
     quit_counters = [300, 600, 900]  # 5, 10, 15 Minutes
@@ -375,30 +440,6 @@ def evaluate_activity():
     print('\n')
 
 
-def evaluate_graph():
-    print('Graph Data:')
-    db_positions = session.query(Statement).filter(Statement.issue_uid == db_issue.uid, Statement.is_startpoint == True).all()
-    max = {}
-    for pos in db_positions:
-        graph, error = get_partial_graph_for_statement(pos.uid, db_issue.uid, '')
-        max[pos.uid] = len(graph['nodes'])
-    sorted_max = sorted(max.items(), key=lambda x: x[1])
-    print('  - Biggest Branches')
-    for t in sorted_max[-top_count:]:
-        print('    - {} nodes for position {}'.format(t[1], t[0]))
-
-    depth = {}
-    for pos in db_positions:
-        d = __get_depth_of_branch(pos.uid) + 1
-        depth[pos.uid] = d
-    sorted_depth = sorted(depth.items(), key=lambda x: x[1])
-    print('  - Depth of Branches')
-    for t in sorted_depth[-top_count:]:
-        print('    - Depth of {} for position {}'.format(t[1], t[0]))
-    print('    - Average {}'.format(sum(t[1] for t in sorted_depth) / len(sorted_depth)))
-    print('\n')
-
-
 def evaluate_measurements():
     print('Several Measurements:')
     db_statements = session.query(Statement).filter_by(issue_uid=db_issue.uid).order_by(Statement.uid.asc())
@@ -412,24 +453,6 @@ def evaluate_measurements():
         arg_index1 = round(len(statements_uids) / len(db_statements.all()), 3)
         arg_index2 = round(len(without_self) / len(db_statements.all()), 3)
         print('    - Position: {}\t->  {}\t{}'.format(pos.uid, arg_index1, arg_index2))
-
-
-def __get_depth_of_branch(statement_uid, todos=[], dones=[], depth=0):
-    arguments = get_all_arguments_by_statement(statement_uid)
-    dones = list(set(dones + [statement_uid]))
-    if not arguments or len(arguments) == 0:
-        return 1
-
-    statements = []
-    db_premises = session.query(Premise).filter(Premise.premisesgroup_uid.in_([a.premisesgroup_uid for a in arguments])).all()
-    statements += [premise.statement_uid for premise in db_premises]
-    statements = list(set([x for x in statements if x not in dones and x not in todos and x != statement_uid]))
-    if len(statements) == 0:
-        return 1
-
-    todo = statements[0]
-    todos = list(set(todos + (statements[1:] if len(statements) > 1 else [])))
-    return __get_depth_of_branch(todo, todos, dones, depth) + 1
 
 
 if __name__ == '__main__':
@@ -455,7 +478,7 @@ if __name__ == '__main__':
     # evaluate_authors()
     # evaluate_interests()
     # evaluate_reviews()
-    # evaluate_history()
+    # evaluate_reactions()
     # evaluate_quits()
     # evaluate_activity()
     evaluate_graph()
