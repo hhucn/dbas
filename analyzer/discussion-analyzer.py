@@ -3,7 +3,7 @@ import os
 import shutil
 
 from dbas.database import DBDiscussionSession as session, get_dbas_db_configuration
-from dbas.database.discussion_model import Issue,  User, Statement, TextVersion, Premise, Argument, History, \
+from dbas.database.discussion_model import Issue,  User, Statement, TextVersion, Argument, History, \
     MarkedArgument, MarkedStatement, ReviewDelete, ReviewEdit, ReviewOptimization, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, ClickedArgument, \
     ClickedStatement, ReviewDuplicate, LastReviewerDuplicate
@@ -481,5 +481,4 @@ if __name__ == '__main__':
     # evaluate_reactions()
     # evaluate_quits()
     # evaluate_activity()
-    evaluate_graph()
     # evaluate_measurements()
