@@ -306,12 +306,14 @@ data = {
     323: 'the mathematics lectures are already adjusted for computer science students by requiring softer admission criteria and by passing the course without a grade',
 }
 
+
 def sanity_check():
     s_uids = [s.uid for s in session.query(Statement).filter_by(issue_uid=old_issue_uid).all()]
     db_textversions = session.query(TextVersion).filter(TextVersion.statement_uid.in_(s_uids)).all()
     for tv in db_textversions:
         if tv.uid not in data:
             print('Error: no translation for statement {}'.format(tv.uid))
+
 
 def add_issue():
     title = 'Improve the Course of Computer-Science Studies'
@@ -455,6 +457,7 @@ def add_arguments():
         transaction.commit()
         uid = session.query(Argument).order_by(Argument.uid.desc()).first().uid
         argument_from_old_to_new[argument.uid] = uid
+
 
 if __name__ == "__main__":
     sanity_check()

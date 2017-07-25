@@ -250,8 +250,8 @@ def print_textversion_length():
     tvs = session.query(TextVersion).filter(TextVersion.statement_uid.in_([x.uid for x in db_statements])).all()
     l = [len(tv.content) for tv in tvs]
     import numpy as np
-    for i in range(0,101):
-        target.write('{},{}\n'.format(i/100, np.percentile(l, i)))
+    for i in range(0, 101):
+        target.write('{},{}\n'.format(i / 100, np.percentile(l, i)))
     target.close()
 
 
@@ -366,14 +366,14 @@ def print_graph_data():
         for n in graph['nodes']:
             if len(n['label']) is 0 or len(n['type']) is 0:
                 graph['nodes'].remove(n)
-        max[pos.uid] = len(graph['nodes']) - 1 # minus issue
+        max[pos.uid] = len(graph['nodes']) - 1  # minus issue
 
     depth = OrderedDict()
     for pos in db_positions:
         d = __get_depth_of_branch(pos.uid) + 1
         depth[pos.uid] = d
     target.write('index,uid,size,depth\n')
-    for index,pos in enumerate(db_positions):
+    for index, pos in enumerate(db_positions):
         target.write('{},{},{},{}\n'.format(index, pos.uid, max[pos.uid], depth[pos.uid]))
     target.close()
 
@@ -394,6 +394,7 @@ def __get_depth_of_branch(statement_uid, todos=[], dones=[], depth=0):
     todo = statements[0]
     todos = list(set(todos + (statements[1:] if len(statements) > 1 else [])))
     return __get_depth_of_branch(todo, todos, dones, depth) + 1
+
 
 if __name__ == '__main__':
     # mk dir
