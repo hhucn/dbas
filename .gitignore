@@ -42,7 +42,7 @@ getMails.py
 addEnglischDiscussion.py
 .#*
 pserve.ini
-evaluation/
+analyzer/
 
 # Pycharm
 .idea/
