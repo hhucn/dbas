@@ -626,12 +626,24 @@ def setup_news_db(session, ui_locale):
                        'increased during the last years, therefore we have to manage some problems like a shortage of '
                        'space for working places and a lack of place classrooms. Our fieldtest will be supported by '
                        'sociology students, who will also do an survey based on our metrics we invented mid 2015.')
+    news60 = News(title='HCI in Canada',
+                  date=arrow.get('2017-07-19'),
+                  author='Tobias Krauthoff',
+                  news='Last week we had the chance to introduce our work about embedding dialog-based discussion '
+                       'into the real world at the HCI in Vancouver. It was a very huge and broad conference '
+                       'with many interesting talks and workshops. Thanks to all listeners during Christians talk.')
+    news61 = News(title='Finding from our fieldtest',
+                  date=arrow.get('2017-07-28'),
+                  author='Tobias Krauthoff',
+                  news='In the meantime we have finished the evaluation of our first fieldtest, which was done '
+                       'carried out to our complete satisfaction. At the moment we are working on our new paper, '
+                       'which will be finished soon. Stay tuned!')
 
     news_array = [news01, news02, news03, news04, news05, news06, news07, news08, news09, news10, news11, news12,
                   news13, news14, news15, news16, news29, news18, news19, news20, news21, news22, news23, news24,
                   news25, news26, news27, news28, news30, news31, news32, news33, news34, news35, news36, news37,
                   news38, news39, news40, news41, news42, news43, news44, news45, news46, news47, news48, news49,
-                  news50, news51, news52, news53, news54, news55, news56, news57, news58, news59]
+                  news50, news51, news52, news53, news54, news55, news56, news57, news58, news59, news60, news61]
     session.add_all(news_array[::-1])
     session.flush()
 
