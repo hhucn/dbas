@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-05-19 15:03+0200\n"
+"POT-Creation-Date: 2017-07-28 08:04+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -92,7 +92,12 @@ msgstr "Sie uns bitte."
 #: templates/index.pt:30
 msgid "choose_fieldtest_reviewer_text"
 msgstr ""
-"Derzeit läuft D-BAS sowohl im Produktivbetrieb zur Diskussion von Verbesserungen im Studiengang Informatik (original nur auf Deutsch, aber mit einer manuellen, englischen Übersetzung), als auch in einer Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres Browsers vermuten wir, dass Sie sich für den Produktivbetrieb interessieren. Welche Version von D-BAS möchten Sie nutzen:"
+"Derzeit läuft D-BAS sowohl im Produktivbetrieb zur Diskussion von "
+"Verbesserungen im Studiengang Informatik (original nur auf Deutsch, aber mit "
+"einer manuellen, englischen Übersetzung), als auch in einer Demo-Version "
+"(nur auf Englisch). Basierend auf den Einstellungen Ihres Browsers vermuten "
+"wir, dass Sie sich für den Produktivbetrieb interessieren. Welche Version "
+"von D-BAS möchten Sie nutzen:"
 
 #. Default: Zum Feldversuch
 #: templates/index.pt:35
@@ -904,7 +909,7 @@ msgstr "Rückgängig machen"
 #. Default: Cancel
 #: templates/review-history.pt:96 templates/snippet-popups.pt:172
 #: templates/snippet-popups.pt:195 templates/snippet-popups.pt:220
-#: templates/snippet-popups.pt:1094
+#: templates/snippet-popups.pt:1098
 msgid "cancel"
 msgstr "Abbrechen"
 
@@ -1070,7 +1075,7 @@ msgstr ""
 
 #. Default: Okay
 #: templates/snippet-popups.pt:171 templates/snippet-popups.pt:194
-#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1093
+#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1097
 msgid "okay"
 msgstr "Okay"
 
@@ -1643,14 +1648,14 @@ msgstr "Geklickte Argumente"
 #. Default: Votes for Statements
 #. Default: Votes for Arguments
 #: templates/settings.pt:157 templates/settings.pt:308 templates/finish.pt:50
-#: templates/user.pt:53
+#: templates/user.pt:57
 msgid "discussion_votes_statements"
 msgstr "Markierte Aussagen"
 
 #. Default: Votes for Arguments
 #. Default: Votes for Statements
 #: templates/settings.pt:164 templates/settings.pt:315 templates/finish.pt:54
-#: templates/user.pt:57
+#: templates/user.pt:53
 msgid "discussion_votes_arguments"
 msgstr "Markierte Argumente"
 
@@ -1961,57 +1966,57 @@ msgid "restart_discussion"
 msgstr "Neustart"
 
 #. Default: Start
-#: templates/content.pt:286
+#: templates/content.pt:188
 msgid "start"
 msgstr "Start"
 
 #. Default: Now
-#: templates/content.pt:288
+#: templates/content.pt:190
 msgid "now"
 msgstr "Jetzt"
 
 #. Default: Complete View
-#: templates/content.pt:303
+#: templates/content.pt:205
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
 #. Default: Default View
-#: templates/content.pt:304
+#: templates/content.pt:206
 msgid "default_view"
 msgstr "Standardansicht"
 
 #. Default: Labels
-#: templates/content.pt:305
+#: templates/content.pt:207
 msgid "labels"
 msgstr "Beschriftungen"
 
 #. Default: Positions
-#: templates/content.pt:306
+#: templates/content.pt:208
 msgid "positions"
 msgstr "Positionen"
 
 #. Default: Statements
-#: templates/content.pt:307
+#: templates/content.pt:209
 msgid "statements"
 msgstr "Aussagen"
 
 #. Default: My path
-#: templates/content.pt:308 templates/content.pt:309
+#: templates/content.pt:210 templates/content.pt:211
 msgid "my_path"
 msgstr "Mein Pfad"
 
 #. Default: My statements
-#: templates/content.pt:310
+#: templates/content.pt:212
 msgid "my_statements"
 msgstr "Meine Aussagen"
 
 #. Default: Supports
-#: templates/content.pt:311
+#: templates/content.pt:213
 msgid "supports_on_my_statements"
 msgstr "Unterstützungen"
 
 #. Default: Attacks
-#: templates/content.pt:312
+#: templates/content.pt:214
 msgid "attacks_on_my_statements"
 msgstr "Angriffe"
 
