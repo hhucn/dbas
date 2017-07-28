@@ -57,6 +57,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             DBDiscussionSession.query(Statement).get(uid).textversion_uid = 1
             DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(MarkedStatement).filter_by(statement_uid=uid).delete()
+            DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(Statement).filter_by(uid=uid).delete()
         transaction.commit()
 
@@ -73,6 +74,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             DBDiscussionSession.query(Statement).get(uid).textversion_uid = 1
             DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(MarkedStatement).filter_by(statement_uid=uid).delete()
+            DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(Statement).filter_by(uid=uid).delete()
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Björn').first()
         DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()
