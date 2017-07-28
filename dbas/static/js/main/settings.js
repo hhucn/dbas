@@ -1,6 +1,5 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 function HistoryHandler(){
@@ -46,7 +45,7 @@ function HistoryHandler(){
 	 * @param jsonData
 	 */
 	this.setDataInHistoryTable = function (jsonData) {
-		var tableElement, trElement, tElement, i, parsedData, thead, tbody, breaked_url;
+		var tableElement, trElement, tElement, i, thead, tbody;
 		tElement = ['', ''];
 		tableElement = $('<table>');
 		tableElement
@@ -75,10 +74,9 @@ function HistoryHandler(){
 
 		// adding the historys
 		var has_data = false;
-		parsedData = $.parseJSON(jsonData);
-		$.each(parsedData, function setDataInHistoryTableEach(index, history) {
+		$.each(jsonData, function setDataInHistoryTableEach(index, history) {
 			has_data = true;
-			breaked_url = cutTextOnChar(history.path, 120, '/');
+			// breaked_url = cutTextOnChar(history.path, 120, '/');
 			tElement[0] = $('<td>').text(index);
 			tElement[1] = $('<td>').html('<a href="' + history.path + '">' + history.path + '</a>');
 			tElement[2] = $('<td>').text(history.timestamp);
@@ -174,13 +172,12 @@ function SettingsHandler(){
 	 * @param settings_value
 	 * @param service
 	 */
-	this.callbackDone = function (jsonData, toggle_element, settings_value, service){
-		var parsedData = $.parseJSON(jsonData);
-		if (parsedData.error.length  ===  0){
+	this.callbackDone = function (data, toggle_element, settings_value, service){
+		if (data.error.length  ===  0){
 			$('#' + settingsSuccessDialog).fadeIn();
-			$('#value_public_nickname').text(parsedData.public_nick);
-			$('#value_public_page').attr('href', parsedData.public_page_url);
-			$('#user_gravatar').attr('src', parsedData.gravatar_url);
+			$('#value_public_nickname').text(data.public_nick);
+			$('#value_public_page').attr('href', data.public_page_url);
+			$('#user_gravatar').attr('src', data.gravatar_url);
 			setTimeout(function() { $('#' + settingsSuccessDialog).fadeOut(); }, 3000);
 		} else {
 			new SettingsHandler().callbackFail(toggle_element, settings_value, service);
@@ -236,8 +233,7 @@ function StatisticsHandler(){
 	 * @param is_clicked_element
 	 */
 	this.callbackGetStatisticsDone = function(jsonData, titleText, is_clicked_element){
-		var parsedData = $.parseJSON(jsonData);
-		if (parsedData.length  ===  0){
+		if (jsonData.length  ===  0){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 			return;
 		}
@@ -259,7 +255,7 @@ function StatisticsHandler(){
 		span_up = $('<i>').addClass('fa').addClass('fa-thumbs-o-up').attr('aria-hidden', 'true');
 		span_down = $('<i>').addClass('fa').addClass('fa-thumbs-o-down').attr('aria-hidden', 'true');
 
-		$.each(parsedData, function callbackGetStatisticsDoneTableEach(key, val) {
+		$.each(jsonData, function callbackGetStatisticsDoneTableEach(key, val) {
 			tr = $('<tr>')
 				.append($('<td>').text(val.timestamp))
 				.append($('<td>').html(val.content));
@@ -315,8 +311,7 @@ function StatisticsHandler(){
 	 * @param jsonData
 	 */
 	this.callbackDeleteStatisticsDone = function(jsonData) {
-		var parsedData = $.parseJSON(jsonData);
-		if (parsedData.removed_data  ===  'true') {
+		if (jsonData.removed_data  ===  'true') {
 			$('#' + statisticsSuccessDialog).fadeIn();
 			$('#' + statisticsSuccessMessage).text(_t(statisticsDeleted));
 			setTimeout(function () {

@@ -1,11 +1,11 @@
 import unittest
+import transaction
 
 import dbas.review.helper.flags as rf_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewOptimization, ReviewDuplicate, RevokedDuplicate, \
     LastReviewerDuplicate, ReviewCanceled
 from dbas.strings.keywords import Keywords as _
-from dbas.views import transaction
 
 
 class TestReviewFlagHelper(unittest.TestCase):

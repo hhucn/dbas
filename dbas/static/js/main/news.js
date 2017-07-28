@@ -1,6 +1,5 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 function News() {
@@ -17,10 +16,10 @@ function News() {
 		var length = array.length;
 
 		// build rows
-		var div = '';
+		var div = $('<div>').attr('id', 'row_' + row).addClass('row');
 		var counter;
 		var row = 0;
-		var container = '';
+		var container = $('<div>').attr('id', 'container_' + row).addClass('container');
 		for (counter = 0; counter < length; counter++) {
 			if (counter % 3 === 0) {
 				if (div !== '') {
@@ -54,19 +53,18 @@ function News() {
 	 * @param data
 	 */
 	this.callbackIfDoneForSendingNews = function (data) {
-		var parsedData = $.parseJSON(data);
-		if (parsedData.error.length === 0) {
+		if (data.error.length === 0) {
 			// $('#' + writingNewsSuccessId).show();
 			// $('#' + writingNewsSuccessMessageId).text(_t(addedEverything));
 			// $('#' + writingNewNewsTitleId).val('');
 			// $('#' + writingNewNewsTextId).val('');
-			// $('#' + newsBodyId).prepend(new News().getNewsContainerAsHtml(parsedData.title, parsedData.date, parsedData.author, parsedData.news));
+			// $('#' + newsBodyId).prepend(new News().getNewsContainerAsHtml(data.title, data.date, data.author, data.news));
 			// new News().setSharingClickEvents();
 			// window.scrollTo(0, 0);
 			location.reload();
 		} else {
 			$('#' + writingNewsFailedId).show();
-			$('#' + writingNewsFailedMessageId).html(parsedData.error);
+			$('#' + writingNewsFailedMessageId).html(data.error);
 		}
 
 	};
@@ -82,6 +80,9 @@ function News() {
 			return;
 		}
 		
+		var set_height = function (ctx, mh) {
+			ctx.children().eq(0).css({'min-height': mh + 'px'});
+		};
 		// find max height of each row and set it
 		for (counter = 0; counter < row; counter++) {
 			var children = $('#row_' + counter).children();
@@ -90,8 +91,8 @@ function News() {
 			}).get();
 			maxHeight = Math.max.apply(Math, heights);
 			
-			$.each(children, function () {
-				$(this).children().eq(0).css({'min-height': maxHeight + 'px'});
+			$.each(children, function(){
+				set_height($(this), maxHeight);
 			});
 		}
 	};
@@ -181,14 +182,16 @@ function News() {
 		newsNavigator.append(html);
 
 		// click events
+		var init_tmp = function(ctx){
+			newsNavigator.children().eq(0).children().removeClass('active');
+			ctx.parent().addClass('active');
+			$('#' + newsBodyId).children().hide();
+			$('.news-page-' + ctx.data('counter')).show();
+			_this.checkNewsForthAndBackButtons(ctx.data('counter'), pagecounter);
+		};
 		for (counter = 0; counter <= pagecounter; counter++) {
 			$('#news-' + (counter + 1)).click(function () {
-				newsNavigator.children().eq(0).children().removeClass('active');
-				$(this).parent().addClass('active');
-
-				$('#' + newsBodyId).children().hide();
-				$('.news-page-' + $(this).data('counter')).show();
-				_this.checkNewsForthAndBackButtons($(this).data('counter'), pagecounter);
+				init_tmp($(this));
 			});
 		}
 
@@ -328,7 +331,7 @@ function News() {
 	 * Sharing shortened url via mail
 	 */
 	this.mailShare = function (_this) {
-		if (typeof $(_this) === undefined){
+		if (typeof $(_this) === 'undefined'){
 			return;
 		}
 		if ($(_this).attr('id') === shareUrlButtonMail) {
@@ -346,7 +349,7 @@ function News() {
 	 * Sharing shortened url on google
 	 */
 	this.googleShare = function (_this) {
-		if (typeof $(_this) === undefined){
+		if (typeof $(_this) === 'undefined'){
 			return;
 		}
 		if ($(_this).attr('id') === shareUrlButtonGoogle) {
@@ -360,7 +363,7 @@ function News() {
 	 * Sharing shortened url on facebook
 	 */
 	this.facebookShare = function (_this) {
-		if (typeof $(_this) === undefined){
+		if (typeof $(_this) === 'undefined'){
 			return;
 		}
 		if ($(_this).attr('id') === shareUrlButtonFacebook) {
@@ -379,7 +382,7 @@ function News() {
 	 * Sharing shortened url on twitter
 	 */
 	this.twitterShare = function (_this) {
-		if (typeof $(_this) === undefined){
+		if (typeof $(_this) === 'undefined'){
 			return;
 		}
 		if ($(_this).attr('id') === shareUrlButtonTwitter) {

@@ -1,5 +1,5 @@
 """
-Core compontent of D-BAS. The Dialog-Based Argumentation Software avoids the pitfalls of unstructured systems such as
+Core component of D-BAS. The Dialog-Based Argumentation Software avoids the pitfalls of unstructured systems such as
 asynchronous threaded discussions and it is usable by any participant without training while still supporting the full
 complexity of real-world argumentation. The key idea is to let users exchange arguments with each other in the form of
 a time-shifted dialog where arguments are presented and acted upon one-at-a-time.
@@ -12,7 +12,7 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 import logging
 import time
 from configparser import ConfigParser, NoSectionError
-from .helper.database import get_db_environs
+from dbas.database import get_db_environs
 import os
 from pyramid.authentication import AuthTktAuthenticationPolicy  # , SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
@@ -91,10 +91,11 @@ def main(global_config, **settings):
 
     # Include apps
     config.include('api', route_prefix='/api')
+    config.include('api.v2', route_prefix='/api/v2')
     config.include('graph', route_prefix='/graph')
     config.include('export', route_prefix='/export')
     config.include('admin', route_prefix='/admin')
-    config.include('websocket', route_prefix='/ws')
+    config.include('webhook', route_prefix='/webhook')
 
     # more includes are in the config
     config.include('pyramid_chameleon')
@@ -102,15 +103,15 @@ def main(global_config, **settings):
     config.include('pyramid_tm')
 
     config.add_static_view(name='static', path='dbas:static/', cache_max_age=3600)
-    config.add_static_view(name='ws', path='websocket:static/', cache_max_age=3600)
+    config.add_static_view(name='webhook', path='webhook:static/', cache_max_age=3600)
     config.add_static_view(name='admin', path='admin:static/', cache_max_age=3600)
     config.add_cache_buster('static', QueryStringConstantCacheBuster(str(int(time.time()))))
     config.add_cache_buster('admin:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
-    config.add_cache_buster('websocket:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
+    config.add_cache_buster('webhook:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
 
     # adding main routes
     config.add_route('main_page', '/')
-    config.add_route('main_contact', '/contact*reason')
+    config.add_route('main_contact', '/contact{reason:.*}')
     config.add_route('main_settings', '/settings')
     config.add_route('main_notification', '/notifications')
     config.add_route('main_news', '/news')

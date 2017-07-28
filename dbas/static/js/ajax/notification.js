@@ -1,6 +1,5 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 function AjaxNotificationHandler(){
@@ -23,15 +22,14 @@ function AjaxNotificationHandler(){
 			dataType: 'json',
 			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function sendAjaxForReadMessageDone(data) {
-			var parsedData = $.parseJSON(data);
-			if (parsedData.error.length > 0) {
-				setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
+			if (data.error.length > 0) {
+				setGlobalErrorHandler(_t_discussion(ohsnap), data.error);
 			} else {
 				var titletext = $(_this).text().replace(_t(neww).toLocaleUpperCase(), '').trim();
 				var spanEl = $('<span>').addClass('text-primary').text(titletext);
 				$(_this).empty().html(spanEl);
 				$('#collapse' + id).addClass('in');
-				new Notifications().setNewBadgeCounter(parsedData.unread_messages);
+				new Notifications().setNewBadgeCounter(data.unread_messages);
 			}
 		}).fail(function sendAjaxForReadMessageFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
@@ -54,15 +52,14 @@ function AjaxNotificationHandler(){
 			dataType: 'json',
 			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function sendAjaxForDeleteMessageDone(data) {
-			var parsedData = $.parseJSON(data);
-			if (parsedData.success.length > 0) {
+			if (data.success.length > 0) {
 				$('#' + id).remove();
-				new Notifications().setNewBadgeCounter(parsedData.unread_messages);
-				$('#total_in_counter').text(parsedData.total_in_messages);
-				$('#total_out_counter').text(parsedData.total_out_messages);
-				setGlobalSuccessHandler('', parsedData.success);
+				new Notifications().setNewBadgeCounter(data.unread_messages);
+				$('#total_in_counter').text(data.total_in_messages);
+				$('#total_out_counter').text(data.total_out_messages);
+				setGlobalSuccessHandler('', data.success);
 			} else {
-				setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
+				setGlobalErrorHandler(_t_discussion(ohsnap), data.error);
 			}
 		}).fail(function sendAjaxForDeleteMessageFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
@@ -90,17 +87,16 @@ function AjaxNotificationHandler(){
 			async: true,
 			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function ajaxSendNewsDone(data) {
-			var parsedData = $.parseJSON(data);
-			if (parsedData.error.length === 0) {
+			if (data.error.length === 0) {
 				$('#popup-writing-notification-success').show();
 				$('#popup-writing-notification-success-message').text(_t(notificationWasSend));
 				var out_counter = $('#total_out_counter');
 				out_counter.text(' ' + (parseInt(out_counter.text()) + 1) + ' ');
 				location.reload();
-				// new Notifications().appendMessageInOutbox(recipient, parsedData.recipient_avatar, title, text, parsedData.timestamp, parsedData.uid)
+				// new Notifications().appendMessageInOutbox(recipient, data.recipient_avatar, title, text, data.timestamp, data.uid)
 			} else {
 				$('#popup-writing-notification-failed').show();
-				$('#popup-writing-notification-failed-message').html(parsedData.error);
+				$('#popup-writing-notification-failed-message').html(data.error);
 			}
 		}).fail(function ajaxSendNewsFail() {
 			$('#popup-writing-notification-failed').show();

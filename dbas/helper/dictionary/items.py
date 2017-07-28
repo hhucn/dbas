@@ -12,16 +12,18 @@ from sqlalchemy import and_
 import dbas.recommender_system as rs
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User
-from dbas.helper.query import get_another_argument_with_same_conclusion
-from dbas.helper.voting import add_seen_argument, add_seen_statement
-from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, is_author_of_argument
+from dbas.handler.arguments import get_another_argument_with_same_conclusion
+from dbas.handler.voting import add_seen_argument, add_seen_statement
+from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, \
+    is_author_of_argument
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
+from dbas.review.helper.queues import is_statement_in_edit_queue, is_arguments_premise_in_edit_queue
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, get_support_to_argument_text_list
+from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, \
+    get_support_to_argument_text_list
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
-from dbas.review.helper.queues import is_statement_in_edit_queue, is_arguments_premise_in_edit_queue
 
 
 class ItemDictHelper(object):
@@ -48,9 +50,9 @@ class ItemDictHelper(object):
         self.LIMIT_SUPPORT_STEP = 0.30
 
         if for_api:
-            self.path = path[len('/api/' + DBDiscussionSession.query(Issue).get(issue_uid).get_slug()):]
+            self.path = path[len('/api/' + DBDiscussionSession.query(Issue).get(issue_uid).slug):]
         else:
-            self.path = path[len('/discuss/' + DBDiscussionSession.query(Issue).get(issue_uid).get_slug()):]
+            self.path = path[len('/discuss/' + DBDiscussionSession.query(Issue).get(issue_uid).slug):]
         if len(history) > 0:
             self.path = history + '-' + self.path
 
@@ -67,7 +69,7 @@ class ItemDictHelper(object):
                                                   Statement.issue_uid == self.issue_uid)).all()
 
         uids = rs.get_uids_of_best_positions(db_statements)  # TODO # 166
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()
+        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
 
         statements_array = []
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
@@ -116,19 +118,22 @@ class ItemDictHelper(object):
         logger('ItemDictHelper', 'prepare_item_dict_for_attitude', 'def')
         _tn = Translator(self.lang)
 
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()
+        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
         # text = get_text_for_statement_uid(statement_uid)
         statements_array = []
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
-        # colon = ' ' if self.lang == 'de' else ': '
-        title_t = _tn.get(_.iAgreeWithInColor) + '.'  # + colon + text
-        title_f = _tn.get(_.iDisagreeWithInColor) + '.'  # + colon + text
-        title_d = _tn.get(_.iHaveNoOpinionYetInColor) + '.'  # + colon + text
+        db_arguments = DBDiscussionSession.query(Argument).filter(Argument.conclusion_uid == statement_uid,
+                                                                  Argument.is_supportive == True).all()
+        uid = random.choice(db_arguments).uid if len(db_arguments) > 0 else 0
+
+        title_t = _tn.get(_.iAgreeWithInColor) + '.'
+        title_f = _tn.get(_.iDisagreeWithInColor) + '.'
+        title_d = _tn.get(_.iHaveNoOpinionYetInColor) + '.'
         url_t = _um.get_url_for_justifying_statement(True, statement_uid, 't')
         url_f = _um.get_url_for_justifying_statement(True, statement_uid, 'f')
-        url_d = _um.get_url_for_justifying_statement(True, statement_uid, 'd')
+        url_d = _um.get_url_for_justifying_statement(True, uid, 'd')
         d_t = self.__create_answer_dict('agree', [{'title': title_t, 'id': 'agree'}], 'agree', url_t)
         d_f = self.__create_answer_dict('disagree', [{'title': title_f, 'id': 'disagree'}], 'disagree', url_f)
         d_d = self.__create_answer_dict('dontknow', [{'title': title_d, 'id': 'dontknow'}], 'dontknow', url_d)
@@ -151,7 +156,7 @@ class ItemDictHelper(object):
         logger('ItemDictHelper', 'get_array_for_justify_statement', 'def')
         statements_array = []
         _tn = Translator(self.lang)
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()
+        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
         db_arguments = rs.get_arguments_by_conclusion(statement_uid, is_supportive)
         uids = rs.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
 
@@ -221,10 +226,10 @@ class ItemDictHelper(object):
         :param history:
         :return:
         """
-        logger('ItemDictHelper', 'get_array_for_justify_argument', 'def: arg ' + str(argument_uid) + ', attack ' + attack_type)
+        logger('ItemDictHelper', 'get_array_for_justify_argument', 'def: arg {}, attack {}'.format(argument_uid, attack_type))
         statements_array = []
         _tn = Translator(self.lang)
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()
+        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
         # description in docs: dbas/logic
         db_arguments = self.__get_arguments_based_on_attack(attack_type, argument_uid)
         uids = rs.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
@@ -339,7 +344,7 @@ class ItemDictHelper(object):
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_dont_know_reaction', 'def')
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()
+        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
         statements_array = []
 
         db_arguments = get_not_disabled_arguments_as_query()
@@ -457,7 +462,7 @@ class ItemDictHelper(object):
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_reaction', 'def')
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()
+        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
 
         db_sys_argument = DBDiscussionSession.query(Argument).get(argument_uid_sys)
         db_user_argument = DBDiscussionSession.query(Argument).get(argument_uid_user)
@@ -608,7 +613,7 @@ class ItemDictHelper(object):
         """
         logger('ItemDictHelper', 'get_array_for_choosing', 'def')
         statements_array = []
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).get_slug()
+        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         conclusion = argument_or_statement_id if not is_argument else None
         argument = argument_or_statement_id if is_argument else None
@@ -771,8 +776,8 @@ class ItemDictHelper(object):
         :return: dict()
         """
         # check punctuation
-        for premise in premises:
-            if 'title' in premise:
+        for index, premise in enumerate(premises):
+            if 'title' in premise and index == len(premises) - 1:
                 premise['title'] += '.' if not premise['title'].endswith(('.', '?', '!')) else ''
 
         return {

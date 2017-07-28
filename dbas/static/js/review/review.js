@@ -1,6 +1,5 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 function Review() {
@@ -46,7 +45,6 @@ function Review() {
 	 *
 	 */
 	this.sendOptimization = function(){
-		var container = $('#optimization-container');
 		var edit_array = [];
 		// getting all edited values
 		$.each($('#argument-part-table').find('input'), function(){

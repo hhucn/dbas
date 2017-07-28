@@ -1,6 +1,5 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 /**
@@ -281,6 +280,7 @@ var fuzzy_start_statement      = 0;
 var fuzzy_statement_popup      = 1;
 var fuzzy_start_premise        = 2;
 var fuzzy_add_reason           = 3;
+var fuzzy_duplicate            = 4;
 var fuzzy_find_user            = 5;
 var fuzzy_find_statement       = 9;
 var attr_add                   = 'add';

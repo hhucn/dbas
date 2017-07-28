@@ -1,6 +1,5 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 /**
@@ -84,7 +83,6 @@ function setLocalStorage (key, value){
 		localStorage.setItem(key, value);
 		return true;
 	} catch(err){
-		console.log('Error while set item in local storage.');
 		return false;
 	}
 }
@@ -100,7 +98,6 @@ function getLocalStorage (key){
 	try {
 		return localStorage.getItem(key);
 	} catch(err){
-		console.log('Error while get item in local storage.');
 		return undefined;
 	}
 }

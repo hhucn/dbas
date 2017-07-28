@@ -1,6 +1,5 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 function PopupHandler() {
@@ -162,6 +161,11 @@ function PopupHandler() {
 			popup.find('#dupl').prev().hide();
 			popup.find('#dupl').next().hide();
 			popup.find('#dupl').hide();
+			
+			// do not mark arguments for optimizations
+			popup.find('fieldset').children().eq(0).hide();
+			popup.find('fieldset').children().eq(1).hide();
+			popup.find('fieldset').children().eq(2).hide();
 		} else {
 			popup.find('.statement_text').show();
 			popup.find('.argument_text').hide();
@@ -170,16 +174,29 @@ function PopupHandler() {
 			popup.find('#dupl').next().show();
 			popup.find('#dupl').show();
 		}
+		
 		popup.modal('show');
 		popup.on('hide.bs.modal', function () {
 			popup.find('input').off('click').unbind('click');
 		});
+		
+		popup.on('hidden.bs.modal', function () {
+			popup.find('fieldset').children().eq(0).show();
+			popup.find('fieldset').children().eq(1).show();
+			popup.find('fieldset').children().eq(2).show();
+		});
+		
 		popup.find('input').not('#dupl').click(function () {
 			var reason = $(this).attr('value');
+			if (reason === 'optimization' && is_argument){
+				// do not mark arguments for optimizations
+				return false;
+			}
 			new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, is_argument, null);
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
 		});
+		
 		popup.find('#dupl').click(function () {
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
@@ -207,7 +224,9 @@ function PopupHandler() {
 	this.showFlagArgumentPopup = function (uid) {
 		var popup = $('#popup-flag-argument');
 		var bubble = $('#question-bubble-' + uid);
-		// var text = $('.triangle-l:last-child .triangle-content').text();
+		if (bubble.length === 0){
+			bubble = $('#' + uid.replace('.', '\\.'));
+		}
 		
 		// clean text
 		// cut the part after <br><br>
@@ -234,17 +253,24 @@ function PopupHandler() {
 		popup.on('hide.bs.modal', function () {
 			popup.find('input').off('click').unbind('click');
 		});
-		popup.find('input').click(function () {
-			if ($(this).data('special') === 'undercut') {
+		popup.find('input,label').off('click').click(function () {
+			var special = $(this).data('special');
+			var id = $(this).attr('id');
+			var next = $(this).next();
+			if ($(this).is('label')){  // gettin the <input>
+				special = $(this).prev().data('special');
+				id = $(this).prev().attr('id');
+				next = $(this);
+			}
+			if (special === 'undercut') {
 				$('#item_undercut').click();
 				
-			} else if ($(this).data('special') === 'argument') {
+			} else if (special === 'argument') {
 				new PopupHandler().showFlagStatementPopup(uid, true, text);
 				
 			} else {
-				console.log('b');
-				var tmp = $(this).next().find('em').text();
-				new PopupHandler().showFlagStatementPopup($(this).attr('id'), false, tmp);
+				var tmp = next.find('em').text();
+				new PopupHandler().showFlagStatementPopup(id, false, tmp);
 			}
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
@@ -311,7 +337,6 @@ function PopupHandler() {
 	 * @param reason
 	 */
 	this.showPopupForSelectingDuplicateFromPrgroup = function(uid, reason){
-		console.log(reason);
 		var popup = $('#popup-choose-statement');
 		var body = $('#popup-choose-statement-radios');
 		body.empty();
@@ -358,7 +383,7 @@ function PopupHandler() {
 		var input = $('#popup-duplicate-statement-text-search');
 		input.on('keyup', function(){
 			var escapedText = escapeHtml($(this).val());
-			new AjaxDiscussionHandler().fuzzySearchForDuplicate(escapedText, fuzzy_add_reason, text);
+			new AjaxDiscussionHandler().fuzzySearchForDuplicate(escapedText, fuzzy_duplicate, text);
 		});
 		
 		// dropdown
@@ -461,7 +486,9 @@ function PopupHandler() {
 				dropdown.show();
 				info_text.show();
 			}
-			send_button.prop('disabled', false);
+			if (dropdown_list.find('li').length < 2) {
+				send_button.prop('disabled', false);
+			}
 		});
 		
 		send_button.off('click').click(function () {
@@ -484,8 +511,16 @@ function PopupHandler() {
 			} else {
 				dropdown.show();
 				info_text.show();
+				send_button.prop('disabled', true);
 			}
 		}
+		
+		dropdown_list.find('li').each(function() {
+			$(this).off('click').click(function(){
+				send_button.attr('data-id', $(this).data('id'));
+				send_button.prop('disabled', false);
+			});
+		});
 	};
 	
 	/**
@@ -494,7 +529,6 @@ function PopupHandler() {
 	 * @param data in json-format
 	 */
 	this.createReferencesPopupBody = function (data) {
-		var popup = $('#' + popupReferences);
 		var references_body = $('#popup-references-body');
 		var send_button = $('#popup-reference-send-btn');
 		var dropdown = $('#popup-references-cite-dropdown');

@@ -1,6 +1,5 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 var socket;
@@ -14,7 +13,6 @@ $(document).ready(function() {
 	try {
 		doConnect();
 	} catch (e) {
-		console.log('Error on connect: ' + e.message);
 	}
 	
 	// delete subscription on page unload events
@@ -51,7 +49,6 @@ function doConnect(){
 		doRecentReview(data);
 	});
 	
-	// console.log('Socket.io connected.');
 	enableTesting();
 }
 
@@ -67,7 +64,6 @@ function doPublish(data){
 	} else if (data.type === 'info') {	    handleMessage(data, 'Ooh!', doInfo);
 	} else {                                setGlobalInfoHandler('Mhhh!', data.msg);
 	}
-	// console.log('publish ' + data.type + ' ' + data.msg);
 }
 
 /**
@@ -134,20 +130,16 @@ function doRecentReview(data){
 	var queue = $('#' + data.queue);
 	if (queue.length !== 0){
 		// just push, if given user is not the last reviewer
-		console.log(data.img_url);
 		if (queue.find('a:last-child').length === 0){
 			queue.find('span').remove();
 		}
 		
 		if (queue.find('img[src^="' + data.img_url + '"]').length === 0) {
-			console.log(data.reviewer_name + ' is a new reviewer');
 			queue.find('a:last-child').remove();
 			var link = $('<a>').attr('target', '_blank').attr('title', data.reviewer_name).attr('href', '/user/' + data.reviewer_name);
 			var img = $('<img>').addClass('img-circle').attr('src', data.img_url + '?d=wavatar&s=40').css('width', '40px').css('margin', '2px');
 			link.append(img);
 			queue.prepend(link);
-		} else {
-			console.log(data.reviewer_name + ' is already in the list');
 		}
 	}
 }
@@ -201,7 +193,6 @@ function enableTesting(){
 		if (data.type === 'success') {	        handleMessage(data, 'TEST!', doSuccess);
 		} else if (data.type === 'warning') {	handleMessage(data, 'TEST!', doWarning);
 		} else if (data.type === 'info') {	    handleMessage(data, 'TEST!', doInfo);
-		} else {                                console.log('unknown test type');
 		}
 	});
 	

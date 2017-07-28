@@ -38,6 +38,17 @@ def get_references_for_argument(uid, main_page):
         references_array = __get_references_for_statement(tmp_uid, main_page)[tmp_uid]
         data[premise.statement_uid] = references_array
         text[premise.statement_uid] = get_text_for_statement_uid(premise.statement_uid)
+
+    if db_argument.conclusion_uid is not None:
+        tmp_uid = db_argument.conclusion_uid
+        references_array = __get_references_for_statement(tmp_uid, main_page)[tmp_uid]
+        data[tmp_uid] = references_array
+        text[tmp_uid] = get_text_for_statement_uid(tmp_uid)
+    else:
+        d, t = get_references_for_argument(db_argument.argument_uid, main_page)
+        data.update(d)
+        text.update(t)
+
     return data, text
 
 
@@ -121,3 +132,27 @@ def set_reference(reference, url, nickname, statement_uid, issue_uid):
     transaction.commit()
 
     return True
+
+
+def get_references(uids, is_argument, application_url) -> dict:
+    """
+    Returns references for an argument or statement.
+
+    :param uids: IDs of statements or arguments as list
+    :param is_argument: boolean if the ids are for arguments
+    :param application_url: url of the application
+    :rtype: dict
+    :return: prepared collection with error, data and text field
+    """
+    if is_argument:
+        data, text = get_references_for_argument(uids, application_url)
+    else:
+        data, text = get_references_for_statements(uids, application_url)
+
+    prepared_dict = {
+        'error': '',
+        'data': data,
+        'text': text
+    }
+
+    return prepared_dict

@@ -38,16 +38,21 @@ jshint:
     - npm install -g jshint
     - bash -c "jshint ./dbas/static/js/{main,ajax,discussion,review,d3}/*.js"
     - bash -c "jshint ./admin/static/js/main/*.js"
-    - bash -c "jshint ./websocket/static/js/*.js"
+    - bash -c "jshint ./webhook/static/js/*.js"
   allow_failure: true
 
 unit:
   <<: *run-server
   stage: test
   script:
-    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --with-timer -w . dbas graph admin api export
+    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . dbas graph admin api export
+    - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
     - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
   coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
+  artifacts:
+    paths:
+      - coverage.xml
+    expire_in: 10 mins
 
 acceptance:
   <<: *run-server
@@ -55,6 +60,15 @@ acceptance:
   script:
     - docker exec dbas_web_$CI_JOB_ID nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
     - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
+
+sonar:
+  image: hhucn/sonar-scanner
+  stage: deploy
+  script:
+    - sonar-scanner -D sonar.host.url=https://sonarqube.cs.uni-duesseldorf.de -D sonar.login=$SONARQUBE_LOGIN -D sonar.projectKey=$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME -D sonar.projectName=$CI_PROJECT_NAME -D sonar.projectVersion=1.4 -D sonar.sources=. -D sonar.python.coverage.reportPath=coverage.xml
+  only:
+    - development
+  when: always
 
 deploy_image:
   stage: deploy

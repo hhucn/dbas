@@ -27,12 +27,12 @@ def logger(who, when, what, warning=False, error=False, debug=False):
     logger = logging.getLogger(__name__)
     try:
         if info:
-            logger.info('[' + who.upper() + '] ' + when + ': ' + what)
+            logger.info('[{}] {}: {}'.format(who.upper(), when, what))
         if warning:
-            logger.warning('[' + who.upper() + '] ' + when + ': ' + what)
+            logger.warning('[{}] {}: {}'.format(who.upper(), when, what))
         if error:
-            logger.error('[' + who.upper() + '] ' + when + ': ' + what)
+            logger.error('[{}] {}: {}'.format(who.upper(), when, what))
         if debug:
-            logger.debug('[' + who.upper() + '] ' + when + ': ' + what)
+            logger.debug('[{}] {}: {}'.format(who.upper(), when, what))
     except Exception as e:
         logger.error('[LOGGER] LOGGER ERROR: ' + repr(e))

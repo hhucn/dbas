@@ -3,10 +3,9 @@ Helper functions for tests.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
-import json
-
 import requests
 from nose.tools import assert_equals, assert_true
+from requests import Response
 
 from api.lib import json_to_dict
 
@@ -17,30 +16,38 @@ def has_json_header(response):
     assert_equals("application/json", response.headers['content-type'])
 
 
-def get_response(route):
+def get_response(route: str, api: str = API, params: dict = None) -> Response:
     """
     Place get request to API.
 
     :param route: route in API
+    :param api: route to API
+    :param params: parameters, which can be sent via the GET request
+    :type params: dict
     :returns: response from API
     :rtype: Response
     """
-    response = requests.get(API + route)
+    if params is None:
+        params = dict()
+    response = requests.get(api + route, params)
     has_json_header(response)
     return response
 
 
-def post_request(route, payload):
+def post_request(route, payload, headers=None):
     """
     Send post request to API with given payload. Adds json headers.
 
+    :param headers: Additional dictionary of headers
     :param route: route in API
     :param payload: data to be send
     :type payload: dict
     :returns: response from API
     :rtype: Response
     """
-    response = requests.post(API + route, json=json.dumps(payload))
+    if headers is None:
+        headers = dict()
+    response = requests.post(API + route, json=payload, headers=headers)
     has_json_header(response)
     return response
 

@@ -41,7 +41,7 @@
                 <li tal:condition="extras.logged_in" class="dropdown" data-toggle="tooltip" data-placement="left">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#user" id="user-menu-dropdown" aria-haspopup="true" aria-expanded="true">
                         <img tal:attributes="src extras.users_avatar" class="img-circle" alt="gravatar" style="width: 25px;">
-                        <span id="header_nickname">${extras.nickname}</span>
+                        <span id="header_nickname" tal:attributes="data-public-nickname extras.public_nickname">${extras.nickname}</span>
                         <span id="header_badge_count_notifications" tal:condition="extras.notifications.has_unread" class="label label-primary label-as-badge">${extras.notifications.new_count}</span>
                         <span class="caret"></span>
                     </a>

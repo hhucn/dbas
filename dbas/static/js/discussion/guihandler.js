@@ -1,23 +1,13 @@
 /* global $*/
 
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 function GuiHandler() {
 	'use strict';
 	
-	var interactionHandler;
 	var maxHeightOfBubbleSpace = 300;
-	
-	/**
-	 *
-	 * @param externInteractionHandler
-	 */
-	this.setHandler = function (externInteractionHandler) {
-		interactionHandler = externInteractionHandler;
-	};
 	
 	/**
 	 * Adds a premise row in the 'add premise'-container
@@ -180,7 +170,7 @@ function GuiHandler() {
 			speechBubbles.css({'background': '#fff'});
 			return;
 		}
-		if (height > maxHeight) {
+		if (height > maxHeight && maxHeight > 0) {
 			if (maxHeight < maxHeightOfBubbleSpace) {
 				maxHeight = maxHeightOfBubbleSpace;
 			}
@@ -223,7 +213,6 @@ function GuiHandler() {
 	 * Hides the 'add position'-container
 	 */
 	this.hideAddPositionContainer = function () {
-		console.log('b');
 		$('#' + addStatementContainerId).hide();
 		$('#' + discussionSpaceListId).find('li:last-child input').prop('checked', false);
 	};
@@ -232,7 +221,6 @@ function GuiHandler() {
 	 * Hides the 'add premise'-container
 	 */
 	this.hideAddPremiseContainer = function () {
-		console.log('c');
 		$('#' + addPremiseContainerId).hide();
 		$('#' + discussionSpaceListId).find('li:last-child input').prop('checked', false);
 	};
@@ -283,8 +271,6 @@ function GuiHandler() {
 				new AjaxDiscussionHandler().sendNewPremiseForArgument(arg, relation, decided_texts);
 			} else if (type === fuzzy_start_premise) {
 				new AjaxDiscussionHandler().sendNewStartPremise(decided_texts, conclusion, supportive);
-			} else {
-				alert("Todo: unknown type");
 			}
 			$('#' + popupSetPremiseGroups).modal('hide');
 		});
@@ -488,11 +474,11 @@ function GuiHandler() {
 			return;
 		}
 		
-		var token, button, span_dist, span_text, distance, index, text, img;
+		var token, button, span_dist, span_text, index, text, img;
 		callbackElement.focus();
 		
 		$.each(parsedData.values, function (key, val) {
-			distance = parseInt(val.distance);
+			// distance = parseInt(val.distance);
 			index = val.index;
 			
 			token = callbackElement.val();

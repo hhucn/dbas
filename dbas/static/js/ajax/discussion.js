@@ -1,6 +1,5 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>S
  */
 
 function AjaxDiscussionHandler() {
@@ -423,9 +422,8 @@ function AjaxDiscussionHandler() {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function (data) {
-			var parsedData = $.parseJSON(data);
 			// note that we already send data
-			if (parsedData.error.length === 0){
+			if (data.error.length === 0){
 				$('#' + discussionSpaceShowItems).attr('data-send-request', 'true');
 				$('#' + discussionSpaceHideItems).attr('data-send-request', 'true');
 			}

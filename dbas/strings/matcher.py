@@ -12,7 +12,7 @@ from itertools import islice
 from Levenshtein import distance
 from sqlalchemy import and_, func
 
-import dbas.helper.issue as issue_helper
+import dbas.handler.issue as issue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
@@ -58,13 +58,10 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
         return_dict['values'] = get_strings_for_start(value, issue, False)
         return_dict['distance_name'] = mechanism
 
-    elif mode == '3':  # adding reasons
+    elif mode == '3' or mode == '4':  # adding reasons / duplicates
         count, extra, m = __get_vars_for_reasons(extra, mechanism)
-        return_dict['values'] = get_strings_for_reasons(value, issue, count, extra[1])
+        return_dict['values'] = get_strings_for_duplicates_or_reasons(value, issue, count, extra[1])
         return_dict['distance_name'] = m
-
-    elif mode == '4':  # getting text # MAYBE deprecated ?! TK will have a look!
-        return_dict = get_strings_for_search(value)
 
     elif mode == '5':  # getting public nicknames
         nickname = get_nickname(request_authenticated_userid, for_api, api_data)
@@ -113,7 +110,7 @@ def get_all_statements_with_value(request, value):
     issue_uid = issue_helper.get_issue_id(request)
     db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue_uid).all()
     return_array = []
-    slug = DBDiscussionSession.query(Issue).get(issue_uid).get_slug()
+    slug = DBDiscussionSession.query(Issue).get(issue_uid).slug
     _um = UrlManager(request.application_url, for_api=False, slug=slug)
     for stat in db_statements:
         db_tv = DBDiscussionSession.query(TextVersion).get(stat.textversion_uid)
@@ -174,7 +171,7 @@ def get_strings_for_edits(value, statement_uid):
     return return_array[:list_length]
 
 
-def get_strings_for_reasons(value, issue, count=list_length, oem_value=''):
+def get_strings_for_duplicates_or_reasons(value, issue, count=list_length, oem_value=''):
     """
     Checks different textversion-strings for a match with given value
 
@@ -187,6 +184,9 @@ def get_strings_for_reasons(value, issue, count=list_length, oem_value=''):
     db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
     return_array = []
 
+    while oem_value.endswith((',', '.', '?')):
+        oem_value = oem_value[:-1]
+
     for stat in db_statements:
         db_tv = DBDiscussionSession.query(TextVersion).get(stat.textversion_uid)
         if value.lower() in db_tv.content.lower() and db_tv.content.lower() != oem_value.lower():
@@ -195,8 +195,8 @@ def get_strings_for_reasons(value, issue, count=list_length, oem_value=''):
 
     return_array = __sort_array(return_array)
 
-    # logger('fuzzy_string_matcher', 'get_strings_for_reasons', 'string: ' + value + ', issue: ' + str(issue) +
-    #        ', dictionary length: ' + str(len(return_array)), debug=True)
+    # logger('fuzzy_string_matcher', 'get_strings_for_duplicates_or_reasons',
+    # 'string: {}, issue {}, len(dict): '.format(value, issue, len(return_array))
 
     return return_array[:count]
 

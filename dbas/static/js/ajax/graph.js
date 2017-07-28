@@ -1,6 +1,5 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 function AjaxGraphHandler(){
@@ -79,7 +78,7 @@ function AjaxGraphHandler(){
 			data: data,
 			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function (data) {
-			context.callbackIfDoneForDiscussionGraph(data, request_for_complete);
+			context.callbackIfDoneForDiscussionGraph(data);
 		}).fail(function () {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});

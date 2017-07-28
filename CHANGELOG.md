@@ -1,3 +1,13 @@
+## 1.4.2 (2017-06-07)
+- Splitting the monolith
+
+## 1.4.1 (2017-05-15)
+- Fixes while sending system mails
+- Fix routing of the contact view
+- Fix escaping of passwords
+- Improvement for the barometer
+- Timeline for the graph
+
 ## 1.4.0 (2017-05-08)
 - Corrections for the user interface
 - Language fixes

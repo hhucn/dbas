@@ -35,11 +35,14 @@ coverage.xml
 .python-version
 *.bak
 *.jar
-mergeDatabase.py
 db.txt
+mergeDatabase.py
 requirementsUpdater.py
+getMails.py
+addEnglischDiscussion.py
 .#*
 pserve.ini
+analyzer/
 
 # Pycharm
 .idea/
@@ -51,7 +54,7 @@ dbas/static/css/main.css.map
 dbas/static/rss/*
 .sass-cache/
 .babelrc
-getMails.py
+createUser.py
 dbas.min.js
 cookie-2.1.3.min.js
 eu-cookie-law-popup.min.js
@@ -67,3 +70,5 @@ restorePostgres.sh
 *.sql
 !001_init.sh.bak
 !002_development_seed.sql
+
+.scannerwork/

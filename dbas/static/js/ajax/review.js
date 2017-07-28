@@ -1,6 +1,5 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 function AjaxReviewHandler(){
@@ -134,9 +133,9 @@ function AjaxReviewHandler(){
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function reviewDeleteArgumentDone(data) {
+		}).done(function reviewUndoDone(data) {
 			new ReviewHistoryCallbacks().forUndoReview(data, queue, uid);
-		}).fail(function reviewDeleteArgumentFail() {
+		}).fail(function reviewUndoFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
@@ -147,7 +146,6 @@ function AjaxReviewHandler(){
 	 * @param uid
 	 */
 	this.cancelReview = function(queue, uid){
-
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_cancel_review',
@@ -156,9 +154,9 @@ function AjaxReviewHandler(){
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function reviewDeleteArgumentDone(data) {
+		}).done(function reviewCancelDone(data) {
 			new ReviewHistoryCallbacks().forUndoReview(data, queue, uid);
-		}).fail(function reviewDeleteArgumentFail() {
+		}).fail(function reviewCancelFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};

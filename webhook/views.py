@@ -4,7 +4,7 @@ Introducing websockets.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 from cornice import Service
-from dbas.helper.language import get_language_from_cookie
+from dbas.handler.language import get_language_from_cookie
 from dbas.logger import logger
 from dbas.views import base_layout
 from dbas.views import project_name

@@ -1,6 +1,5 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 function AjaxMainHandler(){
@@ -22,9 +21,8 @@ function AjaxMainHandler(){
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSwitchDisplayLanguageDone(data) {
-			var parsedData = $.parseJSON(data);
-			if (parsedData.error.length !== 0) {
-				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+			if (data.error.length !== 0) {
+				setGlobalErrorHandler(_t(ohsnap), data.error);
 			} else {
 				setPiwikOptOutLink(new_lang);
 				location.reload(true);

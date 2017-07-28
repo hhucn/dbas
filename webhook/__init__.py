@@ -8,7 +8,7 @@ from dbas.logger import logger
 
 
 def init(config):
-    config.scan("websocket.views")
+    config.scan("webhook.views")
 
 
 def main(global_config, **settings):

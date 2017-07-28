@@ -11,13 +11,13 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, Argument, Premise, Statement, \
     LastReviewerOptimization, ReviewOptimization, ReviewEdit, ReviewEditValue, LastReviewerEdit, LastReviewerDuplicate,\
     ReviewDuplicate, RevokedDuplicate
-from dbas.helper.query import correct_statement
+from dbas.handler.statements import correct_statement
 from dbas.lib import get_all_arguments_by_statement
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_success_flag, rep_reason_bad_flag, \
     rep_reason_success_duplicate, rep_reason_bad_duplicate, rep_reason_success_edit, rep_reason_bad_edit
 from dbas.strings.keywords import Keywords as _
-from websocket.lib import send_request_for_info_popup_to_socketio
+from webhook.lib import send_request_for_info_popup_to_socketio, get_port
 
 max_votes = 5
 min_difference = 3
@@ -70,18 +70,17 @@ def __get_review_count(review_type, review_uid):
     return count_of_okay, count_of_not_okay
 
 
-def add_review_opinion_for_delete(request, nickname, should_delete, review_uid, _t, application_url):
+def add_review_opinion_for_delete(request, review_uid, _t):
     """
     Adds row the delete review
 
-    :param nickname: User.nickname
-    :param should_delete: Boolean
     :param review_uid: ReviewDelete.uid
     :param _t: Translator
-    :param application_url: URL
     :return: String
     """
     logger('review_main_helper', 'add_review_opinion_for_delete', 'main')
+    should_delete = True if str(request.params['should_delete']) == 'true' else False
+    nickname = request.authenticated_userid
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_review = DBDiscussionSession.query(ReviewDelete).get(review_uid)
@@ -133,24 +132,25 @@ def add_review_opinion_for_delete(request, nickname, should_delete, review_uid, 
     transaction.commit()
 
     if broke_limit:
-        send_request_for_info_popup_to_socketio(request, db_user_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
-                                                application_url + '/review')
+        port = get_port(request)
+        send_request_for_info_popup_to_socketio(db_user_created_flag.nickname, port, _t.get(_.youAreAbleToReviewNow),
+                                                request.application_url + '/review')
 
     return ''
 
 
-def add_review_opinion_for_edit(request, nickname, is_edit_okay, review_uid, _t, application_url):
+def add_review_opinion_for_edit(request, is_edit_okay, review_uid, _t):
     """
     Adds row the edit review
 
-    :param nickname: User.nickname
     :param is_edit_okay: Boolean
     :param review_uid: ReviewEdit.uid
     :param _t: Translator
-    :param application_url: URL
     :return: String
     """
     logger('review_main_helper', 'add_review_opinion_for_edit', 'main')
+    nickname = request.authenticated_userid
+    application_url = request.application_url
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_review = DBDiscussionSession.query(ReviewEdit).get(review_uid)
@@ -175,7 +175,7 @@ def add_review_opinion_for_edit(request, nickname, is_edit_okay, review_uid, _t,
     reached_max = max(count_of_edit, count_of_dont_edit) >= max_votes
     if reached_max:
         if count_of_dont_edit < count_of_edit:  # accept the edit
-            __accept_edit_review(db_review, db_user_created_flag)
+            __accept_edit_review(db_review)
             add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_edit)
         else:  # just close the review
             add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_edit)
@@ -183,12 +183,12 @@ def add_review_opinion_for_edit(request, nickname, is_edit_okay, review_uid, _t,
         db_review.update_timestamp()
 
     elif count_of_edit - count_of_dont_edit >= min_difference:  # accept the edit
-        __accept_edit_review(db_review, db_user_created_flag)
+        __accept_edit_review(db_review)
         add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_edit)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
-    elif count_of_dont_edit - count_of_dont_edit >= min_difference:  # decline edit
+    elif count_of_dont_edit - count_of_edit >= min_difference:  # decline edit
         add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_edit)
         db_review.set_executed(True)
         db_review.update_timestamp()
@@ -198,24 +198,26 @@ def add_review_opinion_for_edit(request, nickname, is_edit_okay, review_uid, _t,
     transaction.commit()
 
     if broke_limit:
-        send_request_for_info_popup_to_socketio(request, db_user_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
+        port = get_port(request)
+        send_request_for_info_popup_to_socketio(db_user_created_flag.nickname, port, _t.get(_.youAreAbleToReviewNow),
                                                 application_url + '/review')
 
     return ''
 
 
-def add_review_opinion_for_optimization(request, nickname, should_optimized, review_uid, data, _t, application_url):
+def add_review_opinion_for_optimization(request, should_optimized, review_uid, data, _t):
     """
     Adds row the optimization review
 
-    :param nickname: User.nickname
     :param should_optimized: Boolean
     :param review_uid: ReviewOptimization
     :param data: String
     :param _t: Translator
-    :param application_url: URL
     :return: String
     """
+    nickname = request.authenticated_userid
+    application_url = request.application_url
+
     logger('review_main_helper', 'add_review_opinion_for_optimization',
            'main ' + str(review_uid) + ', optimize ' + str(should_optimized))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -246,19 +248,19 @@ def add_review_opinion_for_optimization(request, nickname, should_optimized, rev
     return ''
 
 
-def add_review_opinion_for_duplicate(request, nickname, is_duplicate, review_uid, _t, application_url):
+def add_review_opinion_for_duplicate(request, is_duplicate, review_uid, _t):
     """
 
     Adds row the duplicate review
 
-    :param nickname: User.nickname
     :param is_duplicate: Boolean
     :param review_uid: ReviewDuplicate.uid
     :param _t: Translator
-    :param application_url: URL
     :return: String
     """
     logger('review_main_helper', 'add_review_opinion_for_duplicate', 'main ' + str(review_uid) + ', duplicate ' + str(is_duplicate))
+    nickname = request.authenticated_userid
+    application_url = request.application_url
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_review = DBDiscussionSession.query(ReviewDuplicate).get(review_uid)
@@ -310,7 +312,8 @@ def add_review_opinion_for_duplicate(request, nickname, is_duplicate, review_uid
     transaction.commit()
 
     if broke_limit:
-        send_request_for_info_popup_to_socketio(request, db_user_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
+        port = get_port(request)
+        send_request_for_info_popup_to_socketio(db_user_created_flag.nickname, port, _t.get(_.youAreAbleToReviewNow),
                                                 application_url + '/review')
 
     return ''
@@ -336,7 +339,8 @@ def __keep_the_element_of_optimization_review(request, db_review, application_ur
     if len(db_keep_version) > max_votes:
         add_rep, broke_limit = add_reputation_for(db_user_who_created_flag, rep_reason_bad_flag)
         if broke_limit:
-            send_request_for_info_popup_to_socketio(request, db_user_who_created_flag.nickname, _t.get(_.youAreAbleToReviewNow),
+            port = get_port(request)
+            send_request_for_info_popup_to_socketio(db_user_who_created_flag.nickname, port, _t.get(_.youAreAbleToReviewNow),
                                                     application_url + '/review')
 
         db_review.set_executed(True)
@@ -373,8 +377,7 @@ def __proposal_for_the_element(db_review, data, db_user):
             else:
                 statement_dict[d['statement']] = [d]
 
-    logger('review_main_helper', 'add_review_opinion_for_optimization',
-           'statements ' + str(statement_dict) + ', argument ' + str(argument_dict))
+    logger('review_main_helper', 'add_review_opinion_for_optimization', 'detector {}, statements {}, arguments {}'.format(db_user.uid, statement_dict, argument_dict))
 
     # add reviews
     new_edits = list()
@@ -543,9 +546,9 @@ def __bend_objects_of_duplicate_review(db_review):
     transaction.commit()
 
 
-def __accept_edit_review(review, db_user_created_flag):
+def __accept_edit_review(review):
     """
-    Add correction fot each value affected by the review
+    Add correction for each value affected by the review
 
     :param review: Review
     :param db_user_created_flag: User
@@ -555,6 +558,3 @@ def __accept_edit_review(review, db_user_created_flag):
     db_user = DBDiscussionSession.query(User).get(review.detector_uid)
     for value in db_values:
         correct_statement(db_user.nickname, value.statement_uid, value.content)
-        # val = QueryHelper.correct_statement(transaction, db_user.nickname, value.statement_uid, value.content)
-        # db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=val['text']).order_by(TextVersion.uid.desc()).first()
-        # send_edit_text_notification(db_user_created_flag, db_textversion, None, None)

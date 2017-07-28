@@ -6,7 +6,8 @@ from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, TextVersion, Argument, Premise, PremiseGroup,\
-    ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement, MarkedArgument, ClickedArgument, ClickedStatement
+    ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement, MarkedArgument, ClickedArgument,\
+    ClickedStatement, SeenStatement, SeenArgument
 
 
 class AjaxAddThingsTest(unittest.TestCase):
@@ -29,6 +30,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             DBDiscussionSession.query(Statement).get(tmp).textversion_uid = 1
             DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tmp).delete()
             DBDiscussionSession.query(MarkedStatement).filter_by(statement_uid=tmp).delete()
+            DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=tmp).delete()
             DBDiscussionSession.query(ClickedStatement).filter_by(statement_uid=tmp).delete()
             DBDiscussionSession.query(Statement).filter_by(uid=tmp).delete()
         # delete premisegroup
@@ -38,6 +40,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         DBDiscussionSession.query(PremiseGroup).filter_by(uid=tmp).delete()
         # delete argument
         DBDiscussionSession.query(MarkedArgument).filter_by(argument_uid=db_new_arg.uid).delete()
+        DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=db_new_arg.uid).delete()
         DBDiscussionSession.query(ClickedArgument).filter_by(argument_uid=db_new_arg.uid).delete()
         DBDiscussionSession.query(Argument).filter_by(uid=db_new_arg.uid).delete()
 
@@ -45,7 +48,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_new_start_statement as ajax
         request = testing.DummyRequest(params={'statement': 'New statement for an issue'}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(len(response['url']) != 0)
@@ -54,6 +57,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             DBDiscussionSession.query(Statement).get(uid).textversion_uid = 1
             DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(MarkedStatement).filter_by(statement_uid=uid).delete()
+            DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(Statement).filter_by(uid=uid).delete()
         transaction.commit()
 
@@ -61,7 +65,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
         from dbas.views import set_new_start_statement as ajax
         request = testing.DummyRequest(params={'statement': 'New statement for an issue'}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(len(response['url']) != 0)
@@ -70,6 +74,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             DBDiscussionSession.query(Statement).get(uid).textversion_uid = 1
             DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(MarkedStatement).filter_by(statement_uid=uid).delete()
+            DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(Statement).filter_by(uid=uid).delete()
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Björn').first()
         DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()
@@ -79,7 +84,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import set_new_start_statement as ajax
         request = testing.DummyRequest(params={'statement': 'New statement for an issue'}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -87,7 +92,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_new_start_statement as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -102,7 +107,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'issue': 2,
             'supportive': 'true'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         transaction.commit()
         db_arg2 = len(DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).all())
         len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
@@ -125,7 +130,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'issue': 2,
             'supportive': 'true'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         transaction.commit()
         db_arg2 = len(DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).all())
         len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
@@ -141,7 +146,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import set_new_start_premise as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -149,7 +154,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_new_start_premise as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -164,7 +169,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'attack_type': 'support',
             'issue': 2
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         db_arg2 = len(DBDiscussionSession.query(Argument).filter_by(uid=2).all())
         db_pgroups2 = len(DBDiscussionSession.query(PremiseGroup).all())
         self.assertIsNotNone(response)
@@ -178,20 +183,20 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import set_new_premises_for_argument as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
     def test_set_correction_of_statement(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_correction_of_statement as ajax
+        from dbas.views import set_correction_of_some_statements as ajax
         db_review1 = len(DBDiscussionSession.query(ReviewEdit).all())
         db_value1 = len(DBDiscussionSession.query(ReviewEditValue).all())
         elements = {'text': 'some new text for a correction', 'uid': 19}
         request = testing.DummyRequest(params={
             'elements': json.dumps([elements])
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         db_review2 = len(DBDiscussionSession.query(ReviewEdit).all())
         db_value2 = len(DBDiscussionSession.query(ReviewEditValue).all())
         self.assertIsNotNone(response)
@@ -206,11 +211,11 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_correction_of_statement_failure(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
-        from dbas.views import set_correction_of_statement as ajax
+        from dbas.views import set_correction_of_some_statements as ajax
         request = testing.DummyRequest(params={
             'elements': json.dumps([{}])
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -223,7 +228,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'title': 'Some new title',
             'lang': 'en'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         DBDiscussionSession.query(Issue).filter_by(title='Some new title').delete()
@@ -238,7 +243,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'long_info': 'Some new long info',
             'lang': 'en'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -252,7 +257,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'long_info': 'Some new long info',
             'lang': 'en'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -266,7 +271,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'long_info': 'Some new long info',
             'lang': 'en'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -280,7 +285,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'long_info': 'Some new long info',
             'lang': 'sw'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
@@ -294,29 +299,29 @@ class AjaxAddThingsTest(unittest.TestCase):
             'long_info': 'Some new long info',
             'lang': 'en'
         }, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
     def test_set_seen_statements(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_seen_statements as ajax
+        from dbas.views import set_statements_as_seen as ajax
         request = testing.DummyRequest(params={'uids': json.dumps([40, 41])}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
 
     def test_set_seen_statements_failure1(self):
-        from dbas.views import set_seen_statements as ajax
+        from dbas.views import set_statements_as_seen as ajax
         request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
     def test_set_seen_statements_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_seen_statements as ajax
+        from dbas.views import set_statements_as_seen as ajax
         request = testing.DummyRequest(params={'uids': json.dumps(['a'])}, matchdict={})
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)

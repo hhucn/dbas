@@ -7,8 +7,10 @@ Provides helping function for getting some opinions.
 from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User, ClickedArgument, ClickedStatement, Premise, SeenArgument, SeenStatement, sql_timestamp_pretty_print
-from dbas.helper.relation import get_rebuts_for_argument_uid, get_undercuts_for_argument_uid, get_undermines_for_argument_uid, get_supports_for_argument_uid
+from dbas.database.discussion_model import Argument, Statement, User, ClickedArgument, ClickedStatement, Premise,\
+    SeenArgument, SeenStatement, sql_timestamp_pretty_print
+from dbas.helper.relation import get_rebuts_for_argument_uid, get_undercuts_for_argument_uid,\
+    get_undermines_for_argument_uid, get_supports_for_argument_uid
 from dbas.lib import get_text_for_statement_uid, get_text_for_argument_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture
 from dbas.logger import logger
@@ -65,8 +67,12 @@ def get_user_and_opinions_for_argument(argument_uids, nickname, lang, main_page,
         get_rebuts_for_argument_uid(argument_uids[0])
     ]
 
-    # get gender of counter user
-    db_user = get_author_or_first_supporter_of_element(argument_uids[1], db_user_uid, True)
+    # get gender of counter use
+    if len(argument_uids) == 1:
+        tmp_uid = 0
+    else:
+        tmp_uid = 1
+    db_user = get_author_or_first_supporter_of_element(argument_uids[tmp_uid], db_user_uid, True)
     gender = db_user.gender if db_user else 'n'
 
     if '/d' in path.split('?')[0]:
@@ -97,20 +103,15 @@ def __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user_ui
     ret_list = []
     user_query = DBDiscussionSession.query(User)
     db_user = DBDiscussionSession.query(User).get(db_user_uid)
-    if db_user:
-        if db_user.gender == 'm':
-            msg = _t.get(_.voteCountTextMayBeFirst) + '.'
-        elif db_user.gender == 'f':
-            msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
-        else:
-            msg = _t.get(_.voteCountTextMayBeFirst) + '.'
+    if db_user and db_user.gender == 'f':
+        msg = _t.get(_.voteCountTextMayBeFirstF) + '.'
     else:
         msg = _t.get(_.voteCountTextMayBeFirst) + '.'
 
     for rel in relation:
-        all_users       = []
-        message         = ''
-        seen_by         = 0
+        all_users  = []
+        message  = ''
+        seen_by  = 0
 
         if not arg_uids_for_reactions[relation.index(rel)]:
             ret_list.append({'users': [],
@@ -138,7 +139,8 @@ def __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user_ui
                 message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
 
             db_seen_by = DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=int(uid['id'])).all()
-            seen_by += len(db_seen_by) if db_seen_by else 0
+            if db_seen_by:
+                seen_by += len(db_seen_by)
 
         ret_list.append({'users': all_users,
                          'message': message,
@@ -218,16 +220,11 @@ def __get_genered_text_for_clickcount(len_db_votes, db_user_uid, _t):
     """
     if len_db_votes == 0:
         db_user = DBDiscussionSession.query(User).get(db_user_uid)
-        if db_user:
-            if db_user.gender == 'm':
-                msg = _t.get(_.voteCountTextMayBeFirst)
-            elif db_user.gender == 'f':
-                msg = _t.get(_.voteCountTextMayBeFirstF)
-            else:
-                msg = _t.get(_.voteCountTextMayBeFirst)
+        if db_user and db_user.gender == 'f':
+            msg = _.voteCountTextMayBeFirstF
         else:
-            msg = _t.get(_.voteCountTextMayBeFirst)
-        return msg + '.'
+            msg = _.voteCountTextMayBeFirst
+        return _t.get(msg) + '.'
     elif len_db_votes == 1:
         return str(len_db_votes) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
     else:
@@ -253,41 +250,31 @@ def get_user_with_same_opinion_for_premisegroups(argument_uids, nickname, lang, 
     title = _t.get(_.relativePopularityOfStatements)
 
     for uid in argument_uids:
-        logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'argument ' + str(uid))
+        logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'Argument {}'.format(uid))
         statement_dict = dict()
         all_users = []
         db_argument = DBDiscussionSession.query(Argument).get(uid)
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
         if not db_premises:
-            statement_dict['uid']       = None
-            statement_dict['text']      = None
-            statement_dict['message']   = None
-            statement_dict['users']     = None
-            statement_dict['seen_by']   = None
+            statement_dict = {'uid': None, 'text': None, 'message': None, 'users': None, 'seen_by': None}
 
         statement_dict['uid'] = str(uid)
         text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
         statement_dict['text'] = '... {} {}'.format(_t.get(_.because).lower(), text)
 
-        db_votes = []
-        for premise in db_premises:
-            logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'group ' + str(uid) +
-                   ' premises statement ' + str(premise.statement_uid))
-            db_votes += DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == premise.statement_uid,
-                                                                                ClickedStatement.is_up_vote == True,
-                                                                                ClickedStatement.is_valid == True,
-                                                                                ClickedStatement.author_uid != db_user_uid)).all()
-
-        for vote in db_votes:
-            voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
-            users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
+        premise_statement_uids = [p.statement_uid for p in db_premises]
+        db_clicks = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid.in_(premise_statement_uids),
+                                                                            ClickedStatement.is_up_vote == True,
+                                                                            ClickedStatement.is_valid == True,
+                                                                            ClickedStatement.author_uid != db_user_uid)).all()
+        db_seens = DBDiscussionSession.query(SeenStatement).filter(SeenStatement.statement_uid.in_(premise_statement_uids)).all()
+        for click in db_clicks:
+            click_user = DBDiscussionSession.query(User).get(click.author_uid)
+            users_dict = create_users_dict(click_user, click.timestamp, main_page, lang)
             all_users.append(users_dict)
         statement_dict['users'] = all_users
-        statement_dict['message'] = __get_genered_text_for_clickcount(len(db_votes), db_user_uid, _t)
-
-        db_seen_by = DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=int(uid)).all()
-        statement_dict['seen_by'] = len(db_seen_by) if db_seen_by else 0
-
+        statement_dict['message'] = __get_genered_text_for_clickcount(len(db_clicks), db_user_uid, _t)
+        statement_dict['seen_by'] = len(db_seens)
         opinions.append(statement_dict)
 
     return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
@@ -318,11 +305,7 @@ def get_user_with_same_opinion_for_argument(argument_uid, nickname, lang, main_p
 
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
     if not db_argument:
-        opinions['uid']       = None
-        opinions['text']      = None
-        opinions['message']   = None
-        opinions['users']     = None
-        opinions['seen_by']   = None
+        opinions = {'uid': None, 'text': None, 'message': None, 'users': None, 'seen_by': None}
 
     opinions['uid'] = str(argument_uid)
     text = get_text_for_argument_uid(argument_uid, lang)
@@ -363,17 +346,9 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
     title = _t.get(_.agreeVsDisagree)
 
     if not db_statement:
-        empty_dict = {
-            'users': [],
-            'text': None,
-            'message': ''
-        }
-        return {
-            'text': None,
-            'agree': empty_dict,
-            'disagree': empty_dict,
-            'title': title
-        }
+        empty_dict = {'users': [], 'text': None, 'message': ''}
+        return {'text': None, 'agree': empty_dict, 'disagree': empty_dict, 'title': title}
+
     title += ' ' + get_text_for_statement_uid(statement_uid)
 
     ret_dict = dict()
@@ -385,7 +360,7 @@ def get_user_with_opinions_for_attitude(statement_uid, nickname, lang, main_page
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_user_uid = db_user.uid if db_user else 0
-    agree_dict    = __collect_pro_clicks(statement_uid, db_user_uid, main_page, _t)
+    agree_dict = __collect_pro_clicks(statement_uid, db_user_uid, main_page, _t)
     disagree_dict = __collect_con_clicks(statement_uid, db_user_uid, main_page, _t)
     ret_dict['agree'] = agree_dict
     ret_dict['disagree'] = disagree_dict
@@ -475,49 +450,3 @@ def create_users_dict(db_user, timestamp, main_page, lang):
             'public_profile_url': main_page + '/user/' + str(db_user.uid),
             'avatar_url': get_profile_picture(db_user),
             'vote_timestamp': sql_timestamp_pretty_print(timestamp, lang)}
-
-
-def get_infos_about_argument(uid, main_page, nickname, _t):
-    """
-    Returns several infos about the argument.
-
-    :param uid: Argument.uid
-    :param main_page: url
-    :param nickname: current nickname
-    :param _t: Translator
-    :return: dict()
-    """
-    return_dict = dict()
-    db_votes = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.argument_uid == uid,
-                                                                      ClickedArgument.is_valid == True,
-                                                                      ClickedStatement.is_up_vote == True)).all()
-    db_argument = DBDiscussionSession.query(Argument).get(uid)
-    if not db_argument:
-        return return_dict
-
-    db_author = DBDiscussionSession.query(User).get(db_argument.author_uid)
-    return_dict['vote_count'] = str(len(db_votes))
-    return_dict['author'] = db_author.get_global_nickname()
-    return_dict['author_url'] = main_page + '/user/' + str(db_author.uid)
-    return_dict['gravatar'] = get_profile_picture(db_author)
-    return_dict['timestamp'] = sql_timestamp_pretty_print(db_argument.timestamp, db_argument.lang)
-    text = get_text_for_argument_uid(uid)
-    return_dict['text'] = text[0:1].upper() + text[1:] + '.'
-
-    supporters = []
-    gravatars = dict()
-    public_page = dict()
-    for vote in db_votes:
-        db_user = DBDiscussionSession.query(User).get(vote.author_uid)
-        name = db_user.get_global_nickname()
-        if db_user.nickname == nickname:
-            name += ' (' + _t.get(_.itsYou) + ')'
-        supporters.append(name)
-        gravatars[name] = get_profile_picture(db_user)
-        public_page[name] = main_page + '/user/' + str(db_user.uid)
-
-    return_dict['supporter'] = supporters
-    return_dict['gravatars'] = gravatars
-    return_dict['public_page'] = public_page
-
-    return return_dict

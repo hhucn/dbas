@@ -1,6 +1,5 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 // main function
@@ -16,8 +15,6 @@ $(document).ready(function () {
 	if ($('.batman').length === 0) {
 		new AdminAjaxHandler().updateCountBadges();
 	}
-	
-	var data = $('#data');
 	
 	// gui modification for the caution row
 	if (!Cookies.get(ADMIN_WARNING)) {

@@ -150,8 +150,8 @@
                         </li>
                     </ul>
                     <div tal:condition="items.extras.cropped_list" style="padding-left: 40px;">
-                        <a id="show-all-elements-in-discussion-space" href="#" class="btn btn-primary btn-xs"><span i18n:translate="show_all_statements">Show all statements</span></a>
-                        <a id="hide-elements-in-discussion-space" href="#" class="btn btn-primary btn-xs" style="display:none;"><span i18n:translate="hide_statements">Hide statements</span></a>
+                        <a id="show-all-elements-in-discussion-space" href="#" class="btn btn-primary btn-xs">${extras.buttons.show_all_statements}</a>
+                        <a id="hide-elements-in-discussion-space" href="#" class="btn btn-primary btn-xs" style="display:none;">${extras.buttons.hide_statements}</a>
                     </div>
                 </div>
             </div>
@@ -167,7 +167,6 @@
                 <ul class="sidebar">
                     <li id="share-url" tal:attributes="titel extras.buttons.share_url"><i class="fa fa-share" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.share_url}</span></li>
                     <li id="opinion-barometer-img" tal:attributes="titel extras.title.barometer" tal:condition="extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true"></i><span class="sidebar-element">${extras.title.barometer}</span></li>
-                    <li id="display-style-icon-island-img" tal:attributes="titel extras.title.island_view"  tal:condition="extras.show_island_icon and False"><i class="fa fa-map-o" aria-hidden="true"></i><span class="sidebar-element">${extras.title.island_view}</span></li>
                     <li id="display-style-icon-graph-img" tal:attributes="titel extras.title.graph_view" tal:condition="extras.show_graph_icon"><i class="fa fa-sitemap" aria-hidden="true"></i><span class="sidebar-element">${extras.title.graph_view}</span></li>
                     <li id="sidebar-search-statement" tal:attributes="title extras.tag.search"><i class="fa fa-search" aria-hidden="true"></i><span class="sidebar-element">${extras.tag.search}</span></li>
                     <li id="finish-button" tal:attributes="titel extras.title.finish_title" onclick="window.location='/discuss/finish'"><i class="fa fa-sign-out" aria-hidden="true"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
@@ -179,109 +178,17 @@
             </div>
         </div>
 
-        <div class="container colored-container" id="island-view-container" style="display:none" tal:condition="extras.show_island_icon">
-            <div class="row">
-                <button id="close-island-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="row" id="island-view-container-space">
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="bs-callout bs-callout-danger">
-                            <h4>
-                                <span class="text-danger">&#10008;</span>
-                                <span class="lead">${structure:extras.island.undermine_text}</span>
-                            </h4>
-                            <div>
-                                <ul>
-                                    <li tal:repeat="undermine extras.island.undermine" tal:attributes="id undermine.id">
-                                        <label tal:attributes="for undermine.id">${structure:undermine.text}</label>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-offset-6 col-md-6">
-                                    <button id="island-view-undermine-button" type="button" class="btn btn-primary" data-dismiss="modal">${extras.buttons.resume_here}</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="bs-callout bs-callout-success">
-                            <h4>
-                                <span class="text-success">&#10004;</span>
-                                <span class="lead">${structure:extras.island.support_text}</span>
-                            </h4>
-                            <div>
-                                <ul>
-                                    <li tal:repeat="support extras.island.support" tal:attributes="id support.id">
-                                        <label tal:attributes="for support.id">${structure:support.text}</label>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-offset-6 col-md-6">
-                                    <button id="island-view-support-button" type="button" class="btn btn-primary" data-dismiss="modal">${extras.buttons.resume_here}</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="bs-callout bs-callout-info">
-                            <h4>
-                                <span class="text-info">&#10134</span>
-                                <span class="lead">${structure:extras.island.undercut_text}</span>
-                            </h4>
-                            <div>
-                                <ul>
-                                    <li tal:repeat="undercut extras.island.undercut" tal:attributes="id undercut.id">
-                                        <label tal:attributes="for undercut.id">${structure:undercut.text}</label>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-offset-6 col-md-6">
-                                    <button id="island-view-undercut-button" type="button" class="btn btn-primary" data-dismiss="modal">${extras.buttons.resume_here}</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="bs-callout bs-callout-info">
-                            <h4>
-                                <span class="text-info">&#10134;</span>
-                                <span class="lead">${structure:extras.island.rebut_text}</span>
-                            </h4>
-                            <div>
-                                <ul>
-                                    <li tal:repeat="rebut extras.island.rebut" tal:attributes="id rebut.id">
-                                        <label tal:attributes="for rebut.id">${structure:rebut.text}</label>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-offset-6 col-md-6">
-                                    <button id="island-view-rebut-button" type="button" class="btn btn-primary" data-dismiss="modal">${extras.buttons.resume_here}</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
         <div class="colored-container" id="graph-view-container" style="display:none">
             <div class="pull-left content-wrapper">
                 <button id="close-graph-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h4 id="graph-view-container-header" class="center"></h4>
+                <div style="position: absolute;">
+                    <span><span i18n:translate="start">Start</span>: <span style="margin-right: 1em;">${issues.date}</span></span>
+                    <input id="graph-slider" type="text" data-slider-min="0" data-slider-step="1" data-slider-value="0" tal:attributes="data-slider-max issues.duration; data-start-ms issues.date_ms; data-slider-value issues.duration"/>
+                    <span i18n:translate="now" style="margin-left: 1em;">Now</span>
+                </div>
                 <div id="graph-view-container-space" style="height:95%;">
                 </div>
             </div>
@@ -300,11 +207,11 @@
                     <li id="labels" class="hidden"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="labels">Labels</span></li>
                     <li id="positions" class="hidden indented-button"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="positions">Positions</span></li>
                     <li id="statements" class="hidden indented-button"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="statements">Statements</span></li>
-                    <li id="show-my-path" class="hidden"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_path">My path</span></li>
-                    <li id="hide-my-path" class="hidden"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_path">My path</span></li>
+                    <li id="show-my-path" class="hidden reset-slider"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_path">My path</span></li>
+                    <li id="hide-my-path" class="hidden reset-slider"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_path">My path</span></li>
                     <li id="my-statements" tal:condition="extras.logged_in" class="hidden"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_statements">My statements</span></li>
-                    <li id="supports-on-my-statements" tal:condition="extras.logged_in" class="hidden indented-button"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="supports_on_my_statements">Supports</span></li>
-                    <li id="attacks-on-my-statements" tal:condition="extras.logged_in" class="hidden indented-button"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="attacks_on_my_statements">Attacks</span></li>
+                    <li id="supports-on-my-statements" tal:condition="extras.logged_in" class="hidden indented-button reset-slider"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="supports_on_my_statements">Supports</span></li>
+                    <li id="attacks-on-my-statements" tal:condition="extras.logged_in" class="hidden indented-button reset-slider"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="attacks_on_my_statements">Attacks</span></li>
                 </ul>
 
                 <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">

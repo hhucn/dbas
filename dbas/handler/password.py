@@ -8,11 +8,13 @@ import random
 
 import transaction
 from cryptacular.bcrypt import BCRYPTPasswordManager
+from pyramid_mailer import get_mailer
 from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Settings, Language
-from dbas.helper.email import send_mail
+from dbas.handler.email import send_mail
+from dbas.handler.language import get_language_from_cookie
 from dbas.lib import escape_string
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -59,7 +61,7 @@ def get_hashed_password(password):
     return manager.encode(password)
 
 
-def request_password(request, ui_locales):
+def request_password(request):
     """
     Request for a new password
 
@@ -70,6 +72,7 @@ def request_password(request, ui_locales):
     success = ''
     error = ''
     info = ''
+    ui_locales = request.params['lang'] if 'lang' in request.params else get_language_from_cookie(request)
 
     _t = Translator(ui_locales)
     email = escape_string(request.params['email'])
@@ -93,7 +96,7 @@ def request_password(request, ui_locales):
         body += _t.get(_.newPwdIs) + pwd + '\n\n'
         body += _t.get(_.newPwdInfo)
         subject = _t.get(_.dbasPwdRequest)
-        reg_success, message = send_mail(request, subject, body, email, db_language.ui_locales)
+        reg_success, message = send_mail(get_mailer(request), subject, body, email, db_language.ui_locales)
 
         if reg_success:
             success = message

@@ -5,7 +5,6 @@
 
 function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     'use strict';
-    var s;
     var isPartialGraphMode = is_partial_graph_mode;
     var isVisible;
     var colors;
@@ -40,23 +39,21 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         var tmp = url.split('/');
         isPartialGraphMode = override_cases;
         if (!override_cases) {
-	        if (url.indexOf('attitude') !== -1) {
-		        uid = tmp[tmp.indexOf('attitude') + 1];
-		        is_argument = false;
-		        isPartialGraphMode = true;
-	        } else if (url.indexOf('justify') !== -1) {
-		        uid = tmp[tmp.indexOf('justify') + 1];
-		        is_argument = false;
-		        isPartialGraphMode = true;
-	        } else if (url.indexOf('reaction') !== -1) {
-		        uid = tmp[tmp.indexOf('reaction') + 1];
-		        is_argument = true;
-		        isPartialGraphMode = true;
-	        } else if (url.indexOf('support') !== -1) {
-		        uid = tmp[tmp.indexOf('support') + 1];
-		        is_argument = true;
-		        isPartialGraphMode = true;
-	        }
+            var keys = { // mapping of keyword and boolean for 'is_argumentÄ
+                'attitude': false,
+                'justify': false,
+                'reaction': true,
+                'support': true,
+                'jump': true
+            };
+            $.each(keys, function(key, bool){
+                if (url.indexOf(key) !== -1) {
+		            uid = tmp[tmp.indexOf(key) + 1];
+		            is_argument = bool;
+		            isPartialGraphMode = true;
+		            return false;
+	            }
+            });
         }
 	    new AjaxGraphHandler().getDiscussionGraphData(this, uid, is_argument, isPartialGraphMode);
     };
@@ -124,6 +121,29 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
          };
     }
 
+    function setSlider(){
+        var slider = $('#graph-slider');
+        var start_date_ms = slider.data('start-ms');
+    	slider.slider({
+            formatter: function(value) {
+		        var add_ms = value * 3600 * 1000;
+		        var cval = start_date_ms + add_ms;
+		        var date = new Date(cval);
+                return date.toLocaleString();
+            }
+    	}).on('slideStop', function(value) {
+		    resetButtons();
+		    if (typeof start_date_ms !== 'undefined') {
+		        var add_ms = value.value * 3600 * 1000;
+		        add_ms += value.value === 0 ? 1800 : 0;
+			    showNodesUntilMoment(start_date_ms + add_ms);
+		    }
+    	});
+        var w = $('#' + graphViewContainerHeaderId).width();
+        w -= slider.parent().width() - slider.parent().find('.slider').width();
+        slider.prev().css('width', w);
+    }
+
     /**
      * Callback if ajax request was successful.
      *
@@ -137,7 +157,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         	new GuiHandler().setDisplayStyleAsDiscussion();
         	return;
         }
-        s = new DiscussionGraph(box_sizes, isPartialGraphMode).setDefaultViewParams(true, jsonData, null, request_for_complete);
+        new DiscussionGraph(box_sizes, isPartialGraphMode).setDefaultViewParams(true, jsonData, null, request_for_complete);
     };
 
     /**
@@ -146,12 +166,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param data
      */
     this.callbackIfDoneForGetJumpDataForGraph = function (data) {
-        var jsonData = $.parseJSON(data);
         var popup = $('#popup-jump-graph');
-        if (jsonData.error.length === 0) {
+        if (data.error.length === 0) {
             var list = $('<ul>');
             popup.find('div.modal-body div').empty();
-            createContentOfModalBody(jsonData, list);
+            createContentOfModalBody(data, list);
             popup.find('div.modal-body div').append(list);
 
             // jump to url
@@ -224,7 +243,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         } else {
         	$('#global-view').show();
         }
-        
+
         // show or hide my path
 	    $('#hide-my-path').hide();
         if (jsonData.path.length === 0) {
@@ -346,7 +365,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             // update position of nodes
             setPositionOfCircles(jsonData);
             // update position of edges
-            setPositionOfLinks(jsonData);
+            setPositionOfLinks();
             // update position of rect
             rect.attr("transform", function (d) {
                 return "translate(" + d.x + "," + (d.y - 50) + ")";
@@ -357,6 +376,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             });
         }
 
+        setSlider();
     }
 
     /**
@@ -475,8 +495,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             if(isVisible.defaultView){
                 rescaleGraph.zoom_scale = 1;
                 isVisible.defaultView = false;
-            }
-            else{
+            } else {
                 rescaleGraph.zoom_scale = zoom.scale();
                 change_scale = Math.abs(rescaleGraph.old_scale - rescaleGraph.zoom_scale) > 0.02;
             }
@@ -486,8 +505,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             d3.selectAll("g.zoom").attr("transform", "translate(" + zoom.translate() + ")" + " scale(" + rescaleGraph.zoom_scale + ")");
 
             if (change_scale) {
+            	var svg = $('#graph-svg');
                 // resizing of font size, line height and the complete rectangle
-                $('#graph-svg').find('.node').each(function () {
+                svg.find('.node').each(function () {
                     var id = $(this).attr('id').replace(rescaleGraph.node_id_prefix, '');
                     if (id.indexOf('statement') !== -1 || id.indexOf('issue') !== -1) {
                         $('#label-' + id).css({
@@ -507,13 +527,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 });
 
                 // dirty hack to accept new line height and label position
-                $('#graph-svg').css({'line-height': '1.0'});
+                svg.css({'line-height': '1.0'});
                 setTimeout(function () {
                     $('#graph-svg').css({'line-height': '1.5'});
                     $('#' + graphViewContainerSpaceId).find('.node').each(function () {
                         var id = $(this).attr('id').replace(rescaleGraph.node_id_prefix, '');
                         var label = $('#label-' + id);
-                        var rect = $('#rect-' + id);
+                        // var rect = $('#rect-' + id);
                         label.attr({
                             'y': -label.height() / rescaleGraph.zoom_scale + 45 / rescaleGraph.zoom_scale
                         });
@@ -833,7 +853,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 return;
             }
             var circleId = this.id;
-            showPartOfGraph(circleId);
+            showArgumentsOfIdInGraph(circleId);
             selectedCircleId = d.id;
         });
         circle.on("dblclick", function (d) {
@@ -844,7 +864,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             // show modal when node clicked twice
             showModal(d);
             var circleId = this.id;
-            showPartOfGraph(circleId);
+            showArgumentsOfIdInGraph(circleId);
             selectedCircleId = d.id;
         });
     }
@@ -945,6 +965,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function addListenersForSidebarButtons(jsonData, zoom) {
         $('#default-view').off('click').click(function () {
+        	resetSlider();
         	if ($('#global-view').attr('data-global-view-loaded') === 'true' && $('#global-view:hidden').length === 0) {
 	            new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(false);}
 	        else {
@@ -957,22 +978,25 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(true);
         	}
         });
-        
+
         var mapper = {
             'labels': [showLabels, hideLabels],
             'positions': [showPositions, hidePositions],
             'statements': [showStatements, hideStatements],
             'my-statements': [showMyStatements, hideMyStatements],
             'supports-on-my-statements': [showSupportsOnMyStatements, hideSupportsOnMyStatements],
-            'attacks-on-my-statements': [showAttacksOnMyStatements, hideAttacksOnMyStatements],
+            'attacks-on-my-statements': [showAttacksOnMyStatements, hideAttacksOnMyStatements]
         };
-        
+
         // get all buttons in the sidebar
         $('#graph-view-container').find('.sidebar').find('li').each(function(index, element){
             var id =  $(element).attr('id');
             // check if the button is mentioned in mapper array
             if (id in mapper) {
 	            $('#' + id).off('click').click(function () {
+	            	if ($(this).hasClass('reset-slider')){
+			            resetSlider();
+		            }
 		            if ($(this).find('i').attr('class') === "fa fa-square-o") {
 			            $(this).find('i').removeClass().addClass("fa fa-check-square-o");
 			            mapper[id][0]();
@@ -983,16 +1007,16 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
 	            });
             }
         });
-        
+
         $('#show-my-path').click(function(){
             showPath(jsonData);
         });
-        
+
         $('#hide-my-path').click(function(){
             hidePath();
         });
     }
-	
+
     /**
      * Restore initial state of graph.
      *
@@ -1033,6 +1057,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         hideMyStatements();
         hideSupportsOnMyStatements();
         hideAttacksOnMyStatements();
+    }
+
+    function resetSlider(){
+        var slider = $('#graph-slider');
+        slider.slider('setValue', slider.data('slider-max'));
     }
 
     /**
@@ -1288,23 +1317,47 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         }
     }
 
+	/**
+     *
+	 * @param new_limit
+	 */
+	function showNodesUntilMoment(new_limit){
+        var tmp_edges = edges;
+        edges.forEach(function (edge) {
+            var edge_source_timestamp = parseInt(edge.source.timestamp) * 1000;
+            var edge_target_timestamp = parseInt(edge.target.timestamp) * 1000;
+            new_limit = parseInt(new_limit);
+        	if (edge_source_timestamp >= new_limit || edge_target_timestamp >= new_limit) {
+        		tmp_edges = $.grep(tmp_edges, function(value) {
+                    return value !== edge;
+				});
+        		highlightElements(edge);
+	        }
+        });
+		edges.forEach(function (edge) {
+			grayingElements(edge);
+		});
+		tmp_edges.forEach(function (edge) {
+			highlightElements(edge);
+		});
+    }
+
     /**
      * Select supports or attacks on statements of current user.
      */
     function selectSupportsAttacks(){
         circleIds = [];
-
         force.nodes().forEach(function (d) {
-            if (d.author.name === $('#header_nickname')[0].innerText) {
-                circleIds.push(d.id);
+            var nick = $('#header_nickname').data('public-nickname');
+            var author = d.author.name;
+            nick = typeof nick === 'undefined' ? nick : nick.toLocaleLowerCase();
+            author = typeof author === 'undefined' ? author : author.toLocaleLowerCase();
+            if (author === nick) {
+                circleIds.push(selectUid(d.id));
             }
         });
 
-        force.nodes().forEach(function (d) {
-            if (d.author.name === $('#header_nickname')[0].innerText) {
-                showPartOfGraph(d.id);
-            }
-        });
+        showPartOfGraph(circleIds);
     }
 
     /**
@@ -1523,12 +1576,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         return splitted[splitted.length - 1];
     }
 
+
     /**
      * Highlight incoming and outgoing edges of selected node.
      *
      * @param circleId: id of selected node
      */
-    function showPartOfGraph(circleId) {
+    function showArgumentsOfIdInGraph(circleId) {
         // edges with selected circle as source or as target
         var edgesCircleId = [];
         // select all incoming and outgoing edges of selected circle
@@ -1550,7 +1604,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 grayingElements(d);
             });
         }
-        highlightElementsVirtualNodes(edges, edgesCircleId);
+        highlightElementsVirtualNodes(edges, edgesCircleId, true);
         edgesCircleId.forEach(function (d) {
             if(isVisible.attack && d.color === colors.red){
                 highlightElements(d);
@@ -1564,13 +1618,68 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         });
     }
 
+
+    /**
+     * Highlight incoming and outgoing edges of selected node.
+     *
+     * @param circleIds: ids of selected node
+     */
+    function showPartOfGraph(circleIds) {
+        // edges with selected circle as source or as target
+        var edgesIds = [];
+        var nodeId = [];
+        // select all incoming and outgoing edges of selected circle
+        edges.forEach(function (d) {
+            // add source for supports/attacks
+            var relation = isVisible.support || isVisible.attack;
+            var selected = $.inArray(d.source.id, circleIds) !== -1;
+            if (relation && selected){
+                edgesIds.push(d);
+            }
+	        // get all targets of the edges without the edge itself
+            relation = !(isVisible.support || isVisible.attack) || d.target.type === 'position';
+            selected = $.inArray(d.target.id, circleIds) !== -1;
+            if (relation && selected) {
+			    nodeId.push(d);
+            }
+        });
+
+        // if isMyStatementsClicked is false gray all elements at each function call,
+        // else the graph is colored once gray
+        var nothing = !isVisible.my_statements && !isVisible.support && !isVisible.attack;
+        if (nothing) {
+            edges.forEach(function (d) {
+                grayingElements(d);
+            });
+        }
+        highlightElementsVirtualNodes(edges, edgesIds, false);
+        edgesIds.forEach(function (d) {
+            var attack = isVisible.attack && d.color === colors.red;
+            var support = isVisible.support && d.color === colors.green;
+            var other = !isVisible.attack && !isVisible.support;
+            if(attack || support || other){
+    	        hightlghtEdge(d);
+	            highlightEdgeSource(d);
+            }
+        });
+        nodeId.forEach(function (d) {
+            var attack = isVisible.attack && d.color === colors.red;
+            var support = isVisible.support && d.color === colors.green;
+            var other = !isVisible.attack && !isVisible.support;
+            if(attack || support || other){
+                hightlightEdgeTarget(d);
+            }
+        });
+    }
+
     /**
      * Highlight incoming and outgoing edges of virtual node.
      *
      * @param edges
      * @param edgesCircleId
+     * @param highlightCompleteArgument
      */
-    function highlightElementsVirtualNodes(edges, edgesCircleId) {
+    function highlightElementsVirtualNodes(edges, edgesCircleId, highlightCompleteArgument) {
         var virtualNodes = [];
         var virtualNodesIds = [];
         do {
@@ -1578,7 +1687,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             // virtual nodes
             createVirtualNodesArray(edgesCircleId, virtualNodes, virtualNodesIds);
             // edges with a virtual node as source or as target
-            createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId);
+            createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId, highlightCompleteArgument);
         }
         while (change);
     }
@@ -1592,7 +1701,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function createVirtualNodesArray(edgesCircleId, virtualNodes, virtualNodesIds) {
         edgesCircleId.forEach(function (d) {
-            if (d.source.label === '') {
+        	if (d.source.label === '') {
                 if($.inArray(d.source.id, virtualNodesIds) === -1){
                     change = true;
                     virtualNodesIds.push(d.source.id);
@@ -1615,11 +1724,12 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param edges
      * @param virtualNodes
      * @param edgesCircleId
+     * @param highlightCompleteArgument
      */
-    function createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId) {
+    function createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId, highlightCompleteArgument) {
         edges.forEach(function (d) {
             virtualNodes.forEach(function (e) {
-                if (d.source.id === e.id || d.target.id === e.id) {
+                if (d.source.id === e.id  || (d.target.id === e.id && highlightCompleteArgument)) {
                     edgesCircleId.push(d);
                 }
             });
@@ -1632,20 +1742,40 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param edge: edge that should be highlighted
      */
     function highlightElements(edge) {
-        // edges
+    	hightlghtEdge(edge);
+	    highlightEdgeSource(edge);
+	    hightlightEdgeTarget(edge);
+    }
+
+	/**
+	 *
+	 * @param edge
+	 */
+	function hightlghtEdge(edge){
         d3.select('#link-' + edge.id).style('stroke', edge.color);
-        // nodes
-        // add border if button support or attack is clicked
+        d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
+    }
+
+	/**
+	 *
+	 * @param edge
+	 */
+    function highlightEdgeSource(edge){
         d3.select('#circle-' + edge.source.id).attr('fill', edge.source.color);
         if((isVisible.support || isVisible.attack) && $.inArray(edge.source.id, circleIds) !== -1) {
             d3.select('#circle-' + edge.source.id).attr({fill: edge.source.color, stroke: 'black'});
         }
+    }
+
+	/**
+	 *
+	 * @param edge
+	 */
+    function hightlightEdgeTarget(edge){
         d3.select('#circle-' + edge.target.id).attr('fill', edge.target.color);
         if((isVisible.support || isVisible.attack) && $.inArray(edge.target.id, circleIds) !== -1) {
             d3.select('#circle-' + edge.target.id).attr({fill: edge.target.color, stroke: 'black'});
         }
-        // arrows
-        d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
     }
 
     /**

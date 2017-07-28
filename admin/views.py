@@ -6,11 +6,12 @@ Introducing an admin interface to enable easy database management.
 
 import json
 
-import admin.lib as lib
-import dbas.user_management as UserHandler
 from cornice import Service
+
+import admin.lib as lib
+from dbas.handler import user
+from dbas.handler.language import get_language_from_cookie
 from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.helper.language import get_language_from_cookie
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -83,7 +84,7 @@ def main_admin(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Admin', 'main_admin', 'def')
     request_authenticated_userid = request.authenticated_userid
-    should_log_out = UserHandler.update_last_action(request_authenticated_userid)
+    should_log_out = user.update_last_action(request_authenticated_userid)
     if should_log_out:
         return user_logout(request, True)
 
@@ -112,7 +113,7 @@ def main_table(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     request_authenticated_userid = request.authenticated_userid
     logger('Admin', 'main_table', 'def')
-    should_log_out = UserHandler.update_last_action(request_authenticated_userid)
+    should_log_out = user.update_last_action(request_authenticated_userid)
     if should_log_out:
         return user_logout(request, True)
 

@@ -12,4 +12,5 @@ systemctl stop deploy_dbas
 docker-compose rm -f
 docker system prune -f
 docker-compose pull
+docker-compose -f docker-compose.production.yml pull
 systemctl start deploy_dbas

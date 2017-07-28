@@ -5,7 +5,7 @@ TODO
 """
 
 from pyramid.security import Allow, Everyone
-from dbas.views import logger
+from dbas.logger import logger
 from .database import DBDiscussionSession
 from .database.discussion_model import User, Group
 from sqlalchemy.exc import InternalError
@@ -22,11 +22,11 @@ class RootFactory(object):
                (Allow, 'group:authors', ('edit', 'use')),
                (Allow, 'group:users', 'use')]
 
-    def __init__(self, request):
+    def __init__(self, _):
         pass
 
 
-def groupfinder(nick, request):
+def groupfinder(nick, _):
     """
     Finds group for the user id in given request
     :param nick: current user id

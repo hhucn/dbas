@@ -9,7 +9,7 @@ import transaction
 
 from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Premise, PremiseGroup, User
+from dbas.database.discussion_model import Argument, Premise, PremiseGroup
 from dbas.lib import get_text_for_premisesgroup_uid
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
 from dbas.input_validator import is_integer
@@ -288,53 +288,6 @@ def set_new_support(premisegroup_uid, current_argument, db_user, issue):
         DBDiscussionSession.flush()
         transaction.commit()
         return new_argument, False
-
-
-def __set_argument(user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
-    """
-    Set an Argument with given values into database
-
-    :param user: User.nickname
-    :param premisegroup_uid: premisesgroup_uid
-    :param conclusion_uid: Statement.uid
-    :param argument_uid: Argument.uid
-    :param is_supportive: Boolean
-    :param issue: Issue.uid
-    :return: Argument.uid or None
-    """
-    # logger('RelationHelper', '__create_argument_by_uids', 'main with user: ' + str(user) +
-    #        ', premisegroup_uid: ' + str(premisegroup_uid) +
-    #        ', conclusion_uid: ' + str(conclusion_uid) +
-    #        ', argument_uid: ' + str(argument_uid) +
-    #        ', is_supportive: ' + str(is_supportive) +
-    #        ', issue: ' + str(issue))
-
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-    new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
-                                                                   Argument.is_supportive == is_supportive,
-                                                                   Argument.conclusion_uid == conclusion_uid,
-                                                                   Argument.issue_uid == issue)).first()
-    if not new_argument:
-        new_argument = Argument(premisegroup=premisegroup_uid, issupportive=is_supportive, author=db_user.uid,
-                                conclusion=conclusion_uid, issue=issue)
-        new_argument.set_conclusions_argument(argument_uid)
-
-        DBDiscussionSession.add(new_argument)
-        DBDiscussionSession.flush()
-
-        new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
-                                                                       Argument.is_supportive == is_supportive,
-                                                                       Argument.author_uid == db_user.uid,
-                                                                       Argument.conclusion_uid == conclusion_uid,
-                                                                       Argument.argument_uid == argument_uid,
-                                                                       Argument.issue_uid == issue)).first()
-    transaction.commit()
-    if new_argument:
-        # logger('RelationHelper', '__create_argument_by_uids', 'argument was inserted')
-        return new_argument.uid
-    else:
-        # logger('RelationHelper', '__create_argument_by_uids', 'argument was not inserted')
-        return None
 
 
 def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_supportive):

@@ -11,6 +11,7 @@ import re
 import time
 from collections import defaultdict
 from datetime import datetime
+from enum import Enum
 from html import escape
 from urllib import parse
 
@@ -25,6 +26,13 @@ from dbas.strings.translator import Translator
 
 fallback_lang = 'en'
 tag_type = 'span'
+
+
+class BubbleTypes(Enum):
+    USER = 1
+    SYSTEM = 2
+    STATUS = 3
+    INFO = 4
 
 
 def get_global_url():
@@ -483,7 +491,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         db_marked = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.argument_uid == uid,
                                                                      MarkedArgument.author_uid == author_uid).first()
         marked_element = db_marked is not None
-    youHaveTheOpinionThat = _t.get(_.youHaveTheOpinionThat).format('').strip()
+    you_have_the_opinion_that = _t.get(_.youHaveTheOpinionThat).format('').strip()
 
     if lang == 'de':
         if start_with_intro and not anonymous_style:
@@ -495,7 +503,12 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
             ret_value = (sb_none if attack_type in ['dont_know'] else sb) + intro + se + ' '
         elif is_users_opinion and not anonymous_style:
             ret_value = sb_none
-            ret_value += _t.get(_.youAgreeWithThecounterargument) if support_counter_argument else (youHaveTheOpinionThat if marked_element else _t.get(_.youArgue))
+            if support_counter_argument:
+                ret_value += _t.get(_.youAgreeWithThecounterargument)
+            elif marked_element:
+                ret_value += you_have_the_opinion_that
+            else:
+                ret_value += _t.get(_.youArgue)
             ret_value += se + ' '
         else:
             ret_value = sb_none + _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous) + se + ' '
@@ -505,7 +518,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         ret_value += sb_none + _t.get(_.because).lower() + se + ' ' + premises
     else:
         tmp = sb + ' ' + _t.get(_.isNotRight).lower() + se + ', ' + _t.get(_.because).lower() + ' '
-        ret_value = (youHaveTheOpinionThat + ' ' if marked_element else '') + conclusion + ' '
+        ret_value = (you_have_the_opinion_that + ' ' if marked_element else '') + conclusion + ' '
         ret_value += _t.get(_.because).lower() if db_argument.is_supportive else tmp
         ret_value += ' ' + premises
 
@@ -571,10 +584,7 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     # just display the last premise group on undercuts, because the story is always saved in all bubbles
 
     if minimize_on_undercut and not user_changed_opinion and len(pgroups) > 2:
-        if premisegroup_by_user:
-            return _t.get(_.butYouCounteredWith).strip() + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
-        else:
-            return _t.get(_.butYouCounteredWith).strip() + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
+        return _t.get(_.butYouCounteredWith).strip() + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
 
     for i, pgroup in enumerate(pgroups):
         ret_value += ' '
@@ -687,7 +697,7 @@ def resolve_issue_uid_to_slug(uid):
     :rtype: str
     """
     issue = DBDiscussionSession.query(Issue).get(uid)
-    return issue.get_slug() if issue else None
+    return issue.slug if issue else None
 
 
 def get_all_attacking_arg_uids_from_history(history):
@@ -786,18 +796,15 @@ def pretty_print_options(message):
     return message
 
 
-def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is_info=False, is_markable=False,
-                             is_author=False, id='', url='', message='', omit_url=False, argument_uid=None,
-                             statement_uid=None, is_supportive=None, nickname='anonymous', lang='en',
-                             is_users_opinion=False):
+def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, id='', url='', message='',
+                             omit_url=False, argument_uid=None, statement_uid=None, is_supportive=None,
+                             nickname='anonymous', lang='en', is_users_opinion=False):
     """
     Creates an dictionary which includes every information needed for a bubble.
 
-    :param is_user: Boolean
-    :param is_system: Boolean
-    :param is_status: Boolean
-    :param is_info: Boolean
+    :param bubble_type: BubbleTypes
     :param is_markable: Boolean
+    :param is_author: Boolean
     :param id: id of bubble
     :param url: URL
     :param message: String
@@ -806,13 +813,14 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
     :param statement_uid: Statement.uid
     :param is_supportive: Boolean
     :param nickname: String
-    :param lang: String
+    :param omit_url: Boolean
+    :param lang: is_users_opinion
     :return: dict()
     """
     message = pretty_print_options(message)
 
     # check for users opinion
-    if is_user and nickname != 'anonymous':
+    if bubble_type is BubbleTypes.USER and nickname != 'anonymous':
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         db_marked = None
         if argument_uid is not None and db_user is not None:
@@ -826,10 +834,10 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
         is_users_opinion = db_marked is not None
 
     speech = {
-        'is_user': is_user,
-        'is_system': is_system,
-        'is_status': is_status,
-        'is_info': is_info,
+        'is_user': bubble_type is BubbleTypes.USER,
+        'is_system': bubble_type is BubbleTypes.SYSTEM,
+        'is_status': bubble_type is BubbleTypes.STATUS,
+        'is_info': bubble_type is BubbleTypes.INFO,
         'is_markable': is_markable,
         'is_author': is_author,
         'id': id if len(str(id)) > 0 else str(time.time()),
@@ -843,14 +851,14 @@ def create_speechbubble_dict(is_user=False, is_system=False, is_status=False, is
         'is_users_opinion': str(is_users_opinion),
     }
 
-    votecount_keys = __get_text_for_click_count(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang)
+    votecount_keys = __get_text_for_click_and_mark_count(nickname, bubble_type is BubbleTypes.USER, is_supportive, argument_uid, statement_uid, speech, lang)
 
     speech['votecounts_message'] = votecount_keys[speech['votecounts']]
 
     return speech
 
 
-def __get_text_for_click_count(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang):
+def __get_text_for_click_and_mark_count(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang):
     """
     Build text for a bubble, how many other participants have the same interest?
 
@@ -863,7 +871,8 @@ def __get_text_for_click_count(nickname, is_user, is_supportive, argument_uid, s
     :param lang: ui_locales
     :return: [String]
     """
-    db_votecounts = None
+    db_clicks = None
+    db_marks = None
 
     if is_supportive is None:
         is_supportive = False
@@ -875,22 +884,29 @@ def __get_text_for_click_count(nickname, is_user, is_supportive, argument_uid, s
         db_user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
 
     if argument_uid:
-        db_votecounts = DBDiscussionSession.query(ClickedArgument). \
+        db_clicks = DBDiscussionSession.query(ClickedArgument). \
             filter(and_(ClickedArgument.argument_uid == argument_uid,
                         ClickedArgument.is_up_vote == is_supportive,
                         ClickedArgument.is_valid,
-                        ClickedArgument.author_uid != db_user.uid)). \
-            all()
+                        ClickedArgument.author_uid != db_user.uid)).all()
+        db_marks = DBDiscussionSession.query(MarkedArgument). \
+            filter(MarkedArgument.argument_uid == argument_uid,
+                   MarkedArgument.author_uid != db_user.uid).all()
 
     elif statement_uid:
-        db_votecounts = DBDiscussionSession.query(ClickedStatement). \
+        db_clicks = DBDiscussionSession.query(ClickedStatement). \
             filter(and_(ClickedStatement.statement_uid == statement_uid,
                         ClickedStatement.is_up_vote == is_supportive,
                         ClickedStatement.is_valid,
-                        ClickedStatement.author_uid != db_user.uid)). \
-            all()
+                        ClickedStatement.author_uid != db_user.uid)).all()
+        db_marks = DBDiscussionSession.query(MarkedStatement). \
+            filter(MarkedStatement.statement_uid == statement_uid,
+                   MarkedStatement.author_uid != db_user.uid).all()
+
     _t = Translator(lang)
-    speech['votecounts'] = len(db_votecounts) if db_votecounts else 0
+    speech['votecounts'] = len(db_clicks) if db_clicks else 0
+    if db_marks:
+        speech['votecounts'] += len(db_marks)
 
     votecount_keys = defaultdict(lambda: "{} {}.".format(speech['votecounts'], _t.get(_.voteCountTextMore)))
 
@@ -916,11 +932,7 @@ def is_user_author_or_admin(nickname):
     db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
     db_author_group = DBDiscussionSession.query(Group).filter_by(name='authors').first()
     #  logger('Lib', 'is_user_author_or_admin', 'main')
-    if db_user:
-        if db_user.group_uid == db_author_group.uid or db_user.group_uid == db_admin_group.uid:
-            return True
-
-    return False
+    return db_user and (db_user.group_uid == db_author_group.uid or db_user.group_uid == db_admin_group.uid)
 
 
 def is_user_admin(nickname):

@@ -1,6 +1,5 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 function InteractionHandler() {
@@ -11,13 +10,12 @@ function InteractionHandler() {
 	 * @param data returned data
 	 */
 	this.callbackIfDoneForSendNewStartStatement = function (data) {
-		var parsedData = $.parseJSON(data);
-		if (parsedData.error.length > 0) {
+		if (data.error.length > 0) {
 			$('#' + addStatementErrorContainer).show();
-			$('#' + addStatementErrorMsg).text(parsedData.error);
+			$('#' + addStatementErrorMsg).text(data.error);
 		} else {
 			$('#' + discussionSpaceId + 'input:last-child').prop('checked', false);
-			window.location.href = parsedData.url;
+			window.location.href = data.url;
 		}
 	};
 
@@ -26,12 +24,11 @@ function InteractionHandler() {
 	 * @param data returned data
 	 */
 	this.callbackIfDoneForSendNewPremisesArgument = function (data) {
-		var parsedData = $.parseJSON(data);
-		if (parsedData.error.length > 0) {
+		if (data.error.length > 0) {
 			$('#' + addPremiseErrorContainer).show();
-			$('#' + addPremiseErrorMsg).text(parsedData.error);
+			$('#' + addPremiseErrorMsg).text(data.error);
 		} else {
-			window.location.href = parsedData.url;
+			window.location.href = data.url;
 		}
 	};
 
@@ -40,12 +37,11 @@ function InteractionHandler() {
 	 * @param data returned data
 	 */
 	this.callbackIfDoneForSendNewStartPremise = function (data) {
-		var parsedData = $.parseJSON(data);
-		if (parsedData.error.length > 0) {
+		if (data.error.length > 0) {
 			$('#' + addPremiseErrorContainer).show();
-			$('#' + addPremiseErrorMsg).text(parsedData.error);
+			$('#' + addPremiseErrorMsg).text(data.error);
 		} else {
-			window.location.href = parsedData.url;
+			window.location.href = data.url;
 		}
 	};
 
@@ -54,21 +50,20 @@ function InteractionHandler() {
 	 * @param data of the ajax request
 	 */
 	this.callbackIfDoneForGettingLogfile = function (data) {
-		var parsedData = $.parseJSON(data);
 		// status is the length of the content
 		var description = $('#' + popupEditStatementErrorDescriptionId);
-		if (parsedData.error.length !== 0) {
-			description.text(parsedData.error);
+		if (data.error.length !== 0) {
+			description.text(data.error);
 			description.addClass('text-danger');
 			description.removeClass('text-info');
 			$('#' + popupEditStatementLogfileSpaceId).prev().hide();
-		} else if (parsedData.info.length !== 0) {
-			description.text(parsedData.error);
+		} else if ('info' in data && data.info.length !== 0) {
+			description.text(data.error);
 			description.removeClass('text-danger');
 			description.addClass('text-info');
 			$('#' + popupEditStatementLogfileSpaceId).prev().hide();
 		} else {
-			new GuiHandler().showLogfileOfPremisegroup(parsedData);
+			new GuiHandler().showLogfileOfPremisegroup(data);
 		}
 	};
 
@@ -78,11 +73,10 @@ function InteractionHandler() {
 	 * @param statements_uids
 	 */
 	this.callbackIfDoneForSendCorrectureOfStatement = function (data, statements_uids) {
-		var parsedData = $.parseJSON(data);
-		if (parsedData.error.length !== 0) {
-			setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
-		} else if (parsedData.info.length !== 0) {
-			setGlobalInfoHandler('Ohh!', parsedData.info);
+		if (data.error.length !== 0) {
+			setGlobalErrorHandler(_t_discussion(ohsnap), data.error);
+		} else if (data.info.length !== 0) {
+			setGlobalInfoHandler('Ohh!', data.info);
 		} else {
 			setGlobalSuccessHandler('Yeah!', _t_discussion(proposalsWereForwarded));
 			new PopupHandler().hideAndClearEditStatementsPopup();
@@ -99,11 +93,11 @@ function InteractionHandler() {
 	 * @param long_url url which should be shortend
 	 */
 	this.callbackIfDoneForShortenUrl = function (data, long_url) {
-		var parsedData = $.parseJSON(data), service;
-		if (parsedData.error.length === 0) {
-			service = '<a href="' + parsedData.service_url + '" title="' + parsedData.service + '" target="_blank">' + parsedData.service + '</a>';
+		var service;
+		if (data.error.length === 0) {
+			service = '<a href="' + data.service_url + '" title="' + data.service + '" target="_blank">' + data.service + '</a>';
 			$('#' + popupUrlSharingDescriptionPId).html(_t_discussion(feelFreeToShareUrl) + ' (' + _t_discussion(shortenedBy) + ' ' + service + '):');
-			$('#' + popupUrlSharingInputId).val(parsedData.url).data('short-url', parsedData.url);
+			$('#' + popupUrlSharingInputId).val(data.url).data('short-url', data.url);
 		} else {
 			$('#' + popupUrlSharingDescriptionPId).text(_t_discussion(feelFreeToShareUrl) + '.');
 			$('#' + popupUrlSharingInputId).val(long_url);
@@ -111,16 +105,15 @@ function InteractionHandler() {
 	};
 	
 	this.callbackForMarkedStatementOrArgument = function (data, should_mark, callback_id){
-		var parsedData = $.parseJSON(data);
-		if (parsedData.error.length !== 0) {
-			setGlobalErrorHandler(_t_discussion(ohsnap), parsedData.error);
+		if (data.error.length !== 0) {
+			setGlobalErrorHandler(_t_discussion(ohsnap), data.error);
 			return;
 		}
 		
-		setGlobalSuccessHandler('Yeah!', parsedData.success);
+		setGlobalSuccessHandler('Yeah!', data.success);
 		var el = $('#' + callback_id);
-		if (parsedData.text.length > 0) {
-			el.parent().find('.triangle-content').html(parsedData.text);
+		if (data.text.length > 0) {
+			el.parent().find('.triangle-content').html(data.text);
 		}
 		if (should_mark){
 			el.hide().prev().show();
@@ -136,16 +129,15 @@ function InteractionHandler() {
 	 * @param type
 	 */
 	this.callbackIfDoneFuzzySearch = function (data, callbackid, type) {
-		var parsedData = $.parseJSON(data);
 		// if there is no returned data, we will clean the list
 
-		if (Object.keys(parsedData).length === 0) {
+		if (Object.keys(data).length === 0) {
 			$('#' + proposalStatementListGroupId).empty();
 			$('#' + proposalPremiseListGroupId).empty();
 			$('#' + proposalEditListGroupId).empty();
 			$('#' + proposalUserListGroupId).empty();
 		} else {
-			new GuiHandler().setStatementsAsProposal(parsedData, callbackid, type);
+			new GuiHandler().setStatementsAsProposal(data, callbackid, type);
 		}
 	};
 	
@@ -154,14 +146,12 @@ function InteractionHandler() {
 	 * @param data
 	 */
 	this.callbackIfDoneFuzzySearchForDuplicate = function (data) {
-		var parsedData = $.parseJSON(data);
 		// if there is no returned data, we will clean the list
-
 		var ph = new PopupHandler();
-		if (Object.keys(parsedData).length === 0) {
+		if (Object.keys(data).length === 0) {
 			ph.setDefaultOfSelectionOfDuplicatePopup();
 		} else {
-			ph.setSelectsOfDuplicatePopup(parsedData);
+			ph.setSelectsOfDuplicatePopup(data);
 		}
 	};
 
@@ -170,34 +160,34 @@ function InteractionHandler() {
 	 * @param data
 	 */
 	this.callbackIfDoneForGettingInfosAboutArgument = function(data){
-		var parsedData = $.parseJSON(data), text, element;
+		var text, element;
 		// status is the length of the content
-		if (parsedData.error.length !== 0) {
-			text = parsedData.error;
+		if (data.error.length !== 0) {
+			text = data.error;
 			element = $('<p>').html(text);
 			displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), element);
 			return;
 		}
 
-		// supporters = parsedData.supporter.join(', ');
-		var author = parsedData.author;
-		if (parsedData.author !== 'anonymous'){
-			var img = '<img class="img-circle" style="height: 1em;" src="' + parsedData.gravatar + '">';
-			author = '<a href="' + parsedData.author_url + '">' + img + ' ' + parsedData.author + '</a>';
+		// supporters = data.supporter.join(', ');
+		var author;
+		if (data.author !== 'anonymous'){
+			var img = '<img class="img-circle" style="height: 1em;" src="' + data.gravatar + '">';
+			author = '<a href="' + data.author_url + '">' + img + ' ' + data.author + '</a>';
 		} else {
 			author = _t_discussion(an_anonymous_user);
 		}
 		text = _t_discussion(messageInfoStatementCreatedBy) + ' ' + author;
-		text += ' (' + parsedData.timestamp + ') ';
-		text += _t_discussion(messageInfoCurrentlySupported) + ' ' + parsedData.vote_count + ' ';
+		text += ' (' + data.timestamp + ') ';
+		text += _t_discussion(messageInfoCurrentlySupported) + ' ' + data.vote_count + ' ';
 		text +=_t_discussion(messageInfoParticipant) + '.';
 
 		var users_array = [];
-		$.each(parsedData.supporter, function (index, val) {
+		$.each(data.supporter, function (index, val) {
 			users_array.push({
-				'avatar_url': parsedData.gravatars[val],
+				'avatar_url': data.gravatars[val],
 				'nickname': val,
-				'public_profile_url': parsedData.public_page[val]
+				'public_profile_url': data.public_page[val]
 			});
 		});
 		
@@ -208,7 +198,7 @@ function InteractionHandler() {
 			tbody.append(value);
 		});
 		
-		var body = gh.closePrepareTableForOpinionDialog(parsedData.supporter, gh, text, tbody);
+		var body = gh.closePrepareTableForOpinionDialog(data.supporter, gh, text, tbody);
 
 		displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), body);
 		$('#' + popupConfirmDialogId).find('.modal-dialog').addClass('modal-lg').on('hidden.bs.modal', function () {
@@ -233,16 +223,14 @@ function InteractionHandler() {
 	 * @param data
 	 */
 	this.callbackIfDoneForSendNewIssue = function(data){
-		var parsedData = $.parseJSON(data);
-
-		if (parsedData.error.length !== 0) {
-			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+		if (data.error.length !== 0) {
+			setGlobalErrorHandler(_t(ohsnap), data.error);
 		} else {
 			$('#popup-add-topic').modal('hide');
 			var li = $('<li>').addClass('enabled'),
-				a = $('<a>').attr('href', parsedData.issue.url).attr('value', parsedData.issue.title),
-				spanTitle = $('<span>').text(parsedData.issue.title),
-				spanBadge = $('<span>').addClass('badge').attr('style', 'float: right; margin-left: 1em;').text(parsedData.issue.arg_count),
+				a = $('<a>').attr('href', data.issue.url).attr('value', data.issue.title),
+				spanTitle = $('<span>').text(data.issue.title),
+				spanBadge = $('<span>').addClass('badge').attr('style', 'float: right; margin-left: 1em;').text(data.issue.arg_count),
 				divider = $('#' + issueDropdownListID).find('li.divider');
 			li.append(a.append(spanTitle).append(spanBadge));
 			if (divider.length>0){
@@ -291,7 +279,7 @@ function InteractionHandler() {
 		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		} else {
-			if (parsedData.is_deleted) {
+			if (parsedData.success) {
 				setGlobalSuccessHandler('Yeah!', _t_discussion(dataRemoved) + ' ' + _t_discussion(yourAreNotTheAuthorOfThisAnymore));
 			} else {
 				setGlobalSuccessHandler('Yeah!', _t_discussion(contentWillBeRevoked));
@@ -305,22 +293,22 @@ function InteractionHandler() {
 	 * @param is_argument
 	 */
 	this.callbackIfDoneForGettingMoreInfosAboutOpinion = function(data, is_argument){
-		var parsedData = $.parseJSON(data), users_array, popup_table;
+		var users_array, popup_table;
 
-		if (parsedData.error.length !== 0) {
-			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+		if (data.error.length !== 0) {
+			setGlobalErrorHandler(_t(ohsnap), data.error);
 			return;
 		}
-		if (parsedData.info.length !== 0) {
-			setGlobalInfoHandler('Hey', parsedData.info);
+		if (data.info.length !== 0) {
+			setGlobalInfoHandler('Hey', data.info);
 			return;
 		}
 		
 		var gh = new GuiHandler();
 		var tbody = $('<tbody>');
-		var span = is_argument? $('<span>').text(parsedData.opinions.message) : $('<span>').text(parsedData.opinions[0].message);
+		var span = is_argument? $('<span>').text(data.opinions.message) : $('<span>').text(data.opinions[0].message);
 
-		users_array = is_argument ? parsedData.opinions.users : parsedData.opinions[0].users;
+		users_array = is_argument ? data.opinions.users : data.opinions[0].users;
 		var rows = gh.createUserRowsForOpinionDialog(users_array);
 		$.each( rows, function( key, value ) {
 			tbody.append(value);
@@ -351,12 +339,10 @@ function InteractionHandler() {
 	 * @param data
 	 */
 	this.callbackIfDoneForGettingReferences = function(data){
-		var parsedData = $.parseJSON(data);
-		
-		if (parsedData.error.length !== 0) {
-			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+		if (data.error.length !== 0) {
+			setGlobalErrorHandler(_t(ohsnap), data.error);
 		} else {
-			new PopupHandler().showReferencesPopup(parsedData);
+			new PopupHandler().showReferencesPopup(data);
 		}
 	};
 	
@@ -420,7 +406,7 @@ function InteractionHandler() {
 			} else {
 				if (type === fuzzy_start_statement) {
 					if (decided_texts.length > 0) {
-						alert("TODO: more than one decided text");
+						setGlobalErrorHandler('Oha', 'More than one decided text!');
 					} else {
 						new AjaxDiscussionHandler().sendNewStartStatement(text);
 					}

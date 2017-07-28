@@ -1,6 +1,5 @@
 /**
- * @author Tobias Krauthoff
- * @email krauthoff@cs.uni-duesseldorf.de
+ * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 var mainpage = location.origin + '/'; //get_hostname(window.location.href);
@@ -59,9 +58,12 @@ getLanguage = function(){
     $('#' + languageDropdownId).children().each(function(){
         if ($(this).hasClass('active')){
             this_id = $(this).children().first().attr('id');
-            if (this_id.indexOf('en') !== -1){        value = 'en';
-            } else if (this_id.indexOf('de') !== -1){ value = 'de';
-            } else {                                  value = 'unknown value';
+            if (this_id.indexOf('en') !== -1){
+                value = 'en';
+            } else if (this_id.indexOf('de') !== -1){
+                value = 'de';
+            } else {
+                value = 'unknown value';
             }
         }
     });
@@ -75,11 +77,13 @@ getLanguage = function(){
 getDiscussionLanguage = function(){
     'use strict';
     
-    var lang = $('#issue_info').data('discussion-language'),
-        value = 'unknown identifier';
-    if (lang.indexOf('en') !== -1){          value = 'en';
-    } else if (lang.indexOf('de') !== -1){    value = 'de';
-    } else {                                value = 'unknown value';
+    var lang = $('#issue_info').data('discussion-language'), value;
+    if (lang.indexOf('en') !== -1){
+        value = 'en';
+    } else if (lang.indexOf('de') !== -1){
+        value = 'de';
+    } else {
+        value = 'unknown value';
     }
     return value;
 };
@@ -746,7 +750,7 @@ var dbas_de = {
     'sawThis': 'sahen dies!',
     'saveMyStatement': 'Aussage speichern!',
     'saveMyStatements': 'Aussagen speichern!',
-    'searchStatementPopupTitleText': 'Aussagensuchen!',
+    'searchStatementPopupTitleText': 'Aussagensuche!',
     'searchStatementPopupBodyText': 'Bei der Auswahl einer Aussage, springen Sie zu diesem Abschnitt in der Diskussion.',
     'showAllUsers': 'Zeig\' alle Benutzer',
     'showAllArguments': 'Zeig\' alle Argumente',
