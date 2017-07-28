@@ -92,8 +92,8 @@ msgstr "us to report bugs or provide feedback."
 #: templates/index.pt:30
 msgid "choose_fieldtest_reviewer_text"
 msgstr ""
-"We are currently hosting both a demo version (english only) and a real-world "
-"deployment of D-BAS (german only, but the is manually translated). Based on "
+"We are currently hosting both a demo version (English only) and a real-world "
+"deployment of D-BAS (German only, manually translated into Englisch). Based on "
 "your browser, we assume that you are interested in the demo version. "
 "However, you can switch to the real-world deployment if you like:"
 
