@@ -453,7 +453,9 @@ def save_path_in_database(nickname, slug, path, history=''):
         path = path[len('/discuss'):]
         path = path[path.index('/') if '/' in path else 0:]
 
-    if slug not in path:
+    db_issues = DBDiscussionSession.query(Issue).all()
+    slugs = [issue.slug for issue in db_issues]
+    if not any([slug in path for slug in slugs]) or slug not in path:
         path = '/{}/{}'.format(slug, path)
 
     if len(history) > 0:
