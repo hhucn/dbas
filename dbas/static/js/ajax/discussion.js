@@ -313,7 +313,7 @@ function AjaxDiscussionHandler() {
 	 */
 	this.fuzzySearch = function (value, callbackid, type, extra) {
 		var callback = $('#' + callbackid);
-		var pencil = '<i class="fa fa-pencil" aria-hidden="true"></i>';
+		var pencil = ' <i class="fa fa-pencil" aria-hidden="true"></i>';
 		var tmpid = callbackid.split('-').length === 6 ? callbackid.split('-')[5] : '0';
 		var bubbleSpace = $('#' + discussionBubbleSpaceId);
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
@@ -346,7 +346,7 @@ function AjaxDiscussionHandler() {
 						});
 					}, 1000);
 				} else {
-					$('#current_' + tmpid).html(opener + value + '...' + pencil);
+					$('#current_' + tmpid).html(opener + ' ' + value + '...' + pencil);
 				}
 			}
 			var gh = new GuiHandler();
