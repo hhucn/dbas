@@ -8045,7 +8045,7 @@ COPY news (uid, title, author, date, news) FROM stdin;
 -- Name: news_uid_seq; Type: SEQUENCE SET; Schema: public; Owner: dbas
 --
 
-SELECT pg_catalog.setval('news_uid_seq', 56, true);
+SELECT pg_catalog.setval('news_uid_seq', 60, true);
 
 
 --
