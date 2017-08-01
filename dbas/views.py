@@ -1268,6 +1268,54 @@ def send_some_notification(request):
 # ADDTIONAL AJAX STUFF # SET NEW THINGS #
 # #######################################
 
+@view_config(route_name='ajax_set_new_start_argument', renderer='json')
+def ajax_set_new_start_argument(request):
+    """
+    Inserts a new argument as starting point into the database
+
+    :param request: request of the web server
+    :return: a status code, if everything was successful
+    """
+    logger('views', 'set_new_start_argument', 'request.params: {}'.format(request.params))
+    discussion_lang = get_discussion_language(request)
+    _tn = Translator(discussion_lang)
+    data = {}
+    try:
+        issue = issue_helper.get_issue_id(request)
+        data['nickname'] = request.authenticated_userid
+        data['issue_id'] = issue
+        data['slug'] = DBDiscussionSession.query(Issue).get(issue).slug
+        data['default_locale_name'] = get_default_locale_name(request)
+        data['application_url'] = request.application_url
+        data['supportive'] = True
+        data['port'] = get_port(request)
+        data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
+        data['discussion_lang'] = get_discussion_language(request)
+        data['default_locale_name'] = get_default_locale_name(request)
+        position = request.params['position']
+        reason = request.params['reason']
+        data['statement'] = position
+        try:
+            data['mailer'] = get_mailer(request)
+        except ComponentLookupError as e:
+            logger('views', 'set_new_start_argument', repr(e), error=True)
+    except KeyError as e:
+        logger('views', 'set_new_start_argument', repr(e), error=True)
+        return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
+
+    # set the new position
+    logger('views', 'set_new_start_argument', 'set conclusion/position')
+    prepared_dict_pos = set_position(False, data)
+    if len(prepared_dict_pos['error']) is 0:
+        logger('views', 'set_new_start_argument', 'set premise/reason')
+        # set the premise
+        data['statement'] = [reason]
+        data['conclusion_id'] = prepared_dict_pos['statement_uids'][0]
+        prepared_dict_reas = set_positions_premise(False, data)
+        return prepared_dict_reas
+
+    return prepared_dict_pos
+
 
 # ajax - send new start statement
 @view_config(route_name='ajax_set_new_start_statement', renderer='json')

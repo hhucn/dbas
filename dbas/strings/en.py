@@ -285,6 +285,8 @@ en_lang = {
     _.exampleStatement: 'Please enter the source here',
     _.exampleSource: 'Please enter the cite here',
     _.exampleSearchDuplicate: 'Enter parts of the statement to search',
+    _.examplePosition: 'we should do something',
+    _.exampleReason: 'this is a reason for this',
     _.everythingSaved: 'Everything saved!',
     _.opinionSaved: 'Your opinion was saved!',
     _.error_code: 'Error code',
