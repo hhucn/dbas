@@ -1316,6 +1316,7 @@ def ajax_set_new_start_argument(request):
 
     return prepared_dict_pos
 
+
 # ajax - send new start statement
 @view_config(route_name='ajax_set_new_start_statement', renderer='json')
 def set_new_start_statement(request):
