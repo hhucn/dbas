@@ -33,6 +33,19 @@ function InteractionHandler() {
 	};
 
 	/**
+	 * Callback, when new start argument was send
+	 * @param data returned data
+	 */
+	this.callbackIfDoneForSendNewStartArgument = function (data) {
+		if (data.error.length > 0) {
+			$('#' + addStatementErrorContainer).show();
+			$('#' + addStatementErrorMsg).text(data.error);
+		} else {
+			window.location.href = data.url;
+		}
+	};
+
+	/**
 	 * Callback, when new premises were send
 	 * @param data returned data
 	 */
@@ -348,6 +361,21 @@ function InteractionHandler() {
 	
 	/**
 	 *
+	 * @param position
+	 * @param reason
+	 */
+	this.sendArgument = function(position, reason){
+		if (position.length === 0 || reason.length === 0) {
+			$('#' + addStatementErrorContainer).show();
+			$('#' + addStatementErrorMsg).text(_t(inputEmpty));
+		} else {
+			$('#' + addStatementErrorContainer).hide();
+			new AjaxDiscussionHandler().sendNewStartArgument(position, reason);
+		}
+	};
+	
+	/**
+	 *
 	 * @param text
 	 * @param conclusion
 	 * @param supportive
@@ -358,13 +386,8 @@ function InteractionHandler() {
 	this.sendStatement = function (text, conclusion, supportive, arg, relation, type) {
 		// error on "no text"
 		if (text.length === 0) {
-			if (type === fuzzy_start_statement){
-				$('#' + addStatementErrorContainer).show();
-				$('#' + addStatementErrorMsg).text(_t(inputEmpty));
-			} else {
-				$('#' + addPremiseErrorContainer).show();
-				$('#' + addPremiseErrorMsg).text(_t(inputEmpty));
-			}
+			$('#' + addPremiseErrorContainer).show();
+			$('#' + addPremiseErrorMsg).text(_t(inputEmpty));
 		} else {
 			var undecided_texts = [], decided_texts = [];
 			if ($.isArray(text)) {
@@ -404,13 +427,7 @@ function InteractionHandler() {
 				}
 				new GuiHandler().showSetStatementContainer(undecided_texts, decided_texts, supportive, type, arg, relation, conclusion);
 			} else {
-				if (type === fuzzy_start_statement) {
-					if (decided_texts.length > 0) {
-						setGlobalErrorHandler('Oha', 'More than one decided text!');
-					} else {
-						new AjaxDiscussionHandler().sendNewStartStatement(text);
-					}
-				} else if (type === fuzzy_start_premise) {
+				if (type === fuzzy_start_premise) {
 					new AjaxDiscussionHandler().sendNewStartPremise(text, conclusion, supportive);
 				} else  if (type === fuzzy_add_reason) {
 					new AjaxDiscussionHandler().sendNewPremiseForArgument(arg, relation, text);

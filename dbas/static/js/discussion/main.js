@@ -500,17 +500,19 @@ function Main () {
 	 * @param ajaxHandler
 	 */
 	this.setKeyUpFunctions = function (guiHandler, ajaxHandler) {
-		// gui for the fuzzy search (statements)
-		$('#' + addStatementContainerMainInputId).keyup(function () {
+		// gui for the fuzzy search (position)
+		$('#' + addStatementContainerMainInputPosId).keyup(function () {
 			setTimeout(function () {
-				var escapedText = escapeHtml($('#' + addStatementContainerMainInputId).val());
-				if ($('#' + discussionBubbleSpaceId).find('.triangle-l:last-child').text().indexOf(_t_discussion(initialPositionInterest)) !== -1) {
-					// here we have our start statement
-					ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_statement, '');
-				} else {
-					// some trick: here we have a premise for our start statement
-					ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputId, fuzzy_start_premise, '');
-				}
+				var escapedText = escapeHtml($('#' + addStatementContainerMainInputPosId).val());
+				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputPosId, fuzzy_start_statement, '');
+			}, 200);
+		});
+		
+		// gui for the fuzzy search (positions premise)
+		$('#' + addStatementContainerMainInputResId).keyup(function () {
+			setTimeout(function () {
+				var escapedText = escapeHtml($('#' + addStatementContainerMainInputResId).val());
+				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputResId, fuzzy_start_premise, '');
 			}, 200);
 		});
 		
@@ -669,8 +671,9 @@ function Main () {
 		splits = window.location.href.split('?');
 		splits = splits[0].split('/');
 		var sendStartStatement = function () {
-			text = $('#' + addStatementContainerMainInputId).val();
-			interactionHandler.sendStatement(text, '', '', '', '', fuzzy_start_statement);
+			var position = $('#' + addStatementContainerMainInputPosId).val();
+			var reason = $('#' + addStatementContainerMainInputResId).val();
+			interactionHandler.sendArgument(position, reason);
 		};
 		var sendStartPremise = function () {
 			conclusion = splits[splits.length - 2];

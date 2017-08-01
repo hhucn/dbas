@@ -279,6 +279,8 @@ class Keywords(Enum):
     exampleStatement = 'exampleStatement'
     exampleSource = 'exampleSource'
     exampleSearchDuplicate = 'exampleSearchDuplicate'
+    examplePosition = 'examplePosition'
+    exampleReason = 'exampleReason'
     everythingSaved = 'everythingSaved'
     opinionSaved = 'opinionSaved'
     error_code = 'error_code'

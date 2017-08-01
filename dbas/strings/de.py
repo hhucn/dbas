@@ -288,6 +288,8 @@ de_lang = {
     _.exampleStatement: 'Bitte fügen Sie hier Ihr Zitat (von der Webseite) ein',
     _.exampleSource: 'Bitte fügen Sie hier Ihre Quelle (URL der Webseite) ein',
     _.exampleSearchDuplicate: 'Hier können Sie suchen!',
+    _.examplePosition: 'wir etwas unternehmen sollten',
+    _.exampleReason: 'das ein Grund dafür ist',
     _.everythingSaved: 'Alles gespeichert',
     _.opinionSaved: 'Ihre Meinung wurde gespeichert!',
     _.feelFreeToLogin: 'Wenn Sie weiter machen möchten, <u><a data-href="login" data-toggle="modal" data-target="#popup-login" title="Anmelden">melden</a></u> Sie sich bitte an.',
