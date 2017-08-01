@@ -341,12 +341,13 @@ function AjaxDiscussionHandler() {
 		var callback = $('#' + callbackid);
 		var pencil = ' <i class="fa fa-pencil" aria-hidden="true"></i>';
 		var tmpid = callbackid.split('-').length === 6 ? callbackid.split('-')[5] : '0';
+		var bubble_value = value;
 		if (tmpid === 'reason' || tmpid === 'position'){
 			var pos = escapeHtml($('#' + addStatementContainerMainInputPosId).val());
 			var res = escapeHtml($('#' + addStatementContainerMainInputResId).val());
 			pos = pos.length === 0 ? '...' : pos;
 			res = res.length === 0 ? '...' : res;
-			value = pos + ' ' + _t_discussion(because) +  ' ' + res;
+			bubble_value = pos + ' ' + _t_discussion(because) +  ' ' + res;
 			tmpid = 'reason_position';
 		}
 		var bubbleSpace = $('#' + discussionBubbleSpaceId);
@@ -370,7 +371,7 @@ function AjaxDiscussionHandler() {
 			// add or remove bubble only iff we are not in an popup
 			if (type !== fuzzy_statement_popup) {
 				if (bubbleSpace.find('#current_' + tmpid).length === 0) {
-					var text = $('<p>').addClass('triangle-r').attr('id', 'current_' + tmpid).html(opener + value + '...' + pencil);
+					var text = $('<p>').addClass('triangle-r').attr('id', 'current_' + tmpid).html(opener + bubble_value + '...' + pencil);
 					var current = $('<div>').addClass('line-wrapper-r').append(text).hide().fadeIn();
 					current.insertAfter(bubbleSpace.find('div:last-child'));
 					setInterval(function () { // fading pencil
@@ -380,7 +381,7 @@ function AjaxDiscussionHandler() {
 						});
 					}, 1000);
 				} else {
-					$('#current_' + tmpid).html(opener + ' ' + value + '...' + pencil);
+					$('#current_' + tmpid).html(opener + ' ' + bubble_value + '...' + pencil);
 				}
 			}
 			var gh = new GuiHandler();
