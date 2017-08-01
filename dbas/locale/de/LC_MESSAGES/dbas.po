@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-07-28 08:04+0200\n"
+"POT-Creation-Date: 2017-08-01 09:03+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -2020,6 +2020,11 @@ msgstr "Unterstützungen"
 msgid "attacks_on_my_statements"
 msgstr "Angriffe"
 
+#. Default: because
+#: templates/content.pt:250
+msgid "because"
+msgstr "weil"
+
 #~ msgid "show_all_statements"
 #~ msgstr "Alle Aussagen anzeigen"
 
@@ -2664,9 +2669,6 @@ msgstr "Angriffe"
 
 #~ msgid "disagree"
 #~ msgstr "stimme nicht"
-
-#~ msgid "Because:"
-#~ msgstr "Weil:"
 
 #~ msgid "how-to-write-text-header-body-title"
 #~ msgstr "Es gibt ein paar einfache Regeln um gute Argumente zu schreiben:"
