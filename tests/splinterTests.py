@@ -549,8 +549,17 @@ class FrontendTests:
         b.find_by_css('#discussions-space-list li:last-child input').click()
         success = success and Helper.check_for_present_text(b, 'What is your idea', 'check for new position field')
         position = 'some new position ' + str(time.time())
-        b.find_by_id('add-statement-container-main-input').fill(position)
+        reason = 'some new position ' + str(time.time())
+        b.find_by_id('add-statement-container-main-input-position').fill(position)
+        b.find_by_id('add-statement-container-main-input-reason').fill(reason)
         b.find_by_id('send-new-statement').click()
+        time.sleep(wait_time)
+
+        # set new argument, no counter, go back to dont know attitude
+        success = success and Helper.check_for_present_text(b, 'Congratulation', 'Check for new argument')
+        b.back()
+        time.sleep(wait_time)
+        b.find_by_text(position)[0].click()
         time.sleep(wait_time)
 
         # dont know attitude
@@ -1352,16 +1361,16 @@ class FrontendTests:
 
         b.find_by_css('#discussions-space-list li:last-child input').click()
         time.sleep(wait_time)
-        b.find_by_id('add-statement-container-main-input').fill(position)
-        b.find_by_id('send-new-statement').click()
-        time.sleep(wait_time)
-
-        b.find_by_css('#discussions-space-list li:first-child input').click()
-        time.sleep(wait_time).click()
+        b.find_by_id('add-statement-container-main-input-position').fill(position)
+        # this is the old interface
+        # b.find_by_id('send-new-statement').click()
+        # time.sleep(wait_time)
+        # b.find_by_css('#discussions-space-list li:first-child input').click()
+        # time.sleep(wait_time).click()
 
         # b.find_by_css('#discussions-space-list li:last-child input').click()
         # time.sleep(wait_time)
-        b.find_by_id('add-premise-container-main-input').fill(reason)
+        b.find_by_id('add-statement-container-main-input-reason').fill(reason)
         b.find_by_id('send-new-statement').click()
         time.sleep(wait_time)
 
