@@ -1085,7 +1085,7 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
     try:
         return login_user(request, nickname, password, for_api, keep_login, _tn)
     except KeyError as e:
-        logger('user_login', 'error', repr(e))
+        logger('user_login', 'error', repr(e), error=True)
         return {'error': _tn.get(_.internalKeyError)}
 
 

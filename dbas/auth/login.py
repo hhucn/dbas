@@ -228,7 +228,7 @@ def __login_user_ldap(request, nickname, password, _tn):
     email = user_data[3]
     ret_dict = user.set_new_user(request, firstname, lastname, nickname, gender, email, 'NO_PW_BECAUSE_LDAP', _tn)
 
-    if not ret_dict['success']:
+    if 'success' not in ret_dict and 'sucess' not in ret_dict:
         error = _tn.get(_.userPasswordNotMatch)
         return error, None
 
