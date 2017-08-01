@@ -38,8 +38,8 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneForSendNewStartArgument = function (data) {
 		if (data.error.length > 0) {
-			$('#' + addPremiseErrorContainer).show();
-			$('#' + addPremiseErrorMsg).text(data.error);
+			$('#' + addStatementErrorContainer).show();
+			$('#' + addStatementErrorMsg).text(data.error);
 		} else {
 			window.location.href = data.url;
 		}

@@ -124,6 +124,7 @@ def main(global_config, **settings):
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('ajax_user_login', '{url:.*}ajax_user_login')
     config.add_route('ajax_user_logout', '{url:.*}ajax_user_logout')
+    config.add_route('ajax_set_new_start_argument', '/{url:.*}ajax_set_new_start_argument')
     config.add_route('ajax_set_new_start_statement', '/{url:.*}ajax_set_new_start_statement')
     config.add_route('ajax_set_new_start_premise', '/{url:.*}ajax_set_new_start_premise')
     config.add_route('ajax_set_new_premises_for_argument', '/{url:.*}ajax_set_new_premises_for_argument')
