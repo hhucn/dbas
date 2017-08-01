@@ -34,6 +34,32 @@ function AjaxDiscussionHandler() {
 			//	 + _t(doNotHesitateToContact) + '. ');
 		});
 	};
+	
+	/**
+	 *
+	 * @param position
+	 * @param reason
+	 */
+	this.sendNewStartArgument = function(position, reason){
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_set_new_start_argument',
+			method: 'POST',
+			data: {
+				position: position,
+				reason: reason
+			},
+			dataType: 'json',
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrf_token
+			}
+		}).done(function ajaxSendNewStartArgumentDone(data) {
+			new InteractionHandler().callbackIfDoneForSendNewStartArgument(data);
+		}).fail(function ajaxSendNewStartArgumentFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		});
+	};
 
 	/**
 	 * Sends new premises to the server. Answer will be given to a callback
@@ -315,6 +341,14 @@ function AjaxDiscussionHandler() {
 		var callback = $('#' + callbackid);
 		var pencil = ' <i class="fa fa-pencil" aria-hidden="true"></i>';
 		var tmpid = callbackid.split('-').length === 6 ? callbackid.split('-')[5] : '0';
+		if (tmpid === 'reason' || tmpid === 'position'){
+			var pos = escapeHtml($('#' + addStatementContainerMainInputPosId).val());
+			var res = escapeHtml($('#' + addStatementContainerMainInputResId).val());
+			pos = pos.length === 0 ? '...' : pos;
+			res = res.length === 0 ? '...' : res;
+			value = pos + ' ' + _t_discussion(because) +  ' ' + res;
+			tmpid = 'reason_position';
+		}
 		var bubbleSpace = $('#' + discussionBubbleSpaceId);
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		

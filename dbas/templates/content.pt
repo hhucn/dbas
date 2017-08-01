@@ -235,14 +235,14 @@
                     <span id="add-statement-error-msg"></span>
                 </div>
                 <div id="add-statement-container-body">
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <span class="input-group-addon" style=" padding-bottom: 1.5em; font-size: 17px;">${structure:discussion.add_premise_text}</span>
-                        <input id="add-statement-container-main-input" type="text" class="form-control" value="" data-min-length="10"  data-max-length="180" style="width: 100%">
+                    <div class="container">
+                        <p style="color: #666; font-size: 17px;">${structure:discussion.add_premise_text}</p>
+                        <div class="row">
+                            <div class="col-md-4"><input id="add-statement-container-main-input-position" tal:attributes="placeholder extras.tag.placeholder_position" class="form-control" value="" data-min-length="10"  data-max-length="180" style="width: 100%"></div>
+                            <div class="col-md-1" style="margin-top: 0.4em;"><span style="font-size: 17px; color: #666">${extras.title.because}</span></div>
+                            <div class="col-md-7"><input id="add-statement-container-main-input-reason" tal:attributes="placeholder extras.tag.placeholder_reason" class="form-control" value="" data-min-length="10"  data-max-length="180" style="width: 100%"></div>
+                        </div>
                     </div>
-                </div>
-
                 </div>
                 <div class="list-group" id="proposal-statement-list-group"></div>
                 <input id="send-new-statement" type="button" name="" value="Save my Statement!" class="btn btn-primary" data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" tal:attributes="value extras.buttons.save_my_statement; name discussion.mode"/>

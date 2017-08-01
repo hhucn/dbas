@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-07-28 08:04+0200\n"
+"POT-Creation-Date: 2017-08-01 09:03+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -93,8 +93,8 @@ msgstr "us to report bugs or provide feedback."
 msgid "choose_fieldtest_reviewer_text"
 msgstr ""
 "We are currently hosting both a demo version (English only) and a real-world "
-"deployment of D-BAS (German only, manually translated into Englisch). Based on "
-"your browser, we assume that you are interested in the demo version. "
+"deployment of D-BAS (German only, manually translated into Englisch). Based "
+"on your browser, we assume that you are interested in the demo version. "
 "However, you can switch to the real-world deployment if you like:"
 
 #. Default: Zum Feldversuch
@@ -2001,6 +2001,11 @@ msgstr "Supports"
 msgid "attacks_on_my_statements"
 msgstr "Attacks"
 
+#. Default: because
+#: templates/content.pt:250
+msgid "because"
+msgstr "because"
+
 #~ msgid "show_all_statements"
 #~ msgstr "Show all statements"
 
@@ -2638,9 +2643,6 @@ msgstr "Attacks"
 
 #~ msgid "disagree"
 #~ msgstr "disagree"
-
-#~ msgid "Because:"
-#~ msgstr "Because:"
 
 #~ msgid "how-to-write-text-header-body-title"
 #~ msgstr "There are a few simple rules for writing good arguments:"

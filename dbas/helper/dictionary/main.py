@@ -575,6 +575,8 @@ class DictionaryHelper(object):
             'placeholder_statement': _tn_sys.get(_.exampleStatement),
             'placeholder_source': _tn_sys.get(_.exampleSource),
             'placeholder_search_duplicate': _tn_sys.get(_.exampleSearchDuplicate),
+            'placeholder_position': _tn_dis.get(_.examplePosition),
+            'placeholder_reason': _tn_dis.get(_.exampleReason),
             'search': _tn_sys.get(_.searchForStatements),
             'premisegroup_popup_warning': _tn_dis.get(_.premisegroupPopupWarning)
         }
