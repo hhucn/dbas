@@ -74,7 +74,7 @@ function AdminAjaxHandler(){
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function (data) {
-			new AdminCallbackHandler().doUpdateDone(element, data);
+			new AdminCallbackHandler().doUpdateDone(data, element);
 		}).fail(function () {
 			new AdminCallbackHandler().doSomethingOnFail();
 		});
@@ -111,11 +111,10 @@ function AdminCallbackHandler(){
 	
 	/**
 	 *
+	 * @param jsonData
 	 * @param element
-	 * @param data
 	 */
-	this.doUpdateDone = function(element, data){
-        var jsonData = $.parseJSON(data);
+	this.doUpdateDone = function(jsonData, element){
         if (jsonData.error.length === 0) {
 	        var gui = new AdminGui();
 	        gui.deactivateElement(element, 'floppy', 'text-success');
@@ -129,11 +128,10 @@ function AdminCallbackHandler(){
 	
 	/**
 	 *
-	 * @param data
+	 * @param jsonData
 	 * @param element
 	 */
-	this.doDeleteDone = function(data, element){
-        var jsonData = $.parseJSON(data);
+	this.doDeleteDone = function(jsonData, element){
         if (jsonData.error.length === 0) {
 	        element.remove();
 			setGlobalSuccessHandler('Yehaw!', _t(dataRemoved));
@@ -144,11 +142,10 @@ function AdminCallbackHandler(){
 	
 	/**
 	 *
-	 * @param data
+	 * @param jsonData
 	 * @param new_data
 	 */
-	this.doAddDone = function(data, new_data){
-        var jsonData = $.parseJSON(data);
+	this.doAddDone = function(jsonData, new_data){
         if (jsonData.error.length === 0) {
 			setGlobalSuccessHandler('Yehaw!', _t(addedEverything));
 	        $('#' + popupConfirmRowDialogId).modal('hide');
@@ -173,10 +170,9 @@ function AdminCallbackHandler(){
 	
 	/**
 	 *
-	 * @param data
+	 * @param jsonData
 	 */
-	this.doUpdateBadges = function(data){
-        var jsonData = $.parseJSON(data);
+	this.doUpdateBadges = function(jsonData){
         if (jsonData.error.length === 0) {
         	$.each(jsonData.data, function(index, element){
         		$('#' + element.name).find('.badge').text(element.count);

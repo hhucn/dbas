@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-08-01 09:03+0200\n"
+"POT-Creation-Date: 2017-08-01 14:44+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -2001,10 +2001,8 @@ msgstr "Supports"
 msgid "attacks_on_my_statements"
 msgstr "Attacks"
 
-#. Default: because
-#: templates/content.pt:250
-msgid "because"
-msgstr "because"
+#~ msgid "because"
+#~ msgstr "because"
 
 #~ msgid "show_all_statements"
 #~ msgstr "Show all statements"
