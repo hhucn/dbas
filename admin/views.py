@@ -166,7 +166,7 @@ def main_update(request):
         logger('Admin', 'main_update error', repr(e))
         return_dict['error'] = _tn.get(_.internalKeyError)
 
-    return json.dumps(return_dict, True)
+    return return_dict
 
 
 @delete_row.get()
@@ -193,7 +193,7 @@ def main_delete(request):
         logger('Admin', 'main_delete error', repr(e))
         return_dict['error'] = _tn.get(_.internalKeyError)
 
-    return json.dumps(return_dict, True)
+    return return_dict
 
 
 @add_row.get()
@@ -220,7 +220,7 @@ def main_add(request):
         logger('Admin', 'main_add error', repr(e))
         return_dict['error'] = _tn.get(_.internalKeyError)
 
-    return json.dumps(return_dict, True)
+    return return_dict
 
 
 @update_badge.get()
@@ -247,4 +247,4 @@ def main_update_badge(request):
         logger('Admin', 'main_add main_update_badge', repr(e))
         return_dict['error'] = _tn.get(_.internalKeyError)
 
-    return json.dumps(return_dict, True)
+    return return_dict
