@@ -27,6 +27,7 @@ def flag(uid, reason, extra_uid, is_argument, nickname, ui_locales) -> dict:
     :rtype: dict
     :return: collection with success, info and error key
     """
+    logger('additives', 'flag_argument_or_statement', 'uid ' + uid)
     _t = Translator(ui_locales)
 
     if not is_integer(uid):

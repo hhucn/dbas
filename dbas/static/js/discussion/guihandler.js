@@ -460,14 +460,16 @@ function GuiHandler() {
 	 * @param parsedData
 	 * @param callbackId
 	 * @param type
+	 * @param reason
 	 */
-	this.setStatementsAsProposal = function (parsedData, callbackId, type) {
+	this.setStatementsAsProposal = function (parsedData, callbackId, type, reason) {
 		var callbackElement = $('#' + callbackId);
 		$('#' + proposalPremiseListGroupId).empty();
 		$('#' + proposalStatementListGroupId).empty();
 		$('#' + proposalEditListGroupId).empty();
 		$('#' + proposalUserListGroupId).empty();
 		$('#' + proposalStatementSearchGroupId).empty();
+		$('#' + proposalDuplicateSearchGroupId).empty();
 		
 		// do we have values ?
 		if (parsedData.length === 0) {
@@ -502,6 +504,8 @@ function GuiHandler() {
 					});
 			if (type === fuzzy_find_statement){
 				button.attr('data-url', val.url);
+			} else if (type === fuzzy_duplicate){
+				button.attr('data-statement-uid', val.statement_uid);
 			}
 			// we do not want the "Levensthein badge"
 			span_dist = '';//$('<span>').attr('class', 'badge').text(parsedData.distance_name + ' ' + distance);
@@ -521,8 +525,12 @@ function GuiHandler() {
 				$('#' + proposalEditListGroupId).empty(); // list with elements should be after the callbacker
 				$('#' + proposalUserListGroupId).empty();
 				$('#' + proposalStatementSearchGroupId).empty();
+				$('#' + proposalDuplicateSearchGroupId).empty();
 				if (type === fuzzy_find_statement){
 					window.location.href = $(this).data('url');
+				} else if (type === fuzzy_duplicate){
+					callbackElement.attr('data-statement-uid', $(this).data('statement-uid'));
+					new PopupHandler().duplicateValueSelected(reason, val.statement_uid);
 				}
 			});
 			
@@ -532,6 +540,7 @@ function GuiHandler() {
 			else if (type === fuzzy_statement_popup){ $('#' + proposalEditListGroupId).append(button); }
 			else if (type === fuzzy_find_user){       $('#' + proposalUserListGroupId).append(button); }
 			else if (type === fuzzy_find_statement){  $('#' + proposalStatementSearchGroupId).append(button); }
+			else if (type === fuzzy_duplicate){       $('#' + proposalDuplicateSearchGroupId).append(button); }
 		});
 	};
 	
