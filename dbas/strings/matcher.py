@@ -60,7 +60,7 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
     elif mode == '3' or mode == '4':  # adding reasons / duplicates
         try:
             uid = int(extra)
-        except TypeError and ValueError:
+        except TypeError or ValueError:
             uid = None
 
         return_dict['values'] = get_strings_for_duplicates_or_reasons(value, issue, uid)
