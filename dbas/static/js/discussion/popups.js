@@ -81,10 +81,7 @@ function PopupHandler() {
 				
 				
 				setTimeout(function () {
-					ajaxHandler.fuzzySearch(now,
-						id,
-						fuzzy_statement_popup,
-						statement_uid);
+					ajaxHandler.fuzzySearch(now, id, fuzzy_statement_popup, statement_uid);
 				}, 200);
 			});
 		});
@@ -368,64 +365,36 @@ function PopupHandler() {
 	 * @param reason
 	 */
 	this.showStatementDuplicatePopup = function(uid, text, reason){
-		var popup = $('#popup-duplicate-statement');
+		var popup = $('#' + popupDuplicateStatementId);
 		popup.modal('show');
 		popup.on('hide.bs.modal', function () {
 			popup.find('input').off('click').unbind('click');
 		});
 		
-		$('#popup-duplicate-statement-text').text(text);
-		
-		// default button settings
-		this.setDefaultOfSelectionOfDuplicatePopup();
+		$('#' + popupDuplicateStatementTextId).text(text).attr('data-statement-uid', uid);
 		
 		// fuzzy search
-		var input = $('#popup-duplicate-statement-text-search');
+		var input = $('#' + popupDuplicateStatementTextSearchId);
 		input.on('keyup', function(){
 			var escapedText = escapeHtml($(this).val());
-			new AjaxDiscussionHandler().fuzzySearchForDuplicate(escapedText, fuzzy_duplicate, text);
-		});
-		
-		// dropdown
-		var selects = $('#popup-duplicate-statement-text-selects');
-		selects.on('change', function() {
-			var oem_uid = $(this).find("option:selected").data('uid');
-			var def = $(this).find('option[data-uid="0"]');
-			if (def.length === 1) {
-				def.remove();
-				var btn = $('#popup-flag-statement-accept-btn');
-				btn.off('click').removeClass('disabled');
-				btn.click(function(){
-					new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, false, oem_uid);
-				});
-			}
-		});
-		
-		// initial start for fuzzy search
-		new AjaxDiscussionHandler().fuzzySearchForDuplicate('', fuzzy_add_reason, text);
-	};
-	
-	/**
-	 *
-	 * @param data
-	 */
-	this.setSelectsOfDuplicatePopup = function(data){
-		var selects = $('#popup-duplicate-statement-text-selects');
-		this.setDefaultOfSelectionOfDuplicatePopup();
-		$.each(data.values, function (index, val) {
-			selects.append($('<option>').attr('data-uid', val.statement_uid).html(val.text));
+			setTimeout(function () {
+				new AjaxDiscussionHandler().fuzzySearch(escapedText, popupDuplicateStatementTextSearchId, fuzzy_duplicate, uid, reason);
+			}, 200);
 		});
 	};
 	
 	/**
 	 *
+	 * @param reason
+	 * @param uid
 	 */
-	this.setDefaultOfSelectionOfDuplicatePopup = function() {
+	this.duplicateValueSelected = function(reason, uid){
 		var btn = $('#popup-flag-statement-accept-btn');
-		btn.off('click').addClass('disabled');
-		var selects = $('#popup-duplicate-statement-text-selects');
-		selects.empty();
-		selects.append($('<option>').attr('data-uid', 0).text(_t_discussion(no_data_selected)));
+		btn.off('click').removeClass('disabled');
+		btn.click(function(){
+			var oem_uid = $('#' + popupDuplicateStatementTextId).data('statement-uid');
+			new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, false, oem_uid);
+		});
 	};
 	
 	/**

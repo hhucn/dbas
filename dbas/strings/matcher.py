@@ -5,7 +5,6 @@ Provides methods for comparing strings.
 """
 
 import difflib
-import json
 from collections import OrderedDict
 from itertools import islice
 
@@ -59,9 +58,13 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
         return_dict['distance_name'] = mechanism
 
     elif mode == '3' or mode == '4':  # adding reasons / duplicates
-        count, extra, m = __get_vars_for_reasons(extra, mechanism)
-        return_dict['values'] = get_strings_for_duplicates_or_reasons(value, issue, count, extra[1])
-        return_dict['distance_name'] = m
+        try:
+            uid = int(extra)
+        except (TypeError, ValueError):
+            uid = None
+
+        return_dict['values'] = get_strings_for_duplicates_or_reasons(value, issue, uid)
+        return_dict['distance_name'] = mechanism
 
     elif mode == '5':  # getting public nicknames
         nickname = get_nickname(request_authenticated_userid, for_api, api_data)
@@ -76,27 +79,6 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
         return_dict = {'error': _tn.get(_.internalError)}
 
     return return_dict
-
-
-def __get_vars_for_reasons(extra, mechanism):
-    """
-    Check if the extra is nen array and prepared for the 'reason search'
-
-    :param extra: undefined
-    :param mechanism: String
-    :return: int, extra, string
-    """
-    m = mechanism
-    try:
-        extra = json.loads(extra) if extra is not None else ['', '']
-    except TypeError and json.JSONDecodeError:
-        extra = ['', '']
-    if isinstance(extra, list):
-        m = 'SequenceMatcher'
-    else:
-        extra = ['', '']
-    count = 1000 if str(extra[0]) == 'all' else list_length
-    return count, extra, m
 
 
 def get_all_statements_with_value(request, value):
@@ -171,23 +153,22 @@ def get_strings_for_edits(value, statement_uid):
     return return_array[:list_length]
 
 
-def get_strings_for_duplicates_or_reasons(value, issue, count=list_length, oem_value=''):
+def get_strings_for_duplicates_or_reasons(value, issue, oem_value_uid=None):
     """
     Checks different textversion-strings for a match with given value
 
     :param value: string
     :param issue: Issue.uid
-    :param count: integer
-    :param oem_value: string
+    :param oem_value: integer
     :return: dict()
     """
     db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
     return_array = []
 
-    while oem_value.endswith((',', '.', '?')):
-        oem_value = oem_value[:-1]
-
     for stat in db_statements:
+        if stat.uid is oem_value_uid:
+            continue
+
         db_tv = DBDiscussionSession.query(TextVersion).get(stat.textversion_uid)
         if value.lower() in db_tv.content.lower():  # and db_tv.content.lower() != oem_value.lower():
             rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
@@ -198,7 +179,7 @@ def get_strings_for_duplicates_or_reasons(value, issue, count=list_length, oem_v
     # logger('fuzzy_string_matcher', 'get_strings_for_duplicates_or_reasons',
     # 'string: {}, issue {}, len(dict): '.format(value, issue, len(return_array))
 
-    return return_array[:count]
+    return return_array[:list_length]
 
 
 def get_strings_for_issues(value):

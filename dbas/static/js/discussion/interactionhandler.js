@@ -140,8 +140,9 @@ function InteractionHandler() {
 	 * @param data
 	 * @param callbackid
 	 * @param type
+	 * @param reason
 	 */
-	this.callbackIfDoneFuzzySearch = function (data, callbackid, type) {
+	this.callbackIfDoneFuzzySearch = function (data, callbackid, type, reason) {
 		// if there is no returned data, we will clean the list
 
 		if (Object.keys(data).length === 0) {
@@ -150,21 +151,7 @@ function InteractionHandler() {
 			$('#' + proposalEditListGroupId).empty();
 			$('#' + proposalUserListGroupId).empty();
 		} else {
-			new GuiHandler().setStatementsAsProposal(data, callbackid, type);
-		}
-	};
-	
-	/**
-	 *
-	 * @param data
-	 */
-	this.callbackIfDoneFuzzySearchForDuplicate = function (data) {
-		// if there is no returned data, we will clean the list
-		var ph = new PopupHandler();
-		if (Object.keys(data).length === 0) {
-			ph.setDefaultOfSelectionOfDuplicatePopup();
-		} else {
-			ph.setSelectsOfDuplicatePopup(data);
+			new GuiHandler().setStatementsAsProposal(data, callbackid, type, reason);
 		}
 	};
 
