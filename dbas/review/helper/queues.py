@@ -21,8 +21,10 @@ max_lock_time_in_sec = 180
 key_deletes = 'deletes'
 key_optimizations = 'optimizations'
 key_edits = 'edits'
-key_history = 'history'
 key_duplicates = 'duplicates'
+key_merge = 'merges'
+key_split = 'splits'
+key_history = 'history'
 key_ongoing = 'ongoing'
 
 
@@ -46,6 +48,8 @@ def get_review_queues_as_lists(main_page, translator, nickname):
     review_list.append(__get_optimization_dict(main_page, translator, nickname, count, all_rights))
     review_list.append(__get_edit_dict(main_page, translator, nickname, count, all_rights))
     review_list.append(__get_duplicates_dict(main_page, translator, nickname, count, all_rights))
+    review_list.append(__get_split_dict(main_page, translator, nickname, count, all_rights))
+    review_list.append(__get_merge_dict(main_page, translator, nickname, count, all_rights))
     review_list.append(__get_history_dict(main_page, translator, count, all_rights))
     if is_user_author_or_admin(nickname):
         review_list.append(__get_ongoing_dict(main_page, translator))
@@ -171,6 +175,56 @@ def __get_duplicates_dict(main_page, translator, nickname, count, all_rights):
                 'is_allowed_text': translator.get(_.visitDuplicateQueue),
                 'is_not_allowed_text': translator.get(_.visitDuplicateQueueLimitation).format(str(reputation_borders[key_duplicates])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerDuplicate, main_page)
+                }
+    return tmp_dict
+
+
+def __get_split_dict(main_page, translator, nickname, count, all_rights):
+    """
+    Prepares dictionary for the a section.
+
+    :param main_page: URL
+    :param translator: Translator
+    :param nickname: Users nickname
+    :return: Dict()
+    """
+    #  logger('ReviewQueues', '__get_delete_dict', 'main')
+    task_count = 0#__get_review_count_for(ReviewSplit, LastReviewerSplit, nickname)
+
+    tmp_dict = {'task_name': translator.get(_.queueSplit),
+                'id': 'splits',
+                'url': main_page + '/review/' + key_split,
+                'icon': reputation_icons[key_split],
+                'task_count': task_count,
+                'is_allowed': count >= reputation_borders[key_split] or all_rights,
+                'is_allowed_text': translator.get(_.visitSplitQueue),
+                'is_not_allowed_text': translator.get(_.visitSplitQueueLimitation).format(str(reputation_borders[key_split])),
+                'last_reviews': list()#__get_last_reviewer_of(LastReviewerSplit, main_page)
+                }
+    return tmp_dict
+
+
+def __get_merge_dict(main_page, translator, nickname, count, all_rights):
+    """
+    Prepares dictionary for the a section.
+
+    :param main_page: URL
+    :param translator: Translator
+    :param nickname: Users nickname
+    :return: Dict()
+    """
+    #  logger('ReviewQueues', '__get_delete_dict', 'main')
+    task_count = 0#__get_review_count_for(ReviewMerge, LastReviewerMerge, nickname)
+
+    tmp_dict = {'task_name': translator.get(_.queueMerge),
+                'id': 'merges',
+                'url': main_page + '/review/' + key_merge,
+                'icon': reputation_icons[key_merge],
+                'task_count': task_count,
+                'is_allowed': count >= reputation_borders[key_merge] or all_rights,
+                'is_allowed_text': translator.get(_.visitMergeQueue),
+                'is_not_allowed_text': translator.get(_.visitMergeQueueLimitation).format(str(reputation_borders[key_merge])),
+                'last_reviews': list()#__get_last_reviewer_of(LastReviewerMerge, main_page)
                 }
     return tmp_dict
 
