@@ -155,6 +155,49 @@ def optimization_argument(request) -> dict:
     prepared_dict = {'error': error}
     return prepared_dict
 
+def split_statement(request) -> dict:
+    """
+    Sets feedback for a review element of a splitted statement
+
+    :param request: pyramid's request object
+    :rtype: dict
+    :return: collection with error key
+    """
+    ui_locales = get_discussion_language(request)
+    _t = Translator(ui_locales)
+    review_uid = request.params['review_uid'] if 'review_uid' in request.params else None
+
+    if not is_integer(review_uid):
+        logger('additives', 'split_statement', 'invalid uid', error=True)
+        error = _t.get(_.internalKeyError)
+    else:
+        error = 'TODO 1'
+
+    prepared_dict = {'error': error}
+    return prepared_dict
+
+
+def merge_statement(request) -> dict:
+    """
+    Sets feedback for a review element of a merged statement
+
+    :param request: pyramid's request object
+    :rtype: dict
+    :return: collection with error key
+    """
+    ui_locales = get_discussion_language(request)
+    _t = Translator(ui_locales)
+    review_uid = request.params['review_uid'] if 'review_uid' in request.params else None
+
+    if not is_integer(review_uid):
+        logger('additives', 'merge_statement', 'invalid uid', error=True)
+        error = _t.get(_.internalKeyError)
+    else:
+        error = 'TODO 2'
+
+    prepared_dict = {'error': error}
+    return prepared_dict
+
 
 def undo(request) -> dict:
     """

@@ -162,6 +162,8 @@ def main(global_config, **settings):
     config.add_route('ajax_review_optimization_argument', '{url:.*}ajax_review_optimization_argument')
     config.add_route('ajax_review_duplicate_statement', '{url:.*}ajax_review_duplicate_statement')
     config.add_route('ajax_review_edit_argument', '{url:.*}ajax_review_edit_argument')
+    config.add_route('ajax_review_splitted_statement', '{url:.*}ajax_review_splitted_statement')
+    config.add_route('ajax_review_merged_statement', '{url:.*}ajax_review_merged_statement')
     config.add_route('ajax_undo_review', '{url:.*}ajax_undo_review')
     config.add_route('ajax_cancel_review', '{url:.*}ajax_cancel_review')
     config.add_route('ajax_review_lock', '{url:.*}ajax_review_lock')

@@ -818,14 +818,18 @@ def review_content(request):
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     title = _tn.get(_.review)
-    if subpage_name == 'deletes':
+    if subpage_name == review_queue_helper.key_deletes:
         title = _tn.get(_.queueDelete)
-    if subpage_name == 'optimizations':
+    if subpage_name == review_queue_helper.key_optimizations:
         title = _tn.get(_.queueOptimization)
-    if subpage_name == 'edits':
+    if subpage_name == review_queue_helper.key_edits:
         title = _tn.get(_.queueEdit)
-    if subpage_name == 'duplicates':
+    if subpage_name == review_queue_helper.key_duplicates:
         title = _tn.get(_.queueDuplicates)
+    if subpage_name == review_queue_helper.key_split:
+        title = _tn.get(_.queueSplit)
+    if subpage_name == review_queue_helper.key_merge:
+        title = _tn.get(_.queueMerge)
 
     return {
         'layout': base_layout(),
@@ -2010,6 +2014,50 @@ def review_optimization_argument(request):
         prepared_dict = review.optimization_argument(request)
     except KeyError as e:
         logger('Views', 'review_optimization_argument', repr(e), error=True)
+        ui_locales = get_discussion_language(request)
+        _t = Translator(ui_locales)
+        prepared_dict = {'error': _t.get(_.internalKeyError)}
+
+    return json.dumps(prepared_dict)
+
+
+# ajax - for feedback on a splitted statement
+@view_config(route_name='ajax_review_splitted_statement', renderer='json')
+def review_splitted_statement(request):
+    """
+    Values for the review for a statement, which should be splitted
+
+    :param request: current request of the server
+    :return: json-dict()
+    """
+    logger('views', 'review_splitted_statement', 'main: {}'.format(request.params))
+
+    try:
+        prepared_dict = review.split_statement(request)
+    except KeyError as e:
+        logger('Views', 'review_splitted_statement', repr(e), error=True)
+        ui_locales = get_discussion_language(request)
+        _t = Translator(ui_locales)
+        prepared_dict = {'error': _t.get(_.internalKeyError)}
+
+    return json.dumps(prepared_dict)
+
+
+# ajax - for feedback on a merged statement
+@view_config(route_name='ajax_review_merged_statement', renderer='json')
+def review_merged_statement(request):
+    """
+    Values for the review for a statement, which should be merged
+
+    :param request: current request of the server
+    :return: json-dict()
+    """
+    logger('views', 'review_merged_statement', 'main: {}'.format(request.params))
+
+    try:
+        prepared_dict = review.merge_statement(request)
+    except KeyError as e:
+        logger('Views', 'review_merged_statement', repr(e), error=True)
         ui_locales = get_discussion_language(request)
         _t = Translator(ui_locales)
         prepared_dict = {'error': _t.get(_.internalKeyError)}

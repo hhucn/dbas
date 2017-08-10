@@ -9,7 +9,8 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, \
     LastReviewerOptimization, User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit,\
     LastReviewerEdit, ReviewEditValue, TextVersion, Statement, ReviewCanceled, sql_timestamp_pretty_print,\
-    ReviewDuplicate, LastReviewerDuplicate, RevokedDuplicate, Argument, Premise
+    ReviewDuplicate, LastReviewerDuplicate, RevokedDuplicate, Argument, Premise, ReviewMerge, ReviewSplit,\
+    StatementMerged, StatementSplitted, LastReviewerSplit, LastReviewerMerge
 from dbas.lib import get_text_for_argument_uid, get_profile_picture, is_user_author_or_admin, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.review.helper.main import en_or_disable_object_of_review
@@ -367,6 +368,18 @@ def revoke_old_decision(queue, uid, lang, nickname):
 
         success = _t.get(_.dataRemoved)
 
+    elif queue == 'merges':
+        # db_review = DBDiscussionSession.query(ReviewDuplicate).get(uid)
+        # db_review.set_revoked(True)
+        # success = _t.get(_.dataRemoved)
+        error = 'TODO 1'
+
+    elif queue == 'splits':
+        # db_review = DBDiscussionSession.query(ReviewDuplicate).get(uid)
+        # db_review.set_revoked(True)
+        # success = _t.get(_.dataRemoved)
+        error = 'TODO 2'
+
     else:
         error = _t.get(_.internalKeyError)
 
@@ -416,6 +429,18 @@ def cancel_ongoing_decision(queue, uid, lang, nickname):
         DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=uid).delete()
         success = _t.get(_.dataRemoved)
         DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_duplicate=uid, was_ongoing=True))
+
+    elif queue == 'merges':
+        DBDiscussionSession.query(ReviewMerge).get(uid).set_revoked(True)
+        DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=uid).delete()
+        DBDiscussionSession.query(StatementMerged).filter_by(review_uid=uid).delete()
+        success = _t.get(_.dataRemoved)
+
+    elif queue == 'splits':
+        DBDiscussionSession.query(ReviewSplit).get(uid).set_revoked(True)
+        DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=uid).delete()
+        DBDiscussionSession.query(StatementSplitted).filter_by(review_uid=uid).delete()
+        success = _t.get(_.dataRemoved)
 
     else:
         error = _t.get(_.internalKeyError)
