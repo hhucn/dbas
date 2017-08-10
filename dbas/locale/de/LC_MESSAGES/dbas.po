@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-08-01 14:44+0200\n"
+"POT-Creation-Date: 2017-08-10 09:37+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -909,7 +909,7 @@ msgstr "Rückgängig machen"
 #. Default: Cancel
 #: templates/review-history.pt:96 templates/snippet-popups.pt:172
 #: templates/snippet-popups.pt:195 templates/snippet-popups.pt:220
-#: templates/snippet-popups.pt:1098
+#: templates/snippet-popups.pt:1101
 msgid "cancel"
 msgstr "Abbrechen"
 
@@ -1075,7 +1075,7 @@ msgstr ""
 
 #. Default: Okay
 #: templates/snippet-popups.pt:171 templates/snippet-popups.pt:194
-#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1097
+#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1100
 msgid "okay"
 msgstr "Okay"
 
@@ -1372,7 +1372,7 @@ msgid "statement_under_consideration_is"
 msgstr "Die aktuelle Aussage ist"
 
 #. Default: The argument under consideration is as follows
-#: templates/snippet-popups.pt:828 templates/snippet-popups.pt:884
+#: templates/snippet-popups.pt:828 templates/snippet-popups.pt:896
 msgid "argument_under_consideration_is"
 msgstr "Das aktuelle Argument ist"
 
@@ -1446,35 +1446,61 @@ msgstr "Diese Aussage ist ein Duplikat."
 msgid "this_statement_duplicate_description"
 msgstr "Diese Aussage ist schon leicht verändert im System vorhanden."
 
+#. Default: This statement should be merged.
+#: templates/snippet-popups.pt:870
+msgid "this_statement_merge"
+msgstr "Diese Aussage hängt von einer weiteren Aussage ab."
+
+#. Default: This statement belongs to another statement, so they should be
+#. merged.
+#: templates/snippet-popups.pt:871
+msgid "this_statement_merge_description"
+msgstr ""
+"Diese Aussage hängt von einer weiteren Aussage ab und diese sollten "
+"verbunden werden."
+
+#. Default: This statement has more than one message.
+#: templates/snippet-popups.pt:876
+msgid "this_statement_split"
+msgstr "Diese Aussage besteht aus mehrere Aussagen."
+
+#. Default: This statement contains more than one message and has to be
+#. splitted.
+#: templates/snippet-popups.pt:877
+msgid "this_statement_split_description"
+msgstr ""
+"Diese Aussage besteht aus mehr als einer Aussage und daher sollten diese "
+"getrennt werden."
+
 #. Default: Reporting (parts of) an argument
-#: templates/snippet-popups.pt:881
+#: templates/snippet-popups.pt:893
 msgid "reporting_parts_argument"
 msgstr "Melden eines Arguments (oder Teile davon)"
 
 #. Default: Please choose which part of the argument you want to report
-#: templates/snippet-popups.pt:886
+#: templates/snippet-popups.pt:898
 msgid "please_choose_part_to_report"
 msgstr "Bitte wählen Sie einen Teil des Arguments, der gemeldet werden soll"
 
 #. Default: Report
-#: templates/snippet-popups.pt:893
+#: templates/snippet-popups.pt:905
 msgid "report"
 msgstr "Melden"
 
 #. Default: Report the whole argument.
-#: templates/snippet-popups.pt:905
+#: templates/snippet-popups.pt:917
 msgid "report_whole_argument"
 msgstr "Komplettes Argument melden."
 
 #. Default: Caution
-#: templates/snippet-popups.pt:981
+#: templates/snippet-popups.pt:984
 msgid "caution"
 msgstr "Achtung"
 
 #. Default: Do you really want to disassociate yourself from your content? This
 #. step is irreversible! Subsequently you will not be the author of this
 #. statement anymore!
-#: templates/snippet-popups.pt:986
+#: templates/snippet-popups.pt:989
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 "Möchten Sie wirklich von diesem Inhalt distanzieren? Dieser Schritt kann "
@@ -1482,46 +1508,46 @@ msgstr ""
 "diesem Statements."
 
 #. Default: Please choose a step to jump in
-#: templates/snippet-popups.pt:1003
+#: templates/snippet-popups.pt:1006
 msgid "choose_a_step_to_jump_in"
 msgstr "Bitte wählen Sie eine Stelle für den Sprung"
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: templates/snippet-popups.pt:1006
+#: templates/snippet-popups.pt:1009
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr "Hier finden Sie alle Stellen, in denen die Aussage verwendet wird:"
 
 #. Default: References
-#: templates/snippet-popups.pt:1023
+#: templates/snippet-popups.pt:1026
 msgid "refereces"
 msgstr "Referenzen"
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: templates/snippet-popups.pt:1031
+#: templates/snippet-popups.pt:1034
 msgid "statement_reference_definition"
 msgstr ""
 "Die Aussage ist ein Zitat von einer Nachrichtenseite o.Ä., welche Ihre "
 "Meinung untersützt. Die Quelle ist die Website."
 
 #. Default: Statement
-#: templates/snippet-popups.pt:1034 templates/snippet-popups.pt:1055
+#: templates/snippet-popups.pt:1037 templates/snippet-popups.pt:1058
 msgid "statement"
 msgstr "Aussage"
 
 #. Default: Source
-#: templates/snippet-popups.pt:1040
+#: templates/snippet-popups.pt:1043
 msgid "source"
 msgstr "Quelle"
 
 #. Default: Please choose a statement for your reference!
-#: templates/snippet-popups.pt:1045
+#: templates/snippet-popups.pt:1048
 msgid "please_choose_a_reference"
 msgstr "Bitte wählen Sie eine Aussage für Ihre Referenz!"
 
 #. Default: Add reference
-#: templates/snippet-popups.pt:1060
+#: templates/snippet-popups.pt:1063
 msgid "add_reference"
 msgstr "Referenzen hinzufügen"
 
@@ -2364,9 +2390,6 @@ msgstr "Angriffe"
 
 #~ msgid "edit_statement_view_changelog"
 #~ msgstr "Bearbeite die Aussage / Schau ins Changelog"
-
-#~ msgid "edit_statement_here"
-#~ msgstr "Bitte hier bearbeiten"
 
 #~ msgid "submit"
 #~ msgstr "Senden"

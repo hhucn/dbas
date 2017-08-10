@@ -864,6 +864,18 @@
                                 <span class="statement_text" i18n:translate="this_statement_duplicate">This statement is a duplicate.</span><br>
                                 <small class="statement_text" i18n:translate="this_statement_duplicate_description">This statement has been done before in a slightly different wording.</small>
                             </label>
+                            <br>
+                            <input type="radio" id="merge" value="merge" name="flag-statement" style="margin-bottom: 1em;">
+                            <label for="merge" style="margin-bottom: 1em;">
+                                <span class="statement_text" i18n:translate="this_statement_merge">This statement should be merged.</span><br>
+                                <small class="statement_text" i18n:translate="this_statement_merge_description">This statement belongs to another statement, so they should be merged.</small>
+                            </label>
+                            <br>
+                            <input type="radio" id="split" value="split" name="flag-statement" style="margin-bottom: 1em;">
+                            <label for="split" style="margin-bottom: 1em;">
+                                <span class="statement_text" i18n:translate="this_statement_split">This statement has more than one message.</span><br>
+                                <small class="statement_text" i18n:translate="this_statement_split_description">This statement contains more than one message and has to be splitted.</small>
+                            </label>
                         </fieldset>
                     </form>
     			</div>

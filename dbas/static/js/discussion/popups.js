@@ -154,10 +154,10 @@ function PopupHandler() {
 		if (is_argument) {
 			popup.find('.statement_text').hide();
 			popup.find('.argument_text').show();
-			// arguments are never duplicates
-			popup.find('#dupl').prev().hide();
-			popup.find('#dupl').next().hide();
-			popup.find('#dupl').hide();
+			// arguments are never duplicates nor can they be merged or splitted
+			this._hideFlagElement(popup, 'dupl');
+			this._hideFlagElement(popup, 'merge');
+			this._hideFlagElement(popup, 'split');
 			
 			// do not mark arguments for optimizations
 			popup.find('fieldset').children().eq(0).hide();
@@ -167,9 +167,9 @@ function PopupHandler() {
 			popup.find('.statement_text').show();
 			popup.find('.argument_text').hide();
 			// only statements are duplicates
-			popup.find('#dupl').prev().show();
-			popup.find('#dupl').next().show();
-			popup.find('#dupl').show();
+			this._showFlagElement(popup, 'dupl');
+			this._showFlagElement(popup, 'merge');
+			this._showFlagElement(popup, 'split');
 		}
 		
 		popup.modal('show');
@@ -183,7 +183,7 @@ function PopupHandler() {
 			popup.find('fieldset').children().eq(2).show();
 		});
 		
-		popup.find('input').not('#dupl').click(function () {
+		popup.find('input').not('#dupl').not('#split').not('#merge').click(function () {
 			var reason = $(this).attr('value');
 			if (reason === 'optimization' && is_argument){
 				// do not mark arguments for optimizations
@@ -211,6 +211,46 @@ function PopupHandler() {
 				new PopupHandler().showStatementDuplicatePopup(uid, text, reason);
 			}
 		});
+		
+		popup.find('#split').click(function () {
+			popup.find('input').prop('checked', false);
+			popup.modal('hide');
+			var text = $('#' + popupFlagStatementTextField).text();
+			var reason = $(this).attr('value');
+			alert('todo split for "' + text + '" because ' + reason);
+		});
+		
+		popup.find('#merge').click(function () {
+			popup.find('input').prop('checked', false);
+			popup.modal('hide');
+			var text = $('#' + popupFlagStatementTextField).text();
+			var reason = $(this).attr('value');
+			alert('todo merge for "' + text + '" because ' + reason);
+		});
+	};
+	
+	/**
+	 *
+	 * @param popup
+	 * @param id
+	 * @private
+	 */
+	this._hideFlagElement = function(popup, id){
+		popup.find('#' + id).prev().show(); // input element
+		popup.find('#' + id).next().show(); // br tag
+		popup.find('#' + id).show();
+	};
+	
+	/**
+	 *
+	 * @param popup
+	 * @param id
+	 * @private
+	 */
+	this._showFlagElement = function(popup, id){
+		popup.find('#' + id).prev().show(); // input element
+		popup.find('#' + id).next().show(); // br tag
+		popup.find('#' + id).show();
 	};
 	
 	/**
