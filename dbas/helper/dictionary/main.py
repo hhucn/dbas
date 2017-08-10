@@ -522,6 +522,10 @@ class DictionaryHelper(object):
             'no_data_selected': _tn_dis.get(_.noDataSelected),
             'select_statement': _tn_dis.get(_.selectStatement),
             'select_multiple_statements': _tn_dis.get(_.selectMultipleStatementsWhichFlag),
+            'merge_statement': _tn_dis.get(_.mergeStatement),
+            'merge_multiple_statements': _tn_dis.get(_.mergeMultipleStatementsWhichFlag),
+            'split_statement': _tn_dis.get(_.splitStatement),
+            'split_multiple_statements': _tn_dis.get(_.splitMultipleStatementsWhichFlag),
             'because': _tn_dis.get(_.because).lower(),
             'mark_as_opinion': _tn_dis.get(_.mark_as_opinion),
             'unmark_as_opinion': _tn_dis.get(_.unmark_as_opinion)
@@ -578,5 +582,13 @@ class DictionaryHelper(object):
             'placeholder_position': _tn_dis.get(_.examplePosition),
             'placeholder_reason': _tn_dis.get(_.exampleReason),
             'search': _tn_sys.get(_.searchForStatements),
-            'premisegroup_popup_warning': _tn_dis.get(_.premisegroupPopupWarning)
+            'premisegroup_popup_warning': _tn_dis.get(_.premisegroupPopupWarning),
+            'argument_optimization_description': _tn_dis.get(_.argument_optimization_description),
+            'argument_offtopic_or_irrelevant_description': _tn_dis.get(_.argument_offtopic_or_irrelevant_description),
+            'argument_statement_harmful_description': _tn_dis.get(_.argument_statement_harmful_description),
+            'statement_offtopic_or_irrelevant_description': _tn_dis.get(_.statement_offtopic_or_irrelevant_description),
+            'statement_duplicate_description': _tn_dis.get(_.statement_duplicate_description),
+            'statement_merge_description': _tn_dis.get(_.statement_merge_description),
+            'statement_split_description': _tn_dis.get(_.statement_split_description),
+            'statement_optimization_description': _tn_dis.get(_.statement_optimization_description),
         }

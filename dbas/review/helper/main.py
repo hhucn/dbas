@@ -250,9 +250,9 @@ def add_review_opinion_for_optimization(request, should_optimized, review_uid, d
 
 def add_review_opinion_for_duplicate(request, is_duplicate, review_uid, _t):
     """
+    Adds row to the duplicate review
 
-    Adds row the duplicate review
-
+    :param request: Pyramids request object
     :param is_duplicate: Boolean
     :param review_uid: ReviewDuplicate.uid
     :param _t: Translator
@@ -316,6 +316,25 @@ def add_review_opinion_for_duplicate(request, is_duplicate, review_uid, _t):
         send_request_for_info_popup_to_socketio(db_user_created_flag.nickname, port, _t.get(_.youAreAbleToReviewNow),
                                                 application_url + '/review')
 
+    return ''
+
+def add_review_opinion_for_split(request):
+    """
+    Adds row to the split review
+
+    :param request: Pyramids request object
+    :return: String
+    """
+    return ''
+
+
+def add_review_opinion_for_merge(request):
+    """
+    Adds row to the merge review
+
+    :param request: Pyramids request object
+    :return: String
+    """
     return ''
 
 

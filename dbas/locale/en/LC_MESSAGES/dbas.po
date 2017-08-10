@@ -1424,35 +1424,35 @@ msgstr ""
 
 #. Default: This statement is a duplicate.
 #: templates/snippet-popups.pt:864
-msgid "this_statement_duplicate"
+msgid "statement_duplicate"
 msgstr "This statement is a duplicate."
 
 #. Default: This statement has been done before in a slightly different
 #. wording.
 #: templates/snippet-popups.pt:865
-msgid "this_statement_duplicate_description"
+msgid "statement_duplicate_description"
 msgstr "This statement has been done before in a slightly different wording."
 
 #. Default: This statement should be merged.
 #: templates/snippet-popups.pt:870
-msgid "this_statement_merge"
+msgid "statement_merge"
 msgstr "This statement should be merged."
 
 #. Default: This statement belongs to another statement, so they should be
 #. merged.
 #: templates/snippet-popups.pt:871
-msgid "this_statement_merge_description"
+msgid "statement_merge_description"
 msgstr "This statement belongs to another statement, so they should be merged."
 
 #. Default: This statement has more than one message.
 #: templates/snippet-popups.pt:876
-msgid "this_statement_split"
+msgid "statement_split"
 msgstr "This statement has more than one message."
 
 #. Default: This statement contains more than one message and has to be
 #. splitted.
 #: templates/snippet-popups.pt:877
-msgid "this_statement_split_description"
+msgid "statement_split_description"
 msgstr "This statement contains more than one message and has to be splitted."
 
 #. Default: Reporting (parts of) an argument

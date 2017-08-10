@@ -1437,37 +1437,37 @@ msgstr ""
 
 #. Default: This statement is a duplicate.
 #: templates/snippet-popups.pt:864
-msgid "this_statement_duplicate"
+msgid "statement_duplicate"
 msgstr "Diese Aussage ist ein Duplikat."
 
 #. Default: This statement has been done before in a slightly different
 #. wording.
 #: templates/snippet-popups.pt:865
-msgid "this_statement_duplicate_description"
+msgid "statement_duplicate_description"
 msgstr "Diese Aussage ist schon leicht verändert im System vorhanden."
 
 #. Default: This statement should be merged.
 #: templates/snippet-popups.pt:870
-msgid "this_statement_merge"
+msgid "statement_merge"
 msgstr "Diese Aussage hängt von einer weiteren Aussage ab."
 
 #. Default: This statement belongs to another statement, so they should be
 #. merged.
 #: templates/snippet-popups.pt:871
-msgid "this_statement_merge_description"
+msgid "statement_merge_description"
 msgstr ""
 "Diese Aussage hängt von einer weiteren Aussage ab und diese sollten "
 "verbunden werden."
 
 #. Default: This statement has more than one message.
 #: templates/snippet-popups.pt:876
-msgid "this_statement_split"
-msgstr "Diese Aussage besteht aus mehrere Aussagen."
+msgid "statement_split"
+msgstr "Diese Aussage besteht aus mehreren Aussagen."
 
 #. Default: This statement contains more than one message and has to be
 #. splitted.
 #: templates/snippet-popups.pt:877
-msgid "this_statement_split_description"
+msgid "statement_split_description"
 msgstr ""
 "Diese Aussage besteht aus mehr als einer Aussage und daher sollten diese "
 "getrennt werden."

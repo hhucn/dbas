@@ -183,6 +183,7 @@ function PopupHandler() {
 			popup.find('fieldset').children().eq(2).show();
 		});
 		
+		// everything but not duplicates not splits or merges
 		popup.find('input').not('#dupl').not('#split').not('#merge').click(function () {
 			var reason = $(this).attr('value');
 			if (reason === 'optimization' && is_argument){
@@ -194,6 +195,7 @@ function PopupHandler() {
 			popup.modal('hide');
 		});
 		
+		// duplicate action
 		popup.find('#dupl').click(function () {
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
@@ -212,20 +214,24 @@ function PopupHandler() {
 			}
 		});
 		
+		// split action
 		popup.find('#split').click(function () {
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
 			var text = $('#' + popupFlagStatementTextField).text();
 			var reason = $(this).attr('value');
-			alert('todo split for "' + text + '" because ' + reason);
+			// TODO what to do with premisegroups
+			new PopupHandler().showSplitStatementPopup(uid, reason);
 		});
 		
+		// merge action
 		popup.find('#merge').click(function () {
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
 			var text = $('#' + popupFlagStatementTextField).text();
 			var reason = $(this).attr('value');
-			alert('todo merge for "' + text + '" because ' + reason);
+			// TODO what to do with premisegroups
+			new PopupHandler().showMergeStatementPopup(uid, reason);
 		});
 	};
 	
@@ -395,6 +401,28 @@ function PopupHandler() {
 					$(this).find('input').prop('checked', false);
 			});
 		});
+	};
+	
+	/**
+	 *
+	 * @param uid
+	 * @param reason
+	 */
+	this.showMergeStatementPopup = function(uid, reason){
+		var popup = $('#popup-merge-statement');
+		popup.modal('show');
+		alert('todo merge');
+	};
+	
+	/**
+	 *
+	 * @param uid
+	 * @param reason
+	 */
+	this.showSplitStatementPopup = function(uid, reason){
+		var popup = $('#popup-split-statement');
+		popup.modal('show');
+		alert('todo split');
 	};
 	
 	/**
