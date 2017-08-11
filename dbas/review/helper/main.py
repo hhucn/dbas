@@ -318,23 +318,34 @@ def add_review_opinion_for_duplicate(request, is_duplicate, review_uid, _t):
 
     return ''
 
-def add_review_opinion_for_split(request):
+
+def add_review_opinion_for_split(request, review_uid, _t):
     """
     Adds row to the split review
 
     :param request: Pyramids request object
+    :param review_uid: ReviewSplit
+    :param _t: Translator
     :return: String
     """
+    logger('review_main_helper', 'add_review_opinion_for_split', 'main ' + str(review_uid))
+    nickname = request.authenticated_userid
+    application_url = request.application_url
     return ''
 
 
-def add_review_opinion_for_merge(request):
+def add_review_opinion_for_merge(request, review_uid, _t):
     """
     Adds row to the merge review
 
     :param request: Pyramids request object
+    :param review_uid: ReviewMerge
+    :param _t: Translator
     :return: String
     """
+    logger('review_main_helper', 'add_review_opinion_for_merge', 'main ' + str(review_uid))
+    nickname = request.authenticated_userid
+    application_url = request.application_url
     return ''
 
 

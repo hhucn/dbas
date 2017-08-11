@@ -155,6 +155,7 @@ def optimization_argument(request) -> dict:
     prepared_dict = {'error': error}
     return prepared_dict
 
+
 def split_statement(request) -> dict:
     """
     Sets feedback for a review element of a splitted statement
@@ -172,6 +173,7 @@ def split_statement(request) -> dict:
         error = _t.get(_.internalKeyError)
     else:
         error = 'TODO 1'
+        review_main_helper.add_review_opinion_for_split(request, review_uid, _t)
 
     prepared_dict = {'error': error}
     return prepared_dict
@@ -194,6 +196,7 @@ def merge_statement(request) -> dict:
         error = _t.get(_.internalKeyError)
     else:
         error = 'TODO 2'
+        review_main_helper.add_review_opinion_for_merge(request, review_uid, _t)
 
     prepared_dict = {'error': error}
     return prepared_dict

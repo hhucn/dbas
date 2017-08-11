@@ -125,7 +125,6 @@ function PopupHandler() {
 	
 	/**
 	 * Displays add topic plugin
-	 *
 	 */
 	this.showAddTopicPopup = function () {
 		$('#popup-add-topic').modal('show');
@@ -220,8 +219,17 @@ function PopupHandler() {
 			popup.modal('hide');
 			var text = $('#' + popupFlagStatementTextField).text();
 			var reason = $(this).attr('value');
-			// TODO what to do with premisegroups
-			new PopupHandler().showSplitStatementPopup(uid, reason);
+			// check for premisegroup
+			if ($('#item_' + uid).parent().find('label').length > 1){
+				new PopupHandler().showSplitPremisegroupPopup(uid, reason, text);
+			} else {
+				// correct uid
+				var is_premisegroup = window.location.href.split('?')[0].indexOf('justify') !== -1;
+				if (is_premisegroup) {
+					uid = $('label[for="item_' + uid + '"]').attr('id');
+				}
+				new PopupHandler().showSplitStatementPopup(uid, reason, text);
+			}
 		});
 		
 		// merge action
@@ -230,15 +238,25 @@ function PopupHandler() {
 			popup.modal('hide');
 			var text = $('#' + popupFlagStatementTextField).text();
 			var reason = $(this).attr('value');
-			// TODO what to do with premisegroups
-			new PopupHandler().showMergeStatementPopup(uid, reason);
+			// check for premisegroup
+			if ($('#item_' + uid).parent().find('label').length > 1){
+				new PopupHandler().showMergePremisegroupPopup(uid, reason, text);
+			} else {
+				// correct uid
+				var is_premisegroup = window.location.href.split('?')[0].indexOf('justify') !== -1;
+				if (is_premisegroup) {
+					uid = $('label[for="item_' + uid + '"]').attr('id');
+				}
+				new PopupHandler().showMergeStatementPopup(uid, reason, text);
+			}
 		});
 	};
 	
 	/**
+	 * Hides a row of the flag statement/argument popup
 	 *
-	 * @param popup
-	 * @param id
+	 * @param popup reference to the popup itself
+	 * @param id of the row, which should be hidden
 	 * @private
 	 */
 	this._hideFlagElement = function(popup, id){
@@ -248,9 +266,10 @@ function PopupHandler() {
 	};
 	
 	/**
+	 * Shows a row of the flag statement/argument popup
 	 *
-	 * @param popup
-	 * @param id
+	 * @param popup reference to the popup itself
+	 * @param id of the row, which should be hidden
 	 * @private
 	 */
 	this._showFlagElement = function(popup, id){
@@ -349,7 +368,7 @@ function PopupHandler() {
 	};
 	
 	/**
-	 *
+	 * Displays the popup to search a specific statement
 	 */
 	this.showSearchStatementPop = function(){
 		var titleText = _t(searchStatementPopupTitleText);
@@ -375,30 +394,37 @@ function PopupHandler() {
 	};
 	
 	/**
+	 * Displays popup to differentiate between the statements of a premise group to
+	 * select the one, which should be a duplicate
 	 *
-	 * @param uid
-	 * @param reason
+	 * @param uid of the pgroup
+	 * @param reason of flagging
 	 */
 	this.showPopupForSelectingDuplicateFromPrgroup = function(uid, reason){
 		var popup = $('#popup-choose-statement');
 		var body = $('#popup-choose-statement-radios');
+		var txt = '';
 		body.empty();
 		popup.modal('show');
 		
 		$.each($('#item_' + uid).parent().find('label:even'), function(){
+			txt = $(this).text();
+			if (txt.match(/\.$/)){ // remove a dot at the end
+				txt = txt.substr(0, txt.length - 1);
+			}
 			var div = $('<div>').addClass('radio');
 			var label = $('<label>').attr({'data-uid': $(this).attr('id')});
 			var input = $('<input>').attr({'type': 'radio', 'name': 'selectStatementDupl'});
-			var span = $('<span>').text($(this).text());
+			var span = $('<span>').text(txt);
 			body.append(div.append(label.append(input).append(span)));
 			label.click(function(){
 				new PopupHandler().showStatementDuplicatePopup($(this).data('uid'), $(this).text(), reason);
 				popup.modal('hide');
 			});
 			label.hover(function () {
-					$(this).find('input').prop('checked', true);
+				$(this).find('input').prop('checked', true);
 			}, function () {
-					$(this).find('input').prop('checked', false);
+				$(this).find('input').prop('checked', false);
 			});
 		});
 	};
@@ -407,22 +433,64 @@ function PopupHandler() {
 	 *
 	 * @param uid
 	 * @param reason
+	 * @param text
 	 */
-	this.showMergeStatementPopup = function(uid, reason){
+	this.showMergeStatementPopup = function(uid, reason, text){
 		var popup = $('#popup-merge-statement');
 		popup.modal('show');
-		alert('todo merge');
+		$('#popup-merge-statement-body').empty();
+		$('#popup-merge-statement-text').text(text);
+		console.log('todo merge statement ' + uid);
 	};
 	
 	/**
 	 *
 	 * @param uid
 	 * @param reason
+	 * @param text
 	 */
-	this.showSplitStatementPopup = function(uid, reason){
+	this.showMergePremisegroupPopup = function(uid, reason, text){
+		var popup = $('#popup-merge-premisegroup');
+		popup.modal('show');
+		$('#popup-merge-premisegroup-body').empty();
+		$('#popup-merge-premisegroup-text').text(text);
+		console.log('todo merge pgroup ' + uid);
+		$('#popup-merge-premisegroup-btn-yes').click(function(){
+			popup.modal('hide');
+			new PopupHandler().showMergeStatementPopup(uid, reason, text);
+		});
+	};
+	
+	/**
+	 *
+	 * @param uid
+	 * @param reason
+	 * @param text
+	 */
+	this.showSplitStatementPopup = function(uid, reason, text){
 		var popup = $('#popup-split-statement');
 		popup.modal('show');
-		alert('todo split');
+		$('#popup-split-statement-body').empty();
+		$('#popup-split-statement-text').text(text);
+		console.log('todo split statement ' + uid);
+	};
+	
+	/**
+	 *
+	 * @param uid
+	 * @param reason
+	 * @param text
+	 */
+	this.showSplitPremisegroupPopup = function(uid, reason, text){
+		var popup = $('#popup-split-premisegroup');
+		popup.modal('show');
+		$('#popup-split-premisegroup-body').empty();
+		$('#popup-split-premisegroup-text').text(text);
+		console.log('todo split pgroup ' + uid);
+		$('#popup-split-premisegroup-btn-yes').click(function(){
+			popup.modal('hide');
+			new PopupHandler().showSplitStatementPopup(uid, reason, text);
+		});
 	};
 	
 	/**

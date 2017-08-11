@@ -994,7 +994,30 @@
     			</div>
     			<div class="modal-body">
                     <p class="lead">${extras.title.split_multiple_statements}</p>
-                    <div id="popup-split-statement-radios"></div>
+                    <p class="well well-sm" id="popup-split-statement-text"></p>
+                    <div id="popup-split-statement-body"></div>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
+    <!-- SPLIT PREMISEGROUP -->
+    <div class="modal fade" id="popup-split-premisegroup" tabindex="-1" role="dialog" aria-labelledby="myModalLabelSplitPremisegroup" aria-hidden="true">
+    	<div class="modal-dialog">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button name="popup-split-premisegroup-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabelSplitPremisegroup">${extras.title.split_statement}</h4>
+    			</div>
+    			<div class="modal-body">
+                    <p class="lead">${extras.title.split_multiple_pgroup}</p>
+                    <p class="well well-sm" id="popup-split-premisegroup-text"></p>
+                    <div id="popup-split-premisegroup-body"></div>
+    			</div>
+    			<div class="modal-footer">
+    				<button type="button" class="btn btn-secondary" i18n:translate="yes" id="popup-split-premisegroup-btn-yes">Yes</button>
+    				<button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="no">No</button>
     			</div>
     		</div>
     	</div>
@@ -1011,7 +1034,30 @@
     			</div>
     			<div class="modal-body">
                     <p class="lead">${extras.title.merge_multiple_statements}</p>
-                    <div id="popup-merge-statement-radios"></div>
+                    <p class="well well-sm" id="popup-merge-statement-text"></p>
+                    <div id="popup-merge-statement-body"></div>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
+    <!-- MERGE PREMISEGROUP -->
+    <div class="modal fade" id="popup-merge-premisegroup" tabindex="-1" role="dialog" aria-labelledby="myModalLabelMergePremisegroup" aria-hidden="true">
+    	<div class="modal-dialog">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button name="popup-merge-premisegroup-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabelMergePremisegroup">${extras.title.merge_statement}</h4>
+    			</div>
+    			<div class="modal-body">
+                    <p class="lead">${extras.title.merge_multiple_pgroup}</p>
+                    <p class="well well-sm" id="popup-merge-premisegroup-text"></p>
+                    <div id="popup-merge-premisegroup-body"></div>
+    			</div>
+    			<div class="modal-footer">
+    				<button type="button" class="btn btn-secondary" i18n:translate="yes" id="popup-merge-premisegroup-btn-yes">Yes</button>
+    				<button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="no">No</button>
     			</div>
     		</div>
     	</div>

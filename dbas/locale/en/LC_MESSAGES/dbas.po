@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-08-10 09:37+0200\n"
+"POT-Creation-Date: 2017-08-11 07:29+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -906,7 +906,7 @@ msgstr "Undo"
 #. Default: Cancel
 #: templates/review-history.pt:96 templates/snippet-popups.pt:172
 #: templates/snippet-popups.pt:195 templates/snippet-popups.pt:220
-#: templates/snippet-popups.pt:1101
+#: templates/snippet-popups.pt:1145
 msgid "cancel"
 msgstr "Cancel"
 
@@ -1070,7 +1070,7 @@ msgstr ""
 
 #. Default: Okay
 #: templates/snippet-popups.pt:171 templates/snippet-popups.pt:194
-#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1100
+#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1144
 msgid "okay"
 msgstr "Okay"
 
@@ -1362,7 +1362,7 @@ msgid "statement_under_consideration_is"
 msgstr "The statement under consideration is as follows"
 
 #. Default: The argument under consideration is as follows
-#: templates/snippet-popups.pt:828 templates/snippet-popups.pt:896
+#: templates/snippet-popups.pt:828 templates/snippet-popups.pt:906
 msgid "argument_under_consideration_is"
 msgstr "The argument under consideration is as follows"
 
@@ -1371,38 +1371,15 @@ msgstr "The argument under consideration is as follows"
 msgid "text_need_to_be_revised"
 msgstr "The text needs to be revised."
 
-#. Default: This statement is acceptable but it needs correction for
-#. spelling/grammar.
-#: templates/snippet-popups.pt:836
-msgid "statement_optimization_description"
-msgstr "This statement is right, but needs correction for spelling/grammar."
-
-#. Default: This argument is acceptable but it needs correction for
-#. spelling/grammar.
-#: templates/snippet-popups.pt:837
-msgid "argument_optimization_description"
-msgstr ""
-"This argument is acceptable but it needs correction for spelling/grammar."
-
 #. Default: This statement is off topic or irrelevant.
-#: templates/snippet-popups.pt:842
+#: templates/snippet-popups.pt:845
 msgid "statement_offtopic_or_irrelevant"
 msgstr "This statement is off topic or irrelevant."
 
-#. Default: This statement does not belong to the topic under discussion.
-#: templates/snippet-popups.pt:843
-msgid "statement_offtopic_or_irrelevant_description"
-msgstr "This statement does not belong to the topic under discussion."
-
 #. Default: This argument is off topic or irrelevant.
-#: templates/snippet-popups.pt:844
+#: templates/snippet-popups.pt:849
 msgid "argument_offtopic_or_irrelevant"
 msgstr "This argument is off topic or irrelevant."
-
-#. Default: This argument does not belong to the topic under discussion.
-#: templates/snippet-popups.pt:845
-msgid "argument_offtopic_or_irrelevant_description"
-msgstr "This argument does not belong to the topic under discussion."
 
 #. Default: This statement is harmful or abusive.
 #: templates/snippet-popups.pt:857
@@ -1410,127 +1387,101 @@ msgid "statement_harmful"
 msgstr "This statement is harmful or abusive."
 
 #. Default: This argument is harmful or abusive.
-#: templates/snippet-popups.pt:858
+#: templates/snippet-popups.pt:859
 msgid "argument_harmful"
 msgstr "This argument is harmful or abusive."
 
-#. Default: A reasonable person would find this content inappropriate for
-#. respectful discourse.
-#: templates/snippet-popups.pt:859
-msgid "argument_statement_harmful_description"
-msgstr ""
-"A reasonable person would find this content inappropriate for respectful "
-"discourse."
-
 #. Default: This statement is a duplicate.
-#: templates/snippet-popups.pt:864
+#: templates/snippet-popups.pt:868
 msgid "statement_duplicate"
 msgstr "This statement is a duplicate."
 
-#. Default: This statement has been done before in a slightly different
-#. wording.
-#: templates/snippet-popups.pt:865
-msgid "statement_duplicate_description"
-msgstr "This statement has been done before in a slightly different wording."
-
 #. Default: This statement should be merged.
-#: templates/snippet-popups.pt:870
+#: templates/snippet-popups.pt:876
 msgid "statement_merge"
 msgstr "This statement should be merged."
 
-#. Default: This statement belongs to another statement, so they should be
-#. merged.
-#: templates/snippet-popups.pt:871
-msgid "statement_merge_description"
-msgstr "This statement belongs to another statement, so they should be merged."
-
 #. Default: This statement has more than one message.
-#: templates/snippet-popups.pt:876
+#: templates/snippet-popups.pt:884
 msgid "statement_split"
 msgstr "This statement has more than one message."
 
-#. Default: This statement contains more than one message and has to be
-#. splitted.
-#: templates/snippet-popups.pt:877
-msgid "statement_split_description"
-msgstr "This statement contains more than one message and has to be splitted."
-
 #. Default: Reporting (parts of) an argument
-#: templates/snippet-popups.pt:893
+#: templates/snippet-popups.pt:903
 msgid "reporting_parts_argument"
 msgstr "Reporting (parts of) an argument"
 
 #. Default: Please choose which part of the argument you want to report
-#: templates/snippet-popups.pt:898
+#: templates/snippet-popups.pt:908
 msgid "please_choose_part_to_report"
 msgstr "Please choose which part of the argument you want to report"
 
 #. Default: Report
-#: templates/snippet-popups.pt:905
+#: templates/snippet-popups.pt:915
 msgid "report"
 msgstr "Report"
 
 #. Default: Report the whole argument.
-#: templates/snippet-popups.pt:917
+#: templates/snippet-popups.pt:927
 msgid "report_whole_argument"
 msgstr "Report the whole argument."
 
 #. Default: Caution
-#: templates/snippet-popups.pt:984
+#: templates/snippet-popups.pt:1028
 msgid "caution"
 msgstr "Caution"
 
 #. Default: Do you really want to disassociate yourself from your content? This
 #. step is irreversible! Subsequently you will not be the author of this
 #. statement anymore!
-#: templates/snippet-popups.pt:989
+#: templates/snippet-popups.pt:1033
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 "Do you really want to disassociate yourself from your content? This step is "
 "irreversible! Subsequently you will not be the author of this"
 
 #. Default: Please choose a step to jump in
-#: templates/snippet-popups.pt:1006
+#: templates/snippet-popups.pt:1050
 msgid "choose_a_step_to_jump_in"
 msgstr "Please choose a step to jump in"
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: templates/snippet-popups.pt:1009
+#: templates/snippet-popups.pt:1053
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr ""
 "Below you find a list with all arguments, where your selected text is used:"
 
 #. Default: References
-#: templates/snippet-popups.pt:1026
+#: templates/snippet-popups.pt:1070
 msgid "refereces"
 msgstr "References"
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: templates/snippet-popups.pt:1034
+#: templates/snippet-popups.pt:1078
 msgid "statement_reference_definition"
 msgstr ""
 "Statement is a cite from a website like a newspaper article, which underpins "
 "the opinion. The source is the website as link."
 
 #. Default: Statement
-#: templates/snippet-popups.pt:1037 templates/snippet-popups.pt:1058
+#: templates/snippet-popups.pt:1081 templates/snippet-popups.pt:1102
 msgid "statement"
 msgstr "Statement"
 
 #. Default: Source
-#: templates/snippet-popups.pt:1043
+#: templates/snippet-popups.pt:1087
 msgid "source"
 msgstr "Source"
 
 #. Default: Please choose a statement for your reference!
-#: templates/snippet-popups.pt:1048
+#: templates/snippet-popups.pt:1092
 msgid "please_choose_a_reference"
 msgstr "Please choose a statement for your reference!"
 
 #. Default: Add reference
-#: templates/snippet-popups.pt:1063
+#: templates/snippet-popups.pt:1107
 msgid "add_reference"
 msgstr "Add reference"
 
@@ -2022,6 +1973,36 @@ msgstr "Supports"
 #: templates/content.pt:214
 msgid "attacks_on_my_statements"
 msgstr "Attacks"
+
+#~ msgid "statement_optimization_description"
+#~ msgstr "This statement is right, but needs correction for spelling/grammar."
+
+#~ msgid "argument_optimization_description"
+#~ msgstr ""
+#~ "This argument is acceptable but it needs correction for spelling/grammar."
+
+#~ msgid "statement_offtopic_or_irrelevant_description"
+#~ msgstr "This statement does not belong to the topic under discussion."
+
+#~ msgid "argument_offtopic_or_irrelevant_description"
+#~ msgstr "This argument does not belong to the topic under discussion."
+
+#~ msgid "argument_statement_harmful_description"
+#~ msgstr ""
+#~ "A reasonable person would find this content inappropriate for respectful "
+#~ "discourse."
+
+#~ msgid "statement_duplicate_description"
+#~ msgstr ""
+#~ "This statement has been done before in a slightly different wording."
+
+#~ msgid "statement_merge_description"
+#~ msgstr ""
+#~ "This statement belongs to another statement, so they should be merged."
+
+#~ msgid "statement_split_description"
+#~ msgstr ""
+#~ "This statement contains more than one message and has to be splitted."
 
 #~ msgid "because"
 #~ msgstr "because"

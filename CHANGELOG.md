@@ -1,5 +1,6 @@
 ## 1.4.3 (2017-xx-yy)
 - Entering position and premise at once
+- Queue for split and merge statements
 
 ## 1.4.2 (2017-06-07)
 - Splitting the monolith

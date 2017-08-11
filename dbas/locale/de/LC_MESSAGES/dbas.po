@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-08-10 09:37+0200\n"
+"POT-Creation-Date: 2017-08-11 07:29+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -909,7 +909,7 @@ msgstr "Rückgängig machen"
 #. Default: Cancel
 #: templates/review-history.pt:96 templates/snippet-popups.pt:172
 #: templates/snippet-popups.pt:195 templates/snippet-popups.pt:220
-#: templates/snippet-popups.pt:1101
+#: templates/snippet-popups.pt:1145
 msgid "cancel"
 msgstr "Abbrechen"
 
@@ -1075,7 +1075,7 @@ msgstr ""
 
 #. Default: Okay
 #: templates/snippet-popups.pt:171 templates/snippet-popups.pt:194
-#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1100
+#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1144
 msgid "okay"
 msgstr "Okay"
 
@@ -1372,7 +1372,7 @@ msgid "statement_under_consideration_is"
 msgstr "Die aktuelle Aussage ist"
 
 #. Default: The argument under consideration is as follows
-#: templates/snippet-popups.pt:828 templates/snippet-popups.pt:896
+#: templates/snippet-popups.pt:828 templates/snippet-popups.pt:906
 msgid "argument_under_consideration_is"
 msgstr "Das aktuelle Argument ist"
 
@@ -1381,41 +1381,15 @@ msgstr "Das aktuelle Argument ist"
 msgid "text_need_to_be_revised"
 msgstr "Der Text sollte überarbeitet werden."
 
-#. Default: This statement is acceptable but it needs correction for
-#. spelling/grammar.
-#: templates/snippet-popups.pt:836
-msgid "statement_optimization_description"
-msgstr ""
-"Die Aussage ist richtig, sollte aber sprachlich/grammatikalisch verbessert "
-"werden."
-
-#. Default: This argument is acceptable but it needs correction for
-#. spelling/grammar.
-#: templates/snippet-popups.pt:837
-msgid "argument_optimization_description"
-msgstr ""
-"Das Argument ist richtig, sollte aber sprachlich/grammatikalisch verbessert "
-"werden."
-
 #. Default: This statement is off topic or irrelevant.
-#: templates/snippet-popups.pt:842
+#: templates/snippet-popups.pt:845
 msgid "statement_offtopic_or_irrelevant"
 msgstr "Die Aussage ist nicht themenbezogen/Spam."
 
-#. Default: This statement does not belong to the topic under discussion.
-#: templates/snippet-popups.pt:843
-msgid "statement_offtopic_or_irrelevant_description"
-msgstr "Die Beudeutung der Aussage ist nicht themenbezogen oder Spam."
-
 #. Default: This argument is off topic or irrelevant.
-#: templates/snippet-popups.pt:844
+#: templates/snippet-popups.pt:849
 msgid "argument_offtopic_or_irrelevant"
 msgstr "Das Argument ist nicht themenbezogen/Spam."
-
-#. Default: This argument does not belong to the topic under discussion.
-#: templates/snippet-popups.pt:845
-msgid "argument_offtopic_or_irrelevant_description"
-msgstr "Die Bedeutung des Arguments ist nicht themenbezogen oder Spam."
 
 #. Default: This statement is harmful or abusive.
 #: templates/snippet-popups.pt:857
@@ -1423,84 +1397,54 @@ msgid "statement_harmful"
 msgstr "Die Aussage ist verletzend, schädigend oder missbräuchlich."
 
 #. Default: This argument is harmful or abusive.
-#: templates/snippet-popups.pt:858
+#: templates/snippet-popups.pt:859
 msgid "argument_harmful"
 msgstr "Die Argument ist verletzend, schädigend oder missbräuchlich."
 
-#. Default: A reasonable person would find this content inappropriate for
-#. respectful discourse.
-#: templates/snippet-popups.pt:859
-msgid "argument_statement_harmful_description"
-msgstr ""
-"Bestimmte Personen würden diesen Inhalt nicht passend für eine respektvolle "
-"Diskussion halten."
-
 #. Default: This statement is a duplicate.
-#: templates/snippet-popups.pt:864
+#: templates/snippet-popups.pt:868
 msgid "statement_duplicate"
 msgstr "Diese Aussage ist ein Duplikat."
 
-#. Default: This statement has been done before in a slightly different
-#. wording.
-#: templates/snippet-popups.pt:865
-msgid "statement_duplicate_description"
-msgstr "Diese Aussage ist schon leicht verändert im System vorhanden."
-
 #. Default: This statement should be merged.
-#: templates/snippet-popups.pt:870
+#: templates/snippet-popups.pt:876
 msgid "statement_merge"
 msgstr "Diese Aussage hängt von einer weiteren Aussage ab."
 
-#. Default: This statement belongs to another statement, so they should be
-#. merged.
-#: templates/snippet-popups.pt:871
-msgid "statement_merge_description"
-msgstr ""
-"Diese Aussage hängt von einer weiteren Aussage ab und diese sollten "
-"verbunden werden."
-
 #. Default: This statement has more than one message.
-#: templates/snippet-popups.pt:876
+#: templates/snippet-popups.pt:884
 msgid "statement_split"
 msgstr "Diese Aussage besteht aus mehreren Aussagen."
 
-#. Default: This statement contains more than one message and has to be
-#. splitted.
-#: templates/snippet-popups.pt:877
-msgid "statement_split_description"
-msgstr ""
-"Diese Aussage besteht aus mehr als einer Aussage und daher sollten diese "
-"getrennt werden."
-
 #. Default: Reporting (parts of) an argument
-#: templates/snippet-popups.pt:893
+#: templates/snippet-popups.pt:903
 msgid "reporting_parts_argument"
 msgstr "Melden eines Arguments (oder Teile davon)"
 
 #. Default: Please choose which part of the argument you want to report
-#: templates/snippet-popups.pt:898
+#: templates/snippet-popups.pt:908
 msgid "please_choose_part_to_report"
 msgstr "Bitte wählen Sie einen Teil des Arguments, der gemeldet werden soll"
 
 #. Default: Report
-#: templates/snippet-popups.pt:905
+#: templates/snippet-popups.pt:915
 msgid "report"
 msgstr "Melden"
 
 #. Default: Report the whole argument.
-#: templates/snippet-popups.pt:917
+#: templates/snippet-popups.pt:927
 msgid "report_whole_argument"
 msgstr "Komplettes Argument melden."
 
 #. Default: Caution
-#: templates/snippet-popups.pt:984
+#: templates/snippet-popups.pt:1028
 msgid "caution"
 msgstr "Achtung"
 
 #. Default: Do you really want to disassociate yourself from your content? This
 #. step is irreversible! Subsequently you will not be the author of this
 #. statement anymore!
-#: templates/snippet-popups.pt:989
+#: templates/snippet-popups.pt:1033
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 "Möchten Sie wirklich von diesem Inhalt distanzieren? Dieser Schritt kann "
@@ -1508,46 +1452,46 @@ msgstr ""
 "diesem Statements."
 
 #. Default: Please choose a step to jump in
-#: templates/snippet-popups.pt:1006
+#: templates/snippet-popups.pt:1050
 msgid "choose_a_step_to_jump_in"
 msgstr "Bitte wählen Sie eine Stelle für den Sprung"
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: templates/snippet-popups.pt:1009
+#: templates/snippet-popups.pt:1053
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr "Hier finden Sie alle Stellen, in denen die Aussage verwendet wird:"
 
 #. Default: References
-#: templates/snippet-popups.pt:1026
+#: templates/snippet-popups.pt:1070
 msgid "refereces"
 msgstr "Referenzen"
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: templates/snippet-popups.pt:1034
+#: templates/snippet-popups.pt:1078
 msgid "statement_reference_definition"
 msgstr ""
 "Die Aussage ist ein Zitat von einer Nachrichtenseite o.Ä., welche Ihre "
 "Meinung untersützt. Die Quelle ist die Website."
 
 #. Default: Statement
-#: templates/snippet-popups.pt:1037 templates/snippet-popups.pt:1058
+#: templates/snippet-popups.pt:1081 templates/snippet-popups.pt:1102
 msgid "statement"
 msgstr "Aussage"
 
 #. Default: Source
-#: templates/snippet-popups.pt:1043
+#: templates/snippet-popups.pt:1087
 msgid "source"
 msgstr "Quelle"
 
 #. Default: Please choose a statement for your reference!
-#: templates/snippet-popups.pt:1048
+#: templates/snippet-popups.pt:1092
 msgid "please_choose_a_reference"
 msgstr "Bitte wählen Sie eine Aussage für Ihre Referenz!"
 
 #. Default: Add reference
-#: templates/snippet-popups.pt:1063
+#: templates/snippet-popups.pt:1107
 msgid "add_reference"
 msgstr "Referenzen hinzufügen"
 
@@ -2045,6 +1989,40 @@ msgstr "Unterstützungen"
 #: templates/content.pt:214
 msgid "attacks_on_my_statements"
 msgstr "Angriffe"
+
+#~ msgid "statement_optimization_description"
+#~ msgstr ""
+#~ "Die Aussage ist richtig, sollte aber sprachlich/grammatikalisch "
+#~ "verbessert werden."
+
+#~ msgid "argument_optimization_description"
+#~ msgstr ""
+#~ "Das Argument ist richtig, sollte aber sprachlich/grammatikalisch "
+#~ "verbessert werden."
+
+#~ msgid "statement_offtopic_or_irrelevant_description"
+#~ msgstr "Die Beudeutung der Aussage ist nicht themenbezogen oder Spam."
+
+#~ msgid "argument_offtopic_or_irrelevant_description"
+#~ msgstr "Die Bedeutung des Arguments ist nicht themenbezogen oder Spam."
+
+#~ msgid "argument_statement_harmful_description"
+#~ msgstr ""
+#~ "Bestimmte Personen würden diesen Inhalt nicht passend für eine "
+#~ "respektvolle Diskussion halten."
+
+#~ msgid "statement_duplicate_description"
+#~ msgstr "Diese Aussage ist schon leicht verändert im System vorhanden."
+
+#~ msgid "statement_merge_description"
+#~ msgstr ""
+#~ "Diese Aussage hängt von einer weiteren Aussage ab und diese sollten "
+#~ "verbunden werden."
+
+#~ msgid "statement_split_description"
+#~ msgstr ""
+#~ "Diese Aussage besteht aus mehr als einer Aussage und daher sollten diese "
+#~ "getrennt werden."
 
 #~ msgid "because"
 #~ msgstr "weil"
