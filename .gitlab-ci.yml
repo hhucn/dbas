@@ -34,8 +34,8 @@ flake8:
 jshint:
   stage: test
   script:
-    - apk add --no-cache nodejs bash
-    - npm install -g jshint
+    - apk add --no-cache yarn bash
+    - yarn global add jshint
     - bash -c "jshint ./dbas/static/js/{main,ajax,discussion,review,d3}/*.js"
     - bash -c "jshint ./admin/static/js/main/*.js"
     - bash -c "jshint ./webhook/static/js/*.js"
