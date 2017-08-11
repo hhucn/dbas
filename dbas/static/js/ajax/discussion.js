@@ -336,8 +336,9 @@ function AjaxDiscussionHandler() {
 	 * @param callbackid
 	 * @param type
 	 * @param extra optional
+	 * @param reason optional
 	 */
-	this.fuzzySearch = function (value, callbackid, type, extra) {
+	this.fuzzySearch = function (value, callbackid, type, extra, reason) {
 		var callback = $('#' + callbackid);
 		var pencil = ' <i class="fa fa-pencil" aria-hidden="true"></i>';
 		var tmpid = callbackid.split('-').length === 6 ? callbackid.split('-')[5] : '0';
@@ -366,7 +367,7 @@ function AjaxDiscussionHandler() {
 			return;
 		}
 
-		if (type !== fuzzy_find_user && type !== fuzzy_find_statement) {
+		if (!$.inArray(type, [fuzzy_find_user, fuzzy_find_statement, fuzzy_duplicate])) {
 			var opener = $('#' + addPremiseContainerMainInputIntroId).text().replace('...', _t_discussion(because) + ' ' );
 			// add or remove bubble only iff we are not in an popup
 			if (type !== fuzzy_statement_popup) {
@@ -400,7 +401,7 @@ function AjaxDiscussionHandler() {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxGetAllUsersDone(data) {
-			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type);
+			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type, reason);
 		}).fail(function ajaxGetAllUsersFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 			//setTimout(function ajaxGetAllUsersFailDelay() {

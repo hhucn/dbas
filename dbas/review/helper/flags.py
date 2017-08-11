@@ -29,6 +29,7 @@ def flag_element(uid, reason, nickname, is_argument, extra_uid=None):
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
+        logger('FlagingHelper', 'flag_element', 'No user', error=True)
         return '', '', _.noRights
 
     db_element = DBDiscussionSession.query(Argument if is_argument else Statement).get(uid)
@@ -66,6 +67,7 @@ def flag_element(uid, reason, nickname, is_argument, extra_uid=None):
         elif reason == 'duplicate':
             # flagged for the first time
             if statement_uid == extra_uid:
+                logger('FlagingHelper', 'flag_element', 'uid error', error=True)
                 return '', '', _.internalKeyError
             __add_duplication_review(statement_uid, extra_uid, db_user.uid)
 
