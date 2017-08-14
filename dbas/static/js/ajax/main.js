@@ -275,4 +275,42 @@ function AjaxMainHandler(){
 			setGlobalErrorHandler('', _t_discussion(requestFailed));
 		});
 	};
+	
+	/**
+	 *
+	 * @param pgroup_uid
+	 * @param key
+	 * @param values
+	 */
+	this.splitOrMergeStatements = function(pgroup_uid, key, values){
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_split_or_merge_statement',
+			method: 'POST',
+			data: {
+				uid: pgroup_uid,
+				key: key,
+				dates: JSON.stringify(values)
+			},
+			global: false,
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrf_token
+			}
+		}).done(function ajaxSplitOrMergeStatementsDone(data) {
+			var parsedData = $.parseJSON(data);
+			if (parsedData.error.length !== 0){
+				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+			} else if (parsedData.info.length !== 0) {
+				setGlobalInfoHandler('Ohh!', parsedData.info);
+				$('#popup-duplicate-statement').modal('hide');
+			} else {
+				setGlobalSuccessHandler('Yeah!', parsedData.success);
+				$('#popup-duplicate-statement').modal('hide');
+			}
+			
+		}).fail(function ajaxSplitOrMergeStatementsFail() {
+			setGlobalErrorHandler('', _t_discussion(requestFailed));
+		});
+	};
 }

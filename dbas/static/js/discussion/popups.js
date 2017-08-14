@@ -469,9 +469,12 @@ function PopupHandler() {
 		}, function(){
 			$(this).removeClass('btn-success').addClass('btn-secondary');
 		}).click(function(){
-			alert('todo');
 			$('#popup-' + key + '-statement').modal('hide');
-			//fct(uid, reason, text);
+			var values = [];
+			$.each(body.find('input'), function(){
+				values.push($(this).val());
+			});
+			new AjaxMainHandler().splitOrMergeStatements(uid, key, values);
 		});
 		
 		// hover and on-click-function for the add key

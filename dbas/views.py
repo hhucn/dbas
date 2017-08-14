@@ -1934,6 +1934,38 @@ def flag_argument_or_statement(request):
     return json.dumps(prepared_dict)
 
 
+# #######################################
+# ADDITIONAL AJAX STUFF # REVIEW THINGS #
+# #######################################
+
+
+# ajax - for flagging arguments
+@view_config(route_name='ajax_split_or_merge_statement', renderer='json')
+def split_or_merge_statement(request):
+    """
+    Flags an argument or statement for a specific reason
+
+    :param request: current request of the server
+    :return: json-dict()
+    """
+    logger('views', 'split_or_merge_statement', 'request.params: {}'.format(request.params))
+    ui_locales = get_discussion_language(request)
+
+    try:
+        uid = request.params['uid']
+        key = request.params['key']
+        dates = request.params['dates']
+        nickname = request.authenticated_userid
+
+        prepared_dict = {'error': 'TODO'}
+    except KeyError as e:
+        _t = Translator(ui_locales)
+        logger('views', 'split_or_merge_statement', repr(e), error=True)
+        prepared_dict = {'error': _t.get(_.internalKeyError), 'info': '', 'success': ''}
+
+    return json.dumps(prepared_dict)
+
+
 # ajax - for feedback on flagged arguments
 @view_config(route_name='ajax_review_delete_argument', renderer='json')
 def review_delete_argument(request):
