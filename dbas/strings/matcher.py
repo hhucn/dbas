@@ -71,7 +71,7 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
         return_dict['values'] = get_strings_for_public_nickname(value, nickname)
         return_dict['distance_name'] = mechanism
 
-    elif mode == '9':  # search everything
+    elif mode == '9' or mode == '8':  # search everything
         return_dict['values'] = get_all_statements_with_value(request, value)
         return_dict['distance_name'] = mechanism
 

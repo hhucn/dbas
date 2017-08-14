@@ -263,6 +263,7 @@ var showMeAnArgumentFor             = 'showMeAnArgumentFor';
 var strength                        = 'strength';
 var strong                          = 'strong';
 var shortenedBy                     = 'shortenedBy';
+var statement                       = 'statement';
 var statisticsDeleted               = 'statisticsDeleted';
 var statisticsNotDeleted            = 'statisticsNotDeleted';
 var statisticsNotFetched            = 'statisticsNotFetched';

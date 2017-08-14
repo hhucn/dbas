@@ -593,7 +593,7 @@ en_lang = {
     _.mergeMultipleStatements: 'Please select the statements, that should be concatenated.',
     _.mergeMultiplePGroup: 'The selected statement already consists out of multiple statement. Further on the several statements are listed. Do you want to continue with the merge?',
     _.splitStatement: 'Split Statements',
-    _.splitMultipleStatements: 'Please enter the splitted version of the version; one per input field.',
+    _.splitMultipleStatements: 'Please enter the splitted version of the statement; one per input field.',
     _.splitMultiplePGroup: 'The selected statement is already splitted in several parts, like the list illustrates below. Do you want to continue with a new split?',
     _.showAllUsers: 'Show all users',
     _.showAllArguments: 'Show all arguments',

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-08-11 07:29+0200\n"
+"POT-Creation-Date: 2017-08-14 15:15+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -906,7 +906,7 @@ msgstr "Undo"
 #. Default: Cancel
 #: templates/review-history.pt:96 templates/snippet-popups.pt:172
 #: templates/snippet-popups.pt:195 templates/snippet-popups.pt:220
-#: templates/snippet-popups.pt:1145
+#: templates/snippet-popups.pt:1203
 msgid "cancel"
 msgstr "Cancel"
 
@@ -1070,7 +1070,7 @@ msgstr ""
 
 #. Default: Okay
 #: templates/snippet-popups.pt:171 templates/snippet-popups.pt:194
-#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1144
+#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1202
 msgid "okay"
 msgstr "Okay"
 
@@ -1426,62 +1426,82 @@ msgstr "Report"
 msgid "report_whole_argument"
 msgstr "Report the whole argument."
 
+#. Default: The statement
+#: templates/snippet-popups.pt:1021 templates/snippet-popups.pt:1067
+msgid "the_statement"
+msgstr "The statement"
+
+#. Default: consist out of
+#: templates/snippet-popups.pt:1021 templates/snippet-popups.pt:1067
+msgid "consist_out_of"
+msgstr "consist out of"
+
+#. Default: Yes
+#: templates/snippet-popups.pt:1025 templates/snippet-popups.pt:1071
+msgid "yes"
+msgstr "Yes"
+
+#. Default: No
+#: templates/snippet-popups.pt:1026 templates/snippet-popups.pt:1072
+msgid "no"
+msgstr "No"
+
 #. Default: Caution
-#: templates/snippet-popups.pt:1028
+#: templates/snippet-popups.pt:1086
 msgid "caution"
 msgstr "Caution"
 
 #. Default: Do you really want to disassociate yourself from your content? This
 #. step is irreversible! Subsequently you will not be the author of this
 #. statement anymore!
-#: templates/snippet-popups.pt:1033
+#: templates/snippet-popups.pt:1091
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 "Do you really want to disassociate yourself from your content? This step is "
 "irreversible! Subsequently you will not be the author of this"
 
 #. Default: Please choose a step to jump in
-#: templates/snippet-popups.pt:1050
+#: templates/snippet-popups.pt:1108
 msgid "choose_a_step_to_jump_in"
 msgstr "Please choose a step to jump in"
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: templates/snippet-popups.pt:1053
+#: templates/snippet-popups.pt:1111
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr ""
 "Below you find a list with all arguments, where your selected text is used:"
 
 #. Default: References
-#: templates/snippet-popups.pt:1070
+#: templates/snippet-popups.pt:1128
 msgid "refereces"
 msgstr "References"
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: templates/snippet-popups.pt:1078
+#: templates/snippet-popups.pt:1136
 msgid "statement_reference_definition"
 msgstr ""
 "Statement is a cite from a website like a newspaper article, which underpins "
 "the opinion. The source is the website as link."
 
 #. Default: Statement
-#: templates/snippet-popups.pt:1081 templates/snippet-popups.pt:1102
+#: templates/snippet-popups.pt:1139 templates/snippet-popups.pt:1160
 msgid "statement"
 msgstr "Statement"
 
 #. Default: Source
-#: templates/snippet-popups.pt:1087
+#: templates/snippet-popups.pt:1145
 msgid "source"
 msgstr "Source"
 
 #. Default: Please choose a statement for your reference!
-#: templates/snippet-popups.pt:1092
+#: templates/snippet-popups.pt:1150
 msgid "please_choose_a_reference"
 msgstr "Please choose a statement for your reference!"
 
 #. Default: Add reference
-#: templates/snippet-popups.pt:1107
+#: templates/snippet-popups.pt:1165
 msgid "add_reference"
 msgstr "Add reference"
 
@@ -2009,9 +2029,6 @@ msgstr "Attacks"
 
 #~ msgid "show_all_statements"
 #~ msgstr "Show all statements"
-
-#~ msgid "hide_statements"
-#~ msgstr "Hide statements"
 
 #~ msgid "contact_header_1"
 #~ msgstr "Get In Touch With Us"
