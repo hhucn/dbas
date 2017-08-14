@@ -470,6 +470,7 @@ function GuiHandler() {
 		$('#' + proposalUserListGroupId).empty();
 		$('#' + proposalStatementSearchGroupId).empty();
 		$('#' + proposalDuplicateSearchGroupId).empty();
+		$('#proposal-mergesplit-list-group-' + callbackId).empty();
 		
 		// do we have values ?
 		if (parsedData.length === 0) {
@@ -526,6 +527,7 @@ function GuiHandler() {
 				$('#' + proposalUserListGroupId).empty();
 				$('#' + proposalStatementSearchGroupId).empty();
 				$('#' + proposalDuplicateSearchGroupId).empty();
+				$('#proposal-mergesplit-list-group-' + callbackId).empty();
 				if (type === fuzzy_find_statement){
 					window.location.href = $(this).data('url');
 				} else if (type === fuzzy_duplicate){
@@ -541,6 +543,7 @@ function GuiHandler() {
 			else if (type === fuzzy_find_user){       $('#' + proposalUserListGroupId).append(button); }
 			else if (type === fuzzy_find_statement){  $('#' + proposalStatementSearchGroupId).append(button); }
 			else if (type === fuzzy_duplicate){       $('#' + proposalDuplicateSearchGroupId).append(button); }
+			else if (type === fuzzy_find_mergesplit){ $('#proposal-mergesplit-list-group-' + callbackId).append(button); }
 		});
 	};
 	

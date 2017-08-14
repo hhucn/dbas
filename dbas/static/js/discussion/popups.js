@@ -154,9 +154,9 @@ function PopupHandler() {
 			popup.find('.statement_text').hide();
 			popup.find('.argument_text').show();
 			// arguments are never duplicates nor can they be merged or splitted
-			this._hideFlagElement(popup, 'dupl');
-			this._hideFlagElement(popup, 'merge');
-			this._hideFlagElement(popup, 'split');
+			this.__hideFlagElement(popup, 'dupl');
+			this.__hideFlagElement(popup, 'merge');
+			this.__hideFlagElement(popup, 'split');
 			
 			// do not mark arguments for optimizations
 			popup.find('fieldset').children().eq(0).hide();
@@ -166,9 +166,9 @@ function PopupHandler() {
 			popup.find('.statement_text').show();
 			popup.find('.argument_text').hide();
 			// only statements are duplicates
-			this._showFlagElement(popup, 'dupl');
-			this._showFlagElement(popup, 'merge');
-			this._showFlagElement(popup, 'split');
+			this.__showFlagElement(popup, 'dupl');
+			this.__showFlagElement(popup, 'merge');
+			this.__showFlagElement(popup, 'split');
 		}
 		
 		popup.modal('show');
@@ -198,7 +198,6 @@ function PopupHandler() {
 		popup.find('#dupl').click(function () {
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
-			var text = $('#' + popupFlagStatementTextField).text();
 			var reason = $(this).attr('value');
 			// check for premisegroup
 			if ($('#item_' + uid).parent().find('label').length > 1){
@@ -217,17 +216,11 @@ function PopupHandler() {
 		popup.find('#split').click(function () {
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
-			var text = $('#' + popupFlagStatementTextField).text();
 			var reason = $(this).attr('value');
 			// check for premisegroup
 			if ($('#item_' + uid).parent().find('label').length > 1){
 				new PopupHandler().showSplitPremisegroupPopup(uid, reason, text);
 			} else {
-				// correct uid
-				var is_premisegroup = window.location.href.split('?')[0].indexOf('justify') !== -1;
-				if (is_premisegroup) {
-					uid = $('label[for="item_' + uid + '"]').attr('id');
-				}
 				new PopupHandler().showSplitStatementPopup(uid, reason, text);
 			}
 		});
@@ -236,17 +229,11 @@ function PopupHandler() {
 		popup.find('#merge').click(function () {
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
-			var text = $('#' + popupFlagStatementTextField).text();
 			var reason = $(this).attr('value');
 			// check for premisegroup
 			if ($('#item_' + uid).parent().find('label').length > 1){
 				new PopupHandler().showMergePremisegroupPopup(uid, reason, text);
 			} else {
-				// correct uid
-				var is_premisegroup = window.location.href.split('?')[0].indexOf('justify') !== -1;
-				if (is_premisegroup) {
-					uid = $('label[for="item_' + uid + '"]').attr('id');
-				}
 				new PopupHandler().showMergeStatementPopup(uid, reason, text);
 			}
 		});
@@ -259,7 +246,7 @@ function PopupHandler() {
 	 * @param id of the row, which should be hidden
 	 * @private
 	 */
-	this._hideFlagElement = function(popup, id){
+	this.__hideFlagElement = function(popup, id){
 		popup.find('#' + id).prev().show(); // input element
 		popup.find('#' + id).next().show(); // br tag
 		popup.find('#' + id).show();
@@ -272,7 +259,7 @@ function PopupHandler() {
 	 * @param id of the row, which should be hidden
 	 * @private
 	 */
-	this._showFlagElement = function(popup, id){
+	this.__showFlagElement = function(popup, id){
 		popup.find('#' + id).prev().show(); // input element
 		popup.find('#' + id).next().show(); // br tag
 		popup.find('#' + id).show();
@@ -440,25 +427,7 @@ function PopupHandler() {
 		popup.modal('show');
 		$('#popup-merge-statement-body').empty();
 		$('#popup-merge-statement-text').text(text);
-		console.log('todo merge statement ' + uid);
-	};
-	
-	/**
-	 *
-	 * @param uid
-	 * @param reason
-	 * @param text
-	 */
-	this.showMergePremisegroupPopup = function(uid, reason, text){
-		var popup = $('#popup-merge-premisegroup');
-		popup.modal('show');
-		$('#popup-merge-premisegroup-body').empty();
-		$('#popup-merge-premisegroup-text').text(text);
-		console.log('todo merge pgroup ' + uid);
-		$('#popup-merge-premisegroup-btn-yes').click(function(){
-			popup.modal('hide');
-			new PopupHandler().showMergeStatementPopup(uid, reason, text);
-		});
+		new PopupHandler().__buildMergeSplitPopup('merge', uid);
 	};
 	
 	/**
@@ -472,7 +441,95 @@ function PopupHandler() {
 		popup.modal('show');
 		$('#popup-split-statement-body').empty();
 		$('#popup-split-statement-text').text(text);
-		console.log('todo split statement ' + uid);
+		new PopupHandler().__buildMergeSplitPopup('split', uid);
+	};
+	
+	/**
+	 * Build the body of the merge/split-group popup
+	 *
+	 * @param key is either 'merge' or 'split'
+	 * @param uid of the current premisegroup
+	 * @private
+	 */
+	this.__buildMergeSplitPopup = function(key, uid){
+		var i = 1;
+		var body = $('#popup-' + key + '-statement-body');
+		$.each($('label[for="item_' + uid + '"]:even'), function(){
+			var txt = $(this).text();
+			if (txt.match(/\.$/)){ // remove a dot at the end
+				txt = txt.substr(0, txt.length - 1);
+			}
+			new PopupHandler().__addInputFormGroup(i, body, txt);
+			i = i+1;
+		});
+		
+		// hover and on-click-function for the yes key
+		$('#popup-' + key + '-statement-btn-yes').hover(function(){
+			$(this).addClass('btn-success').removeClass('btn-secondary');
+		}, function(){
+			$(this).removeClass('btn-success').addClass('btn-secondary');
+		}).click(function(){
+			alert('todo');
+			$('#popup-' + key + '-statement').modal('hide');
+			//fct(uid, reason, text);
+		});
+		
+		// hover and on-click-function for the add key
+		$('#popup-' + key + '-statement-add').hover(function(){
+			$(this).addClass('btn-info').removeClass('btn-secondary');
+		}, function(){
+			$(this).removeClass('btn-info').addClass('btn-secondary');
+		}).click(function(){
+			var counter = 1;
+			if (body.children().length > 0) {
+				counter = body.children().last().data('counter') + 1;
+			}
+			new PopupHandler().__addInputFormGroup(counter, body, '');
+			
+		});
+		
+		// hover and on-click-function for the remove key
+		$('#popup-' + key + '-statement-rem').hover(function(){
+			$(this).addClass('btn-info').removeClass('btn-secondary');
+		}, function(){
+			$(this).removeClass('btn-info').addClass('btn-secondary');
+		}).off('click').click(function(){
+			if (body.children().length > 0) {
+				body.children().last().remove();
+			}
+		});
+	};
+	
+	/**
+	 * Adds a form group with input form to the body
+	 *
+	 * @param counter just an increasing integer
+	 * @param body where the form should be added
+	 * @param text as value for the input
+	 * @private
+	 */
+	this.__addInputFormGroup = function(counter, body, text){
+		var div = $('<div>').addClass('form-group').attr('data-counter', counter);
+		var label = $('<label>').addClass('control-label').attr('for', 'focusedInput' + counter).text(_t_discussion(statement) + ' ' + counter);
+		var input = $('<input>').addClass('form-control').attr({'id': 'focusedInput' + counter, 'type': 'text', 'value': text});
+		var proposal = $('<div>').attr({'class': 'col-md-12 list-group', 'id': 'proposal-mergesplit-list-group-focusedInput' + counter});
+		input.keyup(function () {
+			var val = input.val();
+			setTimeout(function () {
+				new AjaxDiscussionHandler().fuzzySearch(escapeHtml(val), 'focusedInput' + counter, fuzzy_find_mergesplit, '');
+			}, 200);
+		});
+		body.append(div.append(label).append(input).append(proposal));
+	};
+	
+	/**
+	 *
+	 * @param uid
+	 * @param reason
+	 * @param text
+	 */
+	this.showMergePremisegroupPopup = function(uid, reason, text){
+		this.__buildMergeSplitPgroupPopup('merge', uid, text, reason, new PopupHandler().showMergeStatementPopup);
 	};
 	
 	/**
@@ -482,14 +539,41 @@ function PopupHandler() {
 	 * @param text
 	 */
 	this.showSplitPremisegroupPopup = function(uid, reason, text){
-		var popup = $('#popup-split-premisegroup');
+		this.__buildMergeSplitPgroupPopup('split', uid, text, reason, new PopupHandler().showSplitStatementPopup);
+	};
+	
+	/**
+	 * Build the body of the merge/split-premisegroup popup
+	 *
+	 * @param key is either 'merge' or 'split'
+	 * @param uid of the current premisegroup
+	 * @param text of the current premisegroup
+	 * @param reason for the flag popup
+	 * @param fct which should be called if the 'yes'-button is clicked
+	 * @private
+	 */
+	this.__buildMergeSplitPgroupPopup = function(key, uid, text, reason, fct){
+		var popup = $('#popup-' + key + '-premisegroup');
 		popup.modal('show');
-		$('#popup-split-premisegroup-body').empty();
-		$('#popup-split-premisegroup-text').text(text);
-		console.log('todo split pgroup ' + uid);
-		$('#popup-split-premisegroup-btn-yes').click(function(){
-			popup.modal('hide');
-			new PopupHandler().showSplitStatementPopup(uid, reason, text);
+		$('#popup-' + key + '-premisegroup-text').text(text);
+		var body = $('#popup-' + key + '-premisegroup-body');
+		body.empty();
+		$.each($('label[for="item_' + uid + '"]:even'), function(){
+			var txt = $(this).text();
+			if (txt.match(/\.$/)){ // remove a dot at the end
+				txt = txt.substr(0, txt.length - 1);
+			}
+			var child = $('<li>').attr({'class': 'lead', 'id': 'popup-' + key + '-premisegroup-text-' + $.now()}).css('margin-bottom', '0').text(txt);
+			body.append(child);
+		});
+		
+		$('#popup-' + key + '-premisegroup-btn-yes').hover(function(){
+			$(this).addClass('btn-success').removeClass('btn-secondary');
+		}, function(){
+			$(this).removeClass('btn-success').addClass('btn-secondary');
+		}).click(function(){
+			$('#popup-' + key + '-premisegroup').modal('hide');
+			fct(uid, reason, text);
 		});
 	};
 	

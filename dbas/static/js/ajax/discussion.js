@@ -361,6 +361,7 @@ function AjaxDiscussionHandler() {
 			$('#' + proposalEditListGroupId).empty();
 			$('#' + proposalUserListGroupId).empty();
 			$('#' + proposalStatementSearchGroupId).empty();
+			$('#proposal-mergesplit-list-group-' + callbackid).empty();
 			$('p[id^="current_"]').each(function() {
 				$(this).parent().remove();
 			});
