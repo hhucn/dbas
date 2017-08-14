@@ -26,7 +26,6 @@ def flag_element(uid, reason, nickname, is_argument, extra_uid=None):
     :param extra_uid: Uid of the argument/statement, which should be flagged
     :return: success, info, error
     """
-
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         logger('FlagingHelper', 'flag_element', 'No user', error=True)
@@ -72,6 +71,14 @@ def flag_element(uid, reason, nickname, is_argument, extra_uid=None):
             __add_duplication_review(statement_uid, extra_uid, db_user.uid)
 
         return _.thxForFlagText, '', ''
+
+
+def merge_statement(uid, dates, nickname, ui_locales):
+        return '', '', _.internalKeyError
+
+
+def split_statement(uid, dates, nickname, ui_locales):
+        return '', '', _.internalKeyError
 
 
 def __get_flag_status(argument_uid, statement_uid, user_uid):

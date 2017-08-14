@@ -1957,7 +1957,9 @@ def split_or_merge_statement(request):
         dates = request.params['dates']
         nickname = request.authenticated_userid
 
-        prepared_dict = {'error': 'TODO'}
+        prepared_dict = review.mergesplit(uid, key, dates, nickname, ui_locales)
+        prepared_dict['error'] = 'TODO'
+
     except KeyError as e:
         _t = Translator(ui_locales)
         logger('views', 'split_or_merge_statement', repr(e), error=True)

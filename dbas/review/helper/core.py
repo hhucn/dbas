@@ -43,6 +43,36 @@ def flag(uid, reason, extra_uid, is_argument, nickname, ui_locales) -> dict:
     return prepared_dict
 
 
+def mergesplit(uid, key, dates, nickname, ui_locales) -> dict:
+    """
+    Adds review for splitting/merging a statement
+
+    :param uid: ID of the selected PremiseGroup
+    :param key: 'split' or 'merge'
+    :param dates: text values
+    :param nickname: the user's nickname creating the request
+    :param ui_locales: current ui_locales
+    :rtype: dict
+    :return: collection with success, info and error key
+    :return:
+    """
+    logger('additives', 'merge_or_split_statement', 'uid {}'.format(uid))
+    _t = Translator(ui_locales)
+
+    if key is 'merge':
+        success, info, error = review_flag_helper.merge_statements(uid, dates, nickname, ui_locales)
+    elif key is 'split':
+        success, info, error = review_flag_helper.split_statement(uid, dates, nickname, ui_locales)
+    else:
+        raise KeyError
+
+    prepared_dict = {}
+    prepared_dict['success'] = '' if isinstance(success, str) else _t.get(success)
+    prepared_dict['info'] = '' if isinstance(info, str) else _t.get(info)
+    prepared_dict['error'] = '' if isinstance(error, str) else _t.get(error)
+    return prepared_dict
+
+
 def delete_argument(request) -> dict:
     """
     Sets feedback for an review element of the delete-queue
