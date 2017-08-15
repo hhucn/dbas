@@ -172,21 +172,19 @@
                         </div>
 
                         <div class="well well-sm center" style="text-align: justify;" tal:condition="subpage.button_set.is_split">
-                            Todo 1
-                            <!--<span i18n:translate="this_is_original_statements">This is the original statement:</span>-->
-                            <!--<br>-->
-                            <!--<i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>-->
-                            <!--<span class="lead" id="reviewed-argument-text">${subpage.elements.reviewed_element.duplicate_of}</span>-->
-                            <!--<i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>-->
+                            <span i18n:translate="this_statement_should_be_splitted">This statement should be splitted into:</span>
+                            <ul>
+                                <li tal:repeat="text subpage.elements.reviewed_element.splitted_text">${text}</li>
+                            </ul>
                         </div>
 
                         <div class="well well-sm center" style="text-align: justify;" tal:condition="subpage.button_set.is_merge">
-                            Todo 2
-                            <!--<span i18n:translate="this_are_original_statements">This are the original statements:</span>-->
-                            <!--<br>-->
-                            <!--<i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>-->
-                            <!--<span class="lead" id="reviewed-argument-text">${subpage.elements.reviewed_element.duplicate_of}</span>-->
-                            <!--<i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>-->
+                            <span i18n:translate="this_statement_should_be_merged">This statement should be merged to:</span>
+                            <br>
+                            <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
+                            <span class="lead" id="reviewed-argument-text">${structure:subpage.elements.reviewed_element.merged_text}</span>
+                            <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
+                            <br>
                         </div>
 
                     </div>

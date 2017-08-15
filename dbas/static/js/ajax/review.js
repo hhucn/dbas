@@ -121,6 +121,49 @@ function AjaxReviewHandler(){
 	
 	/**
 	 *
+	 * @param should_merged
+	 * @param review_uid
+	 */
+	this.reviewMergeStatement = function(should_merged, review_uid){
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_review_merged_statement',
+			method: 'POST',
+			data:{ 'should_merge': should_merge, 'review_uid': review_uid },
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrf_token }
+		}).done(function reviewDuplicateStatementDone(data) {
+			new ReviewCallbacks().forReviewArgumentOrStatement(data);
+		}).fail(function reviewDuplicateStatementFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		});
+	};
+	
+	/**
+	 *
+	 * @param should_split
+	 * @param review_uid
+	 */
+	this.reviewSplitStatement = function(should_split, review_uid){
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_review_merged_statement',
+			method: 'POST',
+			data:{ 'should_split': should_split, 'review_uid': review_uid },
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrf_token }
+		}).done(function reviewDuplicateStatementDone(data) {
+			new ReviewCallbacks().forReviewArgumentOrStatement(data);
+		}).fail(function reviewDuplicateStatementFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		});
+		
+	};
+	
+	/**
+	 *
 	 * @param queue
 	 * @param uid
 	 */

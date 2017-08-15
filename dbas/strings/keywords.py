@@ -109,6 +109,8 @@ class Keywords(Enum):
     argumentFlaggedBecauseOptimization = 'argumentFlaggedBecauseOptimization'
     argumentFlaggedBecauseEdit = 'argumentFlaggedBecauseEdit'
     argumentFlaggedBecauseDuplicate = 'argumentFlaggedBecauseDuplicate'
+    argumentFlaggedBecauseSplit = 'argumentFlaggedBecauseSplit'
+    argumentFlaggedBecauseMerge = 'argumentFlaggedBecauseMerge'
     argument_optimization_description = 'argument_optimization_description'
     argument_offtopic_or_irrelevant_description = 'argument_offtopic_or_irrelevant_description'
     argument_statement_harmful_description = 'argument_statement_harmful_description'
