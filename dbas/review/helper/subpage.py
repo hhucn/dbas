@@ -12,7 +12,8 @@ from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, ReviewOptimization, ReviewDeleteReason, Argument,\
     Issue, LastReviewerDelete, LastReviewerOptimization, ReviewEdit, LastReviewerEdit, ReviewEditValue, Statement, \
-    sql_timestamp_pretty_print, ReviewDuplicate, LastReviewerDuplicate
+    sql_timestamp_pretty_print, ReviewDuplicate, LastReviewerDuplicate, ReviewMerge, ReviewSplit, LastReviewerMerge,\
+    LastReviewerSplit
 from dbas.lib import get_all_arguments_by_statement
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture
@@ -20,7 +21,7 @@ from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders
 from dbas.strings.keywords import Keywords as _
 
-pages = ['deletes', 'optimizations', 'edits', 'duplicates']
+pages = ['deletes', 'optimizations', 'edits', 'duplicates', 'splits', 'merges']
 
 
 def get_subpage_elements_for(request, subpage_name, nickname, translator):
@@ -37,7 +38,14 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     user_has_access = False
     no_arguments_to_review = False
-    button_set = {'is_delete': False, 'is_optimize': False, 'is_edit': False}
+    button_set = {
+        'is_delete ': False,
+        'is_optimize ': False,
+        'is_edit ': False,
+        'is_duplicate ': False,
+        'is_split ': False,
+        'is_merge ': False
+    }
 
     # does the subpage exists
     if subpage_name not in pages and subpage_name != 'history':
@@ -51,48 +59,42 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
         logger('ReviewSubpagerHelper', 'get_subpage_elements_for', 'No user found', error=True)
         return __get_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
 
-    ret_dict = dict()
-    ret_dict['page_name'] = subpage_name
+    ret_dict = {'page_name': subpage_name}
 
-    # get a random argument for reviewing
     text = translator.get(_.internalError)
+    issue = translator.get(_.internalError)
     reason = ''
     stats = ''
-    issue = translator.get(_.internalError)
 
     if subpage_name == 'deletes':
         subpage_dict = __get_subpage_dict_for_deletes(request, db_user, translator, request.application_url)
         button_set['is_delete'] = True
-        button_set['is_optimize'] = False
-        button_set['is_edit'] = False
-        button_set['is_duplicate'] = False
 
     elif subpage_name == 'optimizations':
         subpage_dict = __get_subpage_dict_for_optimization(request, db_user, translator, request.application_url)
-        button_set['is_delete'] = False
         button_set['is_optimize'] = True
-        button_set['is_edit'] = False
-        button_set['is_duplicate'] = False
 
     elif subpage_name == 'edits':
         subpage_dict = __get_subpage_dict_for_edits(request, db_user, translator, request.application_url)
-        button_set['is_delete'] = False
-        button_set['is_optimize'] = False
         button_set['is_edit'] = True
-        button_set['is_duplicate'] = False
 
     elif subpage_name == 'duplicates':
         subpage_dict = __get_subpage_dict_for_duplicates(request, db_user, translator, request.application_url)
-        button_set['is_delete'] = False
-        button_set['is_optimize'] = False
-        button_set['is_edit'] = False
         button_set['is_duplicate'] = True
+
+    elif subpage_name == 'splits':
+        subpage_dict = __get_subpage_dict_for_splits(request, db_user, translator, request.application_url)
+        button_set['is_split'] = True
+
+    elif subpage_name == 'merges':
+        subpage_dict = __get_subpage_dict_for_merges(request, db_user, translator, request.application_url)
+        button_set['is_merge'] = True
 
     else:
         subpage_dict = {'stats': stats, 'text': text, 'reason': reason, 'issue': issue}
 
     # logger('ReviewSubpagerHelper', 'get_subpage_elements_for', 'subpage_dict ' + str(subpage_dict))
-    ret_dict['reviewed_argument'] = subpage_dict
+    ret_dict['reviewed_element'] = subpage_dict
     if subpage_dict['text'] is None and subpage_dict['reason'] is None and subpage_dict['stats'] is None:
         no_arguments_to_review = True
         return __get_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
@@ -110,10 +112,12 @@ def __get_subpage_dict(ret_dict, has_access, no_arguments_to_review, button_set)
     :param button_set: dict()
     :return: dict()
     """
-    return {'elements': ret_dict,
-            'has_access': has_access,
-            'no_arguments_to_review': no_arguments_to_review,
-            'button_set': button_set}
+    return {
+        'elements': ret_dict,
+        'has_access': has_access,
+        'no_arguments_to_review': no_arguments_to_review,
+        'button_set': button_set
+    }
 
 
 def __get_all_allowed_reviews_for_user(request, session_keyword, db_user, review_type, last_reviewer_type):
@@ -419,6 +423,37 @@ def __get_subpage_dict_for_duplicates(request, db_user, translator, main_page):
             'reason': reason,
             'issue': issue,
             'extra_info': extra_info}
+
+def __get_subpage_dict_for_splits(request, db_user, translator, main_page):
+    logger('ReviewSubpagerHelper', '__get_subpage_dict_for_splits', 'main')
+    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request,
+                                                                                                'already_seen_split',
+                                                                                                db_user,
+                                                                                                ReviewSplit,
+                                                                                                LastReviewerSplit)
+
+    return {
+        'stats': 'a',
+        'text': 'b',
+        'reason': 'c',
+        'issue': 'd',
+    }
+
+
+def __get_subpage_dict_for_merges(request, db_user, translator, main_page):
+    logger('ReviewSubpagerHelper', '__get_subpage_dict_for_merges', 'main')
+    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request,
+                                                                                                'already_seen_merge',
+                                                                                                db_user,
+                                                                                                ReviewMerge,
+                                                                                                LastReviewerMerge)
+
+    return {
+        'stats': 'a',
+        'text': 'b',
+        'reason': 'c',
+        'issue': 'd',
+    }
 
 
 def __difference_between_string(a, b, correction_list):

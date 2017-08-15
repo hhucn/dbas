@@ -11,46 +11,58 @@
 		</div>
 
 		<div class="container colored-container" tal:condition="not:subpage.no_arguments_to_review">
-            <div tal:omit-tag=""  tal:condition="subpage.has_access">
+            <div tal:omit-tag="" tal:condition="subpage.has_access">
 
                 <div class="row" style="margin-bottom: 1em;">
                     <div class="col-md-12">
                         <ul class="breadcrumb">
                             <li><a href="${request.application_url}/review" i18n:translate="review">Review</a></li>
-                            <li tal:condition="subpage.button_set.is_delete" class="active" i18n:translate="deletes">Deletes</li>
-                            <li tal:condition="subpage.button_set.is_optimize" class="active" i18n:translate="optimizations">Optimizations</li>
-                            <li tal:condition="subpage.button_set.is_edit" class="active" i18n:translate="edits">Edits</li>
-                            <li tal:condition="subpage.button_set.is_duplicate" class="active" i18n:translate="duplicates">Duplicates</li>
+                            <li class="active" tal:condition="subpage.button_set.is_delete" i18n:translate="deletes">Deletes</li>
+                            <li class="active" tal:condition="subpage.button_set.is_optimize" i18n:translate="optimizations">Optimizations</li>
+                            <li class="active" tal:condition="subpage.button_set.is_edit" i18n:translate="edits">Edits</li>
+                            <li class="active" tal:condition="subpage.button_set.is_duplicate" i18n:translate="duplicates">Duplicates</li>
+                            <li class="active" tal:condition="subpage.button_set.is_merge" i18n:translate="merge">Merge</li>
+                            <li class="active" tal:condition="subpage.button_set.is_split" i18n:translate="split">Split</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="row" style="margin-bottom: 1em;">
                     <div class="col-md-7">
-                        <h6>${structure:subpage.elements.reviewed_argument.reason}
+                        <h6>${structure:subpage.elements.reviewed_element.reason}
                             <a id="more_about_reason"  href="#" i18n:translate="wrapped_more">(more)</a>
                             <a id="less_about_reason" href="#" i18n:translate="wrapped_less" style="display: none;">(less)</a>
                         </h6>
                     </div>
                     <div class="col-md-5" tal:condition="subpage.button_set.is_delete">
-                        <a id="del_skip" href="#" class="review-btn-delete btn btn-info btn-sm pull-right" data-queue="delete" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Skip it</a>
-                        <a id="del_ack" href="#" class="review-btn-delete btn btn-danger btn-sm pull-right" data-queue="delete" i18n:translate="delete_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Delete it</a>
-                        <a id="del_nack" href="#" class="review-btn-delete btn btn-success btn-sm pull-right" data-queue="delete" i18n:translate="its_okay" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">It's Okay</a>
+                        <a id="del_skip" href="#" class="review-btn-delete btn btn-info btn-sm pull-right" data-queue="delete" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip it</a>
+                        <a id="del_ack" href="#" class="review-btn-delete btn btn-danger btn-sm pull-right" data-queue="delete" i18n:translate="delete_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Delete it</a>
+                        <a id="del_nack" href="#" class="review-btn-delete btn btn-success btn-sm pull-right" data-queue="delete" i18n:translate="its_okay" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">It's Okay</a>
                     </div>
                     <div class="col-md-5" tal:condition="subpage.button_set.is_optimize">
-                        <a id="opti_skip" href="#" class="review-btn-optimize btn btn-info btn-sm pull-right" data-queue="optimization" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Skip it</a>
-                        <a id="opti_nack" href="#" class="review-btn-optimize btn btn-danger btn-sm pull-right" data-queue="optimization" i18n:translate="its_okay_so" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">It's okay so</a>
-                        <a id="opti_ack" href="#" class="review-btn-optimize btn btn-success btn-sm pull-right" data-queue="optimization" i18n:translate="correct_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Let me correct it</a>
+                        <a id="opti_skip" href="#" class="review-btn-optimize btn btn-info btn-sm pull-right" data-queue="optimization" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip it</a>
+                        <a id="opti_nack" href="#" class="review-btn-optimize btn btn-danger btn-sm pull-right" data-queue="optimization" i18n:translate="its_okay_so" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">It's okay so</a>
+                        <a id="opti_ack" href="#" class="review-btn-optimize btn btn-success btn-sm pull-right" data-queue="optimization" i18n:translate="correct_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Let me correct it</a>
                     </div>
                     <div class="col-md-5" tal:condition="subpage.button_set.is_edit">
-                        <a id="edit_skip" href="#" class="review-btn-edit btn btn-info btn-sm pull-right" data-queue="edit" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Skip it</a>
-                        <a id="edit_nack" href="#" class="review-btn-edit btn btn-danger btn-sm pull-right" data-queue="edit" i18n:translate="reject_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Reject it</a>
-                        <a id="edit_ack" href="#" class="review-btn-edit btn btn-success btn-sm pull-right" data-queue="edit" i18n:translate="its_okay" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">It's Okay</a>
+                        <a id="edit_skip" href="#" class="review-btn-edit btn btn-info btn-sm pull-right" data-queue="edit" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip it</a>
+                        <a id="edit_nack" href="#" class="review-btn-edit btn btn-danger btn-sm pull-right" data-queue="edit" i18n:translate="reject_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Reject it</a>
+                        <a id="edit_ack" href="#" class="review-btn-edit btn btn-success btn-sm pull-right" data-queue="edit" i18n:translate="its_okay" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">It's Okay</a>
                     </div>
                     <div class="col-md-5" tal:condition="subpage.button_set.is_duplicate">
-                        <a id="duplicate_skip" href="#" class="review-btn-duplicate btn btn-info btn-sm pull-right" data-queue="duplicates" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Skip it</a>
-                        <a id="duplicate_nack" href="#" class="review-btn-duplicate btn btn-danger btn-sm pull-right" data-queue="duplicates" i18n:translate="unique" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Unique</a>
-                        <a id="duplicate_ack" href="#" class="review-btn-duplicate btn btn-success btn-sm pull-right" data-queue="duplicates" i18n:translate="duplicate" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Duplicate</a>
+                        <a id="duplicate_skip" href="#" class="review-btn-duplicate btn btn-info btn-sm pull-right" data-queue="duplicates" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip it</a>
+                        <a id="duplicate_nack" href="#" class="review-btn-duplicate btn btn-danger btn-sm pull-right" data-queue="duplicates" i18n:translate="unique" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Unique</a>
+                        <a id="duplicate_ack" href="#" class="review-btn-duplicate btn btn-success btn-sm pull-right" data-queue="duplicates" i18n:translate="duplicate" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Duplicate</a>
+                    </div>
+                    <div class="col-md-5" tal:condition="subpage.button_set.is_split">
+                        <a id="duplicate_skip" href="#" class="review-btn-split btn btn-info btn-sm pull-right" data-queue="splits" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip it</a>
+                        <a id="duplicate_nack" href="#" class="review-btn-split btn btn-danger btn-sm pull-right" data-queue="splits" i18n:translate="reject_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Reject it</a>
+                        <a id="duplicate_ack" href="#" class="review-btn-split btn btn-success btn-sm pull-right" data-queue="splits" i18n:translate="split_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Split it</a>
+                    </div>
+                    <div class="col-md-5" tal:condition="subpage.button_set.is_merge">
+                        <a id="duplicate_skip" href="#" class="review-btn-merge btn btn-info btn-sm pull-right" data-queue="merges" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip it</a>
+                        <a id="duplicate_nack" href="#" class="review-btn-merge btn btn-danger btn-sm pull-right" data-queue="merges" i18n:translate="reject_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Reject it</a>
+                        <a id="duplicate_ack" href="#" class="review-btn-merge btn btn-success btn-sm pull-right" data-queue="merges" i18n:translate="merge_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Merge it</a>
                     </div>
                 </div>
 
@@ -93,6 +105,12 @@
                                 <li><span class="text-danger" i18n:translate="its_unique">It's unique</span> <span i18n:translate="duplicate_is_unique">for marked statements, which are unique.</span></li>
                                 <li><span class="text-info" i18n:translate="skip_it">Skip it</span> <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next statement.</span></li>
                             </ul>
+                            <ul tal:condition="subpage.button_set.is_split" style="padding-left: 0.5em">
+                                split
+                            </ul>
+                            <ul tal:condition="subpage.button_set.is_merge" style="padding-left: 0.5em">
+                                merge
+                            </ul>
                         </blockquote>
                     </div>
                 </div>
@@ -103,11 +121,11 @@
                         <div class="well well-sm center" style="text-align: justify; margin-bottom: 1em;" tal:condition="subpage.button_set.is_edit">
                             <div style="margin-bottom: 1em;">
                                 <span i18n:translate="in_the_discussion_about">In the discussion about</span>
-                                <i>${structure:subpage.elements.reviewed_argument.issue}</i>
+                                <i>${structure:subpage.elements.reviewed_element.issue}</i>
                                 <span i18n:translate="following_argument_was_corrected">following argument was corrected.</span>
                             </div>
                             <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
-                            <span class="lead" id="reviewed-argument-corrected-version">${structure:subpage.elements.reviewed_argument.corrected_version}</span>
+                            <span class="lead" id="reviewed-argument-corrected-version">${structure:subpage.elements.reviewed_element.corrected_version}</span>
                             <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
                         </div>
 
@@ -116,14 +134,14 @@
                                 <span i18n:translate="this_are_the_edit">This are the edits:</span>
                             </div>
                             <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
-                            <span class="lead" id="reviewed-argument-correction">${structure:subpage.elements.reviewed_argument.corrections}</span>
+                            <span class="lead" id="reviewed-argument-correction">${structure:subpage.elements.reviewed_element.corrections}</span>
                             <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
                         </div>
 
                         <div class="well well-sm center" style="text-align: justify;">
                             <div style="margin-bottom: 1em;" tal:condition="not:subpage.button_set.is_edit">
                                 <span i18n:translate="in_the_discussion_about">In the discussion about</span>
-                                <i>${structure:subpage.elements.reviewed_argument.issue}</i>
+                                <i>${structure:subpage.elements.reviewed_element.issue}</i>
                                 <span tal:condition="not:subpage.button_set.is_duplicate" i18n:translate="following_argument_was_flagged">following argument was flagged.</span>
                                 <span tal:condition="subpage.button_set.is_duplicate" i18n:translate="following_statement_was_flagged">following statement was flagged.</span>
                             </div>
@@ -131,14 +149,14 @@
                                 <span i18n:translate="this_is_original_version">This is the original version</span>:
                             </div>
                             <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
-                            <span class="lead" id="reviewed-argument-text">${structure:subpage.elements.reviewed_argument.text}</span>
+                            <span class="lead" id="reviewed-argument-text">${structure:subpage.elements.reviewed_element.text}</span>
                             <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
                             <br>
                         </div>
 
                         <div class="well well-sm center" style="text-align: justify;" tal:condition="subpage.button_set.is_optimize">
                             <span i18n:translate="context_where_statement_is_used">Context, where the statement is used:</span>
-                            <div tal:repeat="context subpage.elements.reviewed_argument.context">
+                            <div tal:repeat="context subpage.elements.reviewed_element.context">
                                 <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
                                 <span class="lead" id="reviewed-argument-text">${structure:context}</span>
                                 <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
@@ -149,39 +167,57 @@
                             <span i18n:translate="this_is_original_statements">This is the original statement:</span>
                             <br>
                             <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
-                            <span class="lead" id="reviewed-argument-text">${subpage.elements.reviewed_argument.duplicate_of}</span>
+                            <span class="lead" id="reviewed-argument-text">${subpage.elements.reviewed_element.duplicate_of}</span>
                             <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
+                        </div>
+
+                        <div class="well well-sm center" style="text-align: justify;" tal:condition="subpage.button_set.is_split">
+                            Todo 1
+                            <!--<span i18n:translate="this_is_original_statements">This is the original statement:</span>-->
+                            <!--<br>-->
+                            <!--<i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>-->
+                            <!--<span class="lead" id="reviewed-argument-text">${subpage.elements.reviewed_element.duplicate_of}</span>-->
+                            <!--<i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>-->
+                        </div>
+
+                        <div class="well well-sm center" style="text-align: justify;" tal:condition="subpage.button_set.is_merge">
+                            Todo 2
+                            <!--<span i18n:translate="this_are_original_statements">This are the original statements:</span>-->
+                            <!--<br>-->
+                            <!--<i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>-->
+                            <!--<span class="lead" id="reviewed-argument-text">${subpage.elements.reviewed_element.duplicate_of}</span>-->
+                            <!--<i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>-->
                         </div>
 
                     </div>
                     <div class="col-md-offset-2 col-md-3">
-                        <table id="stats-table" class="table table-condensed pull-right" style="font-size: 14px;" tal:attributes="data-extra-info subpage.elements.reviewed_argument.extra_info">
+                        <table id="stats-table" class="table table-condensed pull-right" style="font-size: 14px;" tal:attributes="data-extra-info subpage.elements.reviewed_element.extra_info">
                             <tbody>
                                 <tr>
                                     <td i18n:translate="reported">Reported</td>
-                                    <td>${subpage.elements.reviewed_argument.stats.reported}</td>
+                                    <td>${subpage.elements.reviewed_element.stats.reported}</td>
                                 </tr>
                                 <tr>
                                     <td i18n:translate="reported_by">Reported by</td>
                                     <td>
-                                        <a tal:attributes="href subpage.elements.reviewed_argument.stats.reporter_url">
-                                            <img class="img-circle" tal:attributes="src subpage.elements.reviewed_argument.stats.reporter_gravatar">
-                                            ${subpage.elements.reviewed_argument.stats.reporter}
+                                        <a tal:attributes="href subpage.elements.reviewed_element.stats.reporter_url">
+                                            <img class="img-circle" tal:attributes="src subpage.elements.reviewed_element.stats.reporter_gravatar">
+                                            ${subpage.elements.reviewed_element.stats.reporter}
                                         </a>
                                     </td>
                                 </tr>
                                 <tal:comment replace="nothing">
                                 <tr>
                                     <td i18n:translate="viewed">Viewed</td>
-                                    <td>${subpage.elements.reviewed_argument.stats.viewed}</td>
+                                    <td>${subpage.elements.reviewed_element.stats.viewed}</td>
                                 </tr>
                                 <tr>
                                     <td i18n:translate="attacks">Attacks</td>
-                                    <td>${subpage.elements.reviewed_argument.stats.attacks}</td>
+                                    <td>${subpage.elements.reviewed_element.stats.attacks}</td>
                                 </tr>
                                 <tr>
                                     <td i18n:translate="supports">Supports</td>
-                                    <td>${subpage.elements.reviewed_argument.stats.supports}</td>
+                                    <td>${subpage.elements.reviewed_element.stats.supports}</td>
                                 </tr>
                                 </tal:comment>
                             </tbody>
@@ -189,46 +225,46 @@
                     </div>
                 </div>
 
-                <small id="review-id" class="text-muted pull-right" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">ID: ${subpage.elements.reviewed_argument.stats.id}</small>
+                <small id="review-id" class="text-muted pull-right" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">ID: ${subpage.elements.reviewed_element.stats.id}</small>
             </div>
         </div>
 
         <div tal:condition="not:subpage.no_arguments_to_review">
-		<div id="optimization-container" class="container colored-container" tal:condition="subpage.button_set.is_optimize" style="display: none;">
-            <button id="close-optimization-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <div class="row">
-                <div class="col-md-12">
-                    <a id="request-lock" href="#" class="btn btn-warning btn-sm" i18n:translate="request_lock" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id; data-lock_sec lock_time" style="margin-bottom: 1.0em; display: none;">Request lock</a>
-                    <strong id="request-not-lock-text" class="text-danger" style="padding-left: 1em; display: none;">Data is not locked anymore, please request a new lock for your edits.</strong>
-                    <p class="lead" id="request-lock-text">
-                        <span i18n:translate="argument_is_locked">This argument is locked for your edit. You have </span>
-                        <span id="countdown_timer_min"></span><span id="countdown_timer_point">:</span><span id="countdown_timer_sec"></span> <span i18n:translate="minutes">minutes</span>.
-                        <span class="lead" i18n:translate="please_make_your_edits">Please make your edits in grammar and/or spelling here:</span>
-                    </p>
+            <div id="optimization-container" class="container colored-container" tal:condition="subpage.button_set.is_optimize" style="display: none;">
+                <button id="close-optimization-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="row">
+                    <div class="col-md-12">
+                        <a id="request-lock" href="#" class="btn btn-warning btn-sm" i18n:translate="request_lock" tal:attributes="data-id subpage.elements.reviewed_element.stats.id; data-lock_sec lock_time" style="margin-bottom: 1.0em; display: none;">Request lock</a>
+                        <strong id="request-not-lock-text" class="text-danger" style="padding-left: 1em; display: none;">Data is not locked anymore, please request a new lock for your edits.</strong>
+                        <p class="lead" id="request-lock-text">
+                            <span i18n:translate="argument_is_locked">This argument is locked for your edit. You have </span>
+                            <span id="countdown_timer_min"></span><span id="countdown_timer_point">:</span><span id="countdown_timer_sec"></span> <span i18n:translate="minutes">minutes</span>.
+                            <span class="lead" i18n:translate="please_make_your_edits">Please make your edits in grammar and/or spelling here:</span>
+                        </p>
 
-                    <table class="table table-condensed" id="argument-part-table">
-                        <thead>
-                            <tr class="success">
-                                <th i18n:translate="original">Original</th>
-                                <th i18n:translate="your correcture">Your correcture</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr tal:repeat="part subpage.elements.reviewed_argument.parts">
-                                <td style="width: 50%">${part.text}</td>
-                                <td style="width: 50%">
-                                    <input type="text" class="form-control" autocomplete="off" tal:attributes="placeholder part.text; data-statement part.statement_uid; data-argument part.argument_uid; data-type part.type">
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        <table class="table table-condensed" id="argument-part-table">
+                            <thead>
+                                <tr class="success">
+                                    <th i18n:translate="original">Original</th>
+                                    <th i18n:translate="your correcture">Your correcture</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr tal:repeat="part subpage.elements.reviewed_element.parts">
+                                    <td style="width: 50%">${part.text}</td>
+                                    <td style="width: 50%">
+                                        <input type="text" class="form-control" autocomplete="off" tal:attributes="placeholder part.text; data-statement part.statement_uid; data-argument part.argument_uid; data-type part.type">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
+                    </div>
                 </div>
+                <a id="send_edit" href="#" class="btn btn-success pull-right disabled" i18n:translate="send" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Send</a>
             </div>
-            <a id="send_edit" href="#" class="btn btn-success pull-right disabled" i18n:translate="send" tal:attributes="data-id subpage.elements.reviewed_argument.stats.id">Send</a>
-        </div>
         </div>
 
 	</tal:block>
