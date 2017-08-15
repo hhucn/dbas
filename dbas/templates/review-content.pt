@@ -68,23 +68,20 @@
 
                 <div class="row" id="more_about_reason_content" style="display:none; margin-bottom: 1em;">
                     <div class="col-md-7">
-                        <blockquote tal:condition="not:(subpage.button_set.is_edit or subpage.button_set.is_duplicate)">
+                        <blockquote tal:condition="not:(subpage.button_set.is_edit or subpage.button_set.is_duplicate or subpage.button_set.is_merge or subpage.button_set.is_split)">
                             <div style="padding-left: 0.5em">
                                 <span i18n:translate="information_for_the_different_reasons">Information for the different reasons</span>
                                 <ul style="padding-left: 0.5em">
                                     <li><strong i18n:translate="off_topic_or_irrelevant">Off topic or irrelevant</strong> <span i18n:translate="off_topic_explanation">text does not belong to the topic under discussion</span>.</li>
                                     <li><strong i18n:translate="inappropriate_harmful_abbusive">Inappropriate, harmful or abusive</strong> <span i18n:translate="inappropriate_harmful_abbusive_explanation">are posts, which are inappropriate, harmful or abbusive</span>.</li>
                                     <li><strong i18n:translate="needs_optimization">Needs optimization</strong> <span i18n:translate="needs_optimization_explanation">if posts are useful, but need edits in grammar and/or spelling</span>.</li>
-                                    <!--<li><strong i18n:translate="spam">Spam</strong> <span i18n:translate="spam_explanation">is neither useful nor mapped to a discussions topic</span>.</li>-->
                                 </ul>
                             </div>
                         </blockquote>
                     </div>
                     <div class="col-md-5">
                         <blockquote class="blockquote-reverse" style="text-align: left;">
-                            <div>
-                                <span i18n:translate="information_for_the_different_buttons">Information for the different buttons</span>
-                            </div>
+                            <p class="lead" i18n:translate="information_for_the_different_buttons">Information for the different buttons</p>
                             <ul tal:condition="subpage.button_set.is_delete">
                                 <li><span class="text-success" i18n:translate="its_okay">It's Okay</span> <span i18n:translate="its_okay_explanation">for arguments, which should not be deleted.</span></li>
                                 <li><span class="text-danger" i18n:translate="delete_it">Delete it</span> <span i18n:translate="delete_it_explanation">for arguments, that should be deleted based on the reason above.</span></li>
@@ -106,10 +103,14 @@
                                 <li><span class="text-info" i18n:translate="skip_it">Skip it</span> <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next statement.</span></li>
                             </ul>
                             <ul tal:condition="subpage.button_set.is_split" style="padding-left: 0.5em">
-                                split
+                                <li><span class="text-success" i18n:translate="split_it">Split it</span> <span i18n:translate="marked_statement_to_slit">, if the selected statement is a set of than one statement and the given proposals match to the original content.</span></li>
+                                <li><span class="text-danger" i18n:translate="reject_it">Reject it</span> <span i18n:translate="statement_not_to_split">for marked statements, which are unique.</span></li>
+                                <li><span class="text-info" i18n:translate="skip_it">Skip it</span> <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next statement.</span></li>
                             </ul>
                             <ul tal:condition="subpage.button_set.is_merge" style="padding-left: 0.5em">
-                                merge
+                                <li><span class="text-success" i18n:translate="merge_it">Merge it</span> <span i18n:translate="marked_statement_to_merge">, if the selected statements should be one, single statements and the given proposal matches to the original contents.</span></li>
+                                <li><span class="text-danger" i18n:translate="reject_it">Reject it</span> <span i18n:translate="statement_not_to_merge">for marked statements, which are unique.</span></li>
+                                <li><span class="text-info" i18n:translate="skip_it">Skip it</span> <span i18n:translate="skip_it_explanation">if you are not sure and want to go to the next statement.</span></li>
                             </ul>
                         </blockquote>
                     </div>
