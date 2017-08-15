@@ -54,7 +54,7 @@ from dbas.strings.translator import Translator
 from webhook.lib import get_port
 
 name = 'D-BAS'
-version = '1.4.2'
+version = '1.4.3'
 full_version = version
 project_name = name + ' ' + full_version
 
@@ -1958,7 +1958,6 @@ def split_or_merge_statement(request):
         nickname = request.authenticated_userid
 
         prepared_dict = review.mergesplit(uid, key, dates, nickname, ui_locales)
-        prepared_dict['error'] = 'TODO'
 
     except KeyError as e:
         _t = Translator(ui_locales)

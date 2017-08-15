@@ -1356,6 +1356,164 @@ class ReviewDuplicate(DiscussionBase):
         self.timestamp = get_now()
 
 
+class ReviewMerge(DiscussionBase):
+    """
+    Review-table with several columns.
+    """
+    __tablename__ = 'review_merge'
+    uid = Column(Integer, primary_key=True)
+    detector_uid = Column(Integer, ForeignKey('users.uid'))
+    premisesgroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    timestamp = Column(ArrowType, default=get_now())
+    is_executed = Column(Boolean, nullable=False, default=False)
+    is_revoked = Column(Boolean, nullable=False, default=False)
+
+    detectors = relationship('User', foreign_keys=[detector_uid])
+    premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
+
+    def __init__(self, detector, premisegroup, is_executed=False, is_revoked=False):
+        """
+        Inits a row in current review merge table
+
+        :param detector: User.uid
+        :param premisegroup: PremiseGroup.uid
+        :param is_executed: Boolean
+        :param is_revoked: Boolean
+        """
+        self.detector_uid = detector
+        self.premisesgroup_uid = premisegroup
+        self.timestamp = get_now()
+        self.is_executed = is_executed
+        self.is_revoked = is_revoked
+
+    def set_executed(self, is_executed):
+        """
+        Sets current review as executed
+
+        :param is_executed: Boolean
+        :return: None
+        """
+        self.is_executed = is_executed
+
+    def set_revoked(self, is_revoked):
+        """
+        Sets current review as revoked
+
+        :param is_revoked: Boolean
+        :return: None
+        """
+        self.is_revoked = is_revoked
+
+    def update_timestamp(self):
+        """
+        Update timestamp
+
+        :return: None
+        """
+        self.timestamp = get_now()
+
+
+class ReviewSplit(DiscussionBase):
+    """
+    Review-table with several columns.
+    """
+    __tablename__ = 'review_split'
+    uid = Column(Integer, primary_key=True)
+    detector_uid = Column(Integer, ForeignKey('users.uid'))
+    premisesgroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    timestamp = Column(ArrowType, default=get_now())
+    is_executed = Column(Boolean, nullable=False, default=False)
+    is_revoked = Column(Boolean, nullable=False, default=False)
+
+    detectors = relationship('User', foreign_keys=[detector_uid])
+    premisegroups = relationship('PremiseGroup', foreign_keys=[premisesgroup_uid])
+
+    def __init__(self, detector, premisegroup, is_executed=False, is_revoked=False):
+        """
+        Inits a row in current review split table
+
+        :param detector: User.uid
+        :param premisegroup: PremiseGroup.uid
+        :param is_executed: Boolean
+        :param is_revoked: Boolean
+        """
+        self.detector_uid = detector
+        self.premisesgroup_uid = premisegroup
+        self.timestamp = get_now()
+        self.is_executed = is_executed
+        self.is_revoked = is_revoked
+
+    def set_executed(self, is_executed):
+        """
+        Sets current review as executed
+
+        :param is_executed: Boolean
+        :return: None
+        """
+        self.is_executed = is_executed
+
+    def set_revoked(self, is_revoked):
+        """
+        Sets current review as revoked
+
+        :param is_revoked: Boolean
+        :return: None
+        """
+        self.is_revoked = is_revoked
+
+    def update_timestamp(self):
+        """
+        Update timestamp
+
+        :return: None
+        """
+        self.timestamp = get_now()
+
+
+class ReviewSplitValues(DiscussionBase):
+    """
+    Review-table with several columns.
+    """
+    __tablename__ = 'review_split_values'
+    uid = Column(Integer, primary_key=True)
+    review_uid = Column(Integer, ForeignKey('review_split.uid'))
+    content = Column(Text, nullable=False)
+
+    reviews = relationship('ReviewSplit', foreign_keys=[review_uid])
+
+    def __init__(self, review, content):
+        """
+        Inits a row in current review merge value table
+
+        :param review: ReviewSplit.uid
+        :param content: String
+        """
+        self.review_uid = review
+        self.content = content
+
+
+class ReviewMergeValues(DiscussionBase):
+    """
+    Review-table with several columns.
+    """
+    __tablename__ = 'review_merge_values'
+    uid = Column(Integer, primary_key=True)
+    review_uid = Column(Integer, ForeignKey('review_merge.uid'))
+    content = Column(Text, nullable=False)
+
+    reviews = relationship('ReviewMerge', foreign_keys=[review_uid])
+
+    def __init__(self, review, content):
+        """
+        Inits a row in current review merge value table
+
+        :param review: ReviewMerge.uid
+        :param content: String
+        """
+        self.review_uid = review
+        self.content = content
+
+
 class ReviewDeleteReason(DiscussionBase):
     """
     ReviewDeleteReason-table with several columns.
@@ -1484,6 +1642,62 @@ class LastReviewerOptimization(DiscussionBase):
         self.timestamp = get_now()
 
 
+class LastReviewerSplit(DiscussionBase):
+    """
+    Inits a row in current last reviewer split table
+    """
+    __tablename__ = 'last_reviewers_split'
+    uid = Column(Integer, primary_key=True)
+    reviewer_uid = Column(Integer, ForeignKey('users.uid'))
+    review_uid = Column(Integer, ForeignKey('review_split.uid'))
+    is_okay = Column(Boolean, nullable=False, default=False)
+    timestamp = Column(ArrowType, default=get_now())
+
+    reviewer = relationship('User', foreign_keys=[reviewer_uid])
+    review = relationship('ReviewSplit', foreign_keys=[review_uid])
+
+    def __init__(self, reviewer, review, is_okay):
+        """
+        Inits a row in current last reviewer Split  table
+
+        :param reviewer: User.uid
+        :param review: ReviewSplit.uid
+        :param is_okay: boolean
+        """
+        self.reviewer_uid = reviewer
+        self.review_uid = review
+        self.is_okay = is_okay
+        self.timestamp = get_now()
+
+
+class LastReviewerMerge(DiscussionBase):
+    """
+    Inits a row in current last reviewer merge table
+    """
+    __tablename__ = 'last_reviewers_merge'
+    uid = Column(Integer, primary_key=True)
+    reviewer_uid = Column(Integer, ForeignKey('users.uid'))
+    review_uid = Column(Integer, ForeignKey('review_merge.uid'))
+    is_okay = Column(Boolean, nullable=False, default=False)
+    timestamp = Column(ArrowType, default=get_now())
+
+    reviewer = relationship('User', foreign_keys=[reviewer_uid])
+    review = relationship('ReviewMerge', foreign_keys=[review_uid])
+
+    def __init__(self, reviewer, review, is_okay):
+        """
+        Inits a row in current last reviewer merge  table
+
+        :param reviewer: User.uid
+        :param review: ReviewMerge.uid
+        :param is_okay: boolean
+        """
+        self.reviewer_uid = reviewer
+        self.review_uid = review
+        self.is_okay = is_okay
+        self.timestamp = get_now()
+
+
 class ReputationHistory(DiscussionBase):
     """
     ReputationHistory-table with several columns.
@@ -1564,6 +1778,8 @@ class ReviewCanceled(DiscussionBase):
     review_delete_uid = Column(Integer, ForeignKey('review_deletes.uid'), nullable=True)
     review_optimization_uid = Column(Integer, ForeignKey('review_optimizations.uid'), nullable=True)
     review_duplicate_uid = Column(Integer, ForeignKey('review_duplicates.uid'), nullable=True)
+    review_merge_uid = Column(Integer, ForeignKey('review_merge.uid'), nullable=True)
+    review_split_uid = Column(Integer, ForeignKey('review_split.uid'), nullable=True)
     was_ongoing = Column(Boolean)
     timestamp = Column(ArrowType, default=get_now())
 
@@ -1572,8 +1788,17 @@ class ReviewCanceled(DiscussionBase):
     deletes = relationship('ReviewDelete', foreign_keys=[review_delete_uid])
     optimizations = relationship('ReviewOptimization', foreign_keys=[review_optimization_uid])
     duplicates = relationship('ReviewDuplicate', foreign_keys=[review_duplicate_uid])
+    merges = relationship('ReviewMerge', foreign_keys=[review_merge_uid])
+    plits = relationship('ReviewSplit', foreign_keys=[review_split_uid])
 
-    def __init__(self, author, review_edit=None, review_delete=None, review_optimization=None, review_duplicate=None, was_ongoing=False):
+    def __init__(self, author,
+                 review_edit=None,
+                 review_delete=None,
+                 review_optimization=None,
+                 review_duplicate=None,
+                 review_merge=None,
+                 review_split=None,
+                 was_ongoing=False):
         """
         Inits a row in current review locks table
 
@@ -1589,6 +1814,8 @@ class ReviewCanceled(DiscussionBase):
         self.review_delete_uid = review_delete
         self.review_optimization_uid = review_optimization
         self.review_duplicate_uid = review_duplicate
+        self.review_merge_uid = review_merge
+        self.review_split_uid = review_split
         self.was_ongoing = was_ongoing
         self.timestamp = get_now()
 
@@ -1689,6 +1916,68 @@ class RevokedDuplicate(DiscussionBase):
         self.argument_uid = conclusion_of_argument
         self.premise_uid = premise
         self.timestamp = get_now()
+
+
+class StatementSplitted(DiscussionBase):
+    """
+    StatementsSplitted-table with several columns.
+    """
+    __tablename__ = 'statements_splitted'
+    uid = Column(Integer, primary_key=True)
+    review_uid = Column(Integer, ForeignKey('review_split.uid'))
+    new_statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    timestamp = Column(ArrowType, default=get_now())
+
+    reviews = relationship('ReviewSplit', foreign_keys=[review_uid])
+    new_statements = relationship('Statement', foreign_keys=[new_statement_uid])
+
+    def __init__(self, review, new_statement):
+        """
+        Inits a row in current statement splitted table
+
+        :param review: ReviewDuplicate.uid
+        :param new_statement: Statement.uid
+        """
+        self.review_uid = review
+        self.new_statement_uid = new_statement
+        self.timestamp = get_now()
+
+
+class StatementMerged(DiscussionBase):
+    """
+    Table with several columns to indicate which statement should be merged to a new one
+    """
+    __tablename__ = 'statements_merged'
+    uid = Column(Integer, primary_key=True)
+    review_uid = Column(Integer, ForeignKey('review_merge.uid'))
+    statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    new_statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=True)
+    timestamp = Column(ArrowType, default=get_now())
+
+    reviews = relationship('ReviewMerge', foreign_keys=[review_uid])
+    statements = relationship('Statement', foreign_keys=[statement_uid])
+    new_statements = relationship('Statement', foreign_keys=[new_statement_uid])
+
+    def __init__(self, review, statement, new_statement=None):
+        """
+        Inits a row in current statement merged table
+
+        :param review: ReviewDuplicate.uid
+        :param statement: Statement.uid
+        """
+        self.review_uid = review
+        self.statement_uid = statement
+        self.new_statement_uid = new_statement
+        self.timestamp = get_now()
+
+    def set_new_statement(self, new_statement):
+        """
+        Sets the uid of the new created statement
+
+        :param new_statement: Statement.uid
+        :return: None
+        """
+        self.new_statement_uid = new_statement
 
 
 class RSS(DiscussionBase):
