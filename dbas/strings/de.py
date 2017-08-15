@@ -113,7 +113,8 @@ de_lang = {
     _.argumentFlaggedBecauseOptimization: 'Dieses Argument wurde von einer/m Benutzer/in gemeldet, da es möglicherweise <strong>sprachlicher Korrektur</strong> bedarf.',
     _.argumentFlaggedBecauseEdit: 'Dieses Argument wurde von einer/m Benutzer/in sprachlich verbessert.',
     _.argumentFlaggedBecauseDuplicate: 'Dieses Argument wurde von einer/m Benutzer/in als Duplikat markiert.',
-
+    _.argumentFlaggedBecauseSplit: 'Diese Aussage wurde von einer/m Benutzer/in markiert, da diese getrennt werden soll.',
+    _.argumentFlaggedBecauseMerge: 'Diese Aussagen wurden von einer/m Benutzer/in markiert, da diese zusammengefügt werden sollen.',
     _.argument_optimization_description: 'Das Argument ist richtig, sollte aber sprachlich/grammatikalisch verbessert werden.',
     _.argument_offtopic_or_irrelevant_description: 'Die Bedeutung des Arguments ist nicht themenbezogen oder Spam.',
     _.argument_statement_harmful_description: 'Bestimmte Personen würden diesen Inhalt nicht passend für eine respektvolle Diskussion halten.',

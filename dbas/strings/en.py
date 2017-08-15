@@ -115,6 +115,8 @@ en_lang = {
     _.argumentFlaggedBecauseOptimization: 'This argument was reported by a participant, because it probably <strong>needs optimization</strong>.',
     _.argumentFlaggedBecauseEdit: 'This argument was improved from a grammatical point of view.',
     _.argumentFlaggedBecauseDuplicate: 'This statement was flagged, because maybe it is a duplicate.',
+    _.argumentFlaggedBecauseSplit: 'This statement was flagged, because it should be splitted',
+    _.argumentFlaggedBecauseMerge: 'This statements were flagged, because they should be joined together.',
     _.argument_optimization_description: 'This argument is acceptable but it needs correction for spelling/grammar.',
     _.argument_offtopic_or_irrelevant_description: 'This argument does not belong to the topic under discussion.',
     _.argument_statement_harmful_description: 'A reasonable person would find this content inappropriate for respectful discourse.',
