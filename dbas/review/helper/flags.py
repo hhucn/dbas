@@ -10,7 +10,7 @@ from sqlalchemy import and_
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
-    Statement, User, ReviewDuplicate
+    Statement, User, ReviewDuplicate, ReviewSplit, ReviewMerge, ReviewMergeValues, ReviewSplitValues
 from dbas.strings.keywords import Keywords as _
 
 
@@ -45,66 +45,92 @@ def flag_element(uid, reason, nickname, is_argument, extra_uid=None):
     statement_uid = uid if not is_argument else None
 
     # was this already flagged?
-    flag_status = __get_flag_status(argument_uid, statement_uid, db_user.uid)
+    flag_status = __get_flag_status(argument_uid, statement_uid, None, db_user.uid)
     if flag_status:
         logger('FlagingHelper', 'flag_element', 'already flagged')
         # who flagged this argument?
         return '', _.alreadyFlaggedByYou if flag_status == 'user' else _.alreadyFlaggedByOthers, ''
 
     # add flag
+    if db_reason:
+        # flagged for the first time
+        __add_delete_review(argument_uid, statement_uid, db_user.uid, db_reason.uid)
+
+    # and another reason for optimization
+    elif reason == 'optimization':
+        # flagged for the first time
+        __add_optimization_review(argument_uid, statement_uid, db_user.uid)
+
+    # and another reason for duplicates
+    elif reason == 'duplicate':
+        # flagged for the first time
+        if statement_uid == extra_uid:
+            logger('FlagingHelper', 'flag_element', 'uid error', error=True)
+            return '', '', _.internalKeyError
+        __add_duplication_review(statement_uid, extra_uid, db_user.uid)
+
+    return _.thxForFlagText, '', ''
+
+
+def flag_pgroup_for_mergesplit(key, pgroup_uid, dates, nickname):
+    """
+    Flags an premisegroup for a merge or split event
+
+    :param key: either 'split' or 'merge'
+    :param pgroup_uid: ID of the selected PremiseGroup
+    :param dates: text values
+    :param nickname: Users nickname
+    :return: success, info, error
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
+        logger('FlagingHelper', 'flag_element', 'No user', error=True)
+        return '', '', _.noRights
+
+    # was this already flagged?
+    flag_status = __get_flag_status(None, None, pgroup_uid, db_user.uid)
+    if flag_status:
+        logger('FlagingHelper', 'flag_element', 'already flagged')
+        # who flagged this pgroup?
+        return '', _.alreadyFlaggedByYou if flag_status == 'user' else _.alreadyFlaggedByOthers, ''
+
+    if key is 'merge':
+        __add_merge_review(pgroup_uid, dates, db_user.uid)
+    elif key is 'split':
+        __add_split_review(pgroup_uid, dates, db_user.uid)
     else:
-        if db_reason:
-            # flagged for the first time
-            __add_delete_review(argument_uid, statement_uid, db_user.uid, db_reason.uid)
-
-        # and another reason for optimization
-        elif reason == 'optimization':
-            # flagged for the first time
-            __add_optimization_review(argument_uid, statement_uid, db_user.uid)
-
-        # and another reason for duplicates
-        elif reason == 'duplicate':
-            # flagged for the first time
-            if statement_uid == extra_uid:
-                logger('FlagingHelper', 'flag_element', 'uid error', error=True)
-                return '', '', _.internalKeyError
-            __add_duplication_review(statement_uid, extra_uid, db_user.uid)
-
-        return _.thxForFlagText, '', ''
-
-
-def merge_statement(uid, dates, nickname, ui_locales):
         return '', '', _.internalKeyError
 
-
-def split_statement(uid, dates, nickname, ui_locales):
-        return '', '', _.internalKeyError
+    return _.thxForFlagText, '', ''
 
 
-def __get_flag_status(argument_uid, statement_uid, user_uid):
+def __get_flag_status(argument_uid, statement_uid, pgroup_uid, user_uid):
     """
     Gets the status for a flag in of given argument/statement
 
     :param argument_uid: The uid of the argument to check.
     :param statement_uid: The uid of the statement to check
+    :param statement_uid: The uid of the premisegroup to check
     :param user_uid: The uid of the user which may have flagged the argument/statement
     :return: 'user' if the user flagged the argument/statement, 'other' if someone else did, None if unflagged.
     """
-    ret_val = None
-
     if any((__is_argument_flagged_for_delete_by_user(argument_uid, statement_uid, user_uid),
             __is_argument_flagged_for_optimization_by_user(argument_uid, statement_uid, user_uid),
-            __is_argument_flagged_for_duplication_by_user(statement_uid, user_uid))):
+            __is_argument_flagged_for_duplication_by_user(statement_uid, user_uid),
+            __is_argument_flagged_for_merge_by_user(pgroup_uid, user_uid),
+            __is_argument_flagged_for_split_by_user(pgroup_uid, user_uid))):
         logger('FlagingHelper', '__get_flag_status', 'Already flagged by the user')
         return 'user'
 
     if any((__is_argument_flagged_for_delete(argument_uid, statement_uid),
             __is_argument_flagged_for_optimization(argument_uid, statement_uid),
-            __is_argument_flagged_for_duplication(statement_uid))):
+            __is_argument_flagged_for_duplication(statement_uid),
+            __is_argument_flagged_for_merge(pgroup_uid),
+            __is_argument_flagged_for_split(pgroup_uid))):
         logger('FlagingHelper', '__get_flag_status', 'Already flagged by others')
         return 'other'
 
-    return ret_val
+    return None
 
 
 def __is_argument_flagged_for_delete(argument_uid, statement_uid, is_executed=False, is_revoked=False):
@@ -207,10 +233,78 @@ def __is_argument_flagged_for_duplication_by_user(statement_uid, user_uid, is_ex
     :param user_uid: User.uid
     :param is_executed:
     :param is_revoked:
-    :return:
+    :return: Boolean
     """
     db_review = DBDiscussionSession.query(ReviewDuplicate).filter(
         and_(ReviewDuplicate.duplicate_statement_uid == statement_uid,
+             ReviewDuplicate.is_executed == is_executed,
+             ReviewDuplicate.detector_uid == user_uid,
+             ReviewDuplicate.is_revoked == is_revoked)).all()
+    return len(db_review) > 0
+
+
+def __is_argument_flagged_for_merge(pgroup_uid, is_executed=False, is_revoked=False):
+    """
+    Check, if the premisegroup is marked for a merge event by any user
+
+    :param pgroup_uid: PremiseGroup.uid
+    :param is_executed: Boolean
+    :param is_revoked: Boolean
+    :return: Boolean
+    """
+    db_review = DBDiscussionSession.query(ReviewMerge).filter(
+        and_(ReviewDuplicate.duplicate_statement_uid == pgroup_uid,
+             ReviewDuplicate.is_executed == is_executed,
+             ReviewDuplicate.is_revoked == is_revoked)).all()
+    return len(db_review) > 0
+
+
+def __is_argument_flagged_for_merge_by_user(pgroup_uid, user_uid, is_executed=False, is_revoked=False):
+    """
+    Check, if the premisegroup is marked for a merge event by current user
+
+    :param pgroup_uid: PremiseGroup.uid
+    :param user_uid: User.uid
+    :param is_executed:
+    :param is_revoked:
+    :return: Boolean
+    """
+    db_review = DBDiscussionSession.query(ReviewMerge).filter(
+        and_(ReviewDuplicate.duplicate_statement_uid == pgroup_uid,
+             ReviewDuplicate.is_executed == is_executed,
+             ReviewDuplicate.detector_uid == user_uid,
+             ReviewDuplicate.is_revoked == is_revoked)).all()
+    return len(db_review) > 0
+
+
+def __is_argument_flagged_for_split(pgroup_uid, is_executed=False, is_revoked=False):
+    """
+    Check, if the premisegroup is marked for a split event by any user
+
+    :param pgroup_uid: PremiseGroup.uid
+    :param is_executed: Boolean
+    :param is_revoked: Boolean
+    :return: Boolean
+    """
+    db_review = DBDiscussionSession.query(ReviewSplit).filter(
+        and_(ReviewDuplicate.duplicate_statement_uid == pgroup_uid,
+             ReviewDuplicate.is_executed == is_executed,
+             ReviewDuplicate.is_revoked == is_revoked)).all()
+    return len(db_review) > 0
+
+
+def __is_argument_flagged_for_split_by_user(pgroup_uid, user_uid, is_executed=False, is_revoked=False):
+    """
+    Check, if the premisegroup is marked for a split event by current user
+
+    :param pgroup_uid: PremiseGroup.uid
+    :param user_uid: User.uid
+    :param is_executed:
+    :param is_revoked:
+    :return: Boolean
+    """
+    db_review = DBDiscussionSession.query(ReviewSplit).filter(
+        and_(ReviewDuplicate.duplicate_statement_uid == pgroup_uid,
              ReviewDuplicate.is_executed == is_executed,
              ReviewDuplicate.detector_uid == user_uid,
              ReviewDuplicate.is_revoked == is_revoked)).all()
@@ -262,5 +356,43 @@ def __add_duplication_review(duplicate_statement_uid, original_statement_uid, us
     logger('FlagingHelper', 'flag_element', 'Flag statement {} by user {} as duplicate of'.format(duplicate_statement_uid, user_uid, original_statement_uid))
     review_duplication = ReviewDuplicate(detector=user_uid, duplicate_statement=duplicate_statement_uid, original_statement=original_statement_uid)
     DBDiscussionSession.add(review_duplication)
+    DBDiscussionSession.flush()
+    transaction.commit()
+
+
+def __add_split_review(pgroup_uid, dates, user_uid):
+    """
+    Adds a row in the ReviewSplit table as well as the values
+
+    :param pgroup_uid: ID of the selected PremiseGroup
+    :param dates: text values
+    :param user_uid: ID of the user
+    :return: None
+    """
+    logger('FlagingHelper', 'flag_element', 'Flag pgroup {} by user {} for splitting'.format(pgroup_uid, user_uid))
+    review_split = ReviewSplit(detector=user_uid, premisegroup=pgroup_uid)
+    DBDiscussionSession.add(review_split)
+    DBDiscussionSession.flush()
+
+    DBDiscussionSession.add_all([ReviewSplitValues(review=review_split.uid, content=date) for date in dates])
+    DBDiscussionSession.flush()
+    transaction.commit()
+
+
+def __add_merge_review(pgroup_uid, dates, user_uid):
+    """
+    Adds a row in the ReviewMerge table as well as the values
+
+    :param pgroup_uid: ID of the selected PremiseGroup
+    :param dates: text values
+    :param user_uid: ID of the user
+    :return: None
+    """
+    logger('FlagingHelper', 'flag_element', 'Flag pgroup {} by user {} for merging'.format(pgroup_uid, user_uid))
+    review_merge = ReviewMerge(detector=user_uid, premisegroup=pgroup_uid)
+    DBDiscussionSession.add(review_merge)
+    DBDiscussionSession.flush()
+
+    DBDiscussionSession.add_all([ReviewMergeValues(review=review_merge.uid, content=date) for date in dates])
     DBDiscussionSession.flush()
     transaction.commit()

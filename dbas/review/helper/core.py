@@ -35,19 +35,20 @@ def flag(uid, reason, extra_uid, is_argument, nickname, ui_locales) -> dict:
         return {'error': _t.get(_.internalError), 'info': '', 'success': ''}
     else:
         success, info, error = review_flag_helper.flag_element(uid, reason, nickname, is_argument, extra_uid)
-        prepared_dict = {}
-        prepared_dict['success'] = '' if isinstance(success, str) else _t.get(success)
-        prepared_dict['info'] = '' if isinstance(info, str) else _t.get(info)
-        prepared_dict['error'] = '' if isinstance(error, str) else _t.get(error)
+        prepared_dict = {
+            'success': '' if isinstance(success, str) else _t.get(success),
+            'info': '' if isinstance(info, str) else _t.get(info),
+            'error': '' if isinstance(error, str) else _t.get(error)
+        }
 
     return prepared_dict
 
 
-def mergesplit(uid, key, dates, nickname, ui_locales) -> dict:
+def mergesplit(pgroup_uid, key, dates, nickname, ui_locales) -> dict:
     """
     Adds review for splitting/merging a statement
 
-    :param uid: ID of the selected PremiseGroup
+    :param pgroup_uid: ID of the selected PremiseGroup
     :param key: 'split' or 'merge'
     :param dates: text values
     :param nickname: the user's nickname creating the request
@@ -56,20 +57,20 @@ def mergesplit(uid, key, dates, nickname, ui_locales) -> dict:
     :return: collection with success, info and error key
     :return:
     """
-    logger('additives', 'merge_or_split_statement', 'uid {}'.format(uid))
+    logger('additives', 'merge_or_split_statement', 'pgroup_uid {}'.format(pgroup_uid))
     _t = Translator(ui_locales)
 
-    if key is 'merge':
-        success, info, error = review_flag_helper.merge_statements(uid, dates, nickname, ui_locales)
-    elif key is 'split':
-        success, info, error = review_flag_helper.split_statement(uid, dates, nickname, ui_locales)
+    if key in ['merge', 'split']:
+        success, info, error = review_flag_helper.flag_pgroup_for_mergesplit(key, pgroup_uid, dates, nickname)
     else:
         raise KeyError
 
-    prepared_dict = {}
-    prepared_dict['success'] = '' if isinstance(success, str) else _t.get(success)
-    prepared_dict['info'] = '' if isinstance(info, str) else _t.get(info)
-    prepared_dict['error'] = '' if isinstance(error, str) else _t.get(error)
+    prepared_dict = {
+        'success': '' if isinstance(success, str) else _t.get(success),
+        'info': '' if isinstance(info, str) else _t.get(info),
+        'error': '' if isinstance(error, str) else _t.get(error)
+    }
+
     return prepared_dict
 
 
