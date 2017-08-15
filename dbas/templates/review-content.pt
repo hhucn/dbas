@@ -175,7 +175,9 @@
                         <div class="well well-sm center" style="text-align: justify;" tal:condition="subpage.button_set.is_split">
                             <span i18n:translate="this_statement_should_be_splitted">This statement should be splitted into:</span>
                             <ul>
-                                <li tal:repeat="text subpage.elements.reviewed_element.splitted_text">${text}</li>
+                                <li tal:repeat="text subpage.elements.reviewed_element.splitted_text">
+                                    <span class="lead">${text}</span>
+                                </li>
                             </ul>
                         </div>
 
