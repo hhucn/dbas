@@ -386,18 +386,18 @@ def __get_subpage_dict_for_duplicates(request, db_user, translator, main_page):
     extra_info = ''
     # if we have no reviews, try again with fewer restrictions
     if not db_reviews:
-        logger('ReviewSubpagerHelper', '__get_subpage_dict_for_duplicates', '1')
+        logger('ReviewSubpagerHelper', '__get_subpage_dict_for_duplicates', 'no unseen reviews')
         already_seen = list()
         extra_info = 'already_seen' if not first_time else ''
         db_reviews = DBDiscussionSession.query(ReviewDuplicate).filter(and_(ReviewDuplicate.is_executed == False,
                                                                             ReviewDuplicate.detector_uid != db_user.uid))
         if len(already_reviewed) > 0:
-            logger('ReviewSubpagerHelper', '__get_subpage_dict_for_duplicates', '2')
+            logger('ReviewSubpagerHelper', '__get_subpage_dict_for_duplicates', 'everything was seen')
             db_reviews = db_reviews.filter(~ReviewDuplicate.uid.in_(already_reviewed))
         db_reviews = db_reviews.all()
 
     if not db_reviews:
-        logger('ReviewSubpagerHelper', '__get_subpage_dict_for_duplicates', '3')
+        logger('ReviewSubpagerHelper', '__get_subpage_dict_for_duplicates', 'no reviews')
         return {'stats': None,
                 'text': None,
                 'reason': None,
@@ -424,6 +424,7 @@ def __get_subpage_dict_for_duplicates(request, db_user, translator, main_page):
             'issue': issue,
             'extra_info': extra_info}
 
+
 def __get_subpage_dict_for_splits(request, db_user, translator, main_page):
     logger('ReviewSubpagerHelper', '__get_subpage_dict_for_splits', 'main')
     db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request,
@@ -435,18 +436,18 @@ def __get_subpage_dict_for_splits(request, db_user, translator, main_page):
     extra_info = ''
     # if we have no reviews, try again with fewer restrictions
     if not db_reviews:
-        logger('ReviewSubpagerHelper', '__get_subpage_dict_for_splits', '1')
+        logger('ReviewSubpagerHelper', '__get_subpage_dict_for_splits', 'no unseen reviews')
         already_seen = list()
         extra_info = 'already_seen' if not first_time else ''
         db_reviews = DBDiscussionSession.query(ReviewSplit).filter(and_(ReviewSplit.is_executed == False,
                                                                         ReviewSplit.detector_uid != db_user.uid))
         if len(already_reviewed) > 0:
-            logger('ReviewSubpagerHelper', '__get_subpage_dict_for_splits', '2')
+            logger('ReviewSubpagerHelper', '__get_subpage_dict_for_splits', 'everything was seen')
             db_reviews = db_reviews.filter(~ReviewSplit.uid.in_(already_reviewed))
         db_reviews = db_reviews.all()
 
     if not db_reviews:
-        logger('ReviewSubpagerHelper', '__get_subpage_dict_for_splits', '3')
+        logger('ReviewSubpagerHelper', '__get_subpage_dict_for_splits', 'no reviews')
         return {
             'stats': None,
             'text': None,
@@ -488,18 +489,18 @@ def __get_subpage_dict_for_merges(request, db_user, translator, main_page):
     extra_info = ''
     # if we have no reviews, try again with fewer restrictions
     if not db_reviews:
-        logger('ReviewSubpagerHelper', '__get_subpage_dict_for_merges', '1')
+        logger('ReviewSubpagerHelper', '__get_subpage_dict_for_merges', 'no unseen reviews')
         already_seen = list()
         extra_info = 'already_seen' if not first_time else ''
         db_reviews = DBDiscussionSession.query(ReviewMerge).filter(and_(ReviewMerge.is_executed == False,
                                                                         ReviewMerge.detector_uid != db_user.uid))
         if len(already_reviewed) > 0:
-            logger('ReviewSubpagerHelper', '__get_subpage_dict_for_merges', '2')
+            logger('ReviewSubpagerHelper', '__get_subpage_dict_for_merges', 'everything was seen')
             db_reviews = db_reviews.filter(~ReviewMerge.uid.in_(already_reviewed))
         db_reviews = db_reviews.all()
 
     if not db_reviews:
-        logger('ReviewSubpagerHelper', '__get_subpage_dict_for_merges', '3')
+        logger('ReviewSubpagerHelper', '__get_subpage_dict_for_merges', 'no reviews')
         return {
             'stats': None,
             'text': None,
@@ -510,7 +511,7 @@ def __get_subpage_dict_for_merges(request, db_user, translator, main_page):
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
     premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=rnd_review.premisesgroup_uid).all()
-    text, tmp = get_text_for_premisesgroup_uid(rnd_review.premisesgroup_uid)
+    text = [get_text_for_statement_uid(p.statement_uid) for p in premises]
     merged_text = DBDiscussionSession.query(ReviewMergeValues).get(rnd_review.uid).content
     issue = DBDiscussionSession.query(Issue).get(premises[0].issue_uid).title
     reason = translator.get(_.argumentFlaggedBecauseMerge)
@@ -636,11 +637,12 @@ def __get_part_dict(typeof, text, argument_uid, conclusion_uid):
     :param typeof: String
     :param text: String
     :param argument_uid: Argument.uid
-    :param uid: Statement.uid
     :return: dict()
     """
     logger('ReviewSubpageHelper', '__get_part_dict', 'type: ' + str(typeof) + ', text: ' + str(text) + ', arg: ' + str(argument_uid) + ', uid: ' + str(conclusion_uid))
-    return {'type': typeof,
-            'text': text,
-            'argument_uid': argument_uid,
-            'statement_uid': conclusion_uid}
+    return {
+        'type': typeof,
+        'text': text,
+        'argument_uid': argument_uid,
+        'statement_uid': conclusion_uid
+    }

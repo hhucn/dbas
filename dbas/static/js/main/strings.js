@@ -769,7 +769,7 @@ var dbas_de = {
     'switchDiscussionText': 'Wollen Sie wirklich die aktuelle Diskussion verlassen und zur Diskussion über <strong>XXX</strong> wechseln?',
     'support': 'Unterstützung',
     'surname': 'Nachname',
-    'sureToDeleteReview': 'Sind Sie sicher, dass sie diese Entscheidung rückgangig machen möchten? Dieser Schritt kann nicht rückgangig gemacht werden!',
+    'sureToDeleteReview': 'Sind Sie sicher, dass Sie diese Entscheidung rückgangig machen möchten? Dieser Schritt kann nicht rückgangig gemacht werden!',
     'showMeAnArgumentFor': 'Zeig\' mir ein Argument für',
     'text': 'Text',
     'to': 'An',

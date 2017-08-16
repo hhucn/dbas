@@ -10,7 +10,7 @@ from sqlalchemy import and_
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, Argument, Premise, Statement, \
     LastReviewerOptimization, ReviewOptimization, ReviewEdit, ReviewEditValue, LastReviewerEdit, LastReviewerDuplicate,\
-    ReviewDuplicate, RevokedDuplicate
+    ReviewDuplicate, RevokedDuplicate, LastReviewerSplit, LastReviewerMerge
 from dbas.handler.statements import correct_statement
 from dbas.lib import get_all_arguments_by_statement
 from dbas.logger import logger
@@ -42,6 +42,10 @@ def __add_vote_for(user, review, is_okay, review_type):
         msg = 'LastReviewerOptimization'
     if review_type == LastReviewerDuplicate:
         msg = 'LastReviewerDuplicate'
+    if review_type == LastReviewerSplit:
+        msg = 'LastReviewerSplit'
+    if review_type == LastReviewerMerge:
+        msg = 'LastReviewerMerge'
 
     logger('review_main_helper', '__add_vote_for', '{}, user {}'.format(msg, user.uid))
     already_voted = DBDiscussionSession.query(review_type).filter(and_(review_type.reviewer_uid == user.uid,
@@ -331,6 +335,7 @@ def add_review_opinion_for_split(request, review_uid, _t):
     logger('review_main_helper', 'add_review_opinion_for_split', 'main ' + str(review_uid))
     nickname = request.authenticated_userid
     application_url = request.application_url
+    logger('review_main_helper', 'add_review_opinion_for_split', 'TODO {} {}'.format(nickname, application_url))
     return ''
 
 
@@ -346,6 +351,7 @@ def add_review_opinion_for_merge(request, review_uid, _t):
     logger('review_main_helper', 'add_review_opinion_for_merge', 'main ' + str(review_uid))
     nickname = request.authenticated_userid
     application_url = request.application_url
+    logger('review_main_helper', 'add_review_opinion_for_merge', 'TODO {} {}'.format(nickname, application_url))
     return ''
 
 
