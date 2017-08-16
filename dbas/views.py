@@ -1943,7 +1943,7 @@ def flag_argument_or_statement(request):
 @view_config(route_name='ajax_split_or_merge_statement', renderer='json')
 def split_or_merge_statement(request):
     """
-    Flags an argument or statement for a specific reason
+    Flags a statement for a specific reason
 
     :param request: current request of the server
     :return: json-dict()
@@ -1952,16 +1952,47 @@ def split_or_merge_statement(request):
     ui_locales = get_discussion_language(request)
 
     try:
-        uid = request.params['uid']
-        key = request.params['key']
-        dates = request.params['dates']
         nickname = request.authenticated_userid
-
-        prepared_dict = review.mergesplit(uid, key, dates, nickname, ui_locales)
+        pgroup_uid = request.params['pgroup_uid']
+        key = request.params['key']
+        text_values = request.params['text_values']
+        prepared_dict = review.mergesplit(key, pgroup_uid, text_values, nickname, ui_locales)
 
     except KeyError as e:
         _t = Translator(ui_locales)
         logger('views', 'split_or_merge_statement', repr(e), error=True)
+        prepared_dict = {'error': _t.get(_.internalKeyError), 'info': '', 'success': ''}
+
+    return json.dumps(prepared_dict)
+
+
+# #######################################
+# ADDITIONAL AJAX STUFF # REVIEW THINGS #
+# #######################################
+
+
+# ajax - for flagging arguments
+@view_config(route_name='ajax_split_or_merge_premisegroup', renderer='json')
+def split_or_merge_premisegroup(request):
+    """
+    Flags a premisegroup for a specific reason
+
+    :param request: current request of the server
+    :return: json-dict()
+    """
+    logger('views', 'split_or_merge_premisegroup', 'request.params: {}'.format(request.params))
+    ui_locales = get_discussion_language(request)
+
+    try:
+        pgroup_uid = request.params['pgroup_uid']
+        key = request.params['key']
+        nickname = request.authenticated_userid
+
+        prepared_dict = review.mergesplit_premisegroup(pgroup_uid, key, nickname, ui_locales)
+
+    except KeyError as e:
+        _t = Translator(ui_locales)
+        logger('views', 'split_or_merge_premisegroup', repr(e), error=True)
         prepared_dict = {'error': _t.get(_.internalKeyError), 'info': '', 'success': ''}
 
     return json.dumps(prepared_dict)

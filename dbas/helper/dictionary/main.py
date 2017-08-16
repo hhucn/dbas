@@ -522,12 +522,6 @@ class DictionaryHelper(object):
             'no_data_selected': _tn_dis.get(_.noDataSelected),
             'select_statement': _tn_dis.get(_.selectStatement),
             'select_multiple_statements': _tn_dis.get(_.selectMultipleStatementsWhichFlag),
-            'merge_statement': _tn_dis.get(_.mergeStatement),
-            'merge_multiple_statements': _tn_dis.get(_.mergeMultipleStatements),
-            'merge_multiple_pgroup': _tn_dis.get(_.mergeMultiplePGroup),
-            'split_statement': _tn_dis.get(_.splitStatement),
-            'split_multiple_statements': _tn_dis.get(_.splitMultipleStatements),
-            'split_multiple_pgroup': _tn_dis.get(_.splitMultiplePGroup),
             'because': _tn_dis.get(_.because).lower(),
             'mark_as_opinion': _tn_dis.get(_.mark_as_opinion),
             'unmark_as_opinion': _tn_dis.get(_.unmark_as_opinion)

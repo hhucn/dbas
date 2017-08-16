@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-08-16 08:48+0200\n"
+"POT-Creation-Date: 2017-08-16 15:03+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -977,6 +977,7 @@ msgstr "Rückgängig machen"
 #. Default: Cancel
 #: templates/review-history.pt:96 templates/snippet-popups.pt:172
 #: templates/snippet-popups.pt:195 templates/snippet-popups.pt:220
+#: templates/snippet-popups.pt:1004 templates/snippet-popups.pt:1050
 #: templates/snippet-popups.pt:1203
 msgid "cancel"
 msgstr "Abbrechen"
@@ -1504,6 +1505,32 @@ msgstr "Melden"
 msgid "report_whole_argument"
 msgstr "Komplettes Argument melden."
 
+#. Default: Split Statements
+#: templates/snippet-popups.pt:993 templates/snippet-popups.pt:1017
+msgid "split_statement"
+msgstr "Aussagen trennen"
+
+#. Default: Please enter the splitted version of the statement; one per input
+#. field.
+#: templates/snippet-popups.pt:996
+msgid "split_multiple_statements"
+msgstr ""
+"Bitte geben Sie die getrennte Version der Aussage ein; Pro Feld eine Aussage."
+
+#. Default: Submit
+#: templates/snippet-popups.pt:1003 templates/snippet-popups.pt:1049
+msgid "submit"
+msgstr "Senden"
+
+#. Default: The selected statement is already splitted in several parts, like
+#. the list illustrates below. Do you want to continue with a new split?
+#: templates/snippet-popups.pt:1020
+msgid "split_multiple_statements_of_pgroup"
+msgstr ""
+"Die von Ihnen gewählte Aussage ist an sich schon, wie unten angegeben, "
+"getrennt. Möchten Sie, dass die Aussagen komplett von einander getrennt "
+"werden?"
+
 #. Default: The statement
 #: templates/snippet-popups.pt:1021 templates/snippet-popups.pt:1067
 msgid "the_statement"
@@ -1523,6 +1550,26 @@ msgstr "Ja"
 #: templates/snippet-popups.pt:1026 templates/snippet-popups.pt:1072
 msgid "no"
 msgstr "Nein"
+
+#. Default: Merge Statement
+#: templates/snippet-popups.pt:1039 templates/snippet-popups.pt:1063
+msgid "merge_statement"
+msgstr "Aussagen verbinden"
+
+#. Default: Please select the statements, that should be concatenated.
+#: templates/snippet-popups.pt:1042
+msgid "merge_multiple_statements"
+msgstr "Bitte wählen Sie die Aussgen, die zusammengehangen werden sollen."
+
+#. Default: The selected statement already consists out of multiple statement.
+#. Further on the several statements are listed. Do you want to continue with
+#. the merge?
+#: templates/snippet-popups.pt:1066
+msgid "merge_multiple_statements_of_pgroup"
+msgstr ""
+"Die von Ihnen gewählte Aussage besteht aus mehr als einer Aussage. Unten "
+"finden Sie die einzelnen Bestandteile. Möchten Sie dennoch, dass diese zu "
+"einer einzelnen Aussage verbunden wird?"
 
 #. Default: Caution
 #: templates/snippet-popups.pt:1086
@@ -2115,9 +2162,6 @@ msgstr "Angriffe"
 #~ msgid "because"
 #~ msgstr "weil"
 
-#~ msgid "show_all_statements"
-#~ msgstr "Alle Aussagen anzeigen"
-
 #~ msgid "contact_header_1"
 #~ msgstr "Treten Sie mit uns in Kontakt"
 
@@ -2450,9 +2494,6 @@ msgstr "Angriffe"
 
 #~ msgid "edit_statement_view_changelog"
 #~ msgstr "Bearbeite die Aussage / Schau ins Changelog"
-
-#~ msgid "submit"
-#~ msgstr "Senden"
 
 #~ msgid "url-sharing"
 #~ msgstr "Teil' die URL"

@@ -280,17 +280,17 @@ function AjaxMainHandler(){
 	 *
 	 * @param pgroup_uid
 	 * @param key
-	 * @param values
+	 * @param text_values
 	 */
-	this.splitOrMergeStatements = function(pgroup_uid, key, values){
+	this.splitOrMergeStatements = function(pgroup_uid, key, text_values){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_split_or_merge_statement',
 			method: 'POST',
 			data: {
-				uid: pgroup_uid,
+				pgroup_uid: pgroup_uid,
 				key: key,
-				dates: JSON.stringify(values)
+				text_values: JSON.stringify(text_values)
 			},
 			global: false,
 			async: true,
@@ -303,14 +303,40 @@ function AjaxMainHandler(){
 				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 			} else if (parsedData.info.length !== 0) {
 				setGlobalInfoHandler('Ohh!', parsedData.info);
-				$('#popup-duplicate-statement').modal('hide');
 			} else {
 				setGlobalSuccessHandler('Yeah!', parsedData.success);
-				$('#popup-duplicate-statement').modal('hide');
 			}
 			
 		}).fail(function ajaxSplitOrMergeStatementsFail() {
 			setGlobalErrorHandler('', _t_discussion(requestFailed));
 		});
 	};
+	
+	this.splitOrMergePremiseGroup = function(key, pgroup_uid){
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_split_or_merge_premisegroup',
+			method: 'POST',
+			data: {
+				pgroup_uid: pgroup_uid,
+				key: key
+			},
+			global: false,
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrf_token
+			}
+		}).done(function ajaxSplitOrMergePremiseGroupDone(data) {
+			var parsedData = $.parseJSON(data);
+			if (parsedData.error.length !== 0){
+				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+			} else if (parsedData.info.length !== 0) {
+				setGlobalInfoHandler('Ohh!', parsedData.info);
+			} else {
+				setGlobalSuccessHandler('Yeah!', parsedData.success);
+			}
+			
+		}).fail(function ajaxSplitOrMergePremiseGroupFail() {
+			setGlobalErrorHandler('', _t_discussion(requestFailed));
+		});}
 }

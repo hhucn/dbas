@@ -159,6 +159,7 @@ def main(global_config, **settings):
     config.add_route('ajax_additional_service', '{stuff:.*}additional_service')
     config.add_route('ajax_flag_argument_or_statement', '{url:.*}ajax_flag_argument_or_statement')
     config.add_route('ajax_split_or_merge_statement', '{url:.*}ajax_split_or_merge_statement')
+    config.add_route('ajax_split_or_merge_premisegroup', '{url:.*}ajax_split_or_merge_premisegroup')
     config.add_route('ajax_review_delete_argument', '{url:.*}ajax_review_delete_argument')
     config.add_route('ajax_review_optimization_argument', '{url:.*}ajax_review_optimization_argument')
     config.add_route('ajax_review_duplicate_statement', '{url:.*}ajax_review_duplicate_statement')

@@ -990,18 +990,19 @@
     			<div class="modal-header">
     				<button name="popup-split-statement-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabelSplitStatement">${extras.title.split_statement}</h4>
+    				<h4 class="modal-title" id="myModalLabelSplitPremisegroup" i18n:translate="split_statement">Split Statements</h4>
     			</div>
     			<div class="modal-body">
-                    <p class="lead">${extras.title.split_multiple_statements}</p>
+                    <p class="lead" i18n:translate="split_multiple_statements">Please enter the splitted version of the statement; one per input field.</p>
                     <p class="well well-sm" id="popup-split-statement-text"></p>
                     <div id="popup-split-statement-body"></div>
     			</div>
     			<div class="modal-footer">
+                    <p class="lead" id="popup-split-statement-question" style="text-align: left;"></p>
                     <button id="popup-split-statement-add" class="pull-left btn btn-secondary" type="button"><i class="fa fa-plus" aria-hidden="true"></i></button>
                     <button id="popup-split-statement-rem" class="pull-left btn btn-secondary" type="button"><i class="fa fa-minus" aria-hidden="true"></i></button>
-    				<button type="button" class="btn btn-secondary" id="popup-split-statement-btn-yes">${structure:extras.tag.submit}</button>
-    				<button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="no">${structure:extras.tag.cancel}</button>
+    				<button type="button" class="btn btn-secondary" id="popup-split-statement-btn-yes" i18n:translate="submit">Submit</button>
+    				<button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="cancel">Cancel</button>
     			</div>
     		</div>
     	</div>
@@ -1014,10 +1015,10 @@
     			<div class="modal-header">
     				<button name="popup-split-premisegroup-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabelSplitPremisegroup">${extras.title.split_statement}</h4>
+    				<h4 class="modal-title" id="myModalLabelSplitPremisegroup" i18n:translate="split_statement">Split Statements</h4>
     			</div>
     			<div class="modal-body">
-                    <p class="lead">${extras.title.split_multiple_pgroup}</p>
+                    <p class="lead" i18n:translate="split_multiple_statements_of_pgroup">The selected statement is already splitted in several parts, like the list illustrates below. Do you want to continue with a new split?</p>
                     <span i18n:translate="the_statement" class="lead">The statement</span> <span class="lead" style="color: #2196f3" id="popup-split-premisegroup-text"></span> <span class="lead" i18n:translate="consist_out_of">consist out of</span>:
                     <ul id="popup-split-premisegroup-body"></ul>
     			</div>
@@ -1036,18 +1037,19 @@
     			<div class="modal-header">
     				<button name="popup-merge-statement-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabelMergeStatement">${extras.title.merge_statement}</h4>
+    				<h4 class="modal-title" id="myModalLabelMergeStatement" i18n:translate="merge_statement">Merge Statement</h4>
     			</div>
     			<div class="modal-body">
-                    <p class="lead">${extras.title.merge_multiple_statements}</p>
+                    <p class="lead" i18n:translate="merge_multiple_statements">Please select the statements, that should be concatenated.</p>
                     <p class="well well-sm" id="popup-merge-statement-text"></p>
                     <div id="popup-merge-statement-body"></div>
     			</div>
     			<div class="modal-footer">
+                    <p class="lead" id="popup-merge-statement-question" style="text-align: left;"></p>
                     <button id="popup-merge-statement-add" class="pull-left btn btn-secondary" type="button" ><i class="fa fa-plus" aria-hidden="true"></i></button>
                     <button id="popup-merge-statement-rem" class="pull-left btn btn-secondary" type="button" ><i class="fa fa-minus" aria-hidden="true"></i></button>
-    				<button type="button" class="btn btn-secondary" id="popup-merge-statement-btn-yes">${structure:extras.tag.submit}</button>
-    				<button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="no">${structure:extras.tag.cancel}</button>
+    				<button type="button" class="btn btn-secondary" id="popup-merge-statement-btn-yes" i18n:translate="submit">Submit</button>
+    				<button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="cancel">Cancel</button>
     			</div>
     		</div>
     	</div>
@@ -1060,10 +1062,10 @@
     			<div class="modal-header">
     				<button name="popup-merge-premisegroup-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
     				</button>
-    				<h4 class="modal-title" id="myModalLabelMergePremisegroup">${extras.title.merge_statement}</h4>
+    				<h4 class="modal-title" id="myModalLabelMergePremisegroup" i18n:translate="merge_statement">Merge Statement</h4>
     			</div>
     			<div class="modal-body">
-                    <p class="lead">${extras.title.merge_multiple_pgroup}</p>
+                    <p class="lead" i18n:translate="merge_multiple_statements_of_pgroup">The selected statement already consists out of multiple statement. Further on the several statements are listed. Do you want to continue with the merge?</p>
                     <span class="lead" i18n:translate="the_statement">The statement</span> <span class="lead" style="color: #2196f3" id="popup-merge-premisegroup-text"></span> <span class="lead" i18n:translate="consist_out_of">consist out of</span>:
                     <ul id="popup-merge-premisegroup-body"></ul>
     			</div>

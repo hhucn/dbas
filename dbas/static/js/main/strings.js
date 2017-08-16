@@ -240,6 +240,10 @@ var pleaseEditAtLeast               = 'pleaseEditAtLeast';
 var pleaseEnterYourTextHere         = 'pleaseEnterYourTextHere';
 var pleaseEnterYourTextForSearchHere = 'pleaseEnterYourTextForSearchHere';
 var queueCompleteSeen               = 'queueCompleteSeen';
+var questionMergeStatementSg        = 'questionMergeStatementSg';
+var questionSplitStatementSg        = 'questionSplitStatementSg';
+var questionMergeStatementPl        = 'questionMergeStatementPl';
+var questionSplitStatementPl        = 'questionSplitStatementPl';
 var revokedArgument                 = 'revokedArgument';
 var registered                      = 'registered';
 var requestTrack                    = 'requestTrack';
@@ -494,6 +498,10 @@ var dbas_en = {
     'pleaseEnterYourTextHere': 'Please enter your text here ...',
     'pleaseEnterYourTextForSearchHere': 'Please enter your text for searching here ...',
     'queueCompleteSeen': 'You have seen every open task, so we will start from the beginning again.',
+    'questionMergeStatementSg': 'Do you really want to merge the given statement into the XXX statement you have entered?',
+    'questionSplitStatementSg': 'Do you really want to split the given statement with the XXX statement you have entered?',
+    'questionMergeStatementPl': 'Do you really want to merge the given statement into the XXX statements you have entered?',
+    'questionSplitStatementPl': 'Do you really want to split the given statement with the XXX statements you have entered?',
     'position': 'Position',
     'revokedArgument': 'revoked argument',
     'registered': 'Registered',
@@ -733,6 +741,10 @@ var dbas_de = {
     'pleaseEnterYourTextForSearchHere': 'Bitte geben Sie hier Ihren Suchtext ein ...',
     'pleaseEnterYourTextHere': 'Bitte geben Sie hier Ihren Text ein ...',
     'queueCompleteSeen': 'Wir haben Ihnen schon leider alles gezeigt, also fangen wir nochmal von vorne an!',
+    'questionMergeStatementSg': 'Möchten Sie wirklich die gegebene Aussage mit der XXX von Ihnen eingegebene Aussage verbinden?',
+    'questionSplitStatementSg': 'Möchten Sie wirklich die gegebene Aussage in die XXX von Ihnen eingegebene Aussage trennen?',
+    'questionMergeStatementPl': 'Möchten Sie wirklich die gegebeen Aussage mit den XXX von Ihnen eingegebenen Aussagen verbinden?',
+    'questionSplitStatementPl': 'Möchten Sie wirklich die gegebene Aussage in die XXX von Ihnen eingegebenen Aussagen trennen?',
     'position': 'Position',
     'report': 'Melden',
     'reportTitle': 'Öffnet eine E-Mail, damit etwas gemeldet werden kann.',

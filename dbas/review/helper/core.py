@@ -44,13 +44,13 @@ def flag(uid, reason, extra_uid, is_argument, nickname, ui_locales) -> dict:
     return prepared_dict
 
 
-def mergesplit(pgroup_uid, key, dates, nickname, ui_locales) -> dict:
+def mergesplit(key, pgroup_uid, text_values, nickname, ui_locales) -> dict:
     """
     Adds review for splitting/merging a statement
 
     :param pgroup_uid: ID of the selected PremiseGroup
     :param key: 'split' or 'merge'
-    :param dates: text values
+    :param text_values: text values
     :param nickname: the user's nickname creating the request
     :param ui_locales: current ui_locales
     :rtype: dict
@@ -61,7 +61,8 @@ def mergesplit(pgroup_uid, key, dates, nickname, ui_locales) -> dict:
     _t = Translator(ui_locales)
 
     if key in ['merge', 'split']:
-        success, info, error = review_flag_helper.flag_pgroup_for_mergesplit(key, pgroup_uid, dates, nickname)
+        raise KeyError
+        success, info, error = review_flag_helper.flag_pgroup_for_mergesplit(key, pgroup_uid, text_values, nickname)
     else:
         raise KeyError
 
