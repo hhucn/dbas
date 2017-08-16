@@ -57,12 +57,12 @@
                     <div class="col-md-5" tal:condition="subpage.button_set.is_split">
                         <a id="duplicate_skip" href="#" class="review-btn-split btn btn-info btn-sm pull-right" data-queue="splits" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip it</a>
                         <a id="duplicate_nack" href="#" class="review-btn-split btn btn-danger btn-sm pull-right" data-queue="splits" i18n:translate="reject_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Reject it</a>
-                        <a id="duplicate_ack" href="#" class="review-btn-split btn btn-success btn-sm pull-right" data-queue="splits" i18n:translate="split_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Split it</a>
+                        <a id="duplicate_ack" href="#" class="review-btn-split btn btn-success btn-sm pull-right" data-queue="splits" i18n:translate="change_okay" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Change is okay</a>
                     </div>
                     <div class="col-md-5" tal:condition="subpage.button_set.is_merge">
                         <a id="duplicate_skip" href="#" class="review-btn-merge btn btn-info btn-sm pull-right" data-queue="merges" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip it</a>
                         <a id="duplicate_nack" href="#" class="review-btn-merge btn btn-danger btn-sm pull-right" data-queue="merges" i18n:translate="reject_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Reject it</a>
-                        <a id="duplicate_ack" href="#" class="review-btn-merge btn btn-success btn-sm pull-right" data-queue="merges" i18n:translate="merge_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Merge it</a>
+                        <a id="duplicate_ack" href="#" class="review-btn-merge btn btn-success btn-sm pull-right" data-queue="merges" i18n:translate="change_okay" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Change is okay</a>
                     </div>
                 </div>
 
@@ -140,19 +140,32 @@
                         </div>
 
                         <div class="well well-sm center" style="text-align: justify;">
-                            <div style="margin-bottom: 1em;" tal:condition="not:subpage.button_set.is_edit">
+                            <div tal:omit-tag="" tal:condition="not:subpage.button_set.is_merge">
+                                <div style="margin-bottom: 1em;" tal:condition="not:subpage.button_set.is_edit">
+                                    <span i18n:translate="in_the_discussion_about">In the discussion about</span>
+                                    <i>${structure:subpage.elements.reviewed_element.issue}</i>
+                                    <span tal:condition="not:subpage.button_set.is_duplicate" i18n:translate="following_argument_was_flagged">following argument was flagged.</span>
+                                    <span tal:condition="subpage.button_set.is_duplicate" i18n:translate="following_statement_was_flagged">following statement was flagged.</span>
+                                </div>
+                                <div style="margin-bottom: 1em;" tal:condition="subpage.button_set.is_edit">
+                                    <span i18n:translate="this_is_original_version">This is the original version</span>:
+                                </div>
+                                <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
+                                <span class="lead" id="reviewed-argument-text">${structure:subpage.elements.reviewed_element.text}</span>
+                                <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
+                                <br>
+                            </div>
+
+                            <div tal:omit-tag="" tal:condition="subpage.button_set.is_merge">
                                 <span i18n:translate="in_the_discussion_about">In the discussion about</span>
                                 <i>${structure:subpage.elements.reviewed_element.issue}</i>
-                                <span tal:condition="not:subpage.button_set.is_duplicate" i18n:translate="following_argument_was_flagged">following argument was flagged.</span>
-                                <span tal:condition="subpage.button_set.is_duplicate" i18n:translate="following_statement_was_flagged">following statement was flagged.</span>
+                                <span i18n:translate="following_statements_were_flagged">following statements were flagged:</span>
+                                <ul>
+                                    <li tal:repeat="text subpage.elements.reviewed_element.text">
+                                        <span class="lead">${text}</span>
+                                    </li>
+                                </ul>
                             </div>
-                            <div style="margin-bottom: 1em;" tal:condition="subpage.button_set.is_edit">
-                                <span i18n:translate="this_is_original_version">This is the original version</span>:
-                            </div>
-                            <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
-                            <span class="lead" id="reviewed-argument-text">${structure:subpage.elements.reviewed_element.text}</span>
-                            <i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em;"></i>
-                            <br>
                         </div>
 
                         <div class="well well-sm center" style="text-align: justify;" tal:condition="subpage.button_set.is_optimize">
