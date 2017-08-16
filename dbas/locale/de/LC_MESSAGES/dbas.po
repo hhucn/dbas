@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-08-16 15:03+0200\n"
+"POT-Creation-Date: 2017-08-16 20:55+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -977,8 +977,8 @@ msgstr "Rückgängig machen"
 #. Default: Cancel
 #: templates/review-history.pt:96 templates/snippet-popups.pt:172
 #: templates/snippet-popups.pt:195 templates/snippet-popups.pt:220
-#: templates/snippet-popups.pt:1004 templates/snippet-popups.pt:1050
-#: templates/snippet-popups.pt:1203
+#: templates/snippet-popups.pt:1005 templates/snippet-popups.pt:1052
+#: templates/snippet-popups.pt:1205
 msgid "cancel"
 msgstr "Abbrechen"
 
@@ -1144,7 +1144,7 @@ msgstr ""
 
 #. Default: Okay
 #: templates/snippet-popups.pt:171 templates/snippet-popups.pt:194
-#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1202
+#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1204
 msgid "okay"
 msgstr "Okay"
 
@@ -1506,7 +1506,7 @@ msgid "report_whole_argument"
 msgstr "Komplettes Argument melden."
 
 #. Default: Split Statements
-#: templates/snippet-popups.pt:993 templates/snippet-popups.pt:1017
+#: templates/snippet-popups.pt:993 templates/snippet-popups.pt:1018
 msgid "split_statement"
 msgstr "Aussagen trennen"
 
@@ -1515,16 +1515,17 @@ msgstr "Aussagen trennen"
 #: templates/snippet-popups.pt:996
 msgid "split_multiple_statements"
 msgstr ""
-"Bitte geben Sie die getrennte Version der Aussage ein; Pro Feld eine Aussage."
+"Bitte geben Sie die getrennte Version der Aussage unteren ein, nennen Sie "
+"dabei pro Feld nur eine Aussage."
 
 #. Default: Submit
-#: templates/snippet-popups.pt:1003 templates/snippet-popups.pt:1049
+#: templates/snippet-popups.pt:1004 templates/snippet-popups.pt:1051
 msgid "submit"
 msgstr "Senden"
 
 #. Default: The selected statement is already splitted in several parts, like
 #. the list illustrates below. Do you want to continue with a new split?
-#: templates/snippet-popups.pt:1020
+#: templates/snippet-popups.pt:1021
 msgid "split_multiple_statements_of_pgroup"
 msgstr ""
 "Die von Ihnen gewählte Aussage ist an sich schon, wie unten angegeben, "
@@ -1532,39 +1533,41 @@ msgstr ""
 "werden?"
 
 #. Default: The statement
-#: templates/snippet-popups.pt:1021 templates/snippet-popups.pt:1067
+#: templates/snippet-popups.pt:1022 templates/snippet-popups.pt:1069
 msgid "the_statement"
 msgstr "Die Aussage"
 
 #. Default: consist out of
-#: templates/snippet-popups.pt:1021 templates/snippet-popups.pt:1067
+#: templates/snippet-popups.pt:1022 templates/snippet-popups.pt:1069
 msgid "consist_out_of"
 msgstr "besteht aus"
 
 #. Default: Yes
-#: templates/snippet-popups.pt:1025 templates/snippet-popups.pt:1071
+#: templates/snippet-popups.pt:1026 templates/snippet-popups.pt:1073
 msgid "yes"
 msgstr "Ja"
 
 #. Default: No
-#: templates/snippet-popups.pt:1026 templates/snippet-popups.pt:1072
+#: templates/snippet-popups.pt:1027 templates/snippet-popups.pt:1074
 msgid "no"
 msgstr "Nein"
 
 #. Default: Merge Statement
-#: templates/snippet-popups.pt:1039 templates/snippet-popups.pt:1063
+#: templates/snippet-popups.pt:1040 templates/snippet-popups.pt:1065
 msgid "merge_statement"
 msgstr "Aussagen verbinden"
 
 #. Default: Please select the statements, that should be concatenated.
-#: templates/snippet-popups.pt:1042
+#: templates/snippet-popups.pt:1043
 msgid "merge_multiple_statements"
-msgstr "Bitte wählen Sie die Aussgen, die zusammengehangen werden sollen."
+msgstr ""
+"Bitte wählen Sie die Aussagen, die mit der unteren Aussage zusammengehangen "
+"werden sollen."
 
 #. Default: The selected statement already consists out of multiple statement.
 #. Further on the several statements are listed. Do you want to continue with
 #. the merge?
-#: templates/snippet-popups.pt:1066
+#: templates/snippet-popups.pt:1068
 msgid "merge_multiple_statements_of_pgroup"
 msgstr ""
 "Die von Ihnen gewählte Aussage besteht aus mehr als einer Aussage. Unten "
@@ -1572,14 +1575,14 @@ msgstr ""
 "einer einzelnen Aussage verbunden wird?"
 
 #. Default: Caution
-#: templates/snippet-popups.pt:1086
+#: templates/snippet-popups.pt:1088
 msgid "caution"
 msgstr "Achtung"
 
 #. Default: Do you really want to disassociate yourself from your content? This
 #. step is irreversible! Subsequently you will not be the author of this
 #. statement anymore!
-#: templates/snippet-popups.pt:1091
+#: templates/snippet-popups.pt:1093
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 "Möchten Sie wirklich von diesem Inhalt distanzieren? Dieser Schritt kann "
@@ -1587,46 +1590,46 @@ msgstr ""
 "diesem Statements."
 
 #. Default: Please choose a step to jump in
-#: templates/snippet-popups.pt:1108
+#: templates/snippet-popups.pt:1110
 msgid "choose_a_step_to_jump_in"
 msgstr "Bitte wählen Sie eine Stelle für den Sprung"
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: templates/snippet-popups.pt:1111
+#: templates/snippet-popups.pt:1113
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr "Hier finden Sie alle Stellen, in denen die Aussage verwendet wird:"
 
 #. Default: References
-#: templates/snippet-popups.pt:1128
+#: templates/snippet-popups.pt:1130
 msgid "refereces"
 msgstr "Referenzen"
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: templates/snippet-popups.pt:1136
+#: templates/snippet-popups.pt:1138
 msgid "statement_reference_definition"
 msgstr ""
 "Die Aussage ist ein Zitat von einer Nachrichtenseite o.Ä., welche Ihre "
 "Meinung untersützt. Die Quelle ist die Website."
 
 #. Default: Statement
-#: templates/snippet-popups.pt:1139 templates/snippet-popups.pt:1160
+#: templates/snippet-popups.pt:1141 templates/snippet-popups.pt:1162
 msgid "statement"
 msgstr "Aussage"
 
 #. Default: Source
-#: templates/snippet-popups.pt:1145
+#: templates/snippet-popups.pt:1147
 msgid "source"
 msgstr "Quelle"
 
 #. Default: Please choose a statement for your reference!
-#: templates/snippet-popups.pt:1150
+#: templates/snippet-popups.pt:1152
 msgid "please_choose_a_reference"
 msgstr "Bitte wählen Sie eine Aussage für Ihre Referenz!"
 
 #. Default: Add reference
-#: templates/snippet-popups.pt:1165
+#: templates/snippet-popups.pt:1167
 msgid "add_reference"
 msgstr "Referenzen hinzufügen"
 

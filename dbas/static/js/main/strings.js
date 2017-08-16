@@ -743,7 +743,7 @@ var dbas_de = {
     'queueCompleteSeen': 'Wir haben Ihnen schon leider alles gezeigt, also fangen wir nochmal von vorne an!',
     'questionMergeStatementSg': 'Möchten Sie wirklich die gegebene Aussage mit der XXX von Ihnen eingegebene Aussage verbinden?',
     'questionSplitStatementSg': 'Möchten Sie wirklich die gegebene Aussage in die XXX von Ihnen eingegebene Aussage trennen?',
-    'questionMergeStatementPl': 'Möchten Sie wirklich die gegebeen Aussage mit den XXX von Ihnen eingegebenen Aussagen verbinden?',
+    'questionMergeStatementPl': 'Möchten Sie wirklich die gegebene Aussage mit den XXX von Ihnen eingegebenen Aussagen verbinden?',
     'questionSplitStatementPl': 'Möchten Sie wirklich die gegebene Aussage in die XXX von Ihnen eingegebenen Aussagen trennen?',
     'position': 'Position',
     'report': 'Melden',
