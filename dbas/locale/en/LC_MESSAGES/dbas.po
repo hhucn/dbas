@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-08-15 19:38+0200\n"
+"POT-Creation-Date: 2017-08-16 08:48+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -378,15 +378,10 @@ msgstr "Unique"
 msgid "duplicate"
 msgstr "Duplicate"
 
-#. Default: Split it
-#: templates/review-content.pt:60 templates/review-content.pt:106
-msgid "split_it"
-msgstr "Split it"
-
-#. Default: Merge it
-#: templates/review-content.pt:65 templates/review-content.pt:111
-msgid "merge_it"
-msgstr "Merge it"
+#. Default: Change is okay
+#: templates/review-content.pt:60 templates/review-content.pt:65
+msgid "change_okay"
+msgstr "Change is okay"
 
 #. Default: Information for the different reasons
 #: templates/review-content.pt:73
@@ -488,6 +483,11 @@ msgstr "It's unique"
 msgid "duplicate_is_unique"
 msgstr "for marked statements, which are unique."
 
+#. Default: Split it
+#: templates/review-content.pt:106
+msgid "split_it"
+msgstr "Split it"
+
 #. Default: , if the selected statement is a set of than one statement and the
 #. given proposals match to the original content.
 #: templates/review-content.pt:106
@@ -500,6 +500,11 @@ msgstr ""
 #: templates/review-content.pt:107
 msgid "statement_not_to_split"
 msgstr "for marked statements, which should not be splitted."
+
+#. Default: Merge it
+#: templates/review-content.pt:111
+msgid "merge_it"
+msgstr "Merge it"
 
 #. Default: , if the selected statements should be one, single statements and
 #. the given proposal matches to the original contents.
@@ -515,7 +520,8 @@ msgid "statement_not_to_merge"
 msgstr "for marked statements, which should not be merged."
 
 #. Default: In the discussion about
-#: templates/review-content.pt:124 templates/review-content.pt:144
+#: templates/review-content.pt:124 templates/review-content.pt:145
+#: templates/review-content.pt:160
 msgid "in_the_discussion_about"
 msgstr "In the discussion about"
 
@@ -530,98 +536,103 @@ msgid "this_are_the_edit"
 msgstr "This are the edits:"
 
 #. Default: following argument was flagged.
-#: templates/review-content.pt:146
+#: templates/review-content.pt:147
 msgid "following_argument_was_flagged"
 msgstr "following argument/statement was flagged:"
 
 #. Default: following statement was flagged.
-#: templates/review-content.pt:147
+#: templates/review-content.pt:148
 msgid "following_statement_was_flagged"
 msgstr "following statement was flagged:"
 
 #. Default: This is the original version
-#: templates/review-content.pt:150
+#: templates/review-content.pt:151
 msgid "this_is_original_version"
 msgstr "This is the original version"
 
+#. Default: following statements were flagged:
+#: templates/review-content.pt:162
+msgid "following_statements_were_flagged"
+msgstr "following statements were flagged:"
+
 #. Default: Context, where the statement is used:
-#: templates/review-content.pt:159
+#: templates/review-content.pt:172
 msgid "context_where_statement_is_used"
 msgstr "Context, where the statement is used:"
 
 #. Default: This is the original statement:
-#: templates/review-content.pt:168
+#: templates/review-content.pt:181
 msgid "this_is_original_statements"
 msgstr "This is the original statement:"
 
 #. Default: This statement should be splitted into:
-#: templates/review-content.pt:176
+#: templates/review-content.pt:189
 msgid "this_statement_should_be_splitted"
 msgstr "This statement should be splitted into:"
 
 #. Default: This statement should be merged to:
-#: templates/review-content.pt:183
+#: templates/review-content.pt:198
 msgid "this_statement_should_be_merged"
 msgstr "This statement should be merged to:"
 
 #. Default: Reported
-#: templates/review-content.pt:196
+#: templates/review-content.pt:211
 msgid "reported"
 msgstr "Reported"
 
 #. Default: Reported by
-#: templates/review-content.pt:200
+#: templates/review-content.pt:215
 msgid "reported_by"
 msgstr "Reported by"
 
 #. Default: Viewed
-#: templates/review-content.pt:210
+#: templates/review-content.pt:225
 msgid "viewed"
 msgstr "Viewed"
 
 #. Default: Attacks
-#: templates/review-content.pt:214
+#: templates/review-content.pt:229
 msgid "attacks"
 msgstr "Attacks"
 
 #. Default: Supports
-#: templates/review-content.pt:218
+#: templates/review-content.pt:233
 msgid "supports"
 msgstr "Supports"
 
 #. Default: Request lock
-#: templates/review-content.pt:238
+#: templates/review-content.pt:253
 msgid "request_lock"
 msgstr "Request lock"
 
 #. Default: This argument is locked for your edit. You have
-#: templates/review-content.pt:241
+#: templates/review-content.pt:256
 msgid "argument_is_locked"
 msgstr "This argument is locked for your edit. You have"
 
 #. Default: minutes
-#: templates/review-content.pt:242
+#: templates/review-content.pt:257
 msgid "minutes"
 msgstr "minutes"
 
 #. Default: Please make your edits in grammar and/or spelling here:
-#: templates/review-content.pt:243
+#: templates/review-content.pt:258
 msgid "please_make_your_edits"
 msgstr "Please make your edits in grammar and/or spelling here:"
 
 #. Default: Original
-#: templates/review-content.pt:249 templates/review-history.pt:43
+#: templates/review-content.pt:264 templates/review-history.pt:43
 #: templates/review-history.pt:44
 msgid "original"
 msgstr "Original"
 
 #. Default: Your correcture
-#: templates/review-content.pt:250
+#: templates/review-content.pt:265
 msgid "your correcture"
 msgstr "Your correcture"
 
 #. Default: Send
-#: templates/review-content.pt:265
+#: templates/review-content.pt:280
 msgid "send"
 msgstr "Send"
 
@@ -2266,9 +2277,6 @@ msgstr "Attacks"
 
 #~ msgid "doughnut_chart"
 #~ msgstr "Doughnut chart"
-
-#~ msgid "change_style"
-#~ msgstr "Change display style"
 
 #~ msgid "island_view"
 #~ msgstr "Island View"
