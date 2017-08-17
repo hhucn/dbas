@@ -41,63 +41,11 @@ jshint:
     - bash -c "jshint ./webhook/static/js/*.js"
   allow_failure: true
 
-unit_dbas:
+unit:
   <<: *run-server
   stage: test
   script:
-    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . dbas
-    - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
-    - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
-  coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
-  artifacts:
-    paths:
-      - coverage.xml
-    expire_in: 10 mins
-
-unit_graph:
-  <<: *run-server
-  stage: test
-  script:
-    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . graph
-    - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
-    - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
-  coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
-  artifacts:
-    paths:
-      - coverage.xml
-    expire_in: 10 mins
-
-unit_admin:
-  <<: *run-server
-  stage: test
-  script:
-    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . admin
-    - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
-    - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
-  coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
-  artifacts:
-    paths:
-      - coverage.xml
-    expire_in: 10 mins
-
-unit_api:
-  <<: *run-server
-  stage: test
-  script:
-    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . api
-    - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
-    - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
-  coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
-  artifacts:
-    paths:
-      - coverage.xml
-    expire_in: 10 mins
-
-unit_export:
-  <<: *run-server
-  stage: test
-  script:
-    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . export
+    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . dbas graph admin api export
     - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
     - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
   coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
