@@ -4,7 +4,7 @@ import transaction
 from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Argument, Premise
+from dbas.database.discussion_model import User, Argument, Premise, ClickedArgument, SeenArgument
 from dbas.helper.relation import get_undermines_for_argument_uid, get_undercuts_for_argument_uid, \
     get_rebuts_for_argument_uid, get_supports_for_argument_uid, set_new_undermine_or_support_for_pgroup, \
     set_new_undercut, set_new_rebut, set_new_support
@@ -17,6 +17,9 @@ class RelationHelperTest(unittest.TestCase):
         self.db_user = DBDiscussionSession.query(User).filter_by(nickname='Christian').first()
 
     def tearDown(self):
+        for uid in [arg.uid for arg in DBDiscussionSession.query(Argument).filter_by(author_uid=self.db_user.uid).all()]:
+            DBDiscussionSession.query(ClickedArgument).filter_by(argument_uid=uid).delete()
+            DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=uid).delete()
         DBDiscussionSession.query(Argument).filter_by(author_uid=self.db_user.uid).delete()
         DBDiscussionSession.flush()
         transaction.commit()

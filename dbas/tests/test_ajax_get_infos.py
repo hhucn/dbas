@@ -194,7 +194,7 @@ class AjaxGetInfosTest(unittest.TestCase):
         transaction.commit()
         self.assertIsNotNone(response)
         self.assertTrue(response['removed_data'] == 'true')
-        db_his = len(DBDiscussionSession.query(History).filter_by(author_uid=3).all())
+        db_his = len(DBDiscussionSession.query(History).filter_by(author_uid=2).all())
         self.assertTrue(db_his == 0)
 
     def test_delete_statistics(self):
