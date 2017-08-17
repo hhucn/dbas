@@ -779,6 +779,15 @@ class Argument(DiscussionBase):
         """
         self.conclusion_uid = conclusion
 
+    def set_premisegroup(self, premisegroup):
+        """
+        Sets a premisegroup for the argument
+
+        :param premisegroup: PremiseGroup.uid
+        :return: None
+        """
+        self.premisesgroup_uid = premisegroup
+
     def set_disable(self, is_disabled):
         """
         Disables current argument
@@ -1558,6 +1567,9 @@ class LastReviewerDelete(DiscussionBase):
         self.is_okay = is_okay
         self.timestamp = get_now()
 
+    def __eq__(self, other):
+        return self.uid == other.uid
+
 
 class LastReviewerDuplicate(DiscussionBase):
     """
@@ -1586,6 +1598,9 @@ class LastReviewerDuplicate(DiscussionBase):
         self.is_okay = is_okay
         self.timestamp = get_now()
 
+    def __eq__(self, other):
+        return self.uid == other.uid
+
 
 class LastReviewerEdit(DiscussionBase):
     """
@@ -1612,6 +1627,9 @@ class LastReviewerEdit(DiscussionBase):
         self.review_uid = review
         self.is_okay = is_okay
         self.timestamp = get_now()
+
+    def __eq__(self, other):
+        return self.uid == other.uid
 
 
 class LastReviewerOptimization(DiscussionBase):
@@ -1641,6 +1659,9 @@ class LastReviewerOptimization(DiscussionBase):
         self.is_okay = is_okay
         self.timestamp = get_now()
 
+    def __eq__(self, other):
+        return self.uid == other.uid
+
 
 class LastReviewerSplit(DiscussionBase):
     """
@@ -1650,24 +1671,27 @@ class LastReviewerSplit(DiscussionBase):
     uid = Column(Integer, primary_key=True)
     reviewer_uid = Column(Integer, ForeignKey('users.uid'))
     review_uid = Column(Integer, ForeignKey('review_split.uid'))
-    is_okay = Column(Boolean, nullable=False, default=False)
+    should_split = Column(Boolean, nullable=False, default=False)
     timestamp = Column(ArrowType, default=get_now())
 
     reviewer = relationship('User', foreign_keys=[reviewer_uid])
     review = relationship('ReviewSplit', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, is_okay):
+    def __init__(self, reviewer, review, should_split):
         """
         Inits a row in current last reviewer Split  table
 
         :param reviewer: User.uid
         :param review: ReviewSplit.uid
-        :param is_okay: boolean
+        :param should_split: boolean
         """
         self.reviewer_uid = reviewer
         self.review_uid = review
-        self.is_okay = is_okay
+        self.should_split = should_split
         self.timestamp = get_now()
+
+    def __eq__(self, other):
+        return self.uid == other.uid
 
 
 class LastReviewerMerge(DiscussionBase):
@@ -1678,24 +1702,27 @@ class LastReviewerMerge(DiscussionBase):
     uid = Column(Integer, primary_key=True)
     reviewer_uid = Column(Integer, ForeignKey('users.uid'))
     review_uid = Column(Integer, ForeignKey('review_merge.uid'))
-    is_okay = Column(Boolean, nullable=False, default=False)
+    should_merge = Column(Boolean, nullable=False, default=False)
     timestamp = Column(ArrowType, default=get_now())
 
     reviewer = relationship('User', foreign_keys=[reviewer_uid])
     review = relationship('ReviewMerge', foreign_keys=[review_uid])
 
-    def __init__(self, reviewer, review, is_okay):
+    def __init__(self, reviewer, review, should_merge):
         """
         Inits a row in current last reviewer merge  table
 
         :param reviewer: User.uid
         :param review: ReviewMerge.uid
-        :param is_okay: boolean
+        :param should_merge: boolean
         """
         self.reviewer_uid = reviewer
         self.review_uid = review
-        self.is_okay = is_okay
+        self.should_merge = should_merge
         self.timestamp = get_now()
+
+    def __eq__(self, other):
+        return self.uid == other.uid
 
 
 class ReputationHistory(DiscussionBase):
@@ -1925,21 +1952,25 @@ class PremiseGroupSplitted(DiscussionBase):
     __tablename__ = 'premisegroup_splitted'
     uid = Column(Integer, primary_key=True)
     review_uid = Column(Integer, ForeignKey('review_split.uid'))
-    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    old_premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    new_premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
     timestamp = Column(ArrowType, default=get_now())
 
     reviews = relationship('ReviewSplit', foreign_keys=[review_uid])
-    premsiegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
+    old_premisegroups = relationship('PremiseGroup', foreign_keys=[old_premisegroup_uid])
+    new_premisegroups = relationship('PremiseGroup', foreign_keys=[new_premisegroup_uid])
 
-    def __init__(self, review, premisegroup_uid):
+    def __init__(self, review, old_premisegroup, new_premisegroup):
         """
         Inits a row in current statement splitted table
 
         :param review: ReviewDuplicate.uid
-        :param premisesgroup_uid: Statement.uid
+        :param old_premisegroup: PremiseGroup.uid
+        :param new_premisegroup: PremiseGroup.uid
         """
         self.review_uid = review
-        self.premisegroup_uid = premisegroup_uid
+        self.old_premisegroup_uid = old_premisegroup
+        self.new_premisegroup_uid = new_premisegroup
         self.timestamp = get_now()
 
 
@@ -1950,21 +1981,25 @@ class PremiseGroupMerged(DiscussionBase):
     __tablename__ = 'premisegroup_merged'
     uid = Column(Integer, primary_key=True)
     review_uid = Column(Integer, ForeignKey('review_merge.uid'))
-    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    old_premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
+    new_premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
     timestamp = Column(ArrowType, default=get_now())
 
     reviews = relationship('ReviewMerge', foreign_keys=[review_uid])
-    premsiegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
+    old_premisegroups = relationship('PremiseGroup', foreign_keys=[old_premisegroup_uid])
+    new_premisegroups = relationship('PremiseGroup', foreign_keys=[new_premisegroup_uid])
 
-    def __init__(self, review, premisegroup_uid):
+    def __init__(self, review, old_premisegroup, new_premisegroup):
         """
         Inits a row in current statement splitted table
 
         :param review: ReviewDuplicate.uid
-        :param premisesgroup_uid: Statement.uid
+        :param old_premisegroup: PremiseGroup.uid
+        :param new_premisegroup: PremiseGroup.uid
         """
         self.review_uid = review
-        self.premisegroup_uid = premisegroup_uid
+        self.old_premisegroup_uid = old_premisegroup
+        self.new_premisegroup_uid = new_premisegroup
         self.timestamp = get_now()
 
 

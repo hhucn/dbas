@@ -10,8 +10,7 @@ from dbas.lib import get_discussion_language, is_user_author_or_admin
 from dbas.helper.query import revoke_content
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from webhook.lib import send_request_for_recent_delete_review_to_socketio, get_port,\
-    send_request_for_recent_edit_review_to_socketio, send_request_for_recent_optimization_review_to_socketio
+from webhook.lib import send_request_for_recent_reviewer_socketio, get_port
 
 
 def flag(uid, reason, extra_uid, is_argument, nickname, ui_locales) -> dict:
@@ -127,7 +126,7 @@ def delete_argument(request) -> dict:
             nickname = request.authenticated_userid
             main_page = request.application_url
             port = get_port(request)
-            send_request_for_recent_delete_review_to_socketio(nickname, main_page, port)
+            send_request_for_recent_reviewer_socketio(nickname, main_page, port, 'deletes')
 
     prepared_dict = {'error': error}
     return prepared_dict
@@ -155,7 +154,7 @@ def edit_argument(request) -> dict:
             nickname = request.authenticated_userid
             main_page = request.application_url
             port = get_port(request)
-            send_request_for_recent_edit_review_to_socketio(nickname, main_page, port)
+            send_request_for_recent_reviewer_socketio(nickname, main_page, port, 'edits')
 
     prepared_dict = {'error': error}
     return prepared_dict
@@ -183,7 +182,7 @@ def duplicate_statement(request) -> dict:
             nickname = request.authenticated_userid
             main_page = request.application_url
             port = get_port(request)
-            send_request_for_recent_edit_review_to_socketio(nickname, main_page, port)
+            send_request_for_recent_reviewer_socketio(nickname, main_page, port, 'duplicates')
 
     prepared_dict = {'error': error}
     return prepared_dict
@@ -213,15 +212,15 @@ def optimization_argument(request) -> dict:
             nickname = request.authenticated_userid
             main_page = request.application_url
             port = get_port(request)
-            send_request_for_recent_optimization_review_to_socketio(nickname, main_page, port)
+            send_request_for_recent_reviewer_socketio(nickname, main_page, port, 'optimizations')
 
     prepared_dict = {'error': error}
     return prepared_dict
 
 
-def split_statement(request) -> dict:
+def split_premisegroup(request) -> dict:
     """
-    Sets feedback for a review element of a splitted statement
+    Sets feedback for a review element of a splitted premisegroup
 
     :param request: pyramid's request object
     :rtype: dict
@@ -229,22 +228,27 @@ def split_statement(request) -> dict:
     """
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
-    review_uid = request.params['review_uid'] if 'review_uid' in request.params else None
+    review_uid = request.params['review_uid']
+    should_split = request.params['should_split']
 
     if not is_integer(review_uid):
-        logger('additives', 'split_statement', 'invalid uid', error=True)
+        logger('additives', 'split_premisegroup', 'invalid uid', error=True)
         error = _t.get(_.internalKeyError)
     else:
-        error = 'TODO 1'
-        review_main_helper.add_review_opinion_for_split(request, review_uid, _t)
+        error = review_main_helper.add_review_opinion_for_split(request, review_uid, should_split, _t)
+        if len(error) == 0:
+            nickname = request.authenticated_userid
+            main_page = request.application_url
+            port = get_port(request)
+            send_request_for_recent_reviewer_socketio(nickname, main_page, port, 'splits')
 
     prepared_dict = {'error': error}
     return prepared_dict
 
 
-def merge_statement(request) -> dict:
+def merge_premisegroup(request) -> dict:
     """
-    Sets feedback for a review element of a merged statement
+    Sets feedback for a review element of a merged premisegroup
 
     :param request: pyramid's request object
     :rtype: dict
@@ -252,14 +256,19 @@ def merge_statement(request) -> dict:
     """
     ui_locales = get_discussion_language(request)
     _t = Translator(ui_locales)
-    review_uid = request.params['review_uid'] if 'review_uid' in request.params else None
+    review_uid = request.params['review_uid']
+    should_merge = request.params['should_merge']
 
     if not is_integer(review_uid):
-        logger('additives', 'merge_statement', 'invalid uid', error=True)
+        logger('additives', 'merge_premisegroup', 'invalid uid', error=True)
         error = _t.get(_.internalKeyError)
     else:
-        error = 'TODO 2'
-        review_main_helper.add_review_opinion_for_merge(request, review_uid, _t)
+        error = review_main_helper.add_review_opinion_for_merge(request, review_uid, should_merge, _t)
+        if len(error) == 0:
+            nickname = request.authenticated_userid
+            main_page = request.application_url
+            port = get_port(request)
+            send_request_for_recent_reviewer_socketio(nickname, main_page, port, 'merges')
 
     prepared_dict = {'error': error}
     return prepared_dict

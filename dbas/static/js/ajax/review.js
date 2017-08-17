@@ -205,7 +205,7 @@ function AjaxReviewHandler(){
 	this.reviewMergeStatement = function(should_merged, review_uid){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_review_merged_statement',
+			url: 'ajax_review_merged_premisegroup',
 			method: 'POST',
 			data:{ 'should_merge': should_merge, 'review_uid': review_uid },
 			dataType: 'json',
@@ -226,7 +226,7 @@ function AjaxReviewHandler(){
 	this.reviewSplitStatement = function(should_split, review_uid){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_review_merged_statement',
+			url: 'ajax_review_split_premisegroup',
 			method: 'POST',
 			data:{ 'should_split': should_split, 'review_uid': review_uid },
 			dataType: 'json',

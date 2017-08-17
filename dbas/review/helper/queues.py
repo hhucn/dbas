@@ -174,7 +174,7 @@ def __get_duplicates_dict(main_page, translator, nickname, count, all_rights):
     task_count = __get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, nickname)
 
     tmp_dict = {'task_name': translator.get(_.queueDuplicates),
-                'id': 'edits',
+                'id': 'duplicates',
                 'url': main_page + '/review/' + key_duplicates,
                 'icon': reputation_icons[key_duplicates],
                 'task_count': task_count,

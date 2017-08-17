@@ -2085,21 +2085,21 @@ def review_optimization_argument(request):
     return json.dumps(prepared_dict)
 
 
-# ajax - for feedback on a splitted statement
-@view_config(route_name='ajax_review_splitted_statement', renderer='json')
-def review_splitted_statement(request):
+# ajax - for feedback on a splitted premisegroup
+@view_config(route_name='ajax_review_splitted_premisegroup', renderer='json')
+def review_splitted_premisegroup(request):
     """
-    Values for the review for a statement, which should be splitted
+    Values for the review for a premisegroup, which should be splitted
 
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'review_splitted_statement', 'main: {}'.format(request.params))
+    logger('views', 'review_splitted_premisegroup', 'main: {}'.format(request.params))
 
     try:
-        prepared_dict = review.split_statement(request)
+        prepared_dict = review.split_premisegroup(request)
     except KeyError as e:
-        logger('Views', 'review_splitted_statement', repr(e), error=True)
+        logger('Views', 'review_splitted_premisegroup', repr(e), error=True)
         ui_locales = get_discussion_language(request)
         _t = Translator(ui_locales)
         prepared_dict = {'error': _t.get(_.internalKeyError)}
@@ -2107,21 +2107,21 @@ def review_splitted_statement(request):
     return json.dumps(prepared_dict)
 
 
-# ajax - for feedback on a merged statement
-@view_config(route_name='ajax_review_merged_statement', renderer='json')
-def review_merged_statement(request):
+# ajax - for feedback on a merged premisegroup
+@view_config(route_name='ajax_review_merged_premisegroup', renderer='json')
+def review_merged_premisegroup(request):
     """
     Values for the review for a statement, which should be merged
 
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'review_merged_statement', 'main: {}'.format(request.params))
+    logger('views', 'review_merged_premisegroup', 'main: {}'.format(request.params))
 
     try:
-        prepared_dict = review.merge_statement(request)
+        prepared_dict = review.merge_premisegroup(request)
     except KeyError as e:
-        logger('Views', 'review_merged_statement', repr(e), error=True)
+        logger('Views', 'review_merged_premisegroup', repr(e), error=True)
         ui_locales = get_discussion_language(request)
         _t = Translator(ui_locales)
         prepared_dict = {'error': _t.get(_.internalKeyError)}

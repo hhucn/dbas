@@ -125,56 +125,22 @@ def __send_request_for_popup_to_socketio(nickname, port, popup_type, message='',
     return __open_url(rurl)
 
 
-def send_request_for_recent_delete_review_to_socketio(nickname, main_page, port):
+def send_request_for_recent_reviewer_socketio(nickname, main_page, port, queue):
     """
     Sends request to the socketio server for updating the last reviewer view
 
     :param nickname: Current users nickname
     :param main_page: URL of the app itself
     :param port: Port of the notification server
+    :param queue: Key of the last reviewers queue
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'send_request_for_recent_delete_review_to_socketio', 'main - nickname ' + str(nickname))
+    logger('Websocket.lib', 'send_request_for_recent_reviewer_socketio', 'main - nickname {} for queue {}'.format(nickname, queue))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     reviewer_name = db_user.get_global_nickname()
     reviewer_image_url = get_profile_picture(db_user)
     use_https = 'dbas' in main_page
-    return __send_request_for_recent_review_to_socketio(port, reviewer_name, reviewer_image_url, 'deletes', use_https)
-
-
-def send_request_for_recent_edit_review_to_socketio(nickname, main_page, port):
-    """
-    Sends request to the socketio server for updating the last reviewer view
-
-    :param nickname: Current users nickname
-    :param main_page: URL of the app itself
-    :param port: Port of the notification server
-    :return: Status code of the request
-    """
-
-    logger('Websocket.lib', 'send_request_for_recent_edit_review_to_socketio', 'main - nickname ' + str(nickname))
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    reviewer_name = db_user.get_global_nickname()
-    reviewer_image_url = get_profile_picture(db_user)
-    use_https = 'dbas' in main_page
-    return __send_request_for_recent_review_to_socketio(port, reviewer_name, reviewer_image_url, 'edits', use_https)
-
-
-def send_request_for_recent_optimization_review_to_socketio(nickname, main_page, port):
-    """
-    Sends request to the socketio server for updating the last reviewer view
-
-    :param nickname: Current users nickname
-    :param main_page: URL of the app itself
-    :param port: Port of the notification server
-    :return: Status code of the request
-    """
-    logger('Websocket.lib', 'send_request_for_recent_optimization_review_to_socketio', 'main - nickname ' + str(nickname))
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    reviewer_name = db_user.get_global_nickname()
-    reviewer_image_url = get_profile_picture(db_user)
-    use_https = 'dbas' in main_page
-    return __send_request_for_recent_review_to_socketio(port, reviewer_name, reviewer_image_url, 'optimizations', use_https)
+    return __send_request_for_recent_review_to_socketio(port, reviewer_name, reviewer_image_url, queue, use_https)
 
 
 def __send_request_for_recent_review_to_socketio(port, reviewer_name, reviewer_image_url, queue, use_https):
