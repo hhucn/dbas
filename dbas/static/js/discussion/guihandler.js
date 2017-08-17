@@ -832,11 +832,11 @@ function GuiHandler() {
 		if (!Cookies.get(LANG_SWITCH_WARNING)) {
 			displayConfirmationDialogWithoutCancelAndFunction(get_it(lang, languageSwitchModalTitle), get_it(lang, languageSwitchModalBody));
 			$('#' + popupConfirmDialogId).on('hide.bs.modal', function () {
-				new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang);
+				new AjaxMainHandler().switchDisplayLanguage(lang);
 				Cookies.set(LANG_SWITCH_WARNING, true, {expires: 180});
 			});
 		} else {
-			new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang);
+			new AjaxMainHandler().switchDisplayLanguage(lang);
 		}
 	};
 }

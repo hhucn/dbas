@@ -196,7 +196,7 @@ $(document).ready(function () {
 	'use strict';
 	
 	$('#admin-login-button').click(function(){
-		new AjaxMainHandler().ajaxLogin($('#admin-login-user').val(), $('#admin-login-pw').val(), true);
+		new AjaxMainHandler().login($('#admin-login-user').val(), $('#admin-login-pw').val(), true);
 	});
 	
 	var data = $('#data');
