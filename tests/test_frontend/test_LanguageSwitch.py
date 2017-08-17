@@ -17,20 +17,23 @@ def teardown():
 
 def test_already_english():
     browser.visit(ROOT + '/ajax_switch_language?_LOCALE_=en')
+    sleep(0.2)
     browser.visit(ROOT)
-    sleep(500)
+    sleep(0.2)
     assert_in('part of the graduate', browser.driver.page_source)
 
 
 def test_switch_to_german():
     browser.visit(ROOT + '/ajax_switch_language?_LOCALE_=de')
+    sleep(0.2)
     browser.visit(ROOT)
-    sleep(500)
+    sleep(0.2)
     assert_in('Teil des Graduierten-Kollegs', browser.driver.page_source)
 
 
 def todo_test_switch_back_to_english():
     browser.visit(ROOT + '/ajax_switch_language?_LOCALE_=en')
+    sleep(0.2)
     browser.visit(ROOT)
-    sleep(500)
+    sleep(0.2)
     assert_in('part of the graduate', browser.driver.page_source)
