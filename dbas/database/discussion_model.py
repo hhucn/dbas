@@ -1962,7 +1962,7 @@ class PremiseGroupSplitted(DiscussionBase):
 
     def __init__(self, review, old_premisegroup, new_premisegroup):
         """
-        Inits a row in current statement splitted table
+        Inits a row in current table
 
         :param review: ReviewDuplicate.uid
         :param old_premisegroup: PremiseGroup.uid
@@ -1993,13 +1993,71 @@ class PremiseGroupMerged(DiscussionBase):
         """
         Inits a row in current statement splitted table
 
-        :param review: ReviewDuplicate.uid
+        :param review: ReviewMerge.uid
         :param old_premisegroup: PremiseGroup.uid
         :param new_premisegroup: PremiseGroup.uid
         """
         self.review_uid = review
         self.old_premisegroup_uid = old_premisegroup
         self.new_premisegroup_uid = new_premisegroup
+        self.timestamp = get_now()
+
+
+class StatementReplacementsByPremiseGroupSplit(DiscussionBase):
+    """
+    List of replaced statements through split action of a pgroup
+    """
+    __tablename__ = 'statement_replacements_by_premisegroup_split'
+    uid = Column(Integer, primary_key=True)
+    review_uid = Column(Integer, ForeignKey('review_split.uid'))
+    old_statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    new_statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    timestamp = Column(ArrowType, default=get_now())
+
+    reviews = relationship('ReviewSplit', foreign_keys=[review_uid])
+    old_statements = relationship('Statement', foreign_keys=[old_statement_uid])
+    new_statements = relationship('Statement', foreign_keys=[new_statement_uid])
+
+    def __init__(self, review, old_statement, new_statement):
+        """
+        Inits a row in current table
+
+        :param review: ReviewSplit.uid
+        :param old_statement: Statement.uid
+        :param new_statement: Statement.uid
+        """
+        self.review_uid = review
+        self.old_statement_uid = old_statement
+        self.new_statement_uid = new_statement
+        self.timestamp = get_now()
+
+
+class StatementReplacementsByPremiseGroupMerge(DiscussionBase):
+    """
+    List of replaced statements through merge action of a pgroup
+    """
+    __tablename__ = 'statement_replacements_by_premisegroups_merge'
+    uid = Column(Integer, primary_key=True)
+    review_uid = Column(Integer, ForeignKey('review_split.uid'))
+    old_statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    new_statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    timestamp = Column(ArrowType, default=get_now())
+
+    reviews = relationship('ReviewSplit', foreign_keys=[review_uid])
+    old_statements = relationship('Statement', foreign_keys=[old_statement_uid])
+    new_statements = relationship('Statement', foreign_keys=[new_statement_uid])
+
+    def __init__(self, review, old_statement, new_statement):
+        """
+        Inits a row in current table
+
+        :param review: ReviewMerge.uid
+        :param old_statement: Statement.uid
+        :param new_statement: Statement.uid
+        """
+        self.review_uid = review
+        self.old_statement_uid = old_statement
+        self.new_statement_uid = new_statement
         self.timestamp = get_now()
 
 

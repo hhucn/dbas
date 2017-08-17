@@ -11,7 +11,8 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, Argument, Premise, Statement, \
     LastReviewerOptimization, ReviewOptimization, ReviewEdit, ReviewEditValue, LastReviewerEdit, LastReviewerDuplicate,\
     ReviewDuplicate, RevokedDuplicate, LastReviewerSplit, LastReviewerMerge, ReviewMerge, ReviewSplit,\
-    ReviewMergeValues, ReviewSplitValues, PremiseGroup, PremiseGroupMerged, PremiseGroupSplitted
+    ReviewMergeValues, ReviewSplitValues, PremiseGroup, PremiseGroupMerged, PremiseGroupSplitted, \
+    StatementReplacementsByPremiseGroupMerge, StatementReplacementsByPremiseGroupSplit
 from dbas.handler.statements import correct_statement
 from dbas.lib import get_all_arguments_by_statement, get_text_for_premisesgroup_uid
 from dbas.logger import logger
@@ -755,10 +756,12 @@ def __merge_premisegroup(review):
 
     # swap the conclusion in every argument as well as premise
     old_statement_ids = [p.statement_uid for p in db_old_premises]
-    db_arguments = DBDiscussionSession.query(Argument).filter(Argument.conclusion_uid.in_(old_statement_ids)).all()
-    for argument in db_arguments:
-        argument.set_conclusion(new_statement.uid)
-        DBDiscussionSession.add(argument)
+    for old_statement_id in old_statement_ids:
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=old_statement_id).all()
+        for argument in db_arguments:
+            argument.set_conclusion(new_statement.uid)
+            DBDiscussionSession.add(argument)
+            DBDiscussionSession.add(StatementReplacementsByPremiseGroupMerge(review.uid, old_statement_id, new_statement.uid))
 
     # add swap to database
     DBDiscussionSession.add(PremiseGroupMerged(review.uid, review.premisesgroup_uid, db_new_premisegroup.uid))
@@ -812,7 +815,7 @@ def __split_premisegroup(review):
         DBDiscussionSession.flush()
         db_new_premise_ids.append(db_new_premise.uid)
 
-        DBDiscussionSession.add(PremiseGroupMerged(review.uid, review.premisesgroup_uid, db_new_premisegroup.uid))
+        DBDiscussionSession.add(PremiseGroupSplitted(review.uid, review.premisesgroup_uid, db_new_premisegroup.uid))
 
     # swap the premisegroup occurence in every argument
     for new_pgroup_uid in db_new_premisegroup_ids:
@@ -821,12 +824,19 @@ def __split_premisegroup(review):
             argument.set_premisegroup(new_pgroup_uid)
             DBDiscussionSession.add(argument)
 
-    # swap the conclusion in every argument as well as premise
-    for statement_uid in [s.uid for s in db_statements]:
-        db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=statement_uid).all()
+    # swap the conclusion in every argument
+    new_statements_uids = [s.uid for s in db_statements]
+    for old_statement_uid in db_old_statement_ids:
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=old_statement_uid).all()
         for argument in db_arguments:
-            argument.set_conclusion(statement_uid)
+            argument.set_conclusion(new_statements_uids[0])
             DBDiscussionSession.add(argument)
+            DBDiscussionSession.add(StatementReplacementsByPremiseGroupSplit(review.uid, old_statement_uid,new_statements_uids[0]))
+
+            for statement_uid in new_statements_uids[1:]:
+                db_argument = Argument(argument.premisesgroup_uid, argument.is_supportive, argument.author_uid, argument.issue_uid, statement_uid, argument.argument_uid, argument.is_disabled)
+                DBDiscussionSession.add(db_argument)
+                DBDiscussionSession.add(StatementReplacementsByPremiseGroupSplit(review.uid, old_statement_uid, statement_uid))
 
     # disable old premises
     # for premise in db_old_premises:

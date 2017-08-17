@@ -10,14 +10,15 @@ from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, Rev
     LastReviewerOptimization, User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit,\
     LastReviewerEdit, ReviewEditValue, TextVersion, Statement, ReviewCanceled, sql_timestamp_pretty_print,\
     ReviewDuplicate, LastReviewerDuplicate, RevokedDuplicate, Argument, Premise, ReviewMerge, ReviewSplit,\
-    PremiseGroupMerged, PremiseGroupSplitted, LastReviewerSplit, LastReviewerMerge
-from dbas.lib import get_text_for_argument_uid, get_profile_picture, is_user_author_or_admin, get_text_for_statement_uid
+    PremiseGroupMerged, PremiseGroupSplitted, LastReviewerSplit, LastReviewerMerge, ReviewSplitValues, \
+    ReviewMergeValues, StatementReplacementsByPremiseGroupSplit, StatementReplacementsByPremiseGroupMerge
+from dbas.lib import get_text_for_argument_uid, get_profile_picture, is_user_author_or_admin, \
+    get_text_for_statement_uid, get_text_for_premisesgroup_uid
 from dbas.logger import logger
 from dbas.review.helper.main import en_or_disable_object_of_review
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from sqlalchemy import and_
 
 
 def get_review_history(main_page, nickname, translator):
@@ -69,6 +70,8 @@ def __get_data(main_page, nickname, translator, is_executed=False):
     optimizations_list = __get_executed_reviews_of('optimizations', main_page, ReviewOptimization, LastReviewerOptimization, translator, is_executed)
     edits_list = __get_executed_reviews_of('edits', main_page, ReviewEdit, LastReviewerEdit, translator, is_executed)
     duplicates_list = __get_executed_reviews_of('duplicates', main_page, ReviewDuplicate, LastReviewerDuplicate, translator, is_executed)
+    splits_list = __get_executed_reviews_of('splits', main_page, ReviewSplit, LastReviewerSplit, translator, is_executed)
+    merges_list = __get_executed_reviews_of('merges', main_page, ReviewMerge, LastReviewerMerge, translator, is_executed)
 
     past_decision = [{
         'title': 'Delete Queue',
@@ -102,6 +105,22 @@ def __get_data(main_page, nickname, translator, is_executed=False):
         'has_reason': False,
         'has_oem_text': False,
         'has_duplicate_text': True
+    }, {
+        'title': 'Splits Queue',
+        'queue': 'splits',
+        'icon': reputation_icons['splits'],
+        'content': splits_list,
+        'has_reason': False,
+        'has_oem_text': True,
+        'has_duplicate_text': False
+    }, {
+        'title': 'Merges Queue',
+        'queue': 'merges',
+        'icon': reputation_icons['merges'],
+        'content': merges_list,
+        'has_reason': False,
+        'has_oem_text': True,
+        'has_duplicate_text': False
     }]
     ret_dict['past_decision'] = past_decision
 
@@ -187,6 +206,8 @@ def __get_executed_review_element_of(table, main_page, review, last_review_type,
     # getting text
     if table == 'duplicates':
         full_text = get_text_for_statement_uid(review.duplicate_statement_uid)
+    elif table in ['splits', 'merges']:
+        full_text, tmp = get_text_for_premisesgroup_uid(review.premisesgroup_uid)
     elif review.statement_uid is None:
         full_text = get_text_for_argument_uid(review.argument_uid)
     else:
@@ -202,11 +223,17 @@ def __get_executed_review_element_of(table, main_page, review, last_review_type,
     short_text += '...' if len(full_text) > length else '.'
     short_text = '<span class="text-primary">' + short_text + '</span>'
 
-    is_okay = False if table == 'optimizations' else True
-    # getting all pro and contra votes for this review
     all_votes = DBDiscussionSession.query(last_review_type).filter_by(review_uid=review.uid)
-    pro_votes = all_votes.filter_by(is_okay=is_okay).all()
-    con_votes = all_votes.filter(and_(last_review_type.is_okay != is_okay)).all()
+    is_okay = False if table == 'optimizations' else True
+    if table is 'merges':
+        pro_votes = all_votes.filter_by(should_merge=is_okay).all()
+        con_votes = all_votes.filter(last_review_type.should_merge != is_okay).all()
+    elif table is 'splits':
+        pro_votes = all_votes.filter_by(should_split=is_okay).all()
+        con_votes = all_votes.filter(last_review_type.should_split != is_okay).all()
+    else:
+        pro_votes = all_votes.filter_by(is_okay=is_okay).all()
+        con_votes = all_votes.filter(last_review_type.is_okay != is_okay).all()
 
     # getting the users which have voted
     pro_list = [__get_user_dict_for_review(pro.reviewer_uid, main_page) for pro in pro_votes]
@@ -283,6 +310,30 @@ def __handle_table_of_review_element(table, entry, review, short_text, full_text
         text = get_text_for_statement_uid(review.original_statement_uid)
         entry['statement_duplicate_shorttext'] = text[0:length] + ('...' if len(text) > length else '')
         entry['statement_duplicate_fulltext'] = text
+
+    if table is 'splits':
+        oem_fulltext, tmp = get_text_for_premisesgroup_uid(review.premisesgroup_uid)
+        full_text = oem_fulltext
+        db_values = DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=review.uid).all()
+        if db_values:
+            full_text = str([value.content for value in db_values])
+        entry['argument_oem_shorttext'] = oem_fulltext[0:length] + '...' if len(oem_fulltext) > length else oem_fulltext
+        entry['argument_oem_fulltext'] = oem_fulltext
+        entry['argument_shorttext'] = full_text[0:length] + '...' if len(full_text) > length else full_text
+        entry['argument_fulltext'] = full_text
+
+    if table is 'merges':
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=review.premisesgroup_uid).all()
+        oem_fulltext = str([get_text_for_statement_uid(p.statement_uid) for p in db_premises])
+        full_text = oem_fulltext
+        db_values = DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=review.uid).all()
+        if db_values:
+            full_text = str([value.content for value in db_values])
+        full_text = ' and '.join(full_text)
+        entry['argument_oem_shorttext'] = oem_fulltext[0:length] + '...' if len(oem_fulltext) > length else oem_fulltext
+        entry['argument_oem_fulltext'] = oem_fulltext
+        entry['argument_shorttext'] = full_text[0:length] + '...' if len(full_text) > length else full_text
+        entry['argument_fulltext'] = full_text
 
     return entry
 
@@ -369,16 +420,30 @@ def revoke_old_decision(queue, uid, lang, nickname):
         success = _t.get(_.dataRemoved)
 
     elif queue == 'merges':
-        # db_review = DBDiscussionSession.query(ReviewDuplicate).get(uid)
-        # db_review.set_revoked(True)
-        # success = _t.get(_.dataRemoved)
-        error = 'TODO 1'
+        db_review = DBDiscussionSession.query(ReviewMerge).get(uid)
+        db_review.set_revoked(True)
+        db_pgroup_splitted = DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=uid).all()
+        replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupMerge).filter_by(review_uid=uid).all()
+        __undo_premisegroups(db_pgroup_splitted, replacements)
+
+        DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=uid).delete()
+        DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=uid).delete()
+        DBDiscussionSession.query(StatementReplacementsByPremiseGroupMerge).filter_by(review_uid=uid).delete()
+
+        success = _t.get(_.dataRemoved)
 
     elif queue == 'splits':
-        # db_review = DBDiscussionSession.query(ReviewDuplicate).get(uid)
-        # db_review.set_revoked(True)
-        # success = _t.get(_.dataRemoved)
-        error = 'TODO 2'
+        db_review = DBDiscussionSession.query(ReviewSplit).get(uid)
+        db_review.set_revoked(True)
+        db_pgroup_merged = DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=uid).all()
+        replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupSplit).filter_by(review_uid=uid).all()
+        __undo_premisegroups(db_pgroup_merged, replacements)
+
+        DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=uid).delete()
+        DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=uid).delete()
+        DBDiscussionSession.query(StatementReplacementsByPremiseGroupSplit).filter_by(review_uid=uid).delete()
+
+        success = _t.get(_.dataRemoved)
 
     else:
         error = _t.get(_.internalKeyError)
@@ -387,6 +452,34 @@ def revoke_old_decision(queue, uid, lang, nickname):
     transaction.commit()
 
     return success, error
+
+
+def __undo_premisegroups(pgroups_splitted_or_merged, replacements):
+    """
+
+    :param pgroups_splitted_or_merged:
+    :param replacements:
+    :return:
+    """
+    for element in pgroups_splitted_or_merged:
+        old_pgroup = element.old_premisegroup_uid
+        new_pgroup = element.new_premisegroup_uid
+
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=new_pgroup).all()
+        for argument in db_arguments:
+            argument.set_premisegroup(old_pgroup)
+            DBDiscussionSession.add(argument)
+
+    for element in replacements:
+        old_statement = element.old_statement_uid
+        new_statement = element.new_premisegroup_uid
+
+        db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=new_statement).all()
+        for argument in db_arguments:
+            argument.set_conclusion(old_statement)
+            DBDiscussionSession.add(argument)
+
+    DBDiscussionSession.flush()
 
 
 def cancel_ongoing_decision(queue, uid, lang, nickname):
