@@ -20,6 +20,7 @@ from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid,\
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
 
 pages = ['deletes', 'optimizations', 'edits', 'duplicates', 'splits', 'merges']
 
@@ -459,7 +460,13 @@ def __get_subpage_dict_for_splits(request, db_user, translator, main_page):
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
     premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=rnd_review.premisesgroup_uid).all()
     text, tmp = get_text_for_premisesgroup_uid(rnd_review.premisesgroup_uid)
-    splitted_text = [rsv.content for rsv in DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=rnd_review.uid).all()]
+    db_review_values = DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=rnd_review.uid).all()
+    if db_review_values:
+        splitted_text = [rsv.content for rsv in db_review_values]
+        pgroup_only = False
+    else:
+        splitted_text = [get_text_for_statement_uid(p.statement_uid) for p in premises]
+        pgroup_only = True
     issue = DBDiscussionSession.query(Issue).get(premises[0].issue_uid).title
     reason = translator.get(_.argumentFlaggedBecauseSplit)
 
@@ -474,7 +481,8 @@ def __get_subpage_dict_for_splits(request, db_user, translator, main_page):
         'splitted_text': splitted_text,
         'reason': reason,
         'issue': issue,
-        'extra_info': extra_info
+        'extra_info': extra_info,
+        'pgroup_only': pgroup_only
     }
 
 
@@ -512,7 +520,18 @@ def __get_subpage_dict_for_merges(request, db_user, translator, main_page):
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
     premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=rnd_review.premisesgroup_uid).all()
     text = [get_text_for_statement_uid(p.statement_uid) for p in premises]
-    merged_text = DBDiscussionSession.query(ReviewMergeValues).get(rnd_review.uid).content
+    db_review_values = DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=rnd_review.uid).all()
+
+    discussion_lang = DBDiscussionSession.query(Statement).get(premises[0].uid).lang
+    translator_discussion = Translator(discussion_lang)
+
+    if db_review_values:
+        aand = translator_discussion.get(_.aand)
+        merged_text = ' {} '.format(aand).join([rsv.content for rsv in db_review_values])
+        pgroup_only = False
+    else:
+        merged_text, tmp = get_text_for_premisesgroup_uid(rnd_review.premisesgroup_uid)
+        pgroup_only = True
     issue = DBDiscussionSession.query(Issue).get(premises[0].issue_uid).title
     reason = translator.get(_.argumentFlaggedBecauseMerge)
 
@@ -527,7 +546,8 @@ def __get_subpage_dict_for_merges(request, db_user, translator, main_page):
         'merged_text': merged_text,
         'reason': reason,
         'issue': issue,
-        'extra_info': extra_info
+        'extra_info': extra_info,
+        'pgroup_only': pgroup_only
     }
 
 

@@ -1956,7 +1956,7 @@ def split_or_merge_statement(request):
         pgroup_uid = request.params['pgroup_uid']
         key = request.params['key']
         text_values = request.params['text_values']
-        prepared_dict = review.mergesplit(key, pgroup_uid, text_values, nickname, ui_locales)
+        prepared_dict = review.merge_or_split_statement(key, pgroup_uid, text_values, nickname, ui_locales)
 
     except KeyError as e:
         _t = Translator(ui_locales)
@@ -1988,7 +1988,7 @@ def split_or_merge_premisegroup(request):
         key = request.params['key']
         nickname = request.authenticated_userid
 
-        prepared_dict = review.mergesplit_premisegroup(pgroup_uid, key, nickname, ui_locales)
+        prepared_dict = review.merge_or_split_premisegroup(key, pgroup_uid, nickname, ui_locales)
 
     except KeyError as e:
         _t = Translator(ui_locales)

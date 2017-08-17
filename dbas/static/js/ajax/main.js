@@ -9,7 +9,7 @@ function AjaxMainHandler(){
 	 * Sends a request for language change
 	 * @param new_lang is the shortcut for the language
 	 */
-	this.ajaxSwitchDisplayLanguage = function (new_lang){
+	this.switchDisplayLanguage = function (new_lang){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: mainpage + 'ajax_switch_language',
@@ -41,7 +41,7 @@ function AjaxMainHandler(){
 	/**
 	 *
 	 */
-	this.ajaxLogin = function(user, password, showGlobalError){
+	this.login = function(user, password, showGlobalError){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		var url = window.location.href;
 		var keep_login = $('#keep-login-box').prop('checked') ? 'true' : 'false';
@@ -90,7 +90,7 @@ function AjaxMainHandler(){
 	/**
 	 *
 	 */
-	this.ajaxLogout = function(){
+	this.logout = function(){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: mainpage + 'ajax_user_logout',
@@ -120,7 +120,7 @@ function AjaxMainHandler(){
 	/**
 	 *
 	 */
-	this.ajaxRegistration = function(){
+	this.registration = function(){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		var firstname = $('#userfirstname-input').val(),
 			lastname = $('#userlastname-input').val(),
@@ -169,7 +169,7 @@ function AjaxMainHandler(){
 	/**
 	 *
 	 */
-	this.ajaxPasswordRequest = function(){
+	this.passwordRequest = function(){
 		var email = $('#password-request-email-input').val();
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
@@ -195,7 +195,7 @@ function AjaxMainHandler(){
 	/**
 	 * Get-Request for an roundhouse kick
 	 */
-	this.ajaxRoundhouseKick = function(){
+	this.roundhouseKick = function(){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'additional_service',
@@ -235,108 +235,4 @@ function AjaxMainHandler(){
 					' style="float:right;">powered by <a href="http://yomomma.info/">http://yomomma.info/</a></span>');
 		});
 	};
-	
-	/**
-	 *
-	 * @param uid
-	 * @param reason
-	 * @param is_argument
-	 * @param extra_uid
-	 */
-	this.ajaxFlagArgumentOrStatement = function(uid, reason, is_argument, extra_uid){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_flag_argument_or_statement',
-			method: 'POST',
-			data: {
-				uid: uid,
-				reason: reason,
-				extra_uid: extra_uid,
-				is_argument: is_argument
-			},
-			global: false,
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxFlagArgumentDone(data) {
-			var parsedData = $.parseJSON(data);
-			if (parsedData.error.length !== 0){
-				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
-			} else if (parsedData.info.length !== 0) {
-				setGlobalInfoHandler('Ohh!', parsedData.info);
-				$('#popup-duplicate-statement').modal('hide');
-			} else {
-				setGlobalSuccessHandler('Yeah!', parsedData.success);
-				$('#popup-duplicate-statement').modal('hide');
-			}
-			
-		}).fail(function ajaxFlagArgumentFail() {
-			setGlobalErrorHandler('', _t_discussion(requestFailed));
-		});
-	};
-	
-	/**
-	 *
-	 * @param pgroup_uid
-	 * @param key
-	 * @param text_values
-	 */
-	this.splitOrMergeStatements = function(pgroup_uid, key, text_values){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_split_or_merge_statement',
-			method: 'POST',
-			data: {
-				pgroup_uid: pgroup_uid,
-				key: key,
-				text_values: JSON.stringify(text_values)
-			},
-			global: false,
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxSplitOrMergeStatementsDone(data) {
-			var parsedData = $.parseJSON(data);
-			if (parsedData.error.length !== 0){
-				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
-			} else if (parsedData.info.length !== 0) {
-				setGlobalInfoHandler('Ohh!', parsedData.info);
-			} else {
-				setGlobalSuccessHandler('Yeah!', parsedData.success);
-			}
-			
-		}).fail(function ajaxSplitOrMergeStatementsFail() {
-			setGlobalErrorHandler('', _t_discussion(requestFailed));
-		});
-	};
-	
-	this.splitOrMergePremiseGroup = function(key, pgroup_uid){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_split_or_merge_premisegroup',
-			method: 'POST',
-			data: {
-				pgroup_uid: pgroup_uid,
-				key: key
-			},
-			global: false,
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxSplitOrMergePremiseGroupDone(data) {
-			var parsedData = $.parseJSON(data);
-			if (parsedData.error.length !== 0){
-				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
-			} else if (parsedData.info.length !== 0) {
-				setGlobalInfoHandler('Ohh!', parsedData.info);
-			} else {
-				setGlobalSuccessHandler('Yeah!', parsedData.success);
-			}
-			
-		}).fail(function ajaxSplitOrMergePremiseGroupFail() {
-			setGlobalErrorHandler('', _t_discussion(requestFailed));
-		});}
 }

@@ -72,32 +72,63 @@ def flag_element(uid, reason, nickname, is_argument, extra_uid=None):
     return _.thxForFlagText, '', ''
 
 
-def flag_pgroup_for_mergesplit(key, pgroup_uid, dates, nickname):
+def flag_statement_for_merge_or_split(key, pgroup_uid, text_values, nickname):
     """
-    Flags an premisegroup for a merge or split event
+    Flags a statement for a merge or split event
 
     :param key: either 'split' or 'merge'
     :param pgroup_uid: ID of the selected PremiseGroup
-    :param dates: text values
+    :param text_values: text values
     :param nickname: Users nickname
     :return: success, info, error
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
-        logger('FlagingHelper', 'flag_element', 'No user', error=True)
+        logger('FlagingHelper', 'flag_statement_for_merge_or_split', 'No user', error=True)
         return '', '', _.noRights
 
     # was this already flagged?
     flag_status = __get_flag_status(None, None, pgroup_uid, db_user.uid)
     if flag_status:
-        logger('FlagingHelper', 'flag_element', 'already flagged')
+        logger('FlagingHelper', 'flag_statement_for_merge_or_split', 'already flagged')
         # who flagged this pgroup?
         return '', _.alreadyFlaggedByYou if flag_status == 'user' else _.alreadyFlaggedByOthers, ''
 
     if key is 'merge':
-        __add_merge_review(pgroup_uid, dates, db_user.uid)
+        __add_merge_review(pgroup_uid, text_values, db_user.uid)
     elif key is 'split':
-        __add_split_review(pgroup_uid, dates, db_user.uid)
+        __add_split_review(pgroup_uid, text_values, db_user.uid)
+    else:
+        return '', '', _.internalKeyError
+
+    return _.thxForFlagText, '', ''
+
+
+def flag_pgroup_for_merge_or_split(key, pgroup_uid, nickname):
+    """
+    Flags a premisegroup for a merge or split event
+
+    :param key: either 'split' or 'merge'
+    :param pgroup_uid: ID of the selected PremiseGroup
+    :param nickname: Users nickname
+    :return: success, info, error
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
+        logger('FlagingHelper', 'flag_pgroup_for_merge_or_split', 'No user', error=True)
+        return '', '', _.noRights
+
+    # was this already flagged?
+    flag_status = __get_flag_status(None, None, pgroup_uid, db_user.uid)
+    if flag_status:
+        logger('FlagingHelper', 'flag_pgroup_for_merge_or_split', 'already flagged')
+        # who flagged this pgroup?
+        return '', _.alreadyFlaggedByYou if flag_status == 'user' else _.alreadyFlaggedByOthers, ''
+
+    if key is 'merge':
+        __add_merge_review(pgroup_uid, db_user.uid)
+    elif key is 'split':
+        __add_split_review(pgroup_uid, db_user.uid)
     else:
         return '', '', _.internalKeyError
 
@@ -360,39 +391,43 @@ def __add_duplication_review(duplicate_statement_uid, original_statement_uid, us
     transaction.commit()
 
 
-def __add_split_review(pgroup_uid, dates, user_uid):
+def __add_split_review(pgroup_uid, user_uid, text_values=None):
     """
-    Adds a row in the ReviewSplit table as well as the values
+    Adds a row in the ReviewSplit table as well as the values, if not none
 
     :param pgroup_uid: ID of the selected PremiseGroup
-    :param dates: text values
     :param user_uid: ID of the user
+    :param text_values: text values or None, if you want to split the premisegroup itself
     :return: None
     """
-    logger('FlagingHelper', 'flag_element', 'Flag pgroup {} by user {} for splitting'.format(pgroup_uid, user_uid))
+    logger('FlagingHelper', 'flag_element', 'Flag pgroup {} by user {} for splitting with {} additional values'.format(pgroup_uid, user_uid, len(text_values) if text_values else 0))
     review_split = ReviewSplit(detector=user_uid, premisegroup=pgroup_uid)
     DBDiscussionSession.add(review_split)
     DBDiscussionSession.flush()
 
-    DBDiscussionSession.add_all([ReviewSplitValues(review=review_split.uid, content=date) for date in dates])
-    DBDiscussionSession.flush()
+    if text_values:
+        DBDiscussionSession.add_all([ReviewSplitValues(review=review_split.uid, content=value) for value in text_values])
+        DBDiscussionSession.flush()
+
     transaction.commit()
 
 
-def __add_merge_review(pgroup_uid, dates, user_uid):
+def __add_merge_review(pgroup_uid, user_uid, text_values=None):
     """
-    Adds a row in the ReviewMerge table as well as the values
+    Adds a row in the ReviewMerge table as well as the values, if not none
 
     :param pgroup_uid: ID of the selected PremiseGroup
-    :param dates: text values
     :param user_uid: ID of the user
+    :param text_values: text values or None, if you want to merge the premisegroup itself
     :return: None
     """
-    logger('FlagingHelper', 'flag_element', 'Flag pgroup {} by user {} for merging'.format(pgroup_uid, user_uid))
+    logger('FlagingHelper', 'flag_element', 'Flag pgroup {} by user {} for merging with {} additional values'.format(pgroup_uid, user_uid, len(text_values) if text_values else 0))
     review_merge = ReviewMerge(detector=user_uid, premisegroup=pgroup_uid)
     DBDiscussionSession.add(review_merge)
     DBDiscussionSession.flush()
 
-    DBDiscussionSession.add_all([ReviewMergeValues(review=review_merge.uid, content=date) for date in dates])
-    DBDiscussionSession.flush()
+    if text_values:
+        DBDiscussionSession.add_all([ReviewMergeValues(review=review_merge.uid, content=value) for value in text_values])
+        DBDiscussionSession.flush()
+
     transaction.commit()

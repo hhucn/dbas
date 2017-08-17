@@ -189,7 +189,7 @@ function PopupHandler() {
 				// do not mark arguments for optimizations
 				return false;
 			}
-			new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, is_argument, null);
+			new AjaxReviewHandler().flagArgumentOrStatement(uid, reason, is_argument, null);
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
 		});
@@ -454,7 +454,6 @@ function PopupHandler() {
 	this.__buildMergeSplitPopup = function(key, uid){
 		var i = 1;
 		var body = $('#popup-' + key + '-statement-body');
-		new PopupHandler().__setQuestionForSplitMergeStatementPopup(key, body.children().length);
 		
 		$.each($('label[for="item_' + uid + '"]:even'), function(){
 			var txt = $(this).text();
@@ -476,7 +475,7 @@ function PopupHandler() {
 			$.each(body.find('input'), function(){
 				values.push($(this).val());
 			});
-			new AjaxMainHandler().splitOrMergeStatements(uid, key, values);
+			new AjaxReviewHandler().splitOrMerge(uid, key, values);
 		});
 		
 		// hover and on-click-function for the add key
@@ -509,6 +508,7 @@ function PopupHandler() {
 			$('#popup-' + key + '-statement-btn-yes').prop('disabled', body.children().length === 0);
 			new PopupHandler().__setQuestionForSplitMergeStatementPopup(key, body.children().length);
 		});
+		new PopupHandler().__setQuestionForSplitMergeStatementPopup(key, body.children().length);
 	};
 	
 	/**
@@ -545,8 +545,8 @@ function PopupHandler() {
 	 */
 	this.__addInputFormGroup = function(counter, body, text){
 		var div = $('<div>').addClass('form-group').attr('data-counter', counter);
-		var label = $('<label>').attr({'class': 'col-lg-3 control-label', 'for': 'focusedInput' + counter}).text(_t_discussion(statement) + ' ' + counter);
-		var inner_div = $('<div>').addClass('col-lg-9');
+		var label = $('<label>').attr({'class': 'col-lg-2 control-label', 'for': 'focusedInput' + counter}).text(_t_discussion(statement) + ' ' + counter).css('padding', '0.7em 0 0 0');
+		var inner_div = $('<div>').addClass('col-lg-10').css('padding-left', 0, 'padding-right', 0);
 		var input = $('<input>').attr({'class': 'form-control', 'id': 'focusedInput' + counter, 'type': 'text', 'value': text, 'placeholder': '...'});
 		var proposal = $('<div>').attr({'class': 'col-md-12 list-group', 'id': 'proposal-mergesplit-list-group-focusedInput' + counter});
 		
@@ -556,7 +556,7 @@ function PopupHandler() {
 				new AjaxDiscussionHandler().fuzzySearch(escapeHtml(val), 'focusedInput' + counter, fuzzy_find_mergesplit, '');
 			}, 200);
 		});
-		body.append(div.append(label).append(inner_div.apend(input)).append(proposal));
+		body.append(div.append(label).append(inner_div.append(input)).append(proposal));
 	};
 	
 	/**
@@ -566,7 +566,7 @@ function PopupHandler() {
 	 * @param text
 	 */
 	this.showMergePremisegroupPopup = function(uid, reason, text){
-		this.__buildMergeSplitPgroupPopup('merge', uid, text, new AjaxMainHandler().splitOrMergePremiseGroup);
+		this.__buildMergeSplitPgroupPopup('merge', uid, text, new AjaxReviewHandler().splitOrMerge);
 	};
 	
 	/**
@@ -576,7 +576,7 @@ function PopupHandler() {
 	 * @param text
 	 */
 	this.showSplitPremisegroupPopup = function(uid, reason, text){
-		this.__buildMergeSplitPgroupPopup('split', uid, text, new AjaxMainHandler().splitOrMergePremiseGroup);
+		this.__buildMergeSplitPgroupPopup('split', uid, text, new AjaxReviewHandler().splitOrMerge);
 	};
 	
 	/**
@@ -593,7 +593,7 @@ function PopupHandler() {
 		var popup = $('#popup-' + key + '-premisegroup');
 		popup.modal('show');
 		$('#popup-' + key + '-premisegroup-text').text(text);
-		var body = $('#popup-' + key + '-premisegroup-body');
+		var body = $('#popup-' + key + '-premisegroup-body').css('margin-top', '0.5em');
 		body.empty();
 		$.each($('label[for="item_' + uid + '"]:even'), function(){
 			var txt = $(this).text();
@@ -602,7 +602,7 @@ function PopupHandler() {
 			}
 			var child = $('<li>');
 			child.attr({'class': 'lead', 'id': 'popup-' + key + '-premisegroup-text-' + $.now()});
-			child.css('margin-bottom', '0').text(txt);
+			child.css('margin-bottom', '0.5em').text(txt);
 			body.append(child);
 		});
 		
@@ -612,7 +612,7 @@ function PopupHandler() {
 			$(this).removeClass('btn-success').addClass('btn-secondary');
 		}).off('click').click(function(){
 			$('#popup-' + key + '-premisegroup').modal('hide');
-			fct(key, uid);
+			fct(key, uid, undefined);
 		});
 	};
 	
@@ -652,7 +652,7 @@ function PopupHandler() {
 		btn.off('click').removeClass('disabled');
 		btn.click(function(){
 			var oem_uid = $('#' + popupDuplicateStatementTextId).data('statement-uid');
-			new AjaxMainHandler().ajaxFlagArgumentOrStatement(uid, reason, false, oem_uid);
+			new AjaxReviewHandler().flagArgumentOrStatement(uid, reason, false, oem_uid);
 		});
 	};
 	

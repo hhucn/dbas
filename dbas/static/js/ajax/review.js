@@ -7,6 +7,84 @@ function AjaxReviewHandler(){
 	
 	/**
 	 *
+	 * @param uid
+	 * @param reason
+	 * @param is_argument
+	 * @param extra_uid
+	 */
+	this.flagArgumentOrStatement = function(uid, reason, is_argument, extra_uid){
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_flag_argument_or_statement',
+			method: 'POST',
+			data: {
+				uid: uid,
+				reason: reason,
+				extra_uid: extra_uid,
+				is_argument: is_argument
+			},
+			global: false,
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrf_token
+			}
+		}).done(function ajaxFlagArgumentDone(data) {
+			var parsedData = $.parseJSON(data);
+			if (parsedData.error.length !== 0){
+				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+			} else if (parsedData.info.length !== 0) {
+				setGlobalInfoHandler('Ohh!', parsedData.info);
+				$('#popup-duplicate-statement').modal('hide');
+			} else {
+				setGlobalSuccessHandler('Yeah!', parsedData.success);
+				$('#popup-duplicate-statement').modal('hide');
+			}
+			
+		}).fail(function ajaxFlagArgumentFail() {
+			setGlobalErrorHandler('', _t_discussion(requestFailed));
+		});
+	};
+	
+	/**
+	 *
+	 * @param pgroup_uid
+	 * @param key
+	 * @param text_values
+	 */
+	this.splitOrMerge = function(pgroup_uid, key, text_values){
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		var is_premisegroup = typeof text_values === "undefined";
+		var url = 'ajax_split_or_merge_' + (is_premisegroup? 'premisegroup' : 'statement');
+		$.ajax({
+			url: url,
+			method: 'POST',
+			data: {
+				pgroup_uid: pgroup_uid,
+				key: key,
+				text_values: JSON.stringify(text_values)
+			},
+			global: false,
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrf_token
+			}
+		}).done(function ajaxSplitOrMergeStatementsDone(data) {
+			var parsedData = $.parseJSON(data);
+			if (parsedData.error.length !== 0){
+				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+			} else if (parsedData.info.length !== 0) {
+				setGlobalInfoHandler('Ohh!', parsedData.info);
+			} else {
+				setGlobalSuccessHandler('Yeah!', parsedData.success);
+			}
+			
+		}).fail(function ajaxSplitOrMergeStatementsFail() {
+			setGlobalErrorHandler('', _t_discussion(requestFailed));
+		});
+	};
+	
+	/**
+	 *
 	 * @param review_uid
 	 * @param should_lock is true, when the review should be locked and false otherwise
 	 * @param review_instance
