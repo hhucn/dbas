@@ -2266,7 +2266,7 @@ def __setup_review_dummy_database(session):
     value09 = ReviewSplitValues(review=review23.uid, content='amet, consetetur sadipscing elitr, sed (value09)')
     value10 = ReviewSplitValues(review=review23.uid, content='diam nonumy eirmod tempor invidunt ut (value10)')
     # session.add_all([value01, value02, value03, value04, value05, value06, value07, value08, value09, value10])
-    session.add_all([value01, value06, value07, value08, value09, value10])
+    session.add_all([value01, value02, value06, value07, value08, value09, value10])
     session.flush()
 
     reviewer01 = LastReviewerOptimization(user[18], review01.uid, True)

@@ -650,7 +650,7 @@ def __bend_objects_of_duplicate_review(db_review):
     :param db_review: Review
     :return: None
     """
-    msg = 'Review {} with dupl {} and oem {}'.format(db_review.uid, 
+    msg = 'Review {} with dupl {} and oem {}'.format(db_review.uid,
                                                      db_review.duplicate_statement_uid,
                                                      db_review.original_statement_uid)
     logger('review_main_helper', '__bend_objects_of_duplicate_review', msg)
@@ -769,8 +769,8 @@ def __merge_premisegroup(review):
     # disable old statements and premises
     # db_old_statements = DBDiscussionSession.query(Statement).filter(Statement.uid.in_(old_statement_ids)).all()
     # for element in db_old_premises + db_old_statements:
-        # element.set_disable(True)
-        # DBDiscussionSession.add(element)
+    #    element.set_disable(True)
+    #    DBDiscussionSession.add(element)
 
     # finish
     DBDiscussionSession.flush()
@@ -801,7 +801,7 @@ def __split_premisegroup(review):
         logger('review_main_helper', '__split_premisegroup', 'just split the premisegroup')
         db_statements = DBDiscussionSession.query(Statement).filter(Statement.uid.in_(db_old_statement_ids)).all()
 
-    # n new premisegroups, for each statement a new one
+    # new premisegroups, for each statement a new one
     db_new_premisegroup_ids = []
     db_new_premise_ids = []
     for statement in db_statements:
@@ -831,7 +831,7 @@ def __split_premisegroup(review):
         for argument in db_arguments:
             argument.set_conclusion(new_statements_uids[0])
             DBDiscussionSession.add(argument)
-            DBDiscussionSession.add(StatementReplacementsByPremiseGroupSplit(review.uid, old_statement_uid,new_statements_uids[0]))
+            DBDiscussionSession.add(StatementReplacementsByPremiseGroupSplit(review.uid, old_statement_uid, new_statements_uids[0]))
 
             for statement_uid in new_statements_uids[1:]:
                 db_argument = Argument(argument.premisesgroup_uid, argument.is_supportive, argument.author_uid, argument.issue_uid, statement_uid, argument.argument_uid, argument.is_disabled)
@@ -840,16 +840,15 @@ def __split_premisegroup(review):
 
     # disable old premises
     # for premise in db_old_premises:
-        # premise.set_disable(True)
-        # DBDiscussionSession.add(premise)
+    #     premise.set_disable(True)
+    #     DBDiscussionSession.add(premise)
 
     # disable old statements and premises
     # db_old_statements = DBDiscussionSession.query(Statement).filter(Statement.uid.in_(db_old_statement_ids)).all()
     # for element in db_old_premises + db_old_statements:
-        # element.set_disable(True)
-        # DBDiscussionSession.add(element)
+    #     element.set_disable(True)
+    #     DBDiscussionSession.add(element)
 
     # finish
     DBDiscussionSession.flush()
     transaction.commit()
-
