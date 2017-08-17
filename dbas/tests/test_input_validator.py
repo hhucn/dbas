@@ -114,8 +114,8 @@ class InputValidatorTests(unittest.TestCase):
         self.assertEqual(undercut_string_false, False)
 
         # rebut
-        rebut_true = check_reaction(attacked_arg_uid=32,
-                                    attacking_arg_uid=36,
+        rebut_true = check_reaction(attacked_arg_uid=4,
+                                    attacking_arg_uid=5,
                                     relation='rebut',
                                     is_history=False)
         self.assertEqual(rebut_true, True)
