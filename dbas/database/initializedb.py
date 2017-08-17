@@ -321,7 +321,7 @@ def init_dummy_votes(argv=sys.argv):
     with transaction.manager:
         __setup_dummy_seen_by(DBDiscussionSession)
         __setup_dummy_clicks(DBDiscussionSession)
-        __setup_review_dummy_database(DBDiscussionSession)
+        # __setup_review_dummy_database(DBDiscussionSession)
 
 
 def setup_news_db(session, ui_locale):

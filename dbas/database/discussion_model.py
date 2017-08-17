@@ -1918,66 +1918,54 @@ class RevokedDuplicate(DiscussionBase):
         self.timestamp = get_now()
 
 
-class StatementSplitted(DiscussionBase):
+class PremiseGroupSplitted(DiscussionBase):
     """
-    StatementsSplitted-table with several columns.
+    PremiseGroupSplitted-table with several columns.
     """
-    __tablename__ = 'statements_splitted'
+    __tablename__ = 'premisegroup_splitted'
     uid = Column(Integer, primary_key=True)
     review_uid = Column(Integer, ForeignKey('review_split.uid'))
-    new_statement_uid = Column(Integer, ForeignKey('statements.uid'))
+    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
     timestamp = Column(ArrowType, default=get_now())
 
     reviews = relationship('ReviewSplit', foreign_keys=[review_uid])
-    new_statements = relationship('Statement', foreign_keys=[new_statement_uid])
+    premsiegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
 
-    def __init__(self, review, new_statement):
+    def __init__(self, review, premisegroup_uid):
         """
         Inits a row in current statement splitted table
 
         :param review: ReviewDuplicate.uid
-        :param new_statement: Statement.uid
+        :param premisesgroup_uid: Statement.uid
         """
         self.review_uid = review
-        self.new_statement_uid = new_statement
+        self.premisegroup_uid = premisegroup_uid
         self.timestamp = get_now()
 
 
-class StatementMerged(DiscussionBase):
+class PremiseGroupMerged(DiscussionBase):
     """
     Table with several columns to indicate which statement should be merged to a new one
     """
-    __tablename__ = 'statements_merged'
+    __tablename__ = 'premisegroup_merged'
     uid = Column(Integer, primary_key=True)
     review_uid = Column(Integer, ForeignKey('review_merge.uid'))
-    statement_uid = Column(Integer, ForeignKey('statements.uid'))
-    new_statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=True)
+    premisegroup_uid = Column(Integer, ForeignKey('premisegroups.uid'))
     timestamp = Column(ArrowType, default=get_now())
 
     reviews = relationship('ReviewMerge', foreign_keys=[review_uid])
-    statements = relationship('Statement', foreign_keys=[statement_uid])
-    new_statements = relationship('Statement', foreign_keys=[new_statement_uid])
+    premsiegroups = relationship('PremiseGroup', foreign_keys=[premisegroup_uid])
 
-    def __init__(self, review, statement, new_statement=None):
+    def __init__(self, review, premisegroup_uid):
         """
-        Inits a row in current statement merged table
+        Inits a row in current statement splitted table
 
         :param review: ReviewDuplicate.uid
-        :param statement: Statement.uid
+        :param premisesgroup_uid: Statement.uid
         """
         self.review_uid = review
-        self.statement_uid = statement
-        self.new_statement_uid = new_statement
+        self.premisegroup_uid = premisegroup_uid
         self.timestamp = get_now()
-
-    def set_new_statement(self, new_statement):
-        """
-        Sets the uid of the new created statement
-
-        :param new_statement: Statement.uid
-        :return: None
-        """
-        self.new_statement_uid = new_statement
 
 
 class RSS(DiscussionBase):
