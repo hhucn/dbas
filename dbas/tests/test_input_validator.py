@@ -87,7 +87,6 @@ class InputValidatorTests(unittest.TestCase):
                                                 is_history=True)
         self.assertEqual(undermine_string_false, False)
 
-
     def test_check_reaction_undercut(self):
         # undercut
         undercut_true = check_reaction(attacked_arg_uid=42,
@@ -113,7 +112,6 @@ class InputValidatorTests(unittest.TestCase):
                                                relation='undercut',
                                                is_history=True)
         self.assertEqual(undercut_string_false, False)
-
 
     def test_check_reaction_rebut(self):
         # rebut
@@ -159,7 +157,6 @@ class InputValidatorTests(unittest.TestCase):
                                             relation='rebut',
                                             is_history=True)
         self.assertEqual(rebut_string_false, False)
-
 
     def test_check_reaction_end(self):
         # end
