@@ -911,31 +911,30 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_review_splitted_premisegroup(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import review_splitted_premisegroup as ajax
+        # from dbas.views import review_splitted_premisegroup as ajax
         pass
 
     def test_review_merged_premisegroup(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import review_merged_premisegroup as ajax
+        # from dbas.views import review_merged_premisegroup as ajax
         pass
 
     def test_cancel_review_splitted_premisegroup(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import cancel_review as ajax
+        # from dbas.views import cancel_review as ajax
         pass
 
     def test_cancel_review_merged_premisegroup(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import cancel_review as ajax
+        # from dbas.views import cancel_review as ajax
         pass
 
     def test_undo_review_splitted_premisegroup(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import undo_review as ajax
+        # from dbas.views import undo_review as ajax
         pass
 
     def test_undo_review_merged_premisegroup(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import undo_review as ajax
+        # from dbas.views import undo_review as ajax
         pass
-

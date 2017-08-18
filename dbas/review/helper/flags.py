@@ -94,7 +94,7 @@ def flag_statement_for_merge_or_split(key, pgroup_uid, text_values, nickname):
         logger('FlagingHelper', 'flag_statement_for_merge_or_split', 'No pgroup', error=True)
         return '', '', _.internalKeyError
 
-    if len(text_values) is 0 or any(len(tv)<10 for tv in text_values):
+    if len(text_values) is 0 or any(len(tv) < 5 for tv in text_values):
         logger('FlagingHelper', 'flag_statement_for_merge_or_split', 'Values to short', error=True)
         return '', '', _.minLength
 
