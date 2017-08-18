@@ -2,7 +2,9 @@ image: docker
 
 stages:
   - build
-  - test
+  - style_guides
+  - frontend_test
+  - unit_test
   - deploy
   - cleanup
 
