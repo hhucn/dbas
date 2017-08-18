@@ -95,9 +95,9 @@ def flag_statement_for_merge_or_split(key, pgroup_uid, text_values, nickname):
         return '', _.alreadyFlaggedByYou if flag_status == 'user' else _.alreadyFlaggedByOthers, ''
 
     if key is 'merge':
-        __add_merge_review(pgroup_uid, text_values, db_user.uid)
+        __add_merge_review(pgroup_uid, db_user.uid, text_values)
     elif key is 'split':
-        __add_split_review(pgroup_uid, text_values, db_user.uid)
+        __add_split_review(pgroup_uid, db_user.uid, text_values)
     else:
         return '', '', _.internalKeyError
 
@@ -284,9 +284,9 @@ def __is_argument_flagged_for_merge(pgroup_uid, is_executed=False, is_revoked=Fa
     :return: Boolean
     """
     db_review = DBDiscussionSession.query(ReviewMerge).filter(
-        and_(ReviewDuplicate.duplicate_statement_uid == pgroup_uid,
-             ReviewDuplicate.is_executed == is_executed,
-             ReviewDuplicate.is_revoked == is_revoked)).all()
+        and_(ReviewMerge.premisesgroup_uid == pgroup_uid,
+             ReviewMerge.is_executed == is_executed,
+             ReviewMerge.is_revoked == is_revoked)).all()
     return len(db_review) > 0
 
 
@@ -301,10 +301,10 @@ def __is_argument_flagged_for_merge_by_user(pgroup_uid, user_uid, is_executed=Fa
     :return: Boolean
     """
     db_review = DBDiscussionSession.query(ReviewMerge).filter(
-        and_(ReviewDuplicate.duplicate_statement_uid == pgroup_uid,
-             ReviewDuplicate.is_executed == is_executed,
-             ReviewDuplicate.detector_uid == user_uid,
-             ReviewDuplicate.is_revoked == is_revoked)).all()
+        and_(ReviewMerge.premisesgroup_uid == pgroup_uid,
+             ReviewMerge.is_executed == is_executed,
+             ReviewMerge.detector_uid == user_uid,
+             ReviewMerge.is_revoked == is_revoked)).all()
     return len(db_review) > 0
 
 
@@ -318,9 +318,9 @@ def __is_argument_flagged_for_split(pgroup_uid, is_executed=False, is_revoked=Fa
     :return: Boolean
     """
     db_review = DBDiscussionSession.query(ReviewSplit).filter(
-        and_(ReviewDuplicate.duplicate_statement_uid == pgroup_uid,
-             ReviewDuplicate.is_executed == is_executed,
-             ReviewDuplicate.is_revoked == is_revoked)).all()
+        and_(ReviewSplit.premisesgroup_uid == pgroup_uid,
+             ReviewSplit.is_executed == is_executed,
+             ReviewSplit.is_revoked == is_revoked)).all()
     return len(db_review) > 0
 
 
@@ -335,10 +335,10 @@ def __is_argument_flagged_for_split_by_user(pgroup_uid, user_uid, is_executed=Fa
     :return: Boolean
     """
     db_review = DBDiscussionSession.query(ReviewSplit).filter(
-        and_(ReviewDuplicate.duplicate_statement_uid == pgroup_uid,
-             ReviewDuplicate.is_executed == is_executed,
-             ReviewDuplicate.detector_uid == user_uid,
-             ReviewDuplicate.is_revoked == is_revoked)).all()
+        and_(ReviewSplit.premisesgroup_uid == pgroup_uid,
+             ReviewSplit.is_executed == is_executed,
+             ReviewSplit.detector_uid == user_uid,
+             ReviewSplit.is_revoked == is_revoked)).all()
     return len(db_review) > 0
 
 
