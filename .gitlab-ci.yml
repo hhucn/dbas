@@ -2,9 +2,7 @@ image: docker
 
 stages:
   - build
-  - style_guides
-  - frontend_test
-  - unit
+  - test
   - deploy
   - cleanup
 
@@ -26,7 +24,7 @@ build_images:
     - docker build -t dbas_db_$CI_PIPELINE_ID docker/db
 
 flake8:
-  stage: style_guides
+  stage: test
   script:
     - apk add --no-cache python3 && python3 -m ensurepip
     - pip3 install --quiet flake8
@@ -34,7 +32,7 @@ flake8:
   allow_failure: true
 
 jshint:
-  stage: style_guides
+  stage: test
   script:
     - apk add --no-cache yarn bash
     - yarn global add jshint
@@ -43,16 +41,16 @@ jshint:
     - bash -c "jshint ./webhook/static/js/*.js"
   allow_failure: true
 
-acceptance:
+frontend:
   <<: *run-server
-  stage: frontend_test
+  stage: test
   script:
     - docker exec dbas_web_$CI_JOB_ID nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
     - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
 
-test:
+unit:
   <<: *run-server
-  stage: unit
+  stage: test
   script:
     - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . dbas graph admin api export
     - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
