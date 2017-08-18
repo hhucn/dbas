@@ -24,7 +24,7 @@ build_images:
     - docker build -t dbas_db_$CI_PIPELINE_ID docker/db
 
 flake8:
-  stage: style guides
+  stage: style_guides
   script:
     - apk add --no-cache python3 && python3 -m ensurepip
     - pip3 install --quiet flake8
@@ -32,7 +32,7 @@ flake8:
   allow_failure: true
 
 jshint:
-  stage: style guides
+  stage: style_guides
   script:
     - apk add --no-cache yarn bash
     - yarn global add jshint
@@ -43,7 +43,7 @@ jshint:
 
 acceptance:
   <<: *run-server
-  stage: frontend test
+  stage: frontend_test
   script:
     - docker exec dbas_web_$CI_JOB_ID nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
     - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
