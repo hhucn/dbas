@@ -43,4 +43,4 @@ class ReviewPageHelperTest(unittest.TestCase):
             self.assertFalse(ret_dict['no_arguments_to_review'])
             self.assertTrue(ret_dict['has_access'])
             print(ret_dict['button_set'])
-            self.assertTrue(b.startswith('is_' + page[0:4]) for el in ret_dict['button_set'])
+            self.assertTrue(el.startswith('is_' + page[0:4]) for el in ret_dict['button_set'])

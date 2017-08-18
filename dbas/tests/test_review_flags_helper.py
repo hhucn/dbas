@@ -125,7 +125,6 @@ class TestReviewFlagHelper(unittest.TestCase):
         DBDiscussionSession.flush()
         transaction.commit()
 
-
     def test_flag_pgroup_for_merge(self):
         keys = ['some_key', 'merge', 'split']
 
@@ -152,7 +151,6 @@ class TestReviewFlagHelper(unittest.TestCase):
         DBDiscussionSession.query(ReviewMerge).filter_by(premisesgroup_uid=11).delete()
         DBDiscussionSession.flush()
         transaction.commit()
-
 
     def test_flag_pgroup_for_split(self):
         keys = ['some_key', 'split', 'merge']
