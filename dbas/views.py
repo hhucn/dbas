@@ -1955,8 +1955,8 @@ def split_or_merge_statement(request):
         nickname = request.authenticated_userid
         pgroup_uid = request.params['pgroup_uid']
         key = request.params['key']
-        text_values = request.params['text_values']
-        prepared_dict = review.merge_or_split_statement(key, pgroup_uid, text_values, nickname, ui_locales)
+        tvalues = json.loads(request.params['text_values'])
+        prepared_dict = review.merge_or_split_statement(key, pgroup_uid, tvalues, nickname, ui_locales)
 
     except KeyError as e:
         _t = Translator(ui_locales)

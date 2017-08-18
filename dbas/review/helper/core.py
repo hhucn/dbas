@@ -55,7 +55,7 @@ def merge_or_split_statement(key, pgroup_uid, text_values, nickname, ui_locales)
     :rtype: dict
     :return: collection with success, info and error key
     """
-    return __mergesplit(key, pgroup_uid, text_values, nickname, ui_locales, is_statement=False)
+    return __mergesplit(key, pgroup_uid, text_values, nickname, ui_locales, is_statement=True)
 
 
 def merge_or_split_premisegroup(key, pgroup_uid, nickname, ui_locales) -> dict:
@@ -69,7 +69,7 @@ def merge_or_split_premisegroup(key, pgroup_uid, nickname, ui_locales) -> dict:
     :rtype: dict
     :return: collection with success, info and error key
     """
-    return __mergesplit(key, pgroup_uid, None, nickname, ui_locales, is_statement=True)
+    return __mergesplit(key, pgroup_uid, None, nickname, ui_locales, is_statement=False)
 
 
 def __mergesplit(key, pgroup_uid, text_values, nickname, ui_locales, is_statement=False) -> dict:
@@ -85,7 +85,7 @@ def __mergesplit(key, pgroup_uid, text_values, nickname, ui_locales, is_statemen
     :rtype: dict
     :return: collection with success, info and error key
     """
-    logger('additives', 'mergesplit', 'pgroup_uid {}'.format(pgroup_uid))
+    logger('additives', 'mergesplit', 'pgroup_uid {} ({}) with values {}'.format(pgroup_uid, is_statement, text_values))
     _t = Translator(ui_locales)
 
     if key in ['merge', 'split']:
