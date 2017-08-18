@@ -50,7 +50,7 @@ acceptance:
     - docker exec dbas_web_$CI_JOB_ID nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
     - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
 
-unit_dbas:
+dbas:
   <<: *run-server
   stage: unit_test
   script:
@@ -63,7 +63,7 @@ unit_dbas:
       - coverage.xml
     expire_in: 10 mins
 
-unit_graph:
+graph:
   <<: *run-server
   stage: unit_test
   script:
@@ -76,7 +76,7 @@ unit_graph:
       - coverage.xml
     expire_in: 10 mins
 
-unit_admin:
+admin:
   <<: *run-server
   stage: unit_test
   script:
@@ -89,7 +89,7 @@ unit_admin:
       - coverage.xml
     expire_in: 10 mins
 
-unit_api:
+api:
   <<: *run-server
   stage: unit_test
   script:
@@ -102,7 +102,7 @@ unit_api:
       - coverage.xml
     expire_in: 10 mins
 
-unit_export:
+export:
   <<: *run-server
   stage: unit_test
   script:
