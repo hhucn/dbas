@@ -48,22 +48,9 @@ acceptance:
     - docker exec dbas_web_$CI_JOB_ID nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
     - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
 
-unit:
+unit_dbas:
   <<: *run-server
-  stage: unit test
-  script:
-    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . dbas graph admin api export
-    - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
-    - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
-  coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
-  artifacts:
-    paths:
-      - coverage.xml
-    expire_in: 10 mins
-
-unit dbas:
-  <<: *run-server
-  stage: unit test
+  stage: unit_test
   script:
     - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . dbas
     - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
@@ -74,9 +61,9 @@ unit dbas:
       - coverage.xml
     expire_in: 10 mins
 
-unit graph:
+unit_graph:
   <<: *run-server
-  stage: unit test
+  stage: unit_test
   script:
     - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . graph
     - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
@@ -87,9 +74,9 @@ unit graph:
       - coverage.xml
     expire_in: 10 mins
 
-unit admin:
+unit_admin:
   <<: *run-server
-  stage: unit test
+  stage: unit_test
   script:
     - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . admin
     - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
@@ -100,9 +87,9 @@ unit admin:
       - coverage.xml
     expire_in: 10 mins
 
-unit api:
+unit_api:
   <<: *run-server
-  stage: unit test
+  stage: unit_test
   script:
     - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . api
     - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
@@ -113,9 +100,9 @@ unit api:
       - coverage.xml
     expire_in: 10 mins
 
-unit export:
+unit_export:
   <<: *run-server
-  stage: unit test
+  stage: unit_test
   script:
     - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . export
     - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
