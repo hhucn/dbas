@@ -34,7 +34,7 @@ class ReviewQueuesHelperTest(unittest.TestCase):
 
     def test_add_proposals_for_statement_corrections(self):
         trans = Translator('en')
-        dupl_elements = [{'uid': 2, 'text': 'we should get a cat'}]
+        dupl_elements = [{'uid': 22, 'text': 'duuuuplicaate'}]
         wrong_elements = [{'uid': 0, 'text': 'oh...this will crash'}]
         no_corr_elements = [{'uid': 7, 'text': 'dogs can act as watch dogs'}]
         right_elements = [{'uid': 7, 'text': 'dogs can act as brutal watch dogs'}]
@@ -60,7 +60,9 @@ class ReviewQueuesHelperTest(unittest.TestCase):
 
     def test_is_statement_in_edit_queue(self):
         self.assertFalse(ReviewQueuesHelper.is_statement_in_edit_queue(1))
-        self.assertTrue(ReviewQueuesHelper.is_statement_in_edit_queue(2))
+        self.assertTrue(ReviewQueuesHelper.is_statement_in_edit_queue(2, True))
+        self.assertFalse(ReviewQueuesHelper.is_statement_in_edit_queue(2))
+        self.assertTrue(ReviewQueuesHelper.is_statement_in_edit_queue(22))
 
     def test_is_arguments_premise_in_edit_queue(self):
         self.assertFalse(ReviewQueuesHelper.is_arguments_premise_in_edit_queue(1))

@@ -429,16 +429,20 @@ def __add_edit_reviews(element, db_user):
     return 0
 
 
-def is_statement_in_edit_queue(uid):
+def is_statement_in_edit_queue(uid, is_executed=False):
     """
     Returns true if the statement is not in the edit queue
 
     :param uid: Statement.uid
     :return: Boolean
     """
+    logger('ReviewQueues', 'is_statement_in_edit_queue', 'current element: {}'.format(uid))
     db_already_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.statement_uid == uid,
-                                                                        ReviewEdit.is_executed == False)).all()
-    return db_already_edit and len(db_already_edit) > 0
+                                                                        ReviewEdit.is_executed == is_executed)).all()
+    if db_already_edit:
+        return len(db_already_edit) > 0
+    else:
+        return False
 
 
 def is_arguments_premise_in_edit_queue(uid):
@@ -454,7 +458,7 @@ def is_arguments_premise_in_edit_queue(uid):
     for premise in db_premises:
         db_already_edit += DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.statement_uid == premise.statement_uid,
                                                                              ReviewEdit.is_executed == False)).all()
-    return db_already_edit and len(db_already_edit) > 0
+    return len(db_already_edit) > 0
 
 
 def __add_edit_values_review(element, db_user):
