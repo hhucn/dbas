@@ -4,7 +4,7 @@ stages:
   - build
   - style_guides
   - frontend_test
-  - unit_test
+  - unit
   - deploy
   - cleanup
 
@@ -50,63 +50,11 @@ acceptance:
     - docker exec dbas_web_$CI_JOB_ID nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
     - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
 
-dbas:
+test:
   <<: *run-server
-  stage: unit_test
+  stage: unit
   script:
-    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . dbas
-    - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
-    - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
-  coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
-  artifacts:
-    paths:
-      - coverage.xml
-    expire_in: 10 mins
-
-graph:
-  <<: *run-server
-  stage: unit_test
-  script:
-    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . graph
-    - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
-    - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
-  coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
-  artifacts:
-    paths:
-      - coverage.xml
-    expire_in: 10 mins
-
-admin:
-  <<: *run-server
-  stage: unit_test
-  script:
-    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . admin
-    - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
-    - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
-  coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
-  artifacts:
-    paths:
-      - coverage.xml
-    expire_in: 10 mins
-
-api:
-  <<: *run-server
-  stage: unit_test
-  script:
-    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . api
-    - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
-    - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
-  coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
-  artifacts:
-    paths:
-      - coverage.xml
-    expire_in: 10 mins
-
-export:
-  <<: *run-server
-  stage: unit_test
-  script:
-    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . export
+    - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . dbas graph admin api export
     - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
     - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
   coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
