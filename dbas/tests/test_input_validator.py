@@ -115,8 +115,8 @@ class InputValidatorTests(unittest.TestCase):
 
     def test_check_reaction_rebut(self):
         # rebut
-        rebut_true = check_reaction(attacked_arg_uid=32,
-                                    attacking_arg_uid=36,
+        rebut_true = check_reaction(attacked_arg_uid=58,
+                                    attacking_arg_uid=51,
                                     relation='rebut',
                                     is_history=False)
         self.assertEqual(rebut_true, True)
