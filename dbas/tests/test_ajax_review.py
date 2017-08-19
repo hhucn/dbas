@@ -5,7 +5,12 @@ import transaction
 from pyramid import testing
 from sqlalchemy import and_
 
-from dbas.database.discussion_model import *
+from dbas.database.discussion_model import ReviewMerge, DBDiscussionSession, ReviewSplit, PremiseGroup, \
+    LastReviewerMerge, Argument, PremiseGroupSplitted, ReviewSplitValues, LastReviewerSplit, ReviewMergeValues, \
+    PremiseGroupMerged, ArgumentsAddedByPremiseGroupSplit, LastReviewerDelete, LastReviewerDuplicate, \
+    LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReviewCanceled, ReviewDelete, ReviewDuplicate, \
+    ReviewEdit, ReviewEditValue, ReviewOptimization, RevokedContentHistory, Statement
+
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.lib import get_text_for_premisesgroup_uid, get_text_for_argument_uid
 
@@ -1025,7 +1030,7 @@ class AjaxReviewTest(unittest.TestCase):
 
         # remove added args
         add_args = DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(review_uid=tmp.uid).all()
-        self.assertEqual(len(add_args), 1) # one argument was added and one was modified
+        self.assertEqual(len(add_args), 1)  # one argument was added and one was modified
         map(lambda arg: DBDiscussionSession.query(Argument).filter_by(arg.uid).delete(), add_args)
 
         DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid).delete()
