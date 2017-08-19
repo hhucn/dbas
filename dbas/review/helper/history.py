@@ -496,8 +496,11 @@ def cancel_ongoing_decision(queue, uid, lang, nickname):
     success = ''
     error = ''
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-
     _t = Translator(lang)
+
+    if not __is_uid_valid(uid, queue):
+        return success, _t.get(_.internalKeyError)
+
     if queue == 'deletes':
         DBDiscussionSession.query(ReviewDelete).get(uid).set_revoked(True)
         DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=uid).delete()
@@ -542,6 +545,31 @@ def cancel_ongoing_decision(queue, uid, lang, nickname):
     transaction.commit()
 
     return success, error
+
+
+def __is_uid_valid(uid, queue):
+    """
+    Check for the specific review in the fiven queue
+
+    :param queue: Table of review
+    :param uid: Review.uid
+    :return: Boolean
+    :rtype: Boolean
+    """
+
+    mapping = {
+        'deletes': ReviewDelete,
+        'optimizations': ReviewOptimization,
+        'edits': ReviewEdit,
+        'duplicates': ReviewDuplicate,
+        'merges': ReviewMerge,
+        'splits': ReviewSplit,
+    }
+
+    if queue in mapping:
+        return DBDiscussionSession.query(mapping[queue]).get(uid) is not None
+
+    return False
 
 
 def __revoke_decision_and_implications(type, reviewer_type, uid):

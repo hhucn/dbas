@@ -5,12 +5,9 @@ import transaction
 from pyramid import testing
 from sqlalchemy import and_
 
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import ReviewDelete, ReviewOptimization, RevokedContentHistory, ReviewCanceled, \
-    LastReviewerDelete, ReviewEdit, Statement, ReputationHistory, ReviewEditValue, LastReviewerOptimization, \
-    LastReviewerEdit, LastReviewerDuplicate, ReviewDuplicate, ReviewSplit, ReviewMerge, ReviewSplitValues, \
-    ReviewMergeValues
+from dbas.database.discussion_model import *
 from dbas.database.initializedb import nick_of_anonymous_user
+from dbas.lib import get_text_for_premisesgroup_uid, get_text_for_argument_uid
 
 
 class AjaxReviewTest(unittest.TestCase):
@@ -416,7 +413,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(len(response['success']) != 0)
-        self.assertNotIn('info', response)
+        self.assertTrue(len(response['info']) == 0)
         self.assertNotEqual(db_canceled1, db_canceled2)
 
     def test_cancel_review_author_error(self):
@@ -430,8 +427,8 @@ class AjaxReviewTest(unittest.TestCase):
         response = json.loads(ajax(request))
         db_canceled2 = len(DBDiscussionSession.query(ReviewCanceled).all())
         self.assertIsNotNone(response)
-        self.assertNotIn('error', response)
-        self.assertNotIn('success', response)
+        self.assertTrue(len(response['error']) == 0)
+        self.assertTrue(len(response['success']) == 0)
         self.assertTrue(len(response['info']) != 0)
         self.assertEqual(db_canceled1, db_canceled2)
 
@@ -446,8 +443,8 @@ class AjaxReviewTest(unittest.TestCase):
         response = json.loads(ajax(request))
         db_canceled2 = len(DBDiscussionSession.query(ReviewCanceled).all())
         self.assertIsNotNone(response)
-        self.assertNotIn('error', response)
-        self.assertNotIn('success', response)
+        self.assertTrue(len(response['error']) == 0)
+        self.assertTrue(len(response['success']) == 0)
         self.assertTrue(len(response['info']) != 0)
         self.assertEqual(db_canceled1, db_canceled2)
 
@@ -747,7 +744,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertEqual(len(response['info']), 0)
         self.assertEqual(len(response['success']), 0)
 
-    def test_or_merge_statement_textvalue_error(self):
+    def test_merge_statement_textvalue_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import split_or_merge_statement as ajax
         request = testing.DummyRequest(params={
@@ -760,7 +757,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertEqual(len(response['info']), 0)
         self.assertEqual(len(response['success']), 0)
 
-    def test_or_merge_statement_user_error(self):
+    def test_merge_statement_user_error(self):
         self.config.testing_securitypolicy(userid='nobody', permissive=True)
         from dbas.views import split_or_merge_statement as ajax
         request = testing.DummyRequest(params={
@@ -773,7 +770,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertEqual(len(response['info']), 0)
         self.assertEqual(len(response['success']), 0)
 
-    def test_or_merge_statement(self):
+    def test_merge_statement(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import split_or_merge_statement as ajax
         request = testing.DummyRequest(params={
@@ -855,6 +852,8 @@ class AjaxReviewTest(unittest.TestCase):
 
         tmp = DBDiscussionSession.query(ReviewSplit).filter_by(premisesgroup_uid=21).first()
         DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=tmp.uid).delete()
+        DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid).delete()
+        DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=tmp.uid).delete()
         DBDiscussionSession.query(ReviewSplit).filter_by(premisesgroup_uid=21).delete()
         DBDiscussionSession.flush()
         transaction.commit()
@@ -907,27 +906,354 @@ class AjaxReviewTest(unittest.TestCase):
         DBDiscussionSession.flush()
         transaction.commit()
 
-    # TODO
+    def test_review_splitted_premisegroup_uid_error(self):
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        from dbas.views import review_splitted_premisegroup as ajax
+        request = testing.DummyRequest(params={
+            'review_uid': 0,
+            'should_split': True,
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertNotEqual(len(response['error']), 0)
+
+    def test_review_splitted_premisegroup_user_error(self):
+        self.config.testing_securitypolicy(userid='some_child', permissive=True)
+        from dbas.views import review_splitted_premisegroup as ajax
+        request = testing.DummyRequest(params={
+            'review_uid': 1,
+            'should_split': True,
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertNotEqual(len(response['error']), 0)
 
     def test_review_splitted_premisegroup(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        # from dbas.views import review_splitted_premisegroup as ajax
-        pass
+        # add something for a review
+        from dbas.views import split_or_merge_statement as ajax
+        request = testing.DummyRequest(params={
+            'pgroup_uid': 21,
+            'key': 'split',
+            'text_values': json.dumps(['it is based on the cats race', 'not every cat is capricious'])
+        }, matchdict={})
+        # oem of pgroup 21 is: 'the fact, that cats are capricious, is based on the cats race'
+        json.loads(ajax(request))
+        tmp = DBDiscussionSession.query(ReviewSplit).filter_by(premisesgroup_uid=21).first()
+
+        db_arguments_with_pgroup = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=21).all()
+
+        # vote 1:0
+        from dbas.views import review_splitted_premisegroup as ajax
+        request = testing.DummyRequest(params={
+            'review_uid': tmp.uid,
+            'should_split': True
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
+        pro = len(db_review.filter_by(should_split=True).all())
+        con = len(db_review.filter_by(should_split=False).all())
+        self.assertEqual(len(response['error']), 0)
+        self.assertEqual(pro, 1)
+        self.assertEqual(con, 0)
+
+        # vote 2:0
+        self.config.testing_securitypolicy(userid='Christian', permissive=True)
+        request = testing.DummyRequest(params={
+            'review_uid': tmp.uid,
+            'should_split': True,
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
+        pro = len(db_review.filter_by(should_split=True).all())
+        con = len(db_review.filter_by(should_split=False).all())
+        self.assertEqual(len(response['error']), 0)
+        self.assertEqual(pro, 2)
+        self.assertEqual(con, 0)
+
+        # vote 2:1
+        self.config.testing_securitypolicy(userid='Bob', permissive=True)
+        request = testing.DummyRequest(params={
+            'review_uid': tmp.uid,
+            'should_split': False,
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
+        pro = len(db_review.filter_by(should_split=True).all())
+        con = len(db_review.filter_by(should_split=False).all())
+        self.assertEqual(len(response['error']), 0)
+        self.assertEqual(pro, 2)
+        self.assertEqual(con, 1)
+
+        # vote 3:1
+        self.config.testing_securitypolicy(userid='Pascal', permissive=True)
+        request = testing.DummyRequest(params={
+            'review_uid': tmp.uid,
+            'should_split': True,
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
+        pro = len(db_review.filter_by(should_split=True).all())
+        con = len(db_review.filter_by(should_split=False).all())
+        self.assertEqual(len(response['error']), 0)
+        self.assertEqual(pro, 3)
+        self.assertEqual(con, 1)
+
+        # vote 4:1
+        self.config.testing_securitypolicy(userid='Kurt', permissive=True)
+        request = testing.DummyRequest(params={
+            'review_uid': tmp.uid,
+            'should_split': True,
+        }, matchdict={})
+        arg_old_len = len(DBDiscussionSession.query(Argument).all())
+        response = json.loads(ajax(request))
+        arg_new_len = len(DBDiscussionSession.query(Argument).all())
+        db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
+        pro = len(db_review.filter_by(should_split=True).all())
+        con = len(db_review.filter_by(should_split=False).all())
+        self.assertEqual(len(response['error']), 0)
+        self.assertEqual(pro, 4)
+        self.assertEqual(con, 1)
+        self.assertEqual(arg_old_len + 1, arg_new_len)
+
+        # now the vote is executed
+        self.assertTrue(DBDiscussionSession.query(ReviewSplit).get(tmp.uid).is_executed)
+
+        # check the new premisegroups
+        for arg in db_arguments_with_pgroup:
+            tmp_arg = DBDiscussionSession.query(Argument).get(arg.uid)
+            self.assertNotEqual(21, tmp_arg.premisesgroup_uid)
+            self.assertNotEqual(arg.premisesgroup_uid, tmp_arg.premisesgroup_uid)
+
+        # remove added args
+        add_args = DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(review_uid=tmp.uid).all()
+        self.assertEqual(len(add_args), 1) # one argument was added and one was modified
+        map(lambda arg: DBDiscussionSession.query(Argument).filter_by(arg.uid).delete(), add_args)
+
+        DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid).delete()
+        DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=tmp.uid).delete()
+        DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=tmp.uid).delete()
+        DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(review_uid=tmp.uid).delete()
+        DBDiscussionSession.flush()
+        DBDiscussionSession.query(ReviewSplit).filter_by(premisesgroup_uid=21).delete()
+        DBDiscussionSession.flush()
+        transaction.commit()
 
     def test_review_merged_premisegroup(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        # from dbas.views import review_merged_premisegroup as ajax
-        pass
+        # add something for a review
+        from dbas.views import split_or_merge_statement as ajax
+        request = testing.DummyRequest(params={
+            'pgroup_uid': 13,
+            'key': 'merge',
+            'text_values': json.dumps(['cats are small and fluffy'])
+        }, matchdict={})
+        # oem of pgroup 21 is: 'the fact, that cats are capricious, is based on the cats race'
+        json.loads(ajax(request))
+        tmp = DBDiscussionSession.query(ReviewMerge).filter_by(premisesgroup_uid=13).first()
+
+        # vote 1:0
+        from dbas.views import review_merged_premisegroup as ajax
+        request = testing.DummyRequest(params={
+            'review_uid': tmp.uid,
+            'should_merge': True
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
+        pro = len(db_review.filter_by(should_merge=True).all())
+        con = len(db_review.filter_by(should_merge=False).all())
+        self.assertEqual(len(response['error']), 0)
+        self.assertEqual(pro, 1)
+        self.assertEqual(con, 0)
+
+        # vote 2:0
+        self.config.testing_securitypolicy(userid='Christian', permissive=True)
+        request = testing.DummyRequest(params={
+            'review_uid': tmp.uid,
+            'should_merge': True,
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
+        pro = len(db_review.filter_by(should_merge=True).all())
+        con = len(db_review.filter_by(should_merge=False).all())
+        self.assertEqual(len(response['error']), 0)
+        self.assertEqual(pro, 2)
+        self.assertEqual(con, 0)
+
+        # vote 2:1
+        self.config.testing_securitypolicy(userid='Bob', permissive=True)
+        request = testing.DummyRequest(params={
+            'review_uid': tmp.uid,
+            'should_merge': False,
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
+        pro = len(db_review.filter_by(should_merge=True).all())
+        con = len(db_review.filter_by(should_merge=False).all())
+        self.assertEqual(len(response['error']), 0)
+        self.assertEqual(pro, 2)
+        self.assertEqual(con, 1)
+
+        # vote 3:1
+        self.config.testing_securitypolicy(userid='Pascal', permissive=True)
+        request = testing.DummyRequest(params={
+            'review_uid': tmp.uid,
+            'should_merge': True,
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
+        pro = len(db_review.filter_by(should_merge=True).all())
+        con = len(db_review.filter_by(should_merge=False).all())
+        self.assertEqual(len(response['error']), 0)
+        self.assertEqual(pro, 3)
+        self.assertEqual(con, 1)
+
+        # vote 4:1
+        self.config.testing_securitypolicy(userid='Kurt', permissive=True)
+        request = testing.DummyRequest(params={
+            'review_uid': tmp.uid,
+            'should_merge': True,
+        }, matchdict={})
+        pgroup_old_len = len(DBDiscussionSession.query(PremiseGroup).all())
+        db_new_pgroup = DBDiscussionSession.query(PremiseGroup).order_by(PremiseGroup.uid.desc()).first()
+        db_arguments_with_pgroup = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=13).all()
+        old_text, trash = get_text_for_premisesgroup_uid(13)
+        old_argument_text = get_text_for_argument_uid(db_arguments_with_pgroup[0].uid)
+        response = json.loads(ajax(request))
+        new_text, trash = get_text_for_premisesgroup_uid(db_new_pgroup.uid)
+        new_argument_text = get_text_for_argument_uid(db_arguments_with_pgroup[0].uid)
+        pgroup_new_len = len(DBDiscussionSession.query(PremiseGroup).all())
+        db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
+        pro = len(db_review.filter_by(should_merge=True).all())
+        con = len(db_review.filter_by(should_merge=False).all())
+        self.assertEqual(len(response['error']), 0)
+        self.assertEqual(pro, 4)
+        self.assertEqual(con, 1)
+        self.assertEqual(pgroup_old_len + 1, pgroup_new_len)
+
+        # now the vote is executed
+        self.assertTrue(DBDiscussionSession.query(ReviewMerge).get(tmp.uid).is_executed)
+
+        # check the new premisegroups in every argument
+        map(lambda arg: self.assertEqual(arg.premisesgroup_uid, db_new_pgroup.uid), db_arguments_with_pgroup)
+
+        # check text change
+        self.assertNotEqual(old_text, new_text)
+        self.assertNotEqual(old_argument_text, new_argument_text)
+
+        DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid).delete()
+        DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=tmp.uid).delete()
+        DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=tmp.uid).delete()
+        DBDiscussionSession.flush()
+        DBDiscussionSession.query(ReviewMerge).filter_by(premisesgroup_uid=13).delete()
+        DBDiscussionSession.flush()
+        transaction.commit()
+
+    def test_cancel_review_splitted_merged_premisegroup_errors(self):
+        self.config.testing_securitypolicy(userid='someone', permissive=True)
+        from dbas.views import cancel_review as ajax
+
+        # user error
+        request = testing.DummyRequest(params={
+            'queue': 'splits',
+            'uid': 1
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertEqual(len(response['error']), 0)
+        self.assertNotEqual(len(response['info']), 0)
+        self.assertEqual(len(response['success']), 0)
+
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+
+        # uid error
+        request = testing.DummyRequest(params={
+            'queue': 'splits',
+            'uid': 'a'
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertNotEqual(len(response['error']), 0)
+        self.assertEqual(len(response['info']), 0)
+        self.assertEqual(len(response['success']), 0)
+
+        # queue error
+        request = testing.DummyRequest(params={
+            'queue': 'asd',
+            'uid': 1
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertNotEqual(len(response['error']), 0)
+        self.assertEqual(len(response['info']), 0)
+        self.assertEqual(len(response['success']), 0)
+
+        # no review error
+        request = testing.DummyRequest(params={
+            'queue': 'splits',
+            'uid': 1000
+        }, matchdict={})
+        response = json.loads(ajax(request))
+        self.assertNotEqual(len(response['error']), 0)
+        self.assertEqual(len(response['info']), 0)
+        self.assertEqual(len(response['success']), 0)
 
     def test_cancel_review_splitted_premisegroup(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        # from dbas.views import cancel_review as ajax
-        pass
+        # add something for a review
+        from dbas.views import split_or_merge_statement as ajax
+
+        request = testing.DummyRequest(params={
+            'pgroup_uid': 13,
+            'key': 'split',
+            'text_values': json.dumps(['cats are small and fluffy'])
+        }, matchdict={})
+
+        len1 = len(DBDiscussionSession.query(ReviewSplit).all())
+        json.loads(ajax(request))
+        len2 = len(DBDiscussionSession.query(ReviewSplit).all())
+        db_review = DBDiscussionSession.query(ReviewSplit).filter_by(premisesgroup_uid=13).first()
+
+        from dbas.views import cancel_review as ajax
+        request = testing.DummyRequest(params={
+            'queue': 'merges',
+            'uid': db_review.uid,
+        }, matchdict={})
+
+        response = json.loads(ajax(request))
+        len3 = len(DBDiscussionSession.query(ReviewSplit).all())
+
+        self.assertEqual(len(response['error']), 0)
+        self.assertEqual(len(response['info']), 0)
+        self.assertNotEqual(len(response['success']), 0)
+        self.assertEqual(len1 + 1, len2)
+        self.assertEqual(len2, len3)
 
     def test_cancel_review_merged_premisegroup(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        # from dbas.views import cancel_review as ajax
-        pass
+        # add something for a review
+        from dbas.views import split_or_merge_statement as ajax
+
+        request = testing.DummyRequest(params={
+            'pgroup_uid': 13,
+            'key': 'merge',
+            'text_values': json.dumps(['cats are small and fluffy'])
+        }, matchdict={})
+
+        len1 = len(DBDiscussionSession.query(ReviewMerge).all())
+        json.loads(ajax(request))
+        len2 = len(DBDiscussionSession.query(ReviewMerge).all())
+        db_review = DBDiscussionSession.query(ReviewMerge).filter_by(premisesgroup_uid=13).first()
+
+        from dbas.views import cancel_review as ajax
+        request2 = testing.DummyRequest(params={
+            'queue': 'merges',
+            'uid': db_review.uid,
+        }, matchdict={})
+
+        response = json.loads(ajax(request2))
+        len3 = len(DBDiscussionSession.query(ReviewMerge).all())
+
+        self.assertEqual(len(response['error']), 0)
+        self.assertEqual(len(response['info']), 0)
+        self.assertNotEqual(len(response['success']), 0)
+        self.assertEqual(len1 + 1, len2)
+        self.assertEqual(len2, len3)
 
     def test_undo_review_splitted_premisegroup(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)

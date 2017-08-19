@@ -317,7 +317,11 @@ def cancel(request) -> dict:
 
     if not is_integer(uid):
         logger('additives', 'cancel_review', 'invalid uid', error=True)
-        return {'error': _t.get(_.internalKeyError)}
+        return {
+            'error': _t.get(_.internalKeyError),
+            'info': '',
+            'success': ''
+        }
 
     prepared_dict = {}
     nickname = request.authenticated_userid
@@ -326,8 +330,11 @@ def cancel(request) -> dict:
         success, error = review_history_helper.cancel_ongoing_decision(queue, uid, ui_locales, nickname)
         prepared_dict['success'] = success
         prepared_dict['error'] = error
+        prepared_dict['info'] = ''
     else:
         prepared_dict['info'] = _t.get(_.justLookDontTouch)
+        prepared_dict['success'] = ''
+        prepared_dict['error'] = ''
 
     return prepared_dict
 

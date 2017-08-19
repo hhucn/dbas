@@ -2061,6 +2061,31 @@ class StatementReplacementsByPremiseGroupMerge(DiscussionBase):
         self.timestamp = get_now()
 
 
+class ArgumentsAddedByPremiseGroupSplit(DiscussionBase):
+    """
+    List of added arguments through the split of a pgroup
+    """
+    __tablename__ = 'arguments_added_by_premisegroups_split'
+    uid = Column(Integer, primary_key=True)
+    review_uid = Column(Integer, ForeignKey('review_split.uid'))
+    argument_uid = Column(Integer, ForeignKey('arguments.uid'))
+    timestamp = Column(ArrowType, default=get_now())
+
+    reviews = relationship('ReviewSplit', foreign_keys=[review_uid])
+    arguments = relationship('Argument', foreign_keys=[argument_uid])
+
+    def __init__(self, review, argument):
+        """
+        Inits a row in current table
+
+        :param review: ReviewMerge.uid
+        :param argument: Argument.uid
+        """
+        self.review_uid = review
+        self.argument_uid = argument
+        self.timestamp = get_now()
+
+
 class RSS(DiscussionBase):
     """
     RSS-table with several columns.
