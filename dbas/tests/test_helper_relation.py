@@ -66,11 +66,11 @@ class RelationHelperTest(unittest.TestCase):
         val = get_rebuts_for_argument_uid(100)
         self.assertIsNone(val)
 
-        val = get_rebuts_for_argument_uid(2)
-        self.assertEqual(len(val), 1)
+        val = get_rebuts_for_argument_uid(62)
+        self.assertEqual(len(val), 2)
 
-        val = get_rebuts_for_argument_uid('2')
-        self.assertEqual(len(val), 1)
+        val = get_rebuts_for_argument_uid('62')
+        self.assertEqual(len(val), 2)
 
     def test_get_supports_for_argument_uid(self):
         val = get_supports_for_argument_uid('a')
