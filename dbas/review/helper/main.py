@@ -786,6 +786,7 @@ def __merge_premisegroup(review):
             argument.set_conclusion(new_statement.uid)
             DBDiscussionSession.add(argument)
             DBDiscussionSession.add(StatementReplacementsByPremiseGroupMerge(review.uid, old_statement_id, new_statement.uid))
+            DBDiscussionSession.flush()
 
     # finish
     DBDiscussionSession.flush()
@@ -854,12 +855,14 @@ def __split_premisegroup(review):
             argument.set_conclusion(new_statements_uids[0])
             DBDiscussionSession.add(argument)
             DBDiscussionSession.add(StatementReplacementsByPremiseGroupSplit(review.uid, old_statement_uid, new_statements_uids[0]))
+            DBDiscussionSession.flush()
 
             for statement_uid in new_statements_uids[1:]:
                 db_argument = Argument(argument.premisesgroup_uid, argument.is_supportive, argument.author_uid,
                                        argument.issue_uid, statement_uid, argument.argument_uid, argument.is_disabled)
                 DBDiscussionSession.add(db_argument)
                 DBDiscussionSession.add(StatementReplacementsByPremiseGroupSplit(review.uid, old_statement_uid, statement_uid))
+                DBDiscussionSession.flush()
 
     # finish
     DBDiscussionSession.flush()

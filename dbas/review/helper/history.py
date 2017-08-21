@@ -11,7 +11,8 @@ from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, Rev
     LastReviewerEdit, ReviewEditValue, TextVersion, Statement, ReviewCanceled, sql_timestamp_pretty_print,\
     ReviewDuplicate, LastReviewerDuplicate, RevokedDuplicate, Argument, Premise, ReviewMerge, ReviewSplit,\
     PremiseGroupMerged, PremiseGroupSplitted, LastReviewerSplit, LastReviewerMerge, ReviewSplitValues, \
-    ReviewMergeValues, StatementReplacementsByPremiseGroupSplit, StatementReplacementsByPremiseGroupMerge
+    ReviewMergeValues, StatementReplacementsByPremiseGroupSplit, StatementReplacementsByPremiseGroupMerge, \
+    ArgumentsAddedByPremiseGroupSplit
 from dbas.lib import get_text_for_argument_uid, get_profile_picture, is_user_author_or_admin, \
     get_text_for_statement_uid, get_text_for_premisesgroup_uid
 from dbas.logger import logger
@@ -448,7 +449,9 @@ def revoke_old_decision(queue, uid, lang, nickname):
         db_review.set_revoked(True)
         db_pgroup_splitted = DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=uid).all()
         replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupSplit).filter_by(review_uid=uid).all()
+        disable_args = [arg.uid for arg in DBDiscussionSession.query(ArgumentsAddedByPremiseGroupSplit).filter_by(review_uid=uid).all()]
         __undo_premisegroups(db_pgroup_splitted, replacements)
+        __disable_arguments_by_id(disable_args)
 
         DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=uid).delete()
         DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=uid).delete()
@@ -464,6 +467,20 @@ def revoke_old_decision(queue, uid, lang, nickname):
     transaction.commit()
 
     return success, error
+
+
+def __disable_arguments_by_id(argument_uids):
+    """
+    Disbale the list of argument by their id
+
+    :param Argument_uids: list of argument.uid
+    :return: None
+    """
+    for uid in argument_uids:
+        db_arg = DBDiscussionSession.query(Argument).get(uid)
+        db_arg.set_disable(True)
+        DBDiscussionSession.add(db_arg)
+        DBDiscussionSession.flush()
 
 
 def __undo_premisegroups(pgroups_splitted_or_merged, replacements):
@@ -488,7 +505,7 @@ def __undo_premisegroups(pgroups_splitted_or_merged, replacements):
 
     for element in replacements:
         old_statement = element.old_statement_uid
-        new_statement = element.new_premisegroup_uid
+        new_statement = element.new_statement_uid
 
         db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=new_statement).all()
         for argument in db_arguments:
