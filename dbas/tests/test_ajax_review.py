@@ -1369,7 +1369,7 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_undo_review_merged_premisegroup(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        uid=14
+        uid = 14
 
         # get one argument with the old premisegroup
         db_argument_old = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=uid).first()
