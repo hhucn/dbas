@@ -16,6 +16,7 @@ def get_testapp():
     app = dbas.main({'__file__': file}, **settings)
     return webtest.TestApp(app)
 
+
 def graphql_query(query) -> dict:
     url = '{}query?q={}'.format(API, query)
     response = get_testapp().get(url, status=200)
