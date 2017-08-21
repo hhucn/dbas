@@ -2146,7 +2146,11 @@ def undo_review(request):
         logger('views', 'undo_review', repr(e), error=True)
         ui_locales = get_discussion_language(request)
         _t = Translator(ui_locales)
-        prepared_dict = {'error': _t.get(_.internalKeyError)}
+        prepared_dict = {
+            'error': _t.get(_.internalKeyError),
+            'info': '',
+            'success': ''
+        }
 
     return json.dumps(prepared_dict)
 

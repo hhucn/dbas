@@ -383,17 +383,25 @@ def revoke_old_decision(queue, uid, lang, nickname):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     _t = Translator(lang)
 
+    if not __is_uid_valid(uid, queue):
+        logger('review_history_helper', 'revoke_old_decision', 'no review with the uid or invalid queue: {},{}'.format(uid, queue), error=True)
+        error = _t.get(_.internalKeyError)
+        return success, error
+
     if queue == 'deletes':
+        logger('review_history_helper', 'revoke_old_decision', 'Executing deletes-queue')
         __revoke_decision_and_implications(ReviewDelete, LastReviewerDelete, uid)
         success = _t.get(_.dataRemoved)
         DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_delete=uid))
 
     elif queue == 'optimizations':
+        logger('review_history_helper', 'revoke_old_decision', 'Executing optimizations-queue')
         __revoke_decision_and_implications(ReviewOptimization, LastReviewerOptimization, uid)
         success = _t.get(_.dataRemoved)
         DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_optimization=uid))
 
     elif queue == 'edits':
+        logger('review_history_helper', 'revoke_old_decision', 'Executing edits-queue')
         db_review = DBDiscussionSession.query(ReviewEdit).get(uid)
         db_review.set_revoked(True)
         DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=uid).delete()
@@ -412,6 +420,7 @@ def revoke_old_decision(queue, uid, lang, nickname):
         success = _t.get(_.dataRemoved)
 
     elif queue == 'duplicates':
+        logger('review_history_helper', 'revoke_old_decision', 'Executing duplicates-queue')
         db_review = DBDiscussionSession.query(ReviewDuplicate).get(uid)
         db_review.set_revoked(True)
         DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_duplicate=uid))
@@ -420,11 +429,12 @@ def revoke_old_decision(queue, uid, lang, nickname):
         success = _t.get(_.dataRemoved)
 
     elif queue == 'merges':
+        logger('review_history_helper', 'revoke_old_decision', 'Executing merges-queue')
         db_review = DBDiscussionSession.query(ReviewMerge).get(uid)
         db_review.set_revoked(True)
-        db_pgroup_splitted = DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=uid).all()
+        db_pgroup_merged = DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=uid).all()
         replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupMerge).filter_by(review_uid=uid).all()
-        __undo_premisegroups(db_pgroup_splitted, replacements)
+        __undo_premisegroups(db_pgroup_merged, replacements)
 
         DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=uid).delete()
         DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=uid).delete()
@@ -433,11 +443,12 @@ def revoke_old_decision(queue, uid, lang, nickname):
         success = _t.get(_.dataRemoved)
 
     elif queue == 'splits':
+        logger('review_history_helper', 'revoke_old_decision', 'Executing splits-queue')
         db_review = DBDiscussionSession.query(ReviewSplit).get(uid)
         db_review.set_revoked(True)
-        db_pgroup_merged = DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=uid).all()
+        db_pgroup_splitted = DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=uid).all()
         replacements = DBDiscussionSession.query(StatementReplacementsByPremiseGroupSplit).filter_by(review_uid=uid).all()
-        __undo_premisegroups(db_pgroup_merged, replacements)
+        __undo_premisegroups(db_pgroup_splitted, replacements)
 
         DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=uid).delete()
         DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=uid).delete()
@@ -446,6 +457,7 @@ def revoke_old_decision(queue, uid, lang, nickname):
         success = _t.get(_.dataRemoved)
 
     else:
+        logger('review_history_helper', 'revoke_old_decision', 'no queue found: {},{}'.format(uid, queue), error=True)
         error = _t.get(_.internalKeyError)
 
     DBDiscussionSession.flush()
@@ -461,14 +473,18 @@ def __undo_premisegroups(pgroups_splitted_or_merged, replacements):
     :param replacements:
     :return:
     """
+    logger('review_history_helper', '__undo_premisegroups', 'Got {} merge/splitted pgroups and {} replacements'.format(len(pgroups_splitted_or_merged), len(replacements)))
+
     for element in pgroups_splitted_or_merged:
         old_pgroup = element.old_premisegroup_uid
         new_pgroup = element.new_premisegroup_uid
 
         db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=new_pgroup).all()
         for argument in db_arguments:
+            logger('review_history_helper', '__undo_premisegroups', 'reset arguments {} pgroup from {} back to {}'.format(argument.uid, new_pgroup, old_pgroup))
             argument.set_premisegroup(old_pgroup)
             DBDiscussionSession.add(argument)
+            DBDiscussionSession.flush()
 
     for element in replacements:
         old_statement = element.old_statement_uid
@@ -476,10 +492,13 @@ def __undo_premisegroups(pgroups_splitted_or_merged, replacements):
 
         db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=new_statement).all()
         for argument in db_arguments:
+            logger('review_history_helper', '__undo_premisegroups', 'reset arguments {} conclusion from {} back to {}'.format(argument.uid, new_statement, old_statement))
             argument.set_conclusion(old_statement)
             DBDiscussionSession.add(argument)
+            DBDiscussionSession.flush()
 
     DBDiscussionSession.flush()
+    transaction.commit()
 
 
 def cancel_ongoing_decision(queue, uid, lang, nickname):
@@ -567,8 +586,10 @@ def __is_uid_valid(uid, queue):
     }
 
     if queue in mapping:
+        # logger('review_history_helper', '__is_uid_valid', 'query table {} with uid {}'.format(mapping[queue], uid))
         return DBDiscussionSession.query(mapping[queue]).get(uid) is not None
 
+    # logger('review_history_helper', '__is_uid_valid', 'no table found for {}'.format(queue), error=True)
     return False
 
 

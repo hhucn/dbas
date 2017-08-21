@@ -288,17 +288,29 @@ def undo(request) -> dict:
 
     if not is_integer(uid):
         logger('additives', 'undo_review', 'invalid uid', error=True)
-        return {'error': _t.get(_.internalKeyError)}
+        prepared_dict = {
+            'info': '',
+            'success': '',
+            'error': _t.get(_.internalKeyError)
+        }
+        return prepared_dict
 
-    prepared_dict = {}
     nickname = request.authenticated_userid
     queue = request.params['queue']
     if is_user_author_or_admin(nickname):
         success, error = review_history_helper.revoke_old_decision(queue, uid, ui_locales, nickname)
-        prepared_dict['success'] = success
-        prepared_dict['error'] = error
+        prepared_dict = {
+            'info': '',
+            'success': success,
+            'error': error
+        }
     else:
-        prepared_dict['info'] = _t.get(_.justLookDontTouch)
+        logger('additives', 'undo_review', 'user has no rights', error=True)
+        prepared_dict = {
+            'info': _t.get(_.justLookDontTouch),
+            'success': '',
+            'error': ''
+        }
 
     return prepared_dict
 

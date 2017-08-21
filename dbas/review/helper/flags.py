@@ -83,7 +83,7 @@ def flag_statement_for_merge_or_split(key, pgroup_uid, text_values, nickname):
     :param nickname: Users nickname
     :return: success, info, error
     """
-    logger('FlagingHelper', 'flag_statement_for_merge_or_split', 'Flag sstatement {} for a {} with values {}'.format(pgroup_uid, key, text_values))
+    logger('FlagingHelper', 'flag_statement_for_merge_or_split', 'Flag statements in pgroup {} for a {} with values {}'.format(pgroup_uid, key, text_values))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         logger('FlagingHelper', 'flag_statement_for_merge_or_split', 'No user', error=True)
