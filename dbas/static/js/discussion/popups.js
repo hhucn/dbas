@@ -452,9 +452,16 @@ function PopupHandler() {
 	 * @private
 	 */
 	this.__buildMergeSplitPopup = function(key, uid){
-		var i = 1;
 		var body = $('#popup-' + key + '-statement-body');
+		var ph = new PopupHandler();
 		
+		ph.__addInputFormGroup(1, body, '...');
+		if (key === 'split'){
+			ph.__addInputFormGroup(2, body, '...');
+		}
+		
+		/*
+		var i = 1;
 		$.each($('label[for="item_' + uid + '"]:even'), function(){
 			var txt = $(this).text();
 			if (txt.match(/\.$/)){ // remove a dot at the end
@@ -463,6 +470,7 @@ function PopupHandler() {
 			new PopupHandler().__addInputFormGroup(i, body, txt);
 			i = i+1;
 		});
+		*/
 		
 		// hover and on-click-function for the yes key
 		$('#popup-' + key + '-statement-btn-yes').hover(function(){
@@ -476,7 +484,7 @@ function PopupHandler() {
 				values.push($(this).val());
 			});
 			new AjaxReviewHandler().splitOrMerge(uid, key, values);
-		});
+		}).prop('disabled', true);
 		
 		// hover and on-click-function for the add key
 		$('#popup-' + key + '-statement-add').hover(function(){
@@ -492,7 +500,6 @@ function PopupHandler() {
 			ph.__addInputFormGroup(counter, body, '');
 			ph.__setQuestionForSplitMergeStatementPopup(key, body.children().length);
 			$('#popup-' + key + '-statement-btn-yes').prop('disabled', false);
-			
 		});
 		
 		// hover and on-click-function for the remove key
@@ -501,14 +508,13 @@ function PopupHandler() {
 		}, function(){
 			$(this).removeClass('btn-info').addClass('btn-secondary');
 		}).off('click').click(function(){
-			var question = $('#popup-' + key + '-statement-question');
 			if (body.children().length > 0) {
 				body.children().last().remove();
 			}
 			$('#popup-' + key + '-statement-btn-yes').prop('disabled', body.children().length === 0);
 			new PopupHandler().__setQuestionForSplitMergeStatementPopup(key, body.children().length);
 		});
-		new PopupHandler().__setQuestionForSplitMergeStatementPopup(key, body.children().length);
+		ph.__setQuestionForSplitMergeStatementPopup(key, body.children().length);
 	};
 	
 	/**

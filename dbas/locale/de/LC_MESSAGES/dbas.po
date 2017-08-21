@@ -1515,7 +1515,7 @@ msgstr "Aussagen trennen"
 #: templates/snippet-popups.pt:996
 msgid "split_multiple_statements"
 msgstr ""
-"Bitte geben Sie die getrennte Version der Aussage unteren ein, nennen Sie "
+"Bitte geben Sie die getrennte Version der Aussage unten ein, nennen Sie "
 "dabei pro Feld nur eine Aussage."
 
 #. Default: Submit
