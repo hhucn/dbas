@@ -1,14 +1,24 @@
-from nose.tools import assert_true, assert_is_not_none
+import webtest
+import dbas
+import os
+
+from nose.tools import assert_is_not_none
 
 from api.lib import json_to_dict
-from api.tests.lib import get_response
+from dbas.helper.tests import add_settings_to_appconfig
 
 API = "http://localhost:4284/api/v2/"
 
 
+def get_testapp():
+    settings = add_settings_to_appconfig()
+    file = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'development.ini'))
+    app = dbas.main({'__file__': file}, **settings)
+    return webtest.TestApp(app)
+
 def graphql_query(query) -> dict:
-    response = get_response("query", API, {"q": query})
-    assert_true(response.ok)
-    ret = json_to_dict(response.content)
+    url = '{}query?q={}'.format(API, query)
+    response = get_testapp().get(url, status=200)
+    ret = json_to_dict(response.body)
     assert_is_not_none(ret)
     return ret
