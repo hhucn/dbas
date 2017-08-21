@@ -6,6 +6,7 @@ from dbas.helper.tests import add_settings_to_appconfig
 
 # copy/paste from https://docs.pylonsproject.org/projects/pyramid/en/latest/tutorials/wiki2/tests.html
 
+
 class FunctionalTests(unittest.TestCase):
 
     @classmethod
