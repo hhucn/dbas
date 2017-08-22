@@ -161,11 +161,11 @@ class DictionaryHelper(object):
         return_dict['en_discussion_link'] = '{}/discuss/{}'.format(request.application_url, db_issue_en.slug)
 
         self.add_language_options_for_extra_dict(return_dict)
-        is_author = user.is_in_group(nickname, 'authors') or get_reputation_of(nickname) > limit_for_open_issues
+        is_author, points= get_reputation_of(nickname)
 
         return_dict['is_reportable'] = is_reportable
         return_dict['is_admin'] = user.is_in_group(nickname, 'admins')
-        return_dict['is_author'] = is_author
+        return_dict['is_author'] = is_author or points > limit_for_open_issues
         return_dict['show_bar_icon'] = show_bar_icon
         return_dict['show_graph_icon'] = show_graph_icon
         return_dict['close_premise_container'] = True
