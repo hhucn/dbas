@@ -37,7 +37,7 @@
                             <table class="table table-condensed">
                                 <thead>
                                     <tr>
-                                        <td tal:condition="not:past.has_oem_text" i18n:translate="argument">Argument</td>
+                                        <td tal:condition="not:past.has_oem_text" i18n:translate="statement">Statement</td>
                                         <td tal:condition="past.has_oem_text" i18n:translate="edit">Edit</td>
                                         <td tal:condition="past.has_reason" i18n:translate="reason">Reason</td>
                                         <td tal:condition="past.has_oem_text" i18n:translate="original">Original</td>
@@ -69,7 +69,7 @@
                                         <td class="center" tal:switch="len(rep.votes_pro) > 0">
                                             <div tal:case="True" tal:omit-tag="" tal:repeat="pro rep.votes_pro">
                                                 <a tal:attributes="href pro.userpage_url; title pro.nickname">
-                                                    <img class="img-circle" tal:attributes="src pro.gravatar_url">
+                                                    <img class="img-circle" tal:attributes="src pro.gravatar_url" src="">
                                                 </a>
                                             </div>
                                             <span tal:case="False">-</span>
@@ -77,7 +77,7 @@
                                         <td class="center" tal:switch="len(rep.votes_con) > 0">
                                             <div tal:case="True" tal:omit-tag="" tal:repeat="con rep.votes_con">
                                                 <a tal:attributes="href con.userpage_url; title con.nickname">
-                                                    <img class="img-circle" tal:attributes="src con.gravatar_url">
+                                                    <img class="img-circle" tal:attributes="src con.gravatar_url" src="">
                                                 </a>
                                             </div>
                                             <span tal:case="False">-</span>
@@ -85,7 +85,7 @@
                                         <td>${rep.timestamp}</td>
                                         <td class="center">
                                             <a tal:attributes="href rep.reporter.userpage_url; title rep.reporter.nickname">
-                                                <img class="img-circle" tal:attributes="src rep.reporter.gravatar_url">
+                                                <img class="img-circle" tal:attributes="src rep.reporter.gravatar_url" src="">
                                             </a>
                                         </td>
                                         <td class="center">

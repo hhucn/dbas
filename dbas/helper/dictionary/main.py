@@ -161,7 +161,7 @@ class DictionaryHelper(object):
         return_dict['en_discussion_link'] = '{}/discuss/{}'.format(request.application_url, db_issue_en.slug)
 
         self.add_language_options_for_extra_dict(return_dict)
-        is_author, points= get_reputation_of(nickname)
+        is_author, points = get_reputation_of(nickname)
 
         return_dict['is_reportable'] = is_reportable
         return_dict['is_admin'] = user.is_in_group(nickname, 'admins')
@@ -584,5 +584,13 @@ class DictionaryHelper(object):
             'placeholder_add_topic_question': _tn_dis.get(_.exampleAddTopicQuestion),
             'placeholder_add_topic_description': _tn_dis.get(_.exampleAddTopicDescription),
             'search': _tn_sys.get(_.searchForStatements),
-            'premisegroup_popup_warning': _tn_dis.get(_.premisegroupPopupWarning)
+            'premisegroup_popup_warning': _tn_dis.get(_.premisegroupPopupWarning),
+            'argument_optimization_description': _tn_dis.get(_.argument_optimization_description),
+            'argument_offtopic_or_irrelevant_description': _tn_dis.get(_.argument_offtopic_or_irrelevant_description),
+            'argument_statement_harmful_description': _tn_dis.get(_.argument_statement_harmful_description),
+            'statement_offtopic_or_irrelevant_description': _tn_dis.get(_.statement_offtopic_or_irrelevant_description),
+            'statement_duplicate_description': _tn_dis.get(_.statement_duplicate_description),
+            'statement_merge_description': _tn_dis.get(_.statement_merge_description),
+            'statement_split_description': _tn_dis.get(_.statement_split_description),
+            'statement_optimization_description': _tn_dis.get(_.statement_optimization_description),
         }

@@ -150,6 +150,8 @@ function InteractionHandler() {
 			$('#' + proposalPremiseListGroupId).empty();
 			$('#' + proposalEditListGroupId).empty();
 			$('#' + proposalUserListGroupId).empty();
+			$('#' + proposalStatementSearchGroupId).empty();
+			$('#proposal-mergesplit-list-group-' + callbackid).empty();
 		} else {
 			new GuiHandler().setStatementsAsProposal(data, callbackid, type, reason);
 		}

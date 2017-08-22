@@ -324,7 +324,7 @@ def insert_as_statements(application_url, default_locale_name, text_list, user, 
         if len(text) < statement_min_length:
             return -1
 
-        new_statement, is_duplicate = __set_statement(text, user, is_start, issue, lang)
+        new_statement, is_duplicate = set_statement(text, user, is_start, issue, lang)
         if new_statement:
             statements.append(new_statement)
 
@@ -347,7 +347,7 @@ def insert_as_statements(application_url, default_locale_name, text_list, user, 
     return statements
 
 
-def __set_statement(text, nickname, is_start, issue, lang):
+def set_statement(text, nickname, is_start, issue, lang):
     """
     Saves statement for user
 

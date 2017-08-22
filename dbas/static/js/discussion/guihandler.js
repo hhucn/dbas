@@ -470,6 +470,7 @@ function GuiHandler() {
 		$('#' + proposalUserListGroupId).empty();
 		$('#' + proposalStatementSearchGroupId).empty();
 		$('#' + proposalDuplicateSearchGroupId).empty();
+		$('#proposal-mergesplit-list-group-' + callbackId).empty();
 		
 		// do we have values ?
 		if (parsedData.length === 0) {
@@ -526,6 +527,7 @@ function GuiHandler() {
 				$('#' + proposalUserListGroupId).empty();
 				$('#' + proposalStatementSearchGroupId).empty();
 				$('#' + proposalDuplicateSearchGroupId).empty();
+				$('#proposal-mergesplit-list-group-' + callbackId).empty();
 				if (type === fuzzy_find_statement){
 					window.location.href = $(this).data('url');
 				} else if (type === fuzzy_duplicate){
@@ -541,6 +543,7 @@ function GuiHandler() {
 			else if (type === fuzzy_find_user){       $('#' + proposalUserListGroupId).append(button); }
 			else if (type === fuzzy_find_statement){  $('#' + proposalStatementSearchGroupId).append(button); }
 			else if (type === fuzzy_duplicate){       $('#' + proposalDuplicateSearchGroupId).append(button); }
+			else if (type === fuzzy_find_mergesplit){ $('#proposal-mergesplit-list-group-' + callbackId).append(button); }
 		});
 	};
 	
@@ -829,11 +832,11 @@ function GuiHandler() {
 		if (!Cookies.get(LANG_SWITCH_WARNING)) {
 			displayConfirmationDialogWithoutCancelAndFunction(get_it(lang, languageSwitchModalTitle), get_it(lang, languageSwitchModalBody));
 			$('#' + popupConfirmDialogId).on('hide.bs.modal', function () {
-				new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang);
+				new AjaxMainHandler().switchDisplayLanguage(lang);
 				Cookies.set(LANG_SWITCH_WARNING, true, {expires: 180});
 			});
 		} else {
-			new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang);
+			new AjaxMainHandler().switchDisplayLanguage(lang);
 		}
 	};
 }

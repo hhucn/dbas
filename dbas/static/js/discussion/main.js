@@ -255,8 +255,13 @@ function Main () {
 		list.find('.item-flag').click(function () {
 			var uid = $(this).parent().find('input').attr('id').replace('item_', '');
 			var text = [];
+			var txt;
 			$.each($(this).parent().find('label'), function(){
-				text.push($(this).text());
+				txt = $(this).text();
+				if (txt.match(/\.$/)){ // remove a dot at the end
+					txt = txt.substr(0, txt.length - 1);
+				}
+				text.push(txt);
 			});
 			popupHandler.showFlagStatementPopup(uid, false, text.join(' '));
 		});

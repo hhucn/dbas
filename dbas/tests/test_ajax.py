@@ -156,6 +156,13 @@ class AjaxTest(unittest.TestCase):
         self.assertIsNotNone(response)
         self.assertNotIn('error', response)
 
+    def test_fuzzy_search_mode_8(self):
+        from dbas.views import fuzzy_search as ajax
+        request = testing.DummyRequest(params={'value': 'cat', 'type': 8}, matchdict={})
+        response = ajax(request)
+        self.assertIsNotNone(response)
+        self.assertNotIn('error', response)
+
     def test_fuzzy_search_mode_9(self):
         from dbas.views import fuzzy_search as ajax
         request = testing.DummyRequest(params={'value': 'cat', 'type': 9}, matchdict={})

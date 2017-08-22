@@ -115,7 +115,7 @@ def attitude(request, nickname, for_api=False) -> dict:
 
     if is_statement_forbidden(statement_id):
         logger('Core', 'discussion.attitude', 'forbidden statement', error=True)
-        raise None
+        return None
 
     disc_ui_locales = get_discussion_language(request, issue)
     issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api)

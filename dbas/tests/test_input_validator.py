@@ -35,8 +35,7 @@ class InputValidatorTests(unittest.TestCase):
         input_array_false = is_integer(variable=[1, 2, 3, 'str'], ignore_empty_case=True)
         self.assertEqual(input_array_false, False)
 
-    def test_check_reaction(self):
-        # DBDiscussionSession.configure(bind=dbas_db_configuration(settings, 'sqlalchemy.discussion.'))
+    def test_check_reaction_undermine(self):
 
         # undermine
         undermine_true = check_reaction(attacked_arg_uid=3,
@@ -88,6 +87,7 @@ class InputValidatorTests(unittest.TestCase):
                                                 is_history=True)
         self.assertEqual(undermine_string_false, False)
 
+    def test_check_reaction_undercut(self):
         # undercut
         undercut_true = check_reaction(attacked_arg_uid=42,
                                        attacking_arg_uid=43,
@@ -113,9 +113,10 @@ class InputValidatorTests(unittest.TestCase):
                                                is_history=True)
         self.assertEqual(undercut_string_false, False)
 
+    def test_check_reaction_rebut(self):
         # rebut
-        rebut_true = check_reaction(attacked_arg_uid=32,
-                                    attacking_arg_uid=36,
+        rebut_true = check_reaction(attacked_arg_uid=58,
+                                    attacking_arg_uid=51,
                                     relation='rebut',
                                     is_history=False)
         self.assertEqual(rebut_true, True)
@@ -157,6 +158,7 @@ class InputValidatorTests(unittest.TestCase):
                                             is_history=True)
         self.assertEqual(rebut_string_false, False)
 
+    def test_check_reaction_end(self):
         # end
         end_attacking_arg_uid_not_zero_true = check_reaction(attacked_arg_uid=1,
                                                              attacking_arg_uid=0,

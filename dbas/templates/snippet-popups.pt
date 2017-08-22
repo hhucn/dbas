@@ -841,37 +841,59 @@
                         <fieldset>
                             <input type="radio" id="opt" value="optimization" name="flag-statement" style="margin-bottom: 1em;">
                             <label for="opt" style="margin-bottom: 1em;">
-                                <span i18n:translate="text_need_to_be_revised">The text needs to be revised.</span><br>
-                                <small class="statement_text" i18n:translate="statement_optimization_description">This statement is acceptable but it needs correction for spelling/grammar.</small>
-                                <small class="argument_text" i18n:translate="argument_optimization_description">This argument is acceptable but it needs correction for spelling/grammar.</small>
+                                <span i18n:translate="text_need_to_be_revised">The text needs to be revised.</span>
+                                <i class="fa fa-question-circle-o statement_text" aria-hidden="true" style="padding-left: 0.5em" tal:attributes="title extras.tag.statement_optimization_description"></i>
+                                <!--<br>-->
+                                <!--<small class="statement_text" i18n:translate="statement_optimization_description">This statement is acceptable but it needs correction for spelling/grammar.</small>-->
+                                <!--<small class="argument_text" i18n:translate="argument_optimization_description">This argument is acceptable but it needs correction for spelling/grammar.</small>-->
+                                <i class="fa fa-question-circle-o argument_text" aria-hidden="true" style="padding-left: 0.5em" tal:attributes="title extras.tag.argument_optimization_description"></i>
                             </label>
                             <br>
                             <input type="radio" id="off" value="offtopic" name="flag-statement" style="margin-bottom: 1em;">
                             <label for="off" style="margin-bottom: 1em;">
-                                <span class="statement_text" i18n:translate="statement_offtopic_or_irrelevant">This statement is off topic or irrelevant.</span><br class="statement_text">
-                                <small class="statement_text" i18n:translate="statement_offtopic_or_irrelevant_description">This statement does not belong to the topic under discussion.</small>
-                                <span class="argument_text" i18n:translate="argument_offtopic_or_irrelevant">This argument is off topic or irrelevant.</span><br class="argument_text">
-                                <small class="argument_text" i18n:translate="argument_offtopic_or_irrelevant_description">This argument does not belong to the topic under discussion.</small>
+                                <span class="statement_text" i18n:translate="statement_offtopic_or_irrelevant">This statement is off topic or irrelevant.</span>
+                                <!--<br class="statement_text">-->
+                                <!--<small class="statement_text" i18n:translate="statement_offtopic_or_irrelevant_description">This statement does not belong to the topic under discussion.</small>-->
+                                <i class="fa fa-question-circle-o statement_text" aria-hidden="true" style="padding-left: 0.5em" tal:attributes="title extras.tag.statement_offtopic_or_irrelevant_description"></i>
+                                <span class="argument_text" i18n:translate="argument_offtopic_or_irrelevant">This argument is off topic or irrelevant.</span>
+                                <!--<br class="argument_text">-->
+                                <!--<small class="argument_text" i18n:translate="argument_offtopic_or_irrelevant_description">This argument does not belong to the topic under discussion.</small>-->
+                                <i class="fa fa-question-circle-o argument_text" aria-hidden="true" style="padding-left: 0.5em" tal:attributes="title extras.tag.argument_offtopic_or_irrelevant_description"></i>
                             </label>
                             <br>
-                            <!--<input type="radio" id="sp" value="spam" name="flag-statement">-->
-                            <!--<label for="sp">-->
-<!--                                <span i18n:translate="statement_spam">It is not relevant at all.</span><br>-->
-<!--                                <small class="statement_text" i18n:translate="statement_spam_description">This statement does not belong to any topic under discussion.</small>-->
-<!--                                <small class="argument_text" i18n:translate="argument_spam_description">This argument does not belong to any topic under discussion.</small>-->
-                            <!--</label>-->
-                            <!--<br>-->
                             <input type="radio" id="bad" value="harmful" name="flag-statement" style="margin-bottom: 1em;">
                             <label for="bad" style="margin-bottom: 1em;">
-                                <span class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span><br class="statement_text">
-                                <span class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span><br class="argument_text">
-                                <small class="statement_text" i18n:translate="argument_statement_harmful_description">A reasonable person would find this content inappropriate for respectful discourse.</small>
+                                <span class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span>
+                                <!--<br class="statement_text">-->
+                                <span class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span>
+                                <!--<br class="argument_text">-->
+                                <i class="fa fa-question-circle-o" aria-hidden="true" style="padding-left: 0.5em" tal:attributes="title extras.tag.argument_statement_harmful_description"></i>
+                                <!--<br>-->
+                                <!--<small class="statement_text" i18n:translate="argument_statement_harmful_description">A reasonable person would find this content inappropriate for respectful discourse.</small>-->
                             </label>
                             <br>
                             <input type="radio" id="dupl" value="duplicate" name="flag-statement" style="margin-bottom: 1em;">
                             <label for="dupl" style="margin-bottom: 1em;">
-                                <span class="statement_text" i18n:translate="this_statement_duplicate">This statement is a duplicate.</span><br>
-                                <small class="statement_text" i18n:translate="this_statement_duplicate_description">This statement has been done before in a slightly different wording.</small>
+                                <span class="statement_text" i18n:translate="statement_duplicate">This statement is a duplicate.</span>
+                                <i class="fa fa-question-circle-o" aria-hidden="true" style="padding-left: 0.5em" tal:attributes="title extras.tag.statement_duplicate_description"></i>
+                                <!--<br>-->
+                                <!--<small class="statement_text" i18n:translate="statement_duplicate_description">This statement has been done before in a slightly different wording.</small>-->
+                            </label>
+                            <br>
+                            <input type="radio" id="merge" value="merge" name="flag-statement" style="margin-bottom: 1em;">
+                            <label for="merge" style="margin-bottom: 1em;">
+                                <span class="statement_text" i18n:translate="statement_merge">This statement should be merged.</span>
+                                <i class="fa fa-question-circle-o" aria-hidden="true" style="padding-left: 0.5em" tal:attributes="title extras.tag.statement_merge_description"></i>
+                                <!--<br>-->
+                                <!--<small class="statement_text" i18n:translate="statement_merge_description">This statement belongs to another statement, so they should be merged.</small>-->
+                            </label>
+                            <br>
+                            <input type="radio" id="split" value="split" name="flag-statement" style="margin-bottom: 1em;">
+                            <label for="split" style="margin-bottom: 1em;">
+                                <span class="statement_text" i18n:translate="statement_split">This statement has more than one message.</span>
+                                <i class="fa fa-question-circle-o" aria-hidden="true" style="padding-left: 0.5em" tal:attributes="title extras.tag.statement_split_description"></i>
+                                <!--<br>-->
+                                <!--<small class="statement_text" i18n:translate="statement_split_description">This statement contains more than one message and has to be splitted.</small>-->
                             </label>
                         </fieldset>
                     </form>
@@ -965,6 +987,100 @@
     			<div class="modal-body">
                     <p class="lead">${extras.title.select_multiple_statements}</p>
                     <div id="popup-choose-statement-radios"></div>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
+    <!-- SPLIT STATEMENT -->
+    <div class="modal fade" id="popup-split-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelSplitStatement" aria-hidden="true">
+    	<div class="modal-dialog">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button name="popup-split-statement-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabelSplitPremisegroup" i18n:translate="split_statement">Split Statements</h4>
+    			</div>
+    			<div class="modal-body">
+                    <p class="lead" i18n:translate="split_multiple_statements">Please enter the splitted version of the statement; one per input field.</p>
+                    <p class="well well-sm" id="popup-split-statement-text"></p>
+                    <div id="popup-split-statement-body"></div>
+    			</div>
+    			<div class="modal-footer">
+                    <p class="lead" id="popup-split-statement-question" style="text-align: left;"></p>
+                    <button id="popup-split-statement-add" class="pull-left btn btn-secondary" type="button"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                    <button id="popup-split-statement-rem" class="pull-left btn btn-secondary" type="button"><i class="fa fa-minus" aria-hidden="true"></i></button>
+    				<button type="button" class="btn btn-secondary" id="popup-split-statement-btn-yes" i18n:translate="submit">Submit</button>
+    				<button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="cancel">Cancel</button>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
+    <!-- SPLIT PREMISEGROUP -->
+    <div class="modal fade" id="popup-split-premisegroup" tabindex="-1" role="dialog" aria-labelledby="myModalLabelSplitPremisegroup" aria-hidden="true">
+    	<div class="modal-dialog">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button name="popup-split-premisegroup-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabelSplitPremisegroup" i18n:translate="split_statement">Split Statements</h4>
+    			</div>
+    			<div class="modal-body">
+                    <p class="lead" i18n:translate="split_multiple_statements_of_pgroup">The selected statement is already splitted in several parts, like the list illustrates below. Do you want to continue with a new split?</p>
+                    <span i18n:translate="the_statement" class="lead">The statement</span> <span class="lead" style="color: #2196f3" id="popup-split-premisegroup-text"></span> <span class="lead" i18n:translate="consist_out_of">consist out of</span>:
+                    <ul id="popup-split-premisegroup-body"></ul>
+    			</div>
+    			<div class="modal-footer">
+    				<button type="button" class="btn btn-secondary" i18n:translate="yes" id="popup-split-premisegroup-btn-yes">Yes</button>
+    				<button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="no">No</button>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
+    <!-- MERGE STATEMENT -->
+    <div class="modal fade" id="popup-merge-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelMergeStatement" aria-hidden="true">
+    	<div class="modal-dialog">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button name="popup-merge-statement-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabelMergeStatement" i18n:translate="merge_statement">Merge Statement</h4>
+    			</div>
+    			<div class="modal-body">
+                    <p class="lead" i18n:translate="merge_multiple_statements">Please select the statements, that should be concatenated.</p>
+                    <p class="well well-sm" id="popup-merge-statement-text"></p>
+                    <div id="popup-merge-statement-body"></div>
+    			</div>
+    			<div class="modal-footer">
+                    <p class="lead" id="popup-merge-statement-question" style="text-align: left;"></p>
+                    <button id="popup-merge-statement-add" class="pull-left btn btn-secondary" type="button" ><i class="fa fa-plus" aria-hidden="true"></i></button>
+                    <button id="popup-merge-statement-rem" class="pull-left btn btn-secondary" type="button" ><i class="fa fa-minus" aria-hidden="true"></i></button>
+    				<button type="button" class="btn btn-secondary" id="popup-merge-statement-btn-yes" i18n:translate="submit">Submit</button>
+    				<button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="cancel">Cancel</button>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
+    <!-- MERGE PREMISEGROUP -->
+    <div class="modal fade" id="popup-merge-premisegroup" tabindex="-1" role="dialog" aria-labelledby="myModalLabelMergePremisegroup" aria-hidden="true">
+    	<div class="modal-dialog">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button name="popup-merge-premisegroup-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h4 class="modal-title" id="myModalLabelMergePremisegroup" i18n:translate="merge_statement">Merge Statement</h4>
+    			</div>
+    			<div class="modal-body">
+                    <p class="lead" i18n:translate="merge_multiple_statements_of_pgroup">The selected statement already consists out of multiple statement. Further on the several statements are listed. Do you want to continue with the merge?</p>
+                    <span class="lead" i18n:translate="the_statement">The statement</span> <span class="lead" style="color: #2196f3" id="popup-merge-premisegroup-text"></span> <span class="lead" i18n:translate="consist_out_of">consist out of</span>:
+                    <ul id="popup-merge-premisegroup-body"></ul>
+    			</div>
+    			<div class="modal-footer">
+    				<button type="button" class="btn btn-secondary" i18n:translate="yes" id="popup-merge-premisegroup-btn-yes">Yes</button>
+    				<button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="no">No</button>
     			</div>
     		</div>
     	</div>
