@@ -287,7 +287,7 @@ en_lang = {
     _.exampleSource: 'Please enter the cite here',
     _.exampleSearchDuplicate: 'Enter parts of the statement to search',
     _.examplePosition: 'we should do something',
-    _.exampleReason: 'this is a reason for this',
+    _.exampleReason: 'this is a reason for it',
     _.exampleAddTopicTitle: 'e.g.: Cat or Dog',
     _.exampleAddTopicQuestion: 'e.g.: Your family argues about buying a cat or dog. What is your position?',
     _.exampleAddTopicDescription: 'e.g.: In the last days your family talked about the buy of a new pet. Currently they are argueing whether to buy a cat or dog. Nor your opininion matters!',
