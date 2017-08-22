@@ -280,10 +280,10 @@ def blank_file(argv=sys.argv):
         lang1, lang2 = __set_up_language(DBDiscussionSession)
 
         issue1 = Issue(title='ONE TITLE',
-                       info='A INFO TO RULE THEM ALL',
+                       info='A INFO TO RULE THEM ALL - THIS WAS CREATED BY AN EMPTY DB',
                        author_uid=user1.uid,
                        lang_uid=lang2.uid,
-                       long_info='I AM A LONG CAT')
+                       long_info='I AM A LONG CAAAAAAAT')
         DBDiscussionSession.add_all([issue1])
         DBDiscussionSession.flush()
 
