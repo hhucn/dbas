@@ -8,7 +8,8 @@ import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, TextVersion, \
     LastReviewerOptimization, ReviewEdit, LastReviewerEdit, OptimizationReviewLocks, ReviewEditValue, get_now, \
-    Statement, ReviewDuplicate, LastReviewerDuplicate, Argument, Premise
+    Statement, ReviewDuplicate, LastReviewerDuplicate, Argument, Premise, ReviewMerge, ReviewSplit, \
+    LastReviewerMerge, LastReviewerSplit
 from dbas.lib import get_profile_picture, is_user_author_or_admin
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of, reputation_icons
@@ -21,8 +22,10 @@ max_lock_time_in_sec = 180
 key_deletes = 'deletes'
 key_optimizations = 'optimizations'
 key_edits = 'edits'
-key_history = 'history'
 key_duplicates = 'duplicates'
+key_merge = 'merges'
+key_split = 'splits'
+key_history = 'history'
 key_ongoing = 'ongoing'
 
 
@@ -46,6 +49,8 @@ def get_review_queues_as_lists(main_page, translator, nickname):
     review_list.append(__get_optimization_dict(main_page, translator, nickname, count, all_rights))
     review_list.append(__get_edit_dict(main_page, translator, nickname, count, all_rights))
     review_list.append(__get_duplicates_dict(main_page, translator, nickname, count, all_rights))
+    review_list.append(__get_split_dict(main_page, translator, nickname, count, all_rights))
+    review_list.append(__get_merge_dict(main_page, translator, nickname, count, all_rights))
     review_list.append(__get_history_dict(main_page, translator, count, all_rights))
     if is_user_author_or_admin(nickname):
         review_list.append(__get_ongoing_dict(main_page, translator))
@@ -66,13 +71,19 @@ def get_complete_review_count(nickname):
     rights2 = count >= reputation_borders[key_optimizations] or all_rights
     rights3 = count >= reputation_borders[key_edits] or all_rights
     rights4 = count >= reputation_borders[key_duplicates] or all_rights
+    rights5 = count >= reputation_borders[key_split] or all_rights
+    rights6 = count >= reputation_borders[key_merge] or all_rights
 
-    count1 = __get_review_count_for(ReviewDelete, LastReviewerDelete, nickname) if rights1 else 0
-    count2 = __get_review_count_for(ReviewOptimization, LastReviewerOptimization, nickname) if rights2 else 0
-    count3 = __get_review_count_for(ReviewEdit, LastReviewerEdit, nickname) if rights3 else 0
-    count4 = __get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, nickname) if rights4 else 0
+    count = [
+        __get_review_count_for(ReviewDelete, LastReviewerDelete, nickname) if rights1 else 0,
+        __get_review_count_for(ReviewOptimization, LastReviewerOptimization, nickname) if rights2 else 0,
+        __get_review_count_for(ReviewEdit, LastReviewerEdit, nickname) if rights3 else 0,
+        __get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, nickname) if rights4 else 0,
+        __get_review_count_for(ReviewSplit, LastReviewerSplit, nickname) if rights5 else 0,
+        __get_review_count_for(ReviewMerge, LastReviewerMerge, nickname) if rights6 else 0,
+    ]
 
-    return count1 + count2 + count3 + count4
+    return sum(count)
 
 
 def __get_delete_dict(main_page, translator, nickname, count, all_rights):
@@ -163,7 +174,7 @@ def __get_duplicates_dict(main_page, translator, nickname, count, all_rights):
     task_count = __get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, nickname)
 
     tmp_dict = {'task_name': translator.get(_.queueDuplicates),
-                'id': 'edits',
+                'id': 'duplicates',
                 'url': main_page + '/review/' + key_duplicates,
                 'icon': reputation_icons[key_duplicates],
                 'task_count': task_count,
@@ -171,6 +182,56 @@ def __get_duplicates_dict(main_page, translator, nickname, count, all_rights):
                 'is_allowed_text': translator.get(_.visitDuplicateQueue),
                 'is_not_allowed_text': translator.get(_.visitDuplicateQueueLimitation).format(str(reputation_borders[key_duplicates])),
                 'last_reviews': __get_last_reviewer_of(LastReviewerDuplicate, main_page)
+                }
+    return tmp_dict
+
+
+def __get_split_dict(main_page, translator, nickname, count, all_rights):
+    """
+    Prepares dictionary for the a section.
+
+    :param main_page: URL
+    :param translator: Translator
+    :param nickname: Users nickname
+    :return: Dict()
+    """
+    #  logger('ReviewQueues', '__get_delete_dict', 'main')
+    task_count = __get_review_count_for(ReviewSplit, LastReviewerSplit, nickname)
+
+    tmp_dict = {'task_name': translator.get(_.queueSplit),
+                'id': 'splits',
+                'url': main_page + '/review/' + key_split,
+                'icon': reputation_icons[key_split],
+                'task_count': task_count,
+                'is_allowed': count >= reputation_borders[key_split] or all_rights,
+                'is_allowed_text': translator.get(_.visitSplitQueue),
+                'is_not_allowed_text': translator.get(_.visitSplitQueueLimitation).format(str(reputation_borders[key_split])),
+                'last_reviews': __get_last_reviewer_of(LastReviewerSplit, main_page)
+                }
+    return tmp_dict
+
+
+def __get_merge_dict(main_page, translator, nickname, count, all_rights):
+    """
+    Prepares dictionary for the a section.
+
+    :param main_page: URL
+    :param translator: Translator
+    :param nickname: Users nickname
+    :return: Dict()
+    """
+    #  logger('ReviewQueues', '__get_delete_dict', 'main')
+    task_count = __get_review_count_for(ReviewMerge, LastReviewerMerge, nickname)
+
+    tmp_dict = {'task_name': translator.get(_.queueMerge),
+                'id': 'merges',
+                'url': main_page + '/review/' + key_merge,
+                'icon': reputation_icons[key_merge],
+                'task_count': task_count,
+                'is_allowed': count >= reputation_borders[key_merge] or all_rights,
+                'is_allowed_text': translator.get(_.visitMergeQueue),
+                'is_not_allowed_text': translator.get(_.visitMergeQueueLimitation).format(str(reputation_borders[key_merge])),
+                'last_reviews': __get_last_reviewer_of(LastReviewerMerge, main_page)
                 }
     return tmp_dict
 
@@ -368,16 +429,20 @@ def __add_edit_reviews(element, db_user):
     return 0
 
 
-def is_statement_in_edit_queue(uid):
+def is_statement_in_edit_queue(uid, is_executed=False):
     """
     Returns true if the statement is not in the edit queue
 
     :param uid: Statement.uid
     :return: Boolean
     """
+    logger('ReviewQueues', 'is_statement_in_edit_queue', 'current element: {}'.format(uid))
     db_already_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.statement_uid == uid,
-                                                                        ReviewEdit.is_executed == False)).all()
-    return db_already_edit and len(db_already_edit) > 0
+                                                                        ReviewEdit.is_executed == is_executed)).all()
+    if db_already_edit:
+        return len(db_already_edit) > 0
+    else:
+        return False
 
 
 def is_arguments_premise_in_edit_queue(uid):
@@ -393,7 +458,7 @@ def is_arguments_premise_in_edit_queue(uid):
     for premise in db_premises:
         db_already_edit += DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.statement_uid == premise.statement_uid,
                                                                              ReviewEdit.is_executed == False)).all()
-    return db_already_edit and len(db_already_edit) > 0
+    return len(db_already_edit) > 0
 
 
 def __add_edit_values_review(element, db_user):

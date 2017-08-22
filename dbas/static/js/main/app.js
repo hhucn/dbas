@@ -252,7 +252,7 @@ function setPiwikOptOutLink(lang){
 function setEasterEggs(){
     'use strict';
     
-	$('#roundhousekick').click(function(){ new AjaxMainHandler().ajaxRoundhouseKick(); });
+	$('#roundhousekick').click(function(){ new AjaxMainHandler().roundhouseKick(); });
 	//$('#yomamma').click(function(){ new AjaxMainHandler().ajaxMama(); });
 	$('#logo_dbas, #logo_dbas_s').click(function(){
 		if (!$(this)){
@@ -320,9 +320,9 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	$('#' + popupLoginButtonLogin).show().click(function() {
-		new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
+		new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
 		Cookies.set(DBAS_DATA_DISCLAIMER, true, { expires: 180 });
-	}).keypress(function(e) { if (e.which === 13) { new AjaxMainHandler().ajaxRegistration(); } });
+	}).keypress(function(e) { if (e.which === 13) { new AjaxMainHandler().registration(); } });
 	
 	// data disclaimer
 	if (Cookies.get(DBAS_DATA_DISCLAIMER) === 'true') {
@@ -387,7 +387,7 @@ function prepareLoginRegistrationPopup(){
 
 		if (text === '' ){
 			$('#' + popupLoginWarningMessage).hide();
-			new AjaxMainHandler().ajaxRegistration();
+			new AjaxMainHandler().registration();
 		} else {
 			$('#' + popupLoginWarningMessage).fadeIn("slow");
 			$('#' + popupLoginWarningMessageText).text(text);
@@ -396,18 +396,18 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	// bind enter key
-	$('#' + loginUserId).keypress(function(e) {							if (e.which === 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
-	$('#' + loginPwId).keypress(function(e) {							if (e.which === 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
-	$('#admin-login-user').keypress(function(e) {   					if (e.which === 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
-	$('#admin-login-pw').keypress(function(e) {							if (e.which === 13) {	new AjaxMainHandler().ajaxLogin($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
-	$('#' + popupLoginUserfirstnameInputId).keypress(function(e) {		if (e.which === 13) {	new AjaxMainHandler().ajaxRegistration();	}	});
-	$('#' + popupLoginUserlastnameInputId).keypress(function(e) {		if (e.which === 13) {	new AjaxMainHandler().ajaxRegistration();	}	});
-	$('#' + popupLoginNickInputId).keypress(function(e) {				if (e.which === 13) {	new AjaxMainHandler().ajaxRegistration();	}	});
-	$('#' + popupLoginEmailInputId).keypress(function(e) {				if (e.which === 13) {	new AjaxMainHandler().ajaxRegistration();	}	});
-	$('#' + popupLoginPasswordconfirmInputId).keypress(function(e) {	if (e.which === 13) {	new AjaxMainHandler().ajaxRegistration();	}	});
+	$('#' + loginUserId).keypress(function(e) {							if (e.which === 13) {	new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
+	$('#' + loginPwId).keypress(function(e) {							if (e.which === 13) {	new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
+	$('#admin-login-user').keypress(function(e) {   					if (e.which === 13) {	new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
+	$('#admin-login-pw').keypress(function(e) {							if (e.which === 13) {	new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
+	$('#' + popupLoginUserfirstnameInputId).keypress(function(e) {		if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
+	$('#' + popupLoginUserlastnameInputId).keypress(function(e) {		if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
+	$('#' + popupLoginNickInputId).keypress(function(e) {				if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
+	$('#' + popupLoginEmailInputId).keypress(function(e) {				if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
+	$('#' + popupLoginPasswordconfirmInputId).keypress(function(e) {	if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
 
 	$('#' + popupLoginButtonRequest).click(function() {
-		new AjaxMainHandler().ajaxPasswordRequest();
+		new AjaxMainHandler().passwordRequest();
 	});
 }
 
@@ -709,7 +709,7 @@ $(document).ready(function () {
 	$('#' + translationLinkEn + ' img').click(function(){ new GuiHandler().lang_switch('en'); });
 	$('#' + logoutLinkId).click(function(e){
 		e.preventDefault();
-		new AjaxMainHandler().ajaxLogout();
+		new AjaxMainHandler().logout();
 	});
 
 	$(window).scroll(function() {

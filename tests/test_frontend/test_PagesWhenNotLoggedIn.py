@@ -56,6 +56,6 @@ def test_admin_pages():
 
 
 def test_user_pages():
-    browser.visit('{}/user/{}'.format(ROOT, 3))
+    browser.visit('{}/user/{}'.format(ROOT, 2))
     assert_true(browser.is_text_present('Tobias'), error_text)
     assert_true(browser.is_text_present('Reputation'), error_text)

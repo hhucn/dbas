@@ -54,7 +54,7 @@ from dbas.strings.translator import Translator
 from webhook.lib import get_port
 
 name = 'D-BAS'
-version = '1.4.2'
+version = '1.4.3'
 full_version = version
 project_name = name + ' ' + full_version
 
@@ -818,14 +818,18 @@ def review_content(request):
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     title = _tn.get(_.review)
-    if subpage_name == 'deletes':
+    if subpage_name == review_queue_helper.key_deletes:
         title = _tn.get(_.queueDelete)
-    if subpage_name == 'optimizations':
+    if subpage_name == review_queue_helper.key_optimizations:
         title = _tn.get(_.queueOptimization)
-    if subpage_name == 'edits':
+    if subpage_name == review_queue_helper.key_edits:
         title = _tn.get(_.queueEdit)
-    if subpage_name == 'duplicates':
+    if subpage_name == review_queue_helper.key_duplicates:
         title = _tn.get(_.queueDuplicates)
+    if subpage_name == review_queue_helper.key_split:
+        title = _tn.get(_.queueSplit)
+    if subpage_name == review_queue_helper.key_merge:
+        title = _tn.get(_.queueMerge)
 
     return {
         'layout': base_layout(),
@@ -1930,6 +1934,70 @@ def flag_argument_or_statement(request):
     return json.dumps(prepared_dict)
 
 
+# #######################################
+# ADDITIONAL AJAX STUFF # REVIEW THINGS #
+# #######################################
+
+
+# ajax - for flagging arguments
+@view_config(route_name='ajax_split_or_merge_statement', renderer='json')
+def split_or_merge_statement(request):
+    """
+    Flags a statement for a specific reason
+
+    :param request: current request of the server
+    :return: json-dict()
+    """
+    logger('views', 'split_or_merge_statement', 'request.params: {}'.format(request.params))
+    ui_locales = get_discussion_language(request)
+
+    try:
+        nickname = request.authenticated_userid
+        pgroup_uid = request.params['pgroup_uid']
+        key = request.params['key']
+        tvalues = json.loads(request.params['text_values'])
+        prepared_dict = review.merge_or_split_statement(key, pgroup_uid, tvalues, nickname, ui_locales)
+
+    except KeyError as e:
+        _t = Translator(ui_locales)
+        logger('views', 'split_or_merge_statement', repr(e), error=True)
+        prepared_dict = {'error': _t.get(_.internalKeyError), 'info': '', 'success': ''}
+
+    return json.dumps(prepared_dict)
+
+
+# #######################################
+# ADDITIONAL AJAX STUFF # REVIEW THINGS #
+# #######################################
+
+
+# ajax - for flagging arguments
+@view_config(route_name='ajax_split_or_merge_premisegroup', renderer='json')
+def split_or_merge_premisegroup(request):
+    """
+    Flags a premisegroup for a specific reason
+
+    :param request: current request of the server
+    :return: json-dict()
+    """
+    logger('views', 'split_or_merge_premisegroup', 'request.params: {}'.format(request.params))
+    ui_locales = get_discussion_language(request)
+
+    try:
+        pgroup_uid = request.params['pgroup_uid']
+        key = request.params['key']
+        nickname = request.authenticated_userid
+
+        prepared_dict = review.merge_or_split_premisegroup(key, pgroup_uid, nickname, ui_locales)
+
+    except KeyError as e:
+        _t = Translator(ui_locales)
+        logger('views', 'split_or_merge_premisegroup', repr(e), error=True)
+        prepared_dict = {'error': _t.get(_.internalKeyError), 'info': '', 'success': ''}
+
+    return json.dumps(prepared_dict)
+
+
 # ajax - for feedback on flagged arguments
 @view_config(route_name='ajax_review_delete_argument', renderer='json')
 def review_delete_argument(request):
@@ -2017,6 +2085,50 @@ def review_optimization_argument(request):
     return json.dumps(prepared_dict)
 
 
+# ajax - for feedback on a splitted premisegroup
+@view_config(route_name='ajax_review_splitted_premisegroup', renderer='json')
+def review_splitted_premisegroup(request):
+    """
+    Values for the review for a premisegroup, which should be splitted
+
+    :param request: current request of the server
+    :return: json-dict()
+    """
+    logger('views', 'review_splitted_premisegroup', 'main: {}'.format(request.params))
+
+    try:
+        prepared_dict = review.split_premisegroup(request)
+    except KeyError as e:
+        logger('Views', 'review_splitted_premisegroup', repr(e), error=True)
+        ui_locales = get_discussion_language(request)
+        _t = Translator(ui_locales)
+        prepared_dict = {'error': _t.get(_.internalKeyError)}
+
+    return json.dumps(prepared_dict)
+
+
+# ajax - for feedback on a merged premisegroup
+@view_config(route_name='ajax_review_merged_premisegroup', renderer='json')
+def review_merged_premisegroup(request):
+    """
+    Values for the review for a statement, which should be merged
+
+    :param request: current request of the server
+    :return: json-dict()
+    """
+    logger('views', 'review_merged_premisegroup', 'main: {}'.format(request.params))
+
+    try:
+        prepared_dict = review.merge_premisegroup(request)
+    except KeyError as e:
+        logger('Views', 'review_merged_premisegroup', repr(e), error=True)
+        ui_locales = get_discussion_language(request)
+        _t = Translator(ui_locales)
+        prepared_dict = {'error': _t.get(_.internalKeyError)}
+
+    return json.dumps(prepared_dict)
+
+
 # ajax - for undoing reviews
 @view_config(route_name='ajax_undo_review', renderer='json')
 def undo_review(request):
@@ -2034,7 +2146,11 @@ def undo_review(request):
         logger('views', 'undo_review', repr(e), error=True)
         ui_locales = get_discussion_language(request)
         _t = Translator(ui_locales)
-        prepared_dict = {'error': _t.get(_.internalKeyError)}
+        prepared_dict = {
+            'error': _t.get(_.internalKeyError),
+            'info': '',
+            'success': ''
+        }
 
     return json.dumps(prepared_dict)
 

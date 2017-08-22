@@ -41,6 +41,13 @@ jshint:
     - bash -c "jshint ./webhook/static/js/*.js"
   allow_failure: true
 
+frontend:
+  <<: *run-server
+  stage: test
+  script:
+    - docker exec dbas_web_$CI_JOB_ID nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
+    - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
+
 unit:
   <<: *run-server
   stage: test
@@ -53,13 +60,6 @@ unit:
     paths:
       - coverage.xml
     expire_in: 10 mins
-
-acceptance:
-  <<: *run-server
-  stage: test
-  script:
-    - docker exec dbas_web_$CI_JOB_ID nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
-    - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
 
 sonar:
   image: hhucn/sonar-scanner

@@ -17,12 +17,16 @@ reputation_borders = {'deletes': 30,
                       'optimizations': 30,
                       'edits': 30,
                       'duplicates': 30,
+                      'splits': 30,
+                      'merges': 30,
                       'history': 150}
 
 reputation_icons = {'deletes': 'fa fa-trash-o',
                     'optimizations': 'fa fa-flag',
                     'edits': 'fa fa-pencil-square-o',
                     'duplicates': 'fa fa-files-o',
+                    'splits': 'fa fa-expand',
+                    'merges': 'fa fa-compress',
                     'history': 'fa fa-history',
                     'ongoing': 'fa fa-clock-o'}
 
@@ -52,6 +56,8 @@ def get_privilege_list(translator):
         {'points': reputation_borders['deletes'], 'icon': reputation_icons['deletes'], 'text': translator.get(_.priv_access_opti_queue)},
         {'points': reputation_borders['optimizations'], 'icon': reputation_icons['optimizations'], 'text': translator.get(_.priv_access_del_queue)},
         {'points': reputation_borders['edits'], 'icon': reputation_icons['edits'], 'text': translator.get(_.priv_access_edit_queue)},
+        {'points': reputation_borders['splits'], 'icon': reputation_icons['splits'], 'text': translator.get(_.priv_access_splits_queue)},
+        {'points': reputation_borders['merges'], 'icon': reputation_icons['merges'], 'text': translator.get(_.priv_access_merges_queue)},
         {'points': reputation_borders['duplicates'], 'icon': reputation_icons['duplicates'], 'text': translator.get(_.priv_access_duplicate_queue)},
         {'points': reputation_borders['history'], 'icon': reputation_icons['history'], 'text': translator.get(_.priv_history_queue)}
     ]

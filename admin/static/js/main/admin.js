@@ -9,7 +9,7 @@ $(document).ready(function () {
 	$('#admin-login-button').click(function(){
 		var user = $('#admin-login-user').val();
 		var pw = $('#admin-login-pw').val();
-		new AjaxMainHandler().ajaxLogin(user, pw, true);
+		new AjaxMainHandler().login(user, pw, true);
 	});
 	
 	if ($('.batman').length === 0) {

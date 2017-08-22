@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-08-01 14:44+0200\n"
+"POT-Creation-Date: 2017-08-22 10:38+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -312,260 +312,328 @@ msgstr "Änderung"
 msgid "duplicates"
 msgstr "Duplikate"
 
+#. Default: Merge
+#: templates/review-content.pt:24
+msgid "merge"
+msgstr "Zusammenfügen"
+
+#. Default: Split
+#: templates/review-content.pt:25
+msgid "split"
+msgstr "Teilen"
+
 #. Default: (more)
-#: templates/review-content.pt:31
+#: templates/review-content.pt:33
 msgid "wrapped_more"
 msgstr "(mehr)"
 
 #. Default: (less)
-#: templates/review-content.pt:32
+#: templates/review-content.pt:34
 msgid "wrapped_less"
 msgstr "(weniger)"
 
 #. Default: Skip it
-#: templates/review-content.pt:36 templates/review-content.pt:41
-#: templates/review-content.pt:46 templates/review-content.pt:51
-#: templates/review-content.pt:79 templates/review-content.pt:84
-#: templates/review-content.pt:89 templates/review-content.pt:94
+#: templates/review-content.pt:38 templates/review-content.pt:43
+#: templates/review-content.pt:48 templates/review-content.pt:53
+#: templates/review-content.pt:58 templates/review-content.pt:63
+#: templates/review-content.pt:88 templates/review-content.pt:93
+#: templates/review-content.pt:98 templates/review-content.pt:103
+#: templates/review-content.pt:108 templates/review-content.pt:113
 msgid "skip_it"
 msgstr "Überspringen"
 
 #. Default: Delete it
-#: templates/review-content.pt:37 templates/review-content.pt:78
+#: templates/review-content.pt:39 templates/review-content.pt:87
 msgid "delete_it"
 msgstr "Löschen"
 
 #. Default: It's Okay
 #. Default: It's okay
-#: templates/review-content.pt:38 templates/review-content.pt:48
-#: templates/review-content.pt:77 templates/review-content.pt:87
+#: templates/review-content.pt:40 templates/review-content.pt:50
+#: templates/review-content.pt:86 templates/review-content.pt:96
 msgid "its_okay"
 msgstr "Das ist okay so"
 
 #. Default: It's okay so
-#: templates/review-content.pt:42 templates/review-content.pt:83
+#: templates/review-content.pt:44 templates/review-content.pt:92
 msgid "its_okay_so"
 msgstr "Das ist okay so"
 
 #. Default: Let me correct it
-#: templates/review-content.pt:43 templates/review-content.pt:82
+#: templates/review-content.pt:45 templates/review-content.pt:91
 msgid "correct_it"
 msgstr "Verbesserungen angeben"
 
 #. Default: Reject it
-#: templates/review-content.pt:47 templates/review-content.pt:88
+#: templates/review-content.pt:49 templates/review-content.pt:59
+#: templates/review-content.pt:64 templates/review-content.pt:97
+#: templates/review-content.pt:107 templates/review-content.pt:112
 msgid "reject_it"
 msgstr "Ablehnen"
 
 #. Default: Unique
-#: templates/review-content.pt:52
+#: templates/review-content.pt:54
 msgid "unique"
 msgstr "Einzigartig"
 
 #. Default: Duplicate
-#: templates/review-content.pt:53
+#: templates/review-content.pt:55
 msgid "duplicate"
 msgstr "Duplikat"
 
+#. Default: Change is okay
+#: templates/review-content.pt:60 templates/review-content.pt:65
+msgid "change_okay"
+msgstr "Änderung ist okay"
+
 #. Default: Information for the different reasons
-#: templates/review-content.pt:61
+#: templates/review-content.pt:73
 msgid "information_for_the_different_reasons"
 msgstr "Informationen zu den Gründen"
 
 #. Default: Off topic or irrelevant
-#: templates/review-content.pt:63
+#: templates/review-content.pt:75
 msgid "off_topic_or_irrelevant"
 msgstr "Nicht relevant / Spam"
 
 #. Default: text does not belong to the topic under discussion
-#: templates/review-content.pt:63
+#: templates/review-content.pt:75
 msgid "off_topic_explanation"
 msgstr "wenn der Text nicht zur Thematik passt"
 
 #. Default: Inappropriate, harmful or abusive
-#: templates/review-content.pt:64
+#: templates/review-content.pt:76
 msgid "inappropriate_harmful_abbusive"
 msgstr "Nicht angebracht, verletzend oder verachtend"
 
 #. Default: are posts, which are inappropriate, harmful or abbusive
-#: templates/review-content.pt:64
+#: templates/review-content.pt:76
 msgid "inappropriate_harmful_abbusive_explanation"
 msgstr "wenn Beiträge nicht angebracht, verletzend oder verachtend sind"
 
 #. Default: Needs optimization
-#: templates/review-content.pt:65
+#: templates/review-content.pt:77
 msgid "needs_optimization"
 msgstr "Der Text sollte überarbeitet werden"
 
 #. Default: if posts are useful, but need edits in grammar and/or spelling
-#: templates/review-content.pt:65
+#: templates/review-content.pt:77
 msgid "needs_optimization_explanation"
 msgstr "wenn Beiträge rein sprachlich überarbeitet werden sollten"
 
 #. Default: Information for the different buttons
-#: templates/review-content.pt:74
+#: templates/review-content.pt:84
 msgid "information_for_the_different_buttons"
 msgstr "Informationen zu den Knöpfen"
 
 #. Default: for arguments, which should not be deleted.
-#: templates/review-content.pt:77
+#: templates/review-content.pt:86
 msgid "its_okay_explanation"
 msgstr "für Argumente, die nicht gelöscht werden sollen."
 
 #. Default: for arguments, that should be deleted based on the reason above.
-#: templates/review-content.pt:78
+#: templates/review-content.pt:87
 msgid "delete_it_explanation"
 msgstr ""
 "für Argumente, die basierend auf dem genannten Grund, gelöscht werden sollen."
 
 #. Default: if you are not sure and want to go to the next argument.
 #. Default: if you are not sure and want to go to the next statement.
-#: templates/review-content.pt:79 templates/review-content.pt:84
-#: templates/review-content.pt:89 templates/review-content.pt:94
+#: templates/review-content.pt:88 templates/review-content.pt:93
+#: templates/review-content.pt:98 templates/review-content.pt:103
+#: templates/review-content.pt:108 templates/review-content.pt:113
 msgid "skip_it_explanation"
 msgstr "wenn Sie unsicher sind und zum Nächsten gehen möchten."
 
 #. Default: , if you have an idea for a better formulation with the same
 #. content.
-#: templates/review-content.pt:82
+#: templates/review-content.pt:91
 msgid "correct_it_explanation"
 msgstr ""
 ", wenn Sie eine Idee zur besseren Formulierung (aber demselben Inhalt) haben."
 
 #. Default: for arguments, which can be understood as-is.
-#: templates/review-content.pt:83
+#: templates/review-content.pt:92
 msgid "its_okay_so_explanation"
 msgstr "für Argumente, die so gut verständlich sind."
 
 #. Default: , if the correction is acceptable and the argument is not
 #. falsified.
-#: templates/review-content.pt:87
+#: templates/review-content.pt:96
 msgid "correction_is_okay"
 msgstr "für Änderungen, die korrekt sind."
 
 #. Default: for correction which are inappropriate are wrong.
-#: templates/review-content.pt:88
+#: templates/review-content.pt:97
 msgid "reject_itexplanation"
 msgstr "für Änderungen, die falsch sind."
 
 #. Default: It's a duplicate
-#: templates/review-content.pt:92
+#: templates/review-content.pt:101
 msgid "its_duplicate"
 msgstr "Es ist ein Dupliat"
 
 #. Default: , if the marked statement is a duplicate.
-#: templates/review-content.pt:92
+#: templates/review-content.pt:101
 msgid "marked_statement_is_duplicate"
 msgstr ", wenn die markierte Aussage ein Duplikat ist."
 
 #. Default: It's unique
-#: templates/review-content.pt:93
+#: templates/review-content.pt:102
 msgid "its_unique"
 msgstr "Es ist einzigartig"
 
 #. Default: for marked statements, which are unique.
-#: templates/review-content.pt:93
+#: templates/review-content.pt:102
 msgid "duplicate_is_unique"
 msgstr ", wenn es kein Duplikat ist."
 
+#. Default: Split it
+#: templates/review-content.pt:106
+msgid "split_it"
+msgstr "Teile es"
+
+#. Default: , if the selected statement is a set of than one statement and the
+#. given proposals match to the original content.
+#: templates/review-content.pt:106
+msgid "marked_statement_to_slit"
+msgstr ", wenn der angegebene Text aus mehr als einer Aussage besteht."
+
+#. Default: for marked statements, which are unique.
+#: templates/review-content.pt:107
+msgid "statement_not_to_split"
+msgstr "für Aussagen, die nicht getrennt werden sollen."
+
+#. Default: Merge it
+#: templates/review-content.pt:111
+msgid "merge_it"
+msgstr "Verbinde es"
+
+#. Default: , if the selected statements should be one, single statements and
+#. the given proposal matches to the original contents.
+#: templates/review-content.pt:111
+msgid "marked_statement_to_merge"
+msgstr ", wenn die gegebenen Texte gleich einer Aussage sind."
+
+#. Default: for marked statements, which are unique.
+#: templates/review-content.pt:112
+msgid "statement_not_to_merge"
+msgstr "für Aussagen, die nicht verbunden werden sollen."
+
 #. Default: In the discussion about
-#: templates/review-content.pt:105 templates/review-content.pt:125
+#: templates/review-content.pt:125 templates/review-content.pt:146
+#: templates/review-content.pt:161
 msgid "in_the_discussion_about"
 msgstr "In der Diskussion über"
 
 #. Default: following argument was corrected.
-#: templates/review-content.pt:107
+#: templates/review-content.pt:127
 msgid "following_argument_was_corrected"
 msgstr "wurde folgendes Argument korrigiert:"
 
 #. Default: This are the edits:
-#: templates/review-content.pt:116
+#: templates/review-content.pt:136
 msgid "this_are_the_edit"
 msgstr "Dies sind die Änderungen:"
 
 #. Default: following argument was flagged.
-#: templates/review-content.pt:127
+#: templates/review-content.pt:148
 msgid "following_argument_was_flagged"
-msgstr "wurde folgende/s Aussage/Argument markiert:"
+msgstr "wurde folgendes Argument markiert:"
 
 #. Default: following statement was flagged.
-#: templates/review-content.pt:128
+#: templates/review-content.pt:149
 msgid "following_statement_was_flagged"
 msgstr "wurde folgende Aussage markiert:"
 
 #. Default: This is the original version
-#: templates/review-content.pt:131
+#: templates/review-content.pt:152
 msgid "this_is_original_version"
 msgstr "Dies ist die ursprüngliche Version"
 
+#. Default: following statements were flagged:
+#: templates/review-content.pt:163
+msgid "following_statements_were_flagged"
+msgstr "wurden folgende Aussagen markiert:"
+
 #. Default: Context, where the statement is used:
-#: templates/review-content.pt:140
+#: templates/review-content.pt:173
 msgid "context_where_statement_is_used"
 msgstr "Kontext, indem die Aussage verwendet wird:"
 
 #. Default: This is the original statement:
-#: templates/review-content.pt:149
+#: templates/review-content.pt:182
 msgid "this_is_original_statements"
 msgstr "Dies ist die ursprüngliche Version:"
 
+#. Default: This statement should be splitted into:
+#: templates/review-content.pt:190
+msgid "this_statement_should_be_splitted"
+msgstr "Diese Aussage soll geteilt werden zu:"
+
+#. Default: This statement should be merged to:
+#: templates/review-content.pt:201
+msgid "this_statement_should_be_merged"
+msgstr "Diese Aussagen soll zusammengfügt werden zu:"
+
 #. Default: Reported
-#: templates/review-content.pt:161
+#: templates/review-content.pt:215
 msgid "reported"
 msgstr "Gemeldet"
 
 #. Default: Reported by
-#: templates/review-content.pt:165
+#: templates/review-content.pt:219
 msgid "reported_by"
 msgstr "Von"
 
 #. Default: Viewed
-#: templates/review-content.pt:175
+#: templates/review-content.pt:229
 msgid "viewed"
 msgstr "Gesehen von"
 
 #. Default: Attacks
-#: templates/review-content.pt:179
+#: templates/review-content.pt:233
 msgid "attacks"
 msgstr "Attackiert von"
 
 #. Default: Supports
-#: templates/review-content.pt:183
+#: templates/review-content.pt:237
 msgid "supports"
 msgstr "Unterstützt von"
 
 #. Default: Request lock
-#: templates/review-content.pt:203
+#: templates/review-content.pt:258
 msgid "request_lock"
 msgstr "Sperrung anfragen"
 
 #. Default: This argument is locked for your edit. You have
-#: templates/review-content.pt:206
+#: templates/review-content.pt:261
 msgid "argument_is_locked"
 msgstr "Dieses Argument ist für Sie gesperrt. Sie haben"
 
 #. Default: minutes
-#: templates/review-content.pt:207
+#: templates/review-content.pt:262
 msgid "minutes"
 msgstr "Minuten"
 
 #. Default: Please make your edits in grammar and/or spelling here:
-#: templates/review-content.pt:208
+#: templates/review-content.pt:263
 msgid "please_make_your_edits"
 msgstr "Bitte geben Sie Änderungen in Grammatik/Rechschreibung hier an:"
 
 #. Default: Original
-#: templates/review-content.pt:214 templates/review-history.pt:43
+#: templates/review-content.pt:269 templates/review-history.pt:43
 #: templates/review-history.pt:44
 msgid "original"
 msgstr "Original"
 
 #. Default: Your correcture
-#: templates/review-content.pt:215
+#: templates/review-content.pt:270
 msgid "your correcture"
 msgstr "Ihre Änderung"
 
 #. Default: Send
-#: templates/review-content.pt:230
+#: templates/review-content.pt:285
 msgid "send"
 msgstr "Änderungen schicken"
 
@@ -851,10 +919,11 @@ msgstr "Die Geschichte der Abstimmungen"
 msgid "no_decision_for_this_queue"
 msgstr "Keine Abstimmungen in dieser Schlange."
 
-#. Default: Argument
-#: templates/review-history.pt:40
-msgid "argument"
-msgstr "Argument"
+#. Default: Statement
+#: templates/review-history.pt:40 templates/snippet-popups.pt:1150
+#: templates/snippet-popups.pt:1171
+msgid "statement"
+msgstr "Aussage"
 
 #. Default: Edit
 #: templates/review-history.pt:41
@@ -909,7 +978,8 @@ msgstr "Rückgängig machen"
 #. Default: Cancel
 #: templates/review-history.pt:96 templates/snippet-popups.pt:172
 #: templates/snippet-popups.pt:195 templates/snippet-popups.pt:220
-#: templates/snippet-popups.pt:1098
+#: templates/snippet-popups.pt:1014 templates/snippet-popups.pt:1061
+#: templates/snippet-popups.pt:1214
 msgid "cancel"
 msgstr "Abbrechen"
 
@@ -1075,7 +1145,7 @@ msgstr ""
 
 #. Default: Okay
 #: templates/snippet-popups.pt:171 templates/snippet-popups.pt:194
-#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1097
+#: templates/snippet-popups.pt:219 templates/snippet-popups.pt:1213
 msgid "okay"
 msgstr "Okay"
 
@@ -1120,7 +1190,7 @@ msgstr "Fehler:"
 #. Default: Success:
 #. Default: Success
 #: templates/snippet-popups.pt:312 templates/snippet-popups.pt:391
-#: templates/snippet-popups.pt:487 templates/content.pt:66
+#: templates/snippet-popups.pt:487 templates/content.pt:74
 msgid "success"
 msgstr "Erfolg:"
 
@@ -1338,143 +1408,183 @@ msgstr "Nachricht senden"
 #. Default: Add Topic
 #. Default: Add a Topic
 #: templates/snippet-popups.pt:758 templates/content.pt:39
+#: templates/content.pt:44
 msgid "add_topic"
 msgstr "Thema hinzufügen"
 
 #. Default: Please enter your title here:
-#: templates/snippet-popups.pt:761
+#: templates/snippet-popups.pt:763
 msgid "please_enter_title"
-msgstr "Bitte geben Sie Ihr Thema an:"
+msgstr "Ihr Thema:"
 
 #. Default: Please enter a short-description or question here:
-#: templates/snippet-popups.pt:764
+#: templates/snippet-popups.pt:768
 msgid "please_enter_info"
-msgstr "Bitte geben Sie eine Kurzform oder Frage zu Ihrem Thema an:"
+msgstr "Frage des Themas:"
 
 #. Default: Please enter the full description here:
-#: templates/snippet-popups.pt:767
+#: templates/snippet-popups.pt:773
 msgid "please_enter_long_info"
-msgstr "Bitte geben Sie alle notwendigen Informationen zu Ihrem Thema an:"
+msgstr "Alle Informationen zum Thema:"
 
 #. Default: Please select the language of the new discussion here:
-#: templates/snippet-popups.pt:770
+#: templates/snippet-popups.pt:778
 msgid "please_select_language_for_topic"
-msgstr "Bitte geben Sie die Sprache Ihres Themas an:"
+msgstr "Sprache der Diskussion:"
 
 #. Default: Selecting a reason
-#: templates/snippet-popups.pt:824
+#: templates/snippet-popups.pt:833
 msgid "select-reason"
 msgstr "Grund auswählen"
 
 #. Default: The statement under consideration is as follows
-#: templates/snippet-popups.pt:827
+#: templates/snippet-popups.pt:836
 msgid "statement_under_consideration_is"
 msgstr "Die aktuelle Aussage ist"
 
 #. Default: The argument under consideration is as follows
-#: templates/snippet-popups.pt:828 templates/snippet-popups.pt:884
+#: templates/snippet-popups.pt:837 templates/snippet-popups.pt:915
 msgid "argument_under_consideration_is"
 msgstr "Das aktuelle Argument ist"
 
 #. Default: The text needs to be revised.
-#: templates/snippet-popups.pt:835
+#: templates/snippet-popups.pt:844
 msgid "text_need_to_be_revised"
 msgstr "Der Text sollte überarbeitet werden."
 
-#. Default: This statement is acceptable but it needs correction for
-#. spelling/grammar.
-#: templates/snippet-popups.pt:836
-msgid "statement_optimization_description"
-msgstr ""
-"Die Aussage ist richtig, sollte aber sprachlich/grammatikalisch verbessert "
-"werden."
-
-#. Default: This argument is acceptable but it needs correction for
-#. spelling/grammar.
-#: templates/snippet-popups.pt:837
-msgid "argument_optimization_description"
-msgstr ""
-"Das Argument ist richtig, sollte aber sprachlich/grammatikalisch verbessert "
-"werden."
-
 #. Default: This statement is off topic or irrelevant.
-#: templates/snippet-popups.pt:842
+#: templates/snippet-popups.pt:854
 msgid "statement_offtopic_or_irrelevant"
 msgstr "Die Aussage ist nicht themenbezogen/Spam."
 
-#. Default: This statement does not belong to the topic under discussion.
-#: templates/snippet-popups.pt:843
-msgid "statement_offtopic_or_irrelevant_description"
-msgstr "Die Beudeutung der Aussage ist nicht themenbezogen oder Spam."
-
 #. Default: This argument is off topic or irrelevant.
-#: templates/snippet-popups.pt:844
+#: templates/snippet-popups.pt:858
 msgid "argument_offtopic_or_irrelevant"
 msgstr "Das Argument ist nicht themenbezogen/Spam."
 
-#. Default: This argument does not belong to the topic under discussion.
-#: templates/snippet-popups.pt:845
-msgid "argument_offtopic_or_irrelevant_description"
-msgstr "Die Bedeutung des Arguments ist nicht themenbezogen oder Spam."
-
 #. Default: This statement is harmful or abusive.
-#: templates/snippet-popups.pt:857
+#: templates/snippet-popups.pt:866
 msgid "statement_harmful"
 msgstr "Die Aussage ist verletzend, schädigend oder missbräuchlich."
 
 #. Default: This argument is harmful or abusive.
-#: templates/snippet-popups.pt:858
+#: templates/snippet-popups.pt:868
 msgid "argument_harmful"
 msgstr "Die Argument ist verletzend, schädigend oder missbräuchlich."
 
-#. Default: A reasonable person would find this content inappropriate for
-#. respectful discourse.
-#: templates/snippet-popups.pt:859
-msgid "argument_statement_harmful_description"
-msgstr ""
-"Bestimmte Personen würden diesen Inhalt nicht passend für eine respektvolle "
-"Diskussion halten."
-
 #. Default: This statement is a duplicate.
-#: templates/snippet-popups.pt:864
-msgid "this_statement_duplicate"
-msgstr "Diese Aussage ist ein Duplikat."
+#: templates/snippet-popups.pt:877
+msgid "statement_duplicate"
+msgstr "Aussage ist ein Duplikat"
 
-#. Default: This statement has been done before in a slightly different
-#. wording.
-#: templates/snippet-popups.pt:865
-msgid "this_statement_duplicate_description"
-msgstr "Diese Aussage ist schon leicht verändert im System vorhanden."
+#. Default: This statement should be merged.
+#: templates/snippet-popups.pt:885
+msgid "statement_merge"
+msgstr "für Aussagen, die nicht verbunden werden sollen."
+
+#. Default: This statement has more than one message.
+#: templates/snippet-popups.pt:893
+msgid "statement_split"
+msgstr "für Aussagen, die nicht getrennt werden sollen."
 
 #. Default: Reporting (parts of) an argument
-#: templates/snippet-popups.pt:881
+#: templates/snippet-popups.pt:912
 msgid "reporting_parts_argument"
 msgstr "Melden eines Arguments (oder Teile davon)"
 
 #. Default: Please choose which part of the argument you want to report
-#: templates/snippet-popups.pt:886
+#: templates/snippet-popups.pt:917
 msgid "please_choose_part_to_report"
 msgstr "Bitte wählen Sie einen Teil des Arguments, der gemeldet werden soll"
 
 #. Default: Report
-#: templates/snippet-popups.pt:893
+#: templates/snippet-popups.pt:924
 msgid "report"
 msgstr "Melden"
 
 #. Default: Report the whole argument.
-#: templates/snippet-popups.pt:905
+#: templates/snippet-popups.pt:936
 msgid "report_whole_argument"
 msgstr "Komplettes Argument melden."
 
+#. Default: Split Statements
+#: templates/snippet-popups.pt:1002 templates/snippet-popups.pt:1027
+msgid "split_statement"
+msgstr "Aussagen trennen"
+
+#. Default: Please enter the splitted version of the statement; one per input
+#. field.
+#: templates/snippet-popups.pt:1005
+msgid "split_multiple_statements"
+msgstr ""
+"Bitte geben Sie die getrennte Version der Aussage unten ein, nennen Sie "
+"dabei pro Feld nur eine Aussage."
+
+#. Default: Submit
+#: templates/snippet-popups.pt:1013 templates/snippet-popups.pt:1060
+msgid "submit"
+msgstr "Senden"
+
+#. Default: The selected statement is already splitted in several parts, like
+#. the list illustrates below. Do you want to continue with a new split?
+#: templates/snippet-popups.pt:1030
+msgid "split_multiple_statements_of_pgroup"
+msgstr ""
+"Die von Ihnen gewählte Aussage ist an sich schon, wie unten angegeben, "
+"getrennt. Möchten Sie, dass die Aussagen komplett von einander getrennt "
+"werden?"
+
+#. Default: The statement
+#: templates/snippet-popups.pt:1031 templates/snippet-popups.pt:1078
+msgid "the_statement"
+msgstr "Die Aussage"
+
+#. Default: consist out of
+#: templates/snippet-popups.pt:1031 templates/snippet-popups.pt:1078
+msgid "consist_out_of"
+msgstr "besteht aus"
+
+#. Default: Yes
+#: templates/snippet-popups.pt:1035 templates/snippet-popups.pt:1082
+msgid "yes"
+msgstr "Ja"
+
+#. Default: No
+#: templates/snippet-popups.pt:1036 templates/snippet-popups.pt:1083
+msgid "no"
+msgstr "Nein"
+
+#. Default: Merge Statement
+#: templates/snippet-popups.pt:1049 templates/snippet-popups.pt:1074
+msgid "merge_statement"
+msgstr "Aussagen verbinden"
+
+#. Default: Please select the statements, that should be concatenated.
+#: templates/snippet-popups.pt:1052
+msgid "merge_multiple_statements"
+msgstr ""
+"Bitte wählen Sie die Aussagen aus, die mit der angegebenen Aussage mittels "
+"'und' zusammen gehangen werden sollen:"
+
+#. Default: The selected statement already consists out of multiple statement.
+#. Further on the several statements are listed. Do you want to continue with
+#. the merge?
+#: templates/snippet-popups.pt:1077
+msgid "merge_multiple_statements_of_pgroup"
+msgstr ""
+"Die von Ihnen gewählte Aussage besteht aus mehr als einer Aussage. Unten "
+"finden Sie die einzelnen Bestandteile. Möchten Sie dennoch, dass diese zu "
+"einer einzelnen Aussage verbunden wird?"
+
 #. Default: Caution
-#: templates/snippet-popups.pt:981
+#: templates/snippet-popups.pt:1097
 msgid "caution"
 msgstr "Achtung"
 
 #. Default: Do you really want to disassociate yourself from your content? This
 #. step is irreversible! Subsequently you will not be the author of this
 #. statement anymore!
-#: templates/snippet-popups.pt:986
+#: templates/snippet-popups.pt:1102
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 "Möchten Sie wirklich von diesem Inhalt distanzieren? Dieser Schritt kann "
@@ -1482,46 +1592,41 @@ msgstr ""
 "diesem Statements."
 
 #. Default: Please choose a step to jump in
-#: templates/snippet-popups.pt:1003
+#: templates/snippet-popups.pt:1119
 msgid "choose_a_step_to_jump_in"
 msgstr "Bitte wählen Sie eine Stelle für den Sprung"
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: templates/snippet-popups.pt:1006
+#: templates/snippet-popups.pt:1122
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr "Hier finden Sie alle Stellen, in denen die Aussage verwendet wird:"
 
 #. Default: References
-#: templates/snippet-popups.pt:1023
+#: templates/snippet-popups.pt:1139
 msgid "refereces"
 msgstr "Referenzen"
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: templates/snippet-popups.pt:1031
+#: templates/snippet-popups.pt:1147
 msgid "statement_reference_definition"
 msgstr ""
 "Die Aussage ist ein Zitat von einer Nachrichtenseite o.Ä., welche Ihre "
 "Meinung untersützt. Die Quelle ist die Website."
 
-#. Default: Statement
-#: templates/snippet-popups.pt:1034 templates/snippet-popups.pt:1055
-msgid "statement"
-msgstr "Aussage"
-
 #. Default: Source
-#: templates/snippet-popups.pt:1040
+#: templates/snippet-popups.pt:1156
 msgid "source"
 msgstr "Quelle"
 
 #. Default: Please choose a statement for your reference!
-#: templates/snippet-popups.pt:1045
+#: templates/snippet-popups.pt:1161
 msgid "please_choose_a_reference"
 msgstr "Bitte wählen Sie eine Aussage für Ihre Referenz!"
 
 #. Default: Add reference
-#: templates/snippet-popups.pt:1060
+#: templates/snippet-popups.pt:1176
 msgid "add_reference"
 msgstr "Referenzen hinzufügen"
 
@@ -1961,73 +2066,110 @@ msgid "switch_topc"
 msgstr "Thema wechseln"
 
 #. Default: Restart
-#: templates/content.pt:46
+#: templates/content.pt:54
 msgid "restart_discussion"
 msgstr "Neustart"
 
 #. Default: Start
-#: templates/content.pt:188
+#: templates/content.pt:196
 msgid "start"
 msgstr "Start"
 
 #. Default: Now
-#: templates/content.pt:190
+#: templates/content.pt:198
 msgid "now"
 msgstr "Jetzt"
 
 #. Default: Complete View
-#: templates/content.pt:205
+#: templates/content.pt:213
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
 #. Default: Default View
-#: templates/content.pt:206
+#: templates/content.pt:214
 msgid "default_view"
 msgstr "Standardansicht"
 
 #. Default: Labels
-#: templates/content.pt:207
+#: templates/content.pt:215
 msgid "labels"
 msgstr "Beschriftungen"
 
 #. Default: Positions
-#: templates/content.pt:208
+#: templates/content.pt:216
 msgid "positions"
 msgstr "Positionen"
 
 #. Default: Statements
-#: templates/content.pt:209
+#: templates/content.pt:217
 msgid "statements"
 msgstr "Aussagen"
 
 #. Default: My path
-#: templates/content.pt:210 templates/content.pt:211
+#: templates/content.pt:218 templates/content.pt:219
 msgid "my_path"
 msgstr "Mein Pfad"
 
 #. Default: My statements
-#: templates/content.pt:212
+#: templates/content.pt:220
 msgid "my_statements"
 msgstr "Meine Aussagen"
 
 #. Default: Supports
-#: templates/content.pt:213
+#: templates/content.pt:221
 msgid "supports_on_my_statements"
 msgstr "Unterstützungen"
 
 #. Default: Attacks
-#: templates/content.pt:214
+#: templates/content.pt:222
 msgid "attacks_on_my_statements"
 msgstr "Angriffe"
 
+#~ msgid "argument"
+#~ msgstr "Argument"
+
+#~ msgid "statement_optimization_description"
+#~ msgstr ""
+#~ "Die Aussage ist richtig, sollte aber sprachlich/grammatikalisch "
+#~ "verbessert werden."
+
+#~ msgid "argument_optimization_description"
+#~ msgstr ""
+#~ "Das Argument ist richtig, sollte aber sprachlich/grammatikalisch "
+#~ "verbessert werden."
+
+#~ msgid "statement_offtopic_or_irrelevant_description"
+#~ msgstr "Die Beudeutung der Aussage ist nicht themenbezogen oder Spam."
+
+#~ msgid "argument_offtopic_or_irrelevant_description"
+#~ msgstr "Die Bedeutung des Arguments ist nicht themenbezogen oder Spam."
+
+#~ msgid "argument_statement_harmful_description"
+#~ msgstr ""
+#~ "Bestimmte Personen würden diesen Inhalt nicht passend für eine "
+#~ "respektvolle Diskussion halten."
+
+#~ msgid "this_statement_duplicate"
+#~ msgstr "Diese Aussage ist ein Duplikat."
+
+#~ msgid "this_statement_duplicate_description"
+#~ msgstr "Diese Aussage ist schon leicht verändert im System vorhanden."
+
+#~ msgid "statement_duplicate_description"
+#~ msgstr "Diese Aussage ist schon leicht verändert im System vorhanden."
+
+#~ msgid "statement_merge_description"
+#~ msgstr ""
+#~ "Diese Aussage hängt von einer weiteren Aussage ab und diese sollten "
+#~ "verbunden werden."
+
+#~ msgid "statement_split_description"
+#~ msgstr ""
+#~ "Diese Aussage besteht aus mehr als einer Aussage und daher sollten diese "
+#~ "getrennt werden."
+
 #~ msgid "because"
 #~ msgstr "weil"
-
-#~ msgid "show_all_statements"
-#~ msgstr "Alle Aussagen anzeigen"
-
-#~ msgid "hide_statements"
-#~ msgstr "Aussage ausblenden"
 
 #~ msgid "contact_header_1"
 #~ msgstr "Treten Sie mit uns in Kontakt"
@@ -2184,9 +2326,6 @@ msgstr "Angriffe"
 #~ msgid "why_do_you_want_to_report"
 #~ msgstr "Wieso möchten Sie es melden"
 
-#~ msgid "statement_is_duplicate"
-#~ msgstr "Aussage ist ein Duplikat"
-
 #~ msgid "you_have_selected_statement"
 #~ msgstr "Sie haben folgende Aussage gewählt"
 
@@ -2219,9 +2358,6 @@ msgstr "Angriffe"
 
 #~ msgid "doughnut_chart"
 #~ msgstr "Ringdiagramm"
-
-#~ msgid "change_style"
-#~ msgstr "Wechsel die Darstellung"
 
 #~ msgid "island_view"
 #~ msgstr "Insel-Ansicht"
@@ -2364,12 +2500,6 @@ msgstr "Angriffe"
 
 #~ msgid "edit_statement_view_changelog"
 #~ msgstr "Bearbeite die Aussage / Schau ins Changelog"
-
-#~ msgid "edit_statement_here"
-#~ msgstr "Bitte hier bearbeiten"
-
-#~ msgid "submit"
-#~ msgstr "Senden"
 
 #~ msgid "url-sharing"
 #~ msgstr "Teil' die URL"

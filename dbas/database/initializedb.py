@@ -15,7 +15,7 @@ from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsS
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
     Settings, ClickedArgument, ClickedStatement, StatementReferences, Language, SeenArgument, SeenStatement, \
     ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, \
-    ReputationReason, \
+    ReputationReason, ReviewMerge, ReviewSplit, ReviewSplitValues, ReviewMergeValues, \
     ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate, MarkedArgument, \
     MarkedStatement, Message, LastReviewerEdit, RevokedContentHistory, RevokedContent, RevokedDuplicate, \
     ReviewCanceled, RSS, OptimizationReviewLocks, History
@@ -280,10 +280,10 @@ def blank_file(argv=sys.argv):
         lang1, lang2 = __set_up_language(DBDiscussionSession)
 
         issue1 = Issue(title='ONE TITLE',
-                       info='A INFO TO RULE THEM ALL',
+                       info='A INFO TO RULE THEM ALL - THIS WAS CREATED BY AN EMPTY DB',
                        author_uid=user1.uid,
                        lang_uid=lang2.uid,
-                       long_info='I AM A LONG CAT')
+                       long_info='I AM A LONG CAAAAAAAT')
         DBDiscussionSession.add_all([issue1])
         DBDiscussionSession.flush()
 
@@ -321,7 +321,7 @@ def init_dummy_votes(argv=sys.argv):
     with transaction.manager:
         __setup_dummy_seen_by(DBDiscussionSession)
         __setup_dummy_clicks(DBDiscussionSession)
-        __setup_review_dummy_database(DBDiscussionSession)
+        # __setup_review_dummy_database(DBDiscussionSession)
 
 
 def setup_news_db(session, ui_locale):
@@ -2233,17 +2233,12 @@ def __setup_review_dummy_database(session):
     review16 = ReviewOptimization(detector=user[3], statement=random.randint(int_start, int_end))
     review04 = ReviewOptimization(detector=user[4], argument=random.randint(int_start, int_end))
     review05 = ReviewOptimization(detector=user[5], argument=random.randint(int_start, int_end))
-    review06 = ReviewDelete(detector=user[6], argument=random.randint(int_start, int_end), reason=random.randint(1, 2),
-                            is_executed=True)
-    review07 = ReviewDelete(detector=user[7], argument=random.randint(int_start, int_end), reason=random.randint(1, 2),
-                            is_executed=True)
-    review08 = ReviewDelete(detector=user[8], statement=random.randint(int_start, int_end), reason=random.randint(1, 2),
-                            is_executed=True)
+    review06 = ReviewDelete(detector=user[6], argument=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
+    review07 = ReviewDelete(detector=user[7], argument=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
+    review08 = ReviewDelete(detector=user[8], statement=random.randint(int_start, int_end), reason=random.randint(1, 2), is_executed=True)
     review09 = ReviewDelete(detector=user[9], statement=random.randint(int_start, int_end), reason=random.randint(1, 2))
-    review10 = ReviewDelete(detector=user[10], statement=random.randint(int_start, int_end),
-                            reason=random.randint(1, 2))
-    review11 = ReviewDelete(detector=user[11], statement=random.randint(int_start, int_end),
-                            reason=random.randint(1, 2))
+    review10 = ReviewDelete(detector=user[10], statement=random.randint(int_start, int_end), reason=random.randint(1, 2))
+    review11 = ReviewDelete(detector=user[11], statement=random.randint(int_start, int_end), reason=random.randint(1, 2))
     review12 = ReviewDelete(detector=user[12], argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
     review13 = ReviewDelete(detector=user[13], argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
     review14 = ReviewDelete(detector=user[14], argument=random.randint(int_start, int_end), reason=random.randint(1, 2))
@@ -2251,8 +2246,27 @@ def __setup_review_dummy_database(session):
     review17 = ReviewDuplicate(detector=user[16], duplicate_statement=6, original_statement=1)
     review18 = ReviewDuplicate(detector=user[17], duplicate_statement=4, original_statement=1, is_executed=True)
     review19 = ReviewDuplicate(detector=user[18], duplicate_statement=22, original_statement=7)
+    review20 = ReviewMerge(detector=user[19], premisegroup=1)
+    review21 = ReviewMerge(detector=user[20], premisegroup=5)
+    review22 = ReviewSplit(detector=user[21], premisegroup=10)
+    review23 = ReviewSplit(detector=user[22], premisegroup=12)
     session.add_all([review01, review02, review03, review04, review05, review06, review07, review08, review09, review10,
-                     review11, review12, review13, review14, review15, review16, review17, review18, review19])
+                     review11, review12, review13, review14, review15, review16, review17, review18, review19, review20,
+                     review21, review22, review23])
+    session.flush()
+
+    value01 = ReviewMergeValues(review=review20.uid, content='Lorem ipsum dolor sit amet, consetetur (value01)')
+    value02 = ReviewMergeValues(review=review20.uid, content='sadipscing elitr, sed diam nonumy eirmod (value02)')
+    # value03 = ReviewSplitValues(review=review22.uid, content='tempor invidunt ut labore et dolore magna (value03)')
+    # value04 = ReviewSplitValues(review=review22.uid, content='aliquyam erat, sed diam voluptua.At vero (value04)')
+    # value05 = ReviewSplitValues(review=review22.uid, content='eos et accusam et justo duo dolores et (value05)')
+    value06 = ReviewSplitValues(review=review23.uid, content='ea rebum.Stet clita kasd gubergren, no (value06)')
+    value07 = ReviewSplitValues(review=review23.uid, content='sea takimata sanctus est Lorem ipsum (value07)')
+    value08 = ReviewSplitValues(review=review23.uid, content='dolor sit amet.Lorem ipsum dolor sit (value08)')
+    value09 = ReviewSplitValues(review=review23.uid, content='amet, consetetur sadipscing elitr, sed (value09)')
+    value10 = ReviewSplitValues(review=review23.uid, content='diam nonumy eirmod tempor invidunt ut (value10)')
+    # session.add_all([value01, value02, value03, value04, value05, value06, value07, value08, value09, value10])
+    session.add_all([value01, value02, value06, value07, value08, value09, value10])
     session.flush()
 
     reviewer01 = LastReviewerOptimization(user[18], review01.uid, True)

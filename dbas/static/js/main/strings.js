@@ -240,6 +240,10 @@ var pleaseEditAtLeast               = 'pleaseEditAtLeast';
 var pleaseEnterYourTextHere         = 'pleaseEnterYourTextHere';
 var pleaseEnterYourTextForSearchHere = 'pleaseEnterYourTextForSearchHere';
 var queueCompleteSeen               = 'queueCompleteSeen';
+var questionMergeStatementSg        = 'questionMergeStatementSg';
+var questionSplitStatementSg        = 'questionSplitStatementSg';
+var questionMergeStatementPl        = 'questionMergeStatementPl';
+var questionSplitStatementPl        = 'questionSplitStatementPl';
 var revokedArgument                 = 'revokedArgument';
 var registered                      = 'registered';
 var requestTrack                    = 'requestTrack';
@@ -263,6 +267,7 @@ var showMeAnArgumentFor             = 'showMeAnArgumentFor';
 var strength                        = 'strength';
 var strong                          = 'strong';
 var shortenedBy                     = 'shortenedBy';
+var statement                       = 'statement';
 var statisticsDeleted               = 'statisticsDeleted';
 var statisticsNotDeleted            = 'statisticsNotDeleted';
 var statisticsNotFetched            = 'statisticsNotFetched';
@@ -493,6 +498,10 @@ var dbas_en = {
     'pleaseEnterYourTextHere': 'Please enter your text here ...',
     'pleaseEnterYourTextForSearchHere': 'Please enter your text for searching here ...',
     'queueCompleteSeen': 'You have seen every open task, so we will start from the beginning again.',
+    'questionMergeStatementSg': 'Do you really want to merge the given statement into the XXX statement you have entered?',
+    'questionSplitStatementSg': 'Do you really want to split the given statement with the XXX statement you have entered?',
+    'questionMergeStatementPl': 'Do you really want to merge the given statement into the XXX statements you have entered?',
+    'questionSplitStatementPl': 'Do you really want to split the given statement with the XXX statements you have entered?',
     'position': 'Position',
     'revokedArgument': 'revoked argument',
     'registered': 'Registered',
@@ -732,6 +741,10 @@ var dbas_de = {
     'pleaseEnterYourTextForSearchHere': 'Bitte geben Sie hier Ihren Suchtext ein ...',
     'pleaseEnterYourTextHere': 'Bitte geben Sie hier Ihren Text ein ...',
     'queueCompleteSeen': 'Wir haben Ihnen schon leider alles gezeigt, also fangen wir nochmal von vorne an!',
+    'questionMergeStatementSg': 'Möchten Sie wirklich die gegebene Aussage mit der XXX eingegebene Aussage verbinden?',
+    'questionSplitStatementSg': 'Möchten Sie wirklich die gegebene Aussage in die XXX eingegebene Aussage trennen?',
+    'questionMergeStatementPl': 'Möchten Sie wirklich die gegebene Aussage mit den XXX eingegebenen Aussagen verbinden?',
+    'questionSplitStatementPl': 'Möchten Sie wirklich die gegebene Aussage in die XXX eingegebenen Aussagen trennen?',
     'position': 'Position',
     'report': 'Melden',
     'reportTitle': 'Öffnet eine E-Mail, damit etwas gemeldet werden kann.',
@@ -768,7 +781,7 @@ var dbas_de = {
     'switchDiscussionText': 'Wollen Sie wirklich die aktuelle Diskussion verlassen und zur Diskussion über <strong>XXX</strong> wechseln?',
     'support': 'Unterstützung',
     'surname': 'Nachname',
-    'sureToDeleteReview': 'Sind Sie sicher, dass sie diese Entscheidung rückgangig machen möchten? Dieser Schritt kann nicht rückgangig gemacht werden!',
+    'sureToDeleteReview': 'Sind Sie sicher, dass Sie diese Entscheidung rückgangig machen möchten? Dieser Schritt kann nicht rückgangig gemacht werden!',
     'showMeAnArgumentFor': 'Zeig\' mir ein Argument für',
     'text': 'Text',
     'to': 'An',

@@ -10,8 +10,7 @@ from dbas.lib import get_discussion_language, is_user_author_or_admin
 from dbas.helper.query import revoke_content
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from webhook.lib import send_request_for_recent_delete_review_to_socketio, get_port,\
-    send_request_for_recent_edit_review_to_socketio, send_request_for_recent_optimization_review_to_socketio
+from webhook.lib import send_request_for_recent_reviewer_socketio, get_port
 
 
 def flag(uid, reason, extra_uid, is_argument, nickname, ui_locales) -> dict:
@@ -35,10 +34,73 @@ def flag(uid, reason, extra_uid, is_argument, nickname, ui_locales) -> dict:
         return {'error': _t.get(_.internalError), 'info': '', 'success': ''}
     else:
         success, info, error = review_flag_helper.flag_element(uid, reason, nickname, is_argument, extra_uid)
-        prepared_dict = {}
-        prepared_dict['success'] = '' if isinstance(success, str) else _t.get(success)
-        prepared_dict['info'] = '' if isinstance(info, str) else _t.get(info)
-        prepared_dict['error'] = '' if isinstance(error, str) else _t.get(error)
+        prepared_dict = {
+            'success': '' if isinstance(success, str) else _t.get(success),
+            'info': '' if isinstance(info, str) else _t.get(info),
+            'error': '' if isinstance(error, str) else _t.get(error)
+        }
+
+    return prepared_dict
+
+
+def merge_or_split_statement(key, pgroup_uid, text_values, nickname, ui_locales) -> dict:
+    """
+    Adds review for splitting/merging a statement
+
+    :param pgroup_uid: ID of the selected PremiseGroup
+    :param key: 'split' or 'merge'
+    :param text_values: text values
+    :param nickname: the user's nickname creating the request
+    :param ui_locales: current ui_locales
+    :rtype: dict
+    :return: collection with success, info and error key
+    """
+    return __mergesplit(key, pgroup_uid, text_values, nickname, ui_locales, is_statement=True)
+
+
+def merge_or_split_premisegroup(key, pgroup_uid, nickname, ui_locales) -> dict:
+    """
+    Adds review for splitting/merging a pgroup
+
+    :param pgroup_uid: ID of the selected PremiseGroup
+    :param key: 'split' or 'merge'
+    :param nickname: the user's nickname creating the request
+    :param ui_locales: current ui_locales
+    :rtype: dict
+    :return: collection with success, info and error key
+    """
+    return __mergesplit(key, pgroup_uid, None, nickname, ui_locales, is_statement=False)
+
+
+def __mergesplit(key, pgroup_uid, text_values, nickname, ui_locales, is_statement=False) -> dict:
+    """
+    Adds review for splitting/merging a statement or pgroup
+
+    :param pgroup_uid: ID of the selected PremiseGroup
+    :param key: 'split' or 'merge'
+    :param text_values: text values if the operation is for a statement or None if it is a premisegroup
+    :param nickname: the user's nickname creating the request
+    :param ui_locales: current ui_locales
+    :param is_statement: Either true, if the operation is for a statement or False if it is a premisegroup
+    :rtype: dict
+    :return: collection with success, info and error key
+    """
+    logger('additives', 'mergesplit', 'pgroup_uid {} ({}) with values {}'.format(pgroup_uid, is_statement, text_values))
+    _t = Translator(ui_locales)
+
+    if key in ['merge', 'split']:
+        if is_statement:
+            success, info, error = review_flag_helper.flag_statement_for_merge_or_split(key, pgroup_uid, text_values, nickname)
+        else:
+            success, info, error = review_flag_helper.flag_pgroup_for_merge_or_split(key, pgroup_uid, nickname)
+    else:
+        raise KeyError
+
+    prepared_dict = {
+        'success': '' if isinstance(success, str) else _t.get(success),
+        'info': '' if isinstance(info, str) else _t.get(info),
+        'error': '' if isinstance(error, str) else _t.get(error)
+    }
 
     return prepared_dict
 
@@ -64,7 +126,7 @@ def delete_argument(request) -> dict:
             nickname = request.authenticated_userid
             main_page = request.application_url
             port = get_port(request)
-            send_request_for_recent_delete_review_to_socketio(nickname, main_page, port)
+            send_request_for_recent_reviewer_socketio(nickname, main_page, port, 'deletes')
 
     prepared_dict = {'error': error}
     return prepared_dict
@@ -92,7 +154,7 @@ def edit_argument(request) -> dict:
             nickname = request.authenticated_userid
             main_page = request.application_url
             port = get_port(request)
-            send_request_for_recent_edit_review_to_socketio(nickname, main_page, port)
+            send_request_for_recent_reviewer_socketio(nickname, main_page, port, 'edits')
 
     prepared_dict = {'error': error}
     return prepared_dict
@@ -120,7 +182,7 @@ def duplicate_statement(request) -> dict:
             nickname = request.authenticated_userid
             main_page = request.application_url
             port = get_port(request)
-            send_request_for_recent_edit_review_to_socketio(nickname, main_page, port)
+            send_request_for_recent_reviewer_socketio(nickname, main_page, port, 'duplicates')
 
     prepared_dict = {'error': error}
     return prepared_dict
@@ -150,7 +212,63 @@ def optimization_argument(request) -> dict:
             nickname = request.authenticated_userid
             main_page = request.application_url
             port = get_port(request)
-            send_request_for_recent_optimization_review_to_socketio(nickname, main_page, port)
+            send_request_for_recent_reviewer_socketio(nickname, main_page, port, 'optimizations')
+
+    prepared_dict = {'error': error}
+    return prepared_dict
+
+
+def split_premisegroup(request) -> dict:
+    """
+    Sets feedback for a review element of a splitted premisegroup
+
+    :param request: pyramid's request object
+    :rtype: dict
+    :return: collection with error key
+    """
+    ui_locales = get_discussion_language(request)
+    _t = Translator(ui_locales)
+    review_uid = request.params['review_uid']
+    should_split = request.params['should_split']
+
+    if not is_integer(review_uid):
+        logger('additives', 'split_premisegroup', 'invalid uid', error=True)
+        error = _t.get(_.internalKeyError)
+    else:
+        error = review_main_helper.add_review_opinion_for_split(request, review_uid, should_split, _t)
+        if len(error) == 0:
+            nickname = request.authenticated_userid
+            main_page = request.application_url
+            port = get_port(request)
+            send_request_for_recent_reviewer_socketio(nickname, main_page, port, 'splits')
+
+    prepared_dict = {'error': error}
+    return prepared_dict
+
+
+def merge_premisegroup(request) -> dict:
+    """
+    Sets feedback for a review element of a merged premisegroup
+
+    :param request: pyramid's request object
+    :rtype: dict
+    :return: collection with error key
+    """
+    ui_locales = get_discussion_language(request)
+    _t = Translator(ui_locales)
+    review_uid = request.params['review_uid']
+    should_merge = request.params['should_merge']
+
+    if not is_integer(review_uid):
+        logger('additives', 'merge_premisegroup', 'invalid uid', error=True)
+        error = _t.get(_.internalKeyError)
+    else:
+        error = review_main_helper.add_review_opinion_for_merge(request, review_uid, should_merge, _t)
+        if len(error) == 0:
+            nickname = request.authenticated_userid
+            main_page = request.application_url
+            port = get_port(request)
+            send_request_for_recent_reviewer_socketio(nickname, main_page, port, 'merges')
 
     prepared_dict = {'error': error}
     return prepared_dict
@@ -170,17 +288,29 @@ def undo(request) -> dict:
 
     if not is_integer(uid):
         logger('additives', 'undo_review', 'invalid uid', error=True)
-        return {'error': _t.get(_.internalKeyError)}
+        prepared_dict = {
+            'info': '',
+            'success': '',
+            'error': _t.get(_.internalKeyError)
+        }
+        return prepared_dict
 
-    prepared_dict = {}
     nickname = request.authenticated_userid
     queue = request.params['queue']
     if is_user_author_or_admin(nickname):
         success, error = review_history_helper.revoke_old_decision(queue, uid, ui_locales, nickname)
-        prepared_dict['success'] = success
-        prepared_dict['error'] = error
+        prepared_dict = {
+            'info': '',
+            'success': success,
+            'error': error
+        }
     else:
-        prepared_dict['info'] = _t.get(_.justLookDontTouch)
+        logger('additives', 'undo_review', 'user has no rights', error=True)
+        prepared_dict = {
+            'info': _t.get(_.justLookDontTouch),
+            'success': '',
+            'error': ''
+        }
 
     return prepared_dict
 
@@ -199,7 +329,11 @@ def cancel(request) -> dict:
 
     if not is_integer(uid):
         logger('additives', 'cancel_review', 'invalid uid', error=True)
-        return {'error': _t.get(_.internalKeyError)}
+        return {
+            'error': _t.get(_.internalKeyError),
+            'info': '',
+            'success': ''
+        }
 
     prepared_dict = {}
     nickname = request.authenticated_userid
@@ -208,8 +342,11 @@ def cancel(request) -> dict:
         success, error = review_history_helper.cancel_ongoing_decision(queue, uid, ui_locales, nickname)
         prepared_dict['success'] = success
         prepared_dict['error'] = error
+        prepared_dict['info'] = ''
     else:
         prepared_dict['info'] = _t.get(_.justLookDontTouch)
+        prepared_dict['success'] = ''
+        prepared_dict['error'] = ''
 
     return prepared_dict
 

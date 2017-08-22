@@ -18,6 +18,12 @@ $(document).ready(function () {
 	var duplicate_ack = $('#duplicate_ack');
 	var duplicate_nack = $('#duplicate_nack');
 	var duplicate_skip = $('#duplicate_skip');
+	var merge_ack = $('#merge_ack');
+	var merge_nack = $('#merge_nack');
+	var merge_skip = $('#merge_skip');
+	var split_ack = $('#split_ack');
+	var split_nack = $('#split_nack');
+	var split_skip = $('#split_skip');
 	var request_lock = $('#request-lock');
 	var send_edit  = $('#send_edit');
 	
@@ -87,6 +93,36 @@ $(document).ready(function () {
 	});
 	
 	duplicate_skip.click(function(){
+		new Review().reloadPageAndUnlockData(false);
+	});
+	
+	/**
+	 * Merge
+	 */
+	merge_ack.click(function(){
+		new Review().doMergeAck($(this).data('id'));
+	});
+	
+	merge_nack.click(function(){
+		new Review().doMergeNack($(this).data('id'));
+	});
+	
+	merge_skip.click(function(){
+		new Review().reloadPageAndUnlockData(false);
+	});
+	
+	/**
+	 * Split
+	 */
+	split_ack.click(function(){
+		new Review().doSplitAck($(this).data('id'));
+	});
+	
+	split_nack.click(function(){
+		new Review().doSplitNack($(this).data('id'));
+	});
+	
+	split_skip.click(function(){
 		new Review().reloadPageAndUnlockData(false);
 	});
 	

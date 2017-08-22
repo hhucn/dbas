@@ -32,7 +32,7 @@ def add_settings_to_appconfig(ini_file="development.ini"):
 
     :param ini_file: name of ini-file
     :return: config with loaded ini-file
-    :rtype: str
+    :rtype: dict
     """
     if os.path.isfile("/.dockerenv") and not ini_file:
         return appconfig("config:" + path_to_settings("docker.ini"))

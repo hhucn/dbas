@@ -57,6 +57,8 @@ function ReviewHistoryCallbacks(){
 		var parsedData = $.parseJSON(jsonData);
 		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+		} else if (parsedData.info.length !== 0) {
+			setGlobalInfoHandler(_t(ohsnap), parsedData.info);
 		} else {
 			setGlobalSuccessHandler('Yep!', parsedData.success);
 			$('#' + queue + uid).remove();

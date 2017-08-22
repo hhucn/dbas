@@ -114,6 +114,38 @@ function Review() {
 	
 	/**
 	 *
+	 * @param review_uid
+	 */
+	this.doMergeAck = function(review_uid){
+		new AjaxReviewHandler().reviewMergeStatement(true, review_uid);
+	};
+	
+	/**
+	 *
+	 * @param review_uid
+	 */
+	this.doMergeNack = function(review_uid){
+		new AjaxReviewHandler().reviewMergeStatement(false, review_uid);
+	};
+	
+	/**
+	 *
+	 * @param review_uid
+	 */
+	this.doSplitAck = function(review_uid){
+		new AjaxReviewHandler().reviewSplitStatement(true, review_uid);
+	};
+	
+	/**
+	 *
+	 * @param review_uid
+	 */
+	this.doSplitNack = function(review_uid){
+		new AjaxReviewHandler().reviewSplitStatement(false, review_uid);
+	};
+	
+	/**
+	 *
 	 */
 	this.startCountdown = function(){
 		var mm = $('#countdown_timer_min');

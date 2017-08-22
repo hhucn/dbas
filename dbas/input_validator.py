@@ -172,16 +172,15 @@ def related_with_rebut(attacked_arg_uid, attacking_arg_uid):
     """
     db_attacking_arg = DBDiscussionSession.query(Argument).get(attacking_arg_uid)
     db_attacked_arg = DBDiscussionSession.query(Argument).get(attacked_arg_uid)
-    if not db_attacked_arg or not db_attacking_arg:
+    if not db_attacked_arg or not db_attacking_arg or not db_attacked_arg.conclusion_uid:
         return False
 
     # do have both arguments the same conclusion?
     same_conclusion = db_attacking_arg.conclusion_uid == db_attacked_arg.conclusion_uid
-    not_none = db_attacked_arg.conclusion_uid is not None
     attacking1 = not db_attacking_arg.is_supportive and db_attacked_arg.is_supportive
     attacking2 = not db_attacked_arg.is_supportive and db_attacking_arg.is_supportive
     attacking = attacking1 or attacking2
-    return True if same_conclusion and not_none and attacking else False
+    return same_conclusion and attacking
 
 
 def related_with_support(attacked_arg_uid, attacking_arg_uid):

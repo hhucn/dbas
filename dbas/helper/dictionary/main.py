@@ -17,6 +17,7 @@ from dbas.handler import user
 from dbas.handler.notification import count_of_new_notifications, get_box_for
 from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, \
     get_public_profile_picture, is_usage_with_ldap, is_development_mode
+from dbas.handler.issue import limit_for_open_issues
 from dbas.logger import logger
 from dbas.review.helper.queues import get_complete_review_count
 from dbas.review.helper.reputation import get_reputation_of
@@ -156,14 +157,17 @@ class DictionaryHelper(object):
         db_en = DBDiscussionSession.query(Language).filter_by(ui_locales='en').first()
         db_issue_de = db_issues.filter_by(lang_uid=db_de.uid).first()
         db_issue_en = db_issues.filter_by(lang_uid=db_en.uid).first()
-        return_dict['de_discussion_link'] = '{}/discuss/{}'.format(request.application_url, db_issue_de.slug)
-        return_dict['en_discussion_link'] = '{}/discuss/{}'.format(request.application_url, db_issue_en.slug)
+        link_de = '{}/discuss/{}'.format(request.application_url, db_issue_de.slug if db_issue_de else '')
+        link_en = '{}/discuss/{}'.format(request.application_url, db_issue_en.slug if db_issue_en else '')
+        return_dict['de_discussion_link'] = link_de
+        return_dict['en_discussion_link'] = link_en
 
         self.add_language_options_for_extra_dict(return_dict)
+        is_author, points = get_reputation_of(nickname)
 
         return_dict['is_reportable'] = is_reportable
         return_dict['is_admin'] = user.is_in_group(nickname, 'admins')
-        return_dict['is_author'] = user.is_in_group(nickname, 'authors')
+        return_dict['is_author'] = is_author or points > limit_for_open_issues
         return_dict['show_bar_icon'] = show_bar_icon
         return_dict['show_graph_icon'] = show_graph_icon
         return_dict['close_premise_container'] = True
@@ -497,6 +501,7 @@ class DictionaryHelper(object):
         _tn_sys = Translator(self.system_lang)
         return_dict['title'] = {
             'barometer': _tn_sys.get(_.opinionBarometer),
+            'add_issue_info': _tn_sys.get(_.addIssueInfo).format(limit_for_open_issues),
             'guided_view': _tn_sys.get(_.displayControlDialogGuidedTitle),
             'island_view': _tn_sys.get(_.displayControlDialogIslandTitle),
             'graph_view': _tn_sys.get(_.displayControlDialogGraphTitle),
@@ -577,6 +582,17 @@ class DictionaryHelper(object):
             'placeholder_search_duplicate': _tn_sys.get(_.exampleSearchDuplicate),
             'placeholder_position': _tn_dis.get(_.examplePosition),
             'placeholder_reason': _tn_dis.get(_.exampleReason),
+            'placeholder_add_topic_title': _tn_dis.get(_.exampleAddTopicTitle),
+            'placeholder_add_topic_question': _tn_dis.get(_.exampleAddTopicQuestion),
+            'placeholder_add_topic_description': _tn_dis.get(_.exampleAddTopicDescription),
             'search': _tn_sys.get(_.searchForStatements),
-            'premisegroup_popup_warning': _tn_dis.get(_.premisegroupPopupWarning)
+            'premisegroup_popup_warning': _tn_dis.get(_.premisegroupPopupWarning),
+            'argument_optimization_description': _tn_dis.get(_.argument_optimization_description),
+            'argument_offtopic_or_irrelevant_description': _tn_dis.get(_.argument_offtopic_or_irrelevant_description),
+            'argument_statement_harmful_description': _tn_dis.get(_.argument_statement_harmful_description),
+            'statement_offtopic_or_irrelevant_description': _tn_dis.get(_.statement_offtopic_or_irrelevant_description),
+            'statement_duplicate_description': _tn_dis.get(_.statement_duplicate_description),
+            'statement_merge_description': _tn_dis.get(_.statement_merge_description),
+            'statement_split_description': _tn_dis.get(_.statement_split_description),
+            'statement_optimization_description': _tn_dis.get(_.statement_optimization_description),
         }

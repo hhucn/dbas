@@ -43,8 +43,8 @@ function GuidedTour(){
 			// language switch
 			var switcher = getLanguage() === 'en' ? $('#switch-to-de') : $('#switch-to-en');
 			var lang = getLanguage() === 'en' ? 'de' : 'en';
-			switcher.click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang); });
-			switcher.find('img').click(function () { new AjaxMainHandler().ajaxSwitchDisplayLanguage(lang); });
+			switcher.click(function () { new AjaxMainHandler().switchDisplayLanguage(lang); });
+			switcher.find('img').click(function () { new AjaxMainHandler().switchDisplayLanguage(lang); });
 		}, 500);
 	};
 		
