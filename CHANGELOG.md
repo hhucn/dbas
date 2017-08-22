@@ -1,6 +1,7 @@
-## 1.4.3 (2017-xx-yy)
+## 1.4.3 (2017-08-24)
 - Entering position and premise at once
 - Queue for split and merge statements
+- Discussion for Meta-D-BAS
 
 ## 1.4.2 (2017-06-07)
 - Splitting the monolith
