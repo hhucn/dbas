@@ -161,7 +161,7 @@ class DictionaryHelper(object):
         return_dict['en_discussion_link'] = '{}/discuss/{}'.format(request.application_url, db_issue_en.slug)
 
         self.add_language_options_for_extra_dict(return_dict)
-        is_author, points= get_reputation_of(nickname)
+        is_author, points = get_reputation_of(nickname)
 
         return_dict['is_reportable'] = is_reportable
         return_dict['is_admin'] = user.is_in_group(nickname, 'admins')
