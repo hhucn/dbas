@@ -758,50 +758,59 @@
     				<h4 id="myModalLabelAddTopic" i18n:translate="add_topic">Add Topic</h4>
     			</div>
     			<div class="modal-body">
-                    <p i18n:translate="please_enter_title">Please enter your title here:</p>
-                    <input class="form-control" type="text" placeholder="..." id="popup-add-topic-title-input">
 
-                    <p style="margin: 2em 0 0 0;" i18n:translate="please_enter_info">Please enter a short-description or question here:</p>
-                    <input class="form-control" type="text" placeholder="..." id="popup-add-topic-info-input">
+                    <div class="form-group">
+                        <label i18n:translate="please_enter_title">Please enter your title here:</label>
+                        <input class="form-control" placeholder="..." id="popup-add-topic-title-input" tal:attributes="placeholder extras.tag.placeholder_add_topic_title">
+                    </div>
 
-                    <p style="margin: 2em 0 0 0;" i18n:translate="please_enter_long_info">Please enter the full description here:</p>
-                    <input class="form-control" type="text" placeholder="..." id="popup-add-topic-long-info-input">
+                    <div class="form-group">
+                        <label style="margin: 1em 0 0 0;" i18n:translate="please_enter_info">Please enter a short-description or question here:</label>
+                        <input class="form-control" placeholder="..." id="popup-add-topic-info-input" tal:attributes="placeholder extras.tag.placeholder_add_topic_question">
+                    </div>
 
-                    <p style="margin: 2em 0 0 0;" i18n:translate="please_select_language_for_topic">Please select the language of the new discussion here:</p>
-                    <ul id="popup-add-topic-lang-input" style="list-style-type: none; display: inline-flex;">
-                        <li style="margin-right: 1em;">
-                            <input tal:condition="not:extras.lang_is_de" id="de" type="radio" name="lang_topic">
-                            <input tal:condition="extras.lang_is_de" id="de" type="radio" name="lang_topic" checked>
-                            <label for="de">
-                                <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_ge">
-                                Deutsch
-                            </label>
-                        </li>
-                        <li style="margin-right: 1em;">
-                            <input tal:condition="not:extras.lang_is_en" id="en" type="radio" name="lang_topic">
-                            <input tal:condition="extras.lang_is_en" id="en" type="radio" name="lang_topic" checked>
-                            <label for="en">
-                                <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en">
-                                English
-                            </label>
-                        </li>
-                        <!--
-                        <li style="margin-right: 1em;">
-                            <input id="es" type="radio" name="lang_topic">
-                            <label for="es">
-                                <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sp-24.png')}" alt="flag_es">
-                                Espa&ntilde;ol
-                            </label>
-                        </li>
-                        <li style="margin-right: 1em;">
-                            <input id="sw" type="radio" name="lang_topic">
-                            <label for="sw">
-                                <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sw-24.png')}" alt="flag_sw">
-                                Svensk
-                            </label>
-                        </li>
-                        -->
-                    </ul>
+                    <div class="form-group">
+                        <label style="margin: 1em 0 0 0;" i18n:translate="please_enter_long_info">Please enter the full description here:</label>
+                        <textarea class="form-control" placeholder="..." id="popup-add-topic-long-info-input" tal:attributes="placeholder extras.tag.placeholder_add_topic_description"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="margin: 1em 0 0 0;" i18n:translate="please_select_language_for_topic">Please select the language of the new discussion here:</label>
+                        <ul id="popup-add-topic-lang-input" style="list-style-type: none;">
+                            <li style="margin-right: 1em;">
+                                <input tal:condition="not:extras.lang_is_de" id="de" type="radio" name="lang_topic">
+                                <input tal:condition="extras.lang_is_de" id="de" type="radio" name="lang_topic" checked>
+                                <label for="de">
+                                    <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_ge">
+                                    Deutsch
+                                </label>
+                            </li>
+                            <li style="margin-right: 1em;">
+                                <input tal:condition="not:extras.lang_is_en" id="en" type="radio" name="lang_topic">
+                                <input tal:condition="extras.lang_is_en" id="en" type="radio" name="lang_topic" checked>
+                                <label for="en">
+                                    <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en">
+                                    English
+                                </label>
+                            </li>
+                            <!--
+                            <li style="margin-right: 1em;">
+                                <input id="es" type="radio" name="lang_topic">
+                                <label for="es">
+                                    <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sp-24.png')}" alt="flag_es">
+                                    Espa&ntilde;ol
+                                </label>
+                            </li>
+                            <li style="margin-right: 1em;">
+                                <input id="sw" type="radio" name="lang_topic">
+                                <label for="sw">
+                                    <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sw-24.png')}" alt="flag_sw">
+                                    Svensk
+                                </label>
+                            </li>
+                            -->
+                        </ul>
+                    </div>
                     <div class="alert alert-danger hidden" id="popup-add-topic-error" style="margin-top: 1em">
                         <strong id="popup-add-topic-error-text"></strong>
                     </div>
