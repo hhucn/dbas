@@ -33,6 +33,21 @@ Use a different compose file::
 
 This mode uses the pre-built images from our registry server and uses "uwsgi".
 
+Troubleshooting
+---------------
+
+If your container stucks during the first start up, please install D-BAS manually via:
+
+    docker exec -i -t dbas_web_1 /bin/bash
+    cd dbas
+    python setup.py --quiet develop
+    google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./dbas/static/js/{main,ajax,d3,discussion,review}/*.js > dbas/static/js/dbas.min.js
+    sass dbas/static/css/main.sass dbas/static/css/main.css --style compressed \
+    cd dbas && ./i18n.sh \
+    cd ../admin && ./i18n.sh \
+
+Afterwards everything should be fine.
+
 
 Environment Variables
 =====================

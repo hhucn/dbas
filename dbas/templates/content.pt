@@ -34,9 +34,17 @@
                                 </div>
                                 </a>
                             </li>
-                            <li tal:condition="extras.is_admin or extras.is_author" role="separator" class="divider"></li>
+                            <li class="divider"></li>
                             <li tal:condition="extras.is_admin or extras.is_author" role="separator">
                                 <a id="add-topic" href="#" i18n:translate="add_topic">Add a Topic</a>
+                            </li>
+                            <li tal:condition="not:(extras.is_admin or extras.is_author)" role="separator">
+                                <div class="row">
+                                    <div class="col-md-10" style="color: gray">
+                                        <span class="disabled" style="cursor: not-allowed" i18n:translate="add_topic" tal:attributes="title extras.title.add_issue_info">Add a Topic</span>
+                                        <i class="fa fa-question-circle-o" aria-hidden="true" tal:attributes="title extras.title.add_issue_info"></i>
+                                    </div>
+                                </div>
                             </li>
                         </ul>
                     </div>

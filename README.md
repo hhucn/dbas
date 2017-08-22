@@ -45,7 +45,11 @@ If your container stucks during the first start up, please install D-BAS manuall
     cd dbas && ./i18n.sh \
     cd ../admin && ./i18n.sh \
 
+<<<<<<< HEAD
+Afterwards everything should be fine.
+=======
 Afterwards everything should be finde.
+>>>>>>> e708e35326fdc4c2334838a52b85abfa802c0788
 
 
 ## Contributors

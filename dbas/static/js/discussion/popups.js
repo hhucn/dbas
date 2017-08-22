@@ -128,6 +128,7 @@ function PopupHandler() {
 	 */
 	this.showAddTopicPopup = function () {
 		$('#popup-add-topic').modal('show');
+		
 		$('#popup-add-topic-accept-btn').click(function () {
 			var info = $('#popup-add-topic-info-input').val();
 			var long_info = $('#popup-add-topic-long-info-input').val();
@@ -135,9 +136,38 @@ function PopupHandler() {
 			var lang = $('#popup-add-topic-lang-input').find('input[type="radio"]:checked').attr('id');
 			new AjaxDiscussionHandler().sendNewIssue(info, long_info, title, lang);
 		});
+		
 		$('#popup-add-topic-refuse-btn').click(function () {
 			$('#popup-add-topic').modal('hide');
 		});
+		
+		var flag_list = $('#popup-add-topic-lang-input');
+		flag_list.find('img').each(function(){
+			new PopupHandler().__add_black_white_filter($(this));
+		});
+		flag_list.find('input').change(function(){
+			flag_list.find('img').each(function() {
+				new PopupHandler().__add_black_white_filter($(this));
+			});
+			new PopupHandler().__remove_black_white_filter(flag_list.find('input[type="radio"]:checked').parent().find('img'));
+		});
+		new PopupHandler().__remove_black_white_filter(flag_list.find('input[type="radio"]:checked').parent().find('img'));
+	};
+	
+	this.__add_black_white_filter = function(element){
+		element.css(
+			'filter', 'grayscale(100%)',
+			'-webkit-filter', 'grayscale(100%)',
+			'-moz-filter', 'grayscale(100%)'
+		);
+	};
+	
+	this.__remove_black_white_filter = function(element){
+		element.css(
+			'filter', '',
+			'-webkit-filter', '',
+			'-moz-filter', ''
+		);
 	};
 	
 	/**

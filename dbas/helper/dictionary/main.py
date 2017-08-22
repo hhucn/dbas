@@ -17,6 +17,7 @@ from dbas.handler import user
 from dbas.handler.notification import count_of_new_notifications, get_box_for
 from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, \
     get_public_profile_picture, is_usage_with_ldap, is_development_mode
+from dbas.handler.issue import limit_for_open_issues
 from dbas.logger import logger
 from dbas.review.helper.queues import get_complete_review_count
 from dbas.review.helper.reputation import get_reputation_of
@@ -160,10 +161,11 @@ class DictionaryHelper(object):
         return_dict['en_discussion_link'] = '{}/discuss/{}'.format(request.application_url, db_issue_en.slug)
 
         self.add_language_options_for_extra_dict(return_dict)
+        is_author, points = get_reputation_of(nickname)
 
         return_dict['is_reportable'] = is_reportable
         return_dict['is_admin'] = user.is_in_group(nickname, 'admins')
-        return_dict['is_author'] = user.is_in_group(nickname, 'authors')
+        return_dict['is_author'] = is_author or points > limit_for_open_issues
         return_dict['show_bar_icon'] = show_bar_icon
         return_dict['show_graph_icon'] = show_graph_icon
         return_dict['close_premise_container'] = True
@@ -497,6 +499,7 @@ class DictionaryHelper(object):
         _tn_sys = Translator(self.system_lang)
         return_dict['title'] = {
             'barometer': _tn_sys.get(_.opinionBarometer),
+            'add_issue_info': _tn_sys.get(_.addIssueInfo).format(limit_for_open_issues),
             'guided_view': _tn_sys.get(_.displayControlDialogGuidedTitle),
             'island_view': _tn_sys.get(_.displayControlDialogIslandTitle),
             'graph_view': _tn_sys.get(_.displayControlDialogGraphTitle),
@@ -577,6 +580,9 @@ class DictionaryHelper(object):
             'placeholder_search_duplicate': _tn_sys.get(_.exampleSearchDuplicate),
             'placeholder_position': _tn_dis.get(_.examplePosition),
             'placeholder_reason': _tn_dis.get(_.exampleReason),
+            'placeholder_add_topic_title': _tn_dis.get(_.exampleAddTopicTitle),
+            'placeholder_add_topic_question': _tn_dis.get(_.exampleAddTopicQuestion),
+            'placeholder_add_topic_description': _tn_dis.get(_.exampleAddTopicDescription),
             'search': _tn_sys.get(_.searchForStatements),
             'premisegroup_popup_warning': _tn_dis.get(_.premisegroupPopupWarning),
             'argument_optimization_description': _tn_dis.get(_.argument_optimization_description),
