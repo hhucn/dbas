@@ -94,6 +94,7 @@ en_lang = {
     _.addStatementRow: 'Add another statement.',
     _.addTopic: 'Add a Topic',
     _.alreadyInserted: 'This is a duplicate and already there.',
+    _.addIssueInfo: 'You need at least {} point for opening a new discussion.',
     _.addPremisesRadioButtonText: 'Let me enter my reasons!',
     _.addArgumentsRadioButtonText: 'Let me enter my own statements!',
     _.argumentContainerTextIfPremises: 'You want to state your own reasons?',

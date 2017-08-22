@@ -88,6 +88,7 @@ class Keywords(Enum):
     addStatementRow = 'addStatementRow'
     addTopic = 'addTopic'
     alreadyInserted = 'alreadyInserted'
+    addIssueInfo = 'addIssueInfo'
     addPremisesRadioButtonText = 'addPremisesRadioButtonText'
     addArgumentsRadioButtonText = 'addArgumentsRadioButtonText'
     argumentContainerTextIfPremises = 'argumentContainerTextIfPremises'

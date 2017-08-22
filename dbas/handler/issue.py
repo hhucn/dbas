@@ -22,6 +22,8 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 
+limit_for_open_issues = 30
+
 
 def set_issue(nickname, info, long_info, title, lang, application_url, ui_locales) -> dict:
     """

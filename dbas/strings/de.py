@@ -96,6 +96,7 @@ de_lang = {
     _.addTopic: 'Thema hinzufügen',
     _.at: 'am',
     _.alreadyInserted: 'Dies ist ein Duplikat und schon vorhanden.',
+    _.addIssueInfo: 'Sie brauchen mindestens {} Punkte um ein neues Thema anzulegen.',
     _.addPremisesRadioButtonText: 'Lass\' mich meine eigenen Gründe angeben!',
     _.addArgumentsRadioButtonText: 'Lass\' mich meine eigenen Aussagen angeben!',
     _.argumentContainerTextIfPremises: 'Sie möchten Ihre eigenen Gründe angeben?',
