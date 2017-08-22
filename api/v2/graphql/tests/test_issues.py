@@ -18,7 +18,7 @@ def test_list_of_issues():
 def test_query_single_issue():
     query = """
         query {
-            issue (uid: 1) {
+            issue (uid: 2) {
                 uid
             }
         }
