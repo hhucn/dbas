@@ -109,12 +109,9 @@ class DictionaryHelper(object):
 
         db_user = DBDiscussionSession.query(User).filter_by(nickname=str(request_authenticated_userid)).first()
         is_logged_in = db_user is not None
-        if request_authenticated_userid:
-            nickname = request_authenticated_userid
-            db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        else:
+        if not db_user:
             nickname = nick_of_anonymous_user
-            db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         if db_user:
             public_nickname = db_user.get_global_nickname()
