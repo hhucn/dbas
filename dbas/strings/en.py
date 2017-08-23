@@ -283,7 +283,7 @@ en_lang = {
     _.examplePhone: 'example: +49 (0)211 81-13461',
     _.exampleMessage: 'example: I\'d like to say good job!',
     _.exampleMessageBug: 'example: On url https://dbas.cs.uni-duesseldorf.de/discuss/a/b D-BAS behaves strange, because ...',
-    _.exampleNickname: 'example: Democrator',
+    _.exampleNickname: 'example: Democrator or tokra100 at the HHU',
     _.examplePassword: 'example: ********',
     _.exampleNicknameLdap: 'example: tokra100',
     _.exampleFirstname: 'example: Tobias',

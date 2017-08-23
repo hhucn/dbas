@@ -286,7 +286,7 @@ de_lang = {
     _.examplePhone: 'Beispiel: +49 (0)211 81-13461',
     _.exampleMessage: 'Beispiel: Sehr gute Arbeit!',
     _.exampleMessageBug: 'Beispiel: Auf der Seite https://dbas.cs.uni-duesseldorf.de/discuss/a/b verhält sich D-BAS komisch, weil ...',
-    _.exampleNickname: 'Beispiel: Democrator',
+    _.exampleNickname: 'Beispiel: Democrator oder tokra100 an der HHU',
     _.exampleNicknameLdap: 'Beispiel: tokra100',
     _.examplePassword: 'Beispiel: ********',
     _.exampleFirstname: 'Beispiel: Tobias',

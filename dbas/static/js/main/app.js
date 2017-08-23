@@ -322,7 +322,11 @@ function prepareLoginRegistrationPopup(){
 	$('#' + popupLoginButtonLogin).show().click(function() {
 		new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
 		Cookies.set(DBAS_DATA_DISCLAIMER, true, { expires: 180 });
-	}).keypress(function(e) { if (e.which === 13) { new AjaxMainHandler().registration(); } });
+	}).keypress(function(e) {
+		if (e.which === 13) {
+			new AjaxMainHandler().registration();
+		}
+	});
 	
 	// data disclaimer
 	if (Cookies.get(DBAS_DATA_DISCLAIMER) === 'true') {
@@ -365,11 +369,11 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	$('#' + popupLoginButtonRegister).click(function(){
-		var userfirstname   = $('#' + popupLoginUserfirstnameInputId).val();
-		var userlastname    = $('#' + popupLoginUserlastnameInputId).val();
-		var nick            = $('#' + popupLoginNickInputId).val();
-		var email           = $('#' + popupLoginEmailInputId).val();
-		var password        = $('#' + popupLoginPasswordInputId).val();
+		var userfirstname = $('#' + popupLoginUserfirstnameInputId).val();
+		var userlastname = $('#' + popupLoginUserlastnameInputId).val();
+		var nick = $('#' + popupLoginNickInputId).val();
+		var email = $('#' + popupLoginEmailInputId).val();
+		var password = $('#' + popupLoginPasswordInputId).val();
 		var passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val();
 		var text = '';
 		var i;
@@ -396,15 +400,15 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	// bind enter key
-	$('#' + loginUserId).keypress(function(e) {							if (e.which === 13) {	new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
-	$('#' + loginPwId).keypress(function(e) {							if (e.which === 13) {	new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
-	$('#admin-login-user').keypress(function(e) {   					if (e.which === 13) {	new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
-	$('#admin-login-pw').keypress(function(e) {							if (e.which === 13) {	new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
-	$('#' + popupLoginUserfirstnameInputId).keypress(function(e) {		if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
-	$('#' + popupLoginUserlastnameInputId).keypress(function(e) {		if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
-	$('#' + popupLoginNickInputId).keypress(function(e) {				if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
-	$('#' + popupLoginEmailInputId).keypress(function(e) {				if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
-	$('#' + popupLoginPasswordconfirmInputId).keypress(function(e) {	if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
+	$('#' + loginUserId).keypress(function(e) {						 if (e.which === 13) {	new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
+	$('#' + loginPwId).keypress(function(e) {						 if (e.which === 13) {	new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
+	$('#admin-login-user').keypress(function(e) {   				 if (e.which === 13) {	new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
+	$('#admin-login-pw').keypress(function(e) {						 if (e.which === 13) {	new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
+	$('#' + popupLoginUserfirstnameInputId).keypress(function(e) {	 if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
+	$('#' + popupLoginUserlastnameInputId).keypress(function(e) {	 if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
+	$('#' + popupLoginNickInputId).keypress(function(e) {			 if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
+	$('#' + popupLoginEmailInputId).keypress(function(e) {			 if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
+	$('#' + popupLoginPasswordconfirmInputId).keypress(function(e) { if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
 
 	$('#' + popupLoginButtonRequest).click(function() {
 		new AjaxMainHandler().passwordRequest();

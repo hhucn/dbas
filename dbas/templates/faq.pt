@@ -6,11 +6,11 @@
                 <div class="col-md-offset-2 col-md-8">
                     <h3 i18n:translate="faq" class="text-center">Frequent Questions</h3>
                     <p i18n:translate="simple_answers" class="lead text-center">Simple answers to your most common questions</p>
-                    <div tal:condition="extras.use_with_ldap">
+                    <div>
                         <h5><span i18n:translate="faq_question_ldap">How do we handle your login data?</span></h5>
-                        <span i18n:translate="faq_answer_ldap">We are using the name information service of the University Düsseldorf. Your password is send from your computer, to our server (which is placed at the University) and then towards the service of the ZIM. Each transmission is secured and encrypted. Additionally we will never save, log or display your password anywhere!</span>
+                        <span i18n:translate="faq_answer_ldap">If you are using the LDAP login, we are using the name information service of the University Düsseldorf. Your password is send from your computer, to our server (which is placed at the University) and then towards the service of the ZIM. Each transmission is secured and encrypted. Additionally we will never save, log or display your password anywhere! Otherwise the data is localy stored with salted hashes.</span>
                     </div>
-                    <br tal:condition="extras.use_with_ldap">
+                    <br>
                     <div>
                         <h5><span i18n:translate="faq_question_interest_opinion">What is the difference between interest and opinion?</span></h5>
                         <span i18n:translate="faq_answer_interest_opinion">If you select any answer in D-BAS, you will be interested in this statement/reaction/... but we will never think, that this is your personal opinion. Only if you mark an statement or argument as your opinion, we will know, that you have the same opinion like the given text.</span>

@@ -262,74 +262,9 @@
     	</div>
     </div>
 
-    <!-- LOGIN POPUP for LDAP-->
-    <div tal:condition="extras.use_with_ldap" class="modal fade" id="popup-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLoginLDAP" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button type="button" id="popup-login-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<br>
-                    <h4 id="myModalLabelLoginLDAP" class="text-primary center" i18n:translate="login">Log In</h4>
-    			</div>
-    			<div class="modal-body" id="popup-login-body">
-                    <form autocomplete="on">
-                        <div class="form-group">
-                            <label class="col-md-3 control-label" for="login-user"><span i18n:translate="your_ldap_nickname">Your University-ID</span><i class="fa fa-info-circle" data-placement="bottom" data-toggle="tooltip" tal:attributes="title extras.buttons.ldap_info" style="padding-left: 1em"></i></label>
-                            <div class="col-md-9 input-group">
-                                <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-                                <input id="login-user" type="text" class="form-control" tal:attributes="placeholder extras.tag.placeholder_nickname" placeholder="" autocomplete="on">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-md-3 control-label" for="login-pw" i18n:translate="your_password">Your Password</label>
-                            <div class="col-md-9 input-group">
-                                <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
-                                <input id="login-pw" type="password" class="form-control" tal:attributes="placeholder extras.tag.placeholder_password" placeholder="" autocomplete="on">
-                            </div>
-                        </div>
-                    </form>
-                    <div style="padding-left: 15px;">
-                        <label>
-                            <input id="keep-login-box" type="checkbox" style="float:left;">
-                            <span i18n:translate="keep_me_logged_in">Keep me logged in</span>
-                        </label>
-                        <!--<a id="popup-login-forgot-password-text" i18n:translate="forgot_password" style="cursor: pointer; float:right;">Forgot your password?</a>-->
-                    </div>
-                    <div id="dbas-login-data-disclaimer" style="padding: 1em 0 0 1em;">
-                        <p class="text-info" i18n:translate="dbas_login_data_disclaimer">Wenn Sie sich bei D-BAS anmelden, erklären Sie sich damit einverstanden, dass Ihre Aktionen anonymisiert ausgewertet werden und Sie nach Abschluss des Experiments einen Fragebogen per E-Mail erhalten werden.</p>
-                    </div>
-
-                    <div class="col-md-12" id="popup-login-failed">
-                        <div class="alert alert-danger" role="alert">
-                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                            <span class="sr-only" i18n:translate="error">Error:</span> <span id="popup-login-failed-message"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-12" id="popup-login-success">
-                        <div class="alert alert-success" role="alert">
-                            <i class="fa fa-check-circle" aria-hidden="true"></i>
-                            <span class="sr-only" i18n:translate="success">Success:</span> <span id="popup-login-success-message"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-12" id="popup-login-info">
-                        <div class="alert alert-warning" role="alert">
-                            <i class="fa fa-info-circle" aria-hidden="true"></i>
-                            <span class="sr-only" i18n:translate="info">Info:</span> <span id="popup-login-info-message"></span>
-                        </div>
-                    </div>
-    			</div>
-    			<div class="modal-footer">
-    				<button id="popup-login-button-login" type="button" class="btn btn-primary" i18n:translate="login">Log In</button>
-    				<button type="button" class="btn btn-secondary" id="popup-login-close-button" i18n:translate="close">Close</button>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
-    <!-- LOGIN POPUP without LDAP-->
-    <div tal:condition="not:extras.use_with_ldap" class="modal fade" id="popup-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLogin" aria-hidden="true">
-        <script src='https://www.google.com/recaptcha/api.js'></script>
+    <!-- LOGIN POPUP -->
+    <div class="modal fade" id="popup-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLogin" aria-hidden="true">
+        <script tal:condition="not extras.logged_in" src='https://www.google.com/recaptcha/api.js'></script>
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
@@ -337,29 +272,32 @@
     				</button>
     				<br>
     				<ul class="nav nav-tabs" style="display: table; margin: 0 auto;">
-    					<li class="tab-login active"><a href="#login" i18n:translate="login">Log In</a>
-    					</li>
-    					<li class="tab-login"><a href="#signup" i18n:translate="sign_up">Sign Up</a>
-    					</li>
+    					<li class="tab-login active"><a href="#login" i18n:translate="login">Log In</a></li>
+    					<li class="tab-login"><a href="#signup" i18n:translate="sign_up">Sign Up</a></li>
     				</ul>
     			</div>
     			<div id="popup-login-body">
     				<div class="tab-content">
+                        <p class="text-info center" i18n:translate="have_account_hhu">If you have a valid account at the HHU, you can directly use the login!</p>
     					<div id="login">
                             <form autocomplete="on">
     						    <div class="form-group">
-    						    	<label class="col-md-3 control-label" for="login-user" i18n:translate="your_nickname">Your Nickname</label>
-    						    	<div class="col-md-9 input-group">
+                                    <div class="col-md-12">
+    						    	    <label class="col-md-3 control-label" for="login-user" i18n:translate="your_nickname">Your Nickname</label>
+    						    	    <div class="col-md-9 input-group">
                                         <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
     						    		<input id="login-user" type="text" class="form-control" tal:attributes="placeholder extras.tag.placeholder_nickname" placeholder="" autocomplete="on">
     						    	</div>
+                                    </div>
     						    </div>
     						    <div class="form-group">
-    						    	<label class="col-md-3 control-label" for="login-pw" i18n:translate="your_password">Your Password</label>
-    						    	<div class="col-md-9 input-group">
+                                    <div class="col-md-12">
+    						    	    <label class="col-md-3 control-label" for="login-pw" i18n:translate="your_password">Your Password</label>
+    						    	    <div class="col-md-9 input-group">
                                         <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
     						    		<input id="login-pw" type="password" class="form-control" tal:attributes="placeholder extras.tag.placeholder_password" placeholder="" autocomplete="on">
     						    	</div>
+                                    </div>
     						    </div>
                             </form>
     						<div style="padding-left: 15px;">
@@ -379,27 +317,14 @@
     						    </div>
                                 <input id="popup-login-button-request" type="submit" onclick="$('body').addClass('loading')" name="form.passwordrequest.submitted" value="Request Password" class="btn btn-primary" tal:attributes="value extras.buttons.request_password"/>
     						</div>
-    						<div class="col-md-12" id="popup-login-failed">
-    							<div class="alert alert-danger" role="alert">
-    								<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-    								<span class="sr-only" i18n:translate="error">Error:</span> <span id="popup-login-failed-message"></span>
-    							</div>
-    						</div>
-    						<div class="col-md-12" id="popup-login-success">
-    							<div class="alert alert-success" role="alert">
-    								<i class="fa fa-check-circle" aria-hidden="true"></i>
-    								<span class="sr-only" i18n:translate="success">Success:</span> <span id="popup-login-success-message"></span>
-    							</div>
-    						</div>
-    						<div class="col-md-12" id="popup-login-info">
-    							<div class="alert alert-warning" role="alert">
-    								<i class="fa fa-info-circle" aria-hidden="true"></i>
-    								<span class="sr-only" i18n:translate="info">Info:</span> <span id="popup-login-info-message"></span>
-    							</div>
-    						</div>
     					</div>
     					<div id="signup">
-                            <p class="center lead"><span class="text-info" i18n:translate="never_display_real_name">We will never display your real name to other users!</span></p>
+                            <p class="center lead">
+                                <span class="text-info" i18n:translate="have_account_hhu">If you have a valid account at the HHU, you can directly use the login!</span>
+                            </p>
+                            <p class="center lead">
+                                <span class="text-info" i18n:translate="never_display_real_name">We will never display your real name to other users!</span>
+                            </p>
     						<div class="form-group">
     							<label class="col-md-3 control-label" for="userfirstname-input" i18n:translate="first_name">Your First Name</label>
     							<div class="col-md-9 input-group">
@@ -533,6 +458,26 @@
     						</div>
     					</div>
     				</div>
+
+                    <div class="col-md-12" id="popup-login-failed">
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                            <span class="sr-only" i18n:translate="error">Error:</span> <span id="popup-login-failed-message"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="popup-login-success">
+                        <div class="alert alert-success" role="alert">
+                            <i class="fa fa-check-circle" aria-hidden="true"></i>
+                            <span class="sr-only" i18n:translate="success">Success:</span> <span id="popup-login-success-message"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="popup-login-info">
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                            <span class="sr-only" i18n:translate="info">Info:</span> <span id="popup-login-info-message"></span>
+                        </div>
+                    </div>
+
     			</div>
     			<div class="modal-footer">
     				<button id="popup-login-button-login" type="button" class="btn btn-primary" i18n:translate="login">Log In</button>

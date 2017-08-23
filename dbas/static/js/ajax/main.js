@@ -156,9 +156,12 @@ function AjaxMainHandler(){
 			callbackIfDoneForRegistration(data);
 		}).fail(function ajaxRegistrationFail(xhr) {
 			$('#' + popupLoginRegistrationFailed).show();
-			if (xhr.status === 400) {		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedBadToken));
-			} else if (xhr.status === 500) {	$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedInternalError));
-			} else {                		$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
+			if (xhr.status === 400) {
+				$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedBadToken));
+			} else if (xhr.status === 500) {
+				$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedInternalError));
+			} else {
+				$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
 			}
 		}).always(function ajaxLoginAlways(){
 			$('#' + popupLoginPasswordInputId).val('');
