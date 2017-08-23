@@ -102,8 +102,6 @@ def main_field_test(argv=sys.argv):
         __set_up_settings(DBDiscussionSession, users)
         __setup_fieltest_discussion_database(DBDiscussionSession, issue6, issue1)
         transaction.commit()
-        # main_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-        # __setup_discussion_database(DBDiscussionSession, main_author, issue1, issue2, issue4, issue5)
         __add_reputation_and_delete_reason(DBDiscussionSession)
         transaction.commit()
         create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
@@ -321,7 +319,6 @@ def init_dummy_votes(argv=sys.argv):
     with transaction.manager:
         __setup_dummy_seen_by(DBDiscussionSession)
         __setup_dummy_clicks(DBDiscussionSession)
-        # __setup_review_dummy_database(DBDiscussionSession)
 
 
 def setup_news_db(session, ui_locale):
@@ -668,7 +665,6 @@ def __set_up_users(session, include_dummy_users=True):
     # adding some dummy users
     pwt = get_hashed_password('iamatestuser2016')
     pw0 = get_hashed_password('QMuxpuPXwehmhm2m93#I;)QX§u4qjqoiwhebakb)(4hkblkb(hnzUIQWEGgalksd')
-    # pw1 = get_hashed_password('pjÖKAJSDHpuiashw89ru9hsidhfsuihfapiwuhrfj098UIODHASIFUSHDF')
     pw2 = '$2a$10$9P5biPvyX2xVeMcCLm82tO0XFQhmdMFwgAhPaUkCHoVL1F5kEAjIa'
     pw4 = '$2a$10$Ou/pHV1MoZRqvt5U8cV09up0qqbIz70ZjwEeanRkyyfR/rrMHcBfe'
     pw8 = get_hashed_password('bjoern')
@@ -676,7 +672,6 @@ def __set_up_users(session, include_dummy_users=True):
 
     user0 = User(firstname=nick_of_anonymous_user, surname=nick_of_anonymous_user, nickname=nick_of_anonymous_user,
                  email='', password=pw0, group_uid=group2.uid, gender='m')
-    # user1 = User(firstname='admin', surname='admin', nickname=nick_of_admin, email='dbas.hhu@gmail.com', password=pw1,  group_uid=group0.uid, gender='m')
     user2 = User(firstname='Tobias', surname='Krauthoff', nickname='Tobias', email='krauthoff@cs.uni-duesseldorf.de',
                  password=pw2, group_uid=group0.uid, gender='m')
     user4 = User(firstname='Christian', surname='Meter', nickname='Christian', email='meter@cs.uni-duesseldorf.de',
@@ -1433,8 +1428,6 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5, i
     textversion32 = TextVersion(content="cats are little, sweet and innocent cuddle toys", author=user.uid)
     textversion33 = TextVersion(content="do you have ever seen a sphinx cat or savannah cats?", author=user.uid)
     textversion34 = TextVersion(content="won't be best friends", author=user.uid)
-    # textversion34 = TextVersion(content="Even overbred races can be taught", author=user.uid)
-    # textversion35 = TextVersion(content="Several pets are nice to have and you do not have to take much care of them, for example turtles or cats, which are living outside", author=user.uid)
     textversion36 = TextVersion(content="it is much work to take care of both animals", author=user.uid)
 
     textversion101 = TextVersion(content="the city should reduce the number of street festivals", author=3)
@@ -1572,8 +1565,6 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5, i
     statement32 = Statement(textversion=textversion32.uid, is_position=False, issue=issue2.uid)
     statement33 = Statement(textversion=textversion33.uid, is_position=False, issue=issue2.uid)
     statement34 = Statement(textversion=textversion34.uid, is_position=False, issue=issue2.uid)
-    # statement34 = Statement(textversion=textversion34.uid, is_position=False, issue=issue2.uid)
-    # statement35 = Statement(textversion=textversion35.uid, is_position=False, issue=issue2.uid)
     statement36 = Statement(textversion=textversion36.uid, is_position=False, issue=issue2.uid)
     statement101 = Statement(textversion=textversion101.uid, is_position=True, issue=issue1.uid)
     statement102 = Statement(textversion=textversion102.uid, is_position=True, issue=issue1.uid)
@@ -1675,8 +1666,6 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5, i
     textversion32.set_statement(statement32.uid)
     textversion33.set_statement(statement33.uid)
     textversion34.set_statement(statement34.uid)
-    # textversion34.set_statement(statement34.uid)
-    # textversion35.set_statement(statement35.uid)
     textversion36.set_statement(statement36.uid)
     textversion101.set_statement(statement101.uid)
     textversion102.set_statement(statement102.uid)
@@ -2026,10 +2015,8 @@ def __setup_discussion_database(session, user, issue1, issue2, issue4, issue5, i
                           conclusion=statement15.uid, issue=issue2.uid)
     argument28 = Argument(premisegroup=premisegroup27.uid, issupportive=True, author=user.uid,
                           conclusion=statement14.uid, issue=issue2.uid)
-    # argument28 = Argument(premisegroup=premisegroup27.uid, issupportive=True, author=user.uid, conclusion=statement15.uid, issue=issue2.uid)
     argument29 = Argument(premisegroup=premisegroup28.uid, issupportive=False, author=user.uid,
                           conclusion=statement14.uid, issue=issue2.uid)
-    # argument30 = Argument(premisegroup=premisegroup28.uid, issupportive=False, author=user.uid, conclusion=statement15.uid, issue=issue2.uid)
     argument31 = Argument(premisegroup=premisegroup29.uid, issupportive=False, author=user.uid, issue=issue2.uid)
     ####
     argument101 = Argument(premisegroup=premisegroup105.uid, issupportive=True, author=3, issue=issue1.uid,
@@ -2219,12 +2206,11 @@ def __setup_review_dummy_database(session):
     :return: None
     """
     reason1 = session.query(ReviewDeleteReason).filter_by(reason='offtopic').first()
-    # reason2 = session.query(ReviewDeleteReason).filter_by(reason='harmful').first()
 
     int_start = 6
     int_end = 30
 
-    names = first_names[5:]  # 31 - 5 = 26
+    names = first_names[5:]
     user = [session.query(User).filter_by(nickname=name).first().uid for name in names]
 
     review01 = ReviewOptimization(detector=user[0], argument=random.randint(int_start, int_end), is_executed=True)
@@ -2257,15 +2243,11 @@ def __setup_review_dummy_database(session):
 
     value01 = ReviewMergeValues(review=review20.uid, content='Lorem ipsum dolor sit amet, consetetur (value01)')
     value02 = ReviewMergeValues(review=review20.uid, content='sadipscing elitr, sed diam nonumy eirmod (value02)')
-    # value03 = ReviewSplitValues(review=review22.uid, content='tempor invidunt ut labore et dolore magna (value03)')
-    # value04 = ReviewSplitValues(review=review22.uid, content='aliquyam erat, sed diam voluptua.At vero (value04)')
-    # value05 = ReviewSplitValues(review=review22.uid, content='eos et accusam et justo duo dolores et (value05)')
     value06 = ReviewSplitValues(review=review23.uid, content='ea rebum.Stet clita kasd gubergren, no (value06)')
     value07 = ReviewSplitValues(review=review23.uid, content='sea takimata sanctus est Lorem ipsum (value07)')
     value08 = ReviewSplitValues(review=review23.uid, content='dolor sit amet.Lorem ipsum dolor sit (value08)')
     value09 = ReviewSplitValues(review=review23.uid, content='amet, consetetur sadipscing elitr, sed (value09)')
     value10 = ReviewSplitValues(review=review23.uid, content='diam nonumy eirmod tempor invidunt ut (value10)')
-    # session.add_all([value01, value02, value03, value04, value05, value06, value07, value08, value09, value10])
     session.add_all([value01, value02, value06, value07, value08, value09, value10])
     session.flush()
 
@@ -2315,7 +2297,6 @@ def __setup_review_dummy_database(session):
     reputation11 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_edit').first()
     reputation12 = session.query(ReputationReason).filter_by(reason='rep_reason_bad_duplicate').first()
 
-    # admin = session.query(User).filter_by(nickname=nick_of_admin).first()
     christian = session.query(User).filter_by(nickname='Christian').first()
     tobias = session.query(User).filter_by(nickname='Tobias').first()
 
