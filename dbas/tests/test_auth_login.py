@@ -39,8 +39,6 @@ class AuthLoginTest(unittest.TestCase):
         self.assertTrue(type(response) is dict)
         self.assertIn('status', response)
 
-
-
     def test_login_register_with_ajax_data(self):
         _tn = Translator('en')
 
