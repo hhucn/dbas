@@ -1834,6 +1834,8 @@ class ReviewCanceled(DiscussionBase):
         :param review_delete: ReviewDelete.uid
         :param review_optimization: ReviewOptimization.uid
         :param review_duplicate: ReviewDuplicate.uid
+        :param review_merge: ReviewMerge.uid
+        :param review_split: ReviewSplit.uid
         :param was_ongoing: Boolean
         """
         self.author_uid = author
