@@ -10,17 +10,20 @@ services:
     tmpfs: /tmp
     env_file: # Needed in 001_init.sh
       - production.env
+
   notifications:
     image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/notifications
     ports:
       - "5222:5222"
     volumes:
       - /etc/letsencrypt:/cert:ro
+
   docs:
     image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/dbas:docs
     ports:
       - "8000:8000"
     tmpfs: /tmp
+
   web:
     image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/dbas
     command: bash -c "sleep 10 && uwsgi --ini-paste production.ini"
