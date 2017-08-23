@@ -12,7 +12,10 @@ class DiscussionChoseViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-        self.pgroup_ids = [15, 17]
+        self.arg_uid = 15
+        self.pgroup_uid = 30
+        self.is_supportive = 'f'
+        self.is_argument = 't'
 
     def tearDown(self):
         testing.tearDown()
@@ -25,10 +28,10 @@ class DiscussionChoseViewTests(unittest.TestCase):
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
-            'is_argument': 'f',
-            'supportive': 't',
-            'id': 5,
-            'pgroup_ids': self.pgroup_ids,
+            'is_argument': self.is_argument,
+            'supportive': self.is_supportive,
+            'id': self.arg_uid,
+            'pgroup_ids': [self.pgroup_uid],
         }
         response = d(request)
         verify_dictionary_of_view(self, response)
@@ -46,20 +49,17 @@ class DiscussionChoseViewTests(unittest.TestCase):
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
-            'is_argument': 'f',
-            'supportive': 't',
-            'id': 5,
-            'pgroup_ids': self.pgroup_ids,
+            'is_argument': self.is_argument,
+            'supportive': self.is_supportive,
+            'id': self.arg_uid,
+            'pgroup_ids': [self.pgroup_uid],
         }
         response = d(request)
         verify_dictionary_of_view(self, response)
 
         len_db_seen2 = len(DBDiscussionSession.query(SeenStatement).all())
 
-        count = 0
-        for group_id in self.pgroup_ids:
-            count += len(DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=group_id).all())
-
+        count = len(DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=self.pgroup_uid).all())
         self.assertEqual(len_db_seen1 + count, len_db_seen2)
 
     def test_page_fail(self):
@@ -68,10 +68,10 @@ class DiscussionChoseViewTests(unittest.TestCase):
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
-            'is_argument': 'f',
-            'supportive': 't',
-            'id': 5,
-            'pgroup_ids': [15, 17, 'a'],
+            'is_argument': self.is_argument,
+            'supportive': self.is_supportive,
+            'id': self.arg_uid,
+            'pgroup_ids': [self.pgroup_uid, 'a'],
         }
         try:
             response = d(request)
@@ -82,10 +82,10 @@ class DiscussionChoseViewTests(unittest.TestCase):
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-doggy-dog',
-            'is_argument': 'f',
-            'supportive': 't',
-            'id': 5,
-            'pgroup_ids': [15, 17, 'a'],
+            'is_argument': self.is_argument,
+            'supportive': self.is_supportive,
+            'id': self.arg_uid,
+            'pgroup_ids': [self.pgroup_uid, 'a'],
         }
         try:
             response = d(request)
@@ -96,10 +96,10 @@ class DiscussionChoseViewTests(unittest.TestCase):
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-doggy-dog',
-            'is_argument': 'f',
-            'supportive': 't',
-            'id': 5,
-            'pgroup_ids': [15, 17, 55],
+            'is_argument': self.is_argument,
+            'supportive': self.is_supportive,
+            'id': self.arg_uid,
+            'pgroup_ids': [self.pgroup_uid, 55],
         }
         try:
             response = d(request)

@@ -605,10 +605,10 @@ def __is_uid_valid(uid, queue):
     }
 
     if queue in mapping:
-        # logger('review_history_helper', '__is_uid_valid', 'query table {} with uid {}'.format(mapping[queue], uid))
+        logger('review_history_helper', '__is_uid_valid', 'query table {} with uid {}'.format(mapping[queue], uid))
         return DBDiscussionSession.query(mapping[queue]).get(uid) is not None
 
-    # logger('review_history_helper', '__is_uid_valid', 'no table found for {}'.format(queue), error=True)
+    logger('review_history_helper', '__is_uid_valid', 'no table found for {}'.format(queue), error=True)
     return False
 
 

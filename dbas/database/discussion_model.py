@@ -1827,12 +1827,12 @@ class ReviewCanceled(DiscussionBase):
         :param was_ongoing: Boolean
         """
         self.author_uid = author
-        self.review_edit_uid = reviews['edit']
-        self.review_delete_uid = reviews['delete']
-        self.review_optimization_uid = reviews['optimization']
-        self.review_duplicate_uid = reviews['duplicate']
-        self.review_merge_uid = reviews['merge']
-        self.review_split_uid = reviews['split']
+        self.review_edit_uid = reviews['edit'] if 'edit' in reviews else None
+        self.review_delete_uid = reviews['delete'] if 'delete' in reviews else None
+        self.review_optimization_uid = reviews['optimization'] if 'optimization' in reviews else None
+        self.review_duplicate_uid = reviews['duplicate'] if 'duplicate' in reviews else None
+        self.review_merge_uid = reviews['merge'] if 'merge' in reviews else None
+        self.review_split_uid = reviews['split'] if 'split' in reviews else None
         self.was_ongoing = was_ongoing
         self.timestamp = get_now()
 
