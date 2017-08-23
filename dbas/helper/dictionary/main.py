@@ -106,15 +106,18 @@ class DictionaryHelper(object):
         logger('DictionaryHelper', 'prepare_extras_dict', 'def user ' + str(nickname))
         request_authenticated_userid = nickname
         public_nickname = nickname
-        nickname = ''
 
         db_user = DBDiscussionSession.query(User).filter_by(nickname=str(request_authenticated_userid)).first()
         is_logged_in = db_user is not None
         if request_authenticated_userid:
-            nickname = request_authenticated_userid if request_authenticated_userid else nick_of_anonymous_user
+            nickname = request_authenticated_userid
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-            if db_user:
-                public_nickname = db_user.get_global_nickname()
+        else:
+            nickname = nick_of_anonymous_user
+            db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+
+        if db_user:
+            public_nickname = db_user.get_global_nickname()
 
         if not db_user or request_authenticated_userid is None:
             nickname = nick_of_anonymous_user
@@ -140,14 +143,22 @@ class DictionaryHelper(object):
         return_dict['add_premise_container_style'] = add_premise_container_style
         return_dict['add_statement_container_style'] = add_statement_container_style
         return_dict['users_avatar'] = get_profile_picture(db_user, 25)
-        return_dict['is_user_male'] = db_user.gender == 'm' if db_user else False
-        return_dict['is_user_female'] = db_user.gender == 'f' if db_user else False
+        if db_user:
+            return_dict['is_user_male'] = db_user.gender == 'm'
+            return_dict['is_user_female'] = db_user.gender == 'f'
+        else:
+            return_dict['is_user_male'] = False
+            return_dict['is_user_female'] = False
         return_dict['is_user_neutral'] = not return_dict['is_user_male'] and not return_dict['is_user_female']
         return_dict['broke_limit'] = 'true' if broke_limit else 'false'
         return_dict['use_with_ldap'] = is_ldap
         return_dict['development_mode'] = is_development
-        return_dict['is_development'] = rrs['mode'] == 'development' if 'mode' in rrs else False
-        return_dict['is_production'] = rrs['mode'] == 'production' if 'mode' in rrs else False
+        if 'mode' in rrs:
+            return_dict['is_development'] = rrs['mode'] == 'development'
+            return_dict['is_production'] = rrs['mode'] == 'production'
+        else:
+            return_dict['is_development'] = False
+            return_dict['is_production'] = False
         return_dict['review_count'] = get_complete_review_count(nickname)
         return_dict['g_recaptcha_key'] = google_recaptcha_client_key
 
@@ -164,10 +175,11 @@ class DictionaryHelper(object):
 
         self.add_language_options_for_extra_dict(return_dict)
         is_author, points = get_reputation_of(nickname)
+        is_author_bool = is_author or points > limit_for_open_issues
 
         return_dict['is_reportable'] = is_reportable
         return_dict['is_admin'] = user.is_in_group(nickname, 'admins')
-        return_dict['is_author'] = is_author or points > limit_for_open_issues
+        return_dict['is_author'] = is_author_bool
         return_dict['show_bar_icon'] = show_bar_icon
         return_dict['show_graph_icon'] = show_graph_icon
         return_dict['close_premise_container'] = True
