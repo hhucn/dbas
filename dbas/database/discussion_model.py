@@ -1818,33 +1818,21 @@ class ReviewCanceled(DiscussionBase):
     merges = relationship('ReviewMerge', foreign_keys=[review_merge_uid])
     plits = relationship('ReviewSplit', foreign_keys=[review_split_uid])
 
-    def __init__(self, author,
-                 review_edit=None,
-                 review_delete=None,
-                 review_optimization=None,
-                 review_duplicate=None,
-                 review_merge=None,
-                 review_split=None,
-                 was_ongoing=False):
+    def __init__(self, author, reviews, was_ongoing=False):
         """
         Inits a row in current review locks table
 
         :param author: User.uid
-        :param review_edit: ReviewEdit.uid
-        :param review_delete: ReviewDelete.uid
-        :param review_optimization: ReviewOptimization.uid
-        :param review_duplicate: ReviewDuplicate.uid
-        :param review_merge: ReviewMerge.uid
-        :param review_split: ReviewSplit.uid
+        :param reviews: dict with possible review uids
         :param was_ongoing: Boolean
         """
         self.author_uid = author
-        self.review_edit_uid = review_edit
-        self.review_delete_uid = review_delete
-        self.review_optimization_uid = review_optimization
-        self.review_duplicate_uid = review_duplicate
-        self.review_merge_uid = review_merge
-        self.review_split_uid = review_split
+        self.review_edit_uid = reviews['edit']
+        self.review_delete_uid = reviews['delete']
+        self.review_optimization_uid = reviews['optimization']
+        self.review_duplicate_uid = reviews['duplicate']
+        self.review_merge_uid = reviews['merge']
+        self.review_split_uid = reviews['split']
         self.was_ongoing = was_ongoing
         self.timestamp = get_now()
 

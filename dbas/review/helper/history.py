@@ -393,13 +393,13 @@ def revoke_old_decision(queue, uid, lang, nickname):
         logger('review_history_helper', 'revoke_old_decision', 'Executing deletes-queue')
         __revoke_decision_and_implications(ReviewDelete, LastReviewerDelete, uid)
         success = _t.get(_.dataRemoved)
-        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_delete=uid))
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'delete': uid}))
 
     elif queue == 'optimizations':
         logger('review_history_helper', 'revoke_old_decision', 'Executing optimizations-queue')
         __revoke_decision_and_implications(ReviewOptimization, LastReviewerOptimization, uid)
         success = _t.get(_.dataRemoved)
-        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_optimization=uid))
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'optimization': uid}))
 
     elif queue == 'edits':
         logger('review_history_helper', 'revoke_old_decision', 'Executing edits-queue')
@@ -410,7 +410,7 @@ def revoke_old_decision(queue, uid, lang, nickname):
         content = db_value.first().content
         db_statement = DBDiscussionSession.query(Statement).get(db_value.first().statement_uid)
         db_value.delete()
-        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_edit=uid))
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'edit': uid}))
 
         # delete forbidden textversion
         DBDiscussionSession.query(TextVersion).filter_by(content=content).delete()
@@ -424,7 +424,7 @@ def revoke_old_decision(queue, uid, lang, nickname):
         logger('review_history_helper', 'revoke_old_decision', 'Executing duplicates-queue')
         db_review = DBDiscussionSession.query(ReviewDuplicate).get(uid)
         db_review.set_revoked(True)
-        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_duplicate=uid))
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'duplicate': uid}))
         __rebend_objects_of_duplicate_review(db_review)
 
         success = _t.get(_.dataRemoved)
@@ -541,38 +541,40 @@ def cancel_ongoing_decision(queue, uid, lang, nickname):
         DBDiscussionSession.query(ReviewDelete).get(uid).set_revoked(True)
         DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=uid).delete()
         success = _t.get(_.dataRemoved)
-        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_delete=uid, was_ongoing=True))
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'delete': uid}, was_ongoing=True))
 
     elif queue == 'optimizations':
         DBDiscussionSession.query(ReviewOptimization).get(uid).set_revoked(True)
         DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=uid).delete()
         success = _t.get(_.dataRemoved)
-        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_optimization=uid, was_ongoing=True))
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'optimization': uid}, was_ongoing=True))
 
     elif queue == 'edits':
         DBDiscussionSession.query(ReviewEdit).filter_by(uid=uid).delete()
         DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=uid).first().set_revoked(True)
         DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=uid).delete()
         success = _t.get(_.dataRemoved)
-        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_edit=uid, was_ongoing=True))
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'edit': uid}, was_ongoing=True))
 
     elif queue == 'duplicates':
         DBDiscussionSession.query(ReviewDuplicate).get(uid).set_revoked(True)
         DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=uid).delete()
         success = _t.get(_.dataRemoved)
-        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, review_duplicate=uid, was_ongoing=True))
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'duplicate': uid}, was_ongoing=True))
 
     elif queue == 'merges':
         DBDiscussionSession.query(ReviewMerge).get(uid).set_revoked(True)
         DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=uid).delete()
         DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=uid).delete()
         success = _t.get(_.dataRemoved)
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'merge': uid}, was_ongoing=True))
 
     elif queue == 'splits':
         DBDiscussionSession.query(ReviewSplit).get(uid).set_revoked(True)
         DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=uid).delete()
         DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=uid).delete()
         success = _t.get(_.dataRemoved)
+        DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'split': uid}, was_ongoing=True))
 
     else:
         error = _t.get(_.internalKeyError)
