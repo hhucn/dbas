@@ -43,16 +43,26 @@ def verify_ldap_user_data(registry_settings, nickname, password, _tn):
         email = user[email][0].decode('utf-8')
         logger('ldap', 'verify_ldap_user_data', 'success')
 
-        return [firstname, lastname, gender, email], None
+        data = {
+            'firstname': firstname,
+            'lastname': lastname,
+            'gender': gender,
+            'email': email,
+            'error': False
+        }
+        return data
 
     except ldap.INVALID_CREDENTIALS as e:
         logger('ldap', 'verify_ldap_user_data', 'ldap credential error: ' + str(e))
-        return None, _tn.get(_.userPasswordNotMatch)
+        data = {'error': _tn.get(_.userPasswordNotMatch)}
+        return data
 
     except ldap.SERVER_DOWN as e:
         logger('ldap', 'verify_ldap_user_data', 'can\'t reach server within 5s: ' + str(e))
-        return None, _tn.get(_.serviceNotAvailable) + '. ' + _tn.get(_.pleaseTryAgainLaterOrContactUs)
+        data = {'error': _tn.get(_.serviceNotAvailable) + '. ' + _tn.get(_.pleaseTryAgainLaterOrContactUs)}
+        return data
 
     except ldap.OPERATIONS_ERROR as e:
         logger('ldap', 'verify_ldap_user_data', 'OPERATIONS_ERROR: ' + str(e))
-        return None, _tn.get(_.internalKeyError) + ' ' + _tn.get(_.pleaseTryAgainLaterOrContactUs)
+        data = {'error': _tn.get(_.internalKeyError) + ' ' + _tn.get(_.pleaseTryAgainLaterOrContactUs)}
+        return data

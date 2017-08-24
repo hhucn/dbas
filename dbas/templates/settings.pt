@@ -84,16 +84,6 @@
 							</td>
 						</tr>
 					</table>
-					<div tal:condition="not:extras.use_with_ldap">
-                        <div class="center text-center" style="float:left; margin: 1em;">
-                            <img id="user_gravatar" class="img-circle" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_public_url">
-						    <br>
-						    <span i18n:translate="profile_picture">Profile Picture</span>
-                        </div>
-                        <span i18n:translate="change_gravatar">Change your profile picture on the</span>
-                        <a style="color: #2196f3;" href="https://en.gravatar.com/site/login">Gravatar website</a>.
-                        <span i18n:translate="what_is_gravatar">A Gravatar is a globally recognized avatar. You upload it and create your profile just once, and then when you participate in any Gravatar-enabled site, your Gravatar image will automatically follow you there.</span>
-					</div>
 				</div>
             </div>
             <div class="row">
@@ -112,7 +102,7 @@
 			</div>
 		</div>
 
-		<div class="container colored-container" tal:condition="extras.use_with_ldap">
+		<div class="container colored-container">
 			<div class="content row">
 
 				<div class="col-md-8">
@@ -214,10 +204,9 @@
 
 		<div class="container colored-container" tal:condition="not:extras.use_with_ldap">
 			<div class="content row">
-				<div class="col-md-7">
+				<div class="col-md-12">
 					<h4><i class="fa fa-lock" aria-hidden="true" style="margin-right: 0.5em;"></i>
-                        <span tal:condition="not:extras.use_with_ldap" i18n:translate="change_password">Change your password</span>
-                        <span tal:condition="extras.use_with_ldap" i18n:translate="change_dbas_password">Change your password in D-BAS</span>
+                        <span i18n:translate="change_dbas_password">Change your password in D-BAS</span>
                     </h4>
                     <p i18n:translate="this_does_not_affect_other_services">This does not affect other services next to D-BAS.</p>
 					<form action="/settings" method="post">
@@ -271,64 +260,6 @@
 						<input id="settings-password-submit" type="submit" onclick="$('body').addClass('loading')" style="display: block; margin: 0 auto;" name="form.passwordchange.submitted" value="Change password" class="button button-block btn btn-primary" data-dismiss="modal" tal:attributes="value extras.buttons.password_submit" />
 					</form>
 				</div>
-
-				<div class="col-md-5" id="statistics">
-					<h4><i class="fa fa-bar-chart" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="discussion_stat">Discussion Statistics</span></h4>
-					<table class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
-						<tr>
-							<td>
-								<span class="lead" i18n:translate="statements_posted">Statements posted</span>
-								<a href="#"><i id="info-statements" class="fa fa-info-circle"></i></a>
-							</td>
-							<td id="statements-done-count" style="text-align: right">${settings.statements_posted}</td>
-						</tr>
-						<tr>
-							<td>
-								<span class="lead" i18n:translate="edits_done">Edits done</span>
-								<a href="#"><i id="info-edits" class="fa fa-info-circle"></i></a>
-							</td>
-							<td id="edits-done-count" style="text-align: right">${settings.edits_done}</td>
-						</tr>
-						<tr>
-							<td>
-								<span class="lead" i18n:translate="discussion_clicked_statements">Clicks for Arguments</span>
-								<a href="#"><i id="info-click-arguments" class="fa fa-info-circle"></i></a>
-							</td>
-							<td id="discussion-arg-click-count" style="text-align: right">${settings.discussion_arg_clicks}</td>
-						</tr>
-						<tr>
-							<td>
-								<span class="lead" i18n:translate="discussion_clicked_arguments">Clicks for Statements</span>
-								<a href="#"><i id="info-click-statements" class="fa fa-info-circle"></i></a>
-							</td>
-							<td id="discussion-stat-click-count" style="text-align: right">${settings.discussion_stat_clicks}</td>
-						</tr>
-						<tr>
-							<td>
-								<span class="lead" i18n:translate="discussion_votes_statements">Votes for Statements</span>
-								<a href="#"><i id="info-vote-statements" class="fa fa-info-circle"></i></a>
-							</td>
-							<td id="discussion-stat-votes-count" style="text-align: right">${settings.discussion_stat_votes}</td>
-						</tr>
-						<tr>
-							<td>
-								<span class="lead" i18n:translate="discussion_votes_arguments">Votes for Arguments</span>
-								<a href="#"><i id="info-vote-arguments" class="fa fa-info-circle"></i></a>
-							</td>
-							<td id="discussion-arg-votes-count" style="text-align: right">${settings.discussion_arg_votes}</td>
-						</tr>
-						<tr>
-							<td>
-								<span class="lead" i18n:translate="reputation">Reputation</span>
-								<a href="${request.application_url}/review/reputation"><i class="fa fa-info-circle"></i></a>
-							</td>
-							<td style="text-align: right">${settings.reputation}</td>
-						</tr>
-					</table>
-					<!--<div class="text-center">-->
-					<!--	<input id="clear-statistics" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.clear_statistics" />-->
-					<!--</div>-->
-				</div>
 			</div>
 
 			<div class="col-md-12">
@@ -347,44 +278,6 @@
 
 			</div>
 		</div>
-
-<!--		<div class="container colored-container">-->
-<!--			<div class="content row">-->
-<!--				<div class="col-md-12">-->
-<!--					<h4><i class="fa fa-clock-o" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="last_history">Your last history</span></h4>-->
-<!---->
-<!--					<div style="text-align:center;">-->
-<!--						<input id="request-history" type="button" value="Request history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.request_history" />-->
-<!--						<input id="delete-history" type="button" value="Delete history" class="button button-block btn btn-primary" style="display: inline-block;" tal:attributes="value extras.buttons.delete_history" />-->
-<!--					</div>-->
-<!---->
-<!--					<div id="history-table-success" class="alert alert-success hidden" role="alert">-->
-<!--						<button type="button" class="close" data-dismiss="alert" aria-label="Close">-->
-<!--							<span aria-hidden="true">&times;</span>-->
-<!--						</button>-->
-<!--						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>-->
-<!--						<span class="lead" i18n:translate="success" style="color: white;">Success:</span>-->
-<!--						<span id="history-success-msg"></span>-->
-<!--					</div>-->
-<!---->
-<!--					<div id="history-table-failure" class="alert alert-danger hidden" role="alert" style="padding: 1em;">-->
-<!--						<button type="button" class="close" data-dismiss="alert" aria-label="Close">-->
-<!--							<span aria-hidden="true">&times;</span>-->
-<!--						</button>-->
-<!--						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>-->
-<!--						<span id="history-failure-msg"></span>-->
-<!--					</div>-->
-<!---->
-<!--					<div id="history-table-space">-->
-<!--						<table id="history-table" class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">-->
-<!--							<tr>-->
-<!--							</tr>-->
-<!--						</table>-->
-<!--					</div>-->
-<!--				</div>-->
-<!--			</div>-->
-<!--		</div>-->
-
 
 	</tal:block>
 </tal:block>

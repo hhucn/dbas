@@ -72,18 +72,6 @@ def get_changelog(no):
     return changelog[0:no]
 
 
-def is_usage_with_ldap(request):
-    """
-    Returns true, if ldap usage is set to true in current ini file.
-
-    :param request:Request
-    :return: Boolean
-    """
-    if 'settings:ldap:usage' in request.registry.settings:
-        return True if request.registry.settings['settings:ldap:usage'] == 'true' else False
-    return False
-
-
 def is_development_mode(request):
     """
     Returns true, if mode is set to development in current ini file.
@@ -765,8 +753,7 @@ def get_user_by_case_insensitive_public_nickname(public_nickname):
     :param public_nickname: String
     :return: User or None
     """
-    return DBDiscussionSession.query(User).filter(
-        func.lower(User.public_nickname) == func.lower(public_nickname)).first()
+    return DBDiscussionSession.query(User).filter(func.lower(User.public_nickname) == func.lower(public_nickname)).first()
 
 
 def pretty_print_options(message):

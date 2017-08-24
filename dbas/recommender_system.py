@@ -88,6 +88,7 @@ def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, res
     :return: Argument.uid, String, Boolean if no new attacks are found
     """
     # getting undermines or undercuts or rebuts
+    restriction_on_arg_uids = list(set(restriction_on_arg_uids))
     logger('RecommenderSystem', 'get_attack_for_argument', 'main ' + str(argument_uid) + ' (reststriction: ' +
            str(restriction_on_attacks) + ', ' + str(restriction_on_arg_uids) + ')')
 
@@ -96,14 +97,14 @@ def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, res
         redirected_from_jump = 'jump' in history[-2 if len(history) > 1 else -1] or redirected_from_jump
     logger('RecommenderSystem', 'get_attack_for_argument', 'redirected_from_jump ' + str(redirected_from_jump))
 
-    # TODO COMMA16 Special Case (forbid: undercuts of undercuts)
+    # COMMA16 Special Case (forbid: undercuts of undercuts)
     # one URL for testing: /discuss/cat-or-dog/reaction/12/undercut/13?history=/attitude/2-/justify/2/t
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
     is_current_arg_undercut = db_argument.argument_uid is not None
     tmp = restriction_on_attacks if restriction_on_attacks else ''
     restriction_on_attacks = [tmp, 'undercut' if is_current_arg_undercut and not redirected_from_jump else '']
-    logger('RecommenderSystem', 'get_attack_for_argument', 'restriction  1: ' + restriction_on_attacks[0] +
-           ', restriction  2: ' + restriction_on_attacks[1])
+    logger('RecommenderSystem', 'get_attack_for_argument', 'restriction_on_attacks 1: ' + restriction_on_attacks[0] +
+           ', restriction_on_attacks 2: ' + restriction_on_attacks[1])
 
     attacks_array, key, no_new_attacks = __get_attack_for_argument(argument_uid, lang, restriction_on_attacks,
                                                                    restriction_on_arg_uids, last_attack, history)
@@ -159,6 +160,29 @@ def get_arguments_by_conclusion(statement_uid, is_supportive):
     # TODO sort arguments and return a subset
 
     return db_arguments
+
+
+def get_forbidden_attacks_based_on_history(history):
+    """
+    Returns all attacking uids from reaction steps of the history string
+
+    :param history: String - history of the user
+    :return: list of uids
+    """
+    tmp = []
+    for split in history.split('-'):
+        if 'reaction' in split and len(split.split('/')) > 4:
+            tmp.append(split.split('/')[4])
+
+    tmp = list(set(tmp))
+
+    forbidden_uids = []
+    for uid in tmp:
+        try:
+            forbidden_uids.append(int(uid))
+        except ValueError:
+            logger('RecommenderSystem', 'get_forbidden_attacks_based_on_history', 'malicious attack in history {}'.format(uid))
+    return forbidden_uids
 
 
 def __get_attack_for_argument(argument_uid, lang, restriction_on_attacks, restriction_on_argument_uids,

@@ -16,7 +16,7 @@ from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
 from dbas.handler.notification import count_of_new_notifications, get_box_for
 from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, \
-    get_public_profile_picture, is_usage_with_ldap, is_development_mode
+    get_public_profile_picture, is_development_mode
 from dbas.handler.issue import limit_for_open_issues
 from dbas.logger import logger
 from dbas.review.helper.queues import get_complete_review_count
@@ -109,12 +109,10 @@ class DictionaryHelper(object):
 
         db_user = DBDiscussionSession.query(User).filter_by(nickname=str(request_authenticated_userid)).first()
         is_logged_in = db_user is not None
-        if request_authenticated_userid:
-            nickname = request_authenticated_userid
-            db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        else:
+        if not db_user:
             nickname = nick_of_anonymous_user
-            db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        is_user_from_ldap = db_user.validate_password('NO_PW_BECAUSE_LDAP')  # TODO CHECK THIS
 
         if db_user:
             public_nickname = db_user.get_global_nickname()
@@ -124,7 +122,6 @@ class DictionaryHelper(object):
             public_nickname = nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
 
-        is_ldap = is_usage_with_ldap(request)
         is_development = is_development_mode(request)
 
         rrs = request.registry.settings
@@ -151,7 +148,7 @@ class DictionaryHelper(object):
             return_dict['is_user_female'] = False
         return_dict['is_user_neutral'] = not return_dict['is_user_male'] and not return_dict['is_user_female']
         return_dict['broke_limit'] = 'true' if broke_limit else 'false'
-        return_dict['use_with_ldap'] = is_ldap
+        return_dict['use_with_ldap'] = is_user_from_ldap
         return_dict['development_mode'] = is_development
         if 'mode' in rrs:
             return_dict['is_development'] = rrs['mode'] == 'development'
@@ -187,7 +184,7 @@ class DictionaryHelper(object):
         return_dict['date'] = arrow.utcnow().format('DD-MM-YYYY')
         self.add_title_text(return_dict)
         self.add_button_text(return_dict)
-        self.add_tag_text(is_ldap, return_dict)
+        self.add_tag_text(return_dict)
 
         message_dict = dict()
         message_dict['new_count'] = count_of_new_notifications(nickname)
@@ -544,11 +541,10 @@ class DictionaryHelper(object):
             'unmark_as_opinion': _tn_dis.get(_.unmark_as_opinion)
         }
 
-    def add_tag_text(self, is_ldap, return_dict):
+    def add_tag_text(self, return_dict):
         """
         Adds string-map in the return dict with the client_key 'tag'
 
-        :param is_ldap: Boolean
         :param return_dict: current dictionary
         :return: None
         """
@@ -584,7 +580,7 @@ class DictionaryHelper(object):
             'need_help_to_understand_statement': _tn_dis.get(_.needHelpToUnderstandStatement),
             'set_premisegroups_intro1': _tn_dis.get(_.setPremisegroupsIntro1),
             'set_premisegroups_intro2': _tn_dis.get(_.setPremisegroupsIntro2),
-            'placeholder_nickname': _tn_sys.get(_.exampleNicknameLdap) if is_ldap else _tn_sys.get(_.exampleNickname),
+            'placeholder_nickname': _tn_sys.get(_.exampleNickname),
             'placeholder_password': _tn_sys.get(_.examplePassword),
             'placeholder_firstname': _tn_sys.get(_.exampleFirstname),
             'placeholder_lastname': _tn_sys.get(_.exampleLastname),

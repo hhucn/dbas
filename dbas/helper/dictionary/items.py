@@ -175,8 +175,12 @@ class ItemDictHelper(object):
                 text = get_text_for_statement_uid(premise.statement_uid)
                 premise_array.append({'title': text, 'id': premise.statement_uid})
 
+            # filter forbidden attacks
+            forbidden_attacks = rs.get_forbidden_attacks_based_on_history(self.path)
+
             # get attack for each premise, so the urls will be unique
-            arg_id_sys, attack = rs.get_attack_for_argument(argument.uid, self.lang, history=self.path)
+            arg_id_sys, attack = rs.get_attack_for_argument(argument.uid, self.lang, history=self.path,
+                                                            restriction_on_arg_uids=forbidden_attacks)
             already_used = 'reaction/' + str(argument.uid) + '/' in self.path
             additional_text = '(' + _tn.get(_.youUsedThisEarlier) + ')'
 
@@ -714,6 +718,7 @@ class ItemDictHelper(object):
         db_argument = DBDiscussionSession.query(Argument).get(arg_uid)
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+        forbidden_attacks = rs.get_forbidden_attacks_based_on_history(self.path)
 
         db_undercutted_arg = None
         len_undercut = 0
@@ -721,9 +726,11 @@ class ItemDictHelper(object):
             db_undercutted_arg = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
             len_undercut = 1 if db_undercutted_arg.argument_uid is None else 2
 
+        arg_id_sys, sys_attack = rs.get_attack_for_argument(db_argument.uid, self.lang, redirected_from_jump=True,
+                                                            restriction_on_arg_uids=forbidden_attacks)
+        url0 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.uid, sys_attack, arg_id_sys)
+
         if len_undercut == 0:
-            arg_id_sys, sys_attack = rs.get_attack_for_argument(db_argument.uid, self.lang, redirected_from_jump=True)
-            url0 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.uid, sys_attack, arg_id_sys)
             url1 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 't')
             url2 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 't', 'undercut')
             url3 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 'f')
@@ -733,8 +740,6 @@ class ItemDictHelper(object):
                 url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
 
         elif len_undercut == 1:
-            arg_id_sys, sys_attack = rs.get_attack_for_argument(db_argument.uid, self.lang, redirected_from_jump=True)
-            url0 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.uid, sys_attack, arg_id_sys)
             url1 = None
             url2 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 't', 'undercut')
             url3 = _um.get_url_for_jump(not for_api, db_undercutted_arg.uid)
@@ -744,8 +749,6 @@ class ItemDictHelper(object):
                 url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
 
         else:
-            arg_id_sys, sys_attack = rs.get_attack_for_argument(db_argument.uid, self.lang, redirected_from_jump=True)
-            url0 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.uid, sys_attack, arg_id_sys)
             url1 = None
             url2 = None
             url3 = _um.get_url_for_jump(not for_api, db_undercutted_arg.uid)

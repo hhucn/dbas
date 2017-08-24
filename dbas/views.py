@@ -27,7 +27,7 @@ import dbas.review.helper.queues as review_queue_helper
 import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
-from dbas.auth.login import login_user, register_with_ajax_data
+from dbas.auth.login import login_user, register_user_with_ajax_data
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
@@ -1133,7 +1133,7 @@ def user_registration(request):
     info = ''
 
     try:
-        success, info = register_with_ajax_data(request)
+        success, info = register_user_with_ajax_data(request)
 
     except KeyError as e:
         logger('Views', 'user_registration', repr(e), error=True)

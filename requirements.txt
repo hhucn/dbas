@@ -42,7 +42,7 @@ pyflakes==1.5.0
 Pygments==2.2.0
 pyldap==2.4.28
 pyparsing==2.2.0
-pyramid==1.8.3
+pyramid==1.9.1
 pyramid-beaker==0.8
 pyramid-chameleon==0.3
 pyramid-debugtoolbar==3.0.5
@@ -56,6 +56,7 @@ pyshorteners==0.6.0
 pytest==3.0.7
 python-dateutil==2.6.0
 python-Levenshtein==0.12.0
+python3-openid==3.1.0
 python-slugify==1.2.4
 pytz==2017.2
 redis==2.10.5

@@ -18,7 +18,8 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Settings
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
-from dbas.lib import escape_string, get_user_by_case_insensitive_nickname, is_usage_with_ldap
+from dbas.lib import escape_string, get_user_by_case_insensitive_nickname, \
+    get_user_by_case_insensitive_public_nickname
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -26,7 +27,7 @@ from dbas.strings.translator import Translator
 
 def login_user(request, nickname, password, for_api, keep_login, _tn):
     """
-    A try to login the user
+    Try to login the user whereby she is maybe a HHU-LDAP user or known localy
 
     :param request: web servers request
     :param nickname: User.nickname
@@ -37,33 +38,82 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
     :return: dict() or HTTPFound if the user is logged in an it is not the api
     """
 
-    is_ldap = is_usage_with_ldap(request)
+    # caution: password is not escaped
+    nickname, password, keep_login, url = __get_data(request, nickname, password, keep_login)
+    logger('Auth.Login', 'login_user', 'user: {}, api: {}'.format(nickname, for_api))
 
-    # getting params from request or api
-    if not nickname and not password:
-        nickname = escape_string(request.params['user'])
-        password = request.params['password'] if is_ldap else escape_string(request.params['password'])
-        keep_login = escape_string(request.params['keep_login'])
-        keep_login = True if keep_login == 'true' else False
-        url = request.params['url']
-    else:
-        nickname = escape_string(nickname)
-        password = escape_string(password)
-        url = ''
-
-    logger('Auth.Login', 'login_user', 'user {}, api '.format(nickname, for_api))
-
+    # now we have several options:
+    # 1. the user is unknown, because she has a HHU-LDAP account
+    # 2. the user is known, but
+    #  a) keeped local
+    #  b) keeped in ldap
     db_user = get_user_by_case_insensitive_nickname(nickname)
-    if not db_user:  # check if the user exists
-        error, db_user = __login_user_not_existing(request, nickname, password, _tn, is_ldap)
-        if error is not None:
-            return {'error': error}  # error
+    if not db_user:  # this is 1.
+        return __register_user_with_ldap_data(request, nickname, password, for_api, keep_login, url, _tn)
 
-    else:
-        error = __login_user_is_existing(request, nickname, password, _tn, is_ldap, db_user)
-        if error is not None:
-            return {'error': error}  # error
+    # this is 2.
+    return __check_in_local_known_user(request, db_user, password, for_api, keep_login, url, _tn)
 
+
+def __register_user_with_ldap_data(request, nickname, password, for_api, keep_login, url, _tn):
+    """
+    Asks LDAP if the user is known
+
+    :param request: web servers request
+    :param nickname: User.nickname
+    :param password: String
+    :param for_api: Boolean
+    :param keep_login: Boolean
+    :param _tn: Translator
+    :return: dict() or HTTPFound if the user is logged in an it is not the api
+    """
+    data = verify_ldap_user_data(request.registry.settings, nickname, password, _tn)
+    if data['error']:
+        return {'error': data['error']}
+
+    # register the new user
+    ret_dict = user.set_new_user(request, data['firstname'], data['lastname'], nickname, data['gender'],
+                                 data['email'], 'NO_PW_BECAUSE_LDAP', _tn)
+    if 'success' not in ret_dict:
+        return {'error': _tn.get(_.internalKeyError)}
+
+    return __return_success_login(request, for_api, ret_dict['user'], keep_login, url)
+
+
+def __check_in_local_known_user(request, db_user, password, for_api, keep_login, url, _tn):
+    """
+    Trys to check in a local known user
+
+    :param request: web servers request
+    :param db_user: current instance of User
+    :param password: password of the user
+    :param for_api: Boolean
+    :param keep_login: Boolean
+    :param url: for redirection after login
+    :param _tn: instance of current translator
+    :return: dict() or HTTPFound if the user is logged in an it is not the api
+    """
+    is_local = db_user.validate_password(password)
+    if is_local:
+        return __return_success_login(request, for_api, db_user, keep_login, url)
+
+    data = verify_ldap_user_data(request.registry.settings, db_user.nickname, password, _tn)
+    if data['error']:
+        return {'error': data['error']}
+
+    return __return_success_login(request, for_api, db_user, keep_login, url)
+
+
+def __return_success_login(request, for_api, db_user, keep_login, url):
+    """
+
+    :param request: web servers request
+    :param for_api:
+    :param db_user:
+    :param keep_login:
+    :param url:
+    :return:
+    """
     if for_api:
         logger('Auth.Login', 'login_user', 'return for api: success')
         return {'status': 'success'}  # api
@@ -74,7 +124,31 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
         return HTTPFound(location=url, headers=headers)  # success
 
 
-def register_with_ajax_data(request):
+def __get_data(request, nickname, password, keep_login):
+    """
+    Read input params for returning nickname and password of the user as well as a boolean if she wants to keep
+    the login and an url for forwarding
+
+    :param request: web servers request
+    :param nickname: User.nickname
+    :param password: String
+    :param keep_login: Boolean
+    :return: String, String, Boolean, String
+    """
+    if not nickname and not password:
+        nickname = escape_string(request.params['user'])
+        password = request.params['password']
+        keep_login = escape_string(request.params['keep_login'])
+        keep_login = True if keep_login == 'true' else False
+        url = request.params['url']
+    else:
+        nickname = escape_string(nickname)
+        password = escape_string(password)
+        url = ''
+    return nickname, password, keep_login, url
+
+
+def register_user_with_ajax_data(request):
     """
     Consume the ajax data for an login attempt
 
@@ -84,21 +158,21 @@ def register_with_ajax_data(request):
     ui_locales = request.params['lang'] if 'lang' in request.params else get_language_from_cookie(request)
     _tn = Translator(ui_locales)
     success = ''
-    params          = request.params
-    firstname       = escape_string(params['firstname']) if 'firstname' in params else ''
-    lastname        = escape_string(params['lastname']) if 'lastname' in params else ''
-    nickname        = escape_string(params['nickname']) if 'nickname' in params else ''
-    email           = escape_string(params['email']) if 'email' in params else ''
-    gender          = escape_string(params['gender']) if 'gender' in params else ''
-    password        = escape_string(params['password']) if 'password' in params else ''
+    params = request.params
+    firstname = escape_string(params['firstname']) if 'firstname' in params else ''
+    lastname = escape_string(params['lastname']) if 'lastname' in params else ''
+    nickname = escape_string(params['nickname']) if 'nickname' in params else ''
+    email = escape_string(params['email']) if 'email' in params else ''
+    gender = escape_string(params['gender']) if 'gender' in params else ''
+    password = escape_string(params['password']) if 'password' in params else ''
     passwordconfirm = escape_string(params['passwordconfirm']) if 'passwordconfirm' in params else ''
-    recaptcha       = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
+    recaptcha = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
     is_human, error = validate_recaptcha(recaptcha)
     db_new_user = None
 
     # database queries mail verification
     db_nick1 = get_user_by_case_insensitive_nickname(nickname)
-    db_nick2 = DBDiscussionSession.query(User).filter(func.lower(User.public_nickname) == func.lower(nickname)).first()
+    db_nick2 = get_user_by_case_insensitive_public_nickname(nickname)
     db_mail = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
     is_mail_valid = validate_email(email, check_mx=True)
 
@@ -145,94 +219,6 @@ def register_with_ajax_data(request):
             msg = error
 
     return success, msg, db_new_user
-
-
-def __login_user_not_existing(request, nickname, password, _tn, is_ldap):
-    """
-    First login of a user who is not registered
-
-    :param request: webservers request
-    :param nickname: User.nickname
-    :param password: String
-    :param _tn: Translator
-    :param is_ldap: Boolean
-    :return: String or None on success
-    """
-    logger('Auth.Login', '__login_user_not_existing', 'user \'' + nickname + '\' does not exists')
-
-    # if the user does not exists and we are using LDAP, we'll grep the user
-    if is_ldap:
-        error, db_user = __login_user_ldap(request, nickname, password, _tn)
-        if error is not None:
-            return error, db_user
-
-    else:
-        success, error, db_user = register_with_ajax_data(request)
-        if not success:
-            return error, db_user
-
-    return error, db_user
-
-
-def __login_user_is_existing(request, nickname, password, _tn, is_ldap, db_user):
-    """
-    Login of a user who is already registered
-
-    :param request: webservers request
-    :param nickname: User.nickname
-    :param password: String
-    :param _tn: Translator
-    :param is_ldap: Boolean
-    :param db_user: User
-    :return: String or None on success
-    """
-    logger('Auth.Login', '__login_user_is_existing', 'user \'' + nickname + '\' exists')
-    if is_ldap:
-        local_login = db_user.validate_password(password)
-        # logger('Auth.Login', '__login_user_is_existing', 'password is {}'.format('right' if local_login else 'wrong'))
-
-        # if not local_login:
-        error = _tn.get(_.userPasswordNotMatch)
-        if not local_login:
-            user_data, error = verify_ldap_user_data(request.registry.settings, nickname, password, _tn)
-
-        if error is not None and not local_login:
-            logger('Auth.Login', '__login_user_is_existing', 'Error ' + error)
-            return error
-    else:
-        if not db_user.validate_password(password):  # check password
-            logger('Auth.Login', '__login_user_is_existing', 'wrong password')
-            error = _tn.get(_.userPasswordNotMatch)
-            return error
-
-
-def __login_user_ldap(request, nickname, password, _tn):
-    """
-    Login the user via LDAP
-
-    :param request: webservers request
-    :param nickname: User.nickname
-    :param password: String
-    :param _tn: Translator
-    :return: String, User
-    """
-    logger('Auth.Login', '__login_user_ldap', nickname)
-    user_data, error = verify_ldap_user_data(request.registry.settings, nickname, password, _tn)
-
-    if error is not None:
-        return error, ''
-
-    firstname = user_data[0]
-    lastname = user_data[1]
-    gender = user_data[2]
-    email = user_data[3]
-    ret_dict = user.set_new_user(request, firstname, lastname, nickname, gender, email, 'NO_PW_BECAUSE_LDAP', _tn)
-
-    if 'success' not in ret_dict and 'sucess' not in ret_dict:
-        error = _tn.get(_.userPasswordNotMatch)
-        return error, None
-
-    return None, ret_dict['user']
 
 
 def __refresh_headers_and_url(request, db_user, keep_login, url):
