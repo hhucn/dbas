@@ -2,7 +2,7 @@ import unittest
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid import testing
-from dbas.auth.login import login_user, register_with_ajax_data
+from dbas.auth.login import login_user, register_user_with_ajax_data
 from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
 
@@ -52,7 +52,7 @@ class AuthLoginTest(unittest.TestCase):
             'passwordconfirm': '',
             'g-recaptcha-response': '',
         }, matchdict={})
-        success, msg, db_new_user = register_with_ajax_data(request)
+        success, msg, db_new_user = register_user_with_ajax_data(request)
         self.assertEqual(_tn.get(_.mailNotValid), msg)
         self.assertIsNone(db_new_user)
 
@@ -66,7 +66,7 @@ class AuthLoginTest(unittest.TestCase):
             'passwordconfirm': 'somepasswd',
             'g-recaptcha-response': '',
         }, matchdict={})
-        success, msg, db_new_user = register_with_ajax_data(request)
+        success, msg, db_new_user = register_user_with_ajax_data(request)
         self.assertEqual(_tn.get(_.nickIsTaken), msg)
         self.assertIsNone(db_new_user)
 
@@ -80,7 +80,7 @@ class AuthLoginTest(unittest.TestCase):
             'passwordconfirm': 'somepasswd',
             'g-recaptcha-response': '',
         }, matchdict={})
-        success, msg, db_new_user = register_with_ajax_data(request)
+        success, msg, db_new_user = register_user_with_ajax_data(request)
         self.assertEqual(_tn.get(_.mailIsTaken), msg)
         self.assertIsNone(db_new_user)
 
@@ -94,7 +94,7 @@ class AuthLoginTest(unittest.TestCase):
             'passwordconfirm': 'somepasswd',
             'g-recaptcha-response': '',
         }, matchdict={})
-        success, msg, db_new_user = register_with_ajax_data(request)
+        success, msg, db_new_user = register_user_with_ajax_data(request)
         self.assertEqual(_tn.get(_.mailNotValid), msg)
         self.assertIsNone(db_new_user)
 
@@ -108,7 +108,7 @@ class AuthLoginTest(unittest.TestCase):
             'passwordconfirm': 'somepasswd',
             'g-recaptcha-response': '',
         }, matchdict={})
-        success, msg, db_new_user = register_with_ajax_data(request)
+        success, msg, db_new_user = register_user_with_ajax_data(request)
         self.assertEqual(_tn.get(_.maliciousAntiSpam), msg)
         self.assertIsNone(db_new_user)
 
@@ -122,7 +122,7 @@ class AuthLoginTest(unittest.TestCase):
             'passwordconfirm': 'somepasswdd',
             'g-recaptcha-response': '',
         }, matchdict={})
-        success, msg, db_new_user = register_with_ajax_data(request)
+        success, msg, db_new_user = register_user_with_ajax_data(request)
         self.assertEqual(_tn.get(_.pwdNotEqual), msg)
         self.assertIsNone(db_new_user)
 
@@ -136,6 +136,6 @@ class AuthLoginTest(unittest.TestCase):
             'passwordconfirm': 'somepasswd',
             'g-recaptcha-response': '',
         }, matchdict={})
-        success, msg, db_new_user = register_with_ajax_data(request)
+        success, msg, db_new_user = register_user_with_ajax_data(request)
         self.assertEqual(_tn.get(_.maliciousAntiSpam), msg)
         self.assertIsNone(db_new_user)

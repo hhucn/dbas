@@ -27,7 +27,7 @@ from dbas.strings.translator import Translator
 
 def login_user(request, nickname, password, for_api, keep_login, _tn):
     """
-    A try to login the user
+    Try to login the user whereby she is maybe a HHU-LDAP user or known localy
 
     :param request: web servers request
     :param nickname: User.nickname
@@ -49,15 +49,15 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
     #  b) keeped in ldap
     db_user = get_user_by_case_insensitive_nickname(nickname)
     if not db_user:  # this is 1.
-        return __try_to_register_ldap_user(request, nickname, password, for_api, keep_login, url, _tn)
+        return __register_user_with_ldap_data(request, nickname, password, for_api, keep_login, url, _tn)
 
     # this is 2.
-    return __try_to_check_in_local_known_user(request, db_user, password, for_api, keep_login, url, _tn)
+    return __check_in_local_known_user(request, db_user, password, for_api, keep_login, url, _tn)
 
 
-def __try_to_register_ldap_user(request, nickname, password, for_api, keep_login, url, _tn):
+def __register_user_with_ldap_data(request, nickname, password, for_api, keep_login, url, _tn):
     """
-    A try to login the user
+    Asks LDAP if the user is known
 
     :param request: web servers request
     :param nickname: User.nickname
@@ -80,7 +80,7 @@ def __try_to_register_ldap_user(request, nickname, password, for_api, keep_login
     return __return_success_login(request, for_api, ret_dict['user'], keep_login, url)
 
 
-def __try_to_check_in_local_known_user(request, db_user, password, for_api, keep_login, url, _tn):
+def __check_in_local_known_user(request, db_user, password, for_api, keep_login, url, _tn):
     """
     Trys to check in a local known user
 
@@ -148,7 +148,7 @@ def __get_data(request, nickname, password, keep_login):
     return nickname, password, keep_login, url
 
 
-def register_with_ajax_data(request):
+def register_user_with_ajax_data(request):
     """
     Consume the ajax data for an login attempt
 
