@@ -4,7 +4,7 @@ import transaction
 
 from dbas import recommender_system
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument
+from dbas.database.discussion_model import Argument, Statement
 
 
 class RecommenerSystemTests(unittest.TestCase):
@@ -99,3 +99,61 @@ class RecommenerSystemTests(unittest.TestCase):
 
         arguments = recommender_system.get_arguments_by_conclusion('1', False)
         self.assertTrue(2 in arguments)
+
+    def test_get_uids_of_best_positions(self):
+        db_statements = DBDiscussionSession.query(Statement).all()
+        response = recommender_system.get_uids_of_best_positions(db_statements)
+        self.assertEqual(len(response), len(db_statements))
+
+        response = recommender_system.get_uids_of_best_positions(db_statements[0:3])
+        self.assertEqual(len(response), 3)
+
+        response = recommender_system.get_uids_of_best_positions(None)
+        self.assertEqual(len(response), 0)
+
+    def test_get_uids_of_best_statements_for_justify_position(self):
+        db_arguments = DBDiscussionSession.query(Argument).all()
+        response = recommender_system.get_uids_of_best_positions(db_arguments)
+        self.assertEqual(len(response), len(db_arguments))
+
+        response = recommender_system.get_uids_of_best_positions(db_arguments[0:3])
+        self.assertEqual(len(response), 3)
+
+        response = recommender_system.get_uids_of_best_positions(None)
+        self.assertEqual(len(response), 0)
+
+    def test_get_uids_of_best_statements_for_justify_argument(self):
+        db_arguments = DBDiscussionSession.query(Argument).all()
+        response = recommender_system.get_uids_of_best_positions(db_arguments)
+        self.assertEqual(len(response), len(db_arguments))
+
+        response = recommender_system.get_uids_of_best_positions(db_arguments[0:3])
+        self.assertEqual(len(response), 3)
+
+        response = recommender_system.get_uids_of_best_positions(None)
+        self.assertEqual(len(response), 0)
+
+    def test_get_forbidden_attacks_based_on_history(self):
+        s1 = ''
+        s2 = 'reaction/239/rebut/199'
+        s3 = 'reaction/239/rebut//199'
+        s4 = 'reaction/239/rebut///199'
+        s5 = 'reaction/239/rebut/199//'
+        s6 = '/attitude/189-/justify/189/t-/reaction/239/rebut/199a-/justify/189/t'
+        s7 = '/attitude/189-/justify/189/t-/reaction/239/rebut/199-/justify/189/t'
+
+        response1 = recommender_system.get_forbidden_attacks_based_on_history(s1)
+        response2 = recommender_system.get_forbidden_attacks_based_on_history(s2)
+        response3 = recommender_system.get_forbidden_attacks_based_on_history(s3)
+        response4 = recommender_system.get_forbidden_attacks_based_on_history(s4)
+        response5 = recommender_system.get_forbidden_attacks_based_on_history(s5)
+        response6 = recommender_system.get_forbidden_attacks_based_on_history(s6)
+        response7 = recommender_system.get_forbidden_attacks_based_on_history(s7)
+
+        self.assertEqual(response1, [])
+        self.assertEqual(response2, [])
+        self.assertEqual(response3, [199])
+        self.assertEqual(response4, [])
+        self.assertEqual(response5, [])
+        self.assertEqual(response6, [])
+        self.assertEqual(response7, [199])
