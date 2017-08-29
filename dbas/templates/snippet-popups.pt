@@ -264,7 +264,6 @@
 
     <!-- LOGIN POPUP -->
     <div class="modal fade" id="popup-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLogin" aria-hidden="true">
-        <script tal:condition="not extras.logged_in" src='https://www.google.com/recaptcha/api.js'></script>
     	<div class="modal-dialog">
     		<div class="modal-content">
     			<div class="modal-header">
@@ -396,7 +395,7 @@
     							</div>
     						</div>
     						<div class="form-group">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <div align="center"
                                          class="g-recaptcha"
                                          data-size="invisible"

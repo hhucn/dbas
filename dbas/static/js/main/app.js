@@ -272,25 +272,6 @@ function setEasterEggs(){
 }
 
 /**
- *
- */
-function hideExtraViewsOfLoginPopup(){
-    'use strict';
-    
-	$('#' + popupLoginWarningMessage).hide();
-	$('#' + popupLoginFailed).hide();
-	$('#' + popupLoginSuccess).hide();
-	$('#' + popupLoginInfo).hide();
-	$('#' + popupLoginRegistrationSuccess).hide();
-	$('#' + popupLoginRegistrationFailed).hide();
-	$('#' + popupLoginRegistrationInfo).hide();
-	$('#' + popupLoginButtonRegister).hide();
-	$('#' + popupLoginButtonLogin).hide();
-	$('#' + popupLoginForgotPasswordBody).hide();
-	$('#' + generatePasswordBodyId).hide();
-}
-
-/**
  * Prepares the login popup
  */
 function prepareLoginRegistrationPopup(){
@@ -298,7 +279,7 @@ function prepareLoginRegistrationPopup(){
     
 	var popupLoginGeneratePasswordBody = $('#' + popupLoginGeneratePasswordBodyId);
 	// hide on startup
-	hideExtraViewsOfLoginPopup();
+	new PopupHandler().hideExtraViewsOfLoginPopup();
 	popupLoginGeneratePasswordBody.hide();
 
 	// switching tabs
@@ -358,7 +339,7 @@ function prepareLoginRegistrationPopup(){
 	});
 
 	$('#' + popupLoginCloseButton).click(function(){
-		hideExtraViewsOfLoginPopup();
+		new PopupHandler().hideExtraViewsOfLoginPopup();
 		$('#' + popupLogin).modal('hide');
 		$('#' + popupLoginButtonLogin).show();
 	});
@@ -666,6 +647,9 @@ $(document).ready(function () {
 	setTimeout(function(){
 		addBorderToActiveNavbar();
 	}, 150);
+	$('#' + popupLogin).on('shown.bs.modal', function (e) {
+		new PopupHandler().showLoginPopup(true);
+	});
 
 	// set current file to active
 		 if (path.indexOf(urlContact) !== -1){ 	setLinkActive('#' + contactLink); }

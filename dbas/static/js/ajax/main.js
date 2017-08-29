@@ -129,6 +129,7 @@ function AjaxMainHandler(){
 			password = $('#' + popupLoginPasswordInputId).val(),
 			passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val(),
 			spamanswer = $('#popup-login-spamanswer-input').val(),
+			recaptcha = $('#recaptcha-token').value,
 			gender = '';
 
 		if ($('#' + popupLoginInlineRadioGenderN).is(':checked')){ gender = 'n'; }
@@ -146,6 +147,7 @@ function AjaxMainHandler(){
 					password: password,
 					passwordconfirm: passwordconfirm,
 					spamanswer: spamanswer,
+					'g-recaptcha-response': recaptcha,
 					lang: getLanguage()},
 			dataType: 'json',
 			async: true,
