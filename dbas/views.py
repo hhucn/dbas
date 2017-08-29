@@ -1,5 +1,5 @@
 """
-Collection of all views components of D-BAS' core.
+Collection of pyramids views components of D-BAS' core.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """

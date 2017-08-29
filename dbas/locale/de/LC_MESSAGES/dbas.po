@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-08-23 18:45+0200\n"
+"POT-Creation-Date: 2017-08-29 13:42+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -1162,7 +1162,8 @@ msgstr "Registrierung"
 #. login!
 #: templates/snippet-popups.pt:281 templates/snippet-popups.pt:323
 msgid "have_account_hhu"
-msgstr "Wenn Sie eine Kennung an der HHU besitzen, können Sie sich direkt anmelden!"
+msgstr ""
+"Wenn Sie eine Kennung an der HHU besitzen, können Sie sich direkt anmelden!"
 
 #. Default: Your Nickname
 #: templates/snippet-popups.pt:286
