@@ -855,4 +855,45 @@ function PopupHandler() {
 		$('#' + popupUrlSharingId).modal('hide');
 		$('#' + popupUrlSharingInputId).val('');
 	};
+
+	this.showLoginPopup = function (appendOnly){
+		if (window.location.href.indexOf('/contact') !== -1){
+			return -1;
+		}
+		console.log('asd');
+		var script = $('<script>').attr('src', 'https://www.google.com/recaptcha/api.js');
+		if (appendOnly) {
+			$('#' + popupLogin).append(script);
+		} else {
+			$('#' + popupLogin).show().append(script);
+		}
+	
+		// Google Recaptcha
+		if ($('.g-recaptcha').length !== 0) {
+			setTimeout(function () {
+				$('.grecaptcha-badge').css('bottom', $('#footer').outerHeight(true) + 'px');
+			//	grecaptcha.execute();
+			}, 1500);
+		} else {
+			console.log('nargh');
+		}
+		
+	};
+	
+	/**
+	 *
+	 */
+	this.hideExtraViewsOfLoginPopup = function (){
+		$('#' + popupLoginWarningMessage).hide();
+		$('#' + popupLoginFailed).hide();
+		$('#' + popupLoginSuccess).hide();
+		$('#' + popupLoginInfo).hide();
+		$('#' + popupLoginRegistrationSuccess).hide();
+		$('#' + popupLoginRegistrationFailed).hide();
+		$('#' + popupLoginRegistrationInfo).hide();
+		$('#' + popupLoginButtonRegister).hide();
+		$('#' + popupLoginButtonLogin).hide();
+		$('#' + popupLoginForgotPasswordBody).hide();
+		$('#' + generatePasswordBodyId).hide();
+	}
 }

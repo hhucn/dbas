@@ -793,6 +793,7 @@ function Main () {
 					// login
 					else if (input.attr('id').indexOf('login') !== -1) {
 						$('#' + popupLogin).modal('show');
+						new PopupHandler().showLoginPopup(false);
 					}
 				});
 			}
@@ -832,6 +833,7 @@ function Main () {
 		// login
 		else if (input.attr('id').indexOf('login') !== -1 && typeof $('#' + popupLogin) !== 'undefined') {
 			$('#' + popupLogin).modal('show');
+			new PopupHandler().showLoginPopup(false);
 		}
 	};
 }
@@ -916,14 +918,6 @@ $(document).ready(function mainDocumentReady() {
 			event.stopPropagation();
 		}
 	});
-	
-	// Google Recaptcha
-	if ($('.g-recaptcha').length !== 0) {
-		setTimeout(function () {
-			$('.grecaptcha-badge').css('bottom', $('#footer').outerHeight(true) + 'px');
-			grecaptcha.execute();
-		}, 1500);
-	}
 	
 	// unleash the beast
 	// gremlins.createHorde().gremlin(gremlins.species.formFiller()).gremlin(gremlins.species.clicker().clickTypes(['click'])).gremlin(gremlins.species.typer()).gremlin(function() {window.$ = function() {};}).unleash();

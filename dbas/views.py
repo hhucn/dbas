@@ -1133,7 +1133,7 @@ def user_registration(request):
     info = ''
 
     try:
-        success, info = register_user_with_ajax_data(request)
+        success, info, new_user = register_user_with_ajax_data(request)
 
     except KeyError as e:
         logger('Views', 'user_registration', repr(e), error=True)
