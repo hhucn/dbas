@@ -320,9 +320,6 @@
     					</div>
     					<div id="signup">
                             <p class="center lead">
-                                <span class="text-info" i18n:translate="have_account_hhu">If you have a valid account at the HHU, you can directly use the login!</span>
-                            </p>
-                            <p class="center lead">
                                 <span class="text-info" i18n:translate="never_display_real_name">We will never display your real name to other users!</span>
                             </p>
     						<div class="form-group">

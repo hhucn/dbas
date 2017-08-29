@@ -17,6 +17,7 @@ from dbas.auth.recaptcha import validate_recaptcha
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Settings
 from dbas.handler import user
+from dbas.handler.password import get_hashed_password
 from dbas.handler.language import get_language_from_cookie
 from dbas.lib import escape_string, get_user_by_case_insensitive_nickname, \
     get_user_by_case_insensitive_public_nickname
@@ -67,6 +68,7 @@ def __register_user_with_ldap_data(request, nickname, password, for_api, keep_lo
     :param _tn: Translator
     :return: dict() or HTTPFound if the user is logged in an it is not the api
     """
+    logger('Auth.Login', '__register_user_with_ldap_data', 'user: {}, api: {}'.format(nickname, for_api))
     data = verify_ldap_user_data(request.registry.settings, nickname, password, _tn)
     if data['error']:
         return {'error': data['error']}
@@ -93,9 +95,14 @@ def __check_in_local_known_user(request, db_user, password, for_api, keep_login,
     :param _tn: instance of current translator
     :return: dict() or HTTPFound if the user is logged in an it is not the api
     """
+    logger('Auth.Login', '__check_in_local_known_user', 'user: {}, api: {}'.format(db_user.nickname, for_api))
     is_local = db_user.validate_password(password)
     if is_local:
         return __return_success_login(request, for_api, db_user, keep_login, url)
+
+    if not (db_user.validate_password('NO_PW_BECAUSE_LDAP') or db_user.password is get_hashed_password('NO_PW_BECAUSE_LDAP')):
+        logger('Auth.Login', '__check_in_local_known_user', 'invalid password for the local user')
+        return {'error': _tn.get(_.userPasswordNotMatch)}
 
     data = verify_ldap_user_data(request.registry.settings, db_user.nickname, password, _tn)
     if data['error']:
@@ -118,8 +125,8 @@ def __return_success_login(request, for_api, db_user, keep_login, url):
         logger('Auth.Login', 'login_user', 'return for api: success')
         return {'status': 'success'}  # api
     else:
-        headers, url = __refresh_headers_and_url(request, db_user, keep_login, url)
         logger('Auth.Login', 'login_user', 'return success: ' + url)
+        headers, url = __refresh_headers_and_url(request, db_user, keep_login, url)
         sleep(0.5)
         return HTTPFound(location=url, headers=headers)  # success
 
