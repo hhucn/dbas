@@ -29,7 +29,7 @@
                                  <label class="col-sm-3 control-label" i18n:translate="name_req">Your Name (required)</label>
                                  <div class="col-sm-9 input-group">
                                      <div class="input-group-addon"><i class="fa fa-user-o fa-2x" aria-hidden="true"></i></div>
-                                     <input type="text" class="form-control" name="name" id="name-input" tal:attributes="placeholder placeholder.name" placeholder="" value="${name}" required>
+                                     <input type="text" class="form-control" name="name" id="name-input" tal:attributes="placeholder placeholder.name" placeholder="" value="${name}">
                                  </div>
                              </div>
 
@@ -37,7 +37,7 @@
             					<label class="col-sm-3 control-label" i18n:translate="mail_req">Your E-Mail (required)</label>
             					<div class="col-sm-9 input-group">
                                     <div class="input-group-addon"><i class="fa fa-envelope-o fa-2x" aria-hidden="true"></i></div>
-            						<input type="email" id="email-input" name="mail" class="form-control" tal:attributes="placeholder placeholder.mail" placeholder="" autocomplete="on" value="${mail}" required>
+            						<input type="email" id="email-input" name="mail" class="form-control" tal:attributes="placeholder placeholder.mail" placeholder="" autocomplete="on" value="${mail}">
             					</div>
             				</div>
 
@@ -52,7 +52,7 @@
                             <div align="center"
                                  class="g-recaptcha"
                                  data-size="invisible"
-                                 tal:attributes="data-sitekey extras.g_recaptcha_key"></div>
+                                 tal:attributes="data-sitekey extras.g_recaptcha_key" style="bottom: 100px;"></div>
 
             				<div tal:condition="contact_error" id="warning-message" class="alert alert-warning alert-dismissible col-md-12">
             					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
