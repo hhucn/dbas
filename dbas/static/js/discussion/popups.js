@@ -895,5 +895,5 @@ function PopupHandler() {
 		$('#' + popupLoginButtonLogin).hide();
 		$('#' + popupLoginForgotPasswordBody).hide();
 		$('#' + generatePasswordBodyId).hide();
-	}
+	};
 }
