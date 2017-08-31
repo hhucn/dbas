@@ -1084,12 +1084,12 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
     logger('views', 'user_login', 'request.params: {} (api: {})'.format(request.params, str(for_api)))
 
     lang = get_language_from_cookie(request)
-    _tn = Translator(lang)
 
     try:
-        return login_user(request, nickname, password, for_api, keep_login, _tn)
+        return login_user(request, nickname, password, for_api, keep_login, lang)
     except KeyError as e:
         logger('user_login', 'error', repr(e), error=True)
+        _tn = Translator(lang)
         return {'error': _tn.get(_.internalKeyError)}
 
 

@@ -15,7 +15,7 @@ import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
-from dbas.views import user_login
+from dbas.auth.login import login_user
 
 from .lib import HTTP401, json_to_dict, logger
 
@@ -126,7 +126,7 @@ def validate_credentials(request, **kwargs):
     password = data['password']
 
     # Check in DB-AS' database, if the user's credentials are valid
-    logged_in = user_login(request, nickname, password, for_api=True)
+    logged_in = login_user(request, nickname, password, for_api=True)
     if isinstance(logged_in, str):
         logged_in = json.loads(logged_in)  # <-- I hate that this is necessary!
 
