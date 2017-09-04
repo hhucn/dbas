@@ -696,9 +696,13 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
         if is_okay:
             if has_other_user_opinion:
                 confrontation_text = author + ' ' + bs + _t.get(_.agreesThat) + ' {}. '
+                confrontation_text += _t.get(_.strongerStatementM) if gender is 'm' else _t.get(_.strongerStatementF)
+            elif db_other_user.nickname == nickname:
+                confrontation_text = author + ' ' + bs + _t.get(_.earlierYouHadNoOpinitionForThisStatement) + ' '
+                confrontation_text += _t.get(_.strongerStatementY)
             else:
                 confrontation_text = author + ' ' + bs + _t.get(_.otherUserDoesntHaveOpinionForThisStatement) + ' '
-            confrontation_text += _t.get(_.strongerStatementM) if gender is 'm' else _t.get(_.strongerStatementF)
+                confrontation_text += _t.get(_.strongerStatementM) if gender is 'm' else _t.get(_.strongerStatementF)
 
         else:
             confrontation_text = bs + _t.get(_.otherParticipantsDontHaveOpinion) + ' {}. '
@@ -717,7 +721,10 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
 
         confrontation_text += ' ' + conclusion + '. '
         confrontation_text += b
-        confrontation_text += (_t.get(_.heSays) if gender is 'm' else _t.get(_.sheSays)) if is_okay else _t.get(_.theySay)
+        if db_other_user.nickname == nickname:
+            confrontation_text += _t.get(_.nowYouSayThat)
+        else:
+            confrontation_text += (_t.get(_.heSays) if gender is 'm' else _t.get(_.sheSays)) if is_okay else _t.get(_.theySay)
         confrontation_text += ' ' if lang == 'de' else ': '
         confrontation_text += e
         confrontation_text += confrontation
