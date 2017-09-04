@@ -277,10 +277,8 @@ function setEasterEggs(){
 function prepareLoginRegistrationPopup(){
     'use strict';
     
-	var popupLoginGeneratePasswordBody = $('#' + popupLoginGeneratePasswordBodyId);
 	// hide on startup
 	new PopupHandler().hideExtraViewsOfLoginPopup();
-	popupLoginGeneratePasswordBody.hide();
 
 	// switching tabs
 	$('.tab-login a').on('click', function (e) {
@@ -342,11 +340,6 @@ function prepareLoginRegistrationPopup(){
 		new PopupHandler().hideExtraViewsOfLoginPopup();
 		$('#' + popupLogin).modal('hide');
 		$('#' + popupLoginButtonLogin).show();
-	});
-
-	$('#' + popupLoginPasswordInputId).keyup(function popupLoginPasswordInputKeyUp() {
-		new PasswordHandler().check_strength($('#' + popupLoginPasswordInputId), $('#' + popupLoginPasswordMeterId),
-				$('#' + popupLoginPasswordStrengthId), $('#' + popupLoginPasswordExtrasId));
 	});
 
 	$('#' + popupLoginButtonRegister).click(function(){

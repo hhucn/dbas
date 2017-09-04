@@ -19,12 +19,10 @@ var addPremiseContainerMainInputId            = 'add-premise-container-main-inpu
 var addPremiseContainerMainInputIntroId       = 'add-premise-container-main-input-intro';
 var adminsSpaceForUsersId                     = 'admins-space-users';
 var adminsSpaceForArgumentsId                 = 'admins-space-argument';
-var adminsSpaceForIssuesId                    = 'admins-space-issue';
 var addStatementErrorContainer                = 'add-statement-error-container';
 var addStatementErrorMsg                      = 'add-statement-error-msg';
 var addPremiseErrorContainer                  = 'add-premise-error-container';
 var addPremiseErrorMsg                        = 'add-premise-error-msg';
-var bugLink                                   = 'bug-link';
 var contactSubmitButtonId                     = 'contact-submit';
 var closeStatementContainerId                 = 'close-statement-container';
 var closePremiseContainerId                   = 'close-premise-container';
@@ -114,13 +112,6 @@ var popupBarometerId                          = 'barometer-popup';
 var popupBarometerAcceptBtn                   = 'barometer-popup-accept-btn';
 var popupBarometerRefuseBtn                   = 'barometer-popup-refuse-btn';
 var popupLoginNickInputId                     = 'nick-input';
-var passwordGeneratorButton                   = 'password-generator-button';
-var passwordGeneratorOutput                   = 'password-generator-output';
-var popupGeneratePasswordId                   = 'popup-generate-password';
-var popupGeneratePasswordCloseButtonId        = 'popup-generate-password-close-button';
-var popupGeneratePasswordCloseId              = 'popup-generate-password-close';
-var popupPasswordGeneratorOutput              = 'popup-password-generator-output';
-var popupPasswordGeneratorButton              = 'popup-password-generator-button';
 var proposalStatementListGroupId              = 'proposal-statement-list-group';
 var proposalPremiseListGroupId                = 'proposal-premise-list-group';
 var proposalEditListGroupId                   = 'proposal-edit-list-group';
@@ -159,15 +150,25 @@ var popupLogin                                = 'popup-login';
 var popupLoginFailed                          = 'popup-login-failed';
 var popupLoginSuccess                         = 'popup-login-success';
 var popupLoginInfo                            = 'popup-login-info';
+
+/*
+
+settings-password-extras
+settings-password-meter
+settings-password-strength
+settings-password-info-link
+settings-password-info-icon
+ */
+
 var popupLoginForgotPasswordBody              = 'popup-login-forgot-password-body';
 var popupLoginForgotPasswordText              = 'popup-login-forgot-password-text';
 var popupLoginGeneratePassword                = 'popup-login-generate-password';
-var popupLoginGeneratePasswordBodyId          = 'popup-login-generate-password-body';
 var popupLoginPasswordMeterId                 = 'popup-login-password-meter';
 var popupLoginPasswordStrengthId              = 'popup-login-password-strength';
 var popupLoginPasswordInputId                 = 'popup-login-password-input';
 var popupLoginPasswordconfirmInputId          = 'popup-login-passwordconfirm-input';
 var popupLoginPasswordExtrasId                = 'popup-login-password-extras';
+
 var popupLoginCloseButton                     = 'popup-login-close-button';
 var popupLoginRegistrationSuccess             = 'popup-login-registration-success';
 var popupLoginRegistrationFailed              = 'popup-login-registration-failed';
@@ -249,16 +250,6 @@ var settingsReceiveNotifications              = 'receive-notifications-toggle';
 var settingsReceiveMails                      = 'receive-mails-toggle';
 var settingsPublicNick                        = 'public-nick-toggle';
 var settingsGuidedTour                        = 'guided-tour-toggle';
-var settingsPasswordInfoIconId                = 'settings-password-info-icon';
-var settingsPasswordInputId                   = 'settings-password-input';
-var settingsPasswordOldInputId                = 'settings-password-old-input';
-var settingsPasswordConfirmInputId            = 'settings-passwordconfirm-input';
-var settingsPasswordMeterId                   = 'settings-password-meter';
-var settingsPasswordStrengthId                = 'settings-password-strength';
-var settingsPasswordExtrasId                  = 'settings-password-extras';
-var settingsPasswordSubmitButtonId            = 'settings-password-submit';
-var settingsPasswordChangeDangerMessage       = 'settings-danger-message';
-var settingsPasswordChangeSuccessMessage      = 'settings-success-message';
 var settingsNotificationLangDe                = 'link-settings-de';
 var settingsNotificationLangEn                = 'link-settings-en';
 var sessionExpiredContainer                   = 'session_expired_container';
