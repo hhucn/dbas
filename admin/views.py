@@ -90,8 +90,12 @@ def main_admin(request):
 
     ui_locales = get_language_from_cookie(request)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
-    overview = lib.get_overview(request.path)
+    overview = {
+        "entities": lib.get_overview(request.path),
+        "api_tokens": lib.get_application_tokens()
+    }
 
+    logger("Admin", "dashboard", overview["api_tokens"])
     return {
         'layout': base_layout(),
         'language': str(ui_locales),

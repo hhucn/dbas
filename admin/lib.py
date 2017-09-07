@@ -6,13 +6,14 @@
 
 import arrow
 import transaction
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, StatementReferences, \
     SeenStatement, SeenArgument, TextVersion, PremiseGroup, Premise, Argument, ClickedArgument, ClickedStatement, \
     Message, ReviewDelete, ReviewEdit, ReviewEditValue, ReviewOptimization, ReviewDeleteReason, LastReviewerDelete, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
     ReviewCanceled, RevokedContent, RevokedContentHistory, RSS, LastReviewerDuplicate, ReviewDuplicate,\
-    RevokedDuplicate, MarkedArgument, MarkedStatement, History
+    RevokedDuplicate, MarkedArgument, MarkedStatement, History, APIToken
 from dbas.lib import is_user_admin, get_text_for_premisesgroup_uid, get_text_for_argument_uid, get_text_for_statement_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -546,3 +547,8 @@ def __find_type(table, col_name):
     for base in table.__bases__:
         return __find_type(base, col_name)
     raise NameError(col_name)
+
+def get_application_tokens():
+    tokens = DBDiscussionSession.query(APIToken)\
+        .filter_by(disabled = False).all()
+    return [token.__dict__ for token in tokens]

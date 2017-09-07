@@ -159,7 +159,7 @@
                 </div>
             </div>
 
-            <div class="row" tal:repeat="row dashboard">
+            <div class="row" tal:repeat="row dashboard.entities">
 
                 <div class="col-md-3" tal:repeat="group row">
 
@@ -181,6 +181,35 @@
 
                 </div>
 
+            </div>
+
+            <div class="row">
+                <div id="api_tokens" class="col-md-3">
+                    <div class="panel panel-primary">
+                      <div class="panel-heading">
+                        <h3 class="panel-title">
+                          <span i18n:translate="Application-tokens">Application tokens</span>
+                        </h3>
+                      </div>
+                      <div class="panel-body">
+                        <table id="api-tokens" class="table table-striped">
+                          <tr>
+                            <th i18n:translate="api-token-owner">Owner</th>
+                            <th i18n:translate="api-token-created">Created</th>
+                          </tr>
+                          <tr tal:repeat="token dashboard.api_tokens">
+                            <td>${token.owner}</td>
+                            <td>${token.created}</td>
+                            <td>
+                              <button class="button">
+                                <span class="fa-times"></span>
+                              </button>
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                </div>
             </div>
         </div>
 
