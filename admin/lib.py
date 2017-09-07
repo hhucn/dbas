@@ -6,6 +6,7 @@
 
 import arrow
 import transaction
+from sqlalchemy import update
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, StatementReferences, \
@@ -552,3 +553,7 @@ def get_application_tokens():
     tokens = DBDiscussionSession.query(APIToken)\
         .filter_by(disabled = False).all()
     return [token.__dict__ for token in tokens]
+
+def revoke_application_token(token_id):
+    DBDiscussionSession.query(APIToken).get(token_id).disabled = True
+    transaction.commit()

@@ -7,8 +7,11 @@ Introducing an admin interface to enable easy database management.
 import json
 
 from cornice import Service
+from pyramid.view import view_config, view_defaults
+from sqlalchemy import update
 
 import admin.lib as lib
+from dbas.database import DBDiscussionSession
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -72,6 +75,12 @@ update_badge = Service(name='update_badge_counter',
                        permission='admin',
                        cors_policy=cors_policy)
 
+api_token = Service(name='api_token',
+                       path='/{url:.*}api_token/{id}',
+                       renderer='json',
+                       permission='admin',
+                       cors_policy=cors_policy)
+
 
 @dashboard.get()
 def main_admin(request):
@@ -90,19 +99,18 @@ def main_admin(request):
 
     ui_locales = get_language_from_cookie(request)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
-    overview = {
+    dashboard_elements = {
         "entities": lib.get_overview(request.path),
         "api_tokens": lib.get_application_tokens()
     }
 
-    logger("Admin", "dashboard", overview["api_tokens"])
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
         'title': 'Admin' if 'is_admin' in extras_dict and extras_dict['is_admin'] else '(B)admin',
         'project': project_name,
         'extras': extras_dict,
-        'dashboard': overview
+        'dashboard': dashboard_elements
     }
 
 
@@ -252,3 +260,14 @@ def main_update_badge(request):
         return_dict['error'] = _tn.get(_.internalKeyError)
 
     return return_dict
+
+
+
+@api_token.delete()
+def revoke_api_token(request):
+    token_id = request.matchdict['id']
+    lib.revoke_application_token(token_id)
+
+@api_token.post()
+def generate_api_token():
+    return

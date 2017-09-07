@@ -26,7 +26,7 @@ $(document).ready(function () {
 	}
 	
 	// set pointer and click event for every row
-	$('#admin-overview').find('tr').each(function() {
+	$('#admin-entities').find('tr').each(function() {
 		$(this).css('cursor', 'pointer');
 		$(this).click(function (){
 			window.location.href = $(this).data('href');
@@ -34,3 +34,16 @@ $(document).ready(function () {
 	});
 	
 });
+
+function revoke_token(id) {
+	console.log("Revoking " + id)
+	var csrf_token = $('#hidden_csrf_token').val();
+	$.ajax({
+		url: 'api_token/' + id,
+		type: 'DELETE',
+		headers: { 'X-CSRF-Token': csrf_token },
+		cache: false,
+		success: function (result) {
+			console.log("Key " + id + " revoked!")
+        }})
+}
