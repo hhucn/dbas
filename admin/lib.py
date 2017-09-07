@@ -2,11 +2,13 @@
 #
 # @author Tobias Krauthoff
 # @email krauthoff@cs.uni-duesseldorf.de
-
+import hashlib
+import os
 
 import arrow
+
+from datetime import datetime
 import transaction
-from sqlalchemy import update
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Language, Group, User, Settings, Statement, StatementReferences, \
@@ -549,11 +551,44 @@ def __find_type(table, col_name):
         return __find_type(base, col_name)
     raise NameError(col_name)
 
+
 def get_application_tokens():
+    """
+
+    :return: A list of all not disabled tokens as dicts.
+    """
     tokens = DBDiscussionSession.query(APIToken)\
         .filter_by(disabled = False).all()
     return [token.__dict__ for token in tokens]
 
+
 def revoke_application_token(token_id):
+    """
+    Revoke a app token by setting it's disabled field.
+
+    :param token_id: The id of the token to revoke
+    """
     DBDiscussionSession.query(APIToken).get(token_id).disabled = True
     transaction.commit()
+
+
+def generate_application_token(owner):
+    """
+    Generates a new application token.
+    A hash (SHA256) of the token is stored in the database, together with it's owner and creation date.
+
+
+    :param owner: The owner of the token.
+    :return: The token to use for authorization.
+    """
+    current_time = datetime.now()
+
+    token = hashlib.sha256(''.join([str(current_time), owner, str(os.urandom(256))]).encode()).hexdigest()
+
+    new_row = APIToken(current_time, hashlib.sha256((owner + token).encode()).hexdigest(), owner)
+
+    DBDiscussionSession.add(new_row)
+    DBDiscussionSession.flush()
+    transaction.commit()
+
+    return token

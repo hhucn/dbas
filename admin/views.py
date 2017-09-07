@@ -76,7 +76,13 @@ update_badge = Service(name='update_badge_counter',
                        cors_policy=cors_policy)
 
 api_token = Service(name='api_token',
-                       path='/{url:.*}api_token/{id}',
+                       path='/{url:.*}api_token/',
+                       renderer='json',
+                       permission='admin',
+                       cors_policy=cors_policy)
+
+revoke_token = Service(name='revoke_token',
+                       path='/{url:.*}revoke_token/{id}',
                        renderer='json',
                        permission='admin',
                        cors_policy=cors_policy)
@@ -262,12 +268,15 @@ def main_update_badge(request):
     return return_dict
 
 
+@api_token.post()
+def generate_api_token(request):
+    logger("bBLA", "BADFG", request.params)
+    owner = request.params['owner']
+    token = lib.generate_application_token(owner)
+    return {'token': token}
 
-@api_token.delete()
+
+@revoke_token.delete()
 def revoke_api_token(request):
     token_id = request.matchdict['id']
     lib.revoke_application_token(token_id)
-
-@api_token.post()
-def generate_api_token():
-    return
