@@ -35,15 +35,16 @@ $(document).ready(function () {
 
 	// reset modal if it hides.
 	$("#api-token-generate-dialog").on("hidden.bs.modal", function () {
-		$('#api-token').hide().empty()
-		$('#api-token-footer').hide()
-		$('#api-token-generate-form').show()
+		$('#api-token').hide().empty();
+		$('#api-token-footer').hide();
+		$('#api-token-generate-form').show();
 	});
 	
 });
 
 function revoke_token(id) {
-	console.log("Revoking " + id)
+	'use strict';
+	console.log("Revoking " + id);
 	var csrf_token = $('#hidden_csrf_token').val();
 	$.ajax({
 		url: 'revoke_token/' + id,
@@ -53,12 +54,13 @@ function revoke_token(id) {
 		data: {'token_id': id},
 		dataType: 'json',
 		success: function (result) {
-			$('#admin-token-' + id).hide()
-			console.log("Token " + id + " revoked!")
-        }})
+			$('#admin-token-' + id).hide();
+			console.log("Token " + id + " revoked!");
+        }});
 }
 
 function generate_token(owner) {
+	'use strict';
 	var csrf_token = $('#hidden_csrf_token').val();
 	$.ajax({
 		url: 'api_token/',
@@ -68,9 +70,9 @@ function generate_token(owner) {
 		dataType: 'json',
 		cache: false,
 		success: function (result) {
-			$('#api-token-generate-form').hide()
-			$('#api-token').append(result.token).show()
-			$('#api-token-footer').show()
+			$('#api-token-generate-form').hide();
+			$('#api-token').append(result.token).show();
+			$('#api-token-footer').show();
         }
-	})
+	});
 }
