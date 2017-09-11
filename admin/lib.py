@@ -558,7 +558,7 @@ def get_application_tokens():
     :return: A list of all not disabled tokens as dicts.
     """
     tokens = DBDiscussionSession.query(APIToken)\
-        .filter_by(disabled = False).all()
+        .filter_by(disabled=False).all()
     return [token.__dict__ for token in tokens]
 
 

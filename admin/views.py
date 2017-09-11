@@ -7,11 +7,8 @@ Introducing an admin interface to enable easy database management.
 import json
 
 from cornice import Service
-from pyramid.view import view_config, view_defaults
-from sqlalchemy import update
 
 import admin.lib as lib
-from dbas.database import DBDiscussionSession
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -76,10 +73,10 @@ update_badge = Service(name='update_badge_counter',
                        cors_policy=cors_policy)
 
 api_token = Service(name='api_token',
-                       path='/{url:.*}api_token/',
-                       renderer='json',
-                       permission='admin',
-                       cors_policy=cors_policy)
+                    path='/{url:.*}api_token/',
+                    renderer='json',
+                    permission='admin',
+                    cors_policy=cors_policy)
 
 revoke_token = Service(name='revoke_token',
                        path='/{url:.*}revoke_token/{id}',
