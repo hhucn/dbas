@@ -267,9 +267,9 @@ def main_update_badge(request):
 
 @api_token.post()
 def generate_api_token(request):
-    logger("bBLA", "BADFG", request.params)
     owner = request.params['owner']
     token = lib.generate_application_token(owner)
+    logger('Admin', 'Application Tokens', 'API-Token for {} was created.'.format(owner))
     return {'token': token}
 
 
@@ -277,3 +277,4 @@ def generate_api_token(request):
 def revoke_api_token(request):
     token_id = request.matchdict['id']
     lib.revoke_application_token(token_id)
+    logger('Admin', 'Application Tokens', 'API-Token {} was revoked.'.format(token_id))
