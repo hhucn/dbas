@@ -29,7 +29,8 @@ def _create_salt(nickname):
 
 
 def _create_token(nickname, alg='sha512'):
-    """Use the system's urandom function to generate a random token and convert it
+    """
+    Use the system's urandom function to generate a random token and convert it
     to ASCII.
 
     :return:
@@ -42,7 +43,7 @@ def _create_token(nickname, alg='sha512'):
 def _get_user_by_nickname(nickname):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
-        log.error("[API] Invalid user")
+        log.info("[API] Invalid user")
         raise HTTP401()
     return db_user
 
@@ -55,18 +56,18 @@ def process_user(request, payload):
     try:
         user, token = htoken.split('-', 1)
     except ValueError:
-        log.debug("[API] Could not split htoken: {}".format(htoken))
+        log.info("[API] Could not split htoken: {}".format(htoken))
         raise HTTP401()
 
-    log.debug("[API] Login Attempt: {}: {}".format(user, token))
+    log.info("[API] Login Attempt: {}: {}".format(user, token))
 
     db_user = _get_user_by_nickname(user)
 
     if not db_user.token == token:
-        log.error("[API] Invalid Token")
+        log.info("[API] Invalid Token")
         raise HTTP401()
 
-    log.debug("[API] Valid token")
+    log.info("[API] Valid token")
 
     # Prepare data for DB-AS
     request.validated['user'] = user
@@ -101,7 +102,7 @@ def valid_token(request):
     if f:
         f(request, payload)
     else:
-        log.debug("[API] Could not dispatch by type. Is request_type {} defined?".format(request_type))
+        log.info("[API] Could not dispatch by type. Is request_type {} defined?".format(request_type))
         raise HTTP401()
 
 
@@ -115,7 +116,7 @@ def validate_login(request, **kwargs):
     header = 'X-Authentication'
     htoken = request.headers.get(header)
     if htoken is None or htoken == "null":
-        log.debug("[API] No htoken set")
+        log.info("[API] No htoken set")
         return
     valid_token(request)
 
