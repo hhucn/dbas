@@ -111,19 +111,6 @@ function PopupHandler() {
 	};
 	
 	/**
-	 * Display url sharing popup
-	 */
-	this.showGeneratePasswordPopup = function () {
-		$('#' + popupGeneratePasswordId).modal('show');
-		$('#' + popupGeneratePasswordCloseButtonId).click(function () {
-			$('#' + popupGeneratePasswordId).modal('hide');
-		});
-		$('#' + popupLoginCloseButton).click(function () {
-			$('#' + popupGeneratePasswordId).modal('hide');
-		});
-	};
-	
-	/**
 	 * Displays add topic plugin
 	 */
 	this.showAddTopicPopup = function () {
@@ -895,5 +882,5 @@ function PopupHandler() {
 		$('#' + popupLoginButtonLogin).hide();
 		$('#' + popupLoginForgotPasswordBody).hide();
 		$('#' + generatePasswordBodyId).hide();
-	}
+	};
 }

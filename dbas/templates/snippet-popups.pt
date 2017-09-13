@@ -423,35 +423,6 @@
     								<span id="popup-login-registration-info-message"></span>
     							</div>
     						</div>
-    						<div id="popup-login-generate-password-body">
-    							<h4 class="modal-title" i18n:translate="select_password">How to select a strong password</h4>
-    							<span i18n:translate="select_password_intro">A Password is strong, when it contains at least:</span>
-                                <table>
-                                    <tr>
-                                        <td>
-    							            <ul>
-    							            	<li i18n:translate="select_password_rule1">eight characters</li>
-    							            	<li i18n:translate="select_password_rule2">one uppercase letter</li>
-    							            </ul></td>
-                                        <td>
-    							            <ul>
-    							            	<li i18n:translate="select_password_rule3">one lowercase letter</li>
-    							            	<li i18n:translate="select_password_rule4">one special sign</li>
-    							            </ul></td>
-                                    </tr>
-                                </table>
-    							<span i18n:translate="popup_password_text">For example 'M2015_fiO' is a strong password. And it would take 275 days to crack this password with a desktop pc in 2015. Removing one sign, reduces the time to 3 days, and adding a sign increases the time to 57 years. It should be noted:</span>
-    							<ul>
-    								<li i18n:translate="select_password_avoid1">Avoid using a password on several pages</li>
-    								<li i18n:translate="select_password_avoid2">Avoid using patterns, which can be found in a dictionary</li>
-    								<li i18n:translate="select_password_avoid3">Avoid using information that is or might become publicly associated with the user or the account</li>
-    								<li i18n:translate="select_password_avoid4">Avoid using information that the user's colleagues and/or acquaintances might know to be associated with the user</li>
-    							</ul>
-    							<br><span i18n:translate="select_password_help">If you need some help with our password, you can get one here:</span>
-    							<br>
-    							<input class="form-control" type="text" id="password-generator-output">
-    				            <button type="button" id="password-generator-button" class="btn btn-primary" i18n:translate="generate_password">Generate secure password</button>
-    						</div>
     					</div>
     				</div>
 
@@ -479,45 +450,6 @@
     				<button id="popup-login-button-login" type="button" class="btn btn-primary" i18n:translate="login">Log In</button>
     				<button id="popup-login-button-register" type="button" class="btn btn-primary" i18n:translate="register">Register</button>
     				<button type="button" class="btn btn-secondary" id="popup-login-close-button" i18n:translate="close">Close</button>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
-    <!-- HOW TO PASSWORD -->
-    <div class="modal fade" id="popup-generate-password" tabindex="-1" role="dialog" aria-labelledby="myModalLabelPassword" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button type="button" id="popup-generate-password-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h4 class="modal-title" id="myModalLabelPassword" i18n:translate="select_password">How to select a strong password</h4>
-    			</div>
-    			<div id="popup-generate-password-body">
-    				<span i18n:translate="select_password_intro">A Password is strong, when it contains at least:</span>
-    				<ul>
-    					<li i18n:translate="select_password_rule1">eight characters</li>
-    					<li i18n:translate="select_password_rule2">one uppercase letter</li>
-    					<li i18n:translate="select_password_rule3">one lowercase letter</li>
-    					<li i18n:translate="select_password_rule4">one special sign</li>
-    				</ul>
-    				<span i18n:translate="popup_password_text">For example 'M2015_fiO' is a strong password. And it would take 275 days to crack this password with a desktop pc in 2015. Removing one sign, reduces the time to 3 days, and adding a sign increases the time to 57 years. It should be noted:</span>
-    				<ul>
-    					<li i18n:translate="select_password_avoid1">Avoid using a password on several pages</li>
-    					<li i18n:translate="select_password_avoid2">Avoid using patterns, which can be found in a dictionary</li>
-    					<li i18n:translate="select_password_avoid3">Avoid using information that is or might become publicly associated with the user or the account</li>
-    					<li i18n:translate="select_password_avoid4">Avoid using information that the user's colleagues and/or acquaintances might know to be associated with the user</li>
-    				</ul>
-    				<br><span i18n:translate="select_password_help">If you need some help with our password, you can get one here:</span>
-    				<br>
-    				<br>
-    				<input type="text" id="popup-password-generator-output">
-    				<input type="button" id="popup-password-generator-button" value="Generate Password" class="button button-block btn btn-primary">
-    				<br>
-    				<br>
-    			</div>
-    			<div class="modal-footer">
-    				<button type="button" class="btn btn-secondary" id="popup-generate-password-close-button" i18n:translate="close">Close</button>
     			</div>
     		</div>
     	</div>

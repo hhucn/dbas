@@ -26,7 +26,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 
-def login_user(request, nickname, password, for_api, keep_login, _tn):
+def login_user(request, nickname, password, for_api, keep_login=False, lang='en'):
     """
     Try to login the user whereby she is maybe a HHU-LDAP user or known localy
 
@@ -35,12 +35,13 @@ def login_user(request, nickname, password, for_api, keep_login, _tn):
     :param password: String
     :param for_api: Boolean
     :param keep_login: Boolean
-    :param _tn: Translator
+    :param lang: current language
     :return: dict() or HTTPFound if the user is logged in an it is not the api
     """
 
     # caution: password is not escaped
     nickname, password, keep_login, url = __get_data(request, nickname, password, keep_login)
+    _tn = Translator(lang)
     logger('Auth.Login', 'login_user', 'user: {}, api: {}'.format(nickname, for_api))
 
     # now we have several options:

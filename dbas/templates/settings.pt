@@ -234,14 +234,6 @@
                                 <div class="input-group-addon"><i class="fa fa-unlock fa-2x" aria-hidden="true"></i></div>
 								<input class="form-control password" id="settings-passwordconfirm-input" type="password" name="passwordconfirm" autocomplete="off" placeholder="example: ******" required>
 							</div>
-
-							<div id="settings-password-extras" class="hidden">
-								<div id="settings-password-meter" class="veryweak"></div>
-								<h5 id="settings-password-strength" i18n:translate="strength">Strength</h5>
-								<a id="settings-password-info-link" href="" data-toggle="modal" data-toggle="tooltip" data-placement="bottom" data-target="#popup_password_info" title="Show Password Information">
-									<i id="settings-password-info-icon" aria-hidden="true" class="fa fa-question-circle">&#160;</i>
-								</a>
-							</div>
 						</div>
 
 						<div class="col-md-12" tal:condition="settings.pw_change_error">

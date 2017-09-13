@@ -19,6 +19,8 @@ stages:
 
 build_images:
   stage: build
+  tags:
+    - 10c
   script:
     - docker build -t dbas_web_$CI_PIPELINE_ID .
     - docker build -t dbas_db_$CI_PIPELINE_ID docker/db
@@ -44,6 +46,8 @@ jshint:
 frontend:
   <<: *run-server
   stage: test
+  tags:
+    - 10c
   script:
     - docker exec dbas_web_$CI_JOB_ID nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
     - docker stop dbas_web_$CI_JOB_ID dbas_db_$CI_JOB_ID
@@ -51,6 +55,8 @@ frontend:
 unit:
   <<: *run-server
   stage: test
+  tags:
+    - 10c
   script:
     - docker exec dbas_web_$CI_JOB_ID nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=export --cover-package=admin --cover-xml --with-timer -w . dbas graph admin api export
     - docker cp dbas_web_$CI_JOB_ID:/dbas/coverage.xml .
@@ -95,6 +101,8 @@ deploy_dev_image:
 
 cleanup_images:
   stage: cleanup
+  tags:
+    - 10c
   script:
     - docker rmi -f dbas_web_$CI_PIPELINE_ID dbas_db_$CI_PIPELINE_ID
   when: always

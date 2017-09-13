@@ -103,71 +103,13 @@ function HistoryHandler(){
 
 }
 
-function PasswordHandler(){
-    'use strict';
-    
-	// check password strength
-	// based on http://git.aaronlumsden.com/strength.js/
-	var upperCase = new RegExp('[A-Z]');
-	var lowerCase = new RegExp('[a-z]');
-	var numbers = new RegExp('[0-9]');
-	var keylist = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!%&@#$?_~<>+-*/';
-	var specialchars = new RegExp('([!,%,&,@,#,$,^,*,?,_,~])');
-
-	this.set_total = function (total, passwordMeter, passwordStrength, passwordExtras) {
-		passwordMeter.removeClass().addClass('col-sm-9');
-		passwordStrength.text(_t(strength) + ': ' + _t(veryweak)).fadeIn("slow");
-
-		if (total  === 1) {			passwordMeter.addClass('veryweak');	passwordStrength.text(_t(strength) + ': ' + _t(veryweak));
-		} else if (total  === 2) {	passwordMeter.addClass('weak');		passwordStrength.text(_t(strength) + ': ' + _t(weak));
-		} else if (total  === 3) {	passwordMeter.addClass('medium');	passwordStrength.text(_t(strength) + ': ' + _t(medium));
-		} else if (total > 3) {		passwordMeter.addClass('strong');	passwordStrength.text(_t(strength) + ': ' + _t(strong));
-		} else if (passwordExtras){	passwordExtras.fadeOut('slow');
-		}
-	};
-
-	/**
-	 *
-	 * @param passwordInput
-	 * @param passwordMeter
-	 * @param passwordStrength
-	 * @param passwordExtras
-	 */
-	this.check_strength = function (passwordInput, passwordMeter, passwordStrength, passwordExtras) {
-		var total = 0;
-		var pw = passwordInput.val();
-		if (pw.length > 8) {			total = total + 1;	}
-		if (upperCase.test(pw)) {		total = total + 1;	}
-		if (lowerCase.test(pw)) {		total = total + 1;	}
-		if (numbers.test(pw)) {			total = total + 1;	}
-		if (specialchars.test(pw)) {	total = total + 1;	}
-		new PasswordHandler().set_total(total, passwordMeter, passwordStrength, passwordExtras);
-	};
-
-	/**
-	 *
-	 * @param output
-	 */
-	this.generate_password = function (output) {
-		var password = '';
-		var i = 0;
-		while (!(upperCase.test(password) && lowerCase.test(password) && numbers.test(password) && specialchars.test(password))) {
-			password = '';
-			for (i = 0; i < 8; i = i + 1) {
-				password += keylist.charAt(Math.floor(Math.random() * keylist.length));
-			}
-		}
-		output.val(password);
-	};
-}
-
 function SettingsHandler(){
     'use strict';
     
 
 	/**
 	 *
-	 * @param jsonData
+	 * @param data
 	 * @param toggle_element
 	 * @param settings_value
 	 * @param service
@@ -337,7 +279,6 @@ function StatisticsHandler(){
 
 $(function () {
 	'use strict';
-	var settingsPasswordExtras = $('#' + settingsPasswordExtrasId);
 
 	$('#' + requestHistoryButtonId).click(function requestTrack() {
 		new AjaxSettingsHandler().getUserHistoryData();
@@ -352,30 +293,6 @@ $(function () {
 		$('#' + historyTableSuccessId).fadeOut('slow');
 		$('#' + historyTableFailureId).fadeOut('slow');
 		$('#' + requestHistoryButtonId).val(_t(requestHistory));
-	});
-
-	$('#' + settingsPasswordInputId).keyup(function passwordInputKeyUp() {
-		new PasswordHandler().check_strength($('#' + settingsPasswordInputId),
-				$('#' + settingsPasswordMeterId),
-				$('#' + settingsPasswordStrengthId),
-				settingsPasswordExtras);
-		if ($(this).val().length > 0){
-			settingsPasswordExtras.fadeIn('slow');
-		} else {
-			settingsPasswordExtras.fadeOut('slow');
-		}
-	});
-
-	$('#' + settingsPasswordInfoIconId).click(function passwordInfoIcon() {
-		new PopupHandler().showGeneratePasswordPopup();
-	});
-
-	$('#' + passwordGeneratorButton).click(function passwordGeneratorButton() {
-		new PasswordHandler().generate_password($('#' + passwordGeneratorOutput));
-	});
-
-	$('#' + popupPasswordGeneratorButton).click(function passwordGeneratorButton() {
-		new PasswordHandler().generate_password($('#' + popupPasswordGeneratorOutput));
 	});
 
 	$('#' + clearStatisticsButtonId).click(function clearCtatisticsButton(){
