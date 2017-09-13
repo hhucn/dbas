@@ -102,7 +102,7 @@ def valid_token(request):
     if f:
         f(request, payload)
     else:
-        log.info("[API] Could not dispatch by type. Is request_type {} defined?".format(request_type))
+        log.info("[API] Could not dispatch by type. Is request_type '{}' defined?".format(request_type))
         raise HTTP401()
 
 
@@ -144,19 +144,22 @@ def validate_credentials(request, **kwargs):
 
     """
     data = json_to_dict(request.json_body)
-    nickname = data['nickname']
-    password = data['password']
+    nickname = data.get('nickname')
+    password = data.get('password')
 
-    # Check in DB-AS' database, if the user's credentials are valid
-    logged_in = login_user(request, nickname, password, for_api=True)
-    if isinstance(logged_in, str):
-        logged_in = json.loads(logged_in)  # <-- I hate that this is necessary!
+    if nickname and password:
+        # Check in DB-AS' database, if the user's credentials are valid
+        logged_in = login_user(request, nickname, password, for_api=True)
+        if isinstance(logged_in, str):
+            logged_in = json.loads(logged_in)  # <-- I hate that this is necessary!
 
-    if logged_in.get('status') == 'success':
-        token = _create_token(nickname)
-        user = {'nickname': nickname, 'token': token}
-        token_to_database(nickname, token)
-        request.validated['user'] = user
+        if logged_in.get('status') == 'success':
+            token = _create_token(nickname)
+            user = {'nickname': nickname, 'token': token}
+            token_to_database(nickname, token)
+            request.validated['user'] = user
+        else:
+            log.info('API Not logged in: %s' % logged_in)
+            request.errors.add('body', logged_in.get("error"))
     else:
-        log.info('API Not logged in: %s' % logged_in)
-        request.errors.add('body', logged_in.get("error"))
+        raise HTTP401
