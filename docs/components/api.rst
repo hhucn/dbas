@@ -1,6 +1,124 @@
-===
-API
-===
+=====
+APIv1
+=====
+
+This is the description for APIv1. We are currently working on a new APIv2,
+which has GraphQL support and returns just that, what you have really queried.
+
+APIv1 is primarily designed to call the same functions, which D-BAS itself calls
+in the frontend, but just get a JSON-representation of it as a response. There
+is one big problem with it currently, because we get data from the API, which we
+didn't directly called, but was just implicitly returned to us, because the
+"normal" frontend needs this information. For example, we additionally get all
+issues back when we try to do one step in the discussion -- why does this
+happen? Because D-BAS needs it in its frontend.
+
+The primary goal of APIv1 is to make the functionality as a dialog-game
+execution platform of D-BAS accessible via a REST-API. We achieved this in
+substituting ``/discuss/`` from the URL to a ``/api/``. For example: We could
+access https://dbas.cs.uni-duesseldorf.de/discuss/town-has-to-cut-spending ,
+replace "discuss" with "api" and get the api-route for the very same step in the
+discussion, just as a JSON representation:
+https://dbas.cs.uni-duesseldorf.de/api/town-has-to-cut-spending
+
+For a cleaner solution and cleaner routes is APIv2 intended to be.
+
+All steps in the discussion are accessible via the APIv1. You could just ignore
+the other data, which is sent from D-BAS and use the data you actually want.
+Additionally, there is an authentication-mechanism, which is described in more
+detail, because this is a new / unique feature of the API, which is not used in
+the frontend.
+
+
+Authentication
+==============
+
+Login
+-----
+
+There is only one important route for authentication: ``/api/login``. This route
+requires a JSON-encoded body containing the keys "nickname" and "password". Post
+these credentials to this endpoint and you get a JSON-response containing the
+token used for authentication in the next steps.
+
+An example in Clojure with clj-http looks like this::
+
+  (client/post "https://dbas.cs.uni-duesseldorf.de/api/login"
+               {:content-type :json
+                :form-params {:nickname "Walter"
+                              :password "iamatestuser2016"}})
+
+The response could then look like this (here in EDN-format)::
+
+  {:request-time 111,
+   :repeatable? false,
+   :protocol-version {:name "HTTP", :major 1, :minor 1},
+   :streaming? true,
+   :chunked? false,
+   :cookies
+   {"dbas_prototyp"
+    {:discard true,
+     :path "/",
+     :secure false,
+     :value "f983ca3e934b2de323523d2f25d89e280b7c7442a6bec923feea472cb54c8d92104c030f",
+     :version 0}},
+   :reason-phrase "OK",
+   :headers
+   {"Connection" "close",
+    "Content-Length" "200",
+    "Content-Type" "application/json",
+    "Date" "Wed, 13 Sep 2017 08:41:34 GMT",
+    "Server" "waitress",
+    "X-Content-Type-Options" "nosniff"},
+   :orig-content-encoding nil,
+   :status 200,
+   :length 200,
+   :body
+   "{\"token\": \"Walter-97e7c23181a6bb8641775647b5d5dcbf01323feb50bfa45fd50aa8199bfba60d627a1645c7175e97595752f8a32c5252986c8e3448d635e1b20fdb4887bf4baf\"}"}
+
+This token can then be parsed and used in your project::
+
+  (def token (->
+              (client/post "https://dbas.cs.uni-duesseldorf.de/api/login"
+                           {:content-type :json
+                            :form-params {:nickname "Walter"
+                                          :password "iamatestuser2016"}})
+              :body
+              (json/read-str :key-fn keyword)
+              :token))
+
+Authenticate
+------------
+
+We use an authentication header ``X-Authentication`` to recognize user and
+services. This header is a JSON-encoded string with a required key ``type`` and
+other keys the authentication might require. In the example of the
+user-authentication that is only the additional key ``token``. For example::
+
+  (client/get "https://dbas.cs.uni-duesseldorf.de/api/"
+              {:headers {"X-Authentication"
+                         (json/write-str {:type "user" :token token})}})
+
+Other types might be possible in the future. Currently only "user" is a valid
+type. But the code is extensible and will support more types in the futures. We
+are currently working on the "facebook" type to let Facebook-Applications
+authenticate themselves. See the next section for a list of supported types.
+
+
+Authentication Types
+--------------------
+
+The authentication-types require their own defined keys in the header. See this
+table for the required and optional keys:
+
++------------------------+----------------------+---------------+---------------+
+| Authentication type    | Description          | required keys | optional keys |
++========================+======================+===============+===============+
+| user                   | Authenticate a user  | ``token``     | none          |
+|                        | against D-BAS        |               |               |
++------------------------+----------------------+---------------+---------------+
+
+
 
 Description
 ===========
