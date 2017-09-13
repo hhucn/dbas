@@ -79,6 +79,13 @@ class PremiseGraph(SQLAlchemyObjectType):
 # Query-Definition
 
 class Query(graphene.ObjectType):
+    """
+    Main entrypoint for GraphQL. Specifies which fields are accessible via the
+    API and which fields from the database are queryable.
+
+    :param graphene.ObjectType: Generic ObjectType for GraphQL
+    """
+
     statement = graphene.Field(StatementGraph, uid=graphene.Int(), is_startpoint=graphene.Boolean())
     statements = StatementGraph.plural()
     argument = graphene.Field(ArgumentGraph, uid=graphene.Int(), is_supportive=graphene.Boolean())
