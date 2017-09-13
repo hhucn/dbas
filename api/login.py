@@ -2,7 +2,6 @@
 Logic for user login, token generation and validation
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
 import binascii
@@ -107,11 +106,11 @@ def valid_token(request):
 
 
 def validate_login(request, **kwargs):
-    """Takes token from request and validates it.
+    """
+    Takes token from request and validates it.
 
     :param request:
     :return:
-
     """
     header = 'X-Authentication'
     htoken = request.headers.get(header)
@@ -122,12 +121,12 @@ def validate_login(request, **kwargs):
 
 
 def token_to_database(nickname, token):
-    """Store the newly created token in database.
+    """
+    Store the newly created token in database.
 
     :param nickname: user's nickname
     :param token: new token to be stored
     :return:
-
     """
     db_user = _get_user_by_nickname(nickname)
     db_user.set_token(token)
@@ -136,30 +135,30 @@ def token_to_database(nickname, token):
 
 
 def validate_credentials(request, **kwargs):
-    """Parse credentials from POST request and validate it against DBA-S'
+    """
+    Parse credentials from POST request and validate it against DBA-S'
     database.
 
     :param request:
     :return:
-
     """
     data = json_to_dict(request.json_body)
     nickname = data.get('nickname')
     password = data.get('password')
 
-    if nickname and password:
-        # Check in DB-AS' database, if the user's credentials are valid
-        logged_in = login_user(request, nickname, password, for_api=True)
-        if isinstance(logged_in, str):
-            logged_in = json.loads(logged_in)  # <-- I hate that this is necessary!
-
-        if logged_in.get('status') == 'success':
-            token = _create_token(nickname)
-            user = {'nickname': nickname, 'token': token}
-            token_to_database(nickname, token)
-            request.validated['user'] = user
-        else:
-            log.info('API Not logged in: %s' % logged_in)
-            request.errors.add('body', logged_in.get("error"))
-    else:
+    if not nickname or not password:
         raise HTTP401
+
+    # Check in DB-AS' database, if the user's credentials are valid
+    logged_in = login_user(request, nickname, password, for_api=True)
+    if isinstance(logged_in, str):
+        logged_in = json.loads(logged_in)  # <-- I hate that this is necessary!
+
+    if logged_in.get('status') == 'success':
+        token = _create_token(nickname)
+        user = {'nickname': nickname, 'token': token}
+        token_to_database(nickname, token)
+        request.validated['user'] = user
+    else:
+        log.info('API Not logged in: %s' % logged_in)
+        request.errors.add('body', logged_in.get("error"))
