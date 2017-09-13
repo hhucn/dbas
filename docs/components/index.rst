@@ -1,7 +1,7 @@
-.. _html_api_documentation:
+.. _html_components_documentation:
 
-Components Documentation
-========================
+Components
+==========
 
 Comprehensive reference material for every component exposed by `D-BAS`.
 

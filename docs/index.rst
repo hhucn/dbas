@@ -14,23 +14,33 @@ Installation
 .. toctree::
     installation
 
+
 Makefile
 ========
 .. toctree::
     makefile
 
+
 Core
 ====
-
 .. toctree::
     :maxdepth: 2
     :glob:
 
     dbas/index
 
+
+API
+===
+.. toctree::
+    :maxdepth: 2
+    :glob:
+
+    api/index
+
+
 Server
 ======
-
 .. toctree::
     :maxdepth: 2
     :glob:
@@ -40,7 +50,6 @@ Server
 
 Components
 ==========
-
 .. toctree::
     :maxdepth: 2
     :glob:
@@ -49,7 +58,6 @@ Components
 
 Docker
 ======
-
 .. toctree::
     :maxdepth: 2
     :glob:
@@ -58,7 +66,6 @@ Docker
 
 Pyramid-Specific Stuff
 ======================
-
 .. toctree::
     :maxdepth: 2
     :glob:
@@ -76,13 +83,11 @@ Indices and tables
 
 Todo's
 ======
-
 .. toctree::
     todo
 
 External Links
 ==============
-
 * Useful `sphinx slides`_
 
 .. _sphinx slides: http://www.slideshare.net/shimizukawa/sphinx-autodoc-automated-api-documentation-europython-2015-in-bilbao
