@@ -2,6 +2,7 @@ arrow==0.10.0
 Babel==2.5.1
 cornice==2.4.0
 colander==1.4
+coverage==4.3.4
 cryptacular==1.4.1
 docutils==0.14
 db==0.1.1
