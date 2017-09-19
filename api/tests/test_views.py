@@ -3,6 +3,7 @@ Testing the routes of the API.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
+import json
 import random
 import string
 
@@ -66,17 +67,20 @@ def test_add_position_should_succeed():
     response = post_request("login", credentials)
     content = json_to_dict(response.content)
     payload = __payload_add_statement()
-    response = post_request("add/start_statement", payload, headers={"X-Messaging-Token": content.get("token")})
+    response = post_request("add/start_statement", payload,
+                            headers={"X-Authentication": json.dumps({"type": "user", "token": content.get("token")})})
     assert_true(response.ok)
 
 
 def test_add_position_unsplittable_token():
     payload = __payload_add_statement()
-    response = post_request("add/start_statement", payload, headers={"X-Messaging-Token": "I am groot"})
+    response = post_request("add/start_statement", payload,
+                            headers={"X-Authentication": json.dumps({"type": "user", "token": "I am groot"})})
     assert_false(response.ok)
 
 
 def test_add_position_splittable_invalid_token():
     payload = __payload_add_statement()
-    response = post_request("add/start_statement", payload, headers={"X-Messaging-Token": "Groot-iamgroot"})
+    response = post_request("add/start_statement", payload,
+                            headers={"X-Authentication": json.dumps({"type": "user", "token": "Groot-iamgroot"})})
     assert_false(response.ok)

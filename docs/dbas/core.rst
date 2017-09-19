@@ -64,13 +64,6 @@ URL Manager
     :members:
 
 
-User Management
-===============
-
-.. automodule:: dbas.user_management
-    :members:
-
-
 Views
 =====
 
@@ -149,50 +142,10 @@ Dictionary Helper for Speech Bubbles
     :members:
 
 
-E-Mail
-======
-
-.. automodule:: dbas.helper.email
-    :members:
-
-
-Helper for History
-==================
-
-.. automodule:: dbas.helper.history
-    :members:
-
-
-Helper for Issues
-=================
-
-.. automodule:: dbas.helper.issue
-    :members:
-
-Helper for Database
-===================
-.. automodule:: dbas.helper.database
-    :members:
-
-
-Notification Helper
-===================
-
-.. automodule:: dbas.helper.notification
-    :members:
-
-
 Query Helper
 ============
 
 .. automodule:: dbas.helper.query
-    :members:
-
-
-References Helper
-=================
-
-.. automodule:: dbas.helper.references
     :members:
 
 
@@ -207,13 +160,6 @@ View Helper
 ===========
 
 .. automodule:: dbas.helper.views
-    :members:
-
-
-Voting Helper
-=============
-
-.. automodule:: dbas.helper.voting
     :members:
 
 

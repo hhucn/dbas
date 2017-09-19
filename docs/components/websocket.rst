@@ -11,15 +11,3 @@ Description
 
 .. automodule:: websocket
     :members:
-
-Views
-=====
-
-.. automodule:: websocket.views
-    :members:
-
-Lib
-===
-
-.. automodule:: websocket.lib
-    :members:

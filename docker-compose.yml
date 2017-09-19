@@ -10,12 +10,6 @@ services:
     env_file: # Needed in 001_init.sh
       - development.env
 
-  notifications:
-    image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/notifications
-    ports:
-      - "5222:5222"
-    tmpfs: /tmp
-
   web:
     build: .
     command: bash -c "sleep 8 && pserve development.ini --reload"
@@ -29,4 +23,10 @@ services:
       - development.env
     depends_on:
       - db
+    tmpfs: /tmp
+
+  notifications:
+    image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/notifications
+    ports:
+      - "5222:5222"
     tmpfs: /tmp
