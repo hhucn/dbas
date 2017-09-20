@@ -5,5 +5,12 @@ from selenium.webdriver.remote.remote_connection import LOGGER
 
 LOGGER.setLevel(logging.WARNING)
 _multiprocess_can_split_ = True
+
 ROOT = 'http://localhost:4284'
+PATH = '/ajax_switch_language?_LOCALE_='
 BROWSER = 'phantomjs'
+
+LANGUAGE = {'GERMAN': 'de', 'ENGLISH': 'en'}
+
+TEST_STRING = {'GERMAN': 'Teil des Graduierten-Kollegs', 'ENGLISH': 'part of the graduate'}
+TEST_ID = {'GERMAN': 'id="switch-lang-indicator-de"', 'ENGLISH': 'id="switch-lang-indicator-en"'}
