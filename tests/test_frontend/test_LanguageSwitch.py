@@ -1,7 +1,5 @@
 from . import *
 
-
-
 def teardown():
     from selenium import webdriver
     driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true'])
@@ -18,12 +16,14 @@ def test_english_to_english():
     driver.get(ROOT)
     driver.refresh()
 
-    html_content = driver.page_source
+    try:
+        html_content = driver.page_source
+        assert_in(TEST_ID["ENGLISH"], html_content)
+        assert_not_in(TEST_ID["GERMAN"], html_content)
 
-    assert_in(TEST_ID["ENGLISH"], html_content)
-    assert_not_in(TEST_ID["GERMAN"], html_content)
+    finally:
+        driver.close()
 
-    driver.close()
 
 def test_english_to_german():
     from selenium import webdriver
@@ -32,12 +32,14 @@ def test_english_to_german():
     driver.get(ROOT)
     driver.refresh()
 
-    html_content = driver.page_source
+    try:
+        html_content = driver.page_source
+        assert_in(TEST_ID["GERMAN"], html_content)
+        assert_not_in(TEST_ID["ENGLISH"], html_content)
 
-    assert_in(TEST_ID["GERMAN"], html_content)
-    assert_not_in(TEST_ID["ENGLISH"], html_content)
+    finally:
+        driver.close()
 
-    driver.close()
 
 def test_german_to_german():
     from selenium import webdriver
@@ -46,12 +48,14 @@ def test_german_to_german():
     driver.get(ROOT)
     driver.refresh()
 
-    html_content = driver.page_source
+    try:
+        html_content = driver.page_source
+        assert_in(TEST_ID["GERMAN"], html_content)
+        assert_not_in(TEST_ID["ENGLISH"], html_content)
 
-    assert_in(TEST_ID["GERMAN"], html_content)
-    assert_not_in(TEST_ID["ENGLISH"], html_content)
+    finally:
+        driver.close()
 
-    driver.close()
 
 def test_german_to_english():
     from selenium import webdriver
@@ -60,10 +64,9 @@ def test_german_to_english():
     driver.get(ROOT)
     driver.refresh()
 
-    html_content = driver.page_source
-
-    assert_in(TEST_ID["ENGLISH"], html_content)
-    assert_not_in(TEST_ID["GERMAN"], html_content)
-
-    driver.close()
-
+    try:
+        html_content = driver.page_source
+        assert_in(TEST_ID["ENGLISH"], html_content)
+        assert_not_in(TEST_ID["GERMAN"], html_content)
+    finally:
+        driver.close()
