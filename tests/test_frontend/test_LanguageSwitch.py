@@ -29,10 +29,6 @@ def test_from_english_to_english():
     browser.reload()
     # current language should be english
 
-    # test string changed from english to english
-    assert_in(TEST_STRING["ENGLISH"], browser.html)
-    assert_not_in(TEST_STRING["GERMAN"], browser.html)
-
     # test flag changed from english to english
     assert_in(TEST_ID["ENGLISH"], browser.driver.page_source)
     assert_not_in(TEST_ID["GERMAN"], browser.driver.page_source)
@@ -54,10 +50,6 @@ def test_from_english_to_german():
     browser.reload()
     # current language should be german
 
-    # test string changed from english to_german
-    assert_in(TEST_STRING["GERMAN"], browser.html)
-    assert_not_in(TEST_STRING["ENGLISH"], browser.html)
-
     # test flag changed from english to german
     assert_in(TEST_ID["GERMAN"], browser.driver.page_source)
     assert_not_in(TEST_ID["ENGLISH"], browser.driver.page_source)
@@ -78,10 +70,6 @@ def test_from_german_to_german():
     browser.reload()
     # current language should be german
 
-    # test string changed from german to german
-    assert_in(TEST_STRING["GERMAN"], browser.html)
-    assert_not_in(TEST_STRING["ENGLISH"], browser.html)
-
     # test flag changed from german to german
     assert_in(TEST_ID["GERMAN"], browser.driver.page_source)
     assert_not_in(TEST_ID["ENGLISH"], browser.driver.page_source)
@@ -98,10 +86,6 @@ def test_from_german_to_english():
 
     browser.reload()
     # current language should be english
-
-    #test string changed from german to english
-    assert_in(TEST_STRING["ENGLISH"], browser.html)
-    assert_not_in(TEST_STRING["GERMAN"], browser.html)
 
     # test flag changed from german to english
     assert_in(TEST_ID["ENGLISH"], browser.driver.page_source)
