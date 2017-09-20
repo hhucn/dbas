@@ -1,4 +1,5 @@
 from . import *
+import time
 browser = None
 
 
@@ -28,7 +29,7 @@ def test_from_english_to_english():
 
     browser.reload()
     # current language should be english
-
+    time.sleep(2)
     # test flag changed from english to english
     assert_in(TEST_ID["ENGLISH"], browser.driver.page_source)
     assert_not_in(TEST_ID["GERMAN"], browser.driver.page_source)
@@ -49,7 +50,7 @@ def test_from_english_to_german():
 
     browser.reload()
     # current language should be german
-
+    time.sleep(2)
     # test flag changed from english to german
     assert_in(TEST_ID["GERMAN"], browser.driver.page_source)
     assert_not_in(TEST_ID["ENGLISH"], browser.driver.page_source)
@@ -69,7 +70,7 @@ def test_from_german_to_german():
 
     browser.reload()
     # current language should be german
-
+    time.sleep(2)
     # test flag changed from german to german
     assert_in(TEST_ID["GERMAN"], browser.driver.page_source)
     assert_not_in(TEST_ID["ENGLISH"], browser.driver.page_source)
@@ -86,7 +87,20 @@ def test_from_german_to_english():
 
     browser.reload()
     # current language should be english
-
+    time.sleep(2)
     # test flag changed from german to english
     assert_in(TEST_ID["ENGLISH"], browser.driver.page_source)
     assert_not_in(TEST_ID["GERMAN"], browser.driver.page_source)
+
+def test_if_this_works():
+    from selenium import webdriver
+    driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true'])
+    driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
+    driver.get(ROOT)
+    driver.refresh()
+
+    html_content = driver.page_source
+
+    assert_in(TEST_ID["ENGLISH"], html_content)
+
+    driver.close()
