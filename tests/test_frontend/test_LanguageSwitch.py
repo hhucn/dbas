@@ -15,7 +15,7 @@ def test_english_to_english():
     driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
     driver.get(ROOT)
     driver.refresh()
-    driver.implicitly_wait(2)
+    driver.implicitly_wait(5)
 
     try:
         html_content = driver.page_source
