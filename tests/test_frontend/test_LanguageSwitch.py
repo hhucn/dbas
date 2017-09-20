@@ -29,8 +29,6 @@ def test_from_english_to_english():
     browser.reload()
     # current language should be english
 
-    assert_in('_LOCALE_', browser.cookies.all())
-
     assert_in(LANGUAGE["ENGLISH"], browser.cookies.all()['_LOCALE_'])
     assert_not_in(LANGUAGE["GERMAN"], browser.cookies.all()['_LOCALE_'])
 
@@ -60,8 +58,6 @@ def test_from_english_to_german():
     browser.reload()
     # current language should be german
 
-    assert_in('_LOCALE_', browser.cookies.all())
-
     assert_in(LANGUAGE["GERMAN"], browser.cookies.all()['_LOCALE_'])
     assert_not_in(LANGUAGE["ENGLISH"], browser.cookies.all()['_LOCALE_'])
 
@@ -89,8 +85,6 @@ def test_from_german_to_german():
     browser.reload()
     # current language should be german
 
-    assert_in('_LOCALE_', browser.cookies.all())
-
     assert_in(LANGUAGE["GERMAN"], browser.cookies.all()['_LOCALE_'])
     assert_not_in(LANGUAGE["ENGLISH"], browser.cookies.all()['_LOCALE_'])
 
@@ -114,8 +108,6 @@ def test_from_german_to_english():
 
     browser.reload()
     # current language should be english
-
-    assert_in('_LOCALE_', browser.cookies.all())
 
     assert_in(LANGUAGE["ENGLISH"], browser.cookies.all()['_LOCALE_'])
     assert_not_in(LANGUAGE["GERMAN"], browser.cookies.all()['_LOCALE_'])
