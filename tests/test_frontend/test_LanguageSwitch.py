@@ -1,11 +1,11 @@
 from . import *
-
 browser = None
 
 
 def setup():
     global browser
     browser = Browser(BROWSER)
+    browser.driver.set_window_size(2000, 2000)
 
 
 def teardown():
@@ -22,7 +22,7 @@ Therefore it would destroy the results if we refresh in every test.
 """
 
 
-def test_cookies_changed_from_english_to_english():
+def test_from_english_to_english():
     browser.visit(ROOT + PATH + LANGUAGE["ENGLISH"])
     browser.visit(ROOT)
 
@@ -35,14 +35,11 @@ def test_cookies_changed_from_english_to_english():
     assert_not_in(LANGUAGE["GERMAN"], browser.cookies.all()['_LOCALE_'])
 
 
-def test_string_changed_from_english_to_english():
-    browser.reload()
+    # test string changed from english to english
     assert_in(TEST_STRING["ENGLISH"], browser.html)
     assert_not_in(TEST_STRING["GERMAN"], browser.html)
 
-
-def test_flag_changed_from_english_to_english():
-    browser.reload()
+    # test flag changed from english to english
     assert_in(TEST_ID["ENGLISH"], browser.driver.page_source)
     assert_not_in(TEST_ID["GERMAN"], browser.driver.page_source)
 
@@ -56,7 +53,7 @@ browser at the beginning(test_cookies_changed_from_english_to_english()).
 '''
 
 
-def test_cookies_changed_from_english_to_german():
+def test_from_english_to_german():
     browser.visit(ROOT + PATH + LANGUAGE["GERMAN"])
     browser.visit(ROOT)
 
@@ -68,15 +65,11 @@ def test_cookies_changed_from_english_to_german():
     assert_in(LANGUAGE["GERMAN"], browser.cookies.all()['_LOCALE_'])
     assert_not_in(LANGUAGE["ENGLISH"], browser.cookies.all()['_LOCALE_'])
 
-
-def test_string_changed_from_english_to_german():
-    browser.reload()
+    # test string changed from english to_german
     assert_in(TEST_STRING["GERMAN"], browser.html)
     assert_not_in(TEST_STRING["ENGLISH"], browser.html)
 
-
-def test_flag_changed_from_english_to_german():
-    browser.reload()
+    # test flag changed from english to german
     assert_in(TEST_ID["GERMAN"], browser.driver.page_source)
     assert_not_in(TEST_ID["ENGLISH"], browser.driver.page_source)
 
@@ -89,7 +82,7 @@ passing previous tests.
 '''
 
 
-def test_cookies_changed_from_german_to_german():
+def test_from_german_to_german():
     browser.visit(ROOT + PATH + LANGUAGE["GERMAN"])
     browser.visit(ROOT)
 
@@ -101,15 +94,11 @@ def test_cookies_changed_from_german_to_german():
     assert_in(LANGUAGE["GERMAN"], browser.cookies.all()['_LOCALE_'])
     assert_not_in(LANGUAGE["ENGLISH"], browser.cookies.all()['_LOCALE_'])
 
-
-def test_string_changed_from_english_to_english():
-    browser.reload()
+    # test string changed from german to german
     assert_in(TEST_STRING["GERMAN"], browser.html)
     assert_not_in(TEST_STRING["ENGLISH"], browser.html)
 
-
-def test_flag_changed_from_english_to_english():
-    browser.reload()
+    # test flag changed from german to german
     assert_in(TEST_ID["GERMAN"], browser.driver.page_source)
     assert_not_in(TEST_ID["ENGLISH"], browser.driver.page_source)
 
@@ -119,7 +108,7 @@ Let's change the language from german back to english
 '''
 
 
-def test_cookies_changed_from_german_to_english():
+def test_from_german_to_english():
     browser.visit(ROOT + PATH + LANGUAGE["ENGLISH"])
     browser.visit(ROOT)
 
@@ -131,14 +120,10 @@ def test_cookies_changed_from_german_to_english():
     assert_in(LANGUAGE["ENGLISH"], browser.cookies.all()['_LOCALE_'])
     assert_not_in(LANGUAGE["GERMAN"], browser.cookies.all()['_LOCALE_'])
 
-
-def test_string_changed_from_english_to_german():
-    browser.reload()
+    #test string changed from german to english
     assert_in(TEST_STRING["ENGLISH"], browser.html)
     assert_not_in(TEST_STRING["GERMAN"], browser.html)
 
-
-def test_flag_changed_from_english_to_german():
-    browser.reload()
+    # test flag changed from german to english
     assert_in(TEST_ID["ENGLISH"], browser.driver.page_source)
     assert_not_in(TEST_ID["GERMAN"], browser.driver.page_source)
