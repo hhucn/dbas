@@ -14,6 +14,58 @@ def teardown():
     browser.quit()
 
 
+def test_english_to_english_other_way():
+    from selenium import webdriver
+    driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true'])
+    driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
+    driver.get(ROOT)
+    driver.refresh()
+
+    html_content = driver.page_source
+
+    assert_in(TEST_ID["ENGLISH"], html_content)
+
+    driver.close()
+
+def test_english_to_german_other_way():
+    from selenium import webdriver
+    driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true'])
+    driver.get(ROOT + PATH + LANGUAGE["GERMAN"])
+    driver.get(ROOT)
+    driver.refresh()
+
+    html_content = driver.page_source
+
+    assert_in(TEST_ID["GERMAN"], html_content)
+
+    driver.close()
+
+def test_german_to_german_other_way():
+    from selenium import webdriver
+    driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true'])
+    driver.get(ROOT + PATH + LANGUAGE["GERMAN"])
+    driver.get(ROOT)
+    driver.refresh()
+
+    html_content = driver.page_source
+
+    assert_in(TEST_ID["GERMAN"], html_content)
+
+    driver.close()
+
+def test_german_to_english_other_way():
+    from selenium import webdriver
+    driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true'])
+    driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
+    driver.get(ROOT)
+    driver.refresh()
+
+    html_content = driver.page_source
+
+    assert_in(TEST_ID["ENGLISH"], html_content)
+
+    driver.close()
+
 """
 This test refresh the browser once.
 It won't make sense to refresh the browser every time, because we want to check
@@ -29,7 +81,7 @@ def test_from_english_to_english():
 
     browser.reload()
     # current language should be english
-    time.sleep(2)
+    time.sleep(5)
     # test flag changed from english to english
     assert_in(TEST_ID["ENGLISH"], browser.driver.page_source)
     assert_not_in(TEST_ID["GERMAN"], browser.driver.page_source)
@@ -91,6 +143,7 @@ def test_from_german_to_english():
     # test flag changed from german to english
     assert_in(TEST_ID["ENGLISH"], browser.driver.page_source)
     assert_not_in(TEST_ID["GERMAN"], browser.driver.page_source)
+
 
 def test_if_this_works():
     from selenium import webdriver
