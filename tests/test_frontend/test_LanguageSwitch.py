@@ -29,10 +29,6 @@ def test_from_english_to_english():
     browser.reload()
     # current language should be english
 
-    assert_in(LANGUAGE["ENGLISH"], browser.cookies.all()['_LOCALE_'])
-    assert_not_in(LANGUAGE["GERMAN"], browser.cookies.all()['_LOCALE_'])
-
-
     # test string changed from english to english
     assert_in(TEST_STRING["ENGLISH"], browser.html)
     assert_not_in(TEST_STRING["GERMAN"], browser.html)

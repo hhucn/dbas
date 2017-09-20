@@ -4,7 +4,7 @@ import logging
 from selenium.webdriver.remote.remote_connection import LOGGER
 
 LOGGER.setLevel(logging.WARNING)
-_multiprocess_can_split_ = True
+_multiprocess_can_split_ = False # this could be a problem, because 
 
 ROOT = 'http://localhost:4284'
 PATH = '/ajax_switch_language?_LOCALE_='
