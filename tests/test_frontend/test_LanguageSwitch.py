@@ -47,7 +47,7 @@ Now test if the language had changed from english to german.
 Therefore it is important to refresh the browser to see if there is any change.
 
 It should be clear that the current language is english, because we only refreshed the 
-browser at the beginning(test_cookies_changed_from_english_to_english()).
+browser at the beginning(test_from_english_to_english()).
 '''
 
 
@@ -57,9 +57,6 @@ def test_from_english_to_german():
 
     browser.reload()
     # current language should be german
-
-    assert_in(LANGUAGE["GERMAN"], browser.cookies.all()['_LOCALE_'])
-    assert_not_in(LANGUAGE["ENGLISH"], browser.cookies.all()['_LOCALE_'])
 
     # test string changed from english to_german
     assert_in(TEST_STRING["GERMAN"], browser.html)
@@ -85,9 +82,6 @@ def test_from_german_to_german():
     browser.reload()
     # current language should be german
 
-    assert_in(LANGUAGE["GERMAN"], browser.cookies.all()['_LOCALE_'])
-    assert_not_in(LANGUAGE["ENGLISH"], browser.cookies.all()['_LOCALE_'])
-
     # test string changed from german to german
     assert_in(TEST_STRING["GERMAN"], browser.html)
     assert_not_in(TEST_STRING["ENGLISH"], browser.html)
@@ -108,9 +102,6 @@ def test_from_german_to_english():
 
     browser.reload()
     # current language should be english
-
-    assert_in(LANGUAGE["ENGLISH"], browser.cookies.all()['_LOCALE_'])
-    assert_not_in(LANGUAGE["GERMAN"], browser.cookies.all()['_LOCALE_'])
 
     #test string changed from german to english
     assert_in(TEST_STRING["ENGLISH"], browser.html)
