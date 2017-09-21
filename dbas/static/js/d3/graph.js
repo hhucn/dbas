@@ -1,6 +1,5 @@
 /**
- * @author Teresa Uebber, Tobias Krauthoff
- * @email teresa.uebber@hhu.de, krauthoff@cs.uni-duesseldorf.de
+ * @author Teresa Uebber <teresa.uebber@hhu.de>, Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
@@ -46,22 +45,22 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 'support': true,
                 'jump': true
             };
-            $.each(keys, function(key, bool){
+            $.each(keys, function (key, bool) {
                 if (url.indexOf(key) !== -1) {
-		            uid = tmp[tmp.indexOf(key) + 1];
-		            is_argument = bool;
-		            isPartialGraphMode = true;
-		            return false;
-	            }
+                    uid = tmp[tmp.indexOf(key) + 1];
+                    is_argument = bool;
+                    isPartialGraphMode = true;
+                    return false;
+                }
             });
         }
-	    new AjaxGraphHandler().getDiscussionGraphData(this, uid, is_argument, isPartialGraphMode);
+        new AjaxGraphHandler().getDiscussionGraphData(this, uid, is_argument, isPartialGraphMode);
     };
 
     /**
      * Initialize global dictionaries.
      */
-    function initialDicts(){
+    function initialDicts() {
         setIsVisibleDict();
         setColorsDict();
         setRescaleGraphDict();
@@ -72,73 +71,79 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * Initialize dict "isVisible".
      */
     function setIsVisibleDict() {
-        isVisible = {'position': false,
-                     'statements': false,
-                     'content': false,
-                     'my_statements': false,
-                     'support': false,
-                     'attack': false,
-                     'defaultView': false};
+        isVisible = {
+            'position': false,
+            'statements': false,
+            'content': false,
+            'my_statements': false,
+            'support': false,
+            'attack': false,
+            'defaultView': false
+        };
     }
 
     /**
      * Initialize dict "colors".
      */
     function setColorsDict() {
-        colors = {'light_grey': '#E0E0E0',
-                  'grey': '#848484',
-                  'yellow': '#FFC107',
-                  'red': '#F44336',
-                  'green': '#64DD17',
-                  'blue': '#3D5AFE',
-                  'black': '#000000',
-                  'dark_grey': '#424242'};
+        colors = {
+            'light_grey': '#E0E0E0',
+            'grey': '#848484',
+            'yellow': '#FFC107',
+            'red': '#F44336',
+            'green': '#64DD17',
+            'blue': '#3D5AFE',
+            'black': '#000000',
+            'dark_grey': '#424242'
+        };
     }
 
     /**
      * Initialize dict "rescaleGraph".
      */
     function setRescaleGraphDict() {
-        rescaleGraph = {'font_size': 14, // needed for rescaling
-                        'line_height': 1.5, // needed for rescaling
-                        'node_id_prefix': 'node_', // needed for rescaling
-                        'old_scale': 1.0, // needed for rescaling
-                        'zoom_scale': 0
+        rescaleGraph = {
+            'font_size': 14, // needed for rescaling
+            'line_height': 1.5, // needed for rescaling
+            'node_id_prefix': 'node_', // needed for rescaling
+            'old_scale': 1.0, // needed for rescaling
+            'zoom_scale': 0
         };
     }
 
     /**
      * Initialize dict "size".
      */
-    function setSizeDict(){
-         size = {'statement': 6, // base node size of an statement
-                 'node_factor': 10, // additional size for the doj, which is in [0,1]
-                 'node': 6,
-                 'issue': 8,
-                 'rel_node_factor': {},
-                 'edge': 90,
-                 'edge_virtual_node': 45
-         };
+    function setSizeDict() {
+        size = {
+            'statement': 6, // base node size of an statement
+            'node_factor': 10, // additional size for the doj, which is in [0,1]
+            'node': 6,
+            'issue': 8,
+            'rel_node_factor': {},
+            'edge': 90,
+            'edge_virtual_node': 45
+        };
     }
 
-    function setSlider(){
+    function setSlider() {
         var slider = $('#graph-slider');
         var start_date_ms = slider.data('start-ms');
-    	slider.slider({
-            formatter: function(value) {
-		        var add_ms = value * 3600 * 1000;
-		        var cval = start_date_ms + add_ms;
-		        var date = new Date(cval);
+        slider.slider({
+            formatter: function (value) {
+                var add_ms = value * 3600 * 1000;
+                var cval = start_date_ms + add_ms;
+                var date = new Date(cval);
                 return date.toLocaleString();
             }
-    	}).on('slideStop', function(value) {
-		    resetButtons();
-		    if (typeof start_date_ms !== 'undefined') {
-		        var add_ms = value.value * 3600 * 1000;
-		        add_ms += value.value === 0 ? 1800 : 0;
-			    showNodesUntilMoment(start_date_ms + add_ms);
-		    }
-    	});
+        }).on('slideStop', function (value) {
+            resetButtons();
+            if (typeof start_date_ms !== 'undefined') {
+                var add_ms = value.value * 3600 * 1000;
+                add_ms += value.value === 0 ? 1800 : 0;
+                showNodesUntilMoment(start_date_ms + add_ms);
+            }
+        });
         var w = $('#' + graphViewContainerHeaderId).width();
         w -= slider.parent().width() - slider.parent().find('.slider').width();
         slider.prev().css('width', w);
@@ -152,10 +157,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     this.callbackIfDoneForDiscussionGraph = function (data, request_for_complete) {
         var jsonData = $.parseJSON(data);
-        if (jsonData.error.length !== 0){
-        	setGlobalErrorHandler('Ohh!', jsonData.error);
-        	new GuiHandler().setDisplayStyleAsDiscussion();
-        	return;
+        if (jsonData.error.length !== 0) {
+            setGlobalErrorHandler('Ohh!', jsonData.error);
+            new GuiHandler().setDisplayStyleAsDiscussion();
+            return;
         }
         new DiscussionGraph(box_sizes, isPartialGraphMode).setDefaultViewParams(true, jsonData, null, request_for_complete);
     };
@@ -212,16 +217,17 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param request_for_complete
      */
     this.setDefaultViewParams = function (startD3, jsonData, d3, request_for_complete) {
-    	var dg = new DiscussionGraph(box_sizes, isPartialGraphMode);
-	    $('#global-view').attr('data-global-view-loaded', jsonData.type === 'complete');
+        var dg = new DiscussionGraph(box_sizes, isPartialGraphMode);
+        $('#global-view').attr('data-global-view-loaded', jsonData.type === 'complete');
         dg.setButtonDefaultSettings(jsonData, request_for_complete);
         initialDicts();
         var container = $('#' + graphViewContainerSpaceId);
         container.empty();
 
         if (startD3) {
-            if (!this.getD3Graph(jsonData)){
-                dg.setDefaultViewParams(false, null, d3, request_for_complete);}
+            if (!this.getD3Graph(jsonData)) {
+                dg.setDefaultViewParams(false, null, d3, request_for_complete);
+            }
         } else {
             container.empty();
         }
@@ -234,18 +240,18 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param request_for_complete
      */
     this.setButtonDefaultSettings = function (jsonData, request_for_complete) {
-    	$('#graph-view-container').find('.sidebar').find('li').each(function(){
-    		$(this).removeClass('hidden');
-	    });
+        $('#graph-view-container').find('.sidebar').find('li').each(function () {
+            $(this).removeClass('hidden');
+        });
 
-        if ((request_for_complete || typeof request_for_complete === 'undefined') && !isPartialGraphMode){
-        	$('#global-view').hide();
+        if ((request_for_complete || typeof request_for_complete === 'undefined') && !isPartialGraphMode) {
+            $('#global-view').hide();
         } else {
-        	$('#global-view').show();
+            $('#global-view').show();
         }
 
         // show or hide my path
-	    $('#hide-my-path').hide();
+        $('#hide-my-path').hide();
         if (jsonData.path.length === 0) {
             $('#show-my-path').addClass('hidden');
         } else {
@@ -311,7 +317,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param jsonData
      * @param svg
      */
-    function setEdges(jsonData, svg){
+    function setEdges(jsonData, svg) {
         // edge
         edges = createEdgeDict(jsonData);
         setNodeColorsForData(jsonData);
@@ -324,7 +330,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Create tooltip.
      */
-    function setTooltip(){
+    function setTooltip() {
         // tooltip
         // rect as background of label
         var tooltip = node.append('g');
@@ -357,9 +363,10 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      *
      * @param jsonData
      */
-    function setPositionOfGraphElements(jsonData){
+    function setPositionOfGraphElements(jsonData) {
         // create arrays of links, nodes and move layout forward one step
         force.links(edges).nodes(jsonData.nodes).on("tick", forceTick);
+
         // update force layout calculations
         function forceTick() {
             // update position of nodes
@@ -384,7 +391,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      *
      * @param jsonData
      */
-    function setPositionOfCircles(jsonData){
+    function setPositionOfCircles(jsonData) {
         circle.attr({
             cx: function (d) {
                 return getCirclePosition(jsonData, d, 'x');
@@ -398,7 +405,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Calculate position of links.
      */
-    function setPositionOfLinks(){
+    function setPositionOfLinks() {
         link.attr({
             x1: function (d) {
                 return d3.select('#circle-' + d.source.id).attr('cx');
@@ -422,18 +429,22 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param d: circle
      * @param coordinate
      */
-    function getCirclePosition(jsonData, d, coordinate){
+    function getCirclePosition(jsonData, d, coordinate) {
         // virtual nodes
-        if((d.label === "") && (d.edge_source.length === 1)) {
-            var edge_source = jsonData.nodes.filter(function (node) { return node.id === d.edge_source[0];})[0];
-            var edge_target = jsonData.nodes.filter(function (node) { return node.id === d.edge_target;})[0];
-            if(coordinate === 'x'){
+        if ((d.label === "") && (d.edge_source.length === 1)) {
+            var edge_source = jsonData.nodes.filter(function (node) {
+                return node.id === d.edge_source[0];
+            })[0];
+            var edge_target = jsonData.nodes.filter(function (node) {
+                return node.id === d.edge_target;
+            })[0];
+            if (coordinate === 'x') {
                 return (edge_source.x + edge_target.x) / 2;
             }
             return (edge_source.y + edge_target.y) / 2;
         }
 
-        if(coordinate === 'x'){
+        if (coordinate === 'x') {
             return d.x;
         }
         return d.y;
@@ -470,7 +481,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             .charge(-chargeFactor)
             .gravity(0.2)
             .linkDistance(function (d) {
-                if((d.source.label === '') || ((d.target.label === '') && (d.edge_type === ''))){
+                if ((d.source.label === '') || ((d.target.label === '') && (d.edge_type === ''))) {
                     return size.edge_virtual_node;
                 }
                 return size.edge;
@@ -486,13 +497,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         d3.select("#graph-svg").call(zoom).on("dblclick.zoom", null);
 
         // if default view button is clicked redraw graph once
-        if(isVisible.defaultView){
+        if (isVisible.defaultView) {
             redraw();
         }
 
         function redraw() {
             var change_scale = true;
-            if(isVisible.defaultView){
+            if (isVisible.defaultView) {
                 rescaleGraph.zoom_scale = 1;
                 isVisible.defaultView = false;
             } else {
@@ -505,7 +516,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             d3.selectAll("g.zoom").attr("transform", "translate(" + zoom.translate() + ")" + " scale(" + rescaleGraph.zoom_scale + ")");
 
             if (change_scale) {
-            	var svg = $('#graph-svg');
+                var svg = $('#graph-svg');
                 // resizing of font size, line height and the complete rectangle
                 svg.find('.node').each(function () {
                     var id = $(this).attr('id').replace(rescaleGraph.node_id_prefix, '');
@@ -562,6 +573,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function resizeGraph(container) {
         d3.select(window).on("resize", resize);
+
         function resize() {
             var graphSvg = $('#graph-svg');
             graphSvg.width(container.width());
@@ -574,7 +586,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Sets the color in the json Data
      *
-     * @jsonData
+     * @param jsonData
      */
     function setNodeColorsForData(jsonData) {
         jsonData.nodes.forEach(function (e) {
@@ -652,7 +664,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 },
                 // for doj
                 refX: function (d) {
-                    if(d.is_undercut === true){
+                    if (d.is_undercut === true) {
                         return 6;
                     }
                     return 6 + calculateNodeSize(d.target) / 2;
@@ -684,7 +696,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             .enter().append("line")
             .attr({
                 'class': "link",
-                'id': function (d) { return 'link-' + d.id; }
+                'id': function (d) {
+                    return 'link-' + d.id;
+                }
             })
             .style("stroke", function (d) {
                 return d.color;
@@ -765,7 +779,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function createLabel(node) {
         return node.append("text").each(function (d) {
-        	var text = $("<div>").html(d.label).text();
+            var text = $("<div>").html(d.label).text();
             var node_text = text.split(" ");
             for (var i = 0; i < node_text.length; i++) {
                 if ((i % 4) === 0) {
@@ -965,18 +979,21 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function addListenersForSidebarButtons(jsonData, zoom) {
         $('#default-view').off('click').click(function () {
-        	resetSlider();
-        	if ($('#global-view').attr('data-global-view-loaded') === 'true' && $('#global-view:hidden').length === 0) {
-	            new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(false);}
-	        else {
-	            showDefaultView(jsonData, zoom);}
+            resetSlider();
+            if ($('#global-view').attr('data-global-view-loaded') === 'true' && $('#global-view:hidden').length === 0) {
+                new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(false);
+            }
+            else {
+                showDefaultView(jsonData, zoom);
+            }
         });
         $('#global-view').off('click').click(function () {
-        	if ($(this).attr('data-global-view-loaded') === 'true') {
-        		showDefaultView(jsonData, zoom);}
-	        else {
+            if ($(this).attr('data-global-view-loaded') === 'true') {
+                showDefaultView(jsonData, zoom);
+            }
+            else {
                 new DiscussionGraph(box_sizes, isPartialGraphMode).showGraph(true);
-        	}
+            }
         });
 
         var mapper = {
@@ -989,30 +1006,30 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         };
 
         // get all buttons in the sidebar
-        $('#graph-view-container').find('.sidebar').find('li').each(function(index, element){
-            var id =  $(element).attr('id');
+        $('#graph-view-container').find('.sidebar').find('li').each(function (index, element) {
+            var id = $(element).attr('id');
             // check if the button is mentioned in mapper array
             if (id in mapper) {
-	            $('#' + id).off('click').click(function () {
-	            	if ($(this).hasClass('reset-slider')){
-			            resetSlider();
-		            }
-		            if ($(this).find('i').attr('class') === "fa fa-square-o") {
-			            $(this).find('i').removeClass().addClass("fa fa-check-square-o");
-			            mapper[id][0]();
-		            } else {
-			            $(this).find('i').removeClass().addClass("fa fa-square-o");
-			            mapper[id][1]();
-		            }
-	            });
+                $('#' + id).off('click').click(function () {
+                    if ($(this).hasClass('reset-slider')) {
+                        resetSlider();
+                    }
+                    if ($(this).find('i').attr('class') === "fa fa-square-o") {
+                        $(this).find('i').removeClass().addClass("fa fa-check-square-o");
+                        mapper[id][0]();
+                    } else {
+                        $(this).find('i').removeClass().addClass("fa fa-square-o");
+                        mapper[id][1]();
+                    }
+                });
             }
         });
 
-        $('#show-my-path').click(function(){
+        $('#show-my-path').click(function () {
             showPath(jsonData);
         });
 
-        $('#hide-my-path').click(function(){
+        $('#hide-my-path').click(function () {
             hidePath();
         });
     }
@@ -1059,7 +1076,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         hideAttacksOnMyStatements();
     }
 
-    function resetSlider(){
+    function resetSlider() {
         var slider = $('#graph-slider');
         slider.slider('setValue', slider.data('slider-max'));
     }
@@ -1117,11 +1134,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function showPositions() {
         isVisible.position = true;
         // select positions
-        if(isVisible.statements){
+        if (isVisible.statements) {
             $('#labels').find('i').removeClass().addClass("fa fa-check-square-o");
             setDisplayStyleOfNodes('inline', 'inline');
         }
-        else{
+        else {
             $('#labels').find('i').removeClass().addClass("fa fa-minus-square-o");
             setDisplayStyleOfNodes('inline', 'none');
         }
@@ -1133,11 +1150,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function hidePositions() {
         isVisible.position = false;
         addListenerForTooltip();
-        if(!isVisible.statements){
+        if (!isVisible.statements) {
             $('#labels').find('i').removeClass().addClass("fa fa-square-o");
             setDisplayStyleOfNodes('none', 'none');
         }
-        else{
+        else {
             $('#labels').find('i').removeClass().addClass("fa fa-minus-square-o");
             setDisplayStyleOfNodes('none', 'inline');
         }
@@ -1148,11 +1165,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function showStatements() {
         isVisible.statements = true;
-        if(isVisible.position){
+        if (isVisible.position) {
             $('#labels').find('i').removeClass().addClass("fa fa-check-square-o");
             setDisplayStyleOfNodes('inline', 'inline');
         }
-        else{
+        else {
             $('#labels').find('i').removeClass().addClass("fa fa-minus-square-o");
             setDisplayStyleOfNodes('none', 'inline');
         }
@@ -1164,11 +1181,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function hideStatements() {
         isVisible.statements = false;
         addListenerForTooltip();
-        if(!isVisible.position){
+        if (!isVisible.position) {
             $('#labels').find('i').removeClass().addClass("fa fa-square-o");
             setDisplayStyleOfNodes('none', 'none');
         }
-        else{
+        else {
             $('#labels').find('i').removeClass().addClass("fa fa-minus-square-o");
             setDisplayStyleOfNodes('inline', 'none');
         }
@@ -1181,7 +1198,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @returns {*}
      */
     function getId(node) {
-        if(node === "issue"){
+        if (node === "issue") {
             return node;
         }
         return "statement_" + node;
@@ -1247,7 +1264,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 grayingElements(d);
             });
         }
-        else{
+        else {
             $('#my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
         }
 
@@ -1292,7 +1309,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 grayingElements(d);
             });
         }
-        else{
+        else {
             $('#my-statements').find('i').removeClass().addClass("fa fa-check-square-o");
         }
 
@@ -1317,35 +1334,35 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         }
     }
 
-	/**
+    /**
      *
-	 * @param new_limit
-	 */
-	function showNodesUntilMoment(new_limit){
+     * @param new_limit
+     */
+    function showNodesUntilMoment(new_limit) {
         var tmp_edges = edges;
         edges.forEach(function (edge) {
             var edge_source_timestamp = parseInt(edge.source.timestamp) * 1000;
             var edge_target_timestamp = parseInt(edge.target.timestamp) * 1000;
             new_limit = parseInt(new_limit);
-        	if (edge_source_timestamp >= new_limit || edge_target_timestamp >= new_limit) {
-        		tmp_edges = $.grep(tmp_edges, function(value) {
+            if (edge_source_timestamp >= new_limit || edge_target_timestamp >= new_limit) {
+                tmp_edges = $.grep(tmp_edges, function (value) {
                     return value !== edge;
-				});
-        		highlightElements(edge);
-	        }
+                });
+                highlightElements(edge);
+            }
         });
-		edges.forEach(function (edge) {
-			grayingElements(edge);
-		});
-		tmp_edges.forEach(function (edge) {
-			highlightElements(edge);
-		});
+        edges.forEach(function (edge) {
+            grayingElements(edge);
+        });
+        tmp_edges.forEach(function (edge) {
+            highlightElements(edge);
+        });
     }
 
     /**
      * Select supports or attacks on statements of current user.
      */
-    function selectSupportsAttacks(){
+    function selectSupportsAttacks() {
         circleIds = [];
         force.nodes().forEach(function (d) {
             var nick = $('#header_nickname').data('public-nickname');
@@ -1373,9 +1390,9 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             grayingElements(d);
         });
 
-        if(jsonData.path.length !== 0) { // if jsonData.path is not empty highlight path
+        if (jsonData.path.length !== 0) { // if jsonData.path is not empty highlight path
             highlightPath(jsonData);
-        } else{ // if jsonData.path is empty color issue
+        } else { // if jsonData.path is empty color issue
             d3.select('#circle-issue').attr('fill', colors.grey);
         }
     }
@@ -1403,11 +1420,11 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         jsonData.path.forEach(function (d) {
             edges.forEach(function (edge) {
                 // edge without virtual node
-                if((edge.source.id === getId(d[0])) && (edge.target.id === getId(d[1]))) {
+                if ((edge.source.id === getId(d[0])) && (edge.target.id === getId(d[1]))) {
                     edgesCircleId.push(edge);
                 }
                 // edge with virtual node
-                else if(edge.source.id === getId(d[0]) && edge.target.label === ''){
+                else if (edge.source.id === getId(d[0]) && edge.target.label === '') {
                     findEdgesVirtualNode(edge, edgesCircleId, d);
                 }
             });
@@ -1426,7 +1443,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param edgesCircleId
      * @param d
      */
-    function findEdgesVirtualNode(edge, edgesCircleId, d){
+    function findEdgesVirtualNode(edge, edgesCircleId, d) {
         // edge from virtual node to statement
         edges.forEach(function (e) {
             if (e.source.id === edge.target.id && e.target.id === getId(d[1])) {
@@ -1448,7 +1465,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     /**
      * Delete border of circle.
      */
-    function deleteBorderOfCircle(){
+    function deleteBorderOfCircle() {
         // delete border of nodes
         force.nodes().forEach(function (d) {
             d3.select('#circle-' + d.id).attr('stroke', 'none');
@@ -1465,7 +1482,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         // select edges with position as source and issue as target
         d3.selectAll(".node").each(function (d) {
             // set display style of statements
-            if(d3.select('#circle-' + d.id).attr('fill') !== colors.light_grey){
+            if (d3.select('#circle-' + d.id).attr('fill') !== colors.light_grey) {
                 d3.select('#label-' + d.id).style("display", statementStyle);
                 d3.select("#rect-" + d.id).style("display", statementStyle);
             }
@@ -1499,13 +1516,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function determineShowOrHideTooltip(d, mouseover) {
         var isPosition = testNodePosition(d);
-        if(!isVisible.position && !isVisible.content){
+        if (!isVisible.position && !isVisible.content) {
             showHideTooltip(d, mouseover);
         }
-        else if(!isPosition && isVisible.position){
+        else if (!isPosition && isVisible.position) {
             showHideTooltip(d, mouseover);
         }
-        else if(isPosition && isVisible.content){
+        else if (isPosition && isVisible.content) {
             showHideTooltip(d, mouseover);
         }
     }
@@ -1515,7 +1532,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      *
      * @param d
      */
-    function testNodePosition(d){
+    function testNodePosition(d) {
         var isPosition = false;
         d3.selectAll(".link").each(function (e) {
             if (e.source.id === d.id && e.target.id === 'issue') {
@@ -1533,7 +1550,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function showHideTooltip(d, mouseover) {
         // if there is a mouseover-event show the tooltip
-        if(mouseover){
+        if (mouseover) {
             d3.select('#label-' + d.id).style('display', 'inline');
             d3.select('#rect-' + d.id).style('display', 'inline');
             // determine color of circle before mouse over
@@ -1542,14 +1559,14 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             d3.select('#circle-' + d.id).attr('fill', '#757575');
         }
         // otherwise there is a mouseout-out, then hide the tooltip
-        else{
+        else {
             d3.select('#label-' + d.id).style('display', 'none');
             d3.select('#rect-' + d.id).style('display', 'none');
             // if circle d is currently clicked restore originally color of circle
-            if(d.id === selectedCircleId){
+            if (d.id === selectedCircleId) {
                 d3.select('#circle-' + d.id).attr('fill', d.color);
             }
-            else{
+            else {
                 d3.select('#circle-' + d.id).attr('fill', currentColorOfCircle);
             }
         }
@@ -1606,13 +1623,13 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         }
         highlightElementsVirtualNodes(edges, edgesCircleId, true);
         edgesCircleId.forEach(function (d) {
-            if(isVisible.attack && d.color === colors.red){
+            if (isVisible.attack && d.color === colors.red) {
                 highlightElements(d);
             }
-            if(isVisible.support && d.color === colors.green){
+            if (isVisible.support && d.color === colors.green) {
                 highlightElements(d);
             }
-            else if (!isVisible.attack && !isVisible.support){
+            else if (!isVisible.attack && !isVisible.support) {
                 highlightElements(d);
             }
         });
@@ -1633,14 +1650,14 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             // add source for supports/attacks
             var relation = isVisible.support || isVisible.attack;
             var selected = $.inArray(d.source.id, circleIds) !== -1;
-            if (relation && selected){
+            if (relation && selected) {
                 edgesIds.push(d);
             }
-	        // get all targets of the edges without the edge itself
+            // get all targets of the edges without the edge itself
             relation = !(isVisible.support || isVisible.attack) || d.target.type === 'position';
             selected = $.inArray(d.target.id, circleIds) !== -1;
             if (relation && selected) {
-			    nodeId.push(d);
+                nodeId.push(d);
             }
         });
 
@@ -1657,16 +1674,16 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             var attack = isVisible.attack && d.color === colors.red;
             var support = isVisible.support && d.color === colors.green;
             var other = !isVisible.attack && !isVisible.support;
-            if(attack || support || other){
-    	        hightlghtEdge(d);
-	            highlightEdgeSource(d);
+            if (attack || support || other) {
+                hightlghtEdge(d);
+                highlightEdgeSource(d);
             }
         });
         nodeId.forEach(function (d) {
             var attack = isVisible.attack && d.color === colors.red;
             var support = isVisible.support && d.color === colors.green;
             var other = !isVisible.attack && !isVisible.support;
-            if(attack || support || other){
+            if (attack || support || other) {
                 hightlightEdgeTarget(d);
             }
         });
@@ -1701,15 +1718,15 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function createVirtualNodesArray(edgesCircleId, virtualNodes, virtualNodesIds) {
         edgesCircleId.forEach(function (d) {
-        	if (d.source.label === '') {
-                if($.inArray(d.source.id, virtualNodesIds) === -1){
+            if (d.source.label === '') {
+                if ($.inArray(d.source.id, virtualNodesIds) === -1) {
                     change = true;
                     virtualNodesIds.push(d.source.id);
                     virtualNodes.push(d.source);
                 }
             }
             if (d.target.label === '') {
-                if($.inArray(d.target.id, virtualNodesIds) === -1){
+                if ($.inArray(d.target.id, virtualNodesIds) === -1) {
                     change = true;
                     virtualNodesIds.push(d.target.id);
                     virtualNodes.push(d.target);
@@ -1729,7 +1746,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function createVirtualNodesEdgesArray(edges, virtualNodes, edgesCircleId, highlightCompleteArgument) {
         edges.forEach(function (d) {
             virtualNodes.forEach(function (e) {
-                if (d.source.id === e.id  || (d.target.id === e.id && highlightCompleteArgument)) {
+                if (d.source.id === e.id || (d.target.id === e.id && highlightCompleteArgument)) {
                     edgesCircleId.push(d);
                 }
             });
@@ -1742,38 +1759,38 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param edge: edge that should be highlighted
      */
     function highlightElements(edge) {
-    	hightlghtEdge(edge);
-	    highlightEdgeSource(edge);
-	    hightlightEdgeTarget(edge);
+        hightlghtEdge(edge);
+        highlightEdgeSource(edge);
+        hightlightEdgeTarget(edge);
     }
 
-	/**
-	 *
-	 * @param edge
-	 */
-	function hightlghtEdge(edge){
+    /**
+     *
+     * @param edge
+     */
+    function hightlghtEdge(edge) {
         d3.select('#link-' + edge.id).style('stroke', edge.color);
         d3.select("#marker_" + edge.edge_type + edge.id).attr('fill', edge.color);
     }
 
-	/**
-	 *
-	 * @param edge
-	 */
-    function highlightEdgeSource(edge){
+    /**
+     *
+     * @param edge
+     */
+    function highlightEdgeSource(edge) {
         d3.select('#circle-' + edge.source.id).attr('fill', edge.source.color);
-        if((isVisible.support || isVisible.attack) && $.inArray(edge.source.id, circleIds) !== -1) {
+        if ((isVisible.support || isVisible.attack) && $.inArray(edge.source.id, circleIds) !== -1) {
             d3.select('#circle-' + edge.source.id).attr({fill: edge.source.color, stroke: 'black'});
         }
     }
 
-	/**
-	 *
-	 * @param edge
-	 */
-    function hightlightEdgeTarget(edge){
+    /**
+     *
+     * @param edge
+     */
+    function hightlightEdgeTarget(edge) {
         d3.select('#circle-' + edge.target.id).attr('fill', edge.target.color);
-        if((isVisible.support || isVisible.attack) && $.inArray(edge.target.id, circleIds) !== -1) {
+        if ((isVisible.support || isVisible.attack) && $.inArray(edge.target.id, circleIds) !== -1) {
             d3.select('#circle-' + edge.target.id).attr({fill: edge.target.color, stroke: 'black'});
         }
     }
