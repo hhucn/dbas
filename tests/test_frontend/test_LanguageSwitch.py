@@ -1,4 +1,11 @@
 from . import *
+import time
+
+
+def setup():
+    time.sleep(5)
+    # wait a long time to see if the first test runs
+
 
 def teardown():
     from selenium import webdriver
@@ -15,7 +22,6 @@ def test_english_to_english():
     driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
     driver.get(ROOT)
     driver.refresh()
-    driver.implicitly_wait(5)
 
     try:
         html_content = driver.page_source
@@ -32,7 +38,6 @@ def test_english_to_german():
     driver.get(ROOT + PATH + LANGUAGE["GERMAN"])
     driver.get(ROOT)
     driver.refresh()
-    driver.implicitly_wait(2)
 
     try:
         html_content = driver.page_source
@@ -49,7 +54,6 @@ def test_german_to_german():
     driver.get(ROOT + PATH + LANGUAGE["GERMAN"])
     driver.get(ROOT)
     driver.refresh()
-    driver.implicitly_wait(2)
 
     try:
         html_content = driver.page_source
@@ -66,7 +70,6 @@ def test_german_to_english():
     driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
     driver.get(ROOT)
     driver.refresh()
-    driver.implicitly_wait(2)
 
     try:
         html_content = driver.page_source
