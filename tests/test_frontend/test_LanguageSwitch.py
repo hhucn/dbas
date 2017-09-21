@@ -85,3 +85,23 @@ def test_german_to_english_page_source():
         assert_not_in(TEST_ID["GERMAN"], html_content)
     finally:
         driver.close()
+
+
+def test_english_to_english_cookies():
+    driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true'])
+    driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
+    driver.get(ROOT)
+    driver.refresh()
+
+    try:
+        cookies = driver.get_cookies()
+        language_value = cookies[len(cookies) - 1].get('value')
+
+        if language_value is not None:
+            assert_in(LANGUAGE["ENGLISH"], language_value)
+            assert_not_in(LANGUAGE["GERMAN"], language_value)
+        else:
+            raise Exception("Cookie language value is empty")
+
+    finally:
+        driver.close()
