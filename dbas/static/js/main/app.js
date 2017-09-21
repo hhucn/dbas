@@ -122,13 +122,12 @@ function replace_gravtar_with_default_image(only_on_error){
 		var no = Math.floor(Math.random() * icons[t].length);
 		var src = mainpage + 'static/images/fallback-' + icons[t].name + '/' +  no + '.svg';
 		
-		var width = $(this).width();
 		if (only_on_error) {
 			$(this).attr('onerror', 'this.src="' + src + '"');
 		} else {
 			$(this).attr('src', src);
 		}
-		$(this).css('width', width + 'px');
+		$(this).css('width', '25px');
 	});
 }
 
