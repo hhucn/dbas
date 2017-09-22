@@ -368,7 +368,6 @@ class Statement(DiscussionBase):
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
 
-    textversions = relationship('TextVersion')
     issues = relationship('Issue', foreign_keys=[issue_uid])
 
     def __init__(self, is_position, issue, is_disabled=False):
@@ -379,7 +378,6 @@ class Statement(DiscussionBase):
         :param issue: Issue.uid
         :param is_disabled: Boolean
         """
-        # self.textversion_uid = textversion
         self.is_startpoint = is_position
         self.issue_uid = issue
         self.is_disabled = is_disabled
@@ -455,6 +453,11 @@ class Statement(DiscussionBase):
 
         return DBDiscussionSession.query(TextVersion).filter_by(statement_uid=self.uid).order_by(TextVersion.timestamp.desc()).first().uid
 
+    # for compatibility reasons
+    @textversion_uid.setter
+    def textversion_uid(self, value):
+        pass
+
     def to_dict(self):
         """
         Returns the row as dictionary.
@@ -468,6 +471,10 @@ class Statement(DiscussionBase):
             'issue_uid': self.issue_uid,
             'is_disabled': self.is_disabled
         }
+
+    @hybrid_property
+    def textversions(self):
+        return self.get_textversion()
 
     def get_textversion(self):
         """
