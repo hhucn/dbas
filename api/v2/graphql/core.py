@@ -14,8 +14,17 @@ from dbas.database.discussion_model import Statement, Issue, TextVersion, User, 
 
 # -----------------------------------------------------------------------------
 # Specify database models which should be able to be queried by GraphQL
+class TextVersionGraph(SQLAlchemyObjectType):
+    class Meta:
+        model = TextVersion
+        exclude_fields = "timestamp"
 
 class StatementGraph(SQLAlchemyObjectType):
+    textversions = graphene.Field(TextVersionGraph)
+
+    def resolve_textversions(self, args, context, info):
+        return resolve_field_query({**args, "statement_uid": self.uid}, context, TextVersionGraph)
+
     class Meta:
         model = Statement
 
@@ -46,10 +55,7 @@ class IssueGraph(SQLAlchemyObjectType):
         exclude_fields = "date"
 
 
-class TextVersionGraph(SQLAlchemyObjectType):
-    class Meta:
-        model = TextVersion
-        exclude_fields = "timestamp"
+
 
 
 class UserGraph(SQLAlchemyObjectType):
