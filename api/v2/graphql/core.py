@@ -19,6 +19,7 @@ class TextVersionGraph(SQLAlchemyObjectType):
         model = TextVersion
         exclude_fields = "timestamp"
 
+
 class StatementGraph(SQLAlchemyObjectType):
     textversions = graphene.Field(TextVersionGraph)
 
@@ -53,9 +54,6 @@ class IssueGraph(SQLAlchemyObjectType):
     class Meta:
         model = Issue
         exclude_fields = "date"
-
-
-
 
 
 class UserGraph(SQLAlchemyObjectType):
