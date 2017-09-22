@@ -326,7 +326,7 @@ def get_count_of_statements(user, only_edits, limit_on_today=False):
     db_textversions = db_textversions.all()
 
     for tv in db_textversions:
-        db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tv.statement_uid).first()
+        db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tv.statement_uid).first()  # TODO #432
         if db_root_version.uid < tv.uid:
             edit_count += 1
         else:
@@ -415,7 +415,7 @@ def get_textversions(public_nickname, lang, timestamp_after=None, timestamp_befo
 
     logger('User', 'get_textversions', 'count of edits: ' + str(len(db_edits)))
     for edit in db_edits:
-        db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=edit.statement_uid).first()
+        db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=edit.statement_uid).first()  # TODO #432
         edit_dict = dict()
         edit_dict['uid'] = str(edit.uid)
         edit_dict['statement_uid'] = str(edit.statement_uid)

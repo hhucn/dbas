@@ -579,7 +579,7 @@ function DiscussionBarometer(){
     /**
      * Choose layout of d3.
      *
-     * @data
+     * @param data
      * @returns {*}
      */
     function getDoughnut(data){

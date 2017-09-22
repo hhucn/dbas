@@ -368,19 +368,16 @@ class Statement(DiscussionBase):
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
 
-    textversions = relationship('TextVersion', foreign_keys=[textversion_uid])
     issues = relationship('Issue', foreign_keys=[issue_uid])
 
-    def __init__(self, textversion, is_position, issue, is_disabled=False):
+    def __init__(self, is_position, issue, is_disabled=False):
         """
         Inits a row in current statement table
 
-        :param textversion: TextVersion.uid
         :param is_position: boolean
         :param issue: Issue.uid
         :param is_disabled: Boolean
         """
-        self.textversion_uid = textversion
         self.is_startpoint = is_position
         self.issue_uid = issue
         self.is_disabled = is_disabled
@@ -392,7 +389,8 @@ class Statement(DiscussionBase):
         :param uid: Textversion.uid
         :return: None
         """
-        self.textversion_uid = uid
+        pass
+        # self.textversion_uid = uid
 
     def set_disable(self, is_disabled):
         """
@@ -445,6 +443,21 @@ class Statement(DiscussionBase):
         """
         return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
 
+    @hybrid_property
+    def textversion_uid(self):
+        """
+        The id of the latest textversion
+
+        :return:
+        """
+
+        return DBDiscussionSession.query(TextVersion).filter_by(statement_uid=self.uid).order_by(TextVersion.timestamp.desc()).first().uid
+
+    # for compatibility reasons
+    @textversion_uid.setter
+    def textversion_uid(self, value):
+        pass
+
     def to_dict(self):
         """
         Returns the row as dictionary.
@@ -458,6 +471,18 @@ class Statement(DiscussionBase):
             'issue_uid': self.issue_uid,
             'is_disabled': self.is_disabled
         }
+
+    @hybrid_property
+    def textversions(self):
+        return self.get_textversion()
+
+    def get_textversion(self):
+        """
+        Returns the latest textversion for this statement.
+
+        :return: TextVersion object
+        """
+        return DBDiscussionSession.query(TextVersion).get(self.textversion_uid)
 
 
 class StatementReferences(DiscussionBase):

@@ -495,7 +495,7 @@ de_lang = {
     _.thinksThat: 'denkt, dass',
     _.agreesThat: 'stimmt zu, dass',
     _.that: 'dass',
-    _.earlierYouHadNoOpinitionForThisStatement: 'Früher hattest du keine Meinung dazu, dass {}.',
+    _.earlierYouHadNoOpinitionForThisStatement: 'früher hattest du keine Meinung dazu, dass {}.',
     _.otherUserDoesntHaveOpinionForThisStatement: 'hat bisher keine Meinung dazu, dass {}.',
     _.otherParticipantsDontHaveOpinionForThisStatement: 'Andere Teilnehmer haben bisher keine Meinung dazu.',
     _.otherParticipantsDontHaveOpinion: 'Andere Teilnehmer haben bisher keine Meinung dazu, dass',

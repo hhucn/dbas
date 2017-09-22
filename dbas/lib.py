@@ -629,8 +629,7 @@ def get_text_for_statement_uid(uid, colored_position=False):
             if not db_statement:
                 return None
 
-            db_textversion = DBDiscussionSession.query(TextVersion).order_by(TextVersion.uid.desc()).filter_by(
-                uid=db_statement.textversion_uid).first()
+            db_textversion = DBDiscussionSession.query(TextVersion).order_by(TextVersion.uid.desc()).get(db_statement.textversion_uid)
             content = db_textversion.content
 
             while content.endswith(('.', '?', '!')):
@@ -980,7 +979,7 @@ def is_author_of_statement(nickname, statement_uid):
     if not db_user:
         return False
     db_textversion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).order_by(
-        TextVersion.uid.asc()).first()
+        TextVersion.uid.asc()).first()  # TODO #432
     if not db_textversion:
         return False
     return db_textversion.author_uid == db_user.uid

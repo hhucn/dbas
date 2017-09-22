@@ -286,7 +286,7 @@ def __handle_table_of_review_element(table, entry, review, short_text, full_text
 
     if table == 'edits':
         if is_executed:
-            db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=review.statement_uid).order_by(TextVersion.uid.desc()).all()
+            db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=review.statement_uid).order_by(TextVersion.uid.desc()).all()  # TODO #432
             if len(db_textversions) == 0:
                 entry['is_innocent'] = False
                 text = 'Review {} is malicious / no text for statement'.format(review.uid)
@@ -415,7 +415,7 @@ def revoke_old_decision(queue, uid, lang, nickname):
         # delete forbidden textversion
         DBDiscussionSession.query(TextVersion).filter_by(content=content).delete()
         # grab and set most recent textversion
-        db_new_textversion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=db_statement.uid).order_by(TextVersion.uid.desc()).first()
+        db_new_textversion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=db_statement.uid).order_by(TextVersion.uid.desc()).first()  # TODO #432
         db_statement.set_textversion(db_new_textversion.uid)
 
         success = _t.get(_.dataRemoved)
