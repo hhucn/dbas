@@ -12,7 +12,7 @@ services:
       - production.env
 
   notifications:
-    image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/notifications
+    image: hhucn/dbas-notifications
     ports:
       - "5222:5222"
     volumes:
