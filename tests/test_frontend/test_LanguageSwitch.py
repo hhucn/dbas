@@ -32,7 +32,7 @@ def setup():
 
 
 def teardown():
-    driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true'])
+    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
     driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
     driver.get(ROOT)
     driver.refresh()
@@ -45,7 +45,7 @@ def test_english_to_english_page_source():
 
     :return: Test in the page_source if the national flag changed from english to english
     """
-    driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true'])
+    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
     driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
     driver.get(ROOT)
     driver.refresh()
@@ -64,7 +64,7 @@ def test_english_to_german_page_source():
 
     :return: Test in the page_source if the national flag changed from english to german
     """
-    driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true'])
+    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
     driver.get(ROOT + PATH + LANGUAGE["GERMAN"])
     driver.get(ROOT)
     driver.refresh()
@@ -83,7 +83,7 @@ def test_german_to_german_page_source():
 
     :return: Test in the page_source if the national flag changed from german to german
     """
-    driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true'])
+    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
     driver.get(ROOT + PATH + LANGUAGE["GERMAN"])
     driver.get(ROOT)
     driver.refresh()
@@ -102,7 +102,7 @@ def test_german_to_english_page_source():
 
     :return: Test in the page_source if the national flag changed from german to english
     """
-    driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true'])
+    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
     driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
     driver.get(ROOT)
     driver.refresh()
@@ -118,19 +118,19 @@ def test_german_to_english_page_source():
 def test_english_to_english_cookies():
     """
     service_args:  to prevent ssl v3 error
-    cookies[len(cookies) - 1].get('value'): because the value of the language is always a dictionary
+    cookies[len(cookies) - 1].get("value"): because the value of the language is always a dictionary
                                             at the last place of cookies.
 
     :return: Test in the cookies if the language changed from english to english
     """
-    driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true'])
+    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
     driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
     driver.get(ROOT)
     driver.refresh()
 
     try:
         cookies = driver.get_cookies()
-        language_value = cookies[len(cookies) - 1].get('value')
+        language_value = cookies[len(cookies) - 1].get("value")
 
         if language_value is not None:
             assert_in(LANGUAGE["ENGLISH"], language_value)
@@ -145,19 +145,19 @@ def test_english_to_english_cookies():
 def test_english_to_german_cookies():
     """
     service_args:  to prevent ssl v3 error
-    cookies[len(cookies) - 1].get('value'): because the value of the language is always a dictionary
+    cookies[len(cookies) - 1].get("value"): because the value of the language is always a dictionary
                                             at the last place of cookies.
 
     :return: Test in the cookies if the language changed from english to german
     """
-    driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true'])
+    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
     driver.get(ROOT + PATH + LANGUAGE["GERMAN"])
     driver.get(ROOT)
     driver.refresh()
 
     try:
         cookies = driver.get_cookies()
-        language_value = cookies[len(cookies) - 1].get('value')
+        language_value = cookies[len(cookies) - 1].get("value")
 
         if language_value is not None:
             assert_in(LANGUAGE["GERMAN"], language_value)
@@ -172,19 +172,19 @@ def test_english_to_german_cookies():
 def test_german_to_german_cookies():
     """
     service_args:  to prevent ssl v3 error
-    cookies[len(cookies) - 1].get('value'): because the value of the language is always a dictionary
+    cookies[len(cookies) - 1].get("value"): because the value of the language is always a dictionary
                                             at the last place of cookies.
 
     :return: Test in the cookies if the language changed from german to german
     """
-    driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true'])
+    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
     driver.get(ROOT + PATH + LANGUAGE["GERMAN"])
     driver.get(ROOT)
     driver.refresh()
 
     try:
         cookies = driver.get_cookies()
-        language_value = cookies[len(cookies) - 1].get('value')
+        language_value = cookies[len(cookies) - 1].get("value")
 
         if language_value is not None:
             assert_in(LANGUAGE["GERMAN"], language_value)
@@ -199,19 +199,19 @@ def test_german_to_german_cookies():
 def test_german_to_english_cookies():
     """
     service_args:  to prevent ssl v3 error
-    cookies[len(cookies) - 1].get('value'): because the value of the language is always a dictionary
+    cookies[len(cookies) - 1].get("value"): because the value of the language is always a dictionary
                                             at the last place of cookies.
 
     :return: Test in the cookies if the language changed from german to english
     """
-    driver = webdriver.PhantomJS(service_args=['--ignore-ssl-errors=true'])
+    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
     driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
     driver.get(ROOT)
     driver.refresh()
 
     try:
         cookies = driver.get_cookies()
-        language_value = cookies[len(cookies) - 1].get('value')
+        language_value = cookies[len(cookies) - 1].get("value")
 
         if language_value is not None:
             assert_in(LANGUAGE["ENGLISH"], language_value)
