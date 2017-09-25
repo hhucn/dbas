@@ -1,4 +1,4 @@
-from nose.tools import assert_is_not_none
+from nose.tools import assert_is_not_none, assert_equal
 
 from api.v2.graphql.tests.lib import graphql_query
 
@@ -61,6 +61,22 @@ def test_query_premisegroups():
     assert_is_not_none(group.get("uid"))
     assert_is_not_none(group.get("users"))
     assert_is_not_none(group.get("users").get("publicNickname"))
+
+
+def test_query_premises_by_premisegroup():
+    query = """
+        query {
+            premises (premisesgroupUid: 9) {
+                uid
+            }
+        }
+    """
+    content = graphql_query(query)
+    result = content.get("premises")
+    assert_is_not_none(result)
+    assert_equal(2, len(result))
+    assert_is_not_none(result[0].get("uid"))
+    assert_is_not_none(result[1].get("uid"))
 
 
 def test_query_arguments():
