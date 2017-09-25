@@ -2,17 +2,10 @@
 Database
 ========
 
+The database has its `own repository on GitHub <https://github.com/hhucn/dbas-database>`_. The default structure of
+the database is provided via this repository and all modifications to it are applied via our migration engine.
 
-Init script for the database entrypoint
-=======================================
-
-D-BAS uses a initialization scripts at the beginning, which can be found in `docker/db`. Everytime Docker
-starts, these scripts and sql files will be used. If you rather want an empty database at the beginning, remove the seed
-and use the init script to create an empty database.
-
-All files in `docker/db` ending on `.sh` or `.sql` will be executed in the concrete order, in which they would appear
-when you type `ls` in the directory. Therefore, `001_foo` will be executed before `002_bar` or solely `baz.sql` etc.
-
+You can find the pre-built image on DockerHub: https://hub.docker.com/r/hhucn/dbas-database/
 
 Dump a database
 ===============
