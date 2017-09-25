@@ -451,7 +451,7 @@ class Statement(DiscussionBase):
         :return:
         """
 
-        return DBDiscussionSession.query(TextVersion).filter_by(statement_uid=self.uid).order_by(TextVersion.timestamp.desc()).first().uid
+        return DBDiscussionSession.query(TextVersion).filter_by(statement_uid=self.uid, is_disabled=False).order_by(TextVersion.timestamp.desc()).first().uid
 
     # for compatibility reasons
     @textversion_uid.setter
