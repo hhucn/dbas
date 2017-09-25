@@ -408,15 +408,11 @@ def revoke_old_decision(queue, uid, lang, nickname):
         DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=uid).delete()
         db_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=uid)
         content = db_value.first().content
-        db_statement = DBDiscussionSession.query(Statement).get(db_value.first().statement_uid)
         db_value.delete()
         DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'edit': uid}))
 
         # delete forbidden textversion
         DBDiscussionSession.query(TextVersion).filter_by(content=content).delete()
-        # grab and set most recent textversion
-        db_new_textversion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=db_statement.uid).order_by(TextVersion.uid.desc()).first()  # TODO #432
-        db_statement.set_textversion(db_new_textversion.uid)
 
         success = _t.get(_.dataRemoved)
 

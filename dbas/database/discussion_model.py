@@ -382,16 +382,6 @@ class Statement(DiscussionBase):
         self.issue_uid = issue
         self.is_disabled = is_disabled
 
-    def set_textversion(self, uid):
-        """
-        Sets given Textversion.uid
-
-        :param uid: Textversion.uid
-        :return: None
-        """
-        pass
-        # self.textversion_uid = uid
-
     def set_disable(self, is_disabled):
         """
         Disables current Statement

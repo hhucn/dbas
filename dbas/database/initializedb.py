@@ -153,8 +153,6 @@ def drop_it(argv=sys.argv):
     with transaction.manager:
         for tmp in DBDiscussionSession.query(TextVersion).all():
             tmp.set_statement(None)
-        for tmp in DBDiscussionSession.query(Statement).all():
-            tmp.set_textversion(None)
 
         logger('INIT_DB', 'DROP IT',
                'deleted ' + str(DBDiscussionSession.query(MarkedArgument).delete()) + ' in MarkedArgument')
