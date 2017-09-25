@@ -9,7 +9,7 @@ stages:
 # Start Docker containers and wait some time to seed the database
 .job-template: &run-server
   before_script:
-    - docker run -d --rm --name dbas_db_$CI_JOB_ID dbas_db_$CI_PIPELINE_ID
+    - docker run -d --rm --name dbas_db_$CI_JOB_ID hhucn/dbas-database
     - sleep 10
     - docker run -d --rm --env-file development.env --name dbas_web_$CI_JOB_ID --link dbas_db_$CI_JOB_ID:db dbas_web_$CI_PIPELINE_ID
 
@@ -23,7 +23,6 @@ build_images:
     - 10c
   script:
     - docker build -t dbas_web_$CI_PIPELINE_ID .
-    - docker build -t dbas_db_$CI_PIPELINE_ID docker/db
 
 flake8:
   stage: test
@@ -104,5 +103,5 @@ cleanup_images:
   tags:
     - 10c
   script:
-    - docker rmi -f dbas_web_$CI_PIPELINE_ID dbas_db_$CI_PIPELINE_ID
+    - docker rmi -f dbas_web_$CI_PIPELINE_ID
   when: always
