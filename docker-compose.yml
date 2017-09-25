@@ -1,14 +1,10 @@
-version: '2'
+version: "3.1"
 services:
   db:
-    image: postgres:9.6-alpine
-    volumes:
-      - ./docker/db:/docker-entrypoint-initdb.d
+    image: hhucn/dbas-database
     ports:
       - "5432:5432"
     tmpfs: /tmp
-    env_file: # Needed in 001_init.sh
-      - development.env
 
   web:
     build: .
