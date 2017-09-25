@@ -27,8 +27,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         for premise in db_premises:
             tmp = premise.statement_uid
             premise.statement_uid = 1
-            DBDiscussionSession.query(Statement).get(tmp).textversion_uid = 1
-            DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tmp).delete()  # TODO #432
+            DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tmp).delete()
             DBDiscussionSession.query(MarkedStatement).filter_by(statement_uid=tmp).delete()
             DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=tmp).delete()
             DBDiscussionSession.query(ClickedStatement).filter_by(statement_uid=tmp).delete()
@@ -54,8 +53,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.assertTrue(len(response['url']) != 0)
         self.assertTrue(len(response['statement_uids']) != 0)
         for uid in response['statement_uids']:
-            DBDiscussionSession.query(Statement).get(uid).textversion_uid = 1
-            DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).delete()  # TODO #432
+            DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(MarkedStatement).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(Statement).filter_by(uid=uid).delete()
@@ -71,8 +69,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.assertTrue(len(response['url']) != 0)
         self.assertTrue(len(response['statement_uids']) != 0)
         for uid in response['statement_uids']:
-            DBDiscussionSession.query(Statement).get(uid).textversion_uid = 1
-            DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).delete()  # TODO #432
+            DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(MarkedStatement).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(Statement).filter_by(uid=uid).delete()

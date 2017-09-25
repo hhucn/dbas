@@ -443,11 +443,6 @@ class Statement(DiscussionBase):
 
         return DBDiscussionSession.query(TextVersion).filter_by(statement_uid=self.uid, is_disabled=False).order_by(TextVersion.timestamp.desc()).first().uid
 
-    # for compatibility reasons
-    @textversion_uid.setter
-    def textversion_uid(self, value):
-        pass
-
     def to_dict(self):
         """
         Returns the row as dictionary.
