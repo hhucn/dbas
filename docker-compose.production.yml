@@ -1,15 +1,10 @@
-version: '3'
+version: "3.1"
 services:
   db:
-    image: postgres:9.6-alpine
+    image: hhucn/dbas-database
     volumes:
-      - ./docker/db:/docker-entrypoint-initdb.d
-      - /home/krauthoff/postgres_db:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+      - ./postgres_db:/var/lib/postgresql/data
     tmpfs: /tmp
-    env_file: # Needed in 001_init.sh
-      - production.env
 
   notifications:
     image: hhucn/dbas-notifications
