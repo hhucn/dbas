@@ -234,10 +234,8 @@ def correct_statement(user, uid, corrected_text):
     db_statement = DBDiscussionSession.query(Statement).get(uid)
     db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=corrected_text).order_by(TextVersion.uid.desc()).all()
 
-    # duplicate or not?
-    if db_textversion:
-        textversion = DBDiscussionSession.query(TextVersion).get(db_textversion[0].uid)
-    else:
+    # not a duplicate?
+    if not db_textversion:
         textversion = TextVersion(content=corrected_text, author=db_user.uid)
         textversion.set_statement(db_statement.uid)
         DBDiscussionSession.add(textversion)
@@ -246,7 +244,6 @@ def correct_statement(user, uid, corrected_text):
     # if request:
     #     NotificationHelper.send_edit_text_notification(db_user, textversion, url, request)
 
-    db_statement.set_textversion(textversion.uid)
     # transaction.commit() # # 207
 
     return_dict['uid'] = uid
@@ -381,22 +378,18 @@ def set_statement(text, nickname, is_start, issue, lang):
                                                                         Statement.issue_uid == issue)).first()
         return db_statement, True
 
+    # add text
+    statement = Statement(is_position=is_start, issue=issue)
+    DBDiscussionSession.add(statement)
+    DBDiscussionSession.flush()
+
     # add textversion
-    textversion = TextVersion(content=text, author=db_user.uid)
+    textversion = TextVersion(content=text, author=db_user.uid, statement_uid=statement.uid)
     DBDiscussionSession.add(textversion)
     DBDiscussionSession.flush()
 
-    # add text
-    DBDiscussionSession.add(Statement(textversion=textversion.uid, is_position=is_start, issue=issue))
-    DBDiscussionSession.flush()
-
-    # get new text
-    new_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.textversion_uid == textversion.uid,
-                                                                     Statement.issue_uid == issue)).order_by(Statement.uid.desc()).first()
-    textversion.set_statement(new_statement.uid)
     transaction.commit()
-
-    return new_statement, False
+    return statement, False
 
 
 def __process_input_of_start_premises_and_receive_url(default_locale_name, premisegroups, conclusion_id, supportive,
