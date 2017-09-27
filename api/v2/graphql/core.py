@@ -99,7 +99,7 @@ class Query(graphene.ObjectType):
     issue = graphene.Field(IssueGraph, uid=graphene.Int(), slug=graphene.String(), title=graphene.String())
     issues = graphene.List(IssueGraph, slug=graphene.String(), title=graphene.String())
     premise = graphene.Field(PremiseGraph, uid=graphene.Int())
-    premises = graphene.List(PremiseGraph)
+    premises = graphene.List(PremiseGraph, premisesgroup_uid=graphene.Int())
     premisegroup = graphene.Field(PremiseGroupGraph, uid=graphene.Int())
     premisegroups = graphene.List(PremiseGroupGraph)
     user = graphene.Field(UserGraph)
@@ -133,7 +133,7 @@ class Query(graphene.ObjectType):
         return resolve_field_query(args, context, PremiseGraph)
 
     def resolve_premises(self, args, context, info):
-        return PremiseGraph.get_query(context).all()
+        return resolve_list_query(args, context, PremiseGraph, Premise)
 
     def resolve_premisegroup(self, args, context, info):
         return resolve_field_query(args, context, PremiseGroupGraph)

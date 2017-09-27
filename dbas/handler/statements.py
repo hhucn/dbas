@@ -234,10 +234,8 @@ def correct_statement(user, uid, corrected_text):
     db_statement = DBDiscussionSession.query(Statement).get(uid)
     db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=corrected_text).order_by(TextVersion.uid.desc()).all()
 
-    # duplicate or not?
-    if db_textversion:
-        textversion = DBDiscussionSession.query(TextVersion).get(db_textversion[0].uid)
-    else:
+    # not a duplicate?
+    if not db_textversion:
         textversion = TextVersion(content=corrected_text, author=db_user.uid)
         textversion.set_statement(db_statement.uid)
         DBDiscussionSession.add(textversion)
@@ -246,7 +244,6 @@ def correct_statement(user, uid, corrected_text):
     # if request:
     #     NotificationHelper.send_edit_text_notification(db_user, textversion, url, request)
 
-    db_statement.set_textversion(textversion.uid)
     # transaction.commit() # # 207
 
     return_dict['uid'] = uid
