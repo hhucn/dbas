@@ -12,3 +12,6 @@ Check the revision before using!
 ###### `alembic upgrade head`
 Runs all migrations until the latest revision!
 Use `alembic upgrade +1` to migrate to the next revision.
+
+#### View revisions
+`alembic history` / `alembic current`
