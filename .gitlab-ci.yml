@@ -12,6 +12,12 @@ stages:
       alias: db
     - name: $CI_REGISTRY/cn-tsn/project/dbas/dbas:experimental
       alias: dbas_container
+  variables:
+    DBAS_DB_HOST: db
+    DBAS_DB_PORT: "5432"
+    DBAS_DB_USER: "dbas"
+    DBAS_DB_PW: "gAjOVf8MHBgHwUH8NmyWqwQQ43En1b0Mk1wZbm2JOYzWJ8PrQbwEIoWRhz4zT6Wz"
+    DBAS_AUTHN_SECRET: "89#s3cr3t_15"
 
 # ------------------------------------------------------------------------------
 # Job definitions
