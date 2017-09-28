@@ -1,3 +1,7 @@
+alabaster==0.7.10
+alembic==0.9.5
+antiorm==1.2.1
+appdirs==1.4.3
 arrow==0.10.0
 Babel==2.5.1
 cornice==2.4.0
