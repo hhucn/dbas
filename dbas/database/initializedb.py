@@ -11,7 +11,7 @@ import sys
 
 import arrow
 import transaction
-from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, DBNewsSession, get_dbas_db_configuration
+from dbas.database import DiscussionBase, NewsBase, DBDiscussionSession, get_dbas_db_configuration
 from dbas.database.discussion_model import User, Argument, Statement, TextVersion, PremiseGroup, Premise, Group, Issue, \
     Settings, ClickedArgument, ClickedStatement, StatementReferences, Language, SeenArgument, SeenStatement, \
     ReviewDeleteReason, ReviewDelete, ReviewOptimization, LastReviewerDelete, LastReviewerOptimization, \
@@ -61,6 +61,7 @@ def main_discussion(argv=sys.argv):
     discussion_engine = get_dbas_db_configuration('discussion', settings)
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
+    NewsBase.metadata.create_all(discussion_engine)
 
     with transaction.manager:
         users = __set_up_users(DBDiscussionSession)
@@ -107,28 +108,6 @@ def main_field_test(argv=sys.argv):
         create_initial_issue_rss(get_global_url(), settings['pyramid.default_locale_name'])
 
 
-def main_news(argv=sys.argv):
-    """
-    Inits news database
-
-    :param argv: standard argv
-    :return: None
-    """
-    if len(argv) != 2:
-        usage(argv)
-    config_uri = argv[1]
-    setup_logging(config_uri)
-    settings = get_appsettings(config_uri)
-
-    news_engine = get_dbas_db_configuration('news', settings)
-    DBNewsSession.configure(bind=news_engine)
-    NewsBase.metadata.create_all(news_engine)
-
-    with transaction.manager:
-        setup_news_db(DBNewsSession, settings['pyramid.default_locale_name'])
-        transaction.commit()
-
-
 def drop_it(argv=sys.argv):
     """
     Just drop it
@@ -145,10 +124,6 @@ def drop_it(argv=sys.argv):
     discussion_engine = get_dbas_db_configuration('discussion', settings)
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
-
-    news_engine = get_dbas_db_configuration('news', settings)
-    DBNewsSession.configure(bind=news_engine)
-    NewsBase.metadata.create_all(news_engine)
 
     with transaction.manager:
         for tmp in DBDiscussionSession.query(TextVersion).all():
@@ -221,7 +196,7 @@ def drop_it(argv=sys.argv):
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Settings).delete()) + ' in Settings')
         logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(History).delete()) + ' in History')
 
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBNewsSession.query(News).delete()) + ' in News')
+        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(News).delete()) + ' in News')
         DBDiscussionSession.flush()
         transaction.commit()
 

@@ -10,7 +10,7 @@ import transaction
 import os
 
 from datetime import datetime
-from dbas.database import DBNewsSession, DBDiscussionSession
+from dbas.database import DBDiscussionSession
 from dbas.database.news_model import News
 from dbas.database.discussion_model import Issue, RSS, User
 from dbas.lib import get_global_url
@@ -28,7 +28,7 @@ def create_news_rss(main_page, ui_locale):
     :return: Boolean
     """
     logger('RSS-Handler', 'create_news_rss', 'def')
-    db_news = DBNewsSession.query(News).order_by(News.date.desc()).all()
+    db_news = DBDiscussionSession.query(News).order_by(News.date.desc()).all()
     items = []
     for news in db_news:
         items.append(PyRSS2Gen.RSSItem(
