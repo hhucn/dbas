@@ -1,10 +1,12 @@
+import ldap
+
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 
 
 def verify_ldap_user_data(registry_settings, nickname, password, _tn):
     """
-    Trys to authenticate the user with nickname and password
+    Tries to authenticate the user with nickname and password
 
     :param registry_settings: Registry settings from ini file
     :param nickname: users nickname for LDAP
@@ -13,7 +15,6 @@ def verify_ldap_user_data(registry_settings, nickname, password, _tn):
     :return: [firstname, lastname, gender, email] on success else None
     """
     logger('ldap', 'verify_ldap_user_data', 'main')
-    import ldap
 
     try:
         r = registry_settings

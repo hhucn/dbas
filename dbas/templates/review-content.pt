@@ -133,7 +133,7 @@
 
                         <div class="well well-sm center" style="text-align: justify; margin-bottom: 1em;" tal:condition="subpage.button_set.is_edit">
                             <div style="margin-bottom: 1em;">
-                                <span i18n:translate="this_are_the_edit">This are the edits:</span>
+                                <span i18n:translate="these_are_the_edits">These are the edits:</span>
                             </div>
                             <i class="fa fa-quote-left" aria-hidden="true" style="padding: 0.5em;"></i>
                             <span class="lead" id="reviewed-argument-correction">${structure:subpage.elements.reviewed_element.corrections}</span>
