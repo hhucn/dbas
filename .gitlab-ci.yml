@@ -83,10 +83,6 @@ deploy_image:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE .
     - docker push $CI_REGISTRY_IMAGE
-    # Build docs
-    - docker build -t $CI_REGISTRY_IMAGE -f Dockerfile.docs .
-    - docker tag $CI_REGISTRY_IMAGE $CI_REGISTRY_IMAGE:docs
-    - docker push $CI_REGISTRY_IMAGE:docs
   only:
     - master
 
@@ -99,3 +95,13 @@ deploy_dev_image:
     - docker push $CI_REGISTRY_IMAGE:development
   only:
     - development
+
+deploy_docs_image:
+  stage: deploy
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE -f Dockerfile.docs .
+    - docker tag $CI_REGISTRY_IMAGE $CI_REGISTRY_IMAGE:docs
+    - docker push $CI_REGISTRY_IMAGE:docs
+  only:
+    - master
