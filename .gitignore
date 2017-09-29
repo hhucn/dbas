@@ -55,10 +55,7 @@ dbas/static/rss/*
 .sass-cache/
 .babelrc
 createUser.py
-dbas.min.js
-cookie-2.1.3.min.js
-eu-cookie-law-popup.min.js
-websocket.min.js
+*.min.js
 production.env
 
 # node
