@@ -38,6 +38,7 @@ pyldap==2.4.37
 requests==2.18.4
 selenium==3.5.0
 slugify==0.0.1
+sphinx==1.6.4
 sphinx-rtd-theme==0.2.4
 splinter==0.7.6
 SQLAlchemy==1.1.9
