@@ -8,8 +8,7 @@ import arrow
 import transaction
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, sql_timestamp_pretty_print
-from dbas.database.news_model import News
+from dbas.database.discussion_model import User, News, sql_timestamp_pretty_print
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.handler.rss import create_news_rss

@@ -2115,3 +2115,26 @@ class RSS(DiscussionBase):
         self.title = title
         self.description = description
         self.timestamp = get_now()
+
+
+class News(DiscussionBase):
+    """
+    News-table with several columns.
+    """
+    __tablename__ = 'news'
+    __table_args__ = {'schema' : 'news'}
+    uid = Column(Integer, primary_key=True)
+    title = Column(Text, nullable=False)
+    author = Column(Text, nullable=False)
+    date = Column(ArrowType, nullable=False)
+    news = Column(Text, nullable=False)
+
+    def __init__(self, title, author, news, date):
+        """
+        Initializes a row in current news-table
+        """
+        self.title = title
+        self.author = author
+        self.news = news
+        self.date = date
+

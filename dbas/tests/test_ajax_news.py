@@ -3,7 +3,7 @@ import unittest
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
-from dbas.database.news_model import News
+from dbas.database.discussion_model import News
 
 
 class AjaxNewsTest(unittest.TestCase):

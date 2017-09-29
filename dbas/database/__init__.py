@@ -14,7 +14,6 @@ DBDiscussionSession = scoped_session(sessionmaker(extension=Zte(), expire_on_com
 DiscussionBase = declarative_base()
 NewsBase = declarative_base(metadata=MetaData(schema='news'))
 DBEngine = None
-DBNewsEngine = None
 
 
 def load_discussion_database(engine):
