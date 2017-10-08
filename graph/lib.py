@@ -225,18 +225,23 @@ def __prepare_statements_for_d3_data(db_statements, db_textversions, edge_type):
     nodes = []
     edges = []
     extras = {}
+    tv_map = {tv.uid: tv for tv in db_textversions}
     for statement in db_statements:
-        text = next((tv for tv in db_textversions if tv.uid == statement.textversion_uid), None)
+        logger('Graph.lib', '__prepare_statements_for_d3_data', '1')
+        text = tv_map[statement.textversion_uid]
         text = text.content if text else 'None'
+        logger('Graph.lib', '__prepare_statements_for_d3_data', '2')
         node_dict = __get_node_dict(uid='statement_' + str(statement.uid),
                                     label=text,
                                     node_type='position' if statement.is_startpoint else 'statement',
                                     author=__get_author_of_statement(statement.uid),
                                     editor=__get_editor_of_statement(statement.uid),
                                     timestamp=statement.get_first_timestamp().timestamp)
+        logger('Graph.lib', '__prepare_statements_for_d3_data', '3')
         extras[node_dict['id']] = node_dict
         all_ids.append('statement_' + str(statement.uid))
         nodes.append(node_dict)
+        logger('Graph.lib', '__prepare_statements_for_d3_data', '4')
         if statement.is_startpoint:
             edge_dict = __get_edge_dict(uid='edge_' + str(statement.uid) + '_issue',
                                         source='statement_' + str(statement.uid),
@@ -244,6 +249,7 @@ def __prepare_statements_for_d3_data(db_statements, db_textversions, edge_type):
                                         color=grey,
                                         edge_type=edge_type)
             edges.append(edge_dict)
+        logger('Graph.lib', '__prepare_statements_for_d3_data', '5')
 
     return all_ids, nodes, edges, extras
 
