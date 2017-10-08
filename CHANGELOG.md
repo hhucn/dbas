@@ -1,4 +1,4 @@
-## 1.4.4. (2017-10-05)
+## 1.4.4 (2017-10-05)
 - Manipulated the database to achieve circle-freeness
 - Add `alembic` as migration-engine
 - Open-Source the database
