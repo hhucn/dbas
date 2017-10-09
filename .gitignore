@@ -37,7 +37,6 @@ coverage.xml
 *.jar
 db.txt
 mergeDatabase.py
-requirementsUpdater.py
 getMails.py
 addEnglischDiscussion.py
 .#*
