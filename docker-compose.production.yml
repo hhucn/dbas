@@ -2,12 +2,14 @@ version: "3.1"
 services:
   db:
     image: hhucn/dbas-database
+    restart: always
     volumes:
       - ./postgres_db:/var/lib/postgresql/data
     tmpfs: /tmp
 
   notifications:
     image: hhucn/dbas-notifications
+    restart: always
     ports:
       - "5222:5222"
     volumes:
@@ -15,6 +17,7 @@ services:
 
   docs:
     image: gitlab.cs.uni-duesseldorf.de:5001/cn-tsn/project/dbas/dbas:docs
+    restart: always
     ports:
       - "8000:8000"
     tmpfs: /tmp
