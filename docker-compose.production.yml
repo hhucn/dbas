@@ -3,6 +3,8 @@ services:
   db:
     image: hhucn/dbas-database
     restart: always
+    ports:
+      - "5432:5432"
     volumes:
       - ./postgres_db:/var/lib/postgresql/data
     tmpfs: /tmp
