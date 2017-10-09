@@ -225,8 +225,9 @@ def __prepare_statements_for_d3_data(db_statements, db_textversions, edge_type):
     nodes = []
     edges = []
     extras = {}
+    tv_map = {tv.uid: tv for tv in db_textversions}
     for statement in db_statements:
-        text = next((tv for tv in db_textversions if tv.uid == statement.textversion_uid), None)
+        text = tv_map[statement.textversion_uid]
         text = text.content if text else 'None'
         node_dict = __get_node_dict(uid='statement_' + str(statement.uid),
                                     label=text,

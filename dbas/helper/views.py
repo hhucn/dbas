@@ -159,7 +159,7 @@ def preparation_for_justify_statement(request, for_api, main_page, slug, stateme
 
     item_dict = _idh.get_array_for_justify_statement(statement_uid, nickname, supportive, history)
     discussion_dict = _ddh.get_dict_for_justify_statement(statement_uid, main_page, slug, supportive, len(item_dict['elements']), nickname)
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, False, request, nickname, for_api=for_api)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request, nickname, for_api=for_api)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0 or len(item_dict['elements']) == 1 and logged_in:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
@@ -193,7 +193,7 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, argum
 
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid, main_page, nickname)
     item_dict = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, nickname, discussion_dict['gender'])
-    extras_dict = _dh.prepare_extras_dict(slug, True, True, False, request, for_api=for_api,
+    extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request, for_api=for_api,
                                           nickname=nickname)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0:

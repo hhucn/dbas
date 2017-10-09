@@ -1,3 +1,11 @@
+## 1.4.4 (2017-10-05)
+- Manipulated the database to achieve circle-freeness
+- Add `alembic` as migration-engine
+- Open-Source the database
+- Refactor requirements.txt
+- Rewrite Authentication via APIv1
+- Extend documentation
+
 ## 1.4.3 (2017-08-24)
 - Entering position and premise at once
 - Queue for split and merge statements
