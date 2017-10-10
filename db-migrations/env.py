@@ -5,10 +5,11 @@ be loaded from there.
 
 """
 from alembic import context
-from sqlalchemy import engine_from_config
+from sqlalchemy import engine_from_config, MetaData
 from dbas import get_dbas_environs
 from pyramid.paster import get_appsettings
-from dbas.database import get_db_environs, DiscussionBase
+from dbas.database import get_db_environs, DiscussionBase, NewsBase
+import os
 
 # customize this section for non-standard engine configurations.
 meta = __import__('dbas.database').database
@@ -56,15 +57,17 @@ def run_migrations_online():
         )
 
         with context.begin_transaction():
+            context.execute('SET search_path TO public')
             context.run_migrations()
 
 
+
+
+
 def _get_dbas_engine():
-    settings = get_appsettings('development.ini', name='main')
-    settings.update(get_dbas_environs())
-    settings.update(get_db_environs(key="session.url", db_name="beaker"))
+    settings = dict() # get_dbas_environs()
+    os.environ['DBAS_DB_USER'] = 'postgres'
     settings.update(get_db_environs("sqlalchemy.discussion.url", db_name="discussion"))
-    # settings.update(get_db_environs("sqlalchemy.news.url", db_name="news"))
     return engine_from_config(settings, "sqlalchemy.discussion.")
 
 

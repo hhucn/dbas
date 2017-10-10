@@ -11,8 +11,7 @@ import os
 
 from datetime import datetime
 from dbas.database import DBDiscussionSession
-from dbas.database.news_model import News
-from dbas.database.discussion_model import Issue, RSS, User
+from dbas.database.discussion_model import Issue, RSS, User, News
 from dbas.lib import get_global_url
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _

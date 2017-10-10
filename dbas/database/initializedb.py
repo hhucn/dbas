@@ -18,8 +18,7 @@ from dbas.database.discussion_model import User, Argument, Statement, TextVersio
     ReputationReason, ReviewMerge, ReviewSplit, ReviewSplitValues, ReviewMergeValues, \
     ReputationHistory, ReviewEdit, ReviewEditValue, ReviewDuplicate, LastReviewerDuplicate, MarkedArgument, \
     MarkedStatement, Message, LastReviewerEdit, RevokedContentHistory, RevokedContent, RevokedDuplicate, \
-    ReviewCanceled, RSS, OptimizationReviewLocks, History
-from dbas.database.news_model import News
+    ReviewCanceled, RSS, OptimizationReviewLocks, History, News
 from dbas.handler.rss import create_news_rss, create_initial_issue_rss
 from dbas.lib import get_global_url
 from dbas.logger import logger
