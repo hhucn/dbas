@@ -67,5 +67,6 @@ restorePostgres.sh
 
 # DB Files
 docker/db/entrypoint/*
+docker/db/data/
 
 .scannerwork/
