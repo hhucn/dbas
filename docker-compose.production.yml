@@ -6,7 +6,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./docker/db:/docker-entrypoint-initdb.d
+      - ./docker/db/entrypoint:/docker-entrypoint-initdb.d
       - ./postgres_db:/var/lib/postgresql/data
     tmpfs: /tmp
 
