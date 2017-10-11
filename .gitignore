@@ -66,6 +66,6 @@ node_modules/
 restorePostgres.sh
 
 # DB Files
-docker/db/entrypoint/*.sql
+docker/db/entrypoint/*
 
 .scannerwork/
