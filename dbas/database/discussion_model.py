@@ -363,7 +363,6 @@ class Statement(DiscussionBase):
     """
     __tablename__ = 'statements'
     uid = Column(Integer, primary_key=True)
-    textversion_uid = Column(Integer, ForeignKey('textversions.uid'), nullable=True)
     is_startpoint = Column(Boolean, nullable=False)
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
