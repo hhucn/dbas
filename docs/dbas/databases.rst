@@ -23,7 +23,7 @@ To use this dump as an entrypoint, you have to remove the root user from the dat
 Working with Migrations
 =======================
 We are using ``alembic`` for database migrations.
-These migrations are saved in so called *revisions* inside the ``db-migrations`` directory.
+These migrations are saved in so called *revisions* inside the ``migrations`` directory.
 
 Create a new migration
 ----------------------
@@ -50,7 +50,7 @@ It is possible to generate just a SQL-File for migration. Just add ``--sql`` to 
 Steps for creating a new database
 =================================
 
-1. Remove all `*.sql`-files in `docker/db`.
+1. Remove all `*.sql`-files in `docker/db/entrypoint`.
 2. Remove the `.bak` ending of the `001_init`-script in `docker/db`. This will create a fresh and empty database.
 3. Be sure, that you deleted your old `dbas_db_1`-container.
 4. Run `docker-compose up`.
