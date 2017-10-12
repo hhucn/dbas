@@ -97,12 +97,6 @@ Discussion Model
     :members:
 
 
-News Model
-==========
-
-.. automodule:: dbas.database.news_model
-    :members:
-
 Initialize Dummy DB
 ===================
 
