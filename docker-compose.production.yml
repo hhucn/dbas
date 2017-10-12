@@ -1,12 +1,13 @@
 version: "3.1"
 services:
   db:
-    image: hhucn/dbas-database
+    image: postgres:9.6-alpine
     restart: always
     ports:
       - "5432:5432"
     volumes:
-      - ./postgres_db:/var/lib/postgresql/data
+      - ./docker/db/entrypoint:/docker-entrypoint-initdb.d
+      - ./docker/db/data:/var/lib/postgresql/data
     tmpfs: /tmp
 
   notifications:

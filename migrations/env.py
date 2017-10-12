@@ -4,12 +4,12 @@ Place 'pylons_config_file' into alembic.ini, and the application will
 be loaded from there.
 
 """
-from alembic import context
-from sqlalchemy import engine_from_config, MetaData
-from dbas import get_dbas_environs
-from pyramid.paster import get_appsettings
-from dbas.database import get_db_environs, DiscussionBase, NewsBase
 import os
+
+from alembic import context
+from sqlalchemy import engine_from_config
+
+from dbas.database import get_db_environs, DiscussionBase
 
 # customize this section for non-standard engine configurations.
 meta = __import__('dbas.database').database
@@ -61,11 +61,8 @@ def run_migrations_online():
             context.run_migrations()
 
 
-
-
-
 def _get_dbas_engine():
-    settings = dict() # get_dbas_environs()
+    settings = dict()  # get_dbas_environs()
     os.environ['DBAS_DB_USER'] = 'postgres'
     settings.update(get_db_environs("sqlalchemy.discussion.url", db_name="discussion"))
     return engine_from_config(settings, "sqlalchemy.discussion.")
