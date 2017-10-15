@@ -393,7 +393,6 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
     :param color_html: Boolean
     :return: String
     """
-    from dbas.logger import logger
     _t = Translator(lang)
     gender = ''
 

@@ -393,8 +393,7 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
     if lang != 'de':
         if current_argument.startswith('<'):
             pos = current_argument.index('>')
-            current_argument = current_argument[0:pos] + current_argument[pos:pos + 1].upper() + current_argument[
-                                                                                                 pos + 1:]
+            current_argument = current_argument[0:pos] + current_argument[pos:pos + 1].upper() + current_argument[pos + 1:]
         else:
             current_argument = current_argument[0:1].upper() + current_argument[1:]
     premise = premise[0:1].lower() + premise[1:]
