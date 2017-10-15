@@ -420,7 +420,7 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
     # build some confrontation text
     if attack == 'undermine':
         confrontation_text, gender = __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sys_arg,
-                                                                            end_tag, confrontation)
+                                                                            start_argument, end_tag, confrontation)
 
     elif attack == 'undercut':
         confrontation_text, gender = __get_confrontation_text_for_undercut(main_page, nickname, _t,
@@ -537,7 +537,8 @@ def get_text_for_add_argument_message(nickname, lang, url, for_html=True):
     return content
 
 
-def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, system_argument, end_tag, confrontation):
+def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, system_argument, start_argument, end_tag,
+                                           confrontation):
     """
     Returns the system bubble text for an undermine
 
@@ -546,6 +547,7 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sys
     :param premise: String
     :param _t: Translator
     :param system_argument: String
+    :param start_argument: String
     :param end_tag: String
     :param confrontation: String
     :return:
@@ -553,7 +555,6 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sys
     b = '<' + tag_type + '>'
     bs = '<{} class="triangle-content-text">'.format(tag_type)
     e = '</' + tag_type + '>'
-    start_argument = '<{} data-argumentation-type="argument">'.format(tag_type)
 
     move_end_tag = False
     if tag_type not in premise:
