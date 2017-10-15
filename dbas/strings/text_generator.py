@@ -371,8 +371,9 @@ def get_support_to_argument_text_list(lang):
     return answers
 
 
-def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, sys_conclusion, supportive, attack, confrontation,
-                               reply_for_argument, user_is_attacking, user_arg, sys_arg, color_html=True):
+def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, sys_conclusion, supportive, attack,
+                               confrontation, reply_for_argument, user_is_attacking, user_arg, sys_arg,
+                               color_html=True):
     """
     Text for the confrontation of the system
 
@@ -392,21 +393,22 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
     :param color_html: Boolean
     :return: String
     """
+    from dbas.logger import logger
     _t = Translator(lang)
     gender = ''
 
     #  build some confrontation text
     if lang != 'de':
-        confrontation   = confrontation[0:1].lower() + confrontation[1:]
-        premise         = premise[0:1].lower() + premise[1:]
-        sys_conclusion  = sys_conclusion[0:1].lower() + sys_conclusion[1:]
-        conclusion      = conclusion[0:1].lower() + conclusion[1:]
+        confrontation = confrontation[0:1].lower() + confrontation[1:]
+        premise = premise[0:1].lower() + premise[1:]
+        sys_conclusion = sys_conclusion[0:1].lower() + sys_conclusion[1:]
+        conclusion = conclusion[0:1].lower() + conclusion[1:]
 
     # adding tags
     start_attack = ('<' + tag_type + ' data-argumentation-type="attack">') if color_html else ''
     start_argument = ('<' + tag_type + ' data-argumentation-type="argument">') if color_html else ''
     # start_position = ('<' + tag_type + ' data-argumentation-type="position">') if color_html else ''
-    end_tag = '</' + tag_type + '>'
+    end_tag = '</' + tag_type + '>' if color_html else ''
     if color_html:
         confrontation = start_attack + confrontation + end_tag
         conclusion = start_argument + conclusion + end_tag
@@ -579,7 +581,8 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sys
     return confrontation_text, gender if is_okay else ''
 
 
-def __get_confrontation_text_for_undercut(main_page, nickname, _t, premise, conclusion, confrontation, supportive, system_argument):
+def __get_confrontation_text_for_undercut(main_page, nickname, _t, premise, conclusion, confrontation, supportive,
+                                          system_argument):
     """
     Returns the system bubble text for an undercut
 
@@ -620,8 +623,9 @@ def __get_confrontation_text_for_undercut(main_page, nickname, _t, premise, conc
     return confrontation_text, gender if is_okay else ''
 
 
-def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argument, user_arg, user_is_attacking, _t, sys_conclusion,
-                                       confrontation, premise, conclusion, start_argument, system_argument):
+def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argument, user_arg, user_is_attacking, _t,
+                                       sys_conclusion, confrontation, premise, conclusion, start_argument,
+                                       system_argument):
     """
     Returns the system bubble text for a rebut
 
@@ -710,9 +714,9 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
             confrontation_text += _t.get(_.strongerStatementP)
 
         tag = tag_pro_start if user_is_attacking else tag_con_start
-        tmp = '<{} data-argumentation-type="argument">'.format(tag_type)
+        tmp = start_argument
         tmp += _t.get(_.accepting) if user_is_attacking else _t.get(_.rejecting)
-        tmp += '</{}>'.format(tag_type)
+        tmp += '</{}>'.format(tag_type) if len(start_argument) > 0 else ''
         confrontation_text = confrontation_text.format(premise, tag, tmp, ' ' + e)
 
         tmp = _t.get(_.strongerStatementEnd)
