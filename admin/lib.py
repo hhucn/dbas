@@ -7,6 +7,7 @@ import os
 
 import arrow
 
+import time
 from datetime import datetime
 import transaction
 
@@ -21,6 +22,7 @@ from dbas.lib import is_user_admin, get_text_for_premisesgroup_uid, get_text_for
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from sqlalchemy.exc import IntegrityError, ProgrammingError
+from sqlalchemy import and_
 
 table_mapper = {
     'Issue'.lower(): {'table': Issue, 'name': 'Issue'},
@@ -565,7 +567,7 @@ def get_application_tokens():
     return [token.__dict__ for token in tokens]
 
 
-def revoke_application_token(token_id):
+def revoke_application_token(token_id: int):
     """
     Revoke a app token by setting it's disabled field.
 
@@ -575,10 +577,11 @@ def revoke_application_token(token_id):
     transaction.commit()
 
 
-def generate_application_token(owner):
+def generate_application_token(owner: str) -> str:
     """
     Generates a new application token.
     A hash (SHA256) of the token is stored in the database, together with it's owner and creation date.
+    The owner is used as a prefix salt, when the token is hashed.
 
 
     :param owner: The owner of the token.
@@ -586,12 +589,42 @@ def generate_application_token(owner):
     """
     current_time = datetime.now()
 
-    token = hashlib.sha256(''.join([str(current_time), owner, str(os.urandom(256))]).encode()).hexdigest()
+    token = hashlib.sha256(''.join([str(time.time()), owner, str(os.urandom(256))]).encode()).hexdigest()
 
-    new_row = APIToken(current_time, hashlib.sha256((owner + token).encode()).hexdigest(), owner)
+    hashed_token = __hash_token_with_owner(owner, token)
+
+    new_row = APIToken(current_time, hashed_token, owner)
 
     DBDiscussionSession.add(new_row)
     DBDiscussionSession.flush()
     transaction.commit()
 
-    return token
+    return hashed_token[:5] + "-" + token
+
+
+def __hash_token_with_owner(owner, token):
+    return hashlib.sha256((owner + token).encode()).hexdigest()
+
+
+def check_token(token: str) -> bool:
+    """
+    Checks if a token is valid or not
+    :param token: The token to check.
+    :return: True if the token is valid and not disabled.
+    """
+
+    token_components = token.split("-")
+    if not len(token_components) is 2:
+        return False
+
+    hash_identifier, auth_token = token_components
+
+    hash_ids = DBDiscussionSession.query(APIToken).filter(and_(
+        APIToken.token.startswith(hash_identifier),
+        APIToken.disabled is False))
+
+    for hash_id in hash_ids:
+        api_token = DBDiscussionSession.query(APIToken).get(hash_id)
+        return __hash_token_with_owner(api_token.owner, auth_token) is api_token.token
+
+    return False
