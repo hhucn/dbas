@@ -328,7 +328,7 @@ def __disable_textversions(statement_uid, author_uid):
     :return: None
     """
     db_textversion = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.statement_uid == statement_uid,
-                                                                        TextVersion.author_uid == author_uid)).all()
+                                                                        TextVersion.author_uid == author_uid)).all()  # TODO #432
     for textversion in db_textversion:
         logger('QueryHelper', '__disable_textversions', str(textversion.uid))
         textversion.set_disable(True)
@@ -349,7 +349,7 @@ def __transfer_textversion_to_new_author(statement_uid, old_author_uid, new_auth
     """
     logger('QueryHelper', '__revoke_statement', 'Textversion of {} will change author from {} to {}'.format(statement_uid, old_author_uid, new_author_uid))
     db_textversion = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.statement_uid == statement_uid,
-                                                                        TextVersion.author_uid == old_author_uid)).all()
+                                                                        TextVersion.author_uid == old_author_uid)).all()  # TODO #432
     if not db_textversion:
         return False
 

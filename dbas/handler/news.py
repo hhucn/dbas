@@ -7,9 +7,8 @@ Provides helping function round about the news.
 import arrow
 import transaction
 
-from dbas.database import DBDiscussionSession, DBNewsSession
-from dbas.database.discussion_model import User, sql_timestamp_pretty_print
-from dbas.database.news_model import News
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User, News, sql_timestamp_pretty_print
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.handler.rss import create_news_rss
@@ -39,15 +38,15 @@ def set_news(request):
 
     author = db_user.firstname
     if db_user.firstname != 'admin':
-        author += db_user.surname
+        author += ' {}'.format(db_user.surname)
 
     date = arrow.now()
     news = News(title=title, author=author, date=date, news=text)
 
-    DBNewsSession.add(news)
-    DBNewsSession.flush()
+    DBDiscussionSession.add(news)
+    DBDiscussionSession.flush()
 
-    db_news = DBNewsSession.query(News).filter_by(title=title).first()
+    db_news = DBDiscussionSession.query(News).filter_by(title=title).first()
     return_dict = dict()
     return_dict['status'] = '1' if db_news is not None else '_'
     return_dict['title'] = title
@@ -68,7 +67,7 @@ def get_news(ui_locales):
     :return: dict()
     """
     logger('NewsHelper', 'get_news', 'main')
-    db_news = DBNewsSession.query(News).order_by(News.date.desc()).all()
+    db_news = DBDiscussionSession.query(News).order_by(News.date.desc()).all()
     ret_news = []
     for index, news in enumerate(db_news):
         news_dict = dict()

@@ -11,6 +11,9 @@ usable by any participant without training while still supporting the full compl
 The key idea is to let users exchange arguments  with each other in the form of a time-shifted dialog where arguments
 are presented and acted upon one-at-a-time.
 
+Currently, the main development-process happens in our GitLab instance, but you
+can open issues here, submit pull requests etc. and we will coordinate your
+contributions.
 
 ## Setup for Linux
 
@@ -60,6 +63,7 @@ We thank all contributors to this project! In order of appearance:
 * Teresa Uebber
 * Björn Ebbinghaus
 * Alexander Schneider
+* Marc Feger
 
 
 ## License

@@ -485,7 +485,10 @@ def __update_row_dict(table, values, keys, _tn):
         if value_type == 'INTEGER':
             # check for foreign key of author or language
             if key in _user_columns:
-                db_user = DBDiscussionSession.query(User).filter_by(nickname=values[index]).first()
+                # clear key / cut "(uid)"
+                tmp = values[index]
+                tmp = tmp[:tmp.rfind(" (")]
+                db_user = DBDiscussionSession.query(User).filter_by(nickname=tmp).first()
                 if not db_user:
                     return _tn.get(_.userNotFound), False
                 update_dict[key] = db_user.uid

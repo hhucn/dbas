@@ -72,7 +72,7 @@ def send_edit_text_notification(db_user, textversion, path, port, mailer):
     :param mailer: Instance of pyramid mailer
     :return: None
     """
-    all_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=textversion.statement_uid).order_by(TextVersion.uid.desc()).all()
+    all_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=textversion.statement_uid).order_by(TextVersion.uid.desc()).all()  # TODO #432
     oem = all_textversions[-1]
     root_author = oem.author_uid
     new_author = textversion.author_uid
@@ -150,7 +150,7 @@ def send_add_text_notification(url, conclusion_id, user, port, mailer):
     :return: None
     """
     # getting all text versions, the main author, last editor and settings ob both authors as well as their languages
-    db_textversions         = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=conclusion_id).all()
+    db_textversions         = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=conclusion_id).all()  # TODO #432
     db_root_author          = DBDiscussionSession.query(User).get(db_textversions[0].author_uid)
     db_last_editor          = DBDiscussionSession.query(User).get(db_textversions[-1].author_uid)
     db_current_user         = DBDiscussionSession.query(User).filter_by(nickname=user).first()

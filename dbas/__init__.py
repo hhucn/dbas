@@ -14,14 +14,14 @@ import time
 from configparser import ConfigParser, NoSectionError
 from dbas.database import get_db_environs
 import os
-from pyramid.authentication import AuthTktAuthenticationPolicy  # , SessionAuthenticationPolicy
+from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.static import QueryStringConstantCacheBuster
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
 import re
 from sqlalchemy import engine_from_config
-from .database import load_discussion_database, load_news_database
+from .database import load_discussion_database
 from .security import groupfinder
 
 
@@ -48,12 +48,9 @@ def main(global_config, **settings):
 
     # load database
     settings.update(get_db_environs("sqlalchemy.discussion.url", db_name="discussion"))
-    settings.update(get_db_environs("sqlalchemy.news.url", db_name="news"))
 
     discussion_engine = engine_from_config(settings, "sqlalchemy.discussion.")
-    news_engine = engine_from_config(settings, "sqlalchemy.news.")
     load_discussion_database(discussion_engine)
-    load_news_database(news_engine)
 
     # session management and cache region support
     session_factory = session_factory_from_settings(settings)

@@ -14,8 +14,18 @@ from dbas.database.discussion_model import Statement, Issue, TextVersion, User, 
 
 # -----------------------------------------------------------------------------
 # Specify database models which should be able to be queried by GraphQL
+class TextVersionGraph(SQLAlchemyObjectType):
+    class Meta:
+        model = TextVersion
+        exclude_fields = "timestamp"
+
 
 class StatementGraph(SQLAlchemyObjectType):
+    textversions = graphene.Field(TextVersionGraph)
+
+    def resolve_textversions(self, args, context, info):
+        return resolve_field_query({**args, "statement_uid": self.uid}, context, TextVersionGraph)
+
     class Meta:
         model = Statement
 
@@ -44,12 +54,6 @@ class IssueGraph(SQLAlchemyObjectType):
     class Meta:
         model = Issue
         exclude_fields = "date"
-
-
-class TextVersionGraph(SQLAlchemyObjectType):
-    class Meta:
-        model = TextVersion
-        exclude_fields = "timestamp"
 
 
 class UserGraph(SQLAlchemyObjectType):
@@ -95,7 +99,7 @@ class Query(graphene.ObjectType):
     issue = graphene.Field(IssueGraph, uid=graphene.Int(), slug=graphene.String(), title=graphene.String())
     issues = graphene.List(IssueGraph, slug=graphene.String(), title=graphene.String())
     premise = graphene.Field(PremiseGraph, uid=graphene.Int())
-    premises = graphene.List(PremiseGraph)
+    premises = graphene.List(PremiseGraph, premisesgroup_uid=graphene.Int())
     premisegroup = graphene.Field(PremiseGroupGraph, uid=graphene.Int())
     premisegroups = graphene.List(PremiseGroupGraph)
     user = graphene.Field(UserGraph)
@@ -129,7 +133,7 @@ class Query(graphene.ObjectType):
         return resolve_field_query(args, context, PremiseGraph)
 
     def resolve_premises(self, args, context, info):
-        return PremiseGraph.get_query(context).all()
+        return resolve_list_query(args, context, PremiseGraph, Premise)
 
     def resolve_premisegroup(self, args, context, info):
         return resolve_field_query(args, context, PremiseGroupGraph)

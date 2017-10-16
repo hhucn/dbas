@@ -169,7 +169,8 @@ class User(DiscussionBase):
 
     groups = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
 
-    def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, token='', token_timestamp=None):
+    def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, token='',
+                 token_timestamp=None):
         """
         Initializes a row in current user-table
 
@@ -281,7 +282,8 @@ class Settings(DiscussionBase):
     issues = relationship('Issue', foreign_keys=[last_topic_uid])
     languages = relationship('Language', foreign_keys=[lang_uid])
 
-    def __init__(self, author_uid, send_mails, send_notifications, should_show_public_nickname=True, lang_uid=2, keep_logged_in=False):
+    def __init__(self, author_uid, send_mails, send_notifications, should_show_public_nickname=True, lang_uid=2,
+                 keep_logged_in=False):
         """
         Initializes a row in current settings-table
 
@@ -363,36 +365,23 @@ class Statement(DiscussionBase):
     """
     __tablename__ = 'statements'
     uid = Column(Integer, primary_key=True)
-    textversion_uid = Column(Integer, ForeignKey('textversions.uid'), nullable=True)
     is_startpoint = Column(Boolean, nullable=False)
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
 
-    textversions = relationship('TextVersion', foreign_keys=[textversion_uid])
     issues = relationship('Issue', foreign_keys=[issue_uid])
 
-    def __init__(self, textversion, is_position, issue, is_disabled=False):
+    def __init__(self, is_position, issue, is_disabled=False):
         """
         Inits a row in current statement table
 
-        :param textversion: TextVersion.uid
         :param is_position: boolean
         :param issue: Issue.uid
         :param is_disabled: Boolean
         """
-        self.textversion_uid = textversion
         self.is_startpoint = is_position
         self.issue_uid = issue
         self.is_disabled = is_disabled
-
-    def set_textversion(self, uid):
-        """
-        Sets given Textversion.uid
-
-        :param uid: Textversion.uid
-        :return: None
-        """
-        self.textversion_uid = uid
 
     def set_disable(self, is_disabled):
         """
@@ -445,6 +434,17 @@ class Statement(DiscussionBase):
         """
         return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
 
+    @hybrid_property
+    def textversion_uid(self):
+        """
+        The id of the latest textversion
+
+        :return:
+        """
+
+        return DBDiscussionSession.query(TextVersion).filter_by(statement_uid=self.uid, is_disabled=False).order_by(
+            TextVersion.timestamp.desc()).first().uid
+
     def to_dict(self):
         """
         Returns the row as dictionary.
@@ -458,6 +458,18 @@ class Statement(DiscussionBase):
             'issue_uid': self.issue_uid,
             'is_disabled': self.is_disabled
         }
+
+    @hybrid_property
+    def textversions(self):
+        return self.get_textversion()
+
+    def get_textversion(self):
+        """
+        Returns the latest textversion for this statement.
+
+        :return: TextVersion object
+        """
+        return DBDiscussionSession.query(TextVersion).get(self.textversion_uid)
 
 
 class StatementReferences(DiscussionBase):
@@ -1321,7 +1333,8 @@ class ReviewDuplicate(DiscussionBase):
     duplicate_statement = relationship('Statement', foreign_keys=[duplicate_statement_uid])
     original_statement = relationship('Statement', foreign_keys=[original_statement_uid])
 
-    def __init__(self, detector, duplicate_statement=None, original_statement=None, is_executed=False, is_revoked=False):
+    def __init__(self, detector, duplicate_statement=None, original_statement=None, is_executed=False,
+                 is_revoked=False):
         """
         Inits a row in current review duplicate table
 
@@ -2105,6 +2118,28 @@ class RSS(DiscussionBase):
         self.title = title
         self.description = description
         self.timestamp = get_now()
+
+
+class News(DiscussionBase):
+    """
+    News-table with several columns.
+    """
+    __tablename__ = 'news'
+    __table_args__ = {'schema': 'news'}
+    uid = Column(Integer, primary_key=True)
+    title = Column(Text, nullable=False)
+    author = Column(Text, nullable=False)
+    date = Column(ArrowType, nullable=False)
+    news = Column(Text, nullable=False)
+
+    def __init__(self, title, author, news, date):
+        """
+        Initializes a row in current news-table
+        """
+        self.title = title
+        self.author = author
+        self.news = news
+        self.date = date
 
 
 class APIToken(DiscussionBase):

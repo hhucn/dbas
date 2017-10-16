@@ -95,7 +95,7 @@ def get_all_statements_with_value(request, value):
     slug = DBDiscussionSession.query(Issue).get(issue_uid).slug
     _um = UrlManager(request.application_url, for_api=False, slug=slug)
     for stat in db_statements:
-        db_tv = DBDiscussionSession.query(TextVersion).get(stat.textversion_uid)
+        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(TextVersion.uid.asc()).first()
         if value.lower() in db_tv.content.lower():
             rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
             rd['url'] = _um.get_url_for_statement_attitude(False, db_tv.statement_uid)
@@ -119,7 +119,7 @@ def get_strings_for_start(value, issue, is_startpoint):
                                                                       Statement.issue_uid == issue)).all()
     return_array = []
     for stat in db_statements:
-        db_tv = DBDiscussionSession.query(TextVersion).get(stat.textversion_uid)
+        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(TextVersion.uid.asc()).first()
         if value.lower() in db_tv.content.lower():
             rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
             return_array.append(rd)
@@ -138,13 +138,13 @@ def get_strings_for_edits(value, statement_uid):
     :return: dict()
     """
 
-    db_tvs = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).all()
+    db_tvs = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).all()  # TODO #432
 
     return_array = []
     index = 1
     for textversion in db_tvs:
         if value.lower() in textversion.content.lower():
-            rd = __get_fuzzy_string_dict(current_text=value, return_text=textversion.content, uid=textversion.statement_uid)
+            rd = __get_fuzzy_string_dict(current_text=value, return_text=textversion.content, uid=textversion.statement_uid)  # TODO #432
             return_array.append(rd)
             index += 1
 
@@ -169,9 +169,9 @@ def get_strings_for_duplicates_or_reasons(value, issue, oem_value_uid=None):
         if stat.uid is oem_value_uid:
             continue
 
-        db_tv = DBDiscussionSession.query(TextVersion).get(stat.textversion_uid)
+        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(TextVersion.uid.asc()).first()
         if value.lower() in db_tv.content.lower():  # and db_tv.content.lower() != oem_value.lower():
-            rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
+            rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)  # TODO #432
             return_array.append(rd)
 
     return_array = __sort_array(return_array)

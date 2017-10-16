@@ -2,8 +2,8 @@ import unittest
 
 from pyramid import testing
 
-from dbas.database import DBNewsSession
-from dbas.database.news_model import News
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import News
 
 
 class AjaxNewsTest(unittest.TestCase):
@@ -35,7 +35,7 @@ class AjaxNewsTest(unittest.TestCase):
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
 
-        DBNewsSession.query(News).filter_by(title='some new title').delete()
+        DBDiscussionSession.query(News).filter_by(title='some new title').delete()
 
     def test_send_news_failure(self):
         from dbas.views import send_news as ajax
@@ -47,4 +47,4 @@ class AjaxNewsTest(unittest.TestCase):
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
-        DBNewsSession.query(News).filter_by(title='some new title').delete()
+        DBDiscussionSession.query(News).filter_by(title='some new title').delete()

@@ -225,8 +225,9 @@ def __prepare_statements_for_d3_data(db_statements, db_textversions, edge_type):
     nodes = []
     edges = []
     extras = {}
+    tv_map = {tv.uid: tv for tv in db_textversions}
     for statement in db_statements:
-        text = next((tv for tv in db_textversions if tv.uid == statement.textversion_uid), None)
+        text = tv_map[statement.textversion_uid]
         text = text.content if text else 'None'
         node_dict = __get_node_dict(uid='statement_' + str(statement.uid),
                                     label=text,
@@ -350,7 +351,7 @@ def __get_author_of_statement(uid):
     :param uid:
     :return:
     """
-    db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).first()
+    db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).first()  # TODO #432
     db_author = DBDiscussionSession.query(User).get(db_tv.author_uid)
     gravatar = get_profile_picture(db_author, 40)
     name = db_author.get_global_nickname()
@@ -363,7 +364,7 @@ def __get_editor_of_statement(uid):
     :param uid:
     :return:
     """
-    db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.desc()).first()
+    db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.desc()).first()  # TODO #432
     db_editor = DBDiscussionSession.query(User).get(db_statement.author_uid)
     gravatar = get_profile_picture(db_editor, 40)
     name = db_editor.get_global_nickname()
@@ -425,9 +426,9 @@ def __get_extras_dict(statement):
     :return:
     """
     db_textversion_author = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.uid).\
-        order_by(TextVersion.uid.asc()).first()
+        order_by(TextVersion.uid.asc()).first()  # TODO #432
     db_textversion_modifier = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.uid).\
-        order_by(TextVersion.uid.desc()).first()
+        order_by(TextVersion.uid.desc()).first()  # TODO #432
 
     db_author   = DBDiscussionSession.query(User).get(db_textversion_author.author_uid)
     db_modifier = DBDiscussionSession.query(User).get(db_textversion_modifier.author_uid)
