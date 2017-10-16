@@ -38,7 +38,7 @@ def set_news(request):
 
     author = db_user.firstname
     if db_user.firstname != 'admin':
-        author += db_user.surname
+        author += ' {}'.format(db_user.surname)
 
     date = arrow.now()
     news = News(title=title, author=author, date=date, news=text)
