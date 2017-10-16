@@ -614,17 +614,14 @@ def check_token(token: str) -> bool:
     """
 
     token_components = token.split("-")
-    if not len(token_components) is 2:
-        return False
+    if len(token_components) is 2:
+        hash_identifier, auth_token = token_components
 
-    hash_identifier, auth_token = token_components
+        api_tokens = DBDiscussionSession.query(APIToken)\
+            .filter(and_(APIToken.token.startswith(hash_identifier),
+                         APIToken.disabled == False))
 
-    hash_ids = DBDiscussionSession.query(APIToken).filter(and_(
-        APIToken.token.startswith(hash_identifier),
-        APIToken.disabled is False))
-
-    for hash_id in hash_ids:
-        api_token = DBDiscussionSession.query(APIToken).get(hash_id)
-        return __hash_token_with_owner(api_token.owner, auth_token) is api_token.token
+        for api_token in api_tokens:
+            return __hash_token_with_owner(api_token.owner, auth_token) == api_token.token
 
     return False

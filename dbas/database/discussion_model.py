@@ -2166,3 +2166,6 @@ class APIToken(DiscussionBase):
         self.token = token
         self.owner = owner
         self.disabled = disabled
+
+    def __str__(self):
+        return "API-Token for {} created {}".format(self.owner, self.created)
