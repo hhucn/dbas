@@ -127,7 +127,10 @@ function replace_gravtar_with_default_image(only_on_error){
 		} else {
 			$(this).attr('src', src);
 		}
-		//$(this).css('width', '25px');
+		// resize fallback avatar
+		if ($(this).closest('#user-menu-dropdown').length === 1) {
+			$(this).css('width', '25px');
+		}
 	});
 }
 
