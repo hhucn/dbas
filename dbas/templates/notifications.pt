@@ -73,7 +73,7 @@
 					        	    </div>
                                     <div id="collapse1" class="panel-collapse collapse" tal:attributes="id msg.collapse_id">
 					        	        <div class="panel-body">
-                                            <div class="notification-content">${structure:msg.content}</div>
+                                            <div class="notification-content" style="overflow: auto;">${structure:msg.content}</div>
                                             <div style="float:right; padding: 0.2em;">
                                                 <span i18n:translate="to">to:</span>
                                                 <a href="#" tal:attributes="href msg.to_author_url" target="_blank" class="to_author_value">
