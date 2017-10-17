@@ -7,7 +7,7 @@ import unittest
 
 import admin.lib as admin
 from dbas.database import DBDiscussionSession, get_dbas_db_configuration
-from dbas.database.discussion_model import User
+from dbas.database.discussion_model import User, APIToken
 from dbas.helper.tests import add_settings_to_appconfig
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -106,6 +106,13 @@ class AdminTest(unittest.TestCase):
 
 
 class APITokenTest(unittest.TestCase):
+    def tearDown(self):
+        DBDiscussionSession.query(APIToken).delete()
+
     def test_generate_check(self):
         token = admin.generate_application_token("test")
         self.assertTrue(admin.check_token(token))
+
+    def test_fail_check(self):
+        token = "hglug8o7aug458oghag8o7h5o87gao87ha47z"  # contains non hex symbols
+        self.assertFalse(admin.check_token(token))
