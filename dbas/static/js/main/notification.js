@@ -154,7 +154,7 @@ function Notifications() {
 				'</div>' +
 				'<div id="collapse' + uid + '" class="panel-collapse collapse">' +
 					'<div class="panel-body">' +
-						'<div class="notification-content">text</div>' +
+						'<div class="notification-content" style="overflow: auto;">text</div>' +
 						'<div style="float:right; padding: 0.2em;">' +
 							'<span>' + _t(to) + ':</span> ' +
 							'<a href="/user/' + recipient + '" target="_blank" class="to_author_value">' +
