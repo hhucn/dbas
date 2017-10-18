@@ -77,10 +77,16 @@ def check_authentication(request):
         return user_logout(request, True)
 
 
-def api_notfound(request):
+def api_notfound(path):
+    """
+    Returns 404-Reponse with requested_path and message in its body
+
+    :param path: current request.path
+    :return: Response with 404 status code
+    """
     body = {
-        'requested_path': request.path,
-        'message': "Not Found",
+        'requested_path': path,
+        'message': 'Not Found',
     }
     response = Response(json.dumps(body).encode("utf-8"))
     response.status_int = 404
@@ -530,7 +536,7 @@ def notfound(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     if request.path.startswith('/api'):
-        return api_notfound(request)
+        return api_notfound(request.path)
 
     user.update_last_action(request.authenticated_userid)
     logger('notfound', 'def', 'main in {}'.format(request.method) + '-request' +
