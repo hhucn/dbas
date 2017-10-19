@@ -23,11 +23,6 @@ def test_main_page():
     assert_true(browser.is_text_present('part of the graduate school'), error_text)
 
 
-def test_contact_page():
-    browser.visit(ROOT + '/contact')
-    assert_true(browser.is_text_present('Feel free to drop us a'), error_text)
-
-
 # def test_news_page():
 #     browser.visit(ROOT + '/news')
 #     xpath = '//span[text()="Docker"]'
