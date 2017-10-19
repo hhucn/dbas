@@ -108,7 +108,7 @@ def main(global_config, **settings):
 
     # adding main routes
     config.add_route('main_page', '/')
-    config.add_route('main_page_new', '/new')
+    config.add_route('main_page_old', '/old')
     config.add_route('main_settings', '/settings')
     config.add_route('main_notification', '/notifications')
     config.add_route('main_news', '/news')

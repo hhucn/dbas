@@ -122,6 +122,38 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any], for_
 
 
 # main page
+@view_config(route_name='main_page_old', renderer='templates/index_old.pt', permission='everybody')
+def main_page_old(request):
+    """
+    View configuration for the main page
+
+    :param request: current request of the server
+    :return: HTTP 200 with several information
+    """
+    logger('main_page_old', 'def', 'request.params: {}'.format(request.params))
+
+    set_language_for_first_visit(request)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
+
+    session_expired = 'session_expired' in request.params and request.params['session_expired'] == 'true'
+    ui_locales = get_language_from_cookie(request)
+    logger('main_page_old', 'def', 'request.params: {}'.format(request.params))
+    _dh = DictionaryHelper(ui_locales, ui_locales)
+    extras_dict = _dh.prepare_extras_dict_for_normal_page(request)
+    _dh.add_language_options_for_extra_dict(extras_dict)
+
+    return {
+        'layout': base_layout(),
+        'language': str(ui_locales),
+        'title': name + ' ' + full_version,
+        'project': project_name,
+        'extras': extras_dict,
+        'session_expired': session_expired
+    }
+
+
 @view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
 @forbidden_view_config(renderer='templates/index.pt')
 def main_page(request):
@@ -141,38 +173,6 @@ def main_page(request):
     session_expired = 'session_expired' in request.params and request.params['session_expired'] == 'true'
     ui_locales = get_language_from_cookie(request)
     logger('main_page', 'def', 'request.params: {}'.format(request.params))
-    _dh = DictionaryHelper(ui_locales, ui_locales)
-    extras_dict = _dh.prepare_extras_dict_for_normal_page(request)
-    _dh.add_language_options_for_extra_dict(extras_dict)
-
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': name + ' ' + full_version,
-        'project': project_name,
-        'extras': extras_dict,
-        'session_expired': session_expired
-    }
-
-
-@view_config(route_name='main_page_new', renderer='templates/index_new.pt', permission='everybody')
-def main_page_new(request):
-    """
-    View configuration for the main page
-
-    :param request: current request of the server
-    :return: HTTP 200 with several information
-    """
-    logger('main_page_new', 'def', 'request.params: {}'.format(request.params))
-
-    set_language_for_first_visit(request)
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
-    session_expired = 'session_expired' in request.params and request.params['session_expired'] == 'true'
-    ui_locales = get_language_from_cookie(request)
-    logger('main_page_new', 'def', 'request.params: {}'.format(request.params))
     _dh = DictionaryHelper(ui_locales, ui_locales)
     extras_dict = _dh.prepare_extras_dict_for_normal_page(request)
     _dh.add_language_options_for_extra_dict(extras_dict)
@@ -367,11 +367,6 @@ def main_imprint(request):
     # add version of pyramid
     import pkg_resources
     extras_dict.update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
-
-    try:  # try to get current commit hash
-        extras_dict.update({'dbas_build': subprocess.check_output(['git', 'describe'])})
-    except FileNotFoundError:  # fallback
-        extras_dict.update({'dbas_build': full_version})
 
     return {
         'layout': base_layout(),

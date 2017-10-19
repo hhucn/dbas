@@ -4,16 +4,10 @@
 
 		<div class="row">
 
-			<div class="col-md-7">
+			<div class="col-md-6">
                 <div class="colored-container" style="margin-bottom: 1em;">
 				    <h4><span i18n:translate="imprint">Impressum</span> ${project}</h4>
-				    <p>Build <span tal:replace="extras.dbas_build"></span></p>
 				    <p i18n:translate="data_tmg">Angaben gemäß § 5 TMG</p>
-                    <p style="margin-top: 1em; margin-bottom: 2em;">
-                        <a id="link_popup_license" href="" data-toggle="modal" data-target="#popup_license">
-                            <span i18n:translate="details_license">Details concerning the license</span>
-                        </a>
-                    </p>
 				    <h5 i18n:translate="contact">Kontakt:</h5>
 				    <a tal:condition="not:extras.lang_is_en" href="http://www.tsn.hhu.de/ourgroup/scientists/tobias-krauthoff.html" target="_blank">Tobias Krauthoff</a>
 				    <a tal:condition="extras.lang_is_en" href="http://www.tsn.hhu.de/en/ourgroup/scientists/tobias-krauthoff.html" target="_blank">Tobias Krauthoff</a>
@@ -22,10 +16,12 @@
                     <br><span>40225 Düsseldorf</span>
 				    <br>
 				    <br><span i18n:translate="phone">Telefon:</span> <span>0211-8113461</span>
-				    <br><span>E-Mail: </span><a target="_blank" href='mailto:krauthoff@cs.uni-duesseldorf.de'>krauthoff@cs.uni-duesseldorf.de</a>
+				    <br><span>E-Mail: </span><a target="_blank" href='mailto:dbas@cs.uni-duesseldorf.de'>dbas@cs.uni-duesseldorf.de</a>
 				    <br>
 				    <br>
-                    <a href="http://www.uni-duesseldorf.de/home/footer/impressum.html"><span i18n:translate="imprint_hhu">Weiteres auf dem Impressum der HHU</span></a>
+                    <span i18n:translate="weiteres im">Weiteres im </span>
+                    <a href="http://www.uni-duesseldorf.de/home/footer/impressum.html"><span i18n:translate="imprint_hhu">Impressum der HHU</span></a>
+                    <span>or checkout the</span> <a href="https://github.com/hhucn/dbas/blob/master/LICENSE" target="_blank">license of D-BAS (MIT)</a>.
 				    <div tal:omit-tag="" tal:condition="not:extras.development_mode">
 				        <br>
 				        <h5><span i18n:translate="disclaimer_piwik">Piwik</span></h5>
@@ -48,41 +44,39 @@
                     </div>
                 </div>
 
-				<div class="colored-container links">
-					<h4><span>Pylons Pyramid</span></h4>
-					<span class="current-version project">${project}</span> <span i18n:translate="generated_with">is generated with Pyramid Web Framework </span> ${extras.pyramid_version}
-					<br>
-					<ul>
-						<li><a target="_blank" href="http://docs.pylonsproject.org/projects/pyramid/en/1.5-branch/"><i class="fa fa-bookmark" aria-hidden="true">&thinsp;</i>Docs</a></li>
-						<li><a target="_blank" href="https://github.com/Pylons/pyramid"><i class="fa fa-cog" aria-hidden="true"></i>&thinsp;Github Project</a></li>
-						<li><a target="_blank" href="https://webchat.freenode.net/?channels=pyramid"><i class="fa fa-globe" aria-hidden="true"></i>&thinsp;IRC Channel</a></li>
-						<li><a target="_blank" href="http://pylonsproject.org"><i class="fa fa-home" aria-hidden="true"></i>&thinsp;Pylons Project</a></li>
-					</ul>
+				<div class="colored-container" style="margin-bottom: 1em">
+					<h4><span i18n:translate="copyright_and_used_software">Copyrights and used Software</span></h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul>
+                                <li><a target="_blank" href="http://pylonsproject.org">Pyramid Framework ${extras.pyramid_version}</a></li>
+                                <li><a target="_blank" href="https://github.com/wimagguc/jquery-eu-cookie-law-popup">EU Cookie Popup</a></li>
+                                <li><a target="_blank" href="http://www.getbootstrap.com/">Bootstrap</a></li>
+                                <li><a target="_blank" href="http://github.hubspot.com/pace/docs/welcome/">Pace</a></li>
+                                <li><a target="_blank" href="http://www.bootstraptoggle.com/">BootstrapsToogle Button</a></li>
+                                <li><a target="_blank" href="https://bootswatch.com/paper/">Bootswatch Paper Theme</a></li>
+                                <li><a target="_blank" href="http://bootstraptour.com/">Bootstrap Tour</a></li>
+                                <li><a target="_blank" href="https://github.com/seiyria/bootstrap-slider">Bootstrap Slider</a>
+                                <li><a target="_blank" href="http://fontawesome.io/icons/">Font Awesome Icon</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul>
+                                <li><a target="_blank" href="http://piwik.org/">Piwik Open-Source Analytics</a></li>
+                                <li><a target="_blank" href="http://www.gravatar.com/">Gravatar</a></li>
+                                <li><a target="_blank" href="http://d3js.org">D3.js</a></li>
+                                <li><a target="_blank" href="http://theoatmeal.com/comics/state_web_summer#tumblr">404-Tumbeasts</a></li>
+                                <li><a target="_blank" href="https://github.com/js-cookie/js-cookie">js-cookie</a></li>
+                                <li><a target="_blank" href="https://www.google.com/recaptcha">Google reCAPTCHAs</a></li>
+                                <li><a target="_blank" href="http://codepen.io/imshubhamsingh/pen/dNQzmG">CSS Batman</a></li>
+                                <li><a target="_blank" href="http://startbootstrap.com/template-overviews/creative">Creative Template</a>
+                            </ul>
+                        </div>
+                    </div>
 				</div>
 			</div>
 
-			<div class="col-md-5">
-				<div class="colored-container" style="margin-bottom: 1em">
-					<h4><span i18n:translate="copyright_and_used_software">Copyrights and used Software</span></h4>
-					<ul>
-						<li><a target="_blank" href="https://github.com/wimagguc/jquery-eu-cookie-law-popup">EU Cookie Popup</a></li>
-						<li><a target="_blank" href="http://www.getbootstrap.com/">Bootstrap</a></li>
-                        <li><a target="_blank" href="http://github.hubspot.com/pace/docs/welcome/">Pace</a></li>
-						<li><a target="_blank" href="http://www.bootstraptoggle.com/">BootstrapsToogle Button</a></li>
-						<li><a target="_blank" href="https://bootswatch.com/paper/">Bootswatch Paper Theme</a></li>
-						<li><a target="_blank" href="http://bootstraptour.com/">Bootstrap Tour</a></li>
-                        <li><a target="_blank" href="https://github.com/seiyria/bootstrap-slider">Bootstrap Slider</a>
-						<li><a target="_blank" href="http://fontawesome.io/icons/">Font Awesome Icon</a></li>
-						<li><a target="_blank" href="http://piwik.org/">Piwik Open-Source Analytics</a></li>
-						<li><a target="_blank" href="http://www.gravatar.com/">Gravatar</a></li>
-						<li><a target="_blank" href="http://d3js.org">D3.js</a></li>
-						<li><a target="_blank" href="http://theoatmeal.com/comics/state_web_summer#tumblr">404-Tumbeasts</a></li>
-						<li><a target="_blank" href="https://github.com/js-cookie/js-cookie">js-cookie</a></li>
-						<li><a target="_blank" href="https://www.google.com/recaptcha">Google reCAPTCHAs</a></li>
-						<li><a target="_blank" href="http://codepen.io/imshubhamsingh/pen/dNQzmG">CSS Batman</a></li>
-						<!--<li><a target="_blank" href="https://github.com/devbridge/jQuery-Autocomplete">Autocomplete</a></li>-->
-					</ul>
-				</div>
+			<div class="col-md-6">
 
 				<div class="colored-container">
 					<h4><span i18n:translate="changes">Changes</span></h4>

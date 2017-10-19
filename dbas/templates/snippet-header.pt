@@ -21,11 +21,6 @@
                     </a>
                 </li>
 
-                <li id="bug-link">
-                    <a href="${request.application_url}/contact&bug=true" data-toggle="tooltip" data-placement="left">
-                        <i class="fa fa-bug" aria-hidden="true"></i><span i18n:translate="report_issue">Report Issues</span></a>
-                </li>
-
                 <li id="news-link">
                     <a href="${request.application_url}/news" data-toggle="tooltip" data-placement="left">
                         <i class="fa fa-newspaper-o" aria-hidden="true"></i><span i18n:translate="news">News</span>
@@ -78,27 +73,15 @@
                     </a>
                 </li>
 
-                <li class="dropdown">
-                    <a id="switch-lang" class="dropdown-toggle" data-toggle="dropdown" href="#language">
-                        <img id="switch-lang-indicator-en" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" tal:condition="extras.lang_is_en" alt="flag-us-gb">
-                        <img id="switch-lang-indicator-de" src="${request.static_url('dbas:static/images/flag-de-24.png')}" tal:condition="extras.lang_is_de" alt="flag-de">
-                        <!--
-                        <i class="fa fa-language" aria-hidden="true"></i>
-                        <img id="switch-lang-indicator-es" src="${request.static_url('dbas:static/images/flag-es-24.png')}">
-                        <img id="switch-lang-indicator-sw" src="${request.static_url('dbas:static/images/flag-sw-24.png')}">
-                        -->
-                        <span tal:condition="extras.lang_is_en">Englisch</span>
-                        <span tal:condition="extras.lang_is_de">Deutsch</span>
-                        <span class="caret"></span>
+                <li tal:condition="extras.lang_is_en">
+                    <a id="link-trans-de" style="cursor:pointer">
+                        <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_ge">
                     </a>
-                    <ul class="dropdown-menu" id="language-dropdown">
-                        <li tal:attributes="class extras.link_de_class"><a id="link-trans-de" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_ge"><span>Deutsch</span></a></li>
-                        <li tal:attributes="class extras.link_en_class"><a id="link-trans-en" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en"><span>Englisch</span></a></li>
-                        <!--
-                        <li tal:attributes="class extras.link_es_class"><a id="link-trans-es" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sp-24.png')}" alt="flag_es">Espa&ntilde;ol</a></li>
-                        <li tal:attributes="class extras.link_sw_class"><a id="link-trans-sw" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sw-32.png')}" alt="flag_sw">Svensk</a></li>
-                        -->
-                    </ul>
+                </li>
+                <li tal:condition="extras.lang_is_de">
+                    <a id="link-trans-en" style="cursor:pointer">
+                        <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en">
+                    </a>
                 </li>
 
             </ul>
