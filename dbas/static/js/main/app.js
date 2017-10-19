@@ -681,7 +681,7 @@ $(document).ready(function () {
 	}
 	
 	// start guided tour, if the cookie is not set
-	if (!Cookies.get(GUIDED_TOUR)){
+	if (!Cookies.get(GUIDED_TOUR) && window.location.href.indexOf('/discuss') !== -1){
 		new GuidedTour().start();
 	}
 
