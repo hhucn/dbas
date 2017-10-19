@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout" tal:attributes="lang extras.ui_locales">
 
   <head>
 
@@ -32,22 +33,22 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#about">About</a>
+              <a class="nav-link js-scroll-trigger" href="#about" i18n:translate="about">About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#services">Services</a>
+              <a class="nav-link js-scroll-trigger" href="#services" i18n:translate="services">Services</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#github">Github</a>
+              <a class="nav-link js-scroll-trigger" href="#github" i18n:translate="github">Github</a>
             </li>
             <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="#partners">Partners</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#news">News</a>
+              <a class="nav-link js-scroll-trigger" href="#news" i18n:translate="news">News</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
+              <a class="nav-link js-scroll-trigger" href="#contact" i18n:translate="contact">Contact</a>
             </li>
               <li class="nav-item" tal:condition="extras.lang_is_en">
                   <a id="link-trans-de" style="cursor:pointer">
@@ -67,12 +68,12 @@
     <header class="masthead">
       <div class="header-content">
         <div class="header-content-inner">
-          <h1 id="homeHeading">D-BAS: A Novel Approach for Large Scale Online-Discussion</h1>
+          <h1 id="homeHeading" i18n:translate="landing-page-heading">D-BAS: A Novel Approach for Large Scale Online-Discussion</h1>
           <hr>
-          <p><strong>Welcome to D-BAS! This is our dialog-based argumentation system. If you have any questions, please feel free to contact us or provide feedback.</strong></p>
+          <p><strong i18n:translate="welcong">Welcome to D-BAS! This is our dialog-based argumentation system. If you have any questions, please feel free to contact us or provide feedback.</strong></p>
             <div class="btn-group">
-                <a class="btn btn-primary btn-xl" href="#about" style="margin-left: 0; margin-right: 0;">Find Out More</a>
-                <a class="btn btn-default btn-xl" href="http://localhost:4284/discuss" style="margin-left: 0; margin-right: 0;"><span class="text-primary">or start directly</span></a>
+                <a class="btn btn-primary btn-xl" href="#about" style="margin-left: 0; margin-right: 0;"><span i18n:translate="find_out_more">Find Out More</span></a>
+                <a class="btn btn-default btn-xl" href="http://localhost:4284/discuss" style="margin-left: 0; margin-right: 0;"><span class="text-primary" i18n:translate="start_directly">or start directly</span></a>
             </div>
         </div>
       </div>
@@ -266,7 +267,7 @@
 
         <div class="container links">
             <ul>
-                <li><i class="fa fa-copyright" aria-hidden="true" style="margin-right: 0.5em"></i><span tal:replace="extras.year"></span> Krauthoff</li>
+                <li><i class="fa fa-copyright" aria-hidden="true" style="margin-right: 0.5em"></i><span>${extras.year} Krauthoff</span></li>
                 <li><a href="${request.application_url}/imprint"><i class="fa fa-copyright" aria-hidden="true" style="margin-right: 0.5em"></i><span i18n:translate="imprint_copyright">Imprint and Copyrights</span></a></li>
                 <li><a href="mailto:dbas@cs.uni-duesseldorf.de"><i class="fa fa-comment" aria-hidden="true" style="margin-right: 0.5em"></i><span i18n:translate="contact">Contact</span></a></li>
                 <li><a href="${request.application_url}/rss"><i class="fa fa-rss" aria-hidden="true" style="margin-right: 0.5em"></i><span i18n:translate="rss">RSS</span></a></li>

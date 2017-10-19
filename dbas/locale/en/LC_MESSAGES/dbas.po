@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-09-27 09:42+0200\n"
+"POT-Creation-Date: 2017-10-19 15:03+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -15,6 +15,996 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Lingua 3.10\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Default: 404 Error
+#: templates/404.pt:8
+msgid "404"
+msgstr "404 Error"
+
+#. Default: The page
+#: templates/404.pt:10
+msgid "404_text_part1"
+msgstr "The page"
+
+#. Default: could not be found
+#: templates/404.pt:12
+msgid "404_text_part2"
+msgstr "could not be found"
+
+#. Default: , because the input parameter seems to be wrong.
+#: templates/404.pt:12
+msgid "wrong_input_params"
+msgstr ", because the input parameter seems to be wrong."
+
+#. Default: , because the author revoked the content.
+#: templates/404.pt:12
+msgid "author_revoked_content"
+msgstr ", because the author revoked the content."
+
+#. Default: Go home
+#: templates/404.pt:15
+msgid "go-home"
+msgstr "Go home"
+
+#. Default: or
+#: templates/404.pt:17
+msgid "or"
+msgstr "oder"
+
+#. Default: go back to the discussion
+#: templates/404.pt:18
+msgid "go_back_to_the_discussion"
+msgstr "go back to the discussion!"
+
+#. Default: Your session has expired!
+#: templates/index.pt:7
+msgid "session_expired"
+msgstr "Your session has expired!"
+
+#. Default: You have to log in again.
+#: templates/index.pt:8
+msgid "login_again"
+msgstr "You have to log in again."
+
+#. Default: Welcome to D-BAS! This is an early prototype of our dialog-based
+#. argumentation system. There will be bugs. Please feel free to
+#: templates/index.pt:19
+msgid "welcome_text1"
+msgstr ""
+"Welcome to D-BAS! This is an prototype of our dialog-based argumentation "
+"system. There will be bugs. Please feel free to"
+
+#. Default: contact
+#: templates/index.pt:20
+msgid "welcome_text2"
+msgstr "contact"
+
+#. Default: us to report bugs or provide feedback.
+#: templates/index.pt:21
+msgid "welcome_text3"
+msgstr "us to report bugs or provide feedback."
+
+#. Default: Derzeit läuft D-BAS sowohl im Produktivbetrieb zur Diskussion von
+#. Verbesserungen im Studiengang Informatik (nur auf Deutsch) als auch in einer
+#. eine Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres
+#. Browsers vermuten wir, dass Sie sich für den Produktivbetrieb interessieren.
+#. Welche Version von D-BAS wollen Sie nutzen:
+#: templates/index.pt:30
+msgid "choose_fieldtest_reviewer_text"
+msgstr ""
+"We are currently hosting both a demo version (English only) and a real-world "
+"deployment of D-BAS (German only, manually translated into Englisch). Based "
+"on your browser, we assume that you are interested in the demo version. "
+"However, you can switch to the real-world deployment if you like:"
+
+#. Default: Zum Feldversuch
+#: templates/index.pt:35
+msgid "fieldtest"
+msgstr "Real-World"
+
+#. Default: Zum Review
+#: templates/index.pt:38
+msgid "reviewer"
+msgstr "Demo"
+
+#. Default: This work is part of the graduate school on
+#: templates/index.pt:46 templates/index_new.pt:157
+msgid "work_based_on"
+msgstr "This work is part of the graduate school on"
+
+#. Default: Online-Participation
+#: templates/index.pt:47 templates/index.pt:48 templates/index_new.pt:158
+#: templates/index_new.pt:159
+msgid "online_participation"
+msgstr "Online-Participation"
+
+#. Default: It is funded by the
+#: templates/index.pt:49 templates/index_new.pt:160
+msgid "funded_by"
+msgstr "It is funded by the"
+
+#. Default: Ministry of Innovation, Science and Research in North Rhine-
+#. Westphalia
+#: templates/index.pt:50 templates/index_new.pt:161
+msgid "ministry_of_innovation"
+msgstr "Ministry of Innovation, Science and Research in North Rhine-Westphalia"
+
+#. Default: Frequent Questions
+#: templates/faq.pt:7
+msgid "faq"
+msgstr "Frequent Questions"
+
+#. Default: Simple answers to your most common questions
+#: templates/faq.pt:8
+msgid "simple_answers"
+msgstr "Simple answers to your most common questions"
+
+#. Default: How do we handle your login data?
+#: templates/faq.pt:10
+msgid "faq_question_ldap"
+msgstr "How do we handle your login data?"
+
+#. Default: If you are using the LDAP login, we are using the name information
+#. service of the University Düsseldorf. Your password is send from your
+#. computer, to our server (which is placed at the University) and then towards
+#. the service of the ZIM. Each transmission is secured and encrypted.
+#. Additionally we will never save, log or display your password anywhere!
+#. Otherwise the data is localy stored with salted hashes.
+#: templates/faq.pt:11
+msgid "faq_answer_ldap"
+msgstr ""
+"We are using the name information service of the University Düsseldorf. Your "
+"password is send from your computer, to our server (which is placed at the "
+"University) and then towards the service of the ZIM. Each transmission is "
+"secured and encrypted. Additionally we will never save, log or display your "
+"password anywhere!"
+
+#. Default: What is the difference between interest and opinion?
+#: templates/faq.pt:15
+msgid "faq_question_interest_opinion"
+msgstr "What is the difference between interests and opinions?"
+
+#. Default: If you select any answer in D-BAS, you will be interested in this
+#. statement/reaction/... but we will never think, that this is your personal
+#. opinion. Only if you mark an statement or argument as your opinion, we will
+#. know, that you have the same opinion like the given text.
+#: templates/faq.pt:16
+msgid "faq_answer_interest_opinion"
+msgstr ""
+"If you select any answer in D-BAS, you will be interested in this statement/"
+"reaction/... but we will never think, that this is your personal opinion. "
+"Only if you mark an statement or argument as your opinion, we will know, "
+"that you have the same opinion like the given text."
+
+#. Default: Can I mark an statement or argument as my opinion?
+#: templates/faq.pt:20
+msgid "faq_question_mark_opinion"
+msgstr "Can I mark an statement or argument as my opinion?"
+
+#. Default: Yes, you can! Please press the yellow star at the beginning of a
+#. green bubble to mark a statement or an argument as your opinon. For this you
+#. have to be logged in.
+#: templates/faq.pt:21
+msgid "faq_answer_mark_opinion"
+msgstr ""
+"Yes, you can! Please press the yellow star at the beginning of a green "
+"bubble to mark a statement or an argument as your opinon. For this you have "
+"to be logged in."
+
+#. Default: Is there any overview about all given arguments and statements?
+#: templates/faq.pt:25
+msgid "faq_question_graph"
+msgstr "Is there any overview about all given arguments and statements?"
+
+#. Default: Yes, we have a graphical representation. Simply open the little
+#. sidebar in the discussion window and click on 'graph view'
+#: templates/faq.pt:26
+msgid "faq_answer_graph"
+msgstr ""
+"Yes, we have a graphical representation. Simply open the little sidebar in "
+"the discussion window and click on 'graph view'"
+
+#. Default: What are these little icons next to the statements?
+#: templates/faq.pt:30
+msgid "faq_question_buttons_next_to_statement"
+msgstr "What are these little icons next to the statements?"
+
+#. Default: These little icons will appear on each set of statements in the
+#. answer field, if you are logged in.
+#: templates/faq.pt:31
+msgid "faq_answer_buttons_next_to_statement"
+msgstr ""
+"These little icons will appear on each set of statements in the answer "
+"field, if you are logged in."
+
+#. Default: The pencil allows you to submit proposals for edits.
+#: templates/faq.pt:33
+msgid "faq_answer_pencil_next_to_statement"
+msgstr "The pencil allows you to submit proposals for edits."
+
+#. Default: With the help of the flag you can report statements, if there is
+#. something wrong.
+#: templates/faq.pt:34
+msgid "faq_answer_flag_next_to_statement"
+msgstr ""
+"With the help of the flag you can report statements, if there is something "
+"wrong."
+
+#. Default: You made an statement on your own and not happy with it? Let's
+#. unsubscribe yourself as author.
+#: templates/faq.pt:35
+msgid "faq_answer_trash_next_to_statement"
+msgstr ""
+"You made an statement on your own and not happy with it? Let's unsubscribe "
+"yourself as author."
+
+#. Default: You are reading an statement, which should be supporting your
+#. conclusion, but it is nonsense? Let's attack this one!
+#: templates/faq.pt:36
+msgid "faq_answer_bomb_next_to_statement"
+msgstr ""
+"You are reading an statement, which should be supporting your conclusion, "
+"but it is nonsense? Let's attack this one!"
+
+#. Default: There is this specific website with facts about an statement? With
+#. the link-icon you can add references for a statement / argument.
+#: templates/faq.pt:37
+msgid "faq_answer_link_next_to_statement"
+msgstr ""
+"There is this specific website with facts about an statement? With the link-"
+"icon you can add references for a statement / argument."
+
+#. Default: What do I do if I found a bug or have other questions about D-BAS?
+#: templates/faq.pt:42
+msgid "faq_question_bug"
+msgstr "What do I do if I found a bug or have other questions about D-BAS?"
+
+#. Default: If you think you've found an issue or have any other questions not
+#. covered above, please email us via the
+#: templates/faq.pt:43
+msgid "faq_answer_bug1"
+msgstr ""
+"If you think you've found an issue or have any other questions not covered "
+"above, please email us at "
+
+#. Default: contact page
+#: templates/faq.pt:43
+msgid "contact_page"
+msgstr "contact page"
+
+#. Default: Please keep in mind that our current team is quite small and we'll
+#. do our very best to get back to you ASAP.
+#: templates/faq.pt:44
+msgid "faq_answer_bug2"
+msgstr ""
+"Please keep in mind that our current team is quite small and we'll do our "
+"very best to get back to you ASAP."
+
+#. Default: No arguments to review in this queue!
+#: templates/review-content.pt:10
+msgid "no_arguments_to_review"
+msgstr "No arguments to review in this queue!"
+
+#. Default: Review
+#: templates/review-content.pt:19 templates/snippet-header.pt:76
+#: templates/review-history.pt:14 templates/review-reputation.pt:8
+msgid "review"
+msgstr "Review"
+
+#. Default: Deletes
+#: templates/review-content.pt:20
+msgid "deletes"
+msgstr "Deletes"
+
+#. Default: Optimizations
+#: templates/review-content.pt:21
+msgid "optimizations"
+msgstr "Optimizations"
+
+#. Default: Edits
+#: templates/review-content.pt:22
+msgid "edits"
+msgstr "Edits"
+
+#. Default: Duplicates
+#: templates/review-content.pt:23
+msgid "duplicates"
+msgstr "Duplicates"
+
+#. Default: Merge
+#: templates/review-content.pt:24
+msgid "merge"
+msgstr "Merge"
+
+#. Default: Split
+#: templates/review-content.pt:25
+msgid "split"
+msgstr "Split"
+
+#. Default: (more)
+#: templates/review-content.pt:33
+msgid "wrapped_more"
+msgstr "(more)"
+
+#. Default: (less)
+#: templates/review-content.pt:34
+msgid "wrapped_less"
+msgstr "(less)"
+
+#. Default: Skip it
+#: templates/review-content.pt:38 templates/review-content.pt:43
+#: templates/review-content.pt:48 templates/review-content.pt:53
+#: templates/review-content.pt:58 templates/review-content.pt:63
+#: templates/review-content.pt:88 templates/review-content.pt:93
+#: templates/review-content.pt:98 templates/review-content.pt:103
+#: templates/review-content.pt:108 templates/review-content.pt:113
+msgid "skip_it"
+msgstr "Skip it"
+
+#. Default: Delete it
+#: templates/review-content.pt:39 templates/review-content.pt:87
+msgid "delete_it"
+msgstr "Delete it"
+
+#. Default: It's Okay
+#. Default: It's okay
+#: templates/review-content.pt:40 templates/review-content.pt:50
+#: templates/review-content.pt:86 templates/review-content.pt:96
+msgid "its_okay"
+msgstr "It's Okay"
+
+#. Default: It's okay so
+#: templates/review-content.pt:44 templates/review-content.pt:92
+msgid "its_okay_so"
+msgstr "It's okay so"
+
+#. Default: Let me correct it
+#: templates/review-content.pt:45 templates/review-content.pt:91
+msgid "correct_it"
+msgstr "Let me correct it"
+
+#. Default: Reject it
+#: templates/review-content.pt:49 templates/review-content.pt:59
+#: templates/review-content.pt:64 templates/review-content.pt:97
+#: templates/review-content.pt:107 templates/review-content.pt:112
+msgid "reject_it"
+msgstr "Reject it"
+
+#. Default: Unique
+#: templates/review-content.pt:54
+msgid "unique"
+msgstr "Unique"
+
+#. Default: Duplicate
+#: templates/review-content.pt:55
+msgid "duplicate"
+msgstr "Duplicate"
+
+#. Default: Change is okay
+#: templates/review-content.pt:60 templates/review-content.pt:65
+msgid "change_okay"
+msgstr "Change is okay"
+
+#. Default: Information for the different reasons
+#: templates/review-content.pt:73
+msgid "information_for_the_different_reasons"
+msgstr "Information for the different reasons"
+
+#. Default: Off topic or irrelevant
+#: templates/review-content.pt:75
+msgid "off_topic_or_irrelevant"
+msgstr "Off topic or irrelevant"
+
+#. Default: text does not belong to the topic under discussion
+#: templates/review-content.pt:75
+msgid "off_topic_explanation"
+msgstr "text does not belong to the topic under discussion"
+
+#. Default: Inappropriate, harmful or abusive
+#: templates/review-content.pt:76
+msgid "inappropriate_harmful_abbusive"
+msgstr "Inappropriate, harmful or abbusive"
+
+#. Default: are posts, which are inappropriate, harmful or abbusive
+#: templates/review-content.pt:76
+msgid "inappropriate_harmful_abbusive_explanation"
+msgstr "are posts, which are inappropriate, harmful or abbusive"
+
+#. Default: Needs optimization
+#: templates/review-content.pt:77
+msgid "needs_optimization"
+msgstr "Needs optimization"
+
+#. Default: if posts are useful, but need edits in grammar and/or spelling
+#: templates/review-content.pt:77
+msgid "needs_optimization_explanation"
+msgstr "if posts are useful, but need edits in grammar and/or spelling"
+
+#. Default: Information for the different buttons
+#: templates/review-content.pt:84
+msgid "information_for_the_different_buttons"
+msgstr "Information for the different buttons"
+
+#. Default: for arguments, which should not be deleted.
+#: templates/review-content.pt:86
+msgid "its_okay_explanation"
+msgstr "for arguments, which should not be deleted."
+
+#. Default: for arguments, that should be deleted based on the reason above.
+#: templates/review-content.pt:87
+msgid "delete_it_explanation"
+msgstr "for arguments, that should be deleted based on the reason above."
+
+#. Default: if you are not sure and want to go to the next argument.
+#. Default: if you are not sure and want to go to the next statement.
+#: templates/review-content.pt:88 templates/review-content.pt:93
+#: templates/review-content.pt:98 templates/review-content.pt:103
+#: templates/review-content.pt:108 templates/review-content.pt:113
+msgid "skip_it_explanation"
+msgstr "if you are not sure and want to go to the next argument."
+
+#. Default: , if you have an idea for a better formulation with the same
+#. content.
+#: templates/review-content.pt:91
+msgid "correct_it_explanation"
+msgstr ", if you have an idea for a better formulation with the same"
+
+#. Default: for arguments, which can be understood as-is.
+#: templates/review-content.pt:92
+msgid "its_okay_so_explanation"
+msgstr "for arguments, which can be understood as-is."
+
+#. Default: , if the correction is acceptable and the argument is not
+#. falsified.
+#: templates/review-content.pt:96
+msgid "correction_is_okay"
+msgstr ", if the correction is acceptable and the argument is not"
+
+#. Default: for correction which are inappropriate are wrong.
+#: templates/review-content.pt:97
+msgid "reject_itexplanation"
+msgstr "for correction which are inappropriate are wrong."
+
+#. Default: It's a duplicate
+#: templates/review-content.pt:101
+msgid "its_duplicate"
+msgstr "It's a duplicate"
+
+#. Default: , if the marked statement is a duplicate.
+#: templates/review-content.pt:101
+msgid "marked_statement_is_duplicate"
+msgstr ", if the marked statement is a duplicate."
+
+#. Default: It's unique
+#: templates/review-content.pt:102
+msgid "its_unique"
+msgstr "It's unique"
+
+#. Default: for marked statements, which are unique.
+#: templates/review-content.pt:102
+msgid "duplicate_is_unique"
+msgstr "for marked statements, which are unique."
+
+#. Default: Split it
+#: templates/review-content.pt:106
+msgid "split_it"
+msgstr "Split it"
+
+#. Default: , if the selected statement is a set of than one statement and the
+#. given proposals match to the original content.
+#: templates/review-content.pt:106
+msgid "marked_statement_to_slit"
+msgstr ""
+", if the selected statement is a set of than one statement and the given "
+"proposals match to the original content."
+
+#. Default: for marked statements, which are unique.
+#: templates/review-content.pt:107
+msgid "statement_not_to_split"
+msgstr "for marked statements, which should not be splitted."
+
+#. Default: Merge it
+#: templates/review-content.pt:111
+msgid "merge_it"
+msgstr "Merge it"
+
+#. Default: , if the selected statements should be one, single statements and
+#. the given proposal matches to the original contents.
+#: templates/review-content.pt:111
+msgid "marked_statement_to_merge"
+msgstr ""
+", if the selected statements should be one, single statements and the given "
+"proposal matches to the original contents."
+
+#. Default: for marked statements, which are unique.
+#: templates/review-content.pt:112
+msgid "statement_not_to_merge"
+msgstr "for marked statements, which should not be merged."
+
+#. Default: In the discussion about
+#: templates/review-content.pt:125 templates/review-content.pt:146
+#: templates/review-content.pt:161
+msgid "in_the_discussion_about"
+msgstr "In the discussion about"
+
+#. Default: following argument was corrected.
+#: templates/review-content.pt:127
+msgid "following_argument_was_corrected"
+msgstr "following argument was corrected."
+
+#. Default: These are the edits:
+#: templates/review-content.pt:136
+msgid "these_are_the_edits"
+msgstr "These are the edits:"
+
+#. Default: following argument was flagged.
+#: templates/review-content.pt:148
+msgid "following_argument_was_flagged"
+msgstr "following argument was flagged:"
+
+#. Default: following statement was flagged.
+#: templates/review-content.pt:149
+msgid "following_statement_was_flagged"
+msgstr "following statement was flagged:"
+
+#. Default: This is the original version
+#: templates/review-content.pt:152
+msgid "this_is_original_version"
+msgstr "This is the original version"
+
+#. Default: following statements were flagged:
+#: templates/review-content.pt:163
+msgid "following_statements_were_flagged"
+msgstr "following statements were flagged:"
+
+#. Default: Context, where the statement is used:
+#: templates/review-content.pt:173
+msgid "context_where_statement_is_used"
+msgstr "Context, where the statement is used:"
+
+#. Default: This is the original statement:
+#: templates/review-content.pt:182
+msgid "this_is_original_statements"
+msgstr "This is the original statement:"
+
+#. Default: This statement should be splitted into:
+#: templates/review-content.pt:190
+msgid "this_statement_should_be_splitted"
+msgstr "This statement should be splitted into:"
+
+#. Default: This statement should be merged to:
+#: templates/review-content.pt:201
+msgid "this_statement_should_be_merged"
+msgstr "This statement should be merged to:"
+
+#. Default: Reported
+#: templates/review-content.pt:215
+msgid "reported"
+msgstr "Reported"
+
+#. Default: Reported by
+#: templates/review-content.pt:219
+msgid "reported_by"
+msgstr "Reported by"
+
+#. Default: Viewed
+#: templates/review-content.pt:229
+msgid "viewed"
+msgstr "Viewed"
+
+#. Default: Attacks
+#: templates/review-content.pt:233
+msgid "attacks"
+msgstr "Attacks"
+
+#. Default: Supports
+#: templates/review-content.pt:237
+msgid "supports"
+msgstr "Supports"
+
+#. Default: Request lock
+#: templates/review-content.pt:258
+msgid "request_lock"
+msgstr "Request lock"
+
+#. Default: This argument is locked for your edit. You have
+#: templates/review-content.pt:261
+msgid "argument_is_locked"
+msgstr "This argument is locked for your edit. You have"
+
+#. Default: minutes
+#: templates/review-content.pt:262
+msgid "minutes"
+msgstr "minutes"
+
+#. Default: Please make your edits in grammar and/or spelling here:
+#: templates/review-content.pt:263
+msgid "please_make_your_edits"
+msgstr "Please make your edits in grammar and/or spelling here:"
+
+#. Default: Original
+#: templates/review-content.pt:269 templates/review-history.pt:43
+#: templates/review-history.pt:44
+msgid "original"
+msgstr "Original"
+
+#. Default: Your correcture
+#: templates/review-content.pt:270
+msgid "your correcture"
+msgstr "Your correcture"
+
+#. Default: Send
+#: templates/review-content.pt:285
+msgid "send"
+msgstr "Send"
+
+#. Default: Toggle navigation
+#: templates/snippet-header.pt:7
+msgid "Toggle Navigation"
+msgstr "Toggle navigation"
+
+#. Default: Let's go
+#: templates/snippet-header.pt:20
+msgid "lets_go"
+msgstr "Let's go"
+
+#. Default: Report Issues
+#: templates/snippet-header.pt:26
+msgid "report_issue"
+msgstr "Report Issue"
+
+#. Default: News
+#: templates/snippet-header.pt:31 templates/index_new.pt:48
+msgid "news"
+msgstr "News"
+
+#. Default: Login
+#. Default: Log In
+#: templates/snippet-header.pt:37 templates/snippet-popups.pt:274
+#: templates/snippet-popups.pt:450
+msgid "login"
+msgstr "Log In"
+
+#. Default: Settings
+#: templates/snippet-header.pt:51 templates/settings.pt:41
+msgid "settings"
+msgstr "Settings"
+
+#. Default: Notifications
+#: templates/snippet-header.pt:58
+msgid "notifications"
+msgstr "Notifications"
+
+#. Default: Admin
+#: templates/snippet-header.pt:63
+msgid "Admin"
+msgstr "Admin"
+
+#. Default: Logout
+#: templates/snippet-header.pt:68
+msgid "logout"
+msgstr "Logout"
+
+#. Default: Impressum
+#: templates/imprint.pt:9
+msgid "imprint"
+msgstr "Imprint"
+
+#. Default: Angaben gemäß § 5 TMG
+#: templates/imprint.pt:11
+msgid "data_tmg"
+msgstr "Information according to § 5 TMG "
+
+#. Default: Details concerning the license
+#: templates/imprint.pt:14
+msgid "details_license"
+msgstr "Details concerning the license"
+
+#. Default: Kontakt:
+#. Default: Contact
+#: templates/imprint.pt:17 templates/snippet-footer.pt:18
+#: templates/index_new.pt:51 templates/index_new.pt:272
+msgid "contact"
+msgstr "Contact"
+
+#. Default: Institut für Informatik
+#: templates/imprint.pt:20
+msgid "department"
+msgstr "Department of Computer Science"
+
+#. Default: Telefon:
+#: templates/imprint.pt:24
+msgid "phone"
+msgstr "Phone Number:"
+
+#. Default: Weiteres auf dem Impressum der HHU
+#: templates/imprint.pt:28
+msgid "imprint_hhu"
+msgstr ""
+"For more details please see the imprint of the Heinrich-Heine-University "
+"Duesseldorf"
+
+#. Default: Piwik
+#: templates/imprint.pt:31
+msgid "disclaimer_piwik"
+msgstr "Piwik"
+
+#. Default: Dieses Angebot benutzt Piwik.org, eine Open-Source-Software zur
+#. statistischen Auswertung der Nutzerzugriffe. Piwik verwendet sog. “Cookies”,
+#. Textdateien, die auf dem Computer der Nutzer gespeichert werden und die eine
+#. Analyse der Benutzung der Website durch die Nutzer ermöglichen. Die durch
+#. den Cookie erzeugten Informationen über die Benutzung dieses Agebotes werden
+#. auf dem Server des Anbieters in Deutschland gespeichert. Die IP-Adresse wird
+#. sofort nach der Verarbeitung und vor deren Speicherung anonymisiert. Nutzer
+#. können die Installation der Cookies durch eine entsprechende Einstellung
+#. Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch
+#. darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche
+#. Funktionen dieser Website vollumfänglich nutzen können.
+#: templates/imprint.pt:32
+msgid "disclaimer_piwik_content"
+msgstr ""
+"Like most website operators, Piwik.org collects non-personally-identifying "
+"information of the sort that web browsers and servers typically make "
+"available, such as the browser type, language preference, referring site, "
+"and the date and time of each visitor request. Piwik.org’s purpose in "
+"collecting non-personally identifying information is to better understand "
+"how Piwik.org’s visitors use its website. From time to time, Piwik.org may "
+"release non-personally-identifying information in the aggregate, e.g., by "
+"publishing a report on trends in the usage of its website. Piwik.org also "
+"collects potentially personally-identifying information like Internet "
+"Protocol (IP) addresses. Piwik.org does not use such information to identify "
+"its visitors, however, and does not disclose such information, other than "
+"under the same circumstances that it uses and discloses personally-"
+"identifying information, as described below."
+
+#. Default: is generated with Pyramid Web Framework
+#: templates/imprint.pt:53
+msgid "generated_with"
+msgstr "is generated with Pyramid Web Framework"
+
+#. Default: Copyrights and used Software
+#: templates/imprint.pt:66
+msgid "copyright_and_used_software"
+msgstr "Used Software"
+
+#. Default: Changes
+#: templates/imprint.pt:88
+msgid "changes"
+msgstr "Changelog"
+
+#. Default: Queues
+#: templates/review.pt:7
+msgid "queues"
+msgstr "Queues"
+
+#. Default: How To
+#: templates/review.pt:8
+msgid "howto"
+msgstr "How To"
+
+#. Default: Help improve the dialog
+#: templates/review.pt:15
+msgid "help_to_improve"
+msgstr "Help improve the dialog"
+
+#. Default: D-BAS is moderated by you. Help your discussion members learn to
+#. argue and raise the quality of argumenty by:
+#: templates/review.pt:16
+msgid "dbas_is_moderated_by"
+msgstr ""
+"D-BAS is moderated by you. Help your discussion members learn to argue and "
+"raise the quality of arguments by:"
+
+#. Default: Evaluate new statements
+#: templates/review.pt:18
+msgid "evaluate_new_statements"
+msgstr "evaluating new statements"
+
+#. Default: Reviewing suspicious statements
+#: templates/review.pt:19
+msgid "reviewing_suspicious_statements"
+msgstr "reviewing suspicious statements"
+
+#. Default: Voting to close or reopen statements
+#: templates/review.pt:20
+msgid "voting_to_close"
+msgstr "vote to close or reopen statements"
+
+#. Default: Choose a task to get started.
+#: templates/review.pt:22
+msgid "choose_task"
+msgstr "Choose a task to get started!"
+
+#. Default: Based on your user group, you have all rights!
+#: templates/review.pt:30 templates/review-reputation.pt:14
+msgid "unlimited_right_based_on_group"
+msgstr "Based on your user group, you have all rights!"
+
+#. Default: Your current reputation count is
+#: templates/review.pt:33
+msgid "current_reputation_os"
+msgstr "Your current reputation count is"
+
+#. Default: Open Tasks
+#: templates/review.pt:43
+msgid "open_tasks"
+msgstr "Open Tasks"
+
+#. Default: Topic
+#: templates/review.pt:44
+msgid "topic"
+msgstr "Topic"
+
+#. Default: Recent Reviews
+#: templates/review.pt:45
+msgid "recent_reviews"
+msgstr "Recent Reviews"
+
+#. Default: None
+#: templates/review.pt:68
+msgid "None"
+msgstr "None"
+
+#. Default: What is reputation? How do I earn (and lose) it?
+#: templates/review.pt:80
+msgid "what_is_reputation"
+msgstr "What is reputation? How do I earn (and lose) it?"
+
+#. Default: Reputation is a rough measurement of how work you are doing for the
+#. discussion and the community.
+#: templates/review.pt:81
+msgid "what_is_reputation_def"
+msgstr ""
+"Reputation is a rough measurement of how work you are doing for the "
+"discussion and the community."
+
+#. Default: you can earn it by using D-BAS and all of its great functions.
+#: templates/review.pt:82
+msgid "what_is_reputation_earn"
+msgstr "You can earn it by using D-BAS and all of its great functions."
+
+#. Default: Basic use of D-BAS, does not require any reputation at all.
+#: templates/review.pt:83
+msgid "what_is_reputation_use"
+msgstr "Basic use of D-BAS does not require any reputation at all."
+
+#. Default: You gain reputation when:
+#: templates/review.pt:86
+msgid "gain_rep_when"
+msgstr "You gain reputation when:"
+
+#. Default: You lose reputation when:
+#: templates/review.pt:95
+msgid "lose_rep_when"
+msgstr "You lose reputation when:"
+
+#. Default: Privileges
+#: templates/review.pt:107
+msgid "privileges"
+msgstr "Privileges"
+
+#. Default: Privileges control what you can see in the review queues of D-BAS.
+#. Gain more privileges by increasing your reputation.
+#: templates/review.pt:108
+msgid "privileges_explanation"
+msgstr ""
+"Privileges control what you can see in the review queues of D-BAS. Gain more "
+"privileges by increasing your reputation."
+
+#. Default: You have to earn more reputation for this queue
+#: templates/review-history.pt:6
+msgid "earn_more_reputation_for_queue"
+msgstr "You have to earn more reputation for this queue"
+
+#. Default: You have no access to this site
+#: templates/review-history.pt:7
+msgid "you_have_no_access"
+msgstr "You have no access to this site"
+
+#. Default: History
+#: templates/review-history.pt:15
+msgid "history"
+msgstr "History"
+
+#. Default: Current Decisions
+#. Default: Current decisions
+#: templates/review-history.pt:16 templates/review-history.pt:23
+msgid "current_decisions"
+msgstr "Current decisions"
+
+#. Default: The history of votes
+#: templates/review-history.pt:22
+msgid "history_of_votes"
+msgstr "The history of votes"
+
+#. Default: No decisions for this queue.
+#: templates/review-history.pt:35
+msgid "no_decision_for_this_queue"
+msgstr "No decisions for this queue."
+
+#. Default: Statement
+#: templates/review-history.pt:40 templates/snippet-popups.pt:1023
+#: templates/snippet-popups.pt:1044
+msgid "statement"
+msgstr "Statement"
+
+#. Default: Edit
+#: templates/review-history.pt:41
+msgid "edit"
+msgstr "Edit"
+
+#. Default: Reason
+#: templates/review-history.pt:42
+msgid "reason"
+msgstr "Reason"
+
+#. Default: Votes
+#: templates/review-history.pt:45
+msgid "votes"
+msgstr "Votes"
+
+#. Default: Accepted
+#: templates/review-history.pt:46
+msgid "accepted"
+msgstr "Accepted"
+
+#. Default: Voters Pro
+#: templates/review-history.pt:47
+msgid "voters_pro"
+msgstr "Voters Pro"
+
+#. Default: Voters Con
+#: templates/review-history.pt:48
+msgid "voters_con"
+msgstr "Voters Con"
+
+#. Default: Timestamp
+#: templates/review-history.pt:49
+msgid "timestamp"
+msgstr "Timestamp"
+
+#. Default: Reporter
+#: templates/review-history.pt:50
+msgid "reporter"
+msgstr "Reporter"
+
+#. Default: Action
+#: templates/review-history.pt:51
+msgid "actions"
+msgstr "Action"
+
+#. Default: Undo
+#: templates/review-history.pt:93
+msgid "undo"
+msgstr "Undo"
+
+#. Default: Cancel
+#: templates/review-history.pt:96 templates/snippet-popups.pt:172
+#: templates/snippet-popups.pt:195 templates/snippet-popups.pt:220
+#: templates/snippet-popups.pt:887 templates/snippet-popups.pt:934
+#: templates/snippet-popups.pt:1087
+msgid "cancel"
+msgstr "Cancel"
+
+#. Default: Imprint and Copyrights
+#: templates/snippet-footer.pt:9 templates/index_new.pt:271
+msgid "imprint_copyright"
+msgstr "Imprint and Copyright"
+
+#. Default: RSS
+#: templates/snippet-footer.pt:22 templates/index_new.pt:273
+msgid "rss"
+msgstr "RSS"
+
+#. Default: Help
+#: templates/snippet-footer.pt:25 templates/index_new.pt:274
+msgid "Help"
+msgstr "Help"
+
+#. Default: Docs
+#: templates/snippet-footer.pt:28 templates/index_new.pt:275
+msgid "Documentation"
+msgstr "Documentation"
 
 #. Default: About me
 #: templates/snippet-popups.pt:10
@@ -159,25 +1149,10 @@ msgstr ""
 msgid "okay"
 msgstr "Okay"
 
-#. Default: Cancel
-#: templates/snippet-popups.pt:172 templates/snippet-popups.pt:195
-#: templates/snippet-popups.pt:220 templates/snippet-popups.pt:887
-#: templates/snippet-popups.pt:934 templates/snippet-popups.pt:1087
-#: templates/review-history.pt:96
-msgid "cancel"
-msgstr "Cancel"
-
 #. Default: Do not remind me again
 #: templates/snippet-popups.pt:214
 msgid "do_not_remind_me_again"
 msgstr "Do not remind me again"
-
-#. Default: Log In
-#. Default: Login
-#: templates/snippet-popups.pt:274 templates/snippet-popups.pt:450
-#: templates/snippet-header.pt:37
-msgid "login"
-msgstr "Log In"
 
 #. Default: Sign Up
 #: templates/snippet-popups.pt:275
@@ -554,12 +1529,6 @@ msgstr ""
 "Statement is a cite from a website like a newspaper article, which underpins "
 "the opinion. The source is the website as link."
 
-#. Default: Statement
-#: templates/snippet-popups.pt:1023 templates/snippet-popups.pt:1044
-#: templates/review-history.pt:40
-msgid "statement"
-msgstr "Statement"
-
 #. Default: Source
 #: templates/snippet-popups.pt:1029
 msgid "source"
@@ -574,864 +1543,6 @@ msgstr "Please choose a statement for your reference!"
 #: templates/snippet-popups.pt:1049
 msgid "add_reference"
 msgstr "Add reference"
-
-#. Default: Documentation
-#: templates/docs.pt:7
-msgid "docs"
-msgstr "Documentation"
-
-#. Default: Queues
-#: templates/review.pt:7
-msgid "queues"
-msgstr "Queues"
-
-#. Default: How To
-#: templates/review.pt:8
-msgid "howto"
-msgstr "How To"
-
-#. Default: Help improve the dialog
-#: templates/review.pt:15
-msgid "help_to_improve"
-msgstr "Help improve the dialog"
-
-#. Default: D-BAS is moderated by you. Help your discussion members learn to
-#. argue and raise the quality of argumenty by:
-#: templates/review.pt:16
-msgid "dbas_is_moderated_by"
-msgstr ""
-"D-BAS is moderated by you. Help your discussion members learn to argue and "
-"raise the quality of arguments by:"
-
-#. Default: Evaluate new statements
-#: templates/review.pt:18
-msgid "evaluate_new_statements"
-msgstr "evaluating new statements"
-
-#. Default: Reviewing suspicious statements
-#: templates/review.pt:19
-msgid "reviewing_suspicious_statements"
-msgstr "reviewing suspicious statements"
-
-#. Default: Voting to close or reopen statements
-#: templates/review.pt:20
-msgid "voting_to_close"
-msgstr "vote to close or reopen statements"
-
-#. Default: Choose a task to get started.
-#: templates/review.pt:22
-msgid "choose_task"
-msgstr "Choose a task to get started!"
-
-#. Default: Based on your user group, you have all rights!
-#: templates/review.pt:30 templates/review-reputation.pt:14
-msgid "unlimited_right_based_on_group"
-msgstr "Based on your user group, you have all rights!"
-
-#. Default: Your current reputation count is
-#: templates/review.pt:33
-msgid "current_reputation_os"
-msgstr "Your current reputation count is"
-
-#. Default: Open Tasks
-#: templates/review.pt:43
-msgid "open_tasks"
-msgstr "Open Tasks"
-
-#. Default: Topic
-#: templates/review.pt:44
-msgid "topic"
-msgstr "Topic"
-
-#. Default: Recent Reviews
-#: templates/review.pt:45
-msgid "recent_reviews"
-msgstr "Recent Reviews"
-
-#. Default: None
-#: templates/review.pt:68
-msgid "None"
-msgstr "None"
-
-#. Default: What is reputation? How do I earn (and lose) it?
-#: templates/review.pt:80
-msgid "what_is_reputation"
-msgstr "What is reputation? How do I earn (and lose) it?"
-
-#. Default: Reputation is a rough measurement of how work you are doing for the
-#. discussion and the community.
-#: templates/review.pt:81
-msgid "what_is_reputation_def"
-msgstr ""
-"Reputation is a rough measurement of how work you are doing for the "
-"discussion and the community."
-
-#. Default: you can earn it by using D-BAS and all of its great functions.
-#: templates/review.pt:82
-msgid "what_is_reputation_earn"
-msgstr "You can earn it by using D-BAS and all of its great functions."
-
-#. Default: Basic use of D-BAS, does not require any reputation at all.
-#: templates/review.pt:83
-msgid "what_is_reputation_use"
-msgstr "Basic use of D-BAS does not require any reputation at all."
-
-#. Default: You gain reputation when:
-#: templates/review.pt:86
-msgid "gain_rep_when"
-msgstr "You gain reputation when:"
-
-#. Default: You lose reputation when:
-#: templates/review.pt:95
-msgid "lose_rep_when"
-msgstr "You lose reputation when:"
-
-#. Default: Privileges
-#: templates/review.pt:107
-msgid "privileges"
-msgstr "Privileges"
-
-#. Default: Privileges control what you can see in the review queues of D-BAS.
-#. Gain more privileges by increasing your reputation.
-#: templates/review.pt:108
-msgid "privileges_explanation"
-msgstr ""
-"Privileges control what you can see in the review queues of D-BAS. Gain more "
-"privileges by increasing your reputation."
-
-#. Default: Impressum
-#: templates/imprint.pt:9
-msgid "imprint"
-msgstr "Imprint"
-
-#. Default: Angaben gemäß § 5 TMG
-#: templates/imprint.pt:11
-msgid "data_tmg"
-msgstr "Information according to § 5 TMG "
-
-#. Default: Details concerning the license
-#: templates/imprint.pt:14
-msgid "details_license"
-msgstr "Details concerning the license"
-
-#. Default: Kontakt:
-#. Default: Contact
-#: templates/imprint.pt:17 templates/snippet-footer.pt:18
-msgid "contact"
-msgstr "Contact"
-
-#. Default: Institut für Informatik
-#: templates/imprint.pt:20
-msgid "department"
-msgstr "Department of Computer Science"
-
-#. Default: Telefon:
-#: templates/imprint.pt:24
-msgid "phone"
-msgstr "Phone Number:"
-
-#. Default: Weiteres auf dem Impressum der HHU
-#: templates/imprint.pt:28
-msgid "imprint_hhu"
-msgstr ""
-"For more details please see the imprint of the Heinrich-Heine-University "
-"Duesseldorf"
-
-#. Default: Piwik
-#: templates/imprint.pt:31
-msgid "disclaimer_piwik"
-msgstr "Piwik"
-
-#. Default: Dieses Angebot benutzt Piwik.org, eine Open-Source-Software zur
-#. statistischen Auswertung der Nutzerzugriffe. Piwik verwendet sog. “Cookies”,
-#. Textdateien, die auf dem Computer der Nutzer gespeichert werden und die eine
-#. Analyse der Benutzung der Website durch die Nutzer ermöglichen. Die durch
-#. den Cookie erzeugten Informationen über die Benutzung dieses Agebotes werden
-#. auf dem Server des Anbieters in Deutschland gespeichert. Die IP-Adresse wird
-#. sofort nach der Verarbeitung und vor deren Speicherung anonymisiert. Nutzer
-#. können die Installation der Cookies durch eine entsprechende Einstellung
-#. Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch
-#. darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche
-#. Funktionen dieser Website vollumfänglich nutzen können.
-#: templates/imprint.pt:32
-msgid "disclaimer_piwik_content"
-msgstr ""
-"Like most website operators, Piwik.org collects non-personally-identifying "
-"information of the sort that web browsers and servers typically make "
-"available, such as the browser type, language preference, referring site, "
-"and the date and time of each visitor request. Piwik.org’s purpose in "
-"collecting non-personally identifying information is to better understand "
-"how Piwik.org’s visitors use its website. From time to time, Piwik.org may "
-"release non-personally-identifying information in the aggregate, e.g., by "
-"publishing a report on trends in the usage of its website. Piwik.org also "
-"collects potentially personally-identifying information like Internet "
-"Protocol (IP) addresses. Piwik.org does not use such information to identify "
-"its visitors, however, and does not disclose such information, other than "
-"under the same circumstances that it uses and discloses personally-"
-"identifying information, as described below."
-
-#. Default: is generated with Pyramid Web Framework
-#: templates/imprint.pt:53
-msgid "generated_with"
-msgstr "is generated with Pyramid Web Framework"
-
-#. Default: Copyrights and used Software
-#: templates/imprint.pt:66
-msgid "copyright_and_used_software"
-msgstr "Used Software"
-
-#. Default: Changes
-#: templates/imprint.pt:88
-msgid "changes"
-msgstr "Changelog"
-
-#. Default: Review
-#: templates/review-reputation.pt:8 templates/review-history.pt:14
-#: templates/snippet-header.pt:76 templates/review-content.pt:19
-msgid "review"
-msgstr "Review"
-
-#. Default: Reputation
-#: templates/review-reputation.pt:9 templates/review-reputation.pt:27
-#: templates/settings.pt:161 templates/user.pt:61
-msgid "reputation"
-msgstr "Reputation"
-
-#. Default: Reputation count
-#: templates/review-reputation.pt:15
-msgid "reputation_count"
-msgstr "Reputation count"
-
-#. Default: Action
-#: templates/review-reputation.pt:26
-msgid "action"
-msgstr "Action"
-
-#. Default: Thank you
-#: templates/finish.pt:7
-msgid "thank_you"
-msgstr "Thank you"
-
-#. Default: Your participation in this discussion was saved and will be used
-#. for evaluation later. If you have any questions, please do not hesitat to
-#: templates/finish.pt:8
-msgid "finish_text"
-msgstr ""
-"Your participation in this discussion was saved and will be used for "
-"evaluation later. If you have any questions, please do not hesitat to"
-
-#. Default: contact us (click here)
-#: templates/finish.pt:9
-msgid "contact_us"
-msgstr "contact us"
-
-#. Default: Todays Summary
-#: templates/finish.pt:22
-msgid "todays_summary"
-msgstr "Todays Summary"
-
-#. Default: Statements posted
-#: templates/finish.pt:29 templates/settings.pt:115 templates/user.pt:41
-msgid "statements_posted"
-msgstr "Statements posted"
-
-#. Default: Edits done
-#: templates/finish.pt:33 templates/settings.pt:122 templates/user.pt:45
-msgid "edits_done"
-msgstr "Edits done"
-
-#. Default: Statements reported
-#: templates/finish.pt:37
-msgid "statements_reported"
-msgstr "Statements reported"
-
-#. Default: Collected reputation
-#: templates/finish.pt:42
-msgid "reputation_colltected"
-msgstr "Collected reputation"
-
-#. Default: Votes for Arguments
-#. Default: Votes for Statements
-#: templates/finish.pt:50 templates/settings.pt:147 templates/user.pt:57
-msgid "discussion_votes_statements"
-msgstr "Marked Arguments"
-
-#. Default: Votes for Statements
-#. Default: Votes for Arguments
-#: templates/finish.pt:54 templates/settings.pt:154 templates/user.pt:53
-msgid "discussion_votes_arguments"
-msgstr "Marked Statements"
-
-#. Default: Clicks for Arguments
-#: templates/finish.pt:58 templates/settings.pt:129
-msgid "discussion_clicked_statements"
-msgstr "Clicked Arguments"
-
-#. Default: Clicks for Statements
-#: templates/finish.pt:62 templates/settings.pt:136
-msgid "discussion_clicked_arguments"
-msgstr "Clicked Statements"
-
-#. Default: Let's go home!
-#: templates/finish.pt:78
-msgid "lets_go_home"
-msgstr "Let's go home"
-
-#. Default: Back to the discussion!
-#: templates/finish.pt:81
-msgid "back_to_the_discussion"
-msgstr "Back to the discussion"
-
-#. Default: Get In Touch With Us
-#: templates/contact.pt:10
-msgid "get_in_touch_with_us"
-msgstr "Get In Touch With Us"
-
-#. Default: Feel free to drop us a line and we’ll try to get back to you in 48
-#. hours max!
-#: templates/contact.pt:12
-msgid "feel_free_to_drop_line"
-msgstr ""
-"Feel free to drop us a line and we’ll try to get back to you in 48 hours max!"
-
-#. Default: You have found a bug?
-#: templates/contact.pt:16
-msgid "you_found_bug"
-msgstr "You have found a bug?"
-
-#. Default: Please open a new issue on our project page at
-#: templates/contact.pt:18
-msgid "send_mail_or_github"
-msgstr "Please open a new issue on our project page at"
-
-#. Default: Otherwise feel free to drop us a line
-#: templates/contact.pt:20
-msgid "otherwise_drop_a_line"
-msgstr "Otherwise feel free to drop us a line"
-
-#. Default: Your Name (required)
-#: templates/contact.pt:29
-msgid "name_req"
-msgstr "Your Name (required)"
-
-#. Default: Your E-Mail (required)
-#: templates/contact.pt:37
-msgid "mail_req"
-msgstr "Your E-Mail (required)"
-
-#. Default: Your Notification (required)
-#: templates/contact.pt:45
-msgid "message_req"
-msgstr "Your Notification (required)"
-
-#. Default: Warning!
-#: templates/contact.pt:61
-msgid "warning"
-msgstr "Warning!"
-
-#. Default: Great:
-#: templates/contact.pt:67
-msgid "great"
-msgstr "Great:"
-
-#. Default: Your message was sent.
-#: templates/contact.pt:67
-msgid "message_sent"
-msgstr "Your message was sent."
-
-#. Default: more infos
-#: templates/content.pt:11 templates/content.pt:18
-msgid "more_infos"
-msgstr "more infos"
-
-#. Default: Switch Topic
-#: templates/content.pt:23
-msgid "switch_topc"
-msgstr "Switch Topic"
-
-#. Default: Restart
-#: templates/content.pt:54
-msgid "restart_discussion"
-msgstr "Restart"
-
-#. Default: Start
-#: templates/content.pt:196
-msgid "start"
-msgstr "Start"
-
-#. Default: Now
-#: templates/content.pt:198
-msgid "now"
-msgstr "Now"
-
-#. Default: Complete View
-#: templates/content.pt:213
-msgid "complete_view"
-msgstr "Complete View"
-
-#. Default: Default View
-#: templates/content.pt:214
-msgid "default_view"
-msgstr "Default View"
-
-#. Default: Labels
-#: templates/content.pt:215
-msgid "labels"
-msgstr "Lables"
-
-#. Default: Positions
-#: templates/content.pt:216
-msgid "positions"
-msgstr "Positions"
-
-#. Default: Statements
-#: templates/content.pt:217
-msgid "statements"
-msgstr "Statements"
-
-#. Default: My path
-#: templates/content.pt:218 templates/content.pt:219
-msgid "my_path"
-msgstr "My path"
-
-#. Default: My statements
-#: templates/content.pt:220
-msgid "my_statements"
-msgstr "My statements"
-
-#. Default: Supports
-#: templates/content.pt:221
-msgid "supports_on_my_statements"
-msgstr "Supports"
-
-#. Default: Attacks
-#: templates/content.pt:222
-msgid "attacks_on_my_statements"
-msgstr "Attacks"
-
-#. Default: JavaScript is not enabled:
-#: templates/basetemplate.pt:29
-msgid "js_disabled1"
-msgstr "JavaScript is not enabled:"
-
-#. Default: Please enable JavaScript!
-#: templates/basetemplate.pt:30
-msgid "js_disabled2"
-msgstr "Please enable JavaScript!"
-
-#. Default: Your request failed!
-#: templates/basetemplate.pt:36
-msgid "request_failed"
-msgstr "Your request failed!"
-
-#. Default: Please reload the page.
-#: templates/basetemplate.pt:37
-msgid "please_reload"
-msgstr "Please reload the page."
-
-#. Default: Your request succeded!
-#: templates/basetemplate.pt:43 templates/basetemplate.pt:44
-msgid "request_success"
-msgstr "Your request succeded!"
-
-#. Default: Frequent Questions
-#: templates/faq.pt:7
-msgid "faq"
-msgstr "Frequent Questions"
-
-#. Default: Simple answers to your most common questions
-#: templates/faq.pt:8
-msgid "simple_answers"
-msgstr "Simple answers to your most common questions"
-
-#. Default: How do we handle your login data?
-#: templates/faq.pt:10
-msgid "faq_question_ldap"
-msgstr "How do we handle your login data?"
-
-#. Default: If you are using the LDAP login, we are using the name information
-#. service of the University Düsseldorf. Your password is send from your
-#. computer, to our server (which is placed at the University) and then towards
-#. the service of the ZIM. Each transmission is secured and encrypted.
-#. Additionally we will never save, log or display your password anywhere!
-#. Otherwise the data is localy stored with salted hashes.
-#: templates/faq.pt:11
-msgid "faq_answer_ldap"
-msgstr ""
-"We are using the name information service of the University Düsseldorf. Your "
-"password is send from your computer, to our server (which is placed at the "
-"University) and then towards the service of the ZIM. Each transmission is "
-"secured and encrypted. Additionally we will never save, log or display your "
-"password anywhere!"
-
-#. Default: What is the difference between interest and opinion?
-#: templates/faq.pt:15
-msgid "faq_question_interest_opinion"
-msgstr "What is the difference between interests and opinions?"
-
-#. Default: If you select any answer in D-BAS, you will be interested in this
-#. statement/reaction/... but we will never think, that this is your personal
-#. opinion. Only if you mark an statement or argument as your opinion, we will
-#. know, that you have the same opinion like the given text.
-#: templates/faq.pt:16
-msgid "faq_answer_interest_opinion"
-msgstr ""
-"If you select any answer in D-BAS, you will be interested in this statement/"
-"reaction/... but we will never think, that this is your personal opinion. "
-"Only if you mark an statement or argument as your opinion, we will know, "
-"that you have the same opinion like the given text."
-
-#. Default: Can I mark an statement or argument as my opinion?
-#: templates/faq.pt:20
-msgid "faq_question_mark_opinion"
-msgstr "Can I mark an statement or argument as my opinion?"
-
-#. Default: Yes, you can! Please press the yellow star at the beginning of a
-#. green bubble to mark a statement or an argument as your opinon. For this you
-#. have to be logged in.
-#: templates/faq.pt:21
-msgid "faq_answer_mark_opinion"
-msgstr ""
-"Yes, you can! Please press the yellow star at the beginning of a green "
-"bubble to mark a statement or an argument as your opinon. For this you have "
-"to be logged in."
-
-#. Default: Is there any overview about all given arguments and statements?
-#: templates/faq.pt:25
-msgid "faq_question_graph"
-msgstr "Is there any overview about all given arguments and statements?"
-
-#. Default: Yes, we have a graphical representation. Simply open the little
-#. sidebar in the discussion window and click on 'graph view'
-#: templates/faq.pt:26
-msgid "faq_answer_graph"
-msgstr ""
-"Yes, we have a graphical representation. Simply open the little sidebar in "
-"the discussion window and click on 'graph view'"
-
-#. Default: What are these little icons next to the statements?
-#: templates/faq.pt:30
-msgid "faq_question_buttons_next_to_statement"
-msgstr "What are these little icons next to the statements?"
-
-#. Default: These little icons will appear on each set of statements in the
-#. answer field, if you are logged in.
-#: templates/faq.pt:31
-msgid "faq_answer_buttons_next_to_statement"
-msgstr ""
-"These little icons will appear on each set of statements in the answer "
-"field, if you are logged in."
-
-#. Default: The pencil allows you to submit proposals for edits.
-#: templates/faq.pt:33
-msgid "faq_answer_pencil_next_to_statement"
-msgstr "The pencil allows you to submit proposals for edits."
-
-#. Default: With the help of the flag you can report statements, if there is
-#. something wrong.
-#: templates/faq.pt:34
-msgid "faq_answer_flag_next_to_statement"
-msgstr ""
-"With the help of the flag you can report statements, if there is something "
-"wrong."
-
-#. Default: You made an statement on your own and not happy with it? Let's
-#. unsubscribe yourself as author.
-#: templates/faq.pt:35
-msgid "faq_answer_trash_next_to_statement"
-msgstr ""
-"You made an statement on your own and not happy with it? Let's unsubscribe "
-"yourself as author."
-
-#. Default: You are reading an statement, which should be supporting your
-#. conclusion, but it is nonsense? Let's attack this one!
-#: templates/faq.pt:36
-msgid "faq_answer_bomb_next_to_statement"
-msgstr ""
-"You are reading an statement, which should be supporting your conclusion, "
-"but it is nonsense? Let's attack this one!"
-
-#. Default: There is this specific website with facts about an statement? With
-#. the link-icon you can add references for a statement / argument.
-#: templates/faq.pt:37
-msgid "faq_answer_link_next_to_statement"
-msgstr ""
-"There is this specific website with facts about an statement? With the link-"
-"icon you can add references for a statement / argument."
-
-#. Default: What do I do if I found a bug or have other questions about D-BAS?
-#: templates/faq.pt:42
-msgid "faq_question_bug"
-msgstr "What do I do if I found a bug or have other questions about D-BAS?"
-
-#. Default: If you think you've found an issue or have any other questions not
-#. covered above, please email us via the
-#: templates/faq.pt:43
-msgid "faq_answer_bug1"
-msgstr ""
-"If you think you've found an issue or have any other questions not covered "
-"above, please email us at "
-
-#. Default: contact page
-#: templates/faq.pt:43
-msgid "contact_page"
-msgstr "contact page"
-
-#. Default: Please keep in mind that our current team is quite small and we'll
-#. do our very best to get back to you ASAP.
-#: templates/faq.pt:44
-msgid "faq_answer_bug2"
-msgstr ""
-"Please keep in mind that our current team is quite small and we'll do our "
-"very best to get back to you ASAP."
-
-#. Default: You have to earn more reputation for this queue
-#: templates/review-history.pt:6
-msgid "earn_more_reputation_for_queue"
-msgstr "You have to earn more reputation for this queue"
-
-#. Default: You have no access to this site
-#: templates/review-history.pt:7
-msgid "you_have_no_access"
-msgstr "You have no access to this site"
-
-#. Default: History
-#: templates/review-history.pt:15
-msgid "history"
-msgstr "History"
-
-#. Default: Current Decisions
-#. Default: Current decisions
-#: templates/review-history.pt:16 templates/review-history.pt:23
-msgid "current_decisions"
-msgstr "Current decisions"
-
-#. Default: The history of votes
-#: templates/review-history.pt:22
-msgid "history_of_votes"
-msgstr "The history of votes"
-
-#. Default: No decisions for this queue.
-#: templates/review-history.pt:35
-msgid "no_decision_for_this_queue"
-msgstr "No decisions for this queue."
-
-#. Default: Edit
-#: templates/review-history.pt:41
-msgid "edit"
-msgstr "Edit"
-
-#. Default: Reason
-#: templates/review-history.pt:42
-msgid "reason"
-msgstr "Reason"
-
-#. Default: Original
-#: templates/review-history.pt:43 templates/review-history.pt:44
-#: templates/review-content.pt:269
-msgid "original"
-msgstr "Original"
-
-#. Default: Votes
-#: templates/review-history.pt:45
-msgid "votes"
-msgstr "Votes"
-
-#. Default: Accepted
-#: templates/review-history.pt:46
-msgid "accepted"
-msgstr "Accepted"
-
-#. Default: Voters Pro
-#: templates/review-history.pt:47
-msgid "voters_pro"
-msgstr "Voters Pro"
-
-#. Default: Voters Con
-#: templates/review-history.pt:48
-msgid "voters_con"
-msgstr "Voters Con"
-
-#. Default: Timestamp
-#: templates/review-history.pt:49
-msgid "timestamp"
-msgstr "Timestamp"
-
-#. Default: Reporter
-#: templates/review-history.pt:50
-msgid "reporter"
-msgstr "Reporter"
-
-#. Default: Action
-#: templates/review-history.pt:51
-msgid "actions"
-msgstr "Action"
-
-#. Default: Undo
-#: templates/review-history.pt:93
-msgid "undo"
-msgstr "Undo"
-
-#. Default: Toggle navigation
-#: templates/snippet-header.pt:7
-msgid "Toggle Navigation"
-msgstr "Toggle navigation"
-
-#. Default: Let's go
-#: templates/snippet-header.pt:20
-msgid "lets_go"
-msgstr "Let's go"
-
-#. Default: Report Issues
-#: templates/snippet-header.pt:26
-msgid "report_issue"
-msgstr "Report Issue"
-
-#. Default: News
-#: templates/snippet-header.pt:31
-msgid "news"
-msgstr "News"
-
-#. Default: Settings
-#: templates/snippet-header.pt:51 templates/settings.pt:41
-msgid "settings"
-msgstr "Settings"
-
-#. Default: Notifications
-#: templates/snippet-header.pt:58
-msgid "notifications"
-msgstr "Notifications"
-
-#. Default: Admin
-#: templates/snippet-header.pt:63
-msgid "Admin"
-msgstr "Admin"
-
-#. Default: Logout
-#: templates/snippet-header.pt:68
-msgid "logout"
-msgstr "Logout"
-
-#. Default: Imprint and Copyrights
-#: templates/snippet-footer.pt:9
-msgid "imprint_copyright"
-msgstr "Imprint and Copyright"
-
-#. Default: RSS
-#: templates/snippet-footer.pt:22
-msgid "rss"
-msgstr "RSS"
-
-#. Default: Help
-#: templates/snippet-footer.pt:25
-msgid "Help"
-msgstr "Help"
-
-#. Default: Docs
-#: templates/snippet-footer.pt:28
-msgid "Documentation"
-msgstr "Documentation"
-
-#. Default: 404 Error
-#: templates/404.pt:8
-msgid "404"
-msgstr "404 Error"
-
-#. Default: The page
-#: templates/404.pt:10
-msgid "404_text_part1"
-msgstr "The page"
-
-#. Default: could not be found
-#: templates/404.pt:12
-msgid "404_text_part2"
-msgstr "could not be found"
-
-#. Default: , because the input parameter seems to be wrong.
-#: templates/404.pt:12
-msgid "wrong_input_params"
-msgstr ", because the input parameter seems to be wrong."
-
-#. Default: , because the author revoked the content.
-#: templates/404.pt:12
-msgid "author_revoked_content"
-msgstr ", because the author revoked the content."
-
-#. Default: Go home
-#: templates/404.pt:15
-msgid "go-home"
-msgstr "Go home"
-
-#. Default: or
-#: templates/404.pt:17
-msgid "or"
-msgstr "oder"
-
-#. Default: go back to the discussion
-#: templates/404.pt:18
-msgid "go_back_to_the_discussion"
-msgstr "go back to the discussion!"
-
-#. Default: Notification Board
-#: templates/notifications.pt:7
-msgid "notification_board"
-msgstr "Notifications"
-
-#. Default: You have got
-#: templates/notifications.pt:8
-msgid "youHaveGot"
-msgstr "You have got"
-
-#. Default: unread notifications and
-#: templates/notifications.pt:10
-msgid "unreadNotificationAnd"
-msgstr "unread notifications and"
-
-#. Default: total in the inbox.
-#: templates/notifications.pt:12
-msgid "totalInTheInbox"
-msgstr "total in the inbox."
-
-#. Default: There are
-#: templates/notifications.pt:13
-msgid "thereAre"
-msgstr "There are"
-
-#. Default: in the outbox.
-#: templates/notifications.pt:15
-msgid "inTheOutbox"
-msgstr "in the outbox."
-
-#. Default: Inbox
-#: templates/notifications.pt:20
-msgid "inbox"
-msgstr "Inbox"
-
-#. Default: Outbox
-#: templates/notifications.pt:21
-msgid "outbox"
-msgstr "Outbox"
-
-#. Default: NEW
-#: templates/notifications.pt:37
-msgid "new"
-msgstr "NEW"
-
-#. Default: From:
-#: templates/notifications.pt:42 templates/notifications.pt:49
-msgid "from"
-msgstr "From:"
-
-#. Default: answer
-#: templates/notifications.pt:54 templates/notifications.pt:83
-msgid "answer"
-msgstr "answer"
-
-#. Default: To:
-#. Default: to:
-#: templates/notifications.pt:71 templates/notifications.pt:78
-msgid "to"
-msgstr "To:"
 
 #. Default: Personal Information
 #: templates/settings.pt:7
@@ -1503,6 +1614,44 @@ msgstr "Settings were set successfully."
 msgid "discussion_stat"
 msgstr "Discussion Statistics"
 
+#. Default: Statements posted
+#: templates/settings.pt:115 templates/finish.pt:29 templates/user.pt:41
+msgid "statements_posted"
+msgstr "Statements posted"
+
+#. Default: Edits done
+#: templates/settings.pt:122 templates/finish.pt:33 templates/user.pt:45
+msgid "edits_done"
+msgstr "Edits done"
+
+#. Default: Clicks for Arguments
+#: templates/settings.pt:129 templates/finish.pt:58
+msgid "discussion_clicked_statements"
+msgstr "Clicked Arguments"
+
+#. Default: Clicks for Statements
+#: templates/settings.pt:136 templates/finish.pt:62
+msgid "discussion_clicked_arguments"
+msgstr "Clicked Statements"
+
+#. Default: Votes for Statements
+#. Default: Votes for Arguments
+#: templates/settings.pt:147 templates/finish.pt:50 templates/user.pt:57
+msgid "discussion_votes_statements"
+msgstr "Marked Arguments"
+
+#. Default: Votes for Arguments
+#. Default: Votes for Statements
+#: templates/settings.pt:154 templates/finish.pt:54 templates/user.pt:53
+msgid "discussion_votes_arguments"
+msgstr "Marked Statements"
+
+#. Default: Reputation
+#: templates/settings.pt:161 templates/review-reputation.pt:9
+#: templates/review-reputation.pt:27 templates/user.pt:61
+msgid "reputation"
+msgstr "Reputation"
+
 #. Default: Profile Picture
 #: templates/settings.pt:180
 msgid "profile_picture"
@@ -1564,351 +1713,149 @@ msgstr "New Password (confirm)"
 msgid "password_changed"
 msgstr "Your password was changed"
 
-#. Default: No arguments to review in this queue!
-#: templates/review-content.pt:10
-msgid "no_arguments_to_review"
-msgstr "No arguments to review in this queue!"
+#. Default: Documentation
+#: templates/docs.pt:7
+msgid "docs"
+msgstr "Documentation"
 
-#. Default: Deletes
-#: templates/review-content.pt:20
-msgid "deletes"
-msgstr "Deletes"
+#. Default: Thank you
+#: templates/finish.pt:7
+msgid "thank_you"
+msgstr "Thank you"
 
-#. Default: Optimizations
-#: templates/review-content.pt:21
-msgid "optimizations"
-msgstr "Optimizations"
-
-#. Default: Edits
-#: templates/review-content.pt:22
-msgid "edits"
-msgstr "Edits"
-
-#. Default: Duplicates
-#: templates/review-content.pt:23
-msgid "duplicates"
-msgstr "Duplicates"
-
-#. Default: Merge
-#: templates/review-content.pt:24
-msgid "merge"
-msgstr "Merge"
-
-#. Default: Split
-#: templates/review-content.pt:25
-msgid "split"
-msgstr "Split"
-
-#. Default: (more)
-#: templates/review-content.pt:33
-msgid "wrapped_more"
-msgstr "(more)"
-
-#. Default: (less)
-#: templates/review-content.pt:34
-msgid "wrapped_less"
-msgstr "(less)"
-
-#. Default: Skip it
-#: templates/review-content.pt:38 templates/review-content.pt:43
-#: templates/review-content.pt:48 templates/review-content.pt:53
-#: templates/review-content.pt:58 templates/review-content.pt:63
-#: templates/review-content.pt:88 templates/review-content.pt:93
-#: templates/review-content.pt:98 templates/review-content.pt:103
-#: templates/review-content.pt:108 templates/review-content.pt:113
-msgid "skip_it"
-msgstr "Skip it"
-
-#. Default: Delete it
-#: templates/review-content.pt:39 templates/review-content.pt:87
-msgid "delete_it"
-msgstr "Delete it"
-
-#. Default: It's Okay
-#. Default: It's okay
-#: templates/review-content.pt:40 templates/review-content.pt:50
-#: templates/review-content.pt:86 templates/review-content.pt:96
-msgid "its_okay"
-msgstr "It's Okay"
-
-#. Default: It's okay so
-#: templates/review-content.pt:44 templates/review-content.pt:92
-msgid "its_okay_so"
-msgstr "It's okay so"
-
-#. Default: Let me correct it
-#: templates/review-content.pt:45 templates/review-content.pt:91
-msgid "correct_it"
-msgstr "Let me correct it"
-
-#. Default: Reject it
-#: templates/review-content.pt:49 templates/review-content.pt:59
-#: templates/review-content.pt:64 templates/review-content.pt:97
-#: templates/review-content.pt:107 templates/review-content.pt:112
-msgid "reject_it"
-msgstr "Reject it"
-
-#. Default: Unique
-#: templates/review-content.pt:54
-msgid "unique"
-msgstr "Unique"
-
-#. Default: Duplicate
-#: templates/review-content.pt:55
-msgid "duplicate"
-msgstr "Duplicate"
-
-#. Default: Change is okay
-#: templates/review-content.pt:60 templates/review-content.pt:65
-msgid "change_okay"
-msgstr "Change is okay"
-
-#. Default: Information for the different reasons
-#: templates/review-content.pt:73
-msgid "information_for_the_different_reasons"
-msgstr "Information for the different reasons"
-
-#. Default: Off topic or irrelevant
-#: templates/review-content.pt:75
-msgid "off_topic_or_irrelevant"
-msgstr "Off topic or irrelevant"
-
-#. Default: text does not belong to the topic under discussion
-#: templates/review-content.pt:75
-msgid "off_topic_explanation"
-msgstr "text does not belong to the topic under discussion"
-
-#. Default: Inappropriate, harmful or abusive
-#: templates/review-content.pt:76
-msgid "inappropriate_harmful_abbusive"
-msgstr "Inappropriate, harmful or abbusive"
-
-#. Default: are posts, which are inappropriate, harmful or abbusive
-#: templates/review-content.pt:76
-msgid "inappropriate_harmful_abbusive_explanation"
-msgstr "are posts, which are inappropriate, harmful or abbusive"
-
-#. Default: Needs optimization
-#: templates/review-content.pt:77
-msgid "needs_optimization"
-msgstr "Needs optimization"
-
-#. Default: if posts are useful, but need edits in grammar and/or spelling
-#: templates/review-content.pt:77
-msgid "needs_optimization_explanation"
-msgstr "if posts are useful, but need edits in grammar and/or spelling"
-
-#. Default: Information for the different buttons
-#: templates/review-content.pt:84
-msgid "information_for_the_different_buttons"
-msgstr "Information for the different buttons"
-
-#. Default: for arguments, which should not be deleted.
-#: templates/review-content.pt:86
-msgid "its_okay_explanation"
-msgstr "for arguments, which should not be deleted."
-
-#. Default: for arguments, that should be deleted based on the reason above.
-#: templates/review-content.pt:87
-msgid "delete_it_explanation"
-msgstr "for arguments, that should be deleted based on the reason above."
-
-#. Default: if you are not sure and want to go to the next argument.
-#. Default: if you are not sure and want to go to the next statement.
-#: templates/review-content.pt:88 templates/review-content.pt:93
-#: templates/review-content.pt:98 templates/review-content.pt:103
-#: templates/review-content.pt:108 templates/review-content.pt:113
-msgid "skip_it_explanation"
-msgstr "if you are not sure and want to go to the next argument."
-
-#. Default: , if you have an idea for a better formulation with the same
-#. content.
-#: templates/review-content.pt:91
-msgid "correct_it_explanation"
-msgstr ", if you have an idea for a better formulation with the same"
-
-#. Default: for arguments, which can be understood as-is.
-#: templates/review-content.pt:92
-msgid "its_okay_so_explanation"
-msgstr "for arguments, which can be understood as-is."
-
-#. Default: , if the correction is acceptable and the argument is not
-#. falsified.
-#: templates/review-content.pt:96
-msgid "correction_is_okay"
-msgstr ", if the correction is acceptable and the argument is not"
-
-#. Default: for correction which are inappropriate are wrong.
-#: templates/review-content.pt:97
-msgid "reject_itexplanation"
-msgstr "for correction which are inappropriate are wrong."
-
-#. Default: It's a duplicate
-#: templates/review-content.pt:101
-msgid "its_duplicate"
-msgstr "It's a duplicate"
-
-#. Default: , if the marked statement is a duplicate.
-#: templates/review-content.pt:101
-msgid "marked_statement_is_duplicate"
-msgstr ", if the marked statement is a duplicate."
-
-#. Default: It's unique
-#: templates/review-content.pt:102
-msgid "its_unique"
-msgstr "It's unique"
-
-#. Default: for marked statements, which are unique.
-#: templates/review-content.pt:102
-msgid "duplicate_is_unique"
-msgstr "for marked statements, which are unique."
-
-#. Default: Split it
-#: templates/review-content.pt:106
-msgid "split_it"
-msgstr "Split it"
-
-#. Default: , if the selected statement is a set of than one statement and the
-#. given proposals match to the original content.
-#: templates/review-content.pt:106
-msgid "marked_statement_to_slit"
+#. Default: Your participation in this discussion was saved and will be used
+#. for evaluation later. If you have any questions, please do not hesitat to
+#: templates/finish.pt:8
+msgid "finish_text"
 msgstr ""
-", if the selected statement is a set of than one statement and the given "
-"proposals match to the original content."
+"Your participation in this discussion was saved and will be used for "
+"evaluation later. If you have any questions, please do not hesitat to"
 
-#. Default: for marked statements, which are unique.
-#: templates/review-content.pt:107
-msgid "statement_not_to_split"
-msgstr "for marked statements, which should not be splitted."
+#. Default: contact us (click here)
+#: templates/finish.pt:9
+msgid "contact_us"
+msgstr "contact us"
 
-#. Default: Merge it
-#: templates/review-content.pt:111
-msgid "merge_it"
-msgstr "Merge it"
+#. Default: Todays Summary
+#: templates/finish.pt:22
+msgid "todays_summary"
+msgstr "Todays Summary"
 
-#. Default: , if the selected statements should be one, single statements and
-#. the given proposal matches to the original contents.
-#: templates/review-content.pt:111
-msgid "marked_statement_to_merge"
-msgstr ""
-", if the selected statements should be one, single statements and the given "
-"proposal matches to the original contents."
+#. Default: Statements reported
+#: templates/finish.pt:37
+msgid "statements_reported"
+msgstr "Statements reported"
 
-#. Default: for marked statements, which are unique.
-#: templates/review-content.pt:112
-msgid "statement_not_to_merge"
-msgstr "for marked statements, which should not be merged."
+#. Default: Collected reputation
+#: templates/finish.pt:42
+msgid "reputation_colltected"
+msgstr "Collected reputation"
 
-#. Default: In the discussion about
-#: templates/review-content.pt:125 templates/review-content.pt:146
-#: templates/review-content.pt:161
-msgid "in_the_discussion_about"
-msgstr "In the discussion about"
+#. Default: Let's go home!
+#: templates/finish.pt:78
+msgid "lets_go_home"
+msgstr "Let's go home"
 
-#. Default: following argument was corrected.
-#: templates/review-content.pt:127
-msgid "following_argument_was_corrected"
-msgstr "following argument was corrected."
+#. Default: Back to the discussion!
+#: templates/finish.pt:81
+msgid "back_to_the_discussion"
+msgstr "Back to the discussion"
 
-#. Default: These are the edits:
-#: templates/review-content.pt:136
-msgid "these_are_the_edits"
-msgstr "These are the edits:"
+#. Default: Reputation count
+#: templates/review-reputation.pt:15
+msgid "reputation_count"
+msgstr "Reputation count"
 
-#. Default: following argument was flagged.
-#: templates/review-content.pt:148
-msgid "following_argument_was_flagged"
-msgstr "following argument was flagged:"
+#. Default: Action
+#: templates/review-reputation.pt:26
+msgid "action"
+msgstr "Action"
 
-#. Default: following statement was flagged.
-#: templates/review-content.pt:149
-msgid "following_statement_was_flagged"
-msgstr "following statement was flagged:"
+#. Default: Notification Board
+#: templates/notifications.pt:7
+msgid "notification_board"
+msgstr "Notifications"
 
-#. Default: This is the original version
-#: templates/review-content.pt:152
-msgid "this_is_original_version"
-msgstr "This is the original version"
+#. Default: You have got
+#: templates/notifications.pt:8
+msgid "youHaveGot"
+msgstr "You have got"
 
-#. Default: following statements were flagged:
-#: templates/review-content.pt:163
-msgid "following_statements_were_flagged"
-msgstr "following statements were flagged:"
+#. Default: unread notifications and
+#: templates/notifications.pt:10
+msgid "unreadNotificationAnd"
+msgstr "unread notifications and"
 
-#. Default: Context, where the statement is used:
-#: templates/review-content.pt:173
-msgid "context_where_statement_is_used"
-msgstr "Context, where the statement is used:"
+#. Default: total in the inbox.
+#: templates/notifications.pt:12
+msgid "totalInTheInbox"
+msgstr "total in the inbox."
 
-#. Default: This is the original statement:
-#: templates/review-content.pt:182
-msgid "this_is_original_statements"
-msgstr "This is the original statement:"
+#. Default: There are
+#: templates/notifications.pt:13
+msgid "thereAre"
+msgstr "There are"
 
-#. Default: This statement should be splitted into:
-#: templates/review-content.pt:190
-msgid "this_statement_should_be_splitted"
-msgstr "This statement should be splitted into:"
+#. Default: in the outbox.
+#: templates/notifications.pt:15
+msgid "inTheOutbox"
+msgstr "in the outbox."
 
-#. Default: This statement should be merged to:
-#: templates/review-content.pt:201
-msgid "this_statement_should_be_merged"
-msgstr "This statement should be merged to:"
+#. Default: Inbox
+#: templates/notifications.pt:20
+msgid "inbox"
+msgstr "Inbox"
 
-#. Default: Reported
-#: templates/review-content.pt:215
-msgid "reported"
-msgstr "Reported"
+#. Default: Outbox
+#: templates/notifications.pt:21
+msgid "outbox"
+msgstr "Outbox"
 
-#. Default: Reported by
-#: templates/review-content.pt:219
-msgid "reported_by"
-msgstr "Reported by"
+#. Default: NEW
+#: templates/notifications.pt:37
+msgid "new"
+msgstr "NEW"
 
-#. Default: Viewed
-#: templates/review-content.pt:229
-msgid "viewed"
-msgstr "Viewed"
+#. Default: From:
+#: templates/notifications.pt:42 templates/notifications.pt:49
+msgid "from"
+msgstr "From:"
 
-#. Default: Attacks
-#: templates/review-content.pt:233
-msgid "attacks"
-msgstr "Attacks"
+#. Default: answer
+#: templates/notifications.pt:54 templates/notifications.pt:83
+msgid "answer"
+msgstr "answer"
 
-#. Default: Supports
-#: templates/review-content.pt:237
-msgid "supports"
-msgstr "Supports"
+#. Default: To:
+#. Default: to:
+#: templates/notifications.pt:71 templates/notifications.pt:78
+msgid "to"
+msgstr "To:"
 
-#. Default: Request lock
-#: templates/review-content.pt:258
-msgid "request_lock"
-msgstr "Request lock"
+#. Default: JavaScript is not enabled:
+#: templates/basetemplate.pt:29
+msgid "js_disabled1"
+msgstr "JavaScript is not enabled:"
 
-#. Default: This argument is locked for your edit. You have
-#: templates/review-content.pt:261
-msgid "argument_is_locked"
-msgstr "This argument is locked for your edit. You have"
+#. Default: Please enable JavaScript!
+#: templates/basetemplate.pt:30
+msgid "js_disabled2"
+msgstr "Please enable JavaScript!"
 
-#. Default: minutes
-#: templates/review-content.pt:262
-msgid "minutes"
-msgstr "minutes"
+#. Default: Your request failed!
+#: templates/basetemplate.pt:36
+msgid "request_failed"
+msgstr "Your request failed!"
 
-#. Default: Please make your edits in grammar and/or spelling here:
-#: templates/review-content.pt:263
-msgid "please_make_your_edits"
-msgstr "Please make your edits in grammar and/or spelling here:"
+#. Default: Please reload the page.
+#: templates/basetemplate.pt:37
+msgid "please_reload"
+msgstr "Please reload the page."
 
-#. Default: Your correcture
-#: templates/review-content.pt:270
-msgid "your correcture"
-msgstr "Your correcture"
-
-#. Default: Send
-#: templates/review-content.pt:285
-msgid "send"
-msgstr "Send"
+#. Default: Your request succeded!
+#: templates/basetemplate.pt:43 templates/basetemplate.pt:44
+msgid "request_success"
+msgstr "Your request succeded!"
 
 #. Default: Public Information of
 #: templates/user.pt:9
@@ -1940,77 +1887,148 @@ msgstr "Profile Picture of"
 msgid "reviews_proposed"
 msgstr "Reviews proposed"
 
-#. Default: Your session has expired!
-#: templates/index.pt:7
-msgid "session_expired"
-msgstr "Your session has expired!"
+#. Default: more infos
+#: templates/content.pt:11 templates/content.pt:18
+msgid "more_infos"
+msgstr "more infos"
 
-#. Default: You have to log in again.
-#: templates/index.pt:8
-msgid "login_again"
-msgstr "You have to log in again."
+#. Default: Switch Topic
+#: templates/content.pt:23
+msgid "switch_topc"
+msgstr "Switch Topic"
 
-#. Default: Welcome to D-BAS! This is an early prototype of our dialog-based
-#. argumentation system. There will be bugs. Please feel free to
-#: templates/index.pt:19
-msgid "welcome_text1"
+#. Default: Restart
+#: templates/content.pt:54
+msgid "restart_discussion"
+msgstr "Restart"
+
+#. Default: Start
+#: templates/content.pt:196
+msgid "start"
+msgstr "Start"
+
+#. Default: Now
+#: templates/content.pt:198
+msgid "now"
+msgstr "Now"
+
+#. Default: Complete View
+#: templates/content.pt:213
+msgid "complete_view"
+msgstr "Complete View"
+
+#. Default: Default View
+#: templates/content.pt:214
+msgid "default_view"
+msgstr "Default View"
+
+#. Default: Labels
+#: templates/content.pt:215
+msgid "labels"
+msgstr "Lables"
+
+#. Default: Positions
+#: templates/content.pt:216
+msgid "positions"
+msgstr "Positions"
+
+#. Default: Statements
+#: templates/content.pt:217
+msgid "statements"
+msgstr "Statements"
+
+#. Default: My path
+#: templates/content.pt:218 templates/content.pt:219
+msgid "my_path"
+msgstr "My path"
+
+#. Default: My statements
+#: templates/content.pt:220
+msgid "my_statements"
+msgstr "My statements"
+
+#. Default: Supports
+#: templates/content.pt:221
+msgid "supports_on_my_statements"
+msgstr "Supports"
+
+#. Default: Attacks
+#: templates/content.pt:222
+msgid "attacks_on_my_statements"
+msgstr "Attacks"
+
+#. Default: About
+#: templates/index_new.pt:36
+msgid "about"
+msgstr "About"
+
+#. Default: Services
+#: templates/index_new.pt:39
+msgid "services"
+msgstr "Services"
+
+#. Default: Github
+#: templates/index_new.pt:42
+msgid "github"
+msgstr "Github"
+
+#. Default: D-BAS: A Novel Approach for Large Scale Online-Discussion
+#: templates/index_new.pt:71
+msgid "landing-page-heading"
+msgstr "D-BAS: A Novel Approach for Large Scale Online-Discussion"
+
+#. Default: Welcome to D-BAS! This is our dialog-based argumentation system. If
+#. you have any questions, please feel free to contact us or provide feedback.
+#: templates/index_new.pt:73
+msgid "welcong"
 msgstr ""
-"Welcome to D-BAS! This is an prototype of our dialog-based argumentation "
-"system. There will be bugs. Please feel free to"
+"Welcome to D-BAS! This is our dialog-based argumentation system. If you have "
+"any questions, please feel free to contact us or provide feedback."
 
-#. Default: contact
-#: templates/index.pt:20
-msgid "welcome_text2"
-msgstr "contact"
+#. Default: Find Out More
+#: templates/index_new.pt:75
+msgid "find_out_more"
+msgstr "Find Out More"
 
-#. Default: us to report bugs or provide feedback.
-#: templates/index.pt:21
-msgid "welcome_text3"
-msgstr "us to report bugs or provide feedback."
+#. Default: or start directly
+#: templates/index_new.pt:76
+msgid "start_directly"
+msgstr "or start directly"
 
-#. Default: Derzeit läuft D-BAS sowohl im Produktivbetrieb zur Diskussion von
-#. Verbesserungen im Studiengang Informatik (nur auf Deutsch) als auch in einer
-#. eine Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres
-#. Browsers vermuten wir, dass Sie sich für den Produktivbetrieb interessieren.
-#. Welche Version von D-BAS wollen Sie nutzen:
-#: templates/index.pt:30
-msgid "choose_fieldtest_reviewer_text"
-msgstr ""
-"We are currently hosting both a demo version (English only) and a real-world "
-"deployment of D-BAS (German only, manually translated into Englisch). Based "
-"on your browser, we assume that you are interested in the demo version. "
-"However, you can switch to the real-world deployment if you like:"
+#~ msgid "get_in_touch_with_us"
+#~ msgstr "Get In Touch With Us"
 
-#. Default: Zum Feldversuch
-#: templates/index.pt:35
-msgid "fieldtest"
-msgstr "Real-World"
+#~ msgid "feel_free_to_drop_line"
+#~ msgstr ""
+#~ "Feel free to drop us a line and we’ll try to get back to you in 48 hours "
+#~ "max!"
 
-#. Default: Zum Review
-#: templates/index.pt:38
-msgid "reviewer"
-msgstr "Demo"
+#~ msgid "you_found_bug"
+#~ msgstr "You have found a bug?"
 
-#. Default: This work is part of the graduate school on
-#: templates/index.pt:46
-msgid "work_based_on"
-msgstr "This work is part of the graduate school on"
+#~ msgid "send_mail_or_github"
+#~ msgstr "Please open a new issue on our project page at"
 
-#. Default: Online-Participation
-#: templates/index.pt:47 templates/index.pt:48
-msgid "online_participation"
-msgstr "Online-Participation"
+#~ msgid "otherwise_drop_a_line"
+#~ msgstr "Otherwise feel free to drop us a line"
 
-#. Default: It is funded by the
-#: templates/index.pt:49
-msgid "funded_by"
-msgstr "It is funded by the"
+#~ msgid "name_req"
+#~ msgstr "Your Name (required)"
 
-#. Default: Ministry of Innovation, Science and Research in North Rhine-
-#. Westphalia
-#: templates/index.pt:50
-msgid "ministry_of_innovation"
-msgstr "Ministry of Innovation, Science and Research in North Rhine-Westphalia"
+#~ msgid "mail_req"
+#~ msgstr "Your E-Mail (required)"
+
+#~ msgid "message_req"
+#~ msgstr "Your Notification (required)"
+
+#~ msgid "warning"
+#~ msgstr "Warning!"
+
+#~ msgid "great"
+#~ msgstr "Great:"
+
+#~ msgid "message_sent"
+#~ msgstr "Your message was sent."
 
 #~ msgid "select_password"
 #~ msgstr "How to select a strong password"
@@ -2544,9 +2562,6 @@ msgstr "Ministry of Innovation, Science and Research in North Rhine-Westphalia"
 #~ "So, you think you are an expert? Okay, you can have a view of the "
 #~ "complete argumentation map."
 
-#~ msgid "about"
-#~ msgstr "About"
-
 #~ msgid "about_description"
 #~ msgstr ""
 #~ "D-BAS is a discussions software in the field of online participation and "
@@ -2709,9 +2724,6 @@ msgstr "Ministry of Innovation, Science and Research in North Rhine-Westphalia"
 
 #~ msgid "argu_approaches"
 #~ msgstr "Argumentation-based Approaches"
-
-#~ msgid "info_about_yourself"
-#~ msgstr "Information about yourself"
 
 #~ msgid "I"
 #~ msgstr "I"
