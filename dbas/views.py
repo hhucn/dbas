@@ -5,7 +5,6 @@ Collection of pyramids views components of D-BAS' core.
 """
 
 import json
-import subprocess
 from typing import Callable, Any
 
 import requests
