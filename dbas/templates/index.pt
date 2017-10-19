@@ -112,6 +112,36 @@
         <div class="row">
           <div class="col-lg-3 col-md-6 text-center">
             <div class="service-box">
+              <i class="fa fa-4x fa-thumbs-up text-primary sr-icons"></i>
+              <h3>Easy to Use</h3>
+              <p class="text-muted">No complicated argumentation! Step-by-step dialogs!</p>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 text-center">
+            <div class="service-box">
+              <i class="fa fa-4x fa-list text-primary sr-icons"></i>
+              <h3>Clear Structure</h3>
+              <p class="text-muted">Argument-maps are to messy! Let's use a modern chat-interface!</p>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 text-center">
+            <div class="service-box">
+              <i class="fa fa-4x fa-bolt text-primary sr-icons"></i>
+              <h3>Decentralized Mods</h3>
+              <p class="text-muted">Give the power to the crowd! They know how to use it!</p>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 text-center">
+            <div class="service-box">
+              <i class="fa fa-4x fa-commenting text-primary sr-icons"></i>
+              <h3>Less Redundancy</h3>
+              <p class="text-muted">Tired of duplicated post? We use modern machine learning processes!</p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-6 text-center">
+            <div class="service-box">
               <i class="fa fa-4x fa-diamond text-primary sr-icons"></i>
               <h3>Tested by a Crowd</h3>
               <p class="text-muted">D-BAS was test by many students and citizens!</p>
@@ -276,7 +306,7 @@
                 <li><a href="mailto:dbas@cs.uni-duesseldorf.de"><i class="fa fa-comment" aria-hidden="true"></i><span i18n:translate="contact">Contact</span></a></li>
                 <li><a href="${request.application_url}/rss"><i class="fa fa-rss" aria-hidden="true"></i><span i18n:translate="rss">RSS</span></a></li>
                 <li><a href="${request.application_url}/faq" data-toggle="modal"><i class="fa fa-question" aria-hidden="true"></i><span i18n:translate="Help">Help</span></a></li>
-                <li><a href="${request.application_url}/docs" data-toggle="modal"><i class="fa fa-book" aria-hidden="true"></i><span i18n:translate="Documentation">Docs</span></a></li>
+                <li><a href="${request.application_url}/docs" data-toggle="modal"><i class="fa fa-book" aria-hidden="true" style="margin-right: 0.5em"></i><span i18n:translate="Documentation">Docs</span></a></li>
                 <li><a href="https://github.com/hhucn/dbas" data-toggle="modal"><i class="fa fa-github" aria-hidden="true"></i><span i18n:translate="Github">Github</span></a></li>
                 <li style="position: absolute; margin: 0; right: 25px;"><img id="roundhousekick" alt=".r" style="width: 25px; height: 25px; border: none; opacity: 0;" src="${request.static_url('dbas:static/images/transparent.gif')}"></li>
                 <li style="position: absolute; margin: 0; right: 0;"><img id="yomamma" alt=".y" style="width: 25px; height: 25px; border: none; opacity: 0;" src="${request.static_url('dbas:static/images/transparent.gif')}"></li>
