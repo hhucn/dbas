@@ -97,7 +97,7 @@
       </div>
     </section>
 
-    <section id="services">
+    <section id="services" class="bg-bright">
       <div class="container">
         <div class="row">
           <div class="col-lg-12 text-center">
@@ -147,11 +147,18 @@
       </div>
     </div>
 
-    <section id="partners">
+    <section id="partners" class="bg-bright">
       <div class="container">
         <div class="row">
           <div class="col-lg-12 text-center">
             <h2 class="section-heading">From the University into Practice</h2>
+              <p class="lead">
+					<span i18n:translate="work_based_on">This work is part of the graduate school on</span>
+                    <a href="http://www.fortschrittskolleg.de/en/" target="_blank" tal:condition="extras.lang_is_en"><span i18n:translate="online_participation">Online-Participation</span></a>
+                    <a href="http://www.fortschrittskolleg.de/" target="_blank" tal:condition="not:extras.lang_is_en"><span i18n:translate="online_participation">Online-Participation</span></a>.
+					<span i18n:translate="funded_by">It is funded by the</span>
+                    <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaere-forschung/fortschrittskolleg-online-partizipation/" target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.
+				</p>
             <hr class="primary">
           </div>
         </div>
@@ -231,7 +238,7 @@
         </div>
     </section>
 
-    <section id="contact">
+    <section id="contact" class="bg-bright">
       <div class="container">
         <div class="row">
           <div class="col-lg-8 mx-auto text-center">
