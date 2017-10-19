@@ -45,7 +45,7 @@ from dbas.handler.voting import clear_vote_and_seen_values_of_user
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
-from dbas.helper.views import preparation_for_view, try_to_contact
+from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
 from dbas.logger import logger
