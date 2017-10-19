@@ -660,11 +660,6 @@ $(document).ready(function () {
 	// gui preperation
 	prepareLoginRegistrationPopup();
 
-	// activate tooltips
-	$(function () {
-		$('body').tooltip({ selector: '[data-toggle=tooltip]' });
-    });
-
 	// add minimal text length field
 	$('input[data-min-length]').each(function(){
 		setTextWatcherInputLength($(this), false);
