@@ -73,12 +73,12 @@
                     </a>
                 </li>
 
-                <li tal:condition="extras.lang_is_en">
+                <li id="header-language-selector" tal:condition="extras.lang_is_en">
                     <a id="link-trans-de" style="cursor:pointer">
                         <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_ge">
                     </a>
                 </li>
-                <li tal:condition="extras.lang_is_de">
+                <li id="header-language-selector" tal:condition="extras.lang_is_de">
                     <a id="link-trans-en" style="cursor:pointer">
                         <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en">
                     </a>

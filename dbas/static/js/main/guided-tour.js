@@ -65,12 +65,11 @@ function GuidedTour(){
 	 */
 	this.prepareSteps = function(){
 		// lang switcher
+		var flag = $('#header-language-selector').find('img').attr('src');
 		if (getLanguage() === 'en'){
-			var de_flag = $('#' + translationLinkDe).find('img').attr('src');
-			lang_switcher = '<a id="switch-to-de" class="pull-right" style="cursor: pointer;"><img class="language_selector_img" src="' + de_flag + '" alt="flag_ge" style="width:25px;"></a>';
+			lang_switcher = '<a id="switch-to-de" class="pull-right" style="cursor: pointer;"><img class="language_selector_img" src="' + flag + '" alt="flag_ge" style="width:25px;"></a>';
 		} else {
-			var en_flag = $('#' + translationLinkEn).find('img').attr('src');
-			lang_switcher = '<a id="switch-to-en" class="pull-right" style="cursor: pointer;"><img class="language_selector_img" src="' + en_flag + '" alt="flag_en" style="width:25px;"></a>';
+			lang_switcher = '<a id="switch-to-en" class="pull-right" style="cursor: pointer;"><img class="language_selector_img" src="' + flag + '" alt="flag_en" style="width:25px;"></a>';
 		}
 		
 		// steps

@@ -12,9 +12,7 @@ var mainpage = location.origin + '/'; //get_hostname(window.location.href);
  */
 _t = function(id){
     'use strict';
-    
-    var lang_id = $('#' + languageDropdownId).find('.active a').attr('id');
-    return get_it(lang_id, id);
+    return get_it(getLanguage(), id);
 };
 
 
@@ -53,21 +51,7 @@ var get_it = function(val, id){
  */
 getLanguage = function(){
     'use strict';
-    
-    var this_id, value = 'unknown value';
-    $('#' + languageDropdownId).children().each(function(){
-        if ($(this).hasClass('active')){
-            this_id = $(this).children().first().attr('id');
-            if (this_id.indexOf('en') !== -1){
-                value = 'en';
-            } else if (this_id.indexOf('de') !== -1){
-                value = 'de';
-            } else {
-                value = 'unknown value';
-            }
-        }
-    });
-    return value;
+    return $('#hidden_language').val();
 };
 
 /**
