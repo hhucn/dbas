@@ -328,7 +328,6 @@ var DBAS_DATA_DISCLAIMER = 'DBAS_DATA_DISCLAIMER';
  */
 var urlContact  = 'contact';
 var urlLogin    = 'login';
-var urlNews     = 'news';
 var urlContent  = 'discuss';
 var urlDiscussions = 'mydiscussions';
 var urlSettings = 'settings';

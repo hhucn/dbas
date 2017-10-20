@@ -206,7 +206,6 @@ def get_issue_dict_for(issue, application_url, for_api, uid, lang):
     issue_dict['error'] = ''
     issue_dict['author_url'] = application_url + '/user/' + str(issue.users.public_nickname)
     issue_dict['enabled'] = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
-    logger('X', 'X', 'z')
     return issue_dict
 
 

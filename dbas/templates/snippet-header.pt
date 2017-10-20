@@ -15,9 +15,15 @@
 
             <ul id="navbar-right" class="nav navbar-nav navbar-right">
 
-                <li id="content-link">
+                <li id="content-link" tal:condition="not:extras.ongoing_discussion">
                     <a href="${request.application_url}/discuss" data-toggle="tooltip" data-placement="left">
                         <i class="fa fa-play" aria-hidden="true"></i>&thinsp;<span i18n:translate="lets_go">Let's go</span>
+                    </a>
+                </li>
+
+                <li id="restart-link" tal:condition="extras.ongoing_discussion">
+                    <a id="discussion-restart-btn" href="" tal:attributes="href extras.restart_url" data-toggle="tooltip" data-placement="left">
+                        <i class="fa fa-refresh" aria-hidden="true"></i>&thinsp;<span i18n:translate="restart">Restart</span>
                     </a>
                 </li>
 
@@ -27,10 +33,40 @@
                     </a>
                 </li>
 
-                <li id="news-link">
-                    <a href="${request.application_url}/news" data-toggle="tooltip" data-placement="left">
-                        <i class="fa fa-newspaper-o" aria-hidden="true"></i><span i18n:translate="news">News</span>
+                <li tal:condition="extras.ongoing_discussion">
+                    <a class="dropdown-toggle" data-toggle="dropdown" id="issue-dropdown" aria-haspopup="true" aria-expanded="true" tal:attributes="issue issues.uid">
+                        <i class="fa fa-files-o" aria-hidden="true"></i><span i18n:translate="switch_topic">Switch Topic</span>&#160;&#160;<span class="caret"></span>
                     </a>
+                    <ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 280px;">
+                        <li tal:repeat="issue issues.all" tal:attributes="class issue.enabled">
+                            <a href="#" tal:attributes="href issue.url; data-value issue.title">
+                                <div class="row" style="padding: 0;">
+                                    <div class="col-md-10"
+                                         style="white-space: pre-wrap;">${structure:issue.title}</div>
+                                    <div class="col-md-2">
+                                    <span class="badge" data-toggle="tooltip"
+                                          data-placement="bottom" tal:attributes="title extras.buttons.count_of_posts">${issue.stat_count}
+                                    </span>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li tal:condition="extras.is_admin or extras.is_author" role="separator">
+                            <a id="add-topic" href="#" i18n:translate="add_topic">Add a Topic</a>
+                        </li>
+                        <li tal:condition="not:(extras.is_admin or extras.is_author)" role="separator">
+                            <div class="row">
+                                <div class="col-md-10" style="color: gray">
+                                    <span class="disabled"
+                                          style="cursor: not-allowed" i18n:translate="add_topic" tal:attributes="title extras.title.add_issue_info">Add a Topic</span>
+                                    <i class="fa fa-question-circle-o"
+                                       aria-hidden="true" tal:attributes="title extras.title.add_issue_info"></i>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
                 </li>
 
                 <li id="login-link" tal:condition="not:extras.logged_in">

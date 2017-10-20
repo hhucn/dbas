@@ -6,7 +6,8 @@ Provides helping function for database querys.
 
 import transaction
 from pyshorteners import Shorteners, Shortener
-from requests.exceptions import ReadTimeout
+from requests.exceptions import ReadTimeout, ConnectionError
+from urllib3.exceptions import NewConnectionError
 from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
@@ -406,7 +407,7 @@ def get_short_url(url, nickname, ui_locales) -> dict:
         service_url = 'http://tinyurl.com/'
         shortener = Shortener(service)
         short_url = format(shortener.short(url))
-    except ReadTimeout as e:
+    except (ReadTimeout, ConnectionError, NewConnectionError) as e:
         logger('getter', 'get_short_url', repr(e), error=True)
         _tn = Translator(ui_locales)
         prepared_dict = {'error': _tn.get(_.serviceNotAvailable)}

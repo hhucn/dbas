@@ -223,6 +223,7 @@ var requestInfoContainerClose                 = 'request_info_container_close';
 var requestInfoContainerHeading               = 'request_info_container_heading';
 var requestInfoContainerMessage               = 'request_info_container_message';
 var reviewLinkId                              = 'review-link';
+var restartLink                               = 'restart-link';
 var translationLink                           = 'link-trans-';
 var translationLinkDe                         = 'link-trans-de';
 var translationLinkEn                         = 'link-trans-en';

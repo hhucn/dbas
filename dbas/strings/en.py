@@ -705,7 +705,7 @@ en_lang = {
     _.whatDoYouThinkArgument: 'What do you think about',
     _.whatDoYouThinkOf: 'What do you think of',
     _.whatDoYouThinkAboutThat: 'What do you think about that',
-    _.whatIsYourIdea: 'What is your idea / opinion? What should we do?',
+    _.whatIsYourIdea: 'I want to talk about the position, that',
     _.whatIsYourMostImportantReasonForArgument: 'What is your most important reason {}for{}',
     _.whatIsYourMostImportantReasonForStatement: 'What is your most important reason {}for{}',
     _.whatIsYourMostImportantReasonAgainstArgument: 'What is your most important reason {}against{}',

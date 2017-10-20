@@ -82,11 +82,12 @@ class DictionaryHelper(object):
         :return: dict()
         """
         return self.prepare_extras_dict('', False, False, False, request, append_notifications=append_notifications,
-                                        nickname=request.authenticated_userid)
+                                        nickname=request.authenticated_userid, ongoing_discussion=False)
 
     def prepare_extras_dict(self, current_slug, is_reportable, show_bar_icon, show_graph_icon, request, nickname,
                             for_api=False, append_notifications=False, broke_limit=False,
-                            add_premise_container_style='display: none', add_statement_container_style='display: none'):
+                            add_premise_container_style='display: none', add_statement_container_style='display: none',
+                            ongoing_discussion=True):
         """
         Creates the extras.dict() with many options!
 
@@ -101,6 +102,7 @@ class DictionaryHelper(object):
         :param broke_limit: Boolean
         :param add_premise_container_style: style string, default 'display:none;'
         :param add_statement_container_style: style string, default 'display:none;'
+        :param ongoing_discussion: Boolean
         :return: dict()
         """
         logger('DictionaryHelper', 'prepare_extras_dict', 'def user ' + str(nickname))
@@ -140,6 +142,7 @@ class DictionaryHelper(object):
         return_dict['add_premise_container_style'] = add_premise_container_style
         return_dict['add_statement_container_style'] = add_statement_container_style
         return_dict['users_avatar'] = get_profile_picture(db_user, 25)
+        return_dict['ongoing_discussion'] = ongoing_discussion
         if db_user:
             return_dict['is_user_male'] = db_user.gender == 'm'
             return_dict['is_user_female'] = db_user.gender == 'f'
