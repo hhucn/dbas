@@ -31,9 +31,6 @@ class FunctionalTests(unittest.TestCase):
     def test_imprint(self):
         self.testapp.get('/imprint', status=200)
 
-    def test_publications(self):
-        self.testapp.get('/publications', status=200)
-
     def test_rss(self):
         self.testapp.get('/rss', status=200)
 
