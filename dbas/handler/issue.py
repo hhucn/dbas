@@ -12,12 +12,13 @@ from slugify import slugify
 from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print
+from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print, ClickedStatement
 from dbas.handler import user
 from dbas.handler.language import get_language_from_header
 from dbas.lib import is_user_author_or_admin
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_issues_as_query
+from dbas.helper.query import get_short_url
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
@@ -127,7 +128,7 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
     days, seconds = (duration.days, duration.seconds) if db_issue else (0, 0)
     duration = ceil(days * 24 + seconds / 3600)
     date_ms = int(db_issue.date.format('X') if db_issue else arrow.utcnow().format('X')) * 1000
-    date = db_issue.date.replace(hours=2).format('DD.MM. HH:mm') if db_issue else 'none'
+    date = db_issue.date.format('DD.MM. HH:mm') if db_issue else 'none'
 
     db_issues = get_not_disabled_issues_as_query().all()
     all_array = []
@@ -155,24 +156,24 @@ def prepare_json_of_issue(uid, application_url, lang, for_api):
             'duration': duration}
 
 
-def get_number_of_arguments(issue):
+def get_number_of_arguments(issue_uid):
     """
     Returns number of arguments for the issue
 
-    :param issue: Issue Issue.uid
+    :param issue_uid: Issue Issue.uid
     :return: Integer
     """
-    return len(DBDiscussionSession.query(Argument).filter_by(issue_uid=issue).all())
+    return len(DBDiscussionSession.query(Argument).filter_by(issue_uid=issue_uid).all())
 
 
-def get_number_of_statements(issue):
+def get_number_of_statements(issue_uid):
     """
     Returns number of statements for the issue
 
-    :param issue: Issue Issue.uid
+    :param issue_uid: Issue Issue.uid
     :return: Integer
     """
-    return len(DBDiscussionSession.query(Statement).filter_by(issue_uid=issue).all())
+    return len(DBDiscussionSession.query(Statement).filter_by(issue_uid=issue_uid).all())
 
 
 def get_issue_dict_for(issue, application_url, for_api, uid, lang):
@@ -186,6 +187,11 @@ def get_issue_dict_for(issue, application_url, for_api, uid, lang):
     :param lang: ui_locales
     :return: dict()
     """
+    if str(type(issue)) != str(Issue):
+        logger('X', 'X', 'y')
+        return {'uid': '', 'slug': '', 'title': '', 'url': '', 'review_url': '', 'info': '', 'stat_count': '',
+                'date': '', 'author': '', 'author_url': '', 'enabled': '', 'error': 'true'}
+
     _um = UrlManager(application_url, issue.slug, for_api)
     issue_dict = dict()
     issue_dict['uid'] = str(issue.uid)
@@ -197,8 +203,10 @@ def get_issue_dict_for(issue, application_url, for_api, uid, lang):
     issue_dict['stat_count'] = get_number_of_statements(issue.uid)
     issue_dict['date'] = sql_timestamp_pretty_print(issue.date, lang)
     issue_dict['author'] = issue.users.public_nickname
+    issue_dict['error'] = ''
     issue_dict['author_url'] = application_url + '/user/' + str(issue.users.public_nickname)
     issue_dict['enabled'] = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
+    logger('X', 'X', 'z')
     return issue_dict
 
 
@@ -265,3 +273,86 @@ def get_title_for_slug(slug):
         if str(slugify(issue.title)) == str(slug):
             return issue.title
     return None
+
+
+def get_issues_overiew(nickname, application_url) -> dict:
+    """
+    Returns dictionary with keywords 'user' and 'others', which got lists with dicts with infos
+
+    :param nickname: Users.nickname
+    :param application_url: current applications url
+    :return: dict
+    """
+    logger('IssueHelper', 'get_issues_overiew', 'def')
+    user.update_last_action(nickname)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+    if not db_user:
+        return {
+            'user': [],
+            'other': []
+        }
+
+    db_issues_of_user = DBDiscussionSession.query(Issue).filter_by(author_uid=db_user.uid).all()
+    db_issues_not_of_user = DBDiscussionSession.query(Issue).filter(Issue.author_uid != db_user.uid).all()
+
+    return {
+        'user': [__create_issue_dict(issue, application_url) for issue in db_issues_of_user],
+        'other': [__create_issue_dict(issue, application_url) for issue in db_issues_not_of_user]
+    }
+
+
+def set_discussions_availability(nickname, uid, enable, translator) -> dict:
+    """
+
+    :param nickname:
+    :param uid:
+    :param enable:
+    :return:
+    """
+    logger('IssueHelper', 'set_discussions_availability', 'uid: {}, available: {}'.format(uid, enable))
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+    if not db_user:
+        return {'error': translator.get(_.userNotFound)}
+
+    db_issue = DBDiscussionSession.query(Issue).get(uid)
+    if not db_issue:
+        return {'error': translator.get(_.internalKeyError)}
+
+    if db_issue.author_uid != db_user.uid:
+        return {'error': translator.get(_.noRights)}
+
+    db_issue.set_disable(not enable)
+    DBDiscussionSession.add(db_issue)
+    DBDiscussionSession.flush()
+
+    return {'error': ''}
+
+
+def __create_issue_dict(issue, application_url) -> dict:
+    """
+    Returns dictionary with several informationa bout the given issue
+
+    :param issue: database row of issue
+    :param application_url: current applications url
+    :return: dict()
+    """
+    short_url_dict = get_short_url(application_url + '/' + issue.slug, '', 'en')
+    url = short_url_dict['url'] if len(short_url_dict['error']) == 0 else application_url + '/' + issue.slug
+
+    issues_statements = [s.uid for s in DBDiscussionSession.query(Statement).filter_by(issue_uid=issue.uid).all()]
+    db_clicked_statements = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.statement_uid.in_(issues_statements)).all()
+    db_authors = DBDiscussionSession.query(User).filter(User.uid.in_(cs.uid for cs in db_clicked_statements)).all()
+    involved_users = str(len(db_authors))
+
+    prepared_dict = {
+        'uid': issue.uid,
+        'title': issue.title,
+        'url': application_url + '/' + issue.slug,
+        'short_url': url,
+        'date': issue.date.format('DD.MM. HH:mm'),
+        'count_of_statements': str(get_number_of_statements(issue.uid)),
+        'is_enabled': not issue.is_disabled,
+        'involved_users': involved_users,
+        'lang': DBDiscussionSession.query(Language).get(issue.lang_uid).ui_locales
+    }
+    return prepared_dict

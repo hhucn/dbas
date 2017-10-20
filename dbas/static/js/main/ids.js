@@ -64,6 +64,7 @@ var headerNicknameId                          = 'header_nickname';
 var headerBadgeCountNotificationsId           = 'header_badge_count_notifications';
 var hamburgerIconClass                        = 'hamburger';
 var menuBadgeCountNotificationsId             = 'menu_badge_count_notifications';
+var myDiscussionsLink                         = 'my-discussions-link';
 var statementsDoneCountId                     = 'statements-done-count';
 var forgotPasswordText                        = 'forgot-password-text';
 var popupLoginEmailInputId                    = 'email-input';

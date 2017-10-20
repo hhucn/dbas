@@ -45,6 +45,7 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
 from dbas.helper.views import preparation_for_view
+from dbas.handler.issue import get_issues_overiew, set_discussions_availability
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
 from dbas.logger import logger
@@ -400,6 +401,34 @@ def main_faq(request):
         'title': 'FAQ',
         'project': project_name,
         'extras': extras_dict
+    }
+
+
+# my discussions
+@view_config(route_name='main_mydiscussions', renderer='templates/discussions.pt', permission='use')
+def main_mydiscussions(request):
+    """
+    View configuration for FAQs.
+
+    :param request: current request of the server
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
+    logger('main_mydiscussions', 'def', 'main')
+    ui_locales = get_language_from_cookie(request)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
+
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    issue_dict = get_issues_overiew(request.authenticated_userid, request.application_url)
+
+    return {
+        'layout': base_layout(),
+        'language': str(ui_locales),
+        'title': 'My Discussions',
+        'project': project_name,
+        'extras': extras_dict,
+        'issues': issue_dict
     }
 
 
@@ -1232,6 +1261,32 @@ def send_some_notification(request):
     prepared_dict = send_users_notification(get_port(request), recipient, title, text, request.authenticated_userid,
                                             ui_locales)
 
+    return prepared_dict
+
+
+# ajax - set boolean for receiving information
+@view_config(route_name='ajax_set_discussion_availability', renderer='json')
+def set_discussion_availability(request):
+    """
+    Sets the discussions availability
+
+    :param request: current request of the server
+    :return: json-dict()
+    """
+    logger('views', 'set_discussion_availability', 'request.params: {}'.format(request.params))
+    _tn = Translator(get_language_from_cookie(request))
+
+    try:
+        enable = request.params['available'] == 'True'
+        uid = request.params['uid']
+        prepared_dict = set_discussions_availability(request.authenticated_userid, uid, enable, _tn)
+    except KeyError as e:
+        logger('views', 'set_user_lang', repr(e), error=True)
+        prepared_dict = {
+            'error': _tn.get(_.internalKeyError),
+            'ui_locales': '',
+            'current_lang': ''
+        }
     return prepared_dict
 
 

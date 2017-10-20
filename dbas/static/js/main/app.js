@@ -647,15 +647,16 @@ $(document).ready(function () {
 	});
 
 	// set current file to active
-		 if (path.indexOf(urlContact) !== -1){ 	setLinkActive('#' + contactLink); }
-	else if (path.indexOf(urlLogin) !== -1){	setLinkActive('#' + loginLinkId); }
-	else if (path.indexOf(urlNews) !== -1){		setLinkActive('#' + newsLink); }
-	else if (path.indexOf(urlContent) !== -1){ 	setLinkActive('#' + contentLink); }
-	else if (path.indexOf(urlReview) !== -1){ 	setLinkActive('#' + reviewLinkId); }
+		 if (path.indexOf(urlContact) !== -1){ 	    setLinkActive('#' + contactLink); }
+	else if (path.indexOf(urlLogin) !== -1){	    setLinkActive('#' + loginLinkId); }
+	else if (path.indexOf(urlNews) !== -1){		    setLinkActive('#' + newsLink); }
+	else if (path.indexOf(urlDiscussions) !== -1){	setLinkActive('#' + myDiscussionsLink); }
+	else if (path.indexOf(urlContent) !== -1){ 	    setLinkActive('#' + contentLink); }
+	else if (path.indexOf(urlReview) !== -1){ 	    setLinkActive('#' + reviewLinkId); }
 	// else if (path.indexOf(urlSettings) !== -1 ||
 	// 		 path.indexOf(urlImprint) !== -1 ||
 	// 		 path.indexOf(urlLogout) !== -1){}
-	else { 										setLinkActive(''); }
+	else { 										    setLinkActive(''); }
 
 	// gui preperation
 	prepareLoginRegistrationPopup();

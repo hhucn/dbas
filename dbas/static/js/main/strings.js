@@ -122,6 +122,7 @@ var doNotHesitateToContact          = 'doNotHesitateToContact';
 var date                            = 'date';
 var deleteTrack                     = 'deleteTrack';
 var deleteHistory                   = 'deleteHistory';
+var discussionsAvailabilitySet      = 'discussionsAvailabilitySet';
 var deleteStatisticsTitle           = 'deleteStatisticsTitle';
 var deleteStatisticsBody            = 'deleteStatisticsBody';
 var euCookiePopupTitle              = 'euCookiePopupTitle';
@@ -328,6 +329,7 @@ var urlContact  = 'contact';
 var urlLogin    = 'login';
 var urlNews     = 'news';
 var urlContent  = 'discuss';
+var urlDiscussions = 'mydiscussions'
 var urlSettings = 'settings';
 var urlImprint  = 'imprint';
 var urlLogout   = 'logout';
@@ -375,6 +377,7 @@ var dbas_en = {
     'clickedOnThis': 'clicked on this',
     'deleteTrack': 'Delete track',
     'deleteHistory': 'Delete history',
+    'discussionsAvailabilitySet': 'The discussion availibility was set.',
     'dataRemoved': 'Data was successfully removed.',
     'dataAdded': 'Data was successfully added.',
     'date': 'Date',
@@ -621,6 +624,7 @@ var dbas_de = {
     'duplicateDialog': 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version dennoch als die aktuellste markieren?',
     'deleteTrack': 'Track löschen',
     'deleteHistory': 'History löschen',
+    'discussionsAvailabilitySet': 'Die Verfügbarkeit der Diskussion wurde geändert.',
     'doNotHesitateToContact': 'Bitte zögern Sie bei Fehlern nicht, <b><span style="cursor: pointer;" id="contact_on_error">uns zu kontaktieren (hier klicken)</span></b>',
     'deleteStatisticsTitle': 'Statistik löschen',
     'deleteStatisticsBody': 'Dies löscht die Statstik. Dadurch werden alle Klicks, die von Ihnen getätigt wurden, wieder entfernt.',
