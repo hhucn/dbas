@@ -13,7 +13,7 @@
     <title>${title}</title>
     <link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-4.0b.min.css')}" rel="stylesheet">
     <link type="text/css" href="${request.static_url('dbas:static/fontawesome/css/font-awesome.min.css')}" rel="stylesheet">
-    <link type="text/css" href="${request.static_url('dbas:static/css/main.css')}" rel="stylesheet">
+    <!--<link type="text/css" href="${request.static_url('dbas:static/css/main.css')}" rel="stylesheet">-->
     <link type="text/css" href="${request.static_url('dbas:static/css/creative.css')}" rel="stylesheet">
     <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery-3.1.0.min.js')}"></script>
 
@@ -43,7 +43,7 @@
               <a class="nav-link js-scroll-trigger" href="#github" i18n:translate="github">Github</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="#partners">Partners</a>
+              <a class="nav-link js-scroll-trigger" href="#partners">Partner</a>
             </li>
             <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="#news" i18n:translate="news">News</a>
@@ -52,13 +52,13 @@
               <a class="nav-link js-scroll-trigger" href="#contact" i18n:translate="contact">Contact</a>
             </li>
               <li class="nav-item" tal:condition="extras.lang_is_en">
-                  <a id="link-trans-de" style="cursor:pointer">
-                      <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-16.png')}" alt="flag_ge">
+                  <a id="link-trans-de" style="cursor:pointer;">
+                      <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-16.png')}" alt="flag_ge" style="padding-top: 0 !important;">
                   </a>
               </li>
               <li class="nav-item" tal:condition="extras.lang_is_de">
-                  <a id="link-trans-en" style="cursor:pointer">
-                      <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-16.png')}" alt="flag_en">
+                  <a id="link-trans-en" style="cursor:pointer;">
+                      <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-16.png')}" alt="flag_en" style="padding-top: 0 !important;">
                   </a>
               </li>
           </ul>
