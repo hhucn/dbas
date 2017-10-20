@@ -5,7 +5,7 @@
             <div class="text-center big-header">
                 <h3 i18n:translate="Settings" class="text-center">Settings</h3>
                 <p i18n:translate="list_of_information" class="lead text-center">List of several information mapped with
-                    your account..</p>
+                    your account</p>
             </div>
         </section>
         <div class="wrapper-container">

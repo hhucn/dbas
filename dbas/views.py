@@ -122,37 +122,6 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any], for_
 
 
 # main page
-@view_config(route_name='main_page_old', renderer='templates/index_old.pt', permission='everybody')
-def main_page_old(request):
-    """
-    View configuration for the main page
-
-    :param request: current request of the server
-    :return: HTTP 200 with several information
-    """
-    logger('main_page_old', 'def', 'request.params: {}'.format(request.params))
-
-    set_language_for_first_visit(request)
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
-    session_expired = 'session_expired' in request.params and request.params['session_expired'] == 'true'
-    ui_locales = get_language_from_cookie(request)
-    logger('main_page_old', 'def', 'request.params: {}'.format(request.params))
-    _dh = DictionaryHelper(ui_locales, ui_locales)
-    extras_dict = _dh.prepare_extras_dict_for_normal_page(request)
-    _dh.add_language_options_for_extra_dict(extras_dict)
-
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': name + ' ' + full_version,
-        'project': project_name,
-        'extras': extras_dict,
-        'session_expired': session_expired
-    }
-
 
 @view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
 @forbidden_view_config(renderer='templates/index.pt')
@@ -425,7 +394,7 @@ def main_mydiscussions(request):
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
-        'title': 'My Discussions',
+        'title': Translator(ui_locales).get(_.myDiscussions),
         'project': project_name,
         'extras': extras_dict,
         'issues': issue_dict
@@ -455,34 +424,6 @@ def main_docs(request):
         'layout': base_layout(),
         'language': str(ui_locales),
         'title': _tn.get(_.docs),
-        'project': project_name,
-        'extras': extras_dict
-    }
-
-
-# imprint
-@view_config(route_name='main_publications', renderer='templates/publications.pt', permission='everybody')
-def main_publications(request):
-    """
-    View configuration for the publications list.
-
-    :param request: current request of the server
-    :return: dictionary with title and project name as well as a value, weather the user is logged in
-    """
-    logger('main_publications', 'def', 'main')
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
-
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': _tn.get(_.publications),
         'project': project_name,
         'extras': extras_dict
     }
@@ -765,6 +706,7 @@ def main_review(request):
 
     issue = issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
+
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, False)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 

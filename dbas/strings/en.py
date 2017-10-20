@@ -71,6 +71,7 @@ en_lang = {
     _.showMyPath: 'Show my path',
     _.hideMyPath: 'Hide my path',
     _.myStatements: 'My statements',
+    _.myDiscussions: 'My Discussions',
     _.supportsOnMyStatements: 'Supports',
     _.attacksOnMyStatements: 'Attacks',
     _.addATopic: 'Add a topic',

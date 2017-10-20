@@ -4,7 +4,7 @@
         <section>
             <div class="text-center big-header">
                 <h3 i18n:translate="overview_of_discussion" class="text-center">Overview of the Discussions</h3>
-                <p i18n:translate="page_contains_overview" class="lead text-center">This page contains an over of discussion you have created as well as other participants created</p>
+                <p i18n:translate="page_contains_overview" class="lead text-center">This page contains an over of discussions you have created as well as other participants created</p>
             </div>
         </section>
 
@@ -12,7 +12,7 @@
 
             <div class="container colored-container">
                 <div class="row">
-                    <div class="col-md-offset-2 col-md-8">
+                    <div class="col-md-offset-1 col-md-10">
                         <h4 i18n:translate="my_discussions" class="text-center">My Discussions</h4>
                         <p i18n:translate="summary_your_discussions" class="lead text-center" tal:condition="len(issues.user)>0">This is a summary of the discussions you have created:</p>
                         <p i18n:translate="you_created_no_discussion" class="lead text-center" tal:condition="len(issues.user)<1">You had not creaty any discussion yet, but you can use the add button in the bottom left to create your own discussion.</p>

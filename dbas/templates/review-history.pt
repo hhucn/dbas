@@ -11,7 +11,8 @@
                     <i class="fa fa-clock-o" aria-hidden="true" style="margin-right: 0.5em;"></i>
                     <span i18n:translate="current_decisions">Current decisions</span>!
                 </h3>
-                <p i18n:translate="page_contains_overview" class="lead text-center">This page contains an over of discussion you have created as well as other participants created.</p>
+                <p tal:condition="history.has_access" i18n:translate="page_contains_list_past_votes" class="lead text-center">This page contains lists with an over of past votes for each queue</p>
+                <p tal:condition="not:history.has_access" i18n:translate="page_contains_list_ongoing_votes" class="lead text-center">This page contains lists with an over of ongoing votes for each queue</p>
 
             </div>
         </section>

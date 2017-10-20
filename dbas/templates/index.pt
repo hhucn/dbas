@@ -69,9 +69,11 @@
     <header class="masthead">
       <div class="header-content">
         <div class="header-content-inner">
-            <h1 id="homeHeading"><img src="${request.static_url('dbas:static/images/logo_white.svg')}" alt="D-BAS Logo" style="height: 1.1em;"> <span i18n:translate="landing-page-heading">D-BAS: A Novel Approach for Large Scale Online-Discussions</span></h1>
+            <h1 id="homeHeading">
+                <img src="${request.static_url('dbas:static/images/logo_white.svg')}" alt="D-BAS Logo" style="height: 1.1em;"> <span i18n:translate="landing-page-heading">D-BAS: A Novel Approach for Large Scale Online-Discussions</span>
+            </h1>
           <hr>
-          <p><strong i18n:translate="welcong">Welcome to D-BAS! This is our Dialog-Based Argumentation System. If you have any questions, please feel free to contact us or provide feedback.</strong></p>
+          <p><strong i18n:translate="welcome_to_dbas">Welcome to D-BAS! This is our Dialog-Based Argumentation System. If you have any questions, please feel free to contact us or provide feedback.</strong></p>
             <div class="btn-group">
                 <a class="btn btn-primary btn-xl" href="#about" style="margin-left: 0; margin-right: 0;"><span i18n:translate="find_out_more">Find Out More</span></a>
                 <a class="btn btn-default btn-xl" href="${request.application_url}/discuss" style="margin-left: 0; margin-right: 0;"><span class="text-primary" i18n:translate="start_directly">or start directly</span></a>
@@ -84,16 +86,16 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-8 mx-auto text-center">
-            <h2 class="section-heading text-white">We've got what you need!</h2>
+            <h2 class="section-heading text-white" i18n:translate="we_have_you_need">We've got what you need!</h2>
             <hr class="light">
-            <p class="text-faded">
+            <p class="text-faded" i18n:translate="landing_page_intro">
                 With the rise of the Internet, we now have a basic infrastructure, which makes participation easier for
                 everyone and independent of space and time. Online participation offers many possibilities for users as
                 well as operators, has an impact on political and administrative decisions and has the potential to
                 strengthen the acceptance and the quality of them. We offer a novel approach for large scale
                 online-discussion. Feel free to try it out now!
             </p>
-            <a class="btn btn-default btn-xl js-scroll-trigger" href="${request.application_url}/discuss">Get Started</a>
+            <a class="btn btn-default btn-xl js-scroll-trigger" href="${request.application_url}/discuss" i18n:translate="get_started">Get Started</a>
           </div>
         </div>
       </div>
@@ -103,69 +105,69 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12 text-center">
-            <h2 class="section-heading">At Your Service</h2>
+            <h2 class="section-heading" i18n:translate="at_your_service">At Your Service</h2>
             <hr class="primary">
           </div>
         </div>
       </div>
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-3 col-md-6 text-center">
-            <div class="service-box">
-              <i class="fa fa-4x fa-thumbs-up text-primary sr-icons"></i>
-              <h3>Easy to Use</h3>
-              <p class="text-muted">No complicated argumentation! Step-by-step dialogs!</p>
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-3 col-md-6 text-center">
+              <div class="service-box">
+                <i class="fa fa-4x fa-thumbs-up text-primary sr-icons"></i>
+                <h3 i18n:translate="easy_to_use">Easy to Use</h3>
+                <p i18n:translate="easy_to_use_text" class="text-muted">No complicated argumentation! Step-by-step dialogs!</p>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 text-center">
+              <div class="service-box">
+                <i class="fa fa-4x fa-list text-primary sr-icons"></i>
+                <h3 i18n:translate="clear_structure">Clear Structure</h3>
+                <p i18n:translate="clear_structure_text" class="text-muted">Argument-maps are to messy! Let's use a modern chat-interface!</p>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 text-center">
+              <div class="service-box">
+                <i class="fa fa-4x fa-bolt text-primary sr-icons"></i>
+                <h3 i18n:translate="dec_mods">Decentralized Mods</h3>
+                <p i18n:translate="dec_mods_text" class="text-muted">Give the power to the crowd! They know how to use it!</p>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 text-center">
+              <div class="service-box">
+                <i class="fa fa-4x fa-commenting text-primary sr-icons"></i>
+                <h3 i18n:translate="less_redund">Less Redundancy</h3>
+                <p i18n:translate="less_redund_text" class="text-muted">Tired of duplicated post? We use modern machine learning processes!</p>
+              </div>
             </div>
           </div>
-          <div class="col-lg-3 col-md-6 text-center">
-            <div class="service-box">
-              <i class="fa fa-4x fa-list text-primary sr-icons"></i>
-              <h3>Clear Structure</h3>
-              <p class="text-muted">Argument-maps are to messy! Let's use a modern chat-interface!</p>
+          <div class="row">
+            <div class="col-lg-3 col-md-6 text-center">
+              <div class="service-box">
+                <i class="fa fa-4x fa-diamond text-primary sr-icons"></i>
+                <h3 i18n:translate="tested_by_crowd">Tested by a Crowd</h3>
+                <p i18n:translate="tested_by_crowd_text" class="text-muted">D-BAS was test by many students and citizens!</p>
+              </div>
             </div>
-          </div>
-          <div class="col-lg-3 col-md-6 text-center">
-            <div class="service-box">
-              <i class="fa fa-4x fa-bolt text-primary sr-icons"></i>
-              <h3>Decentralized Mods</h3>
-              <p class="text-muted">Give the power to the crowd! They know how to use it!</p>
+            <div class="col-lg-3 col-md-6 text-center">
+              <div class="service-box">
+                <i class="fa fa-4x fa-paper-plane text-primary sr-icons"></i>
+                <h3 i18n:translate="ready_to_ship">Ready to Ship</h3>
+                <p i18n:translate="ready_to_ship_text" class="text-muted">Easy to deplay and maintain, because it is shipepd by Docker!</p>
+              </div>
             </div>
-          </div>
-          <div class="col-lg-3 col-md-6 text-center">
-            <div class="service-box">
-              <i class="fa fa-4x fa-commenting text-primary sr-icons"></i>
-              <h3>Less Redundancy</h3>
-              <p class="text-muted">Tired of duplicated post? We use modern machine learning processes!</p>
+            <div class="col-lg-3 col-md-6 text-center">
+              <div class="service-box">
+                <i class="fa fa-4x fa-newspaper-o text-primary sr-icons"></i>
+                <h3 i18n:translate="up_to_date">Up to Date</h3>
+                <p i18n:translate="up_to_date_text" class="text-muted">We update dependencies to keep things fresh.</p>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-3 col-md-6 text-center">
-            <div class="service-box">
-              <i class="fa fa-4x fa-diamond text-primary sr-icons"></i>
-              <h3>Tested by a Crowd</h3>
-              <p class="text-muted">D-BAS was test by many students and citizens!</p>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-6 text-center">
-            <div class="service-box">
-              <i class="fa fa-4x fa-paper-plane text-primary sr-icons"></i>
-              <h3>Ready to Ship</h3>
-              <p class="text-muted">Easy to deplay and maintain, because it is shipepd by Docker!</p>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-6 text-center">
-            <div class="service-box">
-              <i class="fa fa-4x fa-newspaper-o text-primary sr-icons"></i>
-              <h3>Up to Date</h3>
-              <p class="text-muted">We update dependencies to keep things fresh.</p>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-6 text-center">
-            <div class="service-box">
-              <i class="fa fa-4x fa-heart text-primary sr-icons"></i>
-              <h3>Made with Love</h3>
-              <p class="text-muted">You have to make your software with love these days!</p>
+            <div class="col-lg-3 col-md-6 text-center">
+              <div class="service-box">
+                <i class="fa fa-4x fa-heart text-primary sr-icons"></i>
+                <h3 i18n:translate="made_with_love">Made with Love</h3>
+                <p i18n:translate="made_with_love_text" class="text-muted">You have to make your software with love these days!</p>
             </div>
           </div>
         </div>
@@ -174,8 +176,8 @@
 
     <div id="github" class="call-to-action bg-dark">
       <div class="container text-center">
-        <h2>Free Download at Github!</h2>
-        <a class="btn btn-default btn-xl sr-button" href="https://github.com/hhucn/dbas"><i class="fa fa-github" aria-hidden="true"></i> Download Now</a>
+        <h2 i18n:translate="free_at_github">Free Download at Github!</h2>
+          <a class="btn btn-default btn-xl sr-button" href="https://github.com/hhucn/dbas"><i class="fa fa-github" aria-hidden="true"></i> <span  i18n:translate="download_now">Download Now</span></a>
       </div>
     </div>
 
@@ -183,13 +185,13 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12 text-center">
-            <h2 class="section-heading">From the University into Practice</h2>
+            <h2 class="section-heading" i18n:translate="from_uni_to_pratice">From the University into Practice</h2>
               <p class="lead">
-					<span i18n:translate="work_based_on">This work is part of the graduate school on</span>
-                  <span tal:condition="extras.lang_is_en"><a href="http://www.fortschrittskolleg.de/en/" target="_blank"><span i18n:translate="online_participation">Online-Participation</span></a>.</span>
-                  <span tal:condition="not:extras.lang_is_en"><a href="http://www.fortschrittskolleg.de/" target="_blank"><span i18n:translate="online_participation">Online-Participation</span></a>.</span>
-					<span i18n:translate="funded_by">It is funded by the</span>
-                    <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaere-forschung/fortschrittskolleg-online-partizipation/" target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.
+                <span i18n:translate="work_based_on">This work is part of the graduate school on</span>
+                <span tal:condition="extras.lang_is_en"><a href="http://www.fortschrittskolleg.de/en/" target="_blank"><span i18n:translate="online_participation">Online-Participation</span></a>.</span>
+                <span tal:condition="not:extras.lang_is_en"><a href="http://www.fortschrittskolleg.de/" target="_blank"><span i18n:translate="online_participation">Online-Participation</span></a>.</span>
+				<span i18n:translate="funded_by">It is funded by the</span>
+                <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaere-forschung/fortschrittskolleg-online-partizipation/" target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.
 				</p>
             <hr class="primary">
           </div>
@@ -200,25 +202,25 @@
           <div class="col-lg-3 col-md-6 text-center">
             <div class="service-box">
                 <a href="https://www.hhu.de/" title="www.hhu.de" target="_blank"><img class="logo_hhu" alt="logo_hhu" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}"/></a>
-              <p class="text-muted">Heinrich-Heine-University Duesseldorf</p>
+              <p class="text-muted" i18n:translate="hhu">Heinrich-Heine-University Duesseldorf</p>
             </div>
           </div>
           <div class="col-lg-3 col-md-6 text-center">
             <div class="service-box">
               <a href="http://www.fortschrittskolleg.de/" title="www.fortschrittskolleg.de" target="_blank"><img alt="logo_kolleg_s" src="${request.static_url('dbas:static/images/logo_kolleg_s.jpg')}"/></a>
-              <p class="text-muted">Graduation School on Online Participation</p>
+              <p class="text-muted" i18n:translate="graduate_school_online_participation">Graduation School on Online Participation</p>
             </div>
           </div>
           <div class="col-lg-3 col-md-6 text-center">
             <div class="service-box">
               <a href="https://www.fhoev.nrw.de/" title="www.fhoev.nrw.de" target="_blank"><img alt="logo_fhoev_s" src="${request.static_url('dbas:static/images/logo_fhoev_s.png')}"/></a>
-              <p class="text-muted">University of Applied Sciences for Public Administration and management of North Rhine-Westphalia</p>
+              <p class="text-muted" i18n:translate="fhoev">University of Applied Sciences for Public Administration and management of North Rhine-Westphalia</p>
             </div>
           </div>
           <div class="col-lg-3 col-md-6 text-center">
             <div class="service-box">
                 <a href="https://www.diid.hhu.de/" title="www.diid.hhu.de" target="_blank"><img alt="logo_diid_s" src="${request.static_url('dbas:static/images/logo_diid_s.jpg')}"/></a>
-              <p class="text-muted">Duesseldorf Institut of Internet and Democracy</p>
+              <p class="text-muted" i18n:translate="diid">Duesseldorf Institut of Internet and Democracy</p>
             </div>
           </div>
         </div>
@@ -229,7 +231,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h2 class="section-heading">Latest News</h2>
+                    <h2 class="section-heading" i18n:translate="latest_news">Latest News</h2>
                     <hr class="primary">
                 </div>
             </div>
@@ -258,11 +260,11 @@
                         </div>
                         <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Previous</span>
+                            <span class="sr-only" i18n:translate="previous">Previous</span>
                         </a>
                         <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
+                            <span class="sr-only" i18n:translate="next">Next</span>
                         </a>
                     </div>
                 </div>
@@ -277,9 +279,9 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-8 mx-auto text-center">
-            <h2 class="section-heading">Let's Get In Touch!</h2>
+            <h2 class="section-heading" i18n:translate="get_in_touch">Let's Get In Touch!</h2>
             <hr class="primary">
-            <p>Ready to start your next discussion with us? That's great! Give us a call or send us an email and we will get back to you as soon as possible!</p>
+            <p i18n:translate="ready_to_start_with_us">Ready to start your next discussion with us? That's great! Give us a call or send us an email and we will get back to you as soon as possible!</p>
           </div>
         </div>
         <div class="row">
