@@ -349,7 +349,7 @@ def __create_issue_dict(issue, application_url) -> dict:
         'url': application_url + '/' + issue.slug,
         'short_url': url,
         'date': issue.date.format('DD.MM. HH:mm'),
-        'count_of_statements': str(get_number_of_statements(issue.uid)) + '/' + str(get_number_of_arguments(issue.uid)),
+        'count_of_statements': str(get_number_of_statements(issue.uid)),
         'is_enabled': not issue.is_disabled,
         'involved_users': involved_users,
         'lang': DBDiscussionSession.query(Language).get(issue.lang_uid).ui_locales
