@@ -112,6 +112,7 @@ var changelogHide                   = 'changelogHide';
 var clickedOnThis                   = 'clickedOnThis';
 var countOfArguments                = 'countOfArguments';
 var countdownEnded                  = 'countdownEnded';
+var urlCopy                         = 'urlCopy';
 var couldNotLock                    = 'couldNotLock';
 var contentWillBeRevoked            = 'contentWillBeRevoked';
 var dataRemoved                     = 'dataRemoved';
@@ -357,6 +358,7 @@ var dbas_en = {
     'author': 'Author',
     'because': 'because',
     'countOfArguments': 'Count of arguments',
+    'urlCopy': 'URL was copied into your clipboard',
     'countdownEnded': 'Your time is up. Unfortunately you cannot edit anything on this page anymore.',
     'contentWillBeRevoked': 'You will be disassociated from the content.',
     'couldNotLock': 'Set could not be locked, please try again!',
@@ -603,6 +605,7 @@ var dbas_de = {
     'cancel': 'Abbrechen',
     'correctionsSet': 'Ihre Korrektur wurde gesetzt.',
     'countOfArguments': 'Anzahl der Argumente',
+    'urlCopy': 'URL wurde in Ihre Zwischenablage kopiert',
     'countdownEnded': 'Ihre Zeit ist abgelaufen, leider können Sie auf dieser Seite keine Änderungen mehr vornehmen.',
     'contentWillBeRevoked': 'Sie werden vom Inhalt entfernt werden.',
     'couldNotLock': 'Datensatz konnte nicht für Sie gesperrt werden, bitte versuchen Sie es erneut!',

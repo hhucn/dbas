@@ -25,10 +25,8 @@
                                 <td>${issue.count_of_statements}</td>
                                 <td>${issue.involved_users}</td>
                                 <td>${issue.date}</td>
-
                                 <td><input class="discussion-enable-toggle" type="checkbox" data-toggle="toggle" data-size="small" title="" data-onstyle="success" data-offstyle="danger" tal:attributes="checked issue.is_enabled; data-uid issue.uid"></td>
-
-                                <td><a href="" tal:attributes="href issue.short_url; title issue.url">${issue.short_url}</a></td>
+                                <td><a href="" tal:attributes="href issue.short_url; title issue.url">${issue.short_url}</a><i class="fa fa-clipboard" aria-hidden="true" style="margin-left: 0.5em; cursor: pointer;"></i></td>
                             </tr>
                         </tbody>
                     </table>
