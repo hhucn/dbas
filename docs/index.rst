@@ -15,12 +15,6 @@ Installation
     installation
 
 
-Makefile
-========
-.. toctree::
-    makefile
-
-
 Core
 ====
 .. toctree::

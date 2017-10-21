@@ -31,7 +31,7 @@ Use a different compose file::
 
     $ docker-compose -f docker-compose.production.yml up
 
-This mode uses the pre-built images from our registry server and uses "uwsgi".
+This mode uses the pre-built images from our registry server and uses "uwsgi" as webserver.
 
 Troubleshooting
 ---------------
@@ -48,6 +48,7 @@ If your container stucks during the first start up, please install D-BAS manuall
     $ python setup.py --quiet develop
     $ google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./dbas/static/js/{main,ajax,d3,discussion,review}/*.js > dbas/static/js/dbas.min.js
     $ sass dbas/static/css/main.sass dbas/static/css/main.css --style compressed
+    $ sass dbas/static/css/creative.sass dbas/static/css/creative.css --style compressed
     $ cd dbas && ./i18n.sh
     $ cd ../admin && ./i18n.sh
 
@@ -102,25 +103,16 @@ For pyramid and UWSGI specific options you may want to consult the official docs
 :uwsgi: http://uwsgi-docs.readthedocs.io/en/latest/Configuration.html#environment-variables
 
 
-Makefile
-========
-List of all important commands of our Makefile.
-
-* make clean
-    Drop it all!
-
-* make all
-    Creates a new database with and root and read-only user as well as dummy discussions and news.
-
-
 Tests
 =====
 
-* Unit, integration and view tests::
+The development of D-BAS is test-driven and every method should be tested. We are using unittests, view tests as well
+as frontend tests. You can call them via::
 
     nosetests3
 
-* PEP 8 and Co.::
+This will run the files in `tests/` and the tests of every module like `dbas/tests`, `api/tests` etc. In addition we
+are checking the syntax of the python and javascript code with::
 
     jshint ./dbas/static/js/{main,ajax,discussion,review,d3}/*.js
     flake8
