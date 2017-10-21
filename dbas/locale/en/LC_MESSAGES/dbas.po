@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-10-20 20:32+0200\n"
+"POT-Creation-Date: 2017-10-21 20:04+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -77,14 +77,14 @@ msgid "github"
 msgstr "Github"
 
 #. Default: News
-#: templates/index.pt:49 templates/snippet-footer.pt:33 templates/news.pt:6
+#: templates/index.pt:49 templates/snippet-footer.pt:27 templates/news.pt:6
 msgid "news"
 msgstr "News"
 
 #. Default: Contact
 #. Default: Kontakt:
 #: templates/index.pt:52 templates/index.pt:308 templates/imprint.pt:23
-#: templates/snippet-footer.pt:18
+#: templates/snippet-footer.pt:12
 msgid "contact"
 msgstr "Contact"
 
@@ -93,13 +93,15 @@ msgstr "Contact"
 msgid "landing-page-heading"
 msgstr "D-BAS: A Novel Approach for Large Scale Online-Discussion"
 
-#. Default: Welcome to D-BAS! This is our Dialog-Based Argumentation System. If
-#. you have any questions, please feel free to contact us or provide feedback.
+#. Default: Welcome to D-BAS! This is our Dialog-Based Argumentation System. It
+#. offers a clear discussion structure, a modern web interface, a decentralized
+#. moderation system and is easy to use for everyone!
 #: templates/index.pt:76
 msgid "welcome_to_dbas"
 msgstr ""
-"Welcome to D-BAS! This is our Dialog-Based Argumentation System. If you have "
-"any questions, please feel free to contact us or provide feedback."
+"Welcome to D-BAS! This is our Dialog-Based Argumentation System. It offers a "
+"clear discussion structure, a modern web interface, a decentralized "
+"moderation system and is easy to use for everyone!"
 
 #. Default: Find Out More
 #: templates/index.pt:78
@@ -322,22 +324,22 @@ msgid "imprint_copyright"
 msgstr "Imprint and Copyright"
 
 #. Default: RSS
-#: templates/index.pt:309 templates/snippet-footer.pt:22
+#: templates/index.pt:309 templates/snippet-footer.pt:16
 msgid "rss"
 msgstr "RSS"
 
 #. Default: Help
-#: templates/index.pt:310 templates/snippet-footer.pt:25
+#: templates/index.pt:310 templates/snippet-footer.pt:19
 msgid "Help"
 msgstr "Help"
 
 #. Default: Docs
-#: templates/index.pt:311 templates/snippet-footer.pt:28
+#: templates/index.pt:311 templates/snippet-footer.pt:22
 msgid "Documentation"
 msgstr "Documentation"
 
 #. Default: Github
-#: templates/index.pt:312 templates/snippet-footer.pt:37
+#: templates/index.pt:312 templates/snippet-footer.pt:31
 msgid "Github"
 msgstr "Github"
 
@@ -506,7 +508,7 @@ msgid "no_arguments_to_review"
 msgstr "No arguments to review in this queue!"
 
 #. Default: Review
-#: templates/review-content.pt:30 templates/snippet-header.pt:115
+#: templates/review-content.pt:30 templates/snippet-header.pt:82
 msgid "review"
 msgstr "Review"
 
@@ -897,22 +899,22 @@ msgid "login"
 msgstr "Log In"
 
 #. Default: Settings
-#: templates/snippet-header.pt:90 templates/settings.pt:53
+#: templates/snippet-header.pt:97 templates/settings.pt:53
 msgid "settings"
 msgstr "Settings"
 
 #. Default: Notifications
-#: templates/snippet-header.pt:97
+#: templates/snippet-header.pt:104
 msgid "notifications"
 msgstr "Notifications"
 
 #. Default: Admin
-#: templates/snippet-header.pt:102
+#: templates/snippet-header.pt:109
 msgid "Admin"
 msgstr "Admin"
 
 #. Default: Logout
-#: templates/snippet-header.pt:107
+#: templates/snippet-header.pt:114
 msgid "logout"
 msgstr "Logout"
 
