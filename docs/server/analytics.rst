@@ -8,6 +8,8 @@ Piwiks URL has to be hardcoded in:
  - `dbas/templates/imprint.pt`
  - `dbas/templates/basetemplate.pt`
 
+First template containts the opt-out plugin of Piwik. Second template contains the tracking frame.
+
 Useful Links for the Geo-IP-Plugin
 ----------------------------------
 - http://piwik.org/faq/how-to/faq_166/
