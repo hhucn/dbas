@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-10-21 20:04+0200\n"
+"POT-Creation-Date: 2017-10-21 20:07+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -88,10 +88,10 @@ msgstr "News"
 msgid "contact"
 msgstr "Contact"
 
-#. Default: D-BAS: A Novel Approach for Large Scale Online-Discussions
+#. Default: D-BAS: The solution for every Large Scale Online-Discussion
 #: templates/index.pt:73
 msgid "landing-page-heading"
-msgstr "D-BAS: A Novel Approach for Large Scale Online-Discussion"
+msgstr "D-BAS: The solution for every Large Scale Online-Discussion"
 
 #. Default: Welcome to D-BAS! This is our Dialog-Based Argumentation System. It
 #. offers a clear discussion structure, a modern web interface, a decentralized

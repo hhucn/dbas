@@ -70,7 +70,7 @@
       <div class="header-content">
         <div class="header-content-inner">
             <h1 id="homeHeading">
-                <img src="${request.static_url('dbas:static/images/logo_white.svg')}" alt="D-BAS Logo" style="height: 1.1em;"> <span i18n:translate="landing-page-heading">D-BAS: A Novel Approach for Large Scale Online-Discussions</span>
+                <img src="${request.static_url('dbas:static/images/logo_white.svg')}" alt="D-BAS Logo" style="height: 1.1em;"> <span i18n:translate="landing-page-heading">D-BAS: The solution for every Large Scale Online-Discussion</span>
             </h1>
           <hr>
           <p><strong i18n:translate="welcome_to_dbas">Welcome to D-BAS! This is our Dialog-Based Argumentation System. It offers a clear discussion structure, a modern web interface, a decentralized moderation system and is easy to use for everyone!</strong></p>
