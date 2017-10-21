@@ -3,7 +3,7 @@
 
         <section>
             <div class="text-center big-header">
-                <h3 i18n:translate="faq" class="text-center">Frequent Questions</h3>
+                <h3 class="text-center"><span i18n:translate="faq">Frequent Questions</span></h3>
                 <p i18n:translate="simple_answers" class="lead text-center">Simple answers to your most common questions</p>
             </div>
         </section>

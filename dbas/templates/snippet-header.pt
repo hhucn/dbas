@@ -29,7 +29,7 @@
                     </a>
                 </li>
 
-                <li id="my-discussions-link">
+                <li id="my-discussions-link" tal:condition="extras.logged_in">
                     <a href="${request.application_url}/mydiscussions" data-toggle="tooltip" data-placement="left">
                         <i class="fa fa-address-card-o" aria-hidden="true"></i><span i18n:translate="my_discussions">My Discussions</span>
                     </a>

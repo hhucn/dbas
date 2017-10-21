@@ -3,7 +3,7 @@
 
         <section>
             <div class="text-center big-header">
-                <h3 i18n:translate="overview_of_discussion" class="text-center">Overview of the Discussions</h3>
+                <h3 class="text-center"><i class="fa fa-address-card-o" aria-hidden="true"></i><span i18n:translate="overview_of_discussion" >Overview of the Discussions</span></h3>
                 <p i18n:translate="page_contains_overview" class="lead text-center">This page contains an over of discussions you have created as well as other participants created</p>
             </div>
         </section>
