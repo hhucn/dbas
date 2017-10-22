@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-10-21 20:07+0200\n"
+"POT-Creation-Date: 2017-10-22 19:03+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -99,9 +99,9 @@ msgstr "D-BAS: The solution for every Large Scale Online-Discussion"
 #: templates/index.pt:76
 msgid "welcome_to_dbas"
 msgstr ""
-"Welcome to D-BAS! This is our Dialog-Based Argumentation System. It offers a "
-"clear discussion structure, a modern web interface, a decentralized "
-"moderation system and is easy to use for everyone!"
+"Welcome to D-BAS - the Dialog-Based Argumentation System. It offers a clear "
+"discussion structure, a modern web interface, a decentralized moderation "
+"system and is easy to use for everyone!"
 
 #. Default: Find Out More
 #: templates/index.pt:78
@@ -116,7 +116,7 @@ msgstr "or start directly"
 #. Default: We've got what you need!
 #: templates/index.pt:89
 msgid "we_have_you_need"
-msgstr "We've got what you need!"
+msgstr "We've got what you need: Structured Discussions!"
 
 #. Default: With the rise of the Internet, we now have a basic infrastructure,
 #. which makes participation easier for everyone and independent of space and

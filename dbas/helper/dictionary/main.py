@@ -185,7 +185,7 @@ class DictionaryHelper(object):
         return_dict['close_premise_container'] = True
         return_dict['close_statement_container'] = True
         return_dict['date'] = arrow.utcnow().format('DD-MM-YYYY')
-        self.add_title_text(return_dict)
+        self.add_title_text(return_dict, is_logged_in)
         self.add_button_text(return_dict)
         self.add_tag_text(return_dict)
 
@@ -502,18 +502,19 @@ class DictionaryHelper(object):
             'hide_statements': _tn_dis.get(_.statementsHideAll)
         }
 
-    def add_title_text(self, return_dict):
+    def add_title_text(self, return_dict, logged_in):
         """
         Adds string-map in the return dict with the client_key 'title'
 
         :param return_dict: current dictionary
+        :param logged_in: Boolean
         :return: None
         """
         _tn_dis = Translator(self.discussion_lang)
         _tn_sys = Translator(self.system_lang)
         return_dict['title'] = {
             'barometer': _tn_sys.get(_.opinionBarometer),
-            'add_issue_info': _tn_sys.get(_.addIssueInfo).format(limit_for_open_issues),
+            'add_issue_info': _tn_sys.get(_.addIssueInfo).format(limit_for_open_issues) if logged_in else _tn_sys.get(_.notLoggedIn),
             'guided_view': _tn_sys.get(_.displayControlDialogGuidedTitle),
             'island_view': _tn_sys.get(_.displayControlDialogIslandTitle),
             'graph_view': _tn_sys.get(_.displayControlDialogGraphTitle),
@@ -543,6 +544,12 @@ class DictionaryHelper(object):
             'mark_as_opinion': _tn_dis.get(_.mark_as_opinion),
             'unmark_as_opinion': _tn_dis.get(_.unmark_as_opinion)
         }
+
+        if logged_in:
+            return_dict['add_issue_info'] = _tn_sys.get(_.addIssueInfo).format(limit_for_open_issues)
+        else:
+            return_dict['add_issue_info'] = _tn_sys.get(_.notLoggedIn),
+
 
     def add_tag_text(self, return_dict):
         """

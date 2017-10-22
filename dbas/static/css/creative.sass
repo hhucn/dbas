@@ -195,7 +195,7 @@ header.masthead
           margin-right: auto
           margin-left: auto
 
-.service-box
+.service-box, .link-box
   max-width: 400px
   margin: 50px auto 0
   p
@@ -207,8 +207,12 @@ header.masthead
   img
     max-width: 150px
 
+.link-box:hover
+  p
+    color: $primary-color !important
+
 @media (min-width: 992px)
-  .service-box
+  .service-box, .link-box
     margin: 20px auto 0
 
 .portfolio-box
@@ -423,3 +427,10 @@ fieldset[disabled] .btn-primary
 
 .language_selector_img
   margin-top: 0.5em
+
+.grow
+  i
+    transition: all .2s ease-in-out
+.grow:hover
+  i
+    transform: scale(1.1)
