@@ -54,7 +54,7 @@ from dbas.strings.translator import Translator
 from webhook.lib import get_port
 
 name = 'D-BAS'
-version = '1.4.4'
+version = '1.5.0'
 full_version = version
 project_name = name + ' ' + full_version
 
