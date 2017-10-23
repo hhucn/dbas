@@ -1,0 +1,436 @@
+/*!
+ * Start Bootstrap - Createive v4.0.0-beta (http://startbootstrap.com/template-overviews/creative)
+ * Copyright 2013-2017 Start Bootstrap
+ * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-creative/blob/master/LICENSE)
+
+@import "_colors"
+
+body, html
+  width: 100%
+  height: 100%
+
+body
+  font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif
+
+hr
+  max-width: 50px
+  border-width: 3px
+  border-color: $primary-color
+  &.light
+    border-color: white
+
+a
+  color: $primary-color
+  -webkit-transition: all 0.2s
+  -moz-transition: all 0.2s
+  transition: all 0.2s
+  &:focus, &:hover
+    color: $primary-color
+
+h1, h2, h3, h4, h5, h6
+  font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif
+
+p
+  font-size: 16px
+  line-height: 1.5
+  margin-bottom: 20px
+
+.bg-primary
+  background-color: $primary-color !important
+
+.bg-dark
+  color: white
+  background-color: #222222 !important
+
+.text-faded
+  color: rgba(255, 255, 255, 0.7)
+
+section
+  padding: 100px 0
+
+.bg-bright
+  background: white !important
+
+.section-heading
+  margin-top: 0
+
+\::-moz-selection, ::selection
+  color: white
+  background: #222222
+  text-shadow: none
+
+img
+  &::selection, &::-moz-selection
+    color: white
+    background: transparent
+
+body
+  -webkit-tap-highlight-color: #222222
+
+#mainNav
+  border-color: rgba(34, 34, 34, 0.05)
+  background-color: white
+  font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif
+  -webkit-transition: all 0.2s
+  -moz-transition: all 0.2s
+  transition: all 0.2s
+  .navbar-brand
+    font-weight: 700
+    text-transform: uppercase
+    color: $primary-color
+    font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif
+    &:focus, &:hover
+      color: $primary-color
+  .navbar-toggle
+    font-size: 12px
+    font-weight: 700
+    text-transform: uppercase
+    color: #222222
+  .navbar-nav > li.nav-item > a.nav-link
+    &:focus
+      font-size: 13px
+      font-weight: 700
+      text-transform: uppercase
+      color: #222222
+      &:hover
+        color: $primary-color
+    font-size: 13px
+    font-weight: 700
+    text-transform: uppercase
+    color: #222222
+    &:hover
+      color: $primary-color
+    &:focus.active, &.active
+      color: $primary-color !important
+      background-color: transparent
+    &:focus.active:hover, &.active:hover
+      background-color: transparent
+
+@media (min-width: 992px)
+  #mainNav
+    border-color: rgba(255, 255, 255, 0.3)
+    background-color: transparent
+    .navbar-brand
+      color: rgba(255, 255, 255, 0.7)
+      &:focus, &:hover
+        color: white
+    .navbar-nav > li.nav-item > a.nav-link
+      color: rgba(255, 255, 255, 0.7)
+      &:focus
+        color: rgba(255, 255, 255, 0.7)
+      &:hover, &:focus:hover
+        color: white
+    &.navbar-shrink
+      border-color: rgba(34, 34, 34, 0.05)
+      background-color: white
+      .navbar-brand
+        font-size: 16px
+        color: $primary-color
+        &:focus, &:hover
+          color: $primary-color
+      .navbar-nav > li.nav-item > a.nav-link
+        color: #222222
+        &:focus
+          color: #222222
+        &:hover, &:focus:hover
+          color: $primary-color
+
+header.masthead
+  position: relative
+  width: 100%
+  min-height: auto
+  text-align: center
+  color: white
+  background-image: url("../images/pexel1.jpg")
+  //background-image: url("../images/blur-01.jpg")
+  //background-blend-mode: color-burn
+  //background-color: #21b4db
+  background-position: center
+  -webkit-background-size: cover
+  -moz-background-size: cover
+  -o-background-size: cover
+  background-size: cover
+  .header-content
+    position: relative
+    width: 100%
+    padding: 150px 15px 100px
+    text-align: center
+  .header-content-inner a
+    margin: 0.5em 1em
+  .header-content .header-content-inner
+    h1
+      font-size: 30px
+      font-weight: 700
+      margin-top: 0
+      margin-bottom: 0
+      text-transform: uppercase
+    hr
+      margin: 30px auto
+    p
+      font-size: 16px
+      font-weight: 300
+      margin-bottom: 50px
+      /*color: rgba(255, 255, 255, 0.7);
+
+@media (min-width: 768px)
+  header.masthead
+    height: 100%
+    min-height: 600px
+    .header-content
+      position: absolute
+      top: 50%
+      padding: 0 50px
+      -webkit-transform: translateY(-50%)
+      -ms-transform: translateY(-50%)
+      transform: translateY(-50%)
+      .header-content-inner
+        max-width: 1000px
+        margin-right: auto
+        margin-left: auto
+        h1
+          font-size: 50px
+        p
+          font-size: 18px
+          max-width: 80%
+          margin-right: auto
+          margin-left: auto
+
+.service-box, .link-box
+  max-width: 400px
+  margin: 50px auto 0
+  p
+    margin-bottom: 0
+  h3
+    margin-top: 0.5em
+  p
+    margin-top: 1.0em
+  img
+    max-width: 150px
+
+.link-box:hover
+  p
+    color: $primary-color !important
+
+@media (min-width: 992px)
+  .service-box, .link-box
+    margin: 20px auto 0
+
+.portfolio-box
+  position: relative
+  display: block
+  max-width: 650px
+  margin: 0 auto
+  .portfolio-box-caption
+    position: absolute
+    bottom: 0
+    display: block
+    width: 100%
+    height: 100%
+    text-align: center
+    opacity: 0
+    color: white
+    background: rgba(33, 150, 243, 0.9)
+    -webkit-transition: all 0.2s
+    -moz-transition: all 0.2s
+    transition: all 0.2s
+    .portfolio-box-caption-content
+      position: absolute
+      top: 50%
+      width: 100%
+      transform: translateY(-50%)
+      text-align: center
+      .project-category, .project-name
+        padding: 0 15px
+        font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif
+      .project-category
+        font-size: 14px
+        font-weight: 600
+        text-transform: uppercase
+      .project-name
+        font-size: 18px
+  &:hover .portfolio-box-caption
+    opacity: 1
+  &:focus
+    outline: none
+
+@media (min-width: 768px)
+  .portfolio-box .portfolio-box-caption .portfolio-box-caption-content
+    .project-category
+      font-size: 16px
+    .project-name
+      font-size: 22px
+
+.call-to-action
+  padding: 50px 0
+  h2
+    margin: 0 auto 20px
+
+.call-to-action-small
+  padding: 20px 0
+
+.text-primary
+  color: $primary-color !important
+
+.no-gutter > [class*='col-']
+  padding-right: 0
+  padding-left: 0
+
+.btn-default
+  color: #222222
+  border-color: white
+  background-color: white
+  &.focus, &:focus
+    color: #222222
+    border-color: #bfbfbf
+    background-color: #e6e6e6
+  &:hover, &.active, &:active
+    color: #222222
+    border-color: #e0e0e0
+    background-color: #e6e6e6
+
+.open > .btn-default.dropdown-toggle
+  color: #222222
+  border-color: #e0e0e0
+  background-color: #e6e6e6
+
+.btn-default
+  &.active
+    &.focus, &:focus, &:hover
+      color: #222222
+      border-color: #bfbfbf
+      background-color: #d4d4d4
+  &:active
+    &.focus, &:focus, &:hover
+      color: #222222
+      border-color: #bfbfbf
+      background-color: #d4d4d4
+
+.open > .btn-default.dropdown-toggle
+  &.focus, &:focus, &:hover
+    color: #222222
+    border-color: #bfbfbf
+    background-color: #d4d4d4
+
+.btn-default
+  &.active, &:active
+    background-image: none
+
+.open > .btn-default.dropdown-toggle
+  background-image: none
+
+.btn-default
+  &.disabled
+    &.focus, &:focus, &:hover
+      border-color: white
+      background-color: white
+  &[disabled]
+    &.focus, &:focus, &:hover
+      border-color: white
+      background-color: white
+
+fieldset[disabled] .btn-default
+  &.focus, &:focus, &:hover
+    border-color: white
+    background-color: white
+
+.btn-default .badge
+  color: white
+  background-color: #222222
+
+.btn-primary
+  color: white
+  border-color: $primary-color
+  background-color: $primary-color
+  &.focus, &:focus, &:hover, &.active, &:active
+    color: white
+    border-color: #0a6ebd
+    background-color: #0d8aee
+
+.open > .btn-primary.dropdown-toggle
+  color: white
+  border-color: #0a6ebd
+  background-color: #0d8aee
+
+.btn-primary
+  &.active
+    &.focus, &:focus, &:hover
+      color: white
+      border-color: #0a6ebd
+      background-color: #0d8aee
+  &:active
+    &.focus, &:focus, &:hover
+      color: white
+      border-color: #0a6ebd
+      background-color: #0d8aee
+
+.open > .btn-primary.dropdown-toggle
+  &.focus, &:focus, &:hover
+    color: white
+    border-color: #0a6ebd
+    background-color: #0d8aee
+
+.btn-primary
+  &.active, &:active
+    background-image: none
+
+.open > .btn-primary.dropdown-toggle
+  background-image: none
+
+.btn-primary
+  &.disabled
+    &.focus, &:focus, &:hover
+      border-color: $primary-color
+      background-color: $primary-color
+  &[disabled]
+    &.focus, &:focus, &:hover
+      border-color: $primary-color
+      background-color: $primary-color
+
+fieldset[disabled] .btn-primary
+  &.focus, &:focus, &:hover
+    border-color: $primary-color
+    background-color: $primary-color
+
+.btn-primary .badge
+  color: $primary-color
+  background-color: white
+
+.btn
+  font-weight: 700
+  text-transform: uppercase
+  border: none
+  border-radius: 300px
+  font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif
+
+.btn-xl
+  padding: 15px 30px
+
+.links
+  float: none
+  text-align: center
+  i
+    margin-right: 0.5em
+  ul
+    padding: 0
+    margin: 0
+    li
+      list-style: none
+      display: inline
+      margin: 0 1em
+      text-align: center
+      a
+        &:hover
+          text-decoration: underline
+      span, i
+        color: #fff
+        font-size: 18px
+
+.language_selector_img
+  margin-top: 0.5em
+
+.grow
+  i
+    transition: all .2s ease-in-out
+.grow:hover
+  i
+    transform: scale(1.1)

@@ -503,4 +503,26 @@ function AjaxDiscussionHandler() {
 			new PopupHandler().hideAndClearUrlSharingPopup();
 		});
 	};
+	
+	/*
+	
+	 */
+	this.enOrDisableDiscussion = function(toggle_element){
+		var available = toggle_element.prop('checked');
+		var csrf_token = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_set_discussion_availability',
+			method: 'POST',
+			data:{
+				'available': available ? 'True': 'False',
+				'uid': toggle_element.data('uid')},
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrf_token }
+		}).done(function setEnOrDisableDiscussionDone(data) {
+			new InteractionHandler().callbackForSetAvailabilityOfDiscussion(data);
+		}).fail(function setEnOrDisableDiscussionFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		});
+	};
 }

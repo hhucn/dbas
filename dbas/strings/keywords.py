@@ -649,6 +649,7 @@ class Keywords(Enum):
     sureThat = 'sureThat'
     surname = 'surname'
     myStatement = 'myStatement'
+    myDiscussions = 'myDiscussions'
     showMeAnArgumentFor = 'showMeAnArgumentFor'
     textAreaReasonHintText = 'textAreaReasonHintText'
     theCounterArgument = 'theCounterArgument'

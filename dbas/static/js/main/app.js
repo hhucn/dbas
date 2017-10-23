@@ -128,7 +128,7 @@ function replace_gravtar_with_default_image(only_on_error){
 			$(this).attr('src', src);
 		}
 		// resize fallback avatar
-		if ($(this).closest('#user-menu-dropdown').length === 1) {
+		if ($(this).closest('#user-menu-dropdown').length === 1 || window.location.href.indexOf('/review') !== -1) {
 			$(this).css('width', '25px');
 		}
 	});
@@ -647,23 +647,18 @@ $(document).ready(function () {
 	});
 
 	// set current file to active
-		 if (path.indexOf(urlContact) !== -1){ 	setLinkActive('#' + contactLink); }
-	else if (path.indexOf(urlLogin) !== -1){	setLinkActive('#' + loginLinkId); }
-	else if (path.indexOf(urlNews) !== -1){		setLinkActive('#' + newsLink); }
-	else if (path.indexOf(urlContent) !== -1){ 	setLinkActive('#' + contentLink); }
-	else if (path.indexOf(urlReview) !== -1){ 	setLinkActive('#' + reviewLinkId); }
+		 if (path.indexOf(urlContact) !== -1){ 	    setLinkActive('#' + contactLink); }
+	else if (path.indexOf(urlLogin) !== -1){	    setLinkActive('#' + loginLinkId); }
+	else if (path.indexOf(urlDiscussions) !== -1){	setLinkActive('#' + myDiscussionsLink); }
+	else if (path.indexOf(urlContent) !== -1){ 	    setLinkActive('#' + contentLink); }
+	else if (path.indexOf(urlReview) !== -1){ 	    setLinkActive('#' + reviewLinkId); }
 	// else if (path.indexOf(urlSettings) !== -1 ||
 	// 		 path.indexOf(urlImprint) !== -1 ||
 	// 		 path.indexOf(urlLogout) !== -1){}
-	else { 										setLinkActive(''); }
+	else { 										    setLinkActive(''); }
 
 	// gui preperation
 	prepareLoginRegistrationPopup();
-
-	// activate tooltips
-	$(function () {
-		$('body').tooltip({ selector: '[data-toggle=tooltip]' });
-    });
 
 	// add minimal text length field
 	$('input[data-min-length]').each(function(){
@@ -681,7 +676,7 @@ $(document).ready(function () {
 	}
 	
 	// start guided tour, if the cookie is not set
-	if (!Cookies.get(GUIDED_TOUR)){
+	if (!Cookies.get(GUIDED_TOUR) && window.location.href.indexOf('/discuss') !== -1){
 		new GuidedTour().start();
 	}
 

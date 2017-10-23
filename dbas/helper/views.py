@@ -5,13 +5,9 @@ Helper for D-BAS Views
 """
 
 from pyramid.httpexceptions import HTTPNotFound
-from pyramid_mailer import get_mailer
-from validate_email import validate_email
 
-import dbas.handler.email as EmailHelper
-import dbas.handler.issue as IssueHelper
-import dbas.handler.voting as VotingHelper
-from dbas.auth.recaptcha import validate_recaptcha
+import dbas.handler.issue as issue_helper
+import dbas.handler.voting as voting_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.handler import user
@@ -43,7 +39,8 @@ def get_nickname(request_authenticated_userid, for_api=None, api_data=None):
 
 def preparation_for_view(for_api, api_data, request):
     """
-    Does some elementary things like: getting nickname, session id and history. Additionally boolean, if the session is expired
+    Does some elementary things like: getting nickname, session id and history.
+    Additionally boolean, if the session is expired
 
     :param for_api: True, if the values are for the api
     :param api_data: Array with api data
@@ -68,9 +65,9 @@ def prepare_parameter_for_justification(request, for_api):
     mode = request.matchdict['mode'] if 'mode' in request.matchdict else ''
     supportive = mode == 't' or mode == 'd'  # supportive = t or do not know mode
     relation = request.matchdict['relation'][0] if len(request.matchdict['relation']) > 0 else ''
-    issue = IssueHelper.get_id_of_slug(slug, request, True) if len(slug) > 0 else IssueHelper.get_issue_id(request)
+    issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = IssueHelper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
 
     return slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict
 
@@ -86,7 +83,8 @@ def handle_justification_step(request, for_api, ui_locales, nickname, history):
     :param history: string
     :return: dict(), dict(), dict()
     """
-    slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict = prepare_parameter_for_justification(request, for_api)
+    slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict = prepare_parameter_for_justification(
+        request, for_api)
     main_page = request.application_url
 
     if not is_integer(statement_or_arg_id, True):
@@ -94,7 +92,8 @@ def handle_justification_step(request, for_api, ui_locales, nickname, history):
 
     if [c for c in ('t', 'f') if c in mode] and relation == '':
         logger('ViewHelper', 'handle_justification_step', 'justify statement')
-        if not get_text_for_statement_uid(statement_or_arg_id) or not check_belonging_of_statement(issue, statement_or_arg_id):
+        if not get_text_for_statement_uid(statement_or_arg_id) or not check_belonging_of_statement(issue,
+                                                                                                   statement_or_arg_id):
             raise HTTPNotFound()
         item_dict, discussion_dict, extras_dict = preparation_for_justify_statement(request, for_api, main_page, slug,
                                                                                     statement_or_arg_id, supportive,
@@ -148,6 +147,8 @@ def preparation_for_justify_statement(request, for_api, main_page, slug, stateme
     :param statement_uid: Statement.uid
     :param supportive: Boolean
     :param ui_locales: Language.ui_locales
+    :param nickname: string
+    :param history: string
     :return: dict(), dict(), dict()
     """
     logger('ViewHelper', 'preparation_for_justify_statement', 'main')
@@ -155,10 +156,11 @@ def preparation_for_justify_statement(request, for_api, main_page, slug, stateme
     logged_in = DBDiscussionSession.query(User).filter_by(nickname=nickname).first() is not None
     _ddh, _idh, _dh = __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, request)
 
-    VotingHelper.add_click_for_statement(statement_uid, nickname, supportive)
+    voting_helper.add_click_for_statement(statement_uid, nickname, supportive)
 
     item_dict = _idh.get_array_for_justify_statement(statement_uid, nickname, supportive, history)
-    discussion_dict = _ddh.get_dict_for_justify_statement(statement_uid, main_page, slug, supportive, len(item_dict['elements']), nickname)
+    discussion_dict = _ddh.get_dict_for_justify_statement(statement_uid, main_page, slug, supportive,
+                                                          len(item_dict['elements']), nickname)
     extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request, nickname, for_api=for_api)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0 or len(item_dict['elements']) == 1 and logged_in:
@@ -168,7 +170,8 @@ def preparation_for_justify_statement(request, for_api, main_page, slug, stateme
     return item_dict, discussion_dict, extras_dict
 
 
-def preparation_for_dont_know_statement(request, for_api, main_page, slug, argument_uid, supportive, ui_locales, nickname, history):
+def preparation_for_dont_know_statement(request, for_api, main_page, slug, argument_uid, supportive, ui_locales,
+                                        nickname, history):
     """
     Prepares some paramater for the "don't know" step
 
@@ -185,7 +188,7 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, argum
     """
     logger('ViewHelper', 'preparation_for_dont_know_statement', 'main')
 
-    issue = IssueHelper.get_id_of_slug(slug, request, True) if len(slug) > 0 else IssueHelper.get_issue_id(request)
+    issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=main_page, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=request.path, history=history)
@@ -223,6 +226,8 @@ def preparation_for_justify_argument(request, for_api, main_page, slug, statemen
     :param supportive: Boolean
     :param relation: String
     :param ui_locales: Language.ui_locales
+    :param nickname: string
+    :param history: String
     :return: dict(), dict(), dict()
     """
     logger('ViewHelper', 'preparation_for_justify_argument', 'main')
@@ -256,68 +261,9 @@ def __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, re
     :param request: webserver's request
     :return: dict(), dict(), dict()
     """
-    issue = IssueHelper.get_id_of_slug(slug, request, True) if len(slug) > 0 else IssueHelper.get_issue_id(request)
+    issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
     ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=main_page, slug=slug)
     idh = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=request.path, history=history)
-    dh  = DictionaryHelper(ui_locales, disc_ui_locales)
+    dh = DictionaryHelper(ui_locales, disc_ui_locales)
     return ddh, idh, dh
-
-
-def try_to_contact(request, name, email, content, ui_locales, recaptcha):
-    """
-    Trys to send an contact mail
-
-    :param request: webserver's request
-    :param name: String
-    :param email: String
-    :param content: String
-    :param ui_locales: Language.ui_locales
-    :param recaptcha: Googles Recaptcha
-    :return: Boolean, String, Boolean
-    """
-    logger('ViewHelper', 'try_to_contact', 'name: ' + name + ', email: ' + email + ', content: ' + content)
-    _t = Translator(ui_locales)
-    send_message = False
-
-    is_human, error = validate_recaptcha(recaptcha)
-
-    logger('ViewHelper', 'try_to_contact', 'validating email')
-    is_mail_valid = validate_email(email, check_mx=True)
-
-    # check for empty username
-    if not name:
-        logger('ViewHelper', 'try_to_contact', 'username empty')
-        contact_error = True
-        message = _t.get(_.emptyName)
-
-    # check for non valid mail
-    elif not is_mail_valid:
-        logger('ViewHelper', 'try_to_contact', 'mail is not valid')
-        contact_error = True
-        message = _t.get(_.invalidEmail)
-
-    # check for empty content
-    elif not content:
-        logger('main_contact', 'try_to_contact', 'content is empty')
-        contact_error = True
-        message = _t.get(_.emtpyContent)
-
-    # check for empty spam
-    elif not is_human or error:
-        logger('ViewHelper', 'try_to_contact', 'recaptcha error')
-        contact_error = True
-        message = _t.get(_.maliciousAntiSpam)
-
-    else:
-        subject = _t.get(_.contact) + ' D-BAS'
-        body = _t.get(_.name) + ': ' + name + '\n'
-        body += _t.get(_.mail) + ': ' + email + '\n'
-        body += _t.get(_.message) + ':\n' + content
-        EmailHelper.send_mail(get_mailer(request), subject, body, 'dbas.hhu@gmail.com', ui_locales)
-        body = '* ' + _t.get(_.thisIsACopyOfMail).upper() + ' *\n\n' + body
-        subject = '[D-BAS INFO] ' + subject
-        send_message, message = EmailHelper.send_mail(get_mailer(request), subject, body, email, ui_locales)
-        contact_error = not send_message
-
-    return contact_error, message, send_message

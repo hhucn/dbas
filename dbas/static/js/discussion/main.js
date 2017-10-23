@@ -178,12 +178,6 @@ function Main () {
 			}
 		});
 		$('#' + issueDropdownListID + ' .disabled a').off('click').unbind('click').removeAttr('href');
-		$('#issue-long-info-link').click(function(){
-			var title = $('#issue_info').data('title');
-			var info = $(this).data('info');
-			var long_info = $(this).data('long-info');
-			displayConfirmationDialogWithoutCancelAndFunction(title, long_info + '<br><br>' + info);
-		});
 		
 		// get infos about the author
 		//$('[id^="' + questionBubbleId + '-"').click(function () {
@@ -869,7 +863,7 @@ $(document).ready(function mainDocumentReady() {
 	// get restart url and cut the quotes
 	var btn = $('#discussion-restart-btn');
 	if (window.location.href.indexOf('/discuss') !== -1 && btn.length !== 0) {
-		tmp = btn.attr('onclick').substr('location.href='.length);
+		tmp = btn.attr('href').substr('location.href='.length);
 		tmp = tmp.substr(1, tmp.length - 2);
 		$('#' + discussionEndRestart).attr('href', tmp);
 		$('#' + discussionEndReview).attr('href', mainpage + 'review');

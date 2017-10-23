@@ -1,85 +1,95 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-		<div class="container colored-container">
-			<div class="row" style="margin: 1em;">
-				<div class="col-md-6">
-					<h4>
-                        <i class="fa fa-user" aria-hidden="true" style="margin-right: 0.5em;"></i>
-                        <span i18n:translate="public_information_of">Public Information of</span> <em id="public_nick">${user.public_nick}</em>
-                    </h4>
-					<table id="info-table" class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
-						<tr>
-							<td><span class="lead" i18n:translate="last_action">Last Action</span></td>
-                            <td>${user.last_action}</td>
-						</tr>
-						<tr>
-							<td><span class="lead" i18n:translate="last_login">Last Login</span></td>
-                            <td>${user.last_login}</td>
-						</tr>
-						<tr>
-							<td><span class="lead" i18n:translate="registered">Registered</span></td>
-                            <td>${user.registered}</td>
-						</tr>
-						<!--<tr>-->
-						<!--	<td><span class="lead" i18n:translate="user_group">User group</span></td>-->
-                        <!--    <td>${user.group}</td>-->
-						<!--</tr>-->
-					</table>
-                    <div>
-                        <div class="center text-center" style="margin: 2em;">
-						    <img class="img-circle" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src user.avatar_url">
-						    <br>
-						    <span i18n:translate="profile_picture_of">Profile Picture of</span> ${user.public_nick}
+        <section>
+            <div class="text-center big-header">
+                <h3 i18n:translate="personal_user_page" class="text-center">Personal User Page</h3>
+                <p class="lead text-center"><span i18n:translate="this_are_the_details_of"> This are the details of</span>: ${user.public_nick}</p>
+            </div>
+        </section>
+
+        <div class="wrapper-container">
+
+		    <div class="container colored-container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>
+                            <i class="fa fa-user" aria-hidden="true" style="margin-right: 0.5em;"></i>
+                            <span i18n:translate="public_information_of">Public Information of</span> <em id="public_nick">${user.public_nick}</em>
+                        </h4>
+                        <table id="info-table" class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
+                            <tr>
+                                <td><span class="lead" i18n:translate="last_action">Last Action</span></td>
+                                <td>${user.last_action}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="lead" i18n:translate="last_login">Last Login</span></td>
+                                <td>${user.last_login}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="lead" i18n:translate="registered">Registered</span></td>
+                                <td>${user.registered}</td>
+                            </tr>
+                            <!--<tr>-->
+                            <!--	<td><span class="lead" i18n:translate="user_group">User group</span></td>-->
+                            <!--    <td>${user.group}</td>-->
+                            <!--</tr>-->
+                        </table>
+                        <div>
+                            <div class="center text-center" style="margin: 2em;">
+                                <img class="img-circle" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src user.avatar_url">
+                                <br>
+                                <span i18n:translate="profile_picture_of">Profile Picture of</span> ${user.public_nick}
+                            </div>
                         </div>
                     </div>
-				</div>
-				<div class="col-md-6">
-                    <h4><i class="fa fa-bar-chart" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="discussion_stat">Discussion Statistics</span></h4>
-					<table class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
-						<tr>
-							<td><span class="lead" i18n:translate="statements_posted">Statements posted</span></td>
-							<td id="statements-done-count" style="text-align: right">${user.statements_posted}</td>
-						</tr>
-						<tr>
-							<td><span class="lead" i18n:translate="edits_done">Edits done</span></td>
-							<td id="edits-done-count" style="text-align: right">${user.edits_done}</td>
-						</tr>
-						<tr>
-							<td><span class="lead" i18n:translate="reviews_proposed">Reviews proposed</span></td>
-							<td id="edits-done-count" style="text-align: right">${user.reviews_proposed}</td>
-						</tr>
-						<tr>
-							<td><span class="lead" i18n:translate="discussion_votes_arguments">Votes for Arguments</span></td>
-							<td id="discussion-arg-votes-count" style="text-align: right">${user.discussion_arg_votes}</td>
-						</tr>
-						<tr>
-							<td><span class="lead" i18n:translate="discussion_votes_statements">Votes for Statements</span></td>
-							<td id="discussion-stat-votes-count" style="text-align: right">${user.discussion_stat_votes}</td>
-						</tr>
-						<tr>
-							<td><span class="lead" i18n:translate="reputation">Reputation</span></td>
-							<td id="discussion-stat-reputation" style="text-align: right">${user.discussion_stat_rep}</td>
-						</tr>
-					</table>
-                    <img style="width: 50px; float: right;" id="send-notification" class="icon-badge" tal:condition="can_send_notification" src="${request.static_url('dbas:static/images/icon_mail.png')}" title="" />
-				</div>
-            </div>
+                    <div class="col-md-6">
+                        <h4><i class="fa fa-bar-chart" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="discussion_stat">Discussion Statistics</span></h4>
+                        <table class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
+                            <tr>
+                                <td><span class="lead" i18n:translate="statements_posted">Statements posted</span></td>
+                                <td id="statements-done-count" style="text-align: right">${user.statements_posted}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="lead" i18n:translate="edits_done">Edits done</span></td>
+                                <td id="edits-done-count" style="text-align: right">${user.edits_done}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="lead" i18n:translate="reviews_proposed">Reviews proposed</span></td>
+                                <td id="edits-done-count" style="text-align: right">${user.reviews_proposed}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="lead" i18n:translate="discussion_votes_arguments">Votes for Arguments</span></td>
+                                <td id="discussion-arg-votes-count" style="text-align: right">${user.discussion_arg_votes}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="lead" i18n:translate="discussion_votes_statements">Votes for Statements</span></td>
+                                <td id="discussion-stat-votes-count" style="text-align: right">${user.discussion_stat_votes}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="lead" i18n:translate="reputation">Reputation</span></td>
+                                <td id="discussion-stat-reputation" style="text-align: right">${user.discussion_stat_rep}</td>
+                            </tr>
+                        </table>
+                        <img style="width: 50px; float: right;" id="send-notification" class="icon-badge" tal:condition="can_send_notification" src="${request.static_url('dbas:static/images/icon_mail.png')}" title="" />
+                    </div>
+                </div>
 
-			<div class="row text-center" style="margin: 1em;">
-                <div class="col-md-6" id="user-activity-chart-space"></div>
-                <div class="col-md-6" id="user-vote-chart-space"></div>
-            </div>
+                <div class="row text-center" style="margin: 1em;">
+                    <div class="col-md-6" id="user-activity-chart-space"></div>
+                    <div class="col-md-6" id="user-vote-chart-space"></div>
+                </div>
 
-			<div class="row text-center" style="margin: 1em;">
-                <div class="col-md-6" id="user-statement-chart-space"></div>
-                <div class="col-md-6" id="user-edit-chart-space"></div>
-            </div>
+                <div class="row text-center" style="margin: 1em;">
+                    <div class="col-md-6" id="user-statement-chart-space"></div>
+                    <div class="col-md-6" id="user-edit-chart-space"></div>
+                </div>
 
-			<div class="row text-center" style="margin: 1em;">
-                <div class="col-md-12" id="user-statements-chart-space"></div>
-            </div>
+                <div class="row text-center" style="margin: 1em;">
+                    <div class="col-md-12" id="user-statements-chart-space"></div>
+                </div>
 
+            </div>
         </div>
 
 

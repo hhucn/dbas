@@ -19,13 +19,6 @@ class FunctionalTests(unittest.TestCase):
     def test_page(self):
         self.testapp.get('/', status=200)
 
-    def test_contact(self):
-        self.testapp.get('/contact', status=200)
-        self.testapp.get('/contact&bug=true', status=200)
-        self.testapp.get('/contact&bug=false', status=404)
-        self.testapp.get('/contact&bug=f', status=404)
-        self.testapp.get('/contact&gadse', status=404)
-
     def test_settings(self):
         self.testapp.get('/settings', status=200)
 
@@ -37,9 +30,6 @@ class FunctionalTests(unittest.TestCase):
 
     def test_imprint(self):
         self.testapp.get('/imprint', status=200)
-
-    def test_publications(self):
-        self.testapp.get('/publications', status=200)
 
     def test_rss(self):
         self.testapp.get('/rss', status=200)
