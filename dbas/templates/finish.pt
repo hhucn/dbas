@@ -21,7 +21,7 @@
                                 <!--
                                 <img style="margin-top: 3em" class="icon-badge" src="${request.static_url('dbas:static/images/icon_trophy.png')}" />
                                 -->
-                                <i class="fa fa-flag-checkered" aria-hidden="true" style="font-size: 180px;"></i>
+                                <i class="fa fa-flag-checkered" aria-hidden="true" style="font-size: 140px; margin-top: 0.4em"></i>
                             </div>
 
                             <div class="col-md-8">
@@ -80,12 +80,12 @@
                                 <img class="icon-badge" src="${request.static_url('dbas:static/images/icon_trophy.png')}" />
                             </div>
 
-                        <div class="text-center">
+                        <div class="text-center btn-group">
 
-                            <a id="home-button" class="button button-block btn-lg btn btn-primary" href="${request.application_url}" style="margin: 0.5em;">
+                            <a id="home-button" class="button button-block btn-lg btn btn-primary" href="${request.application_url}">
                                 <span i18n:translate="lets_go_home">Let's go home!</span>
                             </a>
-                            <a id="back-to-discuss-button" class="button button-block btn-lg btn btn-primary" href="javascript:window.history.back();" style="margin: 0.5em;">
+                            <a id="back-to-discuss-button" class="button button-block btn-lg btn btn-success" href="javascript:window.history.back();">
                                 <span i18n:translate="back_to_the_discussion">Back to the discussion!</span>
                             </a>
                         </div>
