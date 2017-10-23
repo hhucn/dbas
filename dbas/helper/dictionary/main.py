@@ -550,7 +550,6 @@ class DictionaryHelper(object):
         else:
             return_dict['add_issue_info'] = _tn_sys.get(_.notLoggedIn),
 
-
     def add_tag_text(self, return_dict):
         """
         Adds string-map in the return dict with the client_key 'tag'
