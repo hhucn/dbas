@@ -71,6 +71,7 @@ de_lang = {
     _.labels: 'Beschriftungen',
     _.showMyPath: 'Meinen Pfad einblenden',
     _.hideMyPath: 'Meinen Pfad ausblenden',
+    _.myDiscussions: 'Meine Diskussionen',
     _.myStatements: 'Meine Aussagen',
     _.supportsOnMyStatements: 'Unterstützungen',
     _.attacksOnMyStatements: 'Angriffe',

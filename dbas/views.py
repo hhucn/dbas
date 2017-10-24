@@ -5,7 +5,6 @@ Collection of pyramids views components of D-BAS' core.
 """
 
 import json
-import subprocess
 from typing import Callable, Any
 
 import requests
@@ -45,7 +44,8 @@ from dbas.handler.voting import clear_vote_and_seen_values_of_user
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
-from dbas.helper.views import preparation_for_view, try_to_contact
+from dbas.helper.views import preparation_for_view
+from dbas.handler.issue import get_issues_overiew, set_discussions_availability
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
 from dbas.logger import logger
@@ -54,7 +54,7 @@ from dbas.strings.translator import Translator
 from webhook.lib import get_port
 
 name = 'D-BAS'
-version = '1.4.4'
+version = '1.5.0'
 full_version = version
 project_name = name + ' ' + full_version
 
@@ -77,10 +77,16 @@ def check_authentication(request):
         return user_logout(request, True)
 
 
-def api_notfound(request):
+def api_notfound(path):
+    """
+    Returns 404-Reponse with requested_path and message in its body
+
+    :param path: current request.path
+    :return: Response with 404 status code
+    """
     body = {
-        'requested_path': request.path,
-        'message': "Not Found",
+        'requested_path': path,
+        'message': 'Not Found',
     }
     response = Response(json.dumps(body).encode("utf-8"))
     response.status_int = 404
@@ -116,6 +122,7 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any], for_
 
 
 # main page
+
 @view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
 @forbidden_view_config(renderer='templates/index.pt')
 def main_page(request):
@@ -145,73 +152,8 @@ def main_page(request):
         'title': name + ' ' + full_version,
         'project': project_name,
         'extras': extras_dict,
-        'session_expired': session_expired
-    }
-
-
-# contact page
-@view_config(route_name='main_contact', renderer='templates/contact.pt', permission='everybody', require_csrf=False)
-def main_contact(request):
-    """
-    View configuration for the contact view.
-
-    :param request: current request of the server
-    :return: dictionary with title and project username as well as a value, weather the user is logged in
-    """
-    logger('main_contact', 'def', 'request.params: {}, request.matchdict: {}'.format(request.params, request.matchdict))
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
-    contact_error, send_message, message = False, False, ''
-    ui_locales = get_language_from_cookie(request)
-
-    username = escape_string(request.params['name']) if 'name' in request.params else ''
-    email = escape_string(request.params['mail']) if 'mail' in request.params else ''
-    content = escape_string(request.params['content']) if 'content' in request.params else ''
-    recaptcha = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
-
-    # check for user data
-    if len(name) == 0 or len(email) == 0:
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=str(request.authenticated_userid)).first()
-        username = '{} {}'.format(db_user.firstname, db_user.surname) if db_user else ''
-        email = db_user.email if db_user else ''
-
-    if 'form.contact.submitted' in request.params:
-        contact_error, message, send_message = try_to_contact(request, username, email, content, ui_locales, recaptcha)
-
-    bug_view = False
-    if 'reason' in request.matchdict and len(request.matchdict['reason']) > 0:
-        if request.matchdict['reason'].lower() == '&bug=true':
-            bug_view = True
-        else:
-            logger('main_contact', 'def', 'wrong reason: {}'.format(request.matchdict['reason']), error=True)
-            raise HTTPNotFound()
-
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
-    ui_locales = get_language_from_cookie(request)
-    _t = Translator(ui_locales)
-    placeholder = {
-        'name': _t.get(_.exampleName),
-        'mail': _t.get(_.exampleMail),
-        'message': _t.get(_.exampleMessageBug if bug_view else _.exampleMessage)
-    }
-
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': _t.get(_.reportIssue if bug_view else _.contact),
-        'project': project_name,
-        'extras': extras_dict,
-        'was_message_send': send_message,
-        'contact_error': contact_error,
-        'message': message,
-        'name': username,
-        'mail': email,
-        'content': content,
-        'spamanswer': '',
-        'placeholder': placeholder,
-        'bug_view': bug_view
+        'session_expired': session_expired,
+        'news': news_handler.get_latest_news(ui_locales)
     }
 
 
@@ -395,11 +337,6 @@ def main_imprint(request):
     import pkg_resources
     extras_dict.update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
 
-    try:  # try to get current commit hash
-        extras_dict.update({'dbas_build': subprocess.check_output(['git', 'describe'])})
-    except FileNotFoundError:  # fallback
-        extras_dict.update({'dbas_build': full_version})
-
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
@@ -436,6 +373,34 @@ def main_faq(request):
     }
 
 
+# my discussions
+@view_config(route_name='main_mydiscussions', renderer='templates/discussions.pt', permission='use')
+def main_mydiscussions(request):
+    """
+    View configuration for FAQs.
+
+    :param request: current request of the server
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
+    logger('main_mydiscussions', 'def', 'main')
+    ui_locales = get_language_from_cookie(request)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
+
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    issue_dict = get_issues_overiew(request.authenticated_userid, request.application_url)
+
+    return {
+        'layout': base_layout(),
+        'language': str(ui_locales),
+        'title': Translator(ui_locales).get(_.myDiscussions),
+        'project': project_name,
+        'extras': extras_dict,
+        'issues': issue_dict
+    }
+
+
 # docs
 @view_config(route_name='main_docs', renderer='templates/docs.pt', permission='everybody')
 def main_docs(request):
@@ -459,34 +424,6 @@ def main_docs(request):
         'layout': base_layout(),
         'language': str(ui_locales),
         'title': _tn.get(_.docs),
-        'project': project_name,
-        'extras': extras_dict
-    }
-
-
-# imprint
-@view_config(route_name='main_publications', renderer='templates/publications.pt', permission='everybody')
-def main_publications(request):
-    """
-    View configuration for the publications list.
-
-    :param request: current request of the server
-    :return: dictionary with title and project name as well as a value, weather the user is logged in
-    """
-    logger('main_publications', 'def', 'main')
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
-
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': _tn.get(_.publications),
         'project': project_name,
         'extras': extras_dict
     }
@@ -530,7 +467,7 @@ def notfound(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     if request.path.startswith('/api'):
-        return api_notfound(request)
+        return api_notfound(request.path)
 
     user.update_last_action(request.authenticated_userid)
     logger('notfound', 'def', 'main in {}'.format(request.method) + '-request' +
@@ -769,6 +706,7 @@ def main_review(request):
 
     issue = issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
+
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, False)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
@@ -1265,6 +1203,32 @@ def send_some_notification(request):
     prepared_dict = send_users_notification(get_port(request), recipient, title, text, request.authenticated_userid,
                                             ui_locales)
 
+    return prepared_dict
+
+
+# ajax - set boolean for receiving information
+@view_config(route_name='ajax_set_discussion_availability', renderer='json')
+def set_discussion_availability(request):
+    """
+    Sets the discussions availability
+
+    :param request: current request of the server
+    :return: json-dict()
+    """
+    logger('views', 'set_discussion_availability', 'request.params: {}'.format(request.params))
+    _tn = Translator(get_language_from_cookie(request))
+
+    try:
+        enable = request.params['available'] == 'True'
+        uid = request.params['uid']
+        prepared_dict = set_discussions_availability(request.authenticated_userid, uid, enable, _tn)
+    except KeyError as e:
+        logger('views', 'set_user_lang', repr(e), error=True)
+        prepared_dict = {
+            'error': _tn.get(_.internalKeyError),
+            'ui_locales': '',
+            'current_lang': ''
+        }
     return prepared_dict
 
 

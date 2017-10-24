@@ -29,13 +29,13 @@ def verify_ldap_user_data(registry_settings, nickname, password, _tn):
         logger('ldap', 'verify_ldap_user_data', 'parsed data')
 
         logger('ldap', 'verify_ldap_user_data', 'ldap.initialize(\'{}\')'.format(server))
-        l = ldap.initialize(server)
-        l.set_option(ldap.OPT_NETWORK_TIMEOUT, 5.0)
+        ldaps = ldap.initialize(server)
+        ldaps.set_option(ldap.OPT_NETWORK_TIMEOUT, 5.0)
         logger('ldap', 'verify_ldap_user_data', 'ldap.simple_bind_s(\'{}{}\', \'***\')'.format(nickname, scope))
-        l.simple_bind_s(nickname + scope, password)
+        ldaps.simple_bind_s(nickname + scope, password)
         logger('ldap', 'verify_ldap_user_data',
                'l.search_s({}, ldap.SCOPE_SUBTREE, (\'{}={}\'))[0][1]'.format(base, filter, nickname))
-        user = l.search_s(base, ldap.SCOPE_SUBTREE, filter + '=' + nickname)[0][1]
+        user = ldaps.search_s(base, ldap.SCOPE_SUBTREE, filter + '=' + nickname)[0][1]
 
         firstname = user[firstname][0].decode('utf-8')
         lastname = user[lastname][0].decode('utf-8')

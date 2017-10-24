@@ -6,9 +6,10 @@ Provides helping function for creating the history as bubbles.
 
 import transaction
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User, History, Settings, sql_timestamp_pretty_print, Issue
+from dbas.database.discussion_model import Argument, Statement, User, History, Settings, sql_timestamp_pretty_print, \
+    Issue
 from dbas.input_validator import check_reaction
-from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_text_for_statement_uid,\
+from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_text_for_statement_uid, \
     get_text_for_premisesgroup_uid, get_text_for_conclusion, bubbles_already_last_in_list, BubbleTypes
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -286,7 +287,8 @@ def __get_bubble_from_attitude_step(step, nickname, lang, url):
     text = get_text_for_statement_uid(uid)
     if lang != 'de':
         text = text[0:1].upper() + text[1:]
-    bubble = create_speechbubble_dict(BubbleTypes.USER, message=text, omit_url=False, statement_uid=uid, nickname=nickname,
+    bubble = create_speechbubble_dict(BubbleTypes.USER, message=text, omit_url=False, statement_uid=uid,
+                                      nickname=nickname,
                                       lang=lang, url=url)
 
     return [bubble]
@@ -400,9 +402,9 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
     user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if last_relation == 'support' else ''
     user_text += '<{}>{}</{}>'.format(tag_type, current_argument if current_argument != '' else premise, tag_type)
 
-    sys_text, tmp = get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, sys_conclusion, is_supportive,
-                                               attack, confr, reply_for_argument, user_is_attacking, db_argument,
-                                               db_confrontation, color_html=False)
+    sys_text, tmp = get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, sys_conclusion,
+                                               is_supportive, attack, confr, reply_for_argument, user_is_attacking,
+                                               db_argument, db_confrontation, color_html=False)
 
     bubble_user = create_speechbubble_dict(BubbleTypes.USER, message=user_text, omit_url=False, argument_uid=uid,
                                            is_supportive=is_supportive, nickname=nickname, lang=lang, url=url)

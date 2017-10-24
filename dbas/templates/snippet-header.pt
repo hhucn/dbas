@@ -2,7 +2,9 @@
 <nav id="custom-bootstrap-menu" class="navbar navbar-default navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="/" data-toggle="tooltip" data-placement="right"></a>
+            <a class="navbar-brand" href="/" data-toggle="tooltip" data-placement="right">
+                <img src="${request.static_url('dbas:static/images/logo_black.svg')}" alt="D-BAS Logo"><span>D-BAS</span>
+            </a>
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-menubuilder">
                 <span class="sr-only" i18n:translate="Toggle Navigation">Toggle navigation</span>
                 <span class="icon-bar"></span>
@@ -15,26 +17,70 @@
 
             <ul id="navbar-right" class="nav navbar-nav navbar-right">
 
-                <li id="content-link">
+                <li id="content-link" tal:condition="not:extras.ongoing_discussion">
                     <a href="${request.application_url}/discuss" data-toggle="tooltip" data-placement="left">
                         <i class="fa fa-play" aria-hidden="true"></i>&thinsp;<span i18n:translate="lets_go">Let's go</span>
                     </a>
                 </li>
 
-                <li id="bug-link">
-                    <a href="${request.application_url}/contact&bug=true" data-toggle="tooltip" data-placement="left">
-                        <i class="fa fa-bug" aria-hidden="true"></i><span i18n:translate="report_issue">Report Issues</span></a>
+                <li id="restart-link" tal:condition="extras.ongoing_discussion">
+                    <a id="discussion-restart-btn" href="" tal:attributes="href extras.restart_url" data-toggle="tooltip" data-placement="left">
+                        <i class="fa fa-repeat" aria-hidden="true"></i>&thinsp;<span i18n:translate="restart">Restart</span>
+                    </a>
                 </li>
 
-                <li id="news-link">
-                    <a href="${request.application_url}/news" data-toggle="tooltip" data-placement="left">
-                        <i class="fa fa-newspaper-o" aria-hidden="true"></i><span i18n:translate="news">News</span>
+                <li id="my-discussions-link" tal:condition="extras.logged_in">
+                    <a href="${request.application_url}/mydiscussions" data-toggle="tooltip" data-placement="left">
+                        <i class="fa fa-address-card-o" aria-hidden="true"></i><span i18n:translate="my_discussions">My Discussions</span>
                     </a>
+                </li>
+
+                <li tal:condition="extras.ongoing_discussion" style="cursor: pointer;">
+                    <a class="dropdown-toggle" data-toggle="dropdown" id="issue-dropdown" aria-haspopup="true" aria-expanded="true" tal:attributes="issue issues.uid">
+                        <i class="fa fa-files-o" aria-hidden="true"></i><span i18n:translate="switch_topic">Switch Topic</span>&#160;&#160;<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 280px;">
+                        <li tal:repeat="issue issues.all" tal:attributes="class issue.enabled">
+                            <a href="#" tal:attributes="href issue.url; data-value issue.title">
+                                <div class="row" style="padding: 0;">
+                                    <div class="col-md-10"
+                                         style="white-space: pre-wrap;">${structure:issue.title}</div>
+                                    <div class="col-md-2">
+                                    <span class="badge" data-toggle="tooltip"
+                                          data-placement="bottom" tal:attributes="title extras.buttons.count_of_posts">${issue.stat_count}
+                                    </span>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li tal:condition="extras.is_admin or extras.is_author" role="separator">
+                            <a id="add-topic" href="#" i18n:translate="add_topic">Add a Topic</a>
+                        </li>
+                        <li tal:condition="not:(extras.is_admin or extras.is_author)" role="separator">
+                            <div class="row">
+                                <div class="col-md-10" style="color: gray">
+                                    <span class="disabled"
+                                          style="cursor: not-allowed" i18n:translate="add_topic" tal:attributes="title extras.title.add_issue_info">Add a Topic</span>
+                                    <i class="fa fa-question-circle-o"
+                                       aria-hidden="true" tal:attributes="title extras.title.add_issue_info"></i>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+
                 </li>
 
                 <li id="login-link" tal:condition="not:extras.logged_in">
                     <a id="link_popup_login" href="" data-toggle="modal" data-target="#popup-login" data-placement="left">
                         <i class="fa fa-sign-in" aria-hidden="true"></i><span i18n:translate="login">Login</span>
+                    </a>
+                </li>
+
+                <li id="review-link" tal:condition="extras.logged_in" tal:attributes="data-broke-limit extras.broke_limit">
+                    <a href="${request.application_url}/review" data-toggle="tooltip" data-placement="left">
+                        <i class="fa fa-pencil" aria-hidden="true"></i><span i18n:translate="review">Review</span>
+                        <span tal:condition="extras.review_count > 0" class="label label-primary label-as-badge">${extras.review_count}</span>
                     </a>
                 </li>
 
@@ -71,34 +117,15 @@
                     </ul>
                 </li>
 
-                <li id="review-link" tal:condition="extras.logged_in" tal:attributes="data-broke-limit extras.broke_limit">
-                    <a href="${request.application_url}/review" data-toggle="tooltip" data-placement="left">
-                        <i class="fa fa-pencil" aria-hidden="true"></i><span i18n:translate="review">Review</span>
-                        <span tal:condition="extras.review_count > 0" class="label label-primary label-as-badge">${extras.review_count}</span>
+                <li id="header-language-selector" tal:condition="extras.lang_is_en">
+                    <a id="link-trans-de" style="cursor:pointer">
+                        <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_ge">
                     </a>
                 </li>
-
-                <li class="dropdown">
-                    <a id="switch-lang" class="dropdown-toggle" data-toggle="dropdown" href="#language">
-                        <img id="switch-lang-indicator-en" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" tal:condition="extras.lang_is_en" alt="flag-us-gb">
-                        <img id="switch-lang-indicator-de" src="${request.static_url('dbas:static/images/flag-de-24.png')}" tal:condition="extras.lang_is_de" alt="flag-de">
-                        <!--
-                        <i class="fa fa-language" aria-hidden="true"></i>
-                        <img id="switch-lang-indicator-es" src="${request.static_url('dbas:static/images/flag-es-24.png')}">
-                        <img id="switch-lang-indicator-sw" src="${request.static_url('dbas:static/images/flag-sw-24.png')}">
-                        -->
-                        <span tal:condition="extras.lang_is_en">Englisch</span>
-                        <span tal:condition="extras.lang_is_de">Deutsch</span>
-                        <span class="caret"></span>
+                <li id="header-language-selector" tal:condition="extras.lang_is_de">
+                    <a id="link-trans-en" style="cursor:pointer">
+                        <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en">
                     </a>
-                    <ul class="dropdown-menu" id="language-dropdown">
-                        <li tal:attributes="class extras.link_de_class"><a id="link-trans-de" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_ge"><span>Deutsch</span></a></li>
-                        <li tal:attributes="class extras.link_en_class"><a id="link-trans-en" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en"><span>Englisch</span></a></li>
-                        <!--
-                        <li tal:attributes="class extras.link_es_class"><a id="link-trans-es" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sp-24.png')}" alt="flag_es">Espa&ntilde;ol</a></li>
-                        <li tal:attributes="class extras.link_sw_class"><a id="link-trans-sw" style="cursor:pointer"><img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-sw-32.png')}" alt="flag_sw">Svensk</a></li>
-                        -->
-                    </ul>
                 </li>
 
             </ul>

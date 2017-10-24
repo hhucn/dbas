@@ -8,14 +8,8 @@
         <li>
             <a href="${request.application_url}/imprint"><i class="fa fa-copyright" aria-hidden="true"></i><span i18n:translate="imprint_copyright">Imprint and Copyrights</span></a>
         </li>
-        <!--<li>-->
-            <!--<a href="${request.application_url}/publications"><i class="fa fa-book" aria-hidden="true"></i><span i18n:translate="publications">Publications</span></a>-->
-        <!--</li>-->
-        <!--<li>-->
-            <!--<a id="link_popup_license" href="" data-toggle="modal" data-target="#popup_license"><i class="fa fa-list" aria-hidden="true"></i><span i18n:translate="license">License</span></a>-->
-        <!--</li>-->
         <li id="contact-link">
-            <a href="${request.application_url}/contact"><i class="fa fa-comment" aria-hidden="true"></i><span i18n:translate="contact">Contact</span></a>
+            <a href="mailto:dbas@cs.uni-duesseldorf.de"><i class="fa fa-comment" aria-hidden="true"></i><span i18n:translate="contact">Contact</span></a>
         </li>
 
         <li>
@@ -26,6 +20,15 @@
         </li>
         <li>
             <a href="${request.application_url}/docs" data-toggle="modal"><i class="fa fa-book" aria-hidden="true"></i><span i18n:translate="Documentation">Docs</span></a>
+        </li>
+
+        <li>
+            <a href="${request.application_url}/news" data-toggle="tooltip" data-placement="left">
+                <i class="fa fa-newspaper-o" aria-hidden="true"></i><span i18n:translate="news">News</span>
+            </a>
+        </li>
+        <li>
+            <a href="https://github.com/hhucn/dbas" data-toggle="modal"><i class="fa fa-github" aria-hidden="true"></i><span i18n:translate="Github">Github</span></a>
         </li>
         <li style="position: absolute; margin: 0; right: 25px;"><img id="roundhousekick" alt=".r" style="width: 25px; height: 25px; border: none; opacity: 0;" src="${request.static_url('dbas:static/images/transparent.gif')}"></li>
         <li style="position: absolute; margin: 0; right: 0;"><img id="yomamma" alt=".y" style="width: 25px; height: 25px; border: none; opacity: 0;" src="${request.static_url('dbas:static/images/transparent.gif')}"></li>

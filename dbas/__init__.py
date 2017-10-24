@@ -108,15 +108,14 @@ def main(global_config, **settings):
 
     # adding main routes
     config.add_route('main_page', '/')
-    config.add_route('main_contact', '/contact{reason:.*}')
     config.add_route('main_settings', '/settings')
     config.add_route('main_notification', '/notifications')
     config.add_route('main_news', '/news')
     config.add_route('main_imprint', '/imprint')
-    config.add_route('main_publications', '/publications')
     config.add_route('main_rss', '/rss')
     config.add_route('main_faq', '/faq')
     config.add_route('main_docs', '/docs')
+    config.add_route('main_mydiscussions', '/mydiscussions')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('ajax_user_login', '{url:.*}ajax_user_login')
@@ -171,6 +170,7 @@ def main(global_config, **settings):
     config.add_route('ajax_set_references', '{url:.*}ajax_set_references')
     config.add_route('ajax_set_seen_statements', '{url:.*}ajax_set_seen_statements')
     config.add_route('ajax_mark_statement_or_argument', '{url:.*}ajax_mark_statement_or_argument')
+    config.add_route('ajax_set_discussion_availability', '{url:.*}ajax_set_discussion_availability')
 
     # logic at the end, otherwise the * pattern will do shit
     config.add_route('main_user', '/user/{uid}')
