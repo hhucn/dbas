@@ -398,7 +398,7 @@ def get_box_for(user, lang, main_page, is_inbox):
     return message_array[::-1]
 
 
-def read_notification(uids_list, nickname, ui_locales) -> dict:
+def read_notifications(uids_list, nickname, ui_locales) -> dict:
     """
     Simply marks a notification as read
 
@@ -426,7 +426,7 @@ def read_notification(uids_list, nickname, ui_locales) -> dict:
     return prepared_dict
 
 
-def delete_notification(uids_list, nickname, ui_locales, application_url) -> dict:
+def delete_notifications(uids_list, nickname, ui_locales, application_url) -> dict:
     """
     Simply deletes a specific notification
 
