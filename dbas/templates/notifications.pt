@@ -29,9 +29,6 @@
                                     <li style="display: none;"><a href="#empty" data-toggle="tab"></a></li>
                                 </ul>
                             </div>
-                            <div>
-                                <img style="width: 50px; float: right;" id="new-notification" class="icon-badge" src="${request.static_url('dbas:static/images/icon_mail.png')}" title="" />
-                            </div>
                         </div>
 
                         <div class="tab-content">
@@ -102,6 +99,7 @@
             </div>
         </div>
 
+        <span class="icon-badge blue-button bottom-right" id="new-notification"><i class="fa fa-envelope-o" aria-hidden="true"></i></span>
 
 	</tal:block>
 </tal:block>
