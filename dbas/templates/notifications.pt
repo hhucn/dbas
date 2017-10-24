@@ -37,12 +37,13 @@
                                     <div class="panel panel-default" tal:repeat="msg extras.notifications.inbox" style="margin-bottom: 1em;" tal:attributes="id msg.id">
                                         <div class="panel-heading">
                                             <h4 class="panel-title">
+                                                <input class="msg-checkbox" type="checkbox" tal:attributes="data-id msg.id">
                                                 <a class="panel-title-link" data-toggle="collapse" data-parent="#accordion" href="#collapse1" tal:attributes="href structure:msg.collapse_link">
                                                     <span tal:condition="not:msg.read" class="label label-info" i18n:translate="new">NEW</span>
                                                     <span class="text-primary" tal:condition="msg.read">${structure:msg.topic}</span>
                                                     <strong class="text-primary" tal:condition="not:msg.read">${msg.topic}</strong>
                                                 </a>
-                                                <i class="fa fa-trash" aria-hidden="true" style="float: right; margin-left: 1.0em; cursor: pointer;" ></i>
+                                                <!--<i class="fa fa-trash" aria-hidden="true" style="float: right; margin-left: 1.0em; cursor: pointer;" ></i>-->
                                                 <span style="float: right; padding-right: 1em;"><span i18n:translate="from">From:</span> ${msg.from_author}, ${msg.timestamp}</span>
                                             </h4>
                                         </div>
@@ -61,6 +62,8 @@
                                         </div>
                                     </div>
                                 </div>
+                                <a id="read-inbox" href="#" class="btn btn-primary btn-sm"><i class="fa fa-envelope-open-o" aria-hidden="true" style="margin-right: 0.5em"></i><span id="read-inbox-txt" i18n:translate="set_as_read">Set everything as read</span></a>
+                                <a id="delete-inbox" href="#" class="btn btn-primary btn-sm pull-right"><i class="fa fa-trash-o" aria-hidden="true" style="margin-right: 0.5em"></i><span id="delete-inbox-txt" i18n:translate="delete_everything">Delete everything</span></a>
                             </div>
 
                             <div class="tab-pane fade in" id="outbox">
@@ -68,10 +71,11 @@
                                     <div class="panel panel-default" tal:repeat="msg extras.notifications.outbox" style="margin-bottom: 1em;" tal:attributes="id msg.id">
                                         <div class="panel-heading">
                                             <h4 class="panel-title">
+                                                <input class="msg-checkbox" type="checkbox" tal:attributes="data-id msg.id">
                                                 <a class="panel-title-link" data-toggle="collapse" data-parent="#accordion" href="#collapse1" tal:attributes="href structure:msg.collapse_link">
                                                     <span class="text-primary notification-title" tal:condition="msg.read">${structure:msg.topic}</span>
                                                 </a>
-                                                <i class="fa fa-trash" aria-hidden="true" style="float: right; margin-left: 1.0em; cursor: pointer;" ></i>
+                                                <!--<i class="fa fa-trash" aria-hidden="true" style="float: right; margin-left: 1.0em; cursor: pointer;" ></i>-->
                                                 <span style="float: right; padding-right: 1em;"><span i18n:translate="to">To:</span> ${msg.to_author}, ${msg.timestamp}</span>
                                             </h4>
                                         </div>
@@ -90,6 +94,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <a id="delete-outbox" href="#" class="btn btn-primary btn-sm pull-right"><i class="fa fa-trash-o" aria-hidden="true" style="margin-right: 0.5em"></i><span id="delete-outbox-txt" i18n:translate="delete_everything">Delete everything</span></a>
                             </div>
 
                             <div class="tab-pane fade" id="empty"></div>

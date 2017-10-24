@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-10-22 19:03+0200\n"
+"POT-Creation-Date: 2017-10-24 20:36+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -2064,23 +2064,33 @@ msgid "outbox"
 msgstr "Outbox"
 
 #. Default: NEW
-#: templates/notifications.pt:44
+#: templates/notifications.pt:42
 msgid "new"
 msgstr "NEW"
 
 #. Default: From:
-#: templates/notifications.pt:49 templates/notifications.pt:56
+#: templates/notifications.pt:47 templates/notifications.pt:54
 msgid "from"
 msgstr "From:"
 
 #. Default: answer
-#: templates/notifications.pt:61 templates/notifications.pt:90
+#: templates/notifications.pt:59 templates/notifications.pt:91
 msgid "answer"
 msgstr "answer"
 
+#. Default: Set everything as read
+#: templates/notifications.pt:65
+msgid "set_as_read"
+msgstr "Set everything as read"
+
+#. Default: Delete everything
+#: templates/notifications.pt:66 templates/notifications.pt:97
+msgid "delete_everything"
+msgstr "Delete everything"
+
 #. Default: To:
 #. Default: to:
-#: templates/notifications.pt:78 templates/notifications.pt:85
+#: templates/notifications.pt:79 templates/notifications.pt:86
 msgid "to"
 msgstr "To:"
 
