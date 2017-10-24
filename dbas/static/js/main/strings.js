@@ -76,6 +76,7 @@ getDiscussionLanguage = function(){
  * Messages & Errors
  * @type {string}
  */
+
 var checkmark                       = '&#x2713;'; // ✓
 var ballot                          = '&#x2717;'; // ✗
 var and                             = 'and';
@@ -123,6 +124,8 @@ var doNotHesitateToContact          = 'doNotHesitateToContact';
 var date                            = 'date';
 var deleteTrack                     = 'deleteTrack';
 var deleteHistory                   = 'deleteHistory';
+var deleteEverything                = 'deleteEverything';
+var deleteMarked                    = 'deleteMarked';
 var discussionsAvailabilitySet      = 'discussionsAvailabilitySet';
 var deleteStatisticsTitle           = 'deleteStatisticsTitle';
 var deleteStatisticsBody            = 'deleteStatisticsBody';
@@ -242,6 +245,8 @@ var requestFailedInternalError      = 'requestFailedInternalError';
 var restartOnError                  = 'restartOnError';
 var repuationChartSum               = 'repuationChartSum';
 var repuationChartDay               = 'repuationChartDay';
+var readEverything                  = 'readEverything';
+var readMarked                      = 'readMarked';
 var searchStatementPopupTitleText   = 'searchStatementPopupTitleText';
 var searchStatementPopupBodyText    = 'searchStatementPopupBodyText';
 var sawThis                         = 'saw this';
@@ -378,6 +383,8 @@ var dbas_en = {
     'clickedOnThis': 'clicked on this',
     'deleteTrack': 'Delete track',
     'deleteHistory': 'Delete history',
+    'deleteEverything': 'Delete everything',
+    'deleteMarked': 'Delete marked elements',
     'discussionsAvailabilitySet': 'The discussion availibility was set.',
     'dataRemoved': 'Data was successfully removed.',
     'dataAdded': 'Data was successfully added.',
@@ -490,6 +497,8 @@ var dbas_en = {
     'questionSplitStatementPl': 'Do you really want to split the given statement with the XXX statements you have entered?',
     'position': 'Position',
     'revokedArgument': 'revoked argument',
+    'readEverything': 'Set everything as read',
+    'readMarked': 'Set marked elements as read',
     'registered': 'Registered',
     'restartOnError': 'Please try to reload this page or restart the discussion when the error stays',
     'report': 'Report',
@@ -626,6 +635,8 @@ var dbas_de = {
     'duplicateDialog': 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version dennoch als die aktuellste markieren?',
     'deleteTrack': 'Track löschen',
     'deleteHistory': 'History löschen',
+    'deleteEverything': 'Alle löschen',
+    'deleteMarked': 'Ausgewählte Elemente löschen',
     'discussionsAvailabilitySet': 'Die Verfügbarkeit der Diskussion wurde geändert.',
     'doNotHesitateToContact': 'Bitte zögern Sie bei Fehlern nicht, <b><span style="cursor: pointer;" id="contact_on_error">uns zu kontaktieren (hier klicken)</span></b>',
     'deleteStatisticsTitle': 'Statistik löschen',
@@ -737,6 +748,8 @@ var dbas_de = {
     'report': 'Melden',
     'reportTitle': 'Öffnet eine E-Mail, damit etwas gemeldet werden kann.',
     'revokedArgument': 'wiederrufenes Argument',
+    'readEverything': 'Alle als gelesen markieren',
+    'readMarked': 'Ausgewählte Elemente als gelesen markieren',
     'registered': 'Registriert',
     'requestTrack': 'Track anfragen',
     'refreshTrack': 'Track neuladen',
