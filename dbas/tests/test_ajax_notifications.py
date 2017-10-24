@@ -1,4 +1,5 @@
 import unittest
+import json
 
 import transaction
 from pyramid import testing
@@ -53,7 +54,7 @@ class AjaxNotificationTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_unread1 = len(DBDiscussionSession.query(Message).filter_by(read=False).all())
         from dbas.views import set_notifications_read as ajax
-        request = testing.DummyRequest(params={'id': self.new_inbox_uid}, matchdict={})
+        request = testing.DummyRequest(params={'ids': json.dumps([self.new_inbox_uid])}, matchdict={})
         response = ajax(request)
         db_unread2 = len(DBDiscussionSession.query(Message).filter_by(read=False).all())
         self.assertIsNotNone(response)
@@ -66,7 +67,7 @@ class AjaxNotificationTest(unittest.TestCase):
         from dbas.views import set_notifications_delete as ajax
         db_message1 = len(DBDiscussionSession.query(Message).filter_by(to_author_uid=self.test_author_uid).all())
         db_message1 += len(DBDiscussionSession.query(Message).filter_by(from_author_uid=self.test_author_uid).all())
-        request = testing.DummyRequest(params={'id': self.new_inbox_uid}, matchdict={})
+        request = testing.DummyRequest(params={'ids': json.dumps([self.new_inbox_uid])}, matchdict={})
         response = ajax(request)
         transaction.commit()
         db_message2 = len(DBDiscussionSession.query(Message).filter_by(to_author_uid=self.test_author_uid).all())
