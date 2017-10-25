@@ -1980,7 +1980,7 @@ msgstr "This is a summary of the discussions you have created:"
 #: templates/discussions.pt:18
 msgid "you_created_no_discussion"
 msgstr ""
-"You had not creaty any discussion yet, but you can use the add button in the "
+"You have not create any discussions yet, but maybe you can use the add button in the "
 "bottom left to create your own discussion."
 
 #. Default: Titel
