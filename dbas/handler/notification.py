@@ -370,7 +370,6 @@ def get_box_for(user, lang, main_page, is_inbox):
             Message.uid.desc()).all()
 
     message_array = []
-    from dbas.logger import logger
     for message in db_messages:
         tmp_dict = dict()
         if is_inbox:
@@ -389,7 +388,6 @@ def get_box_for(user, lang, main_page, is_inbox):
         tmp_dict['timestamp'] = sql_timestamp_pretty_print(message.timestamp, lang)
         tmp_dict['read'] = message.read
         tmp_dict['topic'] = message.topic
-        logger('X', 'X', message.topic)
         tmp_dict['content'] = message.content
         tmp_dict['collapse_link'] = '#collapse' + str(message.uid)
         tmp_dict['collapse_id'] = 'collapse' + str(message.uid)

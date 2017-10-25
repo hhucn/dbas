@@ -26,13 +26,13 @@ $(function () {
 		$('#proposal-user-list-group').empty();
 	});
 	
-	if (parseInt($('#total_in_counter')) === 0){
-		$('#read-inbox').remove();
-		$('#delete-inbox').remove();
+	if (parseInt($('#total_in_counter').text()) > 0){
+		$('#read-inbox').removeClass('hidden');
+		$('#delete-inbox').removeClass('hidden');
 	}
 	
-	if (parseInt($('#total_out_counter')) === 0){
-		$('#delete-outbox').remove();
+	if (parseInt($('#total_out_counter').text()) > 0){
+		$('#delete-outbox').removeClass('hidden');
 	}
 });
 
@@ -137,8 +137,6 @@ function Notifications() {
 					uids.push($(this).data('id'));
 				});
 			}
-			console.log('1');
-			console.log(uids);
 			new AjaxNotificationHandler().sendAjaxForReadMessages(uids);
 		});
 	};
@@ -158,8 +156,6 @@ function Notifications() {
 					uids.push($(this).data('id'));
 				});
 			}
-			console.log('2');
-			console.log(uids);
 			new AjaxNotificationHandler().sendAjaxForDeleteMessages(uids);
 		});
 
@@ -174,8 +170,6 @@ function Notifications() {
 					uids.push($(this).data('id'));
 				});
 			}
-			console.log('3');
-			console.log(uids);
 			new AjaxNotificationHandler().sendAjaxForDeleteMessages(uids);
 		});
 	};

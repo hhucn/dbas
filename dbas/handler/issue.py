@@ -188,7 +188,6 @@ def get_issue_dict_for(issue, application_url, for_api, uid, lang):
     :return: dict()
     """
     if str(type(issue)) != str(Issue):
-        logger('X', 'X', 'y')
         return {'uid': '', 'slug': '', 'title': '', 'url': '', 'review_url': '', 'info': '', 'stat_count': '',
                 'date': '', 'author': '', 'author_url': '', 'enabled': '', 'error': 'true'}
 

@@ -62,8 +62,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <a id="read-inbox" href="#" class="btn btn-primary btn-sm"><i class="fa fa-envelope-open-o" aria-hidden="true" style="margin-right: 0.5em"></i><span id="read-inbox-txt" i18n:translate="set_as_read">Set everything as read</span></a>
-                                <a id="delete-inbox" href="#" class="btn btn-primary btn-sm pull-right"><i class="fa fa-trash-o" aria-hidden="true" style="margin-right: 0.5em"></i><span id="delete-inbox-txt" i18n:translate="delete_everything">Delete everything</span></a>
+                                <a id="read-inbox" href="#" class="btn btn-primary btn-sm hidden"><i class="fa fa-envelope-open-o" aria-hidden="true" style="margin-right: 0.5em"></i><span id="read-inbox-txt" i18n:translate="set_as_read">Set everything as read</span></a>
+                                <a id="delete-inbox" href="#" class="btn btn-primary btn-sm pull-right hidden"><i class="fa fa-trash-o" aria-hidden="true" style="margin-right: 0.5em"></i><span id="delete-inbox-txt" i18n:translate="delete_everything">Delete everything</span></a>
                             </div>
 
                             <div class="tab-pane fade in" id="outbox">
@@ -94,7 +94,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <a id="delete-outbox" href="#" class="btn btn-primary btn-sm pull-right"><i class="fa fa-trash-o" aria-hidden="true" style="margin-right: 0.5em"></i><span id="delete-outbox-txt" i18n:translate="delete_everything">Delete everything</span></a>
+                                <a id="delete-outbox" href="#" class="btn btn-primary btn-sm pull-right hidden"><i class="fa fa-trash-o" aria-hidden="true" style="margin-right: 0.5em"></i><span id="delete-outbox-txt" i18n:translate="delete_everything">Delete everything</span></a>
                             </div>
 
                             <div class="tab-pane fade" id="empty"></div>
