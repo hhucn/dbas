@@ -325,7 +325,7 @@ function AjaxDiscussionHandler() {
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneFuzzySearchForDuplicate(data);
 		}).fail(function ajaxGetAllUsersFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			// setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 		
 	};
@@ -404,7 +404,7 @@ function AjaxDiscussionHandler() {
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type, reason);
 		}).fail(function ajaxGetAllUsersFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			// setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 			//setTimout(function ajaxGetAllUsersFailDelay() {
 			//	new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 11). '
 			//			+ _t(doNotHesitateToContact) + '. ');
