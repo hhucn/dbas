@@ -171,7 +171,7 @@ msgstr ""
 #. Default: Decentralized Mods
 #: templates/index.pt:132
 msgid "dec_mods"
-msgstr "Verteile Moderation"
+msgstr "Verteilte Moderation"
 
 #. Default: Give the power to the crowd! They know how to use it!
 #: templates/index.pt:133
