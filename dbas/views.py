@@ -33,7 +33,7 @@ from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
 from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement_uid
 from dbas.handler.language import set_language, get_language_from_cookie, set_language_for_first_visit
-from dbas.handler.notification import read_notification, delete_notification, send_users_notification
+from dbas.handler.notification import read_notifications, delete_notifications, send_users_notification
 from dbas.handler.password import request_password
 from dbas.handler.references import set_reference, get_references
 from dbas.handler.rss import get_list_of_all_feeds
@@ -1411,49 +1411,49 @@ def set_correction_of_some_statements(request):
     return prepared_dict
 
 
-# ajax - set notification as read
-@view_config(route_name='ajax_notification_read', renderer='json')
-def set_notification_read(request):
+# ajax - set notifications as read
+@view_config(route_name='ajax_notifications_read', renderer='json')
+def set_notifications_read(request):
     """
     Set a notification as read
 
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_notification_read', 'main {}'.format(request.params))
+    logger('views', 'set_notifications_read', 'main {}'.format(request.params))
     ui_locales = get_language_from_cookie(request)
 
     try:
-        uid = request.params['id']
+        uids_list = json.loads(request.params['ids'])
     except KeyError as e:
-        logger('views', 'set_notification_read', repr(e), error=True)
+        logger('views', 'set_notifications_read', repr(e), error=True)
         _tn = Translator(ui_locales)
         return {'error': _tn.get(_.internalKeyError), 'success': ''}
 
-    prepared_dict = read_notification(uid, request.authenticated_userid, ui_locales)
+    prepared_dict = read_notifications(uids_list, request.authenticated_userid, ui_locales)
     return prepared_dict
 
 
-# ajax - deletes a notification
-@view_config(route_name='ajax_notification_delete', renderer='json')
-def set_notification_delete(request):
+# ajax - deletes notifications
+@view_config(route_name='ajax_notifications_delete', renderer='json')
+def set_notifications_delete(request):
     """
     Request the removal of a notification
 
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_notification_delete', 'main {}'.format(request.params))
+    logger('views', 'set_notifications_delete', 'main {}'.format(request.params))
     ui_locales = get_language_from_cookie(request)
 
     try:
-        uid = request.params['id']
+        uids_list = json.loads(request.params['ids'])
     except KeyError as e:
-        logger('views', 'set_notification_delete', repr(e), error=True)
+        logger('views', 'set_notifications_delete', repr(e), error=True)
         _tn = Translator(ui_locales)
         return {'error': _tn.get(_.internalKeyError), 'success': ''}
 
-    prepared_dict = delete_notification(uid, request.authenticated_userid, ui_locales, request.application_url)
+    prepared_dict = delete_notifications(uids_list, request.authenticated_userid, ui_locales, request.application_url)
     return prepared_dict
 
 

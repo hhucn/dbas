@@ -65,8 +65,6 @@ def init(request, nickname, for_api=False) -> dict:
     __handle_history(request, nickname, slug, issue)
 
     disc_ui_locales = get_discussion_language(request, issue)
-    logger('X', 'X', str(disc_ui_locales))
-    logger('X', 'X', str(disc_ui_locales))
     issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api)
     item_dict = ItemDictHelper(disc_ui_locales, issue, application_url, for_api).get_array_for_start(nickname)
 

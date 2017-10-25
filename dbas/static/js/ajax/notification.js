@@ -7,61 +7,69 @@ function AjaxNotificationHandler(){
 	
 	/**
     *
-    * @param id
-    * @param _this
+    * @param id_list
     */
-	this.sendAjaxForReadMessage = function(id, _this){
+	this.sendAjaxForReadMessages = function(id_list){
 		new Notifications().hideInfoSpaces();
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_notification_read',
+			url: 'ajax_notifications_read',
 			method: 'POST',
 			data: {
-				id: id
+				ids: JSON.stringify(id_list)
 			},
 			dataType: 'json',
 			headers: {'X-CSRF-Token': csrf_token}
-		}).done(function sendAjaxForReadMessageDone(data) {
+		}).done(function sendAjaxForReadMessagesDone(data) {
 			if (data.error.length > 0) {
 				setGlobalErrorHandler(_t_discussion(ohsnap), data.error);
 			} else {
-				var titletext = $(_this).text().replace(_t(neww).toLocaleUpperCase(), '').trim();
-				var spanEl = $('<span>').addClass('text-primary').text(titletext);
-				$(_this).empty().html(spanEl);
-				$('#collapse' + id).addClass('in');
+				$.each(id_list, function(key, uid){
+					var el = $('#' + uid);
+					el.find('.label-info').remove();
+					var title = el.find('.panel-title-link').text().trim();
+					var spanEl = $('<span>').addClass('text-primary').text(title);
+					el.find('.panel-title-link').empty().append(spanEl);
+				});
 				new Notifications().setNewBadgeCounter(data.unread_messages);
+				$('.msg-checkbox:checked').each(function(){
+					$(this).prop('checked',false);
+				});
 			}
-		}).fail(function sendAjaxForReadMessageFail() {
+		}).fail(function sendAjaxForReadMessagesFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
 
 	/**
     *
-    * @param id
+    * @param id_list
     */
-	this.sendAjaxForDeleteMessage = function(id) {
+	this.sendAjaxForDeleteMessages = function(id_list) {
 		new Notifications().hideInfoSpaces();
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_notification_delete',
+			url: 'ajax_notifications_delete',
 			method: 'POST',
 			data: {
-				id: id
+				ids: JSON.stringify(id_list)
 			},
 			dataType: 'json',
 			headers: {'X-CSRF-Token': csrf_token}
-		}).done(function sendAjaxForDeleteMessageDone(data) {
+		}).done(function sendAjaxForDeleteMessagesDone(data) {
 			if (data.success.length > 0) {
 				$('#' + id).remove();
 				new Notifications().setNewBadgeCounter(data.unread_messages);
 				$('#total_in_counter').text(data.total_in_messages);
 				$('#total_out_counter').text(data.total_out_messages);
 				setGlobalSuccessHandler('', data.success);
+				$('.msg-checkbox:checked').each(function(){
+					$(this).prop('checked',false);
+				});
 			} else {
 				setGlobalErrorHandler(_t_discussion(ohsnap), data.error);
 			}
-		}).fail(function sendAjaxForDeleteMessageFail() {
+		}).fail(function sendAjaxForDeleteMessagesFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
@@ -93,7 +101,6 @@ function AjaxNotificationHandler(){
 				var out_counter = $('#total_out_counter');
 				out_counter.text(' ' + (parseInt(out_counter.text()) + 1) + ' ');
 				location.reload();
-				// new Notifications().appendMessageInOutbox(recipient, data.recipient_avatar, title, text, data.timestamp, data.uid)
 			} else {
 				$('#popup-writing-notification-failed').show();
 				$('#popup-writing-notification-failed-message').html(data.error);
