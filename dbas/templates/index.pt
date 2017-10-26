@@ -27,7 +27,10 @@
 
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
       <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="#page-top">D-BAS</a>
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">
+            <img src="${request.static_url('dbas:static/images/logo_white.svg')}" alt="D-BAS Logo" style="height: 1.0em;margin-right: 0.2em; margin-bottom: 0.2em;">
+            <span>D-BAS</span>
+        </a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -69,9 +72,13 @@
     <header class="masthead">
       <div class="header-content">
         <div class="header-content-inner">
-            <h1 id="homeHeading">
-                <img src="${request.static_url('dbas:static/images/logo_white.svg')}" alt="D-BAS Logo" style="height: 1.1em;"> <span i18n:translate="landing-page-heading">D-BAS: The solution for every Large Scale Online-Discussion</span>
-            </h1>
+            <div id="homeHeading">
+                <h1 style="padding-bottom: 0.5em;">
+                    <img src="${request.static_url('dbas:static/images/logo_white.svg')}" alt="D-BAS Logo" style="height: 1.1em; margin-right: 0.3em;">
+                    <span>D-BAS</span>
+                </h1>
+                <h1 i18n:translate="landing-page-heading">The solution for every Large Scale Online-Discussion</h1>
+            </div>
           <hr>
           <p><strong i18n:translate="welcome_to_dbas">Welcome to D-BAS! This is our Dialog-Based Argumentation System. It offers a clear discussion structure, a modern web interface, a decentralized moderation system and is easy to use for everyone!</strong></p>
             <div class="btn-group">
@@ -238,7 +245,7 @@
             <div class="row">
                 <div class="col-lg-2"></div>
                 <div class="col-lg-8">
-                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="3000">
+                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="6000">
                         <ol class="carousel-indicators">
                             <li tal:repeat="n news" data-target="#carouselExampleIndicators" tal:attributes="data-slide-to n.id; class n.indicatorclass"></li>
                         </ol>

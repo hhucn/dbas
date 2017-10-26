@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-10-24 20:36+0200\n"
+"POT-Creation-Date: 2017-10-26 13:50+0200\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -62,41 +62,41 @@ msgid "go_back_to_the_discussion"
 msgstr "Zurück zur Diskussion!"
 
 #. Default: About
-#: templates/index.pt:37
+#: templates/index.pt:40
 msgid "about"
 msgstr "Über"
 
 #. Default: Services
-#: templates/index.pt:40
+#: templates/index.pt:43
 msgid "services"
 msgstr "Service"
 
 #. Default: Github
-#: templates/index.pt:43
+#: templates/index.pt:46
 msgid "github"
 msgstr "Github"
 
 #. Default: News
-#: templates/index.pt:49 templates/snippet-footer.pt:27 templates/news.pt:6
+#: templates/index.pt:52 templates/snippet-footer.pt:27 templates/news.pt:6
 msgid "news"
 msgstr "Neuigkeiten"
 
 #. Default: Contact
 #. Default: Kontakt:
-#: templates/index.pt:52 templates/index.pt:308 templates/imprint.pt:23
+#: templates/index.pt:55 templates/index.pt:315 templates/imprint.pt:23
 #: templates/snippet-footer.pt:12
 msgid "contact"
 msgstr "Kontakt"
 
-#. Default: D-BAS: The solution for every Large Scale Online-Discussion
-#: templates/index.pt:73
+#. Default: The solution for every Large Scale Online-Discussion
+#: templates/index.pt:80
 msgid "landing-page-heading"
-msgstr "D-BAS: Die Lösung für jede große Online-Diskussionen"
+msgstr "Die Lösung für jede große Online-Diskussionen"
 
 #. Default: Welcome to D-BAS! This is our Dialog-Based Argumentation System. It
 #. offers a clear discussion structure, a modern web interface, a decentralized
 #. moderation system and is easy to use for everyone!
-#: templates/index.pt:76
+#: templates/index.pt:83
 msgid "welcome_to_dbas"
 msgstr ""
 "Willkommen bei D-BAS - dem dialogbasierten Argumentationssystem. Es ist klar "
@@ -104,17 +104,17 @@ msgstr ""
 "Moderationsstruktur und ist für jeden schnell und einfach zu nutzen!"
 
 #. Default: Find Out More
-#: templates/index.pt:78
+#: templates/index.pt:85
 msgid "find_out_more"
 msgstr "Mehr lesen"
 
 #. Default: or start directly
-#: templates/index.pt:79
+#: templates/index.pt:86
 msgid "start_directly"
-msgstr "oder direkt starten"
+msgstr "direkt starten"
 
 #. Default: We've got what you need!
-#: templates/index.pt:89
+#: templates/index.pt:96
 msgid "we_have_you_need"
 msgstr "Wir haben, was Sie brauchen: Strukturiere Diskussionen!"
 
@@ -125,7 +125,7 @@ msgstr "Wir haben, was Sie brauchen: Strukturiere Diskussionen!"
 #. the potential to strengthen the acceptance and the quality of them. We offer
 #. a novel approach for large scale online-discussion. Feel free to try it out
 #. now!
-#: templates/index.pt:91
+#: templates/index.pt:98
 msgid "landing_page_intro"
 msgstr ""
 "Mit dem Internet haben wir eine technische Möglichkeit, mit der Teilnehmer/"
@@ -137,184 +137,184 @@ msgstr ""
 "Teilnehmer/innen problemfrei miteinander diskutieren kann."
 
 #. Default: Get Started
-#: templates/index.pt:98
+#: templates/index.pt:105
 msgid "get_started"
 msgstr "Gleich loslegen"
 
 #. Default: At Your Service
-#: templates/index.pt:108
+#: templates/index.pt:115
 msgid "at_your_service"
 msgstr "Zu Ihren Diensten"
 
 #. Default: Easy to Use
-#: templates/index.pt:118
+#: templates/index.pt:125
 msgid "easy_to_use"
 msgstr "Einfach zu nutzen"
 
 #. Default: No complicated argumentation! Step-by-step dialogs!
-#: templates/index.pt:119
+#: templates/index.pt:126
 msgid "easy_to_use_text"
 msgstr ""
-"Keine komplizierte Argumentation! Einfache Schritt-für-Schritt Dialoge!"
+"Keine komplizierte Argumentation. Einfache Schritt-für-Schritt Dialoge."
 
 #. Default: Clear Structure
-#: templates/index.pt:125
+#: templates/index.pt:132
 msgid "clear_structure"
 msgstr "Klare Strukturen"
 
 #. Default: Argument-maps are to messy! Let's use a modern chat-interface!
-#: templates/index.pt:126
+#: templates/index.pt:133
 msgid "clear_structure_text"
 msgstr ""
-"Argumentkarten sind echt hässlich! Nutzen wir doch moderne Chat-Strukturen!"
+"Argumentkarten sind echt hässlich. Nutzen wir doch moderne Chat-Strukturen."
 
 #. Default: Decentralized Mods
-#: templates/index.pt:132
+#: templates/index.pt:139
 msgid "dec_mods"
 msgstr "Verteilte Moderation"
 
 #. Default: Give the power to the crowd! They know how to use it!
-#: templates/index.pt:133
+#: templates/index.pt:140
 msgid "dec_mods_text"
-msgstr "Die User haben die Macht! Sie wissen, was man damit macht!"
+msgstr "Die User haben die Macht. Sie wissen, was man damit macht."
 
 #. Default: Less Redundancy
-#: templates/index.pt:139
+#: templates/index.pt:146
 msgid "less_redund"
 msgstr "Weniger Redundanz"
 
 #. Default: Tired of duplicated post? We use modern machine learning processes!
-#: templates/index.pt:140
+#: templates/index.pt:147
 msgid "less_redund_text"
-msgstr "Keine Lust auf doppelte Posts? Wir auch nicht!"
+msgstr "Keine Lust auf doppelte Posts? Wir auch nicht."
 
 #. Default: Tested by a Crowd
-#: templates/index.pt:148
+#: templates/index.pt:155
 msgid "tested_by_crowd"
 msgstr "Von allen getestet"
 
 #. Default: D-BAS was test by many students and citizens!
-#: templates/index.pt:149
+#: templates/index.pt:156
 msgid "tested_by_crowd_text"
-msgstr "D-BAS wurde von vielen Studierenden und Teilnehmer/innen getestet!"
+msgstr "D-BAS wurde wissenschaftlich evaluiert und von Vielen getestet."
 
 #. Default: Ready to Ship
-#: templates/index.pt:155
+#: templates/index.pt:162
 msgid "ready_to_ship"
 msgstr "Direkt einsatzbereit"
 
 #. Default: Easy to deplay and maintain, because it is shipepd by Docker!
-#: templates/index.pt:156
+#: templates/index.pt:163
 msgid "ready_to_ship_text"
-msgstr "Einfach aufzusetzen und zu warten, denn wir nutzen Docker!"
+msgstr "Einfach aufzusetzen und zu warten, denn wir nutzen Docker."
 
 #. Default: Up to Date
-#: templates/index.pt:162
+#: templates/index.pt:169
 msgid "up_to_date"
 msgstr "Immer Aktuell"
 
 #. Default: We update dependencies to keep things fresh.
-#: templates/index.pt:163
+#: templates/index.pt:170
 msgid "up_to_date_text"
 msgstr "Wir halten alles aktuell und frisch."
 
 #. Default: Made with Love
-#: templates/index.pt:169
+#: templates/index.pt:176
 msgid "made_with_love"
 msgstr "Mit Liebe gemacht"
 
 #. Default: You have to make your software with love these days!
-#: templates/index.pt:170
+#: templates/index.pt:177
 msgid "made_with_love_text"
-msgstr "Mit Liebe in Düsseldorf gemacht."
+msgstr "Von Wissenschaftlern in Düsseldorf gemacht."
 
 #. Default: Free Download at Github!
-#: templates/index.pt:179
+#: templates/index.pt:186
 msgid "free_at_github"
-msgstr "Direkter Download auf GitHub!"
+msgstr "Direkter Download auf GitHub"
 
 #. Default: Download Now
-#: templates/index.pt:180
+#: templates/index.pt:187
 msgid "download_now"
 msgstr "Jetz laden"
 
 #. Default: From the University into Practice
-#: templates/index.pt:188
+#: templates/index.pt:195
 msgid "from_uni_to_pratice"
 msgstr "Von der Universität in die Praxis"
 
 #. Default: This work is part of the graduate school on
-#: templates/index.pt:190
+#: templates/index.pt:197
 msgid "work_based_on"
 msgstr "Dieses Projekt ist Teil des Graduierten-Kollegs"
 
 #. Default: Online-Participation
-#: templates/index.pt:191 templates/index.pt:192
+#: templates/index.pt:198 templates/index.pt:199
 msgid "online_participation"
 msgstr "Online-Partizipation"
 
 #. Default: It is funded by the
-#: templates/index.pt:193
+#: templates/index.pt:200
 msgid "funded_by"
 msgstr "Es wird finanziert vom"
 
 #. Default: Ministry of Innovation, Science and Research in North Rhine-
 #. Westphalia
-#: templates/index.pt:194
+#: templates/index.pt:201
 msgid "ministry_of_innovation"
 msgstr ""
 "Ministerium für Innovation, Wissenschaft und Forschung des Landes Nordrhein-"
 "Westfalen"
 
 #. Default: Heinrich-Heine-University Duesseldorf
-#: templates/index.pt:205
+#: templates/index.pt:212
 msgid "hhu"
 msgstr "Heinrich-Heine-Universität Düsseldorf"
 
 #. Default: Graduation School on Online Participation
-#: templates/index.pt:211
+#: templates/index.pt:218
 msgid "graduate_school_online_participation"
 msgstr "Fortschrittskolleg Online-Partizipation"
 
 #. Default: University of Applied Sciences for Public Administration and
 #. management of North Rhine-Westphalia
-#: templates/index.pt:217
+#: templates/index.pt:224
 msgid "fhoev"
 msgstr "Fachhochschule für öffentliche Verwaltung NRW"
 
 #. Default: Duesseldorf Institut of Internet and Democracy
-#: templates/index.pt:223
+#: templates/index.pt:230
 msgid "diid"
 msgstr "Düsseldorfer Institut für Internet und Demokratie"
 
 #. Default: Latest News
-#: templates/index.pt:234
+#: templates/index.pt:241
 msgid "latest_news"
 msgstr "Aktuelle Nachrichten"
 
 #. Default: Previous
-#: templates/index.pt:263
+#: templates/index.pt:270
 msgid "previous"
 msgstr "Zurück"
 
 #. Default: Next
-#: templates/index.pt:267
+#: templates/index.pt:274
 msgid "next"
 msgstr "Vor"
 
 #. Default: Go to the news
-#: templates/index.pt:273
+#: templates/index.pt:280
 msgid "go_to_news"
 msgstr "Zu den News"
 
 #. Default: Let's Get In Touch!
-#: templates/index.pt:282
+#: templates/index.pt:289
 msgid "get_in_touch"
 msgstr "Treten Sie mit uns in Kontakt"
 
 #. Default: Ready to start your next discussion with us? That's great! Give us
 #. a call or send us an email and we will get back to you as soon as possible!
-#: templates/index.pt:284
+#: templates/index.pt:291
 msgid "ready_to_start_with_us"
 msgstr ""
 "Sie möchten Ihre nächste Diskussion mit uns starten? Das ist super! Rufen "
@@ -322,27 +322,27 @@ msgstr ""
 "schnellstmöglich bei Ihnen melden!"
 
 #. Default: Imprint and Copyrights
-#: templates/index.pt:307 templates/snippet-footer.pt:9
+#: templates/index.pt:314 templates/snippet-footer.pt:9
 msgid "imprint_copyright"
 msgstr "Impressum und Urheberrecht"
 
 #. Default: RSS
-#: templates/index.pt:309 templates/snippet-footer.pt:16
+#: templates/index.pt:316 templates/snippet-footer.pt:16
 msgid "rss"
 msgstr "RSS"
 
 #. Default: Help
-#: templates/index.pt:310 templates/snippet-footer.pt:19
+#: templates/index.pt:317 templates/snippet-footer.pt:19
 msgid "Help"
 msgstr "Hilfe"
 
 #. Default: Docs
-#: templates/index.pt:311 templates/snippet-footer.pt:22
+#: templates/index.pt:318 templates/snippet-footer.pt:22
 msgid "Documentation"
 msgstr "Dokumentation"
 
 #. Default: Github
-#: templates/index.pt:312 templates/snippet-footer.pt:31
+#: templates/index.pt:319 templates/snippet-footer.pt:31
 msgid "Github"
 msgstr "Github"
 
