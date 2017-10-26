@@ -99,9 +99,9 @@ msgstr "D-BAS: Die Lösung für jede große Online-Diskussionen"
 #: templates/index.pt:76
 msgid "welcome_to_dbas"
 msgstr ""
-"Willkommen bei D-BAS - das DialogBasierte ArgumentationsSystems. Es ist klar "
+"Willkommen bei D-BAS - dem dialogbasierten Argumentationssystem. Es ist klar "
 "strukturiert, bietet ein modernes Web-Interface sowie eine verteilte "
-"Moderationsstruktur uns ist für jeden schnell und einfach zu nutzen!"
+"Moderationsstruktur und ist für jeden schnell und einfach zu nutzen!"
 
 #. Default: Find Out More
 #: templates/index.pt:78
