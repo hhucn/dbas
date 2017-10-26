@@ -119,6 +119,9 @@ body {
     #mainNav.navbar-shrink {
       border-color: rgba(34, 34, 34, 0.05);
       background-color: white; }
+      #mainNav.navbar-shrink .navbar-img {
+        content: url("../images/logo_blue.svg");
+        margin-bottom: 0.1em; }
       #mainNav.navbar-shrink .navbar-brand {
         font-size: 16px;
         color: #2196F3; }

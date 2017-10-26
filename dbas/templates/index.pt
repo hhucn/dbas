@@ -28,7 +28,7 @@
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
       <div class="container">
         <a class="navbar-brand js-scroll-trigger" href="#page-top">
-            <img src="${request.static_url('dbas:static/images/logo_white.svg')}" alt="D-BAS Logo" style="height: 1.0em;margin-right: 0.2em; margin-bottom: 0.2em;">
+            <img class="navbar-img" src="${request.static_url('dbas:static/images/logo_white.svg')}" alt="D-BAS Logo" style="height: 1.0em;margin-right: 0.2em; margin-bottom: 0.2em;">
             <span>D-BAS</span>
         </a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -142,9 +142,12 @@
             </div>
             <div class="col-lg-3 col-md-6 text-center">
               <div class="service-box grow">
-                <i class="fa fa-4x fa-commenting text-primary sr-icons"></i>
-                <h3 i18n:translate="less_redund">Less Redundancy</h3>
-                <p i18n:translate="less_redund_text" class="text-muted">Tired of duplicated post? We use modern machine learning processes!</p>
+                <!--<i class="fa fa-4x fa-commenting text-primary sr-icons"></i>-->
+                <!--<h3 i18n:translate="less_redund">Less Redundancy</h3>-->
+                <!--<p i18n:translate="less_redund_text" class="text-muted">Tired of duplicated post? We use modern machine learning processes!</p>-->
+                <i class="fa fa-4x fa-university text-primary sr-icons"></i>
+                <h3 i18n:translate="developed_at_uni">Proved Scientifically</h3>
+                <p i18n:translate="developed_at_uni_text" class="text-muted">D-BAS was developed at the university in cooperation with cities.</p>
               </div>
             </div>
           </div>
