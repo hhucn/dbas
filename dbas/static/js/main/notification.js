@@ -9,6 +9,9 @@ $(function () {
 	not.setPanelClickFunctions();
 	not.setClickFunctionsForAnswerNotification();
 	not.setClickFunctionsForNewNotification();
+	not.setClickFunctionsForRead();
+	not.setClickFunctionsForDelete();
+	not.setClickFunctionsForCheckboxes();
 
 	$('#popup-writing-notification-recipient').keyup(function () {
 		setTimeout(function () {
@@ -22,6 +25,15 @@ $(function () {
 	$('#popup-writing-notification-text').focusin(function(){
 		$('#proposal-user-list-group').empty();
 	});
+	
+	if (parseInt($('#total_in_counter').text()) > 0){
+		$('#read-inbox').removeClass('hidden');
+		$('#delete-inbox').removeClass('hidden');
+	}
+	
+	if (parseInt($('#total_out_counter').text()) > 0){
+		$('#delete-outbox').removeClass('hidden');
+	}
 });
 
 function Notifications() {
@@ -36,7 +48,7 @@ function Notifications() {
 			$(this).click(function(){
 				var id = $(this).parent().parent().parent().attr('id');
 				if ($(this).html().indexOf('<strong') !== -1) {
-					new AjaxNotificationHandler().sendAjaxForReadMessage(id, this);
+					new AjaxNotificationHandler().sendAjaxForReadMessages([id]);
 				}
 			});
 		}) ;
@@ -44,7 +56,7 @@ function Notifications() {
 		$.each($('.fa-trash'), function ajaxLinksDelete() {
 			$(this).off('click').click(function(){
 				$(this).parent().parent().attr('href','');
-				new AjaxNotificationHandler().sendAjaxForDeleteMessage($(this).parent().parent().parent().attr('id'));
+				new AjaxNotificationHandler().sendAjaxForDeleteMessages([$(this).data('id')]);
 			});
 		});
 	};
@@ -109,6 +121,85 @@ function Notifications() {
 			});
 		});
 	};
+	
+	/**
+	 *
+	 */
+	this.setClickFunctionsForRead = function(){
+		$('#read-inbox').click(function(){
+			var uids = [];
+			var inbox = $('#inbox');
+			inbox.find('.msg-checkbox:checked').each(function(){
+				uids.push($(this).data('id'));
+			});
+			if (uids.length === 0){
+				inbox.find('.msg-checkbox').each(function(){
+					uids.push($(this).data('id'));
+				});
+			}
+			new AjaxNotificationHandler().sendAjaxForReadMessages(uids);
+		});
+	};
+	
+	/**
+	 *
+	 */
+	this.setClickFunctionsForDelete = function(){
+		$('#delete-inbox').click(function(){
+			var uids = [];
+			var inbox = $('#inbox');
+			inbox.find('.msg-checkbox:checked').each(function(){
+				uids.push($(this).data('id'));
+			});
+			if (uids.length === 0){
+				inbox.find('.msg-checkbox').each(function(){
+					uids.push($(this).data('id'));
+				});
+			}
+			new AjaxNotificationHandler().sendAjaxForDeleteMessages(uids);
+		});
+
+		$('#delete-outbox').click(function(){
+			var uids = [];
+			var outbox = $('#outbox');
+			outbox.find('.msg-checkbox:checked').each(function(){
+				uids.push($(this).data('id'));
+			});
+			if (uids.length === 0){
+				outbox.find('.msg-checkbox').each(function(){
+					uids.push($(this).data('id'));
+				});
+			}
+			new AjaxNotificationHandler().sendAjaxForDeleteMessages(uids);
+		});
+	};
+	
+	/**
+	 *
+	 */
+	this.setClickFunctionsForCheckboxes = function(){
+		$('.msg-checkbox').each(function () {
+			$(this).change(function(){
+				var count = $('.msg-checkbox:checked').length;
+				if (count === 0){
+					if ($('#inbox-link').attr('aria-expanded') === 'true'){
+						$('#' + deleteInboxTxt).text(_t(deleteEverything));
+						$('#' + readInboxTxt).text(_t(readEverything));
+					} else {
+						$('#' + deleteOutboxTxt).text(_t(deleteEverything));
+					}
+				} else {
+					if ($('#inbox-link').attr('aria-expanded') === 'true'){
+						$('#' + deleteInboxTxt).text(_t(deleteMarked));
+						$('#' + readInboxTxt).text(_t(readMarked));
+					} else {
+						$('#' + deleteOutboxTxt).text(_t(deleteMarked));
+					}
+				}
+			});
+		});
+	};
+	
 
 	/**
     *
@@ -129,50 +220,5 @@ function Notifications() {
 			$('#header_badge_count_notifications').text(counter);
 		}
 		$('#unread_counter').text(' ' + counter + ' ');
-	};
-
-	/**
-    *
-    * @param recipient
-    * @param recipient_avatar
-    * @param title
-    * @param text
-    * @param timestamp
-    * @param uid
-    */
-	this.appendMessageInOutbox = function(recipient, recipient_avatar, title, text, timestamp, uid) {
-		var panel_html = '' +
-			'<div class="panel panel-default" style="margin-bottom: 1em;" id="' + uid + '">' +
-				'<div class="panel-heading">' +
-					'<h4 class="panel-title">' +
-						'<a class="accordion-toggle panel-title-link" data-toggle="collapse" data-parent="#accordion" href="#collapse' + uid + '">' +
-							'<span class="text-primary notification-title">' + title + '</span>' +
-						'</a>' +
-						'<i style="float: right; margin-left: 1.0em; cursor: pointer;" class="fa center fa-trash"></i>' +
-						'<span style="float: right; padding-right: 1em;"><span>' + _t(to) + ':</span> ' + recipient + ', ' + timestamp + '</span>' +
-					'</h4>' +
-				'</div>' +
-				'<div id="collapse' + uid + '" class="panel-collapse collapse">' +
-					'<div class="panel-body">' +
-						'<div class="notification-content">text</div>' +
-						'<div style="float:right; padding: 0.2em;">' +
-							'<span>' + _t(to) + ':</span> ' +
-							'<a href="/user/' + recipient + '" target="_blank" class="to_author_value">' +
-								recipient +
-								'<img src="' + recipient_avatar + '" style="margin-left: 0.5em; margin-right: 0.5em">' +
-							'</a>' +
-							'<a href="#" class="btn btn-primary btn-xs answer-notification">' + _t(answer) + '</a>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-			'</div>';
-		$('#outbox').find('.panel-group').append(panel_html);
-
-		$.each($('#message-space').find('.fa-trash'), function ajaxLinksDelete() {
-			$(this).off('click').click(function(){
-				$(this).parent().parent().attr('href','');
-				new Notifications().sendAjaxForDeleteMessage($(this).parent().parent().parent().attr('id'));
-			});
-		});
 	};
 }

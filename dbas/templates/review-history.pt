@@ -1,104 +1,107 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
 	<tal:block metal:fill-slot="content_page">
 
-		<div class="container colored-container">
-            <h4 tal:condition="not:history.has_access">
-                <span tal:condition="history.is_history" i18n:translate="earn_more_reputation_for_queue">You have to earn more reputation for this queue</span>
-                <span tal:condition="not:history.is_history" i18n:translate="you_have_no_access">You have no access to this site</span>!
-            </h4>
-			<img tal:condition="not:history.has_access" class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
+        <section>
+            <div class="text-center big-header" tal:condition="history.has_access">
+                <h3 class="text-center" tal:condition="history.is_history">
+                    <i  class="fa fa-history" aria-hidden="true" style="margin-right: 0.5em;"></i>
+                    <span i18n:translate="history_of_votes">The history of votes</span>!
+                </h3>
+                <h3 class="text-center" tal:condition="not:history.is_history">
+                    <i class="fa fa-clock-o" aria-hidden="true" style="margin-right: 0.5em;"></i>
+                    <span i18n:translate="current_decisions">Current decisions</span>!
+                </h3>
+                <p tal:condition="history.has_access" i18n:translate="page_contains_list_past_votes" class="lead text-center">This page contains lists with an over of past votes for each queue</p>
+                <p tal:condition="not:history.has_access" i18n:translate="page_contains_list_ongoing_votes" class="lead text-center">This page contains lists with an over of ongoing votes for each queue</p>
 
-            <div class="row" tal:condition="history.has_access">
-                <div class="col-md-4">
-                    <ul class="breadcrumb">
-                        <li><a href="${request.application_url}/review" i18n:translate="review">Review</a></li>
-                        <li tal:condition="history.is_history" class="active" i18n:translate="history">History</li>
-                        <li tal:condition="not:history.is_history" class="active" i18n:translate="current_decisions">Current Decisions</li>
-                    </ul>
-                </div>
-                <div class="col-md-8">
-                    <h4 tal:condition="history.has_access" class="center">
-                        <i tal:condition="history.is_history" class="fa fa-history" aria-hidden="true"></i><i tal:condition="not:history.is_history" class="fa fa-time-o" aria-hidden="true"></i>
-                        <span tal:condition="history.is_history" i18n:translate="history_of_votes">The history of votes</span>
-                        <span tal:condition="not:history.is_history" i18n:translate="current_decisions">Current decisions</span>!
-                    </h4>
-                </div>
             </div>
-		</div>
+        </section>
+
+        <div class="wrapper-container">
+
+            <div class="container colored-container" tal:condition="not:history.has_access">
+                <h4>
+                    <span tal:condition="history.is_history" i18n:translate="earn_more_reputation_for_queue">You have to earn more reputation for this queue</span>
+                    <span tal:condition="not:history.is_history" i18n:translate="you_have_no_access">You have no access to this site</span>!
+                </h4>
+                <img tal:condition="not:history.has_access" class="center" src="${request.static_url('dbas:static/images/nopower.jpg')}">
+
+            </div>
 
 
-		<div class="container colored-container" tal:repeat="past history.past_decision" tal:condition="history.has_access">
-            <div class="row">
-                <div class="col-md-12">
-                    <h5><i tal:attributes="class past.icon"></i> ${past.title}</h5>
-                    <div tal:switch="len(past.content)>0">
-                        <p tal:case="False" class="lead" i18n:translate="no_decision_for_this_queue">No decisions for this queue.</p>
-                        <div tal:case="True" tal:attributes="class past.queue">
-                            <table class="table table-condensed">
-                                <thead>
-                                    <tr>
-                                        <td tal:condition="not:past.has_oem_text" i18n:translate="statement">Statement</td>
-                                        <td tal:condition="past.has_oem_text" i18n:translate="edit">Edit</td>
-                                        <td tal:condition="past.has_reason" i18n:translate="reason">Reason</td>
-                                        <td tal:condition="past.has_oem_text" i18n:translate="original">Original</td>
-                                        <td tal:condition="past.has_duplicate_text" i18n:translate="original">Original</td>
-                                        <td i18n:translate="votes" class="center">Votes</td>
-                                        <td tal:condition="history.is_history" i18n:translate="accepted" class="center">Accepted</td>
-                                        <td i18n:translate="voters_pro" class="center">Voters Pro</td>
-                                        <td i18n:translate="voters_con" class="center">Voters Con</td>
-                                        <td i18n:translate="timestamp">Timestamp</td>
-                                        <td i18n:translate="reporter" class="center">Reporter</td>
-                                        <td i18n:translate="actions" class="center">Action</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr tal:repeat="rep past.content" tal:attributes="id rep.row_id">
-                                        <td tal:attributes="title rep.argument_fulltext; id rep.entry_id">${structure:rep.argument_shorttext}</td>
-                                        <td tal:condition="past.has_reason">${rep.reason}</td>
-                                        <td tal:condition="past.has_oem_text" tal:attributes="title rep.argument_oem_fulltext; id rep.entry_id">${structure:rep.argument_oem_shorttext}</td>
-                                        <td tal:condition="past.has_duplicate_text" tal:attributes="title rep.statement_duplicate_fulltext; id rep.entry_id">${structure:rep.statement_duplicate_shorttext}</td>
-                                        <td class="center">
-                                            <a href="#">
-                                                <span class="text-success">${len(rep.votes_pro)}</span>:
-                                                <span class="text-danger">${len(rep.votes_con)}</span>
-                                            </a>
-                                        </td>
-                                        <td tal:condition="history.is_history and len(rep.votes_pro) > len(rep.votes_con)" class="text-success center"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></td>
-                                        <td tal:condition="history.is_history and len(rep.votes_pro) < len(rep.votes_con)" class="text-danger center"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></td>
-                                        <td tal:condition="history.is_history and len(rep.votes_pro) == len(rep.votes_con)" class="text-info center"><i class="fa fa-question" aria-hidden="true"></i></td>
-                                        <td class="center" tal:switch="len(rep.votes_pro) > 0">
-                                            <div tal:case="True" tal:omit-tag="" tal:repeat="pro rep.votes_pro">
-                                                <a tal:attributes="href pro.userpage_url; title pro.nickname">
-                                                    <img class="img-circle" tal:attributes="src pro.gravatar_url" src="">
+            <div class="container colored-container" tal:repeat="past history.past_decision" tal:condition="history.has_access">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5><i tal:attributes="class past.icon"></i> ${past.title}</h5>
+                        <div tal:switch="len(past.content)>0">
+                            <p tal:case="False" class="lead" i18n:translate="no_decision_for_this_queue">No decisions for this queue.</p>
+                            <div tal:case="True" tal:attributes="class past.queue">
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <td tal:condition="not:past.has_oem_text" i18n:translate="statement">Statement</td>
+                                            <td tal:condition="past.has_oem_text" i18n:translate="edit">Edit</td>
+                                            <td tal:condition="past.has_reason" i18n:translate="reason">Reason</td>
+                                            <td tal:condition="past.has_oem_text" i18n:translate="original">Original</td>
+                                            <td tal:condition="past.has_duplicate_text" i18n:translate="original">Original</td>
+                                            <td i18n:translate="votes" class="center">Votes</td>
+                                            <td tal:condition="history.is_history" i18n:translate="accepted" class="center">Accepted</td>
+                                            <td i18n:translate="voters_pro" class="center">Voters Pro</td>
+                                            <td i18n:translate="voters_con" class="center">Voters Con</td>
+                                            <td i18n:translate="timestamp">Timestamp</td>
+                                            <td i18n:translate="reporter" class="center">Reporter</td>
+                                            <td i18n:translate="actions" class="center">Action</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr tal:repeat="rep past.content" tal:attributes="id rep.row_id">
+                                            <td tal:attributes="title rep.argument_fulltext; id rep.entry_id">${structure:rep.argument_shorttext}</td>
+                                            <td tal:condition="past.has_reason">${rep.reason}</td>
+                                            <td tal:condition="past.has_oem_text" tal:attributes="title rep.argument_oem_fulltext; id rep.entry_id">${structure:rep.argument_oem_shorttext}</td>
+                                            <td tal:condition="past.has_duplicate_text" tal:attributes="title rep.statement_duplicate_fulltext; id rep.entry_id">${structure:rep.statement_duplicate_shorttext}</td>
+                                            <td class="center">
+                                                <a href="#">
+                                                    <span class="text-success">${len(rep.votes_pro)}</span>:
+                                                    <span class="text-danger">${len(rep.votes_con)}</span>
                                                 </a>
-                                            </div>
-                                            <span tal:case="False">-</span>
-                                        </td>
-                                        <td class="center" tal:switch="len(rep.votes_con) > 0">
-                                            <div tal:case="True" tal:omit-tag="" tal:repeat="con rep.votes_con">
-                                                <a tal:attributes="href con.userpage_url; title con.nickname">
-                                                    <img class="img-circle" tal:attributes="src con.gravatar_url" src="">
+                                            </td>
+                                            <td tal:condition="history.is_history and len(rep.votes_pro) > len(rep.votes_con)" class="text-success center"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i></td>
+                                            <td tal:condition="history.is_history and len(rep.votes_pro) < len(rep.votes_con)" class="text-danger center"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i></td>
+                                            <td tal:condition="history.is_history and len(rep.votes_pro) == len(rep.votes_con)" class="text-info center"><i class="fa fa-question" aria-hidden="true"></i></td>
+                                            <td class="center" tal:switch="len(rep.votes_pro) > 0">
+                                                <div tal:case="True" tal:omit-tag="" tal:repeat="pro rep.votes_pro">
+                                                    <a tal:attributes="href pro.userpage_url; title pro.nickname">
+                                                        <img class="img-circle" tal:attributes="src pro.gravatar_url" src="">
+                                                    </a>
+                                                </div>
+                                                <span tal:case="False">-</span>
+                                            </td>
+                                            <td class="center" tal:switch="len(rep.votes_con) > 0">
+                                                <div tal:case="True" tal:omit-tag="" tal:repeat="con rep.votes_con">
+                                                    <a tal:attributes="href con.userpage_url; title con.nickname">
+                                                        <img class="img-circle" tal:attributes="src con.gravatar_url" src="">
+                                                    </a>
+                                                </div>
+                                                <span tal:case="False">-</span>
+                                            </td>
+                                            <td>${rep.timestamp}</td>
+                                            <td class="center">
+                                                <a tal:attributes="href rep.reporter.userpage_url; title rep.reporter.nickname">
+                                                    <img class="img-circle" tal:attributes="src rep.reporter.gravatar_url" src="">
                                                 </a>
-                                            </div>
-                                            <span tal:case="False">-</span>
-                                        </td>
-                                        <td>${rep.timestamp}</td>
-                                        <td class="center">
-                                            <a tal:attributes="href rep.reporter.userpage_url; title rep.reporter.nickname">
-                                                <img class="img-circle" tal:attributes="src rep.reporter.gravatar_url" src="">
-                                            </a>
-                                        </td>
-                                        <td class="center">
-                                            <a tal:condition="history.is_history and rep.is_innocent" href="#" class="btn btn-danger btn-sm review-undo" tal:attributes="data-id rep.entry_id; data-queue past.queue">
-                                                <span i18n:translate="undo">Undo</span>
-                                            </a>
-                                            <a tal:condition="not:history.is_history" href="#" class="btn btn-danger btn-sm review-undo" tal:attributes="data-id rep.entry_id; data-queue past.queue">
-                                                <span i18n:translate="cancel">Cancel</span>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                            </td>
+                                            <td class="center">
+                                                <a tal:condition="history.is_history and rep.is_innocent" href="#" class="btn btn-danger btn-sm review-undo" tal:attributes="data-id rep.entry_id; data-queue past.queue">
+                                                    <span i18n:translate="undo">Undo</span>
+                                                </a>
+                                                <a tal:condition="not:history.is_history" href="#" class="btn btn-danger btn-sm review-undo" tal:attributes="data-id rep.entry_id; data-queue past.queue">
+                                                    <span i18n:translate="cancel">Cancel</span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

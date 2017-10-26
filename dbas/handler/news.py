@@ -64,12 +64,13 @@ def get_news(ui_locales):
     """
     Returns all news in an array, sorted by date
 
+    :param ui_locales:
     :return: dict()
     """
     logger('NewsHelper', 'get_news', 'main')
     db_news = DBDiscussionSession.query(News).order_by(News.date.desc()).all()
     ret_news = []
-    for index, news in enumerate(db_news):
+    for news in db_news:
         news_dict = dict()
         news_dict['title'] = news.title
         news_dict['author'] = news.author
@@ -81,4 +82,30 @@ def get_news(ui_locales):
         news_dict['uid'] = 'news_' + str(news.uid)
         ret_news.append(news_dict)
 
+    return ret_news
+
+
+def get_latest_news(ui_locales):
+    """
+    Returns the latest news for the carousel
+
+    :param ui_locales:
+    :return: dict()
+    :return:
+    """
+    logger('NewsHelper', 'get_news', 'main')
+    db_news = DBDiscussionSession.query(News).order_by(News.date.desc()).all()
+    ret_news = []
+    for index, news in enumerate(db_news[:5]):
+        news_dict = dict()
+        news_dict['indicatorclass'] = ''
+        news_dict['blockclass'] = 'carousel-item'
+        news_dict['title'] = news.title
+        news_dict['author'] = news.author
+        news_dict['date'] = sql_timestamp_pretty_print(news.date, ui_locales, False)
+        news_dict['news'] = news.news
+        news_dict['id'] = index
+        ret_news.append(news_dict)
+    ret_news[0]['indicatorclass'] = 'active'
+    ret_news[0]['blockclass'] += ' active'
     return ret_news

@@ -22,7 +22,8 @@ LANGUAGE = {"GERMAN": "de",
 TEST_STRING = {"GERMAN": "Teil des Graduierten-Kollegs",
                "ENGLISH": "part of the graduate"}  # to check if the content of the source_page(html) had changed (ugly)
 
-TEST_ID = {"GERMAN": 'id="switch-lang-indicator-de"',
-           "ENGLISH": 'id="switch-lang-indicator-en"'}  # to check if the flag in the source_page(html) had changed
+# english page has a german flag and vice versa
+TEST_ID = {"GERMAN": 'id="link-trans-en"',
+           "ENGLISH": 'id="link-trans-de"'}  # to check if the flag in the source_page(html) had changed
 
 TIME_TO_PREPARE = 5  # used in setup() of test_LanguageSwitch.py to make sure everything had loaded (important but ugly)

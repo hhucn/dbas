@@ -324,10 +324,10 @@ def get_table_rows(nickname, table_name, ids):
             columns.remove(bad)
 
     row = db_elements.filter(table.uid.in_(ids))
-    try:
-        ret_list = get_rows_of(columns, row, '')
-    except:
-        return {'error': _t.get(_.internalKeyError),
-                'table': table_mapper[table_name.lower()]['name']}
+    # try:
+    ret_list = get_rows_of(columns, row, '')
+    # except:
+    #     return {'error': _t.get(_.internalKeyError),
+    #             'table': table_mapper[table_name.lower()]['name']}
 
     return ret_list

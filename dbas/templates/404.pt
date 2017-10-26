@@ -1,26 +1,36 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
-	<tal:block metal:fill-slot="content_page">
+    <tal:block metal:fill-slot="content_page">
 
-		<div class="container center">
-			<div class="row">
-				<div class="col-md-8 center colored-container" style="float: none; height: 230px;">
-                    <img style="height: 200px;" align="right" src="${request.static_url('dbas:static/images/404_monster.png')}"/>
-					<h3 class="text-center" i18n:translate="404">404 Error</h3>
-					<p class="lead">
-						<span i18n:translate="404_text_part1">The page</span>&quot;
-						<strong>${page_notfound_viewname}</strong>&quot;
-						<span i18n:translate="404_text_part2">could not be found</span><span tal:condition="not:(param_error or revoked_content)">.</span><span tal:condition="param_error" i18n:translate="wrong_input_params">, because the input parameter seems to be wrong.</span><span tal:condition="revoked_content" i18n:translate="author_revoked_content">, because the author revoked the content.</span>
-                        <br>
-                        <br>
-                        <a href="/" i18n:translate="go-home">Go home</a>
-                        <span tal:condition="not:param_error">
+        <section>
+            <div class="text-center big-header">
+                <h3 i18n:translate="404" class="text-center">404 Error</h3>
+                <p i18n:translate="something_wrong" class="lead text-center">Something went wrong</p>
+            </div>
+        </section>
+
+        <div class="wrapper-container">
+
+            <div class="container center">
+                <div class="row">
+                    <div class="col-md-8 center colored-container" style="float: none; height: 230px;">
+                        <img style="height: 200px;" align="right"
+                             src="${request.static_url('dbas:static/images/404_monster.png')}"/>
+                        <p class="lead" style="margin-top: 3em">
+                            <span i18n:translate="404_text_part1">The page</span>&quot;
+                            <strong>${page_notfound_viewname}</strong>&quot;
+                            <span i18n:translate="404_text_part2">could not be found</span><span tal:condition="not:(param_error or revoked_content)">.</span><span tal:condition="param_error" i18n:translate="wrong_input_params">, because the input parameter seems to be wrong.</span><span tal:condition="revoked_content" i18n:translate="author_revoked_content">, because the author revoked the content.</span>
+                            <br>
+                            <br>
+                            <a href="/" i18n:translate="go-home">Go home</a>
+                            <span tal:condition="not:param_error">
                         <span i18n:translate="or">or</span>
                         <a href="javascript:window.history.back();" i18n:translate="go_back_to_the_discussion">go back to the discussion</a>
                         </span>
-					</p>
-				</div>
-			</div>
-		</div>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-	</tal:block>
+    </tal:block>
 </tal:block>

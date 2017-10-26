@@ -321,8 +321,8 @@ def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tm
         tmp.append(str(attribute)[:5] + '...')
 
     elif column == 'premisesgroup_uid':
-        text, l = get_text_for_premisesgroup_uid(attribute) if attribute is not None else ('None', '[-]')
-        tmp.append(str(attribute) + ' - ' + str(text) + ' ' + str(l))
+        text, uid_list = get_text_for_premisesgroup_uid(attribute) if attribute is not None else ('None', '[-]')
+        tmp.append(str(attribute) + ' - ' + str(text) + ' ' + str(uid_list))
 
     elif column in _statement_columns:
         text = get_text_for_statement_uid(attribute) if attribute is not None else 'None'

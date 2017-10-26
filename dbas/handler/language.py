@@ -70,7 +70,7 @@ def set_language_for_first_visit(request):
     """
     Sets language and issue uid based on the requests header if there is no _LOCALE_ attribute in the cookie
 
-    :param request: request
+    :param request: request-dict (necessary, because the language will be set in the cookies dict of the request)
     :return: None
     """
 

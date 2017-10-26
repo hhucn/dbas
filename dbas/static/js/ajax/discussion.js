@@ -325,7 +325,7 @@ function AjaxDiscussionHandler() {
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneFuzzySearchForDuplicate(data);
 		}).fail(function ajaxGetAllUsersFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			// setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 		
 	};
@@ -404,7 +404,7 @@ function AjaxDiscussionHandler() {
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type, reason);
 		}).fail(function ajaxGetAllUsersFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			// setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 			//setTimout(function ajaxGetAllUsersFailDelay() {
 			//	new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 11). '
 			//			+ _t(doNotHesitateToContact) + '. ');
@@ -501,6 +501,28 @@ function AjaxDiscussionHandler() {
 		}).fail(function ajaxMarkStatementOrArgumentFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 			new PopupHandler().hideAndClearUrlSharingPopup();
+		});
+	};
+	
+	/*
+	
+	 */
+	this.enOrDisableDiscussion = function(toggle_element){
+		var available = toggle_element.prop('checked');
+		var csrf_token = $('#hidden_csrf_token').val();
+		$.ajax({
+			url: 'ajax_set_discussion_availability',
+			method: 'POST',
+			data:{
+				'available': available ? 'True': 'False',
+				'uid': toggle_element.data('uid')},
+			dataType: 'json',
+			async: true,
+			headers: { 'X-CSRF-Token': csrf_token }
+		}).done(function setEnOrDisableDiscussionDone(data) {
+			new InteractionHandler().callbackForSetAvailabilityOfDiscussion(data);
+		}).fail(function setEnOrDisableDiscussionFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
 }

@@ -25,7 +25,6 @@ def sql_timestamp_pretty_print(ts, lang='en', humanize=True, with_exact_time=Fal
     :param with_exact_time: Boolean
     :return: String
     """
-    ts = ts.replace(hours=-2)
     if humanize:
         # if lang == 'de':
         ts = ts.to('Europe/Berlin')

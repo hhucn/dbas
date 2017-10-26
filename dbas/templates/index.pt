@@ -1,62 +1,393 @@
-<tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
-	<tal:block metal:fill-slot="content_page">
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout" tal:attributes="lang extras.ui_locales">
 
-        <!--<img id="prototype_img" src="${request.static_url('dbas:static/images/beta.svg')}" alt="beta" style="position:fixed; z-index:10; top:65px; width:100px;">-->
+  <head>
 
-	    <div class="blocked session_expired center alert-warning" id="session_expired_container" tal:condition="session_expired">
-	    	<span i18n:translate="session_expired">Your session has expired!</span>
-            <span i18n:translate="login_again" style="padding-left: 0.5em; ">You have to log in again.</span>
-	    </div>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="dialog based discussion online participation tool argumentation argument">
+    <meta name="author" content="Tobias Krauthoff">
+    <link rel="shortcut icon" href="${request.static_url('dbas:static/images/favicon-16x16.png')}">
 
-		<div class="container colored-container jumbotron" id="home-template">
-			<div class="content">
-				<img id="logo_dbas" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo.png')}" alt="dbas logo" tal:condition="extras.lang_is_en" data-counter="0">
-				<img id="logo_dbas" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo_de.png')}" alt="dbas logo" tal:condition="extras.lang_is_de" data-counter="0">
-				<img id="logo_dbas_s" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo_s.png')}" alt="dbas logo" tal:condition="extras.lang_is_en" data-counter="0">
-				<img id="logo_dbas_s" class="logo img-responsive" src="${request.static_url('dbas:static/images/logo_de_s.png')}" alt="dbas logo" tal:condition="extras.lang_is_de" data-counter="0">
-                <br>
-				<p class="lead">
-					<span i18n:translate="welcome_text1">Welcome to D-BAS! This is an early prototype of our dialog-based argumentation system. There will be bugs. Please feel free to</span>
-					<a href="${request.application_url}/contact"><span i18n:translate="welcome_text2">contact</span></a>
-					<span i18n:translate="welcome_text3">us to report bugs or provide feedback.</span>
+    <title>${title}</title>
+    <link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-4.0b.min.css')}" rel="stylesheet">
+    <link type="text/css" href="${request.static_url('dbas:static/fontawesome/css/font-awesome.min.css')}" rel="stylesheet">
+    <!--<link type="text/css" href="${request.static_url('dbas:static/css/main.css')}" rel="stylesheet">-->
+    <link type="text/css" href="${request.static_url('dbas:static/css/creative.css')}" rel="stylesheet">
+    <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery-3.1.0.min.js')}"></script>
+
+  </head>
+
+  <body id="page-top">
+    <input type="hidden" id="hidden_language" value="${language}">
+    <input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
+
+    <!-- Navigation -->
+
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand js-scroll-trigger" href="#page-top">
+            <img class="navbar-img" src="${request.static_url('dbas:static/images/logo_white.svg')}" alt="D-BAS Logo" style="height: 1.0em;margin-right: 0.2em; margin-bottom: 0.2em;">
+            <span>D-BAS</span>
+        </a>
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#about" i18n:translate="about">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#services" i18n:translate="services">Services</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#github" i18n:translate="github">Github</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#partners">Partner</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#news" i18n:translate="news">News</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="#contact" i18n:translate="contact">Contact</a>
+            </li>
+              <li class="nav-item" tal:condition="extras.lang_is_en">
+                  <a id="link-trans-de" style="cursor:pointer;">
+                      <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-16.png')}" alt="flag_ge" style="padding-top: 0 !important;">
+                  </a>
+              </li>
+              <li class="nav-item" tal:condition="extras.lang_is_de">
+                  <a id="link-trans-en" style="cursor:pointer;">
+                      <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-16.png')}" alt="flag_en" style="padding-top: 0 !important;">
+                  </a>
+              </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <header class="masthead">
+      <div class="header-content">
+        <div class="header-content-inner">
+            <div id="homeHeading">
+                <h1 style="padding-bottom: 0.5em;">
+                    <img src="${request.static_url('dbas:static/images/logo_white.svg')}" alt="D-BAS Logo" style="height: 1.1em; margin-right: 0.3em;">
+                    <span>D-BAS</span>
+                </h1>
+                <h1 i18n:translate="landing-page-heading">The solution for every Large Scale Online-Discussion</h1>
+            </div>
+          <hr>
+          <p><strong i18n:translate="welcome_to_dbas">Welcome to D-BAS! This is our Dialog-Based Argumentation System. It offers a clear discussion structure, a modern web interface, a decentralized moderation system and is easy to use for everyone!</strong></p>
+            <div class="btn-group">
+                <a class="btn btn-primary btn-xl" href="#about" style="margin-left: 0; margin-right: 0;"><span i18n:translate="find_out_more">Find Out More</span></a>
+                <a class="btn btn-default btn-xl" href="${request.application_url}/discuss" style="margin-left: 0; margin-right: 0;"><span class="text-primary" i18n:translate="start_directly">or start directly</span></a>
+            </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="bg-primary" id="about">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-10 mx-auto text-center">
+            <h2 class="section-heading text-white" i18n:translate="we_have_you_need">We've got what you need!</h2>
+            <hr class="light">
+            <p class="text-faded" i18n:translate="landing_page_intro">
+                With the rise of the Internet, we now have a basic infrastructure, which makes participation easier for
+                everyone and independent of space and time. Online participation offers many possibilities for users as
+                well as operators, has an impact on political and administrative decisions and has the potential to
+                strengthen the acceptance and the quality of them. We offer a novel approach for large scale
+                online-discussion. Feel free to try it out now!
+            </p>
+            <a class="btn btn-default btn-xl js-scroll-trigger" href="${request.application_url}/discuss" i18n:translate="get_started">Get Started</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="bg-bright">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 text-center">
+            <h2 class="section-heading" i18n:translate="at_your_service">At Your Service</h2>
+            <hr class="primary">
+          </div>
+        </div>
+      </div>
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-3 col-md-6 text-center">
+              <div class="service-box grow">
+                <i class="fa fa-4x fa-thumbs-up text-primary sr-icons"></i>
+                <h3 i18n:translate="easy_to_use">Easy to Use</h3>
+                <p i18n:translate="easy_to_use_text" class="text-muted">No complicated argumentation! Step-by-step dialogs!</p>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 text-center">
+              <div class="service-box grow">
+                <i class="fa fa-4x fa-list text-primary sr-icons"></i>
+                <h3 i18n:translate="clear_structure">Clear Structure</h3>
+                <p i18n:translate="clear_structure_text" class="text-muted">Argument-maps are to messy! Let's use a modern chat-interface!</p>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 text-center">
+              <div class="service-box grow">
+                <i class="fa fa-4x fa-bolt text-primary sr-icons"></i>
+                <h3 i18n:translate="dec_mods">Decentralized Mods</h3>
+                <p i18n:translate="dec_mods_text" class="text-muted">Give the power to the crowd! They know how to use it!</p>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 text-center">
+              <div class="service-box grow">
+                <!--<i class="fa fa-4x fa-commenting text-primary sr-icons"></i>-->
+                <!--<h3 i18n:translate="less_redund">Less Redundancy</h3>-->
+                <!--<p i18n:translate="less_redund_text" class="text-muted">Tired of duplicated post? We use modern machine learning processes!</p>-->
+                <i class="fa fa-4x fa-university text-primary sr-icons"></i>
+                <h3 i18n:translate="developed_at_uni">Proved Scientifically</h3>
+                <p i18n:translate="developed_at_uni_text" class="text-muted">D-BAS was developed at the university in cooperation with cities.</p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-3 col-md-6 text-center">
+              <div class="service-box grow">
+                <i class="fa fa-4x fa-diamond text-primary sr-icons"></i>
+                <h3 i18n:translate="tested_by_crowd">Tested by a Crowd</h3>
+                <p i18n:translate="tested_by_crowd_text" class="text-muted">D-BAS was test by many students and citizens!</p>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 text-center">
+              <div class="service-box grow">
+                <i class="fa fa-4x fa-paper-plane text-primary sr-icons"></i>
+                <h3 i18n:translate="ready_to_ship">Ready to Ship</h3>
+                <p i18n:translate="ready_to_ship_text" class="text-muted">Easy to deplay and maintain, because it is shipepd by Docker!</p>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 text-center">
+              <div class="service-box grow">
+                <i class="fa fa-4x fa-newspaper-o text-primary sr-icons"></i>
+                <h3 i18n:translate="up_to_date">Up to Date</h3>
+                <p i18n:translate="up_to_date_text" class="text-muted">We update dependencies to keep things fresh.</p>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-6 text-center">
+              <div class="service-box grow">
+                <i class="fa fa-4x fa-heart text-primary sr-icons"></i>
+                <h3 i18n:translate="made_with_love">Made with Love</h3>
+                <p i18n:translate="made_with_love_text" class="text-muted">You have to make your software with love these days!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="github" class="call-to-action bg-dark">
+      <div class="container text-center">
+        <h2 i18n:translate="free_at_github">Free Download at Github!</h2>
+          <a class="btn btn-default btn-xl sr-button" href="https://github.com/hhucn/dbas"><i class="fa fa-github" aria-hidden="true"></i> <span  i18n:translate="download_now">Download Now</span></a>
+      </div>
+    </div>
+
+    <section id="partners" class="bg-bright">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 text-center">
+            <h2 class="section-heading" i18n:translate="from_uni_to_pratice">From the University into Practice</h2>
+              <p class="lead">
+                <span i18n:translate="work_based_on">This work is part of the graduate school on</span>
+                <span tal:condition="extras.lang_is_en"><a href="http://www.fortschrittskolleg.de/en/" target="_blank"><span i18n:translate="online_participation">Online-Participation</span></a>.</span>
+                <span tal:condition="not:extras.lang_is_en"><a href="http://www.fortschrittskolleg.de/" target="_blank"><span i18n:translate="online_participation">Online-Participation</span></a>.</span>
+				<span i18n:translate="funded_by">It is funded by the</span>
+                <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaere-forschung/fortschrittskolleg-online-partizipation/" target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.
 				</p>
+            <hr class="primary">
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-3 col-md-6 text-center">
+            <div class="link-box">
+                <a href="https://www.hhu.de/" title="www.hhu.de" target="_blank"><img class="logo_hhu" alt="logo_hhu" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}"/></a>
+              <p class="text-muted" i18n:translate="hhu">Heinrich-Heine-University Duesseldorf</p>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 text-center">
+            <div class="link-box">
+              <a href="http://www.fortschrittskolleg.de/" title="www.fortschrittskolleg.de" target="_blank"><img alt="logo_kolleg_s" src="${request.static_url('dbas:static/images/logo_kolleg_s.jpg')}"/></a>
+              <p class="text-muted" i18n:translate="graduate_school_online_participation">Graduation School on Online Participation</p>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 text-center">
+            <div class="link-box">
+              <a href="https://www.fhoev.nrw.de/" title="www.fhoev.nrw.de" target="_blank"><img alt="logo_fhoev_s" src="${request.static_url('dbas:static/images/logo_fhoev_s.png')}"/></a>
+              <p class="text-muted" i18n:translate="fhoev">University of Applied Sciences for Public Administration and management of North Rhine-Westphalia</p>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 text-center">
+            <div class="link-box">
+                <a href="https://www.diid.hhu.de/" title="www.diid.hhu.de" target="_blank"><img alt="logo_diid_s" src="${request.static_url('dbas:static/images/logo_diid_s.jpg')}"/></a>
+              <p class="text-muted" i18n:translate="diid">Duesseldorf Institut of Internet and Democracy</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-				<br>
-                <div class="row">
-                    <div class="col-md-offset-1 col-md-10">
-                        <div class="well well-sm">
-                            <div class="text-center" id="start-text">
-                                <p class="lead">
-                                    <span i18n:translate="choose_fieldtest_reviewer_text">
-                                        Derzeit läuft D-BAS sowohl im Produktivbetrieb zur Diskussion von Verbesserungen im Studiengang Informatik (nur auf Deutsch) als auch in einer eine Demo-Version (nur auf Englisch). Basierend auf den Einstellungen Ihres Browsers vermuten wir, dass Sie sich für den Produktivbetrieb interessieren. Welche Version von D-BAS wollen Sie nutzen:
-                                    </span>
-                                </p>
-                                <a class="btn btn-lg btn-warning" href="" tal:attributes="href extras.de_discussion_link" data-toggle="tooltip" data-placement="bottom" style="margin-right: 1em; margin-left: 1em;">
-                                    <span i18n:translate="fieldtest">Zum Feldversuch</span>
-                                </a>
-                                <a class="btn btn-lg btn-info" href="" tal:attributes="href extras.en_discussion_link" data-toggle="tooltip" data-placement="bottom" style="margin-right: 1em; margin-left: 1em;">
-                                    <span i18n:translate="reviewer">Zum Review</span>
-                                </a>
+    <section id="news" class="bg-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading" i18n:translate="latest_news">Latest News</h2>
+                    <hr class="primary">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-2"></div>
+                <div class="col-lg-8">
+                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel" data-interval="6000">
+                        <ol class="carousel-indicators">
+                            <li tal:repeat="n news" data-target="#carouselExampleIndicators" tal:attributes="data-slide-to n.id; class n.indicatorclass"></li>
+                        </ol>
+                        <div class="row" style="height: 300px;">
+                            <div class="col-lg-2"></div>
+                            <div class="col-lg-8">
+                                <div class="carousel-inner" role="listbox">
+                                    <div tal:repeat="n news" class="carousel-item" tal:attributes="class n.blockclass">
+                                        <div class="d-block">
+                                            <h4>${n.title}</h4>
+                                            <span>${n.news}</span>
+                                            <br>
+                                            <sub class="pull-right">${n.author} (${n.date})</sub>
+                                            <br>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only" i18n:translate="previous">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only" i18n:translate="next">Next</span>
+                        </a>
                     </div>
                 </div>
-				<br>
-				<p class="lead">
-					<span i18n:translate="work_based_on">This work is part of the graduate school on</span>
-                    <a href="http://www.fortschrittskolleg.de/en/" target="_blank" tal:condition="extras.lang_is_en"><span i18n:translate="online_participation">Online-Participation</span></a>
-                    <a href="http://www.fortschrittskolleg.de/" target="_blank" tal:condition="not:extras.lang_is_en"><span i18n:translate="online_participation">Online-Participation</span></a>.
-					<span i18n:translate="funded_by">It is funded by the</span>
-                    <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaere-forschung/fortschrittskolleg-online-partizipation/" target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.
-				</p>
-				<div class="list-logos center">
-					<a href="https://www.hhu.de/" title="www.hhu.de" target="_blank"><img class="logo_hhu" alt="logo_hhu" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}"/></a>
-					<a href="http://www.fortschrittskolleg.de/" title="www.fortschrittskolleg.de" target="_blank"><img id="logo_kolleg" alt="logo_kolleg" src="${request.static_url('dbas:static/images/logo_kolleg.jpg')}"/><img id="logo_kolleg_s" alt="logo_kolleg_s" src="${request.static_url('dbas:static/images/logo_kolleg_s.jpg')}"/></a>
-					<a href="https://www.diid.hhu.de/" title="www.diid.hhu.de" target="_blank"><img id="logo_diid" alt="logo_diid" src="${request.static_url('dbas:static/images/logo_diid.jpg')}"/><img id="logo_diid_s" alt="logo_diid_s" src="${request.static_url('dbas:static/images/logo_diid_s.jpg')}"/></a>
-                    <a href="https://www.fhoev.nrw.de/" title="www.fhoev.nrw.de" target="_blank"><img id="logo_fhoev" alt="logo_fhoev" src="${request.static_url('dbas:static/images/logo_fhoev.png')}" /><img id="logo_fhoev_s" alt="logo_fhoev_s" src="${request.static_url('dbas:static/images/logo_fhoev_s.png')}"/></a>
-				</div>
-			</div>
-		</div>
+            </div>
+            <div class="row"><div class="col-md-12 text-center">
+                <a class="btn btn-default btn-xl js-scroll-trigger" href="${request.application_url}/news"><span i18n:translate="go_to_news">Go to the news</span></a>
+                </div></div>
+        </div>
+    </section>
 
-	</tal:block>
-</tal:block>
+    <section id="contact" class="bg-bright">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto text-center">
+            <h2 class="section-heading" i18n:translate="get_in_touch">Let's Get In Touch!</h2>
+            <hr class="primary">
+            <p i18n:translate="ready_to_start_with_us">Ready to start your next discussion with us? That's great! Give us a call or send us an email and we will get back to you as soon as possible!</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4 ml-auto text-center">
+            <i class="fa fa-phone fa-3x sr-contact"></i>
+            <p>+49 211 81-13461</p>
+          </div>
+          <div class="col-lg-4 mr-auto text-center">
+            <i class="fa fa-envelope-o fa-3x sr-contact"></i>
+            <p>
+              <a href="mailto:dbas@cs.uni-duesseldorf.de">dbas@cs.uni-duesseldorf.de</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="call-to-action-small bg-dark">
+
+        <div class="container links">
+            <ul>
+                <li><i class="fa fa-copyright" aria-hidden="true"></i><span>${extras.year} Krauthoff</span></li>
+                <li><a href="${request.application_url}/imprint"><i class="fa fa-copyright" aria-hidden="true"></i><span i18n:translate="imprint_copyright">Imprint and Copyrights</span></a></li>
+                <li><a href="mailto:dbas@cs.uni-duesseldorf.de"><i class="fa fa-comment" aria-hidden="true"></i><span i18n:translate="contact">Contact</span></a></li>
+                <li><a href="${request.application_url}/rss"><i class="fa fa-rss" aria-hidden="true"></i><span i18n:translate="rss">RSS</span></a></li>
+                <li><a href="${request.application_url}/faq"><i class="fa fa-question" aria-hidden="true"></i><span i18n:translate="Help">Help</span></a></li>
+                <li><a href="${request.application_url}/docs"><i class="fa fa-book" aria-hidden="true" style="margin-right: 0.5em"></i><span i18n:translate="Documentation">Docs</span></a></li>
+                <li><a href="https://github.com/hhucn/dbas"><i class="fa fa-github" aria-hidden="true"></i><span i18n:translate="Github">Github</span></a></li>
+                <li style="position: absolute; margin: 0; right: 25px;"><img id="roundhousekick" alt=".r" style="width: 25px; height: 25px; border: none; opacity: 0;" src="${request.static_url('dbas:static/images/transparent.gif')}"></li>
+                <li style="position: absolute; margin: 0; right: 0;"><img id="yomamma" alt=".y" style="width: 25px; height: 25px; border: none; opacity: 0;" src="${request.static_url('dbas:static/images/transparent.gif')}"></li>
+            </ul>
+        </div>
+    </div>
+
+  <div class="eupopup eupopup-bottomright"></div>
+  <!--<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/pace.min.js')}"></script>-->
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/popper.min.js')}"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-4.0b.min.js')}"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-slider.9.8.0.min.js')}"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-toggle.min.js')}"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-tour-0.11.0.min.js')}"></script>
+  <!--<script type="text/javascript" src="${request.static_url('dbas:static/js/main/browser-detection.js')}"></script>-->
+
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery.slimscroll-1.3.8.min.js')}"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/cookie-2.1.3.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/cookie-2.1.3.min.js')}" tal:condition="not:extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/socket.io-1.4.5.js')}"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/chart.min.js')}"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/d3.min.js')}"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.min.js')}" tal:condition="not:extras.development_mode"></script>
+
+  <!-- PRODUCTION -->
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/dbas.min.js')}" tal:condition="not:extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('webhook:static/js/websocket.min.js')}" tal:condition="not:extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/creative.js')}" tal:condition="extras.development_mode"></script>
+
+  <!-- DEVELOPMENT -->
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/ids.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/guided-tour.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/app.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/sharing.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/strings.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/settings.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/lib.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/dolan.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/countdown.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/contact.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/news.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/user.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/notification.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/settings.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/popups.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/helper.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/interactionhandler.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/main.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/discussion.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/graph.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/main.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/news.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/notification.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/reference.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/review.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/user.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/review/reputation.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/review/queue.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/review/review.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/review/callbacks.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/review/history.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/review/index.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/d3/barometer.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/d3/graph.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('webhook:static/js/websocket.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/gremlins.min.js')}" tal:condition="extras.development_mode"></script>
+  </body>
+
+</html>

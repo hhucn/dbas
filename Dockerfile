@@ -42,6 +42,7 @@ RUN python setup.py --quiet develop \
     && bash -c 'google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./webhook/static/js/*.js > webhook/static/js/websocket.min.js' \
     && bash -c 'google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./admin/static/js/main/*.js > admin/static/js/admin.min.js' \
     && sass dbas/static/css/main.sass dbas/static/css/main.css --style compressed \
+    && sass dbas/static/css/creative.sass dbas/static/css/creative.css --style compressed \
     && rm -r .sass-cache \
     && cd dbas && ./i18n.sh \
     && cd ../admin && ./i18n.sh \

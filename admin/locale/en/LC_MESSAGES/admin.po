@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-09-27 09:42+0200\n"
+"POT-Creation-Date: 2017-10-20 20:06+0200\n"
 "PO-Revision-Date: 2016-10-25 10:46+0200\n"
 "Last-Translator: Tobias Krauthoff <tobias.krauthoff@uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -16,15 +16,29 @@ msgstr ""
 "Generated-By: Lingua 4.9\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#. Default: Admin Menu
+#: templates/admin.pt:6
+msgid "decentralized_moderation_system"
+msgstr "Admin Menu"
+
 #. Default: Error
-#: templates/admin.pt:14 templates/admin.pt:53
+#: templates/admin.pt:9 templates/admin.pt:59
 msgid "error"
 msgstr "Error:"
 
 #. Default: You have no rights for this page!
-#: templates/admin.pt:16
+#: templates/admin.pt:9
 msgid "no_admin_message"
 msgstr "You have no rights for this page!"
+
+#. Default: Every edit and/or delete operation can have far-reaching
+#. implications for the complete system. Maybe it will be unusable after the
+#. operation!
+#: templates/admin.pt:11
+msgid "admin_caution_message"
+msgstr ""
+"Every edit and/or delete operation can have far-reaching implications for "
+"the complete system. Maybe it will be unusable after the operation!"
 
 #. Default: Your Nickname
 #: templates/admin.pt:28
@@ -32,35 +46,22 @@ msgid "your_nickname"
 msgstr "Your Nickname"
 
 #. Default: Your Password
-#: templates/admin.pt:35
+#: templates/admin.pt:38
 msgid "your_password"
 msgstr "Your Password"
 
 #. Default: Keep me logged in
-#: templates/admin.pt:46
+#: templates/admin.pt:52
 msgid "keep_me_logged_in"
 msgstr "Keep me logged in"
 
 #. Default: Log In
-#: templates/admin.pt:57
+#: templates/admin.pt:65
 msgid "login"
 msgstr "Log In"
 
-#. Default: Caution
-#: templates/admin.pt:151
-msgid "caution"
-msgstr "Caution"
+#~ msgid "caution"
+#~ msgstr "Caution"
 
-#. Default: Every edit and/or delete operation can have far-reaching
-#. implications for the complete system. Maybe it will be unusable after the
-#. operation!
-#: templates/admin.pt:155
-msgid "admin_caution_message"
-msgstr ""
-"Every edit and/or delete operation can have far-reaching implications for "
-"the complete system. Maybe it will be unusable after the operation!"
-
-#. Default: Admin
-#: templates/table.pt:24
-msgid "Admin"
-msgstr "Admin"
+#~ msgid "Admin"
+#~ msgstr "Admin"
