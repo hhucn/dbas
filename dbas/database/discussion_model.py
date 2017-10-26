@@ -2150,7 +2150,7 @@ class APIToken(DiscussionBase):
     created = Column(DateTime, nullable=False)
     token = Column(String, nullable=False, unique=True)
     owner = Column(Text, nullable=False)
-    disabled = Column(Boolean, nullable=False, default=False)
+    disabled = Column(Boolean, nullable=False, server_default="False")
 
     def __init__(self, created, token, owner, disabled=False):
         """
@@ -2164,7 +2164,7 @@ class APIToken(DiscussionBase):
         self.created = created
         self.token = token
         self.owner = owner
-        self.disabled = disabled
+        # self.disabled = disabled
 
     def __str__(self):
         return "API-Token for {} created {}".format(self.owner, self.created)
