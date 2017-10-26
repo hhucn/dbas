@@ -307,9 +307,9 @@
                 <li><a href="${request.application_url}/imprint"><i class="fa fa-copyright" aria-hidden="true"></i><span i18n:translate="imprint_copyright">Imprint and Copyrights</span></a></li>
                 <li><a href="mailto:dbas@cs.uni-duesseldorf.de"><i class="fa fa-comment" aria-hidden="true"></i><span i18n:translate="contact">Contact</span></a></li>
                 <li><a href="${request.application_url}/rss"><i class="fa fa-rss" aria-hidden="true"></i><span i18n:translate="rss">RSS</span></a></li>
-                <li><a href="${request.application_url}/faq" data-toggle="modal"><i class="fa fa-question" aria-hidden="true"></i><span i18n:translate="Help">Help</span></a></li>
-                <li><a href="${request.application_url}/docs" data-toggle="modal"><i class="fa fa-book" aria-hidden="true" style="margin-right: 0.5em"></i><span i18n:translate="Documentation">Docs</span></a></li>
-                <li><a href="https://github.com/hhucn/dbas" data-toggle="modal"><i class="fa fa-github" aria-hidden="true"></i><span i18n:translate="Github">Github</span></a></li>
+                <li><a href="${request.application_url}/faq"><i class="fa fa-question" aria-hidden="true"></i><span i18n:translate="Help">Help</span></a></li>
+                <li><a href="${request.application_url}/docs"><i class="fa fa-book" aria-hidden="true" style="margin-right: 0.5em"></i><span i18n:translate="Documentation">Docs</span></a></li>
+                <li><a href="https://github.com/hhucn/dbas"><i class="fa fa-github" aria-hidden="true"></i><span i18n:translate="Github">Github</span></a></li>
                 <li style="position: absolute; margin: 0; right: 25px;"><img id="roundhousekick" alt=".r" style="width: 25px; height: 25px; border: none; opacity: 0;" src="${request.static_url('dbas:static/images/transparent.gif')}"></li>
                 <li style="position: absolute; margin: 0; right: 0;"><img id="yomamma" alt=".y" style="width: 25px; height: 25px; border: none; opacity: 0;" src="${request.static_url('dbas:static/images/transparent.gif')}"></li>
             </ul>
