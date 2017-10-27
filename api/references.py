@@ -1,7 +1,7 @@
 """
 Handle references from other websites, prepare, store and load them into D-BAS.
 
-.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de
+.. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 
 import transaction
@@ -63,9 +63,6 @@ def store_reference(api_data, statement_uid=None):
     """
     Validate provided reference and store it in the database.
     Has side-effects.
-
-    .. todo::
-        Remove parameter discuss_url and calculate here the correct url
 
     :param api_data: user provided data
     :param statement_uid: the statement the reference should be assigned to
