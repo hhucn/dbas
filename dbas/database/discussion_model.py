@@ -509,6 +509,38 @@ class StatementReferences(DiscussionBase):
         self.issue_uid = issue_uid
 
 
+class StatementOrigins(DiscussionBase):
+    """
+    Add an origin to the statement. Comes from external services, like the aggregators.
+    """
+    __tablename__ = 'statement_origins'
+    uid = Column(Integer, primary_key=True)
+    entity_id = Column(Text, nullable=True)
+    aggregate_id = Column(Text, nullable=True)
+    author = Column(Text, nullable=True)
+    version = Column(Integer, nullable=True)
+    statement_uid = Column(Integer, ForeignKey('statements.uid'), nullable=False)
+    created = Column(ArrowType, default=get_now())
+
+    statements = relationship('Statement', foreign_keys=[statement_uid])
+
+    def __init__(self, entity_id, aggregate_id, author, version, statement_uid):
+        """
+        Initialize the origin.
+
+        :param entity_id: external id of the entity, e.g. a statement
+        :param aggregate_id: the original host where the entitity was first introduced into the system
+        :param author: external author of the statement
+        :param version: current version, might be different from 1 if the entity was updated
+        :param statement_uid: local statement where this origin needs to be assigned to
+        """
+        self.entity_id = entity_id
+        self.aggregate_id = aggregate_id
+        self.author = author
+        self.version = version
+        self.statement_uid = statement_uid
+
+
 class SeenStatement(DiscussionBase):
     """
     List of users, which have seen a statement
