@@ -74,7 +74,7 @@
         <div class="header-content-inner">
             <div id="homeHeading">
                 <h1 style="padding-bottom: 0.5em;">
-                    <img src="${request.static_url('dbas:static/images/logo_white.svg')}" alt="D-BAS Logo" style="height: 1.1em; margin-right: 0.3em;">
+                    <img src="${request.static_url('dbas:static/images/logo_white.svg')}" alt="D-BAS Logo" style="height: 1.1em; margin-right: 0.2em;">
                     <span>D-BAS</span>
                 </h1>
                 <h1 i18n:translate="landing-page-heading">The solution for every Large Scale Online-Discussion</h1>

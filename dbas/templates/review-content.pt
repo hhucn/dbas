@@ -58,70 +58,82 @@
                             </h6>
                         </div>
                         <div class="col-md-5" tal:condition="subpage.button_set.is_delete">
-                            <a id="del_skip" href="#" class="review-btn-delete btn btn-info btn-sm pull-right"
-                               data-queue="delete" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip
-                                it</a>
-                            <a id="del_ack" href="#" class="review-btn-delete btn btn-danger btn-sm pull-right"
-                               data-queue="delete" i18n:translate="delete_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Delete
-                                it</a>
-                            <a id="del_nack" href="#" class="review-btn-delete btn btn-success btn-sm pull-right"
-                               data-queue="delete" i18n:translate="its_okay" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">It's
-                                Okay</a>
+                            <div class="btn-group pull-right">
+                                <a id="del_ack" href="#" class="review-btn-delete btn btn-danger btn-sm"
+                                   data-queue="delete" i18n:translate="delete_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Delete
+                                    it</a>
+                                <a id="del_nack" href="#" class="review-btn-delete btn btn-success btn-sm"
+                                   data-queue="delete" i18n:translate="its_okay" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">It's
+                                    Okay</a>
+                                <a id="del_skip" href="#" class="review-btn-delete btn btn-info btn-sm"
+                                   data-queue="delete" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip
+                                    it</a>
+                            </div>
                         </div>
                         <div class="col-md-5" tal:condition="subpage.button_set.is_optimize">
-                            <a id="opti_skip" href="#" class="review-btn-optimize btn btn-info btn-sm pull-right"
-                               data-queue="optimization" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip
-                                it</a>
-                            <a id="opti_nack" href="#" class="review-btn-optimize btn btn-danger btn-sm pull-right"
-                               data-queue="optimization" i18n:translate="its_okay_so" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">It's
-                                okay so</a>
-                            <a id="opti_ack" href="#" class="review-btn-optimize btn btn-success btn-sm pull-right"
-                               data-queue="optimization" i18n:translate="correct_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Let
-                                me correct it</a>
+                            <div class="btn-group pull-right">
+                                <a id="opti_ack" href="#" class="review-btn-optimize btn btn-success btn-sm"
+                                   data-queue="optimization" i18n:translate="correct_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Let
+                                    me correct it</a>
+                                <a id="opti_nack" href="#" class="review-btn-optimize btn btn-danger btn-sm"
+                                   data-queue="optimization" i18n:translate="its_okay_so" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">It's
+                                    okay so</a>
+                                <a id="opti_skip" href="#" class="review-btn-optimize btn btn-info btn-sm"
+                                   data-queue="optimization" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip
+                                    it</a>
+                            </div>
                         </div>
                         <div class="col-md-5" tal:condition="subpage.button_set.is_edit">
-                            <a id="edit_skip" href="#" class="review-btn-edit btn btn-info btn-sm pull-right"
-                               data-queue="edit" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip
-                                it</a>
-                            <a id="edit_nack" href="#" class="review-btn-edit btn btn-danger btn-sm pull-right"
-                               data-queue="edit" i18n:translate="reject_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Reject
-                                it</a>
-                            <a id="edit_ack" href="#" class="review-btn-edit btn btn-success btn-sm pull-right"
-                               data-queue="edit" i18n:translate="its_okay" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">It's
-                                Okay</a>
+                            <div class="btn-group pull-right">
+                                <a id="edit_ack" href="#" class="review-btn-edit btn btn-success btn-sm"
+                                   data-queue="edit" i18n:translate="its_okay" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">It's
+                                    Okay</a>
+                                <a id="edit_nack" href="#" class="review-btn-edit btn btn-danger btn-sm"
+                                   data-queue="edit" i18n:translate="reject_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Reject
+                                    it</a>
+                                <a id="edit_skip" href="#" class="review-btn-edit btn btn-info btn-sm"
+                                   data-queue="edit" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip
+                                    it</a>
+                            </div>
                         </div>
                         <div class="col-md-5" tal:condition="subpage.button_set.is_duplicate">
-                            <a id="duplicate_skip" href="#" class="review-btn-duplicate btn btn-info btn-sm pull-right"
-                               data-queue="duplicates" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip
-                                it</a>
-                            <a id="duplicate_nack" href="#"
-                               class="review-btn-duplicate btn btn-danger btn-sm pull-right"
-                               data-queue="duplicates" i18n:translate="unique" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Unique</a>
-                            <a id="duplicate_ack" href="#"
-                               class="review-btn-duplicate btn btn-success btn-sm pull-right"
-                               data-queue="duplicates" i18n:translate="duplicate" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Duplicate</a>
+                            <div class="btn-group pull-right">
+                                <a id="duplicate_ack" href="#"
+                                   class="review-btn-duplicate btn btn-success btn-sm"
+                                   data-queue="duplicates" i18n:translate="duplicate" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Duplicate</a>
+                                <a id="duplicate_nack" href="#"
+                                   class="review-btn-duplicate btn btn-danger btn-sm"
+                                   data-queue="duplicates" i18n:translate="unique" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Unique</a>
+                                <a id="duplicate_skip" href="#" class="review-btn-duplicate btn btn-info btn-sm"
+                                   data-queue="duplicates" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip
+                                    it</a>
+                            </div>
                         </div>
                         <div class="col-md-5" tal:condition="subpage.button_set.is_split">
-                            <a id="duplicate_skip" href="#" class="review-btn-split btn btn-info btn-sm pull-right"
-                               data-queue="splits" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip
-                                it</a>
-                            <a id="duplicate_nack" href="#" class="review-btn-split btn btn-danger btn-sm pull-right"
-                               data-queue="splits" i18n:translate="reject_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Reject
-                                it</a>
-                            <a id="duplicate_ack" href="#" class="review-btn-split btn btn-success btn-sm pull-right"
-                               data-queue="splits" i18n:translate="change_okay" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Change
-                                is okay</a>
+                            <div class="btn-group pull-right">
+                                <a id="split_ack" href="#" class="review-btn-split btn btn-success btn-sm"
+                                   data-queue="splits" i18n:translate="change_okay" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Change
+                                    is okay</a>
+                                <a id="split_nack" href="#" class="review-btn-split btn btn-danger btn-sm"
+                                   data-queue="splits" i18n:translate="reject_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Reject
+                                    it</a>
+                                <a id="split_skip" href="#" class="review-btn-split btn btn-info btn-sm"
+                                   data-queue="splits" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip
+                                    it</a>
+                            </div>
                         </div>
                         <div class="col-md-5" tal:condition="subpage.button_set.is_merge">
-                            <a id="duplicate_skip" href="#" class="review-btn-merge btn btn-info btn-sm pull-right"
-                               data-queue="merges" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip
-                                it</a>
-                            <a id="duplicate_nack" href="#" class="review-btn-merge btn btn-danger btn-sm pull-right"
-                               data-queue="merges" i18n:translate="reject_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Reject
-                                it</a>
-                            <a id="duplicate_ack" href="#" class="review-btn-merge btn btn-success btn-sm pull-right"
-                               data-queue="merges" i18n:translate="change_okay" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Change
-                                is okay</a>
+                            <div class="btn-group pull-right">
+                                <a id="merge_ack" href="#" class="review-btn-merge btn btn-success btn-sm"
+                                   data-queue="merges" i18n:translate="change_okay" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Change
+                                    is okay</a>
+                                <a id="merge_nack" href="#" class="review-btn-merge btn btn-danger btn-sm"
+                                   data-queue="merges" i18n:translate="reject_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Reject
+                                    it</a>
+                                <a id="merge_skip" href="#" class="review-btn-merge btn btn-info btn-sm"
+                                   data-queue="merges" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip
+                                    it</a>
+                            </div>
                         </div>
                     </div>
 
