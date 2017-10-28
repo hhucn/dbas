@@ -102,24 +102,24 @@
                                data-queue="duplicates" i18n:translate="duplicate" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Duplicate</a>
                         </div>
                         <div class="col-md-5" tal:condition="subpage.button_set.is_split">
-                            <a id="duplicate_skip" href="#" class="review-btn-split btn btn-info btn-sm pull-right"
+                            <a id="split_skip" href="#" class="review-btn-split btn btn-info btn-sm pull-right"
                                data-queue="splits" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip
                                 it</a>
-                            <a id="duplicate_nack" href="#" class="review-btn-split btn btn-danger btn-sm pull-right"
+                            <a id="split_nack" href="#" class="review-btn-split btn btn-danger btn-sm pull-right"
                                data-queue="splits" i18n:translate="reject_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Reject
                                 it</a>
-                            <a id="duplicate_ack" href="#" class="review-btn-split btn btn-success btn-sm pull-right"
+                            <a id="split_ack" href="#" class="review-btn-split btn btn-success btn-sm pull-right"
                                data-queue="splits" i18n:translate="change_okay" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Change
                                 is okay</a>
                         </div>
                         <div class="col-md-5" tal:condition="subpage.button_set.is_merge">
-                            <a id="duplicate_skip" href="#" class="review-btn-merge btn btn-info btn-sm pull-right"
+                            <a id="merge_skip" href="#" class="review-btn-merge btn btn-info btn-sm pull-right"
                                data-queue="merges" i18n:translate="skip_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Skip
                                 it</a>
-                            <a id="duplicate_nack" href="#" class="review-btn-merge btn btn-danger btn-sm pull-right"
+                            <a id="merge_nack" href="#" class="review-btn-merge btn btn-danger btn-sm pull-right"
                                data-queue="merges" i18n:translate="reject_it" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Reject
                                 it</a>
-                            <a id="duplicate_ack" href="#" class="review-btn-merge btn btn-success btn-sm pull-right"
+                            <a id="merge_ack" href="#" class="review-btn-merge btn btn-success btn-sm pull-right"
                                data-queue="merges" i18n:translate="change_okay" tal:attributes="data-id subpage.elements.reviewed_element.stats.id">Change
                                 is okay</a>
                         </div>
