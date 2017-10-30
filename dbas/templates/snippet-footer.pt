@@ -1,9 +1,8 @@
 <footer id="footer" i18n:domain="dbas" metal:define-macro="layout">
-
 <div class="container links">
     <ul>
         <li>
-            <i class="fa fa-copyright" aria-hidden="true"></i><span tal:replace="extras.year"></span> Krauthoff
+            <i class="fa fa-copyright" aria-hidden="true"></i><span>${extras.year} Krauthoff</span>
         </li>
         <li>
             <a href="${request.application_url}/imprint"><i class="fa fa-copyright" aria-hidden="true"></i><span i18n:translate="imprint_copyright">Imprint and Copyrights</span></a>
