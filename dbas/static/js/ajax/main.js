@@ -216,8 +216,8 @@ function AjaxMainHandler(){
 		}).done(function ajaxRoundhouseKickDone(data) {
 			if (data.type === 'success'){
 				displayConfirmationDialogWithoutCancelAndFunction('Chuck Norris Fact #' + data.value.id,
-					'<h5>' + data.value.joke + '</h5>\n\n' +
-					'<span style="float:right;">powered by <a href="http://www.icndb.com/" target="_blank">http://www.icndb.com/</a></span>');
+					'<p>' + data.value.joke + '</p>' +
+					'<p class="pull-right">powered by <a href="http://www.icndb.com/" target="_blank">http://www.icndb.com/</a></p>');
 
 			}
 		});

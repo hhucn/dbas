@@ -256,20 +256,22 @@ function setEasterEggs(){
     
 	$('#roundhousekick').click(function(){ new AjaxMainHandler().roundhouseKick(); });
 	//$('#yomamma').click(function(){ new AjaxMainHandler().ajaxMama(); });
-	$('#logo_dbas, #logo_dbas_s').click(function(){
+	$('#logo_dbas, #logo_dbas_s, #homeHeading').click(function(){
 		if (!$(this)){
 			return;
 		}
-		var counter = parseInt($(this).data('counter'));
+		var counter = parseInt($('#homeHeading').data('counter'));
 		counter += 1;
-		if (counter === 7){
-			$(this).attr('src', mainpage + 'static/images/dabas.png');
-			$('body').find('span').each(function(){
-				$(this).text(dolan_translate(dolan_dictionary, $(this).text()));
+		if (counter === 5){
+			// $(this).attr('src', mainpage + 'static/images/dabas.png');
+			$('body').find('span,p,h1,h2,h3,h4,h5,a').each(function(){
+				if ($(this).text().trim().length) {
+					$(this).text(dolan_translate(dolan_dictionary, $(this).text()));
+				}
 			});
-			$('.popup_author_img').attr('src', mainpage + 'static/images/dolan.png').css('width', '150%');
+			// $('.popup_author_img').attr('src', mainpage + 'static/images/dolan.png').css('width', '150%');
 		}
-		$(this).data('counter', counter);
+		$('#homeHeading').data('counter', counter);
 	});
 }
 

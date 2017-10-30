@@ -5,7 +5,7 @@
             <div class="text-center big-header">
                 <h3 i18n:translate="decentralized_moderation_system" class="text-center">Admin Menu</h3>
                 <p class="lead text-center" tal:condition="extras.logged_in">
-                    <span  tal:condition="not:extras.is_admin">
+                    <span tal:condition="not:extras.is_admin">
                         <span i18n:translate="error">Error</span>: <span i18n:translate="no_admin_message">You have no rights for this page!</span>
                     </span>
                     <span tal:condition="extras.is_admin" i18n:translate="admin_caution_message">
