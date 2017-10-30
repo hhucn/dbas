@@ -26,7 +26,7 @@ def verify_ldap_user_data(nickname, password, _tn):
         email = os.environ.get('DBAS_HHU_LDAP_ACCOUNT_EMAIL', None)
         logger('ldap', 'verify_ldap_user_data', 'parsed data')
 
-        if any([server, base, scope, filter, firstname, lastname, title, email]) is None:
+        if any(el is None for el in [server, base, scope, filter, firstname, lastname, title, email]):
             return {'error': _tn.get(_.internalKeyError) + ' ' + _tn.get(_.pleaseTryAgainLaterOrContactUs)}
 
         server = server.replace('\'', '')
