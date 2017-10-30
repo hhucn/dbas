@@ -70,7 +70,7 @@ def __register_user_with_ldap_data(request, nickname, password, for_api, keep_lo
     :return: dict() or HTTPFound if the user is logged in an it is not the api
     """
     logger('Auth.Login', '__register_user_with_ldap_data', 'user: {}, api: {}'.format(nickname, for_api))
-    data = verify_ldap_user_data(request.registry.settings, nickname, password, _tn)
+    data = verify_ldap_user_data(nickname, password, _tn)
     if data['error']:
         return {'error': data['error']}
 
@@ -105,7 +105,7 @@ def __check_in_local_known_user(request, db_user, password, for_api, keep_login,
         logger('Auth.Login', '__check_in_local_known_user', 'invalid password for the local user')
         return {'error': _tn.get(_.userPasswordNotMatch)}
 
-    data = verify_ldap_user_data(request.registry.settings, db_user.nickname, password, _tn)
+    data = verify_ldap_user_data(db_user.nickname, password, _tn)
     if data['error']:
         return {'error': data['error']}
 
