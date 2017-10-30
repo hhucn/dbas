@@ -25,9 +25,7 @@ function AjaxMainHandler(){
 				setGlobalErrorHandler(_t(ohsnap), data.error);
 			} else {
 				setPiwikOptOutLink(new_lang);
-				setTimeout(function() {
-					location.reload(true);
-				}, 250);
+				location.reload(true);
 			}
 		}).fail(function ajaxSwitchDisplayLanguageFail(xhr) {
 			if (xhr.status === 400) {

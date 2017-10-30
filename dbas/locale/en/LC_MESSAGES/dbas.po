@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-10-30 08:02+0100\n"
+"POT-Creation-Date: 2017-10-30 12:18+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-Düsseldorf.de>\n"
 "Language-Team: English\n"
@@ -894,13 +894,15 @@ msgstr "Logout"
 
 #. Default: Imprint, Copyrights and Used Software
 #: templates/imprint.pt:6
-msgid "imprint_copyrights_software"
-msgstr "Imprint, Copyrights and Used Software"
+msgid "imprint_copyrights_software_privacy"
+msgstr "Imprint, Copyrights, Privacy and Used Software"
 
 #. Default: Our imprint, a list of used software and the latest changelogs
 #: templates/imprint.pt:8
 msgid "imprint_list_of_software_and_changelog"
-msgstr "Our imprint, a list of used software and the latest changelogs"
+msgstr ""
+"Our imprint, a list of used software, the latest changelogs and our privacy "
+"policy"
 
 #. Default: Impressum
 #: templates/imprint.pt:21
@@ -931,6 +933,16 @@ msgstr "More on the"
 #: templates/imprint.pt:39
 msgid "imprint_hhu"
 msgstr "imprint of the Heinrich-Heine-University Düsseldorf"
+
+#. Default: or checkout the
+#: templates/imprint.pt:40
+msgid "or_checkout_the"
+msgstr "or checkout the"
+
+#. Default: license of D-BAS (MIT)
+#: templates/imprint.pt:41
+msgid "licence_dbas"
+msgstr "license of D-BAS (MIT)"
 
 #. Default: Piwik
 #: templates/imprint.pt:44
@@ -971,7 +983,7 @@ msgid "copyright_and_used_software"
 msgstr "Used Software"
 
 #. Default: Changes
-#: templates/imprint.pt:117
+#: templates/imprint.pt:114
 msgid "changes"
 msgstr "Changelog"
 
@@ -1194,10 +1206,10 @@ msgstr "Undo"
 msgid "cancel"
 msgstr "Cancel"
 
-#. Default: Imprint and Copyrights
+#. Default: Imprint, Copyrights and Privacy
 #: templates/snippet-footer.pt:8
-msgid "imprint_copyright"
-msgstr "Imprint and Copyright"
+msgid "imprint_copyright_privacy"
+msgstr "Imprint, Copyrights and Privacy"
 
 #. Default: RSS
 #: templates/snippet-footer.pt:15
@@ -2442,9 +2454,6 @@ msgstr "Attacks"
 
 #~ msgid "phone_no"
 #~ msgstr "Your Phone Number"
-
-#~ msgid "license"
-#~ msgstr "License"
 
 #~ msgid "lets_start_now"
 #~ msgstr "Click here to start now!"

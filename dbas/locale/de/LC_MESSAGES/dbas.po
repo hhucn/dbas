@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-10-30 08:02+0100\n"
+"POT-Creation-Date: 2017-10-30 12:18+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -894,13 +894,15 @@ msgstr "Abmelden"
 
 #. Default: Imprint, Copyrights and Used Software
 #: templates/imprint.pt:6
-msgid "imprint_copyrights_software"
-msgstr "Impressum, Urheberrecht und Software"
+msgid "imprint_copyrights_software_privacy"
+msgstr "Impressum, Urheberrecht, Software und Datenschutz"
 
 #. Default: Our imprint, a list of used software and the latest changelogs
 #: templates/imprint.pt:8
 msgid "imprint_list_of_software_and_changelog"
-msgstr "Unser Impressum, die verwendete Software und die letzten Änderungen"
+msgstr ""
+"Unser Impressum, die verwendete Software, die letzten Änderungen und unsere "
+"Datenschutzrichtlinien"
 
 #. Default: Impressum
 #: templates/imprint.pt:21
@@ -931,6 +933,16 @@ msgstr "Weiteres im"
 #: templates/imprint.pt:39
 msgid "imprint_hhu"
 msgstr "Impressum der Heinrich-Heine-Universität Düsseldorf"
+
+#. Default: or checkout the
+#: templates/imprint.pt:40
+msgid "or_checkout_the"
+msgstr "oder weiteres in der"
+
+#. Default: license of D-BAS (MIT)
+#: templates/imprint.pt:41
+msgid "licence_dbas"
+msgstr "Lizenz von (D-BAS)"
 
 #. Default: Piwik
 #: templates/imprint.pt:44
@@ -969,7 +981,7 @@ msgid "copyright_and_used_software"
 msgstr "Verwendete Software"
 
 #. Default: Changes
-#: templates/imprint.pt:117
+#: templates/imprint.pt:114
 msgid "changes"
 msgstr "Versionsänderungen"
 
@@ -1194,10 +1206,10 @@ msgstr "Rückgängig machen"
 msgid "cancel"
 msgstr "Abbrechen"
 
-#. Default: Imprint and Copyrights
+#. Default: Imprint, Copyrights and Privacy
 #: templates/snippet-footer.pt:8
-msgid "imprint_copyright"
-msgstr "Impressum und Urheberrecht"
+msgid "imprint_copyright_privacy"
+msgstr "Impressum, Urheberrecht und Datenschutz"
 
 #. Default: RSS
 #: templates/snippet-footer.pt:15
@@ -2465,9 +2477,6 @@ msgstr "Angriffe"
 
 #~ msgid "phone_no"
 #~ msgstr "Ihre Telefon-Nr."
-
-#~ msgid "license"
-#~ msgstr "Lizenz"
 
 #~ msgid "lets_start_now"
 #~ msgstr "Hier klicken um zu starten"
