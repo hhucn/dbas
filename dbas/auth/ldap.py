@@ -27,6 +27,7 @@ def verify_ldap_user_data(nickname, password, _tn):
         logger('ldap', 'verify_ldap_user_data', 'parsed data')
 
         if any(el is None for el in [server, base, scope, filter, firstname, lastname, title, email]):
+            logger('ldap', 'verify_ldap_user_data', 'Environment Keys are None')
             return {'error': _tn.get(_.internalKeyError) + ' ' + _tn.get(_.pleaseTryAgainLaterOrContactUs)}
 
         server = server.replace('\'', '')
