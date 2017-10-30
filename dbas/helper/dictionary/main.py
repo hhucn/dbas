@@ -6,7 +6,7 @@ Provides helping function for dictionaries.
 
 import datetime
 import random
-
+import os
 import arrow
 
 from dbas.auth.recaptcha import client_key as google_recaptcha_client_key
@@ -173,7 +173,7 @@ class DictionaryHelper(object):
         return_dict['de_discussion_link'] = link_de
         return_dict['en_discussion_link'] = link_en
 
-        self.add_language_options_for_extra_dict(return_dict)
+        self.__add_language_options_for_extra_dict(return_dict)
         is_author, points = get_reputation_of(nickname)
         is_author_bool = is_author or points > limit_for_open_issues
 
@@ -185,9 +185,10 @@ class DictionaryHelper(object):
         return_dict['close_premise_container'] = True
         return_dict['close_statement_container'] = True
         return_dict['date'] = arrow.utcnow().format('DD-MM-YYYY')
-        self.add_title_text(return_dict, is_logged_in)
-        self.add_button_text(return_dict)
-        self.add_tag_text(return_dict)
+        self.__add_title_text(return_dict, is_logged_in)
+        self.__add_button_text(return_dict)
+        self.__add_tag_text(return_dict)
+        self.__add_login_button_properties(return_dict)
 
         message_dict = dict()
         message_dict['new_count'] = count_of_new_notifications(nickname)
@@ -446,7 +447,7 @@ class DictionaryHelper(object):
         extras_dict['is_editable'] = False
         extras_dict['is_reportable'] = False
 
-    def add_language_options_for_extra_dict(self, extras_dict):
+    def __add_language_options_for_extra_dict(self, extras_dict):
         """
         Adds language options to the extra-dictionary
 
@@ -464,7 +465,7 @@ class DictionaryHelper(object):
             'link_en_class': 'active' if lang_is_en else ''
         })
 
-    def add_button_text(self, return_dict):
+    def __add_button_text(self, return_dict):
         """
         Adds string-map in the return dict with the client_key 'buttons'
 
@@ -502,7 +503,7 @@ class DictionaryHelper(object):
             'hide_statements': _tn_dis.get(_.statementsHideAll)
         }
 
-    def add_title_text(self, return_dict, logged_in):
+    def __add_title_text(self, return_dict, logged_in):
         """
         Adds string-map in the return dict with the client_key 'title'
 
@@ -550,7 +551,7 @@ class DictionaryHelper(object):
         else:
             return_dict['add_issue_info'] = _tn_sys.get(_.notLoggedIn),
 
-    def add_tag_text(self, return_dict):
+    def __add_tag_text(self, return_dict):
         """
         Adds string-map in the return dict with the client_key 'tag'
 
@@ -612,4 +613,25 @@ class DictionaryHelper(object):
             'statement_merge_description': _tn_dis.get(_.statement_merge_description),
             'statement_split_description': _tn_dis.get(_.statement_split_description),
             'statement_optimization_description': _tn_dis.get(_.statement_optimization_description),
+        }
+
+    def __add_login_button_properties(self, return_dict):
+        """
+        Check if oauth client ids are available and updates the dict
+
+        :param return_dict: current dictionary
+        :return: updated dictionary
+        """
+        google_id = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTID', None)
+        facebook_id = os.environ.get('DBAS_OAUTH_FACEBOOK_CLIENTID', None)
+        twitter_id = os.environ.get('DBAS_OAUTH_TWITTER_CLIENTID', None)
+        github_id = os.environ.get('DBAS_OAUTH_GITHUB_CLIENTID', None)
+        hhu_ldap = os.environ.get('DBAS_HHU_LDAP_SERVER', None)
+
+        return_dict['login_btns'] = {
+            'oauth_google': google_id is not None,
+            'oauth_facebook': facebook_id is not None,
+            'oauth_twitter': twitter_id is not None,
+            'oauth_github': github_id is not None,
+            'hhu_ldap': hhu_ldap is not None
         }

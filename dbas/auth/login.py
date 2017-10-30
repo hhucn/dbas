@@ -14,6 +14,7 @@ from validate_email import validate_email
 
 from dbas.auth.ldap import verify_ldap_user_data
 from dbas.auth.recaptcha import validate_recaptcha
+from dbas.auth.oauth import start_google_flow, continue_google_flow
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Settings
 from dbas.handler import user
@@ -36,7 +37,7 @@ def login_user(request, nickname, password, for_api, keep_login=False, lang='en'
     :param for_api: Boolean
     :param keep_login: Boolean
     :param lang: current language
-    :return: dict() or HTTPFound if the user is logged in an it is not the api
+    :return: dict() or HTTPFound if the user is logged in and it is not the api
     """
 
     # caution: password is not escaped
@@ -55,6 +56,23 @@ def login_user(request, nickname, password, for_api, keep_login=False, lang='en'
 
     # this is 2.
     return __check_in_local_known_user(request, db_user, password, for_api, keep_login, url, _tn)
+
+
+def login_user_oauth(mainpage, service, redirect_uri):
+    """
+
+    :param mainpage:
+    :param service: name of the oauth service
+    :param redirect_uri:
+    :return:
+    """
+    if service == 'google':
+        if 'state' in redirect_uri and 'code' in redirect_uri:
+            return continue_google_flow(mainpage, redirect_uri)
+        else:
+            return start_google_flow(redirect_uri)
+    else:
+        return None
 
 
 def __register_user_with_ldap_data(request, nickname, password, for_api, keep_login, url, _tn):

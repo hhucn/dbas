@@ -36,6 +36,7 @@ python-slugify==1.2.4
 paste==2.0.3
 pyldap==2.4.37
 requests==2.18.4
+requests_oauthlib==0.8.0
 selenium==3.5.0
 slugify==0.0.1
 sphinx==1.6.4

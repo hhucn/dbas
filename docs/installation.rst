@@ -94,6 +94,15 @@ These **have** to be set, otherwise an error will be raised explaning which vari
 
 These variables are accessible like any other via the normal substitutions (DB.HOST, ...)
 
+OAuth
+-----
+
+D-BAS offers the possibility to use Oauth of Google, Facebook and Twitter. Please add the variables
+``DBAS_OAUTH_service_CLIENTID`` and ``DBAS_OAUTH_service_CLIENTKEY`` for each service you want to use,
+wherey you have to replace **service** with e.g. GOOGLE (important: uppercase).
+
+The login buttons will be displayed automatically.
+
 
 Pyramid & UWSGI
 ---------------

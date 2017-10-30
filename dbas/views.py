@@ -26,7 +26,7 @@ import dbas.review.helper.queues as review_queue_helper
 import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
-from dbas.auth.login import login_user, register_user_with_ajax_data
+from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
@@ -144,7 +144,6 @@ def main_page(request):
     logger('main_page', 'def', 'request.params: {}'.format(request.params))
     _dh = DictionaryHelper(ui_locales, ui_locales)
     extras_dict = _dh.prepare_extras_dict_for_normal_page(request)
-    _dh.add_language_options_for_extra_dict(extras_dict)
 
     return {
         'layout': base_layout(),
@@ -1031,6 +1030,31 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
         return {'error': _tn.get(_.internalKeyError)}
 
 
+# ajax - user login via oauth
+@view_config(route_name='ajax_user_login_oauth', renderer='json')
+def user_login_oauth(request):
+    """
+    Will login the user via oauth
+
+    :return: dict() with error
+    """
+    logger('views', 'user_login_oauth', 'request.params: {}'.format(request.params))
+
+    lang = get_language_from_cookie(request)
+    _tn = Translator(lang)
+
+    try:
+        service = request.params['service']
+        redirect_url = request.params['redirect_uri']
+        val = login_user_oauth(request.application_url, service, redirect_url)
+        if val is None:
+            return {'error': _tn.get(_.internalKeyError)}
+        return val
+    except KeyError as e:
+        logger('user_login_oauth', 'error', repr(e), error=True)
+        return {'error': _tn.get(_.internalKeyError)}
+
+
 # ajax - user logout
 @view_config(route_name='ajax_user_logout', renderer='json')
 def user_logout(request, redirect_to_main=False):
@@ -1046,7 +1070,7 @@ def user_logout(request, redirect_to_main=False):
     headers = forget(request)
     if redirect_to_main:
         return HTTPFound(
-            location=request.application_url + '?session_expired=true',
+            location=request.application_url + 'discuss?session_expired=true',
             headers=headers,
         )
     else:

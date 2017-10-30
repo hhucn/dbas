@@ -86,6 +86,33 @@ function AjaxMainHandler(){
 			$('#' + loginPwId).val('');
 		});
 	};
+	
+	/**
+	 *
+	 * @param service
+	 */
+	this.oauthLogin = function(service, url){
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$('#' + popupLoginFailed).hide();
+		$('#' + popupLoginFailed + '-message').text('');
+
+		$.ajax({
+			url: mainpage + 'ajax_user_login_oauth',
+			type: 'POST',
+			data: {
+				service: service,
+				redirect_uri: url},
+			dataType: 'json',
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrf_token
+			}
+		}).done(function ajaxOauthLoginDone(data) {
+			window.open(data.authorization_url, '_self');
+		}).fail(function ajaxOauthLoginFail(xhr) {
+			console.log('fail: ' + xhr.status);
+		});
+	};
 
 	/**
 	 *
@@ -105,12 +132,12 @@ function AjaxMainHandler(){
 		}).fail(function ajaxLogoutFail(xhr) {
 			if (xhr.status === 200) {
 				if (window.location.href.indexOf('settings') !== 0){
-					window.location.href = mainpage;
+					window.location.href = mainpage + 'discuss';
 				} else {
 					location.reload();
 				}
 			} else if (xhr.status === 403) {
-				window.location.href = mainpage;
+				window.location.href = mainpage + 'discuss';
 			} else {
 				location.reload();
 			}
