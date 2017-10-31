@@ -19,7 +19,14 @@ def get_testapp():
 
 def graphql_query(query) -> dict:
     url = '{}query?q={}'.format(API, query)
-    response = get_testapp().get(url, status=200)
+    response = get_testapp().get(url, status=200, extra_environ=dict(DBAS_HHU_LDAP_SERVER='ldaps://ldaps.ad.hhu.de',
+                                                                     DBAS_HHU_LDAP_BASE='ou=IDMUsers,DC=AD,DC=hhu,DC=de',
+                                                                     DBAS_HHU_LDAP_ACCOUNT_SCOPE='@ad.hhu.de',
+                                                                     DBAS_HHU_LDAP_ACCOUNT_FILTER='sAMAccountName',
+                                                                     DBAS_HHU_LDAP_ACCOUNT_FIRSTNAME='givenName',
+                                                                     DBAS_HHU_LDAP_ACCOUNT_LAST='sn',
+                                                                     DBAS_HHU_LDAP_ACCOUNT_TITLE='personalTitle',
+                                                                     DBAS_HHU_LDAP_ACCOUNT_EMAIL='mail'))
     ret = json_to_dict(response.body)
     assert_is_not_none(ret)
     return ret
