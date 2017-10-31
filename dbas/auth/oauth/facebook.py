@@ -57,7 +57,7 @@ def continue_flow(redirect_uri, redirect_response):
 
     resp = facebook.get('https://graph.facebook.com/me?')
     logger('Facebook OAuth', 'continue_flow', str(resp.text))
-    parsed_resp = json.loads(resp.text)
+    # parsed_resp = json.loads(resp.text)
 
     user_data = {}
 
