@@ -1,5 +1,7 @@
 """
-OAuth handler of D-BAS
+Google OAuth handler of D-
+
+App is registered by dbas.hhu@gmail.com's Account
 
 Used lib: http://requests-oauthlib.readthedocs.io/en/latest/examples/google.html
 Manage Google Client IDs: https://console.developers.google.com/apis/credentials
@@ -12,7 +14,7 @@ from requests_oauthlib.oauth2_session import OAuth2Session
 from dbas.logger import logger
 
 
-def start_google_flow(redirect_uri):
+def start_flow(redirect_uri):
     """
 
     :param redirect_uri:
@@ -21,7 +23,7 @@ def start_google_flow(redirect_uri):
     client_id = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTID', None)
     client_secret = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTKEY', None)
 
-    logger('oauth2', 'start_google_flow',
+    logger('Google OAuth', 'start_flow',
            'Read OAuth id/secret: none? {}'.format(client_id is None, client_secret is None))
 
     # OAuth endpoints given in the Google API documentation
@@ -40,12 +42,12 @@ def start_google_flow(redirect_uri):
         access_type='offline',
         prompt='select_account')
 
-    logger('oauth2', 'start_google_flow', 'Please go to {} and authorize access'.format(authorization_url))
+    logger('Google OAuth', 'start_flow', 'Please go to {} and authorize access'.format(authorization_url))
     # TODO: HOW TO TEST WITH LOCALHOST
     return {'authorization_url': authorization_url}
 
 
-def continue_google_flow(mainpage, authorization_response):
+def continue_flow(mainpage, authorization_response):
     """
 
     :param mainpage:
@@ -55,8 +57,8 @@ def continue_google_flow(mainpage, authorization_response):
     client_id = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTID', None)
     client_secret = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTKEY', None)
 
-    logger('oauth2', 'continue_google_flow', 'Read OAuth id: none? {}'.format(client_id is None))
-    logger('oauth2', 'continue_google_flow', 'Read OAuth secret: none? {}'.format(client_secret is None))
+    logger('oauth2', 'continue_flow',
+           'Read OAuth id/secret: none? {}'.format(client_id is None, client_secret is None))
 
     scope = ['https://www.googleapis.com/auth/userinfo.email',
              'https://www.googleapis.com/auth/userinfo.profile']
@@ -72,13 +74,13 @@ def continue_google_flow(mainpage, authorization_response):
         token_url,
         authorization_response=authorization_response,
         client_secret=client_secret)
-    logger('oauth2', 'start_google_flow', 'Token: {}'.format(token))
+    logger('Google OAuth', 'continue_flow', 'Token: {}'.format(token))
 
     resp = google.get('https://www.googleapis.com/oauth2/v2/userinfo?alt=json')
-    logger('oauth2', 'start_google_flow', str(resp.text))
-    parsed_resp = json.loads(resp)
+    logger('Google OAuth', 'continue_flow', str(resp.text))
+    parsed_resp = json.loads(resp.text)
 
-    user_date = {
+    user_data = {
         'given_name': parsed_resp['ad'],
         'lastname': parsed_resp['family_name'],
         'nickname': slugify(parsed_resp['name']),  # TODO: NICKNAME
@@ -99,9 +101,4 @@ def continue_google_flow(mainpage, authorization_response):
     # 'given_name': 'Tobias',
     # 'link': 'https://plus.google.com/112556997662022178084'}
 
-    return user_date
-
-
-def start_facebook_flow():
-    # https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow/
-    return None
+    return user_data

@@ -14,7 +14,7 @@ from validate_email import validate_email
 
 from dbas.auth.ldap import verify_ldap_user_data
 from dbas.auth.recaptcha import validate_recaptcha
-from dbas.auth.oauth import start_google_flow, continue_google_flow
+from dbas.auth.oauth import google as google, github as github, facebook as facebook
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Settings
 from dbas.handler import user
@@ -67,14 +67,60 @@ def login_user_oauth(request, service, redirect_uri, ui_locales):
     :param ui_locales:
     :return:
     """
+    logger('Auth.Login', 'login_user_oauth', 'service: {}'.format(service))
     if service == 'google':
-        if 'state' in redirect_uri and 'code' in redirect_uri:
-            user_data = continue_google_flow(request.application_url + '/discuss', redirect_uri)
-            return __set_oauth_user(request, user_data, ui_locales)
-        else:
-            return start_google_flow(redirect_uri)
+        return __do_google_oauth(request, redirect_uri, ui_locales)
+    elif service == 'github':
+        return __do_github_oauth(request, redirect_uri, ui_locales)
+    elif service == 'facebook':
+        return __do_facebook_oauth(request, redirect_uri, ui_locales)
     else:
         return None
+
+
+def __do_google_oauth(request, redirect_uri, ui_locales):
+    """
+
+    :param request:
+    :param redirect_uri:
+    :param ui_locales:
+    :return:
+    """
+    if 'state' in redirect_uri and 'code' in redirect_uri:
+        user_data = google.continue_flow(request.application_url + '/discuss', redirect_uri)
+        return __set_oauth_user(request, user_data, ui_locales)
+    else:
+        return google.start_flow(redirect_uri)
+
+
+def __do_github_oauth(request, redirect_uri, ui_locales):
+    """
+
+    :param request:
+    :param redirect_uri:
+    :param ui_locales:
+    :return:
+    """
+    if 'code' in redirect_uri:
+        user_data = github.continue_flow(redirect_uri)
+        return __set_oauth_user(request, user_data, ui_locales)
+    else:
+        return github.start_flow()
+
+
+def __do_facebook_oauth(request, redirect_uri, ui_locales):
+    """
+
+    :param request:
+    :param redirect_uri:
+    :param ui_locales:
+    :return:
+    """
+    if 'state' in redirect_uri and 'code' in redirect_uri:  # TODO: DETECT KEYS
+        user_data = facebook.continue_flow(request.application_url + '/discuss', redirect_uri)
+        return __set_oauth_user(request, user_data, ui_locales)
+    else:
+        return facebook.start_flow(redirect_uri)
 
 
 def __set_oauth_user(request, user_data, ui_locales):

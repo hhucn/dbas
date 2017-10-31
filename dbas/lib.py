@@ -65,7 +65,7 @@ def get_changelog(no):
             if len(title) > 0:
                 changelog.append({'title': title, 'body': body})
                 body = []
-            title = l.replace('## ', '')
+            title = l.replace('### ', '')
         else:
             body.append(l.replace('- ', ''))
 

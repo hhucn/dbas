@@ -28,7 +28,7 @@ $(document).ready(function mainDocumentReady() {
 	});
 	
 	$('.btn-github').click(function(){
-		alert('todo: github');
+		new AjaxMainHandler().oauthLogin('github', window.location.href);
 	});
 	
 	$('#nav-tab-login').click(function(){
@@ -59,11 +59,6 @@ $(document).ready(function mainDocumentReady() {
 	
 	// check href for id's
 	var url = window.location.href;
-	console.log(url);
-	console.log(url);
-	console.log(url);
-	console.log(url.indexOf('state=') !== -1);
-	console.log(url.indexOf('code=') !== -1);
 	
 	if (url.indexOf('state=') !== -1 && url.indexOf('code=') !== -1){
 		new AjaxMainHandler().oauthLogin('google', url);

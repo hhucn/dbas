@@ -108,6 +108,7 @@ function AjaxMainHandler(){
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxOauthLoginDone(data) {
+			console.log(data);
 			window.open(data.authorization_url, '_self');
 		}).fail(function ajaxOauthLoginFail(xhr) {
 			console.log('fail: ' + xhr.status);
