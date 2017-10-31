@@ -38,7 +38,11 @@ $(document).ready(function mainDocumentReady() {
 	});
 	
 	$('#nav-tab-signup').click(function(){
-		$('#' + popupLogin).find('.modal-footer').addClass('hidden');
+		if ($('#popup-login-registration-oauth-buttons').children().length !== 0) {
+			$('#' + popupLogin).find('.modal-footer').addClass('hidden');
+		} else {
+			$('#popup-login-registration-field').removeClass('hidden');
+		}
 	});
 	
 	// restore login popup to default
