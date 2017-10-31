@@ -703,18 +703,18 @@ def set_new_user(request, firstname, lastname, nickname, gender, email, password
     :return: Boolean, msg
     """
     # getting the authors group
-    db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
+    db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
 
     # does the group exists?
     if not db_group:
         logger('User', 'set_new_user', 'Internal error occured')
-        return {'success': False, 'message': _tn.get(_.errorTryLateOrContant), 'user': None}
+        return {'success': False, 'error': _tn.get(_.errorTryLateOrContant), 'user': None}
 
     # sanity check
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if db_user:
         logger('User', 'set_new_user', 'User already exists')
-        return {'success': False, 'message': _tn.get(_.nickIsTaken), 'user': None}
+        return {'success': False, 'error': _tn.get(_.nickIsTaken), 'user': None}
 
     success, info, db_new_user = __create_new_user(firstname, lastname, email, nickname, password, gender,
                                                    db_group.uid, _tn.get_lang())
@@ -727,12 +727,12 @@ def set_new_user(request, firstname, lastname, nickname, gender, email, password
         send_welcome_notification(db_new_user.uid, _tn)
 
         logger('User', 'set_new_user', 'set new user in db')
-        return {'success': success, 'message': '', 'user': db_new_user}
+        return {'success': success, 'error': '', 'user': db_new_user}
 
     logger('User', 'set_new_user', 'new user not found in db')
     return {
         'success': False,
-        'message': _tn.get(_.errorTryLateOrContant),
+        'error': _tn.get(_.errorTryLateOrContant),
         'user': None
     }
 

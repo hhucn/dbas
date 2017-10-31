@@ -88,7 +88,11 @@ def __do_google_oauth(request, redirect_uri, ui_locales):
     """
     if 'state' in redirect_uri and 'code' in redirect_uri:
         user_data = google.continue_flow(request.application_url + '/discuss', redirect_uri)
-        return __set_oauth_user(request, user_data, ui_locales)
+        value_dict = __set_oauth_user(request, user_data, ui_locales)
+        if len(value_dict['error']) is 0:
+            return __return_success_login(request, False, value_dict['user'], False, request.application_url + '/discuss')
+        else:
+            return value_dict
     else:
         return google.start_flow(redirect_uri)
 
@@ -103,7 +107,11 @@ def __do_github_oauth(request, redirect_uri, ui_locales):
     """
     if 'code' in redirect_uri:
         user_data = github.continue_flow(redirect_uri)
-        return __set_oauth_user(request, user_data, ui_locales)
+        value_dict = __set_oauth_user(request, user_data, ui_locales)
+        if len(value_dict['error']) is 0:
+            return __return_success_login(request, False, value_dict['user'], False, request.application_url + '/discuss')
+        else:
+            return value_dict
     else:
         return github.start_flow()
 
@@ -118,7 +126,11 @@ def __do_facebook_oauth(request, redirect_uri, ui_locales):
     """
     if 'state' in redirect_uri and 'code' in redirect_uri:  # TODO: DETECT KEYS
         user_data = facebook.continue_flow(request.application_url + '/discuss', redirect_uri)
-        return __set_oauth_user(request, user_data, ui_locales)
+        value_dict = __set_oauth_user(request, user_data, ui_locales)
+        if len(value_dict['error']) is 0:
+            return __return_success_login(request, False, value_dict['user'], False, request.application_url + '/discuss')
+        else:
+            return value_dict
     else:
         return facebook.start_flow(redirect_uri)
 
@@ -142,9 +154,9 @@ def __set_oauth_user(request, user_data, ui_locales):
                                  user_data['gender'], user_data['email'], user_data['password'], _tn)
     # db_new_user = ret_dict['user']
     if ret_dict['success']:
-        return {'error': ret_dict['message'], 'success': _tn.get(_.accountWasAdded).format(user_data['nickname'])}
+        return {'error': ret_dict['error'], 'success': _tn.get(_.accountWasAdded).format(user_data['nickname'])}
     else:
-        return {'error': ret_dict['message'], 'success': ret_dict['success']}
+        return {'error': ret_dict['error'], 'success': ret_dict['success']}
 
 
 def __register_user_with_ldap_data(request, nickname, password, for_api, keep_login, url, _tn):
@@ -309,7 +321,7 @@ def register_user_with_ajax_data(request):
 
         ret_dict = user.set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn)
         success = ret_dict['success']
-        error = ret_dict['message']
+        error = ret_dict['error']
         db_new_user = ret_dict['user']
 
         if success:

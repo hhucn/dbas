@@ -35,7 +35,7 @@ def start_flow(redirect_uri):
 
     logger('Facebook OAuth', 'start_flow', 'Please go to {} and authorize access'.format(authorization_url))
     # TODO: HOW TO TEST WITH LOCALHOST
-    return {'authorization_url': authorization_url}
+    return {'authorization_url': authorization_url, 'error': ''}
 
 
 def continue_flow(redirect_uri, redirect_response):

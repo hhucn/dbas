@@ -90,6 +90,7 @@ function AjaxMainHandler(){
 	/**
 	 *
 	 * @param service
+	 * @param url
 	 */
 	this.oauthLogin = function(service, url){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
@@ -109,7 +110,11 @@ function AjaxMainHandler(){
 			}
 		}).done(function ajaxOauthLoginDone(data) {
 			console.log(data);
-			window.open(data.authorization_url, '_self');
+			if (data.error.length !== 0){
+				setGlobalErrorHandler('Ohh!', data.error);
+			} else {
+				window.open(data.authorization_url, '_self');
+			}
 		}).fail(function ajaxOauthLoginFail(xhr) {
 			console.log('fail: ' + xhr.status);
 		});
