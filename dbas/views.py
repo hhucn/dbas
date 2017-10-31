@@ -1046,7 +1046,7 @@ def user_login_oauth(request):
     try:
         service = request.params['service']
         redirect_url = request.params['redirect_uri']
-        val = login_user_oauth(request.application_url, service, redirect_url)
+        val = login_user_oauth(request, service, redirect_url, lang)
         if val is None:
             return {'error': _tn.get(_.internalKeyError)}
         return val

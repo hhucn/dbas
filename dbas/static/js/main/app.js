@@ -330,16 +330,6 @@ function prepareLoginRegistrationPopup(){
 		}
 	});
 
-	$('#' + popupLoginGeneratePassword + ' > a').click(function(){
-		if (popupLoginGeneratePasswordBody.is(':visible')){
-			popupLoginGeneratePasswordBody.hide();
-			$('#' + popupLoginGeneratePassword + ' > a span').text(_t(generateSecurePassword));
-		} else {
-			popupLoginGeneratePasswordBody.show();
-			$('#' + popupLoginGeneratePassword + ' > a span').text(_t(hideGenerator));
-		}
-	});
-
 	$('#' + popupLoginCloseButton).click(function(){
 		new PopupHandler().hideExtraViewsOfLoginPopup();
 		$('#' + popupLogin).modal('hide');

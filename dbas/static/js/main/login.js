@@ -7,11 +7,12 @@ $(document).ready(function mainDocumentReady() {
 	'use strict';
 	$('.btn-dbas').click(function(){
 		$('#popup-login-registration-field').removeClass('hidden');
+		$('#' + popupLogin).find('.modal-footer').removeClass('hidden');
 	});
 	
 	$('.btn-hhu').click(function(){
 		$('#popup-login-hhu-text').removeClass('hidden');
-		$('#' + popupLogin).find('.nav-tabs:first').find('a');
+		$('#nav-tab-login').find('a').trigger('click');
 	});
 	
 	$('.btn-google').click(function(){
@@ -30,8 +31,18 @@ $(document).ready(function mainDocumentReady() {
 		alert('todo: github');
 	});
 	
+	$('#nav-tab-login').click(function(){
+		if (!$('#popup-login-registration-field').hasClass('hidden')) {
+			$('#' + popupLogin).find('.modal-footer').removeClass('hidden');
+		}
+	});
 	
-	$('#' + popupLogin).on('hidden.bs.modal', function () {// uncheck login button on hide
+	$('#nav-tab-signup').click(function(){
+		$('#' + popupLogin).find('.modal-footer').addClass('hidden');
+	});
+	
+	// restore login popup to default
+	$('#' + popupLogin).on('hidden.bs.modal', function () {
 		var list = $('#' + discussionSpaceListId);
 		if (list) {
 			var login_item = list.find('#item_login');
@@ -41,12 +52,19 @@ $(document).ready(function mainDocumentReady() {
 		}
 		$('#popup-login-registration-field').addClass('hidden');
 		$('#popup-login-hhu-text').addClass('hidden');
+		$('#' + popupLogin).find('.modal-footer').addClass('hidden');
 	}).on('shown.bs.modal', function () {
 		$('#' + loginUserId).focus();
 	});
 	
 	// check href for id's
 	var url = window.location.href;
+	console.log(url);
+	console.log(url);
+	console.log(url);
+	console.log(url.indexOf('state=') !== -1);
+	console.log(url.indexOf('code=') !== -1);
+	
 	if (url.indexOf('state=') !== -1 && url.indexOf('code=') !== -1){
 		new AjaxMainHandler().oauthLogin('google', url);
 	}

@@ -6,8 +6,9 @@ Manage Google Client IDs: https://console.developers.google.com/apis/credentials
 """
 
 import os
+import json
+from slugify import slugify
 from requests_oauthlib.oauth2_session import OAuth2Session
-
 from dbas.logger import logger
 
 
@@ -20,7 +21,8 @@ def start_google_flow(redirect_uri):
     client_id = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTID', None)
     client_secret = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTKEY', None)
 
-    logger('oauth2', 'start_google_flow', 'Read OAuth id/secret: none? {}'.format(client_id is None, client_secret is None))
+    logger('oauth2', 'start_google_flow',
+           'Read OAuth id/secret: none? {}'.format(client_id is None, client_secret is None))
 
     # OAuth endpoints given in the Google API documentation
     authorization_base_url = 'https://accounts.google.com/o/oauth2/v2/auth'
@@ -29,8 +31,8 @@ def start_google_flow(redirect_uri):
              'https://www.googleapis.com/auth/userinfo.profile']
     google = OAuth2Session(
         client_id,
-        # redirect_uri=redirect_uri,
-        redirect_uri='https://dbas.cs.hhu.de',  # for testing
+        redirect_uri=redirect_uri,
+        # redirect_uri='https://dbas.cs.hhu.de',  # TODO: FOR TESTING
         scope=scope)
 
     authorization_url, state = google.authorization_url(
@@ -46,7 +48,7 @@ def start_google_flow(redirect_uri):
 def continue_google_flow(mainpage, authorization_response):
     """
 
-    :param redirect_uri:
+    :param mainpage:
     :param authorization_response: Response uri given by user after clicking on 'authorization_url' of flow start
     :return:
     """
@@ -72,7 +74,34 @@ def continue_google_flow(mainpage, authorization_response):
         client_secret=client_secret)
     logger('oauth2', 'start_google_flow', 'Token: {}'.format(token))
 
-    r = google.get('https://www.googleapis.com/oauth2/v2/userinfo?alt=json')
+    resp = google.get('https://www.googleapis.com/oauth2/v2/userinfo?alt=json')
+    logger('oauth2', 'start_google_flow', str(resp.text))
+    parsed_resp = json.loads(resp)
 
-    logger('oauth2', 'start_google_flow', str(r))
+    user_date = {
+        'given_name': parsed_resp['ad'],
+        'lastname': parsed_resp['family_name'],
+        'nickname': slugify(parsed_resp['name']),  # TODO: NICKNAME
+        'gender': 'm' if parsed_resp['gender'] == 'male' else 'f' if parsed_resp['gender'] == 'female' else 'n',
+        'email': parsed_resp['email'],
+        'password': parsed_resp['ad'],  # TODO: PASSWORD
+        'ui_locales': 'de' if parsed_resp['locale'] == 'de' else 'en'
+    }
+    # example response
+    # 'family_name': 'Krauthoff',
+    # 'locale': 'de',
+    # 'picture': 'https://lh3.googleusercontent.com/-oHifqnhsSEI/AAAAAAAAAAI/AAAAAAAAA_E/FOOl5HaFX4E/photo.jpg',
+    # 'email': 'tobias.krauthoff@googlemail.com',
+    # 'id': '112556997662022178084',
+    # 'verified_email': True,
+    # 'name': 'Tobias Krauthoff',
+    # 'gender': 'male',
+    # 'given_name': 'Tobias',
+    # 'link': 'https://plus.google.com/112556997662022178084'}
+
+    return user_date
+
+
+def start_facebook_flow():
+    # https://developers.facebook.com/docs/facebook-login/manually-build-a-login-flow/
     return None

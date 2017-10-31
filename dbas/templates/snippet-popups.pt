@@ -226,8 +226,8 @@
     				</button>
     				<br>
     				<ul class="nav nav-tabs" style="display: table; margin: 0 auto;">
-    					<li class="tab-login active"><a href="#login" i18n:translate="login">Log In</a></li>
-    					<li class="tab-login"><a href="#signup" i18n:translate="sign_up">Sign Up</a></li>
+    					<li id="nav-tab-login" class="tab-login active"><a href="#login" i18n:translate="login">Log In</a></li>
+    					<li id="nav-tab-signup" class="tab-login"><a href="#signup" i18n:translate="sign_up">Sign Up</a></li>
     				</ul>
     			</div>
     			<div id="popup-login-body">
@@ -276,32 +276,32 @@
 
                             <div>
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 text-center">
                                         <button type="button" class="btn btn-dbas btn-brand">
                                             <i class="fa fa-comments" aria-hidden="true"></i> <span>D-BAS</span>
                                         </button>
                                     </div>
-                                    <div class="col-md-4" tal:condition="extras.login_btns.hhu_ldap">
+                                    <div class="col-md-4 text-center" tal:condition="extras.login_btns.hhu_ldap">
                                         <button type="button" class="btn btn-hhu btn-brand">
                                             <i class="fa fa-university" aria-hidden="true"></i> <span>HHU</span>
                                         </button>
                                     </div>
-                                    <div class="col-md-4" tal:condition="extras.login_btns.oauth_google">
+                                    <div class="col-md-4 text-center" tal:condition="extras.login_btns.oauth_google">
                                         <button type="button" class="btn btn-google btn-brand">
                                             <i class="fa fa-google" aria-hidden="true"></i> <span>Google</span>
                                         </button>
                                     </div>
-                                    <div class="col-md-4" tal:condition="extras.login_btns.oauth_facebook">
+                                    <div class="col-md-4 text-center" tal:condition="extras.login_btns.oauth_facebook">
                                         <button type="button" class="btn btn-facebook btn-brand">
                                             <i class="fa fa-facebook" aria-hidden="true"></i> <span>Facebook</span>
                                         </button>
                                     </div>
-                                    <div class="col-md-4" tal:condition="extras.login_btns.oauth_twitter">
+                                    <div class="col-md-4 text-center" tal:condition="extras.login_btns.oauth_twitter">
                                         <button type="button" class="btn btn-twitter btn-brand">
                                             <i class="fa fa-twitter" aria-hidden="true"></i> <span>Twitter</span>
                                         </button>
                                     </div>
-                                    <div class="col-md-4" tal:condition="extras.login_btns.oauth_github">
+                                    <div class="col-md-4 text-center" tal:condition="extras.login_btns.oauth_github">
                                         <button type="button" class="btn btn-github btn-brand">
                                             <i class="fa fa-github" aria-hidden="true"></i> <span>Github</span>
                                         </button>
@@ -380,10 +380,6 @@
                                     <div class="col-md-9 input-group">
                                         <div class="col-md-9 veryweak" id="popup-login-password-meter"></div>
                                         <h6 id="popup-login-password-strength" i18n:translate="password_strength">very weak</h6>
-                                        <br>
-                                        <div id="popup-login-generate-password" class="form-group" style="margin-bottom: 0;">
-                                            <a i18n:translate="generate_password" style="cursor: pointer;">Generate secure password</a>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">

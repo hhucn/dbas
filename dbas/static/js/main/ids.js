@@ -165,7 +165,6 @@ settings-password-info-icon
 
 var popupLoginForgotPasswordBody              = 'popup-login-forgot-password-body';
 var popupLoginForgotPasswordText              = 'popup-login-forgot-password-text';
-var popupLoginGeneratePassword                = 'popup-login-generate-password';
 var popupLoginPasswordMeterId                 = 'popup-login-password-meter';
 var popupLoginPasswordStrengthId              = 'popup-login-password-strength';
 var popupLoginPasswordInputId                 = 'popup-login-password-input';

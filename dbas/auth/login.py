@@ -58,21 +58,47 @@ def login_user(request, nickname, password, for_api, keep_login=False, lang='en'
     return __check_in_local_known_user(request, db_user, password, for_api, keep_login, url, _tn)
 
 
-def login_user_oauth(mainpage, service, redirect_uri):
+def login_user_oauth(request, service, redirect_uri, ui_locales):
     """
 
-    :param mainpage:
+    :param request:
     :param service: name of the oauth service
     :param redirect_uri:
+    :param ui_locales:
     :return:
     """
     if service == 'google':
         if 'state' in redirect_uri and 'code' in redirect_uri:
-            return continue_google_flow(mainpage, redirect_uri)
+            user_data = continue_google_flow(request.application_url + '/discuss', redirect_uri)
+            return __set_oauth_user(request, user_data, ui_locales)
         else:
             return start_google_flow(redirect_uri)
     else:
         return None
+
+
+def __set_oauth_user(request, user_data, ui_locales):
+    """
+
+    :param request:
+    :param user_data:
+    :param ui_locales:
+    :return:
+    """
+    _tn = Translator(ui_locales)
+
+    db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
+    if not db_group:
+        logger('Auth.Login', '__set_oauth_user', 'Error occured')
+        return {'error': _tn.get(_.errorTryLateOrContant), 'success': ''}
+
+    ret_dict = user.set_new_user(request, user_data['firstname'], user_data['lastname'], user_data['nickname'],
+                                 user_data['gender'], user_data['email'], user_data['password'], _tn)
+    # db_new_user = ret_dict['user']
+    if ret_dict['success']:
+        return {'error': ret_dict['message'], 'success': _tn.get(_.accountWasAdded).format(user_data['nickname'])}
+    else:
+        return {'error': ret_dict['message'], 'success': ret_dict['success']}
 
 
 def __register_user_with_ldap_data(request, nickname, password, for_api, keep_login, url, _tn):
@@ -119,7 +145,8 @@ def __check_in_local_known_user(request, db_user, password, for_api, keep_login,
     if is_local:
         return __return_success_login(request, for_api, db_user, keep_login, url)
 
-    if not (db_user.validate_password('NO_PW_BECAUSE_LDAP') or db_user.password is get_hashed_password('NO_PW_BECAUSE_LDAP')):
+    if not (db_user.validate_password('NO_PW_BECAUSE_LDAP') or db_user.password is get_hashed_password(
+            'NO_PW_BECAUSE_LDAP')):
         logger('Auth.Login', '__check_in_local_known_user', 'invalid password for the local user')
         return {'error': _tn.get(_.userPasswordNotMatch)}
 
