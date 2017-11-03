@@ -26,11 +26,9 @@ def store_origin(api_data, statement_uid):
     author = api_data.get("origin_author")
     version = api_data.get("origin_version")
 
-    if not (entity_id or aggregate_id):
-        return  # Early exit if there is no reference
-    if not statement_uid:
+    if not (entity_id or aggregate_id or statement_uid):
         log.info("[API/StatementOrigin] No origin of statement provided.")
-        return
+        return  # Early exit if there is no origin provided
 
     db_origin = StatementOrigins(entity_id, aggregate_id, author, version, statement_uid)
     DBDiscussionSession.add(db_origin)
