@@ -29,6 +29,7 @@ class StatementGraph(SQLAlchemyObjectType):
     class Meta:
         model = Statement
 
+    @staticmethod
     def plural():
         return graphene.List(StatementGraph, is_startpoint=graphene.Boolean(), issue_uid=graphene.Int())
 
