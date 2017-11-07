@@ -13,6 +13,7 @@ $(document).ready(function mainDocumentReady() {
 	$('.btn-hhu').click(function(){
 		$('#popup-login-hhu-text').removeClass('hidden');
 		$('#nav-tab-login').find('a').trigger('click');
+		$('#' + popupLogin).find('.modal-footer').removeClass('hidden');
 	});
 	
 	$('.btn-google').click(function(){

@@ -276,35 +276,36 @@
 
                             <div>
                                 <div class="row" id="popup-login-registration-oauth-buttons">
-                                    <div class="col-md-4 text-center" tal:condition="extras.login_btns.hhu_ldap or extras.login_btns.oauth_google or extras.login_btns.oauth_facebook or extras.login_btns.oauth_twitter or extras.login_btns.hhu_ldap">
-                                        <button type="button" class="btn btn-dbas btn-brand">
-                                            <i class="fa fa-comments" aria-hidden="true"></i> <span>D-BAS</span>
-                                        </button>
+                                    <div class="col-md-6 text-center" tal:condition="extras.login_btns.hhu_ldap or extras.login_btns.oauth_google or extras.login_btns.oauth_facebook or extras.login_btns.oauth_twitter or extras.login_btns.hhu_ldap">
+                                        <a class="btn btn-block btn-social btn-dbas" data-service="dbas">
+                                            <span class="fa fa-comments"></span><span i18n:translate="sign_in_with">Sign in with</span> <span><span>D-BAS</span>
+                                        </a>
                                     </div>
-                                    <div class="col-md-4 text-center" tal:condition="extras.login_btns.hhu_ldap">
-                                        <button type="button" class="btn btn-hhu btn-brand">
-                                            <i class="fa fa-university" aria-hidden="true"></i> <span>HHU</span>
-                                        </button>
+
+                                    <div class="col-md-6 text-center" tal:condition="extras.login_btns.hhu_ldap">
+                                        <a class="btn btn-block btn-social btn-hhu" data-service="hhu">
+                                            <span class="fa fa-university"></span><span i18n:translate="sign_in_with">Sign in with</span> <span>HHU</span>
+                                        </a>
                                     </div>
-                                    <div class="col-md-4 text-center" tal:condition="extras.login_btns.oauth_google">
-                                        <button type="button" class="btn btn-google btn-brand" data-service="google">
-                                            <i class="fa fa-google" aria-hidden="true"></i> <span>Google</span>
-                                        </button>
+                                    <div class="col-md-6 text-center" tal:condition="extras.login_btns.oauth_google">
+                                        <a class="btn btn-block btn-social btn-google" data-service="google">
+                                            <span class="fa fa-google"></span><span i18n:translate="sign_in_with">Sign in with</span> <span>Google</span>
+                                        </a>
                                     </div>
-                                    <div class="col-md-4 text-center" tal:condition="extras.login_btns.oauth_facebook">
-                                        <button type="button" class="btn btn-facebook btn-brand" data-service="facebook">
-                                            <i class="fa fa-facebook" aria-hidden="true"></i> <span>Facebook</span>
-                                        </button>
+                                    <div class="col-md-6 text-center" tal:condition="extras.login_btns.oauth_facebook">
+                                        <a class="btn btn-block btn-social btn-facebook" data-service="facebook">
+                                            <span class="fa fa-facebook"></span><span i18n:translate="sign_in_with">Sign in with</span> <span>Facebook</span>
+                                        </a>
                                     </div>
-                                    <div class="col-md-4 text-center" tal:condition="extras.login_btns.oauth_twitter">
-                                        <button type="button" class="btn btn-twitter btn-brand" data-service="twitter">
-                                            <i class="fa fa-twitter" aria-hidden="true"></i> <span>Twitter</span>
-                                        </button>
+                                    <div class="col-md-6 text-center" tal:condition="extras.login_btns.oauth_twitter">
+                                        <a class="btn btn-block btn-social btn-twitter" data-service="twitter">
+                                            <span class="fa fa-twitter"></span><span i18n:translate="sign_in_with">Sign in with</span> <span>Twitter</span>
+                                        </a>
                                     </div>
-                                    <div class="col-md-4 text-center" tal:condition="extras.login_btns.oauth_github">
-                                        <button type="button" class="btn btn-github btn-brand" data-service="github">
-                                            <i class="fa fa-github" aria-hidden="true"></i> <span>Github</span>
-                                        </button>
+                                    <div class="col-md-6 text-center" tal:condition="extras.login_btns.oauth_github">
+                                        <a class="btn btn-block btn-social btn-github" data-service="github">
+                                            <span class="fa fa-github"></span><span i18n:translate="sign_in_with">Sign in with</span> <span>Github</span>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
