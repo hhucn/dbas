@@ -4,6 +4,8 @@ services:
     image: hhucn/dbas-database
     ports:
       - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: 'DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!'
     tmpfs: /tmp
 
   web:

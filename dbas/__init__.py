@@ -57,7 +57,7 @@ def main(global_config, **settings):
     set_cache_regions_from_settings(settings)
 
     # include custom parts
-    sections = ['ldap', 'service']
+    sections = ['service']
     for s in sections:
         try:
             parser = ConfigParser()

@@ -3,7 +3,7 @@
 
         <section>
             <div class="text-center big-header">
-                <h3 i18n:translate="imprint_copyrights_software" class="text-center">Imprint, Copyrights and Used
+                <h3 i18n:translate="imprint_copyrights_software_privacy" class="text-center">Imprint, Copyrights and Used
                     Software</h3>
                 <p i18n:translate="imprint_list_of_software_and_changelog" class="lead text-center">Our imprint, a list
                     of used software and the latest changelogs</p>
@@ -37,8 +37,8 @@
                             <br>
                             <span i18n:translate="weiteres im">Weiteres im </span>
                             <a href="http://www.uni-duesseldorf.de/home/footer/impressum.html"><span i18n:translate="imprint_hhu">Impressum der HHU</span></a>
-                            <span>or checkout the</span> <a href="https://github.com/hhucn/dbas/blob/master/LICENSE"
-                                                            target="_blank">license of D-BAS (MIT)</a>.
+                            <span i18n:translate="or_checkout_the">or checkout the</span> <a href="https://github.com/hhucn/dbas/blob/master/LICENSE"
+                                                            target="_blank" i18n:translate="licence_dbas">license of D-BAS (MIT)</a>.
                             <div tal:omit-tag="" tal:condition="not:extras.development_mode">
                                 <br>
                                 <h5><span i18n:translate="disclaimer_piwik">Piwik</span></h5>
@@ -109,11 +109,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-6">
-
-                        <div class="colored-container">
+                        <div class="colored-container" style="margin-bottom: 1em">
                             <h4><span i18n:translate="changes">Changes</span></h4>
 
                             <div tal:omit-tag="" tal:repeat="imp imprint">
@@ -122,6 +119,91 @@
                                     <li tal:repeat="imp_bo imp.body">${imp_bo}</li>
                                 </ul>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="colored-container" style="margin-bottom: 1em">
+                            <h4>Datenschutzerklärung</h4>
+                            <p>
+                                Sie erhalten als Nutzer unserer Internetseite in dieser Datenschutzerklärung alle
+                                notwendigen Informationen darüber, wie, in welchem Umfang sowie zu welchem Zweck wir
+                                oder Drittanbieter Daten von Ihnen erheben und diese verwenden. Die Erhebung und Nutzung
+                                Ihrer Daten erfolgt streng nach den Vorgaben des Bundesdatenschutzgesetzes (BDSG) und
+                                des Telemediengesetzes (TMG). Wir fühlen uns der Vertraulichkeit Ihrer personenbezogenen
+                                Daten besonders verpflichtet und arbeiten deshalb streng innerhalb der Grenzen, die die
+                                gesetzlichen Vorgaben uns setzen. Die Erhebung dieser personenbezogenen Daten erfolgt
+                                auf freiwilliger Basis, wenn uns das möglich ist. Auch geben wir diese Daten nur mit
+                                Ihrer ausdrücklichen Zustimmung an Dritte weiter. Wir sorgen bei besonders vertraulichen
+                                Daten wie im Zahlungsverkehr oder im Hinblick auf Ihre Anfragen an uns durch Einsatz
+                                einer SSL-Verschlüsselung für hohe Sicherheit. Wir möchten es aber an dieser Stelle
+                                nicht versäumen, auf die allgemeinen Gefahren der Internetnutzung hinzuweisen, auf die
+                                wir keinen Einfluss haben. Besonders im E-Mail-Verkehr sind Ihre Daten ohne weitere
+                                Vorkehrungen nicht sicher und können unter Umständen von Dritten erfasst werden.
+                            </p>
+                            <h5>Auskunft, Löschung, Sperrung</h5>
+                            <p>
+                                Sie erhalten jederzeit unentgeltlich Auskunft über die von uns gespeicherten
+                                personenbezogenen Daten zu Ihrer Person sowie zur Herkunft, dem Empfänger und dem Zweck
+                                von Datenerhebung sowie Datenverarbeitung. Außerdem haben Sie das Recht, die
+                                Berichtigung, die Sperrung oder Löschung Ihrer Daten zu verlangen. Ausgenommen davon
+                                sind Daten, die aufgrund gesetzlicher Vorschriften aufbewahrt oder zur ordnungsgemäßen
+                                Geschäftsabwicklung benötigt werden. Damit eine Datensperre jederzeit realisiert werden
+                                kann, werden Daten zu Kontrollzwecken in einer Sperrdatei vorgehalten. Werden Daten
+                                nicht von einer gesetzlichen Archivierungspflicht erfasst, löschen wir Ihre Daten auf
+                                Ihren Wunsch. Greift die Archivierungspflicht, sperren wir Ihre Daten. Für alle Fragen
+                                und Anliegen zur Berichtigung, Sperrung oder Löschung von personenbezogenen Daten wenden
+                                Sie sich bitte an unseren Datenschutzbeauftragten unter den Kontaktdaten in dieser
+                                Datenschutzerklärung bzw. an die im Impressum genannte Adresse.
+                            </p>
+                            <h5>Cookies</h5>
+                            <p>
+                                Wir verwenden auf unserer Webseite Cookies. Diese kleinen Textdateien werden von unserem
+                                Server aus auf Ihrem PC gespeichert. Sie unterstützen die Darstellung unserer Webseite
+                                und helfen Ihnen, sich auf unserer Webseite zu bewegen.
+                                Cookies erfassen Daten zu Ihrer IP-Adresse, zu Ihrem Browser, Ihrem Betriebssystem und
+                                Ihrer Internetverbindung. Diese Informationen verbinden wir nicht mit personenbezogenen
+                                Daten und geben sie nicht an Dritte weiter. Keinesfalls werden Cookies von uns dazu
+                                benutzt, Schad- oder Spionageprogramme auf Ihren Rechner zu bringen.
+                                Sie können unsere Webseite auch ohne den Einsatz von Cookies nutzen, wodurch
+                                möglicherweise einige Darstellungen und Funktionen unseres Angebots nur eingeschränkt
+                                arbeiten. Wenn Sie die Cookies deaktivieren möchten, können Sie das über spezielle
+                                Einstellungen Ihres Browsers erreichen. Nutzen Sie bitte dessen Hilfsfunktion, um die
+                                entsprechenden Änderungen vornehmen zu können.
+                                Online-Anzeigen-Cookies können Sie über folgende Links verwalten:
+                                http://www.aboutads.info/choices für die USA
+                                http://www.youronlinechoices.com/uk/your-ad-choices für Europa
+                            </p>
+                            <h5>Server Logfiles</h5>
+                            <p>
+                                Bei den Server Logfiles handelt es sich um anonymisierte Daten, die bei Ihrem Zugriff
+                                auf unsere Webseite erfasst werden. Diese Informationen ermöglichen keine Rückschlüsse
+                                auf Sie persönlich, sind aber aus technischen Gründen für die Auslieferung und
+                                Darstellung unserer Inhalte unverzichtbar. Weiterhin dienen Sie unserer Statistik und
+                                der ständigen Optimierung unserer Inhalte. Typische Logfiles sind das Datum und die Zeit
+                                des Zugriffs, die Datenmenge, der für den Zugriff benutzte Browser und seine Version,
+                                das eingesetzte Betriebssystem, der Domainname des von Ihnen beauftragten Providers, die
+                                Seite, von der Sie zu unserem Angebot gekommen sind (Referrer-URL) und Ihre IP-Adresse.
+                                Logfiles ermöglichen außerdem eine genaue Prüfung bei Verdacht auf eine rechtswidrige
+                                Nutzung unserer Webseite.
+                            </p>
+                            <h5>SSL-Verschlüsselung</h5>
+                            <p>
+                                Unsere Webseite bedient sich einer SSL-Verschlüsselung, wenn es um die Übermittlung
+                                vertraulicher oder persönlicher Inhalte unserer Nutzer geht. Diese Verschlüsslung wird
+                                zum Beispiel bei der Abwicklung des Zahlungsverkehrs sowie bei Anfragen aktiviert, die
+                                Sie an uns über unsere Webseite stellen. Achten Sie bitte darauf, dass die
+                                SSL-Verschlüsselung bei entsprechenden Aktivitäten von Ihrer Seite her aktiviert ist.
+                                Der Einsatz der Verschlüsselung ist leicht zu erkennen: Die Anzeige in Ihrer
+                                Browserzeile wechselt von „http://“ zu „https://“. Über SSL verschlüsselte Daten sind
+                                nicht von Dritten lesbar. Übermitteln Sie Ihre vertraulichen Informationen nur bei
+                                aktivierter SSL-Verschlüsselung und wenden Sie sich im Zweifel an uns.
+                            </p>
+                            <p>
+                                Diese Datenschutzerklärung wurde erstellt durch <a
+                                    href="https://www.datenschutzexperte.de/">www.datenschutzexperte.de</a>
+                            </p>
+
                         </div>
                     </div>
                 </div>
