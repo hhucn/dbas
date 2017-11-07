@@ -12,6 +12,7 @@ import os
 from requests_oauthlib.oauth2_session import OAuth2Session
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 from dbas.logger import logger
+from dbas.handler.user import values
 
 
 def start_flow(redirect_uri):
@@ -60,4 +61,9 @@ def continue_flow(redirect_uri, redirect_response):
 
     user_data = {}
 
-    return user_data
+    missing_data = [key for key in values if len(user_data[key]) == 0]
+
+    return {
+        'user': user_data,
+        'missing': missing_data
+    }

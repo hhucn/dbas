@@ -12,6 +12,7 @@ import json
 from slugify import slugify
 from requests_oauthlib.oauth2_session import OAuth2Session
 from dbas.logger import logger
+from dbas.handler.user import values
 
 
 def start_flow(redirect_uri):
@@ -81,14 +82,17 @@ def continue_flow(mainpage, authorization_response):
     parsed_resp = json.loads(resp.text)
 
     user_data = {
-        'given_name': parsed_resp['ad'],
+        'firstname': parsed_resp['ad'],
         'lastname': parsed_resp['family_name'],
         'nickname': slugify(parsed_resp['name']),  # TODO: NICKNAME
-        'gender': 'm' if parsed_resp['gender'] == 'male' else 'f' if parsed_resp['gender'] == 'female' else 'n',
+        'gender': 'm' if parsed_resp['gender'] == 'male' else 'f' if parsed_resp['gender'] == 'female' else '',
         'email': parsed_resp['email'],
         'password': parsed_resp['ad'],  # TODO: PASSWORD
         'ui_locales': 'de' if parsed_resp['locale'] == 'de' else 'en'
     }
+
+    missing_data = [key for key in values if len(user_data[key]) == 0]
+
     # example response
     # 'family_name': 'Krauthoff',
     # 'locale': 'de',
@@ -101,4 +105,7 @@ def continue_flow(mainpage, authorization_response):
     # 'given_name': 'Tobias',
     # 'link': 'https://plus.google.com/112556997662022178084'}
 
-    return user_data
+    return {
+        'user': user_data,
+        'missing': missing_data
+    }

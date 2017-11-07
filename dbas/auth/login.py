@@ -87,10 +87,14 @@ def __do_google_oauth(request, redirect_uri, ui_locales):
     :return:
     """
     if 'state' in redirect_uri and 'code' in redirect_uri:
-        user_data = google.continue_flow(request.application_url + '/discuss', redirect_uri)
-        value_dict = __set_oauth_user(request, user_data, ui_locales)
+        data = google.continue_flow(request.application_url + '/discuss', redirect_uri)
+        if len(data['missing']) != 0:
+            return data
+
+        value_dict = __set_oauth_user(request, data['user'], ui_locales)
         if len(value_dict['error']) is 0:
-            return __return_success_login(request, False, value_dict['user'], False, request.application_url + '/discuss')
+            url = request.application_url + '/discuss'
+            return __return_success_login(request, False, value_dict['user'], False, url)
         else:
             return value_dict
     else:
@@ -106,10 +110,14 @@ def __do_github_oauth(request, redirect_uri, ui_locales):
     :return:
     """
     if 'code' in redirect_uri:
-        user_data = github.continue_flow(redirect_uri)
-        value_dict = __set_oauth_user(request, user_data, ui_locales)
+        data = github.continue_flow(redirect_uri)
+        if len(data['missing']) != 0:
+            return data
+
+        value_dict = __set_oauth_user(request, data['user'], ui_locales)
         if len(value_dict['error']) is 0:
-            return __return_success_login(request, False, value_dict['user'], False, request.application_url + '/discuss')
+            url = request.application_url + '/discuss'
+            return __return_success_login(request, False, value_dict['user'], False, url)
         else:
             return value_dict
     else:
@@ -125,10 +133,14 @@ def __do_facebook_oauth(request, redirect_uri, ui_locales):
     :return:
     """
     if 'state' in redirect_uri and 'code' in redirect_uri:
-        user_data = facebook.continue_flow(request.application_url + '/discuss', redirect_uri)
-        value_dict = __set_oauth_user(request, user_data, ui_locales)
+        data = facebook.continue_flow(request.application_url + '/discuss', redirect_uri)
+        if len(data['missing']) != 0:
+            return data
+
+        value_dict = __set_oauth_user(request, data['user'], ui_locales)
         if len(value_dict['error']) is 0:
-            return __return_success_login(request, False, value_dict['user'], False, request.application_url + '/discuss')
+            url = request.application_url + '/discuss'
+            return __return_success_login(request, False, value_dict['user'], False, url)
         else:
             return value_dict
     else:
