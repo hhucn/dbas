@@ -14,7 +14,7 @@ from validate_email import validate_email
 
 from dbas.auth.ldap import verify_ldap_user_data
 from dbas.auth.recaptcha import validate_recaptcha
-from dbas.auth.oauth import google as google, github as github, facebook as facebook
+from dbas.auth.oauth import google as google, github as github, facebook as facebook, twitter as twitter
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Settings
 from dbas.handler import user
@@ -74,6 +74,8 @@ def login_user_oauth(request, service, redirect_uri, ui_locales):
         return __do_github_oauth(request, redirect_uri, ui_locales)
     elif service == 'facebook':
         return __do_facebook_oauth(request, redirect_uri, ui_locales)
+    elif service == 'twitter':
+        return __do_twitter_oauth(request, redirect_uri, ui_locales)
     else:
         return None
 
@@ -145,6 +147,29 @@ def __do_facebook_oauth(request, redirect_uri, ui_locales):
             return value_dict
     else:
         return facebook.start_flow(redirect_uri)
+
+
+def __do_twitter_oauth(request, redirect_uri, ui_locales):
+    """
+
+    :param request:
+    :param redirect_uri:
+    :param ui_locales:
+    :return:
+    """
+    if 'code' in redirect_uri:
+        data = twitter.continue_flow(request.application_url + '/discuss', redirect_uri)
+        if len(data['missing']) != 0:
+            return data
+
+        value_dict = __set_oauth_user(request, data['user'], ui_locales)
+        if len(value_dict['error']) is 0:
+            url = request.application_url + '/discuss'
+            return __return_success_login(request, False, value_dict['user'], False, url)
+        else:
+            return value_dict
+    else:
+        return twitter.start_flow(redirect_uri)
 
 
 def __set_oauth_user(request, user_data, ui_locales):
