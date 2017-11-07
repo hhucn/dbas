@@ -124,7 +124,7 @@ def __do_facebook_oauth(request, redirect_uri, ui_locales):
     :param ui_locales:
     :return:
     """
-    if 'state' in redirect_uri and 'code' in redirect_uri:  # TODO: DETECT KEYS
+    if 'state' in redirect_uri and 'code' in redirect_uri:
         user_data = facebook.continue_flow(request.application_url + '/discuss', redirect_uri)
         value_dict = __set_oauth_user(request, user_data, ui_locales)
         if len(value_dict['error']) is 0:

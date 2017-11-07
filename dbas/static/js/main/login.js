@@ -20,7 +20,7 @@ $(document).ready(function mainDocumentReady() {
 	});
 	
 	$('.btn-facebook').click(function(){
-		alert('todo: facebook');
+		new AjaxMainHandler().oauthLogin('facebook', window.location.href);
 	});
 	
 	$('.btn-twitter').click(function(){

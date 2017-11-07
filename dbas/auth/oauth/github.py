@@ -30,7 +30,6 @@ def start_flow():
     authorization_url, state = github.authorization_url(authorization_base_url)
 
     logger('Github OAuth', 'start_flow', 'Please go to {} and authorize access'.format(authorization_url))
-    # TODO: HOW TO TEST WITH LOCALHOST
     return {'authorization_url': authorization_url, 'error': ''}
 
 

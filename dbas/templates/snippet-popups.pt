@@ -287,22 +287,22 @@
                                         </button>
                                     </div>
                                     <div class="col-md-4 text-center" tal:condition="extras.login_btns.oauth_google">
-                                        <button type="button" class="btn btn-google btn-brand">
+                                        <button type="button" class="btn btn-google btn-brand" data-service="google">
                                             <i class="fa fa-google" aria-hidden="true"></i> <span>Google</span>
                                         </button>
                                     </div>
                                     <div class="col-md-4 text-center" tal:condition="extras.login_btns.oauth_facebook">
-                                        <button type="button" class="btn btn-facebook btn-brand">
+                                        <button type="button" class="btn btn-facebook btn-brand" data-service="facebook">
                                             <i class="fa fa-facebook" aria-hidden="true"></i> <span>Facebook</span>
                                         </button>
                                     </div>
                                     <div class="col-md-4 text-center" tal:condition="extras.login_btns.oauth_twitter">
-                                        <button type="button" class="btn btn-twitter btn-brand">
+                                        <button type="button" class="btn btn-twitter btn-brand" data-service="twitter">
                                             <i class="fa fa-twitter" aria-hidden="true"></i> <span>Twitter</span>
                                         </button>
                                     </div>
                                     <div class="col-md-4 text-center" tal:condition="extras.login_btns.oauth_github">
-                                        <button type="button" class="btn btn-github btn-brand">
+                                        <button type="button" class="btn btn-github btn-brand" data-service="github">
                                             <i class="fa fa-github" aria-hidden="true"></i> <span>Github</span>
                                         </button>
                                     </div>
