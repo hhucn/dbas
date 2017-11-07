@@ -1,7 +1,7 @@
 """
 Google OAuth handler of D-
 
-App is registered by dbas.hhu@gmail.com's Account
+App is registered by the account of dbas.hhu@gmail.com
 
 Used lib: http://requests-oauthlib.readthedocs.io/en/latest/examples/google.html
 Manage Google Client IDs: https://console.developers.google.com/apis/credentials

@@ -1,10 +1,10 @@
 """
 Github OAuth handler of D-BAS
 
-App is registered by hhucn account
+App is registered by the account of hhucn
 
 Used lib: http://requests-oauthlib.readthedocs.io/en/latest/examples/github.html
-Manage Google Client IDs: https://console.developers.google.com/apis/credentials
+Manage Github Client IDs: https://github.com/organizations/**YOUR_ACCOUNT**/settings/applications
 """
 
 import os

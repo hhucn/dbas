@@ -1,10 +1,10 @@
 """
-Facebook OAuth handler of D-
+Facebook OAuth handler of D-BAS
 
-App is registered by xxx account
+App is registered by the account of Tobias Krauthoff
 
 Used lib: http://requests-oauthlib.readthedocs.io/en/latest/examples/facebook.html
-Manage Google Client IDs: https://console.developers.google.com/apis/credentials
+Manage Google Client IDs: https://developers.facebook.com/apps/
 """
 
 import os
