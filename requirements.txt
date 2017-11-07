@@ -13,6 +13,7 @@ db==0.1.1
 db-psycopg2==0.0.7
 graphene==1.4.1
 graphene-sqlalchemy==1.1.1
+graphql-core>=1.1,<2
 imagesize==0.7.1
 iso8601==0.1.12
 Jinja2==2.9.6

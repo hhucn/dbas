@@ -46,6 +46,28 @@ Generate a SQL-Migrations
 -------------------------
 It is possible to generate just a SQL-File for migration. Just add ``--sql`` to the ``alembic upgrade`` command.
 
+Manual migrations
+-----------------
+This is a collection of scripts to migrate old databases to a new version, locatet in ``dock/db/migrations``.
+The changes in this scripts are likely to be out of the scope of alembic.
+The scripts are in directorys named like the version to upgrade to.
+For clarification of the execution order, the scripts are prefixed with strict increasing integers.
+The scripts are supposed to be run inside the db container.
+
+:v1.4.4:
+    This version of D-BAS introduces *alembic* as the migration manager for model migrations.
+    The migrations ...
+
+    1. remove a circular dependency. (*SQLAlchemy* and *alembic* doesn't like them, neither should we)
+    #. move the content of the old news database to the discussion database (Now there is only one database)
+    #. move the old content of the news datsbase into it's own schema.
+    #. stamp the database to the base revision of D-BAS 1.4.4.
+
+
+:v1.5.1:
+    This version of D-BAS removes all other database users except ``postgres``, since the database isn't shared between programs and the other users have no use.
+    The migration will transfer the ownership of all tables to the ``postgres`` user and drops the four old roles.
+
 
 Steps for creating a new database
 =================================
