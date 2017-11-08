@@ -32,19 +32,13 @@ $(document).ready(function mainDocumentReady() {
 		new AjaxMainHandler().oauthLogin('github', window.location.href);
 	});
 	
-	//$('#nav-tab-login').click(function(){
-	//	if (!$('#popup-login-registration-field').hasClass('hidden')) {
-	//		$('#' + popupLogin).find('.modal-footer').removeClass('hidden');
-	//	}
-	//});
+	$('#nav-tab-login').click(function(){
+		$('#' + popupLogin).find('.modal-footer').addClass('hidden');
+	});
 	
-	//$('#nav-tab-signup').click(function(){
-	//	if ($('#popup-login-registration-oauth-buttons').children().length !== 0) {
-	//		$('#' + popupLogin).find('.modal-footer').addClass('hidden');
-	//	} else {
-	//		$('#popup-login-registration-field').removeClass('hidden');
-	//	}
-	//});
+	$('#nav-tab-signup').click(function(){
+		$('#' + popupLogin).find('.modal-footer').removeClass('hidden');
+	});
 	
 	// restore login popup to default
 	$('#' + popupLogin).on('hidden.bs.modal', function () {
@@ -55,11 +49,9 @@ $(document).ready(function mainDocumentReady() {
 				login_item.prop('checked', false);
 			}
 		}
-		//$('#popup-login-registration-field').addClass('hidden');
-		//$('#popup-login-hhu-text').addClass('hidden');
-		//$('#' + popupLogin).find('.modal-footer').addClass('hidden');
 	}).on('shown.bs.modal', function () {
 		$('#' + loginUserId).focus();
+		$('#' + popupLogin).find('.modal-footer').addClass('hidden');
 	});
 	
 	// check href for id's

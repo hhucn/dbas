@@ -171,7 +171,8 @@ var popupLoginPasswordInputId                 = 'popup-login-password-input';
 var popupLoginPasswordconfirmInputId          = 'popup-login-passwordconfirm-input';
 var popupLoginPasswordExtrasId                = 'popup-login-password-extras';
 
-var popupLoginCloseButton                     = 'popup-login-close-button';
+var popupLoginCloseButton1                    = 'popup-login-close-button1';
+var popupLoginCloseButton2                    = 'popup-login-close-button2';
 var popupLoginRegistrationSuccess             = 'popup-login-registration-success';
 var popupLoginRegistrationFailed              = 'popup-login-registration-failed';
 var popupLoginRegistrationInfo                = 'popup-login-registration-info';
