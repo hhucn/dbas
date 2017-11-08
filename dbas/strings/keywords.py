@@ -359,6 +359,7 @@ class Keywords(Enum):
     internalFailureWhileDeletingTrack = 'internalFailureWhileDeletingTrack'
     internalFailureWhileDeletingHistory = 'internalFailureWhileDeletingHistory'
     internalError = 'internalError'
+    internalErrorHTTPS = 'internalErrorHTTPS'
     internalKeyError = 'internalKeyError'
     issueList = 'issueList'
     islandViewHeaderText = 'islandViewHeaderText'

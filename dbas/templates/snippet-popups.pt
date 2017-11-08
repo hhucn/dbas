@@ -232,7 +232,6 @@
     			</div>
     			<div id="popup-login-body">
     				<div class="tab-content">
-                        <p class="text-info center hidden" id="popup-login-hhu-text" i18n:translate="have_account_hhu">If you have a valid account at the HHU, you can directly use the login!</p>
     					<div id="login">
                             <form autocomplete="on">
     						    <div class="form-group">
@@ -271,49 +270,41 @@
     						    </div>
                                 <input id="popup-login-button-request" type="submit" onclick="$('body').addClass('loading')" name="form.passwordrequest.submitted" value="Request Password" class="btn btn-primary" tal:attributes="value extras.buttons.request_password"/>
     						</div>
+                            <div class="center">
+                                <p class="text-center lead" style="margin-top: 1em;"><span i18n:translate="or_login_via">Or login via</span>:</p>
+                                <div class="row text-center" id="popup-login-registration-oauth-buttons">
+                                    <!--<div class="col-md-4 text-center" tal:condition="extras.login_btns.hhu_ldap or extras.login_btns.oauth_google or extras.login_btns.oauth_facebook or extras.login_btns.oauth_twitter or extras.login_btns.hhu_ldap">-->
+                                    <!--    <a class="btn btn-block btn-brand btn-dbas" data-service="dbas">-->
+                                    <!--        <span class="fa fa-comments"></span> <span>D-BAS</span>-->
+                                    <!--    </a>-->
+                                    <!--</div>-->
+                                    <!--<div class="col-md-4 text-center" tal:condition="extras.login_btns.hhu_ldap">-->
+                                    <!--    <a class="btn btn-block btn-brand btn-hhu" data-service="hhu">-->
+                                    <!--        <span class="fa fa-university"></span> <span>HHU</span>-->
+                                    <!--    </a>-->
+                                    <!--</div>-->
+                                    <a tal:condition="extras.login_btns.oauth_google" class="btn btn-block btn-brand btn-google" data-service="google">
+                                        <span class="fa fa-google"></span> <span>Google</span>
+                                    </a>
+                                    <a tal:condition="extras.login_btns.oauth_facebook" class="btn btn-block btn-brand btn-facebook" data-service="facebook">
+                                        <span class="fa fa-facebook"></span> <span>Facebook</span>
+                                    </a>
+                                    <a tal:condition="extras.login_btns.oauth_twitter" class="btn btn-block btn-brand btn-twitter" data-service="twitter">
+                                        <span class="fa fa-twitter"></span> <span>Twitter</span>
+                                    </a>
+                                    <a tal:condition="extras.login_btns.oauth_github" class="btn btn-block btn-brand btn-github" data-service="github">
+                                        <span class="fa fa-github"></span> <span>Github</span>
+                                    </a>
+                                </div>
+                            </div>
     					</div>
     					<div id="signup">
 
-                            <div>
-                                <div class="row" id="popup-login-registration-oauth-buttons">
-                                    <div class="col-md-6 text-center" tal:condition="extras.login_btns.hhu_ldap or extras.login_btns.oauth_google or extras.login_btns.oauth_facebook or extras.login_btns.oauth_twitter or extras.login_btns.hhu_ldap">
-                                        <a class="btn btn-block btn-social btn-dbas" data-service="dbas">
-                                            <span class="fa fa-comments"></span><span i18n:translate="sign_in_with">Sign in with</span> <span><span>D-BAS</span>
-                                        </a>
-                                    </div>
-
-                                    <div class="col-md-6 text-center" tal:condition="extras.login_btns.hhu_ldap">
-                                        <a class="btn btn-block btn-social btn-hhu" data-service="hhu">
-                                            <span class="fa fa-university"></span><span i18n:translate="sign_in_with">Sign in with</span> <span>HHU</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-6 text-center" tal:condition="extras.login_btns.oauth_google">
-                                        <a class="btn btn-block btn-social btn-google" data-service="google">
-                                            <span class="fa fa-google"></span><span i18n:translate="sign_in_with">Sign in with</span> <span>Google</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-6 text-center" tal:condition="extras.login_btns.oauth_facebook">
-                                        <a class="btn btn-block btn-social btn-facebook" data-service="facebook">
-                                            <span class="fa fa-facebook"></span><span i18n:translate="sign_in_with">Sign in with</span> <span>Facebook</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-6 text-center" tal:condition="extras.login_btns.oauth_twitter">
-                                        <a class="btn btn-block btn-social btn-twitter" data-service="twitter">
-                                            <span class="fa fa-twitter"></span><span i18n:translate="sign_in_with">Sign in with</span> <span>Twitter</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-6 text-center" tal:condition="extras.login_btns.oauth_github">
-                                        <a class="btn btn-block btn-social btn-github" data-service="github">
-                                            <span class="fa fa-github"></span><span i18n:translate="sign_in_with">Sign in with</span> <span>Github</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="popup-login-registration-field" class="hidden">
-                                <p class="center lead">
+                            <div id="popup-login-registration-field">
+                                <p class="center">
                                     <span class="text-info" i18n:translate="never_display_real_name">We will never display your real name to other users!</span>
                                 </p>
+                                <p class="text-info center" id="popup-login-hhu-text" i18n:translate="have_account_hhu">If you have a valid account at the HHU, you can directly use the login!</p>
                                 <div class="form-group">
                                     <label class="col-md-3 control-label" for="userfirstname-input" i18n:translate="first_name">Your First Name</label>
                                     <div class="col-md-9 input-group">
@@ -331,7 +322,7 @@
                                 <div class="form-group">
                                     <label class="col-md-3 control-label" for="nick-input" i18n:translate="nickname">Your Nickname</label>
                                     <div class="col-md-9 input-group">
-                                        <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
+                                        <div class="input-group-addon"><i class="fa fa-user-secret fa-2x" aria-hidden="true"></i></div>
                                         <input id="nick-input" type="text" class="form-control nickname" name="nickname" autocomplete="off" tal:attributes="placeholder extras.tag.placeholder_nickname">
                                     </div>
                                 </div>

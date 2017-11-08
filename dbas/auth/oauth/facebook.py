@@ -10,9 +10,12 @@ Manage Google Client IDs: https://developers.facebook.com/apps/
 import os
 # import json
 from requests_oauthlib.oauth2_session import OAuth2Session
+from oauthlib.oauth2.rfc6749.errors import InsecureTransportError
 from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 from dbas.logger import logger
 from dbas.handler.user import values
+from dbas.strings.translator import Translator
+from dbas.strings.keywords import Keywords as _
 
 
 def start_flow(redirect_uri):
@@ -38,11 +41,12 @@ def start_flow(redirect_uri):
     return {'authorization_url': authorization_url, 'error': ''}
 
 
-def continue_flow(redirect_uri, redirect_response):
+def continue_flow(redirect_uri, redirect_response, ui_locales):
     """
 
     :param redirect_uri:
     :param redirect_response:
+    :param ui_locales:
     :return:
     """
     client_id = os.environ.get('DBAS_OAUTH_FACEBOOK_CLIENTID', None)
@@ -53,7 +57,12 @@ def continue_flow(redirect_uri, redirect_response):
            'Read OAuth id/secret: none? {}'.format(client_id is None, client_secret is None))
 
     token_url = 'https://graph.facebook.com/oauth/access_token'
-    facebook.fetch_token(token_url, client_secret=client_secret, authorization_response=redirect_response)
+    try:
+        facebook.fetch_token(token_url, client_secret=client_secret, authorization_response=redirect_response)
+    except InsecureTransportError:
+        logger('Facebook OAuth', 'continue_flow', 'OAuth 2 MUST utilize https', error=True)
+        _tn = Translator(ui_locales)
+        return {'user': '', 'missing': '', 'error': _tn.get(_.internalErrorHTTPS)}
 
     resp = facebook.get('https://graph.facebook.com/me?')
     logger('Facebook OAuth', 'continue_flow', str(resp.text))
@@ -65,5 +74,6 @@ def continue_flow(redirect_uri, redirect_response):
 
     return {
         'user': user_data,
-        'missing': missing_data
+        'missing': missing_data,
+        'error': ''
     }

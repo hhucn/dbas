@@ -10,9 +10,12 @@ Manage Github Client IDs: https://github.com/organizations/**YOUR_ACCOUNT**/sett
 import os
 import json
 from requests_oauthlib.oauth2_session import OAuth2Session
+from oauthlib.oauth2.rfc6749.errors import InsecureTransportError
 from dbas.logger import logger
 from slugify import slugify
 from dbas.handler.user import values
+from dbas.strings.translator import Translator
+from dbas.strings.keywords import Keywords as _
 
 
 def start_flow():
@@ -34,10 +37,11 @@ def start_flow():
     return {'authorization_url': authorization_url, 'error': ''}
 
 
-def continue_flow(redirect_response):
+def continue_flow(redirect_response, ui_locales):
     """
 
     :param redirect_response:
+    :param ui_locales:
     :return:
     """
     client_id = os.environ.get('DBAS_OAUTH_GITHUB_CLIENTID', None)
@@ -48,7 +52,12 @@ def continue_flow(redirect_response):
            'Read OAuth id/secret: none? {}'.format(client_id is None, client_secret is None))
 
     token_url = 'https://github.com/login/oauth/access_token'
-    github.fetch_token(token_url, client_secret=client_secret, authorization_response=redirect_response)
+    try:
+        github.fetch_token(token_url, client_secret=client_secret, authorization_response=redirect_response)
+    except InsecureTransportError:
+        logger('Github OAuth', 'continue_flow', 'OAuth 2 MUST utilize https', error=True)
+        _tn = Translator(ui_locales)
+        return {'user': '', 'missing': '', 'error': _tn.get(_.internalErrorHTTPS)}
 
     resp = github.get('https://api.github.com/user')
     logger('Github OAuth', 'continue_flow', str(resp.text))
@@ -99,5 +108,6 @@ def continue_flow(redirect_response):
 
     return {
         'user': user_data,
-        'missing': missing_data
+        'missing': missing_data,
+        'error': ''
     }

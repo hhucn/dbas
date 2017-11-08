@@ -10,9 +10,12 @@ Manage Google Client IDs: https://console.developers.google.com/apis/credentials
 import os
 import json
 from slugify import slugify
+from oauthlib.oauth2.rfc6749.errors import InsecureTransportError
 from requests_oauthlib.oauth2_session import OAuth2Session
 from dbas.logger import logger
 from dbas.handler.user import values
+from dbas.strings.translator import Translator
+from dbas.strings.keywords import Keywords as _
 
 
 def start_flow(redirect_uri):
@@ -48,11 +51,12 @@ def start_flow(redirect_uri):
     return {'authorization_url': authorization_url, 'error': ''}
 
 
-def continue_flow(mainpage, authorization_response):
+def continue_flow(mainpage, authorization_response, ui_locales):
     """
 
     :param mainpage:
-    :param authorization_response: Response uri given by user after clicking on 'authorization_url' of flow start
+    :param authorization_response:
+    :param ui_locales:
     :return:
     """
     client_id = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTID', None)
@@ -71,10 +75,16 @@ def continue_flow(mainpage, authorization_response):
 
     token_url = 'https://accounts.google.com/o/oauth2/token'
 
-    token = google.fetch_token(
-        token_url,
-        authorization_response=authorization_response,
-        client_secret=client_secret)
+    try:
+        token = google.fetch_token(
+            token_url,
+            authorization_response=authorization_response,
+            client_secret=client_secret)
+    except InsecureTransportError:
+        logger('Google OAuth', 'continue_flow', 'OAuth 2 MUST utilize https', error=True)
+        _tn = Translator(ui_locales)
+        return {'user': '', 'missing': '', 'error': _tn.get(_.internalErrorHTTPS)}
+
     logger('Google OAuth', 'continue_flow', 'Token: {}'.format(token))
 
     resp = google.get('https://www.googleapis.com/oauth2/v2/userinfo?alt=json')
@@ -88,7 +98,7 @@ def continue_flow(mainpage, authorization_response):
         'gender': 'm' if parsed_resp['gender'] == 'male' else 'f' if parsed_resp['gender'] == 'female' else '',
         'email': parsed_resp['email'],
         'password': parsed_resp['ad'],  # TODO: PASSWORD
-        'ui_locales': 'de' if parsed_resp['locale'] == 'de' else 'en'
+        'ui_locales': 'de' if parsed_resp['locale'] == 'de' else ui_locales
     }
 
     missing_data = [key for key in values if len(user_data[key]) == 0]
@@ -107,5 +117,6 @@ def continue_flow(mainpage, authorization_response):
 
     return {
         'user': user_data,
-        'missing': missing_data
+        'missing': missing_data,
+        'error': ''
     }

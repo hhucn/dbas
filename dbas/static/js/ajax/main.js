@@ -116,6 +116,7 @@ function AjaxMainHandler(){
 				window.open(data.authorization_url, '_self');
 			}
 		}).fail(function ajaxOauthLoginFail(xhr) {
+			setGlobalErrorHandler('Ohh!', data.error);
 			console.log('fail: ' + xhr.status);
 		});
 	};
