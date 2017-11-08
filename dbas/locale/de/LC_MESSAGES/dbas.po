@@ -90,7 +90,11 @@ msgstr "Kontakt"
 #. Default: The solution for every Large Scale Online-Discussion
 #: templates/index.pt:80
 msgid "landing-page-heading"
+<<<<<<< HEAD
 msgstr "Die Lösung für jede große Online-Diskussion"
+=======
+msgstr "Die Lösung für alle Online-Diskussionen"
+>>>>>>> development
 
 #. Default: Welcome to D-BAS! This is our Dialog-Based Argumentation System. It
 #. offers a clear discussion structure, a modern web interface, a decentralized
