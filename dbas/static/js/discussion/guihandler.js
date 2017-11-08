@@ -226,6 +226,68 @@ function GuiHandler() {
 	};
 	
 	/**
+	 *
+	 * @param data with the keywords: firstname, lastname, nickname, gender, email, password, ui_locales
+	 */
+	this.showCompleteLoginPopup = function(data){
+		// default
+		$('#popup-complete-login-inlineRadioGender1').prop('checked', true);
+		var mappings = {
+			'firstname': '#popup-complete-login-userfirstname-input',
+			'lastname': '#popup-complete-login-userlastname-input',
+			'nickname': '#popup-complete-login-nick-input',
+			'email': '#popup-complete-login-email-input',
+			'password1': '#popup-complete-login-password-input',
+			'password2': '#popup-complete-login-passwordconfirm-input'
+		};
+		$.each(mappings, function( key, value ) {
+			console.log(key + ' ' + (key in data.missing) + ' ' + (!(key in data.user)));
+			if (key in data.missing || !(key in data.user)) {
+				$(value).parent().addClass('has-warning');
+			}
+		});
+		
+		// check values
+		if ('firstname' in data.user){
+			$('#popup-complete-login-userfirstname-input').val(data.user.firstname).prop('disabled', true);
+		}
+		if ('lastname' in data.user){
+			$('#popup-complete-login-userlastname-input').val(data.user.lastname).prop('disabled', true);
+		}
+		if ('nickname' in data.user){
+			$('#popup-complete-login-nick-input').val(data.user.nickname).prop('disabled', true);
+		}
+		if ('gender' in data.user) {
+			if (data.user.gender === 'f') {
+				$('#popup-complete-login-inlineRadioGender2').prop('checked', true).prop('disabled', true);
+				$('#popup-complete-login-inlineRadioGender1').prop('disabled', true);
+				$('#popup-complete-login-inlineRadioGender3').prop('disabled', true);
+			} else  if (data.user.gender === 'm') {
+				$('#popup-complete-login-inlineRadioGender3').prop('checked', true).prop('disabled', true);
+				$('#popup-complete-login-inlineRadioGender1').prop('disabled', true);
+				$('#popup-complete-login-inlineRadioGender2').prop('disabled', true);
+			} else {
+				$('#popup-complete-login-inlineRadioGender1').prop('checked', true).prop('disabled', true);
+				$('#popup-complete-login-inlineRadioGender2').prop('disabled', true);
+				$('#popup-complete-login-inlineRadioGender3').prop('disabled', true);
+			}
+		}
+		if ('email' in data.user){
+			$('#popup-complete-email-input').value(data.user.email).prop('disabled', true);
+		}
+		
+		$('#popup-complete-login-close-button').click(function(){
+			$('#popup-complete-login').modal('hide');
+		});
+		
+		$('#popup-complete-login-register-button').off('click').click(function(){
+			alert('Todo: register');
+		});
+		
+		$('#popup-complete-login').modal('show');
+	};
+	
+	/**
 	 * Shows a modal where the user has to choose how the premisegroups should be treated
 	 *
 	 * @param undecided_texts, array of strings

@@ -55,7 +55,7 @@ def continue_flow(redirect_response, ui_locales):
     except InsecureTransportError:
         logger('Twitter OAuth', 'continue_flow', 'OAuth 2 MUST utilize https', error=True)
         _tn = Translator(ui_locales)
-        return {'user': '', 'missing': '', 'error': _tn.get(_.internalErrorHTTPS)}
+        return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
 
     twitter.fetch_token(token_url, client_secret=client_secret, authorization_response=redirect_response)
 

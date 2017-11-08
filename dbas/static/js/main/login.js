@@ -16,20 +16,11 @@ $(document).ready(function mainDocumentReady() {
 	//	$('#' + popupLogin).find('.modal-footer').removeClass('hidden');
 	//});
 	
-	$('.btn-google').click(function(){
-		new AjaxMainHandler().oauthLogin('google', window.location.href);
-	});
-	
-	$('.btn-facebook').click(function(){
-		new AjaxMainHandler().oauthLogin('facebook', window.location.href);
-	});
-	
-	$('.btn-twitter').click(function(){
-		alert('todo: twitter');
-	});
-	
-	$('.btn-github').click(function(){
-		new AjaxMainHandler().oauthLogin('github', window.location.href);
+	var classes = ['.btn-google', '.btn-facebook', '.btn-twitter', '.btn-github'];
+	$.each(classes, function( key, value ) {
+		$(value).click(function(){
+			new AjaxMainHandler().oauthLogin($(this).data('service'), window.location.href);
+		});
 	});
 	
 	$('#nav-tab-login').click(function(){
@@ -56,9 +47,12 @@ $(document).ready(function mainDocumentReady() {
 	
 	// check href for id's
 	var url = window.location.href;
-	
-	if (url.indexOf('state=') !== -1 && url.indexOf('code=') !== -1){
-		new AjaxMainHandler().oauthLogin('google', url);
-	}
+	var services = ['google', 'facebook', 'twitter', 'github'];
+	$.each(services, function( key, value ) {
+		if (url.indexOf('service=' + value + '&') !== -1){
+			url = url.replace('service=' + value + '&', '');
+			new AjaxMainHandler().oauthLogin(value, url);
+		}
+	});
 	
 });

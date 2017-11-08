@@ -112,6 +112,8 @@ function AjaxMainHandler(){
 			console.log(data);
 			if (data.error.length !== 0){
 				setGlobalErrorHandler('Ohh!', data.error);
+			} else if ('missing' in data && data.missing.length !== 0) {
+				new GuiHandler().showCompleteLoginPopup(data);
 			} else {
 				window.open(data.authorization_url, '_self');
 			}

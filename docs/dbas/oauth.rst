@@ -22,3 +22,11 @@ You can set up the id's and keys on these sites:
 
 The given parameters of our ``development.env`` are only for development, because the given id's and keys are
 authorized only for the website of ``lvh.me`` which is a redirect to ``localhost``.
+
+If you want to add another provider, please follow these steps:
+
+ 1. Add the name of the provider in the both arrays in `dbas/static/js/main/login.py`
+ 2. Add a button for the login popup `dbas/templates/snippet-popups.pt`
+ 3. Add the client id and secret in the env-vars
+ 4. Add the provider key in `dbas/auth/login.py`
+ 5. And finally and a function for your provider in `dbas/auth/oauth/`

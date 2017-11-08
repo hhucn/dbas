@@ -83,7 +83,7 @@ def continue_flow(mainpage, authorization_response, ui_locales):
     except InsecureTransportError:
         logger('Google OAuth', 'continue_flow', 'OAuth 2 MUST utilize https', error=True)
         _tn = Translator(ui_locales)
-        return {'user': '', 'missing': '', 'error': _tn.get(_.internalErrorHTTPS)}
+        return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
 
     logger('Google OAuth', 'continue_flow', 'Token: {}'.format(token))
 

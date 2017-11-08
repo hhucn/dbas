@@ -57,7 +57,9 @@ def continue_flow(redirect_response, ui_locales):
     except InsecureTransportError:
         logger('Github OAuth', 'continue_flow', 'OAuth 2 MUST utilize https', error=True)
         _tn = Translator(ui_locales)
-        return {'user': '', 'missing': '', 'error': _tn.get(_.internalErrorHTTPS)}
+        # missing_data = ['surname', 'email', 'nickname', 'password']
+        # return {'user': {'firstname': 'anton', 'gender': 'm'}, 'missing': missing_data, 'error': ''}
+        return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
 
     resp = github.get('https://api.github.com/user')
     logger('Github OAuth', 'continue_flow', str(resp.text))
@@ -66,14 +68,14 @@ def continue_flow(redirect_response, ui_locales):
     user_data = {
         'firstname': parsed_resp['name'].rsplit(' ', 1)[0],
         'lastname': parsed_resp['name'].rsplit(' ', 1)[1],
-        'nickname': slugify(parsed_resp['login']),  # TODO: NICKNAME
+        'nickname': slugify(parsed_resp['login']),
         'gender': 'n',
-        'email': parsed_resp['email'],  # TODO: MAYBE NONE
-        'password': parsed_resp['ad'],  # TODO: PASSWORD
-        'ui_locales': 'en'  # TODO: LANG
+        'email': parsed_resp['email'],
+        'password': parsed_resp['ad'],
+        'ui_locales': 'en'
     }
 
-    missing_data = [key for key in values if len(user_data[key]) == 0]
+    missing_data = [key for key in values if len(user_data[key]) == 0 or user_data[key] is 'null']
 
     # 'login': 'tkrauthoff'
     # 'id': 5970416

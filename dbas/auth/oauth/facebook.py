@@ -62,7 +62,7 @@ def continue_flow(redirect_uri, redirect_response, ui_locales):
     except InsecureTransportError:
         logger('Facebook OAuth', 'continue_flow', 'OAuth 2 MUST utilize https', error=True)
         _tn = Translator(ui_locales)
-        return {'user': '', 'missing': '', 'error': _tn.get(_.internalErrorHTTPS)}
+        return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
 
     resp = facebook.get('https://graph.facebook.com/me?')
     logger('Facebook OAuth', 'continue_flow', str(resp.text))

@@ -217,6 +217,89 @@
     	</div>
     </div>
 
+    <!-- COMPLETE LOGIN INFORMATION  POPUP -->
+    <div class="modal fade" id="popup-complete-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabelURL" aria-hidden="true">
+    	<div class="modal-dialog">
+    		<div class="modal-content">
+    			<div class="modal-header">
+    				<button type="button" id="popup-complete-login-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+    				</button>
+    				<h5 class="modal-title" i18n:translate="plase_add_missing_infos">Please add the missing information</h5>
+    			</div>
+    			<div id="popup-complete-login-body">
+                    <form autocomplete="on" style="margin: 2em;">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="popup-complete-login-userfirstname-input" i18n:translate="first_name">Your First Name</label>
+                            <div class="col-md-9 input-group">
+                                <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
+                                <input id="popup-complete-login-userfirstname-input" type="text" name="firstname" class="form-control userfirstname active" autocomplete="on" tal:attributes="placeholder extras.tag.placeholder_firstname">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="popup-complete-login-userlastname-input" i18n:translate="last_name">Your Last Name</label>
+                            <div class="col-md-9 input-group">
+                                <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
+                                <input id="popup-complete-login-userlastname-input" type="text" name="surname" class="form-control userlastname" autocomplete="on" tal:attributes="placeholder extras.tag.placeholder_lastname">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="popup-complete-login-nick-input" i18n:translate="nickname">Your Nickname</label>
+                            <div class="col-md-9 input-group">
+                                <div class="input-group-addon"><i class="fa fa-user-secret fa-2x" aria-hidden="true"></i></div>
+                                <input id="popup-complete-login-nick-input" type="text" class="form-control nickname" name="nickname" autocomplete="off" tal:attributes="placeholder extras.tag.placeholder_nickname">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" i18n:translate="your_gender">Your Gender</label>
+                            <div class="col-md-9 input-group" style="padding-left: 1.3em">
+                                <input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="popup-complete-login-inlineRadioGender1" value="-" checked>
+                                <label for="popup-complete-login-inlineRadioGender1">
+                                    <i class="fa fa-times fa-2x" aria-hidden="true"></i>
+                                    <!--<span i18n:translate="none">none</span>-->
+                                </label>
+                                <input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="popup-complete-login-inlineRadioGender2" value="f">
+                                <label for="popup-complete-login-inlineRadioGender2">
+                                    <i class="fa fa-female fa-2x" aria-hidden="true"></i>
+                                    <!--<span i18n:translate="female">female</span>-->
+                                </label>
+                                <input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="popup-complete-login-inlineRadioGender3" value="m">
+                                <label for="popup-complete-login-inlineRadioGender3">
+                                    <i class="fa fa-male fa-2x" aria-hidden="true"></i>
+                                    <!--<span i18n:translate="male">male</span>-->
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="popup-complete-login-email-input" i18n:translate="your_email">Your Email Address</label>
+                            <div class="col-md-9 input-group">
+                                <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
+                                <input id="popup-complete-login-email-input" type="email" class="form-control email" name="email" autocomplete="on" tal:attributes="placeholder extras.tag.placeholder_mail">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="popup-complete-login-password-input" i18n:translate="password">Your Password</label>
+                            <div class="col-md-9 input-group">
+                                <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
+                                <input id="popup-complete-login-password-input" type="password" name="password" class="form-control password" autocomplete="off" tal:attributes="placeholder extras.tag.placeholder_password">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="popup-complete-login-passwordconfirm-input" i18n:translate="password-confirm">Password (confirm)</label>
+                            <div class="col-md-9 input-group">
+                                <div class="input-group-addon"><i class="fa fa-unlock fa-2x" aria-hidden="true"></i></div>
+                                <input id="popup-complete-login-passwordconfirm-input" type="password" name="passwordconfirm" class="form-control password" autocomplete="off" tal:attributes="placeholder extras.tag.placeholder_password">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+    			<div class="modal-footer">
+    				<button id="popup-complete-login-register-button" type="button" class="btn btn-primary" i18n:translate="register">Register</button>
+    				<button id="popup-complete-login-close-button" type="button" class="btn btn-secondary" i18n:translate="close">Close</button>
+    			</div>
+    		</div>
+    	</div>
+    </div>
+
     <!-- LOGIN POPUP -->
     <div class="modal fade" id="popup-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLogin" aria-hidden="true">
     	<div class="modal-dialog">
@@ -432,8 +515,8 @@
 
     			</div>
     			<div class="modal-footer hidden">
-    				<button id="popup-login-button-login" type="button" class="btn btn-primary" i18n:translate="login">Log In</button>
-    				<button type="button" class="btn btn-secondary" id="popup-login-close-button1" i18n:translate="close">Close</button>
+    				<button id="popup-login-button-register" type="button" class="btn btn-primary" i18n:translate="register">Register</button>
+    				<button id="popup-login-close-button1" type="button" class="btn btn-secondary" i18n:translate="close">Close</button>
     			</div>
     		</div>
     	</div>
