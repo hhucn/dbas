@@ -9,7 +9,7 @@ from graphene_sqlalchemy import SQLAlchemyObjectType
 
 from api.v2.graphql.resolve import resolve_field_query, resolve_list_query
 from dbas.database.discussion_model import Statement, Issue, TextVersion, User, Language, StatementReferences, \
-    PremiseGroup, Premise, Argument
+    StatementOrigins, PremiseGroup, Premise, Argument
 
 
 # -----------------------------------------------------------------------------
@@ -43,6 +43,12 @@ class ArgumentGraph(SQLAlchemyObjectType):
 class StatementReferencesGraph(SQLAlchemyObjectType):
     class Meta:
         model = StatementReferences
+        exclude_fields = "created"
+
+
+class StatementOriginsGraph(SQLAlchemyObjectType):
+    class Meta:
+        model = StatementOrigins
         exclude_fields = "created"
 
 
@@ -97,6 +103,7 @@ class Query(graphene.ObjectType):
     arguments = graphene.List(ArgumentGraph, is_supportive=graphene.Boolean())
     statement_reference = graphene.Field(StatementReferencesGraph, uid=graphene.Int())
     statement_references = graphene.List(StatementReferencesGraph)
+    statement_origin = graphene.Field(StatementOriginsGraph, uid=graphene.Int(), statement_uid=graphene.Int())
     issue = graphene.Field(IssueGraph, uid=graphene.Int(), slug=graphene.String(), title=graphene.String())
     issues = graphene.List(IssueGraph, slug=graphene.String(), title=graphene.String())
     premise = graphene.Field(PremiseGraph, uid=graphene.Int())
@@ -123,6 +130,9 @@ class Query(graphene.ObjectType):
 
     def resolve_statement_references(self, args, context, info):
         return StatementReferencesGraph.get_query(context).all()
+
+    def resolve_statement_origin(self, args, context, info):
+        return resolve_field_query(args, context, StatementOriginsGraph)
 
     def resolve_issue(self, args, context, info):
         return resolve_field_query(args, context, IssueGraph)
