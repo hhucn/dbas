@@ -82,11 +82,12 @@ class DictionaryHelper(object):
         :return: dict()
         """
         return self.prepare_extras_dict('', False, False, False, request, append_notifications=append_notifications,
-                                        nickname=request.authenticated_userid)
+                                        nickname=request.authenticated_userid, ongoing_discussion=False)
 
     def prepare_extras_dict(self, current_slug, is_reportable, show_bar_icon, show_graph_icon, request, nickname,
                             for_api=False, append_notifications=False, broke_limit=False,
-                            add_premise_container_style='display: none', add_statement_container_style='display: none'):
+                            add_premise_container_style='display: none', add_statement_container_style='display: none',
+                            ongoing_discussion=True):
         """
         Creates the extras.dict() with many options!
 
@@ -101,6 +102,7 @@ class DictionaryHelper(object):
         :param broke_limit: Boolean
         :param add_premise_container_style: style string, default 'display:none;'
         :param add_statement_container_style: style string, default 'display:none;'
+        :param ongoing_discussion: Boolean
         :return: dict()
         """
         logger('DictionaryHelper', 'prepare_extras_dict', 'def user ' + str(nickname))
@@ -132,7 +134,7 @@ class DictionaryHelper(object):
 
         return_dict = dict()
         return_dict['year'] = datetime.datetime.now().year
-        return_dict['restart_url'] = UrlManager(application_url, current_slug, for_api).get_slug_url(True)
+        return_dict['restart_url'] = UrlManager(application_url, current_slug, for_api).get_slug_url(False)
         return_dict['is_in_discussion'] = 'discuss' in request.path
         return_dict['logged_in'] = is_logged_in
         return_dict['nickname'] = request_authenticated_userid
@@ -140,6 +142,7 @@ class DictionaryHelper(object):
         return_dict['add_premise_container_style'] = add_premise_container_style
         return_dict['add_statement_container_style'] = add_statement_container_style
         return_dict['users_avatar'] = get_profile_picture(db_user, 25)
+        return_dict['ongoing_discussion'] = ongoing_discussion
         if db_user:
             return_dict['is_user_male'] = db_user.gender == 'm'
             return_dict['is_user_female'] = db_user.gender == 'f'
@@ -182,7 +185,7 @@ class DictionaryHelper(object):
         return_dict['close_premise_container'] = True
         return_dict['close_statement_container'] = True
         return_dict['date'] = arrow.utcnow().format('DD-MM-YYYY')
-        self.add_title_text(return_dict)
+        self.add_title_text(return_dict, is_logged_in)
         self.add_button_text(return_dict)
         self.add_tag_text(return_dict)
 
@@ -499,18 +502,19 @@ class DictionaryHelper(object):
             'hide_statements': _tn_dis.get(_.statementsHideAll)
         }
 
-    def add_title_text(self, return_dict):
+    def add_title_text(self, return_dict, logged_in):
         """
         Adds string-map in the return dict with the client_key 'title'
 
         :param return_dict: current dictionary
+        :param logged_in: Boolean
         :return: None
         """
         _tn_dis = Translator(self.discussion_lang)
         _tn_sys = Translator(self.system_lang)
         return_dict['title'] = {
             'barometer': _tn_sys.get(_.opinionBarometer),
-            'add_issue_info': _tn_sys.get(_.addIssueInfo).format(limit_for_open_issues),
+            'add_issue_info': _tn_sys.get(_.addIssueInfo).format(limit_for_open_issues) if logged_in else _tn_sys.get(_.notLoggedIn),
             'guided_view': _tn_sys.get(_.displayControlDialogGuidedTitle),
             'island_view': _tn_sys.get(_.displayControlDialogIslandTitle),
             'graph_view': _tn_sys.get(_.displayControlDialogGraphTitle),
@@ -540,6 +544,11 @@ class DictionaryHelper(object):
             'mark_as_opinion': _tn_dis.get(_.mark_as_opinion),
             'unmark_as_opinion': _tn_dis.get(_.unmark_as_opinion)
         }
+
+        if logged_in:
+            return_dict['add_issue_info'] = _tn_sys.get(_.addIssueInfo).format(limit_for_open_issues)
+        else:
+            return_dict['add_issue_info'] = _tn_sys.get(_.notLoggedIn),
 
     def add_tag_text(self, return_dict):
         """

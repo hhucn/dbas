@@ -295,8 +295,8 @@ def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tm
         tmp.append(str(attribute)[:5] + '...')
 
     elif column == 'premisesgroup_uid':
-        text, l = get_text_for_premisesgroup_uid(attribute) if attribute is not None else ('None', '[-]')
-        tmp.append(str(attribute) + ' - ' + str(text) + ' ' + str(l))
+        text, uid_list = get_text_for_premisesgroup_uid(attribute) if attribute is not None else ('None', '[-]')
+        tmp.append(str(attribute) + ' - ' + str(text) + ' ' + str(uid_list))
 
     elif column in _statement_columns:
         text = get_text_for_statement_uid(attribute) if attribute is not None else 'None'
@@ -481,7 +481,10 @@ def __update_row_dict(table, values, keys, _tn):
         if value_type == 'INTEGER':
             # check for foreign key of author or language
             if key in _user_columns:
-                db_user = DBDiscussionSession.query(User).filter_by(nickname=values[index]).first()
+                # clear key / cut "(uid)"
+                tmp = values[index]
+                tmp = tmp[:tmp.rfind(" (")]
+                db_user = DBDiscussionSession.query(User).filter_by(nickname=tmp).first()
                 if not db_user:
                     return _tn.get(_.userNotFound), False
                 update_dict[key] = db_user.uid

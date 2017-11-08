@@ -29,7 +29,7 @@ build_test_image:
     - 10c
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE .
+    - docker build -t $CI_REGISTRY_IMAGE --pull .
     - docker tag $CI_REGISTRY_IMAGE $CI_REGISTRY_IMAGE:experimental
     - docker push $CI_REGISTRY_IMAGE:experimental
 
@@ -100,7 +100,7 @@ deploy_docs_image:
   stage: deploy
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE -f Dockerfile.docs .
+    - docker build -t $CI_REGISTRY_IMAGE -f Dockerfile.docs --pull .
     - docker tag $CI_REGISTRY_IMAGE $CI_REGISTRY_IMAGE:docs
     - docker push $CI_REGISTRY_IMAGE:docs
   only:

@@ -12,9 +12,7 @@ var mainpage = location.origin + '/'; //get_hostname(window.location.href);
  */
 _t = function(id){
     'use strict';
-    
-    var lang_id = $('#' + languageDropdownId).find('.active a').attr('id');
-    return get_it(lang_id, id);
+    return get_it(getLanguage(), id);
 };
 
 
@@ -53,21 +51,7 @@ var get_it = function(val, id){
  */
 getLanguage = function(){
     'use strict';
-    
-    var this_id, value = 'unknown value';
-    $('#' + languageDropdownId).children().each(function(){
-        if ($(this).hasClass('active')){
-            this_id = $(this).children().first().attr('id');
-            if (this_id.indexOf('en') !== -1){
-                value = 'en';
-            } else if (this_id.indexOf('de') !== -1){
-                value = 'de';
-            } else {
-                value = 'unknown value';
-            }
-        }
-    });
-    return value;
+    return $('#hidden_language').val();
 };
 
 /**
@@ -92,6 +76,7 @@ getDiscussionLanguage = function(){
  * Messages & Errors
  * @type {string}
  */
+
 var checkmark                       = '&#x2713;'; // ✓
 var ballot                          = '&#x2717;'; // ✗
 var and                             = 'and';
@@ -128,6 +113,7 @@ var changelogHide                   = 'changelogHide';
 var clickedOnThis                   = 'clickedOnThis';
 var countOfArguments                = 'countOfArguments';
 var countdownEnded                  = 'countdownEnded';
+var urlCopy                         = 'urlCopy';
 var couldNotLock                    = 'couldNotLock';
 var contentWillBeRevoked            = 'contentWillBeRevoked';
 var dataRemoved                     = 'dataRemoved';
@@ -138,6 +124,9 @@ var doNotHesitateToContact          = 'doNotHesitateToContact';
 var date                            = 'date';
 var deleteTrack                     = 'deleteTrack';
 var deleteHistory                   = 'deleteHistory';
+var deleteEverything                = 'deleteEverything';
+var deleteMarked                    = 'deleteMarked';
+var discussionsAvailabilitySet      = 'discussionsAvailabilitySet';
 var deleteStatisticsTitle           = 'deleteStatisticsTitle';
 var deleteStatisticsBody            = 'deleteStatisticsBody';
 var euCookiePopupTitle              = 'euCookiePopupTitle';
@@ -256,6 +245,8 @@ var requestFailedInternalError      = 'requestFailedInternalError';
 var restartOnError                  = 'restartOnError';
 var repuationChartSum               = 'repuationChartSum';
 var repuationChartDay               = 'repuationChartDay';
+var readEverything                  = 'readEverything';
+var readMarked                      = 'readMarked';
 var searchStatementPopupTitleText   = 'searchStatementPopupTitleText';
 var searchStatementPopupBodyText    = 'searchStatementPopupBodyText';
 var sawThis                         = 'saw this';
@@ -332,8 +323,6 @@ var tourHaveFunContent              = 'tourHaveFunContent';
 var WARNING_CHANGE_DISCUSSION_POPUP = 'WARNING_CHANGE_DISCUSSION_POPUP';
 var BUBBLE_INFOS = 'SPEECH_BUBBLE_INFOS';
 var GUIDED_TOUR = 'PASSED_GUIDED_TOUR';
-var GUIDED_TOUR_RUNNING_START = 'GUIDED_TOUR_RUNNING_FROM_START';
-var GUIDED_TOUR_RUNNING_DISCUSSION = 'GUIDED_TOUR_RUNNING_FROM_DISCUSSION';
 var ADMIN_WARNING = 'hide-admin-caution-warning';
 var LANG_SWITCH_WARNING = 'LANG_SWITCH_WARNING';
 var DBAS_DATA_DISCLAIMER = 'DBAS_DATA_DISCLAIMER';
@@ -344,8 +333,8 @@ var DBAS_DATA_DISCLAIMER = 'DBAS_DATA_DISCLAIMER';
  */
 var urlContact  = 'contact';
 var urlLogin    = 'login';
-var urlNews     = 'news';
 var urlContent  = 'discuss';
+var urlDiscussions = 'mydiscussions';
 var urlSettings = 'settings';
 var urlImprint  = 'imprint';
 var urlLogout   = 'logout';
@@ -373,6 +362,7 @@ var dbas_en = {
     'author': 'Author',
     'because': 'because',
     'countOfArguments': 'Count of arguments',
+    'urlCopy': 'URL was copied into your clipboard',
     'countdownEnded': 'Your time is up. Unfortunately you cannot edit anything on this page anymore.',
     'contentWillBeRevoked': 'You will be disassociated from the content.',
     'couldNotLock': 'Set could not be locked, please try again!',
@@ -393,6 +383,9 @@ var dbas_en = {
     'clickedOnThis': 'clicked on this',
     'deleteTrack': 'Delete track',
     'deleteHistory': 'Delete history',
+    'deleteEverything': 'Delete everything',
+    'deleteMarked': 'Delete marked elements',
+    'discussionsAvailabilitySet': 'The discussion availibility was set.',
     'dataRemoved': 'Data was successfully removed.',
     'dataAdded': 'Data was successfully added.',
     'date': 'Date',
@@ -504,6 +497,8 @@ var dbas_en = {
     'questionSplitStatementPl': 'Do you really want to split the given statement with the XXX statements you have entered?',
     'position': 'Position',
     'revokedArgument': 'revoked argument',
+    'readEverything': 'Set everything as read',
+    'readMarked': 'Set marked elements as read',
     'registered': 'Registered',
     'restartOnError': 'Please try to reload this page or restart the discussion when the error stays',
     'report': 'Report',
@@ -618,6 +613,7 @@ var dbas_de = {
     'cancel': 'Abbrechen',
     'correctionsSet': 'Ihre Korrektur wurde gesetzt.',
     'countOfArguments': 'Anzahl der Argumente',
+    'urlCopy': 'URL wurde in Ihre Zwischenablage kopiert',
     'countdownEnded': 'Ihre Zeit ist abgelaufen, leider können Sie auf dieser Seite keine Änderungen mehr vornehmen.',
     'contentWillBeRevoked': 'Sie werden vom Inhalt entfernt werden.',
     'couldNotLock': 'Datensatz konnte nicht für Sie gesperrt werden, bitte versuchen Sie es erneut!',
@@ -639,6 +635,9 @@ var dbas_de = {
     'duplicateDialog': 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version dennoch als die aktuellste markieren?',
     'deleteTrack': 'Track löschen',
     'deleteHistory': 'History löschen',
+    'deleteEverything': 'Alle löschen',
+    'deleteMarked': 'Ausgewählte Elemente löschen',
+    'discussionsAvailabilitySet': 'Die Verfügbarkeit der Diskussion wurde geändert.',
     'doNotHesitateToContact': 'Bitte zögern Sie bei Fehlern nicht, <b><span style="cursor: pointer;" id="contact_on_error">uns zu kontaktieren (hier klicken)</span></b>',
     'deleteStatisticsTitle': 'Statistik löschen',
     'deleteStatisticsBody': 'Dies löscht die Statstik. Dadurch werden alle Klicks, die von Ihnen getätigt wurden, wieder entfernt.',
@@ -749,6 +748,8 @@ var dbas_de = {
     'report': 'Melden',
     'reportTitle': 'Öffnet eine E-Mail, damit etwas gemeldet werden kann.',
     'revokedArgument': 'wiederrufenes Argument',
+    'readEverything': 'Alle als gelesen markieren',
+    'readMarked': 'Ausgewählte Elemente als gelesen markieren',
     'registered': 'Registriert',
     'requestTrack': 'Track anfragen',
     'refreshTrack': 'Track neuladen',

@@ -228,6 +228,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
+        self.assertEqual(len(DBDiscussionSession.query(Issue).filter_by(title='Some new title').all()), 1)
         DBDiscussionSession.query(Issue).filter_by(title='Some new title').delete()
         transaction.commit()
 

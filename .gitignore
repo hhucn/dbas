@@ -37,7 +37,6 @@ coverage.xml
 *.jar
 db.txt
 mergeDatabase.py
-requirementsUpdater.py
 getMails.py
 addEnglischDiscussion.py
 .#*
@@ -64,8 +63,7 @@ node_modules/
 restorePostgres.sh
 
 # DB Files
-*.sql
-!001_init.sh.bak
-!002_development_seed.sql
+docker/db/entrypoint/*
+docker/db/data/
 
 .scannerwork/

@@ -347,6 +347,18 @@ function InteractionHandler() {
 			new PopupHandler().showReferencesPopup(data);
 		}
 	};
+
+	/**
+	 *
+	 * @param data
+	 */
+	this.callbackForSetAvailabilityOfDiscussion = function(data){
+		if (data.error.length !== 0) {
+			setGlobalErrorHandler(_t(ohsnap), data.error);
+		} else {
+			setGlobalSuccessHandler('Yeah!', _t(discussionsAvailabilitySet));
+		}
+	};
 	
 	/**
 	 *

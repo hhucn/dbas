@@ -148,10 +148,6 @@ span[data-argumentation-type^="position"]
   font-style: italic
   padding-right: 0.5em
 
-.cn
-  display: flex
-  justify-content: center
-
 .inner
   align-self: center
 
@@ -194,6 +190,21 @@ span[data-argumentation-type^="position"]
 #popup-flag-statement fieldset > label
   width: 95%
 
+.big-header
+  background-image: url('../images/pexel1.jpg')
+  //background-blend-mode: color-burn
+  //background-color: #21b4db
+  background-size: cover
+  padding: 3em 2em 5em 2em
+  h3
+    padding-top: 2em
+    color: white !important
+    i
+      margin-right: 0.5em
+  p,span
+    color: white !important
+    padding-bottom: 1em
+
 @media (max-width: 767px)
   #pro-position-column, #con-position-column
     float: none
@@ -202,9 +213,6 @@ span[data-argumentation-type^="position"]
     padding-left: 0
   #discussions-space label
     max-width: 90%
-  .cn
-    display: inline
-    justify-content: center
 
   .content-wrapper
     width: 90%
@@ -215,3 +223,5 @@ span[data-argumentation-type^="position"]
 @media (max-width: 992px)
   #issue-dropdown
     margin-bottom: 1em
+  .big-header
+    padding: 3em 1em 5em 1em
