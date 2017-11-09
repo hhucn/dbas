@@ -1,4 +1,6 @@
 """
+!!! CURRENTLY NOT USED !!!
+
 Twitter OAuth handler of D-BAS
 
 App is registered by the account of Tobias Krauthoff
