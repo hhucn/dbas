@@ -148,7 +148,7 @@ class AuthLoginTest(unittest.TestCase):
         self.assertIsNone(db_new_user)
 
     def test_login_user_oauth(self):
-        services = ['google', 'github', 'facebook', '']
+        services = ['google', 'github', 'facebook', '']  # 'twitter'
         for service in services:
             redirect_uri = 'http://lvh.me:4284'
             ui_locales = 'en'
@@ -159,8 +159,11 @@ class AuthLoginTest(unittest.TestCase):
                 'DBAS_OAUTH_GITHUB_CLIENTKEY': 'DBAS_OAUTH_GITHUB_CLIENTKEY',
                 'DBAS_OAUTH_FACEBOOK_CLIENTID': 'DBAS_OAUTH_FACEBOOK_CLIENTID',
                 'DBAS_OAUTH_FACEBOOK_CLIENTKEY': 'DBAS_OAUTH_FACEBOOK_CLIENTKEY',
+                'DBAS_OAUTH_TWITTER_CLIENTID': 'DBAS_OAUTH_TWITTER_CLIENTID',
+                'DBAS_OAUTH_TWITTER_CLIENTKEY': 'DBAS_OAUTH_TWITTER_CLIENTKEY',
             }
             request = testing.DummyRequest(params={'application_url': 'http://lvh.me'}, matchdict={}, environ=environ)
+            request.environ = environ
             resp = login_user_oauth(request, service, redirect_uri, ui_locales)
             if len(service) > 0:
                 self.assertIsNotNone(resp)
