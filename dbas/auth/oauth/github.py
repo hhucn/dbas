@@ -10,7 +10,7 @@ Manage Github Client IDs: https://github.com/organizations/**YOUR_ACCOUNT**/sett
 import os
 import json
 from requests_oauthlib.oauth2_session import OAuth2Session
-from oauthlib.oauth2.rfc6749.errors import InsecureTransportError
+from oauthlib.oauth2.rfc6749.errors import InsecureTransportError, InvalidClientError
 from dbas.logger import logger
 from slugify import slugify
 from dbas.handler.user import values
@@ -59,6 +59,10 @@ def continue_flow(redirect_response, ui_locales):
         _tn = Translator(ui_locales)
         # missing_data = ['surname', 'email', 'nickname', 'password']
         # return {'user': {'firstname': 'anton', 'gender': 'm'}, 'missing': missing_data, 'error': ''}
+        return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
+    except InvalidClientError:
+        logger('Github OAuth', 'continue_flow', 'InvalidClientError', error=True)
+        _tn = Translator(ui_locales)
         return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
 
     resp = github.get('https://api.github.com/user')

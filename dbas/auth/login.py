@@ -158,7 +158,7 @@ def __do_twitter_oauth(request, redirect_uri, ui_locales):
     :return:
     """
     if 'code' in redirect_uri:
-        data = twitter.continue_flow(redirect_uri, ui_locales)
+        data = twitter.continue_flow(request, redirect_uri)
         if len(data['error']) != 0 or len(data['missing']) != 0:
             return data
 
@@ -169,7 +169,7 @@ def __do_twitter_oauth(request, redirect_uri, ui_locales):
         url = request.application_url + '/discuss'
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
-        return twitter.start_flow()
+        return twitter.start_flow(request, redirect_uri)
 
 
 def __set_oauth_user(request, user_data, ui_locales):
