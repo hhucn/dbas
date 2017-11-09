@@ -1,6 +1,6 @@
 import unittest
 from pyramid import testing
-from dbas.auth.oauth import twitter as twitter
+# from dbas.auth.oauth import twitter as twitter
 
 
 class OAuthTwitterLoginTest(unittest.TestCase):
