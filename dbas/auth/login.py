@@ -314,8 +314,12 @@ def register_user_with_ajax_data(request):
     gender = escape_string(params['gender']) if 'gender' in params else ''
     password = escape_string(params['password']) if 'password' in params else ''
     passwordconfirm = escape_string(params['passwordconfirm']) if 'passwordconfirm' in params else ''
-    recaptcha = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
-    is_human, error = validate_recaptcha(recaptcha)
+    if request.params['mode'] == 'manually':
+        recaptcha = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
+        is_human, error = validate_recaptcha(recaptcha)
+    else:
+        is_human = True
+        error = False
     db_new_user = None
 
     # database queries mail verification

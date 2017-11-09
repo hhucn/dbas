@@ -232,6 +232,7 @@ function GuiHandler() {
 	this.showCompleteLoginPopup = function(data){
 		// default
 		$('#popup-complete-login-inlineRadioGender1').prop('checked', true);
+		$('#popup-complete-login-failed').hide();
 		var mappings = {
 			'firstname': '#popup-complete-login-userfirstname-input',
 			'lastname': '#popup-complete-login-userlastname-input',
@@ -282,6 +283,45 @@ function GuiHandler() {
 		
 		$('#popup-complete-login-register-button').off('click').click(function(){
 			alert('Todo: register');
+			var gender = '';
+			if ($('#popup-complete-login-inlineRadioGender1').is(':checked')){ gender = 'n'; }
+			if ($('#popup-complete-login-inlineRadioGender2').is(':checked')){ gender = 'm'; }
+			if ($('#popup-complete-login-inlineRadioGender3').is(':checked')){ gender = 'f'; }
+			$.ajax({
+				url: 'ajax_user_registration',
+				type: 'POST',
+				data: {
+					firstname: $('#popup-complete-login-userfirstname-input').val(),
+					lastname: $('#popup-complete-login-userlastname-input').val(),
+					nickname: $('#popup-complete-login-nick-input').val(),
+					gender: gender,
+					email: $('#popup-complete-login-email-input').val(),
+					password: $('#popup-complete-login-password-input').val(),
+					passwordconfirm: $('#popup-complete-login-passwordconfirm-input').val(),
+					'g-recaptcha-response': '',
+					lang: getLanguage(),
+					mode: 'oauth'
+				},
+				dataType: 'json',
+				async: true,
+				headers: {
+					'X-CSRF-Token': csrf_token
+				}
+			}).done(function ajaxRegistrationOauthDone(data) {
+				callbackIfDoneForRegistrationViaOauth(data);
+			}).fail(function ajaxRegistrationOauthFail(xhr) {
+				$('#popup-complete-login-failed').removeClass('hidden');
+				if (xhr.status === 400) {
+					$('#popup-complete-login-failed-message').text(_t(requestFailedBadToken));
+				} else if (xhr.status === 500) {
+					$('#popup-complete-login-failed-message').text(_t(requestFailedInternalError));
+				} else {
+					$('#popup-complete-login-failed-message').text(_t(requestFailed));
+				}
+			}).always(function ajaxLoginOauthAlways(){
+				$('#popup-complete-login-password-input').val('');
+				$('#popup-complete-login-passwordconfirm-input').val('');
+			});
 		});
 		
 		$('#popup-complete-login').modal('show');

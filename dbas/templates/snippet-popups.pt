@@ -291,6 +291,13 @@
                             </div>
                         </div>
                     </form>
+
+                    <div class="col-md-12" id="popup-complete-login-failed">
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                            <span class="sr-only" i18n:translate="error">Error:</span> <span id="popup-complete-login-failed-message"></span>
+                        </div>
+                    </div>
                 </div>
     			<div class="modal-footer">
     				<button id="popup-complete-login-register-button" type="button" class="btn btn-primary" i18n:translate="register">Register</button>
@@ -494,19 +501,19 @@
     					</div>
     				</div>
 
-                    <div class="col-md-12" id="popup-login-failed">
+                    <div class="col-md-12" id="popup-login-failed" style="margin-top: 2em">
                         <div class="alert alert-danger" role="alert">
                             <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                             <span class="sr-only" i18n:translate="error">Error:</span> <span id="popup-login-failed-message"></span>
                         </div>
                     </div>
-                    <div class="col-md-12" id="popup-login-success">
+                    <div class="col-md-12" id="popup-login-success" style="margin-top: 2em">
                         <div class="alert alert-success" role="alert">
                             <i class="fa fa-check-circle" aria-hidden="true"></i>
                             <span class="sr-only" i18n:translate="success">Success:</span> <span id="popup-login-success-message"></span>
                         </div>
                     </div>
-                    <div class="col-md-12" id="popup-login-info">
+                    <div class="col-md-12" id="popup-login-info" style="margin-top: 2em">
                         <div class="alert alert-warning" role="alert">
                             <i class="fa fa-info-circle" aria-hidden="true"></i>
                             <span class="sr-only" i18n:translate="info">Info:</span> <span id="popup-login-info-message"></span>
@@ -514,9 +521,9 @@
                     </div>
 
     			</div>
-    			<div class="modal-footer hidden">
-    				<button id="popup-login-button-register" type="button" class="btn btn-primary" i18n:translate="register">Register</button>
-    				<button id="popup-login-close-button1" type="button" class="btn btn-secondary" i18n:translate="close">Close</button>
+    			<div class="modal-footer">
+    				<button id="popup-login-button-register" type="button" class="btn btn-primary hidden" i18n:translate="register">Register</button>
+    				<button id="popup-login-close-button1" type="button" class="btn btn-secondary hidden" i18n:translate="close">Close</button>
     			</div>
     		</div>
     	</div>

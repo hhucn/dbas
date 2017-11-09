@@ -24,11 +24,11 @@ $(document).ready(function mainDocumentReady() {
 	});
 	
 	$('#nav-tab-login').click(function(){
-		$('#' + popupLogin).find('.modal-footer').addClass('hidden');
+		$('#' + popupLogin).find('.modal-footer').find('button').addClass('hidden');
 	});
 	
 	$('#nav-tab-signup').click(function(){
-		$('#' + popupLogin).find('.modal-footer').removeClass('hidden');
+		$('#' + popupLogin).find('.modal-footer').find('button').removeClass('hidden');
 	});
 	
 	// restore login popup to default
@@ -42,7 +42,7 @@ $(document).ready(function mainDocumentReady() {
 		}
 	}).on('shown.bs.modal', function () {
 		$('#' + loginUserId).focus();
-		$('#' + popupLogin).find('.modal-footer').addClass('hidden');
+		$('#' + popupLogin).find('.modal-footer').find('button').addClass('hidden');
 	});
 	
 	// check href for id's

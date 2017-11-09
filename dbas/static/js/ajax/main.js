@@ -175,16 +175,18 @@ function AjaxMainHandler(){
 		$.ajax({
 			url: 'ajax_user_registration',
 			type: 'POST',
-			data: { firstname: firstname,
-					lastname: lastname,
-					nickname: nickname,
-					gender: gender,
-					email: email,
-					password: password,
-					passwordconfirm: passwordconfirm,
-					spamanswer: spamanswer,
-					'g-recaptcha-response': recaptcha,
-					lang: getLanguage()},
+			data: {
+				firstname: firstname,
+				lastname: lastname,
+				nickname: nickname,
+				gender: gender,
+				email: email,
+				password: password,
+				passwordconfirm: passwordconfirm,
+				'g-recaptcha-response': recaptcha,
+				lang: getLanguage(),
+				mode: 'manually'
+			},
 			dataType: 'json',
 			async: true,
 			headers: {

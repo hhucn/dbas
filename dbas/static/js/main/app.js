@@ -576,6 +576,32 @@ function callbackIfDoneForRegistration(data){
  *
  * @param data
  */
+function callbackIfDoneForRegistrationViaOauth(data) {
+	'use strict';
+	
+	var success = $('#' + popupLoginSuccess);
+	var failed = $('#popup-complete-login-failed-message');
+	success.hide();
+	failed.hide();
+	
+	if (data.success.length > 0) {
+		$('#popup-complete-login').modal('hide');
+		$('#popup-login').modal('show');
+		// trigger click
+		$('a[href="#login"]').trigger('click');
+		success.show();
+		$('#' + popupLoginSuccess + '-message').text(data.success);
+	}
+	if (data.error.length > 0) {
+		failed.show();
+		$('#' + popupLoginRegistrationFailed + '-message').text(data.error);
+	}
+}
+
+/**
+ *
+ * @param data
+ */
 function callbackIfDoneForPasswordRequest(data){
     'use strict';
     
