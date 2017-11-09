@@ -109,17 +109,20 @@ function AjaxMainHandler(){
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxOauthLoginDone(data) {
-			console.log(data);
 			if (data.error.length !== 0){
 				setGlobalErrorHandler('Ohh!', data.error);
 			} else if ('missing' in data && data.missing.length !== 0) {
 				new GuiHandler().showCompleteLoginPopup(data);
-			} else {
+			} else if ('authorization_url' in data){
 				window.open(data.authorization_url, '_self');
 			}
 		}).fail(function ajaxOauthLoginFail(xhr) {
-			setGlobalErrorHandler('Ohh!', data.error);
-			console.log('fail: ' + xhr.status);
+			if (xhr.status === 0){
+				window.location.href = mainpage + 'discuss';
+				// location.reload();
+			} else {
+				setGlobalErrorHandler('Ohh!', _t(requestFailedInternalError) + ' (' + xhr.status + ')');
+			}
 		});
 	};
 

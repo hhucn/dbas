@@ -13,7 +13,7 @@ import os
 # import twitter
 from requests_oauthlib.oauth1_session import OAuth1Session
 from dbas.logger import logger
-from dbas.handler.user import values
+from dbas.handler.user import oauth_values
 
 
 def start_flow(request, redirect_uri):
@@ -76,10 +76,11 @@ def continue_flow(request, redirect_response):
     #                   access_token_secret=oauth_token_secret)
 
     user_data = {
+        'id': resp['id'],
         'nickname': resp['screen_name']
     }
 
-    missing_data = [key for key in values if len(user_data[key]) == 0]
+    missing_data = [key for key in oauth_values if len(user_data[key]) == 0]
 
     return {
         'user': user_data,

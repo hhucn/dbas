@@ -277,10 +277,6 @@ function GuiHandler() {
 			$('#popup-complete-email-input').value(data.user.email).prop('disabled', true);
 		}
 		
-		$('#popup-complete-login-close-button').click(function(){
-			$('#popup-complete-login').modal('hide');
-		});
-		
 		$('#popup-complete-login-register-button').off('click').click(function(){
 			alert('Todo: register');
 			var gender = '';

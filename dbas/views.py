@@ -1043,9 +1043,15 @@ def user_login_oauth(request):
     lang = get_language_from_cookie(request)
     _tn = Translator(lang)
 
+    # sanity check
+    if request.authenticated_userid:
+        return {'error': ''}
+
     try:
         service = request.params['service']
         redirect_url = request.params['redirect_uri']
+        # redirect_url = '{}/discuss?service={}'.format(request.application_url, service).replace('http:', 'https:')
+
         val = login_user_oauth(request, service, redirect_url, lang)
         if val is None:
             return {'error': _tn.get(_.internalKeyError)}

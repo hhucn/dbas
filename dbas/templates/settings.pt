@@ -38,7 +38,7 @@
                                     </a>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr tal:condition="settings.has_mail">
                                 <td><span class="lead">E-Mail</span></td>
                                 <td>${settings.db_mail}</td>
                             </tr>
@@ -67,7 +67,7 @@
                                            data-offstyle="danger" tal:attributes="checked settings.send_notifications; data-on settings.on; data-off settings.off">
                                 </td>
                             </tr>
-                            <tr>
+                            <tr tal:condition="settings.has_mail">
                                 <td><span i18n:translate="receive_mails" class="lead">Receive E-Mails</span><i
                                         class="fa fa-question-circle" aria-hidden="true" style="margin-left: 0.5em;"
                                         data-toggle="tooltip"

@@ -89,15 +89,18 @@ def __do_google_oauth(request, redirect_uri, ui_locales):
     :return:
     """
     if 'state' in redirect_uri and 'code' in redirect_uri:
-        data = google.continue_flow(request.application_url + '/discuss', redirect_uri, ui_locales)
+        url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
+        data = google.continue_flow(url, redirect_uri, ui_locales)
         if len(data['error']) != 0 or len(data['missing']) != 0:
             return data
 
-        value_dict = __set_oauth_user(request, data['user'], ui_locales)
-        if len(value_dict['error']) != 0:
+        value_dict = __set_oauth_user(request, data['user'], 'google', ui_locales)
+        if isinstance(value_dict, dict):
+            if len(value_dict['error']) != 0:
+                return value_dict
+        else:
             return value_dict
 
-        url = request.application_url + '/discuss'
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
         return google.start_flow(redirect_uri)
@@ -116,11 +119,14 @@ def __do_github_oauth(request, redirect_uri, ui_locales):
         if len(data['error']) != 0 or len(data['missing']) != 0:
             return data
 
-        value_dict = __set_oauth_user(request, data['user'], ui_locales)
-        if len(value_dict['error']) != 0:
+        value_dict = __set_oauth_user(request, data['user'], 'github', ui_locales)
+        if isinstance(value_dict, dict):
+            if len(value_dict['error']) != 0:
+                return value_dict
+        else:
             return value_dict
 
-        url = request.application_url + '/discuss'
+        url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
         return github.start_flow()
@@ -135,15 +141,18 @@ def __do_facebook_oauth(request, redirect_uri, ui_locales):
     :return:
     """
     if 'state' in redirect_uri and 'code' in redirect_uri:
-        data = facebook.continue_flow(request.application_url + '/discuss', redirect_uri, ui_locales)
+        url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
+        data = facebook.continue_flow(url, redirect_uri, ui_locales)
         if len(data['error']) != 0 or len(data['missing']) != 0:
             return data
 
-        value_dict = __set_oauth_user(request, data['user'], ui_locales)
-        if len(value_dict['error']) != 0:
+        value_dict = __set_oauth_user(request, data['user'], 'facebook', ui_locales)
+        if isinstance(value_dict, dict):
+            if len(value_dict['error']) != 0:
+                return value_dict
+        else:
             return value_dict
 
-        url = request.application_url + '/discuss'
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
         return facebook.start_flow(redirect_uri)
@@ -162,21 +171,25 @@ def __do_twitter_oauth(request, redirect_uri, ui_locales):
         if len(data['error']) != 0 or len(data['missing']) != 0:
             return data
 
-        value_dict = __set_oauth_user(request, data['user'], ui_locales)
-        if len(value_dict['error']) != 0:
+        value_dict = __set_oauth_user(request, data['user'], 'twitter', ui_locales)
+        if isinstance(value_dict, dict):
+            if len(value_dict['error']) != 0:
+                return value_dict
+        else:
             return value_dict
 
-        url = request.application_url + '/discuss'
+        url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
         return twitter.start_flow(request, redirect_uri)
 
 
-def __set_oauth_user(request, user_data, ui_locales):
+def __set_oauth_user(request, user_data, service, ui_locales):
     """
 
     :param request:
     :param user_data:
+    :param service:
     :param ui_locales:
     :return:
     """
@@ -187,11 +200,13 @@ def __set_oauth_user(request, user_data, ui_locales):
         logger('Auth.Login', '__set_oauth_user', 'Error occured')
         return {'error': _tn.get(_.errorTryLateOrContant), 'success': ''}
 
-    ret_dict = user.set_new_user(request, user_data['firstname'], user_data['lastname'], user_data['nickname'],
-                                 user_data['gender'], user_data['email'], user_data['password'], _tn)
+    ret_dict = user.set_new_oauth_user(user_data['firstname'], user_data['lastname'], user_data['nickname'],
+                                       user_data['email'], user_data['gender'], user_data['password'], user_data['id'],
+                                       service, _tn)
     # db_new_user = ret_dict['user']
     if ret_dict['success']:
-        return {'error': ret_dict['error'], 'success': _tn.get(_.accountWasAdded).format(user_data['nickname'])}
+        return __return_success_login(request, False, ret_dict['user'], False, request.path_url)
+        # return {'error': ret_dict['error'], 'success': _tn.get(_.accountWasAdded).format(user_data['nickname'])}
     else:
         return {'error': ret_dict['error'], 'success': ret_dict['success']}
 

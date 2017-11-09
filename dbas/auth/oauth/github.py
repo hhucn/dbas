@@ -10,10 +10,10 @@ Manage Github Client IDs: https://github.com/organizations/**YOUR_ACCOUNT**/sett
 import os
 import json
 from requests_oauthlib.oauth2_session import OAuth2Session
-from oauthlib.oauth2.rfc6749.errors import InsecureTransportError, InvalidClientError
+from oauthlib.oauth2.rfc6749.errors import InsecureTransportError, InvalidClientError, MissingTokenError
 from dbas.logger import logger
 from slugify import slugify
-from dbas.handler.user import values
+from dbas.handler.user import oauth_values
 from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
 
@@ -27,7 +27,7 @@ def start_flow():
     client_secret = os.environ.get('DBAS_OAUTH_GITHUB_CLIENTKEY', None)
 
     logger('Github OAuth', 'start_flow',
-           'Read OAuth id/secret: none? {}'.format(client_id is None, client_secret is None))
+           'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
 
     authorization_base_url = 'https://github.com/login/oauth/authorize'
     github = OAuth2Session(client_id)
@@ -37,10 +37,10 @@ def start_flow():
     return {'authorization_url': authorization_url, 'error': ''}
 
 
-def continue_flow(redirect_response, ui_locales):
+def continue_flow(authorization_response, ui_locales):
     """
 
-    :param redirect_response:
+    :param authorization_response:
     :param ui_locales:
     :return:
     """
@@ -49,11 +49,12 @@ def continue_flow(redirect_response, ui_locales):
     github = OAuth2Session(client_id)
 
     logger('Github OAuth', 'continue_github_flow',
-           'Read OAuth id/secret: none? {}'.format(client_id is None, client_secret is None))
+           'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
+    logger('Github OAuth', 'continue_flow', 'authorization_response: ' + authorization_response)
 
     token_url = 'https://github.com/login/oauth/access_token'
     try:
-        github.fetch_token(token_url, client_secret=client_secret, authorization_response=redirect_response)
+        github.fetch_token(token_url, client_secret=client_secret, authorization_response=authorization_response)
     except InsecureTransportError:
         logger('Github OAuth', 'continue_flow', 'OAuth 2 MUST utilize https', error=True)
         _tn = Translator(ui_locales)
@@ -64,22 +65,27 @@ def continue_flow(redirect_response, ui_locales):
         logger('Github OAuth', 'continue_flow', 'InvalidClientError', error=True)
         _tn = Translator(ui_locales)
         return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
+    except MissingTokenError:
+        logger('Github OAuth', 'continue_flow', 'MissingTokenError', error=True)
+        _tn = Translator(ui_locales)
+        return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
 
     resp = github.get('https://api.github.com/user')
     logger('Github OAuth', 'continue_flow', str(resp.text))
     parsed_resp = json.loads(resp.text)
 
     user_data = {
+        'id': parsed_resp['id'],
         'firstname': parsed_resp['name'].rsplit(' ', 1)[0],
         'lastname': parsed_resp['name'].rsplit(' ', 1)[1],
         'nickname': slugify(parsed_resp['login']),
         'gender': 'n',
-        'email': parsed_resp['email'],
-        'password': parsed_resp['ad'],
+        'email': str(parsed_resp['email']),
+        'password': '',
         'ui_locales': 'en'
     }
 
-    missing_data = [key for key in values if len(user_data[key]) == 0 or user_data[key] is 'null']
+    missing_data = [key for key in oauth_values if len(user_data[key]) == 0 or user_data[key] is 'null']
 
     # 'login': 'tkrauthoff'
     # 'id': 5970416

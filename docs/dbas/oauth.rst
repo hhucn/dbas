@@ -37,3 +37,6 @@ If you want to add another provider, please follow these steps:
  3. Add the client id and secret in the env-vars
  4. Add the provider key in `dbas/auth/login.py`
  5. And finally and a function for your provider in `dbas/auth/oauth/`
+
+To test your configuration, you can use `ngrok.io` to have secure tunnels to localhost.
+Otherwise the redirect from different apps won't work.

@@ -31,6 +31,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 values = ['firstname', 'surname', 'email', 'nickname', 'password', 'gender']
+oauth_values = ['firstname', 'lastname', 'email', 'nickname', 'gender']
 
 # from https://moodlist.net/
 moodlist = ['Accepted', 'Accomplished', 'Aggravated', 'Alone', 'Amused', 'Angry', 'Annoyed', 'Anxious', 'Apathetic',
@@ -639,7 +640,7 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
     return message, success
 
 
-def __create_new_user(firstname, lastname, email, nickname, password, gender, db_group_uid, ui_locales):
+def __create_new_user(firstname, lastname, email, nickname, password, gender, db_group_uid, ui_locales, token=''):
     """
     Insert a new user row
 
@@ -666,7 +667,8 @@ def __create_new_user(firstname, lastname, email, nickname, password, gender, db
                    nickname=nickname,
                    password=hashed_password,
                    gender=gender,
-                   group_uid=db_group_uid)
+                   group_uid=db_group_uid,
+                   token=token)
     DBDiscussionSession.add(newuser)
     transaction.commit()
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -732,6 +734,59 @@ def set_new_user(request, firstname, lastname, nickname, gender, email, password
         return {'success': success, 'error': '', 'user': db_new_user}
 
     logger('User', 'set_new_user', 'new user not found in db')
+    return {
+        'success': False,
+        'error': _tn.get(_.errorTryLateOrContant),
+        'user': None
+    }
+
+
+def set_new_oauth_user(firstname, lastname, nickname, email, gender, password, id, provider, _tn):
+    """
+    Let's create a new user
+
+    :param firstname: String
+    :param lastname: String
+    :param nickname: String
+    :param email: String
+    :param gender: String
+    :param password: String
+    :param id: String
+    :param provider: String
+    :param _tn: Translaator
+    :return: Boolean, msg
+    """
+    # getting the authors group
+    db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
+
+    # does the group exists?
+    if not db_group:
+        logger('User', 'set_new_oauth_user', 'Internal error occured')
+        return {'success': False, 'error': _tn.get(_.errorTryLateOrContant), 'user': None}
+
+    # sanity check
+    token = '{}-{}'.format(provider, id)
+    db_user = DBDiscussionSession.query(User).filter_by(token=token).first()
+    # login of oauth user
+    if db_user:
+        logger('User', 'set_new_oauth_user', 'User already exists, she will login')
+        return {'success': True, 'error': '', 'user': db_user}
+
+    # sanity check
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if db_user:
+        logger('User', 'set_new_oauth_user', 'User already exists')
+        return {'success': False, 'error': _tn.get(_.nickIsTaken), 'user': None}
+
+    success, info, db_new_user = __create_new_user(firstname, lastname, email, nickname, password, gender,
+                                                   db_group.uid, _tn.get_lang(), token=token)
+
+    if db_new_user:
+        logger('User', 'set_new_oauth_user', 'set new user in db')
+        return {'success': success, 'error': '', 'user': db_new_user}
+
+    logger('User', 'set_new_oauth_user', 'new user not found in db')
+
     return {
         'success': False,
         'error': _tn.get(_.errorTryLateOrContant),
