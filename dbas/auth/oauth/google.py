@@ -9,7 +9,6 @@ Manage Google Client IDs: https://console.developers.google.com/apis/credentials
 
 import os
 import json
-from slugify import slugify
 from oauthlib.oauth2.rfc6749.errors import InsecureTransportError, InvalidClientError
 from requests_oauthlib.oauth2_session import OAuth2Session
 from dbas.logger import logger

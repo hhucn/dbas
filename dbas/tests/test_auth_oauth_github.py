@@ -12,6 +12,5 @@ class OAuthGithubLoginTest(unittest.TestCase):
         testing.tearDown()
 
     def test_login_github(self):
-        redirect_uri = 'http://lvh.me:4284/discuss?service=github'
         resp = github.start_flow()
         self.assertIn('authorization_url', resp)

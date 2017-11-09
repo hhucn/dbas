@@ -152,9 +152,17 @@ class AuthLoginTest(unittest.TestCase):
         for service in services:
             redirect_uri = 'http://lvh.me:4284'
             ui_locales = 'en'
-            request = testing.DummyRequest(params={
-                'application_url': 'http://lvh.me'
-            }, matchdict={})
+            environ = {
+                'DBAS_OAUTH_GOOGLE_CLIENTID': 'DBAS_OAUTH_GOOGLE_CLIENTID',
+                'DBAS_OAUTH_GOOGLE_CLIENTKEY': 'DBAS_OAUTH_GOOGLE_CLIENTKEY',
+                'DBAS_OAUTH_GITHUB_CLIENTID': 'DBAS_OAUTH_GITHUB_CLIENTID',
+                'DBAS_OAUTH_GITHUB_CLIENTKEY': 'DBAS_OAUTH_GITHUB_CLIENTKEY',
+                'DBAS_OAUTH_FACEBOOK_CLIENTID': 'DBAS_OAUTH_FACEBOOK_CLIENTID',
+                'DBAS_OAUTH_FACEBOOK_CLIENTKEY': 'DBAS_OAUTH_FACEBOOK_CLIENTKEY',
+                'DBAS_OAUTH_TWITTER_CLIENTID': 'DBAS_OAUTH_TWITTER_CLIENTID',
+                'DBAS_OAUTH_TWITTER_CLIENTKEY': 'DBAS_OAUTH_TWITTER_CLIENTKEY'
+            }
+            request = testing.DummyRequest(params={'application_url': 'http://lvh.me'}, matchdict={}, environ=environ)
             resp = login_user_oauth(request, service, redirect_uri, ui_locales)
             if len(service) > 0:
                 self.assertIsNotNone(resp)
