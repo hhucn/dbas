@@ -39,7 +39,6 @@ def start_flow(redirect_uri):
     authorization_url, state = google.authorization_url(authorization_base_url, access_type='offline', prompt='select_account')
 
     logger('Google OAuth', 'start_flow', 'Please go to {} and authorize access'.format(authorization_url))
-    # TODO: HOW TO TEST WITH LOCALHOST
     return {'authorization_url': authorization_url, 'error': ''}
 
 

@@ -1,5 +1,5 @@
-### 1.5.1 (2017-11-xx)
-- Add OAuth registrations for Google, Facebook, Twitter and Github
+### 1.5.1 (2017-11-10)
+- Add OAuth registrations for Google, Facebook, Github
 
 ### 1.5.0 (2017-10-23)
 - New landing page
