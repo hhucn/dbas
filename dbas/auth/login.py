@@ -56,7 +56,7 @@ def login_user(request, nickname, password, for_api, keep_login=False, lang='en'
         return __register_user_with_ldap_data(request, nickname, password, for_api, keep_login, url, _tn)
 
     # this is 2.
-    if len(str(db_user.oauth_provider)) > 0:
+    if len(str(db_user.oauth_provider)) > 4 and len(str(db_user.oauth_provider_id)) > 4:  # >4 because len('None') is 4
         return {'info': _tn.get(_.userIsOAuth)}
 
     # this is 3.
