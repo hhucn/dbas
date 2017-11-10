@@ -101,6 +101,7 @@
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/dolan.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/countdown.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/contact.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/login.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/news.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/user.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/notification.js')}" tal:condition="extras.development_mode"></script>

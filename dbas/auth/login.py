@@ -14,6 +14,7 @@ from validate_email import validate_email
 
 from dbas.auth.ldap import verify_ldap_user_data
 from dbas.auth.recaptcha import validate_recaptcha
+from dbas.auth.oauth import google as google, github as github, facebook as facebook, twitter as twitter
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Settings
 from dbas.handler import user
@@ -36,7 +37,7 @@ def login_user(request, nickname, password, for_api, keep_login=False, lang='en'
     :param for_api: Boolean
     :param keep_login: Boolean
     :param lang: current language
-    :return: dict() or HTTPFound if the user is logged in an it is not the api
+    :return: dict() or HTTPFound if the user is logged in and it is not the api
     """
 
     # caution: password is not escaped
@@ -46,7 +47,8 @@ def login_user(request, nickname, password, for_api, keep_login=False, lang='en'
 
     # now we have several options:
     # 1. the user is unknown, because she has a HHU-LDAP account
-    # 2. the user is known, but
+    # 2. oauth nickname
+    # 3. the user is known, but
     #  a) keeped local
     #  b) keeped in ldap
     db_user = get_user_by_case_insensitive_nickname(nickname)
@@ -54,7 +56,164 @@ def login_user(request, nickname, password, for_api, keep_login=False, lang='en'
         return __register_user_with_ldap_data(request, nickname, password, for_api, keep_login, url, _tn)
 
     # this is 2.
+    if len(str(db_user.oauth_provider)) > 4 and len(str(db_user.oauth_provider_id)) > 4:  # >4 because len('None') is 4
+        return {'info': _tn.get(_.userIsOAuth)}
+
+    # this is 3.
     return __check_in_local_known_user(request, db_user, password, for_api, keep_login, url, _tn)
+
+
+def login_user_oauth(request, service, redirect_uri, ui_locales):
+    """
+
+    :param request:
+    :param service: name of the oauth service
+    :param redirect_uri:
+    :param ui_locales:
+    :return:
+    """
+    logger('Auth.Login', 'login_user_oauth', 'service: {}'.format(service))
+    if service == 'google':
+        return __do_google_oauth(request, redirect_uri, ui_locales)
+    elif service == 'github':
+        return __do_github_oauth(request, redirect_uri, ui_locales)
+    elif service == 'facebook':
+        return __do_facebook_oauth(request, redirect_uri, ui_locales)
+    elif service == 'twitter':
+        return __do_twitter_oauth(request, redirect_uri, ui_locales)
+    else:
+        return None
+
+
+def __do_google_oauth(request, redirect_uri, ui_locales):
+    """
+
+    :param request:
+    :param redirect_uri:
+    :param ui_locales:
+    :return:
+    """
+    if 'state' in redirect_uri and 'code' in redirect_uri:
+        url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
+        data = google.continue_flow(url, redirect_uri, ui_locales)
+        if len(data['error']) != 0 or len(data['missing']) != 0:
+            return data
+
+        value_dict = __set_oauth_user(request, data['user'], 'google', ui_locales)
+        if isinstance(value_dict, dict):
+            if len(value_dict['error']) != 0:
+                return value_dict
+        else:
+            return value_dict
+
+        return __return_success_login(request, False, value_dict['user'], False, url)
+    else:
+        return google.start_flow(redirect_uri)
+
+
+def __do_github_oauth(request, redirect_uri, ui_locales):
+    """
+
+    :param request:
+    :param redirect_uri:
+    :param ui_locales:
+    :return:
+    """
+    if 'code' in redirect_uri:
+        data = github.continue_flow(redirect_uri, ui_locales)
+        if len(data['error']) != 0 or len(data['missing']) != 0:
+            return data
+
+        value_dict = __set_oauth_user(request, data['user'], 'github', ui_locales)
+        if isinstance(value_dict, dict):
+            if len(value_dict['error']) != 0:
+                return value_dict
+        else:
+            return value_dict
+
+        url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
+        return __return_success_login(request, False, value_dict['user'], False, url)
+    else:
+        return github.start_flow()
+
+
+def __do_facebook_oauth(request, redirect_uri, ui_locales):
+    """
+
+    :param request:
+    :param redirect_uri:
+    :param ui_locales:
+    :return:
+    """
+    if 'state' in redirect_uri and 'code' in redirect_uri:
+        url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
+        data = facebook.continue_flow(url, redirect_uri, ui_locales)
+        if len(data['error']) != 0 or len(data['missing']) != 0:
+            return data
+
+        value_dict = __set_oauth_user(request, data['user'], 'facebook', ui_locales)
+        if isinstance(value_dict, dict):
+            if len(value_dict['error']) != 0:
+                return value_dict
+        else:
+            return value_dict
+
+        return __return_success_login(request, False, value_dict['user'], False, url)
+    else:
+        return facebook.start_flow(redirect_uri)
+
+
+def __do_twitter_oauth(request, redirect_uri, ui_locales):
+    """
+
+    :param request:
+    :param redirect_uri:
+    :param ui_locales:
+    :return:
+    """
+    if 'code' in redirect_uri:
+        data = twitter.continue_flow(request, redirect_uri)
+        if len(data['error']) != 0 or len(data['missing']) != 0:
+            return data
+
+        value_dict = __set_oauth_user(request, data['user'], 'twitter', ui_locales)
+        if isinstance(value_dict, dict):
+            if len(value_dict['error']) != 0:
+                return value_dict
+        else:
+            return value_dict
+
+        url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
+        return __return_success_login(request, False, value_dict['user'], False, url)
+    else:
+        return twitter.start_flow(request, redirect_uri)
+
+
+def __set_oauth_user(request, user_data, service, ui_locales):
+    """
+
+    :param request:
+    :param user_data:
+    :param service:
+    :param ui_locales:
+    :return:
+    """
+    _tn = Translator(ui_locales)
+
+    db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
+    if not db_group:
+        logger('Auth.Login', '__set_oauth_user', 'Error occured')
+        return {'error': _tn.get(_.errorTryLateOrContant), 'success': ''}
+
+    ret_dict = user.set_new_oauth_user(user_data['firstname'], user_data['lastname'], user_data['nickname'],
+                                       user_data['email'], user_data['gender'], user_data['password'], user_data['id'],
+                                       service, _tn)
+    # db_new_user = ret_dict['user']
+    if ret_dict['success']:
+        return __return_success_login(request, False, ret_dict['user'], False, request.path_url)
+        # return {'error': ret_dict['error'], 'success': _tn.get(_.accountWasAdded).format(user_data['nickname'])}
+    else:
+        return {'error': ret_dict['error'], 'success': ret_dict['success']}
 
 
 def __register_user_with_ldap_data(request, nickname, password, for_api, keep_login, url, _tn):
@@ -101,7 +260,8 @@ def __check_in_local_known_user(request, db_user, password, for_api, keep_login,
     if is_local:
         return __return_success_login(request, for_api, db_user, keep_login, url)
 
-    if not (db_user.validate_password('NO_PW_BECAUSE_LDAP') or db_user.password is get_hashed_password('NO_PW_BECAUSE_LDAP')):
+    if not (db_user.validate_password('NO_PW_BECAUSE_LDAP') or db_user.password is get_hashed_password(
+            'NO_PW_BECAUSE_LDAP')):
         logger('Auth.Login', '__check_in_local_known_user', 'invalid password for the local user')
         return {'error': _tn.get(_.userPasswordNotMatch)}
 
@@ -174,8 +334,12 @@ def register_user_with_ajax_data(request):
     gender = escape_string(params['gender']) if 'gender' in params else ''
     password = escape_string(params['password']) if 'password' in params else ''
     passwordconfirm = escape_string(params['passwordconfirm']) if 'passwordconfirm' in params else ''
-    recaptcha = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
-    is_human, error = validate_recaptcha(recaptcha)
+    if request.params['mode'] == 'manually':
+        recaptcha = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
+        is_human, error = validate_recaptcha(recaptcha)
+    else:
+        is_human = True
+        error = False
     db_new_user = None
 
     # database queries mail verification
@@ -188,6 +352,10 @@ def register_user_with_ajax_data(request):
     if not password == passwordconfirm:
         logger('Auth.Login', 'user_registration', 'Passwords are not equal')
         msg = _tn.get(_.pwdNotEqual)
+    # empty password?
+    elif len(password) <= 5:
+        logger('Auth.Login', 'user_registration', 'Password too short')
+        msg = _tn.get(_.pwdShort)
     # is the nick already taken?
     elif db_nick1 or db_nick2:
         logger('Auth.Login', 'user_registration', 'Nickname \'' + nickname + '\' is taken')
@@ -196,6 +364,9 @@ def register_user_with_ajax_data(request):
     elif db_mail:
         logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is taken')
         msg = _tn.get(_.mailIsTaken)
+    elif len(email) < 2:
+        logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is too short')
+        msg = _tn.get(_.mailNotValid)
     # is the email valid?
     elif not is_mail_valid:
         logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is not valid')
@@ -218,7 +389,7 @@ def register_user_with_ajax_data(request):
 
         ret_dict = user.set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn)
         success = ret_dict['success']
-        error = ret_dict['message']
+        error = ret_dict['error']
         db_new_user = ret_dict['user']
 
         if success:

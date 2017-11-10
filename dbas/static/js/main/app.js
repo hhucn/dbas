@@ -330,17 +330,7 @@ function prepareLoginRegistrationPopup(){
 		}
 	});
 
-	$('#' + popupLoginGeneratePassword + ' > a').click(function(){
-		if (popupLoginGeneratePasswordBody.is(':visible')){
-			popupLoginGeneratePasswordBody.hide();
-			$('#' + popupLoginGeneratePassword + ' > a span').text(_t(generateSecurePassword));
-		} else {
-			popupLoginGeneratePasswordBody.show();
-			$('#' + popupLoginGeneratePassword + ' > a span').text(_t(hideGenerator));
-		}
-	});
-
-	$('#' + popupLoginCloseButton).click(function(){
+	$('#' + popupLoginCloseButton1, '#' + popupLoginCloseButton2).click(function(){
 		new PopupHandler().hideExtraViewsOfLoginPopup();
 		$('#' + popupLogin).modal('hide');
 		$('#' + popupLoginButtonLogin).show();
@@ -528,25 +518,27 @@ function decodeString(encodedString){
  */
 function callbackIfDoneForLogin(data, showGlobalError){
     'use strict';
-    
 	try {
-		if (data.error.length !== 0) {
+		if ('error' in data && data.error.length !== 0) {
 			if (showGlobalError) {
 					setGlobalErrorHandler('Ohh!', data.error);
 			} else {
 				$('#' + popupLoginFailed).show();
 				$('#' + popupLoginFailed + '-message').html(data.error);
 			}
+		} else if ('info' in data && data.info.length !== 0) {
+				$('#' + popupLoginInfo).show();
+				$('#' + popupLoginInfo + '-message').html(data.info);
 		} else {
 			$('#' + popupLogin).modal('hide');
-			location.reload(true);
+			//location.reload(true);
 		}
 	} catch(err){
 		var url = location.href;
 		if (url.indexOf('?session_expired=true') !== -1) {
 			url = url.substr(0, url.length - '?session_expired=true'.length);
 		}
-		location.href = url;
+		//location.href = url;
 	}
 
 }
@@ -579,6 +571,38 @@ function callbackIfDoneForRegistration(data){
 		info.show();
 		$('#' + popupLoginRegistrationInfo + '-message').text(data.info);
 		$('#popup-login-spamanswer-input').attr('placeholder', data.spamquestion).val('');
+	}
+}
+
+/**
+ *
+ * @param data
+ */
+function callbackIfDoneForRegistrationViaOauth(data) {
+	'use strict';
+	
+	var success = $('#' + popupLoginSuccess);
+	var failed = $('#popup-complete-login-failed');
+	var info = $('#popup-complete-login-info');
+	success.hide();
+	info.hide();
+	failed.hide();
+	
+	if ('success' in data && data.success.length > 0) {
+		$('#popup-complete-login').modal('hide');
+		$('#popup-login').modal('show');
+		// trigger click
+		$('a[href="#login"]').trigger('click');
+		success.show();
+		$('#' + popupLoginSuccess + '-message').text(data.success);
+	}
+	if ('error' in data && data.error.length > 0) {
+		failed.show();
+		$('#popup-complete-login-failed-message').text(data.error);
+	}
+	if ('info' in data && data.info.length > 0) {
+		info.show();
+		$('#popup-complete-login-info-message').text(data.info);
 	}
 }
 
@@ -682,6 +706,10 @@ $(document).ready(function () {
 		new GuidedTour().start();
 	}
 
+	$('#contact_on_error').click(function(){
+		window.location.href=$('#contact-link').find('a').attr('href');
+	});
+	
 	// language switch
 	$('#' + translationLinkDe).click(function(){ new GuiHandler().lang_switch('de'); });
 	$('#' + translationLinkEn).click(function(){ new GuiHandler().lang_switch('en'); });

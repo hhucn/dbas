@@ -847,7 +847,7 @@ function PopupHandler() {
 		if (window.location.href.indexOf('/contact') !== -1){
 			return -1;
 		}
-		console.log('asd');
+		
 		var script = $('<script>').attr('src', 'https://www.google.com/recaptcha/api.js');
 		if (appendOnly) {
 			$('#' + popupLogin).append(script);

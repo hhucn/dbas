@@ -76,5 +76,5 @@ def verify_ldap_user_data(nickname, password, _tn):
 
     except ldap.OPERATIONS_ERROR as e:
         logger('ldap', 'verify_ldap_user_data', 'OPERATIONS_ERROR: ' + str(e))
-        data = {'error': _tn.get(_.internalKeyError) + ' ' + _tn.get(_.pleaseTryAgainLaterOrContactUs)}
+        data = {'error': _tn.get(_.userPasswordNotMatch)}
         return data
