@@ -165,11 +165,13 @@ class User(DiscussionBase):
     registered = Column(ArrowType, default=get_now())
     token = Column(Text, nullable=True)
     token_timestamp = Column(ArrowType, nullable=True)
+    oauth_provider = Column(Text, nullable=True)
+    oauth_provider_id = Column(Text, nullable=True)
 
     groups = relationship('Group', foreign_keys=[group_uid], order_by='Group.uid')
 
     def __init__(self, firstname, surname, nickname, email, password, gender, group_uid, token='',
-                 token_timestamp=None):
+                 token_timestamp=None, oauth_provider='', oauth_provider_id=''):
         """
         Initializes a row in current user-table
 
@@ -196,6 +198,8 @@ class User(DiscussionBase):
         self.registered = get_now()
         self.token = token
         self.token_timestamp = token_timestamp
+        self.oauth_provider = oauth_provider
+        self.oauth_provider_id = oauth_provider_id
 
     def validate_password(self, password):
         """

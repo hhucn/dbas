@@ -640,7 +640,8 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
     return message, success
 
 
-def __create_new_user(firstname, lastname, email, nickname, password, gender, db_group_uid, ui_locales, token=''):
+def __create_new_user(firstname, lastname, email, nickname, password, gender, db_group_uid, ui_locales,
+                      oauth_provider='', oauth_provider_id=''):
     """
     Insert a new user row
 
@@ -652,6 +653,8 @@ def __create_new_user(firstname, lastname, email, nickname, password, gender, db
     :param gender: String
     :param db_group_uid: Group.uid
     :param ui_locales: Language.ui_locales
+    :param oauth_provider: String
+    :param oauth_provider_id: String
     :return: String, String, User
     """
     success = ''
@@ -668,7 +671,8 @@ def __create_new_user(firstname, lastname, email, nickname, password, gender, db
                    password=hashed_password,
                    gender=gender,
                    group_uid=db_group_uid,
-                   token=token)
+                   oauth_provider=oauth_provider,
+                   oauth_provider_id=oauth_provider_id)
     DBDiscussionSession.add(newuser)
     transaction.commit()
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -779,7 +783,8 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, password, i
         return {'success': False, 'error': _tn.get(_.nickIsTaken), 'user': None}
 
     success, info, db_new_user = __create_new_user(firstname, lastname, email, nickname, password, gender,
-                                                   db_group.uid, _tn.get_lang(), token=token)
+                                                   db_group.uid, _tn.get_lang(), oauth_provider=provider,
+                                                   oauth_provider_id=id)
 
     if db_new_user:
         logger('User', 'set_new_oauth_user', 'set new user in db')
