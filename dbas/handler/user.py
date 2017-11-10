@@ -769,8 +769,8 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, password, i
         return {'success': False, 'error': _tn.get(_.errorTryLateOrContant), 'user': None}
 
     # sanity check
-    db_user = DBDiscussionSession.query(User).filter(User.oauth_provider == provider,
-                                                     User.oauth_provider_id == id).first()
+    db_user = DBDiscussionSession.query(User).filter(User.oauth_provider == str(provider),
+                                                     User.oauth_provider_id == str(id)).first()
     # login of oauth user
     if db_user:
         logger('User', 'set_new_oauth_user', 'User already exists, she will login')
