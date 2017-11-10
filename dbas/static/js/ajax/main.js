@@ -47,6 +47,8 @@ function AjaxMainHandler(){
 		var keep_login = $('#keep-login-box').prop('checked') ? 'true' : 'false';
 		$('#' + popupLoginFailed).hide();
 		$('#' + popupLoginFailed + '-message').text('');
+		$('#' + popupLoginInfo).hide();
+		$('#' + popupLoginInfo + '-message').text('');
 
 		$.ajax({
 			url: mainpage + 'ajax_user_login',
@@ -96,6 +98,8 @@ function AjaxMainHandler(){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$('#' + popupLoginFailed).hide();
 		$('#' + popupLoginFailed + '-message').text('');
+		$('#' + popupLoginInfo).hide();
+		$('#' + popupLoginInfo + '-message').text('');
 
 		$.ajax({
 			url: mainpage + 'ajax_user_login_oauth',

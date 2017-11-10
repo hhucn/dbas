@@ -518,25 +518,27 @@ function decodeString(encodedString){
  */
 function callbackIfDoneForLogin(data, showGlobalError){
     'use strict';
-    
 	try {
-		if (data.error.length !== 0) {
+		if ('error' in data && data.error.length !== 0) {
 			if (showGlobalError) {
 					setGlobalErrorHandler('Ohh!', data.error);
 			} else {
 				$('#' + popupLoginFailed).show();
 				$('#' + popupLoginFailed + '-message').html(data.error);
 			}
+		} else if ('info' in data && data.info.length !== 0) {
+				$('#' + popupLoginInfo).show();
+				$('#' + popupLoginInfo + '-message').html(data.info);
 		} else {
 			$('#' + popupLogin).modal('hide');
-			location.reload(true);
+			//location.reload(true);
 		}
 	} catch(err){
 		var url = location.href;
 		if (url.indexOf('?session_expired=true') !== -1) {
 			url = url.substr(0, url.length - '?session_expired=true'.length);
 		}
-		location.href = url;
+		//location.href = url;
 	}
 
 }

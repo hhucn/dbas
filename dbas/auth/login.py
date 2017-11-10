@@ -47,7 +47,8 @@ def login_user(request, nickname, password, for_api, keep_login=False, lang='en'
 
     # now we have several options:
     # 1. the user is unknown, because she has a HHU-LDAP account
-    # 2. the user is known, but
+    # 2. oauth nickname
+    # 3. the user is known, but
     #  a) keeped local
     #  b) keeped in ldap
     db_user = get_user_by_case_insensitive_nickname(nickname)
@@ -55,6 +56,10 @@ def login_user(request, nickname, password, for_api, keep_login=False, lang='en'
         return __register_user_with_ldap_data(request, nickname, password, for_api, keep_login, url, _tn)
 
     # this is 2.
+    if db_user.token is not None:
+        return {'info': _tn.get(_.userIsOAuth)}
+
+    # this is 3.
     return __check_in_local_known_user(request, db_user, password, for_api, keep_login, url, _tn)
 
 

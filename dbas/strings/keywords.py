@@ -731,6 +731,7 @@ class Keywords(Enum):
     userPasswordNotMatch = 'userPasswordNotMatch'
     userOptions = 'userOptions'
     userNotFound = 'userNotFound'
+    userIsOAuth = 'userIsOAuth'
     userIsNotAuthorOfStatement = 'userIsNotAuthorOfStatement'
     userIsNotAuthorOfArgument = 'userIsNotAuthorOfArgument'
     untilNowThereAreNoMoreInformation = 'untilNowThereAreNoMoreInformation'

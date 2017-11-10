@@ -740,6 +740,7 @@ de_lang = {
     _.userPasswordNotMatch: 'Benutzername und/oder Passwort stimmen nicht überein',
     _.userOptions: 'Benutzeroptionen',
     _.userNotFound: 'Benutzer konnte nicht gefunden werden',
+    _.userIsOAuth: 'Benutzer wurde via OAuth angemeldet (Facebook, Google, ...)',
     _.userIsNotAuthorOfStatement: 'Sie sind nicht Autor der Aussage',
     _.userIsNotAuthorOfArgument: 'Sie sind nicht Autor des Arguments',
     _.untilNowThereAreNoMoreInformation: 'Bisher haben wir keine weiteren Informationen darüber.',

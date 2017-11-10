@@ -737,6 +737,7 @@ en_lang = {
     _.userPasswordNotMatch: 'User / Password do not match',
     _.userOptions: 'Users Options',
     _.userNotFound: 'User not found',
+    _.userIsOAuth: 'User was logged in via OAuth (Google, Facebook, ...)',
     _.userIsNotAuthorOfStatement: 'You are not the author of this statement',
     _.userIsNotAuthorOfArgument: 'You are not the author of this argument',
     _.untilNowThereAreNoMoreInformation: 'Until now we do not have more information.',
