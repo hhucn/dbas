@@ -14,6 +14,7 @@ import json
 from cornice import Service
 
 import dbas.views as dbas
+from api.origins import store_origin
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
 from dbas.lib import (get_all_arguments_by_statement,
@@ -201,14 +202,20 @@ def prepare_data_assign_reference(request, func):
     :param request:
     :param func:
     :return:
-
     """
     api_data = prepare_user_information(request)
     if api_data:
         data = json_to_dict(request.body)
         api_data.update(data)
         api_data.update({'application_url': request.application_url})
+
+        # Copy content from origin as new statement
+        origin = api_data.get("origin")
+        if origin:
+            api_data["statement"] = origin["content"]
+
         return_dict = func(True, api_data)
+
         if isinstance(return_dict, str):
             return_dict = json.loads(return_dict)
         statement_uids = return_dict["statement_uids"]
@@ -216,7 +223,12 @@ def prepare_data_assign_reference(request, func):
             statement_uids = flatten(statement_uids)
             if type(statement_uids) is int:
                 statement_uids = [statement_uids]
+
+            # Store references
             refs_db = list(map(lambda statement: store_reference(api_data, statement), statement_uids))
+            # Store origin if provided
+            list(map(lambda statement: store_origin(api_data, statement), statement_uids))
+
             return_dict["references"] = list(map(lambda ref: prepare_single_reference(ref), refs_db))
         return return_dict
     else:
