@@ -21,14 +21,14 @@ def store_origin(api_data, statement_uid):
     :param statement_uid: the statement the origin should be assigned to
     :return:
     """
-    entity_id = api_data.get("origin_entity_id")
-    aggregate_id = api_data.get("origin_aggregate_id")
-    author = api_data.get("origin_author")
-    version = api_data.get("origin_version")
+    origin = api_data.get("origin")
+    if not origin:
+        return None
 
-    if not (entity_id or aggregate_id or statement_uid):
-        log.info("[API/StatementOrigin] No origin of statement provided.")
-        return  # Early exit if there is no origin provided
+    entity_id = api_data.get("entity-id")
+    aggregate_id = api_data.get("aggregate-id")
+    author = api_data.get("author")
+    version = api_data.get("version")
 
     db_origin = StatementOrigins(entity_id, aggregate_id, author, version, statement_uid)
     DBDiscussionSession.add(db_origin)
