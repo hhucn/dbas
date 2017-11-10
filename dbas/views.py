@@ -1051,9 +1051,14 @@ def user_login_oauth(request):
         service = request.params['service']
         url = request.params['redirect_uri']
         if '?service' in url:
-            redirect_url = url[0:url.index('/discuss') + len('/discuss')] + url[url.index('?service'):]
-        else:
-            redirect_url = url
+            url = url[0:url.index('/discuss') + len('/discuss')] + url[url.index('?service'):]
+        logger('X', 'X', str([issue.slug for issue in DBDiscussionSession.query(Issue).all()]))
+        for slug in [issue.slug for issue in DBDiscussionSession.query(Issue).all()]:
+            if slug in url:
+                url = url[0:url.index('/discuss') + len('/discuss')]
+        logger('X', 'X', url)
+        logger('X', 'X', url)
+        redirect_url = url
         # redirect_url = '{}/discuss?service={}'.format(request.application_url, service).replace('http:', 'https:')
 
         val = login_user_oauth(request, service, redirect_url, lang)
