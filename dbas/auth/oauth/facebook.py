@@ -93,7 +93,7 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
     # 'gender': 'male'
     # 'locale': 'de_DE'
 
-    gender = ''
+    gender = 'n'
     if 'gender' in parsed_resp:
         gender = 'm' if parsed_resp['gender'] == 'male' else 'f' if parsed_resp['gender'] == 'female' else ''
 

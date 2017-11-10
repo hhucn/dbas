@@ -1055,6 +1055,9 @@ def __get_gravatar(user, additional_id, size):
     url = url[url.index('//') + 2:]
     email = (user.email + additional_id).encode('utf-8') if user else ('unknown@' + url).encode('utf-8')
 
+    if str(user.email) == 'None' or user.email == 'None' or user.email is None:
+        email = (user.nickname + additional_id).encode('utf-8')
+
     gravatar_url = 'https://secure.gravatar.com/avatar/{}?'.format(hashlib.md5(email.lower()).hexdigest())
     gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
 

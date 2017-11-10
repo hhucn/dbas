@@ -195,7 +195,7 @@ def main_settings(request):
     _dh = DictionaryHelper(ui_locales)
     extras_dict = _dh.prepare_extras_dict_for_normal_page(request)
     settings_dict = _dh.prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user,
-                                              request.application_url)
+                                              request.application_url, extras_dict['use_with_ldap'])
 
     return {
         'layout': base_layout(),

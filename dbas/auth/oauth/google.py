@@ -61,6 +61,10 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
     logger('Google OAuth', 'continue_flow',
            'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
 
+    if 'service=google' not in redirect_uri:
+        bind = '#' if '?' in redirect_uri else '?'
+        redirect_uri = '{}{}{}'.format(redirect_uri, bind, 'service=google')
+
     google = OAuth2Session(client_id, redirect_uri=redirect_uri, scope=scope)
 
     try:
@@ -96,7 +100,7 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
     # 'locale': 'de'
     # 'picture': 'https://lh3.googleusercontent.com/-oHifqnhsSEI/AAAAAAAAAAI/AAAAAAAAA_E/FOOl5HaFX4E/photo.jpg'
 
-    gender = ''
+    gender = 'n'
     if 'gender' in parsed_resp:
         gender = 'm' if parsed_resp['gender'] == 'male' else 'f' if parsed_resp['gender'] == 'female' else ''
 
@@ -104,7 +108,7 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
         'id': parsed_resp['id'],
         'firstname': parsed_resp['given_name'] if 'given_name' in parsed_resp else '',
         'lastname': parsed_resp['family_name'] if 'family_name' in parsed_resp else '',
-        'nickname': '',
+        'nickname': parsed_resp['name'].replace(' ', '') if 'name' in parsed_resp else '',
         'gender': gender,
         'email': str(parsed_resp['email']) if 'email' in parsed_resp else 'None',
         'password': '',

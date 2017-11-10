@@ -1734,7 +1734,7 @@ msgstr "Einstellungen"
 #. Default: List of several information mapped with your account
 #: templates/settings.pt:7
 msgid "list_of_information"
-msgstr "Liste mit allen Informationen rund um deinen Account"
+msgstr "Informationen rund um Ihren Account"
 
 #. Default: Personal Information
 #: templates/settings.pt:16

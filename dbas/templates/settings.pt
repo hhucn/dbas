@@ -267,7 +267,7 @@
                 </div>
             </div>
 
-            <div class="container colored-container" tal:condition="not:extras.use_with_ldap">
+            <div class="container colored-container" tal:condition="settings.can_change_password">
                 <div class="content row">
                     <div class="col-md-12">
                         <h4><i class="fa fa-lock" aria-hidden="true" style="margin-right: 0.5em;"></i>

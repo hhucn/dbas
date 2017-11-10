@@ -213,7 +213,7 @@ class DictionaryHelper(object):
         return return_dict
 
     def prepare_settings_dict(self, pw_change_success, old_pw, new_pw, confirm_pw, pw_change_error, message, db_user,
-                              main_page):
+                              main_page, use_with_ldap):
         """
         Prepares the dictionary for settings.ow
 
@@ -225,6 +225,7 @@ class DictionaryHelper(object):
         :param message: String
         :param db_user: User
         :param main_page: String
+        :param use_with_ldap: Boolean
         :return: dict()
         """
         _tn = Translator(self.system_lang)
@@ -254,6 +255,7 @@ class DictionaryHelper(object):
             'db_public_nickname': public_nick,
             'db_mail': db_user.email if db_user else '',
             'has_mail': db_user.email is 'None' if db_user else '',
+            'can_change_password': not use_with_ldap and db_user.token is None,
             'db_group': group,
             'avatar_public_url': gravatar_public_url,
             'edits_done': edits,

@@ -706,6 +706,10 @@ $(document).ready(function () {
 		new GuidedTour().start();
 	}
 
+	$('#contact_on_error').click(function(){
+		window.location.href=$('#contact-link').find('a').attr('href');
+	});
+	
 	// language switch
 	$('#' + translationLinkDe).click(function(){ new GuiHandler().lang_switch('de'); });
 	$('#' + translationLinkEn).click(function(){ new GuiHandler().lang_switch('en'); });
