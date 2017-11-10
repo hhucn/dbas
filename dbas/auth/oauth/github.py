@@ -74,19 +74,6 @@ def continue_flow(authorization_response, ui_locales):
     logger('Github OAuth', 'continue_flow', str(resp.text))
     parsed_resp = json.loads(resp.text)
 
-    user_data = {
-        'id': parsed_resp['id'],
-        'firstname': parsed_resp['name'].rsplit(' ', 1)[0],
-        'lastname': parsed_resp['name'].rsplit(' ', 1)[1],
-        'nickname': slugify(parsed_resp['login']),
-        'gender': 'n',
-        'email': str(parsed_resp['email']),
-        'password': '',
-        'ui_locales': 'en'
-    }
-
-    missing_data = [key for key in oauth_values if len(user_data[key]) == 0 or user_data[key] is 'null']
-
     # 'login': 'tkrauthoff'
     # 'id': 5970416
     # 'avatar_url': 'https://avatars0.githubusercontent.com/u/5970416?v=4'
@@ -117,6 +104,22 @@ def continue_flow(authorization_response, ui_locales):
     # 'following': 4
     # 'created_at': 2013-11-18T15:19:32Z
     # 'updated_at': 2017-10-24T07:01:29Z
+
+    user_data = {
+        'id': parsed_resp['id'],
+        'firstname': parsed_resp['name'].rsplit(' ', 1)[0],
+        'lastname': parsed_resp['name'].rsplit(' ', 1)[1],
+        'nickname': slugify(parsed_resp['login']),
+        'gender': 'n',
+        'email': str(parsed_resp['email']) if 'email' in parsed_resp else 'None',
+        'password': '',
+        'ui_locales': 'en'
+    }
+
+    missing_data = [key for key in oauth_values if len(user_data[key]) == 0 or user_data[key] is 'null']
+
+    logger('Github OAuth', 'continue_flow', 'user_data: ' + str(user_data))
+    logger('Github OAuth', 'continue_flow', 'missing_data: ' + str(missing_data))
 
     return {
         'user': user_data,

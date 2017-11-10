@@ -227,7 +227,7 @@
     				<h5 class="modal-title" i18n:translate="information_missing">Information are missing</h5>
     			</div>
     			<div id="popup-complete-login-body">
-                    <p class="lead text-info" style="margin: 0 2em;" i18n:translate="plase_add_missing_infos_we_add_account">During the authentication we could not fetch all of the necessary information. Please add the missing information, so we can add a new account in D-BAS (Login via other providers won't work).</p>
+                    <p class="text-info" style="margin: 0 2em;" i18n:translate="plase_add_missing_infos_we_add_account">During the authentication we could not fetch all of the necessary information. Please add the missing information, so we can add a new account in D-BAS (Login via other providers won't work).</p>
                     <form autocomplete="on" style="margin: 2em;">
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="popup-complete-login-userfirstname-input" i18n:translate="first_name">Your First Name</label>
@@ -293,10 +293,17 @@
                         </div>
                     </form>
 
-                    <div class="col-md-12 hidden" id="popup-complete-login-failed">
+                    <div class="col-md-12" id="popup-complete-login-failed" style="display: none;">
                         <div class="alert alert-danger" role="alert">
                             <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                             <span class="sr-only" i18n:translate="error">Error:</span> <span id="popup-complete-login-failed-message"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12" id="popup-complete-login-info" style="display: none;">
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                            <span class="sr-only" i18n:translate="info">Info:</span> <span id="popup-complete-login-info-message"></span>
                         </div>
                     </div>
                 </div>

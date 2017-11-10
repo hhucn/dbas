@@ -84,19 +84,6 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
     logger('Google OAuth', 'continue_flow', str(resp.text))
     parsed_resp = json.loads(resp.text)
 
-    user_data = {
-        'id': parsed_resp['id'],
-        'firstname': parsed_resp['given_name'],
-        'lastname': parsed_resp['family_name'],
-        'nickname': '',
-        'gender': 'm' if parsed_resp['gender'] == 'male' else 'f' if parsed_resp['gender'] == 'female' else '',
-        'email': parsed_resp['email'],
-        'password': '',
-        'ui_locales': 'de' if parsed_resp['locale'] == 'de' else ui_locales
-    }
-
-    missing_data = [key for key in oauth_values if len(user_data[key]) == 0]
-
     # example response
     # 'id': '112556997662022178084'
     # 'name': 'Tobias Krauthoff'
@@ -108,6 +95,26 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
     # 'verified_email': True
     # 'locale': 'de'
     # 'picture': 'https://lh3.googleusercontent.com/-oHifqnhsSEI/AAAAAAAAAAI/AAAAAAAAA_E/FOOl5HaFX4E/photo.jpg'
+
+    gender = ''
+    if 'gender' in parsed_resp:
+        gender = 'm' if parsed_resp['gender'] == 'male' else 'f' if parsed_resp['gender'] == 'female' else ''
+
+    user_data = {
+        'id': parsed_resp['id'],
+        'firstname': parsed_resp['given_name'] if 'given_name' in parsed_resp else '',
+        'lastname': parsed_resp['family_name'] if 'family_name' in parsed_resp else '',
+        'nickname': '',
+        'gender': gender,
+        'email': str(parsed_resp['email']) if 'email' in parsed_resp else 'None',
+        'password': '',
+        'ui_locales': 'de' if parsed_resp['locale'] == 'de' else ui_locales
+    }
+
+    missing_data = [key for key in oauth_values if len(user_data[key]) == 0 or user_data[key] is 'null']
+
+    logger('Google OAuth', 'continue_flow', 'user_data: ' + str(user_data))
+    logger('Google OAuth', 'continue_flow', 'missing_data: ' + str(missing_data))
 
     return {
         'user': user_data,

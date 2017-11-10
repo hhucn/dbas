@@ -132,9 +132,17 @@ class DictionaryHelper(object):
             application_url = ''
             logger('DictionaryHelper', 'prepare_extras_dict', 'application_url is None', error=True)
 
+        restart_url = UrlManager(application_url, current_slug, for_api).get_slug_url(False)
+        if restart_url.endswith('/'):
+            restart_url = restart_url[:-1]
+        if not restart_url.startswith('http'):
+            restart_url = 'https://' + restart_url
+        if restart_url.startswith('http:'):
+            restart_url = restart_url.replace('http', 'https')
+
         return_dict = dict()
         return_dict['year'] = datetime.datetime.now().year
-        return_dict['restart_url'] = UrlManager(application_url, current_slug, for_api).get_slug_url(False)
+        return_dict['restart_url'] = restart_url
         return_dict['is_in_discussion'] = 'discuss' in request.path
         return_dict['logged_in'] = is_logged_in
         return_dict['nickname'] = request_authenticated_userid

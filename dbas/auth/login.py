@@ -56,7 +56,7 @@ def login_user(request, nickname, password, for_api, keep_login=False, lang='en'
         return __register_user_with_ldap_data(request, nickname, password, for_api, keep_login, url, _tn)
 
     # this is 2.
-    if db_user.token is not None:
+    if len(str(db_user.token)) > 0:
         return {'info': _tn.get(_.userIsOAuth)}
 
     # this is 3.
@@ -352,6 +352,10 @@ def register_user_with_ajax_data(request):
     if not password == passwordconfirm:
         logger('Auth.Login', 'user_registration', 'Passwords are not equal')
         msg = _tn.get(_.pwdNotEqual)
+    # empty password?
+    elif len(password) <= 5:
+        logger('Auth.Login', 'user_registration', 'Password too short')
+        msg = _tn.get(_.pwdShort)
     # is the nick already taken?
     elif db_nick1 or db_nick2:
         logger('Auth.Login', 'user_registration', 'Nickname \'' + nickname + '\' is taken')
@@ -360,6 +364,9 @@ def register_user_with_ajax_data(request):
     elif db_mail:
         logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is taken')
         msg = _tn.get(_.mailIsTaken)
+    elif len(email) < 2:
+        logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is too short')
+        msg = _tn.get(_.mailNotValid)
     # is the email valid?
     elif not is_mail_valid:
         logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is not valid')

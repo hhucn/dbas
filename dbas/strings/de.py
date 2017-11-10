@@ -51,6 +51,7 @@ de_lang = {
     _.notification: 'Benachrichtigung',
     _.notificationDeleted: 'Benachrichtigung gelöscht',
     _.pwdNotEqual: 'Passwörter sind nicht gleich.',
+    _.pwdShort: 'Passwort ist zu kurz (min. 5 Zeichen).',
     _.nickIsTaken: 'Nickname ist schon vergeben.',
     _.mailIsTaken: 'E-Mail ist schon vergeben.',
     _.mailNotValid: 'E-Mail ist nicht gültig.',

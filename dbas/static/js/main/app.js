@@ -582,11 +582,13 @@ function callbackIfDoneForRegistrationViaOauth(data) {
 	'use strict';
 	
 	var success = $('#' + popupLoginSuccess);
-	var failed = $('#popup-complete-login-failed-message');
+	var failed = $('#popup-complete-login-failed');
+	var info = $('#popup-complete-login-info');
 	success.hide();
+	info.hide();
 	failed.hide();
 	
-	if (data.success.length > 0) {
+	if ('success' in data && data.success.length > 0) {
 		$('#popup-complete-login').modal('hide');
 		$('#popup-login').modal('show');
 		// trigger click
@@ -594,9 +596,13 @@ function callbackIfDoneForRegistrationViaOauth(data) {
 		success.show();
 		$('#' + popupLoginSuccess + '-message').text(data.success);
 	}
-	if (data.error.length > 0) {
+	if ('error' in data && data.error.length > 0) {
 		failed.show();
-		$('#' + popupLoginRegistrationFailed + '-message').text(data.error);
+		$('#popup-complete-login-failed-message').text(data.error);
+	}
+	if ('info' in data && data.info.length > 0) {
+		info.show();
+		$('#popup-complete-login-info-message').text(data.info);
 	}
 }
 

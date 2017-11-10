@@ -44,6 +44,7 @@ class Keywords(Enum):
     notification = 'notification'
     notificationDeleted = 'notificationDeleted'
     pwdNotEqual = 'pwdNotEqual'
+    pwdShort = 'pwdShort'
     nickIsTaken = 'nickIsTaken'
     mailIsTaken = 'mailIsTaken'
     mailNotValid = 'mailNotValid'
