@@ -57,7 +57,7 @@ def main(global_config, **settings):
     set_cache_regions_from_settings(settings)
 
     # include custom parts
-    sections = ['ldap', 'service']
+    sections = ['service']
     for s in sections:
         try:
             parser = ConfigParser()
@@ -119,6 +119,7 @@ def main(global_config, **settings):
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('ajax_user_login', '{url:.*}ajax_user_login')
+    config.add_route('ajax_user_login_oauth', '{url:.*}ajax_user_login_oauth')
     config.add_route('ajax_user_logout', '{url:.*}ajax_user_logout')
     config.add_route('ajax_set_new_start_argument', '/{url:.*}ajax_set_new_start_argument')
     config.add_route('ajax_set_new_start_statement', '/{url:.*}ajax_set_new_start_statement')

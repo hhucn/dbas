@@ -1,32 +1,43 @@
 import ldap
+import os
 
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 
 
-def verify_ldap_user_data(registry_settings, nickname, password, _tn):
+def verify_ldap_user_data(nickname, password, _tn):
     """
     Tries to authenticate the user with nickname and password
 
-    :param registry_settings: Registry settings from ini file
     :param nickname: users nickname for LDAP
     :param password: users password for LDAP
     :param _tn: Translator
     :return: [firstname, lastname, gender, email] on success else None
     """
     logger('ldap', 'verify_ldap_user_data', 'main')
-
     try:
-        r = registry_settings
-        server = r['settings:ldap:server']
-        base = r['settings:ldap:base']
-        scope = r['settings:ldap:account.scope']
-        filter = r['settings:ldap:account.filter']
-        firstname = r['settings:ldap:account.firstname']
-        lastname = r['settings:ldap:account.lastname']
-        title = r['settings:ldap:account.title']
-        email = r['settings:ldap:account.email']
+        server = os.environ.get('DBAS_HHU_LDAP_SERVER', None)
+        base = os.environ.get('DBAS_HHU_LDAP_BASE', None)
+        scope = os.environ.get('DBAS_HHU_LDAP_ACCOUNT_SCOPE', None)
+        filter = os.environ.get('DBAS_HHU_LDAP_ACCOUNT_FILTER', None)
+        firstname = os.environ.get('DBAS_HHU_LDAP_ACCOUNT_FIRSTNAME', None)
+        lastname = os.environ.get('DBAS_HHU_LDAP_ACCOUNT_LAST', None)
+        title = os.environ.get('DBAS_HHU_LDAP_ACCOUNT_TITLE', None)
+        email = os.environ.get('DBAS_HHU_LDAP_ACCOUNT_EMAIL', None)
         logger('ldap', 'verify_ldap_user_data', 'parsed data')
+
+        if any(el is None for el in [server, base, scope, filter, firstname, lastname, title, email]):
+            logger('ldap', 'verify_ldap_user_data', 'Environment Keys are None')
+            return {'error': _tn.get(_.internalKeyError) + ' ' + _tn.get(_.pleaseTryAgainLaterOrContactUs)}
+
+        server = server.replace('\'', '')
+        base = base.replace('\'', '')
+        scope = scope.replace('\'', '')
+        filter = filter.replace('\'', '')
+        firstname = firstname.replace('\'', '')
+        lastname = lastname.replace('\'', '')
+        title = title.replace('\'', '')
+        email = email.replace('\'', '')
 
         logger('ldap', 'verify_ldap_user_data', 'ldap.initialize(\'{}\')'.format(server))
         ldaps = ldap.initialize(server)
@@ -65,5 +76,5 @@ def verify_ldap_user_data(registry_settings, nickname, password, _tn):
 
     except ldap.OPERATIONS_ERROR as e:
         logger('ldap', 'verify_ldap_user_data', 'OPERATIONS_ERROR: ' + str(e))
-        data = {'error': _tn.get(_.internalKeyError) + ' ' + _tn.get(_.pleaseTryAgainLaterOrContactUs)}
+        data = {'error': _tn.get(_.userPasswordNotMatch)}
         return data

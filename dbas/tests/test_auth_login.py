@@ -2,7 +2,7 @@ import unittest
 
 from pyramid.httpexceptions import HTTPFound
 from pyramid import testing
-from dbas.auth.login import login_user, register_user_with_ajax_data
+from dbas.auth.login import login_user, register_user_with_ajax_data, login_user_oauth
 from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
 
@@ -51,9 +51,10 @@ class AuthLoginTest(unittest.TestCase):
             'password': '',
             'passwordconfirm': '',
             'g-recaptcha-response': '',
+            'mode': '',
         }, matchdict={})
         success, msg, db_new_user = register_user_with_ajax_data(request)
-        self.assertEqual(_tn.get(_.mailNotValid), msg)
+        self.assertEqual(_tn.get(_.pwdShort), msg)
         self.assertIsNone(db_new_user)
 
         request = testing.DummyRequest(params={
@@ -65,6 +66,7 @@ class AuthLoginTest(unittest.TestCase):
             'password': 'somepasswd',
             'passwordconfirm': 'somepasswd',
             'g-recaptcha-response': '',
+            'mode': 'manually',
         }, matchdict={})
         success, msg, db_new_user = register_user_with_ajax_data(request)
         self.assertEqual(_tn.get(_.nickIsTaken), msg)
@@ -79,6 +81,7 @@ class AuthLoginTest(unittest.TestCase):
             'password': 'somepasswd',
             'passwordconfirm': 'somepasswd',
             'g-recaptcha-response': '',
+            'mode': 'manually',
         }, matchdict={})
         success, msg, db_new_user = register_user_with_ajax_data(request)
         self.assertEqual(_tn.get(_.mailIsTaken), msg)
@@ -93,6 +96,7 @@ class AuthLoginTest(unittest.TestCase):
             'password': 'somepasswd',
             'passwordconfirm': 'somepasswd',
             'g-recaptcha-response': '',
+            'mode': 'manually',
         }, matchdict={})
         success, msg, db_new_user = register_user_with_ajax_data(request)
         self.assertEqual(_tn.get(_.mailNotValid), msg)
@@ -107,6 +111,7 @@ class AuthLoginTest(unittest.TestCase):
             'password': 'somepasswd',
             'passwordconfirm': 'somepasswd',
             'g-recaptcha-response': '',
+            'mode': 'manually',
         }, matchdict={})
         success, msg, db_new_user = register_user_with_ajax_data(request)
         self.assertEqual(_tn.get(_.maliciousAntiSpam), msg)
@@ -121,6 +126,7 @@ class AuthLoginTest(unittest.TestCase):
             'password': 'somepasswd',
             'passwordconfirm': 'somepasswdd',
             'g-recaptcha-response': '',
+            'mode': 'manually',
         }, matchdict={})
         success, msg, db_new_user = register_user_with_ajax_data(request)
         self.assertEqual(_tn.get(_.pwdNotEqual), msg)
@@ -135,7 +141,31 @@ class AuthLoginTest(unittest.TestCase):
             'password': 'somepasswd',
             'passwordconfirm': 'somepasswd',
             'g-recaptcha-response': '',
+            'mode': 'manually',
         }, matchdict={})
         success, msg, db_new_user = register_user_with_ajax_data(request)
         self.assertEqual(_tn.get(_.maliciousAntiSpam), msg)
         self.assertIsNone(db_new_user)
+
+    def test_login_user_oauth(self):
+        services = ['google', 'github', 'facebook', '']  # 'twitter'
+        for service in services:
+            redirect_uri = 'http://lvh.me:4284'
+            ui_locales = 'en'
+            environ = {
+                'DBAS_OAUTH_GOOGLE_CLIENTID': 'DBAS_OAUTH_GOOGLE_CLIENTID',
+                'DBAS_OAUTH_GOOGLE_CLIENTKEY': 'DBAS_OAUTH_GOOGLE_CLIENTKEY',
+                'DBAS_OAUTH_GITHUB_CLIENTID': 'DBAS_OAUTH_GITHUB_CLIENTID',
+                'DBAS_OAUTH_GITHUB_CLIENTKEY': 'DBAS_OAUTH_GITHUB_CLIENTKEY',
+                'DBAS_OAUTH_FACEBOOK_CLIENTID': 'DBAS_OAUTH_FACEBOOK_CLIENTID',
+                'DBAS_OAUTH_FACEBOOK_CLIENTKEY': 'DBAS_OAUTH_FACEBOOK_CLIENTKEY',
+                'DBAS_OAUTH_TWITTER_CLIENTID': 'DBAS_OAUTH_TWITTER_CLIENTID',
+                'DBAS_OAUTH_TWITTER_CLIENTKEY': 'DBAS_OAUTH_TWITTER_CLIENTKEY',
+            }
+            request = testing.DummyRequest(params={'application_url': 'http://lvh.me'}, matchdict={}, environ=environ)
+            request.environ = environ
+            resp = login_user_oauth(request, service, redirect_uri, ui_locales)
+            if len(service) > 0:
+                self.assertIsNotNone(resp)
+            else:
+                self.assertIsNone(resp)
