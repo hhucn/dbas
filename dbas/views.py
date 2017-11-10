@@ -1049,7 +1049,8 @@ def user_login_oauth(request):
 
     try:
         service = request.params['service']
-        redirect_url = request.params['redirect_uri']
+        url = request.params['redirect_uri']
+        redirect_url = url[0:url.index('/discuss') + len('/discuss')] + url[url.index('?service'):]
         # redirect_url = '{}/discuss?service={}'.format(request.application_url, service).replace('http:', 'https:')
 
         val = login_user_oauth(request, service, redirect_url, lang)
