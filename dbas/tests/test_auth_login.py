@@ -54,7 +54,7 @@ class AuthLoginTest(unittest.TestCase):
             'mode': '',
         }, matchdict={})
         success, msg, db_new_user = register_user_with_ajax_data(request)
-        self.assertEqual(_tn.get(_.mailNotValid), msg)
+        self.assertEqual(_tn.get(_.pwdShort), msg)
         self.assertIsNone(db_new_user)
 
         request = testing.DummyRequest(params={
