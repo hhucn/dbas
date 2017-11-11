@@ -164,7 +164,7 @@ class AuthLoginTest(unittest.TestCase):
             }
             request = testing.DummyRequest(params={'application_url': 'http://lvh.me'}, matchdict={}, environ=environ)
             request.environ = environ
-            resp = login_user_oauth(request, service, redirect_uri, ui_locales)
+            resp = login_user_oauth(request, service, redirect_uri, redirect_uri, ui_locales)
             if len(service) > 0:
                 self.assertIsNotNone(resp)
             else:
