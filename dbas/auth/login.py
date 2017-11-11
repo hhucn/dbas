@@ -63,33 +63,35 @@ def login_user(request, nickname, password, for_api, keep_login=False, lang='en'
     return __check_in_local_known_user(request, db_user, password, for_api, keep_login, url, _tn)
 
 
-def login_user_oauth(request, service, redirect_uri, ui_locales):
+def login_user_oauth(request, service, redirect_uri, old_redirect, ui_locales):
     """
 
     :param request:
     :param service: name of the oauth service
     :param redirect_uri:
+    :param old_redirect: redirect_url without modifications
     :param ui_locales:
     :return:
     """
     logger('Auth.Login', 'login_user_oauth', 'service: {}'.format(service))
     if service == 'google':
-        return __do_google_oauth(request, redirect_uri, ui_locales)
+        return __do_google_oauth(request, redirect_uri, old_redirect, ui_locales)
     elif service == 'github':
-        return __do_github_oauth(request, redirect_uri, ui_locales)
+        return __do_github_oauth(request, redirect_uri, old_redirect, ui_locales)
     elif service == 'facebook':
-        return __do_facebook_oauth(request, redirect_uri, ui_locales)
+        return __do_facebook_oauth(request, redirect_uri, old_redirect, ui_locales)
     elif service == 'twitter':
-        return __do_twitter_oauth(request, redirect_uri, ui_locales)
+        return __do_twitter_oauth(request, redirect_uri, old_redirect, ui_locales)
     else:
         return None
 
 
-def __do_google_oauth(request, redirect_uri, ui_locales):
+def __do_google_oauth(request, redirect_uri, old_redirect, ui_locales):
     """
 
     :param request:
     :param redirect_uri:
+    :param old_redirect:
     :param ui_locales:
     :return:
     """
@@ -108,14 +110,16 @@ def __do_google_oauth(request, redirect_uri, ui_locales):
 
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
+        request.session['oauth_redirect_url'] = old_redirect
         return google.start_flow(redirect_uri)
 
 
-def __do_github_oauth(request, redirect_uri, ui_locales):
+def __do_github_oauth(request, redirect_uri, old_redirect, ui_locales):
     """
 
     :param request:
     :param redirect_uri:
+    :param old_redirect:
     :param ui_locales:
     :return:
     """
@@ -134,14 +138,16 @@ def __do_github_oauth(request, redirect_uri, ui_locales):
         url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
+        request.session['oauth_redirect_url'] = old_redirect
         return github.start_flow()
 
 
-def __do_facebook_oauth(request, redirect_uri, ui_locales):
+def __do_facebook_oauth(request, redirect_uri, old_redirect, ui_locales):
     """
 
     :param request:
     :param redirect_uri:
+    :param old_redirect:
     :param ui_locales:
     :return:
     """
@@ -160,14 +166,16 @@ def __do_facebook_oauth(request, redirect_uri, ui_locales):
 
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
+        request.session['oauth_redirect_url'] = old_redirect
         return facebook.start_flow(redirect_uri)
 
 
-def __do_twitter_oauth(request, redirect_uri, ui_locales):
+def __do_twitter_oauth(request, redirect_uri, old_redirect, ui_locales):
     """
 
     :param request:
     :param redirect_uri:
+    :param old_redirect:
     :param ui_locales:
     :return:
     """
@@ -186,6 +194,7 @@ def __do_twitter_oauth(request, redirect_uri, ui_locales):
         url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
+        request.session['oauth_redirect_url'] = old_redirect
         return twitter.start_flow(request, redirect_uri)
 
 
@@ -210,8 +219,8 @@ def __set_oauth_user(request, user_data, service, ui_locales):
                                        service, _tn)
     # db_new_user = ret_dict['user']
     if ret_dict['success']:
-        return __return_success_login(request, False, ret_dict['user'], False, request.path_url)
-        # return {'error': ret_dict['error'], 'success': _tn.get(_.accountWasAdded).format(user_data['nickname'])}
+        url = request.session['oauth_redirect_url']  # request.path_url
+        return __return_success_login(request, False, ret_dict['user'], False, url)
     else:
         return {'error': ret_dict['error'], 'success': ret_dict['success']}
 

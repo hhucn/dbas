@@ -1050,6 +1050,7 @@ def user_login_oauth(request):
     try:
         service = request.params['service']
         url = request.params['redirect_uri']
+        old_redirect = url
         # cleaner urls
         if '?service' in url:
             url = url[0:url.index('/discuss') + len('/discuss')] + url[url.index('?service'):]
@@ -1058,7 +1059,7 @@ def user_login_oauth(request):
                 url = url[0:url.index('/discuss') + len('/discuss')]
         redirect_url = url.replace('http:', 'https:')
 
-        val = login_user_oauth(request, service, redirect_url, lang)
+        val = login_user_oauth(request, service, redirect_url, old_redirect, lang)
         if val is None:
             return {'error': _tn.get(_.internalKeyError)}
         return val
