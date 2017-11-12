@@ -1564,7 +1564,7 @@ msgstr "This argument is harmful or abusive."
 #. Default: This statement is a duplicate.
 #: templates/snippet-popups.pt:833
 msgid "statement_duplicate"
-msgstr "Statement is a duplicate"
+msgstr "Statement is a duplicate."
 
 #. Default: This statement should be merged.
 #: templates/snippet-popups.pt:841
