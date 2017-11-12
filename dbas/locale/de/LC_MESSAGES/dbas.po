@@ -1571,12 +1571,12 @@ msgstr "Aussage ist ein Duplikat"
 #. Default: This statement should be merged.
 #: templates/snippet-popups.pt:833
 msgid "statement_merge"
-msgstr "für Aussagen, die nicht verbunden werden sollen."
+msgstr "Die Aussage sollte mit einer weiteren verbunden werden."
 
 #. Default: This statement has more than one message.
 #: templates/snippet-popups.pt:841
 msgid "statement_split"
-msgstr "für Aussagen, die nicht getrennt werden sollen."
+msgstr "Die Aussagen sollte geteilt werden."
 
 #. Default: Reporting (parts of) an argument
 #: templates/snippet-popups.pt:860

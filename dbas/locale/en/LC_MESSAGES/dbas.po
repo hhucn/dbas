@@ -1568,12 +1568,12 @@ msgstr "Statement is a duplicate"
 #. Default: This statement should be merged.
 #: templates/snippet-popups.pt:833
 msgid "statement_merge"
-msgstr "for marked statements, which should not be merged."
+msgstr "This statement should be merged."
 
 #. Default: This statement has more than one message.
 #: templates/snippet-popups.pt:841
 msgid "statement_split"
-msgstr "for marked statements, which should not be splitted."
+msgstr "This statement has more than one message."
 
 #. Default: Reporting (parts of) an argument
 #: templates/snippet-popups.pt:860
