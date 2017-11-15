@@ -1051,7 +1051,7 @@ def user_login_oauth(request):
         service = request.params['service']
         url = request.params['redirect_uri']
         old_redirect = url
-        # cleaner urls
+        # add service tag to notice the oauth provider after a redirect
         if '?service' in url:
             url = url[0:url.index('/discuss') + len('/discuss')] + url[url.index('?service'):]
         for slug in [issue.slug for issue in DBDiscussionSession.query(Issue).all()]:
