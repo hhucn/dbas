@@ -17,6 +17,10 @@ from dbas.handler.user import oauth_values
 from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
 
+authorization_base_url = 'https://github.com/login/oauth/authorize'
+token_url = 'https://github.com/login/oauth/access_token'
+scope = ['user:email']
+
 
 def start_flow():
     """
@@ -29,8 +33,7 @@ def start_flow():
     logger('Github OAuth', 'start_flow',
            'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
 
-    authorization_base_url = 'https://github.com/login/oauth/authorize'
-    github = OAuth2Session(client_id)
+    github = OAuth2Session(client_id, scope=scope)
     authorization_url, state = github.authorization_url(authorization_base_url)
 
     logger('Github OAuth', 'start_flow', 'Please go to {} and authorize access'.format(authorization_url))
@@ -52,7 +55,6 @@ def continue_flow(authorization_response, ui_locales):
            'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
     logger('Github OAuth', 'continue_flow', 'authorization_response: ' + authorization_response)
 
-    token_url = 'https://github.com/login/oauth/access_token'
     try:
         github.fetch_token(token_url, client_secret=client_secret, authorization_response=authorization_response)
     except InsecureTransportError:
