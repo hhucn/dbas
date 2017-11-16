@@ -139,6 +139,7 @@ def __do_github_oauth(request, redirect_uri, old_redirect, ui_locales):
             return value_dict
 
         # return HTTPFound
+        url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
         request.session['oauth_redirect_url'] = old_redirect
@@ -196,6 +197,7 @@ def __do_twitter_oauth(request, redirect_uri, old_redirect, ui_locales):
             return value_dict
 
         # return HTTPFound
+        url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
         request.session['oauth_redirect_url'] = old_redirect
