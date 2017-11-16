@@ -26,6 +26,8 @@ from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
+oauth_providers = ['google', 'github', 'facebook', 'twitter']
+
 
 def login_user(request, nickname, password, for_api, keep_login=False, lang='en'):
     """
@@ -109,7 +111,6 @@ def __do_google_oauth(request, redirect_uri, old_redirect, ui_locales):
             return value_dict
 
         # return HTTPFound
-        url = request.session['oauth_redirect_url']
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
         request.session['oauth_redirect_url'] = old_redirect
@@ -137,17 +138,10 @@ def __do_github_oauth(request, redirect_uri, old_redirect, ui_locales):
         else:
             return value_dict
 
-        url = request.session['oauth_redirect_url']
-        logger('X', 'X2', 'oauth_redirect_url: ' + url)
-        logger('X', 'X2', 'oauth_redirect_url: ' + url)
-        logger('X', 'X2', 'oauth_redirect_url: ' + url)
         # return HTTPFound
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
         request.session['oauth_redirect_url'] = old_redirect
-        logger('X', 'X1', 'old_redirect: ' + old_redirect)
-        logger('X', 'X1', 'old_redirect: ' + old_redirect)
-        logger('X', 'X1', 'old_redirect: ' + old_redirect)
         return github.start_flow()
 
 
@@ -173,7 +167,6 @@ def __do_facebook_oauth(request, redirect_uri, old_redirect, ui_locales):
         else:
             return value_dict
 
-        url = request.session['oauth_redirect_url']
         # return HTTPFound
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
@@ -202,7 +195,6 @@ def __do_twitter_oauth(request, redirect_uri, old_redirect, ui_locales):
         else:
             return value_dict
 
-        url = request.session['oauth_redirect_url']
         # return HTTPFound
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
@@ -232,9 +224,6 @@ def __set_oauth_user(request, user_data, service, ui_locales):
     # db_new_user = ret_dict['user']
     if ret_dict['success']:
         url = request.session['oauth_redirect_url']
-        logger('X', 'X3', 'oauth_redirect_url: ' + url)
-        logger('X', 'X3', 'oauth_redirect_url: ' + url)
-        logger('X', 'X3', 'oauth_redirect_url: ' + url)
         return __return_success_login(request, False, ret_dict['user'], False, url)
     else:
         return {'error': ret_dict['error'], 'success': ret_dict['success']}

@@ -121,9 +121,7 @@ function AjaxMainHandler(){
 				window.open(data.authorization_url, '_self');
 			}
 		}).fail(function ajaxOauthLoginFail(xhr) {
-			console.log(xhr.status);
-			if (xhr.status === 0 || xhr.status === 200){
-				// window.location.href = mainpage + 'discuss';
+			if (xhr.status === 0 || xhr.status === 200) {
 				location.reload(true);
 			} else{
 				setGlobalErrorHandler('Ohh!', _t(requestFailedInternalError) + ' (' + xhr.status + ')');

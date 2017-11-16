@@ -26,7 +26,7 @@ import dbas.review.helper.queues as review_queue_helper
 import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
-from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data
+from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
@@ -518,6 +518,11 @@ def discussion_init(request, for_api=False, api_data=None):
     prepared_discussion = __call_from_discussion_step(request, discussion.init, for_api, api_data)
     if not prepared_discussion:
         raise HTTPNotFound()
+
+    # redirect to oauth url after login and redirecting
+    if request.authenticated_userid and 'service' in request.params and request.params['service'] in oauth_providers:
+        url = request.session['oauth_redirect_url']
+        return HTTPFound(location=url)
 
     return prepared_discussion
 
@@ -1050,7 +1055,7 @@ def user_login_oauth(request):
     try:
         service = request.params['service']
         url = request.params['redirect_uri']
-        old_redirect = url
+        old_redirect = url.replace('http:', 'https:')
         # add service tag to notice the oauth provider after a redirect
         if '?service' in url:
             url = url[0:url.index('/discuss') + len('/discuss')] + url[url.index('?service'):]
@@ -1082,13 +1087,16 @@ def user_logout(request, redirect_to_main=False):
     request.session.invalidate()
     headers = forget(request)
     if redirect_to_main:
-        return HTTPFound(
-            location=request.application_url + 'discuss?session_expired=true',
-            headers=headers,
-        )
+        location = request.application_url + 'discuss?session_expired=true',
+    elif (request.application_url + '/discuss') in request.path_url:  # redirect to page, where you need no login
+        location = request.path_url
     else:
-        request.response.headerlist.extend(headers)
-        return request.response
+        location = request.application_url + '/discuss'
+
+    return HTTPFound(
+        location=location,
+        headers=headers
+    )
 
 
 # ajax - registration of users
