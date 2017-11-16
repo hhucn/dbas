@@ -96,7 +96,7 @@ def __do_google_oauth(request, redirect_uri, old_redirect, ui_locales):
     :return:
     """
     if 'state' in redirect_uri and 'code' in redirect_uri:
-        url = request.session['oauth_redirect_url']  # url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
+        url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
         data = google.continue_flow(url, redirect_uri, ui_locales)
         if len(data['error']) != 0 or len(data['missing']) != 0:
             return data
@@ -108,6 +108,8 @@ def __do_google_oauth(request, redirect_uri, old_redirect, ui_locales):
         else:
             return value_dict
 
+        # return HTTPFound
+        url = request.session['oauth_redirect_url']
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
         request.session['oauth_redirect_url'] = old_redirect
@@ -135,10 +137,11 @@ def __do_github_oauth(request, redirect_uri, old_redirect, ui_locales):
         else:
             return value_dict
 
-        url = request.session['oauth_redirect_url']  # url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
+        url = request.session['oauth_redirect_url']
         logger('X', 'X2', 'oauth_redirect_url: ' + url)
         logger('X', 'X2', 'oauth_redirect_url: ' + url)
         logger('X', 'X2', 'oauth_redirect_url: ' + url)
+        # return HTTPFound
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
         request.session['oauth_redirect_url'] = old_redirect
@@ -158,7 +161,7 @@ def __do_facebook_oauth(request, redirect_uri, old_redirect, ui_locales):
     :return:
     """
     if 'state' in redirect_uri and 'code' in redirect_uri:
-        url = request.session['oauth_redirect_url']  # url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
+        url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
         data = facebook.continue_flow(url, redirect_uri, ui_locales)
         if len(data['error']) != 0 or len(data['missing']) != 0:
             return data
@@ -170,6 +173,8 @@ def __do_facebook_oauth(request, redirect_uri, old_redirect, ui_locales):
         else:
             return value_dict
 
+        url = request.session['oauth_redirect_url']
+        # return HTTPFound
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
         request.session['oauth_redirect_url'] = old_redirect
@@ -197,7 +202,8 @@ def __do_twitter_oauth(request, redirect_uri, old_redirect, ui_locales):
         else:
             return value_dict
 
-        url = request.session['oauth_redirect_url']  # url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
+        url = request.session['oauth_redirect_url']
+        # return HTTPFound
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
         request.session['oauth_redirect_url'] = old_redirect
@@ -304,9 +310,9 @@ def __return_success_login(request, for_api, db_user, keep_login, url):
         logger('Auth.Login', 'login_user', 'return for api: success')
         return {'status': 'success'}  # api
     else:
-        logger('Auth.Login', 'login_user', 'return success: ' + url)
         headers, url = __refresh_headers_and_url(request, db_user, keep_login, url)
         sleep(0.5)
+        logger('Auth.Login', 'login_user', 'return HTTPFound with url {}'.format(url))
         return HTTPFound(location=url, headers=headers)  # success
 
 
@@ -429,7 +435,7 @@ def __refresh_headers_and_url(request, db_user, keep_login, url):
     :param url: String
     :return: Headers, String
     """
-    logger('Auth.Login', '__refresh_headers_and_url', 'login', 'login successful / keep_login: ' + str(keep_login))
+    logger('Auth.Login', '__refresh_headers_and_url', 'login', 'login successful / keep_login: {}'.format(keep_login))
     db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
     db_settings.should_hold_the_login(keep_login)
     logger('Auth.Login', '__refresh_headers_and_url', 'remembering headers for {}'.format(db_user.nickname))

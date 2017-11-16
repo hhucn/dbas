@@ -61,7 +61,7 @@ function News() {
 			// $('#' + newsBodyId).prepend(new News().getNewsContainerAsHtml(data.title, data.date, data.author, data.news));
 			// new News().setSharingClickEvents();
 			// window.scrollTo(0, 0);
-			location.reload();
+			location.reload(true);
 		} else {
 			$('#' + writingNewsFailedId).show();
 			$('#' + writingNewsFailedMessageId).html(data.error);

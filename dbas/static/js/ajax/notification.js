@@ -100,7 +100,7 @@ function AjaxNotificationHandler(){
 				$('#popup-writing-notification-success-message').text(_t(notificationWasSend));
 				var out_counter = $('#total_out_counter');
 				out_counter.text(' ' + (parseInt(out_counter.text()) + 1) + ' ');
-				location.reload();
+				location.reload(true);
 			} else {
 				$('#popup-writing-notification-failed').show();
 				$('#popup-writing-notification-failed-message').html(data.error);
