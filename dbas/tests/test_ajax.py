@@ -3,7 +3,6 @@ import unittest
 import transaction
 from pyramid import testing
 from pyramid.httpexceptions import HTTPFound
-from pyramid.response import Response
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
