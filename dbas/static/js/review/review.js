@@ -202,7 +202,7 @@ function Review() {
 	this.reloadPageAndUnlockData = function (only_unlock){
 		new AjaxReviewHandler().un_lockOptimizationReview($('#review-id').data('id'), false, undefined);
 		if (! only_unlock) {
-			location.reload();
+			location.reload(true);
 		}
 	};
 	

@@ -117,14 +117,13 @@ function AjaxMainHandler(){
 				setGlobalErrorHandler('Ohh!', data.error);
 			} else if ('missing' in data && data.missing.length !== 0) {
 				new GuiHandler().showCompleteLoginPopup(data);
-			} else if ('authorization_url' in data){
+			} else if ('authorization_url' in data && data.authorization_url !== 0){
 				window.open(data.authorization_url, '_self');
 			}
 		}).fail(function ajaxOauthLoginFail(xhr) {
-			if (xhr.status === 0){
-				window.location.href = mainpage + 'discuss';
-				// location.reload();
-			} else {
+			if (xhr.status === 0 || xhr.status === 200) {
+				location.reload(true);
+			} else{
 				setGlobalErrorHandler('Ohh!', _t(requestFailedInternalError) + ' (' + xhr.status + ')');
 			}
 		});
@@ -144,18 +143,18 @@ function AjaxMainHandler(){
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxLogoutDone() {
-			location.reload();
+			location.reload(true);
 		}).fail(function ajaxLogoutFail(xhr) {
 			if (xhr.status === 200) {
 				if (window.location.href.indexOf('settings') !== 0){
 					window.location.href = mainpage + 'discuss';
 				} else {
-					location.reload();
+					location.reload(true);
 				}
 			} else if (xhr.status === 403) {
 				window.location.href = mainpage + 'discuss';
 			} else {
-				location.reload();
+				location.reload(true);
 			}
 		});
 	};
@@ -171,7 +170,6 @@ function AjaxMainHandler(){
 			email = $('#email-input').val(),
 			password = $('#' + popupLoginPasswordInputId).val(),
 			passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val(),
-			spamanswer = $('#popup-login-spamanswer-input').val(),
 			recaptcha = $('#recaptcha-token').value,
 			gender = '';
 
