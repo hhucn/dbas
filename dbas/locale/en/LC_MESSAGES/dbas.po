@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-11-12 12:44+0100\n"
+"POT-Creation-Date: 2017-11-16 19:00+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-Düsseldorf.de>\n"
 "Language-Team: English\n"
@@ -983,7 +983,7 @@ msgid "copyright_and_used_software"
 msgstr "Used Software"
 
 #. Default: Changes
-#: templates/imprint.pt:115
+#: templates/imprint.pt:113
 msgid "changes"
 msgstr "Changelog"
 
@@ -1569,7 +1569,7 @@ msgstr "Statement is a duplicate."
 #. Default: This statement should be merged.
 #: templates/snippet-popups.pt:841
 msgid "statement_merge"
-msgstr "This statement should be merged."
+msgstr "This statement should be merged into several messages."
 
 #. Default: This statement has more than one message.
 #: templates/snippet-popups.pt:849
