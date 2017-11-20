@@ -9,10 +9,11 @@ from math import ceil
 import arrow
 import transaction
 from slugify import slugify
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print, ClickedStatement
+from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print, \
+    ClickedStatement, ClickedArgument
 from dbas.handler import user
 from dbas.handler.language import get_language_from_header
 from dbas.lib import is_user_author_or_admin
@@ -337,9 +338,17 @@ def __create_issue_dict(issue, application_url) -> dict:
     short_url_dict = get_short_url(application_url + '/' + issue.slug, '', 'en')
     url = short_url_dict['url'] if len(short_url_dict['error']) == 0 else application_url + '/' + issue.slug
 
-    issues_statements = [s.uid for s in DBDiscussionSession.query(Statement).filter_by(issue_uid=issue.uid).all()]
-    db_clicked_statements = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.statement_uid.in_(issues_statements)).all()
-    db_authors = DBDiscussionSession.query(User).filter(User.uid.in_(cs.uid for cs in db_clicked_statements)).all()
+    statements = [s.uid for s in DBDiscussionSession.query(Statement).filter_by(issue_uid=issue.uid).all()]
+    arguments = [a.uid for a in DBDiscussionSession.query(Argument).filter_by(issue_uid=issue.uid).all()]
+
+    db_clicked_statements = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.statement_uid.in_(statements)).all()
+    db_clicked_arguments = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.statement_uid.in_(arguments)).all()
+
+    authors_clicked_statement = [click.author_uid for click in db_clicked_statements]
+    authors_clicked_arguments = [click.author_uid for click in db_clicked_arguments]
+
+    db_authors = DBDiscussionSession.query(User).filter(or_(User.uid.in_(authors_clicked_statement),
+                                                            User.uid.in_(authors_clicked_arguments))).all()
     involved_users = str(len(db_authors))
 
     prepared_dict = {
