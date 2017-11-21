@@ -208,14 +208,7 @@ def prepare_data_assign_reference(request, func):
         data = json_to_dict(request.body)
         api_data.update(data)
         api_data.update({'application_url': request.application_url})
-
-        # Copy content from origin as new statement
-        origin = api_data.get("origin")
-        if origin:
-            api_data["statement"] = origin["content"]
-
         return_dict = func(True, api_data)
-
         if isinstance(return_dict, str):
             return_dict = json.loads(return_dict)
         statement_uids = return_dict["statement_uids"]
@@ -336,7 +329,6 @@ def add_start_statement(request):
 
     :param request:
     :return:
-
     """
     return prepare_data_assign_reference(request, set_position)
 
@@ -348,18 +340,17 @@ def add_start_premise(request):
 
     :param request:
     :return:
-
     """
     return prepare_data_assign_reference(request, set_positions_premise)
 
 
 @justify_premise.post(validators=validate_login, require_csrf=False)
 def add_justify_premise(request):
-    """Add new justifying premise group.
+    """
+    Add new justifying premise group.
 
     :param request:
     :return:
-
     """
     return prepare_data_assign_reference(request, set_arguments_premises)
 
