@@ -371,12 +371,12 @@ def set_statement(text, nickname, is_start, issue, lang):
     while text.endswith(('.', '?', '!', ',')):
         text = text[:-1]
 
-    # check, if the text already exists
-    db_duplicate = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == text.lower()).first()
-    if db_duplicate:
-        db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == db_duplicate.statement_uid,
-                                                                        Statement.issue_uid == issue)).first()
-        return db_statement, True
+    # # check, if the text already exists
+    # db_duplicate = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == text.lower()).first()
+    # if db_duplicate:
+    #     db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == db_duplicate.statement_uid,
+    #                                                                     Statement.issue_uid == issue)).first()
+    #     return db_statement, True
 
     # add text
     statement = Statement(is_position=is_start, issue=issue)
