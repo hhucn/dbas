@@ -25,10 +25,10 @@ def store_origin(api_data, statement_uid):
     if not origin:
         return None
 
-    entity_id = api_data.get("entity-id")
-    aggregate_id = api_data.get("aggregate-id")
-    author = api_data.get("author")
-    version = api_data.get("version")
+    entity_id = origin.get("entity-id")
+    aggregate_id = origin.get("aggregate-id")
+    author = origin.get("author")
+    version = origin.get("version")
 
     db_origin = StatementOrigins(entity_id, aggregate_id, author, version, statement_uid)
     DBDiscussionSession.add(db_origin)
