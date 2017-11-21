@@ -31,7 +31,8 @@ def store_origin(api_data, statement_uid):
     version = origin.get("version")
 
     db_origin = StatementOrigins(entity_id, aggregate_id, author, version, statement_uid)
-    DBDiscussionSession.add(db_origin)
-    DBDiscussionSession.flush()
-    transaction.commit()
-    return db_origin
+    if db_origin:
+        DBDiscussionSession.add(db_origin)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        return db_origin
