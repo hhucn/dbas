@@ -10,7 +10,7 @@ from dbas.lib import get_discussion_language, is_user_author_or_admin
 from dbas.helper.query import revoke_content
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from webhook.lib import send_request_for_recent_reviewer_socketio, get_port
+from websocket.lib import send_request_for_recent_reviewer_socketio, get_port
 
 
 def flag(uid, reason, extra_uid, is_argument, nickname, ui_locales) -> dict:

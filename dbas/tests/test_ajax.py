@@ -3,7 +3,6 @@ import unittest
 import transaction
 from pyramid import testing
 from pyramid.httpexceptions import HTTPFound
-from pyramid.response import Response
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
@@ -63,8 +62,7 @@ class AjaxTest(unittest.TestCase):
         from dbas.views import user_logout as ajax
         request = testing.DummyRequest(params={}, matchdict={})
         response = ajax(request)
-        self.assertTrue(type(response) is Response)
-        self.assertTrue(type(response) is not HTTPFound)
+        self.assertTrue(type(response) is HTTPFound)
 
     # cannot be testted, because we have no request.session['antispamanswer']
     # def test_user_registration(self):

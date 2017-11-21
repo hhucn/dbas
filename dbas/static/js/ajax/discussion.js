@@ -146,7 +146,7 @@ function AjaxDiscussionHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewIssue(data);
 		}).fail(function ajaxSendStartStatementFail() {
 			// new GuiHandler().setErrorDescription(_t(internalError));
-			$('#' + addTopicPopupErrorText).text(_t(requestFailed) + ' (' + _t(errorCode) + ' 9). ' + _t(doNotHesitateToContact) + '. ');
+			$('#' + addTopicPopupErrorText).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 9). ' + _t(doNotHesitateToContact) + '. ');
 			$('#' + addTopicPopupContainer).show();
 			setTimeout(function(){
 				$('#' + addTopicPopupContainer).hide();

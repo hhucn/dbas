@@ -165,14 +165,14 @@ settings-password-info-icon
 
 var popupLoginForgotPasswordBody              = 'popup-login-forgot-password-body';
 var popupLoginForgotPasswordText              = 'popup-login-forgot-password-text';
-var popupLoginGeneratePassword                = 'popup-login-generate-password';
 var popupLoginPasswordMeterId                 = 'popup-login-password-meter';
 var popupLoginPasswordStrengthId              = 'popup-login-password-strength';
 var popupLoginPasswordInputId                 = 'popup-login-password-input';
 var popupLoginPasswordconfirmInputId          = 'popup-login-passwordconfirm-input';
 var popupLoginPasswordExtrasId                = 'popup-login-password-extras';
 
-var popupLoginCloseButton                     = 'popup-login-close-button';
+var popupLoginCloseButton1                    = 'popup-login-close-button1';
+var popupLoginCloseButton2                    = 'popup-login-close-button2';
 var popupLoginRegistrationSuccess             = 'popup-login-registration-success';
 var popupLoginRegistrationFailed              = 'popup-login-registration-failed';
 var popupLoginRegistrationInfo                = 'popup-login-registration-info';
