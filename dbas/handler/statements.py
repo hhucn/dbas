@@ -1,5 +1,5 @@
 import transaction
-from sqlalchemy import and_, func
+from sqlalchemy import and_
 
 import dbas.review.helper.queues as review_queue_helper
 from dbas.database import DBDiscussionSession
@@ -139,7 +139,7 @@ def set_positions_premise(for_api, data) -> dict:
 
 def set_correction_of_statement(elements, nickname, ui_locales) -> dict:
     """
-    Adds a proposol for a statements correction and returns info if the proposal could be set
+    Adds a proposal for a statements correction and returns info if the proposal could be set
 
     :param elements: List of dicts with text and uids for proposals of edits for new statements
     :param nickname: Nickname of current user
