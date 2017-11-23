@@ -16,10 +16,10 @@ from dbas.database.discussion_model import Argument, User, Issue, Language, Stat
     ClickedStatement, ClickedArgument
 from dbas.handler import user
 from dbas.handler.language import get_language_from_header
+from dbas.helper.query import get_short_url
 from dbas.lib import is_user_author_or_admin
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_issues_as_query
-from dbas.helper.query import get_short_url
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
@@ -306,6 +306,7 @@ def set_discussions_availability(nickname, uid, enable, translator) -> dict:
     :param nickname:
     :param uid:
     :param enable:
+    :param translator:
     :return:
     """
     logger('IssueHelper', 'set_discussions_availability', 'uid: {}, available: {}'.format(uid, enable))
@@ -341,8 +342,10 @@ def __create_issue_dict(issue, application_url) -> dict:
     statements = [s.uid for s in DBDiscussionSession.query(Statement).filter_by(issue_uid=issue.uid).all()]
     arguments = [a.uid for a in DBDiscussionSession.query(Argument).filter_by(issue_uid=issue.uid).all()]
 
-    db_clicked_statements = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.statement_uid.in_(statements)).all()
-    db_clicked_arguments = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.statement_uid.in_(arguments)).all()
+    db_clicked_statements = DBDiscussionSession.query(ClickedStatement).filter(
+        ClickedStatement.statement_uid.in_(statements)).all()
+    db_clicked_arguments = DBDiscussionSession.query(ClickedArgument).filter(
+        ClickedArgument.statement_uid.in_(arguments)).all()
 
     authors_clicked_statement = [click.author_uid for click in db_clicked_statements]
     authors_clicked_arguments = [click.author_uid for click in db_clicked_arguments]
