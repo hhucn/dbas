@@ -338,13 +338,10 @@ def set_discussions_properties(nickname, uid, checked, key, translator) -> dict:
         return {'error': translator.get(_.noRights)}
 
     if key == 'enable':
-        logger('IssueHelper', 'XXX', 'enable: {}'.format(not checked))
         db_issue.set_disable(not checked)
     elif key == 'public':
-        logger('IssueHelper', 'XXX', 'private: {}'.format(not checked))
         db_issue.set_private(not checked)
     elif key == 'writable':
-        logger('IssueHelper', 'XXX', 'writable: {}'.format(not checked))
         db_issue.set_read_only(not checked)
 
     DBDiscussionSession.add(db_issue)
