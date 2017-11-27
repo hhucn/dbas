@@ -72,6 +72,18 @@ update_badge = Service(name='update_badge_counter',
                        permission='admin',
                        cors_policy=cors_policy)
 
+api_token = Service(name='api_token',
+                    path='/{url:.*}api_token/',
+                    renderer='json',
+                    permission='admin',
+                    cors_policy=cors_policy)
+
+revoke_token = Service(name='revoke_token',
+                       path='/{url:.*}revoke_token/{id}',
+                       renderer='json',
+                       permission='admin',
+                       cors_policy=cors_policy)
+
 
 @dashboard.get()
 def main_admin(request):
@@ -90,7 +102,10 @@ def main_admin(request):
 
     ui_locales = get_language_from_cookie(request)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
-    overview = lib.get_overview(request.path)
+    dashboard_elements = {
+        "entities": lib.get_overview(request.path),
+        "api_tokens": lib.get_application_tokens()
+    }
 
     return {
         'layout': base_layout(),
@@ -98,7 +113,7 @@ def main_admin(request):
         'title': 'Admin' if 'is_admin' in extras_dict and extras_dict['is_admin'] else '(B)admin',
         'project': project_name,
         'extras': extras_dict,
-        'dashboard': overview
+        'dashboard': dashboard_elements
     }
 
 
@@ -248,3 +263,18 @@ def main_update_badge(request):
         return_dict['error'] = _tn.get(_.internalKeyError)
 
     return return_dict
+
+
+@api_token.post()
+def generate_api_token(request):
+    owner = request.params['owner']
+    token = lib.generate_application_token(owner)
+    logger('Admin', 'Application Tokens', 'API-Token for {} was created.'.format(owner))
+    return {'token': token}
+
+
+@revoke_token.delete()
+def revoke_api_token(request):
+    token_id = request.matchdict['id']
+    lib.revoke_application_token(token_id)
+    logger('Admin', 'Application Tokens', 'API-Token {} was revoked.'.format(token_id))
