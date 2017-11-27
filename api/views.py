@@ -208,7 +208,7 @@ def prepare_data_assign_reference(request, func):
     if api_data:
         data = json_to_dict(request.body)
 
-        if not "issue_id" in data:
+        if "issue_id" not in data:
             if "slug" in data:
                 issue_db = DBDiscussionSession.query(Issue).filter_by(slug=data["slug"]).first()
 
