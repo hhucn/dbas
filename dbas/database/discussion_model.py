@@ -63,8 +63,8 @@ class Issue(DiscussionBase):
     author_uid = Column(Integer, ForeignKey('users.uid'))
     lang_uid = Column(Integer, ForeignKey('languages.uid'))
     is_disabled = Column(Boolean, nullable=False)
-    is_private = Column(Boolean, nullable=False)
-    is_read_only = Column(Boolean, nullable=False)
+    is_private = Column(Boolean, nullable=False, server_default="False")
+    is_read_only = Column(Boolean, nullable=False, server_default="False")
 
     users = relationship('User', foreign_keys=[author_uid])
     languages = relationship('Language', foreign_keys=[lang_uid])
