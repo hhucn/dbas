@@ -1,3 +1,6 @@
+### 1.5.2 (2017-12-01)
+- Discussion can now be set as private or read only
+
 ### 1.5.1 (2017-11-10)
 - Add OAuth registrations for Google, Facebook, Github
 

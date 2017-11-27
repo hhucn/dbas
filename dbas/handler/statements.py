@@ -47,6 +47,10 @@ def set_position(for_api, data) -> dict:
     # escaping will be done in StatementsHelper().set_statement(...)
     user.update_last_action(nickname)
     _tn = Translator(discussion_lang)
+
+    if DBDiscussionSession.query(Issue).get(issue_id).is_read_only:
+        return {'error': _tn.get(_.discussionIsReadOnly), 'statement_uids': ''}
+
     new_statement = insert_as_statements(application_url, default_locale_name, statement, nickname, issue_id,
                                          discussion_lang, is_start=True)
     prepared_dict = {'error': '', 'statement_uids': ''}
@@ -109,6 +113,10 @@ def set_positions_premise(for_api, data) -> dict:
 
     # escaping will be done in StatementsHelper().set_statement(...)
     user.update_last_action(nickname)
+
+    _tn = Translator('discussion_lang')
+    if DBDiscussionSession.query(Issue).get(issue_id).is_read_only:
+        return {'error': _tn.get(_.discussionIsReadOnly), 'statement_uids': ''}
 
     url, statement_uids, error = __process_input_of_start_premises_and_receive_url(default_locale_name, premisegroups,
                                                                                    conclusion_id, supportive, issue_id,

@@ -19,28 +19,28 @@ class IssueHandlerTests(unittest.TestCase):
         lang = ''
         ui_locales = ''
 
-        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', ui_locales)
+        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', False, False, ui_locales)
         self.assertTrue(len(response['error']) > 0)
 
         nickname = 'Tobias'
-        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', ui_locales)
+        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', False, False, ui_locales)
         self.assertTrue(len(response['error']) > 0)
 
         lang = 'en'
-        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', ui_locales)
+        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', False, False, ui_locales)
         self.assertTrue(len(response['error']) > 0)
 
         ui_locales = 'en'
-        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', ui_locales)
+        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', False, False, ui_locales)
         self.assertTrue(len(response['error']) > 0)
 
         info = 'infoinfoinfo'
         long_info = 'long_infolong_infolong_info'
         title = 'titletitletitle'
-        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', ui_locales)
+        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', False, False, ui_locales)
         self.assertTrue(len(response['error']) == 0)
 
-        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', ui_locales)
+        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', False, False, ui_locales)
         self.assertTrue(len(response['error']) > 0)
 
         DBDiscussionSession.query(Issue).filter_by(title=title).delete()
@@ -51,7 +51,7 @@ class IssueHandlerTests(unittest.TestCase):
         uid = 1
         lang = 'en'
         for_api = False
-        response = ih.prepare_json_of_issue(uid, 'http://test.url', lang, for_api)
+        response = ih.prepare_json_of_issue(uid, 'http://test.url', lang, for_api, '')
         self.assertTrue(len(response) > 0)
 
     def test_get_number_of_arguments(self):

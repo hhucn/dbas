@@ -112,6 +112,24 @@ class Issue(DiscussionBase):
         """
         self.is_disabled = is_disabled
 
+    def set_private(self, is_private):
+        """
+        Set issue as private
+
+        :param is_private: Boolean
+        :return: None
+        """
+        self.is_private = is_private
+
+    def set_read_only(self, is_read_only):
+        """
+        Set issue as read only
+
+        :param is_read_only: Boolean
+        :return: None
+        """
+        self.is_read_only = is_read_only
+
 
 class Language(DiscussionBase):
     """
