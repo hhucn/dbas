@@ -1,9 +1,12 @@
 version: "3.1"
 services:
   db:
-    image: hhucn/dbas-database
+    build: docker/db/
     ports:
       - "5432:5432"
+    volumes:
+      - ./docker/db/entrypoint:/docker-entrypoint-initdb.d
+      - ./docker/db/data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: 'DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!'
     tmpfs: /tmp
