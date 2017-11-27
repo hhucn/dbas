@@ -10,16 +10,17 @@ return JSON objects which can then be used in external websites.
 
 """
 import json
-
 from cornice import Service
 
 import dbas.views as dbas
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Issue
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
 from dbas.lib import (get_all_arguments_by_statement,
                       get_all_arguments_with_text_by_statement_id,
                       get_text_for_argument_uid, resolve_issue_uid_to_slug)
-from .lib import HTTP204, flatten, json_to_dict, logger, merge_dicts
+from .lib import HTTP204, flatten, json_to_dict, logger, merge_dicts, HTTP400
 from .login import validate_credentials, validate_login
 from .references import (get_all_references_by_reference_text,
                          get_reference_by_id, get_references_for_url,
@@ -206,6 +207,18 @@ def prepare_data_assign_reference(request, func):
     api_data = prepare_user_information(request)
     if api_data:
         data = json_to_dict(request.body)
+
+        if not "issue_id" in data:
+            if "slug" in data:
+                issue_db = DBDiscussionSession.query(Issue).filter_by(slug=data["slug"]).first()
+
+                if issue_db:
+                    api_data["issue_id"] = issue_db.uid
+                else:
+                    raise HTTP400("Issue not found")
+        elif not DBDiscussionSession.query(Issue).get(data["issue_id"]):
+            raise HTTP400("Issue not found")
+
         api_data.update(data)
         api_data.update({'application_url': request.application_url})
         return_dict = func(True, api_data)

@@ -95,15 +95,18 @@ def valid_token(request):
     header = 'X-Authentication'
     htoken = request.headers.get(header)
 
-    payload = json_to_dict(htoken)
-    request_type = payload["type"]
-    f = dispatch_type.get(payload["type"])
+    try:
+        payload = json_to_dict(htoken)
+        request_type = payload["type"]
+        f = dispatch_type.get(payload["type"])
 
-    if f:
-        f(request, payload)
-    else:
-        log.info("[API] Could not dispatch by type. Is request_type '{}' defined?".format(request_type))
-        raise HTTP401()
+        if f:
+            f(request, payload)
+        else:
+            log.info("[API] Could not dispatch by type. Is request_type '{}' defined?".format(request_type))
+            raise HTTP401()
+    except json.decoder.JSONDecodeError:
+        raise HTTP401("Invalid JSON in token")
 
 
 def validate_login(request, **kwargs):
