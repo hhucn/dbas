@@ -14,6 +14,7 @@ def init(config):
 def main(global_config, **settings):
     config = Configurator(settings=settings)
     init(config)
+    config.add_route('api-token', 'api-token/', permission='admin')
     return config.make_wsgi_app()
 
 
