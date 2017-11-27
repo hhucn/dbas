@@ -6,12 +6,13 @@ Logic for user login, token generation and validation
 
 import binascii
 import hashlib
-import json
 import os
+
+import json
+import transaction
 from datetime import datetime
 
-import transaction
-
+from admin.lib import check_token
 from dbas.auth.login import login_user
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
@@ -53,7 +54,7 @@ def _get_user_by_nickname(nickname):
 def process_user(request, payload):
     htoken = payload["token"]
     try:
-        user, token = htoken.split('-', 1)
+        user, token = htoken.split('-', 1)  # The 1 is important, because api tokens themself have their own dash.
     except ValueError:
         log.info("[API] Could not split htoken: {}".format(htoken))
         raise HTTP401()
@@ -62,7 +63,7 @@ def process_user(request, payload):
 
     db_user = _get_user_by_nickname(user)
 
-    if not db_user.token == token:
+    if not db_user.token == token and not check_token(token):
         log.info("[API] Invalid Token")
         raise HTTP401()
 
@@ -94,15 +95,18 @@ def valid_token(request):
     header = 'X-Authentication'
     htoken = request.headers.get(header)
 
-    payload = json_to_dict(htoken)
-    request_type = payload["type"]
-    f = dispatch_type.get(payload["type"])
+    try:
+        payload = json_to_dict(htoken)
+        request_type = payload["type"]
+        f = dispatch_type.get(payload["type"])
 
-    if f:
-        f(request, payload)
-    else:
-        log.info("[API] Could not dispatch by type. Is request_type '{}' defined?".format(request_type))
-        raise HTTP401()
+        if f:
+            f(request, payload)
+        else:
+            log.info("[API] Could not dispatch by type. Is request_type '{}' defined?".format(request_type))
+            raise HTTP401()
+    except json.decoder.JSONDecodeError:
+        raise HTTP401("Invalid JSON in token")
 
 
 def validate_login(request, **kwargs):

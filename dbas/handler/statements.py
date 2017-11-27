@@ -35,8 +35,9 @@ def set_position(for_api, data) -> dict:
         nickname = data['nickname']
         statement = data['statement']
         issue_id = data['issue_id']
-        slug = data['slug']
-        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else DBDiscussionSession.query(Issue).get(issue_id).lang
+        issue_db = DBDiscussionSession.query(Issue).get(issue_id)
+        slug = issue_db.slug
+        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else issue_db.lang
         default_locale_name = data['default_locale_name'] if 'default_locale_name' in data else discussion_lang
         application_url = data['application_url']
     except KeyError as e:

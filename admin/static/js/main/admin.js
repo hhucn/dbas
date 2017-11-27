@@ -26,11 +26,53 @@ $(document).ready(function () {
 	}
 	
 	// set pointer and click event for every row
-	$('#admin-overview').find('tr').each(function() {
+	$('#admin-entities').find('tr').each(function() {
 		$(this).css('cursor', 'pointer');
 		$(this).click(function (){
 			window.location.href = $(this).data('href');
 		});
 	});
+
+	// reset modal if it hides.
+	$("#api-token-generate-dialog").on("hidden.bs.modal", function () {
+		$('#api-token').hide().empty();
+		$('#api-token-footer').hide();
+		$('#api-token-generate-form').show();
+	});
 	
 });
+
+function revoke_token(id) {
+	'use strict';
+	console.log("Revoking " + id);
+	var csrf_token = $('#hidden_csrf_token').val();
+	$.ajax({
+		url: 'revoke_token/' + id,
+		type: 'DELETE',
+		headers: { 'X-CSRF-Token': csrf_token },
+		cache: false,
+		data: {'token_id': id},
+		dataType: 'json',
+		success: function (result) {
+			$('#admin-token-' + id).hide();
+			console.log("Token " + id + " revoked!");
+        }});
+}
+
+function generate_token(owner) {
+	'use strict';
+	var csrf_token = $('#hidden_csrf_token').val();
+	$.ajax({
+		url: 'api_token/',
+		type: 'POST',
+		headers: { 'X-CSRF-Token': csrf_token },
+		data: $.param({'owner': owner}),
+		dataType: 'json',
+		cache: false,
+		success: function (result) {
+			$('#api-token-generate-form').hide();
+			$('#api-token').append(result.token).show();
+			$('#api-token-footer').show();
+        }
+	});
+}
