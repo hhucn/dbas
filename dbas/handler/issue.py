@@ -28,7 +28,7 @@ from dbas.url_manager import UrlManager
 limit_for_open_issues = 10
 
 
-def set_issue(nickname, info, long_info, title, lang, application_url, is_public, is_read_only, ui_locales) -> dict:
+def set_issue(nickname, info, long_info, title, lang, is_public, is_read_only, application_url, ui_locales) -> dict:
     """
     Sets new issue, which will be a new discussion
 
@@ -72,6 +72,7 @@ def __set_issue(info, long_info, title, lang, is_public, is_read_only, nickname,
     :param ui_locales: ui_locales
     :return: True, '' on success, False, String on error
     """
+
     _tn = Translator(ui_locales)
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
