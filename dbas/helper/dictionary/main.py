@@ -151,6 +151,7 @@ class DictionaryHelper(object):
         return_dict['add_statement_container_style'] = add_statement_container_style
         return_dict['users_avatar'] = get_profile_picture(db_user, 25)
         return_dict['ongoing_discussion'] = ongoing_discussion
+        return_dict['slug'] = current_slug
         if db_user:
             return_dict['is_user_male'] = db_user.gender == 'm'
             return_dict['is_user_female'] = db_user.gender == 'f'
@@ -342,7 +343,8 @@ class DictionaryHelper(object):
             create_speechbubble_dict(BubbleTypes.STATUS, id='end', message=user_text, lang=self.system_lang,
                                      nickname=nickname))
 
-        if nickname:
+        is_read_only = DBDiscussionSession.query(Issue).filter_by(slug=extras_dict['slug']).first().is_read_only
+        if nickname and not is_read_only:
             extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
             extras_dict['close_statement_container'] = False
 
@@ -363,7 +365,9 @@ class DictionaryHelper(object):
         :return: None
         """
         discussion_dict['mode'] = 'justify_argumentation'
-        if nickname:
+
+        is_read_only = DBDiscussionSession.query(Issue).filter_by(slug=extras_dict['slug']).first().is_read_only
+        if nickname and not is_read_only:
             extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
         extras_dict['close_premise_container'] = False
         extras_dict['show_display_style'] = False
@@ -443,7 +447,8 @@ class DictionaryHelper(object):
             mid_text += ' ' + _tn.get(_.doesNotHold)
         mid_text += '. '
 
-        if nickname:
+        is_read_only = DBDiscussionSession.query(Issue).filter_by(slug=extras_dict['slug']).first().is_read_only
+        if nickname and not is_read_only:
             extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
             mid_text += _tn.get(_.firstPremiseText2)
         else:
@@ -624,6 +629,9 @@ class DictionaryHelper(object):
             'statement_merge_description': _tn_dis.get(_.statement_merge_description),
             'statement_split_description': _tn_dis.get(_.statement_split_description),
             'statement_optimization_description': _tn_dis.get(_.statement_optimization_description),
+            'issue_enabled': _tn_sys.get(_.issueEnableDescription),
+            'issue_public': _tn_sys.get(_.issuePublicDescription),
+            'issue_writable': _tn_sys.get(_.issueWritableDescription)
         }
 
     def __add_login_button_properties(self, return_dict):

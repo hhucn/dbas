@@ -20,6 +20,8 @@
             <div class="container colored-container" id="discussion-container" style="min-height: 200px;">
                 <div id="dialog-wrapper" class="content-wrapper pull-left">
 
+                     <p id="read-only-banner" class="text-center" tal:condition="issues.read_only"><span class="label label-info"><span i18n:translate="info">Info</span> <span i18n:translate="discussion_is_read_only">In dieser Diskussion können keine Beiträge mehr hinzugefügt werden!</span></span></p>
+
                     <div id="discussion-error-description-space" class="alert alert-danger alert-dismissible hidden">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>

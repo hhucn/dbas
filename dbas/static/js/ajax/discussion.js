@@ -116,16 +116,17 @@ function AjaxDiscussionHandler() {
 			//	 + _t(doNotHesitateToContact) + '. ');
 		});
 	};
-
+	
 	/**
-	 * Sends a new topic
 	 *
 	 * @param info
 	 * @param long_info
 	 * @param title
+	 * @param is_public
+	 * @param is_read_only
 	 * @param language
 	 */
-	this.sendNewIssue = function(info, long_info, title, language){
+	this.sendNewIssue = function(info, long_info, title, is_public, is_read_only, language){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$('#add-topic-error').hide();
 		$.ajax({
@@ -135,6 +136,8 @@ function AjaxDiscussionHandler() {
 				info: info,
 				long_info: long_info,
 				title: title,
+				is_public: is_public,
+				is_read_only: is_read_only,
 				lang: language
 			},
 			dataType: 'json',
@@ -507,20 +510,21 @@ function AjaxDiscussionHandler() {
 	/*
 	
 	 */
-	this.enOrDisableDiscussion = function(toggle_element){
-		var available = toggle_element.prop('checked');
+	this.setDiscussionSettings = function(toggle_element){
+		var checked = toggle_element.prop('checked');
 		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
-			url: 'ajax_set_discussion_availability',
+			url: 'ajax_set_discussion_properties',
 			method: 'POST',
 			data:{
-				'available': available ? 'True': 'False',
-				'uid': toggle_element.data('uid')},
+				'checked': checked ? 'True': 'False',
+				'uid': toggle_element.data('uid'),
+				'key': toggle_element.data('keyword')},
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function setEnOrDisableDiscussionDone(data) {
-			new InteractionHandler().callbackForSetAvailabilityOfDiscussion(data);
+			new InteractionHandler().callbackForSetAvailabilityOfDiscussion(toggle_element, data);
 		}).fail(function setEnOrDisableDiscussionFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});

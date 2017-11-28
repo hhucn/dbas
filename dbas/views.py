@@ -45,7 +45,7 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
 from dbas.helper.views import preparation_for_view
-from dbas.handler.issue import get_issues_overiew, set_discussions_availability
+from dbas.handler.issue import get_issues_overiew, set_discussions_properties
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
 from dbas.logger import logger
@@ -54,7 +54,7 @@ from dbas.strings.translator import Translator
 from websocket.lib import get_port
 
 name = 'D-BAS'
-version = '1.5.1'
+version = '1.5.2'
 full_version = version
 project_name = name + ' ' + full_version
 
@@ -711,7 +711,7 @@ def main_review(request):
     issue = issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
 
-    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, False)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, False, request.authenticated_userid)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     review_dict = review_queue_helper.get_review_queues_as_lists(request.application_url, _tn, nickname)
@@ -1252,27 +1252,26 @@ def send_some_notification(request):
 
 
 # ajax - set boolean for receiving information
-@view_config(route_name='ajax_set_discussion_availability', renderer='json')
-def set_discussion_availability(request):
+@view_config(route_name='ajax_set_discussion_properties', renderer='json')
+def set_discussion_properties(request):
     """
     Sets the discussions availability
 
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_discussion_availability', 'request.params: {}'.format(request.params))
+    logger('views', 'set_discussion_properties', 'request.params: {}'.format(request.params))
     _tn = Translator(get_language_from_cookie(request))
 
     try:
-        enable = request.params['available'] == 'True'
+        checked = request.params['checked'] == 'True'
         uid = request.params['uid']
-        prepared_dict = set_discussions_availability(request.authenticated_userid, uid, enable, _tn)
+        key = request.params['key']
+        prepared_dict = set_discussions_properties(request.authenticated_userid, uid, checked, key, _tn)
     except KeyError as e:
-        logger('views', 'set_user_lang', repr(e), error=True)
+        logger('views', 'set_discussion_properties', repr(e), error=True)
         prepared_dict = {
-            'error': _tn.get(_.internalKeyError),
-            'ui_locales': '',
-            'current_lang': ''
+            'error': _tn.get(_.internalKeyError)
         }
     return prepared_dict
 
@@ -1518,13 +1517,15 @@ def set_new_issue(request):
         long_info = escape_string(request.params['long_info'])
         title = escape_string(request.params['title'])
         lang = escape_string(request.params['lang'])
+        is_public = request.params['is_public'] == 'True'
+        is_read_only = request.params['is_read_only'] == 'True'
     except KeyError as e:
         _tn = Translator(ui_locales)
         logger('views', 'set_new_issue', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
-    prepared_dict = issue_helper.set_issue(request.authenticated_userid, info, long_info, title, lang,
-                                           request.application_url, ui_locales)
+    prepared_dict = issue_helper.set_issue(request.authenticated_userid, info, long_info, title, lang, is_public,
+                                           is_read_only, request.application_url, ui_locales)
     return prepared_dict
 
 

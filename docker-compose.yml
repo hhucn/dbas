@@ -6,14 +6,13 @@ services:
       - "5432:5432"
     volumes:
       - ./docker/db/entrypoint:/docker-entrypoint-initdb.d
-      - ./docker/db/data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: 'DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!'
     tmpfs: /tmp
 
   web:
     build: .
-    command: bash -c "sleep 8 && pserve development.ini --reload"
+    command: bash -c "sleep 8 && alembic upgrade head && pserve development.ini --reload"
     volumes:
       - .:/dbas
     ports:

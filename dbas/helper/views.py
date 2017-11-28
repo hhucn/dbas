@@ -67,7 +67,7 @@ def prepare_parameter_for_justification(request, for_api):
     relation = request.matchdict['relation'][0] if len(request.matchdict['relation']) > 0 else ''
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api, request.authenticated_userid)
 
     return slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict
 

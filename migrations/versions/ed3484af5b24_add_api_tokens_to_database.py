@@ -1,7 +1,7 @@
 """Add API-Tokens to database
 
 Revision ID: ed3484af5b24
-Revises: 2a4bc7c8ff38
+Revises: 56351abe64ce
 Create Date: 2017-10-26 17:16:02.699011
 
 """
@@ -12,7 +12,7 @@ import sqlalchemy_utils
 
 # revision identifiers, used by Alembic.
 revision = 'ed3484af5b24'
-down_revision = '42d481d084b2'
+down_revision = '56351abe64ce'
 branch_labels = None
 depends_on = None
 
