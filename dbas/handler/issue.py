@@ -344,6 +344,8 @@ def set_discussions_properties(nickname, uid, checked, key, translator) -> dict:
         db_issue.set_private(not checked)
     elif key == 'writable':
         db_issue.set_read_only(not checked)
+    else:
+        return {'error': translator.get(_.internalKeyError)}
 
     DBDiscussionSession.add(db_issue)
     DBDiscussionSession.flush()
