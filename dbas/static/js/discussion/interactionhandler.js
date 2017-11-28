@@ -347,16 +347,18 @@ function InteractionHandler() {
 			new PopupHandler().showReferencesPopup(data);
 		}
 	};
-
+	
 	/**
 	 *
+	 * @param toggle_element
 	 * @param data
 	 */
-	this.callbackForSetAvailabilityOfDiscussion = function(data){
+	this.callbackForSetAvailabilityOfDiscussion = function(toggle_element, data){
 		if (data.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), data.error);
+			// toggle_element.bootstrapToggle(toggle_element.prop('checked')? 'off' : 'on'); // this will trigger the handler
 		} else {
-			setGlobalSuccessHandler('Yeah!', _t(discussionsAvailabilitySet));
+			setGlobalSuccessHandler('Yeah!', _t(discussionsPropertySet));
 		}
 	};
 	

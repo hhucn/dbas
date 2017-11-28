@@ -126,7 +126,7 @@ var deleteTrack                     = 'deleteTrack';
 var deleteHistory                   = 'deleteHistory';
 var deleteEverything                = 'deleteEverything';
 var deleteMarked                    = 'deleteMarked';
-var discussionsAvailabilitySet      = 'discussionsAvailabilitySet';
+var discussionsPropertySet      = 'discussionsPropertySet';
 var deleteStatisticsTitle           = 'deleteStatisticsTitle';
 var deleteStatisticsBody            = 'deleteStatisticsBody';
 var euCookiePopupTitle              = 'euCookiePopupTitle';
@@ -385,7 +385,7 @@ var dbas_en = {
     'deleteHistory': 'Delete history',
     'deleteEverything': 'Delete everything',
     'deleteMarked': 'Delete marked elements',
-    'discussionsAvailabilitySet': 'The discussion availibility was set.',
+    'discussionsPropertySet': 'The discussions property was set.',
     'dataRemoved': 'Data was successfully removed.',
     'dataAdded': 'Data was successfully added.',
     'date': 'Date',
@@ -637,7 +637,7 @@ var dbas_de = {
     'deleteHistory': 'History löschen',
     'deleteEverything': 'Alle löschen',
     'deleteMarked': 'Ausgewählte Elemente löschen',
-    'discussionsAvailabilitySet': 'Die Verfügbarkeit der Diskussion wurde geändert.',
+    'discussionsPropertySet': 'Die Eigenschaft der Diskussion wurde geändert.',
     'doNotHesitateToContact': 'Bitte zögern Sie bei Fehlern nicht, <b><span style="cursor: pointer;" id="contact_on_error">uns zu kontaktieren (hier klicken)</span></b>',
     'deleteStatisticsTitle': 'Statistik löschen',
     'deleteStatisticsBody': 'Dies löscht die Statstik. Dadurch werden alle Klicks, die von Ihnen getätigt wurden, wieder entfernt.',

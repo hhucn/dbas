@@ -10,7 +10,7 @@
                     <span tal:omit-tag="" tal:condition="len(issues.long_info)>0">
                         ${issues.long_info}
                     </span>
-                    <br>${issues.tooltip}
+                    <br tal:condition="len(issues.long_info)>0">${issues.tooltip}
                 </p>
             </div>
         </section>
@@ -19,6 +19,8 @@
 
             <div class="container colored-container" id="discussion-container" style="min-height: 200px;">
                 <div id="dialog-wrapper" class="content-wrapper pull-left">
+
+                     <p id="read-only-banner" class="text-center" tal:condition="issues.read_only"><span class="label label-info"><span i18n:translate="info">Info</span> <span i18n:translate="discussion_is_read_only">In dieser Diskussion können keine Beiträge mehr hinzugefügt werden!</span></span></p>
 
                     <div id="discussion-error-description-space" class="alert alert-danger alert-dismissible hidden">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -133,7 +135,7 @@
                     </div>
 
                     <ul class="sidebar">
-                        <li id="share-url" tal:attributes="titel extras.buttons.share_url"><i class="fa fa-share" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.share_url}</span></li>
+                        <li id="share-url" tal:attributes="titel extras.buttons.share_url"><i class="fa fa-share-alt" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.share_url}</span></li>
                         <li id="opinion-barometer-img" tal:attributes="titel extras.title.barometer" tal:condition="extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true"></i><span class="sidebar-element">${extras.title.barometer}</span></li>
                         <li id="display-style-icon-graph-img" tal:attributes="titel extras.title.graph_view" tal:condition="extras.show_graph_icon"><i class="fa fa-sitemap" aria-hidden="true"></i><span class="sidebar-element">${extras.title.graph_view}</span></li>
                         <li id="sidebar-search-statement" tal:attributes="title extras.tag.search"><i class="fa fa-search" aria-hidden="true"></i><span class="sidebar-element">${extras.tag.search}</span></li>

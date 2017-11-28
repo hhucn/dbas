@@ -69,7 +69,6 @@
   </div>
 
   <div class="eupopup eupopup-bottomright"></div>
-  <!--<script type="text/javascript" src="${request.static_url('dbas:static/js/libs/pace.min.js')}"></script>-->
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-3.3.7.min.js')}"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-slider.9.8.0.min.js')}"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-toggle.min.js')}"></script>

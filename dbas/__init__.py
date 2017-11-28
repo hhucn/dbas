@@ -171,7 +171,7 @@ def main(global_config, **settings):
     config.add_route('ajax_set_references', '{url:.*}ajax_set_references')
     config.add_route('ajax_set_seen_statements', '{url:.*}ajax_set_seen_statements')
     config.add_route('ajax_mark_statement_or_argument', '{url:.*}ajax_mark_statement_or_argument')
-    config.add_route('ajax_set_discussion_availability', '{url:.*}ajax_set_discussion_availability')
+    config.add_route('ajax_set_discussion_properties', '{url:.*}ajax_set_discussion_properties')
 
     # logic at the end, otherwise the * pattern will do shit
     config.add_route('main_user', '/user/{uid}')
