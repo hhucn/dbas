@@ -223,7 +223,9 @@ class AjaxAddThingsTest(unittest.TestCase):
             'info': 'Some new info',
             'long_info': 'Some new long info',
             'title': 'Some new title',
-            'lang': 'en'
+            'lang': 'en',
+            'is_public': 'False',
+            'is_read_only': 'False'
         }, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
@@ -239,7 +241,9 @@ class AjaxAddThingsTest(unittest.TestCase):
             'info': 'Some new info',
             'title': 'Some new title',
             'long_info': 'Some new long info',
-            'lang': 'en'
+            'lang': 'en',
+            'is_public': 'False',
+            'is_read_only': 'False'
         }, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
@@ -253,7 +257,9 @@ class AjaxAddThingsTest(unittest.TestCase):
             'info': 'Some new info',
             'title': 'Cat or Dog',
             'long_info': 'Some new long info',
-            'lang': 'en'
+            'lang': 'en',
+            'is_public': 'False',
+            'is_read_only': 'False'
         }, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
@@ -267,7 +273,9 @@ class AjaxAddThingsTest(unittest.TestCase):
             'info': 'Your family argues about whether to buy a cat or dog as pet. Now your opinion matters!',
             'title': 'Some new title',
             'long_info': 'Some new long info',
-            'lang': 'en'
+            'lang': 'en',
+            'is_public': 'False',
+            'is_read_only': 'False'
         }, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
@@ -281,7 +289,9 @@ class AjaxAddThingsTest(unittest.TestCase):
             'info': 'Some new info',
             'title': 'Some new title',
             'long_info': 'Some new long info',
-            'lang': 'sw'
+            'lang': 'sw',
+            'is_public': 'False',
+            'is_read_only': 'False'
         }, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
@@ -295,7 +305,9 @@ class AjaxAddThingsTest(unittest.TestCase):
             'info': 'Short',
             'title': 'Some new title',
             'long_info': 'Some new long info',
-            'lang': 'en'
+            'lang': 'en',
+            'is_public': 'False',
+            'is_read_only': 'False'
         }, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
