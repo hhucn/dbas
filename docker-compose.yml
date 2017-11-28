@@ -1,16 +1,18 @@
 version: "3.1"
 services:
   db:
-    image: hhucn/dbas-database
+    build: docker/db/
     ports:
       - "5432:5432"
+    volumes:
+      - ./docker/db/entrypoint:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_PASSWORD: 'DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!'
     tmpfs: /tmp
 
   web:
     build: .
-    command: bash -c "sleep 8 && pserve development.ini --reload"
+    command: bash -c "sleep 8 && alembic upgrade head && pserve development.ini --reload"
     volumes:
       - .:/dbas
     ports:

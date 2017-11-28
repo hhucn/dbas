@@ -26,7 +26,7 @@ import dbas.review.helper.queues as review_queue_helper
 import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
-from dbas.auth.login import login_user, register_user_with_ajax_data
+from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
@@ -45,16 +45,16 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
 from dbas.helper.views import preparation_for_view
-from dbas.handler.issue import get_issues_overiew, set_discussions_availability
+from dbas.handler.issue import get_issues_overiew, set_discussions_properties
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from webhook.lib import get_port
+from websocket.lib import get_port
 
 name = 'D-BAS'
-version = '1.5.0'
+version = '1.5.2'
 full_version = version
 project_name = name + ' ' + full_version
 
@@ -144,7 +144,6 @@ def main_page(request):
     logger('main_page', 'def', 'request.params: {}'.format(request.params))
     _dh = DictionaryHelper(ui_locales, ui_locales)
     extras_dict = _dh.prepare_extras_dict_for_normal_page(request)
-    _dh.add_language_options_for_extra_dict(extras_dict)
 
     return {
         'layout': base_layout(),
@@ -196,7 +195,7 @@ def main_settings(request):
     _dh = DictionaryHelper(ui_locales)
     extras_dict = _dh.prepare_extras_dict_for_normal_page(request)
     settings_dict = _dh.prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user,
-                                              request.application_url)
+                                              request.application_url, extras_dict['use_with_ldap'])
 
     return {
         'layout': base_layout(),
@@ -520,6 +519,11 @@ def discussion_init(request, for_api=False, api_data=None):
     if not prepared_discussion:
         raise HTTPNotFound()
 
+    # redirect to oauth url after login and redirecting
+    if request.authenticated_userid and 'service' in request.params and request.params['service'] in oauth_providers:
+        url = request.session['oauth_redirect_url']
+        return HTTPFound(location=url)
+
     return prepared_discussion
 
 
@@ -707,7 +711,7 @@ def main_review(request):
     issue = issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
 
-    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, False)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, False, request.authenticated_userid)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
 
     review_dict = review_queue_helper.get_review_queues_as_lists(request.application_url, _tn, nickname)
@@ -1031,6 +1035,44 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
         return {'error': _tn.get(_.internalKeyError)}
 
 
+# ajax - user login via oauth
+@view_config(route_name='ajax_user_login_oauth', renderer='json')
+def user_login_oauth(request):
+    """
+    Will login the user via oauth
+
+    :return: dict() with error
+    """
+    logger('views', 'user_login_oauth', 'request.params: {}'.format(request.params))
+
+    lang = get_language_from_cookie(request)
+    _tn = Translator(lang)
+
+    # sanity check
+    if request.authenticated_userid:
+        return {'error': ''}
+
+    try:
+        service = request.params['service']
+        url = request.params['redirect_uri']
+        old_redirect = url.replace('http:', 'https:')
+        # add service tag to notice the oauth provider after a redirect
+        if '?service' in url:
+            url = url[0:url.index('/discuss') + len('/discuss')] + url[url.index('?service'):]
+        for slug in [issue.slug for issue in DBDiscussionSession.query(Issue).all()]:
+            if slug in url:
+                url = url[0:url.index('/discuss') + len('/discuss')]
+        redirect_url = url.replace('http:', 'https:')
+
+        val = login_user_oauth(request, service, redirect_url, old_redirect, lang)
+        if val is None:
+            return {'error': _tn.get(_.internalKeyError)}
+        return val
+    except KeyError as e:
+        logger('user_login_oauth', 'error', repr(e), error=True)
+        return {'error': _tn.get(_.internalKeyError)}
+
+
 # ajax - user logout
 @view_config(route_name='ajax_user_logout', renderer='json')
 def user_logout(request, redirect_to_main=False):
@@ -1045,13 +1087,16 @@ def user_logout(request, redirect_to_main=False):
     request.session.invalidate()
     headers = forget(request)
     if redirect_to_main:
-        return HTTPFound(
-            location=request.application_url + '?session_expired=true',
-            headers=headers,
-        )
+        location = request.application_url + 'discuss?session_expired=true',
+    elif (request.application_url + '/discuss') in request.path_url:  # redirect to page, where you need no login
+        location = request.path_url
     else:
-        request.response.headerlist.extend(headers)
-        return request.response
+        location = request.application_url + '/discuss'
+
+    return HTTPFound(
+        location=location,
+        headers=headers
+    )
 
 
 # ajax - registration of users
@@ -1207,27 +1252,26 @@ def send_some_notification(request):
 
 
 # ajax - set boolean for receiving information
-@view_config(route_name='ajax_set_discussion_availability', renderer='json')
-def set_discussion_availability(request):
+@view_config(route_name='ajax_set_discussion_properties', renderer='json')
+def set_discussion_properties(request):
     """
     Sets the discussions availability
 
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_discussion_availability', 'request.params: {}'.format(request.params))
+    logger('views', 'set_discussion_properties', 'request.params: {}'.format(request.params))
     _tn = Translator(get_language_from_cookie(request))
 
     try:
-        enable = request.params['available'] == 'True'
+        checked = request.params['checked'] == 'True'
         uid = request.params['uid']
-        prepared_dict = set_discussions_availability(request.authenticated_userid, uid, enable, _tn)
+        key = request.params['key']
+        prepared_dict = set_discussions_properties(request.authenticated_userid, uid, checked, key, _tn)
     except KeyError as e:
-        logger('views', 'set_user_lang', repr(e), error=True)
+        logger('views', 'set_discussion_properties', repr(e), error=True)
         prepared_dict = {
-            'error': _tn.get(_.internalKeyError),
-            'ui_locales': '',
-            'current_lang': ''
+            'error': _tn.get(_.internalKeyError)
         }
     return prepared_dict
 
@@ -1473,13 +1517,15 @@ def set_new_issue(request):
         long_info = escape_string(request.params['long_info'])
         title = escape_string(request.params['title'])
         lang = escape_string(request.params['lang'])
+        is_public = request.params['is_public'] == 'True'
+        is_read_only = request.params['is_read_only'] == 'True'
     except KeyError as e:
         _tn = Translator(ui_locales)
         logger('views', 'set_new_issue', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
-    prepared_dict = issue_helper.set_issue(request.authenticated_userid, info, long_info, title, lang,
-                                           request.application_url, ui_locales)
+    prepared_dict = issue_helper.set_issue(request.authenticated_userid, info, long_info, title, lang, is_public,
+                                           is_read_only, request.application_url, ui_locales)
     return prepared_dict
 
 

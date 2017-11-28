@@ -92,7 +92,7 @@ def main(global_config, **settings):
     config.include('graph', route_prefix='/graph')
     config.include('export', route_prefix='/export')
     config.include('admin', route_prefix='/admin')
-    config.include('webhook', route_prefix='/webhook')
+    config.include('websocket', route_prefix='/websocket')
 
     # more includes are in the config
     config.include('pyramid_chameleon')
@@ -100,11 +100,11 @@ def main(global_config, **settings):
     config.include('pyramid_tm')
 
     config.add_static_view(name='static', path='dbas:static/', cache_max_age=3600)
-    config.add_static_view(name='webhook', path='webhook:static/', cache_max_age=3600)
+    config.add_static_view(name='websocket', path='websocket:static/', cache_max_age=3600)
     config.add_static_view(name='admin', path='admin:static/', cache_max_age=3600)
     config.add_cache_buster('static', QueryStringConstantCacheBuster(str(int(time.time()))))
     config.add_cache_buster('admin:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
-    config.add_cache_buster('webhook:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
+    config.add_cache_buster('websocket:static/', QueryStringConstantCacheBuster(str(int(time.time()))))
 
     # adding main routes
     config.add_route('main_page', '/')
@@ -119,6 +119,7 @@ def main(global_config, **settings):
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('ajax_user_login', '{url:.*}ajax_user_login')
+    config.add_route('ajax_user_login_oauth', '{url:.*}ajax_user_login_oauth')
     config.add_route('ajax_user_logout', '{url:.*}ajax_user_logout')
     config.add_route('ajax_set_new_start_argument', '/{url:.*}ajax_set_new_start_argument')
     config.add_route('ajax_set_new_start_statement', '/{url:.*}ajax_set_new_start_statement')
@@ -170,7 +171,7 @@ def main(global_config, **settings):
     config.add_route('ajax_set_references', '{url:.*}ajax_set_references')
     config.add_route('ajax_set_seen_statements', '{url:.*}ajax_set_seen_statements')
     config.add_route('ajax_mark_statement_or_argument', '{url:.*}ajax_mark_statement_or_argument')
-    config.add_route('ajax_set_discussion_availability', '{url:.*}ajax_set_discussion_availability')
+    config.add_route('ajax_set_discussion_properties', '{url:.*}ajax_set_discussion_properties')
 
     # logic at the end, otherwise the * pattern will do shit
     config.add_route('main_user', '/user/{uid}')

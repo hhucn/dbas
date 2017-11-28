@@ -634,18 +634,6 @@ function Main () {
 	 *
 	 */
 	this.setGuiOptions = function () {
-		$('#' + popupLogin).on('hidden.bs.modal', function () {// uncheck login button on hide
-			var list = $('#' + discussionSpaceListId);
-			if (list) {
-				var login_item = list.find('#item_login');
-				if (login_item.length > 0) {
-					login_item.prop('checked', false);
-				}
-			}
-		}).on('shown.bs.modal', function () {
-			$('#' + loginUserId).focus();
-		});
-		
 		
 		// highlight edited statement
 		var pos = window.location.href.indexOf('edited_statement=');

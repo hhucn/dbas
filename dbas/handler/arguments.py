@@ -46,6 +46,10 @@ def set_arguments_premises(for_api, data) -> dict:
         _tn = Translator('en')
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
+    _tn = Translator('discussion_lang')
+    if DBDiscussionSession.query(Issue).get(issue_id).is_read_only:
+        return {'error': _tn.get(_.discussionIsReadOnly), 'statement_uids': ''}
+
     # escaping will be done in QueryHelper().set_statement(...)
     url, statement_uids, error = __process_input_of_premises_for_arguments_and_receive_url(default_locale_name, arg_uid,
                                                                                            attack_type, premisegroups,

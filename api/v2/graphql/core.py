@@ -99,8 +99,8 @@ class Query(graphene.ObjectType):
 
     statement = graphene.Field(StatementGraph, uid=graphene.Int(), is_startpoint=graphene.Boolean())
     statements = StatementGraph.plural()
-    argument = graphene.Field(ArgumentGraph, uid=graphene.Int(), is_supportive=graphene.Boolean())
-    arguments = graphene.List(ArgumentGraph, is_supportive=graphene.Boolean())
+    argument = graphene.Field(ArgumentGraph, uid=graphene.Int(), issue_uid=graphene.Int(), is_supportive=graphene.Boolean())
+    arguments = graphene.List(ArgumentGraph, issue_uid=graphene.Int(), is_supportive=graphene.Boolean())
     statement_reference = graphene.Field(StatementReferencesGraph, uid=graphene.Int())
     statement_references = graphene.List(StatementReferencesGraph)
     statement_origin = graphene.Field(StatementOriginsGraph, uid=graphene.Int(), statement_uid=graphene.Int())

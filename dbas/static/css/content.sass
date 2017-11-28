@@ -205,7 +205,27 @@ span[data-argumentation-type^="position"]
     color: white !important
     padding-bottom: 1em
 
+@media (max-width: 992px)
+  #issue-dropdown
+    margin-bottom: 1em
+  .big-header
+    padding: 3em 1em 5em 1em
+
 @media (max-width: 767px)
+  .big-header
+    padding: 1em 1em 4em 1em
+
+  #wrapper-content
+    padding-top: 0
+  body
+    padding-top: 0
+  #roundhousekick-wrapper, #yomamma-wrapper
+    display: none
+  .big-header h3
+    padding-top: 0
+    span
+      padding-bottom: 0
+
   #pro-position-column, #con-position-column
     float: none
     width: 95%
@@ -219,9 +239,3 @@ span[data-argumentation-type^="position"]
 
   #popup-flag-statement fieldset > label
     width: 90%
-
-@media (max-width: 992px)
-  #issue-dropdown
-    margin-bottom: 1em
-  .big-header
-    padding: 3em 1em 5em 1em

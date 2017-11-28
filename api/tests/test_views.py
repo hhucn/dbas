@@ -3,12 +3,13 @@ Testing the routes of the API.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
-import json
 import random
-import string
 
+import json
+import string
 from nose.tools import assert_equals, assert_false, assert_true
 
+from admin.lib import generate_application_token
 from api.lib import json_to_dict
 from api.tests.lib import get_response, parse_status, post_request
 
@@ -83,4 +84,20 @@ def test_add_position_splittable_invalid_token():
     payload = __payload_add_statement()
     response = post_request("add/start_statement", payload,
                             headers={"X-Authentication": json.dumps({"type": "user", "token": "Groot-iamgroot"})})
+    assert_false(response.ok)
+
+
+def test_correct_api_token():
+    api_token = generate_application_token("Johnny")
+    payload = __payload_add_statement()
+    response = post_request("add/start_statement", payload,
+                            headers={"X-Authentication": json.dumps({"type": "user", "token": "Walter-" + api_token})})
+    assert_true(response.ok)
+
+
+def test_incorrect_api_token():
+    api_token = "blablablab-df---df--df"
+    payload = __payload_add_statement()
+    response = post_request("add/start_statement", payload,
+                            headers={"X-Authentication": json.dumps({"type": "user", "token": "Walter-" + api_token})})
     assert_false(response.ok)

@@ -19,7 +19,7 @@ from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_p
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager, get_url_for_new_argument
-from webhook.lib import send_request_for_info_popup_to_socketio
+from websocket.lib import send_request_for_info_popup_to_socketio
 
 
 def set_position(for_api, data) -> dict:
@@ -35,8 +35,9 @@ def set_position(for_api, data) -> dict:
         nickname = data['nickname']
         statement = data['statement']
         issue_id = data['issue_id']
-        slug = data['slug']
-        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else DBDiscussionSession.query(Issue).get(issue_id).lang
+        issue_db = DBDiscussionSession.query(Issue).get(issue_id)
+        slug = issue_db.slug
+        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else issue_db.lang
         default_locale_name = data['default_locale_name'] if 'default_locale_name' in data else discussion_lang
         application_url = data['application_url']
     except KeyError as e:
@@ -47,6 +48,10 @@ def set_position(for_api, data) -> dict:
     # escaping will be done in StatementsHelper().set_statement(...)
     user.update_last_action(nickname)
     _tn = Translator(discussion_lang)
+
+    if DBDiscussionSession.query(Issue).get(issue_id).is_read_only:
+        return {'error': _tn.get(_.discussionIsReadOnly), 'statement_uids': ''}
+
     new_statement = insert_as_statements(application_url, default_locale_name, statement, nickname, issue_id,
                                          discussion_lang, is_start=True)
     prepared_dict = {'error': '', 'statement_uids': ''}
@@ -109,6 +114,10 @@ def set_positions_premise(for_api, data) -> dict:
 
     # escaping will be done in StatementsHelper().set_statement(...)
     user.update_last_action(nickname)
+
+    _tn = Translator('discussion_lang')
+    if DBDiscussionSession.query(Issue).get(issue_id).is_read_only:
+        return {'error': _tn.get(_.discussionIsReadOnly), 'statement_uids': ''}
 
     url, statement_uids, error = __process_input_of_start_premises_and_receive_url(default_locale_name, premisegroups,
                                                                                    conclusion_id, supportive, issue_id,

@@ -6,7 +6,7 @@ Provides helping function for dictionaries.
 
 import datetime
 import random
-
+import os
 import arrow
 
 from dbas.auth.recaptcha import client_key as google_recaptcha_client_key
@@ -132,9 +132,17 @@ class DictionaryHelper(object):
             application_url = ''
             logger('DictionaryHelper', 'prepare_extras_dict', 'application_url is None', error=True)
 
+        restart_url = UrlManager(application_url, current_slug, for_api).get_slug_url(False)
+        if restart_url.endswith('/'):
+            restart_url = restart_url[:-1]
+        if not restart_url.startswith('http'):
+            restart_url = 'https://' + restart_url
+        if restart_url.startswith('http:'):
+            restart_url = restart_url.replace('http', 'https')
+
         return_dict = dict()
         return_dict['year'] = datetime.datetime.now().year
-        return_dict['restart_url'] = UrlManager(application_url, current_slug, for_api).get_slug_url(False)
+        return_dict['restart_url'] = restart_url
         return_dict['is_in_discussion'] = 'discuss' in request.path
         return_dict['logged_in'] = is_logged_in
         return_dict['nickname'] = request_authenticated_userid
@@ -143,6 +151,7 @@ class DictionaryHelper(object):
         return_dict['add_statement_container_style'] = add_statement_container_style
         return_dict['users_avatar'] = get_profile_picture(db_user, 25)
         return_dict['ongoing_discussion'] = ongoing_discussion
+        return_dict['slug'] = current_slug
         if db_user:
             return_dict['is_user_male'] = db_user.gender == 'm'
             return_dict['is_user_female'] = db_user.gender == 'f'
@@ -173,7 +182,7 @@ class DictionaryHelper(object):
         return_dict['de_discussion_link'] = link_de
         return_dict['en_discussion_link'] = link_en
 
-        self.add_language_options_for_extra_dict(return_dict)
+        self.__add_language_options_for_extra_dict(return_dict)
         is_author, points = get_reputation_of(nickname)
         is_author_bool = is_author or points > limit_for_open_issues
 
@@ -185,9 +194,10 @@ class DictionaryHelper(object):
         return_dict['close_premise_container'] = True
         return_dict['close_statement_container'] = True
         return_dict['date'] = arrow.utcnow().format('DD-MM-YYYY')
-        self.add_title_text(return_dict, is_logged_in)
-        self.add_button_text(return_dict)
-        self.add_tag_text(return_dict)
+        self.__add_title_text(return_dict, is_logged_in)
+        self.__add_button_text(return_dict)
+        self.__add_tag_text(return_dict)
+        self.__add_login_button_properties(return_dict)
 
         message_dict = dict()
         message_dict['new_count'] = count_of_new_notifications(nickname)
@@ -204,7 +214,7 @@ class DictionaryHelper(object):
         return return_dict
 
     def prepare_settings_dict(self, pw_change_success, old_pw, new_pw, confirm_pw, pw_change_error, message, db_user,
-                              main_page):
+                              main_page, use_with_ldap):
         """
         Prepares the dictionary for settings.ow
 
@@ -216,6 +226,7 @@ class DictionaryHelper(object):
         :param message: String
         :param db_user: User
         :param main_page: String
+        :param use_with_ldap: Boolean
         :return: dict()
         """
         _tn = Translator(self.system_lang)
@@ -244,6 +255,8 @@ class DictionaryHelper(object):
             'db_nickname': db_user.nickname if db_user else '',
             'db_public_nickname': public_nick,
             'db_mail': db_user.email if db_user else '',
+            'has_mail': db_user.email is 'None' if db_user else '',
+            'can_change_password': not use_with_ldap and db_user.token is None,
             'db_group': group,
             'avatar_public_url': gravatar_public_url,
             'edits_done': edits,
@@ -330,7 +343,8 @@ class DictionaryHelper(object):
             create_speechbubble_dict(BubbleTypes.STATUS, id='end', message=user_text, lang=self.system_lang,
                                      nickname=nickname))
 
-        if nickname:
+        is_read_only = DBDiscussionSession.query(Issue).filter_by(slug=extras_dict['slug']).first().is_read_only
+        if nickname and not is_read_only:
             extras_dict['add_statement_container_style'] = ''  # this will remove the 'display: none;'-style
             extras_dict['close_statement_container'] = False
 
@@ -351,7 +365,9 @@ class DictionaryHelper(object):
         :return: None
         """
         discussion_dict['mode'] = 'justify_argumentation'
-        if nickname:
+
+        is_read_only = DBDiscussionSession.query(Issue).filter_by(slug=extras_dict['slug']).first().is_read_only
+        if nickname and not is_read_only:
             extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
         extras_dict['close_premise_container'] = False
         extras_dict['show_display_style'] = False
@@ -431,7 +447,8 @@ class DictionaryHelper(object):
             mid_text += ' ' + _tn.get(_.doesNotHold)
         mid_text += '. '
 
-        if nickname:
+        is_read_only = DBDiscussionSession.query(Issue).filter_by(slug=extras_dict['slug']).first().is_read_only
+        if nickname and not is_read_only:
             extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
             mid_text += _tn.get(_.firstPremiseText2)
         else:
@@ -446,7 +463,7 @@ class DictionaryHelper(object):
         extras_dict['is_editable'] = False
         extras_dict['is_reportable'] = False
 
-    def add_language_options_for_extra_dict(self, extras_dict):
+    def __add_language_options_for_extra_dict(self, extras_dict):
         """
         Adds language options to the extra-dictionary
 
@@ -464,7 +481,7 @@ class DictionaryHelper(object):
             'link_en_class': 'active' if lang_is_en else ''
         })
 
-    def add_button_text(self, return_dict):
+    def __add_button_text(self, return_dict):
         """
         Adds string-map in the return dict with the client_key 'buttons'
 
@@ -502,7 +519,7 @@ class DictionaryHelper(object):
             'hide_statements': _tn_dis.get(_.statementsHideAll)
         }
 
-    def add_title_text(self, return_dict, logged_in):
+    def __add_title_text(self, return_dict, logged_in):
         """
         Adds string-map in the return dict with the client_key 'title'
 
@@ -550,7 +567,7 @@ class DictionaryHelper(object):
         else:
             return_dict['add_issue_info'] = _tn_sys.get(_.notLoggedIn),
 
-    def add_tag_text(self, return_dict):
+    def __add_tag_text(self, return_dict):
         """
         Adds string-map in the return dict with the client_key 'tag'
 
@@ -612,4 +629,28 @@ class DictionaryHelper(object):
             'statement_merge_description': _tn_dis.get(_.statement_merge_description),
             'statement_split_description': _tn_dis.get(_.statement_split_description),
             'statement_optimization_description': _tn_dis.get(_.statement_optimization_description),
+            'issue_enabled': _tn_sys.get(_.issueEnableDescription),
+            'issue_public': _tn_sys.get(_.issuePublicDescription),
+            'issue_writable': _tn_sys.get(_.issueWritableDescription)
+        }
+
+    def __add_login_button_properties(self, return_dict):
+        """
+        Check if oauth client ids are available and updates the dict
+
+        :param return_dict: current dictionary
+        :return: updated dictionary
+        """
+        google_id = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTID', None)
+        facebook_id = os.environ.get('DBAS_OAUTH_FACEBOOK_CLIENTID', None)
+        twitter_id = os.environ.get('DBAS_OAUTH_TWITTER_CLIENTID', None)
+        github_id = os.environ.get('DBAS_OAUTH_GITHUB_CLIENTID', None)
+        hhu_ldap = os.environ.get('DBAS_HHU_LDAP_SERVER', None)
+
+        return_dict['login_btns'] = {
+            'oauth_google': google_id is not None,
+            'oauth_facebook': facebook_id is not None,
+            'oauth_twitter': twitter_id is not None,
+            'oauth_github': github_id is not None,
+            'hhu_ldap': hhu_ldap is not None
         }

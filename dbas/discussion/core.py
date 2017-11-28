@@ -65,7 +65,7 @@ def init(request, nickname, for_api=False) -> dict:
     __handle_history(request, nickname, slug, issue)
 
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, request.authenticated_userid)
     item_dict = ItemDictHelper(disc_ui_locales, issue, application_url, for_api).get_array_for_start(nickname)
 
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname=nickname, main_page=application_url, slug=slug)
@@ -118,7 +118,7 @@ def attitude(request, nickname, for_api=False) -> dict:
         return None
 
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, request.authenticated_userid)
     history = __handle_history(request, nickname, slug, issue)
 
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=application_url, slug=slug)
@@ -164,7 +164,7 @@ def justify(request, nickname, for_api=False) -> dict:
     else:
         issue = issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, request.authenticated_userid)
 
     history = __handle_history(request, nickname, slug, issue)
 
@@ -225,7 +225,7 @@ def reaction(request, nickname, for_api=False) -> dict:
     add_click_for_argument(arg_id_user, nickname)
 
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, request.authenticated_userid)
 
     history = __handle_history(request, nickname, slug, issue)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
@@ -272,7 +272,7 @@ def support(request, nickname, for_api=False, api_data=None) -> dict:
     ui_locales = get_language_from_cookie(request)
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, request.authenticated_userid)
 
     if not check_belonging_of_argument(issue, arg_user_uid) or \
             not check_belonging_of_argument(issue, arg_system_uid) or \
@@ -324,7 +324,7 @@ def choose(request, nickname, for_api=False) -> dict:
     ui_locales = get_language_from_cookie(request)
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, request.authenticated_userid)
 
     for pgroup in pgroup_ids:
         if not is_integer(pgroup):
@@ -378,7 +378,7 @@ def jump(request, nickname, for_api=False, api_data=None) -> dict:
 
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, request.authenticated_userid)
     history = __handle_history(request, nickname, slug, issue)
 
     if for_api and api_data:

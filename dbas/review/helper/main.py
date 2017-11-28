@@ -21,7 +21,7 @@ from dbas.review.helper.reputation import add_reputation_for, rep_reason_success
     rep_reason_success_duplicate, rep_reason_bad_duplicate, rep_reason_success_edit, rep_reason_bad_edit
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from webhook.lib import send_request_for_info_popup_to_socketio, get_port
+from websocket.lib import send_request_for_info_popup_to_socketio, get_port
 from dbas.handler.statements import set_statement
 
 max_votes = 5

@@ -6,8 +6,19 @@ $(document).ready(function () {
 
 	$.each($('.discussion-enable-toggle'), function(){
 		$(this).change(function (){
-			console.log('toggle ' + $(this).data('uid'));
-			new AjaxDiscussionHandler().enOrDisableDiscussion($(this));
+			new AjaxDiscussionHandler().setDiscussionSettings($(this), 'enable');
+		});
+	});
+
+	$.each($('.discussion-public-toggle'), function(){
+		$(this).change(function (){
+			new AjaxDiscussionHandler().setDiscussionSettings($(this), 'public');
+		});
+	});
+
+	$.each($('.discussion-writable-toggle'), function(){
+		$(this).change(function (){
+			new AjaxDiscussionHandler().setDiscussionSettings($(this), 'writable');
 		});
 	});
 	

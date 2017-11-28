@@ -121,7 +121,9 @@ function PopupHandler() {
 			var long_info = $('#popup-add-topic-long-info-input').val();
 			var title = $('#popup-add-topic-title-input').val();
 			var lang = $('#popup-add-topic-lang-input').find('input[type="radio"]:checked').attr('id');
-			new AjaxDiscussionHandler().sendNewIssue(info, long_info, title, lang);
+			var is_public = $('#popup-add-topic-public-toggle').prop('checked');
+			var is_read_only = $('#popup-add-topic-read-only-toggle').prop('checked');
+			new AjaxDiscussionHandler().sendNewIssue(info, long_info, title, is_public, is_read_only, lang);
 		});
 		
 		$('#popup-add-topic-refuse-btn').click(function () {
@@ -847,7 +849,7 @@ function PopupHandler() {
 		if (window.location.href.indexOf('/contact') !== -1){
 			return -1;
 		}
-		console.log('asd');
+		
 		var script = $('<script>').attr('src', 'https://www.google.com/recaptcha/api.js');
 		if (appendOnly) {
 			$('#' + popupLogin).append(script);

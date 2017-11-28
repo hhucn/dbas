@@ -48,6 +48,7 @@ class ItemDictHelper(object):
         self.application_url = application_url
         self.for_api = for_api
         self.LIMIT_SUPPORT_STEP = 0.30
+        self.issue_read_only = DBDiscussionSession.query(Issue).get(self.issue_uid).is_read_only
 
         if for_api:
             self.path = path[len('/api/' + DBDiscussionSession.query(Issue).get(issue_uid).slug):]
@@ -94,17 +95,18 @@ class ItemDictHelper(object):
             random.seed(int(hashlib.md5(str.encode(str(nickname))).hexdigest(), 16))
             random.shuffle(statements_array)
 
-        if nickname:
-            title = _tn.get(_.newConclusionRadioButtonText) if len(db_statements) > 0 else _tn.get(_.newConclusionRadioButtonTextNewIdea)
-            statements_array.append(self.__create_answer_dict('start_statement',
-                                                              [{'title': title, 'id': 0}],
-                                                              'start',
-                                                              'add'))
-        else:
-            statements_array.append(self.__create_answer_dict('login',
-                                                              [{'id': '0', 'title': _tn.get(_.wantToStateNewPosition)}],
-                                                              'justify',
-                                                              'login'))
+        if not self.issue_read_only:
+            if nickname:
+                title = _tn.get(_.newConclusionRadioButtonText) if len(db_statements) > 0 else _tn.get(_.newConclusionRadioButtonTextNewIdea)
+                statements_array.append(self.__create_answer_dict('start_statement',
+                                                                  [{'title': title, 'id': 0}],
+                                                                  'start',
+                                                                  'add'))
+            else:
+                statements_array.append(self.__create_answer_dict('login',
+                                                                  [{'id': '0', 'title': _tn.get(_.wantToStateNewPosition)}],
+                                                                  'justify',
+                                                                  'login'))
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_statements)}}
 
@@ -207,15 +209,16 @@ class ItemDictHelper(object):
             random.seed(int(hashlib.md5(str.encode(str(nickname))).hexdigest(), 16))
             random.shuffle(statements_array)
 
-        if nickname:
-            statements_array.append(self.__create_answer_dict('start_premise',
-                                                              [{'title': _tn.get(_.newPremiseRadioButtonText),
-                                                                'id': 0}],
-                                                              'justify',
-                                                              'add'))
-        else:
-            statements_array.append(
-                self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.onlyOneItem)}], 'justify', 'login'))
+        if not self.issue_read_only:
+            if nickname:
+                statements_array.append(self.__create_answer_dict('start_premise',
+                                                                  [{'title': _tn.get(_.newPremiseRadioButtonText),
+                                                                    'id': 0}],
+                                                                  'justify',
+                                                                  'add'))
+            else:
+                statements_array.append(
+                    self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.onlyOneItem)}], 'justify', 'login'))
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_arguments)}}
 
@@ -286,16 +289,17 @@ class ItemDictHelper(object):
             random.seed(int(hashlib.md5(str.encode(str(nickname))).hexdigest(), 16))
             random.shuffle(statements_array)
 
-        if logged_in:
-            if len(statements_array) == 0:
-                text = _tn.get(_.newPremiseRadioButtonTextAsFirstOne)
+        if not self.issue_read_only:
+            if logged_in:
+                if len(statements_array) == 0:
+                    text = _tn.get(_.newPremiseRadioButtonTextAsFirstOne)
+                else:
+                    text = _tn.get(_.newPremiseRadioButtonText)
+                statements_array.append(self.__create_answer_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add'))
             else:
-                text = _tn.get(_.newPremiseRadioButtonText)
-            statements_array.append(self.__create_answer_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add'))
-        else:
-            # elif len(statements_array) == 1:
-            statements_array.append(
-                self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.onlyOneItem)}], 'justify', 'login'))
+                # elif len(statements_array) == 1:
+                statements_array.append(
+                    self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.onlyOneItem)}], 'justify', 'login'))
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_arguments)}}
 

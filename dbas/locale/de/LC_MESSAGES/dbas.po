@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-10-30 12:18+0100\n"
+"POT-Creation-Date: 2017-11-27 16:19+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -90,7 +90,7 @@ msgstr "Kontakt"
 #. Default: The solution for every Large Scale Online-Discussion
 #: templates/index.pt:80
 msgid "landing-page-heading"
-msgstr "Die Lösung für jede große Online-Diskussionen"
+msgstr "Die Lösung für alle Online-Diskussionen"
 
 #. Default: Welcome to D-BAS! This is our Dialog-Based Argumentation System. It
 #. offers a clear discussion structure, a modern web interface, a decentralized
@@ -115,7 +115,7 @@ msgstr "direkt starten"
 #. Default: We've got what you need!
 #: templates/index.pt:96
 msgid "we_have_you_need"
-msgstr "Wir haben, was Sie brauchen: Strukturiere Diskussionen!"
+msgstr "Wir haben, was Sie brauchen: Strukturierte Diskussionen!"
 
 #. Default: With the rise of the Internet, we now have a basic infrastructure,
 #. which makes participation easier for everyone and independent of space and
@@ -849,7 +849,7 @@ msgid "restart"
 msgstr "Neustart"
 
 #. Default: My Discussions
-#: templates/snippet-header.pt:34 templates/discussions.pt:16
+#: templates/snippet-header.pt:34 templates/discussions.pt:18
 msgid "my_discussions"
 msgstr "Meine Diskussionen"
 
@@ -861,14 +861,14 @@ msgstr "Thema wechseln"
 #. Default: Add a Topic
 #. Default: Add Topic
 #: templates/snippet-header.pt:58 templates/snippet-header.pt:64
-#: templates/snippet-popups.pt:586
+#: templates/snippet-popups.pt:714
 msgid "add_topic"
 msgstr "Thema hinzufügen"
 
 #. Default: Login
 #. Default: Log In
-#: templates/snippet-header.pt:76 templates/snippet-popups.pt:229
-#: templates/snippet-popups.pt:405
+#: templates/snippet-header.pt:76 templates/snippet-popups.pt:327
+#: templates/snippet-popups.pt:372
 msgid "login"
 msgstr "Login"
 
@@ -981,7 +981,7 @@ msgid "copyright_and_used_software"
 msgstr "Verwendete Software"
 
 #. Default: Changes
-#: templates/imprint.pt:114
+#: templates/imprint.pt:112
 msgid "changes"
 msgstr "Versionsänderungen"
 
@@ -1143,8 +1143,8 @@ msgid "no_decision_for_this_queue"
 msgstr "Keine Abstimmungen in dieser Schlange."
 
 #. Default: Statement
-#: templates/review-history.pt:42 templates/snippet-popups.pt:978
-#: templates/snippet-popups.pt:999
+#: templates/review-history.pt:42 templates/snippet-popups.pt:1116
+#: templates/snippet-popups.pt:1137
 msgid "statement"
 msgstr "Aussage"
 
@@ -1201,8 +1201,8 @@ msgstr "Rückgängig machen"
 #. Default: Cancel
 #: templates/review-history.pt:98 templates/snippet-popups.pt:127
 #: templates/snippet-popups.pt:150 templates/snippet-popups.pt:175
-#: templates/snippet-popups.pt:842 templates/snippet-popups.pt:889
-#: templates/snippet-popups.pt:1042
+#: templates/snippet-popups.pt:980 templates/snippet-popups.pt:1027
+#: templates/snippet-popups.pt:1180
 msgid "cancel"
 msgstr "Abbrechen"
 
@@ -1315,14 +1315,15 @@ msgid "fax"
 msgstr "Fax"
 
 #. Default: Close
-#: templates/snippet-popups.pt:77 templates/snippet-popups.pt:407
-#: templates/snippet-popups.pt:519 templates/snippet-popups.pt:573
+#: templates/snippet-popups.pt:77 templates/snippet-popups.pt:312
+#: templates/snippet-popups.pt:373 templates/snippet-popups.pt:535
+#: templates/snippet-popups.pt:647 templates/snippet-popups.pt:701
 msgid "close"
 msgstr "Schließen"
 
 #. Default: Okay
 #: templates/snippet-popups.pt:126 templates/snippet-popups.pt:149
-#: templates/snippet-popups.pt:174 templates/snippet-popups.pt:1041
+#: templates/snippet-popups.pt:174 templates/snippet-popups.pt:1179
 msgid "okay"
 msgstr "Okay"
 
@@ -1331,290 +1332,305 @@ msgstr "Okay"
 msgid "do_not_remind_me_again"
 msgstr "Nicht erneut erinnern"
 
-#. Default: Sign Up
+#. Default: Information are missing
+#: templates/snippet-popups.pt:227
+msgid "information_missing"
+msgstr "Uns fehlen Informationen"
+
+#. Default: During the authentication we could not fetch all of the necessary
+#. information. Please add the missing information, so we can add a new account
+#. in D-BAS (Login via other providers won't work).
 #: templates/snippet-popups.pt:230
-msgid "sign_up"
-msgstr "Registrierung"
-
-#. Default: If you have a valid account at the HHU, you can directly use the
-#. login!
-#: templates/snippet-popups.pt:235
-msgid "have_account_hhu"
+msgid "plase_add_missing_infos_we_add_account"
 msgstr ""
-"Wenn Sie eine Kennung an der HHU besitzen, können Sie sich direkt anmelden!"
-
-#. Default: Your Nickname
-#: templates/snippet-popups.pt:240
-msgid "your_nickname"
-msgstr "Ihr Nickname"
-
-#. Default: Your Password
-#: templates/snippet-popups.pt:249
-msgid "your_password"
-msgstr "Ihr Passwort"
-
-#. Default: Keep me logged in
-#: templates/snippet-popups.pt:260
-msgid "keep_me_logged_in"
-msgstr "Angemeldet bleiben"
-
-#. Default: Forgot your password?
-#: templates/snippet-popups.pt:262
-msgid "forgot_password"
-msgstr "Passwort vergessen?"
-
-#. Default: Please fill in your e-mail below. A new password will be send this
-#. address. This does not affect other services of the HHU:
-#: templates/snippet-popups.pt:265
-msgid "fill_in_mail_for_password"
-msgstr ""
-"Bitte trage Sie unten Ihre E-Mail-Adresse ein. Ein neues Passwort wird an "
-"diese Adresse gesendet. Dies ist bei der LDAP Kennung der HHU nicht möglich!"
-
-#. Default: We will never display your real name to other users!
-#: templates/snippet-popups.pt:277
-msgid "never_display_real_name"
-msgstr "Wir werden niemals Ihren echten Namen weiteren Benutzern anzeigen!"
+"Während der Authentifizerung konnten wir nicht alle nötigen Informationen "
+"bekommen. Bitte geben Sie die restlichen Informationen an, sodass wir einen "
+"Account in D-BAS anlegen (Der Login über die Provider klappt dann leider "
+"nicht mehr)."
 
 #. Default: Your First Name
-#: templates/snippet-popups.pt:280
+#: templates/snippet-popups.pt:233 templates/snippet-popups.pt:412
 msgid "first_name"
 msgstr "Vorname"
 
 #. Default: Your Last Name
-#: templates/snippet-popups.pt:287
+#: templates/snippet-popups.pt:240 templates/snippet-popups.pt:419
 msgid "last_name"
 msgstr "Nachname"
 
 #. Default: Your Nickname
 #. Default: Nickname
-#: templates/snippet-popups.pt:294 templates/settings.pt:29
+#: templates/snippet-popups.pt:247 templates/snippet-popups.pt:426
+#: templates/settings.pt:29
 msgid "nickname"
 msgstr "Nickname"
 
 #. Default: Your Gender
-#: templates/snippet-popups.pt:301
+#: templates/snippet-popups.pt:254 templates/snippet-popups.pt:433
 msgid "your_gender"
 msgstr "Ihr Geschlecht"
 
-#. Default: none
-#: templates/snippet-popups.pt:306
-msgid "none"
-msgstr "keine Angabe"
-
-#. Default: female
-#: templates/snippet-popups.pt:311
-msgid "female"
-msgstr "weiblich"
-
-#. Default: male
-#: templates/snippet-popups.pt:316
-msgid "male"
-msgstr "männlich"
-
 #. Default: Your Email Address
-#: templates/snippet-popups.pt:321
+#: templates/snippet-popups.pt:274 templates/snippet-popups.pt:453
 msgid "your_email"
 msgstr "Ihre E-Mail"
 
 #. Default: Your Password
-#: templates/snippet-popups.pt:328
+#: templates/snippet-popups.pt:281 templates/snippet-popups.pt:460
 msgid "password"
 msgstr "Passwort"
 
 #. Default: Password (confirm)
-#: templates/snippet-popups.pt:335
+#: templates/snippet-popups.pt:288 templates/snippet-popups.pt:467
 msgid "password-confirm"
 msgstr "Passwort (Bestätigung)"
 
-#. Default: Password Strength
-#: templates/snippet-popups.pt:342
-msgid "password-strength"
-msgstr "Stärke"
-
-#. Default: very weak
-#: templates/snippet-popups.pt:345
-msgid "password_strength"
-msgstr "sehr schwach"
-
-#. Default: Generate secure password
-#: templates/snippet-popups.pt:348
-msgid "generate_password"
-msgstr "Password generieren"
-
-#. Default: Success:
-#. Default: Success
-#: templates/snippet-popups.pt:363 templates/snippet-popups.pt:393
-#: templates/content.pt:34
-msgid "success"
-msgstr "Erfolg:"
-
 #. Default: Error:
-#: templates/snippet-popups.pt:370 templates/snippet-popups.pt:387
+#: templates/snippet-popups.pt:299 templates/snippet-popups.pt:498
+#: templates/snippet-popups.pt:516
 msgid "error"
 msgstr "Fehler:"
 
 #. Default: Info:
-#: templates/snippet-popups.pt:377 templates/snippet-popups.pt:399
+#. Default: Info
+#: templates/snippet-popups.pt:306 templates/snippet-popups.pt:505
+#: templates/snippet-popups.pt:528 templates/content.pt:23
 msgid "info"
 msgstr "Info:"
 
 #. Default: Register
-#: templates/snippet-popups.pt:406
+#: templates/snippet-popups.pt:311 templates/snippet-popups.pt:534
 msgid "register"
 msgstr "Registierung"
 
+#. Default: Sign Up
+#: templates/snippet-popups.pt:328
+msgid "sign_up"
+msgstr "Registrierung"
+
+#. Default: Your Nickname
+#: templates/snippet-popups.pt:337
+msgid "your_nickname"
+msgstr "Ihr Nickname"
+
+#. Default: Your Password
+#: templates/snippet-popups.pt:346
+msgid "your_password"
+msgstr "Ihr Passwort"
+
+#. Default: Keep me logged in
+#: templates/snippet-popups.pt:357
+msgid "keep_me_logged_in"
+msgstr "Angemeldet bleiben"
+
+#. Default: Forgot your password?
+#: templates/snippet-popups.pt:359
+msgid "forgot_password"
+msgstr "Passwort vergessen?"
+
+#. Default: Please fill in your e-mail below. A new password will be send this
+#. address. This does not affect other services of the HHU:
+#: templates/snippet-popups.pt:362
+msgid "fill_in_mail_for_password"
+msgstr ""
+"Bitte trage Sie unten Ihre E-Mail-Adresse ein. Ein neues Passwort wird an "
+"diese Adresse gesendet. Dies ist bei der LDAP Kennung der HHU nicht möglich!"
+
+#. Default: Or login via
+#: templates/snippet-popups.pt:377
+msgid "or_login_via"
+msgstr "Oder anmelden über"
+
+#. Default: We will never display your real name to other users!
+#: templates/snippet-popups.pt:408
+msgid "never_display_real_name"
+msgstr "Wir werden niemals Ihren echten Namen weiteren Benutzern anzeigen!"
+
+#. Default: If you have a valid account at the HHU, you can directly use the
+#. login!
+#: templates/snippet-popups.pt:410
+msgid "have_account_hhu"
+msgstr ""
+"Wenn Sie eine Kennung an der HHU besitzen, können Sie sich direkt anmelden!"
+
+#. Default: Password Strength
+#: templates/snippet-popups.pt:474
+msgid "password-strength"
+msgstr "Stärke"
+
+#. Default: very weak
+#: templates/snippet-popups.pt:477
+msgid "password_strength"
+msgstr "sehr schwach"
+
+#. Default: Success:
+#. Default: Success
+#: templates/snippet-popups.pt:491 templates/snippet-popups.pt:522
+#: templates/content.pt:36
+msgid "success"
+msgstr "Erfolg:"
+
 #. Default: Writing a new message
-#: templates/snippet-popups.pt:479 templates/snippet-popups.pt:532
+#: templates/snippet-popups.pt:607 templates/snippet-popups.pt:660
 msgid "writing_message"
 msgstr "Neue Nachricht schreiben"
 
 #. Default: Error:
-#: templates/snippet-popups.pt:499 templates/snippet-popups.pt:562
+#: templates/snippet-popups.pt:627 templates/snippet-popups.pt:690
 msgid "error:"
 msgstr "Fehler:"
 
 #. Default: Success:
-#: templates/snippet-popups.pt:504 templates/snippet-popups.pt:567
+#: templates/snippet-popups.pt:632 templates/snippet-popups.pt:695
 msgid "success:"
 msgstr "Erfolg:"
 
 #. Default: Author
-#: templates/snippet-popups.pt:511
+#: templates/snippet-popups.pt:639
 msgid "author"
 msgstr "Autor"
 
 #. Default: Date
-#: templates/snippet-popups.pt:513 templates/review-reputation.pt:22
+#: templates/snippet-popups.pt:641 templates/review-reputation.pt:22
 msgid "date"
 msgstr "Datum"
 
 #. Default: Send News
-#: templates/snippet-popups.pt:518
+#: templates/snippet-popups.pt:646
 msgid "send_news"
 msgstr "News abschicken"
 
 #. Default: Send Notifcation
-#: templates/snippet-popups.pt:572
+#: templates/snippet-popups.pt:700
 msgid "send_notification"
 msgstr "Nachricht senden"
 
 #. Default: Please enter your title here:
-#: templates/snippet-popups.pt:591
+#: templates/snippet-popups.pt:719
 msgid "please_enter_title"
 msgstr "Ihr Thema:"
 
 #. Default: Please enter a short-description or question here:
-#: templates/snippet-popups.pt:596
+#: templates/snippet-popups.pt:724
 msgid "please_enter_info"
 msgstr "Frage des Themas:"
 
 #. Default: Please enter the full description here:
-#: templates/snippet-popups.pt:601
+#: templates/snippet-popups.pt:729
 msgid "please_enter_long_info"
 msgstr "Alle Informationen zum Thema:"
 
-#. Default: Please select the language of the new discussion here:
-#: templates/snippet-popups.pt:606
+#. Default: Language of the discussion:
+#: templates/snippet-popups.pt:736
 msgid "please_select_language_for_topic"
 msgstr "Sprache der Diskussion:"
 
+#. Default: Is the topic available for the public?
+#: templates/snippet-popups.pt:758
+msgid "is_topic_available_for_public"
+msgstr "Ist das Thema für jeden verfügbar?"
+
+#. Default: Is the topic read only?
+#: templates/snippet-popups.pt:769
+msgid "is_topic_read_only"
+msgstr "Soll nur gelesen werden können?"
+
 #. Default: Selecting a reason
-#: templates/snippet-popups.pt:661
+#: templates/snippet-popups.pt:799
 msgid "select-reason"
 msgstr "Grund auswählen"
 
 #. Default: The statement under consideration is as follows
-#: templates/snippet-popups.pt:664
+#: templates/snippet-popups.pt:802
 msgid "statement_under_consideration_is"
 msgstr "Die aktuelle Aussage ist"
 
 #. Default: The argument under consideration is as follows
-#: templates/snippet-popups.pt:665 templates/snippet-popups.pt:743
+#: templates/snippet-popups.pt:803 templates/snippet-popups.pt:881
 msgid "argument_under_consideration_is"
 msgstr "Das aktuelle Argument ist"
 
 #. Default: The text needs to be revised.
-#: templates/snippet-popups.pt:672
+#: templates/snippet-popups.pt:810
 msgid "text_need_to_be_revised"
 msgstr "Der Text sollte überarbeitet werden."
 
 #. Default: This statement is off topic or irrelevant.
-#: templates/snippet-popups.pt:682
+#: templates/snippet-popups.pt:820
 msgid "statement_offtopic_or_irrelevant"
 msgstr "Die Aussage ist nicht themenbezogen/Spam."
 
 #. Default: This argument is off topic or irrelevant.
-#: templates/snippet-popups.pt:686
+#: templates/snippet-popups.pt:824
 msgid "argument_offtopic_or_irrelevant"
 msgstr "Das Argument ist nicht themenbezogen/Spam."
 
 #. Default: This statement is harmful or abusive.
-#: templates/snippet-popups.pt:694
+#: templates/snippet-popups.pt:832
 msgid "statement_harmful"
 msgstr "Die Aussage ist verletzend, schädigend oder missbräuchlich."
 
 #. Default: This argument is harmful or abusive.
-#: templates/snippet-popups.pt:696
+#: templates/snippet-popups.pt:834
 msgid "argument_harmful"
 msgstr "Die Argument ist verletzend, schädigend oder missbräuchlich."
 
 #. Default: This statement is a duplicate.
-#: templates/snippet-popups.pt:705
+#: templates/snippet-popups.pt:843
 msgid "statement_duplicate"
 msgstr "Aussage ist ein Duplikat"
 
 #. Default: This statement should be merged.
-#: templates/snippet-popups.pt:713
+#: templates/snippet-popups.pt:851
 msgid "statement_merge"
-msgstr "für Aussagen, die nicht verbunden werden sollen."
+msgstr "Die Aussage sollte mit einer weiteren verbunden werden."
 
 #. Default: This statement has more than one message.
-#: templates/snippet-popups.pt:721
+#: templates/snippet-popups.pt:859
 msgid "statement_split"
-msgstr "für Aussagen, die nicht getrennt werden sollen."
+msgstr "Die Aussage sollte geteilt werden."
 
 #. Default: Reporting (parts of) an argument
-#: templates/snippet-popups.pt:740
+#: templates/snippet-popups.pt:878
 msgid "reporting_parts_argument"
 msgstr "Melden eines Arguments (oder Teile davon)"
 
 #. Default: Please choose which part of the argument you want to report
-#: templates/snippet-popups.pt:745
+#: templates/snippet-popups.pt:883
 msgid "please_choose_part_to_report"
 msgstr "Bitte wählen Sie einen Teil des Arguments, der gemeldet werden soll"
 
 #. Default: Report
-#: templates/snippet-popups.pt:752
+#: templates/snippet-popups.pt:890
 msgid "report"
 msgstr "Melden"
 
 #. Default: Report the whole argument.
-#: templates/snippet-popups.pt:764
+#: templates/snippet-popups.pt:902
 msgid "report_whole_argument"
 msgstr "Komplettes Argument melden."
 
 #. Default: Split Statements
-#: templates/snippet-popups.pt:830 templates/snippet-popups.pt:855
+#: templates/snippet-popups.pt:968 templates/snippet-popups.pt:993
 msgid "split_statement"
 msgstr "Aussagen trennen"
 
 #. Default: Please enter the splitted version of the statement; one per input
 #. field.
-#: templates/snippet-popups.pt:833
+#: templates/snippet-popups.pt:971
 msgid "split_multiple_statements"
 msgstr ""
 "Bitte geben Sie die getrennte Version der Aussage unten ein, nennen Sie "
 "dabei pro Feld nur eine Aussage."
 
 #. Default: Submit
-#: templates/snippet-popups.pt:841 templates/snippet-popups.pt:888
+#: templates/snippet-popups.pt:979 templates/snippet-popups.pt:1026
 msgid "submit"
 msgstr "Senden"
 
 #. Default: The selected statement is already splitted in several parts, like
 #. the list illustrates below. Do you want to continue with a new split?
-#: templates/snippet-popups.pt:858
+#: templates/snippet-popups.pt:996
 msgid "split_multiple_statements_of_pgroup"
 msgstr ""
 "Die von Ihnen gewählte Aussage ist an sich schon, wie unten angegeben, "
@@ -1622,32 +1638,32 @@ msgstr ""
 "werden?"
 
 #. Default: The statement
-#: templates/snippet-popups.pt:859 templates/snippet-popups.pt:906
+#: templates/snippet-popups.pt:997 templates/snippet-popups.pt:1044
 msgid "the_statement"
 msgstr "Die Aussage"
 
 #. Default: consist out of
-#: templates/snippet-popups.pt:859 templates/snippet-popups.pt:906
+#: templates/snippet-popups.pt:997 templates/snippet-popups.pt:1044
 msgid "consist_out_of"
 msgstr "besteht aus"
 
 #. Default: Yes
-#: templates/snippet-popups.pt:863 templates/snippet-popups.pt:910
+#: templates/snippet-popups.pt:1001 templates/snippet-popups.pt:1048
 msgid "yes"
 msgstr "Ja"
 
 #. Default: No
-#: templates/snippet-popups.pt:864 templates/snippet-popups.pt:911
+#: templates/snippet-popups.pt:1002 templates/snippet-popups.pt:1049
 msgid "no"
 msgstr "Nein"
 
 #. Default: Merge Statement
-#: templates/snippet-popups.pt:877 templates/snippet-popups.pt:902
+#: templates/snippet-popups.pt:1015 templates/snippet-popups.pt:1040
 msgid "merge_statement"
 msgstr "Aussagen verbinden"
 
 #. Default: Please select the statements, that should be concatenated.
-#: templates/snippet-popups.pt:880
+#: templates/snippet-popups.pt:1018
 msgid "merge_multiple_statements"
 msgstr ""
 "Bitte wählen Sie die Aussagen aus, die mit der angegebenen Aussage mittels "
@@ -1656,7 +1672,7 @@ msgstr ""
 #. Default: The selected statement already consists out of multiple statement.
 #. Further on the several statements are listed. Do you want to continue with
 #. the merge?
-#: templates/snippet-popups.pt:905
+#: templates/snippet-popups.pt:1043
 msgid "merge_multiple_statements_of_pgroup"
 msgstr ""
 "Die von Ihnen gewählte Aussage besteht aus mehr als einer Aussage. Unten "
@@ -1664,14 +1680,14 @@ msgstr ""
 "einer einzelnen Aussage verbunden wird?"
 
 #. Default: Caution
-#: templates/snippet-popups.pt:925
+#: templates/snippet-popups.pt:1063
 msgid "caution"
 msgstr "Achtung"
 
 #. Default: Do you really want to disassociate yourself from your content? This
 #. step is irreversible! Subsequently you will not be the author of this
 #. statement anymore!
-#: templates/snippet-popups.pt:930
+#: templates/snippet-popups.pt:1068
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 "Möchten Sie wirklich von diesem Inhalt distanzieren? Dieser Schritt kann "
@@ -1679,41 +1695,41 @@ msgstr ""
 "diesem Statements."
 
 #. Default: Please choose a step to jump in
-#: templates/snippet-popups.pt:947
+#: templates/snippet-popups.pt:1085
 msgid "choose_a_step_to_jump_in"
 msgstr "Bitte wählen Sie eine Stelle für den Sprung"
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: templates/snippet-popups.pt:950
+#: templates/snippet-popups.pt:1088
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr "Hier finden Sie alle Stellen, in denen die Aussage verwendet wird:"
 
 #. Default: References
-#: templates/snippet-popups.pt:967
+#: templates/snippet-popups.pt:1105
 msgid "refereces"
 msgstr "Referenzen"
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: templates/snippet-popups.pt:975
+#: templates/snippet-popups.pt:1113
 msgid "statement_reference_definition"
 msgstr ""
 "Die Aussage ist ein Zitat von einer Nachrichtenseite o.Ä., welche Ihre "
 "Meinung untersützt. Die Quelle ist die Website."
 
 #. Default: Source
-#: templates/snippet-popups.pt:984
+#: templates/snippet-popups.pt:1122
 msgid "source"
 msgstr "Quelle"
 
 #. Default: Please choose a statement for your reference!
-#: templates/snippet-popups.pt:989
+#: templates/snippet-popups.pt:1127
 msgid "please_choose_a_reference"
 msgstr "Bitte wählen Sie eine Aussage für Ihre Referenz!"
 
 #. Default: Add reference
-#: templates/snippet-popups.pt:1004
+#: templates/snippet-popups.pt:1142
 msgid "add_reference"
 msgstr "Referenzen hinzufügen"
 
@@ -1730,7 +1746,7 @@ msgstr "Einstellungen"
 #. Default: List of several information mapped with your account
 #: templates/settings.pt:7
 msgid "list_of_information"
-msgstr "Liste mit allen Informationen rund um deinen Account"
+msgstr "Informationen rund um Ihren Account"
 
 #. Default: Personal Information
 #: templates/settings.pt:16
@@ -1978,81 +1994,98 @@ msgstr ""
 "Nachrichten und Beiträge der Diskussionen"
 
 #. Default: Overview of the Discussions
-#: templates/discussions.pt:6
+#: templates/discussions.pt:7
 msgid "overview_of_discussion"
 msgstr "Übersicht über die Diskussionen"
 
 #. Default: This page contains an over of discussions you have created as well
 #. as other participants created
-#: templates/discussions.pt:7
+#: templates/discussions.pt:8
 msgid "page_contains_overview"
 msgstr ""
-"Die Seite enthält eine Übersicht aller Diskussionen die Sie oder andere "
+"Die Seite enthält eine Übersicht aller Diskussionen, die Sie oder andere "
 "erstellt haben"
 
 #. Default: This is a summary of the discussions you have created:
-#: templates/discussions.pt:17
+#: templates/discussions.pt:20
 msgid "summary_your_discussions"
 msgstr "Zusammenfassung Ihrer Diskussionen:"
 
 #. Default: You had not creaty any discussion yet, but you can use the add
 #. button in the bottom left to create your own discussion.
-#: templates/discussions.pt:18
+#: templates/discussions.pt:23
 msgid "you_created_no_discussion"
-msgstr "Zusammenfassung der Diskussionen von weiteren Benutzer/innen:"
+msgstr "Zusammenfassung der Diskussionen von weiteren Benutzern/innen:"
 
 #. Default: Titel
-#: templates/discussions.pt:23 templates/discussions.pt:62
+#: templates/discussions.pt:30 templates/discussions.pt:99
 msgid "title"
-msgstr "Title"
+msgstr "Titel"
 
-#. Default: Count of Statements
-#: templates/discussions.pt:24 templates/discussions.pt:63
-msgid "count_of_statements"
-msgstr "Anzahl an Aussagen"
+#. Default: Statements
+#: templates/discussions.pt:31 templates/discussions.pt:100
+#: templates/content.pt:179
+msgid "statements"
+msgstr "Aussagen"
 
-#. Default: Count of Involved User
-#: templates/discussions.pt:25 templates/discussions.pt:64
-msgid "count_of_involved_users"
-msgstr "Anzahl an involvierten Nutzern"
+#. Default: Involved User
+#: templates/discussions.pt:32 templates/discussions.pt:101
+msgid "involved_users"
+msgstr "Involvierte Nutzende"
 
-#. Default: Date of Creation
-#: templates/discussions.pt:26 templates/discussions.pt:65
-msgid "date_of_creation"
+#. Default: Creation
+#: templates/discussions.pt:33 templates/discussions.pt:102
+msgid "creation"
 msgstr "Erstellungsdatum"
 
 #. Default: Enabled
-#: templates/discussions.pt:27 templates/discussions.pt:66
+#: templates/discussions.pt:34 templates/discussions.pt:103
 msgid "enabled"
 msgstr "Verfügbar"
 
+#. Default: Public
+#: templates/discussions.pt:35
+msgid "public"
+msgstr "Öffentlich"
+
+#. Default: Writable
+#: templates/discussions.pt:36
+msgid "writable"
+msgstr "Schreibbar"
+
 #. Default: Short Link
-#: templates/discussions.pt:28 templates/discussions.pt:67
+#: templates/discussions.pt:37 templates/discussions.pt:106
 msgid "short_link"
 msgstr "Kurzlink"
 
 #. Default: More Discussions
-#: templates/discussions.pt:50
+#: templates/discussions.pt:80
 msgid "more_discussions"
 msgstr "Weitere Diskussionen"
 
 #. Default: This is a summary of discussions other participants have created,
 #. but you are an admin. So you can en- and disable these discussions too:
-#: templates/discussions.pt:52
+#: templates/discussions.pt:83
 msgid "summary_discussion_other_users_but_admin"
 msgstr ""
 "Zusammenfassung der Diskussionen von weiteren Benutzer/innen. Da Sie aber "
 "Admin sind, können Sie auch diese sperren oder öffnen:"
 
 #. Default: This is a summary of discussions other participants have created:
-#: templates/discussions.pt:55
+#: templates/discussions.pt:89
 msgid "summary_discussion_other_users"
 msgstr "Zusammenfassung der Diskussionen von weiteren Benutzer/innen:"
 
 #. Default: Other users have not created any discussion yet.
-#: templates/discussions.pt:57
+#: templates/discussions.pt:93
 msgid "other_users_not_discussion"
 msgstr "Andere Nutzer/innen haben noch keine Diskussionen erstellt."
+
+#. Default: Writable
+#. Default: writable
+#: templates/discussions.pt:104 templates/discussions.pt:105
+msgid "Writable"
+msgstr "Schreibbar"
 
 #. Default: Notification Board
 #: templates/notifications.pt:6
@@ -2185,60 +2218,84 @@ msgstr "Profilbild von"
 msgid "reviews_proposed"
 msgstr "Änderungen vorgeschlagen"
 
+#. Default: In dieser Diskussion können keine Beiträge mehr hinzugefügt werden!
+#: templates/content.pt:23
+msgid "discussion_is_read_only"
+msgstr "In dieser Diskussion können keine Beiträge mehr hinzugefügt werden!"
+
 #. Default: Start
-#: templates/content.pt:156
+#: templates/content.pt:158
 msgid "start"
 msgstr "Start"
 
 #. Default: Now
-#: templates/content.pt:158
+#: templates/content.pt:160
 msgid "now"
 msgstr "Jetzt"
 
 #. Default: Complete View
-#: templates/content.pt:173
+#: templates/content.pt:175
 msgid "complete_view"
 msgstr "Komplette Ansicht"
 
 #. Default: Default View
-#: templates/content.pt:174
+#: templates/content.pt:176
 msgid "default_view"
 msgstr "Standardansicht"
 
 #. Default: Labels
-#: templates/content.pt:175
+#: templates/content.pt:177
 msgid "labels"
 msgstr "Beschriftungen"
 
 #. Default: Positions
-#: templates/content.pt:176
+#: templates/content.pt:178
 msgid "positions"
 msgstr "Positionen"
 
-#. Default: Statements
-#: templates/content.pt:177
-msgid "statements"
-msgstr "Aussagen"
-
 #. Default: My path
-#: templates/content.pt:178 templates/content.pt:179
+#: templates/content.pt:180 templates/content.pt:181
 msgid "my_path"
 msgstr "Mein Pfad"
 
 #. Default: My statements
-#: templates/content.pt:180
+#: templates/content.pt:182
 msgid "my_statements"
 msgstr "Meine Aussagen"
 
 #. Default: Supports
-#: templates/content.pt:181
+#: templates/content.pt:183
 msgid "supports_on_my_statements"
 msgstr "Unterstützungen"
 
 #. Default: Attacks
-#: templates/content.pt:182
+#: templates/content.pt:184
 msgid "attacks_on_my_statements"
 msgstr "Angriffe"
+
+#~ msgid "open"
+#~ msgstr "Writable"
+
+#~ msgid "count_of_statements"
+#~ msgstr "Anzahl an Aussagen"
+
+#~ msgid "date_of_creation"
+#~ msgstr "Erstellungsdatum"
+
+#~ msgid "sign_in_with"
+#~ msgstr "Anmelden mit"
+
+#~ msgid "none"
+#~ msgstr "keine Angabe"
+
+#~ msgid "female"
+#~ msgstr "weiblich"
+
+#~ msgid "male"
+#~ msgstr "männlich"
+
+#~ msgid "generate_password"
+#~ msgstr "Password generieren"
 
 #~ msgid "link"
 #~ msgstr "Link"
@@ -2259,9 +2316,6 @@ msgstr "Angriffe"
 
 #~ msgid "session_expired"
 #~ msgstr "Ihre Sitzung ist abgelaufen!"
-
-#~ msgid "login_again"
-#~ msgstr "Sie müssen sich erneut anmelden."
 
 #~ msgid "welcome_text2"
 #~ msgstr "kontaktieren"
@@ -2603,9 +2657,6 @@ msgstr "Angriffe"
 
 #~ msgid "cookie_manager_by"
 #~ msgstr "Cookie Manager von"
-
-#~ msgid "publications"
-#~ msgstr "Publikationen"
 
 #~ msgid "and"
 #~ msgstr "und"

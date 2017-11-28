@@ -92,6 +92,19 @@ class HTTP204(exc.HTTPError):
         self.content_type = 'application/json'
 
 
+class HTTP400(exc.HTTPError):
+    """
+    HTTP 400: Bad Request
+
+    :return: JSON response
+    """
+    def __init__(self, msg='Bad Request'):
+        body = {'status': 400, 'message': msg}
+        Response.__init__(self, json.dumps(body))
+        self.status = 400
+        self.content_type = 'application/json'
+
+
 class HTTP401(exc.HTTPError):
     """
     HTTP 401: Not authenticated

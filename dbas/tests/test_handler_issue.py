@@ -19,28 +19,28 @@ class IssueHandlerTests(unittest.TestCase):
         lang = ''
         ui_locales = ''
 
-        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', ui_locales)
+        response = ih.set_issue(nickname, info, long_info, title, lang, False, False, 'http://test.url', ui_locales)
         self.assertTrue(len(response['error']) > 0)
 
         nickname = 'Tobias'
-        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', ui_locales)
+        response = ih.set_issue(nickname, info, long_info, title, lang, False, False, 'http://test.url', ui_locales)
         self.assertTrue(len(response['error']) > 0)
 
         lang = 'en'
-        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', ui_locales)
+        response = ih.set_issue(nickname, info, long_info, title, lang, False, False, 'http://test.url', ui_locales)
         self.assertTrue(len(response['error']) > 0)
 
         ui_locales = 'en'
-        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', ui_locales)
+        response = ih.set_issue(nickname, info, long_info, title, lang, False, False, 'http://test.url', ui_locales)
         self.assertTrue(len(response['error']) > 0)
 
         info = 'infoinfoinfo'
         long_info = 'long_infolong_infolong_info'
         title = 'titletitletitle'
-        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', ui_locales)
+        response = ih.set_issue(nickname, info, long_info, title, lang, False, False, 'http://test.url', ui_locales)
         self.assertTrue(len(response['error']) == 0)
 
-        response = ih.set_issue(nickname, info, long_info, title, lang, 'http://test.url', ui_locales)
+        response = ih.set_issue(nickname, info, long_info, title, lang, False, False, 'http://test.url', ui_locales)
         self.assertTrue(len(response['error']) > 0)
 
         DBDiscussionSession.query(Issue).filter_by(title=title).delete()
@@ -51,7 +51,7 @@ class IssueHandlerTests(unittest.TestCase):
         uid = 1
         lang = 'en'
         for_api = False
-        response = ih.prepare_json_of_issue(uid, 'http://test.url', lang, for_api)
+        response = ih.prepare_json_of_issue(uid, 'http://test.url', lang, for_api, '')
         self.assertTrue(len(response) > 0)
 
     def test_get_number_of_arguments(self):
@@ -122,31 +122,31 @@ class IssueHandlerTests(unittest.TestCase):
         self.assertTrue(len(response['user']) == 0)
         self.assertTrue(len(response['other']) > 0)
 
-    def test_set_discussions_availability(self):
+    def test_set_discussions_properties(self):
         nickname = ''
         uid = 0
         enable = True
         translator = Translator('en')
-        response = ih.set_discussions_availability(nickname, uid, enable, translator)
+        response = ih.set_discussions_properties(nickname, uid, enable, 'somekey', translator)
         self.assertTrue(len(response['error']) > 0)
 
         nickname = 'Christian'
         uid = 0
-        response = ih.set_discussions_availability(nickname, uid, enable, translator)
+        response = ih.set_discussions_properties(nickname, uid, enable, 'somekey', translator)
         self.assertTrue(len(response['error']) > 0)
 
         uid = DBDiscussionSession.query(Issue).first().uid
-        response = ih.set_discussions_availability(nickname, uid, enable, translator)
+        response = ih.set_discussions_properties(nickname, uid, enable, 'somekey', translator)
         self.assertTrue(len(response['error']) > 0)
 
         nickname = 'Tobias'
-        response = ih.set_discussions_availability(nickname, uid, enable, translator)
+        response = ih.set_discussions_properties(nickname, uid, enable, 'enable', translator)
         transaction.commit()
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(DBDiscussionSession.query(Issue).get(uid).is_disabled is False)
 
         enable = False
-        response = ih.set_discussions_availability(nickname, uid, enable, translator)
+        response = ih.set_discussions_properties(nickname, uid, enable, 'enable', translator)
         transaction.commit()
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(DBDiscussionSession.query(Issue).get(uid).is_disabled is True)

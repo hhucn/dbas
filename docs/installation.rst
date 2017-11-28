@@ -44,13 +44,7 @@ Or take a look at dbas > Registry for the newest information (Port *5001* may no
 
 If your container stucks during the first start up, please install D-BAS manually via::
 
-    $ docker exec -i -t dbas_web_1 /bin/bash
-    $ python setup.py --quiet develop
-    $ google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./dbas/static/js/{main,ajax,d3,discussion,review}/*.js > dbas/static/js/dbas.min.js
-    $ sass dbas/static/css/main.sass dbas/static/css/main.css --style compressed
-    $ sass dbas/static/css/creative.sass dbas/static/css/creative.css --style compressed
-    $ cd dbas && ./i18n.sh
-    $ cd ../admin && ./i18n.sh
+    $ docker exec dbas_web_1 ./build_assets.sh
 
 Afterwards everything should be fine.
 
@@ -93,6 +87,15 @@ These **have** to be set, otherwise an error will be raised explaning which vari
 +--------------+------------------------------------------------------------------+
 
 These variables are accessible like any other via the normal substitutions (DB.HOST, ...)
+
+OAuth
+-----
+
+D-BAS offers the possibility to use the open authentication protocoll implemented by Google, Facebook,
+Github and Twitter. Please add the variables ``DBAS_OAUTH_service_CLIENTID`` and ``DBAS_OAUTH_service_CLIENTKEY``
+for each service you want to use, wherey you have to replace **service** with e.g. GOOGLE (important: uppercase).
+
+The login buttons will be displayed automatically. For mroe information, have a look `on this site <dbas/oauth.html>`_.
 
 
 Pyramid & UWSGI
