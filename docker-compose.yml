@@ -13,7 +13,7 @@ services:
 
   web:
     build: .
-    command: bash -c "sleep 8 && pserve development.ini --reload"
+    command: bash -c "sleep 8 && alembic upgrade head && pserve development.ini --reload"
     volumes:
       - .:/dbas
     ports:

@@ -46,8 +46,7 @@ RUN python setup.py --quiet develop \
     && rm -r .sass-cache \
     && cd dbas && ./i18n.sh \
     && cd ../admin && ./i18n.sh \
-    && cd ../ \
-    && alembic upgrade head
+    && cd ../
 
 EXPOSE 4284
 CMD ["pserve", "development.ini", "--reload"]
