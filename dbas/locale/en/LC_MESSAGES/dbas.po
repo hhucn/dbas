@@ -1515,7 +1515,7 @@ msgstr "Question for the topic:"
 #. Default: Please enter the full description here:
 #: templates/snippet-popups.pt:729
 msgid "please_enter_long_info"
-msgstr "Full descriptio:"
+msgstr "Full description:"
 
 #. Default: Language of the discussion:
 #: templates/snippet-popups.pt:736

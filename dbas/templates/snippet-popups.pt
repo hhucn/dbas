@@ -727,15 +727,15 @@
 
                     <div class="form-group">
                         <label style="margin: 1em 0 0 0;" i18n:translate="please_enter_long_info">Please enter the full description here:</label>
-                        <textarea class="form-control" placeholder="..." id="popup-add-topic-long-info-input" tal:attributes="placeholder extras.tag.placeholder_add_topic_description"></textarea>
+                        <textarea class="form-control" placeholder="..." id="popup-add-topic-long-info-input" tal:attributes="placeholder extras.tag.placeholder_add_topic_description" style="resize: vertical;"></textarea>
                     </div>
 
-                    <div class="row" style="margin: 1em 0 0 0;">
+                    <div class="row" style="margin-top: 2em; padding: 0;">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label i18n:translate="please_select_language_for_topic">Language of the discussion:</label>
-                                <ul id="popup-add-topic-lang-input" style="list-style-type: none;">
-                                    <li style="margin-right: 1em;">
+                                <ul id="popup-add-topic-lang-input" style="list-style-type: none; padding-left: 1em">
+                                    <li>
                                         <input tal:condition="not:extras.lang_is_de" id="de" type="radio" name="lang_topic">
                                         <input tal:condition="extras.lang_is_de" id="de" type="radio" name="lang_topic" checked>
                                         <label for="de">
@@ -743,7 +743,7 @@
                                             Deutsch
                                         </label>
                                     </li>
-                                    <li style="margin-right: 1em;">
+                                    <li>
                                         <input tal:condition="not:extras.lang_is_en" id="en" type="radio" name="lang_topic">
                                         <input tal:condition="extras.lang_is_en" id="en" type="radio" name="lang_topic" checked>
                                         <label for="en">
@@ -754,27 +754,38 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <label i18n:translate="is_topic_available_for_public">Is the topic available for the public?</label>
-                            <input style="margin: 1em 0 0 0;" checked
-                                   class="popup-add-topic-public-toggle" type="checkbox" data-toggle="toggle"
-                                   data-keyword="public"
-                                   data-size="small" title=""
-                                   data-onstyle="success"
-                                   data-offstyle="danger"
-                                   data-on="'<i class='fa fa-check' aria-hidden='true'></i>"
-                                   data-off="'<i class='fa fa-times' aria-hidden='true'></i>">
-                        </div>
-                        <div class="col-md-4">
-                            <label i18n:translate="is_topic_read_only">Is the topic read only?</label>
-                            <input style="margin: 1em 0 0 0;"
-                                   class="popup-add-topic-read-only-toggle" type="checkbox" data-toggle="toggle"
-                                   data-keyword="public"
-                                   data-size="small" title=""
-                                   data-onstyle="success"
-                                   data-offstyle="danger"
-                                   data-on="'<i class='fa fa-check' aria-hidden='true'></i>"
-                                   data-off="'<i class='fa fa-times' aria-hidden='true'></i>">
+                        <div class="col-md-8">
+
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="col-md-8" i18n:translate="is_topic_available_for_public" style="padding: 0">Is the topic available for the public?</label>
+                                <div class="col-md-4">
+                                    <i class="fa fa-question-circle-o" aria-hidden="true" style="cursor: help; margin-right: 1em;" tal:attributes="title extras.tag.issue_public"></i>
+                                    <input style="margin: 1em 0 0 0;" checked
+                                           class="popup-add-topic-public-toggle" type="checkbox" data-toggle="toggle"
+                                           data-keyword="public"
+                                           data-size="mini" title=""
+                                           data-onstyle="success"
+                                           data-offstyle="danger"
+                                           data-on="'<i class='fa fa-check' aria-hidden='true'></i>"
+                                           data-off="'<i class='fa fa-times' aria-hidden='true'></i>">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-8" i18n:translate="is_topic_read_only" style="padding: 0">Is the topic read only?</label>
+                                <div class="col-md-4">
+                                    <i class="fa fa-question-circle-o" aria-hidden="true" style="cursor: help; margin-right: 1em;" tal:attributes="title extras.tag.issue_writable"></i>
+                                    <input style="margin: 1em 0 0 0;"
+                                           class="popup-add-topic-read-only-toggle" type="checkbox" data-toggle="toggle"
+                                           data-keyword="public"
+                                           data-size="mini" title=""
+                                           data-onstyle="success"
+                                           data-offstyle="danger"
+                                           data-on="'<i class='fa fa-check' aria-hidden='true'></i>"
+                                           data-off="'<i class='fa fa-times' aria-hidden='true'></i>">
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                     <div class="alert alert-danger hidden" id="popup-add-topic-error" style="margin-top: 1em">

@@ -252,7 +252,7 @@ de_lang = {
     _.isNoGoodJustification: 'keine gute Begründung ist',
     _.issueEnableDescription: 'Zeigt an, ob das Thema allgemein verfügbar ist.',
     _.issuePublicDescription: 'Zeigt an, ob das Thema für jede/n Nutzer/in verfügbar ist oder erst nach Einladung via Link (privat).',
-    _.issueWritableDescription: 'Zeigt an, ob noch beiträge geschrieben werden können.',
+    _.issueWritableDescription: 'Zeigt an, ob das Scheiben von Beiträgen für diese Diskussion erlaubt ist.',
     _.doesJustify: 'gerechtfertigen, dass',
     _.doesNotJustify: 'nicht gerechtfertigen, dass',
     _.deleteTrack: 'Track löschen',
