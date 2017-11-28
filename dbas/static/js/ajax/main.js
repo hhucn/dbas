@@ -47,6 +47,8 @@ function AjaxMainHandler(){
 		var keep_login = $('#keep-login-box').prop('checked') ? 'true' : 'false';
 		$('#' + popupLoginFailed).hide();
 		$('#' + popupLoginFailed + '-message').text('');
+		$('#' + popupLoginInfo).hide();
+		$('#' + popupLoginInfo + '-message').text('');
 
 		$.ajax({
 			url: mainpage + 'ajax_user_login',
@@ -86,6 +88,46 @@ function AjaxMainHandler(){
 			$('#' + loginPwId).val('');
 		});
 	};
+	
+	/**
+	 *
+	 * @param service
+	 * @param url
+	 */
+	this.oauthLogin = function(service, url){
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$('#' + popupLoginFailed).hide();
+		$('#' + popupLoginFailed + '-message').text('');
+		$('#' + popupLoginInfo).hide();
+		$('#' + popupLoginInfo + '-message').text('');
+
+		$.ajax({
+			url: mainpage + 'ajax_user_login_oauth',
+			type: 'POST',
+			data: {
+				service: service,
+				redirect_uri: url},
+			dataType: 'json',
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrf_token
+			}
+		}).done(function ajaxOauthLoginDone(data) {
+			if (data.error.length !== 0){
+				setGlobalErrorHandler('Ohh!', data.error);
+			} else if ('missing' in data && data.missing.length !== 0) {
+				new GuiHandler().showCompleteLoginPopup(data);
+			} else if ('authorization_url' in data && data.authorization_url !== 0){
+				window.open(data.authorization_url, '_self');
+			}
+		}).fail(function ajaxOauthLoginFail(xhr) {
+			if (xhr.status === 0 || xhr.status === 200) {
+				location.reload(true);
+			} else{
+				setGlobalErrorHandler('Ohh!', _t(requestFailedInternalError) + ' (' + xhr.status + ')');
+			}
+		});
+	};
 
 	/**
 	 *
@@ -101,18 +143,18 @@ function AjaxMainHandler(){
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxLogoutDone() {
-			location.reload();
+			location.reload(true);
 		}).fail(function ajaxLogoutFail(xhr) {
 			if (xhr.status === 200) {
 				if (window.location.href.indexOf('settings') !== 0){
-					window.location.href = mainpage;
+					window.location.href = mainpage + 'discuss';
 				} else {
-					location.reload();
+					location.reload(true);
 				}
 			} else if (xhr.status === 403) {
-				window.location.href = mainpage;
+				window.location.href = mainpage + 'discuss';
 			} else {
-				location.reload();
+				location.reload(true);
 			}
 		});
 	};
@@ -128,7 +170,6 @@ function AjaxMainHandler(){
 			email = $('#email-input').val(),
 			password = $('#' + popupLoginPasswordInputId).val(),
 			passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val(),
-			spamanswer = $('#popup-login-spamanswer-input').val(),
 			recaptcha = $('#recaptcha-token').value,
 			gender = '';
 
@@ -139,16 +180,18 @@ function AjaxMainHandler(){
 		$.ajax({
 			url: 'ajax_user_registration',
 			type: 'POST',
-			data: { firstname: firstname,
-					lastname: lastname,
-					nickname: nickname,
-					gender: gender,
-					email: email,
-					password: password,
-					passwordconfirm: passwordconfirm,
-					spamanswer: spamanswer,
-					'g-recaptcha-response': recaptcha,
-					lang: getLanguage()},
+			data: {
+				firstname: firstname,
+				lastname: lastname,
+				nickname: nickname,
+				gender: gender,
+				email: email,
+				password: password,
+				passwordconfirm: passwordconfirm,
+				'g-recaptcha-response': recaptcha,
+				lang: getLanguage(),
+				mode: 'manually'
+			},
 			dataType: 'json',
 			async: true,
 			headers: {

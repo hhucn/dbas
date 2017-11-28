@@ -23,7 +23,13 @@ To use this dump as an entrypoint, you have to remove the root user from the dat
 Working with Migrations
 =======================
 We are using ``alembic`` for database migrations.
-These migrations are saved in so called *revisions* inside the ``migrations`` directory.
+These migrations are saved in so called *revisions* inside the ``migrations/versions`` directory.
+
+tl;wr
+-----
+- ``alembic revision --autogenerate -m "Add table X"`` To generate a migration file. You may want check them.
+- ``alembic history``
+- ``alembic upgrade head`` Upgrade the DB to latest
 
 Create a new migration
 ----------------------
@@ -36,11 +42,21 @@ Test your new revision by up- and downgrading the database with:
 ``alembic upgrade +1`` and ``alembic downgrade -1``.
 Upgrade to the latest revision with ``alembic upgrade head``.
 
+Merging migrations
+------------------
+There are two ways to merge migrations.
+They are comparable to rebase and merge from git.
+The first one is like merge. Use ``alembic merge head`` to merge all head revisions into a new revision.
+The other one is like rebase.
+You have to change the ``down-revision`` in your newest revision to the id of the conflicting revision.
+This way you sort them out.
+
+
 Setup the database for migration
 --------------------------------
 *alembic* creates a table with just the current revision version as content.
 To set this initial version use ``alembic stamp 2a4bc7c8ff38``.
-Revision ``2a4bc7c8ff38`` is the state of the *discussion* database, as the migrations are introduced.
+Revision ``2a4bc7c8ff38`` is the state of the *discussion* database, as the alembic migrations are introduced.
 
 Generate a SQL-Migrations
 -------------------------
@@ -48,7 +64,7 @@ It is possible to generate just a SQL-File for migration. Just add ``--sql`` to 
 
 Manual migrations
 -----------------
-This is a collection of scripts to migrate old databases to a new version, locatet in ``dock/db/migrations``.
+This is a collection of scripts to migrate old databases to a new version, located in ``docker/db/migrations``.
 The changes in this scripts are likely to be out of the scope of alembic.
 The scripts are in directorys named like the version to upgrade to.
 For clarification of the execution order, the scripts are prefixed with strict increasing integers.

@@ -65,7 +65,7 @@ def get_changelog(no):
             if len(title) > 0:
                 changelog.append({'title': title, 'body': body})
                 body = []
-            title = l.replace('## ', '')
+            title = l.replace('### ', '')
         else:
             body.append(l.replace('- ', ''))
 
@@ -1054,6 +1054,9 @@ def __get_gravatar(user, additional_id, size):
     url = get_global_url()
     url = url[url.index('//') + 2:]
     email = (user.email + additional_id).encode('utf-8') if user else ('unknown@' + url).encode('utf-8')
+
+    if str(user.email) == 'None' or user.email == 'None' or user.email is None:
+        email = (user.nickname + additional_id).encode('utf-8')
 
     gravatar_url = 'https://secure.gravatar.com/avatar/{}?'.format(hashlib.md5(email.lower()).hexdigest())
     gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})

@@ -13,6 +13,9 @@ body
   line-height: 1.5
   // background-image: url('../images/bg4.png')
 
+h1
+  font-size: 3em
+
 .ajaxloader
   display: none
   position: fixed
@@ -120,6 +123,7 @@ body.loading
   background: rgba(255, 255, 255, 1)
   padding: 1em
   box-shadow: 1px 1px 1px 1px rgba(19, 35, 47, 0.3)
+  border-radius: 5px
 
 .news
   display: inline-block
@@ -222,9 +226,6 @@ body.loading
 .text-hover
   color: #2196f3
 
-.table th
-  text-align: center
-
 #popup-login-body, #popup-write-text-body, #popup-set-premisegroups-body, #popup-url-sharing-body
   padding: 1em
 
@@ -237,6 +238,10 @@ body.loading
 
 #popup-login-header-button-wrapper
   width: 100%
+
+#popup-login-registration-oauth-buttons a
+  display: inline-block!important
+  margin: 0 0.5em
 
 #insert_statements_options
   > li

@@ -13,6 +13,7 @@ google-closure-compiler-js --createSourceMap --compilationLevel SIMPLE ./admin/s
 
 echo ":: Compile and compress SASS"
 sass dbas/static/css/main.sass dbas/static/css/main.css --style compressed
+sass dbas/static/css/creative.sass dbas/static/css/creative.css --style compressed
 rm -r .sass-cache
 
 echo ":: Build translations"
