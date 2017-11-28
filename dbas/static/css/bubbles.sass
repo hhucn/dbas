@@ -121,9 +121,10 @@
 .triangle-r-info:hover, .triangle-l .triangle-content:hover
   cursor: pointer
 
-@media (max-width: 767px)
-  .line-wrapper-l > a, .line-wrapper-r > a, .line-wrapper-l > p, .line-wrapper-r > p
-    max-width: 90%
+
+@media (max-width: 992px)
+  .line-wrapper-l > a, .line-wrapper-r > a, .line-wrapper-l > p, .line-wrapper-r > p, .line-wrapper-m > p, .line-wrapper-m > p
+    max-width: 70%
 
   .triangle-l
     margin: 0 auto 1em 0
@@ -131,10 +132,15 @@
   .triangle-r
     margin: 0 0 1em auto
 
+  .triangle-l, .triangle-r, .triangle-m
+    margin-bottom: 0.5em
 
-@media (max-width: 992px)
+@media (max-width: 767px)
   .line-wrapper-l > a, .line-wrapper-r > a, .line-wrapper-l > p, .line-wrapper-r > p
-    max-width: 70%
+    max-width: 90%
+
+  .line-wrapper-m > p, .line-wrapper-m > p
+    max-width: 100%
 
   .triangle-l
     margin: 0 auto 1em 0
