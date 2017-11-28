@@ -14,8 +14,8 @@ stages:
   variables:
     DBAS_DB_HOST: db
     DBAS_DB_PORT: "5432"
-    DBAS_DB_USER: "dbas"
-    DBAS_DB_PW: "gAjOVf8MHBgHwUH8NmyWqwQQ43En1b0Mk1wZbm2JOYzWJ8PrQbwEIoWRhz4zT6Wz"
+    DBAS_DB_USER: "postgres"
+    DBAS_DB_PW: "DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!"
     DBAS_AUTHN_SECRET: "89#s3cr3t_15"
   before_script:
     - alembic upgrade head && pserve development.ini --reload &
@@ -52,7 +52,7 @@ jshint:
     - yarn global add jshint
     - bash -c "jshint ./dbas/static/js/{main,ajax,discussion,review,d3}/*.js"
     - bash -c "jshint ./admin/static/js/main/*.js"
-    - bash -c "jshint ./webhook/static/js/*.js"
+    - bash -c "jshint ./websocket/static/js/*.js"
   allow_failure: true
 
 frontend:
