@@ -18,7 +18,7 @@ stages:
     DBAS_DB_PW: "gAjOVf8MHBgHwUH8NmyWqwQQ43En1b0Mk1wZbm2JOYzWJ8PrQbwEIoWRhz4zT6Wz"
     DBAS_AUTHN_SECRET: "89#s3cr3t_15"
   before_script:
-    - pserve development.ini --reload &
+    - alembic upgrade head && pserve development.ini --reload &
 
 # ------------------------------------------------------------------------------
 # Job definitions
