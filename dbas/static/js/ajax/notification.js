@@ -58,7 +58,9 @@ function AjaxNotificationHandler(){
 			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function sendAjaxForDeleteMessagesDone(data) {
 			if (data.success.length > 0) {
-				$('#' + id).remove();
+				$.each( id_list, function( key, value ) {
+					$('#' + value).remove();
+				});
 				new Notifications().setNewBadgeCounter(data.unread_messages);
 				$('#total_in_counter').text(data.total_in_messages);
 				$('#total_out_counter').text(data.total_out_messages);
