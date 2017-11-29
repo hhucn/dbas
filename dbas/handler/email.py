@@ -4,6 +4,7 @@ Provides class for sending an email
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
+import os
 import smtplib
 from socket import error as socket_error
 
@@ -100,7 +101,8 @@ def send_mail(mailer, subject, body, recipient, lang):
 
     send_message = False
     body = body + '\n\n---\n' + _t.get(_.emailBodyText).format(get_global_url())
-    message = Message(subject=subject, sender='dbas.hhu@gmail.com', recipients=[recipient], body=body)
+    sender = os.environ.get("DBAS_MAIL_DEFAULT__SENDER", None)
+    message = Message(subject=subject, sender=sender, recipients=[recipient], body=body)
 
     # try sending an catching errors
     try:
