@@ -47,6 +47,7 @@ path = '/{url:.*}ajax_admin_add',
 # WEBSOCKET REQUESTS
 # =============================================================================
 
+
 @debug_data.get()
 def debug_function(request):
     """
@@ -70,6 +71,7 @@ def debug_function(request):
         'is_admin': is_admin(request.authenticated_userid)
     }
 
+
 @debug_mail.get()
 def debug_that_mail(request):
     """
@@ -83,7 +85,7 @@ def debug_that_mail(request):
         text = request.params['text'] if 'text' in request.params else 'empty text input'
         logger('Websocket', 'debug_mail', 'you got access: {}'.format(text))
         db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
-        send_mail(get_mailer(request), '[D-BAS] Debug Mail', 'Debug: {}'.format(text), db_user.email , 'en')
+        send_mail(get_mailer(request), '[D-BAS] Debug Mail', 'Debug: {}'.format(text), db_user.email, 'en')
         return {'success': True}
     else:
         logger('Websocket', 'debug_mail', 'access denied')
