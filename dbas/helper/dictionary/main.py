@@ -255,7 +255,7 @@ class DictionaryHelper(object):
             'db_nickname': db_user.nickname if db_user else '',
             'db_public_nickname': public_nick,
             'db_mail': db_user.email if db_user else '',
-            'has_mail': db_user.email is 'None' if db_user else '',
+            'has_mail': db_user.email is not 'None' if db_user else '',
             'can_change_password': not use_with_ldap and db_user.token is None,
             'db_group': group,
             'avatar_public_url': gravatar_public_url,
