@@ -12,15 +12,20 @@
                 <div class="col-md-6">
                     <input id="test-input" type="text" class="form-control" placeholder="..." value="Test input text"
                            style="width: 100%;"><br>
-                    <button id="test_success_btn" data-type="success" type="submit" class="btn btn-success"
-                            style="width: 25%; margin: 0.5em;">Success
-                    </button>
-                    <button id="test_danger_btn" data-type="danger" type="submit" class="btn btn-danger"
-                            style="width: 25%; margin: 0.5em;">Danger
-                    </button>
-                    <button id="test_info_btn" data-type="info" type="submit" class="btn btn-info"
-                            style="width: 25%; margin: 0.5em;">Info
-                    </button>
+                    <div class="btn-group" style="width: 100%;">
+                        <button id="test_success_btn" data-type="success" type="submit" class="btn btn-success"
+                                style="width: 25%;">Success
+                        </button>
+                        <button id="test_danger_btn" data-type="danger" type="submit" class="btn btn-danger"
+                                style="width: 25%;">Danger
+                        </button>
+                        <button id="test_info_btn" data-type="info" type="submit" class="btn btn-info"
+                                style="width: 25%;">Info
+                        </button>
+                        <button id="test_mail_btn" data-type="mail" type="submit" class="btn btn-warning"
+                                style="width: 25%;" tal:condition="is_admin">Test Mail
+                        </button>
+                    </div>
                 </div>
                 <div class="col-md-4" id="socket_data">
                     <p>Socket ID: <strong id="socketioId">-</strong></p>

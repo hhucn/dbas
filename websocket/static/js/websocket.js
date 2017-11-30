@@ -208,4 +208,19 @@ function enableTesting(){
 	$('#test_success_btn,#test_danger_btn,#test_info_btn').click(function(){
 		socket.emit('push_test', $(this).attr('data-type'), $('#test-input').val());
 	});
+	
+	$('#test_mail_btn').click(function(){
+		$.ajax({
+			url: 'debug_mail',
+			dataType: 'json',
+			data: {
+				'text': $('#test-input').val()
+			},
+			async: true
+		}).done(function (data) {
+			console.log(data);
+		}).fail(function () {
+			console.log('fail');
+		});
+	});
 }
