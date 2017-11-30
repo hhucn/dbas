@@ -1,7 +1,7 @@
 """Add statement_origins table
 
 Revision ID: f0bf03bf6326
-Revises: 2a4bc7c8ff38
+Revises: ed3484af5b24
 Create Date: 2017-11-03 11:56:28.985785
 
 """
@@ -12,7 +12,7 @@ import sqlalchemy_utils
 
 # revision identifiers, used by Alembic.
 revision = 'f0bf03bf6326'
-down_revision = '2a4bc7c8ff38'
+down_revision = 'ed3484af5b24'
 branch_labels = None
 depends_on = None
 
