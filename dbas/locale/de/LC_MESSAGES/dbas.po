@@ -116,7 +116,7 @@ msgstr "Wir haben uns auf zwei Kernfragen konzentriert"
 #: templates/fieldtest.pt:46
 msgid "key_question1"
 msgstr ""
-"Funktioniert der dialogbasierte Ansatu mit ungeübten Nutzen in einem echten "
+"Funktioniert der dialogbasierte Ansatz mit ungeübten Nutzen in einem echten "
 "Szenario?"
 
 #. Default: Does a decentralized moderation system works for a dialog-based
