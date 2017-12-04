@@ -373,15 +373,15 @@ def main_faq(request):
 
 
 # fieldtest
-@view_config(route_name='main_fieldtest', renderer='templates/fieldtest.pt', permission='everybody')
-def main_fieldtest(request):
+@view_config(route_name='main_experiment', renderer='templates/fieldtest.pt', permission='everybody')
+def main_experiment(request):
     """
     View configuration for fieldtest.
 
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_fieldtest', 'def', 'main')
+    logger('main_experiment', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
     unauthenticated = check_authentication(request)
     if unauthenticated:

@@ -115,7 +115,7 @@ def main(global_config, **settings):
     config.add_route('main_rss', '/rss')
     config.add_route('main_faq', '/faq')
     config.add_route('main_docs', '/docs')
-    config.add_route('main_fieldtest', '/fieldtest')
+    config.add_route('main_experiment', '/fieldexperiment')
     config.add_route('main_mydiscussions', '/mydiscussions')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
