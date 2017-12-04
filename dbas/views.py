@@ -372,6 +372,32 @@ def main_faq(request):
     }
 
 
+# fieldtest
+@view_config(route_name='main_fieldtest', renderer='templates/fieldtest.pt', permission='everybody')
+def main_fieldtest(request):
+    """
+    View configuration for fieldtest.
+
+    :param request: current request of the server
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
+    logger('main_fieldtest', 'def', 'main')
+    ui_locales = get_language_from_cookie(request)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
+
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+
+    return {
+        'layout': base_layout(),
+        'language': str(ui_locales),
+        'title': Translator(ui_locales).get(_.fieldtest),
+        'project': project_name,
+        'extras': extras_dict
+    }
+
+
 # my discussions
 @view_config(route_name='main_mydiscussions', renderer='templates/discussions.pt', permission='use')
 def main_mydiscussions(request):

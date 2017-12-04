@@ -334,6 +334,7 @@ de_lang = {
     _.fromm: 'von',
     _.finish: 'Ende',
     _.finishTitle: 'Diskussion beenden',
+    _.fieldtest: 'Feldtest',
     _.hold: 'stimmen',
     _.gender: 'Geschlecht',
     _.goBack: 'Klicken, um zurückzugehen',
