@@ -67,7 +67,7 @@
                                 <span i18n:translate="of_course_it_is_open_source">Of course! Every used tool is published under the MIT licencese and hostes on GitHub</span>:
                                 <ul>
                                     <li><a href="https://github.com/hhucn/dbas" target="_blank">D-BAS: The Dialog-Based Argumentation System</a></li>
-                                    <li><a href="https://github.com/hhucn/dabasco" target="_blank">Putting the spice into D-BAS</a></li>
+                                    <li><a href="https://github.com/hhucn/dabasco" target="_blank">dabasco: Putting the spice into D-BAS</a></li>
                                 </ul>
                             </div>
                         </div>
