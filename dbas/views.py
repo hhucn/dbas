@@ -1360,13 +1360,13 @@ def ajax_set_new_start_argument(request):
         data['nickname'] = request.authenticated_userid
         data['issue_id'] = issue
         data['slug'] = DBDiscussionSession.query(Issue).get(issue).slug
-        data['default_locale_name'] = get_default_locale_name(request)
+        data['default_locale_name'] = get_default_locale_name(request.registry)
         data['application_url'] = request.application_url
         data['supportive'] = True
         data['port'] = get_port(request)
         data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
         data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
-        data['default_locale_name'] = get_default_locale_name(request)
+        data['default_locale_name'] = get_default_locale_name(request.registry)
         position = request.params['position']
         reason = request.params['reason']
         data['statement'] = position
@@ -1412,7 +1412,7 @@ def set_new_start_statement(request):
         data['issue_id'] = issue
         data['slug'] = DBDiscussionSession.query(Issue).get(issue).slug
         data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
-        data['default_locale_name'] = get_default_locale_name(request)
+        data['default_locale_name'] = get_default_locale_name(request.registry)
         data['application_url'] = request.application_url
     except KeyError as e:
         logger('views', 'set_new_start_statement', repr(e), error=True)
@@ -1446,7 +1446,7 @@ def set_new_start_premise(request):
         data['port'] = get_port(request)
         data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
         data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
-        data['default_locale_name'] = get_default_locale_name(request)
+        data['default_locale_name'] = get_default_locale_name(request.registry)
         try:
             data['mailer'] = get_mailer(request)
         except ComponentLookupError as e:
@@ -1481,7 +1481,7 @@ def set_new_premises_for_argument(request):
         data['port'] = get_port(request)
         data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
         data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
-        data['default_locale_name'] = get_default_locale_name(request)
+        data['default_locale_name'] = get_default_locale_name(request.registry)
         data['application_url'] = request.application_url
         try:
             data['mailer'] = get_mailer(request)

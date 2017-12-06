@@ -417,21 +417,6 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
     return [bubble_user, bubble_syst]
 
 
-def save_history_in_cookie(request, path, history):
-    """
-    Saves history + new path in cookie
-
-    :param request: request
-    :param path: String
-    :param history: String
-    :return: none
-    """
-    if path.startswith('/discuss/'):
-        path = path[len('/discuss/'):]
-        path = path[path.index('/') if '/' in path else 0:]
-        request.response.set_cookie('_HISTORY_', history + '-' + path)
-
-
 def save_path_in_database(nickname, slug, path, history=''):
     """
     Saves a path into the database

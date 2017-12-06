@@ -442,6 +442,12 @@ def __handle_history(request, nickname, slug, issue) -> str:
     """
     history = request.params['history'] if 'history' in request.params else ''
     history_helper.save_path_in_database(nickname, slug, request.path, history)
-    history_helper.save_history_in_cookie(request, request.path, history)
     history_helper.save_issue_uid(issue, nickname)
+
+    # __save_history_in_cookie(request, request.path, history)
+    if request.path.startswith('/discuss/'):
+        path = request.path[len('/discuss/'):]
+        path = path[path.index('/') if '/' in path else 0:]
+        request.response.set_cookie('_HISTORY_', history + '-' + path)
+
     return history
