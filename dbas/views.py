@@ -806,7 +806,6 @@ def review_content(request):
     """
     logger('review_content', 'main', 'def {}'.format(request.matchdict))
     ui_locales = get_language_from_cookie(request)
-    request_authenticated_userid = request.authenticated_userid
     _tn = Translator(ui_locales)
 
     unauthenticated = check_authentication(request)
@@ -814,8 +813,7 @@ def review_content(request):
         return unauthenticated
 
     subpage_name = request.matchdict['queue']
-    subpage_dict = review_page_helper.get_subpage_elements_for(request.application_url, subpage_name,
-                                                               request_authenticated_userid, _tn)
+    subpage_dict = review_page_helper.get_subpage_elements_for(request, subpage_name, _tn)
     if not subpage_dict['elements'] and not subpage_dict['has_access'] and not subpage_dict['no_arguments_to_review']:
         logger('review_content', 'def', 'subpage error', error=True)
         raise HTTPNotFound()

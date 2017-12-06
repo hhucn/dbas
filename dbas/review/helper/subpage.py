@@ -25,18 +25,17 @@ from dbas.strings.translator import Translator
 pages = ['deletes', 'optimizations', 'edits', 'duplicates', 'splits', 'merges']
 
 
-def get_subpage_elements_for(request, subpage_name, nickname, translator):
+def get_subpage_elements_for(request, subpage_name, translator):
     """
     Returns subpage for a specific review queue
 
     :param request: current webserver request
     :param subpage_name: String
-    :param nickname: User.nickname
     :param translator: Translator
     :return: dict()
     """
     logger('ReviewSubpagerHelper', 'get_subpage_elements_for', subpage_name)
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
     user_has_access = False
     no_arguments_to_review = False
     button_set = {
@@ -53,7 +52,7 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
         logger('ReviewSubpagerHelper', 'get_subpage_elements_for', 'No page found', error=True)
         return __get_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
 
-    rep_count, all_rights = get_reputation_of(nickname)
+    rep_count, all_rights = get_reputation_of(request.authenticated_userid)
     user_has_access = rep_count >= reputation_borders[subpage_name] or all_rights
     # does the user exists and does he has the rights for this queue?
     if not db_user or not user_has_access:
