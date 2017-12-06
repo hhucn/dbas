@@ -101,7 +101,7 @@ def main_admin(request):
         return user_logout(request, True)
 
     ui_locales = get_language_from_cookie(request)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, request_authenticated_userid)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry, request.application_url, request.path, request.authenticated_userid)
     dashboard_elements = {
         "entities": lib.get_overview(request.path),
         "api_tokens": lib.get_application_tokens()
@@ -133,7 +133,10 @@ def main_table(request):
         return user_logout(request, True)
 
     ui_locales = get_language_from_cookie(request)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid)
     table = request.matchdict['table']
     try:
         table_dict = lib.get_table_dict(table, request.application_url)
