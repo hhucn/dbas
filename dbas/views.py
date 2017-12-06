@@ -824,18 +824,8 @@ def review_content(request):
                                                                                    request.authenticated_userid)
 
     title = _tn.get(_.review)
-    if subpage_name == review_queue_helper.key_deletes:
-        title = _tn.get(_.queueDelete)
-    if subpage_name == review_queue_helper.key_optimizations:
-        title = _tn.get(_.queueOptimization)
-    if subpage_name == review_queue_helper.key_edits:
-        title = _tn.get(_.queueEdit)
-    if subpage_name == review_queue_helper.key_duplicates:
-        title = _tn.get(_.queueDuplicates)
-    if subpage_name == review_queue_helper.key_split:
-        title = _tn.get(_.queueSplit)
-    if subpage_name == review_queue_helper.key_merge:
-        title = _tn.get(_.queueMerge)
+    if subpage_name in review_queue_helper.title_mapping:
+        title = review_queue_helper.title_mapping[subpage_name]
 
     return {
         'layout': base_layout(),
