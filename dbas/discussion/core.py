@@ -64,14 +64,14 @@ def init(request, nickname, for_api=False) -> dict:
         slug = ''
     __handle_history(request, nickname, slug, issue)
 
-    disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, request.authenticated_userid)
+    disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, nickname)
     item_dict = ItemDictHelper(disc_ui_locales, issue, application_url, for_api).get_array_for_start(nickname)
 
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname=nickname, main_page=application_url, slug=slug)
     _dh = DictionaryHelper(get_language_from_cookie(request), disc_ui_locales)
     discussion_dict = _ddh.get_dict_for_start(position_count=(len(item_dict['elements'])))
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request, for_api=for_api, nickname=nickname)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request.registry, request.application_url, request.path, for_api=for_api, nickname=nickname)
 
     if len(item_dict['elements']) == 1:
         DictionaryHelper(disc_ui_locales, disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict,
@@ -117,8 +117,8 @@ def attitude(request, nickname, for_api=False) -> dict:
         logger('Core', 'discussion.attitude', 'forbidden statement', error=True)
         return None
 
-    disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, request.authenticated_userid)
+    disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, nickname)
     history = __handle_history(request, nickname, slug, issue)
 
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=application_url, slug=slug)
@@ -130,7 +130,7 @@ def attitude(request, nickname, for_api=False) -> dict:
     _idh = ItemDictHelper(disc_ui_locales, issue, application_url, for_api, path=request.path, history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     item_dict = _idh.prepare_item_dict_for_attitude(statement_id)
-    extras_dict = _dh.prepare_extras_dict(issue_dict['slug'], False, True, True, request, for_api=for_api, nickname=nickname)
+    extras_dict = _dh.prepare_extras_dict(issue_dict['slug'], False, True, True, request.registry, request.application_url, request.path, for_api=for_api, nickname=nickname)
 
     prepared_discussion = dict()
     prepared_discussion['issues'] = issue_dict
@@ -163,8 +163,8 @@ def justify(request, nickname, for_api=False) -> dict:
         issue = issue_helper.get_id_of_slug(slug, request, True)
     else:
         issue = issue_helper.get_issue_id(request)
-    disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, request.authenticated_userid)
+    disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, nickname)
 
     history = __handle_history(request, nickname, slug, issue)
 
@@ -224,8 +224,8 @@ def reaction(request, nickname, for_api=False) -> dict:
     add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_argument_click)
     add_click_for_argument(arg_id_user, nickname)
 
-    disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, request.authenticated_userid)
+    disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, nickname)
 
     history = __handle_history(request, nickname, slug, issue)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
@@ -233,7 +233,7 @@ def reaction(request, nickname, for_api=False) -> dict:
     _idh = ItemDictHelper(disc_ui_locales, issue, application_url, for_api, path=request.path, history=history)
     discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history, nickname)
     item_dict = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack, discussion_dict['gender'])
-    extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request, for_api=for_api, nickname=nickname, broke_limit=broke_limit)
+    extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request.registry, request.application_url, request.path, for_api=for_api, nickname=nickname, broke_limit=broke_limit)
 
     prepared_discussion = dict()
     prepared_discussion['issues'] = issue_dict
@@ -271,8 +271,8 @@ def support(request, nickname, for_api=False, api_data=None) -> dict:
     application_url = request.application_url
     ui_locales = get_language_from_cookie(request)
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
-    disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, request.authenticated_userid)
+    disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, nickname)
 
     if not check_belonging_of_argument(issue, arg_user_uid) or \
             not check_belonging_of_argument(issue, arg_system_uid) or \
@@ -286,7 +286,7 @@ def support(request, nickname, for_api=False, api_data=None) -> dict:
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     discussion_dict = _ddh.get_dict_for_supporting_each_other(arg_system_uid, arg_user_uid, nickname, application_url)
     item_dict = _idh.get_array_for_support(arg_system_uid, slug, for_api)
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request, for_api=for_api, nickname=nickname)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request.registry, request.application_url, request.path, for_api=for_api, nickname=nickname)
 
     prepared_discussion = dict()
     prepared_discussion['issues'] = issue_dict
@@ -323,8 +323,8 @@ def choose(request, nickname, for_api=False) -> dict:
 
     ui_locales = get_language_from_cookie(request)
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
-    disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, request.authenticated_userid)
+    disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, nickname)
 
     for pgroup in pgroup_ids:
         if not is_integer(pgroup):
@@ -346,7 +346,7 @@ def choose(request, nickname, for_api=False) -> dict:
         return None
 
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request, for_api=for_api, nickname=nickname)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request.registry, request.application_url, request.path, for_api=for_api, nickname=nickname)
 
     prepared_discussion = dict()
     prepared_discussion['issues'] = issue_dict
@@ -377,8 +377,8 @@ def jump(request, nickname, for_api=False, api_data=None) -> dict:
     application_url = request.application_url
 
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
-    disc_ui_locales = get_discussion_language(request, issue)
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, request.authenticated_userid)
+    disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, nickname)
     history = __handle_history(request, nickname, slug, issue)
 
     if for_api and api_data:
@@ -397,7 +397,7 @@ def jump(request, nickname, for_api=False, api_data=None) -> dict:
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     discussion_dict = _ddh.get_dict_for_jump(arg_uid, nickname, history)
     item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request, for_api=for_api, nickname=nickname)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request.registry, request.application_url, request.path, for_api=for_api, nickname=nickname)
 
     prepared_discussion = dict()
     prepared_discussion['issues'] = issue_dict
@@ -420,7 +420,7 @@ def finish(request) -> dict:
     ui_locales = get_language_from_cookie(request)
     _t = Translator(ui_locales)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry, request.application_url, request.path, request.authenticated_userid)
     summary_dict = user.get_summary_of_today(request.authenticated_userid, ui_locales)
 
     prepared_discussion = dict()

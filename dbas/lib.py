@@ -72,15 +72,15 @@ def get_changelog(no):
     return changelog[0:no]
 
 
-def is_development_mode(request):
+def is_development_mode(registry):
     """
     Returns true, if mode is set to development in current ini file.
 
-    :param request:Request
+    :param registry: request.registry
     :return: Boolean
     """
-    if 'mode' in request.registry.settings:
-        return True if request.registry.settings['mode'] == 'development' else False
+    if 'mode' in registry.settings:
+        return True if registry.settings['mode'] == 'development' else False
     return False
 
 
@@ -94,19 +94,26 @@ def escape_string(text):
     return escape(text)
 
 
-def get_discussion_language(request, current_issue_uid=1):
+def get_discussion_language(matchdict, params, session, current_issue_uid=None):
     """
     Returns Language.ui_locales
     CALL AFTER issue_helper.get_id_of_slug(..)!
 
-    :param request: self.request
+    :param matchdict: matchdict of the current request
+    :param params: params of the current request
+    :param session: session of the current request
     :param current_issue_uid: uid
     :return:
     """
+    if not current_issue_uid:
+        current_issue = DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
+                                                                Issue.is_private == False).first()
+        current_issue_uid = current_issue.uid if current_issue else None
+
     # first matchdict, then params, then session, afterwards fallback
-    issue = request.matchdict['issue'] if 'issue' in request.matchdict \
-        else request.params['issue'] if 'issue' in request.params \
-        else request.session['issue'] if 'issue' in request.session \
+    issue = matchdict['issue'] if 'issue' in matchdict \
+        else params['issue'] if 'issue' in params \
+        else session['issue'] if 'issue' in session \
         else current_issue_uid
 
     db_lang = DBDiscussionSession.query(Issue).filter_by(uid=issue).join(Language).first()
@@ -168,7 +175,8 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
 
     return_array = list(set(return_array + db_all_undercuts + db_all_undercutted_undercuts))
 
-    logger('DBAS.LIB', 'get_all_arguments_by_statement', 'returning arguments ' + str([arg.uid for arg in return_array]))
+    logger('DBAS.LIB', 'get_all_arguments_by_statement',
+           'returning arguments {}'.format([arg.uid for arg in return_array]))
     return return_array if len(return_array) > 0 else None
 
 
@@ -225,8 +233,8 @@ def __get_arguments_of_conclusion(statement_uid, include_disabled):
 
 def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
                               user_changed_opinion=False, rearrange_intro=False, colored_position=False,
-                              attack_type=None, minimize_on_undercut=False, is_users_opinion=True, anonymous_style=False,
-                              support_counter_argument=False):
+                              attack_type=None, minimize_on_undercut=False, is_users_opinion=True,
+                              anonymous_style=False, support_counter_argument=False):
     """
     Returns current argument as string like "conclusion, because premise1 and premise2"
 
@@ -262,8 +270,9 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
         if db_user:
             author_uid = db_user.uid
             pgroup = DBDiscussionSession.query(PremiseGroup).get(db_argument.premisesgroup_uid)
-            marked_argument = DBDiscussionSession.query(MarkedArgument).filter(and_(MarkedArgument.argument_uid == uid,
-                                                                                    MarkedArgument.author_uid == db_user.uid)).first()
+            marked_argument = DBDiscussionSession.query(MarkedArgument).filter(
+                and_(MarkedArgument.argument_uid == uid,
+                     MarkedArgument.author_uid == db_user.uid)).first()
             premisegroup_by_user = pgroup.author_uid == db_user.uid or marked_argument is not None
 
     # getting all argument id
@@ -278,12 +287,14 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
     if len(arg_array) == 1:
         # build one argument only
         return __build_single_argument(arg_array[0], rearrange_intro, with_html_tag, colored_position, attack_type, _t,
-                                       start_with_intro, is_users_opinion, anonymous_style, support_counter_argument, author_uid)
+                                       start_with_intro, is_users_opinion, anonymous_style, support_counter_argument,
+                                       author_uid)
 
     else:
         # get all pgroups and at last, the conclusion
         return __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag,
-                                       start_with_intro, minimize_on_undercut, anonymous_style, premisegroup_by_user, _t)
+                                       start_with_intro, minimize_on_undercut, anonymous_style, premisegroup_by_user,
+                                       _t)
 
 
 def get_all_arguments_with_text_by_statement_id(statement_uid):
@@ -306,7 +317,8 @@ def get_all_arguments_with_text_by_statement_id(statement_uid):
         return results
 
 
-def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanager, color_statement=False, is_jump=False):
+def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanager, color_statement=False,
+                                                        is_jump=False):
     """
     Given a statement_uid, it returns all arguments, which use this statement and adds
     the corresponding text to it, which normally appears in the bubbles. The resulting
@@ -333,7 +345,8 @@ def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanage
         attack_type = 'jump' if is_jump else ''
         argument_text = get_text_for_argument_uid(uid, anonymous_style=True, attack_type=attack_type)
         pos = argument_text.lower().find(statement_text.lower())
-        argument_text = argument_text[0:pos] + sb + argument_text[pos:pos + len(statement_text)] + se + argument_text[pos + len(statement_text):]
+        argument_text = argument_text[0:pos] + sb + argument_text[pos:pos + len(statement_text)] + se
+        argument_text += argument_text[pos + len(statement_text):]
         results.append({'uid': uid,
                         'text': argument_text,
                         'url': urlmanager.get_url_for_jump(False, uid)})
@@ -402,7 +415,8 @@ def __build_argument_for_jump(arg_array, with_html_tag):
         intro = (_t.get(_.statementAbout) + ' ') if lang == 'de' else ''
         bind = con_tag + _t.get(_.isNotAGoodReasonFor) + end_tag
         because = _t.get(_.because)
-        ret_value = '{}{} {} {}. {} {}.'.format(intro, conclusion_premise, bind, conclusion_conclusion, because, premise)
+        ret_value = '{}{} {} {}. {} {}.'.format(intro, conclusion_premise, bind, conclusion_conclusion, because,
+                                                premise)
     else:
         db_undercut1 = DBDiscussionSession.query(Argument).get(arg_array[0])
         db_undercut2 = DBDiscussionSession.query(Argument).get(arg_array[1])
@@ -499,7 +513,8 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
                 ret_value += _t.get(_.youArgue)
             ret_value += se + ' '
         else:
-            ret_value = sb_none + _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous) + se + ' '
+            tmp = _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous)
+            ret_value = sb_none + sb + tmp + se + ' '
         ret_value += ' {}{}{} '.format(sb, _t.get(_.itIsNotRight), se) if not db_argument.is_supportive else ''
         ret_value += conclusion
         ret_value += ', ' if lang == 'de' else ' '
@@ -629,7 +644,8 @@ def get_text_for_statement_uid(uid, colored_position=False):
             if not db_statement:
                 return None
 
-            db_textversion = DBDiscussionSession.query(TextVersion).order_by(TextVersion.uid.desc()).get(db_statement.textversion_uid)
+            db_textversion = DBDiscussionSession.query(TextVersion).order_by(TextVersion.uid.desc())\
+                .get(db_statement.textversion_uid)
             content = db_textversion.content
 
             while content.endswith(('.', '?', '!')):
@@ -669,7 +685,8 @@ def get_text_for_conclusion(argument, start_with_intro=False, rearrange_intro=Fa
     :return: String
     """
     if argument.argument_uid:
-        return get_text_for_argument_uid(argument.argument_uid, start_with_intro, rearrange_intro=rearrange_intro, is_users_opinion=is_users_opinion)
+        return get_text_for_argument_uid(argument.argument_uid, start_with_intro, rearrange_intro=rearrange_intro,
+                                         is_users_opinion=is_users_opinion)
     else:
         return get_text_for_statement_uid(argument.conclusion_uid)
 
@@ -752,7 +769,8 @@ def get_user_by_case_insensitive_public_nickname(public_nickname):
     :param public_nickname: String
     :return: User or None
     """
-    return DBDiscussionSession.query(User).filter(func.lower(User.public_nickname) == func.lower(public_nickname)).first()
+    return DBDiscussionSession.query(User).filter(
+        func.lower(User.public_nickname) == func.lower(public_nickname)).first()
 
 
 def pretty_print_options(message):
@@ -810,12 +828,14 @@ def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, id
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         db_marked = None
         if argument_uid is not None and db_user is not None:
-            db_marked = DBDiscussionSession.query(MarkedArgument).filter(and_(MarkedArgument.argument_uid == argument_uid,
-                                                                              MarkedArgument.author_uid == db_user.uid)).first()
+            db_marked = DBDiscussionSession.query(MarkedArgument).filter(
+                and_(MarkedArgument.argument_uid == argument_uid,
+                     MarkedArgument.author_uid == db_user.uid)).first()
 
         if statement_uid is not None and db_user is not None:
-            db_marked = DBDiscussionSession.query(MarkedStatement).filter(and_(MarkedStatement.statement_uid == statement_uid,
-                                                                               MarkedStatement.author_uid == db_user.uid)).first()
+            db_marked = DBDiscussionSession.query(MarkedStatement).filter(
+                and_(MarkedStatement.statement_uid == statement_uid,
+                     MarkedStatement.author_uid == db_user.uid)).first()
 
         is_users_opinion = db_marked is not None
 
@@ -837,7 +857,8 @@ def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, id
         'is_users_opinion': str(is_users_opinion),
     }
 
-    votecount_keys = __get_text_for_click_and_mark_count(nickname, bubble_type is BubbleTypes.USER, is_supportive, argument_uid, statement_uid, speech, lang)
+    votecount_keys = __get_text_for_click_and_mark_count(nickname, bubble_type is BubbleTypes.USER, is_supportive,
+                                                         argument_uid, statement_uid, speech, lang)
 
     speech['votecounts_message'] = votecount_keys[speech['votecounts']]
 
@@ -1084,8 +1105,12 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
     img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, profile_picture_size))
 
     nick = db_user.get_global_nickname()
-    link_begin = '<a href="{}/user/{}" title="{}">'.format(main_page, db_user.uid, nick) if linked_with_users_page else ''
-    link_end = '</a>' if linked_with_users_page else ''
+    if linked_with_users_page:
+        link_begin = '<a href="{}/user/{}" title="{}">'.format(main_page, db_user.uid, nick)
+        link_end = '</a>'
+    else:
+        link_begin = ''
+        link_end = ''
     if gravatar_on_right_side:
         return db_user, '{}{} {}{}'.format(link_begin, nick, img, link_end), True
     else:

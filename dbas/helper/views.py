@@ -66,7 +66,7 @@ def prepare_parameter_for_justification(request, for_api):
     supportive = mode == 't' or mode == 'd'  # supportive = t or do not know mode
     relation = request.matchdict['relation'][0] if len(request.matchdict['relation']) > 0 else ''
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
-    disc_ui_locales = get_discussion_language(request, issue)
+    disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
     issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, for_api, request.authenticated_userid)
 
     return slug, statement_or_arg_id, mode, supportive, relation, issue, disc_ui_locales, issue_dict
@@ -161,7 +161,7 @@ def preparation_for_justify_statement(request, for_api, main_page, slug, stateme
     item_dict = _idh.get_array_for_justify_statement(statement_uid, nickname, supportive, history)
     discussion_dict = _ddh.get_dict_for_justify_statement(statement_uid, main_page, slug, supportive,
                                                           len(item_dict['elements']), nickname)
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request, nickname, for_api=for_api)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request.registry, request.application_url, request.path, nickname, for_api=for_api)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0 or len(item_dict['elements']) == 1 and logged_in:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
@@ -189,14 +189,14 @@ def preparation_for_dont_know_statement(request, for_api, main_page, slug, argum
     logger('ViewHelper', 'preparation_for_dont_know_statement', 'main')
 
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
-    disc_ui_locales = get_discussion_language(request, issue)
+    disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=main_page, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=request.path, history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
 
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid, main_page, nickname)
     item_dict = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, nickname, discussion_dict['gender'])
-    extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request, for_api=for_api,
+    extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request.registry, request.application_url, request.path, for_api=for_api,
                                           nickname=nickname)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0:
@@ -240,7 +240,7 @@ def preparation_for_justify_argument(request, for_api, main_page, slug, statemen
     # is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
     item_dict = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in, nickname, history)
     discussion_dict = _ddh.get_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, False, request, for_api=for_api, nickname=nickname)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, False, request.registry, request.application_url, request.path, for_api=for_api, nickname=nickname)
     # is the discussion at the end?
     if not logged_in and len(item_dict['elements']) == 1 or logged_in and len(item_dict['elements']) == 1:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)
@@ -262,7 +262,7 @@ def __prepare_helper(ui_locales, nickname, history, main_page, slug, for_api, re
     :return: dict(), dict(), dict()
     """
     issue = issue_helper.get_id_of_slug(slug, request, True) if len(slug) > 0 else issue_helper.get_issue_id(request)
-    disc_ui_locales = get_discussion_language(request, issue)
+    disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
     ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=main_page, slug=slug)
     idh = ItemDictHelper(disc_ui_locales, issue, main_page, for_api, path=request.path, history=history)
     dh = DictionaryHelper(ui_locales, disc_ui_locales)

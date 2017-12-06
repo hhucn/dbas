@@ -114,7 +114,7 @@ def delete_argument(request) -> dict:
     :return: collection with error key
     """
     review_uid = request.params['review_uid'] if 'review_uid' in request.params else None
-    ui_locales = get_discussion_language(request)
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _t = Translator(ui_locales)
 
     if not is_integer(review_uid):
@@ -142,7 +142,7 @@ def edit_argument(request) -> dict:
     """
     review_uid = request.params['review_uid'] if 'review_uid' in request.params else None
     is_edit_okay = True if str(request.params['is_edit_okay']) == 'true' else False
-    ui_locales = get_discussion_language(request)
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _t = Translator(ui_locales)
 
     if not is_integer(review_uid):
@@ -170,7 +170,7 @@ def duplicate_statement(request) -> dict:
     """
     is_duplicate = True if str(request.params['is_duplicate']) == 'true' else False
     review_uid = request.params['review_uid']
-    ui_locales = get_discussion_language(request)
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _t = Translator(ui_locales)
 
     if not is_integer(review_uid):
@@ -200,7 +200,7 @@ def optimization_argument(request) -> dict:
     review_uid = request.params['review_uid'] if 'review_uid' in request.params else None
     new_data = json.loads(request.params['new_data']) if 'new_data' in request.params else None
 
-    ui_locales = get_discussion_language(request)
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _t = Translator(ui_locales)
 
     if not is_integer(review_uid):
@@ -226,7 +226,7 @@ def split_premisegroup(request) -> dict:
     :rtype: dict
     :return: collection with error key
     """
-    ui_locales = get_discussion_language(request)
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _t = Translator(ui_locales)
     review_uid = request.params['review_uid']
     should_split = request.params['should_split']
@@ -254,7 +254,7 @@ def merge_premisegroup(request) -> dict:
     :rtype: dict
     :return: collection with error key
     """
-    ui_locales = get_discussion_language(request)
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _t = Translator(ui_locales)
     review_uid = request.params['review_uid']
     should_merge = request.params['should_merge']
@@ -283,7 +283,7 @@ def undo(request) -> dict:
     :return: collection with error, success, info key
     """
     uid = request.params['uid']
-    ui_locales = get_discussion_language(request)
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _t = Translator(ui_locales)
 
     if not is_integer(uid):
@@ -324,7 +324,7 @@ def cancel(request) -> dict:
     :return: collection with error key
     """
     uid = request.params['uid']
-    ui_locales = get_discussion_language(request)
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _t = Translator(ui_locales)
 
     if not is_integer(uid):
@@ -359,7 +359,7 @@ def lock(request) -> dict:
     :rtype: dict
     :return: collection with error, success, info key
     """
-    ui_locales = get_discussion_language(request)
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _t = Translator(ui_locales)
     prepared_dict = dict()
 
@@ -398,7 +398,7 @@ def revoke(request) -> dict:
     :return: collection with error success key
     """
 
-    ui_locales = get_discussion_language(request)
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _t = Translator(ui_locales)
     uid = request.params['uid'] if 'uid' in request.params else None
 

@@ -60,7 +60,10 @@ def debug_function(request):
     logger('Websocket', 'debug_function', 'main')
 
     ui_locales = get_language_from_cookie(request)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid)
 
     return {
         'layout': base_layout(),

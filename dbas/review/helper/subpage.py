@@ -68,27 +68,27 @@ def get_subpage_elements_for(request, subpage_name, nickname, translator):
     stats = ''
 
     if subpage_name == 'deletes':
-        subpage_dict = __get_subpage_dict_for_deletes(request, db_user, translator, request.application_url)
+        subpage_dict = __get_subpage_dict_for_deletes(request, db_user, translator)
         button_set['is_delete'] = True
 
     elif subpage_name == 'optimizations':
-        subpage_dict = __get_subpage_dict_for_optimization(request, db_user, translator, request.application_url)
+        subpage_dict = __get_subpage_dict_for_optimization(request, db_user, translator)
         button_set['is_optimize'] = True
 
     elif subpage_name == 'edits':
-        subpage_dict = __get_subpage_dict_for_edits(request, db_user, translator, request.application_url)
+        subpage_dict = __get_subpage_dict_for_edits(request, db_user, translator)
         button_set['is_edit'] = True
 
     elif subpage_name == 'duplicates':
-        subpage_dict = __get_subpage_dict_for_duplicates(request, db_user, translator, request.application_url)
+        subpage_dict = __get_subpage_dict_for_duplicates(request, db_user, translator)
         button_set['is_duplicate'] = True
 
     elif subpage_name == 'splits':
-        subpage_dict = __get_subpage_dict_for_splits(request, db_user, translator, request.application_url)
+        subpage_dict = __get_subpage_dict_for_splits(request, db_user, translator)
         button_set['is_split'] = True
 
     elif subpage_name == 'merges':
-        subpage_dict = __get_subpage_dict_for_merges(request, db_user, translator, request.application_url)
+        subpage_dict = __get_subpage_dict_for_merges(request, db_user, translator)
         button_set['is_merge'] = True
 
     else:
@@ -157,14 +157,13 @@ def __get_all_allowed_reviews_for_user(request, session_keyword, db_user, review
     return db_reviews.all(), already_seen, already_reviewed, first_time
 
 
-def __get_subpage_dict_for_deletes(request, db_user, translator, main_page):
+def __get_subpage_dict_for_deletes(request, db_user, translator):
     """
     Setup the subpage for the delete queue
 
     :param request: current webserver request
     :param db_user: User
     :param translator: Translator
-    :param main_page: Host URL
     :return: dict()
     """
     logger('ReviewSubpagerHelper', '__get_subpage_dict_for_deletes', 'main')
@@ -198,7 +197,7 @@ def __get_subpage_dict_for_deletes(request, db_user, translator, main_page):
         issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
 
     db_reason = DBDiscussionSession.query(ReviewDeleteReason).get(rnd_review.reason_uid)
-    stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
+    stats = __get_stats_for_review(rnd_review, translator.get_lang(), request.application_url)
 
     reason = ''
     if db_reason.reason == 'offtopic':
@@ -218,14 +217,13 @@ def __get_subpage_dict_for_deletes(request, db_user, translator, main_page):
             'extra_info': extra_info}
 
 
-def __get_subpage_dict_for_optimization(request, db_user, translator, main_page):
+def __get_subpage_dict_for_optimization(request, db_user, translator):
     """
     Setup the subpage for the optimization queue
 
     :param request: current webserver request
     :param db_user: User
     :param translator: Translator
-    :param main_page: Host URL
     :return: dict()
     """
     logger('ReviewSubpagerHelper', '__get_subpage_dict_for_optimization', 'main')
@@ -272,7 +270,7 @@ def __get_subpage_dict_for_optimization(request, db_user, translator, main_page)
 
     reason = translator.get(_.argumentFlaggedBecauseOptimization)
 
-    stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
+    stats = __get_stats_for_review(rnd_review, translator.get_lang(), request.application_url)
 
     already_seen.append(rnd_review.uid)
     request.session['already_seen_optimization'] = already_seen
@@ -286,14 +284,13 @@ def __get_subpage_dict_for_optimization(request, db_user, translator, main_page)
             'parts': parts}
 
 
-def __get_subpage_dict_for_edits(request, db_user, translator, main_page):
+def __get_subpage_dict_for_edits(request, db_user, translator):
     """
     Setup the subpage for the edits queue
 
     :param request: current webserver request
     :param db_user: User
     :param translator: Translator
-    :param main_page: Host URL
     :return: dict()
     """
     logger('ReviewSubpagerHelper', '__get_subpage_dict_for_edits', 'main')
@@ -334,7 +331,7 @@ def __get_subpage_dict_for_edits(request, db_user, translator, main_page):
 
     # build correction
     db_edit_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=rnd_review.uid).first()
-    stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
+    stats = __get_stats_for_review(rnd_review, translator.get_lang(), request.application_url)
 
     if not db_edit_value:
         logger('ReviewSubpagerHelper', '__get_subpage_dict_for_edits', 'ReviewEdit {} has no edit value!'.format(rnd_review.uid), error=True)
@@ -343,7 +340,7 @@ def __get_subpage_dict_for_edits(request, db_user, translator, main_page):
             ReviewEdit.uid.in_(DBDiscussionSession.query(ReviewEditValue.review_edit_uid))).all()
 
         if len(db_allowed_reviews) > 0:
-            return __get_subpage_dict_for_edits(request, db_user, translator, main_page)
+            return __get_subpage_dict_for_edits(request, db_user, translator, request.application_url)
         else:
             return {'stats': None,
                     'text': None,
@@ -367,14 +364,13 @@ def __get_subpage_dict_for_edits(request, db_user, translator, main_page):
             'extra_info': extra_info}
 
 
-def __get_subpage_dict_for_duplicates(request, db_user, translator, main_page):
+def __get_subpage_dict_for_duplicates(request, db_user, translator):
     """
     Setup the subpage for the duplicates queue
 
     :param request: current webserver request
     :param db_user: User
     :param translator: Translator
-    :param main_page: Host URL
     :return: dict()
     """
     logger('ReviewSubpagerHelper', '__get_subpage_dict_for_duplicates', 'main')
@@ -413,7 +409,7 @@ def __get_subpage_dict_for_duplicates(request, db_user, translator, main_page):
 
     duplicate_of_text = get_text_for_statement_uid(rnd_review.original_statement_uid)
 
-    stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
+    stats = __get_stats_for_review(rnd_review, translator.get_lang(), request.application_url)
 
     already_seen.append(rnd_review.uid)
     request.session['already_seen_duplicate'] = already_seen
@@ -426,7 +422,14 @@ def __get_subpage_dict_for_duplicates(request, db_user, translator, main_page):
             'extra_info': extra_info}
 
 
-def __get_subpage_dict_for_splits(request, db_user, translator, main_page):
+def __get_subpage_dict_for_splits(request, db_user, translator):
+    """
+
+    :param request:
+    :param db_user:
+    :param translator:
+    :return:
+    """
     logger('ReviewSubpagerHelper', '__get_subpage_dict_for_splits', 'main')
     db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request,
                                                                                                 'already_seen_split',
@@ -470,7 +473,7 @@ def __get_subpage_dict_for_splits(request, db_user, translator, main_page):
     issue = DBDiscussionSession.query(Issue).get(premises[0].issue_uid).title
     reason = translator.get(_.argumentFlaggedBecauseSplit)
 
-    stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
+    stats = __get_stats_for_review(rnd_review, translator.get_lang(), request.application_url)
 
     already_seen.append(rnd_review.uid)
     request.session['already_seen_split'] = already_seen
@@ -486,7 +489,14 @@ def __get_subpage_dict_for_splits(request, db_user, translator, main_page):
     }
 
 
-def __get_subpage_dict_for_merges(request, db_user, translator, main_page):
+def __get_subpage_dict_for_merges(request, db_user, translator):
+    """
+
+    :param request:
+    :param db_user:
+    :param translator:
+    :return:
+    """
     logger('ReviewSubpagerHelper', '__get_subpage_dict_for_merges', 'main')
     db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(request,
                                                                                                 'already_seen_merge',
@@ -535,7 +545,7 @@ def __get_subpage_dict_for_merges(request, db_user, translator, main_page):
     issue = DBDiscussionSession.query(Issue).get(premises[0].issue_uid).title
     reason = translator.get(_.argumentFlaggedBecauseMerge)
 
-    stats = __get_stats_for_review(rnd_review, translator.get_lang(), main_page)
+    stats = __get_stats_for_review(rnd_review, translator.get_lang(), request.application_url)
 
     already_seen.append(rnd_review.uid)
     request.session['already_seen_merge'] = already_seen
