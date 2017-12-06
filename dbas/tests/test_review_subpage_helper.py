@@ -7,6 +7,12 @@ from dbas.strings.translator import Translator
 
 
 class ReviewPageHelperTest(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+        self.config.include('pyramid_chameleon')
+
+    def tearDown(self):
+        testing.tearDown()
 
     def test_get_subpage_failure_nick_and_page(self):
         request = testing.DummyRequest()

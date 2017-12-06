@@ -11,7 +11,6 @@ from itertools import islice
 from Levenshtein import distance
 from sqlalchemy import and_, func
 
-import dbas.handler.issue as issue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
