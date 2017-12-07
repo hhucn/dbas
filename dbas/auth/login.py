@@ -5,6 +5,7 @@ Login Handler for D-BAS
 """
 
 from time import sleep
+from pyramid_mailer import get_mailer
 
 import transaction
 from pyramid.httpexceptions import HTTPFound
@@ -19,7 +20,6 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Settings
 from dbas.handler import user
 from dbas.handler.password import get_hashed_password
-from dbas.handler.language import get_language_from_cookie
 from dbas.lib import escape_string, get_user_by_case_insensitive_nickname, \
     get_user_by_case_insensitive_public_nickname
 from dbas.logger import logger
@@ -249,7 +249,7 @@ def __register_user_with_ldap_data(request, nickname, password, for_api, keep_lo
         return {'error': data['error']}
 
     # register the new user
-    ret_dict = user.set_new_user(request, data['firstname'], data['lastname'], nickname, data['gender'],
+    ret_dict = user.set_new_user(get_mailer(request), data['firstname'], data['lastname'], nickname, data['gender'],
                                  data['email'], 'NO_PW_BECAUSE_LDAP', _tn)
     if 'success' not in ret_dict:
         return {'error': _tn.get(_.internalKeyError)}
@@ -331,17 +331,18 @@ def __get_data(request, nickname, password, keep_login):
     return nickname, password, keep_login, url
 
 
-def register_user_with_ajax_data(request):
+def register_user_with_ajax_data(params, ui_locales, mailer):
     """
     Consume the ajax data for an login attempt
 
-    :param request: webserver's request
+    :param params: params of webserver's request
+    :param ui_locales: language
+    :param params: instance of pyramids webmailer
     :return: Boolean, String, User
     """
-    ui_locales = request.params['lang'] if 'lang' in request.params else get_language_from_cookie(request)
     _tn = Translator(ui_locales)
     success = ''
-    params = request.params
+
     firstname = escape_string(params['firstname']) if 'firstname' in params else ''
     lastname = escape_string(params['lastname']) if 'lastname' in params else ''
     nickname = escape_string(params['nickname']) if 'nickname' in params else ''
@@ -349,8 +350,8 @@ def register_user_with_ajax_data(request):
     gender = escape_string(params['gender']) if 'gender' in params else ''
     password = escape_string(params['password']) if 'password' in params else ''
     passwordconfirm = escape_string(params['passwordconfirm']) if 'passwordconfirm' in params else ''
-    if request.params['mode'] == 'manually':
-        recaptcha = request.params['g-recaptcha-response'] if 'g-recaptcha-response' in request.params else ''
+    if params['mode'] == 'manually':
+        recaptcha = params['g-recaptcha-response'] if 'g-recaptcha-response' in params else ''
         is_human, error = validate_recaptcha(recaptcha)
     else:
         is_human = True
@@ -402,7 +403,7 @@ def register_user_with_ajax_data(request):
             logger('Auth.Login', 'user_registration', 'Error occured')
             return success, msg, db_new_user
 
-        ret_dict = user.set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn)
+        ret_dict = user.set_new_user(mailer, firstname, lastname, nickname, gender, email, password, _tn)
         success = ret_dict['success']
         error = ret_dict['error']
         db_new_user = ret_dict['user']

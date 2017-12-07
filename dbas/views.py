@@ -1179,7 +1179,10 @@ def user_registration(request):
     info = ''
 
     try:
-        success, info, new_user = register_user_with_ajax_data(request)
+        params = request.params
+        ui_locales = params['lang'] if 'lang' in params else get_language_from_cookie(request)
+        mailer = get_mailer(request)
+        success, info, new_user = register_user_with_ajax_data(params, ui_locales, mailer)
 
     except KeyError as e:
         logger('Views', 'user_registration', repr(e), error=True)

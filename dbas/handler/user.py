@@ -10,7 +10,6 @@ from datetime import date, timedelta
 
 import arrow
 import transaction
-from pyramid_mailer import get_mailer
 from sqlalchemy import and_
 
 import dbas.handler.password as password_handler
@@ -696,11 +695,11 @@ def __create_new_user(firstname, lastname, email, nickname, password, gender, db
     return success, info, db_user
 
 
-def set_new_user(request, firstname, lastname, nickname, gender, email, password, _tn):
+def set_new_user(mailer, firstname, lastname, nickname, gender, email, password, _tn):
     """
     Let's create a new user
 
-    :param request: current request of web server
+    :param mailer: instance of pyramid mailer
     :param firstname: String
     :param lastname: String
     :param nickname: String
@@ -731,7 +730,7 @@ def set_new_user(request, firstname, lastname, nickname, gender, email, password
         # sending an email and message
         subject = _tn.get(_.accountRegistration)
         body = _tn.get(_.accountWasRegistered).format(firstname, lastname, email)
-        send_mail(get_mailer(request), subject, body, email, _tn.get_lang())
+        send_mail(mailer, subject, body, email, _tn.get_lang())
         send_welcome_notification(db_new_user.uid, _tn)
 
         logger('User', 'set_new_user', 'set new user in db')
