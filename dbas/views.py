@@ -94,6 +94,47 @@ def api_notfound(path):
     return response
 
 
+def prepare_request_dict(request, nickname):
+    """
+
+    :param request:
+    :param nickname:
+    :return:
+    """
+
+    last_topic = history_helper.get_saved_issue(nickname)
+    slug = request.matchdict['slug'] if 'slug' in request.matchdict and len(request.matchdict['slug']) > 0 else ''
+    if len(slug) == 0 and last_topic != 0:
+        issue = last_topic
+    elif len(slug) > 0:
+        issue = issue_helper.get_id_of_slug(slug, request, True)
+    else:
+        issue = issue_helper.get_issue_id(request)
+
+    history = history_helper.handle_history(request, nickname, slug, issue)
+    ui_locales = get_language_from_cookie(request)
+    disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
+    set_language_for_visit(request)
+
+    request_dict = {
+        'nickname': nickname,
+        'path': request.path,
+        'app_url': request.application_url,
+        'matchdict': request.matchdict,
+        'params': request.params,
+        'session': request.session,
+        'registry': request.registry,
+        'issue': issue,
+        'slug': slug,
+        'history': history,
+        'ui_locales': ui_locales,
+        'disc_ui_locales': disc_ui_locales,
+        'last_topic': last_topic,
+        'port': get_port(request)
+    }
+    return request_dict
+
+
 def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any], for_api=False, api_data=None):
     """
     Checks for an expired session, the authentication and calls f with for_api, api_data and the users nickname.
@@ -113,35 +154,8 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any], for_
     if unauthenticated:
         return unauthenticated
 
-    last_topic = history_helper.get_saved_issue(nickname)
-    slug = request.matchdict['slug'] if 'slug' in request.matchdict and len(request.matchdict['slug']) > 0 else ''
-    if len(slug) == 0 and last_topic != 0:
-        issue = last_topic
-    elif len(slug) > 0:
-        issue = issue_helper.get_id_of_slug(slug, request, True)
-    else:
-        issue = issue_helper.get_issue_id(request)
-
-    history = history_helper.handle_history(request, nickname, slug, issue)
+    request_dict = prepare_request_dict(request, nickname)
     ui_locales = get_language_from_cookie(request)
-    disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
-    set_language_for_visit(request)
-    request_dict = {
-        'nickname': nickname,
-        'path': request.path,
-        'app_url': request.application_url,
-        'matchdict': request.matchdict,
-        'params': request.params,
-        'session': request.session,
-        'registry': request.registry,
-        'issue': issue,
-        'slug': slug,
-        'history': history,
-        'ui_locales': ui_locales,
-        'disc_ui_locales': disc_ui_locales,
-        'last_topic': last_topic,
-        'port': get_port(request)
-    }
 
     prepared_discussion = f(request_dict, for_api)
     if prepared_discussion:
@@ -724,8 +738,8 @@ def discussion_finish(request):
 
     request_dict = {
         'registry': request.registry,
-        'application_url': request.application_url,
-        'authenticated_userid': request.authenticated_userid,
+        'app_url': request.application_url,
+        'nickname': request.authenticated_userid,
         'path': request.path,
         'ui_locales': get_language_from_cookie(request)
     }

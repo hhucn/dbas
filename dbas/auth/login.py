@@ -55,8 +55,8 @@ def login_user(request, nickname, password, for_api, keep_login=False, lang='en'
     #  b) keeped in ldap
     db_user = get_user_by_case_insensitive_nickname(nickname)
     if not db_user:  # this is 1.
-        mailer = get_mailer(request)
-        register = __register_user_with_ldap_data(mailer, nickname, password, for_api, keep_login, url, _tn)
+        mailer = None if for_api else get_mailer(request)
+        register = __register_user_with_ldap_data(mailer, nickname, password, for_api, _tn)
         if len(register['error']) != 0:
             return register
         return __return_success_login(request, for_api, register['user'], keep_login, url)
