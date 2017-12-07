@@ -236,18 +236,19 @@ def prepare_data_assign_reference(request, func):
         raise HTTP204()
 
 
-def prepare_request_dict(request):
+def prepare_dbas_request_dict(request):
     """
 
     :param request:
     :return:
     """
     api_data = prepare_user_information(request)
-    return dbas.prepare_request_dict(request, api_data['nickname'])
+    nickname = api_data['nickname'] if api_data else None
+    return dbas.prepare_request_dict(request, nickname)
 
 
 def __init(request):
-    request_dict = prepare_request_dict(request)
+    request_dict = prepare_dbas_request_dict(request)
     return dbas.discussion.init(request_dict, for_api=True)
 
 
@@ -260,7 +261,7 @@ def discussion_reaction(request):
     :return: dbas.discussion_reaction(True)
 
     """
-    request_dict = prepare_request_dict(request)
+    request_dict = prepare_dbas_request_dict(request)
     return dbas.discussion.reaction(request_dict, for_api=True)
 
 
@@ -273,7 +274,7 @@ def discussion_justify(request):
     :return: dbas.discussion_justify(True)
 
     """
-    request_dict = prepare_request_dict(request)
+    request_dict = prepare_dbas_request_dict(request)
     return dbas.discussion.justify(request_dict, for_api=True)
 
 
@@ -286,7 +287,7 @@ def discussion_attitude(request):
     :return: dbas.discussion_attitude(True)
 
     """
-    request_dict = prepare_request_dict(request)
+    request_dict = prepare_dbas_request_dict(request)
     return dbas.discussion.attitude(request_dict, for_api=True)
 
 
@@ -305,7 +306,7 @@ def discussion_support(request):
     api_data["slug"] = request.matchdict["slug"]
     api_data["arg_user_uid"] = request.matchdict["arg_user_uid"]
     api_data["arg_system_uid"] = request.matchdict["arg_system_uid"]
-    request_dict = prepare_request_dict(request)
+    request_dict = prepare_dbas_request_dict(request)
     return dbas.discussion.support(request_dict, for_api=True, api_data=api_data)
 
 
