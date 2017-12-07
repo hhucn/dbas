@@ -813,7 +813,11 @@ def review_content(request):
         return unauthenticated
 
     subpage_name = request.matchdict['queue']
-    subpage_dict = review_page_helper.get_subpage_elements_for(request, subpage_name, _tn)
+    nickname = request.authenticated_userid
+    session = request.session
+    application_url = request.application_url
+    subpage_dict = review_page_helper.get_subpage_elements_for(nickname, session, application_url, subpage_name, _tn)
+    request.session.update(subpage_dict['session'])
     if not subpage_dict['elements'] and not subpage_dict['has_access'] and not subpage_dict['no_arguments_to_review']:
         logger('review_content', 'def', 'subpage error', error=True)
         raise HTTPNotFound()
