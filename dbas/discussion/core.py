@@ -407,9 +407,8 @@ def finish(request_dict) -> dict:
     _t = Translator(request_dict['ui_locales'])
 
     extras_dict = DictionaryHelper(request_dict['ui_locales']).prepare_extras_dict_for_normal_page(
-        request_dict['registry'], request_dict['app_url'], request_dict['path'],
-        request_dict['authenticated_userid'])
-    summary_dict = user.get_summary_of_today(request_dict['authenticated_userid'], request_dict['ui_locales'])
+        request_dict['registry'], request_dict['app_url'], request_dict['path'], request_dict['nickname'])
+    summary_dict = user.get_summary_of_today(request_dict['nickname'], request_dict['ui_locales'])
 
     prepared_discussion = dict()
     prepared_discussion['title'] = _t.get(_.finishTitle)

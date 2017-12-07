@@ -738,8 +738,8 @@ def discussion_finish(request):
 
     request_dict = {
         'registry': request.registry,
-        'application_url': request.application_url,
-        'authenticated_userid': request.authenticated_userid,
+        'app_url': request.application_url,
+        'nickname': request.authenticated_userid,
         'path': request.path,
         'ui_locales': get_language_from_cookie(request)
     }
