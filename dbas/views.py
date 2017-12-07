@@ -32,7 +32,7 @@ from dbas.database.discussion_model import User, Group, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
 from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement_uid
-from dbas.handler.language import set_language, get_language_from_cookie, set_language_for_first_visit
+from dbas.handler.language import set_language, get_language_from_cookie, set_language_for_visit
 from dbas.handler.notification import read_notifications, delete_notifications, send_users_notification
 from dbas.handler.password import request_password
 from dbas.handler.references import set_reference, get_references
@@ -113,10 +113,40 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any], for_
     if unauthenticated:
         return unauthenticated
 
-    prepared_discussion = f(request, nickname, for_api)
+    last_topic = history_helper.get_saved_issue(nickname)
+    slug = request.matchdict['slug'] if 'slug' in request.matchdict and len(request.matchdict['slug']) > 0 else ''
+    if len(slug) == 0 and last_topic != 0:
+        issue = last_topic
+    elif len(slug) > 0:
+        issue = issue_helper.get_id_of_slug(slug, request, True)
+    else:
+        issue = issue_helper.get_issue_id(request)
+
+    history = history_helper.handle_history(request, nickname, slug, issue)
+    ui_locales = get_language_from_cookie(request)
+    disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
+    set_language_for_visit(request)
+    request_dict = {
+        'nickname': nickname,
+        'path': request.path,
+        'app_url': request.application_url,
+        'matchdict': request.matchdict,
+        'params': request.params,
+        'session': request.session,
+        'registry': request.registry,
+        'issue': issue,
+        'slug': slug,
+        'history': history,
+        'ui_locales': ui_locales,
+        'disc_ui_locales': disc_ui_locales,
+        'last_topic': last_topic,
+        'port': get_port(request)
+    }
+
+    prepared_discussion = f(request_dict, for_api)
     if prepared_discussion:
         prepared_discussion['layout'] = base_layout()
-        prepared_discussion['language'] = str(get_language_from_cookie(request))
+        prepared_discussion['language'] = str(ui_locales)
 
     return prepared_discussion
 
@@ -134,7 +164,7 @@ def main_page(request):
     """
     logger('main_page', 'def', 'request.params: {}'.format(request.params))
 
-    set_language_for_first_visit(request)
+    set_language_for_visit(request)
     unauthenticated = check_authentication(request)
     if unauthenticated:
         return unauthenticated
@@ -692,7 +722,15 @@ def discussion_finish(request):
     if unauthenticated:
         return unauthenticated
 
-    prepared_discussion = discussion.finish(request)
+    request_dict = {
+        'registry': request.registry,
+        'application_url': request.application_url,
+        'authenticated_userid': request.authenticated_userid,
+        'path': request.path,
+        'ui_locales': get_language_from_cookie(request)
+    }
+
+    prepared_discussion = discussion.finish(request_dict)
     prepared_discussion['layout'] = base_layout()
     prepared_discussion['language'] = str(get_language_from_cookie(request))
     prepared_discussion['show_summary'] = len(prepared_discussion['summary']) != 0
