@@ -236,10 +236,19 @@ def prepare_data_assign_reference(request, func):
         raise HTTP204()
 
 
-def __init(request):
+def prepare_request_dict(request):
+    """
+
+    :param request:
+    :return:
+    """
     api_data = prepare_user_information(request)
-    nickname = api_data["nickname"] if api_data else None
-    return dbas.discussion.init(request, nickname, for_api=True)
+    return dbas.prepare_request_dict(request, api_data['nickname'])
+
+
+def __init(request):
+    request_dict = prepare_request_dict(request)
+    return dbas.discussion.init(request_dict, for_api=True)
 
 
 @reaction.get(validators=validate_login)
@@ -251,9 +260,8 @@ def discussion_reaction(request):
     :return: dbas.discussion_reaction(True)
 
     """
-    api_data = prepare_user_information(request)
-    nickname = api_data["nickname"] if api_data else None
-    return dbas.discussion.reaction(request, nickname, for_api=True)
+    request_dict = prepare_request_dict(request)
+    return dbas.discussion.reaction(request_dict, for_api=True)
 
 
 @justify.get(validators=validate_login)
@@ -265,9 +273,8 @@ def discussion_justify(request):
     :return: dbas.discussion_justify(True)
 
     """
-    api_data = prepare_user_information(request)
-    nickname = api_data["nickname"] if api_data else None
-    return dbas.discussion.justify(request, nickname, for_api=True)
+    request_dict = prepare_request_dict(request)
+    return dbas.discussion.justify(request_dict, for_api=True)
 
 
 @attitude.get(validators=validate_login)
@@ -279,9 +286,8 @@ def discussion_attitude(request):
     :return: dbas.discussion_attitude(True)
 
     """
-    api_data = prepare_user_information(request)
-    nickname = api_data["nickname"] if api_data else None
-    return dbas.discussion.attitude(request, nickname, for_api=True)
+    request_dict = prepare_request_dict(request)
+    return dbas.discussion.attitude(request_dict, for_api=True)
 
 
 @support.get(validators=validate_login)
@@ -294,13 +300,13 @@ def discussion_support(request):
 
     """
     api_data = prepare_user_information(request)
-    nickname = api_data["nickname"] if api_data else None
     if not api_data:
         api_data = dict()
     api_data["slug"] = request.matchdict["slug"]
     api_data["arg_user_uid"] = request.matchdict["arg_user_uid"]
     api_data["arg_system_uid"] = request.matchdict["arg_system_uid"]
-    return dbas.discussion.support(request, nickname, for_api=True, api_data=api_data)
+    request_dict = prepare_request_dict(request)
+    return dbas.discussion.support(request_dict, for_api=True, api_data=api_data)
 
 
 @zinit.get(validators=validate_login)

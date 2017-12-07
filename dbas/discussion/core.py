@@ -18,13 +18,12 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 
-def init(request_dict, api_nickname=None, for_api=False) -> dict:
+def init(request_dict, for_api=False) -> dict:
     """
     Initialize the discussion. Creates helper and returns a dictionary containing the first elements needed for the
     discussion.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param api_nickname: nickname coming from the API
     :param for_api: boolean if requests came via the API
     :rtype: dict
     :return: prepared collection with first elements for the discussion
@@ -42,7 +41,7 @@ def init(request_dict, api_nickname=None, for_api=False) -> dict:
         logger('Core', 'discussion.init', 'to many slugs', error=True)
         raise None
 
-    nickname = api_nickname if for_api else request_dict['nickname']
+    nickname = request_dict['nickname']
     issue = request_dict['issue']
     ui_locales = request_dict['ui_locales']
 
@@ -75,20 +74,19 @@ def init(request_dict, api_nickname=None, for_api=False) -> dict:
     return prepared_discussion
 
 
-def attitude(request_dict, api_nickname=None, for_api=False) -> dict:
+def attitude(request_dict, for_api=False) -> dict:
     """
     Initialize the attitude step for a position in a discussion. Creates helper and returns a dictionary containing
     the first elements needed for the discussion.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param api_nickname: nickname coming from the API
     :param for_api: boolean if requests came via the API
     :rtype: dict
     :return: prepared collection matchdict for the discussion
     """
     logger('Core', 'discussion.attitude', 'main')
 
-    nickname = api_nickname if for_api else request_dict['nickname']
+    nickname = request_dict['nickname']
     issue = request_dict['issue']
     ui_locales = request_dict['ui_locales']
     slug = request_dict['slug']
@@ -131,20 +129,19 @@ def attitude(request_dict, api_nickname=None, for_api=False) -> dict:
     return prepared_discussion
 
 
-def justify(request_dict, api_nickname=None, for_api=False) -> dict:
+def justify(request_dict, for_api=False) -> dict:
     """
     Initialize the justification step for a statement or an argument in a discussion. Creates helper and
     returns a dictionary containing the necessary elements needed for the discussion.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param api_nickname: nickname coming from the API
     :param for_api: boolean if requests came via the API
     :rtype: dict
     :return: prepared collection matchdictfor the discussion
     """
     logger('Core', 'discussion.justify', 'main')
 
-    nickname = api_nickname if for_api else request_dict['nickname']
+    nickname = request_dict['nickname']
     issue = request_dict['issue']
     application_url = request_dict['app_url']
     disc_ui_locales = request_dict['disc_ui_locales']
@@ -165,13 +162,12 @@ def justify(request_dict, api_nickname=None, for_api=False) -> dict:
     return prepared_discussion
 
 
-def reaction(request_dict, api_nickname=None, for_api=False) -> dict:
+def reaction(request_dict, for_api=False) -> dict:
     """
     Initialize the reaction step for a position in a discussion. Creates helper and returns a dictionary containing
     different feedback options for the confrontation with an argument in a discussion.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param api_nickname: nickname coming from the API
     :param for_api: boolean if requests came via the API
     :param api_data: dict if requests came via the API
     :rtype: dict
@@ -179,7 +175,7 @@ def reaction(request_dict, api_nickname=None, for_api=False) -> dict:
     """
     logger('Core', 'discussion.reaction', 'main')
 
-    nickname = api_nickname if for_api else request_dict['nickname']
+    nickname = request_dict['nickname']
     issue = request_dict['issue']
     ui_locales = request_dict['ui_locales']
     slug = request_dict['slug']
@@ -233,20 +229,19 @@ def reaction(request_dict, api_nickname=None, for_api=False) -> dict:
     return prepared_discussion
 
 
-def support(request_dict, api_nickname=None, for_api=False, api_data=None) -> dict:
+def support(request_dict, for_api=False, api_data=None) -> dict:
     """
     Initialize the support step for the end of a branch in a discussion. Creates helper and returns a dictionary
     containing the first elements needed for the discussion.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param api_nickname: nickname coming from the API
     :param api_data: dict if requests came via the API
     :rtype: dict
     :return: prepared collection matchdictfor the discussion
     """
     logger('Core', 'discussion.support', 'main')
 
-    nickname = api_nickname if for_api else request_dict['nickname']
+    nickname = request_dict['nickname']
     issue = request_dict['issue']
     ui_locales = request_dict['ui_locales']
     history = request_dict['history']
@@ -288,13 +283,12 @@ def support(request_dict, api_nickname=None, for_api=False, api_data=None) -> di
     return prepared_discussion
 
 
-def choose(request_dict, api_nickname=None, for_api=False) -> dict:
+def choose(request_dict, for_api=False) -> dict:
     """
     Initialize the choose step for more than one premise in a discussion. Creates helper and returns a dictionary
     containing several feedback options regarding this argument.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param api_nickname: nickname coming from the API
     :param for_api: boolean if requests came via the API
     :rtype: dict
     :return: prepared collection matchdictfor the discussion
@@ -306,7 +300,7 @@ def choose(request_dict, api_nickname=None, for_api=False) -> dict:
     uid = request_dict['matchdict']['id'] if 'id' in request_dict['matchdict'] else ''
     pgroup_ids = request_dict['matchdict']['pgroup_ids'] if 'id' in request_dict['matchdict'] else ''
 
-    nickname = api_nickname if for_api else request_dict['nickname']
+    nickname = request_dict['nickname']
     issue = request_dict['issue']
     ui_locales = request_dict['ui_locales']
     slug = request_dict['slug']
@@ -351,13 +345,12 @@ def choose(request_dict, api_nickname=None, for_api=False) -> dict:
     return prepared_discussion
 
 
-def jump(request_dict, api_nickname=None, for_api=False, api_data=None) -> dict:
+def jump(request_dict, for_api=False, api_data=None) -> dict:
     """
     Initialize the jump step for an argument in a discussion. Creates helper and returns a dictionary containing
     several feedback options regarding this argument.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param api_nickname: nickname coming from the API
     :param for_api: boolean if requests came via the API
     :param api_data: dict if requests came via the API
     :rtype: dict
@@ -365,7 +358,7 @@ def jump(request_dict, api_nickname=None, for_api=False, api_data=None) -> dict:
     """
     logger('Core', 'discussion.jump', 'main')
 
-    nickname = api_nickname if for_api else request_dict['nickname']
+    nickname = request_dict['nickname']
     issue = request_dict['issue']
     ui_locales = request_dict['ui_locales']
     history = request_dict['history']
