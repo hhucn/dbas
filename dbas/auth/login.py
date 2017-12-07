@@ -55,7 +55,11 @@ def login_user(request, nickname, password, for_api, keep_login=False, lang='en'
     #  b) keeped in ldap
     db_user = get_user_by_case_insensitive_nickname(nickname)
     if not db_user:  # this is 1.
-        return __register_user_with_ldap_data(request, nickname, password, for_api, keep_login, url, _tn)
+        mailer = get_mailer(request)
+        register = __register_user_with_ldap_data(mailer, nickname, password, for_api, keep_login, url, _tn)
+        if len(register['error']) != 0:
+            return register
+        return __return_success_login(request, for_api, register['user'], keep_login, url)
 
     # this is 2.
     if len(str(db_user.oauth_provider)) > 4 and len(str(db_user.oauth_provider_id)) > 4:  # >4 because len('None') is 4
@@ -231,11 +235,11 @@ def __set_oauth_user(request, user_data, service, ui_locales):
         return {'error': ret_dict['error'], 'success': ret_dict['success']}
 
 
-def __register_user_with_ldap_data(request, nickname, password, for_api, keep_login, url, _tn):
+def __register_user_with_ldap_data(mailer, nickname, password, for_api, _tn):
     """
     Asks LDAP if the user is known
 
-    :param request: web servers request
+    :param mailer: instance of pyramids mailer
     :param nickname: User.nickname
     :param password: String
     :param for_api: Boolean
@@ -246,15 +250,15 @@ def __register_user_with_ldap_data(request, nickname, password, for_api, keep_lo
     logger('Auth.Login', '__register_user_with_ldap_data', 'user: {}, api: {}'.format(nickname, for_api))
     data = verify_ldap_user_data(nickname, password, _tn)
     if data['error']:
-        return {'error': data['error']}
+        return {'error': data['error'], 'user': ''}
 
     # register the new user
-    ret_dict = user.set_new_user(get_mailer(request), data['firstname'], data['lastname'], nickname, data['gender'],
+    ret_dict = user.set_new_user(mailer, data['firstname'], data['lastname'], nickname, data['gender'],
                                  data['email'], 'NO_PW_BECAUSE_LDAP', _tn)
     if 'success' not in ret_dict:
-        return {'error': _tn.get(_.internalKeyError)}
+        return {'error': _tn.get(_.internalKeyError), 'user': ''}
 
-    return __return_success_login(request, for_api, ret_dict['user'], keep_login, url)
+    return {'error': '', 'user': ret_dict['user']}
 
 
 def __check_in_local_known_user(request, db_user, password, for_api, keep_login, url, _tn):
