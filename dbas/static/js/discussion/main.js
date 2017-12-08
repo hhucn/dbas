@@ -901,5 +901,12 @@ $(document).ready(function mainDocumentReady() {
 	});
 
 	// unleash the beast
-	// gremlins.createHorde().gremlin(gremlins.species.formFiller()).gremlin(gremlins.species.clicker().clickTypes(['click'])).gremlin(gremlins.species.typer()).gremlin(function() {window.$ = function() {};}).unleash();
+	// gremlins.createHorde()
+	// 	.gremlin(gremlins.species.formFiller())
+	// 	.gremlin(gremlins.species.clicker().clickTypes(['click']))
+	// 	.gremlin(gremlins.species.typer())
+	// 	.gremlin(function() {
+	// 		window.$ = function() {};
+	// 	})
+	// 	.unleash();
 });
