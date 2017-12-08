@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-12-08 12:51+0100\n"
+"POT-Creation-Date: 2017-12-08 12:52+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-Düsseldorf.de>\n"
 "Language-Team: English\n"
@@ -185,7 +185,7 @@ msgstr "The translation into an abstract AF can be"
 #. Default: fetched to
 #: templates/fieldtest.pt:61
 msgid "fetched to"
-msgstr "fetched to"
+msgstr "fetched, too"
 
 #. Default: Open Source?
 #: templates/fieldtest.pt:65
