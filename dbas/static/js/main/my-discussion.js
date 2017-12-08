@@ -21,7 +21,7 @@ $(document).ready(function () {
 			new AjaxDiscussionHandler().setDiscussionSettings($(this), 'writable');
 		});
 	});
-	
+
 	$.each($('.fa-clipboard'), function(){
 		$(this).click(function(){
 			var aux = document.createElement("input");

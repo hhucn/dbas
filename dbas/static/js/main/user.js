@@ -4,7 +4,7 @@
 
 $(function () {
     'use strict';
-    
+
 	if (window.location.href.indexOf(mainpage + 'user/') === -1){
 		return;
 	}
@@ -36,7 +36,7 @@ $(function () {
 
 function User() {
     'use strict';
-    
+
 	// https://www.google.com/design/spec/style/color.html#color-color-palette
 	// 0 is Blue
 	// 1 is Teal
@@ -54,7 +54,7 @@ function User() {
 		if (data.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), data.error);
 		}
-		
+
 		// this.createChart(data, $('#user-activity-chart-space'), 'user-activity-canvas', 0);
 		// this.createChart(data, $('#user-vote-chart-space'), 'user-vote-canvas', 1);
 		// this.createChart(data, $('#user-statement-chart-space'), 'user-statement-canvas', 2);
@@ -117,7 +117,5 @@ function User() {
 	 */
 	this.getPublicUserDataFail = function(){
 	};
-
-
 
 }

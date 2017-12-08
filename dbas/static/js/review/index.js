@@ -4,10 +4,10 @@
 
 $(document).ready(function () {
     'use strict';
-    
+
 	var tabs = $('#review-tabs');
 	var id;
-	
+
 	// action for each tab
 	$.each(tabs.find('a'), function(){
 		$(this).click(function () {
@@ -16,7 +16,7 @@ $(document).ready(function () {
 			$(id).show();
 		});
 	});
-	
+
 	// show first
 	hideAll();
 	id = tabs.find('a:first').attr('href');
@@ -28,14 +28,14 @@ $(document).ready(function () {
  */
 function hideAll(){
     'use strict';
-    
+
 	var tabs = $('#review-tabs');
 	var id;
 	$.each(tabs.find('a'), function(){
 		id = $(this).attr('href');
 		$(id).hide();
 	});
-	
+
 	var table = $('#reputation_table');
 	if (table.length > 0){
 		var dict = getLanguage() === 'de'? dataTables_german_lang : dataTables_english_lang;

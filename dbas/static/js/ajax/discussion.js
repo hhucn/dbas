@@ -4,7 +4,7 @@
 
 function AjaxDiscussionHandler() {
 	'use strict';
-	
+
 	/**
 	 * Sends new premises to the server. Answer will be given to a callback
 	 * @param arg_uid
@@ -34,7 +34,7 @@ function AjaxDiscussionHandler() {
 			//	 + _t(doNotHesitateToContact) + '. ');
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param position
@@ -116,7 +116,7 @@ function AjaxDiscussionHandler() {
 			//	 + _t(doNotHesitateToContact) + '. ');
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param info
@@ -276,7 +276,7 @@ function AjaxDiscussionHandler() {
 		var is_position = type === 'position' || type === 'statement';
 		var uid = argument_uid === 'None' ? statement_uid : argument_uid;
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		
+
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
 			method: 'GET',
@@ -330,7 +330,7 @@ function AjaxDiscussionHandler() {
 		}).fail(function ajaxGetAllUsersFail() {
 			// setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
-		
+
 	};
 
 	/***
@@ -356,7 +356,7 @@ function AjaxDiscussionHandler() {
 		}
 		var bubbleSpace = $('#' + discussionBubbleSpaceId);
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		
+
 		// clear lists if input is empty
 		if(callback.val().length === 0) {
 			$('#' + proposalStatementListGroupId).empty();
@@ -415,7 +415,7 @@ function AjaxDiscussionHandler() {
 		});
 		callback.focus();
 	};
-	
+
 	/**
 	 *
 	 * @param uid
@@ -442,7 +442,7 @@ function AjaxDiscussionHandler() {
 			//$('#' + popupUrlSharingInputId).val(long_url);
 		});
 	};
-	
+
 	/**
 	 * Marks given statements as read
 	 *
@@ -470,7 +470,7 @@ function AjaxDiscussionHandler() {
 		}).fail(function () {
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param uid
@@ -506,9 +506,9 @@ function AjaxDiscussionHandler() {
 			new PopupHandler().hideAndClearUrlSharingPopup();
 		});
 	};
-	
+
 	/*
-	
+
 	 */
 	this.setDiscussionSettings = function(toggle_element){
 		var checked = toggle_element.prop('checked');

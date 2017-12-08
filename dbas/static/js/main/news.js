@@ -4,9 +4,9 @@
 
 function News() {
     'use strict';
-    
+
 	var BOOTSTRAP_COLLAPSE = 990;
-	
+
 	/**
 	 *
 	 */
@@ -79,7 +79,7 @@ function News() {
 		if ($(window).width() < BOOTSTRAP_COLLAPSE) {
 			return;
 		}
-		
+
 		var set_height = function (ctx, mh) {
 			ctx.children().eq(0).css({'min-height': mh + 'px'});
 		};
@@ -90,7 +90,7 @@ function News() {
 				return $(this).height();
 			}).get();
 			maxHeight = Math.max.apply(Math, heights);
-			
+
 			$.each(children, function(){
 				set_height($(this), maxHeight);
 			});
@@ -121,7 +121,7 @@ function News() {
 			p.css({'height': (ph + h) + 'px'});
 		});
 	};
-	
+
 	/**
 	 *
 	 * @returns {number|*}
@@ -221,7 +221,7 @@ function News() {
 			}
 		}).hide();
 	};
-	
+
 	/**
 	 *
 	 * @param index
@@ -285,7 +285,7 @@ function News() {
 		} else {
 			$('#news-back').parent().removeClass('disabled');
 		}
-		
+
 		if (currentCounter === max){
 			$('#news-forth').parent().addClass('disabled');
 		} else {
@@ -397,11 +397,11 @@ function News() {
 
 $(document).ready(function () {
     'use strict';
-    
+
 	if (window.location.href.indexOf(mainpage + 'news') === -1){
 		return;
 	}
-	
+
 	var news = new News();
 	news.setNewsInRow();
 	$('.panel-body').css('height', '');
@@ -413,7 +413,6 @@ $(document).ready(function () {
 
 	$('#' + writingNewsFailedId).hide();
 	$('#' + writingNewsSuccessId).hide();
-
 
 	/**
 	 * Sharing shortened url on google

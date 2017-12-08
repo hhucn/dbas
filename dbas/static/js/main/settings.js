@@ -105,7 +105,6 @@ function HistoryHandler(){
 
 function SettingsHandler(){
     'use strict';
-    
 
 	/**
 	 *
@@ -143,7 +142,6 @@ function SettingsHandler(){
 
 function StatisticsHandler(){
     'use strict';
-    
 
 	/**
 	 *
@@ -167,7 +165,7 @@ function StatisticsHandler(){
 			$('#' + popupConfirmDialogId).modal('hide');
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param jsonData
@@ -207,10 +205,10 @@ function StatisticsHandler(){
 			}
 			table.append(tr);
 		});
-		
+
 		this.setGuiOfCallbackStatisticsModal(table, titleText);
 	};
-	
+
 	this.setGuiOfCallbackStatisticsModal = function(table, titleText){
 		var modalBody;
 
@@ -334,7 +332,7 @@ $(function () {
 	$('#' + settingsPublicNick).change(function publicNickChange() {
 		new AjaxSettingsHandler().setUserSetting($(this), 'public_nick');
 	});
-	
+
 	var guided_toggle = $('#' + settingsGuidedTour);
 	guided_toggle.bootstrapToggle(Cookies.get(GUIDED_TOUR) ? 'off' : 'on');
 	guided_toggle.change(function guidedTourChange() {

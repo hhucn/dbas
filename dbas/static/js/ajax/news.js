@@ -4,7 +4,7 @@
 
 function AjaxNewsHandler(){
 	'use strict';
-	
+
 	/**
 	 *
 	 */

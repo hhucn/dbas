@@ -1,7 +1,7 @@
 /**
  * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
-	
+
 // https://www.google.com/design/spec/style/color.html#color-color-palette
 var fillColorSet = ['rgba(200,230,201,0.4)', 'rgba(255,205,210,0.4)', 'rgba(187,222,251,0.4)', 'rgba(187,222,251,0.4)']; //100
 var strokeColorSet = ['#4CAF50', '#F44336', '#2196F3', '#795548']; // 500
@@ -9,22 +9,22 @@ var pointStrokeColorSet = ['#2E7D32', '#C62828', '#1565C0', '#4E342E']; // 800
 
 $(document).ready(function () {
     'use strict';
-    	
+
 	var labels = collectLabels();
 	var absoluteData = collectAbsoluteDataset();
 	var relativeData = collectRelativeDataset();
-	
+
 	var collected = collectDates(labels, absoluteData, relativeData);
 	var collectedLabels = collected[0];
 	var collectedAbsoluteData = collected[1];
 	var collectedRelativeData = collected[2];
-	
+
 	createChart(_t('repuationChartSum'), collectedLabels,  collectedAbsoluteData, $('#reputation_absolute_graph_summary'), 'absolute_graph_summary', 0);
 	createChart(_t('repuationChartDay'), collectedLabels,  collectedRelativeData, $('#reputation_relative_graph_summary'), 'relative_graph_summary', 2);
 	// createChart('Absolute View', labels, absoluteData, $('#reputation_absolute_graph'), '#absolute_graph', 2);
 	// createChart('Relative View', labels, relativeData, $('#reputation_relative_graph'), '#relative_graph', 3);
 	setLegendCSS();
-	
+
 });
 
 /**
@@ -33,7 +33,7 @@ $(document).ready(function () {
  */
 function collectLabels(){
     'use strict';
-    
+
 	var labels = [];
 	$.each($('#reputation_table').find('.rep_date'), function(){
 		labels.push($(this).text());
@@ -47,7 +47,7 @@ function collectLabels(){
  */
 function collectAbsoluteDataset() {
     'use strict';
-    
+
 	var data = [0];
 	$.each($('#reputation_table').find('.points'), function (index) {
 		data.push(data[index] + parseInt($(this).text()));
@@ -62,7 +62,7 @@ function collectAbsoluteDataset() {
  */
 function collectRelativeDataset(){
     'use strict';
-    
+
 	var data = [];
 	$.each($('#reputation_table').find('.points'), function(){
 		data.push(parseInt($(this).text()));
@@ -79,7 +79,7 @@ function collectRelativeDataset(){
  */
 function collectDates(labels, absoluteDataset, relativeDataset){
     'use strict';
-    
+
 	var newLabels = [];
 	var newAbsolute = [];
 	var newRelative = [];
@@ -93,7 +93,7 @@ function collectDates(labels, absoluteDataset, relativeDataset){
 			newRelative.push(relativeDataset[index]);
 		}
 	});
-	
+
 	return [newLabels, newAbsolute, newRelative];
 }
 
@@ -109,7 +109,7 @@ function collectDates(labels, absoluteDataset, relativeDataset){
  */
 function createChart (label, labels, displaydata, space, id, count){
     'use strict';
-    
+
 	space.append('<canvas id="' + id + '" width="' + space.width() + 'px" height="300" style= "display: block; margin: 0 auto;"></canvas>');
 	var data = {
 		labels : labels,
@@ -139,7 +139,7 @@ function createChart (label, labels, displaydata, space, id, count){
  */
 function setLegendCSS () {
     'use strict';
-    
+
 	var legend = $('.chart-legend');
 
 	legend.find('ul').css({

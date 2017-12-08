@@ -15,7 +15,6 @@ _t = function(id){
     return get_it(getLanguage(), id);
 };
 
-
 /**
  * Returns a translated string in the discussion language
  * @param id of the string
@@ -24,7 +23,7 @@ _t = function(id){
  */
 _t_discussion = function(id){
     'use strict';
-    
+
     var info = $('#issue_info');
     if (typeof info === 'undefined') {
 	    return get_it('en', id);
@@ -42,7 +41,7 @@ var get_it = function(val, id){
         value = dbas_en[id];
     }
     return value;
-    
+
 };
 
 /**
@@ -60,7 +59,7 @@ getLanguage = function(){
  */
 getDiscussionLanguage = function(){
     'use strict';
-    
+
     var lang = $('#issue_info').data('discussion-language'), value;
     if (lang.indexOf('en') !== -1){
         value = 'en';
@@ -339,7 +338,6 @@ var urlSettings = 'settings';
 var urlImprint  = 'imprint';
 var urlLogout   = 'logout';
 var urlReview   = 'review';
-
 
 var dbas_en = {
     'an_anonymous_user': 'an anonymous user',
@@ -836,7 +834,6 @@ var dbas_de = {
     'tourHaveFunTitle': 'Und nun ...',
     'tourHaveFunContent': '... viel Spaß!',
 };
-
 
 var dataTables_german_lang = {
     "sEmptyTable":      "Keine Daten in der Tabelle vorhanden",

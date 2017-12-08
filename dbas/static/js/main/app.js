@@ -10,7 +10,7 @@
  */
 function setLinkActive(linkname) {
 	'use strict';
-	
+
 	$('#navbar-right').find('>li').each(function(){
 		$(this).removeClass('active');
 	});
@@ -22,7 +22,7 @@ function setLinkActive(linkname) {
  */
 function jmpToChapter() {
     'use strict';
-    
+
 	// jump to chapter-function
 	$('a[href^="#"]').on('click', function (e) {
 		try {
@@ -42,20 +42,20 @@ function jmpToChapter() {
  */
 function addBorderToActiveNavbar(){
     'use strict';
-	
+
 	var active_element = $('.navbar-right > .active');
 	if (active_element.length === 0){
 		return;
 	}
 	var border_size = '2';
-	
+
 	// replace padding of the inner element
 	var inner_element = active_element.find('a');
 	var pad_top = parseInt(inner_element.css('padding-top').replace('px', ''));
 	var pad_bottom = parseInt(inner_element.css('padding-bottom').replace('px', ''));
 	inner_element.css('padding-top', (pad_top - border_size / 2) + 'px');
 	inner_element.css('padding-bottom', (pad_bottom - border_size / 2) + 'px');
-	
+
     // add border to the navbar element
 	active_element.css('border-top', border_size + 'px solid #2196F3');
 }
@@ -65,7 +65,7 @@ function addBorderToActiveNavbar(){
  */
 function goBackToTop() {
     'use strict';
-    
+
 	$(window).scroll(function () {
 		if (jQuery(this).scrollTop() > 500) {
 			$('.back-to-top').fadeIn('slow');
@@ -90,13 +90,13 @@ function goBackToTop() {
  */
 function setGravatarFallback() {
     'use strict';
-    
+
 	var body = $('body');
 	var img = body.find('.img-circle');
 	if (img.length === 0) {
 		return true;
 	}
-	
+
 	var src = body.find('.img-circle')[0].src;
 	$.get(src, function() {
     	replace_gravtar_with_default_image(true);
@@ -111,7 +111,7 @@ function setGravatarFallback() {
  */
 function replace_gravtar_with_default_image(only_on_error){
     'use strict';
-    
+
 	$('body').find('.img-circle').each(function (){
 		var icons =
 			[  { 'name': 'faces', 'length': 98
@@ -121,7 +121,7 @@ function replace_gravtar_with_default_image(only_on_error){
 		var t = 3;
 		var no = Math.floor(Math.random() * icons[t].length);
 		var src = mainpage + 'static/images/fallback-' + icons[t].name + '/' +  no + '.svg';
-		
+
 		if (only_on_error) {
 			$(this).attr('onerror', 'this.src="' + src + '"');
 		} else {
@@ -144,7 +144,7 @@ function replace_gravtar_with_default_image(only_on_error){
  */
 function displayConfirmationDialog(titleText, bodyText, functionForAccept, functionForRefuse, small_dialog) {
     'use strict';
-    
+
 	// display dialog
 	var dialog = $('#' + popupConfirmDialogId);
     dialog.find('#confirm-dialog-accept-btn').show();
@@ -175,7 +175,7 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
 		// unload buttons
 		$('#' + popupConfirmDialogAcceptBtn).off('click');
 		$('#' + popupConfirmDialogRefuseBtn).off('click');
-		
+
 	});
 }
 
@@ -187,7 +187,7 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
  */
 function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) {
     'use strict';
-    
+
 	// display dialog
 	$('#' + popupConfirmDialogId).modal('show');
 	$('#' + popupConfirmDialogId + ' h4.modal-title').html(titleText);
@@ -208,7 +208,7 @@ function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) 
  */
 function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText, functionForAccept, isRestartingDiscussion) {
     'use strict';
-    
+
 	// display dialog only if the cookie was not set yet
 	if (Cookies.get(WARNING_CHANGE_DISCUSSION_POPUP)){
 		window.location.href = functionForAccept;
@@ -243,7 +243,7 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
  */
 function setPiwikOptOutLink(lang){
     'use strict';
-    
+
 	var src = mainpage + 'piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=' + lang;
 	$('#piwik-opt-out-iframe').attr('src', src);
 }
@@ -253,7 +253,7 @@ function setPiwikOptOutLink(lang){
  */
 function setEasterEggs(){
     'use strict';
-    
+
 	$('#roundhousekick').click(function(){ new AjaxMainHandler().roundhouseKick(); });
 	//$('#yomamma').click(function(){ new AjaxMainHandler().ajaxMama(); });
 	$('#logo_dbas, #logo_dbas_s, #homeHeading').click(function(){
@@ -280,7 +280,7 @@ function setEasterEggs(){
  */
 function prepareLoginRegistrationPopup(){
     'use strict';
-    
+
 	// hide on startup
 	new PopupHandler().hideExtraViewsOfLoginPopup();
 
@@ -310,7 +310,7 @@ function prepareLoginRegistrationPopup(){
 			new AjaxMainHandler().registration();
 		}
 	});
-	
+
 	// data disclaimer
 	if (Cookies.get(DBAS_DATA_DISCLAIMER) === 'true') {
 		$('#dbas-login-data-disclaimer').hide();
@@ -390,7 +390,7 @@ function prepareLoginRegistrationPopup(){
  */
 function setTextWatcherInputLength(element, display_at_top){
     'use strict';
-    
+
 	var min_length = element.data('min-length');
 	var max_length = element.data('max-length');
 	if (!max_length) {
@@ -404,11 +404,11 @@ function setTextWatcherInputLength(element, display_at_top){
 	} else {
 		field.insertAfter(element);
 	}
-	
+
 	element.keyup(function(){
 		var text = element.val().trim();
 		var current_length = text.length;
-		
+
 		if (current_length === 0){
 			field.addClass('text-info');
 			field.removeClass('text-danger');
@@ -442,7 +442,7 @@ function setTextWatcherInputLength(element, display_at_top){
  */
 function setGlobalErrorHandler(heading, body){
     'use strict';
-    
+
 	$('#' + requestFailedContainer).fadeIn();
 	$('#' + requestFailedContainerClose).click(function(){
 		$('#' + requestFailedContainer).fadeOut();
@@ -462,7 +462,7 @@ function setGlobalErrorHandler(heading, body){
  */
 function setGlobalSuccessHandler(heading, body){
     'use strict';
-    
+
 	$('#' + requestSuccessContainer).fadeIn();
 	$('#' + requestSuccessContainerClose).click(function(){
 		$('#' + requestSuccessContainer).fadeOut();
@@ -482,7 +482,7 @@ function setGlobalSuccessHandler(heading, body){
  */
 function setGlobalInfoHandler(heading, body){
     'use strict';
-    
+
 	$('#' + requestInfoContainer).fadeIn();
 	$('#' + requestInfoContainerClose).click(function(){
 		$('#' + requestInfoContainer).fadeOut();
@@ -500,7 +500,7 @@ function setGlobalInfoHandler(heading, body){
  */
 function decodeString(encodedString){
     'use strict';
-    
+
 	// var textArea = document.createElement('textarea');
     // textArea.innerHTML = encodedString;
     // return textArea.value;
@@ -549,7 +549,7 @@ function callbackIfDoneForLogin(data, showGlobalError){
  */
 function callbackIfDoneForRegistration(data){
     'use strict';
-    
+
 	var success = $('#' + popupLoginSuccess); //popupLoginRegistrationSuccess);
 	var failed = $('#' + popupLoginRegistrationFailed);
 	var info = $('#' + popupLoginRegistrationInfo);
@@ -580,14 +580,14 @@ function callbackIfDoneForRegistration(data){
  */
 function callbackIfDoneForRegistrationViaOauth(data) {
 	'use strict';
-	
+
 	var success = $('#' + popupLoginSuccess);
 	var failed = $('#popup-complete-login-failed');
 	var info = $('#popup-complete-login-info');
 	success.hide();
 	info.hide();
 	failed.hide();
-	
+
 	if ('success' in data && data.success.length > 0) {
 		$('#popup-complete-login').modal('hide');
 		$('#popup-login').modal('show');
@@ -612,7 +612,7 @@ function callbackIfDoneForRegistrationViaOauth(data) {
  */
 function callbackIfDoneForPasswordRequest(data){
     'use strict';
-    
+
 	var success = $('#' + popupLoginSuccess);
 	var failed = $('#' + popupLoginFailed);
 	var info = $('#' + popupLoginInfo);
@@ -640,7 +640,7 @@ function callbackIfDoneForPasswordRequest(data){
 // *********************
 $(document).ready(function () {
     'use strict';
-    
+
 	// ajax loading animation
 	var timer;
 	$(document).on({
@@ -655,8 +655,7 @@ $(document).ready(function () {
             $('body').removeClass('loading');
 		}
 	});
-	
-	
+
 	var path = window.location.href;
 	var lang = $('#hidden_language').val();
 
@@ -700,7 +699,7 @@ $(document).ready(function () {
 			$('#' + sessionExpiredContainer).fadeOut();
 		}, 3000);
 	}
-	
+
 	// start guided tour, if the cookie is not set
 	if (!Cookies.get(GUIDED_TOUR) && window.location.href.indexOf('/discuss') !== -1){
 		new GuidedTour().start();
@@ -709,7 +708,7 @@ $(document).ready(function () {
 	$('#contact_on_error').click(function(){
 		window.location.href=$('#contact-link').find('a').attr('href');
 	});
-	
+
 	// language switch
 	$('#' + translationLinkDe).click(function(){ new GuiHandler().lang_switch('de'); });
 	$('#' + translationLinkEn).click(function(){ new GuiHandler().lang_switch('en'); });
@@ -727,7 +726,7 @@ $(document).ready(function () {
 			$('nav').removeClass('shrink');
 		}
 	});
-	
+
 	// testing with gremlins
 	//var horde = gremlins.createHorde()
 	//	.gremlin(gremlins.species.formFiller())

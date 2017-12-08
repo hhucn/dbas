@@ -2,7 +2,6 @@
  * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
-
 /**
  * Swaps the element with the parameter
  * @param from element
@@ -11,7 +10,7 @@
  */
 function swapElements (from, to) {
     'use strict';
-    
+
     var copy_to = $(to).clone(true),
 	    copy_from = $(from).clone(true);
 	$(to).replaceWith(copy_from);
@@ -25,7 +24,7 @@ function swapElements (from, to) {
  */
 function levensthein (s1, s2){
     'use strict';
-    
+
 	var row2=[];
 	if (s1 === s2) {
 		return 0;

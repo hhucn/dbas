@@ -4,13 +4,13 @@
 
 function Review() {
     'use strict';
-    
+
 	var sec = parseInt($('#request-lock').data('lock_sec'));
 	var countdown;
 	var _this = this;
 	var countdown_min = parseInt(sec/60);
 	var countdown_sec = sec - countdown_min * 60;
-	
+
 	/**
 	 *
 	 */
@@ -18,7 +18,7 @@ function Review() {
 		var container = $('#optimization-container');
 		var opti_ack = $('#opti_ack');
 		var send_edit = $('#send_edit');
-		
+
 		send_edit.addClass('disabled');
 		$('#close-optimization-container').click(function(){
 			container.hide();
@@ -29,7 +29,7 @@ function Review() {
 		});
 		//_this.startCountdown();
 		new AjaxReviewHandler().un_lockOptimizationReview(review_uid, true, _this);
-		
+
 		// for each input in table
 		$.each(container.find('table').find('input'), function(){
 			$(this).focus(function(){
@@ -40,7 +40,7 @@ function Review() {
 			});
 		});
 	};
-	
+
 	/**
 	 *
 	 */
@@ -57,7 +57,7 @@ function Review() {
 				});
 			}
 		});
-		
+
 		if (edit_array.length > 0){
 			var id = $('#send_edit').data('id');
 			new AjaxReviewHandler().reviewOptimizationArgument(true, id, edit_array);
@@ -65,21 +65,21 @@ function Review() {
 			setGlobalInfoHandler('Ohh!', _t(noEditsInOptimization));
 		}
 	};
-	
+
 	/**
 	 *
 	 */
 	this.doDeleteAck = function(review_uid) {
 		new AjaxReviewHandler().reviewDeleteArgument(true, review_uid);
 	};
-	
+
 	/**
 	 *
 	 */
 	this.doDeleteNack = function(review_uid) {
 		new AjaxReviewHandler().reviewDeleteArgument(false, review_uid);
 	};
-	
+
 	/**
 	 *
 	 * @param review_uid
@@ -87,7 +87,7 @@ function Review() {
 	this.doEditAck = function(review_uid){
 		new AjaxReviewHandler().reviewEditArgument(true, review_uid);
 	};
-	
+
 	/**
 	 *
 	 * @param review_uid
@@ -95,7 +95,7 @@ function Review() {
 	this.doEditNack = function(review_uid){
 		new AjaxReviewHandler().reviewEditArgument(false, review_uid);
 	};
-	
+
 	/**
 	 *
 	 * @param review_uid
@@ -103,7 +103,7 @@ function Review() {
 	this.doDuplicateAck = function(review_uid){
 		new AjaxReviewHandler().reviewDuplicateStatement(true, review_uid);
 	};
-	
+
 	/**
 	 *
 	 * @param review_uid
@@ -111,7 +111,7 @@ function Review() {
 	this.doDuplicateNack = function(review_uid){
 		new AjaxReviewHandler().reviewDuplicateStatement(false, review_uid);
 	};
-	
+
 	/**
 	 *
 	 * @param review_uid
@@ -119,7 +119,7 @@ function Review() {
 	this.doMergeAck = function(review_uid){
 		new AjaxReviewHandler().reviewMergeStatement(true, review_uid);
 	};
-	
+
 	/**
 	 *
 	 * @param review_uid
@@ -127,7 +127,7 @@ function Review() {
 	this.doMergeNack = function(review_uid){
 		new AjaxReviewHandler().reviewMergeStatement(false, review_uid);
 	};
-	
+
 	/**
 	 *
 	 * @param review_uid
@@ -135,7 +135,7 @@ function Review() {
 	this.doSplitAck = function(review_uid){
 		new AjaxReviewHandler().reviewSplitStatement(true, review_uid);
 	};
-	
+
 	/**
 	 *
 	 * @param review_uid
@@ -143,7 +143,7 @@ function Review() {
 	this.doSplitNack = function(review_uid){
 		new AjaxReviewHandler().reviewSplitStatement(false, review_uid);
 	};
-	
+
 	/**
 	 *
 	 */
@@ -156,7 +156,7 @@ function Review() {
 		point.removeClass('text-danger').addClass('text-info');
 		$('#request-lock-text').show();
 		$('#request-not-lock-text').show();
-		
+
 		countdown = new Countdown({
             seconds: countdown_min * 60 + countdown_sec,  // number of seconds to count down
             onUpdateStatus: function(sec){
@@ -182,7 +182,7 @@ function Review() {
 		});
 		countdown.start();
 	};
-	
+
 	/**
 	 *
 	 */
@@ -194,7 +194,7 @@ function Review() {
 		button.hide();
 		new AjaxReviewHandler().un_lockOptimizationReview(button.data('id'), false, undefined);
 	};
-	
+
 	/**
 	 *
 	 * @param only_unlock
@@ -205,5 +205,5 @@ function Review() {
 			location.reload(true);
 		}
 	};
-	
+
 }
