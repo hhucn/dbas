@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-12-04 12:33+0100\n"
+"POT-Creation-Date: 2017-12-08 12:51+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 #. Default: Field Experiment 2017
 #: templates/fieldtest.pt:6
-msgid "field_experiment_2016"
+msgid "field_experiment_2017"
 msgstr "Feldstudie 2017"
 
 #. Default: Most important information about our field experiment in May 2017
@@ -669,7 +669,7 @@ msgid "no_arguments_to_review"
 msgstr "Keine Argumente zum Begutachten!"
 
 #. Default: Review
-#: templates/review-content.pt:30 templates/snippet-header.pt:82
+#: templates/review-content.pt:30 templates/snippet-header.pt:80
 msgid "review"
 msgstr "Prüfen"
 
@@ -1045,35 +1045,35 @@ msgstr "Thema wechseln"
 
 #. Default: Add a Topic
 #. Default: Add Topic
-#: templates/snippet-header.pt:58 templates/snippet-header.pt:64
+#: templates/snippet-header.pt:58 templates/snippet-header.pt:63
 #: templates/snippet-popups.pt:714
 msgid "add_topic"
 msgstr "Thema hinzufügen"
 
 #. Default: Login
 #. Default: Log In
-#: templates/snippet-header.pt:76 templates/snippet-popups.pt:327
+#: templates/snippet-header.pt:74 templates/snippet-popups.pt:327
 #: templates/snippet-popups.pt:372
 msgid "login"
 msgstr "Login"
 
 #. Default: Settings
-#: templates/snippet-header.pt:97 templates/settings.pt:53
+#: templates/snippet-header.pt:95 templates/settings.pt:53
 msgid "settings"
 msgstr "Einstellungen"
 
 #. Default: Notifications
-#: templates/snippet-header.pt:104
+#: templates/snippet-header.pt:102
 msgid "notifications"
 msgstr "Benachrichtigungen"
 
 #. Default: Admin
-#: templates/snippet-header.pt:109
+#: templates/snippet-header.pt:107
 msgid "Admin"
 msgstr "Admin"
 
 #. Default: Logout
-#: templates/snippet-header.pt:114
+#: templates/snippet-header.pt:112
 msgid "logout"
 msgstr "Abmelden"
 
@@ -1412,10 +1412,14 @@ msgid "Documentation"
 msgstr "Dokumentation"
 
 #. Default: Github
-#. Default: Field Experiment
-#: templates/snippet-footer.pt:30 templates/snippet-footer.pt:33
+#: templates/snippet-footer.pt:30
 msgid "Github"
 msgstr "Github"
+
+#. Default: Field Experiment
+#: templates/snippet-footer.pt:33
+msgid "field_experiment"
+msgstr "Feldstudie"
 
 #. Default: About me
 #: templates/snippet-popups.pt:10

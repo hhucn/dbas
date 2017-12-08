@@ -134,7 +134,6 @@ class DictionaryHelper(object):
         is_development = is_development_mode(registry)
 
         rrs = registry.settings
-        application_url = application_url
         if application_url is None:
             application_url = ''
             logger('DictionaryHelper', 'prepare_extras_dict', 'application_url is None', error=True)
