@@ -260,72 +260,85 @@ function GuiHandler() {
 				$('#popup-complete-login-nick-input').val(data.user.nickname).prop('disabled', true);
 			}
 			if ('gender' in data.user && data.user.gender.length > 0) {
-				if (data.user.gender === 'f') {
-					$('#popup-complete-login-inlineRadioGender2').prop('checked', true).prop('disabled', true);
-					$('#popup-complete-login-inlineRadioGender1').prop('disabled', true);
-					$('#popup-complete-login-inlineRadioGender3').prop('disabled', true);
-				} else if (data.user.gender === 'm') {
-					$('#popup-complete-login-inlineRadioGender3').prop('checked', true).prop('disabled', true);
-					$('#popup-complete-login-inlineRadioGender1').prop('disabled', true);
-					$('#popup-complete-login-inlineRadioGender2').prop('disabled', true);
-				} else {
-					$('#popup-complete-login-inlineRadioGender1').prop('checked', true).prop('disabled', true);
-					$('#popup-complete-login-inlineRadioGender2').prop('disabled', true);
-					$('#popup-complete-login-inlineRadioGender3').prop('disabled', true);
-				}
+				new GuiHandler().setPropInlineGender(data.user.gender);
 			}
 			if ('email' in data.user && data.user.email.length > 0) {
 				$('#popup-complete-login-email-input').val(data.user.email).prop('disabled', true);
 			}
 
 			$('#popup-complete-login-register-button').off('click').click(function () {
-				var gender = '';
-				if ($('#popup-complete-login-inlineRadioGender1').is(':checked')) { gender = 'n'; }
-				if ($('#popup-complete-login-inlineRadioGender2').is(':checked')) { gender = 'm'; }
-				if ($('#popup-complete-login-inlineRadioGender3').is(':checked')) { gender = 'f'; }
-
-				$('#popup-complete-login-failed').hide();
-				$('#popup-complete-login-info').hide();
-
-				var csrf_token = $('#' + hiddenCSRFTokenId).val();
-				$.ajax({
-					url: 'ajax_user_registration',
-					type: 'POST',
-					data: {
-						firstname: $('#popup-complete-login-userfirstname-input').val(),
-						lastname: $('#popup-complete-login-userlastname-input').val(),
-						nickname: $('#popup-complete-login-nick-input').val(),
-						gender: gender,
-						email: $('#popup-complete-login-email-input').val(),
-						password: $('#popup-complete-login-password-input').val(),
-						passwordconfirm: $('#popup-complete-login-passwordconfirm-input').val(),
-						'g-recaptcha-response': '',
-						lang: getLanguage(),
-						mode: 'oauth'
-					},
-					dataType: 'json',
-					async: true,
-					headers: {
-						'X-CSRF-Token': csrf_token
-					}
-				}).done(function ajaxRegistrationOauthDone(data) {
-					callbackIfDoneForRegistrationViaOauth(data);
-				}).fail(function ajaxRegistrationOauthFail(xhr) {
-					$('#popup-complete-login-failed').removeClass('hidden');
-					if (xhr.status === 400) {
-						$('#popup-complete-login-failed-message').text(_t(requestFailedBadToken));
-					} else if (xhr.status === 500) {
-						$('#popup-complete-login-failed-message').text(_t(requestFailedInternalError));
-					} else {
-						$('#popup-complete-login-failed-message').text(_t(requestFailed));
-					}
-				}).always(function ajaxLoginOauthAlways() {
-					$('#popup-complete-login-password-input').val('');
-					$('#popup-complete-login-passwordconfirm-input').val('');
-				});
+				new GuiHandler().fire_ajax_user_registration();
 			});
 		});
+	};
+	
+	/**
+	 *
+	 * @param gender
+	 */
+	this.setPropInlineGender = function(gender){
+		var g1 = $('#popup-complete-login-inlineRadioGender1');
+		var g2 = $('#popup-complete-login-inlineRadioGender2');
+		var g3 = $('#popup-complete-login-inlineRadioGender3');
+		g1.prop('disabled', true);
+		g2.prop('disabled', true);
+		g3.prop('disabled', true);
+		if (gender === 'f') {
+			g2.prop('checked', true).prop('disabled', true);
+		} else if (gender === 'm') {
+			g3.prop('checked', true).prop('disabled', true);
+		} else {
+			g1.prop('checked', true).prop('disabled', true);
+		}
+	};
+	
+	/**
+	 *
+	 */
+	this.fire_ajax_user_registration = function(){
+		var gender = '';
+		if ($('#popup-complete-login-inlineRadioGender1').is(':checked')) { gender = 'n'; }
+		if ($('#popup-complete-login-inlineRadioGender2').is(':checked')) { gender = 'm'; }
+		if ($('#popup-complete-login-inlineRadioGender3').is(':checked')) { gender = 'f'; }
 
+		$('#popup-complete-login-failed').hide();
+		$('#popup-complete-login-info').hide();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_user_registration',
+			type: 'POST',
+			data: {
+				firstname: $('#popup-complete-login-userfirstname-input').val(),
+				lastname: $('#popup-complete-login-userlastname-input').val(),
+				nickname: $('#popup-complete-login-nick-input').val(),
+				gender: gender,
+				email: $('#popup-complete-login-email-input').val(),
+				password: $('#popup-complete-login-password-input').val(),
+				passwordconfirm: $('#popup-complete-login-passwordconfirm-input').val(),
+				'g-recaptcha-response': '',
+				lang: getLanguage(),
+				mode: 'oauth'
+			},
+			dataType: 'json',
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrf_token
+			}
+		}).done(function ajaxRegistrationOauthDone(data) {
+			callbackIfDoneForRegistrationViaOauth(data);
+		}).fail(function ajaxRegistrationOauthFail(xhr) {
+			$('#popup-complete-login-failed').removeClass('hidden');
+			if (xhr.status === 400) {
+				$('#popup-complete-login-failed-message').text(_t(requestFailedBadToken));
+			} else if (xhr.status === 500) {
+				$('#popup-complete-login-failed-message').text(_t(requestFailedInternalError));
+			} else {
+				$('#popup-complete-login-failed-message').text(_t(requestFailed));
+			}
+		}).always(function ajaxLoginOauthAlways() {
+			$('#popup-complete-login-password-input').val('');
+			$('#popup-complete-login-passwordconfirm-input').val('');
+		});
 	};
 
 	/**
