@@ -11,7 +11,7 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.views import handle_justification_step
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_statement, \
     check_belonging_of_argument, check_belonging_of_premisegroups, related_with_support, check_reaction
-from dbas.lib import get_discussion_language, resolve_issue_uid_to_slug
+from dbas.lib import get_discussion_language
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_argument_click
 from dbas.strings.keywords import Keywords as _
@@ -45,20 +45,17 @@ def init(request_dict, for_api=False) -> dict:
     issue = request_dict['issue']
     ui_locales = request_dict['ui_locales']
 
-    slug = resolve_issue_uid_to_slug(request_dict['last_topic'])
-    if not slug:
-        slug = ''
-
     disc_ui_locales = get_discussion_language(request_dict['matchdict'], request_dict['params'],
                                               request_dict['session'], issue)
     issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, nickname)
     item_dict = ItemDictHelper(disc_ui_locales, issue, application_url, for_api).get_array_for_start(nickname)
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname=nickname, main_page=application_url, slug=slug)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname=nickname, main_page=application_url, slug=request_dict['slug'])
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     discussion_dict = _ddh.get_dict_for_start(position_count=(len(item_dict['elements'])))
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request_dict['registry'], request_dict['app_url'],
-                                          request_dict['path'], for_api=for_api, nickname=nickname)
+    extras_dict = _dh.prepare_extras_dict(request_dict['slug'], False, True, True, request_dict['registry'],
+                                          request_dict['app_url'], request_dict['path'],
+                                          for_api=for_api, nickname=nickname)
 
     if len(item_dict['elements']) == 1:
         DictionaryHelper(disc_ui_locales, disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict,

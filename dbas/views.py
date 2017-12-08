@@ -103,13 +103,22 @@ def prepare_request_dict(request, nickname):
     """
 
     last_topic = history_helper.get_saved_issue(nickname)
-    slug = request.matchdict['slug'] if 'slug' in request.matchdict and len(request.matchdict['slug']) > 0 else ''
+
+    slug = ''
+    if 'slug' in request.matchdict:
+        slug = request.matchdict['slug']
+        if len(request.matchdict['slug']) > 0:
+            slug = request.matchdict['slug'][0]
+
     if len(slug) == 0 and last_topic != 0:
         issue = last_topic
     elif len(slug) > 0:
         issue = issue_helper.get_id_of_slug(slug, request, True)
     else:
         issue = issue_helper.get_issue_id(request)
+
+    if len(slug) == 0:
+        slug = DBDiscussionSession.query(Issue).get(issue).slug
 
     history = history_helper.handle_history(request, nickname, slug, issue)
     ui_locales = get_language_from_cookie(request)
