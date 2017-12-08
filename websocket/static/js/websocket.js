@@ -59,10 +59,14 @@ function doConnect(){
 function doPublish(data){
 	'use strict';
 	
-	if (data.type === 'success') {	        handleMessage(data, 'Huray!', doSuccess);
-	} else if (data.type === 'warning') {	handleMessage(data, 'Uhh!', doWarning);
-	} else if (data.type === 'info') {	    handleMessage(data, 'Ooh!', doInfo);
-	} else {                                setGlobalInfoHandler('Mhhh!', data.msg);
+	if (data.type === 'success') {
+		handleMessage(data, 'Huray!', doSuccess);
+	} else if (data.type === 'warning') {
+		handleMessage(data, 'Uhh!', doWarning);
+	} else if (data.type === 'info') {
+		handleMessage(data, 'Ooh!', doInfo);
+	} else {
+		setGlobalInfoHandler('Mhhh!', data.msg);
 	}
 }
 
@@ -190,9 +194,12 @@ function enableTesting(){
 	}, 100);
 	
 	socket.on('push_test', function(data) {
-		if (data.type === 'success') {	        handleMessage(data, 'TEST!', doSuccess);
-		} else if (data.type === 'warning') {	handleMessage(data, 'TEST!', doWarning);
-		} else if (data.type === 'info') {	    handleMessage(data, 'TEST!', doInfo);
+		if (data.type === 'success') {
+			handleMessage(data, 'TEST!', doSuccess);
+		} else if (data.type === 'warning') {
+			handleMessage(data, 'TEST!', doWarning);
+		} else if (data.type === 'info') {
+			handleMessage(data, 'TEST!', doInfo);
 		}
 	});
 	

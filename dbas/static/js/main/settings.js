@@ -22,9 +22,12 @@ function HistoryHandler(){
 		$('#' + historyTableFailureId).fadeIn('slow');
 		setTimeout(function() { $('#' + historyTableFailureId).fadeOut(); }, 3000);
 
-		if (statuscode  ===  400) {		    $('#' + historyFailureMessageId).html(_t(requestFailedBadToken));
-		} else if (statuscode  ===  500) {	$('#' + historyFailureMessageId).html(_t(requestFailedInternalError));
-		} else {                		    $('#' + historyFailureMessageId).html(_t(requestFailed));
+		if (statuscode  ===  400) {
+			$('#' + historyFailureMessageId).html(_t(requestFailedBadToken));
+		} else if (statuscode  ===  500) {
+			$('#' + historyFailureMessageId).html(_t(requestFailedInternalError));
+		} else {
+			$('#' + historyFailureMessageId).html(_t(requestFailed));
 		}
 	};
 
