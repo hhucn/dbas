@@ -202,7 +202,6 @@ def prepare_data_assign_reference(request, func):
     :param request:
     :param func:
     :return:
-
     """
     api_data = prepare_user_information(request)
     if api_data:
@@ -236,8 +235,9 @@ def prepare_data_assign_reference(request, func):
         raise HTTP204()
 
 
-def prepare_dbas_request_dict(request):
+def prepare_dbas_request_dict(request) -> dict:
     """
+    Wraps D-BAS' creation of the request dict
 
     :param request:
     :return:

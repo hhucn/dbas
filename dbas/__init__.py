@@ -90,7 +90,6 @@ def main(global_config, **settings):
     config.include('api', route_prefix='/api')
     config.include('api.v2', route_prefix='/api/v2')
     config.include('graph', route_prefix='/graph')
-    config.include('export', route_prefix='/export')
     config.include('admin', route_prefix='/admin')
     config.include('websocket', route_prefix='/websocket')
 
