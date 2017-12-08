@@ -15,7 +15,7 @@
                     <div class="col-md-offset-2 col-md-8">
                         <div>
                             <h5><span i18n:translate="faq_question_ldap">How do we handle your login data?</span></h5>
-                            <span i18n:translate="faq_answer_ldap">If you are using the LDAP login, we are using the name information service of the University Düsseldorf. Your password is send from your computer, to our server (which is placed at the University) and then towards the service of the ZIM. Each transmission is secured and encrypted. Additionally we will never save, log or display your password anywhere! Otherwise the data is localy stored with salted hashes.</span>
+                            <span i18n:translate="faq_answer_ldap">If you are using the LDAP login, we are using the name information service of the University Düsseldorf. Your password is send from your computer, to our server (which is placed at the University) and then towards the service of the ZIM. Each transmission is secured and encrypted. Additionally we will never save, log or display your password anywhere!</span>
                         </div>
                         <br>
                         <div>

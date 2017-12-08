@@ -47,6 +47,7 @@ path = '/{url:.*}ajax_admin_add',
 # WEBSOCKET REQUESTS
 # =============================================================================
 
+
 @debug_data.get()
 def debug_function(request):
     """
@@ -59,7 +60,10 @@ def debug_function(request):
     logger('Websocket', 'debug_function', 'main')
 
     ui_locales = get_language_from_cookie(request)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid)
 
     return {
         'layout': base_layout(),
@@ -69,6 +73,7 @@ def debug_function(request):
         'extras': extras_dict,
         'is_admin': is_admin(request.authenticated_userid)
     }
+
 
 @debug_mail.get()
 def debug_that_mail(request):
@@ -83,7 +88,7 @@ def debug_that_mail(request):
         text = request.params['text'] if 'text' in request.params else 'empty text input'
         logger('Websocket', 'debug_mail', 'you got access: {}'.format(text))
         db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
-        send_mail(get_mailer(request), '[D-BAS] Debug Mail', 'Debug: {}'.format(text), db_user.email , 'en')
+        send_mail(get_mailer(request), '[D-BAS] Debug Mail', 'Debug: {}'.format(text), db_user.email, 'en')
         return {'success': True}
     else:
         logger('Websocket', 'debug_mail', 'access denied')

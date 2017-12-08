@@ -66,7 +66,7 @@ def get_language_from_cookie(request):
     return str(lang)
 
 
-def set_language_for_first_visit(request):
+def set_language_for_visit(request):
     """
     Sets language and issue uid based on the requests header if there is no _LOCALE_ attribute in the cookie
 

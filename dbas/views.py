@@ -32,7 +32,7 @@ from dbas.database.discussion_model import User, Group, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
 from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement_uid
-from dbas.handler.language import set_language, get_language_from_cookie, set_language_for_first_visit
+from dbas.handler.language import set_language, get_language_from_cookie, set_language_for_visit
 from dbas.handler.notification import read_notifications, delete_notifications, send_users_notification
 from dbas.handler.password import request_password
 from dbas.handler.references import set_reference, get_references
@@ -94,6 +94,47 @@ def api_notfound(path):
     return response
 
 
+def prepare_request_dict(request, nickname):
+    """
+
+    :param request:
+    :param nickname:
+    :return:
+    """
+
+    last_topic = history_helper.get_saved_issue(nickname)
+    slug = request.matchdict['slug'] if 'slug' in request.matchdict and len(request.matchdict['slug']) > 0 else ''
+    if len(slug) == 0 and last_topic != 0:
+        issue = last_topic
+    elif len(slug) > 0:
+        issue = issue_helper.get_id_of_slug(slug, request, True)
+    else:
+        issue = issue_helper.get_issue_id(request)
+
+    history = history_helper.handle_history(request, nickname, slug, issue)
+    ui_locales = get_language_from_cookie(request)
+    disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
+    set_language_for_visit(request)
+
+    request_dict = {
+        'nickname': nickname,
+        'path': request.path,
+        'app_url': request.application_url,
+        'matchdict': request.matchdict,
+        'params': request.params,
+        'session': request.session,
+        'registry': request.registry,
+        'issue': issue,
+        'slug': slug,
+        'history': history,
+        'ui_locales': ui_locales,
+        'disc_ui_locales': disc_ui_locales,
+        'last_topic': last_topic,
+        'port': get_port(request)
+    }
+    return request_dict
+
+
 def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any], for_api=False, api_data=None):
     """
     Checks for an expired session, the authentication and calls f with for_api, api_data and the users nickname.
@@ -113,10 +154,13 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any], for_
     if unauthenticated:
         return unauthenticated
 
-    prepared_discussion = f(request, nickname, for_api)
+    request_dict = prepare_request_dict(request, nickname)
+    ui_locales = get_language_from_cookie(request)
+
+    prepared_discussion = f(request_dict, for_api)
     if prepared_discussion:
         prepared_discussion['layout'] = base_layout()
-        prepared_discussion['language'] = str(get_language_from_cookie(request))
+        prepared_discussion['language'] = str(ui_locales)
 
     return prepared_discussion
 
@@ -134,7 +178,7 @@ def main_page(request):
     """
     logger('main_page', 'def', 'request.params: {}'.format(request.params))
 
-    set_language_for_first_visit(request)
+    set_language_for_visit(request)
     unauthenticated = check_authentication(request)
     if unauthenticated:
         return unauthenticated
@@ -143,7 +187,8 @@ def main_page(request):
     ui_locales = get_language_from_cookie(request)
     logger('main_page', 'def', 'request.params: {}'.format(request.params))
     _dh = DictionaryHelper(ui_locales, ui_locales)
-    extras_dict = _dh.prepare_extras_dict_for_normal_page(request)
+    extras_dict = _dh.prepare_extras_dict_for_normal_page(request.registry, request.application_url, request.path,
+                                                          request.authenticated_userid)
 
     return {
         'layout': base_layout(),
@@ -193,7 +238,8 @@ def main_settings(request):
         error = not success
 
     _dh = DictionaryHelper(ui_locales)
-    extras_dict = _dh.prepare_extras_dict_for_normal_page(request)
+    extras_dict = _dh.prepare_extras_dict_for_normal_page(request.registry, request.application_url, request.path,
+                                                          request.authenticated_userid)
     settings_dict = _dh.prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user,
                                               request.application_url, extras_dict['use_with_ldap'])
 
@@ -222,7 +268,11 @@ def main_notifications(request):
     if unauthenticated:
         return unauthenticated
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request, append_notifications=True)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid,
+                                                                                   append_notifications=True)
 
     return {
         'layout': base_layout(),
@@ -250,7 +300,10 @@ def main_news(request):
     ui_locales = get_language_from_cookie(request)
     is_author = is_user_author_or_admin(request.authenticated_userid)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid)
 
     return {
         'layout': base_layout(),
@@ -293,7 +346,10 @@ def main_user(request):
         return unauthenticated
 
     ui_locales = get_language_from_cookie(request)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid)
 
     user_dict = user.get_information_of(current_user, ui_locales)
 
@@ -330,7 +386,10 @@ def main_imprint(request):
 
     _tn = Translator(ui_locales)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid)
 
     # add version of pyramid
     import pkg_resources
@@ -361,12 +420,44 @@ def main_faq(request):
     if unauthenticated:
         return unauthenticated
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid)
 
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
         'title': 'FAQ',
+        'project': project_name,
+        'extras': extras_dict
+    }
+
+
+# fieldtest
+@view_config(route_name='main_experiment', renderer='templates/fieldtest.pt', permission='everybody')
+def main_experiment(request):
+    """
+    View configuration for fieldtest.
+
+    :param request: current request of the server
+    :return: dictionary with title and project name as well as a value, weather the user is logged in
+    """
+    logger('main_experiment', 'def', 'main')
+    ui_locales = get_language_from_cookie(request)
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
+
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid)
+
+    return {
+        'layout': base_layout(),
+        'language': str(ui_locales),
+        'title': Translator(ui_locales).get(_.fieldtest),
         'project': project_name,
         'extras': extras_dict
     }
@@ -387,7 +478,10 @@ def main_mydiscussions(request):
     if unauthenticated:
         return unauthenticated
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid)
     issue_dict = get_issues_overiew(request.authenticated_userid, request.application_url)
 
     return {
@@ -417,7 +511,10 @@ def main_docs(request):
     if unauthenticated:
         return unauthenticated
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid)
 
     return {
         'layout': base_layout(),
@@ -443,7 +540,10 @@ def main_rss(request):
     if unauthenticated:
         return unauthenticated
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid)
     rss = get_list_of_all_feeds(ui_locales)
 
     return {
@@ -483,7 +583,10 @@ def notfound(request):
     request.response.status = 404
     ui_locales = get_language_from_cookie(request)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid)
 
     return {
         'layout': base_layout(),
@@ -633,7 +736,15 @@ def discussion_finish(request):
     if unauthenticated:
         return unauthenticated
 
-    prepared_discussion = discussion.finish(request)
+    request_dict = {
+        'registry': request.registry,
+        'app_url': request.application_url,
+        'nickname': request.authenticated_userid,
+        'path': request.path,
+        'ui_locales': get_language_from_cookie(request)
+    }
+
+    prepared_discussion = discussion.finish(request_dict)
     prepared_discussion['layout'] = base_layout()
     prepared_discussion['language'] = str(get_language_from_cookie(request))
     prepared_discussion['show_summary'] = len(prepared_discussion['summary']) != 0
@@ -709,10 +820,14 @@ def main_review(request):
         return unauthenticated
 
     issue = issue_helper.get_issue_id(request)
-    disc_ui_locales = get_discussion_language(request, issue)
+    disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
 
-    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, False, request.authenticated_userid)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, False,
+                                                    request.authenticated_userid)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid)
 
     review_dict = review_queue_helper.get_review_queues_as_lists(request.application_url, _tn, nickname)
     count, all_rights = review_reputation_helper.get_reputation_of(nickname)
@@ -743,7 +858,6 @@ def review_content(request):
     """
     logger('review_content', 'main', 'def {}'.format(request.matchdict))
     ui_locales = get_language_from_cookie(request)
-    request_authenticated_userid = request.authenticated_userid
     _tn = Translator(ui_locales)
 
     unauthenticated = check_authentication(request)
@@ -751,27 +865,23 @@ def review_content(request):
         return unauthenticated
 
     subpage_name = request.matchdict['queue']
-    subpage_dict = review_page_helper.get_subpage_elements_for(request, subpage_name,
-                                                               request_authenticated_userid, _tn)
+    nickname = request.authenticated_userid
+    session = request.session
+    application_url = request.application_url
+    subpage_dict = review_page_helper.get_subpage_elements_for(nickname, session, application_url, subpage_name, _tn)
+    request.session.update(subpage_dict['session'])
     if not subpage_dict['elements'] and not subpage_dict['has_access'] and not subpage_dict['no_arguments_to_review']:
         logger('review_content', 'def', 'subpage error', error=True)
         raise HTTPNotFound()
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid)
 
     title = _tn.get(_.review)
-    if subpage_name == review_queue_helper.key_deletes:
-        title = _tn.get(_.queueDelete)
-    if subpage_name == review_queue_helper.key_optimizations:
-        title = _tn.get(_.queueOptimization)
-    if subpage_name == review_queue_helper.key_edits:
-        title = _tn.get(_.queueEdit)
-    if subpage_name == review_queue_helper.key_duplicates:
-        title = _tn.get(_.queueDuplicates)
-    if subpage_name == review_queue_helper.key_split:
-        title = _tn.get(_.queueSplit)
-    if subpage_name == review_queue_helper.key_merge:
-        title = _tn.get(_.queueMerge)
+    if subpage_name in review_queue_helper.title_mapping:
+        title = review_queue_helper.title_mapping[subpage_name]
 
     return {
         'layout': base_layout(),
@@ -803,7 +913,10 @@ def review_history(request):
         return unauthenticated
 
     history = review_history_helper.get_review_history(request.application_url, request_authenticated_userid, _tn)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid)
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
@@ -832,7 +945,10 @@ def ongoing_history(request):
         return unauthenticated
 
     history = review_history_helper.get_ongoing_reviews(request.application_url, request.authenticated_userid, _tn)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid)
 
     return {
         'layout': base_layout(),
@@ -861,7 +977,10 @@ def review_reputation(request):
     if unauthenticated:
         return unauthenticated
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path,
+                                                                                   request.authenticated_userid)
 
     reputation_dict = review_history_helper.get_reputation_history_of(request.authenticated_userid, _tn)
 
@@ -1116,7 +1235,10 @@ def user_registration(request):
     info = ''
 
     try:
-        success, info, new_user = register_user_with_ajax_data(request)
+        params = request.params
+        ui_locales = params['lang'] if 'lang' in params else get_language_from_cookie(request)
+        mailer = get_mailer(request)
+        success, info, new_user = register_user_with_ajax_data(params, ui_locales, mailer)
 
     except KeyError as e:
         logger('Views', 'user_registration', repr(e), error=True)
@@ -1289,7 +1411,7 @@ def ajax_set_new_start_argument(request):
     :return: a status code, if everything was successful
     """
     logger('views', 'set_new_start_argument', 'request.params: {}'.format(request.params))
-    discussion_lang = get_discussion_language(request)
+    discussion_lang = get_discussion_language(request.matchdict, request.params, request.session)
     _tn = Translator(discussion_lang)
     data = {}
     try:
@@ -1297,13 +1419,13 @@ def ajax_set_new_start_argument(request):
         data['nickname'] = request.authenticated_userid
         data['issue_id'] = issue
         data['slug'] = DBDiscussionSession.query(Issue).get(issue).slug
-        data['default_locale_name'] = get_default_locale_name(request)
+        data['default_locale_name'] = get_default_locale_name(request.registry)
         data['application_url'] = request.application_url
         data['supportive'] = True
         data['port'] = get_port(request)
         data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
-        data['discussion_lang'] = get_discussion_language(request)
-        data['default_locale_name'] = get_default_locale_name(request)
+        data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
+        data['default_locale_name'] = get_default_locale_name(request.registry)
         position = request.params['position']
         reason = request.params['reason']
         data['statement'] = position
@@ -1339,7 +1461,7 @@ def set_new_start_statement(request):
     :return: a status code, if everything was successful
     """
     logger('views', 'set_new_start_statement', 'request.params: {}'.format(request.params))
-    discussion_lang = get_discussion_language(request)
+    discussion_lang = get_discussion_language(request.matchdict, request.params, request.session)
     _tn = Translator(discussion_lang)
     data = {}
     try:
@@ -1348,8 +1470,8 @@ def set_new_start_statement(request):
         data['statement'] = request.params['statement']
         data['issue_id'] = issue
         data['slug'] = DBDiscussionSession.query(Issue).get(issue).slug
-        data['discussion_lang'] = get_discussion_language(request)
-        data['default_locale_name'] = get_default_locale_name(request)
+        data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
+        data['default_locale_name'] = get_default_locale_name(request.registry)
         data['application_url'] = request.application_url
     except KeyError as e:
         logger('views', 'set_new_start_statement', repr(e), error=True)
@@ -1371,7 +1493,7 @@ def set_new_start_premise(request):
     """
     logger('views', 'set_new_start_premise', 'request.params: {}'.format(request.params))
     data = {}
-    lang = get_discussion_language(request)
+    lang = get_discussion_language(request.matchdict, request.params, request.session)
     _tn = Translator(lang)
     try:
         data['nickname'] = request.authenticated_userid
@@ -1382,8 +1504,8 @@ def set_new_start_premise(request):
         data['supportive'] = True if request.params['supportive'].lower() == 'true' else False
         data['port'] = get_port(request)
         data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
-        data['discussion_lang'] = get_discussion_language(request)
-        data['default_locale_name'] = get_default_locale_name(request)
+        data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
+        data['default_locale_name'] = get_default_locale_name(request.registry)
         try:
             data['mailer'] = get_mailer(request)
         except ComponentLookupError as e:
@@ -1406,7 +1528,7 @@ def set_new_premises_for_argument(request):
     :return: json-dict()
     """
     logger('views', 'set_new_premises_for_argument', 'request.params: {}'.format(request.params))
-    lang = get_discussion_language(request)
+    lang = get_discussion_language(request.matchdict, request.params, request.session)
     _tn = Translator(lang)
     data = {}
     try:
@@ -1417,8 +1539,8 @@ def set_new_premises_for_argument(request):
         data['attack_type'] = request.params['attack_type']
         data['port'] = get_port(request)
         data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
-        data['discussion_lang'] = get_discussion_language(request)
-        data['default_locale_name'] = get_default_locale_name(request)
+        data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
+        data['default_locale_name'] = get_default_locale_name(request.registry)
         data['application_url'] = request.application_url
         try:
             data['mailer'] = get_mailer(request)
@@ -1562,7 +1684,7 @@ def mark_or_unmark_statement_or_argument(request):
     :return: json
     """
     logger('views', 'mark_or_unmark_statement_or_argument', 'main {}'.format(request.params))
-    ui_locales = get_discussion_language(request)
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
 
     try:
         uid = request.params['uid']
@@ -1599,12 +1721,12 @@ def get_logfile_for_some_statements(request):
     try:
         uids = json.loads(request.params['uids'])
         issue = request.params['issue']
-        ui_locales = get_discussion_language(request, issue)
+        ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
         prepared_dict = get_logfile_for_statements(uids, ui_locales, request.application_url)
         prepared_dict['error'] = ''
     except KeyError as e:
         logger('views', 'get_logfile_for_statements', repr(e), error=True)
-        _tn = Translator(get_discussion_language(request))
+        _tn = Translator(get_discussion_language(request.matchdict, request.params, request.session))
         prepared_dict = {'error': _tn.get(_.noCorrections)}
 
     return prepared_dict
@@ -1622,10 +1744,12 @@ def get_shortened_url(request):
     logger('views', 'get_shortened_url', 'main')
     try:
         url = request.params['url']
-        prepared_dict = get_short_url(url, request.unauthenticated_userid, get_discussion_language(request))
+        prepared_dict = get_short_url(url, request.unauthenticated_userid, get_discussion_language(request.matchdict,
+                                                                                                   request.params,
+                                                                                                   request.session))
     except KeyError as e:
         logger('views', 'get_shortened_url', repr(e), error=True)
-        _tn = Translator(get_discussion_language(request))
+        _tn = Translator(get_discussion_language(request.matchdict, request.params, request.session))
         return {'error': _tn.get(_.internalKeyError)}
 
     return prepared_dict
@@ -1654,7 +1778,7 @@ def get_infos_about_argument(request):
     :return: json-set with everything
     """
     logger('views', 'get_infos_about_argument', 'request.params: {}'.format(request.params))
-    ui_locales = get_discussion_language(request)
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
 
     try:
         uid = request.params['uid']
@@ -1688,7 +1812,7 @@ def get_users_with_opinion(request):
         is_pos = params['is_position'] == 'true' if 'is_position' in params else False
     except KeyError as e:
         logger('views', 'get_users_with_opinion', repr(e), error=True)
-        ui_locales = get_discussion_language(request)
+        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
         _tn = Translator(ui_locales)
         return {'error': _tn.get(_.internalKeyError)}
 
@@ -1877,8 +2001,9 @@ def fuzzy_search(request, for_api=False, api_data=None):
         logger('views', 'fuzzy_search', repr(e), error=True)
         return {'error': _tn.get(_.internalKeyError)}
 
-    return_dict = fuzzy_string_matcher.get_prediction(request, _tn, for_api, api_data, request_authenticated_userid,
-                                                      value, mode, issue, extra)
+    issue_uid = issue_helper.get_issue_id(request)
+    return_dict = fuzzy_string_matcher.get_prediction(_tn, for_api, api_data, request_authenticated_userid, issue_uid,
+                                                      request.application_url, value, mode, issue, extra)
 
     return return_dict
 
@@ -1926,7 +2051,7 @@ def flag_argument_or_statement(request):
     :return: json-dict()
     """
     logger('views', 'flag_argument_or_statement', 'request.params: {}'.format(request.params))
-    ui_locales = get_discussion_language(request)
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
 
     try:
         uid = request.params['uid']
@@ -1959,7 +2084,7 @@ def split_or_merge_statement(request):
     :return: json-dict()
     """
     logger('views', 'split_or_merge_statement', 'request.params: {}'.format(request.params))
-    ui_locales = get_discussion_language(request)
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
 
     try:
         nickname = request.authenticated_userid
@@ -1991,7 +2116,7 @@ def split_or_merge_premisegroup(request):
     :return: json-dict()
     """
     logger('views', 'split_or_merge_premisegroup', 'request.params: {}'.format(request.params))
-    ui_locales = get_discussion_language(request)
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
 
     try:
         pgroup_uid = request.params['pgroup_uid']
@@ -2023,7 +2148,7 @@ def review_delete_argument(request):
         prepared_dict = review.delete_argument(request)
     except KeyError as e:
         logger('views', 'review_delete_argument', repr(e), error=True)
-        ui_locales = get_discussion_language(request)
+        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
         _t = Translator(ui_locales)
         prepared_dict = {'error': _t.get(_.internalKeyError)}
 
@@ -2045,7 +2170,7 @@ def review_edit_argument(request):
         prepared_dict = review.edit_argument(request)
     except KeyError as e:
         logger('Views', 'review_edit_argument', repr(e), error=True)
-        ui_locales = get_discussion_language(request)
+        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
         _t = Translator(ui_locales)
         prepared_dict = {'error': _t.get(_.internalKeyError)}
 
@@ -2066,7 +2191,7 @@ def review_duplicate_statement(request):
         prepared_dict = review.duplicate_statement(request)
     except KeyError as e:
         logger('Views', 'review_duplicate_statement', repr(e), error=True)
-        ui_locales = get_discussion_language(request)
+        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
         _t = Translator(ui_locales)
         prepared_dict = {'error': _t.get(_.internalKeyError)}
 
@@ -2088,7 +2213,7 @@ def review_optimization_argument(request):
         prepared_dict = review.optimization_argument(request)
     except KeyError as e:
         logger('Views', 'review_optimization_argument', repr(e), error=True)
-        ui_locales = get_discussion_language(request)
+        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
         _t = Translator(ui_locales)
         prepared_dict = {'error': _t.get(_.internalKeyError)}
 
@@ -2110,7 +2235,7 @@ def review_splitted_premisegroup(request):
         prepared_dict = review.split_premisegroup(request)
     except KeyError as e:
         logger('Views', 'review_splitted_premisegroup', repr(e), error=True)
-        ui_locales = get_discussion_language(request)
+        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
         _t = Translator(ui_locales)
         prepared_dict = {'error': _t.get(_.internalKeyError)}
 
@@ -2132,7 +2257,7 @@ def review_merged_premisegroup(request):
         prepared_dict = review.merge_premisegroup(request)
     except KeyError as e:
         logger('Views', 'review_merged_premisegroup', repr(e), error=True)
-        ui_locales = get_discussion_language(request)
+        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
         _t = Translator(ui_locales)
         prepared_dict = {'error': _t.get(_.internalKeyError)}
 
@@ -2154,7 +2279,7 @@ def undo_review(request):
         prepared_dict = review.undo(request)
     except KeyError as e:
         logger('views', 'undo_review', repr(e), error=True)
-        ui_locales = get_discussion_language(request)
+        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
         _t = Translator(ui_locales)
         prepared_dict = {
             'error': _t.get(_.internalKeyError),
@@ -2180,7 +2305,7 @@ def cancel_review(request):
         prepared_dict = review.cancel(request)
     except KeyError as e:
         logger('views', 'cancel_review', repr(e), error=True)
-        ui_locales = get_discussion_language(request)
+        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
         _t = Translator(ui_locales)
         prepared_dict = {'error': _t.get(_.internalKeyError)}
 
@@ -2202,7 +2327,7 @@ def review_lock(request):
         prepared_dict = review.lock(request)
 
     except KeyError as e:
-        ui_locales = get_discussion_language(request)
+        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
         _t = Translator(ui_locales)
         logger('views', 'review_lock', repr(e), error=True)
         prepared_dict = {'info': '', 'error': _t.get(_.internalKeyError), 'success': '', 'is_locked': False}
@@ -2225,7 +2350,7 @@ def revoke_some_content(request):
         prepared_dict = review.revoke(request)
 
     except KeyError as e:
-        ui_locales = get_discussion_language(request)
+        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
         _t = Translator(ui_locales)
         logger('views', 'revoke_some_content', repr(e), error=True)
         prepared_dict = {'success': False, 'error': _t.get(_.internalKeyError)}

@@ -417,21 +417,6 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
     return [bubble_user, bubble_syst]
 
 
-def save_history_in_cookie(request, path, history):
-    """
-    Saves history + new path in cookie
-
-    :param request: request
-    :param path: String
-    :param history: String
-    :return: none
-    """
-    if path.startswith('/discuss/'):
-        path = path[len('/discuss/'):]
-        path = path[path.index('/') if '/' in path else 0:]
-        request.response.set_cookie('_HISTORY_', history + '-' + path)
-
-
 def save_path_in_database(nickname, slug, path, history=''):
     """
     Saves a path into the database
@@ -505,3 +490,26 @@ def delete_history_in_database(nickname):
     DBDiscussionSession.flush()
     transaction.commit()
     return True
+
+
+def handle_history(request, nickname, slug, issue) -> str:
+    """
+
+    :param request: pyramid's request object
+    :param nickname: the user's nickname creating the request
+    :param slug: the discussion's slugified title
+    :param issue: the discussion's issue od
+    :rtype: str
+    :return: current user's history
+    """
+    history = request.params['history'] if 'history' in request.params else ''
+    save_path_in_database(nickname, slug, request.path, history)
+    save_issue_uid(issue, nickname)
+
+    # __save_history_in_cookie(request, request.path, history)
+    if request.path.startswith('/discuss/'):
+        path = request.path[len('/discuss/'):]
+        path = path[path.index('/') if '/' in path else 0:]
+        request.response.set_cookie('_HISTORY_', history + '-' + path)
+
+    return history

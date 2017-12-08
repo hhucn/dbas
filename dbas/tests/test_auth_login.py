@@ -53,7 +53,7 @@ class AuthLoginTest(unittest.TestCase):
             'g-recaptcha-response': '',
             'mode': '',
         }, matchdict={})
-        success, msg, db_new_user = register_user_with_ajax_data(request)
+        success, msg, db_new_user = register_user_with_ajax_data(request.params, 'en', None)
         self.assertEqual(_tn.get(_.pwdShort), msg)
         self.assertIsNone(db_new_user)
 
@@ -68,7 +68,7 @@ class AuthLoginTest(unittest.TestCase):
             'g-recaptcha-response': '',
             'mode': 'manually',
         }, matchdict={})
-        success, msg, db_new_user = register_user_with_ajax_data(request)
+        success, msg, db_new_user = register_user_with_ajax_data(request.params, 'en', None)
         self.assertEqual(_tn.get(_.nickIsTaken), msg)
         self.assertIsNone(db_new_user)
 
@@ -83,7 +83,7 @@ class AuthLoginTest(unittest.TestCase):
             'g-recaptcha-response': '',
             'mode': 'manually',
         }, matchdict={})
-        success, msg, db_new_user = register_user_with_ajax_data(request)
+        success, msg, db_new_user = register_user_with_ajax_data(request.params, 'en', None)
         self.assertEqual(_tn.get(_.mailIsTaken), msg)
         self.assertIsNone(db_new_user)
 
@@ -98,7 +98,7 @@ class AuthLoginTest(unittest.TestCase):
             'g-recaptcha-response': '',
             'mode': 'manually',
         }, matchdict={})
-        success, msg, db_new_user = register_user_with_ajax_data(request)
+        success, msg, db_new_user = register_user_with_ajax_data(request.params, 'en', None)
         self.assertEqual(_tn.get(_.mailNotValid), msg)
         self.assertIsNone(db_new_user)
 
@@ -113,7 +113,7 @@ class AuthLoginTest(unittest.TestCase):
             'g-recaptcha-response': '',
             'mode': 'manually',
         }, matchdict={})
-        success, msg, db_new_user = register_user_with_ajax_data(request)
+        success, msg, db_new_user = register_user_with_ajax_data(request.params, 'en', None)
         self.assertEqual(_tn.get(_.maliciousAntiSpam), msg)
         self.assertIsNone(db_new_user)
 
@@ -128,7 +128,7 @@ class AuthLoginTest(unittest.TestCase):
             'g-recaptcha-response': '',
             'mode': 'manually',
         }, matchdict={})
-        success, msg, db_new_user = register_user_with_ajax_data(request)
+        success, msg, db_new_user = register_user_with_ajax_data(request.params, 'en', None)
         self.assertEqual(_tn.get(_.pwdNotEqual), msg)
         self.assertIsNone(db_new_user)
 
@@ -143,7 +143,7 @@ class AuthLoginTest(unittest.TestCase):
             'g-recaptcha-response': '',
             'mode': 'manually',
         }, matchdict={})
-        success, msg, db_new_user = register_user_with_ajax_data(request)
+        success, msg, db_new_user = register_user_with_ajax_data(request.params, 'en', None)
         self.assertEqual(_tn.get(_.maliciousAntiSpam), msg)
         self.assertIsNone(db_new_user)
 

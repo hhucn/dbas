@@ -381,10 +381,10 @@ def __remove_user_from_arguments_with_statement(statement_uid, db_user, _tn):
             revoke_content(arg.uid, True, db_user.nickname, _tn)
 
 
-def get_default_locale_name(request):
+def get_default_locale_name(registry):
     try:
-        if request and 'pyramid.default_locale_name' in request.registry.settings:
-            return request.registry.settings['pyramid.default_locale_name']
+        if 'pyramid.default_locale_name' in registry.settings:
+            return registry.settings['pyramid.default_locale_name']
     except KeyError:
         return 'en'
     return 'en'

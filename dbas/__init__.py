@@ -90,7 +90,6 @@ def main(global_config, **settings):
     config.include('api', route_prefix='/api')
     config.include('api.v2', route_prefix='/api/v2')
     config.include('graph', route_prefix='/graph')
-    config.include('export', route_prefix='/export')
     config.include('admin', route_prefix='/admin')
     config.include('websocket', route_prefix='/websocket')
 
@@ -115,6 +114,7 @@ def main(global_config, **settings):
     config.add_route('main_rss', '/rss')
     config.add_route('main_faq', '/faq')
     config.add_route('main_docs', '/docs')
+    config.add_route('main_experiment', '/fieldexperiment')
     config.add_route('main_mydiscussions', '/mydiscussions')
 
     # ajax for navigation logic, administration, settings and editing/viewing log

@@ -28,6 +28,15 @@ key_split = 'splits'
 key_history = 'history'
 key_ongoing = 'ongoing'
 
+title_mapping = {
+    key_deletes: _.queueDelete,
+    key_optimizations: _.queueOptimization,
+    key_edits: _.queueEdit,
+    key_duplicates: _.queueDuplicates,
+    key_split: _.queueSplit,
+    key_merge: _.queueMerge
+}
+
 
 def get_review_queues_as_lists(main_page, translator, nickname):
     """

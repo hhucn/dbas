@@ -11,7 +11,6 @@ from itertools import islice
 from Levenshtein import distance
 from sqlalchemy import and_, func
 
-import dbas.handler.issue as issue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
@@ -29,7 +28,7 @@ mechanism = 'Levensthein'
 # mechanism = 'SequenceMatcher'
 
 
-def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid, value, mode, issue, extra=None):
+def get_prediction(_tn, for_api, api_data, request_authenticated_userid, issue_uid, application_url, value, mode, issue, extra=None):
     """
     Get dictionary with matching words, based on the given mode
 
@@ -37,6 +36,8 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
     :param for_api: Boolean
     :param api_data: data from the api
     :param request_authenticated_userid: users nickname
+    :param issue_uid: issue_uid
+    :param application_url: application_url
     :param value: users value, which should be the base for searching
     :param mode: int
     :param issue: Issue.uid
@@ -72,7 +73,7 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
         return_dict['distance_name'] = mechanism
 
     elif mode == '9' or mode == '8':  # search everything
-        return_dict['values'] = get_all_statements_with_value(request, value)
+        return_dict['values'] = get_all_statements_with_value(issue_uid, application_url, value)
         return_dict['distance_name'] = mechanism
 
     else:
@@ -81,19 +82,19 @@ def get_prediction(request, _tn, for_api, api_data, request_authenticated_userid
     return return_dict
 
 
-def get_all_statements_with_value(request, value):
+def get_all_statements_with_value(issue_uid, application_url, value):
     """
     Returns all statements, where with the value
 
-    :param request: request
+    :param issue_uid: issue_uid
+    :param application_url: application_url
     :param value: string
     :return: dict()
     """
-    issue_uid = issue_helper.get_issue_id(request)
     db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue_uid).all()
     return_array = []
     slug = DBDiscussionSession.query(Issue).get(issue_uid).slug
-    _um = UrlManager(request.application_url, for_api=False, slug=slug)
+    _um = UrlManager(application_url, for_api=False, slug=slug)
     for stat in db_statements:
         db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(TextVersion.uid.asc()).first()
         if value.lower() in db_tv.content.lower():

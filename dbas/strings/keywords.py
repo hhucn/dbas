@@ -324,6 +324,7 @@ class Keywords(Enum):
     fillLine = 'fillLine'
     finish = 'finish'
     finishTitle = 'finishTitle'
+    fieldtest = 'fieldtest'
     fromm = 'fromm'
     gender = 'gender'
     goBack = 'goBack'

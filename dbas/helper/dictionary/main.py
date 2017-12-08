@@ -73,21 +73,26 @@ class DictionaryHelper(object):
 
         return return_dict
 
-    def prepare_extras_dict_for_normal_page(self, request, append_notifications=False):
+    def prepare_extras_dict_for_normal_page(self, registry, application_url, path, authenticated_userid,
+                                            append_notifications=False):
         """
-        Calls self.prepare_extras_dict('', False, False, False, False, append_notifications, nickname)
+        Calls self.prepare_extras_dict(...
 
-        :param request: Request
+        :param registry: request.registry
+        :param application_url: request.application_url
+        :param path: request.path
+        :param authenticated_userid: authenticated_userid.path
         :param append_notifications: Boolean
         :return: dict()
         """
-        return self.prepare_extras_dict('', False, False, False, request, append_notifications=append_notifications,
-                                        nickname=request.authenticated_userid, ongoing_discussion=False)
+        return self.prepare_extras_dict('', False, False, False, registry, application_url, path,
+                                        append_notifications=append_notifications,
+                                        nickname=authenticated_userid, ongoing_discussion=False)
 
-    def prepare_extras_dict(self, current_slug, is_reportable, show_bar_icon, show_graph_icon, request, nickname,
-                            for_api=False, append_notifications=False, broke_limit=False,
-                            add_premise_container_style='display: none', add_statement_container_style='display: none',
-                            ongoing_discussion=True):
+    def prepare_extras_dict(self, current_slug, is_reportable, show_bar_icon, show_graph_icon, registry,
+                            application_url, path, nickname, for_api=False, append_notifications=False,
+                            broke_limit=False, add_premise_container_style='display: none',
+                            add_statement_container_style='display: none', ongoing_discussion=True):
         """
         Creates the extras.dict() with many options!
 
@@ -95,7 +100,9 @@ class DictionaryHelper(object):
         :param is_reportable: Boolean
         :param show_bar_icon: Boolean
         :param show_graph_icon: Boolean
-        :param request: Request
+        :param registry: request.registry
+        :param application_url: request.application_url
+        :param path: request.path
         :param nickname: String
         :param for_api: Boolean
         :param append_notifications: Boolean
@@ -114,7 +121,7 @@ class DictionaryHelper(object):
         if not db_user:
             nickname = nick_of_anonymous_user
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        is_user_from_ldap = db_user.validate_password('NO_PW_BECAUSE_LDAP')  # TODO CHECK THIS
+        is_user_from_ldap = db_user.validate_password('NO_PW_BECAUSE_LDAP')
 
         if db_user:
             public_nickname = db_user.get_global_nickname()
@@ -124,10 +131,9 @@ class DictionaryHelper(object):
             public_nickname = nick_of_anonymous_user
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
 
-        is_development = is_development_mode(request)
+        is_development = is_development_mode(registry)
 
-        rrs = request.registry.settings
-        application_url = request.application_url
+        rrs = registry.settings
         if application_url is None:
             application_url = ''
             logger('DictionaryHelper', 'prepare_extras_dict', 'application_url is None', error=True)
@@ -143,7 +149,7 @@ class DictionaryHelper(object):
         return_dict = dict()
         return_dict['year'] = datetime.datetime.now().year
         return_dict['restart_url'] = restart_url
-        return_dict['is_in_discussion'] = 'discuss' in request.path
+        return_dict['is_in_discussion'] = 'discuss' in path
         return_dict['logged_in'] = is_logged_in
         return_dict['nickname'] = request_authenticated_userid
         return_dict['public_nickname'] = public_nickname
@@ -177,8 +183,8 @@ class DictionaryHelper(object):
         db_en = DBDiscussionSession.query(Language).filter_by(ui_locales='en').first()
         db_issue_de = db_issues.filter_by(lang_uid=db_de.uid).first()
         db_issue_en = db_issues.filter_by(lang_uid=db_en.uid).first()
-        link_de = '{}/discuss/{}'.format(request.application_url, db_issue_de.slug if db_issue_de else '')
-        link_en = '{}/discuss/{}'.format(request.application_url, db_issue_en.slug if db_issue_en else '')
+        link_de = '{}/discuss/{}'.format(application_url, db_issue_de.slug if db_issue_de else '')
+        link_en = '{}/discuss/{}'.format(application_url, db_issue_en.slug if db_issue_en else '')
         return_dict['de_discussion_link'] = link_de
         return_dict['en_discussion_link'] = link_en
 
