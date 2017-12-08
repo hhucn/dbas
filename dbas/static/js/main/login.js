@@ -34,7 +34,7 @@ $(document).ready(function mainDocumentReady() {
 	// restore login popup to default
 	$('#' + popupLogin).on('hidden.bs.modal', function () {
 		var list = $('#' + discussionSpaceListId);
-		if (list) {
+		if (list.length !== 0) {
 			var login_item = list.find('#item_login');
 			if (login_item.length > 0) {
 				login_item.prop('checked', false);

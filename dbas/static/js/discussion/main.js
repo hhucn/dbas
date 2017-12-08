@@ -889,13 +889,13 @@ $(document).ready(function mainDocumentReady() {
 	});
 	$(document).delegate('body', 'click', function() {
 		var open = $('.open');
-		if (open) {
+		if (open.length !== 0) {
 			open.removeClass('opened');
 		}
 	});
 	$(document).delegate('.cls', 'click', function(event){
 		var open = $('.open');
-		if (open) {
+		if (open.length !== 0) {
 			event.stopPropagation();
 		}
 	});

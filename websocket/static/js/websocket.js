@@ -162,14 +162,14 @@ function enableTesting(){
 	
 	socket.on('connect', function() {
 		var field = $('#socketStatus');
-		if (field) {
+		if (field.length !== 0) {
 			field.text('Connected!');
 		}
 	});
 
     socket.on('disconnect', function() {
 		var field = $('#socketStatus');
-		if (field) {
+		if (field.length !== 0) {
 			field.text('Disconnected!');
 		}
     });
@@ -177,10 +177,10 @@ function enableTesting(){
     socket.on('pong', function(ms){
     	var testCount = $('#testCount');
 		var latency = $('#latency');
-		if (latency) {
+		if (latency.length !== 0) {
 			latency.text(ms + 'ms');
 		}
-	    if (testCount) {
+	    if (testCount.length !== 0) {
 		    testCount.text(parseInt(testCount.text()) + 1);
 	    }
     });
@@ -199,8 +199,7 @@ function enableTesting(){
 	// getting socket id from server
 	socket.on('push_socketid', function(id){
 		var field = $('#socketioId');
-		
-		if (field) {
+		if (field.length !== 0) {
 			field.text(id);
 		}
 	});

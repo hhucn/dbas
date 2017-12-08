@@ -29,10 +29,12 @@
 	// Collapse the navbar when page is scrolled
 	$(window).scroll(function () {
 		var nav = $("#mainNav");
-		if (typeof nav !== 'undefined' && $(document).scrollTop() > 100) {
-			nav.addClass("navbar-shrink");
-		} else {
-			nav.removeClass("navbar-shrink");
+		if(nav.length !== 0) {
+			if (typeof nav !== 'undefined' && $(document).scrollTop() > 100) {
+				nav.addClass("navbar-shrink");
+			} else {
+				nav.removeClass("navbar-shrink");
+			}
 		}
 	});
 
