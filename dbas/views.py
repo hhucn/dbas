@@ -119,6 +119,7 @@ def prepare_request_dict(request, nickname, for_api=False):
 
     ui_locales = get_language_from_cookie(request)
     if issue == -1 and for_api:
+        logger('Views', 'prepare_request_dict', 'Slug error ({}) for api'.format(slug), error=True)
         _tn = Translator(ui_locales)
         return {'error': _tn.get(_.maliciousAntiSpam)}
 
