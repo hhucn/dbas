@@ -128,16 +128,6 @@ class DiscussionDictHelper(object):
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         user_text, add_premise_text = get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn)
 
-        # additional stuff
-        splitted_history = self.history.split('-')
-        uc_in_h = '/undercut' in splitted_history[-1]
-        um_in_h = '/undermine' in splitted_history[-1]
-        re_in_h = '/rebut' in splitted_history[-1]
-        if len(splitted_history) > 0 and (uc_in_h or um_in_h or re_in_h):
-            intro = _tn.get(_.youHaveMuchStrongerArgumentForAccepting) if is_supportive else _tn.get(
-                _.youHaveMuchStrongerArgumentForRejecting)
-            intro += ': '
-
         url = UrlManager(application_url, slug).get_slug_url(False)
         question_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, message=system_question, omit_url=True,
                                                    lang=self.lang)
@@ -156,15 +146,18 @@ class DiscussionDictHelper(object):
         if not self.nickname and count_of_items == 1:
             _t = Translator(self.lang)
             db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+            msg_dict = {
+                'm': _.voteCountTextFirstM,
+                'f': _.voteCountTextFirstF,
+                'n': _.voteCountTextFirst,
+            }
+
             if db_user:
-                if db_user.gender == 'm':
-                    msg = _t.get(_.voteCountTextFirstM) + '.'
-                elif db_user.gender == 'f':
-                    msg = _t.get(_.voteCountTextFirstF) + '.'
-                else:
-                    msg = _t.get(_.voteCountTextFirst) + '.'
+                msg = msg_dict[db_user.gender]
             else:
-                msg = _t.get(_.voteCountTextFirst) + '.'
+                msg = _.voteCountTextFirst
+
+            msg = _t.get(msg) + '.'
 
             bubbles_array.append(create_speechbubble_dict(BubbleTypes.INFO, id='now_first',
                                                           message=msg + _tn.get(_.onlyOneItemWithLink),
@@ -237,8 +230,6 @@ class DiscussionDictHelper(object):
                 sys_msg = _tn.get(_.whatIsYourMostImportantReasonForStatement).rstrip().format(pro_tag, end_tag) + ': '
 
         sys_msg += user_msg + dot + '<br>' + _tn.get(_.because) + '...'
-        # bubble_user = history_helper.create_speechbubble_dict(BubbleTypes.USER, message=user_msg[0:1].upper() +
-        # user_msg[1:], omit_url=True, lang=self.lang)
 
         self.__append_now_bubble(bubbles_array)
         sys_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, message=sys_msg, omit_url=True, lang=self.lang)
@@ -279,7 +270,6 @@ class DiscussionDictHelper(object):
                                                                   conclusion, is_supportive)
 
         elif attack == 'undercut':
-            # add_premise_text = user_msg.format('', '') + ', ' + _tn.get(_.because).lower() + '...'
             add_premise_text = user_msg.format('', '') + ', ' + '...'
 
         else:
@@ -349,7 +339,6 @@ class DiscussionDictHelper(object):
         :return: dict()
         """
         logger('DictionaryHelper', 'get_dict_for_argumentation', 'at_argumentation about ' + str(uid))
-        _tn = Translator(self.lang)
         bubbles_array = history_helper.create_bubbles_from_history(self.history, nickname, self.lang, self.main_page,
                                                                    self.slug)
         add_premise_text = ''
@@ -363,12 +352,12 @@ class DiscussionDictHelper(object):
 
         if attack.startswith('end'):
             user_text, mid_text, sys_text = self.__get_dict_for_argumentation_end(uid, user_changed_opinion, nickname,
-                                                                                  attack, _tn)
+                                                                                  attack)
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, message=sys_text, omit_url=True, lang=self.lang)
             bubble_mid = create_speechbubble_dict(BubbleTypes.INFO, message=mid_text, omit_url=True, lang=self.lang)
         else:
             user_text, sys_text, gender_of_counter_arg, db_confrontation = self.__get_dict_for_argumentation(
-                db_argument, additional_uid, history, attack, nickname, is_supportive, _tn)
+                db_argument, additional_uid, history, attack, nickname, is_supportive)
             quid = 'question-bubble-' + str(additional_uid) if int(additional_uid) > 0 else ''
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, id=quid, message=sys_text, omit_url=True,
                                                   lang=self.lang, is_markable=True,
@@ -398,7 +387,7 @@ class DiscussionDictHelper(object):
                 'extras': statement_list,
                 'gender': gender_of_counter_arg}
 
-    def __get_dict_for_argumentation_end(self, argument_uid, user_changed_opinion, nickname, attack, _tn):
+    def __get_dict_for_argumentation_end(self, argument_uid, user_changed_opinion, nickname, attack):
         """
         Returns a special dict() when the discussion ends during an argumentation
 
@@ -406,10 +395,9 @@ class DiscussionDictHelper(object):
         :param user_changed_opinion:  Boolean
         :param nickname: User.nickname
         :param attack: String
-        :param _tn: Translator
         :return: String, String, String
         """
-        #  user_text = _tn.get(_.soYourOpinionIsThat) + ': '
+        _tn = Translator(self.lang)
         text = get_text_for_argument_uid(argument_uid, user_changed_opinion=user_changed_opinion,
                                          minimize_on_undercut=True, nickname=nickname)
         user_text = text[0:1].upper() + text[1:]
@@ -434,8 +422,7 @@ class DiscussionDictHelper(object):
 
         return user_text, mid_text, sys_text
 
-    def __get_dict_for_argumentation(self, user_arg, confrontation_arg_uid, history, attack, nickname, is_supportive,
-                                     _tn):
+    def __get_dict_for_argumentation(self, user_arg, confrontation_arg_uid, history, attack, nickname, is_supportive):
         """
         Returns dict() for the reaction step
 
@@ -445,7 +432,6 @@ class DiscussionDictHelper(object):
         :param attack: String
         :param nickname: User.nickname
         :param is_supportive: Boolean
-        :param _tn: Translator
         :return: dict()
         """
         premise, tmp = get_text_for_premisesgroup_uid(user_arg.premisesgroup_uid)
@@ -486,6 +472,7 @@ class DiscussionDictHelper(object):
             premise = premise[0:1].lower() + premise[1:]
 
         # check for support and build text
+        _tn = Translator(self.lang)
         user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if user_changed_opinion else ''
         user_text += current_argument if current_argument != '' else premise
 

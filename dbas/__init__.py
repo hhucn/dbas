@@ -81,11 +81,6 @@ def main(global_config, **settings):
                                 'admin:locale')  # add this before the locale negotiator
     config.set_default_csrf_options(require_csrf=True)
 
-    # config.set_authentication_policy(authn_policy)
-    # config.set_authorization_policy(authz_policy)
-    # config.set_root_factory('dbas.security.RootFactory')
-    # config.set_session_factory(session_factory)
-
     # Include apps
     config.include('api', route_prefix='/api')
     config.include('api.v2', route_prefix='/api/v2')

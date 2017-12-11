@@ -70,8 +70,6 @@ def __add_click_for_argument(db_user, db_argument):
 
     # add seen values
     __argument_seen_by_user(db_user, db_argument.uid)
-    # __premisegroup_seen_by_user(db_user, db_argument.premisesgroup_uid)
-    # __statement_seen_by_user(db_user, db_argument.conclusion_uid)
 
 
 def __add_click_for_undercut_step_1(db_argument, db_undercuted_arg_step_1, db_user):
@@ -99,9 +97,6 @@ def __add_click_for_undercut_step_1(db_argument, db_undercuted_arg_step_1, db_us
     # add seen values
     __argument_seen_by_user(db_user, db_argument.uid)
     __argument_seen_by_user(db_user, db_undercuted_arg_step_1.uid)
-    # __premisegroup_seen_by_user(db_user, db_argument.premisesgroup_uid)
-    # __premisegroup_seen_by_user(db_user, db_undercuted_arg_step_1.premisesgroup_uid)
-    # __statement_seen_by_user(db_user, db_undercuted_arg_step_1.conclusion_uid)
 
 
 def __add_click_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_user):
@@ -131,10 +126,6 @@ def __add_click_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_us
     __argument_seen_by_user(db_user, db_argument.uid)
     __argument_seen_by_user(db_user, db_undercuted_arg_step_1.uid)
     __argument_seen_by_user(db_user, db_undercuted_arg_step_2.uid)
-    # __premisegroup_seen_by_user(db_user, db_argument.premisesgroup_uid)
-    # __premisegroup_seen_by_user(db_user, db_undercuted_arg_step_1.premisesgroup_uid)
-    # __premisegroup_seen_by_user(db_user, db_undercuted_arg_step_2.premisesgroup_uid)
-    # __statement_seen_by_user(db_user, db_undercuted_arg_step_2.conclusion_uid)
 
 
 def add_click_for_statement(statement_uid, nickname, supportive):

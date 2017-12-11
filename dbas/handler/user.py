@@ -633,18 +633,11 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
     return message, success
 
 
-def __create_new_user(firstname, lastname, email, nickname, password, gender, db_group_uid, ui_locales,
-                      oauth_provider='', oauth_provider_id=''):
+def __create_new_user(user, ui_locales, oauth_provider='', oauth_provider_id=''):
     """
     Insert a new user row
 
-    :param firstname: String
-    :param lastname: String
-    :param email: String
-    :param nickname: String
-    :param password: String
-    :param gender: String
-    :param db_group_uid: Group.uid
+    :param user: dict with every information for a user needed
     :param ui_locales: Language.ui_locales
     :param oauth_provider: String
     :param oauth_provider_id: String
@@ -655,20 +648,20 @@ def __create_new_user(firstname, lastname, email, nickname, password, gender, db
 
     _t = Translator(ui_locales)
     # creating a new user with hashed password
-    logger('User', '__create_new_user', 'Adding user ' + nickname)
-    hashed_password = password_handler.get_hashed_password(password)
-    newuser = User(firstname=firstname,
-                   surname=lastname,
-                   email=email,
-                   nickname=nickname,
+    logger('User', '__create_new_user', 'Adding user ' + user['nickname'])
+    hashed_password = password_handler.get_hashed_password(user['password'])
+    newuser = User(firstname=user['firstname'],
+                   surname=user['lastname'],
+                   email=user['email'],
+                   nickname=user['nickname'],
                    password=hashed_password,
-                   gender=gender,
-                   group_uid=db_group_uid,
+                   gender=user['gender'],
+                   group_uid=user['db_group_uid'],
                    oauth_provider=oauth_provider,
                    oauth_provider_id=oauth_provider_id)
     DBDiscussionSession.add(newuser)
     transaction.commit()
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
     settings = Settings(author_uid=db_user.uid,
                         send_mails=False,
                         send_notifications=True,
@@ -677,10 +670,10 @@ def __create_new_user(firstname, lastname, email, nickname, password, gender, db
     transaction.commit()
 
     # sanity check, whether the user exists
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
     if db_user:
         logger('User', '__create_new_user', 'New data was added with uid ' + str(db_user.uid))
-        success = _t.get(_.accountWasAdded).format(nickname)
+        success = _t.get(_.accountWasAdded).format(user['nickname'])
 
     else:
         logger('User', '__create_new_user', 'New data was not added')
@@ -717,8 +710,16 @@ def set_new_user(mailer, firstname, lastname, nickname, gender, email, password,
         logger('User', 'set_new_user', 'User already exists')
         return {'success': False, 'error': _tn.get(_.nickIsTaken), 'user': None}
 
-    success, info, db_new_user = __create_new_user(firstname, lastname, email, nickname, password, gender,
-                                                   db_group.uid, _tn.get_lang())
+    user = {
+        'firstname': firstname,
+        'lastname': lastname,
+        'email': email,
+        'nickname': nickname,
+        'password': password,
+        'gender': gender,
+        'db_group_uid': db_group.uid
+    }
+    success, info, db_new_user = __create_new_user(user, _tn.get_lang())
 
     if db_new_user:
         # sending an email and message
@@ -775,9 +776,16 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, password, i
         logger('User', 'set_new_oauth_user', 'User already exists')
         return {'success': False, 'error': _tn.get(_.nickIsTaken), 'user': None}
 
-    success, info, db_new_user = __create_new_user(firstname, lastname, email, nickname, password, gender,
-                                                   db_group.uid, _tn.get_lang(), oauth_provider=provider,
-                                                   oauth_provider_id=id)
+    user = {
+        'firstname': firstname,
+        'lastname': lastname,
+        'email': email,
+        'nickname': nickname,
+        'password': password,
+        'gender': gender,
+        'db_group_uid': db_group.uid
+    }
+    success, info, db_new_user = __create_new_user(user, _tn.get_lang(), oauth_provider=provider, oauth_provider_id=id)
 
     if db_new_user:
         logger('User', 'set_new_oauth_user', 'set new user in db')

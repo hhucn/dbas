@@ -204,34 +204,34 @@ def prepare_data_assign_reference(request, func):
     :return:
     """
     api_data = prepare_user_information(request)
-    if api_data:
-        data = json_to_dict(request.body)
-
-        if not DBDiscussionSession.query(Issue).get(data["issue_id"]):
-            raise HTTP400("Issue not found")
-
-        if "issue_id" not in data and "slug" in data:
-            issue_db = DBDiscussionSession.query(Issue).filter_by(slug=data["slug"]).first()
-
-            if not issue_db:
-                raise HTTP400("Issue not found")
-            api_data["issue_id"] = issue_db.uid
-
-        api_data.update(data)
-        api_data.update({'application_url': request.application_url})
-        return_dict = func(True, api_data)
-        if isinstance(return_dict, str):
-            return_dict = json.loads(return_dict)
-        statement_uids = return_dict["statement_uids"]
-        if statement_uids:
-            statement_uids = flatten(statement_uids)
-            if type(statement_uids) is int:
-                statement_uids = [statement_uids]
-            refs_db = list(map(lambda statement: store_reference(api_data, statement), statement_uids))
-            return_dict["references"] = list(map(lambda ref: prepare_single_reference(ref), refs_db))
-        return return_dict
-    else:
+    if not api_data:
         raise HTTP204()
+
+    data = json_to_dict(request.body)
+
+    if not DBDiscussionSession.query(Issue).get(data["issue_id"]):
+        raise HTTP400("Issue not found")
+
+    if "issue_id" not in data and "slug" in data:
+        issue_db = DBDiscussionSession.query(Issue).filter_by(slug=data["slug"]).first()
+
+        if not issue_db:
+            raise HTTP400("Issue not found")
+        api_data["issue_id"] = issue_db.uid
+
+    api_data.update(data)
+    api_data.update({'application_url': request.application_url})
+    return_dict = func(True, api_data)
+    if isinstance(return_dict, str):
+        return_dict = json.loads(return_dict)
+    statement_uids = return_dict["statement_uids"]
+    if statement_uids:
+        statement_uids = flatten(statement_uids)
+        if type(statement_uids) is int:
+            statement_uids = [statement_uids]
+        refs_db = list(map(lambda statement: store_reference(api_data, statement), statement_uids))
+        return_dict["references"] = list(map(lambda ref: prepare_single_reference(ref), refs_db))
+    return return_dict
 
 
 def prepare_dbas_request_dict(request) -> dict:

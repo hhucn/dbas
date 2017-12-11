@@ -69,11 +69,6 @@ def continue_flow(request, redirect_response):
 
     resp = oauth_client.fetch_access_token(access_token_url)
 
-    # api = twitter.Api(consumer_key=client_id,
-    #                   consumer_secret=client_secret,
-    #                   access_token_key=oauth_token,
-    #                   access_token_secret=oauth_token_secret)
-
     user_data = {
         'id': resp['id'],
         'nickname': resp['screen_name']
