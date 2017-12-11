@@ -373,11 +373,11 @@ def __resolve_textversion_attribute(attribute, main_page, db_languages, db_users
     tmp.append(str(attribute) + ' - ' + str(text))
 
 
-def __resolve_path_attribute(attribute, column, main_page, db_languages, db_users, tmp):
+def __resolve_path_attribute(attribute, main_page, db_languages, db_users, tmp):
     tmp.append('<a href="{}/{}{}" target="_blank">{}</a>'.format(main_page, 'discuss', attribute, attribute))
 
 
-def __resolve_email_attribute(attribute, column, main_page, db_languages, db_users, tmp):
+def __resolve_email_attribute(attribute, main_page, db_languages, db_users, tmp):
     db_user = DBDiscussionSession.query(User).filter_by(email=str(attribute)).first()
     img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 25))
     tmp.append('{} {}'.format(img, attribute))

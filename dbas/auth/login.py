@@ -356,7 +356,7 @@ def register_user_with_ajax_data(params, ui_locales, mailer):
     db_new_user = None
 
     msg = __check_login_params(params)
-    if len(msg) > 0:
+    if msg:
         msg = _tn.get(msg)
     else:
         # getting the authors group
@@ -433,7 +433,7 @@ def __check_login_params(params):
         logger('Auth.Login', 'user_registration', 'recaptcha error')
         return _.maliciousAntiSpam
 
-    return ''
+    return None
 
 
 def __refresh_headers_and_url(request, db_user, keep_login, url):
