@@ -94,7 +94,7 @@ def api_notfound(path):
     return response
 
 
-def prepare_request_dict(request, nickname):
+def prepare_request_dict(request, nickname, for_api=False):
     """
 
     :param request:
@@ -113,15 +113,19 @@ def prepare_request_dict(request, nickname):
     if len(slug) == 0 and last_topic != 0:
         issue = last_topic
     elif len(slug) > 0:
-        issue = issue_helper.get_id_of_slug(slug, request, True)
+        issue = issue_helper.get_id_of_slug(slug, request, True, for_api)
     else:
         issue = issue_helper.get_issue_id(request)
+
+    ui_locales = get_language_from_cookie(request)
+    if len(issue) == 0 and for_api:
+        _tn = Translator(ui_locales)
+        return {'error': _tn.get(_.maliciousAntiSpam)}
 
     if len(slug) == 0:
         slug = DBDiscussionSession.query(Issue).get(issue).slug
 
     history = history_helper.handle_history(request, nickname, slug, issue)
-    ui_locales = get_language_from_cookie(request)
     disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
     set_language_for_visit(request)
 

@@ -220,7 +220,7 @@ def get_issue_dict_for(issue, application_url, for_api, uid, lang):
     return issue_dict
 
 
-def get_id_of_slug(slug, request, save_id_in_session):
+def get_id_of_slug(slug, request, save_id_in_session, for_api=False):
     """
     Returns the uid
 
@@ -232,11 +232,11 @@ def get_id_of_slug(slug, request, save_id_in_session):
     logger('IssueHelper', 'get_id_of_slug', 'slug: {}'.format(slug))
     db_issues = get_not_disabled_issues_as_query().all()
     for issue in db_issues:
-        if str(slugify(issue.title)) == str(slug):
+        if str(issue.slug) == str(slug):
             if save_id_in_session:
                 request.session['issue'] = issue.uid
             return issue.uid
-    return get_issue_id(request)
+    return get_issue_id(request) if not for_api else ''
 
 
 def get_issue_id(request):
