@@ -235,11 +235,6 @@ def get_public_data(nickname, lang):
     return_dict['label3'] = _tn.get(_.statementIndex)
     return_dict['label4'] = _tn.get(_.editIndex)
 
-    return_dict['labelinfo1'] = _tn.get(_.decisionIndex7Info)
-    return_dict['labelinfo2'] = _tn.get(_.decisionIndex30Info)
-    return_dict['labelinfo3'] = _tn.get(_.statementIndexInfo)
-    return_dict['labelinfo4'] = _tn.get(_.editIndexInfo)
-
     for days_diff in range(30, -1, -1):
         date_begin = date.today() - timedelta(days=days_diff)
         date_end = date.today() - timedelta(days=days_diff - 1)
@@ -251,17 +246,17 @@ def get_public_data(nickname, lang):
         labels_statement_30.append(ts)
         labels_edit_30.append(ts)
 
-        db_votes_statements = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.author_uid == current_user.uid,
-                                                                                      ClickedStatement.timestamp >= begin,
-                                                                                      ClickedStatement.timestamp < end)).all()
-        db_votes_arguments = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == current_user.uid,
-                                                                                    ClickedArgument.timestamp >= begin,
-                                                                                    ClickedArgument.timestamp < end)).all()
-        votes = len(db_votes_arguments) + len(db_votes_statements)
-        data_decision_30.append(votes)
+        db_clicks_statements = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.author_uid == current_user.uid,
+                                                                                       ClickedStatement.timestamp >= begin,
+                                                                                       ClickedStatement.timestamp < end)).all()
+        db_clicks_arguments = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == current_user.uid,
+                                                                                     ClickedArgument.timestamp >= begin,
+                                                                                     ClickedArgument.timestamp < end)).all()
+        clicks = len(db_clicks_statements) + len(db_clicks_arguments)
+        data_decision_30.append(clicks)
         if days_diff < 6:
             labels_decision_7.append(ts)
-            data_decision_7.append(votes)
+            data_decision_7.append(clicks)
 
         statements, edits = get_textversions(nickname, lang, begin, end)
         data_statement_30.append(len(statements))
@@ -415,7 +410,6 @@ def get_textversions(public_nickname, lang, timestamp_after=None, timestamp_befo
                                                                   TextVersion.timestamp >= timestamp_after,
                                                                   TextVersion.timestamp < timestamp_before)).all()
 
-    logger('User', 'get_textversions', 'count of edits: ' + str(len(db_edits)))
     for edit in db_edits:
         db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=edit.statement_uid).first()  # TODO #432
         edit_dict = dict()

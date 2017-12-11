@@ -34,7 +34,6 @@ function ReviewCallbacks() {
 			setGlobalInfoHandler('Mhh!', parsedData.info);
 		} else {
 			if (parsedData.is_locked) {
-				//setGlobalSuccessHandler('Hurey', parsedData.success);
 				review_instance.startCountdown();
 				$('#optimization-container').show();
 				$('#opti_ack').addClass('disabled');

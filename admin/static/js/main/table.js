@@ -73,7 +73,6 @@ function AdminGui() {
 		table.find('.pencil').each(function () {
 			$(this).click(function () {
 				var parent = $(this).parents('tr:first');
-				// var uid = parent.find('td:first').text();
 				_this.activateElement(this, 'floppy', 'text-success');
 				_this.activateElement(this, 'square', 'text-danger');
 				_this.deactivateElement(this, 'pencil', 'text-danger');
@@ -136,7 +135,6 @@ function AdminGui() {
 		table.find('.square').each(function () {
 			$(this).click(function () {
 				var tmp = $(this).parents('tr:first');
-				// var uid = tmp.find('td:first').text();
 				_this.deactivateElement(this, 'floppy', 'text-success');
 				_this.deactivateElement(this, 'square', 'text-danger');
 				_this.activateElement(this, 'pencil', '');

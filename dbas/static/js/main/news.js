@@ -16,9 +16,9 @@ function News() {
 		var length = array.length;
 
 		// build rows
+		var row = 0;
 		var div = $('<div>').attr('id', 'row_' + row).addClass('row');
 		var counter;
-		var row = 0;
 		var container = $('<div>').attr('id', 'container_' + row).addClass('container');
 		for (counter = 0; counter < length; counter++) {
 			if (counter % 3 === 0) {
@@ -54,13 +54,6 @@ function News() {
 	 */
 	this.callbackIfDoneForSendingNews = function (data) {
 		if (data.error.length === 0) {
-			// $('#' + writingNewsSuccessId).show();
-			// $('#' + writingNewsSuccessMessageId).text(_t(addedEverything));
-			// $('#' + writingNewNewsTitleId).val('');
-			// $('#' + writingNewNewsTextId).val('');
-			// $('#' + newsBodyId).prepend(new News().getNewsContainerAsHtml(data.title, data.date, data.author, data.news));
-			// new News().setSharingClickEvents();
-			// window.scrollTo(0, 0);
 			location.reload(true);
 		} else {
 			$('#' + writingNewsFailedId).show();
@@ -406,10 +399,8 @@ $(document).ready(function () {
 	news.setNewsInRow();
 	$('.panel-body').css('height', '');
 	news.setMaxHeightOfNewsRows();
-	//news.setPageNavigation();
 	news.setSharingClickEvents();
 	news.setSharingClickEvents();
-	//news.setSlimscrollForNewsRows();
 
 	$('#' + writingNewsFailedId).hide();
 	$('#' + writingNewsSuccessId).hide();
@@ -423,10 +414,5 @@ $(document).ready(function () {
 
 	$('#icon-add-news').click(function(){
 		$('#popup-writing-news').modal('show');
-	});
-
-	// make some things pretty
-	$(window).on('resize', function resizeWindow(){
-		//new News().setMaxHeightOfNewsRows();
 	});
 });

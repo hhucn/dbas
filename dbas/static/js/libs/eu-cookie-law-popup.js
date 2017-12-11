@@ -139,7 +139,6 @@ $.fn.euCookieLawPopup = (function() {
 	};
 	
 	var hideContainer = function() {
-		// $('.eupopup-container').slideUp(200);
 		$('.eupopup-container').animate({
 			opacity: 0,
 			height: 0

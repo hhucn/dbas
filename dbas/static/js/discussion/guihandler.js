@@ -64,9 +64,6 @@ function GuiHandler() {
 	 * Dialog based discussion modi
 	 */
 	this.setDisplayStyleAsDiscussion = function () {
-		// this.setActivityOfImage($('#' + displayStyleIconGuidedId), false);
-		// this.setActivityOfImage($('#' + displayStyleIconIslandId), true);
-		// this.setActivityOfImage($('#' + displayStyleIconGraphId), true);
 		$('#' + islandViewContainerId).hide();
 		$('#' + graphViewContainerId).hide();
 		$('#' + discussionContainerId).show();
@@ -84,12 +81,7 @@ function GuiHandler() {
 	 * Some kind of pro contra list, but how?
 	 */
 	this.setDisplayStyleAsIsland = function () {
-		// this.setActivityOfImage($('#' + displayStyleIconGuidedId), true);
-		// this.setActivityOfImage($('#' + displayStyleIconIslandId), false);
-		// this.setActivityOfImage($('#' + displayStyleIconGraphId), true);
 		$('#' + islandViewContainerId).fadeIn('slow');
-		//$('#' + graphViewContainerId).hide();
-		//$('#' + discussionContainerId).hide();
 		this.hideAddPositionContainer();
 		this.hideAddPremiseContainer();
 	};
@@ -103,9 +95,6 @@ function GuiHandler() {
 		var header = $('#' + graphViewContainerHeaderId);
 		var main = new Main();
 
-		// this.setActivityOfImage($('#' + displayStyleIconGuidedId), true);
-		// this.setActivityOfImage($('#' + displayStyleIconIslandId), true);
-		// this.setActivityOfImage($('#' + displayStyleIconGraphId), false);
 		$('#' + islandViewContainerId).hide();
 		$('#' + discussionContainerId).hide();
 		$('#' + headerContainerId).hide();
@@ -545,13 +534,12 @@ function GuiHandler() {
 		input2.parent().attr('for', input2.attr('id'));
 		input3.parent().attr('for', input3.attr('id'));
 
-		//connection = supportive ? _t_discussion(isItTrueThat) : _t_discussion(isItFalseThat);
 		connection = _t_discussion(isItTrueThat);
 
 		if (getDiscussionLanguage() === 'de') {
 			bigText = topic;
 		} else {
-			bigText = topic + ' ' + connection; //supportive ? _t_discussion(itIsTrueThat) : _t_discussion(itIsFalseThat);
+			bigText = topic + ' ' + connection;
 		}
 
 		list.append($('<br>'));
@@ -559,7 +547,6 @@ function GuiHandler() {
 			var nl = i < splitted.length - 1 ? '<br>' : '';
 			var line_text = '&#9900;   ' + topic + ' ' + _t_discussion(because) + ' ' + splitted[i] + '.' + nl;
 			var tmp = $('<span>').html(line_text).css('margin-left', '1em');
-			// list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
 			list.append(tmp);
 			infix = i === 0 ? _t_discussion(because) + ' ' : ('<u>' + _t_discussion(and) + ' ' + _t_discussion(because) + '</u> ' );
 			bigText += ' ' + infix + splitted[i];
@@ -596,7 +583,6 @@ function GuiHandler() {
 		callbackElement.focus();
 
 		$.each(parsedData.values, function (key, val) {
-			// distance = parseInt(val.distance);
 			index = val.index;
 
 			token = callbackElement.val();
@@ -805,7 +791,6 @@ function GuiHandler() {
 	this.createUserRowsForOpinionDialog = function (users_array) {
 		var left = '';
 		var middle = '';
-		var right = '';
 		var j = 0;
 		var rows = [];
 
