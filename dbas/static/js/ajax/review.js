@@ -4,7 +4,7 @@
 
 function AjaxReviewHandler(){
 	'use strict';
-	
+
 	/**
 	 *
 	 * @param uid
@@ -39,12 +39,12 @@ function AjaxReviewHandler(){
 				setGlobalSuccessHandler('Yeah!', parsedData.success);
 				$('#popup-duplicate-statement').modal('hide');
 			}
-			
+
 		}).fail(function ajaxFlagArgumentFail() {
 			setGlobalErrorHandler('', _t_discussion(requestFailed));
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param pgroup_uid
@@ -77,12 +77,12 @@ function AjaxReviewHandler(){
 			} else {
 				setGlobalSuccessHandler('Yeah!', parsedData.success);
 			}
-			
+
 		}).fail(function ajaxSplitOrMergeStatementsFail() {
 			setGlobalErrorHandler('', _t_discussion(requestFailed));
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param review_uid
@@ -110,7 +110,7 @@ function AjaxReviewHandler(){
 			}
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param should_delete
@@ -131,7 +131,7 @@ function AjaxReviewHandler(){
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param is_edit_okay
@@ -152,7 +152,7 @@ function AjaxReviewHandler(){
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param is_duplicate
@@ -173,7 +173,7 @@ function AjaxReviewHandler(){
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param should_optimized
@@ -196,7 +196,7 @@ function AjaxReviewHandler(){
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param should_merged
@@ -217,7 +217,7 @@ function AjaxReviewHandler(){
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param should_split
@@ -237,9 +237,9 @@ function AjaxReviewHandler(){
 		}).fail(function reviewDuplicateStatementFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
-		
+
 	};
-	
+
 	/**
 	 *
 	 * @param queue
@@ -260,7 +260,7 @@ function AjaxReviewHandler(){
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param queue

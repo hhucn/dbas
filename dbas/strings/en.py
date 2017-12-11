@@ -41,6 +41,7 @@ en_lang = {
     _.emptyEmail: 'Your e-mail is empty!',
     _.emtpyContent: 'Your content is empty!',
     _.maliciousAntiSpam: 'Your anti-spam message is wrong. Please reload the page!',
+    _.maliciousSlug: 'Malicious URL',
     _.nonValidCSRF: 'Your session is not valid',
     _.name: 'Name',
     _.mail: 'Mail',

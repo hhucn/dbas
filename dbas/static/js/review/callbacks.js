@@ -4,7 +4,7 @@
 
 function ReviewCallbacks() {
     'use strict';
-    	
+
 	/**
 	 *
 	 * @param jsonData
@@ -20,7 +20,7 @@ function ReviewCallbacks() {
 			}
 		}
 	};
-	
+
 	/**
 	 *
 	 * @param jsonData
@@ -41,25 +41,25 @@ function ReviewCallbacks() {
 				$('#request-lock').hide();
 				$('#request-not-lock-text').hide();
 	            $('#send_edit').removeClass('disabled');
-				
+
 				var review_argument_text = $('#reviewed-argument-text');
 				review_argument_text.attr('data-oem', review_argument_text.text());
-				
+
 				$.each($('#argument-part-table').find('input'), function(){
 					var html_text = review_argument_text.html();
 					var pos = html_text.toLowerCase().indexOf($(this).attr('placeholder').toLowerCase());
 					var replacement = '<span id="text' + $(this).data('id') + '">' + $(this).attr('placeholder') + '</span>';
 					var repl_text = html_text.substr(0, pos) + replacement + html_text.substr(pos + $(this).attr('placeholder').length);
 					review_argument_text.html(repl_text);
-					
+
 					$(this).focusin(function(){
 						$('#text' + $(this).data('id')).addClass('text-warning');
 					});
-					
+
 					$(this).focusout(function(){
 						$('#text' + $(this).data('id')).removeClass('text-warning');
 					});
-					
+
 					$(this).on('input',function(){
 						$('#text' + $(this).data('id')).text($(this).val());
 					});
@@ -69,7 +69,7 @@ function ReviewCallbacks() {
 			}
 		}
 	};
-	
+
 	/**
 	 *
 	 * @param jsonData
@@ -84,7 +84,7 @@ function ReviewCallbacks() {
 		//	setGlobalSuccessHandler('Hurey', parsedData.success);
 		}
 	};
-	
+
 	// http://kevin.vanzonneveld.net/techblog/article/javascript_equivalent_for_phps_preg_quote/
 	function preg_quote( str ) {
     // http://kevin.vanzonneveld.net

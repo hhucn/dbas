@@ -5,7 +5,7 @@
 // http://stackoverflow.com/a/5918791/2648872
 navigator.sayswho = (function(){
     'use strict';
-    
+
     var ua= navigator.userAgent, tem,
     M= ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
     if(/trident/i.test(M[1])){
@@ -30,7 +30,7 @@ navigator.sayswho = (function(){
  */
 function setGlobalErrorHandlerWithoutIds(){
     'use strict';
-    
+
     var heading = 'Ohh!';
     var body;
     if ((navigator.language || navigator.userLanguage).indexOf('de') !== -1){
@@ -51,7 +51,7 @@ $(document).ready(function mainDocumentReady() {
 	var splitted = navigator.sayswho.split(' ');
 	var browser = splitted[0];
 	var version = splitted[1];
-	
+
 	if (browser == 'Chrome' && version < 52
 		|| browser == 'Safari' && version < 10
 		|| browser == 'Firefox' && version < 47) {
@@ -59,7 +59,7 @@ $(document).ready(function mainDocumentReady() {
 			setGlobalErrorHandlerWithoutIds();
 		}, 1500);
 	}
-	
+
 	if (browser == 'Safari' && version < 10) {
 		setTimeout(function () {
 			setGlobalErrorHandlerWithoutIds();

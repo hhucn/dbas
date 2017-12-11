@@ -42,6 +42,7 @@ de_lang = {
     _.emptyEmail: 'Ihre E-Mail ist leer!',
     _.emtpyContent: 'Ihr Inhalt ist leer!',
     _.maliciousAntiSpam: 'Ihr Anti-Spam-Nachricht ist falsch. Bitte laden Sie die Seite neu.',
+    _.maliciousSlug: 'Fehlerhafte URL',
     _.nonValidCSRF: 'Ihre Sitzung ist abgelaufen',
     _.name: 'Name',
     _.mail: 'Mail',

@@ -2,7 +2,6 @@
  * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
-
 /**
  * Little simple coutdowntimer with 1000ms steps
  *
@@ -11,7 +10,7 @@
  */
 function Countdown(options) {
     'use strict';
-    
+
 	var timer;
 	var instance = this;
 	var seconds = options.seconds;
@@ -25,7 +24,7 @@ function Countdown(options) {
 		}
 		seconds--;
 	}
-	
+
 	/**
 	 * Start timer
 	 */
@@ -34,7 +33,7 @@ function Countdown(options) {
 		seconds = options.seconds;
 		timer = setInterval(decrementCounter, 1000);
 	};
-	
+
 	/**
 	 * Stop timer
 	 */

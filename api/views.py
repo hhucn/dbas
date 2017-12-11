@@ -244,7 +244,7 @@ def prepare_dbas_request_dict(request) -> dict:
     """
     api_data = prepare_user_information(request)
     nickname = api_data['nickname'] if api_data else None
-    return dbas.prepare_request_dict(request, nickname)
+    return dbas.prepare_request_dict(request, nickname, for_api=True)
 
 
 def __init(request):

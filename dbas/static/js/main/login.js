@@ -9,32 +9,32 @@ $(document).ready(function mainDocumentReady() {
 	//	$('#popup-login-registration-field').removeClass('hidden');
 	//	$('#' + popupLogin).find('.modal-footer').removeClass('hidden');
 	//});
-	
+
 	//$('.btn-hhu').click(function(){
 	//	$('#popup-login-hhu-text').removeClass('hidden');
 	//	$('#nav-tab-login').find('a').trigger('click');
 	//	$('#' + popupLogin).find('.modal-footer').removeClass('hidden');
 	//});
-	
+
 	var classes = ['.btn-google', '.btn-facebook', '.btn-twitter', '.btn-github'];
 	$.each(classes, function( key, value ) {
 		$(value).click(function(){
 			new AjaxMainHandler().oauthLogin($(this).data('service'), window.location.href);
 		});
 	});
-	
+
 	$('#nav-tab-login').click(function(){
 		$('#' + popupLogin).find('.modal-footer').find('button').addClass('hidden');
 	});
-	
+
 	$('#nav-tab-signup').click(function(){
 		$('#' + popupLogin).find('.modal-footer').find('button').removeClass('hidden');
 	});
-	
+
 	// restore login popup to default
 	$('#' + popupLogin).on('hidden.bs.modal', function () {
 		var list = $('#' + discussionSpaceListId);
-		if (list) {
+		if (list.length !== 0) {
 			var login_item = list.find('#item_login');
 			if (login_item.length > 0) {
 				login_item.prop('checked', false);
@@ -44,7 +44,7 @@ $(document).ready(function mainDocumentReady() {
 		$('#' + loginUserId).focus();
 		$('#' + popupLogin).find('.modal-footer').find('button').addClass('hidden');
 	});
-	
+
 	// check href for id's
 	var url = window.location.href;
 	var services = ['google', 'facebook', 'twitter', 'github'];
@@ -54,5 +54,5 @@ $(document).ready(function mainDocumentReady() {
 			new AjaxMainHandler().oauthLogin(value, url);
 		}
 	});
-	
+
 });

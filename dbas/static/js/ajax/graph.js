@@ -4,7 +4,7 @@
 
 function AjaxGraphHandler(){
 	'use strict';
-	
+
 	/**
 	 * Requests JSON-Object
 	 * @param uid: current id in url
@@ -13,7 +13,7 @@ function AjaxGraphHandler(){
 	this.getUserGraphData = function(uid, address){
 		var dataString;
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		
+
 		switch(address){
 			case 'attitude':
 				dataString = {is_argument: 'false', is_attitude: 'true', is_reaction: 'false', is_position: 'false', uids: uid};
@@ -32,7 +32,7 @@ function AjaxGraphHandler(){
 				setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 				return;
 		}
-		
+
 		dataString.lang = $('#issue_info').data('discussion-language');
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
@@ -47,7 +47,7 @@ function AjaxGraphHandler(){
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
-	
+
 	/**
 	 *
 	 * Displays a graph of current discussion
@@ -62,7 +62,7 @@ function AjaxGraphHandler(){
 		var data = {'issue': getCurrentIssueId(), 'path': window.location.href};
 		var request_for_complete = uid === null || !show_partial_graph;
 		var url;
-		
+
 		if (request_for_complete){
 			url = '/graph/complete';
 		} else {
@@ -70,7 +70,7 @@ function AjaxGraphHandler(){
 			data.uid = uid;
 			data.is_argument = is_argument;
 		}
-		
+
 		$.ajax({
 			url: url,
 			type: 'GET',

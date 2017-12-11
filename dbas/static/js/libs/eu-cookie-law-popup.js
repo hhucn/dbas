@@ -15,10 +15,11 @@
  */
 
 (function($) {
+	'use strict';
 
 // for ie9 doesn't support debug console >>>
-if (!window.console) window.console = {};
-if (!window.console.log) window.console.log = function () { };
+if (!window.console){ window.console = {}; }
+if (!window.console.log){ window.console.log = function () { }; }
 // ^^^
 
 $.fn.euCookieLawPopup = (function() {
@@ -129,7 +130,7 @@ $.fn.euCookieLawPopup = (function() {
 		var cookies = document.cookie.split(";");
 		for (var i = 0; i < cookies.length; i++) {
 			var c = cookies[i].trim();
-			if (c.indexOf(_self.vars.COOKIE_NAME) == 0) {
+			if (c.indexOf(_self.vars.COOKIE_NAME) === 0) {
 				userAcceptedCookies = c.substring(_self.vars.COOKIE_NAME.length + 1, c.length);
 			}
 		}
