@@ -206,7 +206,7 @@ def prepare_data_assign_reference(request, func):
     api_data = prepare_user_information(request)
     if not api_data:
         raise HTTP204()
-        
+
     data = json_to_dict(request.body)
 
     if not DBDiscussionSession.query(Issue).get(data["issue_id"]):
