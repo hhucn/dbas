@@ -118,7 +118,7 @@ def prepare_request_dict(request, nickname, for_api=False):
         issue = issue_helper.get_issue_id(request)
 
     ui_locales = get_language_from_cookie(request)
-    if len(issue) == 0 and for_api:
+    if issue == -1 and for_api:
         _tn = Translator(ui_locales)
         return {'error': _tn.get(_.maliciousAntiSpam)}
 

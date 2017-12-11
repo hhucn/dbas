@@ -236,7 +236,7 @@ def get_id_of_slug(slug, request, save_id_in_session, for_api=False):
             if save_id_in_session:
                 request.session['issue'] = issue.uid
             return issue.uid
-    return get_issue_id(request) if not for_api else ''
+    return -1 if for_api else get_issue_id(request)
 
 
 def get_issue_id(request):
