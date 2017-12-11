@@ -31,8 +31,6 @@ def run_migrations_offline():
     script output.
 
     """
-    # raise NotImplementedError("Offline migraton not implemented!")
-
     context.configure(
         url=_get_dbas_engine().url, target_metadata=target_metadata,
         literal_binds=True)

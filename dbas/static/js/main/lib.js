@@ -43,7 +43,11 @@ function levensthein (s1, s2){
 				for (i1 = 0; i1 < s1_len; ++i1) {
 					c = a + (s1.charCodeAt(i1) === c2 ? 0 : 1);
 					a = row[i1];
-					b = b < a ? (b < c ? b + 1 : c) : (a < c ? a + 1 : c);
+					if (b < a) {
+						b = b < c ? b + 1 : c;
+					} else {
+						b = a < c ? a + 1 : c;
+					}
 					row[i1] = b;
 				}
 			}
