@@ -5,73 +5,6 @@
 var mainpage = location.origin + '/';
 
 /**
- * Returns a translated string
- * @param id of the string
- * @returns {string} which is translated or unknown value
- * @private
- */
-_t = function(id){
-    'use strict';
-    return get_it(getLanguage(), id);
-};
-
-/**
- * Returns a translated string in the discussion language
- * @param id of the string
- * @returns {string} which is translated or unknown value
- * @private
- */
-_t_discussion = function(id){
-    'use strict';
-
-    var info = $('#issue_info');
-    if (typeof info === 'undefined') {
-	    return get_it('en', id);
-    }
-    var lang = info.data('discussion-language');
-    return get_it(lang, id);
-};
-
-var get_it = function(val, id){
-    'use strict';
-    var value = 'unknown value';
-    if (typeof val !== 'undefined' && val.indexOf('de') !== -1 && dbas_de.hasOwnProperty(id)){
-        value = dbas_de[id];
-    } else if (dbas_en.hasOwnProperty(id)){
-        value = dbas_en[id];
-    }
-    return value;
-
-};
-
-/**
- * Returns the tag of current language. This is either {en,de} or 'unknown value' *
- * @returns {string} language tag
- */
-getLanguage = function(){
-    'use strict';
-    return $('#hidden_language').val();
-};
-
-/**
- * Returns the tag of current discussion language. This is either {en,de} or 'unknown value' *
- * @returns {string} language tag
- */
-getDiscussionLanguage = function(){
-    'use strict';
-
-    var lang = $('#issue_info').data('discussion-language'), value;
-    if (lang.indexOf('en') !== -1){
-        value = 'en';
-    } else if (lang.indexOf('de') !== -1){
-        value = 'de';
-    } else {
-        value = 'unknown value';
-    }
-    return value;
-};
-
-/**
  * Messages & Errors
  * @type {string}
  */
@@ -900,4 +833,71 @@ var dataTables_english_lang = {
         "sSortAscending":  ": activate to sort column ascending",
         "sSortDescending": ": activate to sort column descending"
     }
+};
+
+var get_it = function(val, id){
+    'use strict';
+    var value = 'unknown value';
+    if (typeof val !== 'undefined' && val.indexOf('de') !== -1 && dbas_de.hasOwnProperty(id)){
+        value = dbas_de[id];
+    } else if (dbas_en.hasOwnProperty(id)){
+        value = dbas_en[id];
+    }
+    return value;
+
+};
+
+/**
+ * Returns a translated string
+ * @param id of the string
+ * @returns {string} which is translated or unknown value
+ * @private
+ */
+_t = function(id){
+    'use strict';
+    return get_it(getLanguage(), id);
+};
+
+/**
+ * Returns a translated string in the discussion language
+ * @param id of the string
+ * @returns {string} which is translated or unknown value
+ * @private
+ */
+_t_discussion = function(id){
+    'use strict';
+
+    var info = $('#issue_info');
+    if (typeof info === 'undefined') {
+	    return get_it('en', id);
+    }
+    var lang = info.data('discussion-language');
+    return get_it(lang, id);
+};
+
+/**
+ * Returns the tag of current language. This is either {en,de} or 'unknown value' *
+ * @returns {string} language tag
+ */
+getLanguage = function(){
+    'use strict';
+    return $('#hidden_language').val();
+};
+
+/**
+ * Returns the tag of current discussion language. This is either {en,de} or 'unknown value' *
+ * @returns {string} language tag
+ */
+getDiscussionLanguage = function(){
+    'use strict';
+
+    var lang = $('#issue_info').data('discussion-language'), value;
+    if (lang.indexOf('en') !== -1){
+        value = 'en';
+    } else if (lang.indexOf('de') !== -1){
+        value = 'de';
+    } else {
+        value = 'unknown value';
+    }
+    return value;
 };

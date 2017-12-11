@@ -341,13 +341,15 @@ function PopupHandler() {
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
 		});
-
+		
 		// pretty stuff on hovering
 		popup.find('input').each(function () {
 			if ($(this).data('special') === '') {
 				var current = $(this).next().find('em').text().trim();
 				$(this).hover(function () {
-					var modded_text = text.replace(new RegExp("(" + (current + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
+					var modded_text = text
+						.replace(new RegExp("(" + (current + '')
+							.replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
 					$('#popup-flag-argument-text').html(modded_text);
 					$(this).next().find('em').html("<span class='text-primary'>" + current + "</span>");
 				}, function () {
@@ -360,7 +362,9 @@ function PopupHandler() {
 			if ($(this).prev().data('special') === '') {
 				var current = $(this).find('em').text().trim();
 				$(this).hover(function () {
-					var modded_text = text.replace(new RegExp("(" + (current + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
+					var modded_text = text
+						.replace(new RegExp("(" + (current + '')
+							.replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
 					$('#popup-flag-argument-text').html(modded_text);
 					$(this).find('em').html("<span class='text-primary'>" + current + "</span>");
 				}, function () {
