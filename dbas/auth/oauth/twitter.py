@@ -10,7 +10,6 @@ Manage Google Client IDs: https://apps.twitter.com/
 """
 
 import os
-# import twitter
 from requests_oauthlib.oauth1_session import OAuth1Session
 from dbas.logger import logger
 from dbas.handler.user import oauth_values

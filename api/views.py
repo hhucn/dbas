@@ -207,16 +207,15 @@ def prepare_data_assign_reference(request, func):
     if api_data:
         data = json_to_dict(request.body)
 
-        if "issue_id" not in data:
-            if "slug" in data:
-                issue_db = DBDiscussionSession.query(Issue).filter_by(slug=data["slug"]).first()
-
-                if issue_db:
-                    api_data["issue_id"] = issue_db.uid
-                else:
-                    raise HTTP400("Issue not found")
-        elif not DBDiscussionSession.query(Issue).get(data["issue_id"]):
+        if not DBDiscussionSession.query(Issue).get(data["issue_id"]):
             raise HTTP400("Issue not found")
+
+        if "issue_id" not in data and "slug" in data:
+            issue_db = DBDiscussionSession.query(Issue).filter_by(slug=data["slug"]).first()
+
+            if not issue_db:
+                raise HTTP400("Issue not found")
+            api_data["issue_id"] = issue_db.uid
 
         api_data.update(data)
         api_data.update({'application_url': request.application_url})

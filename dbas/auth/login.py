@@ -114,7 +114,7 @@ def __do_google_oauth(request, redirect_uri, old_redirect, ui_locales):
         else:
             return value_dict
 
-        # return HTTPFound
+        # return a HTTPFound via 'return success login'
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
         request.session['oauth_redirect_url'] = old_redirect
@@ -142,7 +142,7 @@ def __do_github_oauth(request, redirect_uri, old_redirect, ui_locales):
         else:
             return value_dict
 
-        # return HTTPFound
+        # return a HTTPFound via 'return success login'
         url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
@@ -172,7 +172,7 @@ def __do_facebook_oauth(request, redirect_uri, old_redirect, ui_locales):
         else:
             return value_dict
 
-        # return HTTPFound
+        # return a HTTPFound via 'return success login'
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
         request.session['oauth_redirect_url'] = old_redirect
@@ -200,7 +200,7 @@ def __do_twitter_oauth(request, redirect_uri, old_redirect, ui_locales):
         else:
             return value_dict
 
-        # return HTTPFound
+        # return a HTTPFound via 'return success login'
         url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
@@ -227,7 +227,7 @@ def __set_oauth_user(request, user_data, service, ui_locales):
     ret_dict = user.set_new_oauth_user(user_data['firstname'], user_data['lastname'], user_data['nickname'],
                                        user_data['email'], user_data['gender'], user_data['password'], user_data['id'],
                                        service, _tn)
-    # db_new_user = ret_dict['user']
+
     if ret_dict['success']:
         url = request.session['oauth_redirect_url']
         return __return_success_login(request, False, ret_dict['user'], False, url)
