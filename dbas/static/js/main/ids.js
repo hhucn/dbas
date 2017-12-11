@@ -154,15 +154,6 @@ var popupLoginFailed                          = 'popup-login-failed';
 var popupLoginSuccess                         = 'popup-login-success';
 var popupLoginInfo                            = 'popup-login-info';
 
-/*
-
-settings-password-extras
-settings-password-meter
-settings-password-strength
-settings-password-info-link
-settings-password-info-icon
- */
-
 var popupLoginForgotPasswordBody              = 'popup-login-forgot-password-body';
 var popupLoginForgotPasswordText              = 'popup-login-forgot-password-text';
 var popupLoginPasswordMeterId                 = 'popup-login-password-meter';

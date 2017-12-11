@@ -31,7 +31,7 @@ $(function () {
 		});
 	});
 
-	// new AjaxUserHandler().getPublicUserData();
+	new AjaxUserHandler().getPublicUserData();
 });
 
 function User() {
@@ -48,18 +48,18 @@ function User() {
 
 	/**
 	 *
-	 * @param jsonData
+	 * @param data
 	 */
-	this.callbackDone = function(jsonData){
+	this.callbackDone = function(data){
 		if (data.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), data.error);
 		}
 
-		// this.createChart(data, $('#user-activity-chart-space'), 'user-activity-canvas', 0);
-		// this.createChart(data, $('#user-vote-chart-space'), 'user-vote-canvas', 1);
+		this.createChart(data, $('#user-activity-chart-space'), 'user-activity-canvas', 0);
+		this.createChart(data, $('#user-vote-chart-space'), 'user-vote-canvas', 1);
 		// this.createChart(data, $('#user-statement-chart-space'), 'user-statement-canvas', 2);
 		// this.createChart(data, $('#user-edit-chart-space'), 'user-edit-canvas', 3);
-		// this.setLegendCSS();
+		this.setLegendCSS();
 	};
 
 	/**
@@ -71,7 +71,8 @@ function User() {
 	 */
 	this.createChart = function(parsedData, space, id, count){
 		var chart, data, div_legend;
-		space.append('<canvas id="' + id + '" width="500" height="300" style= "display: block; margin: 0 auto;"></canvas>');
+		console.log(space.width());
+		space.append('<canvas id="' + id + '" width="' + space.width() + '" height="300" style= "display: block; margin: 0 auto;"></canvas>');
 		data = {
 			labels : parsedData['labels' + (count+1)],
 			datasets : [{
@@ -111,11 +112,4 @@ function User() {
 			'color': 'white'
 		}).addClass('lead');
 	};
-
-	/**
-	 *
-	 */
-	this.getPublicUserDataFail = function(){
-	};
-
 }

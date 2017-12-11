@@ -2,7 +2,7 @@
  * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
-var mainpage = location.origin + '/'; //get_hostname(window.location.href);
+var mainpage = location.origin + '/';
 
 /**
  * Returns a translated string

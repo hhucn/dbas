@@ -255,7 +255,6 @@ function setEasterEggs(){
     'use strict';
 
 	$('#roundhousekick').click(function(){ new AjaxMainHandler().roundhouseKick(); });
-	//$('#yomamma').click(function(){ new AjaxMainHandler().ajaxMama(); });
 	$('#logo_dbas, #logo_dbas_s, #homeHeading').click(function(){
 		if (!$(this)){
 			return;
@@ -263,13 +262,11 @@ function setEasterEggs(){
 		var counter = parseInt($('#homeHeading').data('counter'));
 		counter += 1;
 		if (counter === 5){
-			// $(this).attr('src', mainpage + 'static/images/dabas.png');
 			$('body').find('span,p,h1,h2,h3,h4,h5,a').each(function(){
 				if ($(this).text().trim().length) {
 					$(this).text(dolan_translate(dolan_dictionary, $(this).text()));
 				}
 			});
-			// $('.popup_author_img').attr('src', mainpage + 'static/images/dolan.png').css('width', '150%');
 		}
 		$('#homeHeading').data('counter', counter);
 	});
@@ -501,9 +498,6 @@ function setGlobalInfoHandler(heading, body){
 function decodeString(encodedString){
     'use strict';
 
-	// var textArea = document.createElement('textarea');
-    // textArea.innerHTML = encodedString;
-    // return textArea.value;
 	return decodeURIComponent(encodedString);
 }
 
@@ -531,7 +525,6 @@ function callbackIfDoneForLogin(data, showGlobalError){
 				$('#' + popupLoginInfo + '-message').html(data.info);
 		} else {
 			$('#' + popupLogin).modal('hide');
-			//location.reload(true);
 		}
 	} catch(err){
 		var url = location.href;
@@ -677,9 +670,6 @@ $(document).ready(function () {
 	else if (path.indexOf(urlDiscussions) !== -1){	setLinkActive('#' + myDiscussionsLink); }
 	else if (path.indexOf(urlContent) !== -1){ 	    setLinkActive('#' + contentLink); }
 	else if (path.indexOf(urlReview) !== -1){ 	    setLinkActive('#' + reviewLinkId); }
-	// else if (path.indexOf(urlSettings) !== -1 ||
-	// 		 path.indexOf(urlImprint) !== -1 ||
-	// 		 path.indexOf(urlLogout) !== -1){}
 	else { 										    setLinkActive(''); }
 
 	// gui preperation

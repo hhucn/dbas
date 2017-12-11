@@ -171,7 +171,6 @@ function InteractionHandler() {
 			return;
 		}
 
-		// supporters = data.supporter.join(', ');
 		var author;
 		if (data.author !== 'anonymous'){
 			var img = '<img class="img-circle" style="height: 1em;" src="' + data.gravatar + '">';
@@ -356,7 +355,6 @@ function InteractionHandler() {
 	this.callbackForSetAvailabilityOfDiscussion = function(toggle_element, data){
 		if (data.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), data.error);
-			// toggle_element.bootstrapToggle(toggle_element.prop('checked')? 'off' : 'on'); // this will trigger the handler
 		} else {
 			setGlobalSuccessHandler('Yeah!', _t(discussionsPropertySet));
 		}

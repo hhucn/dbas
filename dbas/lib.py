@@ -129,11 +129,11 @@ def python_datetime_pretty_print(ts, lang):
     :param lang: ui_locales
     :return: String
     """
-    formatter = '%d. %b.'
+    formatter = '%b. %d.'
     if lang == 'de':
         try:
             locale.setlocale(locale.LC_TIME, 'de_DE.UTF-8')
-            formatter = '%b. %Y'
+            formatter = '%d. %b.'
         except locale.Error:
             locale.setlocale(locale.LC_TIME, 'en_US.UTF8')
 

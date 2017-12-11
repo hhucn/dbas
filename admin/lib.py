@@ -313,45 +313,54 @@ def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tm
         text, success = __get_author_data(attribute, db_users, main_page)
         text = str(text) if success else ''
         tmp.append(text)
+        return
 
-    elif column == 'lang_uid':
+    if column == 'lang_uid':
         tmp.append(__get_language(attribute, db_languages))
+        return
 
-    elif column == 'password':
+    if column == 'password':
         tmp.append(str(attribute)[:5] + '...')
+        return
 
-    elif column == 'premisesgroup_uid':
+    if column == 'premisesgroup_uid':
         text, uid_list = get_text_for_premisesgroup_uid(attribute) if attribute is not None else ('None', '[-]')
         tmp.append(str(attribute) + ' - ' + str(text) + ' ' + str(uid_list))
+        return
 
-    elif column in _statement_columns:
+    if column in _statement_columns:
         text = get_text_for_statement_uid(attribute) if attribute is not None else 'None'
         tmp.append(str(attribute) + ' - ' + str(text))
+        return
 
-    elif column == 'argument_uid':
+    if column == 'argument_uid':
         text = get_text_for_argument_uid(attribute) if attribute is not None else 'None'
         tmp.append(str(attribute) + ' - ' + str(text))
+        return
 
-    elif column == 'textversion_uid':
+    if column == 'textversion_uid':
         text = 'None'
         if attribute is not None:
             db_tv = DBDiscussionSession.query(TextVersion).get(attribute)
             text = db_tv.content if db_tv else ''
         tmp.append(str(attribute) + ' - ' + str(text))
+        return
 
-    elif column == 'path':
+    if column == 'path':
         tmp.append('<a href="{}/{}{}" target="_blank">{}</a>'.format(main_page, 'discuss', attribute, attribute))
+        return
 
-    elif column == 'email':
+    if column == 'email':
         db_user = DBDiscussionSession.query(User).filter_by(email=str(attribute)).first()
         img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 25))
         tmp.append('{} {}'.format(img, attribute))
+        return
 
-    elif column in _arrow_columns:
+    if column in _arrow_columns:
         tmp.append(attribute.format('YYYY-MM-DD HH:mm:ss'))
+        return
 
-    else:
-        tmp.append(str(attribute))
+    tmp.append(str(attribute))
 
 
 def update_row(table_name, uids, keys, values, nickname, _tn):
@@ -505,24 +514,10 @@ def __update_row_dict(table, values, keys, _tn):
         value_type = str(__find_type(table, key))
         # if current type is int
         if value_type == 'INTEGER':
-            # check for foreign key of author or language
-            if key in _user_columns:
-                # clear key / cut "(uid)"
-                tmp = values[index]
-                tmp = tmp[:tmp.rfind(" (")]
-                db_user = DBDiscussionSession.query(User).filter_by(nickname=tmp).first()
-                if not db_user:
-                    return _tn.get(_.userNotFound), False
-                update_dict[key] = db_user.uid
-
-            elif key == 'lang_uid':
-                db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=values[index]).first()
-                if not db_lang:
-                    return _tn.get(_.userNotFound), False
-                update_dict[key] = db_lang.uid
-
-            else:
-                update_dict[key] = int(values[index])
+            tmp_key, tmp_val, error = __get_int_data(key, values[index], _tn)
+            if error:
+                return tmp_key, tmp_val
+            update_dict[tmp_key] = tmp_val
 
         # if current type is bolean
         elif value_type == 'BOOLEAN':
@@ -540,6 +535,26 @@ def __update_row_dict(table, values, keys, _tn):
             update_dict[key] = values[index]
 
     return update_dict, True
+
+
+def __get_int_data(key, val, _tn):
+    # check for foreign key of author or language
+    if key in _user_columns:
+        # clear key / cut "(uid)"
+        val = val[:val.rfind(" (")]
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=val).first()
+        if not db_user:
+            return _tn.get(_.userNotFound), '', True
+        return key, db_user.uid
+
+    elif key == 'lang_uid':
+        db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=val).first()
+        if not db_lang:
+            return _tn.get(_.userNotFound), '', True
+        return key, db_lang.uid
+
+    else:
+        return key, int(val), False
 
 
 def __update_row(table, table_name, uids, update_dict):

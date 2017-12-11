@@ -145,7 +145,6 @@ function Main () {
 				mainpage + "static/images/logo.png");
 		});
 
-		//guiHandler.setDisplayStyleAsDiscussion();
 		$('#' + displayStyleIconGuidedId).click(function displayStyleIconGuidedFct() {
 			guiHandler.setDisplayStyleAsDiscussion();
 			clearAnchor();
@@ -179,7 +178,6 @@ function Main () {
 		$('#' + issueDropdownListID + ' .disabled a').off('click').unbind('click').removeAttr('href');
 
 		// get infos about the author
-		//$('[id^="' + questionBubbleId + '-"').click(function () {
 		var trianglel = $('.triangle-l');
 		var uid;
 		trianglel.find('.triangle-content-text').click(function () {
@@ -408,7 +406,7 @@ function Main () {
 				sidebarwrapper.css('background-color', '')
 					.css('height', '');
 				setTimeout(function () {
-					wrapper.width('');//width + sidebar.outerWidth());
+					wrapper.width('');
 				}, 300);
 				setLocalStorage(localStorageId, 'false');
 			} else {
@@ -532,15 +530,6 @@ function Main () {
 		guiHandler.hideSuccessDescription();
 		guiHandler.hideErrorDescription();
 
-		// align buttons
-		// var restart, issues, restartWidth, issueWidth;
-		// restart = $('#discussion-restart-btn');
-		// issues = $('#' + issueDropdownButtonID);
-		// restartWidth = restart.outerWidth();
-		// issueWidth = issues.outerWidth();
-		// restart.attr('style', restartWidth<issueWidth ? 'width: ' + issueWidth + 'px;' : '');
-		// issues.attr('style', restartWidth>issueWidth ? 'width: ' + restartWidth + 'px;' : '');
-
 		// no hover action on the systems bubble during the attitude question
 		var trianglel = $('.triangle-l');
 		var url = window.location.href.split('?')[0];
@@ -555,7 +544,6 @@ function Main () {
 		}
 
 		// focus text of input elements
-		// $('input[type='text']'').on("click", function () {
 		$('#' + popupUrlSharingInputId).on("click", function () {
 			$(this).select();
 		});
@@ -693,10 +681,6 @@ function Main () {
 			});
 		}
 
-		//$('#' + discussionSpaceId + ' input').each(function () {
-		//	$(this).prop('checked', false);
-		//});
-
 		$('#' + sendNewStatementId).off("click").click(function () {
 			if ($(this).attr('name').indexOf('start') !== -1) {
 				sendStartStatement();
@@ -749,7 +733,6 @@ function Main () {
 					ctx.setInputExtraBox(input, guiHandler);
 					// new position at start
 					if (input.attr('id').indexOf('start_statement') !== -1) {
-						// guiHandler.showHowToWriteTextPopup();
 						guiHandler.showAddPositionContainer();
 						$('#' + sendNewStatementId).off("click").click(function () {
 							sendStartStatement();
@@ -757,7 +740,6 @@ function Main () {
 					}
 					// new premise for the start
 					else if (input.attr('id').indexOf('start_premise') !== -1) {
-						// guiHandler.showHowToWriteTextPopup();
 						guiHandler.showAddPremiseContainer();
 						$('#' + sendNewPremiseId).off("click").click(function () {
 							sendStartPremise();
@@ -765,7 +747,6 @@ function Main () {
 					}
 					// new premise while judging
 					else if (input.attr('id').indexOf('justify_premise') !== -1) {
-						// guiHandler.showHowToWriteTextPopup();
 						guiHandler.showAddPremiseContainer();
 						$('#' + sendNewPremiseId).off("click").click(function () {
 							sendArgumentsPremise();
@@ -789,7 +770,6 @@ function Main () {
 	this.setInputExtraBox = function (input, guiHandler) {
 		// new position at start
 		if (input.attr('id').indexOf('start_statement') !== -1) {
-			// guiHandler.showHowToWriteTextPopup();
 			guiHandler.showAddPositionContainer();
 			$('#' + sendNewStatementId).off("click").click(function () {
 				sendStartStatement();
@@ -797,7 +777,6 @@ function Main () {
 		}
 		// new premise for the start
 		else if (input.attr('id').indexOf('start_premise') !== -1) {
-			// guiHandler.showHowToWriteTextPopup();
 			guiHandler.showAddPremiseContainer();
 			$('#' + sendNewPremiseId).off("click").click(function () {
 				sendStartPremise();
@@ -805,7 +784,6 @@ function Main () {
 		}
 		// new premise while judging
 		else if (input.attr('id').indexOf('justify_premise') !== -1) {
-			// guiHandler.showHowToWriteTextPopup();
 			guiHandler.showAddPremiseContainer();
 			$('#' + sendNewPremiseId).off("click").click(function () {
 				sendArgumentsPremise();
@@ -843,8 +821,6 @@ $(document).ready(function mainDocumentReady() {
 	main.setWindowOptions();
 	main.setGuiOptions();
 	main.setInputExtraOptions(guiHandler, interactionHandler);
-
-	// displayBubbleInformationDialog();
 
 	// some extras
 	// get restart url and cut the quotes

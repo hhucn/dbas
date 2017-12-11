@@ -27,7 +27,6 @@ function Review() {
 			send_edit.addClass('disabled');
 			new AjaxReviewHandler().un_lockOptimizationReview(review_uid, false, _this);
 		});
-		//_this.startCountdown();
 		new AjaxReviewHandler().un_lockOptimizationReview(review_uid, true, _this);
 
 		// for each input in table
@@ -205,5 +204,4 @@ function Review() {
 			location.reload(true);
 		}
 	};
-
 }

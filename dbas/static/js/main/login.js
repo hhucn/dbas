@@ -5,16 +5,6 @@
  */
 $(document).ready(function mainDocumentReady() {
 	'use strict';
-	//$('.btn-dbas').click(function(){
-	//	$('#popup-login-registration-field').removeClass('hidden');
-	//	$('#' + popupLogin).find('.modal-footer').removeClass('hidden');
-	//});
-
-	//$('.btn-hhu').click(function(){
-	//	$('#popup-login-hhu-text').removeClass('hidden');
-	//	$('#nav-tab-login').find('a').trigger('click');
-	//	$('#' + popupLogin).find('.modal-footer').removeClass('hidden');
-	//});
 
 	var classes = ['.btn-google', '.btn-facebook', '.btn-twitter', '.btn-github'];
 	$.each(classes, function( key, value ) {
