@@ -616,19 +616,6 @@ def __get_stats_for_review(review, ui_locales, main_page):
     :return: dict()
     """
     logger('ReviewSubpagerHelper', '__get_stats_for_review', 'main')
-    # viewed = len(DBDiscussionSession.query(SeenArgument3).filter_by(argument_uid=argument_uid).all())
-
-    # _rh = RelationHelper(argument_uid)
-    # undermines = _rh.get_undermines_for_argument_uid()
-    # undercuts = _rh.get_undercuts_for_argument_uid()
-    # rebuts = _rh.get_rebuts_for_argument_uid()
-    # supports = _rh.get_supports_for_argument_uid()
-
-    # len_undermines = len(undermines) if undermines else 0
-    # len_undercuts = len(undercuts) if undercuts else 0
-    # len_rebuts = len(rebuts) if rebuts else 0
-    # len_supports = len(supports) if supports else 0
-    # attacks = len_undermines + len_undercuts + len_rebuts
 
     db_reporter = DBDiscussionSession.query(User).get(review.detector_uid)
 
@@ -638,9 +625,6 @@ def __get_stats_for_review(review, ui_locales, main_page):
     stats['reporter_gravatar'] = get_profile_picture(db_reporter, 20)
     stats['reporter_url'] = main_page + '/user/' + str(db_reporter.uid)
     stats['id'] = str(review.uid)
-    # stats['viewed'] = viewed
-    # stats['attacks'] = attacks
-    # stats['supports'] = len_supports
 
     return stats
 

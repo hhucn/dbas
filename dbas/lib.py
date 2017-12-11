@@ -383,62 +383,80 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     _t = Translator(lang)
 
     if len(arg_array) == 1:
-        db_argument = DBDiscussionSession.query(Argument).get(arg_array[0])
-        premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-        if premises[-1] != '.':
-            premises += '.'
-        conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
-
-        if lang == 'de':
-            intro = _t.get(_.itIsTrueThatAnonymous) if db_argument.is_supportive else _t.get(_.itIsFalseThatAnonymous)
-            intro = intro[0:1].upper() + intro[1:]
-            intro = (pro_tag if db_argument.is_supportive else con_tag) + intro + end_tag
-            ret_value = intro + ' ' + tag_conclusion + conclusion + tag_end
-            ret_value += ', ' + _t.get(_.because).lower() + ' ' + tag_premise + premises + tag_end
-        else:
-            ret_value = tag_conclusion + conclusion + ' ' + tag_end
-            ret_value += (con_tag + _t.get(_.isNotRight).lower() + end_tag) if not db_argument.is_supportive else ''
-            ret_value += ' ' + _t.get(_.because).lower() + ' '
-            ret_value += tag_premise + premises + tag_end
+        ret_value = __build_val_for_jump(arg_array, tag_premise, tag_conclusion, pro_tag, con_tag, end_tag, tag_end,
+                                         lang, _t)
 
     elif len(arg_array) == 2:
-        db_undercut = DBDiscussionSession.query(Argument).get(arg_array[0])
-        db_conclusion_argument = DBDiscussionSession.query(Argument).get(arg_array[1])
-        premise, uids = get_text_for_premisesgroup_uid(db_undercut.premisesgroup_uid)
-        conclusion_premise, uids = get_text_for_premisesgroup_uid(db_conclusion_argument.premisesgroup_uid)
-        conclusion_conclusion = get_text_for_statement_uid(db_conclusion_argument.conclusion_uid)
+        ret_value = __build_val_for_undercut(arg_array, tag_premise, tag_conclusion, con_tag, end_tag, tag_end, lang,
+                                             _t)
 
-        premise = tag_premise + premise + tag_end
-        conclusion_premise = tag_conclusion + conclusion_premise + tag_end
-        conclusion_conclusion = tag_conclusion + conclusion_conclusion + tag_end
-
-        intro = (_t.get(_.statementAbout) + ' ') if lang == 'de' else ''
-        bind = con_tag + _t.get(_.isNotAGoodReasonFor) + end_tag
-        because = _t.get(_.because)
-        ret_value = '{}{} {} {}. {} {}.'.format(intro, conclusion_premise, bind, conclusion_conclusion, because,
-                                                premise)
     else:
-        db_undercut1 = DBDiscussionSession.query(Argument).get(arg_array[0])
-        db_undercut2 = DBDiscussionSession.query(Argument).get(arg_array[1])
-        db_argument = DBDiscussionSession.query(Argument).get(arg_array[2])
-        premise1, uids = get_text_for_premisesgroup_uid(db_undercut1.premisesgroup_uid)
-        premise2, uids = get_text_for_premisesgroup_uid(db_undercut2.premisesgroup_uid)
-        premise3, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-        conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
+        ret_value = __build_val_for_undercutted_undercut(arg_array, tag_premise, tag_conclusion, con_tag, end_tag,
+                                                         tag_end, lang, _t)
 
-        # intro = (_t.get(_.statementAbout) + ' ') if lang == 'de' else ''
-        bind = con_tag + _t.get(_.isNotAGoodReasonAgainstArgument) + end_tag
-        because = _t.get(_.because)
-        seperator = ',' if lang == 'de' else ''
+    return ret_value
 
-        premise1 = tag_premise + premise1 + tag_end
-        premise2 = tag_conclusion + premise2 + tag_end
-        argument = '{}{} {} {}'.format(conclusion, seperator, because.lower(), premise3)
-        argument = tag_conclusion + argument + tag_end
 
-        # P2 ist kein guter Grund gegen das Argument, dass C weil P3. Weil P1
-        ret_value = '{} {} {}. {} {}'.format(premise2, bind, argument, because, premise1)
+def __build_val_for_jump(arg_array, tag_premise, tag_conclusion, pro_tag, con_tag, end_tag, tag_end, lang, _t):
+    db_argument = DBDiscussionSession.query(Argument).get(arg_array[0])
+    premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+    if premises[-1] != '.':
+        premises += '.'
+    conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 
+    if lang == 'de':
+        intro = _t.get(_.itIsTrueThatAnonymous) if db_argument.is_supportive else _t.get(_.itIsFalseThatAnonymous)
+        intro = intro[0:1].upper() + intro[1:]
+        intro = (pro_tag if db_argument.is_supportive else con_tag) + intro + end_tag
+        ret_value = intro + ' ' + tag_conclusion + conclusion + tag_end
+        ret_value += ', ' + _t.get(_.because).lower() + ' ' + tag_premise + premises + tag_end
+    else:
+        ret_value = tag_conclusion + conclusion + ' ' + tag_end
+        ret_value += (con_tag + _t.get(_.isNotRight).lower() + end_tag) if not db_argument.is_supportive else ''
+        ret_value += ' ' + _t.get(_.because).lower() + ' '
+        ret_value += tag_premise + premises + tag_end
+    return ret_value
+
+
+def __build_val_for_undercut(arg_array, tag_premise, tag_conclusion, con_tag, end_tag, tag_end, lang, _t):
+    db_undercut = DBDiscussionSession.query(Argument).get(arg_array[0])
+    db_conclusion_argument = DBDiscussionSession.query(Argument).get(arg_array[1])
+    premise, uids = get_text_for_premisesgroup_uid(db_undercut.premisesgroup_uid)
+    conclusion_premise, uids = get_text_for_premisesgroup_uid(db_conclusion_argument.premisesgroup_uid)
+    conclusion_conclusion = get_text_for_statement_uid(db_conclusion_argument.conclusion_uid)
+
+    premise = tag_premise + premise + tag_end
+    conclusion_premise = tag_conclusion + conclusion_premise + tag_end
+    conclusion_conclusion = tag_conclusion + conclusion_conclusion + tag_end
+
+    intro = (_t.get(_.statementAbout) + ' ') if lang == 'de' else ''
+    bind = con_tag + _t.get(_.isNotAGoodReasonFor) + end_tag
+    because = _t.get(_.because)
+    ret_value = '{}{} {} {}. {} {}.'.format(intro, conclusion_premise, bind, conclusion_conclusion, because,
+                                            premise)
+    return ret_value
+
+
+def __build_val_for_undercutted_undercut(arg_array, tag_premise, tag_conclusion, con_tag, end_tag, tag_end, lang, _t):
+    db_undercut1 = DBDiscussionSession.query(Argument).get(arg_array[0])
+    db_undercut2 = DBDiscussionSession.query(Argument).get(arg_array[1])
+    db_argument = DBDiscussionSession.query(Argument).get(arg_array[2])
+    premise1, uids = get_text_for_premisesgroup_uid(db_undercut1.premisesgroup_uid)
+    premise2, uids = get_text_for_premisesgroup_uid(db_undercut2.premisesgroup_uid)
+    premise3, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+    conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
+
+    bind = con_tag + _t.get(_.isNotAGoodReasonAgainstArgument) + end_tag
+    because = _t.get(_.because)
+    seperator = ',' if lang == 'de' else ''
+
+    premise1 = tag_premise + premise1 + tag_end
+    premise2 = tag_conclusion + premise2 + tag_end
+    argument = '{}{} {} {}'.format(conclusion, seperator, because.lower(), premise3)
+    argument = tag_conclusion + argument + tag_end
+
+    # P2 ist kein guter Grund gegen das Argument, dass C weil P3. Weil P1
+    ret_value = '{} {} {}. {} {}'.format(premise2, bind, argument, because, premise1)
     return ret_value
 
 
@@ -469,7 +487,6 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     lang = DBDiscussionSession.query(Argument).get(uid).lang
 
     if lang != 'de':
-        # conclusion = conclusion[0:1].lower() + conclusion[1:]  # pretty print
         premises = premises[0:1].lower() + premises[1:]  # pretty print
 
     sb_none = '<' + tag_type + '>' if with_html_tag else ''

@@ -353,51 +353,12 @@ def register_user_with_ajax_data(params, ui_locales, mailer):
     email = escape_string(params['email']) if 'email' in params else ''
     gender = escape_string(params['gender']) if 'gender' in params else ''
     password = escape_string(params['password']) if 'password' in params else ''
-    passwordconfirm = escape_string(params['passwordconfirm']) if 'passwordconfirm' in params else ''
-    if params['mode'] == 'manually':
-        recaptcha = params['g-recaptcha-response'] if 'g-recaptcha-response' in params else ''
-        is_human, error = validate_recaptcha(recaptcha)
-    else:
-        is_human = True
-        error = False
     db_new_user = None
 
-    # database queries mail verification
-    db_nick1 = get_user_by_case_insensitive_nickname(nickname)
-    db_nick2 = get_user_by_case_insensitive_public_nickname(nickname)
-    db_mail = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
-    is_mail_valid = validate_email(email, check_mx=True)
-
-    # are the password equal?
-    if not password == passwordconfirm:
-        logger('Auth.Login', 'user_registration', 'Passwords are not equal')
-        msg = _tn.get(_.pwdNotEqual)
-    # empty password?
-    elif len(password) <= 5:
-        logger('Auth.Login', 'user_registration', 'Password too short')
-        msg = _tn.get(_.pwdShort)
-    # is the nick already taken?
-    elif db_nick1 or db_nick2:
-        logger('Auth.Login', 'user_registration', 'Nickname \'' + nickname + '\' is taken')
-        msg = _tn.get(_.nickIsTaken)
-    # is the email already taken?
-    elif db_mail:
-        logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is taken')
-        msg = _tn.get(_.mailIsTaken)
-    elif len(email) < 2:
-        logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is too short')
-        msg = _tn.get(_.mailNotValid)
-    # is the email valid?
-    elif not is_mail_valid:
-        logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is not valid')
-        msg = _tn.get(_.mailNotValid)
-    # is anti-spam correct?
-    elif not is_human or error:
-        logger('Auth.Login', 'user_registration', 'recaptcha error')
-        msg = _tn.get(_.maliciousAntiSpam)
-    # lets go
+    msg = __check_login_params(params)
+    if len(msg) > 0:
+        msg = _tn.get(msg)
     else:
-
         # getting the authors group
         db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
 
@@ -418,6 +379,61 @@ def register_user_with_ajax_data(params, ui_locales, mailer):
             msg = error
 
     return success, msg, db_new_user
+
+
+def __check_login_params(params):
+    nickname = escape_string(params['nickname']) if 'nickname' in params else ''
+    email = escape_string(params['email']) if 'email' in params else ''
+    password = escape_string(params['password']) if 'password' in params else ''
+    passwordconfirm = escape_string(params['passwordconfirm']) if 'passwordconfirm' in params else ''
+    if params['mode'] == 'manually':
+        recaptcha = params['g-recaptcha-response'] if 'g-recaptcha-response' in params else ''
+        is_human, error = validate_recaptcha(recaptcha)
+    else:
+        is_human = True
+        error = False
+
+    # database queries mail verification
+    db_nick1 = get_user_by_case_insensitive_nickname(nickname)
+    db_nick2 = get_user_by_case_insensitive_public_nickname(nickname)
+    db_mail = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
+    is_mail_valid = validate_email(email, check_mx=True)
+
+    # are the password equal?
+    if not password == passwordconfirm:
+        logger('Auth.Login', 'user_registration', 'Passwords are not equal')
+        return _.pwdNotEqual
+
+    # empty password?
+    if len(password) <= 5:
+        logger('Auth.Login', 'user_registration', 'Password too short')
+        return _.pwdShort
+
+    # is the nick already taken?
+    if db_nick1 or db_nick2:
+        logger('Auth.Login', 'user_registration', 'Nickname \'' + nickname + '\' is taken')
+        return _.nickIsTaken
+
+    # is the email already taken?
+    if db_mail:
+        logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is taken')
+        return _.mailIsTaken
+
+    if len(email) < 2:
+        logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is too short')
+        return _.mailNotValid
+
+    # is the email valid?
+    if not is_mail_valid:
+        logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is not valid')
+        return _.mailNotValid
+
+    # is anti-spam correct?
+    if not is_human or error:
+        logger('Auth.Login', 'user_registration', 'recaptcha error')
+        return _.maliciousAntiSpam
+
+    return ''
 
 
 def __refresh_headers_and_url(request, db_user, keep_login, url):

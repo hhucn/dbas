@@ -121,7 +121,6 @@ class ItemDictHelper(object):
         _tn = Translator(self.lang)
 
         slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
-        # text = get_text_for_statement_uid(statement_uid)
         statements_array = []
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
@@ -164,7 +163,6 @@ class ItemDictHelper(object):
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        # support_step = random.uniform(0, 1) > self.LIMIT_SUPPORT_STEP
 
         for argument in db_arguments:
             if db_user and argument.uid in uids:  # add seen by if the statement is visible
@@ -243,7 +241,6 @@ class ItemDictHelper(object):
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        # support_step = random.uniform(0, 1) > self.LIMIT_SUPPORT_STEP
 
         for argument in db_arguments:
             if db_user:  # add seen by if the statement is visible
@@ -498,7 +495,6 @@ class ItemDictHelper(object):
         if new_attack == 'no_other_attack' or new_attack.startswith('end'):
             url = _um.get_last_valid_url_before_reaction(True)
             relation = 'step_back'
-            # url = 'back' if self.for_api else 'window.history.go(-1)'
         else:
             relation = 'no_opinion'
             url = _um.get_url_for_reaction_on_argument(True, argument_uid_user, new_attack, arg_id_sys)
@@ -587,7 +583,6 @@ class ItemDictHelper(object):
             url = _um.get_url_for_justifying_statement(True, db_sys_argument.conclusion_uid, mode)
 
         elif attack == 'undercut':  # rebutting an undercut will be a overbid for the initial argument
-            # url = _um.get_url_for_justifying_argument(True, argument_uid_user, mode, 'overbid')
             if db_user_argument.argument_uid is None:
                 url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)
             else:

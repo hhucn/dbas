@@ -102,10 +102,6 @@ def __get_rebuts_for_arguments_conclusion_uid(db_argument):
     """
     return_array = []
     given_rebuts = set()
-    index = 0
-    #  logger('RelationHelper', 'get_rebuts_for_arguments_conclusion_uid', 'conclusion_statements_uid ' +
-    #         str(db_argument.conclusion_uid) + ', is_current_argument_supportive ' + str(db_argument.is_supportive) +
-    #         ' (searching for the opposite)')
     db_arguments = get_not_disabled_arguments_as_query()
     db_rebut = db_arguments.filter(Argument.is_supportive == (not db_argument.is_supportive),
                                    Argument.conclusion_uid == db_argument.conclusion_uid).all()
@@ -118,7 +114,6 @@ def __get_rebuts_for_arguments_conclusion_uid(db_argument):
             text, trash = get_text_for_premisesgroup_uid(rebut.premisesgroup_uid)
             tmp_dict['text'] = text[0:1].upper() + text[1:]
             return_array.append(tmp_dict)
-            index += 1
     return return_array
 
 
@@ -129,7 +124,6 @@ def get_supports_for_argument_uid(argument_uid):
     :return argument_uid: UID of the argument
     :return: array with dict() with id (of argumet) and text
     """
-    # logger('RelationHelper', 'get_supports_for_argument_uid', 'main')
     if not is_integer(argument_uid):
         return None
 
@@ -144,7 +138,6 @@ def get_supports_for_argument_uid(argument_uid):
         return []
 
     db_arguments_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
-    index = 0
 
     for arguments_premises in db_arguments_premises:
         db_arguments = get_not_disabled_arguments_as_query()
@@ -159,7 +152,6 @@ def get_supports_for_argument_uid(argument_uid):
                 tmp_dict['id'] = support.uid
                 tmp_dict['text'], trash = get_text_for_premisesgroup_uid(support.premisesgroup_uid)
                 return_array.append(tmp_dict)
-                index += 1
                 given_supports.add(support.premisesgroup_uid)
 
     return [] if len(return_array) == 0 else return_array
@@ -299,13 +291,10 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
     :return: [{id, text}] or 0
     """
     return_array = []
-    # logger('RelationHelper', '__get_attack_or_support_for_justification_of_argument_uid',
-    #        'db_undercut against Argument.argument_uid==' + str(argument_uid))
     db_arguments = get_not_disabled_arguments_as_query()
     db_related_arguments = db_arguments.filter(and_(Argument.is_supportive == is_supportive,
                                                     Argument.argument_uid == argument_uid)).all()
     given_relations = set()
-    index = 0
 
     if not db_related_arguments:
         return None
@@ -317,7 +306,6 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
             tmp_dict['id'] = relation.uid
             tmp_dict['text'], trash = get_text_for_premisesgroup_uid(relation.premisesgroup_uid)
             return_array.append(tmp_dict)
-            index += 1
 
     return return_array
 
@@ -330,9 +318,7 @@ def __get_undermines_for_premises(premises_as_statements_uid, is_supportive=Fals
     :param is_supportive
     :return: [{id, text}]
     """
-    # logger('RelationHelper', '__get_undermines_for_premises', 'main')
     return_array = []
-    index = 0
     given_undermines = set()
     for s_uid in premises_as_statements_uid:
         db_arguments = get_not_disabled_arguments_as_query()
@@ -345,5 +331,4 @@ def __get_undermines_for_premises(premises_as_statements_uid, is_supportive=Fals
                 tmp_dict['id'] = undermine.uid
                 tmp_dict['text'], uids = get_text_for_premisesgroup_uid(undermine.premisesgroup_uid)
                 return_array.append(tmp_dict)
-                index += 1
     return return_array

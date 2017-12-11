@@ -236,18 +236,29 @@ class DictionaryHelper(object):
         :return: dict()
         """
         _tn = Translator(self.system_lang)
-        edits = user.get_count_of_statements(db_user, True) if db_user else 0
-        statements = user.get_count_of_statements(db_user, False) if db_user else 0
-        arg_vote, stat_vote = user.get_count_of_votes_of_user(db_user) if db_user else (0, 0)
-        arg_clicks, stat_clicks = user.get_count_of_clicks(db_user) if db_user else (0, 0)
-        public_nick = db_user.get_global_nickname() if db_user else ''
-        db_group = DBDiscussionSession.query(Group).get(db_user.group_uid) if db_user else None
+
+        edits = 0
+        statements = 0
+        arg_vote, stat_vote = (0, 0)
+        arg_clicks, stat_clicks = (0, 0)
+        public_nick = ''
+        db_group = None
+        db_settings = None
+        db_language = None
+
+        if db_user:
+            edits = user.get_count_of_statements(db_user, True)
+            statements = user.get_count_of_statements(db_user, False)
+            arg_vote, stat_vote = user.get_count_of_votes_of_user(db_user)
+            arg_clicks, stat_clicks = user.get_count_of_clicks(db_user)
+            public_nick = db_user.get_global_nickname()
+            db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
+            db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
+            db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
+
         group = db_group.name if db_group else '-'
         gravatar_public_url = get_public_profile_picture(db_user, 120)
         reputation, tmp = get_reputation_of(db_user.nickname)
-
-        db_settings = DBDiscussionSession.query(Settings).get(db_user.uid) if db_user else None
-        db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid) if db_settings else None
 
         return {
             'passwordold': '' if pw_change_success else old_pw,

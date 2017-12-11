@@ -309,58 +309,78 @@ def get_rows_of(columns, db_elements, main_page):
 
 
 def __resolve_attribute(attribute, column, main_page, db_languages, db_users, tmp):
-    if column in _user_columns:
-        text, success = __get_author_data(attribute, db_users, main_page)
-        text = str(text) if success else ''
-        tmp.append(text)
-        return
+    user_columns = {col: __resolve_user_attribute for col in _user_columns}
+    statement_columns = {col: __resolve_statement_attribute for col in _statement_columns}
+    arrow_columns = {col: __resolve_arrow_attribute for col in _arrow_columns}
 
-    if column == 'lang_uid':
-        tmp.append(__get_language(attribute, db_languages))
-        return
+    column_matcher = {
+        'lang_uid': __resolve_lang_attribute,
+        'password': __resolve_password_attribute,
+        'premisesgroup_uid': __resolve_premisesgroup_attribute,
+        'argument_uid': __resolve_argument_attribute,
+        'textversion_uid': __resolve_textversion_attribute,
+        'path': __resolve_path_attribute,
+        'email': __resolve_email_attribute,
+    }
+    column_matcher.update(user_columns)
+    column_matcher.update(statement_columns)
+    column_matcher.update(arrow_columns)
 
-    if column == 'password':
-        tmp.append(str(attribute)[:5] + '...')
-        return
+    if column in column_matcher:
+        column_matcher[column](attribute, main_page, db_languages, db_users, tmp)
+    else:
+        tmp.append(str(attribute))
 
-    if column == 'premisesgroup_uid':
-        text, uid_list = get_text_for_premisesgroup_uid(attribute) if attribute is not None else ('None', '[-]')
-        tmp.append(str(attribute) + ' - ' + str(text) + ' ' + str(uid_list))
-        return
 
-    if column in _statement_columns:
-        text = get_text_for_statement_uid(attribute) if attribute is not None else 'None'
-        tmp.append(str(attribute) + ' - ' + str(text))
-        return
+def __resolve_user_attribute(attribute, main_page, db_languages, db_users, tmp):
+    text, success = __get_author_data(attribute, db_users, main_page)
+    text = str(text) if success else ''
+    tmp.append(text)
 
-    if column == 'argument_uid':
-        text = get_text_for_argument_uid(attribute) if attribute is not None else 'None'
-        tmp.append(str(attribute) + ' - ' + str(text))
-        return
 
-    if column == 'textversion_uid':
-        text = 'None'
-        if attribute is not None:
-            db_tv = DBDiscussionSession.query(TextVersion).get(attribute)
-            text = db_tv.content if db_tv else ''
-        tmp.append(str(attribute) + ' - ' + str(text))
-        return
+def __resolve_statement_attribute(attribute, main_page, db_languages, db_users, tmp):
+    text = get_text_for_statement_uid(attribute) if attribute is not None else 'None'
+    tmp.append(str(attribute) + ' - ' + str(text))
 
-    if column == 'path':
-        tmp.append('<a href="{}/{}{}" target="_blank">{}</a>'.format(main_page, 'discuss', attribute, attribute))
-        return
 
-    if column == 'email':
-        db_user = DBDiscussionSession.query(User).filter_by(email=str(attribute)).first()
-        img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 25))
-        tmp.append('{} {}'.format(img, attribute))
-        return
-
-    if column in _arrow_columns:
+def __resolve_arrow_attribute(attribute, main_page, db_languages, db_users, tmp):
         tmp.append(attribute.format('YYYY-MM-DD HH:mm:ss'))
-        return
 
-    tmp.append(str(attribute))
+
+def __resolve_lang_attribute(attribute, main_page, db_languages, db_users, tmp):
+    tmp.append(__get_language(attribute, db_languages))
+
+
+def __resolve_password_attribute(attribute, main_page, db_languages, db_users, tmp):
+    tmp.append(str(attribute)[:5] + '...')
+
+
+def __resolve_premisesgroup_attribute(attribute, main_page, db_languages, db_users, tmp):
+    text, uid_list = get_text_for_premisesgroup_uid(attribute) if attribute is not None else ('None', '[-]')
+    tmp.append(str(attribute) + ' - ' + str(text) + ' ' + str(uid_list))
+
+
+def __resolve_argument_attribute(attribute, main_page, db_languages, db_users, tmp):
+    text = get_text_for_argument_uid(attribute) if attribute is not None else 'None'
+    tmp.append(str(attribute) + ' - ' + str(text))
+
+
+def __resolve_textversion_attribute(attribute, main_page, db_languages, db_users, tmp):
+    text = 'None'
+    if attribute is not None:
+        db_tv = DBDiscussionSession.query(TextVersion).get(attribute)
+        text = db_tv.content if db_tv else ''
+    tmp.append(str(attribute) + ' - ' + str(text))
+
+
+def __resolve_path_attribute(attribute, column, main_page, db_languages, db_users, tmp):
+    tmp.append('<a href="{}/{}{}" target="_blank">{}</a>'.format(main_page, 'discuss', attribute, attribute))
+
+
+def __resolve_email_attribute(attribute, column, main_page, db_languages, db_users, tmp):
+    db_user = DBDiscussionSession.query(User).filter_by(email=str(attribute)).first()
+    img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 25))
+    tmp.append('{} {}'.format(img, attribute))
 
 
 def update_row(table_name, uids, keys, values, nickname, _tn):
