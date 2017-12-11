@@ -60,8 +60,6 @@ def continue_flow(authorization_response, ui_locales):
     except InsecureTransportError:
         logger('Github OAuth', 'continue_flow', 'OAuth 2 MUST utilize https', error=True)
         _tn = Translator(ui_locales)
-        # missing_data = ['surname', 'email', 'nickname', 'password']
-        # return {'user': {'firstname': 'anton', 'gender': 'm'}, 'missing': missing_data, 'error': ''}
         return {'user': {}, 'missing': {}, 'error': _tn.get(_.internalErrorHTTPS)}
     except InvalidClientError:
         logger('Github OAuth', 'continue_flow', 'InvalidClientError', error=True)

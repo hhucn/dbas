@@ -312,7 +312,6 @@ function AjaxDiscussionHandler() {
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneFuzzySearchForDuplicate(data);
 		}).fail(function ajaxGetAllUsersFail() {
-			// setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 
 	};
