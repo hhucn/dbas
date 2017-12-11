@@ -271,7 +271,7 @@ function GuiHandler() {
 			});
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param gender
@@ -291,7 +291,7 @@ function GuiHandler() {
 			g1.prop('checked', true).prop('disabled', true);
 		}
 	};
-	
+
 	/**
 	 *
 	 */

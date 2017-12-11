@@ -4,7 +4,7 @@
 
 function AdminGui() {
 	'use strict';
-	
+
 	/**
 	 * Colors text of the element, specified by the class
 	 *
@@ -17,7 +17,7 @@ function AdminGui() {
 		element.removeClass('text-muted').addClass(text_class);
 		element.parent().css('pointer-events', '');
 	};
-	
+
 	/**
 	 * Mute text of the element, specified by the class
 	 *
@@ -30,7 +30,7 @@ function AdminGui() {
 		element.addClass('text-muted').removeClass(text_class);
 		element.parent().css('pointer-events', 'none');
 	};
-	
+
 	/**
 	 * Open a dialog with every column for adding a new row
 	 */
@@ -62,7 +62,7 @@ function AdminGui() {
 			});
 		});
 	};
-	
+
 	/**
 	 * Replaces every span with input field in current row
 	 *
@@ -84,7 +84,7 @@ function AdminGui() {
 			});
 		});
 	};
-	
+
 	/**
 	 * Starts ajax request for deleting current row
 	 *
@@ -99,7 +99,7 @@ function AdminGui() {
 			});
 		});
 	};
-	
+
 	/**
 	 * Starts ajax request for saving edits of current row
 	 *
@@ -125,7 +125,7 @@ function AdminGui() {
 			});
 		});
 	};
-	
+
 	/**
 	 * Restores the inital state of the row
 	 *
@@ -145,7 +145,7 @@ function AdminGui() {
 			});
 		});
 	};
-	
+
 	/**
 	 * Searches the PK of the table and returns an array
 	 *
@@ -163,7 +163,7 @@ function AdminGui() {
 		}
 		return uids;
 	};
-	
+
 	/**
 	 * Creates a row for the 'add-data' modal view
 	 * @returns {*|jQuery} body element of the modal view
@@ -194,21 +194,21 @@ function AdminGui() {
 // main function
 $(document).ready(function () {
 	'use strict';
-	
+
 	$('#admin-login-button').click(function(){
 		new AjaxMainHandler().login($('#admin-login-user').val(), $('#admin-login-pw').val(), true);
 	});
-	
+
 	var data = $('#data');
 	var gui = new AdminGui();
-	
+
 	// events for edit, delete, save, cancel, add
 	gui.setEditClickEvent(data);
 	gui.setDeleteClickEvent(data);
 	gui.setSaveClickEvent(data);
 	gui.setCancelClickEvent(data);
 	gui.setAddClickEvent();
-	
+
 	try{
 		var dict = getLanguage() === 'de'? dataTables_german_lang : dataTables_english_lang;
 		data.DataTable({"language": dict});

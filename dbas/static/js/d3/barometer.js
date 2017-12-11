@@ -21,7 +21,6 @@ var google_colors = [
     ['#ff5722', '#fbe9e7', '#ffccbc', '#ffab91', '#ff8a65', '#ff7043', '#ff5722', '#f4511e', '#e64a19', '#d84315','#bf360c', '#ff9e80', '#ff6e40', '#ff3d00', '#dd2c00']
     ];
 
-
 function DiscussionBarometer(){
     'use strict';
     var is_attitude = false;
@@ -196,7 +195,7 @@ function DiscussionBarometer(){
             addListenerForTooltip(usersDict, barChartSvg, "rect");
         }
     }
-	
+
 	/**
      *
 	 * @param usersDict
@@ -506,7 +505,7 @@ function DiscussionBarometer(){
             return getNormalColorFor(i);}
         return getLightColorFor(i);
     }
-	
+
 	/**
      * Wrapper for division
      *
@@ -819,7 +818,7 @@ function DiscussionBarometer(){
         chartTooltip.remove();
         // hide tooltip with detailed information
         chartTooltip.css("opacity", 0);
-        
+
         $('#legendLi_' + index).css('background', '');
 
         // if doughnut chart is selected hide text in middle of doughnut

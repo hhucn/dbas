@@ -4,7 +4,7 @@
 
 function AjaxMainHandler(){
 	'use strict';
-	
+
 	/**
 	 * Sends a request for language change
 	 * @param new_lang is the shortcut for the language
@@ -37,7 +37,7 @@ function AjaxMainHandler(){
 			}
 		});
 	};
-	
+
 	/**
 	 *
 	 */
@@ -68,7 +68,7 @@ function AjaxMainHandler(){
 			callbackIfDoneForLogin(data, showGlobalError);
 		}).fail(function ajaxLoginFail(xhr) {
 			var errorMsg = '';
-			
+
 			if (xhr.status === 200) {
 				location.reload(true);
 			} else if (xhr.status === 302) {
@@ -80,7 +80,7 @@ function AjaxMainHandler(){
 			} else {
 				errorMsg = _t(requestFailed);
 			}
-			
+
 			if (errorMsg.length > 0){
 				if (showGlobalError) {
 					setGlobalErrorHandler('Ohh!', errorMsg);
@@ -93,7 +93,7 @@ function AjaxMainHandler(){
 			$('#' + loginPwId).val('');
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param service
