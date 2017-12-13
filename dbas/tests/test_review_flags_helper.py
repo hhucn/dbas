@@ -71,7 +71,7 @@ class TestReviewFlagHelper(unittest.TestCase):
         DBDiscussionSession.flush()
         transaction.commit()
 
-    def test_flag_statement_for_merge(self):
+    def flag_statement_for_merge_or_split(self):
         keys = ['some_key', 'merge', 'split']
 
         success, info, error = rf_helper.flag_statement_for_merge_or_split(keys[0], 11, ['value1', 'value2'], self.some_nick)
@@ -92,40 +92,20 @@ class TestReviewFlagHelper(unittest.TestCase):
         success, info, error = rf_helper.flag_statement_for_merge_or_split(keys[1], 11, ['value1', 'value2'], self.christian)
         self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByOthers], [error, '']])
 
-        tmp = DBDiscussionSession.query(ReviewMerge).filter_by(premisesgroup_uid=11).first()
-        DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=tmp.uid).delete()
-        DBDiscussionSession.query(ReviewMerge).filter_by(premisesgroup_uid=11).delete()
-        DBDiscussionSession.flush()
-        transaction.commit()
-
-    def test_flag_statement_for_split(self):
-        keys = ['some_key', 'split', 'merge']
-
-        success, info, error = rf_helper.flag_statement_for_merge_or_split(keys[0], 11, ['value1', 'value2'], self.some_nick)
-        self.__assert_equal_text([[success, ''], [info, ''], [error, _.noRights]])
-
-        success, info, error = rf_helper.flag_statement_for_merge_or_split(keys[0], 11, ['value1', 'value2'], self.tobias)
-        self.__assert_equal_text([[success, ''], [info, ''], [error, _.internalKeyError]])
-
-        success, info, error = rf_helper.flag_statement_for_merge_or_split(keys[1], 11, ['value1', 'value2'], self.tobias)
-        self.__assert_equal_text([[success, _.thxForFlagText], [info, ''], [error, '']])
-
-        success, info, error = rf_helper.flag_statement_for_merge_or_split(keys[1], 11, ['value1', 'value2'], self.tobias)
-        self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByYou], [error, '']])
-
-        success, info, error = rf_helper.flag_statement_for_merge_or_split(keys[2], 11, ['value1', 'value2'], self.tobias)
-        self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByYou], [error, '']])
-
-        success, info, error = rf_helper.flag_statement_for_merge_or_split(keys[1], 11, ['value1', 'value2'], self.christian)
-        self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByOthers], [error, '']])
-
         tmp = DBDiscussionSession.query(ReviewSplit).filter_by(premisesgroup_uid=11).first()
-        DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=tmp.uid).delete()
-        DBDiscussionSession.query(ReviewSplit).filter_by(premisesgroup_uid=11).delete()
+        if tmp:
+            DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=tmp.uid).delete()
+            DBDiscussionSession.query(ReviewSplit).filter_by(premisesgroup_uid=11).delete()
+
+        tmp = DBDiscussionSession.query(ReviewMerge).filter_by(premisesgroup_uid=11).first()
+        if tmp:
+            DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=tmp.uid).delete()
+            DBDiscussionSession.query(ReviewMerge).filter_by(premisesgroup_uid=11).delete()
+
         DBDiscussionSession.flush()
         transaction.commit()
 
-    def test_flag_pgroup_for_merge(self):
+    def flag_pgroup_for_merge_or_split(self):
         keys = ['some_key', 'merge', 'split']
 
         success, info, error = rf_helper.flag_pgroup_for_merge_or_split(keys[0], 11, self.some_nick)
@@ -147,35 +127,14 @@ class TestReviewFlagHelper(unittest.TestCase):
         self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByOthers], [error, '']])
 
         tmp = DBDiscussionSession.query(ReviewMerge).filter_by(premisesgroup_uid=11).first()
-        DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=tmp.uid).delete()
-        DBDiscussionSession.query(ReviewMerge).filter_by(premisesgroup_uid=11).delete()
-        DBDiscussionSession.flush()
-        transaction.commit()
-
-    def test_flag_pgroup_for_split(self):
-        keys = ['some_key', 'split', 'merge']
-
-        success, info, error = rf_helper.flag_pgroup_for_merge_or_split(keys[0], 11, self.some_nick)
-        self.__assert_equal_text([[success, ''], [info, ''], [error, _.noRights]])
-
-        success, info, error = rf_helper.flag_pgroup_for_merge_or_split(keys[0], 11, self.tobias)
-        self.__assert_equal_text([[success, ''], [info, ''], [error, _.internalKeyError]])
-
-        success, info, error = rf_helper.flag_pgroup_for_merge_or_split(keys[1], 11, self.tobias)
-        self.__assert_equal_text([[success, _.thxForFlagText], [info, ''], [error, '']])
-
-        success, info, error = rf_helper.flag_pgroup_for_merge_or_split(keys[1], 11, self.tobias)
-        self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByYou], [error, '']])
-
-        success, info, error = rf_helper.flag_pgroup_for_merge_or_split(keys[2], 11, self.tobias)
-        self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByYou], [error, '']])
-
-        success, info, error = rf_helper.flag_pgroup_for_merge_or_split(keys[1], 11, self.christian)
-        self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByOthers], [error, '']])
+        if tmp:
+            DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=tmp.uid).delete()
+            DBDiscussionSession.query(ReviewMerge).filter_by(premisesgroup_uid=11).delete()
 
         tmp = DBDiscussionSession.query(ReviewSplit).filter_by(premisesgroup_uid=11).first()
-        DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=tmp.uid).delete()
-        DBDiscussionSession.query(ReviewSplit).filter_by(premisesgroup_uid=11).delete()
+        if tmp:
+            DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=tmp.uid).delete()
+            DBDiscussionSession.query(ReviewSplit).filter_by(premisesgroup_uid=11).delete()
         DBDiscussionSession.flush()
         transaction.commit()
 

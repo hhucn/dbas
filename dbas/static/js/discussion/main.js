@@ -22,12 +22,6 @@ function Main () {
 			});
 		});
 
-		/*
-		 $('.icon-rem-premise').each(function() {
-		 // set in GuiHandler
-		 });
-		 */
-
 		// admin list all users button
 		$('#' + listAllUsersButtonId).click(function listAllUsersButtonId() {
 			if ($(this).val() === _t(showAllUsers)) {

@@ -3,6 +3,23 @@
  */
 $(document).ready(function () {
     'use strict';
+    
+    var button_dict = {
+    	'.discussion-enable-toggle': 'enable',
+    	'.discussion-public-toggle': 'public',
+    	'.discussion-writable-toggle': 'writable'
+    };
+    
+    for (var key in button_dict) {
+    	if (!{}.hasOwnProperty.call(button_dict, key)){
+    		continue;
+	    }
+		$.each($(key), function(){
+			$(this).change(function (){
+				new AjaxDiscussionHandler().setDiscussionSettings($(this), button_dict[key]);
+			});
+		});
+    }
 
 	$.each($('.discussion-enable-toggle'), function(){
 		$(this).change(function (){
