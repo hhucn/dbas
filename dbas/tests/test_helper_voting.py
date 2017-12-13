@@ -164,32 +164,20 @@ class VotingHelperTest(unittest.TestCase):
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 2, 1, 0, 1)
 
-        val = add_click_for_argument(2, self.user.nickname)
-        self.assertTrue(val)
-        self.check_tables_of_user_for_n_rows(self.user, 4, 2, 0, 2)
+        # double it
+        for i in range(0, 2):
+            val = add_click_for_argument(2, self.user.nickname)
+            self.assertTrue(val)
+            self.check_tables_of_user_for_n_rows(self.user, 4, 2, 0, 2)
 
-        db_votes_arg_pro = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_up_vote == True)).all()
-        db_votes_arg_con = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_up_vote == False)).all()
-        db_votes_sta_pro = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == True)).all()
-        db_votes_sta_con = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == False)).all()
-        self.assertEquals(len(db_votes_arg_pro), 2)
-        self.assertEquals(len(db_votes_arg_con), 0)
-        self.assertEquals(len(db_votes_sta_pro), 3)
-        self.assertEquals(len(db_votes_sta_con), 1)
-
-        # double
-        val = add_click_for_argument(2, self.user.nickname)
-        self.assertTrue(val)
-        self.check_tables_of_user_for_n_rows(self.user, 4, 2, 0, 2)
-
-        db_votes_arg_pro = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_up_vote == True)).all()
-        db_votes_arg_con = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_up_vote == False)).all()
-        db_votes_sta_pro = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == True)).all()
-        db_votes_sta_con = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == False)).all()
-        self.assertEquals(len(db_votes_arg_pro), 2)
-        self.assertEquals(len(db_votes_arg_con), 0)
-        self.assertEquals(len(db_votes_sta_pro), 3)
-        self.assertEquals(len(db_votes_sta_con), 1)
+            db_votes_arg_pro = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_up_vote == True)).all()
+            db_votes_arg_con = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_up_vote == False)).all()
+            db_votes_sta_pro = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == True)).all()
+            db_votes_sta_con = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == False)).all()
+            self.assertEquals(len(db_votes_arg_pro), 2)
+            self.assertEquals(len(db_votes_arg_con), 0)
+            self.assertEquals(len(db_votes_sta_pro), 3)
+            self.assertEquals(len(db_votes_sta_con), 1)
 
         # vote for undercut
         val = add_click_for_argument(18, self.user.nickname)
