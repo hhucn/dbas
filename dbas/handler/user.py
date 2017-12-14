@@ -355,8 +355,6 @@ def get_count_of_votes_of_user(user, limit_on_today=False):
 
     db_arg = db_arg.all()
     db_stat = db_stat.all()
-    print(len(db_arg))
-    print(len(db_stat))
 
     return len(db_arg), len(db_stat)
 
@@ -557,7 +555,7 @@ def get_summary_of_today(nickname, lang):
     :return: dict()
     """
     ret_dict = dict()
-    db_user = get_user_by_private_or_public_nickname(nickname)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
     if not db_user:
         return dict()

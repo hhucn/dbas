@@ -1,12 +1,13 @@
 import transaction
 import unittest
 import arrow
+from datetime import date, timedelta
 
 from pyramid import testing
 
 from nose.tools import assert_false, assert_true, assert_not_equal, assert_in, assert_not_in
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Settings, TextVersion, ClickedArgument, ClickedStatement
+from dbas.database.discussion_model import User, Settings, TextVersion, ClickedArgument, ClickedStatement, ReviewEdit
 from dbas.handler import user
 
 
@@ -47,26 +48,35 @@ class UserHandlerTests(unittest.TestCase):
         assert_true(user.is_in_group(self.user.nickname, 'admins'))
 
     def test_is_admin(self):
-        self.assertFalse(user.is_admin('Pascal'))
-        self.assertTrue(user.is_admin('Tobias'))
+        assert_false(user.is_admin('Pascal'))
+        assert_true(user.is_admin('Tobias'))
 
     def test_get_public_data(self):
-        prep_dict = user.get_public_data('Tobias', 'en')
-        assert_true(len(prep_dict) > 0)
-        prep_dict = user.get_public_data('Tobi', 'en')
+        prep_dict = user.get_public_data('CantHitThat', 'en')
         assert_true(len(prep_dict) == 0)
+        prep_dict = user.get_public_data(self.user.nickname, 'en')
+        assert_true(len(prep_dict) > 0)
         return True
 
     def test_get_reviews_of(self):
+        kurt = DBDiscussionSession.query(User).filter_by(nickname='Kurt').first()
+        assert_true(user.get_reviews_of(kurt, True) == 0)
+        assert_true(user.get_reviews_of(kurt, False) == 0)
+        rv = ReviewEdit(self.user.uid, 1, 1)
+        yesterday = date.today() - timedelta(1)
+        rv.timestamp = arrow.get(yesterday.strftime('%Y-%m-%d'))
+        DBDiscussionSession.add(rv)
+        transaction.commit()
         assert_true(user.get_reviews_of(self.user, True) == 0)
-        assert_true(user.get_reviews_of(self.user, False) == 0)
+        assert_true(user.get_reviews_of(self.user, False) == 1)
 
     def test_get_count_of_statements(self):
+        kurt = DBDiscussionSession.query(User).filter_by(nickname='Kurt').first()
         assert_true(user.get_count_of_statements(None, True, False) == 0)
-        assert_true(user.get_count_of_statements(self.user, False, False) == 0)
-        assert_true(user.get_count_of_statements(self.user, True, False) == 0)
-        assert_true(user.get_count_of_statements(self.user, False, True) == 0)
-        assert_true(user.get_count_of_statements(self.user, True, True) == 0)
+        assert_true(user.get_count_of_statements(kurt, False, False) == 0)
+        assert_true(user.get_count_of_statements(kurt, True, False) == 0)
+        assert_true(user.get_count_of_statements(kurt, False, True) == 0)
+        assert_true(user.get_count_of_statements(kurt, True, True) == 0)
 
         tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=1).first()
         tv.author_uid = self.user.uid
@@ -135,7 +145,8 @@ class UserHandlerTests(unittest.TestCase):
         prep_dict = user.get_summary_of_today('', 'en')
         assert_true(len(prep_dict) == 0)
 
-        prep_dict = user.get_summary_of_today(self.user.nickname, 'en')
+        prep_dict = user.get_summary_of_today('Tobias', 'en')
+        print(prep_dict)
         assert_true(prep_dict['firstname'] == self.user.firstname)
         assert_true(prep_dict['discussion_arg_clicks'] == 1)
         assert_true(prep_dict['discussion_stat_clicks'] == 1)
@@ -148,25 +159,25 @@ class UserHandlerTests(unittest.TestCase):
         new_pw = 'iamatestuser2017'
 
         msg, success = user.change_password(pascal, old_pw, old_pw, old_pw, 'en')
-        self.assertFalse(success)
+        assert_false(success)
 
         msg, success = user.change_password(pascal, old_pw, old_pw, new_pw, 'en')
-        self.assertFalse(success)
+        assert_false(success)
 
         msg, success = user.change_password(pascal, old_pw, new_pw, old_pw, 'en')
-        self.assertFalse(success)
+        assert_false(success)
 
         msg, success = user.change_password(pascal, new_pw, new_pw, old_pw, 'en')
-        self.assertFalse(success)
+        assert_false(success)
 
         msg, success = user.change_password(pascal, new_pw, old_pw, old_pw, 'en')
-        self.assertFalse(success)
+        assert_false(success)
 
         msg, success = user.change_password(pascal, old_pw, new_pw, new_pw, 'en')
-        self.assertTrue(success)
+        assert_true(success)
 
         msg, success = user.change_password(pascal, new_pw, old_pw, old_pw, 'en')
-        self.assertTrue(success)
+        assert_true(success)
 
         return True
 
