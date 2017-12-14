@@ -143,8 +143,10 @@ def update_last_action(nick):
     timeout_in_sec = 60 * 60 * 24 * 7
 
     # check difference of
-    diff_action = (get_now() - db_user.last_action).seconds
-    diff_login = (get_now() - db_user.last_login).seconds
+    diff_action = get_now() - db_user.last_action
+    diff_login = get_now() - db_user.last_login
+    diff_action = diff_action.seconds + diff_action.days * 24 * 60 * 60
+    diff_login = diff_login.seconds + diff_login.days * 24 * 60 * 60
 
     diff = diff_action if diff_action < diff_login else diff_login
     should_log_out = diff > timeout_in_sec and not db_settings.keep_logged_in
@@ -341,7 +343,7 @@ def get_count_of_votes_of_user(user, limit_on_today=False):
     :return: Int, Int
     """
     if not user:
-        return 0
+        return (0, 0)
 
     db_arg = DBDiscussionSession.query(MarkedArgument).filter(ClickedArgument.author_uid == user.uid)
     db_stat = DBDiscussionSession.query(MarkedStatement).filter(ClickedStatement.author_uid == user.uid)
@@ -353,6 +355,8 @@ def get_count_of_votes_of_user(user, limit_on_today=False):
 
     db_arg = db_arg.all()
     db_stat = db_stat.all()
+    print(len(db_arg))
+    print(len(db_stat))
 
     return len(db_arg), len(db_stat)
 
@@ -366,7 +370,7 @@ def get_count_of_clicks(user, limit_on_today=False):
     :return: Int, Int
     """
     if not user:
-        return 0
+        return (0, 0)
 
     db_arg = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == user.uid)
     db_stat = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == user.uid)
@@ -425,18 +429,18 @@ def get_textversions(public_nickname, lang, timestamp_after=None, timestamp_befo
     return statement_array, edit_array
 
 
-def get_marked_elements_of_user(user, is_argument, lang):
+def get_marked_elements_of_user(nickname, is_argument, lang):
     """
     Get all marked arguments/statements of the user
 
-    :param user: User
+    :param nickname: nickname
     :param is_argument: Boolean
     :param lang: uid_locales
     :return: [{},...]
     """
     return_array = []
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    db_user = get_user_by_private_or_public_nickname(nickname)
     if not db_user:
         return return_array
 
@@ -460,26 +464,26 @@ def get_marked_elements_of_user(user, is_argument, lang):
     return return_array
 
 
-def get_arg_clicks_of_user(user, lang):
-    return get_clicks_of_user(user, True, lang)
+def get_arg_clicks_of_user(nickname, lang):
+    return __get_clicks_of_user(nickname, True, lang)
 
 
-def get_stmt_clicks_of_user(user, lang):
-    return get_clicks_of_user(user, False, lang)
+def get_stmt_clicks_of_user(nickname, lang):
+    return __get_clicks_of_user(nickname, False, lang)
 
 
-def get_clicks_of_user(user, is_argument, lang):
+def __get_clicks_of_user(nickname, is_argument, lang):
     """
     Returs array with all clicks done by the user
 
-    :param user: user.nickname
+    :param nickname: user.nickname
     :param is_argument: Boolean
     :param lang: ui_locales
     :return: [{},...]
     """
     return_array = []
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    db_user = get_user_by_private_or_public_nickname(nickname)
     if not db_user:
         return return_array
 
@@ -553,7 +557,7 @@ def get_summary_of_today(nickname, lang):
     :return: dict()
     """
     ret_dict = dict()
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_user = get_user_by_private_or_public_nickname(nickname)
 
     if not db_user:
         return dict()
