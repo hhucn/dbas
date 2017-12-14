@@ -6,7 +6,7 @@ from datetime import date, timedelta
 from pyramid import testing
 
 from nose.tools import assert_false, assert_true, assert_not_equal, assert_in, assert_not_in, assert_less, assert_equal, \
-    assert_greater_equal, assert_greater
+    assert_greater_equal
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Settings, TextVersion, ClickedArgument, ClickedStatement, ReviewEdit
 from dbas.handler import user
