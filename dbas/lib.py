@@ -80,7 +80,7 @@ def is_development_mode(registry):
     :return: Boolean
     """
     if 'mode' in registry.settings:
-        return True if registry.settings['mode'] == 'development' else False
+        return registry.settings['mode'] == 'development'
     return False
 
 
@@ -118,7 +118,10 @@ def get_discussion_language(matchdict, params, session, current_issue_uid=None):
 
     db_lang = DBDiscussionSession.query(Issue).filter_by(uid=issue).join(Language).first()
 
-    return db_lang.languages.ui_locales if db_lang else 'en'
+    if db_lang:
+        return db_lang.languages.ui_locales
+    else:
+        return 'en'
 
 
 def python_datetime_pretty_print(ts, lang):
@@ -312,8 +315,10 @@ def get_all_arguments_with_text_by_statement_id(statement_uid):
     results = list()
     if arguments:
         for argument in arguments:
-            results.append({'uid': argument.uid,
-                            'text': get_text_for_argument_uid(argument.uid)})
+            results.append({
+                'uid': argument.uid,
+                'text': get_text_for_argument_uid(argument.uid)
+            })
         return results
 
 
