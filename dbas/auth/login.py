@@ -353,9 +353,12 @@ def register_user_with_ajax_data(params, ui_locales, mailer):
     email = escape_string(params['email']) if 'email' in params else ''
     gender = escape_string(params['gender']) if 'gender' in params else ''
     password = escape_string(params['password']) if 'password' in params else ''
+    passwordconfirm = escape_string(params['passwordconfirm']) if 'passwordconfirm' in params else ''
+    mode = escape_string(params['mode']) if 'mode' in params else ''
+    recaptcha = escape_string(params['g-recaptcha-response']) if 'g-recaptcha-response' in params else ''
     db_new_user = None
 
-    msg = __check_login_params(params)
+    msg = __check_login_params(nickname, email, password, passwordconfirm, mode, recaptcha)
     if msg:
         msg = _tn.get(msg)
     else:
@@ -381,17 +384,11 @@ def register_user_with_ajax_data(params, ui_locales, mailer):
     return success, msg, db_new_user
 
 
-def __check_login_params(params):
-    nickname = escape_string(params['nickname']) if 'nickname' in params else ''
-    email = escape_string(params['email']) if 'email' in params else ''
-    password = escape_string(params['password']) if 'password' in params else ''
-    passwordconfirm = escape_string(params['passwordconfirm']) if 'passwordconfirm' in params else ''
-    if params['mode'] == 'manually':
-        recaptcha = params['g-recaptcha-response'] if 'g-recaptcha-response' in params else ''
+def __check_login_params(nickname, email, password, passwordconfirm, mode, recaptcha):
+    is_human = True
+    error = False
+    if mode == 'manually':
         is_human, error = validate_recaptcha(recaptcha)
-    else:
-        is_human = True
-        error = False
 
     # database queries mail verification
     db_nick1 = get_user_by_case_insensitive_nickname(nickname)
@@ -419,13 +416,8 @@ def __check_login_params(params):
         logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is taken')
         return _.mailIsTaken
 
-    if len(email) < 2:
-        logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is too short')
-        return _.mailNotValid
-
-    # is the email valid?
-    if not is_mail_valid:
-        logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is not valid')
+    if len(email) < 2 or not is_mail_valid:
+        logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is too short or not valid')
         return _.mailNotValid
 
     # is anti-spam correct?
