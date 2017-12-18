@@ -156,7 +156,7 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
     db_arguments = __get_arguments_of_conclusion(statement_uid, include_disabled)
     return_array = [arg for arg in db_arguments] if db_arguments else []
 
-    premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement_uid).all()
+    premises = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement_uid)
     if not include_disabled:
         premises = premises.filter_by(is_disabled=False)
     premises = premises.all()
