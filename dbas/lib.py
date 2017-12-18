@@ -161,11 +161,18 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
         premises = premises.filter_by(is_disabled=False)
     premises = premises.all()
 
-    return_array += [__get_argument_of_premisegroup(p.premisesgroup_uid, include_disabled) for p in premises]
-    db_all_undercuts = [__get_undercuts_of_argument(arg.uid, include_disabled) for arg in return_array]
-    db_all_undercutted_undercuts = [__get_undercuts_of_argument(arg.uid, include_disabled) for arg in db_all_undercuts]
+    for p in premises:
+        return_array += __get_argument_of_premisegroup(p.premisesgroup_uid, include_disabled)
 
-    return_array = list(set(return_array + db_all_undercuts + db_all_undercutted_undercuts))
+    db_undercuts = []
+    for arg in return_array:
+        db_undercuts += __get_undercuts_of_argument(arg.uid, include_disabled)
+
+    db_undercutted_undercuts = []
+    for arg in db_undercuts:
+        db_undercutted_undercuts += __get_undercuts_of_argument(arg.uid, include_disabled)
+
+    return_array = list(set(return_array + db_undercuts + db_undercutted_undercuts))
 
     logger('DBAS.LIB', 'get_all_arguments_by_statement',
            'returning arguments {}'.format([arg.uid for arg in return_array]))
@@ -183,8 +190,7 @@ def __get_argument_of_premisegroup(premisesgroup_uid, include_disabled):
     db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=premisesgroup_uid)
     if not include_disabled:
         db_arguments = db_arguments.filter_by(is_disabled=False)
-    db_arguments = db_arguments.all()
-    return db_arguments if db_arguments else []
+    return db_arguments.all() if db_arguments else []
 
 
 def __get_undercuts_of_argument(argument_uid, include_disabled):
@@ -198,8 +204,7 @@ def __get_undercuts_of_argument(argument_uid, include_disabled):
     db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument_uid)
     if not include_disabled:
         db_undercuts = db_undercuts.filter_by(is_disabled=False)
-    db_undercuts = db_undercuts.all()
-    return db_undercuts if db_undercuts else []
+    return db_undercuts.all() if db_undercuts else []
 
 
 def __get_arguments_of_conclusion(statement_uid, include_disabled):
@@ -213,8 +218,7 @@ def __get_arguments_of_conclusion(statement_uid, include_disabled):
     db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=statement_uid)
     if not include_disabled:
         db_arguments = db_arguments.filter_by(is_disabled=False)
-    db_arguments = db_arguments.all()
-    return db_arguments if db_arguments else []
+    return db_arguments.all() if db_arguments else []
 
 
 def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_with_intro=False, first_arg_by_user=False,
