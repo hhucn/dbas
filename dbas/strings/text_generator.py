@@ -428,9 +428,13 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
         conclusion = conclusion[0:1].lower() + conclusion[1:]
 
     # adding tags
-    my_start_attack = start_attack if color_html else ''
-    my_start_argument = start_argument if color_html else ''
-    my_end_tag = end_tag if color_html else ''
+    my_start_attack = ''
+    my_start_argument = ''
+    my_end_tag = ''
+    if color_html:
+        my_start_attack = start_attack
+        my_start_argument = start_argument
+        my_end_tag = end_tag
 
     if color_html:
         confrontation = my_start_attack + confrontation + my_end_tag
@@ -713,10 +717,7 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
     else:  # reply for premise group
         confrontation_text = __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, conclusion,
                                                                           my_start_argument, tags, infos)
-    if is_okay:
-        return confrontation_text, gender
-    else:
-        return ''
+    return confrontation_text, gender
 
 
 def __get_confrontation_text_for_rebut_as_reply(_t, confrontation, user_arg, conclusion, sys_conclusion,
@@ -792,6 +793,7 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
     confrontation_text += ' ' if infos['lang'] == 'de' else ': '
     confrontation_text += tags['end']
     confrontation_text += confrontation
+
     return confrontation_text
 
 
@@ -827,7 +829,7 @@ def get_name_link_of_arguments_author(main_page, argument, nickname, with_link=T
         else:
             return None, '', 'n', False
 
-    return user, text if is_okay else '', gender, is_okay
+    return user, text, is_okay if is_okay else '', gender, is_okay
 
 
 def get_author_or_first_supporter_of_element(uid, current_user_uid, is_argument):
