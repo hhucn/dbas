@@ -74,6 +74,9 @@ class LibTests(unittest.TestCase):
         # negative uid
         self.assertEqual(lib.get_text_for_statement_uid(uid=-30), None)
 
+    def test_get_text_for_premise(self):
+        return True
+
     def test_get_text_for_conclusion(self):
         argument1 = Argument(premisegroup=4, issupportive=True, author=1, conclusion=3, issue=1)
         # 'argument' is an argument
@@ -119,3 +122,63 @@ class LibTests(unittest.TestCase):
         self.assertEqual(len(lib.get_all_arguments_by_statement(70, True)), 2)
         self.assertEqual(len(lib.get_all_arguments_by_statement(12, True)), 1)
         self.assertEqual(lib.get_all_arguments_by_statement(-1), None)
+
+    def test_get_global_url(self):
+        return True
+
+    def test_get_user_by_private_or_public_nickname(self):
+        return True
+
+    def test_get_user_by_case_insensitive_nickname(self):
+        return True
+
+    def test_get_user_by_case_insensitive_public_nickname(self):
+        return True
+
+    def test_pretty_print_options(self):
+        return True
+
+    def test_is_user_author_or_admin(self):
+        return True
+
+    def test_is_user_admin(self):
+        return True
+
+    def test_is_argument_disabled_due_to_disabled_statements(self):
+        return True
+
+    def test_is_author_of_statement(self):
+        return True
+
+    def test_is_author_of_argument(self):
+        return True
+
+    def test_get_profile_picture(self):
+        return True
+
+    def test_get_public_profile_picture(self):
+        return True
+
+    def test_get_author_data(self):
+        return True
+
+    def test_bubbles_already_last_in_list(self):
+        return True
+
+    def test_get_changelog(self):
+        return True
+
+    def test_get_discussion_language(self):
+        return True
+
+    def test_get_text_for_argument_uid(self):
+        return True
+
+    def test_get_all_arguments_with_text_by_statement_id(self):
+        return True
+
+    def test_get_all_arguments_with_text_and_url_by_statement_id(self):
+        return True
+
+    def test_get_slug_by_statement_uid(self):
+        return True
