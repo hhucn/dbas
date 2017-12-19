@@ -341,5 +341,57 @@ class TextGeneratorText(unittest.TestCase):
         text = tg.get_text_for_add_argument_message('Tobias', 'en', 'some_url', False)
         self.assertEqual(text, '''Hey, someone has added his/her opinion regarding your argument!\nWhere: some_url''')
 
-    def test_get_text_for_confrontation(self):
-        return True
+    def test_get_text_for_confrontation_without_attack(self):
+        user_arg = DBDiscussionSession.query(Argument).get(8)
+        sys_arg = DBDiscussionSession.query(Argument).get(10)
+
+        attack = ''
+        color_html, supportive, reply_for_argument, user_is_attacking = False, False, False, False
+        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
+                                                         'another conlcusion', supportive, attack, self.confrontation,
+                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
+                                                         color_html)
+        self.assertEqual(gender, '')
+        self.assertEqual(sys_text, '')
+
+    def test_get_text_for_confrontation_with_undermine(self):
+        user_arg = DBDiscussionSession.query(Argument).get(8)
+        sys_arg = DBDiscussionSession.query(Argument).get(10)
+
+        attack = 'undermine'
+        color_html, supportive, reply_for_argument, user_is_attacking = False, False, False, False
+        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
+                                                         'another conlcusion', supportive, attack, self.confrontation,
+                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
+                                                         color_html)
+        self.assertEqual(gender, '')
+        self.assertEqual(sys_text, '<span class="triangle-content-text">Other participants think that</span> <span>some premise text</span><span data-attitude="con"><span> does not hold</span><span>, because</span> <span>some confrontation text</span><span>.<br><br>What do you think about that?</span>')
+        self.assertEqual(1, 2)
+
+    def test_get_text_for_confrontation_with_undercut(self):
+        user_arg = DBDiscussionSession.query(Argument).get(8)
+        sys_arg = DBDiscussionSession.query(Argument).get(10)
+
+        attack = 'undercut'
+        color_html, supportive, reply_for_argument, user_is_attacking = False, False, False, False
+        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
+                                                         'another conlcusion', supportive, attack, self.confrontation,
+                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
+                                                         color_html)
+        self.assertEqual(gender, '')
+        self.assertEqual(sys_text, '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they do <span data-attitude="con">not</span> believe that this is <span data-attitude="con">a good counter-argument for</span></span> some conclusion text<span>. Other participants think that </span>some confrontation text<span>.<br><br>What do you think about that?</span>')
+        self.assertEqual(1, 2)
+
+    def test_get_text_for_confrontation_with_rebut(self):
+        user_arg = DBDiscussionSession.query(Argument).get(8)
+        sys_arg = DBDiscussionSession.query(Argument).get(10)
+
+        attack = 'rebut'
+        color_html, supportive, reply_for_argument, user_is_attacking = False, False, False, False
+        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
+                                                         'another conlcusion', supportive, attack, self.confrontation,
+                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
+                                                         color_html)
+        self.assertEqual(gender, '')
+        self.assertEqual(sys_text, '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they claim to have a stronger <span data-attitude="con">statement for rejecting </span> some conclusion text. <span>They say: </span>some confrontation text<span>.<br><br>What do you think about that?</span>')
+        self.assertEqual(1, 2)

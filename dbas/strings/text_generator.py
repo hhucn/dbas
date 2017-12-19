@@ -412,7 +412,6 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
             premise = start_argument + premise + end_tag
         sys_conclusion = start_argument + sys_conclusion + end_tag
 
-    confrontation_text = ''
     # build some confrontation text
     if attack == 'undermine':
         confrontation_text, gender = __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sys_arg,
@@ -428,6 +427,8 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
                                                                         user_arg, user_is_attacking, _t, sys_conclusion,
                                                                         confrontation, premise, conclusion,
                                                                         start_argument, sys_arg)
+    else:
+        return '', ''
 
     b = '<{}>'.format(tag_type)
     e = '</{}>'.format(tag_type)
