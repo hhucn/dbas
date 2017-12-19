@@ -46,7 +46,7 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
     if attack_type == 'undermine':
         return '{} {} ...'.format(_t.get(_.itIsFalseThat), premise)
 
-    if attack_type == 'support':
+    elif attack_type == 'support':
         if is_supportive:
             intro = _t.get(_.itIsTrueThat)
             outro = _t.get(_.hold)
@@ -55,15 +55,17 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
             outro = _t.get(_.doesNotHold)
         return '{} {} {} ...'.format(intro, conclusion, outro)
 
-    if attack_type == 'undercut':
+    elif attack_type == 'undercut':
         return '{}, {} ...'.format(confrontation, _t.get(_.butIDoNotBelieveCounterFor).format(conclusion))
 
-    if attack_type == 'overbid':
+    elif attack_type == 'overbid':
         return '{}, {} ...'.format(confrontation, _t.get(_.andIDoBelieveCounterFor).format(conclusion))
 
-    if attack_type == 'rebut':
+    elif attack_type == 'rebut':
         mid = _t.get(_.iAcceptCounterThat) if is_supportive else _t.get(_.iAcceptArgumentThat)
         return '{} {} {} ...'.format(confrontation, mid, conclusion)
+    else:
+        return ''
 
 
 def get_header_for_users_confrontation_response(db_argument, lang, premise, attack_type, conclusion, start_lower_case,
@@ -443,7 +445,6 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
             premise = my_start_argument + premise + my_end_tag
         sys_conclusion = my_start_argument + sys_conclusion + my_end_tag
 
-    confrontation_text = ''
     # build some confrontation text
     if attack == 'undermine':
         confrontation_text, gender = __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sys_arg,
@@ -459,6 +460,8 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
                                                                         user_arg, user_is_attacking, _t, sys_conclusion,
                                                                         confrontation, premise, conclusion,
                                                                         my_start_argument, sys_arg)
+    else:
+        return '', ''
 
     b = '<{}>'.format(tag_type)
     e = '</{}>'.format(tag_type)
@@ -845,13 +848,13 @@ def get_author_or_first_supporter_of_element(uid, current_user_uid, is_argument)
     db_anonymous_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     if is_argument:
         db_vote = DBDiscussionSession.query(MarkedArgument).filter(and_(
-            ~ClickedArgument.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
-            ClickedArgument.argument_uid == uid,
+            ~MarkedArgument.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
+            MarkedArgument.argument_uid == uid,
         )).first()
     else:
         db_vote = DBDiscussionSession.query(MarkedStatement).filter(and_(
-            ~ClickedArgument.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
-            ClickedArgument.statement_uid == uid,
+            ~MarkedStatement.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
+            MarkedStatement.statement_uid == uid,
         )).first()
 
     if db_vote:
