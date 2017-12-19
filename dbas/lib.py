@@ -264,8 +264,8 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
     _t = Translator(lang)
     premisegroup_by_user = False
     author_uid = None
-    if nickname is not None:
 
+    if nickname is not None:
         db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
         if db_user:
             author_uid = db_user.uid

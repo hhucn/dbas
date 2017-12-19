@@ -38,22 +38,20 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
     confrontation = confrontation[0:1].upper() + confrontation[1:]
 
     # different cases
-    ret_text = ''
     if attack_type == 'undermine':
         ret_text = _t.get(_.itIsFalseThat) + ' ' + premise
-    if attack_type == 'support':
+    elif attack_type == 'support':
         ret_text = _t.get(_.itIsTrueThat) if is_supportive else _t.get(_.itIsFalseThat)
         ret_text += ' ' + conclusion + ' '
         ret_text += _t.get(_.hold) if is_supportive else _t.get(_.doesNotHold)
-    if attack_type == 'undercut':
+    elif attack_type == 'undercut':
         ret_text = confrontation + ', ' + _t.get(_.butIDoNotBelieveCounterFor).format(conclusion)
-    if attack_type == 'overbid':
-        ret_text = confrontation + ', ' + _t.get(_.andIDoBelieveCounterFor) + ' ' + conclusion
-    # + '.' + _t.get(_.howeverIHaveEvenStrongerArgumentAccepting) + ' ' + longConclusion + '.'
-    if attack_type == 'rebut':
+    elif attack_type == 'rebut':
         ret_text = confrontation + ' '
         ret_text += _t.get(_.iAcceptCounterThat) if is_supportive else _t.get(_.iAcceptArgumentThat)
         ret_text += ' ' + conclusion
+    else:
+        return ''
 
     return ret_text + ' ...'  # + ', ' + _t.get(_.because).lower() + '...'
 
@@ -211,7 +209,7 @@ def __get_user_msg_for_users_rebut_response(premise, conclusion, right, is_suppo
     return '{}' + user_msg + '{}'
 
 
-def get_relation_text_dict_without_substitution(lang, with_no_opinion_text, premise, conclusion, is_dont_know=False, attack_type=None):
+def get_relation_text_dict_without_substitution(lang, with_no_opinion_text, premise, conclusion, is_dont_know=False):
     """
     Returns the four different reaction possibilities without any replacement based on the gender of the confrontation
 
@@ -220,10 +218,9 @@ def get_relation_text_dict_without_substitution(lang, with_no_opinion_text, prem
     :param premise: String
     :param conclusion: String
     :param is_dont_know: Boolean
-    :param attack_type: String
     :return: dict()
     """
-    return __get_relation_text_dict(lang, with_no_opinion_text, premise, conclusion, is_dont_know, attack_type)
+    return __get_relation_text_dict(lang, with_no_opinion_text, premise, conclusion, is_dont_know)
 
 
 def get_relation_text_dict_with_substitution(lang, with_no_opinion_text, is_dont_know=False, attack_type=None, gender=''):
@@ -784,13 +781,13 @@ def get_author_or_first_supporter_of_element(uid, current_user_uid, is_argument)
     db_anonymous_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     if is_argument:
         db_vote = DBDiscussionSession.query(MarkedArgument).filter(and_(
-            ~ClickedArgument.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
-            ClickedArgument.argument_uid == uid,
+            ~MarkedArgument.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
+            MarkedArgument.argument_uid == uid,
         )).first()
     else:
         db_vote = DBDiscussionSession.query(MarkedStatement).filter(and_(
-            ~ClickedArgument.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
-            ClickedArgument.statement_uid == uid,
+            ~MarkedStatement.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
+            MarkedStatement.statement_uid == uid,
         )).first()
 
     if db_vote:
