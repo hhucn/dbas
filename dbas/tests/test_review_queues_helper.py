@@ -59,13 +59,13 @@ class ReviewQueuesHelperTest(unittest.TestCase):
         self.assertFalse(error)
 
     def test_is_statement_in_edit_queue(self):
-        self.assertFalse(ReviewQueuesHelper.is_statement_in_edit_queue(1))
+        self.assertTrue(ReviewQueuesHelper.is_statement_in_edit_queue(1))
         self.assertTrue(ReviewQueuesHelper.is_statement_in_edit_queue(2, True))
         self.assertFalse(ReviewQueuesHelper.is_statement_in_edit_queue(2))
         self.assertTrue(ReviewQueuesHelper.is_statement_in_edit_queue(22))
 
     def test_is_arguments_premise_in_edit_queue(self):
-        self.assertFalse(ReviewQueuesHelper.is_arguments_premise_in_edit_queue(1))
+        self.assertTrue(ReviewQueuesHelper.is_arguments_premise_in_edit_queue(1))
         self.assertTrue(ReviewQueuesHelper.is_arguments_premise_in_edit_queue(4))
 
     def test_lock_optimization_review(self):

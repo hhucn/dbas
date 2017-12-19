@@ -35,6 +35,7 @@ class Keywords(Enum):
     emptyEmail = 'emptyEmail'
     emtpyContent = 'emtpyContent'
     maliciousAntiSpam = 'maliciousAntiSpam'
+    maliciousSlug = 'maliciousSlug'
     nonValidCSRF = 'nonValidCSRF'
     name = 'name'
     mail = 'mail'

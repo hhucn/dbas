@@ -225,31 +225,20 @@ class AjaxReviewTest(unittest.TestCase):
 
         from dbas.views import review_edit_argument as ajax
 
-        self.config.testing_securitypolicy(userid='Torben', permissive=True)
-        db_reviews1 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
-        request = testing.DummyRequest(params={
-            'is_edit_okay': 'true',
-            'review_uid': db_review.uid
-        }, matchdict={})
-        response = json.loads(ajax(request))
-        transaction.commit()
-        db_reviews2 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(db_reviews1 + 1, db_reviews2)
-
-        self.config.testing_securitypolicy(userid='Pascal', permissive=True)
-        db_reviews1 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
-        request = testing.DummyRequest(params={
-            'is_edit_okay': 'true',
-            'review_uid': db_review.uid
-        }, matchdict={})
-        response = json.loads(ajax(request))
-        transaction.commit()
-        db_reviews2 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(db_reviews1 + 1, db_reviews2)
+        user_ids = ['Torben', 'Pascal']
+        for user in user_ids:
+            self.config.testing_securitypolicy(userid=user, permissive=True)
+            db_reviews1 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
+            request = testing.DummyRequest(params={
+                'is_edit_okay': 'true',
+                'review_uid': db_review.uid
+            }, matchdict={})
+            response = json.loads(ajax(request))
+            transaction.commit()
+            db_reviews2 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
+            self.assertIsNotNone(response)
+            self.assertTrue(len(response['error']) == 0)
+            self.assertTrue(db_reviews1 + 1, db_reviews2)
 
         self.config.testing_securitypolicy(userid='Hermann', permissive=True)
         db_reviews1 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())

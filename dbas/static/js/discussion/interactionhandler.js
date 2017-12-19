@@ -116,13 +116,13 @@ function InteractionHandler() {
 			$('#' + popupUrlSharingInputId).val(long_url);
 		}
 	};
-	
+
 	this.callbackForMarkedStatementOrArgument = function (data, should_mark, callback_id){
 		if (data.error.length !== 0) {
 			setGlobalErrorHandler(_t_discussion(ohsnap), data.error);
 			return;
 		}
-		
+
 		setGlobalSuccessHandler('Yeah!', data.success);
 		var el = $('#' + callback_id);
 		if (data.text.length > 0) {
@@ -171,7 +171,6 @@ function InteractionHandler() {
 			return;
 		}
 
-		// supporters = data.supporter.join(', ');
 		var author;
 		if (data.author !== 'anonymous'){
 			var img = '<img class="img-circle" style="height: 1em;" src="' + data.gravatar + '">';
@@ -192,21 +191,21 @@ function InteractionHandler() {
 				'public_profile_url': data.public_page[val]
 			});
 		});
-		
+
 		var gh = new GuiHandler();
 		var tbody = $('<tbody>');
 		var rows = gh.createUserRowsForOpinionDialog(users_array);
 		$.each( rows, function( key, value ) {
 			tbody.append(value);
 		});
-		
+
 		var body = gh.closePrepareTableForOpinionDialog(data.supporter, gh, text, tbody);
 
 		displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), body);
 		$('#' + popupConfirmDialogId).find('.modal-dialog').addClass('modal-lg').on('hidden.bs.modal', function () {
 			$(this).removeClass('modal-lg');
 		});
-		
+
 		setTimeout(function(){
 			var popup_table = $('#' + popupConfirmDialogId).find('.modal-body div');
 			if ($( window ).height() > 400 && popup_table.outerHeight(true) > $( window ).height()) {
@@ -241,7 +240,7 @@ function InteractionHandler() {
 			setGlobalSuccessHandler('Yeah!', _t(dataAdded));
 		}
 	};
-	
+
 	/**
 	 *
 	 * @param data
@@ -270,14 +269,14 @@ function InteractionHandler() {
 			}, 2500);
 		}
 	};
-	
+
 	/**
 	 *
 	 * @param data
 	 */
 	this.callbackIfDoneRevokeContent = function(data) {
 		var parsedData = $.parseJSON(data);
-		
+
 		if (parsedData.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
 		} else {
@@ -305,7 +304,7 @@ function InteractionHandler() {
 			setGlobalInfoHandler('Hey', data.info);
 			return;
 		}
-		
+
 		var gh = new GuiHandler();
 		var tbody = $('<tbody>');
 		var span = is_argument? $('<span>').text(data.opinions.message) : $('<span>').text(data.opinions[0].message);
@@ -315,7 +314,7 @@ function InteractionHandler() {
 		$.each( rows, function( key, value ) {
 			tbody.append(value);
 		});
-		
+
 		var body = gh.closePrepareTableForOpinionDialog(users_array, gh, span, tbody);
 
 		displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(usersWithSameOpinion), body);
@@ -333,9 +332,9 @@ function InteractionHandler() {
 					});
 				}
 			}, 300);
-		
+
 	};
-	
+
 	/**
 	 *
 	 * @param data
@@ -347,7 +346,7 @@ function InteractionHandler() {
 			new PopupHandler().showReferencesPopup(data);
 		}
 	};
-	
+
 	/**
 	 *
 	 * @param toggle_element
@@ -356,12 +355,11 @@ function InteractionHandler() {
 	this.callbackForSetAvailabilityOfDiscussion = function(toggle_element, data){
 		if (data.error.length !== 0) {
 			setGlobalErrorHandler(_t(ohsnap), data.error);
-			// toggle_element.bootstrapToggle(toggle_element.prop('checked')? 'off' : 'on'); // this will trigger the handler
 		} else {
 			setGlobalSuccessHandler('Yeah!', _t(discussionsPropertySet));
 		}
 	};
-	
+
 	/**
 	 *
 	 * @param position
@@ -376,7 +374,7 @@ function InteractionHandler() {
 			new AjaxDiscussionHandler().sendNewStartArgument(position, reason);
 		}
 	};
-	
+
 	/**
 	 *
 	 * @param text

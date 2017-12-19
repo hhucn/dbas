@@ -33,8 +33,6 @@ def groupfinder(nick, _):
     :param request: request
     :return: given group as list or empty list
     """
-    # import traceback
-    # traceback.print_stack()
 
     logger('security', 'groupfinder', 'nick: ' + nick)
     try:

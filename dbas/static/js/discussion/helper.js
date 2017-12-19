@@ -69,7 +69,7 @@ function redirectInNewTabForContact (params){
 	}
 	f.submit().remove();
 }
-	
+
 /**
  * Writes key-value-pair into local storage and returns boolean
  *
@@ -101,7 +101,7 @@ function getLocalStorage (key){
 		return undefined;
 	}
 }
-	
+
 /**
  * Sets an anchor into the location
  *

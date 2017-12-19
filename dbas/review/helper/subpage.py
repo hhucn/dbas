@@ -166,29 +166,17 @@ def __get_all_allowed_reviews_for_user(session, session_keyword, db_user, review
     return db_reviews.all(), already_seen, already_reviewed, first_time
 
 
-def __get_subpage_dict_for_deletes(session, application_url, db_user, translator):
-    """
-    Setup the subpage for the delete queue
-
-    :param session: session of current webserver request
-    :param application_url: current url of the app
-    :param db_user: User
-    :param translator: Translator
-    :return: dict()
-    """
-    logger('ReviewSubpagerHelper', '__get_subpage_dict_for_deletes', 'main')
-    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(session, 'already_seen_deletes', db_user, ReviewDelete, LastReviewerDelete)
-
+def __get_base_subpage_dict(review_type, db_reviews, already_seen, first_time, db_user, already_reviewed, session):
     extra_info = ''
-    # if we have no reviews, try again with fewer restrictions
     if not db_reviews:
         already_seen = list()
         extra_info = 'already_seen' if not first_time else ''
-        db_reviews = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.is_executed == False,
-                                                                         ReviewDelete.detector_uid != db_user.uid))
+        db_reviews = DBDiscussionSession.query(review_type).filter(and_(review_type.is_executed == False,
+                                                                        review_type.detector_uid != db_user.uid))
         if len(already_reviewed) > 0:
-            db_reviews = db_reviews.filter(~ReviewDelete.uid.in_(already_reviewed))
+            db_reviews = db_reviews.filter(~review_type.uid.in_(already_reviewed))
         db_reviews = db_reviews.all()
+
     if not db_reviews:
         return {'stats': None,
                 'text': None,
@@ -206,6 +194,30 @@ def __get_subpage_dict_for_deletes(session, application_url, db_user, translator
         db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
         text = get_text_for_statement_uid(db_statement.uid)
         issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
+
+    return rnd_review, already_seen, extra_info, text, issue
+
+
+def __get_subpage_dict_for_deletes(session, application_url, db_user, translator):
+    """
+    Setup the subpage for the delete queue
+
+    :param session: session of current webserver request
+    :param application_url: current url of the app
+    :param db_user: User
+    :param translator: Translator
+    :return: dict()
+    """
+    logger('ReviewSubpagerHelper', '__get_subpage_dict_for_deletes', 'main')
+    db_reviews, already_seen, already_reviewed, first_time = __get_all_allowed_reviews_for_user(session,
+                                                                                                'already_seen_deletes',
+                                                                                                db_user,
+                                                                                                ReviewDelete,
+                                                                                                LastReviewerDelete)
+
+    rnd_review, already_seen, extra_info, text, issue = __get_base_subpage_dict(ReviewDelete, db_reviews, already_seen,
+                                                                                first_time, db_user, already_reviewed,
+                                                                                session)
 
     db_reason = DBDiscussionSession.query(ReviewDeleteReason).get(rnd_review.reason_uid)
     stats = __get_stats_for_review(rnd_review, translator.get_lang(), application_url)
@@ -316,34 +328,10 @@ def __get_subpage_dict_for_edits(session, application_url, db_user, translator):
                                                                                                 ReviewEdit,
                                                                                                 LastReviewerEdit)
 
-    extra_info = ''
-    # if we have no reviews, try again with fewer restrictions
-    if not db_reviews:
-        already_seen = list()
-        extra_info = 'already_seen' if not first_time else ''
-        db_reviews = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.is_executed == False,
-                                                                       ReviewEdit.detector_uid != db_user.uid))
-        if len(already_reviewed) > 0:
-            db_reviews = db_reviews.filter(~ReviewEdit.uid.in_(already_reviewed))
-        db_reviews = db_reviews.all()
+    rnd_review, already_seen, extra_info, text, issue = __get_base_subpage_dict(ReviewEdit, db_reviews, already_seen,
+                                                                                first_time, db_user, already_reviewed,
+                                                                                session)
 
-    if not db_reviews:
-        return {'stats': None,
-                'text': None,
-                'reason': None,
-                'issue': None,
-                'extra_info': None,
-                'session': session}
-
-    rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
-    if rnd_review.statement_uid is None:
-        db_argument = DBDiscussionSession.query(Argument).get(rnd_review.argument_uid)
-        text = get_text_for_argument_uid(db_argument.uid)
-        issue = DBDiscussionSession.query(Issue).get(db_argument.issue_uid).title
-    else:
-        db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
-        text = get_text_for_statement_uid(db_statement.uid)
-        issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
     reason = translator.get(_.argumentFlaggedBecauseEdit)
 
     # build correction
@@ -616,19 +604,6 @@ def __get_stats_for_review(review, ui_locales, main_page):
     :return: dict()
     """
     logger('ReviewSubpagerHelper', '__get_stats_for_review', 'main')
-    # viewed = len(DBDiscussionSession.query(SeenArgument3).filter_by(argument_uid=argument_uid).all())
-
-    # _rh = RelationHelper(argument_uid)
-    # undermines = _rh.get_undermines_for_argument_uid()
-    # undercuts = _rh.get_undercuts_for_argument_uid()
-    # rebuts = _rh.get_rebuts_for_argument_uid()
-    # supports = _rh.get_supports_for_argument_uid()
-
-    # len_undermines = len(undermines) if undermines else 0
-    # len_undercuts = len(undercuts) if undercuts else 0
-    # len_rebuts = len(rebuts) if rebuts else 0
-    # len_supports = len(supports) if supports else 0
-    # attacks = len_undermines + len_undercuts + len_rebuts
 
     db_reporter = DBDiscussionSession.query(User).get(review.detector_uid)
 
@@ -638,9 +613,6 @@ def __get_stats_for_review(review, ui_locales, main_page):
     stats['reporter_gravatar'] = get_profile_picture(db_reporter, 20)
     stats['reporter_url'] = main_page + '/user/' + str(db_reporter.uid)
     stats['id'] = str(review.uid)
-    # stats['viewed'] = viewed
-    # stats['attacks'] = attacks
-    # stats['supports'] = len_supports
 
     return stats
 

@@ -4,7 +4,7 @@
 
 $(document).ready(function () {
     'use strict';
-    
+
 	$('.review-undo').click(function(){
 		var queue = $(this).data('queue');
 		var id = $(this).data('id');
@@ -15,8 +15,7 @@ $(document).ready(function () {
 
 function ReviewHistory(){
     'use strict';
-    
-	
+
 	/**
 	 *
 	 * @param queue
@@ -46,7 +45,7 @@ function ReviewHistory(){
 
 function ReviewHistoryCallbacks(){
     'use strict';
-	
+
 	/**
 	 *
 	 * @param jsonData

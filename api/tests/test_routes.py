@@ -8,7 +8,7 @@ from .lib import json_response_ok
 
 
 def test_discussion_support():
-    json_response_ok("town-has-to-cut-spending/support/40/39?history=/attitude/37-/justify/37/t")
+    json_response_ok("cat-or-dog/support/2/12?history=/attitude/2-/justify/2/t")
 
 
 def test_discussion_reactions():

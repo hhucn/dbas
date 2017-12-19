@@ -6,9 +6,9 @@
 
 function GuiHandler() {
 	'use strict';
-	
+
 	var maxHeightOfBubbleSpace = 300;
-	
+
 	/**
 	 * Adds a premise row in the 'add premise'-container
 	 */
@@ -16,7 +16,7 @@ function GuiHandler() {
 		var body = $('#' + addPremiseContainerBodyId);
 		var send = $('#' + sendNewPremiseId);
 		var id = addPremiseContainerMainInputId + '-' + new Date().getTime();
-		
+
 		var copy_div = $('.container-three-divs:first').clone();
 		copy_div.find('input').attr('id', id).val('');
 		copy_div.find('.text-counter-input').remove();
@@ -24,13 +24,13 @@ function GuiHandler() {
 		var img_minus = copy_div.find('.icon-rem-premise');
 		body.append(copy_div);
 		setTextWatcherInputLength(copy_div.find('input'), false);
-		
+
 		img_plus.click(function () {
 			new GuiHandler().appendAddPremiseRow();
 			$(this).hide().prev().show(); // hide +, show -
 			send.val(_t_discussion(saveMyStatements));
 		});
-		
+
 		body.find('.icon-rem-premise').each(function () {
 			$(this).click(function () {
 				// removing bubble
@@ -50,7 +50,7 @@ function GuiHandler() {
 			});
 		});
 		img_minus.show();
-		
+
 		// add fuzzy search
 		$('#' + id).keyup(function () {
 			setTimeout(function () {
@@ -59,41 +59,33 @@ function GuiHandler() {
 			}, 200);
 		});
 	};
-	
+
 	/**
 	 * Dialog based discussion modi
 	 */
 	this.setDisplayStyleAsDiscussion = function () {
-		// this.setActivityOfImage($('#' + displayStyleIconGuidedId), false);
-		// this.setActivityOfImage($('#' + displayStyleIconIslandId), true);
-		// this.setActivityOfImage($('#' + displayStyleIconGraphId), true);
 		$('#' + islandViewContainerId).hide();
 		$('#' + graphViewContainerId).hide();
 		$('#' + discussionContainerId).show();
 		$('#' + headerContainerId).show();
 		clearAnchor();
-		
+
 		// check for single input
 		var elements = $('#' + discussionSpaceListId).find('li');
 		if (elements.length === 1){
 			new Main().setInputExtraBox(elements.find('input'), new GuiHandler());
 		}
 	};
-	
+
 	/**
 	 * Some kind of pro contra list, but how?
 	 */
 	this.setDisplayStyleAsIsland = function () {
-		// this.setActivityOfImage($('#' + displayStyleIconGuidedId), true);
-		// this.setActivityOfImage($('#' + displayStyleIconIslandId), false);
-		// this.setActivityOfImage($('#' + displayStyleIconGraphId), true);
 		$('#' + islandViewContainerId).fadeIn('slow');
-		//$('#' + graphViewContainerId).hide();
-		//$('#' + discussionContainerId).hide();
 		this.hideAddPositionContainer();
 		this.hideAddPremiseContainer();
 	};
-	
+
 	/**
 	 * Full view, full interaction range for the graph
 	 */
@@ -102,18 +94,15 @@ function GuiHandler() {
 		var tacked_sidebar = 'tacked_graph_sidebar';
 		var header = $('#' + graphViewContainerHeaderId);
 		var main = new Main();
-		
-		// this.setActivityOfImage($('#' + displayStyleIconGuidedId), true);
-		// this.setActivityOfImage($('#' + displayStyleIconIslandId), true);
-		// this.setActivityOfImage($('#' + displayStyleIconGraphId), false);
+
 		$('#' + islandViewContainerId).hide();
 		$('#' + discussionContainerId).hide();
 		$('#' + headerContainerId).hide();
 		$('#' + addPremiseContainerId).hide();
-		
+
 		// text
 		header.html($('#issue_info').data('title'));
-		
+
 		// height
 		var innerHeight = this.getMaxSizeOfGraphViewContainer();
 		graphViewContainer.attr('style', 'height: ' + innerHeight + 'px; margin-left: 2em; margin-right: 2em; margin-bottom: 1em;');
@@ -125,7 +114,7 @@ function GuiHandler() {
 		// this.hideAddPositionContainer();
 		// this.hideAddPremiseContainer();
 	};
-	
+
 	/**
 	 *
 	 * @param resize
@@ -140,7 +129,7 @@ function GuiHandler() {
 			sidebarwrapper.css('height', maincontainer.outerHeight() + 'px');
 		}
 	};
-	
+
 	/**
 	 * Sets the maximal height for the bubble space. If needed, a scrollbar will be displayed.
 	 */
@@ -160,7 +149,7 @@ function GuiHandler() {
 				$(this).prev().remove();
 			}
 		});
-		
+
 		start = nowBubble.length === 0 ? 'bottom' : nowBubble;
 		// scroll to now bubble on mobile devices and do not enable slimscroll
 		if (isMobileAgent()){
@@ -194,21 +183,21 @@ function GuiHandler() {
 		}
 		return speechBubbles.height() - oldSize;
 	};
-	
+
 	/**
 	 * Shows the 'add position'-container
 	 */
 	this.showAddPositionContainer = function () {
 		$('#' + addStatementContainerId).show();
 	};
-	
+
 	/**
 	 * Shows the 'add premise'-container
 	 */
 	this.showAddPremiseContainer = function () {
 		$('#' + addPremiseContainerId).show();
 	};
-	
+
 	/**
 	 * Hides the 'add position'-container
 	 */
@@ -216,7 +205,7 @@ function GuiHandler() {
 		$('#' + addStatementContainerId).hide();
 		$('#' + discussionSpaceListId).find('li:last-child input').prop('checked', false);
 	};
-	
+
 	/**
 	 * Hides the 'add premise'-container
 	 */
@@ -224,7 +213,7 @@ function GuiHandler() {
 		$('#' + addPremiseContainerId).hide();
 		$('#' + discussionSpaceListId).find('li:last-child input').prop('checked', false);
 	};
-	
+
 	/**
 	 *
 	 * @param data with the keywords: firstname, lastname, nickname, gender, email, password, ui_locales
@@ -242,13 +231,13 @@ function GuiHandler() {
 				'password1': '#popup-complete-login-password-input',
 				'password2': '#popup-complete-login-passwordconfirm-input'
 			};
-			
+
 			$.each(mappings, function( key, value ) {
 				if (key in data.missing || !(key in data.user) || (key in data.user && data.user[key].length === 0)) {
 					$(value).parent().addClass('has-warning');
 				}
 			});
-		
+
 			// check values
 			if ('firstname' in data.user && data.user.firstname.length > 0) {
 				$('#popup-complete-login-userfirstname-input').val(data.user.firstname).prop('disabled', true);
@@ -260,74 +249,87 @@ function GuiHandler() {
 				$('#popup-complete-login-nick-input').val(data.user.nickname).prop('disabled', true);
 			}
 			if ('gender' in data.user && data.user.gender.length > 0) {
-				if (data.user.gender === 'f') {
-					$('#popup-complete-login-inlineRadioGender2').prop('checked', true).prop('disabled', true);
-					$('#popup-complete-login-inlineRadioGender1').prop('disabled', true);
-					$('#popup-complete-login-inlineRadioGender3').prop('disabled', true);
-				} else if (data.user.gender === 'm') {
-					$('#popup-complete-login-inlineRadioGender3').prop('checked', true).prop('disabled', true);
-					$('#popup-complete-login-inlineRadioGender1').prop('disabled', true);
-					$('#popup-complete-login-inlineRadioGender2').prop('disabled', true);
-				} else {
-					$('#popup-complete-login-inlineRadioGender1').prop('checked', true).prop('disabled', true);
-					$('#popup-complete-login-inlineRadioGender2').prop('disabled', true);
-					$('#popup-complete-login-inlineRadioGender3').prop('disabled', true);
-				}
+				new GuiHandler().setPropInlineGender(data.user.gender);
 			}
 			if ('email' in data.user && data.user.email.length > 0) {
 				$('#popup-complete-login-email-input').val(data.user.email).prop('disabled', true);
 			}
-			
-			$('#popup-complete-login-register-button').off('click').click(function () {
-				var gender = '';
-				if ($('#popup-complete-login-inlineRadioGender1').is(':checked')) { gender = 'n'; }
-				if ($('#popup-complete-login-inlineRadioGender2').is(':checked')) { gender = 'm'; }
-				if ($('#popup-complete-login-inlineRadioGender3').is(':checked')) { gender = 'f'; }
-				
-				$('#popup-complete-login-failed').hide();
-				$('#popup-complete-login-info').hide();
 
-				var csrf_token = $('#' + hiddenCSRFTokenId).val();
-				$.ajax({
-					url: 'ajax_user_registration',
-					type: 'POST',
-					data: {
-						firstname: $('#popup-complete-login-userfirstname-input').val(),
-						lastname: $('#popup-complete-login-userlastname-input').val(),
-						nickname: $('#popup-complete-login-nick-input').val(),
-						gender: gender,
-						email: $('#popup-complete-login-email-input').val(),
-						password: $('#popup-complete-login-password-input').val(),
-						passwordconfirm: $('#popup-complete-login-passwordconfirm-input').val(),
-						'g-recaptcha-response': '',
-						lang: getLanguage(),
-						mode: 'oauth'
-					},
-					dataType: 'json',
-					async: true,
-					headers: {
-						'X-CSRF-Token': csrf_token
-					}
-				}).done(function ajaxRegistrationOauthDone(data) {
-					callbackIfDoneForRegistrationViaOauth(data);
-				}).fail(function ajaxRegistrationOauthFail(xhr) {
-					$('#popup-complete-login-failed').removeClass('hidden');
-					if (xhr.status === 400) {
-						$('#popup-complete-login-failed-message').text(_t(requestFailedBadToken));
-					} else if (xhr.status === 500) {
-						$('#popup-complete-login-failed-message').text(_t(requestFailedInternalError));
-					} else {
-						$('#popup-complete-login-failed-message').text(_t(requestFailed));
-					}
-				}).always(function ajaxLoginOauthAlways() {
-					$('#popup-complete-login-password-input').val('');
-					$('#popup-complete-login-passwordconfirm-input').val('');
-				});
+			$('#popup-complete-login-register-button').off('click').click(function () {
+				new GuiHandler().fire_ajax_user_registration();
 			});
 		});
-		
 	};
-	
+
+	/**
+	 *
+	 * @param gender
+	 */
+	this.setPropInlineGender = function(gender){
+		var g1 = $('#popup-complete-login-inlineRadioGender1');
+		var g2 = $('#popup-complete-login-inlineRadioGender2');
+		var g3 = $('#popup-complete-login-inlineRadioGender3');
+		g1.prop('disabled', true);
+		g2.prop('disabled', true);
+		g3.prop('disabled', true);
+		if (gender === 'f') {
+			g2.prop('checked', true).prop('disabled', true);
+		} else if (gender === 'm') {
+			g3.prop('checked', true).prop('disabled', true);
+		} else {
+			g1.prop('checked', true).prop('disabled', true);
+		}
+	};
+
+	/**
+	 *
+	 */
+	this.fire_ajax_user_registration = function(){
+		var gender = '';
+		if ($('#popup-complete-login-inlineRadioGender1').is(':checked')) { gender = 'n'; }
+		if ($('#popup-complete-login-inlineRadioGender2').is(':checked')) { gender = 'm'; }
+		if ($('#popup-complete-login-inlineRadioGender3').is(':checked')) { gender = 'f'; }
+
+		$('#popup-complete-login-failed').hide();
+		$('#popup-complete-login-info').hide();
+		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$.ajax({
+			url: 'ajax_user_registration',
+			type: 'POST',
+			data: {
+				firstname: $('#popup-complete-login-userfirstname-input').val(),
+				lastname: $('#popup-complete-login-userlastname-input').val(),
+				nickname: $('#popup-complete-login-nick-input').val(),
+				gender: gender,
+				email: $('#popup-complete-login-email-input').val(),
+				password: $('#popup-complete-login-password-input').val(),
+				passwordconfirm: $('#popup-complete-login-passwordconfirm-input').val(),
+				'g-recaptcha-response': '',
+				lang: getLanguage(),
+				mode: 'oauth'
+			},
+			dataType: 'json',
+			async: true,
+			headers: {
+				'X-CSRF-Token': csrf_token
+			}
+		}).done(function ajaxRegistrationOauthDone(data) {
+			callbackIfDoneForRegistrationViaOauth(data);
+		}).fail(function ajaxRegistrationOauthFail(xhr) {
+			$('#popup-complete-login-failed').removeClass('hidden');
+			if (xhr.status === 400) {
+				$('#popup-complete-login-failed-message').text(_t(requestFailedBadToken));
+			} else if (xhr.status === 500) {
+				$('#popup-complete-login-failed-message').text(_t(requestFailedInternalError));
+			} else {
+				$('#popup-complete-login-failed-message').text(_t(requestFailed));
+			}
+		}).always(function ajaxLoginOauthAlways() {
+			$('#popup-complete-login-password-input').val('');
+			$('#popup-complete-login-passwordconfirm-input').val('');
+		});
+	};
+
 	/**
 	 * Shows a modal where the user has to choose how the premisegroups should be treated
 	 *
@@ -349,27 +351,27 @@ function GuiHandler() {
 		var prefix = 'insert_statements_page_';
 		var popup = $('#' + popupSetPremiseGroups);
 		var warning = $('#' + popupSetPremiseGroupsWarningText).hide();
-		
+
 		send.click(function sendClick() {
 			var selections = body.find('input:checked'), i, j, splitted;
-			
+
 			// merge every text part to one array
 			for (i = 0; i < undecided_texts.length; i++) {
 				splitted = undecided_texts[i].split(' ' + _t_discussion(and) + ' ');
-				
+
 				if (selections[i].id.indexOf(attr_more_args) !== -1) { // each splitted text part is one argument
 					for (j = 0; j < splitted.length; j++) {
 						decided_texts.push([splitted[j]]);
 					}
-					
+
 				} else if (selections[i].id.indexOf(attr_one_arg) !== -1) { // one argument with big premise group
 					decided_texts.push(splitted);
-					
+
 				} else { // just take it!
 					decided_texts.push([undecided_texts[i]]);
 				}
 			}
-			
+
 			if (type === fuzzy_add_reason) {
 				new AjaxDiscussionHandler().sendNewPremiseForArgument(arg, relation, decided_texts);
 			} else if (type === fuzzy_start_premise) {
@@ -377,27 +379,26 @@ function GuiHandler() {
 			}
 			$('#' + popupSetPremiseGroups).modal('hide');
 		});
-		
+
 		if (undecided_texts.length === 1) { // we only need one page div
 			page = gh.getPageOfSetStatementContainer(0, undecided_texts[0]);
 			body.append(page);
 			send.text(_t_discussion(saveMyStatement));
-			
+
 			page.find('input').each(function () {
 				$(this).click(function inputClick() {
 					send.removeClass('disabled');
 					warning.show();
 				});
 			});
-			
+
 		} else { // we need several pages
 			prev.show().removeClass('href').attr('max', undecided_texts.length);
 			prev.parent().addClass('disabled');
 			next.show().attr('max', undecided_texts.length);
 			counter.show().text('1/' + undecided_texts.length);
 			send.text(_t_discussion(saveMyStatements));
-			
-			
+
 			// for each statement a new page div will be added
 			for (page_no = 0; page_no < undecided_texts.length; page_no++) {
 				page = gh.getPageOfSetStatementContainer(page_no, undecided_texts[page_no]);
@@ -406,29 +407,29 @@ function GuiHandler() {
 					page.hide();
 				}
 				body.append(page);
-				
+
 				page.find('input').each(function () {
 					$(this).click(function inputClick() {
 						new GuiHandler().displayNextPageOffSetStatementContainer(body, prev, next, counter, prefix);
 					});
 				});
 			}
-			
+
 			// previous button click
 			prev.click(function prevClick() {
 				new GuiHandler().displayPrevPageOffSetStatementContainer(body, prev, next, counter, prefix);
 			});
-			
+
 			// next button click
 			next.click(function nextClick() {
 				new GuiHandler().displayNextPageOffSetStatementContainer(body, prev, next, counter, prefix);
 			});
 		}
-		
+
 		popup.find('strong').text(body.data('text-0'));
 		popup.modal('show');
 	};
-	
+
 	/**
 	 *
 	 * @param body
@@ -441,13 +442,13 @@ function GuiHandler() {
 		var tmp_el = body.find('div:visible');
 		var tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length));
 		var input = tmp_el.find('input:checked');
-		
+
 		// is current page filled?
 		if (input.length === 0) {
 			$('#insert_statements_page_error').fadeIn();
 		} else {
 			$('#insert_statements_page_error').fadeOut();
-			
+
 			if (tmp_id < (parseInt(next_btn.attr('max')) - 1 )) {
 				tmp_el.hide().next().fadeIn();
 				prev_btn.parent().removeClass('disabled');
@@ -463,7 +464,7 @@ function GuiHandler() {
 			}
 		}
 	};
-	
+
 	/**
 	 *
 	 * @param body
@@ -475,7 +476,7 @@ function GuiHandler() {
 	this.displayPrevPageOffSetStatementContainer = function (body, prev_btn, next_btn, counter_text, prefix) {
 		var tmp_el = body.find('div:visible');
 		var tmp_id = parseInt(tmp_el.attr('id').substr(prefix.length));
-		
+
 		if (tmp_id > 0) {
 			tmp_el.hide().prev().fadeIn();
 			next_btn.parent().removeClass('disabled');
@@ -487,7 +488,7 @@ function GuiHandler() {
 			}
 		}
 	};
-	
+
 	/**
 	 *
 	 * @param page_no
@@ -502,23 +503,23 @@ function GuiHandler() {
 		var topic = $('#' + addPremiseContainerMainInputIntroId).text();
 		var input1, input2, input3, list, bigText, bigTextSpan, connection, i, infix;
 		topic = topic.substr(0, topic.length - 3);
-		
+
 		$('#popup-set-premisegroups-body-intro-statements').text(text.trim());
-		
+
 		if (topic.match(/\.$/)) {
 			topic = topic.substr(0, topic.length - 1) + ', ';
 		}
-		
+
 		div_page.attr('id', id + page_no);
 		div_page.attr('page', page_no);
 		div_page.show();
 		div_page.find('#' + popupSetPremiseGroupsStatementCount).text(splitted.length);
-		
+
 		var tmp_span = div_page.find('#insert_one_argument').next();
 		tmp_span.text(tmp_span.text().replace('xx', splitted.length));
 		list = div_page.find('#' + popupSetPremiseGroupsListMoreArguments);
 		bigTextSpan = div_page.find('#' + popupSetPremiseGroupsOneBigStatement);
-		
+
 		// rename the id-, for- and name-tags of all radio button groups
 		input1 = div_page.find('#insert_more_arguments');
 		input2 = div_page.find('#insert_one_argument');
@@ -532,32 +533,30 @@ function GuiHandler() {
 		input1.parent().attr('for', input1.attr('id'));
 		input2.parent().attr('for', input2.attr('id'));
 		input3.parent().attr('for', input3.attr('id'));
-		
-		//connection = supportive ? _t_discussion(isItTrueThat) : _t_discussion(isItFalseThat);
+
 		connection = _t_discussion(isItTrueThat);
-		
+
 		if (getDiscussionLanguage() === 'de') {
 			bigText = topic;
 		} else {
-			bigText = topic + ' ' + connection; //supportive ? _t_discussion(itIsTrueThat) : _t_discussion(itIsFalseThat);
+			bigText = topic + ' ' + connection;
 		}
-		
+
 		list.append($('<br>'));
 		for (i = 0; i < splitted.length; i++) {
 			var nl = i < splitted.length - 1 ? '<br>' : '';
 			var line_text = '&#9900;   ' + topic + ' ' + _t_discussion(because) + ' ' + splitted[i] + '.' + nl;
 			var tmp = $('<span>').html(line_text).css('margin-left', '1em');
-			// list.append($('<li>').text(topic + ' ' + splitted[i] + '.'));
 			list.append(tmp);
 			infix = i === 0 ? _t_discussion(because) + ' ' : ('<u>' + _t_discussion(and) + ' ' + _t_discussion(because) + '</u> ' );
 			bigText += ' ' + infix + splitted[i];
 		}
-		
+
 		bigTextSpan.html(bigText + '.');
-		
+
 		return div_page;
 	};
-	
+
 	/**
 	 *
 	 * @param parsedData
@@ -574,27 +573,26 @@ function GuiHandler() {
 		$('#' + proposalStatementSearchGroupId).empty();
 		$('#' + proposalDuplicateSearchGroupId).empty();
 		$('#proposal-mergesplit-list-group-' + callbackId).empty();
-		
+
 		// do we have values ?
 		if (parsedData.length === 0) {
 			return;
 		}
-		
+
 		var token, button, span_dist, span_text, index, text, img;
 		callbackElement.focus();
-		
+
 		$.each(parsedData.values, function (key, val) {
-			// distance = parseInt(val.distance);
 			index = val.index;
-			
+
 			token = callbackElement.val();
-			
+
 			// make all tokens bold
 			var non_edited_value = val.text;
 			// replacement from http://stackoverflow.com/a/280805/2648872
 			text = val.text.replace(new RegExp("(" + (token + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "</strong>$1<strong>");
 			text = '<strong>' + text;
-			
+
 			button = $('<button>')
 				.attr('type', 'button')
 				.attr('class', 'list-group-item')
@@ -615,13 +613,13 @@ function GuiHandler() {
 			span_dist = '';//$('<span>').attr('class', 'badge').text(parsedData.distance_name + ' ' + distance);
 			span_text = $('<span>').attr('id', 'proposal_' + index + '_text').html(text);
 			img = $('<img>').addClass('preload-image').addClass('img-circle').attr('style', 'height: 20pt; margin-right: 1em;').attr('src', val.avatar);
-			
+
 			if (type === fuzzy_find_user) {
 				button.append(img).append(span_text);
 			} else {
 				button.append(img).append(span_dist).append(span_text);
 			}
-			
+
 			button.click(function () {
 				callbackElement.val($(this).attr('text'));
 				$('#' + proposalStatementListGroupId).empty();
@@ -638,7 +636,7 @@ function GuiHandler() {
 					new PopupHandler().duplicateValueSelected(reason, val.statement_uid);
 				}
 			});
-			
+
 			if (type === fuzzy_start_premise){        $('#' + proposalStatementListGroupId).append(button); }
 			else if (type === fuzzy_start_statement){ $('#' + proposalStatementListGroupId).append(button); }
 			else if (type === fuzzy_add_reason){      $('#' + proposalPremiseListGroupId).append(button); }
@@ -649,7 +647,7 @@ function GuiHandler() {
 			else if (type === fuzzy_find_mergesplit){ $('#proposal-mergesplit-list-group-' + callbackId).append(button); }
 		});
 	};
-	
+
 	/**
 	 * Displays all corrections in the popup
 	 * @param jsonData json encoded return data
@@ -663,7 +661,7 @@ function GuiHandler() {
 		var hide = $('#' + popupEditStatementChangelogHide);
 		view.text('(' + _t_discussion(changelogView) + ')').hide();
 		hide.text('(' + _t_discussion(changelogHide) + ')').hide();
-		
+
 		var at_least_one_history = false;
 		$.each(jsonData, function (key, value) {
 			if (key === 'error' || key === 'info') {
@@ -675,13 +673,13 @@ function GuiHandler() {
 				.attr('border', '0')
 				.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
 			var tbody = $('<tbody>');
-			
+
 			var thead = $('<thead>')
 				.append($('<td>').text(_t(text)))
 				.append($('<td>').text(_t(author)))
 				.append($('<td>').text(_t(date)));
 			table.append(thead);
-			
+
 			var counter = 0;
 			$.each(value.content, function (key, val) {
 				var tr = $('<tr>')
@@ -710,14 +708,14 @@ function GuiHandler() {
 		} else {
 			hide.show();
 		}
-		
+
 		view.click(function () {
 			space.show();
 			space.prev().show();
 			hide.show();
 			view.hide();
 		});
-		
+
 		hide.click(function () {
 			space.hide();
 			space.prev().hide();
@@ -725,7 +723,7 @@ function GuiHandler() {
 			view.show();
 		});
 	};
-	
+
 	/**
 	 * Hides error description
 	 */
@@ -733,7 +731,7 @@ function GuiHandler() {
 		$('#' + discussionErrorDescriptionId).html('');
 		$('#' + discussionErrorDescriptionSpaceId).hide();
 	};
-	
+
 	/**
 	 * Hides success description
 	 */
@@ -741,14 +739,14 @@ function GuiHandler() {
 		$('#' + discussionSuccessDescriptionId).html('');
 		$('#' + discussionSuccessDescriptionSpaceId).hide();
 	};
-	
+
 	/**
 	 * Sets style attributes to default
 	 */
 	this.resetChangeDisplayStyleBox = function () {
 		this.setDisplayStyleAsDiscussion();
 	};
-	
+
 	/**
 	 *
 	 * @returns {*|jQuery}
@@ -761,7 +759,7 @@ function GuiHandler() {
 		div.append(strong).append(span);
 		return div;
 	};
-	
+
 	/**
 	 *
 	 * @param users_array
@@ -776,7 +774,7 @@ function GuiHandler() {
 			.attr('class', 'table table-condensed table-hover center')
 			.attr('border', '0')
 			.attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
-		
+
 		if (Object.keys(users_array).length === 0) {
 			body.append(gh.getNoDecisionsAlert());
 		} else {
@@ -784,7 +782,7 @@ function GuiHandler() {
 		}
 		return body;
 	};
-	
+
 	/**
 	 *
 	 * @param users_array
@@ -793,10 +791,9 @@ function GuiHandler() {
 	this.createUserRowsForOpinionDialog = function (users_array) {
 		var left = '';
 		var middle = '';
-		var right = '';
 		var j = 0;
 		var rows = [];
-		
+
 		$.each(users_array, function (index, val) {
 			var img = $.parseHTML('<img class="img-circle" style="height: 40%; margin-left: 0.5em;" src="' + val.avatar_url + '">');
 			var span = $('<span>').text(val.nickname);
@@ -805,7 +802,7 @@ function GuiHandler() {
 				'href': val.public_profile_url,
 				'style': 'padding-right: 0.5em;'
 			}).append(span).append(img));
-			
+
 			// three elements per row (store middle and left element, append later)
 			if (j === 0) {
 				left = link;
@@ -816,7 +813,7 @@ function GuiHandler() {
 			}
 			j = (j + 1) % 3;
 		});
-		
+
 		// append the last row
 		if (j === 1) {
 			rows.push($('<tr>').append(left));
@@ -824,10 +821,10 @@ function GuiHandler() {
 		if (j === 2) {
 			rows.push($('<tr>').append(left).append(middle));
 		}
-		
+
 		return rows;
 	};
-	
+
 	/**
 	 *
 	 * @param list
@@ -856,7 +853,7 @@ function GuiHandler() {
 			});
 		});
 	};
-	
+
 	/**
 	 *
 	 * @returns {*}
@@ -872,7 +869,7 @@ function GuiHandler() {
 		innerHeight -= this.getPaddingOfElement(footer);
 		return innerHeight;
 	};
-	
+
 	/**
 	 *
 	 * @returns {number}
@@ -888,7 +885,7 @@ function GuiHandler() {
 		innerHeight -= this.getPaddingOfElement(list);
 		return innerHeight - 10;
 	};
-	
+
 	/**
 	 *
 	 * @param element
@@ -903,7 +900,7 @@ function GuiHandler() {
 			return 0;
 		}
 	};
-	
+
 	/**
 	 * Roates the little pin icon in the sidebar
 	 * @param element
@@ -926,7 +923,7 @@ function GuiHandler() {
 			.css('-o-transition', 'all ' + speed + 's ease')
 			.css('transition', 'all ' + speed + 's ease');
 	};
-	
+
 	/**
 	 *
 	 * @param lang

@@ -4,7 +4,6 @@
 
 function Sharing(){
     'use strict';
-    
 
 	/**
 	 *

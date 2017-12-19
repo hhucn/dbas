@@ -36,6 +36,7 @@ def save_issue_uid(issue_uid, nickname):
         return False
 
     db_settings.set_last_topic_uid(issue_uid)
+    DBDiscussionSession.add(db_settings)
     transaction.commit()
     return True
 
