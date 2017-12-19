@@ -325,6 +325,7 @@ def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanage
     text depends on the provided language.
 
     :param statement_uid: Id to a statement, which should be analyzed
+    :param urlmanager:
     :param color_statement: True, if the statement (specified by the ID) should be colored
     :return: list of dictionaries containing some properties of these arguments
     :rtype: list
@@ -345,11 +346,16 @@ def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanage
         attack_type = 'jump' if is_jump else ''
         argument_text = get_text_for_argument_uid(uid, anonymous_style=True, attack_type=attack_type)
         pos = argument_text.lower().find(statement_text.lower())
-        argument_text = argument_text[0:pos] + sb + argument_text[pos:pos + len(statement_text)] + se
-        argument_text += argument_text[pos + len(statement_text):]
-        results.append({'uid': uid,
-                        'text': argument_text,
-                        'url': urlmanager.get_url_for_jump(False, uid)})
+
+        argument_text = argument_text[:pos] + sb + argument_text[pos:]
+        pos += len(statement_text) + len(sb)
+        argument_text = argument_text[:pos] + se + argument_text[pos:]
+
+        results.append({
+            'uid': uid,
+            'text': argument_text,
+            'url': urlmanager.get_url_for_jump(False, uid)
+        })
     return results
 
 
@@ -685,7 +691,7 @@ def get_text_for_premise(uid, colored_position=False):
     :param colored_position: Boolean
     :return: String
     """
-    db_premise = DBDiscussionSession.query(Premise).filter_by(uid).first()
+    db_premise = DBDiscussionSession.query(Premise).get(uid)
     if db_premise:
         return get_text_for_statement_uid(db_premise.statement_uid, colored_position)
     else:
@@ -810,8 +816,7 @@ def pretty_print_options(message):
         pos = message.rfind('<')
         if message[pos - 1:pos] not in ['.', '?', '!']:
             message = message[0:pos] + '.' + message[pos:]
-    else:
-        if not message.endswith(tuple(['.', '?', '!'])) and id is not 'now':
+    elif not message.endswith(tuple(['.', '?', '!'])) and id is not 'now':
             message += '.'
 
     return message
@@ -992,7 +997,8 @@ def is_argument_disabled_due_to_disabled_statements(argument):
                 return True
     else:
         # check conclusion of given argument
-        conclusion = DBDiscussionSession(Statement).get(argument.conclusion_uid)
+        print(argument.conclusion_uid)
+        conclusion = DBDiscussionSession.query(Statement).get(argument.conclusion_uid)
         if conclusion.is_disabled:
             return True
 
@@ -1116,9 +1122,9 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
     db_user = DBDiscussionSession.query(User).get(int(uid))
     db_settings = DBDiscussionSession.query(Settings).get(int(uid))
     if not db_user:
-        return 'Missing author with uid ' + str(uid), False
+        return None, 'Missing author with uid ' + str(uid), False
     if not db_settings:
-        return 'Missing settings of author with uid ' + str(uid), False
+        return None, 'Missing settings of author with uid ' + str(uid), False
     img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, profile_picture_size))
 
     nick = db_user.get_global_nickname()
