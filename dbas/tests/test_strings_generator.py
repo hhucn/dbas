@@ -482,7 +482,7 @@ class TextGeneratorText(unittest.TestCase):
         user_arg = DBDiscussionSession.query(Argument).get(8)
         sys_arg = DBDiscussionSession.query(Argument).get(10)
         attack = 'undercut'
-        
+
         color_html, supportive, reply_for_argument, user_is_attacking = False, False, False, False
         text = '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they do <span data-attitude="con">not</span> believe that this is <span data-attitude="con">a good counter-argument for</span></span> some conclusion text<span>. Other participants think that </span>some confrontation text<span>.<br><br>What do you think about that?</span>'
         sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
