@@ -82,8 +82,8 @@ class TextGeneratorText(unittest.TestCase):
         is_supportive = True
         redirect_from_jump = False
         results = {
-            'undermine': 'that  {}Some premise text{}',
-            'support': '{}it is true that Some conclusion text hold.{}',
+            'undermine': 'that {}Some premise text{}',
+            'support': '{}it is true that Some conclusion text hold{}.',
             'undercut': 'right, Some premise text. {}But I do not believe that this is a argument for Some conclusion text{}',
             'rebut': '{}right, Some premise text, and I do accept that this is a counter-argument for Some conclusion text. However, I have a much stronger argument for reject that Some conclusion text.{}',
             '':  ''
@@ -97,7 +97,7 @@ class TextGeneratorText(unittest.TestCase):
 
         is_supportive = False
         results.update({
-            'support': '{}it is false that Some conclusion text does not hold.{}',
+            'support': '{}it is false that Some conclusion text does not hold{}.',
             'rebut': '{}right, Some premise text, and I do accept that this is an argument for Some conclusion text. However, I have a much stronger argument for accept that Some conclusion text.{}',
         })
         for r in results:
@@ -121,7 +121,7 @@ class TextGeneratorText(unittest.TestCase):
 
         is_supportive = True
         results.update({
-            'support': '{}it is true that Some conclusion text hold.{}',
+            'support': '{}it is true that Some conclusion text hold{}.',
             'rebut': '{}Maybe it is true that Some premise text, and I do accept that this is a counter-argument for Some conclusion text. However, I have a much stronger argument for reject that Some conclusion text.{}',
         })
         for r in results:
@@ -325,10 +325,10 @@ class TextGeneratorText(unittest.TestCase):
 
     def test_get_text_for_add_argument_message(self):
         text = tg.get_text_for_add_argument_message('Tobias', 'en', 'some_url', True)
-        self.assertEqual(text, 'Hey, someone has added his/her opinion regarding your argument!<br>Where: <a href="some_url">some_url</a>')
+        self.assertEqual(text, 'Hey, someone has added his/her argument regarding your argument!<br>Where: <a href="some_url">some_url</a>')
 
         text = tg.get_text_for_add_argument_message('Tobias', 'en', 'some_url', False)
-        self.assertEqual(text, '''Hey, someone has added his/her opinion regarding your argument!\nWhere: some_url''')
+        self.assertEqual(text, '''Hey, someone has added his/her argument regarding your argument!\nWhere: some_url''')
 
     def test_get_text_for_confrontation_without_attack(self):
         user_arg = DBDiscussionSession.query(Argument).get(8)
@@ -626,7 +626,7 @@ class TextGeneratorText(unittest.TestCase):
                                                          'another conlcusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
-        self.assertEqual(gender, '')
+        self.assertEqual(gender, 'n')
         self.assertEqual(sys_text, text)
 
         color_html, supportive, reply_for_argument, user_is_attacking = False, True, False, False
@@ -634,7 +634,7 @@ class TextGeneratorText(unittest.TestCase):
                                                          'another conlcusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
-        self.assertEqual(gender, '')
+        self.assertEqual(gender, 'n')
         self.assertEqual(sys_text, text)
 
         color_html, supportive, reply_for_argument, user_is_attacking = False, False, False, True
@@ -643,7 +643,7 @@ class TextGeneratorText(unittest.TestCase):
                                                          'another conlcusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
-        self.assertEqual(gender, '')
+        self.assertEqual(gender, 'n')
         self.assertEqual(sys_text, text)
 
         color_html, supportive, reply_for_argument, user_is_attacking = False, True, False, True
@@ -651,7 +651,7 @@ class TextGeneratorText(unittest.TestCase):
                                                          'another conlcusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
-        self.assertEqual(gender, '')
+        self.assertEqual(gender, 'n')
         self.assertEqual(sys_text, text)
 
         color_html, supportive, reply_for_argument, user_is_attacking = False, False, True, False
@@ -660,7 +660,7 @@ class TextGeneratorText(unittest.TestCase):
                                                          'another conlcusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
-        self.assertEqual(gender, '')
+        self.assertEqual(gender, 'n')
         self.assertEqual(sys_text, text)
 
         color_html, supportive, reply_for_argument, user_is_attacking = False, False, True, True
@@ -668,7 +668,7 @@ class TextGeneratorText(unittest.TestCase):
                                                          'another conlcusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
-        self.assertEqual(gender, '')
+        self.assertEqual(gender, 'n')
         self.assertEqual(sys_text, text)
 
         color_html, supportive, reply_for_argument, user_is_attacking = False, True, True, False
@@ -676,7 +676,7 @@ class TextGeneratorText(unittest.TestCase):
                                                          'another conlcusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
-        self.assertEqual(gender, '')
+        self.assertEqual(gender, 'n')
         self.assertEqual(sys_text, text)
 
         color_html, supportive, reply_for_argument, user_is_attacking = False, True, True, True
@@ -684,7 +684,7 @@ class TextGeneratorText(unittest.TestCase):
                                                          'another conlcusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
-        self.assertEqual(gender, '')
+        self.assertEqual(gender, 'n')
         self.assertEqual(sys_text, text)
 
         color_html, supportive, reply_for_argument, user_is_attacking = True, False, False, False
@@ -693,7 +693,7 @@ class TextGeneratorText(unittest.TestCase):
                                                          'another conlcusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
-        self.assertEqual(gender, '')
+        self.assertEqual(gender, 'n')
         self.assertEqual(sys_text, text)
 
         color_html, supportive, reply_for_argument, user_is_attacking = True, True, False, False
@@ -701,7 +701,7 @@ class TextGeneratorText(unittest.TestCase):
                                                          'another conlcusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
-        self.assertEqual(gender, '')
+        self.assertEqual(gender, 'n')
         self.assertEqual(sys_text, text)
 
         color_html, supportive, reply_for_argument, user_is_attacking = True, True, False, True
@@ -710,7 +710,7 @@ class TextGeneratorText(unittest.TestCase):
                                                          'another conlcusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
-        self.assertEqual(gender, '')
+        self.assertEqual(gender, 'n')
         self.assertEqual(sys_text, text)
 
         color_html, supportive, reply_for_argument, user_is_attacking = True, False, False, True
@@ -718,7 +718,7 @@ class TextGeneratorText(unittest.TestCase):
                                                          'another conlcusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
-        self.assertEqual(gender, '')
+        self.assertEqual(gender, 'n')
         self.assertEqual(sys_text, text)
 
         color_html, supportive, reply_for_argument, user_is_attacking = True, False, True, False
@@ -727,7 +727,7 @@ class TextGeneratorText(unittest.TestCase):
                                                          'another conlcusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
-        self.assertEqual(gender, '')
+        self.assertEqual(gender, 'n')
         self.assertEqual(sys_text, text)
 
         color_html, supportive, reply_for_argument, user_is_attacking = True, False, True, True
@@ -735,7 +735,7 @@ class TextGeneratorText(unittest.TestCase):
                                                          'another conlcusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
-        self.assertEqual(gender, '')
+        self.assertEqual(gender, 'n')
         self.assertEqual(sys_text, text)
 
         color_html, supportive, reply_for_argument, user_is_attacking = True, True, True, False
@@ -743,7 +743,7 @@ class TextGeneratorText(unittest.TestCase):
                                                          'another conlcusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
-        self.assertEqual(gender, '')
+        self.assertEqual(gender, 'n')
         self.assertEqual(sys_text, text)
 
         color_html, supportive, reply_for_argument, user_is_attacking = True, True, True, True
@@ -751,5 +751,5 @@ class TextGeneratorText(unittest.TestCase):
                                                          'another conlcusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
-        self.assertEqual(gender, '')
+        self.assertEqual(gender, 'n')
         self.assertEqual(sys_text, text)

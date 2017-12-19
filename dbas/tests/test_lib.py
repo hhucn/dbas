@@ -243,7 +243,7 @@ class LibTests(unittest.TestCase):
 
     def test_get_all_arguments_with_text_by_statement_id(self):
         res = lib.get_all_arguments_with_text_by_statement_id(0)
-        self.assertIsNone(res)
+        self.assertEqual(res, [])
 
         results = {
             47: 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them',
