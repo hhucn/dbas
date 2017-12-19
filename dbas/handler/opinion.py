@@ -109,44 +109,54 @@ def __get_clicks_for_reactions(arg_uids_for_reactions, relation_text, db_user_ui
         msg = _t.get(_.voteCountTextMayBeFirst) + '.'
 
     for rel in relation:
-        all_users  = []
-        message  = ''
-        seen_by  = 0
-
-        if not arg_uids_for_reactions[relation.index(rel)]:
-            ret_list.append({'users': [],
-                             'message': msg,
-                             'text': relation_text[rel + '_text'],
-                             'seen_by': 0})
-            continue
-
-        for uid in arg_uids_for_reactions[relation.index(rel)]:
-            db_votes = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.argument_uid == uid['id'],
-                                                                              ClickedArgument.is_up_vote == True,
-                                                                              ClickedArgument.is_valid == True,
-                                                                              ClickedArgument.author_uid != db_user_uid)).all()
-
-            for vote in db_votes:
-                voted_user = user_query.get(vote.author_uid)
-                users_dict = create_users_dict(voted_user, vote.timestamp, main_page, _t.get_lang())
-                all_users.append(users_dict)
-
-            if len(db_votes) == 0:
-                message = msg
-            elif len(db_votes) == 1:
-                message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
-            else:
-                message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
-
-            db_seen_by = DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=int(uid['id'])).all()
-            if db_seen_by:
-                seen_by += len(db_seen_by)
-
-        ret_list.append({'users': all_users,
-                         'message': message,
-                         'text': relation_text[rel + '_text'],
-                         'seen_by': seen_by})
+        d = __build_reaction_dict_by_relation(relation, rel, relation_text, msg, arg_uids_for_reactions, db_user_uid,
+                                              main_page, _t, user_query)
+        ret_list.append(d)
     return ret_list
+
+
+def __build_reaction_dict_by_relation(relations, current_relation, relation_text, msg, arg_uids_for_reactions,
+                                      db_user_uid, main_page, _t, user_query):
+    all_users = []
+    message = ''
+    seen_by = 0
+
+    if not arg_uids_for_reactions[relations.index(current_relation)]:
+        return {
+            'users': [],
+            'message': msg,
+            'text': relation_text[current_relation + '_text'],
+            'seen_by': 0
+        }
+
+    for uid in arg_uids_for_reactions[relations.index(current_relation)]:
+        db_votes = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.argument_uid == uid['id'],
+                                                                          ClickedArgument.is_up_vote == True,
+                                                                          ClickedArgument.is_valid == True,
+                                                                          ClickedArgument.author_uid != db_user_uid)).all()
+
+        for vote in db_votes:
+            voted_user = user_query.get(vote.author_uid)
+            users_dict = create_users_dict(voted_user, vote.timestamp, main_page, _t.get_lang())
+            all_users.append(users_dict)
+
+        if len(db_votes) == 0:
+            message = msg
+        elif len(db_votes) == 1:
+            message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextOneMore) + '.'
+        else:
+            message = str(len(db_votes)) + ' ' + _t.get(_.voteCountTextMore) + '.'
+
+        db_seen_by = DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=int(uid['id'])).all()
+        if db_seen_by:
+            seen_by += len(db_seen_by)
+
+    return {
+        'users': all_users,
+        'message': message,
+        'text': relation_text[current_relation + '_text'],
+        'seen_by': seen_by
+    }
 
 
 def get_user_with_same_opinion_for_statements(statement_uids, is_supportive, nickname, lang, main_page):
