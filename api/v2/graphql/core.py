@@ -93,7 +93,8 @@ class Query(graphene.ObjectType):
 
     statement = graphene.Field(StatementGraph, uid=graphene.Int(), is_startpoint=graphene.Boolean())
     statements = StatementGraph.plural()
-    argument = graphene.Field(ArgumentGraph, uid=graphene.Int(), issue_uid=graphene.Int(), is_supportive=graphene.Boolean())
+    argument = graphene.Field(ArgumentGraph, uid=graphene.Int(), issue_uid=graphene.Int(),
+                              is_supportive=graphene.Boolean())
     arguments = graphene.List(ArgumentGraph, issue_uid=graphene.Int(), is_supportive=graphene.Boolean())
     statement_reference = graphene.Field(StatementReferencesGraph, uid=graphene.Int())
     statement_references = graphene.List(StatementReferencesGraph)
@@ -122,7 +123,7 @@ class Query(graphene.ObjectType):
         return resolve_field_query(kwargs, info, StatementReferencesGraph)
 
     def resolve_statement_references(self, info, **kwargs):
-        return resolve_list_query(kwargs, info, StatementReferencesGraph, StatementReferences)
+        return StatementReferencesGraph.get_query(info).all()
 
     def resolve_issue(self, info, **kwargs):
         return resolve_field_query(kwargs, info, IssueGraph)
@@ -140,7 +141,7 @@ class Query(graphene.ObjectType):
         return resolve_field_query(kwargs, info, PremiseGroupGraph)
 
     def resolve_premisegroups(self, info, **kwargs):
-        return resolve_list_query(kwargs, info, PremiseGroupGraph, PremiseGraph)
+        return PremiseGroupGraph.get_query(info).all()
 
     def resolve_user(self, info, **kwargs):
         return resolve_field_query(kwargs, info, UserGraph)
