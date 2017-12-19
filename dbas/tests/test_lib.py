@@ -309,39 +309,55 @@ class LibTests(unittest.TestCase):
             self.assertEqual(results[r['uid']], r['text'])
 
     def test_get_text_for_argument_uid(self):
-        self.assertTrue(lib.get_text_for_argument_uid(47), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
-        self.assertTrue(lib.get_text_for_argument_uid(48), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
-        self.assertTrue(lib.get_text_for_argument_uid(49), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
+        s47 = 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them'
+        s48 = 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.'
+        s49 = 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high'
+
+        self.assertTrue(lib.get_text_for_argument_uid(47), s47)
+        self.assertTrue(lib.get_text_for_argument_uid(48), s48)
+        self.assertTrue(lib.get_text_for_argument_uid(49), s49)
 
         for attack in ['', None, 'jump']:
-            self.assertTrue(lib.get_text_for_argument_uid(47, attack_type=attack), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
-            self.assertTrue(lib.get_text_for_argument_uid(48, attack_type=attack), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
-            self.assertTrue(lib.get_text_for_argument_uid(49, attack_type=attack), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
+            self.assertTrue(lib.get_text_for_argument_uid(47, attack_type=attack), s47)
+            self.assertTrue(lib.get_text_for_argument_uid(48, attack_type=attack), s48)
+            self.assertTrue(lib.get_text_for_argument_uid(49, attack_type=attack), s49)
 
-        self.assertTrue(lib.get_text_for_argument_uid(47, with_html_tag=True), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
-        self.assertTrue(lib.get_text_for_argument_uid(48, with_html_tag=True), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
-        self.assertTrue(lib.get_text_for_argument_uid(49, with_html_tag=True), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
+        self.assertTrue(lib.get_text_for_argument_uid(47, with_html_tag=True), s47)
+        self.assertTrue(lib.get_text_for_argument_uid(48, with_html_tag=True), s48)
+        self.assertTrue(lib.get_text_for_argument_uid(49, with_html_tag=True), s49)
 
-        self.assertTrue(lib.get_text_for_argument_uid(47, start_with_intro=True), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
-        self.assertTrue(lib.get_text_for_argument_uid(48, start_with_intro=True), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
-        self.assertTrue(lib.get_text_for_argument_uid(49, start_with_intro=True), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
+        self.assertTrue(lib.get_text_for_argument_uid(47, start_with_intro=True), s47)
+        self.assertTrue(lib.get_text_for_argument_uid(48, start_with_intro=True), s48)
+        self.assertTrue(lib.get_text_for_argument_uid(49, start_with_intro=True), s49)
 
-        self.assertTrue(lib.get_text_for_argument_uid(47, first_arg_by_user=True), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
-        self.assertTrue(lib.get_text_for_argument_uid(48, first_arg_by_user=True), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
-        self.assertTrue(lib.get_text_for_argument_uid(49, first_arg_by_user=True), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
+        self.assertTrue(lib.get_text_for_argument_uid(47, first_arg_by_user=True), s47)
+        self.assertTrue(lib.get_text_for_argument_uid(48, first_arg_by_user=True), s48)
+        self.assertTrue(lib.get_text_for_argument_uid(49, first_arg_by_user=True), s49)
 
-        self.assertTrue(lib.get_text_for_argument_uid(47, is_users_opinion=False), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
-        self.assertTrue(lib.get_text_for_argument_uid(48, is_users_opinion=False), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
-        self.assertTrue(lib.get_text_for_argument_uid(49, is_users_opinion=False), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
+        self.assertTrue(lib.get_text_for_argument_uid(47, is_users_opinion=False), s47)
+        self.assertTrue(lib.get_text_for_argument_uid(48, is_users_opinion=False), s48)
+        self.assertTrue(lib.get_text_for_argument_uid(49, is_users_opinion=False), s49)
 
-        self.assertTrue(lib.get_text_for_argument_uid(47, rearrange_intro=True), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
-        self.assertTrue(lib.get_text_for_argument_uid(48, rearrange_intro=True), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
-        self.assertTrue(lib.get_text_for_argument_uid(49, rearrange_intro=True), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
+        self.assertTrue(lib.get_text_for_argument_uid(47, rearrange_intro=True), s47)
+        self.assertTrue(lib.get_text_for_argument_uid(48, rearrange_intro=True), s48)
+        self.assertTrue(lib.get_text_for_argument_uid(49, rearrange_intro=True), s49)
 
-        self.assertTrue(lib.get_text_for_argument_uid(47, support_counter_argument=True), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
-        self.assertTrue(lib.get_text_for_argument_uid(48, support_counter_argument=True), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
-        self.assertTrue(lib.get_text_for_argument_uid(49, support_counter_argument=True), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
+        self.assertTrue(lib.get_text_for_argument_uid(47, support_counter_argument=True), s47)
+        self.assertTrue(lib.get_text_for_argument_uid(48, support_counter_argument=True), s48)
+        self.assertTrue(lib.get_text_for_argument_uid(49, support_counter_argument=True), s49)
 
-        self.assertTrue(lib.get_text_for_argument_uid(47, nickname='Dieter'), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
-        self.assertTrue(lib.get_text_for_argument_uid(48, nickname='Dieter'), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
-        self.assertTrue(lib.get_text_for_argument_uid(49, nickname='Dieter'), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
+        self.assertTrue(lib.get_text_for_argument_uid(47, nickname='Dieter'), s47)
+        self.assertTrue(lib.get_text_for_argument_uid(48, nickname='Dieter'), s48)
+        self.assertTrue(lib.get_text_for_argument_uid(49, nickname='Dieter'), s49)
+
+        self.assertTrue(lib.get_text_for_argument_uid(47, minimize_on_undercut=True), s47)
+        self.assertTrue(lib.get_text_for_argument_uid(48, minimize_on_undercut=True), s48)
+        self.assertTrue(lib.get_text_for_argument_uid(49, minimize_on_undercut=True), s49)
+
+        self.assertTrue(lib.get_text_for_argument_uid(47, colored_position=True), s47)
+        self.assertTrue(lib.get_text_for_argument_uid(48, colored_position=True), s48)
+        self.assertTrue(lib.get_text_for_argument_uid(49, colored_position=True), s49)
+
+        self.assertTrue(lib.get_text_for_argument_uid(47, user_changed_opinion=True), s47)
+        self.assertTrue(lib.get_text_for_argument_uid(48, user_changed_opinion=True), s48)
+        self.assertTrue(lib.get_text_for_argument_uid(49, user_changed_opinion=True), s49)
