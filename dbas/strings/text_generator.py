@@ -165,7 +165,7 @@ def __get_user_msg_for_users_undermine_response(premise, that):
     :param that: String
     :return: String
     """
-    return '{} {} {} {}'.format(that, '{}', premise, '{}')
+    return '{} {}{}{}'.format(that, '{}', premise, '{}')
 
 
 def __get_user_msg_for_users_support_response(conclusion, itistruethat, itisfalsethat, is_supportive, _t):
@@ -212,7 +212,7 @@ def __get_user_msg_for_users_undercut_response(db_argument, premise, conclusion,
         tmp = _t.get(_.butIDoNotBelieveArgumentFor if db_argument.is_supportive else _.butIDoNotBelieveCounterFor)
     tmp = tmp.format(conclusion)
 
-    return '{} {}. {}{}{}'.format(right, premise, '{}', tmp, '{}')
+    return '{}{}. {}{}{}'.format(right, premise, '{}', tmp, '{}')
 
 
 def __get_user_msg_for_users_rebut_response(premise, conclusion, right, is_supportive, _t):
