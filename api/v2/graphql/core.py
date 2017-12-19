@@ -23,8 +23,8 @@ class TextVersionGraph(SQLAlchemyObjectType):
 class StatementGraph(SQLAlchemyObjectType):
     textversions = graphene.Field(TextVersionGraph)
 
-    def resolve_textversions(self, info):
-        return resolve_field_query({"statement_uid": self.uid}, info, TextVersionGraph)
+    def resolve_textversions(self, info, **kwargs):
+        return resolve_field_query({**kwargs, "statement_uid": self.uid}, info, TextVersionGraph)
 
     class Meta:
         model = Statement
@@ -49,8 +49,8 @@ class StatementReferencesGraph(SQLAlchemyObjectType):
 class IssueGraph(SQLAlchemyObjectType):
     statements = StatementGraph.plural()
 
-    def resolve_statements(self, info):
-        return resolve_list_query({"issue_uid": self.uid}, info, StatementGraph, Statement)
+    def resolve_statements(self, info, **kwargs):
+        return resolve_list_query({**kwargs, "issue_uid": self.uid}, info, StatementGraph, Statement)
 
     class Meta:
         model = Issue
@@ -121,14 +121,14 @@ class Query(graphene.ObjectType):
     def resolve_statement_reference(self, info, **kwargs):
         return resolve_field_query(kwargs, info, StatementReferencesGraph)
 
-    def resolve_statement_references(self, info):
-        return StatementReferencesGraph.get_query(info).all()
+    def resolve_statement_references(self, info, **kwargs):
+        return resolve_list_query(kwargs, info, StatementReferencesGraph, StatementReferences)
 
     def resolve_issue(self, info, **kwargs):
         return resolve_field_query(kwargs, info, IssueGraph)
 
-    def resolve_issues(self, info):
-        return IssueGraph.get_query(info).all()
+    def resolve_issues(self, info, **kwargs):
+        return resolve_list_query(kwargs, info, IssueGraph, Issue)
 
     def resolve_premise(self, info, **kwargs):
         return resolve_field_query(kwargs, info, PremiseGraph)
@@ -139,8 +139,8 @@ class Query(graphene.ObjectType):
     def resolve_premisegroup(self, info, **kwargs):
         return resolve_field_query(kwargs, info, PremiseGroupGraph)
 
-    def resolve_premisegroups(self, info):
-        return PremiseGroupGraph.get_query(info).all()
+    def resolve_premisegroups(self, info, **kwargs):
+        return resolve_list_query(kwargs, info, PremiseGroupGraph, PremiseGraph)
 
     def resolve_user(self, info, **kwargs):
         return resolve_field_query(kwargs, info, UserGraph)
