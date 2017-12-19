@@ -3,7 +3,7 @@ from datetime import date
 
 from dbas import lib
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Argument, Statement, Issue
+from dbas.database.discussion_model import User, Argument, Statement, Issue, TextVersion
 
 
 class LibTests(unittest.TestCase):
@@ -136,9 +136,9 @@ class LibTests(unittest.TestCase):
         self.assertIsNone(lib.get_user_by_case_insensitive_nickname('puh_der_bär'))
 
     def test_get_user_by_case_insensitive_public_nickname(self):
-        self.assertIsNotNone(lib.get_user_by_case_insensitive_public_nickname('tobias'))
-        self.assertIsNotNone(lib.get_user_by_case_insensitive_public_nickname('tobiaS'))
-        self.assertIsNotNone(lib.get_user_by_case_insensitive_public_nickname('TobiaS'))
+        user = DBDiscussionSession.query(User).get(2)
+        self.assertIsNotNone(lib.get_user_by_case_insensitive_public_nickname(user.public_nickname.lower()))
+        self.assertIsNotNone(lib.get_user_by_case_insensitive_public_nickname(user.public_nickname.upper()))
         self.assertIsNone(lib.get_user_by_case_insensitive_public_nickname('puh_der_bär'))
 
     def test_pretty_print_options(self):
@@ -155,18 +155,19 @@ class LibTests(unittest.TestCase):
         self.assertFalse(lib.is_user_admin('Pascal'))
 
     def test_is_author_of_statement(self):
-        self.assertTrue(lib.is_author_of_statement('Christian', 36))
-        self.assertFalse(lib.is_author_of_statement('Christian', 2))
-        self.assertFalse(lib.is_author_of_statement('Chris', 36))
-        self.assertFalse(lib.is_author_of_statement('Christian', 0))
-        self.assertFalse(lib.is_author_of_statement('Chris', 0))
+        user = DBDiscussionSession.query(User).get(DBDiscussionSession.query(TextVersion).get(36).author_uid)
+        self.assertTrue(lib.is_author_of_statement(user.nickname, 36))
+        self.assertFalse(lib.is_author_of_statement(user.nickname, 2))
+        self.assertFalse(lib.is_author_of_statement(user.nickname[:3], 36))
+        self.assertFalse(lib.is_author_of_statement(user.nickname, 0))
+        self.assertFalse(lib.is_author_of_statement(user.nickname[:3], 0))
 
     def test_is_author_of_argument(self):
-        self.assertTrue(lib.is_author_of_argument('Christian', 32))
-        self.assertFalse(lib.is_author_of_argument('Christian', 4))
-        self.assertFalse(lib.is_author_of_argument('Chris', 34))
-        self.assertFalse(lib.is_author_of_argument('Tobias', 0))
-        self.assertFalse(lib.is_author_of_argument('Chris', 0))
+        user = DBDiscussionSession.query(User).get(DBDiscussionSession.query(Argument).get(36).author_uid)
+        self.assertTrue(lib.is_author_of_argument(user.nickname, 36))
+        self.assertFalse(lib.is_author_of_argument(user.nickname[:3], 34))
+        self.assertFalse(lib.is_author_of_argument(user.nickname, 0))
+        self.assertFalse(lib.is_author_of_argument(user.nickname[:3], 0))
 
     def test_get_profile_picture(self):
         user = DBDiscussionSession.query(User).get(1)
@@ -245,18 +246,12 @@ class LibTests(unittest.TestCase):
         self.assertIsNone(res)
 
         results = {
-            3: 'we should get a cat  does not hold, because  cats are capricious',
-            18: 'Other participants said that we should get a cat because cats are very independent. You did not agree with this because the purpose of a pet is to have something to take care of.',
-            22: 'Other participants said that it is false that  we should get a cat because cats are capricious. You did not agree with this because this is based on the cats race and a little bit on the breeding.',
-            12: 'we should get a cat because cats are fluffy and cats are small',
-            25: 'Other participants said that we should get a cat because a dog costs taxes and will be more expensive than a cat. You did not agree with this because this is just a claim without any justification.',
-            14: "We should get a cat because cats are fluffy and cats are small. Now you agree that fluffy animals losing much hair and I'm allergic to animal hair. You did not agree with this because you could use a automatic vacuum cleaner.",
-            2: 'we should get a cat because cats are very independent',
-            13: "Other participants said that we should get a cat because cats are fluffy and cats are small. You did not agree with this because fluffy animals losing much hair and I'm allergic to animal hair.",
-            11: 'we should get a cat because a dog costs taxes and will be more expensive than a cat'
+            47: 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them',
+            48: 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.',
+            49: 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high'
         }
-        res = lib.get_all_arguments_with_text_by_statement_id(2)
-        self.assertEqual(9, len(res))
+        res = lib.get_all_arguments_with_text_by_statement_id(38)
+        self.assertEqual(3, len(res))
         for r in res:
             self.assertIn(r['uid'], results)
             self.assertEqual(results[r['uid']], r['text'])
@@ -269,70 +264,84 @@ class LibTests(unittest.TestCase):
         self.assertEqual([], res)
 
         results = {
-            3: 'we should get a cat  does not hold, because  cats are capricious',
-            18: 'Someone argued that we should get a cat because cats are very independent. Other participants said that the purpose of a pet is to have something to take care of.',
-            22: 'Someone argued that it is false that  we should get a cat because cats are capricious. Other participants said that this is based on the cats race and a little bit on the breeding.',
-            12: 'we should get a cat because cats are fluffy and cats are small',
-            25: 'Someone argued that we should get a cat because a dog costs taxes and will be more expensive than a cat. Other participants said that this is just a claim without any justification.',
-            14: "Someone argued that we should get a cat because cats are fluffy and cats are small. Other participants said that fluffy animals losing much hair and I'm allergic to animal hair. Then other participants said that you could use a automatic vacuum cleaner.",
-            2: 'we should get a cat because cats are very independent',
-            13: "Someone argued that we should get a cat because cats are fluffy and cats are small. Other participants said that fluffy animals losing much hair and I'm allergic to animal hair.",
-            11: 'we should get a cat because a dog costs taxes and will be more expensive than a cat'
+            47: 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them',
+            48: 'Someone argued that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. Other participants said that schools need the swimming pools for their sports lessons.',
+            49: 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high'
         }
-        res = lib.get_all_arguments_with_text_and_url_by_statement_id(2, um)
-        self.assertEqual(9, len(res))
+
+        res = lib.get_all_arguments_with_text_and_url_by_statement_id(38, um)
+        self.assertEqual(3, len(res))
         for r in res:
             self.assertIn(r['uid'], results)
             self.assertEqual(results[r['uid']], r['text'])
 
+    def test_get_all_arguments_with_text_and_url_by_statement_id_with_color(self):
+        from dbas.url_manager import UrlManager
+        um = UrlManager(application_url='', slug='slug', for_api=True)
+
+        results = {
+            47: '<span data-argumentation-type="position">we should close public swimming pools</span> because our swimming pools are very old and it would take a major investment to repair them',
+            48: 'Someone argued that <span data-argumentation-type="position">we should close public swimming pools</span> because our swimming pools are very old and it would take a major investment to repair them. Other participants said that schools need the swimming pools for their sports lessons.',
+            49: '<span data-argumentation-type="position">we should close public swimming pools</span>  does not hold, because  the rate of non-swimmers is too high'
+        }
+
+        res = lib.get_all_arguments_with_text_and_url_by_statement_id(38, um, color_statement=True)
+        self.assertEqual(3, len(res))
+        for r in res:
+            self.assertIn(r['uid'], results)
+            self.assertEqual(results[r['uid']], r['text'])
+
+    def test_get_all_arguments_with_text_and_url_by_statement_id_with_color_and_jump(self):
+        from dbas.url_manager import UrlManager
+        um = UrlManager(application_url='', slug='slug', for_api=True)
+
+        results = {
+            47: '<span data-argumentation-type="position">we should close public swimming pools</span>  because our swimming pools are very old and it would take a major investment to repair them.',
+            48: 'our swimming pools are very old and it would take a major investment to repair them <span data-attitude="con">is not a good reason for</span> <span data-argumentation-type="position">we should close public swimming pools</span>. Because schools need the swimming pools for their sports lessons.',
+            49: '<span data-argumentation-type="position">we should close public swimming pools</span> <span data-attitude="con">does not hold</span> because the rate of non-swimmers is too high.'
+        }
+
+        res = lib.get_all_arguments_with_text_and_url_by_statement_id(38, um, color_statement=True, is_jump=True)
+        self.assertEqual(3, len(res))
+        for r in res:
+            self.assertIn(r['uid'], results)
+            self.assertIn('jump', r['url'])
+            self.assertEqual(results[r['uid']], r['text'])
+
     def test_get_text_for_argument_uid(self):
-        self.assertTrue(lib.get_text_for_argument_uid(5), "we should get a dog  does not hold, because  you have to take the dog for a walk every day, which is tedious")
-        self.assertTrue(lib.get_text_for_argument_uid(6), "Other participants said that we should get a dog because dogs can act as watch dogs. You did not agree with this because we have no use for a watch dog.")
-        self.assertTrue(lib.get_text_for_argument_uid(7), "Other participants said that it is false that  we should get a dog because you have to take the dog for a walk every day, which is tedious. You did not agree with this because going for a walk with the dog every day is good for social interaction and physical exercise.")
-        self.assertTrue(lib.get_text_for_argument_uid(8), "we could get both, a cat and a dog because it would be no problem")
-        self.assertTrue(lib.get_text_for_argument_uid(9), "Other participants said that we could get both, a cat and a dog because it would be no problem. You did not agree with this because a cat and a dog will generally not get along well and won't be best friends.")
-        self.assertTrue(lib.get_text_for_argument_uid(10), "it would be no problem  does not hold, because  we do not have enough money for two pets")
-        self.assertTrue(lib.get_text_for_argument_uid(11), "we should get a cat because a dog costs taxes and will be more expensive than a cat")
-        self.assertTrue(lib.get_text_for_argument_uid(12), "we should get a cat because cats are fluffy and cats are small")
-        self.assertTrue(lib.get_text_for_argument_uid(13), "Other participants said that we should get a cat because cats are fluffy and cats are small. You did not agree with this because fluffy animals losing much hair and I'm allergic to animal hair.")
-        self.assertTrue(lib.get_text_for_argument_uid(14), "We should get a cat because cats are fluffy and cats are small. Now you agree that fluffy animals losing much hair and I'm allergic to animal hair. You did not agree with this because you could use a automatic vacuum cleaner.")
+        self.assertTrue(lib.get_text_for_argument_uid(47), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
+        self.assertTrue(lib.get_text_for_argument_uid(48), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
+        self.assertTrue(lib.get_text_for_argument_uid(49), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
 
         for attack in ['', None, 'jump']:
-            self.assertTrue(lib.get_text_for_argument_uid(5, anonymous_style=True, attack_type=attack), "we should get a dog  does not hold, because  you have to take the dog for a walk every day, which is tedious")
-            self.assertTrue(lib.get_text_for_argument_uid(6, anonymous_style=True, attack_type=attack), "Other participants said that we should get a dog because dogs can act as watch dogs. You did not agree with this because we have no use for a watch dog.")
-            self.assertTrue(lib.get_text_for_argument_uid(7, anonymous_style=True, attack_type=attack), "Other participants said that it is false that  we should get a dog because you have to take the dog for a walk every day, which is tedious. You did not agree with this because going for a walk with the dog every day is good for social interaction and physical exercise.")
-            self.assertTrue(lib.get_text_for_argument_uid(8, anonymous_style=True, attack_type=attack), "we could get both, a cat and a dog because it would be no problem")
-            self.assertTrue(lib.get_text_for_argument_uid(9, anonymous_style=True, attack_type=attack), "Other participants said that we could get both, a cat and a dog because it would be no problem. You did not agree with this because a cat and a dog will generally not get along well and won't be best friends.")
-            self.assertTrue(lib.get_text_for_argument_uid(10, anonymous_style=True, attack_type=attack), "it would be no problem  does not hold, because  we do not have enough money for two pets")
-            self.assertTrue(lib.get_text_for_argument_uid(11, anonymous_style=True, attack_type=attack), "we should get a cat because a dog costs taxes and will be more expensive than a cat")
-            self.assertTrue(lib.get_text_for_argument_uid(12, anonymous_style=True, attack_type=attack), "we should get a cat because cats are fluffy and cats are small")
-            self.assertTrue(lib.get_text_for_argument_uid(13, anonymous_style=True, attack_type=attack), "Other participants said that we should get a cat because cats are fluffy and cats are small. You did not agree with this because fluffy animals losing much hair and I'm allergic to animal hair.")
-            self.assertTrue(lib.get_text_for_argument_uid(14, anonymous_style=True, attack_type=attack), "We should get a cat because cats are fluffy and cats are small. Now you agree that fluffy animals losing much hair and I'm allergic to animal hair. You did not agree with this because you could use a automatic vacuum cleaner.")
+            self.assertTrue(lib.get_text_for_argument_uid(47, attack_type=attack), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
+            self.assertTrue(lib.get_text_for_argument_uid(48, attack_type=attack), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
+            self.assertTrue(lib.get_text_for_argument_uid(49, attack_type=attack), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
 
-        self.assertTrue(lib.get_text_for_argument_uid(5, with_html_tag=True), "we should get a dog  does not hold, because  you have to take the dog for a walk every day, which is tedious")
-        self.assertTrue(lib.get_text_for_argument_uid(6, with_html_tag=True), "Other participants said that we should get a dog because dogs can act as watch dogs. You did not agree with this because we have no use for a watch dog.")
-        self.assertTrue(lib.get_text_for_argument_uid(13, with_html_tag=True), "Other participants said that we should get a cat because cats are fluffy and cats are small. You did not agree with this because fluffy animals losing much hair and I'm allergic to animal hair.")
+        self.assertTrue(lib.get_text_for_argument_uid(47, with_html_tag=True), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
+        self.assertTrue(lib.get_text_for_argument_uid(48, with_html_tag=True), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
+        self.assertTrue(lib.get_text_for_argument_uid(49, with_html_tag=True), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
 
-        self.assertTrue(lib.get_text_for_argument_uid(5, start_with_intro=True), "we should get a dog  does not hold, because  you have to take the dog for a walk every day, which is tedious")
-        self.assertTrue(lib.get_text_for_argument_uid(6, start_with_intro=True), "Other participants said that we should get a dog because dogs can act as watch dogs. You did not agree with this because we have no use for a watch dog.")
-        self.assertTrue(lib.get_text_for_argument_uid(13, start_with_intro=True), "Other participants said that we should get a cat because cats are fluffy and cats are small. You did not agree with this because fluffy animals losing much hair and I'm allergic to animal hair.")
+        self.assertTrue(lib.get_text_for_argument_uid(47, start_with_intro=True), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
+        self.assertTrue(lib.get_text_for_argument_uid(48, start_with_intro=True), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
+        self.assertTrue(lib.get_text_for_argument_uid(49, start_with_intro=True), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
 
-        self.assertTrue(lib.get_text_for_argument_uid(5, first_arg_by_user=True), "we should get a dog  does not hold, because  you have to take the dog for a walk every day, which is tedious")
-        self.assertTrue(lib.get_text_for_argument_uid(6, first_arg_by_user=True), "Other participants said that we should get a dog because dogs can act as watch dogs. You did not agree with this because we have no use for a watch dog.")
-        self.assertTrue(lib.get_text_for_argument_uid(13, first_arg_by_user=True), "Other participants said that we should get a cat because cats are fluffy and cats are small. You did not agree with this because fluffy animals losing much hair and I'm allergic to animal hair.")
+        self.assertTrue(lib.get_text_for_argument_uid(47, first_arg_by_user=True), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
+        self.assertTrue(lib.get_text_for_argument_uid(48, first_arg_by_user=True), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
+        self.assertTrue(lib.get_text_for_argument_uid(49, first_arg_by_user=True), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
 
-        self.assertTrue(lib.get_text_for_argument_uid(5, is_users_opinion=False), "we should get a dog  does not hold, because  you have to take the dog for a walk every day, which is tedious")
-        self.assertTrue(lib.get_text_for_argument_uid(6, is_users_opinion=False), "Other participants said that we should get a dog because dogs can act as watch dogs. You did not agree with this because we have no use for a watch dog.")
-        self.assertTrue(lib.get_text_for_argument_uid(13, is_users_opinion=True), "Other participants said that we should get a cat because cats are fluffy and cats are small. You did not agree with this because fluffy animals losing much hair and I'm allergic to animal hair.")
+        self.assertTrue(lib.get_text_for_argument_uid(47, is_users_opinion=False), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
+        self.assertTrue(lib.get_text_for_argument_uid(48, is_users_opinion=False), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
+        self.assertTrue(lib.get_text_for_argument_uid(49, is_users_opinion=False), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
 
-        self.assertTrue(lib.get_text_for_argument_uid(5, rearrange_intro=True), "we should get a dog  does not hold, because  you have to take the dog for a walk every day, which is tedious")
-        self.assertTrue(lib.get_text_for_argument_uid(6, rearrange_intro=True), "Other participants said that we should get a dog because dogs can act as watch dogs. You did not agree with this because we have no use for a watch dog.")
-        self.assertTrue(lib.get_text_for_argument_uid(13, rearrange_intro=True), "Other participants said that we should get a cat because cats are fluffy and cats are small. You did not agree with this because fluffy animals losing much hair and I'm allergic to animal hair.")
+        self.assertTrue(lib.get_text_for_argument_uid(47, rearrange_intro=True), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
+        self.assertTrue(lib.get_text_for_argument_uid(48, rearrange_intro=True), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
+        self.assertTrue(lib.get_text_for_argument_uid(49, rearrange_intro=True), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
 
-        self.assertTrue(lib.get_text_for_argument_uid(5, support_counter_argument=True), "we should get a dog  does not hold, because  you have to take the dog for a walk every day, which is tedious")
-        self.assertTrue(lib.get_text_for_argument_uid(6, support_counter_argument=True), "Other participants said that we should get a dog because dogs can act as watch dogs. You did not agree with this because we have no use for a watch dog.")
-        self.assertTrue(lib.get_text_for_argument_uid(13, support_counter_argument=True), "Other participants said that we should get a cat because cats are fluffy and cats are small. You did not agree with this because fluffy animals losing much hair and I'm allergic to animal hair.")
+        self.assertTrue(lib.get_text_for_argument_uid(47, support_counter_argument=True), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
+        self.assertTrue(lib.get_text_for_argument_uid(48, support_counter_argument=True), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
+        self.assertTrue(lib.get_text_for_argument_uid(49, support_counter_argument=True), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
 
-        self.assertTrue(lib.get_text_for_argument_uid(5, nickname='Dieter'), "we should get a dog  does not hold, because  you have to take the dog for a walk every day, which is tedious")
-        self.assertTrue(lib.get_text_for_argument_uid(6, nickname='Dieter'), "Other participants said that we should get a dog because dogs can act as watch dogs. You did not agree with this because we have no use for a watch dog.")
-        self.assertTrue(lib.get_text_for_argument_uid(13, nickname='Dieter'), "Other participants said that we should get a cat because cats are fluffy and cats are small. You did not agree with this because fluffy animals losing much hair and I'm allergic to animal hair.")
+        self.assertTrue(lib.get_text_for_argument_uid(47, nickname='Dieter'), 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them')
+        self.assertTrue(lib.get_text_for_argument_uid(48, nickname='Dieter'), 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.')
+        self.assertTrue(lib.get_text_for_argument_uid(49, nickname='Dieter'), 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high')
