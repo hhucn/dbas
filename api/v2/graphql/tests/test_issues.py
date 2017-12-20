@@ -15,6 +15,19 @@ def test_list_of_issues():
     assert_true(len(content.get("issues")) > 1)
 
 
+def test_list_of_issues_with_arrowtype():
+    query = """
+        query {
+            issues {
+                uid,
+                date
+            }
+        }
+    """
+    content = graphql_query(query)
+    assert_true(len(content.get("issues")) > 1)
+
+
 def test_query_single_issue():
     query = """
         query {
