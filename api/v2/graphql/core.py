@@ -4,12 +4,44 @@ GraphQL Core. Here are the models listed, which can be queried by GraphQl.
 .. sectionauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 
+import arrow
 import graphene
+from arrow import Arrow
+from graphene import Scalar
 from graphene_sqlalchemy import SQLAlchemyObjectType
+from graphene_sqlalchemy.converter import convert_sqlalchemy_type
+from graphql.language import ast
+from sqlalchemy_utils import ArrowType
 
 from api.v2.graphql.resolve import resolve_field_query, resolve_list_query
 from dbas.database.discussion_model import Statement, Issue, TextVersion, User, Language, StatementReferences, \
     PremiseGroup, Premise, Argument
+
+
+class ArrowTypeScalar(Scalar):
+    '''ArrowType Scalar Description'''
+
+    @staticmethod
+    def serialize(a):
+        assert isinstance(a, Arrow), (
+            'Received not compatible arrowtype "{}"'.format(repr(a))
+        )
+        return a.format()
+
+    @staticmethod
+    def parse_literal(node):
+        if isinstance(node, ast.StringValue):
+            return arrow.get(node.value)
+
+    @staticmethod
+    def parse_value(value):
+        return arrow.get(value)
+
+
+@convert_sqlalchemy_type.register(ArrowType)
+def convert_column_to_arrow(type, column, registry=None):
+    return ArrowTypeScalar(description=getattr(column, 'doc', None),
+                           required=not (getattr(column, 'nullable', True)))
 
 
 # -----------------------------------------------------------------------------
@@ -37,13 +69,11 @@ class StatementGraph(SQLAlchemyObjectType):
 class ArgumentGraph(SQLAlchemyObjectType):
     class Meta:
         model = Argument
-        exclude_fields = "timestamp"
 
 
 class StatementReferencesGraph(SQLAlchemyObjectType):
     class Meta:
         model = StatementReferences
-        exclude_fields = "created"
 
 
 class IssueGraph(SQLAlchemyObjectType):
@@ -54,7 +84,6 @@ class IssueGraph(SQLAlchemyObjectType):
 
     class Meta:
         model = Issue
-        exclude_fields = "date"
 
 
 class UserGraph(SQLAlchemyObjectType):
@@ -77,7 +106,6 @@ class PremiseGroupGraph(SQLAlchemyObjectType):
 class PremiseGraph(SQLAlchemyObjectType):
     class Meta:
         model = Premise
-        exclude_fields = ["timestamp"]
 
 
 # -----------------------------------------------------------------------------
