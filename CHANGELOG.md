@@ -1,3 +1,6 @@
+### 1.5.3 (2017-12-22)
+- Refactoring of the text generators
+
 ### 1.5.2 (2017-12-01)
 - Discussion can now be set as private or read only
 - Remove the webservers request from argumentation logic
