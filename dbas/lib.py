@@ -227,12 +227,6 @@ def __get_arguments_of_conclusion(statement_uid, include_disabled):
     if not include_disabled:
         db_arguments = db_arguments.filter_by(is_disabled=False)
     return db_arguments.all() if db_arguments else []
-    if include_disabled:
-        db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=statement_uid).all()
-    else:
-        db_arguments = DBDiscussionSession.query(Argument).filter_by(is_disabled=False,
-                                                                     conclusion_uid=statement_uid).all()
-    return db_arguments if db_arguments else []
 
 
 def get_all_arguments_with_text_by_statement_id(statement_uid):
