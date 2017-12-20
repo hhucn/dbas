@@ -456,7 +456,6 @@ def __build_val_for_undercutted_undercut(arg_array, tag_premise, tag_conclusion,
 def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_position, attack_type, _t, start_with_intro,
                             is_users_opinion, anonymous_style, support_counter_argument=False, author_uid=None):
     """
-    TODO REFACTOR
     Build up argument text for a single argument
 
     Please, do not touch this!
@@ -542,7 +541,6 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
 def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro,
                             minimize_on_undercut, anonymous_style, premisegroup_by_user, _t):
     """
-    TODO REFACTOR
 
     :param arg_array:
     :param first_arg_by_user:

@@ -564,7 +564,6 @@ def __get_text_for_add_something(nickname, lang, url, keyword, for_html=True):
 def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, system_argument, my_start_argument,
                                            my_end_tag, confrontation):
     """
-    TODO REFACTOR
     Returns the system bubble text for an undermine
 
     :param main_page: String
@@ -611,7 +610,6 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sys
 def __get_confrontation_text_for_undercut(main_page, nickname, _t, premise, conclusion, confrontation, supportive,
                                           system_argument):
     """
-    TODO REFACTOR
     Returns the system bubble text for an undercut
 
     :param main_page: String
@@ -629,8 +627,9 @@ def __get_confrontation_text_for_undercut(main_page, nickname, _t, premise, conc
 
     if is_okay:
         intro = author + ' ' + start_content + _t.get(_.agreesThat)
-        gender_think = (_t.get(_.heThinks) if gender is 'm' else _t.get(_.sheThinks)) if is_okay else _t.get(
-            _.theyThink)
+        gender_think = _t.get(_.theyThink)
+        if is_okay:
+            gender_think = __translation_based_on_gender(_t, _.heThinks, _.sheThinks, gender)
     else:
         intro = start_content + _t.get(_.otherParticipantsDontHaveOpinion)
         gender_think = _t.get(_.participantsThink)
@@ -639,17 +638,13 @@ def __get_confrontation_text_for_undercut(main_page, nickname, _t, premise, conc
     if supportive:
         bind = _t.get(_.butTheyDoNotBelieveArgument)
         if is_okay:
-            if gender is 'm':
-                bind = _t.get(_.butHeDoesNotBelieveArgument)
-            else:
-                bind = _t.get(_.butSheDoesNotBelieveArgument)
+            bind = __translation_based_on_gender(_t, _.butHeDoesNotBelieveArgument, _.butSheDoesNotBelieveArgument,
+                                                 gender)
     else:
         bind = _t.get(_.butTheyDoNotBelieveCounter)
         if is_okay:
-            if gender is 'm':
-                bind = _t.get(_.butHeDoesNotBelieveCounter)
-            else:
-                bind = _t.get(_.butSheDoesNotBelieveCounter)
+            bind = __translation_based_on_gender(_t, _.butHeDoesNotBelieveCounter, _.butSheDoesNotBelieveCounter,
+                                                 gender)
 
     bind = bind.format(start_con, end_tag, start_con, end_tag)
 
@@ -725,7 +720,6 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
 
 def __get_confrontation_text_for_rebut_as_reply(_t, confrontation, user_arg, conclusion, sys_conclusion,
                                                 system_argument, infos):
-    # TODO REFACTOR
     # changing arguments for better understanding
     if not user_arg.is_supportive:
         conclusion = sys_conclusion
@@ -733,7 +727,7 @@ def __get_confrontation_text_for_rebut_as_reply(_t, confrontation, user_arg, con
     if infos['is_okay']:
         intro = infos['author'] + ' ' + start_tag
         bind = start_content + _t.get(_.otherUsersClaimStrongerArgumentS) + end_tag
-        say = _t.get(_.heSays) if infos['gender'] is 'm' else _t.get(_.sheSays)
+        say = __translation_based_on_gender(_t, _.heSays, _.sheSays, infos['gender'])
     else:
         intro = start_content
         bind = start_tag + _t.get(_.otherUsersClaimStrongerArgumentP) + end_tag
@@ -767,17 +761,17 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
     if infos['is_okay']:
         if infos['has_other_user_opinion']:
             intro = infos['author'] + ' ' + start_content + _t.get(_.agreesThat) + ' {}. '
-            intro += _t.get(_.strongerStatementM) if infos['gender'] is 'm' else _t.get(_.strongerStatementF)
+            intro += __translation_based_on_gender(_t, _.strongerStatementM, _.strongerStatementF, infos['gender'])
         elif infos['db_other_nick'] == infos['nickname']:
             intro = infos['author'] + ' ' + start_content
             intro += _t.get(_.earlierYouHadNoOpinitionForThisStatement) + ' ' + _t.get(_.strongerStatementY)
         else:
             intro = infos['author'] + ' ' + start_content
             intro += _t.get(_.otherUserDoesntHaveOpinionForThisStatement) + ' '
-            intro += _t.get(_.strongerStatementM) if infos['gender'] is 'm' else _t.get(_.strongerStatementF)
+            intro += __translation_based_on_gender(_t, _.strongerStatementM, _.strongerStatementF, infos['gender'])
 
     else:
-        intro = start_content + _t.get(_.otherParticipantsDontHaveOpinion) + ' {}. ' +_t.get(_.strongerStatementP)
+        intro = start_content + _t.get(_.otherParticipantsDontHaveOpinion) + ' {}. ' + _t.get(_.strongerStatementP)
 
     tmp = start_argument
     if infos['user_is_attacking']:
@@ -786,7 +780,7 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
     else:
         tag = start_con
         tmp += _t.get(_.rejecting)
-    tmp += '</{}>'.format(tag_type) if len(start_argument) > 0 else ''
+    tmp += end_tag if len(start_argument) > 0 else ''
     intro = intro.format(premise, tag, tmp, ' ' + end_tag)
 
     tmp = _t.get(_.strongerStatementEnd)
@@ -797,11 +791,20 @@ def __get_confrontation_text_for_rebut_as_pgroup(_t, confrontation, premise, con
     if infos['db_other_nick'] == infos['nickname']:
         bind = _t.get(_.nowYouSayThat)
     else:
-        bind = (_t.get(_.heSays if infos['gender'] is 'm' else _.sheSays)) if infos['is_okay'] else _t.get(_.theySay)
+        bind = _t.get(_.theySay)
+        if infos['is_okay']:
+            bind = __translation_based_on_gender(_t, _.heSays, _.sheSays, infos['gender'])
 
     confrontation_text = '{} {}. {}{}:{} {}'.format(intro, conclusion, start_tag, bind, end_tag, confrontation)
 
     return confrontation_text
+
+
+def __translation_based_on_gender(_t, keyword_m, keyword_f, gender):
+    if gender is 'm':
+        return _t.get(keyword_m)
+    else:
+        return _t.get(keyword_f)
 
 
 def get_name_link_of_arguments_author(main_page, argument, nickname, with_link=True):
