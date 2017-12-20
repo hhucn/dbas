@@ -26,9 +26,13 @@ from dbas.strings.translator import Translator
 
 fallback_lang = 'en'
 tag_type = 'span'
-
-pro_tag = '<{} data-attitude="pro">'.format(tag_type)
-con_tag = '<{} data-attitude="con">'.format(tag_type)
+start_attack = '<{} data-argumentation-type="attack">'.format(tag_type)
+start_argument = '<{} data-argumentation-type="argument">'.format(tag_type)
+start_position = '<{} data-argumentation-type="position">'.format(tag_type)
+start_content = '<{} class="triangle-content-text">'.format(tag_type)
+start_pro = '<{} data-attitude="pro">'.format(tag_type)
+start_con = '<{} data-attitude="con">'.format(tag_type)
+start_tag = '<{}>'.format(tag_type)
 end_tag = '</{}>'.format(tag_type)
 
 
@@ -403,10 +407,10 @@ def __build_val_for_jump(arg_array, tag_premise, tag_conclusion, tag_end, _t):
     if _t.get_lang() == 'de':
         intro = _t.get(_.itIsTrueThatAnonymous) if db_argument.is_supportive else _t.get(_.itIsFalseThatAnonymous)
         intro = intro[0:1].upper() + intro[1:]
-        intro = (pro_tag if db_argument.is_supportive else con_tag) + intro + end_tag
+        intro = (start_pro if db_argument.is_supportive else start_con) + intro + end_tag
         ret_value = '{} {}, {} {}'.format(intro, conclusion, because, premises)
     else:
-        intro = (con_tag + _t.get(_.isNotRight).lower() + end_tag) if not db_argument.is_supportive else ''
+        intro = (start_con + _t.get(_.isNotRight).lower() + end_tag) if not db_argument.is_supportive else ''
         ret_value = '{} {} {} {}'.format(conclusion, intro, because, premises)
 
     return ret_value
@@ -424,7 +428,7 @@ def __build_val_for_undercut(arg_array, tag_premise, tag_conclusion, tag_end, _t
     conclusion_conclusion = tag_conclusion + conclusion_conclusion + tag_end
 
     intro = (_t.get(_.statementAbout) + ' ') if _t.get_lang() == 'de' else ''
-    bind = con_tag + _t.get(_.isNotAGoodReasonFor) + end_tag
+    bind = start_con + _t.get(_.isNotAGoodReasonFor) + end_tag
     because = _t.get(_.because)
     ret_value = '{}{} {} {}. {} {}.'.format(intro, conclusion_premise, bind, conclusion_conclusion, because, premise)
     return ret_value
@@ -439,7 +443,7 @@ def __build_val_for_undercutted_undercut(arg_array, tag_premise, tag_conclusion,
     premise3, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
     conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
 
-    bind = con_tag + _t.get(_.isNotAGoodReasonAgainstArgument) + end_tag
+    bind = start_con + _t.get(_.isNotAGoodReasonAgainstArgument) + end_tag
     because = _t.get(_.because)
     seperator = ',' if _t.get_lang() == 'de' else ''
 
@@ -456,7 +460,6 @@ def __build_val_for_undercutted_undercut(arg_array, tag_premise, tag_conclusion,
 def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_position, attack_type, _t, start_with_intro,
                             is_users_opinion, anonymous_style, support_counter_argument=False, author_uid=None):
     """
-    TODO REFACTOR
     Build up argument text for a single argument
 
     Please, do not touch this!
@@ -483,19 +486,19 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     if lang != 'de':
         premises = premises[0:1].lower() + premises[1:]  # pretty print
 
-    sb_none = '<' + tag_type + '>' if with_html_tag else ''
-    se = '</' + tag_type + '>' if with_html_tag else ''
+    sb_none = start_tag if with_html_tag else ''
+    se = end_tag if with_html_tag else ''
     if attack_type not in ['dont_know', 'jump']:
-        sb = '<' + tag_type + '>' if with_html_tag else ''
+        sb = start_tag if with_html_tag else ''
         if colored_position:
-            sb = '<' + tag_type + ' data-argumentation-type="position">' if with_html_tag else ''
+            sb = start_position if with_html_tag else ''
         if attack_type == 'undermine':
             premises = sb + premises + se
         else:
             conclusion = sb + conclusion + se
     else:
-        sb = '<' + tag_type + ' data-argumentation-type="argument">' if with_html_tag else ''
-        sb_tmp = '<' + tag_type + ' data-argumentation-type="attack">' if with_html_tag else ''
+        sb = start_argument if with_html_tag else ''
+        sb_tmp = start_attack if with_html_tag else ''
         premises = sb + premises + se
         conclusion = sb_tmp + conclusion + se
 
@@ -507,42 +510,56 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     you_have_the_opinion_that = _t.get(_.youHaveTheOpinionThat).format('').strip()
 
     if lang == 'de':
-        if start_with_intro and not anonymous_style:
-            if rearrange_intro:
-                intro = _t.get(_.itTrueIsThat) if db_argument.is_supportive else _t.get(_.itFalseIsThat)
-            else:
-                intro = _t.get(_.itIsTrueThat) if db_argument.is_supportive else _t.get(_.itIsFalseThat)
-
-            ret_value = (sb_none if attack_type in ['dont_know'] else sb) + intro + se + ' '
-        elif is_users_opinion and not anonymous_style:
-            ret_value = sb_none
-            if support_counter_argument:
-                ret_value += _t.get(_.youAgreeWithThecounterargument)
-            elif marked_element:
-                ret_value += you_have_the_opinion_that
-            else:
-                ret_value += _t.get(_.youArgue)
-            ret_value += se + ' '
-        else:
-            tmp = _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous)
-            ret_value = sb_none + sb + tmp + se + ' '
-        ret_value += ' {}{}{} '.format(sb, _t.get(_.itIsNotRight), se) if not db_argument.is_supportive else ''
-        ret_value += conclusion
-        ret_value += ', ' if lang == 'de' else ' '
-        ret_value += sb_none + _t.get(_.because).lower() + se + ' ' + premises
+        ret_value = __build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_with_intro,
+                                                   anonymous_style, rearrange_intro, db_argument, attack_type, sb_none,
+                                                   marked_element, lang, premises, conclusion, is_users_opinion,
+                                                   support_counter_argument)
     else:
-        tmp = sb + ' ' + _t.get(_.isNotRight).lower() + se + ', ' + _t.get(_.because).lower() + ' '
-        ret_value = (you_have_the_opinion_that + ' ' if marked_element else '') + conclusion + ' '
-        ret_value += _t.get(_.because).lower() if db_argument.is_supportive else tmp
-        ret_value += ' ' + premises
+        ret_value = __build_single_argument_for_en(_t, sb, se, you_have_the_opinion_that, marked_element, conclusion,
+                                                   premises, db_argument)
+    return ret_value
 
+
+def __build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_with_intro, anonymous_style,
+                                   rearrange_intro, db_argument, attack_type, sb_none, marked_element, lang,
+                                   premises, conclusion, is_users_opinion, support_counter_argument):
+    if start_with_intro and not anonymous_style:
+        if rearrange_intro:
+            intro = _t.get(_.itTrueIsThat) if db_argument.is_supportive else _t.get(_.itFalseIsThat)
+        else:
+            intro = _t.get(_.itIsTrueThat) if db_argument.is_supportive else _t.get(_.itIsFalseThat)
+
+        ret_value = (sb_none if attack_type in ['dont_know'] else sb) + intro + se + ' '
+    elif is_users_opinion and not anonymous_style:
+        ret_value = sb_none
+        if support_counter_argument:
+            ret_value += _t.get(_.youAgreeWithThecounterargument)
+        elif marked_element:
+            ret_value += you_have_the_opinion_that
+        else:
+            ret_value += _t.get(_.youArgue)
+        ret_value += se + ' '
+    else:
+        tmp = _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous)
+        ret_value = sb_none + sb + tmp + se + ' '
+    ret_value += ' {}{}{} '.format(sb, _t.get(_.itIsNotRight), se) if not db_argument.is_supportive else ''
+    ret_value += conclusion
+    ret_value += ', ' if lang == 'de' else ' '
+    ret_value += sb_none + _t.get(_.because).lower() + se + ' ' + premises
+    return ret_value
+
+
+def __build_single_argument_for_en(_t, sb, se, you_have_the_opinion_that, marked_element, conclusion, premises, db_arg):
+    tmp = sb + ' ' + _t.get(_.isNotRight).lower() + se + ', ' + _t.get(_.because).lower() + ' '
+    ret_value = (you_have_the_opinion_that + ' ' if marked_element else '') + conclusion + ' '
+    ret_value += _t.get(_.because).lower() if db_arg.is_supportive else tmp
+    ret_value += ' ' + premises
     return ret_value
 
 
 def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro,
                             minimize_on_undercut, anonymous_style, premisegroup_by_user, _t):
     """
-    TODO REFACTOR
 
     :param arg_array:
     :param first_arg_by_user:
@@ -575,8 +592,8 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     conclusion = get_text_for_statement_uid(uid)
 
     # html tags for framing
-    sb = '<{} data-argumentation-type="position">'.format(tag_type) if with_html_tag else ''
-    se = '</{}>'.format(tag_type) if with_html_tag else ''
+    sb = start_position if with_html_tag else ''
+    se = end_tag if with_html_tag else ''
 
     because = (', ' if local_lang == 'de' else ' ') + _t.get(_.because).lower() + ' '
 
@@ -597,7 +614,6 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     del pgroups[0]
 
     # just display the last premise group on undercuts, because the story is always saved in all bubbles
-
     if minimize_on_undercut and not user_changed_opinion and len(pgroups) > 2:
         return _t.get(_.butYouCounteredWith).strip() + ' ' + sb + pgroups[len(pgroups) - 1] + se + '.'
 

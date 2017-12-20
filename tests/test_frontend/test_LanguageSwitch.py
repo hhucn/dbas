@@ -48,7 +48,9 @@ def test_english_to_english_page_source():
     driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
     driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
     driver.get(ROOT)
+    time.sleep(0.5)
     driver.refresh()
+    time.sleep(0.5)
 
     try:
         html_content = driver.page_source
@@ -67,7 +69,9 @@ def test_english_to_german_page_source():
     driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
     driver.get(ROOT + PATH + LANGUAGE["GERMAN"])
     driver.get(ROOT)
+    time.sleep(0.5)
     driver.refresh()
+    time.sleep(0.5)
 
     try:
         html_content = driver.page_source
@@ -86,7 +90,9 @@ def test_german_to_german_page_source():
     driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
     driver.get(ROOT + PATH + LANGUAGE["GERMAN"])
     driver.get(ROOT)
+    time.sleep(0.5)
     driver.refresh()
+    time.sleep(0.5)
 
     try:
         html_content = driver.page_source
@@ -105,7 +111,9 @@ def test_german_to_english_page_source():
     driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
     driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
     driver.get(ROOT)
+    time.sleep(0.5)
     driver.refresh()
+    time.sleep(0.5)
 
     try:
         html_content = driver.page_source
@@ -126,7 +134,9 @@ def test_english_to_english_cookies():
     driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
     driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
     driver.get(ROOT)
+    time.sleep(0.5)
     driver.refresh()
+    time.sleep(0.5)
 
     try:
         cookies = driver.get_cookies()
@@ -153,7 +163,9 @@ def test_english_to_german_cookies():
     driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
     driver.get(ROOT + PATH + LANGUAGE["GERMAN"])
     driver.get(ROOT)
+    time.sleep(0.5)
     driver.refresh()
+    time.sleep(0.5)
 
     try:
         cookies = driver.get_cookies()
@@ -180,7 +192,9 @@ def test_german_to_german_cookies():
     driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
     driver.get(ROOT + PATH + LANGUAGE["GERMAN"])
     driver.get(ROOT)
+    time.sleep(0.5)
     driver.refresh()
+    time.sleep(0.5)
 
     try:
         cookies = driver.get_cookies()
@@ -207,7 +221,9 @@ def test_german_to_english_cookies():
     driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
     driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
     driver.get(ROOT)
+    time.sleep(0.5)
     driver.refresh()
+    time.sleep(0.5)
 
     try:
         cookies = driver.get_cookies()
