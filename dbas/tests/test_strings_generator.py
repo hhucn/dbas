@@ -14,9 +14,9 @@ class TextGeneratorText(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-        self.premise = 'Some premise text'
-        self.conclusion = 'Some conclusion text'
-        self.confrontation = 'Some confrontation text'
+        self.premise = 'some premise text'
+        self.conclusion = 'some conclusion text'
+        self.confrontation = 'some confrontation text'
         self.maxDiff = None
 
         # test every ajax method, which is not used in other classes
@@ -29,12 +29,13 @@ class TextGeneratorText(unittest.TestCase):
 
         is_supportive = True
 
+        confrontation = self.confrontation[0:1].upper() + self.confrontation[1:]
         undermine = _t.get(_.itIsFalseThat) + ' ' + self.premise
         support = _t.get(_.itIsTrueThat) if is_supportive else _t.get(_.itIsFalseThat)
         support += ' ' + self.conclusion + ' '
         support += _t.get(_.hold) if is_supportive else _t.get(_.doesNotHold)
-        undercut = self.confrontation + ', ' + _t.get(_.butIDoNotBelieveCounterFor).format(self.conclusion)
-        rebut = self.confrontation + ' '
+        undercut = confrontation + ', ' + _t.get(_.butIDoNotBelieveCounterFor).format(self.conclusion)
+        rebut = confrontation + ' '
         rebut += _t.get(_.iAcceptCounterThat) if is_supportive else _t.get(_.iAcceptArgumentThat)
         rebut += ' ' + self.conclusion
 
@@ -55,12 +56,13 @@ class TextGeneratorText(unittest.TestCase):
 
         is_supportive = False
 
+        confrontation = self.confrontation[0:1].upper() + self.confrontation[1:]
         undermine = _t.get(_.itIsFalseThat) + ' ' + self.premise
         support = _t.get(_.itIsTrueThat) if is_supportive else _t.get(_.itIsFalseThat)
         support += ' ' + self.conclusion + ' '
         support += _t.get(_.hold) if is_supportive else _t.get(_.doesNotHold)
-        undercut = self.confrontation + ', ' + _t.get(_.butIDoNotBelieveCounterFor).format(self.conclusion)
-        rebut = self.confrontation + ' '
+        undercut = confrontation + ', ' + _t.get(_.butIDoNotBelieveCounterFor).format(self.conclusion)
+        rebut = confrontation + ' '
         rebut += _t.get(_.iAcceptCounterThat) if is_supportive else _t.get(_.iAcceptArgumentThat)
         rebut += ' ' + self.conclusion
 
@@ -82,10 +84,10 @@ class TextGeneratorText(unittest.TestCase):
         is_supportive = True
         redirect_from_jump = False
         results = {
-            'undermine': 'that {}Some premise text{}',
-            'support': '{}it is true that Some conclusion text hold{}.',
-            'undercut': 'right, Some premise text. {}But I do not believe that this is a argument for Some conclusion text{}',
-            'rebut': '{}right, Some premise text, and I do accept that this is a counter-argument for Some conclusion text. However, I have a much stronger argument for reject that Some conclusion text.{}',
+            'undermine': 'that {}some premise text{}',
+            'support': '{}it is true that some conclusion text hold{}.',
+            'undercut': 'right, some premise text. {}But I do not believe that this is a argument for some conclusion text{}',
+            'rebut': '{}right, some premise text, and I do accept that this is a counter-argument for some conclusion text. However, I have a much stronger argument for reject that some conclusion text.{}',
             '':  ''
         }
         for r in results:
@@ -97,8 +99,8 @@ class TextGeneratorText(unittest.TestCase):
 
         is_supportive = False
         results.update({
-            'support': '{}it is false that Some conclusion text does not hold{}.',
-            'rebut': '{}right, Some premise text, and I do accept that this is an argument for Some conclusion text. However, I have a much stronger argument for accept that Some conclusion text.{}',
+            'support': '{}it is false that some conclusion text does not hold{}.',
+            'rebut': '{}right, some premise text, and I do accept that this is an argument for some conclusion text. However, I have a much stronger argument for accept that some conclusion text.{}',
         })
         for r in results:
             user_msg, system_msg = tg.get_header_for_users_confrontation_response(arg, 'en', self.premise, r,
@@ -109,8 +111,8 @@ class TextGeneratorText(unittest.TestCase):
 
         redirect_from_jump = True
         results.update({
-            'undercut': 'Maybe it is true that Some premise text. {}But I do not believe that this is a argument for Some conclusion text{}',
-            'rebut': '{}Maybe it is true that Some premise text, and I do accept that this is an argument for Some conclusion text. However, I have a much stronger argument for accept that Some conclusion text.{}',
+            'undercut': 'Maybe it is true that some premise text. {}But I do not believe that this is a argument for some conclusion text{}',
+            'rebut': '{}Maybe it is true that some premise text, and I do accept that this is an argument for some conclusion text. However, I have a much stronger argument for accept that some conclusion text.{}',
         })
         for r in results:
             user_msg, system_msg = tg.get_header_for_users_confrontation_response(arg, 'en', self.premise, r,
@@ -121,8 +123,8 @@ class TextGeneratorText(unittest.TestCase):
 
         is_supportive = True
         results.update({
-            'support': '{}it is true that Some conclusion text hold{}.',
-            'rebut': '{}Maybe it is true that Some premise text, and I do accept that this is a counter-argument for Some conclusion text. However, I have a much stronger argument for reject that Some conclusion text.{}',
+            'support': '{}it is true that some conclusion text hold{}.',
+            'rebut': '{}Maybe it is true that some premise text, and I do accept that this is a counter-argument for some conclusion text. However, I have a much stronger argument for reject that some conclusion text.{}',
         })
         for r in results:
             user_msg, system_msg = tg.get_header_for_users_confrontation_response(arg, 'en', self.premise, r,
@@ -137,10 +139,10 @@ class TextGeneratorText(unittest.TestCase):
         res = tg.get_relation_text_dict_without_substitution('en', with_no_opinion_text, self.premise, self.conclusion, is_dont_know)
 
         results = {
-            'undermine_text': 'In my opinion, <span data-argumentation-type="attack">Some premise text</span> is wrong and I would like to argue against it.',
-            'support_text': 'In my opinion, <span data-argumentation-type="attack">Some premise text</span> is correct and it convinced me.',
-            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">Some premise text</span> is correct, but it does not support <span data-argumentation-type="argument">Some conclusion text</span>.',
-            'rebut_text': 'In my opinion, <span data-argumentation-type="attack">Some premise text</span> is correct and it supports <span data-argumentation-type="argument">Some conclusion text</span>. However I want to defend <span data-argumentation-type="position">my point of view</span>.'
+            'undermine_text': 'In my opinion, <span data-argumentation-type="attack">some premise text</span> is wrong and I would like to argue against it.',
+            'support_text': 'In my opinion, <span data-argumentation-type="attack">some premise text</span> is correct and it convinced me.',
+            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">some premise text</span> is correct, but it does not support <span data-argumentation-type="argument">some conclusion text</span>.',
+            'rebut_text': 'In my opinion, <span data-argumentation-type="attack">some premise text</span> is correct and it supports <span data-argumentation-type="argument">some conclusion text</span>. However I want to defend <span data-argumentation-type="position">my point of view</span>.'
         }
 
         self.assertEqual(len(res), 4)
@@ -159,8 +161,8 @@ class TextGeneratorText(unittest.TestCase):
         res = tg.get_relation_text_dict_without_substitution('en', with_no_opinion_text, self.premise, self.conclusion, is_dont_know)
         self.assertEqual(len(res), 6)
         results.update({
-            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">Some premise text</span> is correct, but it is not supported by the <span data-argumentation-type="argument">reason</span>.',
-            'rebut_text': 'In my opinion, <span data-argumentation-type="argument">Some conclusion text</span> is wrong and I would like to argue against it.'
+            'undercut_text': 'In my opinion, <span data-argumentation-type="attack">some premise text</span> is correct, but it is not supported by the <span data-argumentation-type="argument">reason</span>.',
+            'rebut_text': 'In my opinion, <span data-argumentation-type="argument">some conclusion text</span> is wrong and I would like to argue against it.'
         })
         self.assertTrue({k: self.assertEqual(res[k], v) for k, v in results.items()})
 
