@@ -1,5 +1,6 @@
 import unittest
 import transaction
+import itertools
 
 from pyramid import testing
 from dbas.strings import text_generator as tg
@@ -24,59 +25,31 @@ class TextGeneratorText(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_get_text_for_add_premise_container_on_support(self):
+    def test_get_text_for_add_premise_container(self):
         _t = Translator('en')
 
-        is_supportive = True
+        for is_supportive in [True, False]:
+            confrontation = self.confrontation[0:1].upper() + self.confrontation[1:]
+            undermine = _t.get(_.itIsFalseThat) + ' ' + self.premise
+            support = _t.get(_.itIsTrueThat) if is_supportive else _t.get(_.itIsFalseThat)
+            support += ' ' + self.conclusion + ' '
+            support += _t.get(_.hold) if is_supportive else _t.get(_.doesNotHold)
+            undercut = confrontation + ', ' + _t.get(_.butIDoNotBelieveCounterFor).format(self.conclusion)
+            rebut = confrontation + ' '
+            rebut += _t.get(_.iAcceptCounterThat) if is_supportive else _t.get(_.iAcceptArgumentThat)
+            rebut += ' ' + self.conclusion
 
-        confrontation = self.confrontation[0:1].upper() + self.confrontation[1:]
-        undermine = _t.get(_.itIsFalseThat) + ' ' + self.premise
-        support = _t.get(_.itIsTrueThat) if is_supportive else _t.get(_.itIsFalseThat)
-        support += ' ' + self.conclusion + ' '
-        support += _t.get(_.hold) if is_supportive else _t.get(_.doesNotHold)
-        undercut = confrontation + ', ' + _t.get(_.butIDoNotBelieveCounterFor).format(self.conclusion)
-        rebut = confrontation + ' '
-        rebut += _t.get(_.iAcceptCounterThat) if is_supportive else _t.get(_.iAcceptArgumentThat)
-        rebut += ' ' + self.conclusion
+            results = {
+                'undermine': undermine + ' ...',
+                'support': support + ' ...',
+                'undercut': undercut + ' ...',
+                'rebut': rebut + ' ...',
+                '': '',
+            }
 
-        results = {
-            'undermine': undermine + ' ...',
-            'support': support + ' ...',
-            'undercut': undercut + ' ...',
-            'rebut': rebut + ' ...',
-            '': '',
-        }
-
-        for r in results:
-            self.assertEqual(results[r], tg.get_text_for_add_premise_container('en', self.confrontation, self.premise,
-                                                                               r, self.conclusion, is_supportive))
-
-    def test_get_text_for_add_premise_container_on_attack(self):
-        _t = Translator('en')
-
-        is_supportive = False
-
-        confrontation = self.confrontation[0:1].upper() + self.confrontation[1:]
-        undermine = _t.get(_.itIsFalseThat) + ' ' + self.premise
-        support = _t.get(_.itIsTrueThat) if is_supportive else _t.get(_.itIsFalseThat)
-        support += ' ' + self.conclusion + ' '
-        support += _t.get(_.hold) if is_supportive else _t.get(_.doesNotHold)
-        undercut = confrontation + ', ' + _t.get(_.butIDoNotBelieveCounterFor).format(self.conclusion)
-        rebut = confrontation + ' '
-        rebut += _t.get(_.iAcceptCounterThat) if is_supportive else _t.get(_.iAcceptArgumentThat)
-        rebut += ' ' + self.conclusion
-
-        results = {
-            'undermine': undermine + ' ...',
-            'support': support + ' ...',
-            'undercut': undercut + ' ...',
-            'rebut': rebut + ' ...',
-            '': '',
-        }
-
-        for r in results:
-            self.assertEqual(results[r], tg.get_text_for_add_premise_container('en', self.confrontation, self.premise,
-                                                                               r, self.conclusion, is_supportive))
+            for r in results:
+                self.assertEqual(results[r], tg.get_text_for_add_premise_container('en', self.confrontation, self.premise,
+                                                                                   r, self.conclusion, is_supportive))
 
     def test_get_header_for_users_confrontation_response(self):
         arg = DBDiscussionSession.query(Argument).get(2)
@@ -345,413 +318,202 @@ class TextGeneratorText(unittest.TestCase):
         self.assertEqual(gender, '')
         self.assertEqual(sys_text, '')
 
-    def test_get_text_for_confrontation_with_undermine(self):
+    def test_get_text_for_confrontation_with_undermine_for_en(self):
         user_arg = DBDiscussionSession.query(Argument).get(8)
         sys_arg = DBDiscussionSession.query(Argument).get(10)
         attack = 'undermine'
 
-        color_html, supportive, reply_for_argument, user_is_attacking = False, False, False, False
-        text = '<span class="triangle-content-text">Other participants think that</span> <span>some premise text</span><span data-attitude="con"><span> does not hold</span><span>, because</span> <span>some confrontation text</span><span>.<br><br>What do you think about that?</span>'
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
+        for combo in list(itertools.product([False, True], repeat=4)):
+            color_html, supportive, reply_for_argument, user_is_attacking = combo
+            text = '<span class="triangle-content-text">Other participants think that</span> '
+            if color_html:
+                text += '<span data-argumentation-type="argument">some premise text</span><span data-attitude="con"><span> <span data-argumentation-type="argument">does not hold</span></span></span><span>, because</span> <span data-argumentation-type="attack">'
+            else:
+                text += '<span>some premise text</span><span data-attitude="con"><span> does not hold</span><span>, because</span> <span>'
+            text += 'some confrontation text</span><span>.<br><br>What do you think about that?</span>'
 
-        color_html, supportive, reply_for_argument, user_is_attacking = False, False, False, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
+            sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
+                                                             'another conlcusion', supportive, attack,
+                                                             self.confrontation,
+                                                             reply_for_argument, user_is_attacking, user_arg, sys_arg,
+                                                             color_html)
+            self.assertEqual(gender, '')
+            self.assertEqual(sys_text, text)
 
-        color_html, supportive, reply_for_argument, user_is_attacking = False, False, True, False
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = False, False, True, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = False, True, False, False
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = False, True, False, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = False, True, True, False
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = False, True, True, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = True, False, False, False
-        text = '<span class="triangle-content-text">Other participants think that</span> <span data-argumentation-type="argument">some premise text</span><span data-attitude="con"><span> <span data-argumentation-type="argument">does not hold</span></span></span><span>, because</span> <span data-argumentation-type="attack">some confrontation text</span><span>.<br><br>What do you think about that?</span>'
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = True, False, False, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = True, False, True, False
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = True, False, True, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = True, True, False, False
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = True, True, False, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = True, True, True, False
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = True, True, True, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-    def test_get_text_for_confrontation_with_undercut(self):
+    def test_get_text_for_confrontation_with_undercut_for_en(self):
         user_arg = DBDiscussionSession.query(Argument).get(8)
         sys_arg = DBDiscussionSession.query(Argument).get(10)
         attack = 'undercut'
 
-        color_html, supportive, reply_for_argument, user_is_attacking = False, False, False, False
-        text = '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they do <span data-attitude="con">not</span> believe that this is <span data-attitude="con">a good counter-argument for</span></span> some conclusion text<span>. Other participants think that</span> some confrontation text<span>.<br><br>What do you think about that?</span>'
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
+        for combo in list(itertools.product([False, True], repeat=4)):
+            color_html, supportive, reply_for_argument, user_is_attacking = combo
 
-        color_html, supportive, reply_for_argument, user_is_attacking = False, False, False, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
+            text = '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they do <span data-attitude="con">not</span> believe that this is <span data-attitude="con">a good '
+            if not color_html and not supportive:
+                text += 'counter-argument for</span></span> some conclusion text<span>. Other participants think that</span> some confrontation text<span>.'
+            elif not color_html and supportive:
+                text += 'argument for</span></span> some conclusion text<span>. Other participants think that</span> some confrontation text<span>.'
+            elif color_html and not supportive:
+                text += 'counter-argument for</span></span> <span data-argumentation-type="argument">some conclusion text</span><span>. Other participants think that</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
+            elif color_html and supportive:
+                text += 'argument for</span></span> <span data-argumentation-type="argument">some conclusion text</span><span>. Other participants think that</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
+            text += '<br><br>What do you think about that?</span>'
 
-        color_html, supportive, reply_for_argument, user_is_attacking = False, False, True, False
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
+            sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
+                                                             'another conlcusion', supportive, attack,
+                                                             self.confrontation, reply_for_argument, user_is_attacking,
+                                                             user_arg, sys_arg, color_html)
+            self.assertEqual(gender, '')
+            self.assertEqual(sys_text, text)
 
-        color_html, supportive, reply_for_argument, user_is_attacking = False, False, True, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = False, True, False, False
-        text = '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they do <span data-attitude="con">not</span> believe that this is <span data-attitude="con">a good argument for</span></span> some conclusion text<span>. Other participants think that</span> some confrontation text<span>.<br><br>What do you think about that?</span>'
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = False, True, False, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = False, True, True, False
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = False, True, True, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = True, False, False, False
-        text = '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they do <span data-attitude="con">not</span> believe that this is <span data-attitude="con">a good counter-argument for</span></span> <span data-argumentation-type="argument">some conclusion text</span><span>. Other participants think that</span> <span data-argumentation-type="attack">some confrontation text</span><span>.<br><br>What do you think about that?</span>'
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = True, False, False, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = True, False, True, False
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = True, False, True, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = True, True, False, False
-        text = '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they do <span data-attitude="con">not</span> believe that this is <span data-attitude="con">a good argument for</span></span> <span data-argumentation-type="argument">some conclusion text</span><span>. Other participants think that</span> <span data-argumentation-type="attack">some confrontation text</span><span>.<br><br>What do you think about that?</span>'
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = True, True, False, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = True, True, True, False
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-        color_html, supportive, reply_for_argument, user_is_attacking = True, True, True, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, '')
-        self.assertEqual(sys_text, text)
-
-    def test_get_text_for_confrontation_with_rebut(self):
+    def test_get_text_for_confrontation_with_rebut_for_en(self):
         user_arg = DBDiscussionSession.query(Argument).get(8)
         sys_arg = DBDiscussionSession.query(Argument).get(10)
         attack = 'rebut'
 
-        color_html, supportive, reply_for_argument, user_is_attacking = False, False, False, False
-        text = '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they claim to have a stronger <span data-attitude="con">statement for rejecting </span> some conclusion text. <span>They say:</span> some confrontation text<span>.<br><br>What do you think about that?</span>'
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, 'n')
-        self.assertEqual(sys_text, text)
+        for combo in list(itertools.product([False, True], repeat=4)):
+            color_html, supportive, reply_for_argument, user_is_attacking = combo
+            text = ''
+            if not color_html and not reply_for_argument and not user_is_attacking:
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, False, False, False)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, True, False, False)
+                text = '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they claim to have a stronger <span data-attitude="con">statement for rejecting </span> some conclusion text. <span>They say:</span> some confrontation text<span>.'
 
-        color_html, supportive, reply_for_argument, user_is_attacking = False, True, False, False
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, 'n')
-        self.assertEqual(sys_text, text)
+            elif not color_html and not reply_for_argument and user_is_attacking:
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, False, False, True)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, True, False, True)
+                text = '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they claim to have a stronger <span data-attitude="pro">statement for accepting </span> some conclusion text. <span>They say:</span> some confrontation text<span>.'
 
-        color_html, supportive, reply_for_argument, user_is_attacking = False, False, False, True
-        text = '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they claim to have a stronger <span data-attitude="pro">statement for accepting </span> some conclusion text. <span>They say:</span> some confrontation text<span>.<br><br>What do you think about that?</span>'
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, 'n')
-        self.assertEqual(sys_text, text)
+            elif not color_html and reply_for_argument:
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, False, True, False)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, False, True, True)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, True, True, False)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, True, True, True)
+                text = '<span class="triangle-content-text"><span>Other participants claim to have a stronger statement to reject</span> some conclusion text. <span>They say:</span> some confrontation text<span>.'
 
-        color_html, supportive, reply_for_argument, user_is_attacking = False, True, False, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, 'n')
-        self.assertEqual(sys_text, text)
+            elif color_html and not reply_for_argument and not user_is_attacking:
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, False, False, False)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, False, False)
+                text = '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they claim to have a stronger <span data-attitude="con">statement for <span data-argumentation-type="argument">rejecting</span> </span> <span data-argumentation-type="argument">some conclusion text</span>. <span>They say:</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
 
-        color_html, supportive, reply_for_argument, user_is_attacking = False, False, True, False
-        text = '<span class="triangle-content-text"><span>Other participants claim to have a stronger statement to reject</span> some conclusion text. <span>They say:</span> some confrontation text<span>.<br><br>What do you think about that?</span>'
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, 'n')
-        self.assertEqual(sys_text, text)
+            elif color_html and not reply_for_argument and user_is_attacking:
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, False, True)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, False, False, True)
+                text = '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they claim to have a stronger <span data-attitude="pro">statement for <span data-argumentation-type="argument">accepting</span> </span> <span data-argumentation-type="argument">some conclusion text</span>. <span>They say:</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
 
-        color_html, supportive, reply_for_argument, user_is_attacking = False, False, True, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, 'n')
-        self.assertEqual(sys_text, text)
+            elif color_html and reply_for_argument:
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, False, True, False)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, False, True, True)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, True, False)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, True, True)
+                text = '<span class="triangle-content-text"><span>Other participants claim to have a stronger statement to <span data-argumentation-type="argument">reject</span></span> <span data-argumentation-type="argument">some conclusion text</span>. <span>They say:</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
 
-        color_html, supportive, reply_for_argument, user_is_attacking = False, True, True, False
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, 'n')
-        self.assertEqual(sys_text, text)
+            text += '<br><br>What do you think about that?</span>'
 
-        color_html, supportive, reply_for_argument, user_is_attacking = False, True, True, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, 'n')
-        self.assertEqual(sys_text, text)
+            sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
+                                                             'another conlcusion', supportive, attack,
+                                                             self.confrontation, reply_for_argument, user_is_attacking,
+                                                             user_arg, sys_arg, color_html)
+            self.assertEqual(gender, 'n')
+            self.assertEqual(sys_text, text)
 
-        color_html, supportive, reply_for_argument, user_is_attacking = True, False, False, False
-        text = '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they claim to have a stronger <span data-attitude="con">statement for <span data-argumentation-type="argument">rejecting</span> </span> <span data-argumentation-type="argument">some conclusion text</span>. <span>They say:</span> <span data-argumentation-type="attack">some confrontation text</span><span>.<br><br>What do you think about that?</span>'
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, 'n')
-        self.assertEqual(sys_text, text)
+    def test_get_text_for_confrontation_with_undermine_for_de(self):
+        user_arg = DBDiscussionSession.query(Argument).get(8)
+        sys_arg = DBDiscussionSession.query(Argument).get(10)
+        attack = 'undermine'
 
-        color_html, supportive, reply_for_argument, user_is_attacking = True, True, False, False
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, 'n')
-        self.assertEqual(sys_text, text)
+        for combo in list(itertools.product([False, True], repeat=4)):
+            color_html, supportive, reply_for_argument, user_is_attacking = combo
 
-        color_html, supportive, reply_for_argument, user_is_attacking = True, True, False, True
-        text = '<span class="triangle-content-text">Other participants do not have any opinion regarding some premise text. But they claim to have a stronger <span data-attitude="pro">statement for <span data-argumentation-type="argument">accepting</span> </span> <span data-argumentation-type="argument">some conclusion text</span>. <span>They say:</span> <span data-argumentation-type="attack">some confrontation text</span><span>.<br><br>What do you think about that?</span>'
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, 'n')
-        self.assertEqual(sys_text, text)
+            text = '<span class="triangle-content-text">Andere Teilnehmer denken, dass</span> '
+            if color_html:
+                text += '<span data-argumentation-type="argument">some premise text</span><span data-attitude="con"><span> <span data-argumentation-type="argument">keine gute Idee ist</span></span></span><span>, weil</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
+            else:
+                text += '<span>some premise text</span><span data-attitude="con"><span> keine gute Idee ist</span><span>, weil</span> <span>some confrontation text</span><span>.'
+            text += '<br><br>Was denken Sie darüber?</span>'
 
-        color_html, supportive, reply_for_argument, user_is_attacking = True, False, False, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, 'n')
-        self.assertEqual(sys_text, text)
+            sys_text, gender = tg.get_text_for_confrontation('main_page', 'de', 'Tobias', self.premise, self.conclusion,
+                                                             'another conlcusion', supportive, attack,
+                                                             self.confrontation,
+                                                             reply_for_argument, user_is_attacking, user_arg, sys_arg,
+                                                             color_html)
+            self.assertEqual(gender, '')
+            self.assertEqual(sys_text, text)
 
-        color_html, supportive, reply_for_argument, user_is_attacking = True, False, True, False
-        text = '<span class="triangle-content-text"><span>Other participants claim to have a stronger statement to <span data-argumentation-type="argument">reject</span></span> <span data-argumentation-type="argument">some conclusion text</span>. <span>They say:</span> <span data-argumentation-type="attack">some confrontation text</span><span>.<br><br>What do you think about that?</span>'
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, 'n')
-        self.assertEqual(sys_text, text)
+    def test_get_text_for_confrontation_with_undercut_for_de(self):
+        user_arg = DBDiscussionSession.query(Argument).get(8)
+        sys_arg = DBDiscussionSession.query(Argument).get(10)
+        attack = 'undercut'
 
-        color_html, supportive, reply_for_argument, user_is_attacking = True, False, True, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, 'n')
-        self.assertEqual(sys_text, text)
+        for combo in list(itertools.product([False, True], repeat=4)):
+            color_html, supportive, reply_for_argument, user_is_attacking = combo
 
-        color_html, supportive, reply_for_argument, user_is_attacking = True, True, True, False
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, 'n')
-        self.assertEqual(sys_text, text)
+            text = '<span class="triangle-content-text">Andere Teilnehmer haben bisher keine Meinung dazu, dass some premise text. Aber sie glauben, dass es <span data-attitude="con">keine gute Begründung '
+            if not color_html and not supportive:
+                text += 'dagegen</span> ist, <span data-attitude="con">dass</span></span> some conclusion text<span>. Die anderen Teilnehmer denken, dass</span> some confrontation text<span>.'
+            elif not color_html and supportive:
+                text += 'dafür</span> ist, <span data-attitude="con">dass</span></span> some conclusion text<span>. Die anderen Teilnehmer denken, dass</span> some confrontation text<span>.'
+            elif color_html and not supportive:
+                text += 'dagegen</span> ist, <span data-attitude="con">dass</span></span> <span data-argumentation-type="argument">some conclusion text</span><span>. Die anderen Teilnehmer denken, dass</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
+            elif color_html and supportive:
+                text += 'dafür</span> ist, <span data-attitude="con">dass</span></span> <span data-argumentation-type="argument">some conclusion text</span><span>. Die anderen Teilnehmer denken, dass</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
+            text += '<br><br>Was denken Sie darüber?</span>'
 
-        color_html, supportive, reply_for_argument, user_is_attacking = True, True, True, True
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
-                                                         'another conlcusion', supportive, attack, self.confrontation,
-                                                         reply_for_argument, user_is_attacking, user_arg, sys_arg,
-                                                         color_html)
-        self.assertEqual(gender, 'n')
-        self.assertEqual(sys_text, text)
+            sys_text, gender = tg.get_text_for_confrontation('main_page', 'de', 'Tobias', self.premise, self.conclusion,
+                                                             'another conlcusion', supportive, attack,
+                                                             self.confrontation, reply_for_argument, user_is_attacking,
+                                                             user_arg, sys_arg, color_html)
+            self.assertEqual(gender, '')
+            self.assertEqual(sys_text, text)
+
+    def test_get_text_for_confrontation_with_rebut_for_de(self):
+        user_arg = DBDiscussionSession.query(Argument).get(8)
+        sys_arg = DBDiscussionSession.query(Argument).get(10)
+        attack = 'rebut'
+
+        for combo in list(itertools.product([False, True], repeat=4)):
+            color_html, supportive, reply_for_argument, user_is_attacking = combo
+
+            text = ''
+            if not color_html and not reply_for_argument and not user_is_attacking:
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, False, False, False)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, True, False, False)
+                text = '<span class="triangle-content-text">Andere Teilnehmer haben bisher keine Meinung dazu, dass some premise text. Aber sie nennen einen <span data-attitude="con">Grund dagegen, dass </span> some conclusion text. <span>Sie sagen, dass:</span> some confrontation text<span>.'
+
+            elif not color_html and not reply_for_argument and user_is_attacking:
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, False, False, True)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, True, False, True)
+                text = '<span class="triangle-content-text">Andere Teilnehmer haben bisher keine Meinung dazu, dass some premise text. Aber sie nennen einen <span data-attitude="pro">Grund dafür, dass </span> some conclusion text. <span>Sie sagen, dass:</span> some confrontation text<span>.'
+
+            elif not color_html and reply_for_argument:
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, False, True, False)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, False, True, True)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, True, True, False)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (False, True, True, True)
+                text = '<span class="triangle-content-text"><span>Andere Teilnehmer haben eine stärkere Aussage zur Ablehnung davon, dass</span> some conclusion text. <span>Sie sagen, dass</span> some confrontation text<span>.'
+
+            elif color_html and not reply_for_argument and not user_is_attacking:
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, False, False, False)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, False, False)
+                text = '<span class="triangle-content-text">Andere Teilnehmer haben bisher keine Meinung dazu, dass some premise text. Aber sie nennen einen <span data-attitude="con">Grund <span data-argumentation-type="argument">dagegen</span>, dass </span> <span data-argumentation-type="argument">some conclusion text</span>. <span>Sie sagen, dass:</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
+
+            elif color_html and not reply_for_argument and user_is_attacking:
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, False, True)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, False, False, True)
+                text = '<span class="triangle-content-text">Andere Teilnehmer haben bisher keine Meinung dazu, dass some premise text. Aber sie nennen einen <span data-attitude="pro">Grund <span data-argumentation-type="argument">dafür</span>, dass </span> <span data-argumentation-type="argument">some conclusion text</span>. <span>Sie sagen, dass:</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
+
+            elif color_html and reply_for_argument:
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, False, True, False)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, False, True, True)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, True, False)
+                # valid for color_html, supportive, reply_for_argument, user_is_attacking = (True, True, True, True)
+                text = '<span class="triangle-content-text"><span>Andere Teilnehmer haben eine stärkere Aussage zur <span data-argumentation-type="argument">Ablehnung</span> davon, dass</span> <span data-argumentation-type="argument">some conclusion text</span>. <span>Sie sagen, dass</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
+
+            text += '<br><br>Was denken Sie darüber?</span>'
+
+            sys_text, gender = tg.get_text_for_confrontation('main_page', 'de', 'Tobias', self.premise, self.conclusion,
+                                                             'another conlcusion', supportive, attack,
+                                                             self.confrontation, reply_for_argument, user_is_attacking,
+                                                             user_arg, sys_arg, color_html)
+            self.assertEqual(gender, 'n')
+            self.assertEqual(sys_text, text)
