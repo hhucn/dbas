@@ -293,7 +293,6 @@ def get_relation_text_dict_with_substitution(lang, with_no_opinion_text, is_dont
         if is_dont_know:
             conclusion = reason
 
-
     else:
         conclusion = opinion
         if not is_dont_know:
