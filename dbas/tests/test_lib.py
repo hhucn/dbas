@@ -249,7 +249,7 @@ class LibTests(unittest.TestCase):
         results = {
             47: 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them',
             48: 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.',
-            49: 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high'
+            49: 'we should close public swimming pools does not hold, because the rate of non-swimmers is too high'
         }
         res = lib.get_all_arguments_with_text_by_statement_id(38)
         self.assertEqual(3, len(res))
@@ -267,7 +267,7 @@ class LibTests(unittest.TestCase):
         results = {
             47: 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them',
             48: 'Someone argued that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. Other participants said that schools need the swimming pools for their sports lessons.',
-            49: 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high'
+            49: 'we should close public swimming pools does not hold, because the rate of non-swimmers is too high'
         }
 
         res = lib.get_all_arguments_with_text_and_url_by_statement_id(38, um)
@@ -283,7 +283,7 @@ class LibTests(unittest.TestCase):
         results = {
             47: '<span data-argumentation-type="position">we should close public swimming pools</span> because our swimming pools are very old and it would take a major investment to repair them',
             48: 'Someone argued that <span data-argumentation-type="position">we should close public swimming pools</span> because our swimming pools are very old and it would take a major investment to repair them. Other participants said that schools need the swimming pools for their sports lessons.',
-            49: '<span data-argumentation-type="position">we should close public swimming pools</span>  does not hold, because  the rate of non-swimmers is too high'
+            49: '<span data-argumentation-type="position">we should close public swimming pools</span> does not hold, because the rate of non-swimmers is too high'
         }
 
         res = lib.get_all_arguments_with_text_and_url_by_statement_id(38, um, color_statement=True)
@@ -297,7 +297,7 @@ class LibTests(unittest.TestCase):
         um = UrlManager(application_url='', slug='slug', for_api=True)
 
         results = {
-            47: '<span data-argumentation-type="position">we should close public swimming pools</span>  because our swimming pools are very old and it would take a major investment to repair them.',
+            47: '<span data-argumentation-type="position">we should close public swimming pools</span> because our swimming pools are very old and it would take a major investment to repair them.',
             48: 'our swimming pools are very old and it would take a major investment to repair them <span data-attitude="con">is not a good reason for</span> <span data-argumentation-type="position">we should close public swimming pools</span>. Because schools need the swimming pools for their sports lessons.',
             49: '<span data-argumentation-type="position">we should close public swimming pools</span> <span data-attitude="con">does not hold</span> because the rate of non-swimmers is too high.'
         }
@@ -312,7 +312,7 @@ class LibTests(unittest.TestCase):
     def test_get_text_for_argument_uid(self):
         s47 = 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them'
         s48 = 'Other participants said that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. You did not agree with this because schools need the swimming pools for their sports lessons.'
-        s49 = 'we should close public swimming pools  does not hold, because  the rate of non-swimmers is too high'
+        s49 = 'we should close public swimming pools does not hold, because the rate of non-swimmers is too high'
 
         self.assertTrue(lib.get_text_for_argument_uid(47), s47)
         self.assertTrue(lib.get_text_for_argument_uid(48), s48)
