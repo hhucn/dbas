@@ -384,7 +384,7 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     else:
         ret_value = __build_val_for_undercutted_undercut(arg_array, tag_premise, tag_conclusion, tag_end, _t)
 
-    return ret_value
+    return ret_value.replace('  ', ' ')
 
 
 def __build_val_for_jump(arg_array, tag_premise, tag_conclusion, tag_end, _t):
@@ -513,7 +513,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     else:
         ret_value = __build_single_argument_for_en(_t, sb, se, you_have_the_opinion_that, marked_element, conclusion,
                                                    premises, db_argument)
-    return ret_value
+    return ret_value.replace('  ', ' ')
 
 
 def __build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_with_intro, anonymous_style,
@@ -628,7 +628,7 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
         ret_value += sb + ' ' + pgroups[i] + '.'
         tmp_users_opinion = not tmp_users_opinion
 
-    return ret_value
+    return ret_value.replace('  ', ' ')
 
 
 def get_text_for_premisesgroup_uid(uid):
