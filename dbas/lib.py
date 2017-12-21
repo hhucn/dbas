@@ -398,14 +398,13 @@ def __build_val_for_jump(arg_array, tag_premise, tag_conclusion, tag_end, _t):
     conclusion = tag_conclusion + conclusion + tag_end
     premises = tag_premise + premises + tag_end
 
+    intro = (start_con + _t.get(_.isNotRight).lower() + end_tag) if not db_argument.is_supportive else ''
+    ret_value = '{} {} {} {}'.format(conclusion, intro, because, premises)
     if _t.get_lang() == 'de':
         intro = _t.get(_.itIsTrueThatAnonymous) if db_argument.is_supportive else _t.get(_.itIsFalseThatAnonymous)
         intro = intro[0:1].upper() + intro[1:]
         intro = (start_pro if db_argument.is_supportive else start_con) + intro + end_tag
         ret_value = '{} {}, {} {}'.format(intro, conclusion, because, premises)
-    else:
-        intro = (start_con + _t.get(_.isNotRight).lower() + end_tag) if not db_argument.is_supportive else ''
-        ret_value = '{} {} {} {}'.format(conclusion, intro, because, premises)
 
     return ret_value
 
@@ -425,6 +424,7 @@ def __build_val_for_undercut(arg_array, tag_premise, tag_conclusion, tag_end, _t
     bind = start_con + _t.get(_.isNotAGoodReasonFor) + end_tag
     because = _t.get(_.because)
     ret_value = '{}{} {} {}. {} {}.'.format(intro, conclusion_premise, bind, conclusion_conclusion, because, premise)
+
     return ret_value
 
 
@@ -486,6 +486,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         sb = start_tag if with_html_tag else ''
         if colored_position:
             sb = start_position if with_html_tag else ''
+
         if attack_type == 'undermine':
             premises = sb + premises + se
         else:
@@ -501,6 +502,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         db_marked = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.argument_uid == uid,
                                                                      MarkedArgument.author_uid == author_uid).first()
         marked_element = db_marked is not None
+
     you_have_the_opinion_that = _t.get(_.youHaveTheOpinionThat).format('').strip()
 
     if lang == 'de':
@@ -518,12 +520,12 @@ def __build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_
                                    rearrange_intro, db_argument, attack_type, sb_none, marked_element, lang,
                                    premises, conclusion, is_users_opinion, support_counter_argument):
     if start_with_intro and not anonymous_style:
+        intro = _t.get(_.itIsTrueThat) if db_argument.is_supportive else _t.get(_.itIsFalseThat)
         if rearrange_intro:
             intro = _t.get(_.itTrueIsThat) if db_argument.is_supportive else _t.get(_.itFalseIsThat)
-        else:
-            intro = _t.get(_.itIsTrueThat) if db_argument.is_supportive else _t.get(_.itIsFalseThat)
 
         ret_value = (sb_none if attack_type in ['dont_know'] else sb) + intro + se + ' '
+
     elif is_users_opinion and not anonymous_style:
         ret_value = sb_none
         if support_counter_argument:
@@ -533,6 +535,7 @@ def __build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_
         else:
             ret_value += _t.get(_.youArgue)
         ret_value += se + ' '
+
     else:
         tmp = _t.get(_.itIsTrueThatAnonymous if db_argument.is_supportive else _.itIsFalseThatAnonymous)
         ret_value = sb_none + sb + tmp + se + ' '
@@ -599,6 +602,7 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
         ret_value = (_t.get(_.soYourOpinionIsThat) + ': ') if start_with_intro else ''
         tmp_users_opinion = False  # system after user
         conclusion = se + conclusion[0:1].upper() + conclusion[1:]  # pretty print
+
     else:
         ret_value = _t.get(_.someoneArgued) + ' '
         tmp_users_opinion = False
@@ -757,22 +761,24 @@ def get_user_by_private_or_public_nickname(nickname):
     """
     db_user = get_user_by_case_insensitive_nickname(nickname)
     db_public_user = get_user_by_case_insensitive_public_nickname(nickname)
-
-    db_settings = None
-    current_user = None
+    uid = 0
 
     if db_user:
-        db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
+        uid = db_user.uid
     elif db_public_user:
-        db_settings = DBDiscussionSession.query(Settings).get(db_public_user.uid)
+        uid = db_public_user.uid
 
-    if db_settings:
-        if db_settings.should_show_public_nickname and db_user:
-            current_user = db_user
-        elif not db_settings.should_show_public_nickname and db_public_user:
-            current_user = db_public_user
+    db_settings = DBDiscussionSession.query(Settings).get(uid)
 
-    return current_user
+    if not db_settings:
+        return None
+
+    if db_settings.should_show_public_nickname and db_user:
+        return db_user
+    elif not db_settings.should_show_public_nickname and db_public_user:
+        return db_public_user
+
+    return None
 
 
 def get_user_by_case_insensitive_nickname(nickname):

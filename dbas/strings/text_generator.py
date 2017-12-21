@@ -50,12 +50,11 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
         return '{} {} ...'.format(_t.get(_.itIsFalseThat), premise)
 
     elif attack_type == 'support':
+        intro = _t.get(_.itIsFalseThat)
+        outro = _t.get(_.doesNotHold)
         if is_supportive:
             intro = _t.get(_.itIsTrueThat)
             outro = _t.get(_.hold)
-        else:
-            intro = _t.get(_.itIsFalseThat)
-            outro = _t.get(_.doesNotHold)
         return '{} {} {} ...'.format(intro, conclusion, outro)
 
     elif attack_type == 'undercut':
@@ -67,6 +66,7 @@ def get_text_for_add_premise_container(lang, confrontation, premise, attack_type
     elif attack_type == 'rebut':
         mid = _t.get(_.iAcceptCounterThat) if is_supportive else _t.get(_.iAcceptArgumentThat)
         return '{} {} {} ...'.format(confrontation, mid, conclusion)
+
     else:
         return ''
 
@@ -97,14 +97,13 @@ def get_header_for_users_confrontation_response(db_argument, lang, premise, atta
         conclusion = conclusion[:-1]
 
     # pretty print
+    r = _t.get(_.right)[0:1].upper()
+    f = _t.get(_.itIsFalseThat)[0:1].upper()
+    t = _t.get(_.itIsTrueThat)[0:1].upper()
     if start_lower_case:
         r = _t.get(_.right)[0:1].lower()
         f = _t.get(_.itIsFalseThat)[0:1].lower()
         t = _t.get(_.itIsTrueThat)[0:1].lower()
-    else:
-        r = _t.get(_.right)[0:1].upper()
-        f = _t.get(_.itIsFalseThat)[0:1].upper()
-        t = _t.get(_.itIsTrueThat)[0:1].upper()
 
     r += _t.get(_.right)[1:] + ', '
     f += _t.get(_.itIsFalseThat)[1:]
@@ -290,19 +289,18 @@ def get_relation_text_dict_with_substitution(lang, with_no_opinion_text, is_dont
         if is_dont_know:
             premise = assertion
 
+        conclusion = assertion
         if is_dont_know:
             conclusion = reason
-        else:
-            conclusion = assertion
+
 
     else:
+        conclusion = opinion
         if not is_dont_know:
             if attack_type == 'undermine' or attack_type == 'rebut':
                 conclusion = position
             else:
                 conclusion = _t.get(_.myArgument)
-        else:
-            conclusion = opinion
 
     return __get_relation_text_dict(lang, with_no_opinion_text, premise, conclusion, is_dont_know)
 
@@ -333,19 +331,15 @@ def __get_relation_text_dict(lang, with_no_opinion_text, premise, conclusion, is
 
     ret_dict['support_text'] = _t.get(_.reaction_text_support).format(premise)
 
+    ret_dict['undercut_text'] = _t.get(_.reaction_text_undercut).format(premise, conclusion)
     if is_dont_know:
         tmp = start_argument + _t.get(_.reason) + end_tag
         ret_dict['undercut_text'] = _t.get(_.reaction_text_undercut_for_dont_know).format(premise, tmp)
-    else:
-        # tmp = start_position + _t.get(_.myPositionGenitiv) + end_tag
-        ret_dict['undercut_text'] = _t.get(_.reaction_text_undercut).format(premise, conclusion)
 
+    conclusion_user = start_position + _t.get(_.myPosition) + end_tag
+    ret_dict['rebut_text'] = _t.get(_.reaction_text_rebut).format(premise, conclusion, conclusion_user)
     if is_dont_know:
-        # conclusion_genitiv = conclusion.replace('ihre', 'ihrer').replace('seine', 'seiner')
         ret_dict['rebut_text'] = _t.get(_.reaction_text_rebut_for_dont_know).format(conclusion)
-    else:
-        conclusion_user = start_position + _t.get(_.myPosition) + end_tag
-        ret_dict['rebut_text'] = _t.get(_.reaction_text_rebut).format(premise, conclusion, conclusion_user)
 
     return ret_dict
 
@@ -360,9 +354,8 @@ def get_jump_to_argument_text_list(lang):
     """
     _t = Translator(lang)
 
-    premise = start_attack + (_t.get(_.reason).lower() if lang != 'de' else _t.get(_.reason)) + end_tag
-    conclusion = start_argument + (
-        _t.get(_.assertion).lower() if lang != 'de' else _t.get(_.assertion)) + end_tag
+    premise = start_attack + _t.get(_.reason) + end_tag
+    conclusion = start_argument + _t.get(_.assertion) + end_tag
 
     answers = list()
 
@@ -385,9 +378,8 @@ def get_support_to_argument_text_list(lang):
     """
     _t = Translator(lang)
 
-    premise = start_attack + (_t.get(_.reason).lower() if lang != 'de' else _t.get(_.reason)) + end_tag
-    conclusion = start_argument + (
-        _t.get(_.assertion).lower() if lang != 'de' else _t.get(_.assertion)) + end_tag
+    premise = start_attack + _t.get(_.reason) + end_tag
+    conclusion = start_argument + _t.get(_.assertion) + end_tag
 
     answers = list()
 
@@ -421,24 +413,13 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
     :param color_html: Boolean
     :return: String
     """
-    _t = Translator(lang)
-
-    #  build some confrontation text
-    if lang != 'de':
-        confrontation = confrontation[0:1].lower() + confrontation[1:]
-        premise = premise[0:1].lower() + premise[1:]
-        sys_conclusion = sys_conclusion[0:1].lower() + sys_conclusion[1:]
-        conclusion = conclusion[0:1].lower() + conclusion[1:]
-
-    my_start_attack = ''
     my_start_argument = ''
     my_end_tag = ''
+
     if color_html:
         my_start_attack = start_attack
         my_start_argument = start_argument
         my_end_tag = end_tag
-
-    if color_html:
         confrontation = my_start_attack + confrontation + my_end_tag
         conclusion = my_start_argument + conclusion + my_end_tag
         if attack == 'undermine':
@@ -447,24 +428,25 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
 
     # build some confrontation text
     if attack == 'undermine':
-        confrontation_text, gender = __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sys_arg,
+        confrontation_text, gender = __get_confrontation_text_for_undermine(main_page, nickname, premise, lang, sys_arg,
                                                                             my_start_argument, my_end_tag, confrontation)
 
     elif attack == 'undercut':
-        confrontation_text, gender = __get_confrontation_text_for_undercut(main_page, nickname, _t,
+        confrontation_text, gender = __get_confrontation_text_for_undercut(main_page, nickname, lang,
                                                                            premise, conclusion, confrontation,
                                                                            supportive, sys_arg)
 
     elif attack == 'rebut':
         confrontation_text, gender = __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argument,
-                                                                        user_arg, user_is_attacking, _t, sys_conclusion,
+                                                                        user_arg, user_is_attacking, sys_conclusion,
                                                                         confrontation, premise, conclusion,
                                                                         my_start_argument, sys_arg)
     else:
         return '', ''
 
-    sys_text = confrontation_text
-    sys_text += '{}.<br><br>{}?{}'.format(start_tag, _t.get(_.whatDoYouThinkAboutThat), end_tag)
+    _t = Translator(lang)
+    question = '{}.<br><br>{}?{}'.format(start_tag, _t.get(_.whatDoYouThinkAboutThat), end_tag)
+    sys_text = confrontation_text + question
     return sys_text, gender
 
 
@@ -483,10 +465,9 @@ def get_text_for_support(db_arg, argument_text, nickname, main_page, _t):
     e = '</{}>'.format(tag_type)
     db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(main_page, db_arg, nickname)
     if is_okay:
+        intro = _t.get(_.goodPointAndUserIsInterestedTooF)
         if gender == 'm':
             intro = _t.get(_.goodPointAndUserIsInterestedTooM)
-        else:
-            intro = _t.get(_.goodPointAndUserIsInterestedTooF)
         intro = intro.format(b, e, author, b, e, argument_text)
     else:
         intro = _t.get(_.goodPointAndOtherParticipantsIsInterestedToo).format(b, e, argument_text)
@@ -561,7 +542,7 @@ def __get_text_for_add_something(nickname, lang, url, keyword, for_html=True):
     return content
 
 
-def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, system_argument, my_start_argument,
+def __get_confrontation_text_for_undermine(main_page, nickname, premise, lang, system_argument, my_start_argument,
                                            my_end_tag, confrontation):
     """
     Returns the system bubble text for an undermine
@@ -569,13 +550,15 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sys
     :param main_page: String
     :param nickname: User.nickname
     :param premise: String
-    :param _t: Translator
+    :param lang: Language
     :param system_argument: String
     :param my_start_argument: String
     :param my_end_tag: String
     :param confrontation: String
     :return:
     """
+    _t = Translator(lang)
+
     move_end_tag = False
     if tag_type not in premise:
         premise = start_tag + premise + end_tag
@@ -585,17 +568,17 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sys
 
     db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(main_page, system_argument, nickname)
     if is_okay:
-        intro = author + ' ' + start_content + _t.get(_.thinksThat)
+        intro = '{} {}{}'.format(author, start_content, _t.get(_.thinksThat))
     else:
         intro = start_content + _t.get(_.otherParticipantsThinkThat)
         gender = ''
 
+    pro_con_tag = start_con
+    hold_it = _t.get(_.doesNotHold)
     if system_argument.is_supportive:
         pro_con_tag = start_pro
         hold_it = _t.get(_.hold)
-    else:
-        pro_con_tag = start_con
-        hold_it = _t.get(_.doesNotHold)
+
     outro = my_end_tag if move_end_tag else ''
 
     confrontation_text = '{}{} {}{}{} {}{}{}{}{}{}, {}{} {}{}'.format(intro, end_tag, premise, pro_con_tag, start_tag,
@@ -607,14 +590,14 @@ def __get_confrontation_text_for_undermine(main_page, nickname, premise, _t, sys
     return confrontation_text, gender
 
 
-def __get_confrontation_text_for_undercut(main_page, nickname, _t, premise, conclusion, confrontation, supportive,
+def __get_confrontation_text_for_undercut(main_page, nickname, lang, premise, conclusion, confrontation, supportive,
                                           system_argument):
     """
     Returns the system bubble text for an undercut
 
     :param main_page: String
     :param nickname: User.nickname
-    :param _t: Translator
+    :param lang: Language
     :param premise: String
     :param conclusion: String
     :param confrontation: String
@@ -622,6 +605,7 @@ def __get_confrontation_text_for_undercut(main_page, nickname, _t, premise, conc
     :param system_argument: String
     :return:
     """
+    _t = Translator(lang)
 
     db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(main_page, system_argument, nickname)
 
@@ -654,7 +638,7 @@ def __get_confrontation_text_for_undercut(main_page, nickname, _t, premise, conc
     return confrontation_text, gender
 
 
-def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argument, user_arg, user_is_attacking, _t,
+def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argument, user_arg, user_is_attacking,
                                        sys_conclusion, confrontation, premise, conclusion, my_start_argument,
                                        system_argument):
     """
@@ -666,7 +650,6 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
     :param reply_for_argument: Boolean
     :param user_arg: Argument
     :param user_is_attacking: Boolean
-    :param _t: Translator
     :param sys_conclusion: String
     :param confrontation: String
     :param premise: String
@@ -675,6 +658,7 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
     :param system_argument: Counter argument of the system
     :return: String, String
     """
+    _t = Translator(lang)
 
     db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(main_page, system_argument, nickname)
     db_other_nick = db_other_user.nickname if db_other_user else ''
@@ -739,14 +723,13 @@ def __get_confrontation_text_for_rebut_as_reply(_t, confrontation, user_arg, con
         tmp_start_tag = start_argument
         tmp_end_tag = end_tag
 
+    accept = _.accept
+    reject = _.reject
+    point = ':'
     if infos['lang'] == 'de':
         accept = _.assistance
         reject = _.rejection
         point = ''
-    else:
-        accept = _.accept
-        reject = _.reject
-        point = ':'
 
     tmp = '{}{}{}'.format(tmp_start_tag, _t.get(accept if system_argument.is_supportive else reject), tmp_end_tag)
     bind = bind.format(tmp)

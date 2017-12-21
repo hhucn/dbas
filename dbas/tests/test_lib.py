@@ -128,6 +128,7 @@ class LibTests(unittest.TestCase):
         self.assertIsNotNone(lib.get_user_by_case_insensitive_nickname('tobias'))
         self.assertIsNotNone(lib.get_user_by_case_insensitive_nickname('Antonia'))
         self.assertIsNotNone(lib.get_user_by_case_insensitive_nickname('Jutta'))
+        self.assertIsNone(lib.get_user_by_case_insensitive_nickname('puh_der_bär'))
 
     def test_get_user_by_case_insensitive_nickname(self):
         self.assertIsNotNone(lib.get_user_by_case_insensitive_nickname('tobias'))
