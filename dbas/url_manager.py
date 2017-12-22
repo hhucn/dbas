@@ -201,6 +201,23 @@ class UrlManager(object):
         :param as_location_href: Boolean
         :return: String
         """
+        splitted_history, last_valid_step = self.__cut_history()
+        self.history = '-'.join(splitted_history)
+
+        if last_valid_step.startswith('/'):
+            last_valid_step = last_valid_step[1:]
+
+        if len(self.slug) > 0 and self.slug not in (self.api_url if self.for_api else self.discussion_url):
+            last_valid_step = self.slug + '/' + last_valid_step
+
+        return self.__return_discussion_url(as_location_href, last_valid_step)
+
+    def __cut_history(self):
+        """
+        Realigns the history
+
+        :return:
+        """
         splitted_history = self.history.split('-')
         # get last valid step
         last_valid_step = ''
@@ -218,16 +235,7 @@ class UrlManager(object):
                     if last_valid_step in step:
                         c = index
                 splitted_history = splitted_history[:c]
-
-        self.history = '-'.join(splitted_history)
-
-        if last_valid_step.startswith('/'):
-            last_valid_step = last_valid_step[1:]
-
-        if len(self.slug) > 0 and self.slug not in (self.api_url if self.for_api else self.discussion_url):
-            last_valid_step = self.slug + '/' + last_valid_step
-
-        return self.__return_discussion_url(as_location_href, last_valid_step)
+        return splitted_history, last_valid_step
 
     def __return_discussion_url(self, as_location_href, url):
         """
