@@ -348,11 +348,12 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
     steps = step.split('/')
     uid = int(steps[1])
 
-    additional_uid = int(steps[2])
     attack = 'support'
     if 'reaction' in step:
         additional_uid = int(steps[3])
         attack = steps[2]
+    else:
+        additional_uid = int(steps[2])
 
     if not check_reaction(uid, additional_uid, attack, is_history=True):
         logger('history_helper', 'get_bubble_from_reaction_step', 'wrong reaction')
