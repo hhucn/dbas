@@ -262,6 +262,8 @@ class Keywords(Enum):
     eachStatement = 'eachStatement'
     editIndex = 'editIndex'
     editIndexInfo = 'editIndexInfo'
+    editTextMessage = 'editTextMessage'
+    editTextMessageForHtml = 'editTextMessageForHtml'
     euCookiePopupTitle = 'euCookiePopupTitle'
     euCookiePopupText = 'euCookiePopupText'
     euCookiePopoupButton1 = 'euCookiePopoupButton1'

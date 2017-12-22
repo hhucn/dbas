@@ -725,32 +725,6 @@ function Main () {
 				input.attr('onclick', '');
 				input.click(function () {
 					ctx.setInputExtraBox(input, guiHandler);
-					// new position at start
-					if (input.attr('id').indexOf('start_statement') !== -1) {
-						guiHandler.showAddPositionContainer();
-						$('#' + sendNewStatementId).off("click").click(function () {
-							sendStartStatement();
-						});
-					}
-					// new premise for the start
-					else if (input.attr('id').indexOf('start_premise') !== -1) {
-						guiHandler.showAddPremiseContainer();
-						$('#' + sendNewPremiseId).off("click").click(function () {
-							sendStartPremise();
-						});
-					}
-					// new premise while judging
-					else if (input.attr('id').indexOf('justify_premise') !== -1) {
-						guiHandler.showAddPremiseContainer();
-						$('#' + sendNewPremiseId).off("click").click(function () {
-							sendArgumentsPremise();
-						});
-					}
-					// login
-					else if (input.attr('id').indexOf('login') !== -1) {
-						$('#' + popupLogin).modal('show');
-						new PopupHandler().showLoginPopup(false);
-					}
 				});
 			}
 		}

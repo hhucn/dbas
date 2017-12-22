@@ -297,11 +297,16 @@ class TextGeneratorText(unittest.TestCase):
 
     def test_get_text_for_edit_text_message(self):
         text = tg.get_text_for_edit_text_message('en', 'Tobias', 'oem', 'edit', 'some_url', True)
-        self.assertEqual(text,
-                         'Your original statement was edited by Tobias<br>From: oem<br>To: edit<br>Where: <a href="some_url">some_url</a>')
+        self.assertEqual(text, 'Your original statement was edited by Tobias<br>From: oem<br>To: edit<br>Where: <a href="some_url">some_url</a>')
 
         text = tg.get_text_for_edit_text_message('en', 'Tobias', 'oem', 'edit', 'some_url', False)
-        self.assertEqual(text, '''Your original statement was edited by Tobias\nFrom: oem\nTo: edit\nWhere: some_url''')
+        self.assertEqual(text, 'Your original statement was edited by Tobias\nFrom: oem\nTo: edit\nWhere: some_url')
+
+        text = tg.get_text_for_edit_text_message('de', 'Tobias', 'oem', 'edit', 'some_url', True)
+        self.assertEqual(text, 'Ihr Text wurde geändert von Tobias<br>Von: oem<br>Zu: edit<br>Wo: <a href="some_url">some_url</a>')
+
+        text = tg.get_text_for_edit_text_message('de', 'Tobias', 'oem', 'edit', 'some_url', False)
+        self.assertEqual(text, 'Ihr Text wurde geändert von Tobias\nVon: oem\nZu: edit\nWo: some_url')
 
     def test_get_text_for_add_text_message(self):
         text = tg.get_text_for_add_text_message('Tobias', 'en', 'some_url', True)

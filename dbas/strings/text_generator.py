@@ -460,46 +460,36 @@ def get_text_for_support(db_arg, argument_text, nickname, main_page, _t):
     :param _t: translator
     :return: string
     """
-    b = '<{}>'.format(tag_type)
-    e = '</{}>'.format(tag_type)
     db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(main_page, db_arg, nickname)
+    intro = _t.get(_.goodPointAndOtherParticipantsIsInterestedToo).format(start_tag, end_tag, argument_text)
     if is_okay:
         intro = _t.get(_.goodPointAndUserIsInterestedTooF)
         if gender == 'm':
             intro = _t.get(_.goodPointAndUserIsInterestedTooM)
-        intro = intro.format(b, e, author, b, e, argument_text)
-    else:
-        intro = _t.get(_.goodPointAndOtherParticipantsIsInterestedToo).format(b, e, argument_text)
+        intro = intro.format(start_tag, end_tag, author, start_tag, end_tag, argument_text)
 
     question = '<br><br>{}?'.format(_t.get(_.whatDoYouThinkAboutThat))
 
     return intro + question
 
 
-def get_text_for_edit_text_message(lang, nickname, original, edited, url, for_html=True):
+def get_text_for_edit_text_message(lang, nickname, orginal, edit, url, for_html=True):
     """
     Returns text for the editing an statement
 
     :param lang: Language.ui_locales
     :param nickname: User.nickname
-    :param original:
-    :param edited:
+    :param orginal:
+    :param edit:
     :param url: String
     :param for_html: Boolean
     :return:
     """
-    nl = '<br>' if for_html else '\n'
     _t = Translator(lang)
-    content = _t.get(_.textversionChangedContent) + ' ' + nickname
-    content += nl + (_t.get(_.fromm)[0:1].upper() + _t.get(_.fromm)[1:]) + ': ' + original + nl
-    content += (_t.get(_.to)[0:1].upper() + _t.get(_.to)[1:]) + ': ' + edited + nl
-    content += (_t.get(_.where)[0:1].upper() + _t.get(_.where)[1:]) + ': '
     if for_html:
-        content += '<a href="' + url + '">' + url + '</a>'
+        return _t.get(_.editTextMessageForHtml).format(nickname, orginal, edit, url, url)
     else:
-        content += url
-
-    return content
+        return _t.get(_.editTextMessage).format(nickname, orginal, edit, url)
 
 
 def get_text_for_add_text_message(nickname, lang, url, for_html=True):
@@ -531,14 +521,12 @@ def get_text_for_add_argument_message(nickname, lang, url, for_html=True):
 def __get_text_for_add_something(nickname, lang, url, keyword, for_html=True):
     nl = '<br>' if for_html else '\n'
     _t = Translator(lang)
-    content = _t.get(keyword).format(nickname) + nl
-    content += (_t.get(_.where)[0:1].upper() + _t.get(_.where)[1:]) + ': '
+    intro = _t.get(keyword).format(nickname)
+    w = _t.get(_.where)[0:1].upper() + _t.get(_.where)[1:]
     if for_html:
-        content += '<a href="{}">{}</a>'.format(url, url)
-    else:
-        content += url
+        url = '<a href="{}">{}</a>'.format(url, url)
 
-    return content
+    return '{}{}{}: {}'.format(intro, nl, w, url)
 
 
 def __get_confrontation_text_for_undermine(main_page, nickname, premise, lang, system_argument, my_start_argument,

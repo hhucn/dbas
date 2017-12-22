@@ -272,6 +272,8 @@ en_lang = {
     _.eachStatement: 'per Statement',
     _.editIndex: 'Count of given reviews - Last 30 Tage',
     _.editIndexInfo: 'Count of Edits',
+    _.editTextMessage: 'Your original statement was edited by {}\nFrom: {}\nTo: {}\nWhere: {}',
+    _.editTextMessageForHtml: 'Your original statement was edited by {}<br>From: {}<br>To: {}<br>Where: <a href="{}">{}</a>',
     _.euCookiePopupTitle: 'This website is using cookies and Piwik.',
     _.euCookiePopupText: 'We use them to give you the best experience. If you continue using our website, we\'ll assume that you are happy to receive all cookies on this website and being tracked for academic purpose. All tracked data are saved anonymously with reduced masked IP-addresses.',
     _.euCookiePopoupButton1: 'Continue',
