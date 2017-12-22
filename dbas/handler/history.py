@@ -348,12 +348,12 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
     steps = step.split('/')
     uid = int(steps[1])
 
+    attack = 'support'
     if 'reaction' in step:
         additional_uid = int(steps[3])
         attack = steps[2]
     else:
         additional_uid = int(steps[2])
-        attack = 'support'
 
     if not check_reaction(uid, additional_uid, attack, is_history=True):
         logger('history_helper', 'get_bubble_from_reaction_step', 'wrong reaction')
@@ -379,11 +379,10 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
                                                  with_html_tag=color_steps)
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     db_confrontation = DBDiscussionSession.query(Argument).get(additional_uid)
+    reply_for_argument = True
     if db_argument.conclusion_uid is not None:
         db_statement = DBDiscussionSession.query(Statement).get(db_argument.conclusion_uid)
         reply_for_argument = not (db_statement and db_statement.is_startpoint)
-    else:
-        reply_for_argument = True
 
     premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
     conclusion = get_text_for_conclusion(db_argument)
@@ -392,11 +391,11 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
     user_is_attacking = not db_argument.is_supportive
 
     if lang != 'de':
+        current_argument = current_argument[0:1].upper() + current_argument[1:]
         if current_argument.startswith('<'):
             pos = current_argument.index('>')
             current_argument = current_argument[0:pos] + current_argument[pos:pos + 1].upper() + current_argument[pos + 1:]
-        else:
-            current_argument = current_argument[0:1].upper() + current_argument[1:]
+
     premise = premise[0:1].lower() + premise[1:]
 
     _tn = Translator(lang)

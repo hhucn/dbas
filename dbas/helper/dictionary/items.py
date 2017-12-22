@@ -275,6 +275,7 @@ class ItemDictHelper(object):
 
             if the_other_one:
                 url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
+
             statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
                                                               is_markable=True,
                                                               is_editable=not is_arguments_premise_in_edit_queue(argument.uid),
@@ -288,11 +289,11 @@ class ItemDictHelper(object):
 
         if not self.issue_read_only:
             if logged_in:
+                text = _tn.get(_.newPremiseRadioButtonText)
                 if len(statements_array) == 0:
                     text = _tn.get(_.newPremiseRadioButtonTextAsFirstOne)
-                else:
-                    text = _tn.get(_.newPremiseRadioButtonText)
                 statements_array.append(self.__create_answer_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add'))
+
             else:
                 # elif len(statements_array) == 1:
                 statements_array.append(

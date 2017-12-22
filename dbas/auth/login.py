@@ -360,26 +360,25 @@ def register_user_with_ajax_data(params, ui_locales, mailer):
 
     msg = __check_login_params(nickname, email, password, passwordconfirm, mode, recaptcha)
     if msg:
-        msg = _tn.get(msg)
-    else:
-        # getting the authors group
-        db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
+        return success, _tn.get(msg), db_new_user
 
-        # does the group exists?
-        if not db_group:
-            msg = _tn.get(_.errorTryLateOrContant)
-            logger('Auth.Login', 'user_registration', 'Error occured')
-            return success, msg, db_new_user
+    # getting the authors group
+    db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
 
-        ret_dict = user.set_new_user(mailer, firstname, lastname, nickname, gender, email, password, _tn)
-        success = ret_dict['success']
-        error = ret_dict['error']
-        db_new_user = ret_dict['user']
+    # does the group exists?
+    if not db_group:
+        msg = _tn.get(_.errorTryLateOrContant)
+        logger('Auth.Login', 'user_registration', 'Error occured')
+        return success, msg, db_new_user
 
-        if success:
-            msg = _tn.get(_.accountWasAdded).format(nickname)
-        else:
-            msg = error
+    ret_dict = user.set_new_user(mailer, firstname, lastname, nickname, gender, email, password, _tn)
+    success = ret_dict['success']
+    error = ret_dict['error']
+    db_new_user = ret_dict['user']
+
+    msg = error
+    if success:
+        msg = _tn.get(_.accountWasAdded).format(nickname)
 
     return success, msg, db_new_user
 

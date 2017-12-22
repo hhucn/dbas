@@ -480,22 +480,9 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     if lang != 'de':
         premises = premises[0:1].lower() + premises[1:]  # pretty print
 
-    sb_none = start_tag if with_html_tag else ''
-    se = end_tag if with_html_tag else ''
-    if attack_type not in ['dont_know', 'jump']:
-        sb = start_tag if with_html_tag else ''
-        if colored_position:
-            sb = start_position if with_html_tag else ''
-
-        if attack_type == 'undermine':
-            premises = sb + premises + se
-        else:
-            conclusion = sb + conclusion + se
-    else:
-        sb = start_argument if with_html_tag else ''
-        sb_tmp = start_attack if with_html_tag else ''
-        premises = sb + premises + se
-        conclusion = sb_tmp + conclusion + se
+    premises, conclusion, sb, sb_none, se = __get_tags_for_building_single_argument(with_html_tag, attack_type,
+                                                                                    colored_position, premises,
+                                                                                    conclusion)
 
     marked_element = False
     if author_uid:
@@ -514,6 +501,26 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
         ret_value = __build_single_argument_for_en(_t, sb, se, you_have_the_opinion_that, marked_element, conclusion,
                                                    premises, db_argument)
     return ret_value.replace('  ', ' ')
+
+
+def __get_tags_for_building_single_argument(with_html_tag, attack_type, colored_position, premises, conclusion):
+    sb_none = start_tag if with_html_tag else ''
+    se = end_tag if with_html_tag else ''
+    if attack_type not in ['dont_know', 'jump']:
+        sb = start_tag if with_html_tag else ''
+        if colored_position:
+            sb = start_position if with_html_tag else ''
+
+        if attack_type == 'undermine':
+            premises = sb + premises + se
+        else:
+            conclusion = sb + conclusion + se
+    else:
+        sb = start_argument if with_html_tag else ''
+        sb_tmp = start_attack if with_html_tag else ''
+        premises = sb + premises + se
+        conclusion = sb_tmp + conclusion + se
+    return premises, conclusion, sb, sb_none, se
 
 
 def __build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_with_intro, anonymous_style,
