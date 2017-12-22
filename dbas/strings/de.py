@@ -83,6 +83,8 @@ de_lang = {
     _.editInfoHere: 'Bitte bearbeiten Sie hier die Info:',
     _.viewChangelog: 'Änderungprotokoll einsehen',
     _.editStatementHere: 'Bitte bearbeiten Sie hier die Aussage:',
+    _.editTextMessage: 'Ihr Text wurde geändert von {}\nVon: {}\nZu: {}\nWo: {}',
+    _.editTextMessageForHtml: 'Ihr Text wurde geändert von {}<br>Von: {}<br>Zu: {}<br>Wo: <a href="{}">{}</a>',
     _.save: 'Sichern',
     _.cancel: 'Abbrechen',
     _.submit: 'Senden',
