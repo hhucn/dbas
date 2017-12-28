@@ -5,7 +5,7 @@ Namespace for functions used to resolve Queries on the database for GraphQL.
 """
 
 
-def resolve_list_query(args, context, graph, model):
+def resolve_list_query(args, context, graph):
     """
     Query a list of objects based on the provided graph / model.
     Removes disabled items and adds all additional arguments as a filter for sqlalchemy.
@@ -13,11 +13,10 @@ def resolve_list_query(args, context, graph, model):
     :param args: Arguments provided by the GraphQL query
     :param context: retrieve current session
     :param graph: reduced database model
-    :param model: database model to be queried
     :return: list of objects matching the criterias
     :rtype: list
     """
-    query = graph.get_query(context).filter(model.is_disabled == False)
+    query = graph.get_query(context)
     if args:
         query = query.filter_by(**args)
     return query.all()
@@ -38,5 +37,4 @@ def resolve_field_query(args, context, graph):
         query = query.get(args.get("uid"))
     else:
         query = query.filter_by(**args).first()
-    if query and not query.is_disabled:
-        return query
+    return query
