@@ -332,6 +332,8 @@ def __handle_table_of_review_edit(review, length, entry, is_executed, short_text
 
 def __handle_table_of_review_duplicate(review, length, entry):
     text = get_text_for_statement_uid(review.original_statement_uid)
+    if text is None:
+        return '...'
     entry['statement_duplicate_shorttext'] = text[0:length] + ('...' if len(text) > length else '')
     entry['statement_duplicate_fulltext'] = text
     return entry
