@@ -10,7 +10,6 @@ Manage Google Client IDs: https://apps.twitter.com/
 """
 
 import os
-# import twitter
 from requests_oauthlib.oauth1_session import OAuth1Session
 from dbas.logger import logger
 from dbas.handler.user import oauth_values
@@ -69,11 +68,6 @@ def continue_flow(request, redirect_response):
                                  verifier=pincode)
 
     resp = oauth_client.fetch_access_token(access_token_url)
-
-    # api = twitter.Api(consumer_key=client_id,
-    #                   consumer_secret=client_secret,
-    #                   access_token_key=oauth_token,
-    #                   access_token_secret=oauth_token_secret)
 
     user_data = {
         'id': resp['id'],

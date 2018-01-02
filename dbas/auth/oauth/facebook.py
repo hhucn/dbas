@@ -56,8 +56,8 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
     client_id = os.environ.get('DBAS_OAUTH_FACEBOOK_CLIENTID', None)
     client_secret = os.environ.get('DBAS_OAUTH_FACEBOOK_CLIENTKEY', None)
 
+    bind = '#' if '?' in redirect_uri else '?'
     if 'service=facebook' not in redirect_uri:
-        bind = '#' if '?' in redirect_uri else '?'
         redirect_uri = '{}{}{}'.format(redirect_uri, bind, 'service=facebook')
     facebook = OAuth2Session(client_id, redirect_uri=redirect_uri)
 
@@ -95,19 +95,12 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
 
     gender = 'n'
     if 'gender' in parsed_resp:
-        gender = 'm' if parsed_resp['gender'] == 'male' else 'f' if parsed_resp['gender'] == 'female' else ''
+        if parsed_resp['gender'] == 'male':
+            gender = 'm'
+        if parsed_resp['gender'] == 'female':
+            gender = 'f'
 
-    user_data = {
-        'id': parsed_resp['id'],
-        'firstname': parsed_resp['first_name'] if 'first_name' in parsed_resp else '',
-        'lastname': parsed_resp['last_name'] if 'last_name' in parsed_resp else '',
-        'nickname': parsed_resp['name'].replace(' ', '') if 'name' in parsed_resp else '',
-        'gender': gender,
-        'email': str(parsed_resp['email']) if 'email' in parsed_resp else 'None',
-        'password': '',
-        'ui_locales': 'de' if parsed_resp['locale'] == 'de_DE' else ui_locales
-    }
-
+    user_data = __prepare_data(parsed_resp, gender, ui_locales)
     missing_data = [key for key in oauth_values if len(user_data[key]) == 0 or user_data[key] is 'null']
 
     logger('Facebook OAuth', 'continue_flow', 'user_data: ' + str(user_data))
@@ -117,4 +110,17 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
         'user': user_data,
         'missing': missing_data,
         'error': ''
+    }
+
+
+def __prepare_data(parsed_resp, gender, ui_locales):
+    return {
+        'id': parsed_resp['id'],
+        'firstname': parsed_resp['first_name'] if 'first_name' in parsed_resp else '',
+        'lastname': parsed_resp['last_name'] if 'last_name' in parsed_resp else '',
+        'nickname': parsed_resp['name'].replace(' ', '') if 'name' in parsed_resp else '',
+        'gender': gender,
+        'email': str(parsed_resp['email']) if 'email' in parsed_resp else 'None',
+        'password': '',
+        'ui_locales': 'de' if parsed_resp['locale'] == 'de_DE' else ui_locales
     }

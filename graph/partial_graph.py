@@ -121,33 +121,33 @@ def __find_position_for_conclusion_of_argument(current_arg, list_todos, list_don
     list_dones.append(current_arg.uid)
     logger('PartialGraph', '__find_position_for_conclusion_of_argument', 'done ' + str(current_arg.uid))
 
-    if current_arg.conclusion_uid is not None:
-        db_statement = DBDiscussionSession.query(Statement).get(current_arg.conclusion_uid)
-        if db_statement.is_startpoint:
-            if db_statement not in positions:
-                logger('PartialGraph', '__find_position_for_conclusion_of_argument', 'conclusion of {} is a position (statement {})'.format(current_arg.uid, db_statement.uid))
-                positions.append(db_statement)
-        else:
-            # just append arguments, where the conclusion is in the premise
-            db_tmps = get_all_arguments_by_statement(current_arg.conclusion_uid)
-            db_arguments = [arg for arg in db_tmps if arg.conclusion_uid != current_arg.conclusion_uid]
-            for arg in db_arguments:
-                if arg.uid not in list_dones and arg not in list_todos:
-                    list_todos.append(arg)
-                    logger('PartialGraph', '__find_position_for_conclusion_of_argument', 'append todo ' + str(arg.uid))
-        # next argument
-        if len(list_todos) > 0:
-            current_arg = list_todos[0]
-            del list_todos[0]
-            logger('PartialGraph', '__find_position_for_conclusion_of_argument', 'next ' + str(current_arg.uid))
-            return __find_position_for_conclusion_of_argument(current_arg, list_todos, list_dones, positions)
-
-        logger('PartialGraph', '__find_position_for_conclusion_of_argument', 'return')
-        return positions
-
-    else:
+    if current_arg.conclusion_uid is None:
         db_target = DBDiscussionSession.query(Argument).get(current_arg.argument_uid)
         return __find_position_for_conclusion_of_argument(db_target, list_todos, list_dones, positions)
+
+    db_statement = DBDiscussionSession.query(Statement).get(current_arg.conclusion_uid)
+    if db_statement.is_startpoint:
+        if db_statement not in positions:
+            logger('PartialGraph', '__find_position_for_conclusion_of_argument', 'conclusion of {} is a position (statement {})'.format(current_arg.uid, db_statement.uid))
+            positions.append(db_statement)
+    else:
+        # just append arguments, where the conclusion is in the premise
+        db_tmps = get_all_arguments_by_statement(current_arg.conclusion_uid)
+        db_arguments = [arg for arg in db_tmps if arg.conclusion_uid != current_arg.conclusion_uid]
+        for arg in db_arguments:
+            if arg.uid not in list_dones and arg not in list_todos:
+                list_todos.append(arg)
+                logger('PartialGraph', '__find_position_for_conclusion_of_argument', 'append todo ' + str(arg.uid))
+
+    # next argument
+    if len(list_todos) > 0:
+        current_arg = list_todos[0]
+        del list_todos[0]
+        logger('PartialGraph', '__find_position_for_conclusion_of_argument', 'next ' + str(current_arg.uid))
+        return __find_position_for_conclusion_of_argument(current_arg, list_todos, list_dones, positions)
+
+    logger('PartialGraph', '__find_position_for_conclusion_of_argument', 'return')
+    return positions
 
 
 def __climb_graph_down(db_positions):

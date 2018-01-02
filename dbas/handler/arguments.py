@@ -51,12 +51,12 @@ def set_arguments_premises(for_api, data) -> dict:
         return {'error': _tn.get(_.discussionIsReadOnly), 'statement_uids': ''}
 
     # escaping will be done in QueryHelper().set_statement(...)
-    url, statement_uids, error = __process_input_of_premises_for_arguments_and_receive_url(default_locale_name, arg_uid,
-                                                                                           attack_type, premisegroups,
-                                                                                           issue_id, nickname, for_api,
-                                                                                           application_url,
-                                                                                           discussion_lang, history,
-                                                                                           port, mailer)
+    d = {'default_locale_name': default_locale_name, 'discussion_lang': discussion_lang}
+    m = {'mailer': mailer, 'port': port}
+    arg_infos = {'arg_id': arg_uid, 'attack_type': attack_type, 'premisegroups': premisegroups, 'history': history}
+    url, statement_uids, error = __process_input_of_premises_for_arguments_and_receive_url(d, arg_infos, issue_id,
+                                                                                           nickname, for_api,
+                                                                                           application_url, m)
     user.update_last_action(nickname)
 
     prepared_dict = dict()
@@ -173,31 +173,33 @@ def get_arguments_by_statement_uid(uid, application_url, ui_locales) -> dict:
     return prepared_dict
 
 
-def __process_input_of_premises_for_arguments_and_receive_url(default_locale_name, arg_id, attack_type, premisegroups,
-                                                              issue, user, for_api, application_url, discussion_lang,
-                                                              history, port, mailer):
+def __process_input_of_premises_for_arguments_and_receive_url(langs, arg_infos, issue, user,
+                                                              for_api, application_url, m):
     """
-    Inserts the given text in premisegroups as new arguments in dependence of the input parameters and returns a URL for forwarding.
+    Inserts given text in premisegroups as new arguments in dependence of the parameters and returns a URL
 
     .. note::
 
         Optimize the "for_api" part
 
-    :param default_locale_name: Default lang of the app
-    :param arg_id: Argument.uid
-    :param attack_type: String
-    :param premisegroups: [Strings]
+    :param langs: dict with default_locale_name and discussion_lang
+    :param arg_infos: dict with arg_id, attack_type, premisegroups and the history
     :param issue: Issue.uid
     :param user: User.nickname
     :param for_api: Boolean
     :param application_url: URL
-    :param discussion_lang: ui_locales
-    :param history: History of the user
-    :param port: Port of notification server
-    :param mailer: Instance of pyramid mailer
+    :param m: dict with port and mailer
     :return: URL, [Statement.uids], String
     """
-    logger('ArgumentsHelper', 'process_input_of_premises_for_arguments_and_receive_url', 'count of new pgroups: ' + str(len(premisegroups)))
+    default_locale_name = langs['default_locale_name']
+    discussion_lang = langs['discussion_lang']
+    arg_id = arg_infos['arg_id']
+    attack_type = arg_infos['attack_type']
+    premisegroups = arg_infos['premisegroups']
+    history = arg_infos['history']
+
+    logger('ArgumentsHelper', 'process_input_of_premises_for_arguments_and_receive_url',
+           'count of new pgroups: ' + str(len(premisegroups)))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     _tn = Translator(discussion_lang)
     if not db_user:
@@ -260,7 +262,7 @@ def __process_input_of_premises_for_arguments_and_receive_url(default_locale_nam
 
         tmp_url = _um.get_url_for_reaction_on_argument(False, arg_id, attack, new_uid)
 
-        NotificationHelper.send_add_argument_notification(tmp_url, arg_id, user, port, mailer)
+        NotificationHelper.send_add_argument_notification(tmp_url, arg_id, user, m['port'], m['mailer'])
 
     return url, statement_uids, error
 

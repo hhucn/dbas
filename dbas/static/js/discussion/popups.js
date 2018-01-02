@@ -4,7 +4,7 @@
 
 function PopupHandler() {
 	'use strict';
-	
+
 	/**
 	 * Opens the edit statements popup
 	 * @param statements_uids
@@ -20,14 +20,14 @@ function PopupHandler() {
 		$('#' + popupEditStatementSuccessDescriptionId).text('');
 		$('#' + popupEditStatementInfoDescriptionId).text('');
 		$('#' + popupEditStatementSubmitButtonId).addClass('disabled').off('click');
-		
+
 		// Get logfile
 		ajaxHandler.getLogfileForStatements(statements_uids);
-		
+
 		// Add inputs
 		$.each(statements_uids, function (index, value) {
 			var statement = $('#' + value).text().trim().replace(/\s+/g, ' ');
-			
+
 			var group = $('<div>').addClass('form-group');
 			var outerInputGroup = $('<div>').addClass('col-md-12').addClass('input-group');
 			var innerInputGroup = $('<div>').addClass('input-group-addon');
@@ -40,7 +40,7 @@ function PopupHandler() {
 				.attr('placeholder', statement)
 				.attr('data-statement-uid', value)
 				.val(statement);
-			
+
 			innerInputGroup.append(group_icon);
 			outerInputGroup.append(innerInputGroup).append(input);
 			group.append(outerInputGroup);
@@ -57,17 +57,17 @@ function PopupHandler() {
 				var now = $(this).val();
 				var id = $(this).attr('id');
 				var statement_uid = $(this).data('statement-uid');
-				
+
 				// reduce noise
 				var levensthein = _l(oem, now);
 				var tmp = _t_discussion(pleaseEditAtLeast).replace('X', 5 - levensthein);
 				$('#' + popupEditStatementInfoDescriptionId).text(levensthein < 5 ? tmp : '');
-				
+
 				var btn = $('#' + popupEditStatementSubmitButtonId);
 				if (now && oem && now.toLowerCase() === oem.toLowerCase()) {
 					btn.addClass('disabled');
 					btn.off('click');
-					
+
 				} else {
 					btn.removeClass('disabled');
 					btn.off('click').click(function popupEditStatementSubmitButton() {
@@ -78,15 +78,14 @@ function PopupHandler() {
 						new AjaxDiscussionHandler().sendCorrectionOfStatement(elements, statements_uids);
 					});
 				}
-				
-				
+
 				setTimeout(function () {
 					ajaxHandler.fuzzySearch(now, id, fuzzy_statement_popup, statement_uid);
 				}, 200);
 			});
 		});
 	};
-	
+
 	/**
 	 * Clears the edit statement popup
 	 */
@@ -95,7 +94,7 @@ function PopupHandler() {
 		$('#' + popupEditStatementLogfileSpaceId).empty();
 		$('#' + popupEditStatementInputSpaceId).empty();
 	};
-	
+
 	/**
 	 * Display url sharing popup
 	 */
@@ -107,15 +106,14 @@ function PopupHandler() {
 		});
 		setAnchor('sharing');
 		new AjaxDiscussionHandler().getShortenUrl(window.location);
-		//$('#' + popupUrlSharingInputId).val(window.location);
 	};
-	
+
 	/**
 	 * Displays add topic plugin
 	 */
 	this.showAddTopicPopup = function () {
 		$('#popup-add-topic').modal('show');
-		
+
 		$('#popup-add-topic-accept-btn').click(function () {
 			var info = $('#popup-add-topic-info-input').val();
 			var long_info = $('#popup-add-topic-long-info-input').val();
@@ -125,11 +123,11 @@ function PopupHandler() {
 			var is_read_only = $('#popup-add-topic-read-only-toggle').prop('checked');
 			new AjaxDiscussionHandler().sendNewIssue(info, long_info, title, is_public, is_read_only, lang);
 		});
-		
+
 		$('#popup-add-topic-refuse-btn').click(function () {
 			$('#popup-add-topic').modal('hide');
 		});
-		
+
 		var flag_list = $('#popup-add-topic-lang-input');
 		flag_list.find('img').each(function(){
 			new PopupHandler().__add_black_white_filter($(this));
@@ -142,7 +140,7 @@ function PopupHandler() {
 		});
 		new PopupHandler().__remove_black_white_filter(flag_list.find('input[type="radio"]:checked').parent().find('img'));
 	};
-	
+
 	this.__add_black_white_filter = function(element){
 		element.css(
 			'filter', 'grayscale(100%)',
@@ -150,7 +148,7 @@ function PopupHandler() {
 			'-moz-filter', 'grayscale(100%)'
 		);
 	};
-	
+
 	this.__remove_black_white_filter = function(element){
 		element.css(
 			'filter', '',
@@ -158,7 +156,7 @@ function PopupHandler() {
 			'-moz-filter', ''
 		);
 	};
-	
+
 	/**
 	 * Display popup for flagging statements
 	 *
@@ -176,7 +174,7 @@ function PopupHandler() {
 			this.__hideFlagElement(popup, 'dupl');
 			this.__hideFlagElement(popup, 'merge');
 			this.__hideFlagElement(popup, 'split');
-			
+
 			// do not mark arguments for optimizations
 			popup.find('fieldset').children().eq(0).hide();
 			popup.find('fieldset').children().eq(1).hide();
@@ -189,18 +187,18 @@ function PopupHandler() {
 			this.__showFlagElement(popup, 'merge');
 			this.__showFlagElement(popup, 'split');
 		}
-		
+
 		popup.modal('show');
 		popup.on('hide.bs.modal', function () {
 			popup.find('input').off('click').unbind('click');
 		});
-		
+
 		popup.on('hidden.bs.modal', function () {
 			popup.find('fieldset').children().eq(0).show();
 			popup.find('fieldset').children().eq(1).show();
 			popup.find('fieldset').children().eq(2).show();
 		});
-		
+
 		// everything but not duplicates not splits or merges
 		popup.find('input').not('#dupl').not('#split').not('#merge').click(function () {
 			var reason = $(this).attr('value');
@@ -212,7 +210,7 @@ function PopupHandler() {
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
 		});
-		
+
 		// duplicate action
 		popup.find('#dupl').click(function () {
 			popup.find('input').prop('checked', false);
@@ -230,7 +228,7 @@ function PopupHandler() {
 				new PopupHandler().showStatementDuplicatePopup(uid, text, reason);
 			}
 		});
-		
+
 		// split action
 		popup.find('#split').click(function () {
 			popup.find('input').prop('checked', false);
@@ -243,7 +241,7 @@ function PopupHandler() {
 				new PopupHandler().showSplitStatementPopup(uid, reason, text);
 			}
 		});
-		
+
 		// merge action
 		popup.find('#merge').click(function () {
 			popup.find('input').prop('checked', false);
@@ -257,7 +255,7 @@ function PopupHandler() {
 			}
 		});
 	};
-	
+
 	/**
 	 * Hides a row of the flag statement/argument popup
 	 *
@@ -270,7 +268,7 @@ function PopupHandler() {
 		popup.find('#' + id).next().show(); // br tag
 		popup.find('#' + id).show();
 	};
-	
+
 	/**
 	 * Shows a row of the flag statement/argument popup
 	 *
@@ -283,7 +281,7 @@ function PopupHandler() {
 		popup.find('#' + id).next().show(); // br tag
 		popup.find('#' + id).show();
 	};
-	
+
 	/**
 	 * Display popup for flagging arguments
 	 *
@@ -295,19 +293,19 @@ function PopupHandler() {
 		if (bubble.length === 0){
 			bubble = $('#' + uid.replace('.', '\\.'));
 		}
-		
+
 		// clean text
 		// cut the part after <br><br>
 		var text = bubble.find('.triangle-content').html();
 		text = text.substr(0, text.indexOf('<br>'));
-		
+
 		// cut the author
 		var tmp = text.indexOf('</a>');
 		if (tmp !== -1) {
 			var a = bubble.find('.triangle-content a').attr('title');
 			text = a + ' ' + text.substr(tmp + '</a>'.length);
 		}
-			
+
 		// cut all spans
 		while (text.indexOf('</span>') !== -1) {
 			text = text.replace('</span>', '');
@@ -315,7 +313,7 @@ function PopupHandler() {
 		while (text.indexOf('<span') !== -1) {
 			text = text.substr(0, text.indexOf('<span')) + text.substr(text.indexOf('>') + 1);
 		}
-		
+
 		$('#popup-flag-argument-text').text(text);
 		popup.modal('show');
 		popup.on('hide.bs.modal', function () {
@@ -332,10 +330,10 @@ function PopupHandler() {
 			}
 			if (special === 'undercut') {
 				$('#item_undercut').click();
-				
+
 			} else if (special === 'argument') {
 				new PopupHandler().showFlagStatementPopup(uid, true, text);
-				
+
 			} else {
 				var tmp = next.find('em').text();
 				new PopupHandler().showFlagStatementPopup(id, false, tmp);
@@ -349,7 +347,9 @@ function PopupHandler() {
 			if ($(this).data('special') === '') {
 				var current = $(this).next().find('em').text().trim();
 				$(this).hover(function () {
-					var modded_text = text.replace(new RegExp("(" + (current + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
+					var modded_text = text
+						.replace(new RegExp("(" + (current + '')
+							.replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
 					$('#popup-flag-argument-text').html(modded_text);
 					$(this).next().find('em').html("<span class='text-primary'>" + current + "</span>");
 				}, function () {
@@ -362,7 +362,9 @@ function PopupHandler() {
 			if ($(this).prev().data('special') === '') {
 				var current = $(this).find('em').text().trim();
 				$(this).hover(function () {
-					var modded_text = text.replace(new RegExp("(" + (current + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
+					var modded_text = text
+						.replace(new RegExp("(" + (current + '')
+							.replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "<span class='text-primary'>$1</span>");
 					$('#popup-flag-argument-text').html(modded_text);
 					$(this).find('em').html("<span class='text-primary'>" + current + "</span>");
 				}, function () {
@@ -372,7 +374,7 @@ function PopupHandler() {
 			}
 		});
 	};
-	
+
 	/**
 	 * Displays the popup to search a specific statement
 	 */
@@ -387,10 +389,10 @@ function PopupHandler() {
 			'</div>' +
 			'</div>' +
 			'<div id="' + proposalStatementSearchGroupId + '"></div>';
-		
+
 		displayConfirmationDialog(titleText, bodyText, null, null, false);
 		$('#' + popupConfirmDialogId).find('#confirm-dialog-accept-btn').hide();
-		
+
 		$("#search-statement-input").keyup(function () {
 			var val = $('#search-statement-input').val();
 			setTimeout(function () {
@@ -398,7 +400,7 @@ function PopupHandler() {
 			}, 200);
 		});
 	};
-	
+
 	/**
 	 * Displays popup to differentiate between the statements of a premise group to
 	 * select the one, which should be a duplicate
@@ -412,7 +414,7 @@ function PopupHandler() {
 		var txt = '';
 		body.empty();
 		popup.modal('show');
-		
+
 		$.each($('#item_' + uid).parent().find('label:even'), function(){
 			txt = $(this).text();
 			if (txt.match(/\.$/)){ // remove a dot at the end
@@ -434,7 +436,7 @@ function PopupHandler() {
 			});
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param uid
@@ -448,7 +450,7 @@ function PopupHandler() {
 		$('#popup-merge-statement-text').text(text);
 		new PopupHandler().__buildMergeSplitPopup('merge', uid);
 	};
-	
+
 	/**
 	 *
 	 * @param uid
@@ -462,7 +464,7 @@ function PopupHandler() {
 		$('#popup-split-statement-text').text(text);
 		new PopupHandler().__buildMergeSplitPopup('split', uid);
 	};
-	
+
 	/**
 	 * Build the body of the merge/split-group popup
 	 *
@@ -473,24 +475,12 @@ function PopupHandler() {
 	this.__buildMergeSplitPopup = function(key, uid){
 		var body = $('#popup-' + key + '-statement-body');
 		var ph = new PopupHandler();
-		
+
 		ph.__addInputFormGroup(1, body, '...');
 		if (key === 'split'){
 			ph.__addInputFormGroup(2, body, '...');
 		}
-		
-		/*
-		var i = 1;
-		$.each($('label[for="item_' + uid + '"]:even'), function(){
-			var txt = $(this).text();
-			if (txt.match(/\.$/)){ // remove a dot at the end
-				txt = txt.substr(0, txt.length - 1);
-			}
-			new PopupHandler().__addInputFormGroup(i, body, txt);
-			i = i+1;
-		});
-		*/
-		
+
 		// hover and on-click-function for the yes key
 		$('#popup-' + key + '-statement-btn-yes').hover(function(){
 			$(this).addClass('btn-success').removeClass('btn-secondary');
@@ -504,7 +494,7 @@ function PopupHandler() {
 			});
 			new AjaxReviewHandler().splitOrMerge(uid, key, values);
 		}).prop('disabled', true);
-		
+
 		// hover and on-click-function for the add key
 		$('#popup-' + key + '-statement-add').hover(function(){
 			$(this).addClass('btn-info').removeClass('btn-secondary');
@@ -520,7 +510,7 @@ function PopupHandler() {
 			ph.__setQuestionForSplitMergeStatementPopup(key, body.children().length);
 			$('#popup-' + key + '-statement-btn-yes').prop('disabled', false);
 		});
-		
+
 		// hover and on-click-function for the remove key
 		$('#popup-' + key + '-statement-rem').hover(function(){
 			$(this).addClass('btn-info').removeClass('btn-secondary');
@@ -535,7 +525,7 @@ function PopupHandler() {
 		});
 		ph.__setQuestionForSplitMergeStatementPopup(key, body.children().length);
 	};
-	
+
 	/**
 	 * Sets text for the final question in the split/merge statement popup and make it visible or hidden
 	 *
@@ -559,7 +549,7 @@ function PopupHandler() {
 			question.hide();
 		}
 	};
-	
+
 	/**
 	 * Adds a form group with input form to the body
 	 *
@@ -574,7 +564,7 @@ function PopupHandler() {
 		var inner_div = $('<div>').addClass('col-lg-10').css('padding-left', 0, 'padding-right', 0);
 		var input = $('<input>').attr({'class': 'form-control', 'id': 'focusedInput' + counter, 'type': 'text', 'value': text, 'placeholder': '...'});
 		var proposal = $('<div>').attr({'class': 'col-md-12 list-group', 'id': 'proposal-mergesplit-list-group-focusedInput' + counter});
-		
+
 		input.keyup(function () {
 			var val = input.val();
 			setTimeout(function () {
@@ -583,7 +573,7 @@ function PopupHandler() {
 		});
 		body.append(div.append(label).append(inner_div.append(input)).append(proposal));
 	};
-	
+
 	/**
 	 *
 	 * @param uid
@@ -593,7 +583,7 @@ function PopupHandler() {
 	this.showMergePremisegroupPopup = function(uid, reason, text){
 		this.__buildMergeSplitPgroupPopup('merge', uid, text, new AjaxReviewHandler().splitOrMerge);
 	};
-	
+
 	/**
 	 *
 	 * @param uid
@@ -603,7 +593,7 @@ function PopupHandler() {
 	this.showSplitPremisegroupPopup = function(uid, reason, text){
 		this.__buildMergeSplitPgroupPopup('split', uid, text, new AjaxReviewHandler().splitOrMerge);
 	};
-	
+
 	/**
 	 * Build the body of the merge/split-premisegroup popup
 	 *
@@ -630,7 +620,7 @@ function PopupHandler() {
 			child.css('margin-bottom', '0.5em').text(txt);
 			body.append(child);
 		});
-		
+
 		$('#popup-' + key + '-premisegroup-btn-yes').hover(function(){
 			$(this).addClass('btn-success').removeClass('btn-secondary');
 		}, function(){
@@ -640,7 +630,7 @@ function PopupHandler() {
 			fct(key, uid, undefined);
 		});
 	};
-	
+
 	/**
 	 * Displays popup for marking a duplicate
 	 *
@@ -654,9 +644,9 @@ function PopupHandler() {
 		popup.on('hide.bs.modal', function () {
 			popup.find('input').off('click').unbind('click');
 		});
-		
+
 		$('#' + popupDuplicateStatementTextId).text(text).attr('data-statement-uid', uid);
-		
+
 		// fuzzy search
 		var input = $('#' + popupDuplicateStatementTextSearchId);
 		input.on('keyup', function(){
@@ -666,7 +656,7 @@ function PopupHandler() {
 			}, 200);
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param reason
@@ -680,7 +670,7 @@ function PopupHandler() {
 			new AjaxReviewHandler().flagArgumentOrStatement(uid, reason, false, oem_uid);
 		});
 	};
-	
+
 	/**
 	 * Popup for revoking content
 	 *
@@ -690,17 +680,17 @@ function PopupHandler() {
 	this.showDeleteContentPopup = function (uid, is_argument) {
 		var popup = $('#popup-delete-content');
 		popup.modal('show');
-		
+
 		$('#popup-delete-content-submit').click(function () {
 			new AjaxDiscussionHandler().revokeContent(uid, is_argument);
 			popup.modal('hide');
 		});
-		
+
 		$('#popup-delete-content-close').click(function () {
 			popup.modal('hide');
 		});
 	};
-	
+
 	/**
 	 * Popup for managing the references
 	 *
@@ -717,7 +707,7 @@ function PopupHandler() {
 		var reference_text = $('#popup-references-add-text');
 		var reference_source = $('#popup-references-add-source');
 		var info_text = $('#choose_reference_text');
-		
+
 		dropdown.hide();
 		info_text.hide();
 		popup.modal('show');
@@ -727,11 +717,10 @@ function PopupHandler() {
 		send_button.prop('disabled', true);
 		reference_text.val('');
 		reference_source.val('');
-		
+
 		add_button.off('click').click(function () {
 			add_button.hide();
 			references_body_add.fadeIn();
-			//send_button.prop('disabled', false);
 			if (dropdown_list.find('li').length < 2) {
 				dropdown.hide();
 				info_text.hide();
@@ -743,16 +732,16 @@ function PopupHandler() {
 				send_button.prop('disabled', false);
 			}
 		});
-		
+
 		send_button.off('click').click(function () {
 			var uid = $(this).data('id');
 			var reference = reference_text.val();
 			var ref_source = reference_source.val();
 			new AjaxReferenceHandler().setReference(uid, reference, ref_source);
 		});
-		
+
 		this.createReferencesPopupBody(data);
-		
+
 		if (references_body.children().length === 0) {
 			references_body.append($('<p>').addClass('lead').text(_t_discussion(noReferencesButYouCanAdd)));
 			add_button.hide();
@@ -767,7 +756,7 @@ function PopupHandler() {
 				send_button.prop('disabled', true);
 			}
 		}
-		
+
 		dropdown_list.find('li').each(function() {
 			$(this).off('click').click(function(){
 				send_button.attr('data-id', $(this).data('id'));
@@ -775,7 +764,7 @@ function PopupHandler() {
 			});
 		});
 	};
-	
+
 	/**
 	 * Creates the body of the reference popup
 	 *
@@ -787,7 +776,7 @@ function PopupHandler() {
 		var dropdown = $('#popup-references-cite-dropdown');
 		var dropdown_list = $('#popup-references-cite-dropdown-list');
 		var dropdown_title = $('#popup-references-cite-dropdown-title');
-		
+
 		// data is an dictionary with all statement uid's as key
 		// the value of every key is an array with dictionaries for every reference
 		$.each(data.data, function (statement_uid, array) {
@@ -799,17 +788,17 @@ function PopupHandler() {
 				var author = $('<a>').attr({'href': dict.author.link, 'target': '_blank'}).addClass('pull-right')
 					.append($('<span>').text(dict.author.name).css('padding-right', '0.5em'))
 					.append($('<img>').addClass('img-circle').attr('src', dict.author.img));
-				
+
 				var link = $('<a>').attr({
 					'href': dict.host + dict.path,
 					'target': '_blank'
 				}).text('(' + dict.host + dict.path + ')');
 				var span = $('<span>').text(dict.reference + ' ');
-				
+
 				var label = $('<label>').addClass('bs-callout').addClass('bs-callout-primary');
 				var body = $('<p>').append(span).append(link).append(author);
 				label.append(body);
-				
+
 				statements_div.append(label);
 			});
 			// Add the statement itself
@@ -817,7 +806,7 @@ function PopupHandler() {
 			var grqq = $.parseHTML('<i class="fa fa-quote-right" aria-hidden="true" style="padding: 0.5em; font-size: 12px;"></i>');
 			var statement = $('<span>').addClass('lead').text(text);
 			var wrapper = $('<p>').append(glqq).append(statement).append(grqq);
-			
+
 			// Add elements for the drop-down
 			if (text.length > 0) {
 				references_body.append(wrapper.append(statements_div));
@@ -831,12 +820,12 @@ function PopupHandler() {
 				send_button.attr('data-id', statement_uid);
 			});
 			dropdown_list.append($('<li>').append(tmp));
-			
+
 			// Default id
 			send_button.attr('data-id', statement_uid);
 		});
 	};
-	
+
 	/**
 	 * Closes the popup and deletes all of its contents
 	 */
@@ -849,26 +838,25 @@ function PopupHandler() {
 		if (window.location.href.indexOf('/contact') !== -1){
 			return -1;
 		}
-		
+
 		var script = $('<script>').attr('src', 'https://www.google.com/recaptcha/api.js');
 		if (appendOnly) {
 			$('#' + popupLogin).append(script);
 		} else {
 			$('#' + popupLogin).show().append(script);
 		}
-	
+
 		// Google Recaptcha
 		if ($('.g-recaptcha').length !== 0) {
 			setTimeout(function () {
 				$('.grecaptcha-badge').css('bottom', $('#footer').outerHeight(true) + 'px');
-			//	grecaptcha.execute();
 			}, 1500);
 		} else {
 			console.log('nargh');
 		}
-		
+
 	};
-	
+
 	/**
 	 *
 	 */

@@ -528,23 +528,8 @@ def __proposal_for_the_element(db_review, data, db_user):
     :param db_user: User
     :return: None
     """
-    # add new edit
-    argument_dict = {}
-    statement_dict = {}
-
     # sort the new edits by argument uid
-    for d in data:
-        is_argument = d['argument'] > 0
-        if is_argument:
-            if d['argument'] in argument_dict:
-                argument_dict[d['argument']].append(d)
-            else:
-                argument_dict[d['argument']] = [d]
-        else:
-            if d['statement'] in statement_dict:
-                statement_dict[d['statement']].append(d)
-            else:
-                statement_dict[d['statement']] = [d]
+    argument_dict, statement_dict = __prepare_dicts_for_proposals(data)
 
     logger('review_main_helper', 'add_review_opinion_for_optimization', 'detector {}, statements {}, arguments {}'.format(db_user.uid, statement_dict, argument_dict))
 
@@ -591,6 +576,24 @@ def __proposal_for_the_element(db_review, data, db_user):
     DBDiscussionSession.add(db_review)
     DBDiscussionSession.flush()
     transaction.commit()
+
+
+def __prepare_dicts_for_proposals(data):
+    argument_dict = {}
+    statement_dict = {}
+    for d in data:
+        is_argument = d['argument'] > 0
+        if is_argument:
+            if d['argument'] in argument_dict:
+                argument_dict[d['argument']].append(d)
+            else:
+                argument_dict[d['argument']] = [d]
+        else:
+            if d['statement'] in statement_dict:
+                statement_dict[d['statement']].append(d)
+            else:
+                statement_dict[d['statement']] = [d]
+    return argument_dict, statement_dict
 
 
 def en_or_disable_object_of_review(review, is_disabled):

@@ -4,7 +4,7 @@
 
 function AjaxNotificationHandler(){
 	'use strict';
-	
+
 	/**
     *
     * @param id_list
@@ -88,7 +88,7 @@ function AjaxNotificationHandler(){
 		$('#popup-writing-notification-success').hide();
 		$('#popup-writing-notification-failed').hide();
 		var data = {title: title, text: text, recipient: recipient};
-		
+
 		$.ajax({
 			url: 'ajax_send_notification',
 			type: 'POST',

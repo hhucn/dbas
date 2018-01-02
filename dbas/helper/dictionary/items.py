@@ -121,7 +121,6 @@ class ItemDictHelper(object):
         _tn = Translator(self.lang)
 
         slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
-        # text = get_text_for_statement_uid(statement_uid)
         statements_array = []
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
@@ -164,7 +163,6 @@ class ItemDictHelper(object):
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        # support_step = random.uniform(0, 1) > self.LIMIT_SUPPORT_STEP
 
         for argument in db_arguments:
             if db_user and argument.uid in uids:  # add seen by if the statement is visible
@@ -182,7 +180,7 @@ class ItemDictHelper(object):
 
             # get attack for each premise, so the urls will be unique
             arg_id_sys, attack = rs.get_attack_for_argument(argument.uid, self.lang, history=self.path,
-                                                            restriction_on_arg_uids=forbidden_attacks)
+                                                            restriction_on_args=forbidden_attacks)
             already_used = 'reaction/' + str(argument.uid) + '/' in self.path
             additional_text = '(' + _tn.get(_.youUsedThisEarlier) + ')'
 
@@ -243,7 +241,6 @@ class ItemDictHelper(object):
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        # support_step = random.uniform(0, 1) > self.LIMIT_SUPPORT_STEP
 
         for argument in db_arguments:
             if db_user:  # add seen by if the statement is visible
@@ -261,7 +258,7 @@ class ItemDictHelper(object):
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
 
             arg_id_sys, attack = rs.get_attack_for_argument(argument.uid, self.lang, last_attack=is_undermine,
-                                                            restriction_on_arg_uids=attacking_arg_uids,
+                                                            restriction_on_args=attacking_arg_uids,
                                                             history=self.path)
 
             the_other_one = True
@@ -278,6 +275,7 @@ class ItemDictHelper(object):
 
             if the_other_one:
                 url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
+
             statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
                                                               is_markable=True,
                                                               is_editable=not is_arguments_premise_in_edit_queue(argument.uid),
@@ -291,11 +289,11 @@ class ItemDictHelper(object):
 
         if not self.issue_read_only:
             if logged_in:
+                text = _tn.get(_.newPremiseRadioButtonText)
                 if len(statements_array) == 0:
                     text = _tn.get(_.newPremiseRadioButtonTextAsFirstOne)
-                else:
-                    text = _tn.get(_.newPremiseRadioButtonText)
                 statements_array.append(self.__create_answer_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add'))
+
             else:
                 # elif len(statements_array) == 1:
                 statements_array.append(
@@ -492,13 +490,12 @@ class ItemDictHelper(object):
         attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
         attacking_arg_uids.append(argument_uid_sys)
         arg_id_sys, new_attack = rs.get_attack_for_argument(argument_uid_user, self.lang,
-                                                            restriction_on_arg_uids=attacking_arg_uids,
+                                                            restriction_on_args=attacking_arg_uids,
                                                             history=self.path)
 
         if new_attack == 'no_other_attack' or new_attack.startswith('end'):
             url = _um.get_last_valid_url_before_reaction(True)
             relation = 'step_back'
-            # url = 'back' if self.for_api else 'window.history.go(-1)'
         else:
             relation = 'no_opinion'
             url = _um.get_url_for_reaction_on_argument(True, argument_uid_user, new_attack, arg_id_sys)
@@ -539,13 +536,13 @@ class ItemDictHelper(object):
         :return: String
         """
         attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
-        restriction_on_attacks = 'rebut' if attack == 'undercut' else None
+        restriction_on_attacks = rs.Attacks.REBUT if attack == 'undercut' else None
         # if the user did rebutted A with B, the system shall not rebut B with A
         history = '{}/rebut/{}'.format(db_sys_argument.uid, db_user_argument.uid) if attack == 'rebut' else ''
 
         arg_id_sys, sys_attack = rs.get_attack_for_argument(db_sys_argument.uid, self.lang,
-                                                            restriction_on_arg_uids=attacking_arg_uids,
-                                                            restriction_on_attacks=restriction_on_attacks,
+                                                            restriction_on_args=attacking_arg_uids,
+                                                            restriction_on_attacks=[restriction_on_attacks],
                                                             history=history)
         if sys_attack == 'rebut' and attack == 'undercut':
             # case: system makes an undercut and the user supports this new attack can be an rebut, so another
@@ -587,7 +584,6 @@ class ItemDictHelper(object):
             url = _um.get_url_for_justifying_statement(True, db_sys_argument.conclusion_uid, mode)
 
         elif attack == 'undercut':  # rebutting an undercut will be a overbid for the initial argument
-            # url = _um.get_url_for_justifying_argument(True, argument_uid_user, mode, 'overbid')
             if db_user_argument.argument_uid is None:
                 url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)
             else:
@@ -650,7 +646,7 @@ class ItemDictHelper(object):
                 return None
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
             arg_id_sys, attack = rs.get_attack_for_argument(db_argument.uid, self.lang,
-                                                            restriction_on_arg_uids=attacking_arg_uids)
+                                                            restriction_on_args=attacking_arg_uids)
             url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
 
             is_author = is_author_of_argument(nickname, argument) if is_argument else is_author_of_statement(nickname, conclusion)
@@ -731,7 +727,7 @@ class ItemDictHelper(object):
             len_undercut = 1 if db_undercutted_arg.argument_uid is None else 2
 
         arg_id_sys, sys_attack = rs.get_attack_for_argument(db_argument.uid, self.lang, redirected_from_jump=True,
-                                                            restriction_on_arg_uids=forbidden_attacks)
+                                                            restriction_on_args=forbidden_attacks)
         url0 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.uid, sys_attack, arg_id_sys)
 
         if len_undercut == 0:

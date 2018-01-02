@@ -4,7 +4,7 @@
 
 function AdminAjaxHandler(){
 	'use strict';
-	
+
 	/**
 	 *
 	 * @param uids
@@ -28,7 +28,7 @@ function AdminAjaxHandler(){
 			new AdminCallbackHandler().doSomethingOnFail();
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param new_data
@@ -51,7 +51,7 @@ function AdminAjaxHandler(){
 			new AdminCallbackHandler().doSomethingOnFail();
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param element
@@ -79,7 +79,7 @@ function AdminAjaxHandler(){
 			new AdminCallbackHandler().doSomethingOnFail();
 		});
 	};
-	
+
 	/**
 	 *
 	 */
@@ -101,14 +101,14 @@ function AdminAjaxHandler(){
 
 function AdminCallbackHandler(){
 	'use strict';
-	
+
 	/**
 	 *
 	 */
 	this.doSomethingOnFail = function(){
 		setGlobalErrorHandler(_t(ohsnap), _t_discussion(requestFailed));
 	};
-	
+
 	/**
 	 *
 	 * @param jsonData
@@ -125,7 +125,7 @@ function AdminCallbackHandler(){
 			setGlobalErrorHandler(_t(ohsnap), jsonData.error);
         }
 	};
-	
+
 	/**
 	 *
 	 * @param jsonData
@@ -139,7 +139,7 @@ function AdminCallbackHandler(){
 			setGlobalErrorHandler(_t(ohsnap), jsonData.error);
         }
 	};
-	
+
 	/**
 	 *
 	 * @param jsonData
@@ -167,7 +167,7 @@ function AdminCallbackHandler(){
 			setGlobalErrorHandler(_t(ohsnap), jsonData.error);
         }
 	};
-	
+
 	/**
 	 *
 	 * @param jsonData

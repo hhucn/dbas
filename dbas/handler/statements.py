@@ -325,30 +325,33 @@ def insert_as_statements(application_url, default_locale_name, text_list, user, 
 
     statements = []
     input_list = text_list if isinstance(text_list, list) else [text_list]
-    _tn = None
     for text in input_list:
         if len(text) < statement_min_length:
             return -1
 
         new_statement, is_duplicate = set_statement(text, user, is_start, issue, lang)
-        if new_statement:
-            statements.append(new_statement)
+        if not new_statement:
+            continue
 
-            # add marked statement
-            DBDiscussionSession.add(MarkedStatement(statement=new_statement.uid, user=db_user.uid))
-            DBDiscussionSession.add(SeenStatement(statement_uid=new_statement.uid, user_uid=db_user.uid))
-            DBDiscussionSession.flush()
+        statements.append(new_statement)
 
-            if not is_duplicate:
-                _tn = Translator(new_statement.lang) if _tn is None else _tn
-                db_issue = DBDiscussionSession.query(Issue).get(issue)
-                _um = UrlManager(application_url, db_issue.slug)
-                append_action_to_issue_rss(issue_uid=issue,
-                                           author_uid=db_user.uid,
-                                           title=_tn.get(_.positionAdded if is_start else _.statementAdded),
-                                           description='...' + get_text_for_statement_uid(new_statement.uid) + '...',
-                                           ui_locale=default_locale_name,
-                                           url=_um.get_url_for_statement_attitude(False, new_statement.uid))
+        # add marked statement
+        DBDiscussionSession.add(MarkedStatement(statement=new_statement.uid, user=db_user.uid))
+        DBDiscussionSession.add(SeenStatement(statement_uid=new_statement.uid, user_uid=db_user.uid))
+        DBDiscussionSession.flush()
+
+        if is_duplicate:
+            continue
+
+        _tn = Translator(new_statement.lang)
+        db_issue = DBDiscussionSession.query(Issue).get(issue)
+        _um = UrlManager(application_url, db_issue.slug)
+        append_action_to_issue_rss(issue_uid=issue,
+                                   author_uid=db_user.uid,
+                                   title=_tn.get(_.positionAdded if is_start else _.statementAdded),
+                                   description='...' + get_text_for_statement_uid(new_statement.uid) + '...',
+                                   ui_locale=default_locale_name,
+                                   url=_um.get_url_for_statement_attitude(False, new_statement.uid))
 
     return statements
 
