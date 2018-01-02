@@ -271,6 +271,9 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
 
         return_array, is_supportive, key = __get_attacks(attack, argument_uid, last_attack, is_supportive)
 
+        if not return_array or len(return_array) == 0:
+            continue
+
         # check if the step is already in history
         new_attack_step = '{}/{}/{}'.format(argument_uid, attack_mapping[key], return_array[0]['id'])
 
