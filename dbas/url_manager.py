@@ -281,7 +281,7 @@ def get_url_for_new_argument(new_argument_uids, history, lang, url_manager):
     """
     new_argument_uid = random.choice(new_argument_uids)  # TODO eliminate random
     attacking_arg_uids = get_all_attacking_arg_uids_from_history(history)
-    arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, lang, restriction_on_arg_uids=attacking_arg_uids)
+    arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, lang, restriction_on_args=attacking_arg_uids)
     if arg_id_sys == 0:
         attack = 'end'
     url = url_manager.get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
