@@ -768,7 +768,10 @@ def get_name_link_of_arguments_author(main_page, argument, nickname, with_link=T
         else:
             return None, '', 'n', False
 
-    return user, text if is_okay else '', gender, is_okay
+    if not is_okay:
+        text = ''
+
+    return user, text, gender, is_okay
 
 
 def get_author_or_first_supporter_of_element(uid, current_user_uid, is_argument):
