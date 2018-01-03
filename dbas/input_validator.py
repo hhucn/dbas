@@ -104,7 +104,9 @@ def check_belonging_of_premisegroups(issue_uid, premisegroups):
     :param premisegroups: [PremiseGroup.uid]
     :return: Boolean
     """
-    all_premises = [DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=g).all() for g in premisegroups]
+    all_premises = []
+    for g in premisegroups:
+        all_premises += DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=g).all()
     related = [premise.issue_uid == issue_uid for premise in all_premises]
     return all(related)
 
