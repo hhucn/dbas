@@ -3,25 +3,24 @@
  */
 $(document).ready(function () {
     'use strict';
-
-	$.each($('.discussion-enable-toggle'), function(){
-		$(this).change(function (){
-			new AjaxDiscussionHandler().setDiscussionSettings($(this), 'enable');
+    
+    var button_dict = {
+    	'.discussion-enable-toggle': 'enable',
+    	'.discussion-public-toggle': 'public',
+    	'.discussion-writable-toggle': 'writable'
+    };
+    
+    for (var key in button_dict) {
+    	if (!{}.hasOwnProperty.call(button_dict, key)){
+    		continue;
+	    }
+		$.each($(key), function(){
+			$(this).change(function (){
+				new AjaxDiscussionHandler().setDiscussionSettings($(this), button_dict[key]);
+			});
 		});
-	});
+    }
 
-	$.each($('.discussion-public-toggle'), function(){
-		$(this).change(function (){
-			new AjaxDiscussionHandler().setDiscussionSettings($(this), 'public');
-		});
-	});
-
-	$.each($('.discussion-writable-toggle'), function(){
-		$(this).change(function (){
-			new AjaxDiscussionHandler().setDiscussionSettings($(this), 'writable');
-		});
-	});
-	
 	$.each($('.fa-clipboard'), function(){
 		$(this).click(function(){
 			var aux = document.createElement("input");

@@ -4,12 +4,12 @@
 
 function GuidedTour(){
     'use strict';
-    
+
 	var lang_switcher = '';
 	var tour = '';
 	var step_list = [];
 	var start_from_index = false;
-		
+
 	// override default template for i18n
 	var template =
 		'<div class="popover tour">' +
@@ -23,7 +23,7 @@ function GuidedTour(){
 			'</div>' +
 			'<button class="btn btn-sm btn-secondary" data-role="end">' + _t(tourEnd) + '</button>' +
 		'</div>';
-	
+
 	var template_end =
 		'<div class="popover tour">' +
 			'<div class="arrow"></div>' +
@@ -36,7 +36,7 @@ function GuidedTour(){
 			'</div>' +
 			'<button class="btn btn-sm btn-success" data-role="end">' + _t(tourEnd) + '</button>' +
 		'</div>';
-		
+
 	// click function for lang switch
 	var set_lang_click = function () {
 		setTimeout(function () {
@@ -47,19 +47,19 @@ function GuidedTour(){
 			switcher.find('img').click(function () { new AjaxMainHandler().switchDisplayLanguage(lang); });
 		}, 500);
 	};
-		
+
 	// function on start
 	var start_fct = function () {
 		tour.init(); // Initialize the tour
 		tour.restart(); // Start the tour
 		set_lang_click();
 	};
-	
+
 	// function on end
 	var end_fct = function(){
 		Cookies.set(GUIDED_TOUR, true, { expires: 60 });
 	};
-	
+
 	/**
 	 * Prepares the steps of the tour as well as the tour itself
 	 */
@@ -71,7 +71,7 @@ function GuidedTour(){
 		} else {
 			lang_switcher = '<a id="switch-to-en" class="pull-right" style="cursor: pointer;"><img class="language_selector_img" src="' + flag + '" alt="flag_en" style="width:25px;"></a>';
 		}
-		
+
 		// steps
 		var issue = {
 			element: '#header-container',
@@ -114,7 +114,7 @@ function GuidedTour(){
 			placement: 'bottom'
 		};
 		var first_child = $('#discussions-space-list li:first');
-    
+
 		var statement_action = {
 			element: '#discussions-space-list li:first',
 			title: _t(tourStatementActionTitle) + lang_switcher,
@@ -140,7 +140,7 @@ function GuidedTour(){
 			placement: 'bottom',
 			template: template_end
 		};
-		
+
 		step_list = [
 			issue,              // 0
 			start_discussion,   // 1
@@ -150,7 +150,7 @@ function GuidedTour(){
 			statement_action,   // 5
 			have_fun            // 6
 		];
-		
+
 		//data-placement="bottom"
 		tour = new Tour({
 			steps: step_list,
@@ -159,20 +159,20 @@ function GuidedTour(){
 			template: template,
 			onEnd: end_fct
 		});
-		
+
 	};
-	
+
 	/**
 	 * Starts tour from the beginning
 	 */
 	this.start = function(){
 		this.prepareSteps();
-		
+
 		// build dialog
 		var title = _t(tourWelcomeTitle);
 		var text = '<p class="lead">' + _t(welcomeDialogBody) + '</p>' + lang_switcher.replace('style="', 'style="display: none; ');
 		var dialog = $('#' + popupConfirmDialogId);
-		
+
 		// add language switcher
 		dialog.on('shown.bs.modal', function (){
 			var switcher = getLanguage() === 'en' ? $('#switch-to-de') : $('#switch-to-en');
@@ -184,7 +184,7 @@ function GuidedTour(){
 			var switcher = getLanguage() === 'en' ? $('#switch-to-de') : $('#switch-to-en');
 			switcher.remove();
 		});
-		
+
 		// display dialog and set click events
 		displayConfirmationDialog(title, text, start_fct, end_fct, false);
 		dialog.find('#confirm-dialog-accept-btn').text(_t(yes));

@@ -4,7 +4,7 @@
 
 function AjaxDiscussionHandler() {
 	'use strict';
-	
+
 	/**
 	 * Sends new premises to the server. Answer will be given to a callback
 	 * @param arg_uid
@@ -30,11 +30,9 @@ function AjaxDiscussionHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewPremisesArgument(data);
 		}).fail(function ajaxSendNewPremisesForArgumentFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-			//new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 6). '
-			//	 + _t(doNotHesitateToContact) + '. ');
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param position
@@ -86,8 +84,6 @@ function AjaxDiscussionHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewStartPremise(data);
 		}).fail(function ajaxSendNewStartPremiseFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-			//new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 7). '
-			//	 + _t(doNotHesitateToContact) + '. ');
 		});
 	};
 
@@ -112,11 +108,9 @@ function AjaxDiscussionHandler() {
 			new InteractionHandler().callbackIfDoneForSendNewStartStatement(data);
 		}).fail(function ajaxSendStartStatementFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-			//new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 2). '
-			//	 + _t(doNotHesitateToContact) + '. ');
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param info
@@ -148,7 +142,6 @@ function AjaxDiscussionHandler() {
 		}).done(function ajaxSendStartStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewIssue(data);
 		}).fail(function ajaxSendStartStatementFail() {
-			// new GuiHandler().setErrorDescription(_t(internalError));
 			$('#' + addTopicPopupErrorText).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 9). ' + _t(doNotHesitateToContact) + '. ');
 			$('#' + addTopicPopupContainer).show();
 			setTimeout(function(){
@@ -178,8 +171,6 @@ function AjaxDiscussionHandler() {
 		}).done(function ajaxGetLogfileForPremisegroupDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingLogfile(data);
 		}).fail(function ajaxGetLogfileForPremisegroupFail() {
-			// $('#' + popupEditStatementErrorDescriptionId).html('Unfortunately, the log file could not be requested (server offline or csrf check' +
-			// 	' failed. Sorry!');
 			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 15). ' + _t(doNotHesitateToContact) + '. ');
 		});
 	};
@@ -205,8 +196,6 @@ function AjaxDiscussionHandler() {
 		}).done(function ajaxSendCorrectureOfStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, statements_uids);
 		}).fail(function ajaxSendCorrectureOfStatementFail() {
-			// $('#' + popupEditStatementErrorDescriptionId).html('Unfortunately, the correcture could not be send (server offline or csrf check' +
-			// 	' failed. Sorry!');
 			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 13). ' + _t(doNotHesitateToContact) + '. ');
 		});
 	};
@@ -234,7 +223,6 @@ function AjaxDiscussionHandler() {
 		}).fail(function ajaxGetShortenUrl() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 			new PopupHandler().hideAndClearUrlSharingPopup();
-			//$('#' + popupUrlSharingInputId).val(long_url);
 		});
 	};
 
@@ -259,8 +247,6 @@ function AjaxDiscussionHandler() {
 			new InteractionHandler().callbackIfDoneForGettingInfosAboutArgument(data);
 		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-			//new GuiHandler().showDiscussionError(_t_discussion(requestFailed) + ' (' + _t_discussion(errorCode) + ' 8). '
-			//	 + _t_discussion(doNotHesitateToContact) + '. ');
 		});
 	};
 
@@ -276,7 +262,7 @@ function AjaxDiscussionHandler() {
 		var is_position = type === 'position' || type === 'statement';
 		var uid = argument_uid === 'None' ? statement_uid : argument_uid;
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		
+
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
 			method: 'GET',
@@ -295,8 +281,6 @@ function AjaxDiscussionHandler() {
 			new InteractionHandler().callbackIfDoneForGettingMoreInfosAboutOpinion(data, is_argument);
 		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-			//new GuiHandler().showDiscussionError(_t_discussion(requestFailed) + ' (' + _t_discussion(errorCode) + ' 10). '
-			//	 + _t_discussion(doNotHesitateToContact) + '. ');
 		});
 
 	};
@@ -328,9 +312,8 @@ function AjaxDiscussionHandler() {
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneFuzzySearchForDuplicate(data);
 		}).fail(function ajaxGetAllUsersFail() {
-			// setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
-		
+
 	};
 
 	/***
@@ -356,7 +339,7 @@ function AjaxDiscussionHandler() {
 		}
 		var bubbleSpace = $('#' + discussionBubbleSpaceId);
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		
+
 		// clear lists if input is empty
 		if(callback.val().length === 0) {
 			$('#' + proposalStatementListGroupId).empty();
@@ -407,15 +390,10 @@ function AjaxDiscussionHandler() {
 		}).done(function ajaxGetAllUsersDone(data) {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type, reason);
 		}).fail(function ajaxGetAllUsersFail() {
-			// setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-			//setTimout(function ajaxGetAllUsersFailDelay() {
-			//	new GuiHandler().showDiscussionError(_t(requestFailed) + ' (' + _t(errorCode) + ' 11). '
-			//			+ _t(doNotHesitateToContact) + '. ');
-			//}, 350);
 		});
 		callback.focus();
 	};
-	
+
 	/**
 	 *
 	 * @param uid
@@ -442,7 +420,7 @@ function AjaxDiscussionHandler() {
 			//$('#' + popupUrlSharingInputId).val(long_url);
 		});
 	};
-	
+
 	/**
 	 * Marks given statements as read
 	 *
@@ -470,7 +448,7 @@ function AjaxDiscussionHandler() {
 		}).fail(function () {
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param uid
@@ -506,9 +484,9 @@ function AjaxDiscussionHandler() {
 			new PopupHandler().hideAndClearUrlSharingPopup();
 		});
 	};
-	
+
 	/*
-	
+
 	 */
 	this.setDiscussionSettings = function(toggle_element){
 		var checked = toggle_element.prop('checked');

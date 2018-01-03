@@ -2,7 +2,6 @@
  * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
-
 /**
  * Swaps the element with the parameter
  * @param from element
@@ -11,7 +10,7 @@
  */
 function swapElements (from, to) {
     'use strict';
-    
+
     var copy_to = $(to).clone(true),
 	    copy_from = $(from).clone(true);
 	$(to).replaceWith(copy_from);
@@ -25,7 +24,7 @@ function swapElements (from, to) {
  */
 function levensthein (s1, s2){
     'use strict';
-    
+
 	var row2=[];
 	if (s1 === s2) {
 		return 0;
@@ -44,7 +43,11 @@ function levensthein (s1, s2){
 				for (i1 = 0; i1 < s1_len; ++i1) {
 					c = a + (s1.charCodeAt(i1) === c2 ? 0 : 1);
 					a = row[i1];
-					b = b < a ? (b < c ? b + 1 : c) : (a < c ? a + 1 : c);
+					if (b < a) {
+						b = b < c ? b + 1 : c;
+					} else {
+						b = a < c ? a + 1 : c;
+					}
 					row[i1] = b;
 				}
 			}

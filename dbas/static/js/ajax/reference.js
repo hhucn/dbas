@@ -4,7 +4,7 @@
 
 function AjaxReferenceHandler(){
 	'use strict';
-	
+
 	/**
 	 *
 	 * @param uid
@@ -13,7 +13,7 @@ function AjaxReferenceHandler(){
 	 */
 	this.setReference = function(uid, reference, ref_source){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		
+
 		$.ajax({
 			url: 'ajax_set_references',
 			method: 'POST',
@@ -36,7 +36,7 @@ function AjaxReferenceHandler(){
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param uid

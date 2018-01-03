@@ -14,6 +14,12 @@ class DiscussionReactionViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
+        self.default_request = testing.DummyRequest(matchdict={
+            'slug': 'cat-or-dog',
+            'arg_id_user': 2,
+            'mode': 'undermine',
+            'arg_id_sys': 16,
+        })
         clear_seen_by_of('Tobias')
         clear_clicks_of('Tobias')
         clear_seen_by_of('Björn')
@@ -34,13 +40,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         len_db_seen_a1 = len(DBDiscussionSession.query(SeenArgument).all())
         len_db_votes_a1 = len(DBDiscussionSession.query(ClickedArgument).all())
 
-        request = testing.DummyRequest(matchdict={
-            'slug': 'cat-or-dog',
-            'arg_id_user': 2,
-            'mode': 'undermine',
-            'arg_id_sys': 16,
-        })
-        response = d(request)
+        response = d(self.default_request)
         verify_dictionary_of_view(self, response)
 
         len_db_seen_s2 = len(DBDiscussionSession.query(SeenStatement).all())
@@ -52,11 +52,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.assertEqual(len_db_seen_a1, len_db_seen_a2)
         self.assertEqual(len_db_votes_a1, len_db_votes_a2)
 
-    def test_page_logged_in(self):
-        from dbas.views import discussion_reaction as d
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-
+    def __check_standard_counting(self, route, db_user):
         len_db_seen_s1 = len(DBDiscussionSession.query(SeenStatement).all())
         len_db_votes_s1 = len(DBDiscussionSession.query(ClickedStatement).all())
         len_db_seen_a1 = len(DBDiscussionSession.query(SeenArgument).all())
@@ -66,13 +62,7 @@ class DiscussionReactionViewTests(unittest.TestCase):
                                                                                       ClickedArgument.is_valid == True,
                                                                                       ClickedArgument.is_up_vote == True)).all())
 
-        request = testing.DummyRequest(matchdict={
-            'slug': 'cat-or-dog',
-            'arg_id_user': 2,
-            'mode': 'undermine',
-            'arg_id_sys': 16,
-        })
-        response = d(request)
+        response = route(self.default_request)
         transaction.commit()
         verify_dictionary_of_view(self, response)
 
@@ -90,6 +80,13 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.assertLess(len_db_seen_a1, len_db_seen_a2)
         self.assertLess(len_db_votes_a1, len_db_votes_a2)
         self.assertEqual(len_db_vote_arg1 + 1, len_db_vote_arg2)
+
+    def test_page_logged_in(self):
+        from dbas.views import discussion_reaction as d
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+
+        self.__check_standard_counting(d, db_user)
 
         clear_seen_by_of('Tobias')
         clear_clicks_of('Tobias')
@@ -99,41 +96,9 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Björn').first()
 
-        len_db_seen_s1 = len(DBDiscussionSession.query(SeenStatement).all())
-        len_db_votes_s1 = len(DBDiscussionSession.query(ClickedStatement).all())
-        len_db_seen_a1 = len(DBDiscussionSession.query(SeenArgument).all())
-        len_db_votes_a1 = len(DBDiscussionSession.query(ClickedArgument).all())
-        len_db_vote_arg1 = len(DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == db_user.uid,
-                                                                                      ClickedArgument.argument_uid == 2,
-                                                                                      ClickedArgument.is_valid == True,
-                                                                                      ClickedArgument.is_up_vote == True)).all())
         len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
-
-        request = testing.DummyRequest(matchdict={
-            'slug': 'cat-or-dog',
-            'arg_id_user': 2,
-            'mode': 'undermine',
-            'arg_id_sys': 16,
-        })
-        response = d(request)
-        transaction.commit()
-        verify_dictionary_of_view(self, response)
-
-        len_db_seen_s2 = len(DBDiscussionSession.query(SeenStatement).all())
-        len_db_votes_s2 = len(DBDiscussionSession.query(ClickedStatement).all())
-        len_db_seen_a2 = len(DBDiscussionSession.query(SeenArgument).all())
-        len_db_votes_a2 = len(DBDiscussionSession.query(ClickedArgument).all())
-        len_db_vote_arg2 = len(DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == db_user.uid,
-                                                                                      ClickedArgument.argument_uid == 2,
-                                                                                      ClickedArgument.is_valid == True,
-                                                                                      ClickedArgument.is_up_vote == True)).all())
+        self.__check_standard_counting(d, db_user)
         len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
-
-        self.assertEqual(len_db_seen_s1, len_db_seen_s2)
-        self.assertLess(len_db_votes_s1, len_db_votes_s2)
-        self.assertLess(len_db_seen_a1, len_db_seen_a2)
-        self.assertLess(len_db_votes_a1, len_db_votes_a2)
-        self.assertEqual(len_db_vote_arg1 + 1, len_db_vote_arg2)
         self.assertNotEqual(len_db_reputation1, len_db_reputation2)
 
         clear_seen_by_of('Björn')
@@ -143,42 +108,9 @@ class DiscussionReactionViewTests(unittest.TestCase):
         from dbas.views import discussion_reaction as d
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Björn').first()
-
-        len_db_seen_s1 = len(DBDiscussionSession.query(SeenStatement).all())
-        len_db_votes_s1 = len(DBDiscussionSession.query(ClickedStatement).all())
-        len_db_seen_a1 = len(DBDiscussionSession.query(SeenArgument).all())
-        len_db_votes_a1 = len(DBDiscussionSession.query(ClickedArgument).all())
-        len_db_vote_arg1 = len(DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == db_user.uid,
-                                                                                      ClickedArgument.argument_uid == 2,
-                                                                                      ClickedArgument.is_valid == True,
-                                                                                      ClickedArgument.is_up_vote == True)).all())
         len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
-
-        request = testing.DummyRequest(matchdict={
-            'slug': 'cat-or-dog',
-            'arg_id_user': 2,
-            'mode': 'undermine',
-            'arg_id_sys': 16,
-        })
-        response = d(request)
-        transaction.commit()
-        verify_dictionary_of_view(self, response)
-
-        len_db_seen_s2 = len(DBDiscussionSession.query(SeenStatement).all())
-        len_db_votes_s2 = len(DBDiscussionSession.query(ClickedStatement).all())
-        len_db_seen_a2 = len(DBDiscussionSession.query(SeenArgument).all())
-        len_db_votes_a2 = len(DBDiscussionSession.query(ClickedArgument).all())
-        len_db_vote_arg2 = len(DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == db_user.uid,
-                                                                                      ClickedArgument.argument_uid == 2,
-                                                                                      ClickedArgument.is_valid == True,
-                                                                                      ClickedArgument.is_up_vote == True)).all())
+        self.__check_standard_counting(d, db_user)
         len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
-
-        self.assertEqual(len_db_seen_s1, len_db_seen_s2)
-        self.assertLess(len_db_votes_s1, len_db_votes_s2)
-        self.assertLess(len_db_seen_a1, len_db_seen_a2)
-        self.assertLess(len_db_votes_a1, len_db_votes_a2)
-        self.assertEqual(len_db_vote_arg1 + 1, len_db_vote_arg2)
         self.assertEqual(len_db_reputation1, len_db_reputation2)
 
         clear_seen_by_of('Björn')

@@ -76,13 +76,13 @@
                 </div>
 
                 <div class="row text-center" style="margin: 1em;">
-                    <div class="col-md-6" id="user-activity-chart-space"></div>
-                    <div class="col-md-6" id="user-vote-chart-space"></div>
+                    <div class="col-md-5 col-md-offset-1" id="user-activity-chart-space"></div>
+                    <div class="col-md-offset-1 col-md-5" id="user-vote-chart-space"></div>
                 </div>
 
                 <div class="row text-center" style="margin: 1em;">
-                    <div class="col-md-6" id="user-statement-chart-space"></div>
-                    <div class="col-md-6" id="user-edit-chart-space"></div>
+                    <div class="col-md-5 col-md-offset-1" id="user-statement-chart-space"></div>
+                    <div class="col-md-offset-1 col-md-5" id="user-edit-chart-space"></div>
                 </div>
 
                 <div class="row text-center" style="margin: 1em;">

@@ -143,9 +143,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.__check_meta_clicks(vote_dict)
         self.assertEqual(len_db_reputation1, len_db_reputation2)
 
-    def test_justify_argument_page_rep(self):
-        self.config.testing_securitypolicy(userid='Björn', permissive=True)
-        from dbas.views import discussion_justify as d
+    def __test_base_for_justify_argument_page_rep(self, ajax):
         vote_dict = self.__get_meta_clicks(True)
         request = testing.DummyRequest()
         request.matchdict = {
@@ -154,12 +152,18 @@ class DiscussionJustifyViewTests(unittest.TestCase):
             'mode': 't',
             'relation': ['undermine'],
         }
-        response = d(request)
+        response = ajax(request)
         verify_dictionary_of_view(self, response)
         self.assertNotEqual(vote_dict['seen_s'], len(DBDiscussionSession.query(SeenStatement).all()))
         self.assertEqual(vote_dict['click_s'], len(DBDiscussionSession.query(ClickedStatement).all()))
         self.assertNotEqual(vote_dict['seen_a'], len(DBDiscussionSession.query(SeenArgument).all()))
         self.assertEqual(vote_dict['click_a'], len(DBDiscussionSession.query(ClickedArgument).all()))
+        return vote_dict
+
+    def test_justify_argument_page_rep(self):
+        self.config.testing_securitypolicy(userid='Björn', permissive=True)
+        from dbas.views import discussion_justify as d
+        vote_dict = self.__test_base_for_justify_argument_page_rep(d)
         self.assertNotEqual(vote_dict['rep_h'], len(DBDiscussionSession.query(ReputationHistory).all()))
         clear_seen_by_of('Björn')
         clear_clicks_of('Björn')
@@ -167,22 +171,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
     def test_justify_argument_page_rep_not_twice(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
         from dbas.views import discussion_justify as d
-
-        vote_dict = self.__get_meta_clicks(True)
-
-        request = testing.DummyRequest()
-        request.matchdict = {
-            'slug': 'cat-or-dog',
-            'statement_or_arg_id': 2,
-            'mode': 't',
-            'relation': ['undermine'],
-        }
-        response = d(request)
-        verify_dictionary_of_view(self, response)
-        self.assertNotEqual(vote_dict['seen_s'], len(DBDiscussionSession.query(SeenStatement).all()))
-        self.assertEqual(vote_dict['click_s'], len(DBDiscussionSession.query(ClickedStatement).all()))
-        self.assertNotEqual(vote_dict['seen_a'], len(DBDiscussionSession.query(SeenArgument).all()))
-        self.assertEqual(vote_dict['click_a'], len(DBDiscussionSession.query(ClickedArgument).all()))
+        vote_dict = self.__test_base_for_justify_argument_page_rep(d)
         self.assertEqual(vote_dict['rep_h'], len(DBDiscussionSession.query(ReputationHistory).all()))
         clear_seen_by_of('Björn')
         clear_clicks_of('Björn')

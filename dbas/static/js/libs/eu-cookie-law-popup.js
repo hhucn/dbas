@@ -1,26 +1,24 @@
 /**
- * 	
+ *
  * JQUERY EU COOKIE LAW POPUPS
  * version 1.0.1
- * 
+ *
  * Code on Github:
  * https://github.com/wimagguc/jquery-eu-cookie-law-popup
- * 
+ *
  * To see a live demo, go to:
  * http://www.wimagguc.com/2015/03/jquery-eu-cookie-law-popup/
- * 
+ *
  * by Richard Dancsi
  * http://www.wimagguc.com/
- * 
+ *
  */
-
 (function($) {
-
+	'use strict';
 // for ie9 doesn't support debug console >>>
-if (!window.console) window.console = {};
-if (!window.console.log) window.console.log = function () { };
+if (!window.console){ window.console = {}; }
+if (!window.console.log){ window.console.log = function () { }; }
 // ^^^
-
 $.fn.euCookieLawPopup = (function() {
 
 	var _self = this;
@@ -129,7 +127,7 @@ $.fn.euCookieLawPopup = (function() {
 		var cookies = document.cookie.split(";");
 		for (var i = 0; i < cookies.length; i++) {
 			var c = cookies[i].trim();
-			if (c.indexOf(_self.vars.COOKIE_NAME) == 0) {
+			if (c.indexOf(_self.vars.COOKIE_NAME) === 0) {
 				userAcceptedCookies = c.substring(_self.vars.COOKIE_NAME.length + 1, c.length);
 			}
 		}
@@ -138,7 +136,6 @@ $.fn.euCookieLawPopup = (function() {
 	};
 	
 	var hideContainer = function() {
-		// $('.eupopup-container').slideUp(200);
 		$('.eupopup-container').animate({
 			opacity: 0,
 			height: 0
@@ -193,7 +190,7 @@ $.fn.euCookieLawPopup = (function() {
 			// Ready to start!
 			$('.eupopup-container').show();
 
-			// In case it's alright to just display the message once 
+			// In case it's alright to just display the message once
 			if (_self.params.autoAcceptCookiePolicy) {
 				setUserAcceptsCookies(true);
 			}

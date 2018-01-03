@@ -128,74 +128,46 @@ def drop_it(argv=sys.argv):
         for tmp in DBDiscussionSession.query(TextVersion).all():
             tmp.set_statement(None)
 
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(MarkedArgument).delete()) + ' in MarkedArgument')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(MarkedStatement).delete()) + ' in MarkedStatement')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(SeenArgument).delete()) + ' in SeenArgument')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(SeenStatement).delete()) + ' in SeenStatement')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(ClickedArgument).delete()) + ' in VoteArgument')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(ClickedStatement).delete()) + ' in VoteStatement')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Message).delete()) + ' in Message')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(StatementReferences).delete()) + ' in StatementReferences')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Premise).delete()) + ' in Premise')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(TextVersion).delete()) + ' in TextVersion')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Issue).delete()) + ' in Issue')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Language).delete()) + ' in Language')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(ReviewDelete).delete()) + ' in ReviewDelete')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(ReviewEdit).delete()) + ' in ReviewEdit')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(ReviewEditValue).delete()) + ' in ReviewEditValue')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(ReviewOptimization).delete()) + ' in ReviewOptimization')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(ReviewDuplicate).delete()) + ' in ReviewDuplicate')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(ReviewDeleteReason).delete()) + ' in ReviewDeleteReason')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(LastReviewerDelete).delete()) + ' in LastReviewerDelete')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(LastReviewerEdit).delete()) + ' in LastReviewerEdit')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(
-            DBDiscussionSession.query(LastReviewerOptimization).delete()) + ' in LastReviewerOptimization')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(
-            DBDiscussionSession.query(LastReviewerDuplicate).delete()) + ' in LastReviewerDuplicate')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(ReputationHistory).delete()) + ' in ReputationHistory')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(ReputationReason).delete()) + ' in ReputationReason')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(
-            DBDiscussionSession.query(OptimizationReviewLocks).delete()) + ' in OptimizationReviewLocks')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(ReviewCanceled).delete()) + ' in ReviewCanceled')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(RevokedContent).delete()) + ' in RevokedContent')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(
-            DBDiscussionSession.query(RevokedContentHistory).delete()) + ' in RevokedContentHistory')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(RevokedDuplicate).delete()) + ' in RevokedDuplicate')
-
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Argument).delete()) + ' in Argument')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Statement).delete()) + ' in Statement')
-        logger('INIT_DB', 'DROP IT',
-               'deleted ' + str(DBDiscussionSession.query(PremiseGroup).delete()) + ' in PremiseGroup')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(RSS).delete()) + ' in RSS')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Settings).delete()) + ' in Settings')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(User).delete()) + ' in User')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Group).delete()) + ' in Group')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(User).delete()) + ' in User')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(Settings).delete()) + ' in Settings')
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(History).delete()) + ' in History')
-
-        logger('INIT_DB', 'DROP IT', 'deleted ' + str(DBDiscussionSession.query(News).delete()) + ' in News')
+        DBDiscussionSession.query(MarkedArgument).delete()
+        DBDiscussionSession.query(MarkedStatement).delete()
+        DBDiscussionSession.query(SeenArgument).delete()
+        DBDiscussionSession.query(SeenStatement).delete()
+        DBDiscussionSession.query(ClickedArgument).delete()
+        DBDiscussionSession.query(ClickedStatement).delete()
+        DBDiscussionSession.query(Message).delete()
+        DBDiscussionSession.query(StatementReferences).delete()
+        DBDiscussionSession.query(Premise).delete()
+        DBDiscussionSession.query(TextVersion).delete()
+        DBDiscussionSession.query(Issue).delete()
+        DBDiscussionSession.query(Language).delete()
+        DBDiscussionSession.query(ReviewDelete).delete()
+        DBDiscussionSession.query(ReviewEdit).delete()
+        DBDiscussionSession.query(ReviewEditValue).delete()
+        DBDiscussionSession.query(ReviewOptimization).delete()
+        DBDiscussionSession.query(ReviewDuplicate).delete()
+        DBDiscussionSession.query(ReviewDeleteReason).delete()
+        DBDiscussionSession.query(LastReviewerDelete).delete()
+        DBDiscussionSession.query(LastReviewerEdit).delete()
+        DBDiscussionSession.query(LastReviewerOptimization).delete()
+        DBDiscussionSession.query(LastReviewerDuplicate).delete()
+        DBDiscussionSession.query(ReputationHistory).delete()
+        DBDiscussionSession.query(ReputationReason).delete()
+        DBDiscussionSession.query(OptimizationReviewLocks).delete()
+        DBDiscussionSession.query(ReviewCanceled).delete()
+        DBDiscussionSession.query(RevokedContent).delete()
+        DBDiscussionSession.query(RevokedContentHistory).delete()
+        DBDiscussionSession.query(RevokedDuplicate).delete()
+        DBDiscussionSession.query(Argument).delete()
+        DBDiscussionSession.query(Statement).delete()
+        DBDiscussionSession.query(PremiseGroup).delete()
+        DBDiscussionSession.query(RSS).delete()
+        DBDiscussionSession.query(Settings).delete()
+        DBDiscussionSession.query(User).delete()
+        DBDiscussionSession.query(Group).delete()
+        DBDiscussionSession.query(User).delete()
+        DBDiscussionSession.query(Settings).delete()
+        DBDiscussionSession.query(History).delete()
+        DBDiscussionSession.query(News).delete()
         DBDiscussionSession.flush()
         transaction.commit()
 

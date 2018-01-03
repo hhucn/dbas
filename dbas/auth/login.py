@@ -114,7 +114,7 @@ def __do_google_oauth(request, redirect_uri, old_redirect, ui_locales):
         else:
             return value_dict
 
-        # return HTTPFound
+        # return a HTTPFound via 'return success login'
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
         request.session['oauth_redirect_url'] = old_redirect
@@ -142,7 +142,7 @@ def __do_github_oauth(request, redirect_uri, old_redirect, ui_locales):
         else:
             return value_dict
 
-        # return HTTPFound
+        # return a HTTPFound via 'return success login'
         url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
@@ -172,7 +172,7 @@ def __do_facebook_oauth(request, redirect_uri, old_redirect, ui_locales):
         else:
             return value_dict
 
-        # return HTTPFound
+        # return a HTTPFound via 'return success login'
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
         request.session['oauth_redirect_url'] = old_redirect
@@ -200,7 +200,7 @@ def __do_twitter_oauth(request, redirect_uri, old_redirect, ui_locales):
         else:
             return value_dict
 
-        # return HTTPFound
+        # return a HTTPFound via 'return success login'
         url = '{}/{}'.format(request.application_url, 'discuss').replace('http:', 'https:')
         return __return_success_login(request, False, value_dict['user'], False, url)
     else:
@@ -227,7 +227,7 @@ def __set_oauth_user(request, user_data, service, ui_locales):
     ret_dict = user.set_new_oauth_user(user_data['firstname'], user_data['lastname'], user_data['nickname'],
                                        user_data['email'], user_data['gender'], user_data['password'], user_data['id'],
                                        service, _tn)
-    # db_new_user = ret_dict['user']
+
     if ret_dict['success']:
         url = request.session['oauth_redirect_url']
         return __return_success_login(request, False, ret_dict['user'], False, url)
@@ -354,13 +354,40 @@ def register_user_with_ajax_data(params, ui_locales, mailer):
     gender = escape_string(params['gender']) if 'gender' in params else ''
     password = escape_string(params['password']) if 'password' in params else ''
     passwordconfirm = escape_string(params['passwordconfirm']) if 'passwordconfirm' in params else ''
-    if params['mode'] == 'manually':
-        recaptcha = params['g-recaptcha-response'] if 'g-recaptcha-response' in params else ''
-        is_human, error = validate_recaptcha(recaptcha)
-    else:
-        is_human = True
-        error = False
+    mode = escape_string(params['mode']) if 'mode' in params else ''
+    recaptcha = escape_string(params['g-recaptcha-response']) if 'g-recaptcha-response' in params else ''
     db_new_user = None
+
+    msg = __check_login_params(nickname, email, password, passwordconfirm, mode, recaptcha)
+    if msg:
+        return success, _tn.get(msg), db_new_user
+
+    # getting the authors group
+    db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
+
+    # does the group exists?
+    if not db_group:
+        msg = _tn.get(_.errorTryLateOrContant)
+        logger('Auth.Login', 'user_registration', 'Error occured')
+        return success, msg, db_new_user
+
+    ret_dict = user.set_new_user(mailer, firstname, lastname, nickname, gender, email, password, _tn)
+    success = ret_dict['success']
+    error = ret_dict['error']
+    db_new_user = ret_dict['user']
+
+    msg = error
+    if success:
+        msg = _tn.get(_.accountWasAdded).format(nickname)
+
+    return success, msg, db_new_user
+
+
+def __check_login_params(nickname, email, password, passwordconfirm, mode, recaptcha):
+    is_human = True
+    error = False
+    if mode == 'manually':
+        is_human, error = validate_recaptcha(recaptcha)
 
     # database queries mail verification
     db_nick1 = get_user_by_case_insensitive_nickname(nickname)
@@ -371,53 +398,33 @@ def register_user_with_ajax_data(params, ui_locales, mailer):
     # are the password equal?
     if not password == passwordconfirm:
         logger('Auth.Login', 'user_registration', 'Passwords are not equal')
-        msg = _tn.get(_.pwdNotEqual)
+        return _.pwdNotEqual
+
     # empty password?
-    elif len(password) <= 5:
+    if len(password) <= 5:
         logger('Auth.Login', 'user_registration', 'Password too short')
-        msg = _tn.get(_.pwdShort)
+        return _.pwdShort
+
     # is the nick already taken?
-    elif db_nick1 or db_nick2:
+    if db_nick1 or db_nick2:
         logger('Auth.Login', 'user_registration', 'Nickname \'' + nickname + '\' is taken')
-        msg = _tn.get(_.nickIsTaken)
+        return _.nickIsTaken
+
     # is the email already taken?
-    elif db_mail:
+    if db_mail:
         logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is taken')
-        msg = _tn.get(_.mailIsTaken)
-    elif len(email) < 2:
-        logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is too short')
-        msg = _tn.get(_.mailNotValid)
-    # is the email valid?
-    elif not is_mail_valid:
-        logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is not valid')
-        msg = _tn.get(_.mailNotValid)
+        return _.mailIsTaken
+
+    if len(email) < 2 or not is_mail_valid:
+        logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is too short or not valid')
+        return _.mailNotValid
+
     # is anti-spam correct?
-    elif not is_human or error:
+    if not is_human or error:
         logger('Auth.Login', 'user_registration', 'recaptcha error')
-        msg = _tn.get(_.maliciousAntiSpam)
-    # lets go
-    else:
+        return _.maliciousAntiSpam
 
-        # getting the authors group
-        db_group = DBDiscussionSession.query(Group).filter_by(name="users").first()
-
-        # does the group exists?
-        if not db_group:
-            msg = _tn.get(_.errorTryLateOrContant)
-            logger('Auth.Login', 'user_registration', 'Error occured')
-            return success, msg, db_new_user
-
-        ret_dict = user.set_new_user(mailer, firstname, lastname, nickname, gender, email, password, _tn)
-        success = ret_dict['success']
-        error = ret_dict['error']
-        db_new_user = ret_dict['user']
-
-        if success:
-            msg = _tn.get(_.accountWasAdded).format(nickname)
-        else:
-            msg = error
-
-    return success, msg, db_new_user
+    return None
 
 
 def __refresh_headers_and_url(request, db_user, keep_login, url):

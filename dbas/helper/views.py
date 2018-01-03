@@ -61,53 +61,103 @@ def handle_justification_step(request_dict, for_api):
     matchdict = request_dict['matchdict']
     statement_or_arg_id = matchdict['statement_or_arg_id'] if 'statement_or_arg_id' in matchdict else ''
     mode = matchdict['mode'] if 'mode' in request_dict['matchdict'] else ''
-    supportive = mode == 't' or mode == 'd'  # supportive = t or do not know mode
     relation = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
-    issue = request_dict['issue']
-    ui_locales = request_dict['ui_locales']
-    nickname = request_dict['nickname']
-    main_page = request_dict['app_url']
-    port = request_dict['port']
 
     if not is_integer(statement_or_arg_id, True):
         return None, None, None
 
     if [c for c in ('t', 'f') if c in mode] and relation == '':
-        logger('ViewHelper', 'handle_justification_step', 'justify statement')
-        if not get_text_for_statement_uid(statement_or_arg_id) or not check_belonging_of_statement(issue,
-                                                                                                   statement_or_arg_id):
-            raise HTTPNotFound()
-        item_dict, discussion_dict, extras_dict = preparation_for_justify_statement(request_dict, for_api,
-                                                                                    statement_or_arg_id, supportive)
+        item_dict, discussion_dict, extras_dict = __handle_justification_statement(request_dict, for_api,
+                                                                                   statement_or_arg_id, mode)
 
     elif 'd' in mode and relation == '':
-        logger('ViewHelper', 'handle_justification_step', 'do not know for {}'.format(statement_or_arg_id))
-        if int(statement_or_arg_id) != 0 and \
-                not check_belonging_of_argument(issue, statement_or_arg_id) and \
-                not check_belonging_of_statement(issue, statement_or_arg_id):
-            raise HTTPNotFound()
-        item_dict, discussion_dict, extras_dict = preparation_for_dont_know_statement(request_dict, for_api,
-                                                                                      statement_or_arg_id, supportive)
+        item_dict, discussion_dict, extras_dict = __handle_justification_donnt_know(request_dict, for_api,
+                                                                                    statement_or_arg_id, mode)
 
     elif [c for c in ('undermine', 'rebut', 'undercut', 'support') if c in relation]:
-        logger('ViewHelper', 'handle_justification_step', 'justify argument')
-        if not check_belonging_of_argument(issue, statement_or_arg_id):
-            raise HTTPNotFound()
-        item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(request_dict, for_api,
-                                                                                   statement_or_arg_id, supportive,
-                                                                                   relation)
-        # add reputation
-        add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_confrontation)
-        # send message if the user is now able to review
-        if broke_limit:
-            _t = Translator(ui_locales)
-            send_request_for_info_popup_to_socketio(nickname, port, _t.get(_.youAreAbleToReviewNow),
-                                                    main_page + '/review')
+        item_dict, discussion_dict, extras_dict = __handle_justification_argument(request_dict, for_api,
+                                                                                  statement_or_arg_id, relation, mode)
 
     else:
         logger('ViewHelper', 'handle_justification_step', '404')
         return None, None, None
 
+    return item_dict, discussion_dict, extras_dict
+
+
+def __handle_justification_statement(request_dict, for_api, statement_or_arg_id, mode):
+    """
+
+    :param request_dict:
+    :param for_api:
+    :param statement_or_arg_id:
+    :param mode:
+    :return:
+    """
+    logger('ViewHelper', 'handle_justification_step', 'justify statement')
+    issue = request_dict['issue']
+    supportive = mode == 't' or mode == 'd'  # supportive = t or do not know mode
+
+    if not get_text_for_statement_uid(statement_or_arg_id) or not check_belonging_of_statement(issue,
+                                                                                               statement_or_arg_id):
+        raise HTTPNotFound()
+    item_dict, discussion_dict, extras_dict = preparation_for_justify_statement(request_dict, for_api,
+                                                                                statement_or_arg_id, supportive)
+    return item_dict, discussion_dict, extras_dict
+
+
+def __handle_justification_donnt_know(request_dict, for_api, statement_or_arg_id, mode):
+    """
+
+    :param request_dict:
+    :param for_api:
+    :param statement_or_arg_id:
+    :param mode:
+    :return:
+    """
+    logger('ViewHelper', '__handle_justification_donnt_know', 'do not know for {}'.format(statement_or_arg_id))
+    issue = request_dict['issue']
+    supportive = mode == 't' or mode == 'd'  # supportive = t or do not know mode
+
+    if int(statement_or_arg_id) != 0 and \
+            not check_belonging_of_argument(issue, statement_or_arg_id) and \
+            not check_belonging_of_statement(issue, statement_or_arg_id):
+        raise HTTPNotFound()
+    item_dict, discussion_dict, extras_dict = preparation_for_dont_know_statement(request_dict, for_api,
+                                                                                  statement_or_arg_id, supportive)
+    return item_dict, discussion_dict, extras_dict
+
+
+def __handle_justification_argument(request_dict, for_api, statement_or_arg_id, relation, mode):
+    """
+
+    :param request_dict:
+    :param for_api:
+    :param statement_or_arg_id:
+    :param relation:
+    :param mode:
+    :return:
+    """
+    logger('ViewHelper', '__handle_justification_argument', 'justify argument')
+    issue = request_dict['issue']
+    ui_locales = request_dict['ui_locales']
+    nickname = request_dict['nickname']
+    main_page = request_dict['app_url']
+    port = request_dict['port']
+    supportive = mode == 't' or mode == 'd'  # supportive = t or do not know mode
+
+    if not check_belonging_of_argument(issue, statement_or_arg_id):
+        raise HTTPNotFound()
+    item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(request_dict, for_api,
+                                                                               statement_or_arg_id, supportive,
+                                                                               relation)
+    # add reputation
+    add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_confrontation)
+    # send message if the user is now able to review
+    if broke_limit:
+        _t = Translator(ui_locales)
+        send_request_for_info_popup_to_socketio(nickname, port, _t.get(_.youAreAbleToReviewNow),
+                                                main_page + '/review')
     return item_dict, discussion_dict, extras_dict
 
 

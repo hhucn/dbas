@@ -143,8 +143,10 @@ def update_last_action(nick):
     timeout_in_sec = 60 * 60 * 24 * 7
 
     # check difference of
-    diff_action = (get_now() - db_user.last_action).seconds
-    diff_login = (get_now() - db_user.last_login).seconds
+    diff_action = get_now() - db_user.last_action
+    diff_login = get_now() - db_user.last_login
+    diff_action = diff_action.seconds + diff_action.days * 24 * 60 * 60
+    diff_login = diff_login.seconds + diff_login.days * 24 * 60 * 60
 
     diff = diff_action if diff_action < diff_login else diff_login
     should_log_out = diff > timeout_in_sec and not db_settings.keep_logged_in
@@ -235,11 +237,6 @@ def get_public_data(nickname, lang):
     return_dict['label3'] = _tn.get(_.statementIndex)
     return_dict['label4'] = _tn.get(_.editIndex)
 
-    return_dict['labelinfo1'] = _tn.get(_.decisionIndex7Info)
-    return_dict['labelinfo2'] = _tn.get(_.decisionIndex30Info)
-    return_dict['labelinfo3'] = _tn.get(_.statementIndexInfo)
-    return_dict['labelinfo4'] = _tn.get(_.editIndexInfo)
-
     for days_diff in range(30, -1, -1):
         date_begin = date.today() - timedelta(days=days_diff)
         date_end = date.today() - timedelta(days=days_diff - 1)
@@ -251,17 +248,17 @@ def get_public_data(nickname, lang):
         labels_statement_30.append(ts)
         labels_edit_30.append(ts)
 
-        db_votes_statements = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.author_uid == current_user.uid,
-                                                                                      ClickedStatement.timestamp >= begin,
-                                                                                      ClickedStatement.timestamp < end)).all()
-        db_votes_arguments = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == current_user.uid,
-                                                                                    ClickedArgument.timestamp >= begin,
-                                                                                    ClickedArgument.timestamp < end)).all()
-        votes = len(db_votes_arguments) + len(db_votes_statements)
-        data_decision_30.append(votes)
+        db_clicks_statements = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.author_uid == current_user.uid,
+                                                                                       ClickedStatement.timestamp >= begin,
+                                                                                       ClickedStatement.timestamp < end)).all()
+        db_clicks_arguments = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == current_user.uid,
+                                                                                     ClickedArgument.timestamp >= begin,
+                                                                                     ClickedArgument.timestamp < end)).all()
+        clicks = len(db_clicks_statements) + len(db_clicks_arguments)
+        data_decision_30.append(clicks)
         if days_diff < 6:
             labels_decision_7.append(ts)
-            data_decision_7.append(votes)
+            data_decision_7.append(clicks)
 
         statements, edits = get_textversions(nickname, lang, begin, end)
         data_statement_30.append(len(statements))
@@ -346,7 +343,7 @@ def get_count_of_votes_of_user(user, limit_on_today=False):
     :return: Int, Int
     """
     if not user:
-        return 0
+        return (0, 0)
 
     db_arg = DBDiscussionSession.query(MarkedArgument).filter(ClickedArgument.author_uid == user.uid)
     db_stat = DBDiscussionSession.query(MarkedStatement).filter(ClickedStatement.author_uid == user.uid)
@@ -371,7 +368,7 @@ def get_count_of_clicks(user, limit_on_today=False):
     :return: Int, Int
     """
     if not user:
-        return 0
+        return (0, 0)
 
     db_arg = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == user.uid)
     db_stat = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == user.uid)
@@ -415,7 +412,6 @@ def get_textversions(public_nickname, lang, timestamp_after=None, timestamp_befo
                                                                   TextVersion.timestamp >= timestamp_after,
                                                                   TextVersion.timestamp < timestamp_before)).all()
 
-    logger('User', 'get_textversions', 'count of edits: ' + str(len(db_edits)))
     for edit in db_edits:
         db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=edit.statement_uid).first()  # TODO #432
         edit_dict = dict()
@@ -431,18 +427,18 @@ def get_textversions(public_nickname, lang, timestamp_after=None, timestamp_befo
     return statement_array, edit_array
 
 
-def get_marked_elements_of_user(user, is_argument, lang):
+def get_marked_elements_of_user(nickname, is_argument, lang):
     """
     Get all marked arguments/statements of the user
 
-    :param user: User
+    :param nickname: nickname
     :param is_argument: Boolean
     :param lang: uid_locales
     :return: [{},...]
     """
     return_array = []
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    db_user = get_user_by_private_or_public_nickname(nickname)
     if not db_user:
         return return_array
 
@@ -466,26 +462,26 @@ def get_marked_elements_of_user(user, is_argument, lang):
     return return_array
 
 
-def get_arg_clicks_of_user(user, lang):
-    return get_clicks_of_user(user, True, lang)
+def get_arg_clicks_of_user(nickname, lang):
+    return __get_clicks_of_user(nickname, True, lang)
 
 
-def get_stmt_clicks_of_user(user, lang):
-    return get_clicks_of_user(user, False, lang)
+def get_stmt_clicks_of_user(nickname, lang):
+    return __get_clicks_of_user(nickname, False, lang)
 
 
-def get_clicks_of_user(user, is_argument, lang):
+def __get_clicks_of_user(nickname, is_argument, lang):
     """
     Returs array with all clicks done by the user
 
-    :param user: user.nickname
+    :param nickname: user.nickname
     :param is_argument: Boolean
     :param lang: ui_locales
     :return: [{},...]
     """
     return_array = []
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    db_user = get_user_by_private_or_public_nickname(nickname)
     if not db_user:
         return return_array
 
@@ -639,18 +635,11 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
     return message, success
 
 
-def __create_new_user(firstname, lastname, email, nickname, password, gender, db_group_uid, ui_locales,
-                      oauth_provider='', oauth_provider_id=''):
+def __create_new_user(user, ui_locales, oauth_provider='', oauth_provider_id=''):
     """
     Insert a new user row
 
-    :param firstname: String
-    :param lastname: String
-    :param email: String
-    :param nickname: String
-    :param password: String
-    :param gender: String
-    :param db_group_uid: Group.uid
+    :param user: dict with every information for a user needed
     :param ui_locales: Language.ui_locales
     :param oauth_provider: String
     :param oauth_provider_id: String
@@ -661,20 +650,20 @@ def __create_new_user(firstname, lastname, email, nickname, password, gender, db
 
     _t = Translator(ui_locales)
     # creating a new user with hashed password
-    logger('User', '__create_new_user', 'Adding user ' + nickname)
-    hashed_password = password_handler.get_hashed_password(password)
-    newuser = User(firstname=firstname,
-                   surname=lastname,
-                   email=email,
-                   nickname=nickname,
+    logger('User', '__create_new_user', 'Adding user ' + user['nickname'])
+    hashed_password = password_handler.get_hashed_password(user['password'])
+    newuser = User(firstname=user['firstname'],
+                   surname=user['lastname'],
+                   email=user['email'],
+                   nickname=user['nickname'],
                    password=hashed_password,
-                   gender=gender,
-                   group_uid=db_group_uid,
+                   gender=user['gender'],
+                   group_uid=user['db_group_uid'],
                    oauth_provider=oauth_provider,
                    oauth_provider_id=oauth_provider_id)
     DBDiscussionSession.add(newuser)
     transaction.commit()
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
     settings = Settings(author_uid=db_user.uid,
                         send_mails=False,
                         send_notifications=True,
@@ -683,10 +672,10 @@ def __create_new_user(firstname, lastname, email, nickname, password, gender, db
     transaction.commit()
 
     # sanity check, whether the user exists
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
     if db_user:
         logger('User', '__create_new_user', 'New data was added with uid ' + str(db_user.uid))
-        success = _t.get(_.accountWasAdded).format(nickname)
+        success = _t.get(_.accountWasAdded).format(user['nickname'])
 
     else:
         logger('User', '__create_new_user', 'New data was not added')
@@ -723,8 +712,16 @@ def set_new_user(mailer, firstname, lastname, nickname, gender, email, password,
         logger('User', 'set_new_user', 'User already exists')
         return {'success': False, 'error': _tn.get(_.nickIsTaken), 'user': None}
 
-    success, info, db_new_user = __create_new_user(firstname, lastname, email, nickname, password, gender,
-                                                   db_group.uid, _tn.get_lang())
+    user = {
+        'firstname': firstname,
+        'lastname': lastname,
+        'email': email,
+        'nickname': nickname,
+        'password': password,
+        'gender': gender,
+        'db_group_uid': db_group.uid
+    }
+    success, info, db_new_user = __create_new_user(user, _tn.get_lang())
 
     if db_new_user:
         # sending an email and message
@@ -781,9 +778,16 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, password, i
         logger('User', 'set_new_oauth_user', 'User already exists')
         return {'success': False, 'error': _tn.get(_.nickIsTaken), 'user': None}
 
-    success, info, db_new_user = __create_new_user(firstname, lastname, email, nickname, password, gender,
-                                                   db_group.uid, _tn.get_lang(), oauth_provider=provider,
-                                                   oauth_provider_id=id)
+    user = {
+        'firstname': firstname,
+        'lastname': lastname,
+        'email': email,
+        'nickname': nickname,
+        'password': password,
+        'gender': gender,
+        'db_group_uid': db_group.uid
+    }
+    success, info, db_new_user = __create_new_user(user, _tn.get_lang(), oauth_provider=provider, oauth_provider_id=id)
 
     if db_new_user:
         logger('User', 'set_new_oauth_user', 'set new user in db')

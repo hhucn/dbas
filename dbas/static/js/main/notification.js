@@ -25,12 +25,12 @@ $(function () {
 	$('#popup-writing-notification-text').focusin(function(){
 		$('#proposal-user-list-group').empty();
 	});
-	
+
 	if (parseInt($('#total_in_counter').text()) > 0){
 		$('#read-inbox').removeClass('hidden');
 		$('#delete-inbox').removeClass('hidden');
 	}
-	
+
 	if (parseInt($('#total_out_counter').text()) > 0){
 		$('#delete-outbox').removeClass('hidden');
 	}
@@ -38,7 +38,6 @@ $(function () {
 
 function Notifications() {
     'use strict';
-    
 
 	/**
 	 *
@@ -121,7 +120,7 @@ function Notifications() {
 			});
 		});
 	};
-	
+
 	/**
 	 *
 	 */
@@ -140,7 +139,7 @@ function Notifications() {
 			new AjaxNotificationHandler().sendAjaxForReadMessages(uids);
 		});
 	};
-	
+
 	/**
 	 *
 	 */
@@ -173,7 +172,7 @@ function Notifications() {
 			new AjaxNotificationHandler().sendAjaxForDeleteMessages(uids);
 		});
 	};
-	
+
 	/**
 	 *
 	 */
@@ -199,7 +198,6 @@ function Notifications() {
 			});
 		});
 	};
-	
 
 	/**
     *

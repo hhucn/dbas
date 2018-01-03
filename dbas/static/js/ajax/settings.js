@@ -4,7 +4,7 @@
 
 function AjaxSettingsHandler(){
 	"use strict";
-	
+
 	/**
 	 * Ajax request for getting the users history
 	 */

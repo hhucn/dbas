@@ -201,6 +201,23 @@ class UrlManager(object):
         :param as_location_href: Boolean
         :return: String
         """
+        splitted_history, last_valid_step = self.__cut_history()
+        self.history = '-'.join(splitted_history)
+
+        if last_valid_step.startswith('/'):
+            last_valid_step = last_valid_step[1:]
+
+        if len(self.slug) > 0 and self.slug not in (self.api_url if self.for_api else self.discussion_url):
+            last_valid_step = self.slug + '/' + last_valid_step
+
+        return self.__return_discussion_url(as_location_href, last_valid_step)
+
+    def __cut_history(self):
+        """
+        Realigns the history
+
+        :return:
+        """
         splitted_history = self.history.split('-')
         # get last valid step
         last_valid_step = ''
@@ -218,16 +235,7 @@ class UrlManager(object):
                     if last_valid_step in step:
                         c = index
                 splitted_history = splitted_history[:c]
-
-        self.history = '-'.join(splitted_history)
-
-        if last_valid_step.startswith('/'):
-            last_valid_step = last_valid_step[1:]
-
-        if len(self.slug) > 0 and self.slug not in (self.api_url if self.for_api else self.discussion_url):
-            last_valid_step = self.slug + '/' + last_valid_step
-
-        return self.__return_discussion_url(as_location_href, last_valid_step)
+        return splitted_history, last_valid_step
 
     def __return_discussion_url(self, as_location_href, url):
         """
@@ -273,7 +281,7 @@ def get_url_for_new_argument(new_argument_uids, history, lang, url_manager):
     """
     new_argument_uid = random.choice(new_argument_uids)  # TODO eliminate random
     attacking_arg_uids = get_all_attacking_arg_uids_from_history(history)
-    arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, lang, restriction_on_arg_uids=attacking_arg_uids)
+    arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, lang, restriction_on_args=attacking_arg_uids)
     if arg_id_sys == 0:
         attack = 'end'
     url = url_manager.get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)

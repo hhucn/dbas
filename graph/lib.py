@@ -273,49 +273,55 @@ def __prepare_arguments_for_d3_data(db_arguments, edge_type):
                                                                 Premise.is_disabled == False).all()
         db_undercuts = DBDiscussionSession.query(Argument).filter_by(argument_uid=argument.uid).all()
         # target of the edge (case 1) or last edge (case 2)
+        target = 'argument_' + str(argument.argument_uid)
         if argument.conclusion_uid is not None:
             target = 'statement_' + str(argument.conclusion_uid)
-        else:
-            target = 'argument_' + str(argument.argument_uid)
 
         if len(db_premises) == 1 and len(db_undercuts) == 0:
-            edge_dict = __get_edge_dict(uid='edge_' + str(argument.uid) + '_' + str(counter),
-                                        source='statement_' + str(db_premises[0].statement_uid),
-                                        target=target,
-                                        color=green if argument.is_supportive else red,
-                                        edge_type=edge_type)
-            edges.append(edge_dict)
+            __add_edge_to_dict(edges, argument, counter, db_premises[0], target, edge_type)
         else:
-            edge_source = []
-            # edge from premisegroup to the middle point
-            for premise in db_premises:
-                edge_dict = __get_edge_dict(uid='edge_' + str(argument.uid) + '_' + str(counter),
-                                            source='statement_' + str(premise.statement_uid),
-                                            target='argument_' + str(argument.uid),
-                                            color=green if argument.is_supportive else red,
-                                            edge_type='')
-                edges.append(edge_dict)
-                edge_source.append('statement_' + str(premise.statement_uid))
-                counter += 1
-
-            # edge from the middle point to the conclusion/argument
-            edge_dict = __get_edge_dict(uid='edge_' + str(argument.uid) + '_0',
-                                        source='argument_' + str(argument.uid),
-                                        target=target,
-                                        color=green if argument.is_supportive else red,
-                                        edge_type=edge_type)
-            edges.append(edge_dict)
-
-            # add invisible point in the middle of the edge (to enable pgroups and undercuts)
-            node_dict = __get_node_dict(uid='argument_' + str(argument.uid),
-                                        label='',
-                                        edge_source=edge_source,
-                                        edge_target=target,
-                                        timestamp=argument.timestamp.timestamp)
-            nodes.append(node_dict)
-            all_ids.append('argument_' + str(argument.uid))
+            __add_edge_and_node_to_dict(edges, nodes, all_ids, argument, counter, db_premises, target, edge_type)
 
     return all_ids, nodes, edges, extras
+
+
+def __add_edge_to_dict(edges, argument, counter, premise, target, edge_type):
+    edges.append(__get_edge_dict(uid='edge_' + str(argument.uid) + '_' + str(counter),
+                                 source='statement_' + str(premise.statement_uid),
+                                 target=target,
+                                 color=green if argument.is_supportive else red,
+                                 edge_type=edge_type))
+
+
+def __add_edge_and_node_to_dict(edges, nodes, all_ids, argument, counter, db_premises, target, edge_type):
+    edge_source = []
+    # edge from premisegroup to the middle point
+    for premise in db_premises:
+        edge_dict = __get_edge_dict(uid='edge_' + str(argument.uid) + '_' + str(counter),
+                                    source='statement_' + str(premise.statement_uid),
+                                    target='argument_' + str(argument.uid),
+                                    color=green if argument.is_supportive else red,
+                                    edge_type='')
+        edges.append(edge_dict)
+        edge_source.append('statement_' + str(premise.statement_uid))
+        counter += 1
+
+    # edge from the middle point to the conclusion/argument
+    edge_dict = __get_edge_dict(uid='edge_' + str(argument.uid) + '_0',
+                                source='argument_' + str(argument.uid),
+                                target=target,
+                                color=green if argument.is_supportive else red,
+                                edge_type=edge_type)
+    edges.append(edge_dict)
+
+    # add invisible point in the middle of the edge (to enable pgroups and undercuts)
+    node_dict = __get_node_dict(uid='argument_' + str(argument.uid),
+                                label='',
+                                edge_source=edge_source,
+                                edge_target=target,
+                                timestamp=argument.timestamp.timestamp)
+    nodes.append(node_dict)
+    all_ids.append('argument_' + str(argument.uid))
 
 
 def __sanity_check_of_d3_data(all_node_ids, edges_array):

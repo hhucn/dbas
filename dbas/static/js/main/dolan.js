@@ -4,7 +4,7 @@
 
 function dolan_translate(dictionary, inputText) {
     'use strict';
-    
+
     var translatedText;
     var replacement;
     var regex;
@@ -16,7 +16,7 @@ function dolan_translate(dictionary, inputText) {
         regex = new RegExp("\\b("+key+")\\b", 'gi');
         translatedText = translatedText.replace(regex, replacement);
     });
-        
+
     return translatedText;
 }
 

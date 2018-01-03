@@ -22,9 +22,12 @@ function HistoryHandler(){
 		$('#' + historyTableFailureId).fadeIn('slow');
 		setTimeout(function() { $('#' + historyTableFailureId).fadeOut(); }, 3000);
 
-		if (statuscode  ===  400) {		    $('#' + historyFailureMessageId).html(_t(requestFailedBadToken));
-		} else if (statuscode  ===  500) {	$('#' + historyFailureMessageId).html(_t(requestFailedInternalError));
-		} else {                		    $('#' + historyFailureMessageId).html(_t(requestFailed));
+		if (statuscode  ===  400) {
+			$('#' + historyFailureMessageId).html(_t(requestFailedBadToken));
+		} else if (statuscode  ===  500) {
+			$('#' + historyFailureMessageId).html(_t(requestFailedInternalError));
+		} else {
+			$('#' + historyFailureMessageId).html(_t(requestFailed));
 		}
 	};
 
@@ -76,7 +79,7 @@ function HistoryHandler(){
 		var has_data = false;
 		$.each(jsonData, function setDataInHistoryTableEach(index, history) {
 			has_data = true;
-			// breaked_url = cutTextOnChar(history.path, 120, '/');
+
 			tElement[0] = $('<td>').text(index);
 			tElement[1] = $('<td>').html('<a href="' + history.path + '">' + history.path + '</a>');
 			tElement[2] = $('<td>').text(history.timestamp);
@@ -105,7 +108,6 @@ function HistoryHandler(){
 
 function SettingsHandler(){
     'use strict';
-    
 
 	/**
 	 *
@@ -143,7 +145,6 @@ function SettingsHandler(){
 
 function StatisticsHandler(){
     'use strict';
-    
 
 	/**
 	 *
@@ -167,7 +168,7 @@ function StatisticsHandler(){
 			$('#' + popupConfirmDialogId).modal('hide');
 		});
 	};
-	
+
 	/**
 	 *
 	 * @param jsonData
@@ -207,10 +208,10 @@ function StatisticsHandler(){
 			}
 			table.append(tr);
 		});
-		
+
 		this.setGuiOfCallbackStatisticsModal(table, titleText);
 	};
-	
+
 	this.setGuiOfCallbackStatisticsModal = function(table, titleText){
 		var modalBody;
 
@@ -334,7 +335,7 @@ $(function () {
 	$('#' + settingsPublicNick).change(function publicNickChange() {
 		new AjaxSettingsHandler().setUserSetting($(this), 'public_nick');
 	});
-	
+
 	var guided_toggle = $('#' + settingsGuidedTour);
 	guided_toggle.bootstrapToggle(Cookies.get(GUIDED_TOUR) ? 'off' : 'on');
 	guided_toggle.change(function guidedTourChange() {

@@ -43,9 +43,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         DBDiscussionSession.query(ClickedArgument).filter_by(argument_uid=db_new_arg.uid).delete()
         DBDiscussionSession.query(Argument).filter_by(uid=db_new_arg.uid).delete()
 
-    def test_set_new_start_statement(self):
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_new_start_statement as ajax
+    def __set_start_statement_and_rep(self, ajax):
         request = testing.DummyRequest(params={'statement': 'New statement for an issue'}, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
@@ -59,20 +57,16 @@ class AjaxAddThingsTest(unittest.TestCase):
             DBDiscussionSession.query(Statement).filter_by(uid=uid).delete()
         transaction.commit()
 
+    def test_set_new_start_statement(self):
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        from dbas.views import set_new_start_statement as ajax
+        self.__set_start_statement_and_rep(ajax)
+
     def test_set_new_start_statement_reputation(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
         from dbas.views import set_new_start_statement as ajax
-        request = testing.DummyRequest(params={'statement': 'New statement for an issue'}, matchdict={})
-        response = ajax(request)
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(len(response['url']) != 0)
-        self.assertTrue(len(response['statement_uids']) != 0)
-        for uid in response['statement_uids']:
-            DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).delete()
-            DBDiscussionSession.query(MarkedStatement).filter_by(statement_uid=uid).delete()
-            DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=uid).delete()
-            DBDiscussionSession.query(Statement).filter_by(uid=uid).delete()
+        self.__set_start_statement_and_rep(ajax)
+
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Björn').first()
         DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()
         transaction.commit()
@@ -93,9 +87,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
-    def test_set_new_start_premise(self):
-        self.config.testing_securitypolicy(userid='Björn', permissive=True)
-        from dbas.views import set_new_start_premise as ajax
+    def __set_multiple_start_premises(self, ajax):
         db_arg1 = len(DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).all())
         len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
         request = testing.DummyRequest(params={
@@ -116,28 +108,15 @@ class AjaxAddThingsTest(unittest.TestCase):
         DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()
         transaction.commit()
 
+    def test_set_new_start_premise(self):
+        self.config.testing_securitypolicy(userid='Björn', permissive=True)
+        from dbas.views import set_new_start_premise as ajax
+        self.__set_multiple_start_premises(ajax)
+
     def test_set_new_start_premise_twice(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
         from dbas.views import set_new_start_premise as ajax
-        db_arg1 = len(DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).all())
-        len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
-        request = testing.DummyRequest(params={
-            'premisegroups': json.dumps(['this is my first premisegroup']),
-            'conclusion_id': 2,
-            'issue': 2,
-            'supportive': 'true'
-        }, matchdict={})
-        response = ajax(request)
-        transaction.commit()
-        db_arg2 = len(DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).all())
-        len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
-        self.assertIsNotNone(response)
-        self.assertEquals(db_arg1 + 1, db_arg2)
-        self.assertEquals(len_db_reputation1 + 1, len_db_reputation2)
-        self.delete_last_argument_by_conclusion_uid(2)
-        db_user = DBDiscussionSession.query(User).filter_by(nickname='Björn').first()
-        DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()
-        transaction.commit()
+        self.__set_multiple_start_premises(ajax)
 
     def test_set_new_start_premise_failure1(self):
         self.config.testing_securitypolicy(userid='', permissive=True)

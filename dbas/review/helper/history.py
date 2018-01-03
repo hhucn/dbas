@@ -276,66 +276,94 @@ def __handle_table_of_review_element(table, entry, review, short_text, full_text
     :param is_executed:
     :return:
     """
-    if table == 'deletes':
-        db_reason = DBDiscussionSession.query(ReviewDeleteReason).get(review.reason_uid)
-        entry['reason'] = db_reason.reason
     entry['row_id'] = table + str(review.uid)
     entry['argument_shorttext'] = short_text
     entry['argument_fulltext'] = full_text
     entry['is_innocent'] = True
 
+    if table == 'deletes':
+        return __handle_table_of_review_delete(review, entry)
+
     if table == 'edits':
-        if is_executed:
-            db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=review.statement_uid).order_by(TextVersion.uid.desc()).all()  # TODO #432
-            if len(db_textversions) == 0:
-                entry['is_innocent'] = False
-                text = 'Review {} is malicious / no text for statement'.format(review.uid)
-                entry['argument_oem_shorttext'] = '<span class="text-danger">{}</span>'.format(text)
-                entry['argument_oem_fulltext'] = text
-            else:
-                entry['argument_oem_shorttext'] = db_textversions[1].content[0:length]
-                entry['argument_oem_fulltext'] = db_textversions[1].content
-        else:
-            db_edit_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=review.uid).first()
-            if not db_edit_value:
-                entry = None
-            else:
-                entry['argument_oem_shorttext'] = short_text
-                entry['argument_oem_fulltext'] = full_text
-                entry['argument_shorttext'] = short_text.replace(short_text,
-                                                                 (db_edit_value.content[0:length] + '...') if len(
-                                                                     full_text) > length else db_edit_value.content)
-                entry['argument_fulltext'] = db_edit_value.content
+        return __handle_table_of_review_edit(review, length, entry, is_executed, short_text, full_text)
 
     if table == 'duplicates':
-        text = get_text_for_statement_uid(review.original_statement_uid)
-        entry['statement_duplicate_shorttext'] = text[0:length] + ('...' if len(text) > length else '')
-        entry['statement_duplicate_fulltext'] = text
+        return __handle_table_of_review_duplicate(review, length, entry)
 
     if table is 'splits':
-        oem_fulltext, tmp = get_text_for_premisesgroup_uid(review.premisesgroup_uid)
-        full_text = oem_fulltext
-        db_values = DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=review.uid).all()
-        if db_values:
-            full_text = str([value.content for value in db_values])
-        entry['argument_oem_shorttext'] = oem_fulltext[0:length] + '...' if len(oem_fulltext) > length else oem_fulltext
-        entry['argument_oem_fulltext'] = oem_fulltext
-        entry['argument_shorttext'] = full_text[0:length] + '...' if len(full_text) > length else full_text
-        entry['argument_fulltext'] = full_text
+        return __handle_table_of_review_split(review, length, entry)
 
     if table is 'merges':
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=review.premisesgroup_uid).all()
-        oem_fulltext = str([get_text_for_statement_uid(p.statement_uid) for p in db_premises])
-        full_text = oem_fulltext
-        db_values = DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=review.uid).all()
-        if db_values:
-            full_text = str([value.content for value in db_values])
-        full_text = ' and '.join(full_text)
-        entry['argument_oem_shorttext'] = oem_fulltext[0:length] + '...' if len(oem_fulltext) > length else oem_fulltext
-        entry['argument_oem_fulltext'] = oem_fulltext
-        entry['argument_shorttext'] = full_text[0:length] + '...' if len(full_text) > length else full_text
-        entry['argument_fulltext'] = full_text
+        return __handle_table_of_review_merge(review, length, entry)
 
+    return entry
+
+
+def __handle_table_of_review_delete(review, entry):
+    db_reason = DBDiscussionSession.query(ReviewDeleteReason).get(review.reason_uid)
+    entry['reason'] = db_reason.reason
+    return entry
+
+
+def __handle_table_of_review_edit(review, length, entry, is_executed, short_text, full_text):
+    if is_executed:
+        db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=review.statement_uid).order_by(TextVersion.uid.desc()).all()  # TODO #432
+        if len(db_textversions) == 0:
+            entry['is_innocent'] = False
+            text = 'Review {} is malicious / no text for statement'.format(review.uid)
+            entry['argument_oem_shorttext'] = '<span class="text-danger">{}</span>'.format(text)
+            entry['argument_oem_fulltext'] = text
+        else:
+            entry['argument_oem_shorttext'] = db_textversions[1].content[0:length]
+            entry['argument_oem_fulltext'] = db_textversions[1].content
+    else:
+        db_edit_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=review.uid).first()
+        if not db_edit_value:
+            entry = None
+        else:
+            entry['argument_oem_shorttext'] = short_text
+            entry['argument_oem_fulltext'] = full_text
+            entry['argument_shorttext'] = short_text.replace(short_text,
+                                                             (db_edit_value.content[0:length] + '...') if len(
+                                                                 full_text) > length else db_edit_value.content)
+            entry['argument_fulltext'] = db_edit_value.content
+    return entry
+
+
+def __handle_table_of_review_duplicate(review, length, entry):
+    text = get_text_for_statement_uid(review.original_statement_uid)
+    if text is None:
+        text = '...'
+    entry['statement_duplicate_shorttext'] = text[0:length] + ('...' if len(text) > length else '')
+    entry['statement_duplicate_fulltext'] = text
+    return entry
+
+
+def __handle_table_of_review_split(review, length, entry):
+    oem_fulltext, tmp = get_text_for_premisesgroup_uid(review.premisesgroup_uid)
+    full_text = oem_fulltext
+    db_values = DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=review.uid).all()
+    if db_values:
+        full_text = str([value.content for value in db_values])
+    entry['argument_oem_shorttext'] = oem_fulltext[0:length] + '...' if len(oem_fulltext) > length else oem_fulltext
+    entry['argument_oem_fulltext'] = oem_fulltext
+    entry['argument_shorttext'] = full_text[0:length] + '...' if len(full_text) > length else full_text
+    entry['argument_fulltext'] = full_text
+    return entry
+
+
+def __handle_table_of_review_merge(review, length, entry):
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=review.premisesgroup_uid).all()
+    oem_fulltext = str([get_text_for_statement_uid(p.statement_uid) for p in db_premises])
+    full_text = oem_fulltext
+    db_values = DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=review.uid).all()
+    if db_values:
+        full_text = str([value.content for value in db_values])
+    full_text = ' and '.join(full_text)
+    entry['argument_oem_shorttext'] = oem_fulltext[0:length] + '...' if len(oem_fulltext) > length else oem_fulltext
+    entry['argument_oem_fulltext'] = oem_fulltext
+    entry['argument_shorttext'] = full_text[0:length] + '...' if len(full_text) > length else full_text
+    entry['argument_fulltext'] = full_text
     return entry
 
 
