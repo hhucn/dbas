@@ -65,6 +65,6 @@ We thank all contributors to this project! In order of appearance:
 
 ## License
 
-Copyright © 2016 - 2017 Tobias Krauthoff, Christian Meter
+Copyright © 2016 - 2018 Tobias Krauthoff, Christian Meter
 
 Distributed under the [MIT License](https://gitlab.cs.uni-duesseldorf.de/project/dbas/raw/master/LICENSE).
