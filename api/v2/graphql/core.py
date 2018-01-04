@@ -62,8 +62,14 @@ class StatementGraph(SQLAlchemyObjectType):
         model = Statement
 
     @staticmethod
+    def singular():
+        return graphene.Field(StatementGraph, uid=graphene.Int(), is_startpoint=graphene.Boolean(),
+                              is_disabled=graphene.Boolean())
+
+    @staticmethod
     def plural():
-        return graphene.List(StatementGraph, is_startpoint=graphene.Boolean(), issue_uid=graphene.Int())
+        return graphene.List(StatementGraph, is_startpoint=graphene.Boolean(), issue_uid=graphene.Int(),
+                             is_disabled=graphene.Boolean())
 
 
 class StatementReferencesGraph(SQLAlchemyObjectType):
@@ -74,6 +80,11 @@ class StatementReferencesGraph(SQLAlchemyObjectType):
 class ArgumentGraph(SQLAlchemyObjectType):
     class Meta:
         model = Argument
+
+    @staticmethod
+    def singular():
+        return graphene.Field(ArgumentGraph, uid=graphene.Int(), issue_uid=graphene.Int(),
+                              is_supportive=graphene.Boolean(), is_disabled=graphene.Boolean())
 
     @staticmethod
     def plural():
@@ -138,10 +149,9 @@ class Query(graphene.ObjectType):
     :param graphene.ObjectType: Generic ObjectType for GraphQL
     """
 
-    statement = graphene.Field(StatementGraph, uid=graphene.Int(), is_startpoint=graphene.Boolean())
+    statement = StatementGraph.singular()
     statements = StatementGraph.plural()
-    argument = graphene.Field(ArgumentGraph, uid=graphene.Int(), issue_uid=graphene.Int(),
-                              is_supportive=graphene.Boolean())
+    argument = ArgumentGraph.singular()
     arguments = ArgumentGraph.plural()
     statement_reference = graphene.Field(StatementReferencesGraph, uid=graphene.Int())
     statement_references = graphene.List(StatementReferencesGraph)
