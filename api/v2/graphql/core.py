@@ -39,7 +39,7 @@ class ArrowTypeScalar(Scalar):
 
 
 @convert_sqlalchemy_type.register(ArrowType)
-def convert_column_to_arrow(type, column):
+def convert_column_to_arrow(type, column, registry=None):
     return ArrowTypeScalar(description=getattr(column, 'doc', None),
                            required=not (getattr(column, 'nullable', True)))
 
