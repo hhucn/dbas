@@ -10,6 +10,8 @@ return JSON objects which can then be used in external websites.
 
 """
 import json
+from typing import Callable, Any
+
 from cornice import Service
 
 import dbas.views as dbas
@@ -20,7 +22,7 @@ from dbas.handler.statements import set_positions_premise, set_position
 from dbas.lib import (get_all_arguments_by_statement,
                       get_all_arguments_with_text_by_statement_id,
                       get_text_for_argument_uid, resolve_issue_uid_to_slug)
-from .lib import HTTP204, flatten, json_to_dict, logger, merge_dicts, HTTP400
+from .lib import HTTP204, flatten, json_to_dict, logger, merge_dicts
 from .login import validate_credentials, validate_login
 from .references import (get_all_references_by_reference_text,
                          get_reference_by_id, get_references_for_url,
@@ -195,7 +197,7 @@ def prepare_user_information(request):
     return api_data
 
 
-def prepare_data_assign_reference(request, func):
+def prepare_data_assign_reference(request, func: Callable[[bool, dict], Any]):
     """
     Collect user information, prepare submitted data and store references into database.
 
@@ -209,28 +211,44 @@ def prepare_data_assign_reference(request, func):
 
     data = json_to_dict(request.body)
 
-    if not DBDiscussionSession.query(Issue).get(data["issue_id"]):
-        raise HTTP400("Issue not found")
+    if "issue_id" in data:
+        db_issue = DBDiscussionSession.query(Issue).get(data["issue_id"])
 
-    if "issue_id" not in data and "slug" in data:
-        issue_db = DBDiscussionSession.query(Issue).filter_by(slug=data["slug"]).first()
+        if not db_issue:
+            request.errors.add("Body", "Issue not found", "The given slug is invalid")
+            request.status = 400
 
-        if not issue_db:
-            raise HTTP400("Issue not found")
-        api_data["issue_id"] = issue_db.uid
+    elif "slug" in data:
+        db_issue = DBDiscussionSession.query(Issue).filter_by(slug=data["slug"]).one()
+
+        if not db_issue:
+            request.errors.add("Body", "Issue not found", "The given slug is invalid")
+            request.status = 400
+
+        api_data["issue_id"] = db_issue.uid
+
+    else:
+        request.errors.add("Body", "Issue not found", "There was no issue id or slug given")
+        request.status = 400
+        return
+
+    api_data["issue"] = db_issue
 
     api_data.update(data)
     api_data.update({'application_url': request.application_url})
+
     return_dict = func(True, api_data)
+
     if isinstance(return_dict, str):
         return_dict = json.loads(return_dict)
+
     statement_uids = return_dict["statement_uids"]
     if statement_uids:
         statement_uids = flatten(statement_uids)
         if type(statement_uids) is int:
             statement_uids = [statement_uids]
-        refs_db = list(map(lambda statement: store_reference(api_data, statement), statement_uids))
-        return_dict["references"] = list(map(lambda ref: prepare_single_reference(ref), refs_db))
+        refs_db = [store_reference(api_data, statement) for statement in statement_uids]
+        return_dict["references"] = list(map(prepare_single_reference, refs_db))
     return return_dict
 
 

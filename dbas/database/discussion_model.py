@@ -776,7 +776,7 @@ class Argument(DiscussionBase):
     arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
     issues = relationship('Issue', foreign_keys=[issue_uid])
 
-    def __init__(self, premisegroup, issupportive, author, issue, conclusion=None, argument=None, is_disabled=False):
+    def __init__(self, premisegroup, issupportive, author, issue: int, conclusion=None, argument=None, is_disabled=False):
         """
         Initializes a row in current argument-table
 

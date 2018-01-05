@@ -89,8 +89,8 @@ def store_reference(api_data, statement_uid=None):
         DBDiscussionSession.flush()
         transaction.commit()
         return db_ref
-    except KeyError:
-        log.error("[API/Reference] KeyError: could not access field in api_data.")
+    except KeyError as e:
+        log.error("[API/Reference] KeyError: could not access field in api_data. " + repr(e))
 
 
 # =============================================================================

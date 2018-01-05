@@ -4,7 +4,7 @@ import transaction
 from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Argument, Premise, ClickedArgument, SeenArgument
+from dbas.database.discussion_model import User, Argument, Premise, ClickedArgument, SeenArgument, Issue
 from dbas.helper.relation import get_undermines_for_argument_uid, get_undercuts_for_argument_uid, \
     get_rebuts_for_argument_uid, get_supports_for_argument_uid, set_new_undermine_or_support_for_pgroup, \
     set_new_undercut, set_new_rebut, set_new_support
@@ -15,6 +15,7 @@ class RelationHelperTest(unittest.TestCase):
     def setUp(self):
         # set a user wich has no argument in the dummy discussion
         self.db_user = DBDiscussionSession.query(User).filter_by(nickname='Christian').first()
+        self.db_issue = DBDiscussionSession.query(Issue).get(2)
 
     def tearDown(self):
         for uid in [arg.uid for arg in DBDiscussionSession.query(Argument).filter_by(author_uid=self.db_user.uid).all()]:
@@ -94,14 +95,14 @@ class RelationHelperTest(unittest.TestCase):
 
         before = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == 1,
                                                                  Argument.conclusion_uid == db_premise.statement_uid)).all()
-        set_new_undermine_or_support_for_pgroup(1, db_argument, False, self.db_user, 2)
+        set_new_undermine_or_support_for_pgroup(1, db_argument, False, self.db_user, self.db_issue)
         after = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == 1,
                                                                 Argument.conclusion_uid == db_premise.statement_uid)).all()
         self.assertLess(len(before), len(after))
 
         before = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == 1,
                                                                  Argument.conclusion_uid == db_premise.statement_uid)).all()
-        set_new_undermine_or_support_for_pgroup(1, db_argument, True, self.db_user, 2)
+        set_new_undermine_or_support_for_pgroup(1, db_argument, True, self.db_user, self.db_issue)
         after = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == 1,
                                                                 Argument.conclusion_uid == db_premise.statement_uid)).all()
         self.assertLess(len(before), len(after))
@@ -110,7 +111,7 @@ class RelationHelperTest(unittest.TestCase):
         db_argument = DBDiscussionSession.query(Argument).get(1)
 
         before = DBDiscussionSession.query(Argument).filter_by(argument_uid=1).all()
-        set_new_undercut(1, db_argument, self.db_user, 2)
+        set_new_undercut(1, db_argument, self.db_user, self.db_issue)
         after = DBDiscussionSession.query(Argument).filter_by(argument_uid=1).all()
         self.assertLess(len(before), len(after))
 
@@ -118,7 +119,7 @@ class RelationHelperTest(unittest.TestCase):
         db_argument = DBDiscussionSession.query(Argument).get(1)
 
         before = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_argument.conclusion_uid).all()
-        set_new_rebut(1, db_argument, self.db_user, 2)
+        set_new_rebut(1, db_argument, self.db_user, self.db_issue)
         after = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_argument.conclusion_uid).all()
         self.assertLess(len(before), len(after))
 
@@ -127,7 +128,7 @@ class RelationHelperTest(unittest.TestCase):
 
         before = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == 1,
                                                                  Argument.conclusion_uid == db_argument.conclusion_uid)).all()
-        set_new_support(1, db_argument, self.db_user, 2)
+        set_new_support(1, db_argument, self.db_user, self.db_issue)
         after = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == 1,
                                                                 Argument.conclusion_uid == db_argument.conclusion_uid)).all()
         self.assertLess(len(before), len(after))

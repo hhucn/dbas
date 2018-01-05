@@ -152,13 +152,13 @@ def send_edit_text_notification(db_user, textversion, path, port, mailer):
         DBDiscussionSession.flush()
 
 
-def send_add_text_notification(url, conclusion_id, user, port, mailer):
+def send_add_text_notification(url, conclusion_id, db_user: User, port, mailer):
     """
     Send notifications and mails to related users.
 
     :param url: current url
     :param conclusion_id: Statement.uid
-    :param user: current users nickname
+    :param db_user: current users nickname
     :param port: Port of notification server
     :param mailer: Instance of pyramid mailer
     :return: None
@@ -167,7 +167,6 @@ def send_add_text_notification(url, conclusion_id, user, port, mailer):
     db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=conclusion_id).all()  # TODO #432
     db_root_author = DBDiscussionSession.query(User).get(db_textversions[0].author_uid)
     db_last_editor = DBDiscussionSession.query(User).get(db_textversions[-1].author_uid)
-    db_current_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     db_root_author_settings = DBDiscussionSession.query(Settings).get(db_root_author.uid)
     db_last_editor_settings = DBDiscussionSession.query(Settings).get(db_last_editor.uid)
     root_lang = DBDiscussionSession.query(Language).get(db_root_author_settings.lang_uid).ui_locales
@@ -177,25 +176,24 @@ def send_add_text_notification(url, conclusion_id, user, port, mailer):
 
     # send mail to main author
     if db_root_author_settings.should_send_mails \
-            and db_current_user != db_root_author:
+            and db_user != db_root_author:
         email_helper.send_mail_due_to_added_text(root_lang, url, db_root_author, mailer)
 
     # send mail to last author
     if db_last_editor_settings.should_send_mails \
             and db_last_editor != db_root_author \
-            and db_last_editor != db_current_user:
+            and db_last_editor != db_user:
         email_helper.send_mail_due_to_added_text(editor_lang, url, db_last_editor, mailer)
 
     # send notification via websocket to main author
-    if db_root_author_settings.should_send_notifications \
-            and db_root_author != db_current_user:
+    if db_root_author_settings.should_send_notifications and db_root_author != db_user:
         send_request_for_info_popup_to_socketio(db_root_author.nickname, port, _t_root.get(_.statementAdded), url,
                                                 increase_counter=True)
 
     # send notification via websocket to last author
     if db_last_editor_settings.should_send_notifications \
             and db_last_editor != db_root_author \
-            and db_last_editor != db_current_user:
+            and db_last_editor != db_user:
         send_request_for_info_popup_to_socketio(db_last_editor.nickname, port, _t_editor.get(_.statementAdded), url,
                                                 increase_counter=True)
 
@@ -209,13 +207,13 @@ def send_add_text_notification(url, conclusion_id, user, port, mailer):
     topic2 = _t_editor.get(_.statementAdded)
     content2 = get_text_for_add_text_message(db_last_editor.firstname, editor_lang, url, True)
 
-    if db_root_author != db_current_user:
+    if db_root_author != db_user:
         DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
                                         to_author_uid=db_root_author.uid,
                                         topic=topic1,
                                         content=content1,
                                         is_inbox=True))
-    if db_root_author != db_last_editor and db_current_user != db_last_editor:
+    if db_root_author != db_last_editor and db_user != db_last_editor:
         DBDiscussionSession.add(Message(from_author_uid=db_admin.uid,
                                         to_author_uid=db_last_editor.uid,
                                         topic=topic2,

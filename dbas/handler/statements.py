@@ -1,3 +1,5 @@
+from typing import List, Tuple, Dict, Union
+
 import transaction
 from sqlalchemy import and_, func
 
@@ -5,6 +7,7 @@ import dbas.review.helper.queues as review_queue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
     sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement
+from dbas.exceptions import UserNotInDatabase, StatementToShort
 from dbas.handler import user, notification as NotificationHelper
 from dbas.handler.rss import append_action_to_issue_rss
 from dbas.handler.voting import add_seen_argument, add_seen_statement
@@ -35,9 +38,8 @@ def set_position(for_api, data) -> dict:
         nickname = data['nickname']
         statement = data['statement']
         issue_id = data['issue_id']
-        issue_db = DBDiscussionSession.query(Issue).get(issue_id)
-        slug = issue_db.slug
-        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else issue_db.lang
+        db_issue = data['issue']
+        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else db_issue.lang
         default_locale_name = data['default_locale_name'] if 'default_locale_name' in data else discussion_lang
         application_url = data['application_url']
     except KeyError as e:
@@ -52,11 +54,12 @@ def set_position(for_api, data) -> dict:
     if DBDiscussionSession.query(Issue).get(issue_id).is_read_only:
         return {'error': _tn.get(_.discussionIsReadOnly), 'statement_uids': ''}
 
-    new_statement = insert_as_statements(application_url, default_locale_name, statement, nickname, issue_id,
-                                         discussion_lang, is_start=True)
     prepared_dict = {'error': '', 'statement_uids': ''}
 
-    if new_statement == -1:
+    try:
+        new_statement = insert_as_statements(application_url, default_locale_name, statement, nickname, db_issue,
+                                             discussion_lang, is_start=True)
+    except StatementToShort:
         a = _tn.get(_.notInsertedErrorBecauseEmpty)
         b = _tn.get(_.minLength)
         c = _tn.get(_.eachStatement)
@@ -64,11 +67,12 @@ def set_position(for_api, data) -> dict:
         prepared_dict['error'] = error
         return prepared_dict
 
-    if new_statement == -2:
+    except UserNotInDatabase:
         prepared_dict['error'] = _tn.get(_.noRights)
         return prepared_dict
 
-    url = UrlManager(application_url, slug, for_api).get_url_for_statement_attitude(False, new_statement[0].uid)
+    url = UrlManager(application_url, db_issue.slug, for_api).get_url_for_statement_attitude(False,
+                                                                                             new_statement[0].uid)
     prepared_dict['url'] = url
     prepared_dict['statement_uids'] = [new_statement[0].uid]
 
@@ -84,7 +88,7 @@ def set_position(for_api, data) -> dict:
     return prepared_dict
 
 
-def set_positions_premise(for_api, data) -> dict:
+def set_positions_premise(for_api: bool, data: Dict) -> dict:
     """
     Set new premise for a given position and returns dictionary with url for the next step of the discussion
 
@@ -93,19 +97,18 @@ def set_positions_premise(for_api, data) -> dict:
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and next url or an error
     """
-    prepared_dict = dict()
-
     try:
         nickname = data['nickname']
         premisegroups = data['statement']
         issue_id = data['issue_id']
+        issue = DBDiscussionSession.query(Issue).get(issue_id)
         conclusion_id = data['conclusion_id']
         supportive = data['supportive']
         application_url = data['application_url']
         history = data['history'] if '_HISTORY_' in data else None
         port = data['port'] if 'port' in data else None
         mailer = data['mailer'] if 'mailer' in data else None
-        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else DBDiscussionSession.query(Issue).get(issue_id).lang
+        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else issue.lang
         default_locale_name = data['default_locale_name'] if 'default_locale_name' in data else discussion_lang
     except KeyError as e:
         logger('StatementsHelper', 'positions_premise', repr(e), error=True)
@@ -113,20 +116,27 @@ def set_positions_premise(for_api, data) -> dict:
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
     # escaping will be done in StatementsHelper().set_statement(...)
+
     user.update_last_action(nickname)
 
     _tn = Translator('discussion_lang')
-    if DBDiscussionSession.query(Issue).get(issue_id).is_read_only:
+    if issue.is_read_only:
         return {'error': _tn.get(_.discussionIsReadOnly), 'statement_uids': ''}
 
-    url, statement_uids, error = __process_input_of_start_premises_and_receive_url(default_locale_name, premisegroups,
-                                                                                   conclusion_id, supportive, issue_id,
-                                                                                   nickname, for_api, application_url,
-                                                                                   discussion_lang, history, port,
-                                                                                   mailer)
+    url, statement_uids, error = '', '', _tn.get(_.userNotFound)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if db_user:
+        url, statement_uids, error = __process_input_of_start_premises_and_receive_url(default_locale_name,
+                                                                                       premisegroups,
+                                                                                       conclusion_id, supportive,
+                                                                                       issue,
+                                                                                       db_user, for_api,
+                                                                                       application_url,
+                                                                                       discussion_lang, history, port,
+                                                                                       mailer)
 
-    prepared_dict['error'] = error
-    prepared_dict['statement_uids'] = statement_uids
+    prepared_dict = {'error': error,
+                     'statement_uids': statement_uids}
 
     # add reputation
     add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_justification)
@@ -219,7 +229,7 @@ def process_seen_statements(uids, nickname, additional_argument=None):
     return None
 
 
-def correct_statement(user, uid, corrected_text):
+def correct_statement(db_user, uid, corrected_text):
     """
     Corrects a statement
 
@@ -230,18 +240,14 @@ def correct_statement(user, uid, corrected_text):
     """
     logger('StatementsHelper', 'correct_statement', 'def ' + str(uid))
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-
-    if not db_user:
-        return -1
-
     while corrected_text.endswith(('.', '?', '!')):
         corrected_text = corrected_text[:-1]
 
     # duplicate check
     return_dict = dict()
     db_statement = DBDiscussionSession.query(Statement).get(uid)
-    db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=corrected_text).order_by(TextVersion.uid.desc()).all()
+    db_textversion = DBDiscussionSession.query(TextVersion).filter_by(content=corrected_text).order_by(
+        TextVersion.uid.desc()).all()
 
     # not a duplicate?
     if not db_textversion:
@@ -273,7 +279,8 @@ def get_logfile_for_statements(uids, lang, main_page):
 
     main_dict = dict()
     for uid in uids:
-        db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).all()  # TODO #432
+        db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(
+            TextVersion.uid.asc()).all()  # TODO #432
         if len(db_textversions) == 0:
             continue
         return_dict = dict()
@@ -287,7 +294,7 @@ def get_logfile_for_statements(uids, lang, main_page):
     return main_dict
 
 
-def __get_logfile_dict(textversion, main_page, lang):
+def __get_logfile_dict(textversion: TextVersion, main_page: str, lang: str) -> Dict:
     """
     Returns dictionary with information about the given textversion
 
@@ -307,31 +314,31 @@ def __get_logfile_dict(textversion, main_page, lang):
     return corr_dict
 
 
-def insert_as_statements(application_url, default_locale_name, text_list, user, issue, lang, is_start=False):
+def insert_as_statements(application_url: str, default_locale_name: str, text_list: List[str], nickname: str,
+                         db_issue: Issue, lang: str, is_start=False) -> List[Statement]:
     """
     Inserts the given texts as statements and returns the uid's
 
+    :param lang: Language
     :param application_url: Url of the app itself
     :param default_locale_name: default lang of the app
     :param text_list: [String]
-    :param user: User.nickname
-    :param issue: Issue
+    :param nickname: User.nickname
+    :param db_issue: Issue
     :param is_start: Boolean
     :return: [Statement]
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
-        return -2
+        raise UserNotInDatabase()
 
     statements = []
     input_list = text_list if isinstance(text_list, list) else [text_list]
     for text in input_list:
         if len(text) < statement_min_length:
-            return -1
+            raise StatementToShort(text, statement_min_length)
 
-        new_statement, is_duplicate = set_statement(text, user, is_start, issue, lang)
-        if not new_statement:
-            continue
+        new_statement, is_duplicate = set_statement(text, db_user, is_start, db_issue, lang)
 
         statements.append(new_statement)
 
@@ -344,9 +351,8 @@ def insert_as_statements(application_url, default_locale_name, text_list, user, 
             continue
 
         _tn = Translator(new_statement.lang)
-        db_issue = DBDiscussionSession.query(Issue).get(issue)
         _um = UrlManager(application_url, db_issue.slug)
-        append_action_to_issue_rss(issue_uid=issue,
+        append_action_to_issue_rss(issue_uid=db_issue.uid,
                                    author_uid=db_user.uid,
                                    title=_tn.get(_.positionAdded if is_start else _.statementAdded),
                                    description='...' + get_text_for_statement_uid(new_statement.uid) + '...',
@@ -356,22 +362,20 @@ def insert_as_statements(application_url, default_locale_name, text_list, user, 
     return statements
 
 
-def set_statement(text, nickname, is_start, issue, lang):
+def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue, lang) -> Tuple[Statement, bool]:
     """
     Saves statement for user
 
+    :param lang:
     :param text: given statement
-    :param nickname: User.nickname of given user
+    :param db_user: User of given user
     :param is_start: if it is a start statement
-    :param issue: Issue
+    :param db_issue: Issue
     :return: Statement, is_duplicate or -1, False on error
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        return None, False
 
-    logger('StatementsHelper', 'set_statement', 'user: ' + str(nickname) + ', user_id: ' + str(db_user.uid) +
-           ', text: ' + str(text) + ', issue: ' + str(issue))
+    logger('StatementsHelper', 'set_statement', 'user: ' + str(db_user.nickname) + ', user_id: ' + str(db_user.uid) +
+           ', text: ' + str(text) + ', issue: ' + str(db_issue.uid))
 
     # escaping and cleaning
     text = text.strip()
@@ -384,14 +388,15 @@ def set_statement(text, nickname, is_start, issue, lang):
         text = text[:-1]
 
     # check, if the text already exists
-    db_duplicate = DBDiscussionSession.query(TextVersion).filter(func.lower(TextVersion.content) == text.lower()).first()
+    db_duplicate = DBDiscussionSession.query(TextVersion).filter(
+        func.lower(TextVersion.content) == text.lower()).first()
     if db_duplicate:
         db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == db_duplicate.statement_uid,
-                                                                        Statement.issue_uid == issue)).first()
+                                                                        Statement.issue_uid == db_issue.uid)).one()
         return db_statement, True
 
     # add text
-    statement = Statement(is_position=is_start, issue=issue)
+    statement = Statement(is_position=is_start, issue=db_issue.uid)
     DBDiscussionSession.add(statement)
     DBDiscussionSession.flush()
 
@@ -405,7 +410,8 @@ def set_statement(text, nickname, is_start, issue, lang):
 
 
 def __process_input_of_start_premises_and_receive_url(default_locale_name, premisegroups, conclusion_id, supportive,
-                                                      issue, user, for_api, application_url, discussion_lang, history,
+                                                      db_issue: Issue, db_user: User, for_api, application_url,
+                                                      discussion_lang, history,
                                                       port, mailer):
     """
     Inserts the given text in premisegroups as new arguments in dependence of the input parameters and returns a URL for forwarding.
@@ -414,7 +420,7 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     :param premisegroups: [String]
     :param conclusion_id: Statement.uid
     :param supportive: Boolean
-    :param issue: Issue.uid
+    :param issue_uid: Issue.uid
     :param user: User.nickname
     :param for_api: Boolean
     :param application_url: URL
@@ -424,13 +430,10 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     :param mailer: Instance of pyramid mailer
     :return: URL, [Statement.uid], String
     """
-    logger('StatementsHelper', '__process_input_of_start_premises_and_receive_url', 'count of new pgroups: ' + str(len(premisegroups)))
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    logger('StatementsHelper', '__process_input_of_start_premises_and_receive_url',
+           'count of new pgroups: ' + str(len(premisegroups)))
     _tn = Translator(discussion_lang)
-    if not db_user:
-        return '', '', _tn.get(_.userNotFound)
 
-    slug = DBDiscussionSession.query(Issue).get(issue).slug
     error = ''
     url = ''
 
@@ -439,8 +442,10 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     new_argument_uids = []
     new_statement_uids = []  # all statement uids are stored in this list to create the link to a possible reference
     for group in premisegroups:  # premise groups is a list of lists
-        new_argument, statement_uids = __create_argument_by_raw_input(application_url, default_locale_name, user, group, conclusion_id, supportive, issue, discussion_lang)
-        if not isinstance(new_argument, Argument):  # break on error
+        new_argument, statement_uids = __create_argument_by_raw_input(application_url, default_locale_name, db_user,
+                                                                      group, conclusion_id, supportive, db_issue,
+                                                                      discussion_lang)
+        if not new_argument:  # break on error
             error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength),
                                          statement_min_length)
             return -1, None, error
@@ -452,10 +457,11 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     # #arguments=0: empty input
     # #arguments=1: deliver new url
     # #arguments>1: deliver url where the user has to choose between her inputs
-    _um = UrlManager(application_url, slug, for_api, history)
-    _main_um = UrlManager(application_url, slug, False, history)
+    _um = UrlManager(application_url, db_issue.slug, for_api, history)
+    _main_um = UrlManager(application_url, db_issue.slug, False, history)
     if len(new_argument_uids) == 0:
-        error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength), statement_min_length)
+        error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength),
+                                     statement_min_length)
 
     elif len(new_argument_uids) == 1:
         url = get_url_for_new_argument(new_argument_uids, history, discussion_lang, _um)
@@ -469,12 +475,13 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     # send notifications and mails
     if len(new_argument_uids) > 0:
         email_url = _main_um.get_url_for_justifying_statement(False, conclusion_id, 't' if supportive else 'f')
-        NotificationHelper.send_add_text_notification(email_url, conclusion_id, user, port, mailer)
+        NotificationHelper.send_add_text_notification(email_url, conclusion_id, db_user, port, mailer)
 
     return url, new_statement_uids, error
 
 
-def insert_new_premises_for_argument(application_url, default_locale_name, text, current_attack, arg_uid, issue, user,
+def insert_new_premises_for_argument(application_url, default_locale_name, text, current_attack, arg_uid,
+                                     db_issue: Issue, db_user: User,
                                      discussion_lang):
     """
     Creates premises for a given argument
@@ -484,50 +491,48 @@ def insert_new_premises_for_argument(application_url, default_locale_name, text,
     :param text: String
     :param current_attack: String
     :param arg_uid: Argument.uid
-    :param issue: Issue
-    :param user: User.nickname
+    :param db_issue: Issue
+    :param db_user: User
     :return: Argument
     """
     logger('StatementsHelper', 'insert_new_premises_for_argument', 'def')
 
-    statements = insert_as_statements(application_url, default_locale_name, text, user, issue, discussion_lang)
-    if statements == -1:
-        return -1
+    statements = insert_as_statements(application_url, default_locale_name, text, db_user.nickname, db_issue,
+                                      discussion_lang)
 
     # set the new statements as premise group and get current user as well as current argument
-    new_pgroup_uid = set_statements_as_new_premisegroup(statements, user, issue)
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    new_pgroup_uid = set_statements_as_new_premisegroup(statements, db_user, db_issue)
     current_argument = DBDiscussionSession.query(Argument).get(arg_uid)
 
     new_argument = None
     if current_attack == 'undermine':
-        new_argument = set_new_undermine_or_support_for_pgroup(new_pgroup_uid, current_argument, False, db_user, issue)
+        new_argument = set_new_undermine_or_support_for_pgroup(new_pgroup_uid, current_argument, False, db_user,
+                                                               db_issue)
 
     elif current_attack == 'support':
-        new_argument, duplicate = set_new_support(new_pgroup_uid, current_argument, db_user, issue)
+        new_argument, duplicate = set_new_support(new_pgroup_uid, current_argument, db_user, db_issue)
 
     elif current_attack == 'undercut' or current_attack == 'overbid':
-        new_argument, duplicate = set_new_undercut(new_pgroup_uid, current_argument, db_user, issue)
+        new_argument, duplicate = set_new_undercut(new_pgroup_uid, current_argument, db_user, db_issue)
 
     elif current_attack == 'rebut':
-        new_argument, duplicate = set_new_rebut(new_pgroup_uid, current_argument, db_user, issue)
+        new_argument, duplicate = set_new_rebut(new_pgroup_uid, current_argument, db_user, db_issue)
 
     logger('StatementsHelper', 'insert_new_premises_for_argument', 'Returning argument ' + str(new_argument.uid))
     return new_argument
 
 
-def set_statements_as_new_premisegroup(statements, user, issue):
+def set_statements_as_new_premisegroup(statements: List[Statement], db_user: User, db_issue: Issue):
     """
     Set the given statements together as new premise group
 
-    :param statements: [Statement.uid]
-    :param user: User.nickname
-    :param issue: Issue
+    :param statements: [Statement]
+    :param db_user: User
+    :param db_issue: Issue
     :return: PremiseGroup.uid
     """
     logger('StatementsHelper', 'set_statements_as_new_premisegroup', 'user: ' + str(user) +
-           ', statement: ' + str(statements) + ', issue: ' + str(issue))
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+           ', statement: ' + str(statements) + ', issue: ' + str(db_issue.uid))
 
     # check for duplicate
     all_groups = []
@@ -536,7 +541,8 @@ def set_statements_as_new_premisegroup(statements, user, issue):
         db_premise = DBDiscussionSession.query(Premise).filter_by(statement_uid=statement.uid).first()
         if db_premise:
             # getting all groups, where the premise is member
-            db_premisegroup = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_premise.premisesgroup_uid).all()
+            db_premisegroup = DBDiscussionSession.query(Premise).filter_by(
+                premisesgroup_uid=db_premise.premisesgroup_uid).all()
             groups = set()
             for group in db_premisegroup:
                 groups.add(group.premisesgroup_uid)
@@ -555,18 +561,22 @@ def set_statements_as_new_premisegroup(statements, user, issue):
 
     premise_list = []
     for statement in statements:
-        premise = Premise(premisesgroup=premise_group.uid, statement=statement.uid, is_negated=False, author=db_user.uid, issue=issue)
+        premise = Premise(premisesgroup=premise_group.uid, statement=statement.uid, is_negated=False,
+                          author=db_user.uid, issue=db_issue.uid)
         premise_list.append(premise)
 
     DBDiscussionSession.add_all(premise_list)
     DBDiscussionSession.flush()
 
-    db_premisegroup = DBDiscussionSession.query(PremiseGroup).filter_by(author_uid=db_user.uid).order_by(PremiseGroup.uid.desc()).first()
+    db_premisegroup = DBDiscussionSession.query(PremiseGroup).filter_by(author_uid=db_user.uid).order_by(
+        PremiseGroup.uid.desc()).first()
 
     return db_premisegroup.uid
 
 
-def __create_argument_by_raw_input(application_url, default_locale_name, user, text, conclusion_id, is_supportive, issue, discussion_lang):
+def __create_argument_by_raw_input(application_url, default_locale_name, db_user: User, text, conclusion_id,
+                                   is_supportive, db_issue: Issue, discussion_lang) \
+        -> Tuple[Union[Argument, None], List[int]]:
     """
     Consumes the input to create a new argument
 
@@ -576,70 +586,70 @@ def __create_argument_by_raw_input(application_url, default_locale_name, user, t
     :param text: String
     :param conclusion_id:
     :param is_supportive: Boolean
-    :param issue: Issue
+    :param db_issue: Issue
     :return:
     """
     logger('StatementsHelper', '__create_argument_by_raw_input', 'main with text ' + str(text) + ' as premisegroup, ' +
-           'conclusion ' + str(conclusion_id) + ' in issue ' + str(issue))
+           'conclusion ' + str(conclusion_id) + ' in issue ' + str(db_issue.uid))
     # current conclusion
     db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
-                                                                     Statement.issue_uid == issue)).first()
-    statements = insert_as_statements(application_url, default_locale_name, text, user, issue, discussion_lang)
-    if statements == -1:
-        return -1, None
+                                                                     Statement.issue_uid == db_issue.uid)).first()
+    try:
+        statements = insert_as_statements(application_url, default_locale_name, text, db_user.nickname, db_issue,
+                                          discussion_lang)
 
-    statement_uids = [s.uid for s in statements]
+        # second, set the new statements as premisegroup
+        new_premisegroup_uid = set_statements_as_new_premisegroup(statements, db_user, db_issue)
+        logger('StatementsHelper', '__create_argument_by_raw_input', 'new pgroup ' + str(new_premisegroup_uid))
 
-    # second, set the new statements as premisegroup
-    new_premisegroup_uid = set_statements_as_new_premisegroup(statements, user, issue)
-    logger('StatementsHelper', '__create_argument_by_raw_input', 'new pgroup ' + str(new_premisegroup_uid))
+        # third, insert the argument
+        new_argument = __create_argument_by_uids(db_user, new_premisegroup_uid, db_conclusion.uid, None, is_supportive,
+                                                 db_issue)
+        transaction.commit()
 
-    # third, insert the argument
-    new_argument = __create_argument_by_uids(user, new_premisegroup_uid, db_conclusion.uid, None, is_supportive, issue)
-    transaction.commit()
+        if new_argument:
+            _tn = Translator(default_locale_name)
+            _um = UrlManager(application_url, db_issue.slug)
+            append_action_to_issue_rss(issue_uid=db_issue.uid,
+                                       author_uid=db_user.uid,
+                                       title=_tn.get(_.argumentAdded),
+                                       description='...' + get_text_for_argument_uid(new_argument.uid,
+                                                                                     anonymous_style=True) + '...',
+                                       ui_locale=default_locale_name,
+                                       url=_um.get_url_for_justifying_statement(False, new_argument.uid, 'd'))
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-    if new_argument and db_user:
-        _tn = Translator(default_locale_name)
-        db_issue = DBDiscussionSession.query(Issue).get(issue)
-        _um = UrlManager(application_url, db_issue.slug)
-        append_action_to_issue_rss(issue_uid=issue,
-                                   author_uid=db_user.uid,
-                                   title=_tn.get(_.argumentAdded),
-                                   description='...' + get_text_for_argument_uid(new_argument.uid, anonymous_style=True) + '...',
-                                   ui_locale=default_locale_name,
-                                   url=_um.get_url_for_justifying_statement(False, new_argument.uid, 'd'))
-
-    return new_argument, statement_uids
+        return new_argument, [s.uid for s in statements]
+    except StatementToShort:
+        raise
 
 
-def __create_argument_by_uids(user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
+def __create_argument_by_uids(db_user: User, premisegroup_uid, conclusion_uid, argument_uid, is_supportive,
+                              db_issue: Issue) -> Union[Argument, None]:
     """
     Connects the given id's to a new argument
 
-    :param user: User.nickname
+    :param db_user: User.nickname
     :param premisegroup_uid: PremiseGroup.uid
     :param conclusion_uid: Statement.uid
     :param argument_uid: Argument.uid
     :param is_supportive: Boolean
-    :param issue: Issue.uid
+    :param db_issue: Issue
     :return:
     """
-    logger('StatementsHelper', '__create_argument_by_uids', 'main with user: ' + str(user) +
+    logger('StatementsHelper', '__create_argument_by_uids', 'main with user: ' + str(db_user.nickname) +
            ', premisegroup_uid: ' + str(premisegroup_uid) +
            ', conclusion_uid: ' + str(conclusion_uid) +
            ', argument_uid: ' + str(argument_uid) +
            ', is_supportive: ' + str(is_supportive) +
-           ', issue: ' + str(issue))
+           ', issue: ' + str(db_issue.uid))
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
                                                                    Argument.is_supportive == is_supportive,
                                                                    Argument.conclusion_uid == conclusion_uid,
-                                                                   Argument.issue_uid == issue)).first()
+                                                                   Argument.issue_uid == db_issue.uid)).first()
     if not new_argument:
         new_argument = Argument(premisegroup=premisegroup_uid, issupportive=is_supportive, author=db_user.uid,
-                                conclusion=conclusion_uid, issue=issue)
+                                conclusion=conclusion_uid, issue=db_issue.uid)
         new_argument.set_conclusions_argument(argument_uid)
 
         DBDiscussionSession.add(new_argument)
@@ -650,7 +660,7 @@ def __create_argument_by_uids(user, premisegroup_uid, conclusion_uid, argument_u
                                                                        Argument.author_uid == db_user.uid,
                                                                        Argument.conclusion_uid == conclusion_uid,
                                                                        Argument.argument_uid == argument_uid,
-                                                                       Argument.issue_uid == issue)).first()
+                                                                       Argument.issue_uid == db_issue.uid)).first()
     transaction.commit()
     if new_argument:
         logger('StatementsHelper', '__create_argument_by_uids', 'argument was inserted')

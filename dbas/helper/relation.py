@@ -5,14 +5,16 @@ Class for handling relations of arguments
 """
 
 import random
-import transaction
+from typing import Tuple
 
+import transaction
 from sqlalchemy import and_
+
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Premise, PremiseGroup
+from dbas.database.discussion_model import Argument, Premise, PremiseGroup, User, Issue
+from dbas.input_validator import is_integer
 from dbas.lib import get_text_for_premisesgroup_uid
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
-from dbas.input_validator import is_integer
 
 
 def get_undermines_for_argument_uid(argument_uid, is_supportive=False):
@@ -36,8 +38,8 @@ def get_undermines_for_argument_uid(argument_uid, is_supportive=False):
         return []
 
     db_premises = get_not_disabled_premises_as_query()
-    db_attacked_premises = db_premises\
-        .filter_by(premisesgroup_uid=db_attacked_argument.premisesgroup_uid)\
+    db_attacked_premises = db_premises \
+        .filter_by(premisesgroup_uid=db_attacked_argument.premisesgroup_uid) \
         .order_by(Premise.premisesgroup_uid.desc()).all()
 
     premises_as_statements_uid = set()
@@ -137,7 +139,8 @@ def get_supports_for_argument_uid(argument_uid):
     if not db_argument:
         return []
 
-    db_arguments_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
+    db_arguments_premises = DBDiscussionSession.query(Premise).filter_by(
+        premisesgroup_uid=db_argument.premisesgroup_uid).all()
 
     for arguments_premises in db_arguments_premises:
         db_arguments = get_not_disabled_arguments_as_query()
@@ -157,7 +160,8 @@ def get_supports_for_argument_uid(argument_uid):
     return [] if len(return_array) == 0 else return_array
 
 
-def set_new_undermine_or_support_for_pgroup(premisegroup_uid, current_argument, is_supportive, db_user, issue):
+def set_new_undermine_or_support_for_pgroup(premisegroup_uid: int, current_argument: Argument, is_supportive: bool,
+                                            db_user: User, db_issue: Issue):
     """
     Inserts a new undermine or support with the given parameters.
 
@@ -171,7 +175,8 @@ def set_new_undermine_or_support_for_pgroup(premisegroup_uid, current_argument, 
     new_arguments = []
     already_in = []
     # all premises out of current pgroup
-    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_argument.premisesgroup_uid).all()
+    db_premises = DBDiscussionSession.query(Premise).filter_by(
+        premisesgroup_uid=current_argument.premisesgroup_uid).all()
     for premise in db_premises:
         db_arguments = get_not_disabled_arguments_as_query()
         db_argument = db_arguments.filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
@@ -184,7 +189,7 @@ def set_new_undermine_or_support_for_pgroup(premisegroup_uid, current_argument, 
                                     issupportive=is_supportive,
                                     author=db_user.uid,
                                     conclusion=premise.statement_uid,
-                                    issue=issue)
+                                    issue=db_issue.uid)
             new_arguments.append(new_argument)
 
         if len(new_arguments) > 0:
@@ -198,7 +203,8 @@ def set_new_undermine_or_support_for_pgroup(premisegroup_uid, current_argument, 
     return already_in[rnd]
 
 
-def set_new_undercut(premisegroup_uid, current_argument, db_user, issue):
+def set_new_undercut(premisegroup_uid, current_argument: Argument, db_user: User, issue: Issue) \
+        -> Tuple[Argument, bool]:
     """
     Inserts a new undercut or overbid with the given parameters.
 
@@ -218,7 +224,7 @@ def set_new_undercut(premisegroup_uid, current_argument, db_user, issue):
         new_argument = Argument(premisegroup=premisegroup_uid,
                                 issupportive=False,
                                 author=db_user.uid,
-                                issue=issue)
+                                issue=issue.uid)
         new_argument.set_conclusions_argument(current_argument.uid)
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()
@@ -226,7 +232,8 @@ def set_new_undercut(premisegroup_uid, current_argument, db_user, issue):
         return new_argument, False
 
 
-def set_new_rebut(premisegroup_uid, current_argument, db_user, issue):
+def set_new_rebut(premisegroup_uid, current_argument: Argument, db_user: User, db_issue: Issue) \
+        -> Tuple[Argument, bool]:
     """
     Inserts a new rebut with the given parameters.
 
@@ -247,17 +254,19 @@ def set_new_rebut(premisegroup_uid, current_argument, db_user, issue):
                                 issupportive=False,
                                 author=db_user.uid,
                                 conclusion=current_argument.conclusion_uid,
-                                issue=issue)
+                                issue=db_issue.uid)
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()
         transaction.commit()
         return new_argument, False
 
 
-def set_new_support(premisegroup_uid, current_argument, db_user, issue):
+def set_new_support(premisegroup_uid, current_argument: Argument, db_user: User, db_issue: Issue) \
+        -> Tuple[Argument, bool]:
     """
     Inserts a new support with the given parameters.
 
+    :param db_issue: Issue
     :param premisegroup_uid: premisesgroup_uid
     :param current_argument: Argument
     :param db_user: User
@@ -275,7 +284,7 @@ def set_new_support(premisegroup_uid, current_argument, db_user, issue):
                                 issupportive=True,
                                 author=db_user.uid,
                                 conclusion=current_argument.conclusion_uid,
-                                issue=issue)
+                                issue=db_issue.uid)
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()
         transaction.commit()

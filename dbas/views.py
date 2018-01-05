@@ -32,6 +32,7 @@ from dbas.database.discussion_model import User, Group, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
 from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement_uid
+from dbas.handler.issue import get_issues_overiew, set_discussions_properties
 from dbas.handler.language import set_language, get_language_from_cookie, set_language_for_visit
 from dbas.handler.notification import read_notifications, delete_notifications, send_users_notification
 from dbas.handler.password import request_password
@@ -45,7 +46,6 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
 from dbas.helper.views import preparation_for_view
-from dbas.handler.issue import get_issues_overiew, set_discussions_properties
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
 from dbas.logger import logger
@@ -1439,7 +1439,8 @@ def ajax_set_new_start_argument(request):
         issue = issue_helper.get_issue_id(request)
         data['nickname'] = request.authenticated_userid
         data['issue_id'] = issue
-        data['slug'] = DBDiscussionSession.query(Issue).get(issue).slug
+        data['issue'] = DBDiscussionSession.query(Issue).get(issue)
+        data['slug'] = data['issue'].slug
         data['default_locale_name'] = get_default_locale_name(request.registry)
         data['application_url'] = request.application_url
         data['supportive'] = True
@@ -1490,7 +1491,8 @@ def set_new_start_statement(request):
         data['nickname'] = request.authenticated_userid
         data['statement'] = request.params['statement']
         data['issue_id'] = issue
-        data['slug'] = DBDiscussionSession.query(Issue).get(issue).slug
+        data['issue'] = DBDiscussionSession.query(Issue).get(issue)
+        data['slug'] = data['issue'].slug
         data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
         data['default_locale_name'] = get_default_locale_name(request.registry)
         data['application_url'] = request.application_url
@@ -1556,6 +1558,7 @@ def set_new_premises_for_argument(request):
         data['nickname'] = request.authenticated_userid
         data['statement'] = json.loads(request.params['premisegroups'])
         data['issue_id'] = issue_helper.get_issue_id(request)
+        data['issue'] = DBDiscussionSession.query(Issue).get(data['issue_id'])
         data['arg_uid'] = request.params['arg_uid']
         data['attack_type'] = request.params['attack_type']
         data['port'] = get_port(request)

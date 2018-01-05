@@ -32,13 +32,13 @@ def set_arguments_premises(for_api, data) -> dict:
     try:
         nickname = data['nickname']
         premisegroups = data['statement']
-        issue_id = data['issue_id']
+        db_issue = data['issue']
         arg_uid = data['arg_uid']
         attack_type = data['attack_type']
         history = data['history'] if '_HISTORY_' in data else None
         mailer = data['mailer'] if 'mailer' in data else None
         port = data['port'] if 'port' in data else None
-        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else DBDiscussionSession.query(Issue).get(issue_id).lang
+        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else db_issue.lang
         default_locale_name = data['default_locale_name'] if 'default_locale_name' in data else discussion_lang
         application_url = data['application_url']
     except KeyError as e:
@@ -47,21 +47,20 @@ def set_arguments_premises(for_api, data) -> dict:
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
     _tn = Translator('discussion_lang')
-    if DBDiscussionSession.query(Issue).get(issue_id).is_read_only:
+    if db_issue.is_read_only:
         return {'error': _tn.get(_.discussionIsReadOnly), 'statement_uids': ''}
 
     # escaping will be done in QueryHelper().set_statement(...)
     d = {'default_locale_name': default_locale_name, 'discussion_lang': discussion_lang}
     m = {'mailer': mailer, 'port': port}
     arg_infos = {'arg_id': arg_uid, 'attack_type': attack_type, 'premisegroups': premisegroups, 'history': history}
-    url, statement_uids, error = __process_input_of_premises_for_arguments_and_receive_url(d, arg_infos, issue_id,
+    url, statement_uids, error = __process_input_of_premises_for_arguments_and_receive_url(d, arg_infos, db_issue,
                                                                                            nickname, for_api,
                                                                                            application_url, m)
     user.update_last_action(nickname)
 
-    prepared_dict = dict()
-    prepared_dict['error'] = error
-    prepared_dict['statement_uids'] = statement_uids
+    prepared_dict = {'error': error,
+                     'statement_uids': statement_uids}
 
     # add reputation
     add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_new_argument)
@@ -173,7 +172,7 @@ def get_arguments_by_statement_uid(uid, application_url, ui_locales) -> dict:
     return prepared_dict
 
 
-def __process_input_of_premises_for_arguments_and_receive_url(langs, arg_infos, issue, user,
+def __process_input_of_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue: Issue, nickname: str,
                                                               for_api, application_url, m):
     """
     Inserts given text in premisegroups as new arguments in dependence of the parameters and returns a URL
@@ -185,7 +184,7 @@ def __process_input_of_premises_for_arguments_and_receive_url(langs, arg_infos, 
     :param langs: dict with default_locale_name and discussion_lang
     :param arg_infos: dict with arg_id, attack_type, premisegroups and the history
     :param issue: Issue.uid
-    :param user: User.nickname
+    :param nickname: User.nickname
     :param for_api: Boolean
     :param application_url: URL
     :param m: dict with port and mailer
@@ -200,12 +199,12 @@ def __process_input_of_premises_for_arguments_and_receive_url(langs, arg_infos, 
 
     logger('ArgumentsHelper', 'process_input_of_premises_for_arguments_and_receive_url',
            'count of new pgroups: ' + str(len(premisegroups)))
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     _tn = Translator(discussion_lang)
     if not db_user:
         return '', '', _tn.get(_.userNotFound)
 
-    slug = DBDiscussionSession.query(Issue).get(issue).slug
+    slug = db_issue.slug
     error = ''
     supportive = attack_type == 'support' or attack_type == 'overbid'
 
@@ -214,7 +213,7 @@ def __process_input_of_premises_for_arguments_and_receive_url(langs, arg_infos, 
     new_argument_uids = []
     for group in premisegroups:  # premise groups is a list of lists
         new_argument = insert_new_premises_for_argument(application_url, default_locale_name, group, attack_type,
-                                                        arg_id, issue, user, discussion_lang)
+                                                        arg_id, db_issue, db_user, discussion_lang)
         if not isinstance(new_argument, Argument):  # break on error
             a = _tn.get(_.notInsertedErrorBecauseEmpty)
             b = _tn.get(_.minLength)
@@ -238,10 +237,11 @@ def __process_input_of_premises_for_arguments_and_receive_url(langs, arg_infos, 
 
     # #arguments=0: empty input
     # #arguments=1: deliver new url
-    # #arguments>1: deliver url where the user has to choose between her inputs
+    # #arguments>1: deliver url where the nickname has to choose between her inputs
     _um = url = UrlManager(application_url, slug, for_api, history)
     if len(new_argument_uids) == 0:
-        error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength), statement_min_length)
+        error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength),
+                                     statement_min_length)
 
     elif len(new_argument_uids) == 1:
         url = get_url_for_new_argument(new_argument_uids, history, discussion_lang, _um)
@@ -257,17 +257,18 @@ def __process_input_of_premises_for_arguments_and_receive_url(langs, arg_infos, 
         DBDiscussionSession.flush()
         transaction.commit()
 
-        new_uid = random.choice(new_argument_uids)   # TODO eliminate random
+        new_uid = random.choice(new_argument_uids)  # TODO eliminate random
         attack = get_relation_between_arguments(arg_id, new_uid)
 
         tmp_url = _um.get_url_for_reaction_on_argument(False, arg_id, attack, new_uid)
 
-        NotificationHelper.send_add_argument_notification(tmp_url, arg_id, user, m['port'], m['mailer'])
+        NotificationHelper.send_add_argument_notification(tmp_url, arg_id, nickname, m['port'], m['mailer'])
 
     return url, statement_uids, error
 
 
-def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type, arg_id, _um, supportive):
+def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type, arg_id, _um,
+                                                                          supportive):
     """
     Return the 'choose' url, when the user entered more than one premise for an argument
 
