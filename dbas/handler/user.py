@@ -345,18 +345,15 @@ def get_count_of_votes_of_user(user, limit_on_today=False):
     if not user:
         return (0, 0)
 
-    db_arg = DBDiscussionSession.query(MarkedArgument).filter(ClickedArgument.author_uid == user.uid)
-    db_stat = DBDiscussionSession.query(MarkedStatement).filter(ClickedStatement.author_uid == user.uid)
+    db_arg = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.author_uid == user.uid)
+    db_stat = DBDiscussionSession.query(MarkedStatement).filter(MarkedStatement.author_uid == user.uid)
 
     if limit_on_today:
         today = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
         db_arg = db_arg.filter(MarkedArgument.timestamp >= today)
         db_stat = db_stat.filter(MarkedStatement.timestamp >= today)
 
-    db_arg = db_arg.all()
-    db_stat = db_stat.all()
-
-    return len(db_arg), len(db_stat)
+    return len(db_arg.all()), len(db_stat.all())
 
 
 def get_count_of_clicks(user, limit_on_today=False):
