@@ -285,7 +285,8 @@ def preparation_for_justify_argument(request_dict, for_api, statement_or_arg_id,
     extras_dict = _dh.prepare_extras_dict(slug, False, True, False, registry, app_url, path, for_api=for_api,
                                           nickname=nickname)
     # is the discussion at the end?
-    if not logged_in and len(item_dict['elements']) == 1 or logged_in and len(item_dict['elements']) == 1:
+    if len(item_dict['elements']) == 0 or len(item_dict['elements']) == 1 and logged_in:
+
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)
 
     return item_dict, discussion_dict, extras_dict
