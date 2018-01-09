@@ -88,11 +88,11 @@ function User() {
 			}]};
 		try {
 			chart = new Chart(document.getElementById(id).getContext('2d')).Line(data);
+			div_legend = $('<div>').addClass('chart-legend').append(chart.generateLegend());
+			space.prepend(div_legend);
 		} catch(err) {
 			console.log(err.message);
 		}
-		div_legend = $('<div>').addClass('chart-legend').append(chart.generateLegend());
-		space.prepend(div_legend);
 	};
 
 	/**
