@@ -71,7 +71,6 @@ function User() {
 	 */
 	this.createChart = function(parsedData, space, id, count){
 		var chart, data, div_legend;
-		console.log(space.width());
 		space.append('<canvas id="' + id + '" width="' + space.width() + '" height="300" style= "display: block; margin: 0 auto;"></canvas>');
 		data = {
 			labels : parsedData['labels' + (count+1)],
@@ -87,7 +86,11 @@ function User() {
 				data : parsedData['data' + (count+1)],
 				hover: {mode: 'single'}
 			}]};
-		chart = new Chart(document.getElementById(id).getContext('2d')).Line(data);
+		try {
+			chart = new Chart(document.getElementById(id).getContext('2d')).Line(data);
+		} catch(err) {
+			console.log(err.message);
+		}
 		div_legend = $('<div>').addClass('chart-legend').append(chart.generateLegend());
 		space.prepend(div_legend);
 	};
