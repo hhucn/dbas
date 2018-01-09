@@ -388,7 +388,13 @@ class DictionaryHelper(object):
             extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
         extras_dict['close_premise_container'] = False
         extras_dict['show_display_style'] = False
-        if nickname:
+        if is_read_only:
+            mid_text = _tn.get(_.discussionEndAndReadOnly)
+            sdict = create_speechbubble_dict(BubbleTypes.INFO, id='end', message=mid_text, lang=self.system_lang,
+                                             nickname=nickname)
+            discussion_dict['bubbles'].append(sdict)
+
+        elif nickname:
             if gender == 'f':
                 mid_text = _tn.get(_.firstOneReasonF)
             elif gender == 'm':
@@ -451,7 +457,6 @@ class DictionaryHelper(object):
         :return: None
         """
         discussion_dict['mode'] = 'justify'
-        current_premise = current_premise[0:1].lower() + current_premise[1:]
         if gender == 'f':
             mid_text = _tn.get(_.firstPremiseText1F)
         elif gender == 'm':

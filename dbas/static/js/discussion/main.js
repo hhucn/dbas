@@ -724,18 +724,21 @@ function Main () {
 			if ($.inArray(id, ids) !== -1) {
 				input.attr('onclick', '');
 				input.click(function () {
-					ctx.setInputExtraBox(input, guiHandler);
+					ctx.setInputExtraBox(input, guiHandler, sendStartStatement, sendStartPremise, sendArgumentsPremise);
 				});
 			}
 		}
 	};
-
+	
 	/**
 	 *
 	 * @param input
 	 * @param guiHandler
+	 * @param sendStartStatement
+	 * @param sendStartPremise
+	 * @param sendArgumentsPremise
 	 */
-	this.setInputExtraBox = function (input, guiHandler) {
+	this.setInputExtraBox = function (input, guiHandler, sendStartStatement, sendStartPremise, sendArgumentsPremise) {
 		// new position at start
 		if (input.attr('id').indexOf('start_statement') !== -1) {
 			guiHandler.showAddPositionContainer();
