@@ -1438,7 +1438,7 @@ def ajax_set_new_start_argument(request):
     try:
         issue = issue_helper.get_issue_id(request)
         data['nickname'] = request.authenticated_userid
-        data['issue_id'] = issue
+        data['user'] = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).one()
         data['issue'] = DBDiscussionSession.query(Issue).get(issue)
         data['slug'] = data['issue'].slug
         data['default_locale_name'] = get_default_locale_name(request.registry)
@@ -1488,11 +1488,9 @@ def set_new_start_statement(request):
     data = {}
     try:
         issue = issue_helper.get_issue_id(request)
-        data['nickname'] = request.authenticated_userid
+        data['user'] = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).one()
         data['statement'] = request.params['statement']
-        data['issue_id'] = issue
         data['issue'] = DBDiscussionSession.query(Issue).get(issue)
-        data['slug'] = data['issue'].slug
         data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
         data['default_locale_name'] = get_default_locale_name(request.registry)
         data['application_url'] = request.application_url

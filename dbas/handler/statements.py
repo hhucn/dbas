@@ -1,3 +1,4 @@
+from functools import partial
 from typing import List, Tuple, Dict, Union
 
 import transaction
@@ -35,12 +36,10 @@ def set_position(for_api, data) -> dict:
     :return: Prepared collection with statement_uids of the new positions and next url or an error
     """
     try:
-        nickname = data['nickname']
         statement = data['statement']
-        issue_id = data['issue_id']
+        db_user = data['user']
         db_issue = data['issue']
-        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else db_issue.lang
-        default_locale_name = data['default_locale_name'] if 'default_locale_name' in data else discussion_lang
+        default_locale_name = data['default_locale_name'] if 'default_locale_name' in data else db_issue.lang
         application_url = data['application_url']
     except KeyError as e:
         logger('StatementsHelper', 'position', repr(e), error=True)
@@ -48,42 +47,38 @@ def set_position(for_api, data) -> dict:
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
     # escaping will be done in StatementsHelper().set_statement(...)
-    user.update_last_action(nickname)
-    _tn = Translator(discussion_lang)
+    user.update_last_action(db_user.nickname)
+    _tn = Translator(db_issue.lang)
 
-    if DBDiscussionSession.query(Issue).get(issue_id).is_read_only:
+    if db_issue.is_read_only:
         return {'error': _tn.get(_.discussionIsReadOnly), 'statement_uids': ''}
 
     prepared_dict = {'error': '', 'statement_uids': ''}
 
     try:
-        new_statement = insert_as_statements(application_url, default_locale_name, statement, nickname, db_issue,
-                                             discussion_lang, is_start=True)
-    except StatementToShort:
+        new_statement = insert_as_statement(application_url, default_locale_name, statement, db_user, db_issue,
+                                            db_issue.lang, is_start=True)
+    except StatementToShort as e:
         a = _tn.get(_.notInsertedErrorBecauseEmpty)
         b = _tn.get(_.minLength)
         c = _tn.get(_.eachStatement)
-        error = '{} ({}: {} {})'.format(a, b, 10, c)
+        error = '{} ({}: {} {})'.format(a, b, e.min_length, c)
         prepared_dict['error'] = error
         return prepared_dict
 
-    except UserNotInDatabase:
-        prepared_dict['error'] = _tn.get(_.noRights)
-        return prepared_dict
-
     url = UrlManager(application_url, db_issue.slug, for_api).get_url_for_statement_attitude(False,
-                                                                                             new_statement[0].uid)
-    prepared_dict['url'] = url
-    prepared_dict['statement_uids'] = [new_statement[0].uid]
+                                                                                             new_statement.uid)
+    prepared_dict['statement_uids'] = [new_statement.uid]
 
     # add reputation
-    add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_position)
+    add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_position)
     if not add_rep:
-        add_rep, broke_limit = add_reputation_for(nickname, rep_reason_new_statement)
+        add_rep, broke_limit = add_reputation_for(db_user, rep_reason_new_statement)
         # send message if the user is now able to review
     if broke_limit:
         url += '#access-review'
-        prepared_dict['url'] = url
+
+    prepared_dict['url'] = url
 
     return prepared_dict
 
@@ -314,7 +309,46 @@ def __get_logfile_dict(textversion: TextVersion, main_page: str, lang: str) -> D
     return corr_dict
 
 
-def insert_as_statements(application_url: str, default_locale_name: str, text_list: List[str], nickname: str,
+def insert_as_statement(application_url: str, default_locale_name: str, text: str, db_user: User,
+                         db_issue: Issue, lang: str, is_start=False) -> Statement:
+    """
+        Inserts the given text as statement and returns the uid
+
+        :param lang: Language
+        :param application_url: Url of the app itself
+        :param default_locale_name: default lang of the app
+        :param text: String
+        :param db_user: User
+        :param db_issue: Issue
+        :param is_start: Boolean
+        :return: Statement
+        """
+    if len(text) < statement_min_length:
+        raise StatementToShort(text, statement_min_length)
+
+    new_statement, is_duplicate = set_statement(text, db_user, is_start, db_issue, lang)
+
+    # add marked statement
+    DBDiscussionSession.add(MarkedStatement(statement=new_statement.uid, user=db_user.uid))
+    DBDiscussionSession.add(SeenStatement(statement_uid=new_statement.uid, user_uid=db_user.uid))
+    DBDiscussionSession.flush()
+
+    if is_duplicate:
+        pass
+
+    _tn = Translator(new_statement.lang)
+    _um = UrlManager(application_url, db_issue.slug)
+    append_action_to_issue_rss(issue_uid=db_issue.uid,
+                               author_uid=db_user.uid,
+                               title=_tn.get(_.positionAdded if is_start else _.statementAdded),
+                               description='...' + get_text_for_statement_uid(new_statement.uid) + '...',
+                               ui_locale=default_locale_name,
+                               url=_um.get_url_for_statement_attitude(False, new_statement.uid))
+
+    return new_statement
+
+
+def insert_as_statements(application_url: str, default_locale_name: str, text_list: List[str], db_user: User,
                          db_issue: Issue, lang: str, is_start=False) -> List[Statement]:
     """
     Inserts the given texts as statements and returns the uid's
@@ -323,43 +357,13 @@ def insert_as_statements(application_url: str, default_locale_name: str, text_li
     :param application_url: Url of the app itself
     :param default_locale_name: default lang of the app
     :param text_list: [String]
-    :param nickname: User.nickname
+    :param db_user: User
     :param db_issue: Issue
     :param is_start: Boolean
     :return: [Statement]
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        raise UserNotInDatabase()
 
-    statements = []
-    input_list = text_list if isinstance(text_list, list) else [text_list]
-    for text in input_list:
-        if len(text) < statement_min_length:
-            raise StatementToShort(text, statement_min_length)
-
-        new_statement, is_duplicate = set_statement(text, db_user, is_start, db_issue, lang)
-
-        statements.append(new_statement)
-
-        # add marked statement
-        DBDiscussionSession.add(MarkedStatement(statement=new_statement.uid, user=db_user.uid))
-        DBDiscussionSession.add(SeenStatement(statement_uid=new_statement.uid, user_uid=db_user.uid))
-        DBDiscussionSession.flush()
-
-        if is_duplicate:
-            continue
-
-        _tn = Translator(new_statement.lang)
-        _um = UrlManager(application_url, db_issue.slug)
-        append_action_to_issue_rss(issue_uid=db_issue.uid,
-                                   author_uid=db_user.uid,
-                                   title=_tn.get(_.positionAdded if is_start else _.statementAdded),
-                                   description='...' + get_text_for_statement_uid(new_statement.uid) + '...',
-                                   ui_locale=default_locale_name,
-                                   url=_um.get_url_for_statement_attitude(False, new_statement.uid))
-
-    return statements
+    return [insert_as_statement(application_url, default_locale_name, text, db_user, db_issue, lang, is_start) for text in text_list]
 
 
 def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue, lang) -> Tuple[Statement, bool]:
@@ -497,7 +501,7 @@ def insert_new_premises_for_argument(application_url, default_locale_name, text,
     """
     logger('StatementsHelper', 'insert_new_premises_for_argument', 'def')
 
-    statements = insert_as_statements(application_url, default_locale_name, text, db_user.nickname, db_issue,
+    statements = insert_as_statements(application_url, default_locale_name, text, db_user, db_issue,
                                       discussion_lang)
 
     # set the new statements as premise group and get current user as well as current argument
@@ -595,7 +599,7 @@ def __create_argument_by_raw_input(application_url, default_locale_name, db_user
     db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
                                                                      Statement.issue_uid == db_issue.uid)).first()
     try:
-        statements = insert_as_statements(application_url, default_locale_name, text, db_user.nickname, db_issue,
+        statements = insert_as_statements(application_url, default_locale_name, text, db_user, db_issue,
                                           discussion_lang)
 
         # second, set the new statements as premisegroup

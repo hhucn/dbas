@@ -7,10 +7,13 @@ class UserNotInDatabase(Exception):
 
 class StatementToShort(Exception):
     def __init__(self, text=None, min_length=None):
-        if text:
+        self.min_length = min_length
+        self.text = text
+
+        if self.text:
             msg = "%s is %d symbols long."
 
-            if min_length:
+            if self.min_length:
                 msg += "At least %d symbols are expected!".format(min_length)
             else:
                 msg += "This is too short."

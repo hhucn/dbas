@@ -71,6 +71,7 @@ def process_user(request, payload):
 
     # Prepare data for DB-AS
     request.validated['user'] = user
+    request.validated['db_user'] = db_user
     request.validated['user_uid'] = db_user.uid
     request.validated['session_id'] = request.session.id
 

@@ -124,12 +124,9 @@ def get_discussion_language(matchdict, params, session, current_issue_uid=None):
         else session['issue'] if 'issue' in session \
         else current_issue_uid
 
-    db_lang = DBDiscussionSession.query(Issue).filter_by(uid=issue).join(Language).first()
+    db_issue = DBDiscussionSession.query(Issue).get(issue)
 
-    if db_lang:
-        return db_lang.languages.ui_locales
-    else:
-        return 'en'
+    return db_issue.lang if db_issue else 'en'
 
 
 def python_datetime_pretty_print(ts, lang):

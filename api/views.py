@@ -190,6 +190,7 @@ def prepare_user_information(request):
     val = request.validated
     try:
         api_data = {"nickname": val["user"],
+                    "user": val["db_user"],
                     "user_uid": val["user_uid"],
                     "session_id": val["session_id"]}
     except KeyError:
@@ -209,33 +210,34 @@ def prepare_data_assign_reference(request, func: Callable[[bool, dict], Any]):
     if not api_data:
         raise HTTP204()
 
+    log.info(str(request.matched_route))
     data = json_to_dict(request.body)
 
     if "issue_id" in data:
         db_issue = DBDiscussionSession.query(Issue).get(data["issue_id"])
 
         if not db_issue:
-            request.errors.add("Body", "Issue not found", "The given slug is invalid")
+            request.errors.add("body", "Issue not found", "The given issue_id is invalid")
             request.status = 400
 
     elif "slug" in data:
         db_issue = DBDiscussionSession.query(Issue).filter_by(slug=data["slug"]).one()
 
         if not db_issue:
-            request.errors.add("Body", "Issue not found", "The given slug is invalid")
+            request.errors.add("body", "Issue not found", "The given slug is invalid")
             request.status = 400
 
         api_data["issue_id"] = db_issue.uid
 
     else:
-        request.errors.add("Body", "Issue not found", "There was no issue id or slug given")
+        request.errors.add("body", "Issue not found", "There was no issue_id or slug given")
         request.status = 400
         return
 
     api_data["issue"] = db_issue
 
     api_data.update(data)
-    api_data.update({'application_url': request.application_url})
+    api_data['application_url'] = request.application_url
 
     return_dict = func(True, api_data)
 

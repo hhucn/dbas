@@ -382,12 +382,7 @@ def __remove_user_from_arguments_with_statement(statement_uid, db_user, _tn):
 
 
 def get_default_locale_name(registry):
-    try:
-        if 'pyramid.default_locale_name' in registry.settings:
-            return registry.settings['pyramid.default_locale_name']
-    except KeyError:
-        return 'en'
-    return 'en'
+    return registry.settings.get('pyramid.default_locale_name', 'en')
 
 
 def get_short_url(url, nickname, ui_locales) -> dict:
