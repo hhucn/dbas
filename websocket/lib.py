@@ -29,7 +29,7 @@ def send_request_for_info_popup_to_socketio(nickname, port, message='', url=None
     """
     logger('Websocket.lib', 'send_request_for_info_popup_to_socketio', 'main')
     if url:
-        use_https = 'dbas.cs' in url
+        use_https = 'localhost' not in url
         __send_request_for_popup_to_socketio(nickname, port, 'info', message, url, increase_counter, use_https)
 
 
@@ -49,7 +49,7 @@ def send_request_for_info_popup_to_socketio_with_delay(nickname, port, message='
     time.sleep(delay)
     logger('Websocket.lib', 'send_request_for_info_popup_to_socketio_with_delay', 'enough sleep')
     if url:
-        use_https = 'dbas.cs' in url
+        use_https = 'localhost' not in url
         __send_request_for_popup_to_socketio(nickname, port, 'info', message, url, increase_counter, use_https)
 
 
@@ -66,7 +66,7 @@ def send_request_for_success_popup_to_socketio(nickname, port, message='', url=N
     """
     logger('Websocket.lib', 'send_request_for_success_popup_to_socketio', 'main')
     if url:
-        use_https = 'dbas.cs' in url
+        use_https = 'localhost' not in url
         __send_request_for_popup_to_socketio(nickname, port, 'success', message, url, increase_counter, use_https)
 
 
