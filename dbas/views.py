@@ -368,6 +368,7 @@ def main_user(request):
     user_dict = user.get_information_of(current_user, ui_locales)
 
     db_user_of_request = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
+    logger('X', 'X', request.authenticated_userid)
     can_send_notification = False
     if db_user_of_request:
         can_send_notification = current_user.uid != db_user_of_request.uid
