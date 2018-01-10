@@ -18,7 +18,7 @@ from urllib import parse
 from sqlalchemy import and_, func
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, Language, User, Settings, \
+from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, User, Settings, \
     ClickedArgument, ClickedStatement, Group, MarkedArgument, MarkedStatement, PremiseGroup
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _

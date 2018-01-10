@@ -11,11 +11,11 @@ class StatementToShort(Exception):
         self.text = text
 
         if self.text:
-            msg = "%s is %d symbols long."
+            msg = "{} is {} symbols long. ".format(self.text, len(self.text))
 
             if self.min_length:
-                msg += "At least %d symbols are expected!".format(min_length)
+                msg += "At least {} symbols are expected!".format(self.min_length)
             else:
                 msg += "This is too short."
 
-            super(self).__init__(msg)
+            Exception.__init__(self, msg)

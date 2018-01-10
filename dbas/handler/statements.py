@@ -1,4 +1,3 @@
-from functools import partial
 from typing import List, Tuple, Dict, Union
 
 import transaction
@@ -8,7 +7,7 @@ import dbas.review.helper.queues as review_queue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
     sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement
-from dbas.exceptions import UserNotInDatabase, StatementToShort
+from dbas.exceptions import StatementToShort
 from dbas.handler import user, notification as NotificationHelper
 from dbas.handler.rss import append_action_to_issue_rss
 from dbas.handler.voting import add_seen_argument, add_seen_statement
@@ -95,8 +94,7 @@ def set_positions_premise(for_api: bool, data: Dict) -> dict:
     try:
         nickname = data['nickname']
         premisegroups = data['statement']
-        issue_id = data['issue_id']
-        issue = DBDiscussionSession.query(Issue).get(issue_id)
+        issue = data["issue"]
         conclusion_id = data['conclusion_id']
         supportive = data['supportive']
         application_url = data['application_url']
@@ -310,7 +308,7 @@ def __get_logfile_dict(textversion: TextVersion, main_page: str, lang: str) -> D
 
 
 def insert_as_statement(application_url: str, default_locale_name: str, text: str, db_user: User,
-                         db_issue: Issue, lang: str, is_start=False) -> Statement:
+                        db_issue: Issue, lang: str, is_start=False) -> Statement:
     """
         Inserts the given text as statement and returns the uid
 
@@ -363,7 +361,8 @@ def insert_as_statements(application_url: str, default_locale_name: str, text_li
     :return: [Statement]
     """
 
-    return [insert_as_statement(application_url, default_locale_name, text, db_user, db_issue, lang, is_start) for text in text_list]
+    return [insert_as_statement(application_url, default_locale_name, text, db_user, db_issue, lang, is_start) for text
+            in text_list]
 
 
 def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue, lang) -> Tuple[Statement, bool]:
@@ -501,11 +500,11 @@ def insert_new_premises_for_argument(application_url, default_locale_name, text,
     """
     logger('StatementsHelper', 'insert_new_premises_for_argument', 'def')
 
-    statements = insert_as_statements(application_url, default_locale_name, text, db_user, db_issue,
-                                      discussion_lang)
+    statement = insert_as_statement(application_url, default_locale_name, text, db_user, db_issue,
+                                    discussion_lang)
 
     # set the new statements as premise group and get current user as well as current argument
-    new_pgroup_uid = set_statements_as_new_premisegroup(statements, db_user, db_issue)
+    new_pgroup_uid = set_statements_as_new_premisegroup([statement], db_user, db_issue)
     current_argument = DBDiscussionSession.query(Argument).get(arg_uid)
 
     new_argument = None
@@ -578,7 +577,7 @@ def set_statements_as_new_premisegroup(statements: List[Statement], db_user: Use
     return db_premisegroup.uid
 
 
-def __create_argument_by_raw_input(application_url, default_locale_name, db_user: User, text, conclusion_id,
+def __create_argument_by_raw_input(application_url, default_locale_name, db_user: User, text: str, conclusion_id,
                                    is_supportive, db_issue: Issue, discussion_lang) \
         -> Tuple[Union[Argument, None], List[int]]:
     """
@@ -599,11 +598,11 @@ def __create_argument_by_raw_input(application_url, default_locale_name, db_user
     db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
                                                                      Statement.issue_uid == db_issue.uid)).first()
     try:
-        statements = insert_as_statements(application_url, default_locale_name, text, db_user, db_issue,
-                                          discussion_lang)
+        statement = insert_as_statement(application_url, default_locale_name, text, db_user, db_issue,
+                                        discussion_lang)
 
         # second, set the new statements as premisegroup
-        new_premisegroup_uid = set_statements_as_new_premisegroup(statements, db_user, db_issue)
+        new_premisegroup_uid = set_statements_as_new_premisegroup([statement], db_user, db_issue)
         logger('StatementsHelper', '__create_argument_by_raw_input', 'new pgroup ' + str(new_premisegroup_uid))
 
         # third, insert the argument
@@ -622,7 +621,7 @@ def __create_argument_by_raw_input(application_url, default_locale_name, db_user
                                        ui_locale=default_locale_name,
                                        url=_um.get_url_for_justifying_statement(False, new_argument.uid, 'd'))
 
-        return new_argument, [s.uid for s in statements]
+        return new_argument, [statement.uid]
     except StatementToShort:
         raise
 

@@ -1520,6 +1520,7 @@ def set_new_start_premise(request):
         data['nickname'] = request.authenticated_userid
         data['application_url'] = request.application_url
         data['issue_id'] = issue_helper.get_issue_id(request)
+        data['issue'] = DBDiscussionSession.query(Issue).get(issue_helper.get_issue_id(request))
         data['statement'] = json.loads(request.params['premisegroups'])
         data['conclusion_id'] = request.params['conclusion_id']
         data['supportive'] = True if request.params['supportive'].lower() == 'true' else False
