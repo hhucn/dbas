@@ -13,7 +13,7 @@ $(function () {
 	$('#send-notification').each(function () {
 		$(this).click(function () {
 			var _this = $(this);
-			$('#' + popupWritingNotificationRecipient).hide();
+			$('#' + popupWritingNotificationRecipient).closest('.form-group').hide();
 			$('#' + popupWritingNotification).modal('show');
 			$('#' + popupWritingNotificationSuccess).hide();
 			$('#' + popupWritingNotificationFailed).hide();
