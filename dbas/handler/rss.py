@@ -88,7 +88,7 @@ def create_initial_issue_rss(main_page, ui_locale):
     return True
 
 
-def append_action_to_issue_rss(issue_uid, author_uid, title, description, ui_locale, url):
+def append_action_to_issue_rss(db_issue: Issue, db_author: User, title, description, ui_locale, url):
     """
     Appends a new action in D-BAS to the RSS
 
@@ -100,20 +100,13 @@ def append_action_to_issue_rss(issue_uid, author_uid, title, description, ui_loc
     :param url: url of this event
     :return: Boolean
     """
-    logger('RSS-Handler', 'append_action_to_issue_rss', 'issue_uid ' + str(issue_uid))
-    db_issue = DBDiscussionSession.query(Issue).get(issue_uid)
-    if not db_issue:
-        return False
+    logger('RSS-Handler', 'append_action_to_issue_rss', 'issue_uid ' + str(db_issue.uid))
 
-    db_author = DBDiscussionSession.query(User).get(author_uid)
-    if not db_author:
-        return False
-
-    DBDiscussionSession.add(RSS(author=author_uid, issue=issue_uid, title=title, description=description))
+    DBDiscussionSession.add(RSS(author=db_author.uid, issue=db_issue.uid, title=title, description=description))
     DBDiscussionSession.flush()
     transaction.commit()
 
-    db_rss = DBDiscussionSession.query(RSS).filter_by(issue_uid=issue_uid).order_by(RSS.uid.desc()).all()
+    db_rss = DBDiscussionSession.query(RSS).filter_by(issue_uid=db_issue.uid).order_by(RSS.uid.desc()).all()
     items = []
     for rss in db_rss:
         db_author = DBDiscussionSession.query(User).get(rss.author_uid)

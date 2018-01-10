@@ -338,8 +338,8 @@ def insert_as_statement(application_url: str, default_locale_name: str, text: st
 
     _tn = Translator(new_statement.lang)
     _um = UrlManager(application_url, db_issue.slug)
-    append_action_to_issue_rss(issue_uid=db_issue.uid,
-                               author_uid=db_user.uid,
+    append_action_to_issue_rss(db_issue=db_issue,
+                               db_author=db_user,
                                title=_tn.get(_.positionAdded if is_start else _.statementAdded),
                                description='...' + get_text_for_statement_uid(new_statement.uid) + '...',
                                ui_locale=default_locale_name,
@@ -614,8 +614,8 @@ def __create_argument_by_raw_input(application_url, default_locale_name, db_user
         if new_argument:
             _tn = Translator(default_locale_name)
             _um = UrlManager(application_url, db_issue.slug)
-            append_action_to_issue_rss(issue_uid=db_issue.uid,
-                                       author_uid=db_user.uid,
+            append_action_to_issue_rss(db_issue=db_issue,
+                                       db_author=db_user,
                                        title=_tn.get(_.argumentAdded),
                                        description='...' + get_text_for_argument_uid(new_argument.uid,
                                                                                      anonymous_style=True) + '...',
