@@ -12,9 +12,9 @@
         </li>
     </ul>
     <ul>
-        <li>
-            <a href="${request.application_url}/rss"><i class="fa fa-rss" aria-hidden="true"></i><span i18n:translate="rss">RSS</span></a>
-        </li>
+        <!--<li>-->
+            <!--<a href="${request.application_url}/rss"><i class="fa fa-rss" aria-hidden="true"></i><span i18n:translate="rss">RSS</span></a>-->
+        <!--</li>-->
         <li>
             <a href="${request.application_url}/faq"><i class="fa fa-question" aria-hidden="true"></i><span i18n:translate="Help">Help</span></a>
         </li>
