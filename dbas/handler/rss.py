@@ -83,7 +83,7 @@ def create_initial_issue_rss(main_page, ui_locale):
         if not os.path.exists('dbas/static/rss'):
             os.makedirs('dbas/static/rss')
 
-        rss.write_xml(open('dbas/static/rss/' + issue.slug + '.xml', 'w'), encoding='utf-8')
+        rss.write_xml(open('dbas/static/rss/{}.xml'.format(issue.slug) + '.xml', 'w'), encoding='utf-8')
 
     return True
 
@@ -132,7 +132,7 @@ def append_action_to_issue_rss(issue_uid, author_uid, title, description, ui_loc
     if not os.path.exists('dbas/static/rss'):
         os.makedirs('dbas/static/rss')
 
-    rss.write_xml(open('dbas/static/rss/' + db_issue.slug + '.xml', 'w'), encoding='utf-8')
+    rss.write_xml(open('dbas/static/rss/{}.xml'.format(db_issue.slug) + '.xml', 'w'), encoding='utf-8')
 
     return True
 
@@ -147,17 +147,21 @@ def get_list_of_all_feeds(ui_locale):
     logger('RSS-Handler', 'get_list_of_all_feeds', 'def with ' + str(ui_locale))
 
     feeds = []
-    feed = {'title': 'News',
-            'description': 'Latest news about D-BAS, a Dialog-Based Argumentation System',
-            'link': '/static/rss/news.xml'}
+    feed = {
+        'title': 'News',
+        'description': 'Latest news about D-BAS, the Dialog-Based Argumentation System',
+        'link': '/static/rss/news.xml'
+    }
     feeds.append(feed)
 
     _tn = Translator(ui_locale)
     db_issues = DBDiscussionSession.query(Issue).all()
     for issue in db_issues:
-        feed = {'title': issue.title,
-                'description': _tn.get(_.latestNewsFromDiscussion) + ': <em>' + issue.title + ' - ' + issue.info + '</em>',
-                'link': '/static/rss/' + issue.slug + '.xml'}
+        feed = {
+            'title': issue.title,
+            'description': '{}: <em> {} - {} </em>'.format(_tn.get(_.latestNewsFromDiscussion), issue.title, issue.info),
+            'link': '/static/rss/{}.xml'.format(issue.slug)
+        }
         feeds.append(feed)
 
     return feeds
@@ -176,8 +180,8 @@ def __get_issue_rss_gen(main_page, issue, items, ui_locale):
     _tn = Translator(ui_locale)
     return PyRSS2Gen.RSS2(
         title='D-BAS Feed',
-        link=main_page + '/static/rss/' + issue.slug + '.xml',
-        description=_tn.get(_.latestNewsFromDiscussion) + ': ' + issue.title + ' - ' + issue.info,
+        link='{}/static/rss/{}.xml'.format(main_page, issue.slug),
+        description='{}: {} - {}'.format(_tn.get(_.latestNewsFromDiscussion), issue.title, issue.info),
         lastBuildDate=datetime.now(),
         items=items
     )
