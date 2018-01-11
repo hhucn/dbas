@@ -31,6 +31,7 @@ class AuthLoginTest(unittest.TestCase):
         response = login_user(request, '', '', for_api, '', _tn)
         self.assertTrue(type(response) is HTTPFound)
 
+        keep_login = True
         response = login_user(request, nickname, password, for_api, keep_login, _tn)
         self.assertTrue(type(response) is HTTPFound)
 
