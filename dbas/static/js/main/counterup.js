@@ -29,7 +29,6 @@
             var num = $this.text();
             var isComma = /[0-9]+,[0-9]+/.test(num);
             num = num.replace(/,/g, '');
-            var isInt = /^[0-9]+$/.test(num);
             var isFloat = /^[0-9]+\.[0-9]+$/.test(num);
             var decimalPlaces = isFloat ? (num.split('.')[1] || []).length : 0;
 
@@ -63,7 +62,6 @@
                 if ($this.data('counterup-nums').length) {
                     setTimeout($this.data('counterup-func'), $settings.delay);
                 } else {
-                    delete $this.data('counterup-nums');
                     $this.data('counterup-nums', null);
                     $this.data('counterup-func', null);
                 }
