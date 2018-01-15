@@ -11,7 +11,7 @@ import arrow
 
 from dbas.auth.recaptcha import client_key as google_recaptcha_client_key
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Language, Group, Settings, Issue
+from dbas.database.discussion_model import User, Language, Group, Settings, Issue, Argument
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
 from dbas.handler.notification import count_of_new_notifications, get_box_for
@@ -19,6 +19,7 @@ from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture,
     get_public_profile_picture, is_development_mode
 from dbas.handler.issue import limit_for_open_issues
 from dbas.logger import logger
+from dbas.review.helper.queues import get_count_of_all
 from dbas.review.helper.queues import get_complete_review_count
 from dbas.review.helper.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
@@ -200,6 +201,12 @@ class DictionaryHelper(object):
         return_dict['close_premise_container'] = True
         return_dict['close_statement_container'] = True
         return_dict['date'] = arrow.utcnow().format('DD-MM-YYYY')
+        return_dict['count_of'] = {
+            'arguments': len(DBDiscussionSession.query(Argument).all()),
+            'users': len(DBDiscussionSession.query(User).all()),
+            'discussions': len(DBDiscussionSession.query(Issue).all()),
+            'reviews': get_count_of_all(),
+        }
         self.__add_title_text(return_dict, is_logged_in)
         self.__add_button_text(return_dict)
         self.__add_tag_text(return_dict)

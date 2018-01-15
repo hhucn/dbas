@@ -67,6 +67,12 @@ def get_review_queues_as_lists(main_page, translator, nickname):
     return review_list
 
 
+def get_count_of_all():
+    reviews = [ReviewDelete, ReviewOptimization, ReviewEdit, ReviewDuplicate, ReviewSplit, ReviewMerge]
+    count = [len(DBDiscussionSession.query(r).all()) for r in reviews]
+    return sum(count)
+
+
 def get_complete_review_count(nickname):
     """
     Sums up the review points of the user
