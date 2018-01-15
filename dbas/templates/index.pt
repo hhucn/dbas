@@ -294,16 +294,30 @@
         </div>
         <div class="row" style="margin-top: 1em;">
           <div class="col-md-3 mx-auto text-center">
-              <h3><span class="counter">${extras.count_of.arguments}</span> <span i18n:translate="arguments">Arguments</span> <i class="fa fa-comment" aria-hidden="true"></i></h3>
+              <h3><span class="counter" style="padding-right: 0.5em;">${extras.count_of.arguments}</span>
+                  <i class="fa fa-comment" aria-hidden="true"></i><br>
+                  <span i18n:translate="arguments">Arguments</span></h3>
           </div>
           <div class="col-md-3 mx-auto text-center">
-              <h3><span class="counter">${extras.count_of.discussions}</span> <span i18n:translate="discussions">Discussions</span> <i class="fa fa-file" aria-hidden="true"></i></h3>
+              <h3>
+                  <span class="counter" style="padding-right: 0.5em;">${extras.count_of.discussions}</span>
+                  <i class="fa fa-file" aria-hidden="true"></i><br>
+                  <span i18n:translate="discussions">Discussions</span>
+              </h3>
           </div>
           <div class="col-md-3 mx-auto text-center">
-              <h3><span class="counter">${extras.count_of.users}</span> <span i18n:translate="users">Users</span> <i class="fa fa-user" aria-hidden="true"></i></h3>
+              <h3>
+                  <span class="counter" style="padding-right: 0.5em;">${extras.count_of.users}</span>
+                  <i class="fa fa-user" aria-hidden="true"></i><br>
+                  <span i18n:translate="users">Users</span>
+              </h3>
           </div>
           <div class="col-md-3 mx-auto text-center">
-              <h3><span class="counter">${extras.count_of.reviews}</span> <span i18n:translate="reviews">Reviews</span> <i class="fa fa-pencil" aria-hidden="true"></i></h3>
+              <h3>
+                  <span class="counter" style="padding-right: 0.5em;">${extras.count_of.reviews}</span>
+                  <i class="fa fa-pencil" aria-hidden="true"></i><br>
+                  <span i18n:translate="reviews">Reviews</span>
+              </h3>
           </div>
         </div>
       </div>
