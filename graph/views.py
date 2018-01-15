@@ -38,7 +38,7 @@ partial_graph = Service(name='d3js_partial',
 def get_d3_complete_dump(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Graph', 'get_d3_complete_dump', 'main: ' + str(request.params))
-    path = request.params['path'] if 'path' in request.params else ''
+    path = request.params.get('path', '')
     issue = IssueHelper.get_issue_id(request)
 
     graph, error = get_d3_data(issue)
@@ -62,8 +62,8 @@ def get_d3_complete_dump(request):
 def get_d3_partial_dump(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Graph', 'get_d3_partial_dump', 'main: ' + str(request.params))
-    path = request.params['path'] if 'path' in request.params else ''
-    uid = request.params['uid'] if 'uid' in request.params else '0'
+    path = request.params.get('path', '')
+    uid = request.params.get('uid', '0')
     is_argument = True if 'is_argument' in request.params and request.params['is_argument'] == 'true' else False
     issue = IssueHelper.get_issue_id(request)
     return_dict = {'type': 'partial'}

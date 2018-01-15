@@ -347,15 +347,15 @@ def register_user_with_ajax_data(params, ui_locales, mailer):
     _tn = Translator(ui_locales)
     success = ''
 
-    firstname = escape_string(params['firstname']) if 'firstname' in params else ''
-    lastname = escape_string(params['lastname']) if 'lastname' in params else ''
-    nickname = escape_string(params['nickname']) if 'nickname' in params else ''
-    email = escape_string(params['email']) if 'email' in params else ''
-    gender = escape_string(params['gender']) if 'gender' in params else ''
-    password = escape_string(params['password']) if 'password' in params else ''
-    passwordconfirm = escape_string(params['passwordconfirm']) if 'passwordconfirm' in params else ''
-    mode = escape_string(params['mode']) if 'mode' in params else ''
-    recaptcha = escape_string(params['g-recaptcha-response']) if 'g-recaptcha-response' in params else ''
+    firstname = escape_string(params.get('firstname', ''))
+    lastname = escape_string(params.get('lastname', ''))
+    nickname = escape_string(params.get('nickname', ''))
+    email = escape_string(params.get('email', ''))
+    gender = escape_string(params.get('gender', ''))
+    password = escape_string(params.get('password', ''))
+    passwordconfirm = escape_string(params.get('passwordconfirm', ''))
+    mode = escape_string(params.get('mode', ''))
+    recaptcha = escape_string(params.get('g-recaptcha-response', ''))
     db_new_user = None
 
     msg = __check_login_params(nickname, email, password, passwordconfirm, mode, recaptcha)
