@@ -285,7 +285,31 @@
         </div>
     </section>
 
-    <section id="contact" class="bg-bright">
+    <section id="counter" class="bg-light">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 mx-auto text-center">
+                    <h2 class="section-heading" i18n:translate="statistics">Statistics</h2>
+                    <hr class="primary"></div>
+        </div>
+        <div class="row" style="margin-top: 1em;">
+          <div class="col-md-3 mx-auto text-center">
+              <h3><span class="counter">${extras.count_of.arguments}</span> <span i18n:translate="arguments">Arguments</span> <i class="fa fa-comment" aria-hidden="true"></i></h3>
+          </div>
+          <div class="col-md-3 mx-auto text-center">
+              <h3><span class="counter">${extras.count_of.discussions}</span> <span i18n:translate="discussions">Discussions</span> <i class="fa fa-file" aria-hidden="true"></i></h3>
+          </div>
+          <div class="col-md-3 mx-auto text-center">
+              <h3><span class="counter">${extras.count_of.users}</span> <span i18n:translate="users">Users</span> <i class="fa fa-user" aria-hidden="true"></i></h3>
+          </div>
+          <div class="col-md-3 mx-auto text-center">
+              <h3><span class="counter">${extras.count_of.reviews}</span> <span i18n:translate="reviews">Reviews</span> <i class="fa fa-pencil" aria-hidden="true"></i></h3>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="bg-dark">
       <div class="container">
         <div class="row">
           <div class="col-lg-8 mx-auto text-center">
@@ -325,6 +349,7 @@
 
   <!-- Placed at the end of the document so the pages load faster -->
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery.slimscroll-1.3.8.min.js')}"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery.waypoints.min.js')}"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/cookie-2.1.3.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/cookie-2.1.3.min.js')}" tal:condition="not:extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/socket.io-1.4.5.js')}"></script>
@@ -348,6 +373,7 @@
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/lib.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/dolan.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/countdown.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/counterup.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/contact.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/news.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/user.js')}" tal:condition="extras.development_mode"></script>
