@@ -355,21 +355,26 @@ def jump(request_dict, for_api=False, api_data=None) -> dict:
     """
     logger('Core', 'discussion.jump', 'main')
 
-    nickname = request_dict['nickname']
-    issue = request_dict['issue']
-    ui_locales = request_dict['ui_locales']
-    history = request_dict['history']
-    application_url = request_dict['app_url']
-    disc_ui_locales = request_dict['disc_ui_locales']
+    if for_api and api_data:
+        slug = api_data.get('slug', '')
+        arg_uid = api_data.get('arg_uid', '')
+        nickname = api_data.get('nickname', '')
+        issue = api_data.get('issue', '')
+        ui_locales = api_data.get('ui_locales', '')
+        history = api_data.get('history', '')
+        application_url = api_data.get('app_url', '')
+        disc_ui_locales = api_data.get('disc_ui_locales', '')
+    else:
+        slug = request_dict['matchdict'].get('slug', '')
+        arg_uid = request_dict['matchdict'].get('arg_id', '')
+        nickname = request_dict.get('nickname', '')
+        issue = request_dict.get('issue', '')
+        ui_locales = request_dict.get('ui_locales', '')
+        history = request_dict.get('history', '')
+        application_url = request_dict.get('app_url', '')
+        disc_ui_locales = request_dict.get('disc_ui_locales', '')
 
     issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, nickname)
-
-    if for_api and api_data:
-        slug = api_data["slug"]
-        arg_uid = api_data["arg_uid"]
-    else:
-        slug = request_dict['matchdict']['slug'] if 'slug' in request_dict['matchdict'] else ''
-        arg_uid = request_dict['matchdict']['arg_id'] if 'arg_id' in request_dict['matchdict'] else ''
 
     if not check_belonging_of_argument(issue, arg_uid):
         logger('Core', 'discussion.choose', 'no item dict', error=True)
