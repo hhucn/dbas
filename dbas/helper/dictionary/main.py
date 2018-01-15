@@ -15,8 +15,7 @@ from dbas.database.discussion_model import User, Language, Group, Settings, Issu
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
 from dbas.handler.notification import count_of_new_notifications, get_box_for
-from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, \
-    get_public_profile_picture, is_development_mode
+from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, is_development_mode
 from dbas.handler.issue import limit_for_open_issues
 from dbas.logger import logger
 from dbas.review.helper.queues import get_count_of_all
@@ -264,7 +263,7 @@ class DictionaryHelper(object):
             db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
 
         group = db_group.name if db_group else '-'
-        gravatar_public_url = get_public_profile_picture(db_user, 120)
+        gravatar_public_url = get_profile_picture(db_user, 80)
         reputation, tmp = get_reputation_of(db_user.nickname)
 
         return {
