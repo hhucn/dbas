@@ -45,7 +45,7 @@ def get_language_from_header(request):
     :param request: current request
     :return: String
     """
-    lang = request.headers.get('Accept-Language')
+    lang = request.headers.get('Accept-Language', '')
     logger('ViewHelper', 'get_language_from_header', 'Accept-Language: {}'.format(lang))
     return 'de' if 'de' in lang else 'en'
 
