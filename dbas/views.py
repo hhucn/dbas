@@ -1488,7 +1488,7 @@ def set_new_start_statement(request):
     data = {}
     try:
         issue = issue_helper.get_issue_id(request)
-        data['user'] = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).one_or_None()
+        data['user'] = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).one_or_none()
         data['statement'] = request.params['statement']
         data['issue'] = DBDiscussionSession.query(Issue).get(issue)
         data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
