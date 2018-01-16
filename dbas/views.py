@@ -5,8 +5,6 @@ Collection of pyramids views components of D-BAS' core.
 """
 
 import json
-from typing import Callable, Any
-
 import requests
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.renderers import get_renderer
@@ -14,6 +12,7 @@ from pyramid.response import Response
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid_mailer import get_mailer
+from typing import Callable, Any
 from zope.interface.interfaces import ComponentLookupError
 
 import dbas.discussion.core as discussion
@@ -45,6 +44,7 @@ from dbas.handler.voting import clear_vote_and_seen_values_of_user
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
+from dbas.helper.validation import valid_user, validate
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -612,6 +612,7 @@ def notfound(request):
         'param_error': param_error,
         'revoked_content': revoked_content
     }
+
 
 # ####################################
 # DISCUSSION                         #
@@ -1474,7 +1475,9 @@ def ajax_set_new_start_argument(request):
 
 
 # ajax - send new start statement
+
 @view_config(route_name='ajax_set_new_start_statement', renderer='json')
+@validate(validators=(valid_user,))
 def set_new_start_statement(request):
     """
     Inserts a new statement into the database, which should be available at the beginning
@@ -1488,7 +1491,7 @@ def set_new_start_statement(request):
     data = {}
     try:
         issue = issue_helper.get_issue_id(request)
-        data['user'] = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).one_or_none()
+        data['user'] = request.validated['user']
         data['statement'] = request.params['statement']
         data['issue'] = DBDiscussionSession.query(Issue).get(issue)
         data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
@@ -1724,6 +1727,7 @@ def mark_or_unmark_statement_or_argument(request):
     prepared_dict = mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history, ui_locales,
                                                request.authenticated_userid)
     return prepared_dict
+
 
 # ###################################
 # ADDTIONAL AJAX STUFF # GET THINGS #

@@ -1,12 +1,11 @@
 import json
-import unittest
-
 import transaction
+import unittest
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Statement, TextVersion, Argument, Premise, PremiseGroup,\
-    ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement, MarkedArgument, ClickedArgument,\
+from dbas.database.discussion_model import Issue, Statement, TextVersion, Argument, Premise, PremiseGroup, \
+    ReviewEdit, ReviewEditValue, ReputationHistory, User, MarkedStatement, MarkedArgument, ClickedArgument, \
     ClickedStatement, SeenStatement, SeenArgument
 
 
@@ -21,7 +20,8 @@ class AjaxAddThingsTest(unittest.TestCase):
         testing.tearDown()
 
     def delete_last_argument_by_conclusion_uid(self, id):
-        db_new_arg = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=id).order_by(Argument.uid.desc()).first()
+        db_new_arg = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=id).order_by(
+            Argument.uid.desc()).first()
         # delete content of premisegroup
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_new_arg.premisesgroup_uid).all()
         for premise in db_premises:
@@ -77,7 +77,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         request = testing.DummyRequest(params={'statement': 'New statement for an issue'}, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertEqual(400, response.status_code)
 
     def test_set_new_start_statement_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
