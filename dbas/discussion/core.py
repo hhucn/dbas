@@ -355,35 +355,32 @@ def jump(request_dict, for_api=False, api_data=None) -> dict:
     """
     logger('Core', 'discussion.jump', 'main')
 
+    tmp_dict = request_dict
     if for_api and api_data:
-        slug = api_data.get('slug', '')
-        arg_uid = api_data.get('arg_uid', '')
-        nickname = api_data.get('nickname', '')
-        issue = api_data.get('issue', '')
-        ui_locales = api_data.get('ui_locales', '')
-        history = api_data.get('history', '')
-        application_url = api_data.get('app_url', '')
-        disc_ui_locales = api_data.get('disc_ui_locales', '')
+        slug = api_data.get('slug')
+        arg_uid = api_data.get('arg_uid')
+        tmp_dict = api_data
     else:
-        slug = request_dict['matchdict'].get('slug', '')
-        arg_uid = request_dict['matchdict'].get('arg_id', '')
-        nickname = request_dict.get('nickname', '')
-        issue = request_dict.get('issue', '')
-        ui_locales = request_dict.get('ui_locales', '')
-        history = request_dict.get('history', '')
-        application_url = request_dict.get('app_url', '')
-        disc_ui_locales = request_dict.get('disc_ui_locales', '')
+        slug = request_dict['matchdict'].get('slug')
+        arg_uid = request_dict['matchdict'].get('arg_id')
 
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, nickname)
+    nickname = tmp_dict.get('nickname')
+    issue = tmp_dict.get('issue')
+    ui_locales = tmp_dict.get('ui_locales', 'en')
+    history = tmp_dict.get('history')
+    application_url = tmp_dict.get('app_url')
+    disc_ui_locales = tmp_dict.get('disc_ui_locales', 'en')
 
-    if not check_belonging_of_argument(issue, arg_uid):
+    if not check_belonging_of_argument(issue, arg_uid) or not issue and not slug and not arg_uid:
         logger('Core', 'discussion.choose', 'no item dict', error=True)
         return None
+
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, nickname)
 
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=application_url, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, issue, application_url, for_api, path=request_dict['path'], history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
-    discussion_dict = _ddh.get_dict_for_jump(arg_uid, nickname, history)
+    discussion_dict = _ddh.get_dict_for_jump(arg_uid)
     item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
     extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request_dict['registry'], request_dict['app_url'],
                                           request_dict['path'], for_api=for_api, nickname=nickname)
