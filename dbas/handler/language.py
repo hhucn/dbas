@@ -21,9 +21,9 @@ def set_language(request, ui_locales=None):
     return_dict = dict()
 
     if not ui_locales:
-        ui_locales = request.get('_LOCALE_')
-    db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
+        ui_locales = request.params.get('_LOCALE_')
 
+    db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
     if not db_lang or not ui_locales:
         ui_locales = get_language_from_cookie(request)
 
