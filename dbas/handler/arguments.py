@@ -35,11 +35,11 @@ def set_arguments_premises(for_api, data) -> dict:
         issue_id = data['issue_id']
         arg_uid = data['arg_uid']
         attack_type = data['attack_type']
-        history = data['history'] if '_HISTORY_' in data else None
-        mailer = data['mailer'] if 'mailer' in data else None
-        port = data['port'] if 'port' in data else None
-        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else DBDiscussionSession.query(Issue).get(issue_id).lang
-        default_locale_name = data['default_locale_name'] if 'default_locale_name' in data else discussion_lang
+        history = data.get('_HISTORY_')
+        mailer = data.get('mailer')
+        port = data.get('port')
+        discussion_lang = data.get('discussion_lang', DBDiscussionSession.query(Issue).get(issue_id).lang)
+        default_locale_name = data.get('default_locale_name', discussion_lang)
         application_url = data['application_url']
     except KeyError as e:
         logger('ArgumentsHelper', 'arguments_premises', repr(e), error=True)
