@@ -1319,25 +1319,9 @@ def set_user_settings(request):
     logger('Views', 'set_user_settings', 'request.params: {}'.format(request.params))
     _tn = Translator(get_language_from_cookie(request))
 
-    try:
-        settings_value = request.params['settings_value'] == 'True'
-        service = request.params['service']
-        public_nick, public_page_url, gravatar_url, error = set_settings(request.application_url,
-                                                                         request.authenticated_userid,
-                                                                         service, settings_value, _tn)
-    except KeyError as e:
-        error = _tn.get(_.internalKeyError)
-        public_nick = ''
-        public_page_url = ''
-        gravatar_url = ''
-        logger('Views', 'set_user_settings', repr(e), error=True)
-
-    return_dict = {
-        'error': error,
-        'public_nick': public_nick,
-        'public_page_url': public_page_url,
-        'gravatar_url': gravatar_url
-    }
+    settings_value = request.params.get('settings_value') == 'True'
+    service = request.params.get('service')
+    return_dict = set_settings(request.application_url, request.authenticated_userid, service, settings_value, _tn)
     return return_dict
 
 
