@@ -59,7 +59,7 @@ def handle_justification_step(request_dict, for_api):
     :return: dict(), dict(), dict()
     """
     matchdict = request_dict['matchdict']
-    statement_or_arg_id = matchdict.get('statement_or_arg_id', '')
+    statement_or_arg_id = matchdict.get('statement_or_arg_id')
     mode = matchdict.get('mode', '')
     relation = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
 

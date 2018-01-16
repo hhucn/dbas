@@ -180,9 +180,9 @@ def reaction(request_dict, for_api=False) -> dict:
     history = request_dict['history']
 
     # get parameters
-    arg_id_user = request_dict['matchdict'].get('arg_id_user', '')
-    attack = request_dict['matchdict'].get('mode', '')
-    arg_id_sys = request_dict['matchdict'].get('arg_id_sys', '')
+    arg_id_user = request_dict['matchdict'].get('arg_id_user')
+    attack = request_dict['matchdict'].get('mode')
+    arg_id_sys = request_dict['matchdict'].get('arg_id_sys')
     tmp_argument = DBDiscussionSession.query(Argument).get(arg_id_user)
 
     valid_reaction = check_reaction(arg_id_user, arg_id_sys, attack)
