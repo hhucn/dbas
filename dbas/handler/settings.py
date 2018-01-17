@@ -1,16 +1,17 @@
 from dbas.handler import user
 import transaction
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Settings
+from dbas.database.discussion_model import Settings
 from dbas.lib import get_profile_picture
 from dbas.strings.keywords import Keywords as _
 
 
-def set_settings(url, userid, service, settings_value, _tn):
+def set_settings(url, db_user, service, settings_value, _tn):
     """
     Edits a user specific setting
 
     :param request: current request
+    :param db_user: instance of user
     :param service: service, which should be modified
     :param settings_value: Boolean
     :param _tn: Translator
@@ -21,10 +22,15 @@ def set_settings(url, userid, service, settings_value, _tn):
     public_nick = ''
     public_page_url = ''
     gravatar_url = ''
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=userid).first()
+
     if not db_user:
         error = _tn.get(_.checkNickname)
-        return public_nick, public_page_url, gravatar_url, error
+        return {
+            'error': error,
+            'public_nick': public_nick,
+            'public_page_url': public_page_url,
+            'gravatar_url': gravatar_url
+        }
 
     public_nick = db_user.public_nickname
     db_setting = DBDiscussionSession.query(Settings).get(db_user.uid)
@@ -49,4 +55,9 @@ def set_settings(url, userid, service, settings_value, _tn):
     public_page_url = '{}/user/{}'.format(url, db_user.uid)
     gravatar_url = get_profile_picture(db_user, 80, ignore_privacy_settings=settings_value)
 
-    return public_nick, public_page_url, gravatar_url, error
+    return {
+        'error': error,
+        'public_nick': public_nick,
+        'public_page_url': public_page_url,
+        'gravatar_url': gravatar_url
+    }
