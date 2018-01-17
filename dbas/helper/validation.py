@@ -11,7 +11,7 @@ def valid_user(request):
     if db_user:
         request.validated['user'] = db_user
     else:
-        request.errors.add('body', 'Invalid user')
+        request.errors.add('body', 'Invalid user', 'Authenticated userid not found in database')
         request.errors.status = 400
 
 
