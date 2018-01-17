@@ -13,7 +13,7 @@ $(function () {
 	$('#send-notification').each(function () {
 		$(this).click(function () {
 			var _this = $(this);
-			$('#' + popupWritingNotificationRecipient).hide();
+			$('#' + popupWritingNotificationRecipient).closest('.form-group').hide();
 			$('#' + popupWritingNotification).modal('show');
 			$('#' + popupWritingNotificationSuccess).hide();
 			$('#' + popupWritingNotificationFailed).hide();
@@ -71,7 +71,6 @@ function User() {
 	 */
 	this.createChart = function(parsedData, space, id, count){
 		var chart, data, div_legend;
-		console.log(space.width());
 		space.append('<canvas id="' + id + '" width="' + space.width() + '" height="300" style= "display: block; margin: 0 auto;"></canvas>');
 		data = {
 			labels : parsedData['labels' + (count+1)],
@@ -87,9 +86,13 @@ function User() {
 				data : parsedData['data' + (count+1)],
 				hover: {mode: 'single'}
 			}]};
-		chart = new Chart(document.getElementById(id).getContext('2d')).Line(data);
-		div_legend = $('<div>').addClass('chart-legend').append(chart.generateLegend());
-		space.prepend(div_legend);
+		try {
+			chart = new Chart(document.getElementById(id).getContext('2d')).Line(data);
+			div_legend = $('<div>').addClass('chart-legend').append(chart.generateLegend());
+			space.prepend(div_legend);
+		} catch(err) {
+			console.log(err.message);
+		}
 	};
 
 	/**

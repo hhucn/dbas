@@ -3,9 +3,10 @@ Namespace for functions used to resolve Queries on the database for GraphQL.
 
 .. sectionauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
+from typing import Dict
 
 
-def resolve_list_query(args, context, graph, model):
+def resolve_list_query(args: Dict, context, graph):
     """
     Query a list of objects based on the provided graph / model.
     Removes disabled items and adds all additional arguments as a filter for sqlalchemy.
@@ -13,14 +14,17 @@ def resolve_list_query(args, context, graph, model):
     :param args: Arguments provided by the GraphQL query
     :param context: retrieve current session
     :param graph: reduced database model
-    :param model: database model to be queried
     :return: list of objects matching the criterias
     :rtype: list
     """
-    query = graph.get_query(context).filter(model.is_disabled == False)
-    if args:
-        query = query.filter_by(**args)
-    return query.all()
+    query = graph.get_query(context)
+
+    # just apply the filter to the ones who actually have a 'is_disabled' column
+    if any([column == 'is_disabled' for column in dir(query.column_descriptions[0]['entity'])]):
+        disabled = args['is_disabled'] if 'is_disabled' in args else False  # this enables querying for disabled rows
+        query = query.filter_by(is_disabled=disabled)
+
+    return query.filter_by(**args).all()
 
 
 def resolve_field_query(args, context, graph):
@@ -38,5 +42,4 @@ def resolve_field_query(args, context, graph):
         query = query.get(args.get("uid"))
     else:
         query = query.filter_by(**args).first()
-    if query and not query.is_disabled:
-        return query
+    return query

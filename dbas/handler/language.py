@@ -21,7 +21,8 @@ def set_language(request, ui_locales=None):
     return_dict = dict()
 
     if not ui_locales:
-        ui_locales = request.params['_LOCALE_'] if '_LOCALE_' in request.params else None
+        ui_locales = request.params.get('_LOCALE_')
+
     db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
     if not db_lang or not ui_locales:
         ui_locales = get_language_from_cookie(request)
@@ -45,7 +46,7 @@ def get_language_from_header(request):
     :param request: current request
     :return: String
     """
-    lang = request.headers['Accept-Language'] if 'Accept-Language' in request.headers else ''
+    lang = request.headers.get('Accept-Language', '')
     logger('ViewHelper', 'get_language_from_header', 'Accept-Language: {}'.format(lang))
     return 'de' if 'de' in lang else 'en'
 

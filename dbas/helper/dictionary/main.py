@@ -11,14 +11,14 @@ import arrow
 
 from dbas.auth.recaptcha import client_key as google_recaptcha_client_key
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Language, Group, Settings, Issue
+from dbas.database.discussion_model import User, Language, Group, Settings, Issue, Argument
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
 from dbas.handler.notification import count_of_new_notifications, get_box_for
-from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, \
-    get_public_profile_picture, is_development_mode
+from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, is_development_mode
 from dbas.handler.issue import limit_for_open_issues
 from dbas.logger import logger
+from dbas.review.helper.queues import get_count_of_all
 from dbas.review.helper.queues import get_complete_review_count
 from dbas.review.helper.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
@@ -200,6 +200,12 @@ class DictionaryHelper(object):
         return_dict['close_premise_container'] = True
         return_dict['close_statement_container'] = True
         return_dict['date'] = arrow.utcnow().format('DD-MM-YYYY')
+        return_dict['count_of'] = {
+            'arguments': len(DBDiscussionSession.query(Argument).all()),
+            'users': len(DBDiscussionSession.query(User).all()),
+            'discussions': len(DBDiscussionSession.query(Issue).all()),
+            'reviews': get_count_of_all(),
+        }
         self.__add_title_text(return_dict, is_logged_in)
         self.__add_button_text(return_dict)
         self.__add_tag_text(return_dict)
@@ -257,7 +263,7 @@ class DictionaryHelper(object):
             db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
 
         group = db_group.name if db_group else '-'
-        gravatar_public_url = get_public_profile_picture(db_user, 120)
+        gravatar_public_url = get_profile_picture(db_user, 80)
         reputation, tmp = get_reputation_of(db_user.nickname)
 
         return {
@@ -388,7 +394,13 @@ class DictionaryHelper(object):
             extras_dict['add_premise_container_style'] = ''  # this will remove the 'display: none;'-style
         extras_dict['close_premise_container'] = False
         extras_dict['show_display_style'] = False
-        if nickname:
+        if is_read_only:
+            mid_text = _tn.get(_.discussionEndAndReadOnly)
+            sdict = create_speechbubble_dict(BubbleTypes.INFO, id='end', message=mid_text, lang=self.system_lang,
+                                             nickname=nickname)
+            discussion_dict['bubbles'].append(sdict)
+
+        elif nickname:
             if gender == 'f':
                 mid_text = _tn.get(_.firstOneReasonF)
             elif gender == 'm':
@@ -451,7 +463,6 @@ class DictionaryHelper(object):
         :return: None
         """
         discussion_dict['mode'] = 'justify'
-        current_premise = current_premise[0:1].lower() + current_premise[1:]
         if gender == 'f':
             mid_text = _tn.get(_.firstPremiseText1F)
         elif gender == 'm':

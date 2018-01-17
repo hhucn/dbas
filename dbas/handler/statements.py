@@ -38,7 +38,7 @@ def set_position(for_api, data) -> dict:
         statement = data['statement']
         db_user = data['user']
         db_issue = data['issue']
-        default_locale_name = data['default_locale_name'] if 'default_locale_name' in data else db_issue.lang
+        default_locale_name = data.get('default_locale_name', db_issue.lang)
         application_url = data['application_url']
     except KeyError as e:
         logger('StatementsHelper', 'position', repr(e), error=True)
@@ -99,10 +99,12 @@ def set_positions_premise(for_api: bool, data: Dict) -> dict:
         supportive = data['supportive']
         application_url = data['application_url']
         history = data['history'] if '_HISTORY_' in data else None
-        port = data['port'] if 'port' in data else None
-        mailer = data['mailer'] if 'mailer' in data else None
-        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else issue.lang
-        default_locale_name = data['default_locale_name'] if 'default_locale_name' in data else discussion_lang
+
+        port = data.get('port')
+        mailer = data.get('mailer')
+        discussion_lang = data.get('discussion_lang', issue.lang)
+        default_locale_name = data.get('default_locale_name', discussion_lang)
+
     except KeyError as e:
         logger('StatementsHelper', 'positions_premise', repr(e), error=True)
         _tn = Translator('en')

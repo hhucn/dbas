@@ -1,7 +1,7 @@
 version: "3.1"
 services:
   db:
-    image: postgres:9.6-alpine
+    build: docker/db/
     restart: always
     ports:
       - "5432:5432"

@@ -345,18 +345,15 @@ def get_count_of_votes_of_user(user, limit_on_today=False):
     if not user:
         return (0, 0)
 
-    db_arg = DBDiscussionSession.query(MarkedArgument).filter(ClickedArgument.author_uid == user.uid)
-    db_stat = DBDiscussionSession.query(MarkedStatement).filter(ClickedStatement.author_uid == user.uid)
+    db_arg = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.author_uid == user.uid)
+    db_stat = DBDiscussionSession.query(MarkedStatement).filter(MarkedStatement.author_uid == user.uid)
 
     if limit_on_today:
         today = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
         db_arg = db_arg.filter(MarkedArgument.timestamp >= today)
         db_stat = db_stat.filter(MarkedStatement.timestamp >= today)
 
-    db_arg = db_arg.all()
-    db_stat = db_stat.all()
-
-    return len(db_arg), len(db_stat)
+    return len(db_arg.all()), len(db_stat.all())
 
 
 def get_count_of_clicks(user, limit_on_today=False):
@@ -527,7 +524,7 @@ def get_information_of(db_user, lang):
     ret_dict['is_female'] = db_user.gender == 'f'
     ret_dict['is_neutral'] = db_user.gender != 'm' and db_user.gender != 'f'
 
-    arg_vote, stat_vote = get_count_of_votes_of_user(db_user, False)
+    arg_votes, stat_votes = get_count_of_votes_of_user(db_user, False)
     db_reviews_duplicate = DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=db_user.uid).all()
     db_reviews_edit = DBDiscussionSession.query(ReviewEdit).filter_by(detector_uid=db_user.uid).all()
     db_reviews_delete = DBDiscussionSession.query(ReviewDelete).filter_by(detector_uid=db_user.uid).all()
@@ -538,8 +535,8 @@ def get_information_of(db_user, lang):
     ret_dict['statements_posted'] = len(statements)
     ret_dict['edits_done'] = len(edits)
     ret_dict['reviews_proposed'] = len(db_reviews)
-    ret_dict['discussion_arg_votes'] = arg_vote
-    ret_dict['discussion_stat_votes'] = stat_vote
+    ret_dict['discussion_arg_votes'] = arg_votes
+    ret_dict['discussion_stat_votes'] = stat_votes
     ret_dict['avatar_url'] = get_profile_picture(db_user, 120)
     ret_dict['discussion_stat_rep'], trash = get_reputation_of(db_user.nickname)
 
@@ -560,7 +557,7 @@ def get_summary_of_today(nickname, lang):
     if not db_user:
         return dict()
 
-    arg_vote, stat_vote = get_count_of_votes_of_user(db_user, True)
+    arg_votes, stat_votes = get_count_of_votes_of_user(db_user, True)
     arg_clicks, stat_clicks = get_count_of_clicks(db_user, True)
     reputation, tmp = get_reputation_of(nickname, True)
     timestamp = arrow.utcnow().to('Europe/Berlin')
@@ -569,8 +566,8 @@ def get_summary_of_today(nickname, lang):
     ret_dict['date'] = timestamp.format('YYYY-MM-DD') if lang == 'en' else timestamp.format('DD.MM.')
     ret_dict['statements_posted'] = get_count_of_statements(db_user, False, True)
     ret_dict['edits_done'] = get_count_of_statements(db_user, True, True)
-    ret_dict['discussion_arg_votes'] = arg_vote
-    ret_dict['discussion_stat_votes'] = stat_vote
+    ret_dict['discussion_arg_votes'] = arg_votes
+    ret_dict['discussion_stat_votes'] = stat_votes
     ret_dict['discussion_arg_clicks'] = arg_clicks
     ret_dict['discussion_stat_clicks'] = stat_clicks
     ret_dict['statements_reported'] = get_reviews_of(db_user, True)

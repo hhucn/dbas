@@ -85,7 +85,7 @@ def debug_that_mail(request):
     logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Websocket', 'debug_mail', 'debug_mail')
     if request.authenticated_userid in ['Tobias', 'tokra100']:
-        text = request.params['text'] if 'text' in request.params else 'empty text input'
+        text = request.get('text', 'empty text input')
         logger('Websocket', 'debug_mail', 'you got access: {}'.format(text))
         db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
         send_mail(get_mailer(request), '[D-BAS] Debug Mail', 'Debug: {}'.format(text), db_user.email, 'en')

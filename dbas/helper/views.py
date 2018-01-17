@@ -59,8 +59,8 @@ def handle_justification_step(request_dict, for_api):
     :return: dict(), dict(), dict()
     """
     matchdict = request_dict['matchdict']
-    statement_or_arg_id = matchdict['statement_or_arg_id'] if 'statement_or_arg_id' in matchdict else ''
-    mode = matchdict['mode'] if 'mode' in request_dict['matchdict'] else ''
+    statement_or_arg_id = matchdict.get('statement_or_arg_id')
+    mode = matchdict.get('mode', '')
     relation = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
 
     if not is_integer(statement_or_arg_id, True):
@@ -285,7 +285,8 @@ def preparation_for_justify_argument(request_dict, for_api, statement_or_arg_id,
     extras_dict = _dh.prepare_extras_dict(slug, False, True, False, registry, app_url, path, for_api=for_api,
                                           nickname=nickname)
     # is the discussion at the end?
-    if not logged_in and len(item_dict['elements']) == 1 or logged_in and len(item_dict['elements']) == 1:
+    if len(item_dict['elements']) == 0 or len(item_dict['elements']) == 1 and logged_in:
+
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)
 
     return item_dict, discussion_dict, extras_dict

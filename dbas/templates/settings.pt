@@ -238,8 +238,8 @@
                     <!--</div>-->
 
                     <div class="col-md-4" style="font-size: 14px; margin-top: 3em">
-                        <div class="center text-center" style="float:left; margin: 1em;">
-                            <img id="user_gravatar" class="img-circle"
+                        <div class="center text-center" style="float:left; margin: 1em">
+                            <img id="user_gravatar" class="img-circle" style="max-width: 80px"
                                  src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src settings.avatar_public_url">
                             <br>
                             <span i18n:translate="profile_picture">Profile Picture</span>

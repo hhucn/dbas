@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2017-12-08 12:52+0100\n"
+"POT-Creation-Date: 2018-01-15 09:03+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -472,34 +472,59 @@ msgstr "Fachhochschule für öffentliche Verwaltung NRW"
 msgid "diid"
 msgstr "Düsseldorfer Institut für Internet und Demokratie"
 
-#. Default: Latest News
+#. Default: Statistics
 #: templates/index.pt:244
+msgid "statistics"
+msgstr "Statistiken"
+
+#. Default: Arguments
+#: templates/index.pt:249
+msgid "arguments"
+msgstr "Argumente"
+
+#. Default: Discussions
+#: templates/index.pt:252
+msgid "discussions"
+msgstr "Diskussionen"
+
+#. Default: Users
+#: templates/index.pt:255
+msgid "users"
+msgstr "Benutzer"
+
+#. Default: Reviews
+#: templates/index.pt:258
+msgid "reviews"
+msgstr "Überprüfungen"
+
+#. Default: Latest News
+#: templates/index.pt:268
 msgid "latest_news"
 msgstr "Aktuelle Nachrichten"
 
 #. Default: Previous
-#: templates/index.pt:273
+#: templates/index.pt:297
 msgid "previous"
 msgstr "Zurück"
 
 #. Default: Next
-#: templates/index.pt:277
+#: templates/index.pt:301
 msgid "next"
 msgstr "Vor"
 
 #. Default: Go to the news
-#: templates/index.pt:283
+#: templates/index.pt:307
 msgid "go_to_news"
 msgstr "Zu den News"
 
 #. Default: Let's Get In Touch!
-#: templates/index.pt:292
+#: templates/index.pt:316
 msgid "get_in_touch"
 msgstr "Treten Sie mit uns in Kontakt"
 
 #. Default: Ready to start your next discussion with us? That's great! Give us
 #. a call or send us an email and we will get back to you as soon as possible!
-#: templates/index.pt:294
+#: templates/index.pt:318
 msgid "ready_to_start_with_us"
 msgstr ""
 "Sie möchten Ihre nächste Diskussion mit uns starten? Das ist super! Rufen "
@@ -1395,11 +1420,6 @@ msgstr "Abbrechen"
 #: templates/snippet-footer.pt:8
 msgid "imprint_copyright_privacy"
 msgstr "Impressum, Urheberrecht und Datenschutz"
-
-#. Default: RSS
-#: templates/snippet-footer.pt:16
-msgid "rss"
-msgstr "RSS"
 
 #. Default: Help
 #: templates/snippet-footer.pt:19
@@ -2468,6 +2488,9 @@ msgstr "Unterstützungen"
 msgid "attacks_on_my_statements"
 msgstr "Angriffe"
 
+#~ msgid "rss"
+#~ msgstr "RSS"
+
 #~ msgid "open"
 #~ msgstr "Writable"
 
@@ -2669,9 +2692,6 @@ msgstr "Angriffe"
 
 #~ msgid "change_password"
 #~ msgstr "Passwort ändern"
-
-#~ msgid "argument"
-#~ msgstr "Argument"
 
 #~ msgid "statement_optimization_description"
 #~ msgstr ""
@@ -2959,9 +2979,6 @@ msgstr "Angriffe"
 
 #~ msgid "dashboard"
 #~ msgstr "Übersicht"
-
-#~ msgid "users"
-#~ msgstr "Benutzer"
 
 #~ msgid "issues"
 #~ msgstr "Themen"

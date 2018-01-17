@@ -1106,7 +1106,11 @@ def get_public_profile_picture(user, size=80):
     """
     additional_id = 'y'
     if user and isinstance(user, User):
-        additional_id = '' if DBDiscussionSession.query(Settings).get(user.uid).should_show_public_nickname else 'x'
+        additional_id = ''
+        if DBDiscussionSession.query(Settings).get(user.uid).should_show_public_nickname:
+            additional_id = 'x'
+        if len(str(user.oauth_provider)) > 0:
+            additional_id = '{}{}'.format(user.oauth_provider, user.oauth_provider_id)
 
     return __get_gravatar(user, additional_id, size)
 

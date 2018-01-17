@@ -2,7 +2,7 @@ from dbas.handler import user
 import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Settings
-from dbas.lib import get_profile_picture
+from dbas.lib import get_public_profile_picture
 from dbas.strings.keywords import Keywords as _
 
 
@@ -53,7 +53,7 @@ def set_settings(url, db_user, service, settings_value, _tn):
 
     transaction.commit()
     public_page_url = '{}/user/{}'.format(url, db_user.uid)
-    gravatar_url = get_profile_picture(db_user, 80, ignore_privacy_settings=settings_value)
+    gravatar_url = get_public_profile_picture(db_user, 80)
 
     return {
         'error': error,

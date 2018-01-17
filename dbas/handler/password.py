@@ -72,7 +72,10 @@ def request_password(request):
     success = ''
     error = ''
     info = ''
-    ui_locales = request.params['lang'] if 'lang' in request.params else get_language_from_cookie(request)
+    if 'lang' in request.params:
+        ui_locales = request.params['lang']
+    else:
+        ui_locales = get_language_from_cookie(request)
 
     _t = Translator(ui_locales)
     email = escape_string(request.params['email'])

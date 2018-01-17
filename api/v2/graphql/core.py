@@ -62,13 +62,14 @@ class StatementGraph(SQLAlchemyObjectType):
         model = Statement
 
     @staticmethod
+    def singular():
+        return graphene.Field(StatementGraph, uid=graphene.Int(), is_startpoint=graphene.Boolean(),
+                              is_disabled=graphene.Boolean())
+
+    @staticmethod
     def plural():
-        return graphene.List(StatementGraph, is_startpoint=graphene.Boolean(), issue_uid=graphene.Int())
-
-
-class ArgumentGraph(SQLAlchemyObjectType):
-    class Meta:
-        model = Argument
+        return graphene.List(StatementGraph, is_startpoint=graphene.Boolean(), issue_uid=graphene.Int(),
+                             is_disabled=graphene.Boolean())
 
 
 class StatementReferencesGraph(SQLAlchemyObjectType):
@@ -76,14 +77,43 @@ class StatementReferencesGraph(SQLAlchemyObjectType):
         model = StatementReferences
 
 
+class ArgumentGraph(SQLAlchemyObjectType):
+    class Meta:
+        model = Argument
+
+    @staticmethod
+    def singular():
+        return graphene.Field(ArgumentGraph, uid=graphene.Int(), issue_uid=graphene.Int(),
+                              is_supportive=graphene.Boolean(), is_disabled=graphene.Boolean())
+
+    @staticmethod
+    def plural():
+        return graphene.List(ArgumentGraph, issue_uid=graphene.Int(), is_supportive=graphene.Boolean(),
+                             is_disabled=graphene.Boolean())
+
+
 class IssueGraph(SQLAlchemyObjectType):
     statements = StatementGraph.plural()
+    arguments = ArgumentGraph.plural()
 
     def resolve_statements(self, info, **kwargs):
-        return resolve_list_query({**kwargs, "issue_uid": self.uid}, info, StatementGraph, Statement)
+        return resolve_list_query({**kwargs, "issue_uid": self.uid}, info, StatementGraph)
+
+    def resolve_arguments(self, info, **kwargs):
+        return resolve_list_query({**kwargs, "issue_uid": self.uid}, info, ArgumentGraph)
 
     class Meta:
         model = Issue
+
+    @staticmethod
+    def singular():
+        return graphene.Field(IssueGraph, uid=graphene.Int(), slug=graphene.String(), title=graphene.String(),
+                              is_disabled=graphene.Boolean())
+
+    @staticmethod
+    def plural():
+        return graphene.List(IssueGraph, slug=graphene.String(), title=graphene.String(),
+                             is_disabled=graphene.Boolean())
 
 
 class UserGraph(SQLAlchemyObjectType):
@@ -119,15 +149,14 @@ class Query(graphene.ObjectType):
     :param graphene.ObjectType: Generic ObjectType for GraphQL
     """
 
-    statement = graphene.Field(StatementGraph, uid=graphene.Int(), is_startpoint=graphene.Boolean())
+    statement = StatementGraph.singular()
     statements = StatementGraph.plural()
-    argument = graphene.Field(ArgumentGraph, uid=graphene.Int(), issue_uid=graphene.Int(),
-                              is_supportive=graphene.Boolean())
-    arguments = graphene.List(ArgumentGraph, issue_uid=graphene.Int(), is_supportive=graphene.Boolean())
+    argument = ArgumentGraph.singular()
+    arguments = ArgumentGraph.plural()
     statement_reference = graphene.Field(StatementReferencesGraph, uid=graphene.Int())
     statement_references = graphene.List(StatementReferencesGraph)
-    issue = graphene.Field(IssueGraph, uid=graphene.Int(), slug=graphene.String(), title=graphene.String())
-    issues = graphene.List(IssueGraph, slug=graphene.String(), title=graphene.String())
+    issue = IssueGraph.singular()
+    issues = IssueGraph.plural()
     premise = graphene.Field(PremiseGraph, uid=graphene.Int())
     premises = graphene.List(PremiseGraph, premisesgroup_uid=graphene.Int())
     premisegroup = graphene.Field(PremiseGroupGraph, uid=graphene.Int())
@@ -139,13 +168,13 @@ class Query(graphene.ObjectType):
         return resolve_field_query(kwargs, info, StatementGraph)
 
     def resolve_statements(self, info, **kwargs):
-        return resolve_list_query(kwargs, info, StatementGraph, Statement)
+        return resolve_list_query(kwargs, info, StatementGraph)
 
     def resolve_argument(self, info, **kwargs):
         return resolve_field_query(kwargs, info, ArgumentGraph)
 
     def resolve_arguments(self, info, **kwargs):
-        return resolve_list_query(kwargs, info, ArgumentGraph, Argument)
+        return resolve_list_query(kwargs, info, ArgumentGraph)
 
     def resolve_statement_reference(self, info, **kwargs):
         return resolve_field_query(kwargs, info, StatementReferencesGraph)
@@ -157,13 +186,13 @@ class Query(graphene.ObjectType):
         return resolve_field_query(kwargs, info, IssueGraph)
 
     def resolve_issues(self, info, **kwargs):
-        return resolve_list_query(kwargs, info, IssueGraph, Issue)
+        return resolve_list_query(kwargs, info, IssueGraph)
 
     def resolve_premise(self, info, **kwargs):
         return resolve_field_query(kwargs, info, PremiseGraph)
 
     def resolve_premises(self, info, **kwargs):
-        return resolve_list_query(kwargs, info, PremiseGraph, Premise)
+        return resolve_list_query(kwargs, info, PremiseGraph)
 
     def resolve_premisegroup(self, info, **kwargs):
         return resolve_field_query(kwargs, info, PremiseGroupGraph)
