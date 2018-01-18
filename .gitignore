@@ -56,7 +56,6 @@ dbas/static/rss/*
 createUser.py
 *.min.js
 production.env
-development.env
 
 # node
 node_modules/
