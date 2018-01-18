@@ -141,10 +141,10 @@ class DictionaryHelper(object):
         restart_url = UrlManager(application_url, current_slug, for_api).get_slug_url(False)
         if restart_url.endswith('/'):
             restart_url = restart_url[:-1]
-        if not restart_url.startswith('http'):
-            restart_url = 'https://' + restart_url
-        if restart_url.startswith('http:'):
-            restart_url = restart_url.replace('http', 'https')
+        # if not restart_url.startswith('http'):
+        #     restart_url = 'https://' + restart_url
+        # if restart_url.startswith('http:'):
+        #     restart_url = restart_url.replace('http', 'https')
 
         return_dict = dict()
         return_dict['year'] = datetime.datetime.now().year
