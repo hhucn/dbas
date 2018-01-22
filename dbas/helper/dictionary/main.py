@@ -97,7 +97,7 @@ class DictionaryHelper(object):
         Creates the extras.dict() with many options!
 
         :param current_slug:
-        :param is_reportable: Boolean
+        :param is_reportable: Boolean, same as discussion.bubbles.last.is_markable, but TAL has no last indicator
         :param show_bar_icon: Boolean
         :param show_graph_icon: Boolean
         :param registry: request.registry

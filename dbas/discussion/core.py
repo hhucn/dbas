@@ -380,7 +380,7 @@ def jump(request_dict, for_api=False, api_data=None) -> dict:
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     discussion_dict = _ddh.get_dict_for_jump(arg_uid, nickname, history)
     item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request_dict['registry'], request_dict['app_url'],
+    extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request_dict['registry'], request_dict['app_url'],
                                           request_dict['path'], for_api=for_api, nickname=nickname)
 
     prepared_discussion = dict()
