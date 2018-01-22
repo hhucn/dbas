@@ -1,3 +1,6 @@
+### 1.5.4 (2018-01-23)
+- Jump-step offers the flagging-option
+ 
 ### 1.5.3 (2017-12-22)
 - Refactoring of the text generators
 

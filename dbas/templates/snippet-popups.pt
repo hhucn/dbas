@@ -898,7 +898,7 @@
                                 <br>
                                 <input type="radio" id="a" tal:attributes="id statement.uid" name="flag-argument" data-special="">
                                 <label for="a" tal:attributes="for statement.uid" style="width: 90%">
-                                    <span i18n:translate="report">Report</span>: &quot;<em>${statement.text}</em> &quot;
+                                    <span i18n:translate="report">Report</span>: &quot;<em>${structure:statement.text}</em> &quot;
                                 </label>
                             </div>
                             <!--<br>-->

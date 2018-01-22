@@ -514,10 +514,20 @@ class DiscussionDictHelper(object):
             argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
 
         text = intro + argument_text + '?'
-        bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, message=text, omit_url=True, lang=self.lang)
+        bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, message=text, omit_url=True, lang=self.lang,
+                                          id='question-bubble-{}'.format(uid), is_markable=True)
         bubbles_array.append(bubble)
 
-        return {'bubbles': bubbles_array, 'add_premise_text': '', 'save_statement_url': '', 'mode': ''}
+        # add statements of discussion to report them
+        statement_list = self.__get_all_statement_texts_by_argument(db_argument)
+
+        return {
+            'bubbles': bubbles_array,
+            'add_premise_text': '',
+            'save_statement_url': '',
+            'mode': '',
+            'extras': statement_list,
+        }
 
     def get_dict_for_supporting_each_other(self, uid_system_arg, uid_user_arg, nickname, main_page):
         """
@@ -554,7 +564,7 @@ class DiscussionDictHelper(object):
                                                nickname=nickname)
         bubbles_array.append(bubble_user)
 
-        bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, id='question-bubble-' + str(uid_system_arg),
+        bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, id='question-bubble-{}'.format(uid_system_arg),
                                           message=sys_text, omit_url=True, lang=self.lang)
         bubbles_array.append(bubble)
 

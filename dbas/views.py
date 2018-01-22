@@ -54,7 +54,7 @@ from dbas.strings.translator import Translator
 from websocket.lib import get_port
 
 name = 'D-BAS'
-version = '1.5.2'
+version = '1.5.4'
 full_version = version
 project_name = name + ' ' + full_version
 
@@ -722,7 +722,6 @@ def discussion_support(request, for_api=False, api_data=None):
     :param api_data:
     :return: dictionary
     """
-    # '/discuss/{slug}/jump/{arg_id}'
     logger('views', 'discussion_support', 'request.matchdict: {}'.format(request.matchdict))
     logger('views', 'discussion_support', 'request.params: {}'.format(request.params))
 
