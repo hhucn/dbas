@@ -148,24 +148,27 @@ def prepare_json_of_issue(uid, application_url, lang, for_api, nickname):
         all_array.append(issue_dict)
 
     _t = Translator(lang)
-    tooltip = _t.get(_.discussionInfoTooltip1) + ' ' + date + ' '
-    tooltip += _t.get(_.discussionInfoTooltip2) + ' ' + str(stat_count) + ' '
-    tooltip += _t.get(_.discussionInfoTooltip3sg if stat_count == 1 else _.discussionInfoTooltip3pl)
+    t1 = _t.get(_.discussionInfoTooltip1)
+    t2 = _t.get(_.discussionInfoTooltip2)
+    t3 = _t.get(_.discussionInfoTooltip3sg if stat_count == 1 else _.discussionInfoTooltip3pl)
+    tooltip = '{} {} {} {} {}'.format(t1, date, t2, stat_count, t3)
 
-    return {'slug': slug,
-            'info': info,
-            'long_info': long_info,
-            'title': title,
-            'uid': uid,
-            'stat_count': stat_count,
-            'date': date,
-            'date_ms': date_ms,
-            'date_pretty': date_pretty,
-            'all': all_array,
-            'tooltip': tooltip,
-            'intro': _t.get(_.currentDiscussion),
-            'duration': duration,
-            'read_only': db_issue.is_read_only}
+    return {
+        'slug': slug,
+        'info': info,
+        'long_info': long_info,
+        'title': title,
+        'uid': uid,
+        'stat_count': stat_count,
+        'date': date,
+        'date_ms': date_ms,
+        'date_pretty': date_pretty,
+        'all': all_array,
+        'tooltip': tooltip,
+        'intro': _t.get(_.currentDiscussion),
+        'duration': duration,
+        'read_only': db_issue.is_read_only
+    }
 
 
 def get_number_of_arguments(issue_uid):
@@ -215,7 +218,7 @@ def get_issue_dict_for(issue, application_url, for_api, uid, lang):
     issue_dict['date'] = sql_timestamp_pretty_print(issue.date, lang)
     issue_dict['author'] = issue.users.public_nickname
     issue_dict['error'] = ''
-    issue_dict['author_url'] = application_url + '/user/' + str(issue.users.public_nickname)
+    issue_dict['author_url'] = '{}/user/{}'.format(application_url, issue.users.public_nickname)
     issue_dict['enabled'] = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
     return issue_dict
 
