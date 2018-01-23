@@ -54,7 +54,7 @@ from dbas.strings.translator import Translator
 from websocket.lib import get_port
 
 name = 'D-BAS'
-version = '1.5.2'
+version = '1.5.4'
 full_version = version
 project_name = name + ' ' + full_version
 
@@ -344,7 +344,7 @@ def main_user(request):
     logger('main_user', 'def', 'request.matchdict: {}'.format(match_dict))
     logger('main_user', 'def', 'request.params: {}'.format(params))
 
-    uid = match_dict['uid'] if 'uid' in match_dict else 0
+    uid = match_dict.get('uid', 0)
     logger('main_user', 'def', 'uid: {}'.format(uid))
 
     if not is_integer(uid):
@@ -722,7 +722,6 @@ def discussion_support(request, for_api=False, api_data=None):
     :param api_data:
     :return: dictionary
     """
-    # '/discuss/{slug}/jump/{arg_id}'
     logger('views', 'discussion_support', 'request.matchdict: {}'.format(request.matchdict))
     logger('views', 'discussion_support', 'request.params: {}'.format(request.params))
 
@@ -1264,7 +1263,7 @@ def user_registration(request):
 
     except KeyError as e:
         logger('Views', 'user_registration', repr(e), error=True)
-        ui_locales = request.params['lang'] if 'lang' in request.params else get_language_from_cookie(request)
+        ui_locales = request.params.get('lang', get_language_from_cookie(request))
         _t = Translator(ui_locales)
         error = _t.get(_.internalKeyError)
 
@@ -1319,25 +1318,9 @@ def set_user_settings(request):
     logger('Views', 'set_user_settings', 'request.params: {}'.format(request.params))
     _tn = Translator(get_language_from_cookie(request))
 
-    try:
-        settings_value = request.params['settings_value'] == 'True'
-        service = request.params['service']
-        public_nick, public_page_url, gravatar_url, error = set_settings(request.application_url,
-                                                                         request.authenticated_userid,
-                                                                         service, settings_value, _tn)
-    except KeyError as e:
-        error = _tn.get(_.internalKeyError)
-        public_nick = ''
-        public_page_url = ''
-        gravatar_url = ''
-        logger('Views', 'set_user_settings', repr(e), error=True)
-
-    return_dict = {
-        'error': error,
-        'public_nick': public_nick,
-        'public_page_url': public_page_url,
-        'gravatar_url': gravatar_url
-    }
+    settings_value = request.params.get('settings_value') == 'True'
+    service = request.params.get('service')
+    return_dict = set_settings(request.application_url, request.authenticated_userid, service, settings_value, _tn)
     return return_dict
 
 
@@ -1353,7 +1336,7 @@ def set_user_lang(request):
     logger('views', 'set_user_lang', 'request.params: {}'.format(request.params))
 
     try:
-        ui_locales = request.params['ui_locales'] if 'ui_locales' in request.params else None
+        ui_locales = request.params.get('ui_locales', None)
         prepared_dict = set_user_language(request.authenticated_userid, ui_locales)
     except KeyError as e:
         logger('views', 'set_user_lang', repr(e), error=True)
@@ -1525,7 +1508,7 @@ def set_new_start_premise(request):
         data['conclusion_id'] = request.params['conclusion_id']
         data['supportive'] = True if request.params['supportive'].lower() == 'true' else False
         data['port'] = get_port(request)
-        data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
+        data['history'] = request.cookies.get('_HISTORY_', None)
         data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
         data['default_locale_name'] = get_default_locale_name(request.registry)
         try:
@@ -1714,7 +1697,7 @@ def mark_or_unmark_statement_or_argument(request):
         is_argument = str(request.params['is_argument']).lower() == 'true'
         is_supportive = str(request.params['is_supportive']).lower() == 'true'
         should_mark = str(request.params['should_mark']).lower() == 'true'
-        history = request.params['history'] if 'history' in request.params else ''
+        history = request.params.get('history', '')
     except KeyError as e:
         logger('views', 'mark_or_unmark_statement_or_argument', repr(e), error=True)
         _t = Translator(ui_locales)
@@ -1828,10 +1811,10 @@ def get_users_with_opinion(request):
         params = request.params
         ui_locales = params['lang'] if 'lang' in params else 'en'
         uids = params['uids']
-        is_arg = params['is_argument'] == 'true' if 'is_argument' in params else False
-        is_att = params['is_attitude'] == 'true' if 'is_attitude' in params else False
-        is_rea = params['is_reaction'] == 'true' if 'is_reaction' in params else False
-        is_pos = params['is_position'] == 'true' if 'is_position' in params else False
+        is_arg = params.get('is_argument', False)
+        is_att = params.get('is_attitude', False)
+        is_rea = params.get('is_reaction', False)
+        is_pos = params.get('is_position', False)
     except KeyError as e:
         logger('views', 'get_users_with_opinion', repr(e), error=True)
         ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
@@ -2018,7 +2001,7 @@ def fuzzy_search(request, for_api=False, api_data=None):
         mode = str(api_data['mode']) if for_api else str(request.params['type'])
         value = api_data['value'] if for_api else request.params['value']
         issue = api_data['issue'] if for_api else issue_helper.get_issue_id(request)
-        extra = request.params['extra'] if 'extra' in request.params else None
+        extra = request.params.get('extra')
     except KeyError as e:
         logger('views', 'fuzzy_search', repr(e), error=True)
         return {'error': _tn.get(_.internalKeyError)}

@@ -795,4 +795,5 @@ class ItemDictHelper(object):
             'is_editable': is_editable,
             'is_deletable': is_author,
             'is_attackable': len(attack_url) > 0,
-            'style': '' if is_visible else 'display: none;'}
+            'style': '' if is_visible else 'display: none;'
+        }
