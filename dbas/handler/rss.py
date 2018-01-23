@@ -17,8 +17,10 @@ from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
+rss_path = '/static/rss'
 
-def create_news_rss(main_page, ui_locale):
+
+def create_news_rss(main_page: str, ui_locale: str) -> bool:
     """
     Creates a new news rss
 
@@ -28,33 +30,26 @@ def create_news_rss(main_page, ui_locale):
     """
     logger('RSS-Handler', 'create_news_rss', 'def')
     db_news = DBDiscussionSession.query(News).order_by(News.date.desc()).all()
-    items = []
-    for news in db_news:
-        items.append(PyRSS2Gen.RSSItem(
-            title=news.title,
-            description=news.news,
-            pubDate=news.date.datetime,
-            author=news.author
-        ))
+    items = [__get_rss_item(n.title, n.news, n.date.datetime, n.author, '{}/news'.format(get_global_url())) for n in db_news]
 
     _tn = Translator(ui_locale)
     rss = PyRSS2Gen.RSS2(
         title='D-BAS Feed',
-        link=main_page + '/static/rss/rss.xml',
+        link=main_page + '{}/rss.xml'.format(rss_path),
         description=_tn.get(_.latestNewsFromDBAS),
         lastBuildDate=datetime.now(),
         items=items
     )
 
-    if not os.path.exists('dbas/static/rss'):
-        os.makedirs('dbas/static/rss')
+    if not os.path.exists('dbas{}').format(rss_path):
+        os.makedirs('dbas{}').format(rss_path)
 
-    rss.write_xml(open('dbas/static/rss/news.xml', 'w'), encoding='utf-8')
+    rss.write_xml(open('dbas{}/news.xml'.format(rss_path), 'w'), encoding='utf-8')
 
     return True
 
 
-def create_initial_issue_rss(main_page, ui_locale):
+def create_initial_issue_rss(main_page: str, ui_locale: str) -> bool:
     """
     Creates the initial RSS entry for an issue
 
@@ -67,28 +62,26 @@ def create_initial_issue_rss(main_page, ui_locale):
     for issue in db_issues:
         db_rss = DBDiscussionSession.query(RSS).filter_by(issue_uid=issue.uid).all()
         items = []
+
         for rss in db_rss:
             db_author = DBDiscussionSession.query(User).get(rss.author_uid)
             if not db_author:
                 continue
-            items.append(PyRSS2Gen.RSSItem(
-                title=rss.title,
-                description=rss.description,
-                pubDate=arrow.utcnow().datetime,
-                author=db_author.get_global_nickname()
-            ))
+            tmp = __get_rss_item(rss.title, rss.description, arrow.utcnow().datetime, db_author.get_global_nickname(),
+                                 '{}/{}'.format(get_global_url(), issue.slug))
+            items.append(tmp)
 
-        rss = __get_issue_rss_gen(main_page, issue, items, ui_locale)
+        rss = __get_rss2gen(main_page, issue, items, ui_locale)
 
-        if not os.path.exists('dbas/static/rss'):
-            os.makedirs('dbas/static/rss')
+        if not os.path.exists('dbas{}').format(rss_path):
+            os.makedirs('dbas{}').format(rss_path)
 
-        rss.write_xml(open('dbas/static/rss/{}.xml'.format(issue.slug) + '.xml', 'w'), encoding='utf-8')
+        rss.write_xml(open('dbas{}/{}.xml'.format(rss_path, issue.slug) + '.xml', 'w'), encoding='utf-8')
 
     return True
 
 
-def append_action_to_issue_rss(issue_uid, author_uid, title, description, ui_locale, url):
+def append_action_to_issue_rss(issue_uid: int, author_uid: int, title: str, description: str, ui_locale: str, url: str) -> bool:
     """
     Appends a new action in D-BAS to the RSS
 
@@ -119,25 +112,20 @@ def append_action_to_issue_rss(issue_uid, author_uid, title, description, ui_loc
         db_author = DBDiscussionSession.query(User).get(rss.author_uid)
         if not db_author:
             continue
-        items.append(PyRSS2Gen.RSSItem(
-            title=rss.title,
-            description=rss.description,
-            pubDate=rss.timestamp.datetime,
-            author=db_author.get_global_nickname(),
-            link=url
-        ))
+        tmp = __get_rss_item(rss.title, rss.description, rss.timestamp.datetime, db_author.get_global_nickname(), url)
+        items.append(tmp)
 
-    rss = __get_issue_rss_gen(get_global_url(), db_issue, items, ui_locale)
+    rss = __get_rss2gen(get_global_url(), db_issue, items, ui_locale)
 
-    if not os.path.exists('dbas/static/rss'):
-        os.makedirs('dbas/static/rss')
+    if not os.path.exists('dbas{}').format(rss_path):
+        os.makedirs('dbas{}').format(rss_path)
 
-    rss.write_xml(open('dbas/static/rss/{}.xml'.format(db_issue.slug) + '.xml', 'w'), encoding='utf-8')
+    rss.write_xml(open('dbas{}/{}.xml'.format(rss_path, db_issue.slug) + '.xml', 'w'), encoding='utf-8')
 
     return True
 
 
-def get_list_of_all_feeds(ui_locale):
+def get_list_of_all_feeds(ui_locale: str) -> list:
     """
     Returns list of all feeds
 
@@ -150,7 +138,7 @@ def get_list_of_all_feeds(ui_locale):
     feed = {
         'title': 'News',
         'description': 'Latest news about D-BAS, the Dialog-Based Argumentation System',
-        'link': '/static/rss/news.xml'
+        'link': '{}/news.xml'.format(rss_path)
     }
     feeds.append(feed)
 
@@ -160,28 +148,48 @@ def get_list_of_all_feeds(ui_locale):
         feed = {
             'title': issue.title,
             'description': '{}: <em> {} - {} </em>'.format(_tn.get(_.latestNewsFromDiscussion), issue.title, issue.info),
-            'link': '/static/rss/{}.xml'.format(issue.slug)
+            'link': '{}/{}.xml'.format(rss_path, issue.slug)
         }
         feeds.append(feed)
 
     return feeds
 
 
-def __get_issue_rss_gen(main_page, issue, items, ui_locale):
+def __get_rss2gen(main_page: str, issue: Issue, items: list, ui_locale: str) -> PyRSS2Gen.RSS2:
     """
     Creates RSS object
 
     :param main_page: Host URL
     :param issue: Issue
-    :param items: [PyRSS2Gen.RSSItem]
+    :param items: list of PyRSS2Gen.RSSItem
     :param ui_locale: Language.ui_locale
     :return: PyRSS2Gen.RSS2
     """
     _tn = Translator(ui_locale)
     return PyRSS2Gen.RSS2(
         title='D-BAS Feed',
-        link='{}/static/rss/{}.xml'.format(main_page, issue.slug),
+        link='{}{}/{}.xml'.format(main_page, rss_path, issue.slug),
         description='{}: {} - {}'.format(_tn.get(_.latestNewsFromDiscussion), issue.title, issue.info),
         lastBuildDate=datetime.now(),
         items=items
+    )
+
+
+def __get_rss_item(title: str, description: str, pubdate: datetime, author: str, link: str) -> PyRSS2Gen.RSSItem:
+    """
+    Creates an RSS item
+
+    :param title: title of the rss item
+    :param description: description of the rss item
+    :param pubdate: pubdate of the rss item
+    :param author: author of the rss item
+    :param link: link of the rss item
+    :return: PyRSS2Gen.RSSItem
+    """
+    return PyRSS2Gen.RSSItem(
+        title=title,
+        description=description,
+        pubDate=pubdate,
+        author=author,
+        link=link
     )
