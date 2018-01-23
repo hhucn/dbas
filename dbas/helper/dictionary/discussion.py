@@ -483,7 +483,7 @@ class DiscussionDictHelper(object):
 
         return user_text, sys_text, gender_of_counter_arg, db_confrontation
 
-    def get_dict_for_jump(self, uid, nickname, history):
+    def get_dict_for_jump(self, uid):
         """
         Prepares the discussion dict with all bubbles for the jump step
 
@@ -495,11 +495,13 @@ class DiscussionDictHelper(object):
         logger('DictionaryHelper', 'get_dict_for_jump', 'argument ' + str(uid))
         _tn = Translator(self.lang)
         argument_text = get_text_for_argument_uid(uid, colored_position=True, with_html_tag=True, attack_type='jump')
-        bubbles_array = history_helper.create_bubbles_from_history(self.history, nickname, self.lang, self.main_page,
-                                                                   self.slug)
+        bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang,
+                                                                   self.main_page, self.slug)
 
-        splitted_history = history.split('-')
-        coming_from_jump = '/jump' in history[:-1] if len(splitted_history) > 0 else False
+        coming_from_jump = False
+        if self.history:
+            splitted_history = self.history.split('-')
+            coming_from_jump = '/jump' in self.history[:-1] if len(splitted_history) > 0 else False
         intro = (_tn.get(_.canYouBeMorePrecise) + '<br><br>') if coming_from_jump else ''
 
         db_argument = DBDiscussionSession.query(Argument).get(uid)

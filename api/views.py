@@ -517,8 +517,7 @@ def jump_to_argument_fn(request):
 
     """
     api_data = jump_preparation(request)
-    nickname = api_data["nickname"] if api_data else None
-    return dbas.discussion.jump(request, nickname, for_api=True, api_data=api_data)
+    return dbas.discussion.jump(request, for_api=True, api_data=api_data)
 
 
 # =============================================================================
