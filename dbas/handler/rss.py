@@ -10,12 +10,13 @@ import transaction
 import os
 
 from datetime import datetime
-from dbas.database import DBDiscussionSession
+from dbas.database import DBDiscussionSession as Session
 from dbas.database.discussion_model import Issue, RSS, User, News
 from dbas.lib import get_global_url
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+from dbas.query_wrapper import get_not_disabled_issues_as_query
 
 rss_path = '/static/rss'
 
@@ -29,7 +30,7 @@ def create_news_rss(main_page: str, ui_locale: str) -> bool:
     :return: Boolean
     """
     logger('RSS-Handler', 'create_news_rss', 'def')
-    db_news = DBDiscussionSession.query(News).order_by(News.date.desc()).all()
+    db_news = Session.query(News).order_by(News.date.desc()).all()
     items = [__get_rss_item(n.title, n.news, n.date.datetime, n.author, '{}/news'.format(get_global_url())) for n in
              db_news]
 
@@ -42,7 +43,7 @@ def create_news_rss(main_page: str, ui_locale: str) -> bool:
         items=items
     )
 
-    if not os.path.exists('dbas{}').format(rss_path):
+    if not os.path.exists('dbas{}'.format(rss_path)):
         os.makedirs('dbas{}').format(rss_path)
 
     rss.write_xml(open('dbas{}/news.xml'.format(rss_path), 'w'), encoding='utf-8')
@@ -60,14 +61,14 @@ def create_initial_issue_rss(main_page: str, ui_locale: str) -> bool:
     """
     logger('RSS-Handler', 'create_initial_issue_rss', 'def')
 
-    if not os.path.exists('dbas{}').format(rss_path):
+    if not os.path.exists('dbas{}'.format(rss_path)):
         os.makedirs('dbas{}').format(rss_path)
 
-    db_issues = DBDiscussionSession.query(Issue).all()
-    db_authors = {u.uid: u for u in DBDiscussionSession.query(User).all()}
+    db_issues = get_not_disabled_issues_as_query().all()
+    db_authors = {u.uid: u for u in Session.query(User).all()}
     for issue in db_issues:
-        db_rss = DBDiscussionSession.query(RSS).filter(RSS.issue_uid == issue.uid,
-                                                       RSS.author_uid.in_(db_authors.keys())).all()
+        db_rss = Session.query(RSS).filter(RSS.issue_uid == issue.uid,
+                                           RSS.author_uid.in_(db_authors.keys())).all()
 
         items = [__get_rss_item(rss.title, rss.description, arrow.utcnow().datetime,
                                 db_authors.get(rss.author_uid).get_global_nickname(),
@@ -94,22 +95,36 @@ def append_action_to_issue_rss(issue_uid: int, author_uid: int, title: str, desc
     :return: Boolean
     """
     logger('RSS-Handler', 'append_action_to_issue_rss', 'issue_uid ' + str(issue_uid))
-    db_issue = DBDiscussionSession.query(Issue).get(issue_uid)
-    db_author = DBDiscussionSession.query(User).get(author_uid)
+    db_issue = Session.query(Issue).get(issue_uid)
+    db_author = Session.query(User).get(author_uid)
     if not db_issue or not db_author:
         return False
 
-    DBDiscussionSession.add(RSS(author=author_uid, issue=issue_uid, title=title, description=description))
-    DBDiscussionSession.flush()
+    Session.add(RSS(author=author_uid, issue=issue_uid, title=title, description=description))
+    Session.flush()
     transaction.commit()
 
-    db_authors = {u.uid: u for u in DBDiscussionSession.query(User).all()}
-    db_rss = DBDiscussionSession.query(RSS).filter(RSS.issue_uid == issue_uid,
-                                                   RSS.author_uid.in_(db_authors.keys())).order_by(RSS.uid.desc()).all()
+    return rewrite_issue_rss(issue_uid, ui_locale, url)
+
+
+def rewrite_issue_rss(issue_uid: int, ui_locale: str, url: str):
+    """
+    Writes rss file for the issue
+
+    :param issue_uid: Issue.uid
+    :param ui_locale: Language.ui_locale
+    :param url: url of this event
+    :return: Boolean
+    """
+    logger('RSS-Handler', 'rewrite_issue_rss', 'issue_uid ' + str(issue_uid))
+    db_issue = Session.query(Issue).get(issue_uid)
+    db_authors = {u.uid: u for u in Session.query(User).all()}
+    db_rss = Session.query(RSS).filter(RSS.issue_uid == issue_uid,
+                                       RSS.author_uid.in_(db_authors.keys())).order_by(RSS.uid.desc()).all()
     items = [__get_rss_item(r.title, r.description, r.timestamp.datetime,
                             db_authors.get(r.author_uid).get_global_nickname(), url) for r in db_rss]
 
-    if not os.path.exists('dbas{}').format(rss_path):
+    if not os.path.exists('dbas{}'.format(rss_path)):
         os.makedirs('dbas{}').format(rss_path)
 
     rss = __get_rss2gen(get_global_url(), db_issue, items, ui_locale)
@@ -136,7 +151,7 @@ def get_list_of_all_feeds(ui_locale: str) -> list:
     feeds.append(feed)
 
     _tn = Translator(ui_locale)
-    db_issues = DBDiscussionSession.query(Issue).all()
+    db_issues = get_not_disabled_issues_as_query().all()
     for issue in db_issues:
         feed = {
             'title': issue.title,
