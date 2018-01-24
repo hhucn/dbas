@@ -10,19 +10,23 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 # from wsgiref.simple_server import make_server
 
 import logging
+import os
+import re
 import time
+
+from .database import load_discussion_database
+from .security import groupfinder
 from configparser import ConfigParser, NoSectionError
 from dbas.database import get_db_environs
-import os
+from dbas.handler.rss import rewrite_issue_rss, create_news_rss
+from dbas.lib import get_global_url
+from dbas.query_wrapper import get_not_disabled_issues_as_query
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.static import QueryStringConstantCacheBuster
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
-import re
 from sqlalchemy import engine_from_config
-from .database import load_discussion_database
-from .security import groupfinder
 
 
 def main(global_config, **settings):
@@ -187,7 +191,17 @@ def main(global_config, **settings):
     config.add_route('review_content', '/review/{queue}')
 
     config.scan()
+
+    __write_rss_feeds()
+
     return config.make_wsgi_app()
+
+
+def __write_rss_feeds():
+    issues = get_not_disabled_issues_as_query().all()
+    for issue in issues:
+        rewrite_issue_rss(issue.uid, issue.lang, get_global_url())
+    create_news_rss(get_global_url(), 'en')
 
 
 def get_dbas_environs(prefix="DBAS_"):
