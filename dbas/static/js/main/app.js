@@ -663,6 +663,9 @@ $(document).ready(function () {
 	$('#' + popupLogin).on('shown.bs.modal', function (e) {
 		new PopupHandler().showLoginPopup(true);
 	});
+	if ($('.counter').length > 0) {
+		$('.counter').counterUp({delay: 5, time: 1000});
+	}
 
 	// set current file to active
 		 if (path.indexOf(urlContact) !== -1){ 	    setLinkActive('#' + contactLink); }

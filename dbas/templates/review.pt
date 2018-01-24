@@ -56,9 +56,9 @@
                             <table class="table table-condensed" id="review-table">
                                 <thead>
                                 <tr>
-                                    <th i18n:translate="open_tasks">Open Tasks</th>
-                                    <th i18n:translate="topic">Topic</th>
-                                    <th i18n:translate="recent_reviews">Recent Reviews</th>
+                                    <th i18n:translate="open_tasks" class="text-center">Open Tasks</th>
+                                    <th i18n:translate="topic" class="text-center">Topic</th>
+                                    <th i18n:translate="recent_reviews" class="text-center">Recent Reviews</th>
                                 </tr>
                                 </thead>
                                 <tbody>

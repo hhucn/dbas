@@ -180,9 +180,9 @@ def reaction(request_dict, for_api=False) -> dict:
     history = request_dict['history']
 
     # get parameters
-    arg_id_user = request_dict['matchdict']['arg_id_user'] if 'arg_id_user' in request_dict['matchdict'] else ''
-    attack = request_dict['matchdict']['mode'] if 'mode' in request_dict['matchdict'] else ''
-    arg_id_sys = request_dict['matchdict']['arg_id_sys'] if 'arg_id_sys' in request_dict['matchdict'] else ''
+    arg_id_user = request_dict['matchdict'].get('arg_id_user')
+    attack = request_dict['matchdict'].get('mode')
+    arg_id_sys = request_dict['matchdict'].get('arg_id_sys')
     tmp_argument = DBDiscussionSession.query(Argument).get(arg_id_user)
 
     valid_reaction = check_reaction(arg_id_user, arg_id_sys, attack)
@@ -249,9 +249,9 @@ def support(request_dict, for_api=False, api_data=None) -> dict:
         arg_user_uid = api_data['arg_user_uid']
         arg_system_uid = api_data['arg_system_uid']
     else:
-        slug = request_dict['slug'] if 'slug' in request_dict['matchdict'] else ''
-        arg_user_uid = request_dict['matchdict']['arg_id_user'] if 'arg_id_user' in request_dict['matchdict'] else ''
-        arg_system_uid = request_dict['matchdict']['arg_id_sys'] if 'arg_id_sys' in request_dict['matchdict'] else ''
+        slug = request_dict.get('slug', '')
+        arg_user_uid = request_dict['matchdict'].get('arg_id_user', '')
+        arg_system_uid = request_dict['matchdict'].get('arg_id_sys', '')
 
     application_url = request_dict['app_url']
     issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, nickname)
@@ -292,10 +292,10 @@ def choose(request_dict, for_api=False) -> dict:
     """
     logger('Core', 'discussion.choose', 'main')
 
-    is_argument = request_dict['matchdict']['is_argument'] if 'is_argument' in request_dict['matchdict'] else ''
-    is_supportive = request_dict['matchdict']['supportive'] if 'supportive' in request_dict['matchdict'] else ''
-    uid = request_dict['matchdict']['id'] if 'id' in request_dict['matchdict'] else ''
-    pgroup_ids = request_dict['matchdict']['pgroup_ids'] if 'id' in request_dict['matchdict'] else ''
+    is_argument = request_dict['matchdict'].get('is_argument', '')
+    is_supportive = request_dict['matchdict'].get('supportive', '')
+    uid = request_dict['matchdict'].get('id', '')
+    pgroup_ids = request_dict['matchdict'].get('pgroup_ids', '')
 
     nickname = request_dict['nickname']
     issue = request_dict['issue']
@@ -382,7 +382,7 @@ def jump(request_dict, for_api=False, api_data=None) -> dict:
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     discussion_dict = _ddh.get_dict_for_jump(arg_uid)
     item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request_dict['registry'], request_dict['app_url'],
+    extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request_dict['registry'], request_dict['app_url'],
                                           request_dict['path'], for_api=for_api, nickname=nickname)
 
     prepared_discussion = dict()

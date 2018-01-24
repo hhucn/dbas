@@ -37,8 +37,8 @@ def set_position(for_api, data) -> dict:
         issue_id = data['issue_id']
         issue_db = DBDiscussionSession.query(Issue).get(issue_id)
         slug = issue_db.slug
-        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else issue_db.lang
-        default_locale_name = data['default_locale_name'] if 'default_locale_name' in data else discussion_lang
+        discussion_lang = data.get('discussion_lang', issue_db.lang)
+        default_locale_name = data.get('default_locale_name', discussion_lang)
         application_url = data['application_url']
     except KeyError as e:
         logger('StatementsHelper', 'position', repr(e), error=True)
@@ -103,10 +103,10 @@ def set_positions_premise(for_api, data) -> dict:
         supportive = data['supportive']
         application_url = data['application_url']
         history = data['history'] if '_HISTORY_' in data else None
-        port = data['port'] if 'port' in data else None
-        mailer = data['mailer'] if 'mailer' in data else None
-        discussion_lang = data['discussion_lang'] if 'discussion_lang' in data else DBDiscussionSession.query(Issue).get(issue_id).lang
-        default_locale_name = data['default_locale_name'] if 'default_locale_name' in data else discussion_lang
+        port = data.get('port')
+        mailer = data.get('mailer')
+        discussion_lang = data.get('discussion_lang', DBDiscussionSession.query(Issue).get(issue_id).lang)
+        default_locale_name = data.get('default_locale_name', discussion_lang)
     except KeyError as e:
         logger('StatementsHelper', 'positions_premise', repr(e), error=True)
         _tn = Translator('en')

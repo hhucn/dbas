@@ -59,8 +59,8 @@ def handle_justification_step(request_dict, for_api):
     :return: dict(), dict(), dict()
     """
     matchdict = request_dict['matchdict']
-    statement_or_arg_id = matchdict['statement_or_arg_id'] if 'statement_or_arg_id' in matchdict else ''
-    mode = matchdict['mode'] if 'mode' in request_dict['matchdict'] else ''
+    statement_or_arg_id = matchdict.get('statement_or_arg_id')
+    mode = matchdict.get('mode', '')
     relation = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
 
     if not is_integer(statement_or_arg_id, True):
