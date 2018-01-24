@@ -1,7 +1,7 @@
 """
-Provides helping function round about the news.
+Provides functions for our rss feed.
 
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
 import PyRSS2Gen
@@ -66,8 +66,8 @@ def create_initial_issue_rss(main_page: str, ui_locale: str) -> bool:
     db_issues = DBDiscussionSession.query(Issue).all()
     db_authors = {u.uid: u for u in DBDiscussionSession.query(User).all()}
     for issue in db_issues:
-        db_rss = DBDiscussionSession.query(RSS).filter_by(issue_uid=issue.uid).all()
-        db_rss = [rss for rss in db_rss if rss.author_uid in db_authors.keys()]
+        db_rss = DBDiscussionSession.query(RSS).filter(RSS.issue_uid == issue.uid,
+                                                       RSS.author_uid.in_(db_authors.keys())).all()
 
         items = [__get_rss_item(rss.title, rss.description, arrow.utcnow().datetime,
                                 db_authors.get(rss.author_uid).get_global_nickname(),
@@ -95,31 +95,24 @@ def append_action_to_issue_rss(issue_uid: int, author_uid: int, title: str, desc
     """
     logger('RSS-Handler', 'append_action_to_issue_rss', 'issue_uid ' + str(issue_uid))
     db_issue = DBDiscussionSession.query(Issue).get(issue_uid)
-    if not db_issue:
-        return False
-
     db_author = DBDiscussionSession.query(User).get(author_uid)
-    if not db_author:
+    if not db_issue or not db_author:
         return False
 
     DBDiscussionSession.add(RSS(author=author_uid, issue=issue_uid, title=title, description=description))
     DBDiscussionSession.flush()
     transaction.commit()
 
-    db_rss = DBDiscussionSession.query(RSS).filter_by(issue_uid=issue_uid).order_by(RSS.uid.desc()).all()
-    items = []
-    for rss in db_rss:
-        db_author = DBDiscussionSession.query(User).get(rss.author_uid)
-        if not db_author:
-            continue
-        tmp = __get_rss_item(rss.title, rss.description, rss.timestamp.datetime, db_author.get_global_nickname(), url)
-        items.append(tmp)
-
-    rss = __get_rss2gen(get_global_url(), db_issue, items, ui_locale)
+    db_authors = {u.uid: u for u in DBDiscussionSession.query(User).all()}
+    db_rss = DBDiscussionSession.query(RSS).filter(RSS.issue_uid == issue_uid,
+                                                   RSS.author_uid.in_(db_authors.keys())).order_by(RSS.uid.desc()).all()
+    items = [__get_rss_item(r.title, r.description, r.timestamp.datetime,
+                            db_authors.get(r.author_uid).get_global_nickname(), url) for r in db_rss]
 
     if not os.path.exists('dbas{}').format(rss_path):
         os.makedirs('dbas{}').format(rss_path)
 
+    rss = __get_rss2gen(get_global_url(), db_issue, items, ui_locale)
     rss.write_xml(open('dbas{}/{}.xml'.format(rss_path, db_issue.slug) + '.xml', 'w'), encoding='utf-8')
 
     return True
@@ -147,7 +140,8 @@ def get_list_of_all_feeds(ui_locale: str) -> list:
     for issue in db_issues:
         feed = {
             'title': issue.title,
-            'description': '{}: <em> {} - {} </em>'.format(_tn.get(_.latestNewsFromDiscussion), issue.title,
+            'description': '{}: <em> {} - {} </em>'.format(_tn.get(_.latestNewsFromDiscussion),
+                                                           issue.title,
                                                            issue.info),
             'link': '{}/{}.xml'.format(rss_path, issue.slug)
         }
