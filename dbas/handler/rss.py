@@ -44,7 +44,7 @@ def create_news_rss(main_page: str, ui_locale: str) -> bool:
     )
 
     if not os.path.exists('dbas{}'.format(rss_path)):
-        os.makedirs('dbas{}').format(rss_path)
+        os.makedirs('dbas{}'.format(rss_path))
 
     rss.write_xml(open('dbas{}/news.xml'.format(rss_path), 'w'), encoding='utf-8')
 
@@ -62,7 +62,7 @@ def create_initial_issue_rss(main_page: str, ui_locale: str) -> bool:
     logger('RSS-Handler', 'create_initial_issue_rss', 'def')
 
     if not os.path.exists('dbas{}'.format(rss_path)):
-        os.makedirs('dbas{}').format(rss_path)
+        os.makedirs('dbas{}'.format(rss_path))
 
     db_issues = get_not_disabled_issues_as_query().all()
     db_authors = {u.uid: u for u in Session.query(User).all()}
@@ -125,7 +125,7 @@ def rewrite_issue_rss(issue_uid: int, ui_locale: str, url: str):
                             db_authors.get(r.author_uid).get_global_nickname(), url) for r in db_rss]
 
     if not os.path.exists('dbas{}'.format(rss_path)):
-        os.makedirs('dbas{}').format(rss_path)
+        os.makedirs('dbas{}'.format(rss_path))
 
     rss = __get_rss2gen(get_global_url(), db_issue, items, ui_locale)
     rss.write_xml(open('dbas{}/{}.xml'.format(rss_path, db_issue.slug) + '.xml', 'w'), encoding='utf-8')
