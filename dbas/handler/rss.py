@@ -128,7 +128,7 @@ def rewrite_issue_rss(issue_uid: int, ui_locale: str, url: str):
         os.makedirs('dbas{}'.format(rss_path))
 
     rss = __get_rss2gen(get_global_url(), db_issue, items, ui_locale)
-    rss.write_xml(open('dbas{}/{}.xml'.format(rss_path, db_issue.slug) + '.xml', 'w'), encoding='utf-8')
+    rss.write_xml(open('dbas{}/{}.xml'.format(rss_path, db_issue.slug), 'w'), encoding='utf-8')
 
     return True
 
