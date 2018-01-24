@@ -30,3 +30,18 @@ services:
     ports:
       - "5222:5222"
     tmpfs: /tmp
+
+  search:
+    image: hhucn/dbas-search:develop
+    ports:
+      - "9000:9000"
+      - "5000:5000"
+
+    environment:
+      - DBAS_HOST=web
+      - DBAS_PORT=4284
+      - DBAS_PROTOCOL=http
+      - ELASTIC_HOST=0.0.0.0
+      - ELASTIC_PORT=9200
+      - FLASK_HOST=0.0.0.0
+      - FLASK_PORT=5000
