@@ -421,7 +421,7 @@ msgstr "Direkter Download auf GitHub"
 #. Default: Download Now
 #: templates/index.pt:190
 msgid "download_now"
-msgstr "Jetz laden"
+msgstr "Jetzt laden"
 
 #. Default: From the University into Practice
 #: templates/index.pt:198
