@@ -37,11 +37,5 @@ services:
       - "9000:9000"
       - "5000:5000"
 
-    environment:
-      - DBAS_HOST=web
-      - DBAS_PORT=4284
-      - DBAS_PROTOCOL=http
-      - ELASTIC_HOST=0.0.0.0
-      - ELASTIC_PORT=9200
-      - FLASK_HOST=0.0.0.0
-      - FLASK_PORT=5000
+    env_file:
+      - development.env
