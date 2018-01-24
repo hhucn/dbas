@@ -17,6 +17,15 @@ stages:
     DBAS_DB_USER: "postgres"
     DBAS_DB_PW: "DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!"
     DBAS_AUTHN_SECRET: "89#s3cr3t_15"
+
+    DBAS_HOST: web
+    DBAS_PORT: "4284"
+    DBAS_PROTOCOL: "http"
+    ELASTIC_HOST: "0.0.0.0"
+    ELASTIC_PORT: "9200"
+    FLASK_HOST: "0.0.0.0"
+    FLASK_PORT: "5000"
+
   before_script:
     - alembic upgrade head && pserve development.ini --reload &
 

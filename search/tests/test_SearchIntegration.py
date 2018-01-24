@@ -28,5 +28,3 @@ class TestIntegrationSearch(unittest.TestCase):
         response = requests.get(SEARCH_REQUEST_STRING + "/suggestions")
         response = json.loads(response.text)
         self.assertEqual(len(response), 0)
-
-
