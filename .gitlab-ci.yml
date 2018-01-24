@@ -45,7 +45,10 @@ build_test_images:
     - docker build -t $CI_REGISTRY_IMAGE/db --pull docker/db
     - docker tag $CI_REGISTRY_IMAGE/db $CI_REGISTRY_IMAGE/db:testing
     - docker push $CI_REGISTRY_IMAGE/db:testing
-
+    # Build search
+    - docker build -t $CI_REGISTRY_IMAGE/search --pull hhucn/dbas-search
+    - docker tag $CI_REGISTRY_IMAGE/search $CI_REGISTRY_IMAGE/search:testing
+    - docker push $CI_REGISTRY_IMAGE/search:testing
 flake8:
   stage: test
   script:
@@ -74,7 +77,7 @@ unit:
   <<: *add-services
   stage: test
   script:
-    - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=admin --cover-xml --with-timer -w . dbas graph admin api search
+    - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=admin --cover-xml --with-timer -w . dbas graph admin api
   coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
   artifacts:
     paths:
