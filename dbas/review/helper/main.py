@@ -3,8 +3,6 @@ Provides helping function for the adding task in the review queuees or en-/disab
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-from typing import List
-
 import transaction
 from sqlalchemy import and_
 
@@ -39,19 +37,15 @@ def __add_vote_for(user, review, is_okay, review_type):
     :param review_type: one table out of the LastReviews
     :return: None
     """
-    msg = '...'
-    if review_type == LastReviewerDelete:
-        msg = 'LastReviewerDelete'
-    if review_type == LastReviewerEdit:
-        msg = 'LastReviewerEdit'
-    if review_type == LastReviewerOptimization:
-        msg = 'LastReviewerOptimization'
-    if review_type == LastReviewerDuplicate:
-        msg = 'LastReviewerDuplicate'
-    if review_type == LastReviewerSplit:
-        msg = 'LastReviewerSplit'
-    if review_type == LastReviewerMerge:
-        msg = 'LastReviewerMerge'
+    mapper = {
+        LastReviewerDelete: 'LastReviewerDelete',
+        LastReviewerEdit: 'LastReviewerEdit',
+        LastReviewerOptimization: 'LastReviewerOptimization',
+        LastReviewerDuplicate: 'LastReviewerDuplicate',
+        LastReviewerSplit: 'LastReviewerSplit',
+        LastReviewerMerge: 'LastReviewerMerge'
+    }
+    msg = mapper.get(review_type, '...')
 
     logger('review_main_helper', '__add_vote_for', '{}, user {}'.format(msg, user.uid))
     already_voted = DBDiscussionSession.query(review_type).filter(and_(review_type.reviewer_uid == user.uid,
@@ -766,9 +760,9 @@ def __merge_premisegroup(review):
     :return: None
     """
     db_values = DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=review.uid).all()
-    db_old_premises: List[Premise] = DBDiscussionSession.query(Premise).filter_by(
+    db_old_premises = DBDiscussionSession.query(Premise).filter_by(
         premisesgroup_uid=review.premisesgroup_uid).all()
-    db_issue: Issue = DBDiscussionSession.query(Issue).get(db_old_premises[0].issue_uid)
+    db_issue = DBDiscussionSession.query(Issue).get(db_old_premises[0].issue_uid)
     db_first_old_statement = DBDiscussionSession.query(Statement).get(db_old_premises[0].uid)
     discussion_lang = db_first_old_statement.lang
     db_user = DBDiscussionSession.query(User).get(review.detector_uid)
@@ -839,9 +833,9 @@ def __split_premisegroup(review):
     :return: None
     """
     db_values = DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=review.uid).all()
-    db_old_premises: List[Premise] = DBDiscussionSession.query(Premise).filter_by(
+    db_old_premises = DBDiscussionSession.query(Premise).filter_by(
         premisesgroup_uid=review.premisesgroup_uid).all()
-    db_issue: Issue = DBDiscussionSession.query(Issue).get(db_old_premises[0].issue_uid)
+    db_issue = DBDiscussionSession.query(Issue).get(db_old_premises[0].issue_uid)
     db_old_statement_ids = [p.statement_uid for p in db_old_premises]
     db_first_old_statement = DBDiscussionSession.query(Statement).get(db_old_premises[0].uid)
     discussion_lang = db_first_old_statement.lang
