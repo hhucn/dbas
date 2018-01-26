@@ -274,7 +274,7 @@ de_lang = {
     _.eachStatement: 'pro Aussage',
     _.editIndex: 'Anzahl an Änderungen - Letzte 30 Tage',
     _.editIndexInfo: 'Anzahl an Änderungen',
-    _.euCookiePopupTitle: 'Diese Seite nutzt Cookies und Piwik.',
+    _.euCookiePopupTitle: 'Diese Seite nutzt Cookies und Matomo.',
     _.euCookiePopupText: 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen, nehmen Sie alle Cookies unserer Seite an und sind glücklich damit. Zusätzlich tracken wir Ihre Aktionen und speichern diese anonym ab. Dabei wird Ihre IP-Adresse maskiert.',
     _.euCookiePopoupButton1: 'Weiter',
     _.euCookiePopoupButton2: 'Lerne&nbsp;mehr',
