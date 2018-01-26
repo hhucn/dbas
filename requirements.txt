@@ -52,6 +52,7 @@ urllib3==1.22
 uWSGI==2.0.15
 validate-email==1.3
 WebOb==1.8.0rc1
+webob-graphql==1.0
 WebTest==2.0.29
 zope.deprecation==4.3.0
 zope.interface==4.4.3
