@@ -3,7 +3,6 @@ from cornice import Service
 
 from api.v2.graphql.core import Query
 from dbas.database import DBDiscussionSession
-from webob_graphql import serve_graphql_request
 
 #
 # CORS configuration
@@ -21,12 +20,6 @@ query = Service(name='query',
                 path='/query',
                 description="Query database",
                 cors_policy=cors_policy)
-
-graphiql = Service(name='graphiql',
-                   path='/graphiql',
-                   description="GraphiQL support to our WebOb",
-                   cors_policy=cors_policy,
-                   require_csrf=False)
 
 
 # -----------------------------------------------------------------------------
@@ -51,16 +44,3 @@ def query_route(request):
                                "exception": str(result.errors)}}
         return result.data
     return {"errors": {"message": "No valid query provided."}}
-
-
-@graphiql.get()
-@graphiql.post()
-def graphiql_route(request):
-    """
-
-    :param request:
-    :return:
-    """
-    schema = graphene.Schema(query=Query)
-    context = {'session': DBDiscussionSession}
-    return serve_graphql_request(request, schema, batch_enabled=True, context_value=context)
