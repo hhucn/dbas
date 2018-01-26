@@ -61,6 +61,6 @@ def graphiql_route(request):
     :param request:
     :return:
     """
-    context = {'session': request.session}
     schema = graphene.Schema(query=Query)
-    return serve_graphql_request(request, schema, context_value=context, executor=schema.execute())
+    context = {'session': DBDiscussionSession}
+    return serve_graphql_request(request, schema, batch_enabled=True, context_value=context)
