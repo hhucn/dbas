@@ -654,7 +654,7 @@ def generate_application_token(owner: str) -> str:
     DBDiscussionSession.flush()
     transaction.commit()
 
-    return hashed_token[:5] + "-" + token
+    return hashed_token[:5] + ":" + token
 
 
 def __hash_token_with_owner(owner, token):
@@ -669,7 +669,7 @@ def check_token(token: str) -> bool:
     :return: True if the token is valid and not disabled.
     """
 
-    token_components = token.split("-")
+    token_components = token.split(":")
     if len(token_components) is 2:
         hash_identifier, auth_token = token_components
 
