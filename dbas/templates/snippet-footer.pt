@@ -10,6 +10,9 @@
         <li id="contact-link">
             <a href="mailto:dbas@cs.uni-duesseldorf.de"><i class="fa fa-comment" aria-hidden="true"></i><span i18n:translate="contact">Contact</span></a>
         </li>
+        <li>
+            <a href="${request.application_url}/graphiql"><i class="fa fa-circle-o" aria-hidden="true"></i><span>GraphiQL</span></a>
+        </li>
     </ul>
     <ul>
         <li>
