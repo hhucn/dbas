@@ -241,11 +241,11 @@ function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText
  *
  * @param lang
  */
-function setPiwikOptOutLink(lang){
+function setAnalyticsOptOutLink(lang){
     'use strict';
 
-	var src = mainpage + 'piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=' + lang;
-	$('#piwik-opt-out-iframe').attr('src', src);
+	var src = mainpage + 'analytics/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=' + lang;
+	$('#analytics-opt-out-iframe').attr('src', src);
 }
 
 /**
@@ -654,7 +654,7 @@ $(document).ready(function () {
 
 	jmpToChapter();
 	goBackToTop();
-	setPiwikOptOutLink(lang);
+	setAnalyticsOptOutLink(lang);
 	setEasterEggs();
 	setGravatarFallback();
 	setTimeout(function(){

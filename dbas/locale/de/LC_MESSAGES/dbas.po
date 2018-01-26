@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-01-24 10:33+0100\n"
+"POT-Creation-Date: 2018-01-26 13:49+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>\n"
 "Language-Team: Deutsch\n"
@@ -263,7 +263,7 @@ msgid "github"
 msgstr "Github"
 
 #. Default: News
-#: templates/index.pt:52 templates/snippet-footer.pt:26 templates/news.pt:6
+#: templates/index.pt:52 templates/snippet-footer.pt:29 templates/news.pt:6
 msgid "news"
 msgstr "Neuigkeiten"
 
@@ -1154,36 +1154,37 @@ msgstr "oder weiteres in der"
 msgid "licence_dbas"
 msgstr "Lizenz von (D-BAS)"
 
-#. Default: Piwik
+#. Default: Matomo
 #: templates/imprint.pt:44
-msgid "disclaimer_piwik"
-msgstr "Piwik"
+msgid "disclaimer_analytics"
+msgstr "Matomo Analytics"
 
-#. Default: Dieses Angebot benutzt Piwik.org, eine Open-Source-Software zur
-#. statistischen Auswertung der Nutzerzugriffe. Piwik verwendet sog. “Cookies”,
-#. Textdateien, die auf dem Computer der Nutzer gespeichert werden und die eine
-#. Analyse der Benutzung der Website durch die Nutzer ermöglichen. Die durch
-#. den Cookie erzeugten Informationen über die Benutzung dieses Agebotes werden
-#. auf dem Server des Anbieters in Deutschland gespeichert. Die IP-Adresse wird
-#. sofort nach der Verarbeitung und vor deren Speicherung anonymisiert. Nutzer
-#. können die Installation der Cookies durch eine entsprechende Einstellung
-#. Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch
-#. darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche
-#. Funktionen dieser Website vollumfänglich nutzen können.
+#. Default: Dieses Angebot benutzt Matomo.org, eine Open-Source-Software zur
+#. statistischen Auswertung der Nutzerzugriffe. Matomo verwendet sog.
+#. “Cookies”, Textdateien, die auf dem Computer der Nutzer gespeichert werden
+#. und die eine Analyse der Benutzung der Website durch die Nutzer ermöglichen.
+#. Die durch den Cookie erzeugten Informationen über die Benutzung dieses
+#. Agebotes werden auf dem Server des Anbieters in Deutschland gespeichert. Die
+#. IP-Adresse wird sofort nach der Verarbeitung und vor deren Speicherung
+#. anonymisiert. Nutzer können die Installation der Cookies durch eine
+#. entsprechende Einstellung Ihrer Browser-Software verhindern; Der Anbieter
+#. weisen die Nutzer jedoch darauf hin, dass sie in diesem Fall gegebenenfalls
+#. nicht sämtliche Funktionen dieser Website vollumfänglich nutzen können.
 #: templates/imprint.pt:45
-msgid "disclaimer_piwik_content"
+msgid "disclaimer_analytics_content"
 msgstr ""
-"Dieses Angebot benutzt Piwik.org, eine Open-Source-Software zur "
-"statistischen Auswertung der Nutzerzugriffe. Piwik verwendet sog. “Cookies”, "
-"Textdateien, die auf dem Computer der Nutzer gespeichert werden und die eine "
-"Analyse der Benutzung der Website durch die Nutzer ermöglichen. Die durch "
-"den Cookie erzeugten Informationen über die Benutzung dieses Agebotes werden "
-"auf dem Server des Anbieters in Deutschland gespeichert. Die IP-Adresse wird "
-"sofort nach der Verarbeitung und vor deren Speicherung anonymisiert. Nutzer "
-"können die Installation der Cookies durch eine entsprechende Einstellung "
-"Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch "
-"darauf hin, dass Sie in diesem Fall gegebenenfalls nicht sämtliche "
-"Funktionen dieser Website vollumfänglich nutzen können."
+"Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte "
+"wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch "
+"keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der "
+"jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten "
+"Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße "
+"überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht "
+"erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist "
+"jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. "
+"Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend "
+"entfernen. Die Oberfläche von D-BAS ist einfach und klar struktuert. An "
+"jeder Stelle sind die Auswahlen für den Benutzer begrenzt, aber niemals "
+"einschränkend."
 
 #. Default: Copyrights and used Software
 #: templates/imprint.pt:66
@@ -1422,27 +1423,27 @@ msgid "imprint_copyright_privacy"
 msgstr "Impressum, Urheberrecht und Datenschutz"
 
 #. Default: RSS
-#: templates/snippet-footer.pt:16
+#: templates/snippet-footer.pt:19
 msgid "rss"
 msgstr "RSS"
 
 #. Default: Help
-#: templates/snippet-footer.pt:19
+#: templates/snippet-footer.pt:22
 msgid "Help"
 msgstr "Hilfe"
 
 #. Default: Docs
-#: templates/snippet-footer.pt:22
+#: templates/snippet-footer.pt:25
 msgid "Documentation"
 msgstr "Dokumentation"
 
 #. Default: Github
-#: templates/snippet-footer.pt:30
+#: templates/snippet-footer.pt:33
 msgid "Github"
 msgstr "Github"
 
 #. Default: Field Experiment
-#: templates/snippet-footer.pt:33
+#: templates/snippet-footer.pt:36
 msgid "field_experiment"
 msgstr "Feldstudie"
 
@@ -2493,6 +2494,24 @@ msgstr "Unterstützungen"
 msgid "attacks_on_my_statements"
 msgstr "Angriffe"
 
+#~ msgid "disclaimer_piwik"
+#~ msgstr "Piwik"
+
+#~ msgid "disclaimer_piwik_content"
+#~ msgstr ""
+#~ "Dieses Angebot benutzt Piwik.org, eine Open-Source-Software zur "
+#~ "statistischen Auswertung der Nutzerzugriffe. Piwik verwendet sog. "
+#~ "“Cookies”, Textdateien, die auf dem Computer der Nutzer gespeichert "
+#~ "werden und die eine Analyse der Benutzung der Website durch die Nutzer "
+#~ "ermöglichen. Die durch den Cookie erzeugten Informationen über die "
+#~ "Benutzung dieses Agebotes werden auf dem Server des Anbieters in "
+#~ "Deutschland gespeichert. Die IP-Adresse wird sofort nach der Verarbeitung "
+#~ "und vor deren Speicherung anonymisiert. Nutzer können die Installation "
+#~ "der Cookies durch eine entsprechende Einstellung Ihrer Browser-Software "
+#~ "verhindern; Der Anbieter weisen die Nutzer jedoch darauf hin, dass Sie in "
+#~ "diesem Fall gegebenenfalls nicht sämtliche Funktionen dieser Website "
+#~ "vollumfänglich nutzen können."
+
 #~ msgid "open"
 #~ msgstr "Writable"
 
@@ -2776,21 +2795,6 @@ msgstr "Angriffe"
 
 #~ msgid "disclaimer_links"
 #~ msgstr "Haftung für Links"
-
-#~ msgid "disclaimer_links_content"
-#~ msgstr ""
-#~ "Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren "
-#~ "Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden "
-#~ "Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten "
-#~ "Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten "
-#~ "verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung "
-#~ "auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum "
-#~ "Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche "
-#~ "Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte "
-#~ "einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von "
-#~ "Rechtsverletzungen werden wir derartige Links umgehend entfernen. Die "
-#~ "Oberfläche von D-BAS ist einfach und klar struktuert. An jeder Stelle "
-#~ "sind die Auswahlen für den Benutzer begrenzt, aber niemals einschränkend."
 
 #~ msgid "disclaimer_copyright"
 #~ msgstr "Urheberrecht"
@@ -3404,9 +3408,6 @@ msgstr "Angriffe"
 
 #~ msgid "istland_view"
 #~ msgstr "Insel-Ansicht"
-
-#~ msgid "disclaimer_google_analytics"
-#~ msgstr "Google Analytics"
 
 #~ msgid "google_analytics"
 #~ msgstr ""

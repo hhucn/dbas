@@ -68,3 +68,6 @@ docker/db/data/
 docker/db/entrypoint/.*.sql
 
 .scannerwork/
+
+# Emacs temp-files
+.#*

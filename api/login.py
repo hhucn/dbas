@@ -54,7 +54,7 @@ def _get_user_by_nickname(nickname):
 def process_user(request, payload):
     htoken = payload["token"]
     try:
-        user, token = htoken.split('-', 1)  # The 1 is important, because api tokens themself have their own dash.
+        user, token = htoken.rsplit('-', 1)  # The 1 is important, because nicknames may have their own minus.
     except ValueError:
         log.info("[API] Could not split htoken: {}".format(htoken))
         raise HTTP401()

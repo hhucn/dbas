@@ -115,6 +115,8 @@ def main(global_config, **settings):
     config.add_route('main_docs', '/docs')
     config.add_route('main_experiment', '/fieldexperiment')
     config.add_route('main_mydiscussions', '/mydiscussions')
+    config.add_route('main_user', '/user/{uid}')
+    config.add_route('main_graphiql', '/graphiql')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('ajax_user_login', '{url:.*}ajax_user_login')
@@ -173,7 +175,6 @@ def main(global_config, **settings):
     config.add_route('ajax_set_discussion_properties', '{url:.*}ajax_set_discussion_properties')
 
     # logic at the end, otherwise the * pattern will do shit
-    config.add_route('main_user', '/user/{uid}')
     config.add_route('discussion_support', '/discuss/{slug}/support/{arg_id_user}/{arg_id_sys}')
     config.add_route('discussion_reaction', '/discuss/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}')
     config.add_route('discussion_justify', '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation')

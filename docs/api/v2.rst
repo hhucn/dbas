@@ -23,14 +23,26 @@ We chose the typical entry-route ``/api/v2/query?q=`` for GraphQL. Therefore,
 this is the route where you should add your GET-Parameters to query data from
 D-BAS' database.
 
-Sadly, there is no GraphiQL Plugin for pyramid, which is why we currently can't
-use this awesome tool for live-testing our queries.
-
 .. note::
 
    Not all fields are queryable. Only those fields, which seem to be interesting
    for the public in our opinion, are accessible. If you need more fields,
    please contact us. Also only not-disabled entities are exposed.
+
+GraphiQL
+--------
+
+For easy-access to our data, we added `GraphiQL
+<https://github.com/graphql/graphiql>`_, which offers an IDE-like experience
+when building queries to our GraphQL API. Here is a sample query and some
+keybindings, which are commonly used when using GraphiQL:
+
+.. image:: img/graphiql_query_statements.gif
+
+Access our GraphiQL at `https://dbas.cs.uni-duesseldorf.de/graphiql
+<https://dbas.cs.uni-duesseldorf.de/graphiql/graphiql>`_ or
+`http://localhost:4284/graphiql <http://localhost:4284/graphiql>`_.
+
 
 Examples
 --------

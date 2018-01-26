@@ -24,7 +24,7 @@ function AjaxMainHandler(){
 			if (data.error.length !== 0) {
 				setGlobalErrorHandler(_t(ohsnap), data.error);
 			} else {
-				setPiwikOptOutLink(new_lang);
+				setAnalyticsOptOutLink(new_lang);
 				location.reload(true);
 			}
 		}).fail(function ajaxSwitchDisplayLanguageFail(xhr) {
