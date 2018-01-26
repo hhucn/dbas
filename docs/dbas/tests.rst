@@ -72,10 +72,3 @@ Please:
     * use the *success*-parameter
 
 4. Have fun!
-
-
-Code
-----
-
-.. automodule:: tests.splinterTests
-    :members:

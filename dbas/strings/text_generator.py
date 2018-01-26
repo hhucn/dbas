@@ -349,7 +349,7 @@ def get_jump_to_argument_text_list(lang):
 
     :param lang: ui_locales
     :return: Array with [Conclusion is (right, wrong), Premise is (right, wrong)
-    #        Premise does not lead to the conclusion, both hold]
+             Premise does not lead to the conclusion, both hold]
     """
     _t = Translator(lang)
 
@@ -373,7 +373,7 @@ def get_support_to_argument_text_list(lang):
 
     :param lang: ui_locales
     :return: Array with [Conclusion is (right, wrong), Premise is (right, wrong)
-    #        Premise does not lead to the conclusion, both hold]
+             Premise does not lead to the conclusion, both hold]
     """
     _t = Translator(lang)
 
