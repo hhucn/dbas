@@ -806,14 +806,16 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
     function setRectProperties() {
         rect.each(function (d) {
             var element = $("#label-" + d.id);
-            var width = element.width() + 24;
-            var height = element.height() + 10;
+            var width = 0; // element.width() + 24;
+            var height = 0; // element.height() + 10;
             var pos = calculateRectPos(width, height);
+            
             // if d is a virtual node do not show label
             if (d.label === '') {
                 width = 0;
                 height = 0;
             }
+            
             d3.select(this).attr({
                 'width': width,
                 'height': height,
@@ -821,6 +823,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 'y': pos[1],
                 'id': 'rect-' + d.id
             });
+            
             if (d.id.indexOf('statement') !== -1 || d.id.indexOf('issue') !== -1) {
                 box_sizes[d.id] = {'width': width, 'height': height};
             }
