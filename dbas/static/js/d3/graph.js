@@ -780,23 +780,17 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             var text = $("<div>").html(d.label).text();
             var node_text = text.split(" ");
             for (var i = 0; i < node_text.length; i++) {
-                if ((i % 4) === 0) {
-                    d3.select(this).append("tspan")
-                        .text(node_text[i])
-                        .attr({
-                            'dy': i ? '1.2em' : '0',
-                            'x': '0',
-                            'text-anchor': "middle"
-                        });
+                var attr = {};
+                if (i % 4 === 0) {
+	                attr = {'dy': '1.2em', 'x': '0', 'text-anchor': "middle"};
                 }
-                else {
-                    d3.select(this).append("tspan").text(' ' + node_text[i]);
-                }
+                d3.select(this).append("tspan")
+                    .text(' ' + node_text[i])
+                    .attr(attr);
             }
-            d3.select(this).attr("id", 'label-' + d.id);
             // set position of label
             var height = $("#label-" + d.id).height();
-            d3.select(this).attr("y", -height + 45);
+            d3.select(this).attr({'id': 'label-' + d.id, 'y': -height + 45});
         });
     }
 
