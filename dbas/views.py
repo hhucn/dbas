@@ -57,7 +57,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 name = 'D-BAS'
-version = '1.5.4'
+version = '1.5.5'
 full_version = version
 project_name = name + ' ' + full_version
 
