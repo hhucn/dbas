@@ -26,7 +26,7 @@ Ensure that the following tools are installed:
 * [Docker Compose](https://docs.docker.com/compose/install/)
 
 Then copy the `skeleton.env` to `development.env` and fill out the fields you need.
-At least `DBAS_DB_*` and maybe `DBAS_MAIL_*` should be set.
+At least `DB_*` and maybe `MAIL_*` should be set.
 
 Then follow these steps:
 

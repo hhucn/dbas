@@ -27,8 +27,8 @@ def start_flow():
 
     :return:
     """
-    client_id = os.environ.get('DBAS_OAUTH_GITHUB_CLIENTID', None)
-    client_secret = os.environ.get('DBAS_OAUTH_GITHUB_CLIENTKEY', None)
+    client_id = os.environ.get('OAUTH_GITHUB_CLIENTID', None)
+    client_secret = os.environ.get('OAUTH_GITHUB_CLIENTKEY', None)
 
     logger('Github OAuth', 'start_flow',
            'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
@@ -47,8 +47,8 @@ def continue_flow(authorization_response, ui_locales):
     :param ui_locales:
     :return:
     """
-    client_id = os.environ.get('DBAS_OAUTH_GITHUB_CLIENTID', None)
-    client_secret = os.environ.get('DBAS_OAUTH_GITHUB_CLIENTKEY', None)
+    client_id = os.environ.get('OAUTH_GITHUB_CLIENTID', None)
+    client_secret = os.environ.get('OAUTH_GITHUB_CLIENTKEY', None)
     github = OAuth2Session(client_id)
 
     logger('Github OAuth', 'continue_github_flow',

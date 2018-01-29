@@ -63,7 +63,7 @@ def run_migrations_online():
 
 def _get_dbas_engine():
     settings = dict()  # get_dbas_environs()
-    os.environ['DBAS_DB_USER'] = 'postgres'
+    os.environ['DB_USER'] = 'postgres'
     settings.update(get_db_environs("sqlalchemy.discussion.url", db_name="discussion"))
     return engine_from_config(settings, "sqlalchemy.discussion.")
 

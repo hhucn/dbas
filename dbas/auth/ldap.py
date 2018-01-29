@@ -16,14 +16,14 @@ def verify_ldap_user_data(nickname, password, _tn):
     """
     logger('ldap', 'verify_ldap_user_data', 'main')
     try:
-        server = os.environ.get('DBAS_HHU_LDAP_SERVER', None)
-        base = os.environ.get('DBAS_HHU_LDAP_BASE', None)
-        scope = os.environ.get('DBAS_HHU_LDAP_ACCOUNT_SCOPE', None)
-        filter = os.environ.get('DBAS_HHU_LDAP_ACCOUNT_FILTER', None)
-        firstname = os.environ.get('DBAS_HHU_LDAP_ACCOUNT_FIRSTNAME', None)
-        lastname = os.environ.get('DBAS_HHU_LDAP_ACCOUNT_LAST', None)
-        title = os.environ.get('DBAS_HHU_LDAP_ACCOUNT_TITLE', None)
-        email = os.environ.get('DBAS_HHU_LDAP_ACCOUNT_EMAIL', None)
+        server = os.environ.get('HHU_LDAP_SERVER', None)
+        base = os.environ.get('HHU_LDAP_BASE', None)
+        scope = os.environ.get('HHU_LDAP_ACCOUNT_SCOPE', None)
+        filter = os.environ.get('HHU_LDAP_ACCOUNT_FILTER', None)
+        firstname = os.environ.get('HHU_LDAP_ACCOUNT_FIRSTNAME', None)
+        lastname = os.environ.get('HHU_LDAP_ACCOUNT_LAST', None)
+        title = os.environ.get('HHU_LDAP_ACCOUNT_TITLE', None)
+        email = os.environ.get('HHU_LDAP_ACCOUNT_EMAIL', None)
         logger('ldap', 'verify_ldap_user_data', 'parsed data')
 
         if any(el is None for el in [server, base, scope, filter, firstname, lastname, title, email]):
