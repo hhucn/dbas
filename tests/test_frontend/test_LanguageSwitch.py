@@ -26,13 +26,15 @@ from . import *
 from selenium import webdriver
 import time
 
+_service_args = ["--ignore-ssl-errors=true", "--ssl-protocol=any"]
+
 
 def setup():
     time.sleep(TIME_TO_PREPARE)  # very ugly but important to prepare the tests
 
 
 def teardown():
-    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
+    driver = webdriver.PhantomJS(service_args=_service_args)
     driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
     driver.get(ROOT)
     driver.refresh()
@@ -45,7 +47,7 @@ def test_english_to_english_page_source():
 
     :return: Test in the page_source if the national flag changed from english to english
     """
-    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
+    driver = webdriver.PhantomJS(service_args=_service_args)
     driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
     driver.get(ROOT)
     driver.refresh()
@@ -64,7 +66,7 @@ def test_english_to_german_page_source():
 
     :return: Test in the page_source if the national flag changed from english to german
     """
-    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
+    driver = webdriver.PhantomJS(service_args=_service_args)
     driver.get(ROOT + PATH + LANGUAGE["GERMAN"])
     driver.get(ROOT)
     driver.refresh()
@@ -83,7 +85,7 @@ def test_german_to_german_page_source():
 
     :return: Test in the page_source if the national flag changed from german to german
     """
-    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
+    driver = webdriver.PhantomJS(service_args=_service_args)
     driver.get(ROOT + PATH + LANGUAGE["GERMAN"])
     driver.get(ROOT)
     driver.refresh()
@@ -102,7 +104,7 @@ def test_german_to_english_page_source():
 
     :return: Test in the page_source if the national flag changed from german to english
     """
-    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
+    driver = webdriver.PhantomJS(service_args=_service_args)
     driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
     driver.get(ROOT)
     driver.refresh()
@@ -123,7 +125,7 @@ def test_english_to_english_cookies():
 
     :return: Test in the cookies if the language changed from english to english
     """
-    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
+    driver = webdriver.PhantomJS(service_args=_service_args)
     driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
     driver.get(ROOT)
     driver.refresh()
@@ -150,7 +152,7 @@ def test_english_to_german_cookies():
 
     :return: Test in the cookies if the language changed from english to german
     """
-    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
+    driver = webdriver.PhantomJS(service_args=_service_args)
     driver.get(ROOT + PATH + LANGUAGE["GERMAN"])
     driver.get(ROOT)
     driver.refresh()
@@ -177,7 +179,7 @@ def test_german_to_german_cookies():
 
     :return: Test in the cookies if the language changed from german to german
     """
-    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
+    driver = webdriver.PhantomJS(service_args=_service_args)
     driver.get(ROOT + PATH + LANGUAGE["GERMAN"])
     driver.get(ROOT)
     driver.refresh()
@@ -204,7 +206,7 @@ def test_german_to_english_cookies():
 
     :return: Test in the cookies if the language changed from german to english
     """
-    driver = webdriver.PhantomJS(service_args=["--ignore-ssl-errors=true"])
+    driver = webdriver.PhantomJS(service_args=_service_args)
     driver.get(ROOT + PATH + LANGUAGE["ENGLISH"])
     driver.get(ROOT)
     driver.refresh()
