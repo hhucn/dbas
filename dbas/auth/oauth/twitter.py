@@ -22,8 +22,8 @@ def start_flow(request, redirect_uri):
     :param redirect_uri:
     :return:
     """
-    client_id = os.environ.get('DBAS_OAUTH_TWITTER_CLIENTID', None)
-    client_secret = os.environ.get('DBAS_OAUTH_TWITTER_CLIENTKEY', None)
+    client_id = os.environ.get('OAUTH_TWITTER_CLIENTID', None)
+    client_secret = os.environ.get('OAUTH_TWITTER_CLIENTKEY', None)
 
     logger('Twitter OAuth', 'start_flow',
            'Read OAuth id/secret: none? {}'.format(client_id is None, client_secret is None))
@@ -49,8 +49,8 @@ def continue_flow(request, redirect_response):
     :param redirect_response:
     :return:
     """
-    client_id = os.environ.get('DBAS_OAUTH_TWITTER_CLIENTID', None)
-    client_secret = os.environ.get('DBAS_OAUTH_TWITTER_CLIENTKEY', None)
+    client_id = os.environ.get('OAUTH_TWITTER_CLIENTID', None)
+    client_secret = os.environ.get('OAUTH_TWITTER_CLIENTKEY', None)
 
     logger('Twitter OAuth', 'continue_flow',
            'Read OAuth id/secret: none? {}'.format(client_id is None, client_secret is None))

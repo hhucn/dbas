@@ -56,7 +56,7 @@ You may want to configure options as environment variables instead of config ent
 D-BAS
 -----
 You can configure all entries in the ``app:main`` section of the ini-file in environment variables.
-By default D-BAS takes all environment variables with prefix ``DBAS_`` and adds them to the configuration, after parsing the .ini file itself.
+By default D-BAS takes all environment variables with prefix ```` and adds them to the configuration, after parsing the .ini file itself.
 The name of the environment variable will be the key of the new configuration entry, after some transformations.
 
 1. The prefix will be stripped.
@@ -66,7 +66,7 @@ The name of the environment variable will be the key of the new configuration en
 
 Example::
 
-    export DBAS_FOO_BAR__BAZ=fizz
+    export FOO_BAR__BAZ=fizz
     => foo.bar_baz = fizz
 
 
@@ -77,13 +77,13 @@ There are some special variables for the database connection.
 These **have** to be set, otherwise an error will be raised explaning which variables aren't configured.
 
 +--------------+------------------------------------------------------------------+
-| DBAS_DB_HOST | The hostname of the database (example: localhost, db, 10.0.0.2). |
+| DB_HOST | The hostname of the database (example: localhost, db, 10.0.0.2). |
 +--------------+------------------------------------------------------------------+
-| DBAS_DB_PORT | The port of the database (example: 5432).                        |
+| DB_PORT | The port of the database (example: 5432).                        |
 +--------------+------------------------------------------------------------------+
-| DBAS_DB_USER | The database username. (example: dbas)                           |
+| DB_USER | The database username. (example: dbas)                           |
 +--------------+------------------------------------------------------------------+
-| DBAS_DB_PW   | The passwort of the DBAS_DB_USER (example: passw0rt123)          |
+| DB_PW   | The passwort of the DB_USER (example: passw0rt123)          |
 +--------------+------------------------------------------------------------------+
 
 These variables are accessible like any other via the normal substitutions (DB.HOST, ...)
@@ -92,7 +92,7 @@ OAuth
 -----
 
 D-BAS offers the possibility to use the open authentication protocoll implemented by Google, Facebook,
-Github and Twitter. Please add the variables ``DBAS_OAUTH_service_CLIENTID`` and ``DBAS_OAUTH_service_CLIENTKEY``
+Github and Twitter. Please add the variables ``OAUTH_service_CLIENTID`` and ``OAUTH_service_CLIENTKEY``
 for each service you want to use, wherey you have to replace **service** with e.g. GOOGLE (important: uppercase).
 
 The login buttons will be displayed automatically. For mroe information, have a look `on this site <dbas/oauth.html>`_.
