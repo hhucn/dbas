@@ -205,9 +205,9 @@ def __write_rss_feeds():
     create_news_rss(get_global_url(), 'en')
 
 
-def get_dbas_environs(prefix="DBAS_"):
+def get_dbas_environs(prefix=""):
     """
-    Fetches all environment variables beginning with `prefix` (default: `DBAS_`).
+    Fetches all environment variables beginning with `prefix` (default: ``).
 
     Returns a dictionary where the keys are substituted versions of their corresponding environment variables.
     Substitution rules:
@@ -219,7 +219,7 @@ def get_dbas_environs(prefix="DBAS_"):
 
     Example::
 
-        "DBAS_TEST_FOO__BAR" ==> "test.foo_bar"
+        "TEST_FOO__BAR" ==> "test.foo_bar"
 
     :param prefix: The prefix of the environment variables.
     :return: The dictionary of parsed environment variables and their values.
@@ -228,7 +228,7 @@ def get_dbas_environs(prefix="DBAS_"):
     return dict([(_environs_to_keys(k, prefix), os.environ[k]) for k in dbas_keys])
 
 
-def _environs_to_keys(key, prefix="DBAS_"):
+def _environs_to_keys(key, prefix=""):
     prefix_pattern = '^{prefix}'.format(prefix=prefix)
     single_underscore_pattern = r'(?<!_)_(?!_)'
 

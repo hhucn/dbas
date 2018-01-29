@@ -669,11 +669,11 @@ class DictionaryHelper(object):
         :param return_dict: current dictionary
         :return: updated dictionary
         """
-        google_id = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTID', None)
-        facebook_id = os.environ.get('DBAS_OAUTH_FACEBOOK_CLIENTID', None)
-        twitter_id = os.environ.get('DBAS_OAUTH_TWITTER_CLIENTID', None)
-        github_id = os.environ.get('DBAS_OAUTH_GITHUB_CLIENTID', None)
-        hhu_ldap = os.environ.get('DBAS_HHU_LDAP_SERVER', None)
+        google_id = os.environ.get('OAUTH_GOOGLE_CLIENTID', None)
+        facebook_id = os.environ.get('OAUTH_FACEBOOK_CLIENTID', None)
+        twitter_id = os.environ.get('OAUTH_TWITTER_CLIENTID', None)
+        github_id = os.environ.get('OAUTH_GITHUB_CLIENTID', None)
+        hhu_ldap = os.environ.get('HHU_LDAP_SERVER', None)
 
         return_dict['login_btns'] = {
             'oauth_google': google_id is not None,
