@@ -154,14 +154,14 @@ class AuthLoginTest(unittest.TestCase):
             redirect_uri = 'http://lvh.me:4284'
             ui_locales = 'en'
             environ = {
-                'DBAS_OAUTH_GOOGLE_CLIENTID': 'DBAS_OAUTH_GOOGLE_CLIENTID',
-                'DBAS_OAUTH_GOOGLE_CLIENTKEY': 'DBAS_OAUTH_GOOGLE_CLIENTKEY',
-                'DBAS_OAUTH_GITHUB_CLIENTID': 'DBAS_OAUTH_GITHUB_CLIENTID',
-                'DBAS_OAUTH_GITHUB_CLIENTKEY': 'DBAS_OAUTH_GITHUB_CLIENTKEY',
-                'DBAS_OAUTH_FACEBOOK_CLIENTID': 'DBAS_OAUTH_FACEBOOK_CLIENTID',
-                'DBAS_OAUTH_FACEBOOK_CLIENTKEY': 'DBAS_OAUTH_FACEBOOK_CLIENTKEY',
-                'DBAS_OAUTH_TWITTER_CLIENTID': 'DBAS_OAUTH_TWITTER_CLIENTID',
-                'DBAS_OAUTH_TWITTER_CLIENTKEY': 'DBAS_OAUTH_TWITTER_CLIENTKEY',
+                'OAUTH_GOOGLE_CLIENTID': 'OAUTH_GOOGLE_CLIENTID',
+                'OAUTH_GOOGLE_CLIENTKEY': 'OAUTH_GOOGLE_CLIENTKEY',
+                'OAUTH_GITHUB_CLIENTID': 'OAUTH_GITHUB_CLIENTID',
+                'OAUTH_GITHUB_CLIENTKEY': 'OAUTH_GITHUB_CLIENTKEY',
+                'OAUTH_FACEBOOK_CLIENTID': 'OAUTH_FACEBOOK_CLIENTID',
+                'OAUTH_FACEBOOK_CLIENTKEY': 'OAUTH_FACEBOOK_CLIENTKEY',
+                'OAUTH_TWITTER_CLIENTID': 'OAUTH_TWITTER_CLIENTID',
+                'OAUTH_TWITTER_CLIENTKEY': 'OAUTH_TWITTER_CLIENTKEY',
             }
             request = testing.DummyRequest(params={'application_url': 'http://lvh.me'}, matchdict={}, environ=environ)
             request.environ = environ

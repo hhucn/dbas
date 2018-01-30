@@ -24,8 +24,8 @@ def start_flow(redirect_uri):
     :param redirect_uri:
     :return:
     """
-    client_id = os.environ.get('DBAS_OAUTH_FACEBOOK_CLIENTID', None)
-    client_secret = os.environ.get('DBAS_OAUTH_FACEBOOK_CLIENTKEY', None)
+    client_id = os.environ.get('OAUTH_FACEBOOK_CLIENTID', None)
+    client_secret = os.environ.get('OAUTH_FACEBOOK_CLIENTKEY', None)
 
     logger('Facebook OAuth', 'start_flow',
            'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))
@@ -53,8 +53,8 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
     :param ui_locales:
     :return:
     """
-    client_id = os.environ.get('DBAS_OAUTH_FACEBOOK_CLIENTID', None)
-    client_secret = os.environ.get('DBAS_OAUTH_FACEBOOK_CLIENTKEY', None)
+    client_id = os.environ.get('OAUTH_FACEBOOK_CLIENTID', None)
+    client_secret = os.environ.get('OAUTH_FACEBOOK_CLIENTKEY', None)
 
     bind = '#' if '?' in redirect_uri else '?'
     if 'service=facebook' not in redirect_uri:

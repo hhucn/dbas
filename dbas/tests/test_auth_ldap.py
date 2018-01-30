@@ -18,14 +18,14 @@ class AuthLdapTest(unittest.TestCase):
     def test_verify_ldap_user_data(self):
         import os
 
-        os.environ['DBAS_HHU_LDAP_SERVER'] = 'ldaps://ldaps.ad.hhu.de'
-        os.environ['DBAS_HHU_LDAP_BASE'] = 'ou=IDMUsers,DC=AD,DC=hhu,DC=de'
-        os.environ['DBAS_HHU_LDAP_ACCOUNT_SCOPE'] = '@ad.hhu.de'
-        os.environ['DBAS_HHU_LDAP_ACCOUNT_FILTER'] = 'sAMAccountName'
-        os.environ['DBAS_HHU_LDAP_ACCOUNT_FIRSTNAME'] = 'givenName'
-        os.environ['DBAS_HHU_LDAP_ACCOUNT_LAST'] = 'sn'
-        os.environ['DBAS_HHU_LDAP_ACCOUNT_TITLE'] = 'personalTitle'
-        os.environ['DBAS_HHU_LDAP_ACCOUNT_EMAIL'] = 'mail'
+        os.environ['HHU_LDAP_SERVER'] = 'ldaps://ldaps.ad.hhu.de'
+        os.environ['HHU_LDAP_BASE'] = 'ou=IDMUsers,DC=AD,DC=hhu,DC=de'
+        os.environ['HHU_LDAP_ACCOUNT_SCOPE'] = '@ad.hhu.de'
+        os.environ['HHU_LDAP_ACCOUNT_FILTER'] = 'sAMAccountName'
+        os.environ['HHU_LDAP_ACCOUNT_FIRSTNAME'] = 'givenName'
+        os.environ['HHU_LDAP_ACCOUNT_LAST'] = 'sn'
+        os.environ['HHU_LDAP_ACCOUNT_TITLE'] = 'personalTitle'
+        os.environ['HHU_LDAP_ACCOUNT_EMAIL'] = 'mail'
 
         nickname = 'Bob'
         password = 'iamatestuser2016'

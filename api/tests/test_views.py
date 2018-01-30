@@ -88,7 +88,7 @@ def test_add_position_splittable_invalid_token():
 
 
 def test_correct_api_token():
-    api_token = generate_application_token("Johnny")
+    api_token = generate_application_token("Walter")
     payload = __payload_add_statement()
     response = post_request("add/start_statement", payload,
                             headers={"X-Authentication": json.dumps({"type": "user", "token": "Walter-" + api_token})})

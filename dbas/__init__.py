@@ -10,19 +10,23 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 # from wsgiref.simple_server import make_server
 
 import logging
+import os
+import re
 import time
+
+from .database import load_discussion_database
+from .security import groupfinder
 from configparser import ConfigParser, NoSectionError
 from dbas.database import get_db_environs
-import os
+from dbas.handler.rss import rewrite_issue_rss, create_news_rss
+from dbas.lib import get_global_url
+from dbas.query_wrapper import get_not_disabled_issues_as_query
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.static import QueryStringConstantCacheBuster
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
-import re
 from sqlalchemy import engine_from_config
-from .database import load_discussion_database
-from .security import groupfinder
 
 
 def main(global_config, **settings):
@@ -111,6 +115,8 @@ def main(global_config, **settings):
     config.add_route('main_docs', '/docs')
     config.add_route('main_experiment', '/fieldexperiment')
     config.add_route('main_mydiscussions', '/mydiscussions')
+    config.add_route('main_user', '/user/{uid}')
+    config.add_route('main_graphiql', '/graphiql')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('ajax_user_login', '{url:.*}ajax_user_login')
@@ -169,7 +175,6 @@ def main(global_config, **settings):
     config.add_route('ajax_set_discussion_properties', '{url:.*}ajax_set_discussion_properties')
 
     # logic at the end, otherwise the * pattern will do shit
-    config.add_route('main_user', '/user/{uid}')
     config.add_route('discussion_support', '/discuss/{slug}/support/{arg_id_user}/{arg_id_sys}')
     config.add_route('discussion_reaction', '/discuss/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}')
     config.add_route('discussion_justify', '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation')
@@ -187,12 +192,22 @@ def main(global_config, **settings):
     config.add_route('review_content', '/review/{queue}')
 
     config.scan()
+
+    __write_rss_feeds()
+
     return config.make_wsgi_app()
 
 
-def get_dbas_environs(prefix="DBAS_"):
+def __write_rss_feeds():
+    issues = get_not_disabled_issues_as_query().all()
+    for issue in issues:
+        rewrite_issue_rss(issue.uid, issue.lang, get_global_url())
+    create_news_rss(get_global_url(), 'en')
+
+
+def get_dbas_environs(prefix=""):
     """
-    Fetches all environment variables beginning with `prefix` (default: `DBAS_`).
+    Fetches all environment variables beginning with `prefix` (default: ``).
 
     Returns a dictionary where the keys are substituted versions of their corresponding environment variables.
     Substitution rules:
@@ -204,7 +219,7 @@ def get_dbas_environs(prefix="DBAS_"):
 
     Example::
 
-        "DBAS_TEST_FOO__BAR" ==> "test.foo_bar"
+        "TEST_FOO__BAR" ==> "test.foo_bar"
 
     :param prefix: The prefix of the environment variables.
     :return: The dictionary of parsed environment variables and their values.
@@ -213,7 +228,7 @@ def get_dbas_environs(prefix="DBAS_"):
     return dict([(_environs_to_keys(k, prefix), os.environ[k]) for k in dbas_keys])
 
 
-def _environs_to_keys(key, prefix="DBAS_"):
+def _environs_to_keys(key, prefix=""):
     prefix_pattern = '^{prefix}'.format(prefix=prefix)
     single_underscore_pattern = r'(?<!_)_(?!_)'
 

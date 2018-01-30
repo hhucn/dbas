@@ -257,7 +257,7 @@ var BUBBLE_INFOS = 'SPEECH_BUBBLE_INFOS';
 var GUIDED_TOUR = 'PASSED_GUIDED_TOUR';
 var ADMIN_WARNING = 'hide-admin-caution-warning';
 var LANG_SWITCH_WARNING = 'LANG_SWITCH_WARNING';
-var DBAS_DATA_DISCLAIMER = 'DBAS_DATA_DISCLAIMER';
+var DATA_DISCLAIMER = 'DATA_DISCLAIMER';
 
 /**
  * URL's
@@ -737,7 +737,7 @@ var dbas_de = {
     'to': 'An',
     'timestamp': 'Zeit',
     'users': 'Benutzer',
-    'usersWithSameOpinion': 'Teilnehmer/innen mit derselben Einstellung',
+    'usersWithSameOpinion': 'Teilnehmer/innen mit derselben Interesse',
     'unpinNavigation': 'Navigation lösen',
     'unkownError': 'Unbekannter Fehler',
     'typeofVote': 'Zustimmung/Ablehnung',

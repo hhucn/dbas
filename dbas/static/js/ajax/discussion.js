@@ -262,6 +262,7 @@ function AjaxDiscussionHandler() {
 		var is_position = type === 'position' || type === 'statement';
 		var uid = argument_uid === 'None' ? statement_uid : argument_uid;
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		is_supportive = is_supportive === 'True';
 
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',

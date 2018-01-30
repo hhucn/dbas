@@ -41,10 +41,10 @@
                                                             target="_blank" i18n:translate="licence_dbas">license of D-BAS (MIT)</a>.
                             <div tal:omit-tag="" tal:condition="not:extras.development_mode">
                                 <br>
-                                <h5><span i18n:translate="disclaimer_piwik">Piwik</span></h5>
-                                <span i18n:translate="disclaimer_piwik_content">
-                                Dieses Angebot benutzt Piwik.org, eine Open-Source-Software zur statistischen Auswertung der
-                                Nutzerzugriffe. Piwik verwendet sog. “Cookies”, Textdateien, die auf dem Computer der Nutzer
+                                <h5><span i18n:translate="disclaimer_analytics">Matomo</span></h5>
+                                <span i18n:translate="disclaimer_analytics_content">
+                                Dieses Angebot benutzt Matomo.org, eine Open-Source-Software zur statistischen Auswertung der
+                                Nutzerzugriffe. Matomo verwendet sog. “Cookies”, Textdateien, die auf dem Computer der Nutzer
                                 gespeichert werden und die eine Analyse der Benutzung der Website durch die Nutzer ermöglichen.
                                 Die durch den Cookie erzeugten Informationen über die Benutzung dieses Agebotes werden auf dem
                                 Server des Anbieters in Deutschland gespeichert. Die IP-Adresse wird sofort nach der Verarbeitung
@@ -56,9 +56,9 @@
                                 <br>
                                 <br>
                                 <br>
-                                <h5><span>Piwik Opt-Out</span></h5>
-                                <iframe id="piwik-opt-out-iframe" style="border: 0; height: 200px; width: 600px;"
-                                        src="https://dbas.cs.uni-duesseldorf.de/piwik/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=de"></iframe>
+                                <h5><span>Matomo Opt-Out</span></h5>
+                                <iframe id="analytics-opt-out-iframe" style="border: 0; height: 200px; width: 600px;"
+                                        src="https://dbas.cs.uni-duesseldorf.de/analytics/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=de"></iframe>
                             </div>
                         </div>
 
@@ -87,7 +87,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <ul>
-                                        <li><a target="_blank" href="http://piwik.org/">Piwik Open-Source Analytics</a>
+                                        <li><a target="_blank" href="http://matomo.org/">Matomo Open-Source Analytics</a>
                                         </li>
                                         <li><a target="_blank" href="http://www.gravatar.com/">Gravatar</a></li>
                                         <li><a target="_blank" href="http://d3js.org">D3.js</a></li>

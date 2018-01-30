@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-01-24 10:53+0100\n"
+"POT-Creation-Date: 2018-01-26 13:49+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-Düsseldorf.de>\n"
 "Language-Team: English\n"
@@ -76,10 +76,11 @@ msgstr "Please enable JavaScript!"
 msgid "request_failed"
 msgstr "Your request failed!"
 
-#. Default: Please reload the page.
-#: templates/basetemplate.pt:37
-msgid "please_reload"
-msgstr "Please reload the page."
+
+#. Default: News
+#: templates/index.pt:52 templates/snippet-footer.pt:29 templates/news.pt:6
+msgid "news"
+msgstr "News"
 
 #. Default: Your request succeded!
 #: templates/basetemplate.pt:43 templates/basetemplate.pt:44
@@ -261,10 +262,77 @@ msgstr "Writable"
 msgid "docs"
 msgstr "Documentation"
 
-#. Default: Where do I find it?
-#: templates/docs.pt:7
-msgid "where_do_i_find_it"
-msgstr "Where do I find it?"
+
+#. Default: University of Applied Sciences for Public Administration and
+#. management of North Rhine-Westphalia
+#: templates/index.pt:227
+msgid "fhoev"
+msgstr ""
+"University of Applied Sciences for Public Administration and management of "
+"North Rhine-Westphalia"
+
+#. Default: Duesseldorf Institut of Internet and Democracy
+#: templates/index.pt:233
+msgid "diid"
+msgstr "Düsseldorf Institut of Internet and Democracy"
+
+#. Default: Latest News
+#: templates/index.pt:244
+msgid "latest_news"
+msgstr "Latest News"
+
+#. Default: Previous
+#: templates/index.pt:273
+msgid "previous"
+msgstr "Previous"
+
+#. Default: Next
+#: templates/index.pt:277
+msgid "next"
+msgstr "Next"
+
+#. Default: Go to the news
+#: templates/index.pt:283
+msgid "go_to_news"
+msgstr "Go to the News"
+
+#. Default: Statistics
+#: templates/index.pt:292
+msgid "statistics"
+msgstr "Statistics"
+
+#. Default: Arguments
+#: templates/index.pt:299
+msgid "arguments"
+msgstr "Arguments"
+
+#. Default: Discussions
+#: templates/index.pt:305
+msgid "discussions"
+msgstr "Discussions"
+
+#. Default: Users
+#: templates/index.pt:312
+msgid "users"
+msgstr "Users"
+
+#. Default: Reviews
+#: templates/index.pt:319
+msgid "reviews"
+msgstr "Reviews"
+
+#. Default: Let's Get In Touch!
+#: templates/index.pt:330
+msgid "get_in_touch"
+msgstr "Let's Get In Touch!"
+
+#. Default: Ready to start your next discussion with us? That's great! Give us
+#. a call or send us an email and we will get back to you as soon as possible!
+#: templates/index.pt:332
+msgid "ready_to_start_with_us"
+msgstr ""
+"Ready to start your next discussion with us? That's great! Give us a call or "
+"send us an email and we will get back to you as soon as possible!"
 
 #. Default: Frequent Questions
 #: templates/faq.pt:6
@@ -729,38 +797,35 @@ msgstr "or checkout the"
 msgid "licence_dbas"
 msgstr "license of D-BAS (MIT)"
 
-#. Default: Piwik
+#. Default: Matomo
 #: templates/imprint.pt:44
-msgid "disclaimer_piwik"
-msgstr "Piwik"
+msgid "disclaimer_analytics"
+msgstr "Matomo"
 
-#. Default: Dieses Angebot benutzt Piwik.org, eine Open-Source-Software zur
-#. statistischen Auswertung der Nutzerzugriffe. Piwik verwendet sog. “Cookies”,
-#. Textdateien, die auf dem Computer der Nutzer gespeichert werden und die eine
-#. Analyse der Benutzung der Website durch die Nutzer ermöglichen. Die durch
-#. den Cookie erzeugten Informationen über die Benutzung dieses Agebotes werden
-#. auf dem Server des Anbieters in Deutschland gespeichert. Die IP-Adresse wird
-#. sofort nach der Verarbeitung und vor deren Speicherung anonymisiert. Nutzer
-#. können die Installation der Cookies durch eine entsprechende Einstellung
-#. Ihrer Browser-Software verhindern; Der Anbieter weisen die Nutzer jedoch
-#. darauf hin, dass sie in diesem Fall gegebenenfalls nicht sämtliche
-#. Funktionen dieser Website vollumfänglich nutzen können.
+#. Default: Dieses Angebot benutzt Matomo.org, eine Open-Source-Software zur
+#. statistischen Auswertung der Nutzerzugriffe. Matomo verwendet sog.
+#. “Cookies”, Textdateien, die auf dem Computer der Nutzer gespeichert werden
+#. und die eine Analyse der Benutzung der Website durch die Nutzer ermöglichen.
+#. Die durch den Cookie erzeugten Informationen über die Benutzung dieses
+#. Agebotes werden auf dem Server des Anbieters in Deutschland gespeichert. Die
+#. IP-Adresse wird sofort nach der Verarbeitung und vor deren Speicherung
+#. anonymisiert. Nutzer können die Installation der Cookies durch eine
+#. entsprechende Einstellung Ihrer Browser-Software verhindern; Der Anbieter
+#. weisen die Nutzer jedoch darauf hin, dass sie in diesem Fall gegebenenfalls
+#. nicht sämtliche Funktionen dieser Website vollumfänglich nutzen können.
 #: templates/imprint.pt:45
-msgid "disclaimer_piwik_content"
+msgid "disclaimer_analytics_content"
 msgstr ""
-"Like most website operators, Piwik.org collects non-personally-identifying "
-"information of the sort that web browsers and servers typically make "
-"available, such as the browser type, language preference, referring site, "
-"and the date and time of each visitor request. Piwik.org’s purpose in "
-"collecting non-personally identifying information is to better understand "
-"how Piwik.org’s visitors use its website. From time to time, Piwik.org may "
-"release non-personally-identifying information in the aggregate, e.g., by "
-"publishing a report on trends in the usage of its website. Piwik.org also "
-"collects potentially personally-identifying information like Internet "
-"Protocol (IP) addresses. Piwik.org does not use such information to identify "
-"its visitors, however, and does not disclose such information, other than "
-"under the same circumstances that it uses and discloses personally-"
-"identifying information, as described below."
+"Our offer contains links to external websites of third parties on the "
+"contents of which we do not have any influence. Therefore, we cannot be held "
+"responsible for any foreign contents linked or referred to. It is always the "
+"respective author or operator of the pages who is responsible for the "
+"contents of the linked pages. At the time of linking the linked pages were "
+"checked for possible infringements of law. Unlawful contents could not be "
+"recognized at the time of linking. A permanent control as regards content of "
+"the linked pages without a definite indication for an infringement of law "
+"is, however, not reasonable. If any infringements of law become known, such "
+"links will immediately be removed."
 
 #. Default: Copyrights and used Software
 #: templates/imprint.pt:66
@@ -1513,6 +1578,152 @@ msgstr "This page contains lists with an overview of ongoing votes for each"
 #: templates/review-history.pt:24
 msgid "earn_more_reputation_for_queue"
 msgstr "You have to earn more reputation for this queue"
+
+#. Default: You have no access to this site
+#: templates/review-history.pt:25
+msgid "you_have_no_access"
+msgstr "You have no access to this site"
+
+#. Default: No decisions for this queue.
+#: templates/review-history.pt:37
+msgid "no_decision_for_this_queue"
+msgstr "No decisions for this queue."
+
+#. Default: Statement
+#: templates/review-history.pt:42 templates/snippet-popups.pt:1127
+#: templates/snippet-popups.pt:1148
+msgid "statement"
+msgstr "Statement"
+
+#. Default: Edit
+#: templates/review-history.pt:43
+msgid "edit"
+msgstr "Edit"
+
+#. Default: Reason
+#: templates/review-history.pt:44
+msgid "reason"
+msgstr "Reason"
+
+#. Default: Votes
+#: templates/review-history.pt:47
+msgid "votes"
+msgstr "Votes"
+
+#. Default: Accepted
+#: templates/review-history.pt:48
+msgid "accepted"
+msgstr "Accepted"
+
+#. Default: Voters Pro
+#: templates/review-history.pt:49
+msgid "voters_pro"
+msgstr "Voters Pro"
+
+#. Default: Voters Con
+#: templates/review-history.pt:50
+msgid "voters_con"
+msgstr "Voters Con"
+
+#. Default: Timestamp
+#: templates/review-history.pt:51
+msgid "timestamp"
+msgstr "Timestamp"
+
+#. Default: Reporter
+#: templates/review-history.pt:52
+msgid "reporter"
+msgstr "Reporter"
+
+#. Default: Action
+#: templates/review-history.pt:53
+msgid "actions"
+msgstr "Action"
+
+#. Default: Undo
+#: templates/review-history.pt:95
+msgid "undo"
+msgstr "Undo"
+
+#. Default: Cancel
+#: templates/review-history.pt:98 templates/snippet-popups.pt:127
+#: templates/snippet-popups.pt:150 templates/snippet-popups.pt:175
+#: templates/snippet-popups.pt:991 templates/snippet-popups.pt:1038
+#: templates/snippet-popups.pt:1191
+msgid "cancel"
+msgstr "Cancel"
+
+#. Default: Imprint, Copyrights and Privacy
+#: templates/snippet-footer.pt:8
+msgid "imprint_copyright_privacy"
+msgstr "Imprint, Copyrights and Privacy"
+
+#. Default: RSS
+#: templates/snippet-footer.pt:19
+msgid "rss"
+msgstr "RSS"
+
+#. Default: Help
+#: templates/snippet-footer.pt:22
+msgid "Help"
+msgstr "Help"
+
+#. Default: Docs
+#: templates/snippet-footer.pt:25
+msgid "Documentation"
+msgstr "Documentation"
+
+#. Default: Github
+#: templates/snippet-footer.pt:33
+msgid "Github"
+msgstr "Github"
+
+#. Default: Field Experiment
+#: templates/snippet-footer.pt:36
+msgid "field_experiment"
+msgstr "Field Experiment"
+
+#. Default: About me
+#: templates/snippet-popups.pt:10
+msgid "about_me"
+msgstr "About me"
+
+#. Default: Name
+#: templates/snippet-popups.pt:19
+msgid "name"
+msgstr "Name"
+
+#. Default: Role
+#: templates/snippet-popups.pt:25
+msgid "role"
+msgstr "Role"
+
+#. Default: Doctoral Student
+#: templates/snippet-popups.pt:28
+msgid "role_value_1"
+msgstr "Research Assistant and PhD Student"
+
+#. Default: Lab for Technology of Social Networks
+#: templates/snippet-popups.pt:30 templates/snippet-popups.pt:31
+msgid "lab_tsn"
+msgstr "Lab for Technology of Social Networks"
+
+#. Default: Member of the graduation school
+#: templates/snippet-popups.pt:32
+msgid "role_value_2"
+msgstr "Member of the graduation school"
+
+#. Default: Online Participation
+#: templates/snippet-popups.pt:32
+msgid "role_value_3"
+msgstr "Online Participation"
+
+#. Default: Vorstandsmitglied des DIID - Düsseldorfer Institut für Internet und
+#. Demokratie
+#: templates/snippet-popups.pt:33
+msgid "role_value_4"
+msgstr ""
+"Board member of the DIID - Düsseldorf Institut of Internet and Democracy"
 
 #. Default: You have no access to this site
 #: templates/review-history.pt:25
@@ -2479,8 +2690,79 @@ msgstr "Profile Picture of"
 msgid "reviews_proposed"
 msgstr "Reviews proposed"
 
-#~ msgid "rss"
-#~ msgstr "RSS"
+#. Default: In dieser Diskussion können keine Beiträge mehr hinzugefügt werden!
+#: templates/content.pt:23
+msgid "discussion_is_read_only"
+msgstr "No statements can be set for this discussion!"
+
+#. Default: Start
+#: templates/content.pt:158
+msgid "start"
+msgstr "Start"
+
+#. Default: Now
+#: templates/content.pt:160
+msgid "now"
+msgstr "Now"
+
+#. Default: Complete View
+#: templates/content.pt:175
+msgid "complete_view"
+msgstr "Complete View"
+
+#. Default: Default View
+#: templates/content.pt:176
+msgid "default_view"
+msgstr "Default View"
+
+#. Default: Labels
+#: templates/content.pt:177
+msgid "labels"
+msgstr "Lables"
+
+#. Default: Positions
+#: templates/content.pt:178
+msgid "positions"
+msgstr "Positions"
+
+#. Default: My path
+#: templates/content.pt:180 templates/content.pt:181
+msgid "my_path"
+msgstr "My path"
+
+#. Default: My statements
+#: templates/content.pt:182
+msgid "my_statements"
+msgstr "My statements"
+
+#. Default: Supports
+#: templates/content.pt:183
+msgid "supports_on_my_statements"
+msgstr "Supports"
+
+#. Default: Attacks
+#: templates/content.pt:184
+msgid "attacks_on_my_statements"
+msgstr "Attacks"
+
+#~ msgid "disclaimer_piwik"
+#~ msgstr "Piwik"
+
+#~ msgid "disclaimer_piwik_content"
+#~ msgstr ""
+#~ "Like most website operators, Piwik.org collects non-personally-"
+#~ "identifying information of the sort that web browsers and servers "
+#~ "typically make available, such as the browser type, language preference, "
+#~ "referring site, and the date and time of each visitor request. Piwik."
+#~ "org’s purpose in collecting non-personally identifying information is to "
+#~ "better understand how Piwik.org’s visitors use its website. From time to "
+#~ "time, Piwik.org may release non-personally-identifying information in the "
+#~ "aggregate, e.g., by publishing a report on trends in the usage of its "
+#~ "website. Piwik.org also collects potentially personally-identifying "
+#~ "information like Internet Protocol (IP) addresses. Piwik.org does not use "
+#~ "such information to identify its visitors, however, and does not disclose "
+#~ "such information, other than under the same circumstances that it uses "
+#~ "and discloses personally-identifying information, as described below."
 
 #~ msgid "open"
 #~ msgstr "Open"
@@ -2748,19 +3030,6 @@ msgstr "Reviews proposed"
 
 #~ msgid "disclaimer_links"
 #~ msgstr "Liability for links"
-
-#~ msgid "disclaimer_links_content"
-#~ msgstr ""
-#~ "Our offer contains links to external websites of third parties on the "
-#~ "contents of which we do not have any influence. Therefore, we cannot be "
-#~ "held responsible for any foreign contents linked or referred to. It is "
-#~ "always the respective author or operator of the pages who is responsible "
-#~ "for the contents of the linked pages. At the time of linking the linked "
-#~ "pages were checked for possible infringements of law. Unlawful contents "
-#~ "could not be recognized at the time of linking. A permanent control as "
-#~ "regards content of the linked pages without a definite indication for an "
-#~ "infringement of law is, however, not reasonable. If any infringements of "
-#~ "law become known, such links will immediately be removed."
 
 #~ msgid "disclaimer_copyright"
 #~ msgstr "Copyright"
@@ -3364,9 +3633,6 @@ msgstr "Reviews proposed"
 
 #~ msgid "istland_view"
 #~ msgstr "Island View"
-
-#~ msgid "disclaimer_google_analytics"
-#~ msgstr "Google Analytics"
 
 #~ msgid "google_analytics"
 #~ msgstr ""

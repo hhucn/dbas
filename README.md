@@ -25,6 +25,9 @@ Ensure that the following tools are installed:
 * [Docker](https://docs.docker.com/engine/installation/)
 * [Docker Compose](https://docs.docker.com/compose/install/)
 
+Then copy the `skeleton.env` to `development.env` and fill out the fields you need.
+At least `DB_*` and maybe `MAIL_*` should be set.
+
 Then follow these steps:
 
     docker-compose build

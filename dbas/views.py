@@ -5,15 +5,18 @@ Collection of pyramids views components of D-BAS' core.
 """
 
 import json
-from typing import Callable, Any
-
 import requests
+import graphene
+
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.renderers import get_renderer
 from pyramid.response import Response
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid_mailer import get_mailer
+from typing import Callable, Any
+from webob_graphql import serve_graphql_request
+from websocket.lib import get_port
 from zope.interface.interfaces import ComponentLookupError
 
 import dbas.discussion.core as discussion
@@ -26,6 +29,7 @@ import dbas.review.helper.queues as review_queue_helper
 import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
+from api.v2.graphql.core import Query
 from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Issue
@@ -51,10 +55,9 @@ from dbas.lib import escape_string, get_discussion_language, get_changelog, is_u
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from websocket.lib import get_port
 
 name = 'D-BAS'
-version = '1.5.4'
+version = '1.5.5'
 full_version = version
 project_name = name + ' ' + full_version
 
@@ -569,6 +572,21 @@ def main_rss(request):
         'extras': extras_dict,
         'rss': rss
     }
+
+
+# graphiql
+@view_config(route_name='main_graphiql', permission='everybody', require_csrf=False)
+def main_graphiql(request):
+    """
+    View configuration for GraphiQL.
+
+    :param request: current request of the server
+    :return: graphql
+    """
+    logger('main_graphiql', 'def', 'main')
+    schema = graphene.Schema(query=Query)
+    context = {'session': DBDiscussionSession}
+    return serve_graphql_request(request, schema, batch_enabled=True, context_value=context)
 
 
 # 404 page
@@ -1811,10 +1829,10 @@ def get_users_with_opinion(request):
         params = request.params
         ui_locales = params['lang'] if 'lang' in params else 'en'
         uids = params['uids']
-        is_arg = params.get('is_argument', False)
-        is_att = params.get('is_attitude', False)
-        is_rea = params.get('is_reaction', False)
-        is_pos = params.get('is_position', False)
+        is_arg = params.get('is_argument') == 'true'
+        is_att = params.get('is_attitude') == 'true'
+        is_rea = params.get('is_reaction') == 'true'
+        is_pos = params.get('is_position') == 'true'
     except KeyError as e:
         logger('views', 'get_users_with_opinion', repr(e), error=True)
         ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
