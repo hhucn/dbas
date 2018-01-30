@@ -12,20 +12,11 @@ stages:
       alias: db
   image: $CI_REGISTRY/cn-tsn/project/dbas/dbas:experimental
   variables:
-    DBAS_DB_HOST: db
-    DBAS_DB_PORT: "5432"
-    DBAS_DB_USER: "postgres"
-    DBAS_DB_PW: "DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!"
-    DBAS_AUTHN_SECRET: "89#s3cr3t_15"
-
-    DBAS_HOST: web
-    DBAS_PORT: "4284"
-    DBAS_PROTOCOL: "http"
-    ELASTIC_HOST: "0.0.0.0"
-    ELASTIC_PORT: "9200"
-    FLASK_HOST: "0.0.0.0"
-    FLASK_PORT: "5000"
-
+    DB_HOST: db
+    DB_PORT: "5432"
+    DB_USER: "postgres"
+    DB_PW: "DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!"
+    AUTHN_SECRET: "89#s3cr3t_15"
   before_script:
     - alembic upgrade head && pserve development.ini --reload &
 
@@ -45,10 +36,7 @@ build_test_images:
     - docker build -t $CI_REGISTRY_IMAGE/db --pull docker/db
     - docker tag $CI_REGISTRY_IMAGE/db $CI_REGISTRY_IMAGE/db:testing
     - docker push $CI_REGISTRY_IMAGE/db:testing
-    # Build search
-    - docker build -t $CI_REGISTRY_IMAGE/search --pull hhucn/dbas-search
-    - docker tag $CI_REGISTRY_IMAGE/search $CI_REGISTRY_IMAGE/search:testing
-    - docker push $CI_REGISTRY_IMAGE/search:testing
+
 flake8:
   stage: test
   script:
