@@ -737,7 +737,7 @@ var dbas_de = {
     'to': 'An',
     'timestamp': 'Zeit',
     'users': 'Benutzer',
-    'usersWithSameOpinion': 'Teilnehmer/innen mit derselben Einstellung',
+    'usersWithSameOpinion': 'Teilnehmer/innen mit derselben Interesse',
     'unpinNavigation': 'Navigation lösen',
     'unkownError': 'Unbekannter Fehler',
     'typeofVote': 'Zustimmung/Ablehnung',
