@@ -80,6 +80,7 @@ class OpinionHandlerTests(unittest.TestCase):
         response_correct_id = get_user_with_same_opinion_for_argument(argument_uid=1, nickname=nickname,
                                                                       lang=lang, main_page=main_page)
         self.assertTrue(verify_structure_of_user_dictionary_for_argument(self, response_correct_id))
+
         response_correct_id2 = get_user_with_same_opinion_for_argument(argument_uid=62, nickname=nickname,
                                                                        lang=lang, main_page=main_page)
         self.assertTrue(verify_structure_of_user_dictionary_for_argument(self, response_correct_id2))
@@ -87,10 +88,11 @@ class OpinionHandlerTests(unittest.TestCase):
         # wrong id
         response_wrong_id = get_user_with_same_opinion_for_argument(argument_uid=0, nickname=nickname,
                                                                     lang=lang, main_page=main_page)
-        self.assertEqual(response_wrong_id, None)
+        map(lambda x: self.assertEqual(x, None), response_wrong_id.items())
+
         response_wrong_id2 = get_user_with_same_opinion_for_argument(argument_uid=None, nickname=nickname,
                                                                      lang=lang, main_page=main_page)
-        self.assertEqual(response_wrong_id2, None)
+        map(lambda x: self.assertEqual(x, None), response_wrong_id2.items())
 
     def test_get_user_with_opinions_for_attitude(self):
         lang = 'en'
