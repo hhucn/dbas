@@ -37,5 +37,7 @@ services:
       - "9000:9000"
       - "5000:5000"
 
-    env_file:
-      - development.env
+    environment:
+      - DBAS_HOST=web
+      - DBAS_PORT=4284
+      - PROTOCOL=http
