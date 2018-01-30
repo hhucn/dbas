@@ -857,7 +857,8 @@ def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, id
     :param is_users_opinion: Boolean
     :return: dict()
     """
-    message = pretty_print_options(message)
+    if id is not 'now':
+        message = pretty_print_options(message)
 
     # check for users opinion
     if bubble_type is BubbleTypes.USER and nickname != 'anonymous':

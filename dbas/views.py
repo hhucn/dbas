@@ -1829,10 +1829,10 @@ def get_users_with_opinion(request):
         params = request.params
         ui_locales = params['lang'] if 'lang' in params else 'en'
         uids = params['uids']
-        is_arg = params.get('is_argument', False)
-        is_att = params.get('is_attitude', False)
-        is_rea = params.get('is_reaction', False)
-        is_pos = params.get('is_position', False)
+        is_arg = params.get('is_argument') == 'true'
+        is_att = params.get('is_attitude') == 'true'
+        is_rea = params.get('is_reaction') == 'true'
+        is_pos = params.get('is_position') == 'true'
     except KeyError as e:
         logger('views', 'get_users_with_opinion', repr(e), error=True)
         ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
