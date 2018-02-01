@@ -81,12 +81,12 @@ def create_initial_issue_rss(main_page: str, ui_locale: str) -> bool:
     return True
 
 
-def append_action_to_issue_rss(issue_uid: int, author_uid: int, title: str, description: str, ui_locale: str,
+def append_action_to_issue_rss(db_issue: Issue, author_uid: int, title: str, description: str, ui_locale: str,
                                url: str) -> bool:
     """
     Appends a new action in D-BAS to the RSS
 
-    :param issue_uid: Issue.uid
+    :param db_issue: Issue
     :param author_uid: User.uid
     :param title: String
     :param description: String
@@ -94,17 +94,16 @@ def append_action_to_issue_rss(issue_uid: int, author_uid: int, title: str, desc
     :param url: url of this event
     :return: Boolean
     """
-    logger('RSS-Handler', 'append_action_to_issue_rss', 'issue_uid ' + str(issue_uid))
-    db_issue = Session.query(Issue).get(issue_uid)
+    logger('RSS-Handler', 'append_action_to_issue_rss', 'issue_uid ' + str(db_issue.uid))
     db_author = Session.query(User).get(author_uid)
-    if not db_issue or not db_author:
+    if not db_author:
         return False
 
-    Session.add(RSS(author=author_uid, issue=issue_uid, title=title, description=description))
+    Session.add(RSS(author=author_uid, issue=db_issue.uid, title=title, description=description))
     Session.flush()
     transaction.commit()
 
-    return rewrite_issue_rss(issue_uid, ui_locale, url)
+    return rewrite_issue_rss(db_issue.uid, ui_locale, url)
 
 
 def rewrite_issue_rss(issue_uid: int, ui_locale: str, url: str):

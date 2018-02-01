@@ -24,14 +24,14 @@ class RSSHandlerTests(unittest.TestCase):
         return True
 
     def test_append_action_to_issue_rss(self):
-        issue_uid = get_not_disabled_issues_as_query().first().uid
+        db_issue = get_not_disabled_issues_as_query().first()
         l1 = len(DBDiscussionSession.query(RSS).all())
-        self.assertTrue(rss.append_action_to_issue_rss(issue_uid, self.user.uid, 'test_title', 'test_description', 'en',
+        self.assertTrue(rss.append_action_to_issue_rss(db_issue.uid, self.user.uid, 'test_title', 'test_description', 'en',
                                                        get_global_url()))
         l2 = len(DBDiscussionSession.query(RSS).all())
         self.assertTrue(l1 + 1, l2)
 
-        DBDiscussionSession.query(RSS).filter(RSS.issue_uid == issue_uid, RSS.author_uid == self.user.uid,
+        DBDiscussionSession.query(RSS).filter(RSS.issue_uid == db_issue.uid, RSS.author_uid == self.user.uid,
                                               RSS.title == 'test title', RSS.description == 'test_description').delete()
         DBDiscussionSession.flush()
         transaction.commit()
