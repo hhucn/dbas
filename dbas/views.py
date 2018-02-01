@@ -49,7 +49,7 @@ from dbas.handler.voting import clear_vote_and_seen_values_of_user
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
-from dbas.helper.validation import valid_user, validate
+from dbas.helper.validation import combine, valid_user, valid_issue
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -1328,7 +1328,6 @@ def user_password_request(request):
 
 # ajax - set boolean for receiving information
 @view_config(route_name='ajax_set_user_setting', renderer='json')
-@validate(validators=(valid_user,))
 def set_user_settings(request):
     """
     Sets a specific setting of the user
@@ -1342,7 +1341,7 @@ def set_user_settings(request):
 
     settings_value = request.params.get('settings_value') == 'True'
     service = request.params.get('service')
-    return_dict = set_settings(request.application_url, request.validated['user'], service, settings_value, _tn)
+    return_dict = set_settings(request.application_url, request.authenticated_userid, service, settings_value, _tn)
     return return_dict
 
 
@@ -1481,8 +1480,7 @@ def ajax_set_new_start_argument(request):
 
 # ajax - send new start statement
 
-@view_config(route_name='ajax_set_new_start_statement', renderer='json')
-@validate(validators=(valid_user,))
+@view_config(route_name='ajax_set_new_start_statement', renderer='json', decorator=combine(valid_user, valid_issue))
 def set_new_start_statement(request):
     """
     Inserts a new statement into the database, which should be available at the beginning
@@ -1495,10 +1493,9 @@ def set_new_start_statement(request):
     _tn = Translator(discussion_lang)
     data = {}
     try:
-        issue = issue_helper.get_issue_id(request)
         data['user'] = request.validated['user']
         data['statement'] = request.params['statement']
-        data['issue'] = DBDiscussionSession.query(Issue).get(issue)
+        data['issue'] = request.validated['issue']
         data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
         data['default_locale_name'] = get_default_locale_name(request.registry)
         data['application_url'] = request.application_url

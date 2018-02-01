@@ -1,17 +1,17 @@
 from dbas.handler import user
 import transaction
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Settings
+from dbas.database.discussion_model import Settings, User
 from dbas.lib import get_public_profile_picture
 from dbas.strings.keywords import Keywords as _
 
 
-def set_settings(url, db_user, service, settings_value, _tn):
+def set_settings(url, nickname, service, settings_value, _tn):
     """
     Edits a user specific setting
 
-    :param request: current request
-    :param db_user: instance of user
+    :param url: current url of request
+    :param nickname: instance of user
     :param service: service, which should be modified
     :param settings_value: Boolean
     :param _tn: Translator
@@ -23,6 +23,7 @@ def set_settings(url, db_user, service, settings_value, _tn):
     public_page_url = ''
     gravatar_url = ''
 
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         error = _tn.get(_.checkNickname)
         return {

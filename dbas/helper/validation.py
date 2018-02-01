@@ -2,17 +2,69 @@ from cornice import Errors
 from cornice.util import json_error
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User
+from dbas.database.discussion_model import User, Issue
+from dbas.handler.language import get_language_from_cookie
+from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
+import dbas.handler.issue as issue_helper
 
 
-def valid_user(request):
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).one_or_none()
+def combine(*decorators):
+    """
+    Requires a list of decorators, which will be chained together
 
-    if db_user:
-        request.validated['user'] = db_user
-    else:
-        request.errors.add('body', 'Invalid user', 'Authenticated userid not found in database')
-        request.errors.status = 400
+    :param decorators:
+    :return:
+    """
+    def floo(view_callable):
+        for decorator in decorators:
+            view_callable = decorator(view_callable)
+        return view_callable
+    return floo
+
+
+def valid_user(view_callable):
+    """
+
+    :param view_callable:
+    :return:
+    """
+    def inner(context, request):
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
+        if db_user:
+            request.validated['user'] = db_user
+            return view_callable(context, request)
+        else:
+            _tn = Translator(get_language_from_cookie(request))
+            return {
+                'status': 'error',
+                'error:': _tn.get(_.checkNickname)
+            }
+    return inner
+
+
+def valid_issue(view_callable):
+    """
+
+    :param view_callable:
+    :return:
+    """
+    def inner(context, request):
+        issue_id = issue_helper.get_issue_id(request)
+        db_issue = DBDiscussionSession.query(Issue).get(issue_id)
+        request.validated['issue'] = db_issue
+        return view_callable(context, request)
+    return inner
+
+
+# def valid_user(request):
+#     db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
+#
+#     if db_user:
+#         request.validated['user'] = db_user
+#     else:
+#         request.errors.add('body', 'Invalid user', 'Authenticated userid not found in database')
+#         request.errors.status = 400
 
 
 class validate(object):
