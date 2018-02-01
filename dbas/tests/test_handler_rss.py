@@ -26,7 +26,7 @@ class RSSHandlerTests(unittest.TestCase):
     def test_append_action_to_issue_rss(self):
         db_issue = get_not_disabled_issues_as_query().first()
         l1 = len(DBDiscussionSession.query(RSS).all())
-        self.assertTrue(rss.append_action_to_issue_rss(db_issue.uid, self.user.uid, 'test_title', 'test_description', 'en',
+        self.assertTrue(rss.append_action_to_issue_rss(db_issue, self.user, 'test_title', 'test_description', 'en',
                                                        get_global_url()))
         l2 = len(DBDiscussionSession.query(RSS).all())
         self.assertTrue(l1 + 1, l2)

@@ -81,13 +81,13 @@ def create_initial_issue_rss(main_page: str, ui_locale: str) -> bool:
     return True
 
 
-def append_action_to_issue_rss(db_issue: Issue, author_uid: int, title: str, description: str, ui_locale: str,
+def append_action_to_issue_rss(db_issue: Issue, db_author: User, title: str, description: str, ui_locale: str,
                                url: str) -> bool:
     """
     Appends a new action in D-BAS to the RSS
 
     :param db_issue: Issue
-    :param author_uid: User.uid
+    :param db_author: User
     :param title: String
     :param description: String
     :param ui_locale: Language.ui_locale
@@ -95,11 +95,7 @@ def append_action_to_issue_rss(db_issue: Issue, author_uid: int, title: str, des
     :return: Boolean
     """
     logger('RSS-Handler', 'append_action_to_issue_rss', 'issue_uid ' + str(db_issue.uid))
-    db_author = Session.query(User).get(author_uid)
-    if not db_author:
-        return False
-
-    Session.add(RSS(author=author_uid, issue=db_issue.uid, title=title, description=description))
+    Session.add(RSS(author=db_author.uid, issue=db_issue.uid, title=title, description=description))
     Session.flush()
     transaction.commit()
 
