@@ -56,6 +56,7 @@ dbas/static/rss/*
 createUser.py
 *.min.js
 production.env
+development.env
 
 # node
 node_modules/
@@ -67,3 +68,6 @@ docker/db/data/
 docker/db/entrypoint/.*.sql
 
 .scannerwork/
+
+# Emacs temp-files
+.#*

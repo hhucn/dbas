@@ -129,13 +129,13 @@
   <script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/gremlins.min.js')}" tal:condition="extras.development_mode"></script>
 
-  <!-- Piwik -->
+  <!-- Matomo -->
   <script type="text/javascript">
     var _paq = _paq || [];
     _paq.push(['trackPageView']);
     _paq.push(['enableLinkTracking']);
     (function () {
-      var u = "//dbas.cs.uni-duesseldorf.de/piwik/";
+      var u = "//dbas.cs.uni-duesseldorf.de/analytics/";
       _paq.push(['setTrackerUrl', u + 'piwik.php']);
       _paq.push(['setSiteId', 1]);
       var d = document,
@@ -150,11 +150,11 @@
   </script>
   <noscript>
     <p>
-      <img src="//dbas.cs.uni-duesseldorf.de/piwik/piwik.php?idsite=1" style="border:0;" alt=""/>
+      <img src="//dbas.cs.uni-duesseldorf.de/analytics/piwik.php?idsite=1" style="border:0;" alt=""/>
     </p>
   </noscript>
   <!-- Click Heat
-  <script type="text/javascript" src="http://dbas.cs.uni-duesseldorf.de/piwik/plugins/ClickHeat/libs/js/clickheat.js"></script>
+  <script type="text/javascript" src="http://dbas.cs.uni-duesseldorf.de/analytics/plugins/ClickHeat/libs/js/clickheat.js"></script>
   <noscript><p><a href="http://www.dugwood.com/index.html">Open Source Sofware</a></p></noscript>
   <script type="text/javascript">
   clickHeatSite = 1;

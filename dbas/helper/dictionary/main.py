@@ -97,7 +97,7 @@ class DictionaryHelper(object):
         Creates the extras.dict() with many options!
 
         :param current_slug:
-        :param is_reportable: Boolean
+        :param is_reportable: Boolean, same as discussion.bubbles.last.is_markable, but TAL has no last indicator
         :param show_bar_icon: Boolean
         :param show_graph_icon: Boolean
         :param registry: request.registry
@@ -141,10 +141,10 @@ class DictionaryHelper(object):
         restart_url = UrlManager(application_url, current_slug, for_api).get_slug_url(False)
         if restart_url.endswith('/'):
             restart_url = restart_url[:-1]
-        if not restart_url.startswith('http'):
-            restart_url = 'https://' + restart_url
-        if restart_url.startswith('http:'):
-            restart_url = restart_url.replace('http', 'https')
+        # if not restart_url.startswith('http'):
+        #     restart_url = 'https://' + restart_url
+        # if restart_url.startswith('http:'):
+        #     restart_url = restart_url.replace('http', 'https')
 
         return_dict = dict()
         return_dict['year'] = datetime.datetime.now().year
@@ -669,11 +669,11 @@ class DictionaryHelper(object):
         :param return_dict: current dictionary
         :return: updated dictionary
         """
-        google_id = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTID', None)
-        facebook_id = os.environ.get('DBAS_OAUTH_FACEBOOK_CLIENTID', None)
-        twitter_id = os.environ.get('DBAS_OAUTH_TWITTER_CLIENTID', None)
-        github_id = os.environ.get('DBAS_OAUTH_GITHUB_CLIENTID', None)
-        hhu_ldap = os.environ.get('DBAS_HHU_LDAP_SERVER', None)
+        google_id = os.environ.get('OAUTH_GOOGLE_CLIENTID', None)
+        facebook_id = os.environ.get('OAUTH_FACEBOOK_CLIENTID', None)
+        twitter_id = os.environ.get('OAUTH_TWITTER_CLIENTID', None)
+        github_id = os.environ.get('OAUTH_GITHUB_CLIENTID', None)
+        hhu_ldap = os.environ.get('HHU_LDAP_SERVER', None)
 
         return_dict['login_btns'] = {
             'oauth_google': google_id is not None,

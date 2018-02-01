@@ -101,7 +101,7 @@ def send_mail(mailer, subject, body, recipient, lang):
 
     send_message = False
     body = body + '\n\n---\n' + _t.get(_.emailBodyText).format(get_global_url())
-    sender = os.environ.get("DBAS_MAIL_DEFAULT__SENDER", None)
+    sender = os.environ.get("MAIL_DEFAULT__SENDER", None)
     message = Message(subject=subject, sender=sender, recipients=[recipient], body=body)
 
     # try sending an catching errors

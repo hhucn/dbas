@@ -28,8 +28,8 @@ def start_flow(redirect_uri):
     :param redirect_uri:
     :return:
     """
-    client_id = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTID', None)
-    client_secret = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTKEY', None)
+    client_id = os.environ.get('OAUTH_GOOGLE_CLIENTID', None)
+    client_secret = os.environ.get('OAUTH_GOOGLE_CLIENTKEY', None)
 
     if 'service=google' not in redirect_uri:
         bind = '#' if '?' in redirect_uri else '?'
@@ -55,8 +55,8 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
     :param ui_locales:
     :return:
     """
-    client_id = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTID', None)
-    client_secret = os.environ.get('DBAS_OAUTH_GOOGLE_CLIENTKEY', None)
+    client_id = os.environ.get('OAUTH_GOOGLE_CLIENTID', None)
+    client_secret = os.environ.get('OAUTH_GOOGLE_CLIENTKEY', None)
 
     logger('Google OAuth', 'continue_flow',
            'Read OAuth id/secret: none? {}/{}'.format(client_id is None, client_secret is None))

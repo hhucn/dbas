@@ -301,9 +301,13 @@ def get_user_with_same_opinion_for_argument(argument_uid, nickname, lang, main_p
     :return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
     """
     try:
-        logger('OpinionHandler', 'get_user_with_same_opinion_for_argument', 'Argument ' + str(argument_uid) + ' ' + get_text_for_argument_uid(argument_uid, 'de'))
+        text = get_text_for_argument_uid(argument_uid, 'de')
+        logger('OpinionHandler', 'get_user_with_same_opinion_for_argument', 'Argument {}: {}'.format(argument_uid, text))
+        if not text:
+            return {'uid': None, 'text': None, 'message': None, 'users': None, 'seen_by': None}
     except TypeError:
-        return None
+        return {'uid': None, 'text': None, 'message': None, 'users': None, 'seen_by': None}
+
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     db_user_uid = db_user.uid if db_user else 0
 

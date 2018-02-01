@@ -99,7 +99,7 @@ class UrlManager(object):
         :param statement_uid: Statement.uid
         :return: discussion_url/slug/attitude/statement_uid
         """
-        url = self.slug + '/attitude/' + str(statement_uid)
+        url = '{}/attitude/{}'.format(self.slug, statement_uid)
         return self.__return_discussion_url(as_location_href, url)
 
     def get_url_for_justifying_statement(self, as_location_href, statement_uid, mode):
@@ -114,7 +114,7 @@ class UrlManager(object):
         :type mode: String
         :return: discuss/{slug}/justify/{statement_or_arg_id}/{mode}
         """
-        url = self.slug + '/justify/' + str(statement_uid) + '/' + mode
+        url = '{}/justify/{}/{}'.format(self.slug, statement_uid, mode)
         return self.__return_discussion_url(as_location_href, url)
 
     def get_url_for_justifying_argument(self, as_location_href, argument_uid, mode, attitude, additional_id=-1):
@@ -129,9 +129,9 @@ class UrlManager(object):
         :param additional_id: String
         :return: discuss/{slug}/justify/{statement_or_arg_id}/{mode}*attitude
         """
-        url = self.slug + '/justify/' + str(argument_uid) + '/' + mode + '/' + attitude
+        url = '{}/justify/{}/{}/{}'.format(self.slug, argument_uid, mode, attitude)
         if additional_id != -1:
-            url += '/' + str(additional_id)
+            url += '/{}'.format(additional_id)
         return self.__return_discussion_url(as_location_href, url)
 
     def get_url_for_reaction_on_argument(self, as_location_href, argument_uid, mode, confrontation_argument):
@@ -145,7 +145,7 @@ class UrlManager(object):
         :param confrontation_argument: Argument.uid
         :return: discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys
         """
-        url = self.slug + '/reaction/' + str(argument_uid) + '/' + mode + '/' + str(confrontation_argument)
+        url = '{}/reaction/{}/{}/{}'.format(self.slug, argument_uid, mode, confrontation_argument)
         return self.__return_discussion_url(as_location_href, url)
 
     def get_url_for_choosing_premisegroup(self, as_location_href, is_argument, is_supportive, statement_or_argument_id,
@@ -163,8 +163,10 @@ class UrlManager(object):
         """
         is_arg = 't' if is_argument else 'f'
         is_sup = 't' if is_supportive else 'f'
-        pgroups = ('/' + '/'.join(str(x) for x in pgroup_id_list)) if len(pgroup_id_list) > 0 else ''
-        url = self.slug + '/choose/' + is_arg + '/' + is_sup + '/' + str(statement_or_argument_id) + str(pgroups)
+        pgroups = ''
+        if len(pgroup_id_list) > 0:
+            pgroups = '/' + '/'.join(str(x) for x in pgroup_id_list)
+        url = '{}/choose/{}/{}/{}{}'.format(self.slug, is_arg, is_sup, statement_or_argument_id, pgroups)
         return self.__return_discussion_url(as_location_href, url)
 
     def get_url_for_jump(self, as_location_href, argument_uid):
@@ -176,7 +178,7 @@ class UrlManager(object):
         :param argument_uid: Argument.uid
         :return: discuss/{slug}/jump/{argument_uid}
         """
-        url = self.slug + '/jump/' + str(argument_uid)
+        url = '{}/jump/{}'.format(self.slug, argument_uid)
         return self.__return_discussion_url(as_location_href, url)
 
     def get_url_for_support_each_other(self, as_location_href, argument_uid_user, argument_uid_system):
@@ -188,7 +190,7 @@ class UrlManager(object):
         :param argument_uid_system: Argument.uid
         :return: discuss/{slug}/support/{argument_uid1}/{argument_uid2}
         """
-        url = self.slug + '/support/' + str(argument_uid_user) + '/' + str(argument_uid_system)
+        url = '{}/support/{}/{}'.format(self.slug, argument_uid_user, argument_uid_system)
         return self.__return_discussion_url(as_location_href, url)
 
     def get_last_valid_url_before_reaction(self, as_location_href):
@@ -205,7 +207,7 @@ class UrlManager(object):
             last_valid_step = last_valid_step[1:]
 
         if len(self.slug) > 0 and self.slug not in (self.api_url if self.for_api else self.discussion_url):
-            last_valid_step = self.slug + '/' + last_valid_step
+            last_valid_step = '{}/{}'.format(self.slug, last_valid_step)
 
         return self.__return_discussion_url(as_location_href, last_valid_step)
 
@@ -246,7 +248,7 @@ class UrlManager(object):
         history = '?history=' + self.history if self.history and len(self.history) > 1 else ''
 
         if self.for_api:
-            return self.api_url + url + history
+            return '{}{}{}'.format(self.api_url, url, history)
         else:
             prefix = 'location.href="' if as_location_href else ''
             suffix = '"' if as_location_href else ''

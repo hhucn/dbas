@@ -297,7 +297,9 @@ function PopupHandler() {
 		// clean text
 		// cut the part after <br><br>
 		var text = bubble.find('.triangle-content').html();
-		text = text.substr(0, text.indexOf('<br>'));
+		if (text.indexOf('<br>') !== -1){
+			text = text.substr(0, text.indexOf('<br>'));
+		}
 
 		// cut the author
 		var tmp = text.indexOf('</a>');
