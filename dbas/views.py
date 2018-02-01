@@ -1481,7 +1481,7 @@ def ajax_set_new_start_argument(request):
 # ajax - send new start statement
 
 @view_config(route_name='ajax_set_new_start_statement', renderer='json', decorator=combine(valid_user, valid_issue))
-def set_new_start_statement(request):
+def set_new_start_statement(request, **kwargs):
     """
     Inserts a new statement into the database, which should be available at the beginning
 
@@ -1493,9 +1493,9 @@ def set_new_start_statement(request):
     _tn = Translator(discussion_lang)
     data = {}
     try:
-        data['user'] = request.validated['user']
+        data['user'] = kwargs['user']
         data['statement'] = request.params['statement']
-        data['issue'] = request.validated['issue']
+        data['issue'] = kwargs['issue']
         data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
         data['default_locale_name'] = get_default_locale_name(request.registry)
         data['application_url'] = request.application_url

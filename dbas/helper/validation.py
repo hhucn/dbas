@@ -32,8 +32,8 @@ def valid_user(view_callable):
     def inner(context, request):
         db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
         if db_user:
-            request.validated['user'] = db_user
-            return view_callable(context, request)
+            kwargs = {'user': db_user}
+            return view_callable(context, request, kwargs)
         else:
             _tn = Translator(get_language_from_cookie(request))
             return {
@@ -52,8 +52,8 @@ def valid_issue(view_callable):
     def inner(context, request):
         issue_id = issue_helper.get_issue_id(request)
         db_issue = DBDiscussionSession.query(Issue).get(issue_id)
-        request.validated['issue'] = db_issue
-        return view_callable(context, request)
+        kwargs = {'issue': db_issue}
+        return view_callable(context, request, kwargs)
     return inner
 
 
