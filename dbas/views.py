@@ -1486,6 +1486,7 @@ def set_new_start_statement(request, **kwargs):
     Inserts a new statement into the database, which should be available at the beginning
 
     :param request: request of the web server
+    :param kwargs: keyworded arguments from the decorator
     :return: a status code, if everything was successful
     """
     logger('views', 'set_new_start_statement', 'request.params: {}'.format(request.params))

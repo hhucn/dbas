@@ -10,7 +10,7 @@ function InteractionHandler() {
 	 * @param data returned data
 	 */
 	this.callbackIfDoneForSendNewStartStatement = function (data) {
-		if (data.error.length > 0) {
+		if (data.status === 'error') {
 			$('#' + addStatementErrorContainer).show();
 			$('#' + addStatementErrorMsg).text(data.error);
 		} else {

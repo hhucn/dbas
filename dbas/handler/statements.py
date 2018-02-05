@@ -43,14 +43,22 @@ def set_position(for_api, data) -> dict:
     except KeyError as e:
         logger('StatementsHelper', 'position', repr(e), error=True)
         _tn = Translator('en')
-        return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
+        return {
+            'error': _tn.get(_.notInsertedErrorBecauseInternal),
+            'statement_uids': '',
+            'status': 'error'
+        }
 
     # escaping will be done in StatementsHelper().set_statement(...)
     user.update_last_action(db_user.nickname)
     _tn = Translator(db_issue.lang)
 
     if db_issue.is_read_only:
-        return {'error': _tn.get(_.discussionIsReadOnly), 'statement_uids': ''}
+        return {
+            'error': _tn.get(_.discussionIsReadOnly),
+            'statement_uids': '',
+            'status': 'error'
+        }
 
     prepared_dict = {'error': '', 'statement_uids': ''}
 
@@ -62,8 +70,11 @@ def set_position(for_api, data) -> dict:
         b = _tn.get(_.minLength)
         c = _tn.get(_.eachStatement)
         error = '{} ({}: {} {})'.format(a, b, e.min_length, c)
-        prepared_dict['error'] = error
-        return prepared_dict
+        return {
+            'error': error,
+            'statement_uids': '',
+            'status': 'error'
+        }
 
     url = UrlManager(application_url, db_issue.slug, for_api).get_url_for_statement_attitude(False,
                                                                                              new_statement.uid)
@@ -78,6 +89,7 @@ def set_position(for_api, data) -> dict:
         url += '#access-review'
 
     prepared_dict['url'] = url
+    prepared_dict['status'] = 'success'
 
     return prepared_dict
 
