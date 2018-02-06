@@ -43,13 +43,15 @@ class AjaxAddThingsTest(unittest.TestCase):
         DBDiscussionSession.query(ClickedArgument).filter_by(argument_uid=db_new_arg.uid).delete()
         DBDiscussionSession.query(Argument).filter_by(uid=db_new_arg.uid).delete()
 
-    def __set_start_statement_and_rep(self, ajax, kwargs):
+    def __set_start_statement_and_rep(self, ajax, db_user):
+        db_issue = DBDiscussionSession.query(Issue).get(1)
         request = testing.DummyRequest(params={'statement': 'New statement for an issue'}, matchdict={})
-        response = ajax(request, kwargs)
+        response = ajax(request, user=db_user, issue=db_issue)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(len(response['url']) != 0)
         self.assertTrue(len(response['statement_uids']) != 0)
+        self.assertEqual(response['status'], 'success')
         for uid in response['statement_uids']:
             DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).delete()
             DBDiscussionSession.query(MarkedStatement).filter_by(statement_uid=uid).delete()
@@ -60,18 +62,14 @@ class AjaxAddThingsTest(unittest.TestCase):
     def test_set_new_start_statement(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_user = DBDiscussionSession.query(User).filter_by(nickname="Tobias").first()
-        db_issue = DBDiscussionSession.query(Issue).get(1)
-        kwargs = {'user': db_user, 'issue': db_issue}
         from dbas.views import set_new_start_statement as ajax
-        self.__set_start_statement_and_rep(ajax, kwargs)
+        self.__set_start_statement_and_rep(ajax, db_user)
 
     def test_set_new_start_statement_reputation(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
         db_user = DBDiscussionSession.query(User).filter_by(nickname="Björn").first()
-        db_issue = DBDiscussionSession.query(Issue).get(1)
-        kwargs = {'user': db_user, 'issue': db_issue}
         from dbas.views import set_new_start_statement as ajax
-        self.__set_start_statement_and_rep(ajax, kwargs)
+        self.__set_start_statement_and_rep(ajax, db_user)
 
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Björn').first()
         DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()
@@ -83,7 +81,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         request = testing.DummyRequest(params={'statement': 'New statement for an issue'}, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertEqual(400, response.status_code)
+        self.assertEqual('error', response['status'])
 
     def test_set_new_start_statement_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)

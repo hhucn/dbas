@@ -34,6 +34,7 @@ def set_position(for_api, data) -> dict:
     :rtype: dict
     :return: Prepared collection with statement_uids of the new positions and next url or an error
     """
+    logger('StatementsHelper', 'set_position', str(data))
     try:
         statement = data['statement']
         db_user = data['user']
@@ -41,12 +42,13 @@ def set_position(for_api, data) -> dict:
         default_locale_name = data.get('default_locale_name', db_issue.lang)
         application_url = data['application_url']
     except KeyError as e:
-        logger('StatementsHelper', 'position', repr(e), error=True)
+        logger('StatementsHelper', 'set_position', repr(e), error=True)
         _tn = Translator('en')
         return {
             'error': _tn.get(_.notInsertedErrorBecauseInternal),
             'statement_uids': '',
-            'status': 'error'
+            'status': 'error',
+            'url': ''
         }
 
     # escaping will be done in StatementsHelper().set_statement(...)
@@ -57,10 +59,9 @@ def set_position(for_api, data) -> dict:
         return {
             'error': _tn.get(_.discussionIsReadOnly),
             'statement_uids': '',
-            'status': 'error'
+            'status': 'error',
+            'url': ''
         }
-
-    prepared_dict = {'error': '', 'statement_uids': ''}
 
     try:
         new_statement = insert_as_statement(application_url, default_locale_name, statement, db_user, db_issue,
@@ -73,13 +74,12 @@ def set_position(for_api, data) -> dict:
         return {
             'error': error,
             'statement_uids': '',
-            'status': 'error'
+            'status': 'error',
+            'url': ''
         }
 
-    url = UrlManager(application_url, db_issue.slug, for_api).get_url_for_statement_attitude(False,
-                                                                                             new_statement.uid)
-    prepared_dict['statement_uids'] = [new_statement.uid]
-
+    _um = UrlManager(application_url, db_issue.slug, for_api)
+    url = _um.get_url_for_statement_attitude(False, new_statement.uid)
     # add reputation
     add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_position)
     if not add_rep:
@@ -88,10 +88,12 @@ def set_position(for_api, data) -> dict:
     if broke_limit:
         url += '#access-review'
 
-    prepared_dict['url'] = url
-    prepared_dict['status'] = 'success'
-
-    return prepared_dict
+    return {
+        'status': 'success',
+        'url': 'url',
+        'statement_uids': [new_statement.uid],
+        'error': ''
+    }
 
 
 def set_positions_premise(for_api: bool, data: Dict) -> dict:

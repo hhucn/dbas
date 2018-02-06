@@ -1502,7 +1502,10 @@ def set_new_start_statement(request, **kwargs):
         data['application_url'] = request.application_url
     except KeyError as e:
         logger('views', 'set_new_start_statement', repr(e), error=True)
-        return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
+        return {
+            'status': 'error',
+            'error': _tn.get(_.notInsertedErrorBecauseInternal)
+        }
 
     prepared_dict = set_position(False, data)
 
