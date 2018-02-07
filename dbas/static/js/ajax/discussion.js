@@ -88,32 +88,6 @@ function AjaxDiscussionHandler() {
 	};
 
 	/**
-	 * Sends new position to the server. Answer will be given to a callback
-	 * @param statement for sending
-	 */
-	this.sendNewStartStatement = function (statement) {
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_set_new_start_statement',
-			method: 'POST',
-			data: {
-				statement: statement
-			},
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxSendStartStatementDone(data) {
-			$('#' + discussionSpaceId + 'input:last-child').prop('checked', false);
-			window.location.href = data.url;
-		}).fail(function ajaxSendStartStatementFail(data) {
-			$('#' + addStatementErrorContainer).show();
-			$('#' + addStatementErrorMsg).text(data.error);
-		});
-	};
-
-	/**
 	 *
 	 * @param info
 	 * @param long_info

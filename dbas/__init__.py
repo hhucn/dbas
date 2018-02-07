@@ -9,24 +9,25 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 
 # from wsgiref.simple_server import make_server
 
-import logging
 import os
 import re
 import time
 
-from .database import load_discussion_database
-from .security import groupfinder
+import logging
 from configparser import ConfigParser, NoSectionError
-from dbas.database import get_db_environs
-from dbas.handler.rss import rewrite_issue_rss, create_news_rss
-from dbas.lib import get_global_url
-from dbas.query_wrapper import get_not_disabled_issues_as_query
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
 from pyramid.static import QueryStringConstantCacheBuster
 from pyramid_beaker import session_factory_from_settings, set_cache_regions_from_settings
 from sqlalchemy import engine_from_config
+
+from dbas.database import get_db_environs
+from dbas.handler.rss import rewrite_issue_rss, create_news_rss
+from dbas.lib import get_global_url
+from dbas.query_wrapper import get_not_disabled_issues_as_query
+from .database import load_discussion_database
+from .security import groupfinder
 
 
 def main(global_config, **settings):
@@ -123,7 +124,6 @@ def main(global_config, **settings):
     config.add_route('ajax_user_login_oauth', '{url:.*}ajax_user_login_oauth')
     config.add_route('ajax_user_logout', '{url:.*}ajax_user_logout')
     config.add_route('ajax_set_new_start_argument', '/{url:.*}ajax_set_new_start_argument')
-    config.add_route('ajax_set_new_start_statement', '/{url:.*}ajax_set_new_start_statement')
     config.add_route('ajax_set_new_start_premise', '/{url:.*}ajax_set_new_start_premise')
     config.add_route('ajax_set_new_premises_for_argument', '/{url:.*}ajax_set_new_premises_for_argument')
     config.add_route('ajax_set_correction_of_statement', '/{url:.*}ajax_set_correction_of_statement')

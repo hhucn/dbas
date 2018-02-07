@@ -6,12 +6,13 @@ Provides helping function for handling reputation.
 
 import arrow
 import transaction
+from sqlalchemy import and_
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason
 from dbas.lib import is_user_author_or_admin
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
-from sqlalchemy import and_
 
 reputation_borders = {'deletes': 30,
                       'optimizations': 30,
@@ -127,7 +128,7 @@ def add_reputation_for(user, reason):
     :return: True, if the user gained reputation and an additional boolean that is true, when the user reached 30points
     """
     logger('ReputationPointHelper', 'add_reputation_for', 'main ' + reason)
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first() if isinstance(user, str) else user
+    db_user = user if isinstance(user, User) else DBDiscussionSession.query(User).filter_by(nickname=user).first()
     db_reason = DBDiscussionSession.query(ReputationReason).filter_by(reason=reason).first()
     if not db_reason or not db_user:
         logger('ReputationPointHelper', 'add_reputation_for', 'no reason or no user')

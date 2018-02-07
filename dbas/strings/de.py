@@ -713,6 +713,7 @@ de_lang = {
     _.where: 'Wo',
     _.wrong: 'Nein',
     _.wouldYourShareArgument: 'Können Sie einen Grund angeben?',
+    _.wrongConclusion: 'Die Kombination aus Conclusion ID und Issue ist ungültig!',
     _.wrongURL: 'Ihre URL scheint falsch zu sein.',
     _.whatDoYouThinkAbout: 'Was halten Sie von der Aussage, dass',
     _.whatDoYouThinkArgument: 'Was halten Sie von dem Argument',

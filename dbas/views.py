@@ -7,7 +7,7 @@ Collection of pyramids views components of D-BAS' core.
 import graphene
 import json
 import requests
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPBadRequest
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.renderers import get_renderer
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
@@ -17,7 +17,8 @@ from webob_graphql import serve_graphql_request
 from zope.interface.interfaces import ComponentLookupError
 
 import dbas.discussion.core as discussion
-import dbas.handler.history as history_helper
+import dbas.handler.history as history_handler
+import dbas.handler.issue as issue_handler
 import dbas.handler.news as news_handler
 import dbas.review.helper.core as review
 import dbas.review.helper.history as review_history_helper
@@ -27,12 +28,14 @@ import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
 from api.v2.graphql.core import Query
 from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers
+from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Group
+from dbas.database.discussion_model import User, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
 from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement_uid
 from dbas.handler.issue import get_issues_overiew, set_discussions_properties
-from dbas.handler.language import set_language, set_language_for_visit
+from dbas.handler.language import set_language, set_language_for_visit, get_language_from_cookie
 from dbas.handler.notification import read_notifications, delete_notifications, send_users_notification
 from dbas.handler.password import request_password
 from dbas.handler.references import set_reference, get_references
@@ -44,7 +47,7 @@ from dbas.handler.voting import clear_vote_and_seen_values_of_user
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
-from dbas.helper.validation import *
+from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -85,7 +88,7 @@ def prepare_request_dict(request, nickname, for_api=False):
     :return:
     """
 
-    last_topic = history_helper.get_saved_issue(nickname)
+    last_topic = history_handler.get_saved_issue(nickname)
 
     slug = ''
     if 'slug' in request.matchdict:
@@ -96,9 +99,9 @@ def prepare_request_dict(request, nickname, for_api=False):
     if len(slug) == 0 and last_topic != 0:
         issue = last_topic
     elif len(slug) > 0:
-        issue = issue_helper.get_id_of_slug(slug, request, True, for_api)
+        issue = issue_handler.get_id_of_slug(slug, request, True, for_api)
     else:
-        issue = issue_helper.get_issue_id(request)
+        issue = issue_handler.get_issue_id(request)
 
     ui_locales = get_language_from_cookie(request)
     if issue == -1 and for_api:
@@ -109,7 +112,7 @@ def prepare_request_dict(request, nickname, for_api=False):
     if len(slug) == 0:
         slug = DBDiscussionSession.query(Issue).get(issue).slug
 
-    history = history_helper.handle_history(request, nickname, slug, issue)
+    history = history_handler.handle_history(request, nickname, slug, issue)
     disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
     set_language_for_visit(request)
 
@@ -831,11 +834,11 @@ def main_review(request):
     if unauthenticated:
         return unauthenticated
 
-    issue = issue_helper.get_issue_id(request)
+    issue = issue_handler.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
 
-    issue_dict = issue_helper.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, False,
-                                                    request.authenticated_userid)
+    issue_dict = issue_handler.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, False,
+                                                     request.authenticated_userid)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
                                                                                    request.application_url,
                                                                                    request.path,
@@ -1037,7 +1040,7 @@ def get_user_history(request):
     :return: json-dict()
     """
     ui_locales = get_language_from_cookie(request)
-    return history_helper.get_history_from_database(request.authenticated_userid, ui_locales)
+    return history_handler.get_history_from_database(request.authenticated_userid, ui_locales)
 
 
 # ajax - getting all text edits
@@ -1131,7 +1134,7 @@ def delete_user_history(request):
     """
     logger('delete_user_history', 'def', 'main')
     user.update_last_action(request.authenticated_userid)
-    return {'removed_data': str(history_helper.delete_history_in_database(request.authenticated_userid)).lower()}
+    return {'removed_data': str(history_handler.delete_history_in_database(request.authenticated_userid)).lower()}
 
 
 # ajax - deleting complete history of the user
@@ -1419,7 +1422,7 @@ def ajax_set_new_start_argument(request):
     _tn = Translator(discussion_lang)
     data = {}
     try:
-        issue = issue_helper.get_issue_id(request)
+        issue = issue_handler.get_issue_id(request)
         data['nickname'] = request.authenticated_userid
         data['user'] = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).one()
         data['issue'] = DBDiscussionSession.query(Issue).get(issue)
@@ -1456,38 +1459,8 @@ def ajax_set_new_start_argument(request):
     return prepared_dict_pos
 
 
-# ajax - send new start statement
-@validate((valid_user, valid_issue, valid_statement_text,))
-@view_config(route_name='ajax_set_new_start_statement', renderer='json')
-def set_new_start_statement(request):
-    """
-    Inserts a new statement into the database, which should be available at the beginning
-
-    :param request: request of the web server
-    :return: a status code, if everything was successful
-    """
-    logger('views', 'set_new_start_statement', 'request.params: {}'.format(request.params))
-    data = {
-        'user': request.validated['user'],
-        'statement': request.validated['statement'],
-        'issue': request.validated['issue'],
-        'discussion_lang': get_discussion_language(request.matchdict, request.params, request.session),
-        'default_locale_name': get_default_locale_name(request.registry),
-        'application_url': request.application_url
-    }
-
-    prepared_dict = set_position(False, data)
-
-    if prepared_dict.get('status', '') is 'error':
-        return HTTPBadRequest({
-            'path': request.path,
-            'message': prepared_dict.get('error', '')
-        })
-
-    return prepared_dict
-
-
 # ajax - send new start premise
+@validate(valid_user, valid_issue, valid_conclusion)
 @view_config(route_name='ajax_set_new_start_premise', renderer='json')
 def set_new_start_premise(request):
     """
@@ -1501,12 +1474,13 @@ def set_new_start_premise(request):
     lang = get_discussion_language(request.matchdict, request.params, request.session)
     _tn = Translator(lang)
     try:
-        data['nickname'] = request.authenticated_userid
+        data['user'] = request.validated['user']
         data['application_url'] = request.application_url
-        data['issue_id'] = issue_helper.get_issue_id(request)
-        data['issue'] = DBDiscussionSession.query(Issue).get(issue_helper.get_issue_id(request))
+        data['issue'] = request.validated['issue']
+
         data['statement'] = json.loads(request.params['premisegroups'])
-        data['conclusion_id'] = request.params['conclusion_id']
+
+        data['conclusion'] = request.validated['conclusion']
         data['supportive'] = True if request.params['supportive'].lower() == 'true' else False
         data['port'] = get_port(request)
         data['history'] = request.cookies.get('_HISTORY_', None)
@@ -1540,7 +1514,7 @@ def set_new_premises_for_argument(request):
     try:
         data['nickname'] = request.authenticated_userid
         data['statement'] = json.loads(request.params['premisegroups'])
-        data['issue_id'] = issue_helper.get_issue_id(request)
+        data['issue_id'] = issue_handler.get_issue_id(request)
         data['issue'] = DBDiscussionSession.query(Issue).get(data['issue_id'])
         data['arg_uid'] = request.params['arg_uid']
         data['attack_type'] = request.params['attack_type']
@@ -1653,8 +1627,8 @@ def set_new_issue(request):
         logger('views', 'set_new_issue', repr(e), error=True)
         return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
-    prepared_dict = issue_helper.set_issue(request.authenticated_userid, info, long_info, title, lang, is_public,
-                                           is_read_only, request.application_url, ui_locales)
+    prepared_dict = issue_handler.set_issue(request.authenticated_userid, info, long_info, title, lang, is_public,
+                                            is_read_only, request.application_url, ui_locales)
     return prepared_dict
 
 
@@ -1922,7 +1896,7 @@ def set_references(request):
     logger('views', 'set_references', 'main: {}'.format(request.params))
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
-    issue_uid = issue_helper.get_issue_id(request)
+    issue_uid = issue_handler.get_issue_id(request)
 
     try:
         uid = request.params['uid']
@@ -2003,13 +1977,13 @@ def fuzzy_search(request, for_api=False, api_data=None):
     try:
         mode = str(api_data['mode']) if for_api else str(request.params['type'])
         value = api_data['value'] if for_api else request.params['value']
-        issue = api_data['issue'] if for_api else issue_helper.get_issue_id(request)
+        issue = api_data['issue'] if for_api else issue_handler.get_issue_id(request)
         extra = request.params.get('extra')
     except KeyError as e:
         logger('views', 'fuzzy_search', repr(e), error=True)
         return {'error': _tn.get(_.internalKeyError)}
 
-    issue_uid = issue_helper.get_issue_id(request)
+    issue_uid = issue_handler.get_issue_id(request)
     return_dict = fuzzy_string_matcher.get_prediction(_tn, for_api, api_data, request_authenticated_userid, issue_uid,
                                                       request.application_url, value, mode, issue, extra)
 

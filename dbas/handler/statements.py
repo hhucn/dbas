@@ -1,7 +1,7 @@
-from typing import List, Tuple, Dict, Union
-
+# coding=utf-8
 import transaction
 from sqlalchemy import and_, func
+from typing import List, Tuple, Dict, Union
 
 import dbas.review.helper.queues as review_queue_helper
 from dbas.database import DBDiscussionSession
@@ -106,17 +106,18 @@ def set_positions_premise(for_api: bool, data: Dict) -> dict:
     :return: Prepared collection with statement_uids of the new premises and next url or an error
     """
     try:
-        nickname = data['nickname']
+        db_user = data['user']
         premisegroups = data['statement']
-        issue = data["issue"]
-        conclusion_id = data['conclusion_id']
+        db_issue = data["issue"]
+
+        conclusion = data['conclusion']
         supportive = data['supportive']
         application_url = data['application_url']
         history = data['history'] if '_HISTORY_' in data else None
 
         port = data.get('port')
         mailer = data.get('mailer')
-        discussion_lang = data.get('discussion_lang', issue.lang)
+        discussion_lang = data.get('discussion_lang', db_issue.lang)
         default_locale_name = data.get('default_locale_name', discussion_lang)
 
     except KeyError as e:
@@ -126,35 +127,32 @@ def set_positions_premise(for_api: bool, data: Dict) -> dict:
 
     # escaping will be done in StatementsHelper().set_statement(...)
 
-    user.update_last_action(nickname)
+    user.update_last_action(db_user.nickname)
 
     _tn = Translator('discussion_lang')
-    if issue.is_read_only:
+    if db_issue.is_read_only:
         return {'error': _tn.get(_.discussionIsReadOnly), 'statement_uids': ''}
 
-    url, statement_uids, error = '', '', _tn.get(_.userNotFound)
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if db_user:
-        url, statement_uids, error = __process_input_of_start_premises_and_receive_url(default_locale_name,
-                                                                                       premisegroups,
-                                                                                       conclusion_id, supportive,
-                                                                                       issue,
-                                                                                       db_user, for_api,
-                                                                                       application_url,
-                                                                                       discussion_lang, history, port,
-                                                                                       mailer)
+    url, statement_uids, error = __process_input_of_start_premises_and_receive_url(default_locale_name,
+                                                                                   premisegroups,
+                                                                                   conclusion, supportive,
+                                                                                   db_issue,
+                                                                                   db_user, for_api,
+                                                                                   application_url,
+                                                                                   discussion_lang, history, port,
+                                                                                   mailer)
 
     prepared_dict = {'error': error,
                      'statement_uids': statement_uids}
 
     # add reputation
-    add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_justification)
+    add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_justification)
     if not add_rep:
-        add_rep, broke_limit = add_reputation_for(nickname, rep_reason_new_statement)
+        add_rep, broke_limit = add_reputation_for(db_user, rep_reason_new_statement)
         # send message if the user is now able to review
     if broke_limit:
         _t = Translator(discussion_lang)
-        send_request_for_info_popup_to_socketio(nickname, port, _t.get(_.youAreAbleToReviewNow),
+        send_request_for_info_popup_to_socketio(db_user.nickname, port, _t.get(_.youAreAbleToReviewNow),
                                                 '{}/review'.format(application_url))
         prepared_dict['url'] = '{}{}'.format(url, '#access-review')
 
@@ -242,7 +240,7 @@ def correct_statement(db_user, uid, corrected_text):
     """
     Corrects a statement
 
-    :param user: User.nickname requesting user
+    :param db_user: User requesting user
     :param uid: requested statement uid
     :param corrected_text: new text
     :return: dict()
@@ -428,7 +426,8 @@ def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue, lan
     return statement, False
 
 
-def __process_input_of_start_premises_and_receive_url(default_locale_name, premisegroups, conclusion_id, supportive,
+def __process_input_of_start_premises_and_receive_url(default_locale_name, premisegroups, db_conclusion: Statement,
+                                                      supportive,
                                                       db_issue: Issue, db_user: User, for_api, application_url,
                                                       discussion_lang, history,
                                                       port, mailer):
@@ -437,10 +436,10 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
 
     :param default_locale_name: Default lang of the app
     :param premisegroups: [String]
-    :param conclusion_id: Statement.uid
+    :param db_conclusion: Statement
     :param supportive: Boolean
-    :param issue_uid: Issue.uid
-    :param user: User.nickname
+    :param db_issue: Issue
+    :param db_user: User
     :param for_api: Boolean
     :param application_url: URL
     :param discussion_lang: ui_locales
@@ -462,7 +461,7 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     new_statement_uids = []  # all statement uids are stored in this list to create the link to a possible reference
     for group in premisegroups:  # premise groups is a list of lists
         new_argument, statement_uids = __create_argument_by_raw_input(application_url, default_locale_name, db_user,
-                                                                      group, conclusion_id, supportive, db_issue,
+                                                                      group, db_conclusion, supportive, db_issue,
                                                                       discussion_lang)
         if not new_argument:  # break on error
             error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength),
@@ -489,12 +488,12 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
         pgroups = []
         for arg_uid in new_argument_uids:
             pgroups.append(DBDiscussionSession.query(Argument).get(arg_uid).premisesgroup_uid)
-        url = _um.get_url_for_choosing_premisegroup(False, False, supportive, conclusion_id, pgroups)
+        url = _um.get_url_for_choosing_premisegroup(False, False, supportive, db_conclusion.uid, pgroups)
 
     # send notifications and mails
     if len(new_argument_uids) > 0:
-        email_url = _main_um.get_url_for_justifying_statement(False, conclusion_id, 't' if supportive else 'f')
-        NotificationHelper.send_add_text_notification(email_url, conclusion_id, db_user, port, mailer)
+        email_url = _main_um.get_url_for_justifying_statement(False, db_conclusion.uid, 't' if supportive else 'f')
+        NotificationHelper.send_add_text_notification(email_url, db_conclusion.uid, db_user, port, mailer)
 
     return url, new_statement_uids, error
 
@@ -593,7 +592,7 @@ def set_statements_as_new_premisegroup(statements: List[Statement], db_user: Use
     return db_premisegroup.uid
 
 
-def __create_argument_by_raw_input(application_url, default_locale_name, db_user: User, text: str, conclusion_id,
+def __create_argument_by_raw_input(application_url, default_locale_name, db_user: User, text: str, db_conclusion,
                                    is_supportive, db_issue: Issue, discussion_lang) \
         -> Tuple[Union[Argument, None], List[int]]:
     """
@@ -601,18 +600,16 @@ def __create_argument_by_raw_input(application_url, default_locale_name, db_user
 
     :param application_url: Url of the app itself
     :param default_locale_name: default lang of the app
-    :param user: User.nickname
+    :param db_user: User
     :param text: String
-    :param conclusion_id:
+    :param db_conclusion: Statement
     :param is_supportive: Boolean
     :param db_issue: Issue
     :return:
     """
     logger('StatementsHelper', '__create_argument_by_raw_input', 'main with text ' + str(text) + ' as premisegroup, ' +
-           'conclusion ' + str(conclusion_id) + ' in issue ' + str(db_issue.uid))
+           'conclusion ' + str(db_conclusion.uid) + ' in issue ' + str(db_issue.uid))
     # current conclusion
-    db_conclusion = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == conclusion_id,
-                                                                     Statement.issue_uid == db_issue.uid)).first()
     try:
         statement = insert_as_statement(application_url, default_locale_name, text, db_user, db_issue,
                                         discussion_lang)

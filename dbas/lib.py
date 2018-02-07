@@ -9,13 +9,13 @@ import locale
 import os
 import re
 import time
+
 from collections import defaultdict
 from datetime import datetime
 from enum import Enum
 from html import escape
-from urllib import parse
-
 from sqlalchemy import and_, func
+from urllib import parse
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, User, Settings, \
@@ -105,7 +105,7 @@ def escape_string(text):
 def get_discussion_language(matchdict, params, session, current_issue_uid=None):
     """
     Returns Language.ui_locales
-    CALL AFTER issue_helper.get_id_of_slug(..)!
+    CALL AFTER issue_handler.get_id_of_slug(..)!
 
     :param matchdict: matchdict of the current request
     :param params: params of the current request

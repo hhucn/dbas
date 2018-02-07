@@ -5,9 +5,12 @@ Provides helping function for creating the history as bubbles.
 """
 
 import transaction
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, History, Settings, sql_timestamp_pretty_print, \
     Issue
+from dbas.database.initializedb import nick_of_anonymous_user
+from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement
 from dbas.input_validator import check_reaction
 from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_text_for_statement_uid, \
     get_text_for_premisesgroup_uid, get_text_for_conclusion, bubbles_already_last_in_list, BubbleTypes
@@ -15,8 +18,6 @@ from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support
 from dbas.strings.translator import Translator
-from dbas.database.initializedb import nick_of_anonymous_user
-from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement
 
 
 def save_issue_uid(issue_uid, nickname):
@@ -93,7 +94,7 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
     if len(history) == 0:
         return []
 
-    logger('history_helper', 'create_bubbles_from_history', 'nickname: ' + str(nickname) + ', history: ' + history)
+    logger('history_handler', 'create_bubbles_from_history', 'nickname: ' + str(nickname) + ', history: ' + history)
     splitted_history = get_splitted_history(history)
 
     bubble_array = []
@@ -117,7 +118,7 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
             __prepare_support_step(bubble_array, index, step, nickname, lang, application_url)
 
         else:
-            logger('history_helper', 'create_bubbles_from_history', str(index) + ': unused case -> ' + step)
+            logger('history_handler', 'create_bubbles_from_history', str(index) + ': unused case -> ' + step)
 
     return bubble_array
 
@@ -153,7 +154,7 @@ def __prepare_justify_statement_step(bubble_array, index, step, nickname, lang, 
     :param url: String
     :return: None
     """
-    logger('history_helper', '__prepare_justify_statement_step', str(index) + ': justify case -> ' + step)
+    logger('history_handler', '__prepare_justify_statement_step', str(index) + ': justify case -> ' + step)
     steps = step.split('/')
     if len(steps) < 3:
         return
@@ -185,7 +186,7 @@ def __prepare_reaction_step(bubble_array, index, application_url, step, nickname
     :param url: String
     :return: None
     """
-    logger('history_helper', '__prepare_reaction_step', str(index) + ': reaction case -> ' + step)
+    logger('history_handler', '__prepare_reaction_step', str(index) + ': reaction case -> ' + step)
     bubbles = get_bubble_from_reaction_step(application_url, step, nickname, lang, splitted_history, url)
     if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
         bubble_array += bubbles
@@ -203,7 +204,7 @@ def __prepare_support_step(bubble_array, index, step, nickname, lang, applicatio
     :param application_url: String
     :return: None
     """
-    logger('history_helper', '__prepare_support_step', str(index) + ': support case -> ' + step)
+    logger('history_handler', '__prepare_support_step', str(index) + ': support case -> ' + step)
     steps = step.split('/')
     if len(steps) < 3:
         return
@@ -225,7 +226,7 @@ def __get_bubble_from_justify_statement_step(step, nickname, lang, url):
     :param url: String
     :return: [dict()]
     """
-    logger('history_helper', '__justify_statement_step', 'def')
+    logger('history_handler', '__justify_statement_step', 'def')
     steps = step.split('/')
     uid = int(steps[1])
     is_supportive = steps[2] == 't' or steps[2] == 'd'  # supportive = t(rue) or d(ont know) mode
@@ -282,7 +283,7 @@ def __get_bubble_from_attitude_step(step, nickname, lang, url):
     :param url: String
     :return: [dict()]
     """
-    logger('history_helper', '__attitude_step', 'def')
+    logger('history_handler', '__attitude_step', 'def')
     steps = step.split('/')
     uid = int(steps[1])
     text = get_text_for_statement_uid(uid)
@@ -344,7 +345,7 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
     :param color_steps: Boolean
     :return: [dict()]
     """
-    logger('history_helper', 'get_bubble_from_reaction_step', 'def: ' + str(step) + ', ' + str(splitted_history))
+    logger('history_handler', 'get_bubble_from_reaction_step', 'def: ' + str(step) + ', ' + str(splitted_history))
     steps = step.split('/')
     uid = int(steps[1])
 
@@ -356,7 +357,7 @@ def get_bubble_from_reaction_step(main_page, step, nickname, lang, splitted_hist
         additional_uid = int(steps[2])
 
     if not check_reaction(uid, additional_uid, attack, is_history=True):
-        logger('history_helper', 'get_bubble_from_reaction_step', 'wrong reaction')
+        logger('history_handler', 'get_bubble_from_reaction_step', 'wrong reaction')
         return None
 
     is_supportive = DBDiscussionSession.query(Argument).get(uid).is_supportive

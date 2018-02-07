@@ -721,6 +721,7 @@ class Keywords(Enum):
     whatIsYourMostImportantReasonWhyForInColor = 'whatIsYourMostImportantReasonWhyForInColor'
     whatIsYourMostImportantReasonWhyAgainstInColor = 'whatIsYourMostImportantReasonWhyAgainstInColor'
     whyDoYouThinkThat = 'whyDoYouThinkThat'
+    wrongConclusion = 'wrongConclusion'
     wrongURL = 'wrongURL'
     whyAreYouDisagreeingWith = 'whyAreYouDisagreeingWith'
     whyAreYouAgreeingWith = 'whyAreYouAgreeingWith'

@@ -1,9 +1,9 @@
 from cornice import Errors
 from cornice.util import json_error
 
-import dbas.handler.issue as issue_helper
+import dbas.handler.issue as issue_handler
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Issue
+from dbas.database.discussion_model import User, Issue, Statement
 from dbas.handler.language import get_language_from_cookie
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -37,12 +37,25 @@ def valid_user(request):
 
 
 def valid_issue(request):
-    db_issue = DBDiscussionSession.query(Issue).get(issue_helper.get_issue_id(request))
+    db_issue = DBDiscussionSession.query(Issue).get(issue_handler.get_issue_id(request))
 
     if db_issue:
         request.validated['issue'] = db_issue
     else:
         request.errors.add('body', 'Invalid issue')
+        request.errors.status = 400
+
+
+def valid_conclusion(request):
+    conclusion_id = request.params.get('conclusion_id')
+    issue_id = request.validated['issue'].id if 'issue' in request.validated else issue_handler.get_issue_id(request)
+
+    if conclusion_id:
+        db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id, issue_uid=issue_id).first()
+        request.validated['conclusion'] = db_conclusion
+    else:
+        _tn = Translator(get_language_from_cookie(request))
+        request.errors.add('body', 'Invalid conclusion id', _tn.get(_.wrongConclusion))
         request.errors.status = 400
 
 
@@ -76,7 +89,7 @@ class validate(object):
         def my_view(request)
     """
 
-    def __init__(self, validators=()):
+    def __init__(self, *validators):
         self.validators = validators
 
     def __call__(self, func):
