@@ -56,7 +56,7 @@ def valid_statement_text(request):
         b = _tn.get(_.minLength)
         c = _tn.get(_.eachStatement)
         error = '{} ({}: {} {})'.format(a, b, min_length, c)
-        request.errors.add('params', 'Text too short', error)
+        request.errors.add('body', 'Text too short', error)
         request.errors.status = 400
 
     else:

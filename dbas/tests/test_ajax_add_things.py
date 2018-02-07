@@ -43,10 +43,9 @@ class AjaxAddThingsTest(unittest.TestCase):
         DBDiscussionSession.query(ClickedArgument).filter_by(argument_uid=db_new_arg.uid).delete()
         DBDiscussionSession.query(Argument).filter_by(uid=db_new_arg.uid).delete()
 
-    def __set_start_statement_and_rep(self, ajax, db_user):
-        db_issue = DBDiscussionSession.query(Issue).get(1)
-        request = testing.DummyRequest(params={'statement': 'New statement for an issue'}, matchdict={})
-        response = ajax(request, user=db_user, issue=db_issue)
+    def __set_start_statement_and_rep(self, ajax):
+        request = testing.DummyRequest(params={'statement': 'New statement for an issue'}, matchdict={'issue': 1})
+        response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['url']) != 0)
         self.assertTrue(len(response['statement_uids']) != 0)
@@ -59,15 +58,13 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_new_start_statement(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        db_user = DBDiscussionSession.query(User).filter_by(nickname="Tobias").first()
         from dbas.views import set_new_start_statement as ajax
-        self.__set_start_statement_and_rep(ajax, db_user)
+        self.__set_start_statement_and_rep(ajax)
 
     def test_set_new_start_statement_reputation(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
-        db_user = DBDiscussionSession.query(User).filter_by(nickname="Björn").first()
         from dbas.views import set_new_start_statement as ajax
-        self.__set_start_statement_and_rep(ajax, db_user)
+        self.__set_start_statement_and_rep(ajax)
 
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Björn').first()
         DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()
