@@ -61,12 +61,13 @@ function AjaxDiscussionHandler() {
 
 	/**
 	 * Sends new premises to the server. Answer will be given to a callback
-     * @param premises List of premisegroups
+     * @param text_array List of premisegroups
 	 * @param conclusion_id id of the conclusion
 	 * @param supportive boolean, whether it is supportive
 	 */
-    this.sendNewStartPremise = function (premises, conclusion_id, supportive) {
+    this.sendNewStartPremise = function (text_array, conclusion_id, supportive) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		console.log(text_array);
 		$.ajax({
 			url: 'ajax_set_new_start_premise',
 			method: 'POST',

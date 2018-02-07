@@ -1,6 +1,7 @@
 # coding=utf-8
 from cornice import Errors
 from cornice.util import json_error
+from dbas.logger import logger
 
 import dbas.handler.issue as issue_handler
 from dbas.database import DBDiscussionSession
@@ -28,6 +29,7 @@ def combine(*decorators):
 
 
 def valid_user(request):
+    logger('validation', 'valid_user', 'def')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).one_or_none()
 
     if db_user:
@@ -39,6 +41,7 @@ def valid_user(request):
 
 
 def valid_issue(request):
+    logger('validation', 'valid_issue', 'def')
     db_issue = DBDiscussionSession.query(Issue).get(issue_handler.get_issue_id(request))
 
     if db_issue:
@@ -69,6 +72,7 @@ def valid_conclusion(request):
         db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id, issue_uid=issue_id).first()
         request.validated['conclusion'] = db_conclusion
     else:
+        logger('validation', 'valid_conclusion', 'conclusion id is missing', error=True)
         _tn = Translator(get_language_from_cookie(request))
         request.errors.add('body', 'Invalid conclusion id', _tn.get(_.wrongConclusion))
         request.errors.status = 400
@@ -93,13 +97,13 @@ def valid_statement_text(request):
 
 def has_keywords(*keywords):
     def valid_keywords(request):
-        logger("\n\n\nAAHAHAHRHRHRH\n\n\n\n", "aaidfgjhjkqaf", request.json_body)
         for keyword in keywords:
             value = request.json_body.get(keyword)
 
             if value:
                 request.validated[keyword] = value
             else:
+                logger('validation', 'valid_keywords', 'keyword: {} is not there'.format(keyword), error=True)
                 request.errors.add('body', '{} is missing'.format(keyword))
                 request.errors.status = 400
 
