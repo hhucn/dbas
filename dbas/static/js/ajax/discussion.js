@@ -70,13 +70,13 @@ function AjaxDiscussionHandler() {
 		$.ajax({
 			url: 'ajax_set_new_start_premise',
 			method: 'POST',
-			data: {
+            contentType: 'application/json',
+            data: JSON.stringify({
                 premisegroup: premises,
 				conclusion_id: conclusion_id,
 				supportive: supportive
-			},
+            }),
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}

@@ -36,9 +36,10 @@ def set_position(for_api, data) -> dict:
     """
     logger('StatementsHelper', 'set_position', str(data))
     try:
-        statement = data['statement']
+        statement_text = data['statement_text']
         db_user = data['user']
         db_issue = data['issue']
+
         default_locale_name = data.get('default_locale_name', db_issue.lang)
         application_url = data['application_url']
     except KeyError as e:
@@ -53,30 +54,9 @@ def set_position(for_api, data) -> dict:
 
     # escaping will be done in StatementsHelper().set_statement(...)
     user.update_last_action(db_user.nickname)
-    _tn = Translator(db_issue.lang)
 
-    if db_issue.is_read_only:
-        return {
-            'error': _tn.get(_.discussionIsReadOnly),
-            'statement_uids': '',
-            'status': 'error',
-            'url': ''
-        }
-
-    try:
-        new_statement = insert_as_statement(application_url, default_locale_name, statement, db_user, db_issue,
-                                            db_issue.lang, is_start=True)
-    except StatementToShort as e:
-        a = _tn.get(_.notInsertedErrorBecauseEmpty)
-        b = _tn.get(_.minLength)
-        c = _tn.get(_.eachStatement)
-        error = '{} ({}: {} {})'.format(a, b, e.min_length, c)
-        return {
-            'error': error,
-            'statement_uids': '',
-            'status': 'error',
-            'url': ''
-        }
+    new_statement = insert_as_statement(application_url, default_locale_name, statement_text, db_user, db_issue,
+                                        db_issue.lang, is_start=True)
 
     _um = UrlManager(application_url, db_issue.slug, for_api)
     url = _um.get_url_for_statement_attitude(False, new_statement.uid)
@@ -335,9 +315,6 @@ def insert_as_statement(application_url: str, default_locale_name: str, text: st
         :param is_start: Boolean
         :return: Statement
         """
-    if len(text) < statement_min_length:
-        raise StatementToShort(text, statement_min_length)
-
     new_statement, is_duplicate = set_statement(text, db_user, is_start, db_issue, lang)
 
     # add marked statement

@@ -6,8 +6,9 @@ import dbas.handler.issue as issue_handler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Issue, Statement
 from dbas.handler.language import get_language_from_cookie
+from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.translator import Translator
+from dbas.strings.translator import Translator, get_translation
 
 
 def combine(*decorators):
@@ -42,13 +43,26 @@ def valid_issue(request):
 
     if db_issue:
         request.validated['issue'] = db_issue
+        return True
     else:
         request.errors.add('body', 'Invalid issue')
         request.errors.status = 400
+        return False
+
+
+def valid_issue_not_readonly(request):
+    if valid_issue(request) and not request.validated.get('issue').readonly:
+        request.errors.add('body',
+                           'Issue readonly',
+                           get_translation(request.validated.get('issue').lang, _.discussionIsReadOnly))
+        request.errors.status = 400
+        return False
+
+    return True
 
 
 def valid_conclusion(request):
-    conclusion_id = request.params.get('conclusion_id')
+    conclusion_id = request.json_body.get('conclusion_id')
     issue_id = request.validated['issue'].uid if 'issue' in request.validated else issue_handler.get_issue_id(request)
 
     if conclusion_id:
@@ -62,7 +76,7 @@ def valid_conclusion(request):
 
 def valid_statement_text(request):
     min_length = 10
-    text = request.params.get('statement', '')
+    text = request.json_body.get('statement', '')
 
     if len(text) < min_length:
         _tn = Translator(get_language_from_cookie(request))
@@ -79,8 +93,9 @@ def valid_statement_text(request):
 
 def has_keywords(*keywords):
     def valid_keywords(request):
+        logger("\n\n\nAAHAHAHRHRHRH\n\n\n\n", "aaidfgjhjkqaf", request.json_body)
         for keyword in keywords:
-            value = request.params.get(keyword)
+            value = request.json_body.get(keyword)
 
             if value:
                 request.validated[keyword] = value

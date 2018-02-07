@@ -48,7 +48,7 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
 from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, \
-    has_keywords
+    has_keywords, valid_issue_not_readonly
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -1409,8 +1409,8 @@ def set_discussion_properties(request):
 # ADDTIONAL AJAX STUFF # SET NEW THINGS #
 # #######################################
 
-@validate(valid_user, valid_issue)
 @view_config(route_name='ajax_set_new_start_argument', renderer='json')
+@validate(valid_user, valid_issue_not_readonly, has_keywords('position', 'reason'))
 def set_new_start_argument(request):
     """
     Inserts a new argument as starting point into the database
@@ -1419,31 +1419,24 @@ def set_new_start_argument(request):
     :return: a status code, if everything was successful
     """
     logger('views', 'set_new_start_argument', 'request.params: {}'.format(request.params))
-    discussion_lang = get_discussion_language(request.matchdict, request.params, request.session)
-    _tn = Translator(discussion_lang)
-    data = {}
+
+    reason = request.validated['reason']
+    data = {
+        'user': request.validated['user'],
+        'issue': request.validated['issue'],
+        'statement_text': request.validated['position'],
+
+        'default_locale_name': get_default_locale_name(request.registry),
+        'application_url': request.application_url,
+        'supportive': True,
+        'port': get_port(request),
+        'history': request.cookies.get('_HISTORY_'),
+    }
+
     try:
-        data['nickname'] = request.authenticated_userid
-        data['user'] = request.validated['user']
-        data['issue'] = request.validated['']
-        data['slug'] = data['issue'].slug
-        data['default_locale_name'] = get_default_locale_name(request.registry)
-        data['application_url'] = request.application_url
-        data['supportive'] = True
-        data['port'] = get_port(request)
-        data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
-        data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
-        data['default_locale_name'] = get_default_locale_name(request.registry)
-        position = request.params['position']
-        reason = request.params['reason']
-        data['statement'] = position
-        try:
-            data['mailer'] = get_mailer(request)
-        except ComponentLookupError as e:
-            logger('views', 'set_new_start_argument', repr(e), error=True)
-    except KeyError as e:
+        data['mailer'] = get_mailer(request)
+    except ComponentLookupError as e:
         logger('views', 'set_new_start_argument', repr(e), error=True)
-        return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
     # set the new position
     logger('views', 'set_new_start_argument', 'set conclusion/position')
@@ -1460,9 +1453,9 @@ def set_new_start_argument(request):
 
 
 # ajax - send new start premise
+@view_config(route_name='ajax_set_new_start_premise', renderer='json')
 @validate(valid_user, valid_issue, valid_conclusion,
           has_keywords('premisegroup', 'supportive'))
-@view_config(route_name='ajax_set_new_start_premise', renderer='json')
 def set_new_start_premise(request):
     """
     Sets new premise for the start
@@ -1477,13 +1470,13 @@ def set_new_start_premise(request):
         'issue': request.validated['issue'],
         'premisegroup': request.validated['premisegroup'],
         'conclusion': request.validated['conclusion'],
-        'supportive': request.validated['supportive'].lower() == 'true',
+        'supportive': request.validated['supportive'],
         'port': get_port(request),
-        'history': request.cookies.get('_HISTORY_', None),
+        'history': request.cookies.get('_HISTORY_'),
         'default_locale_name': get_default_locale_name(request.registry)
     }
 
-    # TODO Is this a configuration or a runtime error?
+    # TODO Is this a configuration or a runtime error? -> Fix it everywhere! Don't catch errors!
     try:
         data['mailer'] = get_mailer(request)
     except ComponentLookupError as e:
