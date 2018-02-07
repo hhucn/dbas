@@ -1410,7 +1410,7 @@ def set_discussion_properties(request):
 
 @validate(valid_user, valid_issue)
 @view_config(route_name='ajax_set_new_start_argument', renderer='json')
-def ajax_set_new_start_argument(request):
+def set_new_start_argument(request):
     """
     Inserts a new argument as starting point into the database
 
@@ -1422,10 +1422,9 @@ def ajax_set_new_start_argument(request):
     _tn = Translator(discussion_lang)
     data = {}
     try:
-        issue = issue_handler.get_issue_id(request)
         data['nickname'] = request.authenticated_userid
-        data['user'] = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).one()
-        data['issue'] = DBDiscussionSession.query(Issue).get(issue)
+        data['user'] = request.validated['user']
+        data['issue'] = request.validated['']
         data['slug'] = data['issue'].slug
         data['default_locale_name'] = get_default_locale_name(request.registry)
         data['application_url'] = request.application_url
@@ -1461,7 +1460,7 @@ def ajax_set_new_start_argument(request):
 
 # ajax - send new start premise
 @validate(valid_user, valid_issue, valid_conclusion,
-          has_keywords('premisegroups', 'supportive'))
+          has_keywords('premisegroup', 'supportive'))
 @view_config(route_name='ajax_set_new_start_premise', renderer='json')
 def set_new_start_premise(request):
     """

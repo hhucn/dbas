@@ -47,7 +47,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         db_arg1 = len(DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).all())
         len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
         request = testing.DummyRequest(params={
-            'premisegroups': json.dumps(['this is my first premisegroup']),
+            'premisegroup': ['this is my first premisegroup'],
             'conclusion_id': 2,
             'issue': 2,
             'supportive': 'true'
