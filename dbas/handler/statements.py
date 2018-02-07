@@ -107,8 +107,8 @@ def set_positions_premise(for_api: bool, data: Dict) -> dict:
     """
     try:
         db_user = data['user']
-        premisegroups = data['statement']
-        db_issue = data["issue"]
+        premisegroup = data['premisegroup']
+        db_issue = data['issue']
 
         conclusion = data['conclusion']
         supportive = data['supportive']
@@ -117,7 +117,7 @@ def set_positions_premise(for_api: bool, data: Dict) -> dict:
 
         port = data.get('port')
         mailer = data.get('mailer')
-        discussion_lang = data.get('discussion_lang', db_issue.lang)
+        discussion_lang = db_issue.lang
         default_locale_name = data.get('default_locale_name', discussion_lang)
 
     except KeyError as e:
@@ -134,7 +134,7 @@ def set_positions_premise(for_api: bool, data: Dict) -> dict:
         return {'error': _tn.get(_.discussionIsReadOnly), 'statement_uids': ''}
 
     url, statement_uids, error = __process_input_of_start_premises_and_receive_url(default_locale_name,
-                                                                                   premisegroups,
+                                                                                   premisegroup,
                                                                                    conclusion, supportive,
                                                                                    db_issue,
                                                                                    db_user, for_api,
@@ -426,7 +426,7 @@ def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue, lan
     return statement, False
 
 
-def __process_input_of_start_premises_and_receive_url(default_locale_name, premisegroups, db_conclusion: Statement,
+def __process_input_of_start_premises_and_receive_url(default_locale_name, premisegroup, db_conclusion: Statement,
                                                       supportive,
                                                       db_issue: Issue, db_user: User, for_api, application_url,
                                                       discussion_lang, history,
@@ -435,7 +435,7 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     Inserts the given text in premisegroups as new arguments in dependence of the input parameters and returns a URL for forwarding.
 
     :param default_locale_name: Default lang of the app
-    :param premisegroups: [String]
+    :param premisegroup: [String]
     :param db_conclusion: Statement
     :param supportive: Boolean
     :param db_issue: Issue
@@ -449,7 +449,7 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     :return: URL, [Statement.uid], String
     """
     logger('StatementsHelper', '__process_input_of_start_premises_and_receive_url',
-           'count of new pgroups: ' + str(len(premisegroups)))
+           'length of new pgroup: ' + str(len(premisegroup)))
     _tn = Translator(discussion_lang)
 
     error = ''
@@ -459,9 +459,9 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     # all new arguments are collected in a list
     new_argument_uids = []
     new_statement_uids = []  # all statement uids are stored in this list to create the link to a possible reference
-    for group in premisegroups:  # premise groups is a list of lists
+    for premise in premisegroup:  # premise groups is a list of lists
         new_argument, statement_uids = __create_argument_by_raw_input(application_url, default_locale_name, db_user,
-                                                                      group, db_conclusion, supportive, db_issue,
+                                                                      premise, db_conclusion, supportive, db_issue,
                                                                       discussion_lang)
         if not new_argument:  # break on error
             error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength),
@@ -592,7 +592,8 @@ def set_statements_as_new_premisegroup(statements: List[Statement], db_user: Use
     return db_premisegroup.uid
 
 
-def __create_argument_by_raw_input(application_url, default_locale_name, db_user: User, text: str, db_conclusion,
+def __create_argument_by_raw_input(application_url, default_locale_name, db_user: User, premise_text: str,
+                                   db_conclusion,
                                    is_supportive, db_issue: Issue, discussion_lang) \
         -> Tuple[Union[Argument, None], List[int]]:
     """
@@ -601,17 +602,18 @@ def __create_argument_by_raw_input(application_url, default_locale_name, db_user
     :param application_url: Url of the app itself
     :param default_locale_name: default lang of the app
     :param db_user: User
-    :param text: String
+    :param premise_text: String
     :param db_conclusion: Statement
     :param is_supportive: Boolean
     :param db_issue: Issue
     :return:
     """
-    logger('StatementsHelper', '__create_argument_by_raw_input', 'main with text ' + str(text) + ' as premisegroup, ' +
+    logger('StatementsHelper', '__create_argument_by_raw_input',
+           'main with premise_text ' + str(premise_text) + ' as premisegroup, ' +
            'conclusion ' + str(db_conclusion.uid) + ' in issue ' + str(db_issue.uid))
     # current conclusion
     try:
-        statement = insert_as_statement(application_url, default_locale_name, text, db_user, db_issue,
+        statement = insert_as_statement(application_url, default_locale_name, premise_text, db_user, db_issue,
                                         discussion_lang)
 
         # second, set the new statements as premisegroup
