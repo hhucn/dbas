@@ -47,7 +47,8 @@ from dbas.handler.voting import clear_vote_and_seen_values_of_user
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
-from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion
+from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, \
+    has_keywords
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -1314,7 +1315,6 @@ def set_user_settings(request):
     Sets a specific setting of the user
 
     :param request: current request of the server
-    :param db_user: current user instance
     :return: json-dict()
     """
     logger('Views', 'set_user_settings', 'request.params: {}'.format(request.params))
@@ -1409,8 +1409,9 @@ def set_discussion_properties(request):
 # ADDTIONAL AJAX STUFF # SET NEW THINGS #
 # #######################################
 
+@validate(valid_user, valid_issue)
 @view_config(route_name='ajax_set_new_start_argument', renderer='json')
-def ajax_set_new_start_argument(request):
+def set_new_start_argument(request):
     """
     Inserts a new argument as starting point into the database
 
@@ -1422,10 +1423,9 @@ def ajax_set_new_start_argument(request):
     _tn = Translator(discussion_lang)
     data = {}
     try:
-        issue = issue_handler.get_issue_id(request)
         data['nickname'] = request.authenticated_userid
-        data['user'] = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).one()
-        data['issue'] = DBDiscussionSession.query(Issue).get(issue)
+        data['user'] = request.validated['user']
+        data['issue'] = request.validated['']
         data['slug'] = data['issue'].slug
         data['default_locale_name'] = get_default_locale_name(request.registry)
         data['application_url'] = request.application_url
@@ -1451,7 +1451,7 @@ def ajax_set_new_start_argument(request):
     if len(prepared_dict_pos['error']) is 0:
         logger('views', 'set_new_start_argument', 'set premise/reason')
         # set the premise
-        data['statement'] = [reason]
+        data['premisegroup'] = [reason]
         data['conclusion_id'] = prepared_dict_pos['statement_uids'][0]
         prepared_dict_reas = set_positions_premise(False, data)
         return prepared_dict_reas
@@ -1460,7 +1460,8 @@ def ajax_set_new_start_argument(request):
 
 
 # ajax - send new start premise
-@validate(valid_user, valid_issue, valid_conclusion)
+@validate(valid_user, valid_issue, valid_conclusion,
+          has_keywords('premisegroup', 'supportive'))
 @view_config(route_name='ajax_set_new_start_premise', renderer='json')
 def set_new_start_premise(request):
     """
@@ -1470,29 +1471,23 @@ def set_new_start_premise(request):
     :return: json-dict()
     """
     logger('views', 'set_new_start_premise', 'request.params: {}'.format(request.params))
-    data = {}
-    lang = get_discussion_language(request.matchdict, request.params, request.session)
-    _tn = Translator(lang)
+    data = {
+        'user': request.validated['user'],
+        'application_url': request.application_url,
+        'issue': request.validated['issue'],
+        'premisegroup': request.validated['premisegroup'],
+        'conclusion': request.validated['conclusion'],
+        'supportive': request.validated['supportive'].lower() == 'true',
+        'port': get_port(request),
+        'history': request.cookies.get('_HISTORY_', None),
+        'default_locale_name': get_default_locale_name(request.registry)
+    }
+
+    # TODO Is this a configuration or a runtime error?
     try:
-        data['user'] = request.validated['user']
-        data['application_url'] = request.application_url
-        data['issue'] = request.validated['issue']
-
-        data['statement'] = json.loads(request.params['premisegroups'])
-
-        data['conclusion'] = request.validated['conclusion']
-        data['supportive'] = True if request.params['supportive'].lower() == 'true' else False
-        data['port'] = get_port(request)
-        data['history'] = request.cookies.get('_HISTORY_', None)
-        data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
-        data['default_locale_name'] = get_default_locale_name(request.registry)
-        try:
-            data['mailer'] = get_mailer(request)
-        except ComponentLookupError as e:
-            logger('views', 'set_new_start_premise', repr(e), error=True)
-    except KeyError as e:
+        data['mailer'] = get_mailer(request)
+    except ComponentLookupError as e:
         logger('views', 'set_new_start_premise', repr(e), error=True)
-        return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
     prepared_dict = set_positions_premise(False, data)
     return prepared_dict

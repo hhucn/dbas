@@ -33,7 +33,8 @@ def send_request_for_info_popup_to_socketio(nickname, port, message='', url=None
         __send_request_for_popup_to_socketio(nickname, port, 'info', message, url, increase_counter, use_https)
 
 
-def send_request_for_info_popup_to_socketio_with_delay(nickname, port, message='', url=None, increase_counter=False, delay=5):
+def send_request_for_info_popup_to_socketio_with_delay(nickname, port, message='', url=None, increase_counter=False,
+                                                       delay=5):
     """
     Sends request to the socketio server for an info popup with a specific delay
 
@@ -85,11 +86,11 @@ def send_request_for_warning_popup_to_socketio(nickname, port, message='', url=N
     __send_request_for_popup_to_socketio(nickname, port, 'warning', message, url, increase_counter)
 
 
-def __send_request_for_popup_to_socketio(nickname, port, popup_type, message='', url=None, increase_counter=False, use_https=False):
+def __send_request_for_popup_to_socketio(nickname, port, popup_type, message='', url=None, increase_counter=False,
+                                         use_https=False):
     """
     Sends an request to the socket io server
 
-    :param request: Current webservers request
     :param popup_type: String (success, warning, info)
     :param nickname: nickname of the user
     :param port: Port of the notification server
@@ -135,7 +136,8 @@ def send_request_for_recent_reviewer_socketio(nickname, main_page, port, queue):
     :param queue: Key of the last reviewers queue
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'send_request_for_recent_reviewer_socketio', 'main - nickname {} for queue {}'.format(nickname, queue))
+    logger('Websocket.lib', 'send_request_for_recent_reviewer_socketio',
+           'main - nickname {} for queue {}'.format(nickname, queue))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     reviewer_name = db_user.get_global_nickname()
     reviewer_image_url = get_profile_picture(db_user)
@@ -188,14 +190,9 @@ def __open_url(url):
 
 def get_port(request):
     """
-    Lets have a loko into the settings if there is a websocket port, otherwise 5222 will be returned
+    Lets have a look into the settings if there is a websocket port, otherwise 5222 will be returned
 
     :param request: pyramid's request object
     :return: int
     """
-    try:
-        if request and 'settings:services:websocket_port' in request.registry.settings:
-            return request.registry.settings['settings:services:websocket_port']
-    except KeyError as e:
-        logger('Websocket.lib', 'get_port', 'error while reading port: {}'.format(repr(e)), error=True)
-    return fallback_port
+    return request.registry.settings.get('settings:services:websocket_port', fallback_port)

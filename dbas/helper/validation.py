@@ -1,3 +1,4 @@
+# coding=utf-8
 from cornice import Errors
 from cornice.util import json_error
 
@@ -76,6 +77,20 @@ def valid_statement_text(request):
         request.validated['statement'] = text
 
 
+def has_keywords(*keywords):
+    def valid_keywords(request):
+        for keyword in keywords:
+            value = request.params.get(keyword)
+
+            if value:
+                request.validated[keyword] = value
+            else:
+                request.errors.add('body', '{} is missing'.format(keyword))
+                request.errors.status = 400
+
+    return valid_keywords
+
+
 class validate(object):
     """
         Applies all validators to this function.
@@ -102,7 +117,7 @@ class validate(object):
                 setattr(request, 'info', {})
 
             for validator in self.validators:
-                validator(request)
+                validator(request=request)
 
             if len(request.errors) > 0:
                 return json_error(request)
