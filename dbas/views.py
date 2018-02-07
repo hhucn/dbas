@@ -9,8 +9,7 @@ from typing import Callable, Any
 
 import graphene
 import requests
-from pyramid.httpexceptions import HTTPBadRequest
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPBadRequest
 from pyramid.renderers import get_renderer
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
@@ -53,7 +52,6 @@ from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
 from dbas.logger import logger
-from dbas.requests import http_exception
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from websocket.lib import get_port
@@ -218,12 +216,8 @@ def main_settings(request):
         return unauthenticated
 
     ui_locales = get_language_from_cookie(request)
-    old_pw = ''
-    new_pw = ''
-    confirm_pw = ''
-    message = ''
-    success = False
-    error = False
+    old_pw, new_pw, confirm_pw, message = '', '', '', ''
+    success, error = False, False
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(request.authenticated_userid)).join(Group).first()
     _uh = user
     _t = Translator(ui_locales)
@@ -584,7 +578,10 @@ def notfound(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     if request.path.startswith('/api'):
-        return http_exception(request.path)
+        return HTTPNotFound({
+            'path': request.path,
+            'message': 'Not Found'
+        })
 
     user.update_last_action(request.authenticated_userid)
     logger('notfound', 'def', 'main in {}'.format(request.method) + '-request' +
@@ -1487,12 +1484,18 @@ def set_new_start_statement(request, **kwargs):
         data['application_url'] = request.application_url
     except KeyError as e:
         logger('views', 'set_new_start_statement', repr(e), error=True)
-        return http_exception(request.path, HTTPBadRequest.status_code, _tn.get(_.notInsertedErrorBecauseInternal))
+        return HTTPBadRequest({
+            'path': request.path,
+            'message': _tn.get(_.notInsertedErrorBecauseInternal)
+        })
 
     prepared_dict = set_position(False, data)
 
     if prepared_dict.get('status', '') is 'error':
-        return http_exception(request.path, HTTPBadRequest.status_code, prepared_dict.get('error', ''))
+        return HTTPBadRequest({
+            'path': request.path,
+            'message': prepared_dict.get('error', '')
+        })
 
     return prepared_dict
 
