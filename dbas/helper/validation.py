@@ -1,7 +1,6 @@
 # coding=utf-8
 from cornice import Errors
 from cornice.util import json_error
-from dbas.logger import logger
 
 import dbas.handler.issue as issue_handler
 from dbas.database import DBDiscussionSession
@@ -29,25 +28,25 @@ def combine(*decorators):
 
 
 def valid_user(request):
-    logger('validation', 'valid_user', 'def')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).one_or_none()
 
     if db_user:
         request.validated['user'] = db_user
     else:
+        logger('validation', 'valid_user', 'no user is given', error=True)
         _tn = Translator(get_language_from_cookie(request))
         request.errors.add('body', 'Invalid user', _tn.get(_.checkNickname))
         request.errors.status = 400
 
 
 def valid_issue(request):
-    logger('validation', 'valid_issue', 'def')
     db_issue = DBDiscussionSession.query(Issue).get(issue_handler.get_issue_id(request))
 
     if db_issue:
         request.validated['issue'] = db_issue
         return True
     else:
+        logger('validation', 'valid_issue', 'no issue is given', error=True)
         request.errors.add('body', 'Invalid issue')
         request.errors.status = 400
         return False
@@ -97,9 +96,6 @@ def valid_statement_text(request):
 
 def has_keywords(*keywords):
     def valid_keywords(request):
-        logger('X', 'X', str([k for k in request.params.keys()]))
-        for p in request.params:
-            logger('X', str(p), str(request.params[p]))
         for keyword in keywords:
             value = request.json_body.get(keyword)
 

@@ -67,13 +67,12 @@ function AjaxDiscussionHandler() {
 	 */
     this.sendNewStartPremise = function (text_array, conclusion_id, supportive) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		console.log(text_array);
 		$.ajax({
 			url: 'ajax_set_new_start_premise',
 			method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
-                premisegroup: premises,
+                premisegroup: text_array,
 				conclusion_id: conclusion_id,
 				supportive: supportive
             }),
