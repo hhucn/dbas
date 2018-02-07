@@ -1460,9 +1460,9 @@ def set_new_start_argument(request):
 
 
 # ajax - send new start premise
+@view_config(route_name='ajax_set_new_start_premise', renderer='json')
 @validate(valid_user, valid_issue, valid_conclusion,
           has_keywords('premisegroup', 'supportive'))
-@view_config(route_name='ajax_set_new_start_premise', renderer='json')
 def set_new_start_premise(request):
     """
     Sets new premise for the start

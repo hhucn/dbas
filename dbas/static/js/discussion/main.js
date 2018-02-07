@@ -635,7 +635,7 @@ function Main () {
 	this.setInputExtraOptions = function (guiHandler, interactionHandler) {
 		var spaceList = $('#' + discussionSpaceListId);
 		var input = spaceList.find('li:last-child input');
-		var text = [], splits, conclusion, supportive, arg, relation;
+		var text_array = [], splits, conclusion, supportive, arg, relation;
 		splits = window.location.href.split('?');
 		splits = splits[0].split('/');
 		var sendStartStatement = function () {
@@ -646,19 +646,19 @@ function Main () {
 		var sendStartPremise = function () {
 			conclusion = splits[splits.length - 2];
 			supportive = splits[splits.length - 1] === 't';
-			text = [];
+			text_array = [];
 			$('#' + addPremiseContainerBodyId + ' input').each(function () {
 				if ($(this).val().length > 0) {
-					text.push($(this).val());
+					text_array.push($(this).val());
 				}
 			});
-			interactionHandler.sendStatement(text, conclusion, supportive, '', '', fuzzy_start_premise);
+			interactionHandler.sendStatement(text_array, conclusion, supportive, '', '', fuzzy_start_premise);
 		};
 		var sendArgumentsPremise = function () {
-			text = [];
+			text_array = [];
 			$('#' + addPremiseContainerBodyId + ' input').each(function () {
 				if ($(this).val().length > 0) {
-					text.push($(this).val());
+					text_array.push($(this).val());
 				}
 			});
 			var url = window.location.href.split('?')[0];
@@ -666,7 +666,7 @@ function Main () {
 			arg = splits[splits.length - 3 - add];
 			supportive = splits[splits.length - 2 - add] === 't';
 			relation = splits[splits.length - 1 - add];
-			interactionHandler.sendStatement(text, '', supportive, arg, relation, fuzzy_add_reason);
+			interactionHandler.sendStatement(text_array, '', supportive, arg, relation, fuzzy_add_reason);
 		};
 
 		if (window.location.href.indexOf('/r/') !== -1) {
