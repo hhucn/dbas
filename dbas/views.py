@@ -4,22 +4,20 @@ Collection of pyramids views components of D-BAS' core.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
-import json
-from typing import Callable, Any
-
 import graphene
+import json
 import requests
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPBadRequest
 from pyramid.renderers import get_renderer
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid_mailer import get_mailer
+from typing import Callable, Any
 from webob_graphql import serve_graphql_request
 from zope.interface.interfaces import ComponentLookupError
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_helper
-import dbas.handler.issue as issue_helper
 import dbas.handler.news as news_handler
 import dbas.review.helper.core as review
 import dbas.review.helper.history as review_history_helper
@@ -29,13 +27,12 @@ import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
 from api.v2.graphql.core import Query
 from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, Issue
+from dbas.database.discussion_model import Group
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
 from dbas.handler.arguments import set_arguments_premises, get_all_infos_about_argument, get_arguments_by_statement_uid
 from dbas.handler.issue import get_issues_overiew, set_discussions_properties
-from dbas.handler.language import set_language, get_language_from_cookie, set_language_for_visit
+from dbas.handler.language import set_language, set_language_for_visit
 from dbas.handler.notification import read_notifications, delete_notifications, send_users_notification
 from dbas.handler.password import request_password
 from dbas.handler.references import set_reference, get_references
@@ -47,7 +44,7 @@ from dbas.handler.voting import clear_vote_and_seen_values_of_user
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
-from dbas.helper.validation import combine, valid_user, valid_issue
+from dbas.helper.validation import *
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -1460,34 +1457,24 @@ def ajax_set_new_start_argument(request):
 
 
 # ajax - send new start statement
-
-@view_config(route_name='ajax_set_new_start_statement', renderer='json', decorator=combine(valid_user, valid_issue))
-def set_new_start_statement(request, **kwargs):
+@validate((valid_user, valid_issue, valid_statement_text,))
+@view_config(route_name='ajax_set_new_start_statement', renderer='json')
+def set_new_start_statement(request):
     """
     Inserts a new statement into the database, which should be available at the beginning
 
     :param request: request of the web server
-    :param kwargs: keyworded arguments from the decorator
     :return: a status code, if everything was successful
     """
     logger('views', 'set_new_start_statement', 'request.params: {}'.format(request.params))
-    discussion_lang = get_discussion_language(request.matchdict, request.params, request.session)
-    _tn = Translator(discussion_lang)
-    data = {}
-    try:
-        data['user'] = kwargs['user']
-        data['statement'] = request.params['statement']
-        data['issue'] = kwargs['issue']
-        data['path'] = request.path
-        data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
-        data['default_locale_name'] = get_default_locale_name(request.registry)
-        data['application_url'] = request.application_url
-    except KeyError as e:
-        logger('views', 'set_new_start_statement', repr(e), error=True)
-        return HTTPBadRequest({
-            'path': request.path,
-            'message': _tn.get(_.notInsertedErrorBecauseInternal)
-        })
+    data = {
+        'user': request.validated['user'],
+        'statement': request.validated['statement'],
+        'issue': request.validated['issue'],
+        'discussion_lang': get_discussion_language(request.matchdict, request.params, request.session),
+        'default_locale_name': get_default_locale_name(request.registry),
+        'application_url': request.application_url
+    }
 
     prepared_dict = set_position(False, data)
 
