@@ -626,6 +626,7 @@ def notfound(request):
 
 # content page
 @view_config(route_name='discussion_init', renderer='templates/content.pt', permission='everybody')
+@view_config(route_name='discussion_init_with_slug', renderer='templates/content.pt', permission='everybody')
 def discussion_init(request, for_api=False, api_data=None):
     """
     View configuration for the initial discussion.
