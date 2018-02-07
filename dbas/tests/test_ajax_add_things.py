@@ -46,11 +46,11 @@ class AjaxAddThingsTest(unittest.TestCase):
     def __set_multiple_start_premises(self, ajax):
         db_arg1 = len(DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).all())
         len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'premisegroup': ['this is my first premisegroup'],
             'conclusion_id': 2,
             'issue': 2,
-            'supportive': 'true'
+            'supportive': True
         }, matchdict={})
         response = ajax(request)
         transaction.commit()
@@ -77,7 +77,7 @@ class AjaxAddThingsTest(unittest.TestCase):
     def test_set_new_start_premise_failure1(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import set_new_start_premise as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest(json_body={}, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
@@ -85,7 +85,7 @@ class AjaxAddThingsTest(unittest.TestCase):
     def test_set_new_start_premise_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_new_start_premise as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest(json_body={}, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
@@ -105,7 +105,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         db_arg2 = len(DBDiscussionSession.query(Argument).filter_by(uid=2).all())
         db_pgroups2 = len(DBDiscussionSession.query(PremiseGroup).all())
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
+        self.assertEqual(len(response['error']), 0)
         self.assertTrue(db_arg1 + 1, db_arg2)
         self.assertTrue(db_pgroups1 + 1, db_pgroups2)
         self.delete_last_argument_by_conclusion_uid(2)

@@ -650,6 +650,7 @@ def __create_argument_by_uids(db_user: User, premisegroup_uid, conclusion_uid, a
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()
 
+        # TODO This should be redundant code! new_argument should be the new argument
         new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
                                                                        Argument.is_supportive == is_supportive,
                                                                        Argument.author_uid == db_user.uid,
