@@ -48,7 +48,7 @@ def valid_issue(request):
 
 def valid_conclusion(request):
     conclusion_id = request.params.get('conclusion_id')
-    issue_id = request.validated['issue'].id if 'issue' in request.validated else issue_handler.get_issue_id(request)
+    issue_id = request.validated['issue'].uid if 'issue' in request.validated else issue_handler.get_issue_id(request)
 
     if conclusion_id:
         db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id, issue_uid=issue_id).first()

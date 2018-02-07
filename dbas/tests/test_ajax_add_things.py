@@ -80,7 +80,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         request = testing.DummyRequest(params={}, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertTrue(400, response.status_code)
 
     def test_set_new_start_premise_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
@@ -88,7 +88,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         request = testing.DummyRequest(params={}, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertTrue(400, response.status_code)
 
     def test_set_new_premises_for_argument(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
