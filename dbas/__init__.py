@@ -124,7 +124,7 @@ def main(global_config, **settings):
     config.add_route('ajax_user_login_oauth', '{url:.*}ajax_user_login_oauth')
     config.add_route('ajax_user_logout', '{url:.*}ajax_user_logout')
     config.add_route('ajax_set_new_start_argument', '/{url:.*}ajax_set_new_start_argument')
-    config.add_route('ajax_set_new_start_premise', 'ajax_set_new_start_premise')
+    config.add_route('ajax_set_new_start_premise', '/{url:.*}ajax_set_new_start_premise')
     config.add_route('ajax_set_new_premises_for_argument', '/{url:.*}ajax_set_new_premises_for_argument')
     config.add_route('ajax_set_correction_of_statement', '/{url:.*}ajax_set_correction_of_statement')
     config.add_route('ajax_set_new_issue', '/{url:.*}ajax_set_new_issue')
@@ -184,7 +184,8 @@ def main(global_config, **settings):
     config.add_route('discussion_choose', '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids')
     config.add_route('discussion_jump', '/discuss/{slug}/jump/{arg_id}')
     config.add_route('discussion_finish', '/discuss/finish')
-    config.add_route('discussion_init', '/discuss*slug')
+    config.add_route('discussion_init', '/discuss')
+    config.add_route('discussion_init_with_slug', '/discuss/{slug}')
 
     # review section
     config.add_route('review_index', '/review')
