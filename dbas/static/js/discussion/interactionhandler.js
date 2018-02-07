@@ -6,20 +6,6 @@ function InteractionHandler() {
 	'use strict';
 
 	/**
-	 * Callback, when a new position was send
-	 * @param data returned data
-	 */
-	this.callbackIfDoneForSendNewStartStatement = function (data) {
-		if (data.status === 'error') {
-			$('#' + addStatementErrorContainer).show();
-			$('#' + addStatementErrorMsg).text(data.error);
-		} else {
-			$('#' + discussionSpaceId + 'input:last-child').prop('checked', false);
-			window.location.href = data.url;
-		}
-	};
-
-	/**
 	 * Callback, when new statements were send
 	 * @param data returned data
 	 */

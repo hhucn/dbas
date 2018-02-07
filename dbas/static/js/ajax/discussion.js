@@ -105,9 +105,11 @@ function AjaxDiscussionHandler() {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSendStartStatementDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewStartStatement(data);
-		}).fail(function ajaxSendStartStatementFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			$('#' + discussionSpaceId + 'input:last-child').prop('checked', false);
+			window.location.href = data.url;
+		}).fail(function ajaxSendStartStatementFail(data) {
+			$('#' + addStatementErrorContainer).show();
+			$('#' + addStatementErrorMsg).text(data.error);
 		});
 	};
 

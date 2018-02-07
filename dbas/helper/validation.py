@@ -1,12 +1,15 @@
 from cornice import Errors
 from cornice.util import json_error
 
+from dbas.requests import bad_request
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Issue
 from dbas.handler.language import get_language_from_cookie
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 import dbas.handler.issue as issue_helper
+
+from dbas.logger import logger
 
 
 def combine(*decorators):
@@ -23,7 +26,7 @@ def combine(*decorators):
     return floo
 
 
-def valid_user(view_callable):
+def valid_user(view_callable, **kwargs):
     """
 
     :param view_callable:
@@ -32,28 +35,26 @@ def valid_user(view_callable):
     def inner(context, request):
         db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
         if db_user:
-            kwargs = {'user': db_user}
+            kwargs['user'] = db_user
             return view_callable(context, request, kwargs)
         else:
             _tn = Translator(get_language_from_cookie(request))
-            return {
-                'status': 'error',
-                'error:': _tn.get(_.checkNickname)
-            }
+            return bad_request(request.path, _tn.get(_.checkNickname))
     return inner
 
 
-def valid_issue(view_callable):
+def valid_issue(view_callable, **kwargs):
     """
 
     :param view_callable:
     :return:
     """
+
     def inner(context, request):
         issue_id = issue_helper.get_issue_id(request)
         db_issue = DBDiscussionSession.query(Issue).get(issue_id)
-        kwargs = {'issue': db_issue}
-        return view_callable(context, request, kwargs)
+        kwargs['issue'] = db_issue
+        return view_callable(context, request)
     return inner
 
 

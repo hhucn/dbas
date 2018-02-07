@@ -28,6 +28,7 @@ import dbas.review.helper.history as review_history_helper
 import dbas.review.helper.queues as review_queue_helper
 import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
+from dbas.requests import bad_request
 import dbas.strings.matcher as fuzzy_string_matcher
 from api.v2.graphql.core import Query
 from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers
@@ -1497,17 +1498,18 @@ def set_new_start_statement(request, **kwargs):
         data['user'] = kwargs['user']
         data['statement'] = request.params['statement']
         data['issue'] = kwargs['issue']
+        data['path'] = request.path
         data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
         data['default_locale_name'] = get_default_locale_name(request.registry)
         data['application_url'] = request.application_url
     except KeyError as e:
         logger('views', 'set_new_start_statement', repr(e), error=True)
-        return {
-            'status': 'error',
-            'error': _tn.get(_.notInsertedErrorBecauseInternal)
-        }
+        return bad_request(request.path, _tn.get(_.notInsertedErrorBecauseInternal))
 
     prepared_dict = set_position(False, data)
+
+    if prepared_dict.get('status', '') is 'error':
+        return bad_request(request.path, prepared_dict.get('error', ''))
 
     return prepared_dict
 
