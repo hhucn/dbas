@@ -1,15 +1,14 @@
 from cornice import Errors
 from cornice.util import json_error
 
-from dbas.requests import bad_request
+from dbas.requests import http_exception
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Issue
 from dbas.handler.language import get_language_from_cookie
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 import dbas.handler.issue as issue_helper
-
-from dbas.logger import logger
+from pyramid.httpexceptions import HTTPBadRequest
 
 
 def combine(*decorators):
@@ -39,7 +38,7 @@ def valid_user(view_callable, **kwargs):
             return view_callable(context, request, kwargs)
         else:
             _tn = Translator(get_language_from_cookie(request))
-            return bad_request(request.path, _tn.get(_.checkNickname))
+            return http_exception(request.path, HTTPBadRequest.status_code, _tn.get(_.checkNickname))
     return inner
 
 

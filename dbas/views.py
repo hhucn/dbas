@@ -5,18 +5,17 @@ Collection of pyramids views components of D-BAS' core.
 """
 
 import json
-import requests
-import graphene
+from typing import Callable, Any
 
+import graphene
+import requests
+from pyramid.httpexceptions import HTTPBadRequest
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.renderers import get_renderer
-from pyramid.response import Response
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid_mailer import get_mailer
-from typing import Callable, Any
 from webob_graphql import serve_graphql_request
-from websocket.lib import get_port
 from zope.interface.interfaces import ComponentLookupError
 
 import dbas.discussion.core as discussion
@@ -28,7 +27,6 @@ import dbas.review.helper.history as review_history_helper
 import dbas.review.helper.queues as review_queue_helper
 import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
-from dbas.requests import bad_request
 import dbas.strings.matcher as fuzzy_string_matcher
 from api.v2.graphql.core import Query
 from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers
@@ -55,8 +53,10 @@ from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
 from dbas.logger import logger
+from dbas.requests import http_exception
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+from websocket.lib import get_port
 
 name = 'D-BAS'
 version = '1.5.5'
@@ -80,23 +80,6 @@ def check_authentication(request):
     session_expired = user.update_last_action(request.authenticated_userid)
     if session_expired:
         return user_logout(request, True)
-
-
-def api_notfound(path):
-    """
-    Returns 404-Reponse with requested_path and message in its body
-
-    :param path: current request.path
-    :return: Response with 404 status code
-    """
-    body = {
-        'requested_path': path,
-        'message': 'Not Found',
-    }
-    response = Response(json.dumps(body).encode("utf-8"))
-    response.status_int = 404
-    response.content_type = 'application/json'
-    return response
 
 
 def prepare_request_dict(request, nickname, for_api=False):
@@ -601,7 +584,7 @@ def notfound(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     if request.path.startswith('/api'):
-        return api_notfound(request.path)
+        return http_exception(request.path)
 
     user.update_last_action(request.authenticated_userid)
     logger('notfound', 'def', 'main in {}'.format(request.method) + '-request' +
@@ -1504,12 +1487,12 @@ def set_new_start_statement(request, **kwargs):
         data['application_url'] = request.application_url
     except KeyError as e:
         logger('views', 'set_new_start_statement', repr(e), error=True)
-        return bad_request(request.path, _tn.get(_.notInsertedErrorBecauseInternal))
+        return http_exception(request.path, HTTPBadRequest.status_code, _tn.get(_.notInsertedErrorBecauseInternal))
 
     prepared_dict = set_position(False, data)
 
     if prepared_dict.get('status', '') is 'error':
-        return bad_request(request.path, prepared_dict.get('error', ''))
+        return http_exception(request.path, HTTPBadRequest.status_code, prepared_dict.get('error', ''))
 
     return prepared_dict
 
