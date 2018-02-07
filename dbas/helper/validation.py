@@ -97,6 +97,9 @@ def valid_statement_text(request):
 
 def has_keywords(*keywords):
     def valid_keywords(request):
+        logger('X', 'X', str([k for k in request.params.keys()]))
+        for p in request.params:
+            logger('X', str(p), str(request.params[p]))
         for keyword in keywords:
             value = request.json_body.get(keyword)
 
