@@ -414,6 +414,14 @@ function InteractionHandler() {
 				}
 				new GuiHandler().showSetStatementContainer(undecided_texts, decided_texts, supportive, type, arg, relation, conclusion);
 			} else {
+			
+				// pack the data
+				$.each(t_array, function( index, value ) {
+					if ($.type(value) !== "array"){
+						t_array[index] = [value];
+					}
+				});
+				
 				if (type === fuzzy_start_premise) {
 					new AjaxDiscussionHandler().sendNewStartPremise(t_array, conclusion, supportive);
 				} else  if (type === fuzzy_add_reason) {

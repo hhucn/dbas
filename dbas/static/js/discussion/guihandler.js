@@ -371,6 +371,13 @@ function GuiHandler() {
 					decided_texts.push([undecided_texts[i]]);
 				}
 			}
+			
+			// pack the data
+			$.each(decided_texts, function( index, value ) {
+				if ($.type(value) !== "array"){
+					decided_texts[index] = [value];
+				}
+			});
 
 			if (type === fuzzy_add_reason) {
 				new AjaxDiscussionHandler().sendNewPremiseForArgument(arg, relation, decided_texts);

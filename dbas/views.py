@@ -1448,7 +1448,7 @@ def set_new_start_argument(request):
     if len(prepared_dict_pos['error']) is 0:
         logger('views', 'set_new_start_argument', 'set premise/reason')
         # set the premise
-        data['premisegroup'] = [reason]
+        data['premisegroups'] = [[reason]]
         data['conclusion'] = DBDiscussionSession.query(Statement).get(prepared_dict_pos['statement_uids'][0])
         prepared_dict_reas = set_positions_premise(False, data)
         return prepared_dict_reas
@@ -1459,7 +1459,7 @@ def set_new_start_argument(request):
 # ajax - send new start premise
 @view_config(route_name='ajax_set_new_start_premise', renderer='json')
 @validate(valid_user, valid_issue, valid_conclusion,
-          has_keywords('premisegroup', 'supportive'))
+          has_keywords('premisegroups', 'supportive'))
 def set_new_start_premise(request):
     """
     Sets new premise for the start
@@ -1467,12 +1467,12 @@ def set_new_start_premise(request):
     :param request: request of the web server
     :return: json-dict()
     """
-    logger('views', 'set_new_start_premise', 'request.params: {}'.format(request.params))
+    logger('views', 'set_new_start_premise', 'request.json_body: {}'.format(request.json_body))
     data = {
         'user': request.validated['user'],
         'application_url': request.application_url,
         'issue': request.validated['issue'],
-        'premisegroup': request.validated['premisegroup'],
+        'premisegroups': request.validated['premisegroups'],
         'conclusion': request.validated['conclusion'],
         'supportive': request.validated['supportive'],
         'port': get_port(request),

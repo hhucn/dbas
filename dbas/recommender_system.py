@@ -123,8 +123,8 @@ def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, res
         restriction_on_attacks.append(Attacks.UNDERCUT)
 
     logger('RecommenderSystem', 'get_attack_for_argument',
-           'arg: {}, reststricts: {}, {}, from_jump: {}'.format(argument_uid, restriction_on_attacks,
-                                                                restriction_on_args, redirected_from_jump))
+           'arg: {}, restricts: {}, {}, from_jump: {}'.format(argument_uid, restriction_on_attacks,
+                                                              restriction_on_args, redirected_from_jump))
 
     attacks_array, key, no_new_attacks = __get_attack_for_argument(argument_uid, lang, restriction_on_attacks,
                                                                    restriction_on_args, last_attack, history)

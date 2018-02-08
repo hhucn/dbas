@@ -72,7 +72,7 @@ function AjaxDiscussionHandler() {
 			method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
-                premisegroup: text_array,
+                premisegroups: text_array,
 				conclusion_id: conclusion_id,
 				supportive: supportive
             }),
