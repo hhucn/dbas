@@ -118,8 +118,7 @@ def has_keywords(*keywords):
     def valid_keywords(request):
         for keyword in keywords:
             value = request.json_body.get(keyword)
-
-            if value:
+            if value is not None:
                 request.validated[keyword] = value
             else:
                 logger('validation', 'valid_keywords', 'keyword: {} is not there'.format(keyword), error=True)
