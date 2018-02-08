@@ -29,28 +29,19 @@ def set_arguments_premises(for_api, data) -> dict:
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and next url or an error
     """
-    try:
-        db_user = data['user']
-        premisegroups = data['statement']
-        db_issue = data['issue']
-        arg_uid = data['arg_uid']
-        attack_type = data['attack_type']
+    db_user = data['user']
+    db_issue = data['issue']
+    premisegroups = data['premisegroups']
+    arg_uid = data['arg_uid']
+    attack_type = data['attack_type']
 
-        history = data.get('_HISTORY_')
-        mailer = data.get('mailer')
-        port = data.get('port')
-        discussion_lang = data.get('discussion_lang', db_issue.lang)
-        default_locale_name = data.get('default_locale_name', discussion_lang)
+    history = data.get('_HISTORY_')
+    mailer = data.get('mailer')
+    port = data.get('port')
+    discussion_lang = data.get('discussion_lang', db_issue.lang)
+    default_locale_name = data.get('default_locale_name', discussion_lang)
 
-        application_url = data['application_url']
-    except KeyError as e:
-        logger('ArgumentsHelper', 'arguments_premises', repr(e), error=True)
-        _tn = Translator('en')
-        return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
-
-    _tn = Translator('discussion_lang')
-    if db_issue.is_read_only:
-        return {'error': _tn.get(_.discussionIsReadOnly), 'statement_uids': ''}
+    application_url = data['application_url']
 
     # escaping will be done in QueryHelper().set_statement(...)
     d = {'default_locale_name': default_locale_name, 'discussion_lang': discussion_lang}
@@ -61,7 +52,7 @@ def set_arguments_premises(for_api, data) -> dict:
                                                                                            application_url, m)
     user.update_last_action(db_user)
 
-    prepared_dict = {'error': error,
+    prepared_dict = {'error': error,  # TODO will result in a key error in frontend, because we renamed it to "errors"
                      'statement_uids': statement_uids}
 
     # add reputation
