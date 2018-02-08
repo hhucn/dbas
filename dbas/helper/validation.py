@@ -6,6 +6,7 @@ import dbas.handler.issue as issue_handler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Issue, Statement
 from dbas.handler.language import get_language_from_cookie
+from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -32,6 +33,7 @@ def valid_user(request):
     if db_user:
         request.validated['user'] = db_user
     else:
+        logger('validation', 'valid_user', 'no user is given', error=True)
         _tn = Translator(get_language_from_cookie(request))
         request.errors.add('body', 'Invalid user', _tn.get(_.checkNickname))
         request.errors.status = 400
@@ -42,19 +44,34 @@ def valid_issue(request):
 
     if db_issue:
         request.validated['issue'] = db_issue
+        return True
     else:
+        logger('validation', 'valid_issue', 'no issue is given', error=True)
         request.errors.add('body', 'Invalid issue')
         request.errors.status = 400
+        return False
+
+
+def valid_issue_not_readonly(request):
+    if valid_issue(request) and not request.validated.get('issue').is_read_only:
+        return True
+
+    logger('validation', 'valid_issue_not_readonly', 'issue is read only', error=True)
+    _tn = Translator(get_language_from_cookie(request))
+    request.errors.add('body', 'Issue readonly', _tn.get(_.discussionIsReadOnly))
+    request.errors.status = 400
+    return False
 
 
 def valid_conclusion(request):
-    conclusion_id = request.params.get('conclusion_id')
+    conclusion_id = request.json_body.get('conclusion_id')
     issue_id = request.validated['issue'].uid if 'issue' in request.validated else issue_handler.get_issue_id(request)
 
     if conclusion_id:
         db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id, issue_uid=issue_id).first()
         request.validated['conclusion'] = db_conclusion
     else:
+        logger('validation', 'valid_conclusion', 'conclusion id is missing', error=True)
         _tn = Translator(get_language_from_cookie(request))
         request.errors.add('body', 'Invalid conclusion id', _tn.get(_.wrongConclusion))
         request.errors.status = 400
@@ -62,7 +79,7 @@ def valid_conclusion(request):
 
 def valid_statement_text(request):
     min_length = 10
-    text = request.params.get('statement', '')
+    text = request.json_body.get('statement', '')
 
     if len(text) < min_length:
         _tn = Translator(get_language_from_cookie(request))
@@ -80,11 +97,12 @@ def valid_statement_text(request):
 def has_keywords(*keywords):
     def valid_keywords(request):
         for keyword in keywords:
-            value = request.params.get(keyword)
+            value = request.json_body.get(keyword)
 
             if value:
                 request.validated[keyword] = value
             else:
+                logger('validation', 'valid_keywords', 'keyword: {} is not there'.format(keyword), error=True)
                 request.errors.add('body', '{} is missing'.format(keyword))
                 request.errors.status = 400
 

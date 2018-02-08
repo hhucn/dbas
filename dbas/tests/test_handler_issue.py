@@ -85,7 +85,7 @@ class IssueHandlerTests(unittest.TestCase):
         issue = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).first()
         slug = issue.slug
         request = testing.DummyRequest(matchdict={})
-        response = ih.get_id_of_slug(slug, request, False)
+        response = ih.get_id_of_slug(slug, request, True)
         self.assertEqual(response, issue.uid)
 
     def test_get_issue_id(self):

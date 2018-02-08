@@ -371,6 +371,7 @@ de_lang = {
     _.inputEmpty: 'Ihre Eingabe ist leer!',
     _.informationForExperts: 'Infos für Experten',
     _.issueList: 'Themen',
+    _.issueNotFound: 'Es konnte kein Diskussionsthema gefunden werden',
     _.islandViewHeaderText: 'Dies sind alle Argumente für: ',
     _.irrelevant: 'Irrelevant',
     _.itIsTrueThat: 'ich akzeptiere, dass',

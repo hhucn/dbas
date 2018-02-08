@@ -819,11 +819,6 @@ def get_users_with_same_opinion(uids, application_url, path, nickname, is_argume
     prepared_dict = dict()
     _tn = Translator(ui_locales)
 
-    logger('X', 'X', 'is_argument: {}'.format(is_argument))
-    logger('X', 'X', 'is_attitude: {}'.format(is_attitude))
-    logger('X', 'X', 'is_reaction: {}'.format(is_reaction))
-    logger('X', 'X', 'is_position: {}'.format(is_position))
-
     if is_argument and is_reaction:
         uids = json.loads(uids)
         prepared_dict = get_user_and_opinions_for_argument(uids, nickname, ui_locales, application_url, path)

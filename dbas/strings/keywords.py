@@ -369,6 +369,7 @@ class Keywords(Enum):
     internalErrorHTTPS = 'internalErrorHTTPS'
     internalKeyError = 'internalKeyError'
     issueList = 'issueList'
+    issueNotFound = 'issueNotFound'
     islandViewHeaderText = 'islandViewHeaderText'
     islandView = 'islandView'
     islandViewTitle = 'islandViewTitle'

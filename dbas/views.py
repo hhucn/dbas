@@ -29,7 +29,7 @@ import dbas.strings.matcher as fuzzy_string_matcher
 from api.v2.graphql.core import Query
 from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Group
+from dbas.database.discussion_model import Group, Statement
 from dbas.database.discussion_model import User, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
@@ -47,8 +47,8 @@ from dbas.handler.voting import clear_vote_and_seen_values_of_user
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
-from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, \
-    has_keywords
+from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, has_keywords, \
+    valid_issue_not_readonly
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -86,31 +86,35 @@ def prepare_request_dict(request, nickname, for_api=False):
 
     :param request:
     :param nickname:
+    :param for_api:
     :return:
     """
 
     last_topic = history_handler.get_saved_issue(nickname)
 
-    slug = ''
+    slug = None
     if 'slug' in request.matchdict:
         slug = request.matchdict['slug']
         if not isinstance(request.matchdict['slug'], str) and len(request.matchdict['slug']) > 0:
             slug = request.matchdict['slug'][0]
 
-    if len(slug) == 0 and last_topic != 0:
+    if not slug and last_topic != 0:
         issue = last_topic
-    elif len(slug) > 0:
-        issue = issue_handler.get_id_of_slug(slug, request, True, for_api)
+    elif slug and not for_api:
+        issue = issue_handler.get_id_of_slug(slug, request, True)
     else:
         issue = issue_handler.get_issue_id(request)
 
     ui_locales = get_language_from_cookie(request)
-    if issue == -1 and for_api:
-        logger('Views', 'prepare_request_dict', 'Slug error ({}) for api'.format(slug), error=True)
-        _tn = Translator(ui_locales)
-        return {'error': _tn.get(_.maliciousAntiSpam)}
+    if not issue:
+        if for_api:
+            logger('Views', 'prepare_request_dict', 'Slug error ({}) for api'.format(slug), error=True)
+            _tn = Translator(ui_locales)
+            return {'error': _tn.get(_.issueNotFound)}
+        else:
+            raise HTTPNotFound()
 
-    if len(slug) == 0:
+    if not slug:
         slug = DBDiscussionSession.query(Issue).get(issue).slug
 
     history = history_handler.handle_history(request, nickname, slug, issue)
@@ -351,7 +355,6 @@ def main_user(request):
     user_dict = user.get_information_of(current_user, ui_locales)
 
     db_user_of_request = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
-    logger('X', 'X', request.authenticated_userid)
     can_send_notification = False
     if db_user_of_request:
         can_send_notification = current_user.uid != db_user_of_request.uid
@@ -623,6 +626,8 @@ def notfound(request):
 
 # content page
 @view_config(route_name='discussion_init', renderer='templates/content.pt', permission='everybody')
+@view_config(route_name='discussion_init_with_slash', renderer='templates/content.pt', permission='everybody')
+@view_config(route_name='discussion_init_with_slug', renderer='templates/content.pt', permission='everybody')
 def discussion_init(request, for_api=False, api_data=None):
     """
     View configuration for the initial discussion.
@@ -1409,8 +1414,8 @@ def set_discussion_properties(request):
 # ADDTIONAL AJAX STUFF # SET NEW THINGS #
 # #######################################
 
-@validate(valid_user, valid_issue)
 @view_config(route_name='ajax_set_new_start_argument', renderer='json')
+@validate(valid_user, valid_issue_not_readonly, has_keywords('position', 'reason'))
 def set_new_start_argument(request):
     """
     Inserts a new argument as starting point into the database
@@ -1419,31 +1424,23 @@ def set_new_start_argument(request):
     :return: a status code, if everything was successful
     """
     logger('views', 'set_new_start_argument', 'request.params: {}'.format(request.params))
-    discussion_lang = get_discussion_language(request.matchdict, request.params, request.session)
-    _tn = Translator(discussion_lang)
-    data = {}
+
+    reason = request.validated['reason']
+    data = {
+        'user': request.validated['user'],
+        'issue': request.validated['issue'],
+        'statement_text': request.validated['position'],
+        'default_locale_name': get_default_locale_name(request.registry),
+        'application_url': request.application_url,
+        'supportive': True,
+        'port': get_port(request),
+        'history': request.cookies.get('_HISTORY_'),
+    }
+
     try:
-        data['nickname'] = request.authenticated_userid
-        data['user'] = request.validated['user']
-        data['issue'] = request.validated['']
-        data['slug'] = data['issue'].slug
-        data['default_locale_name'] = get_default_locale_name(request.registry)
-        data['application_url'] = request.application_url
-        data['supportive'] = True
-        data['port'] = get_port(request)
-        data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
-        data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
-        data['default_locale_name'] = get_default_locale_name(request.registry)
-        position = request.params['position']
-        reason = request.params['reason']
-        data['statement'] = position
-        try:
-            data['mailer'] = get_mailer(request)
-        except ComponentLookupError as e:
-            logger('views', 'set_new_start_argument', repr(e), error=True)
-    except KeyError as e:
+        data['mailer'] = get_mailer(request)
+    except ComponentLookupError as e:
         logger('views', 'set_new_start_argument', repr(e), error=True)
-        return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
     # set the new position
     logger('views', 'set_new_start_argument', 'set conclusion/position')
@@ -1452,7 +1449,7 @@ def set_new_start_argument(request):
         logger('views', 'set_new_start_argument', 'set premise/reason')
         # set the premise
         data['premisegroup'] = [reason]
-        data['conclusion_id'] = prepared_dict_pos['statement_uids'][0]
+        data['conclusion'] = DBDiscussionSession.query(Statement).get(prepared_dict_pos['statement_uids'][0])
         prepared_dict_reas = set_positions_premise(False, data)
         return prepared_dict_reas
 
@@ -1460,9 +1457,9 @@ def set_new_start_argument(request):
 
 
 # ajax - send new start premise
+@view_config(route_name='ajax_set_new_start_premise', renderer='json')
 @validate(valid_user, valid_issue, valid_conclusion,
           has_keywords('premisegroup', 'supportive'))
-@view_config(route_name='ajax_set_new_start_premise', renderer='json')
 def set_new_start_premise(request):
     """
     Sets new premise for the start
@@ -1477,13 +1474,13 @@ def set_new_start_premise(request):
         'issue': request.validated['issue'],
         'premisegroup': request.validated['premisegroup'],
         'conclusion': request.validated['conclusion'],
-        'supportive': request.validated['supportive'].lower() == 'true',
+        'supportive': request.validated['supportive'],
         'port': get_port(request),
-        'history': request.cookies.get('_HISTORY_', None),
+        'history': request.cookies.get('_HISTORY_'),
         'default_locale_name': get_default_locale_name(request.registry)
     }
 
-    # TODO Is this a configuration or a runtime error?
+    # TODO Is this a configuration or a runtime error? -> Fix it everywhere! Don't catch errors!
     try:
         data['mailer'] = get_mailer(request)
     except ComponentLookupError as e:

@@ -125,8 +125,11 @@ class DiscussionReactionViewTests(unittest.TestCase):
             'mode': 'undermine',
             'arg_id_sys': 16,
         })
-        response = d(request)
-        verify_dictionary_of_view(self, response)
+        try:
+            response = d(request)
+            self.assertTrue(type(response) is HTTPNotFound)
+        except HTTPNotFound:
+            pass
 
     def test_page_failure_argument1(self):
         from dbas.views import discussion_reaction as d

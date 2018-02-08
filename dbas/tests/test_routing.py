@@ -74,7 +74,7 @@ class FunctionalTests(unittest.TestCase):
         self.testapp.get('/discuss', status=200)
         self.testapp.get('/discuss/', status=200)
         self.testapp.get('/discuss/cat-or-dog', status=200)
-        self.testapp.get('/discuss/cat-or-dogg', status=200)
+        self.testapp.get('/discuss/cat-or-dogg', status=404)
 
     def test_review_index(self):
         self.testapp.get('/review', status=200)

@@ -116,15 +116,15 @@ def main(global_config, **settings):
     config.add_route('main_docs', '/docs')
     config.add_route('main_experiment', '/fieldexperiment')
     config.add_route('main_mydiscussions', '/mydiscussions')
-    config.add_route('main_user', '/user/{uid}')
+    config.add_route('main_user', '/user/{uid:\d+}')
     config.add_route('main_graphiql', '/graphiql')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('ajax_user_login', '{url:.*}ajax_user_login')
     config.add_route('ajax_user_login_oauth', '{url:.*}ajax_user_login_oauth')
     config.add_route('ajax_user_logout', '{url:.*}ajax_user_logout')
-    config.add_route('ajax_set_new_start_argument', '/{url:.*}ajax_set_new_start_argument')
-    config.add_route('ajax_set_new_start_premise', '/{url:.*}ajax_set_new_start_premise')
+    config.add_route('ajax_set_new_start_argument', '{url:.*}ajax_set_new_start_argument')
+    config.add_route('ajax_set_new_start_premise', '{url:.*}ajax_set_new_start_premise')
     config.add_route('ajax_set_new_premises_for_argument', '/{url:.*}ajax_set_new_premises_for_argument')
     config.add_route('ajax_set_correction_of_statement', '/{url:.*}ajax_set_correction_of_statement')
     config.add_route('ajax_set_new_issue', '/{url:.*}ajax_set_new_issue')
@@ -137,7 +137,9 @@ def main(global_config, **settings):
     config.add_route('ajax_send_notification', '{url:.*}ajax_send_notification')
     config.add_route('ajax_get_infos_about_argument', '/{url:.*}ajax_get_infos_about_argument')
     config.add_route('ajax_get_user_with_same_opinion', '/{url:.*}ajax_get_user_with_same_opinion')
+
     config.add_route('ajax_get_public_user_data', '/{url:.*}ajax_get_public_user_data')
+
     config.add_route('ajax_get_user_history', 'ajax_get_user_history')
     config.add_route('ajax_get_all_edits', 'ajax_get_all_edits')
     config.add_route('ajax_get_all_posted_statements', 'ajax_get_all_posted_statements')
@@ -182,7 +184,9 @@ def main(global_config, **settings):
     config.add_route('discussion_choose', '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids')
     config.add_route('discussion_jump', '/discuss/{slug}/jump/{arg_id}')
     config.add_route('discussion_finish', '/discuss/finish')
-    config.add_route('discussion_init', '/discuss*slug')
+    config.add_route('discussion_init', '/discuss')
+    config.add_route('discussion_init_with_slash', '/discuss/')
+    config.add_route('discussion_init_with_slug', '/discuss/{slug}')
 
     # review section
     config.add_route('review_index', '/review')

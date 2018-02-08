@@ -43,12 +43,12 @@ function AjaxDiscussionHandler() {
 		$.ajax({
 			url: 'ajax_set_new_start_argument',
 			method: 'POST',
-			data: {
+            contentType: 'application/json',
+            data: JSON.stringify({
 				position: position,
 				reason: reason
-			},
+			}),
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
@@ -61,22 +61,22 @@ function AjaxDiscussionHandler() {
 
 	/**
 	 * Sends new premises to the server. Answer will be given to a callback
-     * @param premises List of premisegroups
+     * @param text_array List of premisegroups
 	 * @param conclusion_id id of the conclusion
 	 * @param supportive boolean, whether it is supportive
 	 */
-    this.sendNewStartPremise = function (premises, conclusion_id, supportive) {
+    this.sendNewStartPremise = function (text_array, conclusion_id, supportive) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_new_start_premise',
 			method: 'POST',
-			data: {
-                premisegroup: premises,
+            contentType: 'application/json',
+            data: JSON.stringify({
+                premisegroup: text_array,
 				conclusion_id: conclusion_id,
 				supportive: supportive
-			},
+            }),
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
