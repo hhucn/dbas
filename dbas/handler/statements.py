@@ -90,7 +90,7 @@ def set_positions_premise(for_api: bool, data: Dict) -> dict:
         premisegroup = data['premisegroup']
         db_issue = data['issue']
 
-        conclusion = data['conclusion']
+        db_conclusion = data['conclusion']
         supportive = data['supportive']
         application_url = data['application_url']
         history = data['history'] if '_HISTORY_' in data else None
@@ -115,7 +115,7 @@ def set_positions_premise(for_api: bool, data: Dict) -> dict:
 
     url, statement_uids, error = __process_input_of_start_premises_and_receive_url(default_locale_name,
                                                                                    premisegroup,
-                                                                                   conclusion, supportive,
+                                                                                   db_conclusion, supportive,
                                                                                    db_issue,
                                                                                    db_user, for_api,
                                                                                    application_url,

@@ -249,7 +249,7 @@ def get_issue_id(request):
     :param request: self.request
     :return: uid
     """
-    logger('IssueHelper', 'get_issue_id', 'def')
+    # logger('IssueHelper', 'get_issue_id', 'def')
     # first matchdict, then params, then session
     issue_uid = request.matchdict['issue'] if 'issue' in request.matchdict \
         else request.params['issue'] if 'issue' in request.params \
@@ -271,7 +271,7 @@ def get_issue_based_on_header(request):
     :param request:
     :return:
     """
-    logger('IssueHelper', 'get_issue_based_on_header', 'no saved issue found')
+    # logger('IssueHelper', 'get_issue_based_on_header', 'no saved issue found')
     ui_locales = get_language_from_header(request)
     db_issues = get_not_disabled_issues_as_query()
     db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()

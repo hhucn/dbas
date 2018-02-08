@@ -111,7 +111,7 @@ def rewrite_issue_rss(issue_uid: int, ui_locale: str, url: str):
     :param url: url of this event
     :return: Boolean
     """
-    logger('RSS-Handler', 'rewrite_issue_rss', 'issue_uid ' + str(issue_uid))
+    # logger('RSS-Handler', 'rewrite_issue_rss', 'issue_uid ' + str(issue_uid))
     db_issue = Session.query(Issue).get(issue_uid)
     db_authors = {u.uid: u for u in Session.query(User).all()}
     db_rss = Session.query(RSS).filter(RSS.issue_uid == issue_uid,

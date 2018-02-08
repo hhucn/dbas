@@ -8,7 +8,7 @@ from dbas.database.discussion_model import User, Issue, Statement
 from dbas.handler.language import get_language_from_cookie
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
-from dbas.strings.translator import Translator, get_translation
+from dbas.strings.translator import Translator
 
 
 def combine(*decorators):
@@ -53,14 +53,14 @@ def valid_issue(request):
 
 
 def valid_issue_not_readonly(request):
-    if valid_issue(request) and not request.validated.get('issue').readonly:
-        request.errors.add('body',
-                           'Issue readonly',
-                           get_translation(request.validated.get('issue').lang, _.discussionIsReadOnly))
-        request.errors.status = 400
-        return False
+    if valid_issue(request) and not request.validated.get('issue').is_read_only:
+        return True
 
-    return True
+    logger('validation', 'valid_issue_not_readonly', 'issue is read only', error=True)
+    _tn = Translator(get_language_from_cookie(request))
+    request.errors.add('body', 'Issue readonly', _tn.get(_.discussionIsReadOnly))
+    request.errors.status = 400
+    return False
 
 
 def valid_conclusion(request):

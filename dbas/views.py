@@ -29,7 +29,7 @@ import dbas.strings.matcher as fuzzy_string_matcher
 from api.v2.graphql.core import Query
 from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Group
+from dbas.database.discussion_model import Group, Statement
 from dbas.database.discussion_model import User, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
@@ -1414,7 +1414,6 @@ def set_discussion_properties(request):
 # ADDTIONAL AJAX STUFF # SET NEW THINGS #
 # #######################################
 
-@validate(valid_user, valid_issue)
 @view_config(route_name='ajax_set_new_start_argument', renderer='json')
 @validate(valid_user, valid_issue_not_readonly, has_keywords('position', 'reason'))
 def set_new_start_argument(request):
@@ -1431,7 +1430,6 @@ def set_new_start_argument(request):
         'user': request.validated['user'],
         'issue': request.validated['issue'],
         'statement_text': request.validated['position'],
-
         'default_locale_name': get_default_locale_name(request.registry),
         'application_url': request.application_url,
         'supportive': True,
@@ -1451,7 +1449,7 @@ def set_new_start_argument(request):
         logger('views', 'set_new_start_argument', 'set premise/reason')
         # set the premise
         data['premisegroup'] = [reason]
-        data['conclusion_id'] = prepared_dict_pos['statement_uids'][0]
+        data['conclusion'] = DBDiscussionSession.query(Statement).get(prepared_dict_pos['statement_uids'][0])
         prepared_dict_reas = set_positions_premise(False, data)
         return prepared_dict_reas
 

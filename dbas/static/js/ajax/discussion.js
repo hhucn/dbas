@@ -43,12 +43,12 @@ function AjaxDiscussionHandler() {
 		$.ajax({
 			url: 'ajax_set_new_start_argument',
 			method: 'POST',
-			data: {
+            contentType: 'application/json',
+            data: JSON.stringify({
 				position: position,
 				reason: reason
-			},
+			}),
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
