@@ -48,7 +48,7 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
 from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, has_keywords, \
-    valid_issue_not_readonly
+    valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -1358,6 +1358,7 @@ def set_user_lang(request):
 
 # ajax - sending notification
 @view_config(route_name='ajax_send_notification', renderer='json')
+@validate(valid_user, valid_notification_title, valid_notification_text, valid_notification_recipient)
 def send_some_notification(request):
     """
     Set a new message into the inbox of an recipient, and the outbox of the sender.
@@ -1365,24 +1366,13 @@ def send_some_notification(request):
     :param request: current request of the server
     :return: dict()
     """
-    logger('views', 'send_some_notification', 'request.params: {}'.format(request.params))
-
+    logger('views', 'send_some_notification', 'request.params: {}'.format(request.json_body))
     ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    try:
-        recipient = str(request.params['recipient']).replace('%20', ' ')
-        title = request.params['title']
-        text = request.params['text']
-    except KeyError as e:
-        logger('views', 'send_some_notification', repr(e), error=True)
-        prepared_dict = {'error': _tn.get(_.internalKeyError), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
-        return prepared_dict
-
-    prepared_dict = send_users_notification(get_port(request), recipient, title, text, request.authenticated_userid,
-                                            ui_locales)
-
-    return prepared_dict
+    author = request.validated['user']
+    recipient = request.validated['recipient']
+    title = request.validated['title']
+    text = request.validated['text']
+    return send_users_notification(author, recipient, title, text, get_port(request), ui_locales)
 
 
 # ajax - set boolean for receiving information
@@ -1542,7 +1532,7 @@ def set_notifications_read(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_notifications_read', 'main {}'.format(request.params))
+    logger('views', 'set_notifications_read', 'main {}'.format(request.json_body))
     ui_locales = get_language_from_cookie(request)
     prepared_dict = read_notifications(request.validated['ids'], request.authenticated_userid, ui_locales)
     return prepared_dict
@@ -1558,9 +1548,10 @@ def set_notifications_delete(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_notifications_delete', 'main {}'.format(request.params))
+    logger('views', 'set_notifications_delete', 'main {}'.format(request.json_body))
     ui_locales = get_language_from_cookie(request)
-    prepared_dict = delete_notifications(request.validated['ids'], request.authenticated_userid, ui_locales, request.application_url)
+    prepared_dict = delete_notifications(request.validated['ids'], request.authenticated_userid, ui_locales,
+                                         request.application_url)
     return prepared_dict
 
 

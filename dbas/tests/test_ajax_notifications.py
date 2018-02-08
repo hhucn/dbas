@@ -80,16 +80,15 @@ class AjaxNotificationTest(unittest.TestCase):
         from dbas.views import send_some_notification as ajax
         db_len1 = len(DBDiscussionSession.query(Message).filter(and_(Message.topic == 'Some text for a message',
                                                                      Message.content == 'Some text for a message')).all())
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'recipient': 'Christian',
             'title': 'Some text for a message',
             'text': 'Some text for a message',
-        }, matchdict={})
+        })
         response = ajax(request)
         db_len2 = len(DBDiscussionSession.query(Message).filter(and_(Message.topic == 'Some text for a message',
                                                                      Message.content == 'Some text for a message')).all())
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
         self.assertTrue(db_len1 != db_len2)
         DBDiscussionSession.query(Message).filter(and_(Message.topic == 'Some text for a message',
                                                        Message.content == 'Some text for a message')).delete()
@@ -115,23 +114,23 @@ class AjaxNotificationTest(unittest.TestCase):
         request = testing.DummyRequest(json_body={'id': 2})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertTrue(400, response.status_code)
 
     def test_send_notification_failure1(self):
         from dbas.views import send_some_notification as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest(json_body={})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertTrue(400, response.status_code)
 
     def test_send_notification_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import send_some_notification as ajax
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'recipient': 'Tobias',
             'title': 'Some new text for a message',
             'text': 'Some new text for a message',
-        }, matchdict={})
+        })
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertTrue(400, response.status_code)

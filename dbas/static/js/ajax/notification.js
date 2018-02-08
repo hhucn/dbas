@@ -89,14 +89,13 @@ function AjaxNotificationHandler(){
 
 		$('#popup-writing-notification-success').hide();
 		$('#popup-writing-notification-failed').hide();
-		var data = {title: title, text: text, recipient: recipient};
 
 		$.ajax({
 			url: 'ajax_send_notification',
 			type: 'POST',
-			data: data,
+            contentType: 'application/json',
+            data: JSON.stringify({title: title, text: text, recipient: recipient}),
 			dataType: 'json',
-			async: true,
 			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function ajaxSendNewsDone(data) {
 			if (data.error.length === 0) {
