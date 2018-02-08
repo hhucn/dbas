@@ -5,11 +5,34 @@ from cornice.util import json_error
 import dbas.handler.issue as issue_handler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Issue, Statement
+from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.language import get_language_from_cookie
+from dbas.lib import get_user_by_private_or_public_nickname
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
+
+# #############################################################################
+# Helper-functions
+
+def __add_error(request, log_key, verbose_short, verbose_long=None):
+    """
+    Log and add errors to request. Supports different verbose-messages.
+
+    :param request:
+    :param log_key: category in log-description, e.g. the caller function
+    :param verbose_short: short description of error
+    :param verbose_long: long, verbose description of error
+    :return:
+    """
+    logger('validation', log_key, verbose_short, error=True)
+    request.errors.add('body', verbose_short, verbose_long)
+    request.errors.status = 400
+
+
+# #############################################################################
+# Validators for discussion-content
 
 def valid_user(request):
     """
@@ -22,11 +45,11 @@ def valid_user(request):
 
     if db_user:
         request.validated['user'] = db_user
+        return True
     else:
-        logger('validation', 'valid_user', 'no user is given', error=True)
         _tn = Translator(get_language_from_cookie(request))
-        request.errors.add('body', 'Invalid user', _tn.get(_.checkNickname))
-        request.errors.status = 400
+        __add_error(request, 'valid_user', 'Invalid user', _tn.get(_.checkNickname))
+        return False
 
 
 def valid_issue(request):
@@ -42,10 +65,7 @@ def valid_issue(request):
         request.validated['issue'] = db_issue
         return True
     else:
-        logger('validation', 'valid_issue', 'no issue is given', error=True)
-        request.errors.add('body', 'Invalid issue')
-        request.errors.status = 400
-        return False
+        __add_error(request, 'valid_issue', 'Invalid issue')
 
 
 def valid_issue_not_readonly(request):
@@ -57,11 +77,8 @@ def valid_issue_not_readonly(request):
     """
     if valid_issue(request) and not request.validated.get('issue').is_read_only:
         return True
-
-    logger('validation', 'valid_issue_not_readonly', 'issue is read only', error=True)
     _tn = Translator(get_language_from_cookie(request))
-    request.errors.add('body', 'Issue readonly', _tn.get(_.discussionIsReadOnly))
-    request.errors.status = 400
+    __add_error(request, 'valid_issue_not_readonly', 'Issue is read only', _tn.get(_.discussionIsReadOnly))
     return False
 
 
@@ -79,10 +96,8 @@ def valid_conclusion(request):
         db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id, issue_uid=issue_id).first()
         request.validated['conclusion'] = db_conclusion
     else:
-        logger('validation', 'valid_conclusion', 'conclusion id is missing', error=True)
         _tn = Translator(get_language_from_cookie(request))
-        request.errors.add('body', 'Invalid conclusion id', _tn.get(_.wrongConclusion))
-        request.errors.status = 400
+        __add_error(request, 'valid_conclusion', 'Conclusion id is missing', _tn.get(_.wrongConclusion))
 
 
 def valid_statement_text(request):
@@ -100,13 +115,85 @@ def valid_statement_text(request):
         a = _tn.get(_.notInsertedErrorBecauseEmpty)
         b = _tn.get(_.minLength)
         c = _tn.get(_.eachStatement)
-        error = '{} ({}: {} {})'.format(a, b, min_length, c)
-        request.errors.add('body', 'Text too short', error)
-        request.errors.status = 400
-
+        error_msg = '{} ({}: {} {})'.format(a, b, min_length, c)
+        __add_error(request, 'valid_statement_text', 'Text too short', error_msg)
     else:
         request.validated['statement'] = text
 
+
+# #############################################################################
+# Validators for notifications
+
+def __validate_notification_msg(request, key):
+    """
+    Lookup key in request.json_body and validate it against the necessary length for a message.
+
+    :param request:
+    :param key:
+    :return:
+    """
+    notification_text = request.json_body.get(key, '')
+    min_length = request.registry.settings.get('settings:discussion:notification_min_length', 5)
+
+    if isinstance(notification_text, str) and len(notification_text) >= min_length:
+        request.validated[key] = notification_text
+    else:
+        _tn = Translator(get_language_from_cookie(request))
+        error_msg = '{} ({}: {})'.format(_tn.get(_.empty_notification_input), _tn.get(_.minLength), min_length)
+        __add_error(request, 'valid_notification_content', 'Notification {} too short or invalid'.format(key),
+                    error_msg)
+
+
+def valid_notification_title(request):
+    """
+    Validate length of notification-title.
+
+    :param request:
+    :return:
+    """
+    __validate_notification_msg(request, 'title')
+
+
+def valid_notification_text(request):
+    """
+    Validate length of notification-text.
+
+    :param request:
+    :return:
+    """
+    __validate_notification_msg(request, 'text')
+
+
+def valid_notification_recipient(request):
+    """
+    Recipients must exist, author and recipient must be different users.
+
+    :param request:
+    :return:
+    """
+    _tn = Translator(get_language_from_cookie(request))
+    if not valid_user(request):
+        __add_error(request, 'valid_notification_recipient', 'Not logged in', _tn.get(_.notLoggedIn))
+        return False
+
+    db_author = request.validated["user"]
+    recipient_nickname = str(request.json_body.get('recipient')).replace('%20', ' ')
+    db_recipient = get_user_by_private_or_public_nickname(recipient_nickname)
+
+    if not db_recipient or recipient_nickname == 'admin' or recipient_nickname == nick_of_anonymous_user:
+        __add_error(request, 'valid_notification_recipient', 'Recipient not found', _tn.get(_.notLoggedIn))
+        return False
+    elif db_author and db_author.uid == db_recipient.uid:
+        __add_error(request, 'valid_notification_recipient', 'Author and Recipient are the same user',
+                    _tn.get(_.senderReceiverSame))
+        return False
+    else:
+        request.validated["recipient"] = db_recipient
+        return True
+
+
+# #############################################################################
+# General validation
 
 def has_keywords(*keywords):
     """
@@ -115,6 +202,7 @@ def has_keywords(*keywords):
     :param keywords: keys in request.json_body
     :return:
     """
+
     def valid_keywords(request):
         for keyword in keywords:
             value = request.json_body.get(keyword)
