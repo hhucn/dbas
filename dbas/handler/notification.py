@@ -13,7 +13,7 @@ from dbas.database.discussion_model import User, TextVersion, Message, Settings,
     sql_timestamp_pretty_print
 from dbas.database.initializedb import nick_of_anonymous_user, nick_of_admin
 from dbas.handler import user
-from dbas.lib import escape_string, get_profile_picture, get_user_by_private_or_public_nickname
+from dbas.lib import escape_string, get_profile_picture
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_text_for_edit_text_message, get_text_for_add_text_message, \
     get_text_for_add_argument_message
@@ -21,42 +21,25 @@ from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_info_popup_to_socketio
 
 
-def send_users_notification(port, recipient, title, text, nickname, ui_locales) -> dict:
+def send_users_notification(author, recipient, title, text, port, ui_locales) -> dict:
     """
     Send a notification from user a to user b
 
     :param port: Port of the notification server
-    :param recipient: Nickname of the recipient
+    :param recipient: User
     :param title: Title of the notification
     :param text: Text of the notification
-    :param nickname: Users nickname
+    :param author: User
     :param ui_locales: Current used language
     :rtype: dict
     :return: prepared collection with status information
     """
-    _tn = Translator(ui_locales)
-
-    db_recipient = get_user_by_private_or_public_nickname(recipient)
-    if len(title) < 5 or len(text) < 5:
-        error = '{} ({}: 5)'.format(_tn.get(_.empty_notification_input), _tn.get(_.minLength))
-        return {'error': error, 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
-
-    if not db_recipient or recipient == 'admin' or recipient == nick_of_anonymous_user:
-        return {'error': _tn.get(_.recipientNotFound), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
-
-    db_author = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_author:
-        return {'error': _tn.get(_.notLoggedIn), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
-
-    if db_author.uid == db_recipient.uid:
-        return {'error': _tn.get(_.senderReceiverSame), 'timestamp': '', 'uid': '', 'recipient_avatar': ''}
-
-    db_notification = send_notification(db_author, db_recipient, title, text, nickname, port)
+    db_notification = send_notification(author, recipient, title, text, author.nickname, port)
     prepared_dict = {
         'error': '',
         'timestamp': sql_timestamp_pretty_print(db_notification.timestamp, ui_locales),
         'uid': db_notification.uid,
-        'recipient_avatar': get_profile_picture(db_recipient, 20)
+        'recipient_avatar': get_profile_picture(recipient, 20)
     }
     return prepared_dict
 
