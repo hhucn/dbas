@@ -15,7 +15,6 @@ from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid_mailer import get_mailer
 from webob_graphql import serve_graphql_request
-from zope.interface.interfaces import ComponentLookupError
 
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
@@ -1436,12 +1435,8 @@ def set_new_start_argument(request):
         'supportive': True,
         'port': get_port(request),
         'history': request.cookies.get('_HISTORY_'),
+        'mailer': request.mailer
     }
-
-    try:
-        data['mailer'] = get_mailer(request)
-    except ComponentLookupError as e:
-        logger('views', 'set_new_start_argument', repr(e), error=True)
 
     # set the new position
     logger('views', 'set_new_start_argument', 'set conclusion/position')
@@ -1478,15 +1473,9 @@ def set_new_start_premise(request):
         'supportive': request.validated['supportive'],
         'port': get_port(request),
         'history': request.cookies.get('_HISTORY_'),
-        'default_locale_name': get_default_locale_name(request.registry)
+        'default_locale_name': get_default_locale_name(request.registry),
+        'mailer': request.mailer
     }
-
-    # TODO Is this a configuration or a runtime error? -> Fix it everywhere! Don't catch errors!
-    try:
-        data['mailer'] = get_mailer(request)
-    except ComponentLookupError as e:
-        logger('views', 'set_new_start_premise', repr(e), error=True)
-
     prepared_dict = set_positions_premise(False, data)
     return prepared_dict
 
@@ -1513,14 +1502,9 @@ def set_new_premises_for_argument(request):
         'history': request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None,
         'discussion_lang': get_discussion_language(request.matchdict, request.params, request.session),
         'default_locale_name': get_default_locale_name(request.registry),
-        'application_url': request.application_url
+        'application_url': request.application_url,
+        'mailer': request.mailer
     }
-
-    try:
-        data['mailer'] = get_mailer(request)
-    except ComponentLookupError as e:
-        logger('views', 'set_new_premises_for_argument', repr(e), error=True)
-
     prepared_dict = set_arguments_premises(False, data)
     return prepared_dict
 
