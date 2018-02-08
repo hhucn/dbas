@@ -1,14 +1,14 @@
 """
 Provides helping function for database querys.
 
-.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
+.. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
 import transaction
 from pyshorteners import Shorteners, Shortener
 from requests.exceptions import ReadTimeout, ConnectionError
-from urllib3.exceptions import NewConnectionError
 from sqlalchemy import and_
+from urllib3.exceptions import NewConnectionError
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, RevokedContent, \
@@ -25,7 +25,7 @@ from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
-statement_min_length = 10
+statement_min_length = 10  # DEPRECATED: use global config
 
 
 def mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history, ui_loc, nickname) -> dict:
@@ -124,7 +124,7 @@ def get_text_for_justification_or_reaction_bubble(uid, is_argument, is_supportiv
     """
     Returns text for an justification or reaction bubble of the user
 
-    :param uid: Argumebt.uid / Statement.uid
+    :param uid: Argument.uid / Statement.uid
     :param is_argument: Boolean
     :param is_supportive: Boolean
     :param nickname: User.nickname
