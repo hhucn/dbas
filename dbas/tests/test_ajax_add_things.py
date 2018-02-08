@@ -97,7 +97,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         db_arg1 = len(DBDiscussionSession.query(Argument).filter_by(uid=2).all())
         db_pgroups1 = len(DBDiscussionSession.query(PremiseGroup).all())
         request = testing.DummyRequest(json_body={
-            'premisegroups': json.dumps(['some new reason for an argument']),
+            'premisegroups': [['some new reason for an argument']],
             'arg_uid': 2,
             'attack_type': 'support',
             'issue': 2
