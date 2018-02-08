@@ -212,10 +212,10 @@ class DictionaryHelper(object):
         self.__add_login_button_properties(return_dict)
 
         message_dict = dict()
-        message_dict['new_count'] = count_of_new_notifications(nickname)
+        message_dict['new_count'] = count_of_new_notifications(db_user) if db_user else 0
         message_dict['has_unread'] = message_dict['new_count'] > 0
-        inbox = get_box_for(nickname, self.system_lang, application_url, True)
-        outbox = get_box_for(nickname, self.system_lang, application_url, False)
+        inbox = get_box_for(db_user, self.system_lang, application_url, True) if db_user else []
+        outbox = get_box_for(db_user, self.system_lang, application_url, False) if db_user else []
         if append_notifications:
             message_dict['inbox'] = inbox
             message_dict['outbox'] = outbox

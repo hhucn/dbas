@@ -1520,7 +1520,7 @@ def set_correction_of_some_statements(request):
 
 # ajax - set notifications as read
 @view_config(route_name='ajax_notifications_read', renderer='json')
-@validate(has_keywords('ids'))
+@validate(valid_user, has_keywords('ids'))
 def set_notifications_read(request):
     """
     Set a notification as read
@@ -1529,14 +1529,13 @@ def set_notifications_read(request):
     :return: json-dict()
     """
     logger('views', 'set_notifications_read', 'main {}'.format(request.json_body))
-    ui_locales = get_language_from_cookie(request)
-    prepared_dict = read_notifications(request.validated['ids'], request.authenticated_userid, ui_locales)
+    prepared_dict = read_notifications(request.validated['ids'], request.validated['user'])
     return prepared_dict
 
 
 # ajax - deletes notifications
 @view_config(route_name='ajax_notifications_delete', renderer='json')
-@validate(has_keywords('ids'))
+@validate(valid_user, has_keywords('ids'))
 def set_notifications_delete(request):
     """
     Request the removal of a notification
@@ -1546,7 +1545,7 @@ def set_notifications_delete(request):
     """
     logger('views', 'set_notifications_delete', 'main {}'.format(request.json_body))
     ui_locales = get_language_from_cookie(request)
-    prepared_dict = delete_notifications(request.validated['ids'], request.authenticated_userid, ui_locales,
+    prepared_dict = delete_notifications(request.validated['ids'], request.validated['user'], ui_locales,
                                          request.application_url)
     return prepared_dict
 

@@ -36,7 +36,6 @@ def send_users_notification(author, recipient, title, text, port, ui_locales) ->
     """
     db_notification = send_notification(author, recipient, title, text, author.nickname, port)
     prepared_dict = {
-        'error': '',
         'timestamp': sql_timestamp_pretty_print(db_notification.timestamp, ui_locales),
         'uid': db_notification.uid,
         'recipient_avatar': get_profile_picture(recipient, 20)
@@ -311,36 +310,28 @@ def send_notification(from_user, to_user, topic, content, mainpage, port):
     return db_inserted_notification
 
 
-def count_of_new_notifications(user):
+def count_of_new_notifications(db_user):
     """
     Returns the count of unread messages of the given user
 
-    :param user: User.nickname
+    :param db_user: User
     :return: integer
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
-    if db_user:
-        return len(DBDiscussionSession.query(Message).filter(and_(Message.to_author_uid == db_user.uid,
-                                                                  Message.read == False,
-                                                                  Message.is_inbox == True)).all())
-    else:
-        return 0
+    return len(DBDiscussionSession.query(Message).filter(and_(Message.to_author_uid == db_user.uid,
+                                                              Message.read == False,
+                                                              Message.is_inbox == True)).all())
 
 
-def get_box_for(user, lang, main_page, is_inbox):
+def get_box_for(db_user, lang, main_page, is_inbox):
     """
     Returns all notifications for the user
 
-    :param user: User.nickname
+    :param db_user: User
     :param lang: ui_locales
     :param main_page: URL
     :param is_inbox: Boolean
     :return: [Notification]
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(user)).first()
-    if not db_user:
-        return []
-
     if is_inbox:
         db_messages = DBDiscussionSession.query(Message).filter(and_(Message.to_author_uid == db_user.uid,
                                                                      Message.is_inbox == is_inbox)).order_by(
@@ -377,52 +368,42 @@ def get_box_for(user, lang, main_page, is_inbox):
     return message_array[::-1]
 
 
-def read_notifications(uids_list, nickname, ui_locales) -> dict:
+def read_notifications(uids_list, db_user) -> dict:
     """
     Simply marks a notification as read
 
     :param uids_list: List of message ids notification which should be marked as read
-    :param nickname: Nickname of current user
-    :param ui_locales: Language of current users session
+    :param db_user: User
     :return: Dictionary with info and/or error
     """
     prepared_dict = dict()
-    _tn = Translator(ui_locales)
-    user.update_last_action(nickname)
-
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        return {'error': _tn.get(_.noRights), 'success': ''}
+    user.update_last_action(db_user)
 
     for uid in uids_list:
         DBDiscussionSession.query(Message).filter(and_(Message.uid == uid,
                                                        Message.to_author_uid == db_user.uid,
                                                        Message.is_inbox == True)).first().set_read(True)
     transaction.commit()
-    prepared_dict['unread_messages'] = count_of_new_notifications(nickname)
+    prepared_dict['unread_messages'] = count_of_new_notifications(db_user)
     prepared_dict['error'] = ''
 
     return prepared_dict
 
 
-def delete_notifications(uids_list, nickname, ui_locales, application_url) -> dict:
+def delete_notifications(uids_list, db_user, ui_locales, application_url) -> dict:
     """
     Simply deletes a specific notification
 
     :param uids_list: List of message ids which should be deleted
-    :param nickname: Nickname of current user
+    :param db_user: User
     :param ui_locales: Language of current users session
     :param application_url Url of the App
     :rtype: dict
     :return: Dictionary with info and/or error
     """
 
-    user.update_last_action(nickname)
+    user.update_last_action(db_user)
     _tn = Translator(ui_locales)
-
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        return {'error': _tn.get(_.noRights), 'success': ''}
 
     for uid in uids_list:
         # inbox
@@ -435,10 +416,9 @@ def delete_notifications(uids_list, nickname, ui_locales, application_url) -> di
                                                        Message.is_inbox == False)).delete()
     transaction.commit()
     prepared_dict = dict()
-    prepared_dict['unread_messages'] = count_of_new_notifications(nickname)
-    prepared_dict['total_in_messages'] = str(len(get_box_for(nickname, ui_locales, application_url, True)))
-    prepared_dict['total_out_messages'] = str(len(get_box_for(nickname, ui_locales, application_url, False)))
-    prepared_dict['error'] = ''
+    prepared_dict['unread_messages'] = count_of_new_notifications(db_user)
+    prepared_dict['total_in_messages'] = str(len(get_box_for(db_user, ui_locales, application_url, True)))
+    prepared_dict['total_out_messages'] = str(len(get_box_for(db_user, ui_locales, application_url, False)))
     prepared_dict['success'] = _tn.get(_.messageDeleted)
 
     return prepared_dict
