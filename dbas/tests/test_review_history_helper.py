@@ -10,7 +10,7 @@ class TestReviewHistoryHelper(unittest.TestCase):
 
     def setUp(self):
         from dbas.review.helper.queues import add_proposals_for_statement_corrections
-        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias')
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         elements = [{'uid': 4, 'text': 'some random text'}]
         add_proposals_for_statement_corrections(elements, db_user, Translator('en'))
 

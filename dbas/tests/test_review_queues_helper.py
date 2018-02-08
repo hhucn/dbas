@@ -40,7 +40,7 @@ class ReviewQueuesHelperTest(unittest.TestCase):
         wrong_elements = [{'uid': 0, 'text': 'oh...this will crash'}]
         no_corr_elements = [{'uid': 7, 'text': 'dogs can act as watch dogs'}]
         right_elements = [{'uid': 7, 'text': 'dogs can act as brutal watch dogs'}]
-        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias')
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
         text, error = rqh.add_proposals_for_statement_corrections(wrong_elements, db_user, trans)
         self.assertTrue(error)
