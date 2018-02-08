@@ -1534,6 +1534,7 @@ def set_correction_of_some_statements(request):
 
 # ajax - set notifications as read
 @view_config(route_name='ajax_notifications_read', renderer='json')
+@validate(has_keywords('ids'))
 def set_notifications_read(request):
     """
     Set a notification as read
@@ -1543,20 +1544,13 @@ def set_notifications_read(request):
     """
     logger('views', 'set_notifications_read', 'main {}'.format(request.params))
     ui_locales = get_language_from_cookie(request)
-
-    try:
-        uids_list = json.loads(request.params['ids'])
-    except KeyError as e:
-        logger('views', 'set_notifications_read', repr(e), error=True)
-        _tn = Translator(ui_locales)
-        return {'error': _tn.get(_.internalKeyError), 'success': ''}
-
-    prepared_dict = read_notifications(uids_list, request.authenticated_userid, ui_locales)
+    prepared_dict = read_notifications(request.validated['ids'], request.authenticated_userid, ui_locales)
     return prepared_dict
 
 
 # ajax - deletes notifications
 @view_config(route_name='ajax_notifications_delete', renderer='json')
+@validate(has_keywords('ids'))
 def set_notifications_delete(request):
     """
     Request the removal of a notification
@@ -1566,15 +1560,7 @@ def set_notifications_delete(request):
     """
     logger('views', 'set_notifications_delete', 'main {}'.format(request.params))
     ui_locales = get_language_from_cookie(request)
-
-    try:
-        uids_list = json.loads(request.params['ids'])
-    except KeyError as e:
-        logger('views', 'set_notifications_delete', repr(e), error=True)
-        _tn = Translator(ui_locales)
-        return {'error': _tn.get(_.internalKeyError), 'success': ''}
-
-    prepared_dict = delete_notifications(uids_list, request.authenticated_userid, ui_locales, request.application_url)
+    prepared_dict = delete_notifications(request.validated['ids'], request.authenticated_userid, ui_locales, request.application_url)
     return prepared_dict
 
 
