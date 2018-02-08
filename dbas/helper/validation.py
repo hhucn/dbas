@@ -11,23 +11,13 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 
-def combine(*decorators):
+def valid_user(request):
     """
-    Requires a list of decorators, which will be chained together
+    Given a nickname of a user, return the object from the database.
 
-    :param decorators:
+    :param request:
     :return:
     """
-
-    def floo(view_callable):
-        for decorator in decorators:
-            view_callable = decorator(view_callable)
-        return view_callable
-
-    return floo
-
-
-def valid_user(request):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).one_or_none()
 
     if db_user:
@@ -40,6 +30,12 @@ def valid_user(request):
 
 
 def valid_issue(request):
+    """
+    Query issue from database and put it into the request.
+
+    :param request:
+    :return:
+    """
     db_issue = DBDiscussionSession.query(Issue).get(issue_handler.get_issue_id(request))
 
     if db_issue:
@@ -53,6 +49,12 @@ def valid_issue(request):
 
 
 def valid_issue_not_readonly(request):
+    """
+    Get issue from database and verify that it is not read-only.
+
+    :param request:
+    :return:
+    """
     if valid_issue(request) and not request.validated.get('issue').is_read_only:
         return True
 
@@ -64,6 +66,12 @@ def valid_issue_not_readonly(request):
 
 
 def valid_conclusion(request):
+    """
+    Given a conclusion id, query the object from the database and return it in the request.
+
+    :param request:
+    :return:
+    """
     conclusion_id = request.json_body.get('conclusion_id')
     issue_id = request.validated['issue'].uid if 'issue' in request.validated else issue_handler.get_issue_id(request)
 
@@ -78,7 +86,13 @@ def valid_conclusion(request):
 
 
 def valid_statement_text(request):
-    min_length = 10
+    """
+    Validate the correct length of a statement's input.
+
+    :param request:
+    :return:
+    """
+    min_length = request.registry.settings.get('settings:discussion:statement_min_length', 10)
     text = request.json_body.get('statement', '')
 
     if len(text) < min_length:
@@ -95,6 +109,12 @@ def valid_statement_text(request):
 
 
 def has_keywords(*keywords):
+    """
+    Verify that specified keywords exist in the request.json_body.
+
+    :param keywords: keys in request.json_body
+    :return:
+    """
     def valid_keywords(request):
         for keyword in keywords:
             value = request.json_body.get(keyword)
