@@ -223,9 +223,9 @@ def get_issue_dict_for(issue, application_url, for_api, uid, lang):
     return issue_dict
 
 
-def get_id_of_slug(slug, request, save_id_in_session, for_api=False):
+def get_id_of_slug(slug: str, request, save_id_in_session: bool):
     """
-    Returns the uid
+    Returns the uid of the issue with given slug
 
     :param slug: slug
     :param request: self.request for a fallback
@@ -233,13 +233,12 @@ def get_id_of_slug(slug, request, save_id_in_session, for_api=False):
     :return: uid
     """
     logger('IssueHelper', 'get_id_of_slug', 'slug: {}'.format(slug))
-    db_issues = get_not_disabled_issues_as_query().all()
-    for issue in db_issues:
-        if str(issue.slug) == str(slug):
-            if save_id_in_session:
-                request.session['issue'] = issue.uid
-            return issue.uid
-    return -1 if for_api else get_issue_id(request)
+    db_issue = get_not_disabled_issues_as_query().filter(Issue.slug == slug).first()
+    if db_issue:
+        if save_id_in_session:
+            request.session['issue'] = db_issue.uid
+        return db_issue.uid
+    return None
 
 
 def get_issue_id(request):
@@ -259,19 +258,28 @@ def get_issue_id(request):
 
     # no issue found
     if not issue_uid:
-        logger('IssueHelper', 'get_issue_id', 'no saved issue found')
-        ui_locales = get_language_from_header(request)
-        db_issues = get_not_disabled_issues_as_query()
-        db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
-        db_issue = db_issues.filter_by(lang_uid=db_lang.uid).first()
-        if not db_issue:
-            db_issue = db_issues.first()
-        issue_uid = db_issue.uid
+        issue_uid = get_issue_based_on_header(request)
 
     # save issue in session
     request.session['issue'] = issue_uid
-
     return issue_uid
+
+
+def get_issue_based_on_header(request):
+    """
+
+    :param request:
+    :return:
+    """
+    logger('IssueHelper', 'get_issue_based_on_header', 'no saved issue found')
+    ui_locales = get_language_from_header(request)
+    db_issues = get_not_disabled_issues_as_query()
+    db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
+    db_issue = db_issues.filter_by(lang_uid=db_lang.uid).first()
+    if not db_issue:
+        db_issue = db_issues.first()
+
+    return db_issue.uid
 
 
 def get_title_for_slug(slug):

@@ -185,6 +185,7 @@ def main(global_config, **settings):
     config.add_route('discussion_jump', '/discuss/{slug}/jump/{arg_id}')
     config.add_route('discussion_finish', '/discuss/finish')
     config.add_route('discussion_init', '/discuss')
+    config.add_route('discussion_init_with_slash', '/discuss/')
     config.add_route('discussion_init_with_slug', '/discuss/{slug}')
 
     # review section

@@ -29,18 +29,7 @@ def init(request_dict, for_api=False) -> dict:
     :return: prepared collection with first elements for the discussion
     """
     logger('Core', 'discussion.init', 'main')
-
-    matchdict = request_dict['matchdict']
     application_url = request_dict['app_url']
-
-    count_of_slugs = 1
-    if 'slug' in matchdict and isinstance(matchdict['slug'], ()):
-        count_of_slugs = len(matchdict['slug'])
-
-    if count_of_slugs > 1:
-        logger('Core', 'discussion.init', 'to many slugs', error=True)
-        raise None
-
     nickname = request_dict['nickname']
     issue = request_dict['issue']
     ui_locales = request_dict['ui_locales']

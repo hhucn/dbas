@@ -379,6 +379,7 @@ en_lang = {
     _.internalErrorHTTPS: 'Internal error due to the login process',
     _.internalKeyError: 'Internal error while reading input data.',
     _.issueList: 'Topics',
+    _.issueNotFound: 'No issue found',
     _.islandViewHeaderText: 'These are all arguments for = ',
     _.islandView: 'Island View',
     _.islandViewTitle: 'Shows the island View',

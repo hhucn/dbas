@@ -86,31 +86,35 @@ def prepare_request_dict(request, nickname, for_api=False):
 
     :param request:
     :param nickname:
+    :param for_api:
     :return:
     """
 
     last_topic = history_handler.get_saved_issue(nickname)
 
-    slug = ''
+    slug = None
     if 'slug' in request.matchdict:
         slug = request.matchdict['slug']
         if not isinstance(request.matchdict['slug'], str) and len(request.matchdict['slug']) > 0:
             slug = request.matchdict['slug'][0]
 
-    if len(slug) == 0 and last_topic != 0:
+    if not slug and last_topic != 0:
         issue = last_topic
-    elif len(slug) > 0:
-        issue = issue_handler.get_id_of_slug(slug, request, True, for_api)
+    elif slug and not for_api:
+        issue = issue_handler.get_id_of_slug(slug, request, True)
     else:
         issue = issue_handler.get_issue_id(request)
 
     ui_locales = get_language_from_cookie(request)
-    if issue == -1 and for_api:
-        logger('Views', 'prepare_request_dict', 'Slug error ({}) for api'.format(slug), error=True)
-        _tn = Translator(ui_locales)
-        return {'error': _tn.get(_.maliciousAntiSpam)}
+    if not issue:
+        if for_api:
+            logger('Views', 'prepare_request_dict', 'Slug error ({}) for api'.format(slug), error=True)
+            _tn = Translator(ui_locales)
+            return {'error': _tn.get(_.issueNotFound)}
+        else:
+            raise HTTPNotFound()
 
-    if len(slug) == 0:
+    if not slug:
         slug = DBDiscussionSession.query(Issue).get(issue).slug
 
     history = history_handler.handle_history(request, nickname, slug, issue)
@@ -622,6 +626,7 @@ def notfound(request):
 
 # content page
 @view_config(route_name='discussion_init', renderer='templates/content.pt', permission='everybody')
+@view_config(route_name='discussion_init_with_slash', renderer='templates/content.pt', permission='everybody')
 @view_config(route_name='discussion_init_with_slug', renderer='templates/content.pt', permission='everybody')
 def discussion_init(request, for_api=False, api_data=None):
     """
