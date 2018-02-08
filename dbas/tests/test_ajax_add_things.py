@@ -3,6 +3,7 @@ import unittest
 
 import transaction
 from pyramid import testing
+from pyramid_mailer.mailer import DummyMailer
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, TextVersion, Argument, Premise, PremiseGroup, \
@@ -52,7 +53,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'conclusion_id': 2,
             'issue': 2,
             'supportive': True
-        }, matchdict={})
+        }, mailer=DummyMailer)
         response = view(request)
         transaction.commit()
         db_arg2 = len(DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).all())
@@ -78,7 +79,7 @@ class AjaxAddThingsTest(unittest.TestCase):
     def test_set_new_start_premise_failure1(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import set_new_start_premise as ajax
-        request = testing.DummyRequest(json_body={}, matchdict={})
+        request = testing.DummyRequest(json_body={}, mailer=DummyMailer)
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
@@ -86,7 +87,7 @@ class AjaxAddThingsTest(unittest.TestCase):
     def test_set_new_start_premise_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_new_start_premise as ajax
-        request = testing.DummyRequest(json_body={}, matchdict={})
+        request = testing.DummyRequest(json_body={}, mailer=DummyMailer)
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
@@ -101,7 +102,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'arg_uid': 2,
             'attack_type': 'support',
             'issue': 2
-        })
+        }, mailer=DummyMailer)
         response = ajax(request)
         db_arg2 = len(DBDiscussionSession.query(Argument).filter_by(uid=2).all())
         db_pgroups2 = len(DBDiscussionSession.query(PremiseGroup).all())
