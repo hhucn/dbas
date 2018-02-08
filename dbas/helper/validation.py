@@ -125,12 +125,14 @@ def valid_premisegroups(request):
         _tn = Translator(get_language_from_cookie(request))
         request.errors.add('body', 'Invalid conclusion id', _tn.get(_.requestFailed))
         request.errors.status = 400
+        return
 
     min_length = request.registry.settings.get('settings:discussion:statement_min_length', 10)
     for premisegroup in premisegroups:
         for premise in premisegroup:
             if len(premise) < min_length:
                 __set_min_length_error(request, min_length)
+    request.validated['premisegroups'] = premisegroups
 
 
 def has_keywords(*keywords):
