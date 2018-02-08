@@ -1527,6 +1527,7 @@ def set_new_premises_for_argument(request):
 
 # ajax - set new textvalue for a statement
 @view_config(route_name='ajax_set_correction_of_statement', renderer='json')
+@validate(valid_user, has_keywords('elements'))
 def set_correction_of_some_statements(request):
     """
     Sets a new textvalue for a statement
@@ -1534,17 +1535,12 @@ def set_correction_of_some_statements(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_correction_of_some_statements', 'request.params: {}'.format(request.params))
+    logger('views', 'set_correction_of_some_statements', 'request.json_body: {}'.format(request.json_body))
     ui_locales = get_language_from_cookie(request)
+    elements = request.validated['elements']
+    user = request.validated['user']
     _tn = Translator(ui_locales)
-
-    try:
-        elements = json.loads(request.params['elements'])
-    except KeyError as e:
-        logger('views', 'set_correction_of_some_statements', repr(e), error=True)
-        return {'error': _tn.get(_.internalError), 'info': ''}
-
-    prepared_dict = set_correction_of_statement(elements, request.authenticated_userid, ui_locales)
+    prepared_dict = set_correction_of_statement(elements, user, _tn)
     return prepared_dict
 
 

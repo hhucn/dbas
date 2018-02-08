@@ -373,19 +373,16 @@ def __get_last_reviewer_of(reviewer_type, main_page):
     return users_array
 
 
-def add_proposals_for_statement_corrections(elements, nickname, translator):
+def add_proposals_for_statement_corrections(elements, db_user, translator):
     """
     Add a proposal to correct a statement
 
     :param elements: [Strings]
-    :param nickname: User.nickname
+    :param db_user: User
     :param translator: Translator
     :return: String, Boolean
     """
     logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'main')
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        return translator.get(_.noRights), True
 
     review_count = len(elements)
     added_reviews = [__add_edit_reviews(element, db_user) for element in elements]

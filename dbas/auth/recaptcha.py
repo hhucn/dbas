@@ -12,10 +12,13 @@ def validate_recaptcha(recaptcha):
     :param recaptcha: Recaptcha
     :return:
     """
-    logger('Recaptcha', 'validate_recaptcha', 'recaptcha ' + str(recaptcha))
+    logger('Recaptcha', 'validate_recaptcha', 'recaptcha: \'{}\''.format(recaptcha))
     try:
-        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data={'secret': server_key,
-                                                                                   'response': recaptcha})
+        data = {
+            'secret': server_key,
+            'response': recaptcha
+        }
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data)
         json = r.json()
     except ConnectionError:
         logger('Recaptcha', 'validate_recaptcha', 'ConnectionError', error=True)

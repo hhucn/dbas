@@ -144,21 +144,20 @@ def set_positions_premise(for_api: bool, data: Dict) -> dict:
     return prepared_dict
 
 
-def set_correction_of_statement(elements, nickname, ui_locales) -> dict:
+def set_correction_of_statement(elements, db_user, translator) -> dict:
     """
     Adds a proposol for a statements correction and returns info if the proposal could be set
 
     :param elements: List of dicts with text and uids for proposals of edits for new statements
-    :param nickname: Nickname of current user
-    :param ui_locales: Language of current users session
+    :param user: User
+    :param translator: Translator
     :rtype: dict
     :return: Dictionary with info and/or error
     """
     prepared_dict = dict()
-    user.update_last_action(nickname)
-    _tn = Translator(ui_locales)
+    db_user.update_last_action(db_user)
 
-    msg, error = review_queue_helper.add_proposals_for_statement_corrections(elements, nickname, _tn)
+    msg, error = review_queue_helper.add_proposals_for_statement_corrections(elements, db_user, translator)
     prepared_dict['error'] = msg if error else ''
     prepared_dict['info'] = msg if len(msg) > 0 else ''
 

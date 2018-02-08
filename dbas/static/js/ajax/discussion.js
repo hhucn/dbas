@@ -161,11 +161,11 @@ function AjaxDiscussionHandler() {
 		$.ajax({
 			url: 'ajax_set_correction_of_statement',
 			method: 'POST',
-			data: {
-				'elements': JSON.stringify(elements)
-			},
+			contentType: 'application/json',
+			data: JSON.stringify({
+				'elements': elements
+			}),
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
