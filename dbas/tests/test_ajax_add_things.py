@@ -1,6 +1,7 @@
 import json
-import transaction
 import unittest
+
+import transaction
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
@@ -95,12 +96,12 @@ class AjaxAddThingsTest(unittest.TestCase):
         from dbas.views import set_new_premises_for_argument as ajax
         db_arg1 = len(DBDiscussionSession.query(Argument).filter_by(uid=2).all())
         db_pgroups1 = len(DBDiscussionSession.query(PremiseGroup).all())
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'premisegroups': json.dumps(['some new reason for an argument']),
             'arg_uid': 2,
             'attack_type': 'support',
             'issue': 2
-        }, matchdict={})
+        })
         response = ajax(request)
         db_arg2 = len(DBDiscussionSession.query(Argument).filter_by(uid=2).all())
         db_pgroups2 = len(DBDiscussionSession.query(PremiseGroup).all())
@@ -117,7 +118,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         request = testing.DummyRequest(params={}, matchdict={})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertTrue(400, response.status_code)
 
     def test_set_correction_of_statement(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
