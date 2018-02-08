@@ -1,4 +1,3 @@
-import json
 import unittest
 
 import transaction
@@ -67,14 +66,13 @@ class AjaxNotificationTest(unittest.TestCase):
         from dbas.views import set_notifications_delete as ajax
         db_message1 = len(DBDiscussionSession.query(Message).filter_by(to_author_uid=self.test_author_uid).all())
         db_message1 += len(DBDiscussionSession.query(Message).filter_by(from_author_uid=self.test_author_uid).all())
-        request = testing.DummyRequest(params={'ids': json.dumps([self.new_inbox_uid])}, matchdict={})
+        request = testing.DummyRequest(json_body={'ids': [self.new_inbox_uid]})
         response = ajax(request)
         transaction.commit()
         db_message2 = len(DBDiscussionSession.query(Message).filter_by(to_author_uid=self.test_author_uid).all())
         db_message2 += len(DBDiscussionSession.query(Message).filter_by(from_author_uid=self.test_author_uid).all())
         self.assertIsNotNone(response)
         self.assertTrue(db_message1 != db_message2)
-        self.assertTrue(len(response['error']) == 0)
         self.delete_messages()
 
     def test_send_notification(self):
@@ -104,17 +102,17 @@ class AjaxNotificationTest(unittest.TestCase):
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
 
-    def test_notification_read_failure2(self):
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import send_some_notification as ajax
-        request = testing.DummyRequest(json_body={'id': 2})
+    def test_notification_delete_failure(self):
+        from dbas.views import set_notifications_delete as ajax
+        request = testing.DummyRequest(json_body={})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
 
-    def test_notification_delete_failure(self):
-        from dbas.views import set_notifications_delete as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+    def test_notification_read_failure2(self):
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        from dbas.views import send_some_notification as ajax
+        request = testing.DummyRequest(json_body={'id': 2})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)

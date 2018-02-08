@@ -15,7 +15,6 @@ function AjaxNotificationHandler(){
 		$.ajax({
 			url: 'ajax_notifications_read',
 			method: 'POST',
-			
 			contentType: 'application/json',
             data: JSON.stringify({
                 ids: id_list
