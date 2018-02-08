@@ -155,7 +155,7 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
     :return: Dictionary with info and/or error
     """
     prepared_dict = dict()
-    db_user.update_last_action(db_user)
+    db_user.update_last_action()
 
     msg, error = review_queue_helper.add_proposals_for_statement_corrections(elements, db_user, translator)
     prepared_dict['error'] = msg if error else ''

@@ -96,16 +96,41 @@ def valid_statement_text(request):
     text = request.json_body.get('statement', '')
 
     if len(text) < min_length:
-        _tn = Translator(get_language_from_cookie(request))
-        a = _tn.get(_.notInsertedErrorBecauseEmpty)
-        b = _tn.get(_.minLength)
-        c = _tn.get(_.eachStatement)
-        error = '{} ({}: {} {})'.format(a, b, min_length, c)
-        request.errors.add('body', 'Text too short', error)
-        request.errors.status = 400
+        __set_min_length_error(request, min_length)
 
     else:
         request.validated['statement'] = text
+
+
+def __set_min_length_error(request, min_length):
+    logger('validation', '__set_min_length_error', 'premise is shorter than {}'.format(min_length), error=True)
+    _tn = Translator(get_language_from_cookie(request))
+    a = _tn.get(_.notInsertedErrorBecauseEmpty)
+    b = _tn.get(_.minLength)
+    c = _tn.get(_.eachStatement)
+    error = '{} ({}: {} {})'.format(a, b, min_length, c)
+    request.errors.add('body', 'Text too short', error)
+    request.errors.status = 400
+
+
+def valid_premisegroups(request):
+    """
+    Validates the correct build of premisegroups
+
+    :param request:
+    :return:
+    """
+    premisegroups = request.json_body.get('premisegroups')
+    if not premisegroups or not isinstance(premisegroups, list) or not all([isinstance(l, list) for l in premisegroups]):
+        _tn = Translator(get_language_from_cookie(request))
+        request.errors.add('body', 'Invalid conclusion id', _tn.get(_.requestFailed))
+        request.errors.status = 400
+
+    min_length = request.registry.settings.get('settings:discussion:statement_min_length', 10)
+    for premisegroup in premisegroups:
+        for premise in premisegroup:
+            if len(premise) < min_length:
+                __set_min_length_error(request, min_length)
 
 
 def has_keywords(*keywords):

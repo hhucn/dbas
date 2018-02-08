@@ -6,45 +6,6 @@ function InteractionHandler() {
 	'use strict';
 
 	/**
-	 * Callback, when new statements were send
-	 * @param data returned data
-	 */
-	this.callbackIfDoneForSendNewPremisesArgument = function (data) {
-		if (data.error.length > 0) {
-			$('#' + addPremiseErrorContainer).show();
-			$('#' + addPremiseErrorMsg).text(data.error);
-		} else {
-			window.location.href = data.url;
-		}
-	};
-
-	/**
-	 * Callback, when new start argument was send
-	 * @param data returned data
-	 */
-	this.callbackIfDoneForSendNewStartArgument = function (data) {
-		if (data.error.length > 0) {
-			$('#' + addStatementErrorContainer).show();
-			$('#' + addStatementErrorMsg).text(data.error);
-		} else {
-			window.location.href = data.url;
-		}
-	};
-
-	/**
-	 * Callback, when new premises were send
-	 * @param data returned data
-	 */
-	this.callbackIfDoneForSendNewStartPremise = function (data) {
-		if (data.error.length > 0) {
-			$('#' + addPremiseErrorContainer).show();
-			$('#' + addPremiseErrorMsg).text(data.error);
-		} else {
-			window.location.href = data.url;
-		}
-	};
-
-	/**
 	 * Callback, when the logfile was fetched
 	 * @param data of the ajax request
 	 */
@@ -72,9 +33,7 @@ function InteractionHandler() {
 	 * @param statements_uids
 	 */
 	this.callbackIfDoneForSendCorrectureOfStatement = function (data, statements_uids) {
-		if (data.error.length !== 0) {
-			setGlobalErrorHandler(_t_discussion(ohsnap), data.error);
-		} else if (data.info.length !== 0) {
+		if (data.info.length !== 0) {
 			setGlobalInfoHandler('Ohh!', data.info);
 		} else {
 			setGlobalSuccessHandler('Yeah!', _t_discussion(proposalsWereForwarded));

@@ -27,9 +27,10 @@ function AjaxDiscussionHandler() {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSendNewPremisesForArgumentDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewPremisesArgument(data);
-		}).fail(function ajaxSendNewPremisesForArgumentFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			window.location.href = data.url;
+		}).fail(function ajaxSendNewPremisesForArgumentFail(data) {
+			$('#' + addPremiseErrorContainer).show();
+			$('#' + addPremiseErrorMsg).text(data.responseJSON.errors[0].description);
 		});
 	};
 
@@ -53,9 +54,10 @@ function AjaxDiscussionHandler() {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSendNewStartArgumentDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewStartArgument(data);
-		}).fail(function ajaxSendNewStartArgumentFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			window.location.href = data.url;
+		}).fail(function ajaxSendNewStartArgumentFail(data) {
+			$('#' + addStatementErrorContainer).show();
+			$('#' + addStatementErrorMsg).text(data.responseJSON.errors[0].description);
 		});
 	};
 
@@ -81,9 +83,11 @@ function AjaxDiscussionHandler() {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSendNewStartPremiseDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewStartPremise(data);
-		}).fail(function ajaxSendNewStartPremiseFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			window.location.href = data.url;
+		}).fail(function ajaxSendNewStartPremiseFail(data) {
+			$('#' + addPremiseErrorContainer).show();
+			console.log(data);
+			$('#' + addPremiseErrorMsg).text(data.responseJSON.errors[0].description);
 		});
 	};
 
@@ -171,8 +175,8 @@ function AjaxDiscussionHandler() {
 			}
 		}).done(function ajaxSendCorrectureOfStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, statements_uids);
-		}).fail(function ajaxSendCorrectureOfStatementFail() {
-			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 13). ' + _t(doNotHesitateToContact) + '. ');
+		}).fail(function ajaxSendCorrectureOfStatementFail(data) {
+			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
 		});
 	};
 

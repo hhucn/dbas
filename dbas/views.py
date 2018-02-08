@@ -48,7 +48,7 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
 from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, has_keywords, \
-    valid_issue_not_readonly
+    valid_issue_not_readonly, valid_premisegroups
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -1454,8 +1454,7 @@ def set_new_start_argument(request):
 
 # ajax - send new start premise
 @view_config(route_name='ajax_set_new_start_premise', renderer='json')
-@validate(valid_user, valid_issue, valid_conclusion,
-          has_keywords('premisegroups', 'supportive'))
+@validate(valid_user, valid_issue, valid_conclusion, valid_premisegroups, has_keywords('supportive'))
 def set_new_start_premise(request):
     """
     Sets new premise for the start
@@ -1482,7 +1481,7 @@ def set_new_start_premise(request):
 
 # ajax - send new premises
 @view_config(route_name='ajax_set_new_premises_for_argument', renderer='json')
-@validate(valid_user, valid_issue_not_readonly, has_keywords('premisegroups', 'arg_uid', 'attack_type'))
+@validate(valid_user, valid_issue_not_readonly, valid_premisegroups, has_keywords('arg_uid', 'attack_type'))
 def set_new_premises_for_argument(request):
     """
     Sets a new premise for an argument

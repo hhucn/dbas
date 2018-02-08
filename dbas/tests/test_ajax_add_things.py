@@ -150,7 +150,8 @@ class AjaxAddThingsTest(unittest.TestCase):
         }, )
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertTrue(400, response.status_code)
+        self.assertTrue(len(response.body.errors) > 0)
 
     def test_set_new_issue(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
