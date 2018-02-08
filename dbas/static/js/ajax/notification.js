@@ -15,9 +15,11 @@ function AjaxNotificationHandler(){
 		$.ajax({
 			url: 'ajax_notifications_read',
 			method: 'POST',
-			data: {
-				ids: JSON.stringify(id_list)
-			},
+			
+			contentType: 'application/json',
+            data: JSON.stringify({
+                ids: id_list
+            }),
 			dataType: 'json',
 			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function sendAjaxForReadMessagesDone(data) {
@@ -51,9 +53,10 @@ function AjaxNotificationHandler(){
 		$.ajax({
 			url: 'ajax_notifications_delete',
 			method: 'POST',
-			data: {
-				ids: JSON.stringify(id_list)
-			},
+			contentType: 'application/json',
+			data: JSON.stringify({
+				ids: id_list
+			}),
 			dataType: 'json',
 			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function sendAjaxForDeleteMessagesDone(data) {

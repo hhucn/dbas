@@ -1,5 +1,5 @@
-import unittest
 import json
+import unittest
 
 import transaction
 from pyramid import testing
@@ -54,7 +54,7 @@ class AjaxNotificationTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_unread1 = len(DBDiscussionSession.query(Message).filter_by(read=False).all())
         from dbas.views import set_notifications_read as ajax
-        request = testing.DummyRequest(params={'ids': json.dumps([self.new_inbox_uid])}, matchdict={})
+        request = testing.DummyRequest(json_body={'ids': [self.new_inbox_uid]})
         response = ajax(request)
         db_unread2 = len(DBDiscussionSession.query(Message).filter_by(read=False).all())
         self.assertIsNotNone(response)
@@ -99,18 +99,18 @@ class AjaxNotificationTest(unittest.TestCase):
 
     def test_notification_read_failure1(self):
         from dbas.views import set_notifications_read as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest(json_body={})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertTrue(400, response.status_code)
 
     def test_notification_read_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import send_some_notification as ajax
-        request = testing.DummyRequest(params={'id': 2}, matchdict={})
+        request = testing.DummyRequest(json_body={'id': 2})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertTrue(400, response.status_code)
 
     def test_notification_delete_failure(self):
         from dbas.views import set_notifications_delete as ajax
