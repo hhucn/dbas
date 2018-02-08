@@ -135,7 +135,9 @@ def update_last_action(user):
     :return: Boolean
     """
     logger('User', 'update_last_action', 'main')
-    if isinstance(user, str):  # TODO remove this check after refactoring
+    if not user:
+        return False
+    elif isinstance(user, str):  # TODO remove this check after refactoring
         user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     db_settings = DBDiscussionSession.query(Settings).get(user.uid)
 
