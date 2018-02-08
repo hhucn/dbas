@@ -126,18 +126,15 @@ foodlist = ['Acorn Squash', 'Adobo', 'Aioli', 'Alfredo Sauce', 'Almond Paste', '
             'Won Ton Skins', 'Worcestershire Sauce', 'Yogurt', 'Zinfandel Wine']
 
 
-def update_last_action(nick):
+def update_last_action(db_user):
     """
     Updates the last action field of the user-row in database. Returns boolean if the users session
     is older than one hour or True, when she wants to keep the login
 
-    :param nick: User.nickname
+    :param db_user: User
     :return: Boolean
     """
     logger('User', 'update_last_action', 'main')
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
-    if not db_user:
-        return False
     db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
 
     timeout_in_sec = 60 * 60 * 24 * 7

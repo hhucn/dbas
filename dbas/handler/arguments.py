@@ -30,7 +30,7 @@ def set_arguments_premises(for_api, data) -> dict:
     :return: Prepared collection with statement_uids of the new premises and next url or an error
     """
     try:
-        nickname = data['nickname']
+        db_user = data['user']
         premisegroups = data['statement']
         db_issue = data['issue']
         arg_uid = data['arg_uid']
@@ -57,17 +57,17 @@ def set_arguments_premises(for_api, data) -> dict:
     m = {'mailer': mailer, 'port': port}
     arg_infos = {'arg_id': arg_uid, 'attack_type': attack_type, 'premisegroups': premisegroups, 'history': history}
     url, statement_uids, error = __process_input_of_premises_for_arguments_and_receive_url(d, arg_infos, db_issue,
-                                                                                           nickname, for_api,
+                                                                                           db_user, for_api,
                                                                                            application_url, m)
-    user.update_last_action(nickname)
+    user.update_last_action(db_user)
 
     prepared_dict = {'error': error,
                      'statement_uids': statement_uids}
 
     # add reputation
-    add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_new_argument)
+    add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_new_argument)
     if not add_rep:
-        add_rep, broke_limit = add_reputation_for(nickname, rep_reason_new_statement)
+        add_rep, broke_limit = add_reputation_for(db_user, rep_reason_new_statement)
         # send message if the user is now able to review
     if broke_limit:
         url += '#access-review'
@@ -174,7 +174,7 @@ def get_arguments_by_statement_uid(uid, application_url, ui_locales) -> dict:
     return prepared_dict
 
 
-def __process_input_of_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue: Issue, nickname: str,
+def __process_input_of_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue: Issue, db_user: User,
                                                               for_api, application_url, m):
     """
     Inserts given text in premisegroups as new arguments in dependence of the parameters and returns a URL
@@ -185,8 +185,8 @@ def __process_input_of_premises_for_arguments_and_receive_url(langs, arg_infos, 
 
     :param langs: dict with default_locale_name and discussion_lang
     :param arg_infos: dict with arg_id, attack_type, premisegroups and the history
-    :param issue: Issue.uid
-    :param nickname: User.nickname
+    :param db_issue: Issue
+    :param db_user: User
     :param for_api: Boolean
     :param application_url: URL
     :param m: dict with port and mailer
@@ -201,10 +201,7 @@ def __process_input_of_premises_for_arguments_and_receive_url(langs, arg_infos, 
 
     logger('ArgumentsHelper', 'process_input_of_premises_for_arguments_and_receive_url',
            'count of new pgroups: ' + str(len(premisegroups)))
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     _tn = Translator(discussion_lang)
-    if not db_user:
-        return '', '', _tn.get(_.userNotFound)
 
     slug = db_issue.slug
     error = ''
@@ -264,7 +261,7 @@ def __process_input_of_premises_for_arguments_and_receive_url(langs, arg_infos, 
 
         tmp_url = _um.get_url_for_reaction_on_argument(False, arg_id, attack, new_uid)
 
-        NotificationHelper.send_add_argument_notification(tmp_url, arg_id, nickname, m['port'], m['mailer'])
+        NotificationHelper.send_add_argument_notification(tmp_url, arg_id, db_user.nickname, m['port'], m['mailer'])
 
     return url, statement_uids, error
 

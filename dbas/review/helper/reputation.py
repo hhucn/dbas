@@ -118,17 +118,16 @@ def get_reputation_of(nickname, only_today=False):
     return count, is_user_author_or_admin(nickname)
 
 
-def add_reputation_for(user, reason):
+def add_reputation_for(db_user, reason):
     """
     Add reputation for the given nickname with the reason only iff the reason can be added. (For example all reputation
     for 'first' things cannot be given twice.
 
-    :param user: current user oder his nickname
+    :param db_user: User
     :param reason: reason as string, as given in reputation.py
     :return: True, if the user gained reputation and an additional boolean that is true, when the user reached 30points
     """
     logger('ReputationPointHelper', 'add_reputation_for', 'main ' + reason)
-    db_user = user if isinstance(user, User) else DBDiscussionSession.query(User).filter_by(nickname=user).first()
     db_reason = DBDiscussionSession.query(ReputationReason).filter_by(reason=reason).first()
     if not db_reason or not db_user:
         logger('ReputationPointHelper', 'add_reputation_for', 'no reason or no user')
@@ -153,7 +152,7 @@ def add_reputation_for(user, reason):
     transaction.commit()
     db_new_points = db_old_points + db_reason.points
 
-    return True, db_old_points < 30 and db_new_points >= 30
+    return True, db_old_points < 30 <= db_new_points
 
 
 def __collect_points(reputation_history):
