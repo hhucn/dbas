@@ -126,10 +126,10 @@ class AjaxAddThingsTest(unittest.TestCase):
         from dbas.views import set_correction_of_some_statements as ajax
         db_review1 = len(DBDiscussionSession.query(ReviewEdit).all())
         db_value1 = len(DBDiscussionSession.query(ReviewEditValue).all())
-        elements = {'text': 'some new text for a correction', 'uid': 19}
-        request = testing.DummyRequest(params={
-            'elements': json.dumps([elements])
-        }, matchdict={})
+        elements = [{'text': 'some new text for a correction', 'uid': 19}]
+        request = testing.DummyRequest(matchdict={}, params={}, json_body={
+            'elements': elements
+        })
         response = ajax(request)
         db_review2 = len(DBDiscussionSession.query(ReviewEdit).all())
         db_value2 = len(DBDiscussionSession.query(ReviewEditValue).all())
@@ -146,12 +146,13 @@ class AjaxAddThingsTest(unittest.TestCase):
     def test_set_correction_of_statement_failure(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import set_correction_of_some_statements as ajax
-        request = testing.DummyRequest(params={
-            'elements': json.dumps([{}])
-        }, matchdict={})
+        request = testing.DummyRequest(matchdict={}, params={}, json_body={
+            'elements': [{}]
+        }, )
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertTrue(400, response.status_code)
+        self.assertTrue(len(json.loads(response.body.decode('utf-8'))['errors']) > 0)
 
     def test_set_new_issue(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)

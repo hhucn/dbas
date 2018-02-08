@@ -48,7 +48,8 @@ from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
 from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, has_keywords, \
-    valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient
+    valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient, \
+    valid_premisegroups
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -1444,8 +1445,7 @@ def set_new_start_argument(request):
 
 # ajax - send new start premise
 @view_config(route_name='ajax_set_new_start_premise', renderer='json')
-@validate(valid_user, valid_issue, valid_conclusion,
-          has_keywords('premisegroups', 'supportive'))
+@validate(valid_user, valid_issue, valid_conclusion, valid_premisegroups, has_keywords('supportive'))
 def set_new_start_premise(request):
     """
     Sets new premise for the start
@@ -1472,7 +1472,7 @@ def set_new_start_premise(request):
 
 # ajax - send new premises
 @view_config(route_name='ajax_set_new_premises_for_argument', renderer='json')
-@validate(valid_user, valid_issue_not_readonly, has_keywords('premisegroups', 'arg_uid', 'attack_type'))
+@validate(valid_user, valid_issue_not_readonly, valid_premisegroups, has_keywords('arg_uid', 'attack_type'))
 def set_new_premises_for_argument(request):
     """
     Sets a new premise for an argument
@@ -1501,6 +1501,7 @@ def set_new_premises_for_argument(request):
 
 # ajax - set new textvalue for a statement
 @view_config(route_name='ajax_set_correction_of_statement', renderer='json')
+@validate(valid_user, has_keywords('elements'))
 def set_correction_of_some_statements(request):
     """
     Sets a new textvalue for a statement
@@ -1508,17 +1509,12 @@ def set_correction_of_some_statements(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_correction_of_some_statements', 'request.params: {}'.format(request.params))
+    logger('views', 'set_correction_of_some_statements', 'request.json_body: {}'.format(request.json_body))
     ui_locales = get_language_from_cookie(request)
+    elements = request.validated['elements']
+    user = request.validated['user']
     _tn = Translator(ui_locales)
-
-    try:
-        elements = json.loads(request.params['elements'])
-    except KeyError as e:
-        logger('views', 'set_correction_of_some_statements', repr(e), error=True)
-        return {'error': _tn.get(_.internalError), 'info': ''}
-
-    prepared_dict = set_correction_of_statement(elements, request.authenticated_userid, ui_locales)
+    prepared_dict = set_correction_of_statement(elements, user, _tn)
     return prepared_dict
 
 

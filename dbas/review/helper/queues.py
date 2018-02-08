@@ -373,45 +373,42 @@ def __get_last_reviewer_of(reviewer_type, main_page):
     return users_array
 
 
-def add_proposals_for_statement_corrections(elements, nickname, translator):
+def add_proposals_for_statement_corrections(elements, db_user, _tn):
     """
     Add a proposal to correct a statement
 
     :param elements: [Strings]
-    :param nickname: User.nickname
-    :param translator: Translator
+    :param db_user: User
+    :param _tn: Translator
     :return: String, Boolean
     """
     logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'main')
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        return translator.get(_.noRights), True
 
     review_count = len(elements)
-    added_reviews = [__add_edit_reviews(element, db_user) for element in elements]
+    added_reviews = [__add_edit_reviews(el, db_user) for el in elements]
 
     if added_reviews.count(1) == 0:  # no edits set
         if added_reviews.count(-1) > 0:
             logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'internal key error')
-            return translator.get(_.internalKeyError), True
+            return _tn.get(_.internalKeyError), True
         if added_reviews.count(-2) > 0:
             logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'already edit proposals')
-            return translator.get(_.alreadyEditProposals), True
+            return _tn.get(_.alreadyEditProposals), True
         logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'no corrections given')
-        return translator.get(_.noCorrections), True
+        return _tn.get(_.noCorrections), True
 
     DBDiscussionSession.flush()
     transaction.commit()
 
     added_values = [__add_edit_values_review(element, db_user) for element in elements]
     if added_values == 0:
-        return translator.get(_.alreadyEditProposals), True
+        return _tn.get(_.alreadyEditProposals), True
     DBDiscussionSession.flush()
     transaction.commit()
 
     msg = ''
     if review_count > added_values.count(1) or added_reviews.count(1) != added_values.count(1):
-        msg = translator.get(_.alreadyEditProposals)
+        msg = _tn.get(_.alreadyEditProposals)
 
     return msg, False
 
