@@ -115,7 +115,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         # author error
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import set_new_premises_for_argument as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest(json_body={})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
