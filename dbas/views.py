@@ -4,15 +4,16 @@ Collection of pyramids views components of D-BAS' core.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
-import graphene
 import json
+from typing import Callable, Any
+
+import graphene
 import requests
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.renderers import get_renderer
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid_mailer import get_mailer
-from typing import Callable, Any
 from webob_graphql import serve_graphql_request
 from zope.interface.interfaces import ComponentLookupError
 
@@ -1492,6 +1493,7 @@ def set_new_start_premise(request):
 
 # ajax - send new premises
 @view_config(route_name='ajax_set_new_premises_for_argument', renderer='json')
+@validate(valid_user, valid_issue_not_readonly, has_keywords('premisegroups', 'arg_uid'))
 def set_new_premises_for_argument(request):
     """
     Sets a new premise for an argument
@@ -1500,28 +1502,24 @@ def set_new_premises_for_argument(request):
     :return: json-dict()
     """
     logger('views', 'set_new_premises_for_argument', 'request.params: {}'.format(request.params))
-    lang = get_discussion_language(request.matchdict, request.params, request.session)
-    _tn = Translator(lang)
-    data = {}
+    data = {
+        'user': request.validated['user'],
+        'issue': request.validated['issue'],
+        'premisegroups': request.validated['premisegroups'],
+        'arg_uid': request.validated['arg_uid'],
+        'attack_type': request.validated['attack_type'],
+
+        'port': get_port(request),
+        'history': request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None,
+        'discussion_lang': get_discussion_language(request.matchdict, request.params, request.session),
+        'default_locale_name': get_default_locale_name(request.registry),
+        'application_url': request.application_url
+    }
+
     try:
-        data['nickname'] = request.authenticated_userid
-        data['statement'] = json.loads(request.params['premisegroups'])
-        data['issue_id'] = issue_handler.get_issue_id(request)
-        data['issue'] = DBDiscussionSession.query(Issue).get(data['issue_id'])
-        data['arg_uid'] = request.params['arg_uid']
-        data['attack_type'] = request.params['attack_type']
-        data['port'] = get_port(request)
-        data['history'] = request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None
-        data['discussion_lang'] = get_discussion_language(request.matchdict, request.params, request.session)
-        data['default_locale_name'] = get_default_locale_name(request.registry)
-        data['application_url'] = request.application_url
-        try:
-            data['mailer'] = get_mailer(request)
-        except ComponentLookupError as e:
-            logger('views', 'set_new_premises_for_argument', repr(e), error=True)
-    except KeyError as e:
+        data['mailer'] = get_mailer(request)
+    except ComponentLookupError as e:
         logger('views', 'set_new_premises_for_argument', repr(e), error=True)
-        return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
 
     prepared_dict = set_arguments_premises(False, data)
     return prepared_dict
