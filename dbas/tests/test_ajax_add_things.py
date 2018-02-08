@@ -43,16 +43,16 @@ class AjaxAddThingsTest(unittest.TestCase):
         DBDiscussionSession.query(ClickedArgument).filter_by(argument_uid=db_new_arg.uid).delete()
         DBDiscussionSession.query(Argument).filter_by(uid=db_new_arg.uid).delete()
 
-    def __set_multiple_start_premises(self, ajax):
+    def __set_multiple_start_premises(self, view):
         db_arg1 = len(DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).all())
         len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
         request = testing.DummyRequest(json_body={
-            'premisegroup': ['this is my first premisegroup'],
+            'premisegroups': [['this is my first premisegroup']],
             'conclusion_id': 2,
             'issue': 2,
             'supportive': True
         }, matchdict={})
-        response = ajax(request)
+        response = view(request)
         transaction.commit()
         db_arg2 = len(DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).all())
         len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
@@ -66,13 +66,13 @@ class AjaxAddThingsTest(unittest.TestCase):
 
     def test_set_new_start_premise(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
-        from dbas.views import set_new_start_premise as ajax
-        self.__set_multiple_start_premises(ajax)
+        from dbas.views import set_new_start_premise as view
+        self.__set_multiple_start_premises(view)
 
     def test_set_new_start_premise_twice(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
-        from dbas.views import set_new_start_premise as ajax
-        self.__set_multiple_start_premises(ajax)
+        from dbas.views import set_new_start_premise as view
+        self.__set_multiple_start_premises(view)
 
     def test_set_new_start_premise_failure1(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
