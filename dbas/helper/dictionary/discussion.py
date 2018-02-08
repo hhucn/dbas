@@ -616,16 +616,27 @@ class DiscussionDictHelper(object):
         save_statement_url = 'ajax_set_new_start_statement'
 
         logger('DictionaryHelper', 'prepare_discussion_dict', 'at_choosing')
-        text = _tn.get(_.soYouEnteredMultipleReasons) + '. '
-        text += _tn.get(_.whyAreYouAgreeingWith) if is_supportive else _tn.get(_.whyAreYouDisagreeingWith)
-        text += ':<br>'
-        text += get_text_for_argument_uid(uid) if is_uid_argument else get_text_for_statement_uid(uid)
-        text += '?<br>' + _tn.get(_.because) + '...'
+        a = _tn.get(_.soYouEnteredMultipleReasons)
+        c = get_text_for_argument_uid(uid) if is_uid_argument else get_text_for_statement_uid(uid)
+
+        if is_supportive:
+            if is_uid_argument:
+                b = _tn.get(_.whatIsYourMostImportantReasonForArgument)
+            else:
+                b = _tn.get(_.whatIsYourMostImportantReasonForStatement)
+        else:
+            if is_uid_argument:
+                b = _tn.get(_.whatIsYourMostImportantReasonAgainstArgument)
+            else:
+                b = _tn.get(_.whatIsYourMostImportantReasonAgainstStatement)
+        b = b.replace('{}', '')
+
+        text = '{}. {}: {}?<br>{}...'.format(a, b, c, _tn.get(_.because))
 
         self.__append_now_bubble(bubbles_array)
 
-        question_bubble = create_speechbubble_dict(BubbleTypes.USER, id='question-bubble', message=text, omit_url=True,
-                                                   lang=self.lang)
+        question_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, id='question-bubble', message=text,
+                                                   omit_url=True, lang=self.lang)
         if not bubbles_already_last_in_list(bubbles_array, question_bubble):
             bubbles_array.append(question_bubble)
 
