@@ -44,12 +44,12 @@ def set_arguments_premises(for_api, data) -> dict:
     application_url = data['application_url']
 
     # escaping will be done in QueryHelper().set_statement(...)
-    d = {'default_locale_name': default_locale_name, 'discussion_lang': discussion_lang}
-    m = {'mailer': mailer, 'port': port}
+    langs = {'default_locale_name': default_locale_name, 'discussion_lang': discussion_lang}
+    mail = {'mailer': mailer, 'port': port}
     arg_infos = {'arg_id': arg_uid, 'attack_type': attack_type, 'premisegroups': premisegroups, 'history': history}
-    url, statement_uids, error = __process_input_of_premises_for_arguments_and_receive_url(d, arg_infos, db_issue,
-                                                                                           db_user, for_api,
-                                                                                           application_url, m)
+    url, statement_uids, error = __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue,
+                                                                                        db_user, for_api,
+                                                                                        application_url, mail)
     user.update_last_action(db_user)
 
     prepared_dict = {'error': error,  # TODO will result in a key error in frontend, because we renamed it to "errors"
@@ -165,8 +165,8 @@ def get_arguments_by_statement_uid(uid, application_url, ui_locales) -> dict:
     return prepared_dict
 
 
-def __process_input_of_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue: Issue, db_user: User,
-                                                              for_api, application_url, m):
+def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue: Issue, db_user: User,
+                                                           for_api, application_url, m):
     """
     Inserts given text in premisegroups as new arguments in dependence of the parameters and returns a URL
 
@@ -201,8 +201,8 @@ def __process_input_of_premises_for_arguments_and_receive_url(langs, arg_infos, 
     # insert all premise groups into our database
     # all new arguments are collected in a list
     new_argument_uids = []
-    for group in premisegroups:  # premise groups is a list of lists
-        new_argument = insert_new_premises_for_argument(application_url, default_locale_name, group, attack_type,
+    for premisegroup in premisegroups:  # premise groups is a list of lists
+        new_argument = insert_new_premises_for_argument(application_url, default_locale_name, premisegroup, attack_type,
                                                         arg_id, db_issue, db_user, discussion_lang)
         if not isinstance(new_argument, Argument):  # break on error
             a = _tn.get(_.notInsertedErrorBecauseEmpty)

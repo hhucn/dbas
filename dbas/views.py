@@ -1493,7 +1493,7 @@ def set_new_start_premise(request):
 
 # ajax - send new premises
 @view_config(route_name='ajax_set_new_premises_for_argument', renderer='json')
-@validate(valid_user, valid_issue_not_readonly, has_keywords('premisegroups', 'arg_uid'))
+@validate(valid_user, valid_issue_not_readonly, has_keywords('premisegroups', 'arg_uid', 'attack_type'))
 def set_new_premises_for_argument(request):
     """
     Sets a new premise for an argument
@@ -1501,7 +1501,7 @@ def set_new_premises_for_argument(request):
     :param request: request of the web server
     :return: json-dict()
     """
-    logger('views', 'set_new_premises_for_argument', 'request.params: {}'.format(request.params))
+    logger('views', 'set_new_premises_for_argument', 'request.json_body: {}'.format(request.json_body))
     data = {
         'user': request.validated['user'],
         'issue': request.validated['issue'],

@@ -9,20 +9,20 @@ function AjaxDiscussionHandler() {
 	 * Sends new premises to the server. Answer will be given to a callback
 	 * @param arg_uid
 	 * @param relation
-	 * @param text
+	 * @param premisegroups
 	 */
-	this.sendNewPremiseForArgument = function (arg_uid, relation, text) {
+	this.sendNewPremiseForArgument = function (arg_uid, relation, premisegroups) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_new_premises_for_argument',
 			method: 'POST',
-			data: {
+			contentType: 'application/json',
+			data: JSON.stringify({
 				arg_uid: arg_uid,
 				attack_type: relation,
-				premisegroups: JSON.stringify(text)
-			},
+				premisegroups: premisegroups
+			}),
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
@@ -61,18 +61,18 @@ function AjaxDiscussionHandler() {
 
 	/**
 	 * Sends new premises to the server. Answer will be given to a callback
-     * @param text_array List of premisegroups
+	 * @param premisegroups List of premisegroups
 	 * @param conclusion_id id of the conclusion
 	 * @param supportive boolean, whether it is supportive
 	 */
-    this.sendNewStartPremise = function (text_array, conclusion_id, supportive) {
+	this.sendNewStartPremise = function (premisegroups, conclusion_id, supportive) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_set_new_start_premise',
 			method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
-                premisegroups: text_array,
+	            premisegroups: premisegroups,
 				conclusion_id: conclusion_id,
 				supportive: supportive
             }),

@@ -126,28 +126,30 @@ foodlist = ['Acorn Squash', 'Adobo', 'Aioli', 'Alfredo Sauce', 'Almond Paste', '
             'Won Ton Skins', 'Worcestershire Sauce', 'Yogurt', 'Zinfandel Wine']
 
 
-def update_last_action(db_user):
+def update_last_action(user):
     """
     Updates the last action field of the user-row in database. Returns boolean if the users session
     is older than one hour or True, when she wants to keep the login
 
-    :param db_user: User
+    :param user: User in refactored fns, else nickname
     :return: Boolean
     """
     logger('User', 'update_last_action', 'main')
-    db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
+    if isinstance(user, str):  # TODO remove this check after refactoring
+        user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    db_settings = DBDiscussionSession.query(Settings).get(user.uid)
 
     timeout_in_sec = 60 * 60 * 24 * 7
 
     # check difference of
-    diff_action = get_now() - db_user.last_action
-    diff_login = get_now() - db_user.last_login
+    diff_action = get_now() - user.last_action
+    diff_login = get_now() - user.last_login
     diff_action = diff_action.seconds + diff_action.days * 24 * 60 * 60
     diff_login = diff_login.seconds + diff_login.days * 24 * 60 * 60
 
     diff = diff_action if diff_action < diff_login else diff_login
     should_log_out = diff > timeout_in_sec and not db_settings.keep_logged_in
-    db_user.update_last_action()
+    user.update_last_action()
 
     transaction.commit()
     return should_log_out

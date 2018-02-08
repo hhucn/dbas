@@ -1,7 +1,8 @@
 # coding=utf-8
+from typing import List, Tuple, Dict, Union
+
 import transaction
 from sqlalchemy import and_, func
-from typing import List, Tuple, Dict, Union
 
 import dbas.review.helper.queues as review_queue_helper
 from dbas.database import DBDiscussionSession
@@ -475,7 +476,7 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     return url, new_statement_uids, error
 
 
-def insert_new_premises_for_argument(application_url, default_locale_name, text, current_attack, arg_uid,
+def insert_new_premises_for_argument(application_url, default_locale_name, premisegroup, current_attack, arg_uid,
                                      db_issue: Issue, db_user: User,
                                      discussion_lang):
     """
@@ -483,7 +484,7 @@ def insert_new_premises_for_argument(application_url, default_locale_name, text,
 
     :param application_url: Url of the app itself
     :param default_locale_name: default lang of the app
-    :param text: String
+    :param premisegroup: List of strings
     :param current_attack: String
     :param arg_uid: Argument.uid
     :param db_issue: Issue
@@ -492,11 +493,14 @@ def insert_new_premises_for_argument(application_url, default_locale_name, text,
     """
     logger('StatementsHelper', 'insert_new_premises_for_argument', 'def')
 
-    statement = insert_as_statement(application_url, default_locale_name, text, db_user, db_issue,
-                                    discussion_lang)
+    statements = []
+    for premise in premisegroup:
+        statement = insert_as_statement(application_url, default_locale_name, premise, db_user, db_issue,
+                                        discussion_lang)
+        statements.append(statement)
 
     # set the new statements as premise group and get current user as well as current argument
-    new_pgroup_uid = set_statements_as_new_premisegroup([statement], db_user, db_issue)
+    new_pgroup_uid = set_statements_as_new_premisegroup(statements, db_user, db_issue)
     current_argument = DBDiscussionSession.query(Argument).get(arg_uid)
 
     new_argument = None
@@ -507,7 +511,7 @@ def insert_new_premises_for_argument(application_url, default_locale_name, text,
     elif current_attack == 'support':
         new_argument, duplicate = set_new_support(new_pgroup_uid, current_argument, db_user, db_issue)
 
-    elif current_attack == 'undercut' or current_attack == 'overbid':
+    elif current_attack == 'undercut':
         new_argument, duplicate = set_new_undercut(new_pgroup_uid, current_argument, db_user, db_issue)
 
     elif current_attack == 'rebut':

@@ -118,17 +118,23 @@ def get_reputation_of(nickname, only_today=False):
     return count, is_user_author_or_admin(nickname)
 
 
-def add_reputation_for(db_user, reason):
+def add_reputation_for(user, reason):
     """
-    Add reputation for the given nickname with the reason only iff the reason can be added. (For example all reputation
+    Add reputation for the given nickname with the reason only iff the reason can be added. For example all reputation
     for 'first' things cannot be given twice.
 
-    :param db_user: User
+    :param user: User in refactored fns, else nickname
     :param reason: reason as string, as given in reputation.py
     :return: True, if the user gained reputation and an additional boolean that is true, when the user reached 30points
     """
     logger('ReputationPointHelper', 'add_reputation_for', 'main ' + reason)
     db_reason = DBDiscussionSession.query(ReputationReason).filter_by(reason=reason).first()
+
+    if isinstance(user, str):  # TODO remove this check after refactoring
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    else:
+        db_user = user
+
     if not db_reason or not db_user:
         logger('ReputationPointHelper', 'add_reputation_for', 'no reason or no user')
         return False, False
