@@ -154,35 +154,34 @@ class AjaxAddThingsTest(unittest.TestCase):
         self.assertTrue(400, response.status_code)
         self.assertTrue(len(json.loads(response.body.decode('utf-8'))['errors']) > 0)
 
-    def test_set_new_issue(self):
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_new_issue as ajax
-        request = testing.DummyRequest(params={}, matchdict={}, json_body={
+    def __get_dummy_request_for_new_issue(self):
+        return testing.DummyRequest(json_body={
             'info': 'Some new info',
-            'long_info': 'Some new long info',
             'title': 'Some new title',
+            'long_info': 'Some new long info',
             'lang': 'en',
             'is_public': False,
             'is_read_only': False
         })
+
+    def test_set_new_issue(self):
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
+        from dbas.views import set_new_issue as ajax
+
+        request = self.__get_dummy_request_for_new_issue()
         response = ajax(request)
+
         self.assertIsNotNone(response)
-        self.assertEqual(len(DBDiscussionSession.query(Issue).filter_by(title='Some new title').all()), 1)
-        DBDiscussionSession.query(Issue).filter_by(title='Some new title').delete()
+        self.assertEqual(len(DBDiscussionSession.query(Issue).filter_by(title=request.json_body['title']).all()), 1)
+        DBDiscussionSession.query(Issue).filter_by(title=request.json_body['title']).delete()
         transaction.commit()
 
     def test_set_new_issue_failure1(self):
         # no author
         from dbas.views import set_new_issue as ajax
-        request = testing.DummyRequest(params={}, matchdict={}, json_body={
-            'info': 'Some new info',
-            'title': 'Some new title',
-            'long_info': 'Some new long info',
-            'lang': 'en',
-            'is_public': False,
-            'is_read_only': False
-        })
+        request = self.__get_dummy_request_for_new_issue()
         response = ajax(request)
+
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
 
@@ -190,15 +189,12 @@ class AjaxAddThingsTest(unittest.TestCase):
         # duplicated title
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_new_issue as ajax
-        request = testing.DummyRequest(params={}, matchdict={}, json_body={
-            'info': 'Some new info',
-            'title': 'Cat or Dog',
-            'long_info': 'Some new long info',
-            'lang': 'en',
-            'is_public': False,
-            'is_read_only': False
-        })
+
+        request = self.__get_dummy_request_for_new_issue()
+        db_issue = DBDiscussionSession.query(Issue).get(1)
+        request.json_body['title'] = db_issue.title
         response = ajax(request)
+
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
 
@@ -206,15 +202,12 @@ class AjaxAddThingsTest(unittest.TestCase):
         # duplicated info
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_new_issue as ajax
-        request = testing.DummyRequest(params={}, matchdict={}, json_body={
-            'info': 'Your family argues about whether to buy a cat or dog as pet. Now your opinion matters!',
-            'title': 'Some new title',
-            'long_info': 'Some new long info',
-            'lang': 'en',
-            'is_public': False,
-            'is_read_only': False
-        })
+
+        request = self.__get_dummy_request_for_new_issue()
+        db_issue = DBDiscussionSession.query(Issue).get(1)
+        request.json_body['info'] = db_issue.info
         response = ajax(request)
+
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
 
@@ -222,15 +215,11 @@ class AjaxAddThingsTest(unittest.TestCase):
         # wrong language
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_new_issue as ajax
-        request = testing.DummyRequest(params={}, matchdict={}, json_body={
-            'info': 'Some new info',
-            'title': 'Some new title',
-            'long_info': 'Some new long info',
-            'lang': 'sw',
-            'is_public': False,
-            'is_read_only': False
-        })
+
+        request = self.__get_dummy_request_for_new_issue()
+        request.json_body['lang'] = 'sw'
         response = ajax(request)
+
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
 

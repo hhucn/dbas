@@ -1406,7 +1406,7 @@ def set_discussion_properties(request):
 # #######################################
 
 @view_config(route_name='ajax_set_new_start_argument', renderer='json')
-@validate(valid_user, valid_issue_not_readonly, has_keywords('position', 'reason'))
+@validate(valid_user, valid_issue_not_readonly, has_keywords(('position', str), ('reason', str)))
 def set_new_start_argument(request):
     """
     Inserts a new argument as starting point into the database
@@ -1445,7 +1445,7 @@ def set_new_start_argument(request):
 
 # ajax - send new start premise
 @view_config(route_name='ajax_set_new_start_premise', renderer='json')
-@validate(valid_user, valid_issue, valid_conclusion, valid_premisegroups, has_keywords('supportive'))
+@validate(valid_user, valid_issue, valid_conclusion, valid_premisegroups, has_keywords(('supportive', bool)))
 def set_new_start_premise(request):
     """
     Sets new premise for the start
@@ -1472,7 +1472,7 @@ def set_new_start_premise(request):
 
 # ajax - send new premises
 @view_config(route_name='ajax_set_new_premises_for_argument', renderer='json')
-@validate(valid_user, valid_issue_not_readonly, valid_premisegroups, has_keywords('arg_uid', 'attack_type'))
+@validate(valid_user, valid_issue_not_readonly, valid_premisegroups, has_keywords(('arg_uid', int), ('attack_type', str)))
 def set_new_premises_for_argument(request):
     """
     Sets a new premise for an argument
@@ -1501,7 +1501,7 @@ def set_new_premises_for_argument(request):
 
 # ajax - set new textvalue for a statement
 @view_config(route_name='ajax_set_correction_of_statement', renderer='json')
-@validate(valid_user, has_keywords('elements'))
+@validate(valid_user, has_keywords(('elements', list)))
 def set_correction_of_some_statements(request):
     """
     Sets a new textvalue for a statement
@@ -1520,7 +1520,7 @@ def set_correction_of_some_statements(request):
 
 # ajax - set notifications as read
 @view_config(route_name='ajax_notifications_read', renderer='json')
-@validate(valid_user, has_keywords('ids'))
+@validate(valid_user, has_keywords(('ids', list)))
 def set_notifications_read(request):
     """
     Set a notification as read
@@ -1535,7 +1535,7 @@ def set_notifications_read(request):
 
 # ajax - deletes notifications
 @view_config(route_name='ajax_notifications_delete', renderer='json')
-@validate(valid_user, has_keywords('ids'))
+@validate(valid_user, has_keywords(('ids', list)))
 def set_notifications_delete(request):
     """
     Request the removal of a notification
@@ -1552,7 +1552,7 @@ def set_notifications_delete(request):
 
 # ajax - set new issue
 @view_config(route_name='ajax_set_new_issue', renderer='json')
-@validate(valid_user, valid_language, valid_new_issue, has_keywords('is_public', 'is_read_only'))
+@validate(valid_user, valid_language, valid_new_issue, has_keywords(('is_public', bool), ('is_read_only', bool)))
 def set_new_issue(request):
     """
 
