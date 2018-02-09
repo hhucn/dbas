@@ -81,7 +81,7 @@ def valid_language(request):
         __add_error(request, 'valid_language', 'Invalid language', _tn.get(_.checkLanguage))
         return
 
-    db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=lang).one_or_none()
+    db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=lang).first()
     if db_lang:
         request.validated['lang'] = db_lang
         return True
@@ -121,6 +121,10 @@ def valid_new_issue(request):
         __add_error(request, 'valid_new_issue', 'Some key is missing', 'Some key for a new issue is missing')
         return False
 
+    if not isinstance(title, str) or not isinstance(info, str) or not isinstance(long_info, str):
+        __add_error(request, 'valid_new_issue', 'Some key is not a string', 'Some key for a new issue is not a string')
+        return False
+
     db_dup1 = DBDiscussionSession.query(Issue).filter_by(title=title).all()
     db_dup2 = DBDiscussionSession.query(Issue).filter_by(info=info).all()
     db_dup3 = DBDiscussionSession.query(Issue).filter_by(long_info=long_info).all()
@@ -129,6 +133,9 @@ def valid_new_issue(request):
         __add_error(request, 'valid_new_issue', 'Issue data is duplicate', _tn.get(_.duplicate))
         return False
 
+    request.validated['title'] = title
+    request.validated['info'] = info
+    request.validated['long_info'] = long_info
     return True
 
 
@@ -290,7 +297,7 @@ def has_keywords(*keywords):
             if value is not None:
                 request.validated[keyword] = value
             else:
-                __add_error(request, 'valid_keywords', 'body', '{} is missing'.format(keyword))
+                __add_error(request, 'valid_keywords', 'body misses {}'.format(keyword), 'Keyword {} is missing'.format(keyword))
 
     return valid_keywords
 

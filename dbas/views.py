@@ -1559,11 +1559,11 @@ def set_new_issue(request):
     :param request: current request of the server
     :return:
     """
-    logger('views', 'set_new_issue', 'main {}'.format(request.params))
+    logger('views', 'set_new_issue', 'main {}'.format(request.json_body))
     info = escape_string(request.validated['info'])
     long_info = escape_string(request.validated['long_info'])
     title = escape_string(request.validated['title'])
-    lang = escape_string(request.validated['lang'])
+    lang = request.validated['lang']
     is_public = request.validated['is_public']
     is_read_only = request.validated['is_read_only']
 

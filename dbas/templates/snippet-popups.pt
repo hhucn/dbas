@@ -761,7 +761,7 @@
                                 <div class="col-md-4">
                                     <i class="fa fa-question-circle-o" aria-hidden="true" style="cursor: help; margin-right: 1em;" tal:attributes="title extras.tag.issue_public"></i>
                                     <input style="margin: 1em 0 0 0;" checked
-                                           class="popup-add-topic-public-toggle" type="checkbox" data-toggle="toggle"
+                                           id="popup-add-topic-public-toggle" type="checkbox" data-toggle="toggle"
                                            data-keyword="public"
                                            data-size="mini" title=""
                                            data-onstyle="success"
@@ -776,7 +776,7 @@
                                 <div class="col-md-4">
                                     <i class="fa fa-question-circle-o" aria-hidden="true" style="cursor: help; margin-right: 1em;" tal:attributes="title extras.tag.issue_writable"></i>
                                     <input style="margin: 1em 0 0 0;"
-                                           class="popup-add-topic-read-only-toggle" type="checkbox" data-toggle="toggle"
+                                           id="popup-add-topic-read-only-toggle" type="checkbox" data-toggle="toggle"
                                            data-keyword="public"
                                            data-size="mini" title=""
                                            data-onstyle="success"

@@ -853,8 +853,6 @@ function PopupHandler() {
 			setTimeout(function () {
 				$('.grecaptcha-badge').css('bottom', $('#footer').outerHeight(true) + 'px');
 			}, 1500);
-		} else {
-			console.log('nargh');
 		}
 
 	};

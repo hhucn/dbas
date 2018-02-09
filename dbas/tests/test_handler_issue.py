@@ -5,7 +5,7 @@ from pyramid import testing
 
 import dbas.handler.issue as ih
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, User
+from dbas.database.discussion_model import Issue, User, Language
 from dbas.strings.translator import Translator
 
 
@@ -13,10 +13,11 @@ class IssueHandlerTests(unittest.TestCase):
 
     def test_set_issue(self):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales='en').first()
         info = 'infoinfoinfo'
         long_info = 'long_infolong_infolong_info'
         title = 'titletitletitle'
-        response = ih.set_issue(db_user, info, long_info, title, db_user, False, False, 'http://test.url')
+        response = ih.set_issue(db_user, info, long_info, title, db_lang, False, False, 'http://test.url')
         self.assertTrue(len(response['issue']) >= 0)
 
         DBDiscussionSession.query(Issue).filter_by(title=title).delete()
