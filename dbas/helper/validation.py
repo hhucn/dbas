@@ -16,6 +16,7 @@ from dbas.strings.translator import Translator
 # #############################################################################
 # Helper-functions
 
+
 def __add_error(request, log_key, verbose_short, verbose_long=None):
     """
     Log and add errors to request. Supports different verbose-messages.
@@ -104,6 +105,7 @@ def valid_issue(request):
         return True
     else:
         __add_error(request, 'valid_issue', 'Invalid issue')
+        return False
 
 
 def valid_new_issue(request):
@@ -113,29 +115,18 @@ def valid_new_issue(request):
     :param request:
     :return:
     """
-    title = request.json_body.get('title')
-    info = request.json_body.get('info')
-    long_info = request.json_body.get('long_info')
 
-    if not title or not info or not long_info:
-        __add_error(request, 'valid_new_issue', 'Some key is missing', 'Some key for a new issue is missing')
+    fn_validator = has_keywords(('title', str), ('info', str), ('long_info', str))
+    if not fn_validator(request):
         return False
 
-    if not isinstance(title, str) or not isinstance(info, str) or not isinstance(long_info, str):
-        __add_error(request, 'valid_new_issue', 'Some key is not a string', 'Some key for a new issue is not a string')
-        return False
-
-    db_dup1 = DBDiscussionSession.query(Issue).filter_by(title=title).all()
-    db_dup2 = DBDiscussionSession.query(Issue).filter_by(info=info).all()
-    db_dup3 = DBDiscussionSession.query(Issue).filter_by(long_info=long_info).all()
+    db_dup1 = DBDiscussionSession.query(Issue).filter_by(title=request.validated['title']).all()
+    db_dup2 = DBDiscussionSession.query(Issue).filter_by(info=request.validated['info']).all()
+    db_dup3 = DBDiscussionSession.query(Issue).filter_by(long_info=request.validated['long_info']).all()
     if db_dup1 or db_dup2 or db_dup3:
         _tn = Translator(get_language_from_cookie(request))
-        __add_error(request, 'valid_new_issue', 'Issue data is duplicate', _tn.get(_.duplicate))
+        __add_error(request, 'valid_new_issue', 'Issue data is a duplicate', _tn.get(_.duplicate))
         return False
-
-    request.validated['title'] = title
-    request.validated['info'] = info
-    request.validated['long_info'] = long_info
     return True
 
 
@@ -270,7 +261,8 @@ def valid_premisegroups(request):
     :return:
     """
     premisegroups = request.json_body.get('premisegroups')
-    if not premisegroups or not isinstance(premisegroups, list) or not all([isinstance(l, list) for l in premisegroups]):
+    if not premisegroups or not isinstance(premisegroups, list) or not all(
+            [isinstance(l, list) for l in premisegroups]):
         _tn = Translator(get_language_from_cookie(request))
         __add_error(request, 'valid_premisegroups', 'Invalid conclusion id', _tn.get(_.requestFailed))
         return
@@ -287,17 +279,24 @@ def has_keywords(*keywords):
     """
     Verify that specified keywords exist in the request.json_body.
 
-    :param keywords: keys in request.json_body
+    :param keywords: tuple of keys and their expected types in request.json_body
     :return:
     """
 
     def valid_keywords(request):
-        for keyword in keywords:
+        error_occured = False
+        for (keyword, ktype) in keywords:
             value = request.json_body.get(keyword)
-            if value is not None:
+            if value is not None and isinstance(value, ktype):
                 request.validated[keyword] = value
+            elif value is None:
+                __add_error(request, 'has_keywords', 'Parameter missing', '{} is missing'.format(keyword))
+                error_occured = True
             else:
-                __add_error(request, 'has_keywords', 'Parameters missing', '{} is missing'.format(keyword))
+                __add_error(request, 'has_keywords', 'Parameter has wrong type',
+                            '{} is {}, expected {}'.format(keyword, type(keyword), ktype))
+                error_occured = True
+        return not error_occured
 
     return valid_keywords
 
