@@ -12,94 +12,40 @@ from slugify import slugify
 from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
-from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print, \
     ClickedStatement
+from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import get_short_url
-from dbas.lib import is_user_author_or_admin
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_issues_as_query, get_visible_issues_for_user_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.url_manager import UrlManager
 
-limit_for_open_issues = 10
+rep_limit_to_open_issues = 10
 
 
-def set_issue(nickname, info, long_info, title, lang, is_public, is_read_only, application_url, ui_locales) -> dict:
+def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Language, is_public: bool,
+              is_read_only: bool, application_url: str) -> dict:
     """
     Sets new issue, which will be a new discussion
 
-    :param nickname: Users nickname
+    :param db_user: User
     :param info: Short information about the new issue
     :param long_info: Long information about the new issue
     :param title: Title of the new issue
-    :param lang: Language of the new issue
+    :param db_lang: Language
     :param application_url: Url of the app itself
     :param is_public: Boolean
     :param is_read_only: Boolean
-    :param ui_locales: Current language
     :rtype: dict
     :return: Collection with information about the new issue
     """
-    user.update_last_action(nickname)
+    user.update_last_action(db_user)
 
     logger('setter', 'set_new_issue', 'main')
-    prepared_dict = dict()
-
-    was_set, error = __set_issue(info, long_info, title, lang, is_public, is_read_only, nickname, ui_locales)
-    if was_set:
-        db_issue = DBDiscussionSession.query(Issue).filter(and_(Issue.title == title,
-                                                                Issue.info == info)).first()
-        prepared_dict['issue'] = get_issue_dict_for(db_issue, application_url, False, 0, ui_locales)
-    prepared_dict['error'] = '' if was_set else error
-
-    return prepared_dict
-
-
-def __set_issue(info, long_info, title, lang, is_public, is_read_only, nickname, ui_locales):
-    """
-    Inserts new issue into database
-
-    :param info: String
-    :param title: String
-    :param lang: String
-    :param nickname: User.nickname
-    :param is_public: Boolean
-    :param is_read_only: Boolean
-    :param ui_locales: ui_locales
-    :return: True, '' on success, False, String on error
-    """
-
-    _tn = Translator(ui_locales)
-
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not is_user_author_or_admin(nickname):
-        logger('IssueHelper', 'set_issue', 'User has no rights', error=True)
-        return False, _tn.get(_.noRights)
-
-    if len(info) < 10 or len(long_info) < 10:
-        logger('IssueHelper', 'set_issue', 'Short text', error=True)
-        a = _tn.get(_.notInsertedErrorBecauseEmpty)
-        b = _tn.get(_.minLength)
-        c = _tn.get(_.eachStatement)
-        error = '{} ({}: {} {})'.format(a, b, str(10), c)
-        return False, error
-
-    db_duplicates1 = DBDiscussionSession.query(Issue).filter_by(title=title).all()
-    db_duplicates2 = DBDiscussionSession.query(Issue).filter_by(info=info).all()
-    db_duplicates3 = DBDiscussionSession.query(Issue).filter_by(long_info=long_info).all()
-    if db_duplicates1 or db_duplicates2 or db_duplicates3:
-        logger('IssueHelper', 'set_issue', 'Duplicates', error=True)
-        return False, _tn.get(_.duplicate)
-
-    db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=lang).first()
-    if not db_lang:
-        logger('IssueHelper', 'set_issue', 'No language', error=True)
-        return False, _tn.get(_.internalError)
-
     DBDiscussionSession.add(Issue(title=title,
                                   info=info,
                                   long_info=long_info,
@@ -108,10 +54,11 @@ def __set_issue(info, long_info, title, lang, is_public, is_read_only, nickname,
                                   is_private=not is_public,
                                   lang_uid=db_lang.uid))
     DBDiscussionSession.flush()
-
     transaction.commit()
+    db_issue = DBDiscussionSession.query(Issue).filter(and_(Issue.title == title,
+                                                            Issue.info == info)).first()
 
-    return True, ''
+    return {'issue': get_issue_dict_for(db_issue, application_url, False, 0, db_lang.ui_locales)}
 
 
 def prepare_json_of_issue(uid, application_url, lang, for_api, nickname):

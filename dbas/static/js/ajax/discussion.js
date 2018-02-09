@@ -86,7 +86,6 @@ function AjaxDiscussionHandler() {
 			window.location.href = data.url;
 		}).fail(function ajaxSendNewStartPremiseFail(data) {
 			$('#' + addPremiseErrorContainer).show();
-			console.log(data);
 			$('#' + addPremiseErrorMsg).text(data.responseJSON.errors[0].description);
 		});
 	};
@@ -106,26 +105,27 @@ function AjaxDiscussionHandler() {
 		$.ajax({
 			url: 'ajax_set_new_issue',
 			method: 'POST',
-			data: {
+			contentType: 'application/json',
+			data: JSON.stringify({
 				info: info,
 				long_info: long_info,
 				title: title,
 				is_public: is_public,
 				is_read_only: is_read_only,
 				lang: language
-			},
+			}),
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
-		}).done(function ajaxSendStartStatementDone(data) {
+		}).done(function ajaxSendnewIssueDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewIssue(data);
-		}).fail(function ajaxSendStartStatementFail() {
-			$('#' + addTopicPopupErrorText).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 9). ' + _t(doNotHesitateToContact) + '. ');
-			$('#' + addTopicPopupContainer).show();
+		}).fail(function ajaxSendnewIssueFail(data) {
+			$('#' + addTopicPopupError).removeClass('hidden');
+			$('#' + addTopicPopupErrorText).text(data.responseJSON.errors[0].description);
 			setTimeout(function(){
-				$('#' + addTopicPopupContainer).hide();
+				$('#' + addTopicPopupError).addClass('hidden');
+				$('#' + addTopicPopupErrorText).text('');
 			}, 2500);
 		});
 	};
@@ -148,9 +148,9 @@ function AjaxDiscussionHandler() {
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
-		}).done(function ajaxGetLogfileForPremisegroupDone(data) {
+		}).done(function ajaxGetLogfileForStatementsDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingLogfile(data);
-		}).fail(function ajaxGetLogfileForPremisegroupFail() {
+		}).fail(function ajaxGetLogfileForStatementsFail() {
 			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 15). ' + _t(doNotHesitateToContact) + '. ');
 		});
 	};
@@ -258,9 +258,9 @@ function AjaxDiscussionHandler() {
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
-		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
+		}).done(function ajaxGetMoreInfosAboutOpinionDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingMoreInfosAboutOpinion(data, is_argument);
-		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
+		}).fail(function ajaxGetMoreInfosAboutOpinionFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 		});
 

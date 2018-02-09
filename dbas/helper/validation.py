@@ -4,7 +4,7 @@ from cornice.util import json_error
 
 import dbas.handler.issue as issue_handler
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Issue, Statement
+from dbas.database.discussion_model import User, Issue, Statement, Language
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.language import get_language_from_cookie
 from dbas.lib import get_user_by_private_or_public_nickname
@@ -31,6 +31,22 @@ def __add_error(request, log_key, verbose_short, verbose_long=None):
     request.errors.status = 400
 
 
+def __set_min_length_error(request, min_length):
+    """
+    Add an error to the request due to too short statements text.
+
+    :param request:
+    :param min_length: minimum length of the statement
+    :return:
+    """
+    _tn = Translator(get_language_from_cookie(request))
+    a = _tn.get(_.notInsertedErrorBecauseEmpty)
+    b = _tn.get(_.minLength)
+    c = _tn.get(_.eachStatement)
+    error_msg = '{} ({}: {} {})'.format(a, b, min_length, c)
+    __add_error(request, '__set_min_length_error', 'Text too short', error_msg)
+
+
 # #############################################################################
 # Validators for discussion-content
 
@@ -52,6 +68,28 @@ def valid_user(request):
         return False
 
 
+def valid_language(request):
+    """
+    Given a nickname of a user, return the object from the database.
+
+    :param request:
+    :return:
+    """
+    lang = request.json_body.get('lang')
+    _tn = Translator(get_language_from_cookie(request))
+    if not lang:
+        __add_error(request, 'valid_language', 'Invalid language', _tn.get(_.checkLanguage))
+        return
+
+    db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=lang).first()
+    if db_lang:
+        request.validated['lang'] = db_lang
+        return True
+    else:
+        __add_error(request, 'valid_language', 'Invalid language', _tn.get(_.checkLanguage))
+        return False
+
+
 def valid_issue(request):
     """
     Query issue from database and put it into the request.
@@ -66,6 +104,39 @@ def valid_issue(request):
         return True
     else:
         __add_error(request, 'valid_issue', 'Invalid issue')
+
+
+def valid_new_issue(request):
+    """
+    Verifies given data for a new issue
+
+    :param request:
+    :return:
+    """
+    title = request.json_body.get('title')
+    info = request.json_body.get('info')
+    long_info = request.json_body.get('long_info')
+
+    if not title or not info or not long_info:
+        __add_error(request, 'valid_new_issue', 'Some key is missing', 'Some key for a new issue is missing')
+        return False
+
+    if not isinstance(title, str) or not isinstance(info, str) or not isinstance(long_info, str):
+        __add_error(request, 'valid_new_issue', 'Some key is not a string', 'Some key for a new issue is not a string')
+        return False
+
+    db_dup1 = DBDiscussionSession.query(Issue).filter_by(title=title).all()
+    db_dup2 = DBDiscussionSession.query(Issue).filter_by(info=info).all()
+    db_dup3 = DBDiscussionSession.query(Issue).filter_by(long_info=long_info).all()
+    if db_dup1 or db_dup2 or db_dup3:
+        _tn = Translator(get_language_from_cookie(request))
+        __add_error(request, 'valid_new_issue', 'Issue data is duplicate', _tn.get(_.duplicate))
+        return False
+
+    request.validated['title'] = title
+    request.validated['info'] = info
+    request.validated['long_info'] = long_info
+    return True
 
 
 def valid_issue_not_readonly(request):
@@ -98,15 +169,6 @@ def valid_conclusion(request):
     else:
         _tn = Translator(get_language_from_cookie(request))
         __add_error(request, 'valid_conclusion', 'Conclusion id is missing', _tn.get(_.wrongConclusion))
-
-
-def __set_min_length_error(request, min_length):
-    _tn = Translator(get_language_from_cookie(request))
-    a = _tn.get(_.notInsertedErrorBecauseEmpty)
-    b = _tn.get(_.minLength)
-    c = _tn.get(_.eachStatement)
-    error_msg = '{} ({}: {} {})'.format(a, b, min_length, c)
-    __add_error(request, 'valid_statement_text', 'Text too short', error_msg)
 
 
 def valid_statement_text(request):
@@ -242,15 +304,15 @@ def has_keywords(*keywords):
 
 class validate(object):
     """
-        Applies all validators to this function.
-        If one of the validators adds an error, the function will not be called.
-        In this situation a response is given with a json body, containing all errors from all validators.
+    Applies all validators to this function.
+    If one of the validators adds an error, the function will not be called.
+    In this situation a response is given with a json body, containing all errors from all validators.
 
-        Decorate a function like this
+    Decorate a function like this
 
-        .. code-block:: python
-        @validate(validators=(check_for_user, check_for_issue, )
-        def my_view(request)
+    .. code-block:: python
+    @validate(validators=(check_for_user, check_for_issue, )
+    def my_view(request)
     """
 
     def __init__(self, *validators):

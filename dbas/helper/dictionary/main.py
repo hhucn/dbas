@@ -5,8 +5,9 @@ Provides helping function for dictionaries.
 """
 
 import datetime
-import random
 import os
+import random
+
 import arrow
 
 from dbas.auth.recaptcha import client_key as google_recaptcha_client_key
@@ -14,12 +15,12 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Language, Group, Settings, Issue, Argument
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
+from dbas.handler.issue import rep_limit_to_open_issues
 from dbas.handler.notification import count_of_new_notifications, get_box_for
 from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, is_development_mode
-from dbas.handler.issue import limit_for_open_issues
 from dbas.logger import logger
-from dbas.review.helper.queues import get_count_of_all
 from dbas.review.helper.queues import get_complete_review_count
+from dbas.review.helper.queues import get_count_of_all
 from dbas.review.helper.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -190,7 +191,7 @@ class DictionaryHelper(object):
 
         self.__add_language_options_for_extra_dict(return_dict)
         is_author, points = get_reputation_of(nickname)
-        is_author_bool = is_author or points > limit_for_open_issues
+        is_author_bool = is_author or points > rep_limit_to_open_issues
 
         return_dict['is_reportable'] = is_reportable
         return_dict['is_admin'] = user.is_in_group(nickname, 'admins')
@@ -559,7 +560,8 @@ class DictionaryHelper(object):
         _tn_sys = Translator(self.system_lang)
         return_dict['title'] = {
             'barometer': _tn_sys.get(_.opinionBarometer),
-            'add_issue_info': _tn_sys.get(_.addIssueInfo).format(limit_for_open_issues) if logged_in else _tn_sys.get(_.notLoggedIn),
+            'add_issue_info': _tn_sys.get(_.addIssueInfo).format(
+                rep_limit_to_open_issues) if logged_in else _tn_sys.get(_.notLoggedIn),
             'guided_view': _tn_sys.get(_.displayControlDialogGuidedTitle),
             'island_view': _tn_sys.get(_.displayControlDialogIslandTitle),
             'graph_view': _tn_sys.get(_.displayControlDialogGraphTitle),
@@ -591,7 +593,7 @@ class DictionaryHelper(object):
         }
 
         if logged_in:
-            return_dict['add_issue_info'] = _tn_sys.get(_.addIssueInfo).format(limit_for_open_issues)
+            return_dict['add_issue_info'] = _tn_sys.get(_.addIssueInfo).format(rep_limit_to_open_issues)
         else:
             return_dict['add_issue_info'] = _tn_sys.get(_.notLoggedIn),
 

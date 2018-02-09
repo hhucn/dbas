@@ -192,6 +192,7 @@ de_lang = {
     _.checkFirstname: 'Bitte überprüfen Sie Ihren Vornamen, da die Eingabe leer ist!',
     _.checkLastname: 'Bitte überprüfen Sie Ihren Nachnamen, da die Eingabe leer ist!',
     _.checkNickname: 'Bitte überprüfen Sie Ihren Spitznamen, da die Eingabe leer ist!',
+    _.checkLanguage: 'Bitte überprüfen Sie Ihren Sprache, da die Eingabe leer ist!',
     _.checkEmail: 'Bitte überprüfen Sie Ihre E-Mail, da die Eingabe leer ist!',
     _.checkPassword: 'Bitte überprüfen Sie Ihre Passwort, da die Eingabe leer ist!',
     _.checkConfirmation: 'Bitte überprüfen Sie Ihre Passwort-Bestätigung, da die Eingabe leer ist!',
