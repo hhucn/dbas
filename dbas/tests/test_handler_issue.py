@@ -1,47 +1,23 @@
 import unittest
+
 import transaction
 from pyramid import testing
 
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue
-from dbas.strings.translator import Translator
-
 import dbas.handler.issue as ih
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import Issue, User
+from dbas.strings.translator import Translator
 
 
 class IssueHandlerTests(unittest.TestCase):
 
     def test_set_issue(self):
-        nickname = ''
-        info = 'info'
-        long_info = 'long_info'
-        title = 'title'
-        lang = ''
-        ui_locales = ''
-
-        response = ih.set_issue(nickname, info, long_info, title, lang, False, False, 'http://test.url', ui_locales)
-        self.assertTrue(len(response['error']) > 0)
-
-        nickname = 'Tobias'
-        response = ih.set_issue(nickname, info, long_info, title, lang, False, False, 'http://test.url', ui_locales)
-        self.assertTrue(len(response['error']) > 0)
-
-        lang = 'en'
-        response = ih.set_issue(nickname, info, long_info, title, lang, False, False, 'http://test.url', ui_locales)
-        self.assertTrue(len(response['error']) > 0)
-
-        ui_locales = 'en'
-        response = ih.set_issue(nickname, info, long_info, title, lang, False, False, 'http://test.url', ui_locales)
-        self.assertTrue(len(response['error']) > 0)
-
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         info = 'infoinfoinfo'
         long_info = 'long_infolong_infolong_info'
         title = 'titletitletitle'
-        response = ih.set_issue(nickname, info, long_info, title, lang, False, False, 'http://test.url', ui_locales)
-        self.assertTrue(len(response['error']) == 0)
-
-        response = ih.set_issue(nickname, info, long_info, title, lang, False, False, 'http://test.url', ui_locales)
-        self.assertTrue(len(response['error']) > 0)
+        response = ih.set_issue(db_user, info, long_info, title, db_user, False, False, 'http://test.url')
+        self.assertTrue(len(response['issue']) >= 0)
 
         DBDiscussionSession.query(Issue).filter_by(title=title).delete()
         DBDiscussionSession.flush()

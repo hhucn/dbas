@@ -198,6 +198,7 @@ en_lang = {
     _.checkFirstname: 'Better check your first name, because the input is empty!',
     _.checkLastname: 'Better check your last name, because the input is empty!',
     _.checkNickname: 'Better check your nickname, because the input is empty!',
+    _.checkLanguage: 'Better check your language, because the input is empty!',
     _.checkEmail: 'Better check your email, because the input is empty!',
     _.checkPassword: 'Better check your password, because the input is empty!',
     _.checkConfirmation: 'Better check the confirmation of your password, because the input is empty!',

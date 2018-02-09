@@ -191,6 +191,7 @@ class Keywords(Enum):
     checkFirstname = 'checkFirstname'
     checkLastname = 'checkLastname'
     checkNickname = 'checkNickname'
+    checkLanguage = 'checkLanguage'
     checkEmail = 'checkEmail'
     checkPassword = 'checkPassword'
     checkConfirmation = 'checkConfirmation'

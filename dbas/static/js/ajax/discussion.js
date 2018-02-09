@@ -106,26 +106,27 @@ function AjaxDiscussionHandler() {
 		$.ajax({
 			url: 'ajax_set_new_issue',
 			method: 'POST',
-			data: {
+			contentType: 'application/json',
+			data: JSON.stringify({
 				info: info,
 				long_info: long_info,
 				title: title,
 				is_public: is_public,
 				is_read_only: is_read_only,
 				lang: language
-			},
+			}),
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSendStartStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewIssue(data);
 		}).fail(function ajaxSendStartStatementFail() {
-			$('#' + addTopicPopupErrorText).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 9). ' + _t(doNotHesitateToContact) + '. ');
-			$('#' + addTopicPopupContainer).show();
+			$('#' + addTopicPopupError).removeClass('hidden');
+			$('#' + addTopicPopupErrorText).text(data.responseJSON.errors[0].description);
 			setTimeout(function(){
-				$('#' + addTopicPopupContainer).hide();
+				$('#' + addTopicPopupError).addClass('hidden');
+				$('#' + addTopicPopupErrorText).text('');
 			}, 2500);
 		});
 	};

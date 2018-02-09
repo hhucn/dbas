@@ -49,7 +49,7 @@ from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
 from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, has_keywords, \
     valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient, \
-    valid_premisegroups
+    valid_premisegroups, valid_language, valid_new_issue
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -1552,6 +1552,7 @@ def set_notifications_delete(request):
 
 # ajax - set new issue
 @view_config(route_name='ajax_set_new_issue', renderer='json')
+@validate(valid_user, valid_language, valid_new_issue, has_keywords('is_public', 'is_read_only'))
 def set_new_issue(request):
     """
 
@@ -1559,23 +1560,15 @@ def set_new_issue(request):
     :return:
     """
     logger('views', 'set_new_issue', 'main {}'.format(request.params))
-    ui_locales = get_language_from_cookie(request)
+    info = escape_string(request.validated['info'])
+    long_info = escape_string(request.validated['long_info'])
+    title = escape_string(request.validated['title'])
+    lang = escape_string(request.validated['lang'])
+    is_public = request.validated['is_public']
+    is_read_only = request.validated['is_read_only']
 
-    try:
-        info = escape_string(request.params['info'])
-        long_info = escape_string(request.params['long_info'])
-        title = escape_string(request.params['title'])
-        lang = escape_string(request.params['lang'])
-        is_public = request.params['is_public'] == 'True'
-        is_read_only = request.params['is_read_only'] == 'True'
-    except KeyError as e:
-        _tn = Translator(ui_locales)
-        logger('views', 'set_new_issue', repr(e), error=True)
-        return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
-
-    prepared_dict = issue_handler.set_issue(request.authenticated_userid, info, long_info, title, lang, is_public,
-                                            is_read_only, request.application_url, ui_locales)
-    return prepared_dict
+    return issue_handler.set_issue(request.validated['user'], info, long_info, title, lang, is_public, is_read_only,
+                                   request.application_url)
 
 
 # ajax - set seen premisegroup

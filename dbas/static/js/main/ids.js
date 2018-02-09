@@ -7,7 +7,7 @@
  * @type {string}
  */
 var addTopicButtonId                          = 'add-topic';
-var addTopicPopupContainer                    = 'popup-add-topic-error';
+var addTopicPopupError = 'popup-add-topic-error';
 var addTopicPopupErrorText                    = 'popup-add-topic-error-text';
 var addReasonButtonId                         = 'add-reason';
 var addStatementContainerId                   = 'add-statement-container';

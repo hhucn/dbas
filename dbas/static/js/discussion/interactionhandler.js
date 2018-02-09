@@ -169,21 +169,17 @@ function InteractionHandler() {
 	 * @param data
 	 */
 	this.callbackIfDoneForSendNewIssue = function(data){
-		if (data.error.length !== 0) {
-			setGlobalErrorHandler(_t(ohsnap), data.error);
-		} else {
-			$('#popup-add-topic').modal('hide');
-			var li = $('<li>').addClass('enabled'),
-				a = $('<a>').attr('href', data.issue.url).attr('value', data.issue.title),
-				spanTitle = $('<span>').text(data.issue.title),
-				spanBadge = $('<span>').addClass('badge').attr('style', 'float: right; margin-left: 1em;').text(data.issue.arg_count),
-				divider = $('#' + issueDropdownListID).find('li.divider');
-			li.append(a.append(spanTitle).append(spanBadge));
-			if (divider.length>0){
-				li.insertBefore(divider);
-			}
-			setGlobalSuccessHandler('Yeah!', _t(dataAdded));
+		$('#popup-add-topic').modal('hide');
+		var li = $('<li>').addClass('enabled'),
+			a = $('<a>').attr('href', data.issue.url).attr('value', data.issue.title),
+			spanTitle = $('<span>').text(data.issue.title),
+			spanBadge = $('<span>').addClass('badge').attr('style', 'float: right; margin-left: 1em;').text(data.issue.arg_count),
+			divider = $('#' + issueDropdownListID).find('li.divider');
+		li.append(a.append(spanTitle).append(spanBadge));
+		if (divider.length > 0) {
+			li.insertBefore(divider);
 		}
+		setGlobalSuccessHandler('Yeah!', _t(dataAdded));
 	};
 
 	/**
