@@ -1573,6 +1573,7 @@ def set_new_issue(request):
 
 # ajax - set seen premisegroup
 @view_config(route_name='ajax_set_seen_statements', renderer='json')
+@validate(valid_user, has_keywords(('uids', list)))
 def set_statements_as_seen(request):
     """
     Set statements as seen, when they were hidden
@@ -1580,18 +1581,9 @@ def set_statements_as_seen(request):
     :param request: current request of the server
     :return: json
     """
-    logger('views', 'set_statements_as_seen', 'main {}'.format(request.params))
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    try:
-        uids = json.loads(request.params['uids'])
-    except KeyError as e:
-        logger('views', 'set_statements_as_seen', repr(e), error=True)
-        return {'error': _tn.get(_.internalKeyError)}
-
-    prepared_dict = set_seen_statements(uids, request.path, request.authenticated_userid, ui_locales)
-    return prepared_dict
+    logger('views', 'set_statements_as_seen', 'main {}'.format(request.json_body))
+    uids = request.validated['uids']
+    return set_seen_statements(uids, request.path, request.validated['user'])
 
 
 # ajax - set users opinion

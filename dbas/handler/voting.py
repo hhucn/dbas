@@ -185,18 +185,10 @@ def add_seen_argument(argument_uid, db_user):
     logger('VotingHelper', 'add_seen_argument', 'argument ' + str(argument_uid) + ', for user ' + str(db_user.uid))
 
     db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
-    if not db_argument:
-        return False
-
     __argument_seen_by_user(db_user, argument_uid)
 
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
-    if not db_premises:
-        return False
-
-    logger('VotingHelper', 'add_seen_argument', 'argument ' + str(argument_uid) + ', premise count ' + str(len(db_premises)))
     for p in db_premises:
-        logger('VotingHelper', 'add_seen_argument', 'argument ' + str(argument_uid) + ', add premise ' + str(p.statement_uid))
         __statement_seen_by_user(db_user, p.statement_uid)
 
     # find the conclusion and mark all arguments on the way
@@ -204,9 +196,7 @@ def add_seen_argument(argument_uid, db_user):
         db_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
         __argument_seen_by_user(db_user, argument_uid)
 
-    logger('VotingHelper', 'add_seen_argument', 'conclusion ' + str(db_argument.conclusion_uid))
     __statement_seen_by_user(db_user, db_argument.conclusion_uid)
-
     transaction.commit()
 
     return True

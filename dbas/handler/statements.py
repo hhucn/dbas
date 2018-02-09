@@ -164,56 +164,27 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
     return prepared_dict
 
 
-def set_seen_statements(uids, path, nickname, ui_locales) -> dict:
+def set_seen_statements(uids, path, db_user) -> dict:
     """
     Marks several statements as already seen.
 
     :param uids: Uids of statements which should be marked as seen
     :param path: Current path of the user
-    :param nickname: Users nickname
-    :param ui_locales: Current language
+    :param db_user: User
     :rtype: dict
     :return: Dictionary with an error field
     """
     # are the statements connected to an argument?
-    additional_argument = None
-    _tn = Translator(ui_locales)
     if 'justify' in path:
         url = path[path.index('justify/') + len('justify/'):]
         additional_argument = int(url[:url.index('/')])
-
-    error_code = process_seen_statements(uids, nickname, additional_argument=additional_argument)
-    error = '' if error_code is None else _tn.get(error_code)
-    return {'error': error}
-
-
-def process_seen_statements(uids, nickname, additional_argument=None):
-    """
-    Sets the given statement uids as seen by given user
-
-    :param uids: [Statement.uid]
-    :param nickname: User.nickname
-    :param additional_argument: Argument.uid
-    :return: String
-    """
-    logger('StatementsHelper', 'process_seen_statements', 'user ' + str(nickname) + ', statements ' + str(uids) +
-           ', additional argument ' + str(additional_argument))
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-
-    if not db_user:
-        return None
-
-    if additional_argument:
         add_seen_argument(additional_argument, db_user)
 
     for uid in uids:
         # we get the premise group id's only
-        if not is_integer(uid):
-            return _.internalKeyError
-
-        add_seen_statement(uid, db_user)
-
-    return None
+        if is_integer(uid):
+            add_seen_statement(uid, db_user)
+    return {'status': 'success'}
 
 
 def correct_statement(db_user, uid, corrected_text):

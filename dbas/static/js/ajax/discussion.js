@@ -412,21 +412,17 @@ function AjaxDiscussionHandler() {
 		$.ajax({
 			url: 'ajax_set_seen_statements',
 			method: 'POST',
-			data: {
-				uids: JSON.stringify(uids),
-			},
+			contentType: 'application/json',
+			data: JSON.stringify({
+				uids: uids
+			}),
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
-		}).done(function (data) {
-			// note that we already send data
-			if (data.error.length === 0){
-				$('#' + discussionSpaceShowItems).attr('data-send-request', 'true');
-				$('#' + discussionSpaceHideItems).attr('data-send-request', 'true');
-			}
 		}).fail(function () {
+			$('#' + discussionSpaceShowItems).attr('data-send-request', 'true');
+			$('#' + discussionSpaceHideItems).attr('data-send-request', 'true');
 		});
 	};
 

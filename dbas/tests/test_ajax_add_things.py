@@ -226,22 +226,15 @@ class AjaxAddThingsTest(unittest.TestCase):
     def test_set_seen_statements(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_statements_as_seen as ajax
-        request = testing.DummyRequest(params={'uids': json.dumps([40, 41])}, matchdict={})
+        request = testing.DummyRequest(json_body={'uids': [40, 41]})
         response = ajax(request)
+
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
 
     def test_set_seen_statements_failure1(self):
         from dbas.views import set_statements_as_seen as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest(json_body={})
         response = ajax(request)
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
 
-    def test_set_seen_statements_failure2(self):
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_statements_as_seen as ajax
-        request = testing.DummyRequest(params={'uids': json.dumps(['a'])}, matchdict={})
-        response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertTrue(400, response.status_code)
