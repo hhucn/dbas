@@ -210,8 +210,7 @@ def valid_premisegroups(request):
     premisegroups = request.json_body.get('premisegroups')
     if not premisegroups or not isinstance(premisegroups, list) or not all([isinstance(l, list) for l in premisegroups]):
         _tn = Translator(get_language_from_cookie(request))
-        request.errors.add('body', 'Invalid conclusion id', _tn.get(_.requestFailed))
-        request.errors.status = 400
+        __add_error(request, 'valid_premisegroups', 'Invalid conclusion id', _tn.get(_.requestFailed))
         return
 
     min_length = request.registry.settings.get('settings:discussion:statement_min_length', 10)
@@ -236,9 +235,7 @@ def has_keywords(*keywords):
             if value is not None:
                 request.validated[keyword] = value
             else:
-                logger('validation', 'valid_keywords', 'keyword: {} is not there'.format(keyword), error=True)
-                request.errors.add('body', '{} is missing'.format(keyword))
-                request.errors.status = 400
+                __add_error(request, 'has_keywords', 'Parameters missing', '{} is missing'.format(keyword))
 
     return valid_keywords
 
