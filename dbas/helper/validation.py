@@ -297,7 +297,7 @@ def has_keywords(*keywords):
             if value is not None:
                 request.validated[keyword] = value
             else:
-                __add_error(request, 'valid_keywords', 'body misses {}'.format(keyword), 'Keyword {} is missing'.format(keyword))
+                __add_error(request, 'has_keywords', 'Parameters missing', '{} is missing'.format(keyword))
 
     return valid_keywords
 
