@@ -344,7 +344,7 @@ def get_bubble_from_reaction_step(main_page, step, db_user, lang, splitted_histo
     :param color_steps: Boolean
     :return: [dict()]
     """
-    logger('history_handler', 'get_bubble_from_reaction_step', 'def: ' + str(step) + ', ' + str(splitted_history))
+    logger('history_handler', 'get_bubble_from_reaction_step', 'def: {}, {}'.format(step, splitted_history))
     steps = step.split('/')
     uid = int(steps[1])
 
@@ -360,7 +360,7 @@ def get_bubble_from_reaction_step(main_page, step, db_user, lang, splitted_histo
         return None
 
     is_supportive = DBDiscussionSession.query(Argument).get(uid).is_supportive
-    last_relation = splitted_history[-1].split('/')[2]
+    last_relation = splitted_history[-1].split('/')[2] if len(splitted_history) > 1 else ''
 
     user_changed_opinion = len(splitted_history) > 1 and '/undercut/' in splitted_history[-2]
     support_counter_argument = False

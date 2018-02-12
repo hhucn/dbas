@@ -57,22 +57,19 @@ class AjaxGetInfosTest(unittest.TestCase):
     def test_get_shortened_url(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_shortened_url as ajax
-        request = testing.DummyRequest(params={'url': 'https://dbas.cs.uni-duesseldorf.de'}, matchdict={})
+        request = testing.DummyRequest(json_body={'url': 'https://dbas.cs.uni-duesseldorf.de'})
         response = ajax(request)
         self.assertIsNotNone(response)
-        if len(response['error']) == 0:
-            self.assertTrue(len(response['error']) == 0)
-            self.assertTrue(len(response['url']) != 0)
-            self.assertTrue(len(response['service']) != 0)
-            self.assertTrue(len(response['service_url']) != 0)
+        self.assertTrue(len(response['url']) != 0)
+        self.assertTrue(len(response['service']) != 0)
+        self.assertTrue(len(response['service_url']) != 0)
 
     def test_get_shortened_url_failure(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_shortened_url as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest(json_body={})
         response = ajax(request)
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertEqual(400, response.status_code)
 
     def test_get_arguments_by_statement_uid(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)

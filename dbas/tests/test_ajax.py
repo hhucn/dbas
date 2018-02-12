@@ -303,30 +303,14 @@ class AjaxTest(unittest.TestCase):
 
     def test_mark_statement_or_argument(self):
         from dbas.views import mark_or_unmark_statement_or_argument as ajax
-        request = testing.DummyRequest(params={'ui_locales': 'en'})
+        request = testing.DummyRequest(json_body={'ui_locales': 'en'})
         response = ajax(request)
-        self.assertTrue(len(response['error']) > 0)
+        self.assertEqual(400, response.status_code)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(params={'uid': 4, 'is_argument': False, 'should_mark': True, 'step': '', 'is_supportive': True})
-        response = ajax(request)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(len(response['success']) != 0)
-
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(params={'uid': 4, 'is_argument': False, 'should_mark': True, 'step': '', 'is_supportive': True})
-        response = ajax(request)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(len(response['success']) != 0)
-
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(params={'uid': 4, 'is_argument': False, 'should_mark': False, 'step': '', 'is_supportive': True})
-        response = ajax(request)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(len(response['success']) != 0)
-
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(params={'uid': 4, 'is_argument': False, 'should_mark': False, 'step': '', 'is_supportive': True})
-        response = ajax(request)
-        self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(len(response['success']) != 0)
+        for b1 in [True, False]:
+            for b2 in [True, False]:
+                for b3 in [True, False]:
+                    request = testing.DummyRequest(json_body={'uid': 4, 'is_argument': b1, 'should_mark': b2, 'step': 'reaction/4/undercut/6', 'is_supportive': b3})
+                    response = ajax(request)
+                    self.assertTrue(len(response['text']) > 0)
