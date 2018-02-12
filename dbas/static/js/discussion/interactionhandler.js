@@ -39,30 +39,6 @@ function InteractionHandler() {
 			parent_statement.find('.item-edit').remove();
 		}
 	};
-	
-	/**
-	 *
-	 * @param data
-	 * @param should_mark
-	 * @param callback_id
-	 */
-	this.callbackForMarkedStatementOrArgument = function (data, should_mark, callback_id){
-		if (data.error.length !== 0) {
-			setGlobalErrorHandler(_t_discussion(ohsnap), data.error);
-			return;
-		}
-
-		setGlobalSuccessHandler('Yeah!', data.success);
-		var el = $('#' + callback_id);
-		if (data.text.length > 0) {
-			el.parent().find('.triangle-content').html(data.text);
-		}
-		if (should_mark){
-			el.hide().prev().show();
-		} else {
-			el.hide().next().show();
-		}
-	};
 
 	/**
 	 * Callback for Fuzzy Search

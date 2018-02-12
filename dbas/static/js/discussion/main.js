@@ -344,7 +344,7 @@ function Main () {
 			var info = $(this).parent().children().last();
 			var is_argument = info.data('type') === 'argument';
 			var uid = info.data(info.data('type') + '-uid');
-			var is_supportive = info.data('is-supportive');
+			var is_supportive = info.data('is-supportive').toLocaleLowerCase() === 'true';
 			var step = location.href.split('#')[0].split('?')[0].split('/').slice(5).join('/');
 			var current_history = location.href.split('#')[0].split('?')[1];
 			ajaxHandler.markStatementOrArgument(uid, is_argument, is_supportive, true, step, current_history, id);
@@ -356,7 +356,7 @@ function Main () {
 			var info = $(this).parent().children().last();
 			var is_argument = info.data('type') === 'argument';
 			var uid = info.data(info.data('type') + '-uid');
-			var is_supportive = info.data('is-supportive');
+			var is_supportive = info.data('is-supportive').toLocaleLowerCase() === 'true';
 			var step = location.href.split('#')[0].split('?')[0].split('/').slice(5).join('/');
 			var current_history = location.href.split('#')[0].split('?')[1];
 			ajaxHandler.markStatementOrArgument(uid, is_argument, is_supportive, false, step, current_history, id);

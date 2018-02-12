@@ -1588,6 +1588,7 @@ def set_statements_as_seen(request):
 
 # ajax - set users opinion
 @view_config(route_name='ajax_mark_statement_or_argument', renderer='json')
+@validate(valid_user, has_keywords(('uid', int), ('step', str), ('is_argument', bool), ('is_supportive', bool), ('should_mark', bool)))
 def mark_or_unmark_statement_or_argument(request):
     """
     Set statements as seen, when they were hidden
@@ -1595,24 +1596,16 @@ def mark_or_unmark_statement_or_argument(request):
     :param request: current request of the server
     :return: json
     """
-    logger('views', 'mark_or_unmark_statement_or_argument', 'main {}'.format(request.params))
+    logger('views', 'mark_or_unmark_statement_or_argument', 'main {}'.format(request.json_body))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-
-    try:
-        uid = request.params['uid']
-        step = request.params['step']
-        is_argument = str(request.params['is_argument']).lower() == 'true'
-        is_supportive = str(request.params['is_supportive']).lower() == 'true'
-        should_mark = str(request.params['should_mark']).lower() == 'true'
-        history = request.params.get('history', '')
-    except KeyError as e:
-        logger('views', 'mark_or_unmark_statement_or_argument', repr(e), error=True)
-        _t = Translator(ui_locales)
-        return {'succes': '', 'text': '', 'error': _t.get(_.internalKeyError)}
-
-    prepared_dict = mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history, ui_locales,
-                                               request.authenticated_userid)
-    return prepared_dict
+    uid = request.validated['uid']
+    step = request.validated['step']
+    is_argument = request.validated['is_argument']
+    is_supportive = request.validated['is_supportive']
+    should_mark = request.validated['should_mark']
+    history = request.json_body.get('history', '')
+    db_user = request.validated['user']
+    return mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history, ui_locales, db_user)
 
 
 # ###################################
@@ -1630,7 +1623,7 @@ def get_logfile_for_some_statements(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'get_logfile_for_statements', 'request.params: {}'.format(request.params))
+    logger('views', 'get_logfile_for_statements', 'request.json_body: {}'.format(request.json_body))
     uids = request.validated['uids']
     db_issue = request.validated['issue']
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session, db_issue.uid)

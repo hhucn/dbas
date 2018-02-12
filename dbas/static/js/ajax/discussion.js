@@ -447,25 +447,34 @@ function AjaxDiscussionHandler() {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_mark_statement_or_argument',
-			method: 'GET',
-			dataType: 'json',
-			data: {
+			method: 'POST',
+			contentType: 'application/json',
+			data: JSON.stringify({
 				uid: uid,
 				is_argument: is_argument,
 				is_supportive: is_supportive,
 				should_mark: should_mark,
 				step: step,
 				history: history
-			},
+			}),
 			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxMarkStatementOrArgumentDone(data) {
-			new InteractionHandler().callbackForMarkedStatementOrArgument(data, should_mark, callback_id);
+			setGlobalSuccessHandler('Yeah!', data.success);
+			var el = $('#' + callback_id);
+			el.hide();
+			if (data.text.length > 0) {
+				el.parent().find('.triangle-content').html(data.text);
+			}
+			if (should_mark){
+				el.prev().show();
+			} else {
+				el.next().show();
+			}
 		}).fail(function ajaxMarkStatementOrArgumentFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-			new PopupHandler().hideAndClearUrlSharingPopup();
 		});
 	};
 

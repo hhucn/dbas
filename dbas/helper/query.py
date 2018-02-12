@@ -27,7 +27,7 @@ from dbas.strings.translator import Translator
 statement_min_length = 10  # DEPRECATED: use global config
 
 
-def mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history, ui_loc, nickname) -> dict:
+def mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history, ui_loc, db_user) -> dict:
     """
     Marks statement or argument as current users opinion and returns status about the action
 
@@ -38,32 +38,29 @@ def mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mar
     :param should_mark: Boolean if it should be (un-)marked
     :param history: Users history
     :param ui_loc: Current language
-    :param nickname: Users nickname
+    :param db_user: User
     :rtype: dict
     :return: Dictionary with new text for the current bubble, where the user marked her opinion
     """
     _t = Translator(ui_loc)
-    prepared_dict = __mark_or_unmark_it(uid, is_argument, should_mark, nickname, _t)
-    prepared_dict['text'] = get_text_for_justification_or_reaction_bubble(uid, is_argument, is_supportive,
-                                                                          nickname, step, history, _t)
+    prepared_dict = __mark_or_unmark_it(uid, is_argument, should_mark, db_user, _t)
+    prepared_dict['text'] = __get_text_for_justification_or_reaction_bubble(uid, is_argument, is_supportive,
+                                                                            db_user, step, history, _t)
     return prepared_dict
 
 
-def __mark_or_unmark_it(uid, is_argument, should_mark, nickname, _t):
+def __mark_or_unmark_it(uid, is_argument, should_mark, db_user, _t):
     """
     Marks or unmark an argument/statement, which represents the users opinion
 
     :param uid: Statement.uid / Argument.uid
     :param is_argument: Boolean
     :param should_mark: Boolean
-    :param nickname: User.nickname
+    :param db_user: User
     :param _t: Translator
     :return: String, String
     """
-    logger('QueryHelper', '__mark_or_unmark_it', '{} {} {}'.format(uid, is_argument, nickname))
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
-    if not db_user:
-        return {'success': '', 'error': _t.get(_.internalError)}
+    logger('QueryHelper', '__mark_or_unmark_it', '{} {} {}'.format(uid, is_argument, db_user.nickname))
 
     base_type = Argument if is_argument else Statement
     table = MarkedArgument if is_argument else MarkedStatement
@@ -119,23 +116,22 @@ def set_user_language(nickname, ui_locales) -> dict:
     return {'error': '', 'ui_locales': ui_locales, 'current_lang': current_lang}
 
 
-def get_text_for_justification_or_reaction_bubble(uid, is_argument, is_supportive, nickname, step, history, _tn):
+def __get_text_for_justification_or_reaction_bubble(uid, is_argument, is_supportive, db_user, step, history, _tn):
     """
     Returns text for an justification or reaction bubble of the user
 
     :param uid: Argument.uid / Statement.uid
     :param is_argument: Boolean
     :param is_supportive: Boolean
-    :param nickname: User.nickname
+    :param db_user: User
     :param step: String
     :param history: String
     :param _tn: Translator
     :return: String
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     if is_argument:
         splitted_history = get_splitted_history(history)
-        bubbles = get_bubble_from_reaction_step('', step, nickname, _tn.get_lang(), splitted_history, '', color_steps=True)
+        bubbles = get_bubble_from_reaction_step('', step, db_user, _tn.get_lang(), splitted_history, '', color_steps=True)
         text = bubbles[0]['message'] if bubbles else ''
     else:
         text, tmp = get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn)

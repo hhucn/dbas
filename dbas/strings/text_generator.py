@@ -412,6 +412,7 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
     :param color_html: Boolean
     :return: String
     """
+    # TODO kick nickname
     my_start_argument = ''
     my_end_tag = ''
 
