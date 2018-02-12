@@ -11,15 +11,15 @@ function AjaxUserHandler(){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_public_user_data',
-			method: 'GET',
-			data:{ 'nickname': $('#public_nick').text() },
+			method: 'POST',
 			dataType: 'json',
-			async: true,
+			contentType: 'application/json',
+			data: JSON.stringify({'nickname': $('#public_nick').text()}),
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function getPublicUserDataDone(data) {
 			new User().callbackDone(data);
-		}).fail(function getPublicUserDataFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		}).fail(function getPublicUserDataFail(data) {
+			setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
 		});
 	};
 }

@@ -1700,6 +1700,7 @@ def get_users_with_opinion(request):
 
 # ajax - for getting all users with the same opinion
 @view_config(route_name='ajax_get_public_user_data', renderer='json')
+@validate(has_keywords(('nickname', str)))
 def get_public_user_data(request):
     """
     Returns dictionary with public user data
@@ -1707,20 +1708,9 @@ def get_public_user_data(request):
     :param request: request of the web server
     :return:
     """
-    logger('views', 'get_public_user_data', 'main: {}'.format(request.params))
+    logger('views', 'get_public_user_data', 'main: {}'.format(request.json_body))
     ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    try:
-        nickname = request.params['nickname']
-    except KeyError as e:
-        logger('views', 'get_public_user_data', repr(e), error=True)
-        return {'error': _tn.get(_.internalKeyError)}
-
-    prepared_dict = user.get_public_data(nickname, ui_locales)
-    prepared_dict['error'] = '' if len(prepared_dict) != 0 else _tn.get(_.internalKeyError)
-
-    return prepared_dict
+    return user.get_public_data(request.validated['nickname'], ui_locales)
 
 
 @view_config(route_name='ajax_get_arguments_by_statement_uid', renderer='json')

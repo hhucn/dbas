@@ -51,10 +51,6 @@ function User() {
 	 * @param data
 	 */
 	this.callbackDone = function(data){
-		if (data.error.length !== 0) {
-			setGlobalErrorHandler(_t(ohsnap), data.error);
-		}
-
 		this.createChart(data, $('#user-activity-chart-space'), 'user-activity-canvas', 0);
 		this.createChart(data, $('#user-vote-chart-space'), 'user-vote-canvas', 1);
 		// this.createChart(data, $('#user-statement-chart-space'), 'user-statement-canvas', 2);

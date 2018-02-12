@@ -4,7 +4,6 @@ Handler for user-accounts
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import json
 import random
 from datetime import date, timedelta
 
@@ -213,6 +212,7 @@ def get_public_data(nickname, lang):
     :param lang:
     :return: dict()
     """
+    logger('User', 'get_public_data', 'User {}'.format(nickname))
     return_dict = dict()
     current_user = get_user_by_private_or_public_nickname(nickname)
 

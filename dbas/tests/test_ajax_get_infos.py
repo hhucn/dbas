@@ -144,18 +144,9 @@ class AjaxGetInfosTest(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         # more tests for get_public_user_data are in test_handler_opinion
         from dbas.views import get_public_user_data as ajax
-        request = testing.DummyRequest(params={
-            'lang': 'en',
-            'uids': json.dumps([2, 3]),
-            'is_argument': 'true',
-            'is_attitude': 'true',
-            'is_reaction': 'true',
-            'is_position': 'true',
-            'is_supporti': 'true',
-        }, matchdict={})
+        request = testing.DummyRequest(json_body={'nickname': 'Torben'})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
 
     def test_get_user_history(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
