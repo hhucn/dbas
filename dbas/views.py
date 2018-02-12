@@ -49,7 +49,7 @@ from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
 from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, has_keywords, \
     valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient, \
-    valid_premisegroups, valid_language, valid_new_issue
+    valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -1661,6 +1661,7 @@ def get_news(request):
 
 # ajax - for getting argument infos
 @view_config(route_name='ajax_get_infos_about_argument', renderer='json')
+@validate(valid_issue, valid_language, valid_argument, invalid_user, has_keywords(('uid', int)))
 def get_infos_about_argument(request):
     """
     ajax interface for getting a dump
@@ -1668,18 +1669,11 @@ def get_infos_about_argument(request):
     :param request: current request of the server
     :return: json-set with everything
     """
-    logger('views', 'get_infos_about_argument', 'request.params: {}'.format(request.params))
-    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-
-    try:
-        uid = request.params['uid']
-    except KeyError as e:
-        logger('views', 'get_infos_about_argument', repr(e), error=True)
-        _tn = Translator(ui_locales)
-        return {'error': _tn.get(_.internalKeyError)}
-
-    prepared_dict = get_all_infos_about_argument(uid, request.application_url, request.authenticated_userid, ui_locales)
-    return prepared_dict
+    logger('views', 'get_infos_about_argument', 'request.json_body: {}'.format(request.json_body))
+    lang = request.validated['lang']
+    user = request.validated['user']
+    db_argument = request.validated['argument']
+    return get_all_infos_about_argument(db_argument, request.application_url, user, lang)
 
 
 # ajax - for getting all users with the same opinion

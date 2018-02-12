@@ -222,18 +222,20 @@ function AjaxDiscussionHandler() {
 		$.ajax({
 			url: 'ajax_get_infos_about_argument',
 			method: 'POST',
-			data: {
-				uid: uid,
-				lang: $('#issue-info').data('discussion-language')
-			},
 			dataType: 'json',
+			contentType: 'application/json',
+			data: JSON.stringify({
+				uid: uid,
+				lang: getDiscussionLanguage()
+			}),
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingInfosAboutArgument(data);
-		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		}).fail(function ajaxGetMoreInfosAboutArgumentFail(data) {
+			var element = $('<p>').html(data.responseJSON.errors[0].description);
+			displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), element);
 		});
 	};
 

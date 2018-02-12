@@ -731,6 +731,7 @@ en_lang = {
     _.whyDoYouThinkThat: 'Why do you think that',
     _.wrongURL: 'Your URL seems to be wrong.',
     _.wrongConclusion: 'The combination of conclusion id and issue does not match.',
+    _.wrongArgument: 'The argumebts ID is not valid.',
     _.whyAreYouDisagreeingWith: 'Why are you disagreeing with',
     _.whyAreYouAgreeingWith: 'Why are you agreeing with',
     _.whyAreYouDisagreeingWithInColor: 'Why are you <span class=\'text-danger\'>disagreeing</span> with',

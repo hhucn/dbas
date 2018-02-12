@@ -179,12 +179,12 @@ function Main () {
 			if (url.indexOf('/d?history') !== -1) {
 				url = url.split('/d?history');
 				url = url[0].split('/');
-				uid = url[url.length - 1];
+				uid = parseInt(url[url.length - 1]);
 				ajaxHandler.getMoreInfosAboutArgument(uid, true);
 			} else {
 				if ($(this).closest('p').attr('id').indexOf(questionBubbleId) !== -1) {
 					uid = $(this).closest('p').attr('id').replace(questionBubbleId + '-', '');
-					ajaxHandler.getMoreInfosAboutArgument(uid, true);
+					ajaxHandler.getMoreInfosAboutArgument(parseInt(uid), true);
 				}
 			}
 		});

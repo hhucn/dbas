@@ -73,46 +73,23 @@ def set_arguments_premises(for_api, data) -> dict:
     return prepared_dict
 
 
-def get_all_infos_about_argument(uid, application_url, nickname, ui_locales) -> dict:
+def get_all_infos_about_argument(db_argument, main_page, db_user, lang) -> dict:
     """
     Returns bunch of information about the given argument
 
-    :param uid: ID of the argument
-    :param application_url: url of the application
-    :param nickname: current users nickname
-    :param ui_locales: language of the discussion
+    :param Argument: Argument
+    :param main_page: url of the application
+    :param db_user: User
+    :param lang: Language
     :rtype: dict
     :return: dictionary with many information or an error
     """
+    _t = Translator(lang.ui_locales)
 
-    _t = Translator(ui_locales)
-
-    if not is_integer(uid):
-        prepared_dict = {'error': _t.get(_.internalError)}
-    else:
-        prepared_dict = __get_infos_about_argument(uid, application_url, nickname, _t)
-        prepared_dict['error'] = ''
-
-    return prepared_dict
-
-
-def __get_infos_about_argument(uid, main_page, nickname, _t):
-    """
-    Returns several infos about the argument.
-
-    :param uid: Argument.uid
-    :param main_page: url
-    :param nickname: current nickname
-    :param _t: Translator
-    :return: dict()
-    """
     return_dict = dict()
-    db_votes = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.argument_uid == uid,
+    db_votes = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.argument_uid == db_argument.uid,
                                                                       ClickedArgument.is_valid == True,
                                                                       ClickedStatement.is_up_vote == True)).all()
-    db_argument = DBDiscussionSession.query(Argument).get(uid)
-    if not db_argument:
-        return return_dict
 
     db_author = DBDiscussionSession.query(User).get(db_argument.author_uid)
     return_dict['vote_count'] = str(len(db_votes))
@@ -120,20 +97,20 @@ def __get_infos_about_argument(uid, main_page, nickname, _t):
     return_dict['author_url'] = main_page + '/user/' + str(db_author.uid)
     return_dict['gravatar'] = get_profile_picture(db_author)
     return_dict['timestamp'] = sql_timestamp_pretty_print(db_argument.timestamp, db_argument.lang)
-    text = get_text_for_argument_uid(uid)
+    text = get_text_for_argument_uid(db_argument.uid)
     return_dict['text'] = text[0:1].upper() + text[1:] + '.'
 
     supporters = []
     gravatars = dict()
     public_page = dict()
     for vote in db_votes:
-        db_user = DBDiscussionSession.query(User).get(vote.author_uid)
-        name = db_user.get_global_nickname()
-        if db_user.nickname == nickname:
+        db_author = DBDiscussionSession.query(User).get(vote.author_uid)
+        name = db_author.get_global_nickname()
+        if db_user.nickname == db_author.nickname:
             name += ' (' + _t.get(_.itsYou) + ')'
         supporters.append(name)
-        gravatars[name] = get_profile_picture(db_user)
-        public_page[name] = main_page + '/user/' + str(db_user.uid)
+        gravatars[name] = get_profile_picture(db_author)
+        public_page[name] = main_page + '/user/' + str(db_author.uid)
 
     return_dict['supporter'] = supporters
     return_dict['gravatars'] = gravatars

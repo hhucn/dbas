@@ -67,16 +67,7 @@ function InteractionHandler() {
 	 * @param data
 	 */
 	this.callbackIfDoneForGettingInfosAboutArgument = function(data){
-		var text, element;
-		// status is the length of the content
-		if (data.error.length !== 0) {
-			text = data.error;
-			element = $('<p>').html(text);
-			displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), element);
-			return;
-		}
-
-		var author;
+		var text, author;
 		if (data.author !== 'anonymous'){
 			var img = '<img class="img-circle" style="height: 1em;" src="' + data.gravatar + '">';
 			author = '<a href="' + data.author_url + '">' + img + ' ' + data.author + '</a>';

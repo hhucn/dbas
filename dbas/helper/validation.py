@@ -4,7 +4,7 @@ from cornice.util import json_error
 
 import dbas.handler.issue as issue_handler
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Issue, Statement, Language
+from dbas.database.discussion_model import User, Issue, Statement, Language, Argument
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.language import get_language_from_cookie
 from dbas.lib import get_user_by_private_or_public_nickname
@@ -53,7 +53,7 @@ def __set_min_length_error(request, min_length):
 
 def valid_user(request):
     """
-    Given a nickname of a user, return the object from the database.
+    Given a nickname of a user authenticated, return the object from the database.
 
     :param request:
     :return:
@@ -66,6 +66,21 @@ def valid_user(request):
     else:
         _tn = Translator(get_language_from_cookie(request))
         __add_error(request, 'valid_user', 'Invalid user', _tn.get(_.checkNickname))
+        return False
+
+
+def invalid_user(request):
+    """
+    Given a nickname of a (un)-authenticated user, return the object from the database.
+
+    :param request:
+    :return:
+    """
+    if request.authenticated_userid:
+        return valid_user(request)
+    else:
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
+        request.validated['user'] = db_user
         return False
 
 
@@ -87,7 +102,7 @@ def valid_language(request):
         request.validated['lang'] = db_lang
         return True
     else:
-        __add_error(request, 'valid_language', 'Invalid language', _tn.get(_.checkLanguage))
+        __add_error(request, 'valid_language', 'Invalid language {}'.format(lang), _tn.get(_.checkLanguage))
         return False
 
 
@@ -160,6 +175,23 @@ def valid_conclusion(request):
     else:
         _tn = Translator(get_language_from_cookie(request))
         __add_error(request, 'valid_conclusion', 'Conclusion id is missing', _tn.get(_.wrongConclusion))
+
+
+def valid_argument(request):
+    """
+    Given an uid, query the argument object from the database and return it in the request.
+
+    :param request:
+    :return:
+    """
+    argument_id = request.json_body.get('uid')
+    db_argument = DBDiscussionSession.query(Argument).get(argument_id) if argument_id else None
+
+    if db_argument:
+        request.validated['argument'] = db_argument
+    else:
+        _tn = Translator(get_language_from_cookie(request))
+        __add_error(request, 'valid_argument', 'Argument uid is missing', _tn.get(_.wrongArgument))
 
 
 def valid_statement_text(request):
