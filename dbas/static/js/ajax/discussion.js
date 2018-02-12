@@ -138,11 +138,12 @@ function AjaxDiscussionHandler() {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_logfile_for_statements',
-			method: 'GET',
-			data: {
-				uids: JSON.stringify(statements_uids),
+			method: 'POST',
+			contentType: 'application/json',
+			data: JSON.stringify({
+				uids: statements_uids,
 				issue: getCurrentIssueId()
-			},
+			}),
 			dataType: 'json',
 			async: true,
 			headers: {
@@ -151,7 +152,11 @@ function AjaxDiscussionHandler() {
 		}).done(function ajaxGetLogfileForStatementsDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingLogfile(data);
 		}).fail(function ajaxGetLogfileForStatementsFail() {
-			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 15). ' + _t(doNotHesitateToContact) + '. ');
+			var description = $('#' + popupEditStatementErrorDescriptionId);
+			description.text(_t(requestFailed));
+			description.addClass('text-danger');
+			description.removeClass('text-info');
+			$('#' + popupEditStatementLogfileSpaceId).prev().hide();
 		});
 	};
 
@@ -192,7 +197,8 @@ function AjaxDiscussionHandler() {
 			dataType: 'json',
 			contentType: 'application/json',
 			data: JSON.stringify({
-				url: encodeURI(long_url)
+				url: encodeURI(long_url),
+				issue: getCurrentIssueId()
 			}),
 			headers: {
 				'X-CSRF-Token': csrf_token

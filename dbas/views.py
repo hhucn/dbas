@@ -1622,6 +1622,7 @@ def mark_or_unmark_statement_or_argument(request):
 
 # ajax - getting changelog of a statement
 @view_config(route_name='ajax_get_logfile_for_statements', renderer='json')
+@validate(valid_issue, has_keywords(('uids', list)))
 def get_logfile_for_some_statements(request):
     """
     Returns the changelog of a statement
@@ -1630,24 +1631,15 @@ def get_logfile_for_some_statements(request):
     :return: json-dict()
     """
     logger('views', 'get_logfile_for_statements', 'request.params: {}'.format(request.params))
-
-    try:
-        uids = json.loads(request.params['uids'])
-        issue = request.params['issue']
-        ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
-        prepared_dict = get_logfile_for_statements(uids, ui_locales, request.application_url)
-        prepared_dict['error'] = ''
-    except KeyError as e:
-        logger('views', 'get_logfile_for_statements', repr(e), error=True)
-        _tn = Translator(get_discussion_language(request.matchdict, request.params, request.session))
-        prepared_dict = {'error': _tn.get(_.noCorrections)}
-
-    return prepared_dict
+    uids = request.validated['uids']
+    db_issue = request.validated['issue']
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session, db_issue.uid)
+    return get_logfile_for_statements(uids, ui_locales, request.application_url)
 
 
 # ajax - for shorten url
 @view_config(route_name='ajax_get_shortened_url', renderer='json')
-@validate(has_keywords(('url', str)))
+@validate(valid_issue, has_keywords(('url', str)))
 def get_shortened_url(request):
     """
     Shortens url with the help of a python lib
@@ -1656,7 +1648,9 @@ def get_shortened_url(request):
     :return: dictionary with shortend url
     """
     logger('views', 'get_shortened_url', 'main')
-    return get_short_url(request.validated['url'], get_discussion_language(request.matchdict, request.params, request.session))
+    db_issue = request.validated['issue']
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session, db_issue.uid)
+    return get_short_url(request.validated['url'], ui_locales)
 
 
 # ajax - for getting all news

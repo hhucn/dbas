@@ -12,12 +12,7 @@ function InteractionHandler() {
 	this.callbackIfDoneForGettingLogfile = function (data) {
 		// status is the length of the content
 		var description = $('#' + popupEditStatementErrorDescriptionId);
-		if (data.error.length !== 0) {
-			description.text(data.error);
-			description.addClass('text-danger');
-			description.removeClass('text-info');
-			$('#' + popupEditStatementLogfileSpaceId).prev().hide();
-		} else if ('info' in data && data.info.length !== 0) {
+		if ('info' in data && data.info.length !== 0) {
 			description.text(data.error);
 			description.removeClass('text-danger');
 			description.addClass('text-info');

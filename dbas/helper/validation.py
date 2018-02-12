@@ -285,9 +285,6 @@ def has_keywords(*keywords):
 
     def valid_keywords(request):
         error_occured = False
-        from pprint import pprint
-        pprint(keywords)
-        pprint(request.json_body)
         for (keyword, ktype) in keywords:
             value = request.json_body.get(keyword)
             if value is not None and isinstance(value, ktype):
@@ -296,7 +293,7 @@ def has_keywords(*keywords):
                 __add_error(request, 'has_keywords', 'Parameter missing', '{} is missing'.format(keyword))
                 error_occured = True
             else:
-                __add_error(request, 'has_keywords', 'Parameter has wrong type',
+                __add_error(request, 'has_keywords', 'Parameter {} has wrong type'.format(keyword),
                             '{} is {}, expected {}'.format(keyword, type(keyword), ktype))
                 error_occured = True
         return not error_occured
