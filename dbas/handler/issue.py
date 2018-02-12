@@ -320,7 +320,7 @@ def __create_issue_dict(issue, application_url) -> dict:
     :param application_url: current applications url
     :return: dict()
     """
-    short_url_dict = get_short_url(application_url + '/' + issue.slug, '', 'en')
+    short_url_dict = get_short_url(application_url + '/' + issue.slug, 'en')
     url = short_url_dict['url'] if len(short_url_dict['error']) == 0 else application_url + '/' + issue.slug
 
     # we do nto have to check for clicked arguments, cause arguments consist out of statements

@@ -44,24 +44,13 @@ function InteractionHandler() {
 			parent_statement.find('.item-edit').remove();
 		}
 	};
-
+	
 	/**
-	 * Callback, when a url was shortend
-	 * @param data of the ajax request
-	 * @param long_url url which should be shortend
+	 *
+	 * @param data
+	 * @param should_mark
+	 * @param callback_id
 	 */
-	this.callbackIfDoneForShortenUrl = function (data, long_url) {
-		var service;
-		if (data.error.length === 0) {
-			service = '<a href="' + data.service_url + '" title="' + data.service + '" target="_blank">' + data.service + '</a>';
-			$('#' + popupUrlSharingDescriptionPId).html(_t_discussion(feelFreeToShareUrl) + ' (' + _t_discussion(shortenedBy) + ' ' + service + '):');
-			$('#' + popupUrlSharingInputId).val(data.url).data('short-url', data.url);
-		} else {
-			$('#' + popupUrlSharingDescriptionPId).text(_t_discussion(feelFreeToShareUrl) + '.');
-			$('#' + popupUrlSharingInputId).val(long_url);
-		}
-	};
-
 	this.callbackForMarkedStatementOrArgument = function (data, should_mark, callback_id){
 		if (data.error.length !== 0) {
 			setGlobalErrorHandler(_t_discussion(ohsnap), data.error);

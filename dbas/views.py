@@ -1647,6 +1647,7 @@ def get_logfile_for_some_statements(request):
 
 # ajax - for shorten url
 @view_config(route_name='ajax_get_shortened_url', renderer='json')
+@validate(has_keywords(('url', str)))
 def get_shortened_url(request):
     """
     Shortens url with the help of a python lib
@@ -1655,17 +1656,7 @@ def get_shortened_url(request):
     :return: dictionary with shortend url
     """
     logger('views', 'get_shortened_url', 'main')
-    try:
-        url = request.params['url']
-        prepared_dict = get_short_url(url, request.unauthenticated_userid, get_discussion_language(request.matchdict,
-                                                                                                   request.params,
-                                                                                                   request.session))
-    except KeyError as e:
-        logger('views', 'get_shortened_url', repr(e), error=True)
-        _tn = Translator(get_discussion_language(request.matchdict, request.params, request.session))
-        return {'error': _tn.get(_.internalKeyError)}
-
-    return prepared_dict
+    return get_short_url(request.validated['url'], get_discussion_language(request.matchdict, request.params, request.session))
 
 
 # ajax - for getting all news

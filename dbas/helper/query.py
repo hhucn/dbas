@@ -14,7 +14,6 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, RevokedContent, \
     RevokedContentHistory, MarkedArgument, MarkedStatement, Settings, Language
 from dbas.database.initializedb import nick_of_anonymous_user
-from dbas.handler import user
 from dbas.handler.history import get_bubble_from_reaction_step, get_splitted_history
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for_argument_uid, \
@@ -385,33 +384,30 @@ def get_default_locale_name(registry):
     return registry.settings.get('pyramid.default_locale_name', 'en')
 
 
-def get_short_url(url, nickname, ui_locales) -> dict:
+def get_short_url(url, ui_locales) -> dict:
     """
     Shortens the url via external service.
 
     :param url: Url as string, which should be shortened
-    :param nickname: current users nickname
     :param ui_locales: language of the discussion
     :rtype: dict
     :return: dictionary with the url, services name and the url of the service or an error
     """
-    user.update_last_action(nickname)
-
+    service = Shorteners.TINYURL
+    service_text = service
+    service_url = 'http://tinyurl.com/'
+    error = ''
+    short_url = ''
     try:
-        service = Shorteners.TINYURL
-        service_url = 'http://tinyurl.com/'
-        shortener = Shortener(service)
-        short_url = format(shortener.short(url))
+        short_url = format(Shortener(service).short(url))
     except (ReadTimeout, ConnectionError, NewConnectionError) as e:
         logger('getter', 'get_short_url', repr(e), error=True)
-        _tn = Translator(ui_locales)
-        prepared_dict = {'error': _tn.get(_.serviceNotAvailable)}
-        return prepared_dict
+        service_text = Translator(ui_locales).get(_.serviceNotAvailable)
 
-    prepared_dict = dict()
-    prepared_dict['url'] = short_url
-    prepared_dict['service'] = service
-    prepared_dict['service_url'] = service_url
-    prepared_dict['error'] = ''
-
-    return prepared_dict
+    return {
+        'url': short_url,
+        'service': service,
+        'service_url': service_url,
+        'service_text': service_text,
+        'error': error
+    }

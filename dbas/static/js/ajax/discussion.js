@@ -185,23 +185,24 @@ function AjaxDiscussionHandler() {
 	 * @param long_url for shortening
 	 */
 	this.getShortenUrl = function (long_url) {
-		var encoded_url = encodeURI(long_url);
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_shortened_url',
-			method: 'GET',
+			method: 'POST',
 			dataType: 'json',
-			data: {
-				url: encoded_url, issue: getCurrentIssueId()
-			},
-			async: true,
+			contentType: 'application/json',
+			data: JSON.stringify({
+				url: encodeURI(long_url)
+			}),
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxGetShortenUrlDone(data) {
-			new InteractionHandler().callbackIfDoneForShortenUrl(data, long_url);
-		}).fail(function ajaxGetShortenUrl() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			var service = '<a href="' + data.service_url + '" title="' + data.service + '" target="_blank">' + data.service_text + '</a>';
+			$('#' + popupUrlSharingDescriptionPId).html(_t_discussion(feelFreeToShareUrl) + ' (' + _t_discussion(shortenedBy) + ' ' + service + '):');
+			$('#' + popupUrlSharingInputId).val(data.url).data('short-url', data.url);
+		}).fail(function ajaxGetShortenUrl(data) {
+			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
 			new PopupHandler().hideAndClearUrlSharingPopup();
 		});
 	};

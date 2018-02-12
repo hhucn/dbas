@@ -285,6 +285,9 @@ def has_keywords(*keywords):
 
     def valid_keywords(request):
         error_occured = False
+        from pprint import pprint
+        pprint(keywords)
+        pprint(request.json_body)
         for (keyword, ktype) in keywords:
             value = request.json_body.get(keyword)
             if value is not None and isinstance(value, ktype):
