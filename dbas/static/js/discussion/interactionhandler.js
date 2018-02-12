@@ -187,11 +187,6 @@ function InteractionHandler() {
 	 */
 	this.callbackIfDoneForGettingMoreInfosAboutOpinion = function(data, is_argument){
 		var users_array, popup_table;
-
-		if (data.error.length !== 0) {
-			setGlobalErrorHandler(_t(ohsnap), data.error);
-			return;
-		}
 		if (data.info.length !== 0) {
 			setGlobalInfoHandler('Hey', data.info);
 			return;

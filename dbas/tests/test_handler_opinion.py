@@ -1,5 +1,7 @@
 import unittest
 
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User
 from dbas.handler.opinion import get_user_and_opinions_for_argument, get_user_with_same_opinion_for_statements, \
     get_user_with_same_opinion_for_premisegroups, get_user_with_same_opinion_for_argument, \
     get_user_with_opinions_for_attitude
@@ -8,110 +10,92 @@ from dbas.handler.opinion import get_user_and_opinions_for_argument, get_user_wi
 class OpinionHandlerTests(unittest.TestCase):
     def test_get_user_and_opinions_for_argument(self):
         lang = 'en'
-        nickname = 'nickname'
         main_page = 'url'
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
         # correct argument id
-        response_correct_id = get_user_and_opinions_for_argument(argument_uids=[11, 12], nickname=nickname,
+        response_correct_id = get_user_and_opinions_for_argument(argument_uids=[11, 12], db_user=db_user,
                                                                  lang=lang, main_page=main_page, path='')
         self.assertTrue(verify_structure_of_argument_dictionary(self, response_correct_id))
-        response_correct_id_2 = get_user_and_opinions_for_argument(argument_uids=[11, 13], nickname=nickname,
+        response_correct_id_2 = get_user_and_opinions_for_argument(argument_uids=[11, 13], db_user=db_user,
                                                                    lang=lang, main_page=main_page, path='')
         self.assertTrue(verify_structure_of_argument_dictionary(self, response_correct_id_2))
 
-        # unknown argument id
-        response_wrong_id = get_user_and_opinions_for_argument(argument_uids=[0, 0], nickname=nickname,
-                                                               lang=lang, main_page=main_page, path='')
-        self.assertIn('Internal Error', response_wrong_id['title'])
-
-        # none id
-        response_single_id = get_user_and_opinions_for_argument(argument_uids=1, nickname=nickname, lang=lang,
-                                                                main_page=main_page, path='')
-        self.assertNotEqual(response_single_id, None)
-        self.assertEqual(len(response_single_id['users']), 0)
-        self.assertEqual(len(response_single_id['opinions']), 0)
-
-        response_none_id = get_user_and_opinions_for_argument(argument_uids=None, nickname=nickname,
-                                                              lang=lang, main_page=main_page, path='')
-        self.assertNotEqual(response_none_id, None)
-        self.assertEqual(len(response_none_id['users']), 0)
-        self.assertEqual(len(response_none_id['opinions']), 0)
-
     def test_get_user_with_same_opinion_for_statements(self):
         lang = 'en'
-        nickname = 'nickname'
         main_page = 'url'
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
         # correct statement id
         response_correct_id_supp_true = get_user_with_same_opinion_for_statements(statement_uids=[1, 1],
                                                                                   is_supportive=True,
-                                                                                  nickname=nickname,
+                                                                                  db_user=db_user,
                                                                                   lang=lang,
                                                                                   main_page=main_page)
         self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response_correct_id_supp_true))
 
         response_correct_id_supp_false = get_user_with_same_opinion_for_statements(statement_uids=[2, 3],
                                                                                    is_supportive=False,
-                                                                                   nickname=nickname,
+                                                                                   db_user=db_user,
                                                                                    lang=lang,
                                                                                    main_page=main_page)
         self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response_correct_id_supp_false))
 
     def test_get_user_with_same_opinion_for_premisegroups(self):
         lang = 'en'
-        nickname = 'nickname'
         main_page = 'url'
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
         # correct premisegroup id
-        response_correct_id = get_user_with_same_opinion_for_premisegroups(argument_uids=[1, 2], nickname=nickname,
+        response_correct_id = get_user_with_same_opinion_for_premisegroups(argument_uids=[1, 2], db_user=db_user,
                                                                            lang=lang, main_page=main_page)
         self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response_correct_id))
         response_correct_id2 = get_user_with_same_opinion_for_premisegroups(argument_uids=[61, 62],
-                                                                            nickname=nickname, lang=lang,
+                                                                            db_user=db_user, lang=lang,
                                                                             main_page=main_page)
         self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response_correct_id2))
 
     def test_get_user_with_same_opinion_for_argument(self):
         lang = 'en'
-        nickname = 'nickname'
         main_page = 'url'
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
         # correct argument id
-        response_correct_id = get_user_with_same_opinion_for_argument(argument_uid=1, nickname=nickname,
+        response_correct_id = get_user_with_same_opinion_for_argument(argument_uid=1, db_user=db_user,
                                                                       lang=lang, main_page=main_page)
         self.assertTrue(verify_structure_of_user_dictionary_for_argument(self, response_correct_id))
 
-        response_correct_id2 = get_user_with_same_opinion_for_argument(argument_uid=62, nickname=nickname,
+        response_correct_id2 = get_user_with_same_opinion_for_argument(argument_uid=62, db_user=db_user,
                                                                        lang=lang, main_page=main_page)
         self.assertTrue(verify_structure_of_user_dictionary_for_argument(self, response_correct_id2))
 
         # wrong id
-        response_wrong_id = get_user_with_same_opinion_for_argument(argument_uid=0, nickname=nickname,
+        response_wrong_id = get_user_with_same_opinion_for_argument(argument_uid=0, db_user=db_user,
                                                                     lang=lang, main_page=main_page)
         map(lambda x: self.assertEqual(x, None), response_wrong_id.items())
 
-        response_wrong_id2 = get_user_with_same_opinion_for_argument(argument_uid=None, nickname=nickname,
+        response_wrong_id2 = get_user_with_same_opinion_for_argument(argument_uid=None, db_user=db_user,
                                                                      lang=lang, main_page=main_page)
         map(lambda x: self.assertEqual(x, None), response_wrong_id2.items())
 
     def test_get_user_with_opinions_for_attitude(self):
         lang = 'en'
-        nickname = 'nickname'
         main_page = 'url'
+        db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
         # correct statement id
-        response_correct_id = get_user_with_opinions_for_attitude(statement_uid=1, nickname=nickname,
+        response_correct_id = get_user_with_opinions_for_attitude(statement_uid=1, db_user=db_user,
                                                                   lang=lang, main_page=main_page)
         self.assertTrue(verify_structure_of_attitude_dictionary(self, response_correct_id))
-        response_correct_id2 = get_user_with_opinions_for_attitude(statement_uid=74, nickname=nickname,
+        response_correct_id2 = get_user_with_opinions_for_attitude(statement_uid=74, db_user=db_user,
                                                                    lang=lang, main_page=main_page)
         self.assertTrue(verify_structure_of_attitude_dictionary(self, response_correct_id2))
 
         # wrong id
-        response_wrong_id = get_user_with_opinions_for_attitude(statement_uid=0, nickname=nickname, lang=lang,
+        response_wrong_id = get_user_with_opinions_for_attitude(statement_uid=0, db_user=db_user, lang=lang,
                                                                 main_page=main_page)
         self.assertEqual(response_wrong_id['text'], None)
-        response_wrong_id2 = get_user_with_opinions_for_attitude(statement_uid=None, nickname=nickname,
+        response_wrong_id2 = get_user_with_opinions_for_attitude(statement_uid=None, db_user=db_user,
                                                                  lang=lang, main_page=main_page)
         self.assertEqual(response_wrong_id2['text'], None)
 

@@ -1678,6 +1678,7 @@ def get_infos_about_argument(request):
 
 # ajax - for getting all users with the same opinion
 @view_config(route_name='ajax_get_user_with_same_opinion', renderer='json')
+@validate(valid_language, invalid_user, has_keywords(('uid', int), ('is_argument', bool), ('is_attitude', bool), ('is_reaction', bool), ('is_position', bool)))
 def get_users_with_opinion(request):
     """
     ajax interface for getting a dump
@@ -1685,28 +1686,16 @@ def get_users_with_opinion(request):
     :params reqeust: current request of the web  server
     :return: json-set with everything
     """
-    logger('views', 'get_users_with_opinion', 'main: {}'.format(request.params))
-
-    try:
-        params = request.params
-        ui_locales = params['lang'] if 'lang' in params else 'en'
-        uids = params['uids']
-        is_arg = params.get('is_argument') == 'true'
-        is_att = params.get('is_attitude') == 'true'
-        is_rea = params.get('is_reaction') == 'true'
-        is_pos = params.get('is_position') == 'true'
-    except KeyError as e:
-        logger('views', 'get_users_with_opinion', repr(e), error=True)
-        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-        _tn = Translator(ui_locales)
-        return {'error': _tn.get(_.internalKeyError)}
-
-    path = request.path
-    application_url = request.application_url
-    nickname = request.authenticated_userid
-    prepared_dict = user.get_users_with_same_opinion(uids, application_url, path, nickname, is_arg, is_att, is_rea,
-                                                     is_pos, ui_locales)
-    return prepared_dict
+    logger('views', 'get_users_with_opinion', 'main: {}'.format(request.json_body))
+    db_lang = request.validated['lang']
+    uids = [request.validated['uid']]
+    is_arg = request.validated['is_argument']
+    is_att = request.validated['is_attitude']
+    is_rea = request.validated['is_reaction']
+    is_pos = request.validated['is_position']
+    db_user = request.validated['user']
+    return user.get_users_with_same_opinion(uids, request.application_url, request.path, db_user, is_arg, is_att,
+                                            is_rea, is_pos, db_lang)
 
 
 # ajax - for getting all users with the same opinion

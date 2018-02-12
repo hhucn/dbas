@@ -11,22 +11,29 @@ function AjaxGraphHandler(){
 	 * @param address: keyword in url
 	 */
 	this.getUserGraphData = function(uid, address){
-		var dataString;
+		var dataString = {
+			is_argument: false,
+			is_attitude: false,
+			is_reaction: false,
+			is_position: false,
+			uid: uid,
+			lang: getDiscussionLanguage()
+		};
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 
 		switch(address){
 			case 'attitude':
-				dataString = {is_argument: 'false', is_attitude: 'true', is_reaction: 'false', is_position: 'false', uids: uid};
+				dataString.is_attitude = true;
 				break;
 			case 'justify':
-				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', is_position: 'false', uids: JSON.stringify(uid)};
 				break;
 			case 'argument':
 			case 'dont_know':
-				dataString = {is_argument: 'true', is_attitude: 'false', is_reaction: 'true', is_position: 'false', uids: JSON.stringify(uid)};
+				dataString.is_argument = true;
+				dataString.is_reaction = true;
 				break;
 			case 'position':
-				dataString = {is_argument: 'false', is_attitude: 'false', is_reaction: 'false', is_position: 'true', uids: JSON.stringify(uid)};
+				dataString.is_position = true;
 				break;
 			default:
 				setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
@@ -36,15 +43,15 @@ function AjaxGraphHandler(){
 		dataString.lang = $('#issue_info').data('discussion-language');
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
-			type: 'POST',
+			method: 'POST',
 			dataType: 'json',
-			data: dataString,
-			async: true,
+			contentType: 'application/json',
+			data: JSON.stringify(dataString),
 			headers: {'X-CSRF-Token': csrf_token}
 		}).done(function (data) {
 			new DiscussionBarometer().callbackIfDoneForGetDictionary(data, address);
-		}).fail(function () {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		}).fail(function (data) {
+			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
 		});
 	};
 

@@ -828,17 +828,31 @@ def get_author_or_first_supporter_of_element(uid, current_user_uid, is_argument)
 
     db_anonymous_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     if is_argument:
-        db_vote = DBDiscussionSession.query(MarkedArgument).filter(and_(
+        db_mark = DBDiscussionSession.query(MarkedArgument).filter(and_(
             ~MarkedArgument.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
             MarkedArgument.argument_uid == uid,
         )).first()
     else:
-        db_vote = DBDiscussionSession.query(MarkedStatement).filter(and_(
+        db_mark = DBDiscussionSession.query(MarkedStatement).filter(and_(
             ~MarkedStatement.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
             MarkedStatement.statement_uid == uid,
         )).first()
 
-    if db_vote:
-        return DBDiscussionSession.query(User).get(db_vote.author_uid)
+    if db_mark:
+        return DBDiscussionSession.query(User).get(db_mark.author_uid)
+
+    if is_argument:
+        db_click = DBDiscussionSession.query(ClickedArgument).filter(and_(
+            ~ClickedArgument.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
+            ClickedArgument.argument_uid == uid,
+        )).first()
     else:
-        return None
+        db_click = DBDiscussionSession.query(ClickedStatement).filter(and_(
+            ~ClickedStatement.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
+            ClickedStatement.statement_uid == uid,
+        )).first()
+
+    if db_click:
+        return DBDiscussionSession.query(User).get(db_click.author_uid)
+
+    return None

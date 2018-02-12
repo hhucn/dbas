@@ -244,33 +244,33 @@ function AjaxDiscussionHandler() {
 	 * @param type
 	 * @param argument_uid
 	 * @param statement_uid
-	 * @param is_supportive
 	 */
-	this.getMoreInfosAboutOpinion = function(type, argument_uid, statement_uid, is_supportive){
+	this.getMoreInfosAboutOpinion = function(type, argument_uid, statement_uid){
 		var is_argument = type === 'argument';
 		var is_position = type === 'position' || type === 'statement';
 		var uid = argument_uid === 'None' ? statement_uid : argument_uid;
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		is_supportive = is_supportive === 'True';
 
 		$.ajax({
 			url: 'ajax_get_user_with_same_opinion',
-			method: 'GET',
-			data: {
-				is_argument: is_argument,
-				uids: uid,
-				is_position: is_position,
-				is_supporti: is_supportive,
-				lang: $('#issue_info').data('discussion-language')
-			},
+			method: 'POST',
 			dataType: 'json',
+			contentType: 'application/json',
+			data: JSON.stringify({
+				uid: uid,
+				is_argument: is_argument,
+				is_attitude: false,
+				is_reaction: false,
+				is_position: is_position,
+				lang: getDiscussionLanguage()
+			}),
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxGetMoreInfosAboutOpinionDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingMoreInfosAboutOpinion(data, is_argument);
-		}).fail(function ajaxGetMoreInfosAboutOpinionFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		}).fail(function ajaxGetMoreInfosAboutOpinionFail(data) {
+			setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
 		});
 
 	};

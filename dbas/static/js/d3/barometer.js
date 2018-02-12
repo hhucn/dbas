@@ -84,7 +84,7 @@ function DiscussionBarometer(){
     /**
      * Callback if ajax request was successful.
      *
-     * @param data: unparsed data of request
+     * @param jdata: unparsed data of request
      * @param addressUrl: step of discussion
      */
     this.callbackIfDoneForGetDictionary = function(jdata, addressUrl){
@@ -96,10 +96,6 @@ function DiscussionBarometer(){
             return;
         }
 
-		if (jdata.error.length !== 0) {
-			setGlobalErrorHandler(_t(ohsnap), jdata.error);
-			return;
-		}
 		if (jdata.info.length !== 0) {
 			setGlobalInfoHandler('Hey', jdata.info);
 			return;

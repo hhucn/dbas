@@ -136,10 +136,9 @@ class AjaxGetInfosTest(unittest.TestCase):
     def test_get_user_with_same_opinion(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_users_with_opinion as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest(params={}, matchdict={}, json_body={})
         response = ajax(request)
         self.assertIsNotNone(response)
-        # self.assertTrue(len(response['error']) == 0)
 
     def test_get_public_user_data(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)

@@ -284,8 +284,7 @@ function Main () {
 					var data_type = $(this).data('type');
 					var data_argument_uid = $(this).data('argument-uid');
 					var data_statement_uid = $(this).data('statement-uid');
-					var data_is_supportive = $(this).data('is-supportive');
-					new AjaxDiscussionHandler().getMoreInfosAboutOpinion(data_type, data_argument_uid, data_statement_uid, data_is_supportive);
+					new AjaxDiscussionHandler().getMoreInfosAboutOpinion(data_type, data_argument_uid, data_statement_uid);
 				});
 			} else {
 				$(this).removeClass('triangle-r-info').addClass('triangle-r-info-nohover');
