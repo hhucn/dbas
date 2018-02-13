@@ -1,10 +1,13 @@
 import unittest
 
-from pyramid.httpexceptions import HTTPFound
 from pyramid import testing
+from pyramid.httpexceptions import HTTPFound
+from pyramid_mailer.mailer import DummyMailer
+
 from dbas.auth.login import login_user, register_user_with_ajax_data, login_user_oauth
-from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
+from dbas.views import user_login
 
 
 class AuthLoginTest(unittest.TestCase):
@@ -19,24 +22,25 @@ class AuthLoginTest(unittest.TestCase):
         nickname = 'Bob'
         password = 'iamatestuser2016'
         for_api = False
-        keep_login = 'true'
+        keep_login = True
 
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'user': nickname,
             'password': password,
             'keep_login': keep_login,
-            'url': 'http://some.url'
-        }, matchdict={})
+            'redirect_url': 'http://some.url'
+        }, mailer=DummyMailer)
+
         _tn = Translator('en')
-        response = login_user(request, '', '', for_api, '', _tn)
+        response = user_login(request)
         self.assertTrue(type(response) is HTTPFound)
 
         keep_login = True
-        response = login_user(request, nickname, password, for_api, keep_login, _tn)
+        response = login_user(request, nickname, password, for_api=for_api, keep_login=keep_login, lang=_tn)
         self.assertTrue(type(response) is HTTPFound)
 
         for_api = True
-        response = login_user(request, nickname, password, for_api, keep_login, _tn)
+        response = login_user(request, nickname, password, for_api=for_api, keep_login=keep_login, lang=_tn)
         self.assertTrue(type(response) is dict)
         self.assertIn('status', response)
 

@@ -40,7 +40,7 @@ function AjaxMainHandler(){
 	this.login = function(user, password, showGlobalError){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		var url = window.location.href;
-		var keep_login = $('#keep-login-box').prop('checked') ? 'true' : 'false';
+        var keep_login = $('#keep-login-box').prop('checked');
 		$('#' + popupLoginFailed).hide();
 		$('#' + popupLoginFailed + '-message').text('');
 		$('#' + popupLoginInfo).hide();
@@ -49,14 +49,14 @@ function AjaxMainHandler(){
 		$.ajax({
 			url: mainpage + 'ajax_user_login',
 			type: 'POST',
-			data: {
+            contentType: 'application/json',
+            data: JSON.stringify({
 				user: user,
 				password: password,
-				url: url,
+                redirect_url: url,
 				keep_login: keep_login
-			},
+            }),
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}

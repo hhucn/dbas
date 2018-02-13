@@ -423,6 +423,31 @@ def has_keywords(*keywords):
     return valid_keywords
 
 
+def has_maybe_keywords(*keywords):
+    """
+    Check if parameter exists. If not, provide fallback value.
+
+    :param keywords: 3-tuple of keys, their expected types in request.json_body and a default value
+    :return:
+    """
+
+    def valid_keywords(request):
+        error_occured = False
+        for (keyword, ktype, kdefault) in keywords:
+            value = request.json_body.get(keyword)
+            if value is not None and isinstance(value, ktype):
+                request.validated[keyword] = value
+            elif value is None:
+                request.validated[keyword] = kdefault
+            else:
+                __add_error(request, 'has_keywords', 'Parameter {} has wrong type'.format(keyword),
+                            '{} is {}, expected {}'.format(keyword, type(keyword), ktype))
+                error_occured = True
+        return not error_occured
+
+    return valid_keywords
+
+
 class validate(object):
     """
     Applies all validators to this function.

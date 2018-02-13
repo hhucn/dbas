@@ -5,7 +5,6 @@ Login Handler for D-BAS
 """
 
 from time import sleep
-from pyramid_mailer import get_mailer
 
 import transaction
 from pyramid.httpexceptions import HTTPFound
@@ -14,8 +13,8 @@ from sqlalchemy import func
 from validate_email import validate_email
 
 from dbas.auth.ldap import verify_ldap_user_data
-from dbas.auth.recaptcha import validate_recaptcha
 from dbas.auth.oauth import google as google, github as github, facebook as facebook, twitter as twitter
+from dbas.auth.recaptcha import validate_recaptcha
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Settings
 from dbas.handler import user
@@ -29,44 +28,42 @@ from dbas.strings.translator import Translator
 oauth_providers = ['google', 'github', 'facebook', 'twitter']
 
 
-def login_user(request, nickname, password, for_api, keep_login=False, lang='en'):
+def login_user(request, nickname, password, keep_login=False, redirect_url='', lang='en', for_api=False):
     """
     Try to login the user whereby she is maybe a HHU-LDAP user or known localy
 
     :param request: web servers request
     :param nickname: User.nickname
     :param password: String
+    :param redirect_url: On success login, redirect to this page
     :param for_api: Boolean
     :param keep_login: Boolean
     :param lang: current language
     :return: dict() or HTTPFound if the user is logged in and it is not the api
     """
-
-    # caution: password is not escaped
-    nickname, password, keep_login, url = __get_data(request, nickname, password, keep_login)
-    _tn = Translator(lang)
     logger('Auth.Login', 'login_user', 'user: {}, api: {}'.format(nickname, for_api))
+    _tn = Translator(lang)
 
     # now we have several options:
-    # 1. the user is unknown, because she has a HHU-LDAP account
+    # 1. the user is unknown in our DB, maybe has HHU-LDAP account
     # 2. oauth nickname
     # 3. the user is known, but
-    #  a) keeped local
-    #  b) keeped in ldap
+    #  a) kept local
+    #  b) kept in ldap
     db_user = get_user_by_case_insensitive_nickname(nickname)
     if not db_user:  # this is 1.
-        mailer = None if for_api else get_mailer(request)
+        mailer = None if for_api else request.mailer
         register = __register_user_with_ldap_data(mailer, nickname, password, for_api, _tn)
         if len(register['error']) != 0:
             return register
-        return __return_success_login(request, for_api, register['user'], keep_login, url)
+        return __return_success_login(request, for_api, register['user'], keep_login, redirect_url)
 
     # this is 2.
     if len(str(db_user.oauth_provider)) > 4 and len(str(db_user.oauth_provider_id)) > 4:  # >4 because len('None') is 4
         return {'info': _tn.get(_.userIsOAuth)}
 
     # this is 3.
-    return __check_in_local_known_user(request, db_user, password, for_api, keep_login, url, _tn)
+    return __check_in_local_known_user(request, db_user, password, for_api, keep_login, redirect_url, _tn)
 
 
 def login_user_oauth(request, service, redirect_uri, old_redirect, ui_locales):
@@ -443,6 +440,9 @@ def __refresh_headers_and_url(request, db_user, keep_login, url):
     db_settings.should_hold_the_login(keep_login)
     logger('Auth.Login', '__refresh_headers_and_url', 'remembering headers for {}'.format(db_user.nickname))
     headers = remember(request, db_user.nickname)
+
+    print("\n\n\n\n")
+    print(url)
 
     # update timestamp
     logger('Auth.Login', '__refresh_headers_and_url', 'update login timestamp')

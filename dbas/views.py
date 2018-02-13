@@ -51,7 +51,7 @@ from dbas.helper.query import get_default_locale_name, set_user_language, \
 from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, has_keywords, \
     valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient, \
     valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument, valid_statement, \
-    valid_review_reason, valid_ui_locales, valid_premisegroup, valid_text_values
+    valid_review_reason, valid_ui_locales, valid_premisegroup, valid_text_values, has_maybe_keywords
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -1160,32 +1160,25 @@ def delete_statistics(request):
     return {'removed_data': str(clear_vote_and_seen_values_of_user(request.authenticated_userid)).lower()}
 
 
-# ajax - user login
 @view_config(route_name='ajax_user_login', renderer='json')
-def user_login(request, nickname=None, password=None, for_api=False, keep_login=False):
+@validate(has_keywords(('user', str), ('password', str), ('keep_login', bool)),
+          has_maybe_keywords(('redirect_url', str, '')))
+def user_login(request):
     """
     Will login the user by his nickname and password
 
     :param request: request of the web server
-    :param nickname: Manually provide nickname (e.g. from API)
-    :param password: Manually provide password (e.g. from API)
-    :param for_api: Manually provide boolean (e.g. from API)
-    :param keep_login: Manually provide boolean (e.g. from API)
     :return: dict() with error
     """
-    logger('views', 'user_login', 'main: {} (api: {})'.format(request.params, str(for_api)))
-
+    logger('views', 'user_login', 'main: {}'.format(request.json_body))
     lang = get_language_from_cookie(request)
-
-    try:
-        return login_user(request, nickname, password, for_api, keep_login, lang)
-    except KeyError as e:
-        logger('user_login', 'error', repr(e), error=True)
-        _tn = Translator(lang)
-        return {'error': _tn.get(_.internalKeyError)}
+    nickname = request.validated['user']
+    password = request.validated['password']
+    keep_login = request.validated['keep_login']
+    redirect_url = request.validated['redirect_url']
+    return login_user(request, nickname, password, keep_login, redirect_url, lang)
 
 
-# ajax - user login via oauth
 @view_config(route_name='ajax_user_login_oauth', renderer='json')
 def user_login_oauth(request):
     """
@@ -1223,7 +1216,6 @@ def user_login_oauth(request):
         return {'error': _tn.get(_.internalKeyError)}
 
 
-# ajax - user logout
 @view_config(route_name='ajax_user_logout', renderer='json')
 def user_logout(request, redirect_to_main=False):
     """
@@ -1249,7 +1241,6 @@ def user_logout(request, redirect_to_main=False):
     )
 
 
-# ajax - registration of users
 @view_config(route_name='ajax_user_registration', renderer='json')
 def user_registration(request):
     """
@@ -1284,7 +1275,6 @@ def user_registration(request):
     }
 
 
-# ajax - password requests
 @view_config(route_name='ajax_user_password_request', renderer='json')
 @validate(valid_ui_locales, has_keywords(('email', str)))
 def user_password_request(request):
