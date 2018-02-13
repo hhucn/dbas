@@ -1359,7 +1359,7 @@ def set_user_lang(request):
 
 # ajax - set boolean for receiving information
 @view_config(route_name='ajax_set_discussion_properties', renderer='json')
-@validate(valid_user, valid_issue, has_keywords(('checked', bool), ('key', str)))
+@validate(valid_user, valid_issue, has_keywords(('property', bool), ('value', str)))
 def set_discussion_properties(request):
     """
     Set availability, read-only, ... flags in the admin panel.
@@ -1370,11 +1370,11 @@ def set_discussion_properties(request):
     logger('views', 'set_discussion_properties', 'request.params: {}'.format(request.params))
     _tn = Translator(get_language_from_cookie(request))
 
-    checked = request.validated['checked']
+    property = request.validated['property']
     user = request.validated['user']
     issue = request.validated['issue']
-    key = request.validated['key']
-    return set_discussions_properties(user, issue, checked, key, _tn)
+    value = request.validated['value']
+    return set_discussions_properties(user, issue, property, value, _tn)
 
 
 # #######################################

@@ -491,9 +491,9 @@ function AjaxDiscussionHandler() {
 			method: 'POST',
 			contentType: 'application/json',
 			data: JSON.stringify({
-				'checked': checked,
+				'property': checked,
 				'issue': toggle_element.data('uid'),
-				'key': toggle_element.data('keyword')
+				'value': toggle_element.data('keyword')
 			}),
 			dataType: 'json',
 			async: true,
