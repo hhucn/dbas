@@ -86,26 +86,20 @@ def __mark_or_unmark_it(uid, is_argument, should_mark, db_user, _t):
     return {'success': _t.get(_.opinionSaved), 'error': ''}
 
 
-def set_user_language(nickname, ui_locales) -> dict:
+def set_user_language(db_user: User, ui_locales) -> dict:
     """
     Changes the users language of the web frontend
 
-    :param nickname: the user's nickname creating the request
+    :param db_user: User
     :param ui_locales: current ui_locales
     :rtype: dict
     :return: prepared collection with status information
     """
     _tn = Translator(ui_locales)
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        return {'error': _tn.get(_.checkNickname), 'ui_locales': ui_locales, 'current_lang': ''}
-
     db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
-    if not db_settings:
-        return {'error': _tn.get(_.checkNickname), 'ui_locales': ui_locales, 'current_lang': ''}
-
     db_language = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
+
     if not db_language:
         return {'error': _tn.get(_.internalError), 'ui_locales': ui_locales, 'current_lang': ''}
 

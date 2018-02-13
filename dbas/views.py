@@ -1332,32 +1332,19 @@ def set_user_settings(request):
     return return_dict
 
 
-# ajax - set boolean for receiving information
 @view_config(route_name='ajax_set_user_language', renderer='json')
+@validate(valid_user, has_keywords(('ui_locales', str)))
 def set_user_lang(request):
     """
-    Will logout the user
+    Specify new UI language for user.
 
     :param request: current request of the server
     :return: json-dict()
     """
     logger('views', 'set_user_lang', 'request.params: {}'.format(request.params))
-
-    try:
-        ui_locales = request.params.get('ui_locales', None)
-        prepared_dict = set_user_language(request.authenticated_userid, ui_locales)
-    except KeyError as e:
-        logger('views', 'set_user_lang', repr(e), error=True)
-        _tn = Translator(get_language_from_cookie(request))
-        prepared_dict = {
-            'error': _tn.get(_.internalKeyError),
-            'ui_locales': '',
-            'current_lang': ''
-        }
-    return prepared_dict
+    return set_user_language(request.validated['user'], request.validated.get('ui_locales'))
 
 
-# ajax - set boolean for receiving information
 @view_config(route_name='ajax_set_discussion_properties', renderer='json')
 @validate(valid_user, valid_issue, has_keywords(('property', bool), ('value', str)))
 def set_discussion_properties(request):
