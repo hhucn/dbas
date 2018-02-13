@@ -108,26 +108,22 @@ def __get_values_of_reference(reference, main_page):
             'statement_text': get_text_for_statement_uid(reference.statement_uid)}
 
 
-def set_reference(reference, url, nickname, statement_uid, issue_uid):
+def set_reference(reference, url, db_user, db_statement, issue_uid):
     """
     Creates a new reference
 
     :param reference: Text of the reference
-    :param nickname: nickname of the user
-    :param statement_uid: statement uid of the linked statement
+    :param db_user: User
+    :param db_statement: Statement
     :param issue_uid: current issue uid
     :return: Boolean
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
-    if not db_user:
-        return False
-
     parsed_url = urlparse(url)
     host = parsed_url.scheme + '://' + parsed_url.netloc
     path = parsed_url.path
     author_uid = db_user.uid
 
-    DBDiscussionSession.add(StatementReferences(reference, host, path, author_uid, statement_uid, issue_uid))
+    DBDiscussionSession.add(StatementReferences(reference, host, path, author_uid, db_statement.uid, issue_uid))
     DBDiscussionSession.flush()
     transaction.commit()
 

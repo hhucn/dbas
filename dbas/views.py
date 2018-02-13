@@ -1742,6 +1742,7 @@ def get_reference(request):
 
 
 @view_config(route_name='ajax_set_references', renderer='json')
+@validate(valid_user, valid_statement, has_keywords(('reference', str), ('ref_source', str)))
 def set_references(request):
     """
     Sets a reference for a statement or an arguments
@@ -1749,24 +1750,13 @@ def set_references(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_references', 'main: {}'.format(request.params))
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
+    logger('views', 'set_references', 'main: {}'.format(request.json_body))
     issue_uid = issue_handler.get_issue_id(request)
-
-    try:
-        uid = request.params['uid']
-        reference = escape_string(json.loads(request.params['reference']))
-        source = escape_string(json.loads(request.params['ref_source']))
-    except KeyError as e:
-        logger('views', 'set_references', repr(e), error=True)
-        prepared_dict = {'error': _tn.get(_.internalKeyError)}
-        return prepared_dict
-
-    success = set_reference(reference, source, request.authenticated_userid, uid, issue_uid)
-    prepared_dict = {'error': '' if success else _tn.get(_.internalKeyError)}
-
-    return prepared_dict
+    db_statement = request.params['uid']
+    reference = escape_string(request.validated['reference'])
+    source = escape_string(request.validated['ref_source'])
+    db_user = request.validated['user']
+    return set_reference(reference, source, db_user, db_statement, issue_uid)
 
 
 # ########################################

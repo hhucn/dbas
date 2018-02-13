@@ -17,23 +17,19 @@ function AjaxReferenceHandler(){
 		$.ajax({
 			url: 'ajax_set_references',
 			method: 'POST',
-			data:{
-				uid: uid,
-				ref_source: JSON.stringify(ref_source),
-				reference: JSON.stringify(reference)
-			},
 			dataType: 'json',
-			async: true,
+			contentType: 'application/json',
+			data: JSON.stringify({
+				uid: uid,
+				ref_source: ref_source,
+				reference: reference
+			}),
 			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function (data) {
-			if (data.error.length > 0) {
-				setGlobalErrorHandler(_t_discussion(ohsnap), data.error);
-			} else {
-				setGlobalSuccessHandler('Yeah!', _t_discussion(dataAdded));
-			}
+		}).done(function () {
+			setGlobalSuccessHandler('Yeah!', _t_discussion(dataAdded));
 			$('#' + popupReferences).modal('hide');
-		}).fail(function () {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		}).fail(function (data) {
+			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
 		});
 	};
 
