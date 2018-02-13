@@ -49,7 +49,7 @@ from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
 from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, has_keywords, \
     valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient, \
-    valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument
+    valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument, valid_statement
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -1709,11 +1709,11 @@ def get_public_user_data(request):
     :return:
     """
     logger('views', 'get_public_user_data', 'main: {}'.format(request.json_body))
-    ui_locales = get_language_from_cookie(request)
-    return user.get_public_data(request.validated['nickname'], ui_locales)
+    return user.get_public_data(request.validated['nickname'], get_language_from_cookie(request))
 
 
 @view_config(route_name='ajax_get_arguments_by_statement_uid', renderer='json')
+@validate(valid_statement)
 def get_arguments_by_statement_id(request):
     """
     Returns all arguments, which use the given statement
@@ -1721,19 +1721,8 @@ def get_arguments_by_statement_id(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'get_arguments_by_statement_id', 'main: {}'.format(request.matchdict))
-
-    ui_locales = get_language_from_cookie(request)
-    try:
-        uid = request.matchdict['uid']
-
-    except KeyError as e:
-        logger('views', 'get_arguments_by_statement_uid', repr(e), error=True)
-        _tn = Translator(ui_locales)
-        return {'error': _tn.get(_.internalKeyError)}
-
-    prepared_dict = get_arguments_by_statement_uid(uid, request.application_url, ui_locales)
-    return prepared_dict
+    logger('views', 'get_arguments_by_statement_id', 'main: {}'.format(request.json_body))
+    return get_arguments_by_statement_uid(request.validated['statement'], request.application_url)
 
 
 @view_config(route_name='ajax_get_references', renderer='json')
@@ -1811,10 +1800,7 @@ def switch_language(request):
     """
     user.update_last_action(request.authenticated_userid)
     logger('switch_language', 'def', 'request.params: {}'.format(request.params))
-
-    return_dict = set_language(request)
-
-    return return_dict
+    return set_language(request)
 
 
 # ajax - for sending news

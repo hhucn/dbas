@@ -10,9 +10,8 @@ from dbas.handler import user, notification as NotificationHelper
 from dbas.handler.statements import insert_new_premises_for_argument
 from dbas.helper.query import statement_min_length
 from dbas.input_validator import get_relation_between_arguments
-from dbas.input_validator import is_integer
-from dbas.lib import get_slug_by_statement_uid, get_all_arguments_with_text_and_url_by_statement_id, \
-    get_profile_picture, get_text_for_argument_uid
+from dbas.lib import  get_all_arguments_with_text_and_url_by_statement_id, \
+    get_profile_picture, get_text_for_argument_uid, resolve_issue_uid_to_slug
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_new_statement, rep_reason_first_new_argument
 from dbas.strings.keywords import Keywords as _
@@ -119,27 +118,18 @@ def get_all_infos_about_argument(db_argument, main_page, db_user, lang) -> dict:
     return return_dict
 
 
-def get_arguments_by_statement_uid(uid, application_url, ui_locales) -> dict:
+def get_arguments_by_statement_uid(db_statement, application_url) -> dict:
     """
     Collects every argument which uses the given statement
 
-    :param uid: ID of statement to request all arguments
+    :param db_statement: Statement
     :param application_url: url of the application
-    :param ui_locales: language of the discussion
     :rtype: dict
     :return: prepared collection with several arguments
     """
-    if not is_integer(uid):
-        _tn = Translator(ui_locales)
-        return {'error': _tn.get(_.internalKeyError)}
-
-    slug = get_slug_by_statement_uid(uid)
+    slug = resolve_issue_uid_to_slug(db_statement.issue_uid)
     _um = UrlManager(application_url, slug)
-    prepared_dict = dict()
-    prepared_dict['arguments'] = get_all_arguments_with_text_and_url_by_statement_id(uid, _um, True, is_jump=True)
-    prepared_dict['error'] = ''
-
-    return prepared_dict
+    return {'arguments': get_all_arguments_with_text_and_url_by_statement_id(db_statement, _um, True, is_jump=True)}
 
 
 def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue: Issue, db_user: User,

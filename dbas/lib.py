@@ -244,21 +244,21 @@ def get_all_arguments_with_text_by_statement_id(statement_uid):
     return results
 
 
-def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanager, color_statement=False,
+def get_all_arguments_with_text_and_url_by_statement_id(db_statement, urlmanager, color_statement=False,
                                                         is_jump=False):
     """
     Given a statement_uid, it returns all arguments, which use this statement and adds
     the corresponding text to it, which normally appears in the bubbles. The resulting
     text depends on the provided language.
 
-    :param statement_uid: Id to a statement, which should be analyzed
+    :param db_statement: Statement
     :param urlmanager:
     :param color_statement: True, if the statement (specified by the ID) should be colored
     :return: list of dictionaries containing some properties of these arguments
     :rtype: list
     """
-    logger('DBAS.LIB', 'get_all_arguments_with_text_by_statement_id', 'main ' + str(statement_uid))
-    arguments = get_all_arguments_by_statement(statement_uid)
+    logger('DBAS.LIB', 'get_all_arguments_with_text_by_statement_id', 'main ' + str(db_statement.uid))
+    arguments = get_all_arguments_by_statement(db_statement.uid)
     uids = [arg.uid for arg in arguments] if arguments else None
     results = list()
     sb = '<{} data-argumentation-type="position">'.format(tag_type) if color_statement else ''
@@ -269,7 +269,7 @@ def get_all_arguments_with_text_and_url_by_statement_id(statement_uid, urlmanage
 
     uids.sort()
     for uid in uids:
-        statement_text = get_text_for_statement_uid(statement_uid)
+        statement_text = get_text_for_statement_uid(db_statement.uid)
         attack_type = 'jump' if is_jump else ''
         argument_text = get_text_for_argument_uid(uid, anonymous_style=True, attack_type=attack_type)
         pos = argument_text.lower().find(statement_text.lower())

@@ -7,6 +7,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Issue, Statement, Language, Argument
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.language import get_language_from_cookie
+from dbas.input_validator import is_integer
 from dbas.lib import get_user_by_private_or_public_nickname
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -177,6 +178,23 @@ def valid_conclusion(request):
         __add_error(request, 'valid_conclusion', 'Conclusion id is missing', _tn.get(_.wrongConclusion))
 
 
+def valid_statement(request):
+    """
+    Given an uid, query the statement object from the database and return it in the request.
+
+    :param request:
+    :return:
+    """
+    statement_id = request.json_body.get('uid')
+    db_statement = DBDiscussionSession.query(Statement).get(statement_id) if is_integer(statement_id) else None
+
+    if db_statement:
+        request.validated['statement'] = db_statement
+    else:
+        _tn = Translator(get_language_from_cookie(request))
+        __add_error(request, 'valid_statement', 'Statement uid is missing', _tn.get(_.wrongStatement))
+
+
 def valid_argument(request):
     """
     Given an uid, query the argument object from the database and return it in the request.
@@ -185,7 +203,7 @@ def valid_argument(request):
     :return:
     """
     argument_id = request.json_body.get('uid')
-    db_argument = DBDiscussionSession.query(Argument).get(argument_id) if argument_id else None
+    db_argument = DBDiscussionSession.query(Argument).get(argument_id) if is_integer(argument_id) else None
 
     if db_argument:
         request.validated['argument'] = db_argument
