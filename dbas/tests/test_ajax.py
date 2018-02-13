@@ -231,12 +231,12 @@ class AjaxTest(unittest.TestCase):
 
     def test_set_user_setting_mail(self):
         from dbas.views import set_user_settings as ajax
-        request = testing.DummyRequest(params={'ui_locales': 'en'})
+        request = testing.DummyRequest(json_body={'ui_locales': 'en'})
         response = ajax(request)
-        self.assertTrue(len(response['error']) > 0)
+        self.assertTrue(400 == response.status_code)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(params={'service': 'mail', 'settings_value': False})
+        request = testing.DummyRequest(json_body={'service': 'mail', 'settings_value': False})
         response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('public_nick', response)
@@ -249,12 +249,12 @@ class AjaxTest(unittest.TestCase):
 
     def test_set_user_setting_notification(self):
         from dbas.views import set_user_settings as ajax
-        request = testing.DummyRequest(params={'ui_locales': 'en'})
+        request = testing.DummyRequest(json_body={'ui_locales': 'en'})
         response = ajax(request)
-        self.assertTrue(len(response['error']) > 0)
+        self.assertTrue(400 == response.status_code)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(params={'service': 'notification', 'settings_value': True})
+        request = testing.DummyRequest(json_body={'service': 'notification', 'settings_value': True})
         response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('public_nick', response)
@@ -267,12 +267,12 @@ class AjaxTest(unittest.TestCase):
 
     def test_set_user_setting_nick(self):
         from dbas.views import set_user_settings as ajax
-        request = testing.DummyRequest(params={'ui_locales': 'en'})
+        request = testing.DummyRequest(json_body={'ui_locales': 'en'})
         response = ajax(request)
-        self.assertTrue(len(response['error']) > 0)
+        self.assertTrue(400 == response.status_code)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(params={'service': 'public_nick', 'settings_value': False})
+        request = testing.DummyRequest(json_body={'service': 'public_nick', 'settings_value': False})
         response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('public_nick', response)
@@ -285,12 +285,12 @@ class AjaxTest(unittest.TestCase):
 
     def test_set_user_setting_no_service(self):
         from dbas.views import set_user_settings as ajax
-        request = testing.DummyRequest(params={'ui_locales': 'en'})
+        request = testing.DummyRequest(json_body={'ui_locales': 'en'})
         response = ajax(request)
-        self.assertTrue(len(response['error']) > 0)
+        self.assertTrue(400 == response.status_code)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(params={'service': 'oha', 'settings_value': False})
+        request = testing.DummyRequest(json_body={'service': 'oha', 'settings_value': False})
         response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('public_nick', response)
