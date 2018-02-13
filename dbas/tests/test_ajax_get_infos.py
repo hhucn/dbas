@@ -1,4 +1,3 @@
-import json
 import unittest
 
 import transaction
@@ -73,12 +72,10 @@ class AjaxGetInfosTest(unittest.TestCase):
 
     def test_get_arguments_by_statement_uid(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_arguments_by_statement_id as ajax
-        request = testing.DummyRequest(params={}, matchdict={'uid': 3})
+        request = testing.DummyRequest(json_body={'uid': 3})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
         self.assertIn('arguments', response)
         for element in response['arguments']:
             self.assertIn('uid', element)
@@ -88,20 +85,16 @@ class AjaxGetInfosTest(unittest.TestCase):
     def test_get_arguments_by_statement_uid_failure1(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_arguments_by_statement_id as ajax
-        request = testing.DummyRequest(params={}, matchdict={'uids': 1})
+        request = testing.DummyRequest(json_body={'uids': 1})
         response = ajax(request)
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
-        self.assertNotIn('arguments', response)
+        self.assertEqual(400, response.status_code)
 
     def test_get_arguments_by_statement_uid_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_arguments_by_statement_id as ajax
-        request = testing.DummyRequest(params={}, matchdict={'uid': 'a'})
+        request = testing.DummyRequest(json_body={'uid': 'a'})
         response = ajax(request)
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
-        self.assertNotIn('arguments', response)
+        self.assertEqual(400, response.status_code)
 
     def test_get_infos_about_argument(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)

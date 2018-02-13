@@ -228,7 +228,7 @@ function Main () {
 
 		trianglel.find('.triangle-reference').click(function () {
 			var uid = $(this).parent().parent().attr('id').replace(questionBubbleId + '-', '');
-			new AjaxReferenceHandler().getReferences(uid, true);
+			new AjaxReferenceHandler().getReferences([parseInt(uid)], true);
 		});
 
 		trianglel.find('.triangle-trash').click(function () {
@@ -267,7 +267,7 @@ function Main () {
 		list.find('.item-reference').click(function () {
 			var uids = [];
 			$(this).parent().find('label:nth-child(even)').each(function(){
-				uids.push($(this).attr('id'));
+				uids.push(parseInt(uid)($(this).attr('id')));
 			});
 			new AjaxReferenceHandler().getReferences(uids, false);
 		});

@@ -224,18 +224,6 @@ function InteractionHandler() {
 
 	/**
 	 *
-	 * @param data
-	 */
-	this.callbackIfDoneForGettingReferences = function(data){
-		if (data.error.length !== 0) {
-			setGlobalErrorHandler(_t(ohsnap), data.error);
-		} else {
-			new PopupHandler().showReferencesPopup(data);
-		}
-	};
-
-	/**
-	 *
 	 * @param toggle_element
 	 * @param data
 	 */

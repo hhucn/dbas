@@ -30,18 +30,20 @@ function AjaxNewsHandler(){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_send_news',
-			type: 'POST',
-			data: {title: title, text: text},
 			dataType: 'json',
-			async: true,
+			contentType: 'application/json',
+			data: JSON.stringify({
+					title: title,
+					text: text
+				}),
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
-		}).done(function ajaxSendNewsDone(data) {
-			new News().callbackIfDoneForSendingNews(data);
-		}).fail(function ajaxSendNewsFail() {
+		}).done(function ajaxSendNewsDone() {
+			location.reload(true);
+		}).fail(function ajaxSendNewsFail(data) {
 			$('#' + writingNewsFailedId).show();
-			$('#' + writingNewsFailedMessageId).html(_t(internalError));
+			$('#' + writingNewsFailedMessageId).html(data.responseJSON.errors[0].description);
 		});
 	};
 }

@@ -261,16 +261,14 @@ class LibTests(unittest.TestCase):
         from dbas.url_manager import UrlManager
         um = UrlManager(application_url='', slug='slug', for_api=True)
 
-        res = lib.get_all_arguments_with_text_and_url_by_statement_id(0, um)
-        self.assertEqual([], res)
-
         results = {
             47: 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them',
             48: 'Someone argued that we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them. Other participants said that schools need the swimming pools for their sports lessons.',
             49: 'we should close public swimming pools does not hold, because the rate of non-swimmers is too high'
         }
 
-        res = lib.get_all_arguments_with_text_and_url_by_statement_id(38, um)
+        db_statement = DBDiscussionSession.query(Statement).get(38)
+        res = lib.get_all_arguments_with_text_and_url_by_statement_id(db_statement, um)
         self.assertEqual(3, len(res))
         for r in res:
             self.assertIn(r['uid'], results)
@@ -286,7 +284,8 @@ class LibTests(unittest.TestCase):
             49: '<span data-argumentation-type="position">we should close public swimming pools</span> does not hold, because the rate of non-swimmers is too high'
         }
 
-        res = lib.get_all_arguments_with_text_and_url_by_statement_id(38, um, color_statement=True)
+        db_statement = DBDiscussionSession.query(Statement).get(38)
+        res = lib.get_all_arguments_with_text_and_url_by_statement_id(db_statement, um, color_statement=True)
         self.assertEqual(3, len(res))
         for r in res:
             self.assertIn(r['uid'], results)
@@ -302,7 +301,8 @@ class LibTests(unittest.TestCase):
             49: '<span data-argumentation-type="position">we should close public swimming pools</span> <span data-attitude="con">does not hold</span> because the rate of non-swimmers is too high.'
         }
 
-        res = lib.get_all_arguments_with_text_and_url_by_statement_id(38, um, color_statement=True, is_jump=True)
+        db_statement = DBDiscussionSession.query(Statement).get(38)
+        res = lib.get_all_arguments_with_text_and_url_by_statement_id(db_statement, um, color_statement=True, is_jump=True)
         self.assertEqual(3, len(res))
         for r in res:
             self.assertIn(r['uid'], results)

@@ -49,7 +49,7 @@ from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
 from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, has_keywords, \
     valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient, \
-    valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument
+    valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument, valid_statement
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -1709,11 +1709,11 @@ def get_public_user_data(request):
     :return:
     """
     logger('views', 'get_public_user_data', 'main: {}'.format(request.json_body))
-    ui_locales = get_language_from_cookie(request)
-    return user.get_public_data(request.validated['nickname'], ui_locales)
+    return user.get_public_data(request.validated['nickname'], get_language_from_cookie(request))
 
 
 @view_config(route_name='ajax_get_arguments_by_statement_uid', renderer='json')
+@validate(valid_statement)
 def get_arguments_by_statement_id(request):
     """
     Returns all arguments, which use the given statement
@@ -1721,22 +1721,12 @@ def get_arguments_by_statement_id(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'get_arguments_by_statement_id', 'main: {}'.format(request.matchdict))
-
-    ui_locales = get_language_from_cookie(request)
-    try:
-        uid = request.matchdict['uid']
-
-    except KeyError as e:
-        logger('views', 'get_arguments_by_statement_uid', repr(e), error=True)
-        _tn = Translator(ui_locales)
-        return {'error': _tn.get(_.internalKeyError)}
-
-    prepared_dict = get_arguments_by_statement_uid(uid, request.application_url, ui_locales)
-    return prepared_dict
+    logger('views', 'get_arguments_by_statement_id', 'main: {}'.format(request.json_body))
+    return get_arguments_by_statement_uid(request.validated['statement'], request.application_url)
 
 
 @view_config(route_name='ajax_get_references', renderer='json')
+@validate(has_keywords(('uids', list), ('is_argument', bool)))
 def get_reference(request):
     """
     Returns all references for an argument or statement
@@ -1745,29 +1735,14 @@ def get_reference(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'get_reference', 'main: {}'.format(request.params))
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    try:
-        # uid is an integer if it is an argument and a list otherwise
-        uids = json.loads(request.params['uid'])
-        is_argument = str(request.params['is_argument']) == 'true'
-        are_all_integer = all(is_integer(tmp) for tmp in uids) if isinstance(uids, list) else is_integer(uids)
-
-        if not are_all_integer:
-            logger('views', 'get_reference', 'uid is not an integer', error=True)
-            return {'data': '', 'text': '', 'error': _tn.get(_.internalKeyError)}
-
-    except KeyError as e:
-        logger('views', 'get_reference', repr(e), error=True)
-        return {'data': '', 'text': '', 'error': _tn.get(_.internalKeyError)}
-
-    prepared_dict = get_references(uids, is_argument, request.application_url)
-    return prepared_dict
+    logger('views', 'get_reference', 'main: {}'.format(request.json_body))
+    uids = request.validated['uids']
+    is_argument = request.validated['is_argument']
+    return get_references(uids, is_argument, request.application_url)
 
 
 @view_config(route_name='ajax_set_references', renderer='json')
+@validate(valid_user, valid_statement, has_keywords(('reference', str), ('ref_source', str)))
 def set_references(request):
     """
     Sets a reference for a statement or an arguments
@@ -1775,24 +1750,12 @@ def set_references(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_references', 'main: {}'.format(request.params))
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-    issue_uid = issue_handler.get_issue_id(request)
-
-    try:
-        uid = request.params['uid']
-        reference = escape_string(json.loads(request.params['reference']))
-        source = escape_string(json.loads(request.params['ref_source']))
-    except KeyError as e:
-        logger('views', 'set_references', repr(e), error=True)
-        prepared_dict = {'error': _tn.get(_.internalKeyError)}
-        return prepared_dict
-
-    success = set_reference(reference, source, request.authenticated_userid, uid, issue_uid)
-    prepared_dict = {'error': '' if success else _tn.get(_.internalKeyError)}
-
-    return prepared_dict
+    logger('views', 'set_references', 'main: {}'.format(request.json_body))
+    db_statement = request.validated['statement']
+    reference = escape_string(request.validated['reference'])
+    source = escape_string(request.validated['ref_source'])
+    db_user = request.validated['user']
+    return set_reference(reference, source, db_user, db_statement, db_statement.issue_uid)
 
 
 # ########################################
@@ -1811,14 +1774,12 @@ def switch_language(request):
     """
     user.update_last_action(request.authenticated_userid)
     logger('switch_language', 'def', 'request.params: {}'.format(request.params))
-
-    return_dict = set_language(request)
-
-    return return_dict
+    return set_language(request)
 
 
 # ajax - for sending news
 @view_config(route_name='ajax_send_news', renderer='json')
+@validate(valid_user, has_keywords(('title', str), ('text', str)))
 def send_news(request):
     """
     ajax interface for settings news
@@ -1827,17 +1788,10 @@ def send_news(request):
     :return: json-set with new news
     """
     logger('views', 'send_news', 'request.params: {}'.format(request.params))
-    _tn = Translator(get_language_from_cookie(request))
-
-    try:
-        return_dict, success = news_handler.set_news(request)
-        return_dict['error'] = '' if success else _tn.get(_.noRights)
-    except KeyError as e:
-        return_dict = dict()
-        logger('views', 'send_news', repr(e), error=True)
-        return_dict['error'] = _tn.get(_.internalKeyError)
-
-    return return_dict
+    title = escape_string(request.validated['title'])
+    text = escape_string(request.validated['text'])
+    db_user = request.validated['user']
+    return news_handler.set_news(title, text, db_user, request.registry.settings['pyramid.default_locale_name'], request.application_url)
 
 
 # ajax - for fuzzy search
