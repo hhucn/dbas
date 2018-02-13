@@ -1294,8 +1294,8 @@ def user_password_request(request):
     :param request: current request of the server
     :return: dict() with success and message
     """
-    logger('Views', 'user_password_request', 'request.params: {}'.format(request.params))
-    _tn = Translator(request.validated['lang'])
+    logger('Views', 'user_password_request', 'request.params: {}'.format(request.json_body))
+    _tn = Translator(request.validated['ui_locales'])
     return request_password(request.validated['email'], request.mailer, _tn)
 
 
@@ -1308,7 +1308,7 @@ def set_user_settings(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('Views', 'set_user_settings', 'request.params: {}'.format(request.params))
+    logger('Views', 'set_user_settings', 'request.params: {}'.format(request.json_body))
     _tn = Translator(get_language_from_cookie(request))
     user = request.validated['user']
     settings_value = request.validated['settings_value']
@@ -1325,7 +1325,7 @@ def set_user_lang(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_user_lang', 'request.params: {}'.format(request.params))
+    logger('views', 'set_user_lang', 'request.params: {}'.format(request.json_body))
     return set_user_language(request.validated['user'], request.validated.get('ui_locales'))
 
 
@@ -1338,7 +1338,7 @@ def set_discussion_properties(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_discussion_properties', 'request.params: {}'.format(request.params))
+    logger('views', 'set_discussion_properties', 'request.params: {}'.format(request.json_body))
     _tn = Translator(get_language_from_cookie(request))
 
     property = request.validated['property']
@@ -1361,7 +1361,7 @@ def set_new_start_argument(request):
     :param request: request of the web server
     :return: a status code, if everything was successful
     """
-    logger('views', 'set_new_start_argument', 'request.params: {}'.format(request.params))
+    logger('views', 'set_new_start_argument', 'request.params: {}'.format(request.json_body))
 
     reason = request.validated['reason']
     data = {
