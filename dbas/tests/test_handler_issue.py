@@ -100,30 +100,29 @@ class IssueHandlerTests(unittest.TestCase):
         self.assertTrue(len(response['other']) > 0)
 
     def test_set_discussions_properties(self):
-        nickname = ''
-        uid = 0
-        enable = True
+        db_walter = DBDiscussionSession.query(User).filter_by(nickname='Walter').one_or_none()
+        db_issue = DBDiscussionSession.query(Issue).first()
         translator = Translator('en')
-        response = ih.set_discussions_properties(nickname, uid, enable, 'somekey', translator)
+
+        enable = True
+        response = ih.set_discussions_properties(db_walter, db_issue, enable, 'somekeywhichdoesnotexist', translator)
         self.assertTrue(len(response['error']) > 0)
 
-        nickname = 'Christian'
-        uid = 0
-        response = ih.set_discussions_properties(nickname, uid, enable, 'somekey', translator)
+        db_christian = DBDiscussionSession.query(User).filter_by(nickname='Christian').one_or_none()
+        response = ih.set_discussions_properties(db_christian, db_issue, enable, 'somekeywhichdoesnotexist', translator)
         self.assertTrue(len(response['error']) > 0)
 
-        uid = DBDiscussionSession.query(Issue).first().uid
-        response = ih.set_discussions_properties(nickname, uid, enable, 'somekey', translator)
+        response = ih.set_discussions_properties(db_christian, db_issue, enable, 'somekeywhichdoesnotexist', translator)
         self.assertTrue(len(response['error']) > 0)
 
-        nickname = 'Tobias'
-        response = ih.set_discussions_properties(nickname, uid, enable, 'enable', translator)
+        db_tobias = DBDiscussionSession.query(User).filter_by(nickname='Tobias').one_or_none()
+        response = ih.set_discussions_properties(db_tobias, db_issue, enable, 'enable', translator)
         transaction.commit()
         self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(DBDiscussionSession.query(Issue).get(uid).is_disabled is False)
+        self.assertTrue(DBDiscussionSession.query(Issue).first().is_disabled is False)
 
         enable = False
-        response = ih.set_discussions_properties(nickname, uid, enable, 'enable', translator)
+        response = ih.set_discussions_properties(db_tobias, db_issue, enable, 'enable', translator)
         transaction.commit()
         self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(DBDiscussionSession.query(Issue).get(uid).is_disabled is True)
+        self.assertTrue(DBDiscussionSession.query(Issue).first().is_disabled is True)

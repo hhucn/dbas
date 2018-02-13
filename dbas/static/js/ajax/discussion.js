@@ -489,10 +489,12 @@ function AjaxDiscussionHandler() {
 		$.ajax({
 			url: 'ajax_set_discussion_properties',
 			method: 'POST',
-			data:{
-				'checked': checked ? 'True': 'False',
-				'uid': toggle_element.data('uid'),
-				'key': toggle_element.data('keyword')},
+			contentType: 'application/json',
+			data: JSON.stringify({
+				'checked': checked,
+				'issue': toggle_element.data('uid'),
+				'key': toggle_element.data('keyword')
+			}),
 			dataType: 'json',
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
