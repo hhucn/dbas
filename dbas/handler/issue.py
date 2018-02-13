@@ -281,7 +281,7 @@ def set_discussions_properties(db_user: User, db_issue: Issue, value, property, 
 
     :param db_user: User
     :param db_issue: Issue
-    :param value: 
+    :param value: The value which should be assigned to property
     :param property: Property of Issue, e.g. is_disabled
     :param translator:
     :return:
