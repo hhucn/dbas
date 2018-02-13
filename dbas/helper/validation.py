@@ -4,7 +4,7 @@ from cornice.util import json_error
 
 import dbas.handler.issue as issue_handler
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Issue, Statement, Language, Argument, ReviewDeleteReason
+from dbas.database.discussion_model import User, Issue, Statement, Language, Argument, ReviewDeleteReason, PremiseGroup
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer
@@ -321,6 +321,39 @@ def valid_review_reason(request):
     else:
         _tn = Translator(get_language_from_cookie(request))
         __add_error(request, 'valid_review_reason', 'Invalid reason', _tn.get(_.internalError))
+
+
+def valid_text_values(request):
+    min_length = request.registry.settings.get('settings:discussion:statement_min_length', 10)
+    tvalues = request.json_body.get('text_values')
+    if not tvalues:
+        __set_min_length_error(request, min_length)
+
+    error = False
+    for text in tvalues:
+        if len(text) < min_length:
+            __set_min_length_error(request, min_length)
+            error = True
+    
+    if not error:
+        request.validated['text_values'] = tvalues
+
+
+def valid_premisegroup(request):
+    """
+    Validates the uid of a premisegroup
+
+    :param request:
+    :return:
+    """
+    pgroup_uid = request.json_body.get('uid')
+    db_pgroup = DBDiscussionSession.query(PremiseGroup).get(pgroup_uid) if is_integer(pgroup_uid) else None
+
+    if db_pgroup:
+        request.validated['pgroup'] = db_pgroup
+    else:
+        _tn = Translator(get_language_from_cookie(request))
+        __add_error(request, 'valid_premisegroup', 'PGroup uid is missing', _tn.get(_.internalError))
 
 
 def valid_premisegroups(request):
