@@ -9,12 +9,12 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 
 # from wsgiref.simple_server import make_server
 
+import logging
 import os
 import re
 import time
-
-import logging
 from configparser import ConfigParser, NoSectionError
+
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -42,10 +42,6 @@ def main(global_config, **settings):
 
     # log settings
     log = logging.getLogger(__name__)
-    development = False
-    for k, v in settings.items():
-        development = development or 'testing' in str(v)
-        log.debug('__INIT__() main() <{} : {}>'.format(str(k), str(v)))
 
     # authentication and authorization
     authn_policy = AuthTktAuthenticationPolicy(settings["authn.secret"], callback=groupfinder, hashalg='sha512')
@@ -69,7 +65,6 @@ def main(global_config, **settings):
             parser.read(global_config['__file__'])
             custom_settings = dict()
             for k, v in parser.items('settings:{}'.format(s)):
-                log.debug('__init__() '.upper() + 'main() <settings:' + str(s) + ':' + str(k) + ' : ' + str(v) + '>')
                 custom_settings['settings:{}:{}'.format(s, k)] = v
             settings.update(custom_settings)
         except NoSectionError as e:
@@ -80,8 +75,7 @@ def main(global_config, **settings):
                           authentication_policy=authn_policy,
                           authorization_policy=authz_policy,
                           root_factory='dbas.security.RootFactory',
-                          session_factory=session_factory
-                          )
+                          session_factory=session_factory)
     config.add_translation_dirs('dbas:locale',
                                 'admin:locale')  # add this before the locale negotiator
     config.set_default_csrf_options(require_csrf=True)

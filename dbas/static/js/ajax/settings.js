@@ -74,9 +74,9 @@ function AjaxSettingsHandler(){
 		$.ajax({
 			url: 'ajax_set_user_language',
 			method: 'POST',
-			data:{'ui_locales': ui_locales},
+            contentType: 'application/json',
+            data: JSON.stringify({'ui_locales': ui_locales}),
 			dataType: 'json',
-			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function setUserSettingDone(data) {
 			if (data.error.length === 0){
