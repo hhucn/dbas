@@ -87,7 +87,8 @@ def prepare_json_of_issue(uid, application_url, lang, for_api, nickname):
     date_ms = int(db_issue.date.format('X') if db_issue else arrow.utcnow().format('X')) * 1000
     date = db_issue.date.format('DD.MM. HH:mm') if db_issue else 'none'
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
+    db_user = DBDiscussionSession.query(User).filter_by(
+        nickname=nickname if nickname else nick_of_anonymous_user).first()
     db_issues = get_visible_issues_for_user_as_query(db_user.uid).all()
     all_array = []
     for issue in db_issues:
@@ -264,7 +265,8 @@ def get_issues_overiew(nickname, application_url) -> dict:
     if is_admin:
         db_issues_other_users = DBDiscussionSession.query(Issue).filter(Issue.author_uid != db_user.uid).all()
     else:
-        db_issues_other_users = get_visible_issues_for_user_as_query(db_user.uid).filter(Issue.author_uid != db_user.uid).all()
+        db_issues_other_users = get_visible_issues_for_user_as_query(db_user.uid).filter(
+            Issue.author_uid != db_user.uid).all()
 
     db_issues_of_user = DBDiscussionSession.query(Issue).filter_by(author_uid=db_user.uid).all()
 
@@ -274,34 +276,28 @@ def get_issues_overiew(nickname, application_url) -> dict:
     }
 
 
-def set_discussions_properties(nickname, uid, checked, key, translator) -> dict:
+def set_discussions_properties(db_user: User, db_issue: Issue, value, property, translator) -> dict:
     """
 
-    :param nickname:
-    :param uid:
-    :param checked:
-    :param key:
+    :param db_user: User
+    :param db_issue: Issue
+    :param value: The value which should be assigned to property
+    :param property: Property of Issue, e.g. is_disabled
     :param translator:
     :return:
     """
-    logger('IssueHelper', 'set_discussions_properties', 'uid: {}, key: {}, checked: {}'.format(uid, key, checked))
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
-    if not db_user:
-        return {'error': translator.get(_.userNotFound)}
+    logger('IssueHelper', 'set_discussions_properties',
+           'issue: {}, key: {}, checked: {}'.format(db_issue.slug, property, value))
 
-    db_issue = DBDiscussionSession.query(Issue).get(uid)
-    if not db_issue:
-        return {'error': translator.get(_.internalKeyError)}
-
-    if db_issue.author_uid != db_user.uid and not user.is_admin(nickname):
+    if db_issue.author_uid != db_user.uid and not user.is_admin(db_user.nickname):
         return {'error': translator.get(_.noRights)}
 
-    if key == 'enable':
-        db_issue.set_disable(not checked)
-    elif key == 'public':
-        db_issue.set_private(not checked)
-    elif key == 'writable':
-        db_issue.set_read_only(not checked)
+    if property == 'enable':
+        db_issue.set_disable(not value)
+    elif property == 'public':
+        db_issue.set_private(not value)
+    elif property == 'writable':
+        db_issue.set_read_only(not value)
     else:
         return {'error': translator.get(_.internalKeyError)}
 

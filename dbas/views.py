@@ -1357,30 +1357,12 @@ def set_user_lang(request):
     return prepared_dict
 
 
-# ajax - sending notification
-@view_config(route_name='ajax_send_notification', renderer='json')
-@validate(valid_user, valid_notification_title, valid_notification_text, valid_notification_recipient)
-def send_some_notification(request):
-    """
-    Set a new message into the inbox of an recipient, and the outbox of the sender.
-
-    :param request: current request of the server
-    :return: dict()
-    """
-    logger('views', 'send_some_notification', 'request.params: {}'.format(request.json_body))
-    ui_locales = get_language_from_cookie(request)
-    author = request.validated['user']
-    recipient = request.validated['recipient']
-    title = request.validated['title']
-    text = request.validated['text']
-    return send_users_notification(author, recipient, title, text, get_port(request), ui_locales)
-
-
 # ajax - set boolean for receiving information
 @view_config(route_name='ajax_set_discussion_properties', renderer='json')
+@validate(valid_user, valid_issue, has_keywords(('property', bool), ('value', str)))
 def set_discussion_properties(request):
     """
-    Sets the discussions availability
+    Set availability, read-only, ... flags in the admin panel.
 
     :param request: current request of the server
     :return: json-dict()
@@ -1388,17 +1370,11 @@ def set_discussion_properties(request):
     logger('views', 'set_discussion_properties', 'request.params: {}'.format(request.params))
     _tn = Translator(get_language_from_cookie(request))
 
-    try:
-        checked = request.params['checked'] == 'True'
-        uid = request.params['uid']
-        key = request.params['key']
-        prepared_dict = set_discussions_properties(request.authenticated_userid, uid, checked, key, _tn)
-    except KeyError as e:
-        logger('views', 'set_discussion_properties', repr(e), error=True)
-        prepared_dict = {
-            'error': _tn.get(_.internalKeyError)
-        }
-    return prepared_dict
+    property = request.validated['property']
+    user = request.validated['user']
+    issue = request.validated['issue']
+    value = request.validated['value']
+    return set_discussions_properties(user, issue, property, value, _tn)
 
 
 # #######################################
@@ -1472,7 +1448,8 @@ def set_new_start_premise(request):
 
 # ajax - send new premises
 @view_config(route_name='ajax_set_new_premises_for_argument', renderer='json')
-@validate(valid_user, valid_issue_not_readonly, valid_premisegroups, has_keywords(('arg_uid', int), ('attack_type', str)))
+@validate(valid_user, valid_issue_not_readonly, valid_premisegroups,
+          has_keywords(('arg_uid', int), ('attack_type', str)))
 def set_new_premises_for_argument(request):
     """
     Sets a new premise for an argument
@@ -1518,7 +1495,6 @@ def set_correction_of_some_statements(request):
     return prepared_dict
 
 
-# ajax - set notifications as read
 @view_config(route_name='ajax_notifications_read', renderer='json')
 @validate(valid_user, has_keywords(('ids', list)))
 def set_notifications_read(request):
@@ -1533,7 +1509,6 @@ def set_notifications_read(request):
     return prepared_dict
 
 
-# ajax - deletes notifications
 @view_config(route_name='ajax_notifications_delete', renderer='json')
 @validate(valid_user, has_keywords(('ids', list)))
 def set_notifications_delete(request):
@@ -1548,6 +1523,24 @@ def set_notifications_delete(request):
     prepared_dict = delete_notifications(request.validated['ids'], request.validated['user'], ui_locales,
                                          request.application_url)
     return prepared_dict
+
+
+@view_config(route_name='ajax_send_notification', renderer='json')
+@validate(valid_user, valid_notification_title, valid_notification_text, valid_notification_recipient)
+def send_some_notification(request):
+    """
+    Set a new message into the inbox of an recipient, and the outbox of the sender.
+
+    :param request: current request of the server
+    :return: dict()
+    """
+    logger('views', 'send_some_notification', 'request.params: {}'.format(request.json_body))
+    ui_locales = get_language_from_cookie(request)
+    author = request.validated['user']
+    recipient = request.validated['recipient']
+    title = request.validated['title']
+    text = request.validated['text']
+    return send_users_notification(author, recipient, title, text, get_port(request), ui_locales)
 
 
 # ajax - set new issue
@@ -1588,7 +1581,8 @@ def set_statements_as_seen(request):
 
 # ajax - set users opinion
 @view_config(route_name='ajax_mark_statement_or_argument', renderer='json')
-@validate(valid_user, has_keywords(('uid', int), ('step', str), ('is_argument', bool), ('is_supportive', bool), ('should_mark', bool)))
+@validate(valid_user, has_keywords(('uid', int), ('step', str), ('is_argument', bool), ('is_supportive', bool),
+                                   ('should_mark', bool)))
 def mark_or_unmark_statement_or_argument(request):
     """
     Set statements as seen, when they were hidden
@@ -1678,7 +1672,9 @@ def get_infos_about_argument(request):
 
 # ajax - for getting all users with the same opinion
 @view_config(route_name='ajax_get_user_with_same_opinion', renderer='json')
-@validate(valid_language, invalid_user, has_keywords(('uid', int), ('is_argument', bool), ('is_attitude', bool), ('is_reaction', bool), ('is_position', bool)))
+@validate(valid_language, invalid_user,
+          has_keywords(('uid', int), ('is_argument', bool), ('is_attitude', bool), ('is_reaction', bool),
+                       ('is_position', bool)))
 def get_users_with_opinion(request):
     """
     ajax interface for getting a dump
@@ -1791,7 +1787,8 @@ def send_news(request):
     title = escape_string(request.validated['title'])
     text = escape_string(request.validated['text'])
     db_user = request.validated['user']
-    return news_handler.set_news(title, text, db_user, request.registry.settings['pyramid.default_locale_name'], request.application_url)
+    return news_handler.set_news(title, text, db_user, request.registry.settings['pyramid.default_locale_name'],
+                                 request.application_url)
 
 
 # ajax - for fuzzy search
