@@ -8,14 +8,12 @@ import random
 
 import transaction
 from cryptacular.bcrypt import BCRYPTPasswordManager
-from pyramid_mailer import get_mailer
+from pyramid_mailer import Mailer
 from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Settings, Language
 from dbas.handler.email import send_mail
-from dbas.handler.language import get_language_from_cookie
-from dbas.lib import escape_string
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -61,29 +59,21 @@ def get_hashed_password(password):
     return manager.encode(password)
 
 
-def request_password(request):
+def request_password(email: str, mailer: Mailer, _tn: Translator):
     """
-    Request for a new password
+    Create new hashed password and send mail..
 
-    :param request: current webserver request
-    :param ui_locales: Language.ui_locales
-    :return: Success-, Error-, Info-String
+    :param email: Mail-address which should be queried
+    :param mailer: pyramid Mailer
+    :param _tn: Translator
+    :return: dict with info about mailing
     """
     success = ''
     error = ''
     info = ''
-    if 'lang' in request.params:
-        ui_locales = request.params['lang']
-    else:
-        ui_locales = get_language_from_cookie(request)
 
-    _t = Translator(ui_locales)
-    email = escape_string(request.params['email'])
     db_user = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
-
-    # does the user exists?
     if db_user:
-        # get password and hashed password
         pwd = get_rnd_passwd()
         hashedpwd = get_hashed_password(pwd)
 
@@ -95,11 +85,11 @@ def request_password(request):
         db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
         db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
 
-        body = _t.get(_.nicknameIs) + db_user.nickname + '\n'
-        body += _t.get(_.newPwdIs) + pwd + '\n\n'
-        body += _t.get(_.newPwdInfo)
-        subject = _t.get(_.dbasPwdRequest)
-        reg_success, message = send_mail(get_mailer(request), subject, body, email, db_language.ui_locales)
+        body = _tn.get(_.nicknameIs) + db_user.nickname + '\n'
+        body += _tn.get(_.newPwdIs) + pwd + '\n\n'
+        body += _tn.get(_.newPwdInfo)
+        subject = _tn.get(_.dbasPwdRequest)
+        reg_success, message = send_mail(mailer, subject, body, email, db_language.ui_locales)
 
         if reg_success:
             success = message
@@ -107,6 +97,5 @@ def request_password(request):
             error = message
     else:
         logger('user_password_request', 'form.passwordrequest.submitted', 'Mail unknown')
-        info = _t.get(_.emailUnknown)
-
-    return success, error, info
+        info = _tn.get(_.emailUnknown)
+    return {'success': success, 'error': error, 'info': info}

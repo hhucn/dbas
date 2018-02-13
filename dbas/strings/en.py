@@ -534,7 +534,7 @@ en_lang = {
     _.previous: 'Previous Entry',
     _.publicNickTitle: 'Enables/Disables the real nickname on your public page.',
     _.passwordSubmit: 'Change Password',
-    _.preferedLangTitle: 'Preferred language for all notifications/mails',
+    _.preferredLangTitle: 'Preferred language for all notifications/mails',
     _.priv_access_opti_queue: 'Access to the optimization queue',
     _.priv_access_del_queue: 'Access to the delete queue',
     _.priv_access_edit_queue: 'Access to the edit queue',

@@ -527,7 +527,7 @@ class Keywords(Enum):
     previous = 'previous'
     publicNickTitle = 'publicNickTitle'
     passwordSubmit = 'passwordSubmit'
-    preferedLangTitle = 'preferedLangTitle'
+    preferredLangTitle = 'preferredLangTitle'
     priv_access_opti_queue = 'priv_access_opti_queue'
     priv_access_del_queue = 'priv_access_del_queue'
     priv_access_edit_queue = 'priv_access_edit_queue'

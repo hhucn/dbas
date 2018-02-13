@@ -3,10 +3,12 @@ import unittest
 import transaction
 from pyramid import testing
 from pyramid.httpexceptions import HTTPFound
+from pyramid_mailer.mailer import DummyMailer
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.handler.password import get_hashed_password
+from dbas.views import user_password_request
 
 
 class AjaxTest(unittest.TestCase):
@@ -15,7 +17,6 @@ class AjaxTest(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
         self.config.include('pyramid_mailer.testing')
-        # self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
     def tearDown(self):
         testing.tearDown()
@@ -27,7 +28,7 @@ class AjaxTest(unittest.TestCase):
             'password': 'tobias',
             'keep_login': 'false',
             'url': ''
-        }, matchdict={})
+        })
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
@@ -39,7 +40,7 @@ class AjaxTest(unittest.TestCase):
             'password': 'tobiass',
             'keep_login': 'false',
             'url': ''
-        }, matchdict={})
+        })
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
@@ -54,59 +55,34 @@ class AjaxTest(unittest.TestCase):
             'password': 'tobias',
             'keep_login': 'false',
             'url': ''
-        }, matchdict={})
+        })
         response = ajax(request)
         self.assertTrue(type(response) is HTTPFound)
 
     def test_user_logout(self):
         from dbas.views import user_logout as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest(params={})
         response = ajax(request)
         self.assertTrue(type(response) is HTTPFound)
 
-    # cannot be testted, because we have no request.session['antispamanswer']
-    # def test_user_registration(self):
-    #     from dbas.views import user_registration as ajax
-    #     request = testing.DummyRequest(params={
-    #         'firstname': 'ThisIsAWebTestAndSoItIsNotSpam',
-    #         'lastname': 'Allo',
-    #         'nickname': 'SomeoneNew',
-    #         'email': 'tobias.krauthoff@web.de',
-    #         'gender': 'm',
-    #         'password': 'somepassword',
-    #         'passwordconfirm': 'somepassword',
-    #         'spamanswer': ''
-    #     }, matchdict={})
-    #     response = ajax(request)
-    #     self.assertIsNotNone(response)
-    #     self.assertTrue(len(response['success']) != 0)
-    #     self.assertTrue(len(response['error']) == 0)
-    #     self.assertTrue(len(response['info']) == 0)
-    #     self.assertTrue(len(response['spamquestion']) != 0)
-
-    def test_user_password_request_failure1(self):
-        from dbas.views import user_password_request as ajax
-        request = testing.DummyRequest(params={'email': 'krauthof@cs.uni-duesseldorf.de'}, matchdict={})
-        response = ajax(request)
+    def test_user_password_request_failure_wrong_email(self):
+        request = testing.DummyRequest(json_body={'email': 'penguinswillrule@theworld.com'}, mailer=DummyMailer)
+        response = user_password_request(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['success']) == 0)
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(len(response['info']) != 0)
 
-    def test_user_password_request_failure2(self):
-        from dbas.views import user_password_request as ajax
-        request = testing.DummyRequest(params={'emai': 'krauthoff@cs.uni-duesseldorf.de'}, matchdict={})
-        response = ajax(request)
+    def test_user_password_request_failure_wrong_key(self):
+        request = testing.DummyRequest(json_body={'emai': 'krauthoff@cs.uni-duesseldorf.de'}, mailer=DummyMailer)
+        response = user_password_request(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['success']) == 0)
-        self.assertTrue(len(response['error']) != 0)
-        self.assertTrue(len(response['info']) == 0)
+        self.assertTrue(400 == response.status_code)
 
     def test_user_password_request(self):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-        from dbas.views import user_password_request as ajax
-        request = testing.DummyRequest(params={'email': 'krauthoff@cs.uni-duesseldorf.de'}, matchdict={})
-        response = ajax(request)
+        request = testing.DummyRequest(json_body={'email': 'krauthoff@cs.uni-duesseldorf.de'}, mailer=DummyMailer)
+        response = user_password_request(request)
         self.assertIsNotNone(response)
         self.assertTrue(db_user.password != get_hashed_password('tobias'))
         db_user.password = get_hashed_password('tobias')
@@ -191,7 +167,7 @@ class AjaxTest(unittest.TestCase):
 
     def test_additional_service(self):
         from dbas.views import additional_service as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest(params={})
         response = ajax(request)
         self.assertIsNotNone(response)
 
@@ -229,12 +205,12 @@ class AjaxTest(unittest.TestCase):
 
     def test_set_user_setting_mail(self):
         from dbas.views import set_user_settings as ajax
-        request = testing.DummyRequest(params={'ui_locales': 'en'})
+        request = testing.DummyRequest(json_body={'ui_locales': 'en'})
         response = ajax(request)
-        self.assertTrue(len(response['error']) > 0)
+        self.assertTrue(400 == response.status_code)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(params={'service': 'mail', 'settings_value': False})
+        request = testing.DummyRequest(json_body={'service': 'mail', 'settings_value': False})
         response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('public_nick', response)
@@ -247,12 +223,12 @@ class AjaxTest(unittest.TestCase):
 
     def test_set_user_setting_notification(self):
         from dbas.views import set_user_settings as ajax
-        request = testing.DummyRequest(params={'ui_locales': 'en'})
+        request = testing.DummyRequest(json_body={'ui_locales': 'en'})
         response = ajax(request)
-        self.assertTrue(len(response['error']) > 0)
+        self.assertTrue(400 == response.status_code)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(params={'service': 'notification', 'settings_value': True})
+        request = testing.DummyRequest(json_body={'service': 'notification', 'settings_value': True})
         response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('public_nick', response)
@@ -265,12 +241,12 @@ class AjaxTest(unittest.TestCase):
 
     def test_set_user_setting_nick(self):
         from dbas.views import set_user_settings as ajax
-        request = testing.DummyRequest(params={'ui_locales': 'en'})
+        request = testing.DummyRequest(json_body={'ui_locales': 'en'})
         response = ajax(request)
-        self.assertTrue(len(response['error']) > 0)
+        self.assertTrue(400 == response.status_code)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(params={'service': 'public_nick', 'settings_value': False})
+        request = testing.DummyRequest(json_body={'service': 'public_nick', 'settings_value': False})
         response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('public_nick', response)
@@ -283,12 +259,12 @@ class AjaxTest(unittest.TestCase):
 
     def test_set_user_setting_no_service(self):
         from dbas.views import set_user_settings as ajax
-        request = testing.DummyRequest(params={'ui_locales': 'en'})
+        request = testing.DummyRequest(json_body={'ui_locales': 'en'})
         response = ajax(request)
-        self.assertTrue(len(response['error']) > 0)
+        self.assertTrue(400 == response.status_code)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(params={'service': 'oha', 'settings_value': False})
+        request = testing.DummyRequest(json_body={'service': 'oha', 'settings_value': False})
         response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('public_nick', response)
@@ -309,6 +285,8 @@ class AjaxTest(unittest.TestCase):
         for b1 in [True, False]:
             for b2 in [True, False]:
                 for b3 in [True, False]:
-                    request = testing.DummyRequest(json_body={'uid': 4, 'is_argument': b1, 'should_mark': b2, 'step': 'reaction/4/undercut/6', 'is_supportive': b3})
+                    request = testing.DummyRequest(
+                        json_body={'uid': 4, 'is_argument': b1, 'should_mark': b2, 'step': 'reaction/4/undercut/6',
+                                   'is_supportive': b3})
                     response = ajax(request)
                     self.assertTrue(len(response['text']) > 0)

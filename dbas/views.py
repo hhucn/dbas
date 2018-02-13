@@ -21,12 +21,12 @@ import dbas.handler.history as history_handler
 import dbas.handler.issue as issue_handler
 import dbas.handler.news as news_handler
 import dbas.review.helper.core as review
+import dbas.review.helper.flags as review_flag_helper
 import dbas.review.helper.history as review_history_helper
 import dbas.review.helper.queues as review_queue_helper
 import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
-import dbas.review.helper.flags as review_flag_helper
 from api.v2.graphql.core import Query
 from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers
 from dbas.database import DBDiscussionSession
@@ -1286,6 +1286,7 @@ def user_registration(request):
 
 # ajax - password requests
 @view_config(route_name='ajax_user_password_request', renderer='json')
+@validate(has_keywords(('email', str)))
 def user_password_request(request):
     """
     Sends an email, when the user requests his password
@@ -1293,45 +1294,26 @@ def user_password_request(request):
     :param request: current request of the server
     :return: dict() with success and message
     """
-    logger('Views', 'user_password_request', 'main: {}'.format(request.params))
-
-    success = ''
-    info = ''
-    ui_locales = request.params['lang'] if 'lang' in request.params else get_language_from_cookie(request)
-    _t = Translator(ui_locales)
-
-    try:
-        success, error, info = request_password(request)
-
-    except KeyError as e:
-        logger('iew', 'user_password_request', repr(e), error=True)
-        error = _t.get(_.internalKeyError)
-
-    return_dict = {
-        'success': str(success),
-        'error': str(error),
-        'info': str(info)
-    }
-
-    return return_dict
+    logger('Views', 'user_password_request', 'request.params: {}'.format(request.params))
+    _tn = Translator(get_language_from_cookie(request))
+    return request_password(request.validated['email'], request.mailer, _tn)
 
 
-# ajax - set boolean for receiving information
 @view_config(route_name='ajax_set_user_setting', renderer='json')
+@validate(valid_user, has_keywords(('settings_value', bool), ('service', str)))
 def set_user_settings(request):
     """
-    Sets a specific setting of the user
+    Sets a specific setting of the user.
 
     :param request: current request of the server
     :return: json-dict()
     """
     logger('Views', 'set_user_settings', 'main: {}'.format(request.params))
     _tn = Translator(get_language_from_cookie(request))
-
-    settings_value = request.params.get('settings_value') == 'True'
-    service = request.params.get('service')
-    return_dict = set_settings(request.application_url, request.authenticated_userid, service, settings_value, _tn)
-    return return_dict
+    user = request.validated['user']
+    settings_value = request.validated['settings_value']
+    service = request.validated['service']
+    return set_settings(request.application_url, user, service, settings_value, _tn)
 
 
 @view_config(route_name='ajax_set_user_language', renderer='json')
