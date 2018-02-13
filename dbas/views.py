@@ -1661,7 +1661,7 @@ def get_news(request):
 
 # ajax - for getting argument infos
 @view_config(route_name='ajax_get_infos_about_argument', renderer='json')
-@validate(valid_issue, valid_language, valid_argument, invalid_user, has_keywords(('uid', int)))
+@validate(valid_issue, valid_language, valid_argument, invalid_user)
 def get_infos_about_argument(request):
     """
     ajax interface for getting a dump

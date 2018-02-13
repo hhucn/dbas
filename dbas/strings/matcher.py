@@ -9,7 +9,6 @@ from collections import OrderedDict
 from itertools import islice
 
 from Levenshtein import distance
-from paste.httpexceptions import HTTPClientError
 from pyramid.response import Response
 from sqlalchemy import and_, func
 

@@ -99,9 +99,8 @@ class AjaxGetInfosTest(unittest.TestCase):
     def test_get_infos_about_argument(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_infos_about_argument as ajax
-        request = testing.DummyRequest(json_body={'uid': 1, 'lang': 'en'})
+        request = testing.DummyRequest(json_body={'uid': 7, 'lang': 'en'})
         response = ajax(request)
-        self.assertIsNotNone(response)
         self.assertIn('supporter', response)
         self.assertIn('gravatars', response)
         self.assertIn('public_page', response)

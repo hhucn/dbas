@@ -71,5 +71,5 @@ def set_language_for_visit(request):
 
     logger('ViewHelper', 'set_language_for_first_visit', 'User is first time here')
     ui_locales = get_language_from_header(request)
-    lang = DBDiscussionSession.query(Language).filter(ui_locales=ui_locales).first()
+    lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
     set_language(request, lang)
