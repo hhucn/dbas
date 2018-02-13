@@ -117,12 +117,16 @@ class IssueHandlerTests(unittest.TestCase):
 
         db_tobias = DBDiscussionSession.query(User).filter_by(nickname='Tobias').one_or_none()
         response = ih.set_discussions_properties(db_tobias, db_issue, enable, 'enable', translator)
+        DBDiscussionSession.flush()
         transaction.commit()
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(DBDiscussionSession.query(Issue).first().is_disabled is False)
 
         enable = False
         response = ih.set_discussions_properties(db_tobias, db_issue, enable, 'enable', translator)
+        DBDiscussionSession.flush()
         transaction.commit()
         self.assertTrue(len(response['error']) == 0)
+        from pprint import pprint
+        pprint(DBDiscussionSession.query(Issue).first())
         self.assertTrue(DBDiscussionSession.query(Issue).first().is_disabled is True)
