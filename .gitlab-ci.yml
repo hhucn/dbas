@@ -59,14 +59,14 @@ frontend:
   <<: *add-services
   stage: test
   script:
-    - nosetests --with-timer --timer-ok 10 --process-timeout=120 tests/test_frontend
+    - nosetests --process-timeout=120 tests/test_frontend
 
 unit:
   <<: *add-services
   stage: test
   script:
-    # - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=admin --cover-xml --with-timer -w . dbas graph admin api
-    - nosetests --with-coverage --cover-package=dbas --cover-package=graph --cover-package=admin --cover-xml --with-timer -w . dbas graph admin
+    # - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=admin --cover-xml -w . dbas graph admin api
+    - nosetests --with-coverage --cover-package=dbas --cover-package=graph --cover-package=admin --cover-xml -w . dbas graph admin
   coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
   artifacts:
     paths:
