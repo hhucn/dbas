@@ -39,25 +39,26 @@ function AjaxReferenceHandler(){
 
 	/**
 	 *
-	 * @param uid
+	 * @param uids
 	 * @param is_argument
 	 */
-	this.getReferences = function(uid, is_argument){
+	this.getReferences = function(uids, is_argument){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: 'ajax_get_references',
 			method: 'POST',
-			data:{
-				'uid': JSON.stringify(uid),
-				'is_argument': is_argument
-			},
 			dataType: 'json',
+			contentType: 'application/json',
+			data: JSON.stringify({
+				'uids': uids,
+				'is_argument': is_argument
+			}),
 			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function (data) {
-			new InteractionHandler().callbackIfDoneForGettingReferences(data);
-		}).fail(function () {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+			new PopupHandler().showReferencesPopup(data);
+		}).fail(function (data) {
+			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
 		});
 	};
 }

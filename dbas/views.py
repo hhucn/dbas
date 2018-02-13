@@ -1726,6 +1726,7 @@ def get_arguments_by_statement_id(request):
 
 
 @view_config(route_name='ajax_get_references', renderer='json')
+@validate(has_keywords(('uids', list), ('is_argument', bool)))
 def get_reference(request):
     """
     Returns all references for an argument or statement
@@ -1734,26 +1735,10 @@ def get_reference(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'get_reference', 'main: {}'.format(request.params))
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    try:
-        # uid is an integer if it is an argument and a list otherwise
-        uids = json.loads(request.params['uid'])
-        is_argument = str(request.params['is_argument']) == 'true'
-        are_all_integer = all(is_integer(tmp) for tmp in uids) if isinstance(uids, list) else is_integer(uids)
-
-        if not are_all_integer:
-            logger('views', 'get_reference', 'uid is not an integer', error=True)
-            return {'data': '', 'text': '', 'error': _tn.get(_.internalKeyError)}
-
-    except KeyError as e:
-        logger('views', 'get_reference', repr(e), error=True)
-        return {'data': '', 'text': '', 'error': _tn.get(_.internalKeyError)}
-
-    prepared_dict = get_references(uids, is_argument, request.application_url)
-    return prepared_dict
+    logger('views', 'get_reference', 'main: {}'.format(request.json_body))
+    uids = request.validated['uids']
+    is_argument = request.validated['is_argument']
+    return get_references(uids, is_argument, request.application_url)
 
 
 @view_config(route_name='ajax_set_references', renderer='json')

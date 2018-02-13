@@ -149,10 +149,7 @@ def get_references(uids, is_argument, application_url) -> dict:
     else:
         data, text = get_references_for_statements(uids, application_url)
 
-    prepared_dict = {
-        'error': '',
+    return {
         'data': data,
         'text': text
     }
-
-    return prepared_dict
