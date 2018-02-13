@@ -1751,12 +1751,11 @@ def set_references(request):
     :return: json-dict()
     """
     logger('views', 'set_references', 'main: {}'.format(request.json_body))
-    issue_uid = issue_handler.get_issue_id(request)
-    db_statement = request.params['uid']
+    db_statement = request.validated['statement']
     reference = escape_string(request.validated['reference'])
     source = escape_string(request.validated['ref_source'])
     db_user = request.validated['user']
-    return set_reference(reference, source, db_user, db_statement, issue_uid)
+    return set_reference(reference, source, db_user, db_statement, db_statement.issue_uid)
 
 
 # ########################################

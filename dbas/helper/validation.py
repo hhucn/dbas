@@ -340,7 +340,7 @@ def has_keywords(*keywords):
             if value is not None and isinstance(value, ktype):
                 request.validated[keyword] = value
             elif value is None:
-                __add_error(request, 'has_keywords', 'Parameter missing', '{} is missing'.format(keyword))
+                __add_error(request, 'has_keywords', 'Parameter {} missing'.format(keyword), '{} is missing'.format(keyword))
                 error_occured = True
             else:
                 __add_error(request, 'has_keywords', 'Parameter {} has wrong type'.format(keyword),
