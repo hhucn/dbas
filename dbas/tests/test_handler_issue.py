@@ -101,7 +101,8 @@ class IssueHandlerTests(unittest.TestCase):
 
     def test_set_discussions_properties(self):
         db_walter = DBDiscussionSession.query(User).filter_by(nickname='Walter').one_or_none()
-        db_issue = DBDiscussionSession.query(Issue).first()
+        issue_slug = "cat-or-dog"
+        db_issue = DBDiscussionSession.query(Issue).filter_by(slug=issue_slug).one()
         translator = Translator('en')
 
         enable = True
@@ -117,16 +118,12 @@ class IssueHandlerTests(unittest.TestCase):
 
         db_tobias = DBDiscussionSession.query(User).filter_by(nickname='Tobias').one_or_none()
         response = ih.set_discussions_properties(db_tobias, db_issue, enable, 'enable', translator)
-        DBDiscussionSession.flush()
         transaction.commit()
         self.assertTrue(len(response['error']) == 0)
-        self.assertTrue(DBDiscussionSession.query(Issue).first().is_disabled is False)
+        self.assertTrue(DBDiscussionSession.query(Issue).filter_by(slug=issue_slug).one().is_disabled is False)
 
         enable = False
         response = ih.set_discussions_properties(db_tobias, db_issue, enable, 'enable', translator)
-        DBDiscussionSession.flush()
         transaction.commit()
         self.assertTrue(len(response['error']) == 0)
-        from pprint import pprint
-        pprint(DBDiscussionSession.query(Issue).first())
-        self.assertTrue(DBDiscussionSession.query(Issue).first().is_disabled is True)
+        self.assertTrue(DBDiscussionSession.query(Issue).filter_by(slug=issue_slug).one().is_disabled is True)
