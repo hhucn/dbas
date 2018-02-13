@@ -50,20 +50,6 @@ function News() {
 
 	/**
 	 *
-	 * @param data
-	 */
-	this.callbackIfDoneForSendingNews = function (data) {
-		if (data.error.length === 0) {
-			location.reload(true);
-		} else {
-			$('#' + writingNewsFailedId).show();
-			$('#' + writingNewsFailedMessageId).html(data.error);
-		}
-
-	};
-
-	/**
-	 *
 	 */
 	this.setMaxHeightOfNewsRows = function () {
 		var counter, row = $('#' + newsBodyId).children().length, heights, maxHeight;

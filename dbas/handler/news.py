@@ -16,48 +16,39 @@ from dbas.lib import escape_string
 from dbas.logger import logger
 
 
-def set_news(request):
+def set_news(title: str, text: str, db_user: User, lang: str, main_page: str) -> dict():
     """
     Sets a new news into the news table
 
-    :param request: current request of the webserver
-    :return: dict(), Boolean
+    :param title: of the news
+    :param text: of the news
+    :param db_user: author of the news
+    :param lang: ui_locales
+    :param main_page: url
+    :return:
     """
     logger('NewsHelper', 'set_news', 'def')
-
-    title = escape_string(request.params['title']) if 'title' in request.params else None
-    text = escape_string(request.params['text']) if 'text' in request.params else None
-    nickname = request.authenticated_userid
-    lang = get_language_from_cookie(request)
-    main_page = request.application_url
-
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-
-    if not db_user or user.is_in_group(nickname, 'author') or not title or not text:
-        return {}, False
 
     author = db_user.firstname
     if db_user.firstname != 'admin':
         author += ' {}'.format(db_user.surname)
 
     date = arrow.now()
-    news = News(title=title, author=author, date=date, news=text)
-
-    DBDiscussionSession.add(news)
+    DBDiscussionSession.add(News(title=title, author=author, date=arrow.now(), news=text))
     DBDiscussionSession.flush()
-
-    db_news = DBDiscussionSession.query(News).filter_by(title=title).first()
-    return_dict = dict()
-    return_dict['status'] = '1' if db_news is not None else '_'
-    return_dict['title'] = title
-    return_dict['date'] = sql_timestamp_pretty_print(date, lang, False)
-    return_dict['author'] = author
-    return_dict['news'] = text
     transaction.commit()
 
-    create_news_rss(main_page, request.registry.settings['pyramid.default_locale_name'])
+    return_dict = {
+        'status': 'success',
+        'title': title,
+        'date': sql_timestamp_pretty_print(date, lang, False),
+        'author': author,
+        'news': text
+    }
 
-    return return_dict, True
+    create_news_rss(main_page, lang)
+
+    return return_dict
 
 
 def get_news(ui_locales):

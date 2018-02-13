@@ -1780,6 +1780,7 @@ def switch_language(request):
 
 # ajax - for sending news
 @view_config(route_name='ajax_send_news', renderer='json')
+@validate(valid_user, has_keywords(('title', str), ('text', str)))
 def send_news(request):
     """
     ajax interface for settings news
@@ -1788,17 +1789,10 @@ def send_news(request):
     :return: json-set with new news
     """
     logger('views', 'send_news', 'request.params: {}'.format(request.params))
-    _tn = Translator(get_language_from_cookie(request))
-
-    try:
-        return_dict, success = news_handler.set_news(request)
-        return_dict['error'] = '' if success else _tn.get(_.noRights)
-    except KeyError as e:
-        return_dict = dict()
-        logger('views', 'send_news', repr(e), error=True)
-        return_dict['error'] = _tn.get(_.internalKeyError)
-
-    return return_dict
+    title = escape_string(request.validated['title'])
+    text = escape_string(request.validated['text'])
+    db_user = request.validated['user']
+    return news_handler.set_news(title, text, db_user, request.registry.settings['pyramid.default_locale_name'], request.application_url)
 
 
 # ajax - for fuzzy search
