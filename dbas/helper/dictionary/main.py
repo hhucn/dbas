@@ -295,7 +295,7 @@ class DictionaryHelper(object):
             'title_mails': _tn.get(_.mailSettingsTitle),
             'title_notifications': _tn.get(_.notificationSettingsTitle),
             'title_public_nick': _tn.get(_.publicNickTitle),
-            'title_preferred_lang': _tn.get(_.preferedLangTitle),
+            'title_preferred_lang': _tn.get(_.preferredLangTitle),
             'public_page_url': (main_page + '/user/' + str(db_user.uid)) if db_user else '',
             'on': _tn.get(_.on),
             'off': _tn.get(_.off),

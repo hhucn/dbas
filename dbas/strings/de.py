@@ -535,7 +535,7 @@ de_lang = {
     _.premisegroupPopupWarning: 'Achtung: Dieser Schritt kann nicht rückgängig gemacht werden!',
     _.publicNickTitle: '(De-)Aktiviert Ihren richtigen Nickname auf Ihrer öffentlichen Seite',
     _.passwordSubmit: 'Passwort ändern',
-    _.preferedLangTitle: 'Bevorzugte Sprache für alle Nachrichten/E-Mails',
+    _.preferredLangTitle: 'Bevorzugte Sprache für alle Nachrichten/E-Mails',
     _.priv_access_opti_queue: 'Zugriff auf die Optimierungs-Queue',
     _.priv_access_del_queue: 'Zugriff auf die Löschantrags-Queue',
     _.priv_access_duplicate_queue: 'Zugriff auf die Duplikats-Queue',
