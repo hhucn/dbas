@@ -441,10 +441,6 @@ def __refresh_headers_and_url(request, db_user, keep_login, url):
     logger('Auth.Login', '__refresh_headers_and_url', 'remembering headers for {}'.format(db_user.nickname))
     headers = remember(request, db_user.nickname)
 
-    print("\n\n\n\n")
-    print(url)
-
-    # update timestamp
     logger('Auth.Login', '__refresh_headers_and_url', 'update login timestamp')
     db_user.update_last_login()
     db_user.update_last_action()

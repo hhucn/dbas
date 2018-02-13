@@ -23,24 +23,24 @@ class AjaxTest(unittest.TestCase):
 
     def test_user_login_wrong_nick(self):
         from dbas.views import user_login as ajax
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'user': 'Tobiass',
             'password': 'tobias',
-            'keep_login': 'false',
+            'keep_login': False,
             'url': ''
-        })
+        }, mailer=DummyMailer)
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
 
     def test_user_login_wrong_password(self):
         from dbas.views import user_login as ajax
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'user': 'Tobias',
             'password': 'tobiass',
-            'keep_login': 'false',
+            'keep_login': False,
             'url': ''
-        })
+        }, mailer=DummyMailer)
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) != 0)
@@ -50,12 +50,12 @@ class AjaxTest(unittest.TestCase):
         db_user.password = get_hashed_password('tobias')
         transaction.commit()
         from dbas.views import user_login as ajax
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'user': 'Tobias',
             'password': 'tobias',
-            'keep_login': 'false',
+            'keep_login': False,
             'url': ''
-        })
+        }, mailer=DummyMailer)
         response = ajax(request)
         self.assertTrue(type(response) is HTTPFound)
 
