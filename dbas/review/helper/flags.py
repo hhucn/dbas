@@ -70,7 +70,7 @@ def flag_element(uid: int, reason: str, db_user: User, is_argument: bool, ui_loc
     }
 
 
-def flag_statement_for_merge_or_split(key, pgroup_uid, text_values, nickname):
+def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_values: list(), db_user: User, tn: Translator) -> dict():
     """
     Flags a statement for a merge or split event
 
@@ -80,39 +80,28 @@ def flag_statement_for_merge_or_split(key, pgroup_uid, text_values, nickname):
     :param nickname: Users nickname
     :return: success, info, error
     """
-    logger('FlagingHelper', 'flag_statement_for_merge_or_split', 'Flag statements in pgroup {} for a {} with values {}'.format(pgroup_uid, key, text_values))
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        logger('FlagingHelper', 'flag_statement_for_merge_or_split', 'No user', error=True)
-        return '', '', _.noRights
-
-    db_pgroup = DBDiscussionSession.query(PremiseGroup).get(pgroup_uid)
-    if not db_pgroup or len(text_values) is 0:
-        logger('FlagingHelper', 'flag_statement_for_merge_or_split', 'No pgroup', error=True)
-        return '', '', _.internalKeyError
-
-    if len(text_values) is 0 or any(len(tv) < 5 for tv in text_values):
-        logger('FlagingHelper', 'flag_statement_for_merge_or_split', 'Values to short', error=True)
-        return '', '', _.minLength
-
+    logger('FlagingHelper', 'flag_statement_for_merge_or_split', 'Flag statements in pgroup {} for a {} with values {}'.format(pgroup.uid, key, text_values))
     # was this already flagged?
-    flag_status = __get_flag_status(None, None, pgroup_uid, db_user.uid)
+    flag_status = __get_flag_status(None, None, pgroup.uid, db_user.uid)
     if flag_status:
         logger('FlagingHelper', 'flag_statement_for_merge_or_split', 'already flagged')
-        # who flagged this pgroup?
-        return '', _.alreadyFlaggedByYou if flag_status == 'user' else _.alreadyFlaggedByOthers, ''
+        return {
+            'success': '',
+            'info': tn.get(_.alreadyFlaggedByYou if flag_status == 'user' else _.alreadyFlaggedByOthers)
+        }
 
     if key is 'merge':
-        __add_merge_review(pgroup_uid, db_user.uid, text_values)
+        __add_merge_review(pgroup.uid, db_user.uid, text_values)
     elif key is 'split':
-        __add_split_review(pgroup_uid, db_user.uid, text_values)
-    else:
-        return '', '', _.internalKeyError
+        __add_split_review(pgroup.uid, db_user.uid, text_values)
 
-    return _.thxForFlagText, '', ''
+    return {
+        'success': tn.get(_.thxForFlagText),
+        'info': ''
+    }
 
 
-def flag_pgroup_for_merge_or_split(key, pgroup_uid, nickname):
+def flag_pgroup_for_merge_or_split(key: str, pgroup: PremiseGroup, db_user: User, tn: Translator) -> dict():
     """
     Flags a premisegroup for a merge or split event
 
@@ -121,32 +110,8 @@ def flag_pgroup_for_merge_or_split(key, pgroup_uid, nickname):
     :param nickname: Users nickname
     :return: success, info, error
     """
-    logger('FlagingHelper', 'flag_pgroup_for_merge_or_split', 'Flag pgroup {} for a {}'.format(pgroup_uid, key))
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        logger('FlagingHelper', 'flag_pgroup_for_merge_or_split', 'No user', error=True)
-        return '', '', _.noRights
-
-    db_pgroup = DBDiscussionSession.query(PremiseGroup).get(pgroup_uid)
-    if not db_pgroup:
-        logger('FlagingHelper', 'flag_pgroup_for_merge_or_split', 'No pgroup', error=True)
-        return '', '', _.internalKeyError
-
-    # was this already flagged?
-    flag_status = __get_flag_status(None, None, pgroup_uid, db_user.uid)
-    if flag_status:
-        logger('FlagingHelper', 'flag_pgroup_for_merge_or_split', 'already flagged')
-        # who flagged this pgroup?
-        return '', _.alreadyFlaggedByYou if flag_status == 'user' else _.alreadyFlaggedByOthers, ''
-
-    if key is 'merge':
-        __add_merge_review(pgroup_uid, db_user.uid, None)
-    elif key is 'split':
-        __add_split_review(pgroup_uid, db_user.uid, None)
-    else:
-        return '', '', _.internalKeyError
-
-    return _.thxForFlagText, '', ''
+    logger('FlagingHelper', 'flag_pgroup_for_merge_or_split', 'Flag pgroup {} for a {}'.format(pgroup.uid, key))
+    return flag_statement_for_merge_or_split(key, pgroup, None, db_user, tn)
 
 
 def __get_flag_status(argument_uid, statement_uid, pgroup_uid, user_uid):

@@ -51,7 +51,7 @@ from dbas.helper.query import get_default_locale_name, set_user_language, \
 from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, has_keywords, \
     valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient, \
     valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument, valid_statement, \
-    valid_review_reason
+    valid_review_reason, valid_premisegroup, valid_text_values
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -184,7 +184,7 @@ def main_page(request):
     :param request: current request of the server
     :return: HTTP 200 with several information
     """
-    logger('main_page', 'def', 'request.params: {}'.format(request.params))
+    logger('main_page', 'def', 'main: {}'.format(request.params))
 
     set_language_for_visit(request)
     unauthenticated = check_authentication(request)
@@ -193,7 +193,7 @@ def main_page(request):
 
     session_expired = 'session_expired' in request.params and request.params['session_expired'] == 'true'
     ui_locales = get_language_from_cookie(request)
-    logger('main_page', 'def', 'request.params: {}'.format(request.params))
+    logger('main_page', 'def', 'main: {}'.format(request.params))
     _dh = DictionaryHelper(ui_locales, ui_locales)
     extras_dict = _dh.prepare_extras_dict_for_normal_page(request.registry, request.application_url, request.path,
                                                           request.authenticated_userid)
@@ -218,7 +218,7 @@ def main_settings(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_settings', 'def', 'request.params: {}'.format(request.params))
+    logger('main_settings', 'def', 'main: {}'.format(request.params))
     unauthenticated = check_authentication(request)
     if unauthenticated:
         return unauthenticated
@@ -332,7 +332,7 @@ def main_user(request):
     match_dict = request.matchdict
     params = request.params
     logger('main_user', 'def', 'request.matchdict: {}'.format(match_dict))
-    logger('main_user', 'def', 'request.params: {}'.format(params))
+    logger('main_user', 'def', 'main: {}'.format(params))
 
     uid = match_dict.get('uid', 0)
     logger('main_user', 'def', 'uid: {}'.format(uid))
@@ -641,7 +641,7 @@ def discussion_init(request, for_api=False, api_data=None):
     :return: dictionary
     """
     logger('Views', 'discussion_init', 'request.matchdict: {}'.format(request.matchdict))
-    logger('Views', 'discussion_init', 'request.params: {}'.format(request.params))
+    logger('Views', 'discussion_init', 'main: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.init, for_api, api_data)
     if not prepared_discussion:
@@ -668,7 +668,7 @@ def discussion_attitude(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/attitude/{statement_id}'
     logger('Views', 'discussion_attitude', 'request.matchdict: {}'.format(request.matchdict))
-    logger('Views', 'discussion_attitude', 'request.params: {}'.format(request.params))
+    logger('Views', 'discussion_attitude', 'main: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.attitude, for_api, api_data)
     if not prepared_discussion:
@@ -690,7 +690,7 @@ def discussion_justify(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation'
     logger('views', 'discussion_justify', 'request.matchdict: {}'.format(request.matchdict))
-    logger('views', 'discussion_justify', 'request.params: {}'.format(request.params))
+    logger('views', 'discussion_justify', 'main: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.justify, for_api, api_data)
     if not prepared_discussion:
@@ -712,7 +712,7 @@ def discussion_reaction(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys'
     logger('views', 'discussion_reaction', 'request.matchdict: {}'.format(request.matchdict))
-    logger('views', 'discussion_reaction', 'request.params: {}'.format(request.params))
+    logger('views', 'discussion_reaction', 'main: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.reaction, for_api, api_data)
     if not prepared_discussion:
@@ -733,7 +733,7 @@ def discussion_support(request, for_api=False, api_data=None):
     :return: dictionary
     """
     logger('views', 'discussion_support', 'request.matchdict: {}'.format(request.matchdict))
-    logger('views', 'discussion_support', 'request.params: {}'.format(request.params))
+    logger('views', 'discussion_support', 'main: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.support, for_api, api_data)
     if not prepared_discussion:
@@ -754,7 +754,7 @@ def discussion_finish(request):
     match_dict = request.matchdict
     params = request.params
     logger('views', 'discussion.finish', 'request.matchdict: {}'.format(match_dict))
-    logger('views', 'discussion.finish', 'request.params: {}'.format(params))
+    logger('views', 'discussion.finish', 'main: {}'.format(params))
 
     unauthenticated = check_authentication(request)
     if unauthenticated:
@@ -790,7 +790,7 @@ def discussion_choose(request, for_api=False, api_data=None):
     match_dict = request.matchdict
     params = request.params
     logger('discussion_choose', 'def', 'request.matchdict: {}'.format(match_dict))
-    logger('discussion_choose', 'def', 'request.params: {}'.format(params))
+    logger('discussion_choose', 'def', 'main: {}'.format(params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.choose, for_api, api_data)
     if not prepared_discussion:
@@ -812,7 +812,7 @@ def discussion_jump(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/jump/{arg_id}'
     logger('views', 'discussion_jump', 'request.matchdict: {}'.format(request.matchdict))
-    logger('views', 'discussion_jump', 'request.params: {}'.format(request.params))
+    logger('views', 'discussion_jump', 'main: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.jump, for_api, api_data)
     if not prepared_discussion:
@@ -1173,7 +1173,7 @@ def user_login(request, nickname=None, password=None, for_api=False, keep_login=
     :param keep_login: Manually provide boolean (e.g. from API)
     :return: dict() with error
     """
-    logger('views', 'user_login', 'request.params: {} (api: {})'.format(request.params, str(for_api)))
+    logger('views', 'user_login', 'main: {} (api: {})'.format(request.params, str(for_api)))
 
     lang = get_language_from_cookie(request)
 
@@ -1193,7 +1193,7 @@ def user_login_oauth(request):
 
     :return: dict() with error
     """
-    logger('views', 'user_login_oauth', 'request.params: {}'.format(request.params))
+    logger('views', 'user_login_oauth', 'main: {}'.format(request.params))
 
     lang = get_language_from_cookie(request)
     _tn = Translator(lang)
@@ -1258,7 +1258,7 @@ def user_registration(request):
     :param request: current request of the server
     :return: dict() with success and message
     """
-    logger('Views', 'user_registration', 'request.params: {}'.format(request.params))
+    logger('Views', 'user_registration', 'main: {}'.format(request.params))
 
     # default values
     success = ''
@@ -1293,7 +1293,7 @@ def user_password_request(request):
     :param request: current request of the server
     :return: dict() with success and message
     """
-    logger('Views', 'user_password_request', 'request.params: {}'.format(request.params))
+    logger('Views', 'user_password_request', 'main: {}'.format(request.params))
 
     success = ''
     info = ''
@@ -1325,7 +1325,7 @@ def set_user_settings(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('Views', 'set_user_settings', 'request.params: {}'.format(request.params))
+    logger('Views', 'set_user_settings', 'main: {}'.format(request.params))
     _tn = Translator(get_language_from_cookie(request))
 
     settings_value = request.params.get('settings_value') == 'True'
@@ -1343,7 +1343,7 @@ def set_user_lang(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_user_lang', 'request.params: {}'.format(request.params))
+    logger('views', 'set_user_lang', 'main: {}'.format(request.params))
     return set_user_language(request.validated['user'], request.validated.get('ui_locales'))
 
 
@@ -1356,7 +1356,7 @@ def set_discussion_properties(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_discussion_properties', 'request.params: {}'.format(request.params))
+    logger('views', 'set_discussion_properties', 'main: {}'.format(request.params))
     _tn = Translator(get_language_from_cookie(request))
 
     property = request.validated['property']
@@ -1379,7 +1379,7 @@ def set_new_start_argument(request):
     :param request: request of the web server
     :return: a status code, if everything was successful
     """
-    logger('views', 'set_new_start_argument', 'request.params: {}'.format(request.params))
+    logger('views', 'set_new_start_argument', 'main: {}'.format(request.params))
 
     reason = request.validated['reason']
     data = {
@@ -1523,7 +1523,7 @@ def send_some_notification(request):
     :param request: current request of the server
     :return: dict()
     """
-    logger('views', 'send_some_notification', 'request.params: {}'.format(request.json_body))
+    logger('views', 'send_some_notification', 'main: {}'.format(request.json_body))
     ui_locales = get_language_from_cookie(request)
     author = request.validated['user']
     recipient = request.validated['recipient']
@@ -1772,7 +1772,7 @@ def send_news(request):
     :param request: current request of the server
     :return: json-set with new news
     """
-    logger('views', 'send_news', 'request.params: {}'.format(request.params))
+    logger('views', 'send_news', 'main: {}'.format(request.params))
     title = escape_string(request.validated['title'])
     text = escape_string(request.validated['text'])
     db_user = request.validated['user']
@@ -1812,7 +1812,7 @@ def additional_service(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'additional_service', 'request.params: {}'.format(request.params))
+    logger('views', 'additional_service', 'main: {}'.format(request.params))
 
     try:
         rtype = request.params['type']
@@ -1863,6 +1863,7 @@ def flag_argument_or_statement(request):
 
 # ajax - for flagging arguments
 @view_config(route_name='ajax_split_or_merge_statement', renderer='json')
+@validate(valid_user, valid_premisegroup, valid_text_values, has_keywords(('key', str)))
 def split_or_merge_statement(request):
     """
     Flags a statement for a specific reason
@@ -1870,22 +1871,14 @@ def split_or_merge_statement(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'split_or_merge_statement', 'request.params: {}'.format(request.params))
+    logger('views', 'split_or_merge_statement', 'main: {}'.format(request.json_body))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-
-    try:
-        nickname = request.authenticated_userid
-        pgroup_uid = request.params['pgroup_uid']
-        key = request.params['key']
-        tvalues = json.loads(request.params['text_values'])
-        prepared_dict = review.merge_or_split_statement(key, pgroup_uid, tvalues, nickname, ui_locales)
-
-    except KeyError as e:
-        _t = Translator(ui_locales)
-        logger('views', 'split_or_merge_statement', repr(e), error=True)
-        prepared_dict = {'error': _t.get(_.internalKeyError), 'info': '', 'success': ''}
-
-    return json.dumps(prepared_dict)
+    _tn = Translator(ui_locales)
+    user = request.validated['user']
+    pgroup = request.validated['pgroup']
+    key = request.validated['key']
+    tvalues = request.validated['text_values']
+    return review.merge_or_split_statement(key, pgroup, tvalues, user, _tn)
 
 
 # #######################################
@@ -1895,6 +1888,7 @@ def split_or_merge_statement(request):
 
 # ajax - for flagging arguments
 @view_config(route_name='ajax_split_or_merge_premisegroup', renderer='json')
+@validate(valid_user, valid_premisegroup, has_keywords(('key', str)))
 def split_or_merge_premisegroup(request):
     """
     Flags a premisegroup for a specific reason
@@ -1902,22 +1896,13 @@ def split_or_merge_premisegroup(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'split_or_merge_premisegroup', 'request.params: {}'.format(request.params))
+    logger('views', 'split_or_merge_premisegroup', 'main: {}'.format(request.params))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-
-    try:
-        pgroup_uid = request.params['pgroup_uid']
-        key = request.params['key']
-        nickname = request.authenticated_userid
-
-        prepared_dict = review.merge_or_split_premisegroup(key, pgroup_uid, nickname, ui_locales)
-
-    except KeyError as e:
-        _t = Translator(ui_locales)
-        logger('views', 'split_or_merge_premisegroup', repr(e), error=True)
-        prepared_dict = {'error': _t.get(_.internalKeyError), 'info': '', 'success': ''}
-
-    return json.dumps(prepared_dict)
+    _tn = Translator(ui_locales)
+    user = request.validated['user']
+    pgroup = request.validated['pgroup']
+    key = request.validated['key']
+    return review.merge_or_split_premisegroup(key, pgroup, user, _tn)
 
 
 # ajax - for feedback on flagged arguments
