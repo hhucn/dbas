@@ -181,9 +181,6 @@ class AjaxTest(unittest.TestCase):
         for l in lang:
             request = testing.DummyRequest(json_body={'lang': l})
             response = ajax(request)
-            from pprint import pprint
-            pprint(l)
-            pprint(response)
             self.assertTrue(response['_LOCALE_'] == l)
 
     def test_switch_language_failure(self):

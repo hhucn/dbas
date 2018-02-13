@@ -38,6 +38,7 @@ function AjaxReviewHandler(){
 
 		}).fail(function ajaxFlagArgumentOrStatementFail() {
 			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
+		});
 	};
 
 	/**
