@@ -9,38 +9,29 @@ from sqlalchemy import and_
 
 from dbas.logger import logger
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
-    Statement, User, ReviewDuplicate, ReviewSplit, ReviewMerge, ReviewMergeValues, ReviewSplitValues, \
+from dbas.database.discussion_model import ReviewDeleteReason, ReviewDelete, ReviewOptimization, \
+    User, ReviewDuplicate, ReviewSplit, ReviewMerge, ReviewMergeValues, ReviewSplitValues, \
     PremiseGroup
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
 
 
-def flag_element(uid, reason, nickname, is_argument, extra_uid=None):
+def flag_element(uid: int, reason: str, db_user: User, is_argument: bool, ui_locales: str, extra_uid=None) -> dict():
     """
     Flags an given argument based on the reason which was sent by the author. This argument will be enqueued
     for a review process.
 
     :param uid: Uid of the argument/statement, which should be flagged
     :param reason: String which describes the reason
-    :param nickname: Users nickname
+    :param db_user: User
     :param is_argument: Boolean
+    :param ui_locales: ui_locales
     :param extra_uid: Uid of the argument/statement, which should be flagged
     :return: success, info, error
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        logger('FlagingHelper', 'flag_element', 'No user', error=True)
-        return '', '', _.noRights
-
-    db_element = DBDiscussionSession.query(Argument if is_argument else Statement).get(uid)
-
+    _tn = Translator(ui_locales)
     # we could have only one reason!
     db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
-
-    # sanity check
-    if None in [db_element, db_user, db_reason] and reason not in ['optimization', 'duplicate']:
-        logger('FlagingHelper', 'flag_element', 'Key error', error=True)
-        return '', '', _.internalKeyError
 
     argument_uid = uid if is_argument else None
     statement_uid = uid if not is_argument else None
@@ -50,7 +41,10 @@ def flag_element(uid, reason, nickname, is_argument, extra_uid=None):
     if flag_status:
         logger('FlagingHelper', 'flag_element', 'already flagged')
         # who flagged this argument?
-        return '', _.alreadyFlaggedByYou if flag_status == 'user' else _.alreadyFlaggedByOthers, ''
+        return {
+            'success': '',
+            'info': _tn.get(_.alreadyFlaggedByYou if flag_status == 'user' else _.alreadyFlaggedByOthers),
+        }
 
     # add flag
     if db_reason:
@@ -70,7 +64,10 @@ def flag_element(uid, reason, nickname, is_argument, extra_uid=None):
             return '', '', _.internalKeyError
         __add_duplication_review(statement_uid, extra_uid, db_user.uid)
 
-    return _.thxForFlagText, '', ''
+    return {
+        'success': _tn.get(_.thxForFlagText),
+        'info': '',
+    }
 
 
 def flag_statement_for_merge_or_split(key, pgroup_uid, text_values, nickname):

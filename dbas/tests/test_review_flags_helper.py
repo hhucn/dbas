@@ -6,6 +6,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewOptimization, ReviewDuplicate, RevokedDuplicate, \
     LastReviewerDuplicate, ReviewCanceled, ReviewMergeValues, ReviewMerge, ReviewSplit, ReviewSplitValues
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
 
 
 class TestReviewFlagHelper(unittest.TestCase):
@@ -14,60 +15,46 @@ class TestReviewFlagHelper(unittest.TestCase):
         self.some_nick = 'some_nick'
         self.tobias = 'Tobias'
         self.christian = 'Christian'
-
-    def test_flag_argument_errors(self):
-        success, info, error = rf_helper.flag_element(0, 'reason', self.some_nick, True)
-        self.__assert_equal_text([[success, ''], [info, ''], [error, _.noRights]])
-
-        success, info, error = rf_helper.flag_element(4, 'reason', self.some_nick, True)
-        self.__assert_equal_text([[success, ''], [info, ''], [error, _.noRights]])
-
-        success, info, error = rf_helper.flag_element(0, 'reason', self.tobias, True)
-        self.__assert_equal_text([[success, ''], [info, ''], [error, _.internalKeyError]])
-
-        success, info, error = rf_helper.flag_element(4, 'reason', self.tobias, True)
-        self.__assert_equal_text([[success, ''], [info, ''], [error, _.internalKeyError]])
-
-        success, info, error = rf_helper.flag_element(0, 'reason', self.tobias, True)
-        self.__assert_equal_text([[success, ''], [info, ''], [error, _.internalKeyError]])
+        self.user_some_nick = DBDiscussionSession.query(User).filter_by(nickname='some_nick').first()
+        self.user_tobias = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        self.user_christian = DBDiscussionSession.query(User).filter_by(nickname='Christian').first()
+        self.tn = Translator('en')
 
     def test_flag_argument(self):
-        success, info, error = rf_helper.flag_element(4, 'optimization', self.some_nick, True)
-        self.__assert_equal_text([[success, ''], [info, ''], [error, _.noRights]])
+        return_dict = rf_helper.flag_element(4, 'optimization', self.user_tobias, True, 'en')
+        self.assertEqual(self.tn.get(_.thxForFlagText), return_dict['success'])
+        self.assertEqual('', return_dict['info'])
 
-        success, info, error = rf_helper.flag_element(4, 'optimization', self.tobias, True)
-        self.__assert_equal_text([[success, _.thxForFlagText], [info, ''], [error, '']])
+        return_dict = rf_helper.flag_element(4, 'optimization', self.user_tobias, True, 'en')
+        self.assertEqual('', return_dict['success'])
+        self.assertEqual(self.tn.get(_.alreadyFlaggedByYou), return_dict['info'])
 
-        success, info, error = rf_helper.flag_element(4, 'optimization', self.tobias, True)
-        self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByYou], [error, '']])
+        return_dict = rf_helper.flag_element(4, 'optimization', self.user_christian, True, 'en')
+        self.assertEqual('', return_dict['success'])
+        self.assertEqual(self.tn.get(_.alreadyFlaggedByOthers), return_dict['info'])
 
-        success, info, error = rf_helper.flag_element(4, 'optimization', self.christian, True)
-        self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByOthers], [error, '']])
+        return_dict = rf_helper.flag_element(5, 'duplicate', self.user_tobias, False, 'en', 1)
+        self.assertEqual(self.tn.get(_.thxForFlagText), return_dict['success'])
+        self.assertEqual('', return_dict['info'])
 
-        success, info, error = rf_helper.flag_element(5, 'duplicate', self.some_nick, False, 1)
-        self.__assert_equal_text([[success, ''], [info, ''], [error, _.noRights]])
+        return_dict = rf_helper.flag_element(5, 'duplicate', self.user_tobias, False, 'en', 1)
+        self.assertEqual('', return_dict['success'])
+        self.assertEqual(self.tn.get(_.alreadyFlaggedByYou), return_dict['info'])
 
-        success, info, error = rf_helper.flag_element(5, 'duplicate', self.tobias, False, 1)
-        self.__assert_equal_text([[success, _.thxForFlagText], [info, ''], [error, '']])
+        return_dict = rf_helper.flag_element(5, 'duplicate', self.user_christian, False, 'en', 1)
+        self.assertEqual('', return_dict['success'])
+        self.assertEqual(self.tn.get(_.alreadyFlaggedByOthers), return_dict['info'])
 
-        success, info, error = rf_helper.flag_element(5, 'duplicate', self.tobias, False, 1)
-        self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByYou], [error, '']])
-
-        success, info, error = rf_helper.flag_element(5, 'duplicate', self.christian, False, 1)
-        self.__assert_equal_text([[success, ''], [info, _.alreadyFlaggedByOthers], [error, '']])
-
-        tobias = DBDiscussionSession.query(User).filter_by(nickname=self.tobias).first()
-
-        DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=tobias.uid, argument_uid=4).delete()
+        DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=self.user_tobias.uid, argument_uid=4).delete()
         DBDiscussionSession.flush()
         transaction.commit()
 
-        tmp = DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=tobias.uid, duplicate_statement_uid=5).first()
+        tmp = DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=self.user_tobias.uid, duplicate_statement_uid=5).first()
         DBDiscussionSession.query(RevokedDuplicate).filter_by(review_uid=tmp.uid).delete()
         DBDiscussionSession.query(LastReviewerDuplicate).filter_by(review_uid=tmp.uid).delete()
         DBDiscussionSession.query(ReviewCanceled).filter_by(review_duplicate_uid=tmp.uid).delete()
 
-        DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=tobias.uid, duplicate_statement_uid=5).delete()
+        DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=self.user_tobias.uid, duplicate_statement_uid=5).delete()
         DBDiscussionSession.flush()
         transaction.commit()
 
@@ -139,5 +126,5 @@ class TestReviewFlagHelper(unittest.TestCase):
         transaction.commit()
 
     def __assert_equal_text(self, values):
-        for pair in values:
-            self.assertEqual(pair[0], pair[1])
+        for v1, v2 in values:
+            self.assertEqual(v1, v2)

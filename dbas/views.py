@@ -26,6 +26,7 @@ import dbas.review.helper.queues as review_queue_helper
 import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
+import dbas.review.helper.flags as review_flag_helper
 from api.v2.graphql.core import Query
 from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers
 from dbas.database import DBDiscussionSession
@@ -49,7 +50,8 @@ from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url
 from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, has_keywords, \
     valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient, \
-    valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument, valid_statement
+    valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument, valid_statement, \
+    valid_review_reason
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -1453,7 +1455,7 @@ def set_new_start_premise(request):
     :param request: request of the web server
     :return: json-dict()
     """
-    logger('views', 'set_new_start_premise', 'request.json_body: {}'.format(request.json_body))
+    logger('views', 'set_new_start_premise', 'main: {}'.format(request.json_body))
     data = {
         'user': request.validated['user'],
         'application_url': request.application_url,
@@ -1480,7 +1482,7 @@ def set_new_premises_for_argument(request):
     :param request: request of the web server
     :return: json-dict()
     """
-    logger('views', 'set_new_premises_for_argument', 'request.json_body: {}'.format(request.json_body))
+    logger('views', 'set_new_premises_for_argument', 'main: {}'.format(request.json_body))
     data = {
         'user': request.validated['user'],
         'issue': request.validated['issue'],
@@ -1509,7 +1511,7 @@ def set_correction_of_some_statements(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_correction_of_some_statements', 'request.json_body: {}'.format(request.json_body))
+    logger('views', 'set_correction_of_some_statements', 'main: {}'.format(request.json_body))
     ui_locales = get_language_from_cookie(request)
     elements = request.validated['elements']
     user = request.validated['user']
@@ -1623,7 +1625,7 @@ def get_logfile_for_some_statements(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'get_logfile_for_statements', 'request.json_body: {}'.format(request.json_body))
+    logger('views', 'get_logfile_for_statements', 'main: {}'.format(request.json_body))
     uids = request.validated['uids']
     db_issue = request.validated['issue']
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session, db_issue.uid)
@@ -1669,7 +1671,7 @@ def get_infos_about_argument(request):
     :param request: current request of the server
     :return: json-set with everything
     """
-    logger('views', 'get_infos_about_argument', 'request.json_body: {}'.format(request.json_body))
+    logger('views', 'get_infos_about_argument', 'main: {}'.format(request.json_body))
     lang = request.validated['lang']
     user = request.validated['user']
     db_argument = request.validated['argument']
@@ -1773,7 +1775,7 @@ def switch_language(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('switch_language', 'def', 'request.json_body: {}'.format(request.json_body))
+    logger('switch_language', 'def', 'main: {}'.format(request.json_body))
     return set_language(request, request.validated['lang'])
 
 
@@ -1806,7 +1808,7 @@ def fuzzy_search(request):
     :param api_data: data
     :return: json-set with all matched strings
     """
-    logger('views', 'fuzzy_search', 'request.json_body: {}'.format(request.json_body))
+    logger('views', 'fuzzy_search', 'main: {}'.format(request.json_body))
 
     _tn = Translator(get_language_from_cookie(request))
     mode = request.validated['type']
@@ -1852,6 +1854,7 @@ def additional_service(request):
 
 # ajax - for flagging arguments
 @view_config(route_name='ajax_flag_argument_or_statement', renderer='json')
+@validate(valid_user, valid_review_reason, has_keywords(('uid', int), ('is_argument', bool)))
 def flag_argument_or_statement(request):
     """
     Flags an argument or statement for a specific reason
@@ -1859,23 +1862,14 @@ def flag_argument_or_statement(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'flag_argument_or_statement', 'request.params: {}'.format(request.params))
+    logger('views', 'flag_argument_or_statement', 'main: {}'.format(request.json_body))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-
-    try:
-        uid = request.params['uid']
-        reason = request.params['reason']
-        extra_uid = request.params['extra_uid'] if 'extra_uid' in request.params else None
-        is_argument = True if request.params['is_argument'] == 'true' else False
-        nickname = request.authenticated_userid
-
-        prepared_dict = review.flag(uid, reason, extra_uid, is_argument, nickname, ui_locales)
-    except KeyError as e:
-        _t = Translator(ui_locales)
-        logger('views', 'flag_argument_or_statement', repr(e), error=True)
-        prepared_dict = {'error': _t.get(_.internalKeyError), 'info': '', 'success': ''}
-
-    return json.dumps(prepared_dict)
+    uid = request.validated['uid']
+    reason = request.validated['reason']
+    extra_uid = request.json_body.get('extra_uid')
+    is_argument = request.validated['is_argument']
+    user = request.validated['user']
+    return review_flag_helper.flag_element(uid, reason, user, is_argument, ui_locales, extra_uid)
 
 
 # #######################################

@@ -13,36 +13,6 @@ from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_recent_reviewer_socketio, get_port
 
 
-def flag(uid, reason, extra_uid, is_argument, nickname, ui_locales) -> dict:
-    """
-    Flags and argument or statement for the review system
-
-    :param uid: ID of the argument of statement, which should be flagged
-    :param reason: Reason, why the id should be flagged
-    :param extra_uid: Statement.id if the reason is a duplicate, otherwise none
-    :param is_argument: Boolean if the uid for is an argument
-    :param nickname: the user's nickname creating the request
-    :param ui_locales: current ui_locales
-    :rtype: dict
-    :return: collection with success, info and error key
-    """
-    logger('additives', 'flag_argument_or_statement', 'uid {}'.format(uid))
-    _t = Translator(ui_locales)
-
-    if not is_integer(uid):
-        logger('additives', 'flag_argument_or_statement', 'invalid uid', error=True)
-        return {'error': _t.get(_.internalError), 'info': '', 'success': ''}
-    else:
-        success, info, error = review_flag_helper.flag_element(uid, reason, nickname, is_argument, extra_uid)
-        prepared_dict = {
-            'success': '' if isinstance(success, str) else _t.get(success),
-            'info': '' if isinstance(info, str) else _t.get(info),
-            'error': '' if isinstance(error, str) else _t.get(error)
-        }
-
-    return prepared_dict
-
-
 def merge_or_split_statement(key, pgroup_uid, text_values, nickname, ui_locales) -> dict:
     """
     Adds review for splitting/merging a statement

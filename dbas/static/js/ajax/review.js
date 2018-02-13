@@ -17,32 +17,27 @@ function AjaxReviewHandler(){
 		$.ajax({
 			url: 'ajax_flag_argument_or_statement',
 			method: 'POST',
-			data: {
+			dataType: 'json',
+			contentType: 'application/json',
+			data: JSON.stringify({
 				uid: uid,
 				reason: reason,
 				extra_uid: extra_uid,
 				is_argument: is_argument
-			},
-			global: false,
-			async: true,
+			}),
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
-		}).done(function ajaxFlagArgumentDone(data) {
-			var parsedData = $.parseJSON(data);
-			if (parsedData.error.length !== 0){
-				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
-			} else if (parsedData.info.length !== 0) {
-				setGlobalInfoHandler('Ohh!', parsedData.info);
-				$('#popup-duplicate-statement').modal('hide');
+		}).done(function ajaxFlagArgumentOrStatementDone(data) {
+			if (data.info.length !== 0) {
+				setGlobalInfoHandler('Ohh!', data.info);
 			} else {
-				setGlobalSuccessHandler('Yeah!', parsedData.success);
-				$('#popup-duplicate-statement').modal('hide');
+				setGlobalSuccessHandler('Yeah!', data.success);
 			}
+			$('#popup-duplicate-statement').modal('hide');
 
-		}).fail(function ajaxFlagArgumentFail() {
-			setGlobalErrorHandler('', _t_discussion(requestFailed));
-		});
+		}).fail(function ajaxFlagArgumentOrStatementFail() {
+			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
 	};
 
 	/**

@@ -4,7 +4,7 @@ from cornice.util import json_error
 
 import dbas.handler.issue as issue_handler
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Issue, Statement, Language, Argument
+from dbas.database.discussion_model import User, Issue, Statement, Language, Argument, ReviewDeleteReason
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer
@@ -305,6 +305,22 @@ def valid_notification_recipient(request):
 
 # #############################################################################
 # General validation
+
+def valid_review_reason(request):
+    """
+    Given an reason, validates the correctness for our review system.
+
+    :param request:
+    :return:
+    """
+    reason = request.json_body.get('reason')
+    db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
+
+    if db_reason or reason in ['optimization', 'duplicate']:
+        request.validated['reason'] = reason
+    else:
+        _tn = Translator(get_language_from_cookie(request))
+        __add_error(request, 'valid_review_reason', 'Invalid reason', _tn.get(_.internalError))
 
 
 def valid_premisegroups(request):

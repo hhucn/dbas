@@ -33,28 +33,26 @@ class AjaxReviewTest(unittest.TestCase):
         transaction.commit()
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import flag_argument_or_statement as ajax
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'uid': 2,
             'reason': 'offtopic',
-            'is_argument': 'false',
-        }, matchdict={})
-        response = json.loads(ajax(request))
+            'is_argument': False,
+        })
+        response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
         self.assertTrue(len(response['success']) != 0)
         self.assertTrue(len(response['info']) == 0)
 
     def test_flag_argument_or_statement_twice(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import flag_argument_or_statement as ajax
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'uid': 2,
             'reason': 'offtopic',
-            'is_argument': 'false',
-        }, matchdict={})
-        response = json.loads(ajax(request))
+            'is_argument': False,
+        })
+        response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
         self.assertTrue(len(response['success']) == 0)
         self.assertTrue(len(response['info']) != 0)
         DBDiscussionSession.query(ReviewDelete).filter_by(statement_uid=2).delete()
@@ -63,34 +61,34 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_flag_argument_or_statement_error_user(self):
         from dbas.views import flag_argument_or_statement as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
-        response = json.loads(ajax(request))
+        request = testing.DummyRequest(json_body={})
+        response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertEqual(400, response.status_code)
 
     def test_flag_argument_or_statement_error_reason(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import flag_argument_or_statement as ajax
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'uid': 2,
             'reason': 'some_fake_reason',
-            'is_argument': 'false',
-        }, matchdict={})
-        response = json.loads(ajax(request))
+            'is_argument': False,
+        })
+        response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertEqual(400, response.status_code)
 
     def test_flag_argument_or_statement_error_uid(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import flag_argument_or_statement as ajax
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'uid': 'a',
             'reason': 'offtopic',
-            'is_argument': 'false',
-        }, matchdict={})
-        response = json.loads(ajax(request))
+            'is_argument': False,
+        })
+        response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertEqual(400, response.status_code)
 
     def __exec_request_and_check_reviewes(self, db_review, ajax, keyword, bool, nickname, reviewer_type):
         self.config.testing_securitypolicy(userid=nickname, permissive=True)
@@ -597,16 +595,15 @@ class AjaxReviewTest(unittest.TestCase):
         argument_uid = get_all_arguments_by_statement(uid)[0].uid
 
         db_review1 = len(DBDiscussionSession.query(ReviewDuplicate).all())
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'uid': uid,  # 'cats are very independent
             'reason': 'duplicate',
             'extra_uid': 1,  # Cats are fucking stupid and bloody fuzzy critters!,
-            'is_argument': 'false'
-        }, matchdict={})
-        response = json.loads(ajax(request))
+            'is_argument': False
+        })
+        response = ajax(request)
         db_review2 = len(DBDiscussionSession.query(ReviewDuplicate).all())
         self.assertIsNotNone(response)
-        self.assertEqual(response['error'], '')
         self.assertEqual(response['info'], '')
         self.assertNotEqual(len(response['success']), 0)
         self.assertLess(db_review1, db_review2)
