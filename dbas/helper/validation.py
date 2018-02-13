@@ -85,28 +85,6 @@ def invalid_user(request):
         return False
 
 
-def valid_language(request):
-    """
-    Given a nickname of a user, return the object from the database.
-
-    :param request:
-    :return:
-    """
-    lang = request.json_body.get('lang')
-    _tn = Translator(get_language_from_cookie(request))
-    if not lang:
-        __add_error(request, 'valid_language', 'Invalid language', _tn.get(_.checkLanguage))
-        return
-
-    db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=lang).first()
-    if db_lang:
-        request.validated['lang'] = db_lang
-        return True
-    else:
-        __add_error(request, 'valid_language', 'Invalid language {}'.format(lang), _tn.get(_.checkLanguage))
-        return False
-
-
 def valid_issue(request):
     """
     Query issue from database and put it into the request.
@@ -189,7 +167,8 @@ def valid_statement(request):
     """
     statement_id = request.json_body.get('uid')
     db_statement = DBDiscussionSession.query(Statement).filter(Statement.uid == statement_id,
-                                                               Statement.is_disabled == False).first() if is_integer(statement_id) else None
+                                                               Statement.is_disabled == False).first() if is_integer(
+        statement_id) else None
 
     if db_statement:
         request.validated['statement'] = db_statement
@@ -207,7 +186,8 @@ def valid_argument(request):
     """
     argument_id = request.json_body.get('uid')
     db_argument = DBDiscussionSession.query(Argument).filter(Argument.uid == argument_id,
-                                                             Argument.is_disabled == False).first() if is_integer(argument_id) else None
+                                                             Argument.is_disabled == False).first() if is_integer(
+        argument_id) else None
 
     if db_argument:
         request.validated['argument'] = db_argument
@@ -301,6 +281,44 @@ def valid_notification_recipient(request):
     else:
         request.validated["recipient"] = db_recipient
         return True
+
+
+# #############################################################################
+# UI-related
+
+def valid_language(request):
+    """
+    Given a nickname of a user, return the object from the database.
+
+    :param request:
+    :return:
+    """
+    lang = request.json_body.get('lang')
+    _tn = Translator(get_language_from_cookie(request))
+    if not lang:
+        __add_error(request, 'valid_language', 'Invalid language', _tn.get(_.checkLanguage))
+        return
+
+    db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=lang).first()
+    if db_lang:
+        request.validated['lang'] = db_lang
+        return True
+    else:
+        __add_error(request, 'valid_language', 'Invalid language {}'.format(lang), _tn.get(_.checkLanguage))
+        return False
+
+
+def valid_ui_locales(request):
+    """
+    Get provided language from form, else interpret it from the request.
+
+    :param request:
+    :return:
+    """
+    lang = request.json_body.get('ui_locales')
+    if not lang:
+        lang = get_language_from_cookie(request)
+    request.validated['ui_locales'] = lang
 
 
 # #############################################################################
@@ -419,7 +437,8 @@ def has_keywords(*keywords):
             if value is not None and isinstance(value, ktype):
                 request.validated[keyword] = value
             elif value is None:
-                __add_error(request, 'has_keywords', 'Parameter {} missing'.format(keyword), '{} is missing'.format(keyword))
+                __add_error(request, 'has_keywords', 'Parameter {} missing'.format(keyword),
+                            '{} is missing'.format(keyword))
                 error_occured = True
             else:
                 __add_error(request, 'has_keywords', 'Parameter {} has wrong type'.format(keyword),

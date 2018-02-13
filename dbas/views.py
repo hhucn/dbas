@@ -53,7 +53,7 @@ from dbas.helper.query import get_default_locale_name, set_user_language, \
 from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, has_keywords, \
     valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient, \
     valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument, valid_statement, \
-    valid_review_reason, valid_premisegroup, valid_text_values, valid_not_executed_review
+    valid_review_reason, valid_ui_locales, valid_premisegroup, valid_text_values, valid_not_executed_review
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -1288,7 +1288,7 @@ def user_registration(request):
 
 # ajax - password requests
 @view_config(route_name='ajax_user_password_request', renderer='json')
-@validate(has_keywords(('email', str)))
+@validate(valid_ui_locales, has_keywords(('email', str)))
 def user_password_request(request):
     """
     Sends an email, when the user requests his password
@@ -1296,8 +1296,8 @@ def user_password_request(request):
     :param request: current request of the server
     :return: dict() with success and message
     """
-    logger('Views', 'user_password_request', 'main: {}'.format(request.params))
-    _tn = Translator(get_language_from_cookie(request))
+    logger('Views', 'user_password_request', 'request.params: {}'.format(request.json_body))
+    _tn = Translator(request.validated['ui_locales'])
     return request_password(request.validated['email'], request.mailer, _tn)
 
 
@@ -1310,7 +1310,7 @@ def set_user_settings(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('Views', 'set_user_settings', 'main: {}'.format(request.params))
+    logger('Views', 'set_user_settings', 'request.params: {}'.format(request.json_body))
     _tn = Translator(get_language_from_cookie(request))
     user = request.validated['user']
     settings_value = request.validated['settings_value']
@@ -1319,7 +1319,7 @@ def set_user_settings(request):
 
 
 @view_config(route_name='ajax_set_user_language', renderer='json')
-@validate(valid_user, has_keywords(('ui_locales', str)))
+@validate(valid_user, valid_ui_locales)
 def set_user_lang(request):
     """
     Specify new UI language for user.
@@ -1327,7 +1327,7 @@ def set_user_lang(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_user_lang', 'main: {}'.format(request.params))
+    logger('views', 'set_user_lang', 'request.params: {}'.format(request.json_body))
     return set_user_language(request.validated['user'], request.validated.get('ui_locales'))
 
 
@@ -1340,7 +1340,7 @@ def set_discussion_properties(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_discussion_properties', 'main: {}'.format(request.params))
+    logger('views', 'set_discussion_properties', 'request.params: {}'.format(request.json_body))
     _tn = Translator(get_language_from_cookie(request))
 
     property = request.validated['property']
@@ -1363,8 +1363,7 @@ def set_new_start_argument(request):
     :param request: request of the web server
     :return: a status code, if everything was successful
     """
-    logger('views', 'set_new_start_argument', 'main: {}'.format(request.params))
-
+    logger('views', 'set_new_start_argument', 'request.params: {}'.format(request.json_body))
     reason = request.validated['reason']
     data = {
         'user': request.validated['user'],
@@ -1383,7 +1382,6 @@ def set_new_start_argument(request):
     prepared_dict_pos = set_position(False, data)
     if len(prepared_dict_pos['error']) is 0:
         logger('views', 'set_new_start_argument', 'set premise/reason')
-        # set the premise
         data['premisegroups'] = [[reason]]
         data['conclusion'] = DBDiscussionSession.query(Statement).get(prepared_dict_pos['statement_uids'][0])
         prepared_dict_reas = set_positions_premise(False, data)
