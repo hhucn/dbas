@@ -225,7 +225,7 @@ function AjaxMainHandler(){
             contentType: 'application/json',
             data: JSON.stringify({
                 email: email,
-                lang: getLanguage()
+                ui_locales: getLanguage()
             }),
 			dataType: 'json',
 			headers: {
