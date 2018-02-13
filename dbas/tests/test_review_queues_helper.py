@@ -1,7 +1,7 @@
 import unittest
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User
+from dbas.database.discussion_model import User, ReviewOptimization
 import dbas.review.helper.queues as rqh
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -69,35 +69,24 @@ class ReviewQueuesHelperTest(unittest.TestCase):
 
     def test_lock_optimization_review(self):
         _tn = Translator('en')
-        success, info, error, is_locked = rqh.lock_optimization_review('nickname', 0, _tn)
-        self.assertTrue(len(success) == 0)
-        self.assertTrue(len(info) == 0)
-        self.assertTrue(len(error) > 0)
-        self.assertFalse(is_locked)
+        tobias = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        christian = DBDiscussionSession.query(User).filter_by(nickname='Christian').first()
+        db_review = DBDiscussionSession.query(ReviewOptimization).get(2)
 
-        success, info, error, is_locked = rqh.lock_optimization_review('Tobias', 0, _tn)
-        self.assertTrue(len(success) == 0)
-        self.assertTrue(len(info) == 0)
-        self.assertTrue(len(error) > 0)
-        self.assertFalse(is_locked)
+        return_dict = rqh.lock_optimization_review(tobias, db_review, _tn)
+        self.assertTrue(len(return_dict['success']) != 0)
+        self.assertTrue(len(return_dict['info']) == 0)
+        self.assertTrue(return_dict['is_locked'])
 
-        success, info, error, is_locked = rqh.lock_optimization_review('Tobias', 2, _tn)
-        self.assertTrue(len(success) != 0)
-        self.assertTrue(len(info) == 0)
-        self.assertTrue(len(error) == 0)
-        self.assertTrue(is_locked)
+        return_dict = rqh.lock_optimization_review(tobias, db_review, _tn)
+        self.assertTrue(len(return_dict['success']) == 0)
+        self.assertTrue(len(return_dict['info']) > 0)
+        self.assertTrue(return_dict['is_locked'])
 
-        success, info, error, is_locked = rqh.lock_optimization_review('Tobias', 2, _tn)
-        self.assertTrue(len(success) == 0)
-        self.assertTrue(len(info) > 0)
-        self.assertTrue(len(error) == 0)
-        self.assertTrue(is_locked)
-
-        success, info, error, is_locked = rqh.lock_optimization_review('Christian', 2, _tn)
-        self.assertTrue(len(success) == 0)
-        self.assertTrue(len(info) > 0)
-        self.assertTrue(len(error) == 0)
-        self.assertTrue(is_locked)
+        return_dict = rqh.lock_optimization_review(christian, db_review, _tn)
+        self.assertTrue(len(return_dict['success']) == 0)
+        self.assertTrue(len(return_dict['info']) > 0)
+        self.assertTrue(return_dict['is_locked'])
 
     def test_unlock_optimization_review(self):
         rqh.unlock_optimization_review(2)

@@ -1,5 +1,6 @@
 import dbas.review.helper.history as review_history_helper
 import dbas.review.helper.queues as review_queue_helper
+from dbas.database.discussion_model import ReviewOptimization, User
 
 from dbas.logger import logger
 from dbas.input_validator import is_integer
@@ -86,42 +87,26 @@ def cancel(request) -> dict:
     return prepared_dict
 
 
-def lock(request) -> dict:
+def lock(db_user: User, db_review: ReviewOptimization, lock: bool, _tn: Translator) -> dict:
     """
     Tries to lock an optimization element, so the user can propose an edit
 
-    :param request: pyramid's request object
-    :rtype: dict
-    :return: collection with error, success, info key
+    :param db_user:
+    :param db_review:
+    :param lock:
+    :param _tn:
+    :return:
     """
-    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-    _t = Translator(ui_locales)
-    prepared_dict = dict()
 
-    review_uid = request.params['review_uid'] if 'review_uid' in request.params else None
-    lock = True if request.params['lock'] == 'true' else False
-
-    if not is_integer(review_uid):
-        info = ''
-        success = ''
-        error = _t.get(_.internalKeyError)
-        is_locked = False
+    if lock:
+        return review_queue_helper.lock_optimization_review(db_user, db_review, _tn)
     else:
-        if lock:
-            success, info, error, is_locked = review_queue_helper.lock_optimization_review(request.authenticated_userid, review_uid, _t)
-        else:
-            review_queue_helper.unlock_optimization_review(review_uid)
-            is_locked = False
-            success = _t.get(_.dataUnlocked)
-            error = ''
-            info = ''
-
-    prepared_dict['info'] = info
-    prepared_dict['error'] = error
-    prepared_dict['success'] = success
-    prepared_dict['is_locked'] = is_locked
-
-    return prepared_dict
+        review_queue_helper.unlock_optimization_review(db_review.uid)
+        return {
+            'is_locked':  False,
+            'success':  _tn.get(_.dataUnlocked),
+            'info':  ''
+        }
 
 
 def revoke(request) -> dict:

@@ -88,19 +88,22 @@ function AjaxReviewHandler(){
 		$.ajax({
 			url: 'ajax_review_lock',
 			method: 'POST',
-			data:{ 'review_uid': review_uid, 'lock': should_lock },
 			dataType: 'json',
-			async: true,
+			contentType: 'application/json',
+			data: JSON.stringify({
+				'review_uid': review_uid,
+				'lock': should_lock
+			}),
 			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function reviewDeleteArgumentDone(data) {
+		}).done(function un_lockOptimizationReviewDone(data) {
 			if (should_lock) {
 				new ReviewCallbacks().forReviewLock(data, review_instance);
 			} else {
 				new ReviewCallbacks().forReviewUnlock(data);
 			}
-		}).fail(function reviewDeleteArgumentFail() {
+		}).fail(function un_lockOptimizationReviewFail(data) {
 			if (should_lock) {
-				setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+				setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
 			}
 		});
 	};

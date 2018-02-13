@@ -53,7 +53,8 @@ from dbas.helper.query import get_default_locale_name, set_user_language, \
 from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, has_keywords, \
     valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient, \
     valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument, valid_statement, \
-    valid_review_reason, valid_ui_locales, valid_premisegroup, valid_text_values, valid_not_executed_review
+    valid_review_reason, valid_ui_locales, valid_premisegroup, valid_text_values, valid_not_executed_review, \
+    valid_database_model
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -2040,6 +2041,7 @@ def review_merged_premisegroup(request):
 
 # ajax - for undoing reviews
 @view_config(route_name='ajax_undo_review', renderer='json')
+@validate(valid_user)
 def undo_review(request):
     """
     Trys to undo a done review process
@@ -2047,7 +2049,7 @@ def undo_review(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'undo_review', 'main: {}'.format(request.params))
+    logger('views', 'undo_review', 'main: {}'.format(request.json_body))
 
     try:
         prepared_dict = review.undo(request)
@@ -2066,6 +2068,7 @@ def undo_review(request):
 
 # ajax - for canceling reviews
 @view_config(route_name='ajax_cancel_review', renderer='json')
+@validate(valid_user)
 def cancel_review(request):
     """
     Trys to cancel an ongoing review
@@ -2073,7 +2076,7 @@ def cancel_review(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'cancel_review', 'main: {}'.format(request.params))
+    logger('views', 'cancel_review', 'main: {}'.format(request.json_body))
 
     try:
         prepared_dict = review.cancel(request)
@@ -2083,11 +2086,12 @@ def cancel_review(request):
         _t = Translator(ui_locales)
         prepared_dict = {'error': _t.get(_.internalKeyError)}
 
-    return json.dumps(prepared_dict)
+    return prepared_dict
 
 
 # ajax - for undoing reviews
 @view_config(route_name='ajax_review_lock', renderer='json', require_csrf=False)
+@validate(valid_user, valid_database_model('review_uid', ReviewOptimization))
 def review_lock(request):
     """
     Locks a review so that the user can do an edit
@@ -2095,22 +2099,18 @@ def review_lock(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'review_lock', 'main: {}'.format(request.params))
-
-    try:
-        prepared_dict = review.lock(request)
-
-    except KeyError as e:
-        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-        _t = Translator(ui_locales)
-        logger('views', 'review_lock', repr(e), error=True)
-        prepared_dict = {'info': '', 'error': _t.get(_.internalKeyError), 'success': '', 'is_locked': False}
-
-    return json.dumps(prepared_dict)
+    logger('views', 'review_lock', 'main: {}'.format(request.json_body))
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
+    _tn = Translator(ui_locales)
+    lock = request.validated['lock']
+    db_review = request.validated['db_model']
+    db_user = request.validated['user']
+    return review.lock(db_user, db_review, lock, _tn)
 
 
 # ajax - for revoking content
 @view_config(route_name='ajax_revoke_content', renderer='json', require_csrf=False)
+@validate(valid_user)
 def revoke_some_content(request):
     """
     Revokes the given user as author from a statement or an argument
@@ -2118,7 +2118,7 @@ def revoke_some_content(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'revoke_some_content', 'main: {}'.format(request.params))
+    logger('views', 'revoke_some_content', 'main: {}'.format(request.json_body))
 
     try:
         prepared_dict = review.revoke(request)
@@ -2129,4 +2129,4 @@ def revoke_some_content(request):
         logger('views', 'revoke_some_content', repr(e), error=True)
         prepared_dict = {'success': False, 'error': _t.get(_.internalKeyError)}
 
-    return json.dumps(prepared_dict)
+    return prepared_dict
