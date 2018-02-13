@@ -1,8 +1,12 @@
 import json
+
+from pyramid.httpexceptions import HTTPBadRequest
+
 import dbas.review.helper.flags as review_flag_helper
 import dbas.review.helper.history as review_history_helper
 import dbas.review.helper.main as review_main_helper
 import dbas.review.helper.queues as review_queue_helper
+from dbas.database.discussion_model import User, PremiseGroup
 
 from dbas.logger import logger
 from dbas.input_validator import is_integer
@@ -13,66 +17,36 @@ from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_recent_reviewer_socketio, get_port
 
 
-def merge_or_split_statement(key, pgroup_uid, text_values, nickname, ui_locales) -> dict:
+def merge_or_split_statement(key: str, pgroup: PremiseGroup, text_values: list(), db_user: User, _tn: Translator) -> dict:
     """
     Adds review for splitting/merging a statement
 
-    :param pgroup_uid: ID of the selected PremiseGroup
     :param key: 'split' or 'merge'
+    :param pgroup: PremiseGroup
     :param text_values: text values
-    :param nickname: the user's nickname creating the request
-    :param ui_locales: current ui_locales
+    :param db_user: User
     :rtype: dict
     :return: collection with success, info and error key
     """
-    return __mergesplit(key, pgroup_uid, text_values, nickname, ui_locales, is_statement=True)
+    if key not in ['merge', 'split']:
+        raise HTTPBadRequest()
+    return review_flag_helper.flag_statement_for_merge_or_split(key, pgroup, text_values, db_user, _tn)
 
 
-def merge_or_split_premisegroup(key, pgroup_uid, nickname, ui_locales) -> dict:
+def merge_or_split_premisegroup(key: str, pgroup: PremiseGroup, db_user: User, _tn: Translator) -> dict:
     """
     Adds review for splitting/merging a pgroup
 
-    :param pgroup_uid: ID of the selected PremiseGroup
     :param key: 'split' or 'merge'
-    :param nickname: the user's nickname creating the request
+    :param pgroup: PremiseGroup
+    :param db_user: User
     :param ui_locales: current ui_locales
     :rtype: dict
     :return: collection with success, info and error key
     """
-    return __mergesplit(key, pgroup_uid, None, nickname, ui_locales, is_statement=False)
-
-
-def __mergesplit(key, pgroup_uid, text_values, nickname, ui_locales, is_statement=False) -> dict:
-    """
-    Adds review for splitting/merging a statement or pgroup
-
-    :param pgroup_uid: ID of the selected PremiseGroup
-    :param key: 'split' or 'merge'
-    :param text_values: text values if the operation is for a statement or None if it is a premisegroup
-    :param nickname: the user's nickname creating the request
-    :param ui_locales: current ui_locales
-    :param is_statement: Either true, if the operation is for a statement or False if it is a premisegroup
-    :rtype: dict
-    :return: collection with success, info and error key
-    """
-    logger('additives', 'mergesplit', 'pgroup_uid {} ({}) with values {}'.format(pgroup_uid, is_statement, text_values))
-    _t = Translator(ui_locales)
-
-    if key in ['merge', 'split']:
-        if is_statement:
-            success, info, error = review_flag_helper.flag_statement_for_merge_or_split(key, pgroup_uid, text_values, nickname)
-        else:
-            success, info, error = review_flag_helper.flag_pgroup_for_merge_or_split(key, pgroup_uid, nickname)
-    else:
-        raise KeyError
-
-    prepared_dict = {
-        'success': '' if isinstance(success, str) else _t.get(success),
-        'info': '' if isinstance(info, str) else _t.get(info),
-        'error': '' if isinstance(error, str) else _t.get(error)
-    }
-
-    return prepared_dict
+    if key not in ['merge', 'split']:
+        raise HTTPBadRequest()
+    return review_flag_helper.flag_pgroup_for_merge_or_split(key, pgroup, db_user, _tn)
 
 
 def delete_argument(request) -> dict:

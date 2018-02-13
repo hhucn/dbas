@@ -602,7 +602,6 @@ function PopupHandler() {
 	 * @param key is either 'merge' or 'split'
 	 * @param uid of the current premisegroup
 	 * @param text of the current premisegroup
-	 * @param reason for the flag popup
 	 * @param fct which should be called if the 'yes'-button is clicked
 	 * @private
 	 */

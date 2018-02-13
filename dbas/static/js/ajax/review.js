@@ -54,28 +54,26 @@ function AjaxReviewHandler(){
 		$.ajax({
 			url: url,
 			method: 'POST',
-			data: {
-				pgroup_uid: pgroup_uid,
+			dataType: 'json',
+			contentType: 'application/json',
+			data: JSON.stringify({
+				uid: parseInt(pgroup_uid),
 				key: key,
-				text_values: JSON.stringify(text_values)
-			},
-			global: false,
-			async: true,
+				text_values: text_values
+			}),
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSplitOrMergeStatementsDone(data) {
 			var parsedData = $.parseJSON(data);
-			if (parsedData.error.length !== 0){
-				setGlobalErrorHandler(_t(ohsnap), parsedData.error);
-			} else if (parsedData.info.length !== 0) {
+			if (parsedData.info.length !== 0) {
 				setGlobalInfoHandler('Ohh!', parsedData.info);
 			} else {
 				setGlobalSuccessHandler('Yeah!', parsedData.success);
 			}
 
-		}).fail(function ajaxSplitOrMergeStatementsFail() {
-			setGlobalErrorHandler('', _t_discussion(requestFailed));
+		}).fail(function ajaxSplitOrMergeStatementsFail(data) {
+			setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
 		});
 	};
 
