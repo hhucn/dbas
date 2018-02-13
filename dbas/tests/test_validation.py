@@ -7,7 +7,8 @@ Unit tests for our validators
 from cornice import Errors
 from pyramid import testing
 
-from dbas.helper.validation import has_keywords
+from dbas.database.discussion_model import ReviewDelete
+from dbas.helper.validation import has_keywords, valid_not_executed_review
 
 
 def test_has_keywords():
@@ -69,4 +70,22 @@ def test_has_keywords_without_keyword():
     })
     setattr(request, 'errors', Errors())
     checker = has_keywords(('bar', int))
+    assert not checker(request)
+
+
+def test_valid_not_executed_review():
+    request = testing.DummyRequest(json_body={
+        'ruid': 4
+    })
+    request.validated = {}
+    checker = valid_not_executed_review('ruid', ReviewDelete)
+    assert checker(request)
+
+
+def test_valid_not_executed_review_error():
+    request = testing.DummyRequest(json_body={
+        'ruid': 1
+    })
+    setattr(request, 'errors', Errors())
+    checker = valid_not_executed_review('ruid', ReviewDelete)
     assert not checker(request)

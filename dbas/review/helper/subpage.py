@@ -178,12 +178,7 @@ def __get_base_subpage_dict(review_type, db_reviews, already_seen, first_time, d
         db_reviews = db_reviews.all()
 
     if not db_reviews:
-        return {'stats': None,
-                'text': None,
-                'reason': None,
-                'issue': None,
-                'extra_info': None,
-                'session': session}
+        return None, None, None, None, None
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
     if rnd_review.statement_uid is None:
@@ -218,6 +213,15 @@ def __get_subpage_dict_for_deletes(session, application_url, db_user, translator
     rnd_review, already_seen, extra_info, text, issue = __get_base_subpage_dict(ReviewDelete, db_reviews, already_seen,
                                                                                 first_time, db_user, already_reviewed,
                                                                                 session)
+    if not rnd_review:
+        return {
+            'stats': None,
+            'text': None,
+            'reason': None,
+            'issue': None,
+            'extra_info': None,
+            'session': session
+        }
 
     db_reason = DBDiscussionSession.query(ReviewDeleteReason).get(rnd_review.reason_uid)
     stats = __get_stats_for_review(rnd_review, translator.get_lang(), application_url)
@@ -331,6 +335,15 @@ def __get_subpage_dict_for_edits(session, application_url, db_user, translator):
     rnd_review, already_seen, extra_info, text, issue = __get_base_subpage_dict(ReviewEdit, db_reviews, already_seen,
                                                                                 first_time, db_user, already_reviewed,
                                                                                 session)
+    if not rnd_review:
+        return {
+            'stats': None,
+            'text': None,
+            'reason': None,
+            'issue': None,
+            'extra_info': None,
+            'session': session
+        }
 
     reason = translator.get(_.argumentFlaggedBecauseEdit)
 
@@ -347,12 +360,14 @@ def __get_subpage_dict_for_edits(session, application_url, db_user, translator):
         if len(db_allowed_reviews) > 0:
             return __get_subpage_dict_for_edits(session, db_user, translator, application_url)
         else:
-            return {'stats': None,
-                    'text': None,
-                    'reason': None,
-                    'issue': None,
-                    'extra_info': None,
-                    'session': session}
+            return {
+                'stats': None,
+                'text': None,
+                'reason': None,
+                'issue': None,
+                'extra_info': None,
+                'session': session
+            }
 
     correction_list = [char for char in text]
     __difference_between_string(text, db_edit_value.content, correction_list)
