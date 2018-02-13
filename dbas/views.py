@@ -9,7 +9,7 @@ from typing import Callable, Any
 
 import graphene
 import requests
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPBadRequest
 from pyramid.renderers import get_renderer
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
@@ -27,10 +27,12 @@ import dbas.review.helper.queues as review_queue_helper
 import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
+import dbas.review.helper.main as review_main_helper
 from api.v2.graphql.core import Query
 from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Group, Statement
+from dbas.database.discussion_model import Group, Statement, ReviewEdit, ReviewMerge, ReviewSplit, ReviewOptimization, \
+    ReviewDuplicate, ReviewDelete
 from dbas.database.discussion_model import User, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
@@ -51,14 +53,14 @@ from dbas.helper.query import get_default_locale_name, set_user_language, \
 from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, has_keywords, \
     valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient, \
     valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument, valid_statement, \
-    valid_review_reason, valid_premisegroup, valid_text_values
+    valid_review_reason, valid_premisegroup, valid_text_values, valid_not_executed_review
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from websocket.lib import get_port
+from websocket.lib import get_port, send_request_for_recent_reviewer_socketio
 
 name = 'D-BAS'
 version = '1.5.5'
@@ -1860,7 +1862,10 @@ def split_or_merge_statement(request):
     pgroup = request.validated['pgroup']
     key = request.validated['key']
     tvalues = request.validated['text_values']
-    return review.merge_or_split_statement(key, pgroup, tvalues, user, _tn)
+
+    if key not in ['merge', 'split']:
+        raise HTTPBadRequest()
+    return review_flag_helper.flag_statement_for_merge_or_split(key, pgroup, tvalues, user, _tn)
 
 
 # #######################################
@@ -1884,11 +1889,15 @@ def split_or_merge_premisegroup(request):
     user = request.validated['user']
     pgroup = request.validated['pgroup']
     key = request.validated['key']
-    return review.merge_or_split_premisegroup(key, pgroup, user, _tn)
+
+    if key not in ['merge', 'split']:
+        raise HTTPBadRequest()
+    return review_flag_helper.flag_pgroup_for_merge_or_split(key, pgroup, user, _tn)
 
 
 # ajax - for feedback on flagged arguments
 @view_config(route_name='ajax_review_delete_argument', renderer='json')
+@validate(valid_user, valid_not_executed_review('review_uid', ReviewDelete), has_keywords(('should_delete', bool)))
 def review_delete_argument(request):
     """
     Values for the review for an argument, which should be deleted
@@ -1897,20 +1906,22 @@ def review_delete_argument(request):
     :return: json-dict()
     """
     logger('views', 'review_delete_argument', 'main: {}'.format(request.params))
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
+    db_review = request.validated['db_review']
+    db_user = request.validated['user']
+    should_delete = request.validated['should_delete']
+    main_page = request.application_url
+    port = get_port(request)
+    _t = Translator(ui_locales)
 
-    try:
-        prepared_dict = review.delete_argument(request)
-    except KeyError as e:
-        logger('views', 'review_delete_argument', repr(e), error=True)
-        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-        _t = Translator(ui_locales)
-        prepared_dict = {'error': _t.get(_.internalKeyError)}
-
-    return json.dumps(prepared_dict)
+    review_main_helper.add_review_opinion_for_delete(db_user, main_page, port, db_review, should_delete, _t)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, port, 'deletes')
+    return True
 
 
 # ajax - for feedback on flagged arguments
 @view_config(route_name='ajax_review_edit_argument', renderer='json')
+@validate(valid_user, valid_not_executed_review('review_uid', ReviewEdit), has_keywords(('is_edit_okay', bool)))
 def review_edit_argument(request):
     """
     Values for the review for an argument, which should be edited
@@ -1918,21 +1929,23 @@ def review_edit_argument(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('Views', 'review_edit_argument', 'main: {} - {}'.format(request.params, request.authenticated_userid))
+    logger('Views', 'review_edit_argument', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
+    db_review = request.validated['db_review']
+    db_user = request.validated['user']
+    is_edit_okay = request.validated['is_edit_okay']
+    main_page = request.application_url
+    port = get_port(request)
 
-    try:
-        prepared_dict = review.edit_argument(request)
-    except KeyError as e:
-        logger('Views', 'review_edit_argument', repr(e), error=True)
-        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-        _t = Translator(ui_locales)
-        prepared_dict = {'error': _t.get(_.internalKeyError)}
-
-    return json.dumps(prepared_dict)
+    _t = Translator(ui_locales)
+    review_main_helper.add_review_opinion_for_edit(db_user, main_page, port, db_review, is_edit_okay, _t)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, port, 'edits')
+    return True
 
 
 # ajax - for feedback on duplicated statements
 @view_config(route_name='ajax_review_duplicate_statement', renderer='json')
+@validate(valid_user, valid_not_executed_review('review_uid', ReviewDuplicate), has_keywords(('is_duplicate', bool)))
 def review_duplicate_statement(request):
     """
     Values for the review for an argument, which is maybe a duplicate
@@ -1940,20 +1953,23 @@ def review_duplicate_statement(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('Views', 'review_duplicate_statement', 'main: {} - {}'.format(request.params, request.authenticated_userid))
-    try:
-        prepared_dict = review.duplicate_statement(request)
-    except KeyError as e:
-        logger('Views', 'review_duplicate_statement', repr(e), error=True)
-        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-        _t = Translator(ui_locales)
-        prepared_dict = {'error': _t.get(_.internalKeyError)}
+    logger('Views', 'review_duplicate_statement', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
+    db_review = request.validated['db_review']
+    db_user = request.validated['user']
+    is_duplicate = request.validated['is_duplicate']
+    main_page = request.application_url
+    port = get_port(request)
 
-    return json.dumps(prepared_dict)
+    _t = Translator(ui_locales)
+    review_main_helper.add_review_opinion_for_duplicate(db_user, main_page, port, db_review, is_duplicate, _t)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, port, 'duplicates')
+    return True
 
 
 # ajax - for feedback on optimization arguments
 @view_config(route_name='ajax_review_optimization_argument', renderer='json')
+@validate(valid_user, valid_not_executed_review('review_uid', ReviewOptimization), has_keywords(('should_optimized', bool), ('new_data', list)))
 def review_optimization_argument(request):
     """
     Values for the review for an argument, which should be optimized
@@ -1961,21 +1977,24 @@ def review_optimization_argument(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'review_optimization_argument', 'main: {}'.format(request.params))
+    logger('views', 'review_optimization_argument', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
+    db_review = request.validated['db_review']
+    db_user = request.validated['user']
+    should_optimized = request.validated['should_optimized']
+    new_data = request.validated['new_data']
+    main_page = request.application_url
+    port = get_port(request)
 
-    try:
-        prepared_dict = review.optimization_argument(request)
-    except KeyError as e:
-        logger('Views', 'review_optimization_argument', repr(e), error=True)
-        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-        _t = Translator(ui_locales)
-        prepared_dict = {'error': _t.get(_.internalKeyError)}
-
-    return json.dumps(prepared_dict)
+    _t = Translator(ui_locales)
+    review_main_helper.add_review_opinion_for_optimization(db_user, main_page, port, db_review, should_optimized, new_data, _t)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, port, 'optimizations')
+    return True
 
 
 # ajax - for feedback on a splitted premisegroup
 @view_config(route_name='ajax_review_splitted_premisegroup', renderer='json')
+@validate(valid_user, valid_not_executed_review('review_uid', ReviewSplit), has_keywords(('should_split', bool)))
 def review_splitted_premisegroup(request):
     """
     Values for the review for a premisegroup, which should be splitted
@@ -1983,21 +2002,23 @@ def review_splitted_premisegroup(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'review_splitted_premisegroup', 'main: {}'.format(request.params))
+    logger('views', 'review_splitted_premisegroup', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
+    db_review = request.validated['db_review']
+    db_user = request.validated['user']
+    should_split = request.validated['should_split']
+    main_page = request.application_url
+    port = get_port(request)
+    _t = Translator(ui_locales)
 
-    try:
-        prepared_dict = review.split_premisegroup(request)
-    except KeyError as e:
-        logger('Views', 'review_splitted_premisegroup', repr(e), error=True)
-        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-        _t = Translator(ui_locales)
-        prepared_dict = {'error': _t.get(_.internalKeyError)}
-
-    return json.dumps(prepared_dict)
+    review_main_helper.add_review_opinion_for_split(db_user, main_page, port, db_review, should_split, _t)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, port, 'splits')
+    return True
 
 
 # ajax - for feedback on a merged premisegroup
 @view_config(route_name='ajax_review_merged_premisegroup', renderer='json')
+@validate(valid_user, valid_not_executed_review('review_uid', ReviewMerge), has_keywords(('should_merge', bool)))
 def review_merged_premisegroup(request):
     """
     Values for the review for a statement, which should be merged
@@ -2005,17 +2026,18 @@ def review_merged_premisegroup(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'review_merged_premisegroup', 'main: {}'.format(request.params))
+    logger('views', 'review_merged_premisegroup', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
+    db_review = request.validated['db_review']
+    db_user = request.validated['user']
+    should_merge = request.validated['should_merge']
+    main_page = request.application_url
+    port = get_port(request)
+    _t = Translator(ui_locales)
 
-    try:
-        prepared_dict = review.merge_premisegroup(request)
-    except KeyError as e:
-        logger('Views', 'review_merged_premisegroup', repr(e), error=True)
-        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-        _t = Translator(ui_locales)
-        prepared_dict = {'error': _t.get(_.internalKeyError)}
-
-    return json.dumps(prepared_dict)
+    review_main_helper.add_review_opinion_for_merge(db_user, main_page, port, db_review, should_merge, _t)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, port, 'merges')
+    return True
 
 
 # ajax - for undoing reviews
@@ -2041,7 +2063,7 @@ def undo_review(request):
             'success': ''
         }
 
-    return json.dumps(prepared_dict)
+    return prepared_dict
 
 
 # ajax - for canceling reviews

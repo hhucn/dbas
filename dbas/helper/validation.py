@@ -334,9 +334,35 @@ def valid_text_values(request):
         if len(text) < min_length:
             __set_min_length_error(request, min_length)
             error = True
-    
+
     if not error:
         request.validated['text_values'] = tvalues
+
+
+def valid_database_model(keyword, model):
+    def valid_model(request):
+        uid = request.json_body.get(keyword)
+        db_something = DBDiscussionSession.query(model).get(uid) if is_integer(uid) else None
+        if db_something:
+            request.validated['db_model'] = db_something
+        else:
+            __add_error(request, 'valid_model', 'Database has no row {} of {}'.format(uid, model))
+
+    return valid_model
+
+
+def valid_not_executed_review(keyword, model):
+    def valid_model(request):
+        uid = request.json_body.get(keyword)
+        db_review = DBDiscussionSession.query(model).filter(model.uid == uid, model.is_executed == False).first() if is_integer(uid) else None
+        if db_review:
+            request.validated['db_review'] = db_review
+            return True
+        else:
+            __add_error(request, 'valid_not_executed_review', 'Database has no row {} of {}'.format(uid, model))
+            return False
+
+    return valid_model
 
 
 def valid_premisegroup(request):

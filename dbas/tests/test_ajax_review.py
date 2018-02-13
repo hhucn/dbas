@@ -93,14 +93,14 @@ class AjaxReviewTest(unittest.TestCase):
     def __exec_request_and_check_reviewes(self, db_review, ajax, keyword, bool, nickname, reviewer_type):
         self.config.testing_securitypolicy(userid=nickname, permissive=True)
         db_reviews1 = len(DBDiscussionSession.query(reviewer_type).filter_by(review_uid=db_review.uid).all())
-        request = testing.DummyRequest(params={
-            keyword: 'true' if bool else 'false',
+        request = testing.DummyRequest(json_body={
+            keyword: bool,
             'review_uid': db_review.uid
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         db_reviews2 = len(DBDiscussionSession.query(reviewer_type).filter_by(review_uid=db_review.uid).all())
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
+        self.assertTrue(response)
         self.assertTrue(db_reviews1 + 1, db_reviews2)
 
     def test_review_delete_argument(self):
@@ -133,13 +133,13 @@ class AjaxReviewTest(unittest.TestCase):
         from dbas.views import review_delete_argument as ajax
 
         self.config.testing_securitypolicy(userid='Pascal', permissive=True)
-        request = testing.DummyRequest(params={
-            'should_delete': 'true',
+        request = testing.DummyRequest(json_body={
+            'should_delete': True,
             'review_uid': 'a'
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertEqual(400, response.status_code)
 
     def test_review_delete_argument_author_error(self):
         db_review = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.statement_uid is not None,
@@ -174,23 +174,23 @@ class AjaxReviewTest(unittest.TestCase):
         db_reviews1 = len(DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=db_review.uid).all())
         db_edits1 = len(DBDiscussionSession.query(ReviewEdit).all())
         db_values1 = len(DBDiscussionSession.query(ReviewEditValue).all())
-        request = testing.DummyRequest(params={
-            'should_optimized': 'true',
+        request = testing.DummyRequest(json_body={
+            'should_optimized': True,
             'review_uid': db_review.uid,
-            'new_data': json.dumps([{
+            'new_data': [{
                 'statement': 22,
                 'type': 'statement',
                 'argument': 0,
                 'val': 'The purpose of a pet is to have something to take care of and to cuddle with'
-            }])
+            }]
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         transaction.commit()
         db_reviews2 = len(DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=db_review.uid).all())
         db_edits2 = len(DBDiscussionSession.query(ReviewEdit).all())
         db_values2 = len(DBDiscussionSession.query(ReviewEditValue).all())
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
+        self.assertTrue(response)
         self.assertTrue(db_reviews1 + 1, db_reviews2)
         self.assertNotEqual(db_edits1, db_edits2)
         self.assertNotEqual(db_values1, db_values2)
@@ -199,24 +199,23 @@ class AjaxReviewTest(unittest.TestCase):
         db_review = DBDiscussionSession.query(ReviewOptimization).first()
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import review_optimization_argument as ajax
-        request = testing.DummyRequest(params={
-            'is_edit_okay': 'true',
+        request = testing.DummyRequest(json_body={
+            'is_edit_okay': True,
             'review_uid': db_review.uid
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertEqual(400, response.status_code)
 
     def test_review_optimization_argument_uid_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import review_optimization_argument as ajax
-        request = testing.DummyRequest(params={
-            'is_edit_okay': 'true',
+        request = testing.DummyRequest(json_body={
+            'is_edit_okay': True,
             'review_uid': 'a'
         })
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        response = ajax(request)
+        self.assertEqual(400, response.status_code)
 
     def test_review_edit_argument(self):
         db_review = DBDiscussionSession.query(ReviewEdit).filter_by(is_executed=False).first()
@@ -227,84 +226,83 @@ class AjaxReviewTest(unittest.TestCase):
         for user in user_ids:
             self.config.testing_securitypolicy(userid=user, permissive=True)
             db_reviews1 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
-            request = testing.DummyRequest(params={
-                'is_edit_okay': 'true',
+            request = testing.DummyRequest(json_body={
+                'is_edit_okay': True,
                 'review_uid': db_review.uid
             })
-            response = json.loads(ajax(request))
+            response = ajax(request)
             transaction.commit()
             db_reviews2 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
             self.assertIsNotNone(response)
-            self.assertTrue(len(response['error']) == 0)
+            self.assertTrue(response)
             self.assertTrue(db_reviews1 + 1, db_reviews2)
 
         self.config.testing_securitypolicy(userid='Hermann', permissive=True)
         db_reviews1 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
         db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
-        request = testing.DummyRequest(params={
-            'is_edit_okay': 'true',
+        request = testing.DummyRequest(json_body={
+            'is_edit_okay': True,
             'review_uid': db_review.uid
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         transaction.commit()
         db_reviews2 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
         db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
+        self.assertTrue(response)
         self.assertTrue(db_reviews1 + 1, db_reviews2)
         self.assertNotEqual(db_reputation1, db_reputation2)
 
         self.config.testing_securitypolicy(userid='Torben', permissive=True)
         db_reviews1 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
-        request = testing.DummyRequest(params={
-            'should_optimized': 'false',
+        request = testing.DummyRequest(json_body={
+            'should_optimized': False,
             'review_uid': db_review.uid
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         transaction.commit()
         db_reviews2 = len(DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).all())
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertEqual(400, response.status_code)
         self.assertTrue(db_reviews1, db_reviews2)
 
     def test_review_edit_argument_author_error(self):
         db_review = DBDiscussionSession.query(ReviewEdit).first()
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import review_edit_argument as ajax
-        request = testing.DummyRequest(params={
-            'should_optimized': 'true',
+        request = testing.DummyRequest(json_body={
+            'should_optimized': True,
             'review_uid': db_review.uid,
             'new_data': 'new data for some statement'
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertEqual(400, response.status_code)
 
     def test_review_edit_argument_uid_error(self):
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import review_edit_argument as ajax
-        request = testing.DummyRequest(params={
-            'should_optimized': 'true',
+        request = testing.DummyRequest(json_body={
+            'should_optimized': True,
             'review_uid': 'a',
             'new_data': 'new data for some statement'
         })
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        response = ajax(request)
+        self.assertEqual(400, response.status_code)
 
     def __exec_request_and_check_duplicates(self, db_review, ajax, bool, nickname):
         self.config.testing_securitypolicy(userid=nickname, permissive=True)
         db_reviews1 = len(DBDiscussionSession.query(LastReviewerDuplicate).filter_by(review_uid=db_review.uid).all())
-        request = testing.DummyRequest(params={
-            'is_duplicate': 'true' if bool else 'false',
+        request = testing.DummyRequest(json_body={
+            'is_duplicate': bool,
             'review_uid': db_review.uid
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         transaction.commit()
         db_reviews2 = len(DBDiscussionSession.query(LastReviewerDuplicate).filter_by(review_uid=db_review.uid).all())
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) == 0)
+        self.assertTrue(response)
         self.assertTrue(db_reviews1 + 1, db_reviews2)
 
     def test_review_duplicate_statement(self):
@@ -326,39 +324,38 @@ class AjaxReviewTest(unittest.TestCase):
 
         self.config.testing_securitypolicy(userid='Friedrich', permissive=True)
         db_reviews1 = len(DBDiscussionSession.query(LastReviewerDuplicate).filter_by(review_uid=db_review.uid).all())
-        request = testing.DummyRequest(params={
-            'should_optimized': 'false',
+        request = testing.DummyRequest(json_body={
+            'should_optimized': False,
             'review_uid': db_review.uid
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         transaction.commit()
         db_reviews2 = len(DBDiscussionSession.query(LastReviewerDuplicate).filter_by(review_uid=db_review.uid).all())
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertEqual(400, response.status_code)
         self.assertTrue(db_reviews1, db_reviews2)
 
     def test_review_duplicate_statement_author_error(self):
         db_review = DBDiscussionSession.query(ReviewDuplicate).first()
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import review_duplicate_statement as ajax
-        request = testing.DummyRequest(params={
-            'is_duplicate': 'true',
+        request = testing.DummyRequest(json_body={
+            'is_duplicate': True,
             'review_uid': db_review.uid,
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertEqual(400, response.status_code)
 
     def test_review_duplicate_uid_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import review_duplicate_statement as ajax
-        request = testing.DummyRequest(params={
-            'is_duplicate': 'true',
+        request = testing.DummyRequest(json_body={
+            'is_duplicate': True,
             'review_uid': 'a'
         })
-        response = json.loads(ajax(request))
-        self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        response = ajax(request)
+        self.assertEqual(400, response.status_code)
 
     def test_undo_review(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
@@ -368,9 +365,10 @@ class AjaxReviewTest(unittest.TestCase):
             'queue': 'deletes',
             'uid': 5
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         db_canceled2 = len(DBDiscussionSession.query(ReviewCanceled).all())
         self.assertIsNotNone(response)
+        self.assertTrue(response)
         self.assertEqual(len(response['error']), 0)
         self.assertNotEqual(len(response['success']), 0)
         self.assertEqual(len(response['info']), 0)
@@ -384,7 +382,7 @@ class AjaxReviewTest(unittest.TestCase):
             'queue': 'deletes',
             'uid': 5
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         db_canceled2 = len(DBDiscussionSession.query(ReviewCanceled).all())
         self.assertIsNotNone(response)
         self.assertEqual(len(response['error']), 0)
@@ -618,14 +616,14 @@ class AjaxReviewTest(unittest.TestCase):
         for name in ['Marga', 'Emmi', 'Rupert']:
             self.config.testing_securitypolicy(userid=name, permissive=True)
             db_review1 = len(DBDiscussionSession.query(LastReviewerDuplicate).all())
-            request = testing.DummyRequest(params={
-                'is_duplicate': 'true',
+            request = testing.DummyRequest(json_body={
+                'is_duplicate': True,
                 'review_uid': db_review.uid
             })
-            response = json.loads(ajax(request))
+            response = ajax(request)
             db_review2 = len(DBDiscussionSession.query(LastReviewerDuplicate).all())
             self.assertIsNotNone(response)
-            self.assertEqual(len(response['error']), 0)
+            self.assertTrue(response)
             self.assertLess(db_review1, db_review2)
 
         new_text = get_text_for_argument_uid(argument_uid)
@@ -645,7 +643,7 @@ class AjaxReviewTest(unittest.TestCase):
             'uid': db_review.uid,
             'queue': 'duplicates',
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertEqual(len(response['error']), 0)
 
         new_oem_text = get_text_for_argument_uid(argument_uid)
@@ -870,22 +868,22 @@ class AjaxReviewTest(unittest.TestCase):
     def test_review_splitted_premisegroup_uid_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import review_splitted_premisegroup as ajax
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'review_uid': 0,
             'should_split': True,
         })
-        response = json.loads(ajax(request))
-        self.assertNotEqual(len(response['error']), 0)
+        response = ajax(request)
+        self.assertEqual(400, response.status_code)
 
     def test_review_splitted_premisegroup_user_error(self):
         self.config.testing_securitypolicy(userid='some_child', permissive=True)
         from dbas.views import review_splitted_premisegroup as ajax
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'review_uid': 1,
             'should_split': True,
         })
-        response = json.loads(ajax(request))
-        self.assertNotEqual(len(response['error']), 0)
+        response = ajax(request)
+        self.assertEqual(400, response.status_code)
 
     def test_review_splitted_premisegroup(self, pgroup_uid=21, resetdb=True):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
@@ -904,75 +902,75 @@ class AjaxReviewTest(unittest.TestCase):
 
         # vote 1:0
         from dbas.views import review_splitted_premisegroup as ajax
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'review_uid': tmp.uid,
             'should_split': True
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
         pro = len(db_review.filter_by(should_split=True).all())
         con = len(db_review.filter_by(should_split=False).all())
-        self.assertEqual(len(response['error']), 0)
+        self.assertTrue(response)
         self.assertEqual(pro, 1)
         self.assertEqual(con, 0)
 
         # vote 2:0
         self.config.testing_securitypolicy(userid='Christian', permissive=True)
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'review_uid': tmp.uid,
             'should_split': True,
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
         pro = len(db_review.filter_by(should_split=True).all())
         con = len(db_review.filter_by(should_split=False).all())
-        self.assertEqual(len(response['error']), 0)
+        self.assertTrue(response)
         self.assertEqual(pro, 2)
         self.assertEqual(con, 0)
 
         # vote 2:1
         self.config.testing_securitypolicy(userid='Bob', permissive=True)
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'review_uid': tmp.uid,
             'should_split': False,
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
         pro = len(db_review.filter_by(should_split=True).all())
         con = len(db_review.filter_by(should_split=False).all())
-        self.assertEqual(len(response['error']), 0)
+        self.assertTrue(response)
         self.assertEqual(pro, 2)
         self.assertEqual(con, 1)
 
         # vote 3:1
         self.config.testing_securitypolicy(userid='Pascal', permissive=True)
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'review_uid': tmp.uid,
             'should_split': True,
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
         pro = len(db_review.filter_by(should_split=True).all())
         con = len(db_review.filter_by(should_split=False).all())
-        self.assertEqual(len(response['error']), 0)
+        self.assertTrue(response)
         self.assertEqual(pro, 3)
         self.assertEqual(con, 1)
 
         # vote 4:1
         self.config.testing_securitypolicy(userid='Kurt', permissive=True)
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'review_uid': tmp.uid,
             'should_split': True,
         })
         arg_old_len = len(DBDiscussionSession.query(Argument).all())
 
-        response = json.loads(ajax(request))
+        response = ajax(request)
 
         arg_new_len = len(DBDiscussionSession.query(Argument).all())
         db_review = DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=tmp.uid)
         pro = len(db_review.filter_by(should_split=True).all())
         con = len(db_review.filter_by(should_split=False).all())
-        self.assertEqual(len(response['error']), 0)
+        self.assertTrue(response)
         self.assertEqual(pro, 4)
         self.assertEqual(con, 1)
         self.assertEqual(arg_old_len + 1, arg_new_len)
@@ -1015,63 +1013,63 @@ class AjaxReviewTest(unittest.TestCase):
 
         # vote 1:0
         from dbas.views import review_merged_premisegroup as ajax
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'review_uid': tmp.uid,
             'should_merge': True
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
         pro = len(db_review.filter_by(should_merge=True).all())
         con = len(db_review.filter_by(should_merge=False).all())
-        self.assertEqual(len(response['error']), 0)
+        self.assertTrue(response)
         self.assertEqual(pro, 1)
         self.assertEqual(con, 0)
 
         # vote 2:0
         self.config.testing_securitypolicy(userid='Christian', permissive=True)
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'review_uid': tmp.uid,
             'should_merge': True,
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
         pro = len(db_review.filter_by(should_merge=True).all())
         con = len(db_review.filter_by(should_merge=False).all())
-        self.assertEqual(len(response['error']), 0)
+        self.assertTrue(response)
         self.assertEqual(pro, 2)
         self.assertEqual(con, 0)
 
         # vote 2:1
         self.config.testing_securitypolicy(userid='Bob', permissive=True)
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'review_uid': tmp.uid,
             'should_merge': False,
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
         pro = len(db_review.filter_by(should_merge=True).all())
         con = len(db_review.filter_by(should_merge=False).all())
-        self.assertEqual(len(response['error']), 0)
+        self.assertTrue(response)
         self.assertEqual(pro, 2)
         self.assertEqual(con, 1)
 
         # vote 3:1
         self.config.testing_securitypolicy(userid='Pascal', permissive=True)
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'review_uid': tmp.uid,
             'should_merge': True,
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         db_review = DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=tmp.uid)
         pro = len(db_review.filter_by(should_merge=True).all())
         con = len(db_review.filter_by(should_merge=False).all())
-        self.assertEqual(len(response['error']), 0)
+        self.assertTrue(response)
         self.assertEqual(pro, 3)
         self.assertEqual(con, 1)
 
         # vote 4:1
         self.config.testing_securitypolicy(userid='Kurt', permissive=True)
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(json_body={
             'review_uid': tmp.uid,
             'should_merge': True,
         })
@@ -1081,7 +1079,7 @@ class AjaxReviewTest(unittest.TestCase):
         old_text, trash = get_text_for_premisesgroup_uid(pgroup_uid)
         old_argument_text = get_text_for_argument_uid(db_arguments_with_pgroup[0].uid)
         pgroup_merged_old_len = len(DBDiscussionSession.query(PremiseGroupMerged).all())
-        response = json.loads(ajax(request))
+        response = ajax(request)
 
         new_text, trash = get_text_for_premisesgroup_uid(db_new_pgroup.uid)
         new_argument_text = get_text_for_argument_uid(db_arguments_with_pgroup[0].uid)
@@ -1091,7 +1089,7 @@ class AjaxReviewTest(unittest.TestCase):
         pro = len(db_review.filter_by(should_merge=True).all())
         con = len(db_review.filter_by(should_merge=False).all())
 
-        self.assertEqual(len(response['error']), 0)
+        self.assertTrue(response)
         self.assertEqual(pro, 4)
         self.assertEqual(con, 1)
         self.assertEqual(pgroup_old_len + 1, pgroup_new_len)
@@ -1188,7 +1186,7 @@ class AjaxReviewTest(unittest.TestCase):
         response = json.loads(ajax(request))
         len3 = len(DBDiscussionSession.query(ReviewSplit).all())
 
-        self.assertEqual(len(response['error']), 0)
+        self.assertTrue(response)
         self.assertEqual(len(response['info']), 0)
         self.assertNotEqual(len(response['success']), 0)
         self.assertEqual(len2, len3)
@@ -1232,7 +1230,7 @@ class AjaxReviewTest(unittest.TestCase):
             'queue': 'merges',
             'uid': 'a',
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertNotEqual(len(response['error']), 0)
         self.assertEqual(len(response['success']), 0)
         self.assertEqual(len(response['info']), 0)
@@ -1242,7 +1240,7 @@ class AjaxReviewTest(unittest.TestCase):
             'queue': 'merges',
             'uid': 2,
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertNotEqual(len(response['info']), 0)
         self.assertEqual(len(response['success']), 0)
         self.assertEqual(len(response['error']), 0)
@@ -1253,7 +1251,7 @@ class AjaxReviewTest(unittest.TestCase):
             'queue': 'HAHA',
             'uid': 2,
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertNotEqual(len(response['error']), 0)
         self.assertEqual(len(response['success']), 0)
         self.assertEqual(len(response['info']), 0)
@@ -1263,7 +1261,7 @@ class AjaxReviewTest(unittest.TestCase):
             'queue': 'merges',
             'uid': 5,
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertNotEqual(len(response['error']), 0)
         self.assertEqual(len(response['success']), 0)
         self.assertEqual(len(response['info']), 0)
@@ -1294,7 +1292,7 @@ class AjaxReviewTest(unittest.TestCase):
             'queue': 'splits',
             'uid': db_review.uid
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertEqual(len(response['error']), 0)
         self.assertEqual(len(response['info']), 0)
         self.assertNotEqual(len(response['success']), 0)
@@ -1341,7 +1339,7 @@ class AjaxReviewTest(unittest.TestCase):
             'queue': 'merges',
             'uid': db_review.uid
         })
-        response = json.loads(ajax(request))
+        response = ajax(request)
         self.assertEqual(len(response['error']), 0)
         self.assertEqual(len(response['info']), 0)
         self.assertNotEqual(len(response['success']), 0)
