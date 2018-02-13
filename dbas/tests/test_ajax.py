@@ -114,82 +114,80 @@ class AjaxTest(unittest.TestCase):
 
     def test_fuzzy_search_mode_0(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(params={'value': 'cat', 'type': 0}, matchdict={})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 0, 'extra': ''})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertNotIn('error', response)
+        self.assertIn('values', response)
 
     def test_fuzzy_search_mode_1(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(params={'value': 'cat', 'type': 1, 'extra': 1}, matchdict={})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 1, 'extra': 1})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertNotIn('error', response)
+        self.assertIn('values', response)
 
     def test_fuzzy_search_mode_2(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(params={'value': 'cat', 'type': 2}, matchdict={})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 2, 'extra': ''})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertNotIn('error', response)
+        self.assertIn('values', response)
 
     def test_fuzzy_search_mode_3(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(params={'value': 'cat', 'type': 3}, matchdict={})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 3, 'extra': ''})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertNotIn('error', response)
+        self.assertIn('values', response)
 
     def test_fuzzy_search_mode_4(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(params={'value': 'cat', 'type': 4}, matchdict={})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 4, 'extra': ''})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertNotIn('error', response)
+        self.assertIn('values', response)
 
     def test_fuzzy_search_mode_5(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(params={'value': 'cat', 'type': 5}, matchdict={})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 5, 'extra': ''})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertNotIn('error', response)
+        self.assertIn('values', response)
 
     def test_fuzzy_search_mode_8(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(params={'value': 'cat', 'type': 8}, matchdict={})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 8, 'extra': ''})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertNotIn('error', response)
+        self.assertIn('values', response)
 
     def test_fuzzy_search_mode_9(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(params={'value': 'cat', 'type': 9}, matchdict={})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 9, 'extra': ''})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertNotIn('error', response)
+        self.assertIn('values', response)
 
     def test_fuzzy_search_failure_mode(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(params={'value': 'cat', 'type': 6}, matchdict={})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': '6', 'extra': ''})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['error']) != 0)
+        self.assertTrue(400, response.status_code)
 
     def test_switch_language(self):
         from dbas.views import switch_language as ajax
         lang = ['de', 'en']
         for l in lang:
-            request = testing.DummyRequest(params={'_LOCALE_': l}, matchdict={})
+            request = testing.DummyRequest(json_body={'lang': l})
             response = ajax(request)
-            self.assertIsNotNone(response)
             self.assertTrue(response['_LOCALE_'] == l)
 
     def test_switch_language_failure(self):
         from dbas.views import switch_language as ajax
-        request = testing.DummyRequest(params={'_LOCALE_': 'sw'}, matchdict={})
+        request = testing.DummyRequest(json_body={'lang': 'sw'})
         response = ajax(request)
-        self.assertIsNotNone(response)
-        self.assertTrue(response['_LOCALE_'] != 'sw')
+        self.assertEqual(400, response.status_code)
 
     def test_additional_service(self):
         from dbas.views import additional_service as ajax

@@ -13,20 +13,16 @@ function AjaxMainHandler(){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
 			url: mainpage + 'ajax_switch_language',
-			type: 'POST',
-			data: { '_LOCALE_': new_lang},
+			method: 'POST',
 			dataType: 'json',
-			async: true,
+			contentType: 'application/json',
+			data: JSON.stringify({'lang': new_lang}),
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
-		}).done(function ajaxSwitchDisplayLanguageDone(data) {
-			if (data.error.length !== 0) {
-				setGlobalErrorHandler(_t(ohsnap), data.error);
-			} else {
-				setAnalyticsOptOutLink(new_lang);
-				location.reload(true);
-			}
+		}).done(function ajaxSwitchDisplayLanguageDone() {
+			setAnalyticsOptOutLink(new_lang);
+			location.reload(true);
 		}).fail(function ajaxSwitchDisplayLanguageFail(xhr) {
 			if (xhr.status === 400) {
 				setGlobalErrorHandler(_t(ohsnap), _t(requestFailedBadToken));

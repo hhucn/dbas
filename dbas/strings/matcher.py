@@ -9,15 +9,14 @@ from collections import OrderedDict
 from itertools import islice
 
 from Levenshtein import distance
+from pyramid.response import Response
 from sqlalchemy import and_, func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
-from dbas.helper.views import get_nickname
 from dbas.lib import get_public_profile_picture
 from dbas.query_wrapper import get_not_disabled_statement_as_query
-from dbas.strings.keywords import Keywords as _
 from dbas.url_manager import UrlManager
 
 list_length = 5
@@ -28,56 +27,53 @@ mechanism = 'Levensthein'
 # mechanism = 'SequenceMatcher'
 
 
-def get_prediction(_tn, for_api, api_data, request_authenticated_userid, issue_uid, application_url, value, mode, issue, extra=None):
+def get_prediction(_tn, db_user, db_issue, application_url, value, mode, extra=None):
     """
     Get dictionary with matching words, based on the given mode
 
     :param _tn: Translator
     :param for_api: Boolean
     :param api_data: data from the api
-    :param request_authenticated_userid: users nickname
-    :param issue_uid: issue_uid
+    :param db_user: User
+    :param db_issue: Issue
     :param application_url: application_url
     :param value: users value, which should be the base for searching
     :param mode: int
-    :param issue: Issue.uid
     :param extra: Array
     :return: Dictionary
     """
 
     return_dict = {}
-    if mode == '0':  # start statement
-        return_dict['values'] = get_strings_for_start(value, issue, True)
+    if mode == 0:  # start statement
+        return_dict['values'] = get_strings_for_start(value, db_issue.uid, True)
         return_dict['distance_name'] = mechanism
 
-    elif mode == '1':  # edit statement popup
+    elif mode == 1:  # edit statement popup
         return_dict['values'] = get_strings_for_edits(value, extra)
         return_dict['distance_name'] = mechanism
 
-    elif mode == '2':  # start premise
-        return_dict['values'] = get_strings_for_start(value, issue, False)
+    elif mode == 2:  # start premise
+        return_dict['values'] = get_strings_for_start(value, db_issue.uid, False)
         return_dict['distance_name'] = mechanism
 
-    elif mode == '3' or mode == '4':  # adding reasons / duplicates
+    elif mode in [3, 4]:  # adding reasons / duplicates
         try:
             uid = int(extra)
         except (TypeError, ValueError):
             uid = None
 
-        return_dict['values'] = get_strings_for_duplicates_or_reasons(value, issue, uid)
+        return_dict['values'] = get_strings_for_duplicates_or_reasons(value, db_issue.uid, uid)
         return_dict['distance_name'] = mechanism
 
-    elif mode == '5':  # getting public nicknames
-        nickname = get_nickname(request_authenticated_userid, for_api, api_data)
-        return_dict['values'] = get_strings_for_public_nickname(value, nickname)
+    elif mode == 5:  # getting public nicknames
+        return_dict['values'] = get_strings_for_public_nickname(value, db_user.get_global_nickname())
         return_dict['distance_name'] = mechanism
 
-    elif mode == '9' or mode == '8':  # search everything
-        return_dict['values'] = get_all_statements_with_value(issue_uid, application_url, value)
+    elif mode in [8, 9]:  # search everything
+        return_dict['values'] = get_all_statements_with_value(db_issue.uid, application_url, value)
         return_dict['distance_name'] = mechanism
-
     else:
-        return_dict = {'error': _tn.get(_.internalError)}
+        return Response({'status_code': 400})
 
     return return_dict
 

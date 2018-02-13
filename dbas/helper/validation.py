@@ -4,7 +4,7 @@ from cornice.util import json_error
 
 import dbas.handler.issue as issue_handler
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Issue, Statement, Language, Argument
+from dbas.database.discussion_model import User, Issue, Statement, Language, Argument, ReviewDeleteReason
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer
@@ -171,7 +171,9 @@ def valid_conclusion(request):
     issue_id = request.validated['issue'].uid if 'issue' in request.validated else issue_handler.get_issue_id(request)
 
     if conclusion_id:
-        db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id, issue_uid=issue_id).first()
+        db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id,
+                                                                       issue_uid=issue_id,
+                                                                       is_disabled=False).first()
         request.validated['conclusion'] = db_conclusion
     else:
         _tn = Translator(get_language_from_cookie(request))
@@ -186,7 +188,8 @@ def valid_statement(request):
     :return:
     """
     statement_id = request.json_body.get('uid')
-    db_statement = DBDiscussionSession.query(Statement).get(statement_id) if is_integer(statement_id) else None
+    db_statement = DBDiscussionSession.query(Statement).filter(Statement.uid == statement_id,
+                                                               Statement.is_disabled == False).first() if is_integer(statement_id) else None
 
     if db_statement:
         request.validated['statement'] = db_statement
@@ -203,7 +206,8 @@ def valid_argument(request):
     :return:
     """
     argument_id = request.json_body.get('uid')
-    db_argument = DBDiscussionSession.query(Argument).get(argument_id) if is_integer(argument_id) else None
+    db_argument = DBDiscussionSession.query(Argument).filter(Argument.uid == argument_id,
+                                                             Argument.is_disabled == False).first() if is_integer(argument_id) else None
 
     if db_argument:
         request.validated['argument'] = db_argument
@@ -301,6 +305,22 @@ def valid_notification_recipient(request):
 
 # #############################################################################
 # General validation
+
+def valid_review_reason(request):
+    """
+    Given an reason, validates the correctness for our review system.
+
+    :param request:
+    :return:
+    """
+    reason = request.json_body.get('reason')
+    db_reason = DBDiscussionSession.query(ReviewDeleteReason).filter_by(reason=reason).first()
+
+    if db_reason or reason in ['optimization', 'duplicate']:
+        request.validated['reason'] = reason
+    else:
+        _tn = Translator(get_language_from_cookie(request))
+        __add_error(request, 'valid_review_reason', 'Invalid reason', _tn.get(_.internalError))
 
 
 def valid_premisegroups(request):
