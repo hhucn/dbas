@@ -223,7 +223,7 @@ function Main () {
 
 		trianglel.find('.triangle-flag').click(function () {
 			var uid = $(this).closest('.triangle-l').attr('id').replace(questionBubbleId + '-', '');
-			popupHandler.showFlagArgumentPopup(uid);
+			popupHandler.showFlagArgumentPopup(parseInt(uid));
 		});
 
 		trianglel.find('.triangle-reference').click(function () {
@@ -248,7 +248,7 @@ function Main () {
 				}
 				text.push(txt);
 			});
-			popupHandler.showFlagStatementPopup(uid, false, text.join(' '));
+			popupHandler.showFlagStatementPopup(parseInt(uid), false, text.join(' '));
 		});
 
 		list.find('.item-edit').click(function () {

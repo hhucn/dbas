@@ -171,7 +171,9 @@ def valid_conclusion(request):
     issue_id = request.validated['issue'].uid if 'issue' in request.validated else issue_handler.get_issue_id(request)
 
     if conclusion_id:
-        db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id, issue_uid=issue_id).first()
+        db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id,
+                                                                       issue_uid=issue_id,
+                                                                       is_disabled=False).first()
         request.validated['conclusion'] = db_conclusion
     else:
         _tn = Translator(get_language_from_cookie(request))
@@ -186,7 +188,8 @@ def valid_statement(request):
     :return:
     """
     statement_id = request.json_body.get('uid')
-    db_statement = DBDiscussionSession.query(Statement).get(statement_id) if is_integer(statement_id) else None
+    db_statement = DBDiscussionSession.query(Statement).filter(Statement.uid == statement_id,
+                                                               Statement.is_disabled == False).first() if is_integer(statement_id) else None
 
     if db_statement:
         request.validated['statement'] = db_statement
@@ -203,7 +206,8 @@ def valid_argument(request):
     :return:
     """
     argument_id = request.json_body.get('uid')
-    db_argument = DBDiscussionSession.query(Argument).get(argument_id) if is_integer(argument_id) else None
+    db_argument = DBDiscussionSession.query(Argument).filter(Argument.uid == argument_id,
+                                                             Argument.is_disabled == False).first() if is_integer(argument_id) else None
 
     if db_argument:
         request.validated['argument'] = db_argument

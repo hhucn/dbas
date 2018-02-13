@@ -277,41 +277,10 @@ function AjaxDiscussionHandler() {
 
 	/***
 	 * Ajax request for the fuzzy search
-	 *
-	 * @param value
-	 * @param type
-	 * @param oem_text
-	 */
-	this.fuzzySearchForDuplicate = function (value, type, oem_text) {
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_fuzzy_search',
-			method: 'GET',
-			dataType: 'json',
-			data: {
-				value: value,
-				type: type,
-				extra: JSON.stringify(['all', oem_text]),
-				issue: getCurrentIssueId()
-			},
-			async: true,
-			global: false,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxGetAllUsersDone(data) {
-			new InteractionHandler().callbackIfDoneFuzzySearchForDuplicate(data);
-		}).fail(function ajaxGetAllUsersFail() {
-		});
-
-	};
-
-	/***
-	 * Ajax request for the fuzzy search
 	 * @param value
 	 * @param callbackid
 	 * @param type
-	 * @param extra optional
+	 * @param extra optional integer
 	 * @param reason optional
 	 */
 	this.fuzzySearch = function (value, callbackid, type, extra, reason) {
@@ -369,17 +338,22 @@ function AjaxDiscussionHandler() {
 
 		$.ajax({
 			url: 'ajax_fuzzy_search',
-			method: 'GET',
+			method: 'POST',
 			dataType: 'json',
-			data: { value: value, type:type, extra: extra, issue: getCurrentIssueId() },
-			async: true,
+			contentType: 'application/json',
+			data: JSON.stringify({
+				value: value,
+				type: type,
+				extra: extra,
+				issue: getCurrentIssueId()
+			}),
 			global: false,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
-		}).done(function ajaxGetAllUsersDone(data) {
+		}).done(function ajaxFuzzySearchDone(data) {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type, reason);
-		}).fail(function ajaxGetAllUsersFail() {
+		}).fail(function ajaxFuzzySearchFail() {
 		});
 		callback.focus();
 	};

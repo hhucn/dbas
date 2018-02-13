@@ -56,7 +56,7 @@ function PopupHandler() {
 				var oem = $(this).attr('placeholder');
 				var now = $(this).val();
 				var id = $(this).attr('id');
-				var statement_uid = $(this).data('statement-uid');
+				var statement_uid = parseInt($(this).data('statement-uid'));
 
 				// reduce noise
 				var levensthein = _l(oem, now);
@@ -338,7 +338,7 @@ function PopupHandler() {
 
 			} else {
 				var tmp = next.find('em').text();
-				new PopupHandler().showFlagStatementPopup(id, false, tmp);
+				new PopupHandler().showFlagStatementPopup(parseInt(id), false, tmp);
 			}
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');

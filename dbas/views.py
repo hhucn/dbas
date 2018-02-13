@@ -1765,6 +1765,7 @@ def set_references(request):
 
 # ajax - for language switch
 @view_config(route_name='ajax_switch_language', renderer='json')
+@validate(valid_language)
 def switch_language(request):
     """
     Switches the language
@@ -1772,9 +1773,8 @@ def switch_language(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    user.update_last_action(request.authenticated_userid)
-    logger('switch_language', 'def', 'request.params: {}'.format(request.params))
-    return set_language(request)
+    logger('switch_language', 'def', 'request.json_body: {}'.format(request.json_body))
+    return set_language(request, request.validated['lang'])
 
 
 # ajax - for sending news
@@ -1796,7 +1796,8 @@ def send_news(request):
 
 # ajax - for fuzzy search
 @view_config(route_name='ajax_fuzzy_search', renderer='json')
-def fuzzy_search(request, for_api=False, api_data=None):
+@validate(valid_issue, invalid_user, has_keywords(('type', int), ('value', str)))
+def fuzzy_search(request):
     """
     ajax interface for fuzzy string search
 
@@ -1805,25 +1806,15 @@ def fuzzy_search(request, for_api=False, api_data=None):
     :param api_data: data
     :return: json-set with all matched strings
     """
-    logger('views', 'fuzzy_search', 'for_api: {}, request.params: {}'.format(for_api, request.params))
+    logger('views', 'fuzzy_search', 'request.json_body: {}'.format(request.json_body))
 
     _tn = Translator(get_language_from_cookie(request))
-    request_authenticated_userid = request.authenticated_userid
-
-    try:
-        mode = str(api_data['mode']) if for_api else str(request.params['type'])
-        value = api_data['value'] if for_api else request.params['value']
-        issue = api_data['issue'] if for_api else issue_handler.get_issue_id(request)
-        extra = request.params.get('extra')
-    except KeyError as e:
-        logger('views', 'fuzzy_search', repr(e), error=True)
-        return {'error': _tn.get(_.internalKeyError)}
-
-    issue_uid = issue_handler.get_issue_id(request)
-    return_dict = fuzzy_string_matcher.get_prediction(_tn, for_api, api_data, request_authenticated_userid, issue_uid,
-                                                      request.application_url, value, mode, issue, extra)
-
-    return return_dict
+    mode = request.validated['type']
+    value = request.validated['value']
+    db_issue = request.validated['issue']
+    extra = request.json_body.get('extra')
+    db_user = request.validated['user']
+    return fuzzy_string_matcher.get_prediction(_tn, db_user, db_issue, request.application_url, value, mode, extra)
 
 
 # ajax - for additional service
