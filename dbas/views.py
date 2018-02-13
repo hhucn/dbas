@@ -1316,22 +1316,21 @@ def user_password_request(request):
     return return_dict
 
 
-# ajax - set boolean for receiving information
 @view_config(route_name='ajax_set_user_setting', renderer='json')
+@validate(valid_user, has_keywords(('settings_value', bool), ('service', str)))
 def set_user_settings(request):
     """
-    Sets a specific setting of the user
+    Sets a specific setting of the user.
 
     :param request: current request of the server
     :return: json-dict()
     """
     logger('Views', 'set_user_settings', 'request.params: {}'.format(request.params))
     _tn = Translator(get_language_from_cookie(request))
-
-    settings_value = request.params.get('settings_value') == 'True'
-    service = request.params.get('service')
-    return_dict = set_settings(request.application_url, request.authenticated_userid, service, settings_value, _tn)
-    return return_dict
+    user = request.validated['user']
+    settings_value = request.validated['settings_value']
+    service = request.validated['service']
+    return set_settings(request.application_url, user, service, settings_value, _tn)
 
 
 @view_config(route_name='ajax_set_user_language', renderer='json')

@@ -14,7 +14,6 @@ function AjaxSettingsHandler(){
 			url: 'ajax_get_user_history',
 			method: 'GET',
 			dataType: 'json',
-			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function ajaxGetUserHistoryDone(data) {
 			new HistoryHandler().getUserHistoryDataDone(data);
@@ -32,7 +31,6 @@ function AjaxSettingsHandler(){
 			url: 'ajax_delete_user_history',
 			method: 'POST',
 			dataType: 'json',
-			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function ajaxGetUserHistoryDone() {
 			new HistoryHandler().removeUserHistoryDataDone();
@@ -53,9 +51,12 @@ function AjaxSettingsHandler(){
 		$.ajax({
 			url: 'ajax_set_user_setting',
 			method: 'POST',
-			data:{'settings_value': settings_value ? 'True': 'False', 'service': service},
+            contentType: 'application/json',
+            data: JSON.stringify({
+                'settings_value': settings_value,
+                'service': service
+            }),
 			dataType: 'json',
-			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function setUserSettingDone(data) {
 			new SettingsHandler().callbackDone(data, toggle_element, settings_value, service);
@@ -114,7 +115,6 @@ function AjaxSettingsHandler(){
 			url: 'ajax_get_all_edits',
 			method: 'GET',
 			dataType: 'json',
-			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function getEditsDoneDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allEditsDone), false);
@@ -137,7 +137,6 @@ function AjaxSettingsHandler(){
 			url: 'ajax_get_all_posted_statements',
 			method: 'GET',
 			dataType: 'json',
-			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function getStatementsSendDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allStatementsPosted), false);
@@ -160,7 +159,6 @@ function AjaxSettingsHandler(){
 			url: 'ajax_get_all_argument_clicks',
 			method: 'GET',
 			dataType: 'json',
-			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function getArgumentClicksDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenInterests), true);
@@ -183,7 +181,6 @@ function AjaxSettingsHandler(){
 			url: 'ajax_get_all_statement_clicks',
 			method: 'GET',
 			dataType: 'json',
-			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function getStatementClicksDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenInterests), true);
@@ -206,7 +203,6 @@ function AjaxSettingsHandler(){
 			url: 'ajax_get_all_marked_arguments',
 			method: 'GET',
 			dataType: 'json',
-			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function gertMarkedArgumentsDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), false);
@@ -229,7 +225,6 @@ function AjaxSettingsHandler(){
 			url: 'ajax_get_all_marked_statements',
 			method: 'GET',
 			dataType: 'json',
-			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function getMarkedStatementsDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), false);
@@ -247,7 +242,6 @@ function AjaxSettingsHandler(){
 			url: 'ajax_delete_statistics',
 			method: 'GET',
 			dataType: 'json',
-			async: true,
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function deleteStatisticsRequestDone(data) {
 			new StatisticsHandler().callbackDeleteStatisticsDone(data);
