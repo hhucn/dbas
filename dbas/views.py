@@ -1284,6 +1284,7 @@ def user_registration(request):
 
 # ajax - password requests
 @view_config(route_name='ajax_user_password_request', renderer='json')
+@validate(has_keywords(('email', str)))
 def user_password_request(request):
     """
     Sends an email, when the user requests his password
@@ -1292,26 +1293,8 @@ def user_password_request(request):
     :return: dict() with success and message
     """
     logger('Views', 'user_password_request', 'request.params: {}'.format(request.params))
-
-    success = ''
-    info = ''
-    ui_locales = request.params['lang'] if 'lang' in request.params else get_language_from_cookie(request)
-    _t = Translator(ui_locales)
-
-    try:
-        success, error, info = request_password(request)
-
-    except KeyError as e:
-        logger('iew', 'user_password_request', repr(e), error=True)
-        error = _t.get(_.internalKeyError)
-
-    return_dict = {
-        'success': str(success),
-        'error': str(error),
-        'info': str(info)
-    }
-
-    return return_dict
+    _tn = Translator(get_language_from_cookie(request))
+    return request_password(request.validated['email'], request.mailer, _tn)
 
 
 @view_config(route_name='ajax_set_user_setting', renderer='json')

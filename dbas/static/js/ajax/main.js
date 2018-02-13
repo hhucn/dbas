@@ -16,7 +16,6 @@ function AjaxMainHandler(){
 			type: 'POST',
 			data: { '_LOCALE_': new_lang},
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
@@ -113,7 +112,6 @@ function AjaxMainHandler(){
 				service: service,
 				redirect_uri: url},
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
@@ -143,7 +141,6 @@ function AjaxMainHandler(){
 			url: mainpage + 'ajax_user_logout',
 			type: 'POST',
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
@@ -228,9 +225,12 @@ function AjaxMainHandler(){
 		$.ajax({
 			url: 'ajax_user_password_request',
 			type: 'POST',
-			data: { email: email, lang: getLanguage()},
+            contentType: 'application/json',
+            data: JSON.stringify({
+                email: email,
+                lang: getLanguage()
+            }),
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
@@ -258,7 +258,6 @@ function AjaxMainHandler(){
 			type: 'POST',
 			data: {type:'chuck'},
 			global: false,
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
@@ -282,7 +281,6 @@ function AjaxMainHandler(){
 			type: 'POST',
 			data: {type:'mama'},
 			global: false,
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
