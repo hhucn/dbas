@@ -90,6 +90,6 @@ class FunctionalTests(unittest.TestCase):
 
     def test_review_content(self):
         self.testapp.get('/review/', status=404)
-        from dbas.review.helper.subpage import pages
-        for page in pages:
-            self.testapp.get('/review/' + page, status=200)
+        from dbas.review.helper.queues import review_queues
+        for queue in review_queues:
+            self.testapp.get('/review/' + queue, status=200)

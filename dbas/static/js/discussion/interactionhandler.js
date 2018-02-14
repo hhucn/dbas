@@ -165,24 +165,6 @@ function InteractionHandler() {
 	/**
 	 *
 	 * @param data
-	 */
-	this.callbackIfDoneRevokeContent = function(data) {
-		var parsedData = $.parseJSON(data);
-
-		if (parsedData.error.length !== 0) {
-			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
-		} else {
-			if (parsedData.success) {
-				setGlobalSuccessHandler('Yeah!', _t_discussion(dataRemoved) + ' ' + _t_discussion(yourAreNotTheAuthorOfThisAnymore));
-			} else {
-				setGlobalSuccessHandler('Yeah!', _t_discussion(contentWillBeRevoked));
-			}
-		}
-	};
-
-	/**
-	 *
-	 * @param data
 	 * @param is_argument
 	 */
 	this.callbackIfDoneForGettingMoreInfosAboutOpinion = function(data, is_argument){

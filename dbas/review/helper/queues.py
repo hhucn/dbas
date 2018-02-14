@@ -12,10 +12,11 @@ from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelet
     LastReviewerMerge, LastReviewerSplit
 from dbas.lib import get_profile_picture, is_user_author_or_admin
 from dbas.logger import logger
-from dbas.review.helper.reputation import get_reputation_of, reputation_icons
-from dbas.review.helper.subpage import reputation_borders
+from dbas.review.helper.reputation import get_reputation_of, reputation_icons, reputation_borders
 from dbas.strings.keywords import Keywords as _
 from sqlalchemy import and_
+
+from dbas.strings.translator import Translator
 
 max_lock_time_in_sec = 180
 
@@ -28,6 +29,15 @@ key_split = 'splits'
 key_history = 'history'
 key_ongoing = 'ongoing'
 
+review_queues = [
+    key_deletes,
+    key_optimizations,
+    key_edits,
+    key_duplicates,
+    key_merge,
+    key_split
+]
+
 title_mapping = {
     key_deletes: _.queueDelete,
     key_optimizations: _.queueOptimization,
@@ -35,6 +45,15 @@ title_mapping = {
     key_duplicates: _.queueDuplicates,
     key_split: _.queueSplit,
     key_merge: _.queueMerge
+}
+
+model_mapping = {
+    key_deletes: ReviewDelete,
+    key_optimizations: ReviewOptimization,
+    key_edits: ReviewEdit,
+    key_duplicates: ReviewDuplicate,
+    key_split: ReviewSplit,
+    key_merge: ReviewMerge
 }
 
 
@@ -500,72 +519,69 @@ def __add_edit_values_review(element, db_user):
         return 0
 
 
-def lock_optimization_review(nickname, review_uid, translator):
+def lock_optimization_review(db_user: User, db_review: ReviewOptimization, translator: Translator):
     """
     Locks a ReviewOptimization
 
-    :param nickname: User.nickname
-    :param review_uid: ReviewOptimization.uid
-    :param translator: Translator
-    :return: success, info, error, is_locked
-    :rtype: String, String, String, Boolean
+    :param db_user:
+    :param db_review:
+    :param translator:
+    :return:
     """
     logger('ReviewQueues', 'lock_optimization_review', 'main')
-    success = ''
-    info = ''
-    error = ''
-    is_locked = False
-
-    # has user already locked an item?
-    db_user  = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    db_lock = DBDiscussionSession.query(ReviewOptimization).get(review_uid)
-
-    if not db_user or int(review_uid) < 1 or not db_lock:
-        logger('ReviewQueues', 'lock_optimization_review', 'no user or no review (' + str(not db_user) + ',' + str(not db_lock) + ')', error=True)
-        error = translator.get(_.internalKeyError)
-        return success, info, error, is_locked
-
     # check if author locked an item and maybe tidy up old locks
     db_locks = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).first()
     if db_locks:
         if is_review_locked(db_locks.review_optimization_uid):
-            info = translator.get(_.dataAlreadyLockedByYou)
-            is_locked = True
             logger('ReviewQueues', 'lock_optimization_review', 'review already locked')
-            return success, info, error, is_locked
+            return {
+                'success': '',
+                'info': translator.get(_.dataAlreadyLockedByYou),
+                'is_locked': True
+            }
         else:
             DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).delete()
 
     # is already locked?
-    if is_review_locked(review_uid):
+    if is_review_locked(db_review.uid):
         logger('ReviewQueues', 'lock_optimization_review', 'already locked', warning=True)
-        info = translator.get(_.dataAlreadyLockedByOthers)
-        is_locked = True
-        return success, info, error, is_locked
+        return {
+            'success': '',
+            'info': translator.get(_.dataAlreadyLockedByOthers),
+            'is_locked': True
+        }
 
-    DBDiscussionSession.add(OptimizationReviewLocks(db_user.uid, review_uid))
+    DBDiscussionSession.add(OptimizationReviewLocks(db_user.uid, db_review.uid))
     DBDiscussionSession.flush()
     transaction.commit()
-    is_locked = True
     success = translator.get(_.dataAlreadyLockedByYou)
 
     logger('ReviewQueues', 'lock_optimization_review', 'review locked')
-    return success, info, error, is_locked
+    return {
+        'success': success,
+        'info': '',
+        'is_locked': True
+    }
 
 
-def unlock_optimization_review(review_uid):
+def unlock_optimization_review(db_review: ReviewOptimization, translator: Translator):
     """
     Unlock the OptimizationReviewLocks
 
-    :param review_uid: OptimizationReviewLocks.uid
-    :return: True
+    :param db_review:
+    :param translator:
+    :return:
     """
     tidy_up_optimization_locks()
     logger('ReviewQueues', 'unlock_optimization_review', 'main')
-    DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=review_uid).delete()
+    DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=db_review.uid).delete()
     DBDiscussionSession.flush()
     transaction.commit()
-    return True
+    return {
+        'is_locked':  False,
+        'success':  translator.get(_.dataUnlocked),
+        'info':  ''
+    }
 
 
 def is_review_locked(review_uid):

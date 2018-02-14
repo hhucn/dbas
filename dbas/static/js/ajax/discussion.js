@@ -364,25 +364,20 @@ function AjaxDiscussionHandler() {
 	 * @param is_argument
 	 */
 	this.revokeContent = function(uid, is_argument){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_revoke_content',
-			method: 'GET',
-			dataType: 'json',
-			data: {
-				uid: uid, is_argument: is_argument
-			},
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
+		var url = is_argument ? 'ajax_argument_revoke_content' : 'ajax_statement_revoke_content';
+		var data = { uid: parseInt(uid) };
+		var done = function ajaxRevokeContentDone(data) {
+			if (data.success) {
+				setGlobalSuccessHandler('Yeah!', _t_discussion(dataRemoved) + ' ' + _t_discussion(yourAreNotTheAuthorOfThisAnymore));
+			} else {
+				setGlobalSuccessHandler('Yeah!', _t_discussion(contentWillBeRevoked));
 			}
-		}).done(function ajaxRevokeContentDone(data) {
-			new InteractionHandler().callbackIfDoneRevokeContent(data);
-		}).fail(function ajaxRevokeContentFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		};
+		var fail = function ajaxRevokeContentFail() {
+			setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
 			new PopupHandler().hideAndClearUrlSharingPopup();
-			//$('#' + popupUrlSharingInputId).val(long_url);
-		});
+		};
+		ajaxSkeleton(url, 'POST', data, done, fail);
 	};
 
 	/**

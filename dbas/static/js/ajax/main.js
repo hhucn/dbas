@@ -2,6 +2,28 @@
  * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
+/**
+ * Use this to call any url asyncronously
+ *
+ * @param url to call
+ * @param method POST or GET
+ * @param data for the body, will be json-decoded
+ * @param ajaxDone is the function to call after ajax is done
+ * @param ajaxFail is the fucntion to call on fail
+ */
+function ajaxSkeleton(url, method, data, ajaxDone, ajaxFail){
+	'use strict';
+	var csrf_token = $('#' + hiddenCSRFTokenId).val();
+	$.ajax({
+		url: url,
+		method: method,
+		dataType: 'json',
+		contentType: 'application/json',
+		data: JSON.stringify(data),
+		headers: {'X-CSRF-Token': csrf_token}
+	}).done(ajaxDone(data)).fail(ajaxFail());
+}
+
 function AjaxMainHandler(){
 	'use strict';
 
@@ -10,20 +32,13 @@ function AjaxMainHandler(){
 	 * @param new_lang is the shortcut for the language
 	 */
 	this.switchDisplayLanguage = function (new_lang){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: mainpage + 'ajax_switch_language',
-			method: 'POST',
-			dataType: 'json',
-			contentType: 'application/json',
-			data: JSON.stringify({'lang': new_lang}),
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxSwitchDisplayLanguageDone() {
+		var url = mainpage + 'ajax_switch_language';
+		var data = {'lang': new_lang};
+		var done = function ajaxSwitchDisplayLanguageDone() {
 			setAnalyticsOptOutLink(new_lang);
 			location.reload(true);
-		}).fail(function ajaxSwitchDisplayLanguageFail(xhr) {
+		};
+		var fail = function ajaxSwitchDisplayLanguageFail(xhr) {
 			if (xhr.status === 400) {
 				setGlobalErrorHandler(_t(ohsnap), _t(requestFailedBadToken));
 			} else if (xhr.status === 500) {
@@ -31,7 +46,8 @@ function AjaxMainHandler(){
 			} else {
 				setGlobalErrorHandler(_t(ohsnap), _t(languageCouldNotBeSwitched));
 			}
-		});
+		};
+		ajaxSkeleton(url, 'POST', data, done, fail);
 	};
 
 	/**
