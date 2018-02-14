@@ -396,7 +396,7 @@ def update_row(table_name, uids, keys, values, nickname, _tn):
     :return: Empty string or error message
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if db_user and not db_user.is_admin():
+    if not db_user or db_user and not db_user.is_admin():
         return _tn.get(_.noRights)
 
     if not table_name.lower() in table_mapper:
@@ -438,7 +438,7 @@ def delete_row(table_name, uids, nickname, _tn):
     """
     logger('AdminLib', 'delete_row', table_name + ' ' + str(uids) + ' ' + nickname)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if db_user and not db_user.is_admin():
+    if not db_user or db_user and not db_user.is_admin():
         return _tn.get(_.noRights)
 
     if not table_name.lower() in table_mapper:
@@ -480,7 +480,7 @@ def add_row(table_name, data, nickname, _tn):
     """
     logger('AdminLib', 'add_row', str(data))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if db_user and not db_user.is_admin():
+    if not db_user or db_user and not db_user.is_admin():
         return _tn.get(_.noRights)
 
     if not table_name.lower() in table_mapper:
@@ -511,7 +511,7 @@ def update_badge(nickname, _tn):
     """
     logger('AdminLib', 'update_badge', '')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user.is_admin():
+    if not db_user or db_user and not db_user.is_admin():
         return None, _tn.get(_.noRights)
     ret_array = []
     for t in table_mapper:
