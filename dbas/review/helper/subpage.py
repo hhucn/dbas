@@ -18,11 +18,10 @@ from dbas.lib import get_all_arguments_by_statement
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid,\
     get_text_for_premisesgroup_uid, get_profile_picture
 from dbas.logger import logger
+from dbas.review.helper.queues import review_queues
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-
-pages = ['deletes', 'optimizations', 'edits', 'duplicates', 'splits', 'merges']
 
 
 def get_subpage_elements_for(nickname, session, application_url, subpage_name, translator):
@@ -51,7 +50,7 @@ def get_subpage_elements_for(nickname, session, application_url, subpage_name, t
     }
 
     # does the subpage exists
-    if subpage_name not in pages and subpage_name != 'history':
+    if subpage_name not in review_queues and subpage_name != 'history':
         logger('ReviewSubpagerHelper', 'get_subpage_elements_for', 'No page found', error=True)
         return __get_subpage_dict(None, user_has_access, no_arguments_to_review, button_set)
 

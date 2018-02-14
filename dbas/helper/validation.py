@@ -4,12 +4,14 @@ from cornice.util import json_error
 
 import dbas.handler.issue as issue_handler
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Issue, Statement, Language, Argument, ReviewDeleteReason, PremiseGroup
+from dbas.database.discussion_model import User, Issue, Statement, Language, Argument, ReviewDeleteReason, PremiseGroup, \
+    TextVersion
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer
 from dbas.lib import get_user_by_private_or_public_nickname
 from dbas.logger import logger
+from dbas.review.helper.queues import review_queues, modal_mapping
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -68,6 +70,60 @@ def valid_user(request):
         _tn = Translator(get_language_from_cookie(request))
         __add_error(request, 'valid_user', 'Invalid user', _tn.get(_.checkNickname))
         return False
+
+
+def valid_user_as_author_of_statement(request):
+    """
+
+    :param request:
+    :return:
+    """
+    if valid_user(request):
+        db_user = request.validated['user']
+        uid = request.json_body.get('uid')
+        db_textversion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).first() if is_integer(uid) else None
+        if db_textversion.author_uid == db_user.uid:
+            request.validated['statement'] = DBDiscussionSession.query(Statement).get(uid)
+            return True
+        else:
+            _tn = Translator(get_language_from_cookie(request))
+            __add_error(request, '', _tn.get(_.userIsNotAuthorOfStatement))
+    return False
+
+
+def valid_user_as_author_of_argument(request):
+    """
+
+    :param request:
+    :return:
+    """
+    if valid_user(request):
+        db_user = request.validated['user']
+        uid = request.json_body.get('uid')
+        db_argument = DBDiscussionSession.query(Argument).filter(Argument.uid == uid, Argument.author_uid == db_user.uid).first() if is_integer(uid) else None
+        if db_argument:
+            request.validated['argument'] = db_argument
+            return True
+        else:
+            _tn = Translator(get_language_from_cookie(request))
+            __add_error(request, '', _tn.get(_.userIsNotAuthorOfArgument))
+    return False
+
+
+def valid_user_as_author(request):
+    """
+
+    :param request:
+    :return:
+    """
+    if valid_user(request):
+        db_user = request.validated['user']
+        if db_user.is_admin() or db_user.is_author():
+            return True
+    else:
+        _tn = Translator(get_language_from_cookie(request))
+        __add_error(request, 'valid_user_as_author', 'Invalid user group', _tn.get(_.justLookDontTouch))
+    return False
 
 
 def invalid_user(request):
@@ -420,6 +476,38 @@ def valid_premisegroups(request):
             if len(premise) < min_length:
                 __set_min_length_error(request, min_length)
     request.validated['premisegroups'] = premisegroups
+
+
+def valid_review_queue_key(request):
+    """
+    Validates the correct keyword for a review queue
+
+    :param request:
+    :return:
+    """
+    queue = request.json_body.get('queue')
+    if queue in review_queues:
+        request.validated[queue] = queue
+        return True
+    else:
+        __add_error(request, 'valid_review_queue_key', 'No queue found: {}'.format(queue))
+        return False
+
+
+def valid_uid_as_row_in_review_queue(request):
+    uid = request.json_body.get('uid')
+    queue = request.json_body.get('queue')
+
+    if is_integer(uid) and queue in modal_mapping:
+        db_review = DBDiscussionSession.query(modal_mapping).get(uid)
+        if db_review:
+            request.validated['queue'] = queue
+            request.validated['uid'] = uid
+            request.validated['review'] = db_review
+            return True
+    else:
+        __add_error(request, 'valid_uid_as_row_in_review_queue', 'Invalid id for any review queue found: {}'.format(queue))
+    return False
 
 
 def has_keywords(*keywords):

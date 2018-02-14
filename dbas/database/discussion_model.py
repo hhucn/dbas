@@ -290,6 +290,22 @@ class User(DiscussionBase):
             'nickname': self.nickname
         }
 
+    def is_admin(self):
+        """
+        Check, if the user is member of the admin group
+
+        :return: True, if the user is member of the admin group
+        """
+        return DBDiscussionSession.query(Group).filter_by(name='admins').first().uid == self.group_uid
+
+    def is_author(self):
+        """
+        Check, if the user is member of the authors group
+
+        :return: True, if the user is member of the authors group
+        """
+        return DBDiscussionSession.query(Group).filter_by(name='authors').first().uid == self.group_uid
+
 
 class Settings(DiscussionBase):
     """

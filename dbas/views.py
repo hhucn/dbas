@@ -20,14 +20,13 @@ import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
 import dbas.handler.issue as issue_handler
 import dbas.handler.news as news_handler
-import dbas.review.helper.core as review
 import dbas.review.helper.flags as review_flag_helper
 import dbas.review.helper.history as review_history_helper
+import dbas.review.helper.main as review_main_helper
 import dbas.review.helper.queues as review_queue_helper
 import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
-import dbas.review.helper.main as review_main_helper
 from api.v2.graphql.core import Query
 from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers
 from dbas.database import DBDiscussionSession
@@ -49,12 +48,13 @@ from dbas.handler.statements import set_correction_of_statement, set_position, s
 from dbas.handler.voting import clear_vote_and_seen_values_of_user
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
-    mark_statement_or_argument, get_short_url
+    mark_statement_or_argument, get_short_url, revoke_author_of_argument_content, revoke_author_of_statement_content
 from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, has_keywords, \
     valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient, \
     valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument, valid_statement, \
     valid_review_reason, valid_ui_locales, valid_premisegroup, valid_text_values, valid_not_executed_review, \
-    valid_database_model
+    valid_database_model, valid_user_as_author, valid_uid_as_row_in_review_queue, valid_user_as_author_of_statement, \
+    valid_user_as_author_of_argument
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
@@ -1952,7 +1952,8 @@ def review_duplicate_statement(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('Views', 'review_duplicate_statement', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    logger('Views', 'review_duplicate_statement',
+           'main: {} - {}'.format(request.json_body, request.authenticated_userid))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']
@@ -1968,7 +1969,8 @@ def review_duplicate_statement(request):
 
 # ajax - for feedback on optimization arguments
 @view_config(route_name='ajax_review_optimization_argument', renderer='json')
-@validate(valid_user, valid_not_executed_review('review_uid', ReviewOptimization), has_keywords(('should_optimized', bool), ('new_data', list)))
+@validate(valid_user, valid_not_executed_review('review_uid', ReviewOptimization),
+          has_keywords(('should_optimized', bool), ('new_data', list)))
 def review_optimization_argument(request):
     """
     Values for the review for an argument, which should be optimized
@@ -1976,7 +1978,8 @@ def review_optimization_argument(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'review_optimization_argument', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    logger('views', 'review_optimization_argument',
+           'main: {} - {}'.format(request.json_body, request.authenticated_userid))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']
@@ -1986,7 +1989,8 @@ def review_optimization_argument(request):
     port = get_port(request)
 
     _t = Translator(ui_locales)
-    review_main_helper.add_review_opinion_for_optimization(db_user, main_page, port, db_review, should_optimized, new_data, _t)
+    review_main_helper.add_review_opinion_for_optimization(db_user, main_page, port, db_review, should_optimized,
+                                                           new_data, _t)
     send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, port, 'optimizations')
     return True
 
@@ -2001,7 +2005,8 @@ def review_splitted_premisegroup(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'review_splitted_premisegroup', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    logger('views', 'review_splitted_premisegroup',
+           'main: {} - {}'.format(request.json_body, request.authenticated_userid))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']
@@ -2025,7 +2030,8 @@ def review_merged_premisegroup(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'review_merged_premisegroup', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    logger('views', 'review_merged_premisegroup',
+           'main: {} - {}'.format(request.json_body, request.authenticated_userid))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']
@@ -2041,7 +2047,7 @@ def review_merged_premisegroup(request):
 
 # ajax - for undoing reviews
 @view_config(route_name='ajax_undo_review', renderer='json')
-@validate(valid_user)
+@validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords(('queue'), str))
 def undo_review(request):
     """
     Trys to undo a done review process
@@ -2050,25 +2056,15 @@ def undo_review(request):
     :return: json-dict()
     """
     logger('views', 'undo_review', 'main: {}'.format(request.json_body))
-
-    try:
-        prepared_dict = review.undo(request)
-    except KeyError as e:
-        logger('views', 'undo_review', repr(e), error=True)
-        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-        _t = Translator(ui_locales)
-        prepared_dict = {
-            'error': _t.get(_.internalKeyError),
-            'info': '',
-            'success': ''
-        }
-
-    return prepared_dict
+    db_user = request.validated['user']
+    queue = request.params['queue']
+    db_review = request.params['review']
+    return review_history_helper.revoke_old_decision(queue, db_review, db_user)
 
 
 # ajax - for canceling reviews
 @view_config(route_name='ajax_cancel_review', renderer='json')
-@validate(valid_user)
+@validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords(('queue'), str))
 def cancel_review(request):
     """
     Trys to cancel an ongoing review
@@ -2077,16 +2073,10 @@ def cancel_review(request):
     :return: json-dict()
     """
     logger('views', 'cancel_review', 'main: {}'.format(request.json_body))
-
-    try:
-        prepared_dict = review.cancel(request)
-    except KeyError as e:
-        logger('views', 'cancel_review', repr(e), error=True)
-        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-        _t = Translator(ui_locales)
-        prepared_dict = {'error': _t.get(_.internalKeyError)}
-
-    return prepared_dict
+    db_user = request.validated['user']
+    queue = request.params['queue']
+    db_review = request.params['review']
+    return review_history_helper.cancel_ongoing_decision(queue, db_review, db_user)
 
 
 # ajax - for undoing reviews
@@ -2105,28 +2095,33 @@ def review_lock(request):
     lock = request.validated['lock']
     db_review = request.validated['db_model']
     db_user = request.validated['user']
-    return review.lock(db_user, db_review, lock, _tn)
+
+    if lock:
+        return review_queue_helper.lock_optimization_review(db_user, db_review, _tn)
+    else:
+        return review_queue_helper.unlock_optimization_review(db_review, _tn)
 
 
-# ajax - for revoking content
-@view_config(route_name='ajax_revoke_content', renderer='json', require_csrf=False)
-@validate(valid_user)
-def revoke_some_content(request):
+# ajax - for revoking statements
+@view_config(route_name='ajax_revoke_statement_content', renderer='json', require_csrf=False)
+@validate(valid_user_as_author_of_statement, valid_statement)
+def revoke_statement_content(request):
     """
-    Revokes the given user as author from a statement or an argument
+    Revokes the given user as author from a statement
 
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'revoke_some_content', 'main: {}'.format(request.json_body))
+    logger('views', 'revoke_statement_content', 'main: {}'.format(request.json_body))
+    db_user = request.validated['user']
+    statement = request.validated['statement']
+    return revoke_author_of_statement_content(statement, db_user)
 
-    try:
-        prepared_dict = review.revoke(request)
 
-    except KeyError as e:
-        ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-        _t = Translator(ui_locales)
-        logger('views', 'revoke_some_content', repr(e), error=True)
-        prepared_dict = {'success': False, 'error': _t.get(_.internalKeyError)}
-
-    return prepared_dict
+# ajax - for revoking arguments
+@view_config(route_name='ajax_revoke_argument_content', renderer='json', require_csrf=False)
+@validate(valid_user_as_author_of_argument, valid_argument)
+def revoke_argument_content(request):
+    db_user = request.validated['user']
+    argument = request.validated['argument']
+    return revoke_author_of_argument_content(argument, db_user)

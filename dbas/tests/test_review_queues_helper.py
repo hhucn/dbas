@@ -89,8 +89,16 @@ class ReviewQueuesHelperTest(unittest.TestCase):
         self.assertTrue(return_dict['is_locked'])
 
     def test_unlock_optimization_review(self):
-        rqh.unlock_optimization_review(2)
-        self.assertFalse(rqh.is_review_locked(2))
+        _tn = Translator('en')
+        db_review = DBDiscussionSession.query(ReviewOptimization).get(2)
+        rqh.unlock_optimization_review(db_review, _tn)
+        self.assertFalse(rqh.is_review_locked(db_review.uid))
 
     def is_review_locked(self):
+        tobias = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        _tn = Translator('en')
+        db_review = DBDiscussionSession.query(ReviewOptimization).get(2)
+        rqh.lock_optimization_review(db_review, tobias, _tn)
+        self.assertTrue(rqh.is_review_locked(2))
+        rqh.unlock_optimization_review(db_review, _tn)
         self.assertFalse(rqh.is_review_locked(2))

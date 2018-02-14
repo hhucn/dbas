@@ -12,8 +12,7 @@ from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelet
     LastReviewerMerge, LastReviewerSplit
 from dbas.lib import get_profile_picture, is_user_author_or_admin
 from dbas.logger import logger
-from dbas.review.helper.reputation import get_reputation_of, reputation_icons
-from dbas.review.helper.subpage import reputation_borders
+from dbas.review.helper.reputation import get_reputation_of, reputation_icons, reputation_borders
 from dbas.strings.keywords import Keywords as _
 from sqlalchemy import and_
 
@@ -30,6 +29,15 @@ key_split = 'splits'
 key_history = 'history'
 key_ongoing = 'ongoing'
 
+review_queues = [
+    key_deletes,
+    key_optimizations,
+    key_edits,
+    key_duplicates,
+    key_merge,
+    key_split
+]
+
 title_mapping = {
     key_deletes: _.queueDelete,
     key_optimizations: _.queueOptimization,
@@ -37,6 +45,15 @@ title_mapping = {
     key_duplicates: _.queueDuplicates,
     key_split: _.queueSplit,
     key_merge: _.queueMerge
+}
+
+modal_mapping = {
+    key_deletes: ReviewDelete,
+    key_optimizations: ReviewOptimization,
+    key_edits: ReviewEdit,
+    key_duplicates: ReviewDuplicate,
+    key_split: ReviewSplit,
+    key_merge: ReviewMerge
 }
 
 
@@ -547,19 +564,24 @@ def lock_optimization_review(db_user: User, db_review: ReviewOptimization, trans
     }
 
 
-def unlock_optimization_review(review_uid):
+def unlock_optimization_review(db_review: ReviewOptimization, translator: Translator):
     """
     Unlock the OptimizationReviewLocks
 
-    :param review_uid: OptimizationReviewLocks.uid
-    :return: True
+    :param db_review:
+    :param translator:
+    :return:
     """
     tidy_up_optimization_locks()
     logger('ReviewQueues', 'unlock_optimization_review', 'main')
-    DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=review_uid).delete()
+    DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=db_review.uid).delete()
     DBDiscussionSession.flush()
     transaction.commit()
-    return True
+    return {
+        'is_locked':  False,
+        'success':  translator.get(_.dataUnlocked),
+        'info':  ''
+    }
 
 
 def is_review_locked(review_uid):

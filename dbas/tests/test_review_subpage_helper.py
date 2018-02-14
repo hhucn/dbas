@@ -2,7 +2,7 @@ import unittest
 
 from pyramid import testing
 
-from dbas.review.helper.subpage import pages
+from dbas.review.helper.queues import review_queues
 import dbas.review.helper.subpage as rph
 from dbas.strings.translator import Translator
 
@@ -28,7 +28,7 @@ class rphTest(unittest.TestCase):
         request = testing.DummyRequest()
         self.config.testing_securitypolicy(userid='some nick', permissive=True)
 
-        ret_dict = rph.get_subpage_elements_for('some nick', request.session, 'url', pages[0], Translator('en'))
+        ret_dict = rph.get_subpage_elements_for('some nick', request.session, 'url', review_queues[0], Translator('en'))
         self.assertIsNone(ret_dict['elements'])
         self.assertFalse(ret_dict['has_access'])
         self.assertFalse(ret_dict['no_arguments_to_review'])
@@ -36,19 +36,19 @@ class rphTest(unittest.TestCase):
     def test_get_subpage_empty_session(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        ret_dict = rph.get_subpage_elements_for('Tobias', {}, 'url', pages[0], Translator('en'))
+        ret_dict = rph.get_subpage_elements_for('Tobias', {}, 'url', review_queues[0], Translator('en'))
         self.assertIsNotNone(ret_dict['elements'])
         self.assertFalse(ret_dict['no_arguments_to_review'])
         self.assertTrue(ret_dict['has_access'])
-        self.assertTrue(el.startswith('is_' + pages[0][0:4]) for el in ret_dict['button_set'])
+        self.assertTrue(el.startswith('is_' + review_queues[0][0:4]) for el in ret_dict['button_set'])
 
     def test_get_all_subpages(self):
         request = testing.DummyRequest()
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
-        for page in pages:
-            ret_dict = rph.get_subpage_elements_for('Tobias', request.session, 'url', page, Translator('en'))
+        for queue in review_queues:
+            ret_dict = rph.get_subpage_elements_for('Tobias', request.session, 'url', queue, Translator('en'))
             self.assertIsNotNone(ret_dict['elements'])
             self.assertFalse(ret_dict['no_arguments_to_review'])
             self.assertTrue(ret_dict['has_access'])
-            self.assertTrue(el.startswith('is_' + page[0:4]) for el in ret_dict['button_set'])
+            self.assertTrue(el.startswith('is_' + queue[0:4]) for el in ret_dict['button_set'])
