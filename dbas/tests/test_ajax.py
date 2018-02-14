@@ -173,12 +173,12 @@ class AjaxTest(unittest.TestCase):
 
     def test_set_user_language(self):
         from dbas.views import set_user_lang as ajax
-        request = testing.DummyRequest(json_body={'ui_locales': 'en'})
+        request = testing.DummyRequest(json_body={'lang': 'en'})
         response = ajax(request)
         self.assertTrue(400 == response.status_code)
 
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={'ui_locales': 'en'})
+        request = testing.DummyRequest(json_body={'lang': 'en'})
         response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('ui_locales', response)
@@ -186,7 +186,7 @@ class AjaxTest(unittest.TestCase):
         self.assertTrue(response['error'] == '')
         self.assertTrue(response['ui_locales'] == 'en')
         self.assertTrue(response['current_lang'] == 'English')
-        request = testing.DummyRequest(json_body={'ui_locales': 'de'})
+        request = testing.DummyRequest(json_body={'lang': 'de'})
         response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('ui_locales', response)
@@ -194,7 +194,7 @@ class AjaxTest(unittest.TestCase):
         self.assertTrue(response['error'] == '')
         self.assertTrue(response['ui_locales'] == 'de')
         self.assertTrue(response['current_lang'] == 'Deutsch')
-        request = testing.DummyRequest(json_body={'ui_locales': 'li'})
+        request = testing.DummyRequest(json_body={'lang': 'li'})
         response = ajax(request)
         self.assertIn('error', response)
         self.assertIn('ui_locales', response)
