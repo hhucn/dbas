@@ -2047,7 +2047,7 @@ def review_merged_premisegroup(request):
 
 # ajax - for undoing reviews
 @view_config(route_name='ajax_undo_review', renderer='json')
-@validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords(('queue'), str))
+@validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords(('queue', str)))
 def undo_review(request):
     """
     Trys to undo a done review process
@@ -2057,14 +2057,14 @@ def undo_review(request):
     """
     logger('views', 'undo_review', 'main: {}'.format(request.json_body))
     db_user = request.validated['user']
-    queue = request.params['queue']
-    db_review = request.params['review']
+    queue = request.validated['queue']
+    db_review = request.validated['review']
     return review_history_helper.revoke_old_decision(queue, db_review, db_user)
 
 
 # ajax - for canceling reviews
 @view_config(route_name='ajax_cancel_review', renderer='json')
-@validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords(('queue'), str))
+@validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords(('queue', str)))
 def cancel_review(request):
     """
     Trys to cancel an ongoing review
@@ -2074,17 +2074,17 @@ def cancel_review(request):
     """
     logger('views', 'cancel_review', 'main: {}'.format(request.json_body))
     db_user = request.validated['user']
-    queue = request.params['queue']
-    db_review = request.params['review']
+    queue = request.validated['queue']
+    db_review = request.validated['review']
     return review_history_helper.cancel_ongoing_decision(queue, db_review, db_user)
 
 
 # ajax - for undoing reviews
 @view_config(route_name='ajax_review_lock', renderer='json', require_csrf=False)
-@validate(valid_user, valid_database_model('review_uid', ReviewOptimization))
+@validate(valid_user, valid_database_model('review_uid', ReviewOptimization), has_keywords(('lock', bool)))
 def review_lock(request):
     """
-    Locks a review so that the user can do an edit
+    Locks an optimization review so that the user can do an edit
 
     :param request: current request of the server
     :return: json-dict()

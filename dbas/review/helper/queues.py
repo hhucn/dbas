@@ -47,7 +47,7 @@ title_mapping = {
     key_merge: _.queueMerge
 }
 
-modal_mapping = {
+model_mapping = {
     key_deletes: ReviewDelete,
     key_optimizations: ReviewOptimization,
     key_edits: ReviewEdit,

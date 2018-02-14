@@ -405,18 +405,20 @@ def revoke_old_decision(queue, db_review, db_user):
     """
     logger('review_history_helper', 'revoke_old_decision', 'queue {} with uid {}'.format(queue, db_review.uid))
 
+    review_canceled = None
     if queue == 'deletes':
-        __revoke_old_deletes_decision(db_review, db_user)
+        review_canceled = __revoke_old_deletes_decision(db_review, db_user)
     elif queue == 'optimizations':
-        __revoke_old_optimizations_decision(db_review, db_user)
+        review_canceled = __revoke_old_optimizations_decision(db_review, db_user)
     elif queue == 'edits':
-        __revoke_old_edits_decision(db_review, db_user)
+        review_canceled = __revoke_old_edits_decision(db_review, db_user)
     elif queue == 'duplicates':
-        __revoke_old_duplicates_decision(db_review, db_user)
+        review_canceled = __revoke_old_duplicates_decision(db_review, db_user)
     elif queue == 'merges':
-        __revoke_old_merges_decision(db_review)
+        review_canceled = __revoke_old_merges_decision(db_review, db_user)
     elif queue == 'splits':
-        __revoke_old_splits_decision(db_review)
+        review_canceled = __revoke_old_splits_decision(db_review, db_user)
+    DBDiscussionSession.add(review_canceled)
     DBDiscussionSession.flush()
     transaction.commit()
     return True
@@ -429,9 +431,9 @@ def __revoke_old_deletes_decision(db_review, db_user):
     :param db_user:
     :return:
     """
-    logger('review_history_helper', '__revoke_old_deletes_decision', 'Executing deletes-queue')
+    logger('review_history_helper', '__revoke_old_deletes_decision', str(db_review.uid))
     __revoke_decision_and_implications(ReviewDelete, LastReviewerDelete, db_review.uid)
-    DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'delete': db_review.uid}))
+    return ReviewCanceled(author=db_user.uid, review_data={'delete': db_review.uid})
 
 
 def __revoke_old_optimizations_decision(db_review, db_user):
@@ -441,9 +443,9 @@ def __revoke_old_optimizations_decision(db_review, db_user):
     :param db_user:
     :return:
     """
-    logger('review_history_helper', '__revoke_old_optimizations_decision', 'Executing optimizations-queue')
+    logger('review_history_helper', '__revoke_old_optimizations_decision', str(db_review.uid))
     __revoke_decision_and_implications(ReviewOptimization, LastReviewerOptimization, db_review.uid)
-    DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'optimization', db_review.uid}))
+    return ReviewCanceled(author=db_user.uid, review_data={'optimization': db_review.uid})
 
 
 def __revoke_old_edits_decision(db_review, db_user):
@@ -453,17 +455,16 @@ def __revoke_old_edits_decision(db_review, db_user):
     :param db_user:
     :return:
     """
-    logger('review_history_helper', '__revoke_old_edits_decision', 'Executing edits-queue')
+    logger('review_history_helper', '__revoke_old_edits_decision', str(db_review.uid))
     db_review = DBDiscussionSession.query(ReviewEdit).get(db_review.uid)
     db_review.set_revoked(True)
     DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=db_review.uid).delete()
     db_value = DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=db_review.uid)
     content = db_value.first().content
     db_value.delete()
-    DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'edit', db_review.uid}))
-
     # delete forbidden textversion
     DBDiscussionSession.query(TextVersion).filter_by(content=content).delete()
+    return ReviewCanceled(author=db_user.uid, review_data={'edit': db_review.uid})
 
 
 def __revoke_old_duplicates_decision(db_review, db_user):
@@ -473,20 +474,21 @@ def __revoke_old_duplicates_decision(db_review, db_user):
     :param db_user:
     :return:
     """
-    logger('review_history_helper', '__revoke_old_duplicates_decision', 'Executing duplicates-queue')
+    logger('review_history_helper', '__revoke_old_duplicates_decision', str(db_review.uid))
     db_review = DBDiscussionSession.query(ReviewDuplicate).get(db_review.uid)
     db_review.set_revoked(True)
-    DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'duplicate', db_review.uid}))
     __rebend_objects_of_duplicate_review(db_review)
+    return ReviewCanceled(author=db_user.uid, review_data={'duplicate': db_review.uid})
 
 
-def __revoke_old_merges_decision(db_review):
+def __revoke_old_merges_decision(db_review, db_user):
     """
 
     :param db_review:
+    :param db_user:
     :return:
     """
-    logger('review_history_helper', '__revoke_old_merges_decision', 'Executing merges-queue')
+    logger('review_history_helper', '__revoke_old_merges_decision', str(db_review.uid))
     db_review = DBDiscussionSession.query(ReviewMerge).get(db_review.uid)
     db_review.set_revoked(True)
     db_pgroup_merged = DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=db_review.uid).all()
@@ -495,15 +497,17 @@ def __revoke_old_merges_decision(db_review):
     DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=db_review.uid).delete()
     DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=db_review.uid).delete()
     DBDiscussionSession.query(StatementReplacementsByPremiseGroupMerge).filter_by(review_uid=db_review.uid).delete()
+    return ReviewCanceled(author=db_user.uid, review_data={'merges': db_review.uid})
 
 
-def __revoke_old_splits_decision(db_review):
+def __revoke_old_splits_decision(db_review, db_user):
     """
 
     :param db_review:
+    :param db_user:
     :return:
     """
-    logger('review_history_helper', '__revoke_old_splits_decision', 'Executing splits-queue')
+    logger('review_history_helper', '__revoke_old_splits_decision', str(db_review.uid))
     db_review = DBDiscussionSession.query(ReviewSplit).get(db_review.uid)
     db_review.set_revoked(True)
     db_pgroup_splitted = DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=db_review.uid).all()
@@ -514,6 +518,7 @@ def __revoke_old_splits_decision(db_review):
     DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review.uid).delete()
     DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=db_review.uid).delete()
     DBDiscussionSession.query(StatementReplacementsByPremiseGroupSplit).filter_by(review_uid=db_review.uid).delete()
+    return ReviewCanceled(author=db_user.uid, review_data={'splits': db_review.uid})
 
 
 def __disable_arguments_by_id(argument_uids):
@@ -576,97 +581,101 @@ def cancel_ongoing_decision(queue, db_review, db_user):
     """
     logger('review_history_helper', 'cancel_ongoing_decision', 'queue {} uid {}'.format(queue, db_review.uid))
 
+    review_canceled = None
     if queue == 'deletes':
-        __cancel_ongoing_deletes_decision(db_review, db_user)
+        review_canceled = __cancel_ongoing_deletes_decision(db_review, db_user)
     elif queue == 'optimizations':
-        __cancel_ongoing_optimizations_decision(db_review, db_user)
+        review_canceled = __cancel_ongoing_optimizations_decision(db_review, db_user)
     elif queue == 'edits':
-        __cancel_ongoing_edits_decision(db_review, db_user)
+        review_canceled = __cancel_ongoing_edits_decision(db_review, db_user)
     elif queue == 'duplicates':
-        __cancel_ongoing_duplicates_decision(db_review, db_user)
+        review_canceled = __cancel_ongoing_duplicates_decision(db_review, db_user)
     elif queue == 'merges':
-        __cancel_ongoing_merges_decision(db_review)
+        review_canceled = __cancel_ongoing_merges_decision(db_review, db_user)
     elif queue == 'splits':
-        __cancel_ongoing_splits_decision(db_review)
+        review_canceled = __cancel_ongoing_splits_decision(db_review, db_user)
 
+    DBDiscussionSession.add(review_canceled)
     DBDiscussionSession.flush()
     transaction.commit()
     return True
 
 
-def __cancel_ongoing_deletes_decision(db_review, db_user):
+def __cancel_ongoing_deletes_decision(db_review: ReviewDelete, db_user: User):
     """
+    Cancel an ongoing vote of the deletes queue
 
-    :param db_review:
-    :param db_user:
+    :param db_review: ReviewDelete
+    :param db_user: User
     :return:
     """
     DBDiscussionSession.query(ReviewDelete).get(db_review.uid).set_revoked(True)
     DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).delete()
-    DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'delete': db_review.uid}, was_ongoing=True))
+    return ReviewCanceled(author=db_user.uid, review_data={'delete': db_review.uid}, was_ongoing=True)
 
 
-def __cancel_ongoing_optimizations_decision(db_review, db_user):
+def __cancel_ongoing_optimizations_decision(db_review: ReviewOptimization, db_user: User):
     """
+    Cancel an ongoing vote of the optimizations queue
 
-    :param db_review:
-    :param db_user:
+    :param db_review: ReviewOptimization
+    :param db_user: User
     :return:
     """
     DBDiscussionSession.query(ReviewOptimization).get(db_review.uid).set_revoked(True)
     DBDiscussionSession.query(LastReviewerOptimization).filter_by(review_uid=db_review.uid).delete()
-    DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'optimization': db_review.uid}, was_ongoing=True))
+    return ReviewCanceled(author=db_user.uid, review_data={'optimization': db_review.uid}, was_ongoing=True)
 
 
-def __cancel_ongoing_edits_decision(db_review, db_user):
+def __cancel_ongoing_edits_decision(db_review: ReviewEdit, db_user: User):
     """
+    Cancel an ongoing vote of the edits queue
 
-    :param db_review:
-    :param db_user:
-    :return:
+    :param db_review: ReviewOptimization
+    :param db_user: User
     """
     DBDiscussionSession.query(ReviewEdit).filter_by(uid=db_review.uid).delete()
     DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=db_review.uid).first().set_revoked(True)
     DBDiscussionSession.query(ReviewEditValue).filter_by(review_edit_uid=db_review.uid).delete()
-    DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'edit': db_review.uid}, was_ongoing=True))
+    return ReviewCanceled(author=db_user.uid, review_data={'edit': db_review.uid}, was_ongoing=True)
 
 
-def __cancel_ongoing_duplicates_decision(db_review, db_user):
+def __cancel_ongoing_duplicates_decision(db_review: ReviewDuplicate, db_user: User):
     """
+    Cancel an ongoing vote of the duplications queue
 
-    :param db_review:
-    :param db_user:
-    :return:
+    :param db_review: ReviewDuplicate
+    :param db_user: User
     """
     DBDiscussionSession.query(ReviewDuplicate).get(db_review.uid).set_revoked(True)
     DBDiscussionSession.query(LastReviewerDelete).filter_by(review_uid=db_review.uid).delete()
-    DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'duplicate': db_review.uid}, was_ongoing=True))
+    return ReviewCanceled(author=db_user.uid, review_data={'duplicate': db_review.uid}, was_ongoing=True)
 
 
-def __cancel_ongoing_merges_decision(db_review, db_user):
+def __cancel_ongoing_merges_decision(db_review: ReviewMerge, db_user: User):
     """
+    Cancel an ongoing vote of the merges queue
 
-    :param db_review:
-    :param db_user:
-    :return:
+    :param db_review: ReviewOptimization
+    :param db_user: User
     """
     DBDiscussionSession.query(ReviewMerge).get(db_review.uid).set_revoked(True)
     DBDiscussionSession.query(LastReviewerMerge).filter_by(review_uid=db_review.uid).delete()
     DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=db_review.uid).delete()
-    DBDiscussionSession.add(ReviewCanceled(author=db_user.db_review.uid, reviews={'merge': db_review.uid}, was_ongoing=True))
+    return ReviewCanceled(author=db_user.uid, review_data={'merge': db_review.uid}, was_ongoing=True)
 
 
-def __cancel_ongoing_splits_decision(db_review, db_user):
+def __cancel_ongoing_splits_decision(db_review: ReviewSplit, db_user: User):
     """
+    Cancel an ongoing vote of the splits queue
 
-    :param db_review:
-    :param db_user:
-    :return:
+    :param db_review: ReviewSplit
+    :param db_user: User
     """
     DBDiscussionSession.query(ReviewSplit).get(db_review.uid).set_revoked(True)
     DBDiscussionSession.query(LastReviewerSplit).filter_by(review_uid=db_review.uid).delete()
     DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=db_review.uid).delete()
-    DBDiscussionSession.add(ReviewCanceled(author=db_user.uid, reviews={'split': db_review.uid}, was_ongoing=True))
+    return ReviewCanceled(author=db_user.uid, review_data={'split': db_review.uid}, was_ongoing=True)
 
 
 def __is_uid_valid(uid, queue):

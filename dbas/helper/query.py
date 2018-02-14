@@ -179,7 +179,7 @@ def revoke_author_of_statement_content(statement, db_user):
     db_element = __revoke_statement(db_user, statement)
     DBDiscussionSession.add(RevokedContent(db_user.uid, statement=db_element.uid))
     DBDiscussionSession.flush()
-
+    transaction.commit()
     return True
 
 
@@ -197,7 +197,7 @@ def revoke_author_of_argument_content(argument, db_user):
     db_element = __revoke_argument(db_user, argument)
     DBDiscussionSession.add(RevokedContent(db_user.uid, argument=db_element.uid))
     DBDiscussionSession.flush()
-
+    transaction.commit()
     return True
 
 
@@ -296,14 +296,13 @@ def __transfer_textversion_to_new_author(statement_uid, old_author_uid, new_auth
         textversion.author_uid = new_author_uid
         DBDiscussionSession.add(textversion)
         DBDiscussionSession.add(RevokedContentHistory(old_author_uid, new_author_uid, textversion_uid=textversion.uid))
-
-    DBDiscussionSession.flush()
-    transaction.commit()
+        DBDiscussionSession.flush()
+        transaction.commit()
 
     return True
 
 
-def __remove_user_from_arguments_with_statement(db_statement, db_user, _tn):
+def __remove_user_from_arguments_with_statement(db_statement, db_user):
     """
     Calls revoke_content(...) for all arguments, where the Statement.uid is used
 

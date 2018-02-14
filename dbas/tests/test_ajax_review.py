@@ -19,10 +19,15 @@ class AjaxReviewTest(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
-
+        DBDiscussionSession.add(ReviewOptimization(detector=2, statement=10))
+        DBDiscussionSession.flush()
+        transaction.commit()
         # test every ajax method, which is not used in other classes
 
     def tearDown(self):
+        DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=2, statement_uid=10).delete()
+        DBDiscussionSession.flush()
+        transaction.commit()
         testing.tearDown()
 
     def test_flag_argument_or_statement(self):
@@ -364,8 +369,8 @@ class AjaxReviewTest(unittest.TestCase):
             'queue': 'deletes',
             'uid': 5
         })
-        db_canceled2 = len(DBDiscussionSession.query(ReviewCanceled).all())
         self.assertTrue(ajax(request))
+        db_canceled2 = len(DBDiscussionSession.query(ReviewCanceled).all())
         self.assertNotEqual(db_canceled1, db_canceled2)
 
     def test_undo_review_author_error(self):
@@ -458,8 +463,7 @@ class AjaxReviewTest(unittest.TestCase):
         })
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['success']) == 0)
-        self.assertTrue(len(response['info']) == 0)
+        self.assertEqual(400, response.status_code)
 
     def test_review_lock_id_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
@@ -472,6 +476,7 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertEqual(400, response.status_code)
 
     def test_review_unlock(self):
+        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         db_review = DBDiscussionSession.query(ReviewOptimization).first()
         from dbas.views import review_lock as ajax
         request = testing.DummyRequest(json_body={
@@ -491,8 +496,8 @@ class AjaxReviewTest(unittest.TestCase):
         request = testing.DummyRequest(json_body={
             'uid': 2,
         })
-        db_content2 = len(DBDiscussionSession.query(RevokedContentHistory).all())
         self.assertTrue(ajax(request))
+        db_content2 = len(DBDiscussionSession.query(RevokedContentHistory).all())
         self.assertNotEqual(db_content1, db_content2)
 
     def test_revoke_content_uid_error1(self):

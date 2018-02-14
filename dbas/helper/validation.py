@@ -11,7 +11,7 @@ from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer
 from dbas.lib import get_user_by_private_or_public_nickname
 from dbas.logger import logger
-from dbas.review.helper.queues import review_queues, modal_mapping
+from dbas.review.helper.queues import review_queues, model_mapping
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
@@ -82,7 +82,7 @@ def valid_user_as_author_of_statement(request):
         db_user = request.validated['user']
         uid = request.json_body.get('uid')
         db_textversion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).first() if is_integer(uid) else None
-        if db_textversion.author_uid == db_user.uid:
+        if db_textversion and db_textversion.author_uid == db_user.uid:
             request.validated['statement'] = DBDiscussionSession.query(Statement).get(uid)
             return True
         else:
@@ -416,7 +416,7 @@ def valid_text_values(request):
 def valid_database_model(keyword, model):
     def valid_model(request):
         uid = request.json_body.get(keyword)
-        db_something = DBDiscussionSession.query(model).get(uid) if is_integer(uid) else None
+        db_something = DBDiscussionSession.query(model).get(uid) if is_integer(uid) and model else None
         if db_something:
             request.validated['db_model'] = db_something
         else:
@@ -496,15 +496,15 @@ def valid_review_queue_key(request):
 
 def valid_uid_as_row_in_review_queue(request):
     uid = request.json_body.get('uid')
-    queue = request.json_body.get('queue')
+    queue = request.json_body.get('queue', '')
+    model = model_mapping.get(queue)
 
-    if is_integer(uid) and queue in modal_mapping:
-        db_review = DBDiscussionSession.query(modal_mapping).get(uid)
-        if db_review:
-            request.validated['queue'] = queue
-            request.validated['uid'] = uid
-            request.validated['review'] = db_review
-            return True
+    db_review = DBDiscussionSession.query(model).get(uid) if is_integer(uid) and model else None
+    if db_review:
+        request.validated['queue'] = queue
+        request.validated['uid'] = uid
+        request.validated['review'] = db_review
+        return True
     else:
         __add_error(request, 'valid_uid_as_row_in_review_queue', 'Invalid id for any review queue found: {}'.format(queue))
     return False

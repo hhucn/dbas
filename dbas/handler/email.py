@@ -125,5 +125,5 @@ def send_mail(mailer, subject, body, recipient, lang):
 
 def __thread_to_send_mail(mailer, message, recipient, body):
     logger('email_helper', '__thread_to_send_mail', 'Start thread to send mail to {} with {}'.format(recipient, body[:30]))
-    mailer.send_immediately(message=message, fail_silently=False)
+    mailer.send_immediately(message, fail_silently=False)
     logger('email_helper', '__thread_to_send_mail', 'End thread to send mail to {} with {}'.format(recipient, body[:30]))

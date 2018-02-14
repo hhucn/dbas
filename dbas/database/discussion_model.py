@@ -1873,21 +1873,21 @@ class ReviewCanceled(DiscussionBase):
     merges = relationship('ReviewMerge', foreign_keys=[review_merge_uid])
     plits = relationship('ReviewSplit', foreign_keys=[review_split_uid])
 
-    def __init__(self, author, reviews, was_ongoing=False):
+    def __init__(self, author, review_data, was_ongoing=False):
         """
         Inits a row in current review locks table
 
         :param author: User.uid
-        :param reviews: dict with possible review uids
+        :param review_data: dict with possible review uids
         :param was_ongoing: Boolean
         """
         self.author_uid = author
-        self.review_edit_uid = reviews.get('edit')
-        self.review_delete_uid = reviews.get('delete')
-        self.review_optimization_uid = reviews.get('optimization')
-        self.review_duplicate_uid = reviews.get('duplicate')
-        self.review_merge_uid = reviews.get('merge')
-        self.review_split_uid = reviews.get('split')
+        self.review_edit_uid = review_data.get('edit')
+        self.review_delete_uid = review_data.get('delete')
+        self.review_optimization_uid = review_data.get('optimization')
+        self.review_duplicate_uid = review_data.get('duplicate')
+        self.review_merge_uid = review_data.get('merge')
+        self.review_split_uid = review_data.get('split')
         self.was_ongoing = was_ongoing
         self.timestamp = get_now()
 
