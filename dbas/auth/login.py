@@ -213,7 +213,7 @@ def __set_oauth_user(request, user_data, service, ui_locales):
     db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
     if not db_group:
         logger('Auth.Login', '__set_oauth_user', 'Error occured')
-        return {'error': _tn.get(_.errorTryLateOrContant), 'success': ''}
+        return {'error': _tn.get(_.errorTryLateOrContant)}
 
     ret_dict = user.set_new_oauth_user(user_data['firstname'], user_data['lastname'], user_data['nickname'],
                                        user_data['email'], user_data['gender'], user_data['password'], user_data['id'],
@@ -239,15 +239,15 @@ def __register_user_with_ldap_data(mailer, nickname, password, _tn) -> dict:
     logger('Auth.Login', '__register_user_with_ldap_data', 'user: {}'.format(nickname))
     ldap_data = verify_ldap_user_data(nickname, password, _tn)
     if ldap_data['error']:
-        return {'error': ldap_data['error'], 'user': ''}
+        return {'error': ldap_data['error']}
 
     # register the new user
     ret_dict = user.set_new_user(mailer, ldap_data['firstname'], ldap_data['lastname'], nickname, ldap_data['gender'],
                                  ldap_data['email'], 'NO_PW_BECAUSE_LDAP', _tn)
     if 'success' not in ret_dict:
-        return {'error': _tn.get(_.internalKeyError), 'user': ''}
+        return {'error': _tn.get(_.internalKeyError)}
 
-    return {'error': '', 'user': ret_dict['user']}
+    return {'user': ret_dict['user']}
 
 
 def __check_in_local_known_user(db_user: User, password: str, _tn) -> dict:

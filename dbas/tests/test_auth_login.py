@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import unittest
 
 from pyramid import testing
@@ -35,11 +36,14 @@ class AuthLoginTest(unittest.TestCase):
         self.assertTrue(type(response) is HTTPFound)
 
         response = login_user(nickname, password, DummyMailer, lang=_tn)
-        self.assertTrue(type(response) is HTTPFound)
+        self.assertTrue(isinstance(response, dict))
+        self.assertNotIn('error', response)
+        self.assertIn('user', response)
 
-        response = login_user(nickname, password, DummyMailer, lang=_tn)
-        self.assertTrue(type(response) is dict)
-        self.assertIn('status', response)
+        response = login_user('definitelynotauser', '¯\_(ツ)_/¯', DummyMailer, lang=_tn)
+        self.assertTrue(isinstance(response, dict))
+        self.assertIn('error', response)
+        self.assertNotIn('user', response)
 
     def test_login_register_with_ajax_data(self):
         _tn = Translator('en')
