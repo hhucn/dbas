@@ -308,30 +308,6 @@ def __return_success_login(request, for_api, db_user, keep_login, url):
         return HTTPFound(location=url, headers=headers)  # success
 
 
-def __get_data(request, nickname, password, keep_login):
-    """
-    Read input params for returning nickname and password of the user as well as a boolean if she wants to keep
-    the login and an url for forwarding
-
-    :param request: web servers request
-    :param nickname: User.nickname
-    :param password: String
-    :param keep_login: Boolean
-    :return: String, String, Boolean, String
-    """
-    if not nickname and not password:
-        nickname = escape_string(request.params['user'])
-        password = request.params['password']
-        keep_login = escape_string(request.params['keep_login'])
-        keep_login = True if keep_login == 'true' else False
-        url = request.params['url']
-    else:
-        nickname = escape_string(nickname)
-        password = escape_string(password)
-        url = ''
-    return nickname, password, keep_login, url
-
-
 def register_user_with_ajax_data(params, ui_locales, mailer):
     """
     Consume the ajax data for an login attempt

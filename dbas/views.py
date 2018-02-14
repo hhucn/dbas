@@ -1160,7 +1160,7 @@ def delete_statistics(request):
     return {'removed_data': str(clear_vote_and_seen_values_of_user(request.authenticated_userid)).lower()}
 
 
-@view_config(route_name='ajax_user_login', renderer='json')
+@view_config(request_method='POST', route_name='ajax_user_login', renderer='json')
 @validate(has_keywords(('user', str), ('password', str), ('keep_login', bool)),
           has_maybe_keywords(('redirect_url', str, '')))
 def user_login(request):
