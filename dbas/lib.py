@@ -9,17 +9,17 @@ import locale
 import os
 import re
 import time
-
 from collections import defaultdict
 from datetime import datetime
 from enum import Enum
 from html import escape
-from sqlalchemy import and_, func
 from urllib import parse
+
+from sqlalchemy import and_, func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, User, Settings, \
-    ClickedArgument, ClickedStatement, Group, MarkedArgument, MarkedStatement, PremiseGroup
+    ClickedArgument, ClickedStatement, MarkedArgument, MarkedStatement, PremiseGroup
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -967,33 +967,6 @@ def __get_clicks_and_marks(argument_uid, statement_uid, is_supportive, db_user):
             filter(MarkedStatement.statement_uid == statement_uid,
                    MarkedStatement.author_uid != db_user.uid).all()
     return db_clicks, db_marks
-
-
-def is_user_author_or_admin(nickname):
-    """
-    Check, if the given uid has admin rights or is admin
-
-    :param nickname: current user name
-    :return: true, if user is admin, false otherwise
-    """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
-    db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
-    db_author_group = DBDiscussionSession.query(Group).filter_by(name='authors').first()
-    #  logger('Lib', 'is_user_author_or_admin', 'main')
-    return db_user and (db_user.group_uid == db_author_group.uid or db_user.group_uid == db_admin_group.uid)
-
-
-def is_user_admin(nickname):
-    """
-    Check, if the given uid has admin rights or is admin
-
-    :param nickname: current user name
-    :return: true, if user is admin, false otherwise
-    """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
-    db_admin_group = DBDiscussionSession.query(Group).filter_by(name='admins').first()
-    #  logger('Lib', 'is_user_author_or_admin', 'main')
-    return db_user and db_user.group_uid == db_admin_group.uid
 
 
 def is_argument_disabled_due_to_disabled_statements(argument):

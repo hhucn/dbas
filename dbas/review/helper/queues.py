@@ -5,17 +5,17 @@ Provides helping function for displaying the review queues and locking entries.
 """
 
 import transaction
+from sqlalchemy import and_
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, TextVersion, \
     LastReviewerOptimization, ReviewEdit, LastReviewerEdit, OptimizationReviewLocks, ReviewEditValue, get_now, \
     Statement, ReviewDuplicate, LastReviewerDuplicate, Argument, Premise, ReviewMerge, ReviewSplit, \
     LastReviewerMerge, LastReviewerSplit
-from dbas.lib import get_profile_picture, is_user_author_or_admin
+from dbas.lib import get_profile_picture
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of, reputation_icons, reputation_borders
 from dbas.strings.keywords import Keywords as _
-from sqlalchemy import and_
-
 from dbas.strings.translator import Translator
 
 max_lock_time_in_sec = 180
@@ -80,7 +80,8 @@ def get_review_queues_as_lists(main_page, translator, nickname):
     review_list.append(__get_split_dict(main_page, translator, nickname, count, all_rights))
     review_list.append(__get_merge_dict(main_page, translator, nickname, count, all_rights))
     review_list.append(__get_history_dict(main_page, translator, count, all_rights))
-    if is_user_author_or_admin(nickname):
+
+    if db_user.is_author() or db_user.is_admin():
         review_list.append(__get_ongoing_dict(main_page, translator))
 
     return review_list

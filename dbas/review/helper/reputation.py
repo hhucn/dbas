@@ -10,7 +10,6 @@ from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason
-from dbas.lib import is_user_author_or_admin
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 
@@ -89,7 +88,7 @@ def get_reputation_list(translator):
     return {'gains': gains, 'looses': looses}
 
 
-def get_reputation_of(nickname, only_today=False):
+def get_reputation_of(db_user, only_today=False):
     """
     Return the total sum of reputation_borders points for the given nickname
 
@@ -97,7 +96,8 @@ def get_reputation_of(nickname, only_today=False):
     :param only_today: Boolean
     :return: Integer and Boolean, if the user is author
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not isinstance(db_user, User):
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=db_user).first()
     count = 0
 
     if not db_user:
@@ -115,7 +115,7 @@ def get_reputation_of(nickname, only_today=False):
 
     count = sum([r.reputations.points for r in db_reputation])
 
-    return count, is_user_author_or_admin(nickname)
+    return count, db_user.is_author() or db_user.is_admin()
 
 
 def add_reputation_for(user, reason):

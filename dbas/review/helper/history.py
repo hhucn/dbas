@@ -5,16 +5,17 @@ Provides helping function for the managing the queue with all executed decisions
 """
 
 import transaction
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ReviewDelete, LastReviewerDelete, ReviewOptimization, \
-    LastReviewerOptimization, User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit,\
-    LastReviewerEdit, ReviewEditValue, TextVersion, Statement, ReviewCanceled, sql_timestamp_pretty_print,\
-    ReviewDuplicate, LastReviewerDuplicate, RevokedDuplicate, Argument, Premise, ReviewMerge, ReviewSplit,\
+    LastReviewerOptimization, User, ReputationHistory, ReputationReason, ReviewDeleteReason, ReviewEdit, \
+    LastReviewerEdit, ReviewEditValue, TextVersion, Statement, ReviewCanceled, sql_timestamp_pretty_print, \
+    ReviewDuplicate, LastReviewerDuplicate, RevokedDuplicate, Argument, Premise, ReviewMerge, ReviewSplit, \
     PremiseGroupMerged, PremiseGroupSplitted, LastReviewerSplit, LastReviewerMerge, ReviewSplitValues, \
     ReviewMergeValues, StatementReplacementsByPremiseGroupSplit, StatementReplacementsByPremiseGroupMerge, \
     ArgumentsAddedByPremiseGroupSplit
-from dbas.lib import get_text_for_argument_uid, get_profile_picture, is_user_author_or_admin, \
-    get_text_for_statement_uid, get_text_for_premisesgroup_uid
+from dbas.lib import get_text_for_argument_uid, get_profile_picture, get_text_for_statement_uid, \
+    get_text_for_premisesgroup_uid
 from dbas.logger import logger
 from dbas.review.helper.main import en_or_disable_object_of_review
 from dbas.review.helper.reputation import get_reputation_of, reputation_borders, reputation_icons
@@ -30,12 +31,13 @@ def get_review_history(main_page, nickname, translator):
     :param translator: Translator
     :return: dict()
     """
-    if not DBDiscussionSession.query(User).filter_by(nickname=nickname).first():
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user:
         return dict()
-    return __get_data(main_page, nickname, translator, True)
+    return __get_data(main_page, db_user, translator, True)
 
 
-def get_ongoing_reviews(main_page, nickname, translator):
+def get_ongoing_reviews(main_page, db_user, translator):
     """"
     Returns the history of all reviews
 
@@ -44,26 +46,24 @@ def get_ongoing_reviews(main_page, nickname, translator):
     :param translator: Translator
     :return: dict()
     """
-    if not DBDiscussionSession.query(User).filter_by(nickname=nickname).first():
-        return dict()
-    return __get_data(main_page, nickname, translator, False)
+    return __get_data(main_page, db_user, translator, False)
 
 
-def __get_data(main_page, nickname, translator, is_executed=False):
+def __get_data(main_page, db_user, translator, is_executed=False):
     """
     Collects data for every review queue
 
     :param main_page: Host URL
-    :param nickname: User.nickname
+    :param db_user: User
     :param translator: Translator
     :param is_executed: Boolean
     :return: dict()
     """
     ret_dict = dict()
     if is_executed:
-        ret_dict['has_access'] = __has_access_to_history(nickname)
+        ret_dict['has_access'] = __has_access_to_history(db_user)
     else:
-        ret_dict['has_access'] = is_user_author_or_admin(nickname)
+        ret_dict['has_access'] = db_user.is_admin() or db_user.is_author()
     ret_dict['is_history'] = is_executed
 
     deletes_list = __get_executed_reviews_of('deletes', main_page, ReviewDelete, LastReviewerDelete, translator, is_executed)
@@ -382,14 +382,14 @@ def __get_user_dict_for_review(user_id, main_page):
     }
 
 
-def __has_access_to_history(nickname):
+def __has_access_to_history(db_user):
     """
     Does the user has access to the history?
 
     :param nickname: User.nickname
     :return: Boolean
     """
-    reputation_count, is_user_author = get_reputation_of(nickname)
+    reputation_count, is_user_author = get_reputation_of(db_user)
     return is_user_author or reputation_count > reputation_borders['history']
 
 

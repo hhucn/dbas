@@ -3,7 +3,6 @@ import unittest
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User
 from dbas.handler import user
-from dbas.lib import is_user_author_or_admin
 from dbas.strings import keywords as _
 from dbas.strings.translator import Translator
 
@@ -38,8 +37,10 @@ class UserManagementTest(unittest.TestCase):
         self.assertFalse(user.is_admin('Torben'))
 
     def test_is_user_author(self):
-        self.assertTrue(is_user_author_or_admin('Tobias'))
-        self.assertFalse(is_user_author_or_admin('Torben'))
+        db_user1 = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        db_user2 = DBDiscussionSession.query(User).filter_by(nickname='Torben').first()
+        self.assertTrue(db_user1.is_admin() or db_user1.is_author())
+        self.assertFalse(db_user2.is_admin() or db_user2.is_author())
 
     def change_password(self):
         db_user = DBDiscussionSession.query(User).filter_by(nickname=str('Tobias')).first()

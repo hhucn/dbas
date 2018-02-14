@@ -17,11 +17,7 @@ class ReviewOngoingViewTests(unittest.TestCase):
         from dbas.views import ongoing_history as d
 
         request = testing.DummyRequest()
-        response = d(request)
-        verify_dictionary_of_view(self, response)
-
-        self.assertIn('history', response)
-        self.assertTrue(len(response['history']) == 0)
+        self.assertEqual(400, d(request).status_code)
 
     def test_page_logged_in(self):
         from dbas.views import ongoing_history as d

@@ -19,7 +19,7 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReputationReason, OptimizationReviewLocks, \
     ReviewCanceled, RevokedContent, RevokedContentHistory, RSS, LastReviewerDuplicate, ReviewDuplicate, \
     RevokedDuplicate, MarkedArgument, MarkedStatement, History, APIToken
-from dbas.lib import is_user_admin, get_text_for_premisesgroup_uid, get_text_for_argument_uid, \
+from dbas.lib import get_text_for_premisesgroup_uid, get_text_for_argument_uid, \
     get_text_for_statement_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -395,7 +395,8 @@ def update_row(table_name, uids, keys, values, nickname, _tn):
     :param _tn: Translator
     :return: Empty string or error message
     """
-    if not is_user_admin(nickname):
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if db_user and not db_user.is_admin():
         return _tn.get(_.noRights)
 
     if not table_name.lower() in table_mapper:
@@ -436,7 +437,8 @@ def delete_row(table_name, uids, nickname, _tn):
     :return: Empty string or error message
     """
     logger('AdminLib', 'delete_row', table_name + ' ' + str(uids) + ' ' + nickname)
-    if not is_user_admin(nickname):
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if db_user and not db_user.is_admin():
         return _tn.get(_.noRights)
 
     if not table_name.lower() in table_mapper:
@@ -477,7 +479,8 @@ def add_row(table_name, data, nickname, _tn):
     :return: Empty string or error message
     """
     logger('AdminLib', 'add_row', str(data))
-    if not is_user_admin(nickname):
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if db_user and not db_user.is_admin():
         return _tn.get(_.noRights)
 
     if not table_name.lower() in table_mapper:
@@ -507,7 +510,8 @@ def update_badge(nickname, _tn):
     :return: dict(), string
     """
     logger('AdminLib', 'update_badge', '')
-    if not is_user_admin(nickname):
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not db_user.is_admin():
         return None, _tn.get(_.noRights)
     ret_array = []
     for t in table_mapper:

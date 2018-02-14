@@ -148,12 +148,14 @@ class LibTests(unittest.TestCase):
         self.assertTrue('Hallo.', lib.pretty_print_options('<bla>hallo</bla>'))
 
     def test_is_user_author_or_admin(self):
-        self.assertTrue(lib.is_user_admin('Tobias'))
-        self.assertFalse(lib.is_user_admin('Pascal'))
+        db_user1 = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        db_user2 = DBDiscussionSession.query(User).filter_by(nickname='Pascal').first()
+        self.assertTrue(db_user1.is_admin() or db_user1.is_author())
+        self.assertFalse(db_user2.is_admin() or db_user2.is_author())
 
     def test_is_user_admin(self):
-        self.assertTrue(lib.is_user_admin('Tobias'))
-        self.assertFalse(lib.is_user_admin('Pascal'))
+        self.assertTrue(DBDiscussionSession.query(User).filter_by(nickname='Tobias').first().is_admin())
+        self.assertFalse(DBDiscussionSession.query(User).filter_by(nickname='Pascal').first().is_admin())
 
     def test_is_author_of_statement(self):
         user = DBDiscussionSession.query(User).get(DBDiscussionSession.query(TextVersion).get(36).author_uid)

@@ -57,7 +57,7 @@ from dbas.helper.validation import validate, valid_user, valid_issue, valid_conc
     valid_user_as_author_of_argument
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
-from dbas.lib import escape_string, get_discussion_language, get_changelog, is_user_author_or_admin
+from dbas.lib import escape_string, get_discussion_language, get_changelog
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -305,7 +305,10 @@ def main_news(request):
         return unauthenticated
 
     ui_locales = get_language_from_cookie(request)
-    is_author = is_user_author_or_admin(request.authenticated_userid)
+    is_author = False
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
+    if db_user:
+        is_author = db_user.is_admin() or db_user.is_author()
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
                                                                                    request.application_url,
@@ -956,6 +959,7 @@ def review_history(request):
 
 # history page for reviews
 @view_config(route_name='review_ongoing', renderer='templates/review-history.pt', permission='use')
+@validate(valid_user)
 def ongoing_history(request):
     """
     View configuration for the current reviews.
@@ -971,7 +975,7 @@ def ongoing_history(request):
     if unauthenticated:
         return unauthenticated
 
-    history = review_history_helper.get_ongoing_reviews(request.application_url, request.authenticated_userid, _tn)
+    history = review_history_helper.get_ongoing_reviews(request.application_url, request.validated['user'], _tn)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
                                                                                    request.application_url,
                                                                                    request.path,
