@@ -76,7 +76,7 @@ function AjaxSettingsHandler(){
 			url: 'ajax_set_user_language',
 			method: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({'ui_locales': ui_locales}),
+            data: JSON.stringify({'lang': ui_locales}),
 			dataType: 'json',
 			headers: { 'X-CSRF-Token': csrf_token }
 		}).done(function setUserSettingDone(data) {

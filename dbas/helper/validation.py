@@ -364,17 +364,17 @@ def valid_language(request):
         return False
 
 
-def valid_ui_locales(request):
+def valid_lang_cookie_fallback(request):
     """
     Get provided language from form, else interpret it from the request.
 
     :param request:
     :return:
     """
-    lang = request.json_body.get('ui_locales')
+    lang = request.json_body.get('lang')
     if not lang:
         lang = get_language_from_cookie(request)
-    request.validated['ui_locales'] = lang
+    request.validated['lang'] = lang
 
 
 # #############################################################################

@@ -23,7 +23,7 @@ from dbas.handler.password import get_hashed_password
 from dbas.lib import escape_string, get_user_by_case_insensitive_nickname, \
     get_user_by_case_insensitive_public_nickname
 from dbas.logger import logger
-from dbas.strings.keywords import Keywords as _
+from dbas.strings.keywords import Keywords as _, Keywords
 from dbas.strings.translator import Translator
 
 oauth_providers = ['google', 'github', 'facebook', 'twitter']
@@ -295,27 +295,27 @@ def __return_success_login(request, for_api, db_user, keep_login, url) -> dict:
         return HTTPFound(location=url, headers=headers)  # success
 
 
-def register_user_with_ajax_data(params, ui_locales, mailer):
+def register_user_with_ajax_data(data, lang, mailer: Mailer):
     """
     Consume the ajax data for an login attempt
 
-    :param params: params of webserver's request
-    :param ui_locales: language
-    :param params: instance of pyramids webmailer
+    :param data: validated params of webserver's request
+    :param lang: language
+    :param mailer: Mailer
     :return: Boolean, String, User
     """
-    _tn = Translator(ui_locales)
+    _tn = Translator(lang)
     success = ''
 
-    firstname = escape_string(params.get('firstname', ''))
-    lastname = escape_string(params.get('lastname', ''))
-    nickname = escape_string(params.get('nickname', ''))
-    email = escape_string(params.get('email', ''))
-    gender = escape_string(params.get('gender', ''))
-    password = escape_string(params.get('password', ''))
-    passwordconfirm = escape_string(params.get('passwordconfirm', ''))
-    mode = escape_string(params.get('mode', ''))
-    recaptcha = escape_string(params.get('g-recaptcha-response', ''))
+    firstname = escape_string(data['firstname'])
+    lastname = escape_string(data['lastname'])
+    nickname = escape_string(data['nickname'])
+    email = escape_string(data['email'])
+    gender = escape_string(data['gender'])
+    password = escape_string(data['password'])
+    passwordconfirm = escape_string(data['passwordconfirm'])
+    mode = escape_string(data['mode'])
+    recaptcha = escape_string(data['g-recaptcha-response'])
     db_new_user = None
 
     msg = __check_login_params(nickname, email, password, passwordconfirm, mode, recaptcha)
@@ -343,7 +343,7 @@ def register_user_with_ajax_data(params, ui_locales, mailer):
     return success, msg, db_new_user
 
 
-def __check_login_params(nickname, email, password, passwordconfirm, mode, recaptcha):
+def __check_login_params(nickname, email, password, passwordconfirm, mode, recaptcha) -> Keywords:
     is_human = True
     error = False
     if mode == 'manually':

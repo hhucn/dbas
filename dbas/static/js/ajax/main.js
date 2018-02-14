@@ -195,7 +195,8 @@ function AjaxMainHandler(){
 		$.ajax({
 			url: 'ajax_user_registration',
 			type: 'POST',
-			data: {
+            contentType: 'application/json',
+            data: JSON.stringify({
 				firstname: firstname,
 				lastname: lastname,
 				nickname: nickname,
@@ -206,9 +207,8 @@ function AjaxMainHandler(){
 				'g-recaptcha-response': recaptcha,
 				lang: getLanguage(),
 				mode: 'manually'
-			},
+            }),
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
@@ -241,7 +241,7 @@ function AjaxMainHandler(){
             contentType: 'application/json',
             data: JSON.stringify({
                 email: email,
-                ui_locales: getLanguage()
+                lang: getLanguage()
             }),
 			dataType: 'json',
 			headers: {
