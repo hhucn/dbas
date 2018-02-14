@@ -5,17 +5,17 @@ Login Handler for D-BAS
 """
 
 from time import sleep
-from pyramid_mailer import get_mailer
 
 import transaction
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import remember
+from pyramid_mailer import Mailer
 from sqlalchemy import func
 from validate_email import validate_email
 
 from dbas.auth.ldap import verify_ldap_user_data
-from dbas.auth.recaptcha import validate_recaptcha
 from dbas.auth.oauth import google as google, github as github, facebook as facebook, twitter as twitter
+from dbas.auth.recaptcha import validate_recaptcha
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Settings
 from dbas.handler import user
@@ -29,44 +29,35 @@ from dbas.strings.translator import Translator
 oauth_providers = ['google', 'github', 'facebook', 'twitter']
 
 
-def login_user(request, nickname, password, for_api, keep_login=False, lang='en'):
+def login_user(nickname: str, password: str, mailer: Mailer, lang='en') -> dict:
     """
-    Try to login the user whereby she is maybe a HHU-LDAP user or known localy
+    Try to login the user whereby she is maybe a HHU-LDAP user or known locally.
 
-    :param request: web servers request
     :param nickname: User.nickname
     :param password: String
-    :param for_api: Boolean
-    :param keep_login: Boolean
+    :param mailer: request.mailer
     :param lang: current language
     :return: dict() or HTTPFound if the user is logged in and it is not the api
     """
-
-    # caution: password is not escaped
-    nickname, password, keep_login, url = __get_data(request, nickname, password, keep_login)
+    logger('Auth.Login', 'login_user', 'user: {}'.format(nickname))
     _tn = Translator(lang)
-    logger('Auth.Login', 'login_user', 'user: {}, api: {}'.format(nickname, for_api))
 
     # now we have several options:
-    # 1. the user is unknown, because she has a HHU-LDAP account
+    # 1. the user is unknown in our DB, maybe has HHU-LDAP account
     # 2. oauth nickname
     # 3. the user is known, but
-    #  a) keeped local
-    #  b) keeped in ldap
+    #  a) kept local
+    #  b) kept in ldap
     db_user = get_user_by_case_insensitive_nickname(nickname)
     if not db_user:  # this is 1.
-        mailer = None if for_api else get_mailer(request)
-        register = __register_user_with_ldap_data(mailer, nickname, password, for_api, _tn)
-        if len(register['error']) != 0:
-            return register
-        return __return_success_login(request, for_api, register['user'], keep_login, url)
+        return __register_user_with_ldap_data(mailer, nickname, password, _tn)
 
     # this is 2.
     if len(str(db_user.oauth_provider)) > 4 and len(str(db_user.oauth_provider_id)) > 4:  # >4 because len('None') is 4
         return {'info': _tn.get(_.userIsOAuth)}
 
     # this is 3.
-    return __check_in_local_known_user(request, db_user, password, for_api, keep_login, url, _tn)
+    return __check_in_local_known_user(db_user, password, _tn)
 
 
 def login_user_oauth(request, service, redirect_uri, old_redirect, ui_locales):
@@ -222,7 +213,7 @@ def __set_oauth_user(request, user_data, service, ui_locales):
     db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
     if not db_group:
         logger('Auth.Login', '__set_oauth_user', 'Error occured')
-        return {'error': _tn.get(_.errorTryLateOrContant), 'success': ''}
+        return {'error': _tn.get(_.errorTryLateOrContant)}
 
     ret_dict = user.set_new_oauth_user(user_data['firstname'], user_data['lastname'], user_data['nickname'],
                                        user_data['email'], user_data['gender'], user_data['password'], user_data['id'],
@@ -235,49 +226,42 @@ def __set_oauth_user(request, user_data, service, ui_locales):
         return {'error': ret_dict['error'], 'success': ret_dict['success']}
 
 
-def __register_user_with_ldap_data(mailer, nickname, password, for_api, _tn):
+def __register_user_with_ldap_data(mailer, nickname, password, _tn) -> dict:
     """
     Asks LDAP if the user is known
 
     :param mailer: instance of pyramids mailer
     :param nickname: User.nickname
     :param password: String
-    :param for_api: Boolean
-    :param keep_login: Boolean
     :param _tn: Translator
     :return: dict() or HTTPFound if the user is logged in an it is not the api
     """
-    logger('Auth.Login', '__register_user_with_ldap_data', 'user: {}, api: {}'.format(nickname, for_api))
-    data = verify_ldap_user_data(nickname, password, _tn)
-    if data['error']:
-        return {'error': data['error'], 'user': ''}
+    logger('Auth.Login', '__register_user_with_ldap_data', 'user: {}'.format(nickname))
+    ldap_data = verify_ldap_user_data(nickname, password, _tn)
+    if ldap_data['error']:
+        return {'error': ldap_data['error']}
 
     # register the new user
-    ret_dict = user.set_new_user(mailer, data['firstname'], data['lastname'], nickname, data['gender'],
-                                 data['email'], 'NO_PW_BECAUSE_LDAP', _tn)
+    ret_dict = user.set_new_user(mailer, ldap_data['firstname'], ldap_data['lastname'], nickname, ldap_data['gender'],
+                                 ldap_data['email'], 'NO_PW_BECAUSE_LDAP', _tn)
     if 'success' not in ret_dict:
-        return {'error': _tn.get(_.internalKeyError), 'user': ''}
+        return {'error': _tn.get(_.internalKeyError)}
 
-    return {'error': '', 'user': ret_dict['user']}
+    return {'user': ret_dict['user']}
 
 
-def __check_in_local_known_user(request, db_user, password, for_api, keep_login, url, _tn):
+def __check_in_local_known_user(db_user: User, password: str, _tn) -> dict:
     """
-    Trys to check in a local known user
+    Tries to check in a local known user.
 
-    :param request: web servers request
     :param db_user: current instance of User
     :param password: password of the user
-    :param for_api: Boolean
-    :param keep_login: Boolean
-    :param url: for redirection after login
     :param _tn: instance of current translator
-    :return: dict() or HTTPFound if the user is logged in an it is not the api
+    :return: dict()
     """
-    logger('Auth.Login', '__check_in_local_known_user', 'user: {}, api: {}'.format(db_user.nickname, for_api))
-    is_local = db_user.validate_password(password)
-    if is_local:
-        return __return_success_login(request, for_api, db_user, keep_login, url)
+    logger('Auth.Login', '__check_in_local_known_user', 'user: {}'.format(db_user.nickname))
+    if db_user.validate_password(password):
+        return {'user': db_user}
 
     if not (db_user.validate_password('NO_PW_BECAUSE_LDAP') or db_user.password is get_hashed_password(
             'NO_PW_BECAUSE_LDAP')):
@@ -288,10 +272,10 @@ def __check_in_local_known_user(request, db_user, password, for_api, keep_login,
     if data['error']:
         return {'error': data['error']}
 
-    return __return_success_login(request, for_api, db_user, keep_login, url)
+    return {'user': db_user}
 
 
-def __return_success_login(request, for_api, db_user, keep_login, url):
+def __return_success_login(request, for_api, db_user, keep_login, url) -> dict:
     """
 
     :param request: web servers request
@@ -309,30 +293,6 @@ def __return_success_login(request, for_api, db_user, keep_login, url):
         sleep(0.5)
         logger('Auth.Login', 'login_user', 'return HTTPFound with url {}'.format(url))
         return HTTPFound(location=url, headers=headers)  # success
-
-
-def __get_data(request, nickname, password, keep_login):
-    """
-    Read input params for returning nickname and password of the user as well as a boolean if she wants to keep
-    the login and an url for forwarding
-
-    :param request: web servers request
-    :param nickname: User.nickname
-    :param password: String
-    :param keep_login: Boolean
-    :return: String, String, Boolean, String
-    """
-    if not nickname and not password:
-        nickname = escape_string(request.params['user'])
-        password = request.params['password']
-        keep_login = escape_string(request.params['keep_login'])
-        keep_login = True if keep_login == 'true' else False
-        url = request.params['url']
-    else:
-        nickname = escape_string(nickname)
-        password = escape_string(password)
-        url = ''
-    return nickname, password, keep_login, url
 
 
 def register_user_with_ajax_data(params, ui_locales, mailer):
@@ -444,7 +404,6 @@ def __refresh_headers_and_url(request, db_user, keep_login, url):
     logger('Auth.Login', '__refresh_headers_and_url', 'remembering headers for {}'.format(db_user.nickname))
     headers = remember(request, db_user.nickname)
 
-    # update timestamp
     logger('Auth.Login', '__refresh_headers_and_url', 'update login timestamp')
     db_user.update_last_login()
     db_user.update_last_action()

@@ -5,6 +5,7 @@ Collection of pyramids views components of D-BAS' core.
 """
 
 import json
+from time import sleep
 from typing import Callable, Any
 
 import graphene
@@ -28,7 +29,8 @@ import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
 from api.v2.graphql.core import Query
-from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers
+from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers, \
+    __refresh_headers_and_url
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Group, Statement, ReviewEdit, ReviewMerge, ReviewSplit, ReviewOptimization, \
     ReviewDuplicate, ReviewDelete
@@ -52,9 +54,9 @@ from dbas.helper.query import get_default_locale_name, set_user_language, \
 from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, has_keywords, \
     valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient, \
     valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument, valid_statement, \
-    valid_review_reason, valid_ui_locales, valid_premisegroup, valid_text_values, valid_not_executed_review, \
-    valid_database_model, valid_user_as_author, valid_uid_as_row_in_review_queue, valid_user_as_author_of_statement, \
-    valid_user_as_author_of_argument
+    valid_not_executed_review, valid_database_model, valid_user_as_author, valid_uid_as_row_in_review_queue, \
+    valid_user_as_author_of_statement, valid_user_as_author_of_argument, valid_review_reason, valid_ui_locales, \
+    valid_premisegroup, valid_text_values, has_maybe_keywords
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog
@@ -1167,32 +1169,33 @@ def delete_statistics(request):
     return {'removed_data': str(clear_vote_and_seen_values_of_user(request.authenticated_userid)).lower()}
 
 
-# ajax - user login
-@view_config(route_name='ajax_user_login', renderer='json')
-def user_login(request, nickname=None, password=None, for_api=False, keep_login=False):
+@view_config(request_method='POST', route_name='ajax_user_login', renderer='json')
+@validate(has_keywords(('user', str), ('password', str), ('keep_login', bool)),
+          has_maybe_keywords(('redirect_url', str, '')))
+def user_login(request):
     """
     Will login the user by his nickname and password
 
     :param request: request of the web server
-    :param nickname: Manually provide nickname (e.g. from API)
-    :param password: Manually provide password (e.g. from API)
-    :param for_api: Manually provide boolean (e.g. from API)
-    :param keep_login: Manually provide boolean (e.g. from API)
     :return: dict() with error
     """
-    logger('views', 'user_login', 'main: {} (api: {})'.format(request.params, str(for_api)))
-
+    logger('views', 'user_login', 'main: {}'.format(request.json_body))
     lang = get_language_from_cookie(request)
+    nickname = request.validated['user']
+    password = request.validated['password']
+    keep_login = request.validated['keep_login']
+    redirect_url = request.validated['redirect_url']
 
-    try:
-        return login_user(request, nickname, password, for_api, keep_login, lang)
-    except KeyError as e:
-        logger('user_login', 'error', repr(e), error=True)
-        _tn = Translator(lang)
-        return {'error': _tn.get(_.internalKeyError)}
+    login_data = login_user(nickname, password, request.mailer, lang)
+
+    if not login_data.get('error'):
+        headers, url = __refresh_headers_and_url(request, login_data['user'], keep_login, redirect_url)
+        sleep(0.5)
+        return HTTPFound(location=url, headers=headers)
+
+    return {'error': Translator(lang).get(_.userPasswordNotMatch)}
 
 
-# ajax - user login via oauth
 @view_config(route_name='ajax_user_login_oauth', renderer='json')
 def user_login_oauth(request):
     """
@@ -1230,7 +1233,6 @@ def user_login_oauth(request):
         return {'error': _tn.get(_.internalKeyError)}
 
 
-# ajax - user logout
 @view_config(route_name='ajax_user_logout', renderer='json')
 def user_logout(request, redirect_to_main=False):
     """
@@ -1256,7 +1258,6 @@ def user_logout(request, redirect_to_main=False):
     )
 
 
-# ajax - registration of users
 @view_config(route_name='ajax_user_registration', renderer='json')
 def user_registration(request):
     """
@@ -1291,7 +1292,6 @@ def user_registration(request):
     }
 
 
-# ajax - password requests
 @view_config(route_name='ajax_user_password_request', renderer='json')
 @validate(valid_ui_locales, has_keywords(('email', str)))
 def user_password_request(request):
