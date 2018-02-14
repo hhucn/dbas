@@ -21,7 +21,6 @@ class AuthLoginTest(unittest.TestCase):
     def test_login_user(self):
         nickname = 'Bob'
         password = 'iamatestuser2016'
-        for_api = False
         keep_login = True
 
         request = testing.DummyRequest(json_body={
@@ -35,12 +34,10 @@ class AuthLoginTest(unittest.TestCase):
         response = user_login(request)
         self.assertTrue(type(response) is HTTPFound)
 
-        keep_login = True
-        response = login_user(request, nickname, password, for_api=for_api, keep_login=keep_login, lang=_tn)
+        response = login_user(nickname, password, DummyMailer, lang=_tn)
         self.assertTrue(type(response) is HTTPFound)
 
-        for_api = True
-        response = login_user(request, nickname, password, for_api=for_api, keep_login=keep_login, lang=_tn)
+        response = login_user(nickname, password, DummyMailer, lang=_tn)
         self.assertTrue(type(response) is dict)
         self.assertIn('status', response)
 
@@ -57,7 +54,7 @@ class AuthLoginTest(unittest.TestCase):
             'passwordconfirm': '',
             'g-recaptcha-response': '',
             'mode': '',
-        }, matchdict={})
+        })
         success, msg, db_new_user = register_user_with_ajax_data(request.params, 'en', None)
         self.assertEqual(_tn.get(_.pwdShort), msg)
         self.assertIsNone(db_new_user)

@@ -5,6 +5,7 @@ Collection of pyramids views components of D-BAS' core.
 """
 
 import json
+from time import sleep
 from typing import Callable, Any
 
 import graphene
@@ -28,7 +29,8 @@ import dbas.review.helper.reputation as review_reputation_helper
 import dbas.review.helper.subpage as review_page_helper
 import dbas.strings.matcher as fuzzy_string_matcher
 from api.v2.graphql.core import Query
-from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers
+from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers, \
+    __refresh_headers_and_url
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Group, Statement
 from dbas.database.discussion_model import User, Issue
@@ -1176,7 +1178,15 @@ def user_login(request):
     password = request.validated['password']
     keep_login = request.validated['keep_login']
     redirect_url = request.validated['redirect_url']
-    return login_user(request, nickname, password, keep_login, redirect_url, lang)
+
+    login_data = login_user(nickname, password, request.mailer, lang)
+
+    if not login_data.get('error'):
+        headers, url = __refresh_headers_and_url(request, login_data['user'], keep_login, redirect_url)
+        sleep(0.5)
+        return HTTPFound(location=url, headers=headers)
+
+    return {'error': Translator(lang).get(_.userPasswordNotMatch)}
 
 
 @view_config(route_name='ajax_user_login_oauth', renderer='json')
