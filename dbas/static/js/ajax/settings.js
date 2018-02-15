@@ -26,17 +26,14 @@ function AjaxSettingsHandler(){
 	 * Ajax request for deleting the users history
 	 */
 	this.deleteUserHistoryData = function(){
-		var csrf_token = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_delete_user_history',
-			method: 'POST',
-			dataType: 'json',
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function ajaxGetUserHistoryDone() {
+		var url = 'ajax_delete_user_history';
+		var done = function ajaxGetUserHistoryDone() {
 			new HistoryHandler().removeUserHistoryDataDone();
-		}).fail(function ajaxGetUserHistoryFail(xhr) {
-			new HistoryHandler().getDataFail(xhr.status);
-		});
+		};
+		var fail = function ajaxGetUserHistoryFail(data) {
+			setGlobalInfoHandler('Ohh', data.responseJSON.errors[0].description);
+		};
+		ajaxSkeleton(url, 'POST', {}, done, fail);
 	};
 
 	/**
@@ -237,16 +234,13 @@ function AjaxSettingsHandler(){
 	 * Ajax request for deleting the statitistics
 	 */
 	this.deleteStatisticsRequest = function() {
-		var csrf_token = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_delete_statistics',
-			method: 'GET',
-			dataType: 'json',
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function deleteStatisticsRequestDone(data) {
-			new StatisticsHandler().callbackDeleteStatisticsDone(data);
-		}).fail(function deleteStatisticsRequestFail() {
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
-		});
+		var url = 'ajax_delete_statistics';
+		var done = function deleteStatisticsRequestDone() {
+			new StatisticsHandler().callbackDeleteStatisticsDone();
+		};
+		var fail = function deleteStatisticsRequestFail() {
+			new StatisticsHandler().callbackStatisticsFail(data.responseJSON.errors[0].description);
+		};
+		ajaxSkeleton(url, 'POST', {}, done, fail);
 	};
 }
