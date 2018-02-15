@@ -317,7 +317,7 @@ def __create_issue_dict(issue, application_url) -> dict:
     :return: dict()
     """
     short_url_dict = get_short_url(application_url + '/' + issue.slug, 'en')
-    url = short_url_dict['url'] if len(short_url_dict['error']) == 0 else application_url + '/' + issue.slug
+    url = short_url_dict['url'] if len(short_url_dict['url']) == 0 else application_url + '/' + issue.slug
 
     # we do nto have to check for clicked arguments, cause arguments consist out of statements
     statements = [s.uid for s in DBDiscussionSession.query(Statement).filter_by(issue_uid=issue.uid).all()]

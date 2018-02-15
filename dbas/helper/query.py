@@ -334,7 +334,6 @@ def get_short_url(url, ui_locales) -> dict:
     service = Shorteners.TINYURL
     service_text = service
     service_url = 'http://tinyurl.com/'
-    error = ''
     short_url = ''
     try:
         short_url = format(Shortener(service).short(url))
@@ -347,5 +346,4 @@ def get_short_url(url, ui_locales) -> dict:
         'service': service,
         'service_url': service_url,
         'service_text': service_text,
-        'error': error
     }

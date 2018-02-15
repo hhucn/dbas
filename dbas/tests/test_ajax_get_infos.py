@@ -5,6 +5,8 @@ from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import History
+from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
 
 
 class AjaxGetInfosTest(unittest.TestCase):
@@ -59,9 +61,10 @@ class AjaxGetInfosTest(unittest.TestCase):
         request = testing.DummyRequest(json_body={'url': 'https://dbas.cs.uni-duesseldorf.de'})
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response['url']) != 0)
-        self.assertTrue(len(response['service']) != 0)
-        self.assertTrue(len(response['service_url']) != 0)
+        if Translator('en').get(_.serviceNotAvailable) == response['service_text']:
+            self.assertEqual(0, len(response['url']))
+        else:
+            self.assertNotEqual(0, len(response['url']))
 
     def test_get_shortened_url_failure(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
