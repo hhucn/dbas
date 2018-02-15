@@ -131,7 +131,7 @@ class AjaxGetInfosTest(unittest.TestCase):
     def test_get_user_with_same_opinion(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_users_with_opinion as ajax
-        request = testing.DummyRequest(params={}, matchdict={}, json_body={})
+        request = testing.DummyRequest(json_body={})
         response = ajax(request)
         self.assertIsNotNone(response)
 
@@ -149,18 +149,17 @@ class AjaxGetInfosTest(unittest.TestCase):
         transaction.commit()
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_user_history as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest()
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(len(response) >= 0)
+        self.assertLessEqual(0, len(response))
 
     def test_get_user_history_failure(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import get_user_history as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest()
         response = ajax(request)
-        self.assertIsNotNone(response)
-        self.assertEqual(len(response), 0)
+        self.assertEqual(400, response.status_code)
 
     def test_delete_user_history(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
@@ -192,7 +191,7 @@ class AjaxGetInfosTest(unittest.TestCase):
     def test_get_all_edits(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_all_edits_of_user as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest()
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertEqual(len(response), 0)
@@ -200,15 +199,15 @@ class AjaxGetInfosTest(unittest.TestCase):
     def test_get_all_edits_failure(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import get_all_edits_of_user as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest()
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertEqual(len(response), 0)
+        self.assertTrue(400, response.status_code)
 
     def test_get_all_posted_statements(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_all_posted_statements as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest()
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertEqual(len(response), 0)
@@ -216,15 +215,14 @@ class AjaxGetInfosTest(unittest.TestCase):
     def test_get_all_posted_statements_failure(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import get_all_posted_statements as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest()
         response = ajax(request)
-        self.assertIsNotNone(response)
-        self.assertEqual(len(response), 0)
+        self.assertEqual(400, response.status_code)
 
     def test_get_all_argument_votes(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_all_argument_clicks as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest()
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertEqual(len(response), 0)
@@ -232,14 +230,14 @@ class AjaxGetInfosTest(unittest.TestCase):
     def test_get_all_argument_votes_failure(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import get_all_argument_clicks as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest()
         response = ajax(request)
         self.assertEqual(400, response.status_code)
 
     def test_get_all_statement_votes(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_all_argument_clicks as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest()
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertEqual(len(response), 0)
@@ -247,6 +245,6 @@ class AjaxGetInfosTest(unittest.TestCase):
     def test_get_all_statement_votes_failure(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import get_all_argument_clicks as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest()
         response = ajax(request)
         self.assertEqual(400, response.status_code)

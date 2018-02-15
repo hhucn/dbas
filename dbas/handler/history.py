@@ -456,18 +456,14 @@ def save_path_in_database(nickname, slug, path, history=''):
     # transaction.commit()  # 207
 
 
-def get_history_from_database(nickname, lang):
+def get_history_from_database(db_user: User, lang: str):
     """
     Returns history from database
 
-    :param nickname: User.nickname
+    :param db_user: User
     :param lang: ui_locales
     :return: [String]
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else '').first()
-    if not nickname or not db_user:
-        return []
-
     db_history = DBDiscussionSession.query(History).filter_by(author_uid=db_user.uid).all()
     return_array = []
     for history in db_history:
