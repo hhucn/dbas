@@ -6,7 +6,7 @@ ENV locs /etc/locale.gen
 RUN apt-get update -qq && \
     apt-get install -yqq curl && \
     curl -sL https://deb.nodesource.com/setup_7.x | bash - && \
-    apt-get install -yqq ruby2.1-dev rubygems build-essential nodejs locales libsasl2-dev python-dev libldap2-dev libssl-dev gettext bzip2 && \
+    apt-get install -yqq ruby2.1-dev rubygems build-essential nodejs locales libsasl2-dev python-dev libldap2-dev libssl-dev gettext bzip2 autoconf libffi-dev && \
     (yes | gem install sass) && \
     npm install bower phantomjs-prebuilt google-closure-compiler-js -g && \
     touch $locs && \

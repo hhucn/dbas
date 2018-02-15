@@ -540,6 +540,7 @@ en_lang = {
     _.priv_access_splits_queue: 'Access to the split queue',
     _.priv_access_merges_queue: 'Access to the merge queue',
     _.priv_history_queue: 'Access to all reviews of the past',
+    _.premiseAndConclusionAreEqual: 'Premise and conclusion are equal',
     _.publications: 'Publications',
     _.queueDelete: 'Deletes',
     _.queueOptimization: 'Optimizations',

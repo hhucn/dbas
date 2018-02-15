@@ -102,7 +102,7 @@ def set_positions_premise(for_api, data) -> dict:
         conclusion_id = data['conclusion_id']
         supportive = data['supportive']
         application_url = data['application_url']
-        history = data['history'] if '_HISTORY_' in data else None
+        history = data.get('history')
         port = data.get('port')
         mailer = data.get('mailer')
         discussion_lang = data.get('discussion_lang', DBDiscussionSession.query(Issue).get(issue_id).lang)
@@ -439,10 +439,13 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     new_argument_uids = []
     new_statement_uids = []  # all statement uids are stored in this list to create the link to a possible reference
     for group in premisegroups:  # premise groups is a list of lists
-        new_argument, statement_uids = __create_argument_by_raw_input(application_url, default_locale_name, user, group, conclusion_id, supportive, issue, discussion_lang)
+        new_argument, statement_uids = __create_argument_by_raw_input(application_url, default_locale_name, user, group,
+                                                                      conclusion_id, supportive, issue, discussion_lang)
         if not isinstance(new_argument, Argument):  # break on error
-            error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength),
-                                         statement_min_length)
+            if error is -1:
+                error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength), statement_min_length)
+            else:
+                error = '{}'.format(_tn.get(_.premiseAndConclusionAreEqual))
             return -1, None, error
 
         new_argument_uids.append(new_argument.uid)
@@ -491,26 +494,27 @@ def insert_new_premises_for_argument(application_url, default_locale_name, text,
     logger('StatementsHelper', 'insert_new_premises_for_argument', 'def')
 
     statements = insert_as_statements(application_url, default_locale_name, text, user, issue, discussion_lang)
-    if statements == -1:
+    current_argument = DBDiscussionSession.query(Argument).get(arg_uid)
+    if statements == -1 or not current_argument or current_argument and any([s.uid == current_argument.conclusion.uid for s in statements]):
+        logger('StatementsHelper', 'insert_new_premises_for_argument', 'No statement or any premise = conclusion')
         return -1
 
     # set the new statements as premise group and get current user as well as current argument
-    new_pgroup_uid = set_statements_as_new_premisegroup(statements, user, issue)
+    new_pgroup = set_statements_as_new_premisegroup(statements, user, issue)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-    current_argument = DBDiscussionSession.query(Argument).get(arg_uid)
 
     new_argument = None
     if current_attack == 'undermine':
-        new_argument = set_new_undermine_or_support_for_pgroup(new_pgroup_uid, current_argument, False, db_user, issue)
+        new_argument = set_new_undermine_or_support_for_pgroup(new_pgroup.uid, current_argument, False, db_user, issue)
 
     elif current_attack == 'support':
-        new_argument, duplicate = set_new_support(new_pgroup_uid, current_argument, db_user, issue)
+        new_argument, duplicate = set_new_support(new_pgroup.uid, current_argument, db_user, issue)
 
-    elif current_attack == 'undercut' or current_attack == 'overbid':
-        new_argument, duplicate = set_new_undercut(new_pgroup_uid, current_argument, db_user, issue)
+    elif current_attack == 'undercut':
+        new_argument, duplicate = set_new_undercut(new_pgroup.uid, current_argument, db_user, issue)
 
     elif current_attack == 'rebut':
-        new_argument, duplicate = set_new_rebut(new_pgroup_uid, current_argument, db_user, issue)
+        new_argument, duplicate = set_new_rebut(new_pgroup.uid, current_argument, db_user, issue)
 
     logger('StatementsHelper', 'insert_new_premises_for_argument', 'Returning argument ' + str(new_argument.uid))
     return new_argument
@@ -526,7 +530,7 @@ def set_statements_as_new_premisegroup(statements, user, issue):
     :return: PremiseGroup.uid
     """
     logger('StatementsHelper', 'set_statements_as_new_premisegroup', 'user: ' + str(user) +
-           ', statement: ' + str(statements) + ', issue: ' + str(issue))
+           ', statement: ' + str([s.uid for s in statements]) + ', issue: ' + str(issue))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
 
     # check for duplicate
@@ -547,7 +551,7 @@ def set_statements_as_new_premisegroup(statements, user, issue):
         for group in intersec:
             db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=group).all()
             if len(db_premise) == len(statements):
-                return group
+                return DBDiscussionSession.query(PremiseGroup).get(group)
 
     premise_group = PremiseGroup(author=db_user.uid)
     DBDiscussionSession.add(premise_group)
@@ -563,7 +567,7 @@ def set_statements_as_new_premisegroup(statements, user, issue):
 
     db_premisegroup = DBDiscussionSession.query(PremiseGroup).filter_by(author_uid=db_user.uid).order_by(PremiseGroup.uid.desc()).first()
 
-    return db_premisegroup.uid
+    return db_premisegroup
 
 
 def __create_argument_by_raw_input(application_url, default_locale_name, user, text, conclusion_id, is_supportive, issue, discussion_lang):
@@ -591,11 +595,18 @@ def __create_argument_by_raw_input(application_url, default_locale_name, user, t
     statement_uids = [s.uid for s in statements]
 
     # second, set the new statements as premisegroup
-    new_premisegroup_uid = set_statements_as_new_premisegroup(statements, user, issue)
-    logger('StatementsHelper', '__create_argument_by_raw_input', 'new pgroup ' + str(new_premisegroup_uid))
+    new_premisegroup = set_statements_as_new_premisegroup(statements, user, issue)
+    logger('StatementsHelper', '__create_argument_by_raw_input', 'new pgroup ' + str(new_premisegroup.uid))
+
+    # sanity check whether any premise and the conclusion are the same
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=new_premisegroup.uid).all()
+    for premise in db_premises:
+        if premise.statement_uid is db_conclusion.uid:
+            logger('StatementsHelper', '__create_argument_by_uids', 'One premise and conclusion are the same', error=True)
+            return -2, None
 
     # third, insert the argument
-    new_argument = __create_argument_by_uids(user, new_premisegroup_uid, db_conclusion.uid, None, is_supportive, issue)
+    new_argument = __create_argument_by_uids(user, new_premisegroup, db_conclusion.uid, None, is_supportive, issue)
     transaction.commit()
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
@@ -613,7 +624,7 @@ def __create_argument_by_raw_input(application_url, default_locale_name, user, t
     return new_argument, statement_uids
 
 
-def __create_argument_by_uids(user, premisegroup_uid, conclusion_uid, argument_uid, is_supportive, issue):
+def __create_argument_by_uids(user, premisegroup, conclusion_uid, argument_uid, is_supportive, issue):
     """
     Connects the given id's to a new argument
 
@@ -626,26 +637,26 @@ def __create_argument_by_uids(user, premisegroup_uid, conclusion_uid, argument_u
     :return:
     """
     logger('StatementsHelper', '__create_argument_by_uids', 'main with user: ' + str(user) +
-           ', premisegroup_uid: ' + str(premisegroup_uid) +
+           ', premisegroup_uid: ' + str(premisegroup.uid) +
            ', conclusion_uid: ' + str(conclusion_uid) +
            ', argument_uid: ' + str(argument_uid) +
            ', is_supportive: ' + str(is_supportive) +
            ', issue: ' + str(issue))
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-    new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
+    new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup.uid,
                                                                    Argument.is_supportive == is_supportive,
                                                                    Argument.conclusion_uid == conclusion_uid,
                                                                    Argument.issue_uid == issue)).first()
     if not new_argument:
-        new_argument = Argument(premisegroup=premisegroup_uid, issupportive=is_supportive, author=db_user.uid,
+        new_argument = Argument(premisegroup=premisegroup.uid, issupportive=is_supportive, author=db_user.uid,
                                 conclusion=conclusion_uid, issue=issue)
         new_argument.set_conclusions_argument(argument_uid)
 
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()
 
-        new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
+        new_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup.uid,
                                                                        Argument.is_supportive == is_supportive,
                                                                        Argument.author_uid == db_user.uid,
                                                                        Argument.conclusion_uid == conclusion_uid,
