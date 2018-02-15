@@ -9,17 +9,14 @@ function AjaxSettingsHandler(){
 	 * Ajax request for getting the users history
 	 */
 	this.getUserHistoryData = function(){
-		var csrf_token = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_get_user_history',
-			method: 'GET',
-			dataType: 'json',
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function ajaxGetUserHistoryDone(data) {
+		var url = 'ajax_get_user_history';
+		var done = function getUserHistoryDataDone(data) {
 			new HistoryHandler().getUserHistoryDataDone(data);
-		}).fail(function ajaxGetUserHistoryFail(xhr) {
+		};
+		var fail = function getUserHistoryDataFail(xhr) {
 			new HistoryHandler().getDataFail(xhr.status);
-		});
+		};
+		ajaxSkeleton(url, 'GET', {}, done, fail);
 	};
 
 	/**
@@ -33,7 +30,7 @@ function AjaxSettingsHandler(){
 		var fail = function ajaxGetUserHistoryFail(data) {
 			setGlobalInfoHandler('Ohh', data.responseJSON.errors[0].description);
 		};
-		ajaxSkeleton(url, 'POST', {}, done, fail);
+		ajaxSkeleton(url, 'GET', {}, done, fail);
 	};
 
 	/**
@@ -44,22 +41,18 @@ function AjaxSettingsHandler(){
 	 */
 	this.setUserSetting = function(toggle_element, service) {
 		var settings_value = toggle_element.prop('checked');
-		var csrf_token = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_set_user_setting',
-			method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                'settings_value': settings_value,
-                'service': service
-            }),
-			dataType: 'json',
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function setUserSettingDone(data) {
+		var url = 'ajax_set_user_setting';
+        var data ={
+            'settings_value': settings_value,
+            'service': service
+        };
+		var done = function setUserSettingDone(data) {
 			new SettingsHandler().callbackDone(data, toggle_element, settings_value, service);
-		}).fail(function setUserSettingFail() {
+		};
+		var fail = function setUserSettingFail() {
 			new SettingsHandler().callbackFail(toggle_element, settings_value, service);
-		});
+		};
+		ajaxSkeleton(url, 'GET', data, done, fail);
 	};
 
 	/**
@@ -68,15 +61,9 @@ function AjaxSettingsHandler(){
 	 * @param ui_locales
 	 */
 	this.setNotifcationLanguage = function(ui_locales){
-		var csrf_token = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_set_user_language',
-			method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({'ui_locales': ui_locales}),
-			dataType: 'json',
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function setUserSettingDone(data) {
+		var url = 'ajax_set_user_language';
+		var data = {'ui_locales': ui_locales};
+		var done = function setUserSettingDone(data) {
 			if (data.error.length === 0){
 				var lang_image = $('#current-lang-images');
 				$('#' + settingsSuccessDialog).fadeIn();
@@ -92,10 +79,12 @@ function AjaxSettingsHandler(){
 				$('#' + settingsAlertDialog).fadeIn();
 				setTimeout(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
 			}
-		}).fail(function setUserSettingFail() {
+		};
+		var fail = function setUserSettingFail() {
 			$('#' + settingsAlertDialog).fadeIn();
 			setTimeout(function() { $('#' + settingsAlertDialog).fadeOut(); }, 3000);
-		});
+		};
+		ajaxSkeleton(url, 'POST', data, done, fail);
 	};
 
 	/**
@@ -107,17 +96,14 @@ function AjaxSettingsHandler(){
 			return;
 		}
 
-		var csrf_token = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_get_all_edits',
-			method: 'GET',
-			dataType: 'json',
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function getEditsDoneDone(data) {
+		var url = 'ajax_get_all_edits';
+		var done = function getEditsDoneDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allEditsDone), false);
-		}).fail(function getEditsDoneFail() {
+		};
+		var fail = function getEditsDoneFail() {
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
-		});
+		};
+		ajaxSkeleton(url, 'GET', {}, done, fail);
 	};
 
 	/**
@@ -129,17 +115,14 @@ function AjaxSettingsHandler(){
 			return;
 		}
 
-		var csrf_token = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_get_all_posted_statements',
-			method: 'GET',
-			dataType: 'json',
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function getStatementsSendDone(data) {
+		var url = 'ajax_get_all_posted_statements';
+		var done = function getStatementsSendDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allStatementsPosted), false);
-		}).fail(function getStatementsSendFail() {
+		};
+		var fail = function getStatementsSendFail() {
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
-		});
+		};
+		ajaxSkeleton(url, 'GET', {}, done, fail);
 	};
 	
 	this.__getInfoWrapper = function(id, url, is_clicked_element){
@@ -154,7 +137,7 @@ function AjaxSettingsHandler(){
 		var fail = function __getInfoWrapperFail(data) {
 			setGlobalInfoHandler('Ohh', data.responseJSON.errors[0].description);
 		};
-		ajaxSkeleton(url, 'POST', {}, done, fail);
+		ajaxSkeleton(url, 'GET', {}, done, fail);
 	};
 
 	/**
@@ -196,6 +179,6 @@ function AjaxSettingsHandler(){
 		var fail = function deleteStatisticsRequestFail() {
 			new StatisticsHandler().callbackStatisticsFail(data.responseJSON.errors[0].description);
 		};
-		ajaxSkeleton(url, 'POST', {}, done, fail);
+		ajaxSkeleton(url, 'GET', {}, done, fail);
 	};
 }

@@ -102,13 +102,10 @@ class UserHandlerTests(unittest.TestCase):
         transaction.commit()
 
     def test_get_textversions(self):
-        statement_array, edit_array = user.get_textversions('', 'en')
-        assert_equal(len(statement_array), 0)
-        assert_equal(len(edit_array), 0)
 
-        statement_array, edit_array = user.get_textversions(self.user.public_nickname, 'en')
-        assert_greater_equal(len(statement_array), 0)
-        assert_greater_equal(len(edit_array), 0)
+        d = user.get_textversions(self.user, 'en')
+        assert_greater_equal(len(d.get('statements', [])), 0)
+        assert_greater_equal(len(d.get('edits', [])), 0)
 
     def test_get_marked_elements_of_user(self):
         prep_dict = user.get_marked_elements_of_user(self.user, False, 'en')

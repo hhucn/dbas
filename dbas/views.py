@@ -1050,6 +1050,7 @@ def call_from_request(request, f: Callable[[Any, Any], Any]):
 
 # ajax - getting complete track of the user
 @view_config(route_name='ajax_get_user_history', renderer='json')
+@validate(valid_user)
 def get_user_history(request):
     """
     Request the complete user track.
@@ -1058,11 +1059,13 @@ def get_user_history(request):
     :return: json-dict()
     """
     ui_locales = get_language_from_cookie(request)
-    return history_handler.get_history_from_database(request.authenticated_userid, ui_locales)
+    db_user = request.validated['user']
+    return history_handler.get_history_from_database(db_user, ui_locales)
 
 
 # ajax - getting all text edits
 @view_config(route_name='ajax_get_all_posted_statements', renderer='json')
+@validate(valid_user)
 def get_all_posted_statements(request):
     """
     Request for all statements of the user
@@ -1071,12 +1074,13 @@ def get_all_posted_statements(request):
     :return: json-dict()
     """
     ui_locales = get_language_from_cookie(request)
-    return_array, _ = user.get_textversions(request.authenticated_userid, ui_locales)
-    return return_array
+    db_user = request.validated['user']
+    return user.get_textversions(db_user, ui_locales).get('statements', [])
 
 
 # ajax - getting all text edits
 @view_config(route_name='ajax_get_all_edits', renderer='json')
+@validate(valid_user)
 def get_all_edits_of_user(request):
     """
     Request for all edits of the user
@@ -1085,8 +1089,8 @@ def get_all_edits_of_user(request):
     :return: json-dict()
     """
     ui_locales = get_language_from_cookie(request)
-    _, return_array = user.get_textversions(request.authenticated_userid, ui_locales)
-    return return_array
+    db_user = request.validated['user']
+    return user.get_textversions(db_user, ui_locales).get('edits', [])
 
 
 # ajax - getting all votes for arguments

@@ -44,11 +44,9 @@ class HistoryHandlerTests(unittest.TestCase):
         assert_less(len(db_hist1), len(db_hist2))
 
     def test_get_history_from_database(self):
-        hist = history.get_history_from_database('', 'en')
-        assert_equal(len(hist), 0)
         big_fucking_link = 'cat-or-dog/justify/13/t/undercut?history=/attitude/2-/justify/2/t-/reaction/12/undercut/13'
         history.save_path_in_database(self.user.nickname, 'cat-or-dog', big_fucking_link, self.history)
-        hist = history.get_history_from_database(self.user.nickname, 'en')
+        hist = history.get_history_from_database(self.user, 'en')
         assert_greater(len(hist), 0)
 
     def test_delete_history_in_database(self):
