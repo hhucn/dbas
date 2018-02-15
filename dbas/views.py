@@ -1649,8 +1649,7 @@ def get_infos_about_argument(request):
 # ajax - for getting all users with the same opinion
 @view_config(route_name='ajax_get_user_with_same_opinion', renderer='json')
 @validate(valid_language, invalid_user,
-          has_keywords(('uid', int), ('is_argument', bool), ('is_attitude', bool), ('is_reaction', bool),
-                       ('is_position', bool)))
+          has_keywords(('is_argument', bool), ('is_attitude', bool), ('is_reaction', bool), ('is_position', bool)))
 def get_users_with_opinion(request):
     """
     ajax interface for getting a dump
@@ -1660,7 +1659,7 @@ def get_users_with_opinion(request):
     """
     logger('views', 'get_users_with_opinion', 'main: {}'.format(request.json_body))
     db_lang = request.validated['lang']
-    uids = [request.validated['uid']]
+    uids = request.json_body.get('uid')
     is_arg = request.validated['is_argument']
     is_att = request.validated['is_attitude']
     is_rea = request.validated['is_reaction']

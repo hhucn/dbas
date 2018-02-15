@@ -11,7 +11,7 @@ function AjaxGraphHandler(){
 	 * @param address: keyword in url
 	 */
 	this.getUserGraphData = function(uid, address){
-		var dataString = {
+		var data = {
 			is_argument: false,
 			is_attitude: false,
 			is_reaction: false,
@@ -19,40 +19,35 @@ function AjaxGraphHandler(){
 			uid: uid,
 			lang: getDiscussionLanguage()
 		};
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-
+		
 		switch(address){
 			case 'attitude':
-				dataString.is_attitude = true;
+				data.is_attitude = true;
 				break;
 			case 'justify':
 				break;
 			case 'argument':
 			case 'dont_know':
-				dataString.is_argument = true;
-				dataString.is_reaction = true;
+				data.is_argument = true;
+				data.is_reaction = true;
 				break;
 			case 'position':
-				dataString.is_position = true;
+				data.is_position = true;
 				break;
 			default:
 				setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
 				return;
 		}
 
-		dataString.lang = $('#issue_info').data('discussion-language');
-		$.ajax({
-			url: 'ajax_get_user_with_same_opinion',
-			method: 'POST',
-			dataType: 'json',
-			contentType: 'application/json',
-			data: JSON.stringify(dataString),
-			headers: {'X-CSRF-Token': csrf_token}
-		}).done(function (data) {
+		var url = 'ajax_get_user_with_same_opinion';
+		
+		var done = function getUserGraphDataDone (data) {
 			new DiscussionBarometer().callbackIfDoneForGetDictionary(data, address);
-		}).fail(function (data) {
+		};
+		var fail = function getUserGraphDataFail (data) {
 			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
-		});
+		};
+		ajaxSkeleton(url, 'POST', data, done, fail);
 	};
 
 	/**
@@ -65,8 +60,9 @@ function AjaxGraphHandler(){
 	 * @param show_partial_graph
 	 */
 	this.getDiscussionGraphData = function (context, uid, is_argument, show_partial_graph) {
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		var data = {'issue': getCurrentIssueId(), 'path': window.location.href};
+		var inputdata = {
+			'path': window.location.href
+		};
 		var request_for_complete = uid === null || !show_partial_graph;
 		var url;
 
@@ -74,21 +70,17 @@ function AjaxGraphHandler(){
 			url = '/graph/complete';
 		} else {
 			url = '/graph/partial';
-			data.uid = uid;
-			data.is_argument = is_argument;
+			inputdata.uid = parseInt(uid);
+			inputdata.is_argument = is_argument;
 		}
 
-		$.ajax({
-			url: url,
-			type: 'GET',
-			dataType: 'json',
-			data: data,
-			headers: {'X-CSRF-Token': csrf_token}
-		}).done(function (data) {
-			context.callbackIfDoneForDiscussionGraph(data);
-		}).fail(function () {
+		var done = function (d) {
+			context.callbackIfDoneForDiscussionGraph(d);
+		};
+		var fail = function () {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-		});
+		};
+		ajaxSkeleton(url, 'POST', inputdata, done, fail);
 	};
 
 	/**
@@ -96,17 +88,13 @@ function AjaxGraphHandler(){
 	 * @param uid
      */
 	this.getJumpDataForGraph = function (uid) {
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: '/ajax_get_arguments_by_statement/' + uid,
-			type: 'GET',
-			dataType: 'json',
-			async: true,
-			headers: {'X-CSRF-Token': csrf_token}
-		}).done(function (data) {
+		var url= '/ajax_get_arguments_by_statement/' + uid;
+		var done = function (data) {
 			new DiscussionGraph({}, false).callbackIfDoneForGetJumpDataForGraph(data);
-		}).fail(function () {
+		};
+		var fail = function () {
 			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-		});
+		};
+		ajaxSkeleton(url, 'GET', {}, done, fail);
 	};
 }
