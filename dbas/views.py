@@ -1259,8 +1259,7 @@ def user_logout(request, redirect_to_main=False):
 
 @view_config(route_name='ajax_user_registration', renderer='json')
 @validate(valid_lang_cookie_fallback,
-          has_keywords(('nickname', str), ('email', str), ('gender', str), ('password', str), ('mode', str),
-                       ('recaptcha', str)),
+          has_keywords(('nickname', str), ('email', str), ('gender', str), ('password', str), ('passwordconfirm', str)),
           has_maybe_keywords(('firstname', str, ''), ('lastname', str, '')))
 def user_registration(request):
     """
@@ -1271,24 +1270,13 @@ def user_registration(request):
     """
     logger('Views', 'user_registration', 'main: {}'.format(request.json_body))
     mailer = request.mailer
-
     lang = request.validated['lang']
-    data = {
-        'firstname': request.validated['firstname'],
-        'lastname': request.validated['lastname'],
-        'nickname': request.validated['nickname'],
-        'email': request.validated['email'],
-        'gender': request.validated['gender'],
-        'password': request.validated['password'],
-        'passwordconfirm': request.validated['passwordconfirm'],
-        'mode': request.validated['mode'],
-        'recaptcha': request.validated['recaptcha']
-    }
 
-    success, info, new_user = register_user_with_ajax_data(data, lang, mailer)
+    success, info, new_user = register_user_with_ajax_data(request.validated, lang, mailer)
 
     return {
         'success': str(success),
+        'error': '',
         'info': str(info)
     }
 

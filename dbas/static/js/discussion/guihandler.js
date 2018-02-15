@@ -296,7 +296,8 @@ function GuiHandler() {
 		$.ajax({
 			url: 'ajax_user_registration',
 			type: 'POST',
-			data: {
+            contentType: 'application/json',
+            data: JSON.stringify({
 				firstname: $('#popup-complete-login-userfirstname-input').val(),
 				lastname: $('#popup-complete-login-userlastname-input').val(),
 				nickname: $('#popup-complete-login-nick-input').val(),
@@ -304,12 +305,10 @@ function GuiHandler() {
 				email: $('#popup-complete-login-email-input').val(),
 				password: $('#popup-complete-login-password-input').val(),
 				passwordconfirm: $('#popup-complete-login-passwordconfirm-input').val(),
-				'g-recaptcha-response': '',
 				lang: getLanguage(),
 				mode: 'oauth'
-			},
+            }),
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}

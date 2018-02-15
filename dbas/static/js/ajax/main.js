@@ -24,6 +24,24 @@ function ajaxSkeleton(url, method, data, ajaxDone, ajaxFail){
 	}).done(ajaxDone(data)).fail(ajaxFail());
 }
 
+/**
+ * Validate content of recaptcha. True if invalid.
+ * @returns {boolean}
+ */
+function invalid_recaptcha() {
+    'use strict';
+    var answer = document.getElementById("captcha-answer").value;
+    var digit1 = parseInt(document.getElementById("captcha-digit1").innerHTML);
+    var digit2 = parseInt(document.getElementById("captcha-digit2").innerHTML);
+    var digit3 = parseInt(document.getElementById("captcha-digit3").innerHTML);
+    var sum = digit1 + digit2 - digit3;
+    console.log("answer: " + answer);
+    console.log("sum: " + sum);
+    console.log("answer == sum" + answer == sum);
+    console.log("answer != sum" + answer != sum);
+    return answer != sum || answer == "";
+}
+
 function AjaxMainHandler(){
 	'use strict';
 
@@ -174,10 +192,8 @@ function AjaxMainHandler(){
 		});
 	};
 
-	/**
-	 *
-	 */
 	this.registration = function(){
+        $('#' + popupLoginRegistrationFailed).hide();
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		var firstname = $('#userfirstname-input').val(),
 			lastname = $('#userlastname-input').val(),
@@ -192,6 +208,12 @@ function AjaxMainHandler(){
 		if ($('#' + popupLoginInlineRadioGenderM).is(':checked')){ gender = 'm'; }
 		if ($('#' + popupLoginInlineRadioGenderF).is(':checked')){ gender = 'f'; }
 
+        if (invalid_recaptcha()) {
+            $('#' + popupLoginRegistrationFailed).show();
+            $('#' + popupLoginRegistrationFailed + '-message').text("I am groot");
+            return;
+        }
+
 		$.ajax({
 			url: 'ajax_user_registration',
 			type: 'POST',
@@ -205,8 +227,7 @@ function AjaxMainHandler(){
 				password: password,
 				passwordconfirm: passwordconfirm,
 				'g-recaptcha-response': recaptcha,
-				lang: getLanguage(),
-				mode: 'manually'
+                lang: getLanguage()
             }),
 			dataType: 'json',
 			headers: {

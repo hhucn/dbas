@@ -15,7 +15,6 @@ from validate_email import validate_email
 
 from dbas.auth.ldap import verify_ldap_user_data
 from dbas.auth.oauth import google as google, github as github, facebook as facebook, twitter as twitter
-from dbas.auth.recaptcha import validate_recaptcha
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, Settings
 from dbas.handler import user
@@ -314,11 +313,9 @@ def register_user_with_ajax_data(data, lang, mailer: Mailer):
     gender = escape_string(data['gender'])
     password = escape_string(data['password'])
     passwordconfirm = escape_string(data['passwordconfirm'])
-    mode = escape_string(data['mode'])
-    recaptcha = escape_string(data['g-recaptcha-response'])
     db_new_user = None
 
-    msg = __check_login_params(nickname, email, password, passwordconfirm, mode, recaptcha)
+    msg = __check_login_params(nickname, email, password, passwordconfirm)
     if msg:
         return success, _tn.get(msg), db_new_user
 
@@ -343,13 +340,7 @@ def register_user_with_ajax_data(data, lang, mailer: Mailer):
     return success, msg, db_new_user
 
 
-def __check_login_params(nickname, email, password, passwordconfirm, mode, recaptcha) -> Keywords:
-    is_human = True
-    error = False
-    if mode == 'manually':
-        is_human, error = validate_recaptcha(recaptcha)
-
-    # database queries mail verification
+def __check_login_params(nickname, email, password, passwordconfirm) -> Keywords:
     db_nick1 = get_user_by_case_insensitive_nickname(nickname)
     db_nick2 = get_user_by_case_insensitive_public_nickname(nickname)
     db_mail = DBDiscussionSession.query(User).filter(func.lower(User.email) == func.lower(email)).first()
@@ -378,11 +369,6 @@ def __check_login_params(nickname, email, password, passwordconfirm, mode, recap
     if len(email) < 2 or not is_mail_valid:
         logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is too short or not valid')
         return _.mailNotValid
-
-    # is anti-spam correct?
-    if not is_human or error:
-        logger('Auth.Login', 'user_registration', 'recaptcha error')
-        return _.maliciousAntiSpam
 
     return None
 
