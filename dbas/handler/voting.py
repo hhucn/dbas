@@ -202,57 +202,23 @@ def add_seen_argument(argument_uid, db_user):
     return True
 
 
-def clear_vote_and_seen_values_of_user(nickname):
+def clear_vote_and_seen_values_of_user(db_user):
     """
     Delete all votes/clicks/mards
 
-    :param nickname: User.nickname
+    :param db_user: User
     :return: Boolean
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        return False
-
-    __clear_seen_by_values_of_user(db_user.uid)
-    __clear_marks_of_user(db_user.uid)
-    __clear_clicks_of_user(db_user.uid)
+    DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).delete()
+    DBDiscussionSession.query(SeenArgument).filter_by(user_uid=db_user.uid).delete()
+    DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=db_user.uid).delete()
+    DBDiscussionSession.query(MarkedStatement).filter_by(author_uid=db_user.uid).delete()
+    DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=db_user.uid).delete()
+    DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=db_user.uid).delete()
 
     DBDiscussionSession.flush()
     transaction.commit()
     return True
-
-
-def __clear_marks_of_user(user_uid):
-    """
-    Deletes all marks of given user
-
-    :param user_uid: User.uid
-    :return:
-    """
-    DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=user_uid).delete()
-    DBDiscussionSession.query(MarkedStatement).filter_by(author_uid=user_uid).delete()
-
-
-def __clear_clicks_of_user(user_uid):
-    """
-    Deletes all votes of given user
-
-    :param user_uid: User.uid
-    :return:
-    """
-    DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=user_uid).delete()
-    DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=user_uid).delete()
-
-
-def __clear_seen_by_values_of_user(user_uid):
-    """
-    Deletes all seen by values of given user
-
-    :param user_uid: User.uid
-    :return:
-    """
-    DBDiscussionSession.query(SeenStatement).filter_by(user_uid=user_uid).delete()
-    DBDiscussionSession.query(SeenArgument).filter_by(user_uid=user_uid).delete()
 
 
 def __click_argument(argument, user, is_up_vote):

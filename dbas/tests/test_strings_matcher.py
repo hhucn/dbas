@@ -16,7 +16,7 @@ class StringMatcherTest(unittest.TestCase):
         self.check_string_matcher_array(return_array)
 
     def test_get_strings_for_reasons(self):
-        return_array = matcher.get_strings_for_duplicates_or_reasons('cat', 2)
+        return_array = matcher.get_strings_for_duplicates_or_reasons('cat', 2, 2)
         self.check_string_matcher_array(return_array)
 
     def test_get_strings_for_issues(self):

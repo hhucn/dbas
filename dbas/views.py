@@ -1143,6 +1143,7 @@ def get_all_statement_clicks(request):
 
 # ajax - deleting complete history of the user
 @view_config(route_name='ajax_delete_user_history', renderer='json')
+@validate(valid_user)
 def delete_user_history(request):
     """
     Request to delete the users history.
@@ -1151,12 +1152,13 @@ def delete_user_history(request):
     :return: json-dict()
     """
     logger('delete_user_history', 'def', 'main')
-    user.update_last_action(request.authenticated_userid)
-    return {'removed_data': str(history_handler.delete_history_in_database(request.authenticated_userid)).lower()}
+    user = request.validated['user']
+    return history_handler.delete_history_in_database(user)
 
 
 # ajax - deleting complete history of the user
 @view_config(route_name='ajax_delete_statistics', renderer='json')
+@validate(valid_user)
 def delete_statistics(request):
     """
     Request to delete votes/clicks of the user.
@@ -1165,8 +1167,8 @@ def delete_statistics(request):
     :return: json-dict()
     """
     logger('delete_statistics', 'def', 'main')
-    user.update_last_action(request.authenticated_userid)
-    return {'removed_data': str(clear_vote_and_seen_values_of_user(request.authenticated_userid)).lower()}
+    user = request.validated['user']
+    return clear_vote_and_seen_values_of_user(user)
 
 
 @view_config(request_method='POST', route_name='ajax_user_login', renderer='json')
@@ -1784,7 +1786,7 @@ def fuzzy_search(request):
     mode = request.validated['type']
     value = request.validated['value']
     db_issue = request.validated['issue']
-    statement_uid = request.validated('statement_uid')
+    statement_uid = request.validated['statement_uid']
     db_user = request.validated['user']
     return fuzzy_string_matcher.get_prediction(_tn, db_user, db_issue, request.application_url, value, mode, statement_uid)
 

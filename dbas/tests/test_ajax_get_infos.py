@@ -164,29 +164,27 @@ class AjaxGetInfosTest(unittest.TestCase):
         DBDiscussionSession.add(History(author_uid=3, path='http://localhost:4284/discuss/cat-or-dog'))
         transaction.commit()
         from dbas.views import delete_user_history as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest()
         response = ajax(request)
         transaction.commit()
-        self.assertIsNotNone(response)
-        self.assertTrue(response['removed_data'] == 'true')
+        self.assertTrue(response)
         db_his = len(DBDiscussionSession.query(History).filter_by(author_uid=2).all())
         self.assertTrue(db_his == 0)
 
     def test_delete_statistics(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import delete_statistics as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest()
         response = ajax(request)
-        self.assertIsNotNone(response)
-        self.assertTrue(response['removed_data'] == 'true')
+        self.assertTrue(response)
 
     def test_delete_statistics_failure(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import delete_statistics as ajax
-        request = testing.DummyRequest(params={}, matchdict={})
+        request = testing.DummyRequest()
         response = ajax(request)
         self.assertIsNotNone(response)
-        self.assertTrue(response['removed_data'] == 'false')
+        self.assertTrue(400, response.status_code)
 
     def test_get_all_edits(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)

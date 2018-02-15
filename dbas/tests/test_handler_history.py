@@ -52,8 +52,7 @@ class HistoryHandlerTests(unittest.TestCase):
         assert_greater(len(hist), 0)
 
     def test_delete_history_in_database(self):
-        assert_false(history.delete_history_in_database(''))
-        assert_true(history.delete_history_in_database(self.user.nickname))
+        assert_true(history.delete_history_in_database(self.user))
 
     def test_handle_history(self):
         # TODO history.handle_history
