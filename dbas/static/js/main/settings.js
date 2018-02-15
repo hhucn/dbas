@@ -305,11 +305,11 @@ $(function () {
 	});
 
 	$('#' + infoVoteArgumentsId).click(function (){
-		new AjaxSettingsHandler().getMarekdArguments();
+		new AjaxSettingsHandler().getMarkedArguments();
 	});
 
 	$('#' + infoVoteStatementsId).click(function (){
-		new AjaxSettingsHandler().getStatementVotes();
+		new AjaxSettingsHandler().getMarkedStatements();
 	});
 
 	$('#' + infoClickArgumentsId).click(function (){
