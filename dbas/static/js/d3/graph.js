@@ -156,13 +156,12 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param request_for_complete
      */
     this.callbackIfDoneForDiscussionGraph = function (data, request_for_complete) {
-        var jsonData = $.parseJSON(data);
-        if (jsonData.error.length !== 0) {
-            setGlobalErrorHandler('Ohh!', jsonData.error);
+        if (data.error.length !== 0) {
+            setGlobalErrorHandler('Ohh!', data.error);
             new GuiHandler().setDisplayStyleAsDiscussion();
             return;
         }
-        new DiscussionGraph(box_sizes, isPartialGraphMode).setDefaultViewParams(true, jsonData, null, request_for_complete);
+        new DiscussionGraph(box_sizes, isPartialGraphMode).setDefaultViewParams(true, data, null, request_for_complete);
     };
 
     /**
