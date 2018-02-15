@@ -369,6 +369,7 @@ class Keywords(Enum):
     internalError = 'internalError'
     internalErrorHTTPS = 'internalErrorHTTPS'
     internalKeyError = 'internalKeyError'
+    invalidTableName = 'invalidTableName'
     issueList = 'issueList'
     issueNotFound = 'issueNotFound'
     islandViewHeaderText = 'islandViewHeaderText'

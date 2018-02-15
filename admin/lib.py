@@ -9,6 +9,7 @@ from datetime import datetime
 
 import arrow
 import transaction
+from pyramid.httpexceptions import exception_response
 from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError, ProgrammingError
 
@@ -22,6 +23,7 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
 from dbas.lib import get_text_for_premisesgroup_uid, get_text_for_argument_uid, \
     get_text_for_statement_uid, get_profile_picture
 from dbas.logger import logger
+from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
 
 table_mapper = {
@@ -206,19 +208,16 @@ def get_table_dict(table_name, main_page):
     """
     logger('AdminLib', 'get_table_dict', str(table_name))
 
-    # check for table
-    if not table_name.lower() in table_mapper:
-        return {'is_existing': False}
-
     # check for elements
     db_elements = DBDiscussionSession.query(table_mapper[table_name.lower()]['table']).all()
 
     count = len(db_elements)
     if count == 0:
-        return {'is_existing': True,
-                'has_elements': False,
-                'name': table_name,
-                'count': count}
+        return {
+            'has_elements': False,
+            'name': table_name,
+            'count': count
+        }
 
     # getting all keys
     table = table_mapper[table_name.lower()]['table']
@@ -234,7 +233,6 @@ def get_table_dict(table_name, main_page):
 
     # save it
     return {
-        'is_existing': True,
         'name': table_name,
         'has_elements': True,
         'count': count,
@@ -383,7 +381,7 @@ def __resolve_email_attribute(attribute, main_page, db_languages, db_users, tmp)
     tmp.append('{} {}'.format(img, attribute))
 
 
-def update_row(table_name, uids, keys, values, nickname, _tn):
+def update_row(table_name, uids, keys, values):
     """
     Updates the data in a specific row of an table
 
@@ -391,42 +389,33 @@ def update_row(table_name, uids, keys, values, nickname, _tn):
     :param uids: Array with uids
     :param keys: Array with keys
     :param values: Array with values
-    :param nickname: Current nickname of the user
-    :param _tn: Translator
     :return: Empty string or error message
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user or db_user and not db_user.is_admin():
-        return _tn.get(_.noRights)
-
-    if not table_name.lower() in table_mapper:
-        return _tn.get(_.internalKeyError)
-
     table = table_mapper[table_name.lower()]['table']
+    _tn = Translator('en')
     try:
         update_dict, success = __update_row_dict(table, values, keys, _tn)
         if not success:
-            return update_dict  # update_dict is a string
+            raise ProgrammingError
     except ProgrammingError as e:
-        logger('AdminLib', 'update_row ProgrammingError in __update_row_dict', str(e))
-        return 'SQLAlchemy ProgrammingError: ' + str(e)
+        logger('AdminLib', 'update_row ProgrammingError', str(e), error=True)
+        return exception_response(400, error='SQLAlchemy ProgrammingError: ' + str(e))
 
     try:
         __update_row(table, table_name, uids, update_dict)
-
     except IntegrityError as e:
-        logger('AdminLib', 'update_row IntegrityError', str(e))
-        return 'SQLAlchemy IntegrityError: ' + str(e)
+        logger('AdminLib', 'update_row IntegrityError', str(e), error=True)
+        return exception_response(400, error='SQLAlchemy IntegrityError: ' + str(e))
     except ProgrammingError as e:
-        logger('AdminLib', 'update_row ProgrammingError', str(e))
-        return 'SQLAlchemy ProgrammingError: ' + str(e)
+        logger('AdminLib', 'update_row ProgrammingError', str(e), error=True)
+        return exception_response(400, error='SQLAlchemy ProgrammingError: ' + str(e))
 
     DBDiscussionSession.flush()
     transaction.commit()
-    return ''
+    return True
 
 
-def delete_row(table_name, uids, nickname, _tn):
+def delete_row(table_name, uids):
     """
     Deletes a row in a table
 
@@ -436,14 +425,7 @@ def delete_row(table_name, uids, nickname, _tn):
     :param _tn: Translator
     :return: Empty string or error message
     """
-    logger('AdminLib', 'delete_row', table_name + ' ' + str(uids) + ' ' + nickname)
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user or db_user and not db_user.is_admin():
-        return _tn.get(_.noRights)
-
-    if not table_name.lower() in table_mapper:
-        return _tn.get(_.internalKeyError)
-
+    logger('AdminLib', 'delete_row', table_name + ' ' + str(uids))
     table = table_mapper[table_name.lower()]['table']
     try:
         # check if there is a table, where uid is not the PK!
@@ -457,34 +439,26 @@ def delete_row(table_name, uids, nickname, _tn):
             DBDiscussionSession.query(table).filter_by(uid=uids[0]).delete()
 
     except IntegrityError as e:
-        logger('AdminLib', 'delete_row IntegrityError', str(e))
-        return 'SQLAlchemy IntegrityError: ' + str(e)
+        logger('AdminLib', 'delete_row IntegrityError', str(e), error=True)
+        return exception_response(400, error='SQLAlchemy IntegrityError: ' + str(e))
     except ProgrammingError as e:
-        logger('AdminLib', 'delete_row ProgrammingError', str(e))
-        return 'SQLAlchemy ProgrammingError: ' + str(e)
+        logger('AdminLib', 'delete_row ProgrammingError', str(e), error=True)
+        return exception_response(400, error='SQLAlchemy ProgrammingError: ' + str(e))
 
     DBDiscussionSession.flush()
     transaction.commit()
-    return ''
+    return True
 
 
-def add_row(table_name, data, nickname, _tn):
+def add_row(table_name, data):
     """
     Updates data of a row in the table
 
     :param table_name: Name of the table
     :param data: Dictionary with data for teh update
-    :param nickname: Current nickname of the user
-    :param _tn: Translator
     :return: Empty string or error message
     """
     logger('AdminLib', 'add_row', str(data))
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user or db_user and not db_user.is_admin():
-        return _tn.get(_.noRights)
-
-    if not table_name.lower() in table_mapper:
-        return _tn.get(_.internalKeyError)
 
     table = table_mapper[table_name.lower()]['table']
     try:
@@ -493,26 +467,21 @@ def add_row(table_name, data, nickname, _tn):
         new_one = table(**data)
         DBDiscussionSession.add(new_one)
     except IntegrityError as e:
-        logger('AdminLib', 'add_row IntegrityError', str(e))
-        return 'SQLAlchemy IntegrityError: ' + str(e)
+        logger('AdminLib', 'add_row IntegrityError', str(e), error=True)
+        return exception_response(400, error='SQLAlchemy IntegrityError: ' + str(e))
 
     DBDiscussionSession.flush()
     transaction.commit()
-    return ''
+    return True
 
 
-def update_badge(nickname, _tn):
+def update_badge():
     """
     Returns the new count for the badge of every table
 
-    :param nickname: Current nickname of the user
-    :param _tn: Translator
     :return: dict(), string
     """
     logger('AdminLib', 'update_badge', '')
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user or db_user and not db_user.is_admin():
-        return None, _tn.get(_.noRights)
     ret_array = []
     for t in table_mapper:
         ret_array.append({
@@ -520,7 +489,7 @@ def update_badge(nickname, _tn):
             'count': DBDiscussionSession.query(table_mapper[t]['table']).count()
         })
 
-    return ret_array, ''
+    return ret_array
 
 
 def __update_row_dict(table, values, keys, _tn):
@@ -540,7 +509,7 @@ def __update_row_dict(table, values, keys, _tn):
         if value_type == 'INTEGER':
             tmp_key, tmp_val, error = __get_int_data(key, values[index], _tn)
             if error:
-                return tmp_key, tmp_val
+                raise ProgrammingError
             update_dict[tmp_key] = tmp_val
 
         # if current type is bolean
@@ -568,13 +537,13 @@ def __get_int_data(key, val, _tn):
         val = val[:val.rfind(" (")]
         db_user = DBDiscussionSession.query(User).filter_by(nickname=val).first()
         if not db_user:
-            return _tn.get(_.userNotFound), '', True
-        return key, db_user.uid
+            return _tn.get(_.userNotFound), '', False
+        return key, db_user.uid, True
 
     elif key == 'lang_uid':
         db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=val).first()
         if not db_lang:
-            return _tn.get(_.userNotFound), '', True
+            return _tn.get(_.langNotFound), '', False
         return key, db_lang.uid
 
     else:

@@ -3,6 +3,7 @@ from cornice import Errors
 from cornice.util import json_error
 
 import dbas.handler.issue as issue_handler
+from admin.lib import table_mapper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Issue, Statement, Language, Argument, ReviewDeleteReason, PremiseGroup, \
     TextVersion
@@ -379,6 +380,20 @@ def valid_ui_locales(request):
 
 # #############################################################################
 # General validation
+
+def valid_table_name(request):
+    """
+
+    :param request:
+    :return:
+    """
+    table_name = request.json_body.get('table')
+    if table_name.lower() in table_mapper:
+        request.validated['table'] = table_name
+    else:
+        _tn = Translator(get_language_from_cookie(request))
+        __add_error(request, 'valid_table_name', 'Invalid table name', _tn.get(_.invalidTableName))
+
 
 def valid_review_reason(request):
     """

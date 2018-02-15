@@ -374,6 +374,7 @@ en_lang = {
     _.iHaveNoOpinion: 'I have no opinion',
     _.iHaveNoOpinionYetInColor: 'I have <span class=\'text-info\'>no opinion yet</span>, show me an argument',
     _.informationForExperts: 'Information for experts',
+    _.invalidTableName: 'Invalid table name',
     _.internalFailureWhileDeletingTrack: 'Internal failure, please try again or did you have deleted your track recently?',
     _.internalFailureWhileDeletingHistory: 'Internal failure, please try again or did you have deleted your history recently?',
     _.internalError: '<strong>Internal Error:</strong> Maybe the server is offline.',
