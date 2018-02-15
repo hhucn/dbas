@@ -280,10 +280,10 @@ function AjaxDiscussionHandler() {
 	 * @param value
 	 * @param callbackid
 	 * @param type
-	 * @param extra optional integer
+	 * @param statement_uid optional integer
 	 * @param reason optional
 	 */
-	this.fuzzySearch = function (value, callbackid, type, extra, reason) {
+	this.fuzzySearch = function (value, callbackid, type, statement_uid, reason) {
 		var callback = $('#' + callbackid);
 		var pencil = ' <i class="fa fa-pencil" aria-hidden="true"></i>';
 		var tmpid = callbackid.split('-').length === 6 ? callbackid.split('-')[5] : '0';
@@ -298,6 +298,9 @@ function AjaxDiscussionHandler() {
 		}
 		var bubbleSpace = $('#' + discussionBubbleSpaceId);
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		if (len(statement_uid) === 0){
+			statement_uid = 0;
+		}
 
 		// clear lists if input is empty
 		if(callback.val().length === 0) {
@@ -344,7 +347,7 @@ function AjaxDiscussionHandler() {
 			data: JSON.stringify({
 				value: value,
 				type: type,
-				extra: extra,
+				statement_uid: statement_uid,
 				issue: getCurrentIssueId()
 			}),
 			global: false,

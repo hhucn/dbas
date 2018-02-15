@@ -1768,7 +1768,7 @@ def send_news(request):
 
 # ajax - for fuzzy search
 @view_config(route_name='ajax_fuzzy_search', renderer='json')
-@validate(valid_issue, invalid_user, has_keywords(('type', int), ('value', str)))
+@validate(valid_issue, invalid_user, has_keywords(('type', int), ('value', str), ('statement_uid', int)))
 def fuzzy_search(request):
     """
     ajax interface for fuzzy string search
@@ -1784,9 +1784,9 @@ def fuzzy_search(request):
     mode = request.validated['type']
     value = request.validated['value']
     db_issue = request.validated['issue']
-    extra = request.json_body.get('extra')
+    statement_uid = request.validated('statement_uid')
     db_user = request.validated['user']
-    return fuzzy_string_matcher.get_prediction(_tn, db_user, db_issue, request.application_url, value, mode, extra)
+    return fuzzy_string_matcher.get_prediction(_tn, db_user, db_issue, request.application_url, value, mode, statement_uid)
 
 
 # ajax - for additional service

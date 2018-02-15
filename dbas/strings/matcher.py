@@ -27,7 +27,7 @@ mechanism = 'Levensthein'
 # mechanism = 'SequenceMatcher'
 
 
-def get_prediction(_tn, db_user, db_issue, application_url, value, mode, extra=None):
+def get_prediction(_tn, db_user, db_issue, application_url, value, mode, statement_uid):
     """
     Get dictionary with matching words, based on the given mode
 
@@ -49,7 +49,7 @@ def get_prediction(_tn, db_user, db_issue, application_url, value, mode, extra=N
         return_dict['distance_name'] = mechanism
 
     elif mode == 1:  # edit statement popup
-        return_dict['values'] = get_strings_for_edits(value, extra)
+        return_dict['values'] = get_strings_for_edits(value, statement_uid)
         return_dict['distance_name'] = mechanism
 
     elif mode == 2:  # start premise
@@ -57,12 +57,7 @@ def get_prediction(_tn, db_user, db_issue, application_url, value, mode, extra=N
         return_dict['distance_name'] = mechanism
 
     elif mode in [3, 4]:  # adding reasons / duplicates
-        try:
-            uid = int(extra)
-        except (TypeError, ValueError):
-            uid = None
-
-        return_dict['values'] = get_strings_for_duplicates_or_reasons(value, db_issue.uid, uid)
+        return_dict['values'] = get_strings_for_duplicates_or_reasons(value, db_issue.uid, statement_uid)
         return_dict['distance_name'] = mechanism
 
     elif mode == 5:  # getting public nicknames
@@ -150,20 +145,20 @@ def get_strings_for_edits(value, statement_uid):
     return return_array[:list_length]
 
 
-def get_strings_for_duplicates_or_reasons(value, issue, oem_value_uid=None):
+def get_strings_for_duplicates_or_reasons(value, issue, statement_uid):
     """
     Checks different textversion-strings for a match with given value
 
     :param value: string
     :param issue: Issue.uid
-    :param oem_value: integer
+    :param statement_uid: integer
     :return: dict()
     """
     db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
     return_array = []
 
     for stat in db_statements:
-        if stat.uid is oem_value_uid:
+        if stat.uid is statement_uid:
             continue
 
         db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(TextVersion.uid.asc()).first()
