@@ -495,7 +495,7 @@ def insert_new_premises_for_argument(application_url, default_locale_name, text,
     current_argument = DBDiscussionSession.query(Argument).get(arg_uid)
 
     statements = insert_as_statements(application_url, default_locale_name, text, user, issue, discussion_lang)
-    if statements == -1 or any([s.uid is arg_uid.conclusion.uid for s in statements]):
+    if statements == -1 or not current_argument or current_argument and any([s.uid == current_argument.conclusion.uid for s in statements]):
         logger('StatementsHelper', 'insert_new_premises_for_argument', 'No statement or any premise = conclusion')
         return -1
 

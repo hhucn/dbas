@@ -146,7 +146,7 @@ class UserHandlerTests(unittest.TestCase):
         assert_equal(prep_dict['firstname'], self.user.firstname)
         assert_equal(prep_dict['discussion_arg_clicks'], 1)
         assert_equal(prep_dict['discussion_stat_clicks'], 1)
-        assert_equal(prep_dict['statements_posted'], 2)
+        assert_equal(prep_dict['statements_posted'], 3)
         assert_equal(prep_dict['edits_done'], 1)
 
     def test_change_password(self):
