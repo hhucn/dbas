@@ -424,20 +424,16 @@ def get_textversions(public_nickname, lang, timestamp_after=None, timestamp_befo
     return statement_array, edit_array
 
 
-def get_marked_elements_of_user(nickname, is_argument, lang):
+def get_marked_elements_of_user(db_user: User, is_argument: bool, lang: str):
     """
     Get all marked arguments/statements of the user
 
-    :param nickname: nickname
+    :param db_user: User
     :param is_argument: Boolean
     :param lang: uid_locales
     :return: [{},...]
     """
     return_array = []
-
-    db_user = get_user_by_private_or_public_nickname(nickname)
-    if not db_user:
-        return return_array
 
     if is_argument:
         db_votes = DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=db_user.uid).all()
@@ -459,28 +455,16 @@ def get_marked_elements_of_user(nickname, is_argument, lang):
     return return_array
 
 
-def get_arg_clicks_of_user(nickname, lang):
-    return __get_clicks_of_user(nickname, True, lang)
-
-
-def get_stmt_clicks_of_user(nickname, lang):
-    return __get_clicks_of_user(nickname, False, lang)
-
-
-def __get_clicks_of_user(nickname, is_argument, lang):
+def get_clicked_element_of_user(db_user: User, is_argument: bool, lang: str):
     """
     Returs array with all clicks done by the user
 
-    :param nickname: user.nickname
+    :param db_user: User
     :param is_argument: Boolean
     :param lang: ui_locales
     :return: [{},...]
     """
     return_array = []
-
-    db_user = get_user_by_private_or_public_nickname(nickname)
-    if not db_user:
-        return return_array
 
     if is_argument:
         db_votes = DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=db_user.uid).all()

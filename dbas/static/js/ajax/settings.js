@@ -141,93 +141,48 @@ function AjaxSettingsHandler(){
 			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
 		});
 	};
+	
+	this.__getInfoWrapper = function(id, url, is_clicked_element){
+		if ($('#' + id).text() === '0'){
+			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
+			return;
+		}
+
+		var done = function __getInfoWrapperDone(data) {
+			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenInterests), is_clicked_element);
+		};
+		var fail = function __getInfoWrapperFail(data) {
+			setGlobalInfoHandler('Ohh', data.responseJSON.errors[0].description);
+		};
+		ajaxSkeleton(url, 'POST', {}, done, fail);
+	};
 
 	/**
 	 * Ajax request for getting all arguments, which the user voted for
 	 */
 	this.getArgumentClicks = function(){
-		if ($('#' + discussionArgClickCountId).text() === '0'){
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
-			return;
-		}
-
-		var csrf_token = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_get_all_argument_clicks',
-			method: 'GET',
-			dataType: 'json',
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function getArgumentClicksDone(data) {
-			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenInterests), true);
-		}).fail(function getArgumentClicksFail() {
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
-		});
+		this.__getInfoWrapper(discussionArgClickCountId, 'ajax_get_all_argument_clicks', true);
 	};
 
 	/**
 	 * Ajax request for getting all edits done by the user
 	 */
 	this.getStatementClicks = function(){
-		if ($('#' + discussionStatVoteCountId).text() === '0'){
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
-			return;
-		}
-
-		var csrf_token = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_get_all_statement_clicks',
-			method: 'GET',
-			dataType: 'json',
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function getStatementClicksDone(data) {
-			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenInterests), true);
-		}).fail(function getStatementClicksFail() {
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
-		});
+		this.__getInfoWrapper(discussionStatClickCountId, 'ajax_get_all_statement_clicks', true);
 	};
 
 	/**
 	 * Ajax request for getting all arguments, which the user voted for
 	 */
-	this.getMarekdArguments = function(){
-		if ($('#' + discussionArgVoteCountId).text() === '0'){
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
-			return;
-		}
-
-		var csrf_token = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_get_all_marked_arguments',
-			method: 'GET',
-			dataType: 'json',
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function gertMarkedArgumentsDone(data) {
-			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), false);
-		}).fail(function gertMarkedArgumentsFail() {
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
-		});
+	this.getMarkedArguments = function(){
+		this.__getInfoWrapper(discussionArgVoteCountId, 'ajax_get_all_marked_arguments', false);
 	};
 
 	/**
 	 * Ajax request for getting all edits done by the user
 	 */
-	this.getStatementVotes = function(){
-		if ($('#' + discussionStatVoteCountId).text() === '0'){
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
-			return;
-		}
-
-		var csrf_token = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_get_all_marked_statements',
-			method: 'GET',
-			dataType: 'json',
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function getMarkedStatementsDone(data) {
-			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allGivenVotes), false);
-		}).fail(function getMarkedStatementsFail() {
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
-		});
+	this.getMarkedStatements = function(){
+		this.__getInfoWrapper(discussionStatVoteCountId, 'ajax_get_all_marked_statements', false);
 	};
 
 	/**

@@ -1091,6 +1091,7 @@ def get_all_edits_of_user(request):
 
 # ajax - getting all votes for arguments
 @view_config(route_name='ajax_get_all_marked_arguments', renderer='json')
+@validate(valid_user)
 def get_all_marked_arguments(request):
     """
     Request for all marked arguments of the user
@@ -1099,11 +1100,13 @@ def get_all_marked_arguments(request):
     :return: json-dict()
     """
     ui_locales = get_language_from_cookie(request)
-    return user.get_marked_elements_of_user(request.authenticated_userid, True, ui_locales)
+    db_user = request.validated['user']
+    return user.get_marked_elements_of_user(db_user, True, ui_locales)
 
 
 # ajax - getting all votes for statements
 @view_config(route_name='ajax_get_all_marked_statements', renderer='json')
+@validate(valid_user)
 def get_all_marked_statements(request):
     """
     Request for all marked statements of the user
@@ -1112,11 +1115,13 @@ def get_all_marked_statements(request):
     :return: json-dict()
     """
     ui_locales = get_language_from_cookie(request)
-    return user.get_marked_elements_of_user(request.authenticated_userid, False, ui_locales)
+    db_user = request.validated['user']
+    return user.get_marked_elements_of_user(db_user, False, ui_locales)
 
 
 # ajax - getting all votes for arguments
 @view_config(route_name='ajax_get_all_argument_clicks', renderer='json')
+@validate(valid_user)
 def get_all_argument_clicks(request):
     """
     Request for all clicked arguments of the user
@@ -1125,11 +1130,13 @@ def get_all_argument_clicks(request):
     :return: json-dict()
     """
     ui_locales = get_language_from_cookie(request)
-    return user.get_arg_clicks_of_user(request.authenticated_userid, ui_locales)
+    db_user = request.validated['user']
+    return user.get_clicked_element_of_user(db_user, True, ui_locales)
 
 
 # ajax - getting all votes for statements
 @view_config(route_name='ajax_get_all_statement_clicks', renderer='json')
+@validate(valid_user)
 def get_all_statement_clicks(request):
     """
     Request for all clicked statements of the user
@@ -1138,7 +1145,8 @@ def get_all_statement_clicks(request):
     :return: json-dict()
     """
     ui_locales = get_language_from_cookie(request)
-    return user.get_stmt_clicks_of_user(request.authenticated_userid, ui_locales)
+    db_user = request.validated['user']
+    return user.get_clicked_element_of_user(db_user, False, ui_locales)
 
 
 # ajax - deleting complete history of the user

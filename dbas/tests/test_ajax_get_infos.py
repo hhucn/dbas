@@ -231,8 +231,7 @@ class AjaxGetInfosTest(unittest.TestCase):
         from dbas.views import get_all_argument_clicks as ajax
         request = testing.DummyRequest(params={}, matchdict={})
         response = ajax(request)
-        self.assertIsNotNone(response)
-        self.assertEqual(len(response), 0)
+        self.assertEqual(400, response.status_code)
 
     def test_get_all_statement_votes(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
@@ -247,5 +246,4 @@ class AjaxGetInfosTest(unittest.TestCase):
         from dbas.views import get_all_argument_clicks as ajax
         request = testing.DummyRequest(params={}, matchdict={})
         response = ajax(request)
-        self.assertIsNotNone(response)
-        self.assertEqual(len(response), 0)
+        self.assertEqual(400, response.status_code)

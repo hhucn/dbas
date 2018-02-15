@@ -111,20 +111,16 @@ class UserHandlerTests(unittest.TestCase):
         assert_greater_equal(len(edit_array), 0)
 
     def test_get_marked_elements_of_user(self):
-        prep_dict = user.get_marked_elements_of_user(None, False, 'en')
-        assert_equal(len(prep_dict), 0)
-        assert_not_in('uid', prep_dict)
-
-        prep_dict = user.get_marked_elements_of_user(self.user.nickname, False, 'en')
+        prep_dict = user.get_marked_elements_of_user(self.user, False, 'en')
         assert_equal(len(prep_dict), 0)
         assert_not_in('uid', prep_dict)
 
     def test_get_arg_clicks_of_user(self):
-        prep_array = user.get_arg_clicks_of_user(self.user.nickname, 'en')
+        prep_array = user.get_clicked_element_of_user(self.user, True, 'en')
         assert_greater_equal(len(prep_array), 0)
 
     def test_get_stmt_clicks_of_user(self):
-        prep_array = user.get_stmt_clicks_of_user(self.user.nickname, 'en')
+        prep_array = user.get_clicked_element_of_user(self.user, False, 'en')
         assert_greater_equal(len(prep_array), 0)
 
     def test_get_information_of(self):
