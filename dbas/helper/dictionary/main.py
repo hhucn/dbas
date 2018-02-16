@@ -244,24 +244,14 @@ class DictionaryHelper(object):
         """
         _tn = Translator(self.system_lang)
 
-        edits = 0
-        statements = 0
-        arg_vote, stat_vote = (0, 0)
-        arg_clicks, stat_clicks = (0, 0)
-        public_nick = ''
-        db_group = None
-        db_settings = None
-        db_language = None
-
-        if db_user:
-            edits = user.get_count_of_statements(db_user, True)
-            statements = user.get_count_of_statements(db_user, False)
-            arg_vote, stat_vote = user.get_count_of_votes_of_user(db_user)
-            arg_clicks, stat_clicks = user.get_count_of_clicks(db_user)
-            public_nick = db_user.get_global_nickname()
-            db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
-            db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
-            db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
+        edits = user.get_count_of_statements(db_user, True)
+        statements = user.get_count_of_statements(db_user, False)
+        arg_vote, stat_vote = user.get_count_of_votes_of_user(db_user)
+        arg_clicks, stat_clicks = user.get_count_of_clicks(db_user)
+        public_nick = db_user.get_global_nickname()
+        db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
+        db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
+        db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
 
         group = db_group.name if db_group else '-'
         gravatar_public_url = get_profile_picture(db_user, 80)
@@ -274,12 +264,12 @@ class DictionaryHelper(object):
             'pw_change_error': pw_change_error,
             'pw_change_success': pw_change_success,
             'message': message,
-            'db_firstname': db_user.firstname if db_user else '',
-            'db_surname': db_user.surname if db_user else '',
-            'db_nickname': db_user.nickname if db_user else '',
+            'db_firstname': db_user.firstname,
+            'db_surname': db_user.surname,
+            'db_nickname': db_user.nickname,
             'db_public_nickname': public_nick,
-            'db_mail': db_user.email if db_user else '',
-            'has_mail': db_user.email is not 'None' if db_user else '',
+            'db_mail': db_user.email,
+            'has_mail': db_user.email is not 'None',
             'can_change_password': not use_with_ldap and db_user.token is None,
             'db_group': group,
             'avatar_public_url': gravatar_public_url,
@@ -289,18 +279,18 @@ class DictionaryHelper(object):
             'discussion_stat_votes': stat_vote,
             'discussion_arg_clicks': arg_clicks,
             'discussion_stat_clicks': stat_clicks,
-            'send_mails': db_settings.should_send_mails if db_settings else False,
-            'send_notifications': db_settings.should_send_notifications if db_settings else False,
-            'public_nick': db_settings.should_show_public_nickname if db_settings else True,
+            'send_mails': db_settings.should_send_mails,
+            'send_notifications': db_settings.should_send_notifications,
+            'public_nick': db_settings.should_show_public_nickname,
             'title_mails': _tn.get(_.mailSettingsTitle),
             'title_notifications': _tn.get(_.notificationSettingsTitle),
             'title_public_nick': _tn.get(_.publicNickTitle),
             'title_preferred_lang': _tn.get(_.preferredLangTitle),
-            'public_page_url': (main_page + '/user/' + str(db_user.uid)) if db_user else '',
+            'public_page_url': main_page + '/user/' + str(db_user.uid),
             'on': _tn.get(_.on),
             'off': _tn.get(_.off),
-            'current_lang': db_language.name if db_language else '?',
-            'current_ui_locales': db_language.ui_locales if db_language else '?',
+            'current_lang': db_language.name,
+            'current_ui_locales': db_language.ui_locales,
             'reputation': reputation
         }
 

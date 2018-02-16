@@ -32,7 +32,7 @@ from api.v2.graphql.core import Query
 from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers, \
     __refresh_headers_and_url
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Group, Statement, ReviewEdit, ReviewMerge, ReviewSplit, ReviewOptimization, \
+from dbas.database.discussion_model import Statement, ReviewEdit, ReviewMerge, ReviewSplit, ReviewOptimization, \
     ReviewDuplicate, ReviewDelete
 from dbas.database.discussion_model import User, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
@@ -48,6 +48,7 @@ from dbas.handler.settings import set_settings
 from dbas.handler.statements import set_correction_of_statement, set_position, set_positions_premise, \
     set_seen_statements, get_logfile_for_statements
 from dbas.handler.voting import clear_vote_and_seen_values_of_user
+from dbas.helper.decoration import check_authentication
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url, revoke_author_of_argument_content, revoke_author_of_statement_content
@@ -73,20 +74,6 @@ project_name = name + ' ' + full_version
 
 def base_layout():
     return get_renderer('templates/basetemplate.pt').implementation()
-
-
-def check_authentication(request):
-    """
-    The entry routine performed by a bulk of functions.
-    Checks whether the user is authenticated and if not logs user out.
-
-    This function is not pure!
-    :param request: current request of the server
-    :return: HTTP response or None if no change in session
-    """
-    session_expired = user.update_last_action(request.authenticated_userid)
-    if session_expired:
-        return user_logout(request, True)
 
 
 def prepare_request_dict(request, nickname, for_api=False):
@@ -163,10 +150,6 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any], for_
     if session_expired:
         return user_logout(request, True)
 
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
     request_dict = prepare_request_dict(request, nickname)
     ui_locales = get_language_from_cookie(request)
 
@@ -180,7 +163,8 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any], for_
 
 # main page
 
-@view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
+@view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody',
+             decorator=check_authentication)
 @forbidden_view_config(renderer='templates/index.pt')
 def main_page(request):
     """
@@ -192,13 +176,9 @@ def main_page(request):
     logger('main_page', 'def', 'main: {}'.format(request.params))
 
     set_language_for_visit(request)
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     session_expired = 'session_expired' in request.params and request.params['session_expired'] == 'true'
     ui_locales = get_language_from_cookie(request)
-    logger('main_page', 'def', 'main: {}'.format(request.params))
     _dh = DictionaryHelper(ui_locales, ui_locales)
     extras_dict = _dh.prepare_extras_dict_for_normal_page(request.registry, request.application_url, request.path,
                                                           request.authenticated_userid)
@@ -215,7 +195,9 @@ def main_page(request):
 
 
 # settings page, when logged in
-@view_config(route_name='main_settings', renderer='templates/settings.pt', permission='use')
+@view_config(route_name='main_settings', renderer='templates/settings.pt', permission='use',
+             decorator=check_authentication)
+@validate(valid_user)
 def main_settings(request):
     """
     View configuration for the personal settings view. Only logged in user can reach this page.
@@ -224,26 +206,18 @@ def main_settings(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_settings', 'def', 'main: {}'.format(request.params))
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     ui_locales = get_language_from_cookie(request)
     old_pw, new_pw, confirm_pw, message = '', '', '', ''
     success, error = False, False
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(request.authenticated_userid)).join(Group).first()
-    _uh = user
-    _t = Translator(ui_locales)
+    db_user = request.validated['user']
 
-    if not db_user:
-        raise HTTPNotFound()
-
-    if db_user and 'form.passwordchange.submitted' in request.params:
+    if 'form.passwordchange.submitted' in request.params:
         old_pw = escape_string(request.params['passwordold'])
         new_pw = escape_string(request.params['password'])
         confirm_pw = escape_string(request.params['passwordconfirm'])
 
-        message, success = _uh.change_password(db_user, old_pw, new_pw, confirm_pw, ui_locales)
+        message, success = user.change_password(db_user, old_pw, new_pw, confirm_pw, ui_locales)
         error = not success
 
     _dh = DictionaryHelper(ui_locales)
@@ -255,7 +229,7 @@ def main_settings(request):
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
-        'title': _t.get(_.settings),
+        'title': Translator(ui_locales).get(_.settings),
         'project': project_name,
         'extras': extras_dict,
         'settings': settings_dict
@@ -263,7 +237,8 @@ def main_settings(request):
 
 
 # message page, when logged in
-@view_config(route_name='main_notification', renderer='templates/notifications.pt', permission='use')
+@view_config(route_name='main_notification', renderer='templates/notifications.pt', permission='use',
+             decorator=check_authentication)
 def main_notifications(request):
     """
     View configuration for the notification view. Only logged in user can reach this page.
@@ -273,9 +248,6 @@ def main_notifications(request):
     """
     logger('main_notifications', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
                                                                                    request.application_url,
@@ -293,7 +265,8 @@ def main_notifications(request):
 
 
 # news page for everybody
-@view_config(route_name='main_news', renderer='templates/news.pt', permission='everybody')
+@view_config(route_name='main_news', renderer='templates/news.pt', permission='everybody',
+             decorator=check_authentication)
 def main_news(request):
     """
     View configuration for the news.
@@ -302,9 +275,6 @@ def main_news(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_news', 'def', 'main')
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     ui_locales = get_language_from_cookie(request)
     is_author = False
@@ -329,7 +299,8 @@ def main_news(request):
 
 
 # public users page for everybody
-@view_config(route_name='main_user', renderer='templates/user.pt', permission='everybody')
+@view_config(route_name='main_user', renderer='templates/user.pt', permission='everybody',
+             decorator=check_authentication)
 def main_user(request):
     """
     View configuration for the public user page.
@@ -352,10 +323,6 @@ def main_user(request):
     if current_user is None or current_user.nickname == nick_of_anonymous_user:
         logger('main_user', 'def', 'no user: {}'.format(uid), error=True)
         raise HTTPNotFound()
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     ui_locales = get_language_from_cookie(request)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
@@ -382,7 +349,8 @@ def main_user(request):
 
 
 # imprint
-@view_config(route_name='main_imprint', renderer='templates/imprint.pt', permission='everybody')
+@view_config(route_name='main_imprint', renderer='templates/imprint.pt', permission='everybody',
+             decorator=check_authentication)
 def main_imprint(request):
     """
     View configuration for the imprint.
@@ -392,9 +360,6 @@ def main_imprint(request):
     """
     logger('main_imprint', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     _tn = Translator(ui_locales)
 
@@ -418,7 +383,7 @@ def main_imprint(request):
 
 
 # faq
-@view_config(route_name='main_faq', renderer='templates/faq.pt', permission='everybody')
+@view_config(route_name='main_faq', renderer='templates/faq.pt', permission='everybody', decorator=check_authentication)
 def main_faq(request):
     """
     View configuration for FAQs.
@@ -428,9 +393,6 @@ def main_faq(request):
     """
     logger('main_faq', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
                                                                                    request.application_url,
@@ -447,7 +409,8 @@ def main_faq(request):
 
 
 # fieldtest
-@view_config(route_name='main_experiment', renderer='templates/fieldtest.pt', permission='everybody')
+@view_config(route_name='main_experiment', renderer='templates/fieldtest.pt', permission='everybody',
+             decorator=check_authentication)
 def main_experiment(request):
     """
     View configuration for fieldtest.
@@ -457,9 +420,6 @@ def main_experiment(request):
     """
     logger('main_experiment', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
                                                                                    request.application_url,
@@ -476,7 +436,8 @@ def main_experiment(request):
 
 
 # my discussions
-@view_config(route_name='main_mydiscussions', renderer='templates/discussions.pt', permission='use')
+@view_config(route_name='main_mydiscussions', renderer='templates/discussions.pt', permission='use',
+             decorator=check_authentication)
 def main_mydiscussions(request):
     """
     View configuration for FAQs.
@@ -486,9 +447,6 @@ def main_mydiscussions(request):
     """
     logger('main_mydiscussions', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
                                                                                    request.application_url,
@@ -507,7 +465,8 @@ def main_mydiscussions(request):
 
 
 # docs
-@view_config(route_name='main_docs', renderer='templates/docs.pt', permission='everybody')
+@view_config(route_name='main_docs', renderer='templates/docs.pt', permission='everybody',
+             decorator=check_authentication)
 def main_docs(request):
     """
     View configuration for the documentation.
@@ -518,10 +477,6 @@ def main_docs(request):
     logger('main_docs', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
                                                                                    request.application_url,
@@ -538,7 +493,7 @@ def main_docs(request):
 
 
 # imprint
-@view_config(route_name='main_rss', renderer='templates/rss.pt', permission='everybody')
+@view_config(route_name='main_rss', renderer='templates/rss.pt', permission='everybody', decorator=check_authentication)
 def main_rss(request):
     """
     View configuration for the RSS feed.
@@ -548,9 +503,6 @@ def main_rss(request):
     """
     logger('main_rss', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
                                                                                    request.application_url,
@@ -751,7 +703,8 @@ def discussion_support(request, for_api=False, api_data=None):
 
 
 # finish page
-@view_config(route_name='discussion_finish', renderer='templates/finish.pt', permission='everybody')
+@view_config(route_name='discussion_finish', renderer='templates/finish.pt', permission='everybody',
+             decorator=check_authentication)
 def discussion_finish(request):
     """
     View configuration for discussion step, where we present a small/daily summary on the end
@@ -763,10 +716,6 @@ def discussion_finish(request):
     params = request.params
     logger('views', 'discussion.finish', 'request.matchdict: {}'.format(match_dict))
     logger('views', 'discussion.finish', 'main: {}'.format(params))
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     request_dict = {
         'registry': request.registry,
@@ -834,7 +783,8 @@ def discussion_jump(request, for_api=False, api_data=None):
 # ####################################
 
 # index page for reviews
-@view_config(route_name='review_index', renderer='templates/review.pt', permission='use')
+@view_config(route_name='review_index', renderer='templates/review.pt', permission='use',
+             decorator=check_authentication)
 def main_review(request):
     """
     View configuration for the review index.
@@ -846,10 +796,6 @@ def main_review(request):
     ui_locales = get_language_from_cookie(request)
     nickname = request.authenticated_userid
     _tn = Translator(ui_locales)
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     issue = issue_handler.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
@@ -880,7 +826,8 @@ def main_review(request):
 
 
 # content page for reviews
-@view_config(route_name='review_content', renderer='templates/review-content.pt', permission='use')
+@view_config(route_name='review_content', renderer='templates/review-content.pt', permission='use',
+             decorator=check_authentication)
 def review_content(request):
     """
     View configuration for the review content.
@@ -891,10 +838,6 @@ def review_content(request):
     logger('review_content', 'main', 'def {}'.format(request.matchdict))
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     subpage_name = request.matchdict['queue']
     nickname = request.authenticated_userid
@@ -927,7 +870,8 @@ def review_content(request):
 
 
 # history page for reviews
-@view_config(route_name='review_history', renderer='templates/review-history.pt', permission='use')
+@view_config(route_name='review_history', renderer='templates/review-history.pt', permission='use',
+             decorator=check_authentication)
 def review_history(request):
     """
     View configuration for the review history.
@@ -939,10 +883,6 @@ def review_history(request):
     ui_locales = get_language_from_cookie(request)
     request_authenticated_userid = request.authenticated_userid
     _tn = Translator(ui_locales)
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     history = review_history_helper.get_review_history(request.application_url, request_authenticated_userid, _tn)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
@@ -960,7 +900,8 @@ def review_history(request):
 
 
 # history page for reviews
-@view_config(route_name='review_ongoing', renderer='templates/review-history.pt', permission='use')
+@view_config(route_name='review_ongoing', renderer='templates/review-history.pt', permission='use',
+             decorator=check_authentication)
 @validate(valid_user)
 def ongoing_history(request):
     """
@@ -972,10 +913,6 @@ def ongoing_history(request):
     logger('ongoing_history', 'main', 'def {}'.format(request.matchdict))
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     history = review_history_helper.get_ongoing_reviews(request.application_url, request.validated['user'], _tn)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
@@ -994,7 +931,8 @@ def ongoing_history(request):
 
 
 # reputation_borders page for reviews
-@view_config(route_name='review_reputation', renderer='templates/review-reputation.pt', permission='use')
+@view_config(route_name='review_reputation', renderer='templates/review-reputation.pt', permission='use',
+             decorator=check_authentication)
 def review_reputation(request):
     """
     View configuration for the review reputation_borders.
@@ -1005,10 +943,6 @@ def review_reputation(request):
     logger('review_reputation', 'main', 'def {}'.format(request.matchdict))
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
                                                                                    request.application_url,
@@ -1800,7 +1734,8 @@ def fuzzy_search(request):
     db_issue = request.validated['issue']
     statement_uid = request.validated['statement_uid']
     db_user = request.validated['user']
-    return fuzzy_string_matcher.get_prediction(_tn, db_user, db_issue, request.application_url, value, mode, statement_uid)
+    return fuzzy_string_matcher.get_prediction(_tn, db_user, db_issue, request.application_url, value, mode,
+                                               statement_uid)
 
 
 # ajax - for additional service
