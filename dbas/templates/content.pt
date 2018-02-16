@@ -244,7 +244,7 @@
                         <span id="add-premise-error-msg"></span>
                     </div>
                     <div id="add-premise-container-body">
-                        <div class="container-three-divs" style="padding-bottom: 2em;">
+                        <div class="container-three-divs">
                             <div class="flex-div">
 
                                 <div class="form-group">
