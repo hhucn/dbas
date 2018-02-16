@@ -5,7 +5,6 @@ Introducing an admin interface to enable easy database management.
 """
 
 import json
-
 from cornice import Service
 from pyramid.httpexceptions import exception_response
 
@@ -160,7 +159,7 @@ def main_table(request):
 
 
 @update_row.post()
-@validate(valid_user, valid_table_name, has_keywords(('keys', list()), ('values', list())))
+@validate(valid_user, valid_table_name, has_keywords(('keys', list), ('values', list)))
 def main_update(request):
     """
     View configuration for updating any row
@@ -177,7 +176,7 @@ def main_update(request):
 
 
 @delete_row.post()
-@validate(valid_user, valid_table_name, has_keywords(('uids', list())))
+@validate(valid_user, valid_table_name, has_keywords(('uids', list)))
 def main_delete(request):
     """
     View configuration for deleting any row
@@ -192,7 +191,7 @@ def main_delete(request):
 
 
 @add_row.post()
-@validate(valid_user, valid_table_name, has_keywords(('new_data', dict())))
+@validate(valid_user, valid_table_name, has_keywords(('new_data', dict)))
 def main_add(request):
     """
     View configuration for adding any row

@@ -7,18 +7,18 @@ from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 
 
-def get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn):
+def get_user_bubble_text_for_justify_statement(stmt_uid, db_user, is_supportive, _tn):
     """
     Returns user text for a bubble when the user has to justify a statement and text for the add-premise-container
 
-    :param uid: Statement.uid
+    :param stmt_uid: Statement.uid
     :param db_user: User
     :param is_supportive: Boolean
     :param _tn: Translator
     :return: String, String
     """
-    logger('BubbleHelper', 'get_user_bubble_text_for_justify_statement', '{} {}'.format(uid, is_supportive))
-    text = get_text_for_statement_uid(uid)
+    logger('BubbleHelper', 'get_user_bubble_text_for_justify_statement', '{} {}'.format(stmt_uid, is_supportive))
+    text = get_text_for_statement_uid(stmt_uid)
 
     if _tn.get_lang() == 'de':
         intro = _tn.get(_.itIsTrueThat if is_supportive else _.itIsFalseThat)
@@ -30,7 +30,7 @@ def get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn)
     is_users_opinion = False
     if db_user:
         db_marked_statement = DBDiscussionSession.query(MarkedStatement).filter(and_(
-            MarkedStatement.statement_uid == uid,
+            MarkedStatement.statement_uid == stmt_uid,
             MarkedStatement.author_uid == db_user.uid
         )).first()
         is_users_opinion = db_marked_statement is not None

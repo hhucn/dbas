@@ -1,8 +1,7 @@
 # coding=utf-8
-from typing import List, Tuple, Dict, Union
-
 import transaction
 from sqlalchemy import and_, func
+from typing import List, Tuple, Dict, Union
 
 import dbas.review.helper.queues as review_queue_helper
 from dbas.database import DBDiscussionSession
@@ -37,9 +36,9 @@ def set_position(for_api, data) -> dict:
     """
     logger('StatementsHelper', 'set_position', str(data))
     try:
-        statement_text = data['statement_text']
-        db_user = data['user']
-        db_issue = data['issue']
+        statement_text: str = data['statement_text']
+        db_user: User = data['user']
+        db_issue: Issue = data['issue']
 
         default_locale_name = data.get('default_locale_name', db_issue.lang)
         application_url = data['application_url']
@@ -57,7 +56,7 @@ def set_position(for_api, data) -> dict:
     user.update_last_action(db_user.nickname)
 
     new_statement = insert_as_statement(application_url, default_locale_name, statement_text, db_user, db_issue,
-                                        db_issue.lang, is_start=True)
+                                        is_start=True)
 
     _um = UrlManager(application_url, db_issue.slug, for_api)
     url = _um.get_url_for_statement_attitude(False, new_statement.uid)
@@ -272,12 +271,11 @@ def __get_logfile_dict(textversion: TextVersion, main_page: str, lang: str) -> D
     return corr_dict
 
 
-def insert_as_statement(application_url: str, default_locale_name: str, text: str, db_user: User,
-                        db_issue: Issue, lang: str, is_start=False) -> Statement:
+def insert_as_statement(application_url: str, default_locale_name: str, text: str, db_user: User, db_issue: Issue,
+                        is_start=False) -> Statement:
     """
         Inserts the given text as statement and returns the uid
 
-        :param lang: Language
         :param application_url: Url of the app itself
         :param default_locale_name: default lang of the app
         :param text: String
@@ -286,7 +284,7 @@ def insert_as_statement(application_url: str, default_locale_name: str, text: st
         :param is_start: Boolean
         :return: Statement
         """
-    new_statement, is_duplicate = set_statement(text, db_user, is_start, db_issue, lang)
+    new_statement, is_duplicate = set_statement(text, db_user, is_start, db_issue)
 
     # add marked statement
     DBDiscussionSession.add(MarkedStatement(statement=new_statement.uid, user=db_user.uid))
@@ -323,15 +321,14 @@ def insert_as_statements(application_url: str, default_locale_name: str, text_li
     :return: [Statement]
     """
 
-    return [insert_as_statement(application_url, default_locale_name, text, db_user, db_issue, lang, is_start) for text
+    return [insert_as_statement(application_url, default_locale_name, text, db_user, db_issue, is_start) for text
             in text_list]
 
 
-def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue, lang) -> Tuple[Statement, bool]:
+def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue) -> Tuple[Statement, bool]:
     """
     Saves statement for user
 
-    :param lang:
     :param text: given statement
     :param db_user: User of given user
     :param is_start: if it is a start statement
@@ -346,7 +343,7 @@ def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue, lan
     text = text.strip()
     text = ' '.join(text.split())
     text = escape_string(text)
-    _tn = Translator(lang)
+    _tn = Translator(db_issue.lang)
     if text.startswith(_tn.get(_.because).lower() + ' '):
         text = text[len(_tn.get(_.because) + ' '):]
     while text.endswith(('.', '?', '!', ',')):
@@ -465,8 +462,7 @@ def insert_new_premises_for_argument(application_url, default_locale_name, premi
 
     statements = []
     for premise in premisegroup:
-        statement = insert_as_statement(application_url, default_locale_name, premise, db_user, db_issue,
-                                        discussion_lang)
+        statement = insert_as_statement(application_url, default_locale_name, premise, db_user, db_issue)
         statements.append(statement)
 
     # set the new statements as premise group and get current user as well as current argument
@@ -564,8 +560,7 @@ def __create_argument_by_raw_input(application_url, default_locale_name, db_user
     try:
         new_statements = []
         for text in premises_text:
-            statement = insert_as_statement(application_url, default_locale_name, text, db_user, db_issue,
-                                            discussion_lang)
+            statement = insert_as_statement(application_url, default_locale_name, text, db_user, db_issue)
             new_statements.append(statement)
 
         # second, set the new statements as premisegroup

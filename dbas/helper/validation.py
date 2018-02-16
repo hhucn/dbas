@@ -526,6 +526,22 @@ def valid_uid_as_row_in_review_queue(request):
     return False
 
 
+def valid_statement_or_argument(request):
+    is_argument = request.json_body.get('is_argument')
+    t = Argument if is_argument else Statement
+    uid = request.json_body.get('uid')
+    if uid:
+        db_arg_or_stmt = DBDiscussionSession.query(t).get(uid)
+    else:
+        __add_error(request, 'valid_statement_or_argument', 'Missing uid for ' + t.__name__)
+        return False
+
+    if db_arg_or_stmt:
+        request.validated['arg_or_stmt'] = db_arg_or_stmt
+    else:
+        __add_error(request, 'valid_statement_or_argument', t.__name__ + ' is invalid')
+
+
 def has_keywords(*keywords: Tuple[str, type]):
     """
     Verify that specified keywords exist in the request.json_body.

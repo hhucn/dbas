@@ -8,6 +8,7 @@ import transaction
 from pyshorteners import Shorteners, Shortener
 from requests.exceptions import ReadTimeout, ConnectionError
 from sqlalchemy import and_
+from typing import Union
 from urllib3.exceptions import NewConnectionError
 
 from dbas.database import DBDiscussionSession
@@ -26,13 +27,13 @@ from dbas.strings.translator import Translator
 statement_min_length = 10  # DEPRECATED: use global config
 
 
-def mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history, ui_loc, db_user) -> dict:
+def mark_statement_or_argument(stmt_or_arg: Union[Statement, Argument], step, is_supportive, should_mark, history,
+                               ui_loc, db_user) -> dict:
     """
     Marks statement or argument as current users opinion and returns status about the action
 
     :param uid: ID of statement or argument
     :param step: kind of step in current discussion
-    :param is_argument: Boolean if the id is for an argument
     :param is_supportive: Boolean if the mark is supportive
     :param should_mark: Boolean if it should be (un-)marked
     :param history: Users history
@@ -42,43 +43,39 @@ def mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mar
     :return: Dictionary with new text for the current bubble, where the user marked her opinion
     """
     _t = Translator(ui_loc)
-    prepared_dict = __mark_or_unmark_it(uid, is_argument, should_mark, db_user, _t)
-    prepared_dict['text'] = __get_text_for_justification_or_reaction_bubble(uid, is_argument, is_supportive,
-                                                                            db_user, step, history, _t)
+    prepared_dict = __mark_or_unmark_it(stmt_or_arg, should_mark, db_user, _t)
+    prepared_dict['text'] = __get_text_for_justification_or_reaction_bubble(stmt_or_arg, is_supportive, db_user, step,
+                                                                            history, _t)
     return prepared_dict
 
 
-def __mark_or_unmark_it(uid, is_argument, should_mark, db_user, _t):
+def __mark_or_unmark_it(stmt_or_arg: Union[Statement, Argument], should_mark, db_user, _t):
     """
     Marks or unmark an argument/statement, which represents the users opinion
 
-    :param uid: Statement.uid / Argument.uid
-    :param is_argument: Boolean
+    :param stmt_or_arg: Statement.uid / Argument.uid
     :param should_mark: Boolean
     :param db_user: User
     :param _t: Translator
     :return: String, String
     """
-    logger('QueryHelper', '__mark_or_unmark_it', '{} {} {}'.format(uid, is_argument, db_user.nickname))
+    logger('QueryHelper', '__mark_or_unmark_it', '{} {}'.format(stmt_or_arg.uid, db_user.nickname))
 
-    base_type = Argument if is_argument else Statement
+    is_argument = isinstance(stmt_or_arg, Argument)
     table = MarkedArgument if is_argument else MarkedStatement
     column = MarkedArgument.argument_uid if is_argument else MarkedStatement.statement_uid
 
-    db_base = DBDiscussionSession.query(base_type).get(uid)
-    if not db_base:
-        return {'success': '', 'error': _t.get(_.internalError)}
-
     if should_mark:
-        db_el = DBDiscussionSession.query(table).filter(column == uid).first()
+        db_el = DBDiscussionSession.query(table).filter(column == stmt_or_arg.uid).first()
         logger('QueryHelper', '__mark_or_unmark_it', 'Element is present{}'.format(' now' if db_el else ''))
         if not db_el:
-            new_el = MarkedArgument(argument=uid, user=db_user.uid) if is_argument else MarkedStatement(statement=uid,
-                                                                                                        user=db_user.uid)
+            new_el = MarkedArgument(argument=stmt_or_arg.uid, user=db_user.uid) if is_argument else MarkedStatement(
+                statement=stmt_or_arg.uid,
+                user=db_user.uid)
             DBDiscussionSession.add(new_el)
     else:
         logger('QueryHelper', '__mark_or_unmark_it', 'Element is deleted')
-        DBDiscussionSession.query(table).filter(column == uid).delete()
+        DBDiscussionSession.query(table).filter(column == stmt_or_arg.uid).delete()
 
     DBDiscussionSession.flush()
     transaction.commit()
@@ -110,12 +107,12 @@ def set_user_language(db_user: User, ui_locales) -> dict:
     return {'error': '', 'ui_locales': ui_locales, 'current_lang': current_lang}
 
 
-def __get_text_for_justification_or_reaction_bubble(uid, is_argument, is_supportive, db_user, step, history, _tn):
+def __get_text_for_justification_or_reaction_bubble(stmt_or_arg: Union[Statement, Argument], is_supportive, db_user,
+                                                    step, history, _tn):
     """
     Returns text for an justification or reaction bubble of the user
 
-    :param uid: Argument.uid / Statement.uid
-    :param is_argument: Boolean
+    :param stmt_or_arg: Argument.uid / Statement.uid
     :param is_supportive: Boolean
     :param db_user: User
     :param step: String
@@ -123,13 +120,13 @@ def __get_text_for_justification_or_reaction_bubble(uid, is_argument, is_support
     :param _tn: Translator
     :return: String
     """
-    if is_argument:
+    if isinstance(stmt_or_arg, Argument):
         splitted_history = get_splitted_history(history)
         bubbles = get_bubble_from_reaction_step('', step, db_user, _tn.get_lang(), splitted_history, '',
                                                 color_steps=True)
         text = bubbles[0]['message'] if bubbles else ''
     else:
-        text, tmp = get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn)
+        text, tmp = get_user_bubble_text_for_justify_statement(stmt_or_arg.uid, db_user, is_supportive, _tn)
         text = pretty_print_options(text)
 
     return text

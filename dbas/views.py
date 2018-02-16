@@ -4,17 +4,17 @@ Collection of pyramids views components of D-BAS' core.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
-import json
 from time import sleep
-from typing import Callable, Any
 
 import graphene
+import json
 import requests
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPBadRequest
 from pyramid.renderers import get_renderer
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from pyramid_mailer import get_mailer
+from typing import Callable, Any
 from webob_graphql import serve_graphql_request
 
 import dbas.discussion.core as discussion
@@ -56,7 +56,7 @@ from dbas.helper.validation import validate, valid_user, valid_issue, valid_conc
     valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument, valid_statement, \
     valid_not_executed_review, valid_database_model, valid_user_as_author, valid_uid_as_row_in_review_queue, \
     valid_user_as_author_of_statement, valid_user_as_author_of_argument, valid_review_reason, valid_ui_locales, \
-    valid_premisegroup, valid_text_values, has_maybe_keywords
+    valid_premisegroup, valid_text_values, has_maybe_keywords, valid_statement_or_argument
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog
@@ -1409,7 +1409,6 @@ def set_new_start_argument(request):
     return prepared_dict_pos
 
 
-# ajax - send new start premise
 @view_config(route_name='ajax_set_new_start_premise', renderer='json')
 @validate(valid_user, valid_issue, valid_conclusion, valid_premisegroups, has_keywords(('supportive', bool)))
 def set_new_start_premise(request):
@@ -1436,7 +1435,6 @@ def set_new_start_premise(request):
     return prepared_dict
 
 
-# ajax - send new premises
 @view_config(route_name='ajax_set_new_premises_for_argument', renderer='json')
 @validate(valid_user, valid_issue_not_readonly, valid_premisegroups,
           has_keywords(('arg_uid', int), ('attack_type', str)))
@@ -1457,16 +1455,13 @@ def set_new_premises_for_argument(request):
 
         'port': get_port(request),
         'history': request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None,
-        'discussion_lang': get_discussion_language(request.matchdict, request.params, request.session),
         'default_locale_name': get_default_locale_name(request.registry),
         'application_url': request.application_url,
         'mailer': request.mailer
     }
-    prepared_dict = set_arguments_premises(False, data)
-    return prepared_dict
+    return set_arguments_premises(False, data)
 
 
-# ajax - set new textvalue for a statement
 @view_config(route_name='ajax_set_correction_of_statement', renderer='json')
 @validate(valid_user, has_keywords(('elements', list)))
 def set_correction_of_some_statements(request):
@@ -1571,8 +1566,8 @@ def set_statements_as_seen(request):
 
 # ajax - set users opinion
 @view_config(route_name='ajax_mark_statement_or_argument', renderer='json')
-@validate(valid_user, has_keywords(('uid', int), ('step', str), ('is_argument', bool), ('is_supportive', bool),
-                                   ('should_mark', bool)))
+@validate(valid_user, valid_statement_or_argument, has_keywords(('step', str), ('is_supportive', bool),
+                                                                ('should_mark', bool)))
 def mark_or_unmark_statement_or_argument(request):
     """
     Set statements as seen, when they were hidden
@@ -1582,14 +1577,13 @@ def mark_or_unmark_statement_or_argument(request):
     """
     logger('views', 'mark_or_unmark_statement_or_argument', 'main {}'.format(request.json_body))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
-    uid = request.validated['uid']
+    arg_or_stmt = request.validated['arg_or_stmt']
     step = request.validated['step']
-    is_argument = request.validated['is_argument']
     is_supportive = request.validated['is_supportive']
     should_mark = request.validated['should_mark']
     history = request.json_body.get('history', '')
     db_user = request.validated['user']
-    return mark_statement_or_argument(uid, step, is_argument, is_supportive, should_mark, history, ui_locales, db_user)
+    return mark_statement_or_argument(arg_or_stmt, step, is_supportive, should_mark, history, ui_locales, db_user)
 
 
 # ###################################
@@ -1610,8 +1604,7 @@ def get_logfile_for_some_statements(request):
     logger('views', 'get_logfile_for_statements', 'main: {}'.format(request.json_body))
     uids = request.validated['uids']
     db_issue = request.validated['issue']
-    ui_locales = get_discussion_language(request.matchdict, request.params, request.session, db_issue.uid)
-    return get_logfile_for_statements(uids, ui_locales, request.application_url)
+    return get_logfile_for_statements(uids, db_issue.lang, request.application_url)
 
 
 # ajax - for shorten url
@@ -1626,8 +1619,7 @@ def get_shortened_url(request):
     """
     logger('views', 'get_shortened_url', 'main')
     db_issue = request.validated['issue']
-    ui_locales = get_discussion_language(request.matchdict, request.params, request.session, db_issue.uid)
-    return get_short_url(request.validated['url'], ui_locales)
+    return get_short_url(request.validated['url'], db_issue.lang)
 
 
 # ajax - for getting all news
@@ -1772,7 +1764,7 @@ def send_news(request):
     :param request: current request of the server
     :return: json-set with new news
     """
-    logger('views', 'send_news', 'main: {}'.format(request.params))
+    logger('views', 'send_news', 'main: {}'.format(request.json_body))
     title = escape_string(request.validated['title'])
     text = escape_string(request.validated['text'])
     db_user = request.validated['user']
