@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
+from uuid import uuid4
 
 from pyramid import testing
 from pyramid.httpexceptions import HTTPFound
@@ -12,9 +13,20 @@ from dbas.views import user_login
 
 
 class AuthLoginTest(unittest.TestCase):
+    @staticmethod
+    def uustring():
+        """
+        Create instance-unique strings to avoid clashes with pre-seeded database.
+
+        :return: Stringified uuid
+        :rtype: str
+        """
+        return str(uuid4())
 
     def setUp(self):
         self.config = testing.setUp()
+        self._tn = Translator('en')
+
 
     def tearDown(self):
         testing.tearDown()
@@ -46,9 +58,7 @@ class AuthLoginTest(unittest.TestCase):
         self.assertNotIn('user', response)
 
     def test_login_register_with_ajax_data(self):
-        _tn = Translator('en')
-
-        request = testing.DummyRequest(params={
+        request = testing.DummyRequest(validated={
             'firstname': '',
             'lastname': '',
             'nickname': '',
@@ -56,101 +66,72 @@ class AuthLoginTest(unittest.TestCase):
             'gender': '',
             'password': '',
             'passwordconfirm': '',
-            'g-recaptcha-response': '',
             'mode': '',
-        })
-        success, msg, db_new_user = register_user_with_ajax_data(request.params, 'en', None)
-        self.assertEqual(_tn.get(_.pwdShort), msg)
+        }, mailer=DummyMailer)
+        success, msg, db_new_user = register_user_with_ajax_data(request.validated, 'en', request.mailer)
+        self.assertEqual(self._tn.get(_.pwdShort), msg)
         self.assertIsNone(db_new_user)
 
-        request = testing.DummyRequest(params={
-            'firstname': 'Tobias',
-            'lastname': 'Krauthoff',
+    def test_register_user_nickname_is_taken(self):
+        request = testing.DummyRequest(validated={
+            'firstname': self.uustring(),
+            'lastname': self.uustring(),
             'nickname': 'Tobias',
+            'email': self.uustring() + '@hhu.de',
+            'gender': 'm',
+            'password': 'somepasswd',
+            'passwordconfirm': 'somepasswd',
+            'mode': 'manually',
+        }, mailer=DummyMailer)
+        success, msg, db_new_user = register_user_with_ajax_data(request.validated, 'en', request.mailer)
+        self.assertEqual(self._tn.get(_.nickIsTaken), msg)
+        self.assertIsNone(db_new_user)
+
+    def test_register_user_mail_is_taken(self):
+        request = testing.DummyRequest(validated={
+            'firstname': self.uustring(),
+            'lastname': self.uustring(),
+            'nickname': self.uustring(),
             'email': 'krauthoff@cs.uni-duesseldorf.de',
             'gender': 'm',
             'password': 'somepasswd',
             'passwordconfirm': 'somepasswd',
-            'g-recaptcha-response': '',
             'mode': 'manually',
-        }, matchdict={})
-        success, msg, db_new_user = register_user_with_ajax_data(request.params, 'en', None)
-        self.assertEqual(_tn.get(_.nickIsTaken), msg)
+        }, mailer=DummyMailer)
+        success, msg, db_new_user = register_user_with_ajax_data(request.validated, 'en', request.mailer)
+        print("success: " + success)
+        print("msg: " + msg)
+        self.assertEqual(self._tn.get(_.mailIsTaken), msg)
         self.assertIsNone(db_new_user)
 
-        request = testing.DummyRequest(params={
-            'firstname': 'Tobiass',
-            'lastname': 'Krauthoff',
-            'nickname': 'Tobiass',
-            'email': 'krauthoff@cs.uni-duesseldorf.de',
+    def test_register_user_mail_invalid(self):
+        request = testing.DummyRequest(validated={
+            'firstname': self.uustring(),
+            'lastname': self.uustring(),
+            'nickname': self.uustring(),
+            'email': 'nota@validhost',
             'gender': 'm',
             'password': 'somepasswd',
             'passwordconfirm': 'somepasswd',
-            'g-recaptcha-response': '',
             'mode': 'manually',
-        }, matchdict={})
-        success, msg, db_new_user = register_user_with_ajax_data(request.params, 'en', None)
-        self.assertEqual(_tn.get(_.mailIsTaken), msg)
+        }, mailer=DummyMailer)
+        success, msg, db_new_user = register_user_with_ajax_data(request.validated, 'en', request.mailer)
+        self.assertEqual(self._tn.get(_.mailNotValid), msg)
         self.assertIsNone(db_new_user)
 
-        request = testing.DummyRequest(params={
-            'firstname': 'Tobiass',
-            'lastname': 'Krauthoff',
-            'nickname': 'Tobiass',
-            'email': 'bla@blaaa ',
-            'gender': 'm',
-            'password': 'somepasswd',
-            'passwordconfirm': 'somepasswd',
-            'g-recaptcha-response': '',
-            'mode': 'manually',
-        }, matchdict={})
-        success, msg, db_new_user = register_user_with_ajax_data(request.params, 'en', None)
-        self.assertEqual(_tn.get(_.mailNotValid), msg)
-        self.assertIsNone(db_new_user)
-
-        request = testing.DummyRequest(params={
-            'firstname': 'Tobiass',
-            'lastname': 'Krauthoff',
-            'nickname': 'Tobiass',
-            'email': 'dbas@cs.uni-duesseldorf.de',
-            'gender': 'm',
-            'password': 'somepasswd',
-            'passwordconfirm': 'somepasswd',
-            'g-recaptcha-response': '',
-            'mode': 'manually',
-        }, matchdict={})
-        success, msg, db_new_user = register_user_with_ajax_data(request.params, 'en', None)
-        self.assertEqual(_tn.get(_.maliciousAntiSpam), msg)
-        self.assertIsNone(db_new_user)
-
-        request = testing.DummyRequest(params={
+    def test_register_user_passwords_not_equal(self):
+        request = testing.DummyRequest(validated={
             'firstname': 'Bob',
             'lastname': 'Builder',
             'nickname': 'Builder',
             'email': 'krauthoff@cs.uni-duesseldorf.de',
             'gender': 'm',
-            'password': 'somepasswd',
-            'passwordconfirm': 'somepasswdd',
-            'g-recaptcha-response': '',
+            'password': self.uustring(),
+            'passwordconfirm': self.uustring(),
             'mode': 'manually',
-        }, matchdict={})
-        success, msg, db_new_user = register_user_with_ajax_data(request.params, 'en', None)
-        self.assertEqual(_tn.get(_.pwdNotEqual), msg)
-        self.assertIsNone(db_new_user)
-
-        request = testing.DummyRequest(params={
-            'firstname': 'Bob',
-            'lastname': 'Builder',
-            'nickname': 'Builder',
-            'email': 'dbas@cs.uni-duesseldorf.de',
-            'gender': 'm',
-            'password': 'somepasswd',
-            'passwordconfirm': 'somepasswd',
-            'g-recaptcha-response': '',
-            'mode': 'manually',
-        }, matchdict={})
-        success, msg, db_new_user = register_user_with_ajax_data(request.params, 'en', None)
-        self.assertEqual(_tn.get(_.maliciousAntiSpam), msg)
+        }, mailer=DummyMailer)
+        success, msg, db_new_user = register_user_with_ajax_data(request.validated, 'en', request.mailer)
+        self.assertEqual(self._tn.get(_.pwdNotEqual), msg)
         self.assertIsNone(db_new_user)
 
     def test_login_user_oauth(self):
@@ -168,7 +149,7 @@ class AuthLoginTest(unittest.TestCase):
                 'OAUTH_TWITTER_CLIENTID': 'OAUTH_TWITTER_CLIENTID',
                 'OAUTH_TWITTER_CLIENTKEY': 'OAUTH_TWITTER_CLIENTKEY',
             }
-            request = testing.DummyRequest(params={'application_url': 'http://lvh.me'}, matchdict={}, environ=environ)
+            request = testing.DummyRequest(params={'application_url': 'http://lvh.me'}, environ=environ)
             request.environ = environ
             resp = login_user_oauth(request, service, redirect_uri, redirect_uri, ui_locales)
             if len(service) > 0:
