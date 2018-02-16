@@ -223,13 +223,14 @@ function GuiHandler() {
 		$('#popup-complete-login').modal('show').on('shown.bs.modal', function (e) {
 			$('#popup-complete-login-inlineRadioGender1').prop('checked', true);
 			$('#popup-complete-login-failed').hide();
+			var prefix = '#popup-complete-login-';
 			var mappings = {
-				'firstname': '#popup-complete-login-userfirstname-input',
-				'lastname': '#popup-complete-login-userlastname-input',
-				'nickname': '#popup-complete-login-nick-input',
-				'email': '#popup-complete-login-email-input',
-				'password1': '#popup-complete-login-password-input',
-				'password2': '#popup-complete-login-passwordconfirm-input'
+				'firstname': prefix + 'userfirstname-input',
+				'lastname': prefix + 'userlastname-input',
+				'nickname': prefix + 'nick-input',
+				'email': prefix + 'email-input',
+				'password1': prefix + 'password-input',
+				'password2': prefix + 'passwordconfirm-input'
 			};
 
 			$.each(mappings, function( key, value ) {

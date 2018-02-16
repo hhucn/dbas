@@ -82,7 +82,7 @@ def check_authentication(request):
 
 def api_notfound(path):
     """
-    Returns 404-Reponse with requested_path and message in its body
+    Returns 404-Response with requested_path and message in its body
 
     :param path: current request.path
     :return: Response with 404 status code
