@@ -1,6 +1,8 @@
 # coding=utf-8
 from cornice import Errors
 from cornice.util import json_error
+from pyramid.httpexceptions import HTTPFound
+from pyramid.security import forget
 from typing import Tuple
 
 import dbas.handler.issue as issue_handler
@@ -10,6 +12,7 @@ from dbas.database.discussion_model import User, Issue, Statement, Language, Arg
     TextVersion
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.language import get_language_from_cookie
+from dbas.handler.user import update_last_action
 from dbas.input_validator import is_integer
 from dbas.lib import get_user_by_private_or_public_nickname
 from dbas.logger import logger
@@ -524,6 +527,24 @@ def valid_uid_as_row_in_review_queue(request):
     else:
         __add_error(request, 'valid_uid_as_row_in_review_queue', 'Invalid id for any review queue found: {}'.format(queue))
     return False
+
+
+def check_authentication(request):
+    """
+    Checks whether the user is authenticated and if not logs user out.
+
+    :param view_callable:
+    :return:
+    """
+    session_expired = update_last_action(request.authenticated_userid)
+    if session_expired:
+        request.session.invalidate()
+        headers = forget(request)
+        location = request.application_url + 'discuss?session_expired=true',
+        raise HTTPFound(
+            location=location,
+            headers=headers
+        )
 
 
 def has_keywords(*keywords: Tuple[str, type]):

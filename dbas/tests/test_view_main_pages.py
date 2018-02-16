@@ -1,6 +1,6 @@
 import unittest
-import transaction
 
+import transaction
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
@@ -62,7 +62,6 @@ class MainMyDiscussionViewTestsNotLoggedIn(unittest.TestCase):
         verify_dictionary_of_view(self, response)
 
         self.assertIn('layout', response)
-        self.assertIn('language', response)
         self.assertIn('title', response)
         self.assertIn('project', response)
         self.assertIn('extras', response)
@@ -86,7 +85,6 @@ class MainMyDiscussionViewTestsLoggedIn(unittest.TestCase):
         verify_dictionary_of_view(self, response)
 
         self.assertIn('layout', response)
-        self.assertIn('language', response)
         self.assertIn('title', response)
         self.assertIn('project', response)
         self.assertIn('extras', response)
@@ -208,12 +206,7 @@ class MainSettingsViewTestsNotLoggedIn(unittest.TestCase):
         from dbas.views import main_settings as d
 
         request = testing.DummyRequest()
-        from pyramid.httpexceptions import HTTPNotFound
-        try:
-            response = d(request)
-            self.assertTrue(type(response) is HTTPNotFound)
-        except HTTPNotFound:
-            pass
+        self.assertEqual(400, d(request).status_code)
 
 
 class MainSettingsViewTestsLoggedIn(unittest.TestCase):
