@@ -15,7 +15,7 @@ languages = {
 }
 
 
-def get_translation(sid, lang='en'):
+def get_translation(sid: Keywords, lang: str = 'en') -> str:
     """
     Returns an localized string
 
@@ -37,7 +37,7 @@ class Translator(object):
     Class for translating string
     """
 
-    def __init__(self, lang):
+    def __init__(self, lang: str):
         """
         Initializes keywords
 
@@ -47,7 +47,7 @@ class Translator(object):
 
         self.lang = lang
 
-    def get(self, sid):
+    def get(self, sid: Keywords) -> str:
         """
         Returns an localized string
 
@@ -56,7 +56,7 @@ class Translator(object):
         """
         return get_translation(sid, self.lang)
 
-    def get_lang(self):
+    def get_lang(self) -> str:
         """
         Return ui locales code
 
