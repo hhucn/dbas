@@ -529,7 +529,6 @@ def valid_uid_as_row_in_review_queue(request):
     return False
 
 
-<<<<<<< dbas/helper/validation.py
 def check_authentication(request):
     """
     Checks whether the user is authenticated and if not logs user out.
@@ -549,7 +548,6 @@ def check_authentication(request):
 
 
 def has_keywords(*keywords: Tuple[str, type]):
->>>>>>> dbas/helper/validation.py
     """
     Verify that specified keywords exist in the request.json_body.
 

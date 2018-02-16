@@ -56,8 +56,8 @@ from dbas.helper.validation import validate, valid_user, valid_issue, valid_conc
     valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient, \
     valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument, valid_statement, \
     valid_not_executed_review, valid_database_model, valid_user_as_author, valid_uid_as_row_in_review_queue, \
-    valid_user_as_author_of_statement, valid_user_as_author_of_argument, valid_review_reason, valid_ui_locales, \
-    valid_premisegroup, valid_text_values, has_maybe_keywords, check_authentication
+    valid_user_as_author_of_statement, valid_user_as_author_of_argument, valid_review_reason, \
+    valid_premisegroup, valid_text_values, has_maybe_keywords, check_authentication, valid_lang_cookie_fallback
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog
