@@ -49,7 +49,7 @@ from dbas.handler.settings import set_settings
 from dbas.handler.statements import set_correction_of_statement, set_position, set_positions_premise, \
     set_seen_statements, get_logfile_for_statements
 from dbas.handler.voting import clear_vote_and_seen_values_of_user
-from dbas.helper.decoration import check_authentication, prep_extras_dict
+from dbas.helper.decoration import prep_extras_dict
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url, revoke_author_of_argument_content, revoke_author_of_statement_content
@@ -58,7 +58,7 @@ from dbas.helper.validation import validate, valid_user, valid_issue, valid_conc
     valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument, valid_statement, \
     valid_not_executed_review, valid_database_model, valid_user_as_author, valid_uid_as_row_in_review_queue, \
     valid_user_as_author_of_statement, valid_user_as_author_of_argument, valid_review_reason, valid_ui_locales, \
-    valid_premisegroup, valid_text_values, has_maybe_keywords
+    valid_premisegroup, valid_text_values, has_maybe_keywords, check_authentication
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog
@@ -322,7 +322,7 @@ def main_imprint(request):
     # add version of pyramid
     request.decorated['extras'].update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
 
-    prep_dict = __main_dict(Translator(get_language_from_cookie(request)).get(_.imprint))
+    prep_dict = __main_dict(request, Translator(get_language_from_cookie(request)).get(_.imprint))
     prep_dict.update({'imprint': get_changelog(5)})
     return prep_dict
 
@@ -691,7 +691,7 @@ def main_review(request):
     count, all_rights = review_reputation_helper.get_reputation_of(nickname)
 
     prep_dict = __main_dict(request, _tn.get(_.review))
-    prep_dict.update_dict({
+    prep_dict.update({
         'review': review_dict,
         'privilege_list': review_reputation_helper.get_privilege_list(_tn),
         'reputation_list': review_reputation_helper.get_reputation_list(_tn),
@@ -937,8 +937,8 @@ def delete_user_history(request):
     :return: json-dict()
     """
     logger('delete_user_history', 'def', 'main')
-    user = request.validated['user']
-    return history_handler.delete_history_in_database(user)
+    db_user = request.validated['user']
+    return history_handler.delete_history_in_database(db_user)
 
 
 # ajax - deleting complete history of the user
@@ -952,8 +952,8 @@ def delete_statistics(request):
     :return: json-dict()
     """
     logger('delete_statistics', 'def', 'main')
-    user = request.validated['user']
-    return clear_vote_and_seen_values_of_user(user)
+    db_user = request.validated['user']
+    return clear_vote_and_seen_values_of_user(db_user)
 
 
 @view_config(request_method='POST', route_name='ajax_user_login', renderer='json')
@@ -1104,10 +1104,10 @@ def set_user_settings(request):
     """
     logger('Views', 'set_user_settings', 'request.params: {}'.format(request.json_body))
     _tn = Translator(get_language_from_cookie(request))
-    user = request.validated['user']
+    db_user = request.validated['user']
     settings_value = request.validated['settings_value']
     service = request.validated['service']
-    return set_settings(request.application_url, user, service, settings_value, _tn)
+    return set_settings(request.application_url, db_user, service, settings_value, _tn)
 
 
 @view_config(route_name='ajax_set_user_language', renderer='json')
@@ -1136,10 +1136,10 @@ def set_discussion_properties(request):
     _tn = Translator(get_language_from_cookie(request))
 
     property = request.validated['property']
-    user = request.validated['user']
+    db_user = request.validated['user']
     issue = request.validated['issue']
     value = request.validated['value']
-    return set_discussions_properties(user, issue, property, value, _tn)
+    return set_discussions_properties(db_user, issue, property, value, _tn)
 
 
 # #######################################
@@ -1252,9 +1252,9 @@ def set_correction_of_some_statements(request):
     logger('views', 'set_correction_of_some_statements', 'main: {}'.format(request.json_body))
     ui_locales = get_language_from_cookie(request)
     elements = request.validated['elements']
-    user = request.validated['user']
+    db_user = request.validated['user']
     _tn = Translator(ui_locales)
-    prepared_dict = set_correction_of_statement(elements, user, _tn)
+    prepared_dict = set_correction_of_statement(elements, db_user, _tn)
     return prepared_dict
 
 
@@ -1428,9 +1428,9 @@ def get_infos_about_argument(request):
     """
     logger('views', 'get_infos_about_argument', 'main: {}'.format(request.json_body))
     lang = request.validated['lang']
-    user = request.validated['user']
+    db_user = request.validated['user']
     db_argument = request.validated['argument']
-    return get_all_infos_about_argument(db_argument, request.application_url, user, lang)
+    return get_all_infos_about_argument(db_argument, request.application_url, db_user, lang)
 
 
 # ajax - for getting all users with the same opinion
@@ -1626,8 +1626,8 @@ def flag_argument_or_statement(request):
     reason = request.validated['reason']
     extra_uid = request.json_body.get('extra_uid')
     is_argument = request.validated['is_argument']
-    user = request.validated['user']
-    return review_flag_helper.flag_element(uid, reason, user, is_argument, ui_locales, extra_uid)
+    db_user = request.validated['user']
+    return review_flag_helper.flag_element(uid, reason, db_user, is_argument, ui_locales, extra_uid)
 
 
 # #######################################
@@ -1648,14 +1648,14 @@ def split_or_merge_statement(request):
     logger('views', 'split_or_merge_statement', 'main: {}'.format(request.json_body))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _tn = Translator(ui_locales)
-    user = request.validated['user']
+    db_user = request.validated['user']
     pgroup = request.validated['pgroup']
     key = request.validated['key']
     tvalues = request.validated['text_values']
 
     if key not in ['merge', 'split']:
         raise HTTPBadRequest()
-    return review_flag_helper.flag_statement_for_merge_or_split(key, pgroup, tvalues, user, _tn)
+    return review_flag_helper.flag_statement_for_merge_or_split(key, pgroup, tvalues, db_user, _tn)
 
 
 # #######################################
@@ -1676,13 +1676,13 @@ def split_or_merge_premisegroup(request):
     logger('views', 'split_or_merge_premisegroup', 'main: {}'.format(request.params))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _tn = Translator(ui_locales)
-    user = request.validated['user']
+    db_user = request.validated['user']
     pgroup = request.validated['pgroup']
     key = request.validated['key']
 
     if key not in ['merge', 'split']:
         raise HTTPBadRequest()
-    return review_flag_helper.flag_pgroup_for_merge_or_split(key, pgroup, user, _tn)
+    return review_flag_helper.flag_pgroup_for_merge_or_split(key, pgroup, db_user, _tn)
 
 
 # ajax - for feedback on flagged arguments
