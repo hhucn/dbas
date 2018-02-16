@@ -1,6 +1,6 @@
 import unittest
-import transaction
 
+import transaction
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
@@ -208,12 +208,7 @@ class MainSettingsViewTestsNotLoggedIn(unittest.TestCase):
         from dbas.views import main_settings as d
 
         request = testing.DummyRequest()
-        from pyramid.httpexceptions import HTTPNotFound
-        try:
-            response = d(request)
-            self.assertTrue(type(response) is HTTPNotFound)
-        except HTTPNotFound:
-            pass
+        self.assertEqual(400, d(request))
 
 
 class MainSettingsViewTestsLoggedIn(unittest.TestCase):

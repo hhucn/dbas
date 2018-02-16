@@ -32,7 +32,7 @@ class DictionaryHelper(object):
     General function for dictionaries as well as the extras-dict()
     """
 
-    def __init__(self, system_lang='', discussion_lang=''):
+    def __init__(self, system_lang: str, discussion_lang=None):
         """
         Initialize default values
 
@@ -41,7 +41,7 @@ class DictionaryHelper(object):
         :return:
         """
         self.system_lang = system_lang
-        self.discussion_lang = discussion_lang if len(discussion_lang) > 0 else system_lang
+        self.discussion_lang = discussion_lang if discussion_lang else system_lang
 
     @staticmethod
     def get_random_subdict_out_of_ordered_dict(ordered_dict, count):
@@ -74,8 +74,7 @@ class DictionaryHelper(object):
 
         return return_dict
 
-    def prepare_extras_dict_for_normal_page(self, registry, application_url, path, authenticated_userid,
-                                            append_notifications=False):
+    def prepare_extras_dict_for_normal_page(self, registry, application_url, path, authenticated_userid):
         """
         Calls self.prepare_extras_dict(...
 
@@ -83,17 +82,15 @@ class DictionaryHelper(object):
         :param application_url: request.application_url
         :param path: request.path
         :param authenticated_userid: authenticated_userid.path
-        :param append_notifications: Boolean
         :return: dict()
         """
         return self.prepare_extras_dict('', False, False, False, registry, application_url, path,
-                                        append_notifications=append_notifications,
                                         nickname=authenticated_userid, ongoing_discussion=False)
 
     def prepare_extras_dict(self, current_slug, is_reportable, show_bar_icon, show_graph_icon, registry,
-                            application_url, path, nickname, for_api=False, append_notifications=False,
-                            broke_limit=False, add_premise_container_style='display: none',
-                            add_statement_container_style='display: none', ongoing_discussion=True):
+                            application_url, path, nickname, for_api=False, broke_limit=False,
+                            add_premise_container_style='display: none', add_statement_container_style='display: none',
+                            ongoing_discussion=True):
         """
         Creates the extras.dict() with many options!
 
@@ -106,7 +103,6 @@ class DictionaryHelper(object):
         :param path: request.path
         :param nickname: String
         :param for_api: Boolean
-        :param append_notifications: Boolean
         :param broke_limit: Boolean
         :param add_premise_container_style: style string, default 'display:none;'
         :param add_statement_container_style: style string, default 'display:none;'
@@ -217,9 +213,8 @@ class DictionaryHelper(object):
         message_dict['has_unread'] = message_dict['new_count'] > 0
         inbox = get_box_for(db_user, self.system_lang, application_url, True) if db_user else []
         outbox = get_box_for(db_user, self.system_lang, application_url, False) if db_user else []
-        if append_notifications:
-            message_dict['inbox'] = inbox
-            message_dict['outbox'] = outbox
+        message_dict['inbox'] = inbox
+        message_dict['outbox'] = outbox
         message_dict['total_in'] = len(inbox)
         message_dict['total_out'] = len(outbox)
         return_dict['notifications'] = message_dict

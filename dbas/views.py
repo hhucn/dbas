@@ -9,6 +9,7 @@ from time import sleep
 from typing import Callable, Any
 
 import graphene
+import pkg_resources
 import requests
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPBadRequest
 from pyramid.renderers import get_renderer
@@ -48,7 +49,7 @@ from dbas.handler.settings import set_settings
 from dbas.handler.statements import set_correction_of_statement, set_position, set_positions_premise, \
     set_seen_statements, get_logfile_for_statements
 from dbas.handler.voting import clear_vote_and_seen_values_of_user
-from dbas.helper.decoration import check_authentication
+from dbas.helper.decoration import check_authentication, prep_extras_dict
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url, revoke_author_of_argument_content, revoke_author_of_statement_content
@@ -156,16 +157,16 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any], for_
     prepared_discussion = f(request_dict, for_api)
     if prepared_discussion:
         prepared_discussion['layout'] = base_layout()
-        prepared_discussion['language'] = str(ui_locales)
+        prepared_discussion['language'] = ui_locales
 
     return prepared_discussion
 
 
 # main page
 
-@view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody',
-             decorator=check_authentication)
+@view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
 @forbidden_view_config(renderer='templates/index.pt')
+@validate(check_authentication, prep_extras_dict)
 def main_page(request):
     """
     View configuration for the main page
@@ -174,30 +175,23 @@ def main_page(request):
     :return: HTTP 200 with several information
     """
     logger('main_page', 'def', 'main: {}'.format(request.params))
-
     set_language_for_visit(request)
-
     session_expired = 'session_expired' in request.params and request.params['session_expired'] == 'true'
     ui_locales = get_language_from_cookie(request)
-    _dh = DictionaryHelper(ui_locales, ui_locales)
-    extras_dict = _dh.prepare_extras_dict_for_normal_page(request.registry, request.application_url, request.path,
-                                                          request.authenticated_userid)
 
     return {
         'layout': base_layout(),
-        'language': str(ui_locales),
         'title': name + ' ' + full_version,
         'project': project_name,
-        'extras': extras_dict,
+        'extras': request.decorated['extras'],
         'session_expired': session_expired,
         'news': news_handler.get_latest_news(ui_locales)
     }
 
 
 # settings page, when logged in
-@view_config(route_name='main_settings', renderer='templates/settings.pt', permission='use',
-             decorator=check_authentication)
-@validate(valid_user)
+@view_config(route_name='main_settings', renderer='templates/settings.pt', permission='use')
+@validate(valid_user, check_authentication, prep_extras_dict)
 def main_settings(request):
     """
     View configuration for the personal settings view. Only logged in user can reach this page.
@@ -220,25 +214,22 @@ def main_settings(request):
         message, success = user.change_password(db_user, old_pw, new_pw, confirm_pw, ui_locales)
         error = not success
 
-    _dh = DictionaryHelper(ui_locales)
-    extras_dict = _dh.prepare_extras_dict_for_normal_page(request.registry, request.application_url, request.path,
-                                                          request.authenticated_userid)
-    settings_dict = _dh.prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user,
-                                              request.application_url, extras_dict['use_with_ldap'])
+    settings_dict = DictionaryHelper(ui_locales).prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error,
+                                                                       message, db_user, request.application_url,
+                                                                       request.decorated['extras']['use_with_ldap'])
 
     return {
         'layout': base_layout(),
-        'language': str(ui_locales),
         'title': Translator(ui_locales).get(_.settings),
         'project': project_name,
-        'extras': extras_dict,
+        'extras': request.decorated['extras'],
         'settings': settings_dict
     }
 
 
 # message page, when logged in
-@view_config(route_name='main_notification', renderer='templates/notifications.pt', permission='use',
-             decorator=check_authentication)
+@view_config(route_name='main_notification', renderer='templates/notifications.pt', permission='use')
+@validate(check_authentication, prep_extras_dict)
 def main_notifications(request):
     """
     View configuration for the notification view. Only logged in user can reach this page.
@@ -247,26 +238,18 @@ def main_notifications(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_notifications', 'def', 'main')
-    ui_locales = get_language_from_cookie(request)
-
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid,
-                                                                                   append_notifications=True)
 
     return {
         'layout': base_layout(),
-        'language': str(ui_locales),
         'title': 'Messages',
         'project': project_name,
-        'extras': extras_dict
+        'extras': request.decorated['extras']
     }
 
 
 # news page for everybody
-@view_config(route_name='main_news', renderer='templates/news.pt', permission='everybody',
-             decorator=check_authentication)
+@view_config(route_name='main_news', renderer='templates/news.pt', permission='everybody')
+@validate(invalid_user, check_authentication, prep_extras_dict)
 def main_news(request):
     """
     View configuration for the news.
@@ -277,30 +260,22 @@ def main_news(request):
     logger('main_news', 'def', 'main')
 
     ui_locales = get_language_from_cookie(request)
-    is_author = False
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
-    if db_user:
-        is_author = db_user.is_admin() or db_user.is_author()
-
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
+    db_user = request.validated['user']
+    is_author = db_user.is_admin() or db_user.is_author()
 
     return {
         'layout': base_layout(),
-        'language': str(ui_locales),
         'title': 'News',
         'project': project_name,
-        'extras': extras_dict,
+        'extras': request.decorated['extras'],
         'is_author': is_author,
         'news': news_handler.get_news(ui_locales)
     }
 
 
 # public users page for everybody
-@view_config(route_name='main_user', renderer='templates/user.pt', permission='everybody',
-             decorator=check_authentication)
+@view_config(route_name='main_user', renderer='templates/user.pt', permission='everybody')
+@validate(check_authentication, prep_extras_dict)
 def main_user(request):
     """
     View configuration for the public user page.
@@ -325,11 +300,6 @@ def main_user(request):
         raise HTTPNotFound()
 
     ui_locales = get_language_from_cookie(request)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
-
     user_dict = user.get_information_of(current_user, ui_locales)
 
     db_user_of_request = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
@@ -339,18 +309,17 @@ def main_user(request):
 
     return {
         'layout': base_layout(),
-        'language': str(ui_locales),
         'title': user_dict['public_nick'],
         'project': project_name,
-        'extras': extras_dict,
+        'extras': request.decorated['extras'],
         'user': user_dict,
         'can_send_notification': can_send_notification
     }
 
 
 # imprint
-@view_config(route_name='main_imprint', renderer='templates/imprint.pt', permission='everybody',
-             decorator=check_authentication)
+@view_config(route_name='main_imprint', renderer='templates/imprint.pt', permission='everybody')
+@validate(check_authentication, prep_extras_dict)
 def main_imprint(request):
     """
     View configuration for the imprint.
@@ -359,31 +328,21 @@ def main_imprint(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_imprint', 'def', 'main')
-    ui_locales = get_language_from_cookie(request)
-
-    _tn = Translator(ui_locales)
-
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
-
     # add version of pyramid
-    import pkg_resources
-    extras_dict.update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
-
+    request.decorated['extras'].update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
     return {
         'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': _tn.get(_.imprint),
+        'language': get_language_from_cookie(request),
+        'title': Translator(get_language_from_cookie(request)).get(_.imprint),
         'project': project_name,
-        'extras': extras_dict,
+        'extras': request.decorated['extras'],
         'imprint': get_changelog(5)
     }
 
 
 # faq
-@view_config(route_name='main_faq', renderer='templates/faq.pt', permission='everybody', decorator=check_authentication)
+@view_config(route_name='main_faq', renderer='templates/faq.pt', permission='everybody')
+@validate(check_authentication, prep_extras_dict)
 def main_faq(request):
     """
     View configuration for FAQs.
@@ -392,25 +351,18 @@ def main_faq(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_faq', 'def', 'main')
-    ui_locales = get_language_from_cookie(request)
-
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
 
     return {
         'layout': base_layout(),
-        'language': str(ui_locales),
         'title': 'FAQ',
         'project': project_name,
-        'extras': extras_dict
+        'extras': request.decorated['extras']
     }
 
 
 # fieldtest
-@view_config(route_name='main_experiment', renderer='templates/fieldtest.pt', permission='everybody',
-             decorator=check_authentication)
+@view_config(route_name='main_experiment', renderer='templates/fieldtest.pt', permission='everybody')
+@validate(check_authentication, prep_extras_dict)
 def main_experiment(request):
     """
     View configuration for fieldtest.
@@ -421,23 +373,17 @@ def main_experiment(request):
     logger('main_experiment', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
-
     return {
         'layout': base_layout(),
-        'language': str(ui_locales),
         'title': Translator(ui_locales).get(_.fieldtest),
         'project': project_name,
-        'extras': extras_dict
+        'extras': request.decorated['extras']
     }
 
 
 # my discussions
-@view_config(route_name='main_mydiscussions', renderer='templates/discussions.pt', permission='use',
-             decorator=check_authentication)
+@view_config(route_name='main_mydiscussions', renderer='templates/discussions.pt', permission='use')
+@validate(check_authentication, prep_extras_dict)
 def main_mydiscussions(request):
     """
     View configuration for FAQs.
@@ -447,26 +393,20 @@ def main_mydiscussions(request):
     """
     logger('main_mydiscussions', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
-
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
     issue_dict = get_issues_overiew(request.authenticated_userid, request.application_url)
 
     return {
         'layout': base_layout(),
-        'language': str(ui_locales),
         'title': Translator(ui_locales).get(_.myDiscussions),
         'project': project_name,
-        'extras': extras_dict,
+        'extras': request.decorated['extras'],
         'issues': issue_dict
     }
 
 
 # docs
-@view_config(route_name='main_docs', renderer='templates/docs.pt', permission='everybody',
-             decorator=check_authentication)
+@view_config(route_name='main_docs', renderer='templates/docs.pt', permission='everybody')
+@validate(check_authentication, prep_extras_dict)
 def main_docs(request):
     """
     View configuration for the documentation.
@@ -478,22 +418,17 @@ def main_docs(request):
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
-
     return {
         'layout': base_layout(),
-        'language': str(ui_locales),
         'title': _tn.get(_.docs),
         'project': project_name,
-        'extras': extras_dict
+        'extras': request.decorated['extras']
     }
 
 
 # imprint
-@view_config(route_name='main_rss', renderer='templates/rss.pt', permission='everybody', decorator=check_authentication)
+@view_config(route_name='main_rss', renderer='templates/rss.pt', permission='everybody')
+@validate(check_authentication, prep_extras_dict)
 def main_rss(request):
     """
     View configuration for the RSS feed.
@@ -503,19 +438,13 @@ def main_rss(request):
     """
     logger('main_rss', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
-
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
     rss = get_list_of_all_feeds(ui_locales)
 
     return {
         'layout': base_layout(),
-        'language': str(ui_locales),
         'title': 'RSS',
         'project': project_name,
-        'extras': extras_dict,
+        'extras': request.decorated['extras'],
         'rss': rss
     }
 
@@ -537,6 +466,7 @@ def main_graphiql(request):
 
 # 404 page
 @notfound_view_config(renderer='templates/404.pt')
+@validate(prep_extras_dict)
 def notfound(request):
     """
     View configuration for the 404 page.
@@ -563,20 +493,13 @@ def notfound(request):
     revoked_content = 'revoked_content' in request.params and request.params['revoked_content'] == 'true'
 
     request.response.status = 404
-    ui_locales = get_language_from_cookie(request)
-
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
 
     return {
         'layout': base_layout(),
-        'language': str(ui_locales),
         'title': 'Error',
         'project': project_name,
         'page_notfound_viewname': path,
-        'extras': extras_dict,
+        'extras': request.decorated['extras'],
         'param_error': param_error,
         'revoked_content': revoked_content
     }
@@ -703,8 +626,8 @@ def discussion_support(request, for_api=False, api_data=None):
 
 
 # finish page
-@view_config(route_name='discussion_finish', renderer='templates/finish.pt', permission='everybody',
-             decorator=check_authentication)
+@view_config(route_name='discussion_finish', renderer='templates/finish.pt', permission='everybody')
+@validate(check_authentication)
 def discussion_finish(request):
     """
     View configuration for discussion step, where we present a small/daily summary on the end
@@ -783,8 +706,8 @@ def discussion_jump(request, for_api=False, api_data=None):
 # ####################################
 
 # index page for reviews
-@view_config(route_name='review_index', renderer='templates/review.pt', permission='use',
-             decorator=check_authentication)
+@view_config(route_name='review_index', renderer='templates/review.pt', permission='use')
+@validate(check_authentication, prep_extras_dict)
 def main_review(request):
     """
     View configuration for the review index.
@@ -802,20 +725,15 @@ def main_review(request):
 
     issue_dict = issue_handler.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, False,
                                                      request.authenticated_userid)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
 
     review_dict = review_queue_helper.get_review_queues_as_lists(request.application_url, _tn, nickname)
     count, all_rights = review_reputation_helper.get_reputation_of(nickname)
 
     return {
         'layout': base_layout(),
-        'language': str(ui_locales),
         'title': _tn.get(_.review),
         'project': project_name,
-        'extras': extras_dict,
+        'extras': request.decorated['extras'],
         'review': review_dict,
         'privilege_list': review_reputation_helper.get_privilege_list(_tn),
         'reputation_list': review_reputation_helper.get_reputation_list(_tn),
@@ -826,8 +744,8 @@ def main_review(request):
 
 
 # content page for reviews
-@view_config(route_name='review_content', renderer='templates/review-content.pt', permission='use',
-             decorator=check_authentication)
+@view_config(route_name='review_content', renderer='templates/review-content.pt', permission='use')
+@validate(check_authentication, prep_extras_dict)
 def review_content(request):
     """
     View configuration for the review content.
@@ -849,29 +767,23 @@ def review_content(request):
         logger('review_content', 'def', 'subpage error', error=True)
         raise HTTPNotFound()
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
-
     title = _tn.get(_.review)
     if subpage_name in review_queue_helper.title_mapping:
         title = review_queue_helper.title_mapping[subpage_name]
 
     return {
         'layout': base_layout(),
-        'language': str(ui_locales),
         'title': title,
         'project': project_name,
-        'extras': extras_dict,
+        'extras': request.decorated['extras'],
         'subpage': subpage_dict,
         'lock_time': review_queue_helper.max_lock_time_in_sec
     }
 
 
 # history page for reviews
-@view_config(route_name='review_history', renderer='templates/review-history.pt', permission='use',
-             decorator=check_authentication)
+@view_config(route_name='review_history', renderer='templates/review-history.pt', permission='use')
+@validate(check_authentication, prep_extras_dict)
 def review_history(request):
     """
     View configuration for the review history.
@@ -885,24 +797,18 @@ def review_history(request):
     _tn = Translator(ui_locales)
 
     history = review_history_helper.get_review_history(request.application_url, request_authenticated_userid, _tn)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
     return {
         'layout': base_layout(),
-        'language': str(ui_locales),
         'title': _tn.get(_.review_history),
         'project': project_name,
-        'extras': extras_dict,
+        'extras': request.decorated['extras'],
         'history': history
     }
 
 
 # history page for reviews
-@view_config(route_name='review_ongoing', renderer='templates/review-history.pt', permission='use',
-             decorator=check_authentication)
-@validate(valid_user)
+@view_config(route_name='review_ongoing', renderer='templates/review-history.pt', permission='use')
+@validate(valid_user, check_authentication, prep_extras_dict)
 def ongoing_history(request):
     """
     View configuration for the current reviews.
@@ -915,24 +821,19 @@ def ongoing_history(request):
     _tn = Translator(ui_locales)
 
     history = review_history_helper.get_ongoing_reviews(request.application_url, request.validated['user'], _tn)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
 
     return {
         'layout': base_layout(),
-        'language': str(ui_locales),
         'title': _tn.get(_.review_ongoing),
         'project': project_name,
-        'extras': extras_dict,
+        'extras': request.decorated['extras'],
         'history': history
     }
 
 
 # reputation_borders page for reviews
-@view_config(route_name='review_reputation', renderer='templates/review-reputation.pt', permission='use',
-             decorator=check_authentication)
+@view_config(route_name='review_reputation', renderer='templates/review-reputation.pt', permission='use')
+@validate(check_authentication, prep_extras_dict)
 def review_reputation(request):
     """
     View configuration for the review reputation_borders.
@@ -944,19 +845,13 @@ def review_reputation(request):
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
-
     reputation_dict = review_history_helper.get_reputation_history_of(request.authenticated_userid, _tn)
 
     return {
         'layout': base_layout(),
-        'language': str(ui_locales),
         'title': _tn.get(_.reputation),
         'project': project_name,
-        'extras': extras_dict,
+        'extras': request.decorated['extras'],
         'reputation': reputation_dict
     }
 

@@ -20,7 +20,7 @@
 </head>
 
 <body>
-  <input type="hidden" id="hidden_language" value="${language}">
+  <input type="hidden" id="hidden_language" value="${extras.ui_locales}">
   <input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 
   <!-- JS DISABLED -->

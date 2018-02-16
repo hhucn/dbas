@@ -49,7 +49,7 @@ def verify_dictionary_of_view(_self, some_dict):
     :rtype: None
     """
     _self.assertIn('layout', some_dict)
-    _self.assertIn('language', some_dict)
+    _self.assertIn('language', some_dict['extras'])
     _self.assertIn('title', some_dict)
     _self.assertIn('extras', some_dict)
 
