@@ -27,7 +27,6 @@ class AuthLoginTest(unittest.TestCase):
         self.config = testing.setUp()
         self._tn = Translator('en')
 
-
     def tearDown(self):
         testing.tearDown()
 
