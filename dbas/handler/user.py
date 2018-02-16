@@ -6,6 +6,7 @@ Handler for user-accounts
 
 import json
 import random
+import uuid
 from datetime import date, timedelta
 
 import arrow
@@ -738,7 +739,7 @@ def set_new_user(mailer, firstname, lastname, nickname, gender, email, password,
     }
 
 
-def set_new_oauth_user(firstname, lastname, nickname, email, gender, password, id, provider, _tn):
+def set_new_oauth_user(firstname, lastname, nickname, email, gender, id, provider, _tn):
     """
     Let's create a new user
 
@@ -747,7 +748,6 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, password, i
     :param nickname: String
     :param email: String
     :param gender: String
-    :param password: String
     :param id: String
     :param provider: String
     :param _tn: Translaator
@@ -780,7 +780,7 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, password, i
         'lastname': lastname,
         'email': email,
         'nickname': nickname,
-        'password': password,
+        'password': str(uuid.uuid4().hex),
         'gender': gender,
         'db_group_uid': db_group.uid
     }

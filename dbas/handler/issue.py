@@ -141,7 +141,7 @@ def prepare_json_of_issue(uid, application_url, lang, for_api, nickname):
     date = db_issue.date.format('DD.MM. HH:mm') if db_issue else 'none'
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
-    db_issues = get_visible_issues_for_user_as_query(db_user.uid).all()
+    db_issues = get_visible_issues_for_user_as_query(db_user.uid).filter(Issue.uid != uid).all()
     all_array = []
     for issue in db_issues:
         issue_dict = get_issue_dict_for(issue, application_url, for_api, uid, lang)

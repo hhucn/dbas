@@ -105,17 +105,7 @@ def continue_flow(authorization_response, ui_locales):
     # 'created_at': 2013-11-18T15:19:32Z
     # 'updated_at': 2017-10-24T07:01:29Z
 
-    user_data = {
-        'id': parsed_resp['id'],
-        'firstname': parsed_resp['name'].rsplit(' ', 1)[0],
-        'lastname': parsed_resp['name'].rsplit(' ', 1)[1],
-        'nickname': slugify(parsed_resp['login']),
-        'gender': 'n',
-        'email': str(parsed_resp['email']) if 'email' in parsed_resp else 'None',
-        'password': '',
-        'ui_locales': 'en'
-    }
-
+    user_data = __prepare_data(parsed_resp)
     missing_data = [key for key in oauth_values if len(user_data[key]) == 0 or user_data[key] is 'null']
 
     logger('Github OAuth', 'continue_flow', 'user_data: ' + str(user_data))
@@ -125,4 +115,16 @@ def continue_flow(authorization_response, ui_locales):
         'user': user_data,
         'missing': missing_data,
         'error': ''
+    }
+
+
+def __prepare_data(parsed_resp):
+    return {
+        'id': parsed_resp.get('id', ''),
+        'firstname': parsed_resp.get('name', '').rsplit(' ', 1)[0],
+        'lastname': parsed_resp.get('name', '').rsplit(' ', 1)[1],
+        'nickname': slugify(parsed_resp.get('login', '')),
+        'gender': 'n',
+        'email': str(parsed_resp.get('email')),
+        'ui_locales': 'en'
     }

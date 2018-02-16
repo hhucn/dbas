@@ -116,11 +116,10 @@ def continue_flow(redirect_uri, authorization_response, ui_locales):
 def __prepare_data(parsed_resp, gender, ui_locales):
     return {
         'id': parsed_resp['id'],
-        'firstname': parsed_resp['first_name'] if 'first_name' in parsed_resp else '',
-        'lastname': parsed_resp['last_name'] if 'last_name' in parsed_resp else '',
-        'nickname': parsed_resp['name'].replace(' ', '') if 'name' in parsed_resp else '',
+        'firstname': parsed_resp.get('first_name', ''),
+        'lastname': parsed_resp.get('last_name', ''),
+        'nickname': parsed_resp.get('name', '').replace(' ', ''),
         'gender': gender,
-        'email': str(parsed_resp['email']) if 'email' in parsed_resp else 'None',
-        'password': '',
+        'email': str(parsed_resp.get('email')),
         'ui_locales': 'de' if parsed_resp['locale'] == 'de_DE' else ui_locales
     }
