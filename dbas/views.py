@@ -1552,8 +1552,6 @@ def fuzzy_search(request):
     ajax interface for fuzzy string search
 
     :param request: request of the web server
-    :param for_api: boolean
-    :param api_data: data
     :return: json-set with all matched strings
     """
     logger('views', 'fuzzy_search', 'main: {}'.format(request.json_body))
