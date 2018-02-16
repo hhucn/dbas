@@ -14,7 +14,6 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPBadRequest
 from pyramid.renderers import get_renderer
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
-from pyramid_mailer import get_mailer
 from webob_graphql import serve_graphql_request
 
 import dbas.discussion.core as discussion
@@ -55,8 +54,8 @@ from dbas.helper.validation import validate, valid_user, valid_issue, valid_conc
     valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient, \
     valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument, valid_statement, \
     valid_not_executed_review, valid_database_model, valid_user_as_author, valid_uid_as_row_in_review_queue, \
-    valid_user_as_author_of_statement, valid_user_as_author_of_argument, valid_review_reason, valid_ui_locales, \
-    valid_premisegroup, valid_text_values, has_maybe_keywords
+    valid_user_as_author_of_statement, valid_user_as_author_of_argument, valid_review_reason, valid_premisegroup, \
+    valid_text_values, has_maybe_keywords, valid_lang_cookie_fallback
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog
@@ -1273,41 +1272,31 @@ def user_logout(request, redirect_to_main=False):
 
 
 @view_config(route_name='ajax_user_registration', renderer='json')
+@validate(valid_lang_cookie_fallback,
+          has_keywords(('nickname', str), ('email', str), ('gender', str), ('password', str), ('passwordconfirm', str)),
+          has_maybe_keywords(('firstname', str, ''), ('lastname', str, '')))
 def user_registration(request):
     """
-    Registers new user with data given in the ajax requesst
+    Registers new user with data given in the ajax request.
 
     :param request: current request of the server
     :return: dict() with success and message
     """
-    logger('Views', 'user_registration', 'main: {}'.format(request.params))
+    logger('Views', 'user_registration', 'main: {}'.format(request.json_body))
+    mailer = request.mailer
+    lang = request.validated['lang']
 
-    # default values
-    success = ''
-    error = ''
-    info = ''
-
-    try:
-        params = request.params
-        ui_locales = params['lang'] if 'lang' in params else get_language_from_cookie(request)
-        mailer = get_mailer(request)
-        success, info, new_user = register_user_with_ajax_data(params, ui_locales, mailer)
-
-    except KeyError as e:
-        logger('Views', 'user_registration', repr(e), error=True)
-        ui_locales = request.params.get('lang', get_language_from_cookie(request))
-        _t = Translator(ui_locales)
-        error = _t.get(_.internalKeyError)
+    success, info, new_user = register_user_with_ajax_data(request.validated, lang, mailer)
 
     return {
         'success': str(success),
-        'error': str(error),
+        'error': '',
         'info': str(info)
     }
 
 
 @view_config(route_name='ajax_user_password_request', renderer='json')
-@validate(valid_ui_locales, has_keywords(('email', str)))
+@validate(valid_lang_cookie_fallback, has_keywords(('email', str)))
 def user_password_request(request):
     """
     Sends an email, when the user requests his password
@@ -1315,8 +1304,10 @@ def user_password_request(request):
     :param request: current request of the server
     :return: dict() with success and message
     """
-    logger('Views', 'user_password_request', 'request.params: {}'.format(request.json_body))
-    _tn = Translator(request.validated['ui_locales'])
+    logger('Views',
+           'user_password_request',
+           'request.params: {}'.format(request.json_body))
+    _tn = Translator(request.validated['lang'])
     return request_password(request.validated['email'], request.mailer, _tn)
 
 
@@ -1338,7 +1329,7 @@ def set_user_settings(request):
 
 
 @view_config(route_name='ajax_set_user_language', renderer='json')
-@validate(valid_user, valid_ui_locales)
+@validate(valid_user, valid_lang_cookie_fallback)
 def set_user_lang(request):
     """
     Specify new UI language for user.
@@ -1347,7 +1338,7 @@ def set_user_lang(request):
     :return: json-dict()
     """
     logger('views', 'set_user_lang', 'request.params: {}'.format(request.json_body))
-    return set_user_language(request.validated['user'], request.validated.get('ui_locales'))
+    return set_user_language(request.validated['user'], request.validated.get('lang'))
 
 
 @view_config(route_name='ajax_set_discussion_properties', renderer='json')

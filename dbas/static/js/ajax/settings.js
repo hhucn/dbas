@@ -61,9 +61,9 @@ function AjaxSettingsHandler(){
 	 * @param ui_locales
 	 */
 	this.setNotifcationLanguage = function(ui_locales){
-		var url = 'ajax_set_user_language';
-		var data = {'ui_locales': ui_locales};
-		var done = function setUserSettingDone(data) {
+        var url = 'ajax_set_user_language';
+        var data = {'ui_locales': ui_locales};
+        var done = function setUserSettingDone(data) {
 			if (data.error.length === 0){
 				var lang_image = $('#current-lang-images');
 				$('#' + settingsSuccessDialog).fadeIn();

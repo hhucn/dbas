@@ -28,6 +28,20 @@ function ajaxSkeleton(url, method, data, ajaxDone, ajaxFail){
 	});
 }
 
+/**
+ * Validate content of recaptcha. True if invalid.
+ * @returns {boolean}
+ */
+function invalid_recaptcha() {
+    'use strict';
+    var answer = parseInt(document.getElementById("captcha-answer").value);
+    var digit1 = parseInt(document.getElementById("captcha-digit1").innerHTML);
+    var digit2 = parseInt(document.getElementById("captcha-digit2").innerHTML);
+    var digit3 = parseInt(document.getElementById("captcha-digit3").innerHTML);
+    var sum = digit1 + digit2 - digit3;
+    return answer !== sum || answer === "";
+}
+
 function AjaxMainHandler(){
 	'use strict';
 
@@ -178,10 +192,8 @@ function AjaxMainHandler(){
 		});
 	};
 
-	/**
-	 *
-	 */
 	this.registration = function(){
+        $('#' + popupLoginRegistrationFailed).hide();
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		var firstname = $('#userfirstname-input').val(),
 			lastname = $('#userlastname-input').val(),
@@ -196,10 +208,17 @@ function AjaxMainHandler(){
 		if ($('#' + popupLoginInlineRadioGenderM).is(':checked')){ gender = 'm'; }
 		if ($('#' + popupLoginInlineRadioGenderF).is(':checked')){ gender = 'f'; }
 
+        if (invalid_recaptcha()) {
+            $('#' + popupLoginRegistrationFailed).show();
+            $('#' + popupLoginRegistrationFailed + '-message').text(_t(wrongCaptcha));
+            return;
+        }
+
 		$.ajax({
 			url: 'ajax_user_registration',
 			type: 'POST',
-			data: {
+            contentType: 'application/json',
+            data: JSON.stringify({
 				firstname: firstname,
 				lastname: lastname,
 				nickname: nickname,
@@ -208,11 +227,9 @@ function AjaxMainHandler(){
 				password: password,
 				passwordconfirm: passwordconfirm,
 				'g-recaptcha-response': recaptcha,
-				lang: getLanguage(),
-				mode: 'manually'
-			},
+                lang: getLanguage()
+            }),
 			dataType: 'json',
-			async: true,
 			headers: {
 				'X-CSRF-Token': csrf_token
 			}
@@ -245,7 +262,7 @@ function AjaxMainHandler(){
             contentType: 'application/json',
             data: JSON.stringify({
                 email: email,
-                ui_locales: getLanguage()
+                lang: getLanguage()
             }),
 			dataType: 'json',
 			headers: {
