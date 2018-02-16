@@ -28,8 +28,8 @@ def set_arguments_premises(for_api, data) -> dict:
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and next url or an error
     """
-    db_user = data['user']
-    db_issue = data['issue']
+    db_user: User = data['user']
+    db_issue: Issue = data['issue']
     premisegroups = data['premisegroups']
     arg_uid = data['arg_uid']
     attack_type = data['attack_type']
@@ -37,7 +37,7 @@ def set_arguments_premises(for_api, data) -> dict:
     history = data.get('_HISTORY_')
     mailer = data.get('mailer')
     port = data.get('port')
-    discussion_lang = data.get('discussion_lang', db_issue.lang)
+    discussion_lang = db_issue.lang
     default_locale_name = data.get('default_locale_name', discussion_lang)
 
     application_url = data['application_url']

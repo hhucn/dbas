@@ -690,8 +690,7 @@ def __merge_premisegroup(review):
         new_text, tmp = get_text_for_premisesgroup_uid(review.premisesgroup_uid)
 
     # now we have new text as a variable, let's set the statement
-    new_statement, tmp = set_statement(new_text, db_user, db_first_old_statement.is_startpoint, db_issue,
-                                       discussion_lang)
+    new_statement, tmp = set_statement(new_text, db_user, db_first_old_statement.is_startpoint, db_issue)
 
     # new premisegroup for the statement
     db_new_premisegroup = PremiseGroup(author=db_user.uid)
@@ -751,15 +750,13 @@ def __split_premisegroup(review):
     db_issue = DBDiscussionSession.query(Issue).get(db_old_premises[0].issue_uid)
     db_old_statement_ids = [p.statement_uid for p in db_old_premises]
     db_first_old_statement = DBDiscussionSession.query(Statement).get(db_old_premises[0].uid)
-    discussion_lang = db_first_old_statement.lang
     db_user = DBDiscussionSession.query(User).get(review.detector_uid)
 
     if db_values:
         logger('review_main_helper', '__split_premisegroup', 'split given premisegroup into the mapped, new statements')
         db_statements = []
         for value in db_values:
-            new_statement, tmp = set_statement(value.content, db_user, db_first_old_statement.is_startpoint, db_issue,
-                                               discussion_lang)
+            new_statement, tmp = set_statement(value.content, db_user, db_first_old_statement.is_startpoint, db_issue)
             db_statements.append(new_statement)
     else:
         logger('review_main_helper', '__split_premisegroup', 'just split the premisegroup')
