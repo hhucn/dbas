@@ -1827,9 +1827,9 @@ def additional_service(request):
 # #######################################
 
 
-# ajax - for flagging arguments
 @view_config(route_name='ajax_flag_argument_or_statement', renderer='json')
-@validate(valid_user, valid_review_reason, has_keywords(('uid', int), ('is_argument', bool)))
+@validate(valid_user, valid_review_reason, has_keywords(('uid', int), ('is_argument', bool)),
+          has_maybe_keywords(('extra_uid', int, None)))
 def flag_argument_or_statement(request):
     """
     Flags an argument or statement for a specific reason
@@ -1841,18 +1841,12 @@ def flag_argument_or_statement(request):
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     uid = request.validated['uid']
     reason = request.validated['reason']
-    extra_uid = request.json_body.get('extra_uid')
+    extra_uid = request.validated['extra_uid']
     is_argument = request.validated['is_argument']
     user = request.validated['user']
     return review_flag_helper.flag_element(uid, reason, user, is_argument, ui_locales, extra_uid)
 
 
-# #######################################
-# ADDITIONAL AJAX STUFF # REVIEW THINGS #
-# #######################################
-
-
-# ajax - for flagging arguments
 @view_config(route_name='ajax_split_or_merge_statement', renderer='json')
 @validate(valid_user, valid_premisegroup, valid_text_values, has_keywords(('key', str)))
 def split_or_merge_statement(request):
@@ -1875,12 +1869,6 @@ def split_or_merge_statement(request):
     return review_flag_helper.flag_statement_for_merge_or_split(key, pgroup, tvalues, user, _tn)
 
 
-# #######################################
-# ADDITIONAL AJAX STUFF # REVIEW THINGS #
-# #######################################
-
-
-# ajax - for flagging arguments
 @view_config(route_name='ajax_split_or_merge_premisegroup', renderer='json')
 @validate(valid_user, valid_premisegroup, has_keywords(('key', str)))
 def split_or_merge_premisegroup(request):
@@ -1902,7 +1890,6 @@ def split_or_merge_premisegroup(request):
     return review_flag_helper.flag_pgroup_for_merge_or_split(key, pgroup, user, _tn)
 
 
-# ajax - for feedback on flagged arguments
 @view_config(route_name='ajax_review_delete_argument', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewDelete), has_keywords(('should_delete', bool)))
 def review_delete_argument(request):
@@ -1926,7 +1913,6 @@ def review_delete_argument(request):
     return True
 
 
-# ajax - for feedback on flagged arguments
 @view_config(route_name='ajax_review_edit_argument', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewEdit), has_keywords(('is_edit_okay', bool)))
 def review_edit_argument(request):
@@ -1950,7 +1936,6 @@ def review_edit_argument(request):
     return True
 
 
-# ajax - for feedback on duplicated statements
 @view_config(route_name='ajax_review_duplicate_statement', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewDuplicate), has_keywords(('is_duplicate', bool)))
 def review_duplicate_statement(request):
@@ -1975,7 +1960,6 @@ def review_duplicate_statement(request):
     return True
 
 
-# ajax - for feedback on optimization arguments
 @view_config(route_name='ajax_review_optimization_argument', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewOptimization),
           has_keywords(('should_optimized', bool), ('new_data', list)))
@@ -2003,7 +1987,6 @@ def review_optimization_argument(request):
     return True
 
 
-# ajax - for feedback on a splitted premisegroup
 @view_config(route_name='ajax_review_splitted_premisegroup', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewSplit), has_keywords(('should_split', bool)))
 def review_splitted_premisegroup(request):
@@ -2028,7 +2011,6 @@ def review_splitted_premisegroup(request):
     return True
 
 
-# ajax - for feedback on a merged premisegroup
 @view_config(route_name='ajax_review_merged_premisegroup', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewMerge), has_keywords(('should_merge', bool)))
 def review_merged_premisegroup(request):
@@ -2053,7 +2035,6 @@ def review_merged_premisegroup(request):
     return True
 
 
-# ajax - for undoing reviews
 @view_config(route_name='ajax_undo_review', renderer='json')
 @validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords(('queue', str)))
 def undo_review(request):
@@ -2070,7 +2051,6 @@ def undo_review(request):
     return review_history_helper.revoke_old_decision(queue, db_review, db_user)
 
 
-# ajax - for canceling reviews
 @view_config(route_name='ajax_cancel_review', renderer='json')
 @validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords(('queue', str)))
 def cancel_review(request):
@@ -2087,7 +2067,6 @@ def cancel_review(request):
     return review_history_helper.cancel_ongoing_decision(queue, db_review, db_user)
 
 
-# ajax - for undoing reviews
 @view_config(route_name='ajax_review_lock', renderer='json', require_csrf=False)
 @validate(valid_user, valid_database_model('review_uid', ReviewOptimization), has_keywords(('lock', bool)))
 def review_lock(request):
@@ -2110,7 +2089,6 @@ def review_lock(request):
         return review_queue_helper.unlock_optimization_review(db_review, _tn)
 
 
-# ajax - for revoking statements
 @view_config(route_name='ajax_revoke_statement_content', renderer='json', require_csrf=False)
 @validate(valid_user_as_author_of_statement, valid_statement)
 def revoke_statement_content(request):
@@ -2126,7 +2104,6 @@ def revoke_statement_content(request):
     return revoke_author_of_statement_content(statement, db_user)
 
 
-# ajax - for revoking arguments
 @view_config(route_name='ajax_revoke_argument_content', renderer='json', require_csrf=False)
 @validate(valid_user_as_author_of_argument, valid_argument)
 def revoke_argument_content(request):
