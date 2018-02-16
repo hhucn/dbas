@@ -3,6 +3,7 @@ from cornice import Errors
 from cornice.util import json_error
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import forget
+from typing import Tuple
 
 import dbas.handler.issue as issue_handler
 from admin.lib import table_mapper
@@ -120,13 +121,13 @@ def valid_user_as_author(request):
     :param request:
     :return:
     """
+    _tn = Translator(get_language_from_cookie(request))
     if valid_user(request):
         db_user = request.validated['user']
         if db_user.is_admin() or db_user.is_author():
             return True
-    else:
-        _tn = Translator(get_language_from_cookie(request))
-        __add_error(request, 'valid_user_as_author', 'Invalid user group', _tn.get(_.justLookDontTouch))
+        else:
+            __add_error(request, 'valid_user_as_author', 'Invalid user group', _tn.get(_.justLookDontTouch))
     return False
 
 
@@ -368,17 +369,17 @@ def valid_language(request):
         return False
 
 
-def valid_ui_locales(request):
+def valid_lang_cookie_fallback(request):
     """
     Get provided language from form, else interpret it from the request.
 
     :param request:
     :return:
     """
-    lang = request.json_body.get('ui_locales')
+    lang = request.json_body.get('lang')
     if not lang:
         lang = get_language_from_cookie(request)
-    request.validated['ui_locales'] = lang
+    request.validated['lang'] = lang
 
 
 # #############################################################################
@@ -528,6 +529,7 @@ def valid_uid_as_row_in_review_queue(request):
     return False
 
 
+<<<<<<< dbas/helper/validation.py
 def check_authentication(request):
     """
     Checks whether the user is authenticated and if not logs user out.
@@ -546,7 +548,8 @@ def check_authentication(request):
         )
 
 
-def has_keywords(*keywords):
+def has_keywords(*keywords: Tuple[str, type]):
+>>>>>>> dbas/helper/validation.py
     """
     Verify that specified keywords exist in the request.json_body.
 
@@ -566,7 +569,7 @@ def has_keywords(*keywords):
                 error_occured = True
             else:
                 __add_error(request, 'has_keywords', 'Parameter {} has wrong type'.format(keyword),
-                            '{} is {}, expected {}'.format(keyword, type(keyword), ktype))
+                            '{} is {}, expected {}'.format(keyword, type(value), ktype))
                 error_occured = True
         return not error_occured
 

@@ -835,25 +835,10 @@ function PopupHandler() {
 		$('#' + popupUrlSharingInputId).val('');
 	};
 
-	this.showLoginPopup = function (appendOnly){
+    this.showLoginPopup = function () {
 		if (window.location.href.indexOf('/contact') !== -1){
 			return -1;
 		}
-
-		var script = $('<script>').attr('src', 'https://www.google.com/recaptcha/api.js');
-		if (appendOnly) {
-			$('#' + popupLogin).append(script);
-		} else {
-			$('#' + popupLogin).show().append(script);
-		}
-
-		// Google Recaptcha
-		if ($('.g-recaptcha').length !== 0) {
-			setTimeout(function () {
-				$('.grecaptcha-badge').css('bottom', $('#footer').outerHeight(true) + 'px');
-			}, 1500);
-		}
-
 	};
 
 	/**
