@@ -152,18 +152,23 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any], for_
         return user_logout(request, True)
 
     request_dict = prepare_request_dict(request, nickname)
-    ui_locales = get_language_from_cookie(request)
-
     prepared_discussion = f(request_dict, for_api)
     if prepared_discussion:
         prepared_discussion['layout'] = base_layout()
-        prepared_discussion['language'] = ui_locales
 
     return prepared_discussion
 
 
-# main page
+def __main_dict(request, title):
+    return {
+        'layout': base_layout(),
+        'title': title,
+        'project': project_name,
+        'extras': request.decorated['extras'],
+    }
 
+
+# main page
 @view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
 @forbidden_view_config(renderer='templates/index.pt')
 @validate(check_authentication, prep_extras_dict)
@@ -179,14 +184,12 @@ def main_page(request):
     session_expired = 'session_expired' in request.params and request.params['session_expired'] == 'true'
     ui_locales = get_language_from_cookie(request)
 
-    return {
-        'layout': base_layout(),
-        'title': name + ' ' + full_version,
-        'project': project_name,
-        'extras': request.decorated['extras'],
+    prep_dict = __main_dict(request, name + ' ' + full_version)
+    prep_dict.update({
         'session_expired': session_expired,
         'news': news_handler.get_latest_news(ui_locales)
-    }
+    })
+    return prep_dict
 
 
 # settings page, when logged in
@@ -218,13 +221,11 @@ def main_settings(request):
                                                                        message, db_user, request.application_url,
                                                                        request.decorated['extras']['use_with_ldap'])
 
-    return {
-        'layout': base_layout(),
-        'title': Translator(ui_locales).get(_.settings),
-        'project': project_name,
-        'extras': request.decorated['extras'],
+    prep_dict = __main_dict(request, Translator(ui_locales).get(_.settings))
+    prep_dict.update({
         'settings': settings_dict
-    }
+    })
+    return prep_dict
 
 
 # message page, when logged in
@@ -238,13 +239,7 @@ def main_notifications(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_notifications', 'def', 'main')
-
-    return {
-        'layout': base_layout(),
-        'title': 'Messages',
-        'project': project_name,
-        'extras': request.decorated['extras']
-    }
+    return __main_dict(request, 'Message')
 
 
 # news page for everybody
@@ -263,14 +258,12 @@ def main_news(request):
     db_user = request.validated['user']
     is_author = db_user.is_admin() or db_user.is_author()
 
-    return {
-        'layout': base_layout(),
-        'title': 'News',
-        'project': project_name,
-        'extras': request.decorated['extras'],
+    prep_dict = __main_dict(request, 'News')
+    prep_dict.update({
         'is_author': is_author,
         'news': news_handler.get_news(ui_locales)
-    }
+    })
+    return prep_dict
 
 
 # public users page for everybody
@@ -307,14 +300,12 @@ def main_user(request):
     if db_user_of_request:
         can_send_notification = current_user.uid != db_user_of_request.uid
 
-    return {
-        'layout': base_layout(),
-        'title': user_dict['public_nick'],
-        'project': project_name,
-        'extras': request.decorated['extras'],
+    prep_dict = __main_dict(request, user_dict['public_nick'])
+    prep_dict.update({
         'user': user_dict,
         'can_send_notification': can_send_notification
-    }
+    })
+    return prep_dict
 
 
 # imprint
@@ -330,14 +321,10 @@ def main_imprint(request):
     logger('main_imprint', 'def', 'main')
     # add version of pyramid
     request.decorated['extras'].update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
-    return {
-        'layout': base_layout(),
-        'language': get_language_from_cookie(request),
-        'title': Translator(get_language_from_cookie(request)).get(_.imprint),
-        'project': project_name,
-        'extras': request.decorated['extras'],
-        'imprint': get_changelog(5)
-    }
+
+    prep_dict = __main_dict(Translator(get_language_from_cookie(request)).get(_.imprint))
+    prep_dict.update({'imprint': get_changelog(5)})
+    return prep_dict
 
 
 # faq
@@ -352,12 +339,7 @@ def main_faq(request):
     """
     logger('main_faq', 'def', 'main')
 
-    return {
-        'layout': base_layout(),
-        'title': 'FAQ',
-        'project': project_name,
-        'extras': request.decorated['extras']
-    }
+    return __main_dict(request, 'FAQ')
 
 
 # fieldtest
@@ -373,12 +355,7 @@ def main_experiment(request):
     logger('main_experiment', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
 
-    return {
-        'layout': base_layout(),
-        'title': Translator(ui_locales).get(_.fieldtest),
-        'project': project_name,
-        'extras': request.decorated['extras']
-    }
+    return __main_dict(request, Translator(ui_locales).get(_.fieldtest))
 
 
 # my discussions
@@ -395,13 +372,11 @@ def main_mydiscussions(request):
     ui_locales = get_language_from_cookie(request)
     issue_dict = get_issues_overiew(request.authenticated_userid, request.application_url)
 
-    return {
-        'layout': base_layout(),
-        'title': Translator(ui_locales).get(_.myDiscussions),
-        'project': project_name,
-        'extras': request.decorated['extras'],
+    prep_dict = __main_dict(request, Translator(ui_locales).get(_.myDiscussions))
+    prep_dict.update({
         'issues': issue_dict
-    }
+    })
+    return prep_dict
 
 
 # docs
@@ -415,15 +390,7 @@ def main_docs(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_docs', 'def', 'main')
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    return {
-        'layout': base_layout(),
-        'title': _tn.get(_.docs),
-        'project': project_name,
-        'extras': request.decorated['extras']
-    }
+    return __main_dict(request, Translator(get_language_from_cookie(request)).get(_.docs))
 
 
 # imprint
@@ -440,13 +407,9 @@ def main_rss(request):
     ui_locales = get_language_from_cookie(request)
     rss = get_list_of_all_feeds(ui_locales)
 
-    return {
-        'layout': base_layout(),
-        'title': 'RSS',
-        'project': project_name,
-        'extras': request.decorated['extras'],
-        'rss': rss
-    }
+    prep_dict = __main_dict(request, 'RSS')
+    prep_dict.update({'rss': rss})
+    return prep_dict
 
 
 # graphiql
@@ -494,15 +457,13 @@ def notfound(request):
 
     request.response.status = 404
 
-    return {
-        'layout': base_layout(),
-        'title': 'Error',
-        'project': project_name,
+    prep_dict = __main_dict(request, 'ERROR')
+    prep_dict.update({
         'page_notfound_viewname': path,
-        'extras': request.decorated['extras'],
         'param_error': param_error,
         'revoked_content': revoked_content
-    }
+    })
+    return prep_dict
 
 
 # ####################################
@@ -729,18 +690,16 @@ def main_review(request):
     review_dict = review_queue_helper.get_review_queues_as_lists(request.application_url, _tn, nickname)
     count, all_rights = review_reputation_helper.get_reputation_of(nickname)
 
-    return {
-        'layout': base_layout(),
-        'title': _tn.get(_.review),
-        'project': project_name,
-        'extras': request.decorated['extras'],
+    prep_dict = __main_dict(request, _tn.get(_.review))
+    prep_dict.update_dict({
         'review': review_dict,
         'privilege_list': review_reputation_helper.get_privilege_list(_tn),
         'reputation_list': review_reputation_helper.get_reputation_list(_tn),
         'issues': issue_dict,
         'reputation': {'count': count,
                        'has_all_rights': all_rights}
-    }
+    })
+    return prep_dict
 
 
 # content page for reviews
@@ -771,14 +730,13 @@ def review_content(request):
     if subpage_name in review_queue_helper.title_mapping:
         title = review_queue_helper.title_mapping[subpage_name]
 
-    return {
-        'layout': base_layout(),
-        'title': title,
-        'project': project_name,
+    prep_dict = __main_dict(request, title)
+    prep_dict.update({
         'extras': request.decorated['extras'],
         'subpage': subpage_dict,
         'lock_time': review_queue_helper.max_lock_time_in_sec
-    }
+    })
+    return prep_dict
 
 
 # history page for reviews
@@ -797,13 +755,9 @@ def review_history(request):
     _tn = Translator(ui_locales)
 
     history = review_history_helper.get_review_history(request.application_url, request_authenticated_userid, _tn)
-    return {
-        'layout': base_layout(),
-        'title': _tn.get(_.review_history),
-        'project': project_name,
-        'extras': request.decorated['extras'],
-        'history': history
-    }
+    prep_dict = __main_dict(request, _tn.get(_.review_history))
+    prep_dict.update({'history': history})
+    return prep_dict
 
 
 # history page for reviews
@@ -821,14 +775,9 @@ def ongoing_history(request):
     _tn = Translator(ui_locales)
 
     history = review_history_helper.get_ongoing_reviews(request.application_url, request.validated['user'], _tn)
-
-    return {
-        'layout': base_layout(),
-        'title': _tn.get(_.review_ongoing),
-        'project': project_name,
-        'extras': request.decorated['extras'],
-        'history': history
-    }
+    prep_dict = __main_dict(request, _tn.get(_.review_ongoing))
+    prep_dict.update({'history': history})
+    return prep_dict
 
 
 # reputation_borders page for reviews
@@ -846,14 +795,9 @@ def review_reputation(request):
     _tn = Translator(ui_locales)
 
     reputation_dict = review_history_helper.get_reputation_history_of(request.authenticated_userid, _tn)
-
-    return {
-        'layout': base_layout(),
-        'title': _tn.get(_.reputation),
-        'project': project_name,
-        'extras': request.decorated['extras'],
-        'reputation': reputation_dict
-    }
+    prep_dict = __main_dict(request, _tn.get(_.reputation))
+    prep_dict.update({'reputation': reputation_dict})
+    return prep_dict
 
 
 # #####################################
