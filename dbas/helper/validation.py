@@ -1,8 +1,10 @@
 # coding=utf-8
 from cornice import Errors
 from cornice.util import json_error
+from typing import Tuple
 
 import dbas.handler.issue as issue_handler
+from admin.lib import table_mapper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Issue, Statement, Language, Argument, ReviewDeleteReason, PremiseGroup, \
     TextVersion
@@ -116,13 +118,13 @@ def valid_user_as_author(request):
     :param request:
     :return:
     """
+    _tn = Translator(get_language_from_cookie(request))
     if valid_user(request):
         db_user = request.validated['user']
         if db_user.is_admin() or db_user.is_author():
             return True
-    else:
-        _tn = Translator(get_language_from_cookie(request))
-        __add_error(request, 'valid_user_as_author', 'Invalid user group', _tn.get(_.justLookDontTouch))
+        else:
+            __add_error(request, 'valid_user_as_author', 'Invalid user group', _tn.get(_.justLookDontTouch))
     return False
 
 
@@ -380,6 +382,20 @@ def valid_lang_cookie_fallback(request):
 # #############################################################################
 # General validation
 
+def valid_table_name(request):
+    """
+
+    :param request:
+    :return:
+    """
+    table_name = request.json_body.get('table')
+    if table_name.lower() in table_mapper:
+        request.validated['table'] = table_name
+    else:
+        _tn = Translator(get_language_from_cookie(request))
+        __add_error(request, 'valid_table_name', 'Invalid table name', _tn.get(_.invalidTableName))
+
+
 def valid_review_reason(request):
     """
     Given an reason, validates the correctness for our review system.
@@ -510,7 +526,7 @@ def valid_uid_as_row_in_review_queue(request):
     return False
 
 
-def has_keywords(*keywords):
+def has_keywords(*keywords: Tuple[str, type]):
     """
     Verify that specified keywords exist in the request.json_body.
 
@@ -530,7 +546,7 @@ def has_keywords(*keywords):
                 error_occured = True
             else:
                 __add_error(request, 'has_keywords', 'Parameter {} has wrong type'.format(keyword),
-                            '{} is {}, expected {}'.format(keyword, type(keyword), ktype))
+                            '{} is {}, expected {}'.format(keyword, type(value), ktype))
                 error_occured = True
         return not error_occured
 

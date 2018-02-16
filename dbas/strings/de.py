@@ -371,6 +371,7 @@ de_lang = {
     _.internalKeyError: 'Interner Fehler beim Verarbeiten von Daten.',
     _.inputEmpty: 'Ihre Eingabe ist leer!',
     _.informationForExperts: 'Infos für Experten',
+    _.invalidTableName: 'Ungültiget Tabellenname',
     _.issueList: 'Themen',
     _.issueNotFound: 'Es konnte kein Diskussionsthema gefunden werden',
     _.islandViewHeaderText: 'Dies sind alle Argumente für: ',

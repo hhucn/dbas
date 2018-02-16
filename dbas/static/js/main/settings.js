@@ -251,21 +251,17 @@ function StatisticsHandler(){
 
 	/**
 	 *
-	 * @param jsonData
 	 */
-	this.callbackDeleteStatisticsDone = function(jsonData) {
-		if (jsonData.removed_data  ===  'true') {
-			$('#' + statisticsSuccessDialog).fadeIn();
-			$('#' + statisticsSuccessMessage).text(_t(statisticsDeleted));
-			setTimeout(function () {
-				$('#' + statisticsSuccessDialog).fadeOut();
-			}, 3000);
-			$('#' + editsDoneCountId).text('0');
-			$('#' + discussionArgVoteCountId).text('0');
-			$('#' + discussionStatVoteCountId).text('0');
-		} else {
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
-		}
+	this.callbackDeleteStatisticsDone = function() {
+		$('#' + statisticsSuccessDialog).fadeIn();
+		$('#' + statisticsSuccessMessage).text(_t(statisticsDeleted));
+		setTimeout(function () {
+			$('#' + statisticsSuccessDialog).fadeOut();
+		}, 3000);
+		$('#' + editsDoneCountId).text('0');
+		$('#' + discussionArgVoteCountId).text('0');
+		$('#' + discussionStatVoteCountId).text('0');
+		new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotThere));
 	};
 
 	/**
@@ -296,7 +292,7 @@ $(function () {
 		$('#' + requestHistoryButtonId).val(_t(requestHistory));
 	});
 
-	$('#' + clearStatisticsButtonId).click(function clearCtatisticsButton(){
+	$('#' + clearStatisticsButtonId).click(function (){
 		new AjaxSettingsHandler().deleteStatistics();
 	});
 
@@ -309,11 +305,11 @@ $(function () {
 	});
 
 	$('#' + infoVoteArgumentsId).click(function (){
-		new AjaxSettingsHandler().getMarekdArguments();
+		new AjaxSettingsHandler().getMarkedArguments();
 	});
 
 	$('#' + infoVoteStatementsId).click(function (){
-		new AjaxSettingsHandler().getStatementVotes();
+		new AjaxSettingsHandler().getMarkedStatements();
 	});
 
 	$('#' + infoClickArgumentsId).click(function (){

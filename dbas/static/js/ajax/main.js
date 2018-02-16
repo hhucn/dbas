@@ -21,7 +21,11 @@ function ajaxSkeleton(url, method, data, ajaxDone, ajaxFail){
 		contentType: 'application/json',
 		data: JSON.stringify(data),
 		headers: {'X-CSRF-Token': csrf_token}
-	}).done(ajaxDone(data)).fail(ajaxFail());
+	}).done(function(data){
+		ajaxDone(data);
+	}).fail(function(data){
+		ajaxFail(data);
+	});
 }
 
 /**

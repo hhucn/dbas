@@ -7,14 +7,14 @@ Introducing an admin interface to enable easy database management.
 import json
 
 from cornice import Service
+from pyramid.httpexceptions import exception_response
 
 import admin.lib as lib
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.dictionary.main import DictionaryHelper
+from dbas.helper.validation import valid_user, validate, valid_table_name, has_keywords
 from dbas.logger import logger
-from dbas.strings.keywords import Keywords as _
-from dbas.strings.translator import Translator
 from dbas.views import user_logout, base_layout, project_name
 
 #
@@ -84,8 +84,11 @@ revoke_token = Service(name='revoke_token',
                        permission='admin',
                        cors_policy=cors_policy)
 
+# IMPORTANT: we do not need to validate if the user in an admin because we set the permission of this views
+
 
 @dashboard.get()
+@validate(valid_user)
 def main_admin(request):
     """
     View configuration for the content view. Only logged in user can reach this page.
@@ -93,18 +96,16 @@ def main_admin(request):
     :param request: current webservers request
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Admin', 'main_admin', 'def')
-    request_authenticated_userid = request.authenticated_userid
-    should_log_out = user.update_last_action(request_authenticated_userid)
+    should_log_out = user.update_last_action(request.authenticated_userid)
     if should_log_out:
         return user_logout(request, True)
 
     ui_locales = get_language_from_cookie(request)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry, request.application_url, request.path, request.authenticated_userid)
     dashboard_elements = {
-        "entities": lib.get_overview(request.path),
-        "api_tokens": lib.get_application_tokens()
+        'entities': lib.get_overview(request.path),
+        'api_tokens': lib.get_application_tokens()
     }
 
     return {
@@ -117,7 +118,8 @@ def main_admin(request):
     }
 
 
-@z_table.get()
+@z_table.post()
+@validate(valid_user)
 def main_table(request):
     """
     View configuration for the content view. Only logged in user can reach this page.
@@ -125,10 +127,8 @@ def main_table(request):
     :param request: current webservers request
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    request_authenticated_userid = request.authenticated_userid
     logger('Admin', 'main_table', 'def')
-    should_log_out = user.update_last_action(request_authenticated_userid)
+    should_log_out = user.update_last_action(request.authenticated_userid)
     if should_log_out:
         return user_logout(request, True)
 
@@ -137,28 +137,30 @@ def main_table(request):
                                                                                    request.application_url,
                                                                                    request.path,
                                                                                    request.authenticated_userid)
-    table = request.matchdict['table']
+    table_name = request.matchdict['table']
+    if not table_name.lower() in lib.table_mapper:
+        return exception_response(400)
     try:
-        table_dict = lib.get_table_dict(table, request.application_url)
+        table_dict = lib.get_table_dict(table_name, request.application_url)
         table_dict['has_error'] = False
         table_dict['error'] = ''
     except Exception as e:
         table_dict = dict()
-        table_dict['is_existing'] = False
         table_dict['has_error'] = True
         table_dict['error'] = str(e)
 
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
-        'title': 'Admin - ' + table,
+        'title': 'Admin - ' + table_name,
         'project': project_name,
         'extras': extras_dict,
         'table': table_dict
     }
 
 
-@update_row.get()
+@update_row.post()
+@validate(valid_user, valid_table_name, has_keywords(('keys', list()), ('values', list())))
 def main_update(request):
     """
     View configuration for updating any row
@@ -166,28 +168,16 @@ def main_update(request):
     :param request: current webservers request
     :return: dict()
     """
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Admin', 'main_update', 'def ' + str(request.params))
-
-    nickname = request.authenticated_userid
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    return_dict = dict()
-    try:
-        table = request.params['table']
-        uids = json.loads(request.params['uids'])
-        keys = json.loads(request.params['keys'])
-        values = json.loads(request.params['values'])
-        return_dict['error'] = lib.update_row(table, uids, keys, values, nickname, _tn)
-    except KeyError as e:
-        logger('Admin', 'main_update error', repr(e))
-        return_dict['error'] = _tn.get(_.internalKeyError)
-
-    return return_dict
+    table = request.validated['table']
+    uids = request.validated['uids']
+    keys = request.validated['keys']
+    values = request.validated['values']
+    return lib.update_row(table, uids, keys, values)
 
 
-@delete_row.get()
+@delete_row.post()
+@validate(valid_user, valid_table_name, has_keywords(('uids', list())))
 def main_delete(request):
     """
     View configuration for deleting any row
@@ -195,26 +185,14 @@ def main_delete(request):
     :param request: current webservers request
     :return: dict()
     """
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Admin', 'main_delete', 'def ' + str(request.params))
-
-    nickname = request.authenticated_userid
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    return_dict = dict()
-    try:
-        table = request.params['table']
-        uids = json.loads(request.params['uids'])
-        return_dict['error'] = lib.delete_row(table, uids, nickname, _tn)
-    except KeyError as e:
-        logger('Admin', 'main_delete error', repr(e))
-        return_dict['error'] = _tn.get(_.internalKeyError)
-
-    return return_dict
+    logger('Admin', 'main_delete', 'def ' + str(request.json_body))
+    table = request.params['table']
+    uids = json.loads(request.params['uids'])
+    return lib.delete_row(table, uids)
 
 
-@add_row.get()
+@add_row.post()
+@validate(valid_user, valid_table_name, has_keywords(('new_data', dict())))
 def main_add(request):
     """
     View configuration for adding any row
@@ -222,26 +200,14 @@ def main_add(request):
     :param request: current webservers request
     :return: dict()
     """
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Admin', 'main_add', 'def ' + str(request.params))
-
-    nickname = request.authenticated_userid
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    return_dict = dict()
-    try:
-        table = request.params['table']
-        new_data = json.loads(request.params['new_data'])
-        return_dict['error'] = lib.add_row(table, new_data, nickname, _tn)
-    except KeyError as e:
-        logger('Admin', 'main_add error', repr(e))
-        return_dict['error'] = _tn.get(_.internalKeyError)
-
-    return return_dict
+    logger('Admin', 'main_add', 'def ' + str(request.json_body))
+    new_data = request.validated['new_data']
+    table = request.validated['table']
+    return lib.add_row(table, new_data)
 
 
 @update_badge.get()
+@validate(valid_user)
 def main_update_badge(request):
     """
     View configuration for updating a badge
@@ -249,23 +215,8 @@ def main_update_badge(request):
     :param request: current webservers request
     :return: dict()
     """
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Admin', 'main_update_badge', 'def ' + str(request.params))
-
-    nickname = request.authenticated_userid
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    return_dict = dict()
-    try:
-        data, error = lib.update_badge(nickname, _tn)
-        return_dict['error'] = error
-        return_dict['data'] = data
-    except KeyError as e:
-        logger('Admin', 'main_add main_update_badge', repr(e))
-        return_dict['error'] = _tn.get(_.internalKeyError)
-
-    return return_dict
+    logger('Admin', 'main_update_badge', 'def ' + str(request.json_body))
+    return lib.update_badge()
 
 
 @api_token.post()

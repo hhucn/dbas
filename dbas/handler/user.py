@@ -260,9 +260,9 @@ def get_public_data(nickname, lang):
             labels_decision_7.append(ts)
             data_decision_7.append(clicks)
 
-        statements, edits = get_textversions(nickname, lang, begin, end)
-        data_statement_30.append(len(statements))
-        data_edit_30.append(len(edits))
+        get_tv_dict = get_textversions(current_user, lang, begin, end)
+        data_statement_30.append(len(get_tv_dict.get('statements', [])))
+        data_edit_30.append(len(get_tv_dict.get('edits', [])))
 
     return_dict['labels1'] = labels_decision_7
     return_dict['labels2'] = labels_decision_30
@@ -381,11 +381,11 @@ def get_count_of_clicks(user, limit_on_today=False):
     return len(db_arg), len(db_stat)
 
 
-def get_textversions(public_nickname, lang, timestamp_after=None, timestamp_before=None):
+def get_textversions(db_user: User, lang: str, timestamp_after=None, timestamp_before=None):
     """
     Returns all textversions, were the user was author
 
-    :param public_nickname: User.public_nickname
+    :param db_user: User
     :param lang: ui_locales
     :param timestamp_after: Arrow or None
     :param timestamp_before: Arrow or None
@@ -393,12 +393,6 @@ def get_textversions(public_nickname, lang, timestamp_after=None, timestamp_befo
     """
     statement_array = []
     edit_array = []
-
-    db_user = get_user_by_private_or_public_nickname(public_nickname)
-
-    if not db_user:
-        logger('User', 'get_textversions', 'no user found', error=True)
-        return statement_array, edit_array
 
     if not timestamp_after:
         timestamp_after = arrow.get('1970-01-01').format('YYYY-MM-DD')
@@ -421,23 +415,22 @@ def get_textversions(public_nickname, lang, timestamp_after=None, timestamp_befo
         else:
             edit_array.append(edit_dict)
 
-    return statement_array, edit_array
+    return {
+        'statements': statement_array,
+        'edits': edit_array
+    }
 
 
-def get_marked_elements_of_user(nickname, is_argument, lang):
+def get_marked_elements_of_user(db_user: User, is_argument: bool, lang: str):
     """
     Get all marked arguments/statements of the user
 
-    :param nickname: nickname
+    :param db_user: User
     :param is_argument: Boolean
     :param lang: uid_locales
     :return: [{},...]
     """
     return_array = []
-
-    db_user = get_user_by_private_or_public_nickname(nickname)
-    if not db_user:
-        return return_array
 
     if is_argument:
         db_votes = DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=db_user.uid).all()
@@ -459,28 +452,16 @@ def get_marked_elements_of_user(nickname, is_argument, lang):
     return return_array
 
 
-def get_arg_clicks_of_user(nickname, lang):
-    return __get_clicks_of_user(nickname, True, lang)
-
-
-def get_stmt_clicks_of_user(nickname, lang):
-    return __get_clicks_of_user(nickname, False, lang)
-
-
-def __get_clicks_of_user(nickname, is_argument, lang):
+def get_clicked_element_of_user(db_user: User, is_argument: bool, lang: str):
     """
     Returs array with all clicks done by the user
 
-    :param nickname: user.nickname
+    :param db_user: User
     :param is_argument: Boolean
     :param lang: ui_locales
     :return: [{},...]
     """
     return_array = []
-
-    db_user = get_user_by_private_or_public_nickname(nickname)
-    if not db_user:
-        return return_array
 
     if is_argument:
         db_votes = DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=db_user.uid).all()
@@ -531,9 +512,9 @@ def get_information_of(db_user, lang):
     db_reviews_optimization = DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=db_user.uid).all()
     db_reviews = db_reviews_duplicate + db_reviews_edit + db_reviews_delete + db_reviews_optimization
 
-    statements, edits = get_textversions(db_user.public_nickname, lang)
-    ret_dict['statements_posted'] = len(statements)
-    ret_dict['edits_done'] = len(edits)
+    get_tv_dict = get_textversions(db_user, lang)
+    ret_dict['statements_posted'] = len(get_tv_dict.get('statements', []))
+    ret_dict['edits_done'] = len(get_tv_dict.get('edits', []))
     ret_dict['reviews_proposed'] = len(db_reviews)
     ret_dict['discussion_arg_votes'] = arg_votes
     ret_dict['discussion_stat_votes'] = stat_votes

@@ -4,7 +4,6 @@
 # @email krauthoff@cs.uni-duesseldorf.de
 
 import requests
-import json
 
 from sqlalchemy import and_
 from dbas.logger import logger
@@ -115,6 +114,7 @@ def get_doj_data(issue):
         return {}
 
     if resp.status_code == 200:
+        import json
         doj = json.loads(resp.text)
         return doj['dojs'] if 'dojs' in doj else {}
     else:

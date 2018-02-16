@@ -1049,6 +1049,7 @@ def call_from_request(request, f: Callable[[Any, Any], Any]):
 
 # ajax - getting complete track of the user
 @view_config(route_name='ajax_get_user_history', renderer='json')
+@validate(valid_user)
 def get_user_history(request):
     """
     Request the complete user track.
@@ -1057,11 +1058,13 @@ def get_user_history(request):
     :return: json-dict()
     """
     ui_locales = get_language_from_cookie(request)
-    return history_handler.get_history_from_database(request.authenticated_userid, ui_locales)
+    db_user = request.validated['user']
+    return history_handler.get_history_from_database(db_user, ui_locales)
 
 
 # ajax - getting all text edits
 @view_config(route_name='ajax_get_all_posted_statements', renderer='json')
+@validate(valid_user)
 def get_all_posted_statements(request):
     """
     Request for all statements of the user
@@ -1070,12 +1073,13 @@ def get_all_posted_statements(request):
     :return: json-dict()
     """
     ui_locales = get_language_from_cookie(request)
-    return_array, _ = user.get_textversions(request.authenticated_userid, ui_locales)
-    return return_array
+    db_user = request.validated['user']
+    return user.get_textversions(db_user, ui_locales).get('statements', [])
 
 
 # ajax - getting all text edits
 @view_config(route_name='ajax_get_all_edits', renderer='json')
+@validate(valid_user)
 def get_all_edits_of_user(request):
     """
     Request for all edits of the user
@@ -1084,12 +1088,13 @@ def get_all_edits_of_user(request):
     :return: json-dict()
     """
     ui_locales = get_language_from_cookie(request)
-    _, return_array = user.get_textversions(request.authenticated_userid, ui_locales)
-    return return_array
+    db_user = request.validated['user']
+    return user.get_textversions(db_user, ui_locales).get('edits', [])
 
 
 # ajax - getting all votes for arguments
 @view_config(route_name='ajax_get_all_marked_arguments', renderer='json')
+@validate(valid_user)
 def get_all_marked_arguments(request):
     """
     Request for all marked arguments of the user
@@ -1098,11 +1103,13 @@ def get_all_marked_arguments(request):
     :return: json-dict()
     """
     ui_locales = get_language_from_cookie(request)
-    return user.get_marked_elements_of_user(request.authenticated_userid, True, ui_locales)
+    db_user = request.validated['user']
+    return user.get_marked_elements_of_user(db_user, True, ui_locales)
 
 
 # ajax - getting all votes for statements
 @view_config(route_name='ajax_get_all_marked_statements', renderer='json')
+@validate(valid_user)
 def get_all_marked_statements(request):
     """
     Request for all marked statements of the user
@@ -1111,11 +1118,13 @@ def get_all_marked_statements(request):
     :return: json-dict()
     """
     ui_locales = get_language_from_cookie(request)
-    return user.get_marked_elements_of_user(request.authenticated_userid, False, ui_locales)
+    db_user = request.validated['user']
+    return user.get_marked_elements_of_user(db_user, False, ui_locales)
 
 
 # ajax - getting all votes for arguments
 @view_config(route_name='ajax_get_all_argument_clicks', renderer='json')
+@validate(valid_user)
 def get_all_argument_clicks(request):
     """
     Request for all clicked arguments of the user
@@ -1124,11 +1133,13 @@ def get_all_argument_clicks(request):
     :return: json-dict()
     """
     ui_locales = get_language_from_cookie(request)
-    return user.get_arg_clicks_of_user(request.authenticated_userid, ui_locales)
+    db_user = request.validated['user']
+    return user.get_clicked_element_of_user(db_user, True, ui_locales)
 
 
 # ajax - getting all votes for statements
 @view_config(route_name='ajax_get_all_statement_clicks', renderer='json')
+@validate(valid_user)
 def get_all_statement_clicks(request):
     """
     Request for all clicked statements of the user
@@ -1137,11 +1148,13 @@ def get_all_statement_clicks(request):
     :return: json-dict()
     """
     ui_locales = get_language_from_cookie(request)
-    return user.get_stmt_clicks_of_user(request.authenticated_userid, ui_locales)
+    db_user = request.validated['user']
+    return user.get_clicked_element_of_user(db_user, False, ui_locales)
 
 
 # ajax - deleting complete history of the user
 @view_config(route_name='ajax_delete_user_history', renderer='json')
+@validate(valid_user)
 def delete_user_history(request):
     """
     Request to delete the users history.
@@ -1150,12 +1163,13 @@ def delete_user_history(request):
     :return: json-dict()
     """
     logger('delete_user_history', 'def', 'main')
-    user.update_last_action(request.authenticated_userid)
-    return {'removed_data': str(history_handler.delete_history_in_database(request.authenticated_userid)).lower()}
+    user = request.validated['user']
+    return history_handler.delete_history_in_database(user)
 
 
 # ajax - deleting complete history of the user
 @view_config(route_name='ajax_delete_statistics', renderer='json')
+@validate(valid_user)
 def delete_statistics(request):
     """
     Request to delete votes/clicks of the user.
@@ -1164,8 +1178,8 @@ def delete_statistics(request):
     :return: json-dict()
     """
     logger('delete_statistics', 'def', 'main')
-    user.update_last_action(request.authenticated_userid)
-    return {'removed_data': str(clear_vote_and_seen_values_of_user(request.authenticated_userid)).lower()}
+    user = request.validated['user']
+    return clear_vote_and_seen_values_of_user(user)
 
 
 @view_config(request_method='POST', route_name='ajax_user_login', renderer='json')
@@ -1640,8 +1654,7 @@ def get_infos_about_argument(request):
 # ajax - for getting all users with the same opinion
 @view_config(route_name='ajax_get_user_with_same_opinion', renderer='json')
 @validate(valid_language, invalid_user,
-          has_keywords(('uid', int), ('is_argument', bool), ('is_attitude', bool), ('is_reaction', bool),
-                       ('is_position', bool)))
+          has_keywords(('is_argument', bool), ('is_attitude', bool), ('is_reaction', bool), ('is_position', bool)))
 def get_users_with_opinion(request):
     """
     ajax interface for getting a dump
@@ -1651,7 +1664,7 @@ def get_users_with_opinion(request):
     """
     logger('views', 'get_users_with_opinion', 'main: {}'.format(request.json_body))
     db_lang = request.validated['lang']
-    uids = [request.validated['uid']]
+    uids = request.json_body.get('uid')
     is_arg = request.validated['is_argument']
     is_att = request.validated['is_attitude']
     is_rea = request.validated['is_reaction']
@@ -1760,7 +1773,7 @@ def send_news(request):
 
 # ajax - for fuzzy search
 @view_config(route_name='ajax_fuzzy_search', renderer='json')
-@validate(valid_issue, invalid_user, has_keywords(('type', int), ('value', str)))
+@validate(valid_issue, invalid_user, has_keywords(('type', int), ('value', str), ('statement_uid', int)))
 def fuzzy_search(request):
     """
     ajax interface for fuzzy string search
@@ -1776,9 +1789,9 @@ def fuzzy_search(request):
     mode = request.validated['type']
     value = request.validated['value']
     db_issue = request.validated['issue']
-    extra = request.json_body.get('extra')
+    statement_uid = request.validated['statement_uid']
     db_user = request.validated['user']
-    return fuzzy_string_matcher.get_prediction(_tn, db_user, db_issue, request.application_url, value, mode, extra)
+    return fuzzy_string_matcher.get_prediction(_tn, db_user, db_issue, request.application_url, value, mode, statement_uid)
 
 
 # ajax - for additional service
