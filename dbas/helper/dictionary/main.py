@@ -32,7 +32,7 @@ class DictionaryHelper(object):
     General function for dictionaries as well as the extras-dict()
     """
 
-    def __init__(self, system_lang='', discussion_lang=''):
+    def __init__(self, system_lang: str, discussion_lang=None):
         """
         Initialize default values
 
@@ -41,7 +41,7 @@ class DictionaryHelper(object):
         :return:
         """
         self.system_lang = system_lang
-        self.discussion_lang = discussion_lang if len(discussion_lang) > 0 else system_lang
+        self.discussion_lang = discussion_lang if discussion_lang else system_lang
 
     @staticmethod
     def get_random_subdict_out_of_ordered_dict(ordered_dict, count):
@@ -74,8 +74,7 @@ class DictionaryHelper(object):
 
         return return_dict
 
-    def prepare_extras_dict_for_normal_page(self, registry, application_url, path, authenticated_userid,
-                                            append_notifications=False):
+    def prepare_extras_dict_for_normal_page(self, registry, application_url, path, authenticated_userid):
         """
         Calls self.prepare_extras_dict(...
 
@@ -83,17 +82,15 @@ class DictionaryHelper(object):
         :param application_url: request.application_url
         :param path: request.path
         :param authenticated_userid: authenticated_userid.path
-        :param append_notifications: Boolean
         :return: dict()
         """
         return self.prepare_extras_dict('', False, False, False, registry, application_url, path,
-                                        append_notifications=append_notifications,
                                         nickname=authenticated_userid, ongoing_discussion=False)
 
     def prepare_extras_dict(self, current_slug, is_reportable, show_bar_icon, show_graph_icon, registry,
-                            application_url, path, nickname, for_api=False, append_notifications=False,
-                            broke_limit=False, add_premise_container_style='display: none',
-                            add_statement_container_style='display: none', ongoing_discussion=True):
+                            application_url, path, nickname, for_api=False, broke_limit=False,
+                            add_premise_container_style='display: none', add_statement_container_style='display: none',
+                            ongoing_discussion=True):
         """
         Creates the extras.dict() with many options!
 
@@ -106,7 +103,6 @@ class DictionaryHelper(object):
         :param path: request.path
         :param nickname: String
         :param for_api: Boolean
-        :param append_notifications: Boolean
         :param broke_limit: Boolean
         :param add_premise_container_style: style string, default 'display:none;'
         :param add_statement_container_style: style string, default 'display:none;'
@@ -217,9 +213,8 @@ class DictionaryHelper(object):
         message_dict['has_unread'] = message_dict['new_count'] > 0
         inbox = get_box_for(db_user, self.system_lang, application_url, True) if db_user else []
         outbox = get_box_for(db_user, self.system_lang, application_url, False) if db_user else []
-        if append_notifications:
-            message_dict['inbox'] = inbox
-            message_dict['outbox'] = outbox
+        message_dict['inbox'] = inbox
+        message_dict['outbox'] = outbox
         message_dict['total_in'] = len(inbox)
         message_dict['total_out'] = len(outbox)
         return_dict['notifications'] = message_dict
@@ -244,24 +239,14 @@ class DictionaryHelper(object):
         """
         _tn = Translator(self.system_lang)
 
-        edits = 0
-        statements = 0
-        arg_vote, stat_vote = (0, 0)
-        arg_clicks, stat_clicks = (0, 0)
-        public_nick = ''
-        db_group = None
-        db_settings = None
-        db_language = None
-
-        if db_user:
-            edits = user.get_count_of_statements(db_user, True)
-            statements = user.get_count_of_statements(db_user, False)
-            arg_vote, stat_vote = user.get_count_of_votes_of_user(db_user)
-            arg_clicks, stat_clicks = user.get_count_of_clicks(db_user)
-            public_nick = db_user.get_global_nickname()
-            db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
-            db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
-            db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
+        edits = user.get_count_of_statements(db_user, True)
+        statements = user.get_count_of_statements(db_user, False)
+        arg_vote, stat_vote = user.get_count_of_votes_of_user(db_user)
+        arg_clicks, stat_clicks = user.get_count_of_clicks(db_user)
+        public_nick = db_user.get_global_nickname()
+        db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
+        db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
+        db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
 
         group = db_group.name if db_group else '-'
         gravatar_public_url = get_profile_picture(db_user, 80)
@@ -274,12 +259,12 @@ class DictionaryHelper(object):
             'pw_change_error': pw_change_error,
             'pw_change_success': pw_change_success,
             'message': message,
-            'db_firstname': db_user.firstname if db_user else '',
-            'db_surname': db_user.surname if db_user else '',
-            'db_nickname': db_user.nickname if db_user else '',
+            'db_firstname': db_user.firstname,
+            'db_surname': db_user.surname,
+            'db_nickname': db_user.nickname,
             'db_public_nickname': public_nick,
-            'db_mail': db_user.email if db_user else '',
-            'has_mail': db_user.email is not 'None' if db_user else '',
+            'db_mail': db_user.email,
+            'has_mail': db_user.email is not 'None',
             'can_change_password': not use_with_ldap and db_user.token is None,
             'db_group': group,
             'avatar_public_url': gravatar_public_url,
@@ -289,18 +274,18 @@ class DictionaryHelper(object):
             'discussion_stat_votes': stat_vote,
             'discussion_arg_clicks': arg_clicks,
             'discussion_stat_clicks': stat_clicks,
-            'send_mails': db_settings.should_send_mails if db_settings else False,
-            'send_notifications': db_settings.should_send_notifications if db_settings else False,
-            'public_nick': db_settings.should_show_public_nickname if db_settings else True,
+            'send_mails': db_settings.should_send_mails,
+            'send_notifications': db_settings.should_send_notifications,
+            'public_nick': db_settings.should_show_public_nickname,
             'title_mails': _tn.get(_.mailSettingsTitle),
             'title_notifications': _tn.get(_.notificationSettingsTitle),
             'title_public_nick': _tn.get(_.publicNickTitle),
             'title_preferred_lang': _tn.get(_.preferredLangTitle),
-            'public_page_url': (main_page + '/user/' + str(db_user.uid)) if db_user else '',
+            'public_page_url': main_page + '/user/' + str(db_user.uid),
             'on': _tn.get(_.on),
             'off': _tn.get(_.off),
-            'current_lang': db_language.name if db_language else '?',
-            'current_ui_locales': db_language.ui_locales if db_language else '?',
+            'current_lang': db_language.name,
+            'current_ui_locales': db_language.ui_locales,
             'reputation': reputation
         }
 

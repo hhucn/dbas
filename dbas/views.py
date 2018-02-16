@@ -4,16 +4,15 @@ Collection of pyramids views components of D-BAS' core.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
-from time import sleep
-
 import graphene
 import json
+import pkg_resources
 import requests
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPBadRequest
 from pyramid.renderers import get_renderer
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
-from pyramid_mailer import get_mailer
+from time import sleep
 from typing import Callable, Any
 from webob_graphql import serve_graphql_request
 
@@ -32,7 +31,7 @@ from api.v2.graphql.core import Query
 from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, oauth_providers, \
     __refresh_headers_and_url
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Group, Statement, ReviewEdit, ReviewMerge, ReviewSplit, ReviewOptimization, \
+from dbas.database.discussion_model import Statement, ReviewEdit, ReviewMerge, ReviewSplit, ReviewOptimization, \
     ReviewDuplicate, ReviewDelete
 from dbas.database.discussion_model import User, Issue
 from dbas.database.initializedb import nick_of_anonymous_user
@@ -48,6 +47,7 @@ from dbas.handler.settings import set_settings
 from dbas.handler.statements import set_correction_of_statement, set_position, set_positions_premise, \
     set_seen_statements, get_logfile_for_statements
 from dbas.handler.voting import clear_vote_and_seen_values_of_user
+from dbas.helper.decoration import prep_extras_dict
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url, revoke_author_of_argument_content, revoke_author_of_statement_content
@@ -55,8 +55,9 @@ from dbas.helper.validation import validate, valid_user, valid_issue, valid_conc
     valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient, \
     valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument, valid_statement, \
     valid_not_executed_review, valid_database_model, valid_user_as_author, valid_uid_as_row_in_review_queue, \
-    valid_user_as_author_of_statement, valid_user_as_author_of_argument, valid_review_reason, valid_ui_locales, \
-    valid_premisegroup, valid_text_values, has_maybe_keywords, valid_statement_or_argument
+    valid_statement_or_argument, valid_user_as_author_of_statement, valid_user_as_author_of_argument, \
+    valid_review_reason, valid_premisegroup, valid_text_values, has_maybe_keywords, check_authentication, \
+    valid_lang_cookie_fallback
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_discussion_language, get_changelog
@@ -73,20 +74,6 @@ project_name = name + ' ' + full_version
 
 def base_layout():
     return get_renderer('templates/basetemplate.pt').implementation()
-
-
-def check_authentication(request):
-    """
-    The entry routine performed by a bulk of functions.
-    Checks whether the user is authenticated and if not logs user out.
-
-    This function is not pure!
-    :param request: current request of the server
-    :return: HTTP response or None if no change in session
-    """
-    session_expired = user.update_last_action(request.authenticated_userid)
-    if session_expired:
-        return user_logout(request, True)
 
 
 def prepare_request_dict(request, nickname, for_api=False):
@@ -163,25 +150,27 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any], for_
     if session_expired:
         return user_logout(request, True)
 
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
     request_dict = prepare_request_dict(request, nickname)
-    ui_locales = get_language_from_cookie(request)
-
     prepared_discussion = f(request_dict, for_api)
     if prepared_discussion:
         prepared_discussion['layout'] = base_layout()
-        prepared_discussion['language'] = str(ui_locales)
 
     return prepared_discussion
 
 
-# main page
+def __main_dict(request, title):
+    return {
+        'layout': base_layout(),
+        'title': title,
+        'project': project_name,
+        'extras': request.decorated['extras'],
+    }
 
+
+# main page
 @view_config(route_name='main_page', renderer='templates/index.pt', permission='everybody')
 @forbidden_view_config(renderer='templates/index.pt')
+@validate(check_authentication, prep_extras_dict)
 def main_page(request):
     """
     View configuration for the main page
@@ -190,32 +179,21 @@ def main_page(request):
     :return: HTTP 200 with several information
     """
     logger('main_page', 'def', 'main: {}'.format(request.params))
-
     set_language_for_visit(request)
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
     session_expired = 'session_expired' in request.params and request.params['session_expired'] == 'true'
     ui_locales = get_language_from_cookie(request)
-    logger('main_page', 'def', 'main: {}'.format(request.params))
-    _dh = DictionaryHelper(ui_locales, ui_locales)
-    extras_dict = _dh.prepare_extras_dict_for_normal_page(request.registry, request.application_url, request.path,
-                                                          request.authenticated_userid)
 
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': name + ' ' + full_version,
-        'project': project_name,
-        'extras': extras_dict,
+    prep_dict = __main_dict(request, name + ' ' + full_version)
+    prep_dict.update({
         'session_expired': session_expired,
         'news': news_handler.get_latest_news(ui_locales)
-    }
+    })
+    return prep_dict
 
 
 # settings page, when logged in
 @view_config(route_name='main_settings', renderer='templates/settings.pt', permission='use')
+@validate(valid_user, check_authentication, prep_extras_dict)
 def main_settings(request):
     """
     View configuration for the personal settings view. Only logged in user can reach this page.
@@ -224,46 +202,34 @@ def main_settings(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_settings', 'def', 'main: {}'.format(request.params))
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     ui_locales = get_language_from_cookie(request)
     old_pw, new_pw, confirm_pw, message = '', '', '', ''
     success, error = False, False
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(request.authenticated_userid)).join(Group).first()
-    _uh = user
-    _t = Translator(ui_locales)
+    db_user = request.validated['user']
 
-    if not db_user:
-        raise HTTPNotFound()
-
-    if db_user and 'form.passwordchange.submitted' in request.params:
+    if 'form.passwordchange.submitted' in request.params:
         old_pw = escape_string(request.params['passwordold'])
         new_pw = escape_string(request.params['password'])
         confirm_pw = escape_string(request.params['passwordconfirm'])
 
-        message, success = _uh.change_password(db_user, old_pw, new_pw, confirm_pw, ui_locales)
+        message, success = user.change_password(db_user, old_pw, new_pw, confirm_pw, ui_locales)
         error = not success
 
-    _dh = DictionaryHelper(ui_locales)
-    extras_dict = _dh.prepare_extras_dict_for_normal_page(request.registry, request.application_url, request.path,
-                                                          request.authenticated_userid)
-    settings_dict = _dh.prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error, message, db_user,
-                                              request.application_url, extras_dict['use_with_ldap'])
+    settings_dict = DictionaryHelper(ui_locales).prepare_settings_dict(success, old_pw, new_pw, confirm_pw, error,
+                                                                       message, db_user, request.application_url,
+                                                                       request.decorated['extras']['use_with_ldap'])
 
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': _t.get(_.settings),
-        'project': project_name,
-        'extras': extras_dict,
+    prep_dict = __main_dict(request, Translator(ui_locales).get(_.settings))
+    prep_dict.update({
         'settings': settings_dict
-    }
+    })
+    return prep_dict
 
 
 # message page, when logged in
 @view_config(route_name='main_notification', renderer='templates/notifications.pt', permission='use')
+@validate(check_authentication, prep_extras_dict)
 def main_notifications(request):
     """
     View configuration for the notification view. Only logged in user can reach this page.
@@ -272,28 +238,12 @@ def main_notifications(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_notifications', 'def', 'main')
-    ui_locales = get_language_from_cookie(request)
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid,
-                                                                                   append_notifications=True)
-
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': 'Messages',
-        'project': project_name,
-        'extras': extras_dict
-    }
+    return __main_dict(request, 'Message')
 
 
 # news page for everybody
 @view_config(route_name='main_news', renderer='templates/news.pt', permission='everybody')
+@validate(invalid_user, check_authentication, prep_extras_dict)
 def main_news(request):
     """
     View configuration for the news.
@@ -302,34 +252,22 @@ def main_news(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_news', 'def', 'main')
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     ui_locales = get_language_from_cookie(request)
-    is_author = False
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
-    if db_user:
-        is_author = db_user.is_admin() or db_user.is_author()
+    db_user = request.validated['user']
+    is_author = db_user.is_admin() or db_user.is_author()
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
-
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': 'News',
-        'project': project_name,
-        'extras': extras_dict,
+    prep_dict = __main_dict(request, 'News')
+    prep_dict.update({
         'is_author': is_author,
         'news': news_handler.get_news(ui_locales)
-    }
+    })
+    return prep_dict
 
 
 # public users page for everybody
 @view_config(route_name='main_user', renderer='templates/user.pt', permission='everybody')
+@validate(check_authentication, prep_extras_dict)
 def main_user(request):
     """
     View configuration for the public user page.
@@ -353,16 +291,7 @@ def main_user(request):
         logger('main_user', 'def', 'no user: {}'.format(uid), error=True)
         raise HTTPNotFound()
 
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
     ui_locales = get_language_from_cookie(request)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
-
     user_dict = user.get_information_of(current_user, ui_locales)
 
     db_user_of_request = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
@@ -370,19 +299,17 @@ def main_user(request):
     if db_user_of_request:
         can_send_notification = current_user.uid != db_user_of_request.uid
 
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': user_dict['public_nick'],
-        'project': project_name,
-        'extras': extras_dict,
+    prep_dict = __main_dict(request, user_dict['public_nick'])
+    prep_dict.update({
         'user': user_dict,
         'can_send_notification': can_send_notification
-    }
+    })
+    return prep_dict
 
 
 # imprint
 @view_config(route_name='main_imprint', renderer='templates/imprint.pt', permission='everybody')
+@validate(check_authentication, prep_extras_dict)
 def main_imprint(request):
     """
     View configuration for the imprint.
@@ -391,34 +318,17 @@ def main_imprint(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_imprint', 'def', 'main')
-    ui_locales = get_language_from_cookie(request)
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
-    _tn = Translator(ui_locales)
-
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
-
     # add version of pyramid
-    import pkg_resources
-    extras_dict.update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
+    request.decorated['extras'].update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
 
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': _tn.get(_.imprint),
-        'project': project_name,
-        'extras': extras_dict,
-        'imprint': get_changelog(5)
-    }
+    prep_dict = __main_dict(request, Translator(get_language_from_cookie(request)).get(_.imprint))
+    prep_dict.update({'imprint': get_changelog(5)})
+    return prep_dict
 
 
 # faq
 @view_config(route_name='main_faq', renderer='templates/faq.pt', permission='everybody')
+@validate(check_authentication, prep_extras_dict)
 def main_faq(request):
     """
     View configuration for FAQs.
@@ -427,27 +337,13 @@ def main_faq(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_faq', 'def', 'main')
-    ui_locales = get_language_from_cookie(request)
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
-
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': 'FAQ',
-        'project': project_name,
-        'extras': extras_dict
-    }
+    return __main_dict(request, 'FAQ')
 
 
 # fieldtest
 @view_config(route_name='main_experiment', renderer='templates/fieldtest.pt', permission='everybody')
+@validate(check_authentication, prep_extras_dict)
 def main_experiment(request):
     """
     View configuration for fieldtest.
@@ -457,26 +353,13 @@ def main_experiment(request):
     """
     logger('main_experiment', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
-
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': Translator(ui_locales).get(_.fieldtest),
-        'project': project_name,
-        'extras': extras_dict
-    }
+    return __main_dict(request, Translator(ui_locales).get(_.fieldtest))
 
 
 # my discussions
 @view_config(route_name='main_mydiscussions', renderer='templates/discussions.pt', permission='use')
+@validate(check_authentication, prep_extras_dict)
 def main_mydiscussions(request):
     """
     View configuration for FAQs.
@@ -486,28 +369,18 @@ def main_mydiscussions(request):
     """
     logger('main_mydiscussions', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
     issue_dict = get_issues_overiew(request.authenticated_userid, request.application_url)
 
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': Translator(ui_locales).get(_.myDiscussions),
-        'project': project_name,
-        'extras': extras_dict,
+    prep_dict = __main_dict(request, Translator(ui_locales).get(_.myDiscussions))
+    prep_dict.update({
         'issues': issue_dict
-    }
+    })
+    return prep_dict
 
 
 # docs
 @view_config(route_name='main_docs', renderer='templates/docs.pt', permission='everybody')
+@validate(check_authentication, prep_extras_dict)
 def main_docs(request):
     """
     View configuration for the documentation.
@@ -516,29 +389,12 @@ def main_docs(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_docs', 'def', 'main')
-    ui_locales = get_language_from_cookie(request)
-    _tn = Translator(ui_locales)
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
-
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': _tn.get(_.docs),
-        'project': project_name,
-        'extras': extras_dict
-    }
+    return __main_dict(request, Translator(get_language_from_cookie(request)).get(_.docs))
 
 
 # imprint
 @view_config(route_name='main_rss', renderer='templates/rss.pt', permission='everybody')
+@validate(check_authentication, prep_extras_dict)
 def main_rss(request):
     """
     View configuration for the RSS feed.
@@ -548,24 +404,11 @@ def main_rss(request):
     """
     logger('main_rss', 'def', 'main')
     ui_locales = get_language_from_cookie(request)
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
     rss = get_list_of_all_feeds(ui_locales)
 
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': 'RSS',
-        'project': project_name,
-        'extras': extras_dict,
-        'rss': rss
-    }
+    prep_dict = __main_dict(request, 'RSS')
+    prep_dict.update({'rss': rss})
+    return prep_dict
 
 
 # graphiql
@@ -585,6 +428,7 @@ def main_graphiql(request):
 
 # 404 page
 @notfound_view_config(renderer='templates/404.pt')
+@validate(prep_extras_dict)
 def notfound(request):
     """
     View configuration for the 404 page.
@@ -611,23 +455,14 @@ def notfound(request):
     revoked_content = 'revoked_content' in request.params and request.params['revoked_content'] == 'true'
 
     request.response.status = 404
-    ui_locales = get_language_from_cookie(request)
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
-
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': 'Error',
-        'project': project_name,
+    prep_dict = __main_dict(request, 'ERROR')
+    prep_dict.update({
         'page_notfound_viewname': path,
-        'extras': extras_dict,
         'param_error': param_error,
         'revoked_content': revoked_content
-    }
+    })
+    return prep_dict
 
 
 # ####################################
@@ -752,6 +587,7 @@ def discussion_support(request, for_api=False, api_data=None):
 
 # finish page
 @view_config(route_name='discussion_finish', renderer='templates/finish.pt', permission='everybody')
+@validate(check_authentication)
 def discussion_finish(request):
     """
     View configuration for discussion step, where we present a small/daily summary on the end
@@ -763,10 +599,6 @@ def discussion_finish(request):
     params = request.params
     logger('views', 'discussion.finish', 'request.matchdict: {}'.format(match_dict))
     logger('views', 'discussion.finish', 'main: {}'.format(params))
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     request_dict = {
         'registry': request.registry,
@@ -835,6 +667,7 @@ def discussion_jump(request, for_api=False, api_data=None):
 
 # index page for reviews
 @view_config(route_name='review_index', renderer='templates/review.pt', permission='use')
+@validate(check_authentication, prep_extras_dict)
 def main_review(request):
     """
     View configuration for the review index.
@@ -847,40 +680,30 @@ def main_review(request):
     nickname = request.authenticated_userid
     _tn = Translator(ui_locales)
 
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
     issue = issue_handler.get_issue_id(request)
     disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
 
     issue_dict = issue_handler.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, False,
                                                      request.authenticated_userid)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
 
     review_dict = review_queue_helper.get_review_queues_as_lists(request.application_url, _tn, nickname)
     count, all_rights = review_reputation_helper.get_reputation_of(nickname)
 
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': _tn.get(_.review),
-        'project': project_name,
-        'extras': extras_dict,
+    prep_dict = __main_dict(request, _tn.get(_.review))
+    prep_dict.update({
         'review': review_dict,
         'privilege_list': review_reputation_helper.get_privilege_list(_tn),
         'reputation_list': review_reputation_helper.get_reputation_list(_tn),
         'issues': issue_dict,
         'reputation': {'count': count,
                        'has_all_rights': all_rights}
-    }
+    })
+    return prep_dict
 
 
 # content page for reviews
 @view_config(route_name='review_content', renderer='templates/review-content.pt', permission='use')
+@validate(check_authentication, prep_extras_dict)
 def review_content(request):
     """
     View configuration for the review content.
@@ -892,10 +715,6 @@ def review_content(request):
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
     subpage_name = request.matchdict['queue']
     nickname = request.authenticated_userid
     session = request.session
@@ -906,28 +725,22 @@ def review_content(request):
         logger('review_content', 'def', 'subpage error', error=True)
         raise HTTPNotFound()
 
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
-
     title = _tn.get(_.review)
     if subpage_name in review_queue_helper.title_mapping:
         title = review_queue_helper.title_mapping[subpage_name]
 
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': title,
-        'project': project_name,
-        'extras': extras_dict,
+    prep_dict = __main_dict(request, title)
+    prep_dict.update({
+        'extras': request.decorated['extras'],
         'subpage': subpage_dict,
         'lock_time': review_queue_helper.max_lock_time_in_sec
-    }
+    })
+    return prep_dict
 
 
 # history page for reviews
 @view_config(route_name='review_history', renderer='templates/review-history.pt', permission='use')
+@validate(check_authentication, prep_extras_dict)
 def review_history(request):
     """
     View configuration for the review history.
@@ -940,28 +753,15 @@ def review_history(request):
     request_authenticated_userid = request.authenticated_userid
     _tn = Translator(ui_locales)
 
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
     history = review_history_helper.get_review_history(request.application_url, request_authenticated_userid, _tn)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': _tn.get(_.review_history),
-        'project': project_name,
-        'extras': extras_dict,
-        'history': history
-    }
+    prep_dict = __main_dict(request, _tn.get(_.review_history))
+    prep_dict.update({'history': history})
+    return prep_dict
 
 
 # history page for reviews
 @view_config(route_name='review_ongoing', renderer='templates/review-history.pt', permission='use')
-@validate(valid_user)
+@validate(valid_user, check_authentication, prep_extras_dict)
 def ongoing_history(request):
     """
     View configuration for the current reviews.
@@ -973,28 +773,15 @@ def ongoing_history(request):
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
     history = review_history_helper.get_ongoing_reviews(request.application_url, request.validated['user'], _tn)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
-
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': _tn.get(_.review_ongoing),
-        'project': project_name,
-        'extras': extras_dict,
-        'history': history
-    }
+    prep_dict = __main_dict(request, _tn.get(_.review_ongoing))
+    prep_dict.update({'history': history})
+    return prep_dict
 
 
 # reputation_borders page for reviews
 @view_config(route_name='review_reputation', renderer='templates/review-reputation.pt', permission='use')
+@validate(check_authentication, prep_extras_dict)
 def review_reputation(request):
     """
     View configuration for the review reputation_borders.
@@ -1006,25 +793,10 @@ def review_reputation(request):
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
-
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
-                                                                                   request.application_url,
-                                                                                   request.path,
-                                                                                   request.authenticated_userid)
-
     reputation_dict = review_history_helper.get_reputation_history_of(request.authenticated_userid, _tn)
-
-    return {
-        'layout': base_layout(),
-        'language': str(ui_locales),
-        'title': _tn.get(_.reputation),
-        'project': project_name,
-        'extras': extras_dict,
-        'reputation': reputation_dict
-    }
+    prep_dict = __main_dict(request, _tn.get(_.reputation))
+    prep_dict.update({'reputation': reputation_dict})
+    return prep_dict
 
 
 # #####################################
@@ -1164,8 +936,8 @@ def delete_user_history(request):
     :return: json-dict()
     """
     logger('delete_user_history', 'def', 'main')
-    user = request.validated['user']
-    return history_handler.delete_history_in_database(user)
+    db_user = request.validated['user']
+    return history_handler.delete_history_in_database(db_user)
 
 
 # ajax - deleting complete history of the user
@@ -1179,8 +951,8 @@ def delete_statistics(request):
     :return: json-dict()
     """
     logger('delete_statistics', 'def', 'main')
-    user = request.validated['user']
-    return clear_vote_and_seen_values_of_user(user)
+    db_user = request.validated['user']
+    return clear_vote_and_seen_values_of_user(db_user)
 
 
 @view_config(request_method='POST', route_name='ajax_user_login', renderer='json')
@@ -1273,41 +1045,31 @@ def user_logout(request, redirect_to_main=False):
 
 
 @view_config(route_name='ajax_user_registration', renderer='json')
+@validate(valid_lang_cookie_fallback,
+          has_keywords(('nickname', str), ('email', str), ('gender', str), ('password', str), ('passwordconfirm', str)),
+          has_maybe_keywords(('firstname', str, ''), ('lastname', str, '')))
 def user_registration(request):
     """
-    Registers new user with data given in the ajax requesst
+    Registers new user with data given in the ajax request.
 
     :param request: current request of the server
     :return: dict() with success and message
     """
-    logger('Views', 'user_registration', 'main: {}'.format(request.params))
+    logger('Views', 'user_registration', 'main: {}'.format(request.json_body))
+    mailer = request.mailer
+    lang = request.validated['lang']
 
-    # default values
-    success = ''
-    error = ''
-    info = ''
-
-    try:
-        params = request.params
-        ui_locales = params['lang'] if 'lang' in params else get_language_from_cookie(request)
-        mailer = get_mailer(request)
-        success, info, new_user = register_user_with_ajax_data(params, ui_locales, mailer)
-
-    except KeyError as e:
-        logger('Views', 'user_registration', repr(e), error=True)
-        ui_locales = request.params.get('lang', get_language_from_cookie(request))
-        _t = Translator(ui_locales)
-        error = _t.get(_.internalKeyError)
+    success, info, new_user = register_user_with_ajax_data(request.validated, lang, mailer)
 
     return {
         'success': str(success),
-        'error': str(error),
+        'error': '',
         'info': str(info)
     }
 
 
 @view_config(route_name='ajax_user_password_request', renderer='json')
-@validate(valid_ui_locales, has_keywords(('email', str)))
+@validate(valid_lang_cookie_fallback, has_keywords(('email', str)))
 def user_password_request(request):
     """
     Sends an email, when the user requests his password
@@ -1315,8 +1077,10 @@ def user_password_request(request):
     :param request: current request of the server
     :return: dict() with success and message
     """
-    logger('Views', 'user_password_request', 'request.params: {}'.format(request.json_body))
-    _tn = Translator(request.validated['ui_locales'])
+    logger('Views',
+           'user_password_request',
+           'request.params: {}'.format(request.json_body))
+    _tn = Translator(request.validated['lang'])
     return request_password(request.validated['email'], request.mailer, _tn)
 
 
@@ -1331,14 +1095,14 @@ def set_user_settings(request):
     """
     logger('Views', 'set_user_settings', 'request.params: {}'.format(request.json_body))
     _tn = Translator(get_language_from_cookie(request))
-    user = request.validated['user']
+    db_user = request.validated['user']
     settings_value = request.validated['settings_value']
     service = request.validated['service']
-    return set_settings(request.application_url, user, service, settings_value, _tn)
+    return set_settings(request.application_url, db_user, service, settings_value, _tn)
 
 
 @view_config(route_name='ajax_set_user_language', renderer='json')
-@validate(valid_user, valid_ui_locales)
+@validate(valid_user, valid_lang_cookie_fallback)
 def set_user_lang(request):
     """
     Specify new UI language for user.
@@ -1347,7 +1111,7 @@ def set_user_lang(request):
     :return: json-dict()
     """
     logger('views', 'set_user_lang', 'request.params: {}'.format(request.json_body))
-    return set_user_language(request.validated['user'], request.validated.get('ui_locales'))
+    return set_user_language(request.validated['user'], request.validated.get('lang'))
 
 
 @view_config(route_name='ajax_set_discussion_properties', renderer='json')
@@ -1363,10 +1127,10 @@ def set_discussion_properties(request):
     _tn = Translator(get_language_from_cookie(request))
 
     property = request.validated['property']
-    user = request.validated['user']
+    db_user = request.validated['user']
     issue = request.validated['issue']
     value = request.validated['value']
-    return set_discussions_properties(user, issue, property, value, _tn)
+    return set_discussions_properties(db_user, issue, property, value, _tn)
 
 
 # #######################################
@@ -1474,9 +1238,9 @@ def set_correction_of_some_statements(request):
     logger('views', 'set_correction_of_some_statements', 'main: {}'.format(request.json_body))
     ui_locales = get_language_from_cookie(request)
     elements = request.validated['elements']
-    user = request.validated['user']
+    db_user = request.validated['user']
     _tn = Translator(ui_locales)
-    prepared_dict = set_correction_of_statement(elements, user, _tn)
+    prepared_dict = set_correction_of_statement(elements, db_user, _tn)
     return prepared_dict
 
 
@@ -1647,9 +1411,9 @@ def get_infos_about_argument(request):
     """
     logger('views', 'get_infos_about_argument', 'main: {}'.format(request.json_body))
     lang = request.validated['lang']
-    user = request.validated['user']
+    db_user = request.validated['user']
     db_argument = request.validated['argument']
-    return get_all_infos_about_argument(db_argument, request.application_url, user, lang)
+    return get_all_infos_about_argument(db_argument, request.application_url, db_user, lang)
 
 
 # ajax - for getting all users with the same opinion
@@ -1780,8 +1544,6 @@ def fuzzy_search(request):
     ajax interface for fuzzy string search
 
     :param request: request of the web server
-    :param for_api: boolean
-    :param api_data: data
     :return: json-set with all matched strings
     """
     logger('views', 'fuzzy_search', 'main: {}'.format(request.json_body))
@@ -1792,7 +1554,8 @@ def fuzzy_search(request):
     db_issue = request.validated['issue']
     statement_uid = request.validated['statement_uid']
     db_user = request.validated['user']
-    return fuzzy_string_matcher.get_prediction(_tn, db_user, db_issue, request.application_url, value, mode, statement_uid)
+    return fuzzy_string_matcher.get_prediction(_tn, db_user, db_issue, request.application_url, value, mode,
+                                               statement_uid)
 
 
 # ajax - for additional service
@@ -1828,9 +1591,9 @@ def additional_service(request):
 # #######################################
 
 
-# ajax - for flagging arguments
 @view_config(route_name='ajax_flag_argument_or_statement', renderer='json')
-@validate(valid_user, valid_review_reason, has_keywords(('uid', int), ('is_argument', bool)))
+@validate(valid_user, valid_review_reason, has_keywords(('uid', int), ('is_argument', bool)),
+          has_maybe_keywords(('extra_uid', int, None)))
 def flag_argument_or_statement(request):
     """
     Flags an argument or statement for a specific reason
@@ -1842,18 +1605,12 @@ def flag_argument_or_statement(request):
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     uid = request.validated['uid']
     reason = request.validated['reason']
-    extra_uid = request.json_body.get('extra_uid')
+    extra_uid = request.validated['extra_uid']
     is_argument = request.validated['is_argument']
-    user = request.validated['user']
-    return review_flag_helper.flag_element(uid, reason, user, is_argument, ui_locales, extra_uid)
+    db_user = request.validated['user']
+    return review_flag_helper.flag_element(uid, reason, db_user, is_argument, ui_locales, extra_uid)
 
 
-# #######################################
-# ADDITIONAL AJAX STUFF # REVIEW THINGS #
-# #######################################
-
-
-# ajax - for flagging arguments
 @view_config(route_name='ajax_split_or_merge_statement', renderer='json')
 @validate(valid_user, valid_premisegroup, valid_text_values, has_keywords(('key', str)))
 def split_or_merge_statement(request):
@@ -1866,22 +1623,16 @@ def split_or_merge_statement(request):
     logger('views', 'split_or_merge_statement', 'main: {}'.format(request.json_body))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _tn = Translator(ui_locales)
-    user = request.validated['user']
+    db_user = request.validated['user']
     pgroup = request.validated['pgroup']
     key = request.validated['key']
     tvalues = request.validated['text_values']
 
     if key not in ['merge', 'split']:
         raise HTTPBadRequest()
-    return review_flag_helper.flag_statement_for_merge_or_split(key, pgroup, tvalues, user, _tn)
+    return review_flag_helper.flag_statement_for_merge_or_split(key, pgroup, tvalues, db_user, _tn)
 
 
-# #######################################
-# ADDITIONAL AJAX STUFF # REVIEW THINGS #
-# #######################################
-
-
-# ajax - for flagging arguments
 @view_config(route_name='ajax_split_or_merge_premisegroup', renderer='json')
 @validate(valid_user, valid_premisegroup, has_keywords(('key', str)))
 def split_or_merge_premisegroup(request):
@@ -1894,16 +1645,15 @@ def split_or_merge_premisegroup(request):
     logger('views', 'split_or_merge_premisegroup', 'main: {}'.format(request.params))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _tn = Translator(ui_locales)
-    user = request.validated['user']
+    db_user = request.validated['user']
     pgroup = request.validated['pgroup']
     key = request.validated['key']
 
     if key not in ['merge', 'split']:
         raise HTTPBadRequest()
-    return review_flag_helper.flag_pgroup_for_merge_or_split(key, pgroup, user, _tn)
+    return review_flag_helper.flag_pgroup_for_merge_or_split(key, pgroup, db_user, _tn)
 
 
-# ajax - for feedback on flagged arguments
 @view_config(route_name='ajax_review_delete_argument', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewDelete), has_keywords(('should_delete', bool)))
 def review_delete_argument(request):
@@ -1927,7 +1677,6 @@ def review_delete_argument(request):
     return True
 
 
-# ajax - for feedback on flagged arguments
 @view_config(route_name='ajax_review_edit_argument', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewEdit), has_keywords(('is_edit_okay', bool)))
 def review_edit_argument(request):
@@ -1951,7 +1700,6 @@ def review_edit_argument(request):
     return True
 
 
-# ajax - for feedback on duplicated statements
 @view_config(route_name='ajax_review_duplicate_statement', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewDuplicate), has_keywords(('is_duplicate', bool)))
 def review_duplicate_statement(request):
@@ -1976,7 +1724,6 @@ def review_duplicate_statement(request):
     return True
 
 
-# ajax - for feedback on optimization arguments
 @view_config(route_name='ajax_review_optimization_argument', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewOptimization),
           has_keywords(('should_optimized', bool), ('new_data', list)))
@@ -2004,7 +1751,6 @@ def review_optimization_argument(request):
     return True
 
 
-# ajax - for feedback on a splitted premisegroup
 @view_config(route_name='ajax_review_splitted_premisegroup', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewSplit), has_keywords(('should_split', bool)))
 def review_splitted_premisegroup(request):
@@ -2029,7 +1775,6 @@ def review_splitted_premisegroup(request):
     return True
 
 
-# ajax - for feedback on a merged premisegroup
 @view_config(route_name='ajax_review_merged_premisegroup', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewMerge), has_keywords(('should_merge', bool)))
 def review_merged_premisegroup(request):
@@ -2054,7 +1799,6 @@ def review_merged_premisegroup(request):
     return True
 
 
-# ajax - for undoing reviews
 @view_config(route_name='ajax_undo_review', renderer='json')
 @validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords(('queue', str)))
 def undo_review(request):
@@ -2071,7 +1815,6 @@ def undo_review(request):
     return review_history_helper.revoke_old_decision(queue, db_review, db_user)
 
 
-# ajax - for canceling reviews
 @view_config(route_name='ajax_cancel_review', renderer='json')
 @validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords(('queue', str)))
 def cancel_review(request):
@@ -2088,7 +1831,6 @@ def cancel_review(request):
     return review_history_helper.cancel_ongoing_decision(queue, db_review, db_user)
 
 
-# ajax - for undoing reviews
 @view_config(route_name='ajax_review_lock', renderer='json', require_csrf=False)
 @validate(valid_user, valid_database_model('review_uid', ReviewOptimization), has_keywords(('lock', bool)))
 def review_lock(request):
@@ -2111,7 +1853,6 @@ def review_lock(request):
         return review_queue_helper.unlock_optimization_review(db_review, _tn)
 
 
-# ajax - for revoking statements
 @view_config(route_name='ajax_revoke_statement_content', renderer='json', require_csrf=False)
 @validate(valid_user_as_author_of_statement, valid_statement)
 def revoke_statement_content(request):
@@ -2127,7 +1868,6 @@ def revoke_statement_content(request):
     return revoke_author_of_statement_content(statement, db_user)
 
 
-# ajax - for revoking arguments
 @view_config(route_name='ajax_revoke_argument_content', renderer='json', require_csrf=False)
 @validate(valid_user_as_author_of_argument, valid_argument)
 def revoke_argument_content(request):

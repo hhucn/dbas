@@ -478,11 +478,15 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <div class="col-md-6">
-                                        <div align="center"
-                                             class="g-recaptcha"
-                                             data-size="invisible"
-                                             tal:attributes="data-sitekey extras.g_recaptcha_key"></div>
+                                  <label class="col-md-3 control-label" for="captcha-answer" i18n:translate="captcha">Solve
+                                    this captcha</label>
+                                  <div class="col-md-9 input-group">
+                                    <div class="input-group-addon">
+                                      <span id="captcha-digit1"></span> + <span id="captcha-digit2"></span> - <span
+                                            id="captcha-digit3"></span> =
+                                    </div>
+                                    <input id="captcha-answer" type="number" name="captcha-answer" class="form-control"
+                                           autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="col-md-12" id="popup-login-registration-success" role="alert">

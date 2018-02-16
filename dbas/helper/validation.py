@@ -1,6 +1,8 @@
 # coding=utf-8
 from cornice import Errors
 from cornice.util import json_error
+from pyramid.httpexceptions import HTTPFound
+from pyramid.security import forget
 from typing import Tuple
 
 import dbas.handler.issue as issue_handler
@@ -10,6 +12,7 @@ from dbas.database.discussion_model import User, Issue, Statement, Language, Arg
     TextVersion
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.language import get_language_from_cookie
+from dbas.handler.user import update_last_action
 from dbas.input_validator import is_integer
 from dbas.lib import get_user_by_private_or_public_nickname
 from dbas.logger import logger
@@ -366,17 +369,17 @@ def valid_language(request):
         return False
 
 
-def valid_ui_locales(request):
+def valid_lang_cookie_fallback(request):
     """
     Get provided language from form, else interpret it from the request.
 
     :param request:
     :return:
     """
-    lang = request.json_body.get('ui_locales')
+    lang = request.json_body.get('lang')
     if not lang:
         lang = get_language_from_cookie(request)
-    request.validated['ui_locales'] = lang
+    request.validated['lang'] = lang
 
 
 # #############################################################################
@@ -540,6 +543,24 @@ def valid_statement_or_argument(request):
         request.validated['arg_or_stmt'] = db_arg_or_stmt
     else:
         __add_error(request, 'valid_statement_or_argument', t.__name__ + ' is invalid')
+
+
+def check_authentication(request):
+    """
+    Checks whether the user is authenticated and if not logs user out.
+
+    :param view_callable:
+    :return:
+    """
+    session_expired = update_last_action(request.authenticated_userid)
+    if session_expired:
+        request.session.invalidate()
+        headers = forget(request)
+        location = request.application_url + 'discuss?session_expired=true',
+        raise HTTPFound(
+            location=location,
+            headers=headers
+        )
 
 
 def has_keywords(*keywords: Tuple[str, type]):
