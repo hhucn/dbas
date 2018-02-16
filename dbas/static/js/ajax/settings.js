@@ -61,15 +61,9 @@ function AjaxSettingsHandler(){
 	 * @param ui_locales
 	 */
 	this.setNotifcationLanguage = function(ui_locales){
-		var csrf_token = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_set_user_language',
-			method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({'lang': ui_locales}),
-			dataType: 'json',
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function setUserSettingDone(data) {
+        var url = 'ajax_set_user_language';
+        var data = {'ui_locales': ui_locales};
+        var done = function setUserSettingDone(data) {
 			if (data.error.length === 0){
 				var lang_image = $('#current-lang-images');
 				$('#' + settingsSuccessDialog).fadeIn();
