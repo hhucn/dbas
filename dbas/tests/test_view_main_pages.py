@@ -62,7 +62,6 @@ class MainMyDiscussionViewTestsNotLoggedIn(unittest.TestCase):
         verify_dictionary_of_view(self, response)
 
         self.assertIn('layout', response)
-        self.assertIn('language', response)
         self.assertIn('title', response)
         self.assertIn('project', response)
         self.assertIn('extras', response)
@@ -86,7 +85,6 @@ class MainMyDiscussionViewTestsLoggedIn(unittest.TestCase):
         verify_dictionary_of_view(self, response)
 
         self.assertIn('layout', response)
-        self.assertIn('language', response)
         self.assertIn('title', response)
         self.assertIn('project', response)
         self.assertIn('extras', response)
@@ -208,7 +206,7 @@ class MainSettingsViewTestsNotLoggedIn(unittest.TestCase):
         from dbas.views import main_settings as d
 
         request = testing.DummyRequest()
-        self.assertEqual(400, d(request))
+        self.assertEqual(400, d(request).status_code)
 
 
 class MainSettingsViewTestsLoggedIn(unittest.TestCase):
