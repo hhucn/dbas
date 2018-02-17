@@ -67,7 +67,7 @@ class RecommenerSystemTests(unittest.TestCase):
                                                      restriction_on_args=[40],
                                                      last_attack=None,
                                                      history='42/rebut/39-42/undermine/44')
-        self.assertEqual(attack_uid, 0)
+        self.assertIn(attack_uid, [0, None])
         self.assertTrue(key in ['end', 'end_attack'])
 
         attack_uid, key = rs.get_attack_for_argument(argument_uid=42,
@@ -76,7 +76,7 @@ class RecommenerSystemTests(unittest.TestCase):
                                                      restriction_on_args=[40],
                                                      last_attack=None,
                                                      history='42/rebut/39-42/undercut/43')
-        self.assertEqual(attack_uid, 0)
+        self.assertIn(attack_uid, [0, None])
         self.assertTrue(key in ['end', 'end_attack'])
 
         attack_uid, key = rs.get_attack_for_argument(argument_uid=42,
@@ -85,7 +85,7 @@ class RecommenerSystemTests(unittest.TestCase):
                                                      restriction_on_args=[40],
                                                      last_attack=None,
                                                      history='42/undercut/43-42/undermine/44')
-        self.assertEqual(attack_uid, 0)
+        self.assertIn(attack_uid, [0, None])
         self.assertTrue(key in ['end', 'end_attack'])
 
     def get_argument_by_conclusion(self):
