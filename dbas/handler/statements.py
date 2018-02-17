@@ -461,7 +461,7 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
         error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength), statement_min_length)
 
     elif len(new_argument_uids) == 1:
-        url = _um.get_url_for_new_argument(new_argument_uids, history, discussion_lang)
+        url = _um.get_url_for_new_argument(new_argument_uids, not for_api)
 
     else:
         pgroups = []

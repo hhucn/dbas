@@ -26,7 +26,6 @@ class RecommenerSystemTests(unittest.TestCase):
 
         for i in range(0, 4):
             attack_uid, key = rs.get_attack_for_argument(argument_uid=42,
-                                                         lang='en',
                                                          restriction_on_attacks=None,
                                                          restriction_on_args=restriction_on_args,
                                                          last_attack=None,
@@ -35,7 +34,6 @@ class RecommenerSystemTests(unittest.TestCase):
             restriction_on_args.append(attack_uid)
 
         attack_uid, key = rs.get_attack_for_argument(argument_uid=42,
-                                                     lang='en',
                                                      restriction_on_attacks=None,
                                                      restriction_on_args=[40],
                                                      last_attack=None,
@@ -44,7 +42,6 @@ class RecommenerSystemTests(unittest.TestCase):
         self.assertEqual(key, 'undercut')
 
         attack_uid, key = rs.get_attack_for_argument(argument_uid=42,
-                                                     lang='en',
                                                      restriction_on_attacks=None,
                                                      restriction_on_args=[40],
                                                      last_attack=None,
@@ -53,7 +50,6 @@ class RecommenerSystemTests(unittest.TestCase):
         self.assertEqual(key, 'undermine')
 
         attack_uid, key = rs.get_attack_for_argument(argument_uid=42,
-                                                     lang='en',
                                                      restriction_on_attacks=None,
                                                      restriction_on_args=[40],
                                                      last_attack=None,
@@ -62,7 +58,6 @@ class RecommenerSystemTests(unittest.TestCase):
         self.assertEqual(key, 'rebut')
 
         attack_uid, key = rs.get_attack_for_argument(argument_uid=42,
-                                                     lang='en',
                                                      restriction_on_attacks=[rs.Attacks.UNDERCUT],
                                                      restriction_on_args=[40],
                                                      last_attack=None,
@@ -71,7 +66,6 @@ class RecommenerSystemTests(unittest.TestCase):
         self.assertTrue(key in ['end', 'end_attack'])
 
         attack_uid, key = rs.get_attack_for_argument(argument_uid=42,
-                                                     lang='en',
                                                      restriction_on_attacks=[rs.Attacks.UNDERMINE],
                                                      restriction_on_args=[40],
                                                      last_attack=None,
@@ -80,7 +74,6 @@ class RecommenerSystemTests(unittest.TestCase):
         self.assertTrue(key in ['end', 'end_attack'])
 
         attack_uid, key = rs.get_attack_for_argument(argument_uid=42,
-                                                     lang='en',
                                                      restriction_on_attacks=[rs.Attacks.REBUT],
                                                      restriction_on_args=[40],
                                                      last_attack=None,

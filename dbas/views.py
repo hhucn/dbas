@@ -759,6 +759,7 @@ def discussion_finish(request, for_api=False, api_data=None):
     :param request: request of the web server
     :return:
     """
+    logger('views', 'discussion_reaction', 'request.matchdict: {}'.format(request.matchdict))
     logger('views', 'discussion_reaction', 'request.params: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.finish, for_api, api_data)

@@ -149,7 +149,7 @@ class UrlManager(object):
         :return: discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys
         """
         if not confrontation_argument:
-            return self.__get_url_for_discussion_finish(argument_uid)
+            return self.__get_url_for_discussion_finish(as_location_href, argument_uid)
         url = '{}/reaction/{}/{}/{}'.format(self.slug, argument_uid, mode, confrontation_argument)
         return self.__return_discussion_url(as_location_href, url)
 
@@ -216,20 +216,19 @@ class UrlManager(object):
 
         return self.__return_discussion_url(as_location_href, last_valid_step)
 
-    def get_url_for_new_argument(self, new_argument_uids, history, lang):
+    def get_url_for_new_argument(self, new_argument_uids: list, as_location_href: bool) -> str:
         """
         Returns url for the reaction on a new argument
 
-        :param new_argument_uids: Argument.uid
-        :param history: String
-        :param lang: Language.ui_locales
+        :param new_argument_uids: List of Argument.uid
+        :param as_location_href: List of Argument.uid
         :return: String
         """
         new_argument_uid = random.choice(new_argument_uids)  # TODO eliminate random
-        attacking_arg_uids = get_all_attacking_arg_uids_from_history(history)
-        arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, lang, restriction_on_args=attacking_arg_uids)
+        attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.history)
+        arg_id_sys, attack = RecommenderSystem.get_attack_for_argument(new_argument_uid, restriction_on_args=attacking_arg_uids)
         if not arg_id_sys:
-            url = self.__get_url_for_discussion_finish(new_argument_uid)
+            url = self.__get_url_for_discussion_finish(as_location_href, new_argument_uid)
         else:
             url = self.get_url_for_reaction_on_argument(False, new_argument_uid, attack, arg_id_sys)
         return url
@@ -290,6 +289,12 @@ class UrlManager(object):
         suffix = '"' if as_location_href else ''
         return prefix + self.review_url + url + suffix
 
-    def __get_url_for_discussion_finish(self, arg_uid):
+    def __get_url_for_discussion_finish(self, as_location_href, arg_uid):
+        """
+
+        :param as_location_href:
+        :param arg_uid:
+        :return:
+        """
         url = '{}/finish/{}'.format(self.slug, arg_uid)
-        return self.__return_discussion_url(True, url)
+        return self.__return_discussion_url(as_location_href, url)
