@@ -467,9 +467,9 @@ class FrontendTests:
             time.sleep(wait_time)
         success = success and Helper.check_for_present_text(b, 'Your family argues', 'check for switched issue')
 
-        # check finish
-        b.find_by_id('finish-button').click()
-        success = success and Helper.check_for_present_text(b, 'Thank you!', 'check for finish button')
+        # check exit
+        b.find_by_id('exit-button').click()
+        success = success and Helper.check_for_present_text(b, 'Thank you!', 'check for exit button')
 
         # go back
         b.find_by_id('back-to-discuss-button').click()

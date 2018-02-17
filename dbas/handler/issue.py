@@ -114,13 +114,12 @@ def __set_issue(info, long_info, title, lang, is_public, is_read_only, nickname,
     return True, ''
 
 
-def prepare_json_of_issue(uid, application_url, lang, for_api, nickname):
+def prepare_json_of_issue(uid, application_url, for_api, nickname):
     """
     Prepares slug, info, argument count and the date of the issue as dict
 
     :param uid: Issue.uid
     :param application_url: application_url
-    :param lang: ui_locales
     :param for_api: Boolean
     :param nickname: Nickname of current user
     :return: Issue-dict()
@@ -128,17 +127,18 @@ def prepare_json_of_issue(uid, application_url, lang, for_api, nickname):
     logger('issueHelper', 'prepare_json_of_issue', 'main')
     db_issue = DBDiscussionSession.query(Issue).get(uid)
 
-    slug = slugify(db_issue.title) if db_issue else 'none'
-    title = db_issue.title if db_issue else 'none'
-    info = db_issue.info if db_issue else 'none'
-    long_info = db_issue.long_info if db_issue else 'none'
+    slug = slugify(db_issue.title)
+    title = db_issue.title
+    info = db_issue.info
+    long_info = db_issue.long_info
     stat_count = get_number_of_statements(uid)
-    date_pretty = sql_timestamp_pretty_print(db_issue.date, lang) if db_issue else 'none'
-    duration = (arrow.utcnow() - db_issue.date) if db_issue else 0
-    days, seconds = (duration.days, duration.seconds) if db_issue else (0, 0)
+    lang = db_issue.lang
+    date_pretty = sql_timestamp_pretty_print(db_issue.date, lang)
+    duration = (arrow.utcnow() - db_issue.date)
+    days, seconds = duration.days, duration.seconds
     duration = ceil(days * 24 + seconds / 3600)
-    date_ms = int(db_issue.date.format('X') if db_issue else arrow.utcnow().format('X')) * 1000
-    date = db_issue.date.format('DD.MM. HH:mm') if db_issue else 'none'
+    date_ms = int(db_issue.date.format('X')) * 1000
+    date = db_issue.date.format('DD.MM. HH:mm')
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
     db_issues = get_visible_issues_for_user_as_query(db_user.uid).filter(Issue.uid != uid).all()
@@ -155,6 +155,7 @@ def prepare_json_of_issue(uid, application_url, lang, for_api, nickname):
 
     return {
         'slug': slug,
+        'lang': lang,
         'info': info,
         'long_info': long_info,
         'title': title,

@@ -326,7 +326,7 @@ class Keywords(Enum):
     firstPremiseText2 = 'firstPremiseText2'
     firstname = 'firstname'
     fillLine = 'fillLine'
-    finish = 'finish'
+    finish = 'exit'
     finishTitle = 'finishTitle'
     fieldtest = 'fieldtest'
     fromm = 'fromm'

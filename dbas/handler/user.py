@@ -59,21 +59,25 @@ animallist = ['Aardvark', 'Albatross', 'Alligator', 'Alpaca', 'Ant', 'Anteater',
               'Badger', 'Barracuda', 'Bat', 'Bear', 'Beaver', 'Bee', 'Bird', 'Bison', 'Boar', 'Buffalo', 'Butterfly',
               'Camel', 'Caribou', 'Cassowary', 'Cat', 'Caterpillar', 'Cattle', 'Chamois', 'Cheetah', 'Chicken',
               'Chimpanzee', 'Chinchilla', 'Chough', 'Coati', 'Cobra', 'Cockroach', 'Cod', 'Cormorant', 'Coyote',
-              'Crab', 'Crane', 'Crocodile', 'Crow', 'Curlew', 'Deer', 'Dinosaur', 'Dog', 'Dolphin', 'Donkey', 'Dotterel',
+              'Crab', 'Crane', 'Crocodile', 'Crow', 'Curlew', 'Deer', 'Dinosaur', 'Dog', 'Dolphin', 'Donkey',
+              'Dotterel',
               'Dove', 'Dragonfly', 'Duck', 'Dugong', 'Dunlin', 'Eagle', 'Echidna', 'Eel', 'Eland', 'Elephant',
               'Elephant Seal', 'Elk', 'Emu Falcon', 'Ferret', 'Finch', 'Fish', 'Flamingo', 'Fly', 'Fox', 'FrogGaur',
               'Gazelle', 'Gerbil', 'Giant Panda', 'Giraffe', 'Gnat', 'Gnu', 'Goat', 'Goldfinch', 'Goosander', 'Goose',
-              'Gorilla', 'Goshawk', 'Grasshopper', 'Grouse', 'Guanaco', 'Guinea Pig', 'Gull ', 'Hamster', 'Hare', 'Hawk',
+              'Gorilla', 'Goshawk', 'Grasshopper', 'Grouse', 'Guanaco', 'Guinea Pig', 'Gull ', 'Hamster', 'Hare',
+              'Hawk',
               'Hedgehog', 'Heron', 'Herring', 'Hippopotamus', 'Hornet', 'Horse', 'Hummingbird', 'Hyena', 'Ibex',
               'Ibis', 'Jackal', 'Jaguar', 'Jay', 'Jellyfish', 'Kangaroo', 'Kinkajou', 'Koala', 'Komodo Dragon',
               'Kouprey', 'Kudu', 'Lapwing', 'Lark', 'Lemur', 'Leopard', 'Lion', 'Llama', 'Lobster', 'Locust', 'Loris',
               'Louse', 'Lyrebird Magpie', 'Mallard', 'Mammoth', 'Manatee', 'Mandrill', 'Mink', 'Mole', 'Mongoose',
-              'Monkey', 'Moose', 'Mouse', 'Mosquito', 'Narwhal', 'Newt', 'Nightingale', 'Octopus', 'Okapi', 'Opossum', 'Ostrich',
+              'Monkey', 'Moose', 'Mouse', 'Mosquito', 'Narwhal', 'Newt', 'Nightingale', 'Octopus', 'Okapi', 'Opossum',
+              'Ostrich',
               'Otter', 'Owl', 'Oyster', 'Panther', 'Parrot', 'Partridge', 'Peafowl', 'Pelican', 'Penguin', 'Pheasant',
               'Pig', 'Pigeon', 'Polar Bear', 'Porcupine', 'Porpoise', 'Quelea', 'Quetzal', 'Rabbit', 'Raccoon', 'Rat',
               'Raven', 'Red Deer', 'Red Panda', 'Reindeer', 'Rhinoceros', 'RookSalamander', 'Salmon', 'Sand Dollar',
               'Sandpiper', 'Sardine', 'Sea Lion', 'Sea Urchin', 'Seahorse', 'Seal', 'Shark', 'Sheep', 'Shrew', 'Skunk',
-              'Sloth', 'Snail', 'Snake ', 'Spider', 'Squirrel', 'Starling', 'Swan', 'Tapir', 'Tarsier', 'Termite', 'Tiger',
+              'Sloth', 'Snail', 'Snake ', 'Spider', 'Squirrel', 'Starling', 'Swan', 'Tapir', 'Tarsier', 'Termite',
+              'Tiger',
               'Toad', 'Turkey', 'Turtle', 'Walrus', 'Wasp', 'Water Buffalo', 'Weasel', 'Whale', 'Wolf', 'Wolverine',
               'Wombat', 'Yak', 'Zebra', 'Baboon', 'Eagle']
 
@@ -249,12 +253,14 @@ def get_public_data(nickname, lang):
         labels_statement_30.append(ts)
         labels_edit_30.append(ts)
 
-        db_clicks_statements = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.author_uid == current_user.uid,
-                                                                                       ClickedStatement.timestamp >= begin,
-                                                                                       ClickedStatement.timestamp < end)).all()
-        db_clicks_arguments = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == current_user.uid,
-                                                                                     ClickedArgument.timestamp >= begin,
-                                                                                     ClickedArgument.timestamp < end)).all()
+        db_clicks_statements = DBDiscussionSession.query(ClickedStatement).filter(
+            and_(ClickedStatement.author_uid == current_user.uid,
+                 ClickedStatement.timestamp >= begin,
+                 ClickedStatement.timestamp < end)).all()
+        db_clicks_arguments = DBDiscussionSession.query(ClickedArgument).filter(
+            and_(ClickedArgument.author_uid == current_user.uid,
+                 ClickedArgument.timestamp >= begin,
+                 ClickedArgument.timestamp < end)).all()
         clicks = len(db_clicks_statements) + len(db_clicks_arguments)
         data_decision_30.append(clicks)
         if days_diff < 6:
@@ -326,7 +332,8 @@ def get_count_of_statements(user, only_edits, limit_on_today=False):
     db_textversions = db_textversions.all()
 
     for tv in db_textversions:
-        db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tv.statement_uid).first()  # TODO #432
+        db_root_version = DBDiscussionSession.query(TextVersion).filter_by(
+            statement_uid=tv.statement_uid).first()  # TODO #432
         if db_root_version.uid < tv.uid:
             edit_count += 1
         else:
@@ -411,7 +418,8 @@ def get_textversions(public_nickname, lang, timestamp_after=None, timestamp_befo
                                                                   TextVersion.timestamp < timestamp_before)).all()
 
     for edit in db_edits:
-        db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=edit.statement_uid).first()  # TODO #432
+        db_root_version = DBDiscussionSession.query(TextVersion).filter_by(
+            statement_uid=edit.statement_uid).first()  # TODO #432
         edit_dict = dict()
         edit_dict['uid'] = str(edit.uid)
         edit_dict['statement_uid'] = str(edit.statement_uid)
@@ -750,7 +758,7 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, id, provide
     :param gender: String
     :param id: String
     :param provider: String
-    :param _tn: Translaator
+    :param _tn: Translator
     :return: Boolean, msg
     """
     # getting the authors group
@@ -758,7 +766,7 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, id, provide
 
     # does the group exists?
     if not db_group:
-        logger('User', 'set_new_oauth_user', 'Internal error occured')
+        logger('User', 'set_new_oauth_user', 'Internal error occurred')
         return {'success': False, 'error': _tn.get(_.errorTryLateOrContant), 'user': None}
 
     # sanity check
@@ -829,7 +837,7 @@ def get_users_with_same_opinion(uids, application_url, path, nickname, is_argume
         uids = uids if isinstance(uids, list) else [uids]
         prepared_dict = get_user_with_same_opinion_for_statements(uids, True, nickname, ui_locales, application_url)
     elif is_attitude:
-            prepared_dict = get_user_with_opinions_for_attitude(uids, nickname, ui_locales, application_url)
+        prepared_dict = get_user_with_opinions_for_attitude(uids, nickname, ui_locales, application_url)
     elif not is_attitude:
         uids = json.loads(uids)
         uids = uids if isinstance(uids, list) else [uids]
