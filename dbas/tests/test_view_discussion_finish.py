@@ -1,5 +1,6 @@
 import unittest
 
+from paste.httpexceptions import HTTPNotFound
 from pyramid import testing
 
 from dbas.helper.tests import verify_dictionary_of_view

@@ -49,9 +49,8 @@ class IssueHandlerTests(unittest.TestCase):
 
     def test_prepare_json_of_issue(self):
         uid = 1
-        lang = 'en'
         for_api = False
-        response = ih.prepare_json_of_issue(uid, 'http://test.url', lang, for_api, '')
+        response = ih.prepare_json_of_issue(uid, 'http://test.url', for_api, '')
         self.assertTrue(len(response) > 0)
 
     def test_get_number_of_arguments(self):
