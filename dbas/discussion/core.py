@@ -407,6 +407,10 @@ def finish(request_dict, for_api=False) -> dict:
 
     # get parameters
     arg_id = request_dict['matchdict'].get('arg_id')
+    if not arg_id:
+        logger('Core', 'discussion_finish', 'no argument', error=True)
+        raise HTTPNotFound()
+
     last_arg = DBDiscussionSession.query(Argument).get(arg_id)
     if not last_arg:
         logger('Core', 'discussion_finish', 'no argument', error=True)
