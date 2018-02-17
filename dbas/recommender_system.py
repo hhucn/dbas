@@ -131,9 +131,11 @@ def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, res
 
     if not attacks_array or len(attacks_array) == 0:
         end = 'end'
+        attack_uid = 0
         if no_new_attacks:
             end += '_attack'
-        return 0, end
+            attack_uid = None
+        return attack_uid, end
 
     else:
         attack_no = random.randrange(0, len(attacks_array))  # Todo fix random

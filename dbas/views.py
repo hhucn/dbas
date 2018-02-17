@@ -751,8 +751,26 @@ def discussion_support(request, for_api=False, api_data=None):
 
 
 # finish page
-@view_config(route_name='discussion_finish', renderer='templates/finish.pt', permission='everybody')
-def discussion_finish(request):
+@view_config(route_name='discussion_finish', renderer='templates/content.pt', permission='everybody')
+def discussion_finish(request, for_api=False, api_data=None):
+    """
+    View configuration for discussion step, where we present a small/daily summary on the end
+
+    :param request: request of the web server
+    :return:
+    """
+    logger('views', 'discussion_reaction', 'request.params: {}'.format(request.params))
+
+    prepared_discussion = __call_from_discussion_step(request, discussion.finish, for_api, api_data)
+    if not prepared_discussion:
+        raise HTTPNotFound()
+
+    return prepared_discussion
+
+
+# exit page
+@view_config(route_name='discussion_exit', renderer='templates/exit.pt', permission='everybody')
+def discussion_exit(request):
     """
     View configuration for discussion step, where we present a small/daily summary on the end
 
@@ -761,8 +779,8 @@ def discussion_finish(request):
     """
     match_dict = request.matchdict
     params = request.params
-    logger('views', 'discussion.finish', 'request.matchdict: {}'.format(match_dict))
-    logger('views', 'discussion.finish', 'request.params: {}'.format(params))
+    logger('views', 'discussion_exit', 'request.matchdict: {}'.format(match_dict))
+    logger('views', 'discussion_exit', 'request.params: {}'.format(params))
 
     unauthenticated = check_authentication(request)
     if unauthenticated:
@@ -776,7 +794,7 @@ def discussion_finish(request):
         'ui_locales': get_language_from_cookie(request)
     }
 
-    prepared_discussion = discussion.finish(request_dict)
+    prepared_discussion = discussion.exit(request_dict)
     prepared_discussion['layout'] = base_layout()
     prepared_discussion['language'] = str(get_language_from_cookie(request))
     prepared_discussion['show_summary'] = len(prepared_discussion['summary']) != 0

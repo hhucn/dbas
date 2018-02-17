@@ -267,7 +267,7 @@ en_lang = {
     _.doYouWantToEnterYourStatements: 'Do you want to enter your statement(s)?',
     _.dataNowLocked: 'You locked the data.',
     _.dataUnlocked: 'Data unlocked!',
-    _.dataAlreadyLockedByYou: 'You are already editing data. Please finish your work first!',
+    _.dataAlreadyLockedByYou: 'You are already editing data. Please exit your work first!',
     _.dataAlreadyLockedByOthers: 'Sorry, this data edited by other participants.',
     _.earlierYouArguedThat: 'Earlier you argued that',
     _.eachStatement: 'per Statement',

@@ -168,7 +168,7 @@ def reaction(request_dict, for_api=False) -> dict:
     :param for_api: boolean if requests came via the API
     :param api_data: dict if requests came via the API
     :rtype: dict
-    :return: prepared collection matchdictfor the discussion
+    :return: prepared collection matchdict for the discussion
     """
     logger('Core', 'discussion.reaction', 'main')
 
@@ -395,7 +395,45 @@ def jump(request_dict, for_api=False, api_data=None) -> dict:
     return prepared_discussion
 
 
-def finish(request_dict) -> dict:
+def finish(request_dict, for_api=False) -> dict:
+    logger('Core', 'discussion_finish', 'main')
+
+    nickname = request_dict['nickname']
+    issue = request_dict['issue']
+    ui_locales = request_dict['ui_locales']
+    slug = request_dict['slug']
+    application_url = request_dict['app_url']
+    history = request_dict['history']
+
+    # get parameters
+    arg_id = request_dict['matchdict'].get('arg_id')
+    last_arg = DBDiscussionSession.query(Argument).get(arg_id)
+    if not last_arg:
+        logger('Core', 'discussion_finish', 'no argument', error=True)
+        raise HTTPNotFound()
+
+    disc_ui_locales = get_discussion_language(request_dict['matchdict'],
+                                              request_dict['params'],
+                                              request_dict['session'],
+                                              issue)
+    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, disc_ui_locales, for_api, nickname)
+
+    _dh = DictionaryHelper(ui_locales, disc_ui_locales)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=application_url, slug=slug)
+    discussion_dict = _ddh.get_dict_for_argumentation(arg_id, last_arg.is_supportive, None, 'end_attack', history, nickname)
+    item_dict = ItemDictHelper.get_empty_dict()
+    extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request_dict['registry'], request_dict['app_url'],
+                                          request_dict['path'], for_api=for_api, nickname=nickname)
+    return {
+        'issues': issue_dict,
+        'discussion': discussion_dict,
+        'items': item_dict,
+        'extras': extras_dict,
+        'title': issue_dict['title']
+    }
+
+
+def exit(request_dict) -> dict:
     """
     Exit the discussion. Creates helper and returns a dictionary containing the summary of today.
 

@@ -18,7 +18,7 @@ from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_p
     rep_reason_first_justification, rep_reason_new_statement
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.url_manager import UrlManager, get_url_for_new_argument
+from dbas.url_manager import UrlManager
 from websocket.lib import send_request_for_info_popup_to_socketio
 
 
@@ -461,7 +461,7 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
         error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength), statement_min_length)
 
     elif len(new_argument_uids) == 1:
-        url = get_url_for_new_argument(new_argument_uids, history, discussion_lang, _um)
+        url = _um.get_url_for_new_argument(new_argument_uids, history, discussion_lang)
 
     else:
         pgroups = []

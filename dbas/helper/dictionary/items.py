@@ -57,6 +57,13 @@ class ItemDictHelper(object):
         if len(history) > 0:
             self.path = history + '-' + self.path
 
+    @staticmethod
+    def get_empty_dict() -> dict:
+        return {
+            'elements': [],
+            'extras': {'cropped_list': False}
+        }
+
     def get_array_for_start(self, nickname):
         """
         Prepares the dict with all items for the first step in discussion, where the user chooses a position.
@@ -478,13 +485,14 @@ class ItemDictHelper(object):
 
         rel_dict = get_relation_text_dict_with_substitution(self.lang, True, attack_type=attack, gender=gender)
         mode = 't' if is_supportive else 'f'
-        _um  = UrlManager(self.application_url, slug, self.for_api, history=self.path)
+        _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
         relations = ['undermine', 'support', 'undercut', 'rebut']
         for relation in relations:
             url = self.__get_url_based_on_relation(relation, attack, _um, mode, db_user_argument, db_sys_argument)
-
-            statements_array.append(self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id':relation}], relation, url))
+            d = {'title': rel_dict[relation + '_text'], 'id': relation}
+            tmp = self.__create_answer_dict(relation, [d], relation, url)
+            statements_array.append(tmp)
 
         # last item is the change attack button or step back, if we have bno other attack
         attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
@@ -544,6 +552,7 @@ class ItemDictHelper(object):
                                                             restriction_on_args=attacking_arg_uids,
                                                             restriction_on_attacks=[restriction_on_attacks],
                                                             history=history)
+
         if sys_attack == 'rebut' and attack == 'undercut':
             # case: system makes an undercut and the user supports this new attack can be an rebut, so another
             # undercut for the users argument therefore now the users opinion is the new undercut (e.g. rebut)
