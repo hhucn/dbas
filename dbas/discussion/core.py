@@ -8,7 +8,8 @@ from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.views import handle_justification_step
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_statement, \
-    check_belonging_of_argument, check_belonging_of_premisegroups, related_with_support, check_reaction
+    check_belonging_of_argument, check_belonging_of_premisegroups, related_with_support, check_reaction, \
+    check_belonging_of_arguments
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_arguments_as_query
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_argument_click
@@ -180,18 +181,8 @@ def reaction(request_dict, for_api=False) -> dict:
     arg_id_sys = request_dict['matchdict'].get('arg_id_sys')
     tmp_argument = DBDiscussionSession.query(Argument).get(arg_id_user)
 
-    valid_reaction = check_reaction(arg_id_user, arg_id_sys, attack)
-    if not tmp_argument or not valid_reaction \
-            or not valid_reaction and not check_belonging_of_argument(issue, arg_id_user) \
-            or not valid_reaction and not check_belonging_of_argument(issue, arg_id_sys):
+    if not check_reaction(arg_id_user, arg_id_sys, attack) or not check_belonging_of_arguments(issue, [arg_id_user, arg_id_sys]):
         logger('discussion_reaction', 'def', 'wrong belonging of arguments', error=True)
-        return None
-
-    supportive = tmp_argument.is_supportive
-
-    # sanity check
-    if not [c for c in ('undermine', 'rebut', 'undercut', 'support', 'overbid', 'end') if c in attack]:
-        logger('core', 'discussion.reaction', 'wrong value in attack', error=True)
         return None
 
     # set votes and reputation
@@ -201,6 +192,7 @@ def reaction(request_dict, for_api=False) -> dict:
     issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, for_api, nickname)
     disc_ui_locales = issue_dict['lang']
 
+    supportive = tmp_argument.is_supportive
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=application_url, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, issue, application_url, for_api, path=request_dict['path'], history=history)
