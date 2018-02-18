@@ -96,6 +96,19 @@ def check_belonging_of_argument(issue_uid, argument_uid):
     return db_argument is not None
 
 
+def check_belonging_of_arguments(issue_uid: int, argument_uids: list) -> bool:
+    """
+    Check whether current Argument.uid belongs to the given Issue
+
+    :param issue_uid: Issue.uid
+    :param argument_uid: Argument.uid
+    :return: Boolean
+    """
+    db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid.in_(argument_uids),
+                                                                  Argument.issue_uid == issue_uid)).all()
+    return len(db_argument) == len(argument_uids)
+
+
 def check_belonging_of_premisegroups(issue_uid, premisegroups):
     """
     Check whether all Groups in Premisgroups belongs to the given Issue
