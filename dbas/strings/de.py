@@ -541,6 +541,7 @@ de_lang = {
     _.priv_access_splits_queue: 'Zugriff auf die Teilungs-Queue',
     _.priv_access_merges_queue: 'Zugriff auf die Zusammenführungs-Queue',
     _.priv_history_queue: 'Zugriff auf alle früheren Entscheidungen',
+    _.premiseAndConclusionAreEqual: 'Begründung und Behauptung sind gleich.',
     _.publications: 'Veröffentlichungen',
     _.queueDelete: 'Löschen',
     _.queueOptimization: 'Optimieren',
