@@ -493,7 +493,7 @@ function Main () {
 		$('#' + addStatementContainerMainInputPosId).keyup(function () {
 			setTimeout(function () {
 				var escapedText = escapeHtml($('#' + addStatementContainerMainInputPosId).val());
-				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputPosId, fuzzy_start_statement, '');
+				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputPosId, fuzzy_start_statement, '', '');
 			}, 200);
 		});
 
@@ -501,7 +501,7 @@ function Main () {
 		$('#' + addStatementContainerMainInputResId).keyup(function () {
 			setTimeout(function () {
 				var escapedText = escapeHtml($('#' + addStatementContainerMainInputResId).val());
-				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputResId, fuzzy_start_premise, '');
+				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputResId, fuzzy_start_premise, '', '');
 			}, 200);
 		});
 
@@ -509,7 +509,7 @@ function Main () {
 		$('#' + addPremiseContainerMainInputId).keyup(function () {
 			setTimeout(function () {
 				var escapedText = escapeHtml($('#' + addPremiseContainerMainInputId).val());
-				ajaxHandler.fuzzySearch(escapedText, addPremiseContainerMainInputId, fuzzy_add_reason, '');
+				ajaxHandler.fuzzySearch(escapedText, addPremiseContainerMainInputId, fuzzy_add_reason, '', '');
 			}, 200);
 		});
 	};

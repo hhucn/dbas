@@ -120,9 +120,11 @@ def set_positions_premise(for_api: bool, data: Dict) -> dict:
                                                                                    application_url,
                                                                                    discussion_lang, history, port,
                                                                                    mailer)
-
     prepared_dict = {'error': error,
                      'statement_uids': statement_uids}
+
+    if not url:
+        return prepared_dict
 
     # add reputation
     add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_justification)
@@ -134,9 +136,6 @@ def set_positions_premise(for_api: bool, data: Dict) -> dict:
         send_request_for_info_popup_to_socketio(db_user.nickname, port, _t.get(_.youAreAbleToReviewNow),
                                                 '{}/review'.format(application_url))
         prepared_dict['url'] = '{}{}'.format(url, '#access-review')
-
-    if not url:
-        return prepared_dict
 
     prepared_dict['url'] = url
     return prepared_dict
@@ -386,11 +385,13 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     new_statement_uids = []  # all statement uids are stored in this list to create the link to a possible reference
     for premisegroup in premisegroups:  # premise groups is a list of lists
         new_argument, statement_uids = __create_argument_by_raw_input(application_url, default_locale_name, db_user,
-                                                                      premisegroup, db_conclusion, supportive, db_issue,
-                                                                      discussion_lang)
+                                                                      premisegroup, db_conclusion, supportive, db_issue)
         if not new_argument:  # break on error
-            error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength),
-                                         statement_min_length)
+            if statement_uids == [-1]:
+                error = '{}'.format(_tn.get(_.premiseAndConclusionAreEqual))
+            else:
+                error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength),
+                                             statement_min_length)
             return None, None, error
 
         new_argument_uids.append(new_argument.uid)
@@ -423,7 +424,7 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     return url, new_statement_uids, error
 
 
-def insert_new_premises_for_argument(application_url, default_locale_name, premisegroup, current_attack, arg_uid,
+def insert_new_premises_for_argument(application_url, default_locale_name, premisegroup: List[str], current_attack, arg_uid,
                                      db_issue: Issue, db_user: User):
     """
     Creates premises for a given argument
@@ -437,7 +438,7 @@ def insert_new_premises_for_argument(application_url, default_locale_name, premi
     :param db_user: User
     :return: Argument
     """
-    logger('StatementsHelper', 'insert_new_premises_for_argument', 'def')
+    logger('StatementsHelper', 'insert_new_premises_for_argument', 'def {}'.format(arg_uid))
 
     statements = []
     for premise in premisegroup:
@@ -462,6 +463,10 @@ def insert_new_premises_for_argument(application_url, default_locale_name, premi
     elif current_attack == 'rebut':
         new_argument, duplicate = set_new_rebut(new_pgroup.uid, current_argument, db_user, db_issue)
 
+    if not new_argument:
+        logger('StatementsHelper', 'insert_new_premises_for_argument', 'No statement or any premise = conclusion')
+        return Translator(db_issue.lang).get(_.premiseAndConclusionAreEqual)
+
     logger('StatementsHelper', 'insert_new_premises_for_argument', 'Returning argument ' + str(new_argument.uid))
     return new_argument
 
@@ -475,8 +480,8 @@ def set_statements_as_new_premisegroup(statements: List[Statement], db_user: Use
     :param db_issue: Issue
     :return: PremiseGroup.uid
     """
-    logger('StatementsHelper', 'set_statements_as_new_premisegroup', 'user: ' + str(user) +
-           ', statement: ' + str(statements) + ', issue: ' + str(db_issue.uid))
+    logger('StatementsHelper', 'set_statements_as_new_premisegroup', 'user: ' + str(db_user.uid) +
+           ', statement: ' + str([s.uid for s in statements]) + ', issue: ' + str(db_issue.uid))
     # check for duplicate
     all_groups = []
     for statement in statements:
@@ -518,7 +523,7 @@ def set_statements_as_new_premisegroup(statements: List[Statement], db_user: Use
 
 
 def __create_argument_by_raw_input(application_url, default_locale_name, db_user: User, premises_text: [str],
-                                   db_conclusion, is_supportive, db_issue: Issue, discussion_lang) \
+                                   db_conclusion, is_supportive, db_issue: Issue) \
         -> Tuple[Union[Argument, None], List[int]]:
     """
     Consumes the input to create a new argument
@@ -544,6 +549,13 @@ def __create_argument_by_raw_input(application_url, default_locale_name, db_user
         # second, set the new statements as premisegroup
         new_premisegroup = set_statements_as_new_premisegroup(new_statements, db_user, db_issue)
         logger('StatementsHelper', '__create_argument_by_raw_input', 'new pgroup ' + str(new_premisegroup.uid))
+
+        # sanity check whether any premise and the conclusion are the same
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=new_premisegroup.uid).all()
+        for premise in db_premises:
+            if premise.statement_uid is db_conclusion.uid:
+                logger('StatementsHelper', '__create_argument_by_uids', 'One premise and conclusion are the same', error=True)
+                return None, [-1]
 
         # third, insert the argument
         new_argument = __create_argument_by_uids(db_user, new_premisegroup.uid, db_conclusion.uid, None, is_supportive,

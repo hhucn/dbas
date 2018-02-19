@@ -13,6 +13,8 @@ function AjaxDiscussionHandler() {
 	 */
 	this.sendNewPremiseForArgument = function (arg_uid, relation, premisegroups) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$('#' + addPremiseErrorContainer).hide();
+		$('#' + addPremiseErrorMsg).text('');
 		$.ajax({
 			url: 'ajax_set_new_premises_for_argument',
 			method: 'POST',
@@ -27,7 +29,12 @@ function AjaxDiscussionHandler() {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSendNewPremisesForArgumentDone(data) {
-			window.location.href = data.url;
+			if (data.error.length > 0){
+				$('#' + addPremiseErrorContainer).show();
+				$('#' + addPremiseErrorMsg).text(data.error);
+			} else {
+				window.location.href = data.url;
+			}
 		}).fail(function ajaxSendNewPremisesForArgumentFail(data) {
 			$('#' + addPremiseErrorContainer).show();
 			$('#' + addPremiseErrorMsg).text(data.responseJSON.errors[0].description);
@@ -69,6 +76,8 @@ function AjaxDiscussionHandler() {
 	 */
 	this.sendNewStartPremise = function (premisegroups, conclusion_id, supportive) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+		$('#' + addPremiseErrorContainer).hide();
+		$('#' + addPremiseErrorMsg).text('');
 		$.ajax({
 			url: 'ajax_set_new_start_premise',
 			method: 'POST',
@@ -83,7 +92,12 @@ function AjaxDiscussionHandler() {
 				'X-CSRF-Token': csrf_token
 			}
 		}).done(function ajaxSendNewStartPremiseDone(data) {
-			window.location.href = data.url;
+			if (data.error.length > 0){
+				$('#' + addPremiseErrorContainer).show();
+				$('#' + addPremiseErrorMsg).text(data.error);
+			} else {
+				window.location.href = data.url;
+			}
 		}).fail(function ajaxSendNewStartPremiseFail(data) {
 			$('#' + addPremiseErrorContainer).show();
 			$('#' + addPremiseErrorMsg).text(data.responseJSON.errors[0].description);
@@ -298,7 +312,8 @@ function AjaxDiscussionHandler() {
 		}
 		var bubbleSpace = $('#' + discussionBubbleSpaceId);
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		if (len(statement_uid) === 0){
+		
+		if (statement_uid.length === 0){
 			statement_uid = 0;
 		}
 

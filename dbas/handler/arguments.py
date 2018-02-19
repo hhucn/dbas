@@ -50,8 +50,13 @@ def set_arguments_premises(for_api, data) -> dict:
                                                                                         application_url, mail)
     user.update_last_action(db_user)
 
-    prepared_dict = {'error': error,  # TODO will result in a key error in frontend, because we renamed it to "errors"
-                     'statement_uids': statement_uids}
+    prepared_dict = {
+        'error': error,
+        'statement_uids': statement_uids
+    }
+
+    if url == -1:
+        return prepared_dict
 
     # add reputation
     add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_new_argument)
@@ -61,9 +66,6 @@ def set_arguments_premises(for_api, data) -> dict:
     if broke_limit:
         url += '#access-review'
         prepared_dict['url'] = url
-
-    if url == -1:
-        return prepared_dict
 
     prepared_dict['url'] = url
 
@@ -175,7 +177,10 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
             b = _tn.get(_.minLength)
             c = str(statement_min_length)
             d = _tn.get(_.eachStatement)
-            error = '{} ({}: {} {})'.format(a, b, c, d)
+            if isinstance(new_argument, str):
+                error = new_argument
+            else:
+                error = '{} ({}: {} {})'.format(a, b, c, d)
             return -1, None, error
 
         new_argument_uids.append(new_argument.uid)
