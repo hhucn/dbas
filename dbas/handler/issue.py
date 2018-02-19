@@ -272,27 +272,27 @@ def get_issues_overiew(nickname, application_url) -> dict:
     }
 
 
-def set_discussions_properties(db_user: User, db_issue: Issue, value, property, translator) -> dict:
+def set_discussions_properties(db_user: User, db_issue: Issue, value, iproperty, translator) -> dict:
     """
 
     :param db_user: User
     :param db_issue: Issue
     :param value: The value which should be assigned to property
-    :param property: Property of Issue, e.g. is_disabled
+    :param iproperty: Property of Issue, e.g. is_disabled
     :param translator:
     :return:
     """
     logger('IssueHelper', 'set_discussions_properties',
-           'issue: {}, key: {}, checked: {}'.format(db_issue.slug, property, value))
+           'issue: {}, key: {}, checked: {}'.format(db_issue.slug, iproperty, value))
 
     if db_issue.author_uid != db_user.uid and not user.is_admin(db_user.nickname):
         return {'error': translator.get(_.noRights)}
 
-    if property == 'enable':
+    if iproperty == 'enable':
         db_issue.set_disable(not value)
-    elif property == 'public':
+    elif iproperty == 'public':
         db_issue.set_private(not value)
-    elif property == 'writable':
+    elif iproperty == 'writable':
         db_issue.set_read_only(not value)
     else:
         return {'error': translator.get(_.internalKeyError)}

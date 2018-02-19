@@ -301,7 +301,7 @@ class DictionaryHelper(object):
         else:
             endtext = _tn.get(_.discussionEndLinkTextLoggedIn if nickname else _.feelFreeToLogin)
             mid_text = _tn.get(_.discussionEnd) + ' ' + endtext
-            discussion_dict['bubbles'].append(create_speechbubble_dict(BubbleTypes.INFO, message=mid_text, id='end',
+            discussion_dict['bubbles'].append(create_speechbubble_dict(BubbleTypes.INFO, message=mid_text, uid='end',
                                                                        lang=self.system_lang, nickname=nickname))
 
     def __add_discussion_end_text_at_start(self, discussion_dict, extras_dict, nickname, gender, _tn):
@@ -324,7 +324,7 @@ class DictionaryHelper(object):
             user_text = _tn.get(_.firstPositionText)
         user_text += '<br>' + (_tn.get(_.pleaseAddYourSuggestion if nickname else _.feelFreeToLogin))
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(BubbleTypes.STATUS, id='end', message=user_text, lang=self.system_lang,
+            create_speechbubble_dict(BubbleTypes.STATUS, uid='end', message=user_text, lang=self.system_lang,
                                      nickname=nickname))
 
         is_read_only = DBDiscussionSession.query(Issue).filter_by(slug=extras_dict['slug']).first().is_read_only
@@ -357,7 +357,7 @@ class DictionaryHelper(object):
         extras_dict['show_display_style'] = False
         if is_read_only:
             mid_text = _tn.get(_.discussionEndAndReadOnly)
-            sdict = create_speechbubble_dict(BubbleTypes.INFO, id='end', message=mid_text, lang=self.system_lang,
+            sdict = create_speechbubble_dict(BubbleTypes.INFO, uid='end', message=mid_text, lang=self.system_lang,
                                              nickname=nickname)
             discussion_dict['bubbles'].append(sdict)
 
@@ -368,7 +368,7 @@ class DictionaryHelper(object):
                 mid_text = _tn.get(_.firstOneReasonM)
             else:
                 mid_text = _tn.get(_.firstOneReason)
-            sdict = create_speechbubble_dict(BubbleTypes.INFO, id='end', message=mid_text, lang=self.system_lang,
+            sdict = create_speechbubble_dict(BubbleTypes.INFO, uid='end', message=mid_text, lang=self.system_lang,
                                              nickname=nickname)
             discussion_dict['bubbles'].append(sdict)
         # else:
@@ -403,10 +403,10 @@ class DictionaryHelper(object):
             mid_text = _tn.get(_.discussionEnd) + ' ' + endtext
 
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(BubbleTypes.SYSTEM, id='end', message=sys_text, lang=self.system_lang,
+            create_speechbubble_dict(BubbleTypes.SYSTEM, uid='end', message=sys_text, lang=self.system_lang,
                                      nickname=nickname))
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(BubbleTypes.INFO, id='end', message=mid_text, lang=self.system_lang,
+            create_speechbubble_dict(BubbleTypes.INFO, uid='end', message=mid_text, lang=self.system_lang,
                                      nickname=nickname))
 
     def __add_discussion_end_text_at_justify_statement(self, discussion_dict, extras_dict, nickname, current_premise,
@@ -444,7 +444,7 @@ class DictionaryHelper(object):
             endtext = _tn.get(_.discussionEndLinkTextLoggedIn if gender else _.discussionEndLinkTextNotLoggedIn)
             mid_text += _tn.get(_.discussionEnd) + ' ' + endtext
 
-        discussion_dict['bubbles'].append(create_speechbubble_dict(BubbleTypes.INFO, id='end', message=mid_text,
+        discussion_dict['bubbles'].append(create_speechbubble_dict(BubbleTypes.INFO, uid='end', message=mid_text,
                                                                    lang=self.system_lang, nickname=nickname))
         extras_dict['close_premise_container'] = False
         extras_dict['show_display_style'] = False

@@ -362,11 +362,11 @@ def set_discussion_properties(request):
     logger('views', 'set_discussion_properties', 'request.params: {}'.format(request.json_body))
     _tn = Translator(get_language_from_cookie(request))
 
-    property = request.validated['property']
+    prop = request.validated['property']
     db_user = request.validated['user']
     issue = request.validated['issue']
     value = request.validated['value']
-    return set_discussions_properties(db_user, issue, property, value, _tn)
+    return set_discussions_properties(db_user, issue, prop, value, _tn)
 
 
 # #######################################

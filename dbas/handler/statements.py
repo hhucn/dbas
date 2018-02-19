@@ -146,7 +146,7 @@ def set_correction_of_statement(elements, db_user, translator) -> dict:
     Adds a proposal for a statements correction and returns info if the proposal could be set
 
     :param elements: List of dicts with text and uids for proposals of edits for new statements
-    :param user: User
+    :param db_user: User
     :param translator: Translator
     :rtype: dict
     :return: Dictionary with info and/or error
@@ -424,8 +424,8 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     return url, new_statement_uids, error
 
 
-def insert_new_premises_for_argument(application_url, default_locale_name, premisegroup: List[str], current_attack, arg_uid,
-                                     db_issue: Issue, db_user: User):
+def insert_new_premises_for_argument(application_url, default_locale_name, premisegroup: List[str], current_attack,
+                                     arg_uid, db_issue: Issue, db_user: User):
     """
     Creates premises for a given argument
 

@@ -727,7 +727,7 @@ def set_new_user(mailer, firstname, lastname, nickname, gender, email, password,
     }
 
 
-def set_new_oauth_user(firstname, lastname, nickname, email, gender, id, provider, _tn):
+def set_new_oauth_user(firstname, lastname, nickname, email, gender, uid, provider, _tn):
     """
     Let's create a new user
 
@@ -736,7 +736,7 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, id, provide
     :param nickname: String
     :param email: String
     :param gender: String
-    :param id: String
+    :param uid: String
     :param provider: String
     :param _tn: Translator
     :return: Boolean, msg
@@ -751,7 +751,7 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, id, provide
 
     # sanity check
     db_user = DBDiscussionSession.query(User).filter(User.oauth_provider == str(provider),
-                                                     User.oauth_provider_id == str(id)).first()
+                                                     User.oauth_provider_id == str(uid)).first()
     # login of oauth user
     if db_user:
         logger('User', 'set_new_oauth_user', 'User already exists, she will login')
@@ -772,7 +772,7 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, id, provide
         'gender': gender,
         'db_group_uid': db_group.uid
     }
-    success, info, db_new_user = __create_new_user(user, _tn.get_lang(), oauth_provider=provider, oauth_provider_id=id)
+    success, info, db_new_user = __create_new_user(user, _tn.get_lang(), oauth_provider=provider, oauth_provider_id=uid)
 
     if db_new_user:
         logger('User', 'set_new_oauth_user', 'set new user in db')

@@ -413,7 +413,7 @@ def get_bubble_from_reaction_step(main_page, step, db_user, lang, splitted_histo
         bubble_syst = create_speechbubble_dict(BubbleTypes.SYSTEM, message=sys_text, omit_url=True,
                                                nickname=db_user.nickname, lang=lang)
     else:
-        bubble_syst = create_speechbubble_dict(BubbleTypes.SYSTEM, id='question-bubble-' + str(additional_uid),
+        bubble_syst = create_speechbubble_dict(BubbleTypes.SYSTEM, uid='question-bubble-' + str(additional_uid),
                                                message=sys_text, omit_url=True, nickname=db_user.nickname, lang=lang)
     return [bubble_user, bubble_syst]
 

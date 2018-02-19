@@ -834,7 +834,7 @@ def pretty_print_options(message):
     return message
 
 
-def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, id='', url='', message='',
+def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, uid='', url='', message='',
                              omit_url=False, argument_uid=None, statement_uid=None, is_supportive=None,
                              nickname='anonymous', lang='en', is_users_opinion=False):
     """
@@ -843,7 +843,7 @@ def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, id
     :param bubble_type: BubbleTypes
     :param is_markable: Boolean
     :param is_author: Boolean
-    :param id: id of bubble
+    :param uid: id of bubble
     :param url: URL
     :param message: String
     :param omit_url: Boolean
@@ -856,7 +856,7 @@ def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, id
     :param is_users_opinion: Boolean
     :return: dict()
     """
-    if id is not 'now':
+    if uid is not 'now':
         message = pretty_print_options(message)
 
     # check for users opinion
@@ -882,7 +882,7 @@ def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, id
         'is_info': bubble_type is BubbleTypes.INFO,
         'is_markable': is_markable,
         'is_author': is_author,
-        'id': id if len(str(id)) > 0 else str(time.time()),
+        'uid': uid if len(str(uid)) > 0 else str(time.time()),
         'url': url if len(str(url)) > 0 else 'None',
         'message': message,
         'omit_url': omit_url,

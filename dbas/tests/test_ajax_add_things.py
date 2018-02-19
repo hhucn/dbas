@@ -21,8 +21,8 @@ class AjaxAddThingsTest(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def delete_last_argument_by_conclusion_uid(self, id):
-        db_new_arg = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=id).order_by(
+    def delete_last_argument_by_conclusion_uid(self, uid):
+        db_new_arg = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=uid).order_by(
             Argument.uid.desc()).first()
         # delete content of premisegroup
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_new_arg.premisesgroup_uid).all()

@@ -254,23 +254,23 @@ def get_strings_for_public_nickname(value, nickname):
     return return_array[:list_length]
 
 
-def __sort_array(list):
+def __sort_array(inlist):
     """
     Returns sorted array, based on the distance
 
-    :param list: Array
+    :param inlist: Array
     :return: Array
     """
     return_list = []
-    newlist = sorted(list, key=lambda k: k['distance'])
+    newlist = sorted(inlist, key=lambda k: k['distance'])
 
     if mechanism == 'SequenceMatcher':  # sort descending
         newlist = reversed(newlist)
 
     # add index
-    for index, dict in enumerate(newlist):
-        dict['index'] = index
-        return_list.append(dict)
+    for index, dic in enumerate(newlist):
+        dic['index'] = index
+        return_list.append(dic)
 
     return return_list
 
