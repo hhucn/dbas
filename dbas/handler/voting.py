@@ -13,6 +13,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, ClickedArgument, ClickedStatement, User, \
     SeenStatement, SeenArgument, MarkedArgument, MarkedStatement
 from dbas.input_validator import is_integer
+from dbas.lib import nick_of_anonymous_user
 from dbas.logger import logger
 
 
@@ -25,7 +26,7 @@ def add_click_for_argument(argument_uid, nickname):
     :return: Boolean
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
-    if not db_user or not is_integer(argument_uid):
+    if not db_user or not is_integer(argument_uid) or db_user.nickname == nick_of_anonymous_user:
         logger('VotingHelper', 'add_click_for_argument', 'User or argument does not exists', error=True)
         return False
 
@@ -144,7 +145,7 @@ def add_click_for_statement(statement_uid, nickname, supportive):
 
     db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
-    if not db_user or not db_statement:
+    if not db_user or not db_statement or db_user.nickname == nick_of_anonymous_user:
         return False
 
     __click_statement(db_statement, db_user, supportive)
@@ -153,7 +154,7 @@ def add_click_for_statement(statement_uid, nickname, supportive):
     return True
 
 
-def add_seen_statement(statement_uid, db_user):
+def add_seen_statement(statement_uid: int, db_user: User):
     """
     Adds the uid of the statement into the seen_by list, mapped with the given user uid
 
@@ -161,7 +162,7 @@ def add_seen_statement(statement_uid, db_user):
     :param statement_uid: uid of the statement
     :return: undefined
     """
-    if not is_integer(statement_uid) or not isinstance(db_user, User):
+    if not is_integer(statement_uid) or not isinstance(db_user, User) or db_user.nickname == nick_of_anonymous_user:
         return False
     logger('VotingHelper', 'add_seen_statement', 'statement ' + str(statement_uid) + ', for user ' + str(db_user.uid))
 
@@ -180,7 +181,7 @@ def add_seen_argument(argument_uid, db_user):
     :param argument_uid: uid of the argument
     :return: undefined
     """
-    if not is_integer(argument_uid) or not isinstance(db_user, User):
+    if not is_integer(argument_uid) or not isinstance(db_user, User) or db_user.nickname == nick_of_anonymous_user:
         return False
     logger('VotingHelper', 'add_seen_argument', 'argument ' + str(argument_uid) + ', for user ' + str(db_user.uid))
 

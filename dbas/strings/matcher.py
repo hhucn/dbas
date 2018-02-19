@@ -14,10 +14,9 @@ from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue
-from dbas.database.initializedb import nick_of_anonymous_user
-from dbas.lib import get_public_profile_picture
+from dbas.lib import get_public_profile_picture, nick_of_anonymous_user
 from dbas.query_wrapper import get_not_disabled_statement_as_query
-from dbas.url_manager import UrlManager
+from dbas.helper.url import UrlManager
 
 list_length = 5
 max_count_zeros = 5

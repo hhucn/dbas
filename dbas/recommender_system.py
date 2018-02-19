@@ -120,7 +120,7 @@ def get_attack_for_argument(argument_uid, restriction_on_attacks=None, restricti
     if is_current_arg_undercut and not redirected_from_jump:
         restriction_on_attacks.append(Attacks.UNDERCUT)
 
-    logger('RecommenderSystem', 'get_attack_for_argument',
+    logger('RS', 'get_attack_for_argument',
            'arg: {}, restricts: {}, {}, from_jump: {}'.format(argument_uid, restriction_on_attacks,
                                                               restriction_on_args, redirected_from_jump))
 
@@ -139,7 +139,7 @@ def get_attack_for_argument(argument_uid, restriction_on_attacks=None, restricti
         attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
         attack_uid = attacks_array[attack_no]['id']
 
-        logger('RecommenderSystem', 'get_attack_for_argument', 'main return {} by {}'.format(key, attack_uid))
+        logger('RS', 'get_attack_for_argument', 'main return {} by {}'.format(key, attack_uid))
 
         return attack_uid, attack_mapping[key]
 
@@ -152,7 +152,7 @@ def get_argument_by_conclusion(statement_uid, is_supportive):
     :param is_supportive: Boolean
     :return: Argument
     """
-    logger('RecommenderSystem', 'get_argument_by_conclusion', 'statement: {}, supportive: {}'.format(statement_uid, is_supportive))
+    logger('RS', 'get_argument_by_conclusion', 'statement: {}, supportive: {}'.format(statement_uid, is_supportive))
     db_arguments = get_arguments_by_conclusion(statement_uid, is_supportive)
 
     if len(db_arguments) == 0:
@@ -169,14 +169,14 @@ def get_arguments_by_conclusion(statement_uid, is_supportive):
     :param is_supportive: Boolean
     :return: [Argument]
     """
-    logger('RecommenderSystem', 'get_arguments_by_conclusion', 'statement: {}, supportive: {}'.format(statement_uid, is_supportive))
+    logger('RS', 'get_arguments_by_conclusion', 'statement: {}, supportive: {}'.format(statement_uid, is_supportive))
     db_arguments = get_not_disabled_arguments_as_query()
     db_arguments = db_arguments.filter(Argument.is_supportive == is_supportive,
                                        Argument.conclusion_uid == statement_uid).all()
     if not db_arguments:
         return []
 
-    logger('RecommenderSystem', 'get_argument_by_conclusion', 'found ' + str(len(db_arguments)) + ' arguments')
+    logger('RS', 'get_argument_by_conclusion', 'found ' + str(len(db_arguments)) + ' arguments')
     # TODO sort arguments and return a subset
 
     return db_arguments
@@ -201,7 +201,7 @@ def get_forbidden_attacks_based_on_history(history):
         try:
             forbidden_uids.append(int(uid))
         except ValueError:
-            logger('RecommenderSystem', 'get_forbidden_attacks_based_on_history', 'malicious attack in history {}'.format(uid))
+            logger('RS', 'get_forbidden_attacks_based_on_history', 'malicious attack in history {}'.format(uid))
     return forbidden_uids
 
 
@@ -221,7 +221,7 @@ def __get_attack_for_argument(argument_uid, restriction_on_attacks, restriction_
     complete_list_of_attacks = [attack for attack in Attacks]
     attacks = [attack for attack in Attacks]
 
-    logger('RecommenderSystem', '__get_attack_for_argument', 'attack_list: {}'.format(attacks))
+    logger('RS', '__get_attack_for_argument', 'attack_list: {}'.format(attacks))
     attack_list = complete_list_of_attacks if len(attacks) == 0 else attacks
     return_array, key, no_new_attacks = __get_attack_for_argument_by_random_in_range(argument_uid, attack_list,
                                                                                      complete_list_of_attacks,
@@ -327,7 +327,7 @@ def __get_best_argument(argument_list):
     :param argument_list: Argument[]
     :return: Argument
     """
-    logger('RecommenderSystem', '__get_best_argument', 'main')
+    logger('RS', '__get_best_argument', 'main')
     evaluations = []
     for argument in argument_list:
         evaluations.append(__evaluate_argument(argument.uid))
@@ -343,7 +343,7 @@ def __evaluate_argument(argument_uid):
     :param argument_uid: Argument.uid Argument.uid
     :return:
     """
-    logger('RecommenderSystem', '__evaluate_argument', 'argument {}'.format(argument_uid))
+    logger('RS', '__evaluate_argument', 'argument {}'.format(argument_uid))
 
     db_votes = DBDiscussionSession.query(ClickedArgument).filter_by(argument_uid=argument_uid)
     db_valid_votes = db_votes.filter(is_valid=True)

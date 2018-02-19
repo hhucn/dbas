@@ -21,7 +21,7 @@ from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_p
     rep_reason_first_justification, rep_reason_new_statement
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.url_manager import UrlManager
+from dbas.helper.url import UrlManager
 from websocket.lib import send_request_for_info_popup_to_socketio
 
 

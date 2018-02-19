@@ -10,9 +10,9 @@ import dbas.handler.email as email_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument, \
     sql_timestamp_pretty_print
-from dbas.database.initializedb import nick_of_anonymous_user, nick_of_admin
+from dbas.database.initializedb import nick_of_admin
 from dbas.handler import user
-from dbas.lib import escape_string, get_profile_picture
+from dbas.lib import escape_string, get_profile_picture, nick_of_anonymous_user
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_text_for_edit_text_message, get_text_for_add_text_message, \
     get_text_for_add_argument_message

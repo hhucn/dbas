@@ -1,6 +1,8 @@
 import unittest
 from datetime import date
 
+import transaction
+
 from dbas import lib
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Argument, Statement, Issue, TextVersion
@@ -158,19 +160,24 @@ class LibTests(unittest.TestCase):
         self.assertFalse(DBDiscussionSession.query(User).filter_by(nickname='Pascal').first().is_admin())
 
     def test_is_author_of_statement(self):
-        user = DBDiscussionSession.query(User).get(DBDiscussionSession.query(TextVersion).get(36).author_uid)
-        self.assertTrue(lib.is_author_of_statement(user.nickname, 36))
-        self.assertFalse(lib.is_author_of_statement(user.nickname, 2))
-        self.assertFalse(lib.is_author_of_statement(user.nickname[:3], 36))
-        self.assertFalse(lib.is_author_of_statement(user.nickname, 0))
-        self.assertFalse(lib.is_author_of_statement(user.nickname[:3], 0))
+        tv = DBDiscussionSession.query(TextVersion).get(35)
+        tv.author_uid = 2
+        DBDiscussionSession.add(tv)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        user36 = DBDiscussionSession.query(User).get(tv.author_uid)
+        self.assertTrue(lib.is_author_of_statement(user36, tv.statement_uid))
+        self.assertFalse(lib.is_author_of_statement(user36, 3))
 
     def test_is_author_of_argument(self):
-        user = DBDiscussionSession.query(User).get(DBDiscussionSession.query(Argument).get(36).author_uid)
-        self.assertTrue(lib.is_author_of_argument(user.nickname, 36))
-        self.assertFalse(lib.is_author_of_argument(user.nickname[:3], 34))
-        self.assertFalse(lib.is_author_of_argument(user.nickname, 0))
-        self.assertFalse(lib.is_author_of_argument(user.nickname[:3], 0))
+        arg = DBDiscussionSession.query(Argument).get(36)
+        arg.author_uid = 2
+        DBDiscussionSession.add(arg)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        user36 = DBDiscussionSession.query(User).get(arg.author_uid)
+        self.assertTrue(lib.is_author_of_argument(user36, 36))
+        self.assertFalse(lib.is_author_of_argument(user36, 2))
 
     def test_get_profile_picture(self):
         user = DBDiscussionSession.query(User).get(1)
@@ -260,7 +267,7 @@ class LibTests(unittest.TestCase):
             self.assertEqual(results[r['uid']], r['text'])
 
     def test_get_all_arguments_with_text_and_url_by_statement_id(self):
-        from dbas.url_manager import UrlManager
+        from dbas.helper.url import UrlManager
         um = UrlManager(application_url='', slug='slug', for_api=True)
 
         results = {
@@ -277,7 +284,7 @@ class LibTests(unittest.TestCase):
             self.assertEqual(results[r['uid']], r['text'])
 
     def test_get_all_arguments_with_text_and_url_by_statement_id_with_color(self):
-        from dbas.url_manager import UrlManager
+        from dbas.helper.url import UrlManager
         um = UrlManager(application_url='', slug='slug', for_api=True)
 
         results = {
@@ -294,7 +301,7 @@ class LibTests(unittest.TestCase):
             self.assertEqual(results[r['uid']], r['text'])
 
     def test_get_all_arguments_with_text_and_url_by_statement_id_with_color_and_jump(self):
-        from dbas.url_manager import UrlManager
+        from dbas.helper.url import UrlManager
         um = UrlManager(application_url='', slug='slug', for_api=True)
 
         results = {

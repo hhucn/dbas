@@ -15,7 +15,7 @@ from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_new_statement, rep_reason_first_new_argument
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.url_manager import UrlManager
+from dbas.helper.url import UrlManager
 
 
 def set_arguments_premises(for_api, data) -> dict:

@@ -11,7 +11,7 @@ import re
 import time
 from collections import defaultdict
 from datetime import datetime
-from enum import Enum
+from enum import Enum, auto
 from html import escape
 from urllib import parse
 
@@ -23,6 +23,8 @@ from dbas.database.discussion_model import Argument, Premise, Statement, TextVer
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+
+nick_of_anonymous_user = 'anonymous'
 
 fallback_lang = 'en'
 tag_type = 'span'
@@ -37,10 +39,10 @@ end_tag = '</{}>'.format(tag_type)
 
 
 class BubbleTypes(Enum):
-    USER = 1
-    SYSTEM = 2
-    STATUS = 3
-    INFO = 4
+    USER = auto()
+    SYSTEM = auto()
+    STATUS = auto()
+    INFO = auto()
 
 
 def get_global_url():
@@ -1004,17 +1006,18 @@ def is_argument_disabled_due_to_disabled_statements(argument):
     return False
 
 
-def is_author_of_statement(nickname, statement_uid):
+def is_author_of_statement(db_user: User, statement_uid: int) -> bool:
     """
     Is the user with given nickname author of the statement?
 
-    :param nickname: User.nickname
+    :param db_user: User
     :param statement_uid: Statement.uid
     :return: Boolean
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+    db_user = db_user if db_user and db_user.nickname != nick_of_anonymous_user else None
     if not db_user:
         return False
+
     db_textversion = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).order_by(
         TextVersion.uid.asc()).first()  # TODO #432
     if not db_textversion:
@@ -1022,15 +1025,15 @@ def is_author_of_statement(nickname, statement_uid):
     return db_textversion.author_uid == db_user.uid
 
 
-def is_author_of_argument(nickname, argument_uid):
+def is_author_of_argument(db_user: User, argument_uid: int) -> bool:
     """
     Is the user with given nickname author of the argument?
 
-    :param nickname: User.nickname
+    :param db_user: User
     :param argument_uid: Argument.uid
     :return: Boolean
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+    db_user = db_user if db_user and db_user.nickname != nick_of_anonymous_user else None
     if not db_user:
         return False
     db_argument = DBDiscussionSession.query(Argument).filter(Argument.uid == argument_uid,
@@ -1091,13 +1094,15 @@ def get_public_profile_picture(user, size=80):
 
 
 def __get_gravatar(user, additional_id, size):
-    url = get_global_url()
-    url = url[url.index('//') + 2:]
-    email = (user.email + additional_id).encode('utf-8') if user else ('unknown@' + url).encode('utf-8')
-
-    if str(user.email) == 'None' or user.email == 'None' or user.email is None:
-        email = (user.nickname + additional_id).encode('utf-8')
-
+    if user:
+        if str(user.email) == 'None':
+            email = (user.nickname + additional_id).encode('utf-8')
+        else:
+            email = (user.email + additional_id).encode('utf-8')
+    else:
+        url = get_global_url()
+        url = url[url.index('//') + 2:]
+        email = ('unknown@' + url).encode('utf-8')
     gravatar_url = 'https://secure.gravatar.com/avatar/{}?'.format(hashlib.md5(email.lower()).hexdigest())
     gravatar_url += parse.urlencode({'d': 'wavatar', 's': str(size)})
 

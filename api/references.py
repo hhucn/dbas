@@ -9,7 +9,7 @@ from api.extractor import extract_reference_information, extract_author_informat
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences, User, Issue, TextVersion
 from dbas.lib import resolve_issue_uid_to_slug, get_all_arguments_with_text_by_statement_id
-from dbas.url_manager import UrlManager
+from dbas.helper.url import UrlManager
 
 from .lib import escape_html, logger
 

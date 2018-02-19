@@ -6,6 +6,7 @@ from pyramid import testing
 import dbas.handler.issue as ih
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Language
+from dbas.lib import nick_of_anonymous_user
 from dbas.strings.translator import Translator
 
 
@@ -27,7 +28,9 @@ class IssueHandlerTests(unittest.TestCase):
     def test_prepare_json_of_issue(self):
         uid = 1
         for_api = False
-        response = ih.prepare_json_of_issue(uid, 'http://test.url', for_api, '')
+
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
+        response = ih.prepare_json_of_issue(uid, 'http://test.url', for_api, db_user)
         self.assertTrue(len(response) > 0)
 
     def test_get_number_of_arguments(self):

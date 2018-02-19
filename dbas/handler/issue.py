@@ -13,7 +13,6 @@ from slugify import slugify
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print, \
     ClickedStatement
-from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import get_short_url
@@ -21,7 +20,7 @@ from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_issues_as_query, get_visible_issues_for_user_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.url_manager import UrlManager
+from dbas.helper.url import UrlManager
 
 rep_limit_to_open_issues = 10
 
@@ -59,14 +58,14 @@ def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Lan
     return {'issue': get_issue_dict_for(db_issue, application_url, False, 0, db_lang.ui_locales)}
 
 
-def prepare_json_of_issue(uid, application_url, for_api, nickname):
+def prepare_json_of_issue(uid: int, application_url: str, for_api: bool, db_user: User) -> dict():
     """
     Prepares slug, info, argument count and the date of the issue as dict
 
     :param uid: Issue.uid
     :param application_url: application_url
     :param for_api: Boolean
-    :param nickname: Nickname of current user
+    :param db_user: User
     :return: Issue-dict()
     """
     logger('issueHelper', 'prepare_json_of_issue', 'main')
@@ -85,7 +84,6 @@ def prepare_json_of_issue(uid, application_url, for_api, nickname):
     date_ms = int(db_issue.date.format('X')) * 1000
     date = db_issue.date.format('DD.MM. HH:mm')
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
     db_issues = get_visible_issues_for_user_as_query(db_user.uid).filter(Issue.uid != uid).all()
     all_array = []
     for issue in db_issues:

@@ -6,13 +6,13 @@ Helper for D-BAS Views
 
 import dbas.handler.voting as voting_helper
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Issue
+from dbas.database.discussion_model import Issue
 from dbas.handler import user
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.input_validator import is_integer, check_belonging_of_argument, check_belonging_of_statement
-from dbas.lib import get_text_for_statement_uid
+from dbas.lib import get_text_for_statement_uid, nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for
 from dbas.review.helper.reputation import rep_reason_first_confrontation
@@ -179,8 +179,9 @@ def preparation_for_justify_statement(request_dict, for_api, statement_uid, supp
     registry = request_dict['registry']
     path = request_dict['path']
     issue = request_dict['issue']
+    db_user = request_dict['user']
 
-    logged_in = DBDiscussionSession.query(User).filter_by(nickname=nickname).first() is not None
+    logged_in = db_user and db_user.nickname != nick_of_anonymous_user
 
     disc_ui_locales = DBDiscussionSession.query(Issue).get(issue).lang
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=app_url, slug=slug)
@@ -189,10 +190,10 @@ def preparation_for_justify_statement(request_dict, for_api, statement_uid, supp
 
     voting_helper.add_click_for_statement(statement_uid, nickname, supportive)
 
-    item_dict = _idh.get_array_for_justify_statement(statement_uid, nickname, supportive, history)
+    item_dict = _idh.get_array_for_justify_statement(statement_uid, db_user, supportive, history)
     discussion_dict = _ddh.get_dict_for_justify_statement(statement_uid, app_url, slug, supportive,
-                                                          len(item_dict['elements']), nickname)
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, registry, app_url, path, nickname, for_api=for_api)
+                                                          len(item_dict['elements']), db_user)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, registry, app_url, path, db_user, for_api=for_api)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0 or len(item_dict['elements']) == 1 and logged_in:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify=True,
@@ -221,6 +222,7 @@ def preparation_for_dont_know_statement(request_dict, for_api, argument_uid, sup
     app_url = request_dict['app_url']
     registry = request_dict['registry']
     path = request_dict['path']
+    db_user = request_dict['user']
 
     disc_ui_locales = DBDiscussionSession.query(Issue).get(issue).lang
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=app_url, slug=slug)
@@ -228,9 +230,9 @@ def preparation_for_dont_know_statement(request_dict, for_api, argument_uid, sup
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
 
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid, app_url, nickname)
-    item_dict = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, nickname, discussion_dict['gender'])
+    item_dict = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, db_user, discussion_dict['gender'])
     extras_dict = _dh.prepare_extras_dict(slug, True, True, True, registry, app_url, path, for_api=for_api,
-                                          nickname=nickname)
+                                          db_user=db_user)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0:
         if int(argument_uid) == 0:
@@ -267,9 +269,8 @@ def preparation_for_justify_argument(request_dict, for_api, statement_or_arg_id,
     registry = request_dict['registry']
     path = request_dict['path']
     issue = request_dict['issue']
-
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    logged_in = db_user is not None
+    db_user = request_dict['user']
+    logged_in = db_user and db_user.nickname != nick_of_anonymous_user is not None
 
     disc_ui_locales = DBDiscussionSession.query(Issue).get(issue).lang
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=app_url, slug=slug)
@@ -278,13 +279,12 @@ def preparation_for_justify_argument(request_dict, for_api, statement_or_arg_id,
 
     # justifying argument
     # is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
-    item_dict = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in, nickname, history)
+    item_dict = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, logged_in, db_user, history)
     discussion_dict = _ddh.get_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
     extras_dict = _dh.prepare_extras_dict(slug, False, True, False, registry, app_url, path, for_api=for_api,
-                                          nickname=nickname)
+                                          db_user=db_user)
     # is the discussion at the end?
     if len(item_dict['elements']) == 0 or len(item_dict['elements']) == 1 and logged_in:
-
         _dh.add_discussion_end_text(discussion_dict, extras_dict, nickname, at_justify_argumentation=True)
 
     return item_dict, discussion_dict, extras_dict

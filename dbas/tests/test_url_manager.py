@@ -4,7 +4,7 @@ import unittest
 class UrlManagerTests(unittest.TestCase):
     @staticmethod
     def __get_target_class():
-        from dbas.url_manager import UrlManager
+        from dbas.helper.url import UrlManager
         return UrlManager
 
     def __make_one(self, *args, **kw):

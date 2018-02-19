@@ -20,7 +20,7 @@ from dbas.database.discussion_model import User, Argument, Statement, TextVersio
     MarkedStatement, Message, LastReviewerEdit, RevokedContentHistory, RevokedContent, RevokedDuplicate, \
     ReviewCanceled, RSS, OptimizationReviewLocks, History, News
 from dbas.handler.rss import create_news_rss, create_initial_issue_rss
-from dbas.lib import get_global_url
+from dbas.lib import get_global_url, nick_of_anonymous_user
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
 from dbas.handler.password import get_hashed_password
@@ -28,7 +28,7 @@ from dbas.handler.password import get_hashed_password
 first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin',
                'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
                'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
-nick_of_anonymous_user = 'anonymous'
+
 nick_of_admin = 'Tobias'
 
 

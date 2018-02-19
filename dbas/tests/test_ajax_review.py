@@ -8,8 +8,7 @@ from dbas.database.discussion_model import ReviewMerge, DBDiscussionSession, Rev
     PremiseGroupMerged, ArgumentsAddedByPremiseGroupSplit, LastReviewerDelete, LastReviewerDuplicate, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReviewCanceled, ReviewDelete, ReviewDuplicate, \
     ReviewEdit, ReviewEditValue, ReviewOptimization, RevokedContentHistory, Statement
-from dbas.database.initializedb import nick_of_anonymous_user
-from dbas.lib import get_text_for_premisesgroup_uid, get_text_for_argument_uid
+from dbas.lib import get_text_for_premisesgroup_uid, get_text_for_argument_uid, nick_of_anonymous_user
 
 
 class AjaxReviewTest(unittest.TestCase):
