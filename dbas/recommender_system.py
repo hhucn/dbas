@@ -7,7 +7,6 @@ TODO
 import random
 
 from enum import Enum, auto
-from sqlalchemy import and_
 from dbas.helper.relation import get_undermines_for_argument_uid, get_rebuts_for_argument_uid, \
     get_undercuts_for_argument_uid
 from dbas.database import DBDiscussionSession
@@ -88,13 +87,12 @@ def __select_random(some_list):
     # return [some_list[i] for i in sorted(random.sample(range(len(some_list)), max_count))]
 
 
-def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, restriction_on_args=None,
+def get_attack_for_argument(argument_uid, restriction_on_attacks=None, restriction_on_args=None,
                             last_attack=None, history=None, redirected_from_jump=False):
     """
     Selects an attack out of the web of reasons.
 
     :param argument_uid: Argument.uid
-    :param lang: ui_locales
     :param restriction_on_attacks: Array of Attacks or None
     :param restriction_on_args: Argument.uid
     :param last_attack: String
@@ -126,14 +124,16 @@ def get_attack_for_argument(argument_uid, lang, restriction_on_attacks=None, res
            'arg: {}, restricts: {}, {}, from_jump: {}'.format(argument_uid, restriction_on_attacks,
                                                               restriction_on_args, redirected_from_jump))
 
-    attacks_array, key, no_new_attacks = __get_attack_for_argument(argument_uid, lang, restriction_on_attacks,
+    attacks_array, key, no_new_attacks = __get_attack_for_argument(argument_uid, restriction_on_attacks,
                                                                    restriction_on_args, last_attack, history)
 
     if not attacks_array or len(attacks_array) == 0:
         end = 'end'
+        attack_uid = 0
         if no_new_attacks:
             end += '_attack'
-        return 0, end
+            attack_uid = None
+        return attack_uid, end
 
     else:
         attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
@@ -171,8 +171,8 @@ def get_arguments_by_conclusion(statement_uid, is_supportive):
     """
     logger('RecommenderSystem', 'get_arguments_by_conclusion', 'statement: {}, supportive: {}'.format(statement_uid, is_supportive))
     db_arguments = get_not_disabled_arguments_as_query()
-    db_arguments = db_arguments.filter(and_(Argument.is_supportive == is_supportive,
-                                            Argument.conclusion_uid == statement_uid)).all()
+    db_arguments = db_arguments.filter(Argument.is_supportive == is_supportive,
+                                       Argument.conclusion_uid == statement_uid).all()
     if not db_arguments:
         return []
 
@@ -205,13 +205,13 @@ def get_forbidden_attacks_based_on_history(history):
     return forbidden_uids
 
 
-def __get_attack_for_argument(argument_uid, lang, restriction_on_attacks, restriction_on_args, last_attack, history):
+def __get_attack_for_argument(argument_uid, restriction_on_attacks, restriction_on_args, last_attack, history):
     """
     Returns a dictionary with attacks. The attack itself is random out of the set of attacks, which were not done yet.
     Additionally returns id's of premises groups with [key + str(index) + 'id']
 
     :param argument_uid: Argument.uid
-    :param lang: ui_locales
+
     :param restriction_on_attacks: String
     :param restriction_on_args: Argument.uid
     :param last_attack: String
@@ -225,7 +225,7 @@ def __get_attack_for_argument(argument_uid, lang, restriction_on_attacks, restri
     attack_list = complete_list_of_attacks if len(attacks) == 0 else attacks
     return_array, key, no_new_attacks = __get_attack_for_argument_by_random_in_range(argument_uid, attack_list,
                                                                                      complete_list_of_attacks,
-                                                                                     lang, restriction_on_attacks,
+                                                                                     restriction_on_attacks,
                                                                                      restriction_on_args,
                                                                                      last_attack, history)
 
@@ -233,7 +233,7 @@ def __get_attack_for_argument(argument_uid, lang, restriction_on_attacks, restri
     if not return_array and len(attacks) > 0:
         return_array, key, no_new_attacks = __get_attack_for_argument_by_random_in_range(argument_uid, [],
                                                                                          complete_list_of_attacks,
-                                                                                         lang, restriction_on_attacks,
+                                                                                         restriction_on_attacks,
                                                                                          restriction_on_args,
                                                                                          last_attack,
                                                                                          history)
@@ -241,7 +241,7 @@ def __get_attack_for_argument(argument_uid, lang, restriction_on_attacks, restri
     return return_array, key, no_new_attacks
 
 
-def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list_of_all_attacks, lang,
+def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list_of_all_attacks,
                                                  restriction_on_attacks, restriction_on_args, last_attack,
                                                  history):
     """
@@ -249,7 +249,6 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
     :param argument_uid: Argument.uid
     :param attack_list:
     :param list_of_all_attacks:
-    :param lang: ui_locales
     :param restriction_on_attacks: String
     :param restriction_on_args: Argument.uid
     :param last_attack: String
@@ -294,7 +293,7 @@ def __get_attack_for_argument_by_random_in_range(argument_uid, attack_list, list
     if not attack_found and len(left_attacks) > 0:
         return_array, key, is_attack_in_history = __get_attack_for_argument_by_random_in_range(argument_uid,
                                                                                                left_attacks,
-                                                                                               left_attacks, lang,
+                                                                                               left_attacks,
                                                                                                restriction_on_attacks,
                                                                                                restriction_on_args,
                                                                                                last_attack, history)

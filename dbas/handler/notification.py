@@ -5,7 +5,6 @@ Provides functions for te internal messaging system
 """
 
 import transaction
-from sqlalchemy import and_
 
 import dbas.handler.email as email_helper
 from dbas.database import DBDiscussionSession
@@ -300,11 +299,11 @@ def send_notification(from_user, to_user, topic, content, mainpage, port):
         send_request_for_info_popup_to_socketio(to_user.nickname, port, _t_user.get(_.newNotification),
                                                 mainpage + '/notifications', increase_counter=True)
 
-    db_inserted_notification = DBDiscussionSession.query(Message).filter(and_(Message.from_author_uid == from_user.uid,
-                                                                              Message.to_author_uid == to_user.uid,
-                                                                              Message.topic == topic,
-                                                                              Message.content == content,
-                                                                              Message.is_inbox == True)).order_by(
+    db_inserted_notification = DBDiscussionSession.query(Message).filter(Message.from_author_uid == from_user.uid,
+                                                                         Message.to_author_uid == to_user.uid,
+                                                                         Message.topic == topic,
+                                                                         Message.content == content,
+                                                                         Message.is_inbox == True).order_by(
         Message.uid.desc()).first()
 
     return db_inserted_notification
@@ -317,9 +316,9 @@ def count_of_new_notifications(db_user):
     :param db_user: User
     :return: integer
     """
-    return len(DBDiscussionSession.query(Message).filter(and_(Message.to_author_uid == db_user.uid,
-                                                              Message.read == False,
-                                                              Message.is_inbox == True)).all())
+    return len(DBDiscussionSession.query(Message).filter(Message.to_author_uid == db_user.uid,
+                                                         Message.read == False,
+                                                         Message.is_inbox == True).all())
 
 
 def get_box_for(db_user, lang, main_page, is_inbox):
@@ -333,12 +332,12 @@ def get_box_for(db_user, lang, main_page, is_inbox):
     :return: [Notification]
     """
     if is_inbox:
-        db_messages = DBDiscussionSession.query(Message).filter(and_(Message.to_author_uid == db_user.uid,
-                                                                     Message.is_inbox == is_inbox)).order_by(
+        db_messages = DBDiscussionSession.query(Message).filter(Message.to_author_uid == db_user.uid,
+                                                                Message.is_inbox == is_inbox).order_by(
             Message.uid.desc()).all()
     else:
-        db_messages = DBDiscussionSession.query(Message).filter(and_(Message.from_author_uid == db_user.uid,
-                                                                     Message.is_inbox == is_inbox)).order_by(
+        db_messages = DBDiscussionSession.query(Message).filter(Message.from_author_uid == db_user.uid,
+                                                                Message.is_inbox == is_inbox).order_by(
             Message.uid.desc()).all()
 
     message_array = []
@@ -380,9 +379,9 @@ def read_notifications(uids_list, db_user) -> dict:
     user.update_last_action(db_user)
 
     for uid in uids_list:
-        DBDiscussionSession.query(Message).filter(and_(Message.uid == uid,
-                                                       Message.to_author_uid == db_user.uid,
-                                                       Message.is_inbox == True)).first().set_read(True)
+        DBDiscussionSession.query(Message).filter(Message.uid == uid,
+                                                  Message.to_author_uid == db_user.uid,
+                                                  Message.is_inbox == True).first().set_read(True)
     transaction.commit()
     prepared_dict['unread_messages'] = count_of_new_notifications(db_user)
     prepared_dict['error'] = ''
@@ -407,13 +406,13 @@ def delete_notifications(uids_list, db_user, ui_locales, application_url) -> dic
 
     for uid in uids_list:
         # inbox
-        DBDiscussionSession.query(Message).filter(and_(Message.uid == uid,
-                                                       Message.to_author_uid == db_user.uid,
-                                                       Message.is_inbox == True)).delete()
+        DBDiscussionSession.query(Message).filter(Message.uid == uid,
+                                                  Message.to_author_uid == db_user.uid,
+                                                  Message.is_inbox == True).delete()
         # send
-        DBDiscussionSession.query(Message).filter(and_(Message.uid == uid,
-                                                       Message.from_author_uid == db_user.uid,
-                                                       Message.is_inbox == False)).delete()
+        DBDiscussionSession.query(Message).filter(Message.uid == uid,
+                                                  Message.from_author_uid == db_user.uid,
+                                                  Message.is_inbox == False).delete()
     transaction.commit()
     prepared_dict = dict()
     prepared_dict['unread_messages'] = count_of_new_notifications(db_user)

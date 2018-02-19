@@ -6,7 +6,6 @@ Provides helping function for handling reputation.
 
 import arrow
 import transaction
-from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason
@@ -143,8 +142,8 @@ def add_reputation_for(user, reason):
     # special case:
     if '_first_' in reason:
         db_already_farmed = DBDiscussionSession.query(ReputationHistory).filter(
-            and_(ReputationHistory.reputation_uid == db_reason.uid,
-                 ReputationHistory.reputator_uid == db_user.uid)).first()
+            ReputationHistory.reputation_uid == db_reason.uid,
+            ReputationHistory.reputator_uid == db_user.uid).first()
         if db_already_farmed:
             logger('ReputationPointHelper', 'add_reputation_for', 'karma already farmed')
             return False, False

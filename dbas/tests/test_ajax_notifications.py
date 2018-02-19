@@ -2,7 +2,6 @@ import unittest
 
 import transaction
 from pyramid import testing
-from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Message
@@ -33,19 +32,19 @@ class AjaxNotificationTest(unittest.TestCase):
                                         read=True))
         DBDiscussionSession.flush()
         transaction.commit()
-        self.new_inbox_uid = DBDiscussionSession.query(Message).filter(and_(
+        self.new_inbox_uid = DBDiscussionSession.query(Message).filter(
             Message.from_author_uid == 1,
             Message.to_author_uid == self.test_author_uid,
             Message.topic == 'Hey you',
-            Message.content == 'wanne buy some galsses?')).first().uid
-        self.new_send_uid = DBDiscussionSession.query(Message).filter(and_(
+            Message.content == 'wanne buy some galsses?').first().uid
+        self.new_send_uid = DBDiscussionSession.query(Message).filter(
             Message.from_author_uid == self.test_author_uid,
             Message.to_author_uid == 1,
             Message.topic == 'Hey you',
-            Message.content == 'wanne buy some galsses?')).first().uid
+            Message.content == 'wanne buy some galsses?').first().uid
 
     def delete_messages(self):
-        DBDiscussionSession.query(Message).filter(and_(Message.topic == 'Hey you', Message.content == 'wanne buy some galsses?')).delete()
+        DBDiscussionSession.query(Message).filter(Message.topic == 'Hey you', Message.content == 'wanne buy some galsses?').delete()
         transaction.commit()
 
     def test_notification_read(self):
@@ -78,20 +77,20 @@ class AjaxNotificationTest(unittest.TestCase):
     def test_send_notification(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import send_some_notification as ajax
-        db_len1 = len(DBDiscussionSession.query(Message).filter(and_(Message.topic == 'Some text for a message',
-                                                                     Message.content == 'Some text for a message')).all())
+        db_len1 = len(DBDiscussionSession.query(Message).filter(Message.topic == 'Some text for a message',
+                                                                Message.content == 'Some text for a message').all())
         request = testing.DummyRequest(json_body={
             'recipient': 'Christian',
             'title': 'Some text for a message',
             'text': 'Some text for a message',
         })
         response = ajax(request)
-        db_len2 = len(DBDiscussionSession.query(Message).filter(and_(Message.topic == 'Some text for a message',
-                                                                     Message.content == 'Some text for a message')).all())
+        db_len2 = len(DBDiscussionSession.query(Message).filter(Message.topic == 'Some text for a message',
+                                                                Message.content == 'Some text for a message').all())
         self.assertIsNotNone(response)
         self.assertTrue(db_len1 != db_len2)
-        DBDiscussionSession.query(Message).filter(and_(Message.topic == 'Some text for a message',
-                                                       Message.content == 'Some text for a message')).delete()
+        DBDiscussionSession.query(Message).filter(Message.topic == 'Some text for a message',
+                                                  Message.content == 'Some text for a message').delete()
         transaction.commit()
 
     def test_notification_read_failure1(self):

@@ -7,7 +7,6 @@ Methods for validating input params given via url or ajax
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Statement, Premise
 from .logger import logger
-from sqlalchemy import and_
 
 
 def is_integer(variable, ignore_empty_case=False):
@@ -78,8 +77,8 @@ def check_belonging_of_statement(issue_uid, statement_uid):
     :param statement_uid: Statement.uid
     :return:
     """
-    db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == statement_uid,
-                                                                    Statement.issue_uid == issue_uid)).first()
+    db_statement = DBDiscussionSession.query(Statement).filter(Statement.uid == statement_uid,
+                                                               Statement.issue_uid == issue_uid).first()
     return db_statement is not None
 
 
@@ -91,9 +90,22 @@ def check_belonging_of_argument(issue_uid, argument_uid):
     :param argument_uid: Argument.uid
     :return: Boolean
     """
-    db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid == argument_uid,
-                                                                  Argument.issue_uid == issue_uid)).first()
+    db_argument = DBDiscussionSession.query(Argument).filter(Argument.uid == argument_uid,
+                                                             Argument.issue_uid == issue_uid).first()
     return db_argument is not None
+
+
+def check_belonging_of_arguments(issue_uid: int, argument_uids: list) -> bool:
+    """
+    Check whether current Argument.uid belongs to the given Issue
+
+    :param issue_uid: Issue.uid
+    :param argument_uid: Argument.uid
+    :return: Boolean
+    """
+    db_argument = DBDiscussionSession.query(Argument).filter(Argument.uid.in_(argument_uids),
+                                                             Argument.issue_uid == issue_uid).all()
+    return len(db_argument) == len(argument_uids)
 
 
 def check_belonging_of_premisegroups(issue_uid, premisegroups):
@@ -153,8 +165,8 @@ def related_with_undercut(attacked_arg_uid, attacking_arg_uid):
     :param attacking_arg_uid: Argument.uid
     :return: Boolean
     """
-    db_attacking_arg = DBDiscussionSession.query(Argument).filter(and_(Argument.uid == attacking_arg_uid,
-                                                                       Argument.argument_uid == attacked_arg_uid)).first()
+    db_attacking_arg = DBDiscussionSession.query(Argument).filter(Argument.uid == attacking_arg_uid,
+                                                                  Argument.argument_uid == attacked_arg_uid).first()
     return db_attacking_arg is not None
 
 

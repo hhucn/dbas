@@ -15,7 +15,7 @@ from enum import Enum
 from html import escape
 from urllib import parse
 
-from sqlalchemy import and_, func
+from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, Statement, TextVersion, Issue, User, Settings, \
@@ -827,7 +827,7 @@ def pretty_print_options(message):
         if message[pos - 1:pos] not in ['.', '?', '!']:
             message = message[0:pos] + '.' + message[pos:]
     elif not message.endswith(tuple(['.', '?', '!'])) and id is not 'now':
-            message += '.'
+        message += '.'
 
     return message
 
@@ -863,13 +863,13 @@ def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, id
         db_marked = None
         if argument_uid is not None and db_user is not None:
             db_marked = DBDiscussionSession.query(MarkedArgument).filter(
-                and_(MarkedArgument.argument_uid == argument_uid,
-                     MarkedArgument.author_uid == db_user.uid)).first()
+                MarkedArgument.argument_uid == argument_uid,
+                MarkedArgument.author_uid == db_user.uid).first()
 
         if statement_uid is not None and db_user is not None:
             db_marked = DBDiscussionSession.query(MarkedStatement).filter(
-                and_(MarkedStatement.statement_uid == statement_uid,
-                     MarkedStatement.author_uid == db_user.uid)).first()
+                MarkedStatement.statement_uid == statement_uid,
+                MarkedStatement.author_uid == db_user.uid).first()
 
         is_users_opinion = db_marked is not None
 
@@ -949,23 +949,24 @@ def __get_clicks_and_marks(argument_uid, statement_uid, is_supportive, db_user):
     db_marks = None
     if argument_uid:
         db_clicks = DBDiscussionSession.query(ClickedArgument). \
-            filter(and_(ClickedArgument.argument_uid == argument_uid,
-                        ClickedArgument.is_up_vote == is_supportive,
-                        ClickedArgument.is_valid,
-                        ClickedArgument.author_uid != db_user.uid)).all()
+            filter(ClickedArgument.argument_uid == argument_uid,
+                   ClickedArgument.is_up_vote == is_supportive,
+                   ClickedArgument.is_valid,
+                   ClickedArgument.author_uid != db_user.uid).all()
         db_marks = DBDiscussionSession.query(MarkedArgument). \
             filter(MarkedArgument.argument_uid == argument_uid,
                    MarkedArgument.author_uid != db_user.uid).all()
 
     elif statement_uid:
         db_clicks = DBDiscussionSession.query(ClickedStatement). \
-            filter(and_(ClickedStatement.statement_uid == statement_uid,
-                        ClickedStatement.is_up_vote == is_supportive,
-                        ClickedStatement.is_valid,
-                        ClickedStatement.author_uid != db_user.uid)).all()
+            filter(ClickedStatement.statement_uid == statement_uid,
+                   ClickedStatement.is_up_vote == is_supportive,
+                   ClickedStatement.is_valid,
+                   ClickedStatement.author_uid != db_user.uid).all()
         db_marks = DBDiscussionSession.query(MarkedStatement). \
             filter(MarkedStatement.statement_uid == statement_uid,
                    MarkedStatement.author_uid != db_user.uid).all()
+
     return db_clicks, db_marks
 
 
@@ -1032,8 +1033,8 @@ def is_author_of_argument(nickname, argument_uid):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     if not db_user:
         return False
-    db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid == argument_uid,
-                                                                  Argument.author_uid == db_user.uid)).first()
+    db_argument = DBDiscussionSession.query(Argument).filter(Argument.uid == argument_uid,
+                                                             Argument.author_uid == db_user.uid).first()
     return True if db_argument else False
 
 

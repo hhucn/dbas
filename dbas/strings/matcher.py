@@ -10,7 +10,7 @@ from itertools import islice
 
 from Levenshtein import distance
 from pyramid.response import Response
-from sqlalchemy import and_, func
+from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue
@@ -107,8 +107,8 @@ def get_strings_for_start(value, issue, is_startpoint):
     :param is_startpoint: boolean
     :return: dict()
     """
-    db_statements = get_not_disabled_statement_as_query().filter(and_(Statement.is_startpoint == is_startpoint,
-                                                                      Statement.issue_uid == issue)).all()
+    db_statements = get_not_disabled_statement_as_query().filter(Statement.is_startpoint == is_startpoint,
+                                                                 Statement.issue_uid == issue).all()
     return_array = []
     for stat in db_statements:
         db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(TextVersion.uid.asc()).first()

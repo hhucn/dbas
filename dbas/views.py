@@ -113,7 +113,6 @@ def prepare_request_dict(request, nickname, for_api=False):
         slug = DBDiscussionSession.query(Issue).get(issue).slug
 
     history = history_handler.handle_history(request, nickname, slug, issue)
-    disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
     set_language_for_visit(request)
 
     request_dict = {
@@ -128,7 +127,6 @@ def prepare_request_dict(request, nickname, for_api=False):
         'slug': slug,
         'history': history,
         'ui_locales': ui_locales,
-        'disc_ui_locales': disc_ui_locales,
         'last_topic': last_topic,
         'port': get_port(request)
     }
@@ -178,7 +176,8 @@ def main_page(request):
     :param request: current request of the server
     :return: HTTP 200 with several information
     """
-    logger('main_page', 'def', 'main: {}'.format(request.params))
+    logger('main_page', 'def', 'request.matchdict: {}'.format(request.matchdict))
+
     set_language_for_visit(request)
     session_expired = 'session_expired' in request.params and request.params['session_expired'] == 'true'
     ui_locales = get_language_from_cookie(request)
@@ -276,9 +275,7 @@ def main_user(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     match_dict = request.matchdict
-    params = request.params
     logger('main_user', 'def', 'request.matchdict: {}'.format(match_dict))
-    logger('main_user', 'def', 'main: {}'.format(params))
 
     uid = match_dict.get('uid', 0)
     logger('main_user', 'def', 'uid: {}'.format(uid))
@@ -446,6 +443,7 @@ def notfound(request):
     logger('notfound', 'def', 'main in {}'.format(request.method) + '-request' +
            ', path: ' + request.path +
            ', view name: ' + request.view_name +
+           ', matchdict: {}'.format(request.matchdict) +
            ', params: {}'.format(request.params))
     path = request.path
     if path.startswith('/404/'):
@@ -484,7 +482,6 @@ def discussion_init(request, for_api=False, api_data=None):
     :return: dictionary
     """
     logger('Views', 'discussion_init', 'request.matchdict: {}'.format(request.matchdict))
-    logger('Views', 'discussion_init', 'main: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.init, for_api, api_data)
     if not prepared_discussion:
@@ -511,7 +508,6 @@ def discussion_attitude(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/attitude/{statement_id}'
     logger('Views', 'discussion_attitude', 'request.matchdict: {}'.format(request.matchdict))
-    logger('Views', 'discussion_attitude', 'main: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.attitude, for_api, api_data)
     if not prepared_discussion:
@@ -533,7 +529,6 @@ def discussion_justify(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation'
     logger('views', 'discussion_justify', 'request.matchdict: {}'.format(request.matchdict))
-    logger('views', 'discussion_justify', 'main: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.justify, for_api, api_data)
     if not prepared_discussion:
@@ -555,7 +550,6 @@ def discussion_reaction(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys'
     logger('views', 'discussion_reaction', 'request.matchdict: {}'.format(request.matchdict))
-    logger('views', 'discussion_reaction', 'main: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.reaction, for_api, api_data)
     if not prepared_discussion:
@@ -576,7 +570,6 @@ def discussion_support(request, for_api=False, api_data=None):
     :return: dictionary
     """
     logger('views', 'discussion_support', 'request.matchdict: {}'.format(request.matchdict))
-    logger('views', 'discussion_support', 'main: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.support, for_api, api_data)
     if not prepared_discussion:
@@ -586,9 +579,27 @@ def discussion_support(request, for_api=False, api_data=None):
 
 
 # finish page
-@view_config(route_name='discussion_finish', renderer='templates/finish.pt', permission='everybody')
+@view_config(route_name='discussion_finish', renderer='templates/content.pt', permission='everybody')
 @validate(check_authentication)
-def discussion_finish(request):
+def discussion_finish(request, for_api=False, api_data=None):
+    """
+    View configuration for discussion step, where we present a small/daily summary on the end
+
+    :param request: request of the web server
+    :return:
+    """
+    logger('views', 'discussion_finish', 'request.matchdict: {}'.format(request.matchdict))
+
+    prepared_discussion = __call_from_discussion_step(request, discussion.finish, for_api, api_data)
+    if not prepared_discussion:
+        raise HTTPNotFound()
+
+    return prepared_discussion
+
+
+# exit page
+@view_config(route_name='discussion_exit', renderer='templates/exit.pt', permission='everybody')
+def discussion_exit(request):
     """
     View configuration for discussion step, where we present a small/daily summary on the end
 
@@ -596,9 +607,11 @@ def discussion_finish(request):
     :return:
     """
     match_dict = request.matchdict
-    params = request.params
-    logger('views', 'discussion.finish', 'request.matchdict: {}'.format(match_dict))
-    logger('views', 'discussion.finish', 'main: {}'.format(params))
+    logger('views', 'discussion_exit', 'request.matchdict: {}'.format(match_dict))
+
+    unauthenticated = check_authentication(request)
+    if unauthenticated:
+        return unauthenticated
 
     request_dict = {
         'registry': request.registry,
@@ -608,7 +621,7 @@ def discussion_finish(request):
         'ui_locales': get_language_from_cookie(request)
     }
 
-    prepared_discussion = discussion.finish(request_dict)
+    prepared_discussion = discussion.dexit(request_dict)
     prepared_discussion['layout'] = base_layout()
     prepared_discussion['language'] = str(get_language_from_cookie(request))
     prepared_discussion['show_summary'] = len(prepared_discussion['summary']) != 0
@@ -628,9 +641,7 @@ def discussion_choose(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids'
     match_dict = request.matchdict
-    params = request.params
     logger('discussion_choose', 'def', 'request.matchdict: {}'.format(match_dict))
-    logger('discussion_choose', 'def', 'main: {}'.format(params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.choose, for_api, api_data)
     if not prepared_discussion:
@@ -652,7 +663,6 @@ def discussion_jump(request, for_api=False, api_data=None):
     """
     # '/discuss/{slug}/jump/{arg_id}'
     logger('views', 'discussion_jump', 'request.matchdict: {}'.format(request.matchdict))
-    logger('views', 'discussion_jump', 'main: {}'.format(request.params))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.jump, for_api, api_data)
     if not prepared_discussion:
@@ -676,16 +686,13 @@ def main_review(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('main_review', 'main', 'def {}'.format(request.matchdict))
-    ui_locales = get_language_from_cookie(request)
     nickname = request.authenticated_userid
-    _tn = Translator(ui_locales)
 
     issue = issue_handler.get_issue_id(request)
-    disc_ui_locales = get_discussion_language(request.matchdict, request.params, request.session, issue)
 
-    issue_dict = issue_handler.prepare_json_of_issue(issue, request.application_url, disc_ui_locales, False,
-                                                     request.authenticated_userid)
+    issue_dict = issue_handler.prepare_json_of_issue(issue, request.application_url, False, nickname)
 
+    _tn = Translator(issue_dict['lang'])
     review_dict = review_queue_helper.get_review_queues_as_lists(request.application_url, _tn, nickname)
     count, all_rights = review_reputation_helper.get_reputation_of(nickname)
 
@@ -1216,7 +1223,6 @@ def set_new_premises_for_argument(request):
         'premisegroups': request.validated['premisegroups'],
         'arg_uid': request.validated['arg_uid'],
         'attack_type': request.validated['attack_type'],
-
         'port': get_port(request),
         'history': request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None,
         'default_locale_name': get_default_locale_name(request.registry),

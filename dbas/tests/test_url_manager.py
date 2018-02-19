@@ -194,7 +194,7 @@ class UrlManagerTests(unittest.TestCase):
                                                                                confrontation_argument=0)
         # Verify that, if 'as_location_href' is 'False',
         # '{discussion_url}/{slug}/reaction/{argument_uid}/{mode}/{confrontation_argument}' is returned.
-        self.assertEqual(response_as_location_href_false, 'application_url/discuss/cat-or-dog/reaction/0/undercut/0')
+        self.assertEqual(response_as_location_href_false, 'application_url/discuss/cat-or-dog/finish/0')
 
     def test_get_url_for_choosing_premisegroup(self):
         url = self.__make_one(application_url='application_url',
@@ -221,39 +221,18 @@ class UrlManagerTests(unittest.TestCase):
         # statement_or_argument_id}' is returned.
         self.assertEqual(response_false, 'application_url/discuss/cat-or-dog/choose/f/f/20')
 
-    def test_return_discussion_url(self):
+    def test_get_url_for_new_argument(self):
         url1 = self.__make_one(application_url='application_url',
                                for_api=True,
-                               history='attitude/35')
+                               slug='cat-or-dog',
+                               history='attitude/4')
         url2 = self.__make_one(application_url='application_url',
-                               for_api=True,
-                               history='')
-        url3 = self.__make_one(application_url='application_url',
                                for_api=False,
-                               history='attitude/35')
+                               slug='cat-or-dog',
+                               history='attitude/4')
 
-        response_history = url1._UrlManager__return_discussion_url(as_location_href=True,
-                                                                   url='cat-or-dog/justify/30/t')
-        # Verify that, if length of string 'history' is greater than 1 and 'for_api' is 'True',
-        # 'api/{url}?history={history}' is returned.
-        self.assertEqual(response_history, 'api/cat-or-dog/justify/30/t?history=attitude/35')
+        api = 'api/cat-or-dog/finish/10?history=attitude/4'
+        dbas = 'location.href="application_url/discuss/cat-or-dog/finish/10?history=attitude/4"'
 
-        response_history_empty = url2._UrlManager__return_discussion_url(as_location_href=True,
-                                                                         url='cat-or-dog/justify/30/t')
-        # Verify that, if length of string 'history' is less than 1 or equal 1 and 'for_api' is 'True', 'api/{url}'
-        # is returned.
-        self.assertEqual(response_history_empty, 'api/cat-or-dog/justify/30/t')
-
-        response_as_location_href_true = url3._UrlManager__return_discussion_url(as_location_href=True,
-                                                                                 url='cat-or-dog/justify/30/t')
-        # Verify that, if 'as_location_href' is 'True' and 'for_api' is 'False',
-        # 'location.href="{discussion_url}/{url}?history={history}"' is returned.
-        self.assertEqual(response_as_location_href_true,
-                         'location.href="application_url/discuss/cat-or-dog/justify/30/t?history=attitude/35"')
-
-        response_as_location_href_true = url3._UrlManager__return_discussion_url(as_location_href=False,
-                                                                                 url='cat-or-dog/justify/30/t')
-        # Verify that, if 'as_location_href' and 'for_api' are 'False', '{discussion_url}/{url}?history={history}' is
-        # returned.
-        self.assertEqual(response_as_location_href_true,
-                         'application_url/discuss/cat-or-dog/justify/30/t?history=attitude/35')
+        self.assertEqual(api, url1.get_url_for_new_argument([10], True))
+        self.assertEqual(dbas, url2.get_url_for_new_argument([10], True))

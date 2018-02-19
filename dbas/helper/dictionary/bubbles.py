@@ -1,5 +1,3 @@
-from sqlalchemy import and_
-
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import MarkedStatement
 from dbas.lib import get_text_for_statement_uid
@@ -29,10 +27,10 @@ def get_user_bubble_text_for_justify_statement(stmt_uid, db_user, is_supportive,
 
     is_users_opinion = False
     if db_user:
-        db_marked_statement = DBDiscussionSession.query(MarkedStatement).filter(and_(
+        db_marked_statement = DBDiscussionSession.query(MarkedStatement).filter(
             MarkedStatement.statement_uid == stmt_uid,
             MarkedStatement.author_uid == db_user.uid
-        )).first()
+        ).first()
         is_users_opinion = db_marked_statement is not None
 
     if is_users_opinion:

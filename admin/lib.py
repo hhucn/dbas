@@ -10,7 +10,6 @@ from datetime import datetime
 import arrow
 import transaction
 from pyramid.httpexceptions import exception_response
-from sqlalchemy import and_
 from sqlalchemy.exc import IntegrityError, ProgrammingError
 
 from dbas.database import DBDiscussionSession
@@ -23,8 +22,8 @@ from dbas.database.discussion_model import Issue, Language, Group, User, Setting
 from dbas.lib import get_text_for_premisesgroup_uid, get_text_for_argument_uid, \
     get_text_for_statement_uid, get_profile_picture
 from dbas.logger import logger
-from dbas.strings.translator import Translator
 from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
 
 table_mapper = {
     'Issue'.lower(): {'table': Issue, 'name': 'Issue'},
@@ -342,7 +341,7 @@ def __resolve_statement_attribute(attribute, main_page, db_languages, db_users, 
 
 
 def __resolve_arrow_attribute(attribute, main_page, db_languages, db_users, tmp):
-        tmp.append(attribute.format('YYYY-MM-DD HH:mm:ss'))
+    tmp.append(attribute.format('YYYY-MM-DD HH:mm:ss'))
 
 
 def __resolve_lang_attribute(attribute, main_page, db_languages, db_users, tmp):
@@ -647,8 +646,8 @@ def check_token(token: str) -> bool:
         hash_identifier, auth_token = token_components
 
         api_tokens = DBDiscussionSession.query(APIToken) \
-            .filter(and_(APIToken.token.startswith(hash_identifier),
-                         APIToken.disabled == False))
+            .filter(APIToken.token.startswith(hash_identifier),
+                    APIToken.disabled == False)
 
         for api_token in api_tokens:
             return __hash_token_with_owner(api_token.owner, auth_token) == api_token.token

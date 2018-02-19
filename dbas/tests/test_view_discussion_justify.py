@@ -3,10 +3,10 @@ import unittest
 import transaction
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
-from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, ReputationHistory
+from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, \
+    ReputationHistory
 from dbas.helper.tests import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of
 
 
@@ -61,8 +61,8 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         from dbas.views import discussion_justify as d
 
         len_db_seen1 = len(DBDiscussionSession.query(SeenStatement).all())
-        len_db_vote1 = len(DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.is_valid == True,
-                                                                                   ClickedStatement.is_up_vote == True)).all())
+        len_db_vote1 = len(DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.is_valid == True,
+                                                                              ClickedStatement.is_up_vote == True).all())
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
@@ -74,8 +74,8 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         transaction.commit()
         verify_dictionary_of_view(self, response)
         len_db_seen2 = len(DBDiscussionSession.query(SeenStatement).all())
-        len_db_vote2 = len(DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.is_valid == True,
-                                                                                   ClickedStatement.is_up_vote == True)).all())
+        len_db_vote2 = len(DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.is_valid == True,
+                                                                              ClickedStatement.is_up_vote == True).all())
 
         count = sum([len(el['premises']) for el in response['items']['elements']])
         self.assertEqual(len_db_seen1 + count, len_db_seen2)
@@ -88,8 +88,8 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         from dbas.views import discussion_justify as d
 
         len_db_seen1 = len(DBDiscussionSession.query(SeenStatement).all())
-        len_db_vote1 = len(DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.is_valid == True,
-                                                                                   ClickedStatement.is_up_vote == False)).all())
+        len_db_vote1 = len(DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.is_valid == True,
+                                                                              ClickedStatement.is_up_vote == False).all())
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
@@ -101,8 +101,8 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         transaction.commit()
         verify_dictionary_of_view(self, response)
         len_db_seen2 = len(DBDiscussionSession.query(SeenStatement).all())
-        len_db_vote2 = len(DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.is_valid == True,
-                                                                                   ClickedStatement.is_up_vote == False)).all())
+        len_db_vote2 = len(DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.is_valid == True,
+                                                                              ClickedStatement.is_up_vote == False).all())
 
         # minus 1 for 'none of the above'
         count = sum([len(el['premises']) for el in response['items']['elements']]) - 1

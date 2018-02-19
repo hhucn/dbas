@@ -6,8 +6,8 @@ Provides helping function for database querys.
 
 import transaction
 from pyshorteners import Shorteners, Shortener
+from pyshorteners.exceptions import ShorteningErrorException
 from requests.exceptions import ReadTimeout, ConnectionError
-from sqlalchemy import and_
 from typing import Union
 from urllib3.exceptions import NewConnectionError
 
@@ -143,8 +143,8 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
     return_array = []
     logger('QueryHelper', '__get_attack_or_support_for_justification_of_argument_uid',
            'db_undercut against Argument.argument_uid==' + str(argument_uid))
-    db_related_arguments = DBDiscussionSession.query(Argument).filter(and_(Argument.is_supportive == is_supportive,
-                                                                           Argument.argument_uid == argument_uid)).all()
+    db_related_arguments = DBDiscussionSession.query(Argument).filter(Argument.is_supportive == is_supportive,
+                                                                      Argument.argument_uid == argument_uid).all()
     given_relations = set()
     index = 0
 
@@ -261,8 +261,8 @@ def __disable_textversions(statement_uid, author_uid):
     :return: None
     """
     # TODO #432
-    db_textversion = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.statement_uid == statement_uid,
-                                                                        TextVersion.author_uid == author_uid)).all()
+    db_textversion = DBDiscussionSession.query(TextVersion).filter(TextVersion.statement_uid == statement_uid,
+                                                                   TextVersion.author_uid == author_uid).all()
     for textversion in db_textversion:
         logger('QueryHelper', '__disable_textversions', str(textversion.uid))
         textversion.set_disable(True)
@@ -284,8 +284,8 @@ def __transfer_textversion_to_new_author(statement_uid, old_author_uid, new_auth
     logger('QueryHelper', '__revoke_statement',
            'Textversion of {} will change author from {} to {}'.format(statement_uid, old_author_uid, new_author_uid))
     # TODO #432
-    db_textversion = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.statement_uid == statement_uid,
-                                                                        TextVersion.author_uid == old_author_uid)).all()
+    db_textversion = DBDiscussionSession.query(TextVersion).filter(TextVersion.statement_uid == statement_uid,
+                                                                   TextVersion.author_uid == old_author_uid).all()
     if not db_textversion:
         return False
 
@@ -334,7 +334,7 @@ def get_short_url(url, ui_locales) -> dict:
     short_url = ''
     try:
         short_url = format(Shortener(service).short(url))
-    except (ReadTimeout, ConnectionError, NewConnectionError) as e:
+    except (ReadTimeout, ConnectionError, NewConnectionError, ShorteningErrorException) as e:
         logger('getter', 'get_short_url', repr(e), error=True)
         service_text = Translator(ui_locales).get(_.serviceNotAvailable)
 

@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from sqlalchemy import and_
-
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import ClickedStatement, ClickedArgument, User, MarkedArgument, MarkedStatement
 from dbas.lib import get_author_data
@@ -429,7 +427,8 @@ def get_text_for_confrontation(main_page, lang, nickname, premise, conclusion, s
     # build some confrontation text
     if attack == 'undermine':
         confrontation_text, gender = __get_confrontation_text_for_undermine(main_page, nickname, premise, lang, sys_arg,
-                                                                            my_start_argument, my_end_tag, confrontation)
+                                                                            my_start_argument, my_end_tag,
+                                                                            confrontation)
 
     elif attack == 'undercut':
         confrontation_text, gender = __get_confrontation_text_for_undercut(main_page, nickname, lang,
@@ -666,16 +665,16 @@ def __get_confrontation_text_for_rebut(main_page, lang, nickname, reply_for_argu
     if is_okay:
         if user_arg.argument_uid is None:
             db_vote = DBDiscussionSession.query(ClickedArgument).filter(
-                and_(ClickedArgument.argument_uid == user_arg.argument_uid,
-                     ClickedArgument.author_uid == db_other_user.uid,
-                     ClickedArgument.is_up_vote == True,
-                     ClickedArgument.is_valid == True)).all()
+                ClickedArgument.argument_uid == user_arg.argument_uid,
+                ClickedArgument.author_uid == db_other_user.uid,
+                ClickedArgument.is_up_vote == True,
+                ClickedArgument.is_valid == True).all()
         else:
             db_vote = DBDiscussionSession.query(ClickedStatement).filter(
-                and_(ClickedStatement.statement_uid == user_arg.conclusion_uid,
-                     ClickedStatement.author_uid == db_other_user.uid,
-                     ClickedStatement.is_up_vote == True,
-                     ClickedStatement.is_valid == True)).all()
+                ClickedStatement.statement_uid == user_arg.conclusion_uid,
+                ClickedStatement.author_uid == db_other_user.uid,
+                ClickedStatement.is_up_vote == True,
+                ClickedStatement.is_valid == True).all()
         has_other_user_opinion = db_vote and len(db_vote) > 0
     infos['has_other_user_opinion'] = has_other_user_opinion
 
@@ -828,29 +827,29 @@ def get_author_or_first_supporter_of_element(uid, current_user_uid, is_argument)
 
     db_anonymous_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
     if is_argument:
-        db_mark = DBDiscussionSession.query(MarkedArgument).filter(and_(
+        db_mark = DBDiscussionSession.query(MarkedArgument).filter(
             ~MarkedArgument.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
             MarkedArgument.argument_uid == uid,
-        )).first()
+        ).first()
     else:
-        db_mark = DBDiscussionSession.query(MarkedStatement).filter(and_(
+        db_mark = DBDiscussionSession.query(MarkedStatement).filter(
             ~MarkedStatement.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
             MarkedStatement.statement_uid == uid,
-        )).first()
+        ).first()
 
     if db_mark:
         return DBDiscussionSession.query(User).get(db_mark.author_uid)
 
     if is_argument:
-        db_click = DBDiscussionSession.query(ClickedArgument).filter(and_(
+        db_click = DBDiscussionSession.query(ClickedArgument).filter(
             ~ClickedArgument.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
             ClickedArgument.argument_uid == uid,
-        )).first()
+        ).first()
     else:
-        db_click = DBDiscussionSession.query(ClickedStatement).filter(and_(
+        db_click = DBDiscussionSession.query(ClickedStatement).filter(
             ~ClickedStatement.author_uid.in_([db_anonymous_user.uid, current_user_uid]),
             ClickedStatement.statement_uid == uid,
-        )).first()
+        ).first()
 
     if db_click:
         return DBDiscussionSession.query(User).get(db_click.author_uid)

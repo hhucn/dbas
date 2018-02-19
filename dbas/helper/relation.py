@@ -8,7 +8,6 @@ import random
 from typing import Tuple
 
 import transaction
-from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, PremiseGroup, User, Issue
@@ -144,8 +143,8 @@ def get_supports_for_argument_uid(argument_uid):
 
     for arguments_premises in db_arguments_premises:
         db_arguments = get_not_disabled_arguments_as_query()
-        db_supports = db_arguments.filter(and_(Argument.conclusion_uid == arguments_premises.statement_uid,
-                                               Argument.is_supportive == True)).join(PremiseGroup).all()
+        db_supports = db_arguments.filter(Argument.conclusion_uid == arguments_premises.statement_uid,
+                                          Argument.is_supportive == True).join(PremiseGroup).all()
         if not db_supports:
             continue
 
@@ -179,9 +178,9 @@ def set_new_undermine_or_support_for_pgroup(premisegroup_uid: int, current_argum
         premisesgroup_uid=current_argument.premisesgroup_uid).all()
     for premise in db_premises:
         db_arguments = get_not_disabled_arguments_as_query()
-        db_argument = db_arguments.filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
-                                               Argument.is_supportive == True,
-                                               Argument.conclusion_uid == premise.statement_uid)).first()
+        db_argument = db_arguments.filter(Argument.premisesgroup_uid == premisegroup_uid,
+                                          Argument.is_supportive == True,
+                                          Argument.conclusion_uid == premise.statement_uid).first()
         if db_argument:
             continue
         else:
@@ -215,9 +214,9 @@ def set_new_undercut(premisegroup_uid, current_argument: Argument, db_user: User
     :return: Argument, Boolean if the argument is a duplicate
     """
     # duplicate?
-    db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
-                                                                  Argument.is_supportive == False,
-                                                                  Argument.argument_uid == current_argument.uid)).first()
+    db_argument = DBDiscussionSession.query(Argument).filter(Argument.premisesgroup_uid == premisegroup_uid,
+                                                             Argument.is_supportive == False,
+                                                             Argument.argument_uid == current_argument.uid).first()
     if db_argument:
         return db_argument, True
     else:
@@ -244,9 +243,9 @@ def set_new_rebut(premisegroup_uid, current_argument: Argument, db_user: User, d
     """
     # duplicate?
     db_arguments = get_not_disabled_arguments_as_query()
-    db_argument = db_arguments.filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
-                                           Argument.is_supportive == True,
-                                           Argument.conclusion_uid == current_argument.conclusion_uid)).first()
+    db_argument = db_arguments.filter(Argument.premisesgroup_uid == premisegroup_uid,
+                                      Argument.is_supportive == True,
+                                      Argument.conclusion_uid == current_argument.conclusion_uid).first()
     if db_argument:
         return db_argument, True
     else:
@@ -261,22 +260,22 @@ def set_new_rebut(premisegroup_uid, current_argument: Argument, db_user: User, d
         return new_argument, False
 
 
-def set_new_support(premisegroup_uid, current_argument: Argument, db_user: User, db_issue: Issue) \
+def set_new_support(premisegroup_uid: int, current_argument: Argument, db_user: User, db_issue: Issue) \
         -> Tuple[Argument, bool]:
     """
     Inserts a new support with the given parameters.
 
-    :param db_issue: Issue
     :param premisegroup_uid: premisesgroup_uid
     :param current_argument: Argument
     :param db_user: User
+    :param db_issue: Issue
     :return: Argument, Boolean if the argument is a duplicate
     """
     # duplicate?
     db_arguments = get_not_disabled_arguments_as_query()
-    db_argument = db_arguments.filter(and_(Argument.premisesgroup_uid == premisegroup_uid,
-                                           Argument.is_supportive == True,
-                                           Argument.conclusion_uid == current_argument.conclusion_uid)).first()
+    db_argument = db_arguments.filter(Argument.premisesgroup_uid == premisegroup_uid,
+                                      Argument.is_supportive == True,
+                                      Argument.conclusion_uid == current_argument.conclusion_uid).first()
     if db_argument:
         return db_argument, True
     else:
@@ -301,8 +300,8 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
     """
     return_array = []
     db_arguments = get_not_disabled_arguments_as_query()
-    db_related_arguments = db_arguments.filter(and_(Argument.is_supportive == is_supportive,
-                                                    Argument.argument_uid == argument_uid)).all()
+    db_related_arguments = db_arguments.filter(Argument.is_supportive == is_supportive,
+                                               Argument.argument_uid == argument_uid).all()
     given_relations = set()
 
     if not db_related_arguments:
@@ -331,8 +330,8 @@ def __get_undermines_for_premises(premises_as_statements_uid, is_supportive=Fals
     given_undermines = set()
     for s_uid in premises_as_statements_uid:
         db_arguments = get_not_disabled_arguments_as_query()
-        db_undermine = db_arguments.filter(and_(Argument.is_supportive == is_supportive,
-                                                Argument.conclusion_uid == s_uid)).all()
+        db_undermine = db_arguments.filter(Argument.is_supportive == is_supportive,
+                                           Argument.conclusion_uid == s_uid).all()
         for undermine in db_undermine:
             if undermine.premisesgroup_uid not in given_undermines:
                 given_undermines.add(undermine.premisesgroup_uid)

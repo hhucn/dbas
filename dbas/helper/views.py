@@ -4,11 +4,9 @@ Helper for D-BAS Views
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-from pyramid.httpexceptions import HTTPNotFound
-
 import dbas.handler.voting as voting_helper
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User
+from dbas.database.discussion_model import User, Issue
 from dbas.handler import user
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
@@ -71,8 +69,8 @@ def handle_justification_step(request_dict, for_api):
                                                                                    statement_or_arg_id, mode)
 
     elif 'd' in mode and relation == '':
-        item_dict, discussion_dict, extras_dict = __handle_justification_donnt_know(request_dict, for_api,
-                                                                                    statement_or_arg_id, mode)
+        item_dict, discussion_dict, extras_dict = __handle_justification_dont_know(request_dict, for_api,
+                                                                                   statement_or_arg_id, mode)
 
     elif [c for c in ('undermine', 'rebut', 'undercut', 'support') if c in relation]:
         item_dict, discussion_dict, extras_dict = __handle_justification_argument(request_dict, for_api,
@@ -100,13 +98,13 @@ def __handle_justification_statement(request_dict, for_api, statement_or_arg_id,
 
     if not get_text_for_statement_uid(statement_or_arg_id) or not check_belonging_of_statement(issue,
                                                                                                statement_or_arg_id):
-        raise HTTPNotFound()
+        return None, None, None
     item_dict, discussion_dict, extras_dict = preparation_for_justify_statement(request_dict, for_api,
                                                                                 statement_or_arg_id, supportive)
     return item_dict, discussion_dict, extras_dict
 
 
-def __handle_justification_donnt_know(request_dict, for_api, statement_or_arg_id, mode):
+def __handle_justification_dont_know(request_dict, for_api, statement_or_arg_id, mode):
     """
 
     :param request_dict:
@@ -115,14 +113,14 @@ def __handle_justification_donnt_know(request_dict, for_api, statement_or_arg_id
     :param mode:
     :return:
     """
-    logger('ViewHelper', '__handle_justification_donnt_know', 'do not know for {}'.format(statement_or_arg_id))
+    logger('ViewHelper', '__handle_justification_dont_know', 'do not know for {}'.format(statement_or_arg_id))
     issue = request_dict['issue']
     supportive = mode == 't' or mode == 'd'  # supportive = t or do not know mode
 
     if int(statement_or_arg_id) != 0 and \
             not check_belonging_of_argument(issue, statement_or_arg_id) and \
             not check_belonging_of_statement(issue, statement_or_arg_id):
-        raise HTTPNotFound()
+        return None, None, None
     item_dict, discussion_dict, extras_dict = preparation_for_dont_know_statement(request_dict, for_api,
                                                                                   statement_or_arg_id, supportive)
     return item_dict, discussion_dict, extras_dict
@@ -147,7 +145,7 @@ def __handle_justification_argument(request_dict, for_api, statement_or_arg_id, 
     supportive = mode == 't' or mode == 'd'  # supportive = t or do not know mode
 
     if not check_belonging_of_argument(issue, statement_or_arg_id):
-        raise HTTPNotFound()
+        return None, None, None
     item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(request_dict, for_api,
                                                                                statement_or_arg_id, supportive,
                                                                                relation)
@@ -180,11 +178,11 @@ def preparation_for_justify_statement(request_dict, for_api, statement_uid, supp
     app_url = request_dict['app_url']
     registry = request_dict['registry']
     path = request_dict['path']
-    disc_ui_locales = request_dict['disc_ui_locales']
     issue = request_dict['issue']
 
     logged_in = DBDiscussionSession.query(User).filter_by(nickname=nickname).first() is not None
 
+    disc_ui_locales = DBDiscussionSession.query(Issue).get(issue).lang
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=app_url, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, issue, app_url, for_api, path=path, history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
@@ -205,7 +203,7 @@ def preparation_for_justify_statement(request_dict, for_api, statement_uid, supp
 
 def preparation_for_dont_know_statement(request_dict, for_api, argument_uid, supportive):
     """
-    Prepares some paramater for the "don't know" step
+    Prepares some parameter for the "don't know" step
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
     :param for_api: Boolean
@@ -218,13 +216,13 @@ def preparation_for_dont_know_statement(request_dict, for_api, argument_uid, sup
     slug = request_dict['slug']
     issue = request_dict['issue']
     ui_locales = request_dict['ui_locales']
-    disc_ui_locales = request_dict['disc_ui_locales']
     history = request_dict['history']
     nickname = request_dict['nickname']
     app_url = request_dict['app_url']
     registry = request_dict['registry']
     path = request_dict['path']
 
+    disc_ui_locales = DBDiscussionSession.query(Issue).get(issue).lang
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=app_url, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, issue, app_url, for_api, path=path, history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
@@ -268,12 +266,12 @@ def preparation_for_justify_argument(request_dict, for_api, statement_or_arg_id,
     app_url = request_dict['app_url']
     registry = request_dict['registry']
     path = request_dict['path']
-    disc_ui_locales = request_dict['disc_ui_locales']
     issue = request_dict['issue']
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     logged_in = db_user is not None
 
+    disc_ui_locales = DBDiscussionSession.query(Issue).get(issue).lang
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=app_url, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, issue, app_url, for_api, path=path, history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)

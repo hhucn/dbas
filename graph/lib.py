@@ -5,14 +5,12 @@
 
 import requests
 
-from sqlalchemy import and_
-from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, TextVersion, Premise, Issue, User, ClickedStatement, Statement, \
     SeenStatement
 from dbas.lib import get_profile_picture
+from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_statement_as_query
-
 
 green = '#64DD17'
 red = '#F44336'
@@ -90,9 +88,9 @@ def get_opinion_data(issue):
     ret_dict = dict()
     for statement in db_statements:
         db_seen = len(db_all_seen.filter_by(statement_uid=statement.uid).all())
-        db_votes = len(db_all_votes.filter(and_(ClickedStatement.statement_uid == statement.uid,
-                                                ClickedStatement.is_up_vote == True,
-                                                ClickedStatement.is_valid == True)).all())
+        db_votes = len(db_all_votes.filter(ClickedStatement.statement_uid == statement.uid,
+                                           ClickedStatement.is_up_vote == True,
+                                           ClickedStatement.is_valid == True).all())
         ret_dict[str(statement.uid)] = (db_votes / db_seen) if db_seen != 0 else 1
 
     return ret_dict
@@ -357,7 +355,8 @@ def __get_author_of_statement(uid):
     :param uid:
     :return:
     """
-    db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.asc()).first()  # TODO #432
+    db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(
+        TextVersion.uid.asc()).first()  # TODO #432
     db_author = DBDiscussionSession.query(User).get(db_tv.author_uid)
     gravatar = get_profile_picture(db_author, 40)
     name = db_author.get_global_nickname()
@@ -370,14 +369,16 @@ def __get_editor_of_statement(uid):
     :param uid:
     :return:
     """
-    db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(TextVersion.uid.desc()).first()  # TODO #432
+    db_statement = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=uid).order_by(
+        TextVersion.uid.desc()).first()  # TODO #432
     db_editor = DBDiscussionSession.query(User).get(db_statement.author_uid)
     gravatar = get_profile_picture(db_editor, 40)
     name = db_editor.get_global_nickname()
     return {'name': name, 'gravatar': gravatar}
 
 
-def __get_node_dict(uid, label, node_type='', author=None, editor=None, edge_source=None, edge_target=None, timestamp=''):
+def __get_node_dict(uid, label, node_type='', author=None, editor=None, edge_source=None, edge_target=None,
+                    timestamp=''):
     """
     Create node dict for D3
 
@@ -431,17 +432,17 @@ def __get_extras_dict(statement):
     :param statement:
     :return:
     """
-    db_textversion_author = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.uid).\
+    db_textversion_author = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.uid). \
         order_by(TextVersion.uid.asc()).first()  # TODO #432
-    db_textversion_modifier = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.uid).\
+    db_textversion_modifier = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement.uid). \
         order_by(TextVersion.uid.desc()).first()  # TODO #432
 
-    db_author   = DBDiscussionSession.query(User).get(db_textversion_author.author_uid)
+    db_author = DBDiscussionSession.query(User).get(db_textversion_author.author_uid)
     db_modifier = DBDiscussionSession.query(User).get(db_textversion_modifier.author_uid)
 
-    db_votes = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.statement_uid == statement.uid,
-                                                                       ClickedStatement.is_up_vote == True,
-                                                                       ClickedStatement.is_valid == True)).all()
+    db_votes = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.statement_uid == statement.uid,
+                                                                  ClickedStatement.is_up_vote == True,
+                                                                  ClickedStatement.is_valid == True).all()
 
     return_dict = {
         'text': db_textversion_author.content,

@@ -5,7 +5,6 @@ Provides helping function for displaying the review queues and locking entries.
 """
 
 import transaction
-from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReviewDelete, LastReviewerDelete, ReviewOptimization, TextVersion, \
@@ -339,8 +338,8 @@ def __get_review_count_for(review_type, last_reviewer_type, nickname):
     already_reviewed = []
     for last_review in db_last_reviews_of_user:
         already_reviewed.append(last_review.review_uid)
-    db_reviews = DBDiscussionSession.query(review_type).filter(and_(review_type.is_executed == False,
-                                                                    review_type.detector_uid != db_user.uid))
+    db_reviews = DBDiscussionSession.query(review_type).filter(review_type.is_executed == False,
+                                                               review_type.detector_uid != db_user.uid)
 
     if len(already_reviewed) > 0:
         db_reviews = db_reviews.filter(~review_type.uid.in_(already_reviewed))
@@ -469,8 +468,8 @@ def is_statement_in_edit_queue(uid, is_executed=False):
     :return: Boolean
     """
     logger('ReviewQueues', 'is_statement_in_edit_queue', 'current element: {}'.format(uid))
-    db_already_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.statement_uid == uid,
-                                                                        ReviewEdit.is_executed == is_executed)).all()
+    db_already_edit = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid == uid,
+                                                                   ReviewEdit.is_executed == is_executed).all()
     if db_already_edit:
         return len(db_already_edit) > 0
     else:
@@ -488,8 +487,8 @@ def is_arguments_premise_in_edit_queue(uid):
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
     db_already_edit = []
     for premise in db_premises:
-        db_already_edit += DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.statement_uid == premise.statement_uid,
-                                                                             ReviewEdit.is_executed == False)).all()
+        db_already_edit += DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid == premise.statement_uid,
+                                                                        ReviewEdit.is_executed == False).all()
     return len(db_already_edit) > 0
 
 
@@ -510,8 +509,8 @@ def __add_edit_values_review(element, db_user):
     db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
 
     if len(element['text']) > 0 and db_textversion.content.lower().strip() != element['text'].lower().strip():
-        db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(and_(ReviewEdit.detector_uid == db_user.uid,
-                                                                           ReviewEdit.statement_uid == element['uid'])).order_by(ReviewEdit.uid.desc()).first()
+        db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.detector_uid == db_user.uid,
+                                                                      ReviewEdit.statement_uid == element['uid']).order_by(ReviewEdit.uid.desc()).first()
         DBDiscussionSession.add(ReviewEditValue(db_review_edit.uid, element['uid'], 'statement', element['text']))
         logger('ReviewQueues', '__add_edit_values_review', '{} - \'{}\' accepted'.format(element['uid'], element['text']))
         return 1

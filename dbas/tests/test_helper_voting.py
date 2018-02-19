@@ -2,7 +2,6 @@ import unittest
 
 import transaction
 from pyramid import testing
-from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ClickedArgument, ClickedStatement, SeenStatement, SeenArgument
@@ -170,10 +169,10 @@ class VotingHelperTest(unittest.TestCase):
             self.assertTrue(val)
             self.check_tables_of_user_for_n_rows(self.user, 4, 2, 0, 2)
 
-            db_votes_arg_pro = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_up_vote == True)).all()
-            db_votes_arg_con = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_up_vote == False)).all()
-            db_votes_sta_pro = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == True)).all()
-            db_votes_sta_con = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == False)).all()
+            db_votes_arg_pro = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_up_vote == True).all()
+            db_votes_arg_con = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_up_vote == False).all()
+            db_votes_sta_pro = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == True).all()
+            db_votes_sta_con = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == False).all()
             self.assertEquals(len(db_votes_arg_pro), 2)
             self.assertEquals(len(db_votes_arg_con), 0)
             self.assertEquals(len(db_votes_sta_pro), 3)
@@ -184,12 +183,12 @@ class VotingHelperTest(unittest.TestCase):
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 5, 4, 0, 3)
 
-        db_votes_arg_pro = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_up_vote == True)).all()
-        db_votes_arg_con = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_up_vote == False)).all()
-        db_votes_arg_val = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_valid == True)).all()
-        db_votes_arg_nva = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_valid == False)).all()
-        db_votes_sta_pro = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == True)).all()
-        db_votes_sta_con = DBDiscussionSession.query(ClickedStatement).filter(and_(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == False)).all()
+        db_votes_arg_pro = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_up_vote == True).all()
+        db_votes_arg_con = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_up_vote == False).all()
+        db_votes_arg_val = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_valid == True).all()
+        db_votes_arg_nva = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == self.user.uid, ClickedArgument.is_valid == False).all()
+        db_votes_sta_pro = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == True).all()
+        db_votes_sta_con = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == self.user.uid, ClickedStatement.is_up_vote == False).all()
         self.assertEquals(len(db_votes_arg_pro), 3)
         self.assertEquals(len(db_votes_arg_con), 1)
         self.assertEquals(len(db_votes_sta_pro), 4)

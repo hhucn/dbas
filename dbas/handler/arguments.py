@@ -1,7 +1,6 @@
 import random
 
 import transaction
-from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Argument, Premise, MarkedArgument, ClickedArgument, \
@@ -16,7 +15,7 @@ from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_new_statement, rep_reason_first_new_argument
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.url_manager import UrlManager, get_url_for_new_argument
+from dbas.url_manager import UrlManager
 
 
 def set_arguments_premises(for_api, data) -> dict:
@@ -28,8 +27,8 @@ def set_arguments_premises(for_api, data) -> dict:
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and next url or an error
     """
-    db_user: User = data['user']
-    db_issue: Issue = data['issue']
+    db_user = data['user']
+    db_issue = data['issue']
     premisegroups = data['premisegroups']
     arg_uid = data['arg_uid']
     attack_type = data['attack_type']
@@ -86,9 +85,9 @@ def get_all_infos_about_argument(db_argument, main_page, db_user, lang) -> dict:
     _t = Translator(lang.ui_locales)
 
     return_dict = dict()
-    db_votes = DBDiscussionSession.query(ClickedArgument).filter(and_(ClickedArgument.argument_uid == db_argument.uid,
-                                                                      ClickedArgument.is_valid == True,
-                                                                      ClickedStatement.is_up_vote == True)).all()
+    db_votes = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.argument_uid == db_argument.uid,
+                                                                 ClickedArgument.is_valid == True,
+                                                                 ClickedStatement.is_up_vote == True).all()
 
     db_author = DBDiscussionSession.query(User).get(db_argument.author_uid)
     return_dict['vote_count'] = str(len(db_votes))
@@ -170,7 +169,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
     new_argument_uids = []
     for premisegroup in premisegroups:  # premise groups is a list of lists
         new_argument = insert_new_premises_for_argument(application_url, default_locale_name, premisegroup, attack_type,
-                                                        arg_id, db_issue, db_user, discussion_lang)
+                                                        arg_id, db_issue, db_user)
         if not isinstance(new_argument, Argument):  # break on error
             a = _tn.get(_.notInsertedErrorBecauseEmpty)
             b = _tn.get(_.minLength)
@@ -201,7 +200,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
                                      statement_min_length)
 
     elif len(new_argument_uids) == 1:
-        url = get_url_for_new_argument(new_argument_uids, history, discussion_lang, _um)
+        url = _um.get_url_for_new_argument(new_argument_uids, not for_api)
 
     else:
         url = __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type,
@@ -283,9 +282,9 @@ def get_another_argument_with_same_conclusion(uid, history):
     splitted_histoy = history.split('-')
     forbidden_uids = [history.split('/')[2] for history in splitted_histoy if 'reaction' in history] + [uid]
 
-    db_supports = DBDiscussionSession.query(Argument).filter(and_(Argument.conclusion_uid == db_arg.conclusion_uid,
-                                                                  Argument.is_supportive == db_arg.is_supportive,
-                                                                  ~Argument.uid.in_(forbidden_uids))).all()
+    db_supports = DBDiscussionSession.query(Argument).filter(Argument.conclusion_uid == db_arg.conclusion_uid,
+                                                             Argument.is_supportive == db_arg.is_supportive,
+                                                             ~Argument.uid.in_(forbidden_uids)).all()
     if len(db_supports) == 0:
         return None
 

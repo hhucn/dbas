@@ -332,7 +332,7 @@ class DiscussionDictHelper(object):
 
         :param uid: Argument.uid
         :param is_supportive: Boolean
-        :param additional_uid: Argument.uid
+        :param additional_uid: Argument.uid / not necessary if attack=end
         :param attack: String (undermine, support, undercut, rebut, ...)
         :param history: History
         :param nickname: Users nickname

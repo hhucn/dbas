@@ -4,7 +4,6 @@ Provides helping function for the adding task in the review queuees or en-/disab
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import transaction
-from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, LastReviewerDelete, Argument, Premise, Statement, \
@@ -48,8 +47,8 @@ def __add_vote_for(user, review, is_okay, review_type):
     msg = mapper.get(review_type, '...')
 
     logger('review_main_helper', '__add_vote_for', '{}, user {}'.format(msg, user.uid))
-    already_voted = DBDiscussionSession.query(review_type).filter(and_(review_type.reviewer_uid == user.uid,
-                                                                       review_type.review_uid == review.uid)).first()
+    already_voted = DBDiscussionSession.query(review_type).filter(review_type.reviewer_uid == user.uid,
+                                                                  review_type.review_uid == review.uid).first()
     if not already_voted:
         db_new_review = review_type(user.uid, review.uid, is_okay)
         DBDiscussionSession.add(db_new_review)
@@ -120,7 +119,8 @@ def add_review_opinion_for_delete(db_user, main_page, port, db_review, should_de
         db_review.update_timestamp()
 
     elif count_of_keep - count_of_delete >= min_difference:  # just close the review
-        logger('review_main_helper', 'add_review_opinion_for_delete', 'vote says keep for review {}'.format(db_review.uid))
+        logger('review_main_helper', 'add_review_opinion_for_delete',
+               'vote says keep for review {}'.format(db_review.uid))
         add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
@@ -317,7 +317,8 @@ def add_review_opinion_for_split(db_user, main_page, port, db_review, should_spl
     reached_max = max(count_of_keep, count_of_reset) >= max_votes
     if reached_max:
         if count_of_keep > count_of_reset:  # split pgroup
-            logger('review_main_helper', 'add_review_opinion_for_split', 'max reached for review {}'.format(db_review.uid))
+            logger('review_main_helper', 'add_review_opinion_for_split',
+                   'max reached for review {}'.format(db_review.uid))
             __split_premisegroup(db_review)
             add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         else:  # just close the review
@@ -335,7 +336,8 @@ def add_review_opinion_for_split(db_user, main_page, port, db_review, should_spl
         db_review.update_timestamp()
 
     elif count_of_keep - count_of_reset >= min_difference:  # split pgroup
-        logger('review_main_helper', 'add_review_opinion_for_split', 'vote says split for review {}'.format(db_review.uid))
+        logger('review_main_helper', 'add_review_opinion_for_split',
+               'vote says split for review {}'.format(db_review.uid))
         __split_premisegroup(db_review)
         add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         db_review.set_executed(True)
@@ -378,7 +380,8 @@ def add_review_opinion_for_merge(db_user, main_page, port, db_review, should_mer
     reached_max = max(count_of_keep, count_of_reset) >= max_votes
     if reached_max:
         if count_of_keep > count_of_reset:  # split pgroup
-            logger('review_main_helper', 'add_review_opinion_for_merge', 'max reached for review {}'.format(db_review.uid))
+            logger('review_main_helper', 'add_review_opinion_for_merge',
+                   'max reached for review {}'.format(db_review.uid))
             __merge_premisegroup(db_review)
             add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         else:  # just close the review
@@ -396,7 +399,8 @@ def add_review_opinion_for_merge(db_user, main_page, port, db_review, should_mer
         db_review.update_timestamp()
 
     elif count_of_keep - count_of_reset >= min_difference:  # split pgroup
-        logger('review_main_helper', 'add_review_opinion_for_merge', 'vote says merge for review {}'.format(db_review.uid))
+        logger('review_main_helper', 'add_review_opinion_for_merge',
+               'vote says merge for review {}'.format(db_review.uid))
         __merge_premisegroup(db_review)
         add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         db_review.set_executed(True)
@@ -427,8 +431,8 @@ def __keep_the_element_of_optimization_review(db_review, application_url, port, 
 
     # get all keep and delete votes
     db_keep_version = DBDiscussionSession.query(LastReviewerOptimization).filter(
-        and_(LastReviewerOptimization.review_uid == db_review.uid,
-             LastReviewerOptimization.is_okay == True)).all()
+        LastReviewerOptimization.review_uid == db_review.uid,
+        LastReviewerOptimization.is_okay == True).all()
 
     if len(db_keep_version) > max_votes:
         add_rep, broke_limit = add_reputation_for(db_user_who_created_flag, rep_reason_bad_flag)
@@ -465,8 +469,8 @@ def __proposal_for_the_element(db_review, data, db_user):
         DBDiscussionSession.flush()
         transaction.commit()
         db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(
-            and_(ReviewEdit.detector_uid == db_user.uid,
-                 ReviewEdit.argument_uid == argument_uid)).order_by(ReviewEdit.uid.desc()).first()
+            ReviewEdit.detector_uid == db_user.uid,
+            ReviewEdit.argument_uid == argument_uid).order_by(ReviewEdit.uid.desc()).first()
         logger('review_main_helper', 'add_review_opinion_for_optimization',
                'New ReviewEdit with uid ' + str(db_review_edit.uid) + ' (argument)')
 
@@ -481,8 +485,8 @@ def __proposal_for_the_element(db_review, data, db_user):
         DBDiscussionSession.flush()
         transaction.commit()
         db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(
-            and_(ReviewEdit.detector_uid == db_user.uid,
-                 ReviewEdit.statement_uid == statement_uid)).order_by(ReviewEdit.uid.desc()).first()
+            ReviewEdit.detector_uid == db_user.uid,
+            ReviewEdit.statement_uid == statement_uid).order_by(ReviewEdit.uid.desc()).first()
         logger('review_main_helper', 'add_review_opinion_for_optimization',
                'New ReviewEdit with uid ' + str(db_review_edit.uid) + ' (statement)')
 

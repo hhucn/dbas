@@ -2,14 +2,12 @@ import unittest
 
 import transaction
 from pyramid import testing
-from sqlalchemy import and_
 
 from dbas.database.discussion_model import ReviewMerge, DBDiscussionSession, ReviewSplit, PremiseGroup, \
     LastReviewerMerge, Argument, PremiseGroupSplitted, ReviewSplitValues, LastReviewerSplit, ReviewMergeValues, \
     PremiseGroupMerged, ArgumentsAddedByPremiseGroupSplit, LastReviewerDelete, LastReviewerDuplicate, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReviewCanceled, ReviewDelete, ReviewDuplicate, \
     ReviewEdit, ReviewEditValue, ReviewOptimization, RevokedContentHistory, Statement
-
 from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.lib import get_text_for_premisesgroup_uid, get_text_for_argument_uid
 
@@ -108,8 +106,8 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertTrue(db_reviews1 + 1, db_reviews2)
 
     def test_review_delete_argument(self):
-        db_review = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.statement_uid is not None,
-                                                                        ReviewDelete.is_executed == False)).first()
+        db_review = DBDiscussionSession.query(ReviewDelete).filter(ReviewDelete.statement_uid is not None,
+                                                                   ReviewDelete.is_executed == False).first()
         from dbas.views import review_delete_argument as ajax
 
         # 1:0
@@ -146,33 +144,36 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertEqual(400, response.status_code)
 
     def test_review_delete_argument_author_error(self):
-        db_review = DBDiscussionSession.query(ReviewDelete).filter(and_(ReviewDelete.statement_uid is not None,
-                                                                        ReviewDelete.is_executed == False)).first()
+        db_review = DBDiscussionSession.query(ReviewDelete).filter(ReviewDelete.statement_uid is not None,
+                                                                   ReviewDelete.is_executed == False).first()
         from dbas.views import review_delete_argument as ajax
 
         self.__exec_request_and_check_reviewes(db_review, ajax, 'should_delete', True, 'Pascal', LastReviewerDelete)
 
     def test_review_optimization_argument(self):  # TODO check the voting method
-        db_review = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.statement_uid is not None,
-                                                                              ReviewOptimization.is_executed == False)).first()
+        db_review = DBDiscussionSession.query(ReviewOptimization).filter(ReviewOptimization.statement_uid is not None,
+                                                                         ReviewOptimization.is_executed == False).first()
         from dbas.views import review_optimization_argument as ajax
 
         # 0:1
-        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_optimized', False, 'Kurt', LastReviewerOptimization)
+        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_optimized', False, 'Kurt',
+                                               LastReviewerOptimization)
 
         # 0:2
-        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_optimized', False, 'Pascal', LastReviewerOptimization)
+        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_optimized', False, 'Pascal',
+                                               LastReviewerOptimization)
 
         # 0:3
         db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
-        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_optimized', False, 'Torben', LastReviewerOptimization)
+        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_optimized', False, 'Torben',
+                                               LastReviewerOptimization)
         transaction.commit()
         db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
         self.assertEqual(db_reputation1, db_reputation2)
 
     def test_review_optimization_argument_for_edit(self):  # TODO how to accept new corrections
-        db_review = DBDiscussionSession.query(ReviewOptimization).filter(and_(ReviewOptimization.statement_uid is not None,
-                                                                              ReviewOptimization.is_executed == False)).first()
+        db_review = DBDiscussionSession.query(ReviewOptimization).filter(ReviewOptimization.statement_uid is not None,
+                                                                         ReviewOptimization.is_executed == False).first()
         from dbas.views import review_optimization_argument as ajax
         self.config.testing_securitypolicy(userid='Kurt', permissive=True)
         db_reviews1 = len(DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=db_review.uid).all())
@@ -611,7 +612,8 @@ class AjaxReviewTest(unittest.TestCase):
 
         new_oem_text = get_text_for_argument_uid(argument_uid)
         from Levenshtein import distance
-        self.assertTrue(oem_text == new_oem_text or distance(oem_text.strip().lower(), new_oem_text.strip().lower()) == 12)
+        self.assertTrue(
+            oem_text == new_oem_text or distance(oem_text.strip().lower(), new_oem_text.strip().lower()) == 12)
         self.assertFalse('fucking' in new_oem_text)
 
     def test_split_or_merge_statement_key_error(self):
@@ -1219,7 +1221,8 @@ class AjaxReviewTest(unittest.TestCase):
         # get one argument with the new premisegroup
         db_new_pgroup = DBDiscussionSession.query(PremiseGroupSplitted).filter_by(old_premisegroup_uid=uid).first()
         db_argument_new1 = DBDiscussionSession.query(Argument).get(db_argument_old.uid)
-        db_argument_new2 = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=db_new_pgroup.new_premisegroup_uid).first()
+        db_argument_new2 = DBDiscussionSession.query(Argument).filter_by(
+            premisesgroup_uid=db_new_pgroup.new_premisegroup_uid).first()
         new_text1 = get_text_for_argument_uid(db_argument_new1.uid)
         new_text2 = get_text_for_argument_uid(db_argument_new2.uid)
 
@@ -1263,7 +1266,8 @@ class AjaxReviewTest(unittest.TestCase):
         # get one argument with the new premisegroup
         db_new_pgroup = DBDiscussionSession.query(PremiseGroupMerged).filter_by(old_premisegroup_uid=uid).first()
         db_argument_new1 = DBDiscussionSession.query(Argument).get(db_argument_old.uid)
-        db_argument_new2 = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=db_new_pgroup.new_premisegroup_uid).first()
+        db_argument_new2 = DBDiscussionSession.query(Argument).filter_by(
+            premisesgroup_uid=db_new_pgroup.new_premisegroup_uid).first()
         new_text1 = get_text_for_argument_uid(db_argument_new1.uid)
         new_text2 = get_text_for_argument_uid(db_argument_new2.uid)
 

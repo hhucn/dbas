@@ -139,7 +139,7 @@
                         <li id="opinion-barometer-img" tal:attributes="titel extras.title.barometer" tal:condition="extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true"></i><span class="sidebar-element">${extras.title.barometer}</span></li>
                         <li id="display-style-icon-graph-img" tal:attributes="titel extras.title.graph_view" tal:condition="extras.show_graph_icon"><i class="fa fa-sitemap" aria-hidden="true"></i><span class="sidebar-element">${extras.title.graph_view}</span></li>
                         <li id="sidebar-search-statement" tal:attributes="title extras.tag.search"><i class="fa fa-search" aria-hidden="true"></i><span class="sidebar-element">${extras.tag.search}</span></li>
-                        <li id="finish-button" tal:attributes="titel extras.title.finish_title" onclick="window.location='/discuss/finish'"><i class="fa fa-sign-out" aria-hidden="true"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
+                        <li id="finish-button" tal:attributes="titel extras.title.finish_title" onclick="window.location='/discuss/exit'"><i class="fa fa-sign-out" aria-hidden="true"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
                     </ul>
 
                     <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
@@ -244,7 +244,7 @@
                         <span id="add-premise-error-msg"></span>
                     </div>
                     <div id="add-premise-container-body">
-                        <div class="container-three-divs" style="padding-bottom: 2em;">
+                        <div class="container-three-divs">
                             <div class="flex-div">
 
                                 <div class="form-group">

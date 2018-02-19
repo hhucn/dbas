@@ -1,7 +1,6 @@
 import unittest
 
 import transaction
-from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Argument, Premise, ClickedArgument, SeenArgument, Issue
@@ -18,7 +17,8 @@ class RelationHelperTest(unittest.TestCase):
         self.db_issue = DBDiscussionSession.query(Issue).get(2)
 
     def tearDown(self):
-        for uid in [arg.uid for arg in DBDiscussionSession.query(Argument).filter_by(author_uid=self.db_user.uid).all()]:
+        for uid in [arg.uid for arg in
+                    DBDiscussionSession.query(Argument).filter_by(author_uid=self.db_user.uid).all()]:
             DBDiscussionSession.query(ClickedArgument).filter_by(argument_uid=uid).delete()
             DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=uid).delete()
         DBDiscussionSession.query(Argument).filter_by(author_uid=self.db_user.uid).delete()
@@ -91,20 +91,21 @@ class RelationHelperTest(unittest.TestCase):
 
     def test_set_new_undermine_or_support_for_pgroup(self):
         db_argument = DBDiscussionSession.query(Argument).get(1)
-        db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).first()
+        db_premise = DBDiscussionSession.query(Premise).filter_by(
+            premisesgroup_uid=db_argument.premisesgroup_uid).first()
 
-        before = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == 1,
-                                                                 Argument.conclusion_uid == db_premise.statement_uid)).all()
+        before = DBDiscussionSession.query(Argument).filter(Argument.premisesgroup_uid == 1,
+                                                            Argument.conclusion_uid == db_premise.statement_uid).all()
         set_new_undermine_or_support_for_pgroup(1, db_argument, False, self.db_user, self.db_issue)
-        after = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == 1,
-                                                                Argument.conclusion_uid == db_premise.statement_uid)).all()
+        after = DBDiscussionSession.query(Argument).filter(Argument.premisesgroup_uid == 1,
+                                                           Argument.conclusion_uid == db_premise.statement_uid).all()
         self.assertLess(len(before), len(after))
 
-        before = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == 1,
-                                                                 Argument.conclusion_uid == db_premise.statement_uid)).all()
+        before = DBDiscussionSession.query(Argument).filter(Argument.premisesgroup_uid == 1,
+                                                            Argument.conclusion_uid == db_premise.statement_uid).all()
         set_new_undermine_or_support_for_pgroup(1, db_argument, True, self.db_user, self.db_issue)
-        after = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == 1,
-                                                                Argument.conclusion_uid == db_premise.statement_uid)).all()
+        after = DBDiscussionSession.query(Argument).filter(Argument.premisesgroup_uid == 1,
+                                                           Argument.conclusion_uid == db_premise.statement_uid).all()
         self.assertLess(len(before), len(after))
 
     def test_set_new_undercut(self):
@@ -126,9 +127,9 @@ class RelationHelperTest(unittest.TestCase):
     def test_set_new_support(self):
         db_argument = DBDiscussionSession.query(Argument).get(1)
 
-        before = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == 1,
-                                                                 Argument.conclusion_uid == db_argument.conclusion_uid)).all()
+        before = DBDiscussionSession.query(Argument).filter(Argument.premisesgroup_uid == 1,
+                                                            Argument.conclusion_uid == db_argument.conclusion_uid).all()
         set_new_support(1, db_argument, self.db_user, self.db_issue)
-        after = DBDiscussionSession.query(Argument).filter(and_(Argument.premisesgroup_uid == 1,
-                                                                Argument.conclusion_uid == db_argument.conclusion_uid)).all()
+        after = DBDiscussionSession.query(Argument).filter(Argument.premisesgroup_uid == 1,
+                                                           Argument.conclusion_uid == db_argument.conclusion_uid).all()
         self.assertLess(len(before), len(after))

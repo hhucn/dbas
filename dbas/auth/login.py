@@ -30,7 +30,7 @@ oauth_providers = ['google', 'github', 'facebook', 'twitter']
 
 def login_user(nickname: str, password: str, mailer: Mailer, lang='en') -> dict:
     """
-    Try to login the user whereby she is maybe a HHU-LDAP user or known locally.
+    Try to login the user whereby she is maybe a HHU-LDAP user or known locally
 
     :param nickname: User.nickname
     :param password: String
@@ -45,8 +45,8 @@ def login_user(nickname: str, password: str, mailer: Mailer, lang='en') -> dict:
     # 1. the user is unknown in our DB, maybe has HHU-LDAP account
     # 2. oauth nickname
     # 3. the user is known, but
-    #  a) kept local
-    #  b) kept in ldap
+    #  a) keep local
+    #  b) keep in ldap
     db_user = get_user_by_case_insensitive_nickname(nickname)
     if not db_user:  # this is 1.
         return __register_user_with_ldap_data(mailer, nickname, password, _tn)
@@ -214,8 +214,12 @@ def __set_oauth_user(request, user_data, service, ui_locales):
         logger('Auth.Login', '__set_oauth_user', 'Error occured')
         return {'error': _tn.get(_.errorTryLateOrContant)}
 
-    ret_dict = user.set_new_oauth_user(user_data['firstname'], user_data['lastname'], user_data['nickname'],
-                                       user_data['email'], user_data['gender'], user_data['password'], user_data['id'],
+    ret_dict = user.set_new_oauth_user(user_data['firstname'],
+                                       user_data['lastname'],
+                                       user_data['nickname'],
+                                       user_data['email'],
+                                       user_data['gender'],
+                                       user_data['id'],
                                        service, _tn)
 
     if ret_dict['success']:
