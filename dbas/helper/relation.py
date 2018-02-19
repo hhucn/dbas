@@ -253,7 +253,7 @@ def set_new_rebut(premisegroup_uid, current_argument: Argument, db_user: User, d
         return db_argument, True
     else:
         db_tmp = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisegroup_uid).all()
-        if any([p.statement_uid == current_argument.statement_uid for p in db_tmp]):
+        if any([p.statement_uid == current_argument.conclusion_uid for p in db_tmp]):
             return False, False
         new_argument = Argument(premisegroup=premisegroup_uid,
                                 issupportive=False,
