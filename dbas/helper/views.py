@@ -4,8 +4,6 @@ Helper for D-BAS Views
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-from pyramid.httpexceptions import HTTPNotFound
-
 import dbas.handler.voting as voting_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Issue
