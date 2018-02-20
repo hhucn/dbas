@@ -17,7 +17,7 @@ def valid_table_name(request):
     :param request:
     :return:
     """
-    table_name = request.json_body.get('table')
+    table_name = request.json_body.get('table', '')
     if table_name.lower() in table_mapper:
         request.validated['table'] = table_name
     else:

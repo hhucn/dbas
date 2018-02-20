@@ -360,7 +360,7 @@ def get_count_of_votes_of_user(user, limit_on_today=False):
         db_arg = db_arg.filter(MarkedArgument.timestamp >= today)
         db_stat = db_stat.filter(MarkedStatement.timestamp >= today)
 
-    return len(db_arg), len(db_stat)
+    return db_arg.count(), db_stat.count()
 
 
 def get_count_of_clicks(user, limit_on_today=False):
@@ -382,10 +382,7 @@ def get_count_of_clicks(user, limit_on_today=False):
         db_arg = db_arg.filter(ClickedArgument.timestamp >= today)
         db_stat = db_stat.filter(ClickedStatement.timestamp >= today)
 
-    db_arg = db_arg.all()
-    db_stat = db_stat.all()
-
-    return len(db_arg), len(db_stat)
+    return db_arg.count(), db_stat.count()
 
 
 def get_textversions(db_user: User, lang: str, timestamp_after=None, timestamp_before=None):
