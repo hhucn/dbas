@@ -8,10 +8,22 @@ from search.routes import get_suggestions_path, get_edits_path, get_duplicates_o
     get_statements_with_value_path
 
 
-class TestIntegrationSearch(unittest.TestCase):
+class TestRoutes(unittest.TestCase):
 
-    def test_get_response_status_200(self):
+    def test_get_suggestions_status_200(self):
         response = requests.get(ROUTE_API + "/suggestions")
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_edits_status_200(self):
+        response = requests.get(ROUTE_API + "/edits")
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_duplicates_reasons_status_200(self):
+        response = requests.get(ROUTE_API + "/duplicates_reasons")
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_statements_status_200(self):
+        response = requests.get(ROUTE_API + "/statements")
         self.assertEqual(response.status_code, 200)
 
     def test_invalid_request_has_404(self):
