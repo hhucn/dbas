@@ -341,7 +341,7 @@ function prepareLoginRegistrationPopup(){
 		}
 	});
 
-	$('#' + popupLoginCloseButton1, '#' + popupLoginCloseButton2).click(function(){
+	$('#' + popupLoginCloseButton1 + ',#' + popupLoginCloseButton2).click(function(){
 		new PopupHandler().hideExtraViewsOfLoginPopup();
 		$('#' + popupLogin).modal('hide');
 		$('#' + popupLoginButtonLogin).show();
