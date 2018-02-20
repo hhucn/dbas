@@ -26,7 +26,7 @@ stages:
 build_test_images:
   stage: build
   tags:
-    - 10c
+    - 40c
   script:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker build -t $CI_REGISTRY_IMAGE --pull .
@@ -66,7 +66,7 @@ unit:
   stage: test
   script:
     # - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=admin --cover-xml -w . dbas graph admin api
-    - nosetests --with-coverage --cover-package=dbas --cover-package=graph --cover-package=admin --cover-xml -w . dbas graph admin
+    - nosetests --with-coverage --cover-package=dbas --cover-package=graph --cover-package=admin --cover-xml -w . api.v2 dbas graph admin
   coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
   artifacts:
     paths:
