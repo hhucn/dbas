@@ -88,6 +88,22 @@ def valid_user_as_author(request):
     return False
 
 
+def valid_user_as_admin(request):
+    """
+
+    :param request:
+    :return:
+    """
+    _tn = Translator(get_language_from_cookie(request))
+    if valid_user(request):
+        db_user = request.validated['user']
+        if db_user.is_admin():
+            return True
+        else:
+            add_error(request, 'valid_user_as_admin', 'Invalid user group', _tn.get(_.justLookDontTouch))
+    return False
+
+
 def invalid_user(request):
     """
     Given a nickname of a (un)-authenticated user, return the object from the database.

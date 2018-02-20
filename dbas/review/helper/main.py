@@ -69,14 +69,14 @@ def __get_review_count(review_type, review_uid):
     """
     db_reviews = DBDiscussionSession.query(review_type).filter_by(review_uid=review_uid)
     if review_type is LastReviewerMerge:
-        count_of_okay = len(db_reviews.filter_by(should_merge=True).all())
-        count_of_not_okay = len(db_reviews.filter_by(should_merge=False).all())
+        count_of_okay = db_reviews.filter_by(should_merge=True).count()
+        count_of_not_okay = db_reviews.filter_by(should_merge=False).count()
     elif review_type is LastReviewerSplit:
-        count_of_okay = len(db_reviews.filter_by(should_split=True).all())
-        count_of_not_okay = len(db_reviews.filter_by(should_split=False).all())
+        count_of_okay = db_reviews.filter_by(should_split=True).count()
+        count_of_not_okay = db_reviews.filter_by(should_split=False).count()
     else:
-        count_of_okay = len(db_reviews.filter_by(is_okay=True).all())
-        count_of_not_okay = len(db_reviews.filter_by(is_okay=False).all())
+        count_of_okay = db_reviews.filter_by(is_okay=True).count()
+        count_of_not_okay = db_reviews.filter_by(is_okay=False).count()
     return count_of_okay, count_of_not_okay
 
 

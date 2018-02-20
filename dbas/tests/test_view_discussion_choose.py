@@ -23,7 +23,7 @@ class DiscussionChoseViewTests(unittest.TestCase):
     def test_page(self):
         from dbas.views import discussion_choose as d
 
-        len_db_seen1 = len(DBDiscussionSession.query(SeenStatement).all())
+        len_db_seen1 = DBDiscussionSession.query(SeenStatement).count()
 
         request = testing.DummyRequest()
         request.matchdict = {
@@ -36,7 +36,7 @@ class DiscussionChoseViewTests(unittest.TestCase):
         response = d(request)
         verify_dictionary_of_view(self, response)
 
-        len_db_seen2 = len(DBDiscussionSession.query(SeenStatement).all())
+        len_db_seen2 = DBDiscussionSession.query(SeenStatement).count()
         # not logged in, no change
         self.assertEqual(len_db_seen1, len_db_seen2)
 
@@ -44,7 +44,7 @@ class DiscussionChoseViewTests(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import discussion_choose as d
 
-        len_db_seen1 = len(DBDiscussionSession.query(SeenStatement).all())
+        len_db_seen1 = DBDiscussionSession.query(SeenStatement).count()
 
         request = testing.DummyRequest()
         request.matchdict = {
@@ -57,9 +57,9 @@ class DiscussionChoseViewTests(unittest.TestCase):
         response = d(request)
         verify_dictionary_of_view(self, response)
 
-        len_db_seen2 = len(DBDiscussionSession.query(SeenStatement).all())
+        len_db_seen2 = DBDiscussionSession.query(SeenStatement).count()
 
-        count = len(DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=self.pgroup_uid).all())
+        count = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=self.pgroup_uid).count()
         self.assertEqual(len_db_seen1 + count, len_db_seen2)
 
     def test_page_fail(self):

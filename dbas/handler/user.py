@@ -360,7 +360,7 @@ def get_count_of_votes_of_user(user, limit_on_today=False):
         db_arg = db_arg.filter(MarkedArgument.timestamp >= today)
         db_stat = db_stat.filter(MarkedStatement.timestamp >= today)
 
-    return len(db_arg.all()), len(db_stat.all())
+    return len(db_arg), len(db_stat)
 
 
 def get_count_of_clicks(user, limit_on_today=False):

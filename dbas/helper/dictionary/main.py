@@ -173,9 +173,9 @@ class DictionaryHelper(object):
         return_dict['close_statement_container'] = True
         return_dict['date'] = arrow.utcnow().format('DD-MM-YYYY')
         return_dict['count_of'] = {
-            'arguments': len(DBDiscussionSession.query(Argument).all()),
-            'users': len(DBDiscussionSession.query(User).all()),
-            'discussions': len(DBDiscussionSession.query(Issue).all()),
+            'arguments': DBDiscussionSession.query(Argument).count(),
+            'users': DBDiscussionSession.query(User).count(),
+            'discussions': DBDiscussionSession.query(Issue).count(),
             'reviews': get_count_of_all(),
         }
         self.__add_title_text(return_dict, is_logged_in)

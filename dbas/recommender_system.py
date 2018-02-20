@@ -349,10 +349,10 @@ def __evaluate_argument(argument_uid):
     db_valid_votes = db_votes.filter(is_valid=True)
     db_valid_upvotes = db_valid_votes.filter(is_up_vote=True)
 
-    votes = len(db_votes.all())
-    valid_votes = len(db_valid_votes.all())
-    valid_upvotes = len(db_valid_upvotes.all())
-    all_users = len(DBDiscussionSession.query(User).all())
+    votes = db_votes.count()
+    valid_votes = db_valid_votes.count()
+    valid_upvotes = db_valid_upvotes.count()
+    all_users = DBDiscussionSession.query(User).count()
 
     if valid_votes == 0:
         valid_votes = 1

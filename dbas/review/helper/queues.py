@@ -88,7 +88,7 @@ def get_review_queues_as_lists(main_page, translator, nickname):
 
 def get_count_of_all():
     reviews = [ReviewDelete, ReviewOptimization, ReviewEdit, ReviewDuplicate, ReviewSplit, ReviewMerge]
-    count = [len(DBDiscussionSession.query(r).all()) for r in reviews]
+    count = [DBDiscussionSession.query(r).count() for r in reviews]
     return sum(count)
 
 

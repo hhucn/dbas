@@ -50,3 +50,8 @@ class AdminViewTest(unittest.TestCase):
         self.assertIn('title', response)
         self.assertIn('project', response)
         self.assertIn('extras', response)
+        self.assertIsNotNone(response['table'].get('name'))
+        self.assertIsNotNone(response['table'].get('has_elements'))
+        self.assertIsNotNone(response['table'].get('count'))
+        self.assertIsNotNone(response['table'].get('head'))
+        self.assertIsNotNone(response['table'].get('row'))

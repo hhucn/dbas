@@ -20,13 +20,13 @@ class DiscussionInitViewTests(unittest.TestCase):
         from dbas.views import discussion_init as d
 
         # check count of seen by statements
-        len_db_seen1 = len(DBDiscussionSession.query(SeenStatement).all())
+        len_db_seen1 = DBDiscussionSession.query(SeenStatement).count()
 
         request = testing.DummyRequest()
         response = d(request)
         verify_dictionary_of_view(self, response)
 
-        len_db_seen2 = len(DBDiscussionSession.query(SeenStatement).all())
+        len_db_seen2 = DBDiscussionSession.query(SeenStatement).count()
         # not logged in, no change
         self.assertEqual(len_db_seen1, len_db_seen2)
 
@@ -36,7 +36,7 @@ class DiscussionInitViewTests(unittest.TestCase):
 
         # check count of seen by statements
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-        len_db_seen1 = len(DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).all())
+        len_db_seen1 = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).count()
 
         request = testing.DummyRequest()
         response = d(request)
@@ -45,7 +45,7 @@ class DiscussionInitViewTests(unittest.TestCase):
         # elements, which were seen
         self.assertIn('elements', response['items'])
         el_count = len(response['items']['elements']) - 1  # -1 for login / add
-        len_db_seen2 = len(DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).all())
+        len_db_seen2 = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).count()
         self.assertEqual(len_db_seen1 + el_count, len_db_seen2)
         transaction.commit()  # normally pyramid_tm does this
 
@@ -55,14 +55,14 @@ class DiscussionInitViewTests(unittest.TestCase):
 
         # check count of seen by statements
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-        len_db_seen1 = len(DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).all())
+        len_db_seen1 = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).count()
 
         request = testing.DummyRequest()
         response = d(request)
         verify_dictionary_of_view(self, response)
 
         # elements, which were seen are now equals the first, cause we have seen them already
-        len_db_seen2 = len(DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).all())
+        len_db_seen2 = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).count()
         self.assertEqual(len_db_seen1, len_db_seen2)
 
         # remove seen statements
