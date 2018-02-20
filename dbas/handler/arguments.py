@@ -205,7 +205,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
                                      statement_min_length)
 
     elif len(new_argument_uids) == 1:
-        url = _um.get_url_for_new_argument(new_argument_uids, not for_api)
+        url = _um.get_url_for_new_argument(new_argument_uids, False)
 
     else:
         url = __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type,
