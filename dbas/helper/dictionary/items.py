@@ -211,21 +211,21 @@ class ItemDictHelper(object):
                                                               attack_url=_um.get_url_for_jump(False, argument.uid)))
 
         if type(db_arguments) is list and len(db_arguments) > 0:
-            n = db_user.nickname if db_user else nick_of_anonymous_user
-            random.seed(int(hashlib.md5(str.encode(str(n))).hexdigest(), 16))
+            random.seed(int(hashlib.md5(str.encode(str(db_user.nickname))).hexdigest(), 16))
             random.shuffle(statements_array)
 
         if not self.issue_read_only:
-            if db_user:
+            if db_user.nickname != nick_of_anonymous_user:
                 statements_array.append(self.__create_answer_dict('start_premise',
                                                                   [{'title': _tn.get(_.newPremiseRadioButtonText),
                                                                     'id': 0}],
                                                                   'justify',
                                                                   'add'))
             else:
-                statements_array.append(
-                    self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.onlyOneItem)}], 'justify',
-                                              'login'))
+                statements_array.append(self.__create_answer_dict('login',
+                                                                  [{'id': '0', 'title': _tn.get(_.onlyOneItem)}],
+                                                                  'justify',
+                                                                  'login'))
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_arguments)}}
 
@@ -252,7 +252,7 @@ class ItemDictHelper(object):
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
 
         for argument in db_arguments:
-            if db_user:  # add seen by if the statement is visible
+            if db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
                 add_seen_argument(argument_uid, db_user)
             # get all premises in this group
             db_premises = DBDiscussionSession.query(Premise).filter_by(
@@ -296,12 +296,11 @@ class ItemDictHelper(object):
                                                               attack_url=_um.get_url_for_jump(False, argument.uid)))
 
         if type(db_arguments) is list and len(db_arguments) > 0:
-            n = db_user.nickname if db_user else nick_of_anonymous_user
-            random.seed(int(hashlib.md5(str.encode(str(n))).hexdigest(), 16))
+            random.seed(int(hashlib.md5(str.encode(str(db_user.nickname))).hexdigest(), 16))
             random.shuffle(statements_array)
 
         if not self.issue_read_only:
-            if logged_in:
+            if db_user.nickname != nick_of_anonymous_user:
                 text = _tn.get(_.newPremiseRadioButtonText)
                 if len(statements_array) == 0:
                     text = _tn.get(_.newPremiseRadioButtonTextAsFirstOne)
@@ -311,7 +310,9 @@ class ItemDictHelper(object):
             else:
                 # elif len(statements_array) == 1:
                 statements_array.append(
-                    self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.onlyOneItem)}], 'justify',
+                    self.__create_answer_dict('login',
+                                              [{'id': '0', 'title': _tn.get(_.onlyOneItem)}],
+                                              'justify',
                                               'login'))
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_arguments)}}
@@ -379,7 +380,7 @@ class ItemDictHelper(object):
                                      '/justify/{}/d'.format(argument_uid))
         _um = UrlManager(self.application_url, slug, self.for_api, history=tmp_path)
 
-        if db_user:  # add seen by if the statement is visible
+        if db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
             add_seen_argument(argument_uid, db_user)
 
         rel_dict = get_relation_text_dict_with_substitution(self.lang, False, is_dont_know=True, gender=gender)
@@ -656,11 +657,12 @@ class ItemDictHelper(object):
             for premise in db_premises:
                 text = get_text_for_statement_uid(premise.statement_uid)
                 premise_array.append({'title': text, 'id': premise.statement_uid})
-                if db_user:  # add seen by if the statement is visible
+                if db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
                     add_seen_statement(premise.statement_uid, db_user)
 
             # get attack for each premise, so the urls will be unique
-            logger('ItemDictHelper', 'get_array_for_choosing', 'premisesgroup_uid: ' + str(group_id) +
+            logger('ItemDictHelper', 'get_array_for_choosing',
+                   'premisesgroup_uid: ' + str(group_id) +
                    ', conclusion_uid: ' + str(conclusion) +
                    ', argument_uid: ' + str(argument) +
                    ', is_supportive: ' + str(is_supportive))
