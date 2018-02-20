@@ -95,7 +95,7 @@ function AjaxNotificationHandler(){
 			var out_counter = $('#total_out_counter');
 			out_counter.text(' ' + (parseInt(out_counter.text()) + 1) + ' ');
 			location.reload(true);
-		}).fail(function ajaxSendNewsFail() {
+		}).fail(function ajaxSendNewsFail(data) {
 			$('#popup-writing-notification-failed').show();
 			$('#popup-writing-notification-failed-message').html(data.responseJSON.errors[0].description);
 		});

@@ -44,7 +44,7 @@ from dbas.validators.user import valid_user, invalid_user
 from websocket.lib import get_port
 
 name = 'D-BAS'
-version = '1.5.5'
+version = '2.0.0'
 full_version = version
 project_name = name + ' ' + full_version
 
