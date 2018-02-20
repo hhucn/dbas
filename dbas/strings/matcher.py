@@ -19,16 +19,21 @@ from dbas.lib import get_public_profile_picture
 from dbas.query_wrapper import get_not_disabled_statement_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.url_manager import UrlManager
+from search.requester import get_suggestions, get_edits, get_duplicates_or_reasons, get_statements_with_value
 
 list_length = 5
 max_count_zeros = 5
 index_zeros = 3
 return_count = 10  # same number as in googles suggest list (16.12.2015)
 mechanism = 'Levensthein'
+elastic = 'ElasticSearch'
+
+
 # mechanism = 'SequenceMatcher'
 
 
-def get_prediction(_tn, for_api, api_data, request_authenticated_userid, issue_uid, application_url, value, mode, issue, extra=None):
+def get_prediction(_tn, for_api, api_data, request_authenticated_userid, issue_uid, application_url, value, mode, issue,
+                   extra=None):
     """
     Get dictionary with matching words, based on the given mode
 
@@ -46,17 +51,16 @@ def get_prediction(_tn, for_api, api_data, request_authenticated_userid, issue_u
     """
 
     return_dict = {}
-    if mode == '0':  # start statement
-        return_dict['values'] = get_strings_for_start(value, issue, True)
-        return_dict['distance_name'] = mechanism
+
+    if mode in ['0', '2']:
+        search = get_suggestions(issue_uid, (False, True)[mode == '0'], value)
+        levensthein = get_strings_for_start(value, issue, (False, True)[mode == '0'])
+        return_dict['values'], return_dict['distance_name'] = get_result_or_fallback(search, levensthein)
 
     elif mode == '1':  # edit statement popup
-        return_dict['values'] = get_strings_for_edits(value, extra)
-        return_dict['distance_name'] = mechanism
-
-    elif mode == '2':  # start premise
-        return_dict['values'] = get_strings_for_start(value, issue, False)
-        return_dict['distance_name'] = mechanism
+        search = get_edits(issue_uid, extra, value)
+        levensthein = get_strings_for_edits(value, extra)
+        return_dict['values'], return_dict['distance_name'] = get_result_or_fallback(search, levensthein)
 
     elif mode == '3' or mode == '4':  # adding reasons / duplicates
         try:
@@ -64,22 +68,30 @@ def get_prediction(_tn, for_api, api_data, request_authenticated_userid, issue_u
         except (TypeError, ValueError):
             uid = None
 
-        return_dict['values'] = get_strings_for_duplicates_or_reasons(value, issue, uid)
-        return_dict['distance_name'] = mechanism
+        search = get_duplicates_or_reasons(issue_uid, uid, value)
+        levensthein = get_strings_for_duplicates_or_reasons(value, issue, uid)
+        return_dict['values'], return_dict['distance_name'] = get_result_or_fallback(search, levensthein)
 
     elif mode == '5':  # getting public nicknames
         nickname = get_nickname(request_authenticated_userid, for_api, api_data)
         return_dict['values'] = get_strings_for_public_nickname(value, nickname)
         return_dict['distance_name'] = mechanism
 
-    elif mode == '9' or mode == '8':  # search everything
-        return_dict['values'] = get_all_statements_with_value(issue_uid, application_url, value)
-        return_dict['distance_name'] = mechanism
+    elif mode in ['8', '9']:
+        search = get_statements_with_value(issue_uid, application_url, value)
+        levensthein = get_all_statements_with_value(issue_uid, application_url, value)
+        return_dict['values'], return_dict['distance_name'] = get_result_or_fallback(search, levensthein)
 
     else:
         return_dict = {'error': _tn.get(_.internalError)}
 
     return return_dict
+
+
+def get_result_or_fallback(elastic_search, levensthein_search):
+    if elastic_search is None or len(elastic_search) == 0:
+        return levensthein_search, mechanism
+    return elastic_search, elastic
 
 
 def get_all_statements_with_value(issue_uid, application_url, value):
@@ -94,9 +106,11 @@ def get_all_statements_with_value(issue_uid, application_url, value):
     db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue_uid).all()
     return_array = []
     slug = DBDiscussionSession.query(Issue).get(issue_uid).slug
+    print(slug, type(issue_uid), issue_uid)
     _um = UrlManager(application_url, for_api=False, slug=slug)
     for stat in db_statements:
-        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(TextVersion.uid.asc()).first()
+        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(
+            TextVersion.uid.asc()).first()
         if value.lower() in db_tv.content.lower():
             rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
             rd['url'] = _um.get_url_for_statement_attitude(False, db_tv.statement_uid)
@@ -120,7 +134,8 @@ def get_strings_for_start(value, issue, is_startpoint):
                                                                       Statement.issue_uid == issue)).all()
     return_array = []
     for stat in db_statements:
-        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(TextVersion.uid.asc()).first()
+        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(
+            TextVersion.uid.asc()).first()
         if value.lower() in db_tv.content.lower():
             rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
             return_array.append(rd)
@@ -145,7 +160,8 @@ def get_strings_for_edits(value, statement_uid):
     index = 1
     for textversion in db_tvs:
         if value.lower() in textversion.content.lower():
-            rd = __get_fuzzy_string_dict(current_text=value, return_text=textversion.content, uid=textversion.statement_uid)  # TODO #432
+            rd = __get_fuzzy_string_dict(current_text=value, return_text=textversion.content,
+                                         uid=textversion.statement_uid)  # TODO #432
             return_array.append(rd)
             index += 1
 
@@ -160,25 +176,23 @@ def get_strings_for_duplicates_or_reasons(value, issue, oem_value_uid=None):
 
     :param value: string
     :param issue: Issue.uid
-    :param oem_value: integer
+    :param oem_value_uid: integer
     :return: dict()
     """
-    db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
+
+    db_statements = get_not_disabled_statement_as_query().filter(and_(Statement.issue_uid == issue,
+                                                                      Statement.uid != oem_value_uid)).all()
     return_array = []
 
     for stat in db_statements:
-        if stat.uid is oem_value_uid:
-            continue
-
-        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(TextVersion.uid.asc()).first()
-        if value.lower() in db_tv.content.lower():  # and db_tv.content.lower() != oem_value.lower():
-            rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)  # TODO #432
+        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(
+            TextVersion.uid.asc()).first()
+        if value.lower() in db_tv.content.lower():
+            rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content,
+                                         uid=db_tv.statement_uid)  # TODO #432
             return_array.append(rd)
 
     return_array = __sort_array(return_array)
-
-    # logger('fuzzy_string_matcher', 'get_strings_for_duplicates_or_reasons',
-    # 'string: {}, issue {}, len(dict): '.format(value, issue, len(return_array))
 
     return return_array[:list_length]
 
@@ -210,7 +224,8 @@ def get_strings_for_search(value):
     :return: dict() with Statements.uid as key and 'text', 'distance' as well as 'arguments' as values
     """
     tmp_dict = OrderedDict()
-    db_statements = get_not_disabled_statement_as_query().join(TextVersion, Statement.textversion_uid == TextVersion.uid).all()
+    db_statements = get_not_disabled_statement_as_query().join(TextVersion,
+                                                               Statement.textversion_uid == TextVersion.uid).all()
     for stat in db_statements:
         if value.lower() in stat.textversions.content.lower():
             # get distance between input value and saved value
@@ -250,7 +265,8 @@ def get_strings_for_public_nickname(value, nickname):
     :return: dict()
     """
     db_user = DBDiscussionSession.query(User).filter(func.lower(User.public_nickname).contains(func.lower(value)),
-                                                     ~User.public_nickname.in_([nickname, 'admin', nick_of_anonymous_user])).all()
+                                                     ~User.public_nickname.in_(
+                                                         [nickname, 'admin', nick_of_anonymous_user])).all()
     return_array = []
 
     for index, user in enumerate(db_user):

@@ -8,7 +8,7 @@ from search.routes import get_statements_with_value_path, get_duplicates_or_reas
 
 
 def request_as_json(query):
-    return requests.get(url=query).json()
+    return requests.get(query).json()
 
 
 def get_suggestions(issue_uid: int, is_start_point: bool, search=""):
@@ -23,15 +23,16 @@ def get_statements_with_value(issue_uid: int, application_url, search=""):
 
     results = []
     current_results = request_as_json(query)
-    for result in current_results:
-        new_content = {
-            "text": result["text"],
-            "statement_uid": result["statement_uid"],
-            "content": result["content"],
-            "score": result["score"],
-            "url": _um.get_url_for_statement_attitude(False, result["statement_uid"])
-        }
-        results.append(new_content)
+    if current_results is not None:
+        for result in current_results:
+            new_content = {
+                "text": result["text"],
+                "statement_uid": result["statement_uid"],
+                "content": result["content"],
+                "score": result["score"],
+                "url": _um.get_url_for_statement_attitude(False, result["statement_uid"])
+            }
+            results.append(new_content)
     return results
 
 
