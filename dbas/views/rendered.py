@@ -69,7 +69,7 @@ def prepare_request_dict(request, nickname, for_api=False):
         if not isinstance(request.matchdict['slug'], str) and len(request.matchdict['slug']) > 0:
             slug = request.matchdict['slug'][0]
 
-    if not slug and last_topic != 0:
+    if not slug and last_topic:
         issue = last_topic
     elif slug and not for_api:
         issue = issue_handler.get_id_of_slug(slug, request, True)
@@ -85,10 +85,11 @@ def prepare_request_dict(request, nickname, for_api=False):
         else:
             raise HTTPNotFound()
 
+    db_issue = DBDiscussionSession.query(Issue).get(issue)
     if not slug:
-        slug = DBDiscussionSession.query(Issue).get(issue).slug
+        slug = db_issue.slug
 
-    history = history_handler.handle_history(request, nickname, slug, issue)
+    history = history_handler.handle_history(request, nickname, slug, db_issue)
     set_language_for_visit(request)
 
     return {
@@ -99,8 +100,7 @@ def prepare_request_dict(request, nickname, for_api=False):
         'params': request.params,
         'session': request.session,
         'registry': request.registry,
-        'issue': issue,
-        'slug': slug,
+        'issue': db_issue,
         'history': history,
         'ui_locales': ui_locales,
         'last_topic': last_topic,
@@ -671,7 +671,8 @@ def main_review(request):
 
     db_user = DBDiscussionSession.query(User).filter_by(
         nickname=nickname if nickname else nick_of_anonymous_user).first()
-    issue_dict = issue_handler.prepare_json_of_issue(issue, request.application_url, False, db_user)
+    db_issue = DBDiscussionSession.query(Issue).get(issue)
+    issue_dict = issue_handler.prepare_json_of_issue(db_issue, request.application_url, False, db_user)
 
     _tn = Translator(issue_dict['lang'])
     review_dict = review_queue_helper.get_review_queues_as_lists(request.application_url, _tn, nickname)

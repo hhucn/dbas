@@ -423,11 +423,12 @@ class DiscussionDictHelper(object):
         text = get_text_for_argument_uid(argument_uid, user_changed_opinion=user_changed_opinion,
                                          minimize_on_undercut=True, nickname=nickname)
         user_text = text[0:1].upper() + text[1:]
-        sys_text = (_tn.get(_.otherParticipantsDontHaveCounterForThat) + '.') if attack == 'end' else _tn.get(
-            _.otherParticipantsDontHaveNewCounterForThat)
-        tropy = '<i class="fa fa-trophy" aria-hidden="true"></i>'
-        mid_text = tropy + ' ' + _tn.get(_.congratulation) + ' ' + tropy + '<br>'
-        mid_text += _tn.get(_.discussionCongratulationEnd) + ' '
+        if attack == 'end':
+            sys_text = _tn.get(_.otherParticipantsDontHaveCounterForThat) + '.'
+        else:
+            sys_text = _tn.get(_.otherParticipantsDontHaveNewCounterForThat)
+        trophy = '<i class="fa fa-trophy" aria-hidden="true"></i>'
+        mid_text = '{} {} {} <br>{}'.format(trophy, _tn.get(_.congratulation), trophy, _tn.get(_.discussionCongratulationEnd))
 
         # do we have task in the queue?
         count = get_complete_review_count(db_user)

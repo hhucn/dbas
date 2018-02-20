@@ -5,8 +5,6 @@ Helper for D-BAS Views
 """
 
 import dbas.handler.voting as voting_helper
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue
 from dbas.handler import user
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
@@ -93,10 +91,10 @@ def __handle_justification_statement(request_dict, for_api, statement_or_arg_id,
     :return:
     """
     logger('ViewHelper', 'handle_justification_step', 'justify statement')
-    issue = request_dict['issue']
+    db_issue = request_dict['issue']
     supportive = mode == 't' or mode == 'd'  # supportive = t or do not know mode
 
-    if not get_text_for_statement_uid(statement_or_arg_id) or not check_belonging_of_statement(issue,
+    if not get_text_for_statement_uid(statement_or_arg_id) or not check_belonging_of_statement(db_issue.uid,
                                                                                                statement_or_arg_id):
         return None, None, None
     item_dict, discussion_dict, extras_dict = preparation_for_justify_statement(request_dict, for_api,
@@ -114,12 +112,12 @@ def __handle_justification_dont_know(request_dict, for_api, statement_or_arg_id,
     :return:
     """
     logger('ViewHelper', '__handle_justification_dont_know', 'do not know for {}'.format(statement_or_arg_id))
-    issue = request_dict['issue']
+    db_issue = request_dict['issue']
     supportive = mode == 't' or mode == 'd'  # supportive = t or do not know mode
 
     if int(statement_or_arg_id) != 0 and \
-            not check_belonging_of_argument(issue, statement_or_arg_id) and \
-            not check_belonging_of_statement(issue, statement_or_arg_id):
+            not check_belonging_of_argument(db_issue.uid, statement_or_arg_id) and \
+            not check_belonging_of_statement(db_issue.uid, statement_or_arg_id):
         return None, None, None
     item_dict, discussion_dict, extras_dict = preparation_for_dont_know_statement(request_dict, for_api,
                                                                                   statement_or_arg_id, supportive)
@@ -137,14 +135,14 @@ def __handle_justification_argument(request_dict, for_api, statement_or_arg_id, 
     :return:
     """
     logger('ViewHelper', '__handle_justification_argument', 'justify argument')
-    issue = request_dict['issue']
+    db_issue = request_dict['issue']
     ui_locales = request_dict['ui_locales']
     nickname = request_dict['nickname']
     main_page = request_dict['app_url']
     port = request_dict['port']
     supportive = mode == 't' or mode == 'd'  # supportive = t or do not know mode
 
-    if not check_belonging_of_argument(issue, statement_or_arg_id):
+    if not check_belonging_of_argument(db_issue.uid, statement_or_arg_id):
         return None, None, None
     item_dict, discussion_dict, extras_dict = preparation_for_justify_argument(request_dict, for_api,
                                                                                statement_or_arg_id, supportive,
@@ -171,21 +169,21 @@ def preparation_for_justify_statement(request_dict, for_api, statement_uid, supp
     """
     logger('ViewHelper', 'preparation_for_justify_statement', 'main')
 
-    slug = request_dict['slug']
     ui_locales = request_dict['ui_locales']
     history = request_dict['history']
     nickname = request_dict['nickname']
     app_url = request_dict['app_url']
     registry = request_dict['registry']
     path = request_dict['path']
-    issue = request_dict['issue']
+    db_issue = request_dict['issue']
     db_user = request_dict['user']
+    slug = db_issue.slug
 
     logged_in = db_user and db_user.nickname != nick_of_anonymous_user
 
-    disc_ui_locales = DBDiscussionSession.query(Issue).get(issue).lang
+    disc_ui_locales = db_issue.lang
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=app_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, issue, app_url, for_api, path=path, history=history)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, app_url, for_api, path=path, history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
 
     voting_helper.add_click_for_statement(statement_uid, nickname, supportive)
@@ -214,8 +212,7 @@ def preparation_for_dont_know_statement(request_dict, for_api, argument_uid, sup
     """
     logger('ViewHelper', 'preparation_for_dont_know_statement', 'main')
 
-    slug = request_dict['slug']
-    issue = request_dict['issue']
+    db_issue = request_dict['issue']
     ui_locales = request_dict['ui_locales']
     history = request_dict['history']
     nickname = request_dict['nickname']
@@ -223,10 +220,11 @@ def preparation_for_dont_know_statement(request_dict, for_api, argument_uid, sup
     registry = request_dict['registry']
     path = request_dict['path']
     db_user = request_dict['user']
+    slug = db_issue.slug
 
-    disc_ui_locales = DBDiscussionSession.query(Issue).get(issue).lang
+    disc_ui_locales = db_issue.lang
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=app_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, issue, app_url, for_api, path=path, history=history)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, app_url, for_api, path=path, history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
 
     discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid, app_url, nickname)
@@ -261,20 +259,20 @@ def preparation_for_justify_argument(request_dict, for_api, statement_or_arg_id,
     """
     logger('ViewHelper', 'preparation_for_justify_argument', 'main')
 
-    slug = request_dict['slug']
     ui_locales = request_dict['ui_locales']
     history = request_dict['history']
     nickname = request_dict['nickname']
     app_url = request_dict['app_url']
     registry = request_dict['registry']
     path = request_dict['path']
-    issue = request_dict['issue']
+    db_issue = request_dict['issue']
     db_user = request_dict['user']
+    slug = db_issue.slug
     logged_in = db_user and db_user.nickname != nick_of_anonymous_user is not None
 
-    disc_ui_locales = DBDiscussionSession.query(Issue).get(issue).lang
+    disc_ui_locales = db_issue.lang
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=app_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, issue, app_url, for_api, path=path, history=history)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, app_url, for_api, path=path, history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
 
     # justifying argument

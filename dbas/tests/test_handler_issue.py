@@ -30,7 +30,8 @@ class IssueHandlerTests(unittest.TestCase):
         for_api = False
 
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-        response = ih.prepare_json_of_issue(uid, 'http://test.url', for_api, db_user)
+        db_issue = DBDiscussionSession.query(Issue).get(uid)
+        response = ih.prepare_json_of_issue(db_issue, 'http://test.url', for_api, db_user)
         self.assertTrue(len(response) > 0)
 
     def test_get_number_of_arguments(self):

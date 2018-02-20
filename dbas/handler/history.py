@@ -5,6 +5,7 @@ Provides helping function for creating the history as bubbles.
 """
 
 import transaction
+from pyramid.request import Request
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, History, Settings, sql_timestamp_pretty_print, \
@@ -44,25 +45,25 @@ def save_issue_uid(issue_uid, nickname):
 
 def get_saved_issue(nickname):
     """
-    Returns the last used issue of the user or 0
+    Returns the last used issue of the user or None
 
     :param nickname: User.nickname
     :return: Issue.uid or 0
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
-        return 0
+        return None
 
     db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
     if not db_settings:
-        return 0
+        return None
 
     val = db_settings.last_topic_uid
     db_issue = DBDiscussionSession.query(Issue).get(val)
     if not db_issue:
-        return 0
+        return None
 
-    return 0 if db_issue.is_disabled else val
+    return None if db_issue.is_disabled else val
 
 
 def get_splitted_history(history):
@@ -72,12 +73,7 @@ def get_splitted_history(history):
     :param history: String
     :return: [String]
     """
-    history = history.split('-')
-    tmp = []
-    for h in history:
-        tmp.append(h[1:] if h[0:1] == '/' else h)
-
-    return tmp
+    return [his[1:] if his[0:1] == '/' else his for his in history.split('-')]
 
 
 def create_bubbles_from_history(history, nickname='', lang='', application_url='', slug=''):
@@ -101,7 +97,8 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
     consumed_history = ''
 
     nickname = nickname if nickname else nick_of_anonymous_user
-    db_user = nickname if isinstance(nickname, User) else DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_user = nickname if isinstance(nickname, User) else DBDiscussionSession.query(User).filter_by(
+        nickname=nickname).first()
 
     for index, step in enumerate(splitted_history):
         url = application_url + '/discuss/' + slug + '/' + step
@@ -297,7 +294,7 @@ def __get_bubble_from_attitude_step(step, nickname, lang, url):
 
 def __get_bubble_from_dont_know_step(step, db_user, lang, url):
     """
-    Creates bubbles for the dont-know-reaction for a statement.
+    Creates bubbles for the don't-know-reaction for a statement.
 
     :param step: String
     :param nickname: User.nickname
@@ -317,7 +314,8 @@ def __get_bubble_from_dont_know_step(step, db_user, lang, url):
     from dbas.strings.text_generator import get_name_link_of_arguments_author
     _tn = Translator(lang)
 
-    db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(url, db_argument, db_user.nickname, False)
+    db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(url, db_argument, db_user.nickname,
+                                                                               False)
     if is_okay:
         intro = author + ' ' + _tn.get(_.thinksThat)
     else:
@@ -373,11 +371,10 @@ def get_bubble_from_reaction_step(main_page, step, db_user, lang, splitted_histo
             support_counter_argument = False
 
     color_steps = color_steps and attack != 'support'  # special case for the support round
-    current_argument = get_text_for_argument_uid(uid, user_changed_opinion=user_changed_opinion,
-                                                 support_counter_argument=support_counter_argument,
-                                                 colored_position=color_steps,
-                                                 nickname=db_user.nickname,
-                                                 with_html_tag=color_steps)
+    current_arg = get_text_for_argument_uid(uid, user_changed_opinion=user_changed_opinion,
+                                            support_counter_argument=support_counter_argument,
+                                            colored_position=color_steps, nickname=db_user.nickname,
+                                            with_html_tag=color_steps)
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     db_confrontation = DBDiscussionSession.query(Argument).get(additional_uid)
     reply_for_argument = True
@@ -392,16 +389,16 @@ def get_bubble_from_reaction_step(main_page, step, db_user, lang, splitted_histo
     user_is_attacking = not db_argument.is_supportive
 
     if lang != 'de':
-        current_argument = current_argument[0:1].upper() + current_argument[1:]
-        if current_argument.startswith('<'):
-            pos = current_argument.index('>')
-            current_argument = current_argument[0:pos] + current_argument[pos:pos + 1].upper() + current_argument[pos + 1:]
+        current_arg = current_arg[0:1].upper() + current_arg[1:]
+        if current_arg.startswith('<'):
+            pos = current_arg.index('>')
+            current_arg = current_arg[0:pos] + current_arg[pos:pos + 1].upper() + current_arg[pos + 1:]
 
     premise = premise[0:1].lower() + premise[1:]
 
     _tn = Translator(lang)
     user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if last_relation == 'support' else ''
-    user_text += '<{}>{}</{}>'.format(tag_type, current_argument if current_argument != '' else premise, tag_type)
+    user_text += '<{}>{}</{}>'.format(tag_type, current_arg if current_arg != '' else premise, tag_type)
 
     sys_text, tmp = get_text_for_confrontation(main_page, lang, db_user.nickname, premise, conclusion, sys_conclusion,
                                                is_supportive, attack, confr, reply_for_argument, user_is_attacking,
@@ -486,7 +483,7 @@ def delete_history_in_database(db_user):
     return True
 
 
-def handle_history(request, nickname, slug, issue) -> str:
+def handle_history(request: Request, nickname: str, slug: str, issue: Issue) -> str:
     """
 
     :param request: pyramid's request object
@@ -496,9 +493,9 @@ def handle_history(request, nickname, slug, issue) -> str:
     :rtype: str
     :return: current user's history
     """
-    history = request.params['history'] if 'history' in request.params else ''
+    history = request.params.get('history', '')
     save_path_in_database(nickname, slug, request.path, history)
-    save_issue_uid(issue, nickname)
+    save_issue_uid(issue.uid, nickname)
 
     # __save_history_in_cookie(request, request.path, history)
     if request.path.startswith('/discuss/'):

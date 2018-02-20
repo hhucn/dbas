@@ -29,12 +29,12 @@ class ItemDictHelper(object):
     Provides all functions for creating the radio buttons.
     """
 
-    def __init__(self, lang, issue_uid, application_url, for_api=False, path='', history=''):
+    def __init__(self, lang, db_issue: Issue, application_url, for_api=False, path='', history=''):
         """
         Initialize default values
 
         :param lang: ui_locales
-        :param issue_uid: Issue.uid
+        :param db_issue Issue
         :param application_url: application_url
         :param for_api: boolean
         :param path: String
@@ -42,16 +42,16 @@ class ItemDictHelper(object):
         :return:
         """
         self.lang = lang
-        self.issue_uid = issue_uid
+        self.db_issue = db_issue
         self.application_url = application_url
         self.for_api = for_api
         self.LIMIT_SUPPORT_STEP = 0.30
-        self.issue_read_only = DBDiscussionSession.query(Issue).get(self.issue_uid).is_read_only
+        self.issue_read_only = db_issue.is_read_only
 
         if for_api:
-            self.path = path[len('/api/' + DBDiscussionSession.query(Issue).get(issue_uid).slug):]
+            self.path = path[len('/api/' + db_issue.slug):]
         else:
-            self.path = path[len('/discuss/' + DBDiscussionSession.query(Issue).get(issue_uid).slug):]
+            self.path = path[len('/discuss/' + db_issue.slug):]
         if len(history) > 0:
             self.path = history + '-' + self.path
 
@@ -72,10 +72,10 @@ class ItemDictHelper(object):
         logger('ItemDictHelper', 'get_array_for_start', 'def user: {}'.format(db_user.nickname))
         db_statements = get_not_disabled_statement_as_query()
         db_statements = db_statements.filter(Statement.is_startpoint == True,
-                                             Statement.issue_uid == self.issue_uid).all()
+                                             Statement.issue_uid == self.db_issue.uid).all()
 
         uids = rs.get_uids_of_best_positions(db_statements)  # TODO # 166
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
+        slug = self.db_issue.slug
 
         statements_array = []
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
@@ -126,7 +126,7 @@ class ItemDictHelper(object):
         logger('ItemDictHelper', 'prepare_item_dict_for_attitude', 'def')
         _tn = Translator(self.lang)
 
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
+        slug = DBDiscussionSession.query(Issue).get(self.db_issue.uid).slug
         statements_array = []
 
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
@@ -163,7 +163,7 @@ class ItemDictHelper(object):
         logger('ItemDictHelper', 'get_array_for_justify_statement', 'def')
         statements_array = []
         _tn = Translator(self.lang)
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
+        slug = self.db_issue.slug
         db_arguments = rs.get_arguments_by_conclusion(statement_uid, is_supportive)
         uids = rs.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
 
@@ -244,7 +244,7 @@ class ItemDictHelper(object):
                'def: arg {}, attack {}'.format(argument_uid, attack_type))
         statements_array = []
         _tn = Translator(self.lang)
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
+        slug = self.db_issue.slug
         # description in docs: dbas/logic
         db_arguments = self.__get_arguments_based_on_attack(attack_type, argument_uid)
         uids = rs.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
@@ -334,25 +334,25 @@ class ItemDictHelper(object):
             for premise in db_premises:
                 arguments = db_arguments_not_disabled.filter(Argument.conclusion_uid == premise.statement_uid,
                                                              Argument.is_supportive == False,
-                                                             Argument.issue_uid == self.issue_uid).all()
+                                                             Argument.issue_uid == self.db_issue.uid).all()
                 db_arguments = db_arguments + arguments
 
         elif attack_type == 'undercut':
             db_arguments = db_arguments_not_disabled.filter(Argument.argument_uid == argument_uid,
                                                             Argument.is_supportive == False,
-                                                            Argument.issue_uid == self.issue_uid).all()
+                                                            Argument.issue_uid == self.db_issue.uid).all()
 
         elif attack_type == 'rebut':
             db_arguments = db_arguments_not_disabled.filter(Argument.conclusion_uid == db_argument.conclusion_uid,
                                                             Argument.argument_uid == db_argument.argument_uid,
                                                             Argument.is_supportive == False,
-                                                            Argument.issue_uid == self.issue_uid).all()
+                                                            Argument.issue_uid == self.db_issue.uid).all()
 
         elif attack_type == 'support':
             db_arguments = db_arguments_not_disabled.filter(Argument.conclusion_uid == db_argument.conclusion_uid,
                                                             Argument.argument_uid == db_argument.argument_uid,
                                                             Argument.is_supportive == db_argument.is_supportive,
-                                                            Argument.issue_uid == self.issue_uid).all()
+                                                            Argument.issue_uid == self.db_issue.uid).all()
         return db_arguments
 
     def get_array_for_dont_know_reaction(self, argument_uid, is_supportive, db_user, gender):
@@ -366,7 +366,7 @@ class ItemDictHelper(object):
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_dont_know_reaction', 'def')
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
+        slug = self.db_issue.slug
         statements_array = []
 
         db_arguments = get_not_disabled_arguments_as_query()
@@ -491,7 +491,7 @@ class ItemDictHelper(object):
         :return:
         """
         logger('ItemDictHelper', 'get_array_for_reaction', 'def')
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
+        slug = self.db_issue.slug
 
         db_sys_argument = DBDiscussionSession.query(Argument).get(argument_uid_sys)
         db_user_argument = DBDiscussionSession.query(Argument).get(argument_uid_user)
@@ -644,7 +644,7 @@ class ItemDictHelper(object):
         """
         logger('ItemDictHelper', 'get_array_for_choosing', 'def')
         statements_array = []
-        slug = DBDiscussionSession.query(Issue).get(self.issue_uid).slug
+        slug = self.db_issue.slug
         _um = UrlManager(self.application_url, slug, self.for_api, history=self.path)
         conclusion = argument_or_statement_id if not is_argument else None
         argument = argument_or_statement_id if is_argument else None

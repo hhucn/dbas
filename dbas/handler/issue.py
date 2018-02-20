@@ -58,7 +58,7 @@ def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Lan
     return {'issue': get_issue_dict_for(db_issue, application_url, False, 0, db_lang.ui_locales)}
 
 
-def prepare_json_of_issue(uid: int, application_url: str, for_api: bool, db_user: User) -> dict():
+def prepare_json_of_issue(db_issue: Issue, application_url: str, for_api: bool, db_user: User) -> dict():
     """
     Prepares slug, info, argument count and the date of the issue as dict
 
@@ -69,13 +69,12 @@ def prepare_json_of_issue(uid: int, application_url: str, for_api: bool, db_user
     :return: Issue-dict()
     """
     logger('issueHelper', 'prepare_json_of_issue', 'main')
-    db_issue = DBDiscussionSession.query(Issue).get(uid)
 
     slug = slugify(db_issue.title)
     title = db_issue.title
     info = db_issue.info
     long_info = db_issue.long_info
-    stat_count = get_number_of_statements(uid)
+    stat_count = get_number_of_statements(db_issue.uid)
     lang = db_issue.lang
     date_pretty = sql_timestamp_pretty_print(db_issue.date, lang)
     duration = (arrow.utcnow() - db_issue.date)
@@ -84,10 +83,10 @@ def prepare_json_of_issue(uid: int, application_url: str, for_api: bool, db_user
     date_ms = int(db_issue.date.format('X')) * 1000
     date = db_issue.date.format('DD.MM. HH:mm')
 
-    db_issues = get_visible_issues_for_user_as_query(db_user.uid).filter(Issue.uid != uid).all()
+    db_issues = get_visible_issues_for_user_as_query(db_user.uid).filter(Issue.uid != db_issue.uid).all()
     all_array = []
     for issue in db_issues:
-        issue_dict = get_issue_dict_for(issue, application_url, for_api, uid, lang)
+        issue_dict = get_issue_dict_for(issue, application_url, for_api, db_issue.uid, lang)
         all_array.append(issue_dict)
 
     _t = Translator(lang)
@@ -102,7 +101,7 @@ def prepare_json_of_issue(uid: int, application_url: str, for_api: bool, db_user
         'info': info,
         'long_info': long_info,
         'title': title,
-        'uid': uid,
+        'uid': db_issue.uid,
         'stat_count': stat_count,
         'date': date,
         'date_ms': date_ms,
