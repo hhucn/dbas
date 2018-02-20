@@ -38,16 +38,21 @@ from dbas.handler.statements import set_correction_of_statement, set_position, s
 from dbas.handler.voting import clear_vote_and_seen_values_of_user
 from dbas.helper.query import get_default_locale_name, set_user_language, \
     mark_statement_or_argument, get_short_url, revoke_author_of_argument_content, revoke_author_of_statement_content
-from dbas.helper.validation import validate, valid_user, valid_issue, valid_conclusion, has_keywords, \
-    valid_issue_not_readonly, valid_notification_text, valid_notification_title, valid_notification_recipient, \
-    valid_premisegroups, valid_language, valid_new_issue, invalid_user, valid_argument, valid_statement, \
-    valid_not_executed_review, valid_database_model, valid_user_as_author, valid_uid_as_row_in_review_queue, \
-    valid_statement_or_argument, valid_user_as_author_of_statement, valid_user_as_author_of_argument, \
-    valid_review_reason, valid_premisegroup, valid_text_values, has_maybe_keywords, valid_lang_cookie_fallback
 from dbas.lib import escape_string, get_discussion_language
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+from dbas.validators.common import valid_language, valid_lang_cookie_fallback
+from dbas.validators.core import has_keywords, has_maybe_keywords, validate
+from dbas.validators.database import valid_database_model
+from dbas.validators.discussion import valid_issue, valid_new_issue, valid_issue_not_readonly, valid_conclusion, \
+    valid_statement, valid_argument, valid_premisegroup, valid_premisegroups, valid_statement_or_argument, \
+    valid_text_values
+from dbas.validators.notifications import valid_notification_title, valid_notification_text, \
+    valid_notification_recipient
+from dbas.validators.reviews import valid_review_reason, valid_not_executed_review, valid_uid_as_row_in_review_queue
+from dbas.validators.user import valid_user, invalid_user, valid_user_as_author, \
+    valid_user_as_author_of_statement, valid_user_as_author_of_argument
 from websocket.lib import get_port, send_request_for_recent_reviewer_socketio
 
 

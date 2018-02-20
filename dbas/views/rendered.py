@@ -32,15 +32,16 @@ from dbas.handler.language import set_language_for_visit, get_language_from_cook
 from dbas.handler.rss import get_list_of_all_feeds
 from dbas.helper.decoration import prep_extras_dict
 from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.helper.validation import validate, valid_user, invalid_user, check_authentication
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_changelog, nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+from dbas.validators.common import check_authentication
+from dbas.validators.core import validate
+from dbas.validators.user import valid_user, invalid_user
 from websocket.lib import get_port
-
 
 name = 'D-BAS'
 version = '1.5.5'

@@ -8,10 +8,10 @@ from cornice import Service
 
 import dbas.handler.issue as IssueHelper
 from dbas.handler.language import get_language_from_cookie
-from dbas.helper.validation import validate, has_keywords
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+from dbas.validators.core import has_keywords, validate
 from graph.lib import get_d3_data, get_doj_data, get_opinion_data, get_path_of_user
 from graph.partial_graph import get_partial_graph_for_argument, get_partial_graph_for_statement
 
