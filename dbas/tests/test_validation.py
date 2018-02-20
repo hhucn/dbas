@@ -8,7 +8,8 @@ from cornice import Errors
 from pyramid import testing
 
 from dbas.database.discussion_model import ReviewDelete
-from dbas.helper.validation import has_keywords, valid_not_executed_review
+from dbas.validators.core import has_keywords
+from dbas.validators.reviews import valid_not_executed_review
 
 
 def test_has_keywords():

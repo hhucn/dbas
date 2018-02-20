@@ -5,6 +5,7 @@ Introducing an admin interface to enable easy database management.
 """
 
 import json
+
 from cornice import Service
 from pyramid.httpexceptions import exception_response
 
@@ -14,8 +15,10 @@ from dbas.database.discussion_model import User
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.helper.validation import valid_user, validate, valid_table_name, has_keywords
 from dbas.logger import logger
+from dbas.validators.core import has_keywords, validate
+from dbas.validators.database import valid_table_name
+from dbas.validators.user import valid_user
 from dbas.views import user_logout, base_layout, project_name
 
 #
