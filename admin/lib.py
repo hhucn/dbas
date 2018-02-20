@@ -393,9 +393,7 @@ def update_row(table_name, uids, keys, values):
     table = table_mapper[table_name.lower()]['table']
     _tn = Translator('en')
     try:
-        update_dict, success = __update_row_dict(table, values, keys, _tn)
-        if not success:
-            raise ProgrammingError
+        update_dict = __update_row_dict(table, values, keys, _tn)
     except ProgrammingError as e:
         logger('AdminLib', 'update_row ProgrammingError', str(e), error=True)
         return exception_response(400, error='SQLAlchemy ProgrammingError: ' + str(e))
@@ -435,6 +433,8 @@ def delete_row(table_name, uids):
             DBDiscussionSession.query(table).filter(Premise.premisesgroup_uid == uids[0],
                                                     Premise.statement_uid == uids[1]).delete()
         else:
+            print(table)
+            print(uids)
             DBDiscussionSession.query(table).filter_by(uid=uids[0]).delete()
 
     except IntegrityError as e:
@@ -454,7 +454,7 @@ def add_row(table_name, data):
     Updates data of a row in the table
 
     :param table_name: Name of the table
-    :param data: Dictionary with data for teh update
+    :param data: Dictionary with data for the update
     :return: Empty string or error message
     """
     logger('AdminLib', 'add_row', str(data))
@@ -506,8 +506,8 @@ def __update_row_dict(table, values, keys, _tn):
         value_type = str(__find_type(table, key))
         # if current type is int
         if value_type == 'INTEGER':
-            tmp_key, tmp_val, error = __get_int_data(key, values[index], _tn)
-            if error:
+            tmp_key, tmp_val, success = __get_int_data(key, values[index], _tn)
+            if not success:
                 raise ProgrammingError
             update_dict[tmp_key] = tmp_val
 
@@ -526,7 +526,7 @@ def __update_row_dict(table, values, keys, _tn):
         else:
             update_dict[key] = values[index]
 
-    return update_dict, True
+    return update_dict
 
 
 def __get_int_data(key, val, _tn):

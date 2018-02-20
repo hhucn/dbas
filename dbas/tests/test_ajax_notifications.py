@@ -44,17 +44,18 @@ class AjaxNotificationTest(unittest.TestCase):
             Message.content == 'wanne buy some galsses?').first().uid
 
     def delete_messages(self):
-        DBDiscussionSession.query(Message).filter(Message.topic == 'Hey you', Message.content == 'wanne buy some galsses?').delete()
+        DBDiscussionSession.query(Message).filter(Message.topic == 'Hey you',
+                                                  Message.content == 'wanne buy some galsses?').delete()
         transaction.commit()
 
     def test_notification_read(self):
         self.add_messages()
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        db_unread1 = len(DBDiscussionSession.query(Message).filter_by(read=False).all())
+        db_unread1 = DBDiscussionSession.query(Message).filter_by(read=False).count()
         from dbas.views import set_notifications_read as ajax
         request = testing.DummyRequest(json_body={'ids': [self.new_inbox_uid]})
         response = ajax(request)
-        db_unread2 = len(DBDiscussionSession.query(Message).filter_by(read=False).all())
+        db_unread2 = DBDiscussionSession.query(Message).filter_by(read=False).count()
         self.assertIsNotNone(response)
         self.assertEqual(db_unread1 - 1, db_unread2)
         self.delete_messages()
@@ -63,13 +64,13 @@ class AjaxNotificationTest(unittest.TestCase):
         self.add_messages()
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_notifications_delete as ajax
-        db_message1 = len(DBDiscussionSession.query(Message).filter_by(to_author_uid=self.test_author_uid).all())
-        db_message1 += len(DBDiscussionSession.query(Message).filter_by(from_author_uid=self.test_author_uid).all())
+        db_message1 = DBDiscussionSession.query(Message).filter_by(to_author_uid=self.test_author_uid).count()
+        db_message1 += DBDiscussionSession.query(Message).filter_by(from_author_uid=self.test_author_uid).count()
         request = testing.DummyRequest(json_body={'ids': [self.new_inbox_uid]})
         response = ajax(request)
         transaction.commit()
-        db_message2 = len(DBDiscussionSession.query(Message).filter_by(to_author_uid=self.test_author_uid).all())
-        db_message2 += len(DBDiscussionSession.query(Message).filter_by(from_author_uid=self.test_author_uid).all())
+        db_message2 = DBDiscussionSession.query(Message).filter_by(to_author_uid=self.test_author_uid).count()
+        db_message2 += DBDiscussionSession.query(Message).filter_by(from_author_uid=self.test_author_uid).count()
         self.assertIsNotNone(response)
         self.assertTrue(db_message1 != db_message2)
         self.delete_messages()
@@ -77,16 +78,16 @@ class AjaxNotificationTest(unittest.TestCase):
     def test_send_notification(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import send_some_notification as ajax
-        db_len1 = len(DBDiscussionSession.query(Message).filter(Message.topic == 'Some text for a message',
-                                                                Message.content == 'Some text for a message').all())
+        db_len1 = DBDiscussionSession.query(Message).filter(Message.topic == 'Some text for a message',
+                                                            Message.content == 'Some text for a message').count()
         request = testing.DummyRequest(json_body={
             'recipient': 'Christian',
             'title': 'Some text for a message',
             'text': 'Some text for a message',
         })
         response = ajax(request)
-        db_len2 = len(DBDiscussionSession.query(Message).filter(Message.topic == 'Some text for a message',
-                                                                Message.content == 'Some text for a message').all())
+        db_len2 = DBDiscussionSession.query(Message).filter(Message.topic == 'Some text for a message',
+                                                            Message.content == 'Some text for a message').count()
         self.assertIsNotNone(response)
         self.assertTrue(db_len1 != db_len2)
         DBDiscussionSession.query(Message).filter(Message.topic == 'Some text for a message',

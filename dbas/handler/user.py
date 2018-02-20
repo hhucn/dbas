@@ -385,7 +385,7 @@ def get_count_of_clicks(user, limit_on_today=False):
     db_arg = db_arg.all()
     db_stat = db_stat.all()
 
-    return len(db_arg), len(db_stat)
+    return len(db_arg.all()), len(db_stat.all())
 
 
 def get_textversions(db_user: User, lang: str, timestamp_after=None, timestamp_before=None):

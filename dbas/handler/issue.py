@@ -121,7 +121,7 @@ def get_number_of_arguments(issue_uid):
     :param issue_uid: Issue Issue.uid
     :return: Integer
     """
-    return len(DBDiscussionSession.query(Argument).filter_by(issue_uid=issue_uid).all())
+    return DBDiscussionSession.query(Argument).filter_by(issue_uid=issue_uid).count()
 
 
 def get_number_of_statements(issue_uid):
@@ -131,7 +131,7 @@ def get_number_of_statements(issue_uid):
     :param issue_uid: Issue Issue.uid
     :return: Integer
     """
-    return len(DBDiscussionSession.query(Statement).filter_by(issue_uid=issue_uid).all())
+    return DBDiscussionSession.query(Statement).filter_by(issue_uid=issue_uid).count()
 
 
 def get_issue_dict_for(issue, application_url, for_api, uid, lang):

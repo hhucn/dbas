@@ -46,8 +46,8 @@ class AjaxAddThingsTest(unittest.TestCase):
         DBDiscussionSession.query(Argument).filter_by(uid=db_new_arg.uid).delete()
 
     def __set_multiple_start_premises(self, view):
-        db_arg1 = len(DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).all())
-        len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
+        db_arg1 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).count()
+        len_db_reputation1 = DBDiscussionSession.query(ReputationHistory).count()
         request = testing.DummyRequest(json_body={
             'premisegroups': [['this is my first premisegroup']],
             'conclusion_id': 2,
@@ -56,8 +56,8 @@ class AjaxAddThingsTest(unittest.TestCase):
         }, mailer=DummyMailer)
         response = view(request)
         transaction.commit()
-        db_arg2 = len(DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).all())
-        len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
+        db_arg2 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).count()
+        len_db_reputation2 = DBDiscussionSession.query(ReputationHistory).count()
         self.assertIsNotNone(response)
         self.assertEquals(db_arg1 + 1, db_arg2)
         self.assertEquals(len_db_reputation1 + 1, len_db_reputation2)
@@ -95,8 +95,8 @@ class AjaxAddThingsTest(unittest.TestCase):
     def test_set_new_premises_for_argument(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_new_premises_for_argument as ajax
-        db_arg1 = len(DBDiscussionSession.query(Argument).filter_by(uid=2).all())
-        db_pgroups1 = len(DBDiscussionSession.query(PremiseGroup).all())
+        db_arg1 = DBDiscussionSession.query(Argument).filter_by(uid=2).count()
+        db_pgroups1 = DBDiscussionSession.query(PremiseGroup).count()
         request = testing.DummyRequest(json_body={
             'premisegroups': [['some new reason for an argument']],
             'arg_uid': 2,
@@ -104,8 +104,8 @@ class AjaxAddThingsTest(unittest.TestCase):
             'issue': 2
         }, mailer=DummyMailer)
         response = ajax(request)
-        db_arg2 = len(DBDiscussionSession.query(Argument).filter_by(uid=2).all())
-        db_pgroups2 = len(DBDiscussionSession.query(PremiseGroup).all())
+        db_arg2 = DBDiscussionSession.query(Argument).filter_by(uid=2).count()
+        db_pgroups2 = DBDiscussionSession.query(PremiseGroup).count()
         self.assertIsNotNone(response)
         self.assertEqual(len(response['error']), 0)
         self.assertTrue(db_arg1 + 1, db_arg2)
@@ -124,15 +124,15 @@ class AjaxAddThingsTest(unittest.TestCase):
     def test_set_correction_of_statement(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_correction_of_some_statements as ajax
-        db_review1 = len(DBDiscussionSession.query(ReviewEdit).all())
-        db_value1 = len(DBDiscussionSession.query(ReviewEditValue).all())
+        db_review1 = DBDiscussionSession.query(ReviewEdit).count()
+        db_value1 = DBDiscussionSession.query(ReviewEditValue).count()
         elements = [{'text': 'some new text for a correction', 'uid': 19}]
         request = testing.DummyRequest(matchdict={}, params={}, json_body={
             'elements': elements
         })
         response = ajax(request)
-        db_review2 = len(DBDiscussionSession.query(ReviewEdit).all())
-        db_value2 = len(DBDiscussionSession.query(ReviewEditValue).all())
+        db_review2 = DBDiscussionSession.query(ReviewEdit).count()
+        db_value2 = DBDiscussionSession.query(ReviewEditValue).count()
         self.assertIsNotNone(response)
         self.assertTrue(len(response['error']) == 0)
         self.assertTrue(db_review1 + 1, db_review2)
@@ -172,7 +172,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         response = ajax(request)
 
         self.assertIsNotNone(response)
-        self.assertEqual(len(DBDiscussionSession.query(Issue).filter_by(title=request.json_body['title']).all()), 1)
+        self.assertEqual(DBDiscussionSession.query(Issue).filter_by(title=request.json_body['title']).count(), 1)
         DBDiscussionSession.query(Issue).filter_by(title=request.json_body['title']).delete()
         transaction.commit()
 

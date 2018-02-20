@@ -930,7 +930,7 @@ def __add_clicks_for_arguments(db_arguments, users):
     arg_down = 0
     new_clicks_for_arguments = list()
     for argument in db_arguments:
-        max_interval = len(DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=argument.uid).all())
+        max_interval = DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=argument.uid).count()
         up_votes = random.randint(1, max_interval - 1)
         down_votes = random.randint(1, max_interval - 1)
         arg_up += up_votes
@@ -975,7 +975,7 @@ def __add_clicks_for_statements(db_statements, users):
     stat_down = 0
     new_clicks_for_statement = list()
     for statement in db_statements:
-        max_interval = len(DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=statement.uid).all())
+        max_interval = DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=statement.uid).count()
         up_votes = random.randint(1, max_interval - 1)
         down_votes = random.randint(1, max_interval - 1)
         stat_up += up_votes

@@ -87,10 +87,10 @@ def get_opinion_data(issue):
     db_all_votes = DBDiscussionSession.query(ClickedStatement)
     ret_dict = dict()
     for statement in db_statements:
-        db_seen = len(db_all_seen.filter_by(statement_uid=statement.uid).all())
-        db_votes = len(db_all_votes.filter(ClickedStatement.statement_uid == statement.uid,
-                                           ClickedStatement.is_up_vote == True,
-                                           ClickedStatement.is_valid == True).all())
+        db_seen = db_all_seen.filter_by(statement_uid=statement.uid).count()
+        db_votes = db_all_votes.filter(ClickedStatement.statement_uid == statement.uid,
+                                       ClickedStatement.is_up_vote == True,
+                                       ClickedStatement.is_valid == True).count()
         ret_dict[str(statement.uid)] = (db_votes / db_seen) if db_seen != 0 else 1
 
     return ret_dict

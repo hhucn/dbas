@@ -35,47 +35,45 @@ class DiscussionReactionViewTests(unittest.TestCase):
     def test_page(self):
         from dbas.views import discussion_reaction as d
 
-        len_db_seen_s1 = len(DBDiscussionSession.query(SeenStatement).all())
-        len_db_votes_s1 = len(DBDiscussionSession.query(ClickedStatement).all())
-        len_db_seen_a1 = len(DBDiscussionSession.query(SeenArgument).all())
-        len_db_votes_a1 = len(DBDiscussionSession.query(ClickedArgument).all())
+        len_db_seen_s1 = DBDiscussionSession.query(SeenStatement).count()
+        len_db_votes_s1 = DBDiscussionSession.query(ClickedStatement).count()
+        len_db_seen_a1 = DBDiscussionSession.query(SeenArgument).count()
+        len_db_votes_a1 = DBDiscussionSession.query(ClickedArgument).count()
 
         response = d(self.default_request)
         verify_dictionary_of_view(self, response)
 
-        len_db_seen_s2 = len(DBDiscussionSession.query(SeenStatement).all())
-        len_db_votes_s2 = len(DBDiscussionSession.query(ClickedStatement).all())
-        len_db_seen_a2 = len(DBDiscussionSession.query(SeenArgument).all())
-        len_db_votes_a2 = len(DBDiscussionSession.query(ClickedArgument).all())
+        len_db_seen_s2 = DBDiscussionSession.query(SeenStatement).count()
+        len_db_votes_s2 = DBDiscussionSession.query(ClickedStatement).count()
+        len_db_seen_a2 = DBDiscussionSession.query(SeenArgument).count()
+        len_db_votes_a2 = DBDiscussionSession.query(ClickedArgument).count()
         self.assertEqual(len_db_seen_s1, len_db_seen_s2)  # no more cause we are not logged in
         self.assertEqual(len_db_votes_s1, len_db_votes_s2)
         self.assertEqual(len_db_seen_a1, len_db_seen_a2)
         self.assertEqual(len_db_votes_a1, len_db_votes_a2)
 
     def __check_standard_counting(self, route, db_user):
-        len_db_seen_s1 = len(DBDiscussionSession.query(SeenStatement).all())
-        len_db_votes_s1 = len(DBDiscussionSession.query(ClickedStatement).all())
-        len_db_seen_a1 = len(DBDiscussionSession.query(SeenArgument).all())
-        len_db_votes_a1 = len(DBDiscussionSession.query(ClickedArgument).all())
-        len_db_vote_arg1 = len(
-            DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == db_user.uid,
-                                                              ClickedArgument.argument_uid == 2,
-                                                              ClickedArgument.is_valid == True,
-                                                              ClickedArgument.is_up_vote == True).all())
+        len_db_seen_s1 = DBDiscussionSession.query(SeenStatement).count()
+        len_db_votes_s1 = DBDiscussionSession.query(ClickedStatement).count()
+        len_db_seen_a1 = DBDiscussionSession.query(SeenArgument).count()
+        len_db_votes_a1 = DBDiscussionSession.query(ClickedArgument).count()
+        len_db_vote_arg1 = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == db_user.uid,
+                                                                             ClickedArgument.argument_uid == 2,
+                                                                             ClickedArgument.is_valid == True,
+                                                                             ClickedArgument.is_up_vote == True).count()
 
         response = route(self.default_request)
         transaction.commit()
         verify_dictionary_of_view(self, response)
 
-        len_db_seen_s2 = len(DBDiscussionSession.query(SeenStatement).all())
-        len_db_votes_s2 = len(DBDiscussionSession.query(ClickedStatement).all())
-        len_db_seen_a2 = len(DBDiscussionSession.query(SeenArgument).all())
-        len_db_votes_a2 = len(DBDiscussionSession.query(ClickedArgument).all())
-        len_db_vote_arg2 = len(
-            DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == db_user.uid,
-                                                              ClickedArgument.argument_uid == 2,
-                                                              ClickedArgument.is_valid == True,
-                                                              ClickedArgument.is_up_vote == True).all())
+        len_db_seen_s2 = DBDiscussionSession.query(SeenStatement).count()
+        len_db_votes_s2 = DBDiscussionSession.query(ClickedStatement).count()
+        len_db_seen_a2 = DBDiscussionSession.query(SeenArgument).count()
+        len_db_votes_a2 = DBDiscussionSession.query(ClickedArgument).count()
+        len_db_vote_arg2 = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == db_user.uid,
+                                                                             ClickedArgument.argument_uid == 2,
+                                                                             ClickedArgument.is_valid == True,
+                                                                             ClickedArgument.is_up_vote == True).count()
 
         self.assertEqual(len_db_seen_s1, len_db_seen_s2)
         self.assertLess(len_db_votes_s1, len_db_votes_s2)
@@ -98,9 +96,9 @@ class DiscussionReactionViewTests(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Björn').first()
 
-        len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
+        len_db_reputation1 = DBDiscussionSession.query(ReputationHistory).count()
         self.__check_standard_counting(d, db_user)
-        len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
+        len_db_reputation2 = DBDiscussionSession.query(ReputationHistory).count()
         self.assertNotEqual(len_db_reputation1, len_db_reputation2)
 
         clear_seen_by_of('Björn')
@@ -110,9 +108,9 @@ class DiscussionReactionViewTests(unittest.TestCase):
         from dbas.views import discussion_reaction as d
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Björn').first()
-        len_db_reputation1 = len(DBDiscussionSession.query(ReputationHistory).all())
+        len_db_reputation1 = DBDiscussionSession.query(ReputationHistory).count()
         self.__check_standard_counting(d, db_user)
-        len_db_reputation2 = len(DBDiscussionSession.query(ReputationHistory).all())
+        len_db_reputation2 = DBDiscussionSession.query(ReputationHistory).count()
         self.assertEqual(len_db_reputation1, len_db_reputation2)
 
         clear_seen_by_of('Björn')

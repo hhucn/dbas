@@ -25,22 +25,22 @@ class RSSHandlerTests(unittest.TestCase):
 
     def test_append_action_to_issue_rss(self):
         db_issue = get_not_disabled_issues_as_query().first()
-        l1 = len(DBDiscussionSession.query(RSS).all())
+        l1 = DBDiscussionSession.query(RSS).count()
         self.assertTrue(rss.append_action_to_issue_rss(db_issue, self.user, 'test_title', 'test_description', 'en',
                                                        get_global_url()))
-        l2 = len(DBDiscussionSession.query(RSS).all())
+        l2 = DBDiscussionSession.query(RSS).count()
         self.assertTrue(l1 + 1, l2)
 
         DBDiscussionSession.query(RSS).filter(RSS.issue_uid == db_issue.uid, RSS.author_uid == self.user.uid,
                                               RSS.title == 'test title', RSS.description == 'test_description').delete()
         DBDiscussionSession.flush()
         transaction.commit()
-        l3 = len(DBDiscussionSession.query(RSS).all())
+        l3 = DBDiscussionSession.query(RSS).count()
         self.assertTrue(l1, l3)
         self.assertTrue(rss.rewrite_issue_rss(1, 'en', get_global_url()))
 
     def test_get_list_of_all_feeds(self):
-        l1 = len(get_not_disabled_issues_as_query().all())
+        l1 = get_not_disabled_issues_as_query().count()
         resp = rss.get_list_of_all_feeds('en')
         self.assertTrue(l1, len(resp))
         for f in resp:

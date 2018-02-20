@@ -4,7 +4,6 @@ Introducing an admin interface to enable easy database management.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import json
 from cornice import Service
 from pyramid.httpexceptions import exception_response
 
@@ -14,7 +13,7 @@ from dbas.database.discussion_model import User
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.helper.validation import valid_user, validate, valid_table_name, has_keywords
+from dbas.helper.validation import valid_user_as_admin, validate, valid_table_name, has_keywords
 from dbas.logger import logger
 from dbas.views import user_logout, base_layout, project_name
 
@@ -26,49 +25,48 @@ cors_policy = dict(enabled=True,
                    origins=('*',),
                    max_age=42)
 
-
 # =============================================================================
 # SERVICES - Define services for several actions of DBAS
 # =============================================================================
 
 dashboard = Service(name='dashboard_page',
                     path='/',
-                    description="Admin Page",
+                    description='Admin Page',
                     renderer='templates/admin.pt',
                     permission='everybody',  # or permission='use'
                     cors_policy=cors_policy)
 
 z_table = Service(name='table_page',
                   path='/{table}',
-                  description="Table Page",
+                  description='Table Page',
                   renderer='templates/table.pt',
                   permission='admin',
                   cors_policy=cors_policy)
 
 update_row = Service(name='update_table_row',
                      path='/{url:.*}update',
-                     description="Update",
+                     description='Update',
                      renderer='json',
                      permission='admin',
                      cors_policy=cors_policy)
 
 delete_row = Service(name='delete_table_row',
                      path='/{url:.*}delete',
-                     description="Delete",
+                     description='Delete',
                      renderer='json',
                      permission='admin',
                      cors_policy=cors_policy)
 
 add_row = Service(name='add_table_row',
                   path='/{url:.*}add',
-                  description="Add",
+                  description='Add',
                   renderer='json',
                   permission='admin',
                   cors_policy=cors_policy)
 
 update_badge = Service(name='update_badge_counter',
                        path='/{url:.*}update_badges',
-                       description="Update",
+                       description='Update',
                        renderer='json',
                        permission='admin',
                        cors_policy=cors_policy)
@@ -85,11 +83,12 @@ revoke_token = Service(name='revoke_token',
                        permission='admin',
                        cors_policy=cors_policy)
 
+
 # IMPORTANT: we do not need to validate if the user in an admin because we set the permission of this views
 
 
 @dashboard.get()
-@validate(valid_user)
+@validate(valid_user_as_admin)
 def main_admin(request):
     """
     View configuration for the content view. Only logged in user can reach this page.
@@ -104,7 +103,9 @@ def main_admin(request):
 
     ui_locales = get_language_from_cookie(request)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry, request.application_url, request.path, db_user)
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
+                                                                                   request.application_url,
+                                                                                   request.path, db_user)
     dashboard_elements = {
         'entities': lib.get_overview(request.path),
         'api_tokens': lib.get_application_tokens()
@@ -120,8 +121,8 @@ def main_admin(request):
     }
 
 
-@z_table.post()
-@validate(valid_user)
+@z_table.get()
+@validate(valid_user_as_admin)
 def main_table(request):
     """
     View configuration for the content view. Only logged in user can reach this page.
@@ -143,14 +144,7 @@ def main_table(request):
     table_name = request.matchdict['table']
     if not table_name.lower() in lib.table_mapper:
         return exception_response(400)
-    try:
-        table_dict = lib.get_table_dict(table_name, request.application_url)
-        table_dict['has_error'] = False
-        table_dict['error'] = ''
-    except Exception as e:
-        table_dict = dict()
-        table_dict['has_error'] = True
-        table_dict['error'] = str(e)
+    table_dict = lib.get_table_dict(table_name, request.application_url)
 
     return {
         'layout': base_layout(),
@@ -163,7 +157,7 @@ def main_table(request):
 
 
 @update_row.post()
-@validate(valid_user, valid_table_name, has_keywords(('keys', list), ('values', list)))
+@validate(valid_user_as_admin, valid_table_name, has_keywords(('keys', list), ('uids', list), ('values', list)))
 def main_update(request):
     """
     View configuration for updating any row
@@ -176,11 +170,15 @@ def main_update(request):
     uids = request.validated['uids']
     keys = request.validated['keys']
     values = request.validated['values']
+    print(table)
+    print(uids)
+    print(keys)
+    print(values)
     return lib.update_row(table, uids, keys, values)
 
 
 @delete_row.post()
-@validate(valid_user, valid_table_name, has_keywords(('uids', list)))
+@validate(valid_user_as_admin, valid_table_name, has_keywords(('uids', list)))
 def main_delete(request):
     """
     View configuration for deleting any row
@@ -189,13 +187,11 @@ def main_delete(request):
     :return: dict()
     """
     logger('Admin', 'main_delete', 'def ' + str(request.json_body))
-    table = request.params['table']
-    uids = json.loads(request.params['uids'])
-    return lib.delete_row(table, uids)
+    return lib.delete_row(request.validated['table'], request.validated['uids'])
 
 
 @add_row.post()
-@validate(valid_user, valid_table_name, has_keywords(('new_data', dict)))
+@validate(valid_user_as_admin, valid_table_name, has_keywords(('new_data', dict)))
 def main_add(request):
     """
     View configuration for adding any row
@@ -204,13 +200,11 @@ def main_add(request):
     :return: dict()
     """
     logger('Admin', 'main_add', 'def ' + str(request.json_body))
-    new_data = request.validated['new_data']
-    table = request.validated['table']
-    return lib.add_row(table, new_data)
+    return lib.add_row(request.validated['table'], request.validated['new_data'])
 
 
 @update_badge.get()
-@validate(valid_user)
+@validate(valid_user_as_admin)
 def main_update_badge(request):
     """
     View configuration for updating a badge

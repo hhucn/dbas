@@ -65,14 +65,14 @@ def valid_user(request):
     :param request:
     :return:
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).one_or_none()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
 
     if db_user:
         request.validated['user'] = db_user
         return True
     else:
         _tn = Translator(get_language_from_cookie(request))
-        __add_error(request, 'valid_user', 'Invalid user', _tn.get(_.checkNickname))
+        __add_error(request, 'valid_user', 'Invalid user: {}'.format(request.authenticated_userid), _tn.get(_.checkNickname))
         return False
 
 
@@ -127,6 +127,22 @@ def valid_user_as_author(request):
             return True
         else:
             __add_error(request, 'valid_user_as_author', 'Invalid user group', _tn.get(_.justLookDontTouch))
+    return False
+
+
+def valid_user_as_admin(request):
+    """
+
+    :param request:
+    :return:
+    """
+    _tn = Translator(get_language_from_cookie(request))
+    if valid_user(request):
+        db_user = request.validated['user']
+        if db_user.is_admin():
+            return True
+        else:
+            __add_error(request, 'valid_user_as_admin', 'Invalid user group', _tn.get(_.justLookDontTouch))
     return False
 
 
@@ -390,12 +406,12 @@ def valid_table_name(request):
     :param request:
     :return:
     """
-    table_name = request.json_body.get('table')
+    table_name = request.json_body.get('table', '')
     if table_name.lower() in table_mapper:
         request.validated['table'] = table_name
     else:
         _tn = Translator(get_language_from_cookie(request))
-        __add_error(request, 'valid_table_name', 'Invalid table name', _tn.get(_.invalidTableName))
+        __add_error(request, 'valid_table_name', 'Invalid table name {}'.format(table_name), _tn.get(_.invalidTableName))
 
 
 def valid_review_reason(request):
