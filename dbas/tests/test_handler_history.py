@@ -1,10 +1,11 @@
 import unittest
 
+import transaction
 from pyramid import testing
 
-from nose.tools import assert_false, assert_true, assert_less, assert_equal, assert_greater
+from nose.tools import assert_false, assert_true, assert_less, assert_equal, assert_greater, assert_is_none
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, History, Settings
+from dbas.database.discussion_model import User, History, Settings, Issue
 from dbas.handler import history
 
 
@@ -12,17 +13,22 @@ class HistoryHandlerTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
+        self.issue = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).first()
+        self.settings = DBDiscussionSession.query(Settings).get(self.user.uid)
+        self.settings.set_last_topic_uid(self.issue.uid)
+        DBDiscussionSession.add(self.settings)
+        DBDiscussionSession.flush()
+        transaction.commit()
         self.history = '/attitude/2-/justify/2/t-/reaction/12/undercut/13'
 
     def test_save_issue_uid(self):
-        assert_false(history.save_issue_uid(2, 'Tobia'))
-        assert_true(history.save_issue_uid(2, 'Tobias'))
-        assert_equal(DBDiscussionSession.query(Settings).get(self.user.uid).last_topic_uid, 2)
+        assert_false(history.save_issue_uid(self.issue.uid, 'Tobia'))
+        assert_true(history.save_issue_uid(self.issue.uid, 'Tobias'))
+        assert_equal(self.issue.uid, self.settings.last_topic_uid)
 
     def test_get_saved_issue(self):
-        assert_equal(history.get_saved_issue('Tobia'), 0)
-        assert_true(history.save_issue_uid(2, 'Tobias'))
-        assert_equal(history.get_saved_issue(self.user.nickname), 2)
+        assert_is_none(history.get_saved_issue('Tobia'))
+        assert_equal(self.settings.last_topic_uid, history.get_saved_issue(self.user.nickname))
 
     def test_get_splitted_history(self):
         hist = history.get_splitted_history(self.history)

@@ -58,12 +58,11 @@ def get_saved_issue(nickname):
     if not db_settings:
         return None
 
-    val = db_settings.last_topic_uid
-    db_issue = DBDiscussionSession.query(Issue).get(val)
+    db_issue = DBDiscussionSession.query(Issue).get(db_settings.last_topic_uid)
     if not db_issue:
         return None
 
-    return None if db_issue.is_disabled else val
+    return None if db_issue.is_disabled else db_issue.uid
 
 
 def get_splitted_history(history):
