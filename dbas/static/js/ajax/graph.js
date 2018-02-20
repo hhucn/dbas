@@ -39,7 +39,7 @@ function AjaxGraphHandler(){
 				return;
 		}
 
-		var url = 'ajax_get_user_with_same_opinion';
+		var url = 'get_user_with_same_opinion';
 		
 		var done = function getUserGraphDataDone (data) {
 			new DiscussionBarometer().callbackIfDoneForGetDictionary(data, address);

@@ -67,7 +67,7 @@ class Helper:
         :param url:
         :return:
         """
-        browser.visit(main_page + 'ajax_user_login?user=' + user + '&password=' + pw + '&keep_login=false&url=' + url)
+        browser.visit(main_page + 'user_login?user=' + user + '&password=' + pw + '&keep_login=false&url=' + url)
         return browser
 
     @staticmethod
@@ -77,7 +77,7 @@ class Helper:
         :param browser:
         :return:
         """
-        browser.visit(main_page + 'ajax_user_logout')
+        browser.visit(main_page + 'user_logout')
         return browser
 
     @staticmethod

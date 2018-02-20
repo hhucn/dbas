@@ -16,7 +16,7 @@ function AjaxDiscussionHandler() {
 		$('#' + addPremiseErrorContainer).hide();
 		$('#' + addPremiseErrorMsg).text('');
 		$.ajax({
-			url: 'ajax_set_new_premises_for_argument',
+			url: 'set_new_premises_for_argument',
 			method: 'POST',
 			contentType: 'application/json',
 			data: JSON.stringify({
@@ -49,7 +49,7 @@ function AjaxDiscussionHandler() {
 	this.sendNewStartArgument = function(position, reason){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_set_new_start_argument',
+			url: 'set_new_start_argument',
 			method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -79,7 +79,7 @@ function AjaxDiscussionHandler() {
 		$('#' + addPremiseErrorContainer).hide();
 		$('#' + addPremiseErrorMsg).text('');
 		$.ajax({
-			url: 'ajax_set_new_start_premise',
+			url: 'set_new_start_premise',
 			method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -117,7 +117,7 @@ function AjaxDiscussionHandler() {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$('#add-topic-error').hide();
 		$.ajax({
-			url: 'ajax_set_new_issue',
+			url: 'set_new_issue',
 			method: 'POST',
 			contentType: 'application/json',
 			data: JSON.stringify({
@@ -151,7 +151,7 @@ function AjaxDiscussionHandler() {
 	this.getLogfileForStatements = function (statements_uids) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_get_logfile_for_statements',
+			url: 'get_logfile_for_statements',
 			method: 'POST',
 			contentType: 'application/json',
 			data: JSON.stringify({
@@ -182,7 +182,7 @@ function AjaxDiscussionHandler() {
 	this.sendCorrectionOfStatement = function (elements, statements_uids) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_set_correction_of_statement',
+			url: 'set_correction_of_statement',
 			method: 'POST',
 			contentType: 'application/json',
 			data: JSON.stringify({
@@ -206,7 +206,7 @@ function AjaxDiscussionHandler() {
 	this.getShortenUrl = function (long_url) {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_get_shortened_url',
+			url: 'get_shortened_url',
 			method: 'POST',
 			dataType: 'json',
 			contentType: 'application/json',
@@ -234,7 +234,7 @@ function AjaxDiscussionHandler() {
 	this.getMoreInfosAboutArgument = function(uid){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_get_infos_about_argument',
+			url: 'get_infos_about_argument',
 			method: 'POST',
 			dataType: 'json',
 			contentType: 'application/json',
@@ -266,7 +266,7 @@ function AjaxDiscussionHandler() {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 
 		$.ajax({
-			url: 'ajax_get_user_with_same_opinion',
+			url: 'get_user_with_same_opinion',
 			method: 'POST',
 			dataType: 'json',
 			contentType: 'application/json',
@@ -355,7 +355,7 @@ function AjaxDiscussionHandler() {
 		}
 
 		$.ajax({
-			url: 'ajax_fuzzy_search',
+			url: 'fuzzy_search',
 			method: 'POST',
 			dataType: 'json',
 			contentType: 'application/json',
@@ -382,7 +382,7 @@ function AjaxDiscussionHandler() {
 	 * @param is_argument
 	 */
 	this.revokeContent = function(uid, is_argument){
-		var url = is_argument ? 'ajax_argument_revoke_content' : 'ajax_statement_revoke_content';
+		var url = is_argument ? 'argument_revoke_content' : 'statement_revoke_content';
 		var data = { uid: parseInt(uid) };
 		var done = function ajaxRevokeContentDone(data) {
 			if (data.success) {
@@ -406,7 +406,7 @@ function AjaxDiscussionHandler() {
 	this.setSeenStatements = function(uids){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_set_seen_statements',
+			url: 'set_seen_statements',
 			method: 'POST',
 			contentType: 'application/json',
 			data: JSON.stringify({
@@ -435,7 +435,7 @@ function AjaxDiscussionHandler() {
 	this.markStatementOrArgument = function(uid, is_argument, is_supportive, should_mark, step, history, callback_id){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_mark_statement_or_argument',
+			url: 'mark_statement_or_argument',
 			method: 'POST',
 			contentType: 'application/json',
 			data: JSON.stringify({
@@ -474,7 +474,7 @@ function AjaxDiscussionHandler() {
 		var checked = toggle_element.prop('checked');
 		var csrf_token = $('#hidden_csrf_token').val();
 		$.ajax({
-			url: 'ajax_set_discussion_properties',
+			url: 'set_discussion_properties',
 			method: 'POST',
 			contentType: 'application/json',
 			data: JSON.stringify({

@@ -13,7 +13,7 @@ function AjaxReviewHandler() {
 	 * @param extra_uid
 	 */
 	this.flagArgumentOrStatement = function (uid, reason, is_argument, extra_uid) {
-		var url = 'ajax_flag_argument_or_statement';
+		var url = 'flag_argument_or_statement';
 		var data = {
 			uid: uid,
 			reason: reason,
@@ -42,7 +42,7 @@ function AjaxReviewHandler() {
 	 */
 	this.splitOrMerge = function (pgroup_uid, key, text_values) {
 		var is_premisegroup = typeof text_values === "undefined";
-		var url = 'ajax_split_or_merge_' + (is_premisegroup ? 'premisegroup' : 'statement');
+		var url = 'split_or_merge_' + (is_premisegroup ? 'premisegroup' : 'statement');
 		var data = {
 			uid: parseInt(pgroup_uid),
 			key: key,
@@ -69,7 +69,7 @@ function AjaxReviewHandler() {
 	 * @param review_instance
 	 */
 	this.un_lockOptimizationReview = function (review_uid, should_lock, review_instance) {
-		var url = 'ajax_review_lock';
+		var url = 'review_lock';
 		var data = {
 			'review_uid': parseInt(review_uid),
 			'lock': should_lock
@@ -95,7 +95,7 @@ function AjaxReviewHandler() {
 	 * @param review_uid
 	 */
 	this.reviewDeleteArgument = function (should_delete, review_uid) {
-		var url = 'ajax_review_delete_argument';
+		var url = 'review_delete_argument';
 		var data = {
 			should_delete: should_delete,
 			review_uid: parseInt(review_uid)
@@ -117,7 +117,7 @@ function AjaxReviewHandler() {
 	 * @param review_uid
 	 */
 	this.reviewEditArgument = function (is_edit_okay, review_uid) {
-		var url = 'ajax_review_edit_argument';
+		var url = 'review_edit_argument';
 		var data = {
 			is_edit_okay: is_edit_okay,
 			review_uid: parseInt(review_uid)
@@ -139,7 +139,7 @@ function AjaxReviewHandler() {
 	 * @param review_uid
 	 */
 	this.reviewDuplicateStatement = function (is_duplicate, review_uid) {
-		var url = 'ajax_review_duplicate_statement';
+		var url = 'review_duplicate_statement';
 		var data = {
 			is_duplicate: is_duplicate,
 			review_uid: parseInt(review_uid)
@@ -162,7 +162,7 @@ function AjaxReviewHandler() {
 	 * @param new_data (Important: must be JSON.stringify(...))
 	 */
 	this.reviewOptimizationArgument = function (should_optimized, review_uid, new_data) {
-		var url = 'ajax_review_optimization_argument';
+		var url = 'review_optimization_argument';
 		var data = {
 			should_optimized: should_optimized,
 			review_uid: parseInt(review_uid),
@@ -185,7 +185,7 @@ function AjaxReviewHandler() {
 	 * @param review_uid
 	 */
 	this.reviewMergeStatement = function (should_merged, review_uid) {
-		var url = 'ajax_review_merged_premisegroup';
+		var url = 'review_merged_premisegroup';
 		var data = {
 			should_merge: should_merge,
 			review_uid: parseInt(review_uid)
@@ -207,7 +207,7 @@ function AjaxReviewHandler() {
 	 * @param review_uid
 	 */
 	this.reviewSplitStatement = function (should_split, review_uid) {
-		var url = 'ajax_review_split_premisegroup';
+		var url = 'review_split_premisegroup';
 		var data = {
 			should_split: should_split,
 			review_uid: parseInt(review_uid)
@@ -229,7 +229,7 @@ function AjaxReviewHandler() {
 	 * @param uid
 	 */
 	this.undoReview = function (queue, uid) {
-		var url = 'ajax_undo_review';
+		var url = 'undo_review';
 		var data = {
 			queue: queue,
 			uid: parseInt(uid)
@@ -254,7 +254,7 @@ function AjaxReviewHandler() {
 	 * @param uid
 	 */
 	this.cancelReview = function (queue, uid) {
-		var url = 'ajax_cancel_review';
+		var url = 'cancel_review';
 		var data = {
 			queue: queue,
 			uid: parseInt(uid)

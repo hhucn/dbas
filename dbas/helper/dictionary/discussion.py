@@ -56,7 +56,7 @@ class DiscussionDictHelper(object):
         _tn = Translator(self.lang)
         add_premise_text = _tn.get(_.whatIsYourIdea)
         intro = _tn.get(_.initialPositionInterest) + (' ...' if self.lang == 'en' else '')
-        save_statement_url = 'ajax_set_new_start_premise'
+        save_statement_url = 'set_new_start_premise'
 
         start_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, uid='start', message=intro, omit_url=True,
                                                 lang=self.lang)
@@ -80,7 +80,7 @@ class DiscussionDictHelper(object):
         logger('DictionaryHelper', 'get_dict_for_attitude', 'at_attitude')
         _tn = Translator(self.lang)
         add_premise_text = ''
-        save_statement_url = 'ajax_set_new_start_statement'
+        save_statement_url = 'set_new_start_statement'
         statement_text = get_text_for_statement_uid(uid, True)
         if not statement_text:
             return None
@@ -121,7 +121,7 @@ class DiscussionDictHelper(object):
         bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang,
                                                                    self.main_page, self.slug)
 
-        save_statement_url = 'ajax_set_new_start_statement'
+        save_statement_url = 'set_new_start_statement'
         text = get_text_for_statement_uid(uid)
         if not text:
             return None
@@ -193,7 +193,7 @@ class DiscussionDictHelper(object):
         bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang,
                                                                    self.main_page, self.slug)
         add_premise_text = ''
-        save_statement_url = 'ajax_set_new_premises_for_argument'
+        save_statement_url = 'set_new_premises_for_argument'
 
         db_argument = DBDiscussionSession.query(Argument).get(uid)
         if not db_argument:
@@ -308,7 +308,7 @@ class DiscussionDictHelper(object):
         bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang,
                                                                    self.main_page, self.slug)
         add_premise_text = ''
-        save_statement_url = 'ajax_set_new_start_statement'
+        save_statement_url = 'set_new_start_statement'
         gender = ''
         b = '<' + tag_type + '>'
         e = '</' + tag_type + '>'
@@ -360,7 +360,7 @@ class DiscussionDictHelper(object):
         bubbles_array = history_helper.create_bubbles_from_history(self.history, nickname, self.lang, self.main_page,
                                                                    self.slug)
         add_premise_text = ''
-        save_statement_url = 'ajax_set_new_start_statement'
+        save_statement_url = 'set_new_start_statement'
         bubble_mid = ''
         splitted_history = history_helper.get_splitted_history(self.history)
         user_changed_opinion = splitted_history[-1].endswith(str(uid))
@@ -370,7 +370,7 @@ class DiscussionDictHelper(object):
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         if attack.startswith('end'):
-            user_text, mid_text, sys_text = self.__get_dict_for_argumentation_end(uid, user_changed_opinion, nickname,
+            user_text, mid_text, sys_text = self.__get_dict_for_argumentation_end(uid, user_changed_opinion, db_user,
                                                                                   attack)
             bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, message=sys_text, omit_url=True, lang=self.lang)
             bubble_mid = create_speechbubble_dict(BubbleTypes.INFO, message=mid_text, omit_url=True, lang=self.lang)
@@ -408,7 +408,7 @@ class DiscussionDictHelper(object):
             'gender': gender_of_counter_arg
         }
 
-    def __get_dict_for_argumentation_end(self, argument_uid, user_changed_opinion, nickname, attack):
+    def __get_dict_for_argumentation_end(self, argument_uid, user_changed_opinion, db_user, attack):
         """
         Returns a special dict() when the discussion ends during an argumentation
 
@@ -418,6 +418,7 @@ class DiscussionDictHelper(object):
         :param attack: String
         :return: String, String, String
         """
+        nickname = db_user.nickname if db_user and db_user.nickname != nick_of_anonymous_user else None
         _tn = Translator(self.lang)
         text = get_text_for_argument_uid(argument_uid, user_changed_opinion=user_changed_opinion,
                                          minimize_on_undercut=True, nickname=nickname)
@@ -429,7 +430,7 @@ class DiscussionDictHelper(object):
         mid_text += _tn.get(_.discussionCongratulationEnd) + ' '
 
         # do we have task in the queue?
-        count = get_complete_review_count(nickname)
+        count = get_complete_review_count(db_user)
         if count > 0:
             if nickname is not None:
                 mid_text += _tn.get(_.discussionEndLinkTextWithQueueLoggedIn)
@@ -634,7 +635,7 @@ class DiscussionDictHelper(object):
         bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang,
                                                                    self.main_page, self.slug)
         add_premise_text = ''
-        save_statement_url = 'ajax_set_new_start_statement'
+        save_statement_url = 'set_new_start_statement'
 
         logger('DictionaryHelper', 'prepare_discussion_dict', 'at_choosing')
         a = _tn.get(_.soYouEnteredMultipleReasons)

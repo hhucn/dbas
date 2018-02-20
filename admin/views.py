@@ -46,28 +46,28 @@ z_table = Service(name='table_page',
                   cors_policy=cors_policy)
 
 update_row = Service(name='update_table_row',
-                     path='/{url:.*}ajax_admin_update',
+                     path='/{url:.*}update',
                      description="Update",
                      renderer='json',
                      permission='admin',
                      cors_policy=cors_policy)
 
 delete_row = Service(name='delete_table_row',
-                     path='/{url:.*}ajax_admin_delete',
+                     path='/{url:.*}delete',
                      description="Delete",
                      renderer='json',
                      permission='admin',
                      cors_policy=cors_policy)
 
 add_row = Service(name='add_table_row',
-                  path='/{url:.*}ajax_admin_add',
+                  path='/{url:.*}add',
                   description="Add",
                   renderer='json',
                   permission='admin',
                   cors_policy=cors_policy)
 
 update_badge = Service(name='update_badge_counter',
-                       path='/{url:.*}ajax_admin_update_badges',
+                       path='/{url:.*}update_badges',
                        description="Update",
                        renderer='json',
                        permission='admin',

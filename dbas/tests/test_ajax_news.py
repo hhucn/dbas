@@ -17,7 +17,7 @@ class AjaxNewsTest(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def test_get_ajax_news(self):
+    def test_get_news_view(self):
         from dbas.views import get_news as ajax
         request = testing.DummyRequest(params={}, matchdict={})
         response = ajax(request)

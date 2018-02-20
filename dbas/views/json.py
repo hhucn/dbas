@@ -20,7 +20,7 @@ import dbas.review.helper.history as review_history_helper
 import dbas.review.helper.main as review_main_helper
 import dbas.review.helper.queues as review_queue_helper
 import dbas.strings.matcher as fuzzy_string_matcher
-from dbas.auth.login import login_user, login_user_oauth, register_user_with_ajax_data, __refresh_headers_and_url
+from dbas.auth.login import login_user, login_user_oauth, register_user_with_json_data, __refresh_headers_and_url
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue
 from dbas.database.discussion_model import Statement, ReviewEdit, ReviewMerge, ReviewSplit, ReviewOptimization, \
@@ -50,14 +50,9 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from websocket.lib import get_port, send_request_for_recent_reviewer_socketio
 
-name = 'D-BAS'
-version = '1.5.5'
-full_version = version
-project_name = name + ' ' + full_version
-
 
 # ajax - getting complete track of the user
-@view_config(route_name='ajax_get_user_history', renderer='json')
+@view_config(route_name='get_user_history', renderer='json')
 @validate(valid_user)
 def get_user_history(request):
     """
@@ -72,7 +67,7 @@ def get_user_history(request):
 
 
 # ajax - getting all text edits
-@view_config(route_name='ajax_get_all_posted_statements', renderer='json')
+@view_config(route_name='get_all_posted_statements', renderer='json')
 @validate(valid_user)
 def get_all_posted_statements(request):
     """
@@ -87,7 +82,7 @@ def get_all_posted_statements(request):
 
 
 # ajax - getting all text edits
-@view_config(route_name='ajax_get_all_edits', renderer='json')
+@view_config(route_name='get_all_edits', renderer='json')
 @validate(valid_user)
 def get_all_edits_of_user(request):
     """
@@ -102,7 +97,7 @@ def get_all_edits_of_user(request):
 
 
 # ajax - getting all votes for arguments
-@view_config(route_name='ajax_get_all_marked_arguments', renderer='json')
+@view_config(route_name='get_all_marked_arguments', renderer='json')
 @validate(valid_user)
 def get_all_marked_arguments(request):
     """
@@ -117,7 +112,7 @@ def get_all_marked_arguments(request):
 
 
 # ajax - getting all votes for statements
-@view_config(route_name='ajax_get_all_marked_statements', renderer='json')
+@view_config(route_name='get_all_marked_statements', renderer='json')
 @validate(valid_user)
 def get_all_marked_statements(request):
     """
@@ -132,7 +127,7 @@ def get_all_marked_statements(request):
 
 
 # ajax - getting all votes for arguments
-@view_config(route_name='ajax_get_all_argument_clicks', renderer='json')
+@view_config(route_name='get_all_argument_clicks', renderer='json')
 @validate(valid_user)
 def get_all_argument_clicks(request):
     """
@@ -147,7 +142,7 @@ def get_all_argument_clicks(request):
 
 
 # ajax - getting all votes for statements
-@view_config(route_name='ajax_get_all_statement_clicks', renderer='json')
+@view_config(route_name='get_all_statement_clicks', renderer='json')
 @validate(valid_user)
 def get_all_statement_clicks(request):
     """
@@ -162,7 +157,7 @@ def get_all_statement_clicks(request):
 
 
 # ajax - deleting complete history of the user
-@view_config(route_name='ajax_delete_user_history', renderer='json')
+@view_config(route_name='delete_user_history', renderer='json')
 @validate(valid_user)
 def delete_user_history(request):
     """
@@ -177,7 +172,7 @@ def delete_user_history(request):
 
 
 # ajax - deleting complete history of the user
-@view_config(route_name='ajax_delete_statistics', renderer='json')
+@view_config(route_name='delete_statistics', renderer='json')
 @validate(valid_user)
 def delete_statistics(request):
     """
@@ -191,7 +186,7 @@ def delete_statistics(request):
     return clear_vote_and_seen_values_of_user(db_user)
 
 
-@view_config(request_method='POST', route_name='ajax_user_login', renderer='json')
+@view_config(request_method='POST', route_name='user_login', renderer='json')
 @validate(has_keywords(('user', str), ('password', str), ('keep_login', bool)),
           has_maybe_keywords(('redirect_url', str, '')))
 def user_login(request):
@@ -218,7 +213,7 @@ def user_login(request):
     return {'error': Translator(lang).get(_.userPasswordNotMatch)}
 
 
-@view_config(route_name='ajax_user_login_oauth', renderer='json')
+@view_config(route_name='user_login_oauth', renderer='json')
 def user_login_oauth(request):
     """
     Will login the user via oauth
@@ -255,7 +250,7 @@ def user_login_oauth(request):
         return {'error': _tn.get(_.internalKeyError)}
 
 
-@view_config(route_name='ajax_user_logout', renderer='json')
+@view_config(route_name='user_logout', renderer='json')
 def user_logout(request, redirect_to_main=False):
     """
     Will logout the user
@@ -280,7 +275,7 @@ def user_logout(request, redirect_to_main=False):
     )
 
 
-@view_config(route_name='ajax_user_registration', renderer='json')
+@view_config(route_name='user_registration', renderer='json')
 @validate(valid_lang_cookie_fallback,
           has_keywords(('nickname', str), ('email', str), ('gender', str), ('password', str), ('passwordconfirm', str)),
           has_maybe_keywords(('firstname', str, ''), ('lastname', str, '')))
@@ -295,7 +290,7 @@ def user_registration(request):
     mailer = request.mailer
     lang = request.validated['lang']
 
-    success, info, new_user = register_user_with_ajax_data(request.validated, lang, mailer)
+    success, info, new_user = register_user_with_json_data(request.validated, lang, mailer)
 
     return {
         'success': str(success),
@@ -304,7 +299,7 @@ def user_registration(request):
     }
 
 
-@view_config(route_name='ajax_user_password_request', renderer='json')
+@view_config(route_name='user_password_request', renderer='json')
 @validate(valid_lang_cookie_fallback, has_keywords(('email', str)))
 def user_password_request(request):
     """
@@ -320,7 +315,7 @@ def user_password_request(request):
     return request_password(request.validated['email'], request.mailer, _tn)
 
 
-@view_config(route_name='ajax_set_user_setting', renderer='json')
+@view_config(route_name='set_user_setting', renderer='json')
 @validate(valid_user, has_keywords(('settings_value', bool), ('service', str)))
 def set_user_settings(request):
     """
@@ -337,7 +332,7 @@ def set_user_settings(request):
     return set_settings(request.application_url, db_user, service, settings_value, _tn)
 
 
-@view_config(route_name='ajax_set_user_language', renderer='json')
+@view_config(route_name='set_user_language', renderer='json')
 @validate(valid_user, valid_lang_cookie_fallback)
 def set_user_lang(request):
     """
@@ -350,7 +345,7 @@ def set_user_lang(request):
     return set_user_language(request.validated['user'], request.validated.get('lang'))
 
 
-@view_config(route_name='ajax_set_discussion_properties', renderer='json')
+@view_config(route_name='set_discussion_properties', renderer='json')
 @validate(valid_user, valid_issue, has_keywords(('property', bool), ('value', str)))
 def set_discussion_properties(request):
     """
@@ -373,7 +368,7 @@ def set_discussion_properties(request):
 # ADDTIONAL AJAX STUFF # SET NEW THINGS #
 # #######################################
 
-@view_config(route_name='ajax_set_new_start_argument', renderer='json')
+@view_config(route_name='set_new_start_argument', renderer='json')
 @validate(valid_user, valid_issue_not_readonly, has_keywords(('position', str), ('reason', str)))
 def set_new_start_argument(request):
     """
@@ -408,7 +403,7 @@ def set_new_start_argument(request):
     return prepared_dict_pos
 
 
-@view_config(route_name='ajax_set_new_start_premise', renderer='json')
+@view_config(route_name='set_new_start_premise', renderer='json')
 @validate(valid_user, valid_issue, valid_conclusion, valid_premisegroups, has_keywords(('supportive', bool)))
 def set_new_start_premise(request):
     """
@@ -434,7 +429,7 @@ def set_new_start_premise(request):
     return prepared_dict
 
 
-@view_config(route_name='ajax_set_new_premises_for_argument', renderer='json')
+@view_config(route_name='set_new_premises_for_argument', renderer='json')
 @validate(valid_user, valid_issue_not_readonly, valid_premisegroups,
           has_keywords(('arg_uid', int), ('attack_type', str)))
 def set_new_premises_for_argument(request):
@@ -460,7 +455,7 @@ def set_new_premises_for_argument(request):
     return set_arguments_premises(False, data)
 
 
-@view_config(route_name='ajax_set_correction_of_statement', renderer='json')
+@view_config(route_name='set_correction_of_statement', renderer='json')
 @validate(valid_user, has_keywords(('elements', list)))
 def set_correction_of_some_statements(request):
     """
@@ -477,7 +472,7 @@ def set_correction_of_some_statements(request):
     return set_correction_of_statement(elements, db_user, _tn)
 
 
-@view_config(route_name='ajax_notifications_read', renderer='json')
+@view_config(route_name='notifications_read', renderer='json')
 @validate(valid_user, has_keywords(('ids', list)))
 def set_notifications_read(request):
     """
@@ -490,7 +485,7 @@ def set_notifications_read(request):
     return read_notifications(request.validated['ids'], request.validated['user'])
 
 
-@view_config(route_name='ajax_notifications_delete', renderer='json')
+@view_config(route_name='notifications_delete', renderer='json')
 @validate(valid_user, has_keywords(('ids', list)))
 def set_notifications_delete(request):
     """
@@ -505,7 +500,7 @@ def set_notifications_delete(request):
                                 request.application_url)
 
 
-@view_config(route_name='ajax_send_notification', renderer='json')
+@view_config(route_name='send_notification', renderer='json')
 @validate(valid_user, valid_notification_title, valid_notification_text, valid_notification_recipient)
 def send_some_notification(request):
     """
@@ -524,7 +519,7 @@ def send_some_notification(request):
 
 
 # ajax - set new issue
-@view_config(route_name='ajax_set_new_issue', renderer='json')
+@view_config(route_name='set_new_issue', renderer='json')
 @validate(valid_user, valid_language, valid_new_issue, has_keywords(('is_public', bool), ('is_read_only', bool)))
 def set_new_issue(request):
     """
@@ -545,7 +540,7 @@ def set_new_issue(request):
 
 
 # ajax - set seen premisegroup
-@view_config(route_name='ajax_set_seen_statements', renderer='json')
+@view_config(route_name='set_seen_statements', renderer='json')
 @validate(valid_user, has_keywords(('uids', list)))
 def set_statements_as_seen(request):
     """
@@ -560,7 +555,7 @@ def set_statements_as_seen(request):
 
 
 # ajax - set users opinion
-@view_config(route_name='ajax_mark_statement_or_argument', renderer='json')
+@view_config(route_name='mark_statement_or_argument', renderer='json')
 @validate(valid_user, valid_statement_or_argument, has_keywords(('step', str), ('is_supportive', bool),
                                                                 ('should_mark', bool)))
 def mark_or_unmark_statement_or_argument(request):
@@ -587,7 +582,7 @@ def mark_or_unmark_statement_or_argument(request):
 
 
 # ajax - getting changelog of a statement
-@view_config(route_name='ajax_get_logfile_for_statements', renderer='json')
+@view_config(route_name='get_logfile_for_statements', renderer='json')
 @validate(valid_issue, has_keywords(('uids', list)))
 def get_logfile_for_some_statements(request):
     """
@@ -603,7 +598,7 @@ def get_logfile_for_some_statements(request):
 
 
 # ajax - for shorten url
-@view_config(route_name='ajax_get_shortened_url', renderer='json')
+@view_config(route_name='get_shortened_url', renderer='json')
 @validate(valid_issue, has_keywords(('url', str)))
 def get_shortened_url(request):
     """
@@ -618,7 +613,7 @@ def get_shortened_url(request):
 
 
 # ajax - for getting all news
-@view_config(route_name='ajax_get_news', renderer='json')
+@view_config(route_name='get_news', renderer='json')
 def get_news(request):
     """
     ajax interface for getting news
@@ -631,7 +626,7 @@ def get_news(request):
 
 
 # ajax - for getting argument infos
-@view_config(route_name='ajax_get_infos_about_argument', renderer='json')
+@view_config(route_name='get_infos_about_argument', renderer='json')
 @validate(valid_issue, valid_language, valid_argument, invalid_user)
 def get_infos_about_argument(request):
     """
@@ -648,7 +643,7 @@ def get_infos_about_argument(request):
 
 
 # ajax - for getting all users with the same opinion
-@view_config(route_name='ajax_get_user_with_same_opinion', renderer='json')
+@view_config(route_name='get_user_with_same_opinion', renderer='json')
 @validate(valid_language, invalid_user,
           has_keywords(('is_argument', bool), ('is_attitude', bool), ('is_reaction', bool), ('is_position', bool)))
 def get_users_with_opinion(request):
@@ -671,7 +666,7 @@ def get_users_with_opinion(request):
 
 
 # ajax - for getting all users with the same opinion
-@view_config(route_name='ajax_get_public_user_data', renderer='json')
+@view_config(route_name='get_public_user_data', renderer='json')
 @validate(has_keywords(('nickname', str)))
 def get_public_user_data(request):
     """
@@ -684,7 +679,7 @@ def get_public_user_data(request):
     return user.get_public_data(request.validated['nickname'], get_language_from_cookie(request))
 
 
-@view_config(route_name='ajax_get_arguments_by_statement_uid', renderer='json')
+@view_config(route_name='get_arguments_by_statement_uid', renderer='json')
 @validate(valid_statement)
 def get_arguments_by_statement_id(request):
     """
@@ -697,7 +692,7 @@ def get_arguments_by_statement_id(request):
     return get_arguments_by_statement_uid(request.validated['statement'], request.application_url)
 
 
-@view_config(route_name='ajax_get_references', renderer='json')
+@view_config(route_name='get_references', renderer='json')
 @validate(has_keywords(('uids', list), ('is_argument', bool)))
 def get_reference(request):
     """
@@ -713,7 +708,7 @@ def get_reference(request):
     return get_references(uids, is_argument, request.application_url)
 
 
-@view_config(route_name='ajax_set_references', renderer='json')
+@view_config(route_name='set_references', renderer='json')
 @validate(valid_user, valid_statement, has_keywords(('reference', str), ('ref_source', str)))
 def set_references(request):
     """
@@ -736,7 +731,7 @@ def set_references(request):
 
 
 # ajax - for language switch
-@view_config(route_name='ajax_switch_language', renderer='json')
+@view_config(route_name='switch_language', renderer='json')
 @validate(valid_language)
 def switch_language(request):
     """
@@ -750,7 +745,7 @@ def switch_language(request):
 
 
 # ajax - for sending news
-@view_config(route_name='ajax_send_news', renderer='json')
+@view_config(route_name='send_news', renderer='json')
 @validate(valid_user, has_keywords(('title', str), ('text', str)))
 def send_news(request):
     """
@@ -768,7 +763,7 @@ def send_news(request):
 
 
 # ajax - for fuzzy search
-@view_config(route_name='ajax_fuzzy_search', renderer='json')
+@view_config(route_name='fuzzy_search', renderer='json')
 @validate(valid_issue, invalid_user, has_keywords(('type', int), ('value', str), ('statement_uid', int)))
 def fuzzy_search(request):
     """
@@ -790,7 +785,7 @@ def fuzzy_search(request):
 
 
 # ajax - for additional service
-@view_config(route_name='ajax_additional_service', renderer='json')
+@view_config(route_name='additional_service', renderer='json')
 def additional_service(request):
     """
     Easteregg O:-)
@@ -822,7 +817,7 @@ def additional_service(request):
 # #######################################
 
 
-@view_config(route_name='ajax_flag_argument_or_statement', renderer='json')
+@view_config(route_name='flag_argument_or_statement', renderer='json')
 @validate(valid_user, valid_review_reason, has_keywords(('uid', int), ('is_argument', bool)),
           has_maybe_keywords(('extra_uid', int, None)))
 def flag_argument_or_statement(request):
@@ -842,7 +837,7 @@ def flag_argument_or_statement(request):
     return review_flag_helper.flag_element(uid, reason, db_user, is_argument, ui_locales, extra_uid)
 
 
-@view_config(route_name='ajax_split_or_merge_statement', renderer='json')
+@view_config(route_name='split_or_merge_statement', renderer='json')
 @validate(valid_user, valid_premisegroup, valid_text_values, has_keywords(('key', str)))
 def split_or_merge_statement(request):
     """
@@ -864,7 +859,7 @@ def split_or_merge_statement(request):
     return review_flag_helper.flag_statement_for_merge_or_split(key, pgroup, tvalues, db_user, _tn)
 
 
-@view_config(route_name='ajax_split_or_merge_premisegroup', renderer='json')
+@view_config(route_name='split_or_merge_premisegroup', renderer='json')
 @validate(valid_user, valid_premisegroup, has_keywords(('key', str)))
 def split_or_merge_premisegroup(request):
     """
@@ -885,7 +880,7 @@ def split_or_merge_premisegroup(request):
     return review_flag_helper.flag_pgroup_for_merge_or_split(key, pgroup, db_user, _tn)
 
 
-@view_config(route_name='ajax_review_delete_argument', renderer='json')
+@view_config(route_name='review_delete_argument', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewDelete), has_keywords(('should_delete', bool)))
 def review_delete_argument(request):
     """
@@ -908,7 +903,7 @@ def review_delete_argument(request):
     return True
 
 
-@view_config(route_name='ajax_review_edit_argument', renderer='json')
+@view_config(route_name='review_edit_argument', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewEdit), has_keywords(('is_edit_okay', bool)))
 def review_edit_argument(request):
     """
@@ -931,7 +926,7 @@ def review_edit_argument(request):
     return True
 
 
-@view_config(route_name='ajax_review_duplicate_statement', renderer='json')
+@view_config(route_name='review_duplicate_statement', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewDuplicate), has_keywords(('is_duplicate', bool)))
 def review_duplicate_statement(request):
     """
@@ -955,7 +950,7 @@ def review_duplicate_statement(request):
     return True
 
 
-@view_config(route_name='ajax_review_optimization_argument', renderer='json')
+@view_config(route_name='review_optimization_argument', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewOptimization),
           has_keywords(('should_optimized', bool), ('new_data', list)))
 def review_optimization_argument(request):
@@ -982,7 +977,7 @@ def review_optimization_argument(request):
     return True
 
 
-@view_config(route_name='ajax_review_splitted_premisegroup', renderer='json')
+@view_config(route_name='review_splitted_premisegroup', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewSplit), has_keywords(('should_split', bool)))
 def review_splitted_premisegroup(request):
     """
@@ -1006,7 +1001,7 @@ def review_splitted_premisegroup(request):
     return True
 
 
-@view_config(route_name='ajax_review_merged_premisegroup', renderer='json')
+@view_config(route_name='review_merged_premisegroup', renderer='json')
 @validate(valid_user, valid_not_executed_review('review_uid', ReviewMerge), has_keywords(('should_merge', bool)))
 def review_merged_premisegroup(request):
     """
@@ -1030,7 +1025,7 @@ def review_merged_premisegroup(request):
     return True
 
 
-@view_config(route_name='ajax_undo_review', renderer='json')
+@view_config(route_name='undo_review', renderer='json')
 @validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords(('queue', str)))
 def undo_review(request):
     """
@@ -1046,7 +1041,7 @@ def undo_review(request):
     return review_history_helper.revoke_old_decision(queue, db_review, db_user)
 
 
-@view_config(route_name='ajax_cancel_review', renderer='json')
+@view_config(route_name='cancel_review', renderer='json')
 @validate(valid_user_as_author, valid_uid_as_row_in_review_queue, has_keywords(('queue', str)))
 def cancel_review(request):
     """
@@ -1062,7 +1057,7 @@ def cancel_review(request):
     return review_history_helper.cancel_ongoing_decision(queue, db_review, db_user)
 
 
-@view_config(route_name='ajax_review_lock', renderer='json', require_csrf=False)
+@view_config(route_name='review_lock', renderer='json', require_csrf=False)
 @validate(valid_user, valid_database_model('review_uid', ReviewOptimization), has_keywords(('lock', bool)))
 def review_lock(request):
     """
@@ -1084,7 +1079,7 @@ def review_lock(request):
         return review_queue_helper.unlock_optimization_review(db_review, _tn)
 
 
-@view_config(route_name='ajax_revoke_statement_content', renderer='json', require_csrf=False)
+@view_config(route_name='revoke_statement_content', renderer='json', require_csrf=False)
 @validate(valid_user_as_author_of_statement, valid_statement)
 def revoke_statement_content(request):
     """
@@ -1099,7 +1094,7 @@ def revoke_statement_content(request):
     return revoke_author_of_statement_content(statement, db_user)
 
 
-@view_config(route_name='ajax_revoke_argument_content', renderer='json', require_csrf=False)
+@view_config(route_name='revoke_argument_content', renderer='json', require_csrf=False)
 @validate(valid_user_as_author_of_argument, valid_argument)
 def revoke_argument_content(request):
     db_user = request.validated['user']

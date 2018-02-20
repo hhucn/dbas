@@ -295,7 +295,7 @@ function GuiHandler() {
 		$('#popup-complete-login-info').hide();
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_user_registration',
+			url: 'user_registration',
 			type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({

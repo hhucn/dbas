@@ -298,7 +298,7 @@ def __return_success_login(request, for_api, db_user, keep_login, url) -> dict:
         return HTTPFound(location=url, headers=headers)  # success
 
 
-def register_user_with_ajax_data(data, lang, mailer: Mailer):
+def register_user_with_json_data(data, lang, mailer: Mailer):
     """
     Consume the ajax data for an login attempt
 

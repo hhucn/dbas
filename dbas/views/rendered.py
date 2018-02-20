@@ -41,6 +41,7 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from websocket.lib import get_port
 
+
 name = 'D-BAS'
 version = '1.5.5'
 full_version = version

@@ -29,7 +29,7 @@ function AjaxNewsHandler(){
 
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_send_news',
+			url: 'send_news',
 			dataType: 'json',
 			contentType: 'application/json',
 			data: JSON.stringify({

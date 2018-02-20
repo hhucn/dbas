@@ -12,7 +12,7 @@ function AdminAjaxHandler() {
 	 */
 	this.deleteSomething = function (uids, element) {
 		var table = $('#table_name').text();
-		var url = 'ajax_admin_delete';
+		var url = 'delete';
 		var data = {
 			'uids': uids,
 			'table': table
@@ -33,7 +33,7 @@ function AdminAjaxHandler() {
 	 */
 	this.addSomething = function (new_data) {
 		var table = $('#table_name').text();
-		var url = 'ajax_admin_add';
+		var url = 'add';
 		var data = {
 			'new_data': new_data,
 			'table': table
@@ -71,7 +71,7 @@ function AdminAjaxHandler() {
 	 */
 	this.updateSomething = function (element, uids, keys, values) {
 		var table = $('#table_name').text();
-		var url = 'ajax_admin_update';
+		var url = 'update';
 		var data = {
 			'table': table,
 			'uids': uids,
@@ -95,7 +95,7 @@ function AdminAjaxHandler() {
 	 *
 	 */
 	this.updateCountBadges = function () {
-		var url = 'ajax_admin_update_badges';
+		var url = 'update_badges';
 		var data = {};
 		var done = function (data) {
 			$.each(data.data, function (index, element) {

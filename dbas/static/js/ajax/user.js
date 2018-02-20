@@ -10,7 +10,7 @@ function AjaxUserHandler(){
 	this.getPublicUserData = function () {
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_get_public_user_data',
+			url: 'get_public_user_data',
 			method: 'POST',
 			dataType: 'json',
 			contentType: 'application/json',
