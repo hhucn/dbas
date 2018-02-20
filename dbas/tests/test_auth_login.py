@@ -6,7 +6,7 @@ from pyramid import testing
 from pyramid.httpexceptions import HTTPFound
 from pyramid_mailer.mailer import DummyMailer
 
-from dbas.auth.login import login_user, register_user_with_ajax_data, login_user_oauth
+from dbas.auth.login import login_user, register_user_with_json_data, login_user_oauth
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.views import user_login
@@ -56,7 +56,7 @@ class AuthLoginTest(unittest.TestCase):
         self.assertIn('error', response)
         self.assertNotIn('user', response)
 
-    def test_login_register_with_ajax_data(self):
+    def test_login_register_with_json_data(self):
         request = testing.DummyRequest(validated={
             'firstname': '',
             'lastname': '',
@@ -67,7 +67,7 @@ class AuthLoginTest(unittest.TestCase):
             'passwordconfirm': '',
             'mode': '',
         }, mailer=DummyMailer)
-        success, msg, db_new_user = register_user_with_ajax_data(request.validated, 'en', request.mailer)
+        success, msg, db_new_user = register_user_with_json_data(request.validated, 'en', request.mailer)
         self.assertEqual(self._tn.get(_.pwdShort), msg)
         self.assertIsNone(db_new_user)
 
@@ -82,7 +82,7 @@ class AuthLoginTest(unittest.TestCase):
             'passwordconfirm': 'somepasswd',
             'mode': 'manually',
         }, mailer=DummyMailer)
-        success, msg, db_new_user = register_user_with_ajax_data(request.validated, 'en', request.mailer)
+        success, msg, db_new_user = register_user_with_json_data(request.validated, 'en', request.mailer)
         self.assertEqual(self._tn.get(_.nickIsTaken), msg)
         self.assertIsNone(db_new_user)
 
@@ -97,7 +97,7 @@ class AuthLoginTest(unittest.TestCase):
             'passwordconfirm': 'somepasswd',
             'mode': 'manually',
         }, mailer=DummyMailer)
-        success, msg, db_new_user = register_user_with_ajax_data(request.validated, 'en', request.mailer)
+        success, msg, db_new_user = register_user_with_json_data(request.validated, 'en', request.mailer)
         print("success: " + success)
         print("msg: " + msg)
         self.assertEqual(self._tn.get(_.mailIsTaken), msg)
@@ -114,7 +114,7 @@ class AuthLoginTest(unittest.TestCase):
             'passwordconfirm': 'somepasswd',
             'mode': 'manually',
         }, mailer=DummyMailer)
-        success, msg, db_new_user = register_user_with_ajax_data(request.validated, 'en', request.mailer)
+        success, msg, db_new_user = register_user_with_json_data(request.validated, 'en', request.mailer)
         self.assertEqual(self._tn.get(_.mailNotValid), msg)
         self.assertIsNone(db_new_user)
 
@@ -129,7 +129,7 @@ class AuthLoginTest(unittest.TestCase):
             'passwordconfirm': self.uustring(),
             'mode': 'manually',
         }, mailer=DummyMailer)
-        success, msg, db_new_user = register_user_with_ajax_data(request.validated, 'en', request.mailer)
+        success, msg, db_new_user = register_user_with_json_data(request.validated, 'en', request.mailer)
         self.assertEqual(self._tn.get(_.pwdNotEqual), msg)
         self.assertIsNone(db_new_user)
 

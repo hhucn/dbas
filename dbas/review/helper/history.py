@@ -705,18 +705,18 @@ def __is_uid_valid(uid, queue):
     return False
 
 
-def __revoke_decision_and_implications(type, reviewer_type, uid):
+def __revoke_decision_and_implications(ttype, reviewer_type, uid):
     """
     Revokes the old decision and the implications
 
-    :param type: table of Review
+    :param ttype: table of Review
     :param reviewer_type: Table of LastReviewer
     :param uid: Review.uid
     :return: None
     """
     DBDiscussionSession.query(reviewer_type).filter_by(review_uid=uid).delete()
 
-    db_review = DBDiscussionSession.query(type).get(uid)
+    db_review = DBDiscussionSession.query(ttype).get(uid)
     db_review.set_revoked(True)
     en_or_disable_object_of_review(db_review, False)
 

@@ -14,10 +14,9 @@ from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue
-from dbas.database.initializedb import nick_of_anonymous_user
-from dbas.lib import get_public_profile_picture
+from dbas.lib import get_public_profile_picture, nick_of_anonymous_user
 from dbas.query_wrapper import get_not_disabled_statement_as_query
-from dbas.url_manager import UrlManager
+from dbas.helper.url import UrlManager
 
 list_length = 5
 max_count_zeros = 5
@@ -255,23 +254,23 @@ def get_strings_for_public_nickname(value, nickname):
     return return_array[:list_length]
 
 
-def __sort_array(list):
+def __sort_array(inlist):
     """
     Returns sorted array, based on the distance
 
-    :param list: Array
+    :param inlist: Array
     :return: Array
     """
     return_list = []
-    newlist = sorted(list, key=lambda k: k['distance'])
+    newlist = sorted(inlist, key=lambda k: k['distance'])
 
     if mechanism == 'SequenceMatcher':  # sort descending
         newlist = reversed(newlist)
 
     # add index
-    for index, dict in enumerate(newlist):
-        dict['index'] = index
-        return_list.append(dict)
+    for index, dic in enumerate(newlist):
+        dic['index'] = index
+        return_list.append(dic)
 
     return return_list
 

@@ -14,7 +14,7 @@ BROWSER = 'phantomjs'
 .. codeauthor:: Marc Feger <marc.feger@uni-duesseldorf.de>
 '''
 
-PATH = '/ajax_switch_language?_LOCALE_='
+PATH = '/switch_language?_LOCALE_='
 
 LANGUAGE = {
     'GERMAN': 'de',

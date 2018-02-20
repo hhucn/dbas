@@ -19,7 +19,9 @@ from dbas.database.discussion_model import Statement, Issue, TextVersion, User, 
 
 
 class ArrowTypeScalar(Scalar):
-    '''ArrowType Scalar Description'''
+    """
+    ArrowType Scalar Description
+    """
 
     @staticmethod
     def serialize(a):
@@ -39,7 +41,7 @@ class ArrowTypeScalar(Scalar):
 
 
 @convert_sqlalchemy_type.register(ArrowType)
-def convert_column_to_arrow(type, column, registry=None):
+def convert_column_to_arrow(ttype, column, registry=None):
     return ArrowTypeScalar(description=getattr(column, 'doc', None),
                            required=not (getattr(column, 'nullable', True)))
 

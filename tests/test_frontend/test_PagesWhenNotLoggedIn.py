@@ -9,7 +9,7 @@
 # def setup():
 #     browser.driver.implicitly_wait(10)
 #     browser.driver.set_window_size(1920, 1080)
-#     browser.visit(ROOT + '/ajax_switch_language?_LOCALE_=en')
+#     browser.visit(ROOT + '/switch_language?_LOCALE_=en')
 #
 #
 # def teardown():

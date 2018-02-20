@@ -55,7 +55,7 @@ function GuiHandler() {
 		$('#' + id).keyup(function () {
 			setTimeout(function () {
 				var escapedText = escapeHtml($('#' + id).val());
-				new AjaxDiscussionHandler().fuzzySearch(escapedText, id, fuzzy_add_reason, '');
+				new AjaxDiscussionHandler().fuzzySearch(escapedText, id, fuzzy_add_reason, '', '');
 			}, 200);
 		});
 	};
@@ -295,7 +295,7 @@ function GuiHandler() {
 		$('#popup-complete-login-info').hide();
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_user_registration',
+			url: 'user_registration',
 			type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -380,7 +380,7 @@ function GuiHandler() {
 			});
 
 			if (type === fuzzy_add_reason) {
-				new AjaxDiscussionHandler().sendNewPremiseForArgument(arg, relation, decided_texts);
+				new AjaxDiscussionHandler().sendNewPremiseForArgument(parseInt(arg), relation, decided_texts);
 			} else if (type === fuzzy_start_premise) {
 				new AjaxDiscussionHandler().sendNewStartPremise(decided_texts, conclusion, supportive);
 			}

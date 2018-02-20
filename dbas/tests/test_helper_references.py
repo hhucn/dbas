@@ -61,10 +61,10 @@ class ReferenceHelperTest(unittest.TestCase):
         DBDiscussionSession.flush()
         transaction.commit()
 
-    def __validate_reference_data(self, uids, dict):
-        for key in dict:
+    def __validate_reference_data(self, uids, ddict):
+        for key in ddict:
             self.assertIn(key, uids)
-            refs = dict[key]
+            refs = ddict[key]
             for ref in refs:
                 self.assertIn('uid', ref)
                 self.assertIn('statement_text', ref)
@@ -72,7 +72,7 @@ class ReferenceHelperTest(unittest.TestCase):
                 db_ref = DBDiscussionSession.query(StatementReferences).get(ref['uid'])
                 self.assertEquals(ref['statement_text'], get_text_for_statement_uid(db_ref.statement_uid))
 
-    def __validate_reference_text(self, uids, dict):
-        for key in dict:
+    def __validate_reference_text(self, uids, ddict):
+        for key in ddict:
             self.assertIn(key, uids)
-            self.assertEquals(dict[key], get_text_for_statement_uid(key))
+            self.assertEquals(ddict[key], get_text_for_statement_uid(key))

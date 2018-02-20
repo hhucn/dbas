@@ -9,6 +9,8 @@ from cornice import Service
 from pyramid.httpexceptions import exception_response
 
 import admin.lib as lib
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -44,28 +46,28 @@ z_table = Service(name='table_page',
                   cors_policy=cors_policy)
 
 update_row = Service(name='update_table_row',
-                     path='/{url:.*}ajax_admin_update',
+                     path='/{url:.*}update',
                      description="Update",
                      renderer='json',
                      permission='admin',
                      cors_policy=cors_policy)
 
 delete_row = Service(name='delete_table_row',
-                     path='/{url:.*}ajax_admin_delete',
+                     path='/{url:.*}delete',
                      description="Delete",
                      renderer='json',
                      permission='admin',
                      cors_policy=cors_policy)
 
 add_row = Service(name='add_table_row',
-                  path='/{url:.*}ajax_admin_add',
+                  path='/{url:.*}add',
                   description="Add",
                   renderer='json',
                   permission='admin',
                   cors_policy=cors_policy)
 
 update_badge = Service(name='update_badge_counter',
-                       path='/{url:.*}ajax_admin_update_badges',
+                       path='/{url:.*}update_badges',
                        description="Update",
                        renderer='json',
                        permission='admin',
@@ -101,7 +103,8 @@ def main_admin(request):
         return user_logout(request, True)
 
     ui_locales = get_language_from_cookie(request)
-    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry, request.application_url, request.path, request.authenticated_userid)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
+    extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry, request.application_url, request.path, db_user)
     dashboard_elements = {
         'entities': lib.get_overview(request.path),
         'api_tokens': lib.get_application_tokens()
@@ -132,10 +135,11 @@ def main_table(request):
         return user_logout(request, True)
 
     ui_locales = get_language_from_cookie(request)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
                                                                                    request.application_url,
                                                                                    request.path,
-                                                                                   request.authenticated_userid)
+                                                                                   db_user)
     table_name = request.matchdict['table']
     if not table_name.lower() in lib.table_mapper:
         return exception_response(400)

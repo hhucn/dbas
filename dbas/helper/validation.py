@@ -10,11 +10,10 @@ from admin.lib import table_mapper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Issue, Statement, Language, Argument, ReviewDeleteReason, PremiseGroup, \
     TextVersion
-from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.language import get_language_from_cookie
 from dbas.handler.user import update_last_action
 from dbas.input_validator import is_integer
-from dbas.lib import get_user_by_private_or_public_nickname
+from dbas.lib import get_user_by_private_or_public_nickname, nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.review.helper.queues import review_queues, model_mapping
 from dbas.strings.keywords import Keywords as _

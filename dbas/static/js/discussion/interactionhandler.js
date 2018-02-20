@@ -296,7 +296,7 @@ function InteractionHandler() {
 				if (type === fuzzy_start_premise) {
 					new AjaxDiscussionHandler().sendNewStartPremise(t_array, conclusion, supportive);
 				} else  if (type === fuzzy_add_reason) {
-					new AjaxDiscussionHandler().sendNewPremiseForArgument(arg, relation, t_array);
+					new AjaxDiscussionHandler().sendNewPremiseForArgument(parseInt(arg), relation, t_array);
 				}
 			}
 		}

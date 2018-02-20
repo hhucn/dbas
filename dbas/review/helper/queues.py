@@ -72,12 +72,12 @@ def get_review_queues_as_lists(main_page, translator, nickname):
     count, all_rights = get_reputation_of(nickname)
 
     review_list = list()
-    review_list.append(__get_delete_dict(main_page, translator, nickname, count, all_rights))
-    review_list.append(__get_optimization_dict(main_page, translator, nickname, count, all_rights))
-    review_list.append(__get_edit_dict(main_page, translator, nickname, count, all_rights))
-    review_list.append(__get_duplicates_dict(main_page, translator, nickname, count, all_rights))
-    review_list.append(__get_split_dict(main_page, translator, nickname, count, all_rights))
-    review_list.append(__get_merge_dict(main_page, translator, nickname, count, all_rights))
+    review_list.append(__get_delete_dict(main_page, translator, db_user, count, all_rights))
+    review_list.append(__get_optimization_dict(main_page, translator, db_user, count, all_rights))
+    review_list.append(__get_edit_dict(main_page, translator, db_user, count, all_rights))
+    review_list.append(__get_duplicates_dict(main_page, translator, db_user, count, all_rights))
+    review_list.append(__get_split_dict(main_page, translator, db_user, count, all_rights))
+    review_list.append(__get_merge_dict(main_page, translator, db_user, count, all_rights))
     review_list.append(__get_history_dict(main_page, translator, count, all_rights))
 
     if db_user.is_author() or db_user.is_admin():
@@ -92,14 +92,14 @@ def get_count_of_all():
     return sum(count)
 
 
-def get_complete_review_count(nickname):
+def get_complete_review_count(db_user: User) -> int:
     """
     Sums up the review points of the user
 
-    :param nickname: User.nickname
+    :param db_user: User
     :return: int
     """
-    count, all_rights = get_reputation_of(nickname)
+    count, all_rights = get_reputation_of(db_user)
 
     rights1 = count >= reputation_borders[key_deletes] or all_rights
     rights2 = count >= reputation_borders[key_optimizations] or all_rights
@@ -109,28 +109,28 @@ def get_complete_review_count(nickname):
     rights6 = count >= reputation_borders[key_merge] or all_rights
 
     count = [
-        __get_review_count_for(ReviewDelete, LastReviewerDelete, nickname) if rights1 else 0,
-        __get_review_count_for(ReviewOptimization, LastReviewerOptimization, nickname) if rights2 else 0,
-        __get_review_count_for(ReviewEdit, LastReviewerEdit, nickname) if rights3 else 0,
-        __get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, nickname) if rights4 else 0,
-        __get_review_count_for(ReviewSplit, LastReviewerSplit, nickname) if rights5 else 0,
-        __get_review_count_for(ReviewMerge, LastReviewerMerge, nickname) if rights6 else 0,
+        __get_review_count_for(ReviewDelete, LastReviewerDelete, db_user) if rights1 else 0,
+        __get_review_count_for(ReviewOptimization, LastReviewerOptimization, db_user) if rights2 else 0,
+        __get_review_count_for(ReviewEdit, LastReviewerEdit, db_user) if rights3 else 0,
+        __get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, db_user) if rights4 else 0,
+        __get_review_count_for(ReviewSplit, LastReviewerSplit, db_user) if rights5 else 0,
+        __get_review_count_for(ReviewMerge, LastReviewerMerge, db_user) if rights6 else 0,
     ]
 
     return sum(count)
 
 
-def __get_delete_dict(main_page, translator, nickname, count, all_rights):
+def __get_delete_dict(main_page, translator, db_user, count, all_rights):
     """
     Prepares dictionary for the a section.
 
     :param main_page: URL
     :param translator: Translator
-    :param nickname: Users nickname
+    :param db_user: Users
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_delete_dict', 'main')
-    task_count = __get_review_count_for(ReviewDelete, LastReviewerDelete, nickname)
+    task_count = __get_review_count_for(ReviewDelete, LastReviewerDelete, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueDelete),
                 'id': 'deletes',
@@ -145,17 +145,17 @@ def __get_delete_dict(main_page, translator, nickname, count, all_rights):
     return tmp_dict
 
 
-def __get_optimization_dict(main_page, translator, nickname, count, all_rights):
+def __get_optimization_dict(main_page, translator, db_user, count, all_rights):
     """
     Prepares dictionary for the a section.
 
     :param main_page: URL
     :param translator: Translator
-    :param nickname: Users nickname
+    :param db_user: User
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_optimization_dict', 'main')
-    task_count = __get_review_count_for(ReviewOptimization, LastReviewerOptimization, nickname)
+    task_count = __get_review_count_for(ReviewOptimization, LastReviewerOptimization, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueOptimization),
                 'id': 'optimizations',
@@ -170,17 +170,17 @@ def __get_optimization_dict(main_page, translator, nickname, count, all_rights):
     return tmp_dict
 
 
-def __get_edit_dict(main_page, translator, nickname, count, all_rights):
+def __get_edit_dict(main_page, translator, db_user, count, all_rights):
     """
     Prepares dictionary for the a section.
 
     :param main_page: URL
     :param translator: Translator
-    :param nickname: Users nickname
+    :param db_user: User
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_edit_dict', 'main')
-    task_count = __get_review_count_for(ReviewEdit, LastReviewerEdit, nickname)
+    task_count = __get_review_count_for(ReviewEdit, LastReviewerEdit, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueEdit),
                 'id': 'edits',
@@ -195,17 +195,17 @@ def __get_edit_dict(main_page, translator, nickname, count, all_rights):
     return tmp_dict
 
 
-def __get_duplicates_dict(main_page, translator, nickname, count, all_rights):
+def __get_duplicates_dict(main_page, translator, db_user, count, all_rights):
     """
     Prepares dictionary for the a section. Queue should be added iff the user is author!
 
     :param main_page: URL
     :param translator: Translator
-    :param nickname: Users nickname
+    :param db_user: User
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_duplicates_dict', 'main')
-    task_count = __get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, nickname)
+    task_count = __get_review_count_for(ReviewDuplicate, LastReviewerDuplicate, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueDuplicates),
                 'id': 'duplicates',
@@ -220,17 +220,17 @@ def __get_duplicates_dict(main_page, translator, nickname, count, all_rights):
     return tmp_dict
 
 
-def __get_split_dict(main_page, translator, nickname, count, all_rights):
+def __get_split_dict(main_page, translator, db_user, count, all_rights):
     """
     Prepares dictionary for the a section.
 
     :param main_page: URL
     :param translator: Translator
-    :param nickname: Users nickname
+    :param db_user: User
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_delete_dict', 'main')
-    task_count = __get_review_count_for(ReviewSplit, LastReviewerSplit, nickname)
+    task_count = __get_review_count_for(ReviewSplit, LastReviewerSplit, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueSplit),
                 'id': 'splits',
@@ -245,17 +245,17 @@ def __get_split_dict(main_page, translator, nickname, count, all_rights):
     return tmp_dict
 
 
-def __get_merge_dict(main_page, translator, nickname, count, all_rights):
+def __get_merge_dict(main_page, translator, db_user, count, all_rights):
     """
     Prepares dictionary for the a section.
 
     :param main_page: URL
     :param translator: Translator
-    :param nickname: Users nickname
+    :param db_user: User
     :return: Dict()
     """
     #  logger('ReviewQueues', '__get_delete_dict', 'main')
-    task_count = __get_review_count_for(ReviewMerge, LastReviewerMerge, nickname)
+    task_count = __get_review_count_for(ReviewMerge, LastReviewerMerge, db_user)
 
     tmp_dict = {'task_name': translator.get(_.queueMerge),
                 'id': 'merges',
@@ -315,18 +315,17 @@ def __get_ongoing_dict(main_page, translator):
     return tmp_dict
 
 
-def __get_review_count_for(review_type, last_reviewer_type, nickname):
+def __get_review_count_for(review_type, last_reviewer_type, db_user):
     """
     Returns the count of reviews of *review_type* for the user with *nickname*, whereby all reviewed data
-    of *last_reviewer_type* is not observed
+    of *last_reviewer_type* are not observed
 
     :param review_type: ReviewEdit, ReviewOptimization or ...
     :param last_reviewer_type: LastReviewerEdit, LastReviewer...
-    :param nickname: Users nickname
+    :param db_user: User
     :return: Integer
     """
     #  logger('ReviewQueues', '__get_review_count_for', 'main')
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         db_reviews = DBDiscussionSession.query(review_type).filter_by(is_executed=False).all()
         return len(db_reviews)

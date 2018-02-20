@@ -5,7 +5,7 @@ Class for handling relations of arguments
 """
 
 import random
-from typing import Tuple
+from typing import Tuple, Union
 
 import transaction
 
@@ -171,25 +171,28 @@ def set_new_undermine_or_support_for_pgroup(premisegroup_uid: int, current_argum
     :param issue: Issue.uid
     :return: Argument, Boolean if the argument is a duplicate
     """
-    new_arguments = []
     already_in = []
+
     # all premises out of current pgroup
-    db_premises = DBDiscussionSession.query(Premise).filter_by(
-        premisesgroup_uid=current_argument.premisesgroup_uid).all()
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_argument.premisesgroup_uid).all()
     for premise in db_premises:
+        new_arguments = []
         db_arguments = get_not_disabled_arguments_as_query()
         db_argument = db_arguments.filter(Argument.premisesgroup_uid == premisegroup_uid,
                                           Argument.is_supportive == True,
                                           Argument.conclusion_uid == premise.statement_uid).first()
         if db_argument:
             continue
-        else:
-            new_argument = Argument(premisegroup=premisegroup_uid,
-                                    issupportive=is_supportive,
-                                    author=db_user.uid,
-                                    conclusion=premise.statement_uid,
-                                    issue=db_issue.uid)
-            new_arguments.append(new_argument)
+
+        db_tmp = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisegroup_uid).all()
+        if any([p.statement_uid == premise.statement_uid for p in db_tmp]):
+            return False
+
+        new_arguments.append(Argument(premisegroup=premisegroup_uid,
+                                      issupportive=is_supportive,
+                                      author=db_user.uid,
+                                      conclusion=premise.statement_uid,
+                                      issue=db_issue.uid))
 
         if len(new_arguments) > 0:
             DBDiscussionSession.add_all(new_arguments)
@@ -232,7 +235,7 @@ def set_new_undercut(premisegroup_uid, current_argument: Argument, db_user: User
 
 
 def set_new_rebut(premisegroup_uid, current_argument: Argument, db_user: User, db_issue: Issue) \
-        -> Tuple[Argument, bool]:
+        -> Tuple[Union[Argument, bool], bool]:
     """
     Inserts a new rebut with the given parameters.
 
@@ -249,6 +252,9 @@ def set_new_rebut(premisegroup_uid, current_argument: Argument, db_user: User, d
     if db_argument:
         return db_argument, True
     else:
+        db_tmp = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisegroup_uid).all()
+        if any([p.statement_uid == current_argument.conclusion_uid for p in db_tmp]):
+            return False, False
         new_argument = Argument(premisegroup=premisegroup_uid,
                                 issupportive=False,
                                 author=db_user.uid,
@@ -261,7 +267,7 @@ def set_new_rebut(premisegroup_uid, current_argument: Argument, db_user: User, d
 
 
 def set_new_support(premisegroup_uid: int, current_argument: Argument, db_user: User, db_issue: Issue) \
-        -> Tuple[Argument, bool]:
+        -> Tuple[Union[Argument, bool], bool]:
     """
     Inserts a new support with the given parameters.
 
@@ -279,6 +285,10 @@ def set_new_support(premisegroup_uid: int, current_argument: Argument, db_user: 
     if db_argument:
         return db_argument, True
     else:
+        db_tmp = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisegroup_uid).all()
+        if any([p.statement_uid == current_argument.conclusion_uid for p in db_tmp]):
+            return False, False
+
         new_argument = Argument(premisegroup=premisegroup_uid,
                                 issupportive=True,
                                 author=db_user.uid,

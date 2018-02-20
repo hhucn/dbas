@@ -13,7 +13,6 @@ from slugify import slugify
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print, \
     ClickedStatement
-from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import get_short_url
@@ -21,7 +20,7 @@ from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_issues_as_query, get_visible_issues_for_user_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.url_manager import UrlManager
+from dbas.helper.url import UrlManager
 
 rep_limit_to_open_issues = 10
 
@@ -59,24 +58,23 @@ def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Lan
     return {'issue': get_issue_dict_for(db_issue, application_url, False, 0, db_lang.ui_locales)}
 
 
-def prepare_json_of_issue(uid, application_url, for_api, nickname):
+def prepare_json_of_issue(db_issue: Issue, application_url: str, for_api: bool, db_user: User) -> dict():
     """
     Prepares slug, info, argument count and the date of the issue as dict
 
     :param uid: Issue.uid
     :param application_url: application_url
     :param for_api: Boolean
-    :param nickname: Nickname of current user
+    :param db_user: User
     :return: Issue-dict()
     """
     logger('issueHelper', 'prepare_json_of_issue', 'main')
-    db_issue = DBDiscussionSession.query(Issue).get(uid)
 
     slug = slugify(db_issue.title)
     title = db_issue.title
     info = db_issue.info
     long_info = db_issue.long_info
-    stat_count = get_number_of_statements(uid)
+    stat_count = get_number_of_statements(db_issue.uid)
     lang = db_issue.lang
     date_pretty = sql_timestamp_pretty_print(db_issue.date, lang)
     duration = (arrow.utcnow() - db_issue.date)
@@ -85,11 +83,10 @@ def prepare_json_of_issue(uid, application_url, for_api, nickname):
     date_ms = int(db_issue.date.format('X')) * 1000
     date = db_issue.date.format('DD.MM. HH:mm')
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
-    db_issues = get_visible_issues_for_user_as_query(db_user.uid).filter(Issue.uid != uid).all()
+    db_issues = get_visible_issues_for_user_as_query(db_user.uid).filter(Issue.uid != db_issue.uid).all()
     all_array = []
     for issue in db_issues:
-        issue_dict = get_issue_dict_for(issue, application_url, for_api, uid, lang)
+        issue_dict = get_issue_dict_for(issue, application_url, for_api, db_issue.uid, lang)
         all_array.append(issue_dict)
 
     _t = Translator(lang)
@@ -104,7 +101,7 @@ def prepare_json_of_issue(uid, application_url, for_api, nickname):
         'info': info,
         'long_info': long_info,
         'title': title,
-        'uid': uid,
+        'uid': db_issue.uid,
         'stat_count': stat_count,
         'date': date,
         'date_ms': date_ms,
@@ -274,27 +271,27 @@ def get_issues_overiew(nickname, application_url) -> dict:
     }
 
 
-def set_discussions_properties(db_user: User, db_issue: Issue, value, property, translator) -> dict:
+def set_discussions_properties(db_user: User, db_issue: Issue, value, iproperty, translator) -> dict:
     """
 
     :param db_user: User
     :param db_issue: Issue
     :param value: The value which should be assigned to property
-    :param property: Property of Issue, e.g. is_disabled
+    :param iproperty: Property of Issue, e.g. is_disabled
     :param translator:
     :return:
     """
     logger('IssueHelper', 'set_discussions_properties',
-           'issue: {}, key: {}, checked: {}'.format(db_issue.slug, property, value))
+           'issue: {}, key: {}, checked: {}'.format(db_issue.slug, iproperty, value))
 
     if db_issue.author_uid != db_user.uid and not user.is_admin(db_user.nickname):
         return {'error': translator.get(_.noRights)}
 
-    if property == 'enable':
+    if iproperty == 'enable':
         db_issue.set_disable(not value)
-    elif property == 'public':
+    elif iproperty == 'public':
         db_issue.set_private(not value)
-    elif property == 'writable':
+    elif iproperty == 'writable':
         db_issue.set_read_only(not value)
     else:
         return {'error': translator.get(_.internalKeyError)}

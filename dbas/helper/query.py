@@ -14,12 +14,12 @@ from urllib3.exceptions import NewConnectionError
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, RevokedContent, \
     RevokedContentHistory, MarkedArgument, MarkedStatement, Settings, Language
-from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler.history import get_bubble_from_reaction_step, get_splitted_history
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for_argument_uid, \
     get_undercuts_for_argument_uid, get_supports_for_argument_uid
-from dbas.lib import get_text_for_premisesgroup_uid, pretty_print_options, get_all_arguments_by_statement
+from dbas.lib import get_text_for_premisesgroup_uid, pretty_print_options, get_all_arguments_by_statement, \
+    nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator

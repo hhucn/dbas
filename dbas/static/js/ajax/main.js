@@ -50,7 +50,7 @@ function AjaxMainHandler(){
 	 * @param new_lang is the shortcut for the language
 	 */
 	this.switchDisplayLanguage = function (new_lang){
-		var url = mainpage + 'ajax_switch_language';
+		var url = mainpage + 'switch_language';
 		var data = {'lang': new_lang};
 		var done = function ajaxSwitchDisplayLanguageDone() {
 			setAnalyticsOptOutLink(new_lang);
@@ -81,7 +81,7 @@ function AjaxMainHandler(){
 		$('#' + popupLoginInfo + '-message').text('');
 
 		$.ajax({
-			url: mainpage + 'ajax_user_login',
+			url: mainpage + 'user_login',
 			type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -137,7 +137,7 @@ function AjaxMainHandler(){
 		$('#' + popupLoginInfo + '-message').text('');
 
 		$.ajax({
-			url: mainpage + 'ajax_user_login_oauth',
+			url: mainpage + 'user_login_oauth',
 			type: 'POST',
 			data: {
 				service: service,
@@ -169,7 +169,7 @@ function AjaxMainHandler(){
 	this.logout = function(){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: mainpage + 'ajax_user_logout',
+			url: mainpage + 'user_logout',
 			type: 'POST',
 			dataType: 'json',
 			headers: {
@@ -215,7 +215,7 @@ function AjaxMainHandler(){
         }
 
 		$.ajax({
-			url: 'ajax_user_registration',
+			url: 'user_registration',
 			type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -257,7 +257,7 @@ function AjaxMainHandler(){
 		var email = $('#password-request-email-input').val();
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_user_password_request',
+			url: 'user_password_request',
 			type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({

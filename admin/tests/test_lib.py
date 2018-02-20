@@ -9,7 +9,7 @@ import admin.lib as admin
 from dbas.database import DBDiscussionSession, get_dbas_db_configuration
 from dbas.database.discussion_model import User, APIToken
 from dbas.helper.tests import add_settings_to_appconfig
-from dbas.database.initializedb import nick_of_anonymous_user
+from dbas.lib import nick_of_anonymous_user
 
 settings = add_settings_to_appconfig()
 

@@ -13,7 +13,7 @@ function AjaxNotificationHandler(){
 		new Notifications().hideInfoSpaces();
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_notifications_read',
+			url: 'notifications_read',
 			method: 'POST',
 			contentType: 'application/json',
             data: JSON.stringify({
@@ -46,7 +46,7 @@ function AjaxNotificationHandler(){
 		new Notifications().hideInfoSpaces();
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_notifications_delete',
+			url: 'notifications_delete',
 			method: 'POST',
 			contentType: 'application/json',
 			data: JSON.stringify({
@@ -83,7 +83,7 @@ function AjaxNotificationHandler(){
 		$('#popup-writing-notification-failed').hide();
 
 		$.ajax({
-			url: 'ajax_send_notification',
+			url: 'send_notification',
 			type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({title: title, text: text, recipient: recipient}),

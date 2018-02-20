@@ -9,7 +9,7 @@ function AjaxSettingsHandler(){
 	 * Ajax request for getting the users history
 	 */
 	this.getUserHistoryData = function(){
-		var url = 'ajax_get_user_history';
+		var url = 'get_user_history';
 		var done = function getUserHistoryDataDone(data) {
 			new HistoryHandler().getUserHistoryDataDone(data);
 		};
@@ -23,7 +23,7 @@ function AjaxSettingsHandler(){
 	 * Ajax request for deleting the users history
 	 */
 	this.deleteUserHistoryData = function(){
-		var url = 'ajax_delete_user_history';
+		var url = 'delete_user_history';
 		var done = function ajaxGetUserHistoryDone() {
 			new HistoryHandler().removeUserHistoryDataDone();
 		};
@@ -41,7 +41,7 @@ function AjaxSettingsHandler(){
 	 */
 	this.setUserSetting = function(toggle_element, service) {
 		var settings_value = toggle_element.prop('checked');
-		var url = 'ajax_set_user_setting';
+		var url = 'set_user_setting';
         var data ={
             'settings_value': settings_value,
             'service': service
@@ -61,7 +61,7 @@ function AjaxSettingsHandler(){
 	 * @param ui_locales
 	 */
 	this.setNotifcationLanguage = function(ui_locales){
-        var url = 'ajax_set_user_language';
+        var url = 'set_user_language';
         var data = {'ui_locales': ui_locales};
         var done = function setUserSettingDone(data) {
 			if (data.error.length === 0){
@@ -96,7 +96,7 @@ function AjaxSettingsHandler(){
 			return;
 		}
 
-		var url = 'ajax_get_all_edits';
+		var url = 'get_all_edits';
 		var done = function getEditsDoneDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allEditsDone), false);
 		};
@@ -115,7 +115,7 @@ function AjaxSettingsHandler(){
 			return;
 		}
 
-		var url = 'ajax_get_all_posted_statements';
+		var url = 'get_all_posted_statements';
 		var done = function getStatementsSendDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allStatementsPosted), false);
 		};
@@ -144,35 +144,35 @@ function AjaxSettingsHandler(){
 	 * Ajax request for getting all arguments, which the user voted for
 	 */
 	this.getArgumentClicks = function(){
-		this.__getInfoWrapper(discussionArgClickCountId, 'ajax_get_all_argument_clicks', true);
+		this.__getInfoWrapper(discussionArgClickCountId, 'get_all_argument_clicks', true);
 	};
 
 	/**
 	 * Ajax request for getting all edits done by the user
 	 */
 	this.getStatementClicks = function(){
-		this.__getInfoWrapper(discussionStatClickCountId, 'ajax_get_all_statement_clicks', true);
+		this.__getInfoWrapper(discussionStatClickCountId, 'get_all_statement_clicks', true);
 	};
 
 	/**
 	 * Ajax request for getting all arguments, which the user voted for
 	 */
 	this.getMarkedArguments = function(){
-		this.__getInfoWrapper(discussionArgVoteCountId, 'ajax_get_all_marked_arguments', false);
+		this.__getInfoWrapper(discussionArgVoteCountId, 'get_all_marked_arguments', false);
 	};
 
 	/**
 	 * Ajax request for getting all edits done by the user
 	 */
 	this.getMarkedStatements = function(){
-		this.__getInfoWrapper(discussionStatVoteCountId, 'ajax_get_all_marked_statements', false);
+		this.__getInfoWrapper(discussionStatVoteCountId, 'get_all_marked_statements', false);
 	};
 
 	/**
 	 * Ajax request for deleting the statitistics
 	 */
 	this.deleteStatisticsRequest = function() {
-		var url = 'ajax_delete_statistics';
+		var url = 'delete_statistics';
 		var done = function deleteStatisticsRequestDone() {
 			new StatisticsHandler().callbackDeleteStatisticsDone();
 		};

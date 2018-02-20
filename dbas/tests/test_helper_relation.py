@@ -91,22 +91,12 @@ class RelationHelperTest(unittest.TestCase):
 
     def test_set_new_undermine_or_support_for_pgroup(self):
         db_argument = DBDiscussionSession.query(Argument).get(1)
-        db_premise = DBDiscussionSession.query(Premise).filter_by(
-            premisesgroup_uid=db_argument.premisesgroup_uid).first()
+        db_premise = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).first()
 
-        before = DBDiscussionSession.query(Argument).filter(Argument.premisesgroup_uid == 1,
-                                                            Argument.conclusion_uid == db_premise.statement_uid).all()
+        before = DBDiscussionSession.query(Argument).filter(Argument.premisesgroup_uid == 1, Argument.conclusion_uid == db_premise.statement_uid).all()
         set_new_undermine_or_support_for_pgroup(1, db_argument, False, self.db_user, self.db_issue)
-        after = DBDiscussionSession.query(Argument).filter(Argument.premisesgroup_uid == 1,
-                                                           Argument.conclusion_uid == db_premise.statement_uid).all()
-        self.assertLess(len(before), len(after))
-
-        before = DBDiscussionSession.query(Argument).filter(Argument.premisesgroup_uid == 1,
-                                                            Argument.conclusion_uid == db_premise.statement_uid).all()
-        set_new_undermine_or_support_for_pgroup(1, db_argument, True, self.db_user, self.db_issue)
-        after = DBDiscussionSession.query(Argument).filter(Argument.premisesgroup_uid == 1,
-                                                           Argument.conclusion_uid == db_premise.statement_uid).all()
-        self.assertLess(len(before), len(after))
+        after = DBDiscussionSession.query(Argument).filter(Argument.premisesgroup_uid == 1, Argument.conclusion_uid == db_premise.statement_uid).all()
+        self.assertEqual(len(before), len(after))
 
     def test_set_new_undercut(self):
         db_argument = DBDiscussionSession.query(Argument).get(1)

@@ -15,7 +15,7 @@ function AjaxReferenceHandler(){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 
 		$.ajax({
-			url: 'ajax_set_references',
+			url: 'set_references',
 			method: 'POST',
 			dataType: 'json',
 			contentType: 'application/json',
@@ -41,7 +41,7 @@ function AjaxReferenceHandler(){
 	this.getReferences = function(uids, is_argument){
 		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'ajax_get_references',
+			url: 'get_references',
 			method: 'POST',
 			dataType: 'json',
 			contentType: 'application/json',

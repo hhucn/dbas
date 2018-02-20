@@ -8,8 +8,7 @@ from dbas.database.discussion_model import ReviewMerge, DBDiscussionSession, Rev
     PremiseGroupMerged, ArgumentsAddedByPremiseGroupSplit, LastReviewerDelete, LastReviewerDuplicate, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReviewCanceled, ReviewDelete, ReviewDuplicate, \
     ReviewEdit, ReviewEditValue, ReviewOptimization, RevokedContentHistory, Statement
-from dbas.database.initializedb import nick_of_anonymous_user
-from dbas.lib import get_text_for_premisesgroup_uid, get_text_for_argument_uid
+from dbas.lib import get_text_for_premisesgroup_uid, get_text_for_argument_uid, nick_of_anonymous_user
 
 
 class AjaxReviewTest(unittest.TestCase):
@@ -92,11 +91,11 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertIsNotNone(response)
         self.assertEqual(400, response.status_code)
 
-    def __exec_request_and_check_reviewes(self, db_review, ajax, keyword, bool, nickname, reviewer_type):
+    def __exec_request_and_check_reviewes(self, db_review, ajax, keyword, boolean, nickname, reviewer_type):
         self.config.testing_securitypolicy(userid=nickname, permissive=True)
         db_reviews1 = len(DBDiscussionSession.query(reviewer_type).filter_by(review_uid=db_review.uid).all())
         request = testing.DummyRequest(json_body={
-            keyword: bool,
+            keyword: boolean,
             'review_uid': db_review.uid
         })
         response = ajax(request)
@@ -296,11 +295,11 @@ class AjaxReviewTest(unittest.TestCase):
         response = ajax(request)
         self.assertEqual(400, response.status_code)
 
-    def __exec_request_and_check_duplicates(self, db_review, ajax, bool, nickname):
+    def __exec_request_and_check_duplicates(self, db_review, ajax, boolean, nickname):
         self.config.testing_securitypolicy(userid=nickname, permissive=True)
         db_reviews1 = len(DBDiscussionSession.query(LastReviewerDuplicate).filter_by(review_uid=db_review.uid).all())
         request = testing.DummyRequest(json_body={
-            'is_duplicate': bool,
+            'is_duplicate': boolean,
             'review_uid': db_review.uid
         })
         response = ajax(request)

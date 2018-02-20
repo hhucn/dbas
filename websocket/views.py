@@ -41,7 +41,7 @@ debug_mail = Service(name='mail',
                      permission='admin',
                      cors_policy=cors_policy)
 
-path = '/{url:.*}ajax_admin_add',
+path = '/{url:.*}add',
 
 # =============================================================================
 # WEBSOCKET REQUESTS

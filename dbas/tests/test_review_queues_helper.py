@@ -25,14 +25,10 @@ class ReviewQueuesHelperTest(unittest.TestCase):
             self.assertTrue('last_reviews' in q)
 
     def test_get_complete_review_count(self):
-        count = rqh.get_complete_review_count('anonymous')
-        self.assertEquals(count, 0)
-
-        count = rqh.get_complete_review_count('Tobias')
-        self.assertTrue(count > 0)
-
-        count = rqh.get_complete_review_count('tobias')
-        self.assertTrue(count is 0)
+        u1 = DBDiscussionSession.query(User).get(1)
+        u2 = DBDiscussionSession.query(User).get(2)
+        self.assertEqual(0, rqh.get_complete_review_count(u1))
+        self.assertLess(0, rqh.get_complete_review_count(u2))
 
     def test_add_proposals_for_statement_corrections(self):
         trans = Translator('en')
