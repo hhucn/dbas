@@ -499,7 +499,7 @@ de_lang = {
     _.opinion_his: 'ihre Meinung',
     _.opinion_her: 'seine Meinung',
     _.opinion: 'die Meinung',
-    _.onlyOneItem: 'Um eine neue Aussage hinzuzufügen, melden Sie sich bitte kurz hier an.',
+    _.onlyOneItem: 'Um eine neue Aussage hinzuzufügen, melden Sie sich bitte hier an.',
     _.onlyOneItemWithLink: 'Um eine neue Aussage hinzuzufügen, melden Sie sich bitte kurz <a data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> an.',
     _.unfortunatelyOnlyOneItem: 'Leider gibt es nur eine Auswahl. Sofern Sie eine neue Aussage hinzufügen möchten, klicken Sie bitte <a data-href="login" data-toggle="modal" data-target="#popup-login" title="Login">hier</a> m sich anzumelden.',
     _.otherParticipantsConvincedYouThat: 'Andere Teilnehmer haben Sie überzeugt, dass',
