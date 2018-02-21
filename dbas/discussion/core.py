@@ -3,7 +3,6 @@ from typing import Union
 import dbas.handler.issue as issue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User
-from dbas.lib import nick_of_anonymous_user
 from dbas.handler import user
 from dbas.handler.voting import add_click_for_argument
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
@@ -13,6 +12,7 @@ from dbas.helper.views import handle_justification_step
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_statement, \
     check_belonging_of_argument, check_belonging_of_premisegroups, related_with_support, check_reaction, \
     check_belonging_of_arguments
+from dbas.lib import nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_arguments_as_query
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_argument_click

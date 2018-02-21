@@ -11,7 +11,7 @@ from dbas.handler.language import get_language_from_cookie
 from dbas.handler.user import update_last_action
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.validators.lib import add_error
+from dbas.validators.lib import add_error, escape_if_string
 
 
 def valid_language(request):
@@ -21,7 +21,7 @@ def valid_language(request):
     :param request:
     :return:
     """
-    lang = request.json_body.get('lang')
+    lang = escape_if_string(request.json_body, 'lang')
     _tn = Translator(get_language_from_cookie(request))
     if not lang:
         add_error(request, 'valid_language', 'Invalid language', _tn.get(_.checkLanguage))
@@ -43,7 +43,7 @@ def valid_lang_cookie_fallback(request):
     :param request:
     :return:
     """
-    lang = request.json_body.get('lang')
+    lang = escape_if_string(request.json_body, 'lang')
     if not lang:
         lang = get_language_from_cookie(request)
     request.validated['lang'] = lang

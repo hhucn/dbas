@@ -60,9 +60,9 @@ def valid_user_as_author_of_argument(request):
     if valid_user(request):
         db_user = request.validated['user']
         uid = request.json_body.get('uid')
-        db_argument = DBDiscussionSession.query(Argument).filter(Argument.uid == uid,
-                                                                 Argument.author_uid == db_user.uid).first() if is_integer(
-            uid) else None
+        db_argument = DBDiscussionSession. \
+            query(Argument).filter(Argument.uid == uid,
+                                   Argument.author_uid == db_user.uid).first() if is_integer(uid) else None
         if db_argument:
             request.validated['argument'] = db_argument
             return True
