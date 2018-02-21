@@ -199,7 +199,7 @@ def main(global_config, **settings):
 def __write_rss_feeds():
     issues = get_not_disabled_issues_as_query().all()
     for issue in issues:
-        rewrite_issue_rss(issue.uid, issue.lang, get_global_url())
+        rewrite_issue_rss(issue.uid, get_global_url())
     create_news_rss(get_global_url(), 'en')
 
 

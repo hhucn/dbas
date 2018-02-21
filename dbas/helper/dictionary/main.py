@@ -16,7 +16,6 @@ from dbas.database.discussion_model import User, Language, Group, Settings, Issu
 from dbas.handler import user
 from dbas.handler.issue import rep_limit_to_open_issues
 from dbas.handler.notification import count_of_new_notifications, get_box_for
-from dbas.helper.url import UrlManager
 from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, is_development_mode, \
     nick_of_anonymous_user
 from dbas.logger import logger
