@@ -43,7 +43,12 @@ class ItemDictHelper(object):
         self.db_issue = db_issue
         self.LIMIT_SUPPORT_STEP = 0.30
         self.issue_read_only = db_issue.is_read_only
-        self.path = history + path[path.replace('/', 'XXX', 1).find('/') - 1:]
+        limiter = '-' if len(history) > 0 else ''
+
+        path = path.replace(db_issue.slug, '').replace('discuss', '')
+        while path.startswith('/'):
+            path = path[1:]
+        self.path = '{}{}/{}'.format(history, limiter, path)
 
     @staticmethod
     def get_empty_dict() -> dict:

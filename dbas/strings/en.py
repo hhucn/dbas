@@ -193,6 +193,7 @@ en_lang = {
     _.confirmation: 'Confirmation',
     _.contact: 'Contact',
     _.contactSubmit: 'Submit your Message',
+    _.conclusionIsMissing: 'Conclusion ID is missing',
     _.confirmTranslation: 'If you change the language, your process on this page will be lost and you have to restart the discussion!',
     _.correctionsSet: 'Your correction was set.',
     _.checkFirstname: 'Better check your first name, because the input is empty!',

@@ -32,15 +32,15 @@ class UrlManagerTests(unittest.TestCase):
         response_string_true = url.get_url_for_statement_attitude(statement_uid=123)
         # Verify that, if 'as_location_href' is 'True' and 'statement_uid' is not empty,
         # '{discussion_url}/{slug}/attitude/{statement_uid}' with 'location.href=' as prefix is returned.
-        self.assertEqual(response_string_true, 'cat-or-dog/attitude/123')
+        self.assertEqual(response_string_true, '/cat-or-dog/attitude/123')
 
         response_empty_string_false = url.get_url_for_statement_attitude(statement_uid='')
         # Verify that, if 'as_location_href' is 'False' and 'statement_uid' is empty,
         # '{discussion_url}/{slug}/attitude/' is returned.
-        self.assertEqual(response_empty_string_false, 'cat-or-dog/attitude/')
+        self.assertEqual(response_empty_string_false, '/cat-or-dog/attitude/')
 
         response_negative_uid_true = url.get_url_for_statement_attitude(statement_uid=-123)
-        self.assertEqual(response_negative_uid_true, 'cat-or-dog/attitude/-123')
+        self.assertEqual(response_negative_uid_true, '/cat-or-dog/attitude/-123')
 
     def test_get_url_for_justifying_statement(self):
         url = self.__make_one(slug='cat-or-dog')
@@ -49,13 +49,13 @@ class UrlManagerTests(unittest.TestCase):
                                                                     mode='t')
         # Verify that, if 'as_location_href' is 'True', 'statement_uid' and 'mode' are not empty,
         # '{discussion_url}/{slug}/justify/{statement_or_arg_id}/{mode}' is returned.
-        self.assertEqual(response_string_true, 'cat-or-dog/justify/123/t')
+        self.assertEqual(response_string_true, '/cat-or-dog/justify/123/t')
 
         response_empty_string_false = url.get_url_for_justifying_statement(statement_uid='',
                                                                            mode='')
         # Verify that, if 'as_location_href' is 'False', 'statement_uid' and 'mode' are empty,
         # '{discussion_url}/{slug}/justify//' is returned.
-        self.assertEqual(response_empty_string_false, 'cat-or-dog/justify//')
+        self.assertEqual(response_empty_string_false, '/cat-or-dog/justify//')
 
     def test_get_url_for_justifying_argument(self):
         url = self.__make_one(slug='cat-or-dog')
@@ -66,8 +66,7 @@ class UrlManagerTests(unittest.TestCase):
                                                                              additional_id=-1)
         # Verify that, if 'additional_id' is '-1' and 'as_location_href' is 'True',
         # '{discussion_url}/{slug}/justify/{argument_uid}/{mode}/{attitude}' is returned.
-        self.assertEqual(response_no_additional_id_true,
-                         'cat-or-dog/justify/123/t/attitude')
+        self.assertEqual(response_no_additional_id_true, '/cat-or-dog/justify/123/t/attitude')
 
         response_additional_id_false = url.get_url_for_justifying_argument(argument_uid=123,
                                                                            mode='t',
@@ -75,7 +74,7 @@ class UrlManagerTests(unittest.TestCase):
                                                                            additional_id=30)
         # Verify that, if 'additional_id' is not equal '-1' and 'as_location_href' is 'False',
         # '{discussion_url}/{slug}/justify/{argument_uid}/{mode}/{attitude}/{attitude_uid}' is returned.
-        self.assertEqual(response_additional_id_false, 'cat-or-dog/justify/123/t/attitude/30')
+        self.assertEqual(response_additional_id_false, '/cat-or-dog/justify/123/t/attitude/30')
 
     def test_get_url_for_reaction_on_argument(self):
         url = self.__make_one(slug='cat-or-dog')
@@ -86,14 +85,14 @@ class UrlManagerTests(unittest.TestCase):
         # Verify that, if 'as_location_href' is 'True',
         # '{discussion_url}/{slug}/reaction/{argument_uid}/{mode}/{confrontation_argument}' is returned.
         self.assertEqual(response_as_location_href_true,
-                         'cat-or-dog/reaction/123/rebut/35')
+                         '/cat-or-dog/reaction/123/rebut/35')
 
         response_as_location_href_false = url.get_url_for_reaction_on_argument(argument_uid=0,
                                                                                mode='undercut',
                                                                                confrontation_argument=0)
         # Verify that, if 'as_location_href' is 'False',
         # '{discussion_url}/{slug}/reaction/{argument_uid}/{mode}/{confrontation_argument}' is returned.
-        self.assertEqual(response_as_location_href_false, 'cat-or-dog/finish/0')
+        self.assertEqual(response_as_location_href_false, '/cat-or-dog/finish/0')
 
     def test_get_url_for_choosing_premisegroup(self):
         url = self.__make_one(slug='cat-or-dog')
@@ -106,7 +105,7 @@ class UrlManagerTests(unittest.TestCase):
         # 'pgroup_id_list' is greater than 0, the url '{discussion-url}/{slug}/choose/{is_argument}/{
         # is_supportive}/{statement_or_argument_id}' and the elements of array 'pgroup_id_list' are put together,
         # separated with backslash, and are attached in url.
-        self.assertEqual(response_true, 'cat-or-dog/choose/t/t/20/1/2/3')
+        self.assertEqual(response_true, '/cat-or-dog/choose/t/t/20/1/2/3')
 
         response_false = url.get_url_for_choosing_premisegroup(is_argument=False,
                                                                is_supportive=False,
@@ -115,9 +114,9 @@ class UrlManagerTests(unittest.TestCase):
         # Verify that, if 'as_location_href', 'is_argument', 'is_supportive' are 'False' and length of array
         # 'pgroup_id_list' is equal 0, '{discussion-url}/{slug}/choose/{is_argument}/{is_supportive}/{
         # statement_or_argument_id}' is returned.
-        self.assertEqual(response_false, 'cat-or-dog/choose/f/f/20')
+        self.assertEqual(response_false, '/cat-or-dog/choose/f/f/20')
 
     def test_get_url_for_new_argument(self):
         url = self.__make_one(slug='cat-or-dog', history='attitude/4')
-        res = 'cat-or-dog/finish/10?history=attitude/4'
+        res = '/cat-or-dog/finish/10?history=attitude/4'
         self.assertEqual(res, url.get_url_for_new_argument([10]))

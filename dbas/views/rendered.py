@@ -59,11 +59,11 @@ def __modifiy_discussion_url(prep_dict: dict) -> dict:
     # modify urls for the radio buttons
     for i, el in enumerate(prep_dict['items']['elements']):
         if '/' in el.get('url', ''):
-            prep_dict['items']['elements'][i]['url'] = '/discuss/' + prep_dict['items']['elements'][i]['url']
+            prep_dict['items']['elements'][i]['url'] = '/discuss' + prep_dict['items']['elements'][i]['url']
 
     # modify urls for topic switch
     for i, el in enumerate(prep_dict['issues']['all']):
-        prep_dict['issues']['all'][i]['url'] = '/discuss/' + prep_dict['issues']['all'][i]['url']
+        prep_dict['issues']['all'][i]['url'] = '/discuss' + prep_dict['issues']['all'][i]['url']
 
     return prep_dict
 

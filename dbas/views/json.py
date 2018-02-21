@@ -56,6 +56,20 @@ from dbas.validators.user import valid_user, invalid_user, valid_user_as_author,
 from websocket.lib import get_port, send_request_for_recent_reviewer_socketio
 
 
+def __modifiy_discussion_url(prep_dict: dict) -> dict:
+    """
+    Adds the /discuss prefix for every url entry
+
+    :param prep_dict:
+    :return:
+    """
+    # modify urls for the radio buttons
+    for el in prep_dict:
+        if el is 'url':
+            prep_dict['url'] = '/discuss' + prep_dict['url']
+    return prep_dict
+
+
 # ajax - getting complete track of the user
 @view_config(route_name='get_user_history', renderer='json')
 @validate(valid_user)
@@ -404,6 +418,7 @@ def set_new_start_argument(request):
         data['premisegroups'] = [[reason]]
         data['conclusion'] = DBDiscussionSession.query(Statement).get(prepared_dict_pos['statement_uids'][0])
         prepared_dict_pos = set_positions_premise(data)
+    __modifiy_discussion_url(prepared_dict_pos)
 
     return prepared_dict_pos
 
@@ -431,6 +446,7 @@ def set_new_start_premise(request):
         'mailer': request.mailer
     }
     prepared_dict = set_positions_premise(data)
+    __modifiy_discussion_url(prepared_dict)
     return prepared_dict
 
 
@@ -457,7 +473,9 @@ def set_new_premises_for_argument(request):
         'application_url': request.application_url,
         'mailer': request.mailer
     }
-    return set_arguments_premises(data)
+    prepared_dict = set_arguments_premises(data)
+    __modifiy_discussion_url(prepared_dict)
+    return prepared_dict
 
 
 @view_config(route_name='set_correction_of_statement', renderer='json')

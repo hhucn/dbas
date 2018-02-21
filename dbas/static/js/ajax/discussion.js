@@ -84,7 +84,7 @@ function AjaxDiscussionHandler() {
             contentType: 'application/json',
             data: JSON.stringify({
 	            premisegroups: premisegroups,
-				conclusion_id: conclusion_id,
+				conclusion_id: parseInt(conclusion_id),
 				supportive: supportive
             }),
 			dataType: 'json',
