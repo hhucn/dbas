@@ -3,10 +3,10 @@ Validate notification-related content.
 """
 
 from dbas.handler.language import get_language_from_cookie
-from dbas.lib import get_user_by_private_or_public_nickname, nick_of_anonymous_user, escape_string
+from dbas.lib import get_user_by_private_or_public_nickname, nick_of_anonymous_user
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.validators.lib import add_error
+from dbas.validators.lib import add_error, escape_if_string
 from dbas.validators.user import valid_user
 
 
@@ -18,10 +18,10 @@ def __validate_notification_msg(request, key):
     :param key:
     :return:
     """
-    notification_text = escape_string(request.json_body.get(key, ''))
+    notification_text = escape_if_string(request.json_body, key)
     min_length = request.registry.settings.get('settings:discussion:notification_min_length', 5)
 
-    if isinstance(notification_text, str) and len(notification_text) >= min_length:
+    if notification_text and isinstance(notification_text, str) and len(notification_text) >= min_length:
         request.validated[key] = notification_text
     else:
         _tn = Translator(get_language_from_cookie(request))

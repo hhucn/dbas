@@ -6,10 +6,9 @@ from admin.lib import table_mapper
 from dbas.database import DBDiscussionSession
 from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer
-from dbas.lib import escape_string
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.validators.lib import add_error
+from dbas.validators.lib import add_error, escape_if_string
 
 
 def valid_table_name(request):
@@ -18,8 +17,8 @@ def valid_table_name(request):
     :param request:
     :return:
     """
-    table_name = escape_string(request.json_body.get('table', ''))
-    if table_name.lower() in table_mapper:
+    table_name = escape_if_string(request.json_body, 'table')
+    if table_name and table_name.lower() in table_mapper:
         request.validated['table'] = table_name
     else:
         _tn = Translator(get_language_from_cookie(request))

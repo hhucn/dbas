@@ -11,7 +11,7 @@ from dbas.lib import escape_string
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.core import has_keywords
-from dbas.validators.lib import add_error
+from dbas.validators.lib import add_error, escape_if_string
 
 
 def valid_issue(request):
@@ -41,9 +41,9 @@ def valid_new_issue(request):
     fn_validator = has_keywords(('title', str), ('info', str), ('long_info', str))
     if not fn_validator(request):
         return False
-    title = escape_string(request.validated['title'])
-    info = escape_string(request.validated['info'])
-    long_info = escape_string(request.validated['long_info'])
+    title = escape_if_string(request.validated, 'title')
+    info = escape_if_string(request.validated, 'info')
+    long_info = escape_if_string(request.validated, 'long_info')
     db_dup1 = DBDiscussionSession.query(Issue).filter_by(title=title).all()
     db_dup2 = DBDiscussionSession.query(Issue).filter_by(info=info).all()
     db_dup3 = DBDiscussionSession.query(Issue).filter_by(long_info=long_info).all()
