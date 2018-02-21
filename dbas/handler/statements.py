@@ -57,7 +57,7 @@ def set_position(data) -> dict:
     new_statement = insert_as_statement(application_url, default_locale_name, statement_text, db_user, db_issue,
                                         is_start=True)
 
-    _um = UrlManager(application_url, db_issue.slug)
+    _um = UrlManager(db_issue.slug)
     url = _um.get_url_for_statement_attitude(new_statement.uid)
     # add reputation
     add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_position)
@@ -291,7 +291,7 @@ def insert_as_statement(application_url: str, default_locale_name: str, text: st
         pass
 
     _tn = Translator(new_statement.lang)
-    _um = UrlManager(application_url, db_issue.slug)
+    _um = UrlManager(db_issue.slug)
     append_action_to_issue_rss(db_issue=db_issue,
                                db_author=db_user,
                                title=_tn.get(_.positionAdded if is_start else _.statementAdded),
@@ -395,8 +395,8 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     # arguments=0: empty input
     # arguments=1: deliver new url
     # arguments>1: deliver url where the user has to choose between her inputs
-    _um = UrlManager(application_url, db_issue.slug, history)
-    _main_um = UrlManager(application_url, db_issue.slug, history=history)
+    _um = UrlManager(db_issue.slug, history)
+    _main_um = UrlManager(db_issue.slug, history=history)
     if len(new_argument_uids) == 0:
         error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength),
                                      statement_min_length)
@@ -556,7 +556,7 @@ def __create_argument_by_raw_input(application_url, default_locale_name, db_user
 
         if new_argument:
             _tn = Translator(default_locale_name)
-            _um = UrlManager(application_url, db_issue.slug)
+            _um = UrlManager(db_issue.slug)
             append_action_to_issue_rss(db_issue=db_issue,
                                        db_author=db_user,
                                        title=_tn.get(_.argumentAdded),

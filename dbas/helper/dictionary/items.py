@@ -29,20 +29,18 @@ class ItemDictHelper(object):
     Provides all functions for creating the radio buttons.
     """
 
-    def __init__(self, lang, db_issue: Issue, application_url, path='', history=''):
+    def __init__(self, lang, db_issue: Issue, path='', history=''):
         """
         Initialize default values
 
         :param lang: ui_locales
         :param db_issue Issue
-        :param application_url: application_url
         :param path: String
         :param history: String
         :return:
         """
         self.lang = lang
         self.db_issue = db_issue
-        self.application_url = application_url
         self.LIMIT_SUPPORT_STEP = 0.30
         self.issue_read_only = db_issue.is_read_only
         self.path = history + path[path.replace('/', 'XXX', 1).find('/') - 1:]
@@ -70,7 +68,7 @@ class ItemDictHelper(object):
         slug = self.db_issue.slug
 
         statements_array = []
-        _um = UrlManager(self.application_url, slug, history=self.path)
+        _um = UrlManager(slug, history=self.path)
 
         for statement in db_statements:
             if statement.uid in uids:  # add seen by if the statement is visible
@@ -121,7 +119,7 @@ class ItemDictHelper(object):
         slug = DBDiscussionSession.query(Issue).get(self.db_issue.uid).slug
         statements_array = []
 
-        _um = UrlManager(self.application_url, slug, history=self.path)
+        _um = UrlManager(slug, history=self.path)
 
         db_arguments = DBDiscussionSession.query(Argument).filter(Argument.conclusion_uid == statement_uid,
                                                                   Argument.is_supportive == True).all()
@@ -159,7 +157,7 @@ class ItemDictHelper(object):
         db_arguments = rs.get_arguments_by_conclusion(statement_uid, is_supportive)
         uids = rs.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
 
-        _um = UrlManager(self.application_url, slug, history=self.path)
+        _um = UrlManager(slug, history=self.path)
 
         for argument in db_arguments:
             if db_user and argument.uid in uids:  # add seen by if the statement is visible
@@ -240,7 +238,7 @@ class ItemDictHelper(object):
         db_arguments = self.__get_arguments_based_on_attack(attack_type, argument_uid)
         uids = rs.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
 
-        _um = UrlManager(self.application_url, slug, history=self.path)
+        _um = UrlManager(slug, history=self.path)
 
         for argument in db_arguments:
             if db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
@@ -369,7 +367,7 @@ class ItemDictHelper(object):
         # set real argument in history
         tmp_path = self.path.replace('/justify/{}/d'.format(db_argument.conclusion_uid),
                                      '/justify/{}/d'.format(argument_uid))
-        _um = UrlManager(self.application_url, slug, history=tmp_path)
+        _um = UrlManager(slug, history=tmp_path)
 
         if db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
             add_seen_argument(argument_uid, db_user)
@@ -491,7 +489,7 @@ class ItemDictHelper(object):
 
         rel_dict = get_relation_text_dict_with_substitution(self.lang, True, attack_type=attack, gender=gender)
         mode = 't' if is_supportive else 'f'
-        _um = UrlManager(self.application_url, slug, history=self.path)
+        _um = UrlManager(slug, history=self.path)
 
         relations = ['undermine', 'support', 'undercut', 'rebut']
         for relation in relations:
@@ -634,7 +632,7 @@ class ItemDictHelper(object):
         logger('ItemDictHelper', 'get_array_for_choosing', 'def')
         statements_array = []
         slug = self.db_issue.slug
-        _um = UrlManager(self.application_url, slug, history=self.path)
+        _um = UrlManager(slug, history=self.path)
         conclusion = argument_or_statement_id if not is_argument else None
         argument = argument_or_statement_id if is_argument else None
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
@@ -733,7 +731,7 @@ class ItemDictHelper(object):
         """
 
         db_argument = DBDiscussionSession.query(Argument).get(arg_uid)
-        _um = UrlManager(self.application_url, slug, history=self.path)
+        _um = UrlManager(slug, history=self.path)
         db_premises = DBDiscussionSession.query(Premise).filter_by(
             premisesgroup_uid=db_argument.premisesgroup_uid).all()
         forbidden_attacks = rs.get_forbidden_attacks_based_on_history(self.path)

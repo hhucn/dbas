@@ -1109,11 +1109,10 @@ def __get_gravatar(user, additional_id, size):
     return gravatar_url
 
 
-def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_users_page=True, profile_picture_size=20):
+def get_author_data(uid, gravatar_on_right_side=True, linked_with_users_page=True, profile_picture_size=20):
     """
     Returns a-tag with gravatar of current author and users page as href
 
-    :param main_page: Current mainpage
     :param uid: Uid of the author
     :param gravatar_on_right_side: True, if the gravatar is on the right of authors name
     :param linked_with_users_page: True, if the text is a link to the authors site
@@ -1132,7 +1131,7 @@ def get_author_data(main_page, uid, gravatar_on_right_side=True, linked_with_use
     link_begin = ''
     link_end = ''
     if linked_with_users_page:
-        link_begin = '<a href="{}/user/{}" title="{}">'.format(main_page, db_user.uid, nick)
+        link_begin = '<a href="/user/{}" title="{}">'.format(db_user.uid, nick)
         link_end = '</a>'
 
     left = img

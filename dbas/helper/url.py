@@ -14,7 +14,7 @@ class UrlManager(object):
     URL-Manager for building all URLs. This includes DBAS-URLs as well as the API-URLs
     """
 
-    def __init__(self, application_url='', slug='',  history=''):
+    def __init__(self, slug='',  history=''):
         """
         Initialization of an URL-Manager
 
@@ -23,39 +23,9 @@ class UrlManager(object):
         :param history: String
         :return: None
         """
-        self.url = application_url + ('' if application_url.endswith('/') else '/')
-        self.discussion_url = self.url + 'discuss/'
-        self.review_url = self.url + 'review/'
-        self.api_url = 'api/'
+        self.review_url = 'review/'
         self.slug = slug
         self.history = history
-
-    def get_404(self, params, is_param_error=False, revoked_content=False):
-        """
-        Returns the 404 page or the API-version
-
-        :param params: self.request.params
-        :param is_param_error: boolean
-        :param revoked_content: boolean
-        :return: 404/params1/param2/
-        """
-        url = self.url + '404'
-        for p in params:
-            if p != '':
-                url += '/' + str(p)
-        params = '&' if '?' in url else '?'
-        params += 'param_error=true' if is_param_error else ''
-        params += 'revoked_content=true' if revoked_content else ''
-        url += params if len(params) > 5 else ''
-        return url
-
-    def get_slug_url(self):
-        """
-        Returns url for starting a discussions
-
-        :return: discussion_url/slug
-        """
-        return self.slug
 
     def get_review_url(self):
         """

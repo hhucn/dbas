@@ -157,14 +157,14 @@ def preparation_for_justify_statement(request_dict, statement_uid, supportive):
     logged_in = db_user and db_user.nickname != nick_of_anonymous_user
 
     disc_ui_locales = db_issue.lang
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=app_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, app_url, path=path, history=history)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
 
     voting_helper.add_click_for_statement(statement_uid, nickname, supportive)
 
     item_dict = _idh.get_array_for_justify_statement(statement_uid, db_user, supportive, history)
-    discussion_dict = _ddh.get_dict_for_justify_statement(statement_uid, app_url, slug, supportive,
+    discussion_dict = _ddh.get_dict_for_justify_statement(statement_uid, slug, supportive,
                                                           len(item_dict['elements']), db_user)
     extras_dict = _dh.prepare_extras_dict(slug, False, True, True, registry, app_url, path, db_user)
     # is the discussion at the end?
@@ -197,11 +197,11 @@ def preparation_for_dont_know_statement(request_dict, argument_uid, supportive):
     slug = db_issue.slug
 
     disc_ui_locales = db_issue.lang
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=app_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, app_url, path=path, history=history)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
 
-    discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid, app_url, nickname)
+    discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid, nickname)
     item_dict = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, db_user, discussion_dict['gender'])
     extras_dict = _dh.prepare_extras_dict(slug, True, True, True, registry, app_url, path, db_user=db_user)
     # is the discussion at the end?
@@ -243,8 +243,8 @@ def preparation_for_justify_argument(request_dict, statement_or_arg_id, supporti
     logged_in = db_user and db_user.nickname != nick_of_anonymous_user is not None
 
     disc_ui_locales = db_issue.lang
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=app_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, app_url, path=path, history=history)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
 
     # justifying argument

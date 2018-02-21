@@ -40,10 +40,10 @@ def init(request_dict) -> Union[dict, None]:
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname=db_user.nickname, main_page=application_url, slug=slug)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname=db_user.nickname, slug=slug)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
 
-    item_dict = ItemDictHelper(disc_ui_locales, db_issue, application_url).get_array_for_start(db_user)
+    item_dict = ItemDictHelper(disc_ui_locales, db_issue).get_array_for_start(db_user)
     discussion_dict = _ddh.get_dict_for_start(position_count=(len(item_dict['elements'])))
     extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request_dict['registry'],
                                           request_dict['app_url'], request_dict['path'], db_user=db_user)
@@ -89,13 +89,13 @@ def attitude(request_dict) -> Union[dict, None]:
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, main_page=application_url, slug=slug)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
     discussion_dict = _ddh.get_dict_for_attitude(statement_uid)
     if not discussion_dict:
         logger('Core', 'discussion.attitude', 'no discussion dict', error=True)
         return None
 
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, application_url, path=request_dict['path'], history=history)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     item_dict = _idh.prepare_item_dict_for_attitude(statement_uid)
     extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request_dict['registry'], request_dict['app_url'],
@@ -184,8 +184,8 @@ def reaction(request_dict) -> Union[dict, None]:
 
     supportive = tmp_argument.is_supportive
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, main_page=application_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, application_url, path=request_dict['path'], history=history)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
     discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history, db_user)
     item_dict = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack, discussion_dict['gender'])
     extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request_dict['registry'], request_dict['app_url'],
@@ -233,10 +233,10 @@ def support(request_dict) -> Union[dict, None]:
         logger('Core', 'discussion.support', 'no item dict', error=True)
         return None
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, main_page=application_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, application_url, path=request_dict['path'], history=history)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
-    discussion_dict = _ddh.get_dict_for_supporting_each_other(arg_system_uid, arg_user_uid, db_user.nickname, application_url)
+    discussion_dict = _ddh.get_dict_for_supporting_each_other(arg_system_uid, arg_user_uid, db_user.nickname)
     item_dict = _idh.get_array_for_support(arg_system_uid, slug)
     extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request_dict['registry'], request_dict['app_url'],
                                           request_dict['path'], db_user=db_user)
@@ -291,8 +291,8 @@ def choose(request_dict) -> Union[dict, None]:
         logger('core', 'discussion.choose', 'wrong belonging of pgroup', error=True)
         return None
 
-    _ddh = DiscussionDictHelper(ui_locales, db_user.nickname, history, main_page=application_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, application_url, path=request_dict['path'], history=history)
+    _ddh = DiscussionDictHelper(ui_locales, db_user.nickname, history, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
     discussion_dict = _ddh.get_dict_for_choosing(uid, is_argument, is_supportive)
     item_dict = _idh.get_array_for_choosing(uid, pgroup_ids, is_argument, is_supportive, db_user.nickname)
 
@@ -342,8 +342,8 @@ def jump(request_dict) -> Union[dict, None]:
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, main_page=application_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, application_url, path=request_dict['path'], history=history)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     discussion_dict = _ddh.get_dict_for_jump(arg_uid)
     item_dict = _idh.get_array_for_jump(arg_uid, slug)
@@ -383,7 +383,7 @@ def finish(request_dict) -> Union[dict, None]:
     disc_ui_locales = issue_dict['lang']
 
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, main_page=application_url, slug=slug)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
     discussion_dict = _ddh.get_dict_for_argumentation(arg_id, last_arg.is_supportive, None, 'end_attack', history, db_user)
     item_dict = ItemDictHelper.get_empty_dict()
     extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request_dict['registry'], request_dict['app_url'],

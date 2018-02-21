@@ -127,7 +127,7 @@ def get_arguments_by_statement_uid(db_statement, application_url) -> dict:
     :return: prepared collection with several arguments
     """
     slug = resolve_issue_uid_to_slug(db_statement.issue_uid)
-    _um = UrlManager(application_url, slug)
+    _um = UrlManager(slug)
     return {'arguments': get_all_arguments_with_text_and_url_by_statement_id(db_statement, _um, True, is_jump=True)}
 
 
@@ -191,7 +191,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
     # #arguments=0: empty input
     # #arguments=1: deliver new url
     # #arguments>1: deliver url where the nickname has to choose between her inputs
-    _um = url = UrlManager(application_url, slug, history)
+    _um = url = UrlManager(slug, history)
     if len(new_argument_uids) == 0:
         error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength),
                                      statement_min_length)

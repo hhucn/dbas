@@ -195,16 +195,16 @@ class LibTests(unittest.TestCase):
         self.assertIn('120', lib.get_profile_picture(user, size=120))
 
     def test_get_author_data(self):
-        u, s, b = lib.get_author_data('main_page', 0)
+        u, s, b = lib.get_author_data(0)
         self.assertFalse(b)
         self.assertIsNone(u)
 
         user = DBDiscussionSession.query(User).get(1)
-        u, s, b = lib.get_author_data('main_page', 1, gravatar_on_right_side=False)
+        u, s, b = lib.get_author_data(1, gravatar_on_right_side=False)
         self.assertTrue(b)
         self.assertIn(' {}'.format(user.nickname), s)
 
-        u, s, b = lib.get_author_data('main_page', 1, gravatar_on_right_side=True)
+        u, s, b = lib.get_author_data(1, gravatar_on_right_side=True)
         self.assertTrue(b)
         self.assertIn('{} '.format(user.nickname), s)
 

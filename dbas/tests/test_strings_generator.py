@@ -244,7 +244,7 @@ class TextGeneratorText(unittest.TestCase):
         argument_text = 'some argument text'
         _t = Translator('en')
 
-        res = tg.get_text_for_support(arg, argument_text, 'Tobias', 'main_page', _t)
+        res = tg.get_text_for_support(arg, argument_text, 'Tobias', _t)
         self.assertEqual(res,
                          '<span>This is a good point and other participants are interested in your conclusion too. They say, that</span> some argument text.<br><br>What do you think about that?')
 
@@ -253,21 +253,20 @@ class TextGeneratorText(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).get(db_arg.author_uid)
 
         with_link = True
-        user, text, gender, okay = tg.get_name_link_of_arguments_author('main_page', db_arg, 'Christian', with_link)
+        user, text, gender, okay = tg.get_name_link_of_arguments_author(db_arg, 'Christian', with_link)
         self.assertEqual(user, None)
         self.assertEqual(text, '')
         self.assertEqual(gender, 'n')
         self.assertEqual(okay, False)
 
-        user, text, gender, okay = tg.get_name_link_of_arguments_author('main_page', db_arg, db_user.nickname,
-                                                                        with_link)
+        user, text, gender, okay = tg.get_name_link_of_arguments_author(db_arg, db_user.nickname, with_link)
         self.assertEqual(user, None)
         self.assertEqual(text, '')
         self.assertEqual(gender, 'n')
         self.assertEqual(okay, False)
 
         with_link = False
-        user, text, gender, okay = tg.get_name_link_of_arguments_author('main_page', db_arg, 'Tobias', with_link)
+        user, text, gender, okay = tg.get_name_link_of_arguments_author(db_arg, 'Tobias', with_link)
         self.assertEqual(user, None)
         self.assertEqual(text, '')
         self.assertEqual(gender, 'n')
@@ -330,7 +329,7 @@ class TextGeneratorText(unittest.TestCase):
 
         attack = ''
         color_html, supportive, reply_for_argument, user_is_attacking = False, False, False, False
-        sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
+        sys_text, gender = tg.get_text_for_confrontation('en', 'Tobias', self.premise, self.conclusion,
                                                          'another conlcusion', supportive, attack, self.confrontation,
                                                          reply_for_argument, user_is_attacking, user_arg, sys_arg,
                                                          color_html)
@@ -351,7 +350,7 @@ class TextGeneratorText(unittest.TestCase):
                 text += '<span>some premise text</span><span data-attitude="con"><span> does not hold</span><span>, because</span> <span>'
             text += 'some confrontation text</span><span>.<br><br>What do you think about that?</span>'
 
-            sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
+            sys_text, gender = tg.get_text_for_confrontation('en', 'Tobias', self.premise, self.conclusion,
                                                              'another conlcusion', supportive, attack,
                                                              self.confrontation,
                                                              reply_for_argument, user_is_attacking, user_arg, sys_arg,
@@ -378,7 +377,7 @@ class TextGeneratorText(unittest.TestCase):
                 text += 'argument for</span></span> <span data-argumentation-type="argument">some conclusion text</span><span>. Other participants think that</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
             text += '<br><br>What do you think about that?</span>'
 
-            sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
+            sys_text, gender = tg.get_text_for_confrontation('en', 'Tobias', self.premise, self.conclusion,
                                                              'another conlcusion', supportive, attack,
                                                              self.confrontation, reply_for_argument, user_is_attacking,
                                                              user_arg, sys_arg, color_html)
@@ -429,7 +428,7 @@ class TextGeneratorText(unittest.TestCase):
 
             text += '<br><br>What do you think about that?</span>'
 
-            sys_text, gender = tg.get_text_for_confrontation('main_page', 'en', 'Tobias', self.premise, self.conclusion,
+            sys_text, gender = tg.get_text_for_confrontation('en', 'Tobias', self.premise, self.conclusion,
                                                              'another conlcusion', supportive, attack,
                                                              self.confrontation, reply_for_argument, user_is_attacking,
                                                              user_arg, sys_arg, color_html)
@@ -451,7 +450,7 @@ class TextGeneratorText(unittest.TestCase):
                 text += '<span>some premise text</span><span data-attitude="con"><span> keine gute Idee ist</span><span>, weil</span> <span>some confrontation text</span>'
             text += '<span>.<br><br>Was denken Sie darüber?</span>'
 
-            sys_text, gender = tg.get_text_for_confrontation('main_page', 'de', 'Tobias', self.premise, self.conclusion,
+            sys_text, gender = tg.get_text_for_confrontation('de', 'Tobias', self.premise, self.conclusion,
                                                              'another conlcusion', supportive, attack,
                                                              self.confrontation,
                                                              reply_for_argument, user_is_attacking, user_arg, sys_arg,
@@ -478,7 +477,7 @@ class TextGeneratorText(unittest.TestCase):
                 text += 'dafür</span> ist, <span data-attitude="con">dass</span></span> <span data-argumentation-type="argument">some conclusion text</span><span>. Die anderen Teilnehmer denken, dass</span> <span data-argumentation-type="attack">some confrontation text</span><span>.'
             text += '<br><br>Was denken Sie darüber?</span>'
 
-            sys_text, gender = tg.get_text_for_confrontation('main_page', 'de', 'Tobias', self.premise, self.conclusion,
+            sys_text, gender = tg.get_text_for_confrontation('de', 'Tobias', self.premise, self.conclusion,
                                                              'another conlcusion', supportive, attack,
                                                              self.confrontation, reply_for_argument, user_is_attacking,
                                                              user_arg, sys_arg, color_html)
@@ -530,8 +529,8 @@ class TextGeneratorText(unittest.TestCase):
 
             text += '<span>.<br><br>Was denken Sie darüber?</span>'
 
-            sys_text, gender = tg.get_text_for_confrontation('main_page', 'de', 'Tobias', self.premise, self.conclusion,
-                                                             'another conlcusion', supportive, attack,
+            sys_text, gender = tg.get_text_for_confrontation('de', 'Tobias', self.premise, self.conclusion,
+                                                             'another conclusion', supportive, attack,
                                                              self.confrontation, reply_for_argument, user_is_attacking,
                                                              user_arg, sys_arg, color_html)
             self.assertEqual(gender, 'n')

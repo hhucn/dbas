@@ -55,7 +55,7 @@ def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Lan
     transaction.commit()
     db_issue = DBDiscussionSession.query(Issue).filter(Issue.title == title, Issue.info == info).first()
 
-    return {'issue': get_issue_dict_for(db_issue, application_url, False, 0, db_lang.ui_locales)}
+    return {'issue': get_issue_dict_for(db_issue, application_url, 0, db_lang.ui_locales)}
 
 
 def prepare_json_of_issue(db_issue: Issue, application_url: str, db_user: User) -> dict():
@@ -159,12 +159,12 @@ def get_issue_dict_for(issue, application_url, uid, lang):
             'error': 'true'
         }
 
-    _um = UrlManager(application_url, issue.slug)
+    _um = UrlManager(issue.slug)
     issue_dict = {
         'uid': str(issue.uid),
         'slug': issue.slug,
         'title': issue.title,
-        'url': _um.get_slug_url() if str(uid) != str(issue.uid) else '',
+        'url': issue.slug,
         'review_url': _um.get_review_url() if str(uid) != str(issue.uid) else '',
         'info': issue.info,
         'stat_count': get_number_of_statements(issue.uid),

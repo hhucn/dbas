@@ -4,10 +4,7 @@ Login Handler for D-BAS
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-from time import sleep
-
 import transaction
-from pyramid.httpexceptions import HTTPFound
 from pyramid.security import remember
 from pyramid_mailer import Mailer
 from sqlalchemy import func
