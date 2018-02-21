@@ -38,14 +38,12 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
     """
     logger('StatementsHelper', 'set_position', statement_text)
 
-    # escaping will be done in StatementsHelper().set_statement(...)
     user.update_last_action(db_user.nickname)
 
     new_statement = insert_as_statement(statement_text, db_user, db_issue, is_start=True)
 
     _um = UrlManager(db_issue.slug)
     url = _um.get_url_for_statement_attitude(new_statement.uid)
-    # add reputation
     add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_position)
     if not add_rep:
         add_rep, broke_limit = add_reputation_for(db_user, rep_reason_new_statement)
@@ -69,41 +67,21 @@ def set_positions_premise(data: Dict) -> dict:
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and next url or an error
     """
-    try:
-        db_user = data['user']
-        premisegroups = data['premisegroups']
-        db_issue = data['issue']
+    db_user = data['user']
+    premisegroups = data['premisegroups']
+    db_issue = data['issue']
+    db_conclusion = data['conclusion']
+    supportive = data['supportive']
 
-        db_conclusion = data['conclusion']
-        supportive = data['supportive']
-        application_url = data['application_url']
-        history = data.get('history')
-        port = data.get('port')
-        mailer = data.get('mailer')
-        discussion_lang = db_issue.lang
-        default_locale_name = data.get('default_locale_name', discussion_lang)
-
-    except KeyError as e:
-        logger('StatementsHelper', 'positions_premise', repr(e), error=True)
-        _tn = Translator('en')
-        return {'error': _tn.get(_.notInsertedErrorBecauseInternal)}
-
-    # escaping will be done in StatementsHelper().set_statement(...)
+    history = data.get('history')
+    port = data.get('port')
+    mailer = data.get('mailer')
 
     user.update_last_action(db_user.nickname)
 
-    _tn = Translator('discussion_lang')
-    if db_issue.is_read_only:
-        return {'error': _tn.get(_.discussionIsReadOnly), 'statement_uids': ''}
-
-    url, statement_uids, error = __process_input_of_start_premises_and_receive_url(default_locale_name,
-                                                                                   premisegroups,
-                                                                                   db_conclusion, supportive,
-                                                                                   db_issue,
-                                                                                   db_user,
-                                                                                   application_url,
-                                                                                   discussion_lang, history, port,
-                                                                                   mailer)
+    url, statement_uids, error = __process_input_of_start_premises_and_receive_url(premisegroups, db_conclusion,
+                                                                                   supportive, db_issue, db_user,
+                                                                                   history, port, mailer)
     prepared_dict = {'error': error,
                      'statement_uids': statement_uids}
 
@@ -116,9 +94,8 @@ def set_positions_premise(data: Dict) -> dict:
         add_rep, broke_limit = add_reputation_for(db_user, rep_reason_new_statement)
         # send message if the user is now able to review
     if broke_limit:
-        _t = Translator(discussion_lang)
-        send_request_for_info_popup_to_socketio(db_user.nickname, port, _t.get(_.youAreAbleToReviewNow),
-                                                '{}/review'.format(application_url))
+        _t = Translator(db_issue.lang)
+        send_request_for_info_popup_to_socketio(db_user.nickname, port, _t.get(_.youAreAbleToReviewNow), '/review')
         prepared_dict['url'] = '{}{}'.format(url, '#access-review')
 
     prepared_dict['url'] = url
@@ -329,20 +306,16 @@ def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue) -> 
     return statement, False
 
 
-def __process_input_of_start_premises_and_receive_url(default_locale_name, premisegroups, db_conclusion: Statement,
-                                                      supportive, db_issue: Issue, db_user: User, application_url,
-                                                      discussion_lang, history, port, mailer):
+def __process_input_of_start_premises_and_receive_url(premisegroups, db_conclusion: Statement, supportive,
+                                                      db_issue: Issue, db_user: User, history, port, mailer):
     """
     Inserts premises of groups as new arguments in dependence of the input parameters and returns a URL for forwarding.
 
-    :param default_locale_name: Default lang of the app
     :param premisegroups: [[String, ..], ...]
     :param db_conclusion: Statement
     :param supportive: Boolean
     :param db_issue: Issue
     :param db_user: User
-    :param application_url: URL
-    :param discussion_lang: ui_locales
     :param history: History of the user
     :param port: Port of the notification server
     :param mailer: Instance of pyramid mailer
@@ -350,7 +323,7 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     """
     logger('StatementsHelper', '__process_input_of_start_premises_and_receive_url',
            'length of new pgroup: {}'.format(len(premisegroups)))
-    _tn = Translator(discussion_lang)
+    _tn = Translator(db_issue.lang)
 
     error = ''
     url = ''
@@ -360,8 +333,8 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     new_argument_uids = []
     new_statement_uids = []  # all statement uids are stored in this list to create the link to a possible reference
     for premisegroup in premisegroups:  # premise groups is a list of lists
-        new_argument, statement_uids = __create_argument_by_raw_input(application_url, default_locale_name, db_user,
-                                                                      premisegroup, db_conclusion, supportive, db_issue)
+        new_argument, statement_uids = __create_argument_by_raw_input(db_user, premisegroup, db_conclusion, supportive,
+                                                                      db_issue)
         if not new_argument:  # break on error
             if statement_uids == [-1]:
                 error = '{}'.format(_tn.get(_.premiseAndConclusionAreEqual))
@@ -397,13 +370,10 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     return url, new_statement_uids, error
 
 
-def insert_new_premises_for_argument(application_url, default_locale_name, premisegroup: List[str], current_attack,
-                                     arg_uid, db_issue: Issue, db_user: User):
+def insert_new_premises_for_argument(premisegroup: List[str], current_attack, arg_uid, db_issue: Issue, db_user: User):
     """
     Creates premises for a given argument
 
-    :param application_url: Url of the app itself
-    :param default_locale_name: default lang of the app
     :param premisegroup: List of strings
     :param current_attack: String
     :param arg_uid: Argument.uid
@@ -495,14 +465,11 @@ def set_statements_as_new_premisegroup(statements: List[Statement], db_user: Use
     return db_premisegroup
 
 
-def __create_argument_by_raw_input(application_url, default_locale_name, db_user: User, premises_text: [str],
-                                   db_conclusion, is_supportive, db_issue: Issue) \
+def __create_argument_by_raw_input(db_user: User, premises_text: [str], db_conclusion, is_supportive, db_issue: Issue) \
         -> Tuple[Union[Argument, None], List[int]]:
     """
     Consumes the input to create a new argument
 
-    :param application_url: Url of the app itself
-    :param default_locale_name: default lang of the app
     :param db_user: User
     :param premises_text: String
     :param db_conclusion: Statement
@@ -536,7 +503,7 @@ def __create_argument_by_raw_input(application_url, default_locale_name, db_user
         transaction.commit()
 
         if new_argument:
-            _tn = Translator(default_locale_name)
+            _tn = Translator(db_issue.lang)
             _um = UrlManager(db_issue.slug)
             append_action_to_issue_rss(db_issue=db_issue, db_author=db_user, title=_tn.get(_.argumentAdded),
                                        description='...' + get_text_for_argument_uid(new_argument.uid,

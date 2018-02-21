@@ -8,6 +8,7 @@ from dbas.database.discussion_model import Issue, User, Argument, Premise, Marke
 from dbas.handler import user, notification as nh
 from dbas.handler.statements import insert_new_premises_for_argument
 from dbas.helper.query import statement_min_length
+from dbas.helper.url import UrlManager
 from dbas.input_validator import get_relation_between_arguments
 from dbas.lib import get_all_arguments_with_text_and_url_by_statement_id, \
     get_profile_picture, get_text_for_argument_uid, resolve_issue_uid_to_slug
@@ -15,7 +16,6 @@ from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_new_statement, rep_reason_first_new_argument
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.helper.url import UrlManager
 
 
 def set_arguments_premises(data) -> dict:
@@ -38,14 +38,12 @@ def set_arguments_premises(data) -> dict:
     discussion_lang = db_issue.lang
     default_locale_name = data.get('default_locale_name', discussion_lang)
 
-    application_url = data['application_url']
-
     # escaping will be done in QueryHelper().set_statement(...)
     langs = {'default_locale_name': default_locale_name, 'discussion_lang': discussion_lang}
     mail = {'mailer': mailer, 'port': port}
     arg_infos = {'arg_id': arg_uid, 'attack_type': attack_type, 'premisegroups': premisegroups, 'history': history}
     url, statement_uids, error = __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue,
-                                                                                        db_user, application_url, mail)
+                                                                                        db_user, mail)
     user.update_last_action(db_user)
 
     prepared_dict = {
@@ -131,8 +129,7 @@ def get_arguments_by_statement_uid(db_statement, application_url) -> dict:
     return {'arguments': get_all_arguments_with_text_and_url_by_statement_id(db_statement, _um, True, is_jump=True)}
 
 
-def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue: Issue, db_user: User,
-                                                           application_url, m):
+def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue: Issue, db_user: User, m):
     """
     Inserts given text in premisegroups as new arguments in dependence of the parameters and returns a URL
 
@@ -140,11 +137,9 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
     :param arg_infos: dict with arg_id, attack_type, premisegroups and the history
     :param db_issue: Issue
     :param db_user: User
-    :param application_url: URL
     :param m: dict with port and mailer
     :return: URL, [Statement.uids], String
     """
-    default_locale_name = langs['default_locale_name']
     discussion_lang = langs['discussion_lang']
     arg_id = arg_infos['arg_id']
     attack_type = arg_infos['attack_type']
@@ -163,8 +158,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
     # all new arguments are collected in a list
     new_argument_uids = []
     for premisegroup in premisegroups:  # premise groups is a list of lists
-        new_argument = insert_new_premises_for_argument(application_url, default_locale_name, premisegroup, attack_type,
-                                                        arg_id, db_issue, db_user)
+        new_argument = insert_new_premises_for_argument(premisegroup, attack_type, arg_id, db_issue, db_user)
         if not isinstance(new_argument, Argument):  # break on error
             a = _tn.get(_.notInsertedErrorBecauseEmpty)
             b = _tn.get(_.minLength)

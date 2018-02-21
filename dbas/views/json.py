@@ -425,7 +425,8 @@ def set_new_start_argument(request):
 
 
 @view_config(route_name='set_new_start_premise', renderer='json')
-@validate(valid_user, valid_issue, valid_conclusion, valid_premisegroups, has_keywords(('supportive', bool)))
+@validate(valid_user, valid_issue_not_readonly, valid_conclusion, valid_premisegroups,
+          has_keywords(('supportive', bool)))
 def set_new_start_premise(request):
     """
     Sets new premise for the start
@@ -471,7 +472,6 @@ def set_new_premises_for_argument(request):
         'port': get_port(request),
         'history': request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None,
         'default_locale_name': get_default_locale_name(request.registry),
-        'application_url': request.application_url,
         'mailer': request.mailer
     }
     prepared_dict = set_arguments_premises(data)
