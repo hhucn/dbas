@@ -32,9 +32,9 @@ def valid_review_reason(request):
 def valid_not_executed_review(keyword, model):
     def valid_model(request):
         uid = request.json_body.get(keyword)
-        db_review = DBDiscussionSession.query(model).filter(model.uid == uid,
-                                                            model.is_executed == False).first() if is_integer(
-            uid) else None
+        db_review = DBDiscussionSession \
+            .query(model).filter(model.uid == uid,
+                                 model.is_executed == False).first() if is_integer(uid) else None
         if db_review:
             request.validated['db_review'] = db_review
             return True
