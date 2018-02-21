@@ -1,7 +1,8 @@
 # coding=utf-8
+from typing import List, Tuple, Dict, Union
+
 import transaction
 from sqlalchemy import func
-from typing import List, Tuple, Dict, Union
 
 import dbas.review.helper.queues as review_queue_helper
 from dbas.database import DBDiscussionSession
@@ -14,6 +15,7 @@ from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.query import statement_min_length
 from dbas.helper.relation import set_new_undermine_or_support_for_pgroup, set_new_support, set_new_undercut, \
     set_new_rebut
+from dbas.helper.url import UrlManager
 from dbas.input_validator import is_integer
 from dbas.lib import get_text_for_statement_uid, get_profile_picture, escape_string, get_text_for_argument_uid
 from dbas.logger import logger
@@ -21,41 +23,25 @@ from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_p
     rep_reason_first_justification, rep_reason_new_statement
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.helper.url import UrlManager
 from websocket.lib import send_request_for_info_popup_to_socketio
 
 
-def set_position(data) -> dict:
+def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
     """
     Set new position for current discussion and returns collection with the next url for the discussion.
 
-    :param data: dict of requests data
+    :param statement_text: The text of the new position statement.
+    :param db_issue: The issue which gets the new position
+    :param db_user: The user who sets the new position.
     :rtype: dict
     :return: Prepared collection with statement_uids of the new positions and next url or an error
     """
-    logger('StatementsHelper', 'set_position', str(data))
-    try:
-        statement_text = data['statement_text']
-        db_user = data['user']
-        db_issue = data['issue']
-
-        default_locale_name = data.get('default_locale_name', db_issue.lang)
-        application_url = data['application_url']
-    except KeyError as e:
-        logger('StatementsHelper', 'set_position', repr(e), error=True)
-        _tn = Translator('en')
-        return {
-            'error': _tn.get(_.notInsertedErrorBecauseInternal),
-            'statement_uids': '',
-            'status': 'error',
-            'url': ''
-        }
+    logger('StatementsHelper', 'set_position', statement_text)
 
     # escaping will be done in StatementsHelper().set_statement(...)
     user.update_last_action(db_user.nickname)
 
-    new_statement = insert_as_statement(application_url, default_locale_name, statement_text, db_user, db_issue,
-                                        is_start=True)
+    new_statement = insert_as_statement(statement_text, db_user, db_issue, is_start=True)
 
     _um = UrlManager(db_issue.slug)
     url = _um.get_url_for_statement_attitude(new_statement.uid)
@@ -267,19 +253,16 @@ def __get_logfile_dict(textversion: TextVersion, main_page: str, lang: str) -> D
     return corr_dict
 
 
-def insert_as_statement(application_url: str, default_locale_name: str, text: str, db_user: User, db_issue: Issue,
-                        is_start=False) -> Statement:
+def insert_as_statement(text: str, db_user: User, db_issue: Issue, is_start=False) -> Statement:
     """
-        Inserts the given text as statement and returns the uid
+    Inserts the given text as statement and returns the uid
 
-        :param application_url: Url of the app itself
-        :param default_locale_name: default lang of the app
-        :param text: String
-        :param db_user: User
-        :param db_issue: Issue
-        :param is_start: Boolean
-        :return: Statement
-        """
+    :param text: String
+    :param db_user: User
+    :param db_issue: Issue
+    :param is_start: Boolean
+    :return: Statement
+    """
     new_statement, is_duplicate = set_statement(text, db_user, is_start, db_issue)
 
     # add marked statement
@@ -292,11 +275,9 @@ def insert_as_statement(application_url: str, default_locale_name: str, text: st
 
     _tn = Translator(new_statement.lang)
     _um = UrlManager(db_issue.slug)
-    append_action_to_issue_rss(db_issue=db_issue,
-                               db_author=db_user,
+    append_action_to_issue_rss(db_issue=db_issue, db_author=db_user,
                                title=_tn.get(_.positionAdded if is_start else _.statementAdded),
                                description='...' + get_text_for_statement_uid(new_statement.uid) + '...',
-                               ui_locale=default_locale_name,
                                url=_um.get_url_for_statement_attitude(new_statement.uid))
 
     return new_statement
@@ -434,7 +415,7 @@ def insert_new_premises_for_argument(application_url, default_locale_name, premi
 
     statements = []
     for premise in premisegroup:
-        statement = insert_as_statement(application_url, default_locale_name, premise, db_user, db_issue)
+        statement = insert_as_statement(premise, db_user, db_issue)
         statements.append(statement)
 
     # set the new statements as premise group and get current user as well as current argument
@@ -535,7 +516,7 @@ def __create_argument_by_raw_input(application_url, default_locale_name, db_user
     try:
         new_statements = []
         for text in premises_text:
-            statement = insert_as_statement(application_url, default_locale_name, text, db_user, db_issue)
+            statement = insert_as_statement(text, db_user, db_issue)
             new_statements.append(statement)
 
         # second, set the new statements as premisegroup
@@ -557,12 +538,9 @@ def __create_argument_by_raw_input(application_url, default_locale_name, db_user
         if new_argument:
             _tn = Translator(default_locale_name)
             _um = UrlManager(db_issue.slug)
-            append_action_to_issue_rss(db_issue=db_issue,
-                                       db_author=db_user,
-                                       title=_tn.get(_.argumentAdded),
+            append_action_to_issue_rss(db_issue=db_issue, db_author=db_user, title=_tn.get(_.argumentAdded),
                                        description='...' + get_text_for_argument_uid(new_argument.uid,
                                                                                      anonymous_style=True) + '...',
-                                       ui_locale=default_locale_name,
                                        url=_um.get_url_for_justifying_statement(new_argument.uid, 'd'))
 
         return new_argument, [s.uid for s in new_statements]

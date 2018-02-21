@@ -1,12 +1,12 @@
 import unittest
-import transaction
 
+import transaction
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import RSS, User
-from dbas.lib import get_global_url
 from dbas.handler import rss
+from dbas.lib import get_global_url
 from dbas.query_wrapper import get_not_disabled_issues_as_query
 
 
@@ -26,18 +26,18 @@ class RSSHandlerTests(unittest.TestCase):
     def test_append_action_to_issue_rss(self):
         db_issue = get_not_disabled_issues_as_query().first()
         l1 = DBDiscussionSession.query(RSS).count()
-        self.assertTrue(rss.append_action_to_issue_rss(db_issue, self.user, 'test_title', 'test_description', 'en',
-                                                       get_global_url()))
+        self.assertTrue(
+            rss.append_action_to_issue_rss(db_issue, self.user, 'test_title', 'test_description', get_global_url()))
         l2 = DBDiscussionSession.query(RSS).count()
-        self.assertTrue(l1 + 1, l2)
+        self.assertEqual(l1 + 1, l2)
 
         DBDiscussionSession.query(RSS).filter(RSS.issue_uid == db_issue.uid, RSS.author_uid == self.user.uid,
-                                              RSS.title == 'test title', RSS.description == 'test_description').delete()
+                                              RSS.title == 'test_title', RSS.description == 'test_description').delete()
         DBDiscussionSession.flush()
         transaction.commit()
         l3 = DBDiscussionSession.query(RSS).count()
-        self.assertTrue(l1, l3)
-        self.assertTrue(rss.rewrite_issue_rss(1, 'en', get_global_url()))
+        self.assertEqual(l2 - 1, l3, "RSS appended more than once.")
+        self.assertTrue(rss.rewrite_issue_rss(1, get_global_url()))
 
     def test_get_list_of_all_feeds(self):
         l1 = get_not_disabled_issues_as_query().count()

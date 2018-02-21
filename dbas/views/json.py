@@ -412,7 +412,8 @@ def set_new_start_argument(request):
 
     # set the new position
     logger('views', 'set_new_start_argument', 'set conclusion/position')
-    prepared_dict_pos = set_position(data)
+    prepared_dict_pos = set_position(request.validated['user'], request.validated['issue'],
+                                     request.validated['position'])
     if len(prepared_dict_pos['error']) is 0:
         logger('views', 'set_new_start_argument', 'set premise/reason')
         data['premisegroups'] = [[reason]]
