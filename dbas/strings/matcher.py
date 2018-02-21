@@ -31,7 +31,6 @@ def get_prediction(_tn, db_user, db_issue, application_url, value, mode, stateme
     Get dictionary with matching words, based on the given mode
 
     :param _tn: Translator
-    :param for_api: Boolean
     :param api_data: data from the api
     :param db_user: User
     :param db_issue: Issue
@@ -84,7 +83,7 @@ def get_all_statements_with_value(issue_uid, application_url, value):
     db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue_uid).all()
     return_array = []
     slug = DBDiscussionSession.query(Issue).get(issue_uid).slug
-    _um = UrlManager(application_url, for_api=False, slug=slug)
+    _um = UrlManager(application_url, slug=slug)
     for stat in db_statements:
         db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(TextVersion.uid.asc()).first()
         if value.lower() in db_tv.content.lower():

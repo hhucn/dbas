@@ -53,7 +53,7 @@ def base_layout():
     return get_renderer('../templates/basetemplate.pt').implementation()
 
 
-def prepare_request_dict(request, nickname, for_api=False):
+def prepare_request_dict(request, nickname):
     """
 
     :param request:
@@ -72,7 +72,7 @@ def prepare_request_dict(request, nickname, for_api=False):
 
     if not slug and last_topic:
         issue = last_topic
-    elif slug and not for_api:
+    elif slug:
         issue = issue_handler.get_id_of_slug(slug, request, True)
     else:
         issue = issue_handler.get_issue_id(request)

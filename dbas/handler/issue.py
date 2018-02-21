@@ -58,13 +58,12 @@ def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Lan
     return {'issue': get_issue_dict_for(db_issue, application_url, False, 0, db_lang.ui_locales)}
 
 
-def prepare_json_of_issue(db_issue: Issue, application_url: str, for_api: bool, db_user: User) -> dict():
+def prepare_json_of_issue(db_issue: Issue, application_url: str, db_user: User) -> dict():
     """
     Prepares slug, info, argument count and the date of the issue as dict
 
     :param uid: Issue.uid
     :param application_url: application_url
-    :param for_api: Boolean
     :param db_user: User
     :return: Issue-dict()
     """
@@ -86,7 +85,7 @@ def prepare_json_of_issue(db_issue: Issue, application_url: str, for_api: bool, 
     db_issues = get_visible_issues_for_user_as_query(db_user.uid).filter(Issue.uid != db_issue.uid).all()
     all_array = []
     for issue in db_issues:
-        issue_dict = get_issue_dict_for(issue, application_url, for_api, db_issue.uid, lang)
+        issue_dict = get_issue_dict_for(issue, application_url, db_issue.uid, lang)
         all_array.append(issue_dict)
 
     _t = Translator(lang)
@@ -134,13 +133,12 @@ def get_number_of_statements(issue_uid):
     return DBDiscussionSession.query(Statement).filter_by(issue_uid=issue_uid).count()
 
 
-def get_issue_dict_for(issue, application_url, for_api, uid, lang):
+def get_issue_dict_for(issue, application_url, uid, lang):
     """
     Creates an dictionary for the issue
 
     :param issue: Issue
     :param application_url:
-    :param for_api: Boolean
     :param uid: current selected Issue.uid
     :param lang: ui_locales
     :return: dict()
@@ -161,7 +159,7 @@ def get_issue_dict_for(issue, application_url, for_api, uid, lang):
             'error': 'true'
         }
 
-    _um = UrlManager(application_url, issue.slug, for_api)
+    _um = UrlManager(application_url, issue.slug)
     issue_dict = {
         'uid': str(issue.uid),
         'slug': issue.slug,

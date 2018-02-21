@@ -13,11 +13,9 @@ class UrlManagerTests(unittest.TestCase):
     def test_init(self):
         url1 = self.__make_one(application_url='application_url',
                                slug='',
-                               for_api=True,
                                history='')
         url2 = self.__make_one(application_url='application_url/',
                                slug='cat-or-dog',
-                               for_api=False,
                                history='attitude/35')
         # Test whether backslash is added, if application_url does not end with it.
         self.assertEqual(url1.url, 'application_url/')
@@ -35,10 +33,6 @@ class UrlManagerTests(unittest.TestCase):
         # Test string.
         self.assertEqual(url2.slug, 'cat-or-dog')
 
-        # Verify variable 'for_api' is assigned to expected boolean value.
-        self.assertEqual(url1.for_api, True)
-        self.assertEqual(url2.for_api, False)
-
         # Test empty string.
         self.assertEqual(url1.history, '')
         # Test string.
@@ -46,20 +40,6 @@ class UrlManagerTests(unittest.TestCase):
 
         # Test whether 'None' is returned.
         self.assertEqual(url1.__init__('application_url/'), None)
-
-    def test_get_url(self):
-        url1 = self.__make_one(application_url='application_url',
-                               for_api=True)
-        url2 = self.__make_one(application_url='application_url',
-                               for_api=False)
-
-        response_for_api_true = url1.get_url(path='discuss')
-        # Verify that, if 'for_api' is 'True', the path is returned.
-        self.assertEqual(response_for_api_true, 'discuss')
-
-        response_for_api_false = url2.get_url(path='discuss')
-        # Verify that, if 'for_api' is 'False', the path with the 'application_url' as prefix is returned.
-        self.assertEqual(response_for_api_false, 'application_url/discuss')
 
     def test_get_404(self):
         url = self.__make_one('application_url')
@@ -212,11 +192,9 @@ class UrlManagerTests(unittest.TestCase):
 
     def test_get_url_for_new_argument(self):
         url1 = self.__make_one(application_url='application_url',
-                               for_api=True,
                                slug='cat-or-dog',
                                history='attitude/4')
         url2 = self.__make_one(application_url='application_url',
-                               for_api=False,
                                slug='cat-or-dog',
                                history='attitude/4')
 

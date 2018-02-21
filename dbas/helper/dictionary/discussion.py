@@ -9,6 +9,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, User
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement, \
     get_system_bubble_text_for_justify_statement
+from dbas.helper.url import UrlManager
 from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, \
     get_text_for_conclusion, create_speechbubble_dict, is_author_of_argument, bubbles_already_last_in_list, BubbleTypes, \
     nick_of_anonymous_user
@@ -19,7 +20,6 @@ from dbas.strings.text_generator import tag_type, get_header_for_users_confronta
     get_text_for_add_premise_container, get_text_for_confrontation, get_text_for_support, \
     get_name_link_of_arguments_author
 from dbas.strings.translator import Translator
-from dbas.helper.url import UrlManager
 
 
 class DiscussionDictHelper(object):
@@ -102,14 +102,14 @@ class DiscussionDictHelper(object):
             'mode': ''
         }
 
-    def get_dict_for_justify_statement(self, uid, application_url, slug, is_supportive, count_of_items, db_user):
+    def get_dict_for_justify_statement(self, uid, app_url, slug, is_supportive, count_of_items, db_user):
         """
         Prepares the discussion dict with all bubbles for the third step in discussion,
         where the user justifies his position.
 
         :param uid: Argument.uid
-        :param application_url: URL
-        :param slug: Issue.info as Slug
+        :param app_url: application url
+        :param slug: Issue.slug
         :param is_supportive: Boolean
         :param count_of_items: Integer
         :param nickname: User.nickname
@@ -126,20 +126,19 @@ class DiscussionDictHelper(object):
         if not text:
             return None
 
-        tag_start = '<' + tag_type + ' data-argumentation-type="position">'
-        tag_end = '</' + tag_type + '/>'
+        tag_start = '<{}data-argumentation-type="position">'.format(tag_type)
+        tag_end = '</{}>'.format(tag_type)
 
         # system bubble
-        system_question = get_system_bubble_text_for_justify_statement(is_supportive, _tn, tag_start, text,
-                                                                       tag_end)
+        system_question = get_system_bubble_text_for_justify_statement(is_supportive, _tn, tag_start, text, tag_end)
 
         # user bubble
         nickname = db_user.nickname if db_user and db_user.nickname != nick_of_anonymous_user else None
         user_text, add_premise_text = get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn)
 
-        url = UrlManager(application_url, slug).get_slug_url()
         question_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, message=system_question, omit_url=True,
                                                    lang=self.lang)
+        url = UrlManager(app_url, slug).get_url_for_statement_attitude(uid)
         select_bubble = create_speechbubble_dict(BubbleTypes.USER, url=url, message=user_text, omit_url=False,
                                                  statement_uid=uid, is_supportive=is_supportive, nickname=nickname,
                                                  lang=self.lang)

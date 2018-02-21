@@ -6,6 +6,7 @@ import transaction
 from dbas import lib
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Argument, Statement, Issue, TextVersion
+from dbas.helper.url import UrlManager
 
 
 class LibTests(unittest.TestCase):
@@ -267,8 +268,7 @@ class LibTests(unittest.TestCase):
             self.assertEqual(results[r['uid']], r['text'])
 
     def test_get_all_arguments_with_text_and_url_by_statement_id(self):
-        from dbas.helper.url import UrlManager
-        um = UrlManager(application_url='', slug='slug', for_api=True)
+        um = UrlManager(slug='slug')
 
         results = {
             47: 'we should close public swimming pools because our swimming pools are very old and it would take a major investment to repair them',
@@ -284,8 +284,7 @@ class LibTests(unittest.TestCase):
             self.assertEqual(results[r['uid']], r['text'])
 
     def test_get_all_arguments_with_text_and_url_by_statement_id_with_color(self):
-        from dbas.helper.url import UrlManager
-        um = UrlManager(application_url='', slug='slug', for_api=True)
+        um = UrlManager(slug='slug')
 
         results = {
             47: '<span data-argumentation-type="position">we should close public swimming pools</span> because our swimming pools are very old and it would take a major investment to repair them',
@@ -301,8 +300,7 @@ class LibTests(unittest.TestCase):
             self.assertEqual(results[r['uid']], r['text'])
 
     def test_get_all_arguments_with_text_and_url_by_statement_id_with_color_and_jump(self):
-        from dbas.helper.url import UrlManager
-        um = UrlManager(application_url='', slug='slug', for_api=True)
+        um = UrlManager(slug='slug')
 
         results = {
             47: '<span data-argumentation-type="position">we should close public swimming pools</span> because our swimming pools are very old and it would take a major investment to repair them.',

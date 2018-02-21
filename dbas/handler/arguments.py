@@ -5,7 +5,7 @@ import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Argument, Premise, MarkedArgument, ClickedArgument, \
     sql_timestamp_pretty_print, ClickedStatement, Statement
-from dbas.handler import user, notification as NotificationHelper
+from dbas.handler import user, notification as nh
 from dbas.handler.statements import insert_new_premises_for_argument
 from dbas.helper.query import statement_min_length
 from dbas.input_validator import get_relation_between_arguments
@@ -18,11 +18,10 @@ from dbas.strings.translator import Translator
 from dbas.helper.url import UrlManager
 
 
-def set_arguments_premises(for_api, data) -> dict:
+def set_arguments_premises(data) -> dict:
     """
     Set new premise for a given conclusion and returns dictionary with url for the next step of the discussion
 
-    :param for_api: boolean if requests came via the API
     :param data: dict if requests came via the API
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and next url or an error
@@ -46,8 +45,7 @@ def set_arguments_premises(for_api, data) -> dict:
     mail = {'mailer': mailer, 'port': port}
     arg_infos = {'arg_id': arg_uid, 'attack_type': attack_type, 'premisegroups': premisegroups, 'history': history}
     url, statement_uids, error = __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue,
-                                                                                        db_user, for_api,
-                                                                                        application_url, mail)
+                                                                                        db_user, application_url, mail)
     user.update_last_action(db_user)
 
     prepared_dict = {
@@ -134,19 +132,14 @@ def get_arguments_by_statement_uid(db_statement, application_url) -> dict:
 
 
 def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue: Issue, db_user: User,
-                                                           for_api, application_url, m):
+                                                           application_url, m):
     """
     Inserts given text in premisegroups as new arguments in dependence of the parameters and returns a URL
-
-    .. note::
-
-        Optimize the "for_api" part
 
     :param langs: dict with default_locale_name and discussion_lang
     :param arg_infos: dict with arg_id, attack_type, premisegroups and the history
     :param db_issue: Issue
     :param db_user: User
-    :param for_api: Boolean
     :param application_url: URL
     :param m: dict with port and mailer
     :return: URL, [Statement.uids], String
@@ -186,20 +179,19 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
         new_argument_uids.append(new_argument.uid)
 
     statement_uids = []
-    if for_api:
-        # @OPTIMIZE
-        # Query all recently stored premises (internally: statements) and collect their ids
-        # This is a bad workaround, let's just think about it in future.
-        for uid in new_argument_uids:
-            current_pgroup = DBDiscussionSession.query(Argument).get(uid).premisesgroup_uid
-            current_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_pgroup).all()
-            for premise in current_premises:
-                statement_uids.append(premise.statement_uid)
+    # @OPTIMIZE
+    # Query all recently stored premises (internally: statements) and collect their ids
+    # This is a bad workaround, let's just think about it in future.
+    for uid in new_argument_uids:
+        current_pgroup = DBDiscussionSession.query(Argument).get(uid).premisesgroup_uid
+        current_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=current_pgroup).all()
+        for premise in current_premises:
+            statement_uids.append(premise.statement_uid)
 
     # #arguments=0: empty input
     # #arguments=1: deliver new url
     # #arguments>1: deliver url where the nickname has to choose between her inputs
-    _um = url = UrlManager(application_url, slug, for_api, history)
+    _um = url = UrlManager(application_url, slug, history)
     if len(new_argument_uids) == 0:
         error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength),
                                      statement_min_length)
@@ -223,7 +215,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
 
         tmp_url = _um.get_url_for_reaction_on_argument(arg_id, attack, new_uid)
 
-        NotificationHelper.send_add_argument_notification(tmp_url, arg_id, db_user.nickname, m['port'], m['mailer'])
+        nh.send_add_argument_notification(tmp_url, arg_id, db_user.nickname, m['port'], m['mailer'])
 
     return url, statement_uids, error
 

@@ -883,7 +883,7 @@ def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, ui
         'is_markable': is_markable,
         'is_author': is_author,
         'id': uid if len(str(uid)) > 0 else str(time.time()),
-        'url': url if len(str(url)) > 0 else 'None',
+        'url': str(url),
         'message': message,
         'omit_url': omit_url,
         'data_type': 'argument' if argument_uid else 'statement' if statement_uid else 'None',

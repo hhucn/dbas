@@ -14,13 +14,12 @@ class UrlManager(object):
     URL-Manager for building all URLs. This includes DBAS-URLs as well as the API-URLs
     """
 
-    def __init__(self, application_url, slug='', for_api=False, history=''):
+    def __init__(self, application_url='', slug='',  history=''):
         """
         Initialization of an URL-Manager
 
         :param application_url: self.request.application_url
         :param slug: slugged issue.title
-        :param for_api: Boolean
         :param history: String
         :return: None
         """
@@ -29,17 +28,7 @@ class UrlManager(object):
         self.review_url = self.url + 'review/'
         self.api_url = 'api/'
         self.slug = slug
-        self.for_api = for_api
         self.history = history
-
-    def get_url(self, path):
-        """
-        Returns current url with self.url as prefix or the API-version
-
-        :param path: String
-        :return:
-        """
-        return path if self.for_api else self.url + path
 
     def get_404(self, params, is_param_error=False, revoked_content=False):
         """
@@ -66,8 +55,7 @@ class UrlManager(object):
 
         :return: discussion_url/slug
         """
-        url = self.slug
-        return self.__return_discussion_url(url)
+        return self.slug
 
     def get_review_url(self):
         """
@@ -234,11 +222,7 @@ class UrlManager(object):
         :return: Valid URL
         """
         history = '?history=' + self.history if self.history and len(self.history) > 1 else ''
-
-        if self.for_api:
-            return '{}{}{}'.format(self.api_url, url, history)
-        else:
-            return '{}{}{}'.format(self.discussion_url, url, history)
+        return '{}{}{}'.format(url, history)
 
     def __get_url_for_discussion_finish(self, arg_uid):
         """
