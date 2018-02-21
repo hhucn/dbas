@@ -627,7 +627,6 @@ def discussion_choose(request):
     prepared_discussion = __call_from_discussion_step(request, discussion.choose)
     if not prepared_discussion:
         raise HTTPNotFound()
-
     return prepared_discussion
 
 
