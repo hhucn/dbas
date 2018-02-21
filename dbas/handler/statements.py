@@ -8,7 +8,6 @@ import dbas.review.helper.queues as review_queue_helper
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
     sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement
-from dbas.exceptions import StatementToShort
 from dbas.handler import user, notification as nh
 from dbas.handler.rss import append_action_to_issue_rss
 from dbas.handler.voting import add_seen_argument, add_seen_statement
@@ -247,10 +246,7 @@ def insert_as_statement(text: str, db_user: User, db_issue: Issue, is_start=Fals
     DBDiscussionSession.add(SeenStatement(statement_uid=new_statement.uid, user_uid=db_user.uid))
     DBDiscussionSession.flush()
 
-    if is_duplicate:
-        pass
-
-    _tn = Translator(new_statement.lang)
+    _tn = Translator(db_issue.lang)
     _um = UrlManager(db_issue.slug)
     append_action_to_issue_rss(db_issue=db_issue, db_author=db_user,
                                title=_tn.get(_.positionAdded if is_start else _.statementAdded),
@@ -306,6 +302,10 @@ def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue) -> 
     return statement, False
 
 
+def __is_conclusion_in_premisegroups(premisegroups, db_conclusion) -> bool:
+    return any([db_conclusion.get_textversion().content in premisegroup for premisegroup in premisegroups])
+
+
 def __process_input_of_start_premises_and_receive_url(premisegroups, db_conclusion: Statement, supportive,
                                                       db_issue: Issue, db_user: User, history, port, mailer):
     """
@@ -332,16 +332,12 @@ def __process_input_of_start_premises_and_receive_url(premisegroups, db_conclusi
     # all new arguments are collected in a list
     new_argument_uids = []
     new_statement_uids = []  # all statement uids are stored in this list to create the link to a possible reference
+    if __is_conclusion_in_premisegroups(premisegroups, db_conclusion):
+        return None, None, '{}'.format(_tn.get(_.premiseAndConclusionAreEqual))
+
     for premisegroup in premisegroups:  # premise groups is a list of lists
         new_argument, statement_uids = __create_argument_by_raw_input(db_user, premisegroup, db_conclusion, supportive,
                                                                       db_issue)
-        if not new_argument:  # break on error
-            if statement_uids == [-1]:
-                error = '{}'.format(_tn.get(_.premiseAndConclusionAreEqual))
-            else:
-                error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength),
-                                             statement_min_length)
-            return None, None, error
 
         new_argument_uids.append(new_argument.uid)
         new_statement_uids.append(statement_uids)
@@ -465,54 +461,48 @@ def set_statements_as_new_premisegroup(statements: List[Statement], db_user: Use
     return db_premisegroup
 
 
-def __create_argument_by_raw_input(db_user: User, premises_text: [str], db_conclusion, is_supportive, db_issue: Issue) \
+def __create_argument_by_raw_input(db_user: User, premisegroup: [str], db_conclusion: Statement, is_supportive,
+                                   db_issue: Issue) \
         -> Tuple[Union[Argument, None], List[int]]:
     """
     Consumes the input to create a new argument
 
     :param db_user: User
-    :param premises_text: String
+    :param premisegroup: String
     :param db_conclusion: Statement
     :param is_supportive: Boolean
     :param db_issue: Issue
     :return:
     """
     logger('StatementsHelper', '__create_argument_by_raw_input',
-           'main with premises_text {} as premisegroup, conclusion {} in issue {}'.format(premises_text, db_conclusion.uid, db_issue.uid))
-    # current conclusion
-    try:
-        new_statements = []
-        for text in premises_text:
-            statement = insert_as_statement(text, db_user, db_issue)
-            new_statements.append(statement)
+           'main with premisegroup {} as premisegroup, conclusion {} in issue {}'.format(premisegroup,
+                                                                                         db_conclusion.uid,
+                                                                                         db_issue.uid))
 
-        # second, set the new statements as premisegroup
-        new_premisegroup = set_statements_as_new_premisegroup(new_statements, db_user, db_issue)
-        logger('StatementsHelper', '__create_argument_by_raw_input', 'new pgroup ' + str(new_premisegroup.uid))
+    new_statements = []
 
-        # sanity check whether any premise and the conclusion are the same
-        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=new_premisegroup.uid).all()
-        for premise in db_premises:
-            if premise.statement_uid is db_conclusion.uid:
-                logger('StatementsHelper', '__create_argument_by_uids', 'One premise and conclusion are the same', error=True)
-                return None, [-1]
+    for text in premisegroup:
+        statement = insert_as_statement(text, db_user, db_issue)
+        new_statements.append(statement)
 
-        # third, insert the argument
-        new_argument = __create_argument_by_uids(db_user, new_premisegroup.uid, db_conclusion.uid, None, is_supportive,
-                                                 db_issue)
-        transaction.commit()
+    # second, set the new statements as premisegroup
+    new_premisegroup = set_statements_as_new_premisegroup(new_statements, db_user, db_issue)
+    logger('StatementsHelper', '__create_argument_by_raw_input', 'new pgroup ' + str(new_premisegroup.uid))
 
-        if new_argument:
-            _tn = Translator(db_issue.lang)
-            _um = UrlManager(db_issue.slug)
-            append_action_to_issue_rss(db_issue=db_issue, db_author=db_user, title=_tn.get(_.argumentAdded),
-                                       description='...' + get_text_for_argument_uid(new_argument.uid,
-                                                                                     anonymous_style=True) + '...',
-                                       url=_um.get_url_for_justifying_statement(new_argument.uid, 'd'))
+    # third, insert the argument
+    new_argument = __create_argument_by_uids(db_user, new_premisegroup.uid, db_conclusion.uid, None, is_supportive,
+                                             db_issue)
+    transaction.commit()
 
-        return new_argument, [s.uid for s in new_statements]
-    except StatementToShort:
-        raise
+    if new_argument:
+        _tn = Translator(db_issue.lang)
+        _um = UrlManager(db_issue.slug)
+        append_action_to_issue_rss(db_issue=db_issue, db_author=db_user, title=_tn.get(_.argumentAdded),
+                                   description='...' + get_text_for_argument_uid(new_argument.uid,
+                                                                                 anonymous_style=True) + '...',
+                                   url=_um.get_url_for_justifying_statement(new_argument.uid, 'd'))
+
+    return new_argument, [s.uid for s in new_statements]
 
 
 def __create_argument_by_uids(db_user: User, premisegroup_uid, conclusion_uid, argument_uid, is_supportive,
