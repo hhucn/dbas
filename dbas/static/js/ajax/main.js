@@ -226,7 +226,6 @@ function AjaxMainHandler(){
 				email: email,
 				password: password,
 				passwordconfirm: passwordconfirm,
-				'g-recaptcha-response': recaptcha,
                 lang: getLanguage()
             }),
 			dataType: 'json',

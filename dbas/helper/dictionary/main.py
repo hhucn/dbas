@@ -11,12 +11,12 @@ import random
 import arrow
 from pyramid.registry import Registry
 
-from dbas.auth.recaptcha import client_key as google_recaptcha_client_key
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Language, Group, Settings, Issue, Argument
 from dbas.handler import user
 from dbas.handler.issue import rep_limit_to_open_issues
 from dbas.handler.notification import count_of_new_notifications, get_box_for
+from dbas.helper.url import UrlManager
 from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, is_development_mode, \
     nick_of_anonymous_user
 from dbas.logger import logger
@@ -137,7 +137,6 @@ class DictionaryHelper(object):
         return_dict['is_development'] = registry.settings.get('mode', '') == 'development'
         return_dict['is_production'] = registry.settings.get('mode', '') == 'production'
         return_dict['review_count'] = get_complete_review_count(db_user)
-        return_dict['g_recaptcha_key'] = google_recaptcha_client_key
 
         # add german and english discussion links
         db_issues = DBDiscussionSession.query(Issue).filter_by(is_disabled=False)
