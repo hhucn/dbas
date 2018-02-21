@@ -45,7 +45,7 @@ class ItemDictHelper(object):
         self.application_url = application_url
         self.LIMIT_SUPPORT_STEP = 0.30
         self.issue_read_only = db_issue.is_read_only
-        self.path = history + path.replace('/', 'XXX', 1).find('/') - 1
+        self.path = history + path[path.replace('/', 'XXX', 1).find('/') - 1:]
 
     @staticmethod
     def get_empty_dict() -> dict:

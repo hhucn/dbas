@@ -209,7 +209,6 @@ def support(request_dict) -> Union[dict, None]:
     containing the first elements needed for the discussion.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param api_data: dict if requests came via the API
     :rtype: dict
     :return: prepared collection matchdictfor the discussion
     """
@@ -316,30 +315,23 @@ def choose(request_dict) -> Union[dict, None]:
     return prepared_discussion
 
 
-def jump(request_dict, api_data=None) -> Union[dict, None]:
+def jump(request_dict) -> Union[dict, None]:
     """
     Initialize the jump step for an argument in a discussion. Creates helper and returns a dictionary containing
     several feedback options regarding this argument.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param api_data: dict if requests came via the API
     :rtype: dict
     :return: prepared collection matchdict for the discussion
     """
     logger('Core', 'discussion.jump', 'main')
 
-    tmp_dict = request_dict
-    if api_data:
-        arg_uid = api_data.get('arg_uid')
-        tmp_dict = api_data
-    else:
-        arg_uid = request_dict['matchdict'].get('arg_id')
-
-    nickname = tmp_dict.get('nickname')
-    db_issue = tmp_dict.get('issue')
-    ui_locales = tmp_dict.get('ui_locales', 'en')
-    history = tmp_dict.get('history')
-    application_url = tmp_dict.get('app_url')
+    arg_uid = request_dict.get('arg_uid', request_dict['matchdict'].get('arg_id'))
+    nickname = request_dict.get('nickname')
+    db_issue = request_dict.get('issue')
+    ui_locales = request_dict.get('ui_locales', 'en')
+    history = request_dict.get('history')
+    application_url = request_dict.get('app_url')
     slug = db_issue.slug
 
     if not check_belonging_of_argument(db_issue.uid, arg_uid):

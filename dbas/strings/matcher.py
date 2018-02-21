@@ -31,7 +31,6 @@ def get_prediction(_tn, db_user, db_issue, application_url, value, mode, stateme
     Get dictionary with matching words, based on the given mode
 
     :param _tn: Translator
-    :param api_data: data from the api
     :param db_user: User
     :param db_issue: Issue
     :param application_url: application_url

@@ -537,7 +537,7 @@ def jump_to_argument_fn(request):
 
     """
     api_data = jump_preparation(request)
-    return dbas.discussion.jump(request, api_data=api_data)
+    return dbas.discussion.jump(request)
 
 
 # =============================================================================

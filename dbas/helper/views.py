@@ -19,29 +19,16 @@ from dbas.strings.translator import Translator
 from websocket.lib import send_request_for_info_popup_to_socketio
 
 
-def get_nickname(request_authenticated_userid, api_data=None):
-    """
-    Given data from api, return nickname and session_id.
-
-    :param request_authenticated_userid:
-    :param api_data:
-    :return:
-    """
-    return api_data.get("nickname") if api_data else request_authenticated_userid
-
-
-def preparation_for_view(api_data, request):
+def preparation_for_view(request):
     """
     Does some elementary things like: getting nickname, session id and history.
     Additionally boolean, if the session is expired
 
-    :param api_data: Array with api data
     :param request: Current request
     :return: nickname, session_id, session_expired, history
     """
-    nickname = get_nickname(request.authenticated_userid, api_data)
-    session_expired = user.update_last_action(nickname)
-    return nickname, session_expired
+    session_expired = user.update_last_action(request.authenticated_userid)
+    return request.authenticated_userid, session_expired
 
 
 def handle_justification_step(request_dict):

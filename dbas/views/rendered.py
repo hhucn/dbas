@@ -44,9 +44,28 @@ from dbas.validators.user import valid_user, invalid_user
 from websocket.lib import get_port
 
 name = 'D-BAS'
-version = '2.0.0'
+version = '1.6.0'
 full_version = version
 project_name = name + ' ' + full_version
+
+
+def __modifiy_discussion_url(prep_dict: dict) -> dict:
+    """
+    Adds the /discuss prefix for every url entry
+
+    :param prep_dict:
+    :return:
+    """
+    # modify urls for the radio buttons
+    for i, el in enumerate(prep_dict['items']['elements']):
+        if '/' in el.get('url', ''):
+            prep_dict['items']['elements'][i]['url'] = '/discuss/' + prep_dict['items']['elements'][i]['url']
+
+    # modify urls for topic switch
+    for i, el in enumerate(prep_dict['issues']['all']):
+        prep_dict['issues']['all'][i]['url'] = '/discuss/' + prep_dict['issues']['all'][i]['url']
+
+    return prep_dict
 
 
 def base_layout():
@@ -58,7 +77,6 @@ def prepare_request_dict(request, nickname):
 
     :param request:
     :param nickname:
-    :param for_api:
     :return:
     """
 
@@ -79,12 +97,7 @@ def prepare_request_dict(request, nickname):
 
     ui_locales = get_language_from_cookie(request)
     if not issue:
-        if for_api:
-            logger('Views', 'prepare_request_dict', 'Slug error ({}) for api'.format(slug), error=True)
-            _tn = Translator(ui_locales)
-            return {'error': _tn.get(_.issueNotFound)}
-        else:
-            raise HTTPNotFound()
+        raise HTTPNotFound()
 
     db_issue = DBDiscussionSession.query(Issue).get(issue)
     if not slug:
@@ -109,18 +122,16 @@ def prepare_request_dict(request, nickname):
     }
 
 
-def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any], for_api=False, api_data=None):
+def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any]):
     """
-    Checks for an expired session, the authentication and calls f with for_api, api_data and the users nickname.
+    Checks for an expired session, the authentication and calls f the users nickname.
     On error an HTTPNotFound-Error is raised, otherwise the discussion dict is returned.
 
     :param request: A pyramid request
     :param f: A function with three arguments
-    :param for_api: boolean if requests came via the API
-    :param api_data: dict if requests came via the API
     :return: prepared collection for the discussion
     """
-    nickname, session_expired = preparation_for_view(for_api, api_data, request)
+    nickname, session_expired = preparation_for_view(request)
     if session_expired:
         request.session.invalidate()
         headers = forget(request)
@@ -131,9 +142,10 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any], for_
         )
 
     request_dict = prepare_request_dict(request, nickname)
-    prepared_discussion = f(request_dict, for_api)
+    prepared_discussion = f(request_dict)
     if prepared_discussion:
         prepared_discussion['layout'] = base_layout()
+        __modifiy_discussion_url(prepared_discussion)
 
     return prepared_discussion
 
@@ -452,18 +464,16 @@ def notfound(request):
 @view_config(route_name='discussion_init', renderer='../templates/content.pt', permission='everybody')
 @view_config(route_name='discussion_init_with_slash', renderer='../templates/content.pt', permission='everybody')
 @view_config(route_name='discussion_init_with_slug', renderer='../templates/content.pt', permission='everybody')
-def discussion_init(request, for_api=False, api_data=None):
+def discussion_init(request):
     """
     View configuration for the initial discussion.
 
     :param request: request of the web server
-    :param for_api: Boolean
-    :param api_data: Dictionary, containing data of a user who logged in via API
     :return: dictionary
     """
     logger('Views', 'discussion_init', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion = __call_from_discussion_step(request, discussion.init, for_api, api_data)
+    prepared_discussion = __call_from_discussion_step(request, discussion.init)
     if not prepared_discussion:
         raise HTTPNotFound()
 
@@ -477,19 +487,17 @@ def discussion_init(request, for_api=False, api_data=None):
 
 # attitude page
 @view_config(route_name='discussion_attitude', renderer='../templates/content.pt', permission='everybody')
-def discussion_attitude(request, for_api=False, api_data=None):
+def discussion_attitude(request):
     """
     View configuration for discussion step, where we will ask the user for her attitude towards a statement.
 
     :param request: request of the web server
-    :param for_api: Boolean
-    :param api_data:
     :return: dictionary
     """
     # '/discuss/{slug}/attitude/{statement_id}'
     logger('Views', 'discussion_attitude', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion = __call_from_discussion_step(request, discussion.attitude, for_api, api_data)
+    prepared_discussion = __call_from_discussion_step(request, discussion.attitude)
     if not prepared_discussion:
         raise HTTPNotFound()
 
@@ -498,19 +506,17 @@ def discussion_attitude(request, for_api=False, api_data=None):
 
 # justify page
 @view_config(route_name='discussion_justify', renderer='../templates/content.pt', permission='everybody')
-def discussion_justify(request, for_api=False, api_data=None):
+def discussion_justify(request):
     """
     View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
 
     :param request: request of the web server
-    :param for_api: Boolean
-    :param api_data:
     :return: dictionary
     """
     # '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation'
     logger('views', 'discussion_justify', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion = __call_from_discussion_step(request, discussion.justify, for_api, api_data)
+    prepared_discussion = __call_from_discussion_step(request, discussion.justify)
     if not prepared_discussion:
         raise HTTPNotFound()
 
@@ -519,19 +525,17 @@ def discussion_justify(request, for_api=False, api_data=None):
 
 # reaction page
 @view_config(route_name='discussion_reaction', renderer='../templates/content.pt', permission='everybody')
-def discussion_reaction(request, for_api=False, api_data=None):
+def discussion_reaction(request):
     """
     View configuration for discussion step, where we will ask the user for her reaction (support, undercut, rebut)...
 
     :param request: request of the web server
-    :param for_api: Boolean
-    :param api_data:
     :return: dictionary
     """
     # '/discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys'
     logger('views', 'discussion_reaction', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion = __call_from_discussion_step(request, discussion.reaction, for_api, api_data)
+    prepared_discussion = __call_from_discussion_step(request, discussion.reaction)
     if not prepared_discussion:
         raise HTTPNotFound()
 
@@ -540,18 +544,16 @@ def discussion_reaction(request, for_api=False, api_data=None):
 
 # support page
 @view_config(route_name='discussion_support', renderer='../templates/content.pt', permission='everybody')
-def discussion_support(request, for_api=False, api_data=None):
+def discussion_support(request):
     """
     View configuration for discussion step, where we will present another supportive argument.
 
     :param request: request of the web server
-    :param for_api: Boolean
-    :param api_data:
     :return: dictionary
     """
     logger('views', 'discussion_support', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion = __call_from_discussion_step(request, discussion.support, for_api, api_data)
+    prepared_discussion = __call_from_discussion_step(request, discussion.support)
     if not prepared_discussion:
         raise HTTPNotFound()
 
@@ -561,7 +563,7 @@ def discussion_support(request, for_api=False, api_data=None):
 # finish page
 @view_config(route_name='discussion_finish', renderer='../templates/content.pt', permission='everybody')
 @validate(check_authentication)
-def discussion_finish(request, for_api=False, api_data=None):
+def discussion_finish(request):
     """
     View configuration for discussion step, where we present a small/daily summary on the end
 
@@ -570,7 +572,7 @@ def discussion_finish(request, for_api=False, api_data=None):
     """
     logger('views', 'discussion_finish', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion = __call_from_discussion_step(request, discussion.finish, for_api, api_data)
+    prepared_discussion = __call_from_discussion_step(request, discussion.finish)
     if not prepared_discussion:
         raise HTTPNotFound()
 
@@ -610,20 +612,18 @@ def discussion_exit(request):
 
 # choosing page
 @view_config(route_name='discussion_choose', renderer='../templates/content.pt', permission='everybody')
-def discussion_choose(request, for_api=False, api_data=None):
+def discussion_choose(request):
     """
     View configuration for discussion step, where the user has to choose between given statements.
 
     :param request: request of the web server
-    :param for_api: Boolean
-    :param api_data:
     :return: dictionary
     """
     # '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids'
     match_dict = request.matchdict
     logger('discussion_choose', 'def', 'request.matchdict: {}'.format(match_dict))
 
-    prepared_discussion = __call_from_discussion_step(request, discussion.choose, for_api, api_data)
+    prepared_discussion = __call_from_discussion_step(request, discussion.choose)
     if not prepared_discussion:
         raise HTTPNotFound()
 
@@ -632,19 +632,17 @@ def discussion_choose(request, for_api=False, api_data=None):
 
 # jump page
 @view_config(route_name='discussion_jump', renderer='../templates/content.pt', permission='everybody')
-def discussion_jump(request, for_api=False, api_data=None):
+def discussion_jump(request):
     """
     View configuration for the jump view.
 
     :param request: request of the web server
-    :param for_api: Boolean
-    :param api_data:
     :return: dictionary
     """
     # '/discuss/{slug}/jump/{arg_id}'
     logger('views', 'discussion_jump', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion = __call_from_discussion_step(request, discussion.jump, for_api, api_data)
+    prepared_discussion = __call_from_discussion_step(request, discussion.jump)
     if not prepared_discussion:
         raise HTTPNotFound()
 
@@ -673,7 +671,7 @@ def main_review(request):
     db_user = DBDiscussionSession.query(User).filter_by(
         nickname=nickname if nickname else nick_of_anonymous_user).first()
     db_issue = DBDiscussionSession.query(Issue).get(issue)
-    issue_dict = issue_handler.prepare_json_of_issue(db_issue, request.application_url, False, db_user)
+    issue_dict = issue_handler.prepare_json_of_issue(db_issue, request.application_url, db_user)
 
     _tn = Translator(issue_dict['lang'])
     review_dict = review_queue_helper.get_review_queues_as_lists(request.application_url, _tn, nickname)

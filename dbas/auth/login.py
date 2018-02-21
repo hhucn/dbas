@@ -278,24 +278,17 @@ def __check_in_local_known_user(db_user: User, password: str, _tn) -> dict:
     return {'user': db_user}
 
 
-def __return_success_login(request, for_api, db_user, keep_login, url) -> dict:
+def __return_success_login(request, db_user, keep_login, url) -> dict:
     """
 
     :param request: web servers request
-    :param for_api:
     :param db_user:
     :param keep_login:
     :param url:
     :return:
     """
-    if for_api:
-        logger('Auth.Login', 'login_user', 'return for api: success')
-        return {'status': 'success'}  # api
-    else:
-        headers, url = __refresh_headers_and_url(request, db_user, keep_login, url)
-        sleep(0.5)
-        logger('Auth.Login', 'login_user', 'return HTTPFound with url {}'.format(url))
-        return HTTPFound(location=url, headers=headers)  # success
+    logger('Auth.Login', 'login_user', 'return for api: success')
+    return {'status': 'success'}  # api
 
 
 def register_user_with_json_data(data, lang, mailer: Mailer):
