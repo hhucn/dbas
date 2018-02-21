@@ -175,8 +175,13 @@ def valid_premisegroups(request):
     min_length = request.registry.settings.get('settings:discussion:statement_min_length', 10)
     for premisegroup in premisegroups:
         for premise in premisegroup:
-            if len(premise) < min_length:
-                __set_min_length_error(request, min_length)
+            if isinstance(premise, str):
+                if len(premise) < min_length:
+                    __set_min_length_error(request, min_length)
+            else:
+                add_error(request, 'valid_premisegroups', 'At least one premise isn\'t a string!')
+                return False
+
     request.validated['premisegroups'] = premisegroups
 
 
