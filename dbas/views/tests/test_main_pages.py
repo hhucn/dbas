@@ -7,7 +7,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Settings
 from dbas.handler.password import get_hashed_password
-from dbas.helper.tests import verify_dictionary_of_view
+from dbas.helper.test import verify_dictionary_of_view
 
 
 class MainImprintViewTests(unittest.TestCase):

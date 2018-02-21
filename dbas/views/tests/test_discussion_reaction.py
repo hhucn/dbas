@@ -7,7 +7,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, User, \
     ReputationHistory
-from dbas.helper.tests import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of
+from dbas.helper.test import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of
 
 
 class DiscussionReactionViewTests(unittest.TestCase):

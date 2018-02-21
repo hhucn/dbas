@@ -5,7 +5,7 @@ from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import SeenStatement, User
-from dbas.helper.tests import verify_dictionary_of_view
+from dbas.helper.test import verify_dictionary_of_view
 
 
 class DiscussionInitViewTests(unittest.TestCase):

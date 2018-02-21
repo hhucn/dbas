@@ -79,6 +79,7 @@ def prepare_request_dict(request, nickname):
     :param nickname:
     :return:
     """
+    logger('Renderer', 'prepare_request_dict', 'def')
 
     last_topic = history_handler.get_saved_issue(nickname)
 

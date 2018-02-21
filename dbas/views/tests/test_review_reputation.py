@@ -2,7 +2,7 @@ import unittest
 
 from pyramid import testing
 
-from dbas.helper.tests import verify_dictionary_of_view
+from dbas.helper.test import verify_dictionary_of_view
 
 
 class ReviewReputationViewTests(unittest.TestCase):
