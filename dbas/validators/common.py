@@ -9,6 +9,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Language
 from dbas.handler.language import get_language_from_cookie
 from dbas.handler.user import update_last_action
+from dbas.lib import escape_string
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.lib import add_error
@@ -21,7 +22,7 @@ def valid_language(request):
     :param request:
     :return:
     """
-    lang = request.json_body.get('lang')
+    lang = escape_string(request.json_body.get('lang'))
     _tn = Translator(get_language_from_cookie(request))
     if not lang:
         add_error(request, 'valid_language', 'Invalid language', _tn.get(_.checkLanguage))
@@ -43,7 +44,7 @@ def valid_lang_cookie_fallback(request):
     :param request:
     :return:
     """
-    lang = request.json_body.get('lang')
+    lang = escape_string(request.json_body.get('lang'))
     if not lang:
         lang = get_language_from_cookie(request)
     request.validated['lang'] = lang

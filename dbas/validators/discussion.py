@@ -7,6 +7,7 @@ from dbas.database.discussion_model import Issue, Statement, Argument, PremiseGr
 from dbas.handler import issue as issue_handler
 from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer
+from dbas.lib import escape_string
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.core import has_keywords
@@ -37,14 +38,15 @@ def valid_new_issue(request):
     :param request:
     :return:
     """
-
     fn_validator = has_keywords(('title', str), ('info', str), ('long_info', str))
     if not fn_validator(request):
         return False
-
-    db_dup1 = DBDiscussionSession.query(Issue).filter_by(title=request.validated['title']).all()
-    db_dup2 = DBDiscussionSession.query(Issue).filter_by(info=request.validated['info']).all()
-    db_dup3 = DBDiscussionSession.query(Issue).filter_by(long_info=request.validated['long_info']).all()
+    title = escape_string(request.validated['title'])
+    info = escape_string(request.validated['info'])
+    long_info = escape_string(request.validated['long_info'])
+    db_dup1 = DBDiscussionSession.query(Issue).filter_by(title=title).all()
+    db_dup2 = DBDiscussionSession.query(Issue).filter_by(info=info).all()
+    db_dup3 = DBDiscussionSession.query(Issue).filter_by(long_info=long_info).all()
     if db_dup1 or db_dup2 or db_dup3:
         _tn = Translator(get_language_from_cookie(request))
         add_error(request, 'valid_new_issue', 'Issue data is a duplicate', _tn.get(_.duplicate))
@@ -76,7 +78,7 @@ def valid_conclusion(request):
     conclusion_id = request.json_body.get('conclusion_id')
     issue_id = request.validated['issue'].uid if 'issue' in request.validated else issue_handler.get_issue_id(request)
 
-    if conclusion_id:
+    if conclusion_id and isinstance(conclusion_id, int) and isinstance(issue_id, int):
         db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id,
                                                                        issue_uid=issue_id,
                                                                        is_disabled=False).first()
@@ -132,7 +134,7 @@ def valid_statement_text(request):
     :return:
     """
     min_length = request.registry.settings.get('settings:discussion:statement_min_length', 10)
-    text = request.json_body.get('statement', '')
+    text = escape_string(request.json_body.get('statement', ''))
 
     if len(text) < min_length:
         __set_min_length_error(request, min_length)
@@ -197,7 +199,7 @@ def valid_statement_or_argument(request):
 
 def valid_text_values(request):
     min_length = request.registry.settings.get('settings:discussion:statement_min_length', 10)
-    tvalues = request.json_body.get('text_values')
+    tvalues = escape_string(request.json_body.get('text_values'))
     if not tvalues:
         __set_min_length_error(request, min_length)
 
