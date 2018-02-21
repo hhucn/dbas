@@ -228,10 +228,9 @@ def support(request_dict, for_api=False, api_data=None) -> Union[dict, None]:
     history = request_dict['history']
     slug = db_issue.slug
 
-    if for_api and api_data:
-        slug = api_data['slug']
-        arg_user_uid = api_data['arg_user_uid']
-        arg_system_uid = api_data['arg_system_uid']
+    if api_data:
+        arg_user_uid = api_data.get('arg_user_uid', '')
+        arg_system_uid = api_data.get('arg_system_uid', '')
     else:
         arg_user_uid = request_dict['matchdict'].get('arg_id_user', '')
         arg_system_uid = request_dict['matchdict'].get('arg_id_sys', '')
@@ -344,7 +343,7 @@ def jump(request_dict, for_api=False, api_data=None) -> Union[dict, None]:
     logger('Core', 'discussion.jump', 'main')
 
     tmp_dict = request_dict
-    if for_api and api_data:
+    if api_data:
         arg_uid = api_data.get('arg_uid')
         tmp_dict = api_data
     else:

@@ -137,7 +137,7 @@ class DiscussionDictHelper(object):
         nickname = db_user.nickname if db_user and db_user.nickname != nick_of_anonymous_user else None
         user_text, add_premise_text = get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn)
 
-        url = UrlManager(application_url, slug).get_slug_url(False)
+        url = UrlManager(application_url, slug).get_slug_url()
         question_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, message=system_question, omit_url=True,
                                                    lang=self.lang)
         select_bubble = create_speechbubble_dict(BubbleTypes.USER, url=url, message=user_text, omit_url=False,

@@ -205,7 +205,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
                                      statement_min_length)
 
     elif len(new_argument_uids) == 1:
-        url = _um.get_url_for_new_argument(new_argument_uids, False)
+        url = _um.get_url_for_new_argument(new_argument_uids)
 
     else:
         url = __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_argument_uids, attack_type,
@@ -221,7 +221,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
         new_uid = random.choice(new_argument_uids)  # TODO eliminate random
         attack = get_relation_between_arguments(arg_id, new_uid)
 
-        tmp_url = _um.get_url_for_reaction_on_argument(False, arg_id, attack, new_uid)
+        tmp_url = _um.get_url_for_reaction_on_argument(arg_id, attack, new_uid)
 
         NotificationHelper.send_add_argument_notification(tmp_url, arg_id, db_user.nickname, m['port'], m['mailer'])
 
@@ -251,11 +251,11 @@ def __receive_url_for_processing_input_of_multiple_premises_for_arguments(new_ar
         db_premise = DBDiscussionSession.query(Premise).filter_by(
             premisesgroup_uid=current_argument.premisesgroup_uid).first()
         db_statement = DBDiscussionSession.query(Statement).get(db_premise.statement_uid)
-        url = _um.get_url_for_choosing_premisegroup(False, False, supportive, db_statement.uid, pgroups)
+        url = _um.get_url_for_choosing_premisegroup(False, supportive, db_statement.uid, pgroups)
 
     # relation to the arguments relation
     elif attack_type == 'undercut' or attack_type == 'overbid':
-        url = _um.get_url_for_choosing_premisegroup(False, True, supportive, arg_id, pgroups)
+        url = _um.get_url_for_choosing_premisegroup(True, supportive, arg_id, pgroups)
 
     # relation to the arguments conclusion
     elif attack_type == 'rebut':

@@ -146,23 +146,36 @@ def get_issue_dict_for(issue, application_url, for_api, uid, lang):
     :return: dict()
     """
     if str(type(issue)) != str(Issue):
-        return {'uid': '', 'slug': '', 'title': '', 'url': '', 'review_url': '', 'info': '', 'stat_count': '',
-                'date': '', 'author': '', 'author_url': '', 'enabled': '', 'error': 'true'}
+        return {
+            'uid': '',
+            'slug': '',
+            'title': '',
+            'url': '',
+            'review_url': '',
+            'info': '',
+            'stat_count': '',
+            'date': '',
+            'author': '',
+            'author_url': '',
+            'enabled': '',
+            'error': 'true'
+        }
 
     _um = UrlManager(application_url, issue.slug, for_api)
-    issue_dict = dict()
-    issue_dict['uid'] = str(issue.uid)
-    issue_dict['slug'] = issue.slug
-    issue_dict['title'] = issue.title
-    issue_dict['url'] = _um.get_slug_url(False) if str(uid) != str(issue.uid) else ''
-    issue_dict['review_url'] = _um.get_review_url(False) if str(uid) != str(issue.uid) else ''
-    issue_dict['info'] = issue.info
-    issue_dict['stat_count'] = get_number_of_statements(issue.uid)
-    issue_dict['date'] = sql_timestamp_pretty_print(issue.date, lang)
-    issue_dict['author'] = issue.users.public_nickname
-    issue_dict['error'] = ''
-    issue_dict['author_url'] = '{}/user/{}'.format(application_url, issue.users.public_nickname)
-    issue_dict['enabled'] = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
+    issue_dict = {
+        'uid': str(issue.uid),
+        'slug': issue.slug,
+        'title': issue.title,
+        'url': _um.get_slug_url() if str(uid) != str(issue.uid) else '',
+        'review_url': _um.get_review_url() if str(uid) != str(issue.uid) else '',
+        'info': issue.info,
+        'stat_count': get_number_of_statements(issue.uid),
+        'date': sql_timestamp_pretty_print(issue.date, lang),
+        'author': issue.users.public_nickname,
+        'error': '',
+        'author_url': '{}/user/{}'.format(application_url, issue.users.public_nickname),
+        'enabled': 'disabled' if str(uid) == str(issue.uid) else 'enabled'
+    }
     return issue_dict
 
 

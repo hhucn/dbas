@@ -283,7 +283,7 @@ def get_all_arguments_with_text_and_url_by_statement_id(db_statement, urlmanager
         results.append({
             'uid': uid,
             'text': argument_text,
-            'url': urlmanager.get_url_for_jump(False, uid)
+            'url': urlmanager.get_url_for_jump(uid)
         })
     return results
 

@@ -105,12 +105,12 @@ class UrlManagerTests(unittest.TestCase):
         url = self.__make_one(application_url='application_url',
                               slug='cat-or-dog')
 
-        response_as_location_href_true = url.get_slug_url(as_location_href=True)
+        response_as_location_href_true = url.get_slug_url()
         # Verify that, if 'as_location_href' is 'True', 'discussion_url/slug' with 'location.href=' as prefix is
         # returned.
-        self.assertEqual(response_as_location_href_true, 'location.href="application_url/discuss/cat-or-dog"')
+        self.assertEqual(response_as_location_href_true, 'application_url/discuss/cat-or-dog')
 
-        response_as_location_href_false = url.get_slug_url(as_location_href=False)
+        response_as_location_href_false = url.get_slug_url()
         # Verify that, if 'as_location_href' is 'False', 'discussion_url/slug' is returned.
         self.assertEqual(response_as_location_href_false, 'application_url/discuss/cat-or-dog')
 
@@ -118,35 +118,30 @@ class UrlManagerTests(unittest.TestCase):
         url = self.__make_one(application_url='application_url',
                               slug='cat-or-dog')
 
-        response_string_true = url.get_url_for_statement_attitude(as_location_href=True,
-                                                                  statement_uid=123)
+        response_string_true = url.get_url_for_statement_attitude(statement_uid=123)
         # Verify that, if 'as_location_href' is 'True' and 'statement_uid' is not empty,
         # '{discussion_url}/{slug}/attitude/{statement_uid}' with 'location.href=' as prefix is returned.
-        self.assertEqual(response_string_true, 'location.href="application_url/discuss/cat-or-dog/attitude/123"')
+        self.assertEqual(response_string_true, 'application_url/discuss/cat-or-dog/attitude/123')
 
-        response_empty_string_false = url.get_url_for_statement_attitude(as_location_href=False,
-                                                                         statement_uid='')
+        response_empty_string_false = url.get_url_for_statement_attitude(statement_uid='')
         # Verify that, if 'as_location_href' is 'False' and 'statement_uid' is empty,
         # '{discussion_url}/{slug}/attitude/' is returned.
         self.assertEqual(response_empty_string_false, 'application_url/discuss/cat-or-dog/attitude/')
 
-        response_negative_uid_true = url.get_url_for_statement_attitude(as_location_href=True,
-                                                                        statement_uid=-123)
-        self.assertEqual(response_negative_uid_true, 'location.href="application_url/discuss/cat-or-dog/attitude/-123"')
+        response_negative_uid_true = url.get_url_for_statement_attitude(statement_uid=-123)
+        self.assertEqual(response_negative_uid_true, 'application_url/discuss/cat-or-dog/attitude/-123')
 
     def test_get_url_for_justifying_statement(self):
         url = self.__make_one(application_url='application_url',
                               slug='cat-or-dog')
 
-        response_string_true = url.get_url_for_justifying_statement(as_location_href=True,
-                                                                    statement_uid=123,
+        response_string_true = url.get_url_for_justifying_statement(statement_uid=123,
                                                                     mode='t')
         # Verify that, if 'as_location_href' is 'True', 'statement_uid' and 'mode' are not empty,
-        # 'location.href="{discussion_url}/{slug}/justify/{statement_or_arg_id}/{mode}"' is returned.
-        self.assertEqual(response_string_true, 'location.href="application_url/discuss/cat-or-dog/justify/123/t"')
+        # '{discussion_url}/{slug}/justify/{statement_or_arg_id}/{mode}' is returned.
+        self.assertEqual(response_string_true, 'application_url/discuss/cat-or-dog/justify/123/t')
 
-        response_empty_string_false = url.get_url_for_justifying_statement(as_location_href=False,
-                                                                           statement_uid='',
+        response_empty_string_false = url.get_url_for_justifying_statement(statement_uid='',
                                                                            mode='')
         # Verify that, if 'as_location_href' is 'False', 'statement_uid' and 'mode' are empty,
         # '{discussion_url}/{slug}/justify//' is returned.
@@ -156,40 +151,36 @@ class UrlManagerTests(unittest.TestCase):
         url = self.__make_one(application_url='application_url',
                               slug='cat-or-dog')
 
-        response_no_additional_id_true = url.get_url_for_justifying_argument(as_location_href=True,
-                                                                             argument_uid=123,
+        response_no_additional_id_true = url.get_url_for_justifying_argument(argument_uid=123,
                                                                              mode='t',
                                                                              attitude='attitude',
                                                                              additional_id=-1)
         # Verify that, if 'additional_id' is '-1' and 'as_location_href' is 'True',
-        # 'location.href="{discussion_url}/{slug}/justify/{argument_uid}/{mode}/{attitude}"' is returned.
+        # '{discussion_url}/{slug}/justify/{argument_uid}/{mode}/{attitude}' is returned.
         self.assertEqual(response_no_additional_id_true,
-                         'location.href="application_url/discuss/cat-or-dog/justify/123/t/attitude"')
+                         'application_url/discuss/cat-or-dog/justify/123/t/attitude')
 
-        response_additional_id_false = url.get_url_for_justifying_argument(as_location_href=False,
-                                                                           argument_uid=123,
+        response_additional_id_false = url.get_url_for_justifying_argument(argument_uid=123,
                                                                            mode='t',
                                                                            attitude='attitude',
                                                                            additional_id=30)
         # Verify that, if 'additional_id' is not equal '-1' and 'as_location_href' is 'False',
-        # '{discussion_url}/{slug}/justify/{argument_uid}/{mode}/{attitude}/{attitude_uid}"' is returned.
+        # '{discussion_url}/{slug}/justify/{argument_uid}/{mode}/{attitude}/{attitude_uid}' is returned.
         self.assertEqual(response_additional_id_false, 'application_url/discuss/cat-or-dog/justify/123/t/attitude/30')
 
     def test_get_url_for_reaction_on_argument(self):
         url = self.__make_one(application_url='application_url',
                               slug='cat-or-dog')
 
-        response_as_location_href_true = url.get_url_for_reaction_on_argument(as_location_href=True,
-                                                                              argument_uid=123,
+        response_as_location_href_true = url.get_url_for_reaction_on_argument(argument_uid=123,
                                                                               mode='rebut',
                                                                               confrontation_argument=35)
         # Verify that, if 'as_location_href' is 'True',
-        # 'location.href="{discussion_url}/{slug}/reaction/{argument_uid}/{mode}/{confrontation_argument}"' is returned.
+        # '{discussion_url}/{slug}/reaction/{argument_uid}/{mode}/{confrontation_argument}' is returned.
         self.assertEqual(response_as_location_href_true,
-                         'location.href="application_url/discuss/cat-or-dog/reaction/123/rebut/35"')
+                         'application_url/discuss/cat-or-dog/reaction/123/rebut/35')
 
-        response_as_location_href_false = url.get_url_for_reaction_on_argument(as_location_href=False,
-                                                                               argument_uid=0,
+        response_as_location_href_false = url.get_url_for_reaction_on_argument(argument_uid=0,
                                                                                mode='undercut',
                                                                                confrontation_argument=0)
         # Verify that, if 'as_location_href' is 'False',
@@ -200,19 +191,17 @@ class UrlManagerTests(unittest.TestCase):
         url = self.__make_one(application_url='application_url',
                               slug='cat-or-dog')
 
-        response_true = url.get_url_for_choosing_premisegroup(as_location_href=True,
-                                                              is_argument=True,
+        response_true = url.get_url_for_choosing_premisegroup(is_argument=True,
                                                               is_supportive=True,
                                                               statement_or_argument_id=20,
                                                               pgroup_id_list=[1, 2, 3])
         # Verify that, if 'as_location_href', 'is_argument', 'is_supportive' are 'True' and length of array
-        # 'pgroup_id_list' is greater than 0, the url 'location.href="{discussion-url}/{slug}/choose/{is_argument}/{
-        # is_supportive}/{statement_or_argument_id}"' and the elements of array 'pgroup_id_list' are put together,
+        # 'pgroup_id_list' is greater than 0, the url '{discussion-url}/{slug}/choose/{is_argument}/{
+        # is_supportive}/{statement_or_argument_id}' and the elements of array 'pgroup_id_list' are put together,
         # separated with backslash, and are attached in url.
-        self.assertEqual(response_true, 'location.href="application_url/discuss/cat-or-dog/choose/t/t/20/1/2/3"')
+        self.assertEqual(response_true, 'application_url/discuss/cat-or-dog/choose/t/t/20/1/2/3')
 
-        response_false = url.get_url_for_choosing_premisegroup(as_location_href=False,
-                                                               is_argument=False,
+        response_false = url.get_url_for_choosing_premisegroup(is_argument=False,
                                                                is_supportive=False,
                                                                statement_or_argument_id=20,
                                                                pgroup_id_list='')
@@ -232,7 +221,7 @@ class UrlManagerTests(unittest.TestCase):
                                history='attitude/4')
 
         api = 'api/cat-or-dog/finish/10?history=attitude/4'
-        dbas = 'location.href="application_url/discuss/cat-or-dog/finish/10?history=attitude/4"'
+        dbas = 'application_url/discuss/cat-or-dog/finish/10?history=attitude/4'
 
-        self.assertEqual(api, url1.get_url_for_new_argument([10], True))
-        self.assertEqual(dbas, url2.get_url_for_new_argument([10], True))
+        self.assertEqual(api, url1.get_url_for_new_argument([10]))
+        self.assertEqual(dbas, url2.get_url_for_new_argument([10]))

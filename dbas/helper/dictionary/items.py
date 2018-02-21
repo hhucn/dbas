@@ -87,7 +87,7 @@ class ItemDictHelper(object):
                                                               [{'title': get_text_for_statement_uid(statement.uid),
                                                                 'id': statement.uid}],
                                                               'start',
-                                                              _um.get_url_for_statement_attitude(True, statement.uid),
+                                                              _um.get_url_for_statement_attitude(statement.uid),
                                                               is_editable=not is_statement_in_edit_queue(statement.uid),
                                                               is_markable=True,
                                                               is_author=is_author_of_statement(db_user, statement.uid),
@@ -138,9 +138,9 @@ class ItemDictHelper(object):
         title_t = _tn.get(_.iAgreeWithInColor) + '.'
         title_f = _tn.get(_.iDisagreeWithInColor) + '.'
         title_d = _tn.get(_.iHaveNoOpinionYetInColor) + '.'
-        url_t = _um.get_url_for_justifying_statement(True, statement_uid, 't')
-        url_f = _um.get_url_for_justifying_statement(True, statement_uid, 'f')
-        url_d = _um.get_url_for_justifying_statement(True, uid, 'd')
+        url_t = _um.get_url_for_justifying_statement(statement_uid, 't')
+        url_f = _um.get_url_for_justifying_statement(statement_uid, 'f')
+        url_d = _um.get_url_for_justifying_statement(uid, 'd')
         d_t = self.__create_answer_dict('agree', [{'title': title_t, 'id': 'agree'}], 'agree', url_t)
         d_f = self.__create_answer_dict('disagree', [{'title': title_f, 'id': 'disagree'}], 'disagree', url_f)
         d_d = self.__create_answer_dict('dontknow', [{'title': title_d, 'id': 'dontknow'}], 'dontknow', url_d)
@@ -195,10 +195,10 @@ class ItemDictHelper(object):
             if 'end' in attack:  # TODO 343
                 new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
                 if new_arg:
-                    url = _um.get_url_for_support_each_other(True, argument.uid, new_arg.uid)
+                    url = _um.get_url_for_support_each_other(argument.uid, new_arg.uid)
 
             if 'end' not in attack or new_arg is None or url is None:
-                url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
+                url = _um.get_url_for_reaction_on_argument(argument.uid, attack, arg_id_sys)
 
             statements_array.append(self.__create_answer_dict(str(argument.uid), premise_array, 'justify', url,
                                                               already_used=already_used,
@@ -208,7 +208,7 @@ class ItemDictHelper(object):
                                                               is_markable=True,
                                                               is_author=is_author_of_argument(db_user, argument.uid),
                                                               is_visible=argument.uid in uids,
-                                                              attack_url=_um.get_url_for_jump(False, argument.uid)))
+                                                              attack_url=_um.get_url_for_jump(argument.uid)))
 
         if type(db_arguments) is list and len(db_arguments) > 0:
             random.seed(int(hashlib.md5(str.encode(str(db_user.nickname))).hexdigest(), 16))
@@ -229,13 +229,12 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_arguments)}}
 
-    def get_array_for_justify_argument(self, argument_uid, attack_type, logged_in, db_user, history):
+    def get_array_for_justify_argument(self, argument_uid, attack_type, db_user, history):
         """
         Prepares the dict with all items for a step in discussion, where the user justifies his attack she has done.
 
         :param argument_uid: Argument.uid
         :param attack_type: String
-        :param logged_in: String
         :param db_user:
         :param history:
         :return:
@@ -282,10 +281,10 @@ class ItemDictHelper(object):
                 the_other_one = new_arg is None
                 if new_arg:
                     the_other_one = False
-                    url = _um.get_url_for_support_each_other(True, argument.uid, new_arg.uid)
+                    url = _um.get_url_for_support_each_other(argument.uid, new_arg.uid)
 
             if the_other_one:
-                url = _um.get_url_for_reaction_on_argument(True, argument.uid, attack, arg_id_sys)
+                url = _um.get_url_for_reaction_on_argument(argument.uid, attack, arg_id_sys)
 
             statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
                                                               is_markable=True,
@@ -293,7 +292,7 @@ class ItemDictHelper(object):
                                                                   argument.uid),
                                                               is_author=is_author_of_argument(db_user, argument.uid),
                                                               is_visible=argument.uid in uids,
-                                                              attack_url=_um.get_url_for_jump(False, argument.uid)))
+                                                              attack_url=_um.get_url_for_jump(argument.uid)))
 
         if type(db_arguments) is list and len(db_arguments) > 0:
             random.seed(int(hashlib.md5(str.encode(str(db_user.nickname))).hexdigest(), 16))
@@ -424,9 +423,9 @@ class ItemDictHelper(object):
         :return: String
         """
         if db_argument.conclusion_uid is not None:
-            url = _um.get_url_for_justifying_statement(True, db_argument.conclusion_uid, is_not_supportive)
+            url = _um.get_url_for_justifying_statement(db_argument.conclusion_uid, is_not_supportive)
         else:
-            url = _um.get_url_for_justifying_argument(True, db_argument.argument_uid, is_not_supportive, 'undermine')
+            url = _um.get_url_for_justifying_argument(db_argument.argument_uid, is_not_supportive, 'undermine')
         return url
 
     @staticmethod
@@ -440,7 +439,7 @@ class ItemDictHelper(object):
         :return: String
         """
         arg_id_sys, sys_attack = rs.get_attack_for_argument(argument_uid)
-        url = _um.get_url_for_reaction_on_argument(True, argument_uid, sys_attack, arg_id_sys)
+        url = _um.get_url_for_reaction_on_argument(argument_uid, sys_attack, arg_id_sys)
         return url
 
     @staticmethod
@@ -453,7 +452,7 @@ class ItemDictHelper(object):
         :param _um: UrlManager
         :return: String
         """
-        url = _um.get_url_for_justifying_argument(True, argument_uid, current_mode, 'undercut')
+        url = _um.get_url_for_justifying_argument(argument_uid, current_mode, 'undercut')
         return url
 
     @staticmethod
@@ -469,15 +468,13 @@ class ItemDictHelper(object):
         db_premises = DBDiscussionSession.query(Premise).filter_by(
             premisesgroup_uid=db_argument.premisesgroup_uid).all()
         if len(db_premises) == 1:
-            url = _um.get_url_for_justifying_statement(True, db_premises[0].statement_uid, is_not_supportive)
+            url = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, is_not_supportive)
         else:
             uids = [db_argument.premisesgroup_uid]
             if db_argument.conclusion_uid is not None:
-                url = _um.get_url_for_choosing_premisegroup(True, False, db_argument.is_supportive,
-                                                            db_argument.conclusion_uid, uids)
+                url = _um.get_url_for_choosing_premisegroup(db_argument.is_supportive, db_argument.conclusion_uid, uids)
             else:
-                url = _um.get_url_for_choosing_premisegroup(True, True, db_argument.is_supportive,
-                                                            db_argument.argument_uid, uids)
+                url = _um.get_url_for_choosing_premisegroup(db_argument.is_supportive, db_argument.argument_uid, uids)
         return url
 
     def get_array_for_reaction(self, argument_uid_sys, argument_uid_user, is_supportive, attack, gender):
@@ -519,11 +516,11 @@ class ItemDictHelper(object):
                                                             history=self.path)
 
         if new_attack == 'no_other_attack' or new_attack.startswith('end'):
-            url = _um.get_last_valid_url_before_reaction(True)
+            url = _um.get_last_valid_url_before_reaction()
             relation = 'step_back'
         else:
             relation = 'no_opinion'
-            url = _um.get_url_for_reaction_on_argument(True, argument_uid_user, new_attack, arg_id_sys)
+            url = _um.get_url_for_reaction_on_argument(argument_uid_user, new_attack, arg_id_sys)
         statements_array.append(
             self.__create_answer_dict(relation, [{'title': rel_dict[relation + '_text'], 'id': relation}], relation,
                                       url))
@@ -550,7 +547,7 @@ class ItemDictHelper(object):
         elif relation == 'rebut':  # if we are having an rebut, everything seems different
             return self.__get_url_for_rebut(attack, _um, mode, db_user_argument, db_sys_argument)
         else:  # undercut
-            return _um.get_url_for_justifying_argument(True, db_sys_argument.uid, mode, relation)
+            return _um.get_url_for_justifying_argument(db_sys_argument.uid, mode, relation)
 
     def __get_url_for_support(self, attack, _um, db_user_argument, db_sys_argument):
         """
@@ -576,9 +573,9 @@ class ItemDictHelper(object):
             # case: system makes an undercut and the user supports this new attack can be an rebut, so another
             # undercut for the users argument therefore now the users opinion is the new undercut (e.g. rebut)
             # because he supported it!
-            url = _um.get_url_for_reaction_on_argument(True, arg_id_sys, sys_attack, db_sys_argument.argument_uid)
+            url = _um.get_url_for_reaction_on_argument(arg_id_sys, sys_attack, db_sys_argument.argument_uid)
         else:
-            url = _um.get_url_for_reaction_on_argument(True, db_sys_argument.uid, sys_attack, arg_id_sys)
+            url = _um.get_url_for_reaction_on_argument(db_sys_argument.uid, sys_attack, arg_id_sys)
 
         return url
 
@@ -593,7 +590,7 @@ class ItemDictHelper(object):
         :param mode: String
         :return: String
         """
-        return _um.get_url_for_justifying_argument(True, argument_uid_sys, mode, relation)
+        return _um.get_url_for_justifying_argument(argument_uid_sys, mode, relation)
 
     @staticmethod
     def __get_url_for_rebut(attack, _um, mode, db_user_argument, db_sys_argument):
@@ -609,16 +606,16 @@ class ItemDictHelper(object):
         """
         url = ''
         if attack == 'undermine':  # rebutting an undermine will be a support for the initial argument
-            url = _um.get_url_for_justifying_statement(True, db_sys_argument.conclusion_uid, mode)
+            url = _um.get_url_for_justifying_statement(db_sys_argument.conclusion_uid, mode)
 
         elif attack == 'undercut':  # rebutting an undercut will be a overbid for the initial argument
             if db_user_argument.argument_uid is None:
-                url = _um.get_url_for_justifying_statement(True, db_user_argument.conclusion_uid, mode)
+                url = _um.get_url_for_justifying_statement(db_user_argument.conclusion_uid, mode)
             else:
                 db_premises = DBDiscussionSession.query(Premise).filter_by(
                     premisesgroup_uid=db_user_argument.premisesgroup_uid).all()
                 db_premise = db_premises[random.randint(0, len(db_premises) - 1)]  # TODO: ELIMINATE RANDOM
-                url = _um.get_url_for_justifying_statement(True, db_premise.statement_uid, mode)
+                url = _um.get_url_for_justifying_statement(db_premise.statement_uid, mode)
 
         # rebutting an rebut will be a justify for the initial argument
         elif attack == 'rebut':
@@ -627,8 +624,7 @@ class ItemDictHelper(object):
             while conclusion_uid is None:
                 conclusion_uid = DBDiscussionSession.query(Argument).filter_by(
                     uid=current_user_argument.argument_uid).first().conclusion_uid
-            url = _um.get_url_for_justifying_statement(True,
-                                                       db_user_argument.conclusion_uid if conclusion_uid is None else conclusion_uid,
+            url = _um.get_url_for_justifying_statement(db_user_argument.conclusion_uid if conclusion_uid is None else conclusion_uid,
                                                        mode)
         return url
 
@@ -676,7 +672,7 @@ class ItemDictHelper(object):
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
             arg_id_sys, attack = rs.get_attack_for_argument(db_argument.uid,
                                                             restriction_on_args=attacking_arg_uids)
-            url = _um.get_url_for_reaction_on_argument(True, db_argument.uid, attack, arg_id_sys)
+            url = _um.get_url_for_reaction_on_argument(db_argument.uid, attack, arg_id_sys)
 
             if is_argument:
                 is_author = is_author_of_argument(db_user, argument)
@@ -761,34 +757,34 @@ class ItemDictHelper(object):
 
         arg_id_sys, sys_attack = rs.get_attack_for_argument(db_argument.uid, redirected_from_jump=True,
                                                             restriction_on_args=forbidden_attacks)
-        url0 = _um.get_url_for_reaction_on_argument(not for_api, db_argument.uid, sys_attack, arg_id_sys)
+        url0 = _um.get_url_for_reaction_on_argument(db_argument.uid, sys_attack, arg_id_sys)
 
         if len_undercut == 0:
-            url1 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 't')
-            url2 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 't', 'undercut')
-            url3 = _um.get_url_for_justifying_statement(not for_api, db_argument.conclusion_uid, 'f')
+            url1 = _um.get_url_for_justifying_statement(db_argument.conclusion_uid, 't')
+            url2 = _um.get_url_for_justifying_argument(db_argument.uid, 't', 'undercut')
+            url3 = _um.get_url_for_justifying_statement(db_argument.conclusion_uid, 'f')
             if len(db_premises) == 1:
-                url4 = _um.get_url_for_justifying_statement(not for_api, db_premises[0].statement_uid, 'f')
+                url4 = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, 'f')
             else:
-                url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
+                url4 = _um.get_url_for_justifying_argument(db_argument.uid, 'f', 'undermine')
 
         elif len_undercut == 1:
             url1 = None
-            url2 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 't', 'undercut')
-            url3 = _um.get_url_for_jump(not for_api, db_undercutted_arg.uid)
+            url2 = _um.get_url_for_justifying_argument(db_argument.uid, 't', 'undercut')
+            url3 = _um.get_url_for_jump(db_undercutted_arg.uid)
             if len(db_premises) == 1:
-                url4 = _um.get_url_for_justifying_statement(not for_api, db_premises[0].statement_uid, 'f')
+                url4 = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, 'f')
             else:
-                url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
+                url4 = _um.get_url_for_justifying_argument(db_argument.uid, 'f', 'undermine')
 
         else:
             url1 = None
             url2 = None
-            url3 = _um.get_url_for_jump(not for_api, db_undercutted_arg.uid)
+            url3 = _um.get_url_for_jump(db_undercutted_arg.uid)
             if len(db_premises) == 1:
-                url4 = _um.get_url_for_justifying_statement(not for_api, db_premises[0].statement_uid, 'f')
+                url4 = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, 'f')
             else:
-                url4 = _um.get_url_for_justifying_argument(not for_api, db_argument.uid, 'f', 'undermine')
+                url4 = _um.get_url_for_justifying_argument(db_argument.uid, 'f', 'undermine')
 
         return [url0, url1, url2, url3, url4]
 

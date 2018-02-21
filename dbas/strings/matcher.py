@@ -89,7 +89,7 @@ def get_all_statements_with_value(issue_uid, application_url, value):
         db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(TextVersion.uid.asc()).first()
         if value.lower() in db_tv.content.lower():
             rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
-            rd['url'] = _um.get_url_for_statement_attitude(False, db_tv.statement_uid)
+            rd['url'] = _um.get_url_for_statement_attitude(db_tv.statement_uid)
             return_array.append(rd)
 
     return_array = __sort_array(return_array)

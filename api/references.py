@@ -39,9 +39,7 @@ def url_to_statement(issue_uid, statement_uid, agree=True):
         mode = "t" if agree is True else "f"
     slug = resolve_issue_uid_to_slug(issue_uid)
     url_manager = UrlManager(application_url="", slug=slug, for_api=True)
-    return url_manager.get_url_for_justifying_statement(as_location_href=True,
-                                                        statement_uid=statement_uid,
-                                                        mode=mode)
+    return url_manager.get_url_for_justifying_statement(statement_uid, mode)
 
 
 def prepare_single_reference(ref):

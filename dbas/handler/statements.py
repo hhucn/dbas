@@ -59,7 +59,7 @@ def set_position(for_api, data) -> dict:
                                         is_start=True)
 
     _um = UrlManager(application_url, db_issue.slug, for_api)
-    url = _um.get_url_for_statement_attitude(False, new_statement.uid)
+    url = _um.get_url_for_statement_attitude(new_statement.uid)
     # add reputation
     add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_position)
     if not add_rep:
@@ -299,7 +299,7 @@ def insert_as_statement(application_url: str, default_locale_name: str, text: st
                                title=_tn.get(_.positionAdded if is_start else _.statementAdded),
                                description='...' + get_text_for_statement_uid(new_statement.uid) + '...',
                                ui_locale=default_locale_name,
-                               url=_um.get_url_for_statement_attitude(False, new_statement.uid))
+                               url=_um.get_url_for_statement_attitude(new_statement.uid))
 
     return new_statement
 
@@ -408,17 +408,17 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
                                      statement_min_length)
 
     elif len(new_argument_uids) == 1:
-        url = _um.get_url_for_new_argument(new_argument_uids, False)
+        url = _um.get_url_for_new_argument(new_argument_uids)
 
     else:
         pgroups = []
         for arg_uid in new_argument_uids:
             pgroups.append(DBDiscussionSession.query(Argument).get(arg_uid).premisesgroup_uid)
-        url = _um.get_url_for_choosing_premisegroup(False, False, supportive, db_conclusion.uid, pgroups)
+        url = _um.get_url_for_choosing_premisegroup(False, supportive, db_conclusion.uid, pgroups)
 
     # send notifications and mails
     if len(new_argument_uids) > 0:
-        email_url = _main_um.get_url_for_justifying_statement(False, db_conclusion.uid, 't' if supportive else 'f')
+        email_url = _main_um.get_url_for_justifying_statement(db_conclusion.uid, 't' if supportive else 'f')
         NotificationHelper.send_add_text_notification(email_url, db_conclusion.uid, db_user, port, mailer)
 
     return url, new_statement_uids, error
@@ -571,7 +571,7 @@ def __create_argument_by_raw_input(application_url, default_locale_name, db_user
                                        description='...' + get_text_for_argument_uid(new_argument.uid,
                                                                                      anonymous_style=True) + '...',
                                        ui_locale=default_locale_name,
-                                       url=_um.get_url_for_justifying_statement(False, new_argument.uid, 'd'))
+                                       url=_um.get_url_for_justifying_statement(new_argument.uid, 'd'))
 
         return new_argument, [s.uid for s in new_statements]
     except StatementToShort:

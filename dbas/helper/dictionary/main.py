@@ -118,7 +118,7 @@ class DictionaryHelper(object):
             db_user = None
             is_logged_in = False
 
-        restart_url = UrlManager(application_url, current_slug, for_api).get_slug_url(False)
+        restart_url = UrlManager(application_url, current_slug, for_api).get_slug_url()
         if restart_url.endswith('/'):
             restart_url = restart_url[:-1]
         # if not restart_url.startswith('http'):
