@@ -27,11 +27,10 @@ class IssueHandlerTests(unittest.TestCase):
 
     def test_prepare_json_of_issue(self):
         uid = 1
-        for_api = False
 
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         db_issue = DBDiscussionSession.query(Issue).get(uid)
-        response = ih.prepare_json_of_issue(db_issue, 'http://test.url', for_api, db_user)
+        response = ih.prepare_json_of_issue(db_issue, 'http://test.url', db_user)
         self.assertTrue(len(response) > 0)
 
     def test_get_number_of_arguments(self):
@@ -47,17 +46,15 @@ class IssueHandlerTests(unittest.TestCase):
         self.assertTrue(response > 0)
 
     def test_get_issue_dict_for(self):
-        for_api = False
         uid = 1
         lang = 'en'
-        response = ih.get_issue_dict_for('', 'http://test.url', for_api, uid, lang)
+        response = ih.get_issue_dict_for('', 'http://test.url', uid, lang)
         self.assertTrue(len(response['error']) > 0)
 
         issue = DBDiscussionSession.query(Issue).first()
-        for_api = False
         uid = issue.uid
         lang = 'en'
-        response = ih.get_issue_dict_for(issue, 'http://test.url', for_api, uid, lang)
+        response = ih.get_issue_dict_for(issue, 'http://test.url', uid, lang)
         self.assertTrue(len(response) > 0)
         self.assertTrue(len(response['error']) == 0)
 

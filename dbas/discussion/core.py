@@ -20,13 +20,12 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 
-def init(request_dict, for_api=False) -> Union[dict, None]:
+def init(request_dict) -> Union[dict, None]:
     """
     Initialize the discussion. Creates helper and returns a dictionary containing the first elements needed for the
     discussion.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param for_api: boolean if requests came via the API
     :rtype: dict
     :return: prepared collection with first elements for the discussion
     """
@@ -38,17 +37,16 @@ def init(request_dict, for_api=False) -> Union[dict, None]:
     slug = db_issue.slug
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
-    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, for_api, db_user)
+    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname=db_user.nickname, main_page=application_url, slug=slug)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname=db_user.nickname, slug=slug)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
 
-    item_dict = ItemDictHelper(disc_ui_locales, db_issue, application_url, for_api).get_array_for_start(db_user)
+    item_dict = ItemDictHelper(disc_ui_locales, db_issue).get_array_for_start(db_user)
     discussion_dict = _ddh.get_dict_for_start(position_count=(len(item_dict['elements'])))
     extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request_dict['registry'],
-                                          request_dict['app_url'], request_dict['path'],
-                                          for_api=for_api, db_user=db_user)
+                                          request_dict['app_url'], request_dict['path'], db_user=db_user)
 
     if len(item_dict['elements']) == 1:
         _dh.add_discussion_end_text(discussion_dict, extras_dict, db_user.nickname, at_start=True)
@@ -62,13 +60,12 @@ def init(request_dict, for_api=False) -> Union[dict, None]:
     }
 
 
-def attitude(request_dict, for_api=False) -> Union[dict, None]:
+def attitude(request_dict) -> Union[dict, None]:
     """
     Initialize the attitude step for a position in a discussion. Creates helper and returns a dictionary containing
     the first elements needed for the discussion.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param for_api: boolean if requests came via the API
     :rtype: dict
     :return: prepared collection matchdict for the discussion
     """
@@ -89,21 +86,20 @@ def attitude(request_dict, for_api=False) -> Union[dict, None]:
         return None
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
-    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, for_api, db_user)
+    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, main_page=application_url, slug=slug)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
     discussion_dict = _ddh.get_dict_for_attitude(statement_uid)
     if not discussion_dict:
         logger('Core', 'discussion.attitude', 'no discussion dict', error=True)
         return None
 
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, application_url, for_api, path=request_dict['path'], history=history)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     item_dict = _idh.prepare_item_dict_for_attitude(statement_uid)
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request_dict['registry'],
-                                          request_dict['app_url'], request_dict['path'], for_api=for_api,
-                                          db_user=db_user)
+    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request_dict['registry'], request_dict['app_url'],
+                                          request_dict['path'], db_user=db_user)
 
     prepared_discussion = {
         'issues': issue_dict,
@@ -116,13 +112,12 @@ def attitude(request_dict, for_api=False) -> Union[dict, None]:
     return prepared_discussion
 
 
-def justify(request_dict, for_api=False) -> Union[dict, None]:
+def justify(request_dict) -> Union[dict, None]:
     """
     Initialize the justification step for a statement or an argument in a discussion. Creates helper and
     returns a dictionary containing the necessary elements needed for the discussion.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param for_api: boolean if requests came via the API
     :rtype: dict
     :return: prepared collection matchdict for the discussion
     """
@@ -134,9 +129,9 @@ def justify(request_dict, for_api=False) -> Union[dict, None]:
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
     request_dict['user'] = db_user
-    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, for_api, db_user)
+    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
 
-    item_dict, discussion_dict, extras_dict = handle_justification_step(request_dict, for_api)
+    item_dict, discussion_dict, extras_dict = handle_justification_step(request_dict)
     if not all([item_dict, discussion_dict, extras_dict]):
         return None
 
@@ -151,13 +146,12 @@ def justify(request_dict, for_api=False) -> Union[dict, None]:
     return prepared_discussion
 
 
-def reaction(request_dict, for_api=False) -> Union[dict, None]:
+def reaction(request_dict) -> Union[dict, None]:
     """
     Initialize the reaction step for a position in a discussion. Creates helper and returns a dictionary containing
     different feedback options for the confrontation with an argument in a discussion.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param for_api: boolean if requests came via the API
     :rtype: dict
     :return: prepared collection matchdict for the discussion
     """
@@ -185,17 +179,17 @@ def reaction(request_dict, for_api=False) -> Union[dict, None]:
     add_click_for_argument(arg_id_user, nickname)
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
-    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, for_api, db_user)
+    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
     supportive = tmp_argument.is_supportive
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, main_page=application_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, application_url, for_api, path=request_dict['path'], history=history)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
     discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history, db_user)
     item_dict = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack, discussion_dict['gender'])
     extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request_dict['registry'], request_dict['app_url'],
-                                          request_dict['path'], for_api=for_api, db_user=db_user,
+                                          request_dict['path'], db_user=db_user,
                                           broke_limit=broke_limit)
 
     prepared_discussion = {
@@ -209,14 +203,12 @@ def reaction(request_dict, for_api=False) -> Union[dict, None]:
     return prepared_discussion
 
 
-def support(request_dict, for_api=False, api_data=None) -> Union[dict, None]:
+def support(request_dict) -> Union[dict, None]:
     """
     Initialize the support step for the end of a branch in a discussion. Creates helper and returns a dictionary
     containing the first elements needed for the discussion.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param for_api
-    :param api_data: dict if requests came via the API
     :rtype: dict
     :return: prepared collection matchdictfor the discussion
     """
@@ -227,18 +219,12 @@ def support(request_dict, for_api=False, api_data=None) -> Union[dict, None]:
     ui_locales = request_dict['ui_locales']
     history = request_dict['history']
     slug = db_issue.slug
-
-    if for_api and api_data:
-        slug = api_data['slug']
-        arg_user_uid = api_data['arg_user_uid']
-        arg_system_uid = api_data['arg_system_uid']
-    else:
-        arg_user_uid = request_dict['matchdict'].get('arg_id_user', '')
-        arg_system_uid = request_dict['matchdict'].get('arg_id_sys', '')
+    arg_user_uid = request_dict.get('arg_user_uid', request_dict['matchdict'].get('arg_id_user', ''))
+    arg_system_uid = request_dict.get('arg_system_uid', request_dict['matchdict'].get('arg_id_sys', ''))
 
     application_url = request_dict['app_url']
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
-    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, for_api, db_user)
+    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
     if not check_belonging_of_argument(db_issue.uid, arg_user_uid) or \
@@ -247,13 +233,13 @@ def support(request_dict, for_api=False, api_data=None) -> Union[dict, None]:
         logger('Core', 'discussion.support', 'no item dict', error=True)
         return None
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, main_page=application_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, application_url, for_api, path=request_dict['path'], history=history)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
-    discussion_dict = _ddh.get_dict_for_supporting_each_other(arg_system_uid, arg_user_uid, db_user.nickname, application_url)
-    item_dict = _idh.get_array_for_support(arg_system_uid, slug, for_api)
+    discussion_dict = _ddh.get_dict_for_supporting_each_other(arg_system_uid, arg_user_uid, db_user.nickname)
+    item_dict = _idh.get_array_for_support(arg_system_uid, slug)
     extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request_dict['registry'], request_dict['app_url'],
-                                          request_dict['path'], for_api=for_api, db_user=db_user)
+                                          request_dict['path'], db_user=db_user)
 
     prepared_discussion = {
         'issues': issue_dict,
@@ -266,13 +252,12 @@ def support(request_dict, for_api=False, api_data=None) -> Union[dict, None]:
     return prepared_discussion
 
 
-def choose(request_dict, for_api=False) -> Union[dict, None]:
+def choose(request_dict) -> Union[dict, None]:
     """
     Initialize the choose step for more than one premise in a discussion. Creates helper and returns a dictionary
     containing several feedback options regarding this argument.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param for_api: boolean if requests came via the API
     :rtype: dict
     :return: prepared collection matchdictfor the discussion
     """
@@ -294,7 +279,7 @@ def choose(request_dict, for_api=False) -> Union[dict, None]:
     is_supportive = True if is_supportive is 't' else False
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
-    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, for_api, db_user)
+    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
     for pgroup in pgroup_ids:
@@ -306,8 +291,8 @@ def choose(request_dict, for_api=False) -> Union[dict, None]:
         logger('core', 'discussion.choose', 'wrong belonging of pgroup', error=True)
         return None
 
-    _ddh = DiscussionDictHelper(ui_locales, db_user.nickname, history, main_page=application_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, application_url, for_api, path=request_dict['path'], history=history)
+    _ddh = DiscussionDictHelper(ui_locales, db_user.nickname, history, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
     discussion_dict = _ddh.get_dict_for_choosing(uid, is_argument, is_supportive)
     item_dict = _idh.get_array_for_choosing(uid, pgroup_ids, is_argument, is_supportive, db_user.nickname)
 
@@ -317,7 +302,7 @@ def choose(request_dict, for_api=False) -> Union[dict, None]:
 
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request_dict['registry'], request_dict['app_url'],
-                                          request_dict['path'], for_api=for_api, db_user=db_user)
+                                          request_dict['path'], db_user=db_user)
 
     prepared_discussion = {
         'issues': issue_dict,
@@ -330,31 +315,23 @@ def choose(request_dict, for_api=False) -> Union[dict, None]:
     return prepared_discussion
 
 
-def jump(request_dict, for_api=False, api_data=None) -> Union[dict, None]:
+def jump(request_dict) -> Union[dict, None]:
     """
     Initialize the jump step for an argument in a discussion. Creates helper and returns a dictionary containing
     several feedback options regarding this argument.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param for_api: boolean if requests came via the API
-    :param api_data: dict if requests came via the API
     :rtype: dict
     :return: prepared collection matchdict for the discussion
     """
     logger('Core', 'discussion.jump', 'main')
 
-    tmp_dict = request_dict
-    if for_api and api_data:
-        arg_uid = api_data.get('arg_uid')
-        tmp_dict = api_data
-    else:
-        arg_uid = request_dict['matchdict'].get('arg_id')
-
-    nickname = tmp_dict.get('nickname')
-    db_issue = tmp_dict.get('issue')
-    ui_locales = tmp_dict.get('ui_locales', 'en')
-    history = tmp_dict.get('history')
-    application_url = tmp_dict.get('app_url')
+    arg_uid = request_dict.get('arg_uid', request_dict['matchdict'].get('arg_id'))
+    nickname = request_dict.get('nickname')
+    db_issue = request_dict.get('issue')
+    ui_locales = request_dict.get('ui_locales', 'en')
+    history = request_dict.get('history')
+    application_url = request_dict.get('app_url')
     slug = db_issue.slug
 
     if not check_belonging_of_argument(db_issue.uid, arg_uid):
@@ -362,16 +339,16 @@ def jump(request_dict, for_api=False, api_data=None) -> Union[dict, None]:
         return None
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
-    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, for_api, db_user)
+    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, main_page=application_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, application_url, for_api, path=request_dict['path'], history=history)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
     discussion_dict = _ddh.get_dict_for_jump(arg_uid)
-    item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
+    item_dict = _idh.get_array_for_jump(arg_uid, slug)
     extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request_dict['registry'], request_dict['app_url'],
-                                          request_dict['path'], for_api=for_api, db_user=db_user)
+                                          request_dict['path'], db_user=db_user)
 
     prepared_discussion = {
         'issues': issue_dict,
@@ -384,7 +361,7 @@ def jump(request_dict, for_api=False, api_data=None) -> Union[dict, None]:
     return prepared_discussion
 
 
-def finish(request_dict, for_api=False) -> Union[dict, None]:
+def finish(request_dict) -> Union[dict, None]:
     logger('Core', 'discussion_finish', 'main')
 
     nickname = request_dict['nickname']
@@ -402,15 +379,15 @@ def finish(request_dict, for_api=False) -> Union[dict, None]:
         return None
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
-    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, for_api, db_user)
+    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, main_page=application_url, slug=slug)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
     discussion_dict = _ddh.get_dict_for_argumentation(arg_id, last_arg.is_supportive, None, 'end_attack', history, db_user)
     item_dict = ItemDictHelper.get_empty_dict()
     extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request_dict['registry'], request_dict['app_url'],
-                                          request_dict['path'], for_api=for_api, db_user=db_user)
+                                          request_dict['path'], db_user=db_user)
     return {
         'issues': issue_dict,
         'discussion': discussion_dict,

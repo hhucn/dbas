@@ -398,12 +398,12 @@ def set_new_start_argument(request):
 
     # set the new position
     logger('views', 'set_new_start_argument', 'set conclusion/position')
-    prepared_dict_pos = set_position(False, data)
+    prepared_dict_pos = set_position(data)
     if len(prepared_dict_pos['error']) is 0:
         logger('views', 'set_new_start_argument', 'set premise/reason')
         data['premisegroups'] = [[reason]]
         data['conclusion'] = DBDiscussionSession.query(Statement).get(prepared_dict_pos['statement_uids'][0])
-        prepared_dict_pos = set_positions_premise(False, data)
+        prepared_dict_pos = set_positions_premise(data)
 
     return prepared_dict_pos
 
@@ -430,7 +430,7 @@ def set_new_start_premise(request):
         'default_locale_name': get_default_locale_name(request.registry),
         'mailer': request.mailer
     }
-    prepared_dict = set_positions_premise(False, data)
+    prepared_dict = set_positions_premise(data)
     return prepared_dict
 
 
@@ -457,7 +457,7 @@ def set_new_premises_for_argument(request):
         'application_url': request.application_url,
         'mailer': request.mailer
     }
-    return set_arguments_premises(False, data)
+    return set_arguments_premises(data)
 
 
 @view_config(route_name='set_correction_of_statement', renderer='json')

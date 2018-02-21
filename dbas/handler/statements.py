@@ -8,7 +8,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, User, Statement, TextVersion, MarkedStatement, \
     sql_timestamp_pretty_print, Argument, Premise, PremiseGroup, SeenStatement
 from dbas.exceptions import StatementToShort
-from dbas.handler import user, notification as NotificationHelper
+from dbas.handler import user, notification as nh
 from dbas.handler.rss import append_action_to_issue_rss
 from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.query import statement_min_length
@@ -25,11 +25,10 @@ from dbas.helper.url import UrlManager
 from websocket.lib import send_request_for_info_popup_to_socketio
 
 
-def set_position(for_api, data) -> dict:
+def set_position(data) -> dict:
     """
     Set new position for current discussion and returns collection with the next url for the discussion.
 
-    :param for_api: boolean if requests came via the API
     :param data: dict of requests data
     :rtype: dict
     :return: Prepared collection with statement_uids of the new positions and next url or an error
@@ -58,8 +57,8 @@ def set_position(for_api, data) -> dict:
     new_statement = insert_as_statement(application_url, default_locale_name, statement_text, db_user, db_issue,
                                         is_start=True)
 
-    _um = UrlManager(application_url, db_issue.slug, for_api)
-    url = _um.get_url_for_statement_attitude(False, new_statement.uid)
+    _um = UrlManager(db_issue.slug)
+    url = _um.get_url_for_statement_attitude(new_statement.uid)
     # add reputation
     add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_position)
     if not add_rep:
@@ -76,11 +75,10 @@ def set_position(for_api, data) -> dict:
     }
 
 
-def set_positions_premise(for_api: bool, data: Dict) -> dict:
+def set_positions_premise(data: Dict) -> dict:
     """
     Set new premise for a given position and returns dictionary with url for the next step of the discussion
 
-    :param for_api: boolean if requests came via the API
     :param data: dict of requests data
     :rtype: dict
     :return: Prepared collection with statement_uids of the new premises and next url or an error
@@ -116,7 +114,7 @@ def set_positions_premise(for_api: bool, data: Dict) -> dict:
                                                                                    premisegroups,
                                                                                    db_conclusion, supportive,
                                                                                    db_issue,
-                                                                                   db_user, for_api,
+                                                                                   db_user,
                                                                                    application_url,
                                                                                    discussion_lang, history, port,
                                                                                    mailer)
@@ -212,7 +210,7 @@ def correct_statement(db_user, uid, corrected_text):
         DBDiscussionSession.flush()
 
     # if request:
-    #     NotificationHelper.send_edit_text_notification(db_user, textversion, url, request)
+    #     nh.send_edit_text_notification(db_user, textversion, url, request)
 
     # transaction.commit() # # 207
 
@@ -293,13 +291,13 @@ def insert_as_statement(application_url: str, default_locale_name: str, text: st
         pass
 
     _tn = Translator(new_statement.lang)
-    _um = UrlManager(application_url, db_issue.slug)
+    _um = UrlManager(db_issue.slug)
     append_action_to_issue_rss(db_issue=db_issue,
                                db_author=db_user,
                                title=_tn.get(_.positionAdded if is_start else _.statementAdded),
                                description='...' + get_text_for_statement_uid(new_statement.uid) + '...',
                                ui_locale=default_locale_name,
-                               url=_um.get_url_for_statement_attitude(False, new_statement.uid))
+                               url=_um.get_url_for_statement_attitude(new_statement.uid))
 
     return new_statement
 
@@ -351,10 +349,8 @@ def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue) -> 
 
 
 def __process_input_of_start_premises_and_receive_url(default_locale_name, premisegroups, db_conclusion: Statement,
-                                                      supportive,
-                                                      db_issue: Issue, db_user: User, for_api, application_url,
-                                                      discussion_lang, history,
-                                                      port, mailer):
+                                                      supportive, db_issue: Issue, db_user: User, application_url,
+                                                      discussion_lang, history, port, mailer):
     """
     Inserts premises of groups as new arguments in dependence of the input parameters and returns a URL for forwarding.
 
@@ -364,7 +360,6 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
     :param supportive: Boolean
     :param db_issue: Issue
     :param db_user: User
-    :param for_api: Boolean
     :param application_url: URL
     :param discussion_lang: ui_locales
     :param history: History of the user
@@ -395,31 +390,28 @@ def __process_input_of_start_premises_and_receive_url(default_locale_name, premi
             return None, None, error
 
         new_argument_uids.append(new_argument.uid)
-        if for_api:
-            new_statement_uids.append(statement_uids)
+        new_statement_uids.append(statement_uids)
 
-    # #arguments=0: empty input
-    # #arguments=1: deliver new url
-    # #arguments>1: deliver url where the user has to choose between her inputs
-    _um = UrlManager(application_url, db_issue.slug, for_api, history)
-    _main_um = UrlManager(application_url, db_issue.slug, False, history)
+    # arguments=0: empty input
+    # arguments=1: deliver new url
+    # arguments>1: deliver url where the user has to choose between her inputs
+    _um = UrlManager(db_issue.slug, history)
+    _main_um = UrlManager(db_issue.slug, history=history)
     if len(new_argument_uids) == 0:
         error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength),
                                      statement_min_length)
 
     elif len(new_argument_uids) == 1:
-        url = _um.get_url_for_new_argument(new_argument_uids, False)
+        url = _um.get_url_for_new_argument(new_argument_uids)
 
     else:
-        pgroups = []
-        for arg_uid in new_argument_uids:
-            pgroups.append(DBDiscussionSession.query(Argument).get(arg_uid).premisesgroup_uid)
-        url = _um.get_url_for_choosing_premisegroup(False, False, supportive, db_conclusion.uid, pgroups)
+        pgroups = [DBDiscussionSession.query(Argument).get(arg_uid).premisesgroup_uid for arg_uid in new_argument_uids]
+        url = _um.get_url_for_choosing_premisegroup(False, supportive, db_conclusion.uid, pgroups)
 
     # send notifications and mails
     if len(new_argument_uids) > 0:
-        email_url = _main_um.get_url_for_justifying_statement(False, db_conclusion.uid, 't' if supportive else 'f')
-        NotificationHelper.send_add_text_notification(email_url, db_conclusion.uid, db_user, port, mailer)
+        email_url = _main_um.get_url_for_justifying_statement(db_conclusion.uid, 't' if supportive else 'f')
+        nh.send_add_text_notification(email_url, db_conclusion.uid, db_user, port, mailer)
 
     return url, new_statement_uids, error
 
@@ -564,14 +556,14 @@ def __create_argument_by_raw_input(application_url, default_locale_name, db_user
 
         if new_argument:
             _tn = Translator(default_locale_name)
-            _um = UrlManager(application_url, db_issue.slug)
+            _um = UrlManager(db_issue.slug)
             append_action_to_issue_rss(db_issue=db_issue,
                                        db_author=db_user,
                                        title=_tn.get(_.argumentAdded),
                                        description='...' + get_text_for_argument_uid(new_argument.uid,
                                                                                      anonymous_style=True) + '...',
                                        ui_locale=default_locale_name,
-                                       url=_um.get_url_for_justifying_statement(False, new_argument.uid, 'd'))
+                                       url=_um.get_url_for_justifying_statement(new_argument.uid, 'd'))
 
         return new_argument, [s.uid for s in new_statements]
     except StatementToShort:

@@ -24,7 +24,7 @@
                 </li>
 
                 <li id="restart-link" tal:condition="extras.ongoing_discussion">
-                    <a id="discussion-restart-btn" href="" tal:attributes="href extras.restart_url" data-toggle="tooltip" data-placement="left">
+                    <a id="discussion-restart-btn" href="/discuss/${extras.restart_url}" data-toggle="tooltip" data-placement="left">
                         <i class="fa fa-repeat" aria-hidden="true"></i>&thinsp;<span i18n:translate="restart">Restart</span>
                     </a>
                 </li>

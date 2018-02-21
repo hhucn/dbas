@@ -75,7 +75,7 @@ def get_splitted_history(history):
     return [his[1:] if his[0:1] == '/' else his for his in history.split('-')]
 
 
-def create_bubbles_from_history(history, nickname='', lang='', application_url='', slug=''):
+def create_bubbles_from_history(history, nickname='', lang='', slug=''):
     """
     Creates the bubbles for every history step
 
@@ -100,7 +100,7 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
         nickname=nickname).first()
 
     for index, step in enumerate(splitted_history):
-        url = application_url + '/discuss/' + slug + '/' + step
+        url = slug + '/' + step
         if len(consumed_history) != 0:
             url += '?history=' + consumed_history
         consumed_history += step if len(consumed_history) == 0 else '-' + step
@@ -108,10 +108,10 @@ def create_bubbles_from_history(history, nickname='', lang='', application_url='
             __prepare_justify_statement_step(bubble_array, index, step, db_user, lang, url)
 
         elif 'reaction/' in step:
-            __prepare_reaction_step(bubble_array, index, application_url, step, db_user, lang, splitted_history, url)
+            __prepare_reaction_step(bubble_array, index, step, db_user, lang, splitted_history, url)
 
         elif 'support/' in step:
-            __prepare_support_step(bubble_array, index, step, db_user, lang, application_url)
+            __prepare_support_step(bubble_array, index, step, db_user, lang)
 
         else:
             logger('history_handler', 'create_bubbles_from_history', str(index) + ': unused case -> ' + step)
@@ -163,12 +163,12 @@ def __prepare_justify_statement_step(bubble_array, index, step, db_user, lang, u
             bubble_array += bubble
 
     elif 'd' in mode and relation == '':
-        bubbles = __get_bubble_from_dont_know_step(step, db_user, lang, url)
+        bubbles = __get_bubble_from_dont_know_step(step, db_user, lang)
         if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
             bubble_array += bubbles
 
 
-def __prepare_reaction_step(bubble_array, index, application_url, step, db_user, lang, splitted_history, url):
+def __prepare_reaction_step(bubble_array, index, step, db_user, lang, splitted_history, url):
     """
     Preparation for creating the reaction bubbles
 
@@ -183,12 +183,12 @@ def __prepare_reaction_step(bubble_array, index, application_url, step, db_user,
     :return: None
     """
     logger('history_handler', '__prepare_reaction_step', str(index) + ': reaction case -> ' + step)
-    bubbles = get_bubble_from_reaction_step(application_url, step, db_user, lang, splitted_history, url)
+    bubbles = get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url)
     if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
         bubble_array += bubbles
 
 
-def __prepare_support_step(bubble_array, index, step, nickname, lang, application_url):
+def __prepare_support_step(bubble_array, index, step, nickname, lang):
     """
     Preparation for creating the support bubbles
 
@@ -207,7 +207,7 @@ def __prepare_support_step(bubble_array, index, step, nickname, lang, applicatio
     user_uid = steps[1]
     system_uid = steps[2]
 
-    bubble = __get_bubble_from_support_step(user_uid, system_uid, nickname, lang, application_url)
+    bubble = __get_bubble_from_support_step(user_uid, system_uid, nickname, lang)
     if bubble and not bubbles_already_last_in_list(bubble_array, bubble):
         bubble_array += bubble
 
@@ -235,7 +235,7 @@ def __get_bubble_from_justify_statement_step(step, db_user, lang, url):
     return [bubble_user]
 
 
-def __get_bubble_from_support_step(uid_user, uid_system, nickname, lang, application_url):
+def __get_bubble_from_support_step(uid_user, uid_system, nickname, lang):
     """
     Creates bubbles for the support-keyword for an statement.
 
@@ -262,7 +262,7 @@ def __get_bubble_from_support_step(uid_user, uid_system, nickname, lang, applica
     while argument_text[:-offset].endswith(('.', '?', '!')):
         argument_text = argument_text[:-offset - 1] + argument_text[-offset:]
 
-    text = get_text_for_support(db_arg_system, argument_text, nickname, application_url, Translator(lang))
+    text = get_text_for_support(db_arg_system, argument_text, nickname, Translator(lang))
     bubble_system = create_speechbubble_dict(BubbleTypes.SYSTEM, message=text, omit_url=True, lang=lang)
 
     return [bubble_user, bubble_system]
@@ -291,7 +291,7 @@ def __get_bubble_from_attitude_step(step, nickname, lang, url):
     return [bubble]
 
 
-def __get_bubble_from_dont_know_step(step, db_user, lang, url):
+def __get_bubble_from_dont_know_step(step, db_user, lang):
     """
     Creates bubbles for the don't-know-reaction for a statement.
 
@@ -313,8 +313,7 @@ def __get_bubble_from_dont_know_step(step, db_user, lang, url):
     from dbas.strings.text_generator import get_name_link_of_arguments_author
     _tn = Translator(lang)
 
-    db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(url, db_argument, db_user.nickname,
-                                                                               False)
+    db_other_user, author, gender, is_okay = get_name_link_of_arguments_author(db_argument, db_user.nickname, False)
     if is_okay:
         intro = author + ' ' + _tn.get(_.thinksThat)
     else:
@@ -329,7 +328,7 @@ def __get_bubble_from_dont_know_step(step, db_user, lang, url):
     return [user_bubble, sys_bubble]
 
 
-def get_bubble_from_reaction_step(main_page, step, db_user, lang, splitted_history, url, color_steps=False):
+def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, color_steps=False):
     """
     Creates bubbles for the reaction-keyword.
 
@@ -399,7 +398,7 @@ def get_bubble_from_reaction_step(main_page, step, db_user, lang, splitted_histo
     user_text = (_tn.get(_.otherParticipantsConvincedYouThat) + ': ') if last_relation == 'support' else ''
     user_text += '<{}>{}</{}>'.format(tag_type, current_arg if current_arg != '' else premise, tag_type)
 
-    sys_text, tmp = get_text_for_confrontation(main_page, lang, db_user.nickname, premise, conclusion, sys_conclusion,
+    sys_text, tmp = get_text_for_confrontation(lang, db_user.nickname, premise, conclusion, sys_conclusion,
                                                is_supportive, attack, confr, reply_for_argument, user_is_attacking,
                                                db_argument, db_confrontation, color_html=False)
 

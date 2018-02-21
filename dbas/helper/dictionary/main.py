@@ -25,7 +25,6 @@ from dbas.review.helper.queues import get_count_of_all
 from dbas.review.helper.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.helper.url import UrlManager
 
 
 class DictionaryHelper(object):
@@ -89,7 +88,7 @@ class DictionaryHelper(object):
                                         db_user=db_user, ongoing_discussion=False)
 
     def prepare_extras_dict(self, current_slug: str, is_reportable: bool, show_bar_icon: bool, show_graph_icon: bool,
-                            registry: Registry, application_url: str, path: str, db_user: User, for_api=False,
+                            registry: Registry, application_url: str, path: str, db_user: User,
                             broke_limit=False, add_premise_container_style='display: none',
                             add_statement_container_style='display: none', ongoing_discussion=True):
         """
@@ -103,7 +102,6 @@ class DictionaryHelper(object):
         :param application_url: current app url
         :param path: current path
         :param db_user: User
-        :param for_api: Boolean
         :param broke_limit: Boolean
         :param add_premise_container_style: style string, default 'display:none;'
         :param add_statement_container_style: style string, default 'display:none;'
@@ -118,17 +116,9 @@ class DictionaryHelper(object):
             db_user = None
             is_logged_in = False
 
-        restart_url = UrlManager(application_url, current_slug, for_api).get_slug_url(False)
-        if restart_url.endswith('/'):
-            restart_url = restart_url[:-1]
-        # if not restart_url.startswith('http'):
-        #     restart_url = 'https://' + restart_url
-        # if restart_url.startswith('http:'):
-        #     restart_url = restart_url.replace('http', 'https')
-
         return_dict = dict()
         return_dict['year'] = datetime.datetime.now().year
-        return_dict['restart_url'] = restart_url
+        return_dict['restart_url'] = current_slug
         return_dict['is_in_discussion'] = 'discuss' in path
         return_dict['logged_in'] = is_logged_in
         return_dict['nickname'] = db_user.nickname if db_user else None

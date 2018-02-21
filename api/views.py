@@ -263,12 +263,12 @@ def prepare_dbas_request_dict(request) -> dict:
     """
     api_data = prepare_user_information(request)
     nickname = api_data['nickname'] if api_data else None
-    return dbas.prepare_request_dict(request, nickname, for_api=True)
+    return dbas.prepare_request_dict(request, nickname)
 
 
 def __init(request):
     request_dict = prepare_dbas_request_dict(request)
-    return dbas.discussion.init(request_dict, for_api=True)
+    return dbas.discussion.init(request_dict)
 
 
 @reaction.get(validators=validate_login)
@@ -281,7 +281,7 @@ def discussion_reaction(request):
 
     """
     request_dict = prepare_dbas_request_dict(request)
-    return dbas.discussion.reaction(request_dict, for_api=True)
+    return dbas.discussion.reaction(request_dict)
 
 
 @justify.get(validators=validate_login)
@@ -294,7 +294,7 @@ def discussion_justify(request):
 
     """
     request_dict = prepare_dbas_request_dict(request)
-    return dbas.discussion.justify(request_dict, for_api=True)
+    return dbas.discussion.justify(request_dict)
 
 
 @attitude.get(validators=validate_login)
@@ -307,7 +307,7 @@ def discussion_attitude(request):
 
     """
     request_dict = prepare_dbas_request_dict(request)
-    return dbas.discussion.attitude(request_dict, for_api=True)
+    return dbas.discussion.attitude(request_dict)
 
 
 @support.get(validators=validate_login)
@@ -326,7 +326,7 @@ def discussion_support(request):
     api_data["arg_user_uid"] = request.matchdict["arg_user_uid"]
     api_data["arg_system_uid"] = request.matchdict["arg_system_uid"]
     request_dict = prepare_dbas_request_dict(request)
-    return dbas.discussion.support(request_dict, for_api=True, api_data=api_data)
+    return dbas.discussion.support(request_dict, api_data=api_data)
 
 
 @zinit.get(validators=validate_login)
@@ -491,7 +491,7 @@ def find_statements_fn(request):
     api_data["issue"] = request.matchdict["issue"]
     api_data["mode"] = request.matchdict["type"]
     api_data["value"] = request.matchdict["value"]
-    results = dbas.fuzzy_search(request, for_api=True, api_data=api_data)
+    results = dbas.fuzzy_search(request, api_data=api_data)
 
     issue_uid = api_data["issue"]
 
@@ -536,8 +536,8 @@ def jump_to_argument_fn(request):
     :return: Argument with a list of possible interactions
 
     """
-    api_data = jump_preparation(request)
-    return dbas.discussion.jump(request, for_api=True, api_data=api_data)
+    # api_data = jump_preparation(request)
+    return dbas.discussion.jump(request)
 
 
 # =============================================================================

@@ -1,4 +1,4 @@
-### 2.0.0 (2018-03-02)
+### 1.6.0 (2018-03-02)
 - Cleaner code everywhere
 - Refactor complete software
 - Usage of validators
