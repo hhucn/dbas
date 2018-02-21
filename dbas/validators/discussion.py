@@ -84,7 +84,7 @@ def valid_conclusion(request):
         request.validated['conclusion'] = db_conclusion
     else:
         _tn = Translator(get_language_from_cookie(request))
-        add_error(request, 'valid_conclusion', 'Conclusion id is missing', _tn.get(_.wrongConclusion))
+        add_error(request, 'valid_conclusion', 'Conclusion id is missing', _tn.get(_.conclusionIsMissing))
 
 
 def valid_statement(request):

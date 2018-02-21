@@ -208,6 +208,7 @@ de_lang = {
     _.canYouBeMorePrecise: 'Können Sie bitte noch genauer sein? Was finden Sie an der Behauptung falsch?',
     _.completeView: 'Komplette View',
     _.completeViewTitle: 'Kompletten Graphen anzeigen',
+    _.conclusionIsMissing: 'Conclusion ID fehlt',
     _.currentDiscussion: 'Die aktuelle Diskussion hat folgendes Thema',
     _.congratulation: 'Glückwunsch!',
     _.docs: 'Dokumentation',

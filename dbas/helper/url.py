@@ -192,7 +192,7 @@ class UrlManager(object):
         :return: Valid URL
         """
         history = '?history=' + self.history if self.history and len(self.history) > 1 else ''
-        return '{}{}'.format(url, history)
+        return '/{}{}'.format(url, history)
 
     def __get_url_for_discussion_finish(self, arg_uid):
         """

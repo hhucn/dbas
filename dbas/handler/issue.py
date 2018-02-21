@@ -83,10 +83,7 @@ def prepare_json_of_issue(db_issue: Issue, application_url: str, db_user: User) 
     date = db_issue.date.format('DD.MM. HH:mm')
 
     db_issues = get_visible_issues_for_user_as_query(db_user.uid).filter(Issue.uid != db_issue.uid).all()
-    all_array = []
-    for issue in db_issues:
-        issue_dict = get_issue_dict_for(issue, application_url, db_issue.uid, lang)
-        all_array.append(issue_dict)
+    all_array = [get_issue_dict_for(issue, application_url, db_issue.uid, lang) for issue in db_issues]
 
     _t = Translator(lang)
     t1 = _t.get(_.discussionInfoTooltip1)
@@ -164,7 +161,7 @@ def get_issue_dict_for(issue, application_url, uid, lang):
         'uid': str(issue.uid),
         'slug': issue.slug,
         'title': issue.title,
-        'url': issue.slug,
+        'url': '/' + issue.slug,
         'review_url': _um.get_review_url() if str(uid) != str(issue.uid) else '',
         'info': issue.info,
         'stat_count': get_number_of_statements(issue.uid),

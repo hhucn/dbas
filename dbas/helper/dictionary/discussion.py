@@ -184,7 +184,7 @@ class DiscussionDictHelper(object):
         :param attack: String (undermine, support, undercut, rebut, ...)
         :return: dict()
         """
-        logger('DictionaryHelper', 'prepare_discussion_dict', 'get_dict_for_justify_argument')
+        logger('DictionaryHelper', 'get_dict_for_justify_argument', 'def')
         _tn = Translator(self.lang)
         bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang, self.slug)
         add_premise_text = ''
