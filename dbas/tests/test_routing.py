@@ -2,7 +2,7 @@ import unittest
 import webtest
 import dbas
 import os
-from dbas.helper.tests import add_settings_to_appconfig
+from dbas.helper.test import add_settings_to_appconfig
 
 # copy/paste from https://docs.pylonsproject.org/projects/pyramid/en/latest/tutorials/wiki2/tests.html
 

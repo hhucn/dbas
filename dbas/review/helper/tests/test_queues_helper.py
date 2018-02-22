@@ -1,7 +1,7 @@
 import unittest
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, ReviewOptimization
+from dbas.database.discussion_model import User, ReviewOptimization, TextVersion, ReviewEdit, Argument, Premise
 import dbas.review.helper.queues as rqh
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -31,11 +31,13 @@ class ReviewQueuesHelperTest(unittest.TestCase):
         self.assertLess(0, rqh.get_complete_review_count(u2))
 
     def test_add_proposals_for_statement_corrections(self):
+        db_tv = DBDiscussionSession.query(TextVersion).get(7)
+        db_edit = DBDiscussionSession.query(ReviewEdit).filter_by(is_executed=False).first()
         trans = Translator('en')
-        dupl_elements = [{'uid': 22, 'text': 'duuuuplicaate'}]
         wrong_elements = [{'uid': 0, 'text': 'oh...this will crash'}]
-        no_corr_elements = [{'uid': 7, 'text': 'dogs can act as watch dogs'}]
-        right_elements = [{'uid': 7, 'text': 'dogs can act as brutal watch dogs'}]
+        dupl_elements = [{'uid': db_edit.uid, 'text': 'duplicate uid, already in review'}]
+        no_corr_elements = [{'uid': db_tv.statement_uid, 'text': db_tv.content}]
+        right_elements = [{'uid': db_tv.statement_uid, 'text': db_tv.content + 'new part for edit'}]
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
         text, error = rqh.add_proposals_for_statement_corrections(wrong_elements, db_user, trans)
@@ -54,14 +56,19 @@ class ReviewQueuesHelperTest(unittest.TestCase):
         self.assertFalse(error)
 
     def test_is_statement_in_edit_queue(self):
-        self.assertTrue(rqh.is_statement_in_edit_queue(1))
-        self.assertTrue(rqh.is_statement_in_edit_queue(2, True))
-        self.assertFalse(rqh.is_statement_in_edit_queue(2))
-        self.assertTrue(rqh.is_statement_in_edit_queue(22))
+        db_review_edits = DBDiscussionSession.query(ReviewEdit).all()
+        for review in db_review_edits:
+            self.assertTrue(rqh.is_statement_in_edit_queue(review.statement_uid, review.is_executed))
+        self.assertFalse(rqh.is_statement_in_edit_queue(50))
 
     def test_is_arguments_premise_in_edit_queue(self):
-        self.assertTrue(rqh.is_arguments_premise_in_edit_queue(1))
-        self.assertTrue(rqh.is_arguments_premise_in_edit_queue(4))
+        db_review = DBDiscussionSession.query(ReviewEdit).filter_by(is_executed=False).all()
+        for review in db_review:
+            db_p = DBDiscussionSession.query(Premise).filter_by(statement_uid=review.statement_uid).first()
+            if db_p:
+                db_arg = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=db_p.premisesgroup_uid).first()
+                self.assertTrue(rqh.is_arguments_premise_in_edit_queue(db_arg, False))
+                break
 
     def test_lock_optimization_review(self):
         _tn = Translator('en')

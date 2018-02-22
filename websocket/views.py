@@ -56,7 +56,6 @@ def debug_function(request):
     :param request: current webservers reqquest
     :return: dict()
     """
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Websocket', 'debug_function', 'main')
 
     ui_locales = get_language_from_cookie(request)
@@ -82,7 +81,6 @@ def debug_that_mail(request):
     :param request:
     :return:
     """
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
     logger('Websocket', 'debug_mail', 'debug_mail')
     if request.authenticated_userid in ['Tobias', 'tokra100']:
         text = request.get('text', 'empty text input')

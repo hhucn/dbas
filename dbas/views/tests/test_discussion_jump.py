@@ -3,7 +3,7 @@ import unittest
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
-from dbas.helper.tests import verify_dictionary_of_view
+from dbas.helper.test import verify_dictionary_of_view
 
 
 class DiscussionJumpViewTests(unittest.TestCase):
@@ -23,7 +23,7 @@ class DiscussionJumpViewTests(unittest.TestCase):
         }
         request = testing.DummyRequest(matchdict=matchdict)
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
     def test_page_on_failure(self):
         from dbas.views import discussion_jump as d

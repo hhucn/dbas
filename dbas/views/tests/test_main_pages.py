@@ -7,7 +7,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Settings
 from dbas.handler.password import get_hashed_password
-from dbas.helper.tests import verify_dictionary_of_view
+from dbas.helper.test import verify_dictionary_of_view
 
 
 class MainImprintViewTests(unittest.TestCase):
@@ -23,7 +23,7 @@ class MainImprintViewTests(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         # place for additional stuff
 
@@ -41,7 +41,7 @@ class MainFieldexperimentViewTests(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         # place for additional stuff
 
@@ -59,7 +59,7 @@ class MainMyDiscussionViewTestsNotLoggedIn(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         self.assertIn('layout', response)
         self.assertIn('title', response)
@@ -82,7 +82,7 @@ class MainMyDiscussionViewTestsLoggedIn(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         self.assertIn('layout', response)
         self.assertIn('title', response)
@@ -104,7 +104,7 @@ class MainNewsViewTests(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         # place for additional stuff
 
@@ -122,7 +122,7 @@ class MainNotificationsViewTests(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         # place for additional stuff
 
@@ -140,7 +140,7 @@ class MainPageViewTests(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = main_page(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         # place for additional stuff
 
@@ -158,7 +158,7 @@ class MainReviewViewTestsNotLoggedIn(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         self.assertIn('review', response)
         self.assertIn('privilege_list', response)
@@ -183,7 +183,7 @@ class MainReviewViewTestsLoggedIn(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         self.assertIn('review', response)
         self.assertIn('privilege_list', response)
@@ -223,7 +223,7 @@ class MainSettingsViewTestsLoggedIn(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         # check settings
         self.assertIn('send_notifications', response['settings'])
@@ -250,7 +250,7 @@ class MainSettingsViewTestsPassword(unittest.TestCase):
             'passwordconfirm': 'tobias'
         })
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         # check settings
         self.assertTrue(len(response['settings']['passwordold']) != 0)
@@ -271,7 +271,7 @@ class MainSettingsViewTestsPassword(unittest.TestCase):
             'passwordconfirm': 'tobiass'
         })
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         # check settings
         self.assertTrue(len(response['settings']['passwordold']) == 0)
@@ -303,7 +303,7 @@ class MainUserView(unittest.TestCase):
 
         request = testing.DummyRequest(matchdict={'uid': db_user.uid})
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
         self.assertIn('user', response)
         self.assertIn('can_send_notification', response)
         self.assertFalse(response['can_send_notification'])
@@ -315,7 +315,7 @@ class MainUserView(unittest.TestCase):
 
         request = testing.DummyRequest(matchdict={'uid': db_user.uid})
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
         self.assertIn('user', response)
         self.assertIn('can_send_notification', response)
         self.assertFalse(response['can_send_notification'])
@@ -327,7 +327,7 @@ class MainUserView(unittest.TestCase):
 
         request = testing.DummyRequest(matchdict={'uid': db_user.uid})
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
         self.assertIn('user', response)
         self.assertIn('can_send_notification', response)
         self.assertTrue(response['can_send_notification'])

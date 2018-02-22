@@ -7,7 +7,7 @@ from pyramid.httpexceptions import HTTPNotFound
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, \
     ReputationHistory
-from dbas.helper.tests import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of
+from dbas.helper.test import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of, refresh_user
 
 
 class DiscussionJustifyViewTests(unittest.TestCase):
@@ -52,7 +52,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
             'relation': '',
         }
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
         self.__check_meta_clicks(vote_dict)
         self.__check_meta_clicks(vote_dict)
 
@@ -72,7 +72,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         }
         response = d(request)
         transaction.commit()
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
         len_db_seen2 = DBDiscussionSession.query(SeenStatement).count()
         len_db_vote2 = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.is_valid == True,
                                                                           ClickedStatement.is_up_vote == True).count()
@@ -99,13 +99,20 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         }
         response = d(request)
         transaction.commit()
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
         len_db_seen2 = DBDiscussionSession.query(SeenStatement).count()
         len_db_vote2 = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.is_valid == True,
                                                                           ClickedStatement.is_up_vote == False).count()
 
         # minus 1 for 'none of the above'
-        count = sum([len(el['premises']) for el in response['items']['elements']]) - 1
+        from pprint import pprint
+        for el in response['items']['elements']:
+            pprint(el)
+        pprint(len_db_seen1)  # 0
+        pprint(len_db_seen2)  # 2
+        pprint(len_db_vote1)  # 0
+        pprint(len_db_vote2)  # 1
+        count = sum([len(el['premises']) for el in response['items']['elements']])
         self.assertEqual(len_db_seen1 + count, len_db_seen2)
         self.assertEqual(len_db_vote1 + 1, len_db_vote2)
         clear_seen_by_of('Tobias')
@@ -122,7 +129,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
             'relation': '',
         }
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
         self.__check_meta_clicks(vote_dict)
 
     def test_justify_argument_page_no_rep(self):
@@ -137,7 +144,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
             'relation': ['undermine'],
         }
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         len_db_reputation2 = DBDiscussionSession.query(ReputationHistory).count()
         self.__check_meta_clicks(vote_dict)
@@ -153,7 +160,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
             'relation': ['undermine'],
         }
         response = view(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
         self.assertNotEqual(vote_dict['seen_s'], DBDiscussionSession.query(SeenStatement).count())
         self.assertEqual(vote_dict['click_s'], DBDiscussionSession.query(ClickedStatement).count())
         self.assertNotEqual(vote_dict['seen_a'], DBDiscussionSession.query(SeenArgument).count())
@@ -162,6 +169,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
 
     def test_justify_argument_page_rep(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
+        refresh_user('Björn')
         from dbas.views import discussion_justify as d
         vote_dict = self.__test_base_for_justify_argument_page_rep(d)
         self.assertNotEqual(vote_dict['rep_h'], DBDiscussionSession.query(ReputationHistory).count())

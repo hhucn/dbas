@@ -198,8 +198,7 @@ class ItemDictHelper(object):
             statements_array.append(self.__create_answer_dict(str(argument.uid), premise_array, 'justify', url,
                                                               already_used=already_used,
                                                               already_used_text=additional_text,
-                                                              is_editable=not is_arguments_premise_in_edit_queue(
-                                                                  argument.uid),
+                                                              is_editable=not is_arguments_premise_in_edit_queue(argument),
                                                               is_markable=True,
                                                               is_author=is_author_of_argument(db_user, argument.uid),
                                                               is_visible=argument.uid in uids,
@@ -283,8 +282,7 @@ class ItemDictHelper(object):
 
             statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
                                                               is_markable=True,
-                                                              is_editable=not is_arguments_premise_in_edit_queue(
-                                                                  argument.uid),
+                                                              is_editable=not is_arguments_premise_in_edit_queue(argument),
                                                               is_author=is_author_of_argument(db_user, argument.uid),
                                                               is_visible=argument.uid in uids,
                                                               attack_url=_um.get_url_for_jump(argument.uid)))

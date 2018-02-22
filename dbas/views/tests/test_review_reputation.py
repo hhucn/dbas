@@ -2,7 +2,7 @@ import unittest
 
 from pyramid import testing
 
-from dbas.helper.tests import verify_dictionary_of_view
+from dbas.helper.test import verify_dictionary_of_view
 
 
 class ReviewReputationViewTests(unittest.TestCase):
@@ -18,7 +18,7 @@ class ReviewReputationViewTests(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
         self.assertIn('reputation', response)
         self.assertTrue(len(response['reputation']) == 0)
 
@@ -28,6 +28,6 @@ class ReviewReputationViewTests(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
         self.assertIn('reputation', response)
         self.assertTrue(len(response['reputation']) != 0)

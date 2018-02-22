@@ -5,7 +5,7 @@ from pyramid.httpexceptions import HTTPNotFound
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Premise, SeenStatement
-from dbas.helper.tests import verify_dictionary_of_view
+from dbas.helper.test import verify_dictionary_of_view
 
 
 class DiscussionChoseViewTests(unittest.TestCase):
@@ -34,7 +34,7 @@ class DiscussionChoseViewTests(unittest.TestCase):
             'pgroup_ids': [self.pgroup_uid],
         }
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         len_db_seen2 = DBDiscussionSession.query(SeenStatement).count()
         # not logged in, no change
@@ -55,7 +55,7 @@ class DiscussionChoseViewTests(unittest.TestCase):
             'pgroup_ids': [self.pgroup_uid],
         }
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         len_db_seen2 = DBDiscussionSession.query(SeenStatement).count()
 

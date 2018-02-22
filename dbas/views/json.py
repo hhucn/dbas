@@ -127,7 +127,7 @@ def get_all_marked_arguments(request):
     """
     ui_locales = get_language_from_cookie(request)
     db_user = request.validated['user']
-    return user.get_marked_elements_of_user(db_user, True, ui_locales)
+    return user.get_marked_elements_of(db_user, True, ui_locales)
 
 
 # ajax - getting all votes for statements
@@ -142,7 +142,7 @@ def get_all_marked_statements(request):
     """
     ui_locales = get_language_from_cookie(request)
     db_user = request.validated['user']
-    return user.get_marked_elements_of_user(db_user, False, ui_locales)
+    return user.get_marked_elements_of(db_user, False, ui_locales)
 
 
 # ajax - getting all votes for arguments
@@ -157,7 +157,7 @@ def get_all_argument_clicks(request):
     """
     ui_locales = get_language_from_cookie(request)
     db_user = request.validated['user']
-    return user.get_clicked_element_of_user(db_user, True, ui_locales)
+    return user.get_clicked_elements_of(db_user, True, ui_locales)
 
 
 # ajax - getting all votes for statements
@@ -172,7 +172,7 @@ def get_all_statement_clicks(request):
     """
     ui_locales = get_language_from_cookie(request)
     db_user = request.validated['user']
-    return user.get_clicked_element_of_user(db_user, False, ui_locales)
+    return user.get_clicked_elements_of(db_user, False, ui_locales)
 
 
 # ajax - deleting complete history of the user

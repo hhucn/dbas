@@ -3,7 +3,7 @@ import unittest
 from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
-from dbas.helper.tests import verify_dictionary_of_view, clear_clicks_of, clear_seen_by_of
+from dbas.helper.test import verify_dictionary_of_view, clear_clicks_of, clear_seen_by_of
 
 
 class ReviewContentViewTests(unittest.TestCase):
@@ -54,7 +54,7 @@ class ReviewContentViewTests(unittest.TestCase):
 
         request = testing.DummyRequest(matchdict={'queue': 'deletes'})
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
         self.assertTrue(len(response['subpage']['elements']) > 0)
         self.assertTrue(response['subpage']['button_set']['is_delete'])
         self.assertFalse(response['subpage']['button_set']['is_edit'])
@@ -66,7 +66,7 @@ class ReviewContentViewTests(unittest.TestCase):
 
         request = testing.DummyRequest(matchdict={'queue': 'edits'})
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
         self.assertTrue(len(response['subpage']['elements']) > 0)
         self.assertFalse(response['subpage']['button_set']['is_delete'])
         self.assertTrue(response['subpage']['button_set']['is_edit'])
@@ -78,7 +78,7 @@ class ReviewContentViewTests(unittest.TestCase):
 
         request = testing.DummyRequest(matchdict={'queue': 'optimizations'})
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
         self.assertTrue(len(response['subpage']['elements']) > 0)
         self.assertFalse(response['subpage']['button_set']['is_delete'])
         self.assertFalse(response['subpage']['button_set']['is_edit'])

@@ -5,7 +5,7 @@ from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import SeenStatement, User
-from dbas.helper.tests import verify_dictionary_of_view
+from dbas.helper.test import verify_dictionary_of_view
 
 
 class DiscussionInitViewTests(unittest.TestCase):
@@ -24,7 +24,7 @@ class DiscussionInitViewTests(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         len_db_seen2 = DBDiscussionSession.query(SeenStatement).count()
         # not logged in, no change
@@ -40,7 +40,7 @@ class DiscussionInitViewTests(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         # elements, which were seen
         self.assertIn('elements', response['items'])
@@ -59,7 +59,7 @@ class DiscussionInitViewTests(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         # elements, which were seen are now equals the first, cause we have seen them already
         len_db_seen2 = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).count()
