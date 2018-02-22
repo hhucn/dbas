@@ -18,7 +18,7 @@ class ReviewHistoryViewTests(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         self.assertIn('history', response)
         self.assertTrue(len(response['history']) == 0)
@@ -29,7 +29,7 @@ class ReviewHistoryViewTests(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         self.assertIn('history', response)
         self.assertTrue(len(response['history']) != 0)

@@ -66,17 +66,25 @@ class IssueHandlerTests(unittest.TestCase):
         self.assertEqual(response, issue.uid)
 
     def test_get_issue_id(self):
+        request = testing.DummyRequest()
+        response = ih.get_issue_id(request)
+        self.assertIsNotNone(response)
+
         request = testing.DummyRequest(matchdict={'issue': 1})
         response = ih.get_issue_id(request)
-        self.assertEqual(response, 1)
+        self.assertEqual(1, response)
 
-        request = testing.DummyRequest(params={'issue': 1})
+        request = testing.DummyRequest(params={'issue': 2})
         response = ih.get_issue_id(request)
-        self.assertEqual(response, 1)
+        self.assertEqual(2, response)
 
-        request = testing.DummyRequest(session={'issue': 1})
+        request = testing.DummyRequest(session={'issue': 3})
         response = ih.get_issue_id(request)
-        self.assertEqual(response, 1)
+        self.assertEqual(3, response)
+
+        request = testing.DummyRequest(json_body={'issue': 4})
+        response = ih.get_issue_id(request)
+        self.assertEqual(4, response)
 
     def test_get_title_for_slug(self):
         issue = DBDiscussionSession.query(Issue).first()

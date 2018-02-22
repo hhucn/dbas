@@ -18,6 +18,6 @@ class NotFoundViewTests(unittest.TestCase):
 
         request = testing.DummyRequest()
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
         # place for additional stuff

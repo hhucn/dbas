@@ -3,6 +3,7 @@ Provides helping function for displaying the review queues and locking entries.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+from enum import Enum, auto
 
 import transaction
 
@@ -54,6 +55,13 @@ model_mapping = {
     key_split: ReviewSplit,
     key_merge: ReviewMerge
 }
+
+
+class _Code(Enum):
+    DOESNT_EXISTS = auto()
+    DUPLICATE = auto()
+    SUCCESS = auto()
+    ERROR = auto()
 
 
 def get_review_queues_as_lists(main_page, translator, nickname):
@@ -398,18 +406,18 @@ def add_proposals_for_statement_corrections(elements, db_user, _tn):
     :param elements: [Strings]
     :param db_user: User
     :param _tn: Translator
-    :return: String, Boolean
+    :return: String, Boolean for Error
     """
     logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'main')
 
     review_count = len(elements)
     added_reviews = [__add_edit_reviews(el, db_user) for el in elements]
 
-    if added_reviews.count(1) == 0:  # no edits set
-        if added_reviews.count(-1) > 0:
+    if added_reviews.count(_Code.SUCCESS) == 0:  # no edits set
+        if added_reviews.count(_Code.DOESNT_EXISTS) > 0:
             logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'internal key error')
             return _tn.get(_.internalKeyError), True
-        if added_reviews.count(-2) > 0:
+        if added_reviews.count(_Code.DUPLICATE) > 0:
             logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'already edit proposals')
             return _tn.get(_.alreadyEditProposals), True
         logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'no corrections given')
@@ -443,52 +451,50 @@ def __add_edit_reviews(element, db_user):
     db_statement = DBDiscussionSession.query(Statement).get(element['uid'])
     if not db_statement:
         logger('ReviewQueues', '__add_edit_reviews', 'statement {} not found (return -1)'.format(element['uid']))
-        return -1
+        return _Code.DOESNT_EXISTS
 
     # already set an correction for this?
     if is_statement_in_edit_queue(element['uid']):  # if we already have an edit, skip this
         logger('ReviewQueues', '__add_edit_reviews', '{} already got an edit (return -2)'.format(element['uid']))
-        return -2
+        return _Code.DUPLICATE
 
-    db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
-    if len(element['text']) > 0 and db_textversion.content.lower().strip() != element['text'].lower().strip():
+    # is text different?
+    db_tv = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
+    if len(element['text']) > 0 and db_tv.content.lower().strip() != element['text'].lower().strip():
         logger('ReviewQueues', '__add_edit_reviews', 'added review element for {}  (return 1)'.format(element['uid']))
         DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=element['uid']))
-        return 1
+        return _Code.SUCCESS
 
-    return 0
+    return _Code.ERROR
 
 
-def is_statement_in_edit_queue(uid, is_executed=False):
+def is_statement_in_edit_queue(uid: int, is_executed: bool = False) -> bool:
     """
     Returns true if the statement is not in the edit queue
 
     :param uid: Statement.uid
+    :param is_executed: Bool
     :return: Boolean
     """
     logger('ReviewQueues', 'is_statement_in_edit_queue', 'current element: {}'.format(uid))
-    db_already_edit = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid == uid,
-                                                                   ReviewEdit.is_executed == is_executed).all()
-    if db_already_edit:
-        return len(db_already_edit) > 0
-    else:
-        return False
+    db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid == uid,
+                                                                         ReviewEdit.is_executed == is_executed).count()
+    return db_already_edit_count > 0
 
 
-def is_arguments_premise_in_edit_queue(uid):
+def is_arguments_premise_in_edit_queue(db_argument: Argument, is_executed: bool = False) -> bool:
     """
     Returns true if the premises of an argument are not in the edit queue
 
-    :param uid: Argument.uid
+    :param db_argument: Argument
+    :param is_executed: Bool
     :return: Boolean
     """
-    db_argument = DBDiscussionSession.query(Argument).get(uid)
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=db_argument.premisesgroup_uid).all()
-    db_already_edit = []
-    for premise in db_premises:
-        db_already_edit += DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid == premise.statement_uid,
-                                                                        ReviewEdit.is_executed == False).all()
-    return len(db_already_edit) > 0
+    dbp_uid = [p.uid for p in db_premises]
+    db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid.in_(dbp_uid),
+                                                                         ReviewEdit.is_executed == is_executed).count()
+    return db_already_edit_count > 0
 
 
 def __add_edit_values_review(element, db_user):

@@ -18,4 +18,4 @@ class DiscussionFinishViewTests(unittest.TestCase):
 
         request = testing.DummyRequest(matchdict={'arg_id': 10})
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)

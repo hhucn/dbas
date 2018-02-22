@@ -23,7 +23,7 @@ class DiscussionJumpViewTests(unittest.TestCase):
         }
         request = testing.DummyRequest(matchdict=matchdict)
         response = d(request)
-        verify_dictionary_of_view(self, response)
+        verify_dictionary_of_view(response)
 
     def test_page_on_failure(self):
         from dbas.views import discussion_jump as d

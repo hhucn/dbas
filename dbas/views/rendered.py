@@ -132,6 +132,9 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any]):
     :param f: A function with three arguments
     :return: prepared collection for the discussion
     """
+    logger('Views', '__call_from_discussion_step', 'def')
+    logger('Views', '__call_from_discussion_step', 'def')
+    logger('Views', '__call_from_discussion_step', 'def')
     nickname, session_expired = preparation_for_view(request)
     if session_expired:
         request.session.invalidate()
@@ -148,6 +151,7 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any]):
         prepared_discussion['layout'] = base_layout()
         __modifiy_discussion_url(prepared_discussion)
 
+    logger('Views', '__call_from_discussion_step', 'Return dict (isNone={})'.format(dict is None))
     return prepared_discussion
 
 

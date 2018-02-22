@@ -6,9 +6,10 @@ Utility functions for testing.
 """
 import os
 import transaction
+from nose.tools import assert_in
 
 from paste.deploy import appconfig
-from dbas.database import DBDiscussionSession as dbs
+from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, User
 
 
@@ -27,8 +28,8 @@ def path_to_settings(ini_file):
 
 def add_settings_to_appconfig(ini_file="development.ini"):
     """
-    Configure appconfig to set correct ini-file. Defaults to development.ini for testing purposes.
-    If dbas runs inside a docker container and no ini-file is provided, then load the docker.ini.
+    Configure app config to set correct ini-file. Defaults to development.ini for testing purposes.
+    If D-BAS runs inside a docker container and no ini-file is provided, then load the docker.ini.
 
     :param ini_file: name of ini-file
     :return: config with loaded ini-file
@@ -39,19 +40,27 @@ def add_settings_to_appconfig(ini_file="development.ini"):
     return appconfig("config:" + path_to_settings(ini_file))
 
 
-def verify_dictionary_of_view(_self, some_dict):
+def verify_dictionary_of_view(some_dict):
     """
     Check for keys in the dict
 
-    :param _self: Instance of unittest.TestCase
     :param some_dict: dict()
     :return: None
     :rtype: None
     """
-    _self.assertIn('layout', some_dict)
-    _self.assertIn('ui_locales', some_dict['extras'])
-    _self.assertIn('title', some_dict)
-    _self.assertIn('extras', some_dict)
+    assert_in('layout', some_dict)
+    assert_in('ui_locales', some_dict['extras'])
+    assert_in('title', some_dict)
+    assert_in('extras', some_dict)
+
+
+def refresh_user(nickname):
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_user.update_last_login()
+    db_user.update_last_action()
+    DBDiscussionSession.add(db_user)
+    DBDiscussionSession.flush()
+    transaction.commit()
 
 
 def clear_seen_by_of(nickname):
@@ -61,9 +70,9 @@ def clear_seen_by_of(nickname):
     :param nickname: User.nickname
     :return: None
     """
-    db_user = dbs.query(User).filter_by(nickname=nickname).first()
-    dbs.query(SeenStatement).filter_by(user_uid=db_user.uid).delete()
-    dbs.query(SeenArgument).filter_by(user_uid=db_user.uid).delete()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).delete()
+    DBDiscussionSession.query(SeenArgument).filter_by(user_uid=db_user.uid).delete()
     transaction.commit()
 
 
@@ -74,7 +83,7 @@ def clear_clicks_of(nickname):
     :param nickname: User.nickname
     :return: None
     """
-    db_user = dbs.query(User).filter_by(nickname=nickname).first()
-    dbs.query(ClickedStatement).filter_by(author_uid=db_user.uid).delete()
-    dbs.query(ClickedArgument).filter_by(author_uid=db_user.uid).delete()
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=db_user.uid).delete()
+    DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=db_user.uid).delete()
     transaction.commit()

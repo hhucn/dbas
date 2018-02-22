@@ -202,10 +202,15 @@ def get_issue_id(request):
     """
     # logger('IssueHelper', 'get_issue_id', 'def')
     # first matchdict, then params, then session
-    issue_uid = request.matchdict['issue'] if 'issue' in request.matchdict \
-        else request.params['issue'] if 'issue' in request.params \
-        else request.session['issue'] if 'issue' in request.session \
-        else None
+    issue_uid = None
+    if request and hasattr(request, 'json_body'):
+        issue_uid = request.json_body.get('issue')
+    if not issue_uid:
+        issue_uid = request.matchdict.get('issue')
+    if not issue_uid:
+        issue_uid = request.params.get('issue')
+    if not issue_uid:
+        issue_uid = request.session.get('issue')
 
     # no issue found
     if not issue_uid:

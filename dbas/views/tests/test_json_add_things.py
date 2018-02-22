@@ -46,22 +46,29 @@ class AjaxAddThingsTest(unittest.TestCase):
         DBDiscussionSession.query(Argument).filter_by(uid=db_new_arg.uid).delete()
 
     def __set_multiple_start_premises(self, view):
-        db_arg1 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).count()
+        db_conclusion = DBDiscussionSession.query(Statement).filter(Statement.is_disabled == False,
+                                                                    Statement.issue_uid == 2).first()
+        db_arg = DBDiscussionSession.query(Argument).filter(Argument.conclusion_uid == db_conclusion.uid,
+                                                            Argument.is_disabled == False).first()
+        db_arg_len1 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_conclusion.uid).count()
         len_db_reputation1 = DBDiscussionSession.query(ReputationHistory).count()
         request = testing.DummyRequest(json_body={
             'premisegroups': [['this is my first premisegroup']],
-            'conclusion_id': 2,
-            'issue': 2,
+            'conclusion_id': db_conclusion.uid,
+            'issue': db_arg.issue_uid,
             'supportive': True
         }, mailer=DummyMailer)
+        from pprint import pprint
+        pprint('in conclusion_id: {}'.format(db_conclusion.uid))
+        pprint('in issue: {}'.format(db_arg.issue_uid))
         response = view(request)
         transaction.commit()
-        db_arg2 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=2).count()
+        db_arg_len2 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_conclusion.uid).count()
         len_db_reputation2 = DBDiscussionSession.query(ReputationHistory).count()
-        self.assertIsNotNone(response)
-        self.assertEquals(db_arg1 + 1, db_arg2)
+        self.assertFalse(response['error'])
+        self.assertEquals(db_arg_len1 + 1, db_arg_len2)
         self.assertEquals(len_db_reputation1 + 1, len_db_reputation2)
-        self.delete_last_argument_by_conclusion_uid(2)
+        self.delete_last_argument_by_conclusion_uid(db_arg.conclusion_uid)
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Björn').first()
         DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()
         transaction.commit()

@@ -75,13 +75,22 @@ def valid_conclusion(request):
     :return:
     """
     conclusion_id = request.json_body.get('conclusion_id')
-    issue_id = request.validated['issue'].uid if 'issue' in request.validated else issue_handler.get_issue_id(request)
+    issue = request.validated.get('issue', issue_handler.get_issue_id(request))
 
-    if conclusion_id and isinstance(conclusion_id, int) and isinstance(issue_id, int):
+    if conclusion_id and isinstance(conclusion_id, int) and isinstance(issue.uid, int):
         db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id,
-                                                                       issue_uid=issue_id,
+                                                                       issue_uid=issue.uid,
                                                                        is_disabled=False).first()
-        request.validated['conclusion'] = db_conclusion
+        if db_conclusion:
+            request.validated['conclusion'] = db_conclusion
+        else:
+            _tn = Translator(get_language_from_cookie(request))
+            from pprint import pprint
+            pprint(conclusion_id)  # 2
+            pprint(issue.uid)  # 3
+            pprint(request.validated.get('issue').uid)
+            pprint(issue_handler.get_issue_id(request))
+            add_error(request, 'valid_conclusion', 'Conclusion is missing', _tn.get(_.conclusionIsMissing))
     else:
         _tn = Translator(get_language_from_cookie(request))
         add_error(request, 'valid_conclusion', 'Conclusion id is missing', _tn.get(_.conclusionIsMissing))
@@ -95,9 +104,10 @@ def valid_statement(request):
     :return:
     """
     statement_id = request.json_body.get('uid')
-    db_statement = DBDiscussionSession.query(Statement).filter(Statement.uid == statement_id,
-                                                               Statement.is_disabled == False).first() if is_integer(
-        statement_id) else None
+    db_statement = None
+    if is_integer(statement_id):
+        db_statement = DBDiscussionSession.query(Statement).filter(Statement.uid == statement_id,
+                                                                   Statement.is_disabled == False).first()
 
     if db_statement:
         request.validated['statement'] = db_statement

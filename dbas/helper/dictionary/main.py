@@ -202,10 +202,10 @@ class DictionaryHelper(object):
         """
         _tn = Translator(self.system_lang)
 
-        edits = user.get_count_of_statements(db_user, True)
-        statements = user.get_count_of_statements(db_user, False)
-        arg_vote, stat_vote = user.get_count_of_votes_of_user(db_user)
-        arg_clicks, stat_clicks = user.get_count_of_clicks(db_user)
+        edits = user.get_edit_count_of(db_user, False)
+        statements = user.get_statement_count_of(db_user, False)
+        arg_vote, stat_vote = user.get_mark_count_of(db_user)
+        arg_clicks, stat_clicks = user.get_click_count_of(db_user)
         public_nick = db_user.get_global_nickname()
         db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
         db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)

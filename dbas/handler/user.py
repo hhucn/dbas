@@ -10,6 +10,7 @@ from datetime import date, timedelta
 
 import arrow
 import transaction
+from typing import Tuple
 
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
@@ -310,7 +311,7 @@ def get_reviews_of(user, only_today):
     return len(db_edits) + len(db_deletes) + len(db_optimizations) + len(db_duplicates)
 
 
-def get_count_of_statements(user, only_edits, limit_on_today=False):
+def __get_count_of_statements(user, only_edits, limit_on_today=False):
     """
     Returns the count of statements of the user
 
@@ -325,35 +326,46 @@ def get_count_of_statements(user, only_edits, limit_on_today=False):
     edit_count = 0
     statement_count = 0
     db_textversions = DBDiscussionSession.query(TextVersion).filter_by(author_uid=user.uid)
+
     if limit_on_today:
         today = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
         db_textversions = db_textversions.filter(TextVersion.timestamp >= today)
     db_textversions = db_textversions.all()
 
     for tv in db_textversions:
-        db_root_version = DBDiscussionSession.query(TextVersion).filter_by(
-            statement_uid=tv.statement_uid).first()  # TODO #432
+        db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tv.statement_uid).first()
         if db_root_version.uid < tv.uid:
             edit_count += 1
         else:
             statement_count += 1
 
-    return edit_count if only_edits else statement_count
+    if only_edits:
+        return edit_count
+    else:
+        return statement_count
 
 
-def get_count_of_votes_of_user(user, limit_on_today=False):
+def get_statement_count_of(db_user: User, only_today: bool = False) -> int:
+    return __get_count_of_statements(db_user, False, only_today)
+
+
+def get_edit_count_of(db_user: User, only_today: bool = False) -> int:
+    return __get_count_of_statements(db_user, True, only_today)
+
+
+def get_mark_count_of(db_user: User, limit_on_today: bool = False):
     """
     Returns the count of marked ones of the user
 
-    :param user: User
+    :param db_user: User
     :param limit_on_today: Boolean
     :return: Int, Int
     """
-    if not user:
+    if not db_user:
         return (0, 0)
 
-    db_arg = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.author_uid == user.uid)
-    db_stat = DBDiscussionSession.query(MarkedStatement).filter(MarkedStatement.author_uid == user.uid)
+    db_arg = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.author_uid == db_user.uid)
+    db_stat = DBDiscussionSession.query(MarkedStatement).filter(MarkedStatement.author_uid == db_user.uid)
 
     if limit_on_today:
         today = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
@@ -363,19 +375,19 @@ def get_count_of_votes_of_user(user, limit_on_today=False):
     return db_arg.count(), db_stat.count()
 
 
-def get_count_of_clicks(user, limit_on_today=False):
+def get_click_count_of(db_user: User, limit_on_today: bool = False) -> Tuple[int, int]:
     """
     Returns the count of clicks of the user
 
-    :param user: User
+    :param db_user: User
     :param limit_on_today: Boolean
     :return: Int, Int
     """
-    if not user:
+    if not db_user:
         return (0, 0)
 
-    db_arg = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == user.uid)
-    db_stat = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == user.uid)
+    db_arg = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == db_user.uid)
+    db_stat = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == db_user.uid)
 
     if limit_on_today:
         today = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
@@ -426,7 +438,7 @@ def get_textversions(db_user: User, lang: str, timestamp_after=None, timestamp_b
     }
 
 
-def get_marked_elements_of_user(db_user: User, is_argument: bool, lang: str):
+def get_marked_elements_of(db_user: User, is_argument: bool, lang: str):
     """
     Get all marked arguments/statements of the user
 
@@ -457,9 +469,10 @@ def get_marked_elements_of_user(db_user: User, is_argument: bool, lang: str):
     return return_array
 
 
-def get_clicked_element_of_user(db_user: User, is_argument: bool, lang: str):
+def get_clicked_elements_of(db_user: User, is_argument: bool, lang: str) -> list:
     """
-    Returs array with all clicks done by the user
+    Returns array with all clicked elements by the user. Each element is a dict with information like the uid,
+    timestamp, up_Vote, validity, the clicked uid and content of the clicked element.
 
     :param db_user: User
     :param is_argument: Boolean
@@ -467,25 +480,22 @@ def get_clicked_element_of_user(db_user: User, is_argument: bool, lang: str):
     :return: [{},...]
     """
     return_array = []
+    db_type = ClickedArgument if is_argument else ClickedStatement
+    db_clicks = DBDiscussionSession.query(db_type).filter_by(author_uid=db_user.uid).all()
 
-    if is_argument:
-        db_votes = DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=db_user.uid).all()
-    else:
-        db_votes = DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=db_user.uid).all()
-
-    for vote in db_votes:
-        vote_dict = dict()
-        vote_dict['uid'] = str(vote.uid)
-        vote_dict['timestamp'] = sql_timestamp_pretty_print(vote.timestamp, lang)
-        vote_dict['is_up_vote'] = str(vote.is_up_vote)
-        vote_dict['is_valid'] = str(vote.is_valid)
+    for click in db_clicks:
+        click_dict = dict()
+        click_dict['uid'] = click.uid
+        click_dict['timestamp'] = sql_timestamp_pretty_print(click.timestamp, lang)
+        click_dict['is_up_vote'] = click.is_up_vote
+        click_dict['is_valid'] = click.is_valid
         if is_argument:
-            vote_dict['argument_uid'] = str(vote.argument_uid)
-            vote_dict['content'] = get_text_for_argument_uid(vote.argument_uid, lang)
+            click_dict['argument_uid'] = click.argument_uid
+            click_dict['content'] = get_text_for_argument_uid(click.argument_uid, lang)
         else:
-            vote_dict['statement_uid'] = str(vote.statement_uid)
-            vote_dict['content'] = get_text_for_statement_uid(vote.statement_uid)
-        return_array.append(vote_dict)
+            click_dict['statement_uid'] = click.statement_uid
+            click_dict['content'] = get_text_for_statement_uid(click.statement_uid)
+        return_array.append(click_dict)
 
     return return_array
 
@@ -510,7 +520,7 @@ def get_information_of(db_user, lang):
     ret_dict['is_female'] = db_user.gender == 'f'
     ret_dict['is_neutral'] = db_user.gender != 'm' and db_user.gender != 'f'
 
-    arg_votes, stat_votes = get_count_of_votes_of_user(db_user, False)
+    arg_votes, stat_votes = get_mark_count_of(db_user, False)
     db_reviews_duplicate = DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=db_user.uid).all()
     db_reviews_edit = DBDiscussionSession.query(ReviewEdit).filter_by(detector_uid=db_user.uid).all()
     db_reviews_delete = DBDiscussionSession.query(ReviewDelete).filter_by(detector_uid=db_user.uid).all()
@@ -537,28 +547,31 @@ def get_summary_of_today(nickname, lang):
     :param lang: ui_locales
     :return: dict()
     """
-    ret_dict = dict()
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-
     if not db_user:
-        return dict()
+        return {}
 
-    arg_votes, stat_votes = get_count_of_votes_of_user(db_user, True)
-    arg_clicks, stat_clicks = get_count_of_clicks(db_user, True)
+    arg_votes, stat_votes = get_mark_count_of(db_user, True)
+    arg_clicks, stat_clicks = get_click_count_of(db_user, True)
     reputation, tmp = get_reputation_of(nickname, True)
     timestamp = arrow.utcnow().to('Europe/Berlin')
+    if lang == 'en':
+        timestamp.format('MM-DD')
+    else:
+        timestamp.format('DD.MM.')
 
-    ret_dict['firstname'] = db_user.firstname
-    ret_dict['date'] = timestamp.format('YYYY-MM-DD') if lang == 'en' else timestamp.format('DD.MM.')
-    ret_dict['statements_posted'] = get_count_of_statements(db_user, False, True)
-    ret_dict['edits_done'] = get_count_of_statements(db_user, True, True)
-    ret_dict['discussion_arg_votes'] = arg_votes
-    ret_dict['discussion_stat_votes'] = stat_votes
-    ret_dict['discussion_arg_clicks'] = arg_clicks
-    ret_dict['discussion_stat_clicks'] = stat_clicks
-    ret_dict['statements_reported'] = get_reviews_of(db_user, True)
-    ret_dict['reputation_colltected'] = reputation
-
+    ret_dict = {
+        'firstname': db_user.firstname,
+        'date': timestamp,
+        'statements_posted': get_statement_count_of(db_user, True),
+        'edits_done': get_edit_count_of(db_user, True),
+        'discussion_arg_votes': arg_votes,
+        'discussion_stat_votes': stat_votes,
+        'discussion_arg_clicks': arg_clicks,
+        'discussion_stat_clicks': stat_clicks,
+        'statements_reported': get_reviews_of(db_user, True),
+        'reputation_colltected': reputation
+    }
     return ret_dict
 
 

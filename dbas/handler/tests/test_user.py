@@ -5,10 +5,11 @@ from datetime import date, timedelta
 
 from pyramid import testing
 
-from nose.tools import assert_false, assert_true, assert_not_equal, assert_in, assert_not_in, assert_less, assert_equal, \
-    assert_greater_equal
+from nose.tools import assert_false, assert_true, assert_not_equal, assert_in, assert_not_in, assert_equal, \
+    assert_greater_equal, assert_less_equal
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Settings, TextVersion, ClickedArgument, ClickedStatement, ReviewEdit
+from dbas.database.discussion_model import User, Settings, TextVersion, ClickedArgument, ClickedStatement, ReviewEdit, \
+    Statement
 from dbas.handler import user
 
 
@@ -68,57 +69,88 @@ class UserHandlerTests(unittest.TestCase):
         assert_greater_equal(user.get_reviews_of(self.user, True), 0)
         assert_greater_equal(user.get_reviews_of(self.user, False), 0)
 
-    def test_get_count_of_statements(self):
-        kurt = DBDiscussionSession.query(User).filter_by(nickname='Engelbert').first()
-        assert_greater_equal(user.get_count_of_statements(None, True, False), 0)
-        assert_greater_equal(user.get_count_of_statements(kurt, False, False), 0)
-        assert_greater_equal(user.get_count_of_statements(kurt, True, False), 0)
-        assert_greater_equal(user.get_count_of_statements(kurt, False, True), 0)
-        assert_greater_equal(user.get_count_of_statements(kurt, True, True), 0)
+    def def_get_statement_count_of(self):
+        engelbert = DBDiscussionSession.query(User).filter_by(nickname='Engelbert').first()
+        assert_equal(user.get_statement_count_of(None, True), 0)
+        assert_equal(user.get_statement_count_of(None, False), 0)
+        assert_equal(user.get_statement_count_of(engelbert, True), 0)
+        assert_equal(user.get_statement_count_of(engelbert, False), 0)
 
-        tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=1).first()
-        tv.author_uid = self.user.uid
-        DBDiscussionSession.add(tv)
-        DBDiscussionSession.add(TextVersion(content=tv.content + '-', author=self.user.uid, statement_uid=1))
+        # add statement
+        db_st = Statement(True, 2)
+        DBDiscussionSession.add(db_st)
+        DBDiscussionSession.flush()
         transaction.commit()
-        a = user.get_count_of_statements(self.user, False, True)
-        b = user.get_count_of_statements(self.user, True, True)
-        assert_less(b, a)
+        db_tv = TextVersion('hello, here i am', engelbert.uid, db_st.uid)
+        DBDiscussionSession.add(db_tv)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        assert_equal(1, user.get_statement_count_of(engelbert, True))
+        assert_equal(1, user.get_statement_count_of(engelbert, False))
+
+        # set older timestamp
+        db_tv.timestamp = DBDiscussionSession.query(TextVersion).get(1).timestamp
+        DBDiscussionSession.add(db_tv)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        assert_equal(0, user.get_statement_count_of(engelbert, True))
+        assert_equal(1, user.get_statement_count_of(engelbert, False))
+
+    def def_get_edit_count_of(self):
+        engelbert = DBDiscussionSession.query(User).filter_by(nickname='Engelbert').first()
+        assert_equal(0, user.get_edit_count_of(None, True))
+        assert_equal(0, user.get_edit_count_of(None, False))
+        assert_equal(0, user.get_edit_count_of(engelbert, True))
+        assert_equal(0, user.get_edit_count_of(engelbert, False))
+
+        # add edit
+        db_st = DBDiscussionSession.query(Statement).get(1)
+        db_tv = TextVersion('hello, here i am again', engelbert.uid, db_st.uid)
+        DBDiscussionSession.add(db_tv)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        assert_equal(1, user.get_edit_count_of(engelbert, True))
+        assert_equal(1, user.get_edit_count_of(engelbert, False))
+
+        # set older timestamp
+        db_tv.timestamp = DBDiscussionSession.query(TextVersion).get(1).timestamp
+        DBDiscussionSession.add(db_tv)
+        DBDiscussionSession.flush()
+        transaction.commit()
+        assert_equal(0, user.get_edit_count_of(engelbert, True))
+        assert_equal(1, user.get_edit_count_of(engelbert, False))
 
     def test_get_count_of_votes_of_user(self):
-        assert_equal(user.get_count_of_votes_of_user(None, True), (0, 0))
-        assert_equal(user.get_count_of_votes_of_user(self.user, False), (0, 0))
-        assert_equal(user.get_count_of_votes_of_user(self.user, True), (0, 0))
+        assert_equal((0, 0), user.get_mark_count_of(None, True))
+        assert_equal((0, 0), user.get_mark_count_of(self.user, False))
+        assert_equal((0, 0), user.get_mark_count_of(self.user, True))
 
     def test_get_count_of_clicks(self):
-        assert_equal(user.get_count_of_clicks(None, True), (0, 0))
-        assert_equal(user.get_count_of_clicks(self.user, False), (0, 0))
-        assert_equal(user.get_count_of_clicks(self.user, True), (0, 0))
+        assert_equal((0, 0), user.get_click_count_of(None, True))
+        assert_equal((0, 0), user.get_click_count_of(self.user, False))
+        assert_equal((0, 0), user.get_click_count_of(self.user, True))
 
         DBDiscussionSession.add(ClickedArgument(1, self.user.uid))
         DBDiscussionSession.add(ClickedStatement(1, self.user.uid))
-        assert_equal(user.get_count_of_clicks(self.user, False), (1, 1))
-        assert_equal(user.get_count_of_clicks(self.user, True), (1, 1))
+        assert_equal((1, 1), user.get_click_count_of(self.user, False))
+        assert_equal((1, 1), user.get_click_count_of(self.user, True))
         transaction.commit()
 
     def test_get_textversions(self):
-
         d = user.get_textversions(self.user, 'en')
-        assert_greater_equal(len(d.get('statements', [])), 0)
-        assert_greater_equal(len(d.get('edits', [])), 0)
+        assert_greater_equal(0, len(d.get('statements', [])))
+        assert_greater_equal(0, len(d.get('edits', [])))
 
-    def test_get_marked_elements_of_user(self):
-        prep_dict = user.get_marked_elements_of_user(self.user, False, 'en')
-        assert_equal(len(prep_dict), 0)
+    def test_get_marked_elements_of(self):
+        prep_dict = user.get_marked_elements_of(self.user, False, 'en')
+        assert_equal(0, len(prep_dict))
         assert_not_in('uid', prep_dict)
 
-    def test_get_arg_clicks_of_user(self):
-        prep_array = user.get_clicked_element_of_user(self.user, True, 'en')
-        assert_greater_equal(len(prep_array), 0)
-
-    def test_get_stmt_clicks_of_user(self):
-        prep_array = user.get_clicked_element_of_user(self.user, False, 'en')
-        assert_greater_equal(len(prep_array), 0)
+    def test_get_clicked_elements_of(self):
+        prep_array = user.get_clicked_elements_of(self.user, True, 'en')
+        assert_less_equal(0, len(prep_array))
+        prep_array = user.get_clicked_elements_of(self.user, False, 'en')
+        assert_less_equal(0, len(prep_array))
 
     def test_get_information_of(self):
         prep_dict = user.get_information_of(self.user, 'en')
@@ -135,12 +167,12 @@ class UserHandlerTests(unittest.TestCase):
         prep_dict = user.get_summary_of_today('', 'en')
         assert_equal(len(prep_dict), 0)
 
-        prep_dict = user.get_summary_of_today('Tobias', 'en')
-        assert_equal(prep_dict['firstname'], self.user.firstname)
-        assert_equal(prep_dict['discussion_arg_clicks'], 1)
-        assert_equal(prep_dict['discussion_stat_clicks'], 1)
-        assert_equal(prep_dict['statements_posted'], 2)
-        assert_equal(prep_dict['edits_done'], 1)
+        prep_dict = user.get_summary_of_today(self.user.nickname, 'en')
+        assert_equal(self.user.nickname, prep_dict['firstname'])
+        assert_less_equal(0, prep_dict['discussion_arg_clicks'])
+        assert_less_equal(0, prep_dict['discussion_stat_clicks'])
+        assert_less_equal(0, prep_dict['statements_posted'])
+        assert_less_equal(0, prep_dict['edits_done'])
 
     def test_change_password(self):
         pascal = DBDiscussionSession.query(User).filter_by(nickname='Pascal').first()
