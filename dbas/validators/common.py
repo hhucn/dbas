@@ -25,7 +25,7 @@ def valid_language(request):
     _tn = Translator(get_language_from_cookie(request))
     if not lang:
         add_error(request, 'valid_language', 'Invalid language', _tn.get(_.checkLanguage))
-        return
+        return False
 
     db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=lang).first()
     if db_lang:
