@@ -68,17 +68,17 @@ def test_valid_review_queue_key():
 
 def test_valid_uid_as_row_in_review_queue():
     request = __prepare_dict({'queue': '', 'uid': ''})
-    response = valid_review_queue_key(request)
+    response = valid_uid_as_row_in_review_queue(request)
     assert_false(response)
     assert_equal(bool, type(response))
 
     request = __prepare_dict({'queue': 'ReviewEdit', 'uid': 10000})
-    response = valid_review_queue_key(request)
+    response = valid_uid_as_row_in_review_queue(request)
     assert_false(response)
     assert_equal(bool, type(response))
 
     db_edit = DBDiscussionSession.query(ReviewEdit).filter_by(is_executed=False).first()
     request = __prepare_dict({'queue': 'ReviewEdit', 'uid': db_edit.uid})
-    response = valid_review_queue_key(request)
+    response = valid_uid_as_row_in_review_queue(request)
     assert_false(response)
     assert_equal(bool, type(response))
