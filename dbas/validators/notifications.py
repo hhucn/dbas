@@ -23,11 +23,13 @@ def __validate_notification_msg(request, key):
 
     if notification_text and isinstance(notification_text, str) and len(notification_text) >= min_length:
         request.validated[key] = notification_text
+        return True
     else:
         _tn = Translator(get_language_from_cookie(request))
         error_msg = '{} ({}: {})'.format(_tn.get(_.empty_notification_input), _tn.get(_.minLength), min_length)
         add_error(request, 'valid_notification_content', 'Notification {} too short or invalid'.format(key),
                   error_msg)
+        return False
 
 
 def valid_notification_title(request):
@@ -37,7 +39,7 @@ def valid_notification_title(request):
     :param request:
     :return:
     """
-    __validate_notification_msg(request, 'title')
+    return __validate_notification_msg(request, 'title')
 
 
 def valid_notification_text(request):
@@ -47,7 +49,7 @@ def valid_notification_text(request):
     :param request:
     :return:
     """
-    __validate_notification_msg(request, 'text')
+    return __validate_notification_msg(request, 'text')
 
 
 def valid_notification_recipient(request):
