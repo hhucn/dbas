@@ -20,9 +20,11 @@ def valid_table_name(request):
     table_name = escape_if_string(request.json_body, 'table')
     if table_name and table_name.lower() in table_mapper:
         request.validated['table'] = table_name
+        return True
     else:
         _tn = Translator(get_language_from_cookie(request))
         add_error(request, 'valid_table_name', 'Invalid table name', _tn.get(_.invalidTableName))
+        return False
 
 
 def valid_database_model(keyword, model):
@@ -31,7 +33,9 @@ def valid_database_model(keyword, model):
         db_something = DBDiscussionSession.query(model).get(uid) if is_integer(uid) and model else None
         if db_something:
             request.validated['db_model'] = db_something
+            return True
         else:
             add_error(request, 'valid_model', 'Database has no row {} of {}'.format(uid, model))
+            return False
 
     return valid_model
