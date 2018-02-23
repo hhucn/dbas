@@ -75,11 +75,13 @@ def valid_conclusion(request):
     :return:
     """
     conclusion_id = request.json_body.get('conclusion_id')
-    issue = request.validated.get('issue', issue_handler.get_issue_id(request))
+    issue = request.validated.get('issue')
+    if not issue:
+        issue = DBDiscussionSession.query(Issue).get(issue_handler.get_issue_id(request))
 
     if conclusion_id and isinstance(conclusion_id, int):
         db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id,
-                                                                       issue_uid=issue,
+                                                                       issue_uid=issue.uid,
                                                                        is_disabled=False).first()
         if db_conclusion:
             request.validated['conclusion'] = db_conclusion

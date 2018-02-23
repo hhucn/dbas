@@ -109,20 +109,23 @@ class DiscussionTest(unittest.TestCase):
         assert_false(response)
         assert_equal(bool, type(response))
 
+        db_issue1 = DBDiscussionSession.query(Issue).get(1)
+        db_issue2 = DBDiscussionSession.query(Issue).get(2)
+
         request = self.__prepare_dict({'conclusion_id': '2',
-                                       'issue': 2})
+                                       'issue': db_issue2})
         response = discussion.valid_conclusion(request)
         assert_false(response)
         assert_equal(bool, type(response))
 
         request = self.__prepare_dict({'conclusion_id': 2,
-                                       'issue': 1})
+                                       'issue': db_issue1})
         response = discussion.valid_conclusion(request)
         assert_false(response)
         assert_equal(bool, type(response))
 
         request = self.__prepare_dict({'conclusion_id': 2,
-                                       'issue': 2})
+                                       'issue': db_issue2})
         response = discussion.valid_conclusion(request)
         assert_true(response)
         assert_equal(bool, type(response))
