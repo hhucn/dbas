@@ -105,13 +105,6 @@ class DiscussionJustifyViewTests(unittest.TestCase):
                                                                           ClickedStatement.is_up_vote == False).count()
 
         # minus 1 for 'none of the above'
-        from pprint import pprint
-        for el in response['items']['elements']:
-            pprint(el)
-        pprint(len_db_seen1)  # 0
-        pprint(len_db_seen2)  # 2
-        pprint(len_db_vote1)  # 0
-        pprint(len_db_vote2)  # 1
         count = sum([len(el['premises']) for el in response['items']['elements']])
         self.assertEqual(len_db_seen1 + count, len_db_seen2)
         self.assertEqual(len_db_vote1 + 1, len_db_vote2)

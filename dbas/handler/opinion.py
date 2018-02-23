@@ -158,8 +158,6 @@ def get_user_with_same_opinion_for_statements(statement_uids, is_supportive, db_
     for uid in statement_uids:
         statement_dict = __get_opinions_for_uid(uid, is_supportive, db_user, lang, _t, main_page)
         opinions.append(statement_dict)
-    from pprint import pprint
-    pprint(opinions)
 
     return {'opinions': opinions, 'title': title[0:1].upper() + title[1:]}
 

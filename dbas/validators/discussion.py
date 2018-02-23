@@ -85,11 +85,6 @@ def valid_conclusion(request):
             request.validated['conclusion'] = db_conclusion
         else:
             _tn = Translator(get_language_from_cookie(request))
-            from pprint import pprint
-            pprint(conclusion_id)  # 2
-            pprint(issue.uid)  # 3
-            pprint(request.validated.get('issue').uid)
-            pprint(issue_handler.get_issue_id(request))
             add_error(request, 'valid_conclusion', 'Conclusion is missing', _tn.get(_.conclusionIsMissing))
     else:
         _tn = Translator(get_language_from_cookie(request))

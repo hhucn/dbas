@@ -58,9 +58,6 @@ class AjaxAddThingsTest(unittest.TestCase):
             'issue': db_arg.issue_uid,
             'supportive': True
         }, mailer=DummyMailer)
-        from pprint import pprint
-        pprint('in conclusion_id: {}'.format(db_conclusion.uid))
-        pprint('in issue: {}'.format(db_arg.issue_uid))
         response = view(request)
         transaction.commit()
         db_arg_len2 = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=db_conclusion.uid).count()
