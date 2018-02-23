@@ -77,18 +77,21 @@ def valid_conclusion(request):
     conclusion_id = request.json_body.get('conclusion_id')
     issue = request.validated.get('issue', issue_handler.get_issue_id(request))
 
-    if conclusion_id and isinstance(conclusion_id, int) and isinstance(issue.uid, int):
+    if conclusion_id and isinstance(conclusion_id, int):
         db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id,
-                                                                       issue_uid=issue.uid,
+                                                                       issue_uid=issue,
                                                                        is_disabled=False).first()
         if db_conclusion:
             request.validated['conclusion'] = db_conclusion
+            return True
         else:
             _tn = Translator(get_language_from_cookie(request))
             add_error(request, 'valid_conclusion', 'Conclusion is missing', _tn.get(_.conclusionIsMissing))
+            return False
     else:
         _tn = Translator(get_language_from_cookie(request))
         add_error(request, 'valid_conclusion', 'Conclusion id is missing', _tn.get(_.conclusionIsMissing))
+        return False
 
 
 def valid_statement(request):
@@ -106,9 +109,11 @@ def valid_statement(request):
 
     if db_statement:
         request.validated['statement'] = db_statement
+        return True
     else:
         _tn = Translator(get_language_from_cookie(request))
         add_error(request, 'valid_statement', 'Statement uid is missing', _tn.get(_.wrongStatement))
+        return False
 
 
 def valid_argument(request):
@@ -119,15 +124,18 @@ def valid_argument(request):
     :return:
     """
     argument_id = request.json_body.get('uid')
-    db_argument = DBDiscussionSession.query(Argument).filter(Argument.uid == argument_id,
-                                                             Argument.is_disabled == False).first() if is_integer(
-        argument_id) else None
+    db_argument = None
+    if is_integer(argument_id):
+        db_argument = DBDiscussionSession.query(Argument).filter(Argument.uid == argument_id,
+                                                                 Argument.is_disabled == False).first()
 
     if db_argument:
         request.validated['argument'] = db_argument
+        return True
     else:
         _tn = Translator(get_language_from_cookie(request))
         add_error(request, 'valid_argument', 'Argument uid is missing', _tn.get(_.wrongArgument))
+        return False
 
 
 def valid_statement_text(request):
@@ -140,10 +148,12 @@ def valid_statement_text(request):
     min_length = request.registry.settings.get('settings:discussion:statement_min_length', 10)
     text = escape_if_string(request.json_body, 'statement')
 
-    if text and len(text) < min_length:
+    if not text or text and len(text) < min_length:
         __set_min_length_error(request, min_length)
+        return False
     else:
         request.validated['statement'] = text
+        return True
 
 
 def valid_premisegroup(request):
@@ -154,13 +164,17 @@ def valid_premisegroup(request):
     :return:
     """
     pgroup_uid = request.json_body.get('uid')
-    db_pgroup = DBDiscussionSession.query(PremiseGroup).get(pgroup_uid) if is_integer(pgroup_uid) else None
+    db_pgroup = None
+    if is_integer(pgroup_uid):
+        db_pgroup = DBDiscussionSession.query(PremiseGroup).get(pgroup_uid)
 
     if db_pgroup:
         request.validated['pgroup'] = db_pgroup
+        return True
     else:
         _tn = Translator(get_language_from_cookie(request))
         add_error(request, 'valid_premisegroup', 'PGroup uid is missing', _tn.get(_.internalError))
+        return False
 
 
 def valid_premisegroups(request):
@@ -171,11 +185,12 @@ def valid_premisegroups(request):
     :return:
     """
     premisegroups = request.json_body.get('premisegroups')
-    if not premisegroups or not isinstance(premisegroups, list) or not all(
-            [isinstance(l, list) for l in premisegroups]):
+    if not premisegroups \
+            or not isinstance(premisegroups, list)\
+            or not all([isinstance(l, list) for l in premisegroups]):
         _tn = Translator(get_language_from_cookie(request))
         add_error(request, 'valid_premisegroups', 'Invalid conclusion id', _tn.get(_.requestFailed))
-        return
+        return False
 
     min_length = request.registry.settings.get('settings:discussion:statement_min_length', 10)
     for premisegroup in premisegroups:
@@ -183,11 +198,13 @@ def valid_premisegroups(request):
             if isinstance(premise, str):
                 if len(premise) < min_length:
                     __set_min_length_error(request, min_length)
+                    return False
             else:
                 add_error(request, 'valid_premisegroups', 'At least one premise isn\'t a string!')
                 return False
 
     request.validated['premisegroups'] = premisegroups
+    return True
 
 
 def valid_statement_or_argument(request):
@@ -202,8 +219,10 @@ def valid_statement_or_argument(request):
 
     if db_arg_or_stmt:
         request.validated['arg_or_stmt'] = db_arg_or_stmt
+        return True
     else:
         add_error(request, 'valid_statement_or_argument', t.__name__ + ' is invalid')
+        return False
 
 
 def valid_text_values(request):
@@ -211,6 +230,7 @@ def valid_text_values(request):
     tvalues = escape_if_string(request.json_body, 'text_values')
     if not tvalues:
         __set_min_length_error(request, min_length)
+        return False
 
     error = False
     for text in tvalues:
@@ -220,6 +240,8 @@ def valid_text_values(request):
 
     if not error:
         request.validated['text_values'] = tvalues
+        return True
+    return False
 
 
 # -----------------------------------------------------------------------------
