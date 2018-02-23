@@ -24,9 +24,11 @@ def valid_review_reason(request):
 
     if db_reason or reason in ['optimization', 'duplicate']:
         request.validated['reason'] = reason
+        return True
     else:
         _tn = Translator(get_language_from_cookie(request))
         add_error(request, 'valid_review_reason', 'Invalid reason', _tn.get(_.internalError))
+        return False
 
 
 def valid_not_executed_review(keyword, model):
