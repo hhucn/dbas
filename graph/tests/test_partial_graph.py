@@ -1,12 +1,6 @@
 import unittest
 
-from dbas.database import DBDiscussionSession, get_dbas_db_configuration
-from dbas.helper.test import add_settings_to_appconfig
 from graph.partial_graph import get_partial_graph_for_argument, get_partial_graph_for_statement
-
-settings = add_settings_to_appconfig()
-
-DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
 
 
 class PartialGraphTest(unittest.TestCase):

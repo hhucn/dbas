@@ -6,14 +6,10 @@ Unit tests for lib.py
 import unittest
 
 import admin.lib as admin
-from dbas.database import DBDiscussionSession, get_dbas_db_configuration
+from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, APIToken
-from dbas.helper.test import add_settings_to_appconfig
 from dbas.lib import nick_of_anonymous_user
 
-settings = add_settings_to_appconfig()
-
-DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
 
 new_user = {
     'firstname': 'new',

@@ -58,6 +58,7 @@ def main_discussion(argv=sys.argv):
     settings = get_appsettings(config_uri)
 
     discussion_engine = get_dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
     NewsBase.metadata.create_all(discussion_engine)
@@ -92,6 +93,7 @@ def main_field_test(argv=sys.argv):
     settings = get_appsettings(config_uri)
 
     discussion_engine = get_dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -121,6 +123,7 @@ def drop_it(argv=sys.argv):
     settings = get_appsettings(config_uri)
 
     discussion_engine = get_dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -186,6 +189,7 @@ def blank_file(argv=sys.argv):
     settings = get_appsettings(config_uri)
 
     discussion_engine = get_dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -257,6 +261,7 @@ def init_dummy_votes(argv=sys.argv):
     settings = get_appsettings(config_uri)
 
     discussion_engine = get_dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 

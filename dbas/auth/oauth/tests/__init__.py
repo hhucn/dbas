@@ -4,6 +4,7 @@ from dbas.helper.test import add_settings_to_appconfig
 
 def setup_package():
     settings = add_settings_to_appconfig()
+    DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
 
 
