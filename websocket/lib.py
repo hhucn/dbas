@@ -27,7 +27,7 @@ def send_request_for_info_popup_to_socketio(nickname, port, message='', url=None
     :param increase_counter: Boolean
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'send_request_for_info_popup_to_socketio', 'main')
+    logger('Websocket.lib', 'main')
     if url:
         use_https = 'localhost' not in url
         __send_request_for_popup_to_socketio(nickname, port, 'info', message, url, increase_counter, use_https)
@@ -46,9 +46,9 @@ def send_request_for_info_popup_to_socketio_with_delay(nickname, port, message='
     :param delay: int
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'send_request_for_info_popup_to_socketio_with_delay', 'main sleeping for ' + str(delay))
+    logger('Websocket.lib', 'main sleeping for ' + str(delay))
     time.sleep(delay)
-    logger('Websocket.lib', 'send_request_for_info_popup_to_socketio_with_delay', 'enough sleep')
+    logger('Websocket.lib', 'enough sleep')
     if url:
         use_https = 'localhost' not in url
         __send_request_for_popup_to_socketio(nickname, port, 'info', message, url, increase_counter, use_https)
@@ -65,7 +65,7 @@ def send_request_for_success_popup_to_socketio(nickname, port, message='', url=N
     :param increase_counter:
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'send_request_for_success_popup_to_socketio', 'main')
+    logger('Websocket.lib', 'main')
     if url:
         use_https = 'localhost' not in url
         __send_request_for_popup_to_socketio(nickname, port, 'success', message, url, increase_counter, use_https)
@@ -82,7 +82,7 @@ def send_request_for_warning_popup_to_socketio(nickname, port, message='', url=N
     :param increase_counter:
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'send_request_for_warning_popup_to_socketio', 'main')
+    logger('Websocket.lib', 'main')
     __send_request_for_popup_to_socketio(nickname, port, 'warning', message, url, increase_counter)
 
 
@@ -100,7 +100,7 @@ def __send_request_for_popup_to_socketio(nickname, port, popup_type, message='',
     :param use_https: Boolean
     :return: Status code of the request
     """
-    logger('Websocket.lib', '__send_request_for_popup_to_socketio', 'main')
+    logger('Websocket.lib', 'main')
 
     if popup_type not in ['success', 'warning', 'info']:
         popup_type = 'info'
@@ -136,8 +136,7 @@ def send_request_for_recent_reviewer_socketio(nickname, main_page, port, queue):
     :param queue: Key of the last reviewers queue
     :return: Status code of the request
     """
-    logger('Websocket.lib', 'send_request_for_recent_reviewer_socketio',
-           'main - nickname {} for queue {}'.format(nickname, queue))
+    logger('Websocket.lib', 'main - nickname {} for queue {}'.format(nickname, queue))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     reviewer_name = db_user.get_global_nickname()
     reviewer_image_url = get_profile_picture(db_user)
@@ -156,7 +155,7 @@ def __send_request_for_recent_review_to_socketio(port, reviewer_name, reviewer_i
     :param use_https: Boolean
     :return: Status code of the request
     """
-    logger('Websocket.lib', '__send_request_for_recent_review_to_socketio', 'main')
+    logger('Websocket.lib', 'main')
     params = '?reviewer_name=' + reviewer_name + '&img_url=' + reviewer_image_url + '&queue=' + queue
 
     if not port:
@@ -180,11 +179,11 @@ def __open_url(url):
     """
     try:
         resp = urllib.request.urlopen(url)
-        logger('Websocket.lib', '__open_url', 'Content of request {}'.format(resp.read()))
+        logger('Websocket.lib', 'Content of request {}'.format(resp.read()))
     except Exception as e:
-        logger('Websocket.lib', '__open_url', 'Error {} by calling {}'.format(e, url), error=True)
+        logger('Websocket.lib', 'Error {} by calling {}'.format(e, url), error=True)
         return None
-    logger('Websocket.lib', '__open_url', 'Status code of request {}'.format(resp.getcode()))
+    logger('Websocket.lib', 'Status code of request {}'.format(resp.getcode()))
     return resp.getcode()
 
 

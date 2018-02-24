@@ -29,7 +29,7 @@ def init(request_dict) -> Union[dict, None]:
     :rtype: dict
     :return: prepared collection with first elements for the discussion
     """
-    logger('Core', 'discussion.init', 'main')
+    logger('Core', 'main')
     application_url = request_dict['app_url']
     nickname = request_dict['nickname']
     db_issue = request_dict['issue']
@@ -69,7 +69,7 @@ def attitude(request_dict) -> Union[dict, None]:
     :rtype: dict
     :return: prepared collection matchdict for the discussion
     """
-    logger('Core', 'discussion.attitude', 'main')
+    logger('Core', 'main')
 
     nickname = request_dict['nickname']
     db_issue = request_dict['issue']
@@ -82,7 +82,7 @@ def attitude(request_dict) -> Union[dict, None]:
     if not is_integer(statement_uid, True) \
             or not check_belonging_of_statement(db_issue.uid, statement_uid)\
             or is_statement_forbidden(statement_uid):
-        logger('Core', 'discussion.attitude', 'param error / forbidden statement {}'.format(statement_uid), error=True)
+        logger('Core', 'param error / forbidden statement {}'.format(statement_uid), error=True)
         return None
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
@@ -92,7 +92,7 @@ def attitude(request_dict) -> Union[dict, None]:
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
     discussion_dict = _ddh.get_dict_for_attitude(statement_uid)
     if not discussion_dict:
-        logger('Core', 'discussion.attitude', 'no discussion dict', error=True)
+        logger('Core', 'no discussion dict', error=True)
         return None
 
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
@@ -121,7 +121,7 @@ def justify(request_dict) -> Union[dict, None]:
     :rtype: dict
     :return: prepared collection matchdict for the discussion
     """
-    logger('Core', 'discussion.justify', 'main')
+    logger('Core', 'main')
 
     nickname = request_dict['nickname']
     db_issue = request_dict['issue']
@@ -155,7 +155,7 @@ def reaction(request_dict) -> Union[dict, None]:
     :rtype: dict
     :return: prepared collection matchdict for the discussion
     """
-    logger('Core', 'discussion.reaction', 'main')
+    logger('Core', 'main')
 
     nickname = request_dict['nickname']
     db_issue = request_dict['issue']
@@ -171,7 +171,7 @@ def reaction(request_dict) -> Union[dict, None]:
     tmp_argument = DBDiscussionSession.query(Argument).get(arg_id_user)
 
     if not check_reaction(arg_id_user, arg_id_sys, attack) or not check_belonging_of_arguments(db_issue.uid, [arg_id_user, arg_id_sys]):
-        logger('discussion_reaction', 'def', 'wrong belonging of arguments', error=True)
+        logger('discussion_reaction', 'wrong belonging of arguments', error=True)
         return None
 
     # set votes and reputation
@@ -212,7 +212,7 @@ def support(request_dict) -> Union[dict, None]:
     :rtype: dict
     :return: prepared collection matchdictfor the discussion
     """
-    logger('Core', 'discussion.support', 'main')
+    logger('Core', 'main')
 
     nickname = request_dict['nickname']
     db_issue = request_dict['issue']
@@ -230,7 +230,7 @@ def support(request_dict) -> Union[dict, None]:
     if not check_belonging_of_argument(db_issue.uid, arg_user_uid) or \
             not check_belonging_of_argument(db_issue.uid, arg_system_uid) or \
             not related_with_support(arg_user_uid, arg_system_uid):
-        logger('Core', 'discussion.support', 'no item dict', error=True)
+        logger('Core', 'no item dict', error=True)
         return None
 
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
@@ -261,7 +261,7 @@ def choose(request_dict) -> Union[dict, None]:
     :rtype: dict
     :return: prepared collection matchdictfor the discussion
     """
-    logger('Core', 'discussion.choose', 'main')
+    logger('Core', 'main')
 
     is_argument = request_dict['matchdict'].get('is_argument', '')
     is_supportive = request_dict['matchdict'].get('supportive', '')
@@ -284,11 +284,11 @@ def choose(request_dict) -> Union[dict, None]:
 
     for pgroup in pgroup_ids:
         if not is_integer(pgroup):
-            logger('core', 'discussion.choose', 'integer error', error=True)
+            logger('core', 'integer error', error=True)
             return None
 
     if not check_belonging_of_premisegroups(db_issue.uid, pgroup_ids) or not is_integer(uid):
-        logger('core', 'discussion.choose', 'wrong belonging of pgroup', error=True)
+        logger('core', 'wrong belonging of pgroup', error=True)
         return None
 
     _ddh = DiscussionDictHelper(ui_locales, db_user.nickname, history, slug=slug)
@@ -297,7 +297,7 @@ def choose(request_dict) -> Union[dict, None]:
     item_dict = _idh.get_array_for_choosing(uid, pgroup_ids, is_argument, is_supportive, db_user.nickname)
 
     if not item_dict:
-        logger('discussion_choose', 'def', 'no item dict', error=True)
+        logger('discussion_choose', 'no item dict', error=True)
         return None
 
     _dh = DictionaryHelper(ui_locales, disc_ui_locales)
@@ -324,7 +324,7 @@ def jump(request_dict) -> Union[dict, None]:
     :rtype: dict
     :return: prepared collection matchdict for the discussion
     """
-    logger('Core', 'discussion.jump', 'main')
+    logger('Core', 'main')
 
     arg_uid = request_dict.get('arg_uid', request_dict['matchdict'].get('arg_id'))
     nickname = request_dict.get('nickname')
@@ -335,7 +335,7 @@ def jump(request_dict) -> Union[dict, None]:
     slug = db_issue.slug
 
     if not check_belonging_of_argument(db_issue.uid, arg_uid):
-        logger('Core', 'discussion.choose', 'no item dict', error=True)
+        logger('Core', 'no item dict', error=True)
         return None
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
@@ -362,7 +362,7 @@ def jump(request_dict) -> Union[dict, None]:
 
 
 def finish(request_dict) -> Union[dict, None]:
-    logger('Core', 'discussion_finish', 'main')
+    logger('Core', 'main')
 
     nickname = request_dict['nickname']
     ui_locales = request_dict['ui_locales']
@@ -375,7 +375,7 @@ def finish(request_dict) -> Union[dict, None]:
     arg_id = request_dict['matchdict'].get('arg_id')
     last_arg = get_not_disabled_arguments_as_query().filter_by(uid=arg_id).first()
     if not last_arg:
-        logger('Core', 'discussion_finish', 'no argument', error=True)
+        logger('Core', 'no argument', error=True)
         return None
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()

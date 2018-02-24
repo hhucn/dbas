@@ -27,8 +27,7 @@ def __validate_notification_msg(request, key):
     else:
         _tn = Translator(get_language_from_cookie(request))
         error_msg = '{} ({}: {})'.format(_tn.get(_.empty_notification_input), _tn.get(_.minLength), min_length)
-        add_error(request, 'valid_notification_content', 'Notification {} too short or invalid'.format(key),
-                  error_msg)
+        add_error(request, 'Notification {} too short or invalid'.format(key), error_msg)
         return False
 
 
@@ -61,7 +60,7 @@ def valid_notification_recipient(request):
     """
     _tn = Translator(get_language_from_cookie(request))
     if not valid_user(request):
-        add_error(request, 'valid_notification_recipient', 'Not logged in', _tn.get(_.notLoggedIn))
+        add_error(request, 'Not logged in', _tn.get(_.notLoggedIn))
         return False
 
     db_author = request.validated["user"]
@@ -69,11 +68,10 @@ def valid_notification_recipient(request):
     db_recipient = get_user_by_private_or_public_nickname(recipient_nickname)
 
     if not db_recipient or recipient_nickname == 'admin' or recipient_nickname == nick_of_anonymous_user:
-        add_error(request, 'valid_notification_recipient', 'Recipient not found', _tn.get(_.notLoggedIn))
+        add_error(request, 'Recipient not found', _tn.get(_.notLoggedIn))
         return False
     elif db_author and db_author.uid == db_recipient.uid:
-        add_error(request, 'valid_notification_recipient', 'Author and Recipient are the same user',
-                  _tn.get(_.senderReceiverSame))
+        add_error(request, 'Author and Recipient are the same user', _tn.get(_.senderReceiverSame))
         return False
     else:
         request.validated["recipient"] = db_recipient

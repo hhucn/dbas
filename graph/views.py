@@ -35,7 +35,7 @@ partial_graph = Service(name='d3js_partial',
 
 @complete_graph.post()
 def get_d3_complete_dump(request):
-    logger('Graph', 'get_d3_complete_dump', 'main: ' + str(request.json_body))
+    logger('Graph', 'main: ' + str(request.json_body))
     path = request.json_body.get('path', '')
     issue = IssueHelper.get_issue_id(request)
 
@@ -59,7 +59,7 @@ def get_d3_complete_dump(request):
 @partial_graph.post()
 @validate(has_keywords(('uid', int), ('is_argument', bool), ('path', str)))
 def get_d3_partial_dump(request):
-    logger('Graph', 'get_d3_partial_dump', 'main: ' + str(request.json_body))
+    logger('Graph', 'main: ' + str(request.json_body))
     path = request.validated['path']
     uid = request.validated['uid']
     is_argument = request.validated['is_argument']

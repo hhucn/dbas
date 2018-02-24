@@ -185,7 +185,7 @@ def delete_user_history(request):
     :param request: request of the web server
     :return: json-dict()
     """
-    logger('delete_user_history', 'def', 'main')
+    logger('delete_user_history', 'main')
     db_user = request.validated['user']
     return history_handler.delete_history_in_database(db_user)
 
@@ -200,7 +200,7 @@ def delete_statistics(request):
     :param request: request of the web server
     :return: json-dict()
     """
-    logger('delete_statistics', 'def', 'main')
+    logger('delete_statistics', 'main')
     db_user = request.validated['user']
     return clear_vote_and_seen_values_of_user(db_user)
 
@@ -215,7 +215,7 @@ def user_login(request):
     :param request: request of the web server
     :return: dict() with error
     """
-    logger('views', 'user_login', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     lang = get_language_from_cookie(request)
     nickname = request.validated['user']
     password = request.validated['password']
@@ -239,7 +239,7 @@ def user_login_oauth(request):
 
     :return: dict() with error
     """
-    logger('views', 'user_login_oauth', 'main: {}'.format(request.params))
+    logger('views', 'main: {}'.format(request.params))
 
     lang = get_language_from_cookie(request)
     _tn = Translator(lang)
@@ -265,7 +265,7 @@ def user_login_oauth(request):
             return {'error': _tn.get(_.internalKeyError)}
         return val
     except KeyError as e:
-        logger('user_login_oauth', 'error', repr(e), error=True)
+        logger('user_login_oauth', repr(e), error=True)
         return {'error': _tn.get(_.internalKeyError)}
 
 
@@ -278,7 +278,7 @@ def user_logout(request, redirect_to_main=False):
     :param redirect_to_main: Boolean
     :return: HTTPFound with forgotten headers
     """
-    logger('views', 'user_logout', 'user: {}, redirect main: {}'.format(request.authenticated_userid, redirect_to_main))
+    logger('views', 'user: {}, redirect main: {}'.format(request.authenticated_userid, redirect_to_main))
     request.session.invalidate()
     headers = forget(request)
     if redirect_to_main:
@@ -305,7 +305,7 @@ def user_registration(request):
     :param request: current request of the server
     :return: dict() with success and message
     """
-    logger('Views', 'user_registration', 'main: {}'.format(request.json_body))
+    logger('Views', 'main: {}'.format(request.json_body))
     mailer = request.mailer
     lang = request.validated['lang']
 
@@ -327,9 +327,7 @@ def user_password_request(request):
     :param request: current request of the server
     :return: dict() with success and message
     """
-    logger('Views',
-           'user_password_request',
-           'request.params: {}'.format(request.json_body))
+    logger('Views', 'request.params: {}'.format(request.json_body))
     _tn = Translator(request.validated['lang'])
     return request_password(request.validated['email'], request.mailer, _tn)
 
@@ -343,7 +341,7 @@ def set_user_settings(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('Views', 'set_user_settings', 'request.params: {}'.format(request.json_body))
+    logger('Views', 'request.params: {}'.format(request.json_body))
     _tn = Translator(get_language_from_cookie(request))
     db_user = request.validated['user']
     settings_value = request.validated['settings_value']
@@ -360,7 +358,7 @@ def set_user_lang(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_user_lang', 'request.params: {}'.format(request.json_body))
+    logger('views', 'request.params: {}'.format(request.json_body))
     return set_user_language(request.validated['user'], request.validated.get('lang'))
 
 
@@ -373,7 +371,7 @@ def set_discussion_properties(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_discussion_properties', 'request.params: {}'.format(request.json_body))
+    logger('views', 'request.params: {}'.format(request.json_body))
     _tn = Translator(get_language_from_cookie(request))
 
     prop = request.validated['property']
@@ -396,7 +394,7 @@ def set_new_start_argument(request):
     :param request: request of the web server
     :return: a status code, if everything was successful
     """
-    logger('views', 'set_new_start_argument', 'request.params: {}'.format(request.json_body))
+    logger('views', 'request.params: {}'.format(request.json_body))
     reason = request.validated['reason']
     data = {
         'user': request.validated['user'],
@@ -411,11 +409,11 @@ def set_new_start_argument(request):
     }
 
     # set the new position
-    logger('views', 'set_new_start_argument', 'set conclusion/position')
+    logger('views', 'set conclusion/position')
     prepared_dict_pos = set_position(request.validated['user'], request.validated['issue'],
                                      request.validated['position'])
     if len(prepared_dict_pos['error']) is 0:
-        logger('views', 'set_new_start_argument', 'set premise/reason')
+        logger('views', 'set premise/reason')
         data['premisegroups'] = [[reason]]
         data['conclusion'] = DBDiscussionSession.query(Statement).get(prepared_dict_pos['statement_uids'][0])
         prepared_dict_pos = set_positions_premise(data)
@@ -434,7 +432,7 @@ def set_new_start_premise(request):
     :param request: request of the web server
     :return: json-dict()
     """
-    logger('views', 'set_new_start_premise', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     data = {
         'user': request.validated['user'],
         'application_url': request.application_url,
@@ -462,7 +460,7 @@ def set_new_premises_for_argument(request):
     :param request: request of the web server
     :return: json-dict()
     """
-    logger('views', 'set_new_premises_for_argument', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     data = {
         'user': request.validated['user'],
         'issue': request.validated['issue'],
@@ -488,7 +486,7 @@ def set_correction_of_some_statements(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_correction_of_some_statements', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     ui_locales = get_language_from_cookie(request)
     elements = request.validated['elements']
     db_user = request.validated['user']
@@ -505,7 +503,7 @@ def set_notifications_read(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_notifications_read', 'main {}'.format(request.json_body))
+    logger('views', 'main {}'.format(request.json_body))
     return read_notifications(request.validated['ids'], request.validated['user'])
 
 
@@ -518,7 +516,7 @@ def set_notifications_delete(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_notifications_delete', 'main {}'.format(request.json_body))
+    logger('views', 'main {}'.format(request.json_body))
     ui_locales = get_language_from_cookie(request)
     return delete_notifications(request.validated['ids'], request.validated['user'], ui_locales,
                                 request.application_url)
@@ -533,7 +531,7 @@ def send_some_notification(request):
     :param request: current request of the server
     :return: dict()
     """
-    logger('views', 'send_some_notification', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     ui_locales = get_language_from_cookie(request)
     author = request.validated['user']
     recipient = request.validated['recipient']
@@ -551,7 +549,7 @@ def set_new_issue(request):
     :param request: current request of the server
     :return:
     """
-    logger('views', 'set_new_issue', 'main {}'.format(request.json_body))
+    logger('views', 'main {}'.format(request.json_body))
     info = escape_string(request.validated['info'])
     long_info = escape_string(request.validated['long_info'])
     title = escape_string(request.validated['title'])
@@ -573,7 +571,7 @@ def set_statements_as_seen(request):
     :param request: current request of the server
     :return: json
     """
-    logger('views', 'set_statements_as_seen', 'main {}'.format(request.json_body))
+    logger('views', 'main {}'.format(request.json_body))
     uids = request.validated['uids']
     return set_seen_statements(uids, request.path, request.validated['user'])
 
@@ -589,7 +587,7 @@ def mark_or_unmark_statement_or_argument(request):
     :param request: current request of the server
     :return: json
     """
-    logger('views', 'mark_or_unmark_statement_or_argument', 'main {}'.format(request.json_body))
+    logger('views', 'main {}'.format(request.json_body))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     arg_or_stmt = request.validated['arg_or_stmt']
     step = request.validated['step']
@@ -615,7 +613,7 @@ def get_logfile_for_some_statements(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'get_logfile_for_statements', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     uids = request.validated['uids']
     db_issue = request.validated['issue']
     return get_logfile_for_statements(uids, db_issue.lang, request.application_url)
@@ -631,7 +629,7 @@ def get_shortened_url(request):
     :param request: current request of the server
     :return: dictionary with shortend url
     """
-    logger('views', 'get_shortened_url', 'main')
+    logger('views', 'main')
     db_issue = request.validated['issue']
     return get_short_url(request.validated['url'], db_issue.lang)
 
@@ -645,7 +643,7 @@ def get_news(request):
     :param request: current request of the server
     :return: json-set with all news
     """
-    logger('views', 'get_news', 'main')
+    logger('views', 'main')
     return news_handler.get_news(get_language_from_cookie(request))
 
 
@@ -659,7 +657,7 @@ def get_infos_about_argument(request):
     :param request: current request of the server
     :return: json-set with everything
     """
-    logger('views', 'get_infos_about_argument', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     lang = request.validated['lang']
     db_user = request.validated['user']
     db_argument = request.validated['argument']
@@ -677,7 +675,7 @@ def get_users_with_opinion(request):
     :params reqeust: current request of the web  server
     :return: json-set with everything
     """
-    logger('views', 'get_users_with_opinion', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     db_lang = request.validated['lang']
     uids = request.json_body.get('uid')
     is_arg = request.validated['is_argument']
@@ -699,7 +697,7 @@ def get_public_user_data(request):
     :param request: request of the web server
     :return:
     """
-    logger('views', 'get_public_user_data', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     return user.get_public_data(request.validated['nickname'], get_language_from_cookie(request))
 
 
@@ -712,7 +710,7 @@ def get_arguments_by_statement_id(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'get_arguments_by_statement_id', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     return get_arguments_by_statement_uid(request.validated['statement'], request.application_url)
 
 
@@ -726,7 +724,7 @@ def get_reference(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'get_reference', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     uids = request.validated['uids']
     is_argument = request.validated['is_argument']
     return get_references(uids, is_argument, request.application_url)
@@ -741,7 +739,7 @@ def set_references(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'set_references', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     db_statement = request.validated['statement']
     reference = escape_string(request.validated['reference'])
     source = escape_string(request.validated['ref_source'])
@@ -764,7 +762,7 @@ def switch_language(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('switch_language', 'def', 'main: {}'.format(request.json_body))
+    logger('switch_language', 'main: {}'.format(request.json_body))
     return set_language(request, request.validated['lang'])
 
 
@@ -778,7 +776,7 @@ def send_news(request):
     :param request: current request of the server
     :return: json-set with new news
     """
-    logger('views', 'send_news', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     title = escape_string(request.validated['title'])
     text = escape_string(request.validated['text'])
     db_user = request.validated['user']
@@ -796,7 +794,7 @@ def fuzzy_search(request):
     :param request: request of the web server
     :return: json-set with all matched strings
     """
-    logger('views', 'fuzzy_search', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
 
     _tn = Translator(get_language_from_cookie(request))
     mode = request.validated['type']
@@ -817,7 +815,7 @@ def additional_service(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'additional_service', 'main: {}'.format(request.params))
+    logger('views', 'main: {}'.format(request.params))
 
     try:
         rtype = request.params['type']
@@ -827,10 +825,10 @@ def additional_service(request):
             data = requests.get('http://api.yomomma.info/')
 
         for a in data.json():
-            logger('views', 'additional_service', str(a) + ': {}'.format(data.json()[a]))
+            logger('views', str(a) + ': {}'.format(data.json()[a]))
 
     except KeyError as e:
-        logger('views', 'additional_service', repr(e), error=True)
+        logger('views', repr(e), error=True)
         return json.dumps(dict())
 
     return data.json()
@@ -851,7 +849,7 @@ def flag_argument_or_statement(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'flag_argument_or_statement', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     uid = request.validated['uid']
     reason = request.validated['reason']
@@ -870,7 +868,7 @@ def split_or_merge_statement(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'split_or_merge_statement', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _tn = Translator(ui_locales)
     db_user = request.validated['user']
@@ -892,7 +890,7 @@ def split_or_merge_premisegroup(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'split_or_merge_premisegroup', 'main: {}'.format(request.params))
+    logger('views', 'main: {}'.format(request.params))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _tn = Translator(ui_locales)
     db_user = request.validated['user']
@@ -913,7 +911,7 @@ def review_delete_argument(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'review_delete_argument', 'main: {}'.format(request.params))
+    logger('views', 'main: {}'.format(request.params))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']
@@ -936,7 +934,7 @@ def review_edit_argument(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('Views', 'review_edit_argument', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    logger('Views', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']
@@ -959,8 +957,7 @@ def review_duplicate_statement(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('Views', 'review_duplicate_statement',
-           'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    logger('Views', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']
@@ -984,8 +981,7 @@ def review_optimization_argument(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'review_optimization_argument',
-           'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    logger('views', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']
@@ -1010,8 +1006,7 @@ def review_splitted_premisegroup(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'review_splitted_premisegroup',
-           'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    logger('views', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']
@@ -1034,8 +1029,7 @@ def review_merged_premisegroup(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'review_merged_premisegroup',
-           'main: {} - {}'.format(request.json_body, request.authenticated_userid))
+    logger('views', 'main: {} - {}'.format(request.json_body, request.authenticated_userid))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     db_review = request.validated['db_review']
     db_user = request.validated['user']
@@ -1058,7 +1052,7 @@ def undo_review(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'undo_review', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     db_user = request.validated['user']
     queue = request.validated['queue']
     db_review = request.validated['review']
@@ -1074,7 +1068,7 @@ def cancel_review(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'cancel_review', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     db_user = request.validated['user']
     queue = request.validated['queue']
     db_review = request.validated['review']
@@ -1090,7 +1084,7 @@ def review_lock(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'review_lock', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     ui_locales = get_discussion_language(request.matchdict, request.params, request.session)
     _tn = Translator(ui_locales)
     lock = request.validated['lock']
@@ -1112,7 +1106,7 @@ def revoke_statement_content(request):
     :param request: current request of the server
     :return: json-dict()
     """
-    logger('views', 'revoke_statement_content', 'main: {}'.format(request.json_body))
+    logger('views', 'main: {}'.format(request.json_body))
     db_user = request.validated['user']
     statement = request.validated['statement']
     return revoke_author_of_statement_content(statement, db_user)

@@ -35,7 +35,7 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
     :rtype: dict
     :return: Prepared collection with statement_uids of the new positions and next url or an error
     """
-    logger('StatementsHelper', 'set_position', statement_text)
+    logger('StatementsHelper', statement_text)
 
     user.update_last_action(db_user.nickname)
 
@@ -153,7 +153,7 @@ def correct_statement(db_user, uid, corrected_text):
     :param corrected_text: new text
     :return: dict()
     """
-    logger('StatementsHelper', 'correct_statement', 'def ' + str(uid))
+    logger('StatementsHelper', 'def ' + str(uid))
 
     while corrected_text.endswith(('.', '?', '!')):
         corrected_text = corrected_text[:-1]
@@ -190,7 +190,7 @@ def get_logfile_for_statements(uids, lang, main_page):
     :param main_page: URL
     :return: dictionary with the logfile-rows
     """
-    logger('StatementsHelper', 'get_logfile_for_statement', 'def with uid: ' + str(uids))
+    logger('StatementsHelper', 'def with uid: ' + str(uids))
 
     main_dict = dict()
     for uid in uids:
@@ -267,7 +267,7 @@ def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue) -> 
     :return: Statement, is_duplicate or -1, False on error
     """
 
-    logger('StatementsHelper', 'set_statement', 'user: ' + str(db_user.nickname) + ', user_id: ' + str(db_user.uid) +
+    logger('StatementsHelper', 'user: ' + str(db_user.nickname) + ', user_id: ' + str(db_user.uid) +
            ', text: ' + str(text) + ', issue: ' + str(db_issue.uid))
 
     # escaping and cleaning
@@ -321,8 +321,7 @@ def __process_input_of_start_premises_and_receive_url(premisegroups, db_conclusi
     :param mailer: Instance of pyramid mailer
     :return: URL, [Statement.uid], String
     """
-    logger('StatementsHelper', '__process_input_of_start_premises_and_receive_url',
-           'length of new pgroup: {}'.format(len(premisegroups)))
+    logger('StatementsHelper', 'length of new pgroup: {}'.format(len(premisegroups)))
     _tn = Translator(db_issue.lang)
 
     error = ''
@@ -377,7 +376,7 @@ def insert_new_premises_for_argument(premisegroup: List[str], current_attack, ar
     :param db_user: User
     :return: Argument
     """
-    logger('StatementsHelper', 'insert_new_premises_for_argument', 'def {}'.format(arg_uid))
+    logger('StatementsHelper', 'def {}'.format(arg_uid))
 
     statements = []
     for premise in premisegroup:
@@ -403,10 +402,10 @@ def insert_new_premises_for_argument(premisegroup: List[str], current_attack, ar
         new_argument, duplicate = set_new_rebut(new_pgroup.uid, current_argument, db_user, db_issue)
 
     if not new_argument:
-        logger('StatementsHelper', 'insert_new_premises_for_argument', 'No statement or any premise = conclusion')
+        logger('StatementsHelper', 'No statement or any premise = conclusion')
         return Translator(db_issue.lang).get(_.premiseAndConclusionAreEqual)
 
-    logger('StatementsHelper', 'insert_new_premises_for_argument', 'Returning argument ' + str(new_argument.uid))
+    logger('StatementsHelper', 'Returning argument ' + str(new_argument.uid))
     return new_argument
 
 
@@ -419,7 +418,7 @@ def set_statements_as_new_premisegroup(statements: List[Statement], db_user: Use
     :param db_issue: Issue
     :return: PremiseGroup.uid
     """
-    logger('StatementsHelper', 'set_statements_as_new_premisegroup', 'user: ' + str(db_user.uid) +
+    logger('StatementsHelper', 'user: ' + str(db_user.uid) +
            ', statement: ' + str([s.uid for s in statements]) + ', issue: ' + str(db_issue.uid))
     # check for duplicate
     all_groups = []
@@ -474,7 +473,7 @@ def __create_argument_by_raw_input(db_user: User, premisegroup: [str], db_conclu
     :param db_issue: Issue
     :return:
     """
-    logger('StatementsHelper', '__create_argument_by_raw_input',
+    logger('StatementsHelper',
            'main with premisegroup {} as premisegroup, conclusion {} in issue {}'.format(premisegroup,
                                                                                          db_conclusion.uid,
                                                                                          db_issue.uid))
@@ -487,7 +486,7 @@ def __create_argument_by_raw_input(db_user: User, premisegroup: [str], db_conclu
 
     # second, set the new statements as premisegroup
     new_premisegroup = set_statements_as_new_premisegroup(new_statements, db_user, db_issue)
-    logger('StatementsHelper', '__create_argument_by_raw_input', 'new pgroup ' + str(new_premisegroup.uid))
+    logger('StatementsHelper', 'new pgroup ' + str(new_premisegroup.uid))
 
     # third, insert the argument
     new_argument = __create_argument_by_uids(db_user, new_premisegroup.uid, db_conclusion.uid, None, is_supportive,
@@ -518,7 +517,7 @@ def __create_argument_by_uids(db_user: User, premisegroup_uid, conclusion_uid, a
     :param db_issue: Issue
     :return:
     """
-    logger('StatementsHelper', '__create_argument_by_uids', 'main with user: ' + str(db_user.nickname) +
+    logger('StatementsHelper', 'main with user: ' + str(db_user.nickname) +
            ', premisegroup_uid: ' + str(premisegroup_uid) +
            ', conclusion_uid: ' + str(conclusion_uid) +
            ', argument_uid: ' + str(argument_uid) +
@@ -546,8 +545,8 @@ def __create_argument_by_uids(db_user: User, premisegroup_uid, conclusion_uid, a
                                                                   Argument.issue_uid == db_issue.uid).first()
     transaction.commit()
     if new_argument:
-        logger('StatementsHelper', '__create_argument_by_uids', 'argument was inserted')
+        logger('StatementsHelper', 'argument was inserted')
         return new_argument
     else:
-        logger('StatementsHelper', '__create_argument_by_uids', 'argument was not inserted')
+        logger('StatementsHelper', 'argument was not inserted')
         return None

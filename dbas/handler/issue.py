@@ -43,7 +43,7 @@ def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Lan
     """
     user.update_last_action(db_user)
 
-    logger('setter', 'set_new_issue', 'main')
+    logger('setter', 'main')
     DBDiscussionSession.add(Issue(title=title,
                                   info=info,
                                   long_info=long_info,
@@ -67,7 +67,7 @@ def prepare_json_of_issue(db_issue: Issue, application_url: str, db_user: User) 
     :param db_user: User
     :return: Issue-dict()
     """
-    logger('issueHelper', 'prepare_json_of_issue', 'main')
+    logger('issueHelper', 'main')
 
     slug = slugify(db_issue.title)
     title = db_issue.title
@@ -183,7 +183,7 @@ def get_id_of_slug(slug: str, request, save_id_in_session: bool):
     :param save_id_in_session: Boolean
     :return: uid
     """
-    logger('IssueHelper', 'get_id_of_slug', 'slug: {}'.format(slug))
+    logger('IssueHelper', 'slug: {}'.format(slug))
     db_issue = get_not_disabled_issues_as_query().filter(Issue.slug == slug).first()
     if db_issue:
         if save_id_in_session:
@@ -262,7 +262,7 @@ def get_issues_overiew(nickname, application_url) -> dict:
     :param application_url: current applications url
     :return: dict
     """
-    logger('IssueHelper', 'get_issues_overiew', 'def')
+    logger('IssueHelper', 'def')
     user.update_last_action(nickname)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     if not db_user:
@@ -296,8 +296,7 @@ def set_discussions_properties(db_user: User, db_issue: Issue, value, iproperty,
     :param translator:
     :return:
     """
-    logger('IssueHelper', 'set_discussions_properties',
-           'issue: {}, key: {}, checked: {}'.format(db_issue.slug, iproperty, value))
+    logger('IssueHelper', 'issue: {}, key: {}, checked: {}'.format(db_issue.slug, iproperty, value))
 
     if db_issue.author_uid != db_user.uid and not user.is_admin(db_user.nickname):
         return {'error': translator.get(_.noRights)}

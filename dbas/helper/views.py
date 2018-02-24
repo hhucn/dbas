@@ -55,7 +55,7 @@ def handle_justification_step(request_dict):
         item_dict, discussion_dict, extras_dict = __handle_justification_argument(request_dict, statement_or_arg_id, relation, mode)
 
     else:
-        logger('ViewHelper', 'handle_justification_step', '404')
+        logger('ViewHelper', '404')
         return None, None, None
 
     return item_dict, discussion_dict, extras_dict
@@ -69,7 +69,7 @@ def __handle_justification_statement(request_dict, statement_or_arg_id, mode):
     :param mode:
     :return:
     """
-    logger('ViewHelper', 'handle_justification_step', 'justify statement')
+    logger('ViewHelper', 'justify statement')
     db_issue = request_dict['issue']
     supportive = mode == 't' or mode == 'd'  # supportive = t or do not know mode
 
@@ -89,7 +89,7 @@ def __handle_justification_dont_know(request_dict, statement_or_arg_id, mode):
     :param mode:
     :return:
     """
-    logger('ViewHelper', '__handle_justification_dont_know', 'do not know for {}'.format(statement_or_arg_id))
+    logger('ViewHelper', 'do not know for {}'.format(statement_or_arg_id))
     db_issue = request_dict['issue']
     supportive = mode == 't' or mode == 'd'  # supportive = t or do not know mode
 
@@ -111,7 +111,7 @@ def __handle_justification_argument(request_dict, statement_or_arg_id, relation,
     :param mode:
     :return:
     """
-    logger('ViewHelper', '__handle_justification_argument', 'justify argument')
+    logger('ViewHelper', 'justify argument')
     db_issue = request_dict['issue']
     ui_locales = request_dict['ui_locales']
     nickname = request_dict['nickname']
@@ -142,7 +142,7 @@ def preparation_for_justify_statement(request_dict, statement_uid, supportive):
     :param supportive: Boolean
     :return: dict(), dict(), dict()
     """
-    logger('ViewHelper', 'preparation_for_justify_statement', 'main')
+    logger('ViewHelper', 'main')
 
     ui_locales = request_dict['ui_locales']
     history = request_dict['history']
@@ -184,7 +184,7 @@ def preparation_for_dont_know_statement(request_dict, argument_uid, supportive):
     :param supportive: Boolean
     :return: dict(), dict(), dict()
     """
-    logger('ViewHelper', 'preparation_for_dont_know_statement', 'main')
+    logger('ViewHelper', 'main')
 
     db_issue = request_dict['issue']
     ui_locales = request_dict['ui_locales']
@@ -229,7 +229,7 @@ def preparation_for_justify_argument(request_dict, statement_or_arg_id, supporti
     :param relation: String
     :return: dict(), dict(), dict()
     """
-    logger('ViewHelper', 'preparation_for_justify_argument', 'main')
+    logger('ViewHelper', 'main')
 
     ui_locales = request_dict['ui_locales']
     history = request_dict['history']

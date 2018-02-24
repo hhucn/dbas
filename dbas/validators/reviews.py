@@ -27,7 +27,7 @@ def valid_review_reason(request):
         return True
     else:
         _tn = Translator(get_language_from_cookie(request))
-        add_error(request, 'valid_review_reason', 'Invalid reason', _tn.get(_.internalError))
+        add_error(request, 'Invalid reason', _tn.get(_.internalError))
         return False
 
 
@@ -41,7 +41,7 @@ def valid_not_executed_review(keyword, model):
             request.validated['db_review'] = db_review
             return True
         else:
-            add_error(request, 'valid_not_executed_review', 'Database has no row {} of {}'.format(uid, model))
+            add_error(request, 'Database has no row {} of {}'.format(uid, model))
             return False
 
     return valid_model
@@ -59,7 +59,7 @@ def valid_review_queue_key(request):
         request.validated[queue] = queue
         return True
     else:
-        add_error(request, 'valid_review_queue_key', 'No queue found: {}'.format(queue))
+        add_error(request, 'No queue found: {}'.format(queue))
         return False
 
 
@@ -75,6 +75,5 @@ def valid_uid_as_row_in_review_queue(request):
         request.validated['review'] = db_review
         return True
     else:
-        add_error(request, 'valid_uid_as_row_in_review_queue',
-                  'Invalid id for any review queue found: {}'.format(queue))
+        add_error(request, 'Invalid id for any review queue found: {}'.format(queue))
     return False

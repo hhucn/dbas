@@ -178,7 +178,7 @@ def __get_executed_reviews_of(table, main_page, table_type, last_review_type, tr
     :param is_executed
     :return: Array with all decision per table
     """
-    logger('History', '__get_executed_reviews_of', 'Table: {} ({})'.format(table, table_type))
+    logger('History', 'Table: {} ({})'.format(table, table_type))
     some_list = list()
     db_reviews = DBDiscussionSession.query(table_type).filter(table_type.is_executed == is_executed).order_by(table_type.uid.desc()).all()
 
@@ -403,7 +403,7 @@ def revoke_old_decision(queue, db_review, db_user):
 
     :return:
     """
-    logger('review_history_helper', 'revoke_old_decision', 'queue {} with uid {}'.format(queue, db_review.uid))
+    logger('review_history_helper', 'queue {} with uid {}'.format(queue, db_review.uid))
 
     review_canceled = None
     if queue == 'deletes':
@@ -431,7 +431,7 @@ def __revoke_old_deletes_decision(db_review, db_user):
     :param db_user:
     :return:
     """
-    logger('review_history_helper', '__revoke_old_deletes_decision', str(db_review.uid))
+    logger('review_history_helper', str(db_review.uid))
     __revoke_decision_and_implications(ReviewDelete, LastReviewerDelete, db_review.uid)
     return ReviewCanceled(author=db_user.uid, review_data={'delete': db_review.uid})
 
@@ -443,7 +443,7 @@ def __revoke_old_optimizations_decision(db_review, db_user):
     :param db_user:
     :return:
     """
-    logger('review_history_helper', '__revoke_old_optimizations_decision', str(db_review.uid))
+    logger('review_history_helper', str(db_review.uid))
     __revoke_decision_and_implications(ReviewOptimization, LastReviewerOptimization, db_review.uid)
     return ReviewCanceled(author=db_user.uid, review_data={'optimization': db_review.uid})
 
@@ -455,7 +455,7 @@ def __revoke_old_edits_decision(db_review, db_user):
     :param db_user:
     :return:
     """
-    logger('review_history_helper', '__revoke_old_edits_decision', str(db_review.uid))
+    logger('review_history_helper', str(db_review.uid))
     db_review = DBDiscussionSession.query(ReviewEdit).get(db_review.uid)
     db_review.set_revoked(True)
     DBDiscussionSession.query(LastReviewerEdit).filter_by(review_uid=db_review.uid).delete()
@@ -474,7 +474,7 @@ def __revoke_old_duplicates_decision(db_review, db_user):
     :param db_user:
     :return:
     """
-    logger('review_history_helper', '__revoke_old_duplicates_decision', str(db_review.uid))
+    logger('review_history_helper', str(db_review.uid))
     db_review = DBDiscussionSession.query(ReviewDuplicate).get(db_review.uid)
     db_review.set_revoked(True)
     __rebend_objects_of_duplicate_review(db_review)
@@ -488,7 +488,7 @@ def __revoke_old_merges_decision(db_review, db_user):
     :param db_user:
     :return:
     """
-    logger('review_history_helper', '__revoke_old_merges_decision', str(db_review.uid))
+    logger('review_history_helper', str(db_review.uid))
     db_review = DBDiscussionSession.query(ReviewMerge).get(db_review.uid)
     db_review.set_revoked(True)
     db_pgroup_merged = DBDiscussionSession.query(PremiseGroupMerged).filter_by(review_uid=db_review.uid).all()
@@ -507,7 +507,7 @@ def __revoke_old_splits_decision(db_review, db_user):
     :param db_user:
     :return:
     """
-    logger('review_history_helper', '__revoke_old_splits_decision', str(db_review.uid))
+    logger('review_history_helper', str(db_review.uid))
     db_review = DBDiscussionSession.query(ReviewSplit).get(db_review.uid)
     db_review.set_revoked(True)
     db_pgroup_splitted = DBDiscussionSession.query(PremiseGroupSplitted).filter_by(review_uid=db_review.uid).all()
@@ -542,7 +542,9 @@ def __undo_premisegroups(pgroups_splitted_or_merged, replacements):
     :param replacements:
     :return:
     """
-    logger('review_history_helper', '__undo_premisegroups', 'Got {} merge/splitted pgroups and {} replacements'.format(len(pgroups_splitted_or_merged), len(replacements)))
+    logger('review_history_helper',
+           'Got {} merge/splitted pgroups and {} replacements'.format(len(pgroups_splitted_or_merged),
+                                                                      len(replacements)))
 
     for element in pgroups_splitted_or_merged:
         old_pgroup = element.old_premisegroup_uid
@@ -550,7 +552,8 @@ def __undo_premisegroups(pgroups_splitted_or_merged, replacements):
 
         db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=new_pgroup).all()
         for argument in db_arguments:
-            logger('review_history_helper', '__undo_premisegroups', 'reset arguments {} pgroup from {} back to {}'.format(argument.uid, new_pgroup, old_pgroup))
+            logger('review_history_helper',
+                   'reset arguments {} pgroup from {} back to {}'.format(argument.uid, new_pgroup, old_pgroup))
             argument.set_premisegroup(old_pgroup)
             DBDiscussionSession.add(argument)
             DBDiscussionSession.flush()
@@ -561,7 +564,9 @@ def __undo_premisegroups(pgroups_splitted_or_merged, replacements):
 
         db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=new_statement).all()
         for argument in db_arguments:
-            logger('review_history_helper', '__undo_premisegroups', 'reset arguments {} conclusion from {} back to {}'.format(argument.uid, new_statement, old_statement))
+            logger('review_history_helper',
+                   'reset arguments {} conclusion from {} back to {}'.format(argument.uid, new_statement,
+                                                                             old_statement))
             argument.set_conclusion(old_statement)
             DBDiscussionSession.add(argument)
             DBDiscussionSession.flush()
@@ -579,7 +584,7 @@ def cancel_ongoing_decision(queue, db_review, db_user):
     :param db_user: User
     :return: Success, Error
     """
-    logger('review_history_helper', 'cancel_ongoing_decision', 'queue {} uid {}'.format(queue, db_review.uid))
+    logger('review_history_helper', 'queue {} uid {}'.format(queue, db_review.uid))
 
     review_canceled = None
     if queue == 'deletes':
@@ -698,10 +703,10 @@ def __is_uid_valid(uid, queue):
     }
 
     if queue in mapping:
-        logger('review_history_helper', '__is_uid_valid', 'query table {} with uid {}'.format(mapping[queue], uid))
+        logger('review_history_helper', 'query table {} with uid {}'.format(mapping[queue], uid))
         return DBDiscussionSession.query(mapping[queue]).get(uid) is not None
 
-    logger('review_history_helper', '__is_uid_valid', 'no table found for {}'.format(queue), error=True)
+    logger('review_history_helper', 'no table found for {}'.format(queue), error=True)
     return False
 
 
@@ -731,7 +736,7 @@ def __rebend_objects_of_duplicate_review(db_review):
     :param db_review: Review
     :return: None
     """
-    logger('review_history_helper', '__rebend_objects_of_duplicate_review', 'review: ' + str(db_review.uid))
+    logger('review_history_helper', 'review: ' + str(db_review.uid))
 
     db_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)
     db_statement.set_disable(False)   # TODO reset more than this ?
@@ -747,14 +752,14 @@ def __rebend_objects_of_duplicate_review(db_review):
         if revoke.argument_uid is not None:
             db_argument = DBDiscussionSession.query(Argument).get(revoke.argument_uid)
             text = 'Rebend conclusion of argument {} from {} to {}'.format(revoke.argument_uid, db_argument.conclusion_uid, db_review.duplicate_statement_uid)
-            logger('review_history_helper', '__rebend_objects_of_duplicate_review', text)
+            logger('review_history_helper', text)
             db_argument.conclusion_uid = db_review.duplicate_statement_uid
             DBDiscussionSession.add(db_argument)
 
         if revoke.premise_uid is not None:
             db_premise = DBDiscussionSession.query(Premise).get(revoke.premise_uid)
             text = 'Rebend premise {} from {} to {}'.format(revoke.premise_uid, db_premise.statement_uid, db_review.duplicate_statement_uid)
-            logger('review_history_helper', '__rebend_objects_of_duplicate_review', text)
+            logger('review_history_helper', text)
             db_premise.statement_uid = db_review.duplicate_statement_uid
             DBDiscussionSession.add(db_premise)
     DBDiscussionSession.query(RevokedDuplicate).filter_by(review_uid=db_review.uid).delete()

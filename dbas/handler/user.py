@@ -137,7 +137,7 @@ def update_last_action(user) -> bool:
     :param user: User in refactored fns, else nickname
     :return: Boolean
     """
-    logger('User', 'update_last_action', 'main')
+    logger('User', 'main')
     if not user:
         return False
     elif isinstance(user, str):  # TODO remove this check after refactoring
@@ -178,7 +178,7 @@ def refresh_public_nickname(user):
         second = biglist[random.randint(0, len(biglist) - 1)]
         nick = first + ' ' + second
 
-    logger('User', 'refresh_public_nickname', user.public_nickname + ' -> ' + nick)
+    logger('User', user.public_nickname + ' -> ' + nick)
     user.set_public_nickname(nick)
 
     return nick
@@ -193,7 +193,7 @@ def is_in_group(nickname, groupname):
     :return: Boolean
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
-    logger('User', 'is user in: ' + groupname, 'main')
+    logger('User', 'main')
     return db_user and db_user.groups.name == groupname
 
 
@@ -205,7 +205,7 @@ def is_admin(nickname):
     :return: true, if user is admin, false otherwise
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
-    logger('User', 'is_admin', 'main')
+    logger('User', 'main')
     return db_user and db_user.groups.name == 'admins'
 
 
@@ -217,7 +217,7 @@ def get_public_data(nickname, lang):
     :param lang:
     :return: dict()
     """
-    logger('User', 'get_public_data', 'User {}'.format(nickname))
+    logger('User', 'User {}'.format(nickname))
     return_dict = dict()
     current_user = get_user_by_private_or_public_nickname(nickname)
 
@@ -586,35 +586,35 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
     :param lang: current language
     :return: an message and boolean for error and success
     """
-    logger('User', 'change_password', 'def')
+    logger('User', 'def')
     _t = Translator(lang)
 
     success = False
 
     # is the old password given?
     if not old_pw:
-        logger('User', 'change_password', 'old pwd is empty')
+        logger('User', 'old pwd is empty')
         message = _t.get(_.oldPwdEmpty)  # 'The old password field is empty.'
     # is the new password given?
     elif not new_pw:
-        logger('User', 'change_password', 'new pwd is empty')
+        logger('User', 'new pwd is empty')
         message = _t.get(_.newPwdEmtpy)  # 'The new password field is empty.'
     # is the confirmation password given?
     elif not confirm_pw:
-        logger('User', 'change_password', 'confirm pwd is empty')
+        logger('User', 'confirm pwd is empty')
         message = _t.get(_.confPwdEmpty)  # 'The password confirmation field is empty.'
     # is new password equals the confirmation?
     elif not new_pw == confirm_pw:
-        logger('User', 'change_password', 'new pwds not equal')
+        logger('User', 'new pwds not equal')
         message = _t.get(_.newPwdNotEqual)  # 'The new passwords are not equal'
     # is new old password equals the new one?
     elif old_pw == new_pw:
-        logger('User', 'change_password', 'pwds are the same')
+        logger('User', 'pwds are the same')
         message = _t.get(_.pwdsSame)  # 'The new and old password are the same'
     else:
         # is the old password valid?
         if not user.validate_password(old_pw):
-            logger('User', 'change_password', 'old password is wrong')
+            logger('User', 'old password is wrong')
             message = _t.get(_.oldPwdWrong)  # 'Your old password is wrong.'
         else:
             hashed_pw = password_handler.get_hashed_password(new_pw)
@@ -624,7 +624,7 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
             DBDiscussionSession.add(user)
             transaction.commit()
 
-            logger('User', 'change_password', 'password was changed')
+            logger('User', 'password was changed')
             message = _t.get(_.pwdChanged)  # 'Your password was changed'
             success = True
 
@@ -646,7 +646,7 @@ def __create_new_user(user, ui_locales, oauth_provider='', oauth_provider_id='')
 
     _t = Translator(ui_locales)
     # creating a new user with hashed password
-    logger('User', '__create_new_user', 'Adding user ' + user['nickname'])
+    logger('User', 'Adding user ' + user['nickname'])
     hashed_password = password_handler.get_hashed_password(user['password'])
     newuser = User(firstname=user['firstname'],
                    surname=user['lastname'],
@@ -670,11 +670,11 @@ def __create_new_user(user, ui_locales, oauth_provider='', oauth_provider_id='')
     # sanity check, whether the user exists
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
     if db_user:
-        logger('User', '__create_new_user', 'New data was added with uid ' + str(db_user.uid))
+        logger('User', 'New data was added with uid ' + str(db_user.uid))
         success = _t.get(_.accountWasAdded).format(user['nickname'])
 
     else:
-        logger('User', '__create_new_user', 'New data was not added')
+        logger('User', 'New data was not added')
         info = _t.get(_.accoutErrorTryLateOrContant)
 
     return success, info, db_user
@@ -699,13 +699,13 @@ def set_new_user(mailer, firstname, lastname, nickname, gender, email, password,
 
     # does the group exists?
     if not db_group:
-        logger('User', 'set_new_user', 'Internal error occured')
+        logger('User', 'Internal error occured')
         return {'success': False, 'error': _tn.get(_.errorTryLateOrContant), 'user': None}
 
     # sanity check
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if db_user:
-        logger('User', 'set_new_user', 'User already exists')
+        logger('User', 'User already exists')
         return {'success': False, 'error': _tn.get(_.nickIsTaken), 'user': None}
 
     user = {
@@ -726,10 +726,10 @@ def set_new_user(mailer, firstname, lastname, nickname, gender, email, password,
         send_mail(mailer, subject, body, email, _tn.get_lang())
         send_welcome_notification(db_new_user.uid, _tn)
 
-        logger('User', 'set_new_user', 'set new user in db')
+        logger('User', 'set new user in db')
         return {'success': success, 'error': '', 'user': db_new_user}
 
-    logger('User', 'set_new_user', 'new user not found in db')
+    logger('User', 'new user not found in db')
     return {
         'success': False,
         'error': _tn.get(_.errorTryLateOrContant),
@@ -756,7 +756,7 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, uid, provid
 
     # does the group exists?
     if not db_group:
-        logger('User', 'set_new_oauth_user', 'Internal error occurred')
+        logger('User', 'Internal error occurred')
         return {'success': False, 'error': _tn.get(_.errorTryLateOrContant), 'user': None}
 
     # sanity check
@@ -764,13 +764,13 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, uid, provid
                                                      User.oauth_provider_id == str(uid)).first()
     # login of oauth user
     if db_user:
-        logger('User', 'set_new_oauth_user', 'User already exists, she will login')
+        logger('User', 'User already exists, she will login')
         return {'success': True, 'error': '', 'user': db_user}
 
     # sanity check
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if db_user:
-        logger('User', 'set_new_oauth_user', 'User already exists')
+        logger('User', 'User already exists')
         return {'success': False, 'error': _tn.get(_.nickIsTaken), 'user': None}
 
     user = {
@@ -785,10 +785,10 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, uid, provid
     success, info, db_new_user = __create_new_user(user, _tn.get_lang(), oauth_provider=provider, oauth_provider_id=uid)
 
     if db_new_user:
-        logger('User', 'set_new_oauth_user', 'set new user in db')
+        logger('User', 'set new user in db')
         return {'success': success, 'error': '', 'user': db_new_user}
 
-    logger('User', 'set_new_oauth_user', 'new user not found in db')
+    logger('User', 'new user not found in db')
 
     return {
         'success': False,

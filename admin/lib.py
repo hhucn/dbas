@@ -123,7 +123,7 @@ def get_overview(page):
     :param page: Name of the main page
     :return: [[{'name': .., 'content': [{'name': .., 'count': .., 'href': ..}, ..] }], ..]
     """
-    logger('AdminLib', 'get_dashboard_infos', 'main')
+    logger('AdminLib', 'main')
     return_list = list()
 
     # all tables for the 'general' group
@@ -205,7 +205,7 @@ def get_table_dict(table_name, main_page):
     :param main_page: URL
     :return: Dictionary with head, row, count and has_elements
     """
-    logger('AdminLib', 'get_table_dict', str(table_name))
+    logger('AdminLib', str(table_name))
 
     # check for elements
     db_elements = DBDiscussionSession.query(table_mapper[table_name.lower()]['table']).all()
@@ -395,16 +395,16 @@ def update_row(table_name, uids, keys, values):
     try:
         update_dict = __update_row_dict(table, values, keys, _tn)
     except ProgrammingError as e:
-        logger('AdminLib', 'update_row ProgrammingError', str(e), error=True)
+        logger('AdminLib', str(e), error=True)
         return exception_response(400, error='SQLAlchemy ProgrammingError: ' + str(e))
 
     try:
         __update_row(table, table_name, uids, update_dict)
     except IntegrityError as e:
-        logger('AdminLib', 'update_row IntegrityError', str(e), error=True)
+        logger('AdminLib', str(e), error=True)
         return exception_response(400, error='SQLAlchemy IntegrityError: ' + str(e))
     except ProgrammingError as e:
-        logger('AdminLib', 'update_row ProgrammingError', str(e), error=True)
+        logger('AdminLib', str(e), error=True)
         return exception_response(400, error='SQLAlchemy ProgrammingError: ' + str(e))
 
     DBDiscussionSession.flush()
@@ -422,7 +422,7 @@ def delete_row(table_name, uids):
     :param _tn: Translator
     :return: Empty string or error message
     """
-    logger('AdminLib', 'delete_row', table_name + ' ' + str(uids))
+    logger('AdminLib', table_name + ' ' + str(uids))
     table = table_mapper[table_name.lower()]['table']
     try:
         # check if there is a table, where uid is not the PK!
@@ -438,10 +438,10 @@ def delete_row(table_name, uids):
             DBDiscussionSession.query(table).filter_by(uid=uids[0]).delete()
 
     except IntegrityError as e:
-        logger('AdminLib', 'delete_row IntegrityError', str(e), error=True)
+        logger('AdminLib', str(e), error=True)
         return exception_response(400, error='SQLAlchemy IntegrityError: ' + str(e))
     except ProgrammingError as e:
-        logger('AdminLib', 'delete_row ProgrammingError', str(e), error=True)
+        logger('AdminLib', str(e), error=True)
         return exception_response(400, error='SQLAlchemy ProgrammingError: ' + str(e))
 
     DBDiscussionSession.flush()
@@ -457,7 +457,7 @@ def add_row(table_name, data):
     :param data: Dictionary with data for the update
     :return: Empty string or error message
     """
-    logger('AdminLib', 'add_row', str(data))
+    logger('AdminLib', str(data))
 
     table = table_mapper[table_name.lower()]['table']
     try:
@@ -466,7 +466,7 @@ def add_row(table_name, data):
         new_one = table(**data)
         DBDiscussionSession.add(new_one)
     except IntegrityError as e:
-        logger('AdminLib', 'add_row IntegrityError', str(e), error=True)
+        logger('AdminLib', str(e), error=True)
         return exception_response(400, error='SQLAlchemy IntegrityError: ' + str(e))
 
     DBDiscussionSession.flush()
@@ -480,7 +480,7 @@ def update_badge():
 
     :return: dict(), string
     """
-    logger('AdminLib', 'update_badge', '')
+    logger('AdminLib', '')
     ret_array = []
     for t in table_mapper:
         ret_array.append({

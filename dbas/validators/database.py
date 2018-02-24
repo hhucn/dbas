@@ -23,7 +23,7 @@ def valid_table_name(request):
         return True
     else:
         _tn = Translator(get_language_from_cookie(request))
-        add_error(request, 'valid_table_name', 'Invalid table name', _tn.get(_.invalidTableName))
+        add_error(request, 'Invalid table name', _tn.get(_.invalidTableName))
         return False
 
 
@@ -35,7 +35,7 @@ def valid_database_model(keyword, model):
             request.validated['db_model'] = db_something
             return True
         else:
-            add_error(request, 'valid_model', 'Database has no row {} of {}'.format(uid, model))
+            add_error(request, 'Database has no row {} of {}'.format(uid, model))
             return False
 
     return valid_model

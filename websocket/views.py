@@ -56,7 +56,7 @@ def debug_function(request):
     :param request: current webservers reqquest
     :return: dict()
     """
-    logger('Websocket', 'debug_function', 'main')
+    logger('Websocket', 'main')
 
     ui_locales = get_language_from_cookie(request)
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
@@ -81,13 +81,13 @@ def debug_that_mail(request):
     :param request:
     :return:
     """
-    logger('Websocket', 'debug_mail', 'debug_mail')
+    logger('Websocket', 'debug_mail')
     if request.authenticated_userid in ['Tobias', 'tokra100']:
         text = request.get('text', 'empty text input')
-        logger('Websocket', 'debug_mail', 'you got access: {}'.format(text))
+        logger('Websocket', 'you got access: {}'.format(text))
         db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
         send_mail(get_mailer(request), '[D-BAS] Debug Mail', 'Debug: {}'.format(text), db_user.email, 'en')
         return {'success': True}
     else:
-        logger('Websocket', 'debug_mail', 'access denied')
+        logger('Websocket', 'access denied')
         return {'success': False}

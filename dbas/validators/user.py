@@ -27,7 +27,7 @@ def valid_user(request):
         return True
     else:
         _tn = Translator(get_language_from_cookie(request))
-        add_error(request, 'valid_user', 'Invalid user', _tn.get(_.checkNickname))
+        add_error(request, 'Invalid user', _tn.get(_.checkNickname))
         return False
 
 
@@ -47,7 +47,7 @@ def valid_user_as_author_of_statement(request):
             return True
         else:
             _tn = Translator(get_language_from_cookie(request))
-            add_error(request, '', _tn.get(_.userIsNotAuthorOfStatement))
+            add_error(request, _tn.get(_.userIsNotAuthorOfStatement))
     return False
 
 
@@ -68,7 +68,7 @@ def valid_user_as_author_of_argument(request):
             return True
         else:
             _tn = Translator(get_language_from_cookie(request))
-            add_error(request, '', _tn.get(_.userIsNotAuthorOfArgument))
+            add_error(request, _tn.get(_.userIsNotAuthorOfArgument))
     return False
 
 
@@ -84,7 +84,7 @@ def valid_user_as_author(request):
         if db_user.is_admin() or db_user.is_author():
             return True
         else:
-            add_error(request, 'valid_user_as_author', 'Invalid user group', _tn.get(_.justLookDontTouch))
+            add_error(request, 'Invalid user group', _tn.get(_.justLookDontTouch))
     return False
 
 
@@ -100,7 +100,7 @@ def valid_user_as_admin(request):
         if db_user.is_admin():
             return True
         else:
-            add_error(request, 'valid_user_as_admin', 'Invalid user group', _tn.get(_.justLookDontTouch))
+            add_error(request, 'Invalid user group', _tn.get(_.justLookDontTouch))
     return False
 
 

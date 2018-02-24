@@ -26,7 +26,7 @@ def valid_issue(request):
         request.validated['issue'] = db_issue
         return True
     else:
-        add_error(request, 'valid_issue', 'Invalid issue')
+        add_error(request, 'Invalid issue')
         return False
 
 
@@ -48,7 +48,7 @@ def valid_new_issue(request):
     db_dup3 = DBDiscussionSession.query(Issue).filter_by(long_info=long_info).all()
     if db_dup1 or db_dup2 or db_dup3:
         _tn = Translator(get_language_from_cookie(request))
-        add_error(request, 'valid_new_issue', 'Issue data is a duplicate', _tn.get(_.duplicate))
+        add_error(request, 'Issue data is a duplicate', _tn.get(_.duplicate))
         return False
     return True
 
@@ -63,7 +63,7 @@ def valid_issue_not_readonly(request):
     if valid_issue(request) and not request.validated.get('issue').is_read_only:
         return True
     _tn = Translator(get_language_from_cookie(request))
-    add_error(request, 'valid_issue_not_readonly', 'Issue is read only', _tn.get(_.discussionIsReadOnly))
+    add_error(request, 'Issue is read only', _tn.get(_.discussionIsReadOnly))
     return False
 
 
@@ -88,11 +88,11 @@ def valid_conclusion(request):
             return True
         else:
             _tn = Translator(get_language_from_cookie(request))
-            add_error(request, 'valid_conclusion', 'Conclusion is missing', _tn.get(_.conclusionIsMissing))
+            add_error(request, 'Conclusion is missing', _tn.get(_.conclusionIsMissing))
             return False
     else:
         _tn = Translator(get_language_from_cookie(request))
-        add_error(request, 'valid_conclusion', 'Conclusion id is missing', _tn.get(_.conclusionIsMissing))
+        add_error(request, 'Conclusion id is missing', _tn.get(_.conclusionIsMissing))
         return False
 
 
@@ -114,7 +114,7 @@ def valid_statement(request):
         return True
     else:
         _tn = Translator(get_language_from_cookie(request))
-        add_error(request, 'valid_statement', 'Statement uid is missing', _tn.get(_.wrongStatement))
+        add_error(request, 'Statement uid is missing', _tn.get(_.wrongStatement))
         return False
 
 
@@ -136,7 +136,7 @@ def valid_argument(request):
         return True
     else:
         _tn = Translator(get_language_from_cookie(request))
-        add_error(request, 'valid_argument', 'Argument uid is missing', _tn.get(_.wrongArgument))
+        add_error(request, 'Argument uid is missing', _tn.get(_.wrongArgument))
         return False
 
 
@@ -175,7 +175,7 @@ def valid_premisegroup(request):
         return True
     else:
         _tn = Translator(get_language_from_cookie(request))
-        add_error(request, 'valid_premisegroup', 'PGroup uid is missing', _tn.get(_.internalError))
+        add_error(request, 'PGroup uid is missing', _tn.get(_.internalError))
         return False
 
 
@@ -191,7 +191,7 @@ def valid_premisegroups(request):
             or not isinstance(premisegroups, list)\
             or not all([isinstance(l, list) for l in premisegroups]):
         _tn = Translator(get_language_from_cookie(request))
-        add_error(request, 'valid_premisegroups', 'Invalid conclusion id', _tn.get(_.requestFailed))
+        add_error(request, 'Invalid conclusion id', _tn.get(_.requestFailed))
         return False
 
     min_length = request.registry.settings.get('settings:discussion:statement_min_length', 10)
@@ -202,7 +202,7 @@ def valid_premisegroups(request):
                     __set_min_length_error(request, min_length)
                     return False
             else:
-                add_error(request, 'valid_premisegroups', 'At least one premise isn\'t a string!')
+                add_error(request, 'At least one premise isn\'t a string!')
                 return False
 
     request.validated['premisegroups'] = premisegroups
@@ -216,14 +216,14 @@ def valid_statement_or_argument(request):
     if uid:
         db_arg_or_stmt = DBDiscussionSession.query(t).get(uid)
     else:
-        add_error(request, 'valid_statement_or_argument', 'Missing uid for ' + t.__name__)
+        add_error(request, 'Missing uid for ' + t.__name__)
         return False
 
     if db_arg_or_stmt:
         request.validated['arg_or_stmt'] = db_arg_or_stmt
         return True
     else:
-        add_error(request, 'valid_statement_or_argument', t.__name__ + ' is invalid')
+        add_error(request, t.__name__ + ' is invalid')
         return False
 
 
@@ -262,4 +262,4 @@ def __set_min_length_error(request, min_length):
     b = _tn.get(_.minLength)
     c = _tn.get(_.eachStatement)
     error_msg = '{} ({}: {} {})'.format(a, b, min_length, c)
-    add_error(request, '__set_min_length_error', 'Text too short', error_msg)
+    add_error(request, 'Text too short', error_msg)

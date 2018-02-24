@@ -38,7 +38,7 @@ def check_reaction(attacked_arg_uid, attacking_arg_uid, relation, is_history=Fal
     :param is_history: Boolean
     :return: Boolean
     """
-    logger('Validator', 'check_reaction', relation + ' from ' + str(attacking_arg_uid) + ' to ' + str(attacked_arg_uid))
+    logger('Validator', relation + ' from ' + str(attacking_arg_uid) + ' to ' + str(attacked_arg_uid))
 
     malicious_val = [
         not is_integer(attacked_arg_uid),
@@ -65,7 +65,7 @@ def check_reaction(attacked_arg_uid, attacking_arg_uid, relation, is_history=Fal
             return False
         return True
 
-    logger('Validator', 'check_reaction', 'else-case')
+    logger('Validator', 'else-case')
     return False
 
 
@@ -221,22 +221,22 @@ def get_relation_between_arguments(arg1_uid, arg2_uid):
     """
 
     if related_with_undermine(arg1_uid, arg2_uid):
-        logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' undermine ' + str(arg2_uid))
+        logger('InputValidator', str(arg1_uid) + ' undermine ' + str(arg2_uid))
         return 'undermine'
 
     if related_with_undercut(arg1_uid, arg2_uid):
-        logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' undermine ' + str(arg2_uid))
+        logger('InputValidator', str(arg1_uid) + ' undermine ' + str(arg2_uid))
         return 'undercut'
 
     if related_with_rebut(arg1_uid, arg2_uid):
-        logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' undermine ' + str(arg2_uid))
+        logger('InputValidator', str(arg1_uid) + ' undermine ' + str(arg2_uid))
         return 'rebut'
 
     if related_with_support(arg1_uid, arg2_uid):
-        logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' support ' + str(arg2_uid))
+        logger('InputValidator', str(arg1_uid) + ' support ' + str(arg2_uid))
         return 'support'
 
-    logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' NONE ' + str(arg2_uid))
+    logger('InputValidator', str(arg1_uid) + ' NONE ' + str(arg2_uid))
     return None
 
 

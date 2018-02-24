@@ -79,7 +79,7 @@ def prepare_request_dict(request, nickname):
     :param nickname:
     :return:
     """
-    logger('Renderer', 'prepare_request_dict', 'def')
+    logger('Renderer', 'def')
 
     last_topic = history_handler.get_saved_issue(nickname)
 
@@ -132,9 +132,9 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any]):
     :param f: A function with three arguments
     :return: prepared collection for the discussion
     """
-    logger('Views', '__call_from_discussion_step', 'def')
-    logger('Views', '__call_from_discussion_step', 'def')
-    logger('Views', '__call_from_discussion_step', 'def')
+    logger('Views', 'def')
+    logger('Views', 'def')
+    logger('Views', 'def')
     nickname, session_expired = preparation_for_view(request)
     if session_expired:
         request.session.invalidate()
@@ -151,7 +151,7 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any]):
         prepared_discussion['layout'] = base_layout()
         __modifiy_discussion_url(prepared_discussion)
 
-    logger('Views', '__call_from_discussion_step', 'Return dict (isNone={})'.format(dict is None))
+    logger('Views', 'Return dict (isNone={})'.format(dict is None))
     return prepared_discussion
 
 
@@ -175,7 +175,7 @@ def main_page(request):
     :param request: current request of the server
     :return: HTTP 200 with several information
     """
-    logger('main_page', 'def', 'request.matchdict: {}'.format(request.matchdict))
+    logger('main_page', 'request.matchdict: {}'.format(request.matchdict))
 
     set_language_for_visit(request)
     session_expired = 'session_expired' in request.params and request.params['session_expired'] == 'true'
@@ -199,7 +199,7 @@ def main_settings(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_settings', 'def', 'main: {}'.format(request.params))
+    logger('main_settings', 'main: {}'.format(request.params))
 
     ui_locales = get_language_from_cookie(request)
     old_pw, new_pw, confirm_pw, message = '', '', '', ''
@@ -235,7 +235,7 @@ def main_notifications(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_notifications', 'def', 'main')
+    logger('main_notifications', 'main')
     return __main_dict(request, 'Message')
 
 
@@ -249,7 +249,7 @@ def main_news(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_news', 'def', 'main')
+    logger('main_news', 'main')
 
     ui_locales = get_language_from_cookie(request)
     db_user = request.validated['user']
@@ -274,17 +274,17 @@ def main_user(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     match_dict = request.matchdict
-    logger('main_user', 'def', 'request.matchdict: {}'.format(match_dict))
+    logger('main_user', 'request.matchdict: {}'.format(match_dict))
 
     uid = match_dict.get('uid', 0)
-    logger('main_user', 'def', 'uid: {}'.format(uid))
+    logger('main_user', 'uid: {}'.format(uid))
 
     if not is_integer(uid):
         raise HTTPNotFound
 
     current_user = DBDiscussionSession.query(User).get(uid)
     if current_user is None or current_user.nickname == nick_of_anonymous_user:
-        logger('main_user', 'def', 'no user: {}'.format(uid), error=True)
+        logger('main_user', 'no user: {}'.format(uid), error=True)
         raise HTTPNotFound()
 
     ui_locales = get_language_from_cookie(request)
@@ -313,7 +313,7 @@ def main_imprint(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_imprint', 'def', 'main')
+    logger('main_imprint', 'main')
     # add version of pyramid
     request.decorated['extras'].update({'pyramid_version': pkg_resources.get_distribution('pyramid').version})
 
@@ -332,7 +332,7 @@ def main_faq(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_faq', 'def', 'main')
+    logger('main_faq', 'main')
     return __main_dict(request, 'FAQ')
 
 
@@ -346,7 +346,7 @@ def main_experiment(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_experiment', 'def', 'main')
+    logger('main_experiment', 'main')
     ui_locales = get_language_from_cookie(request)
     return __main_dict(request, Translator(ui_locales).get(_.fieldtest))
 
@@ -361,7 +361,7 @@ def main_mydiscussions(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_mydiscussions', 'def', 'main')
+    logger('main_mydiscussions', 'main')
     ui_locales = get_language_from_cookie(request)
     issue_dict = get_issues_overiew(request.authenticated_userid, request.application_url)
 
@@ -382,7 +382,7 @@ def main_docs(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_docs', 'def', 'main')
+    logger('main_docs', 'main')
     return __main_dict(request, Translator(get_language_from_cookie(request)).get(_.docs))
 
 
@@ -396,7 +396,7 @@ def main_rss(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_rss', 'def', 'main')
+    logger('main_rss', 'main')
     ui_locales = get_language_from_cookie(request)
     rss = get_list_of_all_feeds(ui_locales)
 
@@ -414,7 +414,7 @@ def main_graphiql(request):
     :param request: current request of the server
     :return: graphql
     """
-    logger('main_graphiql', 'def', 'main')
+    logger('main_graphiql', 'main')
     schema = graphene.Schema(query=Query)
     context = {'session': DBDiscussionSession}
     return serve_graphql_request(request, schema, batch_enabled=True, context_value=context)
@@ -437,7 +437,7 @@ def notfound(request):
         })
 
     user.update_last_action(request.authenticated_userid)
-    logger('notfound', 'def', 'main in {}'.format(request.method) + '-request' +
+    logger('notfound', 'main in {}'.format(request.method) + '-request' +
            ', path: ' + request.path +
            ', view name: ' + request.view_name +
            ', matchdict: {}'.format(request.matchdict) +
@@ -476,7 +476,7 @@ def discussion_init(request):
     :param request: request of the web server
     :return: dictionary
     """
-    logger('Views', 'discussion_init', 'request.matchdict: {}'.format(request.matchdict))
+    logger('Views', 'request.matchdict: {}'.format(request.matchdict))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.init)
     if not prepared_discussion:
@@ -500,7 +500,7 @@ def discussion_attitude(request):
     :return: dictionary
     """
     # '/discuss/{slug}/attitude/{statement_id}'
-    logger('Views', 'discussion_attitude', 'request.matchdict: {}'.format(request.matchdict))
+    logger('Views', 'request.matchdict: {}'.format(request.matchdict))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.attitude)
     if not prepared_discussion:
@@ -519,7 +519,7 @@ def discussion_justify(request):
     :return: dictionary
     """
     # '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation'
-    logger('views', 'discussion_justify', 'request.matchdict: {}'.format(request.matchdict))
+    logger('views', 'request.matchdict: {}'.format(request.matchdict))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.justify)
     if not prepared_discussion:
@@ -538,7 +538,7 @@ def discussion_reaction(request):
     :return: dictionary
     """
     # '/discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys'
-    logger('views', 'discussion_reaction', 'request.matchdict: {}'.format(request.matchdict))
+    logger('views', 'request.matchdict: {}'.format(request.matchdict))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.reaction)
     if not prepared_discussion:
@@ -556,7 +556,7 @@ def discussion_support(request):
     :param request: request of the web server
     :return: dictionary
     """
-    logger('views', 'discussion_support', 'request.matchdict: {}'.format(request.matchdict))
+    logger('views', 'request.matchdict: {}'.format(request.matchdict))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.support)
     if not prepared_discussion:
@@ -575,7 +575,7 @@ def discussion_finish(request):
     :param request: request of the web server
     :return:
     """
-    logger('views', 'discussion_finish', 'request.matchdict: {}'.format(request.matchdict))
+    logger('views', 'request.matchdict: {}'.format(request.matchdict))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.finish)
     if not prepared_discussion:
@@ -594,7 +594,7 @@ def discussion_exit(request):
     :return:
     """
     match_dict = request.matchdict
-    logger('views', 'discussion_exit', 'request.matchdict: {}'.format(match_dict))
+    logger('views', 'request.matchdict: {}'.format(match_dict))
 
     unauthenticated = check_authentication(request)
     if unauthenticated:
@@ -626,7 +626,7 @@ def discussion_choose(request):
     """
     # '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids'
     match_dict = request.matchdict
-    logger('discussion_choose', 'def', 'request.matchdict: {}'.format(match_dict))
+    logger('discussion_choose', 'request.matchdict: {}'.format(match_dict))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.choose)
     if not prepared_discussion:
@@ -644,7 +644,7 @@ def discussion_jump(request):
     :return: dictionary
     """
     # '/discuss/{slug}/jump/{arg_id}'
-    logger('views', 'discussion_jump', 'request.matchdict: {}'.format(request.matchdict))
+    logger('views', 'request.matchdict: {}'.format(request.matchdict))
 
     prepared_discussion = __call_from_discussion_step(request, discussion.jump)
     if not prepared_discussion:
@@ -667,7 +667,7 @@ def main_review(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_review', 'main', 'def {}'.format(request.matchdict))
+    logger('main_review', 'def {}'.format(request.matchdict))
     nickname = request.authenticated_userid
 
     issue = issue_handler.get_issue_id(request)
@@ -703,7 +703,7 @@ def review_content(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('review_content', 'main', 'def {}'.format(request.matchdict))
+    logger('review_content', 'def {}'.format(request.matchdict))
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
@@ -714,7 +714,7 @@ def review_content(request):
     subpage_dict = review_page_helper.get_subpage_elements_for(nickname, session, application_url, subpage_name, _tn)
     request.session.update(subpage_dict['session'])
     if not subpage_dict['elements'] and not subpage_dict['has_access'] and not subpage_dict['no_arguments_to_review']:
-        logger('review_content', 'def', 'subpage error', error=True)
+        logger('review_content', 'subpage error', error=True)
         raise HTTPNotFound()
 
     title = _tn.get(_.review)
@@ -740,7 +740,7 @@ def review_history(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('review_history', 'main', 'def {}'.format(request.matchdict))
+    logger('review_history', 'def {}'.format(request.matchdict))
     ui_locales = get_language_from_cookie(request)
     request_authenticated_userid = request.authenticated_userid
     _tn = Translator(ui_locales)
@@ -761,7 +761,7 @@ def ongoing_history(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('ongoing_history', 'main', 'def {}'.format(request.matchdict))
+    logger('ongoing_history', 'def {}'.format(request.matchdict))
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 
@@ -781,7 +781,7 @@ def review_reputation(request):
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('review_reputation', 'main', 'def {}'.format(request.matchdict))
+    logger('review_reputation', 'def {}'.format(request.matchdict))
     ui_locales = get_language_from_cookie(request)
     _tn = Translator(ui_locales)
 

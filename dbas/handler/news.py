@@ -24,7 +24,7 @@ def set_news(title: str, text: str, db_user: User, lang: str, main_page: str) ->
     :param main_page: url
     :return:
     """
-    logger('NewsHelper', 'set_news', 'def')
+    logger('NewsHelper', 'def')
 
     author = db_user.firstname
     if db_user.firstname != 'admin':
@@ -55,7 +55,7 @@ def get_news(ui_locales):
     :param ui_locales:
     :return: dict()
     """
-    logger('NewsHelper', 'get_news', 'main')
+    logger('NewsHelper', 'main')
     db_news = DBDiscussionSession.query(News).order_by(News.date.desc()).all()
     ret_news = []
     for news in db_news:
@@ -82,7 +82,7 @@ def get_latest_news(ui_locales):
     :return: dict()
     :return:
     """
-    logger('NewsHelper', 'get_news', 'main')
+    logger('NewsHelper', 'main')
     db_news = DBDiscussionSession.query(News).order_by(News.date.desc()).all()
     ret_news = []
     for index, news in enumerate(db_news[:5]):

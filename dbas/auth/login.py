@@ -35,7 +35,7 @@ def login_user(nickname: str, password: str, mailer: Mailer, lang='en') -> dict:
     :param lang: current language
     :return: dict() or HTTPFound if the user is logged in and it is not the api
     """
-    logger('Auth.Login', 'login_user', 'user: {}'.format(nickname))
+    logger('Auth.Login', 'user: {}'.format(nickname))
     _tn = Translator(lang)
 
     # now we have several options:
@@ -66,7 +66,7 @@ def login_user_oauth(request, service, redirect_uri, old_redirect, ui_locales):
     :param ui_locales:
     :return:
     """
-    logger('Auth.Login', 'login_user_oauth', 'service: {}'.format(service))
+    logger('Auth.Login', 'service: {}'.format(service))
     if service == 'google':
         return __do_google_oauth(request, redirect_uri, old_redirect, ui_locales)
     elif service == 'github':
@@ -208,7 +208,7 @@ def __set_oauth_user(request, user_data, service, ui_locales):
 
     db_group = DBDiscussionSession.query(Group).filter_by(name='users').first()
     if not db_group:
-        logger('Auth.Login', '__set_oauth_user', 'Error occured')
+        logger('Auth.Login', 'Error occured')
         return {'error': _tn.get(_.errorTryLateOrContant)}
 
     ret_dict = user.set_new_oauth_user(user_data['firstname'],
@@ -236,7 +236,7 @@ def __register_user_with_ldap_data(mailer, nickname, password, _tn) -> dict:
     :param _tn: Translator
     :return: dict() or HTTPFound if the user is logged in an it is not the api
     """
-    logger('Auth.Login', '__register_user_with_ldap_data', 'user: {}'.format(nickname))
+    logger('Auth.Login', 'user: {}'.format(nickname))
     ldap_data = verify_ldap_user_data(nickname, password, _tn)
     if ldap_data['error']:
         return {'error': ldap_data['error']}
@@ -259,13 +259,13 @@ def __check_in_local_known_user(db_user: User, password: str, _tn) -> dict:
     :param _tn: instance of current translator
     :return: dict()
     """
-    logger('Auth.Login', '__check_in_local_known_user', 'user: {}'.format(db_user.nickname))
+    logger('Auth.Login', 'user: {}'.format(db_user.nickname))
     if db_user.validate_password(password):
         return {'user': db_user}
 
     if not (db_user.validate_password('NO_PW_BECAUSE_LDAP') or db_user.password is get_hashed_password(
             'NO_PW_BECAUSE_LDAP')):
-        logger('Auth.Login', '__check_in_local_known_user', 'invalid password for the local user')
+        logger('Auth.Login', 'invalid password for the local user')
         return {'error': _tn.get(_.userPasswordNotMatch)}
 
     data = verify_ldap_user_data(db_user.nickname, password, _tn)
@@ -284,7 +284,7 @@ def __return_success_login(request, db_user, keep_login, url) -> dict:
     :param url:
     :return:
     """
-    logger('Auth.Login', 'login_user', 'return for api: success')
+    logger('Auth.Login', 'return for api: success')
     return {'status': 'success'}  # api
 
 
@@ -319,7 +319,7 @@ def register_user_with_json_data(data, lang, mailer: Mailer):
     # does the group exists?
     if not db_group:
         msg = _tn.get(_.errorTryLateOrContant)
-        logger('Auth.Login', 'user_registration', 'Error occured')
+        logger('Auth.Login', 'Error occured')
         return success, msg, db_new_user
 
     ret_dict = user.set_new_user(mailer, firstname, lastname, nickname, gender, email, password, _tn)
@@ -342,26 +342,26 @@ def __check_login_params(nickname, email, password, passwordconfirm) -> Keywords
 
     # are the password equal?
     if not password == passwordconfirm:
-        logger('Auth.Login', 'user_registration', 'Passwords are not equal')
+        logger('Auth.Login', 'Passwords are not equal')
         return _.pwdNotEqual
 
     # empty password?
     if len(password) <= 5:
-        logger('Auth.Login', 'user_registration', 'Password too short')
+        logger('Auth.Login', 'Password too short')
         return _.pwdShort
 
     # is the nick already taken?
     if db_nick1 or db_nick2:
-        logger('Auth.Login', 'user_registration', 'Nickname \'' + nickname + '\' is taken')
+        logger('Auth.Login', 'Nickname \'' + nickname + '\' is taken')
         return _.nickIsTaken
 
     # is the email already taken?
     if db_mail:
-        logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is taken')
+        logger('Auth.Login', 'E-Mail \'' + email + '\' is taken')
         return _.mailIsTaken
 
     if len(email) < 2 or not is_mail_valid:
-        logger('Auth.Login', 'user_registration', 'E-Mail \'' + email + '\' is too short or not valid')
+        logger('Auth.Login', 'E-Mail \'' + email + '\' is too short or not valid')
         return _.mailNotValid
 
     return None
@@ -378,13 +378,13 @@ def __refresh_headers_and_url(request, db_user, keep_login, url):
     :param url: String
     :return: Headers, String
     """
-    logger('Auth.Login', '__refresh_headers_and_url', 'login', 'login successful / keep_login: {}'.format(keep_login))
+    logger('Auth.Login', 'login', 'login successful / keep_login: {}'.format(keep_login))
     db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
     db_settings.should_hold_the_login(keep_login)
-    logger('Auth.Login', '__refresh_headers_and_url', 'remembering headers for {}'.format(db_user.nickname))
+    logger('Auth.Login', 'remembering headers for {}'.format(db_user.nickname))
     headers = remember(request, db_user.nickname)
 
-    logger('Auth.Login', '__refresh_headers_and_url', 'update login timestamp')
+    logger('Auth.Login', 'update login timestamp')
     db_user.update_last_login()
     db_user.update_last_action()
     transaction.commit()

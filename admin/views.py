@@ -98,7 +98,7 @@ def main_admin(request):
     :param request: current webservers request
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('Admin', 'main_admin', 'def')
+    logger('Admin', 'def')
     should_log_out = user.update_last_action(request.authenticated_userid)
     if should_log_out:
         return user_logout(request, True)
@@ -132,7 +132,7 @@ def main_table(request):
     :param request: current webservers request
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('Admin', 'main_table', 'def')
+    logger('Admin', 'def')
     should_log_out = user.update_last_action(request.authenticated_userid)
     if should_log_out:
         return user_logout(request, True)
@@ -167,7 +167,7 @@ def main_update(request):
     :param request: current webservers request
     :return: dict()
     """
-    logger('Admin', 'main_update', 'def ' + str(request.params))
+    logger('Admin', 'def ' + str(request.params))
     table = request.validated['table']
     uids = request.validated['uids']
     keys = request.validated['keys']
@@ -188,7 +188,7 @@ def main_delete(request):
     :param request: current webservers request
     :return: dict()
     """
-    logger('Admin', 'main_delete', 'def ' + str(request.json_body))
+    logger('Admin', 'def ' + str(request.json_body))
     return lib.delete_row(request.validated['table'], request.validated['uids'])
 
 
@@ -201,7 +201,7 @@ def main_add(request):
     :param request: current webservers request
     :return: dict()
     """
-    logger('Admin', 'main_add', 'def ' + str(request.json_body))
+    logger('Admin', 'def ' + str(request.json_body))
     return lib.add_row(request.validated['table'], request.validated['new_data'])
 
 
@@ -214,7 +214,7 @@ def main_update_badge(request):
     :param request: current webservers request
     :return: dict()
     """
-    logger('Admin', 'main_update_badge', 'def ' + str(request.json_body))
+    logger('Admin', 'def ' + str(request.json_body))
     return lib.update_badge()
 
 
@@ -222,7 +222,7 @@ def main_update_badge(request):
 def generate_api_token(request):
     owner = request.params['owner']
     token = lib.generate_application_token(owner)
-    logger('Admin', 'Application Tokens', 'API-Token for {} was created.'.format(owner))
+    logger('Admin', 'API-Token for {} was created.'.format(owner))
     return {'token': token}
 
 
@@ -230,4 +230,4 @@ def generate_api_token(request):
 def revoke_api_token(request):
     token_id = request.matchdict['id']
     lib.revoke_application_token(token_id)
-    logger('Admin', 'Application Tokens', 'API-Token {} was revoked.'.format(token_id))
+    logger('Admin', 'API-Token {} was revoked.'.format(token_id))

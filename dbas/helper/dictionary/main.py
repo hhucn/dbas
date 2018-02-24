@@ -53,7 +53,7 @@ class DictionaryHelper(object):
         :return: dictionary
         """
         return_dict = dict()
-        logger('DictionaryHelper', 'get_subdictionary_out_of_orderer_dict', 'count: ' + str(count))
+        logger('DictionaryHelper', 'count: ' + str(count))
         items = list(ordered_dict.items())
 
         if count < 0:
@@ -107,7 +107,7 @@ class DictionaryHelper(object):
         :param ongoing_discussion: Boolean
         :return: dict()
         """
-        logger('DictionaryHelper', 'prepare_extras_dict', 'def')
+        logger('DictionaryHelper', 'def')
 
         is_user_from_ldap = db_user.validate_password('NO_PW_BECAUSE_LDAP') if db_user else None
         is_logged_in = True
@@ -268,7 +268,7 @@ class DictionaryHelper(object):
         :param supportive: supportive
         :return: None
         """
-        logger('DictionaryHelper', 'add_discussion_end_text', 'main')
+        logger('DictionaryHelper', 'main')
         _tn = Translator(self.discussion_lang)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         gender = db_user.gender if db_user else None
@@ -447,7 +447,7 @@ class DictionaryHelper(object):
         :param extras_dict: current dict()
         :return: dict()
         """
-        logger('DictionaryHelper', 'add_language_options_for_extra_dict', 'def')
+        logger('DictionaryHelper', 'def')
         lang_is_en = self.system_lang != 'de'
         lang_is_de = self.system_lang == 'de'
         extras_dict.update({

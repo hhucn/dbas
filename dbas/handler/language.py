@@ -18,12 +18,12 @@ def set_language(request, db_lang):
     :param lang: Language
     :return: dict()
     """
-    logger('LanguageHelper', 'set_language', 'setting lang to {}'.format(db_lang.ui_locales))
+    logger('LanguageHelper', 'setting lang to {}'.format(db_lang.ui_locales))
     request._LOCALE_ = db_lang.ui_locales
     request.response.set_cookie('_LOCALE_', str(db_lang.ui_locales))
     request.cookies['_LOCALE_'] = db_lang.ui_locales
     # we have to set 'ui_locales = get_language_from_cookie(request)' in each view again, because D-BAS is no object
-    logger('LanguageHelper', 'set_language', 'switched to {}'.format(db_lang.ui_locales))
+    logger('LanguageHelper', 'switched to {}'.format(db_lang.ui_locales))
 
     return {'_LOCALE_': db_lang.ui_locales}
 
@@ -36,7 +36,7 @@ def get_language_from_header(request):
     :return: String
     """
     lang = request.headers.get('Accept-Language', '')
-    logger('ViewHelper', 'get_language_from_header', 'Accept-Language: {}'.format(lang))
+    logger('ViewHelper', 'Accept-Language: {}'.format(lang))
     return 'de' if 'de' in lang else 'en'
 
 
@@ -65,11 +65,11 @@ def set_language_for_visit(request):
     """
 
     if '_LOCALE_' in request.cookies:
-        logger('ViewHelper', 'set_language_for_first_visit', 'User was already here')
+        logger('ViewHelper', 'User was already here')
         # user was already here
         return
 
-    logger('ViewHelper', 'set_language_for_first_visit', 'User is first time here')
+    logger('ViewHelper', 'User is first time here')
     ui_locales = get_language_from_header(request)
     lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
     set_language(request, lang)

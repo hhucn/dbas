@@ -126,7 +126,7 @@ def add_reputation_for(user, reason):
     :param reason: reason as string, as given in reputation.py
     :return: True, if the user gained reputation and an additional boolean that is true, when the user reached 30points
     """
-    logger('ReputationPointHelper', 'add_reputation_for', 'main ' + reason)
+    logger('ReputationPointHelper', 'main ' + reason)
     db_reason = DBDiscussionSession.query(ReputationReason).filter_by(reason=reason).first()
 
     if isinstance(user, str):  # TODO remove this check after refactoring
@@ -135,20 +135,20 @@ def add_reputation_for(user, reason):
         db_user = user
 
     if not db_reason or not db_user:
-        logger('ReputationPointHelper', 'add_reputation_for', 'no reason or no user')
+        logger('ReputationPointHelper', 'no reason or no user')
         return False, False
 
-    logger('ReputationPointHelper', 'add_reputation_for', 'user ' + str(db_user.uid))
+    logger('ReputationPointHelper', 'user ' + str(db_user.uid))
     # special case:
     if '_first_' in reason:
         db_already_farmed = DBDiscussionSession.query(ReputationHistory).filter(
             ReputationHistory.reputation_uid == db_reason.uid,
             ReputationHistory.reputator_uid == db_user.uid).first()
         if db_already_farmed:
-            logger('ReputationPointHelper', 'add_reputation_for', 'karma already farmed')
+            logger('ReputationPointHelper', 'karma already farmed')
             return False, False
 
-    logger('ReputationPointHelper', 'add_reputation_for', 'add ' + str(db_reason.points) + ' for ' + db_user.nickname)
+    logger('ReputationPointHelper', 'add ' + str(db_reason.points) + ' for ' + db_user.nickname)
     db_old_points = __collect_points(DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).join(ReputationReason).all())
     new_rep = ReputationHistory(reputator=db_user.uid, reputation=db_reason.uid)
     DBDiscussionSession.add(new_rep)

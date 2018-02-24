@@ -28,7 +28,7 @@ def get_d3_data(issue, all_statements=None, all_arguments=None):
     """
     a = [a.uid for a in all_statements] if all_statements is not None else 'all'
     b = [b.uid for b in all_arguments] if all_arguments is not None else 'all'
-    logger('Graph.lib', 'get_d3_data', 'main - statements: {}, arguments: {}'.format(a, b))
+    logger('Graph.lib', 'main - statements: {}, arguments: {}'.format(a, b))
     edge_type = 'arrow'
     nodes_array = []
     edges_array = []
@@ -37,7 +37,7 @@ def get_d3_data(issue, all_statements=None, all_arguments=None):
     if not db_issue:
         return {}
 
-    logger('Graph.lib', 'get_d3_data', 'title: ' + db_issue.title)
+    logger('Graph.lib', 'title: ' + db_issue.title)
 
     db_textversions = DBDiscussionSession.query(TextVersion).all()
     if all_statements is None:
@@ -72,7 +72,7 @@ def get_d3_data(issue, all_statements=None, all_arguments=None):
     error = __sanity_check_of_d3_data(all_node_ids, edges_array)
 
     d3_dict = {'nodes': nodes_array, 'edges': edges_array, 'extras': extras_dict}
-    logger('Graph.lib', 'get_d3_data', 'end')
+    logger('Graph.lib', 'end')
     return d3_dict, error
 
 
@@ -102,13 +102,13 @@ def get_doj_data(issue):
     :param issue:
     :return:
     """
-    logger('Graph.lib', 'get_doj_nodes', 'main')
+    logger('Graph.lib', 'main')
     url = 'http://localhost:5101/evaluate/dojs?issue=' + str(issue)
     try:
         resp = requests.get(url)
     except Exception as e:
-        logger('Graph.lib', 'get_doj_nodes', 'Error: ' + str(e), error=True)
-        logger('Graph.lib', 'get_doj_nodes', 'return empty doj')
+        logger('Graph.lib', 'Error: ' + str(e), error=True)
+        logger('Graph.lib', 'return empty doj')
         return {}
 
     if resp.status_code == 200:
@@ -116,8 +116,8 @@ def get_doj_data(issue):
         doj = json.loads(resp.text)
         return doj['dojs'] if 'dojs' in doj else {}
     else:
-        logger('Graph.lib', 'get_doj_nodes', 'status ' + str(resp.status_code), error=True)
-        logger('Graph.lib', 'get_doj_nodes', 'return empty doj')
+        logger('Graph.lib', 'status ' + str(resp.status_code), error=True)
+        logger('Graph.lib', 'return empty doj')
         return {}
 
 
@@ -129,7 +129,7 @@ def get_path_of_user(base_url, path, issue):
     :param issue:
     :return:
     """
-    logger('Graph.lib', 'get_path_of_user', 'main ' + path)
+    logger('Graph.lib', 'main ' + path)
 
     # replace everything what we do not need
     db_issue = DBDiscussionSession.query(Issue).get(issue)
@@ -145,7 +145,7 @@ def get_path_of_user(base_url, path, issue):
     else:
         history = [path]
 
-    logger('Graph.lib', 'get_path_of_user', 'main ' + str(history))
+    logger('Graph.lib', 'main ' + str(history))
 
     tlist = []
     for h in history:
@@ -159,7 +159,7 @@ def get_path_of_user(base_url, path, issue):
     else:
         ret_list = tlist
 
-    logger('Graph.lib', 'get_path_of_user', 'returning path ' + str(ret_list))
+    logger('Graph.lib', 'returning path ' + str(ret_list))
     return ret_list
 
 
@@ -173,7 +173,7 @@ def __get_statements_of_path_step(step):
     splitted = step.split('/')
 
     if 'justify' in step and len(splitted) > 2:
-        logger('Graph.lib', '__get_statements_of_path_step', 'append {} -> {}'.format(splitted[2], 'issue'))
+        logger('Graph.lib', 'append {} -> {}'.format(splitted[2], 'issue'))
         statements.append([int(splitted[2]), 'issue'])
 
     # elif 'justify' in step:
@@ -198,8 +198,7 @@ def __get_statements_of_path_step(step):
             db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=arg.premisesgroup_uid)
             for premise in db_premises:
                 statements.append([premise.statement_uid, target])
-                logger('Graph.lib', '__get_statements_of_path_step',
-                       'append {} -> {}'.format(premise.statement_uid, target))
+                logger('Graph.lib', 'append {} -> {}'.format(premise.statement_uid, target))
 
     # reaction / {arg_id_user}
     # justify / {statement_or_arg_id}
@@ -218,7 +217,7 @@ def __prepare_statements_for_d3_data(db_statements, db_textversions, edge_type):
     :param edge_type:
     :return:
     """
-    logger('Graph.lib', '__prepare_statements_for_d3_data', 'def')
+    logger('Graph.lib', 'def')
     all_ids = []
     nodes = []
     edges = []
@@ -259,7 +258,7 @@ def __prepare_arguments_for_d3_data(db_arguments, edge_type):
     nodes = []
     edges = []
     extras = {}
-    logger('Graph.lib', '__prepare_arguments_for_d3_data', 'def')
+    logger('Graph.lib', 'def')
 
     # for each argument edges will be added as well as the premises
     for argument in db_arguments:
@@ -334,18 +333,18 @@ def __sanity_check_of_d3_data(all_node_ids, edges_array):
         err1 = e['source'] not in all_node_ids
         err2 = e['target'] not in all_node_ids
         if err1:
-            logger('Graph.lib', '__sanity_check_of_d3_data', 'Source of {} is not valid'.format(e))
+            logger('Graph.lib', 'Source of {} is not valid'.format(e))
             # logger('Graph.lib', '__sanity_check_of_d3_data', '{} is not in dict of all node ids'.format(e['source']))
         if err2:
-            logger('Graph.lib', '__sanity_check_of_d3_data', 'Target of {} is not valid'.format(e))
+            logger('Graph.lib', 'Target of {} is not valid'.format(e))
             # logger('Graph.lib', '__sanity_check_of_d3_data', '{} is not in dict of all node ids'.format(e['target']))
         error = error or err1 or err2
     if error:
-        logger('Graph.lib', '__sanity_check_of_d3_data', 'At least one edge has invalid source or target!', error=True)
-        logger('Graph.lib', '__sanity_check_of_d3_data', 'List of all node ids: ' + str(all_node_ids))
+        logger('Graph.lib', 'At least one edge has invalid source or target!', error=True)
+        logger('Graph.lib', 'List of all node ids: ' + str(all_node_ids))
         return True
     else:
-        logger('Graph.lib', '__sanity_check_of_d3_data', 'All nodes are connected well')
+        logger('Graph.lib', 'All nodes are connected well')
         return False
 
 
