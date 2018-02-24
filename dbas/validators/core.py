@@ -25,11 +25,10 @@ def has_keywords(*keywords: Tuple[str, type]):
             if value is not None and isinstance(value, ktype):
                 request.validated[keyword] = value
             elif value is None:
-                add_error(request, 'has_keywords', 'Parameter {} missing'.format(keyword),
-                          '{} is missing'.format(keyword))
+                add_error(request, 'Parameter {} missing'.format(keyword), '{} is missing'.format(keyword))
                 error_occured = True
             else:
-                add_error(request, 'has_keywords', 'Parameter {} has wrong type'.format(keyword),
+                add_error(request, 'Parameter {} has wrong type'.format(keyword),
                           '{} is {}, expected {}'.format(keyword, type(value), ktype))
                 error_occured = True
         return not error_occured
@@ -54,7 +53,7 @@ def has_maybe_keywords(*keywords):
             elif value is None:
                 request.validated[keyword] = kdefault
             else:
-                add_error(request, 'has_keywords', 'Parameter {} has wrong type'.format(keyword),
+                add_error(request, 'Parameter {} has wrong type'.format(keyword),
                           '{} is {}, expected {}'.format(keyword, type(keyword), ktype))
                 error_occured = True
         return not error_occured
