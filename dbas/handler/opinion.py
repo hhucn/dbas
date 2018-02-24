@@ -31,8 +31,7 @@ def get_user_and_opinions_for_argument(argument_uids, db_user, lang, main_page, 
     :return: { 'attack_type': { 'message': 'string', 'users': [{'nickname': 'string', 'avatar_url': 'url' 'vote_timestamp': 'string' ], ... }],...}
     """
 
-    logger('OpinionHandler', 'get_user_and_opinions_for_argument',
-           'Arguments ' + str(argument_uids) + ', nickname ' + str(db_user.nickname))
+    logger('OpinionHandler', 'Arguments ' + str(argument_uids) + ', nickname ' + str(db_user.nickname))
 
     # preparation
     _t = Translator(lang)
@@ -148,8 +147,7 @@ def get_user_with_same_opinion_for_statements(statement_uids, is_supportive, db_
     :param main_page: url
     :return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
     """
-    logger('OpinionHandler', 'get_user_with_same_opinion_for_statements',
-           'Statement {} ({})'.format(statement_uids, is_supportive))
+    logger('OpinionHandler', 'Statement {} ({})'.format(statement_uids, is_supportive))
 
     opinions = []
     _t = Translator(lang)
@@ -229,14 +227,14 @@ def get_user_with_same_opinion_for_premisegroups(argument_uids, db_user, lang, m
     :param main_page: url
     :return: {'users':[{nickname1.avatar_url, nickname1.vote_timestamp}*]}
     """
-    logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'Arguments ' + str(argument_uids))
+    logger('OpinionHandler', 'Arguments ' + str(argument_uids))
 
     opinions = []
     _t = Translator(lang)
     title = _t.get(_.relativePopularityOfStatements)
 
     for uid in argument_uids:
-        logger('OpinionHandler', 'get_user_with_same_opinion_for_premisegroups', 'Argument {}'.format(uid))
+        logger('OpinionHandler', 'Argument {}'.format(uid))
         statement_dict = dict()
         all_users = []
         db_argument = DBDiscussionSession.query(Argument).get(uid)
@@ -282,8 +280,7 @@ def get_user_with_same_opinion_for_argument(argument_uid, db_user, lang, main_pa
     """
     try:
         text = get_text_for_argument_uid(argument_uid, 'de')
-        logger('OpinionHandler', 'get_user_with_same_opinion_for_argument',
-               'Argument {}: {}'.format(argument_uid, text))
+        logger('OpinionHandler', 'Argument {}: {}'.format(argument_uid, text))
         if not text:
             return {'uid': None, 'text': None, 'message': None, 'users': None, 'seen_by': None}
     except TypeError:
@@ -332,7 +329,7 @@ def get_user_with_opinions_for_attitude(statement_uid, db_user, lang, main_page)
     :return:
     """
 
-    logger('OpinionHandler', 'get_user_with_opinions_for_attitude', 'Statement ' + str(statement_uid))
+    logger('OpinionHandler', 'Statement ' + str(statement_uid))
     db_statement = DBDiscussionSession.query(Statement).get(statement_uid) if statement_uid else None
     _t = Translator(lang)
     title = _t.get(_.agreeVsDisagree)

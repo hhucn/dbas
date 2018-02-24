@@ -64,7 +64,7 @@ class ItemDictHelper(object):
         :param db_user: User
         :return:
         """
-        logger('ItemDictHelper', 'get_array_for_start', 'def user: {}'.format(db_user.nickname))
+        logger('ItemDictHelper', 'def user: {}'.format(db_user.nickname))
         db_statements = get_not_disabled_statement_as_query()
         db_statements = db_statements.filter(Statement.is_startpoint == True,
                                              Statement.issue_uid == self.db_issue.uid).all()
@@ -118,7 +118,7 @@ class ItemDictHelper(object):
         :param statement_uid: Statement.uid
         :return:
         """
-        logger('ItemDictHelper', 'prepare_item_dict_for_attitude', 'def')
+        logger('ItemDictHelper', 'def')
         _tn = Translator(self.lang)
 
         slug = DBDiscussionSession.query(Issue).get(self.db_issue.uid).slug
@@ -155,7 +155,7 @@ class ItemDictHelper(object):
         :param history: history
         :return:
         """
-        logger('ItemDictHelper', 'get_array_for_justify_statement', 'def')
+        logger('ItemDictHelper', 'def')
         statements_array = []
         _tn = Translator(self.lang)
         slug = self.db_issue.slug
@@ -233,8 +233,7 @@ class ItemDictHelper(object):
         :param history:
         :return:
         """
-        logger('ItemDictHelper', 'get_array_for_justify_argument',
-               'def: arg {}, attack {}'.format(argument_uid, attack_type))
+        logger('ItemDictHelper', 'def: arg {}, attack {}'.format(argument_uid, attack_type))
         statements_array = []
         _tn = Translator(self.lang)
         slug = self.db_issue.slug
@@ -268,7 +267,7 @@ class ItemDictHelper(object):
             url = ''
 
             # with a chance of 50% or at the end we will seed the new "support step"
-            logger('ItemDictHelper', 'get_array_for_justify_argument',
+            logger('ItemDictHelper',
                    'take support? is end: {} or rnd: {}'.format('end' in attack, 'NOO'))  # support_step))
             if 'end' in attack:  # TODO 343
                 new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
@@ -358,7 +357,7 @@ class ItemDictHelper(object):
         :param gender: m, f or n
         :return:
         """
-        logger('ItemDictHelper', 'get_array_for_dont_know_reaction', 'def')
+        logger('ItemDictHelper', 'def')
         slug = self.db_issue.slug
         statements_array = []
 
@@ -481,7 +480,7 @@ class ItemDictHelper(object):
         :param gender: Gender of the author of the attack
         :return:
         """
-        logger('ItemDictHelper', 'get_array_for_reaction', 'def')
+        logger('ItemDictHelper', 'def')
         slug = self.db_issue.slug
 
         db_sys_argument = DBDiscussionSession.query(Argument).get(argument_uid_sys)
@@ -632,7 +631,7 @@ class ItemDictHelper(object):
         :param nickname:
         :return: dict()
         """
-        logger('ItemDictHelper', 'get_array_for_choosing', 'def')
+        logger('ItemDictHelper', 'def')
         statements_array = []
         slug = self.db_issue.slug
         _um = UrlManager(slug, history=self.path)
@@ -650,8 +649,7 @@ class ItemDictHelper(object):
                     add_seen_statement(premise.statement_uid, db_user)
 
             # get attack for each premise, so the urls will be unique
-            logger('ItemDictHelper', 'get_array_for_choosing',
-                   'premisesgroup_uid: ' + str(group_id) +
+            logger('ItemDictHelper', 'premisesgroup_uid: ' + str(group_id) +
                    ', conclusion_uid: ' + str(conclusion) +
                    ', argument_uid: ' + str(argument) +
                    ', is_supportive: ' + str(is_supportive))
@@ -660,7 +658,7 @@ class ItemDictHelper(object):
                                                                      Argument.argument_uid == argument,
                                                                      Argument.is_supportive == is_supportive).first()
             if not db_argument:
-                logger('ItemDictHelper', 'get_array_for_choosing', 'No argument found', error=True)
+                logger('ItemDictHelper', 'No argument found', error=True)
                 return None
             attacking_arg_uids = get_all_attacking_arg_uids_from_history(self.path)
             arg_id_sys, attack = rs.get_attack_for_argument(db_argument.uid,

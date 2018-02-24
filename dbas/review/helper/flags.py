@@ -38,7 +38,7 @@ def flag_element(uid: int, reason: str, db_user: User, is_argument: bool, ui_loc
     # was this already flagged?
     flag_status = __get_flag_status(argument_uid, statement_uid, None, db_user.uid)
     if flag_status:
-        logger('FlagingHelper', 'flag_element', 'already flagged')
+        logger('FlagingHelper', 'already flagged')
         # who flagged this argument?
         return {
             'success': '',
@@ -59,7 +59,7 @@ def flag_element(uid: int, reason: str, db_user: User, is_argument: bool, ui_loc
     elif reason == 'duplicate':
         # flagged for the first time
         if statement_uid == extra_uid:
-            logger('FlagingHelper', 'flag_element', 'uid error', error=True)
+            logger('FlagingHelper', 'uid error', error=True)
             return '', '', _.internalKeyError
         __add_duplication_review(statement_uid, extra_uid, db_user.uid)
 
@@ -80,12 +80,11 @@ def flag_statement_for_merge_or_split(key: str, pgroup: PremiseGroup, text_value
     :param nickname: Users nickname
     :return: success, info, error
     """
-    logger('FlagingHelper', 'flag_statement_for_merge_or_split',
-           'Flag statements in pgroup {} for a {} with values {}'.format(pgroup.uid, key, text_values))
+    logger('FlagingHelper', 'Flag statements in pgroup {} for a {} with values {}'.format(pgroup.uid, key, text_values))
     # was this already flagged?
     flag_status = __get_flag_status(None, None, pgroup.uid, db_user.uid)
     if flag_status:
-        logger('FlagingHelper', 'flag_statement_for_merge_or_split', 'already flagged')
+        logger('FlagingHelper', 'already flagged')
         return {
             'success': '',
             'info': tn.get(_.alreadyFlaggedByYou if flag_status == 'user' else _.alreadyFlaggedByOthers)
@@ -111,7 +110,7 @@ def flag_pgroup_for_merge_or_split(key: str, pgroup: PremiseGroup, db_user: User
     :param nickname: Users nickname
     :return: success, info, error
     """
-    logger('FlagingHelper', 'flag_pgroup_for_merge_or_split', 'Flag pgroup {} for a {}'.format(pgroup.uid, key))
+    logger('FlagingHelper', 'Flag pgroup {} for a {}'.format(pgroup.uid, key))
     return flag_statement_for_merge_or_split(key, pgroup, None, db_user, tn)
 
 
@@ -130,7 +129,7 @@ def __get_flag_status(argument_uid, statement_uid, pgroup_uid, user_uid):
             __is_argument_flagged_for_duplication_by_user(statement_uid, user_uid),
             __is_argument_flagged_for_merge_by_user(pgroup_uid, user_uid),
             __is_argument_flagged_for_split_by_user(pgroup_uid, user_uid))):
-        logger('FlagingHelper', '__get_flag_status', 'Already flagged by the user')
+        logger('FlagingHelper', 'Already flagged by the user')
         return 'user'
 
     if any((__is_argument_flagged_for_delete(argument_uid, statement_uid),
@@ -138,7 +137,7 @@ def __get_flag_status(argument_uid, statement_uid, pgroup_uid, user_uid):
             __is_argument_flagged_for_duplication(statement_uid),
             __is_argument_flagged_for_merge(pgroup_uid),
             __is_argument_flagged_for_split(pgroup_uid))):
-        logger('FlagingHelper', '__get_flag_status', 'Already flagged by others')
+        logger('FlagingHelper', 'Already flagged by others')
         return 'other'
 
     return None
@@ -332,7 +331,7 @@ def __add_delete_review(argument_uid, statement_uid, user_uid, reason_uid):
     :param reason_uid: ReviewDeleteReason.uid
     :return: None
     """
-    logger('FlagingHelper', '__add_delete_review',
+    logger('FlagingHelper',
            'Flag argument/statement {}/{} by user {} for delete'.format(argument_uid, statement_uid, user_uid))
     review_delete = ReviewDelete(detector=user_uid, argument=argument_uid, statement=statement_uid, reason=reason_uid)
     DBDiscussionSession.add(review_delete)
@@ -349,7 +348,7 @@ def __add_optimization_review(argument_uid, statement_uid, user_uid):
     :param user_uid: User.uid
     :return: None
     """
-    logger('FlagingHelper', '__add_optimization_review',
+    logger('FlagingHelper',
            'Flag argument/statement {}/{} by user {} for optimization'.format(argument_uid, statement_uid, user_uid))
     review_optimization = ReviewOptimization(detector=user_uid, argument=argument_uid, statement=statement_uid)
     DBDiscussionSession.add(review_optimization)
@@ -366,9 +365,8 @@ def __add_duplication_review(duplicate_statement_uid, original_statement_uid, us
     :param user_uid: User.uid
     :return: None
     """
-    logger('FlagingHelper', '__add_duplication_review',
-           'Flag statement {} by user {} as duplicate of'.format(duplicate_statement_uid, user_uid,
-                                                                 original_statement_uid))
+    logger('FlagingHelper', 'Flag statement {} by user {} as duplicate of'.format(duplicate_statement_uid, user_uid,
+                                                                                  original_statement_uid))
     review_duplication = ReviewDuplicate(detector=user_uid, duplicate_statement=duplicate_statement_uid,
                                          original_statement=original_statement_uid)
     DBDiscussionSession.add(review_duplication)
@@ -385,7 +383,7 @@ def __add_split_review(pgroup_uid, user_uid, text_values):
     :param text_values: text values or None, if you want to split the premisegroup itself
     :return: None
     """
-    logger('FlagingHelper', '__add_split_review',
+    logger('FlagingHelper',
            'Flag pgroup {} by user {} for merging with additional values: {}'.format(pgroup_uid, user_uid, text_values))
     review_split = ReviewSplit(detector=user_uid, premisegroup=pgroup_uid)
     DBDiscussionSession.add(review_split)
@@ -408,7 +406,7 @@ def __add_merge_review(pgroup_uid, user_uid, text_values):
     :param text_values: text values or None, if you want to merge the premisegroup itself
     :return: None
     """
-    logger('FlagingHelper', '__add_merge_review',
+    logger('FlagingHelper',
            'Flag pgroup {} by user {} for merging with additional values: {}'.format(pgroup_uid, user_uid, text_values))
     review_merge = ReviewMerge(detector=user_uid, premisegroup=pgroup_uid)
     DBDiscussionSession.add(review_merge)

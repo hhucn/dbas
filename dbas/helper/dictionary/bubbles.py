@@ -15,7 +15,7 @@ def get_user_bubble_text_for_justify_statement(stmt_uid, db_user, is_supportive,
     :param _tn: Translator
     :return: String, String
     """
-    logger('BubbleHelper', 'get_user_bubble_text_for_justify_statement', '{} {}'.format(stmt_uid, is_supportive))
+    logger('BubbleHelper', '{} {}'.format(stmt_uid, is_supportive))
     text = get_text_for_statement_uid(stmt_uid)
 
     if _tn.get_lang() == 'de':

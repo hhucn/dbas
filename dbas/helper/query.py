@@ -59,7 +59,7 @@ def __mark_or_unmark_it(stmt_or_arg: Union[Statement, Argument], should_mark, db
     :param _t: Translator
     :return: String, String
     """
-    logger('QueryHelper', '__mark_or_unmark_it', '{} {}'.format(stmt_or_arg.uid, db_user.nickname))
+    logger('QueryHelper', '{} {}'.format(stmt_or_arg.uid, db_user.nickname))
 
     is_argument = isinstance(stmt_or_arg, Argument)
     table = MarkedArgument if is_argument else MarkedStatement
@@ -67,14 +67,14 @@ def __mark_or_unmark_it(stmt_or_arg: Union[Statement, Argument], should_mark, db
 
     if should_mark:
         db_el = DBDiscussionSession.query(table).filter(column == stmt_or_arg.uid).first()
-        logger('QueryHelper', '__mark_or_unmark_it', 'Element is present{}'.format(' now' if db_el else ''))
+        logger('QueryHelper', 'Element is present{}'.format(' now' if db_el else ''))
         if not db_el:
             new_el = MarkedArgument(argument=stmt_or_arg.uid, user=db_user.uid) if is_argument else MarkedStatement(
                 statement=stmt_or_arg.uid,
                 user=db_user.uid)
             DBDiscussionSession.add(new_el)
     else:
-        logger('QueryHelper', '__mark_or_unmark_it', 'Element is deleted')
+        logger('QueryHelper', 'Element is deleted')
         DBDiscussionSession.query(table).filter(column == stmt_or_arg.uid).delete()
 
     DBDiscussionSession.flush()
@@ -140,8 +140,7 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
     :return: [dict()]
     """
     return_array = []
-    logger('QueryHelper', '__get_attack_or_support_for_justification_of_argument_uid',
-           'db_undercut against Argument.argument_uid==' + str(argument_uid))
+    logger('QueryHelper', 'db_undercut against Argument.argument_uid==' + str(argument_uid))
     db_related_arguments = DBDiscussionSession.query(Argument).filter(Argument.is_supportive == is_supportive,
                                                                       Argument.argument_uid == argument_uid).all()
     given_relations = set()
@@ -169,7 +168,7 @@ def revoke_author_of_statement_content(statement, db_user):
     :param db_user: User
     :return:
     """
-    logger('QueryHelper', 'revoke_statement_content', str(statement.uid))
+    logger('QueryHelper', str(statement.uid))
 
     # get element, which should be revoked
     db_element = __revoke_statement(db_user, statement)
@@ -187,7 +186,7 @@ def revoke_author_of_argument_content(argument, db_user):
     :param db_user: User
     :return:
     """
-    logger('QueryHelper', 'revoke_argument_content', str(argument.uid))
+    logger('QueryHelper', str(argument.uid))
 
     # get element, which should be revoked
     db_element = __revoke_argument(db_user, argument)
@@ -205,11 +204,13 @@ def __revoke_statement(db_user, db_statement):
     :param db_statement: Statement
     :return: Statement, Boolean, String
     """
-    logger('QueryHelper', '__revoke_statement', 'Statement {} will be revoked (old author {})'.format(db_statement.uid, db_user.uid) + ')')
+    logger('QueryHelper', 'Statement {} will be revoked (old author {})'.format(db_statement.uid, db_user.uid) + ')')
     __remove_user_from_arguments_with_statement(db_statement, db_user)
 
     db_anonymous = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-    logger('QueryHelper', '__revoke_statement', 'Statement {} will get a new author {} (old author {})'.format(db_statement.uid, db_anonymous.uid, db_user.uid))
+    logger('QueryHelper',
+           'Statement {} will get a new author {} (old author {})'.format(db_statement.uid, db_anonymous.uid,
+                                                                          db_user.uid))
     db_statement.author_uid = db_anonymous.uid
     __transfer_textversion_to_new_author(db_statement.uid, db_user.uid, db_anonymous.uid)
 
@@ -236,12 +237,11 @@ def __revoke_argument(db_user, db_argument):
     is_involved = sum([len(rel) if rel else 0 for rel in relations]) > 0
 
     if is_involved:
-        logger('QueryHelper', '__revoke_argument',
-               'Author of argument {} changed from {} to anonymous'.format(db_argument.uid, db_user.uid))
+        logger('QueryHelper', 'Author of argument {} changed from {} to anonymous'.format(db_argument.uid, db_user.uid))
         db_new_author = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
         db_argument.author_uid = db_new_author.uid
     else:
-        logger('QueryHelper', '__revoke_argument', 'Disabling argument {}'.format(db_argument.uid))
+        logger('QueryHelper', 'Disabling argument {}'.format(db_argument.uid))
         db_argument.set_disable(True)
 
     DBDiscussionSession.add(db_argument)
@@ -263,7 +263,7 @@ def __disable_textversions(statement_uid, author_uid):
     db_textversion = DBDiscussionSession.query(TextVersion).filter(TextVersion.statement_uid == statement_uid,
                                                                    TextVersion.author_uid == author_uid).all()
     for textversion in db_textversion:
-        logger('QueryHelper', '__disable_textversions', str(textversion.uid))
+        logger('QueryHelper', str(textversion.uid))
         textversion.set_disable(True)
         DBDiscussionSession.add(textversion)
 
@@ -280,7 +280,7 @@ def __transfer_textversion_to_new_author(statement_uid, old_author_uid, new_auth
     :param new_author_uid: User.uid
     :return: Boolean
     """
-    logger('QueryHelper', '__revoke_statement',
+    logger('QueryHelper',
            'Textversion of {} will change author from {} to {}'.format(statement_uid, old_author_uid, new_author_uid))
     # TODO #432
     db_textversion = DBDiscussionSession.query(TextVersion).filter(TextVersion.statement_uid == statement_uid,
@@ -306,8 +306,7 @@ def __remove_user_from_arguments_with_statement(db_statement, db_user):
     :param db_user: User
     :return: None
     """
-    logger('QueryHelper', '__remove_user_from_arguments_with_statement',
-           '{} with user{}'.format(db_statement.uid, db_user.uid))
+    logger('QueryHelper', '{} with user{}'.format(db_statement.uid, db_user.uid))
     db_arguments = get_all_arguments_by_statement(db_statement.uid, True)
     for arg in db_arguments:
         if arg.author_uid == db_user.uid:
@@ -334,7 +333,7 @@ def get_short_url(url, ui_locales) -> dict:
     try:
         short_url = format(Shortener(service).short(url))
     except (ReadTimeout, ConnectionError, NewConnectionError, ShorteningErrorException) as e:
-        logger('getter', 'get_short_url', repr(e), error=True)
+        logger('getter', repr(e), error=True)
         service_text = Translator(ui_locales).get(_.serviceNotAvailable)
 
     return {

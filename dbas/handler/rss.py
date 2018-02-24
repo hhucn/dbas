@@ -30,7 +30,7 @@ def create_news_rss(main_page: str, ui_locale: str) -> bool:
     :param ui_locale: Language.ui_locale
     :return: Boolean
     """
-    logger('RSS-Handler', 'create_news_rss', 'def')
+    logger('RSS-Handler', 'def')
     db_news = Session.query(News).order_by(News.date.desc()).all()
     items = [__get_rss_item(n.title, n.news, n.date.datetime, n.author, '{}/news'.format(get_global_url())) for n in
              db_news]
@@ -60,7 +60,7 @@ def create_initial_issue_rss(main_page: str, ui_locale: str) -> bool:
     :param ui_locale: Language.ui_locale
     :return: Boolean
     """
-    logger('RSS-Handler', 'create_initial_issue_rss', 'def')
+    logger('RSS-Handler', 'def')
 
     if not os.path.exists('dbas{}'.format(rss_path)):
         os.makedirs('dbas{}'.format(rss_path))
@@ -93,7 +93,7 @@ def append_action_to_issue_rss(db_issue: Issue, db_author: User, title: str, des
     :param url: url of this event
     :return: Boolean
     """
-    logger('RSS-Handler', 'append_action_to_issue_rss', 'issue_uid ' + str(db_issue.uid))
+    logger('RSS-Handler', 'issue_uid ' + str(db_issue.uid))
     Session.add(RSS(author=db_author.uid, issue=db_issue.uid, title=title, description=description))
     Session.flush()
     transaction.commit()
@@ -133,7 +133,7 @@ def get_list_of_all_feeds(ui_locale: str) -> list:
     :param ui_locale: Language.ui_locale
     :return: list
     """
-    logger('RSS-Handler', 'get_list_of_all_feeds', 'def with ' + str(ui_locale))
+    logger('RSS-Handler', 'def with ' + str(ui_locale))
 
     feeds = []
     feed = {

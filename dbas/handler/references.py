@@ -18,7 +18,7 @@ def get_references_for_argument(uid, main_page):
     :param main_page: current main page
     :return: dict
     """
-    logger('ReferenceHelper', 'get_references_for_argument', str(uid))
+    logger('ReferenceHelper', str(uid))
 
     if not is_integer(uid):
         return {}, {}
@@ -77,7 +77,7 @@ def __get_references_for_statement(uid, main_page):
     :param main_page: current main page
     :return: dict
     """
-    logger('ReferenceHelper', '__get_references_for_statement', str(uid))
+    logger('ReferenceHelper', str(uid))
     db_references = DBDiscussionSession.query(StatementReferences).filter_by(statement_uid=uid).all()
     references_array = [__get_values_of_reference(ref, main_page) for ref in db_references]
     return {uid: references_array}

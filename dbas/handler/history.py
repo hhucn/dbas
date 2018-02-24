@@ -89,7 +89,7 @@ def create_bubbles_from_history(history, nickname='', lang='', slug=''):
     if len(history) == 0:
         return []
 
-    logger('history_handler', 'create_bubbles_from_history', 'nickname: ' + str(nickname) + ', history: ' + history)
+    logger('history_handler', 'nickname: ' + str(nickname) + ', history: ' + history)
     splitted_history = get_splitted_history(history)
 
     bubble_array = []
@@ -114,7 +114,7 @@ def create_bubbles_from_history(history, nickname='', lang='', slug=''):
             __prepare_support_step(bubble_array, index, step, db_user, lang)
 
         else:
-            logger('history_handler', 'create_bubbles_from_history', str(index) + ': unused case -> ' + step)
+            logger('history_handler', str(index) + ': unused case -> ' + step)
 
     return bubble_array
 
@@ -150,7 +150,7 @@ def __prepare_justify_statement_step(bubble_array, index, step, db_user, lang, u
     :param url: String
     :return: None
     """
-    logger('history_handler', '__prepare_justify_statement_step', str(index) + ': justify case -> ' + step)
+    logger('history_handler', str(index) + ': justify case -> ' + step)
     steps = step.split('/')
     if len(steps) < 3:
         return
@@ -182,7 +182,7 @@ def __prepare_reaction_step(bubble_array, index, step, db_user, lang, splitted_h
     :param url: String
     :return: None
     """
-    logger('history_handler', '__prepare_reaction_step', str(index) + ': reaction case -> ' + step)
+    logger('history_handler', str(index) + ': reaction case -> ' + step)
     bubbles = get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url)
     if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
         bubble_array += bubbles
@@ -200,7 +200,7 @@ def __prepare_support_step(bubble_array, index, step, nickname, lang):
     :param application_url: String
     :return: None
     """
-    logger('history_handler', '__prepare_support_step', str(index) + ': support case -> ' + step)
+    logger('history_handler', str(index) + ': support case -> ' + step)
     steps = step.split('/')
     if len(steps) < 3:
         return
@@ -222,7 +222,7 @@ def __get_bubble_from_justify_statement_step(step, db_user, lang, url):
     :param url: String
     :return: [dict()]
     """
-    logger('history_handler', '__justify_statement_step', 'def')
+    logger('history_handler', 'def')
     steps = step.split('/')
     uid = int(steps[1])
     is_supportive = steps[2] == 't' or steps[2] == 'd'  # supportive = t(rue) or d(ont know) mode
@@ -278,7 +278,7 @@ def __get_bubble_from_attitude_step(step, nickname, lang, url):
     :param url: String
     :return: [dict()]
     """
-    logger('history_handler', '__attitude_step', 'def')
+    logger('history_handler', 'def')
     steps = step.split('/')
     uid = int(steps[1])
     text = get_text_for_statement_uid(uid)
@@ -340,7 +340,7 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
     :param color_steps: Boolean
     :return: [dict()]
     """
-    logger('history_handler', 'get_bubble_from_reaction_step', 'def: {}, {}'.format(step, splitted_history))
+    logger('history_handler', 'def: {}, {}'.format(step, splitted_history))
     steps = step.split('/')
     uid = int(steps[1])
 
@@ -352,7 +352,7 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
         additional_uid = int(steps[2])
 
     if not check_reaction(uid, additional_uid, attack, is_history=True):
-        logger('history_handler', 'get_bubble_from_reaction_step', 'wrong reaction')
+        logger('history_handler', 'wrong reaction')
         return None
 
     is_supportive = DBDiscussionSession.query(Argument).get(uid).is_supportive
@@ -423,7 +423,7 @@ def save_path_in_database(nickname, slug, path, history=''):
     :param history: String
     :return: None
     """
-    logger('HistoryHelper', 'save_path_in_database', 'path: {}, history: {}, slug: {}'.format(path, history, slug))
+    logger('HistoryHelper', 'path: {}, history: {}, slug: {}'.format(path, history, slug))
 
     if not nickname:
         return None
@@ -444,7 +444,7 @@ def save_path_in_database(nickname, slug, path, history=''):
     if len(history) > 0:
         history = '?history=' + history
 
-    logger('HistoryHelper', 'save_path_in_database', 'saving {}{}'.format(path, history))
+    logger('HistoryHelper', 'saving {}{}'.format(path, history))
 
     DBDiscussionSession.add(History(author_uid=db_user.uid, path=path + history))
     DBDiscussionSession.flush()

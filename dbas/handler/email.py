@@ -93,10 +93,10 @@ def send_mail(mailer, subject, body, recipient, lang):
     :param lang: current language
     :return: duple with boolean for sent message, message-string
     """
-    logger('email_helper', 'send_mail', 'sending mail with subject \'' + subject + '\' to ' + recipient)
+    logger('email_helper', 'sending mail with subject \'' + subject + '\' to ' + recipient)
     _t = Translator(lang)
     if not mailer:
-        logger('email_helper', 'send_mail', 'mailer is none', error=True)
+        logger('email_helper', 'mailer is none', error=True)
         return False, _t.get(_.internalKeyError)
 
     send_message = False
@@ -114,19 +114,19 @@ def send_mail(mailer, subject, body, recipient, lang):
     except smtplib.SMTPConnectError as exception:
         code = str(exception.smtp_code)
         error = str(exception.smtp_error)
-        logger('email_helper', 'send_mail', 'exception smtplib.SMTPConnectError smtp code / error ' + code + '/' + error, error=True)
+        logger('email_helper', 'exception smtplib.SMTPConnectError smtp code / error ' + code + '/' + error, error=True)
         message = _t.get(_.emailWasNotSent)
     except socket_error as serr:
-        logger('email_helper', 'send_mail', 'socket error while sending ' + str(serr), error=True)
+        logger('email_helper', 'socket error while sending ' + str(serr), error=True)
         message = _t.get(_.emailWasNotSent)
 
     return send_message, message
 
 
 def __thread_to_send_mail(mailer, message, recipient, body):
-    logger('email_helper', '__thread_to_send_mail', 'Start thread to send mail to {} with {}'.format(recipient, body[:30]))
+    logger('email_helper', 'Start thread to send mail to {} with {}'.format(recipient, body[:30]))
     try:
         mailer.send_immediately(message, fail_silently=False)
     except TypeError as e:
-        logger('email_helper', '__thread_to_send_mail', 'TypeError {}'.format(e), error=True)
-    logger('email_helper', '__thread_to_send_mail', 'End thread to send mail to {} with {}'.format(recipient, body[:30]))
+        logger('email_helper', 'TypeError {}'.format(e), error=True)
+    logger('email_helper', 'End thread to send mail to {} with {}'.format(recipient, body[:30]))

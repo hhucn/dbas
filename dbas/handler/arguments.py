@@ -65,7 +65,7 @@ def set_arguments_premises(data) -> dict:
 
     prepared_dict['url'] = url
 
-    logger('ArgumentsHelper', 'set_new_premises_for_argument', 'returning {}'.format(prepared_dict))
+    logger('ArgumentsHelper', 'returning {}'.format(prepared_dict))
     return prepared_dict
 
 
@@ -146,8 +146,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
     premisegroups = arg_infos['premisegroups']
     history = arg_infos['history']
 
-    logger('ArgumentsHelper', 'process_input_of_premises_for_arguments_and_receive_url',
-           'count of new pgroups: ' + str(len(premisegroups)))
+    logger('ArgumentsHelper', 'count of new pgroups: ' + str(len(premisegroups)))
     _tn = Translator(discussion_lang)
 
     slug = db_issue.slug
@@ -261,7 +260,7 @@ def get_another_argument_with_same_conclusion(uid, history):
     :param history: String
     :return: Argument
     """
-    logger('ArgumentsHelper', 'get_another_argument_with_same_conclusion', str(uid))
+    logger('ArgumentsHelper', str(uid))
     db_arg = DBDiscussionSession.query(Argument).get(uid)
     if not db_arg:
         return None

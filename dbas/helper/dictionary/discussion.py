@@ -50,7 +50,7 @@ class DiscussionDictHelper(object):
         :position_count: int
         :return: dict()
         """
-        logger('DictionaryHelper', 'get_dict_for_start', 'at_start with positions: ' + str(position_count))
+        logger('DictionaryHelper', 'at_start with positions: ' + str(position_count))
         _tn = Translator(self.lang)
         add_premise_text = _tn.get(_.whatIsYourIdea)
         intro = _tn.get(_.initialPositionInterest) + (' ...' if self.lang == 'en' else '')
@@ -75,7 +75,7 @@ class DiscussionDictHelper(object):
         :param uid: Argument.uid
         :return: dict()
         """
-        logger('DictionaryHelper', 'get_dict_for_attitude', 'at_attitude')
+        logger('DictionaryHelper', 'at_attitude')
         _tn = Translator(self.lang)
         add_premise_text = ''
         save_statement_url = 'set_new_start_statement'
@@ -113,7 +113,7 @@ class DiscussionDictHelper(object):
         :param nickname: User.nickname
         :return: dict()
         """
-        logger('DictionaryHelper', 'get_dict_for_justify_statement', 'at_justify')
+        logger('DictionaryHelper', 'at_justify')
         _tn = Translator(self.lang)
 
         bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang, self.slug)
@@ -184,7 +184,7 @@ class DiscussionDictHelper(object):
         :param attack: String (undermine, support, undercut, rebut, ...)
         :return: dict()
         """
-        logger('DictionaryHelper', 'get_dict_for_justify_argument', 'def')
+        logger('DictionaryHelper', 'def')
         _tn = Translator(self.lang)
         bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang, self.slug)
         add_premise_text = ''
@@ -297,7 +297,7 @@ class DiscussionDictHelper(object):
         :param nickname:
         :return: dict()
         """
-        logger('DictionaryHelper', 'get_dict_for_dont_know_reaction', 'at_dont_know')
+        logger('DictionaryHelper', 'at_dont_know')
         _tn = Translator(self.lang)
         bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang, self.slug)
         add_premise_text = ''
@@ -348,7 +348,7 @@ class DiscussionDictHelper(object):
         :param nickname: Users nickname
         :return: dict()
         """
-        logger('DictionaryHelper', 'get_dict_for_argumentation', 'at_argumentation about ' + str(uid))
+        logger('DictionaryHelper', 'at_argumentation about ' + str(uid))
         nickname = db_user.nickname if db_user and db_user.nickname != nick_of_anonymous_user else None
         bubbles_array = history_helper.create_bubbles_from_history(self.history, nickname, self.lang, self.slug)
         add_premise_text = ''
@@ -507,7 +507,7 @@ class DiscussionDictHelper(object):
         :param history: String
         :return: dict()
         """
-        logger('DictionaryHelper', 'get_dict_for_jump', 'argument ' + str(uid))
+        logger('DictionaryHelper', 'argument ' + str(uid))
         _tn = Translator(self.lang)
         argument_text = get_text_for_argument_uid(uid, colored_position=True, with_html_tag=True, attack_type='jump')
         bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang, self.slug)
@@ -554,7 +554,7 @@ class DiscussionDictHelper(object):
         :param nickname: User.nickname
         :return: dict()
         """
-        logger('DictionaryHelper', 'get_dict_for_supporting_each_other', str(uid_system_arg))
+        logger('DictionaryHelper', str(uid_system_arg))
         _tn = Translator(self.lang)
         bubbles_array = history_helper.create_bubbles_from_history(self.history, nickname, self.lang, self.slug)
         db_arg_system = DBDiscussionSession.query(Argument).get(uid_system_arg)
@@ -591,7 +591,7 @@ class DiscussionDictHelper(object):
         :param uid: Argument.uid
         :return: dict()
         """
-        logger('DictionaryHelper', 'get_dict_for_jump_decision', 'at_attitude')
+        logger('DictionaryHelper', 'at_attitude')
         _tn = Translator(self.lang)
 
         db_argument = DBDiscussionSession.query(Argument).get(uid)
@@ -626,7 +626,7 @@ class DiscussionDictHelper(object):
         add_premise_text = ''
         save_statement_url = 'set_new_start_statement'
 
-        logger('DictionaryHelper', 'prepare_discussion_dict', 'at_choosing')
+        logger('DictionaryHelper', 'at_choosing')
         a = _tn.get(_.soYouEnteredMultipleReasons)
         c = get_text_for_argument_uid(uid) if is_uid_argument else get_text_for_statement_uid(uid)
 
@@ -665,7 +665,7 @@ class DiscussionDictHelper(object):
         statement_list = list()
         db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
 
-        logger('DictionaryHelper', '__get_all_statement_by_argument', 'Argument ' + str(argument.uid) +
+        logger('DictionaryHelper', 'Argument ' + str(argument.uid) +
                ' conclusion: ' + str(argument.conclusion_uid) + '/' + str(argument.argument_uid) +
                ' premise count: ' + str(len(db_premises)))
 

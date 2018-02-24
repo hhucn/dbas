@@ -862,9 +862,9 @@ def __setup_dummy_seen_by(session):
     session.add_all(elements)
     session.flush()
 
-    logger('INIT_DB', 'Dummy Seen By',
+    logger('INIT_DB',
            'Created ' + str(argument_count) + ' seen-by entries for ' + str(len(db_arguments)) + ' arguments')
-    logger('INIT_DB', 'Dummy Seen By',
+    logger('INIT_DB',
            'Created ' + str(statement_count) + ' seen-by entries for ' + str(len(db_statements)) + ' statements')
 
 
@@ -889,7 +889,7 @@ def __setup_dummy_clicks(session):
     statement_count = len(db_statements)
 
     if argument_count <= 0 or statement_count <= 0:
-        logger('INIT_DB', 'Dummy Votes', 'No arguments or statements! Do you forget to init discussions?', warning=True)
+        logger('INIT_DB', 'No arguments or statements! Do you forget to init discussions?', warning=True)
         return
 
     rat_arg_up = arg_up / argument_count
@@ -897,15 +897,15 @@ def __setup_dummy_clicks(session):
     rat_stat_up = stat_up / statement_count
     rat_stat_down = stat_down / statement_count
 
-    logger('INIT_DB', 'Dummy Clicks',
+    logger('INIT_DB',
            'Created {} up clicks for {} arguments ({:.2f} clicks/argument)'.format(arg_up, argument_count, rat_arg_up))
-    logger('INIT_DB', 'Dummy Clicks',
+    logger('INIT_DB',
            'Created {} down clicks for {} arguments ({:.2f} clicks/argument)'.format(arg_down, argument_count,
                                                                                      rat_arg_down))
-    logger('INIT_DB', 'Dummy Clicks',
+    logger('INIT_DB',
            'Created {} up clicks for {} statements ({:.2f} clicks/statement)'.format(stat_up, statement_count,
                                                                                      rat_stat_up))
-    logger('INIT_DB', 'Dummy Clicks',
+    logger('INIT_DB',
            'Created {} down clicks for {} statements ({:.2f} clicks/statement)'.format(stat_down, statement_count,
                                                                                        rat_stat_down))
 

@@ -46,7 +46,7 @@ def __add_vote_for(user, review, is_okay, review_type):
     }
     msg = mapper.get(review_type, '...')
 
-    logger('review_main_helper', '__add_vote_for', '{}, user {}'.format(msg, user.uid))
+    logger('review_main_helper', '{}, user {}'.format(msg, user.uid))
     already_voted = DBDiscussionSession.query(review_type).filter(review_type.reviewer_uid == user.uid,
                                                                   review_type.review_uid == review.uid).first()
     if not already_voted:
@@ -54,9 +54,9 @@ def __add_vote_for(user, review, is_okay, review_type):
         DBDiscussionSession.add(db_new_review)
         DBDiscussionSession.flush()
         transaction.commit()
-        logger('review_main_helper', '__add_vote_for', 'vote added')
+        logger('review_main_helper', 'vote added')
     else:
-        logger('review_main_helper', '__add_vote_for', 'already voted')
+        logger('review_main_helper', 'already voted')
 
 
 def __get_review_count(review_type, review_uid):
@@ -91,7 +91,7 @@ def add_review_opinion_for_delete(db_user, main_page, port, db_review, should_de
     :param _t:
     :return:
     """
-    logger('review_main_helper', 'add_review_opinion_for_delete', 'main')
+    logger('review_main_helper', 'main')
 
     db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
     # add new vote
@@ -100,34 +100,29 @@ def add_review_opinion_for_delete(db_user, main_page, port, db_review, should_de
 
     # get all keep and delete votes
     count_of_keep, count_of_delete = __get_review_count(LastReviewerDelete, db_review.uid)
-    logger('review_main_helper', 'add_review_opinion_for_delete',
-           'result ' + str(count_of_keep) + ':' + str(count_of_delete))
+    logger('review_main_helper', 'result ' + str(count_of_keep) + ':' + str(count_of_delete))
 
     # do we reached any limit?
     reached_max = max(count_of_keep, count_of_delete) >= max_votes
     if reached_max:
         if count_of_delete > count_of_keep:  # disable the flagged part
-            logger('review_main_helper', 'add_review_opinion_for_delete',
-                   'max reached / delete for review {}'.format(db_review.uid))
+            logger('review_main_helper', 'max reached / delete for review {}'.format(db_review.uid))
             en_or_disable_object_of_review(db_review, True)
             add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         else:  # just close the review
-            logger('review_main_helper', 'add_review_opinion_for_delete',
-                   'max reached / keep for review {}'.format(db_review.uid))
+            logger('review_main_helper', 'max reached / keep for review {}'.format(db_review.uid))
             add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_keep - count_of_delete >= min_difference:  # just close the review
-        logger('review_main_helper', 'add_review_opinion_for_delete',
-               'vote says keep for review {}'.format(db_review.uid))
+        logger('review_main_helper', 'vote says keep for review {}'.format(db_review.uid))
         add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_delete - count_of_keep >= min_difference:  # disable the flagged part
-        logger('review_main_helper', 'add_review_opinion_for_delete',
-               'vote says delete for review {}'.format(db_review.uid))
+        logger('review_main_helper', 'vote says delete for review {}'.format(db_review.uid))
         en_or_disable_object_of_review(db_review, True)
         add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         db_review.set_executed(True)
@@ -155,7 +150,7 @@ def add_review_opinion_for_edit(db_user, main_page, port, db_review, is_edit_oka
     :param _t:
     :return:
     """
-    logger('review_main_helper', 'add_review_opinion_for_edit', 'main')
+    logger('review_main_helper', 'main')
     db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
     broke_limit = False
 
@@ -209,8 +204,7 @@ def add_review_opinion_for_optimization(db_user, main_page, port, db_review, sho
     :param _t: Translator
     :return: String
     """
-    logger('review_main_helper', 'add_review_opinion_for_optimization',
-           'main ' + str(db_review.uid) + ', optimize ' + str(should_optimized))
+    logger('review_main_helper', 'main ' + str(db_review.uid) + ', optimize ' + str(should_optimized))
     # add new review
     db_new_review = LastReviewerOptimization(db_user.uid, db_review.uid, not should_optimized)
     DBDiscussionSession.add(db_new_review)
@@ -239,8 +233,7 @@ def add_review_opinion_for_duplicate(db_user, main_page, port, db_review, is_dup
     :param _t: Translator
     :return: String
     """
-    logger('review_main_helper', 'add_review_opinion_for_duplicate',
-           'main {}, duplicate {}'.format(db_review.uid, is_duplicate))
+    logger('review_main_helper', 'main {}, duplicate {}'.format(db_review.uid, is_duplicate))
     db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
     # add new vote
     __add_vote_for(db_user, db_review, not is_duplicate, LastReviewerDuplicate)
@@ -248,34 +241,29 @@ def add_review_opinion_for_duplicate(db_user, main_page, port, db_review, is_dup
 
     # get all keep and delete votes
     count_of_keep, count_of_reset = __get_review_count(LastReviewerDuplicate, db_review.uid)
-    logger('review_main_helper', 'add_review_opinion_for_duplicate',
-           'result ' + str(count_of_keep) + ':' + str(count_of_reset))
+    logger('review_main_helper', 'result ' + str(count_of_keep) + ':' + str(count_of_reset))
 
     # do we reached any limit?
     reached_max = max(count_of_keep, count_of_reset) >= max_votes
     if reached_max:
         if count_of_reset > count_of_keep:  # disable the flagged part
-            logger('review_main_helper', 'add_review_opinion_for_duplicate',
-                   'max reached / bend for review {}'.format(db_review.uid))
+            logger('review_main_helper', 'max reached / bend for review {}'.format(db_review.uid))
             __bend_objects_of_duplicate_review(db_review)
             add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_duplicate)
         else:  # just close the review
-            logger('review_main_helper', 'add_review_opinion_for_duplicate',
-                   'max reached / forget about review {}'.format(db_review.uid))
+            logger('review_main_helper', 'max reached / forget about review {}'.format(db_review.uid))
             add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_duplicate)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_keep - count_of_reset >= min_difference:  # just close the review
-        logger('review_main_helper', 'add_review_opinion_for_duplicate',
-               'vote says forget about review {}'.format(db_review.uid))
+        logger('review_main_helper', 'vote says forget about review {}'.format(db_review.uid))
         add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_duplicate)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_reset - count_of_keep >= min_difference:  # disable the flagged part
-        logger('review_main_helper', 'add_review_opinion_for_duplicate',
-               'vote says bend for review {}'.format(db_review.uid))
+        logger('review_main_helper', 'vote says bend for review {}'.format(db_review.uid))
         __bend_objects_of_duplicate_review(db_review)
         add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_duplicate)
         db_review.set_executed(True)
@@ -302,7 +290,7 @@ def add_review_opinion_for_split(db_user, main_page, port, db_review, should_spl
     :param _t: Translator
     :return: String
     """
-    logger('review_main_helper', 'add_review_opinion_for_split', 'main {}'.format(db_review.uid))
+    logger('review_main_helper', 'main {}'.format(db_review.uid))
     db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
     # add new vote
     __add_vote_for(db_user, db_review, should_split, LastReviewerSplit)
@@ -310,34 +298,29 @@ def add_review_opinion_for_split(db_user, main_page, port, db_review, should_spl
 
     # get all keep and delete votes
     count_of_keep, count_of_reset = __get_review_count(LastReviewerSplit, db_review.uid)
-    logger('review_main_helper', 'add_review_opinion_for_split',
-           'result ' + str(count_of_keep) + ':' + str(count_of_reset))
+    logger('review_main_helper', 'result ' + str(count_of_keep) + ':' + str(count_of_reset))
 
     # do we reached any limit?
     reached_max = max(count_of_keep, count_of_reset) >= max_votes
     if reached_max:
         if count_of_keep > count_of_reset:  # split pgroup
-            logger('review_main_helper', 'add_review_opinion_for_split',
-                   'max reached for review {}'.format(db_review.uid))
+            logger('review_main_helper', 'max reached for review {}'.format(db_review.uid))
             __split_premisegroup(db_review)
             add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         else:  # just close the review
-            logger('review_main_helper', 'add_review_opinion_for_split',
-                   'max reached / forget about review {}'.format(db_review.uid))
+            logger('review_main_helper', 'max reached / forget about review {}'.format(db_review.uid))
             add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_reset - count_of_keep >= min_difference:  # just close the review
-        logger('review_main_helper', 'add_review_opinion_for_split',
-               'vote says forget about review {}'.format(db_review.uid))
+        logger('review_main_helper', 'vote says forget about review {}'.format(db_review.uid))
         add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_keep - count_of_reset >= min_difference:  # split pgroup
-        logger('review_main_helper', 'add_review_opinion_for_split',
-               'vote says split for review {}'.format(db_review.uid))
+        logger('review_main_helper', 'vote says split for review {}'.format(db_review.uid))
         __split_premisegroup(db_review)
         add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         db_review.set_executed(True)
@@ -364,7 +347,7 @@ def add_review_opinion_for_merge(db_user, main_page, port, db_review, should_mer
     :param _t: Translator
     :return: String
     """
-    logger('review_main_helper', 'add_review_opinion_for_merge', 'main {}'.format(db_review.uid))
+    logger('review_main_helper', 'main {}'.format(db_review.uid))
 
     db_user_created_flag = DBDiscussionSession.query(User).get(db_review.detector_uid)
     # add new vote
@@ -373,34 +356,29 @@ def add_review_opinion_for_merge(db_user, main_page, port, db_review, should_mer
 
     # get all keep and delete votes
     count_of_keep, count_of_reset = __get_review_count(LastReviewerMerge, db_review.uid)
-    logger('review_main_helper', 'add_review_opinion_for_merge',
-           'result ' + str(count_of_keep) + ':' + str(count_of_reset))
+    logger('review_main_helper', 'result ' + str(count_of_keep) + ':' + str(count_of_reset))
 
     # do we reached any limit?
     reached_max = max(count_of_keep, count_of_reset) >= max_votes
     if reached_max:
         if count_of_keep > count_of_reset:  # split pgroup
-            logger('review_main_helper', 'add_review_opinion_for_merge',
-                   'max reached for review {}'.format(db_review.uid))
+            logger('review_main_helper', 'max reached for review {}'.format(db_review.uid))
             __merge_premisegroup(db_review)
             add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         else:  # just close the review
-            logger('review_main_helper', 'add_review_opinion_for_merge',
-                   'max reached / forget about review {}'.format(db_review.uid))
+            logger('review_main_helper', 'max reached / forget about review {}'.format(db_review.uid))
             add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_reset - count_of_keep >= min_difference:  # just close the review
-        logger('review_main_helper', 'add_review_opinion_for_merge',
-               'vote says forget about review {}'.format(db_review.uid))
+        logger('review_main_helper', 'vote says forget about review {}'.format(db_review.uid))
         add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_bad_flag)
         db_review.set_executed(True)
         db_review.update_timestamp()
 
     elif count_of_keep - count_of_reset >= min_difference:  # split pgroup
-        logger('review_main_helper', 'add_review_opinion_for_merge',
-               'vote says merge for review {}'.format(db_review.uid))
+        logger('review_main_helper', 'vote says merge for review {}'.format(db_review.uid))
         __merge_premisegroup(db_review)
         add_rep, broke_limit = add_reputation_for(db_user_created_flag, rep_reason_success_flag)
         db_review.set_executed(True)
@@ -459,7 +437,7 @@ def __proposal_for_the_element(db_review, data, db_user):
     # sort the new edits by argument uid
     argument_dict, statement_dict = __prepare_dicts_for_proposals(data)
 
-    logger('review_main_helper', 'add_review_opinion_for_optimization',
+    logger('review_main_helper',
            'detector {}, statements {}, arguments {}'.format(db_user.uid, statement_dict, argument_dict))
 
     # add reviews
@@ -471,8 +449,7 @@ def __proposal_for_the_element(db_review, data, db_user):
         db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(
             ReviewEdit.detector_uid == db_user.uid,
             ReviewEdit.argument_uid == argument_uid).order_by(ReviewEdit.uid.desc()).first()
-        logger('review_main_helper', 'add_review_opinion_for_optimization',
-               'New ReviewEdit with uid ' + str(db_review_edit.uid) + ' (argument)')
+        logger('review_main_helper', 'New ReviewEdit with uid ' + str(db_review_edit.uid) + ' (argument)')
 
         for edit in argument_dict[argument_uid]:
             new_edits.append(ReviewEditValue(review_edit=db_review_edit.uid,
@@ -487,8 +464,7 @@ def __proposal_for_the_element(db_review, data, db_user):
         db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(
             ReviewEdit.detector_uid == db_user.uid,
             ReviewEdit.statement_uid == statement_uid).order_by(ReviewEdit.uid.desc()).first()
-        logger('review_main_helper', 'add_review_opinion_for_optimization',
-               'New ReviewEdit with uid ' + str(db_review_edit.uid) + ' (statement)')
+        logger('review_main_helper', 'New ReviewEdit with uid ' + str(db_review_edit.uid) + ' (statement)')
 
         for edit in statement_dict[statement_uid]:
             new_edits.append(ReviewEditValue(review_edit=db_review_edit.uid,
@@ -533,7 +509,7 @@ def en_or_disable_object_of_review(review, is_disabled):
     :param is_disabled: boolean
     :return: None
     """
-    logger('review_main_helper', 'en_or_disable_object_of_review', str(review.uid) + ' ' + str(is_disabled))
+    logger('review_main_helper', str(review.uid) + ' ' + str(is_disabled))
     if review.statement_uid is not None:
         __en_or_disable_statement_and_premise_of_review(review, is_disabled)
     else:
@@ -548,8 +524,7 @@ def __en_or_disable_statement_and_premise_of_review(review, is_disabled):
     :param is_disabled: boolean
     :return: None
     """
-    logger('review_main_helper', '__en_or_disable_statement_and_premise_of_review',
-           str(review.uid) + ' ' + str(is_disabled))
+    logger('review_main_helper', str(review.uid) + ' ' + str(is_disabled))
     db_statement = DBDiscussionSession.query(Statement).get(review.statement_uid)
     db_statement.set_disable(is_disabled)
     DBDiscussionSession.add(db_statement)
@@ -571,8 +546,7 @@ def __en_or_disable_arguments_and_premise_of_review(review, is_disabled):
     :param is_disabled: boolean
     :return: None
     """
-    logger('review_main_helper', '__en_or_disable_arguments_and_premise_of_review',
-           str(review.uid) + ' ' + str(is_disabled))
+    logger('review_main_helper', str(review.uid) + ' ' + str(is_disabled))
     db_argument = DBDiscussionSession.query(Argument).get(review.argument_uid)
     db_argument.set_disable(is_disabled)
     DBDiscussionSession.add(db_argument)
@@ -603,7 +577,7 @@ def __bend_objects_of_duplicate_review(db_review):
     msg = 'Review {} with dupl {} and oem {}'.format(db_review.uid,
                                                      db_review.duplicate_statement_uid,
                                                      db_review.original_statement_uid)
-    logger('review_main_helper', '__bend_objects_of_duplicate_review', msg)
+    logger('review_main_helper', msg)
     db_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)
     db_statement.set_disable(True)
     DBDiscussionSession.add(db_statement)
@@ -614,8 +588,7 @@ def __bend_objects_of_duplicate_review(db_review):
     db_dupl_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)
     db_orig_statement = DBDiscussionSession.query(Statement).get(db_review.original_statement_uid)
     if db_dupl_statement.is_startpoint and not db_orig_statement.is_startpoint:
-        logger('review_main_helper', '__bend_objects_of_duplicate_review',
-               'Duplicate is startpoint, but original one is not')
+        logger('review_main_helper', 'Duplicate is startpoint, but original one is not')
         DBDiscussionSession.add(
             RevokedDuplicate(review=db_review.uid, bend_position=True, statement=db_orig_statement.uid))
         db_orig_statement.set_position(True)
@@ -630,7 +603,7 @@ def __bend_objects_of_duplicate_review(db_review):
         if argument.conclusion_uid == db_review.duplicate_statement_uid:
             tmp = '{}, bend conclusion from {} to {}'.format(text, argument.conclusion_uid,
                                                              db_review.original_statement_uid)
-            logger('review_main_helper', '__bend_objects_of_duplicate_review', tmp)
+            logger('review_main_helper', tmp)
             argument.set_conclusion(db_review.original_statement_uid)
             DBDiscussionSession.add(argument)
             DBDiscussionSession.add(RevokedDuplicate(review=db_review.uid, conclusion_of_argument=argument.uid))
@@ -642,14 +615,14 @@ def __bend_objects_of_duplicate_review(db_review):
             if premise.statement_uid == db_review.duplicate_statement_uid:
                 tmp = '{}, bend premise {} from {} to {}'.format(text, premise.uid, premise.statement_uid,
                                                                  db_review.original_statement_uid)
-                logger('review_main_helper', '__bend_objects_of_duplicate_review', tmp)
+                logger('review_main_helper', tmp)
                 premise.set_statement(db_review.original_statement_uid)
                 DBDiscussionSession.add(premise)
                 DBDiscussionSession.add(RevokedDuplicate(review=db_review.uid, premise=premise.uid))
                 used = True
 
         if not used:
-            logger('review_main_helper', '__bend_objects_of_duplicate_review',
+            logger('review_main_helper',
                    'Nothing was bend - undercut from {} to {}'.format(argument.uid, argument.argument_uid), error=True)
 
     DBDiscussionSession.flush()
@@ -685,12 +658,12 @@ def __merge_premisegroup(review):
     db_user = DBDiscussionSession.query(User).get(review.detector_uid)
 
     if db_values:
-        logger('review_main_helper', '__merge_premisegroup', 'merge given premisegroup with the mapped, new statements')
+        logger('review_main_helper', 'merge given premisegroup with the mapped, new statements')
         texts = [values.content for values in db_values]
         translator_discussion = Translator(discussion_lang)
         new_text = ' {} '.format(translator_discussion.get(_.aand)).join(texts)
     else:
-        logger('review_main_helper', '__merge_premisegroup', 'just merge the premisegroup')
+        logger('review_main_helper', 'just merge the premisegroup')
         new_text, tmp = get_text_for_premisesgroup_uid(review.premisesgroup_uid)
 
     # now we have new text as a variable, let's set the statement
@@ -705,13 +678,13 @@ def __merge_premisegroup(review):
     db_new_premise = Premise(db_new_premisegroup.uid, new_statement.uid, False, db_user.uid, new_statement.issue_uid)
     DBDiscussionSession.add(db_new_premise)
     DBDiscussionSession.flush()
-    logger('review_main_helper', '__merge_premisegroup',
+    logger('review_main_helper',
            'Added new premise {} with pgroup {}'.format(db_new_premise.uid, db_new_premisegroup.uid))
 
     # swap the premisegroup occurence in every argument
     db_arguments = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=review.premisesgroup_uid).all()
     for argument in db_arguments:
-        logger('review_main_helper', '__merge_premisegroup',
+        logger('review_main_helper',
                'Reset argument {} from pgroup {} to new pgroup {}'.format(argument.uid, argument.premisesgroup_uid,
                                                                           db_new_premisegroup.uid))
         argument.set_premisegroup(db_new_premisegroup.uid)
@@ -726,7 +699,7 @@ def __merge_premisegroup(review):
     for old_statement_id in old_statement_ids:
         db_arguments = DBDiscussionSession.query(Argument).filter_by(conclusion_uid=old_statement_id).all()
         for argument in db_arguments:
-            logger('review_main_helper', '__merge_premisegroup',
+            logger('review_main_helper',
                    'Reset arguments {} from conclusion {} to new merges statement {}'.format(argument.uid,
                                                                                              argument.conclusion_uid,
                                                                                              new_statement.uid))
@@ -757,13 +730,13 @@ def __split_premisegroup(review):
     db_user = DBDiscussionSession.query(User).get(review.detector_uid)
 
     if db_values:
-        logger('review_main_helper', '__split_premisegroup', 'split given premisegroup into the mapped, new statements')
+        logger('review_main_helper', 'split given premisegroup into the mapped, new statements')
         db_statements = []
         for value in db_values:
             new_statement, tmp = set_statement(value.content, db_user, db_first_old_statement.is_startpoint, db_issue)
             db_statements.append(new_statement)
     else:
-        logger('review_main_helper', '__split_premisegroup', 'just split the premisegroup')
+        logger('review_main_helper', 'just split the premisegroup')
         db_statements = DBDiscussionSession.query(Statement).filter(Statement.uid.in_(db_old_statement_ids)).all()
 
     # new premisegroups, for each statement a new one

@@ -96,6 +96,6 @@ def request_password(email: str, mailer: Mailer, _tn: Translator):
         else:
             error = message
     else:
-        logger('user_password_request', 'form.passwordrequest.submitted', 'Mail unknown')
+        logger('user_password_request', 'Mail unknown')
         info = _tn.get(_.emailUnknown)
     return {'success': success, 'error': error, 'info': info}

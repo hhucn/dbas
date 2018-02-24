@@ -158,8 +158,7 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
     :param include_disabled: Boolean
     :return: [Arguments]
     """
-    logger('DBAS.LIB', 'get_all_arguments_by_statement',
-           'main {}, include_disabled {}'.format(statement_uid, include_disabled))
+    logger('DBAS.LIB', 'main {}, include_disabled {}'.format(statement_uid, include_disabled))
     db_arguments = __get_arguments_of_conclusion(statement_uid, include_disabled)
     return_array = [arg for arg in db_arguments] if db_arguments else []
 
@@ -181,8 +180,7 @@ def get_all_arguments_by_statement(statement_uid, include_disabled=False):
 
     return_array = list(set(return_array + db_undercuts + db_undercutted_undercuts))
 
-    logger('DBAS.LIB', 'get_all_arguments_by_statement',
-           'returning arguments {}'.format([arg.uid for arg in return_array]))
+    logger('DBAS.LIB', 'returning arguments {}'.format([arg.uid for arg in return_array]))
     return return_array if len(return_array) > 0 else None
 
 
@@ -238,7 +236,7 @@ def get_all_arguments_with_text_by_statement_id(statement_uid):
     :return: list of dictionaries containing some properties of these arguments
     :rtype: list
     """
-    logger('DBAS.LIB', 'get_all_arguments_with_text_by_statement_id', 'main ' + str(statement_uid))
+    logger('DBAS.LIB', 'main ' + str(statement_uid))
     arguments = get_all_arguments_by_statement(statement_uid)
     results = []
     if arguments:
@@ -259,7 +257,7 @@ def get_all_arguments_with_text_and_url_by_statement_id(db_statement, urlmanager
     :return: list of dictionaries containing some properties of these arguments
     :rtype: list
     """
-    logger('DBAS.LIB', 'get_all_arguments_with_text_by_statement_id', 'main ' + str(db_statement.uid))
+    logger('DBAS.LIB', 'main ' + str(db_statement.uid))
     arguments = get_all_arguments_by_statement(db_statement.uid)
     uids = [arg.uid for arg in arguments] if arguments else None
     results = list()
@@ -319,7 +317,7 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
     :param support_counter_argument: Boolean
     :return: String
     """
-    logger('DBAS.LIB', 'get_text_for_argument_uid', 'main ' + str(uid))
+    logger('DBAS.LIB', 'main ' + str(uid))
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     if not db_argument:
         return None
@@ -470,7 +468,7 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     :param author_uid: User.uid
     :return: String
     """
-    logger('DBAS.LIB', '__build_single_argument', 'main ' + str(uid))
+    logger('DBAS.LIB', 'main ' + str(uid))
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
     conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
@@ -575,7 +573,7 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     :param _t:
     :return:
     """
-    logger('DBAS.LIB', '__build_nested_argument', 'main ' + str(arg_array))
+    logger('DBAS.LIB', 'main ' + str(arg_array))
 
     # get all pgroups and at last, the conclusion
     pgroups = []

@@ -73,7 +73,7 @@ def get_review_queues_as_lists(main_page, translator, nickname):
     :param nickname: Users nickname
     :return: Array
     """
-    logger('ReviewQueues', 'get_review_queues_as_lists', 'main')
+    logger('ReviewQueues', 'main')
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         return None
@@ -408,19 +408,19 @@ def add_proposals_for_statement_corrections(elements, db_user, _tn):
     :param _tn: Translator
     :return: String, Boolean for Error
     """
-    logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'main')
+    logger('ReviewQueues', 'main')
 
     review_count = len(elements)
     added_reviews = [__add_edit_reviews(el, db_user) for el in elements]
 
     if added_reviews.count(_Code.SUCCESS) == 0:  # no edits set
         if added_reviews.count(_Code.DOESNT_EXISTS) > 0:
-            logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'internal key error')
+            logger('ReviewQueues', 'internal key error')
             return _tn.get(_.internalKeyError), True
         if added_reviews.count(_Code.DUPLICATE) > 0:
-            logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'already edit proposals')
+            logger('ReviewQueues', 'already edit proposals')
             return _tn.get(_.alreadyEditProposals), True
-        logger('ReviewQueues', 'add_proposals_for_statement_corrections', 'no corrections given')
+        logger('ReviewQueues', 'no corrections given')
         return _tn.get(_.noCorrections), True
 
     DBDiscussionSession.flush()
@@ -447,21 +447,21 @@ def __add_edit_reviews(element, db_user):
     :param db_user: User
     :return: -1 if the statement of the element does not exists, -2 if this edit already exists, 1 on success, 0 otherwise
     """
-    logger('ReviewQueues', '__add_edit_reviews', 'current element: {}'.format(element))
+    logger('ReviewQueues', 'current element: {}'.format(element))
     db_statement = DBDiscussionSession.query(Statement).get(element['uid'])
     if not db_statement:
-        logger('ReviewQueues', '__add_edit_reviews', 'statement {} not found (return -1)'.format(element['uid']))
+        logger('ReviewQueues', 'statement {} not found (return -1)'.format(element['uid']))
         return _Code.DOESNT_EXISTS
 
     # already set an correction for this?
     if is_statement_in_edit_queue(element['uid']):  # if we already have an edit, skip this
-        logger('ReviewQueues', '__add_edit_reviews', '{} already got an edit (return -2)'.format(element['uid']))
+        logger('ReviewQueues', '{} already got an edit (return -2)'.format(element['uid']))
         return _Code.DUPLICATE
 
     # is text different?
     db_tv = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
     if len(element['text']) > 0 and db_tv.content.lower().strip() != element['text'].lower().strip():
-        logger('ReviewQueues', '__add_edit_reviews', 'added review element for {}  (return 1)'.format(element['uid']))
+        logger('ReviewQueues', 'added review element for {}  (return 1)'.format(element['uid']))
         DBDiscussionSession.add(ReviewEdit(detector=db_user.uid, statement=element['uid']))
         return _Code.SUCCESS
 
@@ -476,7 +476,7 @@ def is_statement_in_edit_queue(uid: int, is_executed: bool = False) -> bool:
     :param is_executed: Bool
     :return: Boolean
     """
-    logger('ReviewQueues', 'is_statement_in_edit_queue', 'current element: {}'.format(uid))
+    logger('ReviewQueues', 'current element: {}'.format(uid))
     db_already_edit_count = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.statement_uid == uid,
                                                                          ReviewEdit.is_executed == is_executed).count()
     return db_already_edit_count > 0
@@ -505,10 +505,10 @@ def __add_edit_values_review(element, db_user):
     :param db_user: User
     :return: 1 on success, 0 otherwise
     """
-    logger('ReviewQueues', '__add_edit_values_review', 'current element: ' + str(element))
+    logger('ReviewQueues', 'current element: ' + str(element))
     db_statement = DBDiscussionSession.query(Statement).get(element['uid'])
     if not db_statement:
-        logger('ReviewQueues', '__add_edit_values_review', str(element['uid']) + ' not found')
+        logger('ReviewQueues', str(element['uid']) + ' not found')
         return 0
 
     db_textversion = DBDiscussionSession.query(TextVersion).get(db_statement.textversion_uid)
@@ -517,10 +517,10 @@ def __add_edit_values_review(element, db_user):
         db_review_edit = DBDiscussionSession.query(ReviewEdit).filter(ReviewEdit.detector_uid == db_user.uid,
                                                                       ReviewEdit.statement_uid == element['uid']).order_by(ReviewEdit.uid.desc()).first()
         DBDiscussionSession.add(ReviewEditValue(db_review_edit.uid, element['uid'], 'statement', element['text']))
-        logger('ReviewQueues', '__add_edit_values_review', '{} - \'{}\' accepted'.format(element['uid'], element['text']))
+        logger('ReviewQueues', '{} - \'{}\' accepted'.format(element['uid'], element['text']))
         return 1
     else:
-        logger('ReviewQueues', '__add_edit_values_review', '{} - \'{}\' malicious edit'.format(element['uid'], element['text']))
+        logger('ReviewQueues', '{} - \'{}\' malicious edit'.format(element['uid'], element['text']))
         return 0
 
 
@@ -533,12 +533,12 @@ def lock_optimization_review(db_user: User, db_review: ReviewOptimization, trans
     :param translator:
     :return:
     """
-    logger('ReviewQueues', 'lock_optimization_review', 'main')
+    logger('ReviewQueues', 'main')
     # check if author locked an item and maybe tidy up old locks
     db_locks = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(author_uid=db_user.uid).first()
     if db_locks:
         if is_review_locked(db_locks.review_optimization_uid):
-            logger('ReviewQueues', 'lock_optimization_review', 'review already locked')
+            logger('ReviewQueues', 'review already locked')
             return {
                 'success': '',
                 'info': translator.get(_.dataAlreadyLockedByYou),
@@ -549,7 +549,7 @@ def lock_optimization_review(db_user: User, db_review: ReviewOptimization, trans
 
     # is already locked?
     if is_review_locked(db_review.uid):
-        logger('ReviewQueues', 'lock_optimization_review', 'already locked', warning=True)
+        logger('ReviewQueues', 'already locked', warning=True)
         return {
             'success': '',
             'info': translator.get(_.dataAlreadyLockedByOthers),
@@ -561,7 +561,7 @@ def lock_optimization_review(db_user: User, db_review: ReviewOptimization, trans
     transaction.commit()
     success = translator.get(_.dataAlreadyLockedByYou)
 
-    logger('ReviewQueues', 'lock_optimization_review', 'review locked')
+    logger('ReviewQueues', 'review locked')
     return {
         'success': success,
         'info': '',
@@ -578,7 +578,7 @@ def unlock_optimization_review(db_review: ReviewOptimization, translator: Transl
     :return:
     """
     tidy_up_optimization_locks()
-    logger('ReviewQueues', 'unlock_optimization_review', 'main')
+    logger('ReviewQueues', 'main')
     DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=db_review.uid).delete()
     DBDiscussionSession.flush()
     transaction.commit()
@@ -597,7 +597,7 @@ def is_review_locked(review_uid):
     :return: Boolean
     """
     tidy_up_optimization_locks()
-    logger('ReviewQueues', 'is_review_locked', 'main')
+    logger('ReviewQueues', 'main')
     db_lock = DBDiscussionSession.query(OptimizationReviewLocks).filter_by(review_optimization_uid=review_uid).first()
     if not db_lock:
         return False
@@ -610,7 +610,7 @@ def tidy_up_optimization_locks():
 
     :return: None
     """
-    logger('ReviewQueues', 'tidy_up_optimization_locks', 'main')
+    logger('ReviewQueues', 'main')
     db_locks = DBDiscussionSession.query(OptimizationReviewLocks).all()
     for lock in db_locks:
         if (get_now() - lock.locked_since).seconds >= max_lock_time_in_sec:
