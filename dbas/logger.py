@@ -11,9 +11,9 @@ from sys import _getframe
 logging.getLogger('sqlalchemy.dialects.postgresql').setLevel(logging.INFO)
 
 
-def logger(who: str, what: str, warning: bool=False, error: bool=False, debug: bool=False):
+def logger(who: str, what: str, warning: bool=False, error: bool=False, info: bool=False):
     """
-    Log for the console and logfile on disk. Logged format: [who.upper()] when <what>
+    Logs giving strings as debug in the format of: [who.upper()] when <what>
 
     :param who: which class
     :param what: what message
@@ -23,7 +23,7 @@ def logger(who: str, what: str, warning: bool=False, error: bool=False, debug: b
     :return: None
     """
 
-    info = not(warning or error or debug)
+    debug = not(warning or error or info)
     logger = logging.getLogger(__name__)
     try:
         msg = '[{}] {}: {}'.format(who.upper(), _getframe(1).f_code.co_name, what)
