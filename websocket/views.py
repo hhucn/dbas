@@ -7,14 +7,11 @@ from cornice import Service
 from pyramid_mailer import get_mailer
 from dbas.handler.language import get_language_from_cookie
 from dbas.logger import logger
-from dbas.views import base_layout
+from dbas.validators.user import valid_user_as_admin, invalid_user
+from dbas.views import base_layout, validate
 from dbas.views import project_name
-from dbas.handler.user import is_admin
 from dbas.handler.email import send_mail
 from dbas.helper.dictionary.main import DictionaryHelper
-
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User
 
 # =============================================================================
 # CORS configuration
@@ -49,6 +46,7 @@ path = '/{url:.*}add',
 
 
 @debug_data.get()
+@validate(invalid_user)
 def debug_function(request):
     """
     Minimal debug interface for the websocket
@@ -62,7 +60,7 @@ def debug_function(request):
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
                                                                                    request.application_url,
                                                                                    request.path,
-                                                                                   request.authenticated_userid)
+                                                                                   request.validated['user'])
 
     return {
         'layout': base_layout(),
@@ -70,11 +68,12 @@ def debug_function(request):
         'title': 'Debug Socket.IO Connection',
         'project': project_name,
         'extras': extras_dict,
-        'is_admin': is_admin(request.authenticated_userid)
+        'is_admin': request.validated['user'].is_admin()
     }
 
 
 @debug_mail.get()
+@validate(valid_user_as_admin)
 def debug_that_mail(request):
     """
 
@@ -82,12 +81,7 @@ def debug_that_mail(request):
     :return:
     """
     logger('Websocket', 'debug_mail')
-    if request.authenticated_userid in ['Tobias', 'tokra100']:
-        text = request.get('text', 'empty text input')
-        logger('Websocket', 'you got access: {}'.format(text))
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
-        send_mail(get_mailer(request), '[D-BAS] Debug Mail', 'Debug: {}'.format(text), db_user.email, 'en')
-        return {'success': True}
-    else:
-        logger('Websocket', 'access denied')
-        return {'success': False}
+    text = request.get('text', 'empty text input')
+    logger('Websocket', 'you got access: {}'.format(text))
+    send_mail(get_mailer(request), '[D-BAS] Debug Mail', 'Debug: {}'.format(text), request.validated['user'].email, 'en')
+    return {'success': True}
