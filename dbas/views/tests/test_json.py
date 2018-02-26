@@ -165,12 +165,6 @@ class AjaxTest(unittest.TestCase):
         response = ajax(request)
         self.assertEqual(400, response.status_code)
 
-    def test_additional_service(self):
-        from dbas.views import additional_service as ajax
-        request = testing.DummyRequest(params={})
-        response = ajax(request)
-        self.assertIsNotNone(response)
-
     def test_set_user_language(self):
         from dbas.views import set_user_lang as ajax
         request = testing.DummyRequest(json_body={'lang': 'en'})

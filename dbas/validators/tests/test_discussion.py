@@ -1,7 +1,7 @@
 import unittest
 
 from cornice import Errors
-from nose.tools import assert_false, assert_equal, assert_true
+from nose.tools import assert_false, assert_equal, assert_true, assert_in
 from pyramid import testing
 
 import dbas.validators.discussion as discussion
@@ -109,23 +109,20 @@ class DiscussionTest(unittest.TestCase):
         assert_false(response)
         assert_equal(bool, type(response))
 
-        db_issue1 = DBDiscussionSession.query(Issue).get(1)
-        db_issue2 = DBDiscussionSession.query(Issue).get(2)
-
         request = self.__prepare_dict({'conclusion_id': '2',
-                                       'issue': db_issue2})
+                                       'issue': 2})
         response = discussion.valid_conclusion(request)
         assert_false(response)
         assert_equal(bool, type(response))
 
         request = self.__prepare_dict({'conclusion_id': 2,
-                                       'issue': db_issue1})
+                                       'issue': 1})
         response = discussion.valid_conclusion(request)
         assert_false(response)
         assert_equal(bool, type(response))
 
         request = self.__prepare_dict({'conclusion_id': 2,
-                                       'issue': db_issue2})
+                                       'issue': 2})
         response = discussion.valid_conclusion(request)
         assert_true(response)
         assert_equal(bool, type(response))
@@ -168,21 +165,32 @@ class DiscussionTest(unittest.TestCase):
         assert_true(response)
         assert_equal(bool, type(response))
 
-    def test_valid_statement_text(self):
+    def test_valid_text_length_of(self):
         request = self.__prepare_dict({})
-        response = discussion.valid_statement_text(request)
+        inner = discussion.valid_text_length_of('statement')
+        response = inner(request)
         assert_false(response)
         assert_equal(bool, type(response))
 
         request = self.__prepare_dict({'statement': 'shrt'})
-        response = discussion.valid_statement_text(request)
+        inner = discussion.valid_text_length_of('statement')
+        response = inner(request)
         assert_false(response)
         assert_equal(bool, type(response))
 
         request = self.__prepare_dict({'statement': 'loooooooong'})
-        response = discussion.valid_statement_text(request)
+        inner = discussion.valid_text_length_of('statement')
+        response = inner(request)
         assert_true(response)
         assert_equal(bool, type(response))
+        assert_in('statement', request.validated)
+
+        request = self.__prepare_dict({'blorgh': 'more loooooooong'})
+        inner = discussion.valid_text_length_of('blorgh')
+        response = inner(request)
+        assert_true(response)
+        assert_equal(bool, type(response))
+        assert_in('blorgh', request.validated)
 
     def test_valid_premisegroup(self):
         request = self.__prepare_dict({})

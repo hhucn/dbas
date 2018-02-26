@@ -47,7 +47,7 @@ function Notifications() {
 			$(this).click(function(){
 				var id = $(this).parent().parent().parent().attr('id');
 				if ($(this).html().indexOf('<strong') !== -1) {
-					new AjaxNotificationHandler().sendAjaxForReadMessages([id]);
+					new AjaxNotificationHandler().readMessages([id]);
 				}
 			});
 		}) ;
@@ -55,7 +55,7 @@ function Notifications() {
 		$.each($('.fa-trash'), function ajaxLinksDelete() {
 			$(this).off('click').click(function(){
 				$(this).parent().parent().attr('href','');
-				new AjaxNotificationHandler().sendAjaxForDeleteMessages([$(this).data('id')]);
+				new AjaxNotificationHandler().deleteMessages([$(this).data('id')]);
 			});
 		});
 	};
@@ -136,7 +136,7 @@ function Notifications() {
 					uids.push($(this).data('id'));
 				});
 			}
-			new AjaxNotificationHandler().sendAjaxForReadMessages(uids);
+			new AjaxNotificationHandler().readMessages(uids);
 		});
 	};
 
@@ -155,7 +155,7 @@ function Notifications() {
 					uids.push($(this).data('id'));
 				});
 			}
-			new AjaxNotificationHandler().sendAjaxForDeleteMessages(uids);
+			new AjaxNotificationHandler().deleteMessages(uids);
 		});
 
 		$('#delete-outbox').click(function(){
@@ -169,7 +169,7 @@ function Notifications() {
 					uids.push($(this).data('id'));
 				});
 			}
-			new AjaxNotificationHandler().sendAjaxForDeleteMessages(uids);
+			new AjaxNotificationHandler().deleteMessages(uids);
 		});
 	};
 

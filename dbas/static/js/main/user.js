@@ -31,7 +31,17 @@ $(function () {
 		});
 	});
 
-	new AjaxUserHandler().getPublicUserData();
+	var url = 'get_public_user_data';
+	var d = {
+		'nickname': $('#public_nick').text()
+	};
+	var done = function getPublicUserDataDone(data) {
+		new User().callbackDone(data);
+	};
+	var fail = function getPublicUserDataFail(data) {
+		setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
+	};
+	ajaxSkeleton(url, 'POST', d, done, fail);
 });
 
 function User() {

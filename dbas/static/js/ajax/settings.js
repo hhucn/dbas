@@ -42,7 +42,7 @@ function AjaxSettingsHandler(){
 	this.setUserSetting = function(toggle_element, service) {
 		var settings_value = toggle_element.prop('checked');
 		var url = 'set_user_setting';
-        var data ={
+        var data = {
             'settings_value': settings_value,
             'service': service
         };
@@ -100,8 +100,8 @@ function AjaxSettingsHandler(){
 		var done = function getEditsDoneDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allEditsDone), false);
 		};
-		var fail = function getEditsDoneFail() {
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
+		var fail = function getEditsDoneFail(data) {
+			new StatisticsHandler().callbackStatisticsFail(data.responseJSON.errors[0].description);
 		};
 		ajaxSkeleton(url, 'GET', {}, done, fail);
 	};
@@ -119,8 +119,8 @@ function AjaxSettingsHandler(){
 		var done = function getStatementsSendDone(data) {
 			new StatisticsHandler().callbackGetStatisticsDone(data, _t(allStatementsPosted), false);
 		};
-		var fail = function getStatementsSendFail() {
-			new StatisticsHandler().callbackStatisticsFail(_t(statisticsNotFetched));
+		var fail = function getStatementsSendFail(data) {
+			new StatisticsHandler().callbackStatisticsFail(data.responseJSON.errors[0].description);
 		};
 		ajaxSkeleton(url, 'GET', {}, done, fail);
 	};
@@ -169,14 +169,14 @@ function AjaxSettingsHandler(){
 	};
 
 	/**
-	 * Ajax request for deleting the statitistics
+	 * Ajax request for deleting the statistics
 	 */
 	this.deleteStatisticsRequest = function() {
 		var url = 'delete_statistics';
 		var done = function deleteStatisticsRequestDone() {
 			new StatisticsHandler().callbackDeleteStatisticsDone();
 		};
-		var fail = function deleteStatisticsRequestFail() {
+		var fail = function deleteStatisticsRequestFail(data) {
 			new StatisticsHandler().callbackStatisticsFail(data.responseJSON.errors[0].description);
 		};
 		ajaxSkeleton(url, 'GET', {}, done, fail);

@@ -12,25 +12,20 @@ function AjaxReferenceHandler(){
 	 * @param ref_source
 	 */
 	this.setReference = function(uid, reference, ref_source){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-
-		$.ajax({
-			url: 'set_references',
-			method: 'POST',
-			dataType: 'json',
-			contentType: 'application/json',
-			data: JSON.stringify({
-				uid: uid,
-				ref_source: ref_source,
-				reference: reference
-			}),
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function () {
+		var url =  'set_references';
+		var d = {
+			uid: uid,
+			ref_source: ref_source,
+			reference: reference
+		};
+		var done = function () {
 			setGlobalSuccessHandler('Yeah!', _t_discussion(dataAdded));
 			$('#' + popupReferences).modal('hide');
-		}).fail(function (data) {
+		};
+		var fail = function (data) {
 			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
-		});
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
 
 	/**
@@ -39,22 +34,17 @@ function AjaxReferenceHandler(){
 	 * @param is_argument
 	 */
 	this.getReferences = function(uids, is_argument){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'get_references',
-			method: 'POST',
-			dataType: 'json',
-			contentType: 'application/json',
-			data: JSON.stringify({
-				'uids': uids,
-				'is_argument': is_argument
-			}),
-			async: true,
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function (data) {
+		var url =  'get_references';
+		var d = {
+			'uids': uids,
+			'is_argument': is_argument
+		};
+		var done = function () {
 			new PopupHandler().showReferencesPopup(data);
-		}).fail(function (data) {
+		};
+		var fail = function (data) {
 			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
-		});
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
 }

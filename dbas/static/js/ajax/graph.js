@@ -77,8 +77,8 @@ function AjaxGraphHandler(){
 		var done = function (d) {
 			context.callbackIfDoneForDiscussionGraph(d);
 		};
-		var fail = function () {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		var fail = function (data) {
+			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
 		};
 		ajaxSkeleton(url, 'POST', inputdata, done, fail);
 	};
@@ -92,8 +92,8 @@ function AjaxGraphHandler(){
 		var done = function (data) {
 			new DiscussionGraph({}, false).callbackIfDoneForGetJumpDataForGraph(data);
 		};
-		var fail = function () {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		var fail = function (data) {
+			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
 		};
 		ajaxSkeleton(url, 'GET', {}, done, fail);
 	};

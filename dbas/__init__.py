@@ -148,7 +148,6 @@ def main(global_config, **settings):
     config.add_route('notifications_read', 'notifications_read')
     config.add_route('notifications_delete', 'notifications_delete')
     config.add_route('get_arguments_by_statement_uid', 'get_arguments_by_statement/{uid}')
-    config.add_route('additional_service', '{stuff:.*}additional_service')
     config.add_route('flag_argument_or_statement', '{url:.*}flag_argument_or_statement')
     config.add_route('split_or_merge_statement', '{url:.*}split_or_merge_statement')
     config.add_route('split_or_merge_premisegroup', '{url:.*}split_or_merge_premisegroup')
