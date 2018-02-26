@@ -233,21 +233,21 @@
                             <label class="col-md-3 control-label" for="popup-complete-login-userfirstname-input" i18n:translate="first_name">Your First Name</label>
                             <div class="col-md-9 input-group">
                                 <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-                                <input id="popup-complete-login-userfirstname-input" type="text" name="firstname" class="form-control userfirstname active" autocomplete="on" tal:attributes="placeholder extras.tag.placeholder_firstname">
+                                <input id="popup-complete-login-userfirstname-input" type="text" name="firstname" class="form-control userfirstname active" autocomplete="on" placeholder="${extras.tag.placeholder_firstname}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="popup-complete-login-userlastname-input" i18n:translate="last_name">Your Last Name</label>
                             <div class="col-md-9 input-group">
                                 <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-                                <input id="popup-complete-login-userlastname-input" type="text" name="surname" class="form-control userlastname" autocomplete="on" tal:attributes="placeholder extras.tag.placeholder_lastname">
+                                <input id="popup-complete-login-userlastname-input" type="text" name="surname" class="form-control userlastname" autocomplete="on" placeholder="${extras.tag.placeholder_lastname}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="popup-complete-login-nick-input" i18n:translate="nickname">Your Nickname</label>
                             <div class="col-md-9 input-group">
                                 <div class="input-group-addon"><i class="fa fa-user-secret fa-2x" aria-hidden="true"></i></div>
-                                <input id="popup-complete-login-nick-input" type="text" class="form-control nickname" name="nickname" autocomplete="off" tal:attributes="placeholder extras.tag.placeholder_nickname">
+                                <input id="popup-complete-login-nick-input" type="text" class="form-control nickname" name="nickname" autocomplete="off" placeholder="${extras.tag.placeholder_nickname}">
                             </div>
                         </div>
                         <div class="form-group">
@@ -274,21 +274,21 @@
                             <label class="col-md-3 control-label" for="popup-complete-login-email-input" i18n:translate="your_email">Your Email Address</label>
                             <div class="col-md-9 input-group">
                                 <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
-                                <input id="popup-complete-login-email-input" type="email" class="form-control email" name="email" autocomplete="on" tal:attributes="placeholder extras.tag.placeholder_mail">
+                                <input id="popup-complete-login-email-input" type="email" class="form-control email" name="email" autocomplete="on" placeholder="${extras.tag.placeholder_mail}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="popup-complete-login-password-input" i18n:translate="password">Your Password</label>
                             <div class="col-md-9 input-group">
                                 <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
-                                <input id="popup-complete-login-password-input" type="password" name="password" class="form-control password" autocomplete="off" tal:attributes="placeholder extras.tag.placeholder_password">
+                                <input id="popup-complete-login-password-input" type="password" name="password" class="form-control password" autocomplete="off" placeholder="${extras.tag.placeholder_password}">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="popup-complete-login-passwordconfirm-input" i18n:translate="password-confirm">Password (confirm)</label>
                             <div class="col-md-9 input-group">
                                 <div class="input-group-addon"><i class="fa fa-unlock fa-2x" aria-hidden="true"></i></div>
-                                <input id="popup-complete-login-passwordconfirm-input" type="password" name="passwordconfirm" class="form-control password" autocomplete="off" tal:attributes="placeholder extras.tag.placeholder_password">
+                                <input id="popup-complete-login-passwordconfirm-input" type="password" name="passwordconfirm" class="form-control password" autocomplete="off" placeholder="${extras.tag.placeholder_password}">
                             </div>
                         </div>
                     </form>
@@ -337,7 +337,7 @@
     						    	    <label class="col-md-3 control-label" for="login-user" i18n:translate="your_nickname">Your Nickname</label>
     						    	    <div class="col-md-9 input-group">
                                         <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-    						    		<input id="login-user" type="text" class="form-control" tal:attributes="placeholder extras.tag.placeholder_nickname" placeholder="" autocomplete="on">
+    						    		<input id="login-user" type="text" class="form-control" placeholder="${extras.tag.placeholder_nickname}" autocomplete="on">
     						    	</div>
                                     </div>
     						    </div>
@@ -346,7 +346,7 @@
     						    	    <label class="col-md-3 control-label" for="login-pw" i18n:translate="your_password">Your Password</label>
     						    	    <div class="col-md-9 input-group">
                                         <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
-    						    		<input id="login-pw" type="password" class="form-control" tal:attributes="placeholder extras.tag.placeholder_password" placeholder="" autocomplete="on">
+    						    		<input id="login-pw" type="password" class="form-control" placeholder="${extras.tag.placeholder_password}" autocomplete="on">
     						    	</div>
                                     </div>
     						    </div>
@@ -363,7 +363,7 @@
     						    <div class="form-group">
     						    	<div class="col-md-12 input-group">
                                         <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
-    						    		<input id="password-request-email-input" type="email" class="form-control" tal:attributes="placeholder extras.tag.placeholder_mail" placeholder="" autocomplete="on">
+    						    		<input id="password-request-email-input" type="email" class="form-control" placeholder="${extras.tag.placeholder_mail}" autocomplete="on">
     						    	</div>
     						    </div>
                                 <input id="popup-login-button-request" type="submit" onclick="$('body').addClass('loading')" name="form.passwordrequest.submitted" value="Request Password" class="btn btn-primary" tal:attributes="value extras.buttons.request_password"/>
@@ -412,21 +412,21 @@
                                     <label class="col-md-3 control-label" for="userfirstname-input" i18n:translate="first_name">Your First Name</label>
                                     <div class="col-md-9 input-group">
                                         <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-                                        <input id="userfirstname-input" type="text" name="firstname" class="form-control userfirstname active" autocomplete="on" tal:attributes="placeholder extras.tag.placeholder_firstname">
+                                        <input id="userfirstname-input" type="text" name="firstname" class="form-control userfirstname active" autocomplete="on" placeholder="${extras.tag.placeholder_firstname}">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-3 control-label" for="userlastname-input" i18n:translate="last_name">Your Last Name</label>
                                     <div class="col-md-9 input-group">
                                         <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-                                        <input id="userlastname-input" type="text" name="surname" class="form-control userlastname" autocomplete="on" tal:attributes="placeholder extras.tag.placeholder_lastname">
+                                        <input id="userlastname-input" type="text" name="surname" class="form-control userlastname" autocomplete="on" placeholder="${extras.tag.placeholder_lastname}">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-3 control-label" for="nick-input" i18n:translate="nickname">Your Nickname</label>
                                     <div class="col-md-9 input-group">
                                         <div class="input-group-addon"><i class="fa fa-user-secret fa-2x" aria-hidden="true"></i></div>
-                                        <input id="nick-input" type="text" class="form-control nickname" name="nickname" autocomplete="off" tal:attributes="placeholder extras.tag.placeholder_nickname">
+                                        <input id="nick-input" type="text" class="form-control nickname" name="nickname" autocomplete="off" placeholder="${extras.tag.placeholder_nickname}">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -453,21 +453,21 @@
                                     <label class="col-md-3 control-label" for="email-input" i18n:translate="your_email">Your Email Address</label>
                                     <div class="col-md-9 input-group">
                                         <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
-                                        <input id="email-input" type="email" class="form-control email" name="email" autocomplete="on" tal:attributes="placeholder extras.tag.placeholder_mail">
+                                        <input id="email-input" type="email" class="form-control email" name="email" autocomplete="on" placeholder="${extras.tag.placeholder_mail}">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-3 control-label" for="popup-login-password-input" i18n:translate="password">Your Password</label>
                                     <div class="col-md-9 input-group">
                                         <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
-                                        <input id="popup-login-password-input" type="password" name="password" class="form-control password" autocomplete="off" tal:attributes="placeholder extras.tag.placeholder_password">
+                                        <input id="popup-login-password-input" type="password" name="password" class="form-control password" autocomplete="off" placeholder="${extras.tag.placeholder_password}">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-3 control-label" for="popup-login-passwordconfirm-input" i18n:translate="password-confirm">Password (confirm)</label>
                                     <div class="col-md-9 input-group">
                                         <div class="input-group-addon"><i class="fa fa-unlock fa-2x" aria-hidden="true"></i></div>
-                                        <input id="popup-login-passwordconfirm-input" type="password" name="passwordconfirm" class="form-control password" autocomplete="off" tal:attributes="placeholder extras.tag.placeholder_password">
+                                        <input id="popup-login-passwordconfirm-input" type="password" name="passwordconfirm" class="form-control password" autocomplete="off" placeholder="${extras.tag.placeholder_password}">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -482,8 +482,9 @@
                                     this captcha</label>
                                   <div class="col-md-9 input-group">
                                     <div class="input-group-addon">
-                                      <span id="captcha-digit1"></span> + <span id="captcha-digit2"></span> - <span
-                                            id="captcha-digit3"></span> =
+                                        <span id="captcha-digit1"></span> + 
+                                        <span id="captcha-digit2"></span> - 
+                                        <span id="captcha-digit3"></span> =
                                     </div>
                                     <input id="captcha-answer" type="number" name="captcha-answer" class="form-control"
                                            autocomplete="off">
@@ -615,14 +616,14 @@
                     <div class="form-group">
             		    <div class="col-sm-12 input-group">
                             <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
-            		        <input data-min-length="10" type="text" id="popup-writing-news-title" class="form-control" tal:attributes="placeholder extras.title.topic; title extras.title.topic" title="" required>
+            		        <input data-min-length="10" type="text" id="popup-writing-news-title" class="form-control" placeholder="${extras.title.topic}" title="${extras.title.topic}" required>
             		    </div>
                     </div>
 
             		<div class="form-group">
             		    <div class="col-sm-12 input-group">
                             <div class="input-group-addon"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></div>
-            		        <textarea data-min-length="10" id="popup-writing-news-text" class="form-control" tal:attributes="placeholder extras.title.message; title extras.title.message" title=""></textarea>
+            		        <textarea data-min-length="10" id="popup-writing-news-text" class="form-control" placeholder="${extras.title.message}" title="${extras.title.message}"></textarea>
             		    </div>
                     </div>
 
@@ -668,7 +669,7 @@
             		<div class="form-group">
                         <div class="col-sm-12 input-group">
                             <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-            		        <input type="text" id="popup-writing-notification-recipient" class="form-control" tal:attributes="placeholder extras.title.recipient; title extras.title.recipient" title="" required>
+            		        <input type="text" id="popup-writing-notification-recipient" class="form-control" placeholder="${extras.title.recipient}" title="${extras.title.recipient}" required>
                         </div>
             		</div>
 
@@ -678,14 +679,14 @@
             		<div class="form-group">
             		    <div class="col-sm-12 input-group">
                             <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
-            		        <input data-min-length="5" type="text" id="popup-writing-notification-title" class="form-control" tal:attributes="placeholder extras.title.topic; title extras.title.topic" title="" required>
+            		        <input data-min-length="5" type="text" id="popup-writing-notification-title" class="form-control" placeholder="${extras.title.topic}" title="${extras.title.topic}" required>
             		    </div>
                     </div>
 
             		<div class="form-group">
             		    <div class="col-sm-12 input-group">
                             <div class="input-group-addon"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></div>
-            		        <textarea data-min-length="5" id="popup-writing-notification-text" class="form-control" tal:attributes="placeholder extras.title.message; title extras.title.message" title=""></textarea>
+            		        <textarea data-min-length="5" id="popup-writing-notification-text" class="form-control" placeholder="${extras.title.message}" title="${extras.title.message}"></textarea>
             		    </div>
                     </div>
 
@@ -721,17 +722,17 @@
 
                     <div class="form-group">
                         <label i18n:translate="please_enter_title">Please enter your title here:</label>
-                        <input class="form-control" placeholder="..." id="popup-add-topic-title-input" tal:attributes="placeholder extras.tag.placeholder_add_topic_title">
+                        <input class="form-control" id="popup-add-topic-title-input" placeholder="${extras.tag.placeholder_add_topic_title}">
                     </div>
 
                     <div class="form-group">
                         <label style="margin: 1em 0 0 0;" i18n:translate="please_enter_info">Please enter a short-description or question here:</label>
-                        <input class="form-control" placeholder="..." id="popup-add-topic-info-input" tal:attributes="placeholder extras.tag.placeholder_add_topic_question">
+                        <input class="form-control" id="popup-add-topic-info-input" placeholder="${extras.tag.placeholder_add_topic_question}">
                     </div>
 
                     <div class="form-group">
                         <label style="margin: 1em 0 0 0;" i18n:translate="please_enter_long_info">Please enter the full description here:</label>
-                        <textarea class="form-control" placeholder="..." id="popup-add-topic-long-info-input" tal:attributes="placeholder extras.tag.placeholder_add_topic_description" style="resize: vertical;"></textarea>
+                        <textarea class="form-control" id="popup-add-topic-long-info-input" placeholder="${extras.tag.placeholder_add_topic_description}" style="resize: vertical;"></textarea>
                     </div>
 
                     <div class="row" style="margin-top: 2em; padding: 0;">
@@ -767,7 +768,7 @@
                                     <input style="margin: 1em 0 0 0;" checked
                                            id="popup-add-topic-public-toggle" type="checkbox" data-toggle="toggle"
                                            data-keyword="public"
-                                           data-size="mini" title=""
+                                           data-size="mini"
                                            data-onstyle="success"
                                            data-offstyle="danger"
                                            data-on="'<i class='fa fa-check' aria-hidden='true'></i>"
@@ -782,7 +783,7 @@
                                     <input style="margin: 1em 0 0 0;"
                                            id="popup-add-topic-read-only-toggle" type="checkbox" data-toggle="toggle"
                                            data-keyword="public"
-                                           data-size="mini" title=""
+                                           data-size="mini"
                                            data-onstyle="success"
                                            data-offstyle="danger"
                                            data-on="'<i class='fa fa-check' aria-hidden='true'></i>"
@@ -943,7 +944,7 @@
                             <div class="input-group-addon">
                                 <i class="fa fa-2x fa-search" aria-hidden="true"></i>
                             </div>
-                            <input class="form-control" id="popup-duplicate-statement-text-search" type="text" placeholder="..." tal:attributes="placeholder extras.tag.placeholder_search_duplicate">
+                            <input class="form-control" id="popup-duplicate-statement-text-search" type="text" placeholder="${extras.tag.placeholder_search_duplicate}">
                         </div>
                     </div>
 
@@ -1130,13 +1131,13 @@
                         <div class="form-group">
 					        <label class="col-md-2 control-label" for="popup-references-add-text" i18n:translate="statement">Statement</label>
                             <div class="col-md-10">
-						        <input type="text" id="popup-references-add-text" class="col-md-9 form-control" placeholder="Please cite here" tal:attributes="placeholder extras.tag.placeholder_statement">
+						        <input type="text" id="popup-references-add-text" class="col-md-9 form-control" placeholder="${extras.tag.placeholder_statement}">
                             </div>
 					    </div>
                         <div class="form-group">
 					        <label class="col-md-2 control-label" for="popup-references-add-source" i18n:translate="source">Source</label>
                             <div class="col-md-10">
-						        <input type="text" id="popup-references-add-source" class="form-control" placeholder="Please enter the source here" tal:attributes="placeholder extras.tag.placeholder_source">
+						        <input type="text" id="popup-references-add-source" class="form-control" placeholder="${extras.tag.placeholder_source}">
                             </div>
 					    </div>
                         <p id="choose_reference_text" class="text-info" i18n:translate="please_choose_a_reference">Please choose a statement for your reference!</p>
