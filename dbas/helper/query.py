@@ -24,8 +24,6 @@ from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
-statement_min_length = 10  # DEPRECATED: use global config
-
 
 def mark_statement_or_argument(stmt_or_arg: Union[Statement, Argument], step, is_supportive, should_mark, history,
                                ui_loc, db_user) -> dict:

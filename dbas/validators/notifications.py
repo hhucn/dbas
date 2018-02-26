@@ -1,6 +1,7 @@
 """
 Validate notification-related content.
 """
+from os import environ
 
 from dbas.handler.language import get_language_from_cookie
 from dbas.lib import get_user_by_private_or_public_nickname, nick_of_anonymous_user
@@ -19,7 +20,7 @@ def __validate_notification_msg(request, key):
     :return:
     """
     notification_text = escape_if_string(request.json_body, key)
-    min_length = request.registry.settings.get('settings:discussion:notification_min_length', 5)
+    min_length = int(environ.get('MIN_LENGTH_OF_STATEMENT', 10))
 
     if notification_text and isinstance(notification_text, str) and len(notification_text) >= min_length:
         request.validated[key] = notification_text

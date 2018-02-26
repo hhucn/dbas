@@ -41,7 +41,6 @@ from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
 from dbas.validators.core import validate
 from dbas.validators.user import valid_user, invalid_user
-from websocket.lib import get_port
 
 name = 'D-BAS'
 version = '1.6.0'
@@ -118,8 +117,7 @@ def prepare_request_dict(request, nickname):
         'issue': db_issue,
         'history': history,
         'ui_locales': ui_locales,
-        'last_topic': last_topic,
-        'port': get_port(request)
+        'last_topic': last_topic
     }
 
 

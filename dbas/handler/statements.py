@@ -1,4 +1,5 @@
 # coding=utf-8
+from os import environ
 from typing import List, Tuple, Dict, Union
 
 import transaction
@@ -11,7 +12,6 @@ from dbas.database.discussion_model import Issue, User, Statement, TextVersion, 
 from dbas.handler import user, notification as nh
 from dbas.handler.rss import append_action_to_issue_rss
 from dbas.handler.voting import add_seen_argument, add_seen_statement
-from dbas.helper.query import statement_min_length
 from dbas.helper.relation import set_new_undermine_or_support_for_pgroup, set_new_support, set_new_undercut, \
     set_new_rebut
 from dbas.helper.url import UrlManager
@@ -73,14 +73,13 @@ def set_positions_premise(data: Dict) -> dict:
     supportive = data['supportive']
 
     history = data.get('history')
-    port = data.get('port')
     mailer = data.get('mailer')
 
     user.update_last_action(db_user.nickname)
 
     url, statement_uids, error = __process_input_of_start_premises_and_receive_url(premisegroups, db_conclusion,
                                                                                    supportive, db_issue, db_user,
-                                                                                   history, port, mailer)
+                                                                                   history, mailer)
     prepared_dict = {'error': error,
                      'statement_uids': statement_uids}
 
@@ -94,7 +93,7 @@ def set_positions_premise(data: Dict) -> dict:
         # send message if the user is now able to review
     if broke_limit:
         _t = Translator(db_issue.lang)
-        send_request_for_info_popup_to_socketio(db_user.nickname, port, _t.get(_.youAreAbleToReviewNow), '/review')
+        send_request_for_info_popup_to_socketio(db_user.nickname, _t.get(_.youAreAbleToReviewNow), '/review')
         prepared_dict['url'] = '{}{}'.format(url, '#access-review')
 
     prepared_dict['url'] = url
@@ -307,7 +306,7 @@ def __is_conclusion_in_premisegroups(premisegroups, db_conclusion) -> bool:
 
 
 def __process_input_of_start_premises_and_receive_url(premisegroups, db_conclusion: Statement, supportive,
-                                                      db_issue: Issue, db_user: User, history, port, mailer):
+                                                      db_issue: Issue, db_user: User, history, mailer):
     """
     Inserts premises of groups as new arguments in dependence of the input parameters and returns a URL for forwarding.
 
@@ -317,7 +316,6 @@ def __process_input_of_start_premises_and_receive_url(premisegroups, db_conclusi
     :param db_issue: Issue
     :param db_user: User
     :param history: History of the user
-    :param port: Port of the notification server
     :param mailer: Instance of pyramid mailer
     :return: URL, [Statement.uid], String
     """
@@ -347,8 +345,10 @@ def __process_input_of_start_premises_and_receive_url(premisegroups, db_conclusi
     _um = UrlManager(db_issue.slug, history)
     _main_um = UrlManager(db_issue.slug, history=history)
     if len(new_argument_uids) == 0:
-        error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength),
-                                     statement_min_length)
+        a = _tn.get(_.notInsertedErrorBecauseEmpty)
+        b = _tn.get(_.minLength)
+        c = environ.get('MIN_LENGTH_OF_STATEMENT', 10)
+        error = '{} ({}: {})'.format(a, b, c)
 
     elif len(new_argument_uids) == 1:
         url = _um.get_url_for_new_argument(new_argument_uids)
@@ -360,7 +360,7 @@ def __process_input_of_start_premises_and_receive_url(premisegroups, db_conclusi
     # send notifications and mails
     if len(new_argument_uids) > 0:
         email_url = _main_um.get_url_for_justifying_statement(db_conclusion.uid, 't' if supportive else 'f')
-        nh.send_add_text_notification(email_url, db_conclusion.uid, db_user, port, mailer)
+        nh.send_add_text_notification(email_url, db_conclusion.uid, db_user, mailer)
 
     return url, new_statement_uids, error
 

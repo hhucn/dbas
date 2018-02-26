@@ -116,7 +116,6 @@ def __handle_justification_argument(request_dict, statement_or_arg_id, relation,
     ui_locales = request_dict['ui_locales']
     nickname = request_dict['nickname']
     main_page = request_dict['app_url']
-    port = request_dict['port']
     supportive = mode == 't' or mode == 'd'  # supportive = t or do not know mode
 
     if not check_belonging_of_argument(db_issue.uid, statement_or_arg_id):
@@ -128,8 +127,7 @@ def __handle_justification_argument(request_dict, statement_or_arg_id, relation,
     # send message if the user is now able to review
     if broke_limit:
         _t = Translator(ui_locales)
-        send_request_for_info_popup_to_socketio(nickname, port, _t.get(_.youAreAbleToReviewNow),
-                                                main_page + '/review')
+        send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), main_page + '/review')
     return item_dict, discussion_dict, extras_dict
 
 

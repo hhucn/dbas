@@ -51,7 +51,7 @@ from dbas.validators.notifications import valid_notification_title, valid_notifi
 from dbas.validators.reviews import valid_review_reason, valid_not_executed_review, valid_uid_as_row_in_review_queue
 from dbas.validators.user import valid_user, invalid_user, valid_user_as_author, \
     valid_user_as_author_of_statement, valid_user_as_author_of_argument
-from websocket.lib import get_port, send_request_for_recent_reviewer_socketio
+from websocket.lib import send_request_for_recent_reviewer_socketio
 
 
 def __modifiy_discussion_url(prep_dict: dict) -> dict:
@@ -401,7 +401,6 @@ def set_new_start_argument(request):
         'default_locale_name': get_default_locale_name(request.registry),
         'application_url': request.application_url,
         'supportive': True,
-        'port': get_port(request),
         'history': request.cookies.get('_HISTORY_'),
         'mailer': request.mailer
     }
@@ -438,7 +437,6 @@ def set_new_start_premise(request):
         'premisegroups': request.validated['premisegroups'],
         'conclusion': request.validated['conclusion'],
         'supportive': request.validated['supportive'],
-        'port': get_port(request),
         'history': request.cookies.get('_HISTORY_'),
         'default_locale_name': get_default_locale_name(request.registry),
         'mailer': request.mailer
@@ -465,7 +463,6 @@ def set_new_premises_for_argument(request):
         'premisegroups': request.validated['premisegroups'],
         'arg_uid': request.validated['arg_uid'],
         'attack_type': request.validated['attack_type'],
-        'port': get_port(request),
         'history': request.cookies['_HISTORY_'] if '_HISTORY_' in request.cookies else None,
         'default_locale_name': get_default_locale_name(request.registry),
         'mailer': request.mailer
@@ -535,7 +532,7 @@ def send_some_notification(request):
     recipient = request.validated['recipient']
     title = request.validated['title']
     text = request.validated['text']
-    return send_users_notification(author, recipient, title, text, get_port(request), ui_locales)
+    return send_users_notification(author, recipient, title, text, ui_locales)
 
 
 # ajax - set new issue
@@ -887,11 +884,10 @@ def review_delete_argument(request):
     db_user = request.validated['user']
     should_delete = request.validated['should_delete']
     main_page = request.application_url
-    port = get_port(request)
     _t = Translator(ui_locales)
 
-    review_main_helper.add_review_opinion_for_delete(db_user, main_page, port, db_review, should_delete, _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, port, 'deletes')
+    review_main_helper.add_review_opinion_for_delete(db_user, main_page, db_review, should_delete, _t)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'deletes')
     return True
 
 
@@ -910,11 +906,10 @@ def review_edit_argument(request):
     db_user = request.validated['user']
     is_edit_okay = request.validated['is_edit_okay']
     main_page = request.application_url
-    port = get_port(request)
 
     _t = Translator(ui_locales)
-    review_main_helper.add_review_opinion_for_edit(db_user, main_page, port, db_review, is_edit_okay, _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, port, 'edits')
+    review_main_helper.add_review_opinion_for_edit(db_user, main_page, db_review, is_edit_okay, _t)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'edits')
     return True
 
 
@@ -933,11 +928,10 @@ def review_duplicate_statement(request):
     db_user = request.validated['user']
     is_duplicate = request.validated['is_duplicate']
     main_page = request.application_url
-    port = get_port(request)
 
     _t = Translator(ui_locales)
-    review_main_helper.add_review_opinion_for_duplicate(db_user, main_page, port, db_review, is_duplicate, _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, port, 'duplicates')
+    review_main_helper.add_review_opinion_for_duplicate(db_user, main_page, db_review, is_duplicate, _t)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'duplicates')
     return True
 
 
@@ -958,12 +952,11 @@ def review_optimization_argument(request):
     should_optimized = request.validated['should_optimized']
     new_data = request.validated['new_data']
     main_page = request.application_url
-    port = get_port(request)
 
     _t = Translator(ui_locales)
-    review_main_helper.add_review_opinion_for_optimization(db_user, main_page, port, db_review, should_optimized,
-                                                           new_data, _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, port, 'optimizations')
+    review_main_helper.add_review_opinion_for_optimization(db_user, main_page, db_review, should_optimized, new_data,
+                                                           _t)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'optimizations')
     return True
 
 
@@ -982,11 +975,10 @@ def review_splitted_premisegroup(request):
     db_user = request.validated['user']
     should_split = request.validated['should_split']
     main_page = request.application_url
-    port = get_port(request)
     _t = Translator(ui_locales)
 
-    review_main_helper.add_review_opinion_for_split(db_user, main_page, port, db_review, should_split, _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, port, 'splits')
+    review_main_helper.add_review_opinion_for_split(db_user, main_page, db_review, should_split, _t)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'splits')
     return True
 
 
@@ -1005,11 +997,10 @@ def review_merged_premisegroup(request):
     db_user = request.validated['user']
     should_merge = request.validated['should_merge']
     main_page = request.application_url
-    port = get_port(request)
     _t = Translator(ui_locales)
 
-    review_main_helper.add_review_opinion_for_merge(db_user, main_page, port, db_review, should_merge, _t)
-    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, port, 'merges')
+    review_main_helper.add_review_opinion_for_merge(db_user, main_page, db_review, should_merge, _t)
+    send_request_for_recent_reviewer_socketio(db_user.nickname, main_page, 'merges')
     return True
 
 

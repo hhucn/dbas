@@ -1,4 +1,5 @@
 import random
+from os import environ
 
 import transaction
 
@@ -7,7 +8,6 @@ from dbas.database.discussion_model import Issue, User, Argument, Premise, Marke
     sql_timestamp_pretty_print, ClickedStatement, Statement
 from dbas.handler import user, notification as nh
 from dbas.handler.statements import insert_new_premises_for_argument
-from dbas.helper.query import statement_min_length
 from dbas.helper.url import UrlManager
 from dbas.input_validator import get_relation_between_arguments
 from dbas.lib import get_all_arguments_with_text_and_url_by_statement_id, \
@@ -34,16 +34,15 @@ def set_arguments_premises(data) -> dict:
 
     history = data.get('_HISTORY_')
     mailer = data.get('mailer')
-    port = data.get('port')
+
     discussion_lang = db_issue.lang
     default_locale_name = data.get('default_locale_name', discussion_lang)
 
     # escaping will be done in QueryHelper().set_statement(...)
     langs = {'default_locale_name': default_locale_name, 'discussion_lang': discussion_lang}
-    mail = {'mailer': mailer, 'port': port}
     arg_infos = {'arg_id': arg_uid, 'attack_type': attack_type, 'premisegroups': premisegroups, 'history': history}
     url, statement_uids, error = __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue,
-                                                                                        db_user, mail)
+                                                                                        db_user, mailer)
     user.update_last_action(db_user)
 
     prepared_dict = {
@@ -129,7 +128,7 @@ def get_arguments_by_statement_uid(db_statement, application_url) -> dict:
     return {'arguments': get_all_arguments_with_text_and_url_by_statement_id(db_statement, _um, True, is_jump=True)}
 
 
-def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue: Issue, db_user: User, m):
+def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_issue: Issue, db_user: User, mailer):
     """
     Inserts given text in premisegroups as new arguments in dependence of the parameters and returns a URL
 
@@ -161,7 +160,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
         if not isinstance(new_argument, Argument):  # break on error
             a = _tn.get(_.notInsertedErrorBecauseEmpty)
             b = _tn.get(_.minLength)
-            c = str(statement_min_length)
+            c = environ.get('MIN_LENGTH_OF_STATEMENT', 10)
             d = _tn.get(_.eachStatement)
             if isinstance(new_argument, str):
                 error = new_argument
@@ -186,8 +185,10 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
     # #arguments>1: deliver url where the nickname has to choose between her inputs
     _um = url = UrlManager(slug, history)
     if len(new_argument_uids) == 0:
-        error = '{} ({}: {})'.format(_tn.get(_.notInsertedErrorBecauseEmpty), _tn.get(_.minLength),
-                                     statement_min_length)
+        a = _tn.get(_.notInsertedErrorBecauseEmpty)
+        b = _tn.get(_.minLength)
+        c = environ.get('MIN_LENGTH_OF_STATEMENT', 10)
+        error = '{} ({}: {})'.format(a, b, c)
 
     elif len(new_argument_uids) == 1:
         url = _um.get_url_for_new_argument(new_argument_uids)
@@ -208,7 +209,7 @@ def __process_input_premises_for_arguments_and_receive_url(langs, arg_infos, db_
 
         tmp_url = _um.get_url_for_reaction_on_argument(arg_id, attack, new_uid)
 
-        nh.send_add_argument_notification(tmp_url, arg_id, db_user.nickname, m['port'], m['mailer'])
+        nh.send_add_argument_notification(tmp_url, arg_id, db_user.nickname, mailer)
 
     return url, statement_uids, error
 

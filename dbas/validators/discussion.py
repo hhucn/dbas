@@ -1,6 +1,7 @@
 """
 Discussion-related validators for statements, arguments, ...
 """
+from os import environ
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, Argument, PremiseGroup
@@ -148,7 +149,7 @@ def valid_text_length_of(keyword):
     :return:
     """
     def inner(request):
-        min_length = request.registry.settings.get('settings:discussion:statement_min_length', 10)
+        min_length = int(environ.get('MIN_LENGTH_OF_STATEMENT', 10))
         text = escape_if_string(request.json_body, keyword)
         print(text)
 
@@ -197,7 +198,7 @@ def valid_premisegroups(request):
         add_error(request, 'Invalid conclusion id', _tn.get(_.requestFailed))
         return False
 
-    min_length = request.registry.settings.get('settings:discussion:statement_min_length', 10)
+    min_length = int(environ.get('MIN_LENGTH_OF_STATEMENT', 10))
     for premisegroup in premisegroups:
         for premise in premisegroup:
             if isinstance(premise, str):
@@ -231,7 +232,7 @@ def valid_statement_or_argument(request):
 
 
 def valid_text_values(request):
-    min_length = request.registry.settings.get('settings:discussion:statement_min_length', 10)
+    min_length = int(environ.get('MIN_LENGTH_OF_STATEMENT', 10))
     tvalues = escape_if_string(request.json_body, 'text_values')
     if not tvalues:
         __set_min_length_error(request, min_length)
