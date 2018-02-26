@@ -55,12 +55,12 @@ def get_prediction(_tn, for_api, api_data, request_authenticated_userid, issue_u
     if mode in ['0', '2']:
         search = get_suggestions(issue_uid, (False, True)[mode == '0'], value)
         levensthein = get_strings_for_start(value, issue, (False, True)[mode == '0'])
-        return_dict['values'], return_dict['distance_name'] = get_result_or_fallback(search, levensthein)
+        return_dict['values'], return_dict['distance_name'] = __get_result_or_fallback(search, levensthein)
 
     elif mode == '1':  # edit statement popup
         search = get_edits(issue_uid, extra, value)
         levensthein = get_strings_for_edits(value, extra)
-        return_dict['values'], return_dict['distance_name'] = get_result_or_fallback(search, levensthein)
+        return_dict['values'], return_dict['distance_name'] = __get_result_or_fallback(search, levensthein)
 
     elif mode == '3' or mode == '4':  # adding reasons / duplicates
         try:
@@ -70,7 +70,7 @@ def get_prediction(_tn, for_api, api_data, request_authenticated_userid, issue_u
 
         search = get_duplicates_or_reasons(issue_uid, uid, value)
         levensthein = get_strings_for_duplicates_or_reasons(value, issue, uid)
-        return_dict['values'], return_dict['distance_name'] = get_result_or_fallback(search, levensthein)
+        return_dict['values'], return_dict['distance_name'] = __get_result_or_fallback(search, levensthein)
 
     elif mode == '5':  # getting public nicknames
         nickname = get_nickname(request_authenticated_userid, for_api, api_data)
@@ -80,7 +80,7 @@ def get_prediction(_tn, for_api, api_data, request_authenticated_userid, issue_u
     elif mode in ['8', '9']:
         search = get_statements_with_value(issue_uid, application_url, value)
         levensthein = get_all_statements_with_value(issue_uid, application_url, value)
-        return_dict['values'], return_dict['distance_name'] = get_result_or_fallback(search, levensthein)
+        return_dict['values'], return_dict['distance_name'] = __get_result_or_fallback(search, levensthein)
 
     else:
         return_dict = {'error': _tn.get(_.internalError)}
@@ -88,7 +88,7 @@ def get_prediction(_tn, for_api, api_data, request_authenticated_userid, issue_u
     return return_dict
 
 
-def get_result_or_fallback(elastic_search, levensthein_search):
+def __get_result_or_fallback(elastic_search, levensthein_search):
     if elastic_search is None or len(elastic_search) == 0:
         return levensthein_search, mechanism
     return elastic_search, elastic
@@ -106,7 +106,6 @@ def get_all_statements_with_value(issue_uid, application_url, value):
     db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue_uid).all()
     return_array = []
     slug = DBDiscussionSession.query(Issue).get(issue_uid).slug
-    print(slug, type(issue_uid), issue_uid)
     _um = UrlManager(application_url, for_api=False, slug=slug)
     for stat in db_statements:
         db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(
