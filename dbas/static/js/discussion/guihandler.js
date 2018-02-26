@@ -583,70 +583,94 @@ function GuiHandler() {
 		var token, button, span_dist, span_text, index, text, img;
 		callbackElement.focus();
 
-		$.each(parsedData.values, function (key, val) {
-			index = val.index;
+        $.each(parsedData.values, function (key, val) {
+            // distance = parseInt(val.distance);
+            index = val.index;
 
-			token = callbackElement.val();
+            token = callbackElement.val();
 
-			// make all tokens bold
-			var non_edited_value = val.text;
-			// replacement from http://stackoverflow.com/a/280805/2648872
-			text = val.text.replace(new RegExp("(" + (token + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "</strong>$1<strong>");
-			text = '<strong>' + text;
 
-			button = $('<button>')
-				.attr('type', 'button')
-				.attr('class', 'list-group-item')
-				.attr('id', 'proposal_' + index)
-				.attr('text', non_edited_value)
-				.hover(function () {
-						$(this).addClass('active');
-					},
-					function () {
-						$(this).removeClass('active');
-					});
-			if (type === fuzzy_find_statement){
-				button.attr('data-url', val.url);
-			} else if (type === fuzzy_duplicate){
-				button.attr('data-statement-uid', val.statement_uid);
-			}
-			// we do not want the "Levensthein badge"
-			span_dist = '';//$('<span>').attr('class', 'badge').text(parsedData.distance_name + ' ' + distance);
-			span_text = $('<span>').attr('id', 'proposal_' + index + '_text').html(text);
-			img = $('<img>').addClass('preload-image').addClass('img-circle').attr('style', 'height: 20pt; margin-right: 1em;').attr('src', val.avatar);
+            // make all tokens bold
+            var non_edited_value = val.text;
 
-			if (type === fuzzy_find_user) {
-				button.append(img).append(span_text);
-			} else {
-				button.append(img).append(span_dist).append(span_text);
-			}
+            // g indicates a global search
+            non_edited_value = non_edited_value.replace(new RegExp('<em>', 'g'), '');
+            non_edited_value = non_edited_value.replace(new RegExp('</em>', 'g'), '');
 
-			button.click(function () {
-				callbackElement.val($(this).attr('text'));
-				$('#' + proposalStatementListGroupId).empty();
-				$('#' + proposalPremiseListGroupId).empty();
-				$('#' + proposalEditListGroupId).empty(); // list with elements should be after the callbacker
-				$('#' + proposalUserListGroupId).empty();
-				$('#' + proposalStatementSearchGroupId).empty();
-				$('#' + proposalDuplicateSearchGroupId).empty();
-				$('#proposal-mergesplit-list-group-' + callbackId).empty();
-				if (type === fuzzy_find_statement){
-					window.location.href = $(this).data('url');
-				} else if (type === fuzzy_duplicate){
-					callbackElement.attr('data-statement-uid', $(this).data('statement-uid'));
-					new PopupHandler().duplicateValueSelected(reason, val.statement_uid);
-				}
-			});
+            text = val.text;
+            text = text.replace(new RegExp('<em>', 'g'), '<mark>');
+            text = text.replace(new RegExp('</em>', 'g'), '</mark>');
+            text = '<small>' + text;
 
-			if (type === fuzzy_start_premise){        $('#' + proposalStatementListGroupId).append(button); }
-			else if (type === fuzzy_start_statement){ $('#' + proposalStatementListGroupId).append(button); }
-			else if (type === fuzzy_add_reason){      $('#' + proposalPremiseListGroupId).append(button); }
-			else if (type === fuzzy_statement_popup){ $('#' + proposalEditListGroupId).append(button); }
-			else if (type === fuzzy_find_user){       $('#' + proposalUserListGroupId).append(button); }
-			else if (type === fuzzy_find_statement){  $('#' + proposalStatementSearchGroupId).append(button); }
-			else if (type === fuzzy_duplicate){       $('#' + proposalDuplicateSearchGroupId).append(button); }
-			else if (type === fuzzy_find_mergesplit){ $('#proposal-mergesplit-list-group-' + callbackId).append(button); }
-		});
+            button = $('<button>')
+                .attr('type', 'button')
+                .attr('class', 'list-group-item')
+                .attr('id', 'proposal_' + index)
+                .attr('text', non_edited_value)
+                .hover(function () {
+                        $(this).addClass('active');
+                    },
+                    function () {
+                        $(this).removeClass('active');
+                    });
+            if (type === fuzzy_find_statement) {
+                button.attr('data-url', val.url);
+            } else if (type === fuzzy_duplicate) {
+                button.attr('data-statement-uid', val.statement_uid);
+            }
+            // we do not want the "Levensthein badge"
+            span_dist = '';//$('<span>').attr('class', 'badge').text(parsedData.distance_name + ' ' + distance);
+            span_text = $('<span>').attr('id', 'proposal_' + index + '_text').html(text);
+            img = $('<img>').addClass('preload-image').addClass('img-circle').attr('style', 'height: 20pt; margin-right: 1em;').attr('src', val.avatar);
+
+            if (type === fuzzy_find_user) {
+                button.append(img).append(span_text);
+            } else {
+                button.append(img).append(span_dist).append(span_text);
+            }
+
+            button.click(function () {
+                callbackElement.val($(this).attr('text'));
+                $('#' + proposalStatementListGroupId).empty();
+                $('#' + proposalPremiseListGroupId).empty();
+                $('#' + proposalEditListGroupId).empty(); // list with elements should be after the callbacker
+                $('#' + proposalUserListGroupId).empty();
+                $('#' + proposalStatementSearchGroupId).empty();
+                $('#' + proposalDuplicateSearchGroupId).empty();
+                $('#proposal-mergesplit-list-group-' + callbackId).empty();
+                if (type === fuzzy_find_statement) {
+                    window.location.href = $(this).data('url');
+                } else if (type === fuzzy_duplicate) {
+                    callbackElement.attr('data-statement-uid', $(this).data('statement-uid'));
+                    new PopupHandler().duplicateValueSelected(reason, val.statement_uid);
+                }
+            });
+
+            if (type === fuzzy_start_premise) {
+                $('#' + proposalStatementListGroupId).append(button);
+            }
+            else if (type === fuzzy_start_statement) {
+                $('#' + proposalStatementListGroupId).append(button);
+            }
+            else if (type === fuzzy_add_reason) {
+                $('#' + proposalPremiseListGroupId).append(button);
+            }
+            else if (type === fuzzy_statement_popup) {
+                $('#' + proposalEditListGroupId).append(button);
+            }
+            else if (type === fuzzy_find_user) {
+                $('#' + proposalUserListGroupId).append(button);
+            }
+            else if (type === fuzzy_find_statement) {
+                $('#' + proposalStatementSearchGroupId).append(button);
+            }
+            else if (type === fuzzy_duplicate) {
+                $('#' + proposalDuplicateSearchGroupId).append(button);
+            }
+            else if (type === fuzzy_find_mergesplit) {
+                $('#proposal-mergesplit-list-group-' + callbackId).append(button);
+            }
+        });
 	};
 
 	/**
