@@ -287,7 +287,6 @@ var attr_last_relation         = 'last_relation';
 var attr_long_id               = 'long_id';
 var attr_no_opinion            = 'noopinion';
 var attr_more_about            = 'more_about';
-var attr_overbid               = 'overbid';
 var attr_relation              = 'relation';
 var attr_related_argument      = 'related_argument';
 var attr_rebut                 = 'rebut';
