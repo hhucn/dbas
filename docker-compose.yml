@@ -34,10 +34,9 @@ services:
   search:
     image: hhucn/dbas-search:develop
     ports:
-      - "9000:9000"
+      - "9200:9200"
       - "5000:5000"
-
-    environment:
-      - DBAS_HOST=web
-      - DBAS_PORT=4284
-      - PROTOCOL=http
+    env_file:
+      - development.env
+    depends_on:
+      - web
