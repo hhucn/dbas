@@ -77,14 +77,18 @@ def set_positions_premise(data: Dict) -> dict:
 
     user.update_last_action(db_user.nickname)
 
-    url, statement_uids, error = __process_input_of_start_premises_and_receive_url(premisegroups, db_conclusion,
-                                                                                   supportive, db_issue, db_user,
-                                                                                   history, mailer)
-    prepared_dict = {'error': error,
-                     'statement_uids': statement_uids}
+    rdict = __process_input_of_start_premises(premisegroups, db_conclusion, supportive, db_issue, db_user)
+    if rdict['error']:
+        return {
+            'error': rdict['error'],
+            'statement_uids': rdict['stats']
+        }
+    url = __receive_urls_of_start_premises(rdict['args'], db_conclusion, supportive, db_issue, db_user, history, mailer)
 
-    if not url:
-        return prepared_dict
+    prepared_dict = {
+        'error': rdict['error'],
+        'statement_uids': rdict['stats']
+    }
 
     # add reputation
     add_rep, broke_limit = add_reputation_for(db_user, rep_reason_first_justification)
@@ -301,12 +305,14 @@ def set_statement(text: str, db_user: User, is_start: bool, db_issue: Issue) -> 
     return statement, False
 
 
-def __is_conclusion_in_premisegroups(premisegroups, db_conclusion) -> bool:
-    return any([db_conclusion.get_textversion().content in premisegroup for premisegroup in premisegroups])
+def __is_conclusion_in_premisegroups(premisegroups: list, db_conclusion: Statement) -> bool:
+    for premisegroup in premisegroups:
+        if any([db_conclusion.get_textversion().content.lower() in pg.lower() for pg in premisegroup]):
+            return True
+    return False
 
 
-def __process_input_of_start_premises_and_receive_url(premisegroups, db_conclusion: Statement, supportive,
-                                                      db_issue: Issue, db_user: User, history, mailer):
+def __process_input_of_start_premises(premisegroups, db_conclusion: Statement, supportive, db_issue: Issue, db_user: User):
     """
     Inserts premises of groups as new arguments in dependence of the input parameters and returns a URL for forwarding.
 
@@ -315,22 +321,21 @@ def __process_input_of_start_premises_and_receive_url(premisegroups, db_conclusi
     :param supportive: Boolean
     :param db_issue: Issue
     :param db_user: User
-    :param history: History of the user
-    :param mailer: Instance of pyramid mailer
     :return: URL, [Statement.uid], String
     """
-    logger('StatementsHelper', 'length of new pgroup: {}'.format(len(premisegroups)))
+    logger('StatementsHelper', '__process_input_of_start_premises: {}'.format(len(premisegroups)))
     _tn = Translator(db_issue.lang)
-
-    error = ''
-    url = ''
 
     # insert all premise groups into our database
     # all new arguments are collected in a list
     new_argument_uids = []
     new_statement_uids = []  # all statement uids are stored in this list to create the link to a possible reference
     if __is_conclusion_in_premisegroups(premisegroups, db_conclusion):
-        return None, None, '{}'.format(_tn.get(_.premiseAndConclusionAreEqual))
+        return {
+            'args': new_argument_uids,
+            'stats': new_statement_uids,
+            'error': _tn.get(_.premiseAndConclusionAreEqual)
+        }
 
     for premisegroup in premisegroups:  # premise groups is a list of lists
         new_argument, statement_uids = __create_argument_by_raw_input(db_user, premisegroup, db_conclusion, supportive,
@@ -339,18 +344,31 @@ def __process_input_of_start_premises_and_receive_url(premisegroups, db_conclusi
         new_argument_uids.append(new_argument.uid)
         new_statement_uids.append(statement_uids)
 
-    # arguments=0: empty input
-    # arguments=1: deliver new url
-    # arguments>1: deliver url where the user has to choose between her inputs
-    _um = UrlManager(db_issue.slug, history)
-    _main_um = UrlManager(db_issue.slug, history=history)
+    error = None
     if len(new_argument_uids) == 0:
         a = _tn.get(_.notInsertedErrorBecauseEmpty)
         b = _tn.get(_.minLength)
         c = environ.get('MIN_LENGTH_OF_STATEMENT', 10)
         error = '{} ({}: {})'.format(a, b, c)
 
-    elif len(new_argument_uids) == 1:
+    return {
+        'args': new_argument_uids,
+        'stats': new_statement_uids,
+        'error': error
+    }
+
+
+def __receive_urls_of_start_premises(new_argument_uids: list, db_conclusion: Statement, supportive: bool,
+                                     db_issue: Issue, db_user: User, history, mailer):
+    logger('StatementsHelper', '__receive_urls_of_start_premises', 'def')
+
+    # arguments=0: empty input
+    # arguments=1: deliver new url
+    # arguments>1: deliver url where the user has to choose between her inputs
+    _um = UrlManager(db_issue.slug, history)
+    _main_um = UrlManager(db_issue.slug, history=history)
+
+    if len(new_argument_uids) == 1:
         url = _um.get_url_for_new_argument(new_argument_uids)
 
     else:
@@ -358,11 +376,10 @@ def __process_input_of_start_premises_and_receive_url(premisegroups, db_conclusi
         url = _um.get_url_for_choosing_premisegroup(False, supportive, db_conclusion.uid, pgroups)
 
     # send notifications and mails
-    if len(new_argument_uids) > 0:
-        email_url = _main_um.get_url_for_justifying_statement(db_conclusion.uid, 't' if supportive else 'f')
-        nh.send_add_text_notification(email_url, db_conclusion.uid, db_user, mailer)
+    email_url = _main_um.get_url_for_justifying_statement(db_conclusion.uid, 't' if supportive else 'f')
+    nh.send_add_text_notification(email_url, db_conclusion.uid, db_user, mailer)
 
-    return url, new_statement_uids, error
+    return url
 
 
 def insert_new_premises_for_argument(premisegroup: List[str], current_attack, arg_uid, db_issue: Issue, db_user: User):
