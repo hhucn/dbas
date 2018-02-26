@@ -22,6 +22,7 @@ stages:
     # for search
     DB_PWD: "DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!"
     DB_NAME: discussion
+    SEARCH_PROTOCOL: http
     PROTOCOL: http
     DBAS_HOST: web
     DBAS_PORT: 4284
