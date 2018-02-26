@@ -9,19 +9,14 @@ function AjaxNotificationHandler(){
     *
     * @param id_list
     */
-	this.sendAjaxForReadMessages = function(id_list){
+	this.readMessages = function(id_list){
 		new Notifications().hideInfoSpaces();
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'notifications_read',
-			method: 'POST',
-			contentType: 'application/json',
-            data: JSON.stringify({
-                ids: id_list
-            }),
-			dataType: 'json',
-			headers: {'X-CSRF-Token': csrf_token}
-		}).done(function sendAjaxForReadMessagesDone(data) {
+		
+		var url = 'notifications_read';
+		var d = {
+			ids: id_list
+		};
+		var done = function sendAjaxForReadMessagesDone(data) {
 			$.each(id_list, function(key, uid){
 				var el = $('#' + uid);
 				el.find('.label-info').remove();
@@ -33,41 +28,40 @@ function AjaxNotificationHandler(){
 			$('.msg-checkbox:checked').each(function(){
 				$(this).prop('checked',false);
 			});
-		}).fail(function sendAjaxForReadMessagesFail() {
+		};
+		var fail = function sendAjaxForReadMessagesFail(data) {
 			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
-		});
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
 
 	/**
     *
     * @param id_list
     */
-	this.sendAjaxForDeleteMessages = function(id_list) {
+	this.deleteMessages = function(id_list) {
 		new Notifications().hideInfoSpaces();
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'notifications_delete',
-			method: 'POST',
-			contentType: 'application/json',
-			data: JSON.stringify({
-				ids: id_list
-			}),
-			dataType: 'json',
-			headers: {'X-CSRF-Token': csrf_token}
-		}).done(function sendAjaxForDeleteMessagesDone(data) {
-			$.each( id_list, function( key, value ) {
+		
+		var url ='notifications_delete';
+		var d = {
+			ids: id_list
+		};
+		var done = function sendAjaxForDeleteMessagesDone(data) {
+			$.each(id_list, function (key, value) {
 				$('#' + value).remove();
 			});
 			new Notifications().setNewBadgeCounter(data.unread_messages);
 			$('#total_in_counter').text(data.total_in_messages);
 			$('#total_out_counter').text(data.total_out_messages);
 			setGlobalSuccessHandler('', data.success);
-			$('.msg-checkbox:checked').each(function(){
-				$(this).prop('checked',false);
+			$('.msg-checkbox:checked').each(function () {
+				$(this).prop('checked', false);
 			});
-		}).fail(function sendAjaxForDeleteMessagesFail() {
+		};
+		var fail = function sendAjaxForDeleteMessagesFail(data) {
 			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
-		});
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
 
 	/**
@@ -75,29 +69,26 @@ function AjaxNotificationHandler(){
     * @param recipient
     */
 	this.sendNotification = function(recipient){
-		var title = $('#popup-writing-notification-title').val(),
-			text = $('#popup-writing-notification-text').val();
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-
 		$('#popup-writing-notification-success').hide();
 		$('#popup-writing-notification-failed').hide();
 
-		$.ajax({
-			url: 'send_notification',
-			type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({title: title, text: text, recipient: recipient}),
-			dataType: 'json',
-			headers: {'X-CSRF-Token': csrf_token}
-		}).done(function ajaxSendNewsDone(data) {
+		var url = 'send_notification';
+		var d = {
+			title: $('#popup-writing-notification-title').val(),
+			text: $('#popup-writing-notification-text').val(),
+			recipient: recipient
+		};
+		var done = function ajaxSendNotificationDone() {
 			$('#popup-writing-notification-success').show();
 			$('#popup-writing-notification-success-message').text(_t(notificationWasSend));
 			var out_counter = $('#total_out_counter');
 			out_counter.text(' ' + (parseInt(out_counter.text()) + 1) + ' ');
 			location.reload(true);
-		}).fail(function ajaxSendNewsFail(data) {
+		};
+		var fail = function ajaxSendNotificationFail(data) {
 			$('#popup-writing-notification-failed').show();
 			$('#popup-writing-notification-failed-message').html(data.responseJSON.errors[0].description);
-		});
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
 }

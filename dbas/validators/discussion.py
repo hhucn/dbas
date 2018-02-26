@@ -140,22 +140,25 @@ def valid_argument(request):
         return False
 
 
-def valid_statement_text(request):
+def valid_text_length_of(keyword):
     """
-    Validate the correct length of a statement's input.
+    Validate the correct length of a statement's or news titles or ... input.
 
-    :param request:
+    :param keyword:
     :return:
     """
-    min_length = request.registry.settings.get('settings:discussion:statement_min_length', 10)
-    text = escape_if_string(request.json_body, 'statement')
+    def inner(request):
+        min_length = request.registry.settings.get('settings:discussion:statement_min_length', 10)
+        text = escape_if_string(request.json_body, keyword)
+        print(text)
 
-    if not text or text and len(text) < min_length:
-        __set_min_length_error(request, min_length)
-        return False
-    else:
-        request.validated['statement'] = text
-        return True
+        if not text or text and len(text) < min_length:
+            __set_min_length_error(request, min_length)
+            return False
+        else:
+            request.validated[keyword] = text
+            return True
+    return inner
 
 
 def valid_premisegroup(request):

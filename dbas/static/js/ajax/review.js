@@ -28,7 +28,7 @@ function AjaxReviewHandler() {
 			}
 			$('#popup-duplicate-statement').modal('hide');
 		};
-		var fail = function ajaxFlagArgumentOrStatementFail() {
+		var fail = function ajaxFlagArgumentOrStatementFail(data) {
 			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
 		};
 		ajaxSkeleton(url, 'POST', data, done, fail);

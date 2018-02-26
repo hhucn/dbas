@@ -395,7 +395,19 @@ $(document).ready(function () {
 	 * Sharing shortened url on google
 	 */
 	$('#' + sendNewsButtonId).click(function(){
-		new AjaxNewsHandler().ajaxSendNews();
+		var url= 'send_news';
+		var d = {
+			title: $('#' + writingNewNewsTitleId).val(),
+			text: $('#' + writingNewNewsTextId).val()
+		};
+		var done = function ajaxSendNewsDone() {
+			location.reload(true);
+		};
+		var fail = function ajaxSendNewsFail(data) {
+			$('#' + writingNewsFailedId).show();
+			$('#' + writingNewsFailedMessageId).html(data.responseJSON.errors[0].description);
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	});
 
 	$('#icon-add-news').click(function(){

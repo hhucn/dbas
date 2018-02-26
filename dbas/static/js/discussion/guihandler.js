@@ -257,7 +257,7 @@ function GuiHandler() {
 			}
 
 			$('#popup-complete-login-register-button').off('click').click(function () {
-				new GuiHandler().fire_ajax_user_registration();
+				new GuiHandler().fireJsonUserRegistration();
 			});
 		});
 	};
@@ -285,7 +285,7 @@ function GuiHandler() {
 	/**
 	 *
 	 */
-	this.fire_ajax_user_registration = function(){
+	this.fireJsonUserRegistration = function(){
 		var gender = '';
 		if ($('#popup-complete-login-inlineRadioGender1').is(':checked')) { gender = 'n'; }
 		if ($('#popup-complete-login-inlineRadioGender2').is(':checked')) { gender = 'm'; }
@@ -293,41 +293,31 @@ function GuiHandler() {
 
 		$('#popup-complete-login-failed').hide();
 		$('#popup-complete-login-info').hide();
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'user_registration',
-			type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-				firstname: $('#popup-complete-login-userfirstname-input').val(),
-				lastname: $('#popup-complete-login-userlastname-input').val(),
-				nickname: $('#popup-complete-login-nick-input').val(),
-				gender: gender,
-				email: $('#popup-complete-login-email-input').val(),
-				password: $('#popup-complete-login-password-input').val(),
-				passwordconfirm: $('#popup-complete-login-passwordconfirm-input').val(),
-				lang: getLanguage(),
-				mode: 'oauth'
-            }),
-			dataType: 'json',
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxRegistrationOauthDone(data) {
-			callbackIfDoneForRegistrationViaOauth(data);
-		}).fail(function ajaxRegistrationOauthFail(xhr) {
-			$('#popup-complete-login-failed').removeClass('hidden');
-			if (xhr.status === 400) {
-				$('#popup-complete-login-failed-message').text(_t(requestFailedBadToken));
-			} else if (xhr.status === 500) {
-				$('#popup-complete-login-failed-message').text(_t(requestFailedInternalError));
-			} else {
-				$('#popup-complete-login-failed-message').text(_t(requestFailed));
-			}
-		}).always(function ajaxLoginOauthAlways() {
+		
+		var url = 'user_registration';
+        var d = {
+			firstname: $('#popup-complete-login-userfirstname-input').val(),
+			lastname: $('#popup-complete-login-userlastname-input').val(),
+			nickname: $('#popup-complete-login-nick-input').val(),
+			gender: gender,
+			email: $('#popup-complete-login-email-input').val(),
+			password: $('#popup-complete-login-password-input').val(),
+			passwordconfirm: $('#popup-complete-login-passwordconfirm-input').val(),
+			lang: getLanguage(),
+			mode: 'oauth'
+        };
+		var done = function ajaxRegistrationOauthDone(data) {
 			$('#popup-complete-login-password-input').val('');
 			$('#popup-complete-login-passwordconfirm-input').val('');
-		});
+			callbackIfDoneForRegistrationViaOauth(data);
+		};
+		var fail = function ajaxRegistrationOauthFail(data) {
+			$('#popup-complete-login-failed').removeClass('hidden');
+			$('#popup-complete-login-password-input').val('');
+			$('#popup-complete-login-passwordconfirm-input').val('');
+			$('#popup-complete-login-failed-message').text(data.responseJSON.errors[0].description);
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
 
 	/**

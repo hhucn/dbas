@@ -4,10 +4,8 @@ Collection of pyramids views components of D-BAS' core.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
 
-import json
 from time import sleep
 
-import requests
 from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
 from pyramid.security import forget
 from pyramid.view import view_config
@@ -47,7 +45,7 @@ from dbas.validators.core import has_keywords, has_maybe_keywords, validate
 from dbas.validators.database import valid_database_model
 from dbas.validators.discussion import valid_issue, valid_new_issue, valid_issue_not_readonly, valid_conclusion, \
     valid_statement, valid_argument, valid_premisegroup, valid_premisegroups, valid_statement_or_argument, \
-    valid_text_values
+    valid_text_values, valid_text_length_of
 from dbas.validators.notifications import valid_notification_title, valid_notification_text, \
     valid_notification_recipient
 from dbas.validators.reviews import valid_review_reason, valid_not_executed_review, valid_uid_as_row_in_review_queue
@@ -768,7 +766,7 @@ def switch_language(request):
 
 # ajax - for sending news
 @view_config(route_name='send_news', renderer='json')
-@validate(valid_user, has_keywords(('title', str), ('text', str)))
+@validate(valid_user_as_author, valid_text_length_of('title'), valid_text_length_of('text'))
 def send_news(request):
     """
     ajax interface for settings news
@@ -804,34 +802,6 @@ def fuzzy_search(request):
     db_user = request.validated['user']
     return fuzzy_string_matcher.get_prediction(_tn, db_user, db_issue, request.application_url, value, mode,
                                                statement_uid)
-
-
-# ajax - for additional service
-@view_config(route_name='additional_service', renderer='json')
-def additional_service(request):
-    """
-    Easteregg O:-)
-
-    :param request: current request of the server
-    :return: json-dict()
-    """
-    logger('views', 'main: {}'.format(request.params))
-
-    try:
-        rtype = request.params['type']
-        if rtype == "chuck":
-            data = requests.get('http://api.icndb.com/jokes/random')
-        else:
-            data = requests.get('http://api.yomomma.info/')
-
-        for a in data.json():
-            logger('views', str(a) + ': {}'.format(data.json()[a]))
-
-    except KeyError as e:
-        logger('views', repr(e), error=True)
-        return json.dumps(dict())
-
-    return data.json()
 
 
 # #######################################

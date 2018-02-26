@@ -254,7 +254,9 @@ function setAnalyticsOptOutLink(lang){
 function setEasterEggs(){
     'use strict';
 
-	$('#roundhousekick').click(function(){ new AjaxMainHandler().roundhouseKick(); });
+	$('#roundhousekick').click(function(){
+		new AjaxMainHandler().roundhouseKick();
+	});
 	$('#logo_dbas, #logo_dbas_s, #homeHeading').click(function(){
 		if (!$(this)){
 			return;
