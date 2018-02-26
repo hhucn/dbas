@@ -470,11 +470,11 @@
                                         <input id="popup-login-passwordconfirm-input" type="password" name="passwordconfirm" class="form-control password" autocomplete="off" placeholder="${extras.tag.placeholder_password}">
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" style="margin-bottom: 0">
                                     <label class="col-md-3 control-label" i18n:translate="password-strength">Password Strength</label>
                                     <div class="col-md-9 input-group">
                                         <div class="col-md-9 veryweak" id="popup-login-password-meter"></div>
-                                        <h6 id="popup-login-password-strength" i18n:translate="password_strength">very weak</h6>
+                                        <span id="popup-login-password-strength" i18n:translate="password_strength">very weak</span>
                                     </div>
                                 </div>
                                 <div class="form-group">
