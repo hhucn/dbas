@@ -12,7 +12,7 @@ import arrow
 from pyramid.registry import Registry
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Language, Group, Settings, Issue, Argument
+from dbas.database.discussion_model import User, Language, Group, Issue, Argument
 from dbas.handler import user
 from dbas.handler.issue import rep_limit_to_open_issues
 from dbas.handler.notification import count_of_new_notifications, get_box_for
@@ -208,7 +208,7 @@ class DictionaryHelper(object):
         arg_clicks, stat_clicks = user.get_click_count_of(db_user)
         public_nick = db_user.get_global_nickname()
         db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
-        db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
+        db_settings = db_user.get_settings()
         db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
 
         group = db_group.name if db_group else '-'

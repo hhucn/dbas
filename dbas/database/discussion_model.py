@@ -275,8 +275,7 @@ class User(DiscussionBase):
         self.public_nickname = nick
 
     def get_global_nickname(self):
-        db_settings = DBDiscussionSession.query(Settings).get(self.uid)
-        return self.firstname if db_settings.should_show_public_nickname else self.public_nickname
+        return self.firstname if self.get_settings().should_show_public_nickname else self.public_nickname
 
     def to_small_dict(self):
         """
@@ -304,6 +303,14 @@ class User(DiscussionBase):
         :return: True, if the user is member of the authors group
         """
         return DBDiscussionSession.query(Group).filter_by(name='authors').first().uid == self.group_uid
+
+    def get_settings(self):
+        """
+        Check, if the user is member of the admin group
+
+        :return: True, if the user is member of the admin group
+        """
+        return DBDiscussionSession.query(Settings).filter_by(author_uid=self.uid).first()
 
 
 class Settings(DiscussionBase):

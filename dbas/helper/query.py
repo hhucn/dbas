@@ -13,7 +13,7 @@ from urllib3.exceptions import NewConnectionError
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, User, TextVersion, RevokedContent, \
-    RevokedContentHistory, MarkedArgument, MarkedStatement, Settings, Language
+    RevokedContentHistory, MarkedArgument, MarkedStatement, Language
 from dbas.handler.history import get_bubble_from_reaction_step, get_splitted_history
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for_argument_uid, \
@@ -92,7 +92,7 @@ def set_user_language(db_user: User, ui_locales) -> dict:
     """
     _tn = Translator(ui_locales)
 
-    db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
+    db_settings = db_user.get_settings()
     db_language = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
 
     if not db_language:

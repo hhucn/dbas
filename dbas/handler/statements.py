@@ -37,7 +37,7 @@ def set_position(db_user: User, db_issue: Issue, statement_text: str) -> dict:
     """
     logger('StatementsHelper', statement_text)
 
-    user.update_last_action(db_user.nickname)
+    user.update_last_action(db_user)
 
     new_statement = insert_as_statement(statement_text, db_user, db_issue, is_start=True)
 
@@ -75,7 +75,7 @@ def set_positions_premise(data: Dict) -> dict:
     history = data.get('history')
     mailer = data.get('mailer')
 
-    user.update_last_action(db_user.nickname)
+    user.update_last_action(db_user)
 
     rdict = __process_input_of_start_premises(premisegroups, db_conclusion, supportive, db_issue, db_user)
     if rdict['error']:

@@ -8,9 +8,11 @@ import os
 import smtplib
 from socket import error as socket_error
 
+from pyramid_mailer import Mailer
+
 from dbas.lib import get_global_url
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, TextVersion, Settings, Language, Statement
+from dbas.database.discussion_model import User, TextVersion, Language, Statement
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_text_for_add_text_message, get_text_for_edit_text_message, get_text_for_add_argument_message
@@ -52,7 +54,7 @@ def send_mail_due_to_added_argument(lang, url, recipient, mailer):
     return send_mail(mailer, subject, body, recipient.email, lang)
 
 
-def send_mail_due_to_edit_text(statement_uid, previous_author, current_author, url, mailer):
+def send_mail_due_to_edit_text(statement_uid: int, previous_author: User, current_author: User, url: str, mailer: Mailer):
     """
     Will send an email to the author of the statement.
 
@@ -67,12 +69,10 @@ def send_mail_due_to_edit_text(statement_uid, previous_author, current_author, u
     db_textversion_old = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid)  # TODO #432
     db_textversion_new = DBDiscussionSession.query(TextVersion).get(db_statement.uid)
 
-    db_previous_author = DBDiscussionSession.query(User).get(previous_author) if isinstance(previous_author, int) else previous_author
-    db_current_author = DBDiscussionSession.query(User).get(current_author) if isinstance(current_author, int) else current_author
+    db_previous_author = DBDiscussionSession.query(User).get(previous_author)
+    db_current_author = DBDiscussionSession.query(User).get(current_author)
 
-    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=db_previous_author.uid)
-    db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
-
+    db_language = DBDiscussionSession.query(Language).get(db_previous_author.setting.lang_uid)
     _t = Translator(db_language.ui_locales)
     subject = _t.get(_.textversionChangedTopic)
     body = get_text_for_edit_text_message(db_language.ui_locales, db_current_author.public_nickname,

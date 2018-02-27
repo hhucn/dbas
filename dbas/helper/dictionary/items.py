@@ -209,7 +209,7 @@ class ItemDictHelper(object):
             random.shuffle(statements_array)
 
         if not self.issue_read_only:
-            if db_user.nickname != nick_of_anonymous_user:
+            if db_user and db_user.nickname != nick_of_anonymous_user:
                 statements_array.append(self.__create_answer_dict('start_premise',
                                                                   [{'title': _tn.get(_.newPremiseRadioButtonText),
                                                                     'id': 0}],
@@ -244,7 +244,7 @@ class ItemDictHelper(object):
         _um = UrlManager(slug, history=self.path)
 
         for argument in db_arguments:
-            if db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
+            if db_user and db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
                 add_seen_argument(argument_uid, db_user)
             # get all premises in this group
             db_premises = DBDiscussionSession.query(Premise).filter_by(
@@ -291,7 +291,7 @@ class ItemDictHelper(object):
             random.shuffle(statements_array)
 
         if not self.issue_read_only:
-            if db_user.nickname != nick_of_anonymous_user:
+            if db_user and db_user.nickname != nick_of_anonymous_user:
                 text = _tn.get(_.newPremiseRadioButtonText)
                 if len(statements_array) == 0:
                     text = _tn.get(_.newPremiseRadioButtonTextAsFirstOne)
@@ -371,7 +371,7 @@ class ItemDictHelper(object):
                                      '/justify/{}/d'.format(argument_uid))
         _um = UrlManager(slug, history=tmp_path)
 
-        if db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
+        if db_user and db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
             add_seen_argument(argument_uid, db_user)
 
         rel_dict = get_relation_text_dict_with_substitution(self.lang, False, is_dont_know=True, gender=gender)
@@ -645,7 +645,7 @@ class ItemDictHelper(object):
             for premise in db_premises:
                 text = get_text_for_statement_uid(premise.statement_uid)
                 premise_array.append({'title': text, 'id': premise.statement_uid})
-                if db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
+                if db_user and db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
                     add_seen_statement(premise.statement_uid, db_user)
 
             # get attack for each premise, so the urls will be unique

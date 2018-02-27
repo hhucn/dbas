@@ -3,9 +3,9 @@ import unittest
 import transaction
 from pyramid import testing
 
-from nose.tools import assert_false, assert_true, assert_less, assert_equal, assert_greater, assert_is_none
+from nose.tools import assert_true, assert_less, assert_equal, assert_greater, assert_is_none
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, History, Settings, Issue
+from dbas.database.discussion_model import User, History, Issue
 from dbas.handler import history
 
 
@@ -14,7 +14,7 @@ class HistoryHandlerTests(unittest.TestCase):
         self.config = testing.setUp()
         self.user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         self.issue = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).first()
-        self.settings = DBDiscussionSession.query(Settings).get(self.user.uid)
+        self.settings = self.user.get_settings()
         self.settings.set_last_topic_uid(self.issue.uid)
         DBDiscussionSession.add(self.settings)
         DBDiscussionSession.flush()
@@ -22,13 +22,12 @@ class HistoryHandlerTests(unittest.TestCase):
         self.history = '/attitude/2-/justify/2/t-/reaction/12/undercut/13'
 
     def test_save_issue_uid(self):
-        assert_false(history.save_issue_uid(self.issue.uid, 'Tobia'))
-        assert_true(history.save_issue_uid(self.issue.uid, 'Tobias'))
+        assert_true(history.save_issue_uid(self.issue.uid, self.user))
         assert_equal(self.issue.uid, self.settings.last_topic_uid)
 
     def test_get_saved_issue(self):
-        assert_is_none(history.get_saved_issue('Tobia'))
-        assert_equal(self.settings.last_topic_uid, history.get_saved_issue(self.user.nickname).uid)
+        assert_is_none(history.get_saved_issue(None))
+        assert_equal(self.settings.last_topic_uid, history.get_saved_issue(self.user).uid)
 
     def test_get_splitted_history(self):
         hist = history.get_splitted_history(self.history)
@@ -45,13 +44,13 @@ class HistoryHandlerTests(unittest.TestCase):
     def test_save_path_in_database(self):
         db_hist1 = DBDiscussionSession.query(History).filter_by(author_uid=self.user.uid).all()
         big_fucking_link = 'cat-or-dog/justify/13/t/undercut?history=/attitude/2-/justify/2/t-/reaction/12/undercut/13'
-        history.save_path_in_database(self.user.nickname, 'cat-or-dog', big_fucking_link, self.history)
+        history.save_path_in_database(self.user, 'cat-or-dog', big_fucking_link, self.history)
         db_hist2 = DBDiscussionSession.query(History).filter_by(author_uid=self.user.uid).all()
         assert_less(len(db_hist1), len(db_hist2))
 
     def test_get_history_from_database(self):
         big_fucking_link = 'cat-or-dog/justify/13/t/undercut?history=/attitude/2-/justify/2/t-/reaction/12/undercut/13'
-        history.save_path_in_database(self.user.nickname, 'cat-or-dog', big_fucking_link, self.history)
+        history.save_path_in_database(self.user, 'cat-or-dog', big_fucking_link, self.history)
         hist = history.get_history_from_database(self.user, 'en')
         assert_greater(len(hist), 0)
 
