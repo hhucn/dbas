@@ -56,7 +56,7 @@ function PopupHandler() {
 				var oem = $(this).attr('placeholder');
 				var now = $(this).val();
 				var id = $(this).attr('id');
-				var statement_uid = $(this).data('statement-uid');
+				var statement_uid = parseInt($(this).data('statement-uid'));
 
 				// reduce noise
 				var levensthein = _l(oem, now);
@@ -338,7 +338,7 @@ function PopupHandler() {
 
 			} else {
 				var tmp = next.find('em').text();
-				new PopupHandler().showFlagStatementPopup(id, false, tmp);
+				new PopupHandler().showFlagStatementPopup(parseInt(id), false, tmp);
 			}
 			popup.find('input').prop('checked', false);
 			popup.modal('hide');
@@ -602,7 +602,6 @@ function PopupHandler() {
 	 * @param key is either 'merge' or 'split'
 	 * @param uid of the current premisegroup
 	 * @param text of the current premisegroup
-	 * @param reason for the flag popup
 	 * @param fct which should be called if the 'yes'-button is clicked
 	 * @private
 	 */
@@ -836,27 +835,10 @@ function PopupHandler() {
 		$('#' + popupUrlSharingInputId).val('');
 	};
 
-	this.showLoginPopup = function (appendOnly){
+    this.showLoginPopup = function () {
 		if (window.location.href.indexOf('/contact') !== -1){
 			return -1;
 		}
-
-		var script = $('<script>').attr('src', 'https://www.google.com/recaptcha/api.js');
-		if (appendOnly) {
-			$('#' + popupLogin).append(script);
-		} else {
-			$('#' + popupLogin).show().append(script);
-		}
-
-		// Google Recaptcha
-		if ($('.g-recaptcha').length !== 0) {
-			setTimeout(function () {
-				$('.grecaptcha-badge').css('bottom', $('#footer').outerHeight(true) + 'px');
-			}, 1500);
-		} else {
-			console.log('nargh');
-		}
-
 	};
 
 	/**

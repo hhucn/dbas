@@ -1,12 +1,6 @@
 import unittest
 
-from dbas.database import DBDiscussionSession, get_dbas_db_configuration
-from dbas.helper.tests import add_settings_to_appconfig
 from graph.partial_graph import get_partial_graph_for_argument, get_partial_graph_for_statement
-
-settings = add_settings_to_appconfig()
-
-DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
 
 
 class PartialGraphTest(unittest.TestCase):
@@ -17,12 +11,12 @@ class PartialGraphTest(unittest.TestCase):
         path = ''
         ret_dict, error = get_partial_graph_for_statement(uid, issue, path)
         self.assertFalse(error)
-        self.assertTrue('nodes' in ret_dict)
-        self.assertTrue('edges' in ret_dict)
-        self.assertTrue('extras' in ret_dict)
-        self.assertTrue(len(ret_dict['nodes']) > 0)
-        self.assertTrue(len(ret_dict['edges']) > 0)
-        self.assertTrue(len(ret_dict['extras']) > 0)
+        self.assertIn('nodes', ret_dict)
+        self.assertIn('edges', ret_dict)
+        self.assertIn('extras', ret_dict)
+        self.assertLess(0, len(ret_dict['nodes']))
+        self.assertLess(0, len(ret_dict['edges']))
+        self.assertLess(0, len(ret_dict['extras']))
 
     def test_get_partial_graph_for_statement_errors(self):
         uid = 2  # We should get a cat
@@ -37,12 +31,12 @@ class PartialGraphTest(unittest.TestCase):
         ret_dict, error = get_partial_graph_for_argument(uid, issue)
 
         self.assertFalse(error)
-        self.assertTrue('nodes' in ret_dict)
-        self.assertTrue('edges' in ret_dict)
-        self.assertTrue('extras' in ret_dict)
-        self.assertTrue(len(ret_dict['nodes']) > 0)
-        self.assertTrue(len(ret_dict['edges']) > 0)
-        self.assertTrue(len(ret_dict['extras']) > 0)
+        self.assertIn('nodes', ret_dict)
+        self.assertIn('edges', ret_dict)
+        self.assertIn('extras', ret_dict)
+        self.assertLess(0, len(ret_dict['nodes']))
+        self.assertLess(0, len(ret_dict['edges']))
+        self.assertLess(0, len(ret_dict['extras']))
 
     def test_get_partial_graph_for_argument_errors(self):
         uid = 2  # We should get a cat

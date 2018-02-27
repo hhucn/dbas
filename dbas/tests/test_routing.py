@@ -2,7 +2,7 @@ import unittest
 import webtest
 import dbas
 import os
-from dbas.helper.tests import add_settings_to_appconfig
+from dbas.helper.test import add_settings_to_appconfig
 
 # copy/paste from https://docs.pylonsproject.org/projects/pyramid/en/latest/tutorials/wiki2/tests.html
 
@@ -77,7 +77,7 @@ class FunctionalTests(unittest.TestCase):
         self.testapp.get('/discuss', status=200)
         self.testapp.get('/discuss/', status=200)
         self.testapp.get('/discuss/cat-or-dog', status=200)
-        self.testapp.get('/discuss/cat-or-dogg', status=200)
+        self.testapp.get('/discuss/cat-or-dogg', status=404)
 
     def test_review_index(self):
         self.testapp.get('/review', status=200)
@@ -93,6 +93,6 @@ class FunctionalTests(unittest.TestCase):
 
     def test_review_content(self):
         self.testapp.get('/review/', status=404)
-        from dbas.review.helper.subpage import pages
-        for page in pages:
-            self.testapp.get('/review/' + page, status=200)
+        from dbas.review.helper.queues import review_queues
+        for queue in review_queues:
+            self.testapp.get('/review/' + queue, status=200)

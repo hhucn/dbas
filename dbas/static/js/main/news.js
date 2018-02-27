@@ -50,20 +50,6 @@ function News() {
 
 	/**
 	 *
-	 * @param data
-	 */
-	this.callbackIfDoneForSendingNews = function (data) {
-		if (data.error.length === 0) {
-			location.reload(true);
-		} else {
-			$('#' + writingNewsFailedId).show();
-			$('#' + writingNewsFailedMessageId).html(data.error);
-		}
-
-	};
-
-	/**
-	 *
 	 */
 	this.setMaxHeightOfNewsRows = function () {
 		var counter, row = $('#' + newsBodyId).children().length, heights, maxHeight;
@@ -409,7 +395,19 @@ $(document).ready(function () {
 	 * Sharing shortened url on google
 	 */
 	$('#' + sendNewsButtonId).click(function(){
-		new AjaxNewsHandler().ajaxSendNews();
+		var url= 'send_news';
+		var d = {
+			title: $('#' + writingNewNewsTitleId).val(),
+			text: $('#' + writingNewNewsTextId).val()
+		};
+		var done = function ajaxSendNewsDone() {
+			location.reload(true);
+		};
+		var fail = function ajaxSendNewsFail(data) {
+			$('#' + writingNewsFailedId).show();
+			$('#' + writingNewsFailedMessageId).html(data.responseJSON.errors[0].description);
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	});
 
 	$('#icon-add-news').click(function(){

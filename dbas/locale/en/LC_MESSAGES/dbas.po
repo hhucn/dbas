@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-01-26 13:49+0100\n"
+"POT-Creation-Date: 2018-02-26 08:30+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-Düsseldorf.de>\n"
 "Language-Team: English\n"
@@ -1069,7 +1069,7 @@ msgstr "Switch Topic"
 #. Default: Add a Topic
 #. Default: Add Topic
 #: templates/snippet-header.pt:58 templates/snippet-header.pt:63
-#: templates/snippet-popups.pt:714
+#: templates/snippet-popups.pt:718
 msgid "add_topic"
 msgstr "Add a Topic"
 
@@ -1188,7 +1188,7 @@ msgid "copyright_and_used_software"
 msgstr "Used Software"
 
 #. Default: Changes
-#: templates/imprint.pt:112
+#: templates/imprint.pt:110
 msgid "changes"
 msgstr "Changelog"
 
@@ -1348,8 +1348,8 @@ msgid "no_decision_for_this_queue"
 msgstr "No decisions for this queue."
 
 #. Default: Statement
-#: templates/review-history.pt:42 templates/snippet-popups.pt:1127
-#: templates/snippet-popups.pt:1148
+#: templates/review-history.pt:42 templates/snippet-popups.pt:1131
+#: templates/snippet-popups.pt:1152
 msgid "statement"
 msgstr "Statement"
 
@@ -1406,8 +1406,8 @@ msgstr "Undo"
 #. Default: Cancel
 #: templates/review-history.pt:98 templates/snippet-popups.pt:127
 #: templates/snippet-popups.pt:150 templates/snippet-popups.pt:175
-#: templates/snippet-popups.pt:991 templates/snippet-popups.pt:1038
-#: templates/snippet-popups.pt:1191
+#: templates/snippet-popups.pt:995 templates/snippet-popups.pt:1042
+#: templates/snippet-popups.pt:1195
 msgid "cancel"
 msgstr "Cancel"
 
@@ -1525,14 +1525,14 @@ msgstr "Fax"
 
 #. Default: Close
 #: templates/snippet-popups.pt:77 templates/snippet-popups.pt:312
-#: templates/snippet-popups.pt:373 templates/snippet-popups.pt:535
-#: templates/snippet-popups.pt:647 templates/snippet-popups.pt:701
+#: templates/snippet-popups.pt:373 templates/snippet-popups.pt:539
+#: templates/snippet-popups.pt:651 templates/snippet-popups.pt:705
 msgid "close"
 msgstr "Close"
 
 #. Default: Okay
 #: templates/snippet-popups.pt:126 templates/snippet-popups.pt:149
-#: templates/snippet-popups.pt:174 templates/snippet-popups.pt:1190
+#: templates/snippet-popups.pt:174 templates/snippet-popups.pt:1194
 msgid "okay"
 msgstr "Okay"
 
@@ -1594,20 +1594,20 @@ msgid "password-confirm"
 msgstr "Password (confirm)"
 
 #. Default: Error:
-#: templates/snippet-popups.pt:299 templates/snippet-popups.pt:498
-#: templates/snippet-popups.pt:516
+#: templates/snippet-popups.pt:299 templates/snippet-popups.pt:502
+#: templates/snippet-popups.pt:520
 msgid "error"
 msgstr "Error:"
 
 #. Default: Info:
 #. Default: Info
-#: templates/snippet-popups.pt:306 templates/snippet-popups.pt:505
-#: templates/snippet-popups.pt:528 templates/content.pt:23
+#: templates/snippet-popups.pt:306 templates/snippet-popups.pt:509
+#: templates/snippet-popups.pt:532 templates/content.pt:23
 msgid "info"
 msgstr "Info:"
 
 #. Default: Register
-#: templates/snippet-popups.pt:311 templates/snippet-popups.pt:534
+#: templates/snippet-popups.pt:311 templates/snippet-popups.pt:538
 msgid "register"
 msgstr "Register"
 
@@ -1670,205 +1670,210 @@ msgstr "Password Strength"
 msgid "password_strength"
 msgstr "very weak"
 
+#. Default: Solve this captcha
+#: templates/snippet-popups.pt:481
+msgid "captcha"
+msgstr "Solve this captcha"
+
 #. Default: Success:
 #. Default: Success
-#: templates/snippet-popups.pt:491 templates/snippet-popups.pt:522
+#: templates/snippet-popups.pt:495 templates/snippet-popups.pt:526
 #: templates/content.pt:36
 msgid "success"
 msgstr "Success:"
 
 #. Default: Writing a new message
-#: templates/snippet-popups.pt:607 templates/snippet-popups.pt:660
+#: templates/snippet-popups.pt:611 templates/snippet-popups.pt:664
 msgid "writing_message"
 msgstr "Writing a new message"
 
 #. Default: Error:
-#: templates/snippet-popups.pt:627 templates/snippet-popups.pt:690
+#: templates/snippet-popups.pt:631 templates/snippet-popups.pt:694
 msgid "error:"
 msgstr "Error:"
 
 #. Default: Success:
-#: templates/snippet-popups.pt:632 templates/snippet-popups.pt:695
+#: templates/snippet-popups.pt:636 templates/snippet-popups.pt:699
 msgid "success:"
 msgstr "Success:"
 
 #. Default: Author
-#: templates/snippet-popups.pt:639
+#: templates/snippet-popups.pt:643
 msgid "author"
 msgstr "Author"
 
 #. Default: Date
-#: templates/snippet-popups.pt:641 templates/review-reputation.pt:22
+#: templates/snippet-popups.pt:645 templates/review-reputation.pt:22
 msgid "date"
 msgstr "Date"
 
 #. Default: Send News
-#: templates/snippet-popups.pt:646
+#: templates/snippet-popups.pt:650
 msgid "send_news"
 msgstr "Send News"
 
 #. Default: Send Notifcation
-#: templates/snippet-popups.pt:700
+#: templates/snippet-popups.pt:704
 msgid "send_notification"
 msgstr "Send Notifcation"
 
 #. Default: Please enter your title here:
-#: templates/snippet-popups.pt:719
+#: templates/snippet-popups.pt:723
 msgid "please_enter_title"
 msgstr "Your title here:"
 
 #. Default: Please enter a short-description or question here:
-#: templates/snippet-popups.pt:724
+#: templates/snippet-popups.pt:728
 msgid "please_enter_info"
 msgstr "Question for the topic:"
 
 #. Default: Please enter the full description here:
-#: templates/snippet-popups.pt:729
+#: templates/snippet-popups.pt:733
 msgid "please_enter_long_info"
 msgstr "Full description:"
 
 #. Default: Language of the discussion:
-#: templates/snippet-popups.pt:736
+#: templates/snippet-popups.pt:740
 msgid "please_select_language_for_topic"
 msgstr "Language of the discussion:"
 
 #. Default: Is the topic available for the public?
-#: templates/snippet-popups.pt:760
+#: templates/snippet-popups.pt:764
 msgid "is_topic_available_for_public"
 msgstr "Is the topic available for the public?"
 
 #. Default: Is the topic read only?
-#: templates/snippet-popups.pt:775
+#: templates/snippet-popups.pt:779
 msgid "is_topic_read_only"
 msgstr "Is the topic read only?"
 
 #. Default: Selecting a reason
-#: templates/snippet-popups.pt:810
+#: templates/snippet-popups.pt:814
 msgid "select-reason"
 msgstr "Selecting a reason"
 
 #. Default: The statement under consideration is as follows
-#: templates/snippet-popups.pt:813
+#: templates/snippet-popups.pt:817
 msgid "statement_under_consideration_is"
 msgstr "The statement under consideration is as follows"
 
 #. Default: The argument under consideration is as follows
-#: templates/snippet-popups.pt:814 templates/snippet-popups.pt:892
+#: templates/snippet-popups.pt:818 templates/snippet-popups.pt:896
 msgid "argument_under_consideration_is"
 msgstr "The argument under consideration is as follows"
 
 #. Default: The text needs to be revised.
-#: templates/snippet-popups.pt:821
+#: templates/snippet-popups.pt:825
 msgid "text_need_to_be_revised"
 msgstr "The text needs to be revised."
 
 #. Default: This statement is off topic or irrelevant.
-#: templates/snippet-popups.pt:831
+#: templates/snippet-popups.pt:835
 msgid "statement_offtopic_or_irrelevant"
 msgstr "This statement is off topic or irrelevant."
 
 #. Default: This argument is off topic or irrelevant.
-#: templates/snippet-popups.pt:835
+#: templates/snippet-popups.pt:839
 msgid "argument_offtopic_or_irrelevant"
 msgstr "This argument is off topic or irrelevant."
 
 #. Default: This statement is harmful or abusive.
-#: templates/snippet-popups.pt:843
+#: templates/snippet-popups.pt:847
 msgid "statement_harmful"
 msgstr "This statement is harmful or abusive."
 
 #. Default: This argument is harmful or abusive.
-#: templates/snippet-popups.pt:845
+#: templates/snippet-popups.pt:849
 msgid "argument_harmful"
 msgstr "This argument is harmful or abusive."
 
 #. Default: This statement is a duplicate.
-#: templates/snippet-popups.pt:854
+#: templates/snippet-popups.pt:858
 msgid "statement_duplicate"
 msgstr "Statement is a duplicate."
 
 #. Default: This statement should be merged.
-#: templates/snippet-popups.pt:862
+#: templates/snippet-popups.pt:866
 msgid "statement_merge"
 msgstr "This statement should be merged into several messages."
 
 #. Default: This statement has more than one message.
-#: templates/snippet-popups.pt:870
+#: templates/snippet-popups.pt:874
 msgid "statement_split"
 msgstr "This statement has more than one message."
 
 #. Default: Reporting (parts of) an argument
-#: templates/snippet-popups.pt:889
+#: templates/snippet-popups.pt:893
 msgid "reporting_parts_argument"
 msgstr "Reporting (parts of) an argument"
 
 #. Default: Please choose which part of the argument you want to report
-#: templates/snippet-popups.pt:894
+#: templates/snippet-popups.pt:898
 msgid "please_choose_part_to_report"
 msgstr "Please choose which part of the argument you want to report"
 
 #. Default: Report
-#: templates/snippet-popups.pt:901
+#: templates/snippet-popups.pt:905
 msgid "report"
 msgstr "Report"
 
 #. Default: Report the whole argument.
-#: templates/snippet-popups.pt:913
+#: templates/snippet-popups.pt:917
 msgid "report_whole_argument"
 msgstr "Report the whole argument."
 
 #. Default: Split Statements
-#: templates/snippet-popups.pt:979 templates/snippet-popups.pt:1004
+#: templates/snippet-popups.pt:983 templates/snippet-popups.pt:1008
 msgid "split_statement"
 msgstr "Split Statements"
 
 #. Default: Please enter the splitted version of the statement; one per input
 #. field.
-#: templates/snippet-popups.pt:982
+#: templates/snippet-popups.pt:986
 msgid "split_multiple_statements"
 msgstr ""
 "Please enter the splitted version of the statement; one per input field."
 
 #. Default: Submit
-#: templates/snippet-popups.pt:990 templates/snippet-popups.pt:1037
+#: templates/snippet-popups.pt:994 templates/snippet-popups.pt:1041
 msgid "submit"
 msgstr "Submit"
 
 #. Default: The selected statement is already splitted in several parts, like
 #. the list illustrates below. Do you want to continue with a new split?
-#: templates/snippet-popups.pt:1007
+#: templates/snippet-popups.pt:1011
 msgid "split_multiple_statements_of_pgroup"
 msgstr ""
 "The selected statement is already splitted in several parts, like the list "
 "illustrates below. Do you want to split the statements totally?"
 
 #. Default: The statement
-#: templates/snippet-popups.pt:1008 templates/snippet-popups.pt:1055
+#: templates/snippet-popups.pt:1012 templates/snippet-popups.pt:1059
 msgid "the_statement"
 msgstr "The statement"
 
 #. Default: consist out of
-#: templates/snippet-popups.pt:1008 templates/snippet-popups.pt:1055
+#: templates/snippet-popups.pt:1012 templates/snippet-popups.pt:1059
 msgid "consist_out_of"
 msgstr "consist out of"
 
 #. Default: Yes
-#: templates/snippet-popups.pt:1012 templates/snippet-popups.pt:1059
+#: templates/snippet-popups.pt:1016 templates/snippet-popups.pt:1063
 msgid "yes"
 msgstr "Yes"
 
 #. Default: No
-#: templates/snippet-popups.pt:1013 templates/snippet-popups.pt:1060
+#: templates/snippet-popups.pt:1017 templates/snippet-popups.pt:1064
 msgid "no"
 msgstr "No"
 
 #. Default: Merge Statement
-#: templates/snippet-popups.pt:1026 templates/snippet-popups.pt:1051
+#: templates/snippet-popups.pt:1030 templates/snippet-popups.pt:1055
 msgid "merge_statement"
 msgstr "Merge Statement"
 
 #. Default: Please select the statements, that should be concatenated.
-#: templates/snippet-popups.pt:1029
+#: templates/snippet-popups.pt:1033
 msgid "merge_multiple_statements"
 msgstr ""
 "Please select the statements, that should be concatenated with the given "
@@ -1877,7 +1882,7 @@ msgstr ""
 #. Default: The selected statement already consists out of multiple statement.
 #. Further on the several statements are listed. Do you want to continue with
 #. the merge?
-#: templates/snippet-popups.pt:1054
+#: templates/snippet-popups.pt:1058
 msgid "merge_multiple_statements_of_pgroup"
 msgstr ""
 "The selected statement already consists out of multiple statement. Further "
@@ -1885,56 +1890,56 @@ msgstr ""
 "to one single statement?"
 
 #. Default: Caution
-#: templates/snippet-popups.pt:1074
+#: templates/snippet-popups.pt:1078
 msgid "caution"
 msgstr "Caution"
 
 #. Default: Do you really want to disassociate yourself from your content? This
 #. step is irreversible! Subsequently you will not be the author of this
 #. statement anymore!
-#: templates/snippet-popups.pt:1079
+#: templates/snippet-popups.pt:1083
 msgid "do_you_really_disassociate_step_irreversible"
 msgstr ""
 "Do you really want to disassociate yourself from your content? This step is "
 "irreversible! Subsequently you will not be the author of this"
 
 #. Default: Please choose a step to jump in
-#: templates/snippet-popups.pt:1096
+#: templates/snippet-popups.pt:1100
 msgid "choose_a_step_to_jump_in"
 msgstr "Please choose a step to jump in"
 
 #. Default: Below you find a list with all arguments, where your selected text
 #. is used:
-#: templates/snippet-popups.pt:1099
+#: templates/snippet-popups.pt:1103
 msgid "below_you_will_find_list_with_jump_arguments"
 msgstr ""
 "Below you find a list with all arguments, where your selected text is used:"
 
 #. Default: References
-#: templates/snippet-popups.pt:1116
+#: templates/snippet-popups.pt:1120
 msgid "refereces"
 msgstr "References"
 
 #. Default: Statement is a cite from a website like a newspaper article, which
 #. underpins the opinion. The source is the website as link.
-#: templates/snippet-popups.pt:1124
+#: templates/snippet-popups.pt:1128
 msgid "statement_reference_definition"
 msgstr ""
 "Statement is a cite from a website like a newspaper article, which underpins "
 "the opinion. The source is the website as link."
 
 #. Default: Source
-#: templates/snippet-popups.pt:1133
+#: templates/snippet-popups.pt:1137
 msgid "source"
 msgstr "Source"
 
 #. Default: Please choose a statement for your reference!
-#: templates/snippet-popups.pt:1138
+#: templates/snippet-popups.pt:1142
 msgid "please_choose_a_reference"
 msgstr "Please choose a statement for your reference!"
 
 #. Default: Add reference
-#: templates/snippet-popups.pt:1153
+#: templates/snippet-popups.pt:1157
 msgid "add_reference"
 msgstr "Add reference"
 
@@ -2024,34 +2029,34 @@ msgid "discussion_stat"
 msgstr "Discussion Statistics"
 
 #. Default: Statements posted
-#: templates/settings.pt:172 templates/finish.pt:37 templates/user.pt:50
+#: templates/settings.pt:172 templates/exit.pt:37 templates/user.pt:50
 msgid "statements_posted"
 msgstr "Statements posted"
 
 #. Default: Edits done
-#: templates/settings.pt:180 templates/finish.pt:41 templates/user.pt:54
+#: templates/settings.pt:180 templates/exit.pt:41 templates/user.pt:54
 msgid "edits_done"
 msgstr "Edits done"
 
 #. Default: Clicks for Arguments
-#: templates/settings.pt:187 templates/finish.pt:66
+#: templates/settings.pt:187 templates/exit.pt:66
 msgid "discussion_clicked_statements"
 msgstr "Clicked Arguments"
 
 #. Default: Clicks for Statements
-#: templates/settings.pt:195 templates/finish.pt:70
+#: templates/settings.pt:195 templates/exit.pt:70
 msgid "discussion_clicked_arguments"
 msgstr "Clicked Statements"
 
 #. Default: Votes for Statements
 #. Default: Votes for Arguments
-#: templates/settings.pt:208 templates/finish.pt:58 templates/user.pt:66
+#: templates/settings.pt:208 templates/exit.pt:58 templates/user.pt:66
 msgid "discussion_votes_statements"
 msgstr "Marked Arguments"
 
 #. Default: Votes for Arguments
 #. Default: Votes for Statements
-#: templates/settings.pt:216 templates/finish.pt:62 templates/user.pt:62
+#: templates/settings.pt:216 templates/exit.pt:62 templates/user.pt:62
 msgid "discussion_votes_arguments"
 msgstr "Marked Statements"
 
@@ -2132,49 +2137,6 @@ msgstr "Documentation"
 msgid "where_do_i_find_it"
 msgstr "Where do I find it?"
 
-#. Default: Thank you
-#: templates/finish.pt:6
-msgid "thank_you"
-msgstr "Thank you"
-
-#. Default: Your participation in this discussion was saved and will be used
-#. for evaluation later. If you have any questions, please do not hesitat to
-#: templates/finish.pt:8
-msgid "finish_text"
-msgstr ""
-"Your participation in this discussion was saved and will be used for "
-"evaluation later. If you have any questions, please do not hesitat to"
-
-#. Default: contact us
-#: templates/finish.pt:9
-msgid "contact_us"
-msgstr "contact us"
-
-#. Default: Todays Summary
-#: templates/finish.pt:30
-msgid "todays_summary"
-msgstr "Todays Summary"
-
-#. Default: Statements reported
-#: templates/finish.pt:45
-msgid "statements_reported"
-msgstr "Statements reported"
-
-#. Default: Collected reputation
-#: templates/finish.pt:50
-msgid "reputation_colltected"
-msgstr "Collected reputation"
-
-#. Default: Let's go home!
-#: templates/finish.pt:86
-msgid "lets_go_home"
-msgstr "Let's go home"
-
-#. Default: Back to the discussion!
-#: templates/finish.pt:89
-msgid "back_to_the_discussion"
-msgstr "Back to the discussion"
-
 #. Default: Your Reputation
 #: templates/review-reputation.pt:6
 msgid "your_reputation"
@@ -2231,7 +2193,7 @@ msgstr "Title"
 
 #. Default: Statements
 #: templates/discussions.pt:31 templates/discussions.pt:100
-#: templates/content.pt:179
+#: templates/content.pt:178
 msgid "statements"
 msgstr "Statements"
 
@@ -2385,6 +2347,49 @@ msgstr "Please reload the page."
 msgid "request_success"
 msgstr "Your request succeded!"
 
+#. Default: Thank you
+#: templates/exit.pt:6
+msgid "thank_you"
+msgstr "Thank you"
+
+#. Default: Your participation in this discussion was saved and will be used
+#. for evaluation later. If you have any questions, please do not hesitat to
+#: templates/exit.pt:8
+msgid "finish_text"
+msgstr ""
+"Your participation in this discussion was saved and will be used for "
+"evaluation later. If you have any questions, please do not hesitat to"
+
+#. Default: contact us
+#: templates/exit.pt:9
+msgid "contact_us"
+msgstr "contact us"
+
+#. Default: Todays Summary
+#: templates/exit.pt:30
+msgid "todays_summary"
+msgstr "Todays Summary"
+
+#. Default: Statements reported
+#: templates/exit.pt:45
+msgid "statements_reported"
+msgstr "Statements reported"
+
+#. Default: Collected reputation
+#: templates/exit.pt:50
+msgid "reputation_colltected"
+msgstr "Collected reputation"
+
+#. Default: Let's go home!
+#: templates/exit.pt:86
+msgid "lets_go_home"
+msgstr "Let's go home"
+
+#. Default: Back to the discussion!
+#: templates/exit.pt:89
+msgid "back_to_the_discussion"
+msgstr "Back to the discussion"
+
 #. Default: Personal User Page
 #: templates/user.pt:6
 msgid "personal_user_page"
@@ -2431,52 +2436,52 @@ msgid "discussion_is_read_only"
 msgstr "No statements can be set for this discussion!"
 
 #. Default: Start
-#: templates/content.pt:158
+#: templates/content.pt:157
 msgid "start"
 msgstr "Start"
 
 #. Default: Now
-#: templates/content.pt:160
+#: templates/content.pt:159
 msgid "now"
 msgstr "Now"
 
 #. Default: Complete View
-#: templates/content.pt:175
+#: templates/content.pt:174
 msgid "complete_view"
 msgstr "Complete View"
 
 #. Default: Default View
-#: templates/content.pt:176
+#: templates/content.pt:175
 msgid "default_view"
 msgstr "Default View"
 
 #. Default: Labels
-#: templates/content.pt:177
+#: templates/content.pt:176
 msgid "labels"
 msgstr "Lables"
 
 #. Default: Positions
-#: templates/content.pt:178
+#: templates/content.pt:177
 msgid "positions"
 msgstr "Positions"
 
 #. Default: My path
-#: templates/content.pt:180 templates/content.pt:181
+#: templates/content.pt:179 templates/content.pt:180
 msgid "my_path"
 msgstr "My path"
 
 #. Default: My statements
-#: templates/content.pt:182
+#: templates/content.pt:181
 msgid "my_statements"
 msgstr "My statements"
 
 #. Default: Supports
-#: templates/content.pt:183
+#: templates/content.pt:182
 msgid "supports_on_my_statements"
 msgstr "Supports"
 
 #. Default: Attacks
-#: templates/content.pt:184
+#: templates/content.pt:183
 msgid "attacks_on_my_statements"
 msgstr "Attacks"
 

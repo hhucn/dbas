@@ -14,7 +14,6 @@ def init(config):
 def main(global_config, **settings):
     config = Configurator(settings=settings)
     init(config)
-    config.add_route('api-token', 'api-token/', permission='admin')
     return config.make_wsgi_app()
 
 
@@ -23,4 +22,4 @@ def includeme(config):
 
 
 if __name__ == "__main__":
-    logger("i", "want", "in too")
+    logger("i", "in too")

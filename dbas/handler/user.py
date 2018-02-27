@@ -4,14 +4,13 @@ Handler for user-accounts
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import json
 import random
 import uuid
 from datetime import date, timedelta
 
 import arrow
 import transaction
-from sqlalchemy import and_
+from typing import Tuple
 
 import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
@@ -54,7 +53,6 @@ moodlist = ['Accepted', 'Accomplished', 'Aggravated', 'Alone', 'Amused', 'Angry'
 # https://en.wikipedia.org/wiki/List_of_animal_names
 # list = ';
 # $.each($($('table')[3]).find('tbody td:first-child'), function(){if ($(this).text().length > 2 ) list += ', ' + '"' + $(this).text().replace(' (list) ', ') + '"'});
-# console.log(list)
 animallist = ['Aardvark', 'Albatross', 'Alligator', 'Alpaca', 'Ant', 'Anteater', 'Antelope', 'Ape', 'Armadillo',
               'Badger', 'Barracuda', 'Bat', 'Bear', 'Beaver', 'Bee', 'Bird', 'Bison', 'Boar', 'Buffalo', 'Butterfly',
               'Camel', 'Caribou', 'Cassowary', 'Cat', 'Caterpillar', 'Cattle', 'Chamois', 'Cheetah', 'Chicken',
@@ -131,31 +129,32 @@ foodlist = ['Acorn Squash', 'Adobo', 'Aioli', 'Alfredo Sauce', 'Almond Paste', '
             'Won Ton Skins', 'Worcestershire Sauce', 'Yogurt', 'Zinfandel Wine']
 
 
-def update_last_action(nick):
+def update_last_action(user) -> bool:
     """
     Updates the last action field of the user-row in database. Returns boolean if the users session
     is older than one hour or True, when she wants to keep the login
 
-    :param nick: User.nickname
+    :param user: User in refactored fns, else nickname
     :return: Boolean
     """
-    logger('User', 'update_last_action', 'main')
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nick)).first()
-    if not db_user:
+    logger('User', 'main')
+    if not user:
         return False
-    db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
+    elif isinstance(user, str):  # TODO remove this check after refactoring
+        user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    db_settings = DBDiscussionSession.query(Settings).get(user.uid)
 
     timeout_in_sec = 60 * 60 * 24 * 7
 
     # check difference of
-    diff_action = get_now() - db_user.last_action
-    diff_login = get_now() - db_user.last_login
+    diff_action = get_now() - user.last_action
+    diff_login = get_now() - user.last_login
     diff_action = diff_action.seconds + diff_action.days * 24 * 60 * 60
     diff_login = diff_login.seconds + diff_login.days * 24 * 60 * 60
 
     diff = diff_action if diff_action < diff_login else diff_login
     should_log_out = diff > timeout_in_sec and not db_settings.keep_logged_in
-    db_user.update_last_action()
+    user.update_last_action()
 
     transaction.commit()
     return should_log_out
@@ -179,7 +178,7 @@ def refresh_public_nickname(user):
         second = biglist[random.randint(0, len(biglist) - 1)]
         nick = first + ' ' + second
 
-    logger('User', 'refresh_public_nickname', user.public_nickname + ' -> ' + nick)
+    logger('User', user.public_nickname + ' -> ' + nick)
     user.set_public_nickname(nick)
 
     return nick
@@ -194,7 +193,7 @@ def is_in_group(nickname, groupname):
     :return: Boolean
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
-    logger('User', 'is user in: ' + groupname, 'main')
+    logger('User', 'main')
     return db_user and db_user.groups.name == groupname
 
 
@@ -206,7 +205,7 @@ def is_admin(nickname):
     :return: true, if user is admin, false otherwise
     """
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).join(Group).first()
-    logger('User', 'is_admin', 'main')
+    logger('User', 'main')
     return db_user and db_user.groups.name == 'admins'
 
 
@@ -218,6 +217,7 @@ def get_public_data(nickname, lang):
     :param lang:
     :return: dict()
     """
+    logger('User', 'User {}'.format(nickname))
     return_dict = dict()
     current_user = get_user_by_private_or_public_nickname(nickname)
 
@@ -254,22 +254,22 @@ def get_public_data(nickname, lang):
         labels_edit_30.append(ts)
 
         db_clicks_statements = DBDiscussionSession.query(ClickedStatement).filter(
-            and_(ClickedStatement.author_uid == current_user.uid,
-                 ClickedStatement.timestamp >= begin,
-                 ClickedStatement.timestamp < end)).all()
+            ClickedStatement.author_uid == current_user.uid,
+            ClickedStatement.timestamp >= begin,
+            ClickedStatement.timestamp < end).all()
         db_clicks_arguments = DBDiscussionSession.query(ClickedArgument).filter(
-            and_(ClickedArgument.author_uid == current_user.uid,
-                 ClickedArgument.timestamp >= begin,
-                 ClickedArgument.timestamp < end)).all()
+            ClickedArgument.author_uid == current_user.uid,
+            ClickedArgument.timestamp >= begin,
+            ClickedArgument.timestamp < end).all()
         clicks = len(db_clicks_statements) + len(db_clicks_arguments)
         data_decision_30.append(clicks)
         if days_diff < 6:
             labels_decision_7.append(ts)
             data_decision_7.append(clicks)
 
-        statements, edits = get_textversions(nickname, lang, begin, end)
-        data_statement_30.append(len(statements))
-        data_edit_30.append(len(edits))
+        get_tv_dict = get_textversions(current_user, lang, begin, end)
+        data_statement_30.append(len(get_tv_dict.get('statements', [])))
+        data_edit_30.append(len(get_tv_dict.get('edits', [])))
 
     return_dict['labels1'] = labels_decision_7
     return_dict['labels2'] = labels_decision_30
@@ -311,7 +311,7 @@ def get_reviews_of(user, only_today):
     return len(db_edits) + len(db_deletes) + len(db_optimizations) + len(db_duplicates)
 
 
-def get_count_of_statements(user, only_edits, limit_on_today=False):
+def __get_count_of_statements(user, only_edits, limit_on_today=False):
     """
     Returns the count of statements of the user
 
@@ -326,74 +326,82 @@ def get_count_of_statements(user, only_edits, limit_on_today=False):
     edit_count = 0
     statement_count = 0
     db_textversions = DBDiscussionSession.query(TextVersion).filter_by(author_uid=user.uid)
+
     if limit_on_today:
         today = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
         db_textversions = db_textversions.filter(TextVersion.timestamp >= today)
     db_textversions = db_textversions.all()
 
     for tv in db_textversions:
-        db_root_version = DBDiscussionSession.query(TextVersion).filter_by(
-            statement_uid=tv.statement_uid).first()  # TODO #432
+        db_root_version = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=tv.statement_uid).first()
         if db_root_version.uid < tv.uid:
             edit_count += 1
         else:
             statement_count += 1
 
-    return edit_count if only_edits else statement_count
+    if only_edits:
+        return edit_count
+    else:
+        return statement_count
 
 
-def get_count_of_votes_of_user(user, limit_on_today=False):
+def get_statement_count_of(db_user: User, only_today: bool = False) -> int:
+    return __get_count_of_statements(db_user, False, only_today)
+
+
+def get_edit_count_of(db_user: User, only_today: bool = False) -> int:
+    return __get_count_of_statements(db_user, True, only_today)
+
+
+def get_mark_count_of(db_user: User, limit_on_today: bool = False):
     """
     Returns the count of marked ones of the user
 
-    :param user: User
+    :param db_user: User
     :param limit_on_today: Boolean
     :return: Int, Int
     """
-    if not user:
+    if not db_user:
         return (0, 0)
 
-    db_arg = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.author_uid == user.uid)
-    db_stat = DBDiscussionSession.query(MarkedStatement).filter(MarkedStatement.author_uid == user.uid)
+    db_arg = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.author_uid == db_user.uid)
+    db_stat = DBDiscussionSession.query(MarkedStatement).filter(MarkedStatement.author_uid == db_user.uid)
 
     if limit_on_today:
         today = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
         db_arg = db_arg.filter(MarkedArgument.timestamp >= today)
         db_stat = db_stat.filter(MarkedStatement.timestamp >= today)
 
-    return len(db_arg.all()), len(db_stat.all())
+    return db_arg.count(), db_stat.count()
 
 
-def get_count_of_clicks(user, limit_on_today=False):
+def get_click_count_of(db_user: User, limit_on_today: bool = False) -> Tuple[int, int]:
     """
     Returns the count of clicks of the user
 
-    :param user: User
+    :param db_user: User
     :param limit_on_today: Boolean
     :return: Int, Int
     """
-    if not user:
+    if not db_user:
         return (0, 0)
 
-    db_arg = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == user.uid)
-    db_stat = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == user.uid)
+    db_arg = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.author_uid == db_user.uid)
+    db_stat = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.author_uid == db_user.uid)
 
     if limit_on_today:
         today = arrow.utcnow().to('Europe/Berlin').format('YYYY-MM-DD')
         db_arg = db_arg.filter(ClickedArgument.timestamp >= today)
         db_stat = db_stat.filter(ClickedStatement.timestamp >= today)
 
-    db_arg = db_arg.all()
-    db_stat = db_stat.all()
-
-    return len(db_arg), len(db_stat)
+    return db_arg.count(), db_stat.count()
 
 
-def get_textversions(public_nickname, lang, timestamp_after=None, timestamp_before=None):
+def get_textversions(db_user: User, lang: str, timestamp_after=None, timestamp_before=None):
     """
     Returns all textversions, were the user was author
 
-    :param public_nickname: User.public_nickname
+    :param db_user: User
     :param lang: ui_locales
     :param timestamp_after: Arrow or None
     :param timestamp_before: Arrow or None
@@ -402,20 +410,14 @@ def get_textversions(public_nickname, lang, timestamp_after=None, timestamp_befo
     statement_array = []
     edit_array = []
 
-    db_user = get_user_by_private_or_public_nickname(public_nickname)
-
-    if not db_user:
-        logger('User', 'get_textversions', 'no user found', error=True)
-        return statement_array, edit_array
-
     if not timestamp_after:
         timestamp_after = arrow.get('1970-01-01').format('YYYY-MM-DD')
     if not timestamp_before:
         timestamp_before = arrow.utcnow().replace(days=+1).format('YYYY-MM-DD')
 
-    db_edits = DBDiscussionSession.query(TextVersion).filter(and_(TextVersion.author_uid == db_user.uid,
-                                                                  TextVersion.timestamp >= timestamp_after,
-                                                                  TextVersion.timestamp < timestamp_before)).all()
+    db_edits = DBDiscussionSession.query(TextVersion).filter(TextVersion.author_uid == db_user.uid,
+                                                             TextVersion.timestamp >= timestamp_after,
+                                                             TextVersion.timestamp < timestamp_before).all()
 
     for edit in db_edits:
         db_root_version = DBDiscussionSession.query(TextVersion).filter_by(
@@ -430,23 +432,22 @@ def get_textversions(public_nickname, lang, timestamp_after=None, timestamp_befo
         else:
             edit_array.append(edit_dict)
 
-    return statement_array, edit_array
+    return {
+        'statements': statement_array,
+        'edits': edit_array
+    }
 
 
-def get_marked_elements_of_user(nickname, is_argument, lang):
+def get_marked_elements_of(db_user: User, is_argument: bool, lang: str):
     """
     Get all marked arguments/statements of the user
 
-    :param nickname: nickname
+    :param db_user: User
     :param is_argument: Boolean
     :param lang: uid_locales
     :return: [{},...]
     """
     return_array = []
-
-    db_user = get_user_by_private_or_public_nickname(nickname)
-    if not db_user:
-        return return_array
 
     if is_argument:
         db_votes = DBDiscussionSession.query(MarkedArgument).filter_by(author_uid=db_user.uid).all()
@@ -468,52 +469,38 @@ def get_marked_elements_of_user(nickname, is_argument, lang):
     return return_array
 
 
-def get_arg_clicks_of_user(nickname, lang):
-    return __get_clicks_of_user(nickname, True, lang)
-
-
-def get_stmt_clicks_of_user(nickname, lang):
-    return __get_clicks_of_user(nickname, False, lang)
-
-
-def __get_clicks_of_user(nickname, is_argument, lang):
+def get_clicked_elements_of(db_user: User, is_argument: bool, lang: str) -> list:
     """
-    Returs array with all clicks done by the user
+    Returns array with all clicked elements by the user. Each element is a dict with information like the uid,
+    timestamp, up_Vote, validity, the clicked uid and content of the clicked element.
 
-    :param nickname: user.nickname
+    :param db_user: User
     :param is_argument: Boolean
     :param lang: ui_locales
     :return: [{},...]
     """
     return_array = []
+    db_type = ClickedArgument if is_argument else ClickedStatement
+    db_clicks = DBDiscussionSession.query(db_type).filter_by(author_uid=db_user.uid).all()
 
-    db_user = get_user_by_private_or_public_nickname(nickname)
-    if not db_user:
-        return return_array
-
-    if is_argument:
-        db_votes = DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=db_user.uid).all()
-    else:
-        db_votes = DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=db_user.uid).all()
-
-    for vote in db_votes:
-        vote_dict = dict()
-        vote_dict['uid'] = str(vote.uid)
-        vote_dict['timestamp'] = sql_timestamp_pretty_print(vote.timestamp, lang)
-        vote_dict['is_up_vote'] = str(vote.is_up_vote)
-        vote_dict['is_valid'] = str(vote.is_valid)
+    for click in db_clicks:
+        click_dict = dict()
+        click_dict['uid'] = click.uid
+        click_dict['timestamp'] = sql_timestamp_pretty_print(click.timestamp, lang)
+        click_dict['is_up_vote'] = click.is_up_vote
+        click_dict['is_valid'] = click.is_valid
         if is_argument:
-            vote_dict['argument_uid'] = str(vote.argument_uid)
-            vote_dict['content'] = get_text_for_argument_uid(vote.argument_uid, lang)
+            click_dict['argument_uid'] = click.argument_uid
+            click_dict['content'] = get_text_for_argument_uid(click.argument_uid, lang)
         else:
-            vote_dict['statement_uid'] = str(vote.statement_uid)
-            vote_dict['content'] = get_text_for_statement_uid(vote.statement_uid)
-        return_array.append(vote_dict)
+            click_dict['statement_uid'] = click.statement_uid
+            click_dict['content'] = get_text_for_statement_uid(click.statement_uid)
+        return_array.append(click_dict)
 
     return return_array
 
 
-def get_information_of(db_user, lang):
+def get_information_of(db_user: User, lang):
     """
     Returns public information of the given user
 
@@ -533,16 +520,16 @@ def get_information_of(db_user, lang):
     ret_dict['is_female'] = db_user.gender == 'f'
     ret_dict['is_neutral'] = db_user.gender != 'm' and db_user.gender != 'f'
 
-    arg_votes, stat_votes = get_count_of_votes_of_user(db_user, False)
+    arg_votes, stat_votes = get_mark_count_of(db_user, False)
     db_reviews_duplicate = DBDiscussionSession.query(ReviewDuplicate).filter_by(detector_uid=db_user.uid).all()
     db_reviews_edit = DBDiscussionSession.query(ReviewEdit).filter_by(detector_uid=db_user.uid).all()
     db_reviews_delete = DBDiscussionSession.query(ReviewDelete).filter_by(detector_uid=db_user.uid).all()
     db_reviews_optimization = DBDiscussionSession.query(ReviewOptimization).filter_by(detector_uid=db_user.uid).all()
     db_reviews = db_reviews_duplicate + db_reviews_edit + db_reviews_delete + db_reviews_optimization
 
-    statements, edits = get_textversions(db_user.public_nickname, lang)
-    ret_dict['statements_posted'] = len(statements)
-    ret_dict['edits_done'] = len(edits)
+    get_tv_dict = get_textversions(db_user, lang)
+    ret_dict['statements_posted'] = len(get_tv_dict.get('statements', []))
+    ret_dict['edits_done'] = len(get_tv_dict.get('edits', []))
     ret_dict['reviews_proposed'] = len(db_reviews)
     ret_dict['discussion_arg_votes'] = arg_votes
     ret_dict['discussion_stat_votes'] = stat_votes
@@ -552,36 +539,33 @@ def get_information_of(db_user, lang):
     return ret_dict
 
 
-def get_summary_of_today(nickname, lang):
+def get_summary_of_today(db_user: User) -> dict:
     """
-    Returns summary of todays actions
+    Returns summary of today's actions
 
     :param nickname: User.nickname
-    :param lang: ui_locales
     :return: dict()
     """
-    ret_dict = dict()
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-
     if not db_user:
-        return dict()
+        return {}
 
-    arg_votes, stat_votes = get_count_of_votes_of_user(db_user, True)
-    arg_clicks, stat_clicks = get_count_of_clicks(db_user, True)
-    reputation, tmp = get_reputation_of(nickname, True)
+    arg_votes, stat_votes = get_mark_count_of(db_user, True)
+    arg_clicks, stat_clicks = get_click_count_of(db_user, True)
+    reputation, tmp = get_reputation_of(db_user, True)
     timestamp = arrow.utcnow().to('Europe/Berlin')
+    timestamp.format('DD.MM.')
 
-    ret_dict['firstname'] = db_user.firstname
-    ret_dict['date'] = timestamp.format('YYYY-MM-DD') if lang == 'en' else timestamp.format('DD.MM.')
-    ret_dict['statements_posted'] = get_count_of_statements(db_user, False, True)
-    ret_dict['edits_done'] = get_count_of_statements(db_user, True, True)
-    ret_dict['discussion_arg_votes'] = arg_votes
-    ret_dict['discussion_stat_votes'] = stat_votes
-    ret_dict['discussion_arg_clicks'] = arg_clicks
-    ret_dict['discussion_stat_clicks'] = stat_clicks
-    ret_dict['statements_reported'] = get_reviews_of(db_user, True)
-    ret_dict['reputation_colltected'] = reputation
-
+    ret_dict = {
+        'firstname': db_user.firstname,
+        'statements_posted': get_statement_count_of(db_user, True),
+        'edits_done': get_edit_count_of(db_user, True),
+        'discussion_arg_votes': arg_votes,
+        'discussion_stat_votes': stat_votes,
+        'discussion_arg_clicks': arg_clicks,
+        'discussion_stat_clicks': stat_clicks,
+        'statements_reported': get_reviews_of(db_user, True),
+        'reputation_collected': reputation
+    }
     return ret_dict
 
 
@@ -596,35 +580,35 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
     :param lang: current language
     :return: an message and boolean for error and success
     """
-    logger('User', 'change_password', 'def')
+    logger('User', 'def')
     _t = Translator(lang)
 
     success = False
 
     # is the old password given?
     if not old_pw:
-        logger('User', 'change_password', 'old pwd is empty')
+        logger('User', 'old pwd is empty')
         message = _t.get(_.oldPwdEmpty)  # 'The old password field is empty.'
     # is the new password given?
     elif not new_pw:
-        logger('User', 'change_password', 'new pwd is empty')
+        logger('User', 'new pwd is empty')
         message = _t.get(_.newPwdEmtpy)  # 'The new password field is empty.'
     # is the confirmation password given?
     elif not confirm_pw:
-        logger('User', 'change_password', 'confirm pwd is empty')
+        logger('User', 'confirm pwd is empty')
         message = _t.get(_.confPwdEmpty)  # 'The password confirmation field is empty.'
     # is new password equals the confirmation?
     elif not new_pw == confirm_pw:
-        logger('User', 'change_password', 'new pwds not equal')
+        logger('User', 'new pwds not equal')
         message = _t.get(_.newPwdNotEqual)  # 'The new passwords are not equal'
     # is new old password equals the new one?
     elif old_pw == new_pw:
-        logger('User', 'change_password', 'pwds are the same')
+        logger('User', 'pwds are the same')
         message = _t.get(_.pwdsSame)  # 'The new and old password are the same'
     else:
         # is the old password valid?
         if not user.validate_password(old_pw):
-            logger('User', 'change_password', 'old password is wrong')
+            logger('User', 'old password is wrong')
             message = _t.get(_.oldPwdWrong)  # 'Your old password is wrong.'
         else:
             hashed_pw = password_handler.get_hashed_password(new_pw)
@@ -634,7 +618,7 @@ def change_password(user, old_pw, new_pw, confirm_pw, lang):
             DBDiscussionSession.add(user)
             transaction.commit()
 
-            logger('User', 'change_password', 'password was changed')
+            logger('User', 'password was changed')
             message = _t.get(_.pwdChanged)  # 'Your password was changed'
             success = True
 
@@ -656,7 +640,7 @@ def __create_new_user(user, ui_locales, oauth_provider='', oauth_provider_id='')
 
     _t = Translator(ui_locales)
     # creating a new user with hashed password
-    logger('User', '__create_new_user', 'Adding user ' + user['nickname'])
+    logger('User', 'Adding user ' + user['nickname'])
     hashed_password = password_handler.get_hashed_password(user['password'])
     newuser = User(firstname=user['firstname'],
                    surname=user['lastname'],
@@ -680,11 +664,11 @@ def __create_new_user(user, ui_locales, oauth_provider='', oauth_provider_id='')
     # sanity check, whether the user exists
     db_user = DBDiscussionSession.query(User).filter_by(nickname=user['nickname']).first()
     if db_user:
-        logger('User', '__create_new_user', 'New data was added with uid ' + str(db_user.uid))
+        logger('User', 'New data was added with uid ' + str(db_user.uid))
         success = _t.get(_.accountWasAdded).format(user['nickname'])
 
     else:
-        logger('User', '__create_new_user', 'New data was not added')
+        logger('User', 'New data was not added')
         info = _t.get(_.accoutErrorTryLateOrContant)
 
     return success, info, db_user
@@ -709,13 +693,13 @@ def set_new_user(mailer, firstname, lastname, nickname, gender, email, password,
 
     # does the group exists?
     if not db_group:
-        logger('User', 'set_new_user', 'Internal error occured')
+        logger('User', 'Internal error occured')
         return {'success': False, 'error': _tn.get(_.errorTryLateOrContant), 'user': None}
 
     # sanity check
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if db_user:
-        logger('User', 'set_new_user', 'User already exists')
+        logger('User', 'User already exists')
         return {'success': False, 'error': _tn.get(_.nickIsTaken), 'user': None}
 
     user = {
@@ -736,10 +720,10 @@ def set_new_user(mailer, firstname, lastname, nickname, gender, email, password,
         send_mail(mailer, subject, body, email, _tn.get_lang())
         send_welcome_notification(db_new_user.uid, _tn)
 
-        logger('User', 'set_new_user', 'set new user in db')
+        logger('User', 'set new user in db')
         return {'success': success, 'error': '', 'user': db_new_user}
 
-    logger('User', 'set_new_user', 'new user not found in db')
+    logger('User', 'new user not found in db')
     return {
         'success': False,
         'error': _tn.get(_.errorTryLateOrContant),
@@ -747,7 +731,7 @@ def set_new_user(mailer, firstname, lastname, nickname, gender, email, password,
     }
 
 
-def set_new_oauth_user(firstname, lastname, nickname, email, gender, id, provider, _tn):
+def set_new_oauth_user(firstname, lastname, nickname, email, gender, uid, provider, _tn):
     """
     Let's create a new user
 
@@ -756,7 +740,7 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, id, provide
     :param nickname: String
     :param email: String
     :param gender: String
-    :param id: String
+    :param uid: String
     :param provider: String
     :param _tn: Translator
     :return: Boolean, msg
@@ -766,21 +750,21 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, id, provide
 
     # does the group exists?
     if not db_group:
-        logger('User', 'set_new_oauth_user', 'Internal error occurred')
+        logger('User', 'Internal error occurred')
         return {'success': False, 'error': _tn.get(_.errorTryLateOrContant), 'user': None}
 
     # sanity check
     db_user = DBDiscussionSession.query(User).filter(User.oauth_provider == str(provider),
-                                                     User.oauth_provider_id == str(id)).first()
+                                                     User.oauth_provider_id == str(uid)).first()
     # login of oauth user
     if db_user:
-        logger('User', 'set_new_oauth_user', 'User already exists, she will login')
+        logger('User', 'User already exists, she will login')
         return {'success': True, 'error': '', 'user': db_user}
 
     # sanity check
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if db_user:
-        logger('User', 'set_new_oauth_user', 'User already exists')
+        logger('User', 'User already exists')
         return {'success': False, 'error': _tn.get(_.nickIsTaken), 'user': None}
 
     user = {
@@ -792,13 +776,13 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, id, provide
         'gender': gender,
         'db_group_uid': db_group.uid
     }
-    success, info, db_new_user = __create_new_user(user, _tn.get_lang(), oauth_provider=provider, oauth_provider_id=id)
+    success, info, db_new_user = __create_new_user(user, _tn.get_lang(), oauth_provider=provider, oauth_provider_id=uid)
 
     if db_new_user:
-        logger('User', 'set_new_oauth_user', 'set new user in db')
+        logger('User', 'set new user in db')
         return {'success': success, 'error': '', 'user': db_new_user}
 
-    logger('User', 'set_new_oauth_user', 'new user not found in db')
+    logger('User', 'new user not found in db')
 
     return {
         'success': False,
@@ -807,42 +791,36 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, id, provide
     }
 
 
-def get_users_with_same_opinion(uids, application_url, path, nickname, is_argument, is_attitude, is_reaction,
-                                is_position, ui_locales) -> dict:
+def get_users_with_same_opinion(uids, application_url, path, db_user, is_argument, is_attitude, is_reaction,
+                                is_position, db_lang) -> dict:
     """
     Based on current discussion step information about other users will be given
 
     :param uids: IDs of statements or argument for the information request
     :param application_url: url of the application
     :param path: current path of the user
-    :param nickname: users nickname
+    :param db_user: User
     :param is_argument: boolean, if the request is for an argument
     :param is_attitude: boolean, if the request is during the attitude step
     :param is_reaction: boolean, if the request is during the attitude step
     :param is_position: boolean, if the request is for a position
-    :param ui_locales: language of the discussion
+    :param db_lang: Language
     :rtype: dict
     :return: prepared collection with information about other users with the same opinion or an error
     """
     prepared_dict = dict()
-    _tn = Translator(ui_locales)
+    _tn = Translator(db_lang.ui_locales)
 
     if is_argument and is_reaction:
-        uids = json.loads(uids)
-        prepared_dict = get_user_and_opinions_for_argument(uids, nickname, ui_locales, application_url, path)
+        prepared_dict = get_user_and_opinions_for_argument(uids, db_user, db_lang.ui_locales, application_url, path)
     elif is_argument and not is_reaction:
-        prepared_dict = get_user_with_same_opinion_for_argument(uids, nickname, ui_locales, application_url)
+        prepared_dict = get_user_with_same_opinion_for_argument(uids[0], db_user, db_lang.ui_locales, application_url)
     elif is_position:
-        uids = json.loads(uids)
-        uids = uids if isinstance(uids, list) else [uids]
-        prepared_dict = get_user_with_same_opinion_for_statements(uids, True, nickname, ui_locales, application_url)
+        prepared_dict = get_user_with_same_opinion_for_statements(uids, True, db_user, db_lang.ui_locales, application_url)
     elif is_attitude:
-        prepared_dict = get_user_with_opinions_for_attitude(uids, nickname, ui_locales, application_url)
+        prepared_dict = get_user_with_opinions_for_attitude(uids[0], db_user, db_lang.ui_locales, application_url)
     elif not is_attitude:
-        uids = json.loads(uids)
-        uids = uids if isinstance(uids, list) else [uids]
-        prepared_dict = get_user_with_same_opinion_for_premisegroups(uids, nickname, ui_locales, application_url)
+        prepared_dict = get_user_with_same_opinion_for_premisegroups(uids, db_user, db_lang.ui_locales, application_url)
     prepared_dict['info'] = _tn.get(_.otherParticipantsDontHaveOpinionForThisStatement) if len(uids) == 0 else ''
-    prepared_dict['error'] = ''
 
     return prepared_dict

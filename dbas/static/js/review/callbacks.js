@@ -28,57 +28,54 @@ function ReviewCallbacks() {
 	 */
 	this.forReviewLock = function(jsonData, review_instance){
 		var parsedData = $.parseJSON(jsonData);
-		if (parsedData.error.length !== 0) {
-			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
-		} else if (parsedData.info.length !== 0) {
+		if (parsedData.info.length !== 0) {
 			setGlobalInfoHandler('Mhh!', parsedData.info);
-		} else {
-			if (parsedData.is_locked) {
-				review_instance.startCountdown();
-				$('#optimization-container').show();
-				$('#opti_ack').addClass('disabled');
-				$('#request-lock').hide();
-				$('#request-not-lock-text').hide();
-	            $('#send_edit').removeClass('disabled');
-
-				var review_argument_text = $('#reviewed-argument-text');
-				review_argument_text.attr('data-oem', review_argument_text.text());
-
-				$.each($('#argument-part-table').find('input'), function(){
-					var html_text = review_argument_text.html();
-					var pos = html_text.toLowerCase().indexOf($(this).attr('placeholder').toLowerCase());
-					var replacement = '<span id="text' + $(this).data('id') + '">' + $(this).attr('placeholder') + '</span>';
-					var repl_text = html_text.substr(0, pos) + replacement + html_text.substr(pos + $(this).attr('placeholder').length);
-					review_argument_text.html(repl_text);
-
-					$(this).focusin(function(){
-						$('#text' + $(this).data('id')).addClass('text-warning');
-					});
-
-					$(this).focusout(function(){
-						$('#text' + $(this).data('id')).removeClass('text-warning');
-					});
-
-					$(this).on('input',function(){
-						$('#text' + $(this).data('id')).text($(this).val());
-					});
-				});
-			} else {
-				setGlobalInfoHandler('Ohh!', _t(couldNotLock));
-			}
+			return true;
 		}
+		if (!parsedData.is_locked){
+			setGlobalInfoHandler('Ohh!', _t(couldNotLock));
+			return true;
+		}
+		review_instance.startCountdown();
+		$('#optimization-container').show();
+		$('#opti_ack').addClass('disabled');
+		$('#request-lock').hide();
+		$('#request-not-lock-text').hide();
+        $('#send_edit').removeClass('disabled');
+
+		var review_argument_text = $('#reviewed-argument-text');
+		review_argument_text.attr('data-oem', review_argument_text.text());
+
+		$.each($('#argument-part-table').find('input'), function(){
+			var html_text = review_argument_text.html();
+			var pos = html_text.toLowerCase().indexOf($(this).attr('placeholder').toLowerCase());
+			var replacement = '<span id="text' + $(this).data('id') + '">' + $(this).attr('placeholder') + '</span>';
+			var repl_text = html_text.substr(0, pos) + replacement + html_text.substr(pos + $(this).attr('placeholder').length);
+			review_argument_text.html(repl_text);
+
+			$(this).focusin(function(){
+				$('#text' + $(this).data('id')).addClass('text-warning');
+			});
+
+			$(this).focusout(function(){
+				$('#text' + $(this).data('id')).removeClass('text-warning');
+			});
+
+			$(this).on('input',function(){
+				$('#text' + $(this).data('id')).text($(this).val());
+			});
+		});
 	};
 
 	/**
 	 *
-	 * @param jsonData
+	 * @param data
 	 */
-	this.forReviewUnlock = function(jsonData){
-		var parsedData = $.parseJSON(jsonData);
+	this.forReviewUnlock = function(data){
 		if (parsedData.error.length !== 0) {
-			setGlobalErrorHandler(_t(ohsnap), parsedData.error);
+			setGlobalErrorHandler(_t(ohsnap), data.error);
 		} else if (parsedData.info.length !== 0) {
-			setGlobalInfoHandler('Mhh!', parsedData.info);
+			setGlobalInfoHandler('Mhh!', data.info);
 		// } else {
 		//	setGlobalSuccessHandler('Hurey', parsedData.success);
 		}

@@ -5,6 +5,9 @@ TODO
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
 """
+from typing import Union
+
+from dbas.database.discussion_model import Language
 from .de import de_lang
 from .en import en_lang
 from .keywords import Keywords
@@ -15,7 +18,7 @@ languages = {
 }
 
 
-def get_translation(sid, lang='en'):
+def get_translation(sid: Keywords, lang: Union[str, Language] = 'en') -> str:
     """
     Returns an localized string
 
@@ -23,6 +26,9 @@ def get_translation(sid, lang='en'):
     :param sid: a key identifier from .keywords.Keywords or the name of a key (for backwards compatibility reasons)
     :return: string
     """
+    if isinstance(lang, Language):
+        lang = lang.ui_locales
+
     if isinstance(sid, Keywords):
         if lang in languages:
             return languages[lang][sid]
@@ -37,7 +43,7 @@ class Translator(object):
     Class for translating string
     """
 
-    def __init__(self, lang):
+    def __init__(self, lang: Union[str, Language]):
         """
         Initializes keywords
 
@@ -45,9 +51,9 @@ class Translator(object):
         :return:
         """
 
-        self.lang = lang
+        self.lang = lang.ui_locales if isinstance(lang, Language) else lang
 
-    def get(self, sid):
+    def get(self, sid: Keywords) -> str:
         """
         Returns an localized string
 
@@ -56,7 +62,7 @@ class Translator(object):
         """
         return get_translation(sid, self.lang)
 
-    def get_lang(self):
+    def get_lang(self) -> str:
         """
         Return ui locales code
 

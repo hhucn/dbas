@@ -4,8 +4,6 @@ Introducing an graph manager.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 
-import json
-
 from cornice import Service
 
 import dbas.handler.issue as IssueHelper
@@ -13,6 +11,7 @@ from dbas.handler.language import get_language_from_cookie
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+from dbas.validators.core import has_keywords, validate
 from graph.lib import get_d3_data, get_doj_data, get_opinion_data, get_path_of_user
 from graph.partial_graph import get_partial_graph_for_argument, get_partial_graph_for_statement
 
@@ -34,11 +33,10 @@ partial_graph = Service(name='d3js_partial',
 # =============================================================================
 
 
-@complete_graph.get()
+@complete_graph.post()
 def get_d3_complete_dump(request):
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Graph', 'get_d3_complete_dump', 'main: ' + str(request.params))
-    path = request.params.get('path', '')
+    logger('Graph', 'main: ' + str(request.json_body))
+    path = request.json_body.get('path', '')
     issue = IssueHelper.get_issue_id(request)
 
     graph, error = get_d3_data(issue)
@@ -55,20 +53,22 @@ def get_d3_complete_dump(request):
         error = _t.get(_.internalKeyError)
         return_dict = {'error': error}
 
-    return json.dumps(return_dict)
+    return return_dict
 
 
-@partial_graph.get()
+@partial_graph.post()
+@validate(has_keywords(('uid', int), ('is_argument', bool), ('path', str)))
 def get_d3_partial_dump(request):
-    logger('- - - - - - - - - - - -', '- - - - - - - - - - - -', '- - - - - - - - - - - -')
-    logger('Graph', 'get_d3_partial_dump', 'main: ' + str(request.params))
-    path = request.params.get('path', '')
-    uid = request.params.get('uid', '0')
-    is_argument = True if 'is_argument' in request.params and request.params['is_argument'] == 'true' else False
+    logger('Graph', 'main: ' + str(request.json_body))
+    path = request.validated['path']
+    uid = request.validated['uid']
+    is_argument = request.validated['is_argument']
     issue = IssueHelper.get_issue_id(request)
-    return_dict = {'type': 'partial'}
+    return_dict = {
+        'type': 'partial'
+    }
 
-    if uid == '0':
+    if not uid:
         graph, error = get_d3_data(issue, request.authenticated_userid)
         if not error:
             return_dict = graph
@@ -88,6 +88,8 @@ def get_d3_partial_dump(request):
         ui_locales = get_language_from_cookie(request)
         _t = Translator(ui_locales)
         error = _t.get(_.internalKeyError)
-        return_dict = {'error': error}
+        return_dict = {
+            'error': error
+        }
 
-    return json.dumps(return_dict)
+    return return_dict

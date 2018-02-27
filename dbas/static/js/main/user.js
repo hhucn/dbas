@@ -31,7 +31,17 @@ $(function () {
 		});
 	});
 
-	new AjaxUserHandler().getPublicUserData();
+	var url = 'get_public_user_data';
+	var d = {
+		'nickname': $('#public_nick').text()
+	};
+	var done = function getPublicUserDataDone(data) {
+		new User().callbackDone(data);
+	};
+	var fail = function getPublicUserDataFail(data) {
+		setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
+	};
+	ajaxSkeleton(url, 'POST', d, done, fail);
 });
 
 function User() {
@@ -51,10 +61,6 @@ function User() {
 	 * @param data
 	 */
 	this.callbackDone = function(data){
-		if (data.error.length !== 0) {
-			setGlobalErrorHandler(_t(ohsnap), data.error);
-		}
-
 		this.createChart(data, $('#user-activity-chart-space'), 'user-activity-canvas', 0);
 		this.createChart(data, $('#user-vote-chart-space'), 'user-vote-canvas', 1);
 		// this.createChart(data, $('#user-statement-chart-space'), 'user-statement-canvas', 2);

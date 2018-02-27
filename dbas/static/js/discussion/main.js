@@ -179,12 +179,12 @@ function Main () {
 			if (url.indexOf('/d?history') !== -1) {
 				url = url.split('/d?history');
 				url = url[0].split('/');
-				uid = url[url.length - 1];
+				uid = parseInt(url[url.length - 1]);
 				ajaxHandler.getMoreInfosAboutArgument(uid, true);
 			} else {
 				if ($(this).closest('p').attr('id').indexOf(questionBubbleId) !== -1) {
 					uid = $(this).closest('p').attr('id').replace(questionBubbleId + '-', '');
-					ajaxHandler.getMoreInfosAboutArgument(uid, true);
+					ajaxHandler.getMoreInfosAboutArgument(parseInt(uid), true);
 				}
 			}
 		});
@@ -223,12 +223,12 @@ function Main () {
 
 		trianglel.find('.triangle-flag').click(function () {
 			var uid = $(this).closest('.triangle-l').attr('id').replace(questionBubbleId + '-', '');
-			popupHandler.showFlagArgumentPopup(uid);
+			popupHandler.showFlagArgumentPopup(parseInt(uid));
 		});
 
 		trianglel.find('.triangle-reference').click(function () {
 			var uid = $(this).parent().parent().attr('id').replace(questionBubbleId + '-', '');
-			new AjaxReferenceHandler().getReferences(uid, true);
+			new AjaxReferenceHandler().getReferences([parseInt(uid)], true);
 		});
 
 		trianglel.find('.triangle-trash').click(function () {
@@ -248,7 +248,7 @@ function Main () {
 				}
 				text.push(txt);
 			});
-			popupHandler.showFlagStatementPopup(uid, false, text.join(' '));
+			popupHandler.showFlagStatementPopup(parseInt(uid), false, text.join(' '));
 		});
 
 		list.find('.item-edit').click(function () {
@@ -267,7 +267,7 @@ function Main () {
 		list.find('.item-reference').click(function () {
 			var uids = [];
 			$(this).parent().find('label:nth-child(even)').each(function(){
-				uids.push($(this).attr('id'));
+				uids.push(parseInt(uid)($(this).attr('id')));
 			});
 			new AjaxReferenceHandler().getReferences(uids, false);
 		});
@@ -284,8 +284,7 @@ function Main () {
 					var data_type = $(this).data('type');
 					var data_argument_uid = $(this).data('argument-uid');
 					var data_statement_uid = $(this).data('statement-uid');
-					var data_is_supportive = $(this).data('is-supportive');
-					new AjaxDiscussionHandler().getMoreInfosAboutOpinion(data_type, data_argument_uid, data_statement_uid, data_is_supportive);
+					new AjaxDiscussionHandler().getMoreInfosAboutOpinion(data_type, data_argument_uid, data_statement_uid);
 				});
 			} else {
 				$(this).removeClass('triangle-r-info').addClass('triangle-r-info-nohover');
@@ -344,7 +343,7 @@ function Main () {
 			var info = $(this).parent().children().last();
 			var is_argument = info.data('type') === 'argument';
 			var uid = info.data(info.data('type') + '-uid');
-			var is_supportive = info.data('is-supportive');
+			var is_supportive = info.data('is-supportive').toLocaleLowerCase() === 'true';
 			var step = location.href.split('#')[0].split('?')[0].split('/').slice(5).join('/');
 			var current_history = location.href.split('#')[0].split('?')[1];
 			ajaxHandler.markStatementOrArgument(uid, is_argument, is_supportive, true, step, current_history, id);
@@ -356,7 +355,7 @@ function Main () {
 			var info = $(this).parent().children().last();
 			var is_argument = info.data('type') === 'argument';
 			var uid = info.data(info.data('type') + '-uid');
-			var is_supportive = info.data('is-supportive');
+			var is_supportive = info.data('is-supportive').toLocaleLowerCase() === 'true';
 			var step = location.href.split('#')[0].split('?')[0].split('/').slice(5).join('/');
 			var current_history = location.href.split('#')[0].split('?')[1];
 			ajaxHandler.markStatementOrArgument(uid, is_argument, is_supportive, false, step, current_history, id);
@@ -494,7 +493,7 @@ function Main () {
 		$('#' + addStatementContainerMainInputPosId).keyup(function () {
 			setTimeout(function () {
 				var escapedText = escapeHtml($('#' + addStatementContainerMainInputPosId).val());
-				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputPosId, fuzzy_start_statement, '');
+				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputPosId, fuzzy_start_statement, '', '');
 			}, 200);
 		});
 
@@ -502,7 +501,7 @@ function Main () {
 		$('#' + addStatementContainerMainInputResId).keyup(function () {
 			setTimeout(function () {
 				var escapedText = escapeHtml($('#' + addStatementContainerMainInputResId).val());
-				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputResId, fuzzy_start_premise, '');
+				ajaxHandler.fuzzySearch(escapedText, addStatementContainerMainInputResId, fuzzy_start_premise, '', '');
 			}, 200);
 		});
 
@@ -510,7 +509,7 @@ function Main () {
 		$('#' + addPremiseContainerMainInputId).keyup(function () {
 			setTimeout(function () {
 				var escapedText = escapeHtml($('#' + addPremiseContainerMainInputId).val());
-				ajaxHandler.fuzzySearch(escapedText, addPremiseContainerMainInputId, fuzzy_add_reason, '');
+				ajaxHandler.fuzzySearch(escapedText, addPremiseContainerMainInputId, fuzzy_add_reason, '', '');
 			}, 200);
 		});
 	};
@@ -635,7 +634,7 @@ function Main () {
 	this.setInputExtraOptions = function (guiHandler, interactionHandler) {
 		var spaceList = $('#' + discussionSpaceListId);
 		var input = spaceList.find('li:last-child input');
-		var text = [], splits, conclusion, supportive, arg, relation;
+		var text_array = [], splits, conclusion, supportive, arg, relation;
 		splits = window.location.href.split('?');
 		splits = splits[0].split('/');
 		var sendStartStatement = function () {
@@ -646,19 +645,19 @@ function Main () {
 		var sendStartPremise = function () {
 			conclusion = splits[splits.length - 2];
 			supportive = splits[splits.length - 1] === 't';
-			text = [];
+			text_array = [];
 			$('#' + addPremiseContainerBodyId + ' input').each(function () {
 				if ($(this).val().length > 0) {
-					text.push($(this).val());
+					text_array.push($(this).val());
 				}
 			});
-			interactionHandler.sendStatement(text, conclusion, supportive, '', '', fuzzy_start_premise);
+			interactionHandler.sendStatement(text_array, conclusion, supportive, '', '', fuzzy_start_premise);
 		};
 		var sendArgumentsPremise = function () {
-			text = [];
+			text_array = [];
 			$('#' + addPremiseContainerBodyId + ' input').each(function () {
 				if ($(this).val().length > 0) {
-					text.push($(this).val());
+					text_array.push($(this).val());
 				}
 			});
 			var url = window.location.href.split('?')[0];
@@ -666,7 +665,7 @@ function Main () {
 			arg = splits[splits.length - 3 - add];
 			supportive = splits[splits.length - 2 - add] === 't';
 			relation = splits[splits.length - 1 - add];
-			interactionHandler.sendStatement(text, '', supportive, arg, relation, fuzzy_add_reason);
+			interactionHandler.sendStatement(text_array, '', supportive, arg, relation, fuzzy_add_reason);
 		};
 
 		if (window.location.href.indexOf('/r/') !== -1) {
@@ -763,7 +762,7 @@ function Main () {
 		// login
 		else if (input.attr('id').indexOf('login') !== -1 && typeof $('#' + popupLogin) !== 'undefined') {
 			$('#' + popupLogin).modal('show');
-			new PopupHandler().showLoginPopup(false);
+            new PopupHandler().showLoginPopup();
 		}
 	};
 }

@@ -3,102 +3,45 @@ Provides helping function for issues.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-
+from json import JSONDecodeError
 from math import ceil
 
 import arrow
 import transaction
+from pyramid.request import Request
 from slugify import slugify
-from sqlalchemy import and_
 
 from dbas.database import DBDiscussionSession
-from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print, \
     ClickedStatement
 from dbas.handler import user
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import get_short_url
-from dbas.lib import is_user_author_or_admin
-from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_issues_as_query, get_visible_issues_for_user_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.url_manager import UrlManager
+from dbas.helper.url import UrlManager
 
-limit_for_open_issues = 10
+rep_limit_to_open_issues = 10
 
 
-def set_issue(nickname, info, long_info, title, lang, is_public, is_read_only, application_url, ui_locales) -> dict:
+def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Language, is_public: bool,
+              is_read_only: bool, application_url: str) -> dict:
     """
     Sets new issue, which will be a new discussion
 
-    :param nickname: Users nickname
+    :param db_user: User
     :param info: Short information about the new issue
     :param long_info: Long information about the new issue
     :param title: Title of the new issue
-    :param lang: Language of the new issue
+    :param db_lang: Language
     :param application_url: Url of the app itself
     :param is_public: Boolean
     :param is_read_only: Boolean
-    :param ui_locales: Current language
     :rtype: dict
     :return: Collection with information about the new issue
     """
-    user.update_last_action(nickname)
-
-    logger('setter', 'set_new_issue', 'main')
-    prepared_dict = dict()
-
-    was_set, error = __set_issue(info, long_info, title, lang, is_public, is_read_only, nickname, ui_locales)
-    if was_set:
-        db_issue = DBDiscussionSession.query(Issue).filter(and_(Issue.title == title,
-                                                                Issue.info == info)).first()
-        prepared_dict['issue'] = get_issue_dict_for(db_issue, application_url, False, 0, ui_locales)
-    prepared_dict['error'] = '' if was_set else error
-
-    return prepared_dict
-
-
-def __set_issue(info, long_info, title, lang, is_public, is_read_only, nickname, ui_locales):
-    """
-    Inserts new issue into database
-
-    :param info: String
-    :param title: String
-    :param lang: String
-    :param nickname: User.nickname
-    :param is_public: Boolean
-    :param is_read_only: Boolean
-    :param ui_locales: ui_locales
-    :return: True, '' on success, False, String on error
-    """
-
-    _tn = Translator(ui_locales)
-
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not is_user_author_or_admin(nickname):
-        logger('IssueHelper', 'set_issue', 'User has no rights', error=True)
-        return False, _tn.get(_.noRights)
-
-    if len(info) < 10 or len(long_info) < 10:
-        logger('IssueHelper', 'set_issue', 'Short text', error=True)
-        a = _tn.get(_.notInsertedErrorBecauseEmpty)
-        b = _tn.get(_.minLength)
-        c = _tn.get(_.eachStatement)
-        error = '{} ({}: {} {})'.format(a, b, str(10), c)
-        return False, error
-
-    db_duplicates1 = DBDiscussionSession.query(Issue).filter_by(title=title).all()
-    db_duplicates2 = DBDiscussionSession.query(Issue).filter_by(info=info).all()
-    db_duplicates3 = DBDiscussionSession.query(Issue).filter_by(long_info=long_info).all()
-    if db_duplicates1 or db_duplicates2 or db_duplicates3:
-        logger('IssueHelper', 'set_issue', 'Duplicates', error=True)
-        return False, _tn.get(_.duplicate)
-
-    db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=lang).first()
-    if not db_lang:
-        logger('IssueHelper', 'set_issue', 'No language', error=True)
-        return False, _tn.get(_.internalError)
+    user.update_last_action(db_user)
 
     DBDiscussionSession.add(Issue(title=title,
                                   info=info,
@@ -108,44 +51,38 @@ def __set_issue(info, long_info, title, lang, is_public, is_read_only, nickname,
                                   is_private=not is_public,
                                   lang_uid=db_lang.uid))
     DBDiscussionSession.flush()
-
     transaction.commit()
+    db_issue = DBDiscussionSession.query(Issue).filter(Issue.title == title, Issue.info == info).first()
 
-    return True, ''
+    return {'issue': get_issue_dict_for(db_issue, application_url, 0, db_lang.ui_locales)}
 
 
-def prepare_json_of_issue(uid, application_url, for_api, nickname):
+def prepare_json_of_issue(db_issue: Issue, application_url: str, db_user: User) -> dict():
     """
     Prepares slug, info, argument count and the date of the issue as dict
 
-    :param uid: Issue.uid
+    :param db_issue: Issue
     :param application_url: application_url
-    :param for_api: Boolean
-    :param nickname: Nickname of current user
+    :param db_user: User
     :return: Issue-dict()
     """
-    logger('issueHelper', 'prepare_json_of_issue', 'main')
-    db_issue = DBDiscussionSession.query(Issue).get(uid)
-
     slug = slugify(db_issue.title)
     title = db_issue.title
     info = db_issue.info
     long_info = db_issue.long_info
-    stat_count = get_number_of_statements(uid)
+    stat_count = get_number_of_statements(db_issue.uid)
     lang = db_issue.lang
     date_pretty = sql_timestamp_pretty_print(db_issue.date, lang)
     duration = (arrow.utcnow() - db_issue.date)
     days, seconds = duration.days, duration.seconds
     duration = ceil(days * 24 + seconds / 3600)
     date_ms = int(db_issue.date.format('X')) * 1000
-    date = db_issue.date.format('DD.MM. HH:mm')
+    date = db_issue.date.format('DD.MM.YY HH:mm')
+    if db_issue.lang == 'de':
+        date = date.replace(' ', ' um ')
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
-    db_issues = get_visible_issues_for_user_as_query(db_user.uid).filter(Issue.uid != uid).all()
-    all_array = []
-    for issue in db_issues:
-        issue_dict = get_issue_dict_for(issue, application_url, for_api, uid, lang)
-        all_array.append(issue_dict)
+    db_issues = get_visible_issues_for_user_as_query(db_user.uid).filter(Issue.uid != db_issue.uid).all()
+    all_array = [get_issue_dict_for(db_issue, application_url, db_issue.uid, lang) for db_issue in db_issues]
 
     _t = Translator(lang)
     t1 = _t.get(_.discussionInfoTooltip1)
@@ -159,7 +96,7 @@ def prepare_json_of_issue(uid, application_url, for_api, nickname):
         'info': info,
         'long_info': long_info,
         'title': title,
-        'uid': uid,
+        'uid': db_issue.uid,
         'stat_count': stat_count,
         'date': date,
         'date_ms': date_ms,
@@ -172,75 +109,72 @@ def prepare_json_of_issue(uid, application_url, for_api, nickname):
     }
 
 
-def get_number_of_arguments(issue_uid):
+def get_number_of_arguments(issue_uid: int) -> int:
     """
     Returns number of arguments for the issue
 
     :param issue_uid: Issue Issue.uid
     :return: Integer
     """
-    return len(DBDiscussionSession.query(Argument).filter_by(issue_uid=issue_uid).all())
+    return DBDiscussionSession.query(Argument).filter_by(issue_uid=issue_uid).count()
 
 
-def get_number_of_statements(issue_uid):
+def get_number_of_statements(issue_uid: int) -> int:
     """
     Returns number of statements for the issue
 
     :param issue_uid: Issue Issue.uid
     :return: Integer
     """
-    return len(DBDiscussionSession.query(Statement).filter_by(issue_uid=issue_uid).all())
+    return DBDiscussionSession.query(Statement).filter_by(issue_uid=issue_uid).count()
 
 
-def get_issue_dict_for(issue, application_url, for_api, uid, lang):
+def get_issue_dict_for(db_issue: Issue, application_url: str, uid: int, lang: str) -> dict():
     """
     Creates an dictionary for the issue
 
-    :param issue: Issue
+    :param db_issue: Issue
     :param application_url:
-    :param for_api: Boolean
     :param uid: current selected Issue.uid
     :param lang: ui_locales
     :return: dict()
     """
-    if str(type(issue)) != str(Issue):
-        return {'uid': '', 'slug': '', 'title': '', 'url': '', 'review_url': '', 'info': '', 'stat_count': '',
-                'date': '', 'author': '', 'author_url': '', 'enabled': '', 'error': 'true'}
-
-    _um = UrlManager(application_url, issue.slug, for_api)
-    issue_dict = dict()
-    issue_dict['uid'] = str(issue.uid)
-    issue_dict['slug'] = issue.slug
-    issue_dict['title'] = issue.title
-    issue_dict['url'] = _um.get_slug_url(False) if str(uid) != str(issue.uid) else ''
-    issue_dict['review_url'] = _um.get_review_url(False) if str(uid) != str(issue.uid) else ''
-    issue_dict['info'] = issue.info
-    issue_dict['stat_count'] = get_number_of_statements(issue.uid)
-    issue_dict['date'] = sql_timestamp_pretty_print(issue.date, lang)
-    issue_dict['author'] = issue.users.public_nickname
-    issue_dict['error'] = ''
-    issue_dict['author_url'] = '{}/user/{}'.format(application_url, issue.users.public_nickname)
-    issue_dict['enabled'] = 'disabled' if str(uid) == str(issue.uid) else 'enabled'
+    _um = UrlManager(db_issue.slug)
+    issue_dict = {
+        'uid': str(db_issue.uid),
+        'slug': db_issue.slug,
+        'title': db_issue.title,
+        'url': '/' + db_issue.slug,
+        'review_url': _um.get_review_url() if str(uid) != str(db_issue.uid) else '',
+        'info': db_issue.info,
+        'stat_count': get_number_of_statements(db_issue.uid),
+        'date': sql_timestamp_pretty_print(db_issue.date, lang),
+        'author': db_issue.users.public_nickname,
+        'error': '',
+        'author_url': '{}/user/{}'.format(application_url, db_issue.users.public_nickname),
+        'enabled': 'disabled' if str(uid) == str(db_issue.uid) else 'enabled'
+    }
     return issue_dict
 
 
-def get_id_of_slug(slug, request, save_id_in_session, for_api=False):
+def get_id_of_slug(slug: str):
     """
-    Returns the uid
+    Returns the uid of the issue with given slug
 
     :param slug: slug
-    :param request: self.request for a fallback
-    :param save_id_in_session: Boolean
     :return: uid
     """
-    logger('IssueHelper', 'get_id_of_slug', 'slug: {}'.format(slug))
-    db_issues = get_not_disabled_issues_as_query().all()
-    for issue in db_issues:
-        if str(issue.slug) == str(slug):
-            if save_id_in_session:
-                request.session['issue'] = issue.uid
-            return issue.uid
-    return -1 if for_api else get_issue_id(request)
+    return get_not_disabled_issues_as_query().filter(Issue.slug == slug).first()
+
+
+def save_issue_id_in_session(issue_uid: int, request: Request):
+    """
+
+    :param issue_uid:
+    :param request:
+    :return:
+    """
+    request.session['issue'] = issue_uid
 
 
 def get_issue_id(request):
@@ -251,28 +185,44 @@ def get_issue_id(request):
     :param request: self.request
     :return: uid
     """
-    logger('IssueHelper', 'get_issue_id', 'def')
+    # logger('IssueHelper', 'get_issue_id', 'def')
     # first matchdict, then params, then session
-    issue_uid = request.matchdict['issue'] if 'issue' in request.matchdict \
-        else request.params['issue'] if 'issue' in request.params \
-        else request.session['issue'] if 'issue' in request.session \
-        else None
+    issue_uid = None
+    try:
+        issue_uid = request.json_body.get('issue')
+    except (JSONDecodeError, AttributeError):
+        pass
+    if not issue_uid:
+        issue_uid = request.matchdict.get('issue')
+    if not issue_uid:
+        issue_uid = request.params.get('issue')
+    if not issue_uid:
+        issue_uid = request.session.get('issue')
 
     # no issue found
     if not issue_uid:
-        logger('IssueHelper', 'get_issue_id', 'no saved issue found')
-        ui_locales = get_language_from_header(request)
-        db_issues = get_not_disabled_issues_as_query()
-        db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
-        db_issue = db_issues.filter_by(lang_uid=db_lang.uid).first()
-        if not db_issue:
-            db_issue = db_issues.first()
-        issue_uid = db_issue.uid
+        issue_uid = get_issue_based_on_header(request)
 
     # save issue in session
     request.session['issue'] = issue_uid
-
     return issue_uid
+
+
+def get_issue_based_on_header(request):
+    """
+
+    :param request:
+    :return:
+    """
+    # logger('IssueHelper', 'get_issue_based_on_header', 'no saved issue found')
+    ui_locales = get_language_from_header(request)
+    db_issues = get_not_disabled_issues_as_query()
+    db_lang = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
+    db_issue = db_issues.filter_by(lang_uid=db_lang.uid).first()
+    if not db_issue:
+        db_issue = db_issues.first()
+
+    return db_issue.uid
 
 
 def get_title_for_slug(slug):
@@ -297,7 +247,6 @@ def get_issues_overiew(nickname, application_url) -> dict:
     :param application_url: current applications url
     :return: dict
     """
-    logger('IssueHelper', 'get_issues_overiew', 'def')
     user.update_last_action(nickname)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     if not db_user:
@@ -310,7 +259,8 @@ def get_issues_overiew(nickname, application_url) -> dict:
     if is_admin:
         db_issues_other_users = DBDiscussionSession.query(Issue).filter(Issue.author_uid != db_user.uid).all()
     else:
-        db_issues_other_users = get_visible_issues_for_user_as_query(db_user.uid).filter(Issue.author_uid != db_user.uid).all()
+        db_issues_other_users = get_visible_issues_for_user_as_query(db_user.uid).filter(
+            Issue.author_uid != db_user.uid).all()
 
     db_issues_of_user = DBDiscussionSession.query(Issue).filter_by(author_uid=db_user.uid).all()
 
@@ -320,34 +270,25 @@ def get_issues_overiew(nickname, application_url) -> dict:
     }
 
 
-def set_discussions_properties(nickname, uid, checked, key, translator) -> dict:
+def set_discussions_properties(db_user: User, db_issue: Issue, value, iproperty, translator) -> dict:
     """
 
-    :param nickname:
-    :param uid:
-    :param checked:
-    :param key:
+    :param db_user: User
+    :param db_issue: Issue
+    :param value: The value which should be assigned to property
+    :param iproperty: Property of Issue, e.g. is_disabled
     :param translator:
     :return:
     """
-    logger('IssueHelper', 'set_discussions_properties', 'uid: {}, key: {}, checked: {}'.format(uid, key, checked))
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
-    if not db_user:
-        return {'error': translator.get(_.userNotFound)}
-
-    db_issue = DBDiscussionSession.query(Issue).get(uid)
-    if not db_issue:
-        return {'error': translator.get(_.internalKeyError)}
-
-    if db_issue.author_uid != db_user.uid and not user.is_admin(nickname):
+    if db_issue.author_uid != db_user.uid and not user.is_admin(db_user.nickname):
         return {'error': translator.get(_.noRights)}
 
-    if key == 'enable':
-        db_issue.set_disable(not checked)
-    elif key == 'public':
-        db_issue.set_private(not checked)
-    elif key == 'writable':
-        db_issue.set_read_only(not checked)
+    if iproperty == 'enable':
+        db_issue.set_disable(not value)
+    elif iproperty == 'public':
+        db_issue.set_private(not value)
+    elif iproperty == 'writable':
+        db_issue.set_read_only(not value)
     else:
         return {'error': translator.get(_.internalKeyError)}
 
@@ -366,8 +307,8 @@ def __create_issue_dict(issue, application_url) -> dict:
     :param application_url: current applications url
     :return: dict()
     """
-    short_url_dict = get_short_url(application_url + '/' + issue.slug, '', 'en')
-    url = short_url_dict['url'] if len(short_url_dict['error']) == 0 else application_url + '/' + issue.slug
+    short_url_dict = get_short_url(application_url + '/' + issue.slug, 'en')
+    url = short_url_dict['url'] if len(short_url_dict['url']) == 0 else application_url + '/' + issue.slug
 
     # we do nto have to check for clicked arguments, cause arguments consist out of statements
     statements = [s.uid for s in DBDiscussionSession.query(Statement).filter_by(issue_uid=issue.uid).all()]

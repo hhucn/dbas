@@ -18,6 +18,7 @@ DBEngine = None
 
 def load_discussion_database(engine):
     db_discussion_engine = engine
+    DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=db_discussion_engine)
     DiscussionBase.metadata.bind = db_discussion_engine
     DiscussionBase.metadata.create_all(db_discussion_engine)

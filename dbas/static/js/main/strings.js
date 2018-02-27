@@ -220,7 +220,7 @@ var yes                             = 'yes';
 var youAreAbleToReviewNow           = 'youAreAbleToReviewNow';
 var yourAreNotTheAuthorOfThisAnymore = 'yourAreNotTheAuthorOfThisAnymore';
 var weak                            = 'weak';
-
+var wrongCaptcha = 'wrongCaptcha';
 var next                            = 'next';
 var prev                            = 'prev';
 var tourEnd                         = 'tourEnd';
@@ -498,6 +498,7 @@ var dbas_en = {
     'vote': 'vote',
     'votes': 'votes',
     'weak': 'weak',
+    'wrongCaptcha': 'Please fill in the correct solution for the captcha.',
     'next': 'Next',
     'prev': 'Prev',
     'tourEnd': 'End Tour',
@@ -754,6 +755,7 @@ var dbas_de = {
     'vote': 'Stimme',
     'votes': 'Stimmen',
     'weak': 'schwach',
+    'wrongCaptcha': 'Bitte füllen Sie das Captcha korrekt aus.',
     'next': 'Weiter',
     'prev': 'Zurück',
     'yes': 'Ja',

@@ -1,15 +1,17 @@
+from typing import Union
+
 import dbas.handler.issue as issue_helper
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument
+from dbas.database.discussion_model import Argument, User
 from dbas.handler import user
 from dbas.handler.voting import add_click_for_argument
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
-from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.views import handle_justification_step
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_statement, \
     check_belonging_of_argument, check_belonging_of_premisegroups, related_with_support, check_reaction, \
     check_belonging_of_arguments
+from dbas.lib import nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_arguments_as_query
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_argument_click
@@ -17,163 +19,134 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 
 
-def init(request_dict, for_api=False) -> dict:
+def init(request_dict) -> Union[dict, None]:
     """
     Initialize the discussion. Creates helper and returns a dictionary containing the first elements needed for the
     discussion.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param for_api: boolean if requests came via the API
     :rtype: dict
     :return: prepared collection with first elements for the discussion
     """
-    logger('Core', 'discussion.init', 'main')
-
-    matchdict = request_dict['matchdict']
+    logger('Core', 'main')
     application_url = request_dict['app_url']
-
-    count_of_slugs = 1
-    if 'slug' in matchdict and isinstance(matchdict['slug'], ()):
-        count_of_slugs = len(matchdict['slug'])
-
-    if count_of_slugs > 1:
-        logger('Core', 'discussion.init', 'to many slugs', error=True)
-        return None
-
     nickname = request_dict['nickname']
-    issue = request_dict['issue']
-    ui_locales = request_dict['ui_locales']
+    db_issue = request_dict['issue']
+    slug = db_issue.slug
 
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, for_api, nickname)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
+    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
-    item_dict = ItemDictHelper(disc_ui_locales, issue, application_url, for_api).get_array_for_start(nickname)
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname=nickname, main_page=application_url, slug=request_dict['slug'])
-    _dh = DictionaryHelper(ui_locales, disc_ui_locales)
+    _ddh = DiscussionDictHelper(disc_ui_locales, nickname=db_user.nickname, slug=slug)
+
+    item_dict = ItemDictHelper(disc_ui_locales, db_issue).get_array_for_start(db_user)
     discussion_dict = _ddh.get_dict_for_start(position_count=(len(item_dict['elements'])))
-    extras_dict = _dh.prepare_extras_dict(request_dict['slug'], False, True, True, request_dict['registry'],
-                                          request_dict['app_url'], request_dict['path'],
-                                          for_api=for_api, nickname=nickname)
 
-    if len(item_dict['elements']) == 1:
-        DictionaryHelper(disc_ui_locales, disc_ui_locales).add_discussion_end_text(discussion_dict, extras_dict,
-                                                                                   nickname, at_start=True)
-
-    prepared_discussion = dict()
-    prepared_discussion['issues'] = issue_dict
-    prepared_discussion['discussion'] = discussion_dict
-    prepared_discussion['items'] = item_dict
-    prepared_discussion['extras'] = extras_dict
-    prepared_discussion['title'] = issue_dict['title']
-
-    return prepared_discussion
+    return {
+        'issues': issue_dict,
+        'discussion': discussion_dict,
+        'items': item_dict,
+        'title': issue_dict['title']
+    }
 
 
-def attitude(request_dict, for_api=False) -> dict:
+def attitude(request_dict) -> Union[dict, None]:
     """
     Initialize the attitude step for a position in a discussion. Creates helper and returns a dictionary containing
     the first elements needed for the discussion.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param for_api: boolean if requests came via the API
     :rtype: dict
     :return: prepared collection matchdict for the discussion
     """
-    logger('Core', 'discussion.attitude', 'main')
+    logger('Core', 'attitude')
 
     nickname = request_dict['nickname']
-    issue = request_dict['issue']
-    ui_locales = request_dict['ui_locales']
-    slug = request_dict['slug']
+    db_issue = request_dict['issue']
     application_url = request_dict['app_url']
     history = request_dict['history']
-    statement_id = request_dict['matchdict']['statement_id'][0] if 'statement_id' in request_dict['matchdict'] else ''
+    statement_uid = request_dict['matchdict']['statement_id'][0] if 'statement_id' in request_dict['matchdict'] else '-'
+    slug = db_issue.slug
 
-    if not is_integer(statement_id, True) \
-            or not check_belonging_of_statement(issue, statement_id):
-        logger('Core', 'discussion.attitude', 'param error', error=True)
+    if not is_integer(statement_uid, True) \
+            or not check_belonging_of_statement(db_issue.uid, statement_uid)\
+            or is_statement_forbidden(statement_uid):
+        logger('Core', 'param error / forbidden statement {}'.format(statement_uid), error=True)
         return None
 
-    if is_statement_forbidden(statement_id):
-        logger('Core', 'discussion.attitude', 'forbidden statement', error=True)
-        return None
-
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, for_api, nickname)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
+    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=application_url, slug=slug)
-    discussion_dict = _ddh.get_dict_for_attitude(statement_id)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
+    discussion_dict = _ddh.get_dict_for_attitude(statement_uid)
     if not discussion_dict:
-        logger('Core', 'discussion.attitude', 'no discussion dict', error=True)
+        logger('Core', 'no discussion dict', error=True)
         return None
 
-    _idh = ItemDictHelper(disc_ui_locales, issue, application_url, for_api, path=request_dict['path'], history=history)
-    _dh = DictionaryHelper(ui_locales, disc_ui_locales)
-    item_dict = _idh.prepare_item_dict_for_attitude(statement_id)
-    extras_dict = _dh.prepare_extras_dict(issue_dict['slug'], False, True, True, request_dict['registry'],
-                                          request_dict['app_url'], request_dict['path'], for_api=for_api,
-                                          nickname=nickname)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
+    item_dict = _idh.prepare_item_dict_for_attitude(statement_uid)
 
-    prepared_discussion = dict()
-    prepared_discussion['issues'] = issue_dict
-    prepared_discussion['discussion'] = discussion_dict
-    prepared_discussion['items'] = item_dict
-    prepared_discussion['extras'] = extras_dict
-    prepared_discussion['title'] = issue_dict['title']
+    prepared_discussion = {
+        'issues': issue_dict,
+        'discussion': discussion_dict,
+        'items': item_dict,
+        'title': issue_dict['title']
+    }
 
     return prepared_discussion
 
 
-def justify(request_dict, for_api=False) -> dict:
+def justify(request_dict) -> Union[dict, None]:
     """
     Initialize the justification step for a statement or an argument in a discussion. Creates helper and
     returns a dictionary containing the necessary elements needed for the discussion.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param for_api: boolean if requests came via the API
     :rtype: dict
-    :return: prepared collection matchdictfor the discussion
+    :return: prepared collection matchdict for the discussion
     """
-    logger('Core', 'discussion.justify', 'main')
+    logger('Core', 'main')
 
     nickname = request_dict['nickname']
-    issue = request_dict['issue']
+    db_issue = request_dict['issue']
     application_url = request_dict['app_url']
 
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, for_api, nickname)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
+    request_dict['user'] = db_user
+    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
 
-    item_dict, discussion_dict, extras_dict = handle_justification_step(request_dict, for_api)
-    if item_dict is None or discussion_dict is None or extras_dict is None:
+    item_dict, discussion_dict = handle_justification_step(request_dict)
+    if not all([item_dict, discussion_dict]):
         return None
 
-    prepared_discussion = dict()
-    prepared_discussion['issues'] = issue_dict
-    prepared_discussion['discussion'] = discussion_dict
-    prepared_discussion['items'] = item_dict
-    prepared_discussion['extras'] = extras_dict
-    prepared_discussion['title'] = issue_dict['title']
+    prepared_discussion = {
+        'issues': issue_dict,
+        'discussion': discussion_dict,
+        'items': item_dict,
+        'title': issue_dict['title']
+    }
 
     return prepared_discussion
 
 
-def reaction(request_dict, for_api=False) -> dict:
+def reaction(request_dict) -> Union[dict, None]:
     """
     Initialize the reaction step for a position in a discussion. Creates helper and returns a dictionary containing
     different feedback options for the confrontation with an argument in a discussion.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param for_api: boolean if requests came via the API
     :rtype: dict
     :return: prepared collection matchdict for the discussion
     """
-    logger('Core', 'discussion.reaction', 'main')
+    logger('Core', 'main')
 
     nickname = request_dict['nickname']
-    issue = request_dict['issue']
-    ui_locales = request_dict['ui_locales']
-    slug = request_dict['slug']
+    db_issue = request_dict['issue']
     application_url = request_dict['app_url']
     history = request_dict['history']
+    slug = db_issue.slug
 
     # get parameters
     arg_id_user = request_dict['matchdict'].get('arg_id_user')
@@ -181,103 +154,88 @@ def reaction(request_dict, for_api=False) -> dict:
     arg_id_sys = request_dict['matchdict'].get('arg_id_sys')
     tmp_argument = DBDiscussionSession.query(Argument).get(arg_id_user)
 
-    if not check_reaction(arg_id_user, arg_id_sys, attack) or not check_belonging_of_arguments(issue, [arg_id_user, arg_id_sys]):
-        logger('discussion_reaction', 'def', 'wrong belonging of arguments', error=True)
+    if not check_reaction(arg_id_user, arg_id_sys, attack) or not check_belonging_of_arguments(db_issue.uid, [arg_id_user, arg_id_sys]):
+        logger('discussion_reaction', 'wrong belonging of arguments', error=True)
         return None
 
     # set votes and reputation
     add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_argument_click)
     add_click_for_argument(arg_id_user, nickname)
 
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, for_api, nickname)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
+    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
     supportive = tmp_argument.is_supportive
-    _dh = DictionaryHelper(ui_locales, disc_ui_locales)
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=application_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, issue, application_url, for_api, path=request_dict['path'], history=history)
-    discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history, nickname)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug, broke_limit=broke_limit)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
+    discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history, db_user)
     item_dict = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack, discussion_dict['gender'])
-    extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request_dict['registry'], request_dict['app_url'],
-                                          request_dict['path'], for_api=for_api, nickname=nickname,
-                                          broke_limit=broke_limit)
 
-    prepared_discussion = dict()
-    prepared_discussion['issues'] = issue_dict
-    prepared_discussion['discussion'] = discussion_dict
-    prepared_discussion['items'] = item_dict
-    prepared_discussion['extras'] = extras_dict
-    prepared_discussion['title'] = issue_dict['title']
+    prepared_discussion = {
+        'issues': issue_dict,
+        'discussion': discussion_dict,
+        'items': item_dict,
+        'title': issue_dict['title']
+    }
 
     return prepared_discussion
 
 
-def support(request_dict, for_api=False, api_data=None) -> dict:
+def support(request_dict) -> Union[dict, None]:
     """
     Initialize the support step for the end of a branch in a discussion. Creates helper and returns a dictionary
     containing the first elements needed for the discussion.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param for_api
-    :param api_data: dict if requests came via the API
     :rtype: dict
     :return: prepared collection matchdictfor the discussion
     """
-    logger('Core', 'discussion.support', 'main')
+    logger('Core', 'main')
 
     nickname = request_dict['nickname']
-    issue = request_dict['issue']
-    ui_locales = request_dict['ui_locales']
+    db_issue = request_dict['issue']
     history = request_dict['history']
-
-    if for_api and api_data:
-        slug = api_data['slug']
-        arg_user_uid = api_data['arg_user_uid']
-        arg_system_uid = api_data['arg_system_uid']
-    else:
-        slug = request_dict.get('slug', '')
-        arg_user_uid = request_dict['matchdict'].get('arg_id_user', '')
-        arg_system_uid = request_dict['matchdict'].get('arg_id_sys', '')
+    slug = db_issue.slug
+    arg_user_uid = request_dict.get('arg_user_uid', request_dict['matchdict'].get('arg_id_user', ''))
+    arg_system_uid = request_dict.get('arg_system_uid', request_dict['matchdict'].get('arg_id_sys', ''))
 
     application_url = request_dict['app_url']
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, for_api, nickname)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
+    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    if not check_belonging_of_argument(issue, arg_user_uid) or \
-            not check_belonging_of_argument(issue, arg_system_uid) or \
+    if not check_belonging_of_argument(db_issue.uid, arg_user_uid) or \
+            not check_belonging_of_argument(db_issue.uid, arg_system_uid) or \
             not related_with_support(arg_user_uid, arg_system_uid):
-        logger('Core', 'discussion.support', 'no item dict', error=True)
+        logger('Core', 'no item dict', error=True)
         return None
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=application_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, issue, application_url, for_api, path=request_dict['path'], history=history)
-    _dh = DictionaryHelper(ui_locales, disc_ui_locales)
-    discussion_dict = _ddh.get_dict_for_supporting_each_other(arg_system_uid, arg_user_uid, nickname, application_url)
-    item_dict = _idh.get_array_for_support(arg_system_uid, slug, for_api)
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request_dict['registry'], request_dict['app_url'],
-                                          request_dict['path'], for_api=for_api, nickname=nickname)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
+    discussion_dict = _ddh.get_dict_for_supporting_each_other(arg_system_uid, arg_user_uid, db_user.nickname)
+    item_dict = _idh.get_array_for_support(arg_system_uid, slug)
 
-    prepared_discussion = dict()
-    prepared_discussion['issues'] = issue_dict
-    prepared_discussion['discussion'] = discussion_dict
-    prepared_discussion['items'] = item_dict
-    prepared_discussion['extras'] = extras_dict
-    prepared_discussion['title'] = issue_dict['title']
+    prepared_discussion = {
+        'issues': issue_dict,
+        'discussion': discussion_dict,
+        'items': item_dict,
+        'title': issue_dict['title']
+    }
 
     return prepared_discussion
 
 
-def choose(request_dict, for_api=False) -> dict:
+def choose(request_dict) -> Union[dict, None]:
     """
     Initialize the choose step for more than one premise in a discussion. Creates helper and returns a dictionary
     containing several feedback options regarding this argument.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param for_api: boolean if requests came via the API
     :rtype: dict
     :return: prepared collection matchdictfor the discussion
     """
-    logger('Core', 'discussion.choose', 'main')
+    logger('Core', 'main')
 
     is_argument = request_dict['matchdict'].get('is_argument', '')
     is_supportive = request_dict['matchdict'].get('supportive', '')
@@ -285,158 +243,130 @@ def choose(request_dict, for_api=False) -> dict:
     pgroup_ids = request_dict['matchdict'].get('pgroup_ids', '')
 
     nickname = request_dict['nickname']
-    issue = request_dict['issue']
+    db_issue = request_dict['issue']
     ui_locales = request_dict['ui_locales']
-    slug = request_dict['slug']
     application_url = request_dict['app_url']
     history = request_dict['history']
+    slug = db_issue.slug
 
     is_argument = True if is_argument is 't' else False
     is_supportive = True if is_supportive is 't' else False
 
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, for_api, nickname)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
+    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
     for pgroup in pgroup_ids:
         if not is_integer(pgroup):
-            logger('core', 'discussion.choose', 'integer error', error=True)
+            logger('core', 'integer error', error=True)
             return None
 
-    if not check_belonging_of_premisegroups(issue, pgroup_ids) or not is_integer(uid):
-        logger('core', 'discussion.choose', 'wrong belonging of pgroup', error=True)
+    if not check_belonging_of_premisegroups(db_issue.uid, pgroup_ids) or not is_integer(uid):
+        logger('core', 'wrong belonging of pgroup', error=True)
         return None
 
-    _ddh = DiscussionDictHelper(ui_locales, nickname, history, main_page=application_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, issue, application_url, for_api, path=request_dict['path'], history=history)
+    _ddh = DiscussionDictHelper(ui_locales, db_user.nickname, history, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
     discussion_dict = _ddh.get_dict_for_choosing(uid, is_argument, is_supportive)
-    item_dict = _idh.get_array_for_choosing(uid, pgroup_ids, is_argument, is_supportive, nickname)
+    item_dict = _idh.get_array_for_choosing(uid, pgroup_ids, is_argument, is_supportive, db_user.nickname)
 
     if not item_dict:
-        logger('discussion_choose', 'def', 'no item dict', error=True)
+        logger('discussion_choose', 'no item dict', error=True)
         return None
 
-    _dh = DictionaryHelper(ui_locales, disc_ui_locales)
-    extras_dict = _dh.prepare_extras_dict(slug, False, True, True, request_dict['registry'], request_dict['app_url'],
-                                          request_dict['path'], for_api=for_api, nickname=nickname)
-
-    prepared_discussion = dict()
-    prepared_discussion['issues'] = issue_dict
-    prepared_discussion['discussion'] = discussion_dict
-    prepared_discussion['items'] = item_dict
-    prepared_discussion['extras'] = extras_dict
-    prepared_discussion['title'] = issue_dict['title']
+    prepared_discussion = {
+        'issues': issue_dict,
+        'discussion': discussion_dict,
+        'items': item_dict,
+        'title': issue_dict['title']
+    }
 
     return prepared_discussion
 
 
-def jump(request_dict, for_api=False, api_data=None) -> dict:
+def jump(request_dict) -> Union[dict, None]:
     """
     Initialize the jump step for an argument in a discussion. Creates helper and returns a dictionary containing
     several feedback options regarding this argument.
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param for_api: boolean if requests came via the API
-    :param api_data: dict if requests came via the API
     :rtype: dict
     :return: prepared collection matchdict for the discussion
     """
-    logger('Core', 'discussion.jump', 'main')
+    logger('Core', 'main')
 
-    tmp_dict = request_dict
-    if for_api and api_data:
-        slug = api_data.get('slug')
-        arg_uid = api_data.get('arg_uid')
-        tmp_dict = api_data
-    else:
-        slug = request_dict['matchdict'].get('slug')
-        arg_uid = request_dict['matchdict'].get('arg_id')
+    arg_uid = request_dict.get('arg_uid', request_dict['matchdict'].get('arg_id'))
+    nickname = request_dict.get('nickname')
+    db_issue = request_dict.get('issue')
+    history = request_dict.get('history')
+    application_url = request_dict.get('app_url')
+    slug = db_issue.slug
 
-    nickname = tmp_dict.get('nickname')
-    issue = tmp_dict.get('issue')
-    ui_locales = tmp_dict.get('ui_locales', 'en')
-    history = tmp_dict.get('history')
-    application_url = tmp_dict.get('app_url')
-
-    if not check_belonging_of_argument(issue, arg_uid) or not issue and not slug and not arg_uid:
-        logger('Core', 'discussion.choose', 'no item dict', error=True)
+    if not check_belonging_of_argument(db_issue.uid, arg_uid):
+        logger('Core', 'no item dict', error=True)
         return None
 
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, for_api, nickname)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
+    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=application_url, slug=slug)
-    _idh = ItemDictHelper(disc_ui_locales, issue, application_url, for_api, path=request_dict['path'], history=history)
-    _dh = DictionaryHelper(ui_locales, disc_ui_locales)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
+    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
     discussion_dict = _ddh.get_dict_for_jump(arg_uid)
-    item_dict = _idh.get_array_for_jump(arg_uid, slug, for_api)
-    extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request_dict['registry'], request_dict['app_url'],
-                                          request_dict['path'], for_api=for_api, nickname=nickname)
+    item_dict = _idh.get_array_for_jump(arg_uid, slug)
 
-    prepared_discussion = dict()
-    prepared_discussion['issues'] = issue_dict
-    prepared_discussion['discussion'] = discussion_dict
-    prepared_discussion['items'] = item_dict
-    prepared_discussion['extras'] = extras_dict
-    prepared_discussion['title'] = issue_dict['title']
+    prepared_discussion = {
+        'issues': issue_dict,
+        'discussion': discussion_dict,
+        'items': item_dict,
+        'title': issue_dict['title']
+    }
 
     return prepared_discussion
 
 
-def finish(request_dict, for_api=False) -> dict:
-    logger('Core', 'discussion_finish', 'main')
+def finish(request_dict) -> Union[dict, None]:
+    logger('Core', 'main')
 
     nickname = request_dict['nickname']
-    ui_locales = request_dict['ui_locales']
     application_url = request_dict['app_url']
-    issue = request_dict['issue']
-    slug = request_dict['slug']
+    db_issue = request_dict['issue']
     history = request_dict['history']
+    slug = db_issue.slug
 
     # get parameters
     arg_id = request_dict['matchdict'].get('arg_id')
-    if not arg_id:
-        logger('Core', 'discussion_finish', 'no argument', error=True)
-        return None
-
     last_arg = get_not_disabled_arguments_as_query().filter_by(uid=arg_id).first()
     if not last_arg:
-        logger('Core', 'discussion_finish', 'no argument', error=True)
+        logger('Core', 'no argument', error=True)
         return None
 
-    issue_dict = issue_helper.prepare_json_of_issue(issue, application_url, for_api, nickname)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
+    issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
-    _dh = DictionaryHelper(ui_locales, disc_ui_locales)
-    _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, main_page=application_url, slug=slug)
-    discussion_dict = _ddh.get_dict_for_argumentation(arg_id, last_arg.is_supportive, None, 'end_attack', history, nickname)
+    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
+    discussion_dict = _ddh.get_dict_for_argumentation(arg_id, last_arg.is_supportive, None, 'end_attack', history, db_user)
     item_dict = ItemDictHelper.get_empty_dict()
-    extras_dict = _dh.prepare_extras_dict(slug, True, True, True, request_dict['registry'], request_dict['app_url'],
-                                          request_dict['path'], for_api=for_api, nickname=nickname)
+
     return {
         'issues': issue_dict,
         'discussion': discussion_dict,
         'items': item_dict,
-        'extras': extras_dict,
         'title': issue_dict['title']
     }
 
 
-def dexit(request_dict) -> dict:
+def dexit(ui_locales: str, db_user: User) -> Union[dict, None]:
     """
     Exit the discussion. Creates helper and returns a dictionary containing the summary of today.
 
-    :param request_dict: dict with registry, appurl, nickname, path and ui_locales of pyramid's request object
+    :param ui_locales:
+    :param db_user:
     :rtype: dict
     :return: prepared collection with summary of current day's actions of the user
     """
-    _t = Translator(request_dict['ui_locales'])
-
-    extras_dict = DictionaryHelper(request_dict['ui_locales']).prepare_extras_dict_for_normal_page(
-        request_dict['registry'], request_dict['app_url'], request_dict['path'], request_dict['nickname'])
-    summary_dict = user.get_summary_of_today(request_dict['nickname'], request_dict['ui_locales'])
-
-    prepared_discussion = dict()
-    prepared_discussion['title'] = _t.get(_.finishTitle)
-    prepared_discussion['extras'] = extras_dict
-    prepared_discussion['summary'] = summary_dict
-    return prepared_discussion
+    return {
+        'title': Translator(ui_locales).get(_.finishTitle),
+        'summary': user.get_summary_of_today(db_user)
+    }

@@ -23,18 +23,18 @@ var google_colors = [
 
 function DiscussionBarometer(){
     'use strict';
-    var is_attitude = false;
-    var global_dialog = $('#' + popupBarometerId);
-    var data = [];
-    var address = 'position';
-    var barWidth;
-    var modeEnum = {
+    var _is_attitude = false;
+    var _global_dialog = $('#' + popupBarometerId);
+    var _data = [];
+    var _address = 'position';
+    var _barWidth;
+    var _modeEnum = {
     	'attitude': 1,
 	    'justify': 2,
 	    'argument': 3,
 	    'position': 4,
     };
-    var mode;
+    var _mode;
 
     /**
      * Displays barometer.
@@ -51,33 +51,33 @@ function DiscussionBarometer(){
 
         // parse url
         if (url.indexOf('/attitude/') !== -1){
-            address = 'attitude';
-            uid = splitted[splitted.length-1];
-            new AjaxGraphHandler().getUserGraphData(uid, address);
+            _address = 'attitude';
+            uid = parseInt(splitted[splitted.length-1]);
+            new AjaxGraphHandler().getUserGraphData(uid, _address);
         } else if (url.indexOf('/justify/') !== -1 || url.indexOf('/choose/') !== -1) {
-            address = 'justify';
+            _address = 'justify';
             // dont know step
             var tmp = url.split('/');
             if (tmp[tmp.length - 1] === 'd'){
-                address = 'dont_know';
-                uid_array.push(tmp[tmp.length - 2]);
+                _address = 'dont_know';
+                uid_array.push(parseInt(tmp[tmp.length - 2]));
             } else {
                 inputs.each(function(){
                    uid_array.push($(this).attr('id').substr(5));
                 });
             }
-            new AjaxGraphHandler().getUserGraphData(uid_array, address);
+            new AjaxGraphHandler().getUserGraphData(uid_array, _address);
         } else if (url.indexOf('/reaction/') !== -1){
-            address = 'argument';
-            uid_array.push(splitted[splitted.length - 3]);
-            uid_array.push(splitted[splitted.length - 1]);
-            new AjaxGraphHandler().getUserGraphData(uid_array, address);
+            _address = 'argument';
+            uid_array.push(parseInt(splitted[splitted.length - 3]));
+            uid_array.push(parseInt(splitted[splitted.length - 1]));
+            new AjaxGraphHandler().getUserGraphData(uid_array, _address);
         } else {
-            address = 'position';
+            _address = 'position';
             inputs.each(function(){
-                uid_array.push($(this).attr('id').substr(5));
+                uid_array.push(parseInt($(this).attr('id').substr(5)));
             });
-            new AjaxGraphHandler().getUserGraphData(uid_array, address);
+            new AjaxGraphHandler().getUserGraphData(uid_array, _address);
         }
     };
 
@@ -87,30 +87,27 @@ function DiscussionBarometer(){
      * @param data: unparsed data of request
      * @param addressUrl: step of discussion
      */
-    this.callbackIfDoneForGetDictionary = function(jdata, addressUrl){
-        address = addressUrl;
+    this.callbackIfDoneForGetDictionary = function(inputdata, addressUrl){
+        _address = addressUrl;
         try{
-            mode = modeEnum[address];
+            _mode = _modeEnum[_address];
         } catch(e) {
             setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(internalError));
             return;
         }
 
-		if (jdata.error.length !== 0) {
-			setGlobalErrorHandler(_t(ohsnap), jdata.error);
-			return;
-		}
-		if (jdata.info.length !== 0) {
-			setGlobalInfoHandler('Hey', jdata.info);
+		if (inputdata.info.length !== 0) {
+			setGlobalInfoHandler('Hey', inputdata.info);
 			return;
 		}
 
         // fetch zero users
-        if (isEverythingZero(jdata)){
+        if (isEverythingZero(inputdata)){
             setGlobalInfoHandler('Hey', _t_discussion(otherParticipantsDontHaveOpinionForThis));
             return -1;
         }
-        data = jdata;
+        
+        _data = inputdata;
 
         removeContentOfModal();
 
@@ -121,16 +118,16 @@ function DiscussionBarometer(){
         // create bar chart as default view
         getD3BarometerBarChart();
 
-        global_dialog.modal('show').on('hidden.bs.modal', function () {
+        _global_dialog.modal('show').on('hidden.bs.modal', function () {
             clearAnchor();
         });
 
         $('#' + popupBarometerAcceptBtn).show().click( function () {
-            global_dialog.modal('hide');
+            _global_dialog.modal('hide');
         }).removeClass('btn-success');
         $('#' + popupBarometerRefuseBtn).hide();
 
-        global_dialog.find('.modal-title').html(jdata.title).css({'line-height': '1.0'});
+        _global_dialog.find('.modal-title').html(_data.title).css({'line-height': '1.0'});
     };
 
     /**
@@ -138,7 +135,7 @@ function DiscussionBarometer(){
      */
     function removeContentOfModal(){
         $('#modal-body-chart-place').empty();
-        global_dialog.find('.col-md-5').empty();
+        _global_dialog.find('.col-md-5').empty();
     }
 
     /**
@@ -168,7 +165,7 @@ function DiscussionBarometer(){
         $('#modal-body-chart-place').append('<div id="barometer-div"></div>');
         // width and height of chart
         var width = 400;
-        var height = mode === modeEnum.attitude ? 300 : 400;
+        var height = _mode === _modeEnum.attitude ? 300 : 400;
         var barChartSvg = getSvg(width+70, height+50).attr("id", "barometer-svg");
 
         var usersDict = getUsersDict([]);
@@ -176,12 +173,12 @@ function DiscussionBarometer(){
         // create bars of chart
         // selector = inner-rect: clicks on statement relative to seen_by value
         createBar(usersDict, width, height-50, barChartSvg, "inner-rect");
-        if(address !== 'argument' && address !== 'attitude'){
+        if(_address !== 'argument' && _address !== 'attitude'){
             createBar(usersDict, width, height-50, barChartSvg, "outer-rect");
         }
 
         // create axis
-        if(address === 'argument' || address === 'attitude'){
+        if(_address === 'argument' || _address === 'attitude'){
             createXAxis(usersDict, barChartSvg, width, height+10);
         } else {
             createYAxis(barChartSvg, height-50);
@@ -202,9 +199,9 @@ function DiscussionBarometer(){
 	 */
 	function isEverythingZero(usersDict){
         // counting depends on address
-        is_attitude = address === 'attitude';
+        _is_attitude = _address === 'attitude';
         var count = 0;
-        if(is_attitude) {
+        if(_is_attitude) {
             count = usersDict.agree.seenBy + usersDict.disagree.seenBy;
         } else {
             $.each(usersDict.opinions, function( index, value ) {
@@ -222,8 +219,8 @@ function DiscussionBarometer(){
      */
     function getUsersDict(usersDict) {
         // create dictionary depending on address
-        is_attitude = address === 'attitude';
-        if(is_attitude) {
+        _is_attitude = _address === 'attitude';
+        if(_is_attitude) {
             usersDict = createDictForAttitude(usersDict);
         } else {
             usersDict = createDictForArgumentAndStatement(usersDict);
@@ -306,18 +303,18 @@ function DiscussionBarometer(){
      */
     function createDictForAttitude(usersDict){
         usersDict.push({
-            usersNumber: data.agree.users.length,
-            seenBy: data.seen_by,
-            text: data.agree.text,
-            users: data.agree.users,
-            message: data.agree.message
+            usersNumber: _data.agree.users.length,
+            seenBy: _data.seen_by,
+            text: _data.agree.text,
+            users: _data.agree.users,
+            message: _data.agree.message
         });
         usersDict.push({
-            usersNumber: data.disagree.users.length,
-            seenBy: data.seen_by,
-            text: data.disagree.text,
-            users: data.disagree.users,
-            message: data.disagree.message
+            usersNumber: _data.disagree.users.length,
+            seenBy: _data.seen_by,
+            text: _data.disagree.text,
+            users: _data.disagree.users,
+            message: _data.disagree.message
         });
         return usersDict;
     }
@@ -328,7 +325,7 @@ function DiscussionBarometer(){
      * @returns usersDict
      */
     function createDictForArgumentAndStatement(usersDict){
-        $.each(data.opinions, function(key, value) {
+        $.each(_data.opinions, function(key, value) {
             usersDict.push({
                 usersNumber: value.users.length,
                 seenBy: value.seen_by,
@@ -351,21 +348,21 @@ function DiscussionBarometer(){
      */
     function createBar(usersDict, width, height, barChartSvg, selector) {
         // if the chart is a bar chart, subtract offset on scale from width
-        if(address === "argument" || address === "attitude"){
+        if(_address === "argument" || _address === "attitude"){
             var maxUsersNumber = getMaximum(usersDict);
             var offset = 5/100 * maxUsersNumber;
             width = width - (width/(maxUsersNumber+offset) * offset);
         }
         // width of one bar
         // width/height - left padding to y-Axis - space between bars
-	    var tmp = address === "argument" || address === "attitude" ? height : width;
-        barWidth = (tmp - 10 - (usersDict.length-1)*10) / usersDict.length;
+	    var tmp = _address === "argument" || _address === "attitude" ? height : width;
+        _barWidth = (tmp - 10 - (usersDict.length-1)*10) / usersDict.length;
 
         var y_offset_height = 60;
         // set max-width of bar
-        if(barWidth > 100){
-            barWidth = 100;
-            y_offset_height = height - usersDict.length * barWidth;
+        if(_barWidth > 100){
+            _barWidth = 100;
+            y_offset_height = height - usersDict.length * _barWidth;
         }
 
         testNoArgumentsCreateRects(usersDict, barChartSvg, width, height, y_offset_height, selector);
@@ -433,10 +430,10 @@ function DiscussionBarometer(){
      */
     function getRectWidth(usersNumber, width, maxUsersNumber) {
         // height in percent: length/seen_by = x/height
-        if(address === "argument" || address === "attitude"){
+        if(_address === "argument" || _address === "attitude"){
             return divideWrapperIfZero(usersNumber, maxUsersNumber) * width;
         } else {
-            return barWidth;
+            return _barWidth;
         }
     }
 
@@ -451,8 +448,8 @@ function DiscussionBarometer(){
      */
     function getRectHeight(usersNumber, seenBy, height, selector) {
         // number of bar * width of bar + padding-left + space between to bars
-        if(address === "argument" || address === "attitude"){
-            return barWidth;
+        if(_address === "argument" || _address === "attitude"){
+            return _barWidth;
         }
         if (selector === 'inner-rect'){
             return divideWrapperIfZero(usersNumber, seenBy) * height;}
@@ -466,10 +463,10 @@ function DiscussionBarometer(){
      * @returns {number}
      */
     function getRectX(i) {
-        if(address === "argument" || address === "attitude"){
+        if(_address === "argument" || _address === "attitude"){
             return 50;
         }
-        return i * barWidth + 60 + i * 10;
+        return i * _barWidth + 60 + i * 10;
     }
 
     /**
@@ -485,8 +482,8 @@ function DiscussionBarometer(){
      */
     function getRectY(usersNumber, seenBy, i, y_offset_height, height, selector) {
         // y: height - barLength, because d3 starts to draw in left upper corner
-        if(address === "argument" || address === "attitude"){
-            return i * barWidth + y_offset_height + i * 10;
+        if(_address === "argument" || _address === "attitude"){
+            return i * _barWidth + y_offset_height + i * 10;
         }
         if (selector === 'inner-rect'){
            return height - (divideWrapperIfZero(usersNumber, seenBy) * height - 50);}
@@ -618,7 +615,7 @@ function DiscussionBarometer(){
             .innerRadius(innerRadius)
             .outerRadius(function (d, i) {
                 // if the user can only decide between agree and disagree: the height of sector is not dependent on seen-by-value
-                if(address === "attitude"){
+                if(_address === "attitude"){
                     return (outerRadius - innerRadius) + innerRadius;
                 }
                 // if nobody has chosen the argument then the height of the sector is 2% of the difference between innerRadius and outerRadius
@@ -693,7 +690,7 @@ function DiscussionBarometer(){
         // append tooltip in middle of doughnut chart
         // text of tooltip depends on address
         var tooltipText;
-        if(address === "attitude"){
+        if(_address === "attitude"){
             tooltipText = usersDict[index].usersNumber;
         } else {
             tooltipText = usersDict[index].usersNumber + "/" + usersDict[index].seenBy;
@@ -772,7 +769,7 @@ function DiscussionBarometer(){
         });
 
         // add click-event-listener for popup
-        global_dialog.on('click', function (d) {
+        _global_dialog.on('click', function (d) {
             // select area of popup without tooltip and listen for click event
             // if tooltip is visible hide tooltip
             if (d.target.id.indexOf("path") === -1 && d.target.id.indexOf("rect") === -1 && tooltipIsVisible === true) {
@@ -840,9 +837,9 @@ function DiscussionBarometer(){
      */
     function getTooltip(usersDict, index){
         var tooltip = $('<div>').attr("class", "chartTooltip");
-        var append_left = global_dialog.find('.col-md-5').outerHeight() > global_dialog.find('.col-md-6').outerHeight() + 100;
+        var append_left = _global_dialog.find('.col-md-5').outerHeight() > _global_dialog.find('.col-md-6').outerHeight() + 100;
         var col = append_left ? '.col-md-6' : '.col-md-5';
-        global_dialog.find(col).append(tooltip);
+        _global_dialog.find(col).append(tooltip);
 
         // make tooltip visible
         tooltip.css("opacity", 1).css('border-radius', '0.2em');
@@ -866,7 +863,7 @@ function DiscussionBarometer(){
 
         var message_list = usersDict[index].message !== null ? $('<li>').html(usersDict[index].message) : '';
         var text_keyword = '';
-        if (address === 'argument'){
+        if (_address === 'argument'){
             text_keyword = usersDict[index].seenBy === 1 ? participantSawArgumentsToThis : participantsSawArgumentsToThis;
         } else {
             text_keyword = usersDict[index].seenBy === 1 ? participantSawThisStatement : participantsSawThisStatement;
@@ -874,7 +871,7 @@ function DiscussionBarometer(){
 
         var seenByList = $('<li>').html(usersDict[index].seenBy + ' ' + _t_discussion(text_keyword));
 
-        var list = !is_attitude ? seenByList.append(message_list):  message_list;
+        var list = !_is_attitude ? seenByList.append(message_list):  message_list;
 
         // add images of avatars
         usersDict[index].users.forEach(function (e) {
@@ -899,7 +896,7 @@ function DiscussionBarometer(){
             label = $('<label>').attr('class', 'legendLabel').html(value.text);
             ul.append($('<li>').attr('id', 'legendLi_' + key).css('border-radius', '0.2em').append(div).append(label));
         });
-        global_dialog.find('.col-md-5').append(ul);
+        _global_dialog.find('.col-md-5').append(ul);
     }
 
     function getNormalColorFor(index){ return google_colors[index % google_colors.length][0]; }

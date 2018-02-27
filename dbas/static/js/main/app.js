@@ -254,7 +254,9 @@ function setAnalyticsOptOutLink(lang){
 function setEasterEggs(){
     'use strict';
 
-	$('#roundhousekick').click(function(){ new AjaxMainHandler().roundhouseKick(); });
+	$('#roundhousekick').click(function(){
+		new AjaxMainHandler().roundhouseKick();
+	});
 	$('#logo_dbas, #logo_dbas_s, #homeHeading').click(function(){
 		if (!$(this)){
 			return;
@@ -270,6 +272,19 @@ function setEasterEggs(){
 		}
 		$('#homeHeading').data('counter', counter);
 	});
+}
+
+/**
+ * Fill captcha in registration-form
+ */
+function fill_captcha() {
+    'use strict';
+    var rand_num1 = Math.floor(Math.random() * 10) + 1;
+    var rand_num2 = Math.floor(Math.random() * 10) + 1;
+    var rand_num3 = Math.floor(Math.random() * 10) + 1;
+    document.getElementById("captcha-digit1").innerHTML = rand_num1;
+    document.getElementById("captcha-digit2").innerHTML = rand_num2;
+    document.getElementById("captcha-digit3").innerHTML = rand_num3;
 }
 
 /**
@@ -293,6 +308,7 @@ function prepareLoginRegistrationPopup(){
 		if ($(this).attr('href').indexOf('signup') !== -1){
 			$('#' + popupLoginButtonLogin).hide();
 			$('#' + popupLoginButtonRegister).show();
+            fill_captcha();
 		} else {
 			$('#' + popupLoginButtonLogin).show();
 			$('#' + popupLoginButtonRegister).hide();
@@ -661,7 +677,7 @@ $(document).ready(function () {
 		addBorderToActiveNavbar();
 	}, 150);
 	$('#' + popupLogin).on('shown.bs.modal', function (e) {
-		new PopupHandler().showLoginPopup(true);
+        new PopupHandler().showLoginPopup();
 	});
 	if ($('.counter').length > 0) {
 		$('.counter').counterUp({delay: 5, time: 1000});

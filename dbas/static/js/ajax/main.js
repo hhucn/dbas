@@ -2,6 +2,46 @@
  * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
+/**
+ * Use this to call any url asyncronously
+ *
+ * @param url to call
+ * @param method POST or GET
+ * @param data for the body, will be json-decoded
+ * @param ajaxDone is the function to call after ajax is done
+ * @param ajaxFail is the fucntion to call on fail
+ */
+function ajaxSkeleton(url, method, data, ajaxDone, ajaxFail){
+	'use strict';
+	var csrf_token = $('#' + hiddenCSRFTokenId).val();
+	$.ajax({
+		url: url,
+		method: method,
+		dataType: 'json',
+		contentType: 'application/json',
+		data: JSON.stringify(data),
+		headers: {'X-CSRF-Token': csrf_token}
+	}).done(function(data){
+		ajaxDone(data);
+	}).fail(function(data){
+		ajaxFail(data);
+	});
+}
+
+/**
+ * Validate content of recaptcha. True if invalid.
+ * @returns {boolean}
+ */
+function invalid_recaptcha() {
+    'use strict';
+    var answer = parseInt(document.getElementById("captcha-answer").value);
+    var digit1 = parseInt(document.getElementById("captcha-digit1").innerHTML);
+    var digit2 = parseInt(document.getElementById("captcha-digit2").innerHTML);
+    var digit3 = parseInt(document.getElementById("captcha-digit3").innerHTML);
+    var sum = digit1 + digit2 - digit3;
+    return answer !== sum || answer === "";
+}
+
 function AjaxMainHandler(){
 	'use strict';
 
@@ -10,114 +50,69 @@ function AjaxMainHandler(){
 	 * @param new_lang is the shortcut for the language
 	 */
 	this.switchDisplayLanguage = function (new_lang){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: mainpage + 'ajax_switch_language',
-			type: 'POST',
-			data: { '_LOCALE_': new_lang},
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxSwitchDisplayLanguageDone(data) {
-			if (data.error.length !== 0) {
-				setGlobalErrorHandler(_t(ohsnap), data.error);
-			} else {
-				setAnalyticsOptOutLink(new_lang);
-				location.reload(true);
-			}
-		}).fail(function ajaxSwitchDisplayLanguageFail(xhr) {
-			if (xhr.status === 400) {
-				setGlobalErrorHandler(_t(ohsnap), _t(requestFailedBadToken));
-			} else if (xhr.status === 500) {
-				setGlobalErrorHandler(_t(ohsnap), _t(requestFailedInternalError));
-			} else {
-				setGlobalErrorHandler(_t(ohsnap), _t(languageCouldNotBeSwitched));
-			}
-		});
+		var url = mainpage + 'switch_language';
+		var data = {'lang': new_lang};
+		var done = function ajaxSwitchDisplayLanguageDone() {
+			setAnalyticsOptOutLink(new_lang);
+			location.reload(true);
+		};
+		var fail = function ajaxSwitchDisplayLanguageFail(data) {
+			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
+		};
+		ajaxSkeleton(url, 'POST', data, done, fail);
 	};
 
 	/**
 	 *
 	 */
 	this.login = function(user, password, showGlobalError){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		var url = window.location.href;
-		var keep_login = $('#keep-login-box').prop('checked') ? 'true' : 'false';
+        var keep_login = $('#keep-login-box').prop('checked');
 		$('#' + popupLoginFailed).hide();
 		$('#' + popupLoginFailed + '-message').text('');
 		$('#' + popupLoginInfo).hide();
 		$('#' + popupLoginInfo + '-message').text('');
 
-		$.ajax({
-			url: mainpage + 'ajax_user_login',
-			type: 'POST',
-			data: {
-				user: user,
-				password: password,
-				url: url,
-				keep_login: keep_login
-			},
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxLoginDone(data) {
+		var url = mainpage + 'user_login';
+        var d = {
+			user: user,
+			password: password,
+            redirect_url: window.location.href,
+			keep_login: keep_login
+        };
+		var done = function ajaxLoginDone(data) {
+			$('#' + loginPwId).val('');
 			callbackIfDoneForLogin(data, showGlobalError);
-		}).fail(function ajaxLoginFail(xhr) {
-			var errorMsg = '';
-
+		};
+		var fail = function ajaxLoginFail(xhr) {
+			$('#' + loginPwId).val('');
 			if (xhr.status === 200) {
 				location.reload(true);
 			} else if (xhr.status === 302) {
 				location.href = xhr.getResponseHeader('Location');
-			} else if (xhr.status === 400) {
-				errorMsg = _t(requestFailedBadToken);
-			} else if (xhr.status === 500) {
-				errorMsg = _t(requestFailedInternalError);
 			} else {
-				errorMsg = _t(requestFailed);
+				setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
 			}
-
-			if (errorMsg.length > 0){
-				if (showGlobalError) {
-					setGlobalErrorHandler('Ohh!', errorMsg);
-				} else {
-					$('#' + popupLoginFailed).show();
-					$('#' + popupLoginFailed + '-message').html(errorMsg);
-				}
-			}
-		}).always(function ajaxLoginAlways(){
-			$('#' + loginPwId).val('');
-		});
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
 
 	/**
 	 *
 	 * @param service
-	 * @param url
+	 * @param redirect_uri
 	 */
-	this.oauthLogin = function(service, url){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+	this.oauthLogin = function(service, redirect_uri){
 		$('#' + popupLoginFailed).hide();
 		$('#' + popupLoginFailed + '-message').text('');
 		$('#' + popupLoginInfo).hide();
 		$('#' + popupLoginInfo + '-message').text('');
 
-		$.ajax({
-			url: mainpage + 'ajax_user_login_oauth',
-			type: 'POST',
-			data: {
-				service: service,
-				redirect_uri: url},
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxOauthLoginDone(data) {
+		var url =  mainpage + 'user_login_oauth';
+		var d = {
+			service: service,
+			redirect_uri: redirect_uri
+		};
+		var done = function ajaxOauthLoginDone(data) {
 			if (data.error.length !== 0){
 				setGlobalErrorHandler('Ohh!', data.error);
 			} else if ('missing' in data && data.missing.length !== 0) {
@@ -125,31 +120,26 @@ function AjaxMainHandler(){
 			} else if ('authorization_url' in data && data.authorization_url !== 0){
 				window.open(data.authorization_url, '_self');
 			}
-		}).fail(function ajaxOauthLoginFail(xhr) {
+		};
+		var fail = function ajaxOauthLoginFail(xhr) {
 			if (xhr.status === 0 || xhr.status === 200) {
 				location.reload(true);
 			} else{
-				setGlobalErrorHandler('Ohh!', _t(requestFailedInternalError) + ' (' + xhr.status + ')');
+				setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
 			}
-		});
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
 
 	/**
 	 *
 	 */
 	this.logout = function(){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: mainpage + 'ajax_user_logout',
-			type: 'POST',
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxLogoutDone() {
+		var url =  mainpage + 'user_logout';
+		var done = function ajaxLogoutDone() {
 			location.reload(true);
-		}).fail(function ajaxLogoutFail(xhr) {
+		};
+		var fail = function ajaxLogoutFail(xhr) {
 			if (xhr.status === 200) {
 				if (window.location.href.indexOf('settings') !== 0){
 					window.location.href = mainpage + 'discuss';
@@ -161,134 +151,77 @@ function AjaxMainHandler(){
 			} else {
 				location.reload(true);
 			}
-		});
+		};
+		ajaxSkeleton(url, 'POST', {}, done, fail);
 	};
 
-	/**
-	 *
-	 */
 	this.registration = function(){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		var firstname = $('#userfirstname-input').val(),
-			lastname = $('#userlastname-input').val(),
-			nickname = $('#nick-input').val(),
-			email = $('#email-input').val(),
-			password = $('#' + popupLoginPasswordInputId).val(),
-			passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val(),
-			recaptcha = $('#recaptcha-token').value,
-			gender = '';
-
+        $('#' + popupLoginRegistrationFailed).hide();
 		if ($('#' + popupLoginInlineRadioGenderN).is(':checked')){ gender = 'n'; }
 		if ($('#' + popupLoginInlineRadioGenderM).is(':checked')){ gender = 'm'; }
 		if ($('#' + popupLoginInlineRadioGenderF).is(':checked')){ gender = 'f'; }
 
-		$.ajax({
-			url: 'ajax_user_registration',
-			type: 'POST',
-			data: {
-				firstname: firstname,
-				lastname: lastname,
-				nickname: nickname,
-				gender: gender,
-				email: email,
-				password: password,
-				passwordconfirm: passwordconfirm,
-				'g-recaptcha-response': recaptcha,
-				lang: getLanguage(),
-				mode: 'manually'
-			},
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxRegistrationDone(data) {
+        if (invalid_recaptcha()) {
+            $('#' + popupLoginRegistrationFailed).show();
+            $('#' + popupLoginRegistrationFailed + '-message').text(_t(wrongCaptcha));
+            return;
+        }
+
+		var url = 'user_registration';
+        var d = {
+			firstname: $('#userfirstname-input').val(),
+			lastname: $('#userlastname-input').val(),
+			nickname: $('#nick-input').val(),
+			gender: '',
+			email: $('#email-input').val(),
+			password: $('#' + popupLoginPasswordInputId).val(),
+			passwordconfirm: $('#' + popupLoginPasswordconfirmInputId).val(),
+            lang: getLanguage()
+        };
+		var done = function ajaxRegistrationDone(data) {
 			callbackIfDoneForRegistration(data);
-		}).fail(function ajaxRegistrationFail(xhr) {
-			$('#' + popupLoginRegistrationFailed).show();
-			if (xhr.status === 400) {
-				$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedBadToken));
-			} else if (xhr.status === 500) {
-				$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedInternalError));
-			} else {
-				$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
-			}
-		}).always(function ajaxLoginAlways(){
 			$('#' + popupLoginPasswordInputId).val('');
 			$('#' + popupLoginPasswordconfirmInputId).val('');
-		});
+		};
+		var fail = function ajaxRegistrationFail(data) {
+			$('#' + popupLoginRegistrationFailed).show();
+			$('#' + popupLoginPasswordInputId).val('');
+			$('#' + popupLoginPasswordconfirmInputId).val('');
+			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
 
 	/**
 	 *
 	 */
 	this.passwordRequest = function(){
-		var email = $('#password-request-email-input').val();
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_user_password_request',
-			type: 'POST',
-			data: { email: email, lang: getLanguage()},
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxPasswordRequestDone(data) {
-			callbackIfDoneForPasswordRequest(data);
-		}).fail(function ajaxPasswordRequestFail(xhr) {
-			$('#' + popupLoginRegistrationFailed).show();
-			if (xhr.status === 400) {
-				$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedBadToken));
-			} else if (xhr.status === 500) {
-				$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailedInternalError));
-			} else {
-				$('#' + popupLoginRegistrationFailed + '-message').text(_t(requestFailed));
-			}
-		});
+		var url =  'user_password_request';
+        var d = {
+            email: $('#password-request-email-input').val(),
+            lang: getLanguage()
+        };
+		var fail = function ajaxPasswordRequestFail(data) {
+			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
+		};
+		ajaxSkeleton(url, 'POST', d, callbackIfDoneForPasswordRequest(data), fail);
 	};
 
 	/**
 	 * Get-Request for an roundhouse kick
 	 */
 	this.roundhouseKick = function(){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
 		$.ajax({
-			url: 'additional_service',
-			type: 'POST',
-			data: {type:'chuck'},
-			global: false,
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
+			url: 'http://api.icndb.com/jokes/random',
+			type: 'GET'
 		}).done(function ajaxRoundhouseKickDone(data) {
 			if (data.type === 'success'){
 				displayConfirmationDialogWithoutCancelAndFunction('Chuck Norris Fact #' + data.value.id,
 					'<p>' + data.value.joke + '</p>' +
-					'<p class="pull-right">powered by <a href="http://www.icndb.com/" target="_blank">http://www.icndb.com/</a></p>');
-
+					'<p class="pull-right">powered by ' +
+					'<a href="http://www.icndb.com/" target="_blank">http://www.icndb.com/</a>' +
+					'</p>');
 			}
-		});
-	};
-
-	/**
-	 * Get your mama
-	 */
-	this.ajaxMama = function(){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'additional_service',
-			type: 'POST',
-			data: {type:'mama'},
-			global: false,
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxMamaDone(data) {
-			displayConfirmationDialogWithoutCancelAndFunction('Yo Mamma',  '<h4>' + data.joke + '</h4>\n\n<span' +
-					' style="float:right;">powered by <a href="http://yomomma.info/">http://yomomma.info/</a></span>');
 		});
 	};
 }

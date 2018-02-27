@@ -24,7 +24,7 @@
                 </li>
 
                 <li id="restart-link" tal:condition="extras.ongoing_discussion">
-                    <a id="discussion-restart-btn" href="" tal:attributes="href extras.restart_url" data-toggle="tooltip" data-placement="left">
+                    <a id="discussion-restart-btn" href="/discuss/${extras.restart_url}" data-toggle="tooltip" data-placement="left">
                         <i class="fa fa-repeat" aria-hidden="true"></i>&thinsp;<span i18n:translate="restart">Restart</span>
                     </a>
                 </li>
@@ -75,7 +75,7 @@
                     </a>
                 </li>
 
-                <li id="review-link" tal:condition="extras.logged_in" tal:attributes="data-broke-limit extras.broke_limit">
+                <li id="review-link" tal:condition="extras.logged_in" tal:attributes="data-broke-limit discussion.broke_limit">
                     <a href="${request.application_url}/review" data-toggle="tooltip" data-placement="left">
                         <i class="fa fa-pencil" aria-hidden="true"></i><span i18n:translate="review">Review</span>
                         <span tal:condition="extras.review_count > 0" class="label label-primary label-as-badge">${extras.review_count}</span>

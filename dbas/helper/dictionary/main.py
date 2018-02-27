@@ -5,25 +5,25 @@ Provides helping function for dictionaries.
 """
 
 import datetime
-import random
 import os
-import arrow
+import random
 
-from dbas.auth.recaptcha import client_key as google_recaptcha_client_key
+import arrow
+from pyramid.registry import Registry
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Language, Group, Settings, Issue, Argument
-from dbas.database.initializedb import nick_of_anonymous_user
 from dbas.handler import user
+from dbas.handler.issue import rep_limit_to_open_issues
 from dbas.handler.notification import count_of_new_notifications, get_box_for
-from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, is_development_mode
-from dbas.handler.issue import limit_for_open_issues
+from dbas.lib import BubbleTypes, create_speechbubble_dict, get_profile_picture, is_development_mode, \
+    nick_of_anonymous_user
 from dbas.logger import logger
-from dbas.review.helper.queues import get_count_of_all
 from dbas.review.helper.queues import get_complete_review_count
+from dbas.review.helper.queues import get_count_of_all
 from dbas.review.helper.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.url_manager import UrlManager
 
 
 class DictionaryHelper(object):
@@ -31,7 +31,7 @@ class DictionaryHelper(object):
     General function for dictionaries as well as the extras-dict()
     """
 
-    def __init__(self, system_lang='', discussion_lang=''):
+    def __init__(self, system_lang: str, discussion_lang=None):
         """
         Initialize default values
 
@@ -40,7 +40,7 @@ class DictionaryHelper(object):
         :return:
         """
         self.system_lang = system_lang
-        self.discussion_lang = discussion_lang if len(discussion_lang) > 0 else system_lang
+        self.discussion_lang = discussion_lang if discussion_lang else system_lang
 
     @staticmethod
     def get_random_subdict_out_of_ordered_dict(ordered_dict, count):
@@ -53,7 +53,7 @@ class DictionaryHelper(object):
         :return: dictionary
         """
         return_dict = dict()
-        logger('DictionaryHelper', 'get_subdictionary_out_of_orderer_dict', 'count: ' + str(count))
+        logger('DictionaryHelper', 'count: ' + str(count))
         items = list(ordered_dict.items())
 
         if count < 0:
@@ -73,109 +73,69 @@ class DictionaryHelper(object):
 
         return return_dict
 
-    def prepare_extras_dict_for_normal_page(self, registry, application_url, path, authenticated_userid,
-                                            append_notifications=False):
+    def prepare_extras_dict_for_normal_page(self, registry, application_url, path, db_user):
         """
         Calls self.prepare_extras_dict(...
 
         :param registry: request.registry
         :param application_url: request.application_url
         :param path: request.path
-        :param authenticated_userid: authenticated_userid.path
-        :param append_notifications: Boolean
+        :param db_user: db_user
         :return: dict()
         """
         return self.prepare_extras_dict('', False, False, False, registry, application_url, path,
-                                        append_notifications=append_notifications,
-                                        nickname=authenticated_userid, ongoing_discussion=False)
+                                        db_user=db_user, ongoing_discussion=False)
 
-    def prepare_extras_dict(self, current_slug, is_reportable, show_bar_icon, show_graph_icon, registry,
-                            application_url, path, nickname, for_api=False, append_notifications=False,
+    def prepare_extras_dict(self, current_slug: str, is_reportable: bool, show_bar_icon: bool, show_graph_icon: bool,
+                            registry: Registry, application_url: str, path: str, db_user: User,
                             broke_limit=False, add_premise_container_style='display: none',
                             add_statement_container_style='display: none', ongoing_discussion=True):
         """
         Creates the extras.dict() with many options!
 
         :param current_slug:
-        :param is_reportable: Boolean, same as discussion.bubbles.last.is_markable, but TAL has no last indicator
-        :param show_bar_icon: Boolean
-        :param show_graph_icon: Boolean
-        :param registry: request.registry
-        :param application_url: request.application_url
-        :param path: request.path
-        :param nickname: String
-        :param for_api: Boolean
-        :param append_notifications: Boolean
+        :param is_reportable: Same as discussion.bubbles.last.is_markable, but TAL has no last indicator
+        :param show_bar_icon: True, if the discussion space should show the graph icon
+        :param show_graph_icon: True, if the discussion space should show the barometer icon
+        :param registry: Pyramids registry
+        :param application_url: current app url
+        :param path: current path
+        :param db_user: User
         :param broke_limit: Boolean
         :param add_premise_container_style: style string, default 'display:none;'
         :param add_statement_container_style: style string, default 'display:none;'
         :param ongoing_discussion: Boolean
         :return: dict()
         """
-        logger('DictionaryHelper', 'prepare_extras_dict', 'def user ' + str(nickname))
-        request_authenticated_userid = nickname
-        public_nickname = nickname
+        logger('DictionaryHelper', 'def')
 
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=str(request_authenticated_userid)).first()
-        is_logged_in = db_user is not None
-        if not db_user:
-            nickname = nick_of_anonymous_user
-        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-        is_user_from_ldap = db_user.validate_password('NO_PW_BECAUSE_LDAP')
-
-        if db_user:
-            public_nickname = db_user.get_global_nickname()
-
-        if not db_user or request_authenticated_userid is None:
-            nickname = nick_of_anonymous_user
-            public_nickname = nick_of_anonymous_user
-            db_user = DBDiscussionSession.query(User).filter_by(nickname=nick_of_anonymous_user).first()
-
-        is_development = is_development_mode(registry)
-
-        rrs = registry.settings
-        if application_url is None:
-            application_url = ''
-            logger('DictionaryHelper', 'prepare_extras_dict', 'application_url is None', error=True)
-
-        restart_url = UrlManager(application_url, current_slug, for_api).get_slug_url(False)
-        if restart_url.endswith('/'):
-            restart_url = restart_url[:-1]
-        # if not restart_url.startswith('http'):
-        #     restart_url = 'https://' + restart_url
-        # if restart_url.startswith('http:'):
-        #     restart_url = restart_url.replace('http', 'https')
+        is_user_from_ldap = db_user.validate_password('NO_PW_BECAUSE_LDAP') if db_user else None
+        is_logged_in = True
+        if db_user and db_user.nickname == nick_of_anonymous_user:
+            db_user = None
+            is_logged_in = False
 
         return_dict = dict()
         return_dict['year'] = datetime.datetime.now().year
-        return_dict['restart_url'] = restart_url
+        return_dict['restart_url'] = current_slug
         return_dict['is_in_discussion'] = 'discuss' in path
         return_dict['logged_in'] = is_logged_in
-        return_dict['nickname'] = request_authenticated_userid
-        return_dict['public_nickname'] = public_nickname
+        return_dict['nickname'] = db_user.nickname if db_user else None
+        return_dict['public_nickname'] = db_user.public_nickname if db_user else None
         return_dict['add_premise_container_style'] = add_premise_container_style
         return_dict['add_statement_container_style'] = add_statement_container_style
         return_dict['users_avatar'] = get_profile_picture(db_user, 25)
         return_dict['ongoing_discussion'] = ongoing_discussion
         return_dict['slug'] = current_slug
-        if db_user:
-            return_dict['is_user_male'] = db_user.gender == 'm'
-            return_dict['is_user_female'] = db_user.gender == 'f'
-        else:
-            return_dict['is_user_male'] = False
-            return_dict['is_user_female'] = False
+        return_dict['is_user_male'] = db_user.gender == 'm' if db_user else False
+        return_dict['is_user_female'] = db_user.gender == 'f' if db_user else False
         return_dict['is_user_neutral'] = not return_dict['is_user_male'] and not return_dict['is_user_female']
         return_dict['broke_limit'] = 'true' if broke_limit else 'false'
         return_dict['use_with_ldap'] = is_user_from_ldap
-        return_dict['development_mode'] = is_development
-        if 'mode' in rrs:
-            return_dict['is_development'] = rrs['mode'] == 'development'
-            return_dict['is_production'] = rrs['mode'] == 'production'
-        else:
-            return_dict['is_development'] = False
-            return_dict['is_production'] = False
-        return_dict['review_count'] = get_complete_review_count(nickname)
-        return_dict['g_recaptcha_key'] = google_recaptcha_client_key
+        return_dict['development_mode'] = is_development_mode(registry)
+        return_dict['is_development'] = registry.settings.get('mode', '') == 'development'
+        return_dict['is_production'] = registry.settings.get('mode', '') == 'production'
+        return_dict['review_count'] = get_complete_review_count(db_user)
 
         # add german and english discussion links
         db_issues = DBDiscussionSession.query(Issue).filter_by(is_disabled=False)
@@ -189,11 +149,11 @@ class DictionaryHelper(object):
         return_dict['en_discussion_link'] = link_en
 
         self.__add_language_options_for_extra_dict(return_dict)
-        is_author, points = get_reputation_of(nickname)
-        is_author_bool = is_author or points > limit_for_open_issues
+        is_author, points = get_reputation_of(db_user)
+        is_author_bool = is_author or points > rep_limit_to_open_issues
 
         return_dict['is_reportable'] = is_reportable
-        return_dict['is_admin'] = user.is_in_group(nickname, 'admins')
+        return_dict['is_admin'] = db_user.is_admin() if db_user else False
         return_dict['is_author'] = is_author_bool
         return_dict['show_bar_icon'] = show_bar_icon
         return_dict['show_graph_icon'] = show_graph_icon
@@ -201,9 +161,9 @@ class DictionaryHelper(object):
         return_dict['close_statement_container'] = True
         return_dict['date'] = arrow.utcnow().format('DD-MM-YYYY')
         return_dict['count_of'] = {
-            'arguments': len(DBDiscussionSession.query(Argument).all()),
-            'users': len(DBDiscussionSession.query(User).all()),
-            'discussions': len(DBDiscussionSession.query(Issue).all()),
+            'arguments': DBDiscussionSession.query(Argument).count(),
+            'users': DBDiscussionSession.query(User).count(),
+            'discussions': DBDiscussionSession.query(Issue).count(),
             'reviews': get_count_of_all(),
         }
         self.__add_title_text(return_dict, is_logged_in)
@@ -212,13 +172,12 @@ class DictionaryHelper(object):
         self.__add_login_button_properties(return_dict)
 
         message_dict = dict()
-        message_dict['new_count'] = count_of_new_notifications(nickname)
+        message_dict['new_count'] = count_of_new_notifications(db_user) if db_user else 0
         message_dict['has_unread'] = message_dict['new_count'] > 0
-        inbox = get_box_for(nickname, self.system_lang, application_url, True)
-        outbox = get_box_for(nickname, self.system_lang, application_url, False)
-        if append_notifications:
-            message_dict['inbox'] = inbox
-            message_dict['outbox'] = outbox
+        inbox = get_box_for(db_user, self.system_lang, application_url, True) if db_user else []
+        outbox = get_box_for(db_user, self.system_lang, application_url, False) if db_user else []
+        message_dict['inbox'] = inbox
+        message_dict['outbox'] = outbox
         message_dict['total_in'] = len(inbox)
         message_dict['total_out'] = len(outbox)
         return_dict['notifications'] = message_dict
@@ -243,24 +202,14 @@ class DictionaryHelper(object):
         """
         _tn = Translator(self.system_lang)
 
-        edits = 0
-        statements = 0
-        arg_vote, stat_vote = (0, 0)
-        arg_clicks, stat_clicks = (0, 0)
-        public_nick = ''
-        db_group = None
-        db_settings = None
-        db_language = None
-
-        if db_user:
-            edits = user.get_count_of_statements(db_user, True)
-            statements = user.get_count_of_statements(db_user, False)
-            arg_vote, stat_vote = user.get_count_of_votes_of_user(db_user)
-            arg_clicks, stat_clicks = user.get_count_of_clicks(db_user)
-            public_nick = db_user.get_global_nickname()
-            db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
-            db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
-            db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
+        edits = user.get_edit_count_of(db_user, False)
+        statements = user.get_statement_count_of(db_user, False)
+        arg_vote, stat_vote = user.get_mark_count_of(db_user)
+        arg_clicks, stat_clicks = user.get_click_count_of(db_user)
+        public_nick = db_user.get_global_nickname()
+        db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
+        db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
+        db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
 
         group = db_group.name if db_group else '-'
         gravatar_public_url = get_profile_picture(db_user, 80)
@@ -273,12 +222,12 @@ class DictionaryHelper(object):
             'pw_change_error': pw_change_error,
             'pw_change_success': pw_change_success,
             'message': message,
-            'db_firstname': db_user.firstname if db_user else '',
-            'db_surname': db_user.surname if db_user else '',
-            'db_nickname': db_user.nickname if db_user else '',
+            'db_firstname': db_user.firstname,
+            'db_surname': db_user.surname,
+            'db_nickname': db_user.nickname,
             'db_public_nickname': public_nick,
-            'db_mail': db_user.email if db_user else '',
-            'has_mail': db_user.email is not 'None' if db_user else '',
+            'db_mail': db_user.email,
+            'has_mail': db_user.email is not 'None',
             'can_change_password': not use_with_ldap and db_user.token is None,
             'db_group': group,
             'avatar_public_url': gravatar_public_url,
@@ -288,18 +237,18 @@ class DictionaryHelper(object):
             'discussion_stat_votes': stat_vote,
             'discussion_arg_clicks': arg_clicks,
             'discussion_stat_clicks': stat_clicks,
-            'send_mails': db_settings.should_send_mails if db_settings else False,
-            'send_notifications': db_settings.should_send_notifications if db_settings else False,
-            'public_nick': db_settings.should_show_public_nickname if db_settings else True,
+            'send_mails': db_settings.should_send_mails,
+            'send_notifications': db_settings.should_send_notifications,
+            'public_nick': db_settings.should_show_public_nickname,
             'title_mails': _tn.get(_.mailSettingsTitle),
             'title_notifications': _tn.get(_.notificationSettingsTitle),
             'title_public_nick': _tn.get(_.publicNickTitle),
-            'title_preferred_lang': _tn.get(_.preferedLangTitle),
-            'public_page_url': (main_page + '/user/' + str(db_user.uid)) if db_user else '',
+            'title_preferred_lang': _tn.get(_.preferredLangTitle),
+            'public_page_url': main_page + '/user/' + str(db_user.uid),
             'on': _tn.get(_.on),
             'off': _tn.get(_.off),
-            'current_lang': db_language.name if db_language else '?',
-            'current_ui_locales': db_language.ui_locales if db_language else '?',
+            'current_lang': db_language.name,
+            'current_ui_locales': db_language.ui_locales,
             'reputation': reputation
         }
 
@@ -319,7 +268,7 @@ class DictionaryHelper(object):
         :param supportive: supportive
         :return: None
         """
-        logger('DictionaryHelper', 'add_discussion_end_text', 'main')
+        logger('DictionaryHelper', 'main')
         _tn = Translator(self.discussion_lang)
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
         gender = db_user.gender if db_user else None
@@ -340,7 +289,7 @@ class DictionaryHelper(object):
         else:
             endtext = _tn.get(_.discussionEndLinkTextLoggedIn if nickname else _.feelFreeToLogin)
             mid_text = _tn.get(_.discussionEnd) + ' ' + endtext
-            discussion_dict['bubbles'].append(create_speechbubble_dict(BubbleTypes.INFO, message=mid_text, id='end',
+            discussion_dict['bubbles'].append(create_speechbubble_dict(BubbleTypes.INFO, message=mid_text, uid='end',
                                                                        lang=self.system_lang, nickname=nickname))
 
     def __add_discussion_end_text_at_start(self, discussion_dict, extras_dict, nickname, gender, _tn):
@@ -363,7 +312,7 @@ class DictionaryHelper(object):
             user_text = _tn.get(_.firstPositionText)
         user_text += '<br>' + (_tn.get(_.pleaseAddYourSuggestion if nickname else _.feelFreeToLogin))
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(BubbleTypes.STATUS, id='end', message=user_text, lang=self.system_lang,
+            create_speechbubble_dict(BubbleTypes.STATUS, uid='end', message=user_text, lang=self.system_lang,
                                      nickname=nickname))
 
         is_read_only = DBDiscussionSession.query(Issue).filter_by(slug=extras_dict['slug']).first().is_read_only
@@ -396,7 +345,7 @@ class DictionaryHelper(object):
         extras_dict['show_display_style'] = False
         if is_read_only:
             mid_text = _tn.get(_.discussionEndAndReadOnly)
-            sdict = create_speechbubble_dict(BubbleTypes.INFO, id='end', message=mid_text, lang=self.system_lang,
+            sdict = create_speechbubble_dict(BubbleTypes.INFO, uid='end', message=mid_text, lang=self.system_lang,
                                              nickname=nickname)
             discussion_dict['bubbles'].append(sdict)
 
@@ -407,11 +356,11 @@ class DictionaryHelper(object):
                 mid_text = _tn.get(_.firstOneReasonM)
             else:
                 mid_text = _tn.get(_.firstOneReason)
-            sdict = create_speechbubble_dict(BubbleTypes.INFO, id='end', message=mid_text, lang=self.system_lang,
+            sdict = create_speechbubble_dict(BubbleTypes.INFO, uid='end', message=mid_text, lang=self.system_lang,
                                              nickname=nickname)
             discussion_dict['bubbles'].append(sdict)
         # else:
-            #     mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin)
+        #     mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin)
 
     def __add_discussion_end_text_at_dont_know(self, discussion_dict, current_premise, gender, _tn, nickname):
         """
@@ -442,10 +391,10 @@ class DictionaryHelper(object):
             mid_text = _tn.get(_.discussionEnd) + ' ' + endtext
 
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(BubbleTypes.SYSTEM, id='end', message=sys_text, lang=self.system_lang,
+            create_speechbubble_dict(BubbleTypes.SYSTEM, uid='end', message=sys_text, lang=self.system_lang,
                                      nickname=nickname))
         discussion_dict['bubbles'].append(
-            create_speechbubble_dict(BubbleTypes.INFO, id='end', message=mid_text, lang=self.system_lang,
+            create_speechbubble_dict(BubbleTypes.INFO, uid='end', message=mid_text, lang=self.system_lang,
                                      nickname=nickname))
 
     def __add_discussion_end_text_at_justify_statement(self, discussion_dict, extras_dict, nickname, current_premise,
@@ -483,7 +432,7 @@ class DictionaryHelper(object):
             endtext = _tn.get(_.discussionEndLinkTextLoggedIn if gender else _.discussionEndLinkTextNotLoggedIn)
             mid_text += _tn.get(_.discussionEnd) + ' ' + endtext
 
-        discussion_dict['bubbles'].append(create_speechbubble_dict(BubbleTypes.INFO, id='end', message=mid_text,
+        discussion_dict['bubbles'].append(create_speechbubble_dict(BubbleTypes.INFO, uid='end', message=mid_text,
                                                                    lang=self.system_lang, nickname=nickname))
         extras_dict['close_premise_container'] = False
         extras_dict['show_display_style'] = False
@@ -498,7 +447,7 @@ class DictionaryHelper(object):
         :param extras_dict: current dict()
         :return: dict()
         """
-        logger('DictionaryHelper', 'add_language_options_for_extra_dict', 'def')
+        logger('DictionaryHelper', 'def')
         lang_is_en = self.system_lang != 'de'
         lang_is_de = self.system_lang == 'de'
         extras_dict.update({
@@ -559,7 +508,8 @@ class DictionaryHelper(object):
         _tn_sys = Translator(self.system_lang)
         return_dict['title'] = {
             'barometer': _tn_sys.get(_.opinionBarometer),
-            'add_issue_info': _tn_sys.get(_.addIssueInfo).format(limit_for_open_issues) if logged_in else _tn_sys.get(_.notLoggedIn),
+            'add_issue_info': _tn_sys.get(_.addIssueInfo).format(
+                rep_limit_to_open_issues) if logged_in else _tn_sys.get(_.notLoggedIn),
             'guided_view': _tn_sys.get(_.displayControlDialogGuidedTitle),
             'island_view': _tn_sys.get(_.displayControlDialogIslandTitle),
             'graph_view': _tn_sys.get(_.displayControlDialogGraphTitle),
@@ -591,7 +541,7 @@ class DictionaryHelper(object):
         }
 
         if logged_in:
-            return_dict['add_issue_info'] = _tn_sys.get(_.addIssueInfo).format(limit_for_open_issues)
+            return_dict['add_issue_info'] = _tn_sys.get(_.addIssueInfo).format(rep_limit_to_open_issues)
         else:
             return_dict['add_issue_info'] = _tn_sys.get(_.notLoggedIn),
 
@@ -669,16 +619,12 @@ class DictionaryHelper(object):
         :param return_dict: current dictionary
         :return: updated dictionary
         """
-        google_id = os.environ.get('OAUTH_GOOGLE_CLIENTID', None)
-        facebook_id = os.environ.get('OAUTH_FACEBOOK_CLIENTID', None)
-        twitter_id = os.environ.get('OAUTH_TWITTER_CLIENTID', None)
-        github_id = os.environ.get('OAUTH_GITHUB_CLIENTID', None)
-        hhu_ldap = os.environ.get('HHU_LDAP_SERVER', None)
-
-        return_dict['login_btns'] = {
-            'oauth_google': google_id is not None,
-            'oauth_facebook': facebook_id is not None,
-            'oauth_twitter': twitter_id is not None,
-            'oauth_github': github_id is not None,
-            'hhu_ldap': hhu_ldap is not None
+        ids = {
+            'oauth_google': os.environ.get('OAUTH_GOOGLE_CLIENTID', None),
+            'oauth_facebook': os.environ.get('OAUTH_FACEBOOK_CLIENTID', None),
+            'oauth_twitter': os.environ.get('OAUTH_TWITTER_CLIENTID', None),
+            'oauth_github': os.environ.get('OAUTH_GITHUB_CLIENTID', None),
+            'hhu_ldap': os.environ.get('HHU_LDAP_SERVER', None)
         }
+
+        return_dict['login_btns'] = {key: ids[key] is not None for key in ids}

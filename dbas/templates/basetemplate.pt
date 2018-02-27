@@ -20,7 +20,7 @@
 </head>
 
 <body>
-  <input type="hidden" id="hidden_language" value="${language}">
+  <input type="hidden" id="hidden_language" value="${extras.ui_locales}">
   <input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 
   <!-- JS DISABLED -->
@@ -102,6 +102,7 @@
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/contact.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/login.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/news.js')}" tal:condition="extras.development_mode"></script>
+  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/passwordcheck.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/user.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/notification.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/settings.js')}" tal:condition="extras.development_mode"></script>
@@ -113,11 +114,9 @@
   <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/discussion.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/graph.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/main.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/news.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/notification.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/reference.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/review.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/user.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/review/reputation.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/review/queue.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/review/review.js')}" tal:condition="extras.development_mode"></script>

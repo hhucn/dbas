@@ -4,113 +4,88 @@
 
 function AjaxDiscussionHandler() {
 	'use strict';
-
+	
 	/**
 	 * Sends new premises to the server. Answer will be given to a callback
 	 * @param arg_uid
 	 * @param relation
-	 * @param text
+	 * @param premisegroups
 	 */
-	this.sendNewPremiseForArgument = function (arg_uid, relation, text) {
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_set_new_premises_for_argument',
-			method: 'POST',
-			data: {
-				arg_uid: arg_uid,
-				attack_type: relation,
-				premisegroups: JSON.stringify(text)
-			},
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
+	this.sendNewPremiseForArgument = function (arg_uid, relation, premisegroups) {
+		$('#' + addPremiseErrorContainer).hide();
+		$('#' + addPremiseErrorMsg).text('');
+		var url = 'set_new_premises_for_argument';
+		var d = {
+			arg_uid: arg_uid,
+			attack_type: relation,
+			premisegroups: premisegroups
+		};
+		var done = function ajaxSendNewPremisesForArgumentDone(data) {
+			if (data.error.length > 0) {
+				$('#' + addPremiseErrorContainer).show();
+				$('#' + addPremiseErrorMsg).text(data.error);
+			} else {
+				window.location.href = data.url;
 			}
-		}).done(function ajaxSendNewPremisesForArgumentDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewPremisesArgument(data);
-		}).fail(function ajaxSendNewPremisesForArgumentFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-		});
+		};
+		var fail = function ajaxSendNewPremisesForArgumentFail(data) {
+			$('#' + addPremiseErrorContainer).show();
+			$('#' + addPremiseErrorMsg).text(data.responseJSON.errors[0].description);
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
-
+	
 	/**
 	 *
 	 * @param position
 	 * @param reason
 	 */
-	this.sendNewStartArgument = function(position, reason){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_set_new_start_argument',
-			method: 'POST',
-			data: {
-				position: position,
-				reason: reason
-			},
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxSendNewStartArgumentDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewStartArgument(data);
-		}).fail(function ajaxSendNewStartArgumentFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-		});
+	this.sendNewStartArgument = function (position, reason) {
+		var url = 'set_new_start_argument';
+		var d = {
+			position: position,
+			reason: reason
+		};
+		var done = function ajaxSendNewStartArgumentDone(data) {
+			window.location.href = data.url;
+		};
+		var fail = function ajaxSendNewStartArgumentFail(data) {
+			$('#' + addStatementErrorContainer).show();
+			$('#' + addStatementErrorMsg).text(data.responseJSON.errors[0].description);
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
-
+	
 	/**
 	 * Sends new premises to the server. Answer will be given to a callback
-	 * @param text of the premise
+	 * @param premisegroups List of premisegroups
 	 * @param conclusion_id id of the conclusion
 	 * @param supportive boolean, whether it is supportive
 	 */
-	this.sendNewStartPremise = function (text, conclusion_id, supportive) {
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_set_new_start_premise',
-			method: 'POST',
-			data: {
-				premisegroups: JSON.stringify(text),
-				conclusion_id: conclusion_id,
-				supportive: supportive
-			},
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
+	this.sendNewStartPremise = function (premisegroups, conclusion_id, supportive) {
+		$('#' + addPremiseErrorContainer).hide();
+		$('#' + addPremiseErrorMsg).text('');
+		var url = 'set_new_start_premise';
+		var d = {
+			premisegroups: premisegroups,
+			conclusion_id: parseInt(conclusion_id),
+			supportive: supportive
+		};
+		var done = function ajaxSendNewStartPremiseDone(data) {
+			if (data.error.length > 0) {
+				$('#' + addPremiseErrorContainer).show();
+				$('#' + addPremiseErrorMsg).text(data.error);
+			} else {
+				window.location.href = data.url;
 			}
-		}).done(function ajaxSendNewStartPremiseDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewStartPremise(data);
-		}).fail(function ajaxSendNewStartPremiseFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-		});
+		};
+		var fail = function ajaxSendNewStartPremiseFail(data) {
+			$('#' + addPremiseErrorContainer).show();
+			$('#' + addPremiseErrorMsg).text(data.responseJSON.errors[0].description);
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
-
-	/**
-	 * Sends new position to the server. Answer will be given to a callback
-	 * @param statement for sending
-	 */
-	this.sendNewStartStatement = function (statement) {
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_set_new_start_statement',
-			method: 'POST',
-			data: {
-				statement: statement
-			},
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxSendStartStatementDone(data) {
-			new InteractionHandler().callbackIfDoneForSendNewStartStatement(data);
-		}).fail(function ajaxSendStartStatementFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-		});
-	};
-
+	
 	/**
 	 *
 	 * @param info
@@ -120,243 +95,188 @@ function AjaxDiscussionHandler() {
 	 * @param is_read_only
 	 * @param language
 	 */
-	this.sendNewIssue = function(info, long_info, title, is_public, is_read_only, language){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
+	this.sendNewIssue = function (info, long_info, title, is_public, is_read_only, language) {
 		$('#add-topic-error').hide();
-		$.ajax({
-			url: 'ajax_set_new_issue',
-			method: 'POST',
-			data: {
-				info: info,
-				long_info: long_info,
-				title: title,
-				is_public: is_public,
-				is_read_only: is_read_only,
-				lang: language
-			},
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxSendStartStatementDone(data) {
+		var url = 'set_new_issue';
+		var d = {
+			info: info,
+			long_info: long_info,
+			title: title,
+			is_public: is_public,
+			is_read_only: is_read_only,
+			lang: language
+		};
+		var done = function ajaxSendnewIssueDone(data) {
 			new InteractionHandler().callbackIfDoneForSendNewIssue(data);
-		}).fail(function ajaxSendStartStatementFail() {
-			$('#' + addTopicPopupErrorText).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 9). ' + _t(doNotHesitateToContact) + '. ');
-			$('#' + addTopicPopupContainer).show();
-			setTimeout(function(){
-				$('#' + addTopicPopupContainer).hide();
+		};
+		var fail = function ajaxSendnewIssueFail(data) {
+			$('#' + addTopicPopupError).removeClass('hidden');
+			$('#' + addTopicPopupErrorText).text(data.responseJSON.errors[0].description);
+			setTimeout(function () {
+				$('#' + addTopicPopupError).addClass('hidden');
+				$('#' + addTopicPopupErrorText).text('');
 			}, 2500);
-		});
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
-
+	
 	/**
 	 * Requests the logfile for the given uid
 	 * @param statements_uids current uid of the statement
 	 */
 	this.getLogfileForStatements = function (statements_uids) {
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_get_logfile_for_statements',
-			method: 'GET',
-			data: {
-				uids: JSON.stringify(statements_uids),
-				issue: getCurrentIssueId()
-			},
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxGetLogfileForPremisegroupDone(data) {
+		var url = 'get_logfile_for_statements';
+		var d = {
+			uids: statements_uids,
+			issue: getCurrentIssueId()
+		};
+		var done = function ajaxGetLogfileForStatementsDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingLogfile(data);
-		}).fail(function ajaxGetLogfileForPremisegroupFail() {
-			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 15). ' + _t(doNotHesitateToContact) + '. ');
-		});
+		};
+		var fail = function ajaxGetLogfileForStatementsFail(data) {
+			var description = $('#' + popupEditStatementErrorDescriptionId);
+			description.text(data.responseJSON.errors[0].description);
+			description.addClass('text-danger');
+			description.removeClass('text-info');
+			$('#' + popupEditStatementLogfileSpaceId).prev().hide();
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
-
+	
 	/**
 	 * Sends a correction of statements
 	 * @param elements
 	 * @param statements_uids
 	 */
 	this.sendCorrectionOfStatement = function (elements, statements_uids) {
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_set_correction_of_statement',
-			method: 'POST',
-			data: {
-				'elements': JSON.stringify(elements)
-			},
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxSendCorrectureOfStatementDone(data) {
+		var url = 'set_correction_of_statement';
+		var d = {
+			'elements': elements
+		};
+		var done = function ajaxSendCorrectureOfStatementDone(data) {
 			new InteractionHandler().callbackIfDoneForSendCorrectureOfStatement(data, statements_uids);
-		}).fail(function ajaxSendCorrectureOfStatementFail() {
-			$('#' + popupEditStatementErrorDescriptionId).html(_t(requestFailed) + ' (' + _t(errorCode) + ' 13). ' + _t(doNotHesitateToContact) + '. ');
-		});
+		};
+		var fail = function ajaxSendCorrectureOfStatementFail(data) {
+			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
-
+	
 	/**
 	 * Shortens url
 	 * @param long_url for shortening
 	 */
 	this.getShortenUrl = function (long_url) {
-		var encoded_url = encodeURI(long_url);
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_get_shortened_url',
-			method: 'GET',
-			dataType: 'json',
-			data: {
-				url: encoded_url, issue: getCurrentIssueId()
-			},
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxGetShortenUrlDone(data) {
-			new InteractionHandler().callbackIfDoneForShortenUrl(data, long_url);
-		}).fail(function ajaxGetShortenUrl() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		var url = 'get_shortened_url';
+		var d = {
+			url: encodeURI(long_url),
+			issue: getCurrentIssueId()
+		};
+		var done = function ajaxGetShortenUrlDone(data) {
+			var service = '<a href="' + data.service_url + '" title="' + data.service + '" target="_blank">' + data.service_text + '</a>';
+			$('#' + popupUrlSharingDescriptionPId).html(_t_discussion(feelFreeToShareUrl) + ' (' + _t_discussion(shortenedBy) + ' ' + service + '):');
+			$('#' + popupUrlSharingInputId).val(data.url).data('short-url', data.url);
+		};
+		var fail = function ajaxGetShortenUrl(data) {
+			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
 			new PopupHandler().hideAndClearUrlSharingPopup();
-		});
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
-
+	
 	/**
 	 *
 	 * @param uid
 	 */
-	this.getMoreInfosAboutArgument = function(uid){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_get_infos_about_argument',
-			method: 'POST',
-			data: {
-				uid: uid,
-				lang: $('#issue-info').data('discussion-language')
-			},
-			dataType: 'json',
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
+	this.getMoreInfosAboutArgument = function (uid) {
+		var url = 'get_infos_about_argument';
+		var d = {
+			uid: uid,
+			lang: getDiscussionLanguage()
+		};
+		var done = function ajaxGetMoreInfosAboutArgumentDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingInfosAboutArgument(data);
-		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-		});
+		};
+		var fail = function ajaxGetMoreInfosAboutArgumentFail(data) {
+			var element = $('<p>').html(data.responseJSON.errors[0].description);
+			displayConfirmationDialogWithoutCancelAndFunction(_t_discussion(messageInfoTitle), element);
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
-
+	
 	/**
 	 *
 	 * @param type
 	 * @param argument_uid
 	 * @param statement_uid
-	 * @param is_supportive
 	 */
-	this.getMoreInfosAboutOpinion = function(type, argument_uid, statement_uid, is_supportive){
+	this.getMoreInfosAboutOpinion = function (type, argument_uid, statement_uid) {
 		var is_argument = type === 'argument';
 		var is_position = type === 'position' || type === 'statement';
 		var uid = argument_uid === 'None' ? statement_uid : argument_uid;
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		is_supportive = is_supportive === 'True';
-
-		$.ajax({
-			url: 'ajax_get_user_with_same_opinion',
-			method: 'GET',
-			data: {
-				is_argument: is_argument,
-				uids: uid,
-				is_position: is_position,
-				is_supporti: is_supportive,
-				lang: $('#issue_info').data('discussion-language')
-			},
-			dataType: 'json',
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxGetMoreInfosAboutArgumentDone(data) {
+		
+		var url = 'get_user_with_same_opinion';
+		var d = {
+			uid: uid,
+			is_argument: is_argument,
+			is_attitude: false,
+			is_reaction: false,
+			is_position: is_position,
+			lang: getDiscussionLanguage()
+		};
+		var done = function ajaxGetMoreInfosAboutOpinionDone(data) {
 			new InteractionHandler().callbackIfDoneForGettingMoreInfosAboutOpinion(data, is_argument);
-		}).fail(function ajaxGetMoreInfosAboutArgumentFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-		});
-
+		};
+		var fail = function ajaxGetMoreInfosAboutOpinionFail(data) {
+			setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
+		
 	};
-
-	/***
-	 * Ajax request for the fuzzy search
-	 *
-	 * @param value
-	 * @param type
-	 * @param oem_text
-	 */
-	this.fuzzySearchForDuplicate = function (value, type, oem_text) {
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_fuzzy_search',
-			method: 'GET',
-			dataType: 'json',
-			data: {
-				value: value,
-				type: type,
-				extra: JSON.stringify(['all', oem_text]),
-				issue: getCurrentIssueId()
-			},
-			async: true,
-			global: false,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxGetAllUsersDone(data) {
-			new InteractionHandler().callbackIfDoneFuzzySearchForDuplicate(data);
-		}).fail(function ajaxGetAllUsersFail() {
-		});
-
-	};
-
+	
 	/***
 	 * Ajax request for the fuzzy search
 	 * @param value
 	 * @param callbackid
 	 * @param type
-	 * @param extra optional
+	 * @param statement_uid optional integer
 	 * @param reason optional
 	 */
-	this.fuzzySearch = function (value, callbackid, type, extra, reason) {
+	this.fuzzySearch = function (value, callbackid, type, statement_uid, reason) {
 		var callback = $('#' + callbackid);
 		var pencil = ' <i class="fa fa-pencil" aria-hidden="true"></i>';
 		var tmpid = callbackid.split('-').length === 6 ? callbackid.split('-')[5] : '0';
 		var bubble_value = value;
-		if (tmpid === 'reason' || tmpid === 'position'){
+		if (tmpid === 'reason' || tmpid === 'position') {
 			var pos = escapeHtml($('#' + addStatementContainerMainInputPosId).val());
 			var res = escapeHtml($('#' + addStatementContainerMainInputResId).val());
 			pos = pos.length === 0 ? '...' : pos;
 			res = res.length === 0 ? '...' : res;
-			bubble_value = pos + ' ' + _t_discussion(because) +  ' ' + res;
+			bubble_value = pos + ' ' + _t_discussion(because) + ' ' + res;
 			tmpid = 'reason_position';
 		}
 		var bubbleSpace = $('#' + discussionBubbleSpaceId);
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-
+		
+		if (statement_uid.length === 0) {
+			statement_uid = 0;
+		}
+		
 		// clear lists if input is empty
-		if(callback.val().length === 0) {
+		if (callback.val().length === 0) {
 			$('#' + proposalStatementListGroupId).empty();
 			$('#' + proposalPremiseListGroupId).empty();
 			$('#' + proposalEditListGroupId).empty();
 			$('#' + proposalUserListGroupId).empty();
 			$('#' + proposalStatementSearchGroupId).empty();
 			$('#proposal-mergesplit-list-group-' + callbackid).empty();
-			$('p[id^="current_"]').each(function() {
+			$('p[id^="current_"]').each(function () {
 				$(this).parent().remove();
 			});
 			return;
 		}
-
+		
 		if (!$.inArray(type, [fuzzy_find_user, fuzzy_find_statement, fuzzy_duplicate])) {
-			var opener = $('#' + addPremiseContainerMainInputIntroId).text().replace('...', _t_discussion(because) + ' ' );
+			var opener = $('#' + addPremiseContainerMainInputIntroId).text().replace('...', _t_discussion(because) + ' ');
 			// add or remove bubble only iff we are not in an popup
 			if (type !== fuzzy_statement_popup) {
 				if (bubbleSpace.find('#current_' + tmpid).length === 0) {
@@ -377,79 +297,64 @@ function AjaxDiscussionHandler() {
 			var resize = gh.setMaxHeightForBubbleSpace();
 			gh.setMaxHeightForDiscussionContainer(resize);
 		}
-
-		$.ajax({
-			url: 'ajax_fuzzy_search',
-			method: 'GET',
-			dataType: 'json',
-			data: { value: value, type:type, extra: extra, issue: getCurrentIssueId() },
-			async: true,
-			global: false,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function ajaxGetAllUsersDone(data) {
+		
+		var url = 'fuzzy_search';
+		var d = {
+			value: value,
+			type: type,
+			statement_uid: statement_uid,
+			issue: getCurrentIssueId()
+		};
+		var done = function ajaxFuzzySearchDone(data) {
 			new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type, reason);
-		}).fail(function ajaxGetAllUsersFail() {
-		});
+		};
+		var fail = function ajaxFuzzySearchFail() {
+		};
 		callback.focus();
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
-
+	
 	/**
 	 *
 	 * @param uid
 	 * @param is_argument
 	 */
-	this.revokeContent = function(uid, is_argument){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_revoke_content',
-			method: 'GET',
-			dataType: 'json',
-			data: {
-				uid: uid, is_argument: is_argument
-			},
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
+	this.revokeContent = function (uid, is_argument) {
+		var url = is_argument ? 'argument_revoke_content' : 'statement_revoke_content';
+		var d = {uid: parseInt(uid)};
+		var done = function ajaxRevokeContentDone(data) {
+			if (data.success) {
+				setGlobalSuccessHandler('Yeah!', _t_discussion(dataRemoved) + ' ' + _t_discussion(yourAreNotTheAuthorOfThisAnymore));
+			} else {
+				setGlobalSuccessHandler('Yeah!', _t_discussion(contentWillBeRevoked));
 			}
-		}).done(function ajaxRevokeContentDone(data) {
-			new InteractionHandler().callbackIfDoneRevokeContent(data);
-		}).fail(function ajaxRevokeContentFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
+		};
+		var fail = function ajaxRevokeContentFail(data) {
+			setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
 			new PopupHandler().hideAndClearUrlSharingPopup();
-			//$('#' + popupUrlSharingInputId).val(long_url);
-		});
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
-
+	
 	/**
 	 * Marks given statements as read
 	 *
 	 * @param uids of the statements
 	 */
-	this.setSeenStatements = function(uids){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_set_seen_statements',
-			method: 'POST',
-			data: {
-				uids: JSON.stringify(uids),
-			},
-			dataType: 'json',
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
-			}
-		}).done(function (data) {
-			// note that we already send data
-			if (data.error.length === 0){
-				$('#' + discussionSpaceShowItems).attr('data-send-request', 'true');
-				$('#' + discussionSpaceHideItems).attr('data-send-request', 'true');
-			}
-		}).fail(function () {
-		});
+	this.setSeenStatements = function (uids) {
+		var url = 'set_seen_statements';
+		var d = {
+			uids: uids
+		};
+		var done = function () {
+		};
+		var fail = function () {
+			$('#' + discussionSpaceShowItems).attr('data-send-request', 'true');
+			$('#' + discussionSpaceHideItems).attr('data-send-request', 'true');
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
-
+	
 	/**
 	 *
 	 * @param uid
@@ -460,52 +365,52 @@ function AjaxDiscussionHandler() {
 	 * @param history
 	 * @param callback_id
 	 */
-	this.markStatementOrArgument = function(uid, is_argument, is_supportive, should_mark, step, history, callback_id){
-		var csrf_token = $('#' + hiddenCSRFTokenId).val();
-		$.ajax({
-			url: 'ajax_mark_statement_or_argument',
-			method: 'GET',
-			dataType: 'json',
-			data: {
-				uid: uid,
-				is_argument: is_argument,
-				is_supportive: is_supportive,
-				should_mark: should_mark,
-				step: step,
-				history: history
-			},
-			async: true,
-			headers: {
-				'X-CSRF-Token': csrf_token
+	this.markStatementOrArgument = function (uid, is_argument, is_supportive, should_mark, step, history, callback_id) {
+		var url = 'mark_statement_or_argument';
+		var d = {
+			uid: uid,
+			is_argument: is_argument,
+			is_supportive: is_supportive,
+			should_mark: should_mark,
+			step: step,
+			history: history
+		};
+		var done = function ajaxMarkStatementOrArgumentDone(data) {
+			setGlobalSuccessHandler('Yeah!', data.success);
+			var el = $('#' + callback_id);
+			el.hide();
+			if (data.text.length > 0) {
+				el.parent().find('.triangle-content').html(data.text);
 			}
-		}).done(function ajaxMarkStatementOrArgumentDone(data) {
-			new InteractionHandler().callbackForMarkedStatementOrArgument(data, should_mark, callback_id);
-		}).fail(function ajaxMarkStatementOrArgumentFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-			new PopupHandler().hideAndClearUrlSharingPopup();
-		});
+			if (should_mark) {
+				el.prev().show();
+			} else {
+				el.next().show();
+			}
+		};
+		var fail = function ajaxMarkStatementOrArgumentFail(data) {
+			setGlobalErrorHandler(_t_discussion(ohsnap), data.responseJSON.errors[0].description);
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
-
+	
 	/*
 
 	 */
-	this.setDiscussionSettings = function(toggle_element){
+	this.setDiscussionSettings = function (toggle_element) {
 		var checked = toggle_element.prop('checked');
-		var csrf_token = $('#hidden_csrf_token').val();
-		$.ajax({
-			url: 'ajax_set_discussion_properties',
-			method: 'POST',
-			data:{
-				'checked': checked ? 'True': 'False',
-				'uid': toggle_element.data('uid'),
-				'key': toggle_element.data('keyword')},
-			dataType: 'json',
-			async: true,
-			headers: { 'X-CSRF-Token': csrf_token }
-		}).done(function setEnOrDisableDiscussionDone(data) {
+		var url = 'set_discussion_properties';
+		var d = {
+			property: checked,
+			issue: toggle_element.data('uid'),
+			value: toggle_element.data('keyword')
+		};
+		var done = function setEnOrDisableDiscussionDone(data) {
 			new InteractionHandler().callbackForSetAvailabilityOfDiscussion(toggle_element, data);
-		}).fail(function setEnOrDisableDiscussionFail() {
-			setGlobalErrorHandler(_t_discussion(ohsnap), _t_discussion(requestFailed));
-		});
+		};
+		var fail = function setEnOrDisableDiscussionFail(data) {
+			setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
+		};
+		ajaxSkeleton(url, 'POST', d, done, fail);
 	};
 }

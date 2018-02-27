@@ -6,11 +6,11 @@ Logic for user login, token generation and validation
 
 import binascii
 import hashlib
-import os
-
 import json
-import transaction
+import os
 from datetime import datetime
+
+import transaction
 
 from admin.lib import check_token
 from dbas.auth.login import login_user
@@ -71,6 +71,7 @@ def process_user(request, payload):
 
     # Prepare data for DB-AS
     request.validated['user'] = user
+    request.validated['db_user'] = db_user
     request.validated['user_uid'] = db_user.uid
     request.validated['session_id'] = request.session.id
 
@@ -154,7 +155,7 @@ def validate_credentials(request, **kwargs):
         raise HTTP401
 
     # Check in DB-AS' database, if the user's credentials are valid
-    logged_in = login_user(request, nickname, password, for_api=True)
+    logged_in = login_user(nickname, password, request.mailer)
     if isinstance(logged_in, str):
         logged_in = json.loads(logged_in)  # <-- I hate that this is necessary!
 

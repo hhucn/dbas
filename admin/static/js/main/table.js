@@ -154,10 +154,10 @@ function AdminGui() {
 		var uids = [];
 		// Premise has two columns as PK
 		if ($('#table_name').text().toLowerCase() === 'premise'){
-			uids.push(element.find('td:nth-child(1)').text().trim());
-			uids.push(element.find('td:nth-child(2)').text().trim());
+			uids.push(parseInt(element.find('td:nth-child(1)').text().trim()));
+			uids.push(parseInt(element.find('td:nth-child(2)').text().trim()));
 		} else {
-			uids.push(element.find('td:first').text().trim());
+			uids.push(parseInt(element.find('td:first').text().trim()));
 		}
 		return uids;
 	};
