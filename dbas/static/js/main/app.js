@@ -9,12 +9,12 @@
  * @param linkname name of the link
  */
 function setLinkActive(linkname) {
-	'use strict';
+    'use strict';
 
-	$('#navbar-right').find('>li').each(function(){
-		$(this).removeClass('active');
-	});
-	$(linkname).addClass('active');
+    $('#navbar-right').find('>li').each(function () {
+        $(this).removeClass('active');
+    });
+    $(linkname).addClass('active');
 }
 
 /**
@@ -23,41 +23,41 @@ function setLinkActive(linkname) {
 function jmpToChapter() {
     'use strict';
 
-	// jump to chapter-function
-	$('a[href^="#"]').on('click', function (e) {
-		try {
-			var href = $(this).attr('href');
-			$('html, body').animate({
-				scrollTop: ($(href).offset().top - 100)
-			}, 'slow');
-			e.preventDefault();
-		} catch (err) {
-			// something like 'Cannot read property 'top' of undefined'
-		}
-	});
+    // jump to chapter-function
+    $('a[href^="#"]').on('click', function (e) {
+        try {
+            var href = $(this).attr('href');
+            $('html, body').animate({
+                scrollTop: ($(href).offset().top - 100)
+            }, 'slow');
+            e.preventDefault();
+        } catch (err) {
+            // something like 'Cannot read property 'top' of undefined'
+        }
+    });
 }
 
 /**
  * Adds a small border to the active navbar element
  */
-function addBorderToActiveNavbar(){
+function addBorderToActiveNavbar() {
     'use strict';
 
-	var active_element = $('.navbar-right > .active');
-	if (active_element.length === 0){
-		return;
-	}
-	var border_size = '2';
+    var activeElement = $('.navbar-right > .active');
+    if (activeElement.length === 0) {
+        return;
+    }
+    var borderSize = '2';
 
-	// replace padding of the inner element
-	var inner_element = active_element.find('a');
-	var pad_top = parseInt(inner_element.css('padding-top').replace('px', ''));
-	var pad_bottom = parseInt(inner_element.css('padding-bottom').replace('px', ''));
-	inner_element.css('padding-top', (pad_top - border_size / 2) + 'px');
-	inner_element.css('padding-bottom', (pad_bottom - border_size / 2) + 'px');
+    // replace padding of the inner element
+    var innerElement = activeElement.find('a');
+    var padTop = parseInt(innerElement.css('padding-top').replace('px', ''));
+    var padBottom = parseInt(innerElement.css('padding-bottom').replace('px', ''));
+    innerElement.css('padding-top', (padTop - borderSize / 2) + 'px');
+    innerElement.css('padding-bottom', (padBottom - borderSize / 2) + 'px');
 
     // add border to the navbar element
-	active_element.css('border-top', border_size + 'px solid #2196F3');
+    activeElement.css('border-top', borderSize + 'px solid #2196F3');
 }
 
 /**
@@ -66,23 +66,25 @@ function addBorderToActiveNavbar(){
 function goBackToTop() {
     'use strict';
 
-	$(window).scroll(function () {
-		if (jQuery(this).scrollTop() > 500) {
-			$('.back-to-top').fadeIn('slow');
-			setTimeout(function() { $('.back-to-top').fadeOut('slow'); }, 2500);
-		} else {
-			$('.back-to-top').fadeOut('slow');
-		}
-	});
+    $(window).scroll(function () {
+        if (jQuery(this).scrollTop() > 500) {
+            $('.back-to-top').fadeIn('slow');
+            setTimeout(function () {
+                $('.back-to-top').fadeOut('slow');
+            }, 2500);
+        } else {
+            $('.back-to-top').fadeOut('slow');
+        }
+    });
 
-	// going back to top
-	$('.back-to-top').click(function (event) {
-		event.preventDefault();
-		$('html, body').animate({
-			scrollTop: 0
-		}, 500);
-		return false;
-	});
+    // going back to top
+    $('.back-to-top').click(function (event) {
+        event.preventDefault();
+        $('html, body').animate({
+            scrollTop: 0
+        }, 500);
+        return false;
+    });
 }
 
 /**
@@ -91,47 +93,50 @@ function goBackToTop() {
 function setGravatarFallback() {
     'use strict';
 
-	var body = $('body');
-	var img = body.find('.img-circle');
-	if (img.length === 0) {
-		return true;
-	}
+    var body = $('body');
+    var img = body.find('.img-circle');
+    if (img.length === 0) {
+        return true;
+    }
 
-	var src = body.find('.img-circle')[0].src;
-	$.get(src, function() {
-    	replace_gravtar_with_default_image(true);
-    }).fail(function() {
-    	replace_gravtar_with_default_image(false);
+    var src = body.find('.img-circle')[0].src;
+    $.get(src, function () {
+        replaceGravtarWithDefaultImage(true);
+    }).fail(function () {
+        replaceGravtarWithDefaultImage(false);
     });
 }
 
 /**
  *
- * @param only_on_error
+ * @param onlyOnError
  */
-function replace_gravtar_with_default_image(only_on_error){
+function replaceGravtarWithDefaultImage(onlyOnError) {
     'use strict';
 
-	$('body').find('.img-circle').each(function (){
-		var icons =
-			[  { 'name': 'faces', 'length': 98
-			}, { 'name': 'flat-smileys', 'length': 32
-			}, { 'name': 'human', 'length': 81
-			}, { 'name': 'lego', 'length': 10 }];
-		var t = 3;
-		var no = Math.floor(Math.random() * icons[t].length);
-		var src = mainpage + 'static/images/fallback-' + icons[t].name + '/' +  no + '.svg';
+    $('body').find('.img-circle').each(function () {
+        var icons =
+            [{
+                'name': 'faces', 'length': 98
+            }, {
+                'name': 'flat-smileys', 'length': 32
+            }, {
+                'name': 'human', 'length': 81
+            }, {'name': 'lego', 'length': 10}];
+        var t = 3;
+        var no = Math.floor(Math.random() * icons[t].length);
+        var src = mainpage + 'static/images/fallback-' + icons[t].name + '/' + no + '.svg';
 
-		if (only_on_error) {
-			$(this).attr('onerror', 'this.src="' + src + '"');
-		} else {
-			$(this).attr('src', src);
-		}
-		// resize fallback avatar
-		if ($(this).closest('#user-menu-dropdown').length === 1 || window.location.href.indexOf('/review') !== -1) {
-			$(this).css('width', '25px');
-		}
-	});
+        if (onlyOnError) {
+            $(this).attr('onerror', 'this.src="' + src + '"');
+        } else {
+            $(this).attr('src', src);
+        }
+        // resize fallback avatar
+        if ($(this).closest('#user-menu-dropdown').length === 1 || window.location.href.indexOf('/review') !== -1) {
+            $(this).css('width', '25px');
+        }
+    });
 }
 
 /**
@@ -140,43 +145,43 @@ function replace_gravtar_with_default_image(only_on_error){
  * @param bodyText
  * @param functionForAccept
  * @param functionForRefuse
- * @param small_dialog
+ * @param smallDialog
  */
-function displayConfirmationDialog(titleText, bodyText, functionForAccept, functionForRefuse, small_dialog) {
+function displayConfirmationDialog(titleText, bodyText, functionForAccept, functionForRefuse, smallDialog) {
     'use strict';
 
-	// display dialog
-	var dialog = $('#' + popupConfirmDialogId);
+    // display dialog
+    var dialog = $('#' + popupConfirmDialogId);
     dialog.find('#confirm-dialog-accept-btn').show();
-	dialog.find('#confirm-dialog-refuse-btn').show();
-	if (small_dialog) {
-		dialog.find('.modal-dialog').addClass('modal-sm');
-	}
-	dialog.modal('show');
-	$('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
-	$('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
-	$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
-		$('#' + popupConfirmDialogId).modal('hide');
-		if (functionForRefuse) {
-			functionForAccept();
-		}
-	});
-	$('#' + popupConfirmDialogRefuseBtn).show().click( function () {
-		$('#' + popupConfirmDialogId).modal('hide');
-		if (functionForRefuse) {
-			functionForRefuse();
-		}
-	});
-	dialog.on('hidden.bs.modal', function () {
-		$('#' + popupConfirmDialogRefuseBtn).show();
-		dialog.find('.modal-dialog').removeClass('modal-sm');
-		dialog.find('#confirm-dialog-accept-btn').text(_t(okay));
-		dialog.find('#confirm-dialog-refuse-btn').text(_t(cancel));
-		// unload buttons
-		$('#' + popupConfirmDialogAcceptBtn).off('click');
-		$('#' + popupConfirmDialogRefuseBtn).off('click');
+    dialog.find('#confirm-dialog-refuse-btn').show();
+    if (smallDialog) {
+        dialog.find('.modal-dialog').addClass('modal-sm');
+    }
+    dialog.modal('show');
+    $('#' + popupConfirmDialogId + ' h4.modal-title').text(titleText);
+    $('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
+    $('#' + popupConfirmDialogAcceptBtn).show().click(function () {
+        $('#' + popupConfirmDialogId).modal('hide');
+        if (functionForRefuse) {
+            functionForAccept();
+        }
+    });
+    $('#' + popupConfirmDialogRefuseBtn).show().click(function () {
+        $('#' + popupConfirmDialogId).modal('hide');
+        if (functionForRefuse) {
+            functionForRefuse();
+        }
+    });
+    dialog.on('hidden.bs.modal', function () {
+        $('#' + popupConfirmDialogRefuseBtn).show();
+        dialog.find('.modal-dialog').removeClass('modal-sm');
+        dialog.find('#confirm-dialog-accept-btn').text(_t(okay));
+        dialog.find('#confirm-dialog-refuse-btn').text(_t(cancel));
+        // unload buttons
+        $('#' + popupConfirmDialogAcceptBtn).off('click');
+        $('#' + popupConfirmDialogRefuseBtn).off('click');
 
-	});
+    });
 }
 
 /**
@@ -188,14 +193,14 @@ function displayConfirmationDialog(titleText, bodyText, functionForAccept, funct
 function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) {
     'use strict';
 
-	// display dialog
-	$('#' + popupConfirmDialogId).modal('show');
-	$('#' + popupConfirmDialogId + ' h4.modal-title').html(titleText);
-	$('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
-	$('#' + popupConfirmDialogAcceptBtn).show().click( function () {
-		$('#' + popupConfirmDialogId).modal('hide').find('.modal-dialog').removeClass('modal-sm');
-	}).removeClass('btn-success');
-	$('#' + popupConfirmDialogRefuseBtn).hide();
+    // display dialog
+    $('#' + popupConfirmDialogId).modal('show');
+    $('#' + popupConfirmDialogId + ' h4.modal-title').html(titleText);
+    $('#' + popupConfirmDialogId + ' div.modal-body').html(bodyText);
+    $('#' + popupConfirmDialogAcceptBtn).show().click(function () {
+        $('#' + popupConfirmDialogId).modal('hide').find('.modal-dialog').removeClass('modal-sm');
+    }).removeClass('btn-success');
+    $('#' + popupConfirmDialogRefuseBtn).hide();
 }
 
 /**
@@ -209,262 +214,280 @@ function displayConfirmationDialogWithoutCancelAndFunction(titleText, bodyText) 
 function displayConfirmationDialogWithCheckbox(titleText, bodyText, checkboxText, functionForAccept, isRestartingDiscussion) {
     'use strict';
 
-	// display dialog only if the cookie was not set yet
-	if (Cookies.get(WARNING_CHANGE_DISCUSSION_POPUP)){
-		window.location.href = functionForAccept;
-	} else {
-		$('#' + popupConfirmChecbkoxDialogId).modal('show');
-		$('#' + popupConfirmChecbkoxDialogId + ' h4.modal-title').text(titleText);
-		$('#' + popupConfirmChecbkoxDialogId + ' div.modal-body').html(bodyText);
-		$('#' + popupConfirmChecbkoxDialogTextId).text(checkboxText);
-		$('#' + popupConfirmChecbkoxDialogAcceptBtn).click( function () {
-			$('#' + popupConfirmChecbkoxDialogId).modal('hide');
-			// maybe set a cookie
-			if ($('#' + popupConfirmChecbkoxId).prop('checked')) {
-				Cookies.set(WARNING_CHANGE_DISCUSSION_POPUP, true, { expires: 7 });
-			}
+    // display dialog only if the cookie was not set yet
+    if (Cookies.get(WARNING_CHANGE_DISCUSSION_POPUP)) {
+        window.location.href = functionForAccept;
+    } else {
+        $('#' + popupConfirmChecbkoxDialogId).modal('show');
+        $('#' + popupConfirmChecbkoxDialogId + ' h4.modal-title').text(titleText);
+        $('#' + popupConfirmChecbkoxDialogId + ' div.modal-body').html(bodyText);
+        $('#' + popupConfirmChecbkoxDialogTextId).text(checkboxText);
+        $('#' + popupConfirmChecbkoxDialogAcceptBtn).click(function () {
+            $('#' + popupConfirmChecbkoxDialogId).modal('hide');
+            // maybe set a cookie
+            if ($('#' + popupConfirmChecbkoxId).prop('checked')) {
+                Cookies.set(WARNING_CHANGE_DISCUSSION_POPUP, true, {expires: 7});
+            }
 
-			if (isRestartingDiscussion) {
-				window.location.href = functionForAccept;
-			} else {
-				functionForAccept();
-			}
+            if (isRestartingDiscussion) {
+                window.location.href = functionForAccept;
+            } else {
+                functionForAccept();
+            }
 
-		});
-		$('#' + popupConfirmChecbkoxDialogRefuseBtn).click( function () {
-			$('#' + popupConfirmChecbkoxDialogId).modal('hide');
-		});
-	}
+        });
+        $('#' + popupConfirmChecbkoxDialogRefuseBtn).click(function () {
+            $('#' + popupConfirmChecbkoxDialogId).modal('hide');
+        });
+    }
 }
 
 /**
  *
  * @param lang
  */
-function setAnalyticsOptOutLink(lang){
+function setAnalyticsOptOutLink(lang) {
     'use strict';
 
-	var src = mainpage + 'analytics/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=' + lang;
-	$('#analytics-opt-out-iframe').attr('src', src);
+    var src = mainpage + 'analytics/index.php?module=CoreAdminHome&action=optOut&idsite=1&language=' + lang;
+    $('#analytics-opt-out-iframe').attr('src', src);
 }
 
 /**
  *
  */
-function setEasterEggs(){
+function setEasterEggs() {
     'use strict';
 
-	$('#roundhousekick').click(function(){
-		new AjaxMainHandler().roundhouseKick();
-	});
-	$('#logo_dbas, #logo_dbas_s, #homeHeading').click(function(){
-		if (!$(this)){
-			return;
-		}
-		var counter = parseInt($('#homeHeading').data('counter'));
-		counter += 1;
-		if (counter === 5){
-			$('body').find('span,p,h1,h2,h3,h4,h5,a').each(function(){
-				if ($(this).text().trim().length) {
-					$(this).text(dolan_translate(dolan_dictionary, $(this).text()));
-				}
-			});
-		}
-		$('#homeHeading').data('counter', counter);
-	});
+    $('#roundhousekick').click(function () {
+        new AjaxMainHandler().roundhouseKick();
+    });
+    $('#logo_dbas, #logo_dbas_s, #homeHeading').click(function () {
+        if (!$(this)) {
+            return;
+        }
+        var homeHeading = $('#homeHeading');
+        var counter = parseInt(homeHeading.data('counter'));
+        counter += 1;
+        if (counter === 5) {
+            $('body').find('span,p,h1,h2,h3,h4,h5,a').each(function () {
+                if ($(this).text().trim().length) {
+                    $(this).text(dolanTranslate(dolanDictionary, $(this).text()));
+                }
+            });
+        }
+        homeHeading.data('counter', counter);
+    });
 }
 
 /**
  * Fill captcha in registration-form
  */
-function fill_captcha() {
+function fillCaptcha() {
     'use strict';
-    var rand_num1 = Math.floor(Math.random() * 10) + 1;
-    var rand_num2 = Math.floor(Math.random() * 10) + 1;
-    var rand_num3 = Math.floor(Math.random() * 10) + 1;
-    document.getElementById("captcha-digit1").innerHTML = rand_num1;
-    document.getElementById("captcha-digit2").innerHTML = rand_num2;
-    document.getElementById("captcha-digit3").innerHTML = rand_num3;
+    var numOne = Math.floor(Math.random() * 10) + 1;
+    var numTwo = Math.floor(Math.random() * 10) + 1;
+    var numThree = Math.floor(Math.random() * 10) + 1;
+    document.getElementById("captcha-digit1").innerHTML = numOne;
+    document.getElementById("captcha-digit2").innerHTML = numTwo;
+    document.getElementById("captcha-digit3").innerHTML = numThree;
 }
 
 /**
  * Prepares the login popup
  */
-function prepareLoginRegistrationPopup(){
+function prepareLoginRegistrationPopup() {
     'use strict';
 
-	// hide on startup
-	new PopupHandler().hideExtraViewsOfLoginPopup();
+    // hide on startup
+    new PopupHandler().hideExtraViewsOfLoginPopup();
 
-	// switching tabs
-	$('.tab-login a').on('click', function (e) {
-		e.preventDefault();
-		$(this).parent().addClass('active');
-		$(this).parent().siblings().removeClass('active');
-		var target = $(this).attr('href');
-		$('.tab-content > div').not(target).hide();
-		$(target).fadeIn(600);
+    // switching tabs
+    $('.tab-login a').on('click', function (e) {
+        e.preventDefault();
+        $(this).parent().addClass('active');
+        $(this).parent().siblings().removeClass('active');
+        var target = $(this).attr('href');
+        $('.tab-content > div').not(target).hide();
+        $(target).fadeIn(600);
 
-		if ($(this).attr('href').indexOf('signup') !== -1){
-			$('#' + popupLoginButtonLogin).hide();
-			$('#' + popupLoginButtonRegister).show();
-            fill_captcha();
-		} else {
-			$('#' + popupLoginButtonLogin).show();
-			$('#' + popupLoginButtonRegister).hide();
-		}
-	});
+        if ($(this).attr('href').indexOf('signup') === -1) {
+            $('#' + popupLoginButtonLogin).show();
+            $('#' + popupLoginButtonRegister).hide();
+        } else {
+            $('#' + popupLoginButtonLogin).hide();
+            $('#' + popupLoginButtonRegister).show();
+            fillCaptcha();
+        }
+    });
 
-	$('#' + popupLoginButtonLogin).show().click(function() {
-		new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
-		Cookies.set(DATA_DISCLAIMER, true, { expires: 180 });
-	}).keypress(function(e) {
-		if (e.which === 13) {
-			new AjaxMainHandler().registration();
-		}
-	});
+    $('#' + popupLoginButtonLogin).show().click(function () {
+        new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
+        Cookies.set(DATA_DISCLAIMER, true, {expires: 180});
+    }).keypress(function (e) {
+        if (e.which === 13) {
+            new AjaxMainHandler().registration();
+        }
+    });
 
-	// data disclaimer
-	if (Cookies.get(DATA_DISCLAIMER) === 'true') {
-		$('#dbas-login-data-disclaimer').hide();
-	}
+    // data disclaimer
+    if (Cookies.get(DATA_DISCLAIMER) === 'true') {
+        $('#dbas-login-data-disclaimer').hide();
+    }
 
-	$('#' + popupLoginForgotPasswordText).click(function(){
-		var body = $('#' + popupLoginForgotPasswordBody);
-		if (body.is(':visible')){
-			body.fadeOut();
-			$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
-			$('#' + popupLoginFailed).fadeOut();
-			$('#' + popupLoginSuccess).fadeOut();
-			$('#' + popupLoginInfo).fadeOut();
-		} else {
-			body.fadeIn();
-			$('#' + popupLoginForgotPasswordText).text(_t(hidePasswordRequest));
-		}
-	});
+    $('#' + popupLoginForgotPasswordText).click(function () {
+        var body = $('#' + popupLoginForgotPasswordBody);
+        if (body.is(':visible')) {
+            body.fadeOut();
+            $('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
+            $('#' + popupLoginFailed).fadeOut();
+            $('#' + popupLoginSuccess).fadeOut();
+            $('#' + popupLoginInfo).fadeOut();
+        } else {
+            body.fadeIn();
+            $('#' + popupLoginForgotPasswordText).text(_t(hidePasswordRequest));
+        }
+    });
 
-	$('#' + popupLoginCloseButton1 + ',#' + popupLoginCloseButton2).click(function(){
-		new PopupHandler().hideExtraViewsOfLoginPopup();
-		$('#' + popupLogin).modal('hide');
-		$('#' + popupLoginButtonLogin).show();
-	});
+    $('#' + popupLoginCloseButton1 + ',#' + popupLoginCloseButton2).click(function () {
+        new PopupHandler().hideExtraViewsOfLoginPopup();
+        $('#' + popupLogin).modal('hide');
+        $('#' + popupLoginButtonLogin).show();
+    });
 
-	$('#' + popupLoginButtonRegister).click(function(){
-		var userfirstname = $('#' + popupLoginUserfirstnameInputId).val();
-		var userlastname = $('#' + popupLoginUserlastnameInputId).val();
-		var nick = $('#' + popupLoginNickInputId).val();
-		var email = $('#' + popupLoginEmailInputId).val();
-		var password = $('#' + popupLoginPasswordInputId).val();
-		var passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val();
-		var text = '';
-		var i;
-		var fields = [userfirstname, userlastname, nick, email, password, passwordconfirm];
-		var tvalues = [_t(checkFirstname), _t(checkLastname), _t(checkNickname), _t(checkEmail),_t(checkPassword),
-				_t(checkConfirmation), _t(checkPasswordConfirm)];
+    $('#' + popupLoginButtonRegister).click(function () {
+        var userfirstname = $('#' + popupLoginUserfirstnameInputId).val();
+        var userlastname = $('#' + popupLoginUserlastnameInputId).val();
+        var nick = $('#' + popupLoginNickInputId).val();
+        var email = $('#' + popupLoginEmailInputId).val();
+        var password = $('#' + popupLoginPasswordInputId).val();
+        var passwordconfirm = $('#' + popupLoginPasswordconfirmInputId).val();
+        var text = '';
+        var i;
+        var fields = [userfirstname, userlastname, nick, email, password, passwordconfirm];
+        var tvalues = [_t(checkFirstname), _t(checkLastname), _t(checkNickname), _t(checkEmail), _t(checkPassword),
+            _t(checkConfirmation), _t(checkPasswordConfirm)];
 
-		// check all vields for obivously errors
-		for (i=0; i<fields.length; i++){
-			if (!fields[i] || /^\s*$/.test(fields[i]) || 0 === fields[i].length) {
-				text = tvalues[i];
-				break;
-			}
-		}
+        // check all fields for obivous errors
+        for (i = 0; i < fields.length; i++) {
+            if (!fields[i] || /^\s*$/.test(fields[i]) || 0 === fields[i].length) {
+                text = tvalues[i];
+                break;
+            }
+        }
 
-		if (text === '' ){
-			$('#' + popupLoginWarningMessage).hide();
-			new AjaxMainHandler().registration();
-		} else {
-			$('#' + popupLoginWarningMessage).fadeIn("slow");
-			$('#' + popupLoginWarningMessageText).text(text);
-		}
+        if (text === '') {
+            $('#' + popupLoginWarningMessage).hide();
+            new AjaxMainHandler().registration();
+        } else {
+            $('#' + popupLoginWarningMessage).fadeIn("slow");
+            $('#' + popupLoginWarningMessageText).text(text);
+        }
 
-	});
+    });
 
-	// bind enter key
-	$('#' + loginUserId).keypress(function(e) {						 if (e.which === 13) {	new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
-	$('#' + loginPwId).keypress(function(e) {						 if (e.which === 13) {	new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
-	$('#admin-login-user').keypress(function(e) {   				 if (e.which === 13) {	new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
-	$('#admin-login-pw').keypress(function(e) {						 if (e.which === 13) {	new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false); } });
-	$('#' + popupLoginUserfirstnameInputId).keypress(function(e) {	 if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
-	$('#' + popupLoginUserlastnameInputId).keypress(function(e) {	 if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
-	$('#' + popupLoginNickInputId).keypress(function(e) {			 if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
-	$('#' + popupLoginEmailInputId).keypress(function(e) {			 if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
-	$('#' + popupLoginPasswordconfirmInputId).keypress(function(e) { if (e.which === 13) {	new AjaxMainHandler().registration();	}	});
+    // bind enter key
+    var enterKey = 13;
+    $('#' + loginUserId).keypress(function (e) {
+        if (e.which === enterKey) {
+            new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
+        }
+    });
+    $('#' + loginPwId).keypress(function (e) {
+        if (e.which === enterKey) {
+            new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
+        }
+    });
+    $('#admin-login-user').keypress(function (e) {
+        if (e.which === enterKey) {
+            new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
+        }
+    });
+    $('#admin-login-pw').keypress(function (e) {
+        if (e.which === enterKey) {
+            new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
+        }
+    });
+    $('#' + popupLoginUserfirstnameInputId).keypress(function (e) {
+        if (e.which === enterKey) {
+            new AjaxMainHandler().registration();
+        }
+    });
+    $('#' + popupLoginUserlastnameInputId).keypress(function (e) {
+        if (e.which === enterKey) {
+            new AjaxMainHandler().registration();
+        }
+    });
+    $('#' + popupLoginNickInputId).keypress(function (e) {
+        if (e.which === enterKey) {
+            new AjaxMainHandler().registration();
+        }
+    });
+    $('#' + popupLoginEmailInputId).keypress(function (e) {
+        if (e.which === enterKey) {
+            new AjaxMainHandler().registration();
+        }
+    });
+    $('#' + popupLoginPasswordconfirmInputId).keypress(function (e) {
+        if (e.which === enterKey) {
+            new AjaxMainHandler().registration();
+        }
+    });
 
-	$('#' + popupLoginButtonRequest).click(function() {
-		new AjaxMainHandler().passwordRequest();
-	});
+    $('#' + popupLoginButtonRequest).click(function () {
+        new AjaxMainHandler().passwordRequest();
+    });
 }
 
 /**
  *
  * @param element
- * @param display_at_top
+ * @param displayAtTop
  */
-function setTextWatcherInputLength(element, display_at_top){
+function setTextWatcherInputLength(element, displayAtTop) {
     'use strict';
 
-	var min_length = element.data('min-length');
-	var max_length = element.data('max-length');
-	if (!max_length) {
-		max_length = 1000;
-	}
-	var id = element.attr('id') + '-text-counter';
-	var msg = _t_discussion(textMinCountMessageBegin1) + ' ' + min_length + ' ' + _t_discussion(textMinCountMessageBegin2);
-	var field = $('<span>').text(msg).attr('id', id).addClass('text-info').addClass('text-counter-input');
-	if (display_at_top){
-		field.insertBefore(element);
-	} else {
-		field.insertAfter(element);
-	}
+    var minLength = element.data('min-length');
+    var maxLength = element.data('max-length');
+    if (!maxLength) {
+        maxLength = 1000;
+    }
+    var id = element.attr('id') + '-text-counter';
+    var msg = _t_discussion(textMinCountMessageBegin1) + ' ' + minLength + ' ' + _t_discussion(textMinCountMessageBegin2);
+    var field = $('<span>').text(msg).attr('id', id).addClass('text-info').addClass('text-counter-input');
+    if (displayAtTop) {
+        field.insertBefore(element);
+    } else {
+        field.insertAfter(element);
+    }
 
-	element.keyup(function(){
-		var text = element.val().trim();
-		var current_length = text.length;
+    element.keyup(function () {
+        var text = element.val().trim();
+        var currentLength = text.length;
 
-		if (current_length === 0){
-			field.addClass('text-info');
-			field.removeClass('text-danger');
-			field.text(msg);
-		} else if (current_length < min_length) {
-			field.removeClass('text-danger');
-			field.text((min_length - current_length) + ' ' + _t_discussion(textMinCountMessageDuringTyping));
-		} else {
-				field.removeClass('text-info');
-			if (current_length > max_length * 3 / 4){
-				field.addClass('text-danger');
-			} else {
-				field.removeClass('text-danger');
-			}
-			var left = max_length < current_length ? 0 : max_length - current_length;
-			field.text(left + ' ' + _t_discussion(textMaxCountMessage));
-			if (max_length <= current_length) {
-				field.removeClass('text-danger');
-			field.addClass('text-info');
-				field.text(_t_discussion(textMaxCountMessageError));
-			}
-		}
-	});
-}
-
-/**
- * Sets data for the global sucess field
- *
- * @param heading text
- * @param body text
- */
-function setGlobalErrorHandler(heading, body){
-    'use strict';
-
-	$('#' + requestFailedContainer).fadeIn();
-	$('#' + requestFailedContainerClose).click(function(){
-		$('#' + requestFailedContainer).fadeOut();
-	});
-	$('#' + requestFailedContainerHeading).html(decodeString(heading));
-	$('#' + requestFailedContainerMessage).html(decodeString(body));
-	setTimeout(function(){
-		$('#' + requestFailedContainer).fadeOut();
-	}, 5000);
+        if (currentLength === 0) {
+            field.addClass('text-info');
+            field.removeClass('text-danger');
+            field.text(msg);
+        } else if (currentLength < minLength) {
+            field.removeClass('text-danger');
+            field.text((minLength - currentLength) + ' ' + _t_discussion(textMinCountMessageDuringTyping));
+        } else {
+            field.removeClass('text-info');
+            if (currentLength > maxLength * 3 / 4) {
+                field.addClass('text-danger');
+            } else {
+                field.removeClass('text-danger');
+            }
+            var left = maxLength < currentLength ? 0 : maxLength - currentLength;
+            field.text(left + ' ' + _t_discussion(textMaxCountMessage));
+            if (maxLength <= currentLength) {
+                field.removeClass('text-danger');
+                field.addClass('text-info');
+                field.text(_t_discussion(textMaxCountMessageError));
+            }
+        }
+    });
 }
 
 /**
@@ -473,18 +496,38 @@ function setGlobalErrorHandler(heading, body){
  * @param heading text
  * @param body text
  */
-function setGlobalSuccessHandler(heading, body){
+function setGlobalErrorHandler(heading, body) {
     'use strict';
 
-	$('#' + requestSuccessContainer).fadeIn();
-	$('#' + requestSuccessContainerClose).click(function(){
-		$('#' + requestSuccessContainer).fadeOut();
-	});
-	$('#' + requestSuccessContainerHeading).html(decodeString(heading));
-	$('#' + requestSuccessContainerMessage).html(decodeString(body));
-	setTimeout(function(){
-		$('#' + requestSuccessContainer).fadeOut();
-	}, 5000);
+    $('#' + requestFailedContainer).fadeIn();
+    $('#' + requestFailedContainerClose).click(function () {
+        $('#' + requestFailedContainer).fadeOut();
+    });
+    $('#' + requestFailedContainerHeading).html(decodeString(heading));
+    $('#' + requestFailedContainerMessage).html(decodeString(body));
+    setTimeout(function () {
+        $('#' + requestFailedContainer).fadeOut();
+    }, 5000);
+}
+
+/**
+ * Sets data for the global success field
+ *
+ * @param heading text
+ * @param body text
+ */
+function setGlobalSuccessHandler(heading, body) {
+    'use strict';
+
+    $('#' + requestSuccessContainer).fadeIn();
+    $('#' + requestSuccessContainerClose).click(function () {
+        $('#' + requestSuccessContainer).fadeOut();
+    });
+    $('#' + requestSuccessContainerHeading).html(decodeString(heading));
+    $('#' + requestSuccessContainerMessage).html(decodeString(body));
+    setTimeout(function () {
+        $('#' + requestSuccessContainer).fadeOut();
+    }, 5000);
 }
 
 /**
@@ -493,28 +536,28 @@ function setGlobalSuccessHandler(heading, body){
  * @param heading text
  * @param body text
  */
-function setGlobalInfoHandler(heading, body){
+function setGlobalInfoHandler(heading, body) {
     'use strict';
 
-	$('#' + requestInfoContainer).fadeIn();
-	$('#' + requestInfoContainerClose).click(function(){
-		$('#' + requestInfoContainer).fadeOut();
-	});
-	$('#' + requestInfoContainerHeading).html(decodeString(heading));
-	$('#' + requestInfoContainerMessage).html(decodeString(body));
-	setTimeout(function(){
-		$('#' + requestInfoContainer).fadeOut();
-	}, 5000);
+    $('#' + requestInfoContainer).fadeIn();
+    $('#' + requestInfoContainerClose).click(function () {
+        $('#' + requestInfoContainer).fadeOut();
+    });
+    $('#' + requestInfoContainerHeading).html(decodeString(heading));
+    $('#' + requestInfoContainerMessage).html(decodeString(body));
+    setTimeout(function () {
+        $('#' + requestInfoContainer).fadeOut();
+    }, 5000);
 }
 
 /**
  *
  * @param encodedString
  */
-function decodeString(encodedString){
+function decodeString(encodedString) {
     'use strict';
 
-	return decodeURIComponent(encodedString);
+    return decodeURIComponent(encodedString);
 }
 
 // *********************
@@ -526,61 +569,56 @@ function decodeString(encodedString){
  * @param data
  * @param showGlobalError
  */
-function callbackIfDoneForLogin(data, showGlobalError){
+function callbackIfDoneForLogin(data, showGlobalError) {
     'use strict';
-	try {
-		if ('error' in data && data.error.length !== 0) {
-			if (showGlobalError) {
-					setGlobalErrorHandler('Ohh!', data.error);
-			} else {
-				$('#' + popupLoginFailed).show();
-				$('#' + popupLoginFailed + '-message').html(data.error);
-			}
-		} else if ('info' in data && data.info.length !== 0) {
-				$('#' + popupLoginInfo).show();
-				$('#' + popupLoginInfo + '-message').html(data.info);
-		} else {
-			$('#' + popupLogin).modal('hide');
-		}
-	} catch(err){
-		var url = location.href;
-		if (url.indexOf('?session_expired=true') !== -1) {
-			url = url.substr(0, url.length - '?session_expired=true'.length);
-		}
-		//location.href = url;
-	}
-
+    try {
+        if ('error' in data && data.error.length !== 0) {
+            if (showGlobalError) {
+                setGlobalErrorHandler('Ohh!', data.error);
+            } else {
+                $('#' + popupLoginFailed).show();
+                $('#' + popupLoginFailed + '-message').html(data.error);
+            }
+        } else if ('info' in data && data.info.length !== 0) {
+            $('#' + popupLoginInfo).show();
+            $('#' + popupLoginInfo + '-message').html(data.info);
+        } else {
+            $('#' + popupLogin).modal('hide');
+        }
+    } catch (err) {
+        // session expired
+    }
 }
 
 /**
  *
  * @param data
  */
-function callbackIfDoneForRegistration(data){
+function callbackIfDoneForRegistration(data) {
     'use strict';
 
-	var success = $('#' + popupLoginSuccess); //popupLoginRegistrationSuccess);
-	var failed = $('#' + popupLoginRegistrationFailed);
-	var info = $('#' + popupLoginRegistrationInfo);
-	success.hide();
-	failed.hide();
-	info.hide();
+    var success = $('#' + popupLoginSuccess); //popupLoginRegistrationSuccess);
+    var failed = $('#' + popupLoginRegistrationFailed);
+    var info = $('#' + popupLoginRegistrationInfo);
+    success.hide();
+    failed.hide();
+    info.hide();
 
-	if (data.success.length > 0) {
-		// trigger click
-		$('a[href="#login"]').trigger('click');
-		success.show();
-		$('#' + popupLoginSuccess + '-message').text(data.success);
-	}
-	if (data.error.length > 0) {
-		failed.show();
-		$('#' + popupLoginRegistrationFailed + '-message').text(data.error);
-	}
-	if (data.info.length > 0) {
-		info.show();
-		$('#' + popupLoginRegistrationInfo + '-message').text(data.info);
-		$('#popup-login-spamanswer-input').attr('placeholder', data.spamquestion).val('');
-	}
+    if (data.success.length > 0) {
+        // trigger click
+        $('a[href="#login"]').trigger('click');
+        success.show();
+        $('#' + popupLoginSuccess + '-message').text(data.success);
+    }
+    if (data.error.length > 0) {
+        failed.show();
+        $('#' + popupLoginRegistrationFailed + '-message').text(data.error);
+    }
+    if (data.info.length > 0) {
+        info.show();
+        $('#' + popupLoginRegistrationInfo + '-message').text(data.info);
+        $('#popup-login-spamanswer-input').attr('placeholder', data.spamquestion).val('');
+    }
 }
 
 /**
@@ -588,60 +626,60 @@ function callbackIfDoneForRegistration(data){
  * @param data
  */
 function callbackIfDoneForRegistrationViaOauth(data) {
-	'use strict';
+    'use strict';
 
-	var success = $('#' + popupLoginSuccess);
-	var failed = $('#popup-complete-login-failed');
-	var info = $('#popup-complete-login-info');
-	success.hide();
-	info.hide();
-	failed.hide();
+    var success = $('#' + popupLoginSuccess);
+    var failed = $('#popup-complete-login-failed');
+    var info = $('#popup-complete-login-info');
+    success.hide();
+    info.hide();
+    failed.hide();
 
-	if ('success' in data && data.success.length > 0) {
-		$('#popup-complete-login').modal('hide');
-		$('#popup-login').modal('show');
-		// trigger click
-		$('a[href="#login"]').trigger('click');
-		success.show();
-		$('#' + popupLoginSuccess + '-message').text(data.success);
-	}
-	if ('error' in data && data.error.length > 0) {
-		failed.show();
-		$('#popup-complete-login-failed-message').text(data.error);
-	}
-	if ('info' in data && data.info.length > 0) {
-		info.show();
-		$('#popup-complete-login-info-message').text(data.info);
-	}
+    if ('success' in data && data.success.length > 0) {
+        $('#popup-complete-login').modal('hide');
+        $('#popup-login').modal('show');
+        // trigger click
+        $('a[href="#login"]').trigger('click');
+        success.show();
+        $('#' + popupLoginSuccess + '-message').text(data.success);
+    }
+    if ('error' in data && data.error.length > 0) {
+        failed.show();
+        $('#popup-complete-login-failed-message').text(data.error);
+    }
+    if ('info' in data && data.info.length > 0) {
+        info.show();
+        $('#popup-complete-login-info-message').text(data.info);
+    }
 }
 
 /**
  *
  * @param data
  */
-function callbackIfDoneForPasswordRequest(data){
+function callbackIfDoneForPasswordRequest(data) {
     'use strict';
 
-	var success = $('#' + popupLoginSuccess);
-	var failed = $('#' + popupLoginFailed);
-	var info = $('#' + popupLoginInfo);
-	success.hide();
-	failed.hide();
-	info.hide();
-	if (data.success.length > 0) {
-		$('#' + popupLoginForgotPasswordBody).hide();
-		$('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
-		success.show();
-		$('#' + popupLoginSuccess + '-message').text(data.success);
-	}
-	if (data.error.length > 0) {
-		failed.show();
-		$('#' + popupLoginFailed + '-message').text(data.error);
-	}
-	if (data.info.length > 0) {
-		info.show();
-		$('#' + popupLoginInfo + '-message').text(data.info);
-	}
+    var success = $('#' + popupLoginSuccess);
+    var failed = $('#' + popupLoginFailed);
+    var info = $('#' + popupLoginInfo);
+    success.hide();
+    failed.hide();
+    info.hide();
+    if (data.success.length > 0) {
+        $('#' + popupLoginForgotPasswordBody).hide();
+        $('#' + popupLoginForgotPasswordText).text(_t(forgotPassword) + '?');
+        success.show();
+        $('#' + popupLoginSuccess + '-message').text(data.success);
+    }
+    if (data.error.length > 0) {
+        failed.show();
+        $('#' + popupLoginFailed + '-message').text(data.error);
+    }
+    if (data.info.length > 0) {
+        info.show();
+        $('#' + popupLoginInfo + '-message').text(data.info);
+    }
 }
 
 // *********************
@@ -650,100 +688,110 @@ function callbackIfDoneForPasswordRequest(data){
 $(document).ready(function () {
     'use strict';
 
-	// ajax loading animation
-	var timer;
-	$(document).on({
-		ajaxStart: function ajaxStartFct() {
+    // ajax loading animation
+    var timer;
+    $(document).on({
+        ajaxStart: function ajaxStartFct() {
             timer && clearTimeout(timer);
-            timer = setTimeout(function(){
+            timer = setTimeout(function () {
                 $('body').addClass('loading');
             }, 150);
-		},
-		ajaxStop: function ajaxStopFct() {
+        },
+        ajaxStop: function ajaxStopFct() {
             clearTimeout(timer);
             $('body').removeClass('loading');
-		}
-	});
+        }
+    });
 
-	var path = window.location.href;
-	var lang = $('#hidden_language').val();
+    var path = window.location.href;
+    var lang = $('#hidden_language').val();
 
-	jmpToChapter();
-	goBackToTop();
-	setAnalyticsOptOutLink(lang);
-	setEasterEggs();
-	setGravatarFallback();
-	setTimeout(function(){
-		addBorderToActiveNavbar();
-	}, 150);
-	$('#' + popupLogin).on('shown.bs.modal', function (e) {
+    jmpToChapter();
+    goBackToTop();
+    setAnalyticsOptOutLink(lang);
+    setEasterEggs();
+    setGravatarFallback();
+    setTimeout(function () {
+        addBorderToActiveNavbar();
+    }, 150);
+    $('#' + popupLogin).on('shown.bs.modal', function (e) {
         new PopupHandler().showLoginPopup();
-	});
-	if ($('.counter').length > 0) {
-		$('.counter').counterUp({delay: 5, time: 1000});
-	}
+    });
+    var counter = $('.counter');
+    if (counter.length > 0) {
+        counter.counterUp({delay: 5, time: 1000});
+    }
 
-	// set current file to active
-		 if (path.indexOf(urlContact) !== -1){ 	    setLinkActive('#' + contactLink); }
-	else if (path.indexOf(urlLogin) !== -1){	    setLinkActive('#' + loginLinkId); }
-	else if (path.indexOf(urlDiscussions) !== -1){	setLinkActive('#' + myDiscussionsLink); }
-	else if (path.indexOf(urlContent) !== -1){ 	    setLinkActive('#' + contentLink); }
-	else if (path.indexOf(urlReview) !== -1){ 	    setLinkActive('#' + reviewLinkId); }
-	else { 										    setLinkActive(''); }
+    // set current file to active
+    if (path.indexOf(urlContact) !== -1) {
+        setLinkActive('#' + contactLink);
+    }
+    else if (path.indexOf(urlLogin) !== -1) {
+        setLinkActive('#' + loginLinkId);
+    }
+    else if (path.indexOf(urlDiscussions) !== -1) {
+        setLinkActive('#' + myDiscussionsLink);
+    }
+    else if (path.indexOf(urlContent) !== -1) {
+        setLinkActive('#' + contentLink);
+    }
+    else if (path.indexOf(urlReview) !== -1) {
+        setLinkActive('#' + reviewLinkId);
+    }
+    else {
+        setLinkActive('');
+    }
 
-	// gui preperation
-	prepareLoginRegistrationPopup();
+    // gui preparation
+    prepareLoginRegistrationPopup();
 
-	// add minimal text length field
-	$('input[data-min-length]').each(function(){
-		setTextWatcherInputLength($(this), false);
-	});
-	$('textarea[data-min-length]').each(function(){
-		setTextWatcherInputLength($(this), false);
-	});
+    // add minimal text length field
+    $('input[data-min-length]').each(function () {
+        setTextWatcherInputLength($(this), false);
+    });
+    $('textarea[data-min-length]').each(function () {
+        setTextWatcherInputLength($(this), false);
+    });
 
-	// session expired popup
-	if ($('#' + sessionExpiredContainer).length === 1) {
-		setTimeout(function () {
-			$('#' + sessionExpiredContainer).fadeOut();
-		}, 3000);
-	}
+    // session expired popup
+    if ($('#' + sessionExpiredContainer).length === 1) {
+        setTimeout(function () {
+            $('#' + sessionExpiredContainer).fadeOut();
+        }, 3000);
+    }
 
-	// start guided tour, if the cookie is not set
-	if (!Cookies.get(GUIDED_TOUR) && window.location.href.indexOf('/discuss') !== -1){
-		new GuidedTour().start();
-	}
+    // start guided tour, if the cookie is not set
+    if (!Cookies.get(GUIDED_TOUR) && window.location.href.indexOf('/discuss') !== -1) {
+        new GuidedTour().start();
+    }
 
-	$('#contact_on_error').click(function(){
-		window.location.href=$('#contact-link').find('a').attr('href');
-	});
+    $('#contact_on_error').click(function () {
+        window.location.href = $('#contact-link').find('a').attr('href');
+    });
 
-	// language switch
-	$('#' + translationLinkDe).click(function(){ new GuiHandler().lang_switch('de'); });
-	$('#' + translationLinkEn).click(function(){ new GuiHandler().lang_switch('en'); });
-	$('#' + translationLinkDe + ' img').click(function(){ new GuiHandler().lang_switch('de'); });
-	$('#' + translationLinkEn + ' img').click(function(){ new GuiHandler().lang_switch('en'); });
-	$('#' + logoutLinkId).click(function(e){
-		e.preventDefault();
-		new AjaxMainHandler().logout();
-	});
+    // language switch
+    $('#' + translationLinkDe).click(function () {
+        new GuiHandler().lang_switch('de');
+    });
+    $('#' + translationLinkEn).click(function () {
+        new GuiHandler().lang_switch('en');
+    });
+    $('#' + translationLinkDe + ' img').click(function () {
+        new GuiHandler().lang_switch('de');
+    });
+    $('#' + translationLinkEn + ' img').click(function () {
+        new GuiHandler().lang_switch('en');
+    });
+    $('#' + logoutLinkId).click(function (e) {
+        e.preventDefault();
+        new AjaxMainHandler().logout();
+    });
 
-	$(window).scroll(function() {
-		if ($(document).scrollTop() > 50) {
+    $(window).scroll(function () {
+        if ($(document).scrollTop() > 50) {
             $('nav').addClass('shrink');
-		} else {
-			$('nav').removeClass('shrink');
-		}
-	});
-
-	// testing with gremlins
-	//var horde = gremlins.createHorde()
-	//	.gremlin(gremlins.species.formFiller())
-	//	.gremlin(gremlins.species.clicker().clickTypes(['click']))
-	//	.gremlin(gremlins.species.typer())
-	//	.gremlin(function() {
-	//		window.$ = function() {};
-	//	});
-    //horde.unleash();
-	// gremlins will act randomly, at 10 ms interval, 1000 times
+        } else {
+            $('nav').removeClass('shrink');
+        }
+    });
 });

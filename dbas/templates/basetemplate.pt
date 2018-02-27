@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:metal="http://xml.zope.org/namespaces/metal"
-      xmlns:i18n="http://xml.zope.org/namespaces/i18n" i18n:domain="dbas" metal:define-macro="layout" tal:attributes="lang extras.ui_locales">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+         i18n:domain="dbas" metal:define-macro="layout" tal:attributes="lang extras.ui_locales">
 <head>
   <meta name="google-site-verification" content="u3fQwV9ImqboTAEyPUoNlS7LNF0gAGaIb67qg-aD9JY" />
   <meta charset="utf-8">
@@ -99,7 +99,6 @@
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/my-discussion.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/dolan.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/countdown.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/contact.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/login.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/news.js')}" tal:condition="extras.development_mode"></script>
   <script type="text/javascript" src="${request.static_url('dbas:static/js/main/passwordcheck.js')}" tal:condition="extras.development_mode"></script>
