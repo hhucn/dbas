@@ -8,7 +8,7 @@ import transaction
 from pyramid.request import Request
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement, User, History, Settings, sql_timestamp_pretty_print, \
+from dbas.database.discussion_model import Argument, Statement, User, History, sql_timestamp_pretty_print, \
     Issue
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement
 from dbas.input_validator import check_reaction
@@ -21,44 +21,31 @@ from dbas.strings.text_generator import tag_type, get_text_for_confrontation, ge
 from dbas.strings.translator import Translator
 
 
-def save_issue_uid(issue_uid, nickname):
+def save_issue_uid(issue_uid: int, db_user: User):
     """
     Saves the Issue.uid for an user
 
     :param issue_uid: Issue.uid
-    :param nickname: User.nickname
+    :param db_user: User
     :return: Boolean
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        return False
-
-    db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
-    if not db_settings:
-        return False
-
+    db_settings = db_user.get_settings()
     db_settings.set_last_topic_uid(issue_uid)
     DBDiscussionSession.add(db_settings)
     transaction.commit()
     return True
 
 
-def get_saved_issue(nickname):
+def get_saved_issue(db_user: User):
     """
     Returns the last used issue of the user or None
 
-    :param nickname: User.nickname
+    :param db_user: User
     :return: Issue.uid or 0
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
+    if not db_user or db_user.nickname == nick_of_anonymous_user:
         return None
-
-    db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
-    if not db_settings:
-        return None
-
-    db_issue = DBDiscussionSession.query(Issue).get(db_settings.last_topic_uid)
+    db_issue = DBDiscussionSession.query(Issue).get(db_user.get_settings().last_topic_uid)
     if not db_issue:
         return None
 
@@ -413,24 +400,17 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
     return [bubble_user, bubble_syst]
 
 
-def save_path_in_database(nickname, slug, path, history=''):
+def save_path_in_database(db_user: User, slug: str, path: str, history: str='') -> None:
     """
     Saves a path into the database
 
-    :param nickname: User.nickname
+    :param db_user: User
     :param slug: Issue.slug
     :param path: String
     :param history: String
     :return: None
     """
     logger('HistoryHelper', 'path: {}, history: {}, slug: {}'.format(path, history, slug))
-
-    if not nickname:
-        return None
-
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    if not db_user:
-        return None
 
     if path.startswith('/discuss'):
         path = path[len('/discuss'):]
@@ -481,7 +461,7 @@ def delete_history_in_database(db_user):
     return True
 
 
-def handle_history(request: Request, nickname: str, slug: str, issue: Issue) -> str:
+def handle_history(request: Request, db_user: User, slug: str, issue: Issue) -> str:
     """
 
     :param request: pyramid's request object
@@ -492,8 +472,9 @@ def handle_history(request: Request, nickname: str, slug: str, issue: Issue) -> 
     :return: current user's history
     """
     history = request.params.get('history', '')
-    save_path_in_database(nickname, slug, request.path, history)
-    save_issue_uid(issue.uid, nickname)
+    if db_user and db_user.nickname != nick_of_anonymous_user:
+        save_path_in_database(db_user, slug, request.path, history)
+        save_issue_uid(issue.uid, db_user)
 
     # __save_history_in_cookie(request, request.path, history)
     if request.path.startswith('/discuss/'):

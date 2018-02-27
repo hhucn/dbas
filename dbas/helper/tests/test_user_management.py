@@ -12,7 +12,7 @@ class UserManagementTest(unittest.TestCase):
     def test_update_last_action(self):
         db_user = DBDiscussionSession.query(User).filter_by(nickname=str('Tobias')).first()
         last_action_old = db_user.last_action
-        user.update_last_action('Tobias')
+        user.update_last_action(db_user)
         last_action_new = db_user.last_action
         self.assertNotEqual(last_action_old, last_action_new)
 

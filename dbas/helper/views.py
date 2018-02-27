@@ -26,7 +26,7 @@ def preparation_for_view(request):
     :param request: Current request
     :return: nickname, session_id, session_expired, history
     """
-    session_expired = user.update_last_action(request.authenticated_userid)
+    session_expired = user.update_last_action(request.validated['user'])
     return request.authenticated_userid, session_expired
 
 

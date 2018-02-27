@@ -247,8 +247,8 @@ def get_issues_overiew(nickname, application_url) -> dict:
     :param application_url: current applications url
     :return: dict
     """
-    user.update_last_action(nickname)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
+    user.update_last_action(db_user)
     if not db_user:
         return {
             'user': [],

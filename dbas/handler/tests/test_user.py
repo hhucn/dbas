@@ -8,7 +8,7 @@ from pyramid import testing
 from nose.tools import assert_false, assert_true, assert_not_equal, assert_in, assert_not_in, assert_equal, \
     assert_greater_equal, assert_less_equal
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Settings, TextVersion, ClickedArgument, ClickedStatement, ReviewEdit, \
+from dbas.database.discussion_model import User, TextVersion, ClickedArgument, ClickedStatement, ReviewEdit, \
     Statement
 from dbas.handler import user
 
@@ -20,21 +20,20 @@ class UserHandlerTests(unittest.TestCase):
         self.user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
     def test_update_last_action(self):
-        assert_false(user.update_last_action(''))
-        user.update_last_action('Tobias')
-        assert_false(user.update_last_action('Tobias'))
+        user.update_last_action(self.user)
+        assert_false(user.update_last_action(self.user))
 
         old_ts = arrow.get(2016, 5, 5)
         self.user.last_action = old_ts
         self.user.last_login = old_ts
         DBDiscussionSession.add(self.user)
-        settings = DBDiscussionSession.query(Settings).filter_by(author_uid=self.user.uid).first()
+        settings = self.user.get_settings()
         settings.should_hold_the_login(False)
         DBDiscussionSession.add(settings)
         transaction.commit()
 
-        assert_true(user.update_last_action('Tobias'))
-        assert_false(user.update_last_action('Tobias'))
+        assert_true(user.update_last_action(self.user))
+        assert_false(user.update_last_action(self.user))
 
     def test_refresh_public_nickname(self):
         old_nickname = self.user.public_nickname

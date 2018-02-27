@@ -23,7 +23,7 @@ from dbas.handler.opinion import get_user_with_same_opinion_for_argument, \
     get_user_with_same_opinion_for_statements, get_user_with_opinions_for_attitude, \
     get_user_with_same_opinion_for_premisegroups, get_user_and_opinions_for_argument
 from dbas.lib import python_datetime_pretty_print, get_text_for_argument_uid, \
-    get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture
+    get_text_for_statement_uid, get_user_by_private_or_public_nickname, get_profile_picture, nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.review.helper.reputation import get_reputation_of
 from dbas.strings.keywords import Keywords as _
@@ -129,32 +129,28 @@ foodlist = ['Acorn Squash', 'Adobo', 'Aioli', 'Alfredo Sauce', 'Almond Paste', '
             'Won Ton Skins', 'Worcestershire Sauce', 'Yogurt', 'Zinfandel Wine']
 
 
-def update_last_action(user) -> bool:
+def update_last_action(db_user: User) -> bool:
     """
     Updates the last action field of the user-row in database. Returns boolean if the users session
     is older than one hour or True, when she wants to keep the login
 
-    :param user: User in refactored fns, else nickname
+    :param db_user: User in refactored fns, else nickname
     :return: Boolean
     """
-    logger('User', 'main')
-    if not user:
+    if not db_user or db_user.nickname == nick_of_anonymous_user:
         return False
-    elif isinstance(user, str):  # TODO remove this check after refactoring
-        user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
-    db_settings = DBDiscussionSession.query(Settings).get(user.uid)
 
     timeout_in_sec = 60 * 60 * 24 * 7
 
     # check difference of
-    diff_action = get_now() - user.last_action
-    diff_login = get_now() - user.last_login
+    diff_action = get_now() - db_user.last_action
+    diff_login = get_now() - db_user.last_login
     diff_action = diff_action.seconds + diff_action.days * 24 * 60 * 60
     diff_login = diff_login.seconds + diff_login.days * 24 * 60 * 60
 
     diff = diff_action if diff_action < diff_login else diff_login
-    should_log_out = diff > timeout_in_sec and not db_settings.keep_logged_in
-    user.update_last_action()
+    should_log_out = diff > timeout_in_sec and not db_user.get_settings().keep_logged_in
+    db_user.update_last_action()
 
     transaction.commit()
     return should_log_out

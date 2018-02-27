@@ -5,7 +5,7 @@ from pyramid import testing
 from pyramid.httpexceptions import HTTPNotFound
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Settings
+from dbas.database.discussion_model import User
 from dbas.handler.password import get_hashed_password
 from dbas.helper.test import verify_dictionary_of_view
 
@@ -290,7 +290,7 @@ class MainUserView(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-        db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
+        db_settings = db_user.get_settings()
         db_settings.set_show_public_nickname(True)
         transaction.commit()
 

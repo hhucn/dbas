@@ -57,8 +57,8 @@ def send_edit_text_notification(db_user, textversion, path, mailer):
     root_author = oem.author_uid
     new_author = textversion.author_uid
     last_author = all_textversions[-2].author_uid if len(all_textversions) > 1 else root_author
-    settings_root_author = DBDiscussionSession.query(Settings).get(root_author)
-    settings_last_author = DBDiscussionSession.query(Settings).get(last_author)
+    settings_root_author = root_author.get_settings()
+    settings_last_author = last_author.get_settings()
 
     # create content
     db_editor = DBDiscussionSession.query(User).get(new_author)
@@ -145,8 +145,8 @@ def send_add_text_notification(url, conclusion_id, db_user: User, mailer):
     db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=conclusion_id).all()  # TODO #432
     db_root_author = DBDiscussionSession.query(User).get(db_textversions[0].author_uid)
     db_last_editor = DBDiscussionSession.query(User).get(db_textversions[-1].author_uid)
-    db_root_author_settings = DBDiscussionSession.query(Settings).get(db_root_author.uid)
-    db_last_editor_settings = DBDiscussionSession.query(Settings).get(db_last_editor.uid)
+    db_root_author_settings = db_root_author.get_settings()
+    db_last_editor_settings = db_last_editor.get_settings()
     root_lang = DBDiscussionSession.query(Language).get(db_root_author_settings.lang_uid).ui_locales
     editor_lang = DBDiscussionSession.query(Language).get(db_last_editor_settings.lang_uid).ui_locales
     _t_editor = Translator(editor_lang)
@@ -218,7 +218,7 @@ def send_add_argument_notification(url, attacked_argument_uid, user, mailer):
     if db_author == db_current_user:
         return None
 
-    db_author_settings = DBDiscussionSession.query(Settings).get(db_author.uid)
+    db_author_settings = db_author.get_settings()
     user_lang = DBDiscussionSession.query(Language).get(db_author_settings.lang_uid).ui_locales
 
     # send notification via websocket to last author
@@ -287,7 +287,7 @@ def send_notification(from_user, to_user, topic, content, mainpage):
     DBDiscussionSession.flush()
     transaction.commit()
 
-    db_settings = DBDiscussionSession.query(Settings).get(to_user.uid)
+    db_settings = to_user.get_settings()
     if db_settings.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).get(db_settings.lang_uid).ui_locales
         _t_user = Translator(user_lang)
