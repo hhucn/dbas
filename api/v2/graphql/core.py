@@ -144,7 +144,17 @@ class LanguageGraph(SQLAlchemyObjectType):
         model = Language
 
 
+
 class PremiseGroupGraph(SQLAlchemyObjectType):
+    statements = StatementGraph.plural()
+
+    def resolve_statements(self, info, **kwargs):
+        premises = DBDiscussionSession.query(Premise).filter(Premise.premisesgroup_uid == self.uid).all()
+        uids = set([premise.statement_uid for premise in premises])
+        query = StatementGraph.get_query(info)
+
+        return query.filter_by(**kwargs).filter(Statement.uid.in_(uids))
+
     class Meta:
         model = PremiseGroup
 
