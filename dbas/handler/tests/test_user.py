@@ -164,10 +164,7 @@ class UserHandlerTests(unittest.TestCase):
         assert_false(prep_dict['is_neutral'])
 
     def test_get_summary_of_today(self):
-        prep_dict = user.get_summary_of_today('', 'en')
-        assert_equal(len(prep_dict), 0)
-
-        prep_dict = user.get_summary_of_today(self.user.nickname, 'en')
+        prep_dict = user.get_summary_of_today(self.user)
         assert_equal(self.user.nickname, prep_dict['firstname'])
         assert_less_equal(0, prep_dict['discussion_arg_clicks'])
         assert_less_equal(0, prep_dict['discussion_stat_clicks'])

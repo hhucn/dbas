@@ -28,7 +28,7 @@ class HistoryHandlerTests(unittest.TestCase):
 
     def test_get_saved_issue(self):
         assert_is_none(history.get_saved_issue('Tobia'))
-        assert_equal(self.settings.last_topic_uid, history.get_saved_issue(self.user.nickname))
+        assert_equal(self.settings.last_topic_uid, history.get_saved_issue(self.user.nickname).uid)
 
     def test_get_splitted_history(self):
         hist = history.get_splitted_history(self.history)

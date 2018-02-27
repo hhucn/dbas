@@ -27,7 +27,7 @@ class DiscussionDictHelper(object):
     Provides all functions for creating the discussion dictionaries with all bubbles.
     """
 
-    def __init__(self, lang, nickname=None, history='', slug=''):
+    def __init__(self, lang, nickname=None, history: str='', slug: str='', broke_limit: bool=False):
         """
         Initialize default values
 
@@ -41,6 +41,7 @@ class DiscussionDictHelper(object):
         self.nickname = nickname
         self.history = history
         self.slug = slug
+        self.broke_limit = broke_limit
 
     def get_dict_for_start(self, position_count):
         """
@@ -64,7 +65,8 @@ class DiscussionDictHelper(object):
             'bubbles': bubbles_array,
             'add_premise_text': add_premise_text,
             'save_statement_url': save_statement_url,
-            'mode': ''
+            'mode': '',
+            'broke_limit': self.broke_limit
         }
 
     def get_dict_for_attitude(self, uid):
@@ -97,7 +99,8 @@ class DiscussionDictHelper(object):
             'bubbles': bubbles_array,
             'add_premise_text': add_premise_text,
             'save_statement_url': save_statement_url,
-            'mode': ''
+            'mode': '',
+            'broke_limit': self.broke_limit
         }
 
     def get_dict_for_justify_statement(self, uid, slug, is_supportive, count_of_items, db_user):
@@ -172,7 +175,9 @@ class DiscussionDictHelper(object):
             'add_premise_text': add_premise_text,
             'save_statement_url': save_statement_url,
             'mode': '',
-            'is_supportive': is_supportive}
+            'is_supportive': is_supportive,
+            'broke_limit': self.broke_limit
+        }
 
     def get_dict_for_justify_argument(self, uid, is_supportive, attack):
         """
@@ -192,10 +197,13 @@ class DiscussionDictHelper(object):
 
         db_argument = DBDiscussionSession.query(Argument).get(uid)
         if not db_argument:
-            return {'bubbles': bubbles_array,
-                    'add_premise_text': add_premise_text,
-                    'save_statement_url': save_statement_url,
-                    'mode': ''}
+            return {
+                'bubbles': bubbles_array,
+                'add_premise_text': add_premise_text,
+                'save_statement_url': save_statement_url,
+                'mode': '',
+                'broke_limit': self.broke_limit
+            }
 
         confrontation = get_text_for_argument_uid(uid)
         premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
@@ -250,7 +258,8 @@ class DiscussionDictHelper(object):
             'save_statement_url': save_statement_url,
             'mode': '',
             'attack_type': attack,
-            'arg_uid': uid
+            'arg_uid': uid,
+            'broke_limit': self.broke_limit
         }
 
     def __get_add_premise_text_for_justify_argument(self, confrontation, premise, attack, conclusion, db_argument,
@@ -333,7 +342,8 @@ class DiscussionDictHelper(object):
             'save_statement_url': save_statement_url,
             'mode': '',
             'extras': statement_list,
-            'gender': gender
+            'gender': gender,
+            'broke_limit': self.broke_limit
         }
 
     def get_dict_for_argumentation(self, uid, is_supportive, additional_uid, attack, history, db_user):
@@ -397,7 +407,8 @@ class DiscussionDictHelper(object):
             'save_statement_url': save_statement_url,
             'mode': '',
             'extras': statement_list,
-            'gender': gender_of_counter_arg
+            'gender': gender_of_counter_arg,
+            'broke_limit': self.broke_limit
         }
 
     def __get_dict_for_argumentation_end(self, argument_uid, user_changed_opinion, db_user, attack):
@@ -543,6 +554,7 @@ class DiscussionDictHelper(object):
             'save_statement_url': '',
             'mode': '',
             'extras': statement_list,
+            'broke_limit': self.broke_limit
         }
 
     def get_dict_for_supporting_each_other(self, uid_system_arg, uid_user_arg, nickname):
@@ -582,7 +594,13 @@ class DiscussionDictHelper(object):
                                           message=sys_text, omit_url=True, lang=self.lang)
         bubbles_array.append(bubble)
 
-        return {'bubbles': bubbles_array, 'add_premise_text': '', 'save_statement_url': '', 'mode': ''}
+        return {
+            'bubbles': bubbles_array,
+            'add_premise_text': '',
+            'save_statement_url': '',
+            'mode': '',
+            'broke_limit': self.broke_limit
+        }
 
     def get_dict_for_jump_decision(self, uid):
         """
@@ -609,7 +627,13 @@ class DiscussionDictHelper(object):
 
         bubbles_array = [bubble]
 
-        return {'bubbles': bubbles_array, 'add_premise_text': '', 'save_statement_url': '', 'mode': ''}
+        return {
+            'bubbles': bubbles_array,
+            'add_premise_text': '',
+            'save_statement_url': '',
+            'mode': '',
+            'broke_limit': self.broke_limit
+        }
 
     def get_dict_for_choosing(self, uid, is_uid_argument, is_supportive):
         """
@@ -651,8 +675,13 @@ class DiscussionDictHelper(object):
         if not bubbles_already_last_in_list(bubbles_array, question_bubble):
             bubbles_array.append(question_bubble)
 
-        return {'bubbles': bubbles_array, 'add_premise_text': add_premise_text,
-                'save_statement_url': save_statement_url, 'mode': ''}
+        return {
+            'bubbles': bubbles_array,
+            'add_premise_text': add_premise_text,
+            'save_statement_url': save_statement_url,
+            'mode': '',
+            'broke_limit': self.broke_limit
+        }
 
     @staticmethod
     def __get_all_statement_texts_by_argument(argument):

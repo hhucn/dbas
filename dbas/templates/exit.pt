@@ -25,11 +25,7 @@
                             </div>
 
                             <div class="col-md-8">
-                                <h5>
-                                    <i class="fa fa-bar-chart" aria-hidden="true" style="margin-right: 0.5em;"></i>
-                                    <span i18n:translate="todays_summary">Todays Summary</span>: <span>${summary.date}</span>
-                                    <i class="fa fa-calendar" aria-hidden="true"></i>
-                                </h5>
+                                <h5 i18n:translate="todays_summary">Todays Summary</h5>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <table class="table table-condensed finish-summary-table" style="border-collapse: separate; border-spacing: 5px 5px;">
@@ -48,7 +44,7 @@
 
                                             <tr>
                                                 <td><span class="lead" i18n:translate="reputation_colltected">Collected reputation</span></td>
-                                                <td>${summary.reputation_colltected}</td>
+                                                <td>${summary.reputation_collected}</td>
                                             </tr>
                                         </table>
                                     </div>

@@ -245,7 +245,7 @@ de_lang = {
     _.displayControlDialogExpertBody: 'Du bist also ein Experte? Okay, dann darfst du wirklich alles auf einen Blick sehen.',
     _.displayControlDialogGraphTitle: 'Graph-Ansicht',
     _.displayControlDialogGraphBody: 'Darstellung der Diskussion als Graph.',
-    _.discussionInfoTooltip1: 'Die Diskussion wurde am/um',
+    _.discussionInfoTooltip1: 'Die Diskussion wurde am',
     _.discussionInfoTooltip2: 'Uhr gestartet und hat schon',
     _.discussionInfoTooltip3pl: 'Argumente.',
     _.discussionIsReadOnly: 'Die Diskussion kann nur gelesen werden.',

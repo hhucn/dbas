@@ -10,6 +10,7 @@ import graphene
 import pkg_resources
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.renderers import get_renderer
+from pyramid.request import Request
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
 from webob_graphql import serve_graphql_request
@@ -34,7 +35,7 @@ from dbas.helper.decoration import prep_extras_dict
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
-from dbas.lib import escape_string, get_changelog, nick_of_anonymous_user
+from dbas.lib import escape_string, get_changelog, nick_of_anonymous_user, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -80,7 +81,7 @@ def prepare_request_dict(request, nickname):
     """
     logger('Renderer', 'def')
 
-    last_topic = history_handler.get_saved_issue(nickname)
+    db_last_topic = history_handler.get_saved_issue(nickname)
 
     slug = None
     if 'slug' in request.matchdict:
@@ -88,10 +89,10 @@ def prepare_request_dict(request, nickname):
         if not isinstance(request.matchdict['slug'], str) and len(request.matchdict['slug']) > 0:
             slug = request.matchdict['slug'][0]
 
-    if not slug and last_topic:
-        issue = last_topic
+    if not slug and db_last_topic:
+        issue = db_last_topic
     elif slug:
-        issue = issue_handler.get_id_of_slug(slug, request, True)
+        issue = issue_handler.get_id_of_slug(slug)
     else:
         issue = issue_handler.get_issue_id(request)
 
@@ -99,10 +100,15 @@ def prepare_request_dict(request, nickname):
     if not issue:
         raise HTTPNotFound()
 
-    db_issue = DBDiscussionSession.query(Issue).get(issue)
+    if isinstance(issue, int):
+        db_issue = DBDiscussionSession.query(Issue).get(issue)
+    else:
+        db_issue = issue
+
     if not slug:
         slug = db_issue.slug
 
+    issue_handler.save_issue_id_in_session(db_issue.uid, request)
     history = history_handler.handle_history(request, nickname, slug, db_issue)
     set_language_for_visit(request)
 
@@ -116,8 +122,7 @@ def prepare_request_dict(request, nickname):
         'registry': request.registry,
         'issue': db_issue,
         'history': history,
-        'ui_locales': ui_locales,
-        'last_topic': last_topic
+        'ui_locales': ui_locales
     }
 
 
@@ -130,8 +135,6 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any]):
     :param f: A function with three arguments
     :return: prepared collection for the discussion
     """
-    logger('Views', 'def')
-    logger('Views', 'def')
     logger('Views', 'def')
     nickname, session_expired = preparation_for_view(request)
     if session_expired:
@@ -149,8 +152,80 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any]):
         prepared_discussion['layout'] = base_layout()
         __modifiy_discussion_url(prepared_discussion)
 
-    logger('Views', 'Return dict (isNone={})'.format(dict is None))
-    return prepared_discussion
+    return prepared_discussion, request_dict
+
+
+def __append_extras_dict(pdict: dict, rdict: dict, nickname: str, is_reportable: bool) -> None:
+    """
+
+    :param pdict: prepared dict for rendering
+    :param idict: item dict with the answers
+    :param nickname: request.authenticated_userid
+    :param is_reportable: Same as discussion.bubbles.last.is_markable, but TAL has no last indicator
+    :return:
+    """
+    _dh = DictionaryHelper(rdict['ui_locales'], pdict['issues']['lang'])
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
+    pdict['extras'] = _dh.prepare_extras_dict(rdict['issue'].slug, is_reportable, True, True, rdict['registry'], rdict['app_url'], rdict['path'], db_user)
+
+
+def __append_extras_dict_during_justification(request: Request, pdict: dict, rdict: dict) -> None:
+    """
+
+    :param request: pyramids Request object
+    :param pdict: prepared dict for rendering
+    :param idict: item dict with the answers
+    :param ddict: discussion dict with bubbles
+    :param rdict: request dict for the discussion core
+    :param is_reportable:
+    :return:
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
+    ui_locales = get_language_from_cookie(request)
+    mode = request.matchdict.get('mode', '')
+    relation = request.matchdict['relation'][0] if len(request.matchdict['relation']) > 0 else ''
+    stat_or_arg_uid = request.matchdict.get('statement_or_arg_id')
+    supportive = mode in ['t', 'd']
+    item_len = len(pdict['items']['elements'])
+    extras_dict = {}
+
+    _dh = DictionaryHelper(ui_locales, rdict['issue'].lang)
+    logged_in = db_user and db_user.nickname != nick_of_anonymous_user is not None
+
+    if [c for c in ('t', 'f') if c in mode] and relation == '':
+        extras_dict = _dh.prepare_extras_dict(rdict['issue'].slug, False, True, True, request.registry,
+                                              request.application_url, request.path, db_user)
+        if item_len == 0 or item_len == 1 and logged_in:
+            _dh.add_discussion_end_text(pdict['discussion'], extras_dict, request.authenticated_userid, at_justify=True,
+                                        current_premise=get_text_for_statement_uid(stat_or_arg_uid),
+                                        supportive=supportive)
+
+    elif 'd' in mode and relation == '':
+        extras_dict = _dh.prepare_extras_dict(rdict['issue'].slug, True, True, True, request.registry,
+                                              request.application_url, request.path, db_user=db_user)
+        # is the discussion at the end?
+        if item_len == 0:
+            if int(stat_or_arg_uid) == 0:
+                stat_or_arg_uid = rdict['history'].split('/')[-1]
+                if not is_integer(stat_or_arg_uid):
+                    stat_or_arg_uid = 0
+
+            text = ''
+            if int(stat_or_arg_uid) != 0:
+                text = get_text_for_statement_uid(stat_or_arg_uid)
+
+            _dh.add_discussion_end_text(pdict['discussion'], extras_dict, request.authenticated_userid,
+                                        at_dont_know=True, current_premise=text)
+
+    elif [c for c in ('undermine', 'rebut', 'undercut', 'support') if c in relation]:
+        extras_dict = _dh.prepare_extras_dict(rdict['issue'].slug, False, True, False, request.registry,
+                                              request.application_url, request.path, db_user=db_user)
+        # is the discussion at the end?
+        if item_len == 0 or item_len == 1 and logged_in:
+            _dh.add_discussion_end_text(pdict['discussion'], extras_dict, request.authenticated_userid,
+                                        at_justify_argumentation=True)
+
+    pdict['extras'] = extras_dict
 
 
 def __main_dict(request, title):
@@ -159,6 +234,7 @@ def __main_dict(request, title):
         'title': title,
         'project': project_name,
         'extras': request.decorated['extras'],
+        'discussion': {'broke_limit': False}
     }
 
 
@@ -453,7 +529,8 @@ def notfound(request):
     prep_dict.update({
         'page_notfound_viewname': path,
         'param_error': param_error,
-        'revoked_content': revoked_content
+        'revoked_content': revoked_content,
+        'discussion': {'broke_limit': False}
     })
     return prep_dict
 
@@ -474,9 +551,9 @@ def discussion_init(request):
     :param request: request of the web server
     :return: dictionary
     """
-    logger('Views', 'request.matchdict: {}'.format(request.matchdict))
+    logger('discussion_init', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion = __call_from_discussion_step(request, discussion.init)
+    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.init)
     if not prepared_discussion:
         raise HTTPNotFound()
 
@@ -484,6 +561,12 @@ def discussion_init(request):
     if request.authenticated_userid and 'service' in request.params and request.params['service'] in oauth_providers:
         url = request.session['oauth_redirect_url']
         return HTTPFound(location=url)
+
+    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
+    if len(prepared_discussion['items']['elements']) == 1:
+        _dh = DictionaryHelper(rdict['ui_locales'], prepared_discussion['issues']['lang'])
+        nickname = request.authenticated_userid if request.authenticated_userid else nick_of_anonymous_user
+        _dh.add_discussion_end_text(prepared_discussion['discussion'], prepared_discussion['extras'], nickname, at_start=True)
 
     return prepared_discussion
 
@@ -498,11 +581,14 @@ def discussion_attitude(request):
     :return: dictionary
     """
     # '/discuss/{slug}/attitude/{statement_id}'
-    logger('Views', 'request.matchdict: {}'.format(request.matchdict))
+    logger('discussion_attitude', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion = __call_from_discussion_step(request, discussion.attitude)
+    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.attitude)
+
     if not prepared_discussion:
         raise HTTPNotFound()
+
+    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
 
     return prepared_discussion
 
@@ -517,11 +603,13 @@ def discussion_justify(request):
     :return: dictionary
     """
     # '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation'
-    logger('views', 'request.matchdict: {}'.format(request.matchdict))
+    logger('discussion_justify', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion = __call_from_discussion_step(request, discussion.justify)
+    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.justify)
     if not prepared_discussion:
         raise HTTPNotFound()
+
+    __append_extras_dict_during_justification(request, prepared_discussion, rdict)
 
     return prepared_discussion
 
@@ -536,11 +624,13 @@ def discussion_reaction(request):
     :return: dictionary
     """
     # '/discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys'
-    logger('views', 'request.matchdict: {}'.format(request.matchdict))
+    logger('discussion_reaction', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion = __call_from_discussion_step(request, discussion.reaction)
+    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.reaction)
     if not prepared_discussion:
         raise HTTPNotFound()
+
+    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, True)
 
     return prepared_discussion
 
@@ -554,11 +644,13 @@ def discussion_support(request):
     :param request: request of the web server
     :return: dictionary
     """
-    logger('views', 'request.matchdict: {}'.format(request.matchdict))
+    logger('discussion_support', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion = __call_from_discussion_step(request, discussion.support)
+    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.support)
     if not prepared_discussion:
         raise HTTPNotFound()
+
+    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
 
     return prepared_discussion
 
@@ -573,17 +665,19 @@ def discussion_finish(request):
     :param request: request of the web server
     :return:
     """
-    logger('views', 'request.matchdict: {}'.format(request.matchdict))
+    logger('discussion_finish', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion = __call_from_discussion_step(request, discussion.finish)
+    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.finish)
     if not prepared_discussion:
         raise HTTPNotFound()
+
+    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, True)
 
     return prepared_discussion
 
 
 # exit page
-@view_config(route_name='discussion_exit', renderer='../templates/exit.pt', permission='everybody')
+@view_config(route_name='discussion_exit', renderer='../templates/exit.pt', permission='use')
 def discussion_exit(request):
     """
     View configuration for discussion step, where we present a small/daily summary on the end
@@ -592,21 +686,17 @@ def discussion_exit(request):
     :return:
     """
     match_dict = request.matchdict
-    logger('views', 'request.matchdict: {}'.format(match_dict))
+    logger('discussion_exit', 'request.matchdict: {}'.format(match_dict))
 
     unauthenticated = check_authentication(request)
     if unauthenticated:
         return unauthenticated
 
-    request_dict = {
-        'registry': request.registry,
-        'app_url': request.application_url,
-        'nickname': request.authenticated_userid,
-        'path': request.path,
-        'ui_locales': get_language_from_cookie(request)
-    }
-
-    prepared_discussion = discussion.dexit(request_dict)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
+    dh = DictionaryHelper(get_language_from_cookie(request))
+    prepared_discussion = discussion.dexit(get_language_from_cookie(request), db_user)
+    prepared_discussion['extras'] = dh.prepare_extras_dict_for_normal_page(request.registry, request.application_url,
+                                                                           request.path, db_user)
     prepared_discussion['layout'] = base_layout()
     prepared_discussion['language'] = str(get_language_from_cookie(request))
     prepared_discussion['show_summary'] = len(prepared_discussion['summary']) != 0
@@ -626,9 +716,12 @@ def discussion_choose(request):
     match_dict = request.matchdict
     logger('discussion_choose', 'request.matchdict: {}'.format(match_dict))
 
-    prepared_discussion = __call_from_discussion_step(request, discussion.choose)
+    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.choose)
     if not prepared_discussion:
         raise HTTPNotFound()
+
+    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
+
     return prepared_discussion
 
 
@@ -642,11 +735,13 @@ def discussion_jump(request):
     :return: dictionary
     """
     # '/discuss/{slug}/jump/{arg_id}'
-    logger('views', 'request.matchdict: {}'.format(request.matchdict))
+    logger('discussion_jump', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion = __call_from_discussion_step(request, discussion.jump)
+    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.jump)
     if not prepared_discussion:
         raise HTTPNotFound()
+
+    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, True)
 
     return prepared_discussion
 

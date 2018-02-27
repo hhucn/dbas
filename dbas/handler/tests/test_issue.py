@@ -46,11 +46,6 @@ class IssueHandlerTests(unittest.TestCase):
         self.assertTrue(response > 0)
 
     def test_get_issue_dict_for(self):
-        uid = 1
-        lang = 'en'
-        response = ih.get_issue_dict_for('', 'http://test.url', uid, lang)
-        self.assertTrue(len(response['error']) > 0)
-
         issue = DBDiscussionSession.query(Issue).first()
         uid = issue.uid
         lang = 'en'
@@ -61,9 +56,8 @@ class IssueHandlerTests(unittest.TestCase):
     def test_get_id_of_slug(self):
         issue = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).first()
         slug = issue.slug
-        request = testing.DummyRequest(matchdict={})
-        response = ih.get_id_of_slug(slug, request, True)
-        self.assertEqual(response, issue.uid)
+        response = ih.get_id_of_slug(slug)
+        self.assertEqual(response.uid, issue.uid)
 
     def test_get_issue_id(self):
         request = testing.DummyRequest()

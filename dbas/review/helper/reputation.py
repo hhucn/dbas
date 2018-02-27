@@ -9,6 +9,7 @@ import transaction
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason
+from dbas.lib import nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 
@@ -99,7 +100,7 @@ def get_reputation_of(db_user, only_today=False):
         db_user = DBDiscussionSession.query(User).filter_by(nickname=db_user).first()
     count = 0
 
-    if not db_user:
+    if not db_user or db_user.nickname == nick_of_anonymous_user:
         return count, False
 
     db_reputation = DBDiscussionSession.query(ReputationHistory)

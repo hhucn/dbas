@@ -10,7 +10,8 @@
                     <span tal:omit-tag="" tal:condition="len(issues.long_info)>0">
                         ${issues.long_info}
                     </span>
-                    <br tal:condition="len(issues.long_info)>0">${issues.tooltip}
+                    <br tal:condition="len(issues.long_info)>0">
+                    <span>${issues.tooltip}</span>
                 </p>
             </div>
         </section>
@@ -138,7 +139,7 @@
                         <li id="opinion-barometer-img" tal:condition="extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true"></i><span class="sidebar-element">${extras.title.barometer}</span></li>
                         <li id="display-style-icon-graph-img" tal:condition="extras.show_graph_icon"><i class="fa fa-sitemap" aria-hidden="true"></i><span class="sidebar-element">${extras.title.graph_view}</span></li>
                         <li id="sidebar-search-statement"><i class="fa fa-search" aria-hidden="true"></i><span class="sidebar-element">${extras.tag.search}</span></li>
-                        <li id="finish-button" onclick="window.location='/discuss/exit'"><i class="fa fa-sign-out" aria-hidden="true"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
+                        <li id="finish-button" onclick="window.location='/discuss/exit'" tal:condition="extras.logged_in"><i class="fa fa-sign-out" aria-hidden="true"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
                     </ul>
 
                     <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
@@ -206,18 +207,18 @@
                     <div id="add-statement-container-body">
                         <fieldset>
                             <div class="form-group">
-                                <label for="add-statement-container-main-input-position" class="col-lg-4 col-md-5 col-sm-6 control-label"
+                                <label for="add-statement-container-main-input-position" class="col-lg-3 col-md-5 col-sm-6 control-label"
                                        style="color: #666; font-size: 17px; margin-top: 0.4em;">${structure:discussion.add_premise_text}</label>
-                                <div class="col-lg-8 col-md-7 col-sm-6">
+                                <div class="col-lg-9 col-md-7 col-sm-6">
                                     <input id="add-statement-container-main-input-position" placeholder="${extras.tag.placeholder_position}"
                                            class="form-control" value="" data-min-length="10" data-max-length="180" style="width: 100%">
                                 </div>
                             </div>
                             <br>
                             <div class="form-group">
-                                <label for="add-statement-container-main-input-reason" class="col-lg-4 col-md-5 col-sm-6 control-label"
+                                <label for="add-statement-container-main-input-reason" class="col-lg-3 col-md-5 col-sm-6 control-label"
                                        style="color: #666; font-size: 17px; margin-top: 0.4em;">${extras.title.because}</label>
-                                <div class="col-lg-8 col-md-7 col-sm-6">
+                                <div class="col-lg-9 col-md-7 col-sm-6">
                                     <input id="add-statement-container-main-input-reason" placeholder="${extras.tag.placeholder_reason}"
                                            class="form-control" value="" data-min-length="10" data-max-length="180" style="width: 100%">
                                 </div>

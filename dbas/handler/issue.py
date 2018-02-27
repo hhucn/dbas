@@ -8,6 +8,7 @@ from math import ceil
 
 import arrow
 import transaction
+from pyramid.request import Request
 from slugify import slugify
 
 from dbas.database import DBDiscussionSession
@@ -16,7 +17,6 @@ from dbas.database.discussion_model import Argument, User, Issue, Language, Stat
 from dbas.handler import user
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import get_short_url
-from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_issues_as_query, get_visible_issues_for_user_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -43,7 +43,6 @@ def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Lan
     """
     user.update_last_action(db_user)
 
-    logger('setter', 'main')
     DBDiscussionSession.add(Issue(title=title,
                                   info=info,
                                   long_info=long_info,
@@ -62,13 +61,11 @@ def prepare_json_of_issue(db_issue: Issue, application_url: str, db_user: User) 
     """
     Prepares slug, info, argument count and the date of the issue as dict
 
-    :param uid: Issue.uid
+    :param db_issue: Issue
     :param application_url: application_url
     :param db_user: User
     :return: Issue-dict()
     """
-    logger('issueHelper', 'main')
-
     slug = slugify(db_issue.title)
     title = db_issue.title
     info = db_issue.info
@@ -80,10 +77,12 @@ def prepare_json_of_issue(db_issue: Issue, application_url: str, db_user: User) 
     days, seconds = duration.days, duration.seconds
     duration = ceil(days * 24 + seconds / 3600)
     date_ms = int(db_issue.date.format('X')) * 1000
-    date = db_issue.date.format('DD.MM. HH:mm')
+    date = db_issue.date.format('DD.MM.YY HH:mm')
+    if db_issue.lang == 'de':
+        date = date.replace(' ', ' um ')
 
     db_issues = get_visible_issues_for_user_as_query(db_user.uid).filter(Issue.uid != db_issue.uid).all()
-    all_array = [get_issue_dict_for(issue, application_url, db_issue.uid, lang) for issue in db_issues]
+    all_array = [get_issue_dict_for(db_issue, application_url, db_issue.uid, lang) for db_issue in db_issues]
 
     _t = Translator(lang)
     t1 = _t.get(_.discussionInfoTooltip1)
@@ -110,7 +109,7 @@ def prepare_json_of_issue(db_issue: Issue, application_url: str, db_user: User) 
     }
 
 
-def get_number_of_arguments(issue_uid):
+def get_number_of_arguments(issue_uid: int) -> int:
     """
     Returns number of arguments for the issue
 
@@ -120,7 +119,7 @@ def get_number_of_arguments(issue_uid):
     return DBDiscussionSession.query(Argument).filter_by(issue_uid=issue_uid).count()
 
 
-def get_number_of_statements(issue_uid):
+def get_number_of_statements(issue_uid: int) -> int:
     """
     Returns number of statements for the issue
 
@@ -130,66 +129,52 @@ def get_number_of_statements(issue_uid):
     return DBDiscussionSession.query(Statement).filter_by(issue_uid=issue_uid).count()
 
 
-def get_issue_dict_for(issue, application_url, uid, lang):
+def get_issue_dict_for(db_issue: Issue, application_url: str, uid: int, lang: str) -> dict():
     """
     Creates an dictionary for the issue
 
-    :param issue: Issue
+    :param db_issue: Issue
     :param application_url:
     :param uid: current selected Issue.uid
     :param lang: ui_locales
     :return: dict()
     """
-    if str(type(issue)) != str(Issue):
-        return {
-            'uid': '',
-            'slug': '',
-            'title': '',
-            'url': '',
-            'review_url': '',
-            'info': '',
-            'stat_count': '',
-            'date': '',
-            'author': '',
-            'author_url': '',
-            'enabled': '',
-            'error': 'true'
-        }
-
-    _um = UrlManager(issue.slug)
+    _um = UrlManager(db_issue.slug)
     issue_dict = {
-        'uid': str(issue.uid),
-        'slug': issue.slug,
-        'title': issue.title,
-        'url': '/' + issue.slug,
-        'review_url': _um.get_review_url() if str(uid) != str(issue.uid) else '',
-        'info': issue.info,
-        'stat_count': get_number_of_statements(issue.uid),
-        'date': sql_timestamp_pretty_print(issue.date, lang),
-        'author': issue.users.public_nickname,
+        'uid': str(db_issue.uid),
+        'slug': db_issue.slug,
+        'title': db_issue.title,
+        'url': '/' + db_issue.slug,
+        'review_url': _um.get_review_url() if str(uid) != str(db_issue.uid) else '',
+        'info': db_issue.info,
+        'stat_count': get_number_of_statements(db_issue.uid),
+        'date': sql_timestamp_pretty_print(db_issue.date, lang),
+        'author': db_issue.users.public_nickname,
         'error': '',
-        'author_url': '{}/user/{}'.format(application_url, issue.users.public_nickname),
-        'enabled': 'disabled' if str(uid) == str(issue.uid) else 'enabled'
+        'author_url': '{}/user/{}'.format(application_url, db_issue.users.public_nickname),
+        'enabled': 'disabled' if str(uid) == str(db_issue.uid) else 'enabled'
     }
     return issue_dict
 
 
-def get_id_of_slug(slug: str, request, save_id_in_session: bool):
+def get_id_of_slug(slug: str):
     """
     Returns the uid of the issue with given slug
 
     :param slug: slug
-    :param request: self.request for a fallback
-    :param save_id_in_session: Boolean
     :return: uid
     """
-    logger('IssueHelper', 'slug: {}'.format(slug))
-    db_issue = get_not_disabled_issues_as_query().filter(Issue.slug == slug).first()
-    if db_issue:
-        if save_id_in_session:
-            request.session['issue'] = db_issue.uid
-        return db_issue.uid
-    return None
+    return get_not_disabled_issues_as_query().filter(Issue.slug == slug).first()
+
+
+def save_issue_id_in_session(issue_uid: int, request: Request):
+    """
+
+    :param issue_uid:
+    :param request:
+    :return:
+    """
+    request.session['issue'] = issue_uid
 
 
 def get_issue_id(request):
@@ -262,7 +247,6 @@ def get_issues_overiew(nickname, application_url) -> dict:
     :param application_url: current applications url
     :return: dict
     """
-    logger('IssueHelper', 'def')
     user.update_last_action(nickname)
     db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
     if not db_user:
@@ -296,8 +280,6 @@ def set_discussions_properties(db_user: User, db_issue: Issue, value, iproperty,
     :param translator:
     :return:
     """
-    logger('IssueHelper', 'issue: {}, key: {}, checked: {}'.format(db_issue.slug, iproperty, value))
-
     if db_issue.author_uid != db_user.uid and not user.is_admin(db_user.nickname):
         return {'error': translator.get(_.noRights)}
 

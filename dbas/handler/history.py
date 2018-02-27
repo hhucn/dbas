@@ -62,7 +62,7 @@ def get_saved_issue(nickname):
     if not db_issue:
         return None
 
-    return None if db_issue.is_disabled else db_issue.uid
+    return None if db_issue.is_disabled else db_issue
 
 
 def get_splitted_history(history):

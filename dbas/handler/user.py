@@ -500,7 +500,7 @@ def get_clicked_elements_of(db_user: User, is_argument: bool, lang: str) -> list
     return return_array
 
 
-def get_information_of(db_user, lang):
+def get_information_of(db_user: User, lang):
     """
     Returns public information of the given user
 
@@ -539,30 +539,24 @@ def get_information_of(db_user, lang):
     return ret_dict
 
 
-def get_summary_of_today(nickname, lang):
+def get_summary_of_today(db_user: User) -> dict:
     """
-    Returns summary of todays actions
+    Returns summary of today's actions
 
     :param nickname: User.nickname
-    :param lang: ui_locales
     :return: dict()
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     if not db_user:
         return {}
 
     arg_votes, stat_votes = get_mark_count_of(db_user, True)
     arg_clicks, stat_clicks = get_click_count_of(db_user, True)
-    reputation, tmp = get_reputation_of(nickname, True)
+    reputation, tmp = get_reputation_of(db_user, True)
     timestamp = arrow.utcnow().to('Europe/Berlin')
-    if lang == 'en':
-        timestamp.format('MM-DD')
-    else:
-        timestamp.format('DD.MM.')
+    timestamp.format('DD.MM.')
 
     ret_dict = {
         'firstname': db_user.firstname,
-        'date': timestamp,
         'statements_posted': get_statement_count_of(db_user, True),
         'edits_done': get_edit_count_of(db_user, True),
         'discussion_arg_votes': arg_votes,
@@ -570,7 +564,7 @@ def get_summary_of_today(nickname, lang):
         'discussion_arg_clicks': arg_clicks,
         'discussion_stat_clicks': stat_clicks,
         'statements_reported': get_reviews_of(db_user, True),
-        'reputation_colltected': reputation
+        'reputation_collected': reputation
     }
     return ret_dict
 
