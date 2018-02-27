@@ -14,6 +14,7 @@ from graphql.language import ast
 from sqlalchemy_utils import ArrowType
 
 from api.v2.graphql.resolve import resolve_field_query, resolve_list_query
+from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, Issue, TextVersion, User, Language, StatementReferences, \
     PremiseGroup, Premise, Argument
 
@@ -55,10 +56,15 @@ class TextVersionGraph(SQLAlchemyObjectType):
 
 
 class StatementGraph(SQLAlchemyObjectType):
+    text = graphene.String()
     textversions = graphene.Field(TextVersionGraph)
 
     def resolve_textversions(self, info, **kwargs):
         return resolve_field_query({**kwargs, "statement_uid": self.uid}, info, TextVersionGraph)
+
+    def resolve_text(self, info, **kwargs):
+        return DBDiscussionSession.query(TextVersion).filter(TextVersion.statement_uid == self.uid).order_by(
+            TextVersion.timestamp.desc()).first().content
 
     class Meta:
         model = Statement
