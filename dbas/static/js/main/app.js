@@ -272,7 +272,7 @@ function setEasterEggs() {
         if (counter === 5) {
             $('body').find('span,p,h1,h2,h3,h4,h5,a').each(function () {
                 if ($(this).text().trim().length) {
-                    $(this).text(dolan_translate(dolan_dictionary, $(this).text()));
+                    $(this).text(dolanTranslate(dolanDictionary, $(this).text()));
                 }
             });
         }
