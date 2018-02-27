@@ -95,8 +95,12 @@ class ArgumentGraph(SQLAlchemyObjectType):
 
 
 class IssueGraph(SQLAlchemyObjectType):
+    positions = StatementGraph.plural()
     statements = StatementGraph.plural()
     arguments = ArgumentGraph.plural()
+
+    def resolve_positions(self, info, **kwargs):
+        return resolve_list_query({**kwargs, "issue_uid": self.uid, "is_startpoint": True}, info, StatementGraph)
 
     def resolve_statements(self, info, **kwargs):
         return resolve_list_query({**kwargs, "issue_uid": self.uid}, info, StatementGraph)
