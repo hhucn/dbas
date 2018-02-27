@@ -20,12 +20,14 @@ stages:
     DB_PW: "DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!"
 
     # for search
-    DB_PWD: "DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!"
     DB_NAME: discussion
-    SEARCH_PROTOCOL: http
+    DB_PWD: "DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!"
     PROTOCOL: http
     DBAS_HOST: web
     DBAS_PORT: 4284
+    SEARCH_PORT: 5000
+    SEARCH_PROTOCOL: http
+    SEARCH_NAME: search
 
     AUTHN_SECRET: "89#s3cr3t_15"
   before_script:

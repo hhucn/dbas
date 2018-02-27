@@ -1,5 +1,4 @@
 import unittest
-from pprint import pprint
 
 import transaction
 from pyramid import testing
@@ -117,7 +116,6 @@ class AjaxTest(unittest.TestCase):
         from dbas.views import fuzzy_search as ajax
         request = testing.DummyRequest(params={'value': 'cat', 'type': 0}, matchdict={})
         response = ajax(request)
-        pprint(response)
         self.assertIsNotNone(response)
         self.assertNotIn('error', response)
 
