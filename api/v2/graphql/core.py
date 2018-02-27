@@ -76,6 +76,7 @@ class StatementGraph(SQLAlchemyObjectType):
     arguments = ArgumentGraph.plural()
     supports = ArgumentGraph.plural()
     rebuts = ArgumentGraph.plural()
+    undercuts = ArgumentGraph.plural()
 
     def resolve_textversions(self, info, **kwargs):
         return resolve_field_query({**kwargs, "statement_uid": self.uid}, info, TextVersionGraph)
@@ -92,6 +93,21 @@ class StatementGraph(SQLAlchemyObjectType):
 
     def resolve_rebuts(self, info, **kwargs):
         return resolve_list_query({**kwargs, "is_supportive": False, "conclusion_uid": self.uid}, info, ArgumentGraph)
+
+    def resolve_undercuts(self, info, **kwargs):
+        # Query for all arguments attacking / supporting this statement
+        sq = DBDiscussionSession.query(Argument.uid) \
+            .filter(Argument.conclusion_uid == self.uid,
+                    Argument.is_disabled == False) \
+            .subquery()
+
+        # Query for all arguments, which are attacking the arguments from the query above.
+        return ArgumentGraph.get_query(info) \
+            .filter_by(**kwargs) \
+            .filter(
+            Argument.is_disabled == False,
+            Argument.argument_uid.in_(sq)
+        )
 
     class Meta:
         model = Statement
@@ -113,9 +129,13 @@ class StatementReferencesGraph(SQLAlchemyObjectType):
 
 
 class IssueGraph(SQLAlchemyObjectType):
+    position = StatementGraph.singular()
     positions = StatementGraph.plural()
     statements = StatementGraph.plural()
     arguments = ArgumentGraph.plural()
+
+    def resolve_position(self, info, **kwargs):
+        return resolve_field_query(kwargs, info, StatementGraph)
 
     def resolve_positions(self, info, **kwargs):
         return resolve_list_query({**kwargs, "issue_uid": self.uid, "is_startpoint": True}, info, StatementGraph)
