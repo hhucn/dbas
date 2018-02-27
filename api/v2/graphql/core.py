@@ -55,9 +55,25 @@ class TextVersionGraph(SQLAlchemyObjectType):
         exclude_fields = "timestamp"
 
 
+class ArgumentGraph(SQLAlchemyObjectType):
+    class Meta:
+        model = Argument
+
+    @staticmethod
+    def singular():
+        return graphene.Field(ArgumentGraph, uid=graphene.Int(), issue_uid=graphene.Int(),
+                              is_supportive=graphene.Boolean(), is_disabled=graphene.Boolean())
+
+    @staticmethod
+    def plural():
+        return graphene.List(ArgumentGraph, issue_uid=graphene.Int(), is_supportive=graphene.Boolean(),
+                             is_disabled=graphene.Boolean())
+
+
 class StatementGraph(SQLAlchemyObjectType):
     text = graphene.String()
     textversions = graphene.Field(TextVersionGraph)
+    arguments = ArgumentGraph.plural()
 
     def resolve_textversions(self, info, **kwargs):
         return resolve_field_query({**kwargs, "statement_uid": self.uid}, info, TextVersionGraph)
@@ -65,6 +81,9 @@ class StatementGraph(SQLAlchemyObjectType):
     def resolve_text(self, info, **kwargs):
         return DBDiscussionSession.query(TextVersion).filter(TextVersion.statement_uid == self.uid).order_by(
             TextVersion.timestamp.desc()).first().content
+
+    def resolve_arguments(self, info, **kwargs):
+        return resolve_list_query({**kwargs, "conclusion_uid": self.uid}, info, ArgumentGraph)
 
     class Meta:
         model = Statement
@@ -83,21 +102,6 @@ class StatementGraph(SQLAlchemyObjectType):
 class StatementReferencesGraph(SQLAlchemyObjectType):
     class Meta:
         model = StatementReferences
-
-
-class ArgumentGraph(SQLAlchemyObjectType):
-    class Meta:
-        model = Argument
-
-    @staticmethod
-    def singular():
-        return graphene.Field(ArgumentGraph, uid=graphene.Int(), issue_uid=graphene.Int(),
-                              is_supportive=graphene.Boolean(), is_disabled=graphene.Boolean())
-
-    @staticmethod
-    def plural():
-        return graphene.List(ArgumentGraph, issue_uid=graphene.Int(), is_supportive=graphene.Boolean(),
-                             is_disabled=graphene.Boolean())
 
 
 class IssueGraph(SQLAlchemyObjectType):
