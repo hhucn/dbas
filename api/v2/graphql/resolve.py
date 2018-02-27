@@ -5,6 +5,7 @@ Namespace for functions used to resolve Queries on the database for GraphQL.
 """
 from typing import Dict
 
+
 def resolve_list_query(args: Dict, context, graph):
     """
     Query a list of objects based on the provided graph / model.

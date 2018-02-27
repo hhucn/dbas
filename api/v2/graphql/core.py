@@ -74,6 +74,8 @@ class StatementGraph(SQLAlchemyObjectType):
     text = graphene.String()
     textversions = graphene.Field(TextVersionGraph)
     arguments = ArgumentGraph.plural()
+    supports = ArgumentGraph.plural()
+    rebuts = ArgumentGraph.plural()
 
     def resolve_textversions(self, info, **kwargs):
         return resolve_field_query({**kwargs, "statement_uid": self.uid}, info, TextVersionGraph)
@@ -84,6 +86,12 @@ class StatementGraph(SQLAlchemyObjectType):
 
     def resolve_arguments(self, info, **kwargs):
         return resolve_list_query({**kwargs, "conclusion_uid": self.uid}, info, ArgumentGraph)
+
+    def resolve_supports(self, info, **kwargs):
+        return resolve_list_query({**kwargs, "is_supportive": True, "conclusion_uid": self.uid}, info, ArgumentGraph)
+
+    def resolve_rebuts(self, info, **kwargs):
+        return resolve_list_query({**kwargs, "is_supportive": False, "conclusion_uid": self.uid}, info, ArgumentGraph)
 
     class Meta:
         model = Statement
@@ -142,7 +150,6 @@ class UserGraph(SQLAlchemyObjectType):
 class LanguageGraph(SQLAlchemyObjectType):
     class Meta:
         model = Language
-
 
 
 class PremiseGroupGraph(SQLAlchemyObjectType):
