@@ -13,7 +13,7 @@ from validate_email import validate_email
 from dbas.auth.ldap import verify_ldap_user_data
 from dbas.auth.oauth import google as google, github as github, facebook as facebook, twitter as twitter
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Group, Settings
+from dbas.database.discussion_model import User, Group
 from dbas.handler import user
 from dbas.handler.password import get_hashed_password
 from dbas.lib import escape_string, get_user_by_case_insensitive_nickname, \
@@ -379,7 +379,7 @@ def __refresh_headers_and_url(request, db_user, keep_login, url):
     :return: Headers, String
     """
     logger('Auth.Login', 'login', 'login successful / keep_login: {}'.format(keep_login))
-    db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
+    db_settings = db_user.get_settings()
     db_settings.should_hold_the_login(keep_login)
     logger('Auth.Login', 'remembering headers for {}'.format(db_user.nickname))
     headers = remember(request, db_user.nickname)

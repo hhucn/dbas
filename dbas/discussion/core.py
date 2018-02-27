@@ -11,7 +11,6 @@ from dbas.helper.views import handle_justification_step
 from dbas.input_validator import is_integer, is_statement_forbidden, check_belonging_of_statement, \
     check_belonging_of_argument, check_belonging_of_premisegroups, related_with_support, check_reaction, \
     check_belonging_of_arguments
-from dbas.lib import nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_arguments_as_query
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_argument_click
@@ -30,11 +29,10 @@ def init(request_dict) -> Union[dict, None]:
     """
     logger('Core', 'main')
     application_url = request_dict['app_url']
-    nickname = request_dict['nickname']
     db_issue = request_dict['issue']
     slug = db_issue.slug
+    db_user = request_dict['user']
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
@@ -62,12 +60,12 @@ def attitude(request_dict) -> Union[dict, None]:
     """
     logger('Core', 'attitude')
 
-    nickname = request_dict['nickname']
     db_issue = request_dict['issue']
     application_url = request_dict['app_url']
     history = request_dict['history']
     statement_uid = request_dict['matchdict']['statement_id'][0] if 'statement_id' in request_dict['matchdict'] else '-'
     slug = db_issue.slug
+    db_user = request_dict['user']
 
     if not is_integer(statement_uid, True) \
             or not check_belonging_of_statement(db_issue.uid, statement_uid)\
@@ -75,7 +73,6 @@ def attitude(request_dict) -> Union[dict, None]:
         logger('Core', 'param error / forbidden statement {}'.format(statement_uid), error=True)
         return None
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
@@ -109,11 +106,10 @@ def justify(request_dict) -> Union[dict, None]:
     """
     logger('Core', 'main')
 
-    nickname = request_dict['nickname']
     db_issue = request_dict['issue']
     application_url = request_dict['app_url']
+    db_user = request_dict['user']
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
     request_dict['user'] = db_user
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
 
@@ -147,6 +143,7 @@ def reaction(request_dict) -> Union[dict, None]:
     application_url = request_dict['app_url']
     history = request_dict['history']
     slug = db_issue.slug
+    db_user = request_dict['user']
 
     # get parameters
     arg_id_user = request_dict['matchdict'].get('arg_id_user')
@@ -162,7 +159,6 @@ def reaction(request_dict) -> Union[dict, None]:
     add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_argument_click)
     add_click_for_argument(arg_id_user, nickname)
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
@@ -193,15 +189,14 @@ def support(request_dict) -> Union[dict, None]:
     """
     logger('Core', 'main')
 
-    nickname = request_dict['nickname']
     db_issue = request_dict['issue']
     history = request_dict['history']
+    db_user = request_dict['user']
     slug = db_issue.slug
     arg_user_uid = request_dict.get('arg_user_uid', request_dict['matchdict'].get('arg_id_user', ''))
     arg_system_uid = request_dict.get('arg_system_uid', request_dict['matchdict'].get('arg_id_sys', ''))
 
     application_url = request_dict['app_url']
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
@@ -242,17 +237,16 @@ def choose(request_dict) -> Union[dict, None]:
     uid = request_dict['matchdict'].get('id', '')
     pgroup_ids = request_dict['matchdict'].get('pgroup_ids', '')
 
-    nickname = request_dict['nickname']
     db_issue = request_dict['issue']
     ui_locales = request_dict['ui_locales']
     application_url = request_dict['app_url']
     history = request_dict['history']
+    db_user = request_dict['user']
     slug = db_issue.slug
 
     is_argument = True if is_argument is 't' else False
     is_supportive = True if is_supportive is 't' else False
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
@@ -296,17 +290,16 @@ def jump(request_dict) -> Union[dict, None]:
     logger('Core', 'main')
 
     arg_uid = request_dict.get('arg_uid', request_dict['matchdict'].get('arg_id'))
-    nickname = request_dict.get('nickname')
     db_issue = request_dict.get('issue')
     history = request_dict.get('history')
     application_url = request_dict.get('app_url')
+    db_user = request_dict['user']
     slug = db_issue.slug
 
     if not check_belonging_of_argument(db_issue.uid, arg_uid):
         logger('Core', 'no item dict', error=True)
         return None
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 
@@ -328,11 +321,11 @@ def jump(request_dict) -> Union[dict, None]:
 def finish(request_dict) -> Union[dict, None]:
     logger('Core', 'main')
 
-    nickname = request_dict['nickname']
     application_url = request_dict['app_url']
     db_issue = request_dict['issue']
     history = request_dict['history']
     slug = db_issue.slug
+    db_user = request_dict['user']
 
     # get parameters
     arg_id = request_dict['matchdict'].get('arg_id')
@@ -341,7 +334,6 @@ def finish(request_dict) -> Union[dict, None]:
         logger('Core', 'no argument', error=True)
         return None
 
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']
 

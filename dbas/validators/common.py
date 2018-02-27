@@ -6,7 +6,7 @@ from pyramid.httpexceptions import HTTPFound
 from pyramid.security import forget
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Language
+from dbas.database.discussion_model import Language, User
 from dbas.handler.language import get_language_from_cookie
 from dbas.handler.user import update_last_action
 from dbas.strings.keywords import Keywords as _
@@ -56,7 +56,8 @@ def check_authentication(request):
     :param request:
     :return:
     """
-    session_expired = update_last_action(request.authenticated_userid)
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
+    session_expired = update_last_action(db_user)
     if session_expired:
         request.session.invalidate()
         headers = forget(request)

@@ -12,7 +12,7 @@ from pyramid_mailer import Mailer
 from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Settings, Language
+from dbas.database.discussion_model import User, Language
 from dbas.handler.email import send_mail
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
@@ -82,8 +82,7 @@ def request_password(email: str, mailer: Mailer, _tn: Translator):
         DBDiscussionSession.add(db_user)
         transaction.commit()
 
-        db_settings = DBDiscussionSession.query(Settings).get(db_user.uid)
-        db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
+        db_language = DBDiscussionSession.query(Language).get(db_user.get_settings().lang_uid)
 
         body = _tn.get(_.nicknameIs) + db_user.nickname + '\n'
         body += _tn.get(_.newPwdIs) + pwd + '\n\n'

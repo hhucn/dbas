@@ -668,24 +668,25 @@ def get_text_for_statement_uid(uid, colored_position=False):
     :return: String
     """
     try:
-        if isinstance(int(uid), int):
-            db_statement = DBDiscussionSession.query(Statement).get(uid)
-            if not db_statement:
-                return None
+        if not isinstance(int(uid), int):
+            return None
+        db_statement = DBDiscussionSession.query(Statement).get(uid)
+        if not db_statement:
+            return None
 
-            db_textversion = DBDiscussionSession.query(TextVersion).order_by(TextVersion.uid.desc()).get(
-                db_statement.textversion_uid)
-            content = db_textversion.content
+        db_textversion = DBDiscussionSession.query(TextVersion).order_by(TextVersion.uid.desc()).get(
+            db_statement.textversion_uid)
+        content = db_textversion.content
 
-            while content.endswith(('.', '?', '!')):
-                content = content[:-1]
+        while content.endswith(('.', '?', '!')):
+            content = content[:-1]
 
-            sb, se = '', ''
-            if colored_position:
-                sb = '<{} data-argumentation-type="position">'.format(tag_type)
-                se = '</{}>'.format(tag_type)
+        sb, se = '', ''
+        if colored_position:
+            sb = '<{} data-argumentation-type="position">'.format(tag_type)
+            se = '</{}>'.format(tag_type)
 
-            return sb + content + se
+        return sb + content + se
 
     except (ValueError, TypeError):
         return None
@@ -1054,7 +1055,7 @@ def __get_all_premises_of_argument(argument):
     return ret_list
 
 
-def get_profile_picture(user, size=80, ignore_privacy_settings=False):
+def get_profile_picture(user: User, size: int=80, ignore_privacy_settings: bool=False):
     """
     Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
 
@@ -1065,13 +1066,12 @@ def get_profile_picture(user, size=80, ignore_privacy_settings=False):
     """
     additional_id = ''
     if user and isinstance(user, User):
-        db_settings = DBDiscussionSession.query(Settings).get(user.uid)
-        additional_id = '' if db_settings.should_show_public_nickname or ignore_privacy_settings else 'x'
+        additional_id = '' if user.get_settings().should_show_public_nickname or ignore_privacy_settings else 'x'
 
     return __get_gravatar(user, additional_id, size)
 
 
-def get_public_profile_picture(user, size=80):
+def get_public_profile_picture(user: User, size: int=80):
     """
     Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
     If the user doesn't want an public profile, an anonymous image will be returned
@@ -1083,7 +1083,7 @@ def get_public_profile_picture(user, size=80):
     additional_id = 'y'
     if user and isinstance(user, User):
         additional_id = ''
-        if DBDiscussionSession.query(Settings).get(user.uid).should_show_public_nickname:
+        if user.get_settings().should_show_public_nickname:
             additional_id = 'x'
         if len(str(user.oauth_provider)) > 0:
             additional_id = '{}{}'.format(user.oauth_provider, user.oauth_provider_id)

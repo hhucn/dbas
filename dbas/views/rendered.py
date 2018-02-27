@@ -33,7 +33,6 @@ from dbas.handler.language import set_language_for_visit, get_language_from_cook
 from dbas.handler.rss import get_list_of_all_feeds
 from dbas.helper.decoration import prep_extras_dict
 from dbas.helper.dictionary.main import DictionaryHelper
-from dbas.helper.views import preparation_for_view
 from dbas.input_validator import is_integer
 from dbas.lib import escape_string, get_changelog, nick_of_anonymous_user, get_text_for_statement_uid
 from dbas.logger import logger
@@ -72,16 +71,17 @@ def base_layout():
     return get_renderer('../templates/basetemplate.pt').implementation()
 
 
-def prepare_request_dict(request, nickname):
+def prepare_request_dict(request: Request):
     """
 
     :param request:
-    :param nickname:
     :return:
     """
     logger('Renderer', 'def')
 
-    db_last_topic = history_handler.get_saved_issue(nickname)
+    db_user = request.validated['user']
+    nickname = db_user.nickname if db_user.nickname != nick_of_anonymous_user else None
+    db_last_topic = history_handler.get_saved_issue(db_user)
 
     slug = None
     if 'slug' in request.matchdict:
@@ -109,11 +109,12 @@ def prepare_request_dict(request, nickname):
         slug = db_issue.slug
 
     issue_handler.save_issue_id_in_session(db_issue.uid, request)
-    history = history_handler.handle_history(request, nickname, slug, db_issue)
+    history = history_handler.handle_history(request, db_user, slug, db_issue)
     set_language_for_visit(request)
 
     return {
         'nickname': nickname,
+        'user': db_user,
         'path': request.path,
         'app_url': request.application_url,
         'matchdict': request.matchdict,
@@ -136,7 +137,10 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any]):
     :return: prepared collection for the discussion
     """
     logger('Views', 'def')
-    nickname, session_expired = preparation_for_view(request)
+    session_expired = user.update_last_action(request.validated['user'])
+    logger('Views', str(request.validated['user']))
+    logger('Views', str(request.validated['user'].uid))
+    logger('Views', str(session_expired))
     if session_expired:
         request.session.invalidate()
         headers = forget(request)
@@ -146,7 +150,7 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any]):
             headers=headers
         )
 
-    request_dict = prepare_request_dict(request, nickname)
+    request_dict = prepare_request_dict(request)
     prepared_discussion = f(request_dict)
     if prepared_discussion:
         prepared_discussion['layout'] = base_layout()
@@ -510,7 +514,6 @@ def notfound(request):
             'message': 'Not Found'
         })
 
-    user.update_last_action(request.authenticated_userid)
     logger('notfound', 'main in {}'.format(request.method) + '-request' +
            ', path: ' + request.path +
            ', view name: ' + request.view_name +
@@ -544,6 +547,7 @@ def notfound(request):
 @view_config(route_name='discussion_init', renderer='../templates/content.pt', permission='everybody')
 @view_config(route_name='discussion_init_with_slash', renderer='../templates/content.pt', permission='everybody')
 @view_config(route_name='discussion_init_with_slug', renderer='../templates/content.pt', permission='everybody')
+@validate(invalid_user)
 def discussion_init(request):
     """
     View configuration for the initial discussion.
@@ -573,6 +577,7 @@ def discussion_init(request):
 
 # attitude page
 @view_config(route_name='discussion_attitude', renderer='../templates/content.pt', permission='everybody')
+@validate(invalid_user)
 def discussion_attitude(request):
     """
     View configuration for discussion step, where we will ask the user for her attitude towards a statement.
@@ -595,6 +600,7 @@ def discussion_attitude(request):
 
 # justify page
 @view_config(route_name='discussion_justify', renderer='../templates/content.pt', permission='everybody')
+@validate(invalid_user)
 def discussion_justify(request):
     """
     View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
@@ -616,6 +622,7 @@ def discussion_justify(request):
 
 # reaction page
 @view_config(route_name='discussion_reaction', renderer='../templates/content.pt', permission='everybody')
+@validate(invalid_user)
 def discussion_reaction(request):
     """
     View configuration for discussion step, where we will ask the user for her reaction (support, undercut, rebut)...
@@ -637,6 +644,7 @@ def discussion_reaction(request):
 
 # support page
 @view_config(route_name='discussion_support', renderer='../templates/content.pt', permission='everybody')
+@validate(invalid_user)
 def discussion_support(request):
     """
     View configuration for discussion step, where we will present another supportive argument.
@@ -657,7 +665,7 @@ def discussion_support(request):
 
 # finish page
 @view_config(route_name='discussion_finish', renderer='../templates/content.pt', permission='everybody')
-@validate(check_authentication)
+@validate(check_authentication, invalid_user)
 def discussion_finish(request):
     """
     View configuration for discussion step, where we present a small/daily summary on the end
@@ -678,6 +686,7 @@ def discussion_finish(request):
 
 # exit page
 @view_config(route_name='discussion_exit', renderer='../templates/exit.pt', permission='use')
+@validate(check_authentication, invalid_user)
 def discussion_exit(request):
     """
     View configuration for discussion step, where we present a small/daily summary on the end
@@ -687,10 +696,6 @@ def discussion_exit(request):
     """
     match_dict = request.matchdict
     logger('discussion_exit', 'request.matchdict: {}'.format(match_dict))
-
-    unauthenticated = check_authentication(request)
-    if unauthenticated:
-        return unauthenticated
 
     db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
     dh = DictionaryHelper(get_language_from_cookie(request))
@@ -705,6 +710,7 @@ def discussion_exit(request):
 
 # choosing page
 @view_config(route_name='discussion_choose', renderer='../templates/content.pt', permission='everybody')
+@validate(invalid_user)
 def discussion_choose(request):
     """
     View configuration for discussion step, where the user has to choose between given statements.
@@ -727,6 +733,7 @@ def discussion_choose(request):
 
 # jump page
 @view_config(route_name='discussion_jump', renderer='../templates/content.pt', permission='everybody')
+@validate(invalid_user)
 def discussion_jump(request):
     """
     View configuration for the jump view.
@@ -752,7 +759,7 @@ def discussion_jump(request):
 
 # index page for reviews
 @view_config(route_name='review_index', renderer='../templates/review.pt', permission='use')
-@validate(check_authentication, prep_extras_dict)
+@validate(check_authentication, prep_extras_dict, invalid_user)
 def main_review(request):
     """
     View configuration for the review index.

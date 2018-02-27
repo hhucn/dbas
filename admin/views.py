@@ -8,8 +8,6 @@ from cornice import Service
 from pyramid.httpexceptions import exception_response
 
 import admin.lib as lib
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -99,15 +97,15 @@ def main_admin(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('Admin', 'def')
-    should_log_out = user.update_last_action(request.authenticated_userid)
+    should_log_out = user.update_last_action(request.validated['user'])
     if should_log_out:
         return user_logout(request, True)
 
     ui_locales = get_language_from_cookie(request)
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
                                                                                    request.application_url,
-                                                                                   request.path, db_user)
+                                                                                   request.path,
+                                                                                   request.validated['user'])
     dashboard_elements = {
         'entities': lib.get_overview(request.path),
         'api_tokens': lib.get_application_tokens()
@@ -133,16 +131,15 @@ def main_table(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('Admin', 'def')
-    should_log_out = user.update_last_action(request.authenticated_userid)
+    should_log_out = user.update_last_action(request.validated['user'])
     if should_log_out:
         return user_logout(request, True)
 
     ui_locales = get_language_from_cookie(request)
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
                                                                                    request.application_url,
                                                                                    request.path,
-                                                                                   db_user)
+                                                                                   request.validated['user'])
     table_name = request.matchdict['table']
     if not table_name.lower() in lib.table_mapper:
         return exception_response(400)
