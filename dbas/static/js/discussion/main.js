@@ -1,4 +1,4 @@
-/*global $, _t */
+/*global $, _t, _t_discussion */
 /**
  * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
@@ -90,7 +90,7 @@ function Main() {
         });
 
         // share url for argument blogging
-        $('#' + shareUrlId).click(function shareurlClick() {
+        $('#' + shareUrlId).click(function shareUrlClick() {
             popupHandler.showUrlSharingPopup();
         });
 

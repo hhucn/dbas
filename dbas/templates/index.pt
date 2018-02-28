@@ -17,7 +17,7 @@
   <script src="${request.static_url('dbas:static/js/libs/jquery-3.2.1.min.js')}"></script>
 </head>
 
-<body id="page-top">
+<body id="page-top" name="top">
 <input type="hidden" id="hidden_language" value="${extras.ui_locales}">
 <input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 
@@ -104,7 +104,7 @@
   </div>
 </header>
 
-<section class="bg-primary" id="about">
+<section id="about" class="bg-primary">
   <div class="container">
     <div class="row">
       <div class="col-lg-10 mx-auto text-center">
@@ -215,7 +215,7 @@
   </div>
 </section>
 
-<div id="github" class="call-to-action bg-dark">
+<section id="github" class="call-to-action bg-dark">
   <div class="container text-center">
     <h2 i18n:translate="free_at_github">Free Download at Github!</h2>
     <a class="btn btn-default btn-xl sr-button" href="https://github.com/hhucn/dbas">
@@ -223,7 +223,7 @@
       <span  i18n:translate="download_now">Download Now</span>
     </a>
   </div>
-</div>
+</section>
 
 <section id="partners" class="bg-bright">
   <div class="container">
@@ -423,7 +423,6 @@
 <script src="${request.static_url('dbas:static/js/libs/bootstrap-slider.9.8.0.min.js')}"></script>
 <script src="${request.static_url('dbas:static/js/libs/bootstrap-toggle.min.js')}"></script>
 <script src="${request.static_url('dbas:static/js/libs/bootstrap-tour-0.11.0.min.js')}"></script>
-<!--<script src="${request.static_url('dbas:static/js/main/browser-detection.js')}"></script>-->
 
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="${request.static_url('dbas:static/js/libs/jquery.slimscroll-1.3.8.min.js')}"></script>
@@ -444,7 +443,7 @@
 <!-- DEVELOPMENT -->
 <script src="${request.static_url('dbas:static/js/main/ids.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/main/guided-tour.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/main/app.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/main/dbas.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/main/sharing.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/main/strings.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/main/settings.js')}" tal:condition="extras.development_mode"></script>

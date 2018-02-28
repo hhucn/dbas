@@ -18,26 +18,6 @@ function setLinkActive(linkname) {
 }
 
 /**
- * Jumps to clicked chapter, which is defined in the header
- */
-function jmpToChapter() {
-    'use strict';
-
-    // jump to chapter-function
-    $('a[href^="#"]').on('click', function (e) {
-        try {
-            var href = $(this).attr('href');
-            $('html, body').animate({
-                scrollTop: ($(href).offset().top - 100)
-            }, 'slow');
-            e.preventDefault();
-        } catch (err) {
-            // something like 'Cannot read property 'top' of undefined'
-        }
-    });
-}
-
-/**
  * Adds a small border to the active navbar element
  */
 function addBorderToActiveNavbar() {
@@ -58,33 +38,6 @@ function addBorderToActiveNavbar() {
 
     // add border to the navbar element
     activeElement.css('border-top', borderSize + 'px solid #2196F3');
-}
-
-/**
- * Go back to top arrow
- */
-function goBackToTop() {
-    'use strict';
-
-    $(window).scroll(function () {
-        if (jQuery(this).scrollTop() > 500) {
-            $('.back-to-top').fadeIn('slow');
-            setTimeout(function () {
-                $('.back-to-top').fadeOut('slow');
-            }, 2500);
-        } else {
-            $('.back-to-top').fadeOut('slow');
-        }
-    });
-
-    // going back to top
-    $('.back-to-top').click(function (event) {
-        event.preventDefault();
-        $('html, body').animate({
-            scrollTop: 0
-        }, 500);
-        return false;
-    });
 }
 
 /**
@@ -388,50 +341,30 @@ function prepareLoginRegistrationPopup() {
 
     // bind enter key
     var enterKey = 13;
-    $('#' + loginUserId).keypress(function (e) {
-        if (e.which === enterKey) {
-            new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
-        }
+    [
+        '#' + loginUserId,
+        '#' + loginPwId,
+        '#admin-login-user',
+        '#admin-login-pw'
+    ].forEach(function(id) {
+        $(id).keypress(function (e) {
+            if (e.which === enterKey) {
+                new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
+            }
+        });
+        
     });
-    $('#' + loginPwId).keypress(function (e) {
-        if (e.which === enterKey) {
-            new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
-        }
-    });
-    $('#admin-login-user').keypress(function (e) {
-        if (e.which === enterKey) {
-            new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
-        }
-    });
-    $('#admin-login-pw').keypress(function (e) {
-        if (e.which === enterKey) {
-            new AjaxMainHandler().login($('#' + loginUserId).val(), $('#' + loginPwId).val(), false);
-        }
-    });
-    $('#' + popupLoginUserfirstnameInputId).keypress(function (e) {
-        if (e.which === enterKey) {
-            new AjaxMainHandler().registration();
-        }
-    });
-    $('#' + popupLoginUserlastnameInputId).keypress(function (e) {
-        if (e.which === enterKey) {
-            new AjaxMainHandler().registration();
-        }
-    });
-    $('#' + popupLoginNickInputId).keypress(function (e) {
-        if (e.which === enterKey) {
-            new AjaxMainHandler().registration();
-        }
-    });
-    $('#' + popupLoginEmailInputId).keypress(function (e) {
-        if (e.which === enterKey) {
-            new AjaxMainHandler().registration();
-        }
-    });
-    $('#' + popupLoginPasswordconfirmInputId).keypress(function (e) {
-        if (e.which === enterKey) {
-            new AjaxMainHandler().registration();
-        }
+    [
+        '#' + popupLoginUserfirstnameInputId,
+        '#' + popupLoginUserlastnameInputId,
+        '#' + popupLoginEmailInputId,
+        '#' + popupLoginPasswordconfirmInputId
+    ].forEach(function(id) {
+        $(id).keypress(function (e) {
+            if (e.which === enterKey) {
+                new AjaxMainHandler().registration();
+            }
+        });
     });
 
     $('#' + popupLoginButtonRequest).click(function () {
@@ -706,8 +639,6 @@ $(document).ready(function () {
     var path = window.location.href;
     var lang = $('#hidden_language').val();
 
-    jmpToChapter();
-    goBackToTop();
     setAnalyticsOptOutLink(lang);
     setEasterEggs();
     setGravatarFallback();
