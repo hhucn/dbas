@@ -14,6 +14,7 @@ from graphql.language import ast
 from sqlalchemy_utils import ArrowType
 
 from api.v2.graphql.resolve import resolve_field_query, resolve_list_query
+from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, Issue, TextVersion, User, Language, StatementReferences, \
     PremiseGroup, Premise, Argument
 
@@ -54,11 +55,59 @@ class TextVersionGraph(SQLAlchemyObjectType):
         exclude_fields = "timestamp"
 
 
+class ArgumentGraph(SQLAlchemyObjectType):
+    class Meta:
+        model = Argument
+
+    @staticmethod
+    def singular():
+        return graphene.Field(ArgumentGraph, uid=graphene.Int(), issue_uid=graphene.Int(),
+                              is_supportive=graphene.Boolean(), is_disabled=graphene.Boolean())
+
+    @staticmethod
+    def plural():
+        return graphene.List(ArgumentGraph, issue_uid=graphene.Int(), is_supportive=graphene.Boolean(),
+                             is_disabled=graphene.Boolean())
+
+
 class StatementGraph(SQLAlchemyObjectType):
+    text = graphene.String()
     textversions = graphene.Field(TextVersionGraph)
+    arguments = ArgumentGraph.plural()
+    supports = ArgumentGraph.plural()
+    rebuts = ArgumentGraph.plural()
+    undercuts = ArgumentGraph.plural()
 
     def resolve_textversions(self, info, **kwargs):
         return resolve_field_query({**kwargs, "statement_uid": self.uid}, info, TextVersionGraph)
+
+    def resolve_text(self, info, **kwargs):
+        return DBDiscussionSession.query(TextVersion).filter(TextVersion.statement_uid == self.uid).order_by(
+            TextVersion.timestamp.desc()).first().content
+
+    def resolve_arguments(self, info, **kwargs):
+        return resolve_list_query({**kwargs, "conclusion_uid": self.uid}, info, ArgumentGraph)
+
+    def resolve_supports(self, info, **kwargs):
+        return resolve_list_query({**kwargs, "is_supportive": True, "conclusion_uid": self.uid}, info, ArgumentGraph)
+
+    def resolve_rebuts(self, info, **kwargs):
+        return resolve_list_query({**kwargs, "is_supportive": False, "conclusion_uid": self.uid}, info, ArgumentGraph)
+
+    def resolve_undercuts(self, info, **kwargs):
+        # Query for all arguments attacking / supporting this statement
+        sq = DBDiscussionSession.query(Argument.uid) \
+            .filter(Argument.conclusion_uid == self.uid,
+                    Argument.is_disabled == False) \
+            .subquery()
+
+        # Query for all arguments, which are attacking the arguments from the query above.
+        return ArgumentGraph.get_query(info) \
+            .filter_by(**kwargs) \
+            .filter(
+            Argument.is_disabled == False,
+            Argument.argument_uid.in_(sq)
+        )
 
     class Meta:
         model = Statement
@@ -79,24 +128,17 @@ class StatementReferencesGraph(SQLAlchemyObjectType):
         model = StatementReferences
 
 
-class ArgumentGraph(SQLAlchemyObjectType):
-    class Meta:
-        model = Argument
-
-    @staticmethod
-    def singular():
-        return graphene.Field(ArgumentGraph, uid=graphene.Int(), issue_uid=graphene.Int(),
-                              is_supportive=graphene.Boolean(), is_disabled=graphene.Boolean())
-
-    @staticmethod
-    def plural():
-        return graphene.List(ArgumentGraph, issue_uid=graphene.Int(), is_supportive=graphene.Boolean(),
-                             is_disabled=graphene.Boolean())
-
-
 class IssueGraph(SQLAlchemyObjectType):
+    position = StatementGraph.singular()
+    positions = StatementGraph.plural()
     statements = StatementGraph.plural()
     arguments = ArgumentGraph.plural()
+
+    def resolve_position(self, info, **kwargs):
+        return resolve_field_query(kwargs, info, StatementGraph)
+
+    def resolve_positions(self, info, **kwargs):
+        return resolve_list_query({**kwargs, "issue_uid": self.uid, "is_startpoint": True}, info, StatementGraph)
 
     def resolve_statements(self, info, **kwargs):
         return resolve_list_query({**kwargs, "issue_uid": self.uid}, info, StatementGraph)
@@ -131,6 +173,15 @@ class LanguageGraph(SQLAlchemyObjectType):
 
 
 class PremiseGroupGraph(SQLAlchemyObjectType):
+    statements = StatementGraph.plural()
+
+    def resolve_statements(self, info, **kwargs):
+        premises = DBDiscussionSession.query(Premise).filter(Premise.premisesgroup_uid == self.uid).all()
+        uids = set([premise.statement_uid for premise in premises])
+        query = StatementGraph.get_query(info)
+
+        return query.filter_by(**kwargs).filter(Statement.uid.in_(uids))
+
     class Meta:
         model = PremiseGroup
 
