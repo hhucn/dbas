@@ -393,9 +393,10 @@ function AjaxDiscussionHandler() {
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
     };
-
-    /*
-
+    
+    /**
+     * Set properties for every discussion on the private discussion page
+     * @param toggle_element
      */
     this.setDiscussionSettings = function (toggle_element) {
         var checked = toggle_element.prop('checked');
@@ -405,10 +406,10 @@ function AjaxDiscussionHandler() {
             issue: toggle_element.data('uid'),
             value: toggle_element.data('keyword')
         };
-        var done = function setEnOrDisableDiscussionDone(data) {
+        var done = function setDiscussionSettingsDone(data) {
             new InteractionHandler().callbackForSetAvailabilityOfDiscussion(toggle_element, data);
         };
-        var fail = function setEnOrDisableDiscussionFail(data) {
+        var fail = function setDiscussionSettingsFail(data) {
             setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
         };
         ajaxSkeleton(url, 'POST', d, done, fail);

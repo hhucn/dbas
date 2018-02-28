@@ -1,43 +1,59 @@
 /**
+ * Script for the personal message board
+ *
  * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 $(function () {
     'use strict';
+    
+    // execute only in the notifications page
+    if (window.location.href.indexOf(mainpage + 'notifications/') === -1) {
+        return;
+    }
 
     var not = new Notifications();
+    not.setGui();
     not.setPanelClickFunctions();
     not.setClickFunctionsForAnswerNotification();
     not.setClickFunctionsForNewNotification();
     not.setClickFunctionsForRead();
     not.setClickFunctionsForDelete();
     not.setClickFunctionsForCheckboxes();
-
-    $('#popup-writing-notification-recipient').keyup(function () {
-        setTimeout(function () {
-            var escapedText = escapeHtml($('#popup-writing-notification-recipient').val());
-            new AjaxDiscussionHandler().fuzzySearch(escapedText, 'popup-writing-notification-recipient', fuzzy_find_user, '');
-        }, 200);
-    });
-    $('#popup-writing-notification-title').focusin(function () {
-        $('#proposal-user-list-group').empty();
-    });
-    $('#popup-writing-notification-text').focusin(function () {
-        $('#proposal-user-list-group').empty();
-    });
-
-    if (parseInt($('#total_in_counter').text()) > 0) {
-        $('#read-inbox').removeClass('hidden');
-        $('#delete-inbox').removeClass('hidden');
-    }
-
-    if (parseInt($('#total_out_counter').text()) > 0) {
-        $('#delete-outbox').removeClass('hidden');
-    }
 });
 
 function Notifications() {
     'use strict';
+    
+    this.setGui = function(){
+        // proposals for user while typing the recipient
+        $('#popup-writing-notification-recipient').keyup(function () {
+            setTimeout(function () {
+                var escapedText = escapeHtml($('#popup-writing-notification-recipient').val());
+                new AjaxDiscussionHandler().fuzzySearch(escapedText, 'popup-writing-notification-recipient', fuzzy_find_user, '');
+            }, 200);
+        });
+        
+        // clear proposals on focus change
+        $('#popup-writing-notification-title').focusin(function () {
+            $('#proposal-user-list-group').empty();
+        });
+        
+        // clear proposals on focus change
+        $('#popup-writing-notification-text').focusin(function () {
+            $('#proposal-user-list-group').empty();
+        });
+    
+        if (parseInt($('#total_in_counter').text()) > 0) {
+            $('#read-inbox').removeClass('hidden');
+            $('#delete-inbox').removeClass('hidden');
+        }
+    
+        if (parseInt($('#total_out_counter').text()) > 0) {
+            $('#delete-outbox').removeClass('hidden');
+        }
+    
+    };
 
     /**
      *

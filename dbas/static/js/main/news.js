@@ -76,36 +76,6 @@ function News() {
         }
     };
 
-    /**
-     *
-     * @param index
-     * @param pagecounter
-     */
-    this.setPlaceholder = function (index, pagecounter) {
-        var i, p, s,
-            placeholder = $('<li>').addClass('disabled').append($('<a>').addClass('news-placeholder').text('...'));
-        $('.news-placeholder').remove();
-
-        for (i = 3; i < pagecounter - 1; i++) {
-            $('#news-' + i).parent().hide();
-        }
-
-        p = index - 1;
-        i = p + 1;
-        s = i + 1;
-
-        $('#news-' + p).parent().show();
-        $('#news-' + i).parent().show();
-        $('#news-' + s).parent().show();
-
-        if (p - 3 > 0) {
-            placeholder.insertAfter($('#news-' + (p - 1)).parent());
-        }
-        if (pagecounter - 2 - s > 0) {
-            placeholder.insertAfter($('#news-' + s).parent());
-        }
-    };
-
     // *********************
     //	SHARING IS CARING
     // *********************
