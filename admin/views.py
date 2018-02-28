@@ -8,14 +8,16 @@ from cornice import Service
 from pyramid.httpexceptions import exception_response
 
 import admin.lib as lib
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.logger import logger
 from dbas.validators.core import has_keywords, validate
 from dbas.validators.database import valid_table_name
-from dbas.validators.user import valid_user_as_admin
-from dbas.views import user_logout, base_layout, project_name
+from dbas.validators.user import valid_user_as_admin, invalid_user
+from dbas.views import user_logout, base_layout, project_name, nick_of_anonymous_user
 
 #
 # CORS configuration
@@ -88,7 +90,7 @@ revoke_token = Service(name='revoke_token',
 
 
 @dashboard.get()
-@validate(valid_user_as_admin)
+@validate(invalid_user)
 def main_admin(request):
     """
     View configuration for the content view. Only logged in user can reach this page.
@@ -97,6 +99,9 @@ def main_admin(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('Admin', 'def')
+    nickname = request.authenticated_userid if request.authenticated_userid else nick_of_anonymous_user
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+
     should_log_out = user.update_last_action(request.validated['user'])
     if should_log_out:
         return user_logout(request, True)
@@ -105,16 +110,19 @@ def main_admin(request):
     extras_dict = DictionaryHelper(ui_locales).prepare_extras_dict_for_normal_page(request.registry,
                                                                                    request.application_url,
                                                                                    request.path,
-                                                                                   request.validated['user'])
-    dashboard_elements = {
-        'entities': lib.get_overview(request.path),
-        'api_tokens': lib.get_application_tokens()
-    }
+                                                                                   db_user)
+
+    dashboard_elements = {}
+    if db_user.is_admin():
+        dashboard_elements = {
+            'entities': lib.get_overview(request.path),
+            'api_tokens': lib.get_application_tokens()
+        }
 
     return {
         'layout': base_layout(),
         'language': str(ui_locales),
-        'title': 'Admin' if 'is_admin' in extras_dict and extras_dict['is_admin'] else '(B)admin',
+        'title': 'Admin' if db_user.is_admin() else '(B)admin',
         'project': project_name,
         'extras': extras_dict,
         'dashboard': dashboard_elements
