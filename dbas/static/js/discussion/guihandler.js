@@ -689,9 +689,8 @@ function GuiHandler() {
             }
 
             var table = $('<table>');
-            table.attr('class', 'table table-condensed table-striped table-hover')
-                .attr('border', '0')
-                .attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
+            table.attr('class', 'table table-condensed table-collapsed table-striped table-hover')
+                .attr('border', '0');
             var tbody = $('<tbody>');
 
             var thead = $('<thead>')
@@ -791,9 +790,8 @@ function GuiHandler() {
     this.closePrepareTableForOpinionDialog = function (users_array, gh, element, tbody) {
         var body = $('<div>');
         var table = $('<table>')
-            .attr('class', 'table table-condensed table-hover center')
-            .attr('border', '0')
-            .attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
+            .attr('class', 'table table-condensed table-collapsed table-hover center')
+            .attr('border', '0');
 
         if (Object.keys(users_array).length === 0) {
             body.append(gh.getNoDecisionsAlert());

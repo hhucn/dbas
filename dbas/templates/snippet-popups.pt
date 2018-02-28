@@ -1,1202 +1,1360 @@
 <div i18n:domain="dbas" metal:define-macro="layout">
 
-    <!-- ABOUT POPUP IN -->
-    <div class="modal fade" id="popup_author" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAbout" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button name="popup_author_icon_close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h4 class="modal-title" id="myModalLabelAbout" i18n:translate="about_me">About me</h4>
-    			</div>
-    			<div class="modal-body">
-    				<div class="container-fluid">
-    					<div class="row">
-    						<div class="col-md-9">
-    							<table class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
-    								<tr>
-    									<td>
-    										<strong i18n:translate="name">Name</strong>
-    									</td>
-    									<td>Tobias Krauthoff, M.Sc.</td>
-    								</tr>
-    								<tr>
-    									<td>
-    										<strong i18n:translate="role">Role</strong>
-    									</td>
-    									<td>
-    										<span i18n:translate="role_value_1">Doctoral Student</span>
-    										<br>
-                                            <a tal:condition="not:extras.lang_is_en" href="http://www.tsn.hhu.de/ourgroup/scientists/tobias-krauthoff.html" i18n:translate="lab_tsn">Lab for Technology of Social Networks</a>
-    										<a tal:condition="extras.lang_is_en" href="http://www.tsn.hhu.de/en/ourgroup/scientists/tobias-krauthoff.html" i18n:translate="lab_tsn">Lab for Technology of Social Networks</a>
-    										<br><span i18n:translate="role_value_2">Member of the graduation school</span> <a tal:condition="extras.lang_is_en" href="http://www.fortschrittskolleg.de/en/participants/phd-students/#krauthoff" target="_blank"><span i18n:translate="role_value_3">Online Participation</span></a><a tal:condition="not:extras.lang_is_en" href="http://www.fortschrittskolleg.de/beteiligte/kollegiatinnen/#krauthoff" target="_blank"><span i18n:translate="role_value_3">Online Participation</span></a>
-                                            <br><span i18n:translate="role_value_4">Vorstandsmitglied des DIID - Düsseldorfer Institut für Internet und Demokratie</span>
-
-    									</td>
-    								</tr>
-    								<tr>
-    									<td>
-    										<strong>E-Mail</strong>
-    									</td>
-    									<td><a href="mailto:krauthoff@cs.uni-duesseldorf.de">krauthoff@cs.uni-duesseldorf.de</a>
-    									</td>
-    								</tr>
-    								<tr>
-    									<td>
-    										<strong i18n:translate="office">Office</strong>
-    									</td>
-    									<td><span i18n:translate="office_value_1">Heinrich-Heine University Duesseldorf</span>
-    										<br><span i18n:translate="office_value_2">Universitätsstraße 1</span>
-    										<br><span i18n:translate="office_value_3">40225 Duesseldorf</span>
-    										<br><span i18n:translate="office_value_4">Department of Computer Science</span>
-    										<br><span i18n:translate="office_value_5">Building 25.12, Room 02.45</span>
-    									</td>
-    								</tr>
-    								<tr>
-    									<td>
-    										<strong i18n:translate="telephone">Telephone</strong>
-    									</td>
-    									<td>+49 211 81-13461</td>
-    								</tr>
-    								<tr>
-    									<td>
-    										<strong i18n:translate="fax">Fax</strong>
-    									</td>
-    									<td>+49 211 81-11638</td>
-    								</tr>
-    							</table>
-    						</div>
-
-    						<div class="col-md-2">
-    							<img class="popup_author_img" src="${request.static_url('dbas:static/images/author.jpg')}" alt="image of the author" style="border-radius: 5px; width: 100%; max-width: 200px;">
-    						</div>
-    					</div>
-    				</div>
-    			</div>
-    			<div class="modal-footer">
-    				<button id="popup_author_btn_close" type="button" class="btn btn-primary" data-dismiss="modal" i18n:translate="close">Close</button>
-    			</div>
-    		</div>
-    	</div>
+  <!-- EDIT STATEMENTS -->
+  <div class="modal fade" id="popup-edit-statement" tabindex="-1" role="dialog"
+       aria-labelledby="myModalLabelEditStatements" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" id="popup-edit-statement-close" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h5 class="modal-title" id="myModalLabelEditStatements">${extras.title.edit_statement}</h5>
+        </div>
+        <div id="popup-edit-statement-body">
+          <p id="popup-edit-statement-success-description" class="text-success"></p>
+          <p id="popup-edit-statement-error-description" class="text-danger"></p>
+          <p id="popup-edit-statement-info-description" class="text-info"></p>
+          <p class="lead">${structure:extras.tag.edit_statement_here}</p>
+          <div id="popup-edit-statement-inputs"></div>
+          <div class="list-group" id="proposal-edit-list-group"></div>
+          <p class="text-right">
+            <small><a href="#" id="popup-edit-statement-changelog-view"></a></small>
+          </p>
+          <p class="text-right">
+            <small><a href="#" id="popup-edit-statement-changelog-hide"></a></small>
+          </p>
+          <p class="lead">${extras.title.view_changelog}:</p>
+          <div id="popup-edit-statement-logfile"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success"
+                  id="popup-edit-statement-submit">${structure:extras.tag.submit}</button>
+          <button type="button" class="btn btn-danger"
+                  id="popup-edit-statement-close-button">${structure:extras.tag.close}</button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- EDIT STATEMENTS -->
-    <div class="modal fade" id="popup-edit-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelEditStatements" aria-hidden="true">
-    	<div class="modal-dialog modal-lg">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button type="button" id="popup-edit-statement-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h5 class="modal-title" id="myModalLabelEditStatements">${extras.title.edit_statement}</h5>
-    			</div>
-    			<div id="popup-edit-statement-body">
-    				<p id="popup-edit-statement-success-description" class="text-success"></p>
-    				<p id="popup-edit-statement-error-description" class="text-danger"></p>
-    				<p id="popup-edit-statement-info-description" class="text-info"></p>
-    				<p class="lead">${structure:extras.tag.edit_statement_here}</p>
-                    <div id="popup-edit-statement-inputs">
-
-                    </div>
-    				<div class="list-group" id="proposal-edit-list-group"></div>
-                    <p style="text-align: right"><small><a href="#" id="popup-edit-statement-changelog-view"></a></small></p>
-                    <p style="text-align: right"><small><a href="#" id="popup-edit-statement-changelog-hide"></a></small></p>
-    				<p class="lead">${extras.title.view_changelog}:</p>
-    				<div id="popup-edit-statement-logfile"></div>
-    			</div>
-    			<div class="modal-footer">
-    				<button type="button" class="btn btn-success" id="popup-edit-statement-submit">${structure:extras.tag.submit}</button>
-    				<button type="button" class="btn btn-danger" id="popup-edit-statement-close-button">${structure:extras.tag.close}</button>
-    			</div>
-    		</div>
-    	</div>
+  <!-- CONFIRM DIALOG POPUP -->
+  <div class="modal fade" id="confirm-dialog-popup" tabindex="-1" role="dialog"
+       aria-labelledby="myModalLabelConfirmDialog" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabelConfirmDialog">...</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                  aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button id="confirm-dialog-accept-btn" type="button"
+                  class="btn btn-success btn-secondary" i18n:translate="okay">Okay
+          </button>
+          <button id="confirm-dialog-refuse-btn" type="button"
+                  class="btn btn-danger btn-secondary" i18n:translate="cancel">Cancel
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- CONFIRM DIALOG POPUP -->
-    <div class="modal fade" id="confirm-dialog-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabelConfirmDialog" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<h4 class="modal-title" id="myModalLabelConfirmDialog">...</h4>
-    				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    			</div>
-    			<div class="modal-body">
-    			</div>
-    			<div class="modal-footer">
-    				<button id="confirm-dialog-accept-btn" type="button" class="btn btn-success btn-secondary" i18n:translate="okay">Okay</button>
-    				<button id="confirm-dialog-refuse-btn" type="button" class="btn btn-danger btn-secondary" i18n:translate="cancel">Cancel</button>
-    			</div>
-    		</div>
-    	</div>
+  <!-- CONFIRM ROW DIALOG POPUP -->
+  <div class="modal fade" id="confirm-row-dialog-popup" tabindex="-1" role="dialog"
+       aria-labelledby="myModalLabelConfirmRowDialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabelConfirmRowDialog">...</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6"></div>
+            <div class="col-md-offset-1 col-md-5"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="confirm-row-dialog-accept-btn" type="button"
+                  class="btn btn-success btn-secondary" i18n:translate="okay">
+            Okay
+          </button>
+          <button id="confirm-row-dialog-refuse-btn" type="button"
+                  class="btn btn-danger btn-secondary" i18n:translate="cancel">
+            Cancel
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- CONFIRM ROW DIALOG POPUP -->
-    <div class="modal fade" id="confirm-row-dialog-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabelConfirmRowDialog" aria-hidden="true">
-    	<div class="modal-dialog modal-lg">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h4 class="modal-title" id="myModalLabelConfirmRowDialog">...</h4>
-    			</div>
-    			<div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6"></div>
-                        <div class="col-md-offset-1 col-md-5"></div>
-                    </div>
-    			</div>
-    			<div class="modal-footer">
-    				<button id="confirm-row-dialog-accept-btn" type="button" class="btn btn-success btn-secondary" i18n:translate="okay">Okay</button>
-    				<button id="confirm-row-dialog-refuse-btn" type="button" class="btn btn-danger btn-secondary" i18n:translate="cancel">Cancel</button>
-    			</div>
-    		</div>
-    	</div>
+  <!-- CONFIRM DIALOG POPUP WITH CHECKBOX -->
+  <div class="modal fade" id="confirm-dialog-checkbox-popup" tabindex="-1" role="dialog"
+       aria-labelledby="myModalLabelConfirmDialogCheckbox" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabelConfirmDialogCheckbox">...</h4>
+        </div>
+        <div class="modal-body"></div>
+        <div id="modal-checkbox-body">
+          <label id="confirm-dialog-checkbox-label" for="confirm-dialog-checkbox">
+            <input id="confirm-dialog-checkbox" type="checkbox">&thinsp;&thinsp;
+            <span id="confirm-dialog-checkbox-text" i18n:translate="do_not_remind_me_again">
+              Do not remind me again
+            </span>
+          </label>
+        </div>
+        <div class="modal-footer">
+          <button id="confirm-dialog-checkbox-accept-btn" type="button"
+                  class="btn btn-success btn-secondary" i18n:translate="okay">
+            Okay
+          </button>
+          <button id="confirm-dialog-checkbox-refuse-btn" type="button"
+                  class="btn btn-danger btn-secondary" i18n:translate="cancel">
+            Cancel
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- CONFIRM DIALOG POPUP WITH CHECKBOX -->
-    <div class="modal fade" id="confirm-dialog-checkbox-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabelConfirmDialogCheckbox" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h4 class="modal-title" id="myModalLabelConfirmDialogCheckbox">...</h4>
-    			</div>
-    			<div class="modal-body">
-    			</div>
-    			<div id="modal-checkbox-body">
-    				<label id="confirm-dialog-checkbox-label" for="confirm-dialog-checkbox">
-    					<input id="confirm-dialog-checkbox" type="checkbox">&thinsp;&thinsp;<span id="confirm-dialog-checkbox-text" i18n:translate="do_not_remind_me_again">Do not remind me again</span>
-    				</label>
+  <!-- URL SHARING POPUP -->
+  <div class="modal fade" id="popup-url-sharing" tabindex="-1" role="dialog" aria-labelledby="myModalLabelURL"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" id="popup-url-sharing-close" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h5 class="modal-title" id="myModalLabelURL">${extras.tag.url_sharing}</h5>
+        </div>
+        <div id="popup-url-sharing-body">
+          <div id="popup-url-sharing-content"></div>
+          <p id="popup-url-sharing-description-p">${extras.tag.url_sharing_description}</p>
+          <div class="form-group">
+            <div class="col-sm-12 input-group">
+              <div class="input-group-addon"><i class="fa fa-share fa-2x" aria-hidden="true"></i></div>
+              <input id="popup-url-sharing-input" class="form-control" type="text" placeholder="URL">
+            </div>
+          </div>
 
-    			</div>
-    			<div class="modal-footer">
-    				<button id="confirm-dialog-checkbox-accept-btn" type="button" class="btn btn-success btn-secondary" i18n:translate="okay">Okay</button>
-    				<button id="confirm-dialog-checkbox-refuse-btn" type="button" class="btn btn-danger btn-secondary" i18n:translate="cancel">Cancel</button>
-    			</div>
-    		</div>
-    	</div>
+        </div>
+        <div class="modal-footer">
+          <div class="pull-left">
+            <a class="social-wrapper share-mail" id="share-url-mail" data-toggle="tooltip" data-placement="bottom"
+               title="Mail">
+              <i class="social-em fa fa-envelope social fa-2x"></i></a>
+            <a class="social-wrapper share-twitter" id="share-url-twitter" data-toggle="tooltip" data-placement="bottom"
+               title="Twitter"><i class="social-tw fa fa-twitter social fa-2x"></i></a>
+            <a class="social-wrapper share-google" id="share-url-google" data-toggle="tooltip" data-placement="bottom"
+               title="Google+"><i class="social-gp fa fa-google-plus social fa-2x"></i></a>
+            <a class="social-wrapper share-facebook" id="share-url-facebook" data-toggle="tooltip"
+               data-placement="bottom" title="Facebook"><i class="social-fb fa fa-facebook social fa-2x"></i></a>
+          </div>
+          <button type="button" class="btn btn-success" id="popup-url-sharing-long-url-button"
+                  data-is-short-url="1">${structure:extras.tag.fetchurl}</button>
+          <button type="button" class="btn btn-secondary"
+                  id="popup-url-sharing-close-button">${structure:extras.tag.close}</button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- URL SHARING POPUP -->
-    <div class="modal fade" id="popup-url-sharing" tabindex="-1" role="dialog" aria-labelledby="myModalLabelURL" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button type="button" id="popup-url-sharing-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h5 class="modal-title" id="myModalLabelURL">${extras.tag.url_sharing}</h5>
-    			</div>
-    			<div id="popup-url-sharing-body">
-    				<div id="popup-url-sharing-content">
-    				</div>
-    				<p id="popup-url-sharing-description-p">${extras.tag.url_sharing_description}</p>
+  <!-- COMPLETE LOGIN INFORMATION  POPUP -->
+  <div class="modal fade" id="popup-complete-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabelURL"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" id="popup-complete-login-close" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h5 class="modal-title" i18n:translate="information_missing">Information are missing</h5>
+        </div>
+        <div id="popup-complete-login-body">
+          <p class="text-info" style="margin: 0 2em;" i18n:translate="plase_add_missing_infos_we_add_account">During the
+            authentication we could not fetch all of the necessary information. Please add the missing information, so
+            we can add a new account in D-BAS (Login via other providers won't work).</p>
+          <form autocomplete="on" style="margin: 2em;">
+            <div class="form-group">
+              <label class="col-md-3 control-label"
+                     for="popup-complete-login-userfirstname-input" i18n:translate="first_name">Your First Name</label>
+              <div class="col-md-9 input-group">
+                <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
+                <input id="popup-complete-login-userfirstname-input" type="text" name="firstname"
+                       class="form-control userfirstname active" autocomplete="on"
+                       placeholder="${extras.tag.placeholder_firstname}">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label"
+                     for="popup-complete-login-userlastname-input" i18n:translate="last_name">Your Last Name</label>
+              <div class="col-md-9 input-group">
+                <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
+                <input id="popup-complete-login-userlastname-input" type="text" name="surname"
+                       class="form-control userlastname" autocomplete="on"
+                       placeholder="${extras.tag.placeholder_lastname}">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="popup-complete-login-nick-input" i18n:translate="nickname">
+                Your Nickname
+              </label>
+              <div class="col-md-9 input-group">
+                <div class="input-group-addon"><i class="fa fa-user-secret fa-2x" aria-hidden="true"></i></div>
+                <input id="popup-complete-login-nick-input" type="text" class="form-control nickname" name="nickname"
+                       autocomplete="off" placeholder="${extras.tag.placeholder_nickname}">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" i18n:translate="your_gender">Your Gender</label>
+              <div class="col-md-9 input-group" style="padding-left: 1.3em">
+                <input class="radio-inline" type="radio" name="inlineRadioGenderOptions"
+                       id="popup-complete-login-inlineRadioGender1" value="-" checked>
+                <label for="popup-complete-login-inlineRadioGender1">
+                  <i class="fa fa-times fa-2x" aria-hidden="true"></i>
+                </label>
+                <input class="radio-inline" type="radio" name="inlineRadioGenderOptions"
+                       id="popup-complete-login-inlineRadioGender2" value="f">
+                <label for="popup-complete-login-inlineRadioGender2">
+                  <i class="fa fa-female fa-2x" aria-hidden="true"></i>
+                </label>
+                <input class="radio-inline" type="radio" name="inlineRadioGenderOptions"
+                       id="popup-complete-login-inlineRadioGender3" value="m">
+                <label for="popup-complete-login-inlineRadioGender3">
+                  <i class="fa fa-male fa-2x" aria-hidden="true"></i>
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="popup-complete-login-email-input" i18n:translate="your_email">
+                Your Email Address</label>
+              <div class="col-md-9 input-group">
+                <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
+                <input id="popup-complete-login-email-input" type="email" class="form-control email" name="email"
+                       autocomplete="on" placeholder="${extras.tag.placeholder_mail}">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label" for="popup-complete-login-password-input" i18n:translate="password">
+                Your Password</label>
+              <div class="col-md-9 input-group">
+                <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
+                <input id="popup-complete-login-password-input" type="password" name="password"
+                       class="form-control password" autocomplete="off"
+                       placeholder="${extras.tag.placeholder_password}">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-3 control-label"
+                     for="popup-complete-login-passwordconfirm-input" i18n:translate="password-confirm">
+                Password (confirm)</label>
+              <div class="col-md-9 input-group">
+                <div class="input-group-addon"><i class="fa fa-unlock fa-2x" aria-hidden="true"></i></div>
+                <input id="popup-complete-login-passwordconfirm-input" type="password" name="passwordconfirm"
+                       class="form-control password" autocomplete="off"
+                       placeholder="${extras.tag.placeholder_password}">
+              </div>
+            </div>
+          </form>
 
-                    <div class="form-group">
-            		    <div class="col-sm-12 input-group">
-                            <div class="input-group-addon"><i class="fa fa-share fa-2x" aria-hidden="true"></i></div>
-            		        <input id="popup-url-sharing-input" class="form-control" type="text" placeholder="URL" data-short-url="" >
-            		    </div>
-                    </div>
+          <div class="col-md-12" id="popup-complete-login-failed" style="display: none;">
+            <div class="alert alert-danger" role="alert">
+              <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              <span class="sr-only" i18n:translate="error">Error:</span>
+              <span id="popup-complete-login-failed-message"></span>
+            </div>
+          </div>
 
-    			</div>
-    			<div class="modal-footer">
-
-                    <div class="pull-left">
-                        <a class="social-wrapper share-mail" id="share-url-mail" data-toggle="tooltip" data-placement="bottom" title="Mail"><i class="social-em fa fa-envelope social fa-2x"></i></a>
-                        <a class="social-wrapper share-twitter" id="share-url-twitter" data-toggle="tooltip" data-placement="bottom" title="Twitter"><i class="social-tw fa fa-twitter social fa-2x"></i></a>
-	                    <a class="social-wrapper share-google" id="share-url-google" data-toggle="tooltip" data-placement="bottom" title="Google+"><i class="social-gp fa fa-google-plus social fa-2x"></i></a>
-                        <a class="social-wrapper share-facebook" id="share-url-facebook" data-toggle="tooltip" data-placement="bottom" title="Facebook"><i class="social-fb fa fa-facebook social fa-2x"></i></a>
-                    </div>
-
-
-    				<button type="button" class="btn btn-success" id="popup-url-sharing-long-url-button" data-is-short-url="1">${structure:extras.tag.fetchurl}</button>
-    				<button type="button" class="btn btn-secondary" id="popup-url-sharing-close-button" >${structure:extras.tag.close}</button>
-    			</div>
-    		</div>
-    	</div>
+          <div class="col-md-12" id="popup-complete-login-info" style="display: none;">
+            <div class="alert alert-warning" role="alert">
+              <i class="fa fa-info-circle" aria-hidden="true"></i>
+              <span class="sr-only" i18n:translate="info">Info:</span>
+              <span id="popup-complete-login-info-message"></span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="popup-complete-login-register-button" type="button"
+                  class="btn btn-primary" i18n:translate="register">
+            Register
+          </button>
+          <button id="popup-complete-login-close-button" type="button" class="btn btn-secondary" i18n:translate="close"
+                  onclick="$('#popup-complete-login').modal('hide');">
+            Close
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <!-- COMPLETE LOGIN INFORMATION  POPUP -->
-    <div class="modal fade" id="popup-complete-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabelURL" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button type="button" id="popup-complete-login-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h5 class="modal-title" i18n:translate="information_missing">Information are missing</h5>
-    			</div>
-    			<div id="popup-complete-login-body">
-                    <p class="text-info" style="margin: 0 2em;" i18n:translate="plase_add_missing_infos_we_add_account">During the authentication we could not fetch all of the necessary information. Please add the missing information, so we can add a new account in D-BAS (Login via other providers won't work).</p>
-                    <form autocomplete="on" style="margin: 2em;">
-                        <div class="form-group">
-                            <label class="col-md-3 control-label" for="popup-complete-login-userfirstname-input" i18n:translate="first_name">Your First Name</label>
-                            <div class="col-md-9 input-group">
-                                <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-                                <input id="popup-complete-login-userfirstname-input" type="text" name="firstname" class="form-control userfirstname active" autocomplete="on" placeholder="${extras.tag.placeholder_firstname}">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-md-3 control-label" for="popup-complete-login-userlastname-input" i18n:translate="last_name">Your Last Name</label>
-                            <div class="col-md-9 input-group">
-                                <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-                                <input id="popup-complete-login-userlastname-input" type="text" name="surname" class="form-control userlastname" autocomplete="on" placeholder="${extras.tag.placeholder_lastname}">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-md-3 control-label" for="popup-complete-login-nick-input" i18n:translate="nickname">Your Nickname</label>
-                            <div class="col-md-9 input-group">
-                                <div class="input-group-addon"><i class="fa fa-user-secret fa-2x" aria-hidden="true"></i></div>
-                                <input id="popup-complete-login-nick-input" type="text" class="form-control nickname" name="nickname" autocomplete="off" placeholder="${extras.tag.placeholder_nickname}">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-md-3 control-label" i18n:translate="your_gender">Your Gender</label>
-                            <div class="col-md-9 input-group" style="padding-left: 1.3em">
-                                <input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="popup-complete-login-inlineRadioGender1" value="-" checked>
-                                <label for="popup-complete-login-inlineRadioGender1">
-                                    <i class="fa fa-times fa-2x" aria-hidden="true"></i>
-                                    <!--<span i18n:translate="none">none</span>-->
-                                </label>
-                                <input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="popup-complete-login-inlineRadioGender2" value="f">
-                                <label for="popup-complete-login-inlineRadioGender2">
-                                    <i class="fa fa-female fa-2x" aria-hidden="true"></i>
-                                    <!--<span i18n:translate="female">female</span>-->
-                                </label>
-                                <input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="popup-complete-login-inlineRadioGender3" value="m">
-                                <label for="popup-complete-login-inlineRadioGender3">
-                                    <i class="fa fa-male fa-2x" aria-hidden="true"></i>
-                                    <!--<span i18n:translate="male">male</span>-->
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-md-3 control-label" for="popup-complete-login-email-input" i18n:translate="your_email">Your Email Address</label>
-                            <div class="col-md-9 input-group">
-                                <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
-                                <input id="popup-complete-login-email-input" type="email" class="form-control email" name="email" autocomplete="on" placeholder="${extras.tag.placeholder_mail}">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-md-3 control-label" for="popup-complete-login-password-input" i18n:translate="password">Your Password</label>
-                            <div class="col-md-9 input-group">
-                                <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
-                                <input id="popup-complete-login-password-input" type="password" name="password" class="form-control password" autocomplete="off" placeholder="${extras.tag.placeholder_password}">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-md-3 control-label" for="popup-complete-login-passwordconfirm-input" i18n:translate="password-confirm">Password (confirm)</label>
-                            <div class="col-md-9 input-group">
-                                <div class="input-group-addon"><i class="fa fa-unlock fa-2x" aria-hidden="true"></i></div>
-                                <input id="popup-complete-login-passwordconfirm-input" type="password" name="passwordconfirm" class="form-control password" autocomplete="off" placeholder="${extras.tag.placeholder_password}">
-                            </div>
-                        </div>
-                    </form>
-
-                    <div class="col-md-12" id="popup-complete-login-failed" style="display: none;">
-                        <div class="alert alert-danger" role="alert">
-                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                            <span class="sr-only" i18n:translate="error">Error:</span> <span id="popup-complete-login-failed-message"></span>
-                        </div>
+  <!-- LOGIN POPUP -->
+  <div class="modal fade" id="popup-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLogin"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" id="popup-login-close" class="close" data-dismiss="modal" aria-label="Close"><span
+                  aria-hidden="true">&times;</span>
+          </button>
+          <br>
+          <ul class="nav nav-tabs" style="display: table; margin: 0 auto;">
+            <li id="nav-tab-login" class="tab-login active"><a href="#login" i18n:translate="login">Log In</a></li>
+            <li id="nav-tab-signup" class="tab-login"><a href="#signup" i18n:translate="sign_up">Sign Up</a></li>
+          </ul>
+        </div>
+        <div id="popup-login-body">
+          <div class="tab-content">
+            <div id="login">
+              <form autocomplete="on">
+                <div class="form-group">
+                  <div class="col-md-12">
+                    <label class="col-md-3 control-label" for="login-user" i18n:translate="your_nickname">
+                      Your Nickname
+                    </label>
+                    <div class="col-md-9 input-group">
+                      <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
+                      <input id="login-user" type="text" class="form-control"
+                             placeholder="${extras.tag.placeholder_nickname}" autocomplete="on">
                     </div>
-
-                    <div class="col-md-12" id="popup-complete-login-info" style="display: none;">
-                        <div class="alert alert-warning" role="alert">
-                            <i class="fa fa-info-circle" aria-hidden="true"></i>
-                            <span class="sr-only" i18n:translate="info">Info:</span> <span id="popup-complete-login-info-message"></span>
-                        </div>
-                    </div>
+                  </div>
                 </div>
-    			<div class="modal-footer">
-    				<button id="popup-complete-login-register-button" type="button" class="btn btn-primary" i18n:translate="register">Register</button>
-    				<button id="popup-complete-login-close-button" type="button" class="btn btn-secondary" i18n:translate="close" onclick="$('#popup-complete-login').modal('hide');">Close</button>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
-    <!-- LOGIN POPUP -->
-    <div class="modal fade" id="popup-login" tabindex="-1" role="dialog" aria-labelledby="myModalLabelLogin" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button type="button" id="popup-login-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<br>
-    				<ul class="nav nav-tabs" style="display: table; margin: 0 auto;">
-    					<li id="nav-tab-login" class="tab-login active"><a href="#login" i18n:translate="login">Log In</a></li>
-    					<li id="nav-tab-signup" class="tab-login"><a href="#signup" i18n:translate="sign_up">Sign Up</a></li>
-    				</ul>
-    			</div>
-    			<div id="popup-login-body">
-    				<div class="tab-content">
-    					<div id="login">
-                            <form autocomplete="on">
-    						    <div class="form-group">
-                                    <div class="col-md-12">
-    						    	    <label class="col-md-3 control-label" for="login-user" i18n:translate="your_nickname">Your Nickname</label>
-    						    	    <div class="col-md-9 input-group">
-                                        <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-    						    		<input id="login-user" type="text" class="form-control" placeholder="${extras.tag.placeholder_nickname}" autocomplete="on">
-    						    	</div>
-                                    </div>
-    						    </div>
-    						    <div class="form-group">
-                                    <div class="col-md-12">
-    						    	    <label class="col-md-3 control-label" for="login-pw" i18n:translate="your_password">Your Password</label>
-    						    	    <div class="col-md-9 input-group">
-                                        <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
-    						    		<input id="login-pw" type="password" class="form-control" placeholder="${extras.tag.placeholder_password}" autocomplete="on">
-    						    	</div>
-                                    </div>
-    						    </div>
-                            </form>
-    						<div style="padding-left: 15px;">
-                                <label>
-                                    <input id="keep-login-box" type="checkbox" style="float:left;">
-                                    <span i18n:translate="keep_me_logged_in">Keep me logged in</span>
-                                </label>
-    							<a id="popup-login-forgot-password-text" i18n:translate="forgot_password" style="cursor: pointer; float:right;">Forgot your password?</a>
-                            </div>
-    						<div id="popup-login-forgot-password-body" class="form-group" style="margin-top: 1em;">
-    							<label for="mail-address" class="control-label" i18n:translate="fill_in_mail_for_password">Please fill in your e-mail below. A new password will be send this address. This does not affect other services of the HHU:</label>
-    						    <div class="form-group">
-    						    	<div class="col-md-12 input-group">
-                                        <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
-    						    		<input id="password-request-email-input" type="email" class="form-control" placeholder="${extras.tag.placeholder_mail}" autocomplete="on">
-    						    	</div>
-    						    </div>
-                                <input id="popup-login-button-request" type="submit" onclick="$('body').addClass('loading')" name="form.passwordrequest.submitted" value="Request Password" class="btn btn-primary" tal:attributes="value extras.buttons.request_password"/>
-    						</div>
-    			            <div class="pull-right">
-    				            <button id="popup-login-button-login" type="button" class="btn btn-primary" i18n:translate="login">Log In</button>
-    				            <button type="button" class="btn btn-secondary" id="popup-login-close-button2" i18n:translate="close">Close</button>
-    			            </div>
-                            <div class="center" tal:condition="extras.login_btns.oauth_google or extras.login_btns.oauth_facebook or extras.login_btns.oauth_twitter" style="margin-top: 3.5em;">
-                                <hr>
-                                <p class="text-center lead"><span i18n:translate="or_login_via">Or login via</span>:</p>
-                                <div class="row text-center" id="popup-login-registration-oauth-buttons">
-                                    <!--<div class="col-md-4 text-center" tal:condition="extras.login_btns.hhu_ldap or extras.login_btns.oauth_google or extras.login_btns.oauth_facebook or extras.login_btns.oauth_twitter or extras.login_btns.hhu_ldap">-->
-                                    <!--    <a class="btn btn-block btn-brand btn-dbas" data-service="dbas">-->
-                                    <!--        <span class="fa fa-comments"></span> <span>D-BAS</span>-->
-                                    <!--    </a>-->
-                                    <!--</div>-->
-                                    <!--<div class="col-md-4 text-center" tal:condition="extras.login_btns.hhu_ldap">-->
-                                    <!--    <a class="btn btn-block btn-brand btn-hhu" data-service="hhu">-->
-                                    <!--        <span class="fa fa-university"></span> <span>HHU</span>-->
-                                    <!--    </a>-->
-                                    <!--</div>-->
-                                    <a tal:condition="extras.login_btns.oauth_google" class="btn btn-block btn-brand btn-google" data-service="google">
-                                        <img src="${request.static_url('dbas:static/images/btn_google_light_normal.svg')}"> <span>Google</span>
-                                    </a>
-                                    <a tal:condition="extras.login_btns.oauth_facebook" class="btn btn-block btn-brand btn-facebook" data-service="facebook">
-                                        <span class="fa fa-facebook"></span> <span>Facebook</span>
-                                    </a>
-                                    <a tal:condition="extras.login_btns.oauth_twitter" class="btn btn-block btn-brand btn-twitter" data-service="twitter">
-                                        <span class="fa fa-twitter"></span> <span>Twitter</span>
-                                    </a>
-                                    <a tal:condition="extras.login_btns.oauth_github" class="btn btn-block btn-brand btn-github" data-service="github">
-                                        <span class="fa fa-github"></span> <span>Github</span>
-                                    </a>
-                                </div>
-                            </div>
-    					</div>
-    					<div id="signup">
-
-                            <div id="popup-login-registration-field">
-                                <p class="center">
-                                    <span class="text-info" i18n:translate="never_display_real_name">We will never display your real name to other users!</span>
-                                </p>
-                                <p class="text-info center" id="popup-login-hhu-text" i18n:translate="have_account_hhu">If you have a valid account at the HHU, you can directly use the login!</p>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label" for="userfirstname-input" i18n:translate="first_name">Your First Name</label>
-                                    <div class="col-md-9 input-group">
-                                        <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-                                        <input id="userfirstname-input" type="text" name="firstname" class="form-control userfirstname active" autocomplete="on" placeholder="${extras.tag.placeholder_firstname}">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label" for="userlastname-input" i18n:translate="last_name">Your Last Name</label>
-                                    <div class="col-md-9 input-group">
-                                        <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-                                        <input id="userlastname-input" type="text" name="surname" class="form-control userlastname" autocomplete="on" placeholder="${extras.tag.placeholder_lastname}">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label" for="nick-input" i18n:translate="nickname">Your Nickname</label>
-                                    <div class="col-md-9 input-group">
-                                        <div class="input-group-addon"><i class="fa fa-user-secret fa-2x" aria-hidden="true"></i></div>
-                                        <input id="nick-input" type="text" class="form-control nickname" name="nickname" autocomplete="off" placeholder="${extras.tag.placeholder_nickname}">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label" i18n:translate="your_gender">Your Gender</label>
-                                    <div class="col-md-9 input-group" style="padding-left: 1.3em">
-                                        <input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender1" value="-" checked>
-                                        <label for="inlineRadioGender1">
-                                            <i class="fa fa-times fa-2x" aria-hidden="true"></i>
-                                            <!--<span i18n:translate="none">none</span>-->
-                                        </label>
-                                        <input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender2" value="f">
-                                        <label for="inlineRadioGender2">
-                                            <i class="fa fa-female fa-2x" aria-hidden="true"></i>
-                                            <!--<span i18n:translate="female">female</span>-->
-                                        </label>
-                                        <input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender3" value="m">
-                                        <label for="inlineRadioGender3">
-                                            <i class="fa fa-male fa-2x" aria-hidden="true"></i>
-                                            <!--<span i18n:translate="male">male</span>-->
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label" for="email-input" i18n:translate="your_email">Your Email Address</label>
-                                    <div class="col-md-9 input-group">
-                                        <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
-                                        <input id="email-input" type="email" class="form-control email" name="email" autocomplete="on" placeholder="${extras.tag.placeholder_mail}">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label" for="popup-login-password-input" i18n:translate="password">Your Password</label>
-                                    <div class="col-md-9 input-group">
-                                        <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
-                                        <input id="popup-login-password-input" type="password" name="password" class="form-control password" autocomplete="off" placeholder="${extras.tag.placeholder_password}">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label" for="popup-login-passwordconfirm-input" i18n:translate="password-confirm">Password (confirm)</label>
-                                    <div class="col-md-9 input-group">
-                                        <div class="input-group-addon"><i class="fa fa-unlock fa-2x" aria-hidden="true"></i></div>
-                                        <input id="popup-login-passwordconfirm-input" type="password" name="passwordconfirm" class="form-control password" autocomplete="off" placeholder="${extras.tag.placeholder_password}">
-                                    </div>
-                                </div>
-                                <div class="form-group" style="margin-bottom: 0">
-                                    <label class="col-md-3 control-label" i18n:translate="password-strength">Password Strength</label>
-                                    <div class="col-md-9 input-group">
-                                        <div class="col-md-9 veryweak" id="popup-login-password-meter"></div>
-                                        <span id="popup-login-password-strength" i18n:translate="password_strength">very weak</span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                  <label class="col-md-3 control-label" for="captcha-answer" i18n:translate="captcha">Solve
-                                    this captcha</label>
-                                  <div class="col-md-9 input-group">
-                                    <div class="input-group-addon">
-                                        <span id="captcha-digit1"></span> + 
-                                        <span id="captcha-digit2"></span> - 
-                                        <span id="captcha-digit3"></span> =
-                                    </div>
-                                    <input id="captcha-answer" type="number" name="captcha-answer" class="form-control"
-                                           autocomplete="off">
-                                    </div>
-                                </div>
-                                <div class="col-md-12" id="popup-login-registration-success" role="alert">
-                                    <div class="alert alert-success alert-dismissible">
-                                        <i class="fa fa-check-circle" aria-hidden="true"></i>
-                                        <span class="sr-only" i18n:translate="success">Success:</span>
-                                        <span id="popup-login-registration-success-message"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-12" id="popup-login-registration-failed" role="alert">
-                                    <div class="alert alert-danger alert-dismissible">
-                                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                                        <span class="sr-only" i18n:translate="error">Error:</span>
-                                        <span id="popup-login-registration-failed-message"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-12" id="popup-login-registration-info" role="alert">
-                                    <div class="alert alert-warning alert-dismissible">
-                                        <i class="fa fa-info-circle" aria-hidden="true"></i>
-                                        <span class="sr-only" i18n:translate="info">Info:</span>
-                                        <span id="popup-login-registration-info-message"></span>
-                                    </div>
-                                </div>
-                            </div>
-    					</div>
-    				</div>
-
-                    <div class="col-md-12" id="popup-login-failed" style="margin-top: 2em">
-                        <div class="alert alert-danger" role="alert">
-                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                            <span class="sr-only" i18n:translate="error">Error:</span> <span id="popup-login-failed-message"></span>
-                        </div>
+                <div class="form-group">
+                  <div class="col-md-12">
+                    <label class="col-md-3 control-label" for="login-pw" i18n:translate="your_password">
+                      Your Password
+                    </label>
+                    <div class="col-md-9 input-group">
+                      <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
+                      <input id="login-pw" type="password" class="form-control"
+                             placeholder="${extras.tag.placeholder_password}" autocomplete="on">
                     </div>
-                    <div class="col-md-12" id="popup-login-success" style="margin-top: 2em">
-                        <div class="alert alert-success" role="alert">
-                            <i class="fa fa-check-circle" aria-hidden="true"></i>
-                            <span class="sr-only" i18n:translate="success">Success:</span> <span id="popup-login-success-message"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-12" id="popup-login-info" style="margin-top: 2em">
-                        <div class="alert alert-warning" role="alert">
-                            <i class="fa fa-info-circle" aria-hidden="true"></i>
-                            <span class="sr-only" i18n:translate="info">Info:</span> <span id="popup-login-info-message"></span>
-                        </div>
-                    </div>
-
-    			</div>
-    			<div class="modal-footer">
-    				<button id="popup-login-button-register" type="button" class="btn btn-primary hidden" i18n:translate="register">Register</button>
-    				<button id="popup-login-close-button1" type="button" class="btn btn-secondary hidden" i18n:translate="close">Close</button>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
-    <!-- HOW TO SET PREMISSEGROUPS POPUP -->
-    <div class="modal fade" id="popup-set-premisegroups" tabindex="-1" role="dialog" aria-labelledby="myModalLabelSetPGroup" aria-hidden="true">
-    	<div class="modal-dialog modal-lg">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button type="button" id="popup-set-premisegroups-close" class="close" data-dismiss="modal" aria-label="Close">
-    					<span aria-hidden="true">&times;</span>
-    				</button>
-    				<span id="popup-set-premisegroups-counter" class="lead badge" style="float:right; margin: 1em;">1/4</span>
-    				<h4 class="modal-title" id="myModalLabelSetPGroup" i18n:translate="need-help-to-understand-statement">${extras.tag.need_help_to_understand_statement}</h4>
-    			</div>
-    			<div id="popup-set-premisegroups-body" class="lead">
-    				<span>${extras.tag.set_premisegroups_intro1}</span><strong><span id="popup-set-premisegroups-body-intro-statements"></span></strong><span>${extras.tag.set_premisegroups_intro2}</span>
-                    <br>
-                    <br>
-    				<div id="insert_statements_page_" style="display: none;">
-    					<ul id="insert_statements_options">
-    						<li>
-    							<label class="bs-callout bs-callout-primary">
-    								<input type="radio" name="insert_statements" id="insert_more_arguments">
-                                    <span>${extras.tag.i_actually_have}</span>&#160;<span id="insert_statements_count"></span>&#160;<span>${extras.tag.seperated}</span>&#160;<span>${extras.tag.arguments}:</span>
-    							    <span id="insert_statements_list_more_arguments" style="font-weight: 300;"></span>
-    							</label>
-    						</li>
-    						<li>
-    							<label class="bs-callout bs-callout-primary">
-    								<input type="radio" name="insert_statements" id="insert_one_argument"><span>${extras.tag.insert_one_argument}</span>
-    							    <br>
-    							    <span id="insert_statements_one_argument" style="font-weight: 300;"></span>
-    							</label>
-    						</li>
-    						<li>
-    							<label class="bs-callout bs-callout-primary">
-    								<input type="radio" name="insert_statements" id="insert_dont_care" style="font-weight: 300;">${extras.tag.insert_dont_care}
-    							</label>
-    						</li>
-    					</ul>
-    					</div>
-    	    		<div id="popup-set-premisegroups-body-content">
-    	    		</div>
-                    <div id="insert_statements_page_error" class="alert alert-danger" role="alert" style="display:none">
-    					<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-    					<span>${extras.tag.error}</span>:
-    					<span>${extras.tag.forgot_input_radio}</span>
-    				</div>
-    	    		<div class="modal-footer">
-    	    			<ul class="pager" style="float: left; margin: 0;">
-    	    				<li class="previous"><a href="#" id="popup-set-premisegroups-previous-button" tal:attributes="title extras.buttons.previous">←</a></li>
-    	    				<li class="next"><a href="#" id="popup-set-premisegroups-next-button" style="float: left;" tal:attributes="title extras.buttons.next">→</a></li>
-    	    			</ul>
-                        <span id="popup-set-premisegroups-warning-text" class="text-warning" style="padding-right: 1em;">${extras.tag.premisegroup_popup_warning}</span>
-                        <button type="button" class="btn btn-success" id="popup-set-premisegroups-send-button" style="float: right;" >${extras.buttons.save_my_statement}</button>
-    	    		</div>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
-
-    <!-- WRITE NEWS -->
-    <div class="modal fade" id="popup-writing-news" tabindex="-1" role="dialog" aria-labelledby="myModalLabelNews" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button type="button" id="popup-write-news-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h5 class="modal-title" id="myModalLabelNews" i18n:translate="writing_message">Writing a new message</h5>
-    			</div>
-    			<div id="popup-writing-news-body">
-
-                    <div class="form-group">
-            		    <div class="col-sm-12 input-group">
-                            <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
-            		        <input data-min-length="10" type="text" id="popup-writing-news-title" class="form-control" placeholder="${extras.title.topic}" title="${extras.title.topic}" required>
-            		    </div>
-                    </div>
-
-            		<div class="form-group">
-            		    <div class="col-sm-12 input-group">
-                            <div class="input-group-addon"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></div>
-            		        <textarea data-min-length="10" id="popup-writing-news-text" class="form-control" placeholder="${extras.title.message}" title="${extras.title.message}"></textarea>
-            		    </div>
-                    </div>
-
-                    <div id="popup-writing-news-failed" class="alert alert-danger" role="alert">
-						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-						<span class="sr-only" i18n:translate="error:">Error:</span> <span id="popup-writing-news-failed-message"></span>
-					</div>
-
-					<div id="popup-writing-news-success" class="alert alert-success" role="alert">
-						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-						<span class="sr-only" i18n:translate="success:">Success:</span> <span id="popup-writing-news-success-message"></span>
-					</div>
-
-    			</div>
-    			<div class="modal-footer">
-                    <div id="news-credentials" style="float: left;">
-			        	<h6>
-                            <span i18n:translate="author">Author</span>:
-                            <span tal:replace="extras.nickname"></span>,
-                            <span i18n:translate="date">Date</span>:
-                            <span tal:replace="extras.date"></span>
-                        </h6>
-                    </div>
-
-    				<button type="button" class="btn btn-success" id="popup-writing-news-send" i18n:translate="send_news">Send News</button>
-    				<button type="button" class="btn btn-secondary" data-dismiss="modal" i18n:translate="close">Close</button>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
-    <!-- WRITE NOTIFICATION -->
-    <div class="modal fade" id="popup-writing-notification" tabindex="-1" role="dialog" aria-labelledby="myModalLabelNotification" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button type="button" id="popup-write-notification-close" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h5 class="modal-title" id="myModalLabelNotification" i18n:translate="writing_message">Writing a new message</h5>
-    			</div>
-    			<div id="popup-notification-body">
-
-            		<div class="form-group">
-                        <div class="col-sm-12 input-group">
-                            <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
-            		        <input type="text" id="popup-writing-notification-recipient" class="form-control" placeholder="${extras.title.recipient}" title="${extras.title.recipient}" required>
-                        </div>
-            		</div>
-
-                    <div class="list-group" id="proposal-user-list-group"></div>
-
-
-            		<div class="form-group">
-            		    <div class="col-sm-12 input-group">
-                            <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
-            		        <input data-min-length="5" type="text" id="popup-writing-notification-title" class="form-control" placeholder="${extras.title.topic}" title="${extras.title.topic}" required>
-            		    </div>
-                    </div>
-
-            		<div class="form-group">
-            		    <div class="col-sm-12 input-group">
-                            <div class="input-group-addon"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></div>
-            		        <textarea data-min-length="5" id="popup-writing-notification-text" class="form-control" placeholder="${extras.title.message}" title="${extras.title.message}"></textarea>
-            		    </div>
-                    </div>
-
-                    <div id="popup-writing-notification-failed" class="alert alert-danger" role="alert">
-						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-						<span class="sr-only" i18n:translate="error:">Error:</span> <span id="popup-writing-notification-failed-message"></span>
-					</div>
-
-					<div id="popup-writing-notification-success" class="alert alert-success" role="alert">
-						<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-						<span class="sr-only" i18n:translate="success:">Success:</span> <span id="popup-writing-notification-success-message"></span>
-					</div>
-
-    			</div>
-    			<div class="modal-footer">
-    				<button type="button" class="btn btn-success" id="popup-writing-notification-send" i18n:translate="send_notification">Send Notifcation</button>
-    				<button type="button" class="btn btn-secondary" data-dismiss="modal" i18n:translate="close">Close</button>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
-    <!-- ADD TOPIC -->
-    <div class="modal fade in" id="popup-add-topic" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddTopic" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
-    				</button>
-    				<h4 id="myModalLabelAddTopic" i18n:translate="add_topic">Add Topic</h4>
-    			</div>
-    			<div class="modal-body">
-
-                    <div class="form-group">
-                        <label i18n:translate="please_enter_title">Please enter your title here:</label>
-                        <input class="form-control" id="popup-add-topic-title-input" placeholder="${extras.tag.placeholder_add_topic_title}">
-                    </div>
-
-                    <div class="form-group">
-                        <label style="margin: 1em 0 0 0;" i18n:translate="please_enter_info">Please enter a short-description or question here:</label>
-                        <input class="form-control" id="popup-add-topic-info-input" placeholder="${extras.tag.placeholder_add_topic_question}">
-                    </div>
-
-                    <div class="form-group">
-                        <label style="margin: 1em 0 0 0;" i18n:translate="please_enter_long_info">Please enter the full description here:</label>
-                        <textarea class="form-control" id="popup-add-topic-long-info-input" placeholder="${extras.tag.placeholder_add_topic_description}" style="resize: vertical;"></textarea>
-                    </div>
-
-                    <div class="row" style="margin-top: 2em; padding: 0;">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label i18n:translate="please_select_language_for_topic">Language of the discussion:</label>
-                                <ul id="popup-add-topic-lang-input" style="list-style-type: none; padding-left: 1em">
-                                    <li>
-                                        <input tal:condition="not:extras.lang_is_de" id="de" type="radio" name="lang_topic">
-                                        <input tal:condition="extras.lang_is_de" id="de" type="radio" name="lang_topic" checked>
-                                        <label for="de">
-                                            <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_ge">
-                                            Deutsch
-                                        </label>
-                                    </li>
-                                    <li>
-                                        <input tal:condition="not:extras.lang_is_en" id="en" type="radio" name="lang_topic">
-                                        <input tal:condition="extras.lang_is_en" id="en" type="radio" name="lang_topic" checked>
-                                        <label for="en">
-                                            <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en">
-                                            English
-                                        </label>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-
-                            <div class="form-group" style="margin-bottom: 0;">
-                                <label class="col-md-8" i18n:translate="is_topic_available_for_public" style="padding: 0">Is the topic available for the public?</label>
-                                <div class="col-md-4">
-                                    <i class="fa fa-question-circle-o" aria-hidden="true" style="cursor: help; margin-right: 1em;" tal:attributes="title extras.tag.issue_public"></i>
-                                    <input style="margin: 1em 0 0 0;" checked
-                                           id="popup-add-topic-public-toggle" type="checkbox" data-toggle="toggle"
-                                           data-keyword="public"
-                                           data-size="mini"
-                                           data-onstyle="success"
-                                           data-offstyle="danger"
-                                           data-on="'<i class='fa fa-check' aria-hidden='true'></i>"
-                                           data-off="'<i class='fa fa-times' aria-hidden='true'></i>">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-8" i18n:translate="is_topic_read_only" style="padding: 0">Is the topic read only?</label>
-                                <div class="col-md-4">
-                                    <i class="fa fa-question-circle-o" aria-hidden="true" style="cursor: help; margin-right: 1em;" tal:attributes="title extras.tag.issue_writable"></i>
-                                    <input style="margin: 1em 0 0 0;"
-                                           id="popup-add-topic-read-only-toggle" type="checkbox" data-toggle="toggle"
-                                           data-keyword="public"
-                                           data-size="mini"
-                                           data-onstyle="success"
-                                           data-offstyle="danger"
-                                           data-on="'<i class='fa fa-check' aria-hidden='true'></i>"
-                                           data-off="'<i class='fa fa-times' aria-hidden='true'></i>">
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="alert alert-danger hidden" id="popup-add-topic-error" style="margin-top: 1em">
-                        <strong id="popup-add-topic-error-text"></strong>
-                    </div>
+                  </div>
                 </div>
-    			<div class="modal-footer">
-    				<button id="popup-add-topic-accept-btn" type="button" class="btn btn-success btn-secondary">${structure:extras.tag.save}</button>
-    				<button id="popup-add-topic-refuse-btn" type="button" class="btn btn-danger btn-secondary">${structure:extras.tag.cancel}</button>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
-    <!-- FLAG STATEMENT -->
-    <div class="modal fade" id="popup-flag-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelFlagStatement" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button name="popup-flag-statement-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h4 class="modal-title" id="myModalLabelFlagStatement" i18n:translate="select-reason">Selecting a reason</h4>
-    			</div>
-    			<div class="modal-body">
-                    <p class="statement_text lead"><span i18n:translate="statement_under_consideration_is">The statement under consideration is as follows</span>:</p>
-                    <p class="argument_text lead"><span i18n:translate="argument_under_consideration_is">The argument under consideration is as follows</span>:</p>
-                    <!--<p><span i18n:translate="why_do_you_want_to_report">Why do you want to report it</span>:</p>-->
-                    <p class="well well-sm" id="popup-flag-statement-text"></p>
-                    <form>
-                        <fieldset>
-                            <input type="radio" id="opt" value="optimization" name="flag-statement" style="margin-bottom: 1em;">
-                            <label for="opt" style="margin-bottom: 1em;">
-                                <span i18n:translate="text_need_to_be_revised">The text needs to be revised.</span>
-                                <i class="fa fa-question-circle-o statement_text" aria-hidden="true" style="padding-left: 0.5em" tal:attributes="title extras.tag.statement_optimization_description"></i>
-                                <!--<br>-->
-                                <!--<small class="statement_text" i18n:translate="statement_optimization_description">This statement is acceptable but it needs correction for spelling/grammar.</small>-->
-                                <!--<small class="argument_text" i18n:translate="argument_optimization_description">This argument is acceptable but it needs correction for spelling/grammar.</small>-->
-                                <i class="fa fa-question-circle-o argument_text" aria-hidden="true" style="padding-left: 0.5em" tal:attributes="title extras.tag.argument_optimization_description"></i>
-                            </label>
-                            <br>
-                            <input type="radio" id="off" value="offtopic" name="flag-statement" style="margin-bottom: 1em;">
-                            <label for="off" style="margin-bottom: 1em;">
-                                <span class="statement_text" i18n:translate="statement_offtopic_or_irrelevant">This statement is off topic or irrelevant.</span>
-                                <!--<br class="statement_text">-->
-                                <!--<small class="statement_text" i18n:translate="statement_offtopic_or_irrelevant_description">This statement does not belong to the topic under discussion.</small>-->
-                                <i class="fa fa-question-circle-o statement_text" aria-hidden="true" style="padding-left: 0.5em" tal:attributes="title extras.tag.statement_offtopic_or_irrelevant_description"></i>
-                                <span class="argument_text" i18n:translate="argument_offtopic_or_irrelevant">This argument is off topic or irrelevant.</span>
-                                <!--<br class="argument_text">-->
-                                <!--<small class="argument_text" i18n:translate="argument_offtopic_or_irrelevant_description">This argument does not belong to the topic under discussion.</small>-->
-                                <i class="fa fa-question-circle-o argument_text" aria-hidden="true" style="padding-left: 0.5em" tal:attributes="title extras.tag.argument_offtopic_or_irrelevant_description"></i>
-                            </label>
-                            <br>
-                            <input type="radio" id="bad" value="harmful" name="flag-statement" style="margin-bottom: 1em;">
-                            <label for="bad" style="margin-bottom: 1em;">
-                                <span class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span>
-                                <!--<br class="statement_text">-->
-                                <span class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span>
-                                <!--<br class="argument_text">-->
-                                <i class="fa fa-question-circle-o" aria-hidden="true" style="padding-left: 0.5em" tal:attributes="title extras.tag.argument_statement_harmful_description"></i>
-                                <!--<br>-->
-                                <!--<small class="statement_text" i18n:translate="argument_statement_harmful_description">A reasonable person would find this content inappropriate for respectful discourse.</small>-->
-                            </label>
-                            <br>
-                            <input type="radio" id="dupl" value="duplicate" name="flag-statement" style="margin-bottom: 1em;">
-                            <label for="dupl" style="margin-bottom: 1em;">
-                                <span class="statement_text" i18n:translate="statement_duplicate">This statement is a duplicate.</span>
-                                <i class="fa fa-question-circle-o" aria-hidden="true" style="padding-left: 0.5em" tal:attributes="title extras.tag.statement_duplicate_description"></i>
-                                <!--<br>-->
-                                <!--<small class="statement_text" i18n:translate="statement_duplicate_description">This statement has been done before in a slightly different wording.</small>-->
-                            </label>
-                            <br>
-                            <input type="radio" id="merge" value="merge" name="flag-statement" style="margin-bottom: 1em;">
-                            <label for="merge" style="margin-bottom: 1em;">
-                                <span class="statement_text" i18n:translate="statement_merge">This statement should be merged.</span>
-                                <i class="fa fa-question-circle-o" aria-hidden="true" style="padding-left: 0.5em" tal:attributes="title extras.tag.statement_merge_description"></i>
-                                <!--<br>-->
-                                <!--<small class="statement_text" i18n:translate="statement_merge_description">This statement belongs to another statement, so they should be merged.</small>-->
-                            </label>
-                            <br>
-                            <input type="radio" id="split" value="split" name="flag-statement" style="margin-bottom: 1em;">
-                            <label for="split" style="margin-bottom: 1em;">
-                                <span class="statement_text" i18n:translate="statement_split">This statement has more than one message.</span>
-                                <i class="fa fa-question-circle-o" aria-hidden="true" style="padding-left: 0.5em" tal:attributes="title extras.tag.statement_split_description"></i>
-                                <!--<br>-->
-                                <!--<small class="statement_text" i18n:translate="statement_split_description">This statement contains more than one message and has to be splitted.</small>-->
-                            </label>
-                        </fieldset>
-                    </form>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
-    <!-- FLAG ARGUMENTS -->
-    <div tal:condition="extras.is_reportable" class="modal fade" id="popup-flag-argument" tabindex="-1" role="dialog" aria-labelledby="myModalLabelFlagArgument" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button name="popup-flag-argument-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h4 class="modal-title" id="myModalLabelFlagArgument" i18n:translate="reporting_parts_argument">Reporting (parts of) an argument</h4>
-    			</div>
-    			<div class="modal-body">
-                    <p class="lead"><span i18n:translate="argument_under_consideration_is">The argument under consideration is as follows</span>:</p>
-                    <p class="well well-sm" id="popup-flag-argument-text"></p>
-                    <p><span i18n:translate="please_choose_part_to_report">Please choose which part of the argument you want to report</span>:</p>
-                    <form>
-                        <fieldset>
-                            <div tal:repeat="statement discussion.extras" tal:omit-tag="">
-                                <br>
-                                <input type="radio" id="a" tal:attributes="id statement.uid" name="flag-argument" data-special="">
-                                <label for="a" tal:attributes="for statement.uid" style="width: 90%">
-                                    <span i18n:translate="report">Report</span>: &quot;<em>${structure:statement.text}</em> &quot;
-                                </label>
-                            </div>
-                            <!--<br>-->
-                            <!--<input type="radio" id="flag_interference_wrong" value="interference_wrong" name="flag-argument" data-special="undercut">-->
-                            <!--<label for="flag_interference_wrong">-->
-                            <!--    <span i18n:translate="argument_wrong">The implication is wrong.</span><br>-->
-                            <!--    <small i18n:translate="argument_wrong_description">The text itself is maybe right, but I do not see, that this is well-justified.</small>-->
-                            <!--</label>-->
-                            <br>
-                            <input type="radio" id="flag_interference" value="interference" name="flag-argument" data-special="argument">
-                            <label for="flag_interference" style="width: 90%">
-                                <span i18n:translate="report_whole_argument">Report the whole argument.</span><br>
-                                <!--<small i18n:translate="statement_harmful_description">Content is inappropriate, harmful or abusive.</small>-->
-                            </label>
-                        </fieldset>
-                    </form>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
-    <!-- DUPLICATED STATEMENT -->
-    <div class="modal fade" id="popup-duplicate-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelDuplicateStatement" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button name="popup-duplicate-statement-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h4 class="modal-title" id="myModalLabelDuplicateStatement">${extras.title.statement_is_duplicate}</h4>
-    			</div>
-    			<div class="modal-body">
-                    <p class="lead">${extras.title.you_have_selected_statement}:</p>
-                    <p class="well well-sm" id="popup-duplicate-statement-text"></p>
-
-
-                    <div class="form-group">
-                        <div class="col-md-12 input-group">
-                            <div class="input-group-addon">
-                                <i class="fa fa-2x fa-search" aria-hidden="true"></i>
-                            </div>
-                            <input class="form-control" id="popup-duplicate-statement-text-search" type="text" placeholder="${extras.tag.placeholder_search_duplicate}">
-                        </div>
-                    </div>
-
-                    <div class="col-md-12 list-group" id="proposal-duplicate-list-group"></div>
-    			</div>
-    			<div class="modal-footer">
-    				<button id="popup-flag-statement-accept-btn" type="button" class="btn btn-success btn-secondary">${structure:extras.tag.submit}</button>
+              </form>
+              <div style="padding-left: 15px;">
+                <label>
+                  <input id="keep-login-box" type="checkbox" style="float:left;">
+                  <span i18n:translate="keep_me_logged_in">Keep me logged in</span>
+                </label>
+                <a id="popup-login-forgot-password-text"
+                   class="cursor-pointer pull-right" i18n:translate="forgot_password">
+                  Forgot your password?
+                </a>
+              </div>
+              <div id="popup-login-forgot-password-body" class="form-group" style="margin-top: 1em;">
+                <label for="mail-address" class="control-label" i18n:translate="fill_in_mail_for_password">
+                  Please fill in your e-mail below. A new password will be send this address. This does not affect other
+                  services of the HHU:
+                </label>
+                <div class="form-group">
+                  <div class="col-md-12 input-group">
+                    <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
+                    <input id="password-request-email-input" type="email" class="form-control"
+                           placeholder="${extras.tag.placeholder_mail}" autocomplete="on">
+                  </div>
                 </div>
-    		</div>
-    	</div>
-    </div>
-
-    <!-- CHOOSE STATEMENT -->
-    <div class="modal fade" id="popup-choose-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelChooseStatement" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button name="popup-choose-statement-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h4 class="modal-title" id="myModalLabelChooseStatement">${extras.title.select_statement}</h4>
-    			</div>
-    			<div class="modal-body">
-                    <p class="lead">${extras.title.select_multiple_statements}</p>
-                    <div id="popup-choose-statement-radios"></div>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
-    <!-- SPLIT STATEMENT -->
-    <div class="modal fade" id="popup-split-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelSplitStatement" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button name="popup-split-statement-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h4 class="modal-title" id="myModalLabelSplitPremisegroup" i18n:translate="split_statement">Split Statements</h4>
-    			</div>
-    			<div class="modal-body">
-                    <p class="lead" i18n:translate="split_multiple_statements">Please enter the splitted version of the statement; one per input field.</p>
-                    <p class="well well-sm" id="popup-split-statement-text"></p>
-                    <div id="popup-split-statement-body"></div>
-    			</div>
-    			<div class="modal-footer">
-                    <p class="lead" id="popup-split-statement-question" style="text-align: left;"></p>
-                    <button id="popup-split-statement-add" class="pull-left btn btn-secondary" type="button"><i class="fa fa-plus" aria-hidden="true"></i></button>
-                    <button id="popup-split-statement-rem" class="pull-left btn btn-secondary" type="button"><i class="fa fa-minus" aria-hidden="true"></i></button>
-    				<button type="button" class="btn btn-secondary" id="popup-split-statement-btn-yes" i18n:translate="submit">Submit</button>
-    				<button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="cancel">Cancel</button>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
-    <!-- SPLIT PREMISEGROUP -->
-    <div class="modal fade" id="popup-split-premisegroup" tabindex="-1" role="dialog" aria-labelledby="myModalLabelSplitPremisegroup" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button name="popup-split-premisegroup-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h4 class="modal-title" id="myModalLabelSplitPremisegroup" i18n:translate="split_statement">Split Statements</h4>
-    			</div>
-    			<div class="modal-body">
-                    <p class="lead" i18n:translate="split_multiple_statements_of_pgroup">The selected statement is already splitted in several parts, like the list illustrates below. Do you want to continue with a new split?</p>
-                    <span i18n:translate="the_statement" class="lead">The statement</span> <span class="lead" style="color: #2196f3" id="popup-split-premisegroup-text"></span> <span class="lead" i18n:translate="consist_out_of">consist out of</span>:
-                    <ul id="popup-split-premisegroup-body"></ul>
-    			</div>
-    			<div class="modal-footer">
-    				<button type="button" class="btn btn-secondary" i18n:translate="yes" id="popup-split-premisegroup-btn-yes">Yes</button>
-    				<button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="no">No</button>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
-    <!-- MERGE STATEMENT -->
-    <div class="modal fade" id="popup-merge-statement" tabindex="-1" role="dialog" aria-labelledby="myModalLabelMergeStatement" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button name="popup-merge-statement-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h4 class="modal-title" id="myModalLabelMergeStatement" i18n:translate="merge_statement">Merge Statement</h4>
-    			</div>
-    			<div class="modal-body">
-                    <p class="lead" i18n:translate="merge_multiple_statements">Please select the statements, that should be concatenated.</p>
-                    <p class="well well-sm" id="popup-merge-statement-text"></p>
-                    <div id="popup-merge-statement-body"></div>
-    			</div>
-    			<div class="modal-footer">
-                    <p class="lead" id="popup-merge-statement-question" style="text-align: left;"></p>
-                    <button id="popup-merge-statement-add" class="pull-left btn btn-secondary" type="button" ><i class="fa fa-plus" aria-hidden="true"></i></button>
-                    <button id="popup-merge-statement-rem" class="pull-left btn btn-secondary" type="button" ><i class="fa fa-minus" aria-hidden="true"></i></button>
-    				<button type="button" class="btn btn-secondary" id="popup-merge-statement-btn-yes" i18n:translate="submit">Submit</button>
-    				<button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="cancel">Cancel</button>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
-    <!-- MERGE PREMISEGROUP -->
-    <div class="modal fade" id="popup-merge-premisegroup" tabindex="-1" role="dialog" aria-labelledby="myModalLabelMergePremisegroup" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button name="popup-merge-premisegroup-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h4 class="modal-title" id="myModalLabelMergePremisegroup" i18n:translate="merge_statement">Merge Statement</h4>
-    			</div>
-    			<div class="modal-body">
-                    <p class="lead" i18n:translate="merge_multiple_statements_of_pgroup">The selected statement already consists out of multiple statement. Further on the several statements are listed. Do you want to continue with the merge?</p>
-                    <span class="lead" i18n:translate="the_statement">The statement</span> <span class="lead" style="color: #2196f3" id="popup-merge-premisegroup-text"></span> <span class="lead" i18n:translate="consist_out_of">consist out of</span>:
-                    <ul id="popup-merge-premisegroup-body"></ul>
-    			</div>
-    			<div class="modal-footer">
-    				<button type="button" class="btn btn-secondary" i18n:translate="yes" id="popup-merge-premisegroup-btn-yes">Yes</button>
-    				<button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="no">No</button>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
-    <!-- DELETE CONTENT-->
-    <div class="modal fade" id="popup-delete-content" tabindex="-1" role="dialog" aria-labelledby="myModalLabelDelete" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button name="popup-flag-argument-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h4 class="modal-title" id="myModalLabelDelete">
-                        <i class="text-danger fa fa-exclamation-triangle" aria-hidden="true"></i> <span i18n:translate="caution">Caution</span>
-                    </h4>
-    			</div>
-    			<div class="modal-body">
-                    <!--<p class="lead" i18n:translate="do_you_really_delete_step_irreversible">Do you really want to delete this content? This step is irreversible!</p>-->
-                    <p class="lead" i18n:translate="do_you_really_disassociate_step_irreversible">Do you really want to disassociate yourself from your content? This step is irreversible! Subsequently you will not be the author of this statement anymore!</p>
-    			</div>
-    			<div class="modal-footer">
-    				<button type="button" class="btn btn-danger" id="popup-delete-content-submit">Okay</button>
-    				<button type="button" class="btn btn-success" id="popup-delete-content-close">${structure:extras.tag.close}</button>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
-    <!-- SHOW POSITIONS -->
-    <div class="modal fade" id="popup-jump-graph" tabindex="-1" role="dialog" aria-labelledby="myModalLabelPositions" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button name="popup-jump-graph-close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h4 class="modal-title" id="myModalLabelPositions" i18n:translate="choose_a_step_to_jump_in">Please choose a step to jump in</h4>
-    			</div>
-    			<div class="modal-body">
-                    <p class="lead" i18n:translate="below_you_will_find_list_with_jump_arguments">Below you find a list with all arguments, where your selected text is used:</p>
-                    <div>
-
-                    </div>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-
-    <!-- SET AND GET REFERENCES -->
-    <div class="modal fade" id="popup-references" tabindex="-1" role="dialog" aria-labelledby="myModalLabelReferences" aria-hidden="true">
-    	<div class="modal-dialog">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button name="popup-references-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-    				</button>
-    				<h4 class="modal-title" id="myModalLabelReferences" i18n:translate="refereces">References</h4>
-    			</div>
-    			<div class="modal-body">
-                    <div id="popup-references-body">
-
-                    </div>
-                    <div id="popup-references-body-add" style="display: none">
-
-                        <p class="text-info" i18n:translate="statement_reference_definition">Statement is a cite from a website like a newspaper article, which underpins the opinion. The source is the website as link.</p>
-
-                        <div class="form-group">
-					        <label class="col-md-2 control-label" for="popup-references-add-text" i18n:translate="statement">Statement</label>
-                            <div class="col-md-10">
-						        <input type="text" id="popup-references-add-text" class="col-md-9 form-control" placeholder="${extras.tag.placeholder_statement}">
-                            </div>
-					    </div>
-                        <div class="form-group">
-					        <label class="col-md-2 control-label" for="popup-references-add-source" i18n:translate="source">Source</label>
-                            <div class="col-md-10">
-						        <input type="text" id="popup-references-add-source" class="form-control" placeholder="${extras.tag.placeholder_source}">
-                            </div>
-					    </div>
-                        <p id="choose_reference_text" class="text-info" i18n:translate="please_choose_a_reference">Please choose a statement for your reference!</p>
-                    </div>
-                    <p>
-                        <span class="icon-badge blue-button" id="popup-reference-add-btn" style="font-size: 25px; height: 32px; width: 32px;">+</span>
-                    </p>
-    			</div>
-    			<div class="modal-footer">
-
-                    <div id="popup-references-cite-dropdown" class="btn-group open" style="display: block;">
-                        <a href="#" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-                            <span i18n:translate="statement" id="popup-references-cite-dropdown-title">Statement</span><span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu" id="popup-references-cite-dropdown-list">
-                        </ul>
-                    </div>
-    				<button type="button" class="btn btn-sm btn-success" id="popup-reference-send-btn" i18n:translate="add_reference">Add reference</button>
+                <input id="popup-login-button-request" type="submit" onclick="$('body').addClass('loading')"
+                       name="form.passwordrequest.submitted" value="${extras.buttons.request_password}"
+                       class="btn btn-primary">
+              </div>
+              <div class="pull-right">
+                <button id="popup-login-button-login" type="button" class="btn btn-primary" i18n:translate="login">
+                  Log In
+                </button>
+                <button type="button" class="btn btn-secondary" id="popup-login-close-button2" i18n:translate="close">
+                  Close
+                </button>
+              </div>
+              <div class="center" tal:condition="extras.login_btns.oauth_google or extras.login_btns.oauth_facebook or extras.login_btns.oauth_twitter"
+                   style="margin-top: 3.5em;">
+                <hr>
+                <p class="text-center lead">
+                  <span i18n:translate="or_login_via">Or login via</span>:
+                </p>
+                <div class="row text-center" id="popup-login-registration-oauth-buttons">
+                  <a tal:condition="extras.login_btns.oauth_google" class="btn btn-block btn-brand btn-google"
+                                                                    data-service="google">
+                    <img src="${request.static_url('dbas:static/images/btn_google_light_normal.svg')}">
+                    <span>Google</span>
+                  </a>
+                  <a tal:condition="extras.login_btns.oauth_facebook" class="btn btn-block btn-brand btn-facebook"
+                                                                      data-service="facebook">
+                    <span class="fa fa-facebook"></span>
+                    <span>Facebook</span> </a>
+                  <a tal:condition="extras.login_btns.oauth_twitter" class="btn btn-block btn-brand btn-twitter"
+                                                                     data-service="twitter">
+                    <span class="fa fa-twitter"></span>
+                    <span>Twitter</span> </a>
+                  <a tal:condition="extras.login_btns.oauth_github" class="btn btn-block btn-brand btn-github"
+                                                                    data-service="github">
+                    <span class="fa fa-github"></span>
+                    <span>Github</span> </a>
                 </div>
-    		</div>
-    	</div>
-    </div>
+              </div>
+            </div>
+            <div id="signup">
 
-    <!-- BAROMETER POPUP -->
-    <div class="modal fade" id="barometer-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabelBarometer" aria-hidden="true">
-    	<div class="modal-dialog modal-lg">
-    		<div class="modal-content">
-    			<div class="modal-header">
-    				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-    				</button>
-    				<h4 class="modal-title" id="myModalLabelBarometer">...</h4>
-    			</div>
-    			<div class="modal-body">
-                    <div class="row">
-                    <div style="float:right;">
+              <div id="popup-login-registration-field">
+                <p class="center">
+                  <span class="text-info" i18n:translate="never_display_real_name">We will never display your real name to other users!</span>
+                </p>
+                <p class="text-info center" id="popup-login-hhu-text" i18n:translate="have_account_hhu">
+                  If you have a valid account at the HHU, you can directly use the login!
+                </p>
+                <div class="form-group">
+                  <label class="col-md-3 control-label" for="userfirstname-input" i18n:translate="first_name">
+                    Your First Name</label>
+                  <div class="col-md-9 input-group">
+                    <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
+                    <input id="userfirstname-input" type="text" name="firstname"
+                           class="form-control userfirstname active" autocomplete="on"
+                           placeholder="${extras.tag.placeholder_firstname}">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label" for="userlastname-input" i18n:translate="last_name">
+                    Your Last Name</label>
+                  <div class="col-md-9 input-group">
+                    <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
+                    <input id="userlastname-input" type="text" name="surname" class="form-control userlastname"
+                           autocomplete="on" placeholder="${extras.tag.placeholder_lastname}">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label" for="nick-input" i18n:translate="nickname">Your Nickname</label>
+                  <div class="col-md-9 input-group">
+                    <div class="input-group-addon"><i class="fa fa-user-secret fa-2x" aria-hidden="true"></i></div>
+                    <input id="nick-input" type="text" class="form-control nickname" name="nickname" autocomplete="off"
+                           placeholder="${extras.tag.placeholder_nickname}">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label" i18n:translate="your_gender">Your Gender</label>
+                  <div class="col-md-9 input-group" style="padding-left: 1.3em">
+                    <input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender1"
+                           value="-" checked>
+                    <label for="inlineRadioGender1">
+                      <i class="fa fa-times fa-2x" aria-hidden="true"></i>
+                    </label>
+                    <input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender2"
+                           value="f">
+                    <label for="inlineRadioGender2">
+                      <i class="fa fa-female fa-2x" aria-hidden="true"></i>
+                    </label>
+                    <input class="radio-inline" type="radio" name="inlineRadioGenderOptions" id="inlineRadioGender3"
+                           value="m">
+                    <label for="inlineRadioGender3">
+                      <i class="fa fa-male fa-2x" aria-hidden="true"></i>
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label" for="email-input" i18n:translate="your_email">
+                    Your Email Address
+                  </label>
+                  <div class="col-md-9 input-group">
+                    <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
+                    <input id="email-input" type="email" class="form-control email" name="email" autocomplete="on"
+                           placeholder="${extras.tag.placeholder_mail}">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label" for="popup-login-password-input" i18n:translate="password">
+                    Your Password
+                  </label>
+                  <div class="col-md-9 input-group">
+                    <div class="input-group-addon"><i class="fa fa-lock fa-2x" aria-hidden="true"></i></div>
+                    <input id="popup-login-password-input" type="password" name="password" class="form-control password"
+                           autocomplete="off" placeholder="${extras.tag.placeholder_password}">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label"
+                         for="popup-login-passwordconfirm-input" i18n:translate="password-confirm">
+                    Password (confirm)
+                  </label>
+                  <div class="col-md-9 input-group">
+                    <div class="input-group-addon"><i class="fa fa-unlock fa-2x" aria-hidden="true"></i></div>
+                    <input id="popup-login-passwordconfirm-input" type="password" name="passwordconfirm"
+                           class="form-control password" autocomplete="off"
+                           placeholder="${extras.tag.placeholder_password}">
+                  </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 0">
+                  <label class="col-md-3 control-label" i18n:translate="password-strength">Password Strength</label>
+                  <div class="col-md-9 input-group">
+                    <div class="col-md-9 veryweak" id="popup-login-password-meter"></div>
+                    <span id="popup-login-password-strength" i18n:translate="password_strength">very weak</span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-md-3 control-label" for="captcha-answer" i18n:translate="captcha">Solve
+                    this captcha</label>
+                  <div class="col-md-9 input-group">
+                    <div class="input-group-addon">
+                      <span id="captcha-digit1"></span> +
+                      <span id="captcha-digit2"></span> -
+                      <span id="captcha-digit3"></span> =
                     </div>
-                        <div class="col-md-6">
-                            <div id="modal-body-chart-place">
+                    <input id="captcha-answer" type="number" name="captcha-answer" class="form-control"
+                           autocomplete="off">
+                  </div>
+                </div>
+                <div class="col-md-12" id="popup-login-registration-success" role="alert">
+                  <div class="alert alert-success alert-dismissible">
+                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                    <span class="sr-only" i18n:translate="success">Success:</span>
+                    <span id="popup-login-registration-success-message"></span>
+                  </div>
+                </div>
+                <div class="col-md-12" id="popup-login-registration-failed" role="alert">
+                  <div class="alert alert-danger alert-dismissible">
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                    <span class="sr-only" i18n:translate="error">Error:</span>
+                    <span id="popup-login-registration-failed-message"></span>
+                  </div>
+                </div>
+                <div class="col-md-12" id="popup-login-registration-info" role="alert">
+                  <div class="alert alert-warning alert-dismissible">
+                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                    <span class="sr-only" i18n:translate="info">Info:</span>
+                    <span id="popup-login-registration-info-message"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-                            </div>
-                            <div id="chart-btn-div">
-                                <input id="chart-btn"
-                                       data-toggle="toggle"
-                                       data-on="<i class='fa fa-bar-chart fa-pull-left fa-2x'></i>"
-                                       data-off="<i class='fa fa-pie-chart fa-2x'></i>"
-                                       checked type="checkbox"
-                                       data-onstyle="default"
-                                       data-offstyle="default">
-                            </div>
-                        </div>
-                        <div class="col-md-offset-1 col-md-5"></div>
-                    </div>
-    			</div>
-    			<div class="modal-footer">
-    				<button id="barometer-popup-accept-btn" type="button" class="btn btn-success btn-secondary" i18n:translate="okay">Okay</button>
-    				<button id="barometer-popup-refuse-btn" type="button" class="btn btn-danger btn-secondary" i18n:translate="cancel">Cancel</button>
-    			</div>
-    		</div>
-    	</div>
+          <div class="col-md-12" id="popup-login-failed" style="margin-top: 2em">
+            <div class="alert alert-danger" role="alert">
+              <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+              <span class="sr-only" i18n:translate="error">Error:</span>
+              <span id="popup-login-failed-message"></span></div>
+          </div>
+          <div class="col-md-12" id="popup-login-success" style="margin-top: 2em">
+            <div class="alert alert-success" role="alert">
+              <i class="fa fa-check-circle" aria-hidden="true"></i>
+              <span class="sr-only" i18n:translate="success">Success:</span>
+              <span id="popup-login-success-message"></span>
+            </div>
+          </div>
+          <div class="col-md-12" id="popup-login-info" style="margin-top: 2em">
+            <div class="alert alert-warning" role="alert">
+              <i class="fa fa-info-circle" aria-hidden="true"></i>
+              <span class="sr-only" i18n:translate="info">Info:</span>
+              <span id="popup-login-info-message"></span></div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button id="popup-login-button-register" type="button"
+                  class="btn btn-primary hidden" i18n:translate="register">Register
+          </button>
+          <button id="popup-login-close-button1" type="button" class="btn btn-secondary hidden" i18n:translate="close">
+            Close
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 
+  <!-- HOW TO SET PREMISEGROUPS POPUP -->
+  <div class="modal fade" id="popup-set-premisegroups" tabindex="-1" role="dialog"
+       aria-labelledby="myModalLabelSetPGroup" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" id="popup-set-premisegroups-close" class="close" data-dismiss="modal"
+                  aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <span id="popup-set-premisegroups-counter" class="lead badge" style="float:right; margin: 1em;">1/4</span>
+          <h4 class="modal-title"
+              id="myModalLabelSetPGroup" i18n:translate="need-help-to-understand-statement">${extras.tag.need_help_to_understand_statement}</h4>
+        </div>
+        <div id="popup-set-premisegroups-body" class="lead">
+          <span>${extras.tag.set_premisegroups_intro1}</span><strong><span
+                id="popup-set-premisegroups-body-intro-statements"></span></strong><span>${extras.tag.set_premisegroups_intro2}</span>
+          <br>
+          <br>
+          <div id="insert_statements_page_" style="display: none;">
+            <ul id="insert_statements_options">
+              <li>
+                <label class="bs-callout bs-callout-primary">
+                  <input type="radio" name="insert_statements" id="insert_more_arguments">
+                  <span>${extras.tag.i_actually_have}</span>&#160;<span
+                        id="insert_statements_count"></span>&#160;<span>${extras.tag.seperated}</span>&#160;<span>${extras.tag.arguments}
+                  :</span>
+                  <span id="insert_statements_list_more_arguments" style="font-weight: 300;"></span>
+                </label>
+              </li>
+              <li>
+                <label class="bs-callout bs-callout-primary">
+                  <input type="radio" name="insert_statements"
+                         id="insert_one_argument"><span>${extras.tag.insert_one_argument}</span>
+                  <br>
+                  <span id="insert_statements_one_argument" style="font-weight: 300;"></span>
+                </label>
+              </li>
+              <li>
+                <label class="bs-callout bs-callout-primary">
+                  <input type="radio" name="insert_statements" id="insert_dont_care"
+                         style="font-weight: 300;">${extras.tag.insert_dont_care}
+                </label>
+              </li>
+            </ul>
+          </div>
+          <div id="popup-set-premisegroups-body-content">
+          </div>
+          <div id="insert_statements_page_error" class="alert alert-danger" role="alert" style="display:none">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+            <span>${extras.tag.error}</span>:
+            <span>${extras.tag.forgot_input_radio}</span>
+          </div>
+          <div class="modal-footer">
+            <ul class="pager pull-left" style="margin: 0;">
+              <li class="previous">
+                <a href="#" id="popup-set-premisegroups-previous-button" title="${extras.buttons.previous}">←</a>
+              </li>
+              <li class="next">
+                <a href="#" id="popup-set-premisegroups-next-button" class="pull-left"
+                   title="${extras.buttons.next}">→</a>
+              </li>
+            </ul>
+            <span id="popup-set-premisegroups-warning-text" class="text-warning"
+                  style="padding-right: 1em;">${extras.tag.premisegroup_popup_warning}</span>
+            <button type="button" class="btn btn-success pull-right" id="popup-set-premisegroups-send-button">
+                    ${extras.buttons.save_my_statement}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- WRITE NEWS -->
+  <div class="modal fade" id="popup-writing-news" tabindex="-1" role="dialog" aria-labelledby="myModalLabelNews"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" id="popup-write-news-close" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h5 class="modal-title" id="myModalLabelNews" i18n:translate="writing_message">Writing a new message</h5>
+        </div>
+        <div id="popup-writing-news-body">
+
+          <div class="form-group">
+            <div class="col-sm-12 input-group">
+              <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
+              <input data-min-length="10" type="text" id="popup-writing-news-title" class="form-control"
+                     placeholder="${extras.title.topic}" title="${extras.title.topic}" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-sm-12 input-group">
+              <div class="input-group-addon"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></div>
+              <textarea data-min-length="10" id="popup-writing-news-text" class="form-control"
+                        placeholder="${extras.title.message}" title="${extras.title.message}"></textarea>
+            </div>
+          </div>
+
+          <div id="popup-writing-news-failed" class="alert alert-danger" role="alert">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+            <span class="sr-only" i18n:translate="error:">Error:</span>
+            <span id="popup-writing-news-failed-message"></span>
+          </div>
+
+          <div id="popup-writing-news-success" class="alert alert-success" role="alert">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+            <span class="sr-only" i18n:translate="success:">Success:</span>
+            <span id="popup-writing-news-success-message"></span>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <div id="news-credentials" style="float: left;">
+            <h6>
+              <span i18n:translate="author">Author</span>:
+              <span tal:replace="extras.nickname"></span>,
+              <span i18n:translate="date">Date</span>:
+              <span tal:replace="extras.date"></span>
+            </h6>
+          </div>
+
+          <button type="button" class="btn btn-success" id="popup-writing-news-send" i18n:translate="send_news">
+            Send News
+          </button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" i18n:translate="close">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WRITE NOTIFICATION -->
+  <div class="modal fade" id="popup-writing-notification" tabindex="-1" role="dialog"
+       aria-labelledby="myModalLabelNotification" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" id="popup-write-notification-close" class="close" data-dismiss="modal"
+                  aria-label="Close"><span aria-hidden="true">&times;</span>
+          </button>
+          <h5 class="modal-title" id="myModalLabelNotification" i18n:translate="writing_message">
+            Writing a new message
+          </h5>
+        </div>
+        <div id="popup-notification-body">
+
+          <div class="form-group">
+            <div class="col-sm-12 input-group">
+              <div class="input-group-addon"><i class="fa fa-user fa-2x" aria-hidden="true"></i></div>
+              <input type="text" id="popup-writing-notification-recipient" class="form-control"
+                     placeholder="${extras.title.recipient}" title="${extras.title.recipient}" required>
+            </div>
+          </div>
+
+          <div class="list-group" id="proposal-user-list-group"></div>
+
+          <div class="form-group">
+            <div class="col-sm-12 input-group">
+              <div class="input-group-addon"><i class="fa fa-envelope fa-2x" aria-hidden="true"></i></div>
+              <input data-min-length="5" type="text" id="popup-writing-notification-title" class="form-control"
+                     placeholder="${extras.title.topic}" title="${extras.title.topic}" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-sm-12 input-group">
+              <div class="input-group-addon"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></div>
+              <textarea data-min-length="5" id="popup-writing-notification-text" class="form-control"
+                        placeholder="${extras.title.message}" title="${extras.title.message}"></textarea>
+            </div>
+          </div>
+
+          <div id="popup-writing-notification-failed" class="alert alert-danger" role="alert">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+            <span class="sr-only" i18n:translate="error:">Error:</span>
+            <span id="popup-writing-notification-failed-message"></span>
+          </div>
+
+          <div id="popup-writing-notification-success" class="alert alert-success" role="alert">
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+            <span class="sr-only" i18n:translate="success:">Success:</span>
+            <span id="popup-writing-notification-success-message"></span>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success"
+                  id="popup-writing-notification-send" i18n:translate="send_notification">Send Notifcation
+          </button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" i18n:translate="close">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD TOPIC -->
+  <div class="modal fade in" id="popup-add-topic" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddTopic"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+          </button>
+          <h4 id="myModalLabelAddTopic" i18n:translate="add_topic">Add Topic</h4>
+        </div>
+        <div class="modal-body">
+
+          <div class="form-group">
+            <label i18n:translate="please_enter_title">Please enter your title here:</label>
+            <input class="form-control" id="popup-add-topic-title-input"
+                   placeholder="${extras.tag.placeholder_add_topic_title}">
+          </div>
+
+          <div class="form-group">
+            <label style="margin: 1em 0 0 0;" i18n:translate="please_enter_info">
+              Please enter a short-description or question here:
+            </label>
+            <input class="form-control" id="popup-add-topic-info-input"
+                   placeholder="${extras.tag.placeholder_add_topic_question}">
+          </div>
+
+          <div class="form-group">
+            <label style="margin: 1em 0 0 0;" i18n:translate="please_enter_long_info">
+              Please enter the full description here:
+            </label>
+            <textarea class="form-control" id="popup-add-topic-long-info-input"
+                      placeholder="${extras.tag.placeholder_add_topic_description}"
+                      style="resize: vertical;"></textarea>
+          </div>
+
+          <div class="row" style="margin-top: 2em; padding: 0;">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label i18n:translate="please_select_language_for_topic">Language of the discussion:</label>
+                <ul id="popup-add-topic-lang-input" style="list-style-type: none; padding-left: 1em">
+                  <li>
+                    <input tal:condition="not:extras.lang_is_de" id="de" type="radio" name="lang_topic">
+                    <input tal:condition="extras.lang_is_de" id="de" type="radio" name="lang_topic" checked>
+                    <label for="de">
+                      <img class="language_selector_img"
+                           src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_ge">
+                      Deutsch
+                    </label>
+                  </li>
+                  <li>
+                    <input tal:condition="not:extras.lang_is_en" id="en" type="radio" name="lang_topic">
+                    <input tal:condition="extras.lang_is_en" id="en" type="radio" name="lang_topic" checked>
+                    <label for="en">
+                      <img class="language_selector_img"
+                           src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en">
+                      English
+                    </label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="col-md-8">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="col-md-8" i18n:translate="is_topic_available_for_public" style="padding: 0">Is the topic
+                  available for the public?</label>
+                <div class="col-md-4">
+                  <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
+                     style="margin-right: 1em;" title="${extras.tag.issue_public}"></i>
+                  <input style="margin: 1em 0 0 0;" checked
+                         id="popup-add-topic-public-toggle" type="checkbox" data-toggle="toggle"
+                         data-keyword="public"
+                         data-size="mini"
+                         data-onstyle="success"
+                         data-offstyle="danger"
+                         data-on="'<i class='fa fa-check' aria-hidden='true'></i>"
+                         data-off="'<i class='fa fa-times' aria-hidden='true'></i>">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-md-8" i18n:translate="is_topic_read_only" style="padding: 0">Is the topic read
+                  only?</label>
+                <div class="col-md-4">
+                  <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
+                     style="margin-right: 1em;" title="${extras.tag.issue_writable}"></i>
+                  <input style="margin: 1em 0 0 0;"
+                         id="popup-add-topic-read-only-toggle" type="checkbox" data-toggle="toggle"
+                         data-keyword="public"
+                         data-size="mini"
+                         data-onstyle="success"
+                         data-offstyle="danger"
+                         data-on="'<i class='fa fa-check' aria-hidden='true'></i>"
+                         data-off="'<i class='fa fa-times' aria-hidden='true'></i>">
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="alert alert-danger hidden" id="popup-add-topic-error" style="margin-top: 1em">
+            <strong id="popup-add-topic-error-text"></strong>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="popup-add-topic-accept-btn" type="button"
+                  class="btn btn-success btn-secondary">${structure:extras.tag.save}</button>
+          <button id="popup-add-topic-refuse-btn" type="button"
+                  class="btn btn-danger btn-secondary">${structure:extras.tag.cancel}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLAG STATEMENT -->
+  <div class="modal fade" id="popup-flag-statement" tabindex="-1" role="dialog"
+       aria-labelledby="myModalLabelFlagStatement" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button name="popup-flag-statement-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabelFlagStatement" i18n:translate="select-reason">Selecting a reason</h4>
+        </div>
+        <div class="modal-body">
+          <p class="statement_text lead">
+            <span i18n:translate="statement_under_consideration_is">
+              The statement under consideration is as follows
+            </span>:
+          </p>
+          <p class="argument_text lead">
+            <span i18n:translate="argument_under_consideration_is">
+              The argument under consideration is as follows
+            </span>:
+          </p>
+          <p class="well well-sm" id="popup-flag-statement-text"></p>
+          <form>
+            <style>
+              .i-pad-left i {
+                padding-left: 0.5em;
+              }
+            </style>
+            <fieldset class="i-pad-left">
+              <input type="radio" id="opt" value="optimization" name="flag-statement" style="margin-bottom: 1em;">
+              <label for="opt" style="margin-bottom: 1em;">
+                <span i18n:translate="text_need_to_be_revised">The text needs to be revised.</span>
+                <i class="fa fa-question-circle-o statement_text" aria-hidden="true"
+                   title="${extras.tag.statement_optimization_description}"></i>
+                <i class="fa fa-question-circle-o argument_text" aria-hidden="true"
+                   title="${extras.tag.argument_optimization_description}"></i>
+              </label>
+              <br>
+              <input type="radio" id="off" value="offtopic" name="flag-statement" style="margin-bottom: 1em;">
+              <label for="off" style="margin-bottom: 1em;">
+                <span class="statement_text" i18n:translate="statement_offtopic_or_irrelevant">This statement is off topic or irrelevant.</span>
+                <i class="fa fa-question-circle-o statement_text" aria-hidden="true"
+                   style="padding-left: 0.5em" title="${extras.tag.statement_offtopic_or_irrelevant_description}"></i>
+                <span class="argument_text" i18n:translate="argument_offtopic_or_irrelevant">This argument is off topic or irrelevant.</span>
+                <i class="fa fa-question-circle-o argument_text" aria-hidden="true"
+                   style="padding-left: 0.5em" title="${extras.tag.argument_offtopic_or_irrelevant_description}"></i>
+              </label>
+              <br>
+              <input type="radio" id="bad" value="harmful" name="flag-statement" style="margin-bottom: 1em;">
+              <label for="bad" style="margin-bottom: 1em;">
+                <span class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span>
+                <span class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span>
+                <i class="fa fa-question-circle-o" aria-hidden="true"
+                   style="padding-left: 0.5em" title="${extras.tag.argument_statement_harmful_description}"></i>
+              </label>
+              <br>
+              <input type="radio" id="dupl" value="duplicate" name="flag-statement" style="margin-bottom: 1em;">
+              <label for="dupl" style="margin-bottom: 1em;">
+                <span class="statement_text" i18n:translate="statement_duplicate">This statement is a duplicate.</span>
+                <i class="fa fa-question-circle-o" aria-hidden="true"
+                   style="padding-left: 0.5em" title="${extras.tag.statement_duplicate_description}"></i>
+              </label>
+              <br>
+              <input type="radio" id="merge" value="merge" name="flag-statement" style="margin-bottom: 1em;">
+              <label for="merge" style="margin-bottom: 1em;">
+                <span class="statement_text" i18n:translate="statement_merge">This statement should be merged.</span>
+                <i class="fa fa-question-circle-o" aria-hidden="true"
+                   style="padding-left: 0.5em" title="${extras.tag.statement_merge_description}"></i>
+              </label>
+              <br>
+              <input type="radio" id="split" value="split" name="flag-statement" style="margin-bottom: 1em;">
+              <label for="split" style="margin-bottom: 1em;">
+                <span class="statement_text" i18n:translate="statement_split">This statement has more than one message.</span>
+                <i class="fa fa-question-circle-o" aria-hidden="true"
+                   style="padding-left: 0.5em" title="${extras.tag.statement_split_description}"></i>
+              </label>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLAG ARGUMENTS -->
+  <div tal:condition="extras.is_reportable" class="modal fade" id="popup-flag-argument" tabindex="-1" role="dialog"
+                                            aria-labelledby="myModalLabelFlagArgument" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button name="popup-flag-argument-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabelFlagArgument" i18n:translate="reporting_parts_argument">Reporting
+            (parts of) an argument</h4>
+        </div>
+        <div class="modal-body">
+          <p class="lead">
+            <span i18n:translate="argument_under_consideration_is">The argument under consideration is as follows</span>:
+          </p>
+          <p class="well well-sm" id="popup-flag-argument-text"></p>
+          <p><span i18n:translate="please_choose_part_to_report">Please choose which part of the argument you want to report</span>:
+          </p>
+          <form>
+            <fieldset>
+              <div tal:repeat="statement discussion.extras" tal:omit-tag="">
+                <br>
+                <input type="radio" id="${statement.uid}" name="flag-argument">
+                <label for="${statement.uid}" style="width: 90%">
+                  <span i18n:translate="report">Report</span>: &quot;<em>${structure:statement.text}</em> &quot;
+                </label>
+              </div>
+              <br>
+              <input type="radio" id="flag_interference" value="interference" name="flag-argument"
+                     data-special="argument">
+              <label for="flag_interference" style="width: 90%">
+                <span i18n:translate="report_whole_argument">Report the whole argument.</span><br>
+              </label>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DUPLICATED STATEMENT -->
+  <div class="modal fade" id="popup-duplicate-statement" tabindex="-1" role="dialog"
+       aria-labelledby="myModalLabelDuplicateStatement" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button name="popup-duplicate-statement-close" type="button" class="close" data-dismiss="modal"
+                  aria-label="Close"><span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabelDuplicateStatement">${extras.title.statement_is_duplicate}</h4>
+        </div>
+        <div class="modal-body">
+          <p class="lead">${extras.title.you_have_selected_statement}:</p>
+          <p class="well well-sm" id="popup-duplicate-statement-text"></p>
+
+
+          <div class="form-group">
+            <div class="col-md-12 input-group">
+              <div class="input-group-addon">
+                <i class="fa fa-2x fa-search" aria-hidden="true"></i>
+              </div>
+              <input class="form-control" id="popup-duplicate-statement-text-search" type="text"
+                     placeholder="${extras.tag.placeholder_search_duplicate}">
+            </div>
+          </div>
+          <div class="col-md-12 list-group" id="proposal-duplicate-list-group"></div>
+        </div>
+
+        <div class="modal-footer">
+          <button id="popup-flag-statement-accept-btn" type="button"
+                  class="btn btn-success btn-secondary">${structure:extras.tag.submit}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHOOSE STATEMENT -->
+  <div class="modal fade" id="popup-choose-statement" tabindex="-1" role="dialog"
+       aria-labelledby="myModalLabelChooseStatement" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button name="popup-choose-statement-close" type="button" class="close" data-dismiss="modal"
+                  aria-label="Close"><span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabelChooseStatement">${extras.title.select_statement}</h4>
+        </div>
+        <div class="modal-body">
+          <p class="lead">${extras.title.select_multiple_statements}</p>
+          <div id="popup-choose-statement-radios"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPLIT STATEMENT -->
+  <div class="modal fade" id="popup-split-statement" tabindex="-1" role="dialog"
+       aria-labelledby="myModalLabelSplitStatement" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button name="popup-split-statement-close" type="button" class="close" data-dismiss="modal"
+                  aria-label="Close"><span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabelSplitPremisegroup" i18n:translate="split_statement">Split
+            Statements</h4>
+        </div>
+        <div class="modal-body">
+          <p class="lead" i18n:translate="split_multiple_statements">
+            Please enter the splitted version of the statement; one per input field.
+          </p>
+          <p class="well well-sm" id="popup-split-statement-text"></p>
+          <div id="popup-split-statement-body"></div>
+        </div>
+        <div class="modal-footer">
+          <p class="lead" id="popup-split-statement-question" style="text-align: left;"></p>
+          <button id="popup-split-statement-add" class="pull-left btn btn-secondary" type="button">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </button>
+          <button id="popup-split-statement-rem" class="pull-left btn btn-secondary" type="button">
+            <i class="fa fa-minus" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn btn-secondary" id="popup-split-statement-btn-yes" i18n:translate="submit">
+            Submit
+          </button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPLIT PREMISEGROUP -->
+  <div class="modal fade" id="popup-split-premisegroup" tabindex="-1" role="dialog"
+       aria-labelledby="myModalLabelSplitPremisegroup" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button name="popup-split-premisegroup-close" type="button" class="close" data-dismiss="modal"
+                  aria-label="Close"><span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabelSplitPremisegroup" i18n:translate="split_statement">
+            Split Statements
+          </h4>
+        </div>
+        <div class="modal-body">
+          <p class="lead" i18n:translate="split_multiple_statements_of_pgroup">
+            The selected statement is already splitted in several parts, like the list illustrates below. Do you want to
+            continue with a new split?
+          </p>
+          <span i18n:translate="the_statement" class="lead">The statement</span>
+          <span class="lead" style="color: #2196f3" id="popup-split-premisegroup-text"></span>
+          <span class="lead" i18n:translate="consist_out_of">consist out of</span>:
+          <ul id="popup-split-premisegroup-body"></ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" i18n:translate="yes" id="popup-split-premisegroup-btn-yes">
+            Yes
+          </button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="no">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MERGE STATEMENT -->
+  <div class="modal fade" id="popup-merge-statement" tabindex="-1" role="dialog"
+       aria-labelledby="myModalLabelMergeStatement" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button name="popup-merge-statement-close" type="button" class="close" data-dismiss="modal"
+                  aria-label="Close"><span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabelMergeStatement" i18n:translate="merge_statement">Merge Statement</h4>
+        </div>
+        <div class="modal-body">
+          <p class="lead" i18n:translate="merge_multiple_statements">
+            Please select the statements, that should be concatenated.
+          </p>
+          <p class="well well-sm" id="popup-merge-statement-text"></p>
+          <div id="popup-merge-statement-body"></div>
+        </div>
+        <div class="modal-footer">
+          <p class="lead" id="popup-merge-statement-question" style="text-align: left;"></p>
+          <button id="popup-merge-statement-add" class="pull-left btn btn-secondary" type="button">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </button>
+          <button id="popup-merge-statement-rem" class="pull-left btn btn-secondary" type="button">
+            <i class="fa fa-minus" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn btn-secondary" id="popup-merge-statement-btn-yes" i18n:translate="submit">
+            Submit
+          </button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MERGE PREMISEGROUP -->
+  <div class="modal fade" id="popup-merge-premisegroup" tabindex="-1" role="dialog"
+       aria-labelledby="myModalLabelMergePremisegroup" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button name="popup-merge-premisegroup-close" type="button" class="close" data-dismiss="modal"
+                  aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabelMergePremisegroup" i18n:translate="merge_statement">
+            Merge Statement
+          </h4>
+        </div>
+        <div class="modal-body">
+          <p class="lead" i18n:translate="merge_multiple_statements_of_pgroup">
+            The selected statement already consists out of multiple statement. Further on the several statements are
+            listed. Do you want to continue with the merge?
+          </p>
+          <span class="lead" i18n:translate="the_statement">The statement</span>
+          <span class="lead" style="color: #2196f3"
+                id="popup-merge-premisegroup-text"></span>
+          <span class="lead" i18n:translate="consist_out_of">consist out of</span>:
+          <ul id="popup-merge-premisegroup-body"></ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" i18n:translate="yes" id="popup-merge-premisegroup-btn-yes">
+            Yes
+          </button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" i18n:translate="no">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE CONTENT-->
+  <div class="modal fade" id="popup-delete-content" tabindex="-1" role="dialog" aria-labelledby="myModalLabelDelete"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button name="popup-flag-argument-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabelDelete">
+            <i class="text-danger fa fa-exclamation-triangle" aria-hidden="true"></i>
+            <span i18n:translate="caution">Caution</span>
+          </h4>
+        </div>
+        <div class="modal-body">
+          <p class="lead" i18n:translate="do_you_really_disassociate_step_irreversible">
+            Do you really want to disassociate yourself from your content? This step is irreversible! Subsequently you
+            will not be the author of this statement anymore!
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" id="popup-delete-content-submit">Okay</button>
+          <button type="button" class="btn btn-success"
+                  id="popup-delete-content-close">${structure:extras.tag.close}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHOW POSITIONS -->
+  <div class="modal fade" id="popup-jump-graph" tabindex="-1" role="dialog" aria-labelledby="myModalLabelPositions"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button name="popup-jump-graph-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabelPositions" i18n:translate="choose_a_step_to_jump_in">
+            Please choose a step to jump in
+          </h4>
+        </div>
+        <div class="modal-body">
+          <p class="lead" i18n:translate="below_you_will_find_list_with_jump_arguments">
+            Below you find a list with all arguments, where your selected text is used:
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SET AND GET REFERENCES -->
+  <div class="modal fade" id="popup-references" tabindex="-1" role="dialog" aria-labelledby="myModalLabelReferences"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button name="popup-references-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabelReferences" i18n:translate="refereces">References</h4>
+        </div>
+        <div class="modal-body">
+          <div id="popup-references-body">
+          </div>
+          <div id="popup-references-body-add" style="display: none">
+            <p class="text-info" i18n:translate="statement_reference_definition">
+              Statement is a cite from a website like a newspaper article, which underpins the opinion. The source is
+              the website as link.
+            </p>
+            <div class="form-group">
+              <label class="col-md-2 control-label" for="popup-references-add-text" i18n:translate="statement">
+                Statement
+              </label>
+              <div class="col-md-10">
+                <input type="text" id="popup-references-add-text" class="col-md-9 form-control"
+                       placeholder="${extras.tag.placeholder_statement}">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-md-2 control-label" for="popup-references-add-source" i18n:translate="source">
+                Source
+              </label>
+              <div class="col-md-10">
+                <input type="text" id="popup-references-add-source" class="form-control"
+                       placeholder="${extras.tag.placeholder_source}">
+              </div>
+            </div>
+            <p id="choose_reference_text" class="text-info" i18n:translate="please_choose_a_reference">
+              Please choose a statement for your reference!
+            </p>
+          </div>
+          <p>
+            <span class="icon-badge blue-button" id="popup-reference-add-btn"
+                  style="font-size: 25px; height: 32px; width: 32px;">+</span>
+          </p>
+        </div>
+
+        <div class="modal-footer">
+          <div id="popup-references-cite-dropdown" class="btn-group open" style="display: block;">
+            <a href="#" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+              <span i18n:translate="statement" id="popup-references-cite-dropdown-title">Statement</span><span
+                    class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" id="popup-references-cite-dropdown-list"></ul>
+          </div>
+          <button type="button" class="btn btn-sm btn-success"
+                  id="popup-reference-send-btn" i18n:translate="add_reference">Add reference
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BAROMETER POPUP -->
+  <div class="modal fade" id="barometer-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabelBarometer"
+       aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabelBarometer">...</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="pull-right"></div>
+            <div class="col-md-6">
+              <div id="modal-body-chart-place"></div>
+              <div id="chart-btn-div">
+                <input id="chart-btn"
+                       data-toggle="toggle"
+                       data-on="<i class='fa fa-bar-chart fa-pull-left fa-2x'></i>"
+                       data-off="<i class='fa fa-pie-chart fa-2x'></i>"
+                       checked type="checkbox"
+                       data-onstyle="default"
+                       data-offstyle="default">
+              </div>
+            </div>
+            <div class="col-md-offset-1 col-md-5"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="barometer-popup-accept-btn" type="button"
+                  class="btn btn-success btn-secondary" i18n:translate="okay">
+            Okay
+          </button>
+          <button id="barometer-popup-refuse-btn" type="button"
+                  class="btn btn-danger btn-secondary" i18n:translate="cancel">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

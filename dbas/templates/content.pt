@@ -1,268 +1,363 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
-    <tal:block metal:fill-slot="content_page">
+  <tal:block metal:fill-slot="content_page">
 
-        <section>
-            <div class="text-center big-header">
-                <h3 class="text-center">
-                    <span id="issue_info" data-discussion-language="${extras.tag.language}" data-title="${issues.title}" data-issue="${issues.uid}" style="text-align: justify;">${structure:issues.info}</span>
-                </h3>
-                <p class="lead text-center">
-                    <span tal:omit-tag="" tal:condition="len(issues.long_info)>0">
-                        ${issues.long_info}
-                    </span>
-                    <br tal:condition="len(issues.long_info)>0">
-                    <span>${issues.tooltip}</span>
-                </p>
-            </div>
-        </section>
+    <section>
+      <div class="text-center big-header">
+        <h3 class="text-center">
+          <span id="issue_info" data-discussion-language="${extras.tag.language}" data-title="${issues.title}"
+                data-issue="${issues.uid}" style="text-align: justify;">${structure:issues.info}</span>
+        </h3>
+        <p class="lead text-center">
+          <span tal:omit-tag="" tal:condition="len(issues.long_info)>0">${issues.long_info}</span>
+          <br tal:condition="len(issues.long_info)>0">
+          <span>${issues.tooltip}</span>
+        </p>
+      </div>
+    </section>
 
-        <div class="wrapper-container">
+    <div class="wrapper-container">
 
-            <div class="container colored-container" id="discussion-container" style="min-height: 200px;">
-                <div id="dialog-wrapper" class="content-wrapper pull-left">
+      <div class="container colored-container" id="discussion-container" style="min-height: 200px;">
+        <div id="dialog-wrapper" class="content-wrapper pull-left">
 
-                     <p id="read-only-banner" class="text-center" tal:condition="issues.read_only"><span class="label label-info"><span i18n:translate="info">Info</span> <span i18n:translate="discussion_is_read_only">In dieser Diskussion können keine Beiträge mehr hinzugefügt werden!</span></span></p>
+          <p id="read-only-banner" class="text-center" tal:condition="issues.read_only">
+            <span class="label label-info">
+              <span i18n:translate="info">Info</span>
+              <span i18n:translate="discussion_is_read_only">In dieser Diskussion können keine Beiträge mehr hinzugefügt werden!</span>
+            </span>
+          </p>
 
-                    <div id="discussion-error-description-space" class="alert alert-danger alert-dismissible hidden">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <span id="discussion-error-description"></span>
-                    </div>
+          <div id="discussion-error-description-space" class="alert alert-danger alert-dismissible hidden">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <span id="discussion-error-description"></span>
+          </div>
 
-                    <div id="discussion-success-description-space" class="alert alert-success alert-dismissible hidden">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <strong i18n:translate="success">Success</strong>
-                        <span id="discussion-success-description"></span>
-                    </div>
+          <div id="discussion-success-description-space" class="alert alert-success alert-dismissible hidden">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <strong i18n:translate="success">Success</strong>
+            <span id="discussion-success-description"></span>
+          </div>
 
-                     <div id="dialog-speech-bubbles-space">
-                            <div tal:repeat="bubble discussion.bubbles" tal:omit-tag="">
-                                <div tal:condition="bubble.is_user" class="line-wrapper-r">
-                                    <p class="triangle-r" id="${bubble.id}">
-                                        <div tal:omit-tag="" tal:condition="extras.logged_in">
-                                            <i class="fa fa-star user-star uncheck-as-users-opinion text-warning" aria-hidden="true" title="${extras.title.unmark_as_opinion}" data-is-users-opinion="${bubble.is_users_opinion}" style="display:none;"></i>
-                                            <i class="fa fa-star-o user-star check-as-users-opinion" aria-hidden="true" title="${extras.title.mark_as_opinion}" data-is-users-opinion="${bubble.is_users_opinion}" style="display:none;"></i>
-                                        </div>
-                                        <!--<img class="triangle-gravatar-r" src extras.users_avatar">-->
-                                        <a tal:omit-tag="bubble.omit_url" href="${bubble.url}" title="${extras.buttons.lets_go_back}" data-toggle="tooltip" data-placement="bottom">
-                                            <span class="triangle-content">${structure:bubble.message}</span>
-                                        </a>
-                                        <br>
-                                        <em class="triangle-r-info" data-type="${bubble.data_type}" data-argument-uid="${bubble.data_argument_uid}" data-statement-uid="${bubble.data_statement_uid}" data-votecount="${bubble.votecounts}" data-is-supportive="${bubble.data_is_supportive}">${bubble.votecounts_message}</em>
-                                    </p>
-                                </div>
-                                <div tal:condition="bubble.is_system" class="line-wrapper-l">
-                                    <p class="triangle-l" id="${bubble.id}">
-                                        <span class="triangle-content">${structure:bubble.message}</span>
-                                        <br tal:condition="bubble.is_markable and extras.logged_in">
-                                        <span class="triangle-trash pull-right" tal:condition="bubble.is_author and extras.logged_in">
-                                            <i class="fa fa-trash" aria-hidden="true" title="${extras.title.delete_statement}"></i>
-                                        </span>
-                                        <span class="triangle-flag pull-right" tal:condition="bubble.is_markable and extras.logged_in">
-                                            <i class="fa fa-flag" aria-hidden="true"  title="${extras.title.report_statement}"></i>
-                                        </span>
-                                        <span class="triangle-reference pull-right" tal:condition="bubble.is_markable and extras.logged_in" >
-                                            <i class="fa fa-link" aria-hidden="true" title="${extras.title.reference}"></i>
-                                        </span>
-                                    </p>
-                                </div>
-                                <div tal:condition="bubble.is_status" class="line-wrapper-m">
-                                    <p class="triangle-m" id="${bubble.id}">${structure:bubble.message}</p>
-                                </div>
-                                <div tal:condition="bubble.is_info" class="line-wrapper-m">
-                                    <p class="triangle-m-info" id="${bubble.id}">${structure:bubble.message}</p>
-                                </div>
-                           </div>
-                        </div>
-                    <div id="discussions-space">
-                        <ul id="discussions-space-list">
-                            <li tal:repeat="item items.elements" style="${item.style}">
-                                <input id="${item.id}" type="radio" name="discussion-button-group" onclick="location.href=&quot;${item.url}&quot;" data-url="${item.url}">
-                                <span tal:repeat="premise item.premises" tal:omit-tag="">
-                                    <label for="${item.id}" id="${premise.id}" data-toggle="tooltip" data-placement="auto">${structure:premise.title}</label>
-                                    <label for="${item.id}" tal:condition="not:repeat.premise.end">${extras.tag.aand}</label>
-                                    <label tal:condition="repeat.premise.end and item.already_used">${item.already_used_text}</label>
-                                    <div tal:omit-tag="" tal:condition="repeat.premise.end and extras.logged_in">
-                                        <div tal:omit-tag="" tal:condition="item.is_editable or item.is_markable or item.is_deletable">
-                                            <span style="margin-left: 1em" tal:condition="item.is_editable or item.is_markable or item.is_deletable or item.is_attackable"></span>
-                                            <span class="item-actions item-edit" tal:condition="item.is_editable" title="${extras.title.edit_statement}">
-                                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                            </span>
-                                            <span class="item-actions item-disabled" tal:condition="not:item.is_editable" title="${extras.title.edit_statement_already}">
-                                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                            </span>
-                                            <div tal:condition="item.is_editable" tal:omit-tag="">
-                                                <span id="item-edit-disabled-hidden-wrapper" style="display:none;">
-                                                    <span class="item-actions item-disabled" title="${extras.title.edit_statement_already}">
-                                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                                    </span>
-                                                </span>
-                                            </div>
-                                            <span class="item-actions item-flag" tal:condition="item.is_markable " title="${extras.title.report_statement}">
-                                                <i class="fa fa-flag" aria-hidden="true"></i>
-                                            </span>
-                                            <span class="item-actions item-trash" tal:condition="item.is_deletable" title="${extras.title.disassociate_statement}">
-                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
-                                            </span>
-                                            <span class="item-actions item-attack" tal:condition="item.is_attackable" title="${extras.title.attack_statement}">
-                                                <a href="${item.attack_url}"><i class="fa fa-bomb" aria-hidden="true"></i></a>
-                                            </span>
-                                            <span class="item-actions item-reference" title="${extras.title.reference}">
-                                                <span style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_markable or item.is_deletable)"></span>
-                                                <i class="fa fa-link" aria-hidden="true"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </span>
-                            </li>
-                        </ul>
-                        <div tal:condition="items.extras.cropped_list" style="padding-left: 40px;">
-                            <a id="show-all-elements-in-discussion-space" href="#" class="btn btn-primary btn-xs">${extras.buttons.show_all_statements}</a>
-                            <a id="hide-elements-in-discussion-space" href="#" class="btn btn-primary btn-xs" style="display:none;">${extras.buttons.hide_statements}</a>
-                        </div>
-                    </div>
+          <div id="dialog-speech-bubbles-space">
+            <div tal:repeat="bubble discussion.bubbles" tal:omit-tag="">
+              <div tal:condition="bubble.is_user" class="line-wrapper-r">
+                <p class="triangle-r" id="${bubble.id}">
+                <div tal:omit-tag="" tal:condition="extras.logged_in">
+                  <i class="fa fa-star user-star uncheck-as-users-opinion text-warning" aria-hidden="true"
+                     title="${extras.title.unmark_as_opinion}" data-is-users-opinion="${bubble.is_users_opinion}"
+                     style="display:none;"></i>
+                  <i class="fa fa-star-o user-star check-as-users-opinion" aria-hidden="true"
+                     title="${extras.title.mark_as_opinion}" data-is-users-opinion="${bubble.is_users_opinion}"
+                     style="display:none;"></i>
                 </div>
-
-                <div class="pull-right sidebar-wrapper" style="min-height: 200px;">
-                    <div class="hamburger">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-
-                    <ul class="sidebar">
-                        <li id="share-url"><i class="fa fa-share-alt" aria-hidden="true"></i><span class="sidebar-element">${extras.buttons.share_url}</span></li>
-                        <li id="opinion-barometer-img" tal:condition="extras.show_bar_icon"><i class="fa fa-bar-chart" aria-hidden="true"></i><span class="sidebar-element">${extras.title.barometer}</span></li>
-                        <li id="display-style-icon-graph-img" tal:condition="extras.show_graph_icon"><i class="fa fa-sitemap" aria-hidden="true"></i><span class="sidebar-element">${extras.title.graph_view}</span></li>
-                        <li id="sidebar-search-statement"><i class="fa fa-search" aria-hidden="true"></i><span class="sidebar-element">${extras.tag.search}</span></li>
-                        <li id="finish-button" onclick="window.location='/discuss/exit'" tal:condition="extras.logged_in"><i class="fa fa-sign-out" aria-hidden="true"></i><span class="sidebar-element">${extras.title.finish_title}</span></li>
-                    </ul>
-
-                    <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
-                        <i class="tack fa fa-thumb-tack" aria-hidden="true"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="colored-container" id="graph-view-container" style="display:none">
-                <div class="pull-left content-wrapper">
-                    <button id="close-graph-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 id="graph-view-container-header" class="center"></h4>
-                    <div style="position: absolute;">
-                        <span><span i18n:translate="start">Start</span>: <span style="margin-right: 1em;">${issues.date}</span></span>
-                        <input id="graph-slider" type="text" data-slider-min="0" data-slider-step="1" data-slider-max="${issues.duration}" data-start-ms="${issues.date_ms}" data-slider-value="${issues.duration}"/>
-                        <span i18n:translate="now" style="margin-left: 1em;">Now</span>
-                    </div>
-                    <div id="graph-view-container-space" style="height:95%;">
-                    </div>
-                </div>
-
-                <div class="pull-right sidebar-wrapper">
-                    <div class="hamburger">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-
-                    <ul class="sidebar">
-                        <li id="global-view" class="hidden"><i class="fa fa-globe" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="complete_view">Complete View</span></li>
-                        <li id="default-view" class="hidden"><i class="fa fa-fast-backward" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="default_view">Default View</span></li>
-                        <li id="labels" class="hidden"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="labels">Labels</span></li>
-                        <li id="positions" class="hidden indented-button"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="positions">Positions</span></li>
-                        <li id="statements" class="hidden indented-button"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="statements">Statements</span></li>
-                        <li id="show-my-path" class="hidden reset-slider"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_path">My path</span></li>
-                        <li id="hide-my-path" class="hidden reset-slider"><i class="fa fa-check-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_path">My path</span></li>
-                        <li id="my-statements" tal:condition="extras.logged_in" class="hidden"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="my_statements">My statements</span></li>
-                        <li id="supports-on-my-statements" tal:condition="extras.logged_in" class="hidden indented-button reset-slider"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="supports_on_my_statements">Supports</span></li>
-                        <li id="attacks-on-my-statements" tal:condition="extras.logged_in" class="hidden indented-button reset-slider"><i class="fa fa-square-o" aria-hidden="true"></i><span class="sidebar-element" i18n:translate="attacks_on_my_statements">Attacks</span></li>
-                    </ul>
-
-                    <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
-                        <i class="tack fa fa-thumb-tack" aria-hidden="true"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div class="container colored-container" id="add-statement-container" style="${extras.add_statement_container_style}">
-                <button tal:condition="extras.close_statement_container" id="close-statement-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <!--<img class="triangle-gravatar-r" src extras.users_avatar">-->
+                <a tal:omit-tag="bubble.omit_url" href="${bubble.url}" title="${extras.buttons.lets_go_back}"
+                                                  data-toggle="tooltip" data-placement="bottom">
+                  <span class="triangle-content">${structure:bubble.message}</span>
+                </a>
                 <br>
-                <div class="col-lg-12 text-center">
-                    <!--<p class="lead">${structure:discussion.add_premise_text}</p>-->
-                    <div id="add-statement-error-container" class="alert alert-danger" role="alert" style="display:none">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                        <span id="add-statement-error-msg"></span>
-                    </div>
-                    <div id="add-statement-container-body">
-                        <fieldset>
-                            <div class="form-group">
-                                <label for="add-statement-container-main-input-position" class="col-lg-3 col-md-5 col-sm-6 control-label"
-                                       style="color: #666; font-size: 17px; margin-top: 0.4em;">${structure:discussion.add_premise_text}</label>
-                                <div class="col-lg-9 col-md-7 col-sm-6">
-                                    <input id="add-statement-container-main-input-position" placeholder="${extras.tag.placeholder_position}"
-                                           class="form-control" value="" data-min-length="10" data-max-length="180" style="width: 100%">
-                                </div>
-                            </div>
-                            <br>
-                            <div class="form-group">
-                                <label for="add-statement-container-main-input-reason" class="col-lg-3 col-md-5 col-sm-6 control-label"
-                                       style="color: #666; font-size: 17px; margin-top: 0.4em;">${extras.title.because}</label>
-                                <div class="col-lg-9 col-md-7 col-sm-6">
-                                    <input id="add-statement-container-main-input-reason" placeholder="${extras.tag.placeholder_reason}"
-                                           class="form-control" value="" data-min-length="10" data-max-length="180" style="width: 100%">
-                                </div>
-                            </div>
-                        </fieldset>
-                    </div>
-                    <div class="list-group" id="proposal-statement-list-group"></div>
-                    <input id="send-new-statement" type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" value="${extras.buttons.save_my_statement}" name="${discussion.mode}"/>
-                </div>
+                <em class="triangle-r-info" data-type="${bubble.data_type}"
+                    data-argument-uid="${bubble.data_argument_uid}" data-statement-uid="${bubble.data_statement_uid}"
+                    data-votecount="${bubble.votecounts}"
+                    data-is-supportive="${bubble.data_is_supportive}">${bubble.votecounts_message}</em>
+                </p>
+              </div>
+              <div tal:condition="bubble.is_system" class="line-wrapper-l">
+                <p class="triangle-l" id="${bubble.id}">
+                  <span class="triangle-content">${structure:bubble.message}</span>
+                  <br tal:condition="bubble.is_markable and extras.logged_in">
+                  <span class="triangle-trash pull-right" tal:condition="bubble.is_author and extras.logged_in">
+                    <i class="fa fa-trash" aria-hidden="true"
+                       title="${extras.title.delete_statement}"></i>
+                  </span>
+                  <span class="triangle-flag pull-right" tal:condition="bubble.is_markable and extras.logged_in">
+                    <i class="fa fa-flag" aria-hidden="true"
+                       title="${extras.title.report_statement}"></i>
+                  </span>
+                  <span class="triangle-reference pull-right" tal:condition="bubble.is_markable and extras.logged_in" >
+                    <i class="fa fa-link" aria-hidden="true"
+                       title="${extras.title.reference}"></i>
+                  </span>
+                </p>
+              </div>
+              <div tal:condition="bubble.is_status" class="line-wrapper-m">
+                <p class="triangle-m" id="${bubble.id}">${structure:bubble.message}</p>
+              </div>
+              <div tal:condition="bubble.is_info" class="line-wrapper-m">
+                <p class="triangle-m-info" id="${bubble.id}">${structure:bubble.message}</p>
+              </div>
             </div>
-
-            <div class="container colored-container" id="add-premise-container" style="${extras.add_premise_container_style}">
-                <button tal:condition="extras.close_premise_container" id="close-premise-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <div class="col-lg-12 text-center">
-                    <p class="lead" style="margin-bottom: 0"><!--<span>${structure:extras.tag.add_premise_title}</span>:--> <span id="add-premise-container-main-input-intro">${structure:discussion.add_premise_text}</span></p>
-                    <div id="add-premise-error-container" class="alert alert-danger" role="alert" style="display:none">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                        <span id="add-premise-error-msg"></span>
+          </div>
+          <div id="discussions-space">
+            <ul id="discussions-space-list">
+              <li tal:repeat="item items.elements" style="${item.style}">
+                <input id="${item.id}" type="radio" name="discussion-button-group"
+                       onclick="location.href=;&quot;${item.url}&quot;" data-url="${item.url}">
+                <span tal:repeat="premise item.premises" tal:omit-tag="">
+                  <label for="${item.id}" id="${premise.id}" data-toggle="tooltip"
+                         data-placement="auto">${structure:premise.title}</label>
+                  <label for="${item.id}" tal:condition="not:repeat.premise.end">${extras.tag.aand}</label>
+                  <label tal:condition="repeat.premise.end and item.already_used">${item.already_used_text}</label>
+                  <div tal:omit-tag="" tal:condition="repeat.premise.end and extras.logged_in">
+                    <div tal:omit-tag="" tal:condition="item.is_editable or item.is_markable or item.is_deletable">
+                      <span style="margin-left: 1em" tal:condition="item.is_editable or item.is_markable or item.is_deletable or item.is_attackable"></span>
+                      <span class="item-actions item-edit" tal:condition="item.is_editable"
+                            title="${extras.title.edit_statement}">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                      </span>
+                      <span class="item-actions item-disabled" tal:condition="not:item.is_editable"
+                            title="${extras.title.edit_statement_already}">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                      </span>
+                      <div tal:condition="item.is_editable" tal:omit-tag="">
+                        <span id="item-edit-disabled-hidden-wrapper" style="display:none;">
+                          <span class="item-actions item-disabled"
+                                title="${extras.title.edit_statement_already}">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                          </span>
+                        </span>
+                      </div>
+                      <span class="item-actions item-flag" tal:condition="item.is_markable "
+                            title="${extras.title.report_statement}">
+                        <i class="fa fa-flag" aria-hidden="true"></i>
+                      </span>
+                      <span class="item-actions item-trash" tal:condition="item.is_deletable"
+                            title="${extras.title.disassociate_statement}">
+                      <i class="fa fa-trash-o" aria-hidden="true"></i>
+                    </span>
+                      <span class="item-actions item-attack" tal:condition="item.is_attackable"
+                            title="${extras.title.attack_statement}">
+                        <a href="${item.attack_url}">
+                          <i class="fa fa-bomb" aria-hidden="true"></i>
+                        </a>
+                      </span>
+                      <span class="item-actions item-reference" title="${extras.title.reference}">
+                        <span style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_markable or item.is_deletable)"></span>
+                        <i class="fa fa-link" aria-hidden="true"></i>
+                      </span>
                     </div>
-                    <div id="add-premise-container-body">
-                        <div class="container-three-divs">
-                            <div class="flex-div">
-
-                                <div class="form-group">
-                                    <div class="col-sm-12 input-group">
-                                        <span class="input-group-addon" style=" padding-bottom: 1.5em; font-size: 17px;"><span>...</span><span>${extras.title.because}</span></span>
-                                        <input id="add-premise-container-main-input" type="text" class="form-control" value="" data-min-length="10"  data-max-length="180" style="width: 100%">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div><img class="icon-badge icon-rem-premise" alt="rem" src="${request.static_url('dbas:static/images/icon_minus1.png')}" title="${extras.title.rem_statement_row_title}"/><img class="icon-badge icon-add-premise" alt="add" src="${request.static_url('dbas:static/images/icon_plus1.png')}" title="${extras.title.add_statement_row_title}"/></div>
-                        </div>
-                    </div>
-                    <div class="list-group" id="proposal-premise-list-group"></div>
-                    <input id="send-new-premise" type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="tooltip" data-placement="bottom" value="${extras.buttons.save_my_statement}" name="${discussion.mode}"/>
-                </div>
+                  </div>
+                </span>
+              </li>
+            </ul>
+            <div tal:condition="items.extras.cropped_list" style="padding-left: 40px;">
+              <a id="show-all-elements-in-discussion-space" href="#"
+                 class="btn btn-primary btn-xs">${extras.buttons.show_all_statements}</a>
+              <a id="hide-elements-in-discussion-space" href="#" class="btn btn-primary btn-xs"
+                 style="display:none;">${extras.buttons.hide_statements}</a>
             </div>
+          </div>
         </div>
 
-    </tal:block>
+        <div class="pull-right sidebar-wrapper" style="min-height: 200px;">
+          <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <ul class="sidebar">
+            <li id="share-url">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+              <span class="sidebar-element">${extras.buttons.share_url}</span>
+            </li>
+            <li id="opinion-barometer-img" tal:condition="extras.show_bar_icon">
+              <i class="fa fa-bar-chart" aria-hidden="true"></i>
+              <span class="sidebar-element">${extras.title.barometer}</span>
+            </li>
+            <li id="display-style-icon-graph-img" tal:condition="extras.show_graph_icon">
+              <i class="fa fa-sitemap" aria-hidden="true"></i>
+              <span class="sidebar-element">${extras.title.graph_view}</span>
+            </li>
+            <li id="sidebar-search-statement">
+              <i class="fa fa-search" aria-hidden="true"></i>
+              <span class="sidebar-element">${extras.tag.search}</span>
+            </li>
+            <li id="finish-button" onclick="window.location='/discuss/exit'" tal:condition="extras.logged_in">
+              <i class="fa fa-sign-out" aria-hidden="true"></i>
+              <span class="sidebar-element">${extras.title.finish_title}</span>
+            </li>
+          </ul>
+
+          <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
+            <i class="tack fa fa-thumb-tack" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="colored-container" id="graph-view-container" style="display:none">
+        <div class="pull-left content-wrapper">
+          <button id="close-graph-view-container" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 id="graph-view-container-header" class="center"></h4>
+          <div style="position: absolute;">
+            <span i18n:translate="start">Start</span>:
+            <span style="margin-right: 1em;">${issues.date}</span>
+            <input id="graph-slider" type="text" data-slider-min="0" data-slider-step="1"
+                   data-slider-max="${issues.duration}" data-start-ms="${issues.date_ms}"
+                   data-slider-value="${issues.duration}"/>
+            <span i18n:translate="now" style="margin-left: 1em;">Now</span>
+          </div>
+          <div id="graph-view-container-space" style="height:95%;"></div>
+        </div>
+
+        <div class="pull-right sidebar-wrapper">
+          <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <ul class="sidebar">
+            <li id="global-view" class="hidden">
+              <i class="fa fa-globe" aria-hidden="true"></i>
+              <span class="sidebar-element" i18n:translate="complete_view">Complete View</span>
+            </li>
+            <li id="default-view" class="hidden">
+              <i class="fa fa-fast-backward" aria-hidden="true"></i>
+              <span class="sidebar-element" i18n:translate="default_view">Default View</span>
+            </li>
+            <li id="labels" class="hidden">
+              <i class="fa fa-square-o" aria-hidden="true"></i>
+              <span class="sidebar-element" i18n:translate="labels">Labels</span>
+            </li>
+            <li id="positions" class="hidden indented-button">
+              <i class="fa fa-square-o" aria-hidden="true"></i>
+              <span class="sidebar-element" i18n:translate="positions">Positions</span>
+            </li>
+            <li id="statements" class="hidden indented-button">
+              <i class="fa fa-square-o" aria-hidden="true"></i>
+              <span class="sidebar-element" i18n:translate="statements">Statements</span>
+            </li>
+            <li id="show-my-path" class="hidden reset-slider">
+              <i class="fa fa-square-o" aria-hidden="true"></i>
+              <span class="sidebar-element" i18n:translate="my_path">My path</span>
+            </li>
+            <li id="hide-my-path" class="hidden reset-slider">
+              <i class="fa fa-check-square-o" aria-hidden="true"></i>
+              <span class="sidebar-element" i18n:translate="my_path">My path</span>
+            </li>
+            <li id="my-statements" tal:condition="extras.logged_in" class="hidden">
+              <i class="fa fa-square-o" aria-hidden="true"></i>
+              <span class="sidebar-element" i18n:translate="my_statements">My statements</span>
+            </li>
+            <li id="supports-on-my-statements" tal:condition="extras.logged_in"
+                class="hidden indented-button reset-slider">
+              <i class="fa fa-square-o" aria-hidden="true"></i>
+              <span class="sidebar-element" i18n:translate="supports_on_my_statements">Supports</span>
+            </li>
+            <li id="attacks-on-my-statements" tal:condition="extras.logged_in"
+                class="hidden indented-button reset-slider">
+              <i class="fa fa-square-o" aria-hidden="true"></i>
+              <span class="sidebar-element" i18n:translate="attacks_on_my_statements">Attacks</span>
+            </li>
+          </ul>
+
+          <div class="tack-wrapper" data-toggle="tooltip" data-placement="bottom">
+            <i class="tack fa fa-thumb-tack" aria-hidden="true"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="container colored-container" id="add-statement-container"
+           style="${extras.add_statement_container_style}">
+        <button tal:condition="extras.close_statement_container" id="close-statement-container" type="button"
+                                                                 class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <br>
+        <div class="col-lg-12 text-center">
+          <!--<p class="lead">${structure:discussion.add_premise_text}</p>-->
+          <div id="add-statement-error-container" class="alert alert-danger" role="alert" style="display:none">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+            <span id="add-statement-error-msg"></span>
+          </div>
+          <div id="add-statement-container-body">
+            <fieldset>
+              <div class="form-group">
+                <label for="add-statement-container-main-input-position"
+                       class="col-lg-3 col-md-5 col-sm-6 control-label"
+                       style="color: #666; font-size: 17px; margin-top: 0.4em;">${structure:discussion.add_premise_text}</label>
+                <div class="col-lg-9 col-md-7 col-sm-6">
+                  <input id="add-statement-container-main-input-position"
+                         placeholder="${extras.tag.placeholder_position}"
+                         class="form-control" data-min-length="10" data-max-length="180" style="width: 100%">
+                </div>
+              </div>
+              <br>
+              <div class="form-group">
+                <label for="add-statement-container-main-input-reason" class="col-lg-3 col-md-5 col-sm-6 control-label"
+                       style="color: #666; font-size: 17px; margin-top: 0.4em;">${extras.title.because}</label>
+                <div class="col-lg-9 col-md-7 col-sm-6">
+                  <input id="add-statement-container-main-input-reason" placeholder="${extras.tag.placeholder_reason}"
+                         class="form-control" data-min-length="10" data-max-length="180" style="width: 100%">
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <div class="list-group" id="proposal-statement-list-group"></div>
+          <input id="send-new-statement" type="button" class="btn btn-primary" data-dismiss="modal"
+                 data-toggle="tooltip" data-placement="bottom" value="${extras.buttons.save_my_statement}"
+                 name="${discussion.mode}"/>
+        </div>
+      </div>
+
+      <div class="container colored-container" id="add-premise-container" style="${extras.add_premise_container_style}">
+        <button tal:condition="extras.close_premise_container" id="close-premise-container" type="button" class="close"
+                                                               data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="col-lg-12 text-center">
+          <p class="lead" style="margin-bottom: 0">
+            <span id="add-premise-container-main-input-intro">${structure:discussion.add_premise_text}</span>
+          </p>
+          <div id="add-premise-error-container" class="alert alert-danger" role="alert" style="display:none">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+            <span id="add-premise-error-msg"></span>
+          </div>
+          <div id="add-premise-container-body">
+            <div class="container-three-divs">
+              <div class="flex-div">
+
+                <div class="form-group">
+                  <div class="col-sm-12 input-group">
+                    <span class="input-group-addon"
+                          style=" padding-bottom: 1.5em; font-size: 17px;"><span>...</span><span>${extras.title.because}</span></span>
+                    <input id="add-premise-container-main-input" type="text" class="form-control" value=""
+                           data-min-length="10" data-max-length="180" style="width: 100%">
+                  </div>
+                </div>
+
+              </div>
+              <div>
+                <img class="icon-badge icon-rem-premise" alt="rem"
+                     src="${request.static_url('dbas:static/images/icon_minus1.png')}"
+                     title="${extras.title.rem_statement_row_title}"/>
+                <img class="icon-badge icon-add-premise" alt="add"
+                     src="${request.static_url('dbas:static/images/icon_plus1.png')}"
+                     title="${extras.title.add_statement_row_title}"/>
+              </div>
+            </div>
+          </div>
+          <div class="list-group" id="proposal-premise-list-group"></div>
+          <input id="send-new-premise" type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="tooltip"
+                 data-placement="bottom" value="${extras.buttons.save_my_statement}" name="${discussion.mode}"/>
+        </div>
+      </div>
+    </div>
+
+  </tal:block>
 </tal:block>
