@@ -1,9 +1,5 @@
 # D-BAS
 
-[![build status](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/badges/master/build.svg)](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/commits/master)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![coverage report](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/badges/master/coverage.svg)](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/commits/master)
-
 D-BAS is based on [Pyramid](http://www.pylonsproject.org/), [Bootstrap](http://getbootstrap.com/),
 [jQuery](https://jquery.com/) and shipped via [Docker Containers](https://www.docker.com/). It is a novel approach to online
 argumentation. It avoids the pitfalls of  unstructured systems such as asynchronous threaded discussions and it is
