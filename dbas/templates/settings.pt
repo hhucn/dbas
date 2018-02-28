@@ -61,7 +61,7 @@
                 </td>
                 <td class="text-center">
                   <input id="receive-notifications-toggle" type="checkbox" data-toggle="toggle"
-                         data-size="small" title="" data-onstyle="success"
+                         data-size="small" data-onstyle="success"
                          data-offstyle="danger" tal:attributes="checked settings.send_notifications; data-on settings.on; data-off settings.off">
                 </td>
               </tr>
@@ -73,7 +73,7 @@
                 </td>
                 <td class="text-center">
                   <input id="receive-mails-toggle" type="checkbox" data-toggle="toggle"
-                         data-size="small" title="" data-onstyle="success"
+                         data-size="small" data-onstyle="success"
                          data-offstyle="danger" tal:attributes="checked settings.send_mails; data-on settings.on; data-off settings.off">
                 </td>
               </tr>
@@ -85,7 +85,7 @@
                 </td>
                 <td class="text-center">
                   <input id="public-nick-toggle" type="checkbox" data-toggle="toggle"
-                         data-size="small" title="" data-onstyle="success"
+                         data-size="small" data-onstyle="success"
                          data-offstyle="danger" tal:attributes="checked settings.public_nick; data-on settings.on; data-off settings.off">
                 </td>
               </tr>
@@ -136,7 +136,7 @@
                 </td>
                 <td class="text-center">
                   <input id="guided-tour-toggle" type="checkbox" data-toggle="toggle"
-                         data-size="small" title="" data-onstyle="success"
+                         data-size="small" data-onstyle="success"
                          data-offstyle="danger" tal:attributes="data-on settings.on; data-off settings.off">
                 </td>
               </tr>

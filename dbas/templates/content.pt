@@ -290,7 +290,7 @@
                 <div class="col-lg-9 col-md-7 col-sm-6">
                   <input id="add-statement-container-main-input-position"
                          placeholder="${extras.tag.placeholder_position}"
-                         class="form-control" value="" data-min-length="10" data-max-length="180" style="width: 100%">
+                         class="form-control" data-min-length="10" data-max-length="180" style="width: 100%">
                 </div>
               </div>
               <br>
@@ -299,7 +299,7 @@
                        style="color: #666; font-size: 17px; margin-top: 0.4em;">${extras.title.because}</label>
                 <div class="col-lg-9 col-md-7 col-sm-6">
                   <input id="add-statement-container-main-input-reason" placeholder="${extras.tag.placeholder_reason}"
-                         class="form-control" value="" data-min-length="10" data-max-length="180" style="width: 100%">
+                         class="form-control" data-min-length="10" data-max-length="180" style="width: 100%">
                 </div>
               </div>
             </fieldset>
@@ -338,7 +338,7 @@
                       <span>...</span>
                       <span>${extras.title.because}</span>
                     </span>
-                    <input id="add-premise-container-main-input" type="text" class="form-control" value=""
+                    <input id="add-premise-container-main-input" type="text" class="form-control"
                            data-min-length="10" data-max-length="180" style="width: 100%">
                   </div>
                 </div>

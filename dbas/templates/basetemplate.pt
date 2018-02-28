@@ -153,7 +153,7 @@
 </script>
 <noscript>
   <p>
-    <img src="//dbas.cs.uni-duesseldorf.de/analytics/piwik.php?idsite=1" style="border:0;" alt=""/>
+    <img src="//dbas.cs.uni-duesseldorf.de/analytics/piwik.php?idsite=1" style="border:0;"/>
   </p>
 </noscript>
 <!-- End Matomo Code -->

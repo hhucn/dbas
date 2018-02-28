@@ -55,24 +55,24 @@
                 <td>
                   <input class="discussion-enable-toggle" type="checkbox" data-toggle="toggle"
                          data-keyword="enable"
-                         data-size="mini" title=""
+                         data-size="mini"
                          data-onstyle="success"
                          data-offstyle="danger" tal:attributes="checked issue.is_enabled; data-uid issue.uid; data-on issue.toggle_on; data-off issue.toggle_off">
                 </td>
                 <td>
                   <input class="discussion-public-toggle" type="checkbox" data-toggle="toggle"
                          data-keyword="public"
-                         data-size="mini" title=""
+                         data-size="mini"
                          data-onstyle="success"
                          data-offstyle="danger" tal:attributes="checked issue.is_public; data-uid issue.uid; data-on issue.toggle_on; data-off issue.toggle_off">
                 <td>
                   <input class="discussion-writable-toggle" type="checkbox" data-toggle="toggle"
                          data-keyword="writable"
-                         data-size="mini" title=""
+                         data-size="mini"
                          data-onstyle="success"
                          data-offstyle="danger" tal:attributes="checked issue.is_writable; data-uid issue.uid; data-on issue.toggle_on; data-off issue.toggle_off">
                 <td>
-                  <a href="" tal:attributes="href issue.short_url; title issue.url">${issue.short_url}</a>
+                  <a href="${issue.short_url}" title="${issue.url}">${issue.short_url}</a>
                   <i class="fa fa-clipboard" aria-hidden="true" style="margin-left: 0.5em; cursor: pointer;"></i></td>
               </tr>
               </tbody>
@@ -139,7 +139,7 @@
                 <td tal:condition="extras.is_admin">
                   <input class="discussion-enable-toggle" type="checkbox" data-toggle="toggle"
                          data-keyword="enable"
-                         data-size="mini" title=""
+                         data-size="mini"
                          data-onstyle="success"
                          data-offstyle="danger" tal:attributes="checked issue.is_enabled; data-uid issue.uid; data-on issue.toggle_on; data-off issue.toggle_off">
                 </td>
@@ -150,19 +150,19 @@
                 <td tal:condition="extras.is_admin">
                   <input class="discussion-public-toggle" type="checkbox" data-toggle="toggle"
                          data-keyword="public"
-                         data-size="mini" title=""
+                         data-size="mini"
                          data-onstyle="success"
                          data-offstyle="danger" tal:attributes="checked issue.is_public; data-uid issue.uid; data-on issue.toggle_on; data-off issue.toggle_off">
                 </td>
                 <td tal:condition="extras.is_admin">
                   <input class="discussion-writable-toggle" type="checkbox" data-toggle="toggle"
                          data-keyword="writable"
-                         data-size="mini" title=""
+                         data-size="mini"
                          data-onstyle="success"
                          data-offstyle="danger" tal:attributes="checked issue.is_writable; data-uid issue.uid; data-on issue.toggle_on; data-off issue.toggle_off">
                 </td>
                 <td>
-                  <a href="" tal:attributes="href issue.short_url; title issue.url">${issue.short_url}</a>
+                  <a href="${issue.short_url}" title="${issue.url}">${issue.short_url}</a>
                 </td>
               </tr>
               </tbody>

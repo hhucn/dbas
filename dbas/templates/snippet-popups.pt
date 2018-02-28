@@ -199,7 +199,7 @@
                     <div class="form-group">
             		    <div class="col-sm-12 input-group">
                             <div class="input-group-addon"><i class="fa fa-share fa-2x" aria-hidden="true"></i></div>
-            		        <input id="popup-url-sharing-input" class="form-control" type="text" placeholder="URL" data-short-url="" >
+                      <input id="popup-url-sharing-input" class="form-control" type="text" placeholder="URL">
             		    </div>
                     </div>
 
@@ -905,7 +905,7 @@
                         <fieldset>
                             <div tal:repeat="statement discussion.extras" tal:omit-tag="">
                                 <br>
-                                <input type="radio" id="a" tal:attributes="id statement.uid" name="flag-argument" data-special="">
+                              <input type="radio" id="a" tal:attributes="id statement.uid" name="flag-argument">
                                 <label for="a" tal:attributes="for statement.uid" style="width: 90%">
                                     <span i18n:translate="report">Report</span>: &quot;<em>${structure:statement.text}</em> &quot;
                                 </label>
