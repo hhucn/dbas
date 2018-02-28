@@ -15,7 +15,11 @@ class AdminViewTest(unittest.TestCase):
         from admin.views import main_admin
         request = testing.DummyRequest()
         response = main_admin(request)
-        self.assertEqual(400, response.status_code)
+        self.assertIn('layout', response)
+        self.assertIn('title', response)
+        self.assertIn('project', response)
+        self.assertIn('extras', response)
+        self.assertIn('dashboard', response)
 
     def test_main_admin(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
