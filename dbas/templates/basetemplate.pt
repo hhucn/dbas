@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-         i18n:domain="dbas" metal:define-macro="layout" tal:attributes="lang extras.ui_locales">
+         i18n:domain="dbas" metal:define-macro="layout" lang="${extras.ui_locales}">
 <head>
   <meta name="google-site-verification" content="u3fQwV9ImqboTAEyPUoNlS7LNF0gAGaIb67qg-aD9JY"/>
   <meta charset="utf-8">

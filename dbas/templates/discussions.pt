@@ -47,7 +47,7 @@
               </tr>
               </thead>
               <tbody>
-              <tr tal:repeat="issue issues.user" tal:attributes="data-uid issue.uid">
+              <tr tal:repeat="issue issues.user" data-uid="${issue.uid}">
                 <td>${issue.title}</td>
                 <td>${issue.count_of_statements}</td>
                 <td>${issue.involved_users}</td>
@@ -111,23 +111,23 @@
                 <th i18n:translate="creation">Creation</th>
                 <th>
                   <span i18n:translate="enabled">Enabled</span>
-                  <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
-                           tal:attributes="title extras.tag.issue_enabled"></i>
+                  <i class="fa fa-question-circle-o cursor-help" title="${extras.tag.issue_enabled}"
+                     aria-hidden="true"></i>
                 </th>
                 <th tal:condition="extras.is_admin"><span i18n:translate="Writable">Writable</span>
-                  <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
-                           tal:attributes="title extras.tag.issue_public"></i>
+                  <i class="fa fa-question-circle-o cursor-help" title="${extras.tag.issue_public}"
+                     aria-hidden="true"></i>
                 </th>
                 <th>
                   <span i18n:translate="Writable">writable</span>
-                  <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
-                           tal:attributes="title extras.tag.issue_writable"></i>
+                  <i class="fa fa-question-circle-o cursor-help" title="${extras.tag.issue_writable}"
+                     aria-hidden="true"></i>
                 </th>
                 <th i18n:translate="short_link">Short Link</th>
               </tr>
               </thead>
               <tbody>
-              <tr tal:repeat="issue issues.other" tal:attributes="data-uid issue.uid">
+              <tr tal:repeat="issue issues.other" data-uid="${issue.uid}">
                 <td>${issue.title}</td>
                 <td>${issue.count_of_statements}</td>
                 <td>${issue.involved_users}</td>

@@ -365,8 +365,8 @@
                   </div>
                 </div>
                 <input id="popup-login-button-request" type="submit" onclick="$('body').addClass('loading')"
-                       name="form.passwordrequest.submitted" value="Request Password"
-                       class="btn btn-primary" tal:attributes="value extras.buttons.request_password"/>
+                       name="form.passwordrequest.submitted" value="${extras.buttons.request_password}"
+                       class="btn btn-primary">
               </div>
               <div class="pull-right">
                 <button id="popup-login-button-login" type="button" class="btn btn-primary" i18n:translate="login">
@@ -837,7 +837,7 @@
                   available for the public?</label>
                 <div class="col-md-4">
                   <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
-                     style="margin-right: 1em;" tal:attributes="title extras.tag.issue_public"></i>
+                     style="margin-right: 1em;" title="${extras.tag.issue_public}"></i>
                   <input style="margin: 1em 0 0 0;" checked
                          id="popup-add-topic-public-toggle" type="checkbox" data-toggle="toggle"
                          data-keyword="public"
@@ -854,7 +854,7 @@
                   only?</label>
                 <div class="col-md-4">
                   <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
-                     style="margin-right: 1em;" tal:attributes="title extras.tag.issue_writable"></i>
+                     style="margin-right: 1em;" title="${extras.tag.issue_writable}"></i>
                   <input style="margin: 1em 0 0 0;"
                          id="popup-add-topic-read-only-toggle" type="checkbox" data-toggle="toggle"
                          data-keyword="public"
@@ -916,19 +916,19 @@
               <label for="opt" style="margin-bottom: 1em;">
                 <span i18n:translate="text_need_to_be_revised">The text needs to be revised.</span>
                 <i class="fa fa-question-circle-o statement_text" aria-hidden="true"
-                         tal:attributes="title extras.tag.statement_optimization_description"></i>
+                   title="${extras.tag.statement_optimization_description}"></i>
                 <i class="fa fa-question-circle-o argument_text" aria-hidden="true"
-                         tal:attributes="title extras.tag.argument_optimization_description"></i>
+                   title="${extras.tag.argument_optimization_description}"></i>
               </label>
               <br>
               <input type="radio" id="off" value="offtopic" name="flag-statement" style="margin-bottom: 1em;">
               <label for="off" style="margin-bottom: 1em;">
                 <span class="statement_text" i18n:translate="statement_offtopic_or_irrelevant">This statement is off topic or irrelevant.</span>
                 <i class="fa fa-question-circle-o statement_text" aria-hidden="true"
-                   style="padding-left: 0.5em" tal:attributes="title extras.tag.statement_offtopic_or_irrelevant_description"></i>
+                   style="padding-left: 0.5em" title="${extras.tag.statement_offtopic_or_irrelevant_description}"></i>
                 <span class="argument_text" i18n:translate="argument_offtopic_or_irrelevant">This argument is off topic or irrelevant.</span>
                 <i class="fa fa-question-circle-o argument_text" aria-hidden="true"
-                   style="padding-left: 0.5em" tal:attributes="title extras.tag.argument_offtopic_or_irrelevant_description"></i>
+                   style="padding-left: 0.5em" title="${extras.tag.argument_offtopic_or_irrelevant_description}"></i>
               </label>
               <br>
               <input type="radio" id="bad" value="harmful" name="flag-statement" style="margin-bottom: 1em;">
@@ -936,28 +936,28 @@
                 <span class="statement_text" i18n:translate="statement_harmful">This statement is harmful or abusive.</span>
                 <span class="argument_text" i18n:translate="argument_harmful">This argument is harmful or abusive.</span>
                 <i class="fa fa-question-circle-o" aria-hidden="true"
-                   style="padding-left: 0.5em" tal:attributes="title extras.tag.argument_statement_harmful_description"></i>
+                   style="padding-left: 0.5em" title="${extras.tag.argument_statement_harmful_description}"></i>
               </label>
               <br>
               <input type="radio" id="dupl" value="duplicate" name="flag-statement" style="margin-bottom: 1em;">
               <label for="dupl" style="margin-bottom: 1em;">
                 <span class="statement_text" i18n:translate="statement_duplicate">This statement is a duplicate.</span>
                 <i class="fa fa-question-circle-o" aria-hidden="true"
-                   style="padding-left: 0.5em" tal:attributes="title extras.tag.statement_duplicate_description"></i>
+                   style="padding-left: 0.5em" title="${extras.tag.statement_duplicate_description}"></i>
               </label>
               <br>
               <input type="radio" id="merge" value="merge" name="flag-statement" style="margin-bottom: 1em;">
               <label for="merge" style="margin-bottom: 1em;">
                 <span class="statement_text" i18n:translate="statement_merge">This statement should be merged.</span>
                 <i class="fa fa-question-circle-o" aria-hidden="true"
-                   style="padding-left: 0.5em" tal:attributes="title extras.tag.statement_merge_description"></i>
+                   style="padding-left: 0.5em" title="${extras.tag.statement_merge_description}"></i>
               </label>
               <br>
               <input type="radio" id="split" value="split" name="flag-statement" style="margin-bottom: 1em;">
               <label for="split" style="margin-bottom: 1em;">
                 <span class="statement_text" i18n:translate="statement_split">This statement has more than one message.</span>
                 <i class="fa fa-question-circle-o" aria-hidden="true"
-                   style="padding-left: 0.5em" tal:attributes="title extras.tag.statement_split_description"></i>
+                   style="padding-left: 0.5em" title="${extras.tag.statement_split_description}"></i>
               </label>
             </fieldset>
           </form>
@@ -989,8 +989,8 @@
             <fieldset>
               <div tal:repeat="statement discussion.extras" tal:omit-tag="">
                 <br>
-                <input type="radio" id="a" tal:attributes="id statement.uid" name="flag-argument">
-                <label for="a" tal:attributes="for statement.uid" style="width: 90%">
+                <input type="radio" id="${statement.uid}" name="flag-argument">
+                <label for="${statement.uid}" style="width: 90%">
                   <span i18n:translate="report">Report</span>: &quot;<em>${structure:statement.text}</em> &quot;
                 </label>
               </div>

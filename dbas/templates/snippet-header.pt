@@ -36,18 +36,18 @@
 
           <li tal:condition="extras.ongoing_discussion" style="cursor: pointer;">
             <a class="dropdown-toggle" data-toggle="dropdown" id="issue-dropdown" aria-haspopup="true"
-               aria-expanded="true" tal:attributes="issue issues.uid">
+               aria-expanded="true" id="${issues.uid}">
               <i class="fa fa-files-o" aria-hidden="true"></i><span i18n:translate="switch_topic">Switch Topic</span>&#160;&#160;<span
                     class="caret"></span>
             </a>
             <ul class="dropdown-menu" id="dropdown-issue-list" aria-labelledby="issue-dropdown" style="width: 280px;">
-              <li tal:repeat="issue issues.all" tal:attributes="class issue.enabled">
-                <a href="#" tal:attributes="href issue.url; data-value issue.title">
+              <li tal:repeat="issue issues.all" class="${issue.enabled}">
+                <a href="${issue.url}" data-value="${issue.title}">
                   <div class="row" style="padding: 0;">
                     <div class="col-md-10" style="white-space: pre-wrap;">${structure:issue.title}</div>
                     <div class="col-md-2">
                       <span class="badge" data-toggle="tooltip"
-                            data-placement="bottom" tal:attributes="title extras.buttons.count_of_posts">${issue.stat_count}
+                            data-placement="bottom" title="${extras.buttons.count_of_posts}">${issue.stat_count}
                       </span>
                     </div>
                   </div>
@@ -78,7 +78,7 @@
             </a>
           </li>
 
-          <li id="review-link" tal:condition="extras.logged_in" tal:attributes="data-broke-limit discussion.broke_limit">
+          <li id="review-link" tal:condition="extras.logged_in" data-broke-limit="${discussion.broke_limit}">
             <a href="${request.application_url}/review" data-toggle="tooltip" data-placement="left">
               <i class="fa fa-pencil" aria-hidden="true"></i><span i18n:translate="review">Review</span>
               <span tal:condition="extras.review_count > 0"
@@ -89,8 +89,8 @@
           <li tal:condition="extras.logged_in" class="dropdown" data-toggle="tooltip" data-placement="left">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#user" id="user-menu-dropdown" aria-haspopup="true"
                aria-expanded="true">
-              <img tal:attributes="src extras.users_avatar" class="img-circle" alt="gravatar" style="max-width: 25px!;">
-              <span id="header_nickname" tal:attributes="data-public-nickname extras.public_nickname">${extras.nickname}</span>
+              <img src="${extras.users_avatar}" class="img-circle" alt="gravatar" style="max-width: 25px;">
+              <span id="header_nickname" data-public-nickname="${extras.public_nickname}">${extras.nickname}</span>
               <span id="header_badge_count_notifications" tal:condition="extras.notifications.has_unread"
                     class="label label-primary label-as-badge">${extras.notifications.new_count}</span>
               <span class="caret"></span>
