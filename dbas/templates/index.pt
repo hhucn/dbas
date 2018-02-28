@@ -12,7 +12,6 @@
   <link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-4.0b.min.css')}" rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/fontawesome/css/font-awesome.min.css')}"
         rel="stylesheet">
-  <!--<link type="text/css" href="${request.static_url('dbas:static/css/main.css')}" rel="stylesheet">-->
   <link type="text/css" href="${request.static_url('dbas:static/css/creative.css')}" rel="stylesheet">
   <script src="${request.static_url('dbas:static/js/libs/jquery-3.2.1.min.js')}"></script>
 </head>
