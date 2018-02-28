@@ -36,24 +36,24 @@
   <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
   <span id="request_failed_container_heading" i18n:translate="request_failed">Your request failed!</span>
   <span id="request_failed_container_message" i18n:translate="please_reload" style="padding-left: 0.5em; ">Please reload the page.</span>
-  <button type="button" class="close" aria-label="Close"><span id="request_failed_container_close"
-                                                               aria-hidden="true">×</span></button>
+  <button type="button" class="close" aria-label="Close">
+    <span id="request_failed_container_close" aria-hidden="true">×</span></button>
 </div>
 
 <div class="blocked request_success center alert-success" id="request_success_container" style="display:none;">
   <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
   <span id="request_success_container_heading" i18n:translate="request_success">Your request succeded!</span>
   <span id="request_success_container_message" i18n:translate="request_success" style="padding-left: 0.5em; ">Your request succeded!</span>
-  <button type="button" class="close" aria-label="Close"><span id="request_success_container_close"
-                                                               aria-hidden="true">×</span></button>
+  <button type="button" class="close" aria-label="Close">
+    <span id="request_success_container_close" aria-hidden="true">×</span></button>
 </div>
 
 <div class="blocked request_success center alert-info" id="request_info_container" style="display:none;">
   <i class="fa fa-bell-o" aria-hidden="true"></i>
   <span id="request_info_container_heading"></span>
   <span id="request_info_container_message" style="padding-left: 0.5em; "></span>
-  <button type="button" class="close" aria-label="Close"><span id="request_info_container_close"
-                                                               aria-hidden="true">×</span></button>
+  <button type="button" class="close" aria-label="Close">
+    <span id="request_info_container_close" aria-hidden="true">×</span></button>
 </div>
 
 <div metal:use-macro="load: snippet-header.pt"></div>
@@ -64,8 +64,9 @@
 
 <div metal:use-macro="load: snippet-popups.pt"></div>
 
-<a href="#top" class="back-to-top"><img class="center" id="back-to-top-img" alt="back-to-top-img"
-                                        src="${request.static_url('dbas:static/images/chevron_up.png')}"></a>
+<a href="#top" class="back-to-top">
+  <img class="center" id="back-to-top-img" alt="back-to-top-img"
+       src="${request.static_url('dbas:static/images/chevron_up.png')}"></a>
 
 <div metal:use-macro="load: snippet-footer.pt"></div>
 
