@@ -32,16 +32,16 @@
                 <th i18n:translate="involved_users">Involved User</th>
                 <th i18n:translate="creation">Creation</th>
                 <th><span i18n:translate="enabled">Enabled</span>
-                  <i class="fa fa-question-circle-o" aria-hidden="true"
-                     style="cursor: help;" tal:attributes="title extras.tag.issue_enabled"></i>
+                  <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
+                     title="${extras.tag.issue_enabled}"></i>
                 </th>
                 <th><span i18n:translate="public">Public</span>
-                  <i class="fa fa-question-circle-o" aria-hidden="true"
-                     style="cursor: help;" tal:attributes="title extras.tag.issue_public"></i>
+                  <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
+                     title="${extras.tag.issue_public}"></i>
                 </th>
                 <th><span i18n:translate="writable">Writable</span>
-                  <i class="fa fa-question-circle-o" aria-hidden="true"
-                     style="cursor: help;" tal:attributes="title extras.tag.issue_writable"></i>
+                  <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
+                     title="${extras.tag.issue_writable}"></i>
                 </th>
                 <th i18n:translate="short_link">Short Link</th>
               </tr>

@@ -768,7 +768,8 @@
                             <div class="form-group" style="margin-bottom: 0;">
                                 <label class="col-md-8" i18n:translate="is_topic_available_for_public" style="padding: 0">Is the topic available for the public?</label>
                                 <div class="col-md-4">
-                                    <i class="fa fa-question-circle-o" aria-hidden="true" style="cursor: help; margin-right: 1em;" tal:attributes="title extras.tag.issue_public"></i>
+                                  <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
+                                     style="margin-right: 1em;" tal:attributes="title extras.tag.issue_public"></i>
                                     <input style="margin: 1em 0 0 0;" checked
                                            id="popup-add-topic-public-toggle" type="checkbox" data-toggle="toggle"
                                            data-keyword="public"
@@ -783,7 +784,8 @@
                             <div class="form-group">
                                 <label class="col-md-8" i18n:translate="is_topic_read_only" style="padding: 0">Is the topic read only?</label>
                                 <div class="col-md-4">
-                                    <i class="fa fa-question-circle-o" aria-hidden="true" style="cursor: help; margin-right: 1em;" tal:attributes="title extras.tag.issue_writable"></i>
+                                  <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
+                                     style="margin-right: 1em;" tal:attributes="title extras.tag.issue_writable"></i>
                                     <input style="margin: 1em 0 0 0;"
                                            id="popup-add-topic-read-only-toggle" type="checkbox" data-toggle="toggle"
                                            data-keyword="public"
