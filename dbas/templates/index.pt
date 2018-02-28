@@ -15,7 +15,6 @@
   <!--<link type="text/css" href="${request.static_url('dbas:static/css/main.css')}" rel="stylesheet">-->
   <link type="text/css" href="${request.static_url('dbas:static/css/creative.css')}" rel="stylesheet">
   <script src="${request.static_url('dbas:static/js/libs/jquery-3.2.1.min.js')}"></script>
-
 </head>
 
 <body id="page-top">
@@ -80,19 +79,26 @@
         <h1 style="padding-bottom: 0.5em;">
           <img src="${request.static_url('dbas:static/images/logo_white.svg')}" alt="D-BAS Logo"
                style="height: 1.1em; margin-right: 0.2em;">
-          <span>D-BAS</span>
+          D-BAS
         </h1>
         <h1 i18n:translate="landing-page-heading">The solution for every Large Scale Online-Discussion</h1>
       </div>
       <hr>
-      <p><strong i18n:translate="welcome_to_dbas">Welcome to D-BAS! This is our Dialog-Based Argumentation System. It
-        offers a clear discussion structure, a modern web interface, a decentralized moderation system and is easy to
-        use for everyone!</strong></p>
+      <p>
+        <strong i18n:translate="welcome_to_dbas">
+          Welcome to D-BAS! This is our Dialog-Based Argumentation System. It offers a clear discussion structure, a
+          modern web interface, a decentralized moderation system and is easy to use for everyone!
+        </strong>
+      </p>
       <div class="btn-group">
         <a class="btn btn-primary btn-xl" href="#about"
-           style="margin-left: 0; margin-right: 0;"><span i18n:translate="find_out_more">Find Out More</span></a>
+           style="margin-left: 0; margin-right: 0;" i18n:translate="find_out_more">
+          Find Out More
+        </a>
         <a class="btn btn-default btn-xl" href="${request.application_url}/discuss"
-           style="margin-left: 0; margin-right: 0;"><span class="text-primary" i18n:translate="start_directly">or start directly</span></a>
+           style="margin-left: 0; margin-right: 0;">
+          <span class="text-primary" i18n:translate="start_directly">or start directly</span>
+        </a>
       </div>
     </div>
   </div>
@@ -102,7 +108,9 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-10 mx-auto text-center">
-        <h2 class="section-heading text-white" i18n:translate="we_have_you_need">We've got what you need!</h2>
+        <h2 class="section-heading text-white" i18n:translate="we_have_you_need">
+          We've got what you need!
+        </h2>
         <hr class="light">
         <p class="text-faded" i18n:translate="landing_page_intro">
           With the rise of the Internet, we now have a basic infrastructure, which makes participation easier for
@@ -112,7 +120,9 @@
           online-discussion. Feel free to try it out now!
         </p>
         <a class="btn btn-default btn-xl js-scroll-trigger"
-           href="${request.application_url}/discuss" i18n:translate="get_started">Get Started</a>
+           href="${request.application_url}/discuss" i18n:translate="get_started">
+          Get Started
+        </a>
       </div>
     </div>
   </div>
@@ -133,34 +143,34 @@
         <div class="service-box grow">
           <i class="fa fa-4x fa-thumbs-up text-primary sr-icons"></i>
           <h3 i18n:translate="easy_to_use">Easy to Use</h3>
-          <p i18n:translate="easy_to_use_text" class="text-muted">No complicated argumentation! Step-by-step
-            dialogs!</p>
+          <p i18n:translate="easy_to_use_text" class="text-muted">
+            No complicated argumentation! Step-by-step dialogs!</p>
         </div>
       </div>
       <div class="col-lg-3 col-md-6 text-center">
         <div class="service-box grow">
           <i class="fa fa-4x fa-list text-primary sr-icons"></i>
           <h3 i18n:translate="clear_structure">Clear Structure</h3>
-          <p i18n:translate="clear_structure_text" class="text-muted">Argument-maps are to messy! Let's use a modern
-            chat-interface!</p>
+          <p i18n:translate="clear_structure_text" class="text-muted">
+            Argument-maps are to messy! Let's use a modern chat-interface!</p>
         </div>
       </div>
       <div class="col-lg-3 col-md-6 text-center">
         <div class="service-box grow">
           <i class="fa fa-4x fa-bolt text-primary sr-icons"></i>
           <h3 i18n:translate="dec_mods">Decentralized Mods</h3>
-          <p i18n:translate="dec_mods_text" class="text-muted">Give the power to the crowd! They know how to use it!</p>
+          <p i18n:translate="dec_mods_text" class="text-muted">
+            Give the power to the crowd! They know how to use it!
+          </p>
         </div>
       </div>
       <div class="col-lg-3 col-md-6 text-center">
         <div class="service-box grow">
-          <!--<i class="fa fa-4x fa-commenting text-primary sr-icons"></i>-->
-          <!--<h3 i18n:translate="less_redund">Less Redundancy</h3>-->
-          <!--<p i18n:translate="less_redund_text" class="text-muted">Tired of duplicated post? We use modern machine learning processes!</p>-->
           <i class="fa fa-4x fa-university text-primary sr-icons"></i>
           <h3 i18n:translate="developed_at_uni">Proved Scientifically</h3>
-          <p i18n:translate="developed_at_uni_text" class="text-muted">D-BAS was developed at the university in
-            cooperation with cities.</p>
+          <p i18n:translate="developed_at_uni_text" class="text-muted">
+            D-BAS was developed at the university in cooperation with city councils.
+          </p>
         </div>
       </div>
     </div>
@@ -169,30 +179,36 @@
         <div class="service-box grow">
           <i class="fa fa-4x fa-diamond text-primary sr-icons"></i>
           <h3 i18n:translate="tested_by_crowd">Tested by a Crowd</h3>
-          <p i18n:translate="tested_by_crowd_text" class="text-muted">D-BAS was test by many students and citizens!</p>
+          <p i18n:translate="tested_by_crowd_text" class="text-muted">
+            D-BAS was test by many students and citizens!
+          </p>
         </div>
       </div>
       <div class="col-lg-3 col-md-6 text-center">
         <div class="service-box grow">
           <i class="fa fa-4x fa-paper-plane text-primary sr-icons"></i>
           <h3 i18n:translate="ready_to_ship">Ready to Ship</h3>
-          <p i18n:translate="ready_to_ship_text" class="text-muted">Easy to deplay and maintain, because it is shipepd
-            by Docker!</p>
+          <p i18n:translate="ready_to_ship_text" class="text-muted">
+            Easy to deploy and maintain, because it is shipped in Docker Containers!
+          </p>
         </div>
       </div>
       <div class="col-lg-3 col-md-6 text-center">
         <div class="service-box grow">
           <i class="fa fa-4x fa-newspaper-o text-primary sr-icons"></i>
           <h3 i18n:translate="up_to_date">Up to Date</h3>
-          <p i18n:translate="up_to_date_text" class="text-muted">We update dependencies to keep things fresh.</p>
+          <p i18n:translate="up_to_date_text" class="text-muted">
+            We update dependencies to keep things fresh.
+          </p>
         </div>
       </div>
       <div class="col-lg-3 col-md-6 text-center">
         <div class="service-box grow">
           <i class="fa fa-4x fa-heart text-primary sr-icons"></i>
           <h3 i18n:translate="made_with_love">Made with Love</h3>
-          <p i18n:translate="made_with_love_text" class="text-muted">You have to make your software with love these
-            days!</p>
+          <p i18n:translate="made_with_love_text" class="text-muted">
+            You have to make your software with love these days!
+          </p>
         </div>
       </div>
     </div>
@@ -202,9 +218,10 @@
 <div id="github" class="call-to-action bg-dark">
   <div class="container text-center">
     <h2 i18n:translate="free_at_github">Free Download at Github!</h2>
-    <a class="btn btn-default btn-xl sr-button" href="https://github.com/hhucn/dbas"><i class="fa fa-github"
-                                                                                        aria-hidden="true"></i>
-      <span  i18n:translate="download_now">Download Now</span></a>
+    <a class="btn btn-default btn-xl sr-button" href="https://github.com/hhucn/dbas">
+      <i class="fa fa-github" aria-hidden="true"></i>
+      <span  i18n:translate="download_now">Download Now</span>
+    </a>
   </div>
 </div>
 
@@ -215,13 +232,21 @@
         <h2 class="section-heading" i18n:translate="from_uni_to_pratice">From the University into Practice</h2>
         <p class="lead">
           <span i18n:translate="work_based_on">This work is part of the graduate school on</span>
-          <span tal:condition="extras.lang_is_en"><a href="http://www.fortschrittskolleg.de/en/"
-                                                     target="_blank"><span i18n:translate="online_participation">Online-Participation</span></a>.</span>
-          <span tal:condition="not:extras.lang_is_en"><a href="http://www.fortschrittskolleg.de/"
-                                                         target="_blank"><span i18n:translate="online_participation">Online-Participation</span></a>.</span>
+          <span tal:condition="extras.lang_is_en">
+            <a href="http://www.fortschrittskolleg.de/en/" target="_blank">
+              <span i18n:translate="online_participation">Online-Participation</span>
+            </a>.
+          </span>
+          <span tal:condition="not:extras.lang_is_en">
+            <a href="http://www.fortschrittskolleg.de/" target="_blank">
+              <span i18n:translate="online_participation">Online-Participation</span>
+            </a>.
+          </span>
           <span i18n:translate="funded_by">It is funded by the</span>
           <a href="http://www.wissenschaft.nrw.de/forschung/fortschritt-nrw/inter-und-transdisziplinaere-forschung/fortschrittskolleg-online-partizipation/"
-             target="_blank"><span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span></a>.
+             target="_blank">
+            <span i18n:translate="ministry_of_innovation">Ministry of Innovation, Science and Research in North Rhine-Westphalia</span>
+          </a>.
         </p>
         <hr class="primary">
       </div>
@@ -231,31 +256,36 @@
     <div class="row">
       <div class="col-lg-3 col-md-6 text-center">
         <div class="link-box">
-          <a href="https://www.hhu.de/" title="www.hhu.de" target="_blank"><img class="logo_hhu" alt="logo_hhu"
-                                                                                src="${request.static_url('dbas:static/images/logo_hhu.jpg')}"/></a>
+          <a href="https://www.hhu.de/" title="www.hhu.de" target="_blank">
+            <img class="logo_hhu" alt="logo_hhu" src="${request.static_url('dbas:static/images/logo_hhu.jpg')}"/>
+          </a>
           <p class="text-muted" i18n:translate="hhu">Heinrich-Heine-University Duesseldorf</p>
         </div>
       </div>
       <div class="col-lg-3 col-md-6 text-center">
         <div class="link-box">
-          <a href="http://www.fortschrittskolleg.de/" title="www.fortschrittskolleg.de" target="_blank"><img
-                  alt="logo_kolleg_s" src="${request.static_url('dbas:static/images/logo_kolleg_s.jpg')}"/></a>
-          <p class="text-muted" i18n:translate="graduate_school_online_participation">Graduation School on Online
-            Participation</p>
+          <a href="http://www.fortschrittskolleg.de/" title="www.fortschrittskolleg.de" target="_blank">
+            <img alt="logo_kolleg_s" src="${request.static_url('dbas:static/images/logo_kolleg_s.jpg')}"/>
+          </a>
+          <p class="text-muted" i18n:translate="graduate_school_online_participation">
+            Graduation School on Online Participation</p>
         </div>
       </div>
       <div class="col-lg-3 col-md-6 text-center">
         <div class="link-box">
-          <a href="https://www.fhoev.nrw.de/" title="www.fhoev.nrw.de" target="_blank"><img alt="logo_fhoev_s"
-                                                                                            src="${request.static_url('dbas:static/images/logo_fhoev_s.png')}"/></a>
-          <p class="text-muted" i18n:translate="fhoev">University of Applied Sciences for Public Administration and
-            management of North Rhine-Westphalia</p>
+          <a href="https://www.fhoev.nrw.de/" title="www.fhoev.nrw.de" target="_blank">
+            <img alt="logo_fhoev_s" src="${request.static_url('dbas:static/images/logo_fhoev_s.png')}"/>
+          </a>
+          <p class="text-muted" i18n:translate="fhoev">
+            University of Applied Sciences for Public Administration and management of North Rhine-Westphalia
+          </p>
         </div>
       </div>
       <div class="col-lg-3 col-md-6 text-center">
         <div class="link-box">
-          <a href="https://www.diid.hhu.de/" title="www.diid.hhu.de" target="_blank"><img alt="logo_diid_s"
-                                                                                          src="${request.static_url('dbas:static/images/logo_diid_s.jpg')}"/></a>
+          <a href="https://www.diid.hhu.de/" title="www.diid.hhu.de" target="_blank">
+            <img alt="logo_diid_s" src="${request.static_url('dbas:static/images/logo_diid_s.jpg')}"/>
+          </a>
           <p class="text-muted" i18n:translate="diid">Duesseldorf Institut of Internet and Democracy</p>
         </div>
       </div>
@@ -309,7 +339,9 @@
     <div class="row">
       <div class="col-md-12 text-center">
         <a class="btn btn-default btn-xl js-scroll-trigger"
-           href="${request.application_url}/news"><span i18n:translate="go_to_news">Go to the news</span></a>
+           href="${request.application_url}/news">
+          <span i18n:translate="go_to_news">Go to the news</span>
+        </a>
       </div>
     </div>
   </div>

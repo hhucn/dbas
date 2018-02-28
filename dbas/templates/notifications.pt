@@ -1,110 +1,141 @@
 <tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
-	<tal:block metal:fill-slot="content_page">
+  <tal:block metal:fill-slot="content_page">
 
-        <section>
-            <div class="text-center big-header">
-                <h3 i18n:translate="notification_board" class="text-center">Notification Board</h3>
-                <p class="lead text-center" style="color: white;">
-                    <span id="unread_counter"> ${structure:extras.notifications.new_count} </span>
-                    <span i18n:translate="unreadNotificationAnd">unread notifications and</span>
-                    <span id="total_in_counter"> ${structure:extras.notifications.total_in} </span>
-                    <span i18n:translate="totalInTheInbox">total in the inbox.</span>
-                    <span i18n:translate="thereAre">There are</span>
-                    <span id="total_out_counter"> ${structure:extras.notifications.total_out} </span>
-                    <span i18n:translate="inTheOutbox">in the outbox.</span>
-                </p>
+    <section>
+      <div class="text-center big-header">
+        <h3 i18n:translate="notification_board" class="text-center">Notification Board</h3>
+        <p class="lead text-center" style="color: white;">
+          <span id="unread_counter"> ${structure:extras.notifications.new_count} </span>
+          <span i18n:translate="unreadNotificationAnd">unread notifications and</span>
+          <span id="total_in_counter"> ${structure:extras.notifications.total_in} </span>
+          <span i18n:translate="totalInTheInbox">total in the inbox.</span>
+          <span i18n:translate="thereAre">There are</span>
+          <span id="total_out_counter"> ${structure:extras.notifications.total_out} </span>
+          <span i18n:translate="inTheOutbox">in the outbox.</span>
+        </p>
+      </div>
+    </section>
+
+    <div class="wrapper-container">
+
+      <div class="container colored-container">
+        <div class="row">
+          <div class="col-md-12" id="message-space">
+            <div class="container-three-divs">
+              <div class="flex-div">
+                <ul class="nav nav-tabs">
+                  <li class="active">
+                    <a id="inbox-link" href="#inbox" data-toggle="tab"
+                       aria-expanded="true" i18n:translate="inbox">Inbox</a>
+                  </li>
+                  <li>
+                    <a id="outbox-link" href="#outbox" data-toggle="tab" aria-expanded="false" i18n:translate="outbox">Outbox</a>
+                  </li>
+                  <li style="display: none;">
+                    <a href="#empty" data-toggle="tab"></a>
+                  </li>
+                </ul>
+              </div>
             </div>
-        </section>
 
-        <div class="wrapper-container">
-
-            <div class="container colored-container">
-                <div class="row">
-                    <div class="col-md-12" id="message-space">
-                        <div class="container-three-divs">
-                            <div class="flex-div">
-                                <ul class="nav nav-tabs">
-                                    <li class="active"><a id="inbox-link" href="#inbox" data-toggle="tab" aria-expanded="true" i18n:translate="inbox">Inbox</a></li>
-                                    <li class=""><a id="outbox-link" href="#outbox" data-toggle="tab" aria-expanded="false" i18n:translate="outbox">Outbox</a></li>
-                                    <li style="display: none;"><a href="#empty" data-toggle="tab"></a></li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="tab-content">
-                            <div class="tab-pane fade active in" id="inbox">
-                                <div class="panel-group" id="accordion" style="margin-top: 2em;">
-                                    <div class="panel panel-default" tal:repeat="msg extras.notifications.inbox" style="margin-bottom: 1em;" tal:attributes="id msg.id">
-                                        <div class="panel-heading">
-                                            <h4 class="panel-title">
-                                                <input class="msg-checkbox" type="checkbox" tal:attributes="data-id msg.id">
-                                                <a class="panel-title-link" data-toggle="collapse" data-parent="#accordion" href="#collapse1" tal:attributes="href structure:msg.collapse_link">
-                                                    <span tal:condition="not:msg.read" class="label label-info" i18n:translate="new">NEW</span>
-                                                    <span class="text-primary" tal:condition="msg.read">${structure:msg.topic}</span>
-                                                    <strong class="text-primary" tal:condition="not:msg.read">${msg.topic}</strong>
-                                                </a>
-                                                <!--<i class="fa fa-trash" aria-hidden="true" style="float: right; margin-left: 1.0em; cursor: pointer;" ></i>-->
-                                                <span style="float: right; padding-right: 1em;"><span i18n:translate="from">From:</span> ${msg.from_author}, ${msg.timestamp}</span>
-                                            </h4>
-                                        </div>
-                                        <div id="collapse1" class="panel-collapse collapse" tal:attributes="id msg.collapse_id">
-                                            <div class="panel-body">
-                                                <div>${structure:msg.content}</div>
-                                                <div tal:condition="msg.show_from_author" style="float:right; padding: 0.2em;">
-                                                    <span i18n:translate="from">From:</span>
-                                                    <a href="#" tal:attributes="href msg.from_author_url" target="_blank" class="from_author_value">
-                                                        ${msg.from_author}
-                                                        <img class="img-circle" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src msg.from_author_avatar">
-                                                    </a>
-                                                    <a href="#" class="answer-notification btn btn-primary btn-xs" i18n:translate="answer">answer</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <a id="read-inbox" href="#" class="btn btn-primary btn-sm hidden"><i class="fa fa-envelope-open-o" aria-hidden="true" style="margin-right: 0.5em"></i><span id="read-inbox-txt" i18n:translate="set_as_read">Set everything as read</span></a>
-                                <a id="delete-inbox" href="#" class="btn btn-primary btn-sm pull-right hidden"><i class="fa fa-trash-o" aria-hidden="true" style="margin-right: 0.5em"></i><span id="delete-inbox-txt" i18n:translate="delete_everything">Delete everything</span></a>
-                            </div>
-
-                            <div class="tab-pane fade in" id="outbox">
-                                <div class="panel-group" id="accordion" style="margin-top: 2em;">
-                                    <div class="panel panel-default" tal:repeat="msg extras.notifications.outbox" style="margin-bottom: 1em;" tal:attributes="id msg.id">
-                                        <div class="panel-heading">
-                                            <h4 class="panel-title">
-                                                <input class="msg-checkbox" type="checkbox" tal:attributes="data-id msg.id">
-                                                <a class="panel-title-link" data-toggle="collapse" data-parent="#accordion" href="#collapse1" tal:attributes="href structure:msg.collapse_link">
-                                                    <span class="text-primary notification-title" tal:condition="msg.read">${structure:msg.topic}</span>
-                                                </a>
-                                                <!--<i class="fa fa-trash" aria-hidden="true" style="float: right; margin-left: 1.0em; cursor: pointer;" ></i>-->
-                                                <span style="float: right; padding-right: 1em;"><span i18n:translate="to">To:</span> ${msg.to_author}, ${msg.timestamp}</span>
-                                            </h4>
-                                        </div>
-                                        <div id="collapse1" class="panel-collapse collapse" tal:attributes="id msg.collapse_id">
-                                            <div class="panel-body">
-                                                <div class="notification-content" style="overflow: auto;">${structure:msg.content}</div>
-                                                <div style="float:right; padding: 0.2em;">
-                                                    <span i18n:translate="to">to:</span>
-                                                    <a href="#" tal:attributes="href msg.to_author_url" target="_blank" class="to_author_value">
-                                                        ${msg.to_author}
-                                                        <img class="img-circle" src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src msg.to_author_avatar">
-                                                    </a>
-                                                    <a href="#" class="btn btn-primary btn-xs answer-notification" i18n:translate="answer">answer</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <a id="delete-outbox" href="#" class="btn btn-primary btn-sm pull-right hidden"><i class="fa fa-trash-o" aria-hidden="true" style="margin-right: 0.5em"></i><span id="delete-outbox-txt" i18n:translate="delete_everything">Delete everything</span></a>
-                            </div>
-
-                            <div class="tab-pane fade" id="empty"></div>
-                        </div>
+            <div class="tab-content">
+              <div class="tab-pane fade active in" id="inbox">
+                <div class="panel-group" id="accordion" style="margin-top: 2em;">
+                  <div class="panel panel-default" tal:repeat="msg extras.notifications.inbox"
+                       style="margin-bottom: 1em;" tal:attributes="id msg.id">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <input class="msg-checkbox" type="checkbox" tal:attributes="data-id msg.id">
+                        <a class="panel-title-link" data-toggle="collapse" data-parent="#accordion"
+                           href="#collapse1" tal:attributes="href structure:msg.collapse_link">
+                          <span tal:condition="not:msg.read" class="label label-info" i18n:translate="new">NEW</span>
+                          <span class="text-primary" tal:condition="msg.read">${structure:msg.topic}</span>
+                          <strong class="text-primary" tal:condition="not:msg.read">${msg.topic}</strong>
+                        </a>
+                        <span style="float: right; padding-right: 1em;">
+                          <span i18n:translate="from">From:</span>
+                                ${msg.from_author}, ${msg.timestamp}
+                        </span>
+                      </h4>
                     </div>
+                    <div id="collapse1" class="panel-collapse collapse" tal:attributes="id msg.collapse_id">
+                      <div class="panel-body">
+                        <div>${structure:msg.content}</div>
+                        <div tal:condition="msg.show_from_author" style="float:right; padding: 0.2em;">
+                          <span i18n:translate="from">From:</span>
+                          <a href="#" tal:attributes="href msg.from_author_url" target="_blank"
+                             class="from_author_value">
+                          ${msg.from_author}
+                            <img class="img-circle"
+                                 src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src msg.from_author_avatar">
+                          </a>
+                          <a href="#" class="answer-notification btn btn-primary btn-xs" i18n:translate="answer">
+                            answer
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+                <a id="read-inbox" href="#" class="btn btn-primary btn-sm hidden">
+                  <i class="fa fa-envelope-open-o" aria-hidden="true" style="margin-right: 0.5em"></i>
+                  <span id="read-inbox-txt" i18n:translate="set_as_read">Set everything as read</span>
+                </a>
+                <a id="delete-inbox" href="#" class="btn btn-primary btn-sm pull-right hidden">
+                  <i class="fa fa-trash-o" aria-hidden="true" style="margin-right: 0.5em"></i>
+                  <span id="delete-inbox-txt" i18n:translate="delete_everything">Delete everything</span>
+                </a>
+              </div>
+
+              <div class="tab-pane fade in" id="outbox">
+                <div class="panel-group" id="accordion" style="margin-top: 2em;">
+                  <div class="panel panel-default" tal:repeat="msg extras.notifications.outbox"
+                       style="margin-bottom: 1em;" tal:attributes="id msg.id">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <input class="msg-checkbox" type="checkbox" tal:attributes="data-id msg.id">
+                        <a class="panel-title-link" data-toggle="collapse" data-parent="#accordion"
+                           href="#collapse1" tal:attributes="href structure:msg.collapse_link">
+                          <span class="text-primary notification-title" tal:condition="msg.read">${structure:msg.topic}</span>
+                        </a>
+                        <span style="float: right; padding-right: 1em;">
+                          <span i18n:translate="to">To:</span>
+                                ${msg.to_author}, ${msg.timestamp}
+                        </span>
+                      </h4>
+                    </div>
+                    <div id="collapse1" class="panel-collapse collapse" tal:attributes="id msg.collapse_id">
+                      <div class="panel-body">
+                        <div class="notification-content" style="overflow: auto;">${structure:msg.content}</div>
+                        <div style="float:right; padding: 0.2em;">
+                          <span i18n:translate="to">to:</span>
+                          <a href="#" tal:attributes="href msg.to_author_url" target="_blank" class="to_author_value">
+                          ${msg.to_author}
+                            <img class="img-circle"
+                                 src="https://secure.gravatar.com/avatar/00000000000000000000000000000000?d=mm&f=y" tal:attributes="src msg.to_author_avatar">
+                          </a>
+                          <a href="#" class="btn btn-primary btn-xs answer-notification" i18n:translate="answer">
+                            answer
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <a id="delete-outbox" href="#" class="btn btn-primary btn-sm pull-right hidden">
+                  <i class="fa fa-trash-o" aria-hidden="true" style="margin-right: 0.5em"></i>
+                  <span id="delete-outbox-txt" i18n:translate="delete_everything">Delete everything</span>
+                </a>
+              </div>
+              <div class="tab-pane fade" id="empty"></div>
             </div>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <span class="icon-badge blue-button bottom-right" id="new-notification"><i class="fa fa-envelope-o" aria-hidden="true"></i></span>
-
-	</tal:block>
+    <span class="icon-badge blue-button bottom-right" id="new-notification">
+      <i class="fa fa-envelope-o" aria-hidden="true"></i>
+    </span>
+  </tal:block>
 </tal:block>
