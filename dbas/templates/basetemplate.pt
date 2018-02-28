@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
          i18n:domain="dbas" metal:define-macro="layout" tal:attributes="lang extras.ui_locales">
 <head>
-  <meta name="google-site-verification" content="u3fQwV9ImqboTAEyPUoNlS7LNF0gAGaIb67qg-aD9JY" />
+  <meta name="google-site-verification" content="u3fQwV9ImqboTAEyPUoNlS7LNF0gAGaIb67qg-aD9JY"/>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,154 +14,149 @@
   <link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-3.3.7-paper.min.css')}" rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-tour-0.11.0.min.css')}" rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/css/bootstrap-slider.9.8.0.min.css')}" rel="stylesheet">
-  <link type="text/css" href="${request.static_url('dbas:static/fontawesome/css/font-awesome.min.css')}" rel="stylesheet">
+  <link type="text/css" href="${request.static_url('dbas:static/fontawesome/css/font-awesome.min.css')}"
+        rel="stylesheet">
   <link type="text/css" href="${request.static_url('dbas:static/css/main.css')}" rel="stylesheet">
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery-3.2.1.min.js')}"></script>
+  <script src="${request.static_url('dbas:static/js/libs/jquery-3.2.1.min.js')}"></script>
 </head>
 
 <body>
-  <input type="hidden" id="hidden_language" value="${extras.ui_locales}">
-  <input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
+<input type="hidden" id="hidden_language" value="${extras.ui_locales}">
+<input type="hidden" id="hidden_csrf_token" name="csrf_token" value="${request.session.get_csrf_token()}">
 
-  <!-- JS DISABLED -->
-  <noscript>
-    <div class="blocked jsdisabled">
-      <strong i18n:translate="js_disabled1">JavaScript is not enabled:</strong><br>
-      <strong i18n:translate="js_disabled2">Please enable JavaScript!</strong>
-    </div>
-  </noscript>
-
-  <div class="blocked request_failed center alert-danger" id="request_failed_container" style="display:none;">
-    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-    <span id="request_failed_container_heading" i18n:translate="request_failed">Your request failed!</span>
-    <span id="request_failed_container_message" i18n:translate="please_reload" style="padding-left: 0.5em; ">Please reload the page.</span>
-    <button type="button" class="close" aria-label="Close"><span id="request_failed_container_close" aria-hidden="true">×</span> </button>
+<!-- JS DISABLED -->
+<noscript>
+  <div class="blocked jsdisabled">
+    <strong i18n:translate="js_disabled1">JavaScript is not enabled:</strong><br>
+    <strong i18n:translate="js_disabled2">Please enable JavaScript!</strong>
   </div>
+</noscript>
 
-  <div class="blocked request_success center alert-success" id="request_success_container" style="display:none;">
-    <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
-    <span id="request_success_container_heading" i18n:translate="request_success">Your request succeded!</span>
-    <span id="request_success_container_message" i18n:translate="request_success" style="padding-left: 0.5em; ">Your request succeded!</span>
-    <button type="button" class="close" aria-label="Close"><span id="request_success_container_close" aria-hidden="true">×</span> </button>
-  </div>
+<div class="blocked request_failed center alert-danger" id="request_failed_container" style="display:none;">
+  <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+  <span id="request_failed_container_heading" i18n:translate="request_failed">Your request failed!</span>
+  <span id="request_failed_container_message" i18n:translate="please_reload" style="padding-left: 0.5em; ">Please reload the page.</span>
+  <button type="button" class="close" aria-label="Close"><span id="request_failed_container_close"
+                                                               aria-hidden="true">×</span></button>
+</div>
 
-  <div class="blocked request_success center alert-info" id="request_info_container" style="display:none;">
-    <i class="fa fa-bell-o" aria-hidden="true"></i>
-    <span id="request_info_container_heading"></span>
-    <span id="request_info_container_message" style="padding-left: 0.5em; "></span>
-    <button type="button" class="close" aria-label="Close"><span id="request_info_container_close" aria-hidden="true">×</span> </button>
-  </div>
+<div class="blocked request_success center alert-success" id="request_success_container" style="display:none;">
+  <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+  <span id="request_success_container_heading" i18n:translate="request_success">Your request succeded!</span>
+  <span id="request_success_container_message" i18n:translate="request_success" style="padding-left: 0.5em; ">Your request succeded!</span>
+  <button type="button" class="close" aria-label="Close"><span id="request_success_container_close"
+                                                               aria-hidden="true">×</span></button>
+</div>
 
-  <div metal:use-macro="load: snippet-header.pt"></div>
+<div class="blocked request_success center alert-info" id="request_info_container" style="display:none;">
+  <i class="fa fa-bell-o" aria-hidden="true"></i>
+  <span id="request_info_container_heading"></span>
+  <span id="request_info_container_message" style="padding-left: 0.5em; "></span>
+  <button type="button" class="close" aria-label="Close"><span id="request_info_container_close"
+                                                               aria-hidden="true">×</span></button>
+</div>
 
-  <div id="wrapper-content">
-    <div metal:define-slot="content_page"></div>
-  </div>
+<div metal:use-macro="load: snippet-header.pt"></div>
 
-  <div metal:use-macro="load: snippet-popups.pt"></div>
+<div id="wrapper-content">
+  <div metal:define-slot="content_page"></div>
+</div>
 
-  <a href="#top" class="back-to-top"><img class="center" id="back-to-top-img" alt="back-to-top-img" src="${request.static_url('dbas:static/images/chevron_up.png')}"></a>
+<div metal:use-macro="load: snippet-popups.pt"></div>
 
-  <div metal:use-macro="load: snippet-footer.pt"></div>
+<a href="#top" class="back-to-top"><img class="center" id="back-to-top-img" alt="back-to-top-img"
+                                        src="${request.static_url('dbas:static/images/chevron_up.png')}"></a>
 
-  <div class="ajaxloader">
-    <img class="center rotating" src="${request.static_url('dbas:static/images/icon.png')}" alt="loading">
-  </div>
+<div metal:use-macro="load: snippet-footer.pt"></div>
 
-  <div class="eupopup eupopup-bottomright"></div>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-3.3.7.min.js')}"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-slider.9.8.0.min.js')}"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-toggle.min.js')}"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/bootstrap-tour-0.11.0.min.js')}"></script>
-  <!--<script type="text/javascript" src="${request.static_url('dbas:static/js/main/browser-detection.js')}"></script>-->
+<div class="ajaxloader">
+  <img class="center rotating" src="${request.static_url('dbas:static/images/icon.png')}" alt="loading">
+</div>
 
-  <!-- Placed at the end of the document so the pages load faster -->
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/jquery.slimscroll-1.3.8.min.js')}"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/cookie-2.1.3.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/cookie-2.1.3.min.js')}" tal:condition="not:extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/socket.io-1.4.5.js')}"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/chart.min.js')}"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/d3.min.js')}"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.min.js')}" tal:condition="not:extras.development_mode"></script>
+<div class="eupopup eupopup-bottomright"></div>
+<script src="${request.static_url('dbas:static/js/libs/bootstrap-3.3.7.min.js')}"></script>
+<script src="${request.static_url('dbas:static/js/libs/bootstrap-slider.9.8.0.min.js')}"></script>
+<script src="${request.static_url('dbas:static/js/libs/bootstrap-toggle.min.js')}"></script>
+<script src="${request.static_url('dbas:static/js/libs/bootstrap-tour-0.11.0.min.js')}"></script>
+<!--<script src="${request.static_url('dbas:static/js/main/browser-detection.js')}"></script>-->
 
-  <!-- PRODUCTION -->
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/dbas.min.js')}" tal:condition="not:extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.min.js')}" tal:condition="not:extras.development_mode"></script>
-  <!-- DEVELOPMENT -->
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/ids.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/guided-tour.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/app.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/sharing.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/strings.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/settings.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/lib.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/my-discussion.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/dolan.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/countdown.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/login.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/news.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/passwordcheck.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/user.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/main/notification.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/settings.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/popups.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/helper.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/interactionhandler.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/main.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/discussion.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/graph.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/main.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/notification.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/reference.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/ajax/review.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/review/reputation.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/review/queue.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/review/review.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/review/callbacks.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/review/history.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/review/index.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/d3/barometer.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/d3/graph.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('websocket:static/js/websocket.js')}" tal:condition="extras.development_mode"></script>
-  <script type="text/javascript" src="${request.static_url('dbas:static/js/libs/gremlins.min.js')}" tal:condition="extras.development_mode"></script>
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="${request.static_url('dbas:static/js/libs/jquery.slimscroll-1.3.8.min.js')}"></script>
+<script src="${request.static_url('dbas:static/js/libs/cookie-2.1.3.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/libs/cookie-2.1.3.min.js')}" tal:condition="not:extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/libs/socket.io-1.4.5.js')}"></script>
+<script src="${request.static_url('dbas:static/js/libs/chart.min.js')}"></script>
+<script src="${request.static_url('dbas:static/js/libs/d3.min.js')}"></script>
+<script src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/libs/eu-cookie-law-popup.min.js')}" tal:condition="not:extras.development_mode"></script>
 
-  <!-- Matomo -->
-  <script type="text/javascript">
-    var _paq = _paq || [];
-    _paq.push(['trackPageView']);
-    _paq.push(['enableLinkTracking']);
-    (function () {
-      var u = "//dbas.cs.uni-duesseldorf.de/analytics/";
-      _paq.push(['setTrackerUrl', u + 'piwik.php']);
-      _paq.push(['setSiteId', 1]);
-      var d = document,
-        g = d.createElement('script'),
-        s = d.getElementsByTagName('script')[0];
-      g.type = 'text/javascript';
-      g.async = true;
-      g.defer = true;
-      g.src = u + 'piwik.js';
-      s.parentNode.insertBefore(g, s);
-    })();
-  </script>
-  <noscript>
-    <p>
-      <img src="//dbas.cs.uni-duesseldorf.de/analytics/piwik.php?idsite=1" style="border:0;" alt=""/>
-    </p>
-  </noscript>
-  <!-- Click Heat
-  <script type="text/javascript" src="http://dbas.cs.uni-duesseldorf.de/analytics/plugins/ClickHeat/libs/js/clickheat.js"></script>
-  <noscript><p><a href="http://www.dugwood.com/index.html">Open Source Sofware</a></p></noscript>
-  <script type="text/javascript">
-  clickHeatSite = 1;
-  clickHeatGroup = encodeURIComponent(window.location.pathname+window.location.search);
-  clickHeatServer = 'http://dbas.cs.uni-duesseldorf.de/piwik/plugins/ClickHeat/libs/click.php';
-  initClickHeat();
-  </script>
-  -->
-  <!-- End Piwik Code -->
+<!-- PRODUCTION -->
+<script src="${request.static_url('dbas:static/js/dbas.min.js')}" tal:condition="not:extras.development_mode"></script>
+<script src="${request.static_url('websocket:static/js/websocket.min.js')}" tal:condition="not:extras.development_mode"></script>
+<!-- DEVELOPMENT -->
+<script src="${request.static_url('dbas:static/js/main/ids.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/main/guided-tour.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/main/app.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/main/sharing.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/main/strings.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/main/settings.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/main/lib.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/main/my-discussion.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/main/dolan.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/main/countdown.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/main/login.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/main/news.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/main/passwordcheck.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/main/user.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/main/notification.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/ajax/settings.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/discussion/guihandler.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/discussion/popups.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/discussion/helper.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/discussion/interactionhandler.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/discussion/main.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/ajax/discussion.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/ajax/graph.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/ajax/main.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/ajax/notification.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/ajax/reference.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/ajax/review.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/review/reputation.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/review/queue.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/review/review.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/review/callbacks.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/review/history.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/review/index.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/d3/barometer.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/d3/graph.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('websocket:static/js/websocket.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/libs/gremlins.min.js')}" tal:condition="extras.development_mode"></script>
+
+<!-- Matomo -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function () {
+    var u = "//dbas.cs.uni-duesseldorf.de/analytics/";
+    _paq.push(['setTrackerUrl', u + 'piwik.php']);
+    _paq.push(['setSiteId', 1]);
+    var d = document,
+            g = d.createElement('script'),
+            s = d.getElementsByTagName('script')[0];
+    g.type = 'text/javascript';
+    g.async = true;
+    g.defer = true;
+    g.src = u + 'piwik.js';
+    s.parentNode.insertBefore(g, s);
+  })();
+</script>
+<noscript>
+  <p>
+    <img src="//dbas.cs.uni-duesseldorf.de/analytics/piwik.php?idsite=1" style="border:0;" alt=""/>
+  </p>
+</noscript>
+<!-- End Matomo Code -->
 </body>
 
 </html>
