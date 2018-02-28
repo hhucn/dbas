@@ -475,7 +475,6 @@
 <script src="${request.static_url('dbas:static/js/d3/barometer.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/d3/graph.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('websocket:static/js/websocket.js')}" tal:condition="extras.development_mode"></script>
-<script src="${request.static_url('dbas:static/js/libs/gremlins.min.js')}" tal:condition="extras.development_mode"></script>
 </body>
 
 </html>
