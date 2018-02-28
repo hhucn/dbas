@@ -127,12 +127,13 @@
                       </span>
                       <span class="item-actions item-trash" tal:condition="item.is_deletable"
                             title="${extras.title.disassociate_statement}">
-                        <i class="fa fa-trash-o" aria-hidden="true"></i>
-                      </span>
+                      <i class="fa fa-trash-o" aria-hidden="true"></i>
+                    </span>
                       <span class="item-actions item-attack" tal:condition="item.is_attackable"
                             title="${extras.title.attack_statement}">
                         <a href="${item.attack_url}">
-                          <i class="fa fa-bomb" aria-hidden="true"></i></a>
+                          <i class="fa fa-bomb" aria-hidden="true"></i>
+                        </a>
                       </span>
                       <span class="item-actions item-reference" title="${extras.title.reference}">
                         <span style="margin-left: 1em" tal:condition="not:(item.is_editable or item.is_markable or item.is_deletable)"></span>
@@ -161,7 +162,8 @@
           </div>
 
           <ul class="sidebar">
-            <li id="share-url"><i class="fa fa-share-alt" aria-hidden="true"></i>
+            <li id="share-url">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
               <span class="sidebar-element">${extras.buttons.share_url}</span>
             </li>
             <li id="opinion-barometer-img" tal:condition="extras.show_bar_icon">
@@ -172,7 +174,8 @@
               <i class="fa fa-sitemap" aria-hidden="true"></i>
               <span class="sidebar-element">${extras.title.graph_view}</span>
             </li>
-            <li id="sidebar-search-statement"><i class="fa fa-search" aria-hidden="true"></i>
+            <li id="sidebar-search-statement">
+              <i class="fa fa-search" aria-hidden="true"></i>
               <span class="sidebar-element">${extras.tag.search}</span>
             </li>
             <li id="finish-button" onclick="window.location='/discuss/exit'" tal:condition="extras.logged_in">
@@ -194,10 +197,8 @@
           </button>
           <h4 id="graph-view-container-header" class="center"></h4>
           <div style="position: absolute;">
-            <span>
-              <span i18n:translate="start">Start</span>:
-              <span style="margin-right: 1em;">${issues.date}</span>
-            </span>
+            <span i18n:translate="start">Start</span>:
+            <span style="margin-right: 1em;">${issues.date}</span>
             <input id="graph-slider" type="text" data-slider-min="0" data-slider-step="1"
                    data-slider-max="${issues.duration}" data-start-ms="${issues.date_ms}"
                    data-slider-value="${issues.duration}"/>
@@ -317,7 +318,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
         <div class="col-lg-12 text-center">
-          <p class="lead" style="margin-bottom: 0"><!--<span>${structure:extras.tag.add_premise_title}</span>:-->
+          <p class="lead" style="margin-bottom: 0">
             <span id="add-premise-container-main-input-intro">${structure:discussion.add_premise_text}</span>
           </p>
           <div id="add-premise-error-container" class="alert alert-danger" role="alert" style="display:none">
@@ -334,19 +335,17 @@
                 <div class="form-group">
                   <div class="col-sm-12 input-group">
                     <span class="input-group-addon"
-                          style=" padding-bottom: 1.5em; font-size: 17px;">
-                      <span>...</span>
-                      <span>${extras.title.because}</span>
-                    </span>
-                    <input id="add-premise-container-main-input" type="text" class="form-control"
+                          style=" padding-bottom: 1.5em; font-size: 17px;"><span>...</span><span>${extras.title.because}</span></span>
+                    <input id="add-premise-container-main-input" type="text" class="form-control" value=""
                            data-min-length="10" data-max-length="180" style="width: 100%">
                   </div>
                 </div>
 
               </div>
-              <div><img class="icon-badge icon-rem-premise" alt="rem"
-                        src="${request.static_url('dbas:static/images/icon_minus1.png')}"
-                        title="${extras.title.rem_statement_row_title}"/>
+              <div>
+                <img class="icon-badge icon-rem-premise" alt="rem"
+                     src="${request.static_url('dbas:static/images/icon_minus1.png')}"
+                     title="${extras.title.rem_statement_row_title}"/>
                 <img class="icon-badge icon-add-premise" alt="add"
                      src="${request.static_url('dbas:static/images/icon_plus1.png')}"
                      title="${extras.title.add_statement_row_title}"/>
