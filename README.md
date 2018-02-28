@@ -11,7 +11,7 @@ Currently, the main development-process happens in our GitLab instance, but you
 can open issues here, submit pull requests etc. and we will coordinate your
 contributions.
 
-Of course, you can try out D-BAS on (https://dbas.cs.uni-duesseldorf.de/)[https://dbas.cs.uni-duesseldorf.de/].
+Of course, you can try out D-BAS on [https://dbas.cs.uni-duesseldorf.de/](https://dbas.cs.uni-duesseldorf.de/).
 
 ## Setup for Linux
 
