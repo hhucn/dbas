@@ -1,7 +1,9 @@
 $(document).ready(function () {
     'use strict';
     $('#' + popupLoginPasswordInputId).keyup(function () {
-        checkStrength($(this).val());
+        if ($('#popup-login-password-input').is(':visible')) {
+            checkStrength($(this).val());
+        }
     });
 
     function checkStrength(password) {

@@ -1,46 +1,20 @@
 /**
+ * Script to get more data on the user pages.
+ *
  * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
 
 $(function () {
     'use strict';
-
+    
+    // execute only in the users page
     if (window.location.href.indexOf(mainpage + 'user/') === -1) {
         return;
     }
-
-    // send notification to users
-    $('#send-notification').each(function () {
-        $(this).click(function () {
-            $('#' + popupWritingNotificationRecipient).closest('.form-group').hide();
-            $('#' + popupWritingNotification).modal('show');
-            $('#' + popupWritingNotificationSuccess).hide();
-            $('#' + popupWritingNotificationFailed).hide();
-            $('#' + popupWritingNotificationSend).click(function () {
-                var url = window.location.href;
-                var splitted = url.split('/');
-                var recipient;
-                if (url.indexOf('/user/') === -1) {
-                    recipient = $(this).prev().text();
-                } else {
-                    recipient = splitted[splitted.length - 1];
-                }
-                new AjaxNotificationHandler().sendNotification(recipient.trim()); // declared in notification.js
-            });
-        });
-    });
-
-    var url = 'get_public_user_data';
-    var d = {
-        'nickname': $('#public_nick').text()
-    };
-    var done = function getPublicUserDataDone(data) {
-        new User().callbackDone(data);
-    };
-    var fail = function getPublicUserDataFail(data) {
-        setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
-    };
-    ajaxSkeleton(url, 'POST', d, done, fail);
+    
+    var u = new User();
+    u.setNotificationBtn();
+    u.getPublicUserData();
 });
 
 function User() {
@@ -54,15 +28,51 @@ function User() {
     var fillColorSet = [blue, teal, deepOrange, brown]; // 100
     var strokeColorSet = ['#2196F3', '#009688', '#FF5722', '#795548']; // 500
     var pointStrokeColorSet = ['#1565C0', '#00695C', '#D84315', '#4E342E']; // 800
-
+    
     /**
-     *
-     * @param data
+     * Sets click listener to send notifications to a user
      */
-    this.callbackDone = function (data) {
-        this.createChart(data, $('#user-activity-chart-space'), 'user-activity-canvas', 0);
-        this.createChart(data, $('#user-vote-chart-space'), 'user-vote-canvas', 1);
-        this.setLegendCSS();
+    this.setNotificationBtn = function () {
+        // send notification to users
+        $('#send-notification').each(function () {
+            $(this).click(function () {
+                $('#' + popupWritingNotificationRecipient).closest('.form-group').hide();
+                $('#' + popupWritingNotification).modal('show');
+                $('#' + popupWritingNotificationSuccess).hide();
+                $('#' + popupWritingNotificationFailed).hide();
+                $('#' + popupWritingNotificationSend).click(function () {
+                    var url = window.location.href;
+                    var splitted = url.split('/');
+                    var recipient;
+                    if (url.indexOf('/user/') === -1) {
+                        recipient = $(this).prev().text();
+                    } else {
+                        recipient = splitted[splitted.length - 1];
+                    }
+                    new AjaxNotificationHandler().sendNotification(recipient.trim()); // declared in notification.js
+                });
+            });
+        });
+    };
+    
+    /**
+     * Requests specific user data and will display these in charts
+     */
+    this.getPublicUserData = function () {
+        var url = 'get_public_user_data';
+        var d = {
+            'nickname': $('#public_nick').text()
+        };
+        var done = function getPublicUserDataDone(data) {
+            var u = new User();
+            u.createChart(data, $('#user-activity-chart-space'), 'user-activity-canvas', 0);
+            u.createChart(data, $('#user-vote-chart-space'), 'user-vote-canvas', 1);
+            u.setLegendCSS();
+        };
+        var fail = function getPublicUserDataFail(data) {
+            setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
+        };
+        ajaxSkeleton(url, 'POST', d, done, fail);
     };
 
     /**
@@ -111,7 +121,6 @@ function User() {
         legend.find('li').css({
             'clear': 'both',
             'padding': '2px'
-
         });
         legend.find('span').css({
             'border-radius': '4px',
