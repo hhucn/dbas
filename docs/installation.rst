@@ -74,7 +74,7 @@ Special Variables
 -----------------
 
 There are some special variables for the database connection.
-These **have** to be set, otherwise an error will be raised explaning which variables aren't configured.
+These **have** to be set, otherwise an error will be raised explaining which variables aren't configured.
 
 +--------------+------------------------------------------------------------------+
 | DB_HOST | The hostname of the database (example: localhost, db, 10.0.0.2). |
@@ -83,7 +83,7 @@ These **have** to be set, otherwise an error will be raised explaning which vari
 +--------------+------------------------------------------------------------------+
 | DB_USER | The database username. (example: dbas)                           |
 +--------------+------------------------------------------------------------------+
-| DB_PW   | The passwort of the DB_USER (example: passw0rt123)          |
+| DB_PW   | The passwort of the DB_USER (example: passw0rt123)               |
 +--------------+------------------------------------------------------------------+
 
 These variables are accessible like any other via the normal substitutions (DB.HOST, ...)
