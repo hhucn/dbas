@@ -17,7 +17,7 @@
                             <i class="fa fa-user" aria-hidden="true" style="margin-right: 0.5em;"></i>
                             <span i18n:translate="public_information_of">Public Information of</span> <em id="public_nick">${user.public_nick}</em>
                         </h4>
-                        <table id="info-table" class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
+                      <table id="info-table" class="table table-condensed table-collapsed">
                             <tr>
                                 <td><span class="lead" i18n:translate="last_action">Last Action</span></td>
                                 <td>${user.last_action}</td>
@@ -45,33 +45,35 @@
                     </div>
                     <div class="col-md-6">
                         <h4><i class="fa fa-bar-chart" aria-hidden="true" style="margin-right: 0.5em;"></i><span i18n:translate="discussion_stat">Discussion Statistics</span></h4>
-                        <table class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
+                      <table class="table table-condensed table-collapsed">
                             <tr>
                                 <td><span class="lead" i18n:translate="statements_posted">Statements posted</span></td>
-                                <td id="statements-done-count" style="text-align: right">${user.statements_posted}</td>
+                              <td class="text-right" id="statements-done-count">${user.statements_posted}</td>
                             </tr>
                             <tr>
                                 <td><span class="lead" i18n:translate="edits_done">Edits done</span></td>
-                                <td id="edits-done-count" style="text-align: right">${user.edits_done}</td>
+                              <td class="text-right" id="edits-done-count">${user.edits_done}</td>
                             </tr>
                             <tr>
                                 <td><span class="lead" i18n:translate="reviews_proposed">Reviews proposed</span></td>
-                                <td id="edits-done-count" style="text-align: right">${user.reviews_proposed}</td>
+                              <td class="text-right" id="edits-done-count">${user.reviews_proposed}</td>
                             </tr>
                             <tr>
                                 <td><span class="lead" i18n:translate="discussion_votes_arguments">Votes for Arguments</span></td>
-                                <td id="discussion-arg-votes-count" style="text-align: right">${user.discussion_arg_votes}</td>
+                              <td class="text-right" id="discussion-arg-votes-count">${user.discussion_arg_votes}</td>
                             </tr>
                             <tr>
                                 <td><span class="lead" i18n:translate="discussion_votes_statements">Votes for Statements</span></td>
-                                <td id="discussion-stat-votes-count" style="text-align: right">${user.discussion_stat_votes}</td>
+                              <td class="text-right" id="discussion-stat-votes-count">${user.discussion_stat_votes}</td>
                             </tr>
                             <tr>
                                 <td><span class="lead" i18n:translate="reputation">Reputation</span></td>
-                                <td id="discussion-stat-reputation" style="text-align: right">${user.discussion_stat_rep}</td>
+                              <td class="text-right" id="discussion-stat-reputation">${user.discussion_stat_rep}</td>
                             </tr>
                         </table>
-                        <img style="width: 50px; float: right;" id="send-notification" class="icon-badge" tal:condition="can_send_notification" src="${request.static_url('dbas:static/images/icon_mail.png')}" title="" />
+                      <img class="pull-right" style="width: 50px;" id="send-notification"
+                           class="icon-badge" tal:condition="can_send_notification"
+                           src="${request.static_url('dbas:static/images/icon_mail.png')}"/>
                     </div>
                 </div>
 

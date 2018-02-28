@@ -13,7 +13,7 @@
     				<div class="container-fluid">
     					<div class="row">
     						<div class="col-md-9">
-    							<table class="table table-condensed" style="border-collapse: separate; border-spacing: 5px 5px;">
+                  <table class="table table-condensed table-collapsed">
     								<tr>
     									<td>
     										<strong i18n:translate="name">Name</strong>
@@ -98,8 +98,12 @@
 
                     </div>
     				<div class="list-group" id="proposal-edit-list-group"></div>
-                    <p style="text-align: right"><small><a href="#" id="popup-edit-statement-changelog-view"></a></small></p>
-                    <p style="text-align: right"><small><a href="#" id="popup-edit-statement-changelog-hide"></a></small></p>
+            <p class="text-right">
+              <small><a href="#" id="popup-edit-statement-changelog-view"></a></small>
+            </p>
+            <p class="text-right">
+              <small><a href="#" id="popup-edit-statement-changelog-hide"></a></small>
+            </p>
     				<p class="lead">${extras.title.view_changelog}:</p>
     				<div id="popup-edit-statement-logfile"></div>
     			</div>

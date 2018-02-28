@@ -28,8 +28,7 @@
                 <h5 i18n:translate="todays_summary">Today's Summary</h5>
                 <div class="row">
                   <div class="col-md-6">
-                    <table class="table table-condensed finish-summary-table"
-                           style="border-collapse: separate; border-spacing: 5px 5px;">
+                    <table class="table table-condensed table-collapsed finish-summary-table">
                       <tr>
                         <td><span class="lead" i18n:translate="statements_posted">Statements posted</span></td>
                         <td>${summary.statements_posted}</td>
@@ -49,8 +48,7 @@
                     </table>
                   </div>
                   <div class="col-md-6">
-                    <table class="table table-condensed finish-summary-table"
-                           style="border-collapse: separate; border-spacing: 5px 5px;">
+                    <table class="table table-condensed table-collapsed finish-summary-table">
                       <tr>
                         <td>
                           <span class="lead" i18n:translate="discussion_votes_statements">Votes for Arguments</span>

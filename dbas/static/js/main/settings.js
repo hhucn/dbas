@@ -189,9 +189,8 @@ function StatisticsHandler() {
 
         var table, tr, spanUp, spanDown;
         table = $('<table>');
-        table.attr('class', 'table table-condensed table-hover')
-            .attr('border', '0')
-            .attr('style', 'border-collapse: separate; border-spacing: 5px 5px;');
+        table.attr('class', 'table table-condensed table-hover table-collapsed')
+            .attr('border', '0');
         tr = $('<tr>')
             .append($('<td>').html('<strong>' + _t(date) + '</strong>').css('text-align', 'center'))
             .append($('<td>').html('<strong>' + _t(text) + '</strong>').css('text-align', 'center'));
