@@ -95,7 +95,7 @@
             <ul id="discussions-space-list">
               <li tal:repeat="item items.elements" style="${item.style}">
                 <input id="${item.id}" type="radio" name="discussion-button-group"
-                       onclick="location.href=&quot;${item.url}&quot;" data-url="${item.url}">
+                       onclick='location.href="${item.url}";' data-url="${item.url}">
                 <span tal:repeat="premise item.premises" tal:omit-tag="">
                   <label for="${item.id}" id="${premise.id}" data-toggle="tooltip"
                          data-placement="auto">${structure:premise.title}</label>
