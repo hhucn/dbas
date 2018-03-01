@@ -82,7 +82,7 @@ def prepare_json_of_issue(db_issue: Issue, application_url: str, db_user: User) 
         date = date.replace(' ', ' um ')
 
     db_issues = get_visible_issues_for_user_as_query(db_user.uid).filter(Issue.uid != db_issue.uid).all()
-    all_array = [get_issue_dict_for(db_issue, application_url, db_issue.uid, lang) for db_issue in db_issues]
+    all_array = [get_issue_dict_for(issue, application_url, db_issue.uid, lang) for issue in db_issues]
 
     _t = Translator(lang)
     t1 = _t.get(_.discussionInfoTooltip1)

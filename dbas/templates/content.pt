@@ -54,7 +54,6 @@
                      title="${extras.title.mark_as_opinion}" data-is-users-opinion="${bubble.is_users_opinion}"
                      style="display:none;"></i>
                 </div>
-                <!--<img class="triangle-gravatar-r" src extras.users_avatar">-->
                 <a tal:omit-tag="bubble.omit_url" href="${bubble.url}" title="${extras.buttons.lets_go_back}"
                                                   data-toggle="tooltip" data-placement="bottom">
                   <span class="triangle-content">${structure:bubble.message}</span>
