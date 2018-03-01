@@ -63,7 +63,8 @@ def attitude(request_dict) -> Union[dict, None]:
     db_issue = request_dict['issue']
     application_url = request_dict['app_url']
     history = request_dict['history']
-    statement_uid = request_dict['matchdict']['statement_id'][0] if 'statement_id' in request_dict['matchdict'] else '-'
+    tmp = request_dict['matchdict']['statement_id']
+    statement_uid = tmp[0] if len(tmp) > 0 else tmp
     slug = db_issue.slug
     db_user = request_dict['user']
 
