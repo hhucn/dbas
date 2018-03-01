@@ -64,6 +64,11 @@ def __modifiy_discussion_url(prep_dict: dict) -> dict:
     for i, el in enumerate(prep_dict['issues']['all']):
         prep_dict['issues']['all'][i]['url'] = '/discuss' + prep_dict['issues']['all'][i]['url']
 
+    # modify urls of the bubbles
+    for i, el in enumerate(prep_dict['discussion']['bubbles']):
+        if '/' in el.get('url', ''):
+            prep_dict['discussion']['bubbles'][i]['url'] = '/discuss' + prep_dict['discussion']['bubbles'][i]['url']
+
     return prep_dict
 
 
