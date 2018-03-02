@@ -77,18 +77,15 @@ def prepare_json_of_issue(db_issue: Issue, application_url: str, db_user: User) 
     days, seconds = duration.days, duration.seconds
     duration = ceil(days * 24 + seconds / 3600)
     date_ms = int(db_issue.date.format('X')) * 1000
-    date = db_issue.date.format('DD.MM.YY HH:mm')
-    if db_issue.lang == 'de':
-        date = date.replace(' ', ' um ')
+    date = db_issue.date.format('DD.MM.YY')
+    time = db_issue.date.format('HH:mm')
 
     db_issues = get_visible_issues_for_user_as_query(db_user.uid).filter(Issue.uid != db_issue.uid).all()
     all_array = [get_issue_dict_for(issue, application_url, db_issue.uid, lang) for issue in db_issues]
 
     _t = Translator(lang)
-    t1 = _t.get(_.discussionInfoTooltip1)
-    t2 = _t.get(_.discussionInfoTooltip2)
-    t3 = _t.get(_.discussionInfoTooltip3sg if stat_count == 1 else _.discussionInfoTooltip3pl)
-    tooltip = '{} {} {} {} {}'.format(t1, date, t2, stat_count, t3)
+    tooltip = _t.get(_.discussionInfoTooltipSg) if stat_count == 1 else _t.get(_.discussionInfoTooltipPl)
+    tooltip = tooltip.format(date, time, stat_count)
 
     return {
         'slug': slug,
