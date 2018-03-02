@@ -48,26 +48,23 @@ full_version = version
 project_name = name + ' ' + full_version
 
 
-def __modifiy_discussion_url(prep_dict: dict) -> dict:
+def __modify_discussion_url(prep_dict: dict) -> dict:
     """
     Adds the /discuss prefix for every url entry
 
     :param prep_dict:
     :return:
     """
-    # modify urls for the radio buttons
-    for i, el in enumerate(prep_dict['items']['elements']):
-        if '/' in el.get('url', ''):
-            prep_dict['items']['elements'][i]['url'] = '/discuss' + prep_dict['items']['elements'][i]['url']
+    # modify urls for the radio buttons and urls of the bubbles
+    dict_tuples = [('items', 'elements'), ('discussion', 'bubbles')]
+    for (x, y) in dict_tuples:
+        for i, el in enumerate(prep_dict[x][y]):
+            if '/' in el.get('url', ''):
+                prep_dict[x][y][i]['url'] = '/discuss' + prep_dict[x][y][i]['url']
 
     # modify urls for topic switch
     for i, el in enumerate(prep_dict['issues']['all']):
         prep_dict['issues']['all'][i]['url'] = '/discuss' + prep_dict['issues']['all'][i]['url']
-
-    # modify urls of the bubbles
-    for i, el in enumerate(prep_dict['discussion']['bubbles']):
-        if '/' in el.get('url', ''):
-            prep_dict['discussion']['bubbles'][i]['url'] = '/discuss' + prep_dict['discussion']['bubbles'][i]['url']
 
     return prep_dict
 
@@ -157,7 +154,7 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any]):
     prepared_discussion = f(request_dict)
     if prepared_discussion:
         prepared_discussion['layout'] = base_layout()
-        __modifiy_discussion_url(prepared_discussion)
+        __modify_discussion_url(prepared_discussion)
 
     return prepared_discussion, request_dict
 
