@@ -54,7 +54,7 @@ class FunctionalTests(unittest.TestCase):
         self.testapp.get('/discuss/cat-or-dog/reaction/13/end/0', status=404)
 
     def test_discussion_justify(self):
-        self.testapp.get('/discuss/cat-or-dog/justify/2/t', status=200)
+        self.testapp.get('/discuss/cat-or-dog/justify/2/agree', status=200)
         self.testapp.get('/discuss/cat-or-dog/justify/13/agree/undercut', status=200)
 
     def test_discussion_attitude(self):

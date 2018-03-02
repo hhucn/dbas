@@ -49,7 +49,7 @@ class UrlManagerTests(unittest.TestCase):
                                                                     mode='agree')
         # Verify that, if 'as_location_href' is 'True', 'statement_uid' and 'mode' are not empty,
         # '{discussion_url}/{slug}/justify/{statement_or_arg_id}/{mode}' is returned.
-        self.assertEqual(response_string_true, '/cat-or-dog/justify/123/t')
+        self.assertEqual(response_string_true, '/cat-or-dog/justify/123/agree')
 
         response_empty_string_false = url.get_url_for_justifying_statement(statement_uid='',
                                                                            mode='')

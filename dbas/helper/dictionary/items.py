@@ -198,7 +198,8 @@ class ItemDictHelper(object):
             statements_array.append(self.__create_answer_dict(str(argument.uid), premise_array, 'justify', url,
                                                               already_used=already_used,
                                                               already_used_text=additional_text,
-                                                              is_editable=not is_arguments_premise_in_edit_queue(argument),
+                                                              is_editable=not is_arguments_premise_in_edit_queue(
+                                                                  argument),
                                                               is_markable=True,
                                                               is_author=is_author_of_argument(db_user, argument.uid),
                                                               is_visible=argument.uid in uids,
@@ -280,7 +281,8 @@ class ItemDictHelper(object):
 
             statements_array.append(self.__create_answer_dict(argument.uid, premises_array, 'justify', url,
                                                               is_markable=True,
-                                                              is_editable=not is_arguments_premise_in_edit_queue(argument),
+                                                              is_editable=not is_arguments_premise_in_edit_queue(
+                                                                  argument),
                                                               is_author=is_author_of_argument(db_user, argument.uid),
                                                               is_visible=argument.uid in uids,
                                                               attack_url=_um.get_url_for_jump(argument.uid)))
@@ -299,7 +301,8 @@ class ItemDictHelper(object):
 
             else:
                 # elif len(statements_array) == 1:
-                a_dict = self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.onlyOneItem)}], 'justify', 'login')
+                a_dict = self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.onlyOneItem)}], 'justify',
+                                                   'login')
                 statements_array.append(a_dict)
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_arguments)}}
@@ -612,8 +615,8 @@ class ItemDictHelper(object):
             while conclusion_uid is None:
                 conclusion_uid = DBDiscussionSession.query(Argument).filter_by(
                     uid=current_user_argument.argument_uid).first().conclusion_uid
-            url = _um.get_url_for_justifying_statement(db_user_argument.conclusion_uid if conclusion_uid is None else conclusion_uid,
-                                                       mode)
+            uid = db_user_argument.conclusion_uid if conclusion_uid is None else conclusion_uid
+            url = _um.get_url_for_justifying_statement(uid, mode)
         return url
 
     def get_array_for_choosing(self, argument_or_statement_id, pgroup_ids, is_argument, is_supportive, nickname):
@@ -631,8 +634,8 @@ class ItemDictHelper(object):
         statements_array = []
         slug = self.db_issue.slug
         _um = UrlManager(slug, history=self.path)
-        conclusion = argument_or_statement_id if not is_argument else None
-        argument = argument_or_statement_id if is_argument else None
+        conclusion_uid = argument_or_statement_id if not is_argument else None
+        argument_uid = argument_or_statement_id if is_argument else None
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
         for group_id in pgroup_ids:
@@ -645,14 +648,18 @@ class ItemDictHelper(object):
                     add_seen_statement(premise.statement_uid, db_user)
 
             # get attack for each premise, so the urls will be unique
-            logger('ItemDictHelper', 'premisesgroup_uid: ' + str(group_id) +
-                   ', conclusion_uid: ' + str(conclusion) +
-                   ', argument_uid: ' + str(argument) +
-                   ', is_supportive: ' + str(is_supportive))
+            logger('ItemDictHelper',
+                   'premisesgroup_uid: {}, concl_uid: {}, arg_uid: {}, is_supp: {}'.format(group_id,
+                                                                                           conclusion_uid,
+                                                                                           argument_uid,
+                                                                                           is_supportive))
             db_argument = DBDiscussionSession.query(Argument).filter(Argument.premisesgroup_uid == group_id,
-                                                                     Argument.conclusion_uid == conclusion,
-                                                                     Argument.argument_uid == argument,
-                                                                     Argument.is_supportive == is_supportive).first()
+                                                                     Argument.is_supportive == is_supportive)
+            if conclusion_uid and not is_argument:
+                db_argument = db_argument.filter_by(conclusion_uid=conclusion_uid).first()
+            else:
+                db_argument = db_argument.filter_by(argument_uid=argument_uid).first()
+
             if not db_argument:
                 logger('ItemDictHelper', 'No argument found', error=True)
                 return None
@@ -662,9 +669,9 @@ class ItemDictHelper(object):
             url = _um.get_url_for_reaction_on_argument(db_argument.uid, attack, arg_id_sys)
 
             if is_argument:
-                is_author = is_author_of_argument(db_user, argument)
+                is_author = is_author_of_argument(db_user, argument_uid)
             else:
-                is_author = is_author_of_statement(db_user, conclusion)
+                is_author = is_author_of_statement(db_user, conclusion_uid)
             statements_array.append(self.__create_answer_dict(str(db_argument.uid), premise_array, 'choose', url,
                                                               is_markable=True, is_editable=True, is_author=is_author))
 

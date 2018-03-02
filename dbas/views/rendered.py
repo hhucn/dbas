@@ -144,8 +144,6 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any]):
     logger('Views', 'def')
     session_expired = user.update_last_action(request.validated['user'])
     logger('Views', str(request.validated['user']))
-    logger('Views', str(request.validated['user'].uid))
-    logger('Views', str(session_expired))
     if session_expired:
         request.session.invalidate()
         headers = forget(request)
