@@ -79,6 +79,17 @@ class ValidateUserLoginRoute(unittest.TestCase):
         self.assertEqual(401, response.status_code)
         self.assertIsInstance(response, _JSONError)
 
+    def test_login_empty_user_is_not_allowed_to_login(self):
+        request = construct_dummy_request()
+        request.json_body = {'nickname': '',
+                             'password': 'thankgoditsfriday'}
+        response = user_login(request)
+        self.assertIn('nickname', request.validated)
+        self.assertIn('password', request.validated)
+        self.assertEqual(401, response.status_code)
+        self.assertIsInstance(response, _JSONError)
+
+
 
 def test_server_available():
     response = get_response("hello")

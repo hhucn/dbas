@@ -24,7 +24,7 @@ from dbas.lib import (get_all_arguments_by_statement,
                       get_text_for_argument_uid, resolve_issue_uid_to_slug)
 from dbas.validators.core import has_keywords, validate
 from .lib import HTTP204, flatten, json_to_dict, logger, merge_dicts
-from .login import validate_credentials, validate_login
+from .login import validate_credentials, validate_login, valid_token
 from .references import (get_all_references_by_reference_text,
                          get_reference_by_id, get_references_for_url,
                          prepare_single_reference, store_reference,
@@ -50,6 +50,12 @@ ahello = Service(name='hello',
                  path='/hello',
                  description="Say hello to remote users",
                  cors_policy=cors_policy)
+
+whoami = Service(name='whoami',
+                 path='/whoami',
+                 description='Send nickname and token to D-BAS and validate yourself',
+                 cors_policy=cors_policy)
+
 
 # Argumentation stuff
 reaction = Service(name='api_reaction',
@@ -157,6 +163,19 @@ login = Service(name='login',
 def hello(_):
     """
     Return data from DBas discussion_reaction page.
+
+    :return: dbas.discussion_reaction(True)
+    """
+    return {"status": "ok",
+            "message": "Connection established. \"Back when PHP had less than 100 functions and the function hashing "
+                       "mechanism was strlen()\" -- Author of PHP"}
+
+
+@whoami.get()
+@validate(valid_token)
+def whoami_fn(request):
+    """
+    Test-route to validate token and nickname.
 
     :return: dbas.discussion_reaction(True)
     """

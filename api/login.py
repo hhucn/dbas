@@ -11,7 +11,6 @@ import os
 from datetime import datetime
 
 import transaction
-from pyramid.httpexceptions import HTTPUnauthorized
 
 from admin.lib import check_token
 from dbas.auth.login import login_user
@@ -59,60 +58,7 @@ def __create_token(nickname, alg='sha512'):
     return hashlib.new(alg, salt).hexdigest()
 
 
-# #############################################################################
-# Dispatch API attempts by type
-
-def process_user(request, htoken):
-    try:
-        nickname, token = htoken.rsplit('-', 1)  # The 1 is important, because nicknames may have their own minus.
-    except ValueError:
-        raise HTTPUnauthorized()
-
-    log.info("[API] Login Attempt with user {}".format(nickname))
-
-    db_user = get_user_by_case_insensitive_nickname(nickname)
-
-    if not db_user.token == token and not check_token(token):
-        __raise_401("Invalid Token")
-
-    log.info("[API] Valid token")
-
-    # Prepare data for DB-AS
-    request.validated['user'] = nickname
-    request.validated['db_user'] = db_user
-    request.validated['user_uid'] = db_user.uid
-    request.validated['session_id'] = request.session.id
-
-
-# #############################################################################
-# Validators
-
-
-def validate_login(request):
-    """
-    Validate the submitted token. Checks if a user is logged in and prepares a
-    dictionary, which is then passed to DBAS.
-
-    :param request:
-    :return:
-    """
-    header = 'X-Authentication'
-    htoken = request.headers.get(header)
-    if not htoken or htoken == "null":
-        msg = "Received invalid or empty authentication token"
-        log.info("[API] " + msg)
-        raise HTTP401(msg)
-
-    try:
-        payload = json_to_dict(htoken)
-        process_user(request, payload["token"])
-    except json.decoder.JSONDecodeError:
-        msg = "Invalid JSON in token"
-        log.info("[API] " + msg)
-        raise HTTP401("Invalid JSON in token")
-
-
-def token_to_database(nickname, token):
+def __token_to_database(nickname, token):
     """
     Store the newly created token in database.
 
@@ -124,6 +70,49 @@ def token_to_database(nickname, token):
     db_user.set_token(token)
     db_user.update_token_timestamp()
     transaction.commit()
+
+
+# #############################################################################
+# Dispatch API attempts by type
+
+def __process_user_token(request, nickname, token):
+    log.info("[API] Login Attempt from user {}".format(nickname))
+    db_user = get_user_by_case_insensitive_nickname(nickname)
+
+    if not db_user.token == token and not check_token(token):
+        add_error(request, "Invalid token", 401)
+        return
+
+    request.validated['db_user'] = db_user
+
+
+# #############################################################################
+# Validators
+
+
+def validate_login(request, **kwargs):
+    valid_token(request)
+
+
+def valid_token(request, **kwargs):
+    """
+    Validate the submitted token. Checks if a user is logged in and prepares a
+    dictionary, which is then passed to DBAS.
+
+    :param request:
+    :return:
+    """
+    header = 'X-Authentication'
+    htoken = request.headers.get(header)
+    if not htoken or htoken == "null":
+        add_error(request, "Received invalid or empty authentication token")
+        return
+
+    try:
+        payload = json_to_dict(htoken)
+        __process_user_token(request, payload['nickname'], payload['token'])
+    except json.decoder.JSONDecodeError:
+        add_error(request, "Invalid JSON in token")
 
 
 def validate_credentials(request, **kwargs):
@@ -144,7 +133,7 @@ def validate_credentials(request, **kwargs):
     logged_in = login_user(nickname, password, request.mailer)
     if 'user' in logged_in:
         token = __create_token(nickname)
-        token_to_database(nickname, token)
+        __token_to_database(nickname, token)
         request.validated['nickname'] = logged_in['user'].nickname
         request.validated['token'] = token
     else:
