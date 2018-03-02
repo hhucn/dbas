@@ -10,7 +10,7 @@ class ValidateCredentials(unittest.TestCase):
         request.validated = {'nickname': 'Walter',
                              'password': 'iamatestuser2016'}
         validate_credentials(request)
-        self.assertIs(len(request.errors), 0)
+        self.assertEqual(0, len(request.errors))
         self.assertIn('nickname', request.validated)
         self.assertIn('token', request.validated)
 

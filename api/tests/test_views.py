@@ -7,6 +7,9 @@ import random
 import string
 import unittest
 
+import hypothesis.strategies as st
+from cornice.util import _JSONError
+from hypothesis import given
 from nose.tools import assert_equals, assert_true
 
 from api.tests.lib import get_response, parse_status, construct_dummy_request
@@ -43,6 +46,38 @@ class ValidateUserLoginRoute(unittest.TestCase):
         self.assertIn('password', request.validated)
         self.assertIn('token', response)
         self.assertIn('nickname', response)
+
+    def test_login_without_password(self):
+        request = construct_dummy_request()
+        request.json_body = {'nickname': 'Walter'}
+        response = user_login(request)
+        self.assertIn('nickname', request.validated)
+        self.assertNotIn('password', request.validated)
+        self.assertEqual(400, response.status_code)
+        self.assertIsInstance(response, _JSONError)
+
+    @given(password=st.text())
+    def test_login_wrong_password(self, password: str):
+        pwd = password.replace('\x00', '')
+        pwd = pwd.replace('iamatestuser2016', '¯\_(ツ)_/¯')
+        request = construct_dummy_request()
+        request.json_body = {'nickname': 'Walter',
+                             'password': pwd}
+        response = user_login(request)
+        self.assertIn('nickname', request.validated)
+        self.assertIn('password', request.validated)
+        self.assertEqual(401, response.status_code)
+        self.assertIsInstance(response, _JSONError)
+
+    def test_login_wrong_user(self):
+        request = construct_dummy_request()
+        request.json_body = {'nickname': '¯\_(ツ)_/¯',
+                             'password': 'thankgoditsfriday'}
+        response = user_login(request)
+        self.assertIn('nickname', request.validated)
+        self.assertIn('password', request.validated)
+        self.assertEqual(401, response.status_code)
+        self.assertIsInstance(response, _JSONError)
 
 
 def test_server_available():

@@ -439,13 +439,13 @@ def get_reference_usages(request):
 
 @login.post(require_csrf=False)
 @validate(has_keywords(('nickname', str), ('password', str)), validate_credentials)
-def user_login(request) -> dict:
+def user_login(request):
     """
     Check provided credentials and return a token, if it is a valid user. The function body is only executed,
     if the validator added a request.validated field.
 
     :param request:
-    :return: token
+    :return: token and nickname
     """
     return {'nickname': request.validated['nickname'],
             'token': request.validated['token']}
