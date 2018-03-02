@@ -13,7 +13,7 @@ from dbas.strings.translator import Translator
 from dbas.validators.lib import add_error
 
 
-def valid_user(request):
+def valid_user(request, **kwargs):
     """
     Given a nickname of a user authenticated, return the object from the database.
 

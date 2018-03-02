@@ -18,7 +18,7 @@ def has_keywords(*keywords: Tuple[str, type]):
     :return:
     """
 
-    def valid_keywords(request):
+    def valid_keywords(request, **kwargs):
         error_occured = False
         for (keyword, ktype) in keywords:
             value = request.json_body.get(keyword)

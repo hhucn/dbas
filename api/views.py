@@ -22,8 +22,9 @@ from dbas.handler.statements import set_positions_premise, set_position
 from dbas.lib import (get_all_arguments_by_statement,
                       get_all_arguments_with_text_by_statement_id,
                       get_text_for_argument_uid, resolve_issue_uid_to_slug)
+from dbas.validators.core import has_keywords, validate
 from .lib import HTTP204, flatten, json_to_dict, logger, merge_dicts
-from .login import validate_credentials, validate_login
+from .login import validate_credentials, validate_login, valid_token
 from .references import (get_all_references_by_reference_text,
                          get_reference_by_id, get_references_for_url,
                          prepare_single_reference, store_reference,
@@ -49,6 +50,12 @@ ahello = Service(name='hello',
                  path='/hello',
                  description="Say hello to remote users",
                  cors_policy=cors_policy)
+
+whoami = Service(name='whoami',
+                 path='/whoami',
+                 description='Send nickname and token to D-BAS and validate yourself',
+                 cors_policy=cors_policy)
+
 
 # Argumentation stuff
 reaction = Service(name='api_reaction',
@@ -164,6 +171,19 @@ def hello(_):
                        "mechanism was strlen()\" -- Author of PHP"}
 
 
+@whoami.get()
+@validate(valid_token)
+def whoami_fn(request):
+    """
+    Test-route to validate token and nickname.
+
+    :return: dbas.discussion_reaction(True)
+    """
+    return {"status": "ok",
+            "message": "Connection established. \"Back when PHP had less than 100 functions and the function hashing "
+                       "mechanism was strlen()\" -- Author of PHP"}
+
+
 # =============================================================================
 # DISCUSSION-RELATED REQUESTS
 # =============================================================================
@@ -261,9 +281,7 @@ def prepare_dbas_request_dict(request) -> dict:
     :param request:
     :return:
     """
-    api_data = prepare_user_information(request)
-    nickname = api_data['nickname'] if api_data else None
-    return dbas.prepare_request_dict(request, nickname)
+    return dbas.prepare_request_dict(request)
 
 
 def __init(request):
@@ -304,7 +322,6 @@ def discussion_attitude(request):
 
     :param request: request
     :return: dbas.discussion_attitude(True)
-
     """
     request_dict = prepare_dbas_request_dict(request)
     return dbas.discussion.attitude(request_dict)
@@ -439,38 +456,18 @@ def get_reference_usages(request):
 # USER MANAGEMENT
 # =============================================================================
 
-@login.get()  # TODO test this permission='use'
-def get_csrf_token(request):
-    """
-    Test user's credentials, return success if valid token and username is provided.
-
-    :param request:
-    :return:
-
-    """
-    log.debug("[API/CSRF] Returning CSRF token.")
-    return append_csrf_to_dict(request, {})
-
-
-@login.post(validators=validate_credentials, require_csrf=False)
+@login.post(require_csrf=False)
+@validate(has_keywords(('nickname', str), ('password', str)), validate_credentials)
 def user_login(request):
     """
     Check provided credentials and return a token, if it is a valid user. The function body is only executed,
     if the validator added a request.validated field.
 
     :param request:
-    :return: token
-
+    :return: token and nickname
     """
-    user = request.validated['user']
-    # Convert bytes to string
-    if type(user['token']) == bytes:
-        token = user['token'].decode('utf-8')
-    else:
-        token = user['token']
-
-    return_dict = {'token': '%s-%s' % (user['nickname'], token)}
-    return append_csrf_to_dict(request, return_dict)
+    return {'nickname': request.validated['nickname'],
+            'token': request.validated['token']}
 
 
 # =============================================================================

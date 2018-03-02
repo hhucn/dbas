@@ -4,12 +4,19 @@ Helper functions for tests.
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
 import requests
+from cornice import Errors
 from nose.tools import assert_equals, assert_true
+from pyramid.testing import DummyRequest
+from pyramid_mailer.mailer import DummyMailer
 from requests import Response
 
 from api.lib import json_to_dict
 
 API = "http://localhost:4284/api/"
+
+
+def construct_dummy_request() -> DummyRequest:
+    return DummyRequest(json_body={}, validated={}, errors=Errors(), mailer=DummyMailer)
 
 
 def has_json_header(response):
