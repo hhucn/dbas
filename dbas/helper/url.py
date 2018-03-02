@@ -97,8 +97,8 @@ class UrlManager(object):
         :param pgroup_id_list: [int]
         :return: discuss/{slug}/choose/{p1}/{p2}/...
         """
-        is_arg = 'agree' if is_argument else 'disagree'
-        is_sup = 'agree' if is_supportive else 'disagree'
+        is_arg = 'true' if is_argument else 'false'
+        is_sup = 'true' if is_supportive else 'false'
         pgroups = ''
         if len(pgroup_id_list) > 0:
             pgroups = '/' + '/'.join(str(x) for x in pgroup_id_list)

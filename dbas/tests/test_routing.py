@@ -62,7 +62,7 @@ class FunctionalTests(unittest.TestCase):
         self.testapp.get('/discuss/cat-or-dog/attitude/2', status=200)
 
     def test_discussion_choose(self):
-        self.testapp.get('/discuss/cat-or-dog/choose/t/f/4/6', status=200)
+        self.testapp.get('/discuss/cat-or-dog/choose/true/false/4/6', status=200)
 
     def test_discussion_jump(self):
         self.testapp.get('/discuss/cat-or-dog/jump/12', status=200)
