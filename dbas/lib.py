@@ -8,12 +8,12 @@ import hashlib
 import locale
 import os
 import re
-import time
 from collections import defaultdict
 from datetime import datetime
 from enum import Enum, auto
 from html import escape
 from urllib import parse
+from uuid import uuid4
 
 from sqlalchemy import func
 
@@ -468,7 +468,6 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     :param author_uid: User.uid
     :return: String
     """
-    logger('DBAS.LIB', 'main ' + str(uid))
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
     conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
@@ -573,8 +572,6 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     :param _t:
     :return:
     """
-    logger('DBAS.LIB', 'main ' + str(arg_array))
-
     # get all pgroups and at last, the conclusion
     pgroups = []
     supportive = []
@@ -881,7 +878,7 @@ def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, ui
         'is_info': bubble_type is BubbleTypes.INFO,
         'is_markable': is_markable,
         'is_author': is_author,
-        'id': uid if len(str(uid)) > 0 else '{}'.format(time.time()).replace('.', ''),
+        'id': uid if len(str(uid)) > 0 else uuid4().hex,
         'url': url,
         'message': message,
         'omit_url': omit_url,
@@ -892,29 +889,26 @@ def create_speechbubble_dict(bubble_type, is_markable=False, is_author=False, ui
         'is_users_opinion': is_users_opinion,
     }
 
-    votecount_keys = __get_text_for_click_and_mark_count(nickname, bubble_type is BubbleTypes.USER, is_supportive,
-                                                         argument_uid, statement_uid, speech, lang)
+    votecount_keys = __get_text_for_click_and_mark_count(nickname, bubble_type is BubbleTypes.USER, argument_uid,
+                                                         statement_uid, speech, lang)
 
     speech['votecounts_message'] = votecount_keys[speech['votecounts']]
 
     return speech
 
 
-def __get_text_for_click_and_mark_count(nickname, is_user, is_supportive, argument_uid, statement_uid, speech, lang):
+def __get_text_for_click_and_mark_count(nickname, is_user, argument_uid, statement_uid, speech, lang):
     """
     Build text for a bubble, how many other participants have the same interest?
 
     :param nickname: User.nickname
     :param is_user: boolean
-    :param is_supportive: boolean
     :param argument_uid: Argument.uid
     :param statement_uid: Statement.uid
     :param speech: dict()
     :param lang: ui_locales
     :return: [String]
     """
-    if is_supportive is None:
-        is_supportive = False
 
     if not nickname:
         nickname = 'anonymous'
@@ -923,7 +917,7 @@ def __get_text_for_click_and_mark_count(nickname, is_user, is_supportive, argume
     if not db_user:
         db_user = DBDiscussionSession.query(User).filter_by(nickname='anonymous').first()
 
-    db_clicks, db_marks = __get_clicks_and_marks(argument_uid, statement_uid, is_supportive, db_user)
+    db_clicks, db_marks = __get_clicks_and_marks(argument_uid, statement_uid, db_user)
 
     _t = Translator(lang)
     speech['votecounts'] = len(db_clicks) if db_clicks else 0
@@ -945,13 +939,13 @@ def __get_text_for_click_and_mark_count(nickname, is_user, is_supportive, argume
     return votecount_keys
 
 
-def __get_clicks_and_marks(argument_uid, statement_uid, is_supportive, db_user):
+def __get_clicks_and_marks(argument_uid, statement_uid, db_user):
     db_clicks = None
     db_marks = None
     if argument_uid:
         db_clicks = DBDiscussionSession.query(ClickedArgument). \
             filter(ClickedArgument.argument_uid == argument_uid,
-                   ClickedArgument.is_up_vote == is_supportive,
+                   ClickedArgument.is_up_vote == True,
                    ClickedArgument.is_valid,
                    ClickedArgument.author_uid != db_user.uid).all()
         db_marks = DBDiscussionSession.query(MarkedArgument). \
@@ -961,7 +955,7 @@ def __get_clicks_and_marks(argument_uid, statement_uid, is_supportive, db_user):
     elif statement_uid:
         db_clicks = DBDiscussionSession.query(ClickedStatement). \
             filter(ClickedStatement.statement_uid == statement_uid,
-                   ClickedStatement.is_up_vote == is_supportive,
+                   ClickedStatement.is_up_vote == True,
                    ClickedStatement.is_valid,
                    ClickedStatement.author_uid != db_user.uid).all()
         db_marks = DBDiscussionSession.query(MarkedStatement). \

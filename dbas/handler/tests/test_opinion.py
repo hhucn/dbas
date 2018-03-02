@@ -13,47 +13,38 @@ class OpinionHandlerTests(unittest.TestCase):
         main_page = 'url'
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
-        # correct argument id
-        response_correct_id = get_user_and_opinions_for_argument(argument_uids=[11, 12], db_user=db_user,
-                                                                 lang=lang, main_page=main_page, path='')
-        self.assertTrue(verify_structure_of_argument_dictionary(self, response_correct_id))
-        response_correct_id_2 = get_user_and_opinions_for_argument(argument_uids=[11, 13], db_user=db_user,
-                                                                   lang=lang, main_page=main_page, path='')
-        self.assertTrue(verify_structure_of_argument_dictionary(self, response_correct_id_2))
+        for uid in [11, 12, 13]:
+            response = get_user_and_opinions_for_argument(argument_uid=uid,
+                                                          db_user=db_user,
+                                                          lang=lang,
+                                                          main_page=main_page,
+                                                          path='')
+            self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response))
 
     def test_get_user_with_same_opinion_for_statements(self):
         lang = 'en'
         main_page = 'url'
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
-        # correct statement id
-        response_correct_id_supp_true = get_user_with_same_opinion_for_statements(statement_uids=[1, 1],
-                                                                                  is_supportive=True,
-                                                                                  db_user=db_user,
-                                                                                  lang=lang,
-                                                                                  main_page=main_page)
-        self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response_correct_id_supp_true))
-
-        response_correct_id_supp_false = get_user_with_same_opinion_for_statements(statement_uids=[2, 3],
-                                                                                   is_supportive=False,
-                                                                                   db_user=db_user,
-                                                                                   lang=lang,
-                                                                                   main_page=main_page)
-        self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response_correct_id_supp_false))
+        for uid in [1, 2, 3]:
+            response = get_user_with_same_opinion_for_statements(statement_uid=uid,
+                                                                 is_supportive=True,
+                                                                 db_user=db_user,
+                                                                 lang=lang,
+                                                                 main_page=main_page)
+            self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response))
 
     def test_get_user_with_same_opinion_for_premisegroups(self):
         lang = 'en'
         main_page = 'url'
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
 
-        # correct premisegroup id
-        response_correct_id = get_user_with_same_opinion_for_premisegroups(argument_uids=[1, 2], db_user=db_user,
-                                                                           lang=lang, main_page=main_page)
-        self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response_correct_id))
-        response_correct_id2 = get_user_with_same_opinion_for_premisegroups(argument_uids=[61, 62],
-                                                                            db_user=db_user, lang=lang,
-                                                                            main_page=main_page)
-        self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response_correct_id2))
+        for uid in [1, 2, 61, 62]:
+            response = get_user_with_same_opinion_for_premisegroups(argument_uid=uid,
+                                                                    db_user=db_user,
+                                                                    lang=lang,
+                                                                    main_page=main_page)
+            self.assertTrue(verify_structure_of_statement_premisgroup_argument_dictionary(self, response))
 
     def test_get_user_with_same_opinion_for_argument(self):
         lang = 'en'
@@ -143,7 +134,6 @@ def verify_structure_of_statement_premisgroup_argument_dictionary(self, response
 
     # test structure of ...
     # ... value of key 'opinions'
-    self.assertTrue('uid' in response['opinions'][0])
     self.assertTrue('text' in response['opinions'][0])
     self.assertTrue('message' in response['opinions'][0])
     self.assertTrue('users' in response['opinions'][0])

@@ -24,7 +24,11 @@ function ajaxSkeleton(url, method, data, ajaxDone, ajaxFail) {
     }).done(function (data) {
         ajaxDone(data);
     }).fail(function (data) {
-        ajaxFail(data);
+        if (data.statusText ==='Bad CSRF Token' || !('errors' in data.responseJSON)){
+            setGlobalErrorHandler(_t(ohsnap), _t(requestFailedBadToken));
+        } else {
+            ajaxFail(data);
+        }
     });
 }
 

@@ -64,6 +64,11 @@ def __modifiy_discussion_url(prep_dict: dict) -> dict:
     for i, el in enumerate(prep_dict['issues']['all']):
         prep_dict['issues']['all'][i]['url'] = '/discuss' + prep_dict['issues']['all'][i]['url']
 
+    # modify urls of the bubbles
+    for i, el in enumerate(prep_dict['discussion']['bubbles']):
+        if '/' in el.get('url', ''):
+            prep_dict['discussion']['bubbles'][i]['url'] = '/discuss' + prep_dict['discussion']['bubbles'][i]['url']
+
     return prep_dict
 
 
@@ -184,7 +189,8 @@ def __append_extras_dict_during_justification(request: Request, pdict: dict, rdi
     :param is_reportable:
     :return:
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).first()
+    nickname = request.authenticated_userid
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
     ui_locales = get_language_from_cookie(request)
     mode = request.matchdict.get('mode', '')
     relation = request.matchdict['relation'][0] if len(request.matchdict['relation']) > 0 else ''
@@ -194,7 +200,7 @@ def __append_extras_dict_during_justification(request: Request, pdict: dict, rdi
     extras_dict = {}
 
     _dh = DictionaryHelper(ui_locales, rdict['issue'].lang)
-    logged_in = db_user and db_user.nickname != nick_of_anonymous_user is not None
+    logged_in = (db_user and db_user.nickname != nick_of_anonymous_user) is not None
 
     if [c for c in ('t', 'f') if c in mode] and relation == '':
         extras_dict = _dh.prepare_extras_dict(rdict['issue'].slug, False, True, True, request.registry,
@@ -225,7 +231,7 @@ def __append_extras_dict_during_justification(request: Request, pdict: dict, rdi
         extras_dict = _dh.prepare_extras_dict(rdict['issue'].slug, False, True, False, request.registry,
                                               request.application_url, request.path, db_user=db_user)
         # is the discussion at the end?
-        if item_len == 0 or item_len == 1 and logged_in:
+        if item_len == 0 or item_len == 1 and logged_in or 'login' in pdict['items']['elements'][0].get('id'):
             _dh.add_discussion_end_text(pdict['discussion'], extras_dict, request.authenticated_userid,
                                         at_justify_argumentation=True)
 

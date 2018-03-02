@@ -213,7 +213,7 @@ function AjaxDiscussionHandler() {
     this.getMoreInfosAboutOpinion = function (type, argument_uid, statement_uid) {
         var is_argument = type === 'argument';
         var is_position = type === 'position' || type === 'statement';
-        var uid = argument_uid === 'None' ? statement_uid : argument_uid;
+        var uid = typeof argument_uid === 'undefined' ? statement_uid : argument_uid;
 
         var url = 'get_user_with_same_opinion';
         var d = {
@@ -230,6 +230,7 @@ function AjaxDiscussionHandler() {
         var fail = function ajaxGetMoreInfosAboutOpinionFail(data) {
             setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
         };
+        
         ajaxSkeleton(url, 'POST', d, done, fail);
 
     };
