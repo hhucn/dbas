@@ -360,6 +360,7 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
                                             support_counter_argument=support_counter_argument,
                                             colored_position=color_steps, nickname=db_user.nickname,
                                             with_html_tag=color_steps)
+
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     db_confrontation = DBDiscussionSession.query(Argument).get(additional_uid)
     reply_for_argument = True

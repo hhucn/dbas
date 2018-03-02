@@ -230,6 +230,7 @@ function AjaxDiscussionHandler() {
         var fail = function ajaxGetMoreInfosAboutOpinionFail(data) {
             setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
         };
+        
         ajaxSkeleton(url, 'POST', d, done, fail);
 
     };

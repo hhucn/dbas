@@ -232,7 +232,6 @@ def __append_extras_dict_during_justification(request: Request, pdict: dict, rdi
                                               request.application_url, request.path, db_user=db_user)
         # is the discussion at the end?
         if item_len == 0 or item_len == 1 and logged_in or 'login' in pdict['items']['elements'][0].get('id'):
-            logger('X', 'Y')
             _dh.add_discussion_end_text(pdict['discussion'], extras_dict, request.authenticated_userid,
                                         at_justify_argumentation=True)
 

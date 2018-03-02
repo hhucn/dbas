@@ -31,7 +31,7 @@ def get_user_and_opinions_for_argument(argument_uid, db_user, lang, main_page, p
     :return: { 'attack_type': { 'message': 'string', 'users': [{'nickname': 'string', 'avatar_url': 'url' 'vote_timestamp': 'string' ], ... }],...}
     """
 
-    logger('OpinionHandler', 'Arguments ' + str(argument_uid) + ', nickname ' + str(db_user.nickname))
+    logger('OpinionHandler', 'Argument ' + str(argument_uid) + ', nickname ' + str(db_user.nickname))
 
     # preparation
     _t = Translator(lang)
@@ -293,17 +293,17 @@ def get_user_with_same_opinion_for_argument(argument_uid, db_user, lang, main_pa
     text = get_text_for_argument_uid(argument_uid, lang)
     opinions['text'] = text[0:1].upper() + text[1:]
 
-    db_votes = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.argument_uid == argument_uid,
-                                                                 ClickedArgument.is_up_vote == True,
-                                                                 ClickedArgument.is_valid == True,
-                                                                 ClickedArgument.author_uid != db_user.uid).all()
+    db_clicks = DBDiscussionSession.query(ClickedArgument).filter(ClickedArgument.argument_uid == argument_uid,
+                                                                  ClickedArgument.is_up_vote == True,
+                                                                  ClickedArgument.is_valid == True,
+                                                                  ClickedArgument.author_uid != db_user.uid).all()
 
-    for vote in db_votes:
+    for vote in db_clicks:
         voted_user = DBDiscussionSession.query(User).get(vote.author_uid)
         users_dict = create_users_dict(voted_user, vote.timestamp, main_page, lang)
         all_users.append(users_dict)
     opinions['users'] = all_users
-    opinions['message'] = __get_genered_text_for_clickcount(len(db_votes), db_user.uid, _t)
+    opinions['message'] = __get_genered_text_for_clickcount(len(db_clicks), db_user.uid, _t)
 
     db_seen_by = DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=int(argument_uid)).all()
     opinions['seen_by'] = len(db_seen_by) if db_seen_by else 0

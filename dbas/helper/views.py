@@ -185,7 +185,7 @@ def preparation_for_dont_know_statement(request_dict, argument_uid, supportive):
 
 def preparation_for_justify_argument(request_dict, statement_or_arg_id, supportive, relation):
     """
-    Prepares some paramater for the justification step for an argument
+    Prepares some parameter for the justification step for an argument
 
     :param request_dict: dict out of pyramid's request object including issue, slug and history and more
     :param statement_or_arg_id: Argument.uid / Statement.uid
