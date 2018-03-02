@@ -195,14 +195,14 @@ def __append_extras_dict_during_justification(request: Request, pdict: dict, rdi
     mode = request.matchdict.get('mode', '')
     relation = request.matchdict['relation'][0] if len(request.matchdict['relation']) > 0 else ''
     stat_or_arg_uid = request.matchdict.get('statement_or_arg_id')
-    supportive = mode in ['t', 'd']
+    supportive = mode in ['agree', 'dontknow']
     item_len = len(pdict['items']['elements'])
     extras_dict = {}
 
     _dh = DictionaryHelper(ui_locales, rdict['issue'].lang)
     logged_in = (db_user and db_user.nickname != nick_of_anonymous_user) is not None
 
-    if [c for c in ('t', 'f') if c in mode] and relation == '':
+    if [c for c in ('agree', 'disagree') if c in mode] and relation == '':
         extras_dict = _dh.prepare_extras_dict(rdict['issue'].slug, False, True, True, request.registry,
                                               request.application_url, request.path, db_user)
         if item_len == 0 or item_len == 1 and logged_in:
@@ -210,7 +210,7 @@ def __append_extras_dict_during_justification(request: Request, pdict: dict, rdi
                                         current_premise=get_text_for_statement_uid(stat_or_arg_uid),
                                         supportive=supportive)
 
-    elif 'd' in mode and relation == '':
+    elif 'dontknow' in mode and relation == '':
         extras_dict = _dh.prepare_extras_dict(rdict['issue'].slug, True, True, True, request.registry,
                                               request.application_url, request.path, db_user=db_user)
         # is the discussion at the end?

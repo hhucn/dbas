@@ -245,8 +245,8 @@ def choose(request_dict) -> Union[dict, None]:
     db_user = request_dict['user']
     slug = db_issue.slug
 
-    is_argument = True if is_argument is 't' else False
-    is_supportive = True if is_supportive is 't' else False
+    is_argument = True if is_argument is 'agree' else False
+    is_supportive = True if is_supportive is 'agree' else False
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, application_url, db_user)
     disc_ui_locales = issue_dict['lang']

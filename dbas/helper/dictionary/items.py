@@ -133,9 +133,9 @@ class ItemDictHelper(object):
         title_t = _tn.get(_.iAgreeWithInColor) + '.'
         title_f = _tn.get(_.iDisagreeWithInColor) + '.'
         title_d = _tn.get(_.iHaveNoOpinionYetInColor) + '.'
-        url_t = _um.get_url_for_justifying_statement(statement_uid, 't')
-        url_f = _um.get_url_for_justifying_statement(statement_uid, 'f')
-        url_d = _um.get_url_for_justifying_statement(uid, 'd')
+        url_t = _um.get_url_for_justifying_statement(statement_uid, 'agree')
+        url_f = _um.get_url_for_justifying_statement(statement_uid, 'disagree')
+        url_d = _um.get_url_for_justifying_statement(uid, 'dontknow')
         d_t = self.__create_answer_dict('agree', [{'title': title_t, 'id': 'agree'}], 'agree', url_t)
         d_f = self.__create_answer_dict('disagree', [{'title': title_f, 'id': 'disagree'}], 'disagree', url_f)
         d_d = self.__create_answer_dict('dontknow', [{'title': title_d, 'id': 'dontknow'}], 'dontknow', url_d)
@@ -371,8 +371,8 @@ class ItemDictHelper(object):
             add_seen_argument(argument_uid, db_user)
 
         rel_dict = get_relation_text_dict_with_substitution(self.lang, False, is_dont_know=True, gender=gender)
-        current_mode = 't' if is_supportive else 'f'
-        not_current_mode = 'f' if is_supportive else 't'
+        current_mode = 'agree' if is_supportive else 'disagree'
+        not_current_mode = 'disagree' if is_supportive else 'agree'
 
         relation = 'undermine'
         url = self.__get_dont_know_item_for_undermine(db_argument, not_current_mode, _um)
@@ -486,7 +486,7 @@ class ItemDictHelper(object):
             return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
         rel_dict = get_relation_text_dict_with_substitution(self.lang, True, attack_type=attack, gender=gender)
-        mode = 't' if is_supportive else 'f'
+        mode = 'agree' if is_supportive else 'disagree'
         _um = UrlManager(slug, history=self.path)
 
         relations = ['undermine', 'support', 'undercut', 'rebut']
@@ -744,31 +744,31 @@ class ItemDictHelper(object):
         url0 = _um.get_url_for_reaction_on_argument(db_argument.uid, sys_attack, arg_id_sys)
 
         if len_undercut == 0:
-            url1 = _um.get_url_for_justifying_statement(db_argument.conclusion_uid, 't')
-            url2 = _um.get_url_for_justifying_argument(db_argument.uid, 't', 'undercut')
-            url3 = _um.get_url_for_justifying_statement(db_argument.conclusion_uid, 'f')
+            url1 = _um.get_url_for_justifying_statement(db_argument.conclusion_uid, 'agree')
+            url2 = _um.get_url_for_justifying_argument(db_argument.uid, 'agree', 'undercut')
+            url3 = _um.get_url_for_justifying_statement(db_argument.conclusion_uid, 'disagree')
             if len(db_premises) == 1:
-                url4 = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, 'f')
+                url4 = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, 'disagree')
             else:
-                url4 = _um.get_url_for_justifying_argument(db_argument.uid, 'f', 'undermine')
+                url4 = _um.get_url_for_justifying_argument(db_argument.uid, 'disagree', 'undermine')
 
         elif len_undercut == 1:
             url1 = None
-            url2 = _um.get_url_for_justifying_argument(db_argument.uid, 't', 'undercut')
+            url2 = _um.get_url_for_justifying_argument(db_argument.uid, 'agree', 'undercut')
             url3 = _um.get_url_for_jump(db_undercutted_arg.uid)
             if len(db_premises) == 1:
-                url4 = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, 'f')
+                url4 = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, 'disagree')
             else:
-                url4 = _um.get_url_for_justifying_argument(db_argument.uid, 'f', 'undermine')
+                url4 = _um.get_url_for_justifying_argument(db_argument.uid, 'disagree', 'undermine')
 
         else:
             url1 = None
             url2 = None
             url3 = _um.get_url_for_jump(db_undercutted_arg.uid)
             if len(db_premises) == 1:
-                url4 = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, 'f')
+                url4 = _um.get_url_for_justifying_statement(db_premises[0].statement_uid, 'disagree')
             else:
-                url4 = _um.get_url_for_justifying_argument(db_argument.uid, 'f', 'undermine')
+                url4 = _um.get_url_for_justifying_argument(db_argument.uid, 'disagree', 'undermine')
 
         return [url0, url1, url2, url3, url4]
 

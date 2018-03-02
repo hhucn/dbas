@@ -144,12 +144,12 @@ def __prepare_justify_statement_step(bubble_array, index, step, db_user, lang, u
     mode = steps[2]
     relation = steps[3] if len(steps) > 3 else ''
 
-    if [c for c in ('t', 'f') if c in mode] and relation == '':
+    if [c for c in ('agree', 'disagree') if c in mode] and relation == '':
         bubble = __get_bubble_from_justify_statement_step(step, db_user, lang, url)
         if bubble and not bubbles_already_last_in_list(bubble_array, bubble):
             bubble_array += bubble
 
-    elif 'd' in mode and relation == '':
+    elif 'dontknow' in mode and relation == '':
         bubbles = __get_bubble_from_dont_know_step(step, db_user, lang)
         if bubbles and not bubbles_already_last_in_list(bubble_array, bubbles):
             bubble_array += bubbles
@@ -212,7 +212,7 @@ def __get_bubble_from_justify_statement_step(step, db_user, lang, url):
     logger('history_handler', 'def')
     steps = step.split('/')
     uid = int(steps[1])
-    is_supportive = steps[2] == 't' or steps[2] == 'd'  # supportive = t(rue) or d(ont know) mode
+    is_supportive = steps[2] == 'agree' or steps[2] == 'dontknow'
 
     _tn = Translator(lang)
     msg, tmp = get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn)

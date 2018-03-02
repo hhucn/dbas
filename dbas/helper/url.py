@@ -77,7 +77,7 @@ class UrlManager(object):
         Returns url for getting the reaction regarding an argument of the user or the API-version
 
         :param argument_uid: Argument.uid
-        :param mode: 't' on supportive, 'f' otherwise
+        :param mode:
         :param confrontation_argument: Argument.uid
         :return: discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys
         """
@@ -97,8 +97,8 @@ class UrlManager(object):
         :param pgroup_id_list: [int]
         :return: discuss/{slug}/choose/{p1}/{p2}/...
         """
-        is_arg = 't' if is_argument else 'f'
-        is_sup = 't' if is_supportive else 'f'
+        is_arg = 'agree' if is_argument else 'disagree'
+        is_sup = 'agree' if is_supportive else 'disagree'
         pgroups = ''
         if len(pgroup_id_list) > 0:
             pgroups = '/' + '/'.join(str(x) for x in pgroup_id_list)

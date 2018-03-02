@@ -14,8 +14,8 @@ class DiscussionChoseViewTests(unittest.TestCase):
         self.config.include('pyramid_chameleon')
         self.arg_uid = 15
         self.pgroup_uid = 30
-        self.is_supportive = 'f'
-        self.is_argument = 't'
+        self.is_supportive = False
+        self.is_argument = True
 
     def tearDown(self):
         testing.tearDown()

@@ -48,7 +48,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 2,
-            'mode': 't',
+            'mode': 'agree',
             'relation': '',
         }
         response = d(request)
@@ -67,7 +67,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 2,
-            'mode': 't',
+            'mode': 'agree',
             'relation': '',
         }
         response = d(request)
@@ -94,7 +94,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 2,
-            'mode': 'f',
+            'mode': 'disagree',
             'relation': ''
         }
         response = d(request)
@@ -118,7 +118,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 2,
-            'mode': 'd',
+            'mode': 'dontknow',
             'relation': '',
         }
         response = d(request)
@@ -133,7 +133,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 2,
-            'mode': 't',
+            'mode': 'agree',
             'relation': ['undermine'],
         }
         response = d(request)
@@ -149,7 +149,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 2,
-            'mode': 't',
+            'mode': 'agree',
             'relation': ['undermine'],
         }
         response = view(request)
@@ -186,7 +186,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 2,
-            'mode': 't',
+            'mode': 'agree',
             'relation': 'blabla',
         }
         try:
@@ -199,7 +199,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 40,
-            'mode': 't',
+            'mode': 'agree',
             'relation': '',
         }
         try:

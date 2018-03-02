@@ -46,7 +46,7 @@ class UrlManagerTests(unittest.TestCase):
         url = self.__make_one(slug='cat-or-dog')
 
         response_string_true = url.get_url_for_justifying_statement(statement_uid=123,
-                                                                    mode='t')
+                                                                    mode='agree')
         # Verify that, if 'as_location_href' is 'True', 'statement_uid' and 'mode' are not empty,
         # '{discussion_url}/{slug}/justify/{statement_or_arg_id}/{mode}' is returned.
         self.assertEqual(response_string_true, '/cat-or-dog/justify/123/t')
@@ -61,20 +61,20 @@ class UrlManagerTests(unittest.TestCase):
         url = self.__make_one(slug='cat-or-dog')
 
         response_no_additional_id_true = url.get_url_for_justifying_argument(argument_uid=123,
-                                                                             mode='t',
+                                                                             mode='agree',
                                                                              attitude='attitude',
                                                                              additional_id=-1)
         # Verify that, if 'additional_id' is '-1' and 'as_location_href' is 'True',
         # '{discussion_url}/{slug}/justify/{argument_uid}/{mode}/{attitude}' is returned.
-        self.assertEqual(response_no_additional_id_true, '/cat-or-dog/justify/123/t/attitude')
+        self.assertEqual(response_no_additional_id_true, '/cat-or-dog/justify/123/agree/attitude')
 
         response_additional_id_false = url.get_url_for_justifying_argument(argument_uid=123,
-                                                                           mode='t',
+                                                                           mode='agree',
                                                                            attitude='attitude',
                                                                            additional_id=30)
         # Verify that, if 'additional_id' is not equal '-1' and 'as_location_href' is 'False',
         # '{discussion_url}/{slug}/justify/{argument_uid}/{mode}/{attitude}/{attitude_uid}' is returned.
-        self.assertEqual(response_additional_id_false, '/cat-or-dog/justify/123/t/attitude/30')
+        self.assertEqual(response_additional_id_false, '/cat-or-dog/justify/123/agree/attitude/30')
 
     def test_get_url_for_reaction_on_argument(self):
         url = self.__make_one(slug='cat-or-dog')
