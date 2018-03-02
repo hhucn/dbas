@@ -145,8 +145,7 @@ def validate_credentials(request, **kwargs):
     if 'user' in logged_in:
         token = __create_token(nickname)
         token_to_database(nickname, token)
-        user = {'nickname': nickname, 'token': token}
-        request.validated['db_user'] = logged_in['user']
-        request.validated['user'] = user
+        request.validated['nickname'] = logged_in['user'].nickname
+        request.validated['token'] = token
     else:
         add_error(request, 'Could not login user', 401)

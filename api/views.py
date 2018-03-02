@@ -437,22 +437,9 @@ def get_reference_usages(request):
 # USER MANAGEMENT
 # =============================================================================
 
-@login.get()  # TODO test this permission='use'
-def get_csrf_token(request):
-    """
-    Test user's credentials, return success if valid token and username is provided.
-
-    :param request:
-    :return:
-    """
-    log.debug("[API/CSRF] Returning CSRF token.")
-    return append_csrf_to_dict(request, {})
-
-
 @login.post(require_csrf=False)
-@validate(has_keywords(('nickname', str), ('password', str)),
-          validate_credentials)
-def user_login(request):
+@validate(has_keywords(('nickname', str), ('password', str)), validate_credentials)
+def user_login(request) -> dict:
     """
     Check provided credentials and return a token, if it is a valid user. The function body is only executed,
     if the validator added a request.validated field.
@@ -460,8 +447,8 @@ def user_login(request):
     :param request:
     :return: token
     """
-    user = request.validated['user']
-    return {'token': '%s-%s' % (user['nickname'], user['token'])}
+    return {'nickname': request.validated['nickname'],
+            'token': request.validated['token']}
 
 
 # =============================================================================
