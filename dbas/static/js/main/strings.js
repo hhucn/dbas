@@ -487,7 +487,7 @@ var dbas_en = {
     'textMaxCountMessage': 'characters left',
     'textMaxCountMessageError': 'Put it in a nutshell!', //'Please shorten!',
     'users': 'Users',
-    'usersWithSameOpinion': 'Users with same mood',
+    'usersWithSameOpinion': 'Users with the same decision',
     'unpinNavigation': 'Unpin Navigation',
     'unkownError': 'Unknown error',
     'youAreAbleToReviewNow': 'You are now able to visit the review section.',

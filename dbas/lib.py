@@ -468,7 +468,6 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     :param author_uid: User.uid
     :return: String
     """
-    logger('DBAS.LIB', 'main ' + str(uid))
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
     conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
@@ -573,8 +572,6 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     :param _t:
     :return:
     """
-    logger('DBAS.LIB', 'main ' + str(arg_array))
-
     # get all pgroups and at last, the conclusion
     pgroups = []
     supportive = []

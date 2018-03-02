@@ -16,7 +16,7 @@ import dbas.handler.password as password_handler
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, Group, ClickedStatement, ClickedArgument, TextVersion, Settings, \
     ReviewEdit, ReviewDelete, ReviewOptimization, get_now, sql_timestamp_pretty_print, MarkedArgument, MarkedStatement, \
-    ReviewDuplicate
+    ReviewDuplicate, Language
 from dbas.handler.email import send_mail
 from dbas.handler.notification import send_welcome_notification
 from dbas.handler.opinion import get_user_with_same_opinion_for_argument, \
@@ -787,13 +787,13 @@ def set_new_oauth_user(firstname, lastname, nickname, email, gender, uid, provid
     }
 
 
-def get_users_with_same_opinion(uids, application_url, path, db_user, is_argument, is_attitude, is_reaction,
-                                is_position, db_lang) -> dict:
+def get_users_with_same_opinion(uid: int, app_url: str, path: str, db_user: User, is_argument: bool,
+                                is_attitude: bool, is_reaction: bool, is_position: bool, db_lang: Language) -> dict:
     """
     Based on current discussion step information about other users will be given
 
     :param uids: IDs of statements or argument for the information request
-    :param application_url: url of the application
+    :param app_url: url of the application
     :param path: current path of the user
     :param db_user: User
     :param is_argument: boolean, if the request is for an argument
@@ -805,18 +805,17 @@ def get_users_with_same_opinion(uids, application_url, path, db_user, is_argumen
     :return: prepared collection with information about other users with the same opinion or an error
     """
     prepared_dict = dict()
-    _tn = Translator(db_lang.ui_locales)
 
     if is_argument and is_reaction:
-        prepared_dict = get_user_and_opinions_for_argument(uids, db_user, db_lang.ui_locales, application_url, path)
+        prepared_dict = get_user_and_opinions_for_argument(uid, db_user, db_lang.ui_locales, app_url, path)
     elif is_argument and not is_reaction:
-        prepared_dict = get_user_with_same_opinion_for_argument(uids[0], db_user, db_lang.ui_locales, application_url)
+        prepared_dict = get_user_with_same_opinion_for_argument(uid, db_user, db_lang.ui_locales, app_url)
     elif is_position:
-        prepared_dict = get_user_with_same_opinion_for_statements(uids, True, db_user, db_lang.ui_locales, application_url)
+        prepared_dict = get_user_with_same_opinion_for_statements(uid, True, db_user, db_lang.ui_locales, app_url)
     elif is_attitude:
-        prepared_dict = get_user_with_opinions_for_attitude(uids[0], db_user, db_lang.ui_locales, application_url)
+        prepared_dict = get_user_with_opinions_for_attitude(uid, db_user, db_lang.ui_locales, app_url)
     elif not is_attitude:
-        prepared_dict = get_user_with_same_opinion_for_premisegroups(uids, db_user, db_lang.ui_locales, application_url)
-    prepared_dict['info'] = _tn.get(_.otherParticipantsDontHaveOpinionForThisStatement) if len(uids) == 0 else ''
+        prepared_dict = get_user_with_same_opinion_for_premisegroups(uid, db_user, db_lang.ui_locales, app_url)
+    prepared_dict['info'] = ''
 
     return prepared_dict
