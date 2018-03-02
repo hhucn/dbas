@@ -39,10 +39,10 @@ def get_user_and_opinions_for_argument(argument_uid, db_user, lang, main_page, p
 
     # getting uids of all reactions
     arg_uids_for_reactions = [
-        get_undermines_for_argument_uid(argument_uid[0]),
-        get_supports_for_argument_uid(argument_uid[0]),
-        get_undercuts_for_argument_uid(argument_uid[0]),
-        get_rebuts_for_argument_uid(argument_uid[0])
+        get_undermines_for_argument_uid(argument_uid),
+        get_supports_for_argument_uid(argument_uid),
+        get_undercuts_for_argument_uid(argument_uid),
+        get_rebuts_for_argument_uid(argument_uid)
     ]
 
     # get gender of counter use
