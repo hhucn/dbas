@@ -22,6 +22,7 @@ from dbas.handler.statements import set_positions_premise, set_position
 from dbas.lib import (get_all_arguments_by_statement,
                       get_all_arguments_with_text_by_statement_id,
                       get_text_for_argument_uid, resolve_issue_uid_to_slug)
+from dbas.validators.core import has_keywords, validate
 from .lib import HTTP204, flatten, json_to_dict, logger, merge_dicts
 from .login import validate_credentials, validate_login
 from .references import (get_all_references_by_reference_text,
@@ -261,9 +262,7 @@ def prepare_dbas_request_dict(request) -> dict:
     :param request:
     :return:
     """
-    api_data = prepare_user_information(request)
-    nickname = api_data['nickname'] if api_data else None
-    return dbas.prepare_request_dict(request, nickname)
+    return dbas.prepare_request_dict(request)
 
 
 def __init(request):
@@ -304,7 +303,6 @@ def discussion_attitude(request):
 
     :param request: request
     :return: dbas.discussion_attitude(True)
-
     """
     request_dict = prepare_dbas_request_dict(request)
     return dbas.discussion.attitude(request_dict)
@@ -446,13 +444,14 @@ def get_csrf_token(request):
 
     :param request:
     :return:
-
     """
     log.debug("[API/CSRF] Returning CSRF token.")
     return append_csrf_to_dict(request, {})
 
 
-@login.post(validators=validate_credentials, require_csrf=False)
+@login.post(require_csrf=False)
+@validate(has_keywords(('nickname', str), ('password', str)),
+          validate_credentials)
 def user_login(request):
     """
     Check provided credentials and return a token, if it is a valid user. The function body is only executed,
@@ -460,17 +459,9 @@ def user_login(request):
 
     :param request:
     :return: token
-
     """
     user = request.validated['user']
-    # Convert bytes to string
-    if type(user['token']) == bytes:
-        token = user['token'].decode('utf-8')
-    else:
-        token = user['token']
-
-    return_dict = {'token': '%s-%s' % (user['nickname'], token)}
-    return append_csrf_to_dict(request, return_dict)
+    return {'token': '%s-%s' % (user['nickname'], user['token'])}
 
 
 # =============================================================================

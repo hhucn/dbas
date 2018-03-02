@@ -3,10 +3,10 @@ Testing the routes of the API.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
-import random
-
 import json
+import random
 import string
+
 from nose.tools import assert_equals, assert_false, assert_true
 
 from admin.lib import generate_application_token
@@ -39,27 +39,6 @@ def test_server_available():
     status = parse_status(response.content)
     assert_true(response.ok)
     assert_equals("ok", status)
-
-
-def test_login_foo_is_not_a_valid_user():
-    credentials = {"nickname": "foo",
-                   "password": "bar"}
-    response = post_request("login", credentials)
-    content = json_to_dict(response.content)
-    assert_false(response.ok)
-    assert_equals("error", content.get("status"))
-    assert_false(content.get("token"))
-    assert_false(content.get("csrf"))
-
-
-def test_login_walter_is_a_valid_user():
-    credentials = {"nickname": "Walter",
-                   "password": "iamatestuser2016"}
-    response = post_request("login", credentials)
-    content = json_to_dict(response.content)
-    assert_true(response.ok)
-    assert_true(content.get("token"))
-    assert_true(content.get("csrf"))
 
 
 def test_add_position_should_succeed():
