@@ -32,11 +32,11 @@ def url_to_statement(issue_uid, statement_uid, agree=True):
     """
     if isinstance(agree, str):
         if agree == "true":
-            mode = "t"
+            mode = "agree"
         else:
-            mode = "f"
+            mode = "disagree"
     else:
-        mode = "t" if agree is True else "f"
+        mode = "agree" if agree is True else "disagree"
     slug = resolve_issue_uid_to_slug(issue_uid)
     url_manager = UrlManager(slug=slug)
     return "api/" + url_manager.get_url_for_justifying_statement(statement_uid, mode)

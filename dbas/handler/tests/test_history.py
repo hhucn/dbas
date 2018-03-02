@@ -43,13 +43,13 @@ class HistoryHandlerTests(unittest.TestCase):
 
     def test_save_path_in_database(self):
         db_hist1 = DBDiscussionSession.query(History).filter_by(author_uid=self.user.uid).all()
-        big_fucking_link = 'cat-or-dog/justify/13/t/undercut?history=/attitude/2-/justify/2/t-/reaction/12/undercut/13'
+        big_fucking_link = 'cat-or-dog/justify/13/agree/undercut?history=/attitude/2-/justify/2/t-/reaction/12/undercut/13'
         history.save_path_in_database(self.user, 'cat-or-dog', big_fucking_link, self.history)
         db_hist2 = DBDiscussionSession.query(History).filter_by(author_uid=self.user.uid).all()
         assert_less(len(db_hist1), len(db_hist2))
 
     def test_get_history_from_database(self):
-        big_fucking_link = 'cat-or-dog/justify/13/t/undercut?history=/attitude/2-/justify/2/t-/reaction/12/undercut/13'
+        big_fucking_link = 'cat-or-dog/justify/13/agree/undercut?history=/attitude/2-/justify/2/t-/reaction/12/undercut/13'
         history.save_path_in_database(self.user, 'cat-or-dog', big_fucking_link, self.history)
         hist = history.get_history_from_database(self.user, 'en')
         assert_greater(len(hist), 0)

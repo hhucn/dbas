@@ -376,7 +376,7 @@ def __receive_urls_of_start_premises(new_argument_uids: list, db_conclusion: Sta
         url = _um.get_url_for_choosing_premisegroup(False, supportive, db_conclusion.uid, pgroups)
 
     # send notifications and mails
-    email_url = _main_um.get_url_for_justifying_statement(db_conclusion.uid, 't' if supportive else 'f')
+    email_url = _main_um.get_url_for_justifying_statement(db_conclusion.uid, 'agree' if supportive else 'disagree')
     nh.send_add_text_notification(email_url, db_conclusion.uid, db_user, mailer)
 
     return url
@@ -516,7 +516,7 @@ def __create_argument_by_raw_input(db_user: User, premisegroup: [str], db_conclu
         append_action_to_issue_rss(db_issue=db_issue, db_author=db_user, title=_tn.get(_.argumentAdded),
                                    description='...' + get_text_for_argument_uid(new_argument.uid,
                                                                                  anonymous_style=True) + '...',
-                                   url=_um.get_url_for_justifying_statement(new_argument.uid, 'd'))
+                                   url=_um.get_url_for_justifying_statement(new_argument.uid, 'dontknow'))
 
     return new_argument, [s.uid for s in new_statements]
 

@@ -44,10 +44,10 @@ def handle_justification_step(request_dict):
     if not is_integer(statement_or_arg_id, True):
         return None, None
 
-    if [c for c in ('t', 'f') if c in mode] and relation == '':
+    if [c for c in ('agree', 'disagree') if c in mode] and relation == '':
         item_dict, discussion_dict = __handle_justification_statement(request_dict, statement_or_arg_id, mode)
 
-    elif 'd' in mode and relation == '':
+    elif 'dontknow' in mode and relation == '':
         item_dict, discussion_dict = __handle_justification_dont_know(request_dict, statement_or_arg_id, mode)
 
     elif [c for c in ('undermine', 'rebut', 'undercut', 'support') if c in relation]:
@@ -69,7 +69,7 @@ def __handle_justification_statement(request_dict, statement_or_arg_id, mode):
     """
     logger('ViewHelper', 'justify statement')
     db_issue = request_dict['issue']
-    supportive = mode in ['t', 'd']  # supportive = t or do not know mode
+    supportive = mode in ['agree', 'dontknow']
 
     if not get_text_for_statement_uid(statement_or_arg_id)\
             or not check_belonging_of_statement(db_issue.uid, statement_or_arg_id):
@@ -88,7 +88,7 @@ def __handle_justification_dont_know(request_dict, statement_or_arg_id, mode):
     """
     logger('ViewHelper', 'do not know for {}'.format(statement_or_arg_id))
     db_issue = request_dict['issue']
-    supportive = mode in ['t', 'd']  # supportive = t or do not know mode
+    supportive = mode in ['agree', 'dontknow']
 
     if int(statement_or_arg_id) != 0 and \
             not check_belonging_of_argument(db_issue.uid, statement_or_arg_id) and \
@@ -112,7 +112,7 @@ def __handle_justification_argument(request_dict, statement_or_arg_id, relation,
     ui_locales = request_dict['ui_locales']
     nickname = request_dict['nickname']
     main_page = request_dict['app_url']
-    supportive = mode in ['t', 'd']  # supportive = t or do not know mode
+    supportive = mode in ['agree', 'dontknow']  # supportive = t or do not know mode
 
     if not check_belonging_of_argument(db_issue.uid, statement_or_arg_id):
         return None, None, None

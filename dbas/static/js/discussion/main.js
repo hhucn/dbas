@@ -656,7 +656,7 @@ function Main() {
         };
         var sendStartPremise = function () {
             conclusion = splits[splits.length - 2];
-            supportive = splits[splits.length - 1] === 't';
+            supportive = splits[splits.length - 1] === 'agree';
             textArray = [];
             $('#' + addPremiseContainerBodyId + ' input').each(function () {
                 if ($(this).val().length > 0) {
@@ -675,7 +675,7 @@ function Main() {
             var url = window.location.href.split('?')[0];
             var add = url.indexOf('support') === -1 ? 0 : 1;
             arg = splits[splits.length - 3 - add];
-            supportive = splits[splits.length - 2 - add] === 't';
+            supportive = splits[splits.length - 2 - add] === 'agree';
             relation = splits[splits.length - 1 - add];
             interactionHandler.sendStatement(textArray, '', supportive, arg, relation, fuzzy_add_reason);
         };
