@@ -58,7 +58,7 @@ def __create_token(nickname, alg='sha512'):
     return hashlib.new(alg, salt).hexdigest()
 
 
-def __token_to_database(nickname, token):
+def token_to_database(nickname, token):
     """
     Store the newly created token in database.
 
@@ -82,7 +82,6 @@ def __process_user_token(request, nickname, token):
     if not db_user.token == token and not check_token(token):
         add_error(request, "Invalid token", 401)
         return
-
     request.validated['db_user'] = db_user
 
 
@@ -133,7 +132,7 @@ def validate_credentials(request, **kwargs):
     logged_in = login_user(nickname, password, request.mailer)
     if 'user' in logged_in:
         token = __create_token(nickname)
-        __token_to_database(nickname, token)
+        token_to_database(nickname, token)
         request.validated['nickname'] = logged_in['user'].nickname
         request.validated['token'] = token
     else:
