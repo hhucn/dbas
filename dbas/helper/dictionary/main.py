@@ -286,11 +286,12 @@ class DictionaryHelper(object):
             self.__add_discussion_end_text_at_justify_statement(discussion_dict, extras_dict, nickname,
                                                                 current_premise, supportive, gender, _tn)
 
-        else:
-            endtext = _tn.get(_.discussionEndLinkTextLoggedIn if nickname else _.feelFreeToLogin)
-            mid_text = _tn.get(_.discussionEnd) + ' ' + endtext
-            discussion_dict['bubbles'].append(create_speechbubble_dict(BubbleTypes.INFO, message=mid_text, uid='end',
-                                                                       lang=self.system_lang, nickname=nickname))
+        # with this part you could add an "end bubble with login text", but only if you do not want an login-item
+        # else:
+        #     endtext = _tn.get(_.discussionEndLinkTextLoggedIn if nickname else _.feelFreeToLogin)
+        #     mid_text = _tn.get(_.discussionEnd) + ' ' + endtext
+        #     discussion_dict['bubbles'].append(create_speechbubble_dict(BubbleTypes.INFO, message=mid_text, uid='end',
+        #                                                               lang=self.system_lang, nickname=nickname))
 
     def __add_discussion_end_text_at_start(self, discussion_dict, extras_dict, nickname, gender, _tn):
         """
@@ -359,8 +360,11 @@ class DictionaryHelper(object):
             sdict = create_speechbubble_dict(BubbleTypes.INFO, uid='end', message=mid_text, lang=self.system_lang,
                                              nickname=nickname)
             discussion_dict['bubbles'].append(sdict)
-        # else:
-        #     mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin)
+        else:
+            mid_text = _tn.get(_.discussionEnd) + ' ' + _tn.get(_.feelFreeToLogin)
+            sdict = create_speechbubble_dict(BubbleTypes.INFO, uid='end', message=mid_text, lang=self.system_lang,
+                                             nickname=nickname)
+            discussion_dict['bubbles'].append(sdict)
 
     def __add_discussion_end_text_at_dont_know(self, discussion_dict, current_premise, gender, _tn, nickname):
         """

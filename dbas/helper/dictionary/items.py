@@ -262,7 +262,6 @@ class ItemDictHelper(object):
             arg_id_sys, attack = rs.get_attack_for_argument(argument.uid, last_attack=is_undermine,
                                                             restriction_on_args=attacking_arg_uids,
                                                             history=self.path)
-
             the_other_one = True
             url = ''
 
@@ -295,16 +294,13 @@ class ItemDictHelper(object):
                 text = _tn.get(_.newPremiseRadioButtonText)
                 if len(statements_array) == 0:
                     text = _tn.get(_.newPremiseRadioButtonTextAsFirstOne)
-                statements_array.append(
-                    self.__create_answer_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add'))
+                a_dict = self.__create_answer_dict('justify_premise', [{'id': '0', 'title': text}], 'justify', 'add')
+                statements_array.append(a_dict)
 
             else:
                 # elif len(statements_array) == 1:
-                statements_array.append(
-                    self.__create_answer_dict('login',
-                                              [{'id': '0', 'title': _tn.get(_.onlyOneItem)}],
-                                              'justify',
-                                              'login'))
+                a_dict = self.__create_answer_dict('login', [{'id': '0', 'title': _tn.get(_.onlyOneItem)}], 'justify', 'login')
+                statements_array.append(a_dict)
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_arguments)}}
 

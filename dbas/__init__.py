@@ -9,11 +9,9 @@ a time-shifted dialog where arguments are presented and acted upon one-at-a-time
 
 # from wsgiref.simple_server import make_server
 
-import logging
 import os
 import re
 import time
-from configparser import ConfigParser, NoSectionError
 
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
@@ -40,9 +38,6 @@ def main(global_config, **settings):
     # Patch in beaker url
     settings.update(get_db_environs(key="session.url", db_name="beaker"))
 
-    # log settings
-    log = logging.getLogger(__name__)
-
     # authentication and authorization
     authn_policy = AuthTktAuthenticationPolicy(settings["authn.secret"], callback=groupfinder, hashalg='sha512')
     authz_policy = ACLAuthorizationPolicy()
@@ -57,18 +52,21 @@ def main(global_config, **settings):
     session_factory = session_factory_from_settings(settings)
     set_cache_regions_from_settings(settings)
 
+    # PLEASE USE THIS CODE TO READ CUSTOM SETTINGS FROM THE INI FILES
     # include custom parts
-    sections = ['service']
-    for s in sections:
-        try:
-            parser = ConfigParser()
-            parser.read(global_config['__file__'])
-            custom_settings = dict()
-            for k, v in parser.items('settings:{}'.format(s)):
-                custom_settings['settings:{}:{}'.format(s, k)] = v
-            settings.update(custom_settings)
-        except NoSectionError as e:
-            log.debug('__init__() '.upper() + 'main() <No ' + s + '-Section> ' + str(e))
+    # sections = ['service']
+    # log settings
+    # log = logging.getLogger(__name__)
+    # for s in sections:
+    #     try:
+    #         parser = ConfigParser()
+    #         parser.read(global_config['__file__'])
+    #         custom_settings = dict()
+    #         for k, v in parser.items('settings:{}'.format(s)):
+    #             custom_settings['settings:{}:{}'.format(s, k)] = v
+    #         settings.update(custom_settings)
+    #     except NoSectionError as e:
+    #         log.debug('__init__() '.upper() + 'main() <No ' + s + '-Section> ' + str(e))
 
     # creating the configurator
     config = Configurator(settings=settings,
