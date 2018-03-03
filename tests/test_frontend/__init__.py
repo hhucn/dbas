@@ -28,7 +28,7 @@ TEST_STRING = {
 
 # english page has a german flag and vice versa
 TEST_IMG = {
-    'GERMAN': 'flag-en',
+    'GERMAN': 'flag-us-gb',
     'ENGLISH': 'flag-de'
 }  # to check if the flag in the source_page(html) had changed
 

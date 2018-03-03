@@ -823,7 +823,7 @@
                     <input tal:condition="extras.lang_is_en" id="en" type="radio" name="lang_topic" checked>
                     <label for="en">
                       <img class="language_selector_img"
-                           src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en">
+                           src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_us-gb">
                       English
                     </label>
                   </li>

@@ -8,6 +8,7 @@ from math import ceil
 
 import arrow
 import transaction
+from paste.httpexceptions import HTTPNotFound
 from pyramid.request import Request
 from slugify import slugify
 
@@ -17,6 +18,7 @@ from dbas.database.discussion_model import Argument, User, Issue, Language, Stat
 from dbas.handler import user
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import get_short_url
+from dbas.lib import nick_of_anonymous_user
 from dbas.query_wrapper import get_not_disabled_issues_as_query, get_visible_issues_for_user_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -161,7 +163,7 @@ def get_id_of_slug(slug: str):
     :param slug: slug
     :return: uid
     """
-    return get_not_disabled_issues_as_query().filter(Issue.slug == slug).first()
+    return get_not_disabled_issues_as_query().filter_by(slug=slug).first()
 
 
 def save_issue_id_in_session(issue_uid: int, request: Request):
@@ -198,7 +200,8 @@ def get_issue_id(request):
 
     # no issue found
     if not issue_uid:
-        issue_uid = get_issue_based_on_header(request)
+        raise HTTPNotFound()
+        # issue_uid = get_issue_based_on_header(request)
 
     # save issue in session
     request.session['issue'] = issue_uid
@@ -236,24 +239,24 @@ def get_title_for_slug(slug):
     return None
 
 
-def get_issues_overiew(nickname, application_url) -> dict:
+def get_issues_overiew(db_user: User, application_url: str) -> dict:
     """
     Returns dictionary with keywords 'user' and 'others', which got lists with dicts with infos
+    IMPORTANT: URL's are generated for the frontend!
 
     :param nickname: Users.nickname
     :param application_url: current applications url
     :return: dict
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
-    user.update_last_action(db_user)
-    if not db_user:
+
+    if not db_user or db_user.nickname == nick_of_anonymous_user:
         return {
             'user': [],
             'other': []
         }
 
-    is_admin = user.is_admin(nickname)
-    if is_admin:
+    user.update_last_action(db_user)
+    if db_user.is_admin():
         db_issues_other_users = DBDiscussionSession.query(Issue).filter(Issue.author_uid != db_user.uid).all()
     else:
         db_issues_other_users = get_visible_issues_for_user_as_query(db_user.uid).filter(
@@ -265,6 +268,30 @@ def get_issues_overiew(nickname, application_url) -> dict:
         'user': [__create_issue_dict(issue, application_url) for issue in db_issues_of_user],
         'other': [__create_issue_dict(issue, application_url) for issue in db_issues_other_users]
     }
+
+
+def get_issues_overview_on_start(db_user: User) -> list:
+    """
+    Returns list with title, date, and count of statements for each visible issue
+
+    :param db_user: User
+    :return:
+    """
+    prepared_list = []
+    db_issues = get_visible_issues_for_user_as_query(db_user.uid).all()
+    for index, db_issue in enumerate(db_issues):
+        prepared_list.append({
+            'url': '/' + db_issue.slug,
+            'statements': get_number_of_statements(db_issue.uid),
+            'title': db_issue.title,
+            'date': db_issue.date.format('DD.MM.YY HH:mm'),
+            'lang': {
+                'is_de': db_issue.lang == 'de',
+                'is_en': db_issue.lang == 'en',
+            },
+        })
+
+    return prepared_list
 
 
 def set_discussions_properties(db_user: User, db_issue: Issue, value, iproperty, translator) -> dict:
@@ -296,37 +323,40 @@ def set_discussions_properties(db_user: User, db_issue: Issue, value, iproperty,
     return {'error': ''}
 
 
-def __create_issue_dict(issue, application_url) -> dict:
+def __create_issue_dict(db_issue: Issue, app_url: str) -> dict:
     """
     Returns dictionary with several informationa bout the given issue
 
-    :param issue: database row of issue
-    :param application_url: current applications url
+    :param db_issue: database row of issue
+    :param app_url: current applications url
     :return: dict()
     """
-    short_url_dict = get_short_url(application_url + '/' + issue.slug, 'en')
-    url = short_url_dict['url'] if len(short_url_dict['url']) == 0 else application_url + '/' + issue.slug
+    short_url_dict = get_short_url(app_url + '/discuss/' + db_issue.slug, 'en')
+    url = short_url_dict['url'] if len(short_url_dict['url']) > 0 else app_url + '/discuss/' + db_issue.slug
 
     # we do nto have to check for clicked arguments, cause arguments consist out of statements
-    statements = [s.uid for s in DBDiscussionSession.query(Statement).filter_by(issue_uid=issue.uid).all()]
+    statements = [s.uid for s in DBDiscussionSession.query(Statement).filter_by(issue_uid=db_issue.uid).all()]
     db_clicked_statements = DBDiscussionSession.query(ClickedStatement).filter(
         ClickedStatement.statement_uid.in_(statements)).all()
     authors_clicked_statement = [click.author_uid for click in db_clicked_statements]
     db_authors = DBDiscussionSession.query(User).filter(User.uid.in_(authors_clicked_statement)).all()
-    involved_users = str(len(db_authors))
+    participants = str(len(db_authors))
 
     prepared_dict = {
-        'uid': issue.uid,
-        'title': issue.title,
-        'url': application_url + '/' + issue.slug,
+        'uid': db_issue.uid,
+        'title': db_issue.title,
+        'url': '/' + db_issue.slug,
         'short_url': url,
-        'date': issue.date.format('DD.MM. HH:mm'),
-        'count_of_statements': str(get_number_of_statements(issue.uid)),
-        'is_enabled': not issue.is_disabled,
-        'is_public': not issue.is_private,
-        'is_writable': not issue.is_read_only,
-        'involved_users': involved_users,
-        'lang': DBDiscussionSession.query(Language).get(issue.lang_uid).ui_locales,
+        'date': db_issue.date.format('DD.MM.YY HH:mm'),
+        'count_of_statements': str(get_number_of_statements(db_issue.uid)),
+        'is_enabled': not db_issue.is_disabled,
+        'is_public': not db_issue.is_private,
+        'is_writable': not db_issue.is_read_only,
+        'participants': participants,
+        'lang': {
+            'is_de': db_issue.lang == 'de',
+            'is_en': db_issue.lang == 'en',
+        },
         'toggle_on': "<i class='fa fa-check'></i>",
         'toggle_off': "<i class='fa fa-times'></i>",
     }

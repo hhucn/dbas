@@ -133,7 +133,7 @@
           <li id="header-language-selector" tal:condition="extras.lang_is_de">
             <a id="link-trans-en" style="cursor:pointer">
               <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}"
-                   alt="flag_en">
+                   alt="flag_us-gb">
             </a>
           </li>
 

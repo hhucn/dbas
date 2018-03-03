@@ -119,7 +119,7 @@
                       <li tal:attributes="class extras.link_en_class">
                         <a id="link-settings-en" style="cursor:pointer" data-ui-locales="en">
                           <img class="language_selector_img"
-                               src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_en">
+                               src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_us-gb">
                           English
                         </a>
                       </li>

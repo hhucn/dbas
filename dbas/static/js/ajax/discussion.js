@@ -400,6 +400,7 @@ function AjaxDiscussionHandler() {
      * @param toggle_element
      */
     this.setDiscussionSettings = function (toggle_element) {
+        var _this = this;
         var checked = toggle_element.prop('checked');
         var url = 'set_discussion_properties';
         var d = {
@@ -409,10 +410,46 @@ function AjaxDiscussionHandler() {
         };
         var done = function setDiscussionSettingsDone(data) {
             new InteractionHandler().callbackForSetAvailabilityOfDiscussion(toggle_element, data);
+            if (toggle_element.attr('class') === 'discussion-enable-toggle'){
+                _this.replaceTitleOfDiscussionOverview(checked, toggle_element);
+                _this.replaceShortLinkOfDiscussionOverview(checked, toggle_element);
+            }
         };
         var fail = function setDiscussionSettingsFail(data) {
             setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
         };
         ajaxSkeleton(url, 'POST', d, done, fail);
+    };
+    
+    this.replaceTitleOfDiscussionOverview = function(checked, toggle_element){
+        var tr = $('tr[data-uid="' + toggle_element.data('uid') + '"]');
+        var child = $(tr.find('td:first'));
+        var url = child.data('url');
+        var text = child.text().trim();
+        if (checked){
+            child.find('span').replaceWith('<a href="' + url + '">' + text + '</a>');
+        } else {
+            child.find('a').replaceWith('<span>' + text + '</span>');
+        }
+    };
+    
+    this.replaceShortLinkOfDiscussionOverview = function(checked, toggle_element){
+        var tr = $('tr[data-uid="' + toggle_element.data('uid') + '"]');
+        var child = $(tr.find('td:last'));
+        var clipboard = $('<i>').attr({
+            'class': 'fa fa-clipboard',
+            'aria-hidden': 'true', 'style':
+                'margin-left: 0.5em; cursor: pointer;'
+        });
+        var text = child.text().trim();
+        if (checked){
+            child.empty();
+            child.append($('<a>').attr('href', text).text(text));
+            child.append(clipboard);
+            new MyDiscussion().set_clipboard(clipboard);
+        } else {
+            child.empty();
+            child.append($('<span>').text(text));
+        }
     };
 }

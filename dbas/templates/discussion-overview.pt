@@ -4,8 +4,8 @@
     <section>
       <div class="text-center big-header">
         <h3 class="text-center">
-          <span i18n:translate="overview_of_discussion">Overview of the Discussions</span></h3>
-        <p i18n:translate="page_contains_overview" class="lead text-center">This page contains an over of
+          <span i18n:translate="overview_of_discussion=">Overview of the Discussions</span></h3>
+        <p i18n:translate="page_contains_overview_all_created" class="lead text-center">This page contains an over of
           discussions you have created as well as other participants created</p>
       </div>
     </section>
@@ -29,7 +29,8 @@
               <tr>
                 <th i18n:translate="title">Titel</th>
                 <th i18n:translate="statements">Statements</th>
-                <th i18n:translate="involved_users">Involved User</th>
+                <th i18n:translate="participants">Participants</th>
+                <th i18n:translate="language">Language</th>
                 <th i18n:translate="creation">Creation</th>
                 <th><span i18n:translate="enabled">Enabled</span>
                   <i class="fa fa-question-circle-o cursor-help" aria-hidden="true"
@@ -47,33 +48,43 @@
               </tr>
               </thead>
               <tbody>
-              <tr tal:repeat="issue issues.user" data-uid="${issue.uid}">
-                <td>${issue.title}</td>
+              <tr tal:repeat="issue issues.user" data-uid="${issue.uid}" data-url="${issue.url}">
+                <td tal:condition="issue.is_enabled" data-url="${issue.url}">
+                    <a href="${issue.url}">${issue.title}</a>
+                </td>
+                <td tal:condition="not:issue.is_enabled">
+                    <span>${issue.title}</span>
+                </td>
                 <td>${issue.count_of_statements}</td>
-                <td>${issue.involved_users}</td>
+                <td>${issue.participants}</td>
+                <td>
+                  <img tal:condition="issue.lang.is_de" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_de">
+                  <img tal:condition="issue.lang.is_en" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_us-gb">
+                </td>
                 <td>${issue.date}</td>
                 <td>
                   <input class="discussion-enable-toggle" type="checkbox" data-toggle="toggle"
                          data-keyword="enable"
                          data-size="mini"
                          data-onstyle="success"
-                         data-offstyle="danger" tal:attributes="checked issue.is_enabled; data-uid issue.uid; data-on issue.toggle_on; data-off issue.toggle_off">
+                         data-offstyle="danger" checked="${issue.is_enabled}" data-uid="${issue.uid}" data-on="${issue.toggle_on}" data-off="${issue.toggle_off}">
                 </td>
                 <td>
                   <input class="discussion-public-toggle" type="checkbox" data-toggle="toggle"
                          data-keyword="public"
                          data-size="mini"
                          data-onstyle="success"
-                         data-offstyle="danger" tal:attributes="checked issue.is_public; data-uid issue.uid; data-on issue.toggle_on; data-off issue.toggle_off">
+                         data-offstyle="danger" checked="${issue.is_public}" data-uid="${issue.uid}" data-on="${issue.toggle_on}" data-off="${issue.toggle_off}">
                 <td>
                   <input class="discussion-writable-toggle" type="checkbox" data-toggle="toggle"
                          data-keyword="writable"
                          data-size="mini"
                          data-onstyle="success"
-                         data-offstyle="danger" tal:attributes="checked issue.is_writable; data-uid issue.uid; data-on issue.toggle_on; data-off issue.toggle_off">
+                         data-offstyle="danger" checked="${issue.is_writable}" data-uid="${issue.uid}" data-on="${issue.toggle_on}" data-off="${issue.toggle_off}">
                 <td>
-                  <a href="${issue.short_url}" title="${issue.url}">${issue.short_url}</a>
-                  <i class="fa fa-clipboard" aria-hidden="true" style="margin-left: 0.5em; cursor: pointer;"></i></td>
+                  <a tal:condition="issue.is_enabled" href="${issue.short_url}" title="${issue.url}">${issue.short_url}</a>
+                  <span tal:condition="not:issue.is_enabled">${issue.short_url}</span>
+                  <i tal:condition="issue.is_enabled" class="fa fa-clipboard" aria-hidden="true" style="margin-left: 0.5em; cursor: pointer;"></i></td>
               </tr>
               </tbody>
             </table>
@@ -107,7 +118,8 @@
               <tr>
                 <th i18n:translate="title">Titel</th>
                 <th i18n:translate="statements">Statements</th>
-                <th i18n:translate="involved_users">Involved User</th>
+                <th i18n:translate="participants">Participants</th>
+                <th i18n:translate="language">Language</th>
                 <th i18n:translate="creation">Creation</th>
                 <th>
                   <span i18n:translate="enabled">Enabled</span>
@@ -128,9 +140,19 @@
               </thead>
               <tbody>
               <tr tal:repeat="issue issues.other" data-uid="${issue.uid}">
-                <td>${issue.title}</td>
+
+                <td tal:condition="issue.is_enabled" data-url="${issue.url}">
+                    <a href="${issue.url}">${issue.title}</a>
+                </td>
+                <td tal:condition="not:issue.is_enabled" data-url="${issue.url}">
+                    <span>${issue.title}</span>
+                </td>
                 <td>${issue.count_of_statements}</td>
-                <td>${issue.involved_users}</td>
+                <td>${issue.participants}</td>
+                <td>
+                  <img tal:condition="issue.lang.is_de" src="${request.static_url('dbas:static/images/flag-de-24.png')}" alt="flag_de">
+                  <img tal:condition="issue.lang.is_en" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_us-gb">
+                </td>
                 <td>${issue.date}</td>
                 <td tal:condition="not:extras.is_admin">
                   <i tal:condition="issue.is_enabled" class="fa fa-check text-success" aria-hidden="true"></i>
@@ -141,7 +163,7 @@
                          data-keyword="enable"
                          data-size="mini"
                          data-onstyle="success"
-                         data-offstyle="danger" tal:attributes="checked issue.is_enabled; data-uid issue.uid; data-on issue.toggle_on; data-off issue.toggle_off">
+                         data-offstyle="danger" checked="${issue.is_enabled}" data-uid="${issue.uid}" data-on="${issue.toggle_on}" data-off="${issue.toggle_off}">
                 </td>
                 <td tal:condition="not:extras.is_admin">
                   <i tal:condition="issue.is_writable" class="fa fa-check text-success" aria-hidden="true"></i>
@@ -152,17 +174,20 @@
                          data-keyword="public"
                          data-size="mini"
                          data-onstyle="success"
-                         data-offstyle="danger" tal:attributes="checked issue.is_public; data-uid issue.uid; data-on issue.toggle_on; data-off issue.toggle_off">
+                         data-offstyle="danger" checked="${issue.is_public}" data-uid="${issue.uid}" data-on="${issue.toggle_on}" data-off="${issue.toggle_off}">
                 </td>
                 <td tal:condition="extras.is_admin">
                   <input class="discussion-writable-toggle" type="checkbox" data-toggle="toggle"
                          data-keyword="writable"
                          data-size="mini"
                          data-onstyle="success"
-                         data-offstyle="danger" tal:attributes="checked issue.is_writable; data-uid issue.uid; data-on issue.toggle_on; data-off issue.toggle_off">
+                         data-offstyle="danger" checked="${issue.is_writable}" data-uid="${issue.uid}" data-on="${issue.toggle_on}" data-off="${issue.toggle_off}">
                 </td>
-                <td>
+                <td tal:condition="issue.is_enabled">
                   <a href="${issue.short_url}" title="${issue.url}">${issue.short_url}</a>
+                </td>
+                <td tal:condition="not:issue.is_enabled">
+                    ${issue.short_url}
                 </td>
               </tr>
               </tbody>

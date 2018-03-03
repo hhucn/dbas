@@ -87,19 +87,25 @@ class IssueHandlerTests(unittest.TestCase):
         self.assertEqual(issue.title, response)
 
     def test_get_issues_overiew(self):
-        nickname = 'Tobias'
-        response = ih.get_issues_overiew(nickname, 'http://test.url')
+        db_user = DBDiscussionSession.query(User).get(2)
+        response = ih.get_issues_overiew(db_user, 'http://test.url')
         self.assertIn('user', response)
         self.assertIn('other', response)
         self.assertTrue(len(response['user']) > 0)
         self.assertTrue(len(response['other']) == 0)
 
-        nickname = 'Christian'
-        response = ih.get_issues_overiew(nickname, 'http://test.url')
+        db_user = DBDiscussionSession.query(User).get(3)
+        response = ih.get_issues_overiew(db_user, 'http://test.url')
         self.assertIn('user', response)
         self.assertIn('other', response)
         self.assertTrue(len(response['user']) == 0)
         self.assertTrue(len(response['other']) > 0)
+
+    def test_get_issues_overview_on_start(self):
+        db_user = DBDiscussionSession.query(User).get(2)
+        response = ih.get_issues_overview_on_start(db_user)
+        self.assertIn('title', response)
+        self.assertIn('url', response)
 
     def test_set_discussions_properties(self):
         db_walter = DBDiscussionSession.query(User).filter_by(nickname='Walter').one_or_none()
