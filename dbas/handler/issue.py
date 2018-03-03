@@ -239,13 +239,13 @@ def get_title_for_slug(slug):
     return None
 
 
-def get_issues_overiew(db_user: User, application_url: str) -> dict:
+def get_issues_overiew(db_user: User, app_url: str) -> dict:
     """
     Returns dictionary with keywords 'user' and 'others', which got lists with dicts with infos
     IMPORTANT: URL's are generated for the frontend!
 
     :param nickname: Users.nickname
-    :param application_url: current applications url
+    :param app_url: current applications url
     :return: dict
     """
 
@@ -262,11 +262,10 @@ def get_issues_overiew(db_user: User, application_url: str) -> dict:
         db_issues_other_users = get_visible_issues_for_user_as_query(db_user.uid).filter(
             Issue.author_uid != db_user.uid).all()
 
-    db_issues_of_user = DBDiscussionSession.query(Issue).filter_by(author_uid=db_user.uid).all()
-
+    db_issues_of_user = DBDiscussionSession.query(Issue).filter_by(author_uid=db_user.uid).order_by(Issue.uid.asc()).all()
     return {
-        'user': [__create_issue_dict(issue, application_url) for issue in db_issues_of_user],
-        'other': [__create_issue_dict(issue, application_url) for issue in db_issues_other_users]
+        'user': [__create_issue_dict(issue, app_url) for issue in db_issues_of_user],
+        'other': [__create_issue_dict(issue, app_url) for issue in db_issues_other_users]
     }
 
 
@@ -278,7 +277,7 @@ def get_issues_overview_on_start(db_user: User) -> list:
     :return:
     """
     prepared_list = []
-    db_issues = get_visible_issues_for_user_as_query(db_user.uid).all()
+    db_issues = get_visible_issues_for_user_as_query(db_user.uid).order_by(Issue.uid.asc()).all()
     for index, db_issue in enumerate(db_issues):
         prepared_list.append({
             'url': '/' + db_issue.slug,
@@ -325,7 +324,7 @@ def set_discussions_properties(db_user: User, db_issue: Issue, value, iproperty,
 
 def __create_issue_dict(db_issue: Issue, app_url: str) -> dict:
     """
-    Returns dictionary with several informationa bout the given issue
+    Returns dictionary with several information about the given issue
 
     :param db_issue: database row of issue
     :param app_url: current applications url
@@ -338,9 +337,9 @@ def __create_issue_dict(db_issue: Issue, app_url: str) -> dict:
     statements = [s.uid for s in DBDiscussionSession.query(Statement).filter_by(issue_uid=db_issue.uid).all()]
     db_clicked_statements = DBDiscussionSession.query(ClickedStatement).filter(
         ClickedStatement.statement_uid.in_(statements)).all()
+
     authors_clicked_statement = [click.author_uid for click in db_clicked_statements]
-    db_authors = DBDiscussionSession.query(User).filter(User.uid.in_(authors_clicked_statement)).all()
-    participants = str(len(db_authors))
+    db_authors_len = DBDiscussionSession.query(User).filter(User.uid.in_(authors_clicked_statement)).count()
 
     prepared_dict = {
         'uid': db_issue.uid,
@@ -348,16 +347,14 @@ def __create_issue_dict(db_issue: Issue, app_url: str) -> dict:
         'url': '/' + db_issue.slug,
         'short_url': url,
         'date': db_issue.date.format('DD.MM.YY HH:mm'),
-        'count_of_statements': str(get_number_of_statements(db_issue.uid)),
+        'count_of_statements': len(statements),
         'is_enabled': not db_issue.is_disabled,
         'is_public': not db_issue.is_private,
         'is_writable': not db_issue.is_read_only,
-        'participants': participants,
+        'participants': db_authors_len,
         'lang': {
             'is_de': db_issue.lang == 'de',
             'is_en': db_issue.lang == 'en',
-        },
-        'toggle_on': "<i class='fa fa-check'></i>",
-        'toggle_off': "<i class='fa fa-times'></i>",
+        }
     }
     return prepared_dict

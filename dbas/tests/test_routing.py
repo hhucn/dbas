@@ -51,7 +51,7 @@ class FunctionalTests(unittest.TestCase):
         self.testapp.get('/discuss/', status=200)
 
     def test_discussion_overview(self):
-        self.testapp.get('/discuss/mydiscussions', status=200)
+        self.testapp.get('/discuss/mydiscussions', status=404)  # not logged in
 
     def test_discussion_support(self):
         self.testapp.get('/discuss/cat-or-dog/support/11/12', status=200)

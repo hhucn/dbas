@@ -67,20 +67,20 @@
                          data-keyword="enable"
                          data-size="mini"
                          data-onstyle="success"
-                         data-offstyle="danger" checked="${issue.is_enabled}" data-uid="${issue.uid}" data-on="${issue.toggle_on}" data-off="${issue.toggle_off}">
+                         data-offstyle="danger" checked="${issue.is_enabled}" data-uid="${issue.uid}" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>">
                 </td>
                 <td>
                   <input class="discussion-public-toggle" type="checkbox" data-toggle="toggle"
                          data-keyword="public"
                          data-size="mini"
                          data-onstyle="success"
-                         data-offstyle="danger" checked="${issue.is_public}" data-uid="${issue.uid}" data-on="${issue.toggle_on}" data-off="${issue.toggle_off}">
+                         data-offstyle="danger" checked="${issue.is_public}" data-uid="${issue.uid}" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>">
                 <td>
                   <input class="discussion-writable-toggle" type="checkbox" data-toggle="toggle"
                          data-keyword="writable"
                          data-size="mini"
                          data-onstyle="success"
-                         data-offstyle="danger" checked="${issue.is_writable}" data-uid="${issue.uid}" data-on="${issue.toggle_on}" data-off="${issue.toggle_off}">
+                         data-offstyle="danger" checked="${issue.is_writable}" data-uid="${issue.uid}" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>">
                 <td>
                   <a tal:condition="issue.is_enabled" href="${issue.short_url}" title="${issue.url}">${issue.short_url}</a>
                   <span tal:condition="not:issue.is_enabled">${issue.short_url}</span>
@@ -163,7 +163,7 @@
                          data-keyword="enable"
                          data-size="mini"
                          data-onstyle="success"
-                         data-offstyle="danger" checked="${issue.is_enabled}" data-uid="${issue.uid}" data-on="${issue.toggle_on}" data-off="${issue.toggle_off}">
+                         data-offstyle="danger" checked="${issue.is_enabled}" data-uid="${issue.uid}" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>">
                 </td>
                 <td tal:condition="not:extras.is_admin">
                   <i tal:condition="issue.is_writable" class="fa fa-check text-success" aria-hidden="true"></i>
@@ -174,14 +174,14 @@
                          data-keyword="public"
                          data-size="mini"
                          data-onstyle="success"
-                         data-offstyle="danger" checked="${issue.is_public}" data-uid="${issue.uid}" data-on="${issue.toggle_on}" data-off="${issue.toggle_off}">
+                         data-offstyle="danger" checked="${issue.is_public}" data-uid="${issue.uid}" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>">
                 </td>
                 <td tal:condition="extras.is_admin">
                   <input class="discussion-writable-toggle" type="checkbox" data-toggle="toggle"
                          data-keyword="writable"
                          data-size="mini"
                          data-onstyle="success"
-                         data-offstyle="danger" checked="${issue.is_writable}" data-uid="${issue.uid}" data-on="${issue.toggle_on}" data-off="${issue.toggle_off}">
+                         data-offstyle="danger" checked="${issue.is_writable}" data-uid="${issue.uid}" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>">
                 </td>
                 <td tal:condition="issue.is_enabled">
                   <a href="${issue.short_url}" title="${issue.url}">${issue.short_url}</a>
