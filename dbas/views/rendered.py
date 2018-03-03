@@ -536,7 +536,7 @@ def notfound(request):
 
     request.response.status = 404
 
-    prep_dict = __main_dict(request, 'ERROR')
+    prep_dict = __main_dict(request, '404 Error')
     prep_dict.update({
         'page_notfound_viewname': path,
         'param_error': param_error,
@@ -582,7 +582,7 @@ def discussion_init(request):
 
 
 @view_config(route_name='discussion_start', renderer='../templates/discussion-start.pt', permission='everybody')
-@view_config(route_name='discussion_start_with_slash', renderer='../templates/discussions-start.pt', permission='everybody')
+@view_config(route_name='discussion_start_with_slash', renderer='../templates/discussion-start.pt', permission='everybody')
 @validate(check_authentication, invalid_user, prep_extras_dict)
 def discussion_start(request):
     """

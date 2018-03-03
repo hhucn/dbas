@@ -102,7 +102,7 @@ class AjaxGetInfosTest(unittest.TestCase):
     def test_get_infos_about_argument(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_infos_about_argument as ajax
-        request = testing.DummyRequest(json_body={'uid': 7, 'lang': 'en'})
+        request = testing.DummyRequest(json_body={'uid': 7, 'lang': 'en', 'issue': 2})
         response = ajax(request)
         self.assertIn('supporter', response)
         self.assertIn('gravatars', response)
@@ -115,7 +115,7 @@ class AjaxGetInfosTest(unittest.TestCase):
     def test_get_infos_about_argument_failure1(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_infos_about_argument as ajax
-        request = testing.DummyRequest(json_body={'uid': 100, 'lang': 'en'})
+        request = testing.DummyRequest(json_body={'uid': 100, 'lang': 'en', 'issue': 2})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertEqual(400, response.status_code)
@@ -123,7 +123,7 @@ class AjaxGetInfosTest(unittest.TestCase):
     def test_get_infos_about_argument_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import get_infos_about_argument as ajax
-        request = testing.DummyRequest(json_body={'uids': 1, 'lang': 'en'})
+        request = testing.DummyRequest(json_body={'uids': 1, 'lang': 'en', 'issue': 2})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertEqual(400, response.status_code)

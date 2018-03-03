@@ -331,7 +331,7 @@ def __create_issue_dict(db_issue: Issue, app_url: str) -> dict:
     :param app_url: current applications url
     :return: dict()
     """
-    short_url_dict = get_short_url(app_url + '/discuss/' + db_issue.slug, 'en')
+    short_url_dict = get_short_url(app_url + '/discuss/' + db_issue.slug)
     url = short_url_dict['url'] if len(short_url_dict['url']) > 0 else app_url + '/discuss/' + db_issue.slug
 
     # we do nto have to check for clicked arguments, cause arguments consist out of statements

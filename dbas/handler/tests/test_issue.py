@@ -60,10 +60,6 @@ class IssueHandlerTests(unittest.TestCase):
         self.assertEqual(response.uid, issue.uid)
 
     def test_get_issue_id(self):
-        request = testing.DummyRequest()
-        response = ih.get_issue_id(request)
-        self.assertIsNotNone(response)
-
         request = testing.DummyRequest(matchdict={'issue': 1})
         response = ih.get_issue_id(request)
         self.assertEqual(1, response)
@@ -104,8 +100,9 @@ class IssueHandlerTests(unittest.TestCase):
     def test_get_issues_overview_on_start(self):
         db_user = DBDiscussionSession.query(User).get(2)
         response = ih.get_issues_overview_on_start(db_user)
-        self.assertIn('title', response)
-        self.assertIn('url', response)
+        for element in response:
+            self.assertIn('title', element)
+            self.assertIn('url', element)
 
     def test_set_discussions_properties(self):
         db_walter = DBDiscussionSession.query(User).filter_by(nickname='Walter').one_or_none()

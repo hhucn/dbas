@@ -315,12 +315,11 @@ def get_default_locale_name(registry):
     return registry.settings.get('pyramid.default_locale_name', 'en')
 
 
-def get_short_url(url, ui_locales) -> dict:
+def get_short_url(url) -> dict:
     """
     Shortens the url via external service.
 
     :param url: Url as string, which should be shortened
-    :param ui_locales: language of the discussion
     :rtype: dict
     :return: dictionary with the url, services name and the url of the service or an error
     """
@@ -332,7 +331,7 @@ def get_short_url(url, ui_locales) -> dict:
         short_url = format(Shortener(service).short(url))
     except (ReadTimeout, ConnectionError, NewConnectionError, ShorteningErrorException) as e:
         logger('getter', repr(e), error=True)
-        service_text = Translator(ui_locales).get(_.serviceNotAvailable)
+        service_text = Translator('en').get(_.serviceNotAvailable)
 
     return {
         'url': short_url,
