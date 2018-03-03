@@ -459,6 +459,7 @@
 <script src="${request.static_url('dbas:static/js/discussion/helper.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/discussion/interactionhandler.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/discussion/main.js')}" tal:condition="extras.development_mode"></script>
+<script src="${request.static_url('dbas:static/js/discussion/start.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/ajax/discussion.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/ajax/graph.js')}" tal:condition="extras.development_mode"></script>
 <script src="${request.static_url('dbas:static/js/ajax/main.js')}" tal:condition="extras.development_mode"></script>

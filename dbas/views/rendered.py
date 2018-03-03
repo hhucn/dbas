@@ -593,15 +593,13 @@ def discussion_start(request):
     """
     logger('discussion_start', 'main')
     ui_locales = get_language_from_cookie(request)
-    issue_list = issue_handler.get_issues_overview_on_start(request.validated['user'])
-    for i in range(len(issue_list)):
-        issue_list[i]['url'] = '/discuss' + issue_list[i]['url']
+    issue_dict = issue_handler.get_issues_overview_on_start(request.validated['user'])
+    for i in range(len(issue_dict['issues'])):
+        issue_dict['issues'][i]['url'] = '/discuss' + issue_dict['issues'][i]['url']
 
     prep_dict = __main_dict(request, Translator(ui_locales).get(_.discussionStart))
 
-    prep_dict.update({
-        'issues': issue_list
-    })
+    prep_dict.update(issue_dict)
     return prep_dict
 
 
