@@ -24,7 +24,9 @@ function ajaxSkeleton(url, method, data, ajaxDone, ajaxFail) {
     }).done(function (data) {
         ajaxDone(data);
     }).fail(function (data) {
-        if (data.statusText ==='Bad CSRF Token' || !('errors' in data.responseJSON)){
+        if (data.status === 200) {
+            location.reload(true);
+        } else if (data.statusText === 'Bad CSRF Token' || !('errors' in data.responseJSON)) {
             setGlobalErrorHandler(_t(ohsnap), _t(requestFailedBadToken));
         } else {
             ajaxFail(data);
