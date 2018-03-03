@@ -22,7 +22,7 @@ class DiscussionInitViewTests(unittest.TestCase):
         # check count of seen by statements
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).count()
 
-        request = testing.DummyRequest()
+        request = testing.DummyRequest(matchdict={'slug': 'cat-or-dog'})
         response = d(request)
         verify_dictionary_of_view(response)
 
@@ -38,7 +38,7 @@ class DiscussionInitViewTests(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).count()
 
-        request = testing.DummyRequest()
+        request = testing.DummyRequest(matchdict={'slug': 'cat-or-dog'})
         response = d(request)
         verify_dictionary_of_view(response)
 
@@ -57,7 +57,7 @@ class DiscussionInitViewTests(unittest.TestCase):
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).filter_by(user_uid=db_user.uid).count()
 
-        request = testing.DummyRequest()
+        request = testing.DummyRequest(matchdict={'slug': 'cat-or-dog'})
         response = d(request)
         verify_dictionary_of_view(response)
 

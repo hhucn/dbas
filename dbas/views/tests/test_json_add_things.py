@@ -83,7 +83,7 @@ class AjaxAddThingsTest(unittest.TestCase):
     def test_set_new_start_premise_failure1(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import set_new_start_premise as ajax
-        request = testing.DummyRequest(json_body={}, mailer=DummyMailer)
+        request = testing.DummyRequest(json_body={'issue': 2}, mailer=DummyMailer)
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
@@ -91,7 +91,7 @@ class AjaxAddThingsTest(unittest.TestCase):
     def test_set_new_start_premise_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
         from dbas.views import set_new_start_premise as ajax
-        request = testing.DummyRequest(json_body={}, mailer=DummyMailer)
+        request = testing.DummyRequest(json_body={'issue': 2}, mailer=DummyMailer)
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
@@ -120,7 +120,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         # author error
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import set_new_premises_for_argument as ajax
-        request = testing.DummyRequest(json_body={})
+        request = testing.DummyRequest(json_body={'issue': 2})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)
@@ -131,7 +131,7 @@ class AjaxAddThingsTest(unittest.TestCase):
         db_review1 = DBDiscussionSession.query(ReviewEdit).count()
         db_value1 = DBDiscussionSession.query(ReviewEditValue).count()
         elements = [{'text': 'some new text for a correction', 'uid': 19}]
-        request = testing.DummyRequest(matchdict={}, params={}, json_body={
+        request = testing.DummyRequest(matchdict={'slug': 'cat-or-dog'}, params={}, json_body={
             'elements': elements
         })
         response = ajax(request)
@@ -150,7 +150,7 @@ class AjaxAddThingsTest(unittest.TestCase):
     def test_set_correction_of_statement_failure(self):
         self.config.testing_securitypolicy(userid='', permissive=True)
         from dbas.views import set_correction_of_some_statements as ajax
-        request = testing.DummyRequest(matchdict={}, params={}, json_body={
+        request = testing.DummyRequest(matchdict={'slug': 'cat-or-dog'}, params={}, json_body={
             'elements': [{}]
         }, )
         response = ajax(request)
@@ -166,7 +166,7 @@ class AjaxAddThingsTest(unittest.TestCase):
             'lang': 'en',
             'is_public': False,
             'is_read_only': False
-        })
+        }, matchdict={'slug': 'cat-or-dog'})
 
     def test_set_new_issue(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)

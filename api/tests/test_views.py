@@ -90,7 +90,6 @@ class ValidateUserLoginRoute(unittest.TestCase):
         self.assertIsInstance(response, _JSONError)
 
 
-
 def test_server_available():
     response = get_response("hello")
     status = parse_status(response.content)

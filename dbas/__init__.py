@@ -107,7 +107,7 @@ def main(global_config, **settings):
     config.add_route('main_faq', '/faq')
     config.add_route('main_docs', '/docs')
     config.add_route('main_experiment', '/fieldexperiment')
-    config.add_route('main_mydiscussions', '/mydiscussions')
+    config.add_route('main_discussions_overview', '/mydiscussions')
     config.add_route('main_user', '/user/{uid:\d+}')
     config.add_route('main_graphiql', '/graphiql')
 
@@ -175,8 +175,8 @@ def main(global_config, **settings):
     config.add_route('discussion_jump', '/discuss/{slug}/jump/{arg_id}')
     config.add_route('discussion_finish', '/discuss/{slug}/finish/{arg_id}')
     config.add_route('discussion_exit', '/discuss/exit')
-    config.add_route('discussion_init', '/discuss')
-    config.add_route('discussion_init_with_slash', '/discuss/')
+    config.add_route('discussion_start', '/discuss')
+    config.add_route('discussion_start_with_slash', '/discuss/')
     config.add_route('discussion_init_with_slug', '/discuss/{slug}')
 
     # review section

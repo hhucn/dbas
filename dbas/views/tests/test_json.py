@@ -90,63 +90,63 @@ class AjaxTest(unittest.TestCase):
 
     def test_fuzzy_search_mode_0(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 0, 'statement_uid': 0})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 0, 'statement_uid': 0, 'issue': 2})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertIn('values', response)
 
     def test_fuzzy_search_mode_1(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 1, 'statement_uid': 1})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 1, 'statement_uid': 1, 'issue': 2})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertIn('values', response)
 
     def test_fuzzy_search_mode_2(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 2, 'statement_uid': 0})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 2, 'statement_uid': 0, 'issue': 2})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertIn('values', response)
 
     def test_fuzzy_search_mode_3(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 3, 'statement_uid': 0})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 3, 'statement_uid': 0, 'issue': 2})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertIn('values', response)
 
     def test_fuzzy_search_mode_4(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 4, 'statement_uid': 0})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 4, 'statement_uid': 0, 'issue': 2})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertIn('values', response)
 
     def test_fuzzy_search_mode_5(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 5, 'statement_uid': 0})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 5, 'statement_uid': 0, 'issue': 2})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertIn('values', response)
 
     def test_fuzzy_search_mode_8(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 8, 'statement_uid': 0})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 8, 'statement_uid': 0, 'issue': 2})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertIn('values', response)
 
     def test_fuzzy_search_mode_9(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 9, 'statement_uid': 0})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': 9, 'statement_uid': 0, 'issue': 2})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertIn('values', response)
 
     def test_fuzzy_search_failure_mode(self):
         from dbas.views import fuzzy_search as ajax
-        request = testing.DummyRequest(json_body={'value': 'cat', 'type': '6', 'statement_uid': 0})
+        request = testing.DummyRequest(json_body={'value': 'cat', 'type': '6', 'statement_uid': 0, 'issue': 2})
         response = ajax(request)
         self.assertIsNotNone(response)
         self.assertTrue(400, response.status_code)

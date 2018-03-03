@@ -72,7 +72,7 @@ function GuidedTour() {
         if (getLanguage() === 'en') {
             langSwitcher = '<a id="switch-to-de" class="pull-right" style="cursor: pointer;"><img class="language_selector_img" src="' + flag + '" alt="flag_ge" style="width:25px;"></a>';
         } else {
-            langSwitcher = '<a id="switch-to-en" class="pull-right" style="cursor: pointer;"><img class="language_selector_img" src="' + flag + '" alt="flag_en" style="width:25px;"></a>';
+            langSwitcher = '<a id="switch-to-en" class="pull-right" style="cursor: pointer;"><img class="language_selector_img" src="' + flag + '" alt="flag_us-gb" style="width:25px;"></a>';
         }
 
         // steps

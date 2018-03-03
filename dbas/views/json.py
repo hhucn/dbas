@@ -616,7 +616,7 @@ def get_logfile_for_some_statements(request):
 
 # ajax - for shorten url
 @view_config(route_name='get_shortened_url', renderer='json')
-@validate(valid_issue, has_keywords(('url', str)))
+@validate(has_keywords(('url', str)))
 def get_shortened_url(request):
     """
     Shortens url with the help of a python lib
@@ -625,8 +625,7 @@ def get_shortened_url(request):
     :return: dictionary with shortend url
     """
     logger('views', 'main')
-    db_issue = request.validated['issue']
-    return get_short_url(request.validated['url'], db_issue.lang)
+    return get_short_url(request.validated['url'])
 
 
 # ajax - for getting all news

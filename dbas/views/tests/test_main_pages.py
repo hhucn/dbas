@@ -55,7 +55,7 @@ class MainMyDiscussionViewTestsNotLoggedIn(unittest.TestCase):
         testing.tearDown()
 
     def test_page(self):
-        from dbas.views import main_mydiscussions as d
+        from dbas.views import main_discussions_overview as d
 
         request = testing.DummyRequest()
         response = d(request)
@@ -78,7 +78,7 @@ class MainMyDiscussionViewTestsLoggedIn(unittest.TestCase):
         testing.tearDown()
 
     def test_page(self):
-        from dbas.views import main_mydiscussions as d
+        from dbas.views import main_discussions_overview as d
 
         request = testing.DummyRequest()
         response = d(request)
@@ -163,7 +163,6 @@ class MainReviewViewTestsNotLoggedIn(unittest.TestCase):
         self.assertIn('review', response)
         self.assertIn('privilege_list', response)
         self.assertIn('reputation_list', response)
-        self.assertIn('issues', response)
         self.assertIn('reputation', response)
         self.assertFalse(response['reputation']['has_all_rights'])
         self.assertTrue(response['reputation']['count'] == 0)
@@ -188,7 +187,6 @@ class MainReviewViewTestsLoggedIn(unittest.TestCase):
         self.assertIn('review', response)
         self.assertIn('privilege_list', response)
         self.assertIn('reputation_list', response)
-        self.assertIn('issues', response)
         self.assertIn('reputation', response)
         self.assertTrue(response['reputation']['has_all_rights'])
         self.assertTrue(type(response['reputation']['count']) is int)

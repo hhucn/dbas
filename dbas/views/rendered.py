@@ -48,7 +48,7 @@ full_version = version
 project_name = name + ' ' + full_version
 
 
-def __modify_discussion_url(prep_dict: dict) -> dict:
+def __modify_discussion_url(prep_dict: dict):
     """
     Adds the /discuss prefix for every url entry
 
@@ -66,6 +66,13 @@ def __modify_discussion_url(prep_dict: dict) -> dict:
     for i, el in enumerate(prep_dict['issues']['all']):
         prep_dict['issues']['all'][i]['url'] = '/discuss' + prep_dict['issues']['all'][i]['url']
 
+
+def __modifiy_issue_overview_url(prep_dict: dict):
+    # modify urls for topic switch
+    pdict = ['user', 'other']
+    for p in pdict:
+        for i, el in enumerate(prep_dict[p]):
+            prep_dict[p][i]['url'] = '/discuss' + prep_dict[p][i]['url']
     return prep_dict
 
 
@@ -140,7 +147,6 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any]):
     """
     logger('Views', 'def')
     session_expired = user.update_last_action(request.validated['user'])
-    logger('Views', str(request.validated['user']))
     if session_expired:
         request.session.invalidate()
         headers = forget(request)
@@ -431,20 +437,21 @@ def main_experiment(request):
 
 
 # my discussions
-@view_config(route_name='main_mydiscussions', renderer='../templates/discussions.pt', permission='use')
-@validate(check_authentication, prep_extras_dict)
-def main_mydiscussions(request):
+@view_config(route_name='main_discussions_overview', renderer='../templates/discussion-overview.pt', permission='use')
+@validate(check_authentication, prep_extras_dict, invalid_user)
+def main_discussions_overview(request):
     """
     View configuration for FAQs.
 
     :param request: current request of the server
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
-    logger('main_mydiscussions', 'main')
+    logger('main_discussions_overview', 'main')
     ui_locales = get_language_from_cookie(request)
-    issue_dict = get_issues_overiew(request.authenticated_userid, request.application_url)
+    issue_dict = get_issues_overiew(request.validated['user'], request.application_url)
 
     prep_dict = __main_dict(request, Translator(ui_locales).get(_.myDiscussions))
+    __modifiy_issue_overview_url(issue_dict)
     prep_dict.update({
         'issues': issue_dict
     })
@@ -529,7 +536,7 @@ def notfound(request):
 
     request.response.status = 404
 
-    prep_dict = __main_dict(request, 'ERROR')
+    prep_dict = __main_dict(request, '404 Error')
     prep_dict.update({
         'page_notfound_viewname': path,
         'param_error': param_error,
@@ -545,10 +552,8 @@ def notfound(request):
 
 
 # content page
-@view_config(route_name='discussion_init', renderer='../templates/content.pt', permission='everybody')
-@view_config(route_name='discussion_init_with_slash', renderer='../templates/content.pt', permission='everybody')
-@view_config(route_name='discussion_init_with_slug', renderer='../templates/content.pt', permission='everybody')
-@validate(invalid_user)
+@view_config(route_name='discussion_init_with_slug', renderer='../templates/discussion.pt', permission='everybody')
+@validate(check_authentication, invalid_user)
 def discussion_init(request):
     """
     View configuration for the initial discussion.
@@ -576,9 +581,33 @@ def discussion_init(request):
     return prepared_discussion
 
 
+@view_config(route_name='discussion_start', renderer='../templates/discussion-start.pt', permission='everybody')
+@view_config(route_name='discussion_start_with_slash', renderer='../templates/discussion-start.pt', permission='everybody')
+@validate(check_authentication, invalid_user, prep_extras_dict)
+def discussion_start(request):
+    """
+    View configuration for the initial discussion overview.
+
+    :param request: request of the web server
+    :return: dictionary
+    """
+    logger('discussion_start', 'main')
+    ui_locales = get_language_from_cookie(request)
+    issue_list = issue_handler.get_issues_overview_on_start(request.validated['user'])
+    for i in range(len(issue_list)):
+        issue_list[i]['url'] = '/discuss' + issue_list[i]['url']
+
+    prep_dict = __main_dict(request, Translator(ui_locales).get(_.discussionStart))
+
+    prep_dict.update({
+        'issues': issue_list
+    })
+    return prep_dict
+
+
 # attitude page
-@view_config(route_name='discussion_attitude', renderer='../templates/content.pt', permission='everybody')
-@validate(invalid_user)
+@view_config(route_name='discussion_attitude', renderer='../templates/discussion.pt', permission='everybody')
+@validate(check_authentication, invalid_user)
 def discussion_attitude(request):
     """
     View configuration for discussion step, where we will ask the user for her attitude towards a statement.
@@ -600,8 +629,8 @@ def discussion_attitude(request):
 
 
 # justify page
-@view_config(route_name='discussion_justify', renderer='../templates/content.pt', permission='everybody')
-@validate(invalid_user)
+@view_config(route_name='discussion_justify', renderer='../templates/discussion.pt', permission='everybody')
+@validate(check_authentication, invalid_user)
 def discussion_justify(request):
     """
     View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
@@ -622,8 +651,8 @@ def discussion_justify(request):
 
 
 # reaction page
-@view_config(route_name='discussion_reaction', renderer='../templates/content.pt', permission='everybody')
-@validate(invalid_user)
+@view_config(route_name='discussion_reaction', renderer='../templates/discussion.pt', permission='everybody')
+@validate(check_authentication, invalid_user)
 def discussion_reaction(request):
     """
     View configuration for discussion step, where we will ask the user for her reaction (support, undercut, rebut)...
@@ -644,8 +673,8 @@ def discussion_reaction(request):
 
 
 # support page
-@view_config(route_name='discussion_support', renderer='../templates/content.pt', permission='everybody')
-@validate(invalid_user)
+@view_config(route_name='discussion_support', renderer='../templates/discussion.pt', permission='everybody')
+@validate(check_authentication, invalid_user)
 def discussion_support(request):
     """
     View configuration for discussion step, where we will present another supportive argument.
@@ -665,7 +694,7 @@ def discussion_support(request):
 
 
 # finish page
-@view_config(route_name='discussion_finish', renderer='../templates/content.pt', permission='everybody')
+@view_config(route_name='discussion_finish', renderer='../templates/discussion.pt', permission='everybody')
 @validate(check_authentication, invalid_user)
 def discussion_finish(request):
     """
@@ -710,8 +739,8 @@ def discussion_exit(request):
 
 
 # choosing page
-@view_config(route_name='discussion_choose', renderer='../templates/content.pt', permission='everybody')
-@validate(invalid_user)
+@view_config(route_name='discussion_choose', renderer='../templates/discussion.pt', permission='everybody')
+@validate(check_authentication, invalid_user)
 def discussion_choose(request):
     """
     View configuration for discussion step, where the user has to choose between given statements.
@@ -733,8 +762,8 @@ def discussion_choose(request):
 
 
 # jump page
-@view_config(route_name='discussion_jump', renderer='../templates/content.pt', permission='everybody')
-@validate(invalid_user)
+@view_config(route_name='discussion_jump', renderer='../templates/discussion.pt', permission='everybody')
+@validate(check_authentication, invalid_user)
 def discussion_jump(request):
     """
     View configuration for the jump view.
@@ -771,14 +800,7 @@ def main_review(request):
     logger('main_review', 'def {}'.format(request.matchdict))
     nickname = request.authenticated_userid
 
-    issue = issue_handler.get_issue_id(request)
-
-    db_user = DBDiscussionSession.query(User).filter_by(
-        nickname=nickname if nickname else nick_of_anonymous_user).first()
-    db_issue = DBDiscussionSession.query(Issue).get(issue)
-    issue_dict = issue_handler.prepare_json_of_issue(db_issue, request.application_url, db_user)
-
-    _tn = Translator(issue_dict['lang'])
+    _tn = Translator(get_language_from_cookie(request))
     review_dict = review_queue_helper.get_review_queues_as_lists(request.application_url, _tn, nickname)
     count, all_rights = review_reputation_helper.get_reputation_of(nickname)
 
@@ -787,15 +809,16 @@ def main_review(request):
         'review': review_dict,
         'privilege_list': review_reputation_helper.get_privilege_list(_tn),
         'reputation_list': review_reputation_helper.get_reputation_list(_tn),
-        'issues': issue_dict,
-        'reputation': {'count': count,
-                       'has_all_rights': all_rights}
+        'reputation': {
+            'count': count,
+            'has_all_rights': all_rights
+        }
     })
     return prep_dict
 
 
 # content page for reviews
-@view_config(route_name='review_content', renderer='../templates/review-content.pt', permission='use')
+@view_config(route_name='review_content', renderer='../templates/review-discussion.pt', permission='use')
 @validate(check_authentication, prep_extras_dict)
 def review_content(request):
     """

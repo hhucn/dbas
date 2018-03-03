@@ -3,6 +3,22 @@
  *
  * @author Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de>
  */
+
+function MyDiscussion() {
+    'use strict';
+    this.set_clipboard = function(_this){
+        $(_this).click(function () {
+            var aux = document.createElement("input");
+            aux.setAttribute("value", $(this).prev().text());
+            document.body.appendChild(aux);
+            aux.select();
+            document.execCommand("copy");
+            document.body.removeChild(aux);
+            setGlobalSuccessHandler('Yeah!', _t_discussion(urlCopy));
+        });
+    };
+}
+
 $(document).ready(function () {
     'use strict';
 
@@ -11,6 +27,7 @@ $(document).ready(function () {
         '.discussion-public-toggle': 'public',
         '.discussion-writable-toggle': 'writable'
     };
+    var md = new MyDiscussion();
 
     for (var key in button_dict) {
         if (!{}.hasOwnProperty.call(button_dict, key)) {
@@ -24,15 +41,7 @@ $(document).ready(function () {
     }
 
     $.each($('.fa-clipboard'), function () {
-        $(this).click(function () {
-            var aux = document.createElement("input");
-            aux.setAttribute("value", $(this).prev().text());
-            document.body.appendChild(aux);
-            aux.select();
-            document.execCommand("copy");
-            document.body.removeChild(aux);
-            setGlobalSuccessHandler('Yeah!', _t_discussion(urlCopy));
-        });
+        md.set_clipboard(this);
     });
 
     // ajax loading animation

@@ -240,6 +240,7 @@ en_lang = {
     _.displayControlDialogGraphTitle: 'Graph-View',
     _.displayControlDialogGraphBody: 'Presentation of the discusion as graph.',
     _.discussionEnd: 'The discussion ends here.',
+    _.discussionStart: 'Discussions Overview',
     _.discussionEndAndReadOnly: 'The discussion ends here. Unfortunately the discussion was set as read only, so that no new statements can be added.',
     _.discussionCongratulationEnd: 'The discussion ends here, because there is no other counter argument at the moment.',
     _.discussionEndLinkTextLoggedIn: 'You can restart the discussion with the button above.',

@@ -16,6 +16,6 @@ class DiscussionFinishViewTests(unittest.TestCase):
     def test_page(self):
         from dbas.views import discussion_finish as d
 
-        request = testing.DummyRequest(matchdict={'arg_id': 10})
+        request = testing.DummyRequest(matchdict={'arg_id': 10, 'slug': 'cat-or-dog'})
         response = d(request)
         verify_dictionary_of_view(response)

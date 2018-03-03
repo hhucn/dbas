@@ -54,17 +54,18 @@
                 </a>
               </li>
               <li class="divider"></li>
-              <li tal:condition="extras.is_admin or extras.is_author" role="separator">
+              <li>
+                <a href="/discuss" i18n:translate="overview">Übersicht</a>
+              </li>
+              <li tal:condition="extras.is_admin or extras.is_author">
                 <a id="add-topic" href="#" i18n:translate="add_topic">Add a Topic</a>
               </li>
-              <li tal:condition="not:(extras.is_admin or extras.is_author)" role="separator">
-                <div class="row">
-                  <div class="col-md-10" style="color: gray; cursor: not-allowed"
+              <li tal:condition="not:(extras.is_admin or extras.is_author)">
+                <div class="row" style="color: gray; cursor: not-allowed"
                        title="${extras.title.add_issue_info}">
-                    <span class="disabled" i18n:translate="add_topic">Add a Topic</span>
-                    <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"
+                  <span class="disabled" i18n:translate="add_topic" style="padding-left: 20px">Add a Topic</span>
+                  <i class="fa fa-exclamation-triangle text-warning" aria-hidden="true"
                        title="${extras.title.add_issue_info}"></i>
-                  </div>
                 </div>
               </li>
             </ul>
@@ -133,7 +134,7 @@
           <li id="header-language-selector" tal:condition="extras.lang_is_de">
             <a id="link-trans-en" style="cursor:pointer">
               <img class="language_selector_img" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}"
-                   alt="flag_en">
+                   alt="flag_us-gb">
             </a>
           </li>
 

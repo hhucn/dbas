@@ -229,6 +229,7 @@ de_lang = {
     _.dataRemoved: 'Daten wurden erfolgreich gelöscht.',
     _.didYouMean: 'Top 10 der Aussagen, die Sie eventuell meinten:',
     _.discussionEnd: 'Die Diskussion endet hier.',
+    _.discussionStart: 'Diskussionsübersicht',
     _.discussionEndAndReadOnly: 'Die Diskussion endet hier. Da diese nur noch lesbar ist, kann keine weitere Aussage mehr hinzugefügt werden.',
     _.discussionCongratulationEnd: 'Die Diskussion endet hier, da weitere Teilnehmer aktuell kein Gegenargument mehr haben.',
     _.discussionEndLinkTextLoggedIn: 'Sie können oben den Button nutzen, um die Diskussion zu neu zu starten.',

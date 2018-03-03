@@ -233,6 +233,7 @@ class Keywords(Enum):
     displayControlDialogGraphTitle = 'displayControlDialogGraphTitle'
     displayControlDialogGraphBody = 'displayControlDialogGraphBody'
     discussionEnd = 'discussionEnd'
+    discussionStart = 'discussionStart'
     discussionEndAndReadOnly = 'discussionEndAndReadOnly'
     discussionCongratulationEnd = 'discussionCongratulationEnd'
     discussionEndLinkTextLoggedIn = 'discussionEndLinkTextLoggedIn'
