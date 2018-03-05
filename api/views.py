@@ -23,7 +23,7 @@ from dbas.lib import (get_all_arguments_by_statement,
                       get_all_arguments_with_text_by_statement_id,
                       get_text_for_argument_uid, resolve_issue_uid_to_slug)
 from dbas.validators.core import has_keywords, validate
-from .lib import HTTP204, flatten, json_to_dict, logger, merge_dicts
+from .lib import HTTP204, flatten, json_to_dict, logger
 from .login import validate_credentials, validate_login, valid_token
 from .references import (get_all_references_by_reference_text,
                          get_reference_by_id, get_references_for_url,
@@ -175,30 +175,19 @@ def hello(_):
 @validate(valid_token)
 def whoami_fn(request):
     """
-    Test-route to validate token and nickname.
+    Test-route to validate token and nickname from headers.
 
-    :return: dbas.discussion_reaction(True)
+    :return: welcome-dict
     """
+    nickname = request.validated["db_user"].nickname
     return {"status": "ok",
-            "message": "Connection established. \"Back when PHP had less than 100 functions and the function hashing "
-                       "mechanism was strlen()\" -- Author of PHP"}
+            "nickname": nickname,
+            "message": "Hello " + nickname + ", nice to meet you."}
 
 
 # =============================================================================
 # DISCUSSION-RELATED REQUESTS
 # =============================================================================
-
-def append_csrf_to_dict(request, return_dict):
-    """
-    Append CSRF token to response.
-
-    :param request: needed to extract the token
-    :param return_dict: dictionary, which gets merged with the CSRF token
-    :return:
-    """
-    csrf = request.session.get_csrf_token()
-    return merge_dicts({"csrf": csrf}, return_dict)
-
 
 def prepare_user_information(request):
     """

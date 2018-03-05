@@ -8,12 +8,11 @@ import string
 import unittest
 
 import hypothesis.strategies as st
-from cornice.util import _JSONError
-from hypothesis import given
-from nose.tools import assert_equals, assert_true
+from hypothesis import given, settings
+from pyramid import httpexceptions
 
-from api.tests.lib import get_response, parse_status, construct_dummy_request
-from api.views import user_login
+from api.tests.lib import construct_dummy_request
+from api.views import user_login, hello
 
 
 def __generate_random_string(length=50) -> str:
@@ -54,9 +53,10 @@ class ValidateUserLoginRoute(unittest.TestCase):
         self.assertIn('nickname', request.validated)
         self.assertNotIn('password', request.validated)
         self.assertEqual(400, response.status_code)
-        self.assertIsInstance(response, _JSONError)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
 
     @given(password=st.text())
+    @settings(deadline=400)
     def test_login_wrong_password(self, password: str):
         pwd = password.replace('\x00', '')
         pwd = pwd.replace('iamatestuser2016', '¯\_(ツ)_/¯')
@@ -67,7 +67,7 @@ class ValidateUserLoginRoute(unittest.TestCase):
         self.assertIn('nickname', request.validated)
         self.assertIn('password', request.validated)
         self.assertEqual(401, response.status_code)
-        self.assertIsInstance(response, _JSONError)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_login_wrong_user(self):
         request = construct_dummy_request()
@@ -77,7 +77,7 @@ class ValidateUserLoginRoute(unittest.TestCase):
         self.assertIn('nickname', request.validated)
         self.assertIn('password', request.validated)
         self.assertEqual(401, response.status_code)
-        self.assertIsInstance(response, _JSONError)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_login_empty_user_is_not_allowed_to_login(self):
         request = construct_dummy_request()
@@ -87,14 +87,14 @@ class ValidateUserLoginRoute(unittest.TestCase):
         self.assertIn('nickname', request.validated)
         self.assertIn('password', request.validated)
         self.assertEqual(401, response.status_code)
-        self.assertIsInstance(response, _JSONError)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
 
 
-def test_server_available():
-    response = get_response("hello")
-    status = parse_status(response.content)
-    assert_true(response.ok)
-    assert_equals("ok", status)
+class TestSystemRoutes(unittest.TestCase):
+    def test_server_available(self):
+        request = construct_dummy_request()
+        response = hello(request)
+        self.assertEqual('ok', response['status'])
 
 # def test_add_position_should_succeed():
 #     credentials = {"nickname": "Walter",
