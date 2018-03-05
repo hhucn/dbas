@@ -38,7 +38,5 @@ services:
       - "5000:5000"
     env_file:
       - development.env
-    environment:
-      PROTOCOL: http
     depends_on:
       - web
