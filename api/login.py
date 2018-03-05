@@ -79,22 +79,10 @@ def token_to_database(db_user: User, token: Union[str, None]) -> None:
 def __process_user_token(request, nickname, token):
     log.info("[API] Login Attempt from user {}".format(nickname))
     db_user = get_user_by_case_insensitive_nickname(nickname)
-    print("Found " + db_user.nickname)
-    print("dbuser:")
-    print(db_user.token)
-    print("token:")
-    print(token)
-    from pprint import pprint
-    pprint("not db_user.token")
-    pprint(not db_user.token)
-    pprint("not db_user.token == token")
-    pprint(not db_user.token == token)
 
     if not db_user.token or not db_user.token == token and not check_token(token):
-        print("invalid token")
         add_error(request, "Invalid token", 401)
         return
-    print("token valid")
     request.validated['db_user'] = db_user
 
 
@@ -115,13 +103,10 @@ def valid_token(request, **kwargs):
     :return:
     """
     header = 'X-Authentication'
-    from pprint import pprint
-    pprint(request.headers)
     htoken = request.headers.get(header)
     if not htoken or htoken == "null":
         add_error(request, "Received invalid or empty authentication token")
         return
-    pprint(htoken)
 
     try:
         payload = json_to_dict(htoken)

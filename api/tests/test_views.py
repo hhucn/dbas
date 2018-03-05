@@ -12,10 +12,17 @@ from pyramid import httpexceptions
 
 from api.login import token_to_database
 from api.tests.lib import construct_dummy_request
-from api.views import user_login, hello, user_logout
+from api.views import user_login, hello, user_logout, whoami_fn
 # ------------------------------------------------------------------------------
 # Tests
 from dbas.lib import get_user_by_case_insensitive_nickname
+
+
+def create_request_with_token_header(nickname='Walter', token='mytoken'):
+    token_to_database(get_user_by_case_insensitive_nickname(nickname), token)
+    request = construct_dummy_request()
+    request.headers['X-Authentication'] = json.dumps({'nickname': nickname, 'token': token})
+    return request
 
 
 class ValidateUserLoginLogoutRoute(unittest.TestCase):
@@ -75,11 +82,7 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_logout_valid_user(self):
-        nickname = 'Walter'
-        token = 'mytoken'
-        token_to_database(get_user_by_case_insensitive_nickname(nickname), token)
-        request = construct_dummy_request()
-        request.headers[self.header] = json.dumps({'nickname': nickname, 'token': token})
+        request = create_request_with_token_header()
         response = user_logout(request)
         self.assertEqual(len(request.errors), 0)
         self.assertEqual('ok', response['status'])
@@ -106,10 +109,12 @@ class TestSystemRoutes(unittest.TestCase):
         self.assertEqual(response['status'], 'ok')
 
     def test_whoami_and_check_for_valid_token(self):
-        request = construct_dummy_request()
-        response = hello(request)
+        nickname = 'Walter'
+        request = create_request_with_token_header(nickname)
+        response = whoami_fn(request)
+        self.assertEqual(len(request.errors), 0)
         self.assertEqual(response['status'], 'ok')
-
+        self.assertEqual(response['nickname'], nickname)
 
 # def test_add_position_should_succeed():
 #     credentials = {"nickname": "Walter",
