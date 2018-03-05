@@ -10,7 +10,7 @@ stages:
   services:
     - name: $CI_REGISTRY/cn-tsn/project/dbas/dbas/db:testing
       alias: db
-    - name: hhucn/dbas-search:develop
+    - name: hhucn/dbas-search:debugging
       alias: search
   image: $CI_REGISTRY/cn-tsn/project/dbas/dbas:experimental
   variables:
@@ -27,7 +27,7 @@ stages:
     DBAS_PORT: 4284
     SEARCH_PORT: 5000
     SEARCH_PROTOCOL: http
-    SEARCH_NAME: $(hostname)
+    SEARCH_NAME: search
 
     AUTHN_SECRET: "89#s3cr3t_15"
   before_script:
@@ -79,8 +79,9 @@ unit:
   stage: test
   before_script:
     - apt install -yqq curl
-    - echo $(hostname)
-    - bash -c "curl -X POST -d '{\"DBAS_HOST\":$(hostname),\"DBAS_PORT\":\"4284\",\"DBAS_PROTOCOL\":\"http\"}' http://search:5000/init"
+    #- echo $(hostname)
+    # - "curl -H 'Content-Type: application/json' -X POST -d \"{'DBAS_HOST':\"'$(hostname)'\",'DBAS_PORT':'4284','DBAS_PROTOCOL':'http'}\" http://search:5000/init"
+    - "curl -H \"Content-Type: application/json\" -X POST -d '{\"DBAS_HOST\":\"'$(hostname)'\",\"DBAS_PORT\":\"4284\",\"DBAS_PROTOCOL\":\"http\"}' http://search:5000/init"
     - sleep 5
   script:
     # - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=admin --cover-xml --with-timer -w . dbas graph admin api search

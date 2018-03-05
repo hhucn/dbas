@@ -31,12 +31,12 @@ services:
       - "5222:5222"
     tmpfs: /tmp
 
-  search:
-    image: hhucn/dbas-search:develop
-    ports:
-      - "9200:9200"
-      - "5000:5000"
-    env_file:
-      - development.env
-    depends_on:
-      - web
+#  search:
+#    image: hhucn/dbas-search:develop
+#    ports:
+#      - "9200:9200"
+#      - "5000:5000"
+#    env_file:
+#      - development.env
+#    depends_on:
+#      - web
