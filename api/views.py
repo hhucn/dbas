@@ -24,7 +24,7 @@ from dbas.lib import (get_all_arguments_by_statement,
                       get_text_for_argument_uid, resolve_issue_uid_to_slug)
 from dbas.validators.core import has_keywords, validate
 from .lib import HTTP204, flatten, json_to_dict, logger
-from .login import validate_credentials, validate_login, valid_token
+from .login import validate_credentials, validate_login, valid_token, token_to_database
 from .references import (get_all_references_by_reference_text,
                          get_reference_by_id, get_references_for_url,
                          prepare_single_reference, store_reference,
@@ -55,7 +55,6 @@ whoami = Service(name='whoami',
                  path='/whoami',
                  description='Send nickname and token to D-BAS and validate yourself',
                  cors_policy=cors_policy)
-
 
 # Argumentation stuff
 reaction = Service(name='api_reaction',
@@ -153,6 +152,11 @@ login = Service(name='login',
                 path='/login',
                 description="Log into external discussion system",
                 cors_policy=cors_policy)
+
+logout = Service(name='logout',
+                 path='/logout',
+                 description="Logout user",
+                 cors_policy=cors_policy)
 
 
 # =============================================================================
@@ -457,6 +461,21 @@ def user_login(request):
     """
     return {'nickname': request.validated['nickname'],
             'token': request.validated['token']}
+
+
+@logout.get(require_csrf=False)
+@validate(valid_token)
+def user_logout(request):
+    """
+    If user is logged in and has token, remove the token from the database and perform logout.
+
+    :param request:
+    :return:
+    """
+    request.session.invalidate()
+    token_to_database(request.validated['db_user'], None)
+    return {'status': 'ok',
+            'message': 'Successfully logged out'}
 
 
 # =============================================================================
