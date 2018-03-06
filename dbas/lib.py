@@ -806,7 +806,8 @@ def get_user_by_case_insensitive_public_nickname(public_nickname):
 
 def pretty_print_options(message):
     """
-    Some modifications for pretty printing
+    Some modifications for pretty printing.
+    Use uppercase for first letter in text and a single dot for the end if there isn't one already.
 
     :param message: String
     :return:  String

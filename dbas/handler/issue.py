@@ -8,7 +8,6 @@ from math import ceil
 
 import arrow
 import transaction
-from paste.httpexceptions import HTTPNotFound
 from pyramid.request import Request
 from slugify import slugify
 
@@ -18,11 +17,11 @@ from dbas.database.discussion_model import Argument, User, Issue, Language, Stat
 from dbas.handler import user
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import get_short_url
+from dbas.helper.url import UrlManager
 from dbas.lib import nick_of_anonymous_user
 from dbas.query_wrapper import get_not_disabled_issues_as_query, get_visible_issues_for_user_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.helper.url import UrlManager
 
 rep_limit_to_open_issues = 10
 
@@ -200,7 +199,7 @@ def get_issue_id(request):
 
     # no issue found
     if not issue_uid:
-        raise HTTPNotFound()
+        return None
         # issue_uid = get_issue_based_on_header(request)
 
     # save issue in session

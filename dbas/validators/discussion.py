@@ -10,25 +10,53 @@ from dbas.handler.language import get_language_from_cookie
 from dbas.input_validator import is_integer
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.validators.core import has_keywords
+from dbas.validators.core import has_keywords, has_keywords_in_path
 from dbas.validators.lib import add_error, escape_if_string
 
 
-def valid_issue(request):
+def valid_issue_by_id(request):
     """
     Query issue from database and put it into the request.
 
     :param request:
     :return:
     """
-    db_issue = DBDiscussionSession.query(Issue).get(issue_handler.get_issue_id(request))
 
-    if db_issue:
-        request.validated['issue'] = db_issue
-        return True
-    else:
-        add_error(request, 'Invalid issue')
-        return False
+    issue_id = issue_handler.get_issue_id(request)
+    if issue_id:
+        db_issue: Issue = DBDiscussionSession.query(Issue).get(issue_id)
+
+        if db_issue and db_issue.is_disabled:
+            add_error(request, 'Issue no longer available', status_code=410)
+            return False
+        else:
+            request.validated['issue'] = db_issue
+            return True
+
+    add_error(request, 'Invalid issue')
+    return False
+
+
+def valid_issue_by_slug(request):
+    """
+    Query issue by slug from the path.
+
+    :param request:
+    :return:
+    """
+    if has_keywords_in_path(('slug', str))(request):
+        db_issue = DBDiscussionSession.query(Issue).filter(
+            Issue.slug == request.validated['slug']).one_or_none()
+
+        if db_issue and db_issue.is_disabled:
+            add_error(request, 'Issue no longer available', location='path', status_code=410)
+            return False
+        else:
+            request.validated['issue'] = db_issue
+            return True
+
+    add_error(request, 'Invalid slug for issue', location='path', status_code=404)
+    return False
 
 
 def valid_new_issue(request):
@@ -61,7 +89,7 @@ def valid_issue_not_readonly(request):
     :param request:
     :return:
     """
-    if valid_issue(request) and not request.validated.get('issue').is_read_only:
+    if valid_issue_by_id(request) and not request.validated.get('issue').is_read_only:
         return True
     _tn = Translator(get_language_from_cookie(request))
     add_error(request, 'Issue is read only', _tn.get(_.discussionIsReadOnly))
