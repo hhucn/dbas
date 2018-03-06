@@ -78,9 +78,9 @@ unit:
   <<: *add-services
   stage: test
   before_script:
-    - apt install -yqq curl
-    #- echo $(hostname)
-    # - "curl -H 'Content-Type: application/json' -X POST -d \"{'DBAS_HOST':\"'$(hostname)'\",'DBAS_PORT':'4284','DBAS_PROTOCOL':'http'}\" http://search:5000/init"
+    - apt-get install -yqq curl
+    - echo $(hostname)
+    - "echo curl -H \"Content-Type: application/json\" -X POST -d '{\"DBAS_HOST\":\"'$(hostname)'\",\"DBAS_PORT\":\"4284\",\"DBAS_PROTOCOL\":\"http\"}' http://search:5000/init"
     - "curl -H \"Content-Type: application/json\" -X POST -d '{\"DBAS_HOST\":\"'$(hostname)'\",\"DBAS_PORT\":\"4284\",\"DBAS_PROTOCOL\":\"http\"}' http://search:5000/init"
     - sleep 5
   script:
