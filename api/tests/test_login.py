@@ -3,6 +3,7 @@ import unittest
 
 from api.login import validate_credentials, valid_token, token_to_database
 from api.tests.lib import construct_dummy_request
+from dbas.lib import get_user_by_case_insensitive_nickname
 
 
 class ValidateCredentialsTest(unittest.TestCase):
@@ -37,7 +38,7 @@ class ValidTokenTest(unittest.TestCase):
     def test_valid_token(self):
         nickname = 'Walter'
         token = 'mytoken'
-        token_to_database(nickname, token)
+        token_to_database(get_user_by_case_insensitive_nickname(nickname), token)
         request = construct_dummy_request()
         request.headers[self.header] = json.dumps({'nickname': nickname, 'token': token})
         valid_token(request)

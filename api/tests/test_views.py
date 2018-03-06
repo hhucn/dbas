@@ -3,40 +3,31 @@ Testing the routes of the API.
 
 .. codeauthor:: Christian Meter <meter@cs.uni-duesseldorf.de>
 """
-import random
-import string
+import json
 import unittest
 
 import hypothesis.strategies as st
-from cornice.util import _JSONError
-from hypothesis import given
-from nose.tools import assert_equals, assert_true
+from hypothesis import given, settings
+from pyramid import httpexceptions
 
-from api.tests.lib import get_response, parse_status, construct_dummy_request
-from api.views import user_login
-
-
-def __generate_random_string(length=50) -> str:
-    return ''.join(random.SystemRandom().choice(string.ascii_letters) for _ in range(length))
-
-
-def __payload_add_statement() -> dict:
-    return {"path": "/",
-            "statement": __generate_random_string(),
-            "slug": "town-has-to-cut-spending",
-            "issue_id": 1,
-            "conclusion_id": "None",
-            "attack_type": None,
-            "arg_uid": None,
-            "reference": None,
-            "host": "i.amgro.ot",
-            "supportive": None}
-
-
+from api.login import token_to_database
+from api.tests.lib import construct_dummy_request
+from api.views import user_login, hello, user_logout, whoami_fn
 # ------------------------------------------------------------------------------
 # Tests
+from dbas.lib import get_user_by_case_insensitive_nickname
 
-class ValidateUserLoginRoute(unittest.TestCase):
+
+def create_request_with_token_header(nickname='Walter', token='mytoken'):
+    token_to_database(get_user_by_case_insensitive_nickname(nickname), token)
+    request = construct_dummy_request()
+    request.headers['X-Authentication'] = json.dumps({'nickname': nickname, 'token': token})
+    return request
+
+
+class ValidateUserLoginLogoutRoute(unittest.TestCase):
+    header = 'X-Authentication'
+
     def test_valid_login_attempt(self):
         request = construct_dummy_request()
         request.json_body = {'nickname': 'Walter',
@@ -54,9 +45,10 @@ class ValidateUserLoginRoute(unittest.TestCase):
         self.assertIn('nickname', request.validated)
         self.assertNotIn('password', request.validated)
         self.assertEqual(400, response.status_code)
-        self.assertIsInstance(response, _JSONError)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
 
     @given(password=st.text())
+    @settings(deadline=400)
     def test_login_wrong_password(self, password: str):
         pwd = password.replace('\x00', '')
         pwd = pwd.replace('iamatestuser2016', '¯\_(ツ)_/¯')
@@ -67,7 +59,7 @@ class ValidateUserLoginRoute(unittest.TestCase):
         self.assertIn('nickname', request.validated)
         self.assertIn('password', request.validated)
         self.assertEqual(401, response.status_code)
-        self.assertIsInstance(response, _JSONError)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_login_wrong_user(self):
         request = construct_dummy_request()
@@ -77,7 +69,7 @@ class ValidateUserLoginRoute(unittest.TestCase):
         self.assertIn('nickname', request.validated)
         self.assertIn('password', request.validated)
         self.assertEqual(401, response.status_code)
-        self.assertIsInstance(response, _JSONError)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_login_empty_user_is_not_allowed_to_login(self):
         request = construct_dummy_request()
@@ -87,14 +79,42 @@ class ValidateUserLoginRoute(unittest.TestCase):
         self.assertIn('nickname', request.validated)
         self.assertIn('password', request.validated)
         self.assertEqual(401, response.status_code)
-        self.assertIsInstance(response, _JSONError)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
+
+    def test_logout_valid_user(self):
+        request = create_request_with_token_header()
+        response = user_logout(request)
+        self.assertEqual(len(request.errors), 0)
+        self.assertEqual('ok', response['status'])
+
+    def test_logout_invalid_user(self):
+        nickname = 'Walter'
+        request = construct_dummy_request()
+        request.headers[self.header] = json.dumps({'nickname': nickname, 'token': 'notavalidtoken'})
+        response = user_logout(request)
+        self.assertGreater(len(request.errors), 0)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
+
+    def test_logout_missing_header(self):
+        request = construct_dummy_request()
+        response = user_logout(request)
+        self.assertGreater(len(request.errors), 0)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
 
 
-def test_server_available():
-    response = get_response("hello")
-    status = parse_status(response.content)
-    assert_true(response.ok)
-    assert_equals("ok", status)
+class TestSystemRoutes(unittest.TestCase):
+    def test_server_available(self):
+        request = construct_dummy_request()
+        response = hello(request)
+        self.assertEqual(response['status'], 'ok')
+
+    def test_whoami_and_check_for_valid_token(self):
+        nickname = 'Walter'
+        request = create_request_with_token_header(nickname)
+        response = whoami_fn(request)
+        self.assertEqual(len(request.errors), 0)
+        self.assertEqual(response['status'], 'ok')
+        self.assertEqual(response['nickname'], nickname)
 
 # def test_add_position_should_succeed():
 #     credentials = {"nickname": "Walter",

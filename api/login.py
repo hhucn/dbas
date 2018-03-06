@@ -9,11 +9,13 @@ import hashlib
 import json
 import os
 from datetime import datetime
+from typing import Union
 
 import transaction
 
 from admin.lib import check_token
 from dbas.auth.login import login_user
+from dbas.database.discussion_model import User
 from dbas.lib import get_user_by_case_insensitive_nickname
 from .lib import HTTP401, json_to_dict, logger
 
@@ -58,15 +60,14 @@ def __create_token(nickname, alg='sha512'):
     return hashlib.new(alg, salt).hexdigest()
 
 
-def token_to_database(nickname, token):
+def token_to_database(db_user: User, token: Union[str, None]) -> None:
     """
     Store the newly created token in database.
 
-    :param nickname: user's nickname
+    :param db_user: User
     :param token: new token to be stored
     :return:
     """
-    db_user = get_user_by_case_insensitive_nickname(nickname)
     db_user.set_token(token)
     db_user.update_token_timestamp()
     transaction.commit()
@@ -79,7 +80,7 @@ def __process_user_token(request, nickname, token):
     log.info("[API] Login Attempt from user {}".format(nickname))
     db_user = get_user_by_case_insensitive_nickname(nickname)
 
-    if not db_user.token == token and not check_token(token):
+    if not db_user.token or not db_user.token == token and not check_token(token):
         add_error(request, "Invalid token", 401)
         return
     request.validated['db_user'] = db_user
@@ -130,10 +131,12 @@ def validate_credentials(request, **kwargs):
 
     # Check in DB-AS' database, if the user's credentials are valid
     logged_in = login_user(nickname, password, request.mailer)
-    if 'user' in logged_in:
-        token = __create_token(nickname)
-        token_to_database(nickname, token)
-        request.validated['nickname'] = logged_in['user'].nickname
+    db_user = logged_in.get('user')
+    if db_user:
+        token = __create_token(db_user.nickname)
+        token_to_database(db_user, token)
+        request.validated['nickname'] = db_user.nickname
+        request.validated['db_user'] = db_user
         request.validated['token'] = token
     else:
         add_error(request, 'Could not login user', 401)
