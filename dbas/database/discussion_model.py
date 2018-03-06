@@ -130,6 +130,17 @@ class Issue(DiscussionBase):
         """
         self.is_read_only = is_read_only
 
+    def __json__(self, _request):
+        return {
+            "title": self.title,
+            "slug": self.slug,
+            "summary": self.info,
+            "description": self.long_info,
+            "url": "/" + self.slug,
+            "language": self.lang,
+            "date": self.date.format(),
+        }
+
 
 class Language(DiscussionBase):
     """

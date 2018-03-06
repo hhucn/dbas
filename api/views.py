@@ -577,17 +577,12 @@ def get_statement_url(request):
 
 
 @issues.get()
-def get_issues(request):
+def get_issues(_request):
     """
     Returns a list of active issues.
 
-    :param request:
-    :return:
+    :param _request:
+    :return: List of active issues.
     """
-
-    def enabled(issue):
-        return issue["enabled"] == "enabled"
-
-    issues = list(filter(enabled, __init(request)["issues"]["all"]))
-    return {"status": "ok",
-            "data": {"issues": issues}}
+    return DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
+                                                   Issue.is_private == False).all()
