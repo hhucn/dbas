@@ -22,11 +22,8 @@ stages:
     # for search
     DB_NAME: discussion
     DB_PWD: "DXxCNtfnt!MOo!f8LY1!P%sw3KGzt@s!"
-    DBAS_PROTOCOL: http
-    DBAS_HOST: web
-    DBAS_PORT: 4284
     SEARCH_PORT: 5000
-    SEARCH_PROTOCOL: http
+    DBAS_PROTOCOL: http
     SEARCH_NAME: search
 
     AUTHN_SECRET: "89#s3cr3t_15"
@@ -77,15 +74,15 @@ frontend:
 unit:
   <<: *add-services
   stage: test
-  before_script:
-    - apt-get install -yqq curl
-    - echo $(hostname)
-    - "echo curl -H \"Content-Type: application/json\" -X POST -d '{\"DBAS_HOST\":\"'$(hostname)'\",\"DBAS_PORT\":\"4284\",\"DBAS_PROTOCOL\":\"http\"}' http://search:5000/init"
-    - "curl -H \"Content-Type: application/json\" -X POST -d '{\"DBAS_HOST\":\"'$(hostname)'\",\"DBAS_PORT\":\"4284\",\"DBAS_PROTOCOL\":\"http\"}' http://search:5000/init"
-    - sleep 3
   script:
+    - apt-get install -yqq curl
+    - export DBAS_IP=$(ip a | grep 172. | awk '{print $2}' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
+    - "echo curl -H \"Content-Type: application/json\" -X POST -d '{\"DBAS_HOST\":\"'$DBAS_IP'\",\"DBAS_PORT\":\"4284\",\"DBAS_PROTOCOL\":\"http\"}' http://search:5000/init"
+    - "curl -H \"Content-Type: application/json\" -X POST -d '{\"DBAS_HOST\":\"'$DBAS_IP'\",\"DBAS_PORT\":\"4284\",\"DBAS_PROTOCOL\":\"http\"}' http://search:5000/init"
+    - sleep 5
     # - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=admin --cover-xml --with-timer -w . dbas graph admin api search
-    - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=admin --cover-xml --with-timer -w . search
+    # - python2 -m SimpleHTTPServer 8000
+    - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=admin --cover-xml --with-timer -s -w . search/tests/test_routes.py
   coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
   artifacts:
     paths:
