@@ -82,7 +82,7 @@ unit:
     - echo $(hostname)
     - "echo curl -H \"Content-Type: application/json\" -X POST -d '{\"DBAS_HOST\":\"'$(hostname)'\",\"DBAS_PORT\":\"4284\",\"DBAS_PROTOCOL\":\"http\"}' http://search:5000/init"
     - "curl -H \"Content-Type: application/json\" -X POST -d '{\"DBAS_HOST\":\"'$(hostname)'\",\"DBAS_PORT\":\"4284\",\"DBAS_PROTOCOL\":\"http\"}' http://search:5000/init"
-    - sleep 5
+    - sleep 3
   script:
     # - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=admin --cover-xml --with-timer -w . dbas graph admin api search
     - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=admin --cover-xml --with-timer -w . search
