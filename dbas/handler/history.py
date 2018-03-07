@@ -69,7 +69,6 @@ def create_bubbles_from_history(history, nickname='', lang='', slug=''):
     :param history: String
     :param nickname: User.nickname
     :param lang: ui_locales
-    :param application_url: String
     :param slug: String
     :return: Array
     """
@@ -87,7 +86,7 @@ def create_bubbles_from_history(history, nickname='', lang='', slug=''):
         nickname=nickname).first()
 
     for index, step in enumerate(splitted_history):
-        url = slug + '/' + step
+        url = '/' + slug + '/' + step
         if len(consumed_history) != 0:
             url += '?history=' + consumed_history
         consumed_history += step if len(consumed_history) == 0 else '-' + step
