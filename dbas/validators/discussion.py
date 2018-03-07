@@ -60,6 +60,34 @@ def valid_issue_by_slug(request):
     return False
 
 
+def valid_position(request):
+    """
+    Check if given statement is a position and belongs to the queried issue.
+
+    :param request: Request
+    :return:
+    """
+    if not valid_issue_by_slug(request):
+        return False
+
+    if has_keywords_in_path(('position_id', int))(request):
+        position_id = request.validated['position_id']
+        db_position: Statement = DBDiscussionSession.query(Statement).get(position_id)
+        if not db_position.is_startpoint:
+            add_error(request, 'Queried statement is not a valid position', location='path')
+            return False
+        if db_position.issue_uid != request.validated['issue'].uid:
+            add_error(request, 'Position does not belong to the queried issue', location='path')
+            return False
+        if db_position.is_disabled:
+            add_error(request, 'Position is disabled', location='path', status_code=410)
+            return False
+
+        request.validated['position'] = db_position
+        return True
+    return False
+
+
 def valid_new_issue(request):
     """
     Verifies given data for a new issue
