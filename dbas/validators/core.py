@@ -80,7 +80,6 @@ def has_keywords_in_path(*keywords: Tuple[str, type]):
                 error_occured = True
         return not error_occured
 
-
     return valid_keywords
 
 

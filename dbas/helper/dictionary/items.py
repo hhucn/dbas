@@ -50,7 +50,7 @@ class ItemDictHelper(object):
         self.issue_read_only = db_issue.is_read_only
         limiter = '-' if len(history) > 0 else ''
 
-        path = path.replace(db_issue.slug, '').replace('discuss', '')
+        path = path.replace(db_issue.slug, '').replace('discuss', '').replace('api', '')
         while path.startswith('/'):
             path = path[1:]
         self.path = '{}{}/{}'.format(history, limiter, path)

@@ -46,7 +46,6 @@ def valid_user_optional(request, **kwargs):
     request.validated['user'] = db_user
 
 
-
 def valid_user_as_author_of_statement(request):
     """
 

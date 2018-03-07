@@ -28,7 +28,7 @@ from dbas.strings.translator import get_translation
 from dbas.validators.core import has_keywords, validate
 from dbas.validators.discussion import valid_issue_by_slug
 from .lib import HTTP204, flatten, json_to_dict, logger
-from .login import validate_credentials, validate_login, valid_token, token_to_database
+from .login import validate_credentials, validate_login, valid_token, token_to_database, valid_token_optional
 from .references import (get_all_references_by_reference_text,
                          get_reference_by_id, get_references_for_url,
                          prepare_single_reference, store_reference,
@@ -184,7 +184,7 @@ def whoami_fn(request):
 
     :return: welcome-dict
     """
-    nickname = request.validated["db_user"].nickname
+    nickname = request.validated["user"].nickname
     return {"status": "ok",
             "nickname": nickname,
             "message": "Hello " + nickname + ", nice to meet you."}
@@ -204,7 +204,7 @@ def prepare_user_information(request):
     val = request.validated
     try:
         api_data = {"nickname": val["user"],
-                    "user": val["db_user"],
+                    "user": val["user"],
                     "user_uid": val["user_uid"],
                     "session_id": val["session_id"]}
     except KeyError:
@@ -305,7 +305,7 @@ def discussion_justify(request):
 
 
 @attitude.get()
-@validate(valid_issue_by_slug)
+@validate(valid_issue_by_slug, valid_token_optional)
 def discussion_attitude(request):
     """
     Return data from DBas discussion_attitude page.
@@ -472,7 +472,7 @@ def user_logout(request):
     :return:
     """
     request.session.invalidate()
-    token_to_database(request.validated['db_user'], None)
+    token_to_database(request.validated['user'], None)
     return {'status': 'ok',
             'message': 'Successfully logged out'}
 
