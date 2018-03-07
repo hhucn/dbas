@@ -7,7 +7,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument
 
 
-class RecommenerSystemTests(unittest.TestCase):
+class RecommenderSystemTests(unittest.TestCase):
 
     def test_get_attack_for_argument(self):
         results = {}
@@ -97,7 +97,6 @@ class RecommenerSystemTests(unittest.TestCase):
 
         arguments = rs.get_arguments_by_conclusion('1', False)
         self.assertTrue(2 in arguments)
-
 
     def test_get_forbidden_attacks_based_on_history(self):
         urls = [

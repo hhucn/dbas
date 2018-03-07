@@ -6,6 +6,7 @@ Provides helping function for dictionaries, which are used for the radio buttons
 
 import hashlib
 import random
+from typing import List
 
 import dbas.recommender_system as rs
 from dbas.database import DBDiscussionSession
@@ -22,6 +23,11 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, \
     get_support_to_argument_text_list, nick_of_anonymous_user
 from dbas.strings.translator import Translator
+
+
+def shuffle_list_by_user(db_user: User, l: List) -> List:
+    random.seed(int(hashlib.md5(str.encode(str(db_user.nickname))).hexdigest(), 16))
+    return random.sample(l, len(l))
 
 
 class ItemDictHelper(object):
@@ -91,9 +97,7 @@ class ItemDictHelper(object):
 
         _tn = Translator(self.lang)
 
-        if type(db_statements) is list and len(db_statements) > 0:
-            random.seed(int(hashlib.md5(str.encode(str(db_user.nickname))).hexdigest(), 16))
-            random.shuffle(statements_array)
+        shuffle_list_by_user(db_user, statements_array)
 
         if not self.issue_read_only:
             if db_user.nickname is not nick_of_anonymous_user:
@@ -206,9 +210,7 @@ class ItemDictHelper(object):
                                                               is_visible=argument.uid in uids,
                                                               attack_url=_um.get_url_for_jump(argument.uid)))
 
-        if type(db_arguments) is list and len(db_arguments) > 0:
-            random.seed(int(hashlib.md5(str.encode(str(db_user.nickname))).hexdigest(), 16))
-            random.shuffle(statements_array)
+        shuffle_list_by_user(db_user, statements_array)
 
         if not self.issue_read_only:
             if db_user and db_user.nickname != nick_of_anonymous_user:
@@ -288,9 +290,7 @@ class ItemDictHelper(object):
                                                               is_visible=argument.uid in uids,
                                                               attack_url=_um.get_url_for_jump(argument.uid)))
 
-        if type(db_arguments) is list and len(db_arguments) > 0:
-            random.seed(int(hashlib.md5(str.encode(str(db_user.nickname))).hexdigest(), 16))
-            random.shuffle(statements_array)
+        shuffle_list_by_user(db_user, statements_array)
 
         if not self.issue_read_only:
             if db_user and db_user.nickname != nick_of_anonymous_user:
