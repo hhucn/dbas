@@ -14,14 +14,14 @@ class TestShuffleList(unittest.TestCase):
         self.assertEqual(shuffle_list_by_user(self.db_user, []), [])
 
     def test_repeatabilty(self):
-        l = list(range(100))
-        l1 = shuffle_list_by_user(self.db_user, l)
-        l2 = shuffle_list_by_user(self.db_user, l)
+        list0 = list(range(100))
+        list1 = shuffle_list_by_user(self.db_user, list0)
+        list2 = shuffle_list_by_user(self.db_user, list0)
 
-        self.assertEqual(l1, l2)
+        self.assertEqual(list1, list2)
 
     def test_not_equal(self):
-        l = list(range(100))
-        l1 = shuffle_list_by_user(self.db_user, l)
+        list0 = list(range(100))
+        list1 = shuffle_list_by_user(self.db_user, list0)
 
-        self.assertNotEqual(l, l1)
+        self.assertNotEqual(list0, list1)

@@ -15,14 +15,18 @@ from typing import Callable, Any
 from cornice import Service
 
 import dbas.views as dbas
+from api.models import Item, Bubble
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue
+from dbas.database.discussion_model import Issue, Statement
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
 from dbas.lib import (get_all_arguments_by_statement,
                       get_all_arguments_with_text_by_statement_id,
-                      get_text_for_argument_uid, resolve_issue_uid_to_slug)
+                      get_text_for_argument_uid, resolve_issue_uid_to_slug, create_speechbubble_dict, BubbleTypes)
+from dbas.strings.translator import Keywords as _
+from dbas.strings.translator import get_translation
 from dbas.validators.core import has_keywords, validate
+from dbas.validators.discussion import valid_issue_by_slug
 from .lib import HTTP204, flatten, json_to_dict, logger
 from .login import validate_credentials, validate_login, valid_token, token_to_database
 from .references import (get_all_references_by_reference_text,
@@ -129,6 +133,7 @@ issues = Service(name="issues",
                  path="/issues",
                  description="Get issues",
                  cors_policy=cors_policy)
+
 #
 # Build text-blocks
 #
@@ -339,16 +344,30 @@ def discussion_support(request):
     return dbas.discussion.support(request_dict, api_data=api_data)
 
 
-@zinit.get(validators=validate_login)
+@zinit.get()
+@validate(valid_issue_by_slug)
 def discussion_init(request):
     """
     Return data from DBas discussion_init page.
 
     :param request: request
     :return: dbas.discussion_init(True)
-
     """
-    return __init(request)
+    db_issue = request.validated['issue']
+    intro = get_translation(_.initialPositionInterest, db_issue.lang)
+
+    bubbles = [
+        create_speechbubble_dict(BubbleTypes.SYSTEM, uid='start', message=intro, omit_url=True, lang=db_issue.lang)]
+
+    db_positions = DBDiscussionSession.query(Statement).filter(Statement.is_disabled == False,
+                                                               Statement.issue_uid == db_issue.uid,
+                                                               Statement.is_startpoint == True).all()
+
+    items = [Item(pos.get_textversion().content, "{}/attitude/{}".format(db_issue.slug, pos.uid)) for pos in
+             db_positions]
+
+    return {'bubbles': [Bubble(bubble) for bubble in bubbles],
+            'items': items}
 
 
 @zinit_blank.get(validators=validate_login)
