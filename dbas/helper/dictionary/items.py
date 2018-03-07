@@ -12,16 +12,16 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User
 from dbas.handler.arguments import get_another_argument_with_same_conclusion
 from dbas.handler.voting import add_seen_argument, add_seen_statement
+from dbas.helper.url import UrlManager
 from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, \
     is_author_of_argument
 from dbas.logger import logger
-from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
+from dbas.query_wrapper import get_not_disabled_arguments_as_query
 from dbas.review.helper.queues import is_statement_in_edit_queue, is_arguments_premise_in_edit_queue
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, \
     get_support_to_argument_text_list, nick_of_anonymous_user
 from dbas.strings.translator import Translator
-from dbas.helper.url import UrlManager
 
 
 class ItemDictHelper(object):
@@ -65,11 +65,12 @@ class ItemDictHelper(object):
         :return:
         """
         logger('ItemDictHelper', 'def user: {}'.format(db_user.nickname))
-        db_statements = get_not_disabled_statement_as_query()
-        db_statements = db_statements.filter(Statement.is_startpoint == True,
-                                             Statement.issue_uid == self.db_issue.uid).all()
+        db_statements = DBDiscussionSession.query(Statement) \
+            .filter(Statement.is_disabled == False,
+                    Statement.is_startpoint == True,
+                    Statement.issue_uid == self.db_issue.uid).all()
 
-        uids = rs.get_uids_of_best_positions(db_statements)  # TODO # 166
+        uids = [element.uid for element in db_statements if db_statements]
         slug = self.db_issue.slug
 
         statements_array = []
@@ -160,7 +161,7 @@ class ItemDictHelper(object):
         _tn = Translator(self.lang)
         slug = self.db_issue.slug
         db_arguments = rs.get_arguments_by_conclusion(statement_uid, is_supportive)
-        uids = rs.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
+        uids = [argument.uid for argument in db_arguments if db_arguments]
 
         _um = UrlManager(slug, history=self.path)
 
@@ -240,7 +241,7 @@ class ItemDictHelper(object):
         slug = self.db_issue.slug
         # description in docs: dbas/logic
         db_arguments = self.__get_arguments_based_on_attack(attack_type, argument_uid)
-        uids = rs.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
+        uids = [argument.uid for argument in db_arguments if db_arguments]
 
         _um = UrlManager(slug, history=self.path)
 

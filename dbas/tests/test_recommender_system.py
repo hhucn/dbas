@@ -4,7 +4,7 @@ import transaction
 
 from dbas import recommender_system as rs
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Argument, Statement
+from dbas.database.discussion_model import Argument
 
 
 class RecommenerSystemTests(unittest.TestCase):
@@ -98,38 +98,6 @@ class RecommenerSystemTests(unittest.TestCase):
         arguments = rs.get_arguments_by_conclusion('1', False)
         self.assertTrue(2 in arguments)
 
-    def test_get_uids_of_best_positions(self):
-        db_statements = DBDiscussionSession.query(Statement).all()
-        response = rs.get_uids_of_best_positions(db_statements)
-        self.assertEqual(len(response), len(db_statements))
-
-        response = rs.get_uids_of_best_positions(db_statements[0:3])
-        self.assertEqual(len(response), 3)
-
-        response = rs.get_uids_of_best_positions(None)
-        self.assertEqual(len(response), 0)
-
-    def test_get_uids_of_best_statements_for_justify_position(self):
-        db_arguments = DBDiscussionSession.query(Argument).all()
-        response = rs.get_uids_of_best_positions(db_arguments)
-        self.assertEqual(len(response), len(db_arguments))
-
-        response = rs.get_uids_of_best_positions(db_arguments[0:3])
-        self.assertEqual(len(response), 3)
-
-        response = rs.get_uids_of_best_positions(None)
-        self.assertEqual(len(response), 0)
-
-    def test_get_uids_of_best_statements_for_justify_argument(self):
-        db_arguments = DBDiscussionSession.query(Argument).all()
-        response = rs.get_uids_of_best_positions(db_arguments)
-        self.assertEqual(len(response), len(db_arguments))
-
-        response = rs.get_uids_of_best_positions(db_arguments[0:3])
-        self.assertEqual(len(response), 3)
-
-        response = rs.get_uids_of_best_positions(None)
-        self.assertEqual(len(response), 0)
 
     def test_get_forbidden_attacks_based_on_history(self):
         urls = [
