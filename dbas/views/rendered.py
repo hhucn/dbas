@@ -39,8 +39,8 @@ from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
-from dbas.validators.core import validate, has_keywords_in_path
-from dbas.validators.discussion import valid_issue_by_slug
+from dbas.validators.core import validate
+from dbas.validators.discussion import valid_issue_by_slug, valid_position
 from dbas.validators.user import valid_user, invalid_user, valid_user_optional
 
 name = 'D-BAS'
@@ -609,23 +609,27 @@ def discussion_start(request):
 
 # attitude page
 @view_config(route_name='discussion_attitude', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, invalid_user, has_keywords_in_path(('position_id', int)))
+@validate(check_authentication, valid_user_optional, valid_position)
 def discussion_attitude(request):
     """
     View configuration for discussion step, where we will ask the user for her attitude towards a statement.
+    Route: /discuss/{slug}/attitude/{position_id}
 
     :param request: request of the web server
     :return: dictionary
     """
-    # '/discuss/{slug}/attitude/{statement_id}'
     logger('discussion_attitude', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.attitude)
+    db_position = request.validated['position']
+    db_issue = request.validated['issue']
+    db_user = request.validated['user']
 
-    # extend_history(history, path)
+    history = history_handler.handle_history(request, db_user, db_issue)
+    prepared_discussion = discussion.attitude(db_issue, db_user, db_position, history, request.path)
+    prepared_discussion['layout'] = base_layout()
+    __modify_discussion_url(prepared_discussion)
 
-    if not prepared_discussion:
-        raise HTTPNotFound()
+    rdict = prepare_request_dict(request)
 
     __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
 

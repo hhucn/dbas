@@ -69,7 +69,7 @@ class DiscussionDictHelper(object):
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_attitude(self, uid):
+    def get_dict_for_attitude(self, db_position: Statement) -> dict:
         """
         Prepares the discussion dict with all bubbles for the second step in discussion,
         where the user chooses her attitude.
@@ -81,9 +81,7 @@ class DiscussionDictHelper(object):
         _tn = Translator(self.lang)
         add_premise_text = ''
         save_statement_url = 'set_new_start_statement'
-        statement_text = get_text_for_statement_uid(uid, True)
-        if not statement_text:
-            return None
+        statement_text = db_position.get_html()
 
         if self.lang != 'de':
             pos = len('<' + tag_type + ' data-argumentation-type="position">')
