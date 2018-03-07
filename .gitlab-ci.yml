@@ -80,7 +80,7 @@ unit:
     - "echo curl -H \"Content-Type: application/json\" -X POST -d '{\"DBAS_HOST\":\"'$DBAS_IP'\",\"DBAS_PORT\":\"4284\",\"DBAS_PROTOCOL\":\"http\"}' http://search:5000/init"
     - "curl -H \"Content-Type: application/json\" -X POST -d '{\"DBAS_HOST\":\"'$DBAS_IP'\",\"DBAS_PORT\":\"4284\",\"DBAS_PROTOCOL\":\"http\"}' http://search:5000/init"
     - sleep 5
-    - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=admin --cover-xml --with-timer -s -w . search/tests/test_routes.py
+    - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=admin --cover-xml --with-timer -w . search/tests
     - nosetests --with-coverage --cover-package=dbas --cover-package=graph --cover-package=admin --cover-package=api --cover-xml -w . api.v2 dbas graph admin api.tests.test_login api.tests.test_views
   coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
   artifacts:
