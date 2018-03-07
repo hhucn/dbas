@@ -47,7 +47,6 @@ class ItemDictHelper(object):
         """
         self.lang = lang
         self.db_issue = db_issue
-        self.LIMIT_SUPPORT_STEP = 0.30
         self.issue_read_only = db_issue.is_read_only
         limiter = '-' if len(history) > 0 else ''
 

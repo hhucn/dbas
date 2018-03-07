@@ -40,7 +40,8 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
 from dbas.validators.core import validate
-from dbas.validators.user import valid_user, invalid_user
+from dbas.validators.discussion import valid_issue_by_slug
+from dbas.validators.user import valid_user, invalid_user, valid_user_optional
 
 name = 'D-BAS'
 version = '1.6.0'
@@ -135,7 +136,6 @@ def prepare_request_dict(request: Request):
         'ui_locales': ui_locales
     }
 
-
 def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any]):
     """
     Checks for an expired session, the authentication and calls f the users nickname.
@@ -184,10 +184,7 @@ def __append_extras_dict_during_justification(request: Request, pdict: dict, rdi
 
     :param request: pyramids Request object
     :param pdict: prepared dict for rendering
-    :param idict: item dict with the answers
-    :param ddict: discussion dict with bubbles
     :param rdict: request dict for the discussion core
-    :param is_reportable:
     :return:
     """
     nickname = request.authenticated_userid
@@ -553,7 +550,7 @@ def notfound(request):
 
 # content page
 @view_config(route_name='discussion_init_with_slug', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, invalid_user)
+@validate(check_authentication, valid_issue_by_slug, valid_user_optional)
 def discussion_init(request):
     """
     View configuration for the initial discussion.
@@ -563,9 +560,11 @@ def discussion_init(request):
     """
     logger('discussion_init', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.init)
-    if not prepared_discussion:
-        raise HTTPNotFound()
+    prepared_discussion = discussion.init(request.validated['issue'], request.validated['user'])
+    prepared_discussion['layout'] = base_layout()
+    __modify_discussion_url(prepared_discussion)
+
+    rdict = prepare_request_dict(request)
 
     # redirect to oauth url after login and redirecting
     if request.authenticated_userid and 'service' in request.params and request.params['service'] in oauth_providers:

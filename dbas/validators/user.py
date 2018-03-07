@@ -31,6 +31,22 @@ def valid_user(request, **kwargs):
         return False
 
 
+def valid_user_optional(request, **kwargs):
+    """
+    If user is provided, query her, else return the anonymous user.
+
+    :param request:
+    :return:
+    """
+    db_user = DBDiscussionSession.query(User).filter_by(nickname=request.authenticated_userid).one_or_none()
+
+    if not db_user:
+        db_user = DBDiscussionSession.query(User).get(1)
+
+    request.validated['user'] = db_user
+
+
+
 def valid_user_as_author_of_statement(request):
     """
 

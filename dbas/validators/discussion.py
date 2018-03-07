@@ -48,12 +48,13 @@ def valid_issue_by_slug(request):
         db_issue = DBDiscussionSession.query(Issue).filter(
             Issue.slug == request.validated['slug']).one_or_none()
 
-        if db_issue and db_issue.is_disabled:
-            add_error(request, 'Issue no longer available', location='path', status_code=410)
-            return False
-        else:
-            request.validated['issue'] = db_issue
-            return True
+        if db_issue:
+            if db_issue.is_disabled:
+                add_error(request, 'Issue no longer available', location='path', status_code=410)
+                return False
+            else:
+                request.validated['issue'] = db_issue
+                return True
 
     add_error(request, 'Invalid slug for issue', location='path', status_code=404)
     return False

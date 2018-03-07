@@ -83,10 +83,6 @@ zinit = Service(name='api_init',
                 path='/{slug}',
                 description="Discussion Init",
                 cors_policy=cors_policy)
-zinit_blank = Service(name='api_init_blank',
-                      path='/',
-                      description="Discussion Init",
-                      cors_policy=cors_policy)
 
 #
 # Add new data to D-BAS
@@ -282,11 +278,6 @@ def prepare_dbas_request_dict(request) -> dict:
     return dbas.prepare_request_dict(request)
 
 
-def __init(request):
-    request_dict = prepare_dbas_request_dict(request)
-    return dbas.discussion.init(request_dict)
-
-
 @reaction.get(validators=validate_login)
 def discussion_reaction(request):
     """
@@ -313,7 +304,8 @@ def discussion_justify(request):
     return dbas.discussion.justify(request_dict)
 
 
-@attitude.get(validators=validate_login)
+@attitude.get()
+@validate(valid_issue_by_slug)
 def discussion_attitude(request):
     """
     Return data from DBas discussion_attitude page.
@@ -348,10 +340,10 @@ def discussion_support(request):
 @validate(valid_issue_by_slug)
 def discussion_init(request):
     """
-    Return data from DBas discussion_init page.
+    Given a slug, show its positions.
 
-    :param request: request
-    :return: dbas.discussion_init(True)
+    :param request: Request
+    :return:
     """
     db_issue = request.validated['issue']
     intro = get_translation(_.initialPositionInterest, db_issue.lang)
@@ -368,18 +360,6 @@ def discussion_init(request):
 
     return {'bubbles': [Bubble(bubble) for bubble in bubbles],
             'items': items}
-
-
-@zinit_blank.get(validators=validate_login)
-def discussion_init_blank(request):
-    """
-    Return data from DBas discussion_init page.
-
-    :param request: request
-    :return: dbas.discussion_init(True)
-
-    """
-    return __init(request)
 
 
 #
