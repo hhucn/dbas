@@ -20,7 +20,7 @@ from dbas.database.discussion_model import User, Argument, Statement, TextVersio
     MarkedStatement, Message, LastReviewerEdit, RevokedContentHistory, RevokedContent, RevokedDuplicate, \
     ReviewCanceled, RSS, OptimizationReviewLocks, History, News
 from dbas.handler.rss import create_news_rss, create_initial_issue_rss
-from dbas.lib import get_global_url
+from dbas.lib import get_global_url, nick_of_anonymous_user
 from dbas.logger import logger
 from pyramid.paster import get_appsettings, setup_logging
 from dbas.handler.password import get_hashed_password
@@ -28,7 +28,7 @@ from dbas.handler.password import get_hashed_password
 first_names = ['Pascal', 'Kurt', 'Torben', 'Thorsten', 'Friedrich', 'Aayden', 'Hermann', 'Wolf', 'Jakob', 'Alwin',
                'Walter', 'Volker', 'Benedikt', 'Engelbert', 'Elias', 'Rupert', 'Marga', 'Larissa', 'Emmi', 'Konstanze',
                'Catrin', 'Antonia', 'Nora', 'Nora', 'Jutta', 'Helga', 'Denise', 'Hanne', 'Elly', 'Sybille', 'Ingeburg']
-nick_of_anonymous_user = 'anonymous'
+
 nick_of_admin = 'Tobias'
 
 
@@ -58,6 +58,7 @@ def main_discussion(argv=sys.argv):
     settings = get_appsettings(config_uri)
 
     discussion_engine = get_dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
     NewsBase.metadata.create_all(discussion_engine)
@@ -92,6 +93,7 @@ def main_field_test(argv=sys.argv):
     settings = get_appsettings(config_uri)
 
     discussion_engine = get_dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -121,6 +123,7 @@ def drop_it(argv=sys.argv):
     settings = get_appsettings(config_uri)
 
     discussion_engine = get_dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -186,6 +189,7 @@ def blank_file(argv=sys.argv):
     settings = get_appsettings(config_uri)
 
     discussion_engine = get_dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -257,6 +261,7 @@ def init_dummy_votes(argv=sys.argv):
     settings = get_appsettings(config_uri)
 
     discussion_engine = get_dbas_db_configuration('discussion', settings)
+    DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=discussion_engine)
     DiscussionBase.metadata.create_all(discussion_engine)
 
@@ -857,9 +862,9 @@ def __setup_dummy_seen_by(session):
     session.add_all(elements)
     session.flush()
 
-    logger('INIT_DB', 'Dummy Seen By',
+    logger('INIT_DB',
            'Created ' + str(argument_count) + ' seen-by entries for ' + str(len(db_arguments)) + ' arguments')
-    logger('INIT_DB', 'Dummy Seen By',
+    logger('INIT_DB',
            'Created ' + str(statement_count) + ' seen-by entries for ' + str(len(db_statements)) + ' statements')
 
 
@@ -884,7 +889,7 @@ def __setup_dummy_clicks(session):
     statement_count = len(db_statements)
 
     if argument_count <= 0 or statement_count <= 0:
-        logger('INIT_DB', 'Dummy Votes', 'No arguments or statements! Do you forget to init discussions?', warning=True)
+        logger('INIT_DB', 'No arguments or statements! Do you forget to init discussions?', warning=True)
         return
 
     rat_arg_up = arg_up / argument_count
@@ -892,15 +897,15 @@ def __setup_dummy_clicks(session):
     rat_stat_up = stat_up / statement_count
     rat_stat_down = stat_down / statement_count
 
-    logger('INIT_DB', 'Dummy Clicks',
+    logger('INIT_DB',
            'Created {} up clicks for {} arguments ({:.2f} clicks/argument)'.format(arg_up, argument_count, rat_arg_up))
-    logger('INIT_DB', 'Dummy Clicks',
+    logger('INIT_DB',
            'Created {} down clicks for {} arguments ({:.2f} clicks/argument)'.format(arg_down, argument_count,
                                                                                      rat_arg_down))
-    logger('INIT_DB', 'Dummy Clicks',
+    logger('INIT_DB',
            'Created {} up clicks for {} statements ({:.2f} clicks/statement)'.format(stat_up, statement_count,
                                                                                      rat_stat_up))
-    logger('INIT_DB', 'Dummy Clicks',
+    logger('INIT_DB',
            'Created {} down clicks for {} statements ({:.2f} clicks/statement)'.format(stat_down, statement_count,
                                                                                        rat_stat_down))
 
@@ -930,7 +935,7 @@ def __add_clicks_for_arguments(db_arguments, users):
     arg_down = 0
     new_clicks_for_arguments = list()
     for argument in db_arguments:
-        max_interval = len(DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=argument.uid).all())
+        max_interval = DBDiscussionSession.query(SeenArgument).filter_by(argument_uid=argument.uid).count()
         up_votes = random.randint(1, max_interval - 1)
         down_votes = random.randint(1, max_interval - 1)
         arg_up += up_votes
@@ -975,7 +980,7 @@ def __add_clicks_for_statements(db_statements, users):
     stat_down = 0
     new_clicks_for_statement = list()
     for statement in db_statements:
-        max_interval = len(DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=statement.uid).all())
+        max_interval = DBDiscussionSession.query(SeenStatement).filter_by(statement_uid=statement.uid).count()
         up_votes = random.randint(1, max_interval - 1)
         down_votes = random.randint(1, max_interval - 1)
         stat_up += up_votes

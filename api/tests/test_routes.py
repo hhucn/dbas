@@ -17,4 +17,4 @@ def test_discussion_reactions():
 
 
 def test_discussion_justify():
-    json_response_ok("cat-or-dog/justify/10/t/undermine?history=/attitude/4-/justify/4/t-/reaction/8/undermine/10")
+    json_response_ok("cat-or-dog/justify/10/agree/undermine?history=/attitude/4-/justify/4/t-/reaction/8/undermine/10")

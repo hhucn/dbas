@@ -3,9 +3,7 @@
 
         <section>
             <div class="text-center big-header">
-                <h3  tal:condition="table.is_existing" class="text-center">Admin Menu</h3>
-                <h3  tal:condition="not:table.is_existing" class="text-center">Table does not exists or contains
-                    errors!</h3>
+                <h3 class="text-center">Admin Menu</h3>
                 <p class="lead text-center"><span class="lead"><span
                         id="table_name">${table.name}</span> has ${table.count} Elements</span></p>
             </div>
@@ -24,8 +22,7 @@
                 </div>
             </div>
 
-            <div class="container colored-container overlap-with-big-header" tal:condition="table.is_existing"
-                 style="width: 95%">
+            <div class="container colored-container overlap-with-big-header" style="width: 95%">
                 <table id="data" class="table table-striped table-hover" tal:condition="table.has_elements">
                     <thead>
                     <tr>
@@ -50,8 +47,7 @@
             </div>
         </div>
 
-        <span tal:condition="table.is_existing" class="icon-badge blue-button bottom-right add" id="icon-add-news"
-                                                title="Create">+</span>
+        <span class="icon-badge blue-button bottom-right add" id="icon-add-news" title="Create">+</span>
 
         <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/helper.js')}"></script>
         <script type="text/javascript" src="${request.static_url('dbas:static/js/discussion/guihandler.js')}"></script>

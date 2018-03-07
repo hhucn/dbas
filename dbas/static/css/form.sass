@@ -44,6 +44,9 @@ input[name="inlineRadioGenderOptions"] + label i
   margin-left: auto
   margin-right: auto
 
+#popup-login-password-meter
+  height: 2px
+
 #popup-login-password-strength, #popup-login-password-info-link
   float: right
 
@@ -58,20 +61,24 @@ input[name="inlineRadioGenderOptions"] + label i
   transition: .5s ease
 
 .veryweak
-  background-color: #ff7070
-  width: 25% !important
+  background-color: $pw-veryweak
+  width: 20% !important
+  left: 63px
 
 .weak
-  background-color: #ffa070
-  width: 50% !important
+  background-color: $pw-weak
+  width: 40% !important
+  left: 63px
 
 .medium
-  background-color: #ffcf70
-  width: 75% !important
+  background-color: $pw-medium
+  width: 60% !important
+  left: 63px
 
 .strong
-  background-color: #a0ff70
-  width: 100% !important
+  background-color: $pw-strong
+  width: 85% !important
+  left: 63px
 
 #login-register-submit
   margin-top: 25px

@@ -1,9 +1,5 @@
 # D-BAS
 
-[![build status](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/badges/master/build.svg)](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/commits/master)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![coverage report](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/badges/master/coverage.svg)](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/project/dbas/dbas/commits/master)
-
 D-BAS is based on [Pyramid](http://www.pylonsproject.org/), [Bootstrap](http://getbootstrap.com/),
 [jQuery](https://jquery.com/) and shipped via [Docker Containers](https://www.docker.com/). It is a novel approach to online
 argumentation. It avoids the pitfalls of  unstructured systems such as asynchronous threaded discussions and it is
@@ -15,7 +11,7 @@ Currently, the main development-process happens in our GitLab instance, but you
 can open issues here, submit pull requests etc. and we will coordinate your
 contributions.
 
-Of course, you can try out D-BAS on (https://dbas.cs.uni-duesseldorf.de/)[https://dbas.cs.uni-duesseldorf.de/].
+Of course, you can try out D-BAS on [https://dbas.cs.uni-duesseldorf.de/](https://dbas.cs.uni-duesseldorf.de/).
 
 ## Setup for Linux
 
@@ -26,7 +22,11 @@ Ensure that the following tools are installed:
 * [Docker Compose](https://docs.docker.com/compose/install/)
 
 Then copy the `skeleton.env` to `development.env` and fill out the fields you need.
-At least `DB_*` and maybe `MAIL_*` should be set.
+At least the following field should be set:
+ - `DB_*` ; Please fill out every value of your used database.
+ - `MAIL_*`; Please fill out every value of your mail server.
+ - `WEBSOCKET_PORT` with the port of the small node.js server. Default is 5222. On modification, please set the new port on `websocket/static/js/websocket.js` too. 
+ - `MIN_LENGTH_OF_STATEMENT` is the minimal length of any statement in D-BAS. We think, that `10` is a good default value.
 
 Then follow these steps:
 
@@ -52,8 +52,8 @@ Afterwards everything should be fine.
 
 ## Maintainers and Main Contributors
 
-* Tobias Krauthoff
-* Christian Meter
+* [Tobias Krauthoff](mailto:krauthoff@cs.uni-duesseldorf.de)
+* [Christian Meter](mailto:meter@cs.uni-duesseldorf.de)
 
 
 ## Contributors

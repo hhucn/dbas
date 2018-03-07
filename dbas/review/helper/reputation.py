@@ -6,12 +6,12 @@ Provides helping function for handling reputation.
 
 import arrow
 import transaction
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, ReputationHistory, ReputationReason
-from dbas.lib import is_user_author_or_admin
+from dbas.lib import nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
-from sqlalchemy import and_
 
 reputation_borders = {'deletes': 30,
                       'optimizations': 30,
@@ -88,7 +88,7 @@ def get_reputation_list(translator):
     return {'gains': gains, 'looses': looses}
 
 
-def get_reputation_of(nickname, only_today=False):
+def get_reputation_of(db_user, only_today=False):
     """
     Return the total sum of reputation_borders points for the given nickname
 
@@ -96,10 +96,11 @@ def get_reputation_of(nickname, only_today=False):
     :param only_today: Boolean
     :return: Integer and Boolean, if the user is author
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    if not isinstance(db_user, User):
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=db_user).first()
     count = 0
 
-    if not db_user:
+    if not db_user or db_user.nickname == nick_of_anonymous_user:
         return count, False
 
     db_reputation = DBDiscussionSession.query(ReputationHistory)
@@ -114,36 +115,41 @@ def get_reputation_of(nickname, only_today=False):
 
     count = sum([r.reputations.points for r in db_reputation])
 
-    return count, is_user_author_or_admin(nickname)
+    return count, db_user.is_author() or db_user.is_admin()
 
 
 def add_reputation_for(user, reason):
     """
-    Add reputation for the given nickname with the reason only iff the reason can be added. (For example all reputation
+    Add reputation for the given nickname with the reason only iff the reason can be added. For example all reputation
     for 'first' things cannot be given twice.
 
-    :param user: current user oder his nickname
+    :param user: User in refactored fns, else nickname
     :param reason: reason as string, as given in reputation.py
     :return: True, if the user gained reputation and an additional boolean that is true, when the user reached 30points
     """
-    logger('ReputationPointHelper', 'add_reputation_for', 'main ' + reason)
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first() if isinstance(user, str) else user
+    logger('ReputationPointHelper', 'main ' + reason)
     db_reason = DBDiscussionSession.query(ReputationReason).filter_by(reason=reason).first()
+
+    if isinstance(user, str):  # TODO remove this check after refactoring
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
+    else:
+        db_user = user
+
     if not db_reason or not db_user:
-        logger('ReputationPointHelper', 'add_reputation_for', 'no reason or no user')
+        logger('ReputationPointHelper', 'no reason or no user')
         return False, False
 
-    logger('ReputationPointHelper', 'add_reputation_for', 'user ' + str(db_user.uid))
+    logger('ReputationPointHelper', 'user ' + str(db_user.uid))
     # special case:
     if '_first_' in reason:
         db_already_farmed = DBDiscussionSession.query(ReputationHistory).filter(
-            and_(ReputationHistory.reputation_uid == db_reason.uid,
-                 ReputationHistory.reputator_uid == db_user.uid)).first()
+            ReputationHistory.reputation_uid == db_reason.uid,
+            ReputationHistory.reputator_uid == db_user.uid).first()
         if db_already_farmed:
-            logger('ReputationPointHelper', 'add_reputation_for', 'karma already farmed')
+            logger('ReputationPointHelper', 'karma already farmed')
             return False, False
 
-    logger('ReputationPointHelper', 'add_reputation_for', 'add ' + str(db_reason.points) + ' for ' + db_user.nickname)
+    logger('ReputationPointHelper', 'add ' + str(db_reason.points) + ' for ' + db_user.nickname)
     db_old_points = __collect_points(DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).join(ReputationReason).all())
     new_rep = ReputationHistory(reputator=db_user.uid, reputation=db_reason.uid)
     DBDiscussionSession.add(new_rep)
@@ -152,7 +158,7 @@ def add_reputation_for(user, reason):
     transaction.commit()
     db_new_points = db_old_points + db_reason.points
 
-    return True, db_old_points < 30 and db_new_points >= 30
+    return True, db_old_points < 30 <= db_new_points
 
 
 def __collect_points(reputation_history):

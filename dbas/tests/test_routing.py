@@ -2,7 +2,7 @@ import unittest
 import webtest
 import dbas
 import os
-from dbas.helper.tests import add_settings_to_appconfig
+from dbas.helper.test import add_settings_to_appconfig
 
 # copy/paste from https://docs.pylonsproject.org/projects/pyramid/en/latest/tutorials/wiki2/tests.html
 
@@ -46,6 +46,13 @@ class FunctionalTests(unittest.TestCase):
         self.testapp.get('/user/1', status=404)
         self.testapp.get('/user/2', status=200)
 
+    def test_discussion_start(self):
+        self.testapp.get('/discuss', status=200)
+        self.testapp.get('/discuss/', status=200)
+
+    def test_discussion_overview(self):
+        self.testapp.get('/discuss/mydiscussions', status=404)  # not logged in
+
     def test_discussion_support(self):
         self.testapp.get('/discuss/cat-or-dog/support/11/12', status=200)
 
@@ -54,15 +61,15 @@ class FunctionalTests(unittest.TestCase):
         self.testapp.get('/discuss/cat-or-dog/reaction/13/end/0', status=404)
 
     def test_discussion_justify(self):
-        self.testapp.get('/discuss/cat-or-dog/justify/2/t', status=200)
-        self.testapp.get('/discuss/cat-or-dog/justify/13/t/undercut', status=200)
+        self.testapp.get('/discuss/cat-or-dog/justify/2/agree', status=200)
+        self.testapp.get('/discuss/cat-or-dog/justify/13/agree/undercut', status=200)
 
     def test_discussion_attitude(self):
         self.testapp.get('/discuss/cat-or-dog/attitude/1', status=404)
         self.testapp.get('/discuss/cat-or-dog/attitude/2', status=200)
 
     def test_discussion_choose(self):
-        self.testapp.get('/discuss/cat-or-dog/choose/t/f/4/6', status=200)
+        self.testapp.get('/discuss/cat-or-dog/choose/true/false/4/6', status=200)
 
     def test_discussion_jump(self):
         self.testapp.get('/discuss/cat-or-dog/jump/12', status=200)
@@ -77,7 +84,7 @@ class FunctionalTests(unittest.TestCase):
         self.testapp.get('/discuss', status=200)
         self.testapp.get('/discuss/', status=200)
         self.testapp.get('/discuss/cat-or-dog', status=200)
-        self.testapp.get('/discuss/cat-or-dogg', status=200)
+        self.testapp.get('/discuss/cat-or-dogg', status=404)
 
     def test_review_index(self):
         self.testapp.get('/review', status=200)
@@ -93,6 +100,6 @@ class FunctionalTests(unittest.TestCase):
 
     def test_review_content(self):
         self.testapp.get('/review/', status=404)
-        from dbas.review.helper.subpage import pages
-        for page in pages:
-            self.testapp.get('/review/' + page, status=200)
+        from dbas.review.helper.queues import review_queues
+        for queue in review_queues:
+            self.testapp.get('/review/' + queue, status=200)

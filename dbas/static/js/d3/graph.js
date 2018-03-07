@@ -156,13 +156,12 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      * @param request_for_complete
      */
     this.callbackIfDoneForDiscussionGraph = function (data, request_for_complete) {
-        var jsonData = $.parseJSON(data);
-        if (jsonData.error.length !== 0) {
-            setGlobalErrorHandler('Ohh!', jsonData.error);
+        if (data.error.length !== 0) {
+            setGlobalErrorHandler('Ohh!', data.error);
             new GuiHandler().setDisplayStyleAsDiscussion();
             return;
         }
-        new DiscussionGraph(box_sizes, isPartialGraphMode).setDefaultViewParams(true, jsonData, null, request_for_complete);
+        new DiscussionGraph(box_sizes, isPartialGraphMode).setDefaultViewParams(true, data, null, request_for_complete);
     };
 
     /**
@@ -270,7 +269,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
         size.rel_node_factor = {};
 
         // height of the header (offset per line count)
-        var offset = ($('#' + graphViewContainerHeaderId).outerHeight() / 26 - 1 ) * 26;
+        var offset = ($('#' + graphViewContainerHeaderId).outerHeight() / 26 - 1) * 26;
 
         var width = container.width();
         var height = container.outerHeight() - offset;
@@ -660,13 +659,6 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 id: function (d) {
                     return "marker_" + d.edge_type + d.id;
                 },
-                // for doj
-                refX: function (d) {
-                    if (d.is_undercut === true) {
-                        return 6;
-                    }
-                    return 6 + calculateNodeSize(d.target) / 2;
-                },
                 refY: 0,
                 markerWidth: 10,
                 markerHeight: 10,
@@ -782,7 +774,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
             for (var i = 0; i < node_text.length; i++) {
                 var attr = {};
                 if (i % 4 === 0) {
-	                attr = {'dy': '1.2em', 'x': '0', 'text-anchor': "middle"};
+                    attr = {'dy': '1.2em', 'x': '0', 'text-anchor': "middle"};
                 }
                 d3.select(this).append("tspan")
                     .text(' ' + node_text[i])
@@ -799,17 +791,16 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
      */
     function setRectProperties() {
         rect.each(function (d) {
-            var element = $("#label-" + d.id);
             var width = 0; // element.width() + 24;
             var height = 0; // element.height() + 10;
             var pos = calculateRectPos(width, height);
-            
+
             // if d is a virtual node do not show label
             if (d.label === '') {
                 width = 0;
                 height = 0;
             }
-            
+
             d3.select(this).attr({
                 'width': width,
                 'height': height,
@@ -817,7 +808,7 @@ function DiscussionGraph(box_sizes_for_rescaling, is_partial_graph_mode) {
                 'y': pos[1],
                 'id': 'rect-' + d.id
             });
-            
+
             if (d.id.indexOf('statement') !== -1 || d.id.indexOf('issue') !== -1) {
                 box_sizes[d.id] = {'width': width, 'height': height};
             }

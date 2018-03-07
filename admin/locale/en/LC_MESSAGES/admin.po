@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-01-24 10:53+0100\n"
+"POT-Creation-Date: 2017-11-27 20:00+0100\n"
 "PO-Revision-Date: 2016-10-25 10:46+0200\n"
 "Last-Translator: Tobias Krauthoff <tobias.krauthoff@uni-duesseldorf.de>\n"
 "Language-Team: English\n"
@@ -63,41 +63,42 @@ msgstr "Log In"
 #. Default: Security
 #: templates/admin.pt:179
 msgid "security"
-msgstr ""
+msgstr "Security"
 
 #. Default: Application tokens
 #: templates/admin.pt:188
 msgid "Application-tokens"
-msgstr ""
+msgstr "App Tokens"
 
 #. Default: Owner
 #: templates/admin.pt:195 templates/admin.pt:230
 msgid "api_token_owner"
-msgstr ""
+msgstr "Owner"
 
 #. Default: Created
 #: templates/admin.pt:196
 msgid "api_token_created"
-msgstr ""
+msgstr "Created"
 
 #. Default: Revoke
 #: templates/admin.pt:197
 msgid "api_token_revoke"
-msgstr ""
+msgstr "Revoke"
 
 #. Default: Generate a new application token
 #: templates/admin.pt:221
 msgid "api_token_generate_title"
-msgstr ""
+msgstr "Generate a new App Token"
 
 #. Default: Please write this token down. You will not be able to see this
 #. token again.
 #: templates/admin.pt:228
 msgid "api_token_warning"
 msgstr ""
+"Please write this token down. You will not be able to see this token again."
 
 #~ msgid "caution"
-#~ msgstr "Caution"
+#~ msgstr "Achtung"
 
 #~ msgid "Admin"
 #~ msgstr "Admin"

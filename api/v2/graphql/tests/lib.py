@@ -5,7 +5,7 @@ import os
 from nose.tools import assert_is_not_none
 
 from api.lib import json_to_dict
-from dbas.helper.tests import add_settings_to_appconfig
+from dbas.helper.test import add_settings_to_appconfig
 
 API = "http://localhost:4284/api/v2/"
 

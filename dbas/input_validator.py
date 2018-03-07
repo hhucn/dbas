@@ -7,7 +7,6 @@ Methods for validating input params given via url or ajax
 from .database import DBDiscussionSession
 from .database.discussion_model import Argument, Statement, Premise
 from .logger import logger
-from sqlalchemy import and_
 
 
 def is_integer(variable, ignore_empty_case=False):
@@ -39,7 +38,7 @@ def check_reaction(attacked_arg_uid, attacking_arg_uid, relation, is_history=Fal
     :param is_history: Boolean
     :return: Boolean
     """
-    logger('Validator', 'check_reaction', relation + ' from ' + str(attacking_arg_uid) + ' to ' + str(attacked_arg_uid))
+    logger('Validator', relation + ' from ' + str(attacking_arg_uid) + ' to ' + str(attacked_arg_uid))
 
     malicious_val = [
         not is_integer(attacked_arg_uid),
@@ -66,7 +65,7 @@ def check_reaction(attacked_arg_uid, attacking_arg_uid, relation, is_history=Fal
             return False
         return True
 
-    logger('Validator', 'check_reaction', 'else-case')
+    logger('Validator', 'else-case')
     return False
 
 
@@ -78,8 +77,8 @@ def check_belonging_of_statement(issue_uid, statement_uid):
     :param statement_uid: Statement.uid
     :return:
     """
-    db_statement = DBDiscussionSession.query(Statement).filter(and_(Statement.uid == statement_uid,
-                                                                    Statement.issue_uid == issue_uid)).first()
+    db_statement = DBDiscussionSession.query(Statement).filter(Statement.uid == statement_uid,
+                                                               Statement.issue_uid == issue_uid).first()
     return db_statement is not None
 
 
@@ -91,8 +90,8 @@ def check_belonging_of_argument(issue_uid, argument_uid):
     :param argument_uid: Argument.uid
     :return: Boolean
     """
-    db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid == argument_uid,
-                                                                  Argument.issue_uid == issue_uid)).first()
+    db_argument = DBDiscussionSession.query(Argument).filter(Argument.uid == argument_uid,
+                                                             Argument.issue_uid == issue_uid).first()
     return db_argument is not None
 
 
@@ -104,8 +103,8 @@ def check_belonging_of_arguments(issue_uid: int, argument_uids: list) -> bool:
     :param argument_uid: Argument.uid
     :return: Boolean
     """
-    db_argument = DBDiscussionSession.query(Argument).filter(and_(Argument.uid.in_(argument_uids),
-                                                                  Argument.issue_uid == issue_uid)).all()
+    db_argument = DBDiscussionSession.query(Argument).filter(Argument.uid.in_(argument_uids),
+                                                             Argument.issue_uid == issue_uid).all()
     return len(db_argument) == len(argument_uids)
 
 
@@ -166,8 +165,8 @@ def related_with_undercut(attacked_arg_uid, attacking_arg_uid):
     :param attacking_arg_uid: Argument.uid
     :return: Boolean
     """
-    db_attacking_arg = DBDiscussionSession.query(Argument).filter(and_(Argument.uid == attacking_arg_uid,
-                                                                       Argument.argument_uid == attacked_arg_uid)).first()
+    db_attacking_arg = DBDiscussionSession.query(Argument).filter(Argument.uid == attacking_arg_uid,
+                                                                  Argument.argument_uid == attacked_arg_uid).first()
     return db_attacking_arg is not None
 
 
@@ -222,22 +221,22 @@ def get_relation_between_arguments(arg1_uid, arg2_uid):
     """
 
     if related_with_undermine(arg1_uid, arg2_uid):
-        logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' undermine ' + str(arg2_uid))
+        logger('InputValidator', str(arg1_uid) + ' undermine ' + str(arg2_uid))
         return 'undermine'
 
     if related_with_undercut(arg1_uid, arg2_uid):
-        logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' undermine ' + str(arg2_uid))
+        logger('InputValidator', str(arg1_uid) + ' undermine ' + str(arg2_uid))
         return 'undercut'
 
     if related_with_rebut(arg1_uid, arg2_uid):
-        logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' undermine ' + str(arg2_uid))
+        logger('InputValidator', str(arg1_uid) + ' undermine ' + str(arg2_uid))
         return 'rebut'
 
     if related_with_support(arg1_uid, arg2_uid):
-        logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' support ' + str(arg2_uid))
+        logger('InputValidator', str(arg1_uid) + ' support ' + str(arg2_uid))
         return 'support'
 
-    logger('InputValidator', 'get_relation_between_arguments', str(arg1_uid) + ' NONE ' + str(arg2_uid))
+    logger('InputValidator', str(arg1_uid) + ' NONE ' + str(arg2_uid))
     return None
 
 

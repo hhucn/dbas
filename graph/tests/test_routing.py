@@ -16,11 +16,11 @@ class ViewTest(unittest.TestCase):
         testing.tearDown()
 
     def test_get_d3_complete_dump(self):
-        request = testing.DummyRequest()
+        request = testing.DummyRequest(json_body={'issue': 2})
         ret_dict = get_d3_partial_dump(request)
         self.assertIsNotNone(ret_dict)
 
     def test_get_d3_partial_dump(self):
-        request = testing.DummyRequest()
+        request = testing.DummyRequest(json_body={'issue': 2})
         ret_dict = get_d3_complete_dump(request)
         self.assertIsNotNone(ret_dict)

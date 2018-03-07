@@ -1,12 +1,6 @@
 import unittest
 
-from dbas.database import DBDiscussionSession, get_dbas_db_configuration
-from dbas.helper.tests import add_settings_to_appconfig
 from graph.lib import get_d3_data
-
-settings = add_settings_to_appconfig()
-
-DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
 
 
 class LibTest(unittest.TestCase):
@@ -16,9 +10,9 @@ class LibTest(unittest.TestCase):
 
         ret_dict, error = get_d3_data(1)
         self.assertFalse(error)
-        self.assertTrue('nodes' in ret_dict)
-        self.assertTrue('edges' in ret_dict)
-        self.assertTrue('extras' in ret_dict)
-        self.assertTrue(len(ret_dict['nodes']) > 0)
-        self.assertTrue(len(ret_dict['edges']) > 0)
-        self.assertTrue(len(ret_dict['extras']) > 0)
+        self.assertIn('nodes', ret_dict)
+        self.assertIn('edges', ret_dict)
+        self.assertIn('extras', ret_dict)
+        self.assertLess(0, len(ret_dict['nodes']))
+        self.assertLess(0, len(ret_dict['edges']))
+        self.assertLess(0, len(ret_dict['extras']))

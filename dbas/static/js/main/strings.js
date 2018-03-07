@@ -9,247 +9,247 @@ var mainpage = location.origin + '/';
  * @type {string}
  */
 
-var checkmark                       = '&#x2713;'; // ✓
-var ballot                          = '&#x2717;'; // ✗
-var and                             = 'and';
-var answer                          = 'answer';
-var andAtTheSameTime                = 'andAtTheSameTime';
-var addedEverything                 = 'addedEverything';
-var addTopic                        = 'addTopic';
-var addTopicTitleText               = 'addTopicTitleText';
-var addTopicShortText               = 'addTopicShortText';
-var addTopicLangText                = 'addTopicLangText';
-var acceptIt                        = 'acceptIt';
-var an_anonymous_user               = 'an_anonymous_user';
-var allEditsDone                    = 'allEditsDone';
-var allStatementsPosted             = 'allStatementsPosted';
-var allGivenVotes                   = 'allGivenVotes';
-var allGivenInterests               = 'allGivenInterests';
-var author                          = 'author';
-var avatar                          = 'avatar';
-var acceptItTitle                   = 'acceptItTitle';
-var caution                         = 'caution';
-var cancel                          = 'cancel';
-var correctionsSet                  = 'correctionsSet';
-var because                         = 'because';
-var changelog                       = 'changelog';
-var checkFirstname                  = 'checkFirstname';
-var checkLastname                   = 'checkLastname';
-var checkNickname                   = 'checkNickname';
-var checkEmail                      = 'checkEmail';
-var checkPassword                   = 'checkPassword';
-var checkConfirmation               = 'checkConfirmation';
-var checkPasswordConfirm            = 'checkPasswordConfirm';
-var changelogView                   = 'changelogView';
-var changelogHide                   = 'changelogHide';
-var clickedOnThis                   = 'clickedOnThis';
-var countOfArguments                = 'countOfArguments';
-var countdownEnded                  = 'countdownEnded';
-var urlCopy                         = 'urlCopy';
-var couldNotLock                    = 'couldNotLock';
-var contentWillBeRevoked            = 'contentWillBeRevoked';
-var dataRemoved                     = 'dataRemoved';
-var dataAdded                       = 'dataAdded';
-var didYouMean                      = 'didYouMean';
-var duplicateDialog                 = 'duplicateDialog';
-var doNotHesitateToContact          = 'doNotHesitateToContact';
-var date                            = 'date';
-var deleteTrack                     = 'deleteTrack';
-var deleteHistory                   = 'deleteHistory';
-var deleteEverything                = 'deleteEverything';
-var deleteMarked                    = 'deleteMarked';
-var discussionsPropertySet      = 'discussionsPropertySet';
-var deleteStatisticsTitle           = 'deleteStatisticsTitle';
-var deleteStatisticsBody            = 'deleteStatisticsBody';
-var euCookiePopupTitle              = 'euCookiePopupTitle';
-var euCookiePopupText               = 'euCookiePopupText';
-var euCookiePopoupButton1           = 'euCookiePopoupButton1';
-var euCookiePopoupButton2           = 'euCookiePopoupButton2';
-var empty_news_input                = 'empty_news_input';
-var email                           = 'email';
-var emailWasSent                    = 'emailWasSent';
-var emailWasNotSent                 = 'emailWasNotSent';
-var emailUnknown                    = 'emailUnknown';
-var edit                            = 'edit';
-var errorCode                       = 'error_code';
-var editTitle                       = 'editTitle';
-var forText                         = 'forText';
-var forward                         = 'forward';
-var fillLine                        = 'fillLine';
-var feelFreeToShareUrl              = 'feelFreeToShareUrl';
-var fetchLongUrl                    = 'fetchLongUrl';
-var fetchShortUrl                   = 'fetchShortUrl';
-var forgotPassword                  = 'forgotPassword';
-var firstname                       = 'firstname';
-var gender                          = 'gender';
-var generateSecurePassword          = 'generateSecurePassword';
-var goodPointTakeMeBackButtonText   = 'goodPointTakeMeBackButtonText';
-var group_uid                       = 'group_uid';
-var haveALookAt                     = 'haveALookAt';
-var hidePasswordRequest             = 'hidePasswordRequest';
-var hideGenerator                   = 'hideGenerator';
-var inputEmpty                      = 'inputEmpty';
-var internalError                   = 'internalError';
-var interestingOnDBAS               = 'interestingOnDBAS';
-var initialPositionInterest         = 'initialPositionInterest';
-var itIsTrueThat                    = 'itIsTrueThat';
-var itIsFalseThat                   = 'itIsFalseThat';
-var interestingNews                 = 'interestingNews';
-var isItTrueThat                    = 'isItTrueThat';
-var isItFalseThat                   = 'isItFalseThat';
-var keepSetting                     = 'keepSetting';
-var hideAllUsers                    = 'hideAllUsers';
-var hideAllArguments                = 'hideAllArguments';
-var languageCouldNotBeSwitched      = 'languageCouldNotBeSwitched';
-var languageSwitchModalTitle        = 'languageSwitchModalTitle';
-var languageSwitchModalBody         = 'languageSwitchModalBody';
-var last_action                     = 'last_action';
-var last_login                      = 'last_login';
-var legend                          = 'legend';
-var logfile                         = 'logfile';
-var login                           = 'login';
-var letsGo                          = 'letsGo';
-var listOfDoneEdits                 = 'listOfDoneEdits';
-var listOfPostedStatements          = 'listOfPostedStatements';
-var listOfGivenVotes                = 'listOfGivenVotes';
-var medium                          = 'medium';
-var messageInfoTitle                = 'messageInfoTitle';
-var messageInfoStatementCreatedBy   = 'messageInfoStatementCreatedBy';
-var messageInfoAt                   = 'messageInfoAt';
-var messageInfoMessage              = 'messageInfoMessage';
-var messageInfoCurrentlySupported   = 'messageInfoCurrentlySupported';
-var messageInfoParticipant          = 'messageInfoParticipant';
-var messageInfoParticipantPl        = 'messageInfoParticipantPl';
-var messageInfoSupporterSg          = 'messageInfoSupporterSg';
-var messageInfoSupporterPl          = 'messageInfoSupporterPl';
-var nickname                        = 'nickname';
-var noCorrections                   = 'noCorrections';
-var noCorrectionsSet                = 'noCorrectionsSet';
-var noDecisionDone                  = 'noDecisionDone';
-var notInsertedErrorBecauseEmpty    = 'notInsertedErrorBecauseEmpty';
-var notInsertedErrorBecauseDuplicate= 'notInsertedErrorBecauseDuplicate';
-var notInsertedErrorBecauseUnknown  = 'notInsertedErrorBecauseUnknown';
+var checkmark = '&#x2713;'; // ✓
+var ballot = '&#x2717;'; // ✗
+var and = 'and';
+var answer = 'answer';
+var andAtTheSameTime = 'andAtTheSameTime';
+var addedEverything = 'addedEverything';
+var addTopic = 'addTopic';
+var addTopicTitleText = 'addTopicTitleText';
+var addTopicShortText = 'addTopicShortText';
+var addTopicLangText = 'addTopicLangText';
+var acceptIt = 'acceptIt';
+var an_anonymous_user = 'an_anonymous_user';
+var allEditsDone = 'allEditsDone';
+var allStatementsPosted = 'allStatementsPosted';
+var allGivenVotes = 'allGivenVotes';
+var allGivenInterests = 'allGivenInterests';
+var author = 'author';
+var avatar = 'avatar';
+var acceptItTitle = 'acceptItTitle';
+var caution = 'caution';
+var cancel = 'cancel';
+var correctionsSet = 'correctionsSet';
+var because = 'because';
+var changelog = 'changelog';
+var checkFirstname = 'checkFirstname';
+var checkLastname = 'checkLastname';
+var checkNickname = 'checkNickname';
+var checkEmail = 'checkEmail';
+var checkPassword = 'checkPassword';
+var checkConfirmation = 'checkConfirmation';
+var checkPasswordConfirm = 'checkPasswordConfirm';
+var changelogView = 'changelogView';
+var changelogHide = 'changelogHide';
+var clickedOnThis = 'clickedOnThis';
+var countOfArguments = 'countOfArguments';
+var countdownEnded = 'countdownEnded';
+var urlCopy = 'urlCopy';
+var couldNotLock = 'couldNotLock';
+var contentWillBeRevoked = 'contentWillBeRevoked';
+var dataRemoved = 'dataRemoved';
+var dataAdded = 'dataAdded';
+var didYouMean = 'didYouMean';
+var duplicateDialog = 'duplicateDialog';
+var doNotHesitateToContact = 'doNotHesitateToContact';
+var date = 'date';
+var deleteTrack = 'deleteTrack';
+var deleteHistory = 'deleteHistory';
+var deleteEverything = 'deleteEverything';
+var deleteMarked = 'deleteMarked';
+var discussionsPropertySet = 'discussionsPropertySet';
+var deleteStatisticsTitle = 'deleteStatisticsTitle';
+var deleteStatisticsBody = 'deleteStatisticsBody';
+var euCookiePopupTitle = 'euCookiePopupTitle';
+var euCookiePopupText = 'euCookiePopupText';
+var euCookiePopoupButton1 = 'euCookiePopoupButton1';
+var euCookiePopoupButton2 = 'euCookiePopoupButton2';
+var empty_news_input = 'empty_news_input';
+var email = 'email';
+var emailWasSent = 'emailWasSent';
+var emailWasNotSent = 'emailWasNotSent';
+var emailUnknown = 'emailUnknown';
+var edit = 'edit';
+var errorCode = 'error_code';
+var editTitle = 'editTitle';
+var forText = 'forText';
+var forward = 'forward';
+var fillLine = 'fillLine';
+var feelFreeToShareUrl = 'feelFreeToShareUrl';
+var fetchLongUrl = 'fetchLongUrl';
+var fetchShortUrl = 'fetchShortUrl';
+var forgotPassword = 'forgotPassword';
+var firstname = 'firstname';
+var gender = 'gender';
+var generateSecurePassword = 'generateSecurePassword';
+var goodPointTakeMeBackButtonText = 'goodPointTakeMeBackButtonText';
+var group_uid = 'group_uid';
+var haveALookAt = 'haveALookAt';
+var hidePasswordRequest = 'hidePasswordRequest';
+var hideGenerator = 'hideGenerator';
+var inputEmpty = 'inputEmpty';
+var internalError = 'internalError';
+var interestingOnDBAS = 'interestingOnDBAS';
+var initialPositionInterest = 'initialPositionInterest';
+var itIsTrueThat = 'itIsTrueThat';
+var itIsFalseThat = 'itIsFalseThat';
+var interestingNews = 'interestingNews';
+var isItTrueThat = 'isItTrueThat';
+var isItFalseThat = 'isItFalseThat';
+var keepSetting = 'keepSetting';
+var hideAllUsers = 'hideAllUsers';
+var hideAllArguments = 'hideAllArguments';
+var languageCouldNotBeSwitched = 'languageCouldNotBeSwitched';
+var languageSwitchModalTitle = 'languageSwitchModalTitle';
+var languageSwitchModalBody = 'languageSwitchModalBody';
+var last_action = 'last_action';
+var last_login = 'last_login';
+var legend = 'legend';
+var logfile = 'logfile';
+var login = 'login';
+var letsGo = 'letsGo';
+var listOfDoneEdits = 'listOfDoneEdits';
+var listOfPostedStatements = 'listOfPostedStatements';
+var listOfGivenVotes = 'listOfGivenVotes';
+var medium = 'medium';
+var messageInfoTitle = 'messageInfoTitle';
+var messageInfoStatementCreatedBy = 'messageInfoStatementCreatedBy';
+var messageInfoAt = 'messageInfoAt';
+var messageInfoMessage = 'messageInfoMessage';
+var messageInfoCurrentlySupported = 'messageInfoCurrentlySupported';
+var messageInfoParticipant = 'messageInfoParticipant';
+var messageInfoParticipantPl = 'messageInfoParticipantPl';
+var messageInfoSupporterSg = 'messageInfoSupporterSg';
+var messageInfoSupporterPl = 'messageInfoSupporterPl';
+var nickname = 'nickname';
+var noCorrections = 'noCorrections';
+var noCorrectionsSet = 'noCorrectionsSet';
+var noDecisionDone = 'noDecisionDone';
+var notInsertedErrorBecauseEmpty = 'notInsertedErrorBecauseEmpty';
+var notInsertedErrorBecauseDuplicate = 'notInsertedErrorBecauseDuplicate';
+var notInsertedErrorBecauseUnknown = 'notInsertedErrorBecauseUnknown';
 var notInsertedErrorBecauseInternal = 'notInsertedErrorBecauseInternal';
 var notInsertedErrorBecauseTooShort = 'notInsertedErrorBecauseTooShort';
-var noTrackedData                   = 'noTrackedData';
-var noDecisionstaken                = 'noDecisionstaken';
-var noReferencesButYouCanAdd        = 'noReferencesButYouCanAdd';
-var noEntries                       = 'noEntries';
-var noEntriesFor                    = 'noEntriesFor';
-var note                            = 'note';
-var no                              = 'no';
-var no_data_selected                = 'no_data_selected';
-var neww                            = 'new';
-var number                          = 'number';
-var notificationWasSend             = 'notificationWasSend';
-var noEditsInOptimization           = 'noEditsInOptimization';
-var opinionBarometer                = 'opinionBarometer';
-var okay                            = 'okay';
+var noTrackedData = 'noTrackedData';
+var noDecisionstaken = 'noDecisionstaken';
+var noReferencesButYouCanAdd = 'noReferencesButYouCanAdd';
+var noEntries = 'noEntries';
+var noEntriesFor = 'noEntriesFor';
+var note = 'note';
+var no = 'no';
+var no_data_selected = 'no_data_selected';
+var neww = 'new';
+var number = 'number';
+var notificationWasSend = 'notificationWasSend';
+var noEditsInOptimization = 'noEditsInOptimization';
+var opinionBarometer = 'opinionBarometer';
+var okay = 'okay';
 var otherParticipantsDontHaveOpinionForThis = 'otherParticipantsDontHaveOpinionForThis';
-var option                          = 'option';
-var ohsnap                          = 'ohsnap';
-var report                          = 'report';
-var reportTitle                     = 'reportTitle';
-var passwordSubmit                  = 'passwordSubmit';
-var proposalsWereForwarded          = 'proposalsWereForwarded';
-var participantsSawThisStatement    = 'participantsSawThisStatement';
-var participantSawThisStatement     = 'participantSawThisStatement';
-var participantsSawArgumentsToThis  = 'participantsSawArgumentsToThis';
-var participantSawArgumentsToThis   = 'participantSawArgumentsToThis';
-var pinNavigation                   = 'pinNavigation';
-var pleaseEditAtLeast               = 'pleaseEditAtLeast';
-var pleaseEnterYourTextHere         = 'pleaseEnterYourTextHere';
+var option = 'option';
+var ohsnap = 'ohsnap';
+var report = 'report';
+var reportTitle = 'reportTitle';
+var passwordSubmit = 'passwordSubmit';
+var proposalsWereForwarded = 'proposalsWereForwarded';
+var participantsSawThisStatement = 'participantsSawThisStatement';
+var participantSawThisStatement = 'participantSawThisStatement';
+var participantsSawArgumentsToThis = 'participantsSawArgumentsToThis';
+var participantSawArgumentsToThis = 'participantSawArgumentsToThis';
+var pinNavigation = 'pinNavigation';
+var pleaseEditAtLeast = 'pleaseEditAtLeast';
+var pleaseEnterYourTextHere = 'pleaseEnterYourTextHere';
 var pleaseEnterYourTextForSearchHere = 'pleaseEnterYourTextForSearchHere';
-var queueCompleteSeen               = 'queueCompleteSeen';
-var questionMergeStatementSg        = 'questionMergeStatementSg';
-var questionSplitStatementSg        = 'questionSplitStatementSg';
-var questionMergeStatementPl        = 'questionMergeStatementPl';
-var questionSplitStatementPl        = 'questionSplitStatementPl';
-var revokedArgument                 = 'revokedArgument';
-var registered                      = 'registered';
-var requestTrack                    = 'requestTrack';
-var refreshTrack                    = 'refreshTrack';
-var requestHistory                  = 'requestHistory';
-var refreshHistory                  = 'refreshHistory';
-var requestFailed                   = 'requestFailed';
-var requestFailedBadToken           = 'requestFailedBadToken';
-var requestFailedInternalError      = 'requestFailedInternalError';
-var restartOnError                  = 'restartOnError';
-var repuationChartSum               = 'repuationChartSum';
-var repuationChartDay               = 'repuationChartDay';
-var readEverything                  = 'readEverything';
-var readMarked                      = 'readMarked';
-var searchStatementPopupTitleText   = 'searchStatementPopupTitleText';
-var searchStatementPopupBodyText    = 'searchStatementPopupBodyText';
-var sawThis                         = 'saw this';
-var saveMyStatement                 = 'saveMyStatement';
-var saveMyStatements                = 'saveMyStatements';
-var showAllUsers                    = 'showAllUsers';
-var showAllArguments                = 'showAllArguments';
-var showMeAnArgumentFor             = 'showMeAnArgumentFor';
-var strength                        = 'strength';
-var strong                          = 'strong';
-var shortenedBy                     = 'shortenedBy';
-var statement                       = 'statement';
-var statisticsDeleted               = 'statisticsDeleted';
-var statisticsNotDeleted            = 'statisticsNotDeleted';
-var statisticsNotFetched            = 'statisticsNotFetched';
-var statisticsNotThere              = 'statisticsNotThere';
-var switchDiscussion                = 'switchDiscussion';
-var switchDiscussionText            = 'switchDiscussionText';
-var surname                         = 'surname';
-var sureToDeleteReview              = 'sureToDeleteReview';
-var showAllAttacksTitle             = 'showAllAttacksTitle';
-var showAllUsersTitle               = 'showAllUsersTitle';
-var text                            = 'text';
-var to                              = 'to';
-var textMinCountMessageBegin1       = 'textMinCountMessageBegin1';
-var textMinCountMessageBegin2       = 'textMinCountMessageBegin2';
+var queueCompleteSeen = 'queueCompleteSeen';
+var questionMergeStatementSg = 'questionMergeStatementSg';
+var questionSplitStatementSg = 'questionSplitStatementSg';
+var questionMergeStatementPl = 'questionMergeStatementPl';
+var questionSplitStatementPl = 'questionSplitStatementPl';
+var revokedArgument = 'revokedArgument';
+var registered = 'registered';
+var requestTrack = 'requestTrack';
+var refreshTrack = 'refreshTrack';
+var requestHistory = 'requestHistory';
+var refreshHistory = 'refreshHistory';
+var requestFailed = 'requestFailed';
+var requestFailedBadToken = 'requestFailedBadToken';
+var requestFailedInternalError = 'requestFailedInternalError';
+var restartOnError = 'restartOnError';
+var repuationChartSum = 'repuationChartSum';
+var repuationChartDay = 'repuationChartDay';
+var readEverything = 'readEverything';
+var readMarked = 'readMarked';
+var searchStatementPopupTitleText = 'searchStatementPopupTitleText';
+var searchStatementPopupBodyText = 'searchStatementPopupBodyText';
+var sawThis = 'saw this';
+var saveMyStatement = 'saveMyStatement';
+var saveMyStatements = 'saveMyStatements';
+var showAllUsers = 'showAllUsers';
+var showAllArguments = 'showAllArguments';
+var showMeAnArgumentFor = 'showMeAnArgumentFor';
+var strength = 'strength';
+var strong = 'strong';
+var shortenedBy = 'shortenedBy';
+var statement = 'statement';
+var statisticsDeleted = 'statisticsDeleted';
+var statisticsNotDeleted = 'statisticsNotDeleted';
+var statisticsNotFetched = 'statisticsNotFetched';
+var statisticsNotThere = 'statisticsNotThere';
+var switchDiscussion = 'switchDiscussion';
+var switchDiscussionText = 'switchDiscussionText';
+var surname = 'surname';
+var sureToDeleteReview = 'sureToDeleteReview';
+var showAllAttacksTitle = 'showAllAttacksTitle';
+var showAllUsersTitle = 'showAllUsersTitle';
+var text = 'text';
+var to = 'to';
+var textMinCountMessageBegin1 = 'textMinCountMessageBegin1';
+var textMinCountMessageBegin2 = 'textMinCountMessageBegin2';
 var textMinCountMessageDuringTyping = 'textMinCountMessageDuringTyping';
-var textMaxCountMessage             = 'textMaxCountMessage';
-var textMaxCountMessageError        = 'textMaxCountMessageError';
-var timestamp                       = 'timestamp';
-var typeofVote                      = 'typeofVote';
-var users                           = 'users';
-var usersWithSameOpinion            = 'usersWithSameOpinion';
-var unpinNavigation                 = 'unpinNavigation';
-var veryweak                        = 'veryweak';
-var valid                           = 'valid';
-var vote                            = 'vote';
-var yes                             = 'yes';
-var youAreAbleToReviewNow           = 'youAreAbleToReviewNow';
+var textMaxCountMessage = 'textMaxCountMessage';
+var textMaxCountMessageError = 'textMaxCountMessageError';
+var timestamp = 'timestamp';
+var typeofVote = 'typeofVote';
+var users = 'users';
+var usersWithSameOpinion = 'usersWithSameOpinion';
+var unpinNavigation = 'unpinNavigation';
+var veryweak = 'veryweak';
+var valid = 'valid';
+var vote = 'vote';
+var yes = 'yes';
+var youAreAbleToReviewNow = 'youAreAbleToReviewNow';
 var yourAreNotTheAuthorOfThisAnymore = 'yourAreNotTheAuthorOfThisAnymore';
-var weak                            = 'weak';
-
-var next                            = 'next';
-var prev                            = 'prev';
-var tourEnd                         = 'tourEnd';
-var welcomeDialogBody               = 'welcomeDialogBody';
-var tourWelcomeTitle                = 'tourWelcomeTitle';
-var tourWelcomeContent              = 'tourWelcomeContent';
-var tourStartButtonTitle            = 'tourStartButtonTitle';
-var tourStartButtonContent          = 'tourStartButtonContent';
-var tourStartHeaderTitle            = 'tourStartHeaderTitle';
-var tourStartHeaderContent          = 'tourStartHeaderContent';
-var tourLoginTitle                  = 'tourLoginTitle';
-var tourLoginContent                = 'tourLoginContent';
-var tourIssueTitle                  = 'tourIssueTitle';
-var tourIssueContent                = 'tourIssueContent';
-var tourStartDiscussionTitle        = 'tourStartDiscussionTitle';
-var tourStartDiscussionContent      = 'tourStartDiscussionContent';
-var tourMarkOpinionTitle            = 'tourMarkOpinionTitle';
-var tourMarkOpinionContent          = 'tourMarkOpinionContent';
-var tourMarkOpinionText             = 'tourMarkOpinionText';
-var tourSidebarTitle                = 'tourSidebarTitle';
-var tourSidebarContent              = 'tourSidebarContent';
-var tourSelectAnswertTitle          = 'tourSelectAnswertTitle';
-var tourSelectAnswertContent        = 'tourSelectAnswertContent';
-var tourEnterStatementTitle         = 'tourEnterStatementTitle';
-var tourEnterStatementContent       = 'tourEnterStatementContent';
-var tourStatementActionTitle        = 'tourStatementActionTitle';
-var tourStatementActionContent      = 'tourStatementActionContent';
-var tourHaveFunTitle                = 'tourHaveFunTitle';
-var tourHaveFunContent              = 'tourHaveFunContent';
+var weak = 'weak';
+var wrongCaptcha = 'wrongCaptcha';
+var next = 'next';
+var prev = 'prev';
+var tourEnd = 'tourEnd';
+var welcomeDialogBody = 'welcomeDialogBody';
+var tourWelcomeTitle = 'tourWelcomeTitle';
+var tourWelcomeContent = 'tourWelcomeContent';
+var tourStartButtonTitle = 'tourStartButtonTitle';
+var tourStartButtonContent = 'tourStartButtonContent';
+var tourStartHeaderTitle = 'tourStartHeaderTitle';
+var tourStartHeaderContent = 'tourStartHeaderContent';
+var tourLoginTitle = 'tourLoginTitle';
+var tourLoginContent = 'tourLoginContent';
+var tourIssueTitle = 'tourIssueTitle';
+var tourIssueContent = 'tourIssueContent';
+var tourStartDiscussionTitle = 'tourStartDiscussionTitle';
+var tourStartDiscussionContent = 'tourStartDiscussionContent';
+var tourMarkOpinionTitle = 'tourMarkOpinionTitle';
+var tourMarkOpinionContent = 'tourMarkOpinionContent';
+var tourMarkOpinionText = 'tourMarkOpinionText';
+var tourSidebarTitle = 'tourSidebarTitle';
+var tourSidebarContent = 'tourSidebarContent';
+var tourSelectAnswertTitle = 'tourSelectAnswertTitle';
+var tourSelectAnswertContent = 'tourSelectAnswertContent';
+var tourEnterStatementTitle = 'tourEnterStatementTitle';
+var tourEnterStatementContent = 'tourEnterStatementContent';
+var tourStatementActionTitle = 'tourStatementActionTitle';
+var tourStatementActionContent = 'tourStatementActionContent';
+var tourHaveFunTitle = 'tourHaveFunTitle';
+var tourHaveFunContent = 'tourHaveFunContent';
 
 // cookies
 var WARNING_CHANGE_DISCUSSION_POPUP = 'WARNING_CHANGE_DISCUSSION_POPUP';
@@ -263,14 +263,14 @@ var DATA_DISCLAIMER = 'DATA_DISCLAIMER';
  * URL's
  * @type {string}
  */
-var urlContact  = 'contact';
-var urlLogin    = 'login';
-var urlContent  = 'discuss';
+var urlContact = 'contact';
+var urlLogin = 'login';
+var urlContent = 'discuss';
 var urlDiscussions = 'mydiscussions';
 var urlSettings = 'settings';
-var urlImprint  = 'imprint';
-var urlLogout   = 'logout';
-var urlReview   = 'review';
+var urlImprint = 'imprint';
+var urlLogout = 'logout';
+var urlReview = 'review';
 
 var dbas_en = {
     'an_anonymous_user': 'an anonymous user',
@@ -323,16 +323,16 @@ var dbas_en = {
     'date': 'Date',
     'didYouMean': 'Top10 statements, which you probably could mean:',
     'duplicateDialog': 'This textversion is deprecated, because it was already edited to this version.\nDo you want to ' +
-        'set this version as the current one once again?',
+    'set this version as the current one once again?',
     'doNotHesitateToContact': 'Do not hesitate to <b><span style="cursor: pointer;" id="contact_on_error">contact us ' +
-        '(click here)</span></b>',
+    '(click here)</span></b>',
     'deleteStatisticsTitle': 'Delete Statistics',
     'deleteStatisticsBody': 'Are you sure? This will delete all stored information about clicks respectively votes you ' +
     'have done.',
     'euCookiePopupTitle': 'This website uses cookies.',
     'euCookiePopupText': 'We use them to give you the best experience. If you continue using our website, we\'ll ' +
-        'assume that you are happy to receive all cookies on this website and beeing tracked for academic purpose. ' +
-        'All tracked data are saved anonymously with reduced masked IP-adresses.',
+    'assume that you are happy to receive all cookies on this website and beeing tracked for academic purpose. ' +
+    'All tracked data are saved anonymously with reduced masked IP-adresses.',
     'euCookiePopoupButton1': 'Okay',
     'euCookiePopoupButton2': 'Learn&nbsp;more',
     'empty_news_input': 'News title or text is empty or too short!',
@@ -347,7 +347,7 @@ var dbas_en = {
     'fetchLongUrl': 'Fetch long url!',
     'fetchShortUrl': 'Fetch short url!',
     'forgotPassword': 'Forgot Password',
-    'forward' : 'forward',
+    'forward': 'forward',
     'firstname': 'Firstname',
     'fillLine': 'Please, fill this this line with your report',
     'gender': 'Gender',
@@ -373,7 +373,7 @@ var dbas_en = {
     'languageCouldNotBeSwitched': 'Unfortunately, the language could not be switched',
     'languageSwitchModalTitle': 'Change of Language',
     'languageSwitchModalBody': 'Changing current language does not affect the discussion language, because this ' +
-        'language is mapped to the content of the discussion.',
+    'language is mapped to the content of the discussion.',
     'last_action': 'Last Action',
     'last_login': 'Last Login',
     'legend': 'Legend',
@@ -398,7 +398,7 @@ var dbas_en = {
     'no': 'No',
     'noCorrections': 'No corrections for the given statement.',
     'noCorrectionsSet': 'Correction could not be set, because your user was not fount in the database. Are you ' +
-        'currently logged in?',
+    'currently logged in?',
     'noDecisionDone': 'No decision was done.',
     'notInsertedErrorBecauseEmpty': 'Your idea was not inserted, because your input text is empty.',
     'notInsertedErrorBecauseDuplicate': 'Your idea was not inserted, because your idea is a duplicate.',
@@ -410,7 +410,7 @@ var dbas_en = {
     'noTrackedData': 'No data was tracked.',
     'noDecisionstaken': 'No decision has yet been taken.',
     'noReferencesButYouCanAdd': 'There are no references for this statement, but you can add a new one (Source from ' +
-        'a newspaper etc.):',
+    'a newspaper etc.):',
     'number': 'No',
     'note': 'Note',
     'noEditsInOptimization': 'You have edited nothing!',
@@ -450,7 +450,7 @@ var dbas_en = {
     'requestFailed': 'Request failed, please reload the page.',
     'requestFailedBadToken': 'Your session is invalid, please reload the page.',
     'requestFailedInternalError': 'Request failed due to internal error, please reload this page. If the reload fails ' +
-        'again, please do not hesitate to <span style="cursor: pointer;" id="contact_on_error">contact us (click here)</span>',
+    'again, please do not hesitate to <span style="cursor: pointer;" id="contact_on_error">contact us (click here)</span>',
     'repuationChartSum': 'Summarized Reputation',
     'repuationChartDay': 'Reputation per Day',
     'sawThis': 'saw this',
@@ -471,7 +471,7 @@ var dbas_en = {
     'statisticsNotFetched': 'Statistics could not be fetched.',
     'statisticsNotThere': 'You have no statistics for this point.',
     'support': 'Support',
-    'surname' : 'Surname',
+    'surname': 'Surname',
     'sureToDeleteReview': 'Are you sure, that you want to revoke this decision? This revoke cannot be undone!',
     'shortenedBy': 'which was shortened by',
     'switchDiscussion': 'Change of discussion\'s topic',
@@ -487,7 +487,7 @@ var dbas_en = {
     'textMaxCountMessage': 'characters left',
     'textMaxCountMessageError': 'Put it in a nutshell!', //'Please shorten!',
     'users': 'Users',
-    'usersWithSameOpinion': 'Users with same mood',
+    'usersWithSameOpinion': 'Users with the same decision',
     'unpinNavigation': 'Unpin Navigation',
     'unkownError': 'Unknown error',
     'youAreAbleToReviewNow': 'You are now able to visit the review section.',
@@ -498,6 +498,7 @@ var dbas_en = {
     'vote': 'vote',
     'votes': 'votes',
     'weak': 'weak',
+    'wrongCaptcha': 'Please fill in the correct solution for the captcha.',
     'next': 'Next',
     'prev': 'Prev',
     'tourEnd': 'End Tour',
@@ -548,7 +549,7 @@ var dbas_de = {
     'allGivenInterests': 'Alle Interessen',
     'attack': 'Angriff',
     'author': 'Autor',
-    'because':'weil',
+    'because': 'weil',
     'confirmTranslation': 'Wenn Sie die Sprache ändern, geht Ihr aktueller Fortschritt verloren!',
     'caution': 'Achtung',
     'cancel': 'Abbrechen',
@@ -574,20 +575,20 @@ var dbas_de = {
     'date': 'Datum',
     'didYouMean': 'Top 10 der Aussagen, die Sie eventuell meinten:',
     'duplicateDialog': 'Diese Textversion ist veraltet, weil Sie schon editiert wurde.\nMöchten Sie diese Version ' +
-        'dennoch als die aktuellste markieren?',
+    'dennoch als die aktuellste markieren?',
     'deleteTrack': 'Track löschen',
     'deleteHistory': 'History löschen',
     'deleteEverything': 'Alle löschen',
     'deleteMarked': 'Ausgewählte Elemente löschen',
     'discussionsPropertySet': 'Die Eigenschaft der Diskussion wurde geändert.',
     'doNotHesitateToContact': 'Bitte zögern Sie bei Fehlern nicht, <b><span style="cursor: pointer;" ' +
-        'id="contact_on_error">uns zu kontaktieren (hier klicken)</span></b>',
+    'id="contact_on_error">uns zu kontaktieren (hier klicken)</span></b>',
     'deleteStatisticsTitle': 'Statistik löschen',
     'deleteStatisticsBody': 'Dies löscht die Statstik. Dadurch werden alle Klicks, die von Ihnen getätigt wurden, wieder entfernt.',
     'euCookiePopupTitle': 'Diese Seite nutzt Cookies.',
     'euCookiePopupText': 'Wir benutzen Sie, um Ihnen die beste Erfahrung zu geben. Wenn Sie unsere Seite weiter nutzen,' +
-        ' nehmen Sie alle Cookies unserer Seite an und sind glücklich damit. Zusätzlich tracken wir Ihre Aktionen und ' +
-        'speichern diese anonym ab. Dabei wird Ihre IP-Adresse maskiert.',
+    ' nehmen Sie alle Cookies unserer Seite an und sind glücklich damit. Zusätzlich tracken wir Ihre Aktionen und ' +
+    'speichern diese anonym ab. Dabei wird Ihre IP-Adresse maskiert.',
     'euCookiePopoupButton1': 'Okay',
     'euCookiePopoupButton2': 'Mehr&nbsp;Infos',
     'empty_news_input': 'Nachrichten-Titel oder Text ist leer oder zu kurz!',
@@ -603,7 +604,7 @@ var dbas_de = {
     'fetchLongUrl': 'Normale URL',
     'fetchShortUrl': 'Kurze URL',
     'forgotPassword': 'Passwort vergessen',
-    'forward' : 'weiterleiten',
+    'forward': 'weiterleiten',
     'firstname': 'Vorname',
     'gender': 'Geschlecht',
     'generateSecurePassword': 'Generate secure password',
@@ -703,8 +704,8 @@ var dbas_de = {
     'requestFailed': 'Anfrage fehlgeschlagen, bitte laden Sie die Seite erneut.',
     'requestFailedBadToken': 'Ihre Sitzung ist abgelaufen. Bitte laden Sie die Seite neu.',
     'requestFailedInternalError': 'Anfrage aufgrund eines internen Fehlers fehlgeschlagen. Bitte laden Sie die Seite ' +
-        'neu, sollte der Fehler bestehen bleiben, so <span style="cursor: pointer;" id="contact_on_error">' +
-        'kontaktieren sie uns bitte (hier klicken)</span>',
+    'neu, sollte der Fehler bestehen bleiben, so <span style="cursor: pointer;" id="contact_on_error">' +
+    'kontaktieren sie uns bitte (hier klicken)</span>',
     'repuationChartSum': 'Reputation ingsesamt',
     'repuationChartDay': 'Reputation pro Tag',
     'restartOnError': 'Bitte laden Sie die Seite erneut oder starten Sie die Diskussion neu, sofern der Fehler bleibt',
@@ -727,11 +728,11 @@ var dbas_de = {
     'shortenedBy': 'gekürzt mit',
     'switchDiscussion': 'Diskussionsthema ändern',
     'switchDiscussionText': 'Wollen Sie wirklich die aktuelle Diskussion verlassen und zur Diskussion über ' +
-        '<strong>XXX</strong> wechseln?',
+    '<strong>XXX</strong> wechseln?',
     'support': 'Unterstützung',
     'surname': 'Nachname',
     'sureToDeleteReview': 'Sind Sie sicher, dass Sie diese Entscheidung rückgangig machen möchten? Dieser Schritt kann ' +
-        'nicht rückgangig gemacht werden!',
+    'nicht rückgangig gemacht werden!',
     'showMeAnArgumentFor': 'Zeig\' mir ein Argument für',
     'text': 'Text',
     'to': 'An',
@@ -754,6 +755,7 @@ var dbas_de = {
     'vote': 'Stimme',
     'votes': 'Stimmen',
     'weak': 'schwach',
+    'wrongCaptcha': 'Bitte füllen Sie das Captcha korrekt aus.',
     'next': 'Weiter',
     'prev': 'Zurück',
     'yes': 'Ja',
@@ -771,7 +773,7 @@ var dbas_de = {
     'tourIssueContent': 'Hier sehen Sie das aktuelle Diskussionsthema.',
     'tourStartDiscussionTitle': 'Erste Schritte',
     'tourStartDiscussionContent': 'In diesem Abschnitt sehen Sie links Nachrichten des Systems und rechts später ' +
-        'Ihre eigenen Nachrichten.',
+    'Ihre eigenen Nachrichten.',
     'tourMarkOpinionTitle': 'Meinung markieren',
     'tourMarkOpinionContent': 'Mit dem kleinen Stern neben dem Text können Sie Ihre eigene Meinung markieren.',
     'tourMarkOpinionText': 'Sie interessiert, dass der Park geschlossen werden soll.',
@@ -788,59 +790,59 @@ var dbas_de = {
 };
 
 var dataTables_german_lang = {
-    "sEmptyTable":      "Keine Daten in der Tabelle vorhanden",
-    "sInfo":            "_START_ bis _END_ von _TOTAL_ Einträgen",
-    "sInfoEmpty":       "0 bis 0 von 0 Einträgen",
-    "sInfoFiltered":    "(gefiltert von _MAX_ Einträgen)",
-    "sInfoPostFix":     "",
-    "sInfoThousands":   ".",
-    "sLengthMenu":      "_MENU_ Einträge anzeigen",
-    "sLoadingRecords":  "Wird geladen...",
-    "sProcessing":      "Bitte warten...",
-    "sSearch":          "Suchen",
-    "sZeroRecords":     "Keine Einträge vorhanden.",
+    "sEmptyTable": "Keine Daten in der Tabelle vorhanden",
+    "sInfo": "_START_ bis _END_ von _TOTAL_ Einträgen",
+    "sInfoEmpty": "0 bis 0 von 0 Einträgen",
+    "sInfoFiltered": "(gefiltert von _MAX_ Einträgen)",
+    "sInfoPostFix": "",
+    "sInfoThousands": ".",
+    "sLengthMenu": "_MENU_ Einträge anzeigen",
+    "sLoadingRecords": "Wird geladen...",
+    "sProcessing": "Bitte warten...",
+    "sSearch": "Suchen",
+    "sZeroRecords": "Keine Einträge vorhanden.",
     "oPaginate": {
-        "sFirst":       "Erste",
-        "sPrevious":    "Zurück",
-        "sNext":        "Nächste",
-        "sLast":        "Letzte"
+        "sFirst": "Erste",
+        "sPrevious": "Zurück",
+        "sNext": "Nächste",
+        "sLast": "Letzte"
     },
     "oAria": {
-        "sSortAscending":  ": aktivieren, um Spalte aufsteigend zu sortieren",
+        "sSortAscending": ": aktivieren, um Spalte aufsteigend zu sortieren",
         "sSortDescending": ": aktivieren, um Spalte absteigend zu sortieren"
     }
 };
 
 var dataTables_english_lang = {
-    "sEmptyTable":     "No data available in table",
-    "sInfo":           "Showing _START_ to _END_ of _TOTAL_ entries",
-    "sInfoEmpty":      "Showing 0 to 0 of 0 entries",
-    "sInfoFiltered":   "(filtered from _MAX_ total entries)",
-    "sInfoPostFix":    "",
-    "sInfoThousands":  ",",
-    "sLengthMenu":     "Show _MENU_ entries",
+    "sEmptyTable": "No data available in table",
+    "sInfo": "Showing _START_ to _END_ of _TOTAL_ entries",
+    "sInfoEmpty": "Showing 0 to 0 of 0 entries",
+    "sInfoFiltered": "(filtered from _MAX_ total entries)",
+    "sInfoPostFix": "",
+    "sInfoThousands": ",",
+    "sLengthMenu": "Show _MENU_ entries",
     "sLoadingRecords": "Loading...",
-    "sProcessing":     "Processing...",
-    "sSearch":         "Search:",
-    "sZeroRecords":    "No matching records found",
+    "sProcessing": "Processing...",
+    "sSearch": "Search:",
+    "sZeroRecords": "No matching records found",
     "oPaginate": {
-        "sFirst":    "First",
-        "sLast":     "Last",
-        "sNext":     "Next",
+        "sFirst": "First",
+        "sLast": "Last",
+        "sNext": "Next",
         "sPrevious": "Previous"
     },
     "oAria": {
-        "sSortAscending":  ": activate to sort column ascending",
+        "sSortAscending": ": activate to sort column ascending",
         "sSortDescending": ": activate to sort column descending"
     }
 };
 
-var get_it = function(val, id){
+var get_it = function (val, id) {
     'use strict';
     var value = 'unknown value';
-    if (typeof val !== 'undefined' && val.indexOf('de') !== -1 && dbas_de.hasOwnProperty(id)){
+    if (typeof val !== 'undefined' && val.indexOf('de') !== -1 && dbas_de.hasOwnProperty(id)) {
         value = dbas_de[id];
-    } else if (dbas_en.hasOwnProperty(id)){
+    } else if (dbas_en.hasOwnProperty(id)) {
         value = dbas_en[id];
     }
     return value;
@@ -853,7 +855,7 @@ var get_it = function(val, id){
  * @returns {string} which is translated or unknown value
  * @private
  */
-_t = function(id){
+_t = function (id) {
     'use strict';
     return get_it(getLanguage(), id);
 };
@@ -864,12 +866,12 @@ _t = function(id){
  * @returns {string} which is translated or unknown value
  * @private
  */
-_t_discussion = function(id){
+_t_discussion = function (id) {
     'use strict';
 
     var info = $('#issue_info');
     if (typeof info === 'undefined') {
-	    return get_it('en', id);
+        return get_it('en', id);
     }
     var lang = info.data('discussion-language');
     return get_it(lang, id);
@@ -879,7 +881,7 @@ _t_discussion = function(id){
  * Returns the tag of current language. This is either {en,de} or 'unknown value' *
  * @returns {string} language tag
  */
-getLanguage = function(){
+getLanguage = function () {
     'use strict';
     return $('#hidden_language').val();
 };
@@ -888,13 +890,13 @@ getLanguage = function(){
  * Returns the tag of current discussion language. This is either {en,de} or 'unknown value' *
  * @returns {string} language tag
  */
-getDiscussionLanguage = function(){
+getDiscussionLanguage = function () {
     'use strict';
 
     var lang = $('#issue_info').data('discussion-language'), value;
-    if (lang.indexOf('en') !== -1){
+    if (lang.indexOf('en') !== -1) {
         value = 'en';
-    } else if (lang.indexOf('de') !== -1){
+    } else if (lang.indexOf('de') !== -1) {
         value = 'de';
     } else {
         value = 'unknown value';
