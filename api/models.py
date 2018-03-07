@@ -1,5 +1,6 @@
 import re
 from html import unescape
+from typing import List
 
 
 def unhtmlify(html):
@@ -9,7 +10,7 @@ def unhtmlify(html):
     :param html: Evil-string containing html
     :return:
     """
-    return unescape(re.sub(r'\s*<.*?>\s*', ' ', html))
+    return unescape(re.sub(r'<.*?>', '', html))
 
 
 class Item:
@@ -17,16 +18,16 @@ class Item:
     Entity to construct items-dict.
     """
 
-    def __init__(self, html, url):
+    def __init__(self, htmls: List[str], url: str):
         """
         Construct item for items-dict.
 
-        :param html: May contain html, which is also converted to plain text
+        :param htmls: List of strings containing html, which is also converted to plain text
         :param url: URL to next step in the discussion
         """
         self.url = url if url != '' else None
-        self.html = html
-        self.text = unhtmlify(self.html)
+        self.htmls = htmls
+        self.texts = [unhtmlify(html) for html in htmls]
 
     def __json__(self, _request):
         """
@@ -36,8 +37,8 @@ class Item:
         :return:
         """
         return {
-            'html': self.html,
-            'text': self.text,
+            'htmls': self.htmls,
+            'texts': self.texts,
             'url': self.url
         }
 

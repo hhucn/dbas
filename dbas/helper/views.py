@@ -37,7 +37,7 @@ def handle_justification_step(request_dict):
     :return: dict(), dict(), dict()
     """
     matchdict = request_dict['matchdict']
-    statement_or_arg_id = matchdict.get('statement_or_arg_id')
+    statement_or_arg_id = int(matchdict.get('statement_or_arg_id'))
     mode = matchdict.get('mode', '')
     relation = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
 
@@ -59,7 +59,7 @@ def handle_justification_step(request_dict):
     return item_dict, discussion_dict
 
 
-def __handle_justification_statement(request_dict, statement_or_arg_id, mode):
+def __handle_justification_statement(request_dict, statement_or_arg_id: int, mode):
     """
 
     :param request_dict:

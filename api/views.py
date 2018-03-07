@@ -14,6 +14,8 @@ from typing import Callable, Any
 
 from cornice import Service
 
+import dbas.discussion.core as discussion
+import dbas.handler.history as history_handler
 import dbas.views as dbas
 from api.models import Item, Bubble
 from dbas.database import DBDiscussionSession
@@ -26,7 +28,7 @@ from dbas.lib import (get_all_arguments_by_statement,
 from dbas.strings.translator import Keywords as _
 from dbas.strings.translator import get_translation
 from dbas.validators.core import has_keywords, validate
-from dbas.validators.discussion import valid_issue_by_slug
+from dbas.validators.discussion import valid_issue_by_slug, valid_position
 from .lib import HTTP204, flatten, json_to_dict, logger
 from .login import validate_credentials, validate_login, valid_token, token_to_database, valid_token_optional
 from .references import (get_all_references_by_reference_text,
@@ -70,7 +72,7 @@ justify = Service(name='api_justify',
                   description="Discussion Justify",
                   cors_policy=cors_policy)
 attitude = Service(name='api_attitude',
-                   path='/{slug}/attitude/*statement_id',
+                   path='/{slug}/attitude/{position_id}',
                    description="Discussion Attitude",
                    cors_policy=cors_policy)
 support = Service(name='api_support',
@@ -305,7 +307,7 @@ def discussion_justify(request):
 
 
 @attitude.get()
-@validate(valid_issue_by_slug, valid_token_optional)
+@validate(valid_issue_by_slug, valid_token_optional, valid_position)
 def discussion_attitude(request):
     """
     Return data from DBas discussion_attitude page.
@@ -313,8 +315,23 @@ def discussion_attitude(request):
     :param request: request
     :return: dbas.discussion_attitude(True)
     """
-    request_dict = prepare_dbas_request_dict(request)
-    return dbas.discussion.attitude(request_dict)
+    db_position = request.validated['position']
+    db_issue = request.validated['issue']
+    db_user = request.validated['user']
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    prepared_discussion = discussion.attitude(db_issue, db_user, db_position, history, request.path)
+
+    bubbles = [Bubble(bubble) for bubble in prepared_discussion['discussion']['bubbles']]
+
+    keys = [item['attitude'] for item in prepared_discussion['items']['elements']]
+    items = [Item([premise['title'] for premise in item['premises']], item['url']) for item in
+             prepared_discussion['items']['elements']]
+
+    return {
+        'bubbles': bubbles,
+        'attitudes': dict(zip(keys, items))
+    }
 
 
 @support.get(validators=validate_login)
@@ -355,7 +372,7 @@ def discussion_init(request):
                                                                Statement.issue_uid == db_issue.uid,
                                                                Statement.is_startpoint == True).all()
 
-    items = [Item(pos.get_textversion().content, "{}/attitude/{}".format(db_issue.slug, pos.uid)) for pos in
+    items = [Item([pos.get_textversion().content], "{}/attitude/{}".format(db_issue.slug, pos.uid)) for pos in
              db_positions]
 
     return {'bubbles': [Bubble(bubble) for bubble in bubbles],
