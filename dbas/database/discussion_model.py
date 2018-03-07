@@ -530,6 +530,25 @@ class Statement(DiscussionBase):
         """
         return DBDiscussionSession.query(TextVersion).get(self.textversion_uid)
 
+    def get_text(self, html: bool = False) -> str:
+        """
+        Gets the current text form the statement, without trailing punctuation.
+
+        :param html: If True, returns a html span for coloring.
+        :return:
+        """
+        text = self.get_textversion().content
+        while text.endswith(('.', '?', '!')):
+            text = text[:-1]
+
+        if html:
+            return '<span data-argumentation-type="position">{}</span>'.format(text)
+        else:
+            return text
+
+    def get_html(self):
+        return self.get_text(html=True)
+
 
 class StatementReferences(DiscussionBase):
     """
