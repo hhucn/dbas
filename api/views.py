@@ -196,6 +196,79 @@ def whoami_fn(request):
 # DISCUSSION-RELATED REQUESTS
 # =============================================================================
 
+@zinit.get()
+@validate(valid_issue_by_slug)
+def discussion_init(request):
+    """
+    Given a slug, show its positions.
+
+    :param request: Request
+    :return:
+    """
+    db_issue = request.validated['issue']
+    intro = get_translation(_.initialPositionInterest, db_issue.lang)
+
+    bubbles = [
+        create_speechbubble_dict(BubbleTypes.SYSTEM, uid='start', message=intro, omit_url=True, lang=db_issue.lang)
+    ]
+
+    db_positions = DBDiscussionSession.query(Statement).filter(Statement.is_disabled == False,
+                                                               Statement.issue_uid == db_issue.uid,
+                                                               Statement.is_startpoint == True).all()
+
+    items = [Item([pos.get_textversion().content], "{}/attitude/{}".format(db_issue.slug, pos.uid))
+             for pos in db_positions]
+
+    return {'bubbles': [Bubble(bubble) for bubble in bubbles],
+            'items': items}
+
+
+@attitude.get()
+@validate(valid_issue_by_slug, valid_token_optional, valid_position)
+def discussion_attitude(request):
+    """
+    Return data from DBas discussion_attitude page.
+
+    :param request: request
+    :return: dbas.discussion_attitude(True)
+    """
+    db_position = request.validated['position']
+    db_issue = request.validated['issue']
+    db_user = request.validated['user']
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    prepared_discussion = discussion.attitude(db_issue, db_user, db_position, history, request.path)
+
+    bubbles = [Bubble(bubble) for bubble in prepared_discussion['discussion']['bubbles']]
+
+    keys = [item['attitude'] for item in prepared_discussion['items']['elements']]
+    items = [Item([premise['title'] for premise in item['premises']], item['url'])
+             for item in prepared_discussion['items']['elements']]
+
+    return {
+        'bubbles': bubbles,
+        'attitudes': dict(zip(keys, items))
+    }
+
+
+@justify.get()
+@validate(valid_issue_by_slug, valid_token_optional, valid_position)
+def discussion_justify(request):
+    """
+    Return data from DBas discussion_justify page. Contains bubbles and lists of positions matching the current
+    attitude of the user.
+
+    Path: /{slug}/justify/{statement_or_arg_id}/{mode}*relation
+
+    :param request: request
+    :return: dbas.discussion_justify(True)
+    """
+    request_dict = prepare_dbas_request_dict(request)
+    return dbas.discussion.justify(request_dict)
+
+
+# -----------------------------------------------------------------------------
+
 def prepare_user_information(request):
     """
     Check if user is authenticated, return prepared data for D-BAS.
@@ -293,47 +366,6 @@ def discussion_reaction(request):
     return dbas.discussion.reaction(request_dict)
 
 
-@justify.get(validators=validate_login)
-def discussion_justify(request):
-    """
-    Return data from DBas discussion_justify page.
-
-    :param request: request
-    :return: dbas.discussion_justify(True)
-
-    """
-    request_dict = prepare_dbas_request_dict(request)
-    return dbas.discussion.justify(request_dict)
-
-
-@attitude.get()
-@validate(valid_issue_by_slug, valid_token_optional, valid_position)
-def discussion_attitude(request):
-    """
-    Return data from DBas discussion_attitude page.
-
-    :param request: request
-    :return: dbas.discussion_attitude(True)
-    """
-    db_position = request.validated['position']
-    db_issue = request.validated['issue']
-    db_user = request.validated['user']
-    history = history_handler.handle_history(request, db_user, db_issue)
-
-    prepared_discussion = discussion.attitude(db_issue, db_user, db_position, history, request.path)
-
-    bubbles = [Bubble(bubble) for bubble in prepared_discussion['discussion']['bubbles']]
-
-    keys = [item['attitude'] for item in prepared_discussion['items']['elements']]
-    items = [Item([premise['title'] for premise in item['premises']], item['url']) for item in
-             prepared_discussion['items']['elements']]
-
-    return {
-        'bubbles': bubbles,
-        'attitudes': dict(zip(keys, items))
-    }
-
-
 @support.get(validators=validate_login)
 def discussion_support(request):
     """
@@ -351,32 +383,6 @@ def discussion_support(request):
     api_data["arg_system_uid"] = request.matchdict["arg_system_uid"]
     request_dict = prepare_dbas_request_dict(request)
     return dbas.discussion.support(request_dict, api_data=api_data)
-
-
-@zinit.get()
-@validate(valid_issue_by_slug)
-def discussion_init(request):
-    """
-    Given a slug, show its positions.
-
-    :param request: Request
-    :return:
-    """
-    db_issue = request.validated['issue']
-    intro = get_translation(_.initialPositionInterest, db_issue.lang)
-
-    bubbles = [
-        create_speechbubble_dict(BubbleTypes.SYSTEM, uid='start', message=intro, omit_url=True, lang=db_issue.lang)]
-
-    db_positions = DBDiscussionSession.query(Statement).filter(Statement.is_disabled == False,
-                                                               Statement.issue_uid == db_issue.uid,
-                                                               Statement.is_startpoint == True).all()
-
-    items = [Item([pos.get_textversion().content], "{}/attitude/{}".format(db_issue.slug, pos.uid)) for pos in
-             db_positions]
-
-    return {'bubbles': [Bubble(bubble) for bubble in bubbles],
-            'items': items}
 
 
 #
