@@ -14,29 +14,29 @@ from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue
+from dbas.helper.url import UrlManager
 from dbas.lib import get_public_profile_picture, nick_of_anonymous_user
 from dbas.query_wrapper import get_not_disabled_statement_as_query
-from dbas.helper.url import UrlManager
 
 list_length = 5
 max_count_zeros = 5
 index_zeros = 3
 return_count = 10  # same number as in googles suggest list (16.12.2015)
 mechanism = 'Levensthein'
+
+
 # mechanism = 'SequenceMatcher'
 
 
-def get_prediction(_tn, db_user, db_issue, application_url, value, mode, statement_uid):
+def get_prediction(_tn, db_user, db_issue, value, mode, statement_uid):
     """
     Get dictionary with matching words, based on the given mode
 
     :param _tn: Translator
     :param db_user: User
     :param db_issue: Issue
-    :param application_url: application_url
     :param value: users value, which should be the base for searching
     :param mode: int
-    :param extra: Array
     :return: Dictionary
     """
 
@@ -62,7 +62,7 @@ def get_prediction(_tn, db_user, db_issue, application_url, value, mode, stateme
         return_dict['distance_name'] = mechanism
 
     elif mode in [8, 9]:  # search everything
-        return_dict['values'] = get_all_statements_with_value(db_issue.uid, application_url, value)
+        return_dict['values'] = get_all_statements_with_value(db_issue.uid, value)
         return_dict['distance_name'] = mechanism
     else:
         return Response({'status_code': 400})
@@ -70,12 +70,11 @@ def get_prediction(_tn, db_user, db_issue, application_url, value, mode, stateme
     return return_dict
 
 
-def get_all_statements_with_value(issue_uid, application_url, value):
+def get_all_statements_with_value(issue_uid, value):
     """
     Returns all statements, where with the value
 
     :param issue_uid: issue_uid
-    :param application_url: application_url
     :param value: string
     :return: dict()
     """
@@ -84,7 +83,8 @@ def get_all_statements_with_value(issue_uid, application_url, value):
     slug = DBDiscussionSession.query(Issue).get(issue_uid).slug
     _um = UrlManager(slug=slug)
     for stat in db_statements:
-        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(TextVersion.uid.asc()).first()
+        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(
+            TextVersion.uid.asc()).first()
         if value.lower() in db_tv.content.lower():
             rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
             rd['url'] = _um.get_url_for_statement_attitude(db_tv.statement_uid)
@@ -108,7 +108,8 @@ def get_strings_for_start(value, issue, is_startpoint):
                                                                  Statement.issue_uid == issue).all()
     return_array = []
     for stat in db_statements:
-        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(TextVersion.uid.asc()).first()
+        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(
+            TextVersion.uid.asc()).first()
         if value.lower() in db_tv.content.lower():
             rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
             return_array.append(rd)
@@ -133,7 +134,8 @@ def get_strings_for_edits(value, statement_uid):
     index = 1
     for textversion in db_tvs:
         if value.lower() in textversion.content.lower():
-            rd = __get_fuzzy_string_dict(current_text=value, return_text=textversion.content, uid=textversion.statement_uid)  # TODO #432
+            rd = __get_fuzzy_string_dict(current_text=value, return_text=textversion.content,
+                                         uid=textversion.statement_uid)  # TODO #432
             return_array.append(rd)
             index += 1
 
@@ -158,9 +160,11 @@ def get_strings_for_duplicates_or_reasons(value, issue, statement_uid):
         if stat.uid is statement_uid:
             continue
 
-        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(TextVersion.uid.asc()).first()
+        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(
+            TextVersion.uid.asc()).first()
         if value.lower() in db_tv.content.lower():  # and db_tv.content.lower() != oem_value.lower():
-            rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)  # TODO #432
+            rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content,
+                                         uid=db_tv.statement_uid)  # TODO #432
             return_array.append(rd)
 
     return_array = __sort_array(return_array)
@@ -198,7 +202,8 @@ def get_strings_for_search(value):
     :return: dict() with Statements.uid as key and 'text', 'distance' as well as 'arguments' as values
     """
     tmp_dict = OrderedDict()
-    db_statements = get_not_disabled_statement_as_query().join(TextVersion, Statement.textversion_uid == TextVersion.uid).all()
+    db_statements = get_not_disabled_statement_as_query().join(TextVersion,
+                                                               Statement.textversion_uid == TextVersion.uid).all()
     for stat in db_statements:
         if value.lower() in stat.textversions.content.lower():
             # get distance between input value and saved value
@@ -238,7 +243,8 @@ def get_strings_for_public_nickname(value, nickname):
     :return: dict()
     """
     db_user = DBDiscussionSession.query(User).filter(func.lower(User.public_nickname).contains(func.lower(value)),
-                                                     ~User.public_nickname.in_([nickname, 'admin', nick_of_anonymous_user])).all()
+                                                     ~User.public_nickname.in_(
+                                                         [nickname, 'admin', nick_of_anonymous_user])).all()
     return_array = []
 
     for index, user in enumerate(db_user):
