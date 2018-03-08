@@ -3,12 +3,13 @@ Helper for D-BAS Views
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+from typing import Tuple
 
 import dbas.handler.voting as voting_helper
+from dbas.database.discussion_model import Statement, Issue, User
 from dbas.handler import user
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
-from dbas.input_validator import is_integer, check_belonging_of_argument, check_belonging_of_statement
 from dbas.lib import get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.review.helper.reputation import add_reputation_for
@@ -30,176 +31,169 @@ def preparation_for_view(request):
     return request.authenticated_userid, session_expired
 
 
-def handle_justification_step(request_dict):
+def handle_justification_step(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, relation: str,
+                              history, path) -> Tuple[dict, dict]:
     """
     Handles the justification step
-    :param request_dict: dict out of pyramid's request object including issue, slug and history and more
+
+    :param db_issue:
+    :param db_user:
+    :param db_stmt_or_arg:
+    :param attitude:
+    :param relation:
+    :param history:
+    :param path:
     :return: dict(), dict(), dict()
     """
-    matchdict = request_dict['matchdict']
-    statement_or_arg_id = int(matchdict.get('statement_or_arg_id'))
-    mode = matchdict.get('mode', '')
-    relation = matchdict['relation'][0] if len(matchdict['relation']) > 0 else ''
+    item_dict = {}
+    discussion_dict = {}
 
-    if not is_integer(statement_or_arg_id, True):
-        return None, None
+    if [c for c in ('agree', 'disagree') if c in attitude] and relation == '':
+        item_dict, discussion_dict = __handle_justification_statement(db_issue, db_user, db_stmt_or_arg, attitude,
+                                                                      history, path)
 
-    if [c for c in ('agree', 'disagree') if c in mode] and relation == '':
-        item_dict, discussion_dict = __handle_justification_statement(request_dict, statement_or_arg_id, mode)
-
-    elif 'dontknow' in mode and relation == '':
-        item_dict, discussion_dict = __handle_justification_dont_know(request_dict, statement_or_arg_id, mode)
+    elif 'dontknow' in attitude and relation == '':
+        item_dict, discussion_dict = __handle_justification_dont_know(db_issue, db_user, db_stmt_or_arg, attitude,
+                                                                      history, path)
 
     elif [c for c in ('undermine', 'rebut', 'undercut', 'support') if c in relation]:
-        item_dict, discussion_dict = __handle_justification_argument(request_dict, statement_or_arg_id, relation, mode)
-
-    else:
-        return None, None
+        item_dict, discussion_dict = __handle_justification_argument(db_issue, db_user, db_stmt_or_arg, attitude,
+                                                                     relation, history, path)
 
     return item_dict, discussion_dict
 
 
-def __handle_justification_statement(request_dict, statement_or_arg_id: int, mode):
+def __handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, history,
+                                     path):
     """
 
-    :param request_dict:
-    :param statement_or_arg_id:
-    :param mode:
+    :param attitude:
     :return:
     """
     logger('ViewHelper', 'justify statement')
-    db_issue = request_dict['issue']
-    supportive = mode in ['agree', 'dontknow']
+    supportive = attitude in ['agree', 'dontknow']
 
-    if not get_text_for_statement_uid(statement_or_arg_id)\
-            or not check_belonging_of_statement(db_issue.uid, statement_or_arg_id):
+    if not get_text_for_statement_uid(db_stmt_or_arg.uid):
         return None, None
-    item_dict, discussion_dict = preparation_for_justify_statement(request_dict, statement_or_arg_id, supportive)
+    item_dict, discussion_dict = preparation_for_justify_statement(history, db_user, path, db_issue, db_stmt_or_arg,
+                                                                   supportive)
     return item_dict, discussion_dict
 
 
-def __handle_justification_dont_know(request_dict, statement_or_arg_id, mode):
+def __handle_justification_dont_know(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, history,
+                                     path) -> Tuple[dict, dict]:
     """
 
-    :param request_dict:
-    :param statement_or_arg_id:
-    :param mode:
+    :param db_issue: Current issue
+    :param db_user: User
+    :param db_stmt_or_arg: Statement
+    :param attitude:
+    :param history:
+    :param path:
     :return:
     """
-    logger('ViewHelper', 'do not know for {}'.format(statement_or_arg_id))
-    db_issue = request_dict['issue']
-    supportive = mode in ['agree', 'dontknow']
-
-    if int(statement_or_arg_id) != 0 and \
-            not check_belonging_of_argument(db_issue.uid, statement_or_arg_id) and \
-            not check_belonging_of_statement(db_issue.uid, statement_or_arg_id):
-        return None, None, None
-    item_dict, discussion_dict = preparation_for_dont_know_statement(request_dict, statement_or_arg_id, supportive)
+    logger('ViewHelper', 'do not know for {}'.format(db_stmt_or_arg.uid))
+    supportive = attitude in ['agree', 'dontknow']
+    item_dict, discussion_dict = __preparation_for_dont_know_statement(db_issue, db_user, db_stmt_or_arg, supportive,
+                                                                       history, path)
     return item_dict, discussion_dict
 
 
-def __handle_justification_argument(request_dict, statement_or_arg_id, relation, mode):
+def __handle_justification_argument(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str,
+                                    relation: str, history, path) -> Tuple[dict, dict]:
     """
 
-    :param request_dict:
-    :param statement_or_arg_id:
     :param relation:
-    :param mode:
+    :param attitude:
     :return:
     """
     logger('ViewHelper', 'justify argument')
-    db_issue = request_dict['issue']
-    ui_locales = request_dict['ui_locales']
-    nickname = request_dict['nickname']
-    main_page = request_dict['app_url']
-    supportive = mode in ['agree', 'dontknow']  # supportive = t or do not know mode
+    ui_locales = db_issue.lang
+    nickname = db_user.nickname
+    supportive = attitude in ['agree', 'dontknow']
 
-    if not check_belonging_of_argument(db_issue.uid, statement_or_arg_id):
-        return None, None, None
-    item_dict, discussion_dict = preparation_for_justify_argument(request_dict, statement_or_arg_id, supportive, relation)
-    # add reputation
+    item_dict, discussion_dict = preparation_for_justify_argument(db_issue, db_user, db_stmt_or_arg, relation,
+                                                                  supportive, history, path)
     add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_confrontation)
-    # send message if the user is now able to review
+
     if broke_limit:
         _t = Translator(ui_locales)
-        send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), main_page + '/review')
+        send_request_for_info_popup_to_socketio(nickname, _t.get(_.youAreAbleToReviewNow), '/review')
     return item_dict, discussion_dict
 
 
-def preparation_for_justify_statement(request_dict, statement_uid, supportive):
+def preparation_for_justify_statement(history, db_user: User, path, db_issue: Issue, stmt_or_arg: Statement,
+                                      supportive: bool):
     """
-    Prepares some paramater for the justification step for an statement
+    Prepares some parameter for the justification step for an statement.
 
-    :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param statement_uid: Statement.uid
+    :param history: history
+    :param db_user: User
+    :param path:
+    :param stmt_or_arg: Statement
+    :param db_issue: Issue
     :param supportive: Boolean
     :return: dict(), dict(), dict()
     """
     logger('ViewHelper', 'main')
-
-    history = request_dict['history']
-    nickname = request_dict['nickname']
-    path = request_dict['path']
-    db_issue = request_dict['issue']
-    db_user = request_dict['user']
+    nickname = db_user.nickname
     slug = db_issue.slug
 
     disc_ui_locales = db_issue.lang
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
 
-    voting_helper.add_click_for_statement(statement_uid, nickname, supportive)
+    voting_helper.add_click_for_statement(stmt_or_arg, db_user, supportive)
 
-    item_dict = _idh.get_array_for_justify_statement(statement_uid, db_user, supportive, history)
-    discussion_dict = _ddh.get_dict_for_justify_statement(statement_uid, slug, supportive,
+    item_dict = _idh.get_array_for_justify_statement(stmt_or_arg, db_user, supportive, history)
+    discussion_dict = _ddh.get_dict_for_justify_statement(stmt_or_arg, slug, supportive,
                                                           len(item_dict['elements']), db_user)
     return item_dict, discussion_dict
 
 
-def preparation_for_dont_know_statement(request_dict, argument_uid, supportive):
+def __preparation_for_dont_know_statement(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, supportive: bool,
+                                          history, path) -> Tuple[dict, dict]:
     """
     Prepares some parameter for the "don't know" step
 
-    :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param argument_uid: Argument.uid
+    :param db_issue: Current issue
+    :param db_user: User
+    :param db_stmt_or_arg: Statement
     :param supportive: Boolean
+    :param history:
+    :param path: request.path
     :return: dict(), dict(), dict()
     """
     logger('ViewHelper', 'main')
-
-    db_issue = request_dict['issue']
-    history = request_dict['history']
-    nickname = request_dict['nickname']
-    path = request_dict['path']
-    db_user = request_dict['user']
+    nickname = db_user.nickname
     slug = db_issue.slug
 
     disc_ui_locales = db_issue.lang
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
 
-    discussion_dict = _ddh.get_dict_for_dont_know_reaction(argument_uid, nickname)
-    item_dict = _idh.get_array_for_dont_know_reaction(argument_uid, supportive, db_user, discussion_dict['gender'])
+    discussion_dict = _ddh.get_dict_for_dont_know_reaction(db_stmt_or_arg.uid, nickname)
+    item_dict = _idh.get_array_for_dont_know_reaction(db_stmt_or_arg.uid, supportive, db_user,
+                                                      discussion_dict['gender'])
     return item_dict, discussion_dict
 
 
-def preparation_for_justify_argument(request_dict, statement_or_arg_id, supportive, relation):
+def preparation_for_justify_argument(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, relation: str,
+                                     supportive: bool, history, path):
     """
     Prepares some parameter for the justification step for an argument
 
-    :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :param statement_or_arg_id: Argument.uid / Statement.uid
-    :param supportive: Boolean
-    :param relation: String
-    :return: dict(), dict(), dict()
+    :param db_issue:
+    :param db_user:
+    :param db_stmt_or_arg:
+    :param relation:
+    :param supportive:
+    :param history:
+    :param path:
+    :return:
     """
     logger('ViewHelper', 'main')
-
-    history = request_dict['history']
-    nickname = request_dict['nickname']
-    path = request_dict['path']
-    db_issue = request_dict['issue']
-    db_user = request_dict['user']
+    nickname = db_user.nickname
     slug = db_issue.slug
 
     disc_ui_locales = db_issue.lang
@@ -207,8 +201,7 @@ def preparation_for_justify_argument(request_dict, statement_or_arg_id, supporti
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
 
     # justifying argument
-    # is_attack = True if [c for c in ('undermine', 'rebut', 'undercut') if c in relation] else False
-    item_dict = _idh.get_array_for_justify_argument(statement_or_arg_id, relation, db_user, history)
-    discussion_dict = _ddh.get_dict_for_justify_argument(statement_or_arg_id, supportive, relation)
+    item_dict = _idh.get_array_for_justify_argument(db_stmt_or_arg.uid, relation, db_user, history)
+    discussion_dict = _ddh.get_dict_for_justify_argument(db_stmt_or_arg.uid, supportive, relation)
 
     return item_dict, discussion_dict

@@ -204,7 +204,6 @@ def __append_extras_dict_during_justification(request: Request, pdict: dict, rdi
     from pprint import pprint
     pprint("__append_extras_dict_during_justification")
 
-
     if [c for c in ('agree', 'disagree') if c in attitude] and relation == '':
         extras_dict = _dh.prepare_extras_dict(rdict['issue'].slug, False, True, True, request.registry,
                                               request.application_url, request.path, db_user)
@@ -661,7 +660,8 @@ def discussion_justify(request) -> dict:
     relation = request.validated['relation']
 
     history = history_handler.handle_history(request, db_user, db_issue)
-    prepared_discussion = discussion.justify(db_issue, db_user, db_stmt_or_arg, attitude, relation, history, request.path)
+    prepared_discussion = discussion.justify(db_issue, db_user, db_stmt_or_arg, attitude, relation, history,
+                                             request.path)
     prepared_discussion['layout'] = base_layout()
     __modify_discussion_url(prepared_discussion)
 

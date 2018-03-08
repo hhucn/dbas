@@ -101,17 +101,16 @@ class DiscussionDictHelper(object):
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_justify_statement(self, uid, slug, is_supportive, count_of_items, db_user):
+    def get_dict_for_justify_statement(self, stmt_or_arg: Statement, slug, is_supportive, count_of_items, db_user: User):
         """
         Prepares the discussion dict with all bubbles for the third step in discussion,
         where the user justifies his position.
 
-        :param uid: Argument.uid
-        :param app_url: application url
+        :param stmt_or_arg: Statement
+        :param db_user: User
         :param slug: Issue.slug
         :param is_supportive: Boolean
         :param count_of_items: Integer
-        :param nickname: User.nickname
         :return: dict()
         """
         logger('DictionaryHelper', 'at_justify')
@@ -120,7 +119,7 @@ class DiscussionDictHelper(object):
         bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang, self.slug)
 
         save_statement_url = 'set_new_start_statement'
-        text = get_text_for_statement_uid(uid)
+        text = get_text_for_statement_uid(stmt_or_arg.uid)
         if not text:
             return None
 
@@ -132,13 +131,13 @@ class DiscussionDictHelper(object):
 
         # user bubble
         nickname = db_user.nickname if db_user and db_user.nickname != nick_of_anonymous_user else None
-        user_text, add_premise_text = get_user_bubble_text_for_justify_statement(uid, db_user, is_supportive, _tn)
+        user_text, add_premise_text = get_user_bubble_text_for_justify_statement(stmt_or_arg.uid, db_user, is_supportive, _tn)
 
         question_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, message=system_question, omit_url=True,
                                                    lang=self.lang)
-        url = UrlManager(slug).get_url_for_statement_attitude(uid)
+        url = UrlManager(slug).get_url_for_statement_attitude(stmt_or_arg.uid)
         select_bubble = create_speechbubble_dict(BubbleTypes.USER, url=url, message=user_text, omit_url=False,
-                                                 statement_uid=uid, is_supportive=is_supportive, nickname=nickname,
+                                                 statement_uid=stmt_or_arg.uid, is_supportive=is_supportive, nickname=nickname,
                                                  lang=self.lang)
 
         if not bubbles_already_last_in_list(bubbles_array, select_bubble):

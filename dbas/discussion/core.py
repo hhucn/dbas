@@ -80,35 +80,35 @@ def attitude(db_issue: Issue, db_user: User, db_position: Statement, history: st
     }
 
 
-def justify(request_dict) -> Union[dict, None]:
+def justify(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, relation: str, history, path) -> \
+        Union[dict, None]:
     """
     Initialize the justification step for a statement or an argument in a discussion. Creates helper and
     returns a dictionary containing the necessary elements needed for the discussion.
 
-    :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :rtype: dict
-    :return: prepared collection matchdict for the discussion
+    :param db_issue:
+    :param db_user:
+    :param db_stmt_or_arg:
+    :param attitude:
+    :param relation:
+    :param history:
+    :param path:
+    :return:
     """
-    logger('Core', 'main')
+    logger('Justify discussion', 'main')
 
-    db_issue = request_dict['issue']
-    db_user = request_dict['user']
-
-    request_dict['user'] = db_user
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
-
-    item_dict, discussion_dict = handle_justification_step(request_dict)
+    item_dict, discussion_dict = handle_justification_step(db_issue, db_user, db_stmt_or_arg, attitude, relation,
+                                                           history, path)
     if not all([item_dict, discussion_dict]):
         return None
 
-    prepared_discussion = {
+    return {
         'issues': issue_dict,
         'discussion': discussion_dict,
         'items': item_dict,
         'title': issue_dict['title']
     }
-
-    return prepared_discussion
 
 
 def reaction(request_dict) -> Union[dict, None]:
