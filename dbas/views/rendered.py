@@ -40,7 +40,8 @@ from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
 from dbas.validators.core import validate
-from dbas.validators.discussion import valid_issue_by_slug, valid_position
+from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement_or_arg_id, valid_attitude, \
+    valid_relation_optional
 from dbas.validators.user import valid_user, invalid_user, valid_user_optional
 
 name = 'D-BAS'
@@ -179,7 +180,7 @@ def __append_extras_dict(pdict: dict, rdict: dict, nickname: str, is_reportable:
                                               rdict['app_url'], rdict['path'], db_user)
 
 
-def __append_extras_dict_during_justification(request: Request, pdict: dict, rdict: dict) -> None:
+def __append_extras_dict_during_justification(request: Request, pdict: dict, rdict: dict, attitude: str) -> None:
     """
 
     :param request: pyramids Request object
@@ -191,17 +192,20 @@ def __append_extras_dict_during_justification(request: Request, pdict: dict, rdi
     db_user = DBDiscussionSession.query(User).filter_by(
         nickname=nickname if nickname else nick_of_anonymous_user).first()
     ui_locales = get_language_from_cookie(request)
-    mode = request.matchdict.get('mode', '')
     relation = request.matchdict['relation'][0] if len(request.matchdict['relation']) > 0 else ''
     stat_or_arg_uid = request.matchdict.get('statement_or_arg_id')
-    supportive = mode in ['agree', 'dontknow']
+    supportive = attitude in ['agree', 'dontknow']
     item_len = len(pdict['items']['elements'])
     extras_dict = {}
 
     _dh = DictionaryHelper(ui_locales, rdict['issue'].lang)
     logged_in = (db_user and db_user.nickname != nick_of_anonymous_user) is not None
 
-    if [c for c in ('agree', 'disagree') if c in mode] and relation == '':
+    from pprint import pprint
+    pprint("__append_extras_dict_during_justification")
+
+
+    if [c for c in ('agree', 'disagree') if c in attitude] and relation == '':
         extras_dict = _dh.prepare_extras_dict(rdict['issue'].slug, False, True, True, request.registry,
                                               request.application_url, request.path, db_user)
         if item_len == 0 or item_len == 1 and logged_in:
@@ -209,7 +213,7 @@ def __append_extras_dict_during_justification(request: Request, pdict: dict, rdi
                                         current_premise=get_text_for_statement_uid(stat_or_arg_uid),
                                         supportive=supportive)
 
-    elif 'dontknow' in mode and relation == '':
+    elif 'dontknow' in attitude and relation == '':
         extras_dict = _dh.prepare_extras_dict(rdict['issue'].slug, True, True, True, request.registry,
                                               request.application_url, request.path, db_user=db_user)
         # is the discussion at the end?
@@ -638,22 +642,32 @@ def discussion_attitude(request):
 
 # justify page
 @view_config(route_name='discussion_justify', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, invalid_user)
-def discussion_justify(request):
+@validate(check_authentication, valid_user_optional, valid_statement_or_arg_id, valid_attitude, valid_relation_optional)
+def discussion_justify(request) -> dict:
     """
     View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
 
+    Path: /discuss/{slug}/justify/{statement_or_arg_id}/{attitude}*relation
+
     :param request: request of the web server
-    :return: dictionary
+    :return: dict
     """
-    # '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation'
     logger('discussion_justify', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.justify)
-    if not prepared_discussion:
-        raise HTTPNotFound()
+    db_stmt_or_arg = request.validated['stmt_or_arg']
+    db_issue = request.validated['issue']
+    db_user = request.validated['user']
+    attitude = request.validated['attitude']
+    relation = request.validated['relation']
 
-    __append_extras_dict_during_justification(request, prepared_discussion, rdict)
+    history = history_handler.handle_history(request, db_user, db_issue)
+    prepared_discussion = discussion.justify(db_issue, db_user, db_stmt_or_arg, attitude, relation, history, request.path)
+    prepared_discussion['layout'] = base_layout()
+    __modify_discussion_url(prepared_discussion)
+
+    rdict = prepare_request_dict(request)
+
+    __append_extras_dict_during_justification(request, prepared_discussion, rdict, attitude)
 
     return prepared_discussion
 

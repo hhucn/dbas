@@ -4,32 +4,22 @@ import transaction
 from pyramid import testing
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, ClickedArgument, ClickedStatement, SeenStatement, SeenArgument
+from dbas.database.discussion_model import User, ClickedArgument, ClickedStatement, SeenStatement, SeenArgument, \
+    Statement
 from dbas.handler.voting import add_seen_argument, add_seen_statement, add_click_for_argument, add_click_for_statement
 
 
 class VotingHelperTest(unittest.TestCase):
 
     def setUp(self):
-        """
-
-        :return:
-        """
         self.config = testing.setUp()
         self.user = DBDiscussionSession.query(User).get(3)
 
     def tearDown(self):
-        """
-
-        :return:
-        """
         testing.tearDown()
 
     def test_add_seen_argument(self):
-        """
 
-        :return:
-        """
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
@@ -74,40 +64,17 @@ class VotingHelperTest(unittest.TestCase):
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
-    def test_add_seen_statement(self):
-        """
-
-        :return:
-        """
+    def test_add_seen_statement_anonymous_user_is_not_tracked(self):
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
-        db_user = DBDiscussionSession.query(User).get(1100)
-        val = add_seen_statement([], db_user)
+        db_anon = DBDiscussionSession.query(User).get(1)
+
+        val = add_seen_statement(1, db_anon)
         self.assertFalse(val)
 
-        val = add_seen_statement([], self.user)
-        self.assertFalse(val)
-
-        val = add_seen_statement([0], self.user)
-        self.assertFalse(val)
-
-        val = add_seen_statement([1], self.user)
-        self.assertFalse(val)
-
-        val = add_seen_statement(None, self.user)
-        self.assertFalse(val)
-
-        val = add_seen_statement('a', self.user)
-        self.assertFalse(val)
-
-        val = add_seen_statement(1, db_user)
-        self.assertFalse(val)
-
-        DBDiscussionSession.query(User).get(1)
-        val = add_seen_statement(0, 1)
-        self.assertFalse(val)
-
+    def test_add_seen_statement(self):
+        self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
         val = add_seen_statement(1, self.user)
@@ -126,10 +93,6 @@ class VotingHelperTest(unittest.TestCase):
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
     def test_add_vote_for_argument(self):
-        """
-
-        :return:
-        """
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
@@ -200,64 +163,37 @@ class VotingHelperTest(unittest.TestCase):
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
     def test_add_vote_for_statement(self):
-        """
-
-        :return:
-        """
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
-        val = add_click_for_statement([], 1100, True)
-        self.assertFalse(val)
+        db_stmt_1 = DBDiscussionSession.query(Statement).get(1)
+        db_stmt_2 = DBDiscussionSession.query(Statement).get(2)
 
-        val = add_click_for_statement([], self.user.nickname, True)
-        self.assertFalse(val)
-
-        val = add_click_for_statement([0], self.user.nickname, True)
-        self.assertFalse(val)
-
-        val = add_click_for_statement([1], self.user.nickname, True)
-        self.assertFalse(val)
-
-        val = add_click_for_statement(None, self.user.nickname, True)
-        self.assertFalse(val)
-
-        val = add_click_for_statement('a', self.user.nickname, True)
-        self.assertFalse(val)
-
-        val = add_click_for_statement(1, self.user.nickname + '#', True)
-        self.assertFalse(val)
-
-        val = add_click_for_statement(0, 1, True)
-        self.assertFalse(val)
-
-        self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
-
-        val = add_click_for_statement(1, self.user.nickname, True)
+        val = add_click_for_statement(db_stmt_1, self.user, True)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 1, 0, 1, 0)
 
-        val = add_click_for_statement(2, self.user.nickname, True)
+        val = add_click_for_statement(db_stmt_2, self.user, True)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 2, 0, 2, 0)
 
         # duplicate
-        val = add_click_for_statement(2, self.user.nickname, True)
+        val = add_click_for_statement(db_stmt_2, self.user, True)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 2, 0, 2, 0)
 
         # opinion change
-        val = add_click_for_statement(2, self.user.nickname, False)
+        val = add_click_for_statement(db_stmt_2, self.user, False)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 3, 0, 2, 0)
 
         # duplicate
-        val = add_click_for_statement(2, self.user.nickname, False)
+        val = add_click_for_statement(db_stmt_2, self.user, False)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 3, 0, 2, 0)
 
         # opinion change
-        val = add_click_for_statement(2, self.user.nickname, True)
+        val = add_click_for_statement(db_stmt_2, self.user, True)
         self.assertTrue(val)
         self.check_tables_of_user_for_n_rows(self.user, 4, 0, 2, 0)
 
