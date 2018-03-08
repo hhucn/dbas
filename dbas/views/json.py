@@ -660,7 +660,9 @@ def get_infos_about_argument(request):
 
 # ajax - for getting all users with the same opinion
 @view_config(route_name='get_user_with_same_opinion', renderer='json')
-@validate(valid_language, invalid_user, has_keywords(('uid', int), ('is_argument', bool), ('is_attitude', bool), ('is_reaction', bool), ('is_position', bool)))
+@validate(valid_language, invalid_user,
+          has_keywords(('uid', int), ('is_argument', bool), ('is_attitude', bool), ('is_reaction', bool),
+                       ('is_position', bool)))
 def get_users_with_opinion(request):
     """
     ajax interface for getting a dump
@@ -789,13 +791,12 @@ def fuzzy_search(request):
     """
     logger('views', 'main: {}'.format(request.json_body))
 
-    _tn = Translator(get_language_from_cookie(request))
     mode = request.validated['type']
     value = request.validated['value']
     db_issue = request.validated['issue']
     statement_uid = request.validated['statement_uid']
     db_user = request.validated['user']
-    return fuzzy_string_matcher.get_prediction(_tn, db_user, db_issue, value, mode, statement_uid)
+    return fuzzy_string_matcher.get_prediction(db_user, db_issue, value, mode, statement_uid)
 
 
 # #######################################

@@ -9,7 +9,6 @@ from collections import OrderedDict
 from itertools import islice
 
 from Levenshtein import distance
-from pyramid.response import Response
 from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
@@ -28,44 +27,44 @@ mechanism = 'Levensthein'
 # mechanism = 'SequenceMatcher'
 
 
-def get_prediction(_tn, db_user, db_issue, value, mode, statement_uid):
+def get_prediction(db_user: User, db_issue: Issue, search_value: str, mode: int, statement_uid: int) -> dict:
     """
     Get dictionary with matching words, based on the given mode
 
-    :param _tn: Translator
-    :param db_user: User
-    :param db_issue: Issue
-    :param value: users value, which should be the base for searching
-    :param mode: int
-    :return: Dictionary
+    :param statement_uid: the uid of the statement to be looked at
+    :param db_user: Current user
+    :param db_issue:  current Issue the user looks at, used to get the uid of the issue to search at
+    :param search_value: users value, which should be the base for searching
+    :param mode: form of search the user chooses
+    :return: Dictionary with the corresponding search results
     """
 
     return_dict = {}
     if mode == 0:  # start statement
-        return_dict['values'] = get_strings_for_start(value, db_issue.uid, True)
+        return_dict['values'] = get_strings_for_start(search_value, db_issue.uid, True)
         return_dict['distance_name'] = mechanism
 
     elif mode == 1:  # edit statement popup
-        return_dict['values'] = get_strings_for_edits(value, statement_uid)
+        return_dict['values'] = get_strings_for_edits(search_value, statement_uid)
         return_dict['distance_name'] = mechanism
 
     elif mode == 2:  # start premise
-        return_dict['values'] = get_strings_for_start(value, db_issue.uid, False)
+        return_dict['values'] = get_strings_for_start(search_value, db_issue.uid, False)
         return_dict['distance_name'] = mechanism
 
     elif mode in [3, 4]:  # adding reasons / duplicates
-        return_dict['values'] = get_strings_for_duplicates_or_reasons(value, db_issue.uid, statement_uid)
+        return_dict['values'] = get_strings_for_duplicates_or_reasons(search_value, db_issue.uid, statement_uid)
         return_dict['distance_name'] = mechanism
 
     elif mode == 5:  # getting public nicknames
-        return_dict['values'] = get_strings_for_public_nickname(value, db_user.get_global_nickname())
+        return_dict['values'] = get_strings_for_public_nickname(search_value, db_user.get_global_nickname())
         return_dict['distance_name'] = mechanism
 
     elif mode in [8, 9]:  # search everything
-        return_dict['values'] = get_all_statements_with_value(db_issue.uid, value)
+        return_dict['values'] = get_all_statements_with_value(db_issue.uid, search_value)
         return_dict['distance_name'] = mechanism
     else:
-        return Response({'status_code': 400})
+        return {'status_code': 400}
 
     return return_dict
 
