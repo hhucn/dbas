@@ -60,34 +60,6 @@ def valid_issue_by_slug(request):
     return False
 
 
-def valid_position(request):
-    """
-    Check if given statement is a position and belongs to the queried issue.
-
-    :param request: Request
-    :return:
-    """
-    if not valid_issue_by_slug(request):
-        return False
-
-    if has_keywords_in_path(('position_id', int))(request):
-        position_id = request.validated['position_id']
-        db_position: Statement = DBDiscussionSession.query(Statement).get(position_id)
-        if not db_position.is_startpoint:
-            add_error(request, 'Queried statement is not a valid position', location='path')
-            return False
-        if db_position.issue_uid != request.validated['issue'].uid:
-            add_error(request, 'Position does not belong to the queried issue', location='path')
-            return False
-        if db_position.is_disabled:
-            add_error(request, 'Position is disabled', location='path', status_code=410)
-            return False
-
-        request.validated['position'] = db_position
-        return True
-    return False
-
-
 def valid_new_issue(request):
     """
     Verifies given data for a new issue
@@ -154,9 +126,115 @@ def valid_conclusion(request):
         return False
 
 
+def valid_position(request):
+    """
+    Check if given statement is a position and belongs to the queried issue.
+
+    :param request: Request
+    :return:
+    """
+    if not valid_issue_by_slug(request):
+        return False
+
+    if has_keywords_in_path(('position_id', int))(request):
+        position_id = request.validated['position_id']
+        db_position: Statement = DBDiscussionSession.query(Statement).get(position_id)
+        if not db_position.is_startpoint:
+            add_error(request, 'Queried statement is not a valid position', location='path')
+            return False
+        if db_position.issue_uid != request.validated['issue'].uid:
+            add_error(request, 'Position does not belong to the queried issue', location='path')
+            return False
+        if db_position.is_disabled:
+            add_error(request, 'Position is disabled', location='path', status_code=410)
+            return False
+
+        request.validated['position']: Statement = db_position
+        return True
+    return False
+
+
+def valid_statement_or_arg_id(request):
+    """
+    Check if given Statement or Argument belongs to the queried issue and return the Statement.
+
+    .. note:: Maybe we need to return the argument too? Currently it is only the statement which is returned.
+
+    :param request: Request
+    :return:
+    """
+    if not valid_issue_by_slug(request):
+        return False
+
+    db_issue: Issue = request.validated['issue']
+
+    if has_keywords_in_path(('statement_or_arg_id', int))(request):
+        statement_or_arg_id = request.validated['statement_or_arg_id']
+        db_statement: Statement = DBDiscussionSession.query(Statement).get(statement_or_arg_id)
+        db_argument: Argument = DBDiscussionSession.query(Argument).get(statement_or_arg_id)
+        if not db_statement.issue_uid == db_argument.issue_uid == db_issue.uid:
+            add_error(request,
+                      'Statement / Argument with uid {} does not belong to the queried issue'.format(db_statement.uid),
+                      'db_issue.uid = {}, stmt = {}, arg = {}, issue-info = {}'.format(db_issue.uid,
+                                                                                       db_statement.issue_uid,
+                                                                                       db_argument.issue_uid,
+                                                                                       db_issue.info),
+                      location='path')
+            return False
+        if db_statement.is_disabled:
+            add_error(request, 'Statement / Argument is disabled', location='path', status_code=410)
+            return False
+
+        request.validated['stmt_or_arg']: Statement = db_statement
+        return True
+    return False
+
+
+def valid_attitude(request):
+    """
+    Check if given statement is a position and belongs to the queried issue.
+
+    :param request: Request
+    :return:
+    """
+    attitudes = ['agree', 'disagree', 'dontknow']
+
+    if has_keywords_in_path(('attitude', str))(request):
+        attitude = request.validated['attitude']
+        if attitude not in attitudes:
+            add_error(request, 'Your attitude is not correct. Received \'{}\', expected one of {}'.format(attitude, attitudes),
+                      location='path')
+            return False
+        return True
+    return False
+
+
+def valid_relation_optional(request):
+    """
+    Parse relation from path if provided. Else return None. Should only fail if wrong relation is given.
+
+    :param request: Request
+    :return:
+    """
+    relations_from_path = request.matchdict['relation']
+    if not relations_from_path:
+        request.validated['relation'] = ''
+        return True
+
+    relations = ['undermine', 'undercut', 'rebut']
+    relation = relations_from_path[0]
+    if relation not in relations:
+        add_error(request, 'Your relation is not correct. Received \'{}\', expected one of {}'.format(relation, relations),
+                  location='path')
+        return False
+
+    request.validated['relation'] = relation
+    return True
+
+
 def valid_statement(request):
     """
-    Given an uid, query the statement object from the database and return it in the request.
+    Given a uid, query the statement object from the database and return it in the request.
 
     :param request:
     :return:
@@ -205,6 +283,7 @@ def valid_text_length_of(keyword):
     :param keyword:
     :return:
     """
+
     def inner(request):
         min_length = int(environ.get('MIN_LENGTH_OF_STATEMENT', 10))
         text = escape_if_string(request.json_body, keyword)
@@ -216,6 +295,7 @@ def valid_text_length_of(keyword):
         else:
             request.validated[keyword] = text
             return True
+
     return inner
 
 
@@ -249,7 +329,7 @@ def valid_premisegroups(request):
     """
     premisegroups = request.json_body.get('premisegroups')
     if not premisegroups \
-            or not isinstance(premisegroups, list)\
+            or not isinstance(premisegroups, list) \
             or not all([isinstance(l, list) for l in premisegroups]):
         _tn = Translator(get_language_from_cookie(request))
         add_error(request, 'Invalid conclusion id', _tn.get(_.requestFailed))
