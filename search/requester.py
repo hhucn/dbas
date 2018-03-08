@@ -7,16 +7,16 @@ from search.routes import get_statements_with_value_path, get_duplicates_or_reas
     get_edits_path, get_suggestions_path
 
 
-def request_as_json(query):
+def request_as_json(query: str) -> dict:
     return requests.get(query).json()
 
 
-def get_suggestions(issue_uid: int, is_start_point: bool, search=""):
+def get_suggestions(issue_uid: int, is_start_point: bool, search: str = "") -> dict:
     query = get_suggestions_path(issue_uid, is_start_point, search)
     return request_as_json(query)["result"]
 
 
-def get_statements_with_value(issue_uid: int, application_url, search=""):
+def get_statements_with_value(issue_uid: int, search: str = "") -> dict:
     query = get_statements_with_value_path(issue_uid, search)
     slug = DBDiscussionSession.query(Issue).get(issue_uid).slug
     _um = UrlManager(slug=slug)
@@ -35,7 +35,7 @@ def get_statements_with_value(issue_uid: int, application_url, search=""):
     return results
 
 
-def get_duplicates_or_reasons(issue_uid: int, statement_uid: int, search=""):
+def get_duplicates_or_reasons(issue_uid: int, statement_uid: int, search: str = "") -> dict:
     query = get_duplicates_or_reasons_path(issue_uid, statement_uid, search)
     return request_as_json(query)["result"]
 

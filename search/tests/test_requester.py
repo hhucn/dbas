@@ -23,7 +23,7 @@ class TestRequester(unittest.TestCase):
         self.assertNotEqual(0, len(results))
 
     def test_statements_with_value_has_url_1(self):
-        url = get_statements_with_value(2, "http://localhost:4284")[0]["url"]
+        url = get_statements_with_value(2)[0]["url"]
         self.assertIsNotNone(url)
 
     def test_edits_not_empty_1(self):
