@@ -1,13 +1,13 @@
 import unittest
 
 import transaction
-from pyramid import testing
-from pyramid.httpexceptions import HTTPNotFound
+from pyramid import testing, httpexceptions
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, \
     ReputationHistory
-from dbas.helper.test import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of, refresh_user
+from dbas.helper.test import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of
+from dbas.views import discussion_justify
 
 
 class DiscussionJustifyViewTests(unittest.TestCase):
@@ -42,24 +42,22 @@ class DiscussionJustifyViewTests(unittest.TestCase):
             self.assertEqual(vote_dict['rep_h'], DBDiscussionSession.query(ReputationHistory).count())
 
     def test_justify_statement_page(self):
-        from dbas.views import discussion_justify as d
         vote_dict = self.__get_meta_clicks(False)
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 2,
-            'mode': 'agree',
+            'attitude': 'agree',
             'relation': '',
         }
-        response = d(request)
+        response = discussion_justify(request)
+        self.assertNotIsInstance(response, httpexceptions.HTTPError)
         verify_dictionary_of_view(response)
         self.__check_meta_clicks(vote_dict)
         self.__check_meta_clicks(vote_dict)
 
     def test_support_statement_page(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import discussion_justify as d
-
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).count()
         len_db_vote1 = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.is_valid == True,
                                                                           ClickedStatement.is_up_vote == True).count()
@@ -67,10 +65,11 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 2,
-            'mode': 'agree',
+            'attitude': 'agree',
             'relation': '',
         }
-        response = d(request)
+        response = discussion_justify(request)
+        self.assertNotIsInstance(response, httpexceptions.HTTPError)
         transaction.commit()
         verify_dictionary_of_view(response)
         len_db_seen2 = DBDiscussionSession.query(SeenStatement).count()
@@ -85,7 +84,6 @@ class DiscussionJustifyViewTests(unittest.TestCase):
 
     def test_attack_statement_page(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import discussion_justify as d
 
         len_db_seen1 = DBDiscussionSession.query(SeenStatement).count()
         len_db_vote1 = DBDiscussionSession.query(ClickedStatement).filter(ClickedStatement.is_valid == True,
@@ -94,10 +92,11 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 2,
-            'mode': 'disagree',
+            'attitude': 'disagree',
             'relation': ''
         }
-        response = d(request)
+        response = discussion_justify(request)
+        self.assertNotIsInstance(response, httpexceptions.HTTPError)
         transaction.commit()
         verify_dictionary_of_view(response)
         len_db_seen2 = DBDiscussionSession.query(SeenStatement).count()
@@ -112,47 +111,48 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         clear_clicks_of('Tobias')
 
     def test_dont_know_statement_page(self):
-        from dbas.views import discussion_justify as d
         vote_dict = self.__get_meta_clicks(False)
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 2,
-            'mode': 'dontknow',
+            'attitude': 'dontknow',
             'relation': '',
         }
-        response = d(request)
+        response = discussion_justify(request)
+        self.assertNotIsInstance(response, httpexceptions.HTTPError)
         verify_dictionary_of_view(response)
         self.__check_meta_clicks(vote_dict)
 
     def test_justify_argument_page_no_rep(self):
-        from dbas.views import discussion_justify as d
         vote_dict = self.__get_meta_clicks(True)
         len_db_reputation1 = DBDiscussionSession.query(ReputationHistory).count()
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 2,
-            'mode': 'agree',
+            'attitude': 'agree',
             'relation': ['undermine'],
         }
-        response = d(request)
+        response = discussion_justify(request)
+        self.assertNotIsInstance(response, httpexceptions.HTTPError)
         verify_dictionary_of_view(response)
 
         len_db_reputation2 = DBDiscussionSession.query(ReputationHistory).count()
         self.__check_meta_clicks(vote_dict)
         self.assertEqual(len_db_reputation1, len_db_reputation2)
 
-    def __test_base_for_justify_argument_page_rep(self, view):
+    def __test_base_for_justify_argument_page_rep(self):
         vote_dict = self.__get_meta_clicks(True)
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 2,
-            'mode': 'agree',
+            'attitude': 'agree',
             'relation': ['undermine'],
         }
-        response = view(request)
+        response = discussion_justify(request)
+        self.assertNotIsInstance(response, httpexceptions.HTTPError)
         verify_dictionary_of_view(response)
         self.assertNotEqual(vote_dict['seen_s'], DBDiscussionSession.query(SeenStatement).count())
         self.assertEqual(vote_dict['click_s'], DBDiscussionSession.query(ClickedStatement).count())
@@ -160,65 +160,53 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.assertEqual(vote_dict['click_a'], DBDiscussionSession.query(ClickedArgument).count())
         return vote_dict
 
-    def test_justify_argument_page_rep(self):
-        self.config.testing_securitypolicy(userid='Björn', permissive=True)
-        refresh_user('Björn')
-        from dbas.views import discussion_justify as d
-        vote_dict = self.__test_base_for_justify_argument_page_rep(d)
-        self.assertNotEqual(vote_dict['rep_h'], DBDiscussionSession.query(ReputationHistory).count())
-        clear_seen_by_of('Björn')
-        clear_clicks_of('Björn')
-
     def test_justify_argument_page_rep_not_twice(self):
         self.config.testing_securitypolicy(userid='Björn', permissive=True)
-        from dbas.views import discussion_justify as d
-        vote_dict = self.__test_base_for_justify_argument_page_rep(d)
+        vote_dict = self.__test_base_for_justify_argument_page_rep()
         self.assertEqual(vote_dict['rep_h'], DBDiscussionSession.query(ReputationHistory).count())
         clear_seen_by_of('Björn')
         clear_clicks_of('Björn')
 
-    def test_false_page(self):
-        from dbas.views import discussion_justify as d
-
-        vote_dict = self.__get_meta_clicks(False)
-
+    def test_wrong_attitude(self):
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 2,
-            'mode': 'agree',
-            'relation': 'blabla',
+            'attitude': 'not-a-valid-attitude',
+            'relation': '',
         }
-        try:
-            response = d(request)
-            self.assertTrue(type(response) is HTTPNotFound)
-        except HTTPNotFound:
-            pass
+        response = discussion_justify(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
 
+    def test_wrong_relation(self):
+        request = testing.DummyRequest()
+        request.matchdict = {
+            'slug': 'cat-or-dog',
+            'statement_or_arg_id': 2,
+            'attitude': 'agree',
+            'relation': 'i am groot',
+        }
+        response = discussion_justify(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
+
+    def test_wrong_slug(self):
+        request = testing.DummyRequest()
+        request.matchdict = {
+            'slug': 'kitty-or-doggy-is-a-wrong-slug',
+            'statement_or_arg_id': 2,
+            'attitude': 'agree',
+            'relation': '',
+        }
+        response = discussion_justify(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
+
+    def test_stmt_or_arg_id_does_not_belong_to_issue(self):
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
             'statement_or_arg_id': 40,
-            'mode': 'agree',
+            'attitude': 'agree',
             'relation': '',
         }
-        try:
-            response = d(request)
-            self.assertTrue(type(response) is HTTPNotFound)
-        except HTTPNotFound:
-            pass
-
-        request = testing.DummyRequest()
-        request.matchdict = {
-            'slug': 'cat-or-dog',
-            'statement_or_arg_id': 2,
-            'mode': 'babla',
-            'relation': '',
-        }
-        try:
-            response = d(request)
-            self.assertTrue(type(response) is HTTPNotFound)
-        except HTTPNotFound:
-            pass
-
-        self.__check_meta_clicks(vote_dict)
+        response = discussion_justify(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)

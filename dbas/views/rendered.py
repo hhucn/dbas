@@ -201,9 +201,6 @@ def __append_extras_dict_during_justification(request: Request, pdict: dict, rdi
     _dh = DictionaryHelper(ui_locales, rdict['issue'].lang)
     logged_in = (db_user and db_user.nickname != nick_of_anonymous_user) is not None
 
-    from pprint import pprint
-    pprint("__append_extras_dict_during_justification")
-
     if [c for c in ('agree', 'disagree') if c in attitude] and relation == '':
         extras_dict = _dh.prepare_extras_dict(rdict['issue'].slug, False, True, True, request.registry,
                                               request.application_url, request.path, db_user)
