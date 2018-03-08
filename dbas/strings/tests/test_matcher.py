@@ -9,10 +9,10 @@ class StringMatcherTest(unittest.TestCase):
     matcher.mechanism = 'Levensthein'
 
     def test_get_strings_for_start(self):
-        return_array = matcher.get_strings_for_start('cat', 2, True)
+        return_array = matcher.get_suggestions_for_positions('cat', 2, True)
         self.check_string_matcher_array(return_array)
 
-        return_array = matcher.get_strings_for_start('cat', 2, False)
+        return_array = matcher.get_suggestions_for_positions('cat', 2, False)
         self.check_string_matcher_array(return_array)
 
     def test_get_strings_for_reasons(self):
