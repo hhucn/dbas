@@ -172,29 +172,15 @@ def valid_statement_or_arg_id(request):
     if has_keywords_in_path(('statement_or_arg_id', int))(request):
         statement_or_arg_id = request.validated['statement_or_arg_id']
         db_statement: Statement = DBDiscussionSession.query(Statement).get(statement_or_arg_id)
-        db_argument: Argument = DBDiscussionSession.query(Argument).filter(
-            Argument.conclusion_uid == db_statement.uid).first()
-        if not db_argument:
-            print("foo")
-            from pprint import pprint
-            pprint(db_statement.uid)
-            add_error(request,
-                      'The queried statement {} is not an argument of the issue \'{}\''.format(db_statement.uid,
-                                                                                               db_issue.title),
-                      location='path', status_code=410)
-            return False
-        elif not db_statement.issue_uid == db_argument.issue_uid == db_issue.uid:
-            print("foo2")
+        if not db_statement.issue_uid == db_issue.uid:
             add_error(request,
                       'Statement / Argument with uid {} does not belong to the queried issue'.format(db_statement.uid),
-                      'db_issue.uid = {}, stmt = {}, arg = {}, issue = {}'.format(db_issue.uid,
-                                                                                  db_statement.issue_uid,
-                                                                                  db_argument.issue_uid,
-                                                                                  db_issue.title),
+                      'db_issue.uid = {}, stmt = {}, issue = {}'.format(db_issue.uid,
+                                                                        db_statement.issue_uid,
+                                                                        db_issue.title),
                       location='path')
             return False
         if db_statement.is_disabled:
-            print("foo3")
             add_error(request, 'Statement / Argument is disabled', location='path', status_code=410)
             return False
 
@@ -215,7 +201,8 @@ def valid_attitude(request):
     if has_keywords_in_path(('attitude', str))(request):
         attitude = request.validated['attitude']
         if attitude not in attitudes:
-            add_error(request, 'Your attitude is not correct. Received \'{}\', expected one of {}'.format(attitude, attitudes),
+            add_error(request,
+                      'Your attitude is not correct. Received \'{}\', expected one of {}'.format(attitude, attitudes),
                       location='path')
             return False
         return True
@@ -237,7 +224,8 @@ def valid_relation_optional(request):
     relations = ['undermine', 'undercut', 'rebut']
     relation = relations_from_path[0]
     if relation not in relations:
-        add_error(request, 'Your relation is not correct. Received \'{}\', expected one of {}'.format(relation, relations),
+        add_error(request,
+                  'Your relation is not correct. Received \'{}\', expected one of {}'.format(relation, relations),
                   location='path')
         return False
 
