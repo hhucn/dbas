@@ -169,21 +169,32 @@ def valid_statement_or_arg_id(request):
         return False
 
     db_issue: Issue = request.validated['issue']
-
     if has_keywords_in_path(('statement_or_arg_id', int))(request):
         statement_or_arg_id = request.validated['statement_or_arg_id']
         db_statement: Statement = DBDiscussionSession.query(Statement).get(statement_or_arg_id)
-        db_argument: Argument = DBDiscussionSession.query(Argument).get(statement_or_arg_id)
-        if not db_statement.issue_uid == db_argument.issue_uid == db_issue.uid:
+        db_argument: Argument = DBDiscussionSession.query(Argument).filter(
+            Argument.conclusion_uid == db_statement.uid).first()
+        if not db_argument:
+            print("foo")
+            from pprint import pprint
+            pprint(db_statement.uid)
+            add_error(request,
+                      'The queried statement {} is not an argument of the issue \'{}\''.format(db_statement.uid,
+                                                                                               db_issue.title),
+                      location='path', status_code=410)
+            return False
+        elif not db_statement.issue_uid == db_argument.issue_uid == db_issue.uid:
+            print("foo2")
             add_error(request,
                       'Statement / Argument with uid {} does not belong to the queried issue'.format(db_statement.uid),
-                      'db_issue.uid = {}, stmt = {}, arg = {}, issue-info = {}'.format(db_issue.uid,
-                                                                                       db_statement.issue_uid,
-                                                                                       db_argument.issue_uid,
-                                                                                       db_issue.info),
+                      'db_issue.uid = {}, stmt = {}, arg = {}, issue = {}'.format(db_issue.uid,
+                                                                                  db_statement.issue_uid,
+                                                                                  db_argument.issue_uid,
+                                                                                  db_issue.title),
                       location='path')
             return False
         if db_statement.is_disabled:
+            print("foo3")
             add_error(request, 'Statement / Argument is disabled', location='path', status_code=410)
             return False
 
