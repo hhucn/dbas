@@ -66,9 +66,6 @@ class LibTests(unittest.TestCase):
         # id for no statement
         self.assertIsNone(lib.get_text_for_statement_uid(uid=0))
 
-        self.assertIsNone(lib.get_text_for_statement_uid(uid='22222222'))
-        self.assertIsNone(lib.get_text_for_statement_uid(uid="str"))
-
         # id for statement, which ends with '.'
         self.assertEqual(lib.get_text_for_statement_uid(uid=3), 'we should get a dog')
 

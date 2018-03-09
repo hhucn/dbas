@@ -8,7 +8,6 @@ from math import ceil
 
 import arrow
 import transaction
-from paste.httpexceptions import HTTPNotFound
 from pyramid.request import Request
 from slugify import slugify
 
@@ -18,11 +17,11 @@ from dbas.database.discussion_model import Argument, User, Issue, Language, Stat
 from dbas.handler import user
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import get_short_url
+from dbas.helper.url import UrlManager
 from dbas.lib import nick_of_anonymous_user
 from dbas.query_wrapper import get_not_disabled_issues_as_query, get_visible_issues_for_user_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
-from dbas.helper.url import UrlManager
 
 rep_limit_to_open_issues = 10
 
@@ -56,15 +55,14 @@ def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Lan
     transaction.commit()
     db_issue = DBDiscussionSession.query(Issue).filter(Issue.title == title, Issue.info == info).first()
 
-    return {'issue': get_issue_dict_for(db_issue, application_url, 0, db_lang.ui_locales)}
+    return {'issue': get_issue_dict_for(db_issue, 0, db_lang.ui_locales)}
 
 
-def prepare_json_of_issue(db_issue: Issue, application_url: str, db_user: User) -> dict():
+def prepare_json_of_issue(db_issue: Issue, db_user: User) -> dict():
     """
     Prepares slug, info, argument count and the date of the issue as dict
 
     :param db_issue: Issue
-    :param application_url: application_url
     :param db_user: User
     :return: Issue-dict()
     """
@@ -83,7 +81,7 @@ def prepare_json_of_issue(db_issue: Issue, application_url: str, db_user: User) 
     time = db_issue.date.format('HH:mm')
 
     db_issues = get_visible_issues_for_user_as_query(db_user.uid).filter(Issue.uid != db_issue.uid).all()
-    all_array = [get_issue_dict_for(issue, application_url, db_issue.uid, lang) for issue in db_issues]
+    all_array = [get_issue_dict_for(issue, db_issue.uid, lang) for issue in db_issues]
 
     _t = Translator(lang)
     tooltip = _t.get(_.discussionInfoTooltipSg) if stat_count == 1 else _t.get(_.discussionInfoTooltipPl)
@@ -128,12 +126,11 @@ def get_number_of_statements(issue_uid: int) -> int:
     return DBDiscussionSession.query(Statement).filter_by(issue_uid=issue_uid).count()
 
 
-def get_issue_dict_for(db_issue: Issue, application_url: str, uid: int, lang: str) -> dict():
+def get_issue_dict_for(db_issue: Issue, uid: int, lang: str) -> dict():
     """
     Creates an dictionary for the issue
 
     :param db_issue: Issue
-    :param application_url:
     :param uid: current selected Issue.uid
     :param lang: ui_locales
     :return: dict()
@@ -150,7 +147,7 @@ def get_issue_dict_for(db_issue: Issue, application_url: str, uid: int, lang: st
         'date': sql_timestamp_pretty_print(db_issue.date, lang),
         'author': db_issue.users.public_nickname,
         'error': '',
-        'author_url': '{}/user/{}'.format(application_url, db_issue.users.public_nickname),
+        'author_url': '/user/{}'.format(db_issue.users.public_nickname),
         'enabled': 'disabled' if str(uid) == str(db_issue.uid) else 'enabled'
     }
     return issue_dict
@@ -200,7 +197,7 @@ def get_issue_id(request):
 
     # no issue found
     if not issue_uid:
-        raise HTTPNotFound()
+        return None
         # issue_uid = get_issue_based_on_header(request)
 
     # save issue in session

@@ -130,6 +130,17 @@ class Issue(DiscussionBase):
         """
         self.is_read_only = is_read_only
 
+    def __json__(self, _request):
+        return {
+            "title": self.title,
+            "slug": self.slug,
+            "summary": self.info,
+            "description": self.long_info,
+            "url": "/" + self.slug,
+            "language": self.lang,
+            "date": self.date.format(),
+        }
+
 
 class Language(DiscussionBase):
     """
@@ -518,6 +529,25 @@ class Statement(DiscussionBase):
         :return: TextVersion object
         """
         return DBDiscussionSession.query(TextVersion).get(self.textversion_uid)
+
+    def get_text(self, html: bool = False) -> str:
+        """
+        Gets the current text form the statement, without trailing punctuation.
+
+        :param html: If True, returns a html span for coloring.
+        :return:
+        """
+        text = self.get_textversion().content
+        while text.endswith(('.', '?', '!')):
+            text = text[:-1]
+
+        if html:
+            return '<span data-argumentation-type="position">{}</span>'.format(text)
+        else:
+            return text
+
+    def get_html(self):
+        return self.get_text(html=True)
 
 
 class StatementReferences(DiscussionBase):

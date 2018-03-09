@@ -17,7 +17,7 @@ class DiscussionAttitudeViewTests(unittest.TestCase):
         from dbas.views import discussion_attitude as d
         request = testing.DummyRequest(matchdict={
             'slug': 'cat-or-dog',
-            'statement_id': [2],
+            'position_id': 2,
         })
         response = d(request)
         verify_dictionary_of_view(response)

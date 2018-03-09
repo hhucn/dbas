@@ -26,30 +26,30 @@ class DiscussionTest(unittest.TestCase):
 
     def test_valid_issue(self):
         request = self.__prepare_dict({})
-        response = discussion.valid_issue(request)
+        response = discussion.valid_issue_by_id(request)
         assert_true(response)
         assert_equal(bool, type(response))
 
         request = self.__prepare_dict({'issue': 1})
-        response = discussion.valid_issue(request)
+        response = discussion.valid_issue_by_id(request)
         assert_true(response)
         assert_equal(bool, type(response))
 
         request = self.__prepare_dict({})
         request.matchdict = {'issue': 1}
-        response = discussion.valid_issue(request)
+        response = discussion.valid_issue_by_id(request)
         assert_true(response)
         assert_equal(bool, type(response))
 
         request = self.__prepare_dict({})
         request.params = {'issue': 1}
-        response = discussion.valid_issue(request)
+        response = discussion.valid_issue_by_id(request)
         assert_true(response)
         assert_equal(bool, type(response))
 
         request = self.__prepare_dict({})
         request.session = {'issue': 1}
-        response = discussion.valid_issue(request)
+        response = discussion.valid_issue_by_id(request)
         assert_true(response)
         assert_equal(bool, type(response))
 

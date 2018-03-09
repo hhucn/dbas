@@ -8,6 +8,7 @@ import hashlib
 import locale
 import os
 import re
+import warnings
 from collections import defaultdict
 from datetime import datetime
 from enum import Enum, auto
@@ -656,7 +657,7 @@ def get_text_for_premisesgroup_uid(uid):
     return ' {} '.format(_t.get(_.aand)).join(texts), uids
 
 
-def get_text_for_statement_uid(uid, colored_position=False):
+def get_text_for_statement_uid(uid: int, colored_position=False):
     """
     Returns text of statement with given uid
 
@@ -664,29 +665,27 @@ def get_text_for_statement_uid(uid, colored_position=False):
     :param colored_position: Boolean
     :return: String
     """
-    try:
-        if not isinstance(int(uid), int):
-            return None
-        db_statement = DBDiscussionSession.query(Statement).get(uid)
-        if not db_statement:
-            return None
+    warnings.warn("Use Statement.get_text() or Statemente.get_html() instead.", DeprecationWarning)
 
-        db_textversion = DBDiscussionSession.query(TextVersion).order_by(TextVersion.uid.desc()).get(
-            db_statement.textversion_uid)
-        content = db_textversion.content
-
-        while content.endswith(('.', '?', '!')):
-            content = content[:-1]
-
-        sb, se = '', ''
-        if colored_position:
-            sb = '<{} data-argumentation-type="position">'.format(tag_type)
-            se = '</{}>'.format(tag_type)
-
-        return sb + content + se
-
-    except (ValueError, TypeError):
+    if not isinstance(uid, int):
         return None
+    db_statement = DBDiscussionSession.query(Statement).get(uid)
+    if not db_statement:
+        return None
+
+    db_textversion = DBDiscussionSession.query(TextVersion).order_by(TextVersion.uid.desc()).get(
+        db_statement.textversion_uid)
+    content = db_textversion.content
+
+    while content.endswith(('.', '?', '!')):
+        content = content[:-1]
+
+    sb, se = '', ''
+    if colored_position:
+        sb = '<{} data-argumentation-type="position">'.format(tag_type)
+        se = '</{}>'.format(tag_type)
+
+    return sb + content + se
 
 
 def get_text_for_premise(uid, colored_position=False):
@@ -806,7 +805,8 @@ def get_user_by_case_insensitive_public_nickname(public_nickname):
 
 def pretty_print_options(message):
     """
-    Some modifications for pretty printing
+    Some modifications for pretty printing.
+    Use uppercase for first letter in text and a single dot for the end if there isn't one already.
 
     :param message: String
     :return:  String
@@ -1049,7 +1049,7 @@ def __get_all_premises_of_argument(argument):
     return ret_list
 
 
-def get_profile_picture(user: User, size: int=80, ignore_privacy_settings: bool=False):
+def get_profile_picture(user: User, size: int = 80, ignore_privacy_settings: bool = False):
     """
     Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
 
@@ -1065,7 +1065,7 @@ def get_profile_picture(user: User, size: int=80, ignore_privacy_settings: bool=
     return __get_gravatar(user, additional_id, size)
 
 
-def get_public_profile_picture(user: User, size: int=80):
+def get_public_profile_picture(user: User, size: int = 80):
     """
     Returns the url to a https://secure.gravatar.com picture, with the option wavatar and size of 80px
     If the user doesn't want an public profile, an anonymous image will be returned

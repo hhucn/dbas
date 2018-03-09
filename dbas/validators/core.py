@@ -35,8 +35,20 @@ def has_keywords(*keywords: Tuple[str, type]):
     :return:
     """
 
-    def valid_keywords(request: Request, **kwargs):
-        return __look_for_keyword(request, request.json_body, "POST-Request body", keywords)
+    def valid_keywords(request: Request, **_kwargs):
+        error_occured = False
+        for (keyword, ktype) in keywords:
+            value = request.json_body.get(keyword)
+            if value is not None and isinstance(value, ktype):
+                request.validated[keyword] = value
+            elif value is None:
+                add_error(request, 'Parameter {} is missing in body'.format(keyword))
+                error_occured = True
+            else:
+                add_error(request, 'Parameter {} has wrong type'.format(keyword),
+                          '{} is {}, expected {}'.format(keyword, type(value), ktype))
+                error_occured = True
+        return not error_occured
 
     return valid_keywords
 
@@ -49,8 +61,24 @@ def has_keywords_in_path(*keywords: Tuple[str, type]):
     :return:
     """
 
-    def valid_keywords(request: Request, **kwargs):
-        return __look_for_keyword(request, request.matchdict, "PATH", keywords)
+    def valid_keywords(request: Request, **_kwargs):
+        error_occured = False
+        for (keyword, ktype) in keywords:
+            value = request.matchdict.get(keyword)
+            if value is not None and isinstance(value, ktype):
+                request.validated[keyword] = value
+            elif value:
+                if ktype in [int, float]:
+                    try:
+                        request.validated[keyword] = ktype(value)
+                        continue
+                    except ValueError:
+                        pass
+
+                add_error(request, 'Parameter {} has wrong type'.format(keyword),
+                          '{} is {}, expected {}'.format(keyword, type(value), ktype))
+                error_occured = True
+        return not error_occured
 
     return valid_keywords
 
