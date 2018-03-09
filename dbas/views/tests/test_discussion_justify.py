@@ -5,8 +5,8 @@ from pyramid import testing, httpexceptions
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, \
-    ReputationHistory
-from dbas.helper.test import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of
+    ReputationHistory, User
+from dbas.helper.test import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of, refresh_user
 from dbas.views import discussion_justify
 
 
@@ -22,7 +22,8 @@ class DiscussionJustifyViewTests(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
-    def __get_meta_clicks(self, include_history):
+    @staticmethod
+    def __get_meta_clicks(include_history):
         d = {
             'seen_s': DBDiscussionSession.query(SeenStatement).count(),
             'click_s': DBDiscussionSession.query(ClickedStatement).count(),
@@ -32,6 +33,11 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         if include_history:
             d['rep_h'] = DBDiscussionSession.query(ReputationHistory).count()
         return d
+
+    @staticmethod
+    def __delete_reputation_for_user(db_user):
+        DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()
+        transaction.commit()
 
     def __check_meta_clicks(self, vote_dict):
         self.assertEqual(vote_dict['seen_s'], DBDiscussionSession.query(SeenStatement).count())
@@ -69,7 +75,6 @@ class DiscussionJustifyViewTests(unittest.TestCase):
             'relation': '',
         }
         response = discussion_justify(request)
-        self.assertNotIsInstance(response, httpexceptions.HTTPError)
         transaction.commit()
         verify_dictionary_of_view(response)
         len_db_seen2 = DBDiscussionSession.query(SeenStatement).count()
@@ -160,12 +165,45 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.assertEqual(vote_dict['click_a'], DBDiscussionSession.query(ClickedArgument).count())
         return vote_dict
 
+    def test_justify_argument_page_rep(self):
+        db_user: User = refresh_user('Björn')
+        self.config.testing_securitypolicy(userid=db_user.nickname, permissive=True)
+
+        self.__delete_reputation_for_user(db_user)
+        rep_history_before_new_rep = DBDiscussionSession.query(ReputationHistory).count()
+
+        self.__test_base_for_justify_argument_page_rep()
+        rep_history_after_new_rep = DBDiscussionSession.query(ReputationHistory).count()
+
+        self.assertGreater(rep_history_after_new_rep, rep_history_before_new_rep,
+                           'Reputation should be granted on first confrontation')
+
+        self.__delete_reputation_for_user(db_user)
+        clear_seen_by_of(db_user.nickname)
+        clear_clicks_of(db_user.nickname)
+
     def test_justify_argument_page_rep_not_twice(self):
-        self.config.testing_securitypolicy(userid='Björn', permissive=True)
-        vote_dict = self.__test_base_for_justify_argument_page_rep()
-        self.assertEqual(vote_dict['rep_h'], DBDiscussionSession.query(ReputationHistory).count())
-        clear_seen_by_of('Björn')
-        clear_clicks_of('Björn')
+        db_user: User = refresh_user('Björn')
+        self.config.testing_securitypolicy(userid=db_user.nickname, permissive=True)
+
+        self.__delete_reputation_for_user(db_user)
+        rep_history_before_new_rep = DBDiscussionSession.query(ReputationHistory).count()
+
+        self.__test_base_for_justify_argument_page_rep()
+        rep_history_after_new_rep = DBDiscussionSession.query(ReputationHistory).count()
+        self.assertGreater(rep_history_after_new_rep, rep_history_before_new_rep,
+                           'Reputation should be granted on first confrontation')
+        clear_seen_by_of(db_user.nickname)
+        clear_clicks_of(db_user.nickname)
+
+        self.__test_base_for_justify_argument_page_rep()
+        rep_history_after_second_try = DBDiscussionSession.query(ReputationHistory).count()
+        self.assertEqual(rep_history_after_new_rep, rep_history_after_second_try,
+                         'Reputation should NOT be granted twice for the first confrontation')
+
+        self.__delete_reputation_for_user(db_user)
+        clear_seen_by_of(db_user.nickname)
+        clear_clicks_of(db_user.nickname)
 
     def test_wrong_attitude(self):
         request = testing.DummyRequest()
