@@ -145,6 +145,9 @@ def valid_position(request):
     if has_keywords_in_path(('position_id', int))(request):
         position_id = request.validated['position_id']
         db_position: Statement = DBDiscussionSession.query(Statement).get(position_id)
+        if db_position.is_disabled:
+            add_error(request, 'Position is disabled', location='path', status_code=410)
+            return False
         if not db_position.is_startpoint:
             add_error(request, 'Queried statement is not a valid position', location='path')
             return False
