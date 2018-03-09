@@ -88,11 +88,11 @@ def get_reputation_list(translator):
     return {'gains': gains, 'looses': looses}
 
 
-def get_reputation_of(db_user, only_today=False):
+def get_reputation_of(db_user: User, only_today=False):
     """
     Return the total sum of reputation_borders points for the given nickname
 
-    :param nickname: Nickname of the user
+    :param db_user: Should be of type "User", but also accepts nickname for legacy support
     :param only_today: Boolean
     :return: Integer and Boolean, if the user is author
     """
@@ -123,6 +123,8 @@ def add_reputation_for(user, reason):
     Add reputation for the given nickname with the reason only iff the reason can be added. For example all reputation
     for 'first' things cannot be given twice.
 
+    Anonymous user is not eligible to receive reputation.
+
     :param user: User in refactored fns, else nickname
     :param reason: reason as string, as given in reputation.py
     :return: True, if the user gained reputation and an additional boolean that is true, when the user reached 30points
@@ -134,6 +136,10 @@ def add_reputation_for(user, reason):
         db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     else:
         db_user = user
+
+    if db_user.nickname == nick_of_anonymous_user:
+        logger('ReputationPointHelper', '{} is not eligible to receive reputation'.format(db_user.nickname))
+        return False, False
 
     if not db_reason or not db_user:
         logger('ReputationPointHelper', 'no reason or no user')
