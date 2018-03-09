@@ -20,6 +20,12 @@ def construct_dummy_lang_request(lang) -> DummyRequest:
 
 
 class ValidLanguageTest(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
     @given(lang=st.text())
     def test_invalid_language(self, lang: str):
         lang = lang.replace('\x00', '')
@@ -44,6 +50,12 @@ class ValidLanguageTest(unittest.TestCase):
 
 
 class ValidLangCookieFallbackTest(unittest.TestCase):
+    def setUp(self):
+        self.config = testing.setUp()
+
+    def tearDown(self):
+        testing.tearDown()
+
     @given(lang=st.text())
     def test_valid_lang_cookie_fallback(self, lang: str):
         lang = lang.replace('\x00', '')
