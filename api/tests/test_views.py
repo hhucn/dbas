@@ -16,7 +16,7 @@ from api.views import user_login, hello, user_logout, whoami_fn, get_issues
 # Tests
 from dbas.database.discussion_model import Issue
 from dbas.lib import get_user_by_case_insensitive_nickname
-from dbas.validators.tests.lib import construct_dummy_request
+from dbas.tests.utils import construct_dummy_request
 
 
 def create_request_with_token_header(nickname='Walter', token='mytoken'):

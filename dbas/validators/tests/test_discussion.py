@@ -3,11 +3,10 @@ from nose.tools import assert_in
 import dbas.validators.discussion as discussion
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, Argument
-from dbas.tests.utils import TestCaseWithConfig
-from dbas.validators.tests.lib import construct_dummy_request
+from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
 
 
-class DiscussionTest(TestCaseWithConfig):
+class TestDiscussionValidators(TestCaseWithConfig):
     def test_valid_issue_by_id(self):
         request = construct_dummy_request()
         response = discussion.valid_issue_by_id(request)
@@ -269,7 +268,7 @@ class DiscussionTest(TestCaseWithConfig):
         self.assertIsInstance(response, bool)
 
 
-class ValidIssueBySlug(TestCaseWithConfig):
+class TestValidIssueBySlug(TestCaseWithConfig):
     def test_slug_must_be_valid(self):
         request = construct_dummy_request()
         request.matchdict['slug'] = ''

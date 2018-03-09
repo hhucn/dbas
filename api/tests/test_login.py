@@ -3,7 +3,7 @@ import unittest
 
 from api.login import validate_credentials, valid_token, token_to_database
 from dbas.lib import get_user_by_case_insensitive_nickname
-from dbas.validators.tests.lib import construct_dummy_request
+from dbas.tests.utils import construct_dummy_request
 
 
 class ValidateCredentialsTest(unittest.TestCase):
