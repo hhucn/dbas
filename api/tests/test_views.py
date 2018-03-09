@@ -11,12 +11,12 @@ from hypothesis import given, settings
 from pyramid import httpexceptions
 
 from api.login import token_to_database
-from api.tests.lib import construct_dummy_request
 from api.views import user_login, hello, user_logout, whoami_fn, get_issues
 # ------------------------------------------------------------------------------
 # Tests
 from dbas.database.discussion_model import Issue
 from dbas.lib import get_user_by_case_insensitive_nickname
+from dbas.validators.tests.lib import construct_dummy_request
 
 
 def create_request_with_token_header(nickname='Walter', token='mytoken'):
@@ -125,7 +125,6 @@ class TestIssues(unittest.TestCase):
         self.assertIsInstance(response, list)
         for issue in response:
             self.assertIsInstance(issue, Issue)
-
 
 # def test_add_position_should_succeed():
 #     credentials = {"nickname": "Walter",

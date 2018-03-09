@@ -106,8 +106,15 @@ def valid_conclusion(request):
     """
     conclusion_id = request.json_body.get('conclusion_id')
     issue = request.validated.get('issue')
+    _tn = Translator(get_language_from_cookie(request))
+
     if not issue:
-        issue = DBDiscussionSession.query(Issue).get(issue_handler.get_issue_id(request))
+        find_issue_in_request = issue_handler.get_issue_id(request)
+        if find_issue_in_request:
+            issue = DBDiscussionSession.query(Issue).get(issue_handler.get_issue_id(request))
+        else:
+            add_error(request, 'Issue is missing', _tn.get(_.issueNotFound))
+            return False
 
     if conclusion_id and isinstance(conclusion_id, int):
         db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id,
@@ -117,7 +124,6 @@ def valid_conclusion(request):
             request.validated['conclusion'] = db_conclusion
             return True
         else:
-            _tn = Translator(get_language_from_cookie(request))
             add_error(request, 'Conclusion is missing', _tn.get(_.conclusionIsMissing))
             return False
     else:

@@ -78,6 +78,9 @@ def has_keywords_in_path(*keywords: Tuple[str, type]):
                 add_error(request, 'Parameter {} has wrong type'.format(keyword),
                           '{} is {}, expected {}'.format(keyword, type(value), ktype))
                 error_occured = True
+            else:
+                add_error(request, 'Parameter {} is missing in path'.format(keyword))
+                error_occured = True
         return not error_occured
 
     return valid_keywords
