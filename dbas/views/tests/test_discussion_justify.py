@@ -23,15 +23,13 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         testing.tearDown()
 
     @staticmethod
-    def __get_meta_clicks(include_history):
+    def __get_meta_clicks():
         d = {
             'seen_s': DBDiscussionSession.query(SeenStatement).count(),
             'click_s': DBDiscussionSession.query(ClickedStatement).count(),
             'seen_a': DBDiscussionSession.query(SeenArgument).count(),
             'click_a': DBDiscussionSession.query(ClickedArgument).count()
         }
-        if include_history:
-            d['rep_h'] = DBDiscussionSession.query(ReputationHistory).count()
         return d
 
     @staticmethod
@@ -44,11 +42,9 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.assertEqual(vote_dict['click_s'], DBDiscussionSession.query(ClickedStatement).count())
         self.assertEqual(vote_dict['seen_a'], DBDiscussionSession.query(SeenArgument).count())
         self.assertEqual(vote_dict['click_a'], DBDiscussionSession.query(ClickedArgument).count())
-        if 'rep_h' in vote_dict:
-            self.assertEqual(vote_dict['rep_h'], DBDiscussionSession.query(ReputationHistory).count())
 
     def test_justify_statement_page(self):
-        vote_dict = self.__get_meta_clicks(False)
+        vote_dict = self.__get_meta_clicks()
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
@@ -116,7 +112,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         clear_clicks_of('Tobias')
 
     def test_dont_know_statement_page(self):
-        vote_dict = self.__get_meta_clicks(False)
+        vote_dict = self.__get_meta_clicks()
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
@@ -130,7 +126,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.__check_meta_clicks(vote_dict)
 
     def test_justify_argument_page_no_rep(self):
-        vote_dict = self.__get_meta_clicks(True)
+        vote_dict = self.__get_meta_clicks()
         len_db_reputation1 = DBDiscussionSession.query(ReputationHistory).count()
         request = testing.DummyRequest()
         request.matchdict = {
@@ -148,7 +144,7 @@ class DiscussionJustifyViewTests(unittest.TestCase):
         self.assertEqual(len_db_reputation1, len_db_reputation2)
 
     def __test_base_for_justify_argument_page_rep(self):
-        vote_dict = self.__get_meta_clicks(True)
+        vote_dict = self.__get_meta_clicks()
         request = testing.DummyRequest()
         request.matchdict = {
             'slug': 'cat-or-dog',
