@@ -11,7 +11,7 @@ from pyramid.testing import DummyRequest
 from pyramid_mailer.mailer import DummyMailer
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue
+from dbas.database.discussion_model import Issue, Statement
 
 
 class TestCaseWithConfig(unittest.TestCase):
@@ -19,6 +19,10 @@ class TestCaseWithConfig(unittest.TestCase):
         self.config = testing.setUp()
         self.issue_disabled: Issue = DBDiscussionSession.query(Issue).get(6)
         self.issue_cat_or_dog: Issue = DBDiscussionSession.query(Issue).get(2)
+        self.position_cat_or_dog: Statement = DBDiscussionSession.query(Statement).get(1)
+        self.statement_cat_or_dog: Statement = DBDiscussionSession.query(Statement).get(5)
+        self.position_town: Statement = DBDiscussionSession.query(Statement).get(36)
+        self.statement_town: Statement = DBDiscussionSession.query(Statement).get(39)
 
     def tearDown(self):
         testing.tearDown()

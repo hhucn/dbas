@@ -307,3 +307,45 @@ class TestValidIssueBySlug(TestCaseWithConfig):
                          'The field-experiment-issue is disabled in the development-seed and can\'t be queried')
         self.assertIsInstance(response, bool)
         self.assertNotIn('issue', request.validated)
+
+
+class TestValidPosition(TestCaseWithConfig):
+    def test_missing_slug(self):
+        request = construct_dummy_request()
+        request.matchdict['slug'] = ''
+        response = discussion.valid_position(request)
+        self.assertFalse(response, 'Slug is missing')
+        self.assertIsInstance(response, bool)
+        self.assertNotIn('issue', request.validated)
+
+    def test_missing_position(self):
+        request = construct_dummy_request()
+        request.matchdict['slug'] = self.issue_cat_or_dog.slug
+        request.matchdict['position_id'] = None
+        response = discussion.valid_position(request)
+        self.assertFalse(response, 'position_id is missing')
+        self.assertIsInstance(response, bool)
+
+    def test_provided_statement_which_is_no_position(self):
+        request = construct_dummy_request()
+        request.matchdict['slug'] = self.issue_cat_or_dog.slug
+        request.matchdict['position_id'] = self.statement_cat_or_dog.uid
+        response = discussion.valid_position(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+    def test_position_does_not_belong_to_issue(self):
+        request = construct_dummy_request()
+        request.matchdict['slug'] = self.issue_cat_or_dog.slug
+        request.matchdict['position_id'] = self.position_town.uid
+        response = discussion.valid_position(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+    def test_position_and_issue_are_correct_should_return_true(self):
+        request = construct_dummy_request()
+        request.matchdict['slug'] = self.issue_cat_or_dog.slug
+        request.matchdict['position_id'] = self.position_cat_or_dog.uid
+        response = discussion.valid_position(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
