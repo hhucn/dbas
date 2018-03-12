@@ -60,8 +60,6 @@ def get_prediction(db_user: User, db_issue: Issue, search_value: str, mode: int,
     elif mode in [8, 9]:  # search everything
         return_dict['values'] = get_all_statements_with_value(search_value, db_issue.uid)
         return_dict['distance_name'] = mechanism
-    else:
-        return {'status_code': 400}
 
     return return_dict
 

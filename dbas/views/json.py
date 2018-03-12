@@ -45,7 +45,7 @@ from dbas.validators.core import has_keywords, has_maybe_keywords, validate
 from dbas.validators.database import valid_database_model
 from dbas.validators.discussion import valid_issue, valid_new_issue, valid_issue_not_readonly, valid_conclusion, \
     valid_statement, valid_argument, valid_premisegroup, valid_premisegroups, valid_statement_or_argument, \
-    valid_text_values, valid_text_length_of
+    valid_text_values, valid_text_length_of, valid_fuzzy_search_mode
 from dbas.validators.notifications import valid_notification_title, valid_notification_text, \
     valid_notification_recipient
 from dbas.validators.reviews import valid_review_reason, valid_not_executed_review, valid_uid_as_row_in_review_queue
@@ -781,7 +781,7 @@ def send_news(request):
 
 # ajax - for fuzzy search
 @view_config(route_name='fuzzy_search', renderer='json')
-@validate(valid_issue, invalid_user, has_keywords(('type', int), ('value', str), ('statement_uid', int)))
+@validate(valid_issue, invalid_user, valid_fuzzy_search_mode, has_keywords(('value', str), ('statement_uid', int)))
 def fuzzy_search(request):
     """
     ajax interface for fuzzy string search

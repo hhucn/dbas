@@ -148,6 +148,7 @@ def valid_text_length_of(keyword):
     :param keyword:
     :return:
     """
+
     def inner(request):
         min_length = int(environ.get('MIN_LENGTH_OF_STATEMENT', 10))
         text = escape_if_string(request.json_body, keyword)
@@ -159,6 +160,7 @@ def valid_text_length_of(keyword):
         else:
             request.validated[keyword] = text
             return True
+
     return inner
 
 
@@ -192,7 +194,7 @@ def valid_premisegroups(request):
     """
     premisegroups = request.json_body.get('premisegroups')
     if not premisegroups \
-            or not isinstance(premisegroups, list)\
+            or not isinstance(premisegroups, list) \
             or not all([isinstance(l, list) for l in premisegroups]):
         _tn = Translator(get_language_from_cookie(request))
         add_error(request, 'Invalid conclusion id', _tn.get(_.requestFailed))
@@ -248,6 +250,16 @@ def valid_text_values(request):
         request.validated['text_values'] = tvalues
         return True
     return False
+
+
+def valid_fuzzy_search_mode(request):
+    mode = request.json_body['type']
+    if mode in [0, 1, 2, 3, 4, 5, 8, 9]:
+        request.validated['type'] = mode
+        return True
+    else:
+        add_error(request, 'invalid fuzzy mode')
+        return False
 
 
 # -----------------------------------------------------------------------------
