@@ -49,7 +49,6 @@ def verify_dictionary_of_view(some_dict):
     :return: None
     :rtype: None
     """
-    assert_in('layout', some_dict)
     assert_in('ui_locales', some_dict['extras'])
     assert_in('title', some_dict)
     assert_in('extras', some_dict)
