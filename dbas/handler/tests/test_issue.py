@@ -18,7 +18,7 @@ class IssueHandlerTests(unittest.TestCase):
         info = 'infoinfoinfo'
         long_info = 'long_infolong_infolong_info'
         title = 'titletitletitle'
-        response = ih.set_issue(db_user, info, long_info, title, db_lang, False, False, 'http://test.url')
+        response = ih.set_issue(db_user, info, long_info, title, db_lang, False, False)
         self.assertTrue(len(response['issue']) >= 0)
 
         DBDiscussionSession.query(Issue).filter_by(title=title).delete()
@@ -100,9 +100,8 @@ class IssueHandlerTests(unittest.TestCase):
     def test_get_issues_overview_on_start(self):
         db_user = DBDiscussionSession.query(User).get(2)
         response = ih.get_issues_overview_on_start(db_user)
-        for element in response:
-            self.assertIn('title', element)
-            self.assertIn('url', element)
+        self.assertIn('issues', response)
+        self.assertIn('data', response)
 
     def test_set_discussions_properties(self):
         db_walter = DBDiscussionSession.query(User).filter_by(nickname='Walter').one_or_none()

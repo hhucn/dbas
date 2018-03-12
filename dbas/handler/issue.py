@@ -3,26 +3,24 @@ Provides helping function for issues.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+from datetime import date, timedelta
 from json import JSONDecodeError
 from math import ceil
 
 import arrow
 import transaction
-from datetime import date, timedelta
-from paste.httpexceptions import HTTPNotFound
 from pyramid.request import Request
 from slugify import slugify
 
-from dbas.logger import logger
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print, \
     ClickedStatement, TextVersion
 from dbas.handler import user
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import get_short_url
-from dbas.lib import nick_of_anonymous_user, python_datetime_pretty_print
 from dbas.helper.url import UrlManager
 from dbas.lib import nick_of_anonymous_user
+from dbas.lib import python_datetime_pretty_print
 from dbas.query_wrapper import get_not_disabled_issues_as_query, get_visible_issues_for_user_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -31,7 +29,7 @@ rep_limit_to_open_issues = 10
 
 
 def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Language, is_public: bool,
-              is_read_only: bool, application_url: str) -> dict:
+              is_read_only: bool) -> dict:
     """
     Sets new issue, which will be a new discussion
 
@@ -40,7 +38,6 @@ def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Lan
     :param long_info: Long information about the new issue
     :param title: Title of the new issue
     :param db_lang: Language
-    :param application_url: Url of the app itself
     :param is_public: Boolean
     :param is_read_only: Boolean
     :rtype: dict
