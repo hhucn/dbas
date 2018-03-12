@@ -580,7 +580,7 @@ function GuiHandler() {
      */
     this.setStatementsAsProposal = function (parsedData, callbackId, type, reason) {
         var callbackElement = $('#' + callbackId);
-        var _this = _this;
+        var _this = this;
         this.clearProposalSpace(callbackId);
 
         // do we have values ?
