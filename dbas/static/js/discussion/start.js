@@ -18,42 +18,69 @@ function OverviewCharts() {
     
     this.create = function () {
         var input = $("#hidden-chart-data").text().replace(/'/g, "\"");
-        var data = eval('(' + input + ')');
+        var data = JSON.parse(input);
         var _this = this;
-    
+        
         $.each(data, function (val) {
             _this.__createChart(data[val], val);
         });
     };
-        
+    
     this.__createChart = function (input, id) {
-        var chart, data, divLegend;
+        var colors = new Colors();
+        var color_100_rgba = colors.getAllAsRGB(100, 0.4);
+        var color_500_hex = colors.getAllAsHEX(500);
+        var clen = color_100_rgba.length;
+        
         var space = $('#' + id);
         var canvas = $('<canvas>').attr({
-                'id': 'c' + id,
-                'width': space.width(),
-                'height': space.parent().height(),
-                'style': 'display: block; margin: 0 auto;'
-            });
+            'id': 'c' + id,
+            'width': space.width(),
+            'height': space.parent().height()
+        });
         space.append(canvas);
-        data = {
-            labels: input.labels,
-            datasets: [{
-                label: input.label,
-                fillColor: fillColorSet[id],
-                strokeColor: strokeColorSet[id],
-                pointStrokeColor: pointStrokeColorSet[id],
-                pointColor: "#fff",
-                data: input.data,
-                hover: {mode: 'single'}
-            }]
+        
+        var ctx = document.getElementById('c' + id).getContext('2d');
+        var chart_data = {
+            type: 'line',
+            data: {
+                labels: input.label,
+                datasets: [{
+                    label: input.label,
+                    data: input.data,
+                    fillColor: fillColorSet[id % clen],
+                    borderColor: color_500_hex[id % clen],
+                    backgroundColor: color_100_rgba[id % clen],
+                    pointColor: "#fff",
+                    hover: {
+                        mode: 'single'
+                    }
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            display: false
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            display: false
+                        }
+                    }]
+                },
+                legend: {
+                    display: false
+                },
+                tooltips: {
+                    enabled: false
+                }
+            }
         };
         try {
-            chart = new Chart(document.getElementById('c' + id).getContext('2d')).Line(data);
-            divLegend = $('<div>').addClass('chart-legend').append(chart.generateLegend());
-            space.prepend(divLegend);
+            new Chart(ctx, chart_data);
         } catch (err) {
-            console.log(err);
         }
     };
 }

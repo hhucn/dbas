@@ -294,7 +294,8 @@ def get_issues_overview_on_start(db_user: User) -> dict:
             },
         })
 
-        date_dict[db_issue.uid] = __get_dict_for_charts(db_issue)
+        # key needs to be a str to be parsed in the frontend as json
+        date_dict[str(db_issue.uid)] = __get_dict_for_charts(db_issue)
 
     return {
         'issues': prepared_list,
@@ -309,6 +310,8 @@ def __get_dict_for_charts(db_issue: Issue) -> dict:
     :return:
     """
     days_since_start = (arrow.utcnow() - db_issue.date).days
+    if days_since_start > 30:
+        days_since_start = 30
     label = []
     data = []
     for days_diff in range(days_since_start, -1, -1):
@@ -317,9 +320,10 @@ def __get_dict_for_charts(db_issue: Issue) -> dict:
         begin = arrow.get(date_begin.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
         end = arrow.get(date_end.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
         label.append(python_datetime_pretty_print(date_begin, db_issue.lang))
-        data.append(DBDiscussionSession.query(TextVersion).filter(
+        count = DBDiscussionSession.query(TextVersion).filter(
             TextVersion.timestamp >= begin,
-            TextVersion.timestamp < end).count())
+            TextVersion.timestamp < end).count()
+        data.append(count)
 
     return {
         'data': data,
