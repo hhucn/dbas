@@ -51,7 +51,7 @@ def get_statements_with_value(issue_uid: int, search_value: str = "") -> list:
         results = list(map(lambda res: {
             "text": res["text"],
             "statement_uid": res["statement_uid"],
-            "content": res["content"],
+            "html": res["html"],
             "score": res["score"],
             "url": _um.get_url_for_statement_attitude(res["statement_uid"])
         }, current_results))
