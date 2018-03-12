@@ -238,15 +238,15 @@ function AjaxDiscussionHandler() {
     /***
      * Ajax request for the fuzzy search
      * @param value
-     * @param callbackid
+     * @param callbackId
      * @param type
      * @param statement_uid optional integer
      * @param reason optional
      */
-    this.fuzzySearch = function (value, callbackid, type, statement_uid, reason) {
-        var callback = $('#' + callbackid);
+    this.fuzzySearch = function (value, callbackId, type, statement_uid, reason) {
+        var callback = $('#' + callbackId);
         var pencil = ' <i class="fa fa-pencil" aria-hidden="true"></i>';
-        var tmpid = callbackid.split('-').length === 6 ? callbackid.split('-')[5] : '0';
+        var tmpid = callbackId.split('-').length === 6 ? callbackId.split('-')[5] : '0';
         var bubble_value = value;
         if (tmpid === 'reason' || tmpid === 'position') {
             var pos = escapeHtml($('#' + addStatementContainerMainInputPosId).val());
@@ -264,12 +264,7 @@ function AjaxDiscussionHandler() {
 
         // clear lists if input is empty
         if (callback.val().length === 0) {
-            $('#' + proposalStatementListGroupId).empty();
-            $('#' + proposalPremiseListGroupId).empty();
-            $('#' + proposalEditListGroupId).empty();
-            $('#' + proposalUserListGroupId).empty();
-            $('#' + proposalStatementSearchGroupId).empty();
-            $('#proposal-mergesplit-list-group-' + callbackid).empty();
+            new GuiHandler().clearProposalSpace(callbackId);
             $('p[id^="current_"]').each(function () {
                 $(this).parent().remove();
             });
@@ -307,9 +302,10 @@ function AjaxDiscussionHandler() {
             issue: getCurrentIssueId()
         };
         var done = function ajaxFuzzySearchDone(data) {
-            new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackid, type, reason);
+            new InteractionHandler().callbackIfDoneFuzzySearch(data, callbackId, type, reason);
         };
         var fail = function ajaxFuzzySearchFail() {
+            new GuiHandler().clearProposalSpace(callbackId);
         };
         callback.focus();
         ajaxSkeleton(url, 'POST', d, done, fail);
