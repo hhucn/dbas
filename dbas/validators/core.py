@@ -6,8 +6,25 @@ from typing import Tuple
 
 from cornice import Errors
 from cornice.util import json_error
+from pyramid.request import Request
 
 from dbas.validators.lib import add_error
+
+
+def __look_for_keyword(request, req_location, where_should_it_be, keywords):
+    error_occured = False
+    for (keyword, ktype) in keywords:
+        value = req_location.get(keyword)
+        if value is not None and isinstance(value, ktype):
+            request.validated[keyword] = value
+        elif value is None:
+            add_error(request, 'Parameter {} is missing in {}'.format(keyword, where_should_it_be))
+            error_occured = True
+        else:
+            add_error(request, 'Parameter {} has wrong type'.format(keyword),
+                      '{} is {}, expected {}'.format(keyword, type(value), ktype))
+            error_occured = True
+    return not error_occured
 
 
 def has_keywords(*keywords: Tuple[str, type]):
@@ -18,16 +35,46 @@ def has_keywords(*keywords: Tuple[str, type]):
     :return:
     """
 
-    def valid_keywords(request, **kwargs):
+    def valid_keywords(request: Request, **_kwargs):
         error_occured = False
         for (keyword, ktype) in keywords:
             value = request.json_body.get(keyword)
             if value is not None and isinstance(value, ktype):
                 request.validated[keyword] = value
             elif value is None:
-                add_error(request, 'Parameter {} missing'.format(keyword), '{} is missing'.format(keyword))
+                add_error(request, 'Parameter {} is missing in body'.format(keyword))
                 error_occured = True
             else:
+                add_error(request, 'Parameter {} has wrong type'.format(keyword),
+                          '{} is {}, expected {}'.format(keyword, type(value), ktype))
+                error_occured = True
+        return not error_occured
+
+    return valid_keywords
+
+
+def has_keywords_in_path(*keywords: Tuple[str, type]):
+    """
+    Verify that specified keywords exist in the request.matchdict.
+
+    :param keywords: tuple of keys and their expected types in request.json_body
+    :return:
+    """
+
+    def valid_keywords(request: Request, **_kwargs):
+        error_occured = False
+        for (keyword, ktype) in keywords:
+            value = request.matchdict.get(keyword)
+            if value is not None and isinstance(value, ktype):
+                request.validated[keyword] = value
+            elif value:
+                if ktype in [int, float]:
+                    try:
+                        request.validated[keyword] = ktype(value)
+                        continue
+                    except ValueError:
+                        pass
+
                 add_error(request, 'Parameter {} has wrong type'.format(keyword),
                           '{} is {}, expected {}'.format(keyword, type(value), ktype))
                 error_occured = True

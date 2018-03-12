@@ -5,10 +5,11 @@ Utility functions for testing.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import os
+
 import transaction
 from nose.tools import assert_in
-
 from paste.deploy import appconfig
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, User
 
@@ -61,6 +62,7 @@ def refresh_user(nickname):
     DBDiscussionSession.add(db_user)
     DBDiscussionSession.flush()
     transaction.commit()
+    return db_user
 
 
 def clear_seen_by_of(nickname):

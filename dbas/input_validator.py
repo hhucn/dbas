@@ -254,19 +254,3 @@ def is_argument_forbidden(uid):
     if not db_argument:
         return False
     return db_argument.is_disabled
-
-
-def is_statement_forbidden(uid):
-    """
-    Is the given statement disabled?
-
-    :param uid: Statement.uid
-    :return: Boolean
-    """
-    if not is_integer(uid):
-        return False
-
-    db_statement = DBDiscussionSession.query(Statement).get(uid)
-    if not db_statement:
-        return False
-    return db_statement.is_disabled

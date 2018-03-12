@@ -128,28 +128,24 @@ def __add_click_for_undercut_step_2(db_argument, db_undercuted_arg_step_1, db_us
     __argument_seen_by_user(db_user, db_undercuted_arg_step_2.uid)
 
 
-def add_click_for_statement(statement_uid, nickname, supportive):
+def add_click_for_statement(stmt_or_arg: Statement, db_user: User, supportive: bool):
     """
-    Adds a clicks for the given statements
+    Adds a clicks for the given statement.
 
-    :param statement_uid: Statement.uid
-    :param nickname: User.nickname
+    :param db_user: User
+    :param stmt_or_arg: Statement
     :param supportive: boolean
     :return: Boolean
     """
 
     logger('VotingHelper',
-           'increasing {} vote for statement {}'.format('up' if supportive else 'down', str(statement_uid)))
-    if not is_integer(statement_uid):
+           'increasing {} vote for statement {}'.format('up' if supportive else 'down', str(stmt_or_arg.uid)))
+
+    if db_user.nickname == nick_of_anonymous_user:
         return False
 
-    db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
-    if not db_user or not db_statement or db_user.nickname == nick_of_anonymous_user:
-        return False
-
-    __click_statement(db_statement, db_user, supportive)
-    __statement_seen_by_user(db_user, statement_uid)
+    __click_statement(stmt_or_arg, db_user, supportive)
+    __statement_seen_by_user(db_user, stmt_or_arg.uid)
     transaction.commit()
     return True
 

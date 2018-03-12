@@ -69,7 +69,6 @@ def create_bubbles_from_history(history, nickname='', lang='', slug=''):
     :param history: String
     :param nickname: User.nickname
     :param lang: ui_locales
-    :param application_url: String
     :param slug: String
     :return: Array
     """
@@ -87,7 +86,7 @@ def create_bubbles_from_history(history, nickname='', lang='', slug=''):
         nickname=nickname).first()
 
     for index, step in enumerate(splitted_history):
-        url = slug + '/' + step
+        url = '/' + slug + '/' + step
         if len(consumed_history) != 0:
             url += '?history=' + consumed_history
         consumed_history += step if len(consumed_history) == 0 else '-' + step
@@ -462,22 +461,20 @@ def delete_history_in_database(db_user):
     return True
 
 
-def handle_history(request: Request, db_user: User, slug: str, issue: Issue) -> str:
+def handle_history(request: Request, db_user: User, issue: Issue) -> str:
     """
 
     :param request: pyramid's request object
     :param nickname: the user's nickname creating the request
-    :param slug: the discussion's slugified title
     :param issue: the discussion's issue od
     :rtype: str
     :return: current user's history
     """
     history = request.params.get('history', '')
     if db_user and db_user.nickname != nick_of_anonymous_user:
-        save_path_in_database(db_user, slug, request.path, history)
+        save_path_in_database(db_user, issue.slug, request.path, history)
         save_issue_uid(issue.uid, db_user)
 
-    # __save_history_in_cookie(request, request.path, history)
     if request.path.startswith('/discuss/'):
         path = request.path[len('/discuss/'):]
         path = path[path.index('/') if '/' in path else 0:]

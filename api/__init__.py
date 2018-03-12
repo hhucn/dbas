@@ -7,6 +7,9 @@ import sys
 
 from pyramid.config import Configurator
 
+from dbas.database import DBDiscussionSession, get_dbas_db_configuration
+from dbas.helper.test import add_settings_to_appconfig
+
 # Enable console print when in dockerized environment
 ENABLE_DOCKER_PRINT = True
 
@@ -38,3 +41,13 @@ def main(global_config, **settings):
 
 def includeme(config):
     init(config)
+
+
+def setup_package():
+    settings = add_settings_to_appconfig()
+    DBDiscussionSession.remove()
+    DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
+
+
+def teardown_package():
+    pass

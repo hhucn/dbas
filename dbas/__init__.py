@@ -169,8 +169,8 @@ def main(global_config, **settings):
     # logic at the end, otherwise the * pattern will do shit
     config.add_route('discussion_support', '/discuss/{slug}/support/{arg_id_user}/{arg_id_sys}')
     config.add_route('discussion_reaction', '/discuss/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}')
-    config.add_route('discussion_justify', '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation')
-    config.add_route('discussion_attitude', '/discuss/{slug}/attitude/*statement_id')
+    config.add_route('discussion_justify', '/discuss/{slug}/justify/{statement_or_arg_id}/{attitude}*relation')
+    config.add_route('discussion_attitude', '/discuss/{slug}/attitude/{position_id}')
     config.add_route('discussion_choose', '/discuss/{slug}/choose/{is_argument}/{supportive}/{id}*pgroup_ids')
     config.add_route('discussion_jump', '/discuss/{slug}/jump/{arg_id}')
     config.add_route('discussion_finish', '/discuss/{slug}/finish/{arg_id}')
