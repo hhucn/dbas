@@ -36,30 +36,22 @@ def get_prediction(db_user: User, db_issue: Issue, search_value: str, mode: int,
     :return: Dictionary with the corresponding search results
     """
 
-    return_dict = {}
-    if mode == 0:  # start statement
-        return_dict['values'] = get_suggestions_for_positions(search_value, db_issue.uid, True)
-        return_dict['distance_name'] = mechanism
+    return_dict = {'distance_name': mechanism}
+
+    if mode in [0, 2]:  # start statement / premise
+        return_dict['values'] = get_suggestions_for_positions(search_value, db_issue.uid, mode == 0)
 
     elif mode == 1:  # edit statement popup
         return_dict['values'] = get_strings_for_edits(search_value, statement_uid)
-        return_dict['distance_name'] = mechanism
-
-    elif mode == 2:  # start premise
-        return_dict['values'] = get_suggestions_for_positions(search_value, db_issue.uid, False)
-        return_dict['distance_name'] = mechanism
 
     elif mode in [3, 4]:  # adding reasons / duplicates
         return_dict['values'] = get_strings_for_duplicates_or_reasons(search_value, db_issue.uid, statement_uid)
-        return_dict['distance_name'] = mechanism
 
     elif mode == 5:  # getting public nicknames
         return_dict['values'] = get_strings_for_public_nickname(search_value, db_user.get_global_nickname())
-        return_dict['distance_name'] = mechanism
 
     elif mode in [8, 9]:  # search everything
         return_dict['values'] = get_all_statements_with_value(search_value, db_issue.uid)
-        return_dict['distance_name'] = mechanism
 
     return return_dict
 
