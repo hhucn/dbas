@@ -278,3 +278,25 @@ class DiscussionTest(unittest.TestCase):
         response = discussion.valid_text_values(request)
         assert_true(response)
         assert_equal(bool, type(response))
+
+    def test_valid_fuzzy_search_mode(self):
+        request = self.__prepare_dict({})
+        response = discussion.valid_fuzzy_search_mode(request)
+        assert_false(response)
+        assert_equal(bool, type(response))
+
+        request = self.__prepare_dict({'type': ''})
+        response = discussion.valid_fuzzy_search_mode(request)
+        assert_false(response)
+        assert_equal(bool, type(response))
+
+        request = self.__prepare_dict({'type': -1})
+        response = discussion.valid_fuzzy_search_mode(request)
+        assert_false(response)
+        assert_equal(bool, type(response))
+
+        for mode in [0, 1, 2, 3, 4, 5, 8, 9]:
+            request = self.__prepare_dict({'type': mode})
+            response = discussion.valid_fuzzy_search_mode(request)
+            assert_true(response)
+            assert_equal(bool, type(response))
