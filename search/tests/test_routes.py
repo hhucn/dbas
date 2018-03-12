@@ -40,37 +40,3 @@ class TestRoutes(unittest.TestCase):
         response = json.loads(response.text)
         self.assertGreaterEqual(len(response), 1)
         self.assertNotEqual(len(response.get("result")), 0)
-
-#
-#    def test_valid_suggestions_path(self):
-#        path = get_suggestions_path(1, True, "coconut")
-#        self.assertEqual(path, "http://search:5000/suggestions?id=1&start=True&search=coconut")
-#
-#    def test_valid_edits_path(self):
-#        path = get_edits_path(1, 1, "coconut")
-#        self.assertEqual(path, "http://search:5000/edits?id=1&statement_uid=1&search=coconut")
-#
-#    def test_duplicates_or_reasons_path(self):
-#        path = get_duplicates_or_reasons_path(1, 1, "coconut")
-#        self.assertEqual(path, "http://search:5000/duplicates_reasons?id=1&statement_uid=1&search=coconut")
-#
-#    def test_statements_with_value_path(self):
-#        path = get_statements_with_value_path(1, "coconut")
-#        self.assertEqual(path, "http://search:5000/statements?id=1&search=coconut")
-#
-#    def test_valid_suggestions_path_empty_search(self):
-#        path = get_suggestions_path(1, True)
-#        self.assertEqual(path, "http://search:5000/suggestions?id=1&start=True&search=")
-#
-#    def test_valid_edits_path_empty_search(self):
-#        path = get_edits_path(1, 1)
-#        self.assertEqual(path, "http://search:5000/edits?id=1&statement_uid=1&search=")
-#
-#    def test_duplicates_or_reasons_path_empty_search(self):
-#        path = get_duplicates_or_reasons_path(1, 1)
-#        self.assertEqual(path, "http://search:5000/duplicates_reasons?id=1&statement_uid=1&search=")
-#
-#    def test_statements_with_value_path_empty_search(self):
-#        path = get_statements_with_value_path(1)
-#        self.assertEqual(path, "http://search:5000/statements?id=1&search=")
-#
