@@ -3,6 +3,7 @@ Provides helping function for issues.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+from datetime import date, timedelta
 from json import JSONDecodeError
 from math import ceil
 
@@ -13,12 +14,13 @@ from slugify import slugify
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Language, Statement, sql_timestamp_pretty_print, \
-    ClickedStatement
+    ClickedStatement, TextVersion
 from dbas.handler import user
 from dbas.handler.language import get_language_from_header
 from dbas.helper.query import get_short_url
 from dbas.helper.url import UrlManager
 from dbas.lib import nick_of_anonymous_user
+from dbas.lib import python_datetime_pretty_print
 from dbas.query_wrapper import get_not_disabled_issues_as_query, get_visible_issues_for_user_as_query
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -27,7 +29,7 @@ rep_limit_to_open_issues = 10
 
 
 def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Language, is_public: bool,
-              is_read_only: bool, application_url: str) -> dict:
+              is_read_only: bool) -> dict:
     """
     Sets new issue, which will be a new discussion
 
@@ -36,7 +38,6 @@ def set_issue(db_user: User, info: str, long_info: str, title: str, db_lang: Lan
     :param long_info: Long information about the new issue
     :param title: Title of the new issue
     :param db_lang: Language
-    :param application_url: Url of the app itself
     :param is_public: Boolean
     :param is_read_only: Boolean
     :rtype: dict
@@ -266,7 +267,7 @@ def get_issues_overiew(db_user: User, app_url: str) -> dict:
     }
 
 
-def get_issues_overview_on_start(db_user: User) -> list:
+def get_issues_overview_on_start(db_user: User) -> dict:
     """
     Returns list with title, date, and count of statements for each visible issue
 
@@ -275,8 +276,10 @@ def get_issues_overview_on_start(db_user: User) -> list:
     """
     prepared_list = []
     db_issues = get_visible_issues_for_user_as_query(db_user.uid).order_by(Issue.uid.asc()).all()
+    date_dict = {}
     for index, db_issue in enumerate(db_issues):
         prepared_list.append({
+            'uid': db_issue.uid,
             'url': '/' + db_issue.slug,
             'statements': get_number_of_statements(db_issue.uid),
             'title': db_issue.title,
@@ -287,7 +290,41 @@ def get_issues_overview_on_start(db_user: User) -> list:
             },
         })
 
-    return prepared_list
+        # key needs to be a str to be parsed in the frontend as json
+        date_dict[str(db_issue.uid)] = __get_dict_for_charts(db_issue)
+
+    return {
+        'issues': prepared_list,
+        'data': date_dict
+    }
+
+
+def __get_dict_for_charts(db_issue: Issue) -> dict:
+    """
+
+    :param db_issue:
+    :return:
+    """
+    days_since_start = (arrow.utcnow() - db_issue.date).days
+    if days_since_start > 30:
+        days_since_start = 30
+    label = []
+    data = []
+    for days_diff in range(days_since_start, -1, -1):
+        date_begin = date.today() - timedelta(days=days_diff)
+        date_end = date.today() - timedelta(days=days_diff - 1)
+        begin = arrow.get(date_begin.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
+        end = arrow.get(date_end.strftime('%Y-%m-%d'), 'YYYY-MM-DD')
+        label.append(python_datetime_pretty_print(date_begin, db_issue.lang))
+        count = DBDiscussionSession.query(TextVersion).filter(
+            TextVersion.timestamp >= begin,
+            TextVersion.timestamp < end).count()
+        data.append(count)
+
+    return {
+        'data': data,
+        'label': label
+    }
 
 
 def set_discussions_properties(db_user: User, db_issue: Issue, value, iproperty, translator) -> dict:

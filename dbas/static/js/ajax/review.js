@@ -49,11 +49,10 @@ function AjaxReviewHandler() {
             text_values: text_values
         };
         var done = function ajaxSplitOrMergeStatementsDone(data) {
-            var parsedData = $.parseJSON(data);
-            if (parsedData.info.length !== 0) {
-                setGlobalInfoHandler('Ohh!', parsedData.info);
+            if (data.info.length !== 0) {
+                setGlobalInfoHandler('Ohh!', data.info);
             } else {
-                setGlobalSuccessHandler('Yeah!', parsedData.success);
+                setGlobalSuccessHandler('Yeah!', data.success);
             }
         };
         var fail = function ajaxSplitOrMergeStatementsFail(data) {

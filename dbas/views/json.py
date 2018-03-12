@@ -552,8 +552,7 @@ def set_new_issue(request):
     is_public = request.validated['is_public']
     is_read_only = request.validated['is_read_only']
 
-    return issue_handler.set_issue(request.validated['user'], info, long_info, title, lang, is_public, is_read_only,
-                                   request.application_url)
+    return issue_handler.set_issue(request.validated['user'], info, long_info, title, lang, is_public, is_read_only)
 
 
 # ajax - set seen premisegroup

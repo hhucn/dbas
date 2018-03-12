@@ -21,6 +21,7 @@
                                 <th i18n:translate="title">Titel</th>
                                 <th i18n:translate="language">Language</th>
                                 <th i18n:translate="statements">Statements</th>
+                                <th i18n:translate="activity_last_30_days">Activity (Last 30 days)</th>
                                 <th i18n:translate="creation">Creation</th>
                             </tr>
                             </thead>
@@ -32,6 +33,7 @@
                                     <img tal:condition="issue.lang.is_en" src="${request.static_url('dbas:static/images/flag-us-gb-24.png')}" alt="flag_us-gb">
                                 </td>
                                 <td>${issue.statements}</td>
+                                <td><div id="${issue.uid}" class="activity_table"></div></td>
                                 <td>${issue.date}</td>
                             </tr>
                             </tbody>
@@ -40,6 +42,8 @@
                 </div>
             </div>
         </div>
+
+        <span id="hidden-chart-data" class="hidden">${data}</span>
 
         <span tal:condition="extras.logged_in" class="icon-badge blue-button bottom-right" id="add-topic">+</span>
     </tal:block>
