@@ -242,7 +242,7 @@ def get_issues_overiew(db_user: User, app_url: str) -> dict:
     Returns dictionary with keywords 'user' and 'others', which got lists with dicts with infos
     IMPORTANT: URL's are generated for the frontend!
 
-    :param nickname: Users.nickname
+    :param db_user: User
     :param app_url: current applications url
     :return: dict
     """

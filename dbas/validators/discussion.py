@@ -45,7 +45,7 @@ def valid_issue_by_slug(request):
     :return:
     """
     if has_keywords_in_path(('slug', str))(request):
-        db_issue = DBDiscussionSession.query(Issue).filter(
+        db_issue: Issue = DBDiscussionSession.query(Issue).filter(
             Issue.slug == request.validated['slug']).one_or_none()
 
         if db_issue:
@@ -106,8 +106,15 @@ def valid_conclusion(request):
     """
     conclusion_id = request.json_body.get('conclusion_id')
     issue = request.validated.get('issue')
+    _tn = Translator(get_language_from_cookie(request))
+
     if not issue:
-        issue = DBDiscussionSession.query(Issue).get(issue_handler.get_issue_id(request))
+        find_issue_in_request = issue_handler.get_issue_id(request)
+        if find_issue_in_request:
+            issue = DBDiscussionSession.query(Issue).get(issue_handler.get_issue_id(request))
+        else:
+            add_error(request, 'Issue is missing', _tn.get(_.issueNotFound))
+            return False
 
     if conclusion_id and isinstance(conclusion_id, int):
         db_conclusion = DBDiscussionSession.query(Statement).filter_by(uid=conclusion_id,
@@ -117,7 +124,6 @@ def valid_conclusion(request):
             request.validated['conclusion'] = db_conclusion
             return True
         else:
-            _tn = Translator(get_language_from_cookie(request))
             add_error(request, 'Conclusion is missing', _tn.get(_.conclusionIsMissing))
             return False
     else:
@@ -139,16 +145,15 @@ def valid_position(request):
     if has_keywords_in_path(('position_id', int))(request):
         position_id = request.validated['position_id']
         db_position: Statement = DBDiscussionSession.query(Statement).get(position_id)
+        if db_position.is_disabled:
+            add_error(request, 'Position is disabled', location='path', status_code=410)
+            return False
         if not db_position.is_startpoint:
             add_error(request, 'Queried statement is not a valid position', location='path')
             return False
         if db_position.issue_uid != request.validated['issue'].uid:
             add_error(request, 'Position does not belong to the queried issue', location='path')
             return False
-        if db_position.is_disabled:
-            add_error(request, 'Position is disabled', location='path', status_code=410)
-            return False
-
         request.validated['position']: Statement = db_position
         return True
     return False
@@ -167,18 +172,15 @@ def valid_statement_or_arg_id(request):
         return False
 
     db_issue: Issue = request.validated['issue']
-
     if has_keywords_in_path(('statement_or_arg_id', int))(request):
         statement_or_arg_id = request.validated['statement_or_arg_id']
         db_statement: Statement = DBDiscussionSession.query(Statement).get(statement_or_arg_id)
-        db_argument: Argument = DBDiscussionSession.query(Argument).get(statement_or_arg_id)
-        if not db_statement.issue_uid == db_argument.issue_uid == db_issue.uid:
+        if not db_statement.issue_uid == db_issue.uid:
             add_error(request,
                       'Statement / Argument with uid {} does not belong to the queried issue'.format(db_statement.uid),
-                      'db_issue.uid = {}, stmt = {}, arg = {}, issue-info = {}'.format(db_issue.uid,
-                                                                                       db_statement.issue_uid,
-                                                                                       db_argument.issue_uid,
-                                                                                       db_issue.info),
+                      'db_issue.uid = {}, stmt = {}, issue = {}'.format(db_issue.uid,
+                                                                        db_statement.issue_uid,
+                                                                        db_issue.title),
                       location='path')
             return False
         if db_statement.is_disabled:
@@ -202,7 +204,8 @@ def valid_attitude(request):
     if has_keywords_in_path(('attitude', str))(request):
         attitude = request.validated['attitude']
         if attitude not in attitudes:
-            add_error(request, 'Your attitude is not correct. Received \'{}\', expected one of {}'.format(attitude, attitudes),
+            add_error(request,
+                      'Your attitude is not correct. Received \'{}\', expected one of {}'.format(attitude, attitudes),
                       location='path')
             return False
         return True
@@ -224,7 +227,8 @@ def valid_relation_optional(request):
     relations = ['undermine', 'undercut', 'rebut']
     relation = relations_from_path[0]
     if relation not in relations:
-        add_error(request, 'Your relation is not correct. Received \'{}\', expected one of {}'.format(relation, relations),
+        add_error(request,
+                  'Your relation is not correct. Received \'{}\', expected one of {}'.format(relation, relations),
                   location='path')
         return False
 
