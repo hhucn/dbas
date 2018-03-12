@@ -11,6 +11,7 @@ from api.lib import json_to_dict
 
 API = "http://localhost:4284/api/"
 
+
 def has_json_header(response):
     assert_equals("application/json", response.headers['content-type'])
 

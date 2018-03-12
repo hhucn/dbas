@@ -20,7 +20,7 @@ class TestCaseWithConfig(unittest.TestCase):
         self.issue_disabled: Issue = DBDiscussionSession.query(Issue).get(6)
         self.issue_cat_or_dog: Issue = DBDiscussionSession.query(Issue).get(2)
         self.issue_town: Issue = DBDiscussionSession.query(Issue).get(1)
-        self.position_cat_or_dog: Statement = DBDiscussionSession.query(Statement).get(1)
+        self.position_cat_or_dog: Statement = DBDiscussionSession.query(Statement).get(2)
         self.statement_cat_or_dog: Statement = DBDiscussionSession.query(Statement).get(5)
         self.position_town: Statement = DBDiscussionSession.query(Statement).get(36)
         self.statement_town: Statement = DBDiscussionSession.query(Statement).get(40)
