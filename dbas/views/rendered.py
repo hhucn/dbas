@@ -158,7 +158,6 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any]):
     request_dict = prepare_request_dict(request)
     prepared_discussion = f(request_dict)
     if prepared_discussion:
-        prepared_discussion['layout'] = base_layout()
         __modify_discussion_url(prepared_discussion)
 
     return prepared_discussion, request_dict
@@ -239,7 +238,6 @@ def __append_extras_dict_during_justification(request: Request, pdict: dict, rdi
 
 def __main_dict(request, title):
     return {
-        'layout': base_layout(),
         'title': title,
         'project': project_name,
         'extras': request.decorated['extras'],
@@ -562,7 +560,6 @@ def discussion_init(request):
     logger('discussion_init', 'request.matchdict: {}'.format(request.matchdict))
 
     prepared_discussion = discussion.init(request.validated['issue'], request.validated['user'])
-    prepared_discussion['layout'] = base_layout()
     __modify_discussion_url(prepared_discussion)
 
     rdict = prepare_request_dict(request)
@@ -624,7 +621,6 @@ def discussion_attitude(request):
 
     history = history_handler.handle_history(request, db_user, db_issue)
     prepared_discussion = discussion.attitude(db_issue, db_user, db_position, history, request.path)
-    prepared_discussion['layout'] = base_layout()
     __modify_discussion_url(prepared_discussion)
 
     rdict = prepare_request_dict(request)
@@ -657,7 +653,6 @@ def discussion_justify(request) -> dict:
     history = history_handler.handle_history(request, db_user, db_issue)
     prepared_discussion = discussion.justify(db_issue, db_user, db_stmt_or_arg, attitude, relation, history,
                                              request.path)
-    prepared_discussion['layout'] = base_layout()
     __modify_discussion_url(prepared_discussion)
 
     rdict = prepare_request_dict(request)
@@ -749,7 +744,6 @@ def discussion_exit(request):
     prepared_discussion = discussion.dexit(get_language_from_cookie(request), db_user)
     prepared_discussion['extras'] = dh.prepare_extras_dict_for_normal_page(request.registry, request.application_url,
                                                                            request.path, db_user)
-    prepared_discussion['layout'] = base_layout()
     prepared_discussion['language'] = str(get_language_from_cookie(request))
     prepared_discussion['show_summary'] = len(prepared_discussion['summary']) != 0
     return prepared_discussion

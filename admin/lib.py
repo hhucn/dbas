@@ -281,7 +281,12 @@ def __get_dash_dict(name, href):
     :param href: link for current table
     :return: {'count': count, 'name': name, 'href': href}
     """
-    return {'name': name, 'href': href}
+    count = DBDiscussionSession.query(table_mapper[name.lower()]['table']).count()
+    return {
+        'name': name,
+        'href': href,
+        'count': count,
+    }
 
 
 def get_rows_of(columns, db_elements, main_page):

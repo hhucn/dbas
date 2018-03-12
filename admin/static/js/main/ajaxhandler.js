@@ -91,23 +91,6 @@ function AdminAjaxHandler() {
 		ajaxSkeleton(url, 'POST', data, done, fail);
 	};
 	
-	/**
-	 *
-	 */
-	this.updateCountBadges = function () {
-		var url = 'update_badges';
-		var data = {};
-		var done = function (data) {
-			$.each(data.data, function (index, element) {
-				$('#' + element.name).find('.badge').text(element.count);
-			});
-		};
-		var fail = function (data) {
-			setGlobalErrorHandler(_t(ohsnap), data.responseJSON.errors[0].description);
-		};
-		ajaxSkeleton(url, 'POST', data, done, fail);
-	};
-	
 	this.revokeToken = function (id) {
 		console.log("Revoking " + id);
 		var csrf_token = $('#hidden_csrf_token').val();

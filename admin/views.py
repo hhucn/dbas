@@ -8,8 +8,6 @@ from cornice import Service
 from pyramid.httpexceptions import exception_response
 
 import admin.lib as lib
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User
 from dbas.handler import user
 from dbas.handler.language import get_language_from_cookie
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -17,7 +15,7 @@ from dbas.logger import logger
 from dbas.validators.core import has_keywords, validate
 from dbas.validators.database import valid_table_name
 from dbas.validators.user import valid_user_as_admin, invalid_user
-from dbas.views import user_logout, base_layout, project_name, nick_of_anonymous_user
+from dbas.views import user_logout, base_layout, project_name
 
 #
 # CORS configuration
@@ -66,13 +64,6 @@ add_row = Service(name='add_table_row',
                   permission='admin',
                   cors_policy=cors_policy)
 
-update_badge = Service(name='update_badge_counter',
-                       path='/{url:.*}update_badges',
-                       description='Update',
-                       renderer='json',
-                       permission='admin',
-                       cors_policy=cors_policy)
-
 api_token = Service(name='api_token',
                     path='/{url:.*}api_token/',
                     renderer='json',
@@ -99,8 +90,7 @@ def main_admin(request):
     :return: dictionary with title and project name as well as a value, weather the user is logged in
     """
     logger('Admin', 'def')
-    nickname = request.authenticated_userid if request.authenticated_userid else nick_of_anonymous_user
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+    db_user = request.validated['user']
 
     should_log_out = user.update_last_action(request.validated['user'])
     if should_log_out:
@@ -111,13 +101,10 @@ def main_admin(request):
                                                                                    request.application_url,
                                                                                    request.path,
                                                                                    db_user)
-
-    dashboard_elements = {}
-    if db_user.is_admin():
-        dashboard_elements = {
-            'entities': lib.get_overview(request.path),
-            'api_tokens': lib.get_application_tokens()
-        }
+    dashboard_elements = {
+        'entities': lib.get_overview(request.path),
+        'api_tokens': lib.get_application_tokens()
+    }
 
     return {
         'layout': base_layout(),
@@ -125,7 +112,8 @@ def main_admin(request):
         'title': 'Admin' if db_user.is_admin() else '(B)admin',
         'project': project_name,
         'extras': extras_dict,
-        'dashboard': dashboard_elements
+        'dashboard': dashboard_elements,
+        'discussion': {'broke_limit': False}
     }
 
 
@@ -159,7 +147,8 @@ def main_table(request):
         'title': 'Admin - ' + table_name,
         'project': project_name,
         'extras': extras_dict,
-        'table': table_dict
+        'table': table_dict,
+        'discussion': {'broke_limit': False}
     }
 
 
@@ -208,19 +197,6 @@ def main_add(request):
     """
     logger('Admin', 'def ' + str(request.json_body))
     return lib.add_row(request.validated['table'], request.validated['new_data'])
-
-
-@update_badge.get()
-@validate(valid_user_as_admin)
-def main_update_badge(request):
-    """
-    View configuration for updating a badge
-
-    :param request: current webservers request
-    :return: dict()
-    """
-    logger('Admin', 'def ' + str(request.json_body))
-    return lib.update_badge()
 
 
 @api_token.post()
