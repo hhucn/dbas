@@ -7,7 +7,7 @@ from search.routes import get_statements_with_value_path, get_duplicates_or_reas
     get_edits_path, get_suggestions_path
 
 
-def request_as_json(query: str) -> dict:
+def response_as_dict(query: str) -> dict:
     """
     Request with a certain query and return the result as a dict.
 
@@ -28,7 +28,7 @@ def get_suggestions(issue_uid: int, position: bool, search_value: str = "") -> d
     :return: suggestions of the textversions fitting the given parameters
     """
     query = get_suggestions_path(issue_uid, position, search_value)
-    return request_as_json(query)["result"]
+    return response_as_dict(query)["result"]
 
 
 def get_statements_with_value(issue_uid: int, search_value: str = "") -> list:
@@ -46,7 +46,7 @@ def get_statements_with_value(issue_uid: int, search_value: str = "") -> list:
     _um = UrlManager(slug=slug)
 
     results = []
-    current_results = request_as_json(query)["result"]
+    current_results = response_as_dict(query)["result"]
     if current_results is not None:
         results = list(map(lambda res: {
             "text": res["text"],
@@ -69,7 +69,7 @@ def get_duplicates_or_reasons(issue_uid: int, statement_uid: int, search_value: 
     :return: duplicates or reasons fitting the parameters
     """
     query = get_duplicates_or_reasons_path(issue_uid, statement_uid, search_value)
-    return request_as_json(query)["result"]
+    return response_as_dict(query)["result"]
 
 
 def get_edits(issue_uid: int, statement_uid: int, search_value=""):
@@ -82,4 +82,4 @@ def get_edits(issue_uid: int, statement_uid: int, search_value=""):
     :return: edits fitting the parameters
     """
     query = get_edits_path(issue_uid, statement_uid, search_value)
-    return request_as_json(query)["result"]
+    return response_as_dict(query)["result"]
