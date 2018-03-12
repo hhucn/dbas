@@ -2,13 +2,23 @@ import unittest
 
 from dbas.database import DBDiscussionSession, get_dbas_db_configuration
 from dbas.helper.tests import add_settings_to_appconfig
-from search.requester import get_suggestions, get_duplicates_or_reasons, get_statements_with_value, get_edits
+from search import ROUTE_API
+from search.requester import get_suggestions, get_duplicates_or_reasons, get_statements_with_value, get_edits, \
+    response_as_dict
 
 
 class TestRequester(unittest.TestCase):
     def setUp(self):
         settings = add_settings_to_appconfig()
         DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
+
+    def test_request_as_dict_returns_dict(self):
+        result = response_as_dict(ROUTE_API + "/suggestions?id=2")
+        self.assertEqual(type(result), dict)
+
+    def test_request_as_dict_is_not_empty(self):
+        result = response_as_dict(ROUTE_API + "/suggestions?id=2")
+        self.assertNotEqual(0, len(result.get("result")))
 
     def test_suggestions_not_empty_1(self):
         results = get_suggestions(2, True)
