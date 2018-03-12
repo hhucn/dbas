@@ -270,9 +270,6 @@ def valid_argument(request):
     if is_integer(argument_id):
         db_argument = DBDiscussionSession.query(Argument).filter(Argument.uid == argument_id,
                                                                  Argument.is_disabled == False).first()
-    else:
-        add_error(request, 'Argument id {} has wrong type'.format(argument_id),
-                  '{} is {}, expected {}'.format(argument_id, type(argument_id), int))
 
     if db_argument:
         request.validated['argument'] = db_argument
