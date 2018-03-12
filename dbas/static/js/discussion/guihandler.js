@@ -560,6 +560,16 @@ function GuiHandler() {
 
         return div_page;
     };
+    
+    this.clearProposalSpace = function(callbackId){
+        $('#' + proposalPremiseListGroupId).empty();
+        $('#' + proposalStatementListGroupId).empty();
+        $('#' + proposalEditListGroupId).empty();
+        $('#' + proposalUserListGroupId).empty();
+        $('#' + proposalStatementSearchGroupId).empty();
+        $('#' + proposalDuplicateSearchGroupId).empty();
+        $('#proposal-mergesplit-list-group-' + callbackId).empty();
+    };
 
     /**
      *
@@ -570,13 +580,7 @@ function GuiHandler() {
      */
     this.setStatementsAsProposal = function (parsedData, callbackId, type, reason) {
         var callbackElement = $('#' + callbackId);
-        $('#' + proposalPremiseListGroupId).empty();
-        $('#' + proposalStatementListGroupId).empty();
-        $('#' + proposalEditListGroupId).empty();
-        $('#' + proposalUserListGroupId).empty();
-        $('#' + proposalStatementSearchGroupId).empty();
-        $('#' + proposalDuplicateSearchGroupId).empty();
-        $('#proposal-mergesplit-list-group-' + callbackId).empty();
+        this.clearProposalSpace(callbackId);
 
         // do we have values ?
         if (parsedData.length === 0) {
