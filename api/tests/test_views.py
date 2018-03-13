@@ -11,11 +11,12 @@ from hypothesis import given, settings
 from pyramid import httpexceptions
 
 from api.login import token_to_database
-from api.tests.lib import construct_dummy_request
-from api.views import user_login, hello, user_logout, whoami_fn
+from api.views import user_login, hello, user_logout, whoami_fn, get_issues
 # ------------------------------------------------------------------------------
 # Tests
+from dbas.database.discussion_model import Issue
 from dbas.lib import get_user_by_case_insensitive_nickname
+from dbas.tests.utils import construct_dummy_request
 
 
 def create_request_with_token_header(nickname='Walter', token='mytoken'):
@@ -48,7 +49,7 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     @given(password=st.text())
-    @settings(deadline=400)
+    @settings(deadline=1000)
     def test_login_wrong_password(self, password: str):
         pwd = password.replace('\x00', '')
         pwd = pwd.replace('iamatestuser2016', '¯\_(ツ)_/¯')
@@ -115,6 +116,15 @@ class TestSystemRoutes(unittest.TestCase):
         self.assertEqual(len(request.errors), 0)
         self.assertEqual(response['status'], 'ok')
         self.assertEqual(response['nickname'], nickname)
+
+
+class TestIssues(unittest.TestCase):
+    def test_get_issues(self):
+        request = construct_dummy_request()
+        response = get_issues(request)
+        self.assertIsInstance(response, list)
+        for issue in response:
+            self.assertIsInstance(issue, Issue)
 
 # def test_add_position_should_succeed():
 #     credentials = {"nickname": "Walter",

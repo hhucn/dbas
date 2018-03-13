@@ -252,7 +252,3 @@ class InputValidatorTests(unittest.TestCase):
     def test_is_argument_forbidden(self):
         self.assertTrue(iv.is_argument_forbidden(1))
         self.assertFalse(iv.is_argument_forbidden(9))
-
-    def test_is_statement_forbidden(self):
-        self.assertTrue(iv.is_statement_forbidden(1))
-        self.assertFalse(iv.is_statement_forbidden(9))

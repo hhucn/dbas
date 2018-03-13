@@ -12,10 +12,6 @@ $(document).ready(function () {
 		new AjaxMainHandler().login(user, pw, true);
 	});
 	
-	if ($('.batman').length === 0) {
-		new AdminAjaxHandler().updateCountBadges();
-	}
-	
 	// gui modification for the caution row
 	if (!Cookies.get(ADMIN_WARNING)) {
 		$('#close-warning').fadeIn();

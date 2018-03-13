@@ -43,7 +43,7 @@ from dbas.strings.translator import Translator
 from dbas.validators.common import valid_language, valid_lang_cookie_fallback
 from dbas.validators.core import has_keywords, has_maybe_keywords, validate
 from dbas.validators.database import valid_database_model
-from dbas.validators.discussion import valid_issue, valid_new_issue, valid_issue_not_readonly, valid_conclusion, \
+from dbas.validators.discussion import valid_issue_by_id, valid_new_issue, valid_issue_not_readonly, valid_conclusion, \
     valid_statement, valid_argument, valid_premisegroup, valid_premisegroups, valid_statement_or_argument, \
     valid_text_values, valid_text_length_of, valid_fuzzy_search_mode
 from dbas.validators.notifications import valid_notification_title, valid_notification_text, \
@@ -361,7 +361,7 @@ def set_user_lang(request):
 
 
 @view_config(route_name='set_discussion_properties', renderer='json')
-@validate(valid_user, valid_issue, has_keywords(('property', bool), ('value', str)))
+@validate(valid_user, valid_issue_by_id, has_keywords(('property', bool), ('value', str)))
 def set_discussion_properties(request):
     """
     Set availability, read-only, ... flags in the admin panel.
@@ -552,8 +552,7 @@ def set_new_issue(request):
     is_public = request.validated['is_public']
     is_read_only = request.validated['is_read_only']
 
-    return issue_handler.set_issue(request.validated['user'], info, long_info, title, lang, is_public, is_read_only,
-                                   request.application_url)
+    return issue_handler.set_issue(request.validated['user'], info, long_info, title, lang, is_public, is_read_only)
 
 
 # ajax - set seen premisegroup
@@ -600,7 +599,7 @@ def mark_or_unmark_statement_or_argument(request):
 
 # ajax - getting changelog of a statement
 @view_config(route_name='get_logfile_for_statements', renderer='json')
-@validate(valid_issue, has_keywords(('uids', list)))
+@validate(valid_issue_by_id, has_keywords(('uids', list)))
 def get_logfile_for_some_statements(request):
     """
     Returns the changelog of a statement
@@ -643,7 +642,7 @@ def get_news(request):
 
 # ajax - for getting argument infos
 @view_config(route_name='get_infos_about_argument', renderer='json')
-@validate(valid_issue, valid_language, valid_argument, invalid_user)
+@validate(valid_issue_by_id, valid_language, valid_argument, invalid_user)
 def get_infos_about_argument(request):
     """
     ajax interface for getting a dump
@@ -781,7 +780,7 @@ def send_news(request):
 
 # ajax - for fuzzy search
 @view_config(route_name='fuzzy_search', renderer='json')
-@validate(valid_issue, invalid_user, valid_fuzzy_search_mode, has_keywords(('value', str), ('statement_uid', int)))
+@validate(valid_issue_by_id, invalid_user, valid_fuzzy_search_mode, has_keywords(('value', str), ('statement_uid', int)))
 def fuzzy_search(request):
     """
     ajax interface for fuzzy string search

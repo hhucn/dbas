@@ -5,10 +5,11 @@ Utility functions for testing.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import os
+
 import transaction
 from nose.tools import assert_in
-
 from paste.deploy import appconfig
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, User
 
@@ -48,7 +49,6 @@ def verify_dictionary_of_view(some_dict):
     :return: None
     :rtype: None
     """
-    assert_in('layout', some_dict)
     assert_in('ui_locales', some_dict['extras'])
     assert_in('title', some_dict)
     assert_in('extras', some_dict)
@@ -61,6 +61,7 @@ def refresh_user(nickname):
     DBDiscussionSession.add(db_user)
     DBDiscussionSession.flush()
     transaction.commit()
+    return db_user
 
 
 def clear_seen_by_of(nickname):

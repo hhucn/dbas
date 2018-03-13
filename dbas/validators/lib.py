@@ -2,23 +2,30 @@
 Common functions shared between the validators.
 """
 
-from dbas.lib import escape_string
-from dbas.logger import logger
 from sys import _getframe
 
+from pyramid.request import Request
 
-def add_error(request, verbose_short, verbose_long=None):
+from dbas.lib import escape_string
+from dbas.logger import logger
+
+
+def add_error(request: Request, verbose_short: str, verbose_long: str = None, location: str = 'body',
+              status_code: int = 400):
     """
     Log and add errors to request. Supports different verbose-messages.
 
     :param request:
     :param verbose_short: short description of error
     :param verbose_long: long, verbose description of error
+    :param location: Where did the error happen? Has to be: body, path, query, ...
+    :param status_code: HTTP status code
     :return:
     """
-    logger('validation', _getframe(1).f_code.co_name, verbose_short, error=True)
-    request.errors.add('body', verbose_short, verbose_long)
-    request.errors.status = 400
+    error_msg = verbose_short if not verbose_long else verbose_short + ' , additional infos:' + verbose_long
+    logger('validation', _getframe(1).f_code.co_name + ': ' + error_msg, error=True)
+    request.errors.add(location, verbose_short, verbose_long)
+    request.errors.status = status_code
 
 
 def escape_if_string(data: dict, key: str):

@@ -1,4 +1,4 @@
-<tal:block metal:use-macro="layout" i18n:domain="dbas" metal:define-macro="layout">
+<tal:block metal:use-macro="load: basetemplate.pt" i18n:domain="dbas" metal:define-macro="layout">
   <tal:block metal:fill-slot="content_page">
 
     <section>

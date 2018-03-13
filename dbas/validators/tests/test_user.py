@@ -1,22 +1,13 @@
-import unittest
-
 from cornice import Errors
 from pyramid import testing
 
 import dbas.validators.user as user
+from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
 
 
-class Usertest(unittest.TestCase):
-    def setUp(self):
-        self.config = testing.setUp()
-
-    def tearDown(self):
-        testing.tearDown()
-
+class Usertest(TestCaseWithConfig):
     def test_valid_user(self):
-        request = testing.DummyRequest(json_body={})
-        request.validated = {}
-        setattr(request, 'errors', Errors())
+        request = construct_dummy_request()
         response = user.valid_user(request)
         self.assertFalse(response)
         self.assertEqual(bool, type(response))
@@ -32,9 +23,7 @@ class Usertest(unittest.TestCase):
         self.assertEqual(bool, type(response))
 
     def test_valid_user_as_author_of_statement(self):
-        request = testing.DummyRequest()
-        request.validated = {}
-        setattr(request, 'errors', Errors())
+        request = construct_dummy_request()
         response = user.valid_user_as_author_of_statement(request)
         self.assertFalse(response)
         self.assertEqual(bool, type(response))
@@ -53,9 +42,7 @@ class Usertest(unittest.TestCase):
                     self.assertFalse(response)
 
     def test_valid_user_as_author_of_argument(self):
-        request = testing.DummyRequest()
-        request.validated = {}
-        setattr(request, 'errors', Errors())
+        request = construct_dummy_request()
         response = user.valid_user_as_author_of_argument(request)
         self.assertFalse(response)
 
@@ -73,9 +60,7 @@ class Usertest(unittest.TestCase):
                     self.assertFalse(response)
 
     def test_valid_user_as_author(self):
-        request = testing.DummyRequest()
-        request.validated = {}
-        setattr(request, 'errors', Errors())
+        request = construct_dummy_request()
         response = user.valid_user_as_author(request)
         self.assertFalse(response)
         self.assertEqual(bool, type(response))
@@ -91,9 +76,7 @@ class Usertest(unittest.TestCase):
         self.assertEqual(bool, type(response))
 
     def test_valid_user_as_admin(self):
-        request = testing.DummyRequest()
-        request.validated = {}
-        setattr(request, 'errors', Errors())
+        request = construct_dummy_request()
         response = user.valid_user_as_admin(request)
         self.assertFalse(response)
         self.assertEqual(bool, type(response))
@@ -109,8 +92,7 @@ class Usertest(unittest.TestCase):
         self.assertEqual(bool, type(response))
 
     def test_invalid_user(self):
-        request = testing.DummyRequest()
-        request.validated = {}
+        request = construct_dummy_request()
         response = user.invalid_user(request)
         self.assertFalse(response)
         self.assertEqual(bool, type(response))

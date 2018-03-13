@@ -61,7 +61,6 @@ class MainMyDiscussionViewTestsNotLoggedIn(unittest.TestCase):
         response = d(request)
         verify_dictionary_of_view(response)
 
-        self.assertIn('layout', response)
         self.assertIn('title', response)
         self.assertIn('project', response)
         self.assertIn('extras', response)
@@ -84,7 +83,6 @@ class MainMyDiscussionViewTestsLoggedIn(unittest.TestCase):
         response = d(request)
         verify_dictionary_of_view(response)
 
-        self.assertIn('layout', response)
         self.assertIn('title', response)
         self.assertIn('project', response)
         self.assertIn('extras', response)

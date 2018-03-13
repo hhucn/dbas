@@ -53,13 +53,20 @@ def get_privilege_list(translator):
     :return: list()
     """
     return [
-        {'points': reputation_borders['deletes'], 'icon': reputation_icons['deletes'], 'text': translator.get(_.priv_access_opti_queue)},
-        {'points': reputation_borders['optimizations'], 'icon': reputation_icons['optimizations'], 'text': translator.get(_.priv_access_del_queue)},
-        {'points': reputation_borders['edits'], 'icon': reputation_icons['edits'], 'text': translator.get(_.priv_access_edit_queue)},
-        {'points': reputation_borders['splits'], 'icon': reputation_icons['splits'], 'text': translator.get(_.priv_access_splits_queue)},
-        {'points': reputation_borders['merges'], 'icon': reputation_icons['merges'], 'text': translator.get(_.priv_access_merges_queue)},
-        {'points': reputation_borders['duplicates'], 'icon': reputation_icons['duplicates'], 'text': translator.get(_.priv_access_duplicate_queue)},
-        {'points': reputation_borders['history'], 'icon': reputation_icons['history'], 'text': translator.get(_.priv_history_queue)}
+        {'points': reputation_borders['deletes'], 'icon': reputation_icons['deletes'],
+         'text': translator.get(_.priv_access_opti_queue)},
+        {'points': reputation_borders['optimizations'], 'icon': reputation_icons['optimizations'],
+         'text': translator.get(_.priv_access_del_queue)},
+        {'points': reputation_borders['edits'], 'icon': reputation_icons['edits'],
+         'text': translator.get(_.priv_access_edit_queue)},
+        {'points': reputation_borders['splits'], 'icon': reputation_icons['splits'],
+         'text': translator.get(_.priv_access_splits_queue)},
+        {'points': reputation_borders['merges'], 'icon': reputation_icons['merges'],
+         'text': translator.get(_.priv_access_merges_queue)},
+        {'points': reputation_borders['duplicates'], 'icon': reputation_icons['duplicates'],
+         'text': translator.get(_.priv_access_duplicate_queue)},
+        {'points': reputation_borders['history'], 'icon': reputation_icons['history'],
+         'text': translator.get(_.priv_history_queue)}
     ]
 
 
@@ -88,11 +95,11 @@ def get_reputation_list(translator):
     return {'gains': gains, 'looses': looses}
 
 
-def get_reputation_of(db_user, only_today=False):
+def get_reputation_of(db_user: User, only_today=False):
     """
     Return the total sum of reputation_borders points for the given nickname
 
-    :param nickname: Nickname of the user
+    :param db_user: Should be of type "User", but also accepts nickname for legacy support
     :param only_today: Boolean
     :return: Integer and Boolean, if the user is author
     """
@@ -123,6 +130,8 @@ def add_reputation_for(user, reason):
     Add reputation for the given nickname with the reason only iff the reason can be added. For example all reputation
     for 'first' things cannot be given twice.
 
+    Anonymous user is not eligible to receive reputation.
+
     :param user: User in refactored fns, else nickname
     :param reason: reason as string, as given in reputation.py
     :return: True, if the user gained reputation and an additional boolean that is true, when the user reached 30points
@@ -134,6 +143,14 @@ def add_reputation_for(user, reason):
         db_user = DBDiscussionSession.query(User).filter_by(nickname=user).first()
     else:
         db_user = user
+
+    if not db_user:
+        logger('ReputationPointHelper', 'The nickname \'{}\' could not be found in our database'.format(user))
+        return False, False
+
+    if db_user.nickname == nick_of_anonymous_user:
+        logger('ReputationPointHelper', '{} is not eligible to receive reputation'.format(db_user.nickname))
+        return False, False
 
     if not db_reason or not db_user:
         logger('ReputationPointHelper', 'no reason or no user')
@@ -150,7 +167,8 @@ def add_reputation_for(user, reason):
             return False, False
 
     logger('ReputationPointHelper', 'add ' + str(db_reason.points) + ' for ' + db_user.nickname)
-    db_old_points = __collect_points(DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).join(ReputationReason).all())
+    db_old_points = __collect_points(
+        DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).join(ReputationReason).all())
     new_rep = ReputationHistory(reputator=db_user.uid, reputation=db_reason.uid)
     DBDiscussionSession.add(new_rep)
     DBDiscussionSession.flush()

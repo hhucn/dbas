@@ -2,8 +2,8 @@ import json
 import unittest
 
 from api.login import validate_credentials, valid_token, token_to_database
-from api.tests.lib import construct_dummy_request
 from dbas.lib import get_user_by_case_insensitive_nickname
+from dbas.tests.utils import construct_dummy_request
 
 
 class ValidateCredentialsTest(unittest.TestCase):
@@ -21,7 +21,7 @@ class ValidateCredentialsTest(unittest.TestCase):
         request.validated = {'nickname': 'Walter',
                              'password': 'somerandomstuffwhichisdefinitelynotapassword'}
         validate_credentials(request)
-        self.assertNotIn('db_user', request.validated)
+        self.assertNotIn('user', request.validated)
         self.assertGreater(len(request.errors), 0)
 
 
@@ -33,7 +33,7 @@ class ValidTokenTest(unittest.TestCase):
         request.headers[self.header] = json.dumps({'nickname': 'Walter', 'token': 'thisisnotarealtoken'})
         valid_token(request)
         self.assertGreater(len(request.errors), 0)
-        self.assertNotIn('db_user', request.validated)
+        self.assertNotIn('user', request.validated)
 
     def test_valid_token(self):
         nickname = 'Walter'
@@ -43,4 +43,4 @@ class ValidTokenTest(unittest.TestCase):
         request.headers[self.header] = json.dumps({'nickname': nickname, 'token': token})
         valid_token(request)
         self.assertEqual(len(request.errors), 0)
-        self.assertIn('db_user', request.validated)
+        self.assertIn('user', request.validated)

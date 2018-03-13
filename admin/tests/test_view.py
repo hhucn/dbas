@@ -15,7 +15,6 @@ class AdminViewTest(unittest.TestCase):
         from admin.views import main_admin
         request = testing.DummyRequest()
         response = main_admin(request)
-        self.assertIn('layout', response)
         self.assertIn('title', response)
         self.assertIn('project', response)
         self.assertIn('extras', response)

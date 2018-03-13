@@ -560,6 +560,16 @@ function GuiHandler() {
 
         return div_page;
     };
+    
+    this.clearProposalSpace = function(callbackId){
+        $('#' + proposalPremiseListGroupId).empty();
+        $('#' + proposalStatementListGroupId).empty();
+        $('#' + proposalEditListGroupId).empty();
+        $('#' + proposalUserListGroupId).empty();
+        $('#' + proposalStatementSearchGroupId).empty();
+        $('#' + proposalDuplicateSearchGroupId).empty();
+        $('#proposal-mergesplit-list-group-' + callbackId).empty();
+    };
 
     /**
      *
@@ -576,13 +586,8 @@ function GuiHandler() {
      */
     this.setStatementsAsProposal = function (parsedData, callbackId, type, reason) {
         var callbackElement = $('#' + callbackId);
-        $('#' + proposalPremiseListGroupId).empty();
-        $('#' + proposalStatementListGroupId).empty();
-        $('#' + proposalEditListGroupId).empty();
-        $('#' + proposalUserListGroupId).empty();
-        $('#' + proposalStatementSearchGroupId).empty();
-        $('#' + proposalDuplicateSearchGroupId).empty();
-        $('#proposal-mergesplit-list-group-' + callbackId).empty();
+        var _this = this;
+        this.clearProposalSpace(callbackId);
 
         // do we have values ?
         if (parsedData.length === 0) {
@@ -619,14 +624,8 @@ function GuiHandler() {
             button.append(img).append(spanText);
 
             button.click(function () {
+                _this.clearProposalSpace(callbackId);
                 callbackElement.val($(this).attr('text'));
-                $('#' + proposalStatementListGroupId).empty();
-                $('#' + proposalPremiseListGroupId).empty();
-                $('#' + proposalEditListGroupId).empty(); // list with elements should be after the callbacker
-                $('#' + proposalUserListGroupId).empty();
-                $('#' + proposalStatementSearchGroupId).empty();
-                $('#' + proposalDuplicateSearchGroupId).empty();
-                $('#proposal-mergesplit-list-group-' + callbackId).empty();
                 if (type === fuzzy_find_statement) {
                     window.location.href = $(this).data('url');
                 } else if (type === fuzzy_duplicate) {

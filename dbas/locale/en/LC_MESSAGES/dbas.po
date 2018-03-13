@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE 1.0\n"
-"POT-Creation-Date: 2018-03-03 11:03+0100\n"
+"POT-Creation-Date: 2018-03-12 10:23+0100\n"
 "PO-Revision-Date: 2015-07-17 09:59+0200\n"
 "Last-Translator: Tobias Krauthoff <krauthoff@cs.uni-Düsseldorf.de>\n"
 "Language-Team: English\n"
@@ -2168,7 +2168,7 @@ msgstr "Language"
 
 #. Default: Creation
 #: templates/discussion-overview.pt:34 templates/discussion-overview.pt:123
-#: templates/discussion-start.pt:24
+#: templates/discussion-start.pt:25
 msgid "creation"
 msgstr "Creation"
 
@@ -2427,6 +2427,11 @@ msgstr "Overview of the Discussions"
 #: templates/discussion-start.pt:8
 msgid "page_contains_overview"
 msgstr "This page contains an overview of discussions:"
+
+#. Default: Activity (Last 30 days)
+#: templates/discussion-start.pt:24
+msgid "activity_last_30_days"
+msgstr "Activity (Last 30 days)"
 
 #~ msgid "involved_users"
 #~ msgstr "Involved User"

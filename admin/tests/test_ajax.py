@@ -18,8 +18,7 @@ class AjaxTest(unittest.TestCase):
         from admin.views import main_update as ajax1
         from admin.views import main_delete as ajax2
         from admin.views import main_add as ajax3
-        from admin.views import main_update_badge as ajax4
-        ajax = [ajax1, ajax2, ajax3, ajax4]
+        ajax = [ajax1, ajax2, ajax3]
         for a in ajax:
             request = testing.DummyRequest(json_body={}, validated={})
             self.assertEqual(400, a(request).status_code)
@@ -93,13 +92,3 @@ class AjaxTest(unittest.TestCase):
         # self.assertLess(db_s1, db_s2)
         # self.assertGreater(db_s2, db_s3)
         # self.assertEqual(db_s1, db_s3)
-
-    def test_main_update_badge(self):
-        from admin.views import main_update_badge as ajax
-        request = testing.DummyRequest(json_body={}, validated={})
-        self.assertEqual(400, ajax(request).status_code)
-
-        self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        request = testing.DummyRequest(json_body={}, validated={})
-        response = ajax(request)
-        self.assertGreater(len(response), 0)

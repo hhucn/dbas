@@ -14,17 +14,23 @@ from typing import Callable, Any
 
 from cornice import Service
 
+import dbas.discussion.core as discussion
+import dbas.handler.history as history_handler
 import dbas.views as dbas
+from api.models import Item, Bubble
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue
+from dbas.database.discussion_model import Issue, Statement
 from dbas.handler.arguments import set_arguments_premises
 from dbas.handler.statements import set_positions_premise, set_position
 from dbas.lib import (get_all_arguments_by_statement,
                       get_all_arguments_with_text_by_statement_id,
-                      get_text_for_argument_uid, resolve_issue_uid_to_slug)
+                      get_text_for_argument_uid, resolve_issue_uid_to_slug, create_speechbubble_dict, BubbleTypes)
+from dbas.strings.translator import Keywords as _
+from dbas.strings.translator import get_translation
 from dbas.validators.core import has_keywords, validate
+from dbas.validators.discussion import valid_issue_by_slug, valid_position
 from .lib import HTTP204, flatten, json_to_dict, logger
-from .login import validate_credentials, validate_login, valid_token, token_to_database
+from .login import validate_credentials, validate_login, valid_token, token_to_database, valid_token_optional
 from .references import (get_all_references_by_reference_text,
                          get_reference_by_id, get_references_for_url,
                          prepare_single_reference, store_reference,
@@ -66,7 +72,7 @@ justify = Service(name='api_justify',
                   description="Discussion Justify",
                   cors_policy=cors_policy)
 attitude = Service(name='api_attitude',
-                   path='/{slug}/attitude/*statement_id',
+                   path='/{slug}/attitude/{position_id}',
                    description="Discussion Attitude",
                    cors_policy=cors_policy)
 support = Service(name='api_support',
@@ -79,10 +85,6 @@ zinit = Service(name='api_init',
                 path='/{slug}',
                 description="Discussion Init",
                 cors_policy=cors_policy)
-zinit_blank = Service(name='api_init_blank',
-                      path='/',
-                      description="Discussion Init",
-                      cors_policy=cors_policy)
 
 #
 # Add new data to D-BAS
@@ -129,6 +131,7 @@ issues = Service(name="issues",
                  path="/issues",
                  description="Get issues",
                  cors_policy=cors_policy)
+
 #
 # Build text-blocks
 #
@@ -183,7 +186,7 @@ def whoami_fn(request):
 
     :return: welcome-dict
     """
-    nickname = request.validated["db_user"].nickname
+    nickname = request.validated["user"].nickname
     return {"status": "ok",
             "nickname": nickname,
             "message": "Hello " + nickname + ", nice to meet you."}
@@ -192,6 +195,79 @@ def whoami_fn(request):
 # =============================================================================
 # DISCUSSION-RELATED REQUESTS
 # =============================================================================
+
+@zinit.get()
+@validate(valid_issue_by_slug)
+def discussion_init(request):
+    """
+    Given a slug, show its positions.
+
+    :param request: Request
+    :return:
+    """
+    db_issue = request.validated['issue']
+    intro = get_translation(_.initialPositionInterest, db_issue.lang)
+
+    bubbles = [
+        create_speechbubble_dict(BubbleTypes.SYSTEM, uid='start', message=intro, omit_url=True, lang=db_issue.lang)
+    ]
+
+    db_positions = DBDiscussionSession.query(Statement).filter(Statement.is_disabled == False,
+                                                               Statement.issue_uid == db_issue.uid,
+                                                               Statement.is_startpoint == True).all()
+
+    items = [Item([pos.get_textversion().content], "{}/attitude/{}".format(db_issue.slug, pos.uid))
+             for pos in db_positions]
+
+    return {'bubbles': [Bubble(bubble) for bubble in bubbles],
+            'items': items}
+
+
+@attitude.get()
+@validate(valid_issue_by_slug, valid_token_optional, valid_position)
+def discussion_attitude(request):
+    """
+    Return data from DBas discussion_attitude page.
+
+    :param request: request
+    :return: dbas.discussion_attitude(True)
+    """
+    db_position = request.validated['position']
+    db_issue = request.validated['issue']
+    db_user = request.validated['user']
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    prepared_discussion = discussion.attitude(db_issue, db_user, db_position, history, request.path)
+
+    bubbles = [Bubble(bubble) for bubble in prepared_discussion['discussion']['bubbles']]
+
+    keys = [item['attitude'] for item in prepared_discussion['items']['elements']]
+    items = [Item([premise['title'] for premise in item['premises']], item['url'])
+             for item in prepared_discussion['items']['elements']]
+
+    return {
+        'bubbles': bubbles,
+        'attitudes': dict(zip(keys, items))
+    }
+
+
+@justify.get()
+@validate(valid_issue_by_slug, valid_token_optional, valid_position)
+def discussion_justify(request):
+    """
+    Return data from DBas discussion_justify page. Contains bubbles and lists of positions matching the current
+    attitude of the user.
+
+    Path: /{slug}/justify/{statement_or_arg_id}/{mode}*relation
+
+    :param request: request
+    :return: dbas.discussion_justify(True)
+    """
+    request_dict = prepare_dbas_request_dict(request)
+    return dbas.discussion.justify(request_dict)
+
+
+# -----------------------------------------------------------------------------
 
 def prepare_user_information(request):
     """
@@ -203,7 +279,7 @@ def prepare_user_information(request):
     val = request.validated
     try:
         api_data = {"nickname": val["user"],
-                    "user": val["db_user"],
+                    "user": val["user"],
                     "user_uid": val["user_uid"],
                     "session_id": val["session_id"]}
     except KeyError:
@@ -277,11 +353,6 @@ def prepare_dbas_request_dict(request) -> dict:
     return dbas.prepare_request_dict(request)
 
 
-def __init(request):
-    request_dict = prepare_dbas_request_dict(request)
-    return dbas.discussion.init(request_dict)
-
-
 @reaction.get(validators=validate_login)
 def discussion_reaction(request):
     """
@@ -293,31 +364,6 @@ def discussion_reaction(request):
     """
     request_dict = prepare_dbas_request_dict(request)
     return dbas.discussion.reaction(request_dict)
-
-
-@justify.get(validators=validate_login)
-def discussion_justify(request):
-    """
-    Return data from DBas discussion_justify page.
-
-    :param request: request
-    :return: dbas.discussion_justify(True)
-
-    """
-    request_dict = prepare_dbas_request_dict(request)
-    return dbas.discussion.justify(request_dict)
-
-
-@attitude.get(validators=validate_login)
-def discussion_attitude(request):
-    """
-    Return data from DBas discussion_attitude page.
-
-    :param request: request
-    :return: dbas.discussion_attitude(True)
-    """
-    request_dict = prepare_dbas_request_dict(request)
-    return dbas.discussion.attitude(request_dict)
 
 
 @support.get(validators=validate_login)
@@ -337,30 +383,6 @@ def discussion_support(request):
     api_data["arg_system_uid"] = request.matchdict["arg_system_uid"]
     request_dict = prepare_dbas_request_dict(request)
     return dbas.discussion.support(request_dict, api_data=api_data)
-
-
-@zinit.get(validators=validate_login)
-def discussion_init(request):
-    """
-    Return data from DBas discussion_init page.
-
-    :param request: request
-    :return: dbas.discussion_init(True)
-
-    """
-    return __init(request)
-
-
-@zinit_blank.get(validators=validate_login)
-def discussion_init_blank(request):
-    """
-    Return data from DBas discussion_init page.
-
-    :param request: request
-    :return: dbas.discussion_init(True)
-
-    """
-    return __init(request)
 
 
 #
@@ -473,7 +495,7 @@ def user_logout(request):
     :return:
     """
     request.session.invalidate()
-    token_to_database(request.validated['db_user'], None)
+    token_to_database(request.validated['user'], None)
     return {'status': 'ok',
             'message': 'Successfully logged out'}
 
@@ -577,17 +599,12 @@ def get_statement_url(request):
 
 
 @issues.get()
-def get_issues(request):
+def get_issues(_request):
     """
     Returns a list of active issues.
 
-    :param request:
-    :return:
+    :param _request:
+    :return: List of active issues.
     """
-
-    def enabled(issue):
-        return issue["enabled"] == "enabled"
-
-    issues = list(filter(enabled, __init(request)["issues"]["all"]))
-    return {"status": "ok",
-            "data": {"issues": issues}}
+    return DBDiscussionSession.query(Issue).filter(Issue.is_disabled == False,
+                                                   Issue.is_private == False).all()

@@ -164,7 +164,7 @@
                   <tbody>
                   <tr tal:attributes="data-href line.href; id line.name" tal:repeat="line group.content">
                     <td>${line.name}</td>
-                    <td><span class="badge">-</span></td>
+                    <td><span class="badge">${line.count}</span></td>
                   </tr>
                   </tbody>
                 </table>

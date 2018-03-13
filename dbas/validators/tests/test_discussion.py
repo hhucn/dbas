@@ -1,302 +1,400 @@
-import unittest
-
-from cornice import Errors
-from nose.tools import assert_false, assert_equal, assert_true, assert_in
-from pyramid import testing
+from nose.tools import assert_in
 
 import dbas.validators.discussion as discussion
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Issue, Statement, Argument
+from dbas.tests.utils import TestCaseWithConfig, construct_dummy_request
 
 
-class DiscussionTest(unittest.TestCase):
+class TestDiscussionValidators(TestCaseWithConfig):
+    def test_valid_issue_by_id(self):
+        request = construct_dummy_request()
+        response = discussion.valid_issue_by_id(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-    def setUp(self):
-        self.config = testing.setUp()
+        request = construct_dummy_request({'issue': self.issue_cat_or_dog.uid})
+        response = discussion.valid_issue_by_id(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
 
-    def tearDown(self):
-        testing.tearDown()
+        request = construct_dummy_request()
+        request.matchdict = {'issue': self.issue_cat_or_dog.uid}
+        response = discussion.valid_issue_by_id(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
 
-    def __prepare_dict(self, jbody):
-        request = testing.DummyRequest(json_body=jbody)
-        setattr(request, 'errors', Errors())
-        setattr(request, 'cookies', {'_LOCALE_': 'en'})
-        request.validated = {}
-        return request
+        request = construct_dummy_request()
+        request.params = {'issue': self.issue_cat_or_dog.uid}
+        response = discussion.valid_issue_by_id(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
 
-    def test_valid_issue(self):
-        request = self.__prepare_dict({})
-        response = discussion.valid_issue(request)
-        assert_true(response)
-        assert_equal(bool, type(response))
+        request = construct_dummy_request()
+        request.session = {'issue': self.issue_cat_or_dog.uid}
+        response = discussion.valid_issue_by_id(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'issue': 1})
-        response = discussion.valid_issue(request)
-        assert_true(response)
-        assert_equal(bool, type(response))
-
-        request = self.__prepare_dict({})
-        request.matchdict = {'issue': 1}
-        response = discussion.valid_issue(request)
-        assert_true(response)
-        assert_equal(bool, type(response))
-
-        request = self.__prepare_dict({})
-        request.params = {'issue': 1}
-        response = discussion.valid_issue(request)
-        assert_true(response)
-        assert_equal(bool, type(response))
-
-        request = self.__prepare_dict({})
-        request.session = {'issue': 1}
-        response = discussion.valid_issue(request)
-        assert_true(response)
-        assert_equal(bool, type(response))
+    def test_valid_issue_by_id_disabled_issue(self):
+        request = construct_dummy_request()
+        request.session = {'issue': self.issue_disabled.uid}
+        response = discussion.valid_issue_by_id(request)
+        self.assertFalse(response,
+                         'The field-experiment-issue is disabled in the development-seed and can\'t be queried')
+        self.assertIsInstance(response, bool)
 
     def test_valid_new_issue(self):
-        request = self.__prepare_dict({})
+        request = construct_dummy_request()
         response = discussion.valid_new_issue(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        db_issue = DBDiscussionSession.query(Issue).get(1)
-        request = self.__prepare_dict({'title': db_issue.title,
-                                       'info': 'some info',
-                                       'long_info': 'some longer info'})
+        request = construct_dummy_request({'title': self.issue_cat_or_dog.title,
+                                           'info': 'some info',
+                                           'long_info': 'some longer info'})
         response = discussion.valid_new_issue(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'title': 'some title',
-                                       'info': db_issue.info,
-                                       'long_info': 'some longer info'})
+        request = construct_dummy_request({'title': 'some title',
+                                           'info': self.issue_cat_or_dog.info,
+                                           'long_info': 'some longer info'})
         response = discussion.valid_new_issue(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'title': 'some title',
-                                       'info': 'some info',
-                                       'long_info': db_issue.long_info})
+        request = construct_dummy_request({'title': 'some title',
+                                           'info': 'some info',
+                                           'long_info': self.issue_cat_or_dog.long_info})
         response = discussion.valid_new_issue(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'title': 'some title',
-                                       'info': 'some info',
-                                       'long_info': 'some longer info'})
+        request = construct_dummy_request({'title': 'some title',
+                                           'info': 'some info',
+                                           'long_info': 'some longer info'})
         response = discussion.valid_new_issue(request)
-        assert_true(response)
-        assert_equal(bool, type(response))
-
-    def test_valid_issue_not_readonly(self):
-        db_issue = DBDiscussionSession.query(Issue).get(1)
-        db_issue.set_read_only(True)
-        request = self.__prepare_dict({'issue': db_issue.uid})
-        response = discussion.valid_issue_not_readonly(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
-        db_issue.set_read_only(False)
-
-        db_issue = DBDiscussionSession.query(Issue).get(1)
-        request = self.__prepare_dict({'issue': db_issue.uid})
-        response = discussion.valid_issue_not_readonly(request)
-        assert_true(response)
-        assert_equal(bool, type(response))
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
 
     def test_valid_conclusion(self):
-        request = self.__prepare_dict({})
+        request = construct_dummy_request()
         response = discussion.valid_conclusion(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'conclusion_id': '2',
-                                       'issue': 2})
+        request = construct_dummy_request({'conclusion_id': '2',
+                                           'issue': 2})
         response = discussion.valid_conclusion(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'conclusion_id': 2,
-                                       'issue': 1})
+        request = construct_dummy_request({'conclusion_id': 2,
+                                           'issue': 1})
         response = discussion.valid_conclusion(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'conclusion_id': 2,
-                                       'issue': 2})
+        request = construct_dummy_request({'conclusion_id': 2,
+                                           'issue': 2})
         response = discussion.valid_conclusion(request)
-        assert_true(response)
-        assert_equal(bool, type(response))
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
 
     def test_valid_statement(self):
-        request = self.__prepare_dict({})
+        request = construct_dummy_request()
         response = discussion.valid_statement(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        db_statement = DBDiscussionSession.query(Statement).get(1)
-        db_statement.set_disable(True)
-        request = self.__prepare_dict({'uid': 1})
+        request = construct_dummy_request({'uid': 1})
         response = discussion.valid_statement(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
-        db_statement.set_disable(False)
+        self.assertFalse(response, 'uid 1 is disabled and should not be returned')
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'uid': 1})
+        request = construct_dummy_request({'uid': 2})
         response = discussion.valid_statement(request)
-        assert_true(response)
-        assert_equal(bool, type(response))
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
 
     def test_valid_argument(self):
-        request = self.__prepare_dict({})
+        request = construct_dummy_request()
         response = discussion.valid_argument(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        db_argument = DBDiscussionSession.query(Argument).get(1)
-        db_argument.set_disable(True)
-        request = self.__prepare_dict({'uid': 1})
+        request = construct_dummy_request({'uid': 1})
         response = discussion.valid_argument(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
-        db_argument.set_disable(False)
+        self.assertFalse(response, 'uid 1 should be disabled')
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'uid': 1})
+        request = construct_dummy_request({'uid': 2})
         response = discussion.valid_argument(request)
-        assert_true(response)
-        assert_equal(bool, type(response))
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
 
     def test_valid_text_length_of(self):
-        request = self.__prepare_dict({})
+        request = construct_dummy_request()
         inner = discussion.valid_text_length_of('statement')
         response = inner(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'statement': 'shrt'})
+        request = construct_dummy_request({'statement': 'shrt'})
         inner = discussion.valid_text_length_of('statement')
         response = inner(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'statement': 'loooooooong'})
+        request = construct_dummy_request({'statement': 'loooooooong'})
         inner = discussion.valid_text_length_of('statement')
         response = inner(request)
-        assert_true(response)
-        assert_equal(bool, type(response))
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
         assert_in('statement', request.validated)
 
-        request = self.__prepare_dict({'blorgh': 'more loooooooong'})
+        request = construct_dummy_request({'blorgh': 'more loooooooong'})
         inner = discussion.valid_text_length_of('blorgh')
         response = inner(request)
-        assert_true(response)
-        assert_equal(bool, type(response))
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
         assert_in('blorgh', request.validated)
 
     def test_valid_premisegroup(self):
-        request = self.__prepare_dict({})
+        request = construct_dummy_request()
         response = discussion.valid_premisegroup(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
         for uid in ['a', 0, 1000]:
-            request = self.__prepare_dict({'uid': uid})
+            request = construct_dummy_request({'uid': uid})
             response = discussion.valid_premisegroup(request)
-            assert_false(response)
-            assert_equal(bool, type(response))
+            self.assertFalse(response)
+            self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'uid': 2})
+        request = construct_dummy_request({'uid': 2})
         response = discussion.valid_premisegroup(request)
-        assert_true(response)
-        assert_equal(bool, type(response))
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
 
     def test_valid_premisegroups(self):
-        request = self.__prepare_dict({})
+        request = construct_dummy_request()
         response = discussion.valid_premisegroups(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'premisegroups': []})
+        request = construct_dummy_request({'premisegroups': []})
         response = discussion.valid_premisegroups(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'premisegroups': [{}]})
+        request = construct_dummy_request({'premisegroups': [{}]})
         response = discussion.valid_premisegroups(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'premisegroups': [['random text', 'more text here'], ['shrt']]})
+        request = construct_dummy_request({'premisegroups': [['random text', 'more text here'], ['shrt']]})
         response = discussion.valid_premisegroups(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'premisegroups': [['random text', 'more text here'], ['not so short here']]})
+        request = construct_dummy_request({'premisegroups': [['random text', 'more text here'], ['not so short here']]})
         response = discussion.valid_premisegroups(request)
-        assert_true(response)
-        assert_equal(bool, type(response))
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
 
     def test_valid_statement_or_argument(self):
-        request = self.__prepare_dict({})
+        request = construct_dummy_request()
         response = discussion.valid_statement_or_argument(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'is_argument': True})
+        request = construct_dummy_request({'is_argument': True})
         response = discussion.valid_statement_or_argument(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'is_argument': True,
-                                       'uid': 1000})
+        request = construct_dummy_request({'is_argument': True,
+                                           'uid': 1000})
         response = discussion.valid_statement_or_argument(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'is_argument': True,
-                                       'uid': 2})
+        request = construct_dummy_request({'is_argument': True,
+                                           'uid': 2})
         response = discussion.valid_statement_or_argument(request)
-        assert_true(response)
-        assert_equal(bool, type(response))
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
 
     def test_valid_text_values(self):
-        request = self.__prepare_dict({})
+        request = construct_dummy_request()
         response = discussion.valid_text_values(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'text_values': 'just a string'})
+        request = construct_dummy_request({'text_values': 'just a string'})
         response = discussion.valid_text_values(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'text_values': ['sm', 'all', 'str']})
+        request = construct_dummy_request({'text_values': ['sm', 'all', 'str']})
         response = discussion.valid_text_values(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
 
-        request = self.__prepare_dict({'text_values': ['long string 1', 'another one']})
+        request = construct_dummy_request({'text_values': ['long string 1', 'another one']})
         response = discussion.valid_text_values(request)
-        assert_true(response)
-        assert_equal(bool, type(response))
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+
+
+class TestValidIssueBySlug(TestCaseWithConfig):
+    def test_slug_must_be_valid(self):
+        request = construct_dummy_request()
+        request.matchdict['slug'] = ''
+        response = discussion.valid_issue_by_slug(request)
+        self.assertFalse(response, 'Slug is missing')
+        self.assertIsInstance(response, bool)
+        self.assertNotIn('issue', request.validated)
+
+        request = construct_dummy_request()
+        request.matchdict['slug'] = 1
+        response = discussion.valid_issue_by_slug(request)
+        self.assertFalse(response, 'Slug should be a string')
+        self.assertIsInstance(response, bool)
+        self.assertNotIn('issue', request.validated)
+
+        request = construct_dummy_request()
+        request.matchdict['slug'] = None
+        response = discussion.valid_issue_by_slug(request)
+        self.assertFalse(response, 'Slug should be a string')
+        self.assertIsInstance(response, bool)
+        self.assertNotIn('issue', request.validated)
+
+    def test_valid_slug_is_true(self):
+        request = construct_dummy_request()
+        request.matchdict['slug'] = self.issue_cat_or_dog.slug
+        response = discussion.valid_issue_by_slug(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+        self.assertIn('issue', request.validated)
+
+    def test_disabled_slug_is_false(self):
+        request = construct_dummy_request()
+        request.matchdict['slug'] = self.issue_disabled.slug
+        response = discussion.valid_issue_by_slug(request)
+        self.assertFalse(response,
+                         'The field-experiment-issue is disabled in the development-seed and can\'t be queried')
+        self.assertIsInstance(response, bool)
+        self.assertNotIn('issue', request.validated)
+
+
+class TestValidPosition(TestCaseWithConfig):
+    def test_missing_slug(self):
+        request = construct_dummy_request()
+        request.matchdict['slug'] = ''
+        response = discussion.valid_position(request)
+        self.assertFalse(response, 'Slug is missing')
+        self.assertIsInstance(response, bool)
+        self.assertNotIn('issue', request.validated)
+
+    def test_missing_position(self):
+        request = construct_dummy_request()
+        request.matchdict['slug'] = self.issue_cat_or_dog.slug
+        request.matchdict['position_id'] = None
+        response = discussion.valid_position(request)
+        self.assertFalse(response, 'position_id is missing')
+        self.assertIsInstance(response, bool)
+        self.assertIn('issue', request.validated)
+        self.assertNotIn('position', request.validated)
+
+    def test_provided_statement_which_is_no_position(self):
+        request = construct_dummy_request()
+        request.matchdict['slug'] = self.issue_cat_or_dog.slug
+        request.matchdict['position_id'] = self.statement_cat_or_dog.uid
+        response = discussion.valid_position(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+        self.assertIn('issue', request.validated)
+        self.assertNotIn('position', request.validated)
+
+    def test_position_does_not_belong_to_issue(self):
+        request = construct_dummy_request()
+        request.matchdict['slug'] = self.issue_cat_or_dog.slug
+        request.matchdict['position_id'] = self.position_town.uid
+        response = discussion.valid_position(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+        self.assertIn('issue', request.validated)
+        self.assertNotIn('position', request.validated)
+
+    def test_position_and_issue_are_correct_should_return_true(self):
+        request = construct_dummy_request()
+        request.matchdict['slug'] = self.issue_cat_or_dog.slug
+        request.matchdict['position_id'] = self.position_cat_or_dog.uid
+        response = discussion.valid_position(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+        self.assertIn('issue', request.validated)
+        self.assertIn('position', request.validated)
+
+
+class TestValidStatementOrArgId(TestCaseWithConfig):
+    def test_missing_slug(self):
+        request = construct_dummy_request()
+        request.matchdict['slug'] = ''
+        response = discussion.valid_statement_or_arg_id(request)
+        self.assertFalse(response, 'Slug is missing')
+        self.assertIsInstance(response, bool)
+        self.assertNotIn('issue', request.validated)
+
+    def test_missing_statement_or_arg_id(self):
+        request = construct_dummy_request()
+        request.matchdict['slug'] = self.issue_cat_or_dog.slug
+        request.matchdict['statement_or_arg_id'] = None
+        response = discussion.valid_statement_or_arg_id(request)
+        self.assertFalse(response, 'statement_or_arg_id is missing')
+        self.assertIsInstance(response, bool)
+        self.assertIn('issue', request.validated)
+        self.assertNotIn('stmt_or_arg', request.validated)
+
+    def test_statement_or_arg_id_does_not_belong_to_issue(self):
+        request = construct_dummy_request()
+        request.matchdict['slug'] = self.issue_cat_or_dog.slug
+        request.matchdict['statement_or_arg_id'] = self.position_town.uid
+        response = discussion.valid_statement_or_arg_id(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+        self.assertIn('issue', request.validated)
+        self.assertNotIn('stmt_or_arg', request.validated)
+
+    def test_valid_argument_belongs_to_issue(self):
+        request = construct_dummy_request()
+        request.matchdict['slug'] = self.issue_cat_or_dog.slug
+        request.matchdict['statement_or_arg_id'] = self.statement_cat_or_dog.uid
+        response = discussion.valid_statement_or_arg_id(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+        self.assertIn('issue', request.validated)
+        self.assertIn('stmt_or_arg', request.validated)
 
     def test_valid_fuzzy_search_mode(self):
         request = self.__prepare_dict({})
         response = discussion.valid_fuzzy_search_mode(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assert_false(response)
+        self.assert_equal(bool, type(response))
 
         request = self.__prepare_dict({'type': ''})
         response = discussion.valid_fuzzy_search_mode(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assert_false(response)
+        self.assert_equal(bool, type(response))
 
         request = self.__prepare_dict({'type': -1})
         response = discussion.valid_fuzzy_search_mode(request)
-        assert_false(response)
-        assert_equal(bool, type(response))
+        self.assert_false(response)
+        self.assert_equal(bool, type(response))
 
         for mode in [0, 1, 2, 3, 4, 5, 8, 9]:
             request = self.__prepare_dict({'type': mode})
             response = discussion.valid_fuzzy_search_mode(request)
-            assert_true(response)
-            assert_equal(bool, type(response))
+            self.assert_true(response)
+            self.assert_equal(bool, type(response))

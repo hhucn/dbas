@@ -25,9 +25,9 @@ function User() {
     var teal = 'rgba(178,223,219,0.4)';
     var deepOrange = 'rgba(255,204,188,0.4)';
     var brown = 'rgba(215,204,200,0.4';
-    var fillColorSet = [blue, teal, deepOrange, brown]; // 100
-    var strokeColorSet = ['#2196F3', '#009688', '#FF5722', '#795548']; // 500
-    var pointStrokeColorSet = ['#1565C0', '#00695C', '#D84315', '#4E342E']; // 800
+    var color_100_rgba = [blue, teal, deepOrange, brown]; // 100
+    var color_500_hex = ['#2196F3', '#009688', '#FF5722', '#795548']; // 500
+    // var color_800_hex = ['#1565C0', '#00695C', '#D84315', '#4E342E']; // 800
     
     /**
      * Sets click listener to send notifications to a user
@@ -83,27 +83,25 @@ function User() {
      * @param count
      */
     this.createChart = function (parsedData, space, id, count) {
-        var chart, data, divLegend;
-        space.append('<canvas id="' + id + '" width="' + space.width() + '" height="300" style= "display: block; margin: 0 auto;"></canvas>');
-        data = {
-            labels: parsedData['labels' + (count + 1)],
-            datasets: [{
-                label: parsedData['label' + (count + 1)],
-                fillColor: fillColorSet[count],
-                strokeColor: strokeColorSet[count],
-                pointStrokeColor: pointStrokeColorSet[count],
-                pointColor: "#fff",
-                // pointHitRadius: 1,
-                // pointHoverRadius: 1,
-                // pointHoverBorderWidth: 1,
-                data: parsedData['data' + (count + 1)],
-                hover: {mode: 'single'}
-            }]
+        space.append('<canvas id="' + id + '" width="' + space.width() + '" height="300"></canvas>');
+        var ctx = document.getElementById(id).getContext('2d');
+        var chart_data = {
+            type: 'line',
+            data: {
+                labels: parsedData['labels' + (count + 1)],
+                datasets: [{
+                    label: parsedData['label' + (count + 1)],
+                    data: parsedData['data' + (count + 1)],
+                    borderColor: color_500_hex[count],
+                    backgroundColor: color_100_rgba[count],
+                    hover: {
+                        mode: 'single'
+                    }
+                }]
+            }
         };
         try {
-            chart = new Chart(document.getElementById(id).getContext('2d')).Line(data);
-            divLegend = $('<div>').addClass('chart-legend').append(chart.generateLegend());
-            space.prepend(divLegend);
+            new Chart(ctx, chart_data);
         } catch (err) {
             //
         }

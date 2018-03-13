@@ -1,8 +1,11 @@
-import unittest
-import webtest
-import dbas
 import os
+import unittest
+
+import webtest
+
+import dbas
 from dbas.helper.test import add_settings_to_appconfig
+
 
 # copy/paste from https://docs.pylonsproject.org/projects/pyramid/en/latest/tutorials/wiki2/tests.html
 
@@ -65,7 +68,7 @@ class FunctionalTests(unittest.TestCase):
         self.testapp.get('/discuss/cat-or-dog/justify/13/agree/undercut', status=200)
 
     def test_discussion_attitude(self):
-        self.testapp.get('/discuss/cat-or-dog/attitude/1', status=404)
+        self.testapp.get('/discuss/cat-or-dog/attitude/1', status=410)
         self.testapp.get('/discuss/cat-or-dog/attitude/2', status=200)
 
     def test_discussion_choose(self):
