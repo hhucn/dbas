@@ -215,6 +215,7 @@ def __get_fuzzy_string_dict(index: int = 0, current_text: str = '', return_text:
     return {'index': index,
             'distance': get_distance(current_text.lower(), return_text.lower()),
             'text': return_text,
+            'html': __highlight_fuzzy_string(return_text, current_text),
             'statement_uid': uid}
 
 
@@ -237,6 +238,7 @@ def get_strings_for_public_nickname(search_value: str, nickname: str) -> list:
         return_array.append({'index': index,
                              'distance': dist,
                              'text': user.public_nickname,
+                             'html': __highlight_fuzzy_string(nickname, search_value),
                              'avatar': get_public_profile_picture(user)})
 
     return_array = __sort_array(return_array)
@@ -320,3 +322,15 @@ def get_difflib_distance(a: str, b: str) -> str:
     matcher = difflib.SequenceMatcher(lambda x: x == " ", a.lower(), b.lower())
     dist = str(round(matcher.ratio() * 100, 1))[:-2]
     return str(dist).zfill(max_count_zeros)
+
+
+def __highlight_fuzzy_string(target: str, search_value: str) -> str:
+    """
+    Highlight every existence of target in the search_value with the <em> tag.
+    This <em> tag can be replaces with any other tag.
+
+    :param target: the haystack to search in
+    :param search_value: the needle to search for target
+    :return: a highlighted html string
+    """
+    return target.replace(search_value, "<em>" + search_value + "</em>")
