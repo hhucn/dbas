@@ -15,7 +15,9 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue
 from dbas.helper.url import UrlManager
 from dbas.lib import get_public_profile_picture, nick_of_anonymous_user
+from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_statement_as_query
+from search.requester import elastic_search
 
 list_length = 5
 max_count_zeros = 5
@@ -36,6 +38,20 @@ def get_prediction(db_user: User, db_issue: Issue, search_value: str, mode: int,
     :return: Dictionary with the corresponding search results
     """
 
+    try:
+        if mode == 5:
+            logger('Matcher', 'Mode 5 is active', error=False)
+            return __levensthein_search(db_user, db_issue, search_value, mode, statement_uid)
+
+        return elastic_search(db_issue, search_value, mode, statement_uid)
+
+    except Exception as ex:
+        logger('Matcher', 'An error occurred while requesting elasticsearch: {}'.format(ex), error=True)
+
+    return __levensthein_search(db_user, db_issue, search_value, mode, statement_uid)
+
+
+def __levensthein_search(db_user: User, db_issue: Issue, search_value: str, mode: int, statement_uid: int) -> dict:
     return_dict = {'distance_name': mechanism}
 
     if mode in [0, 2]:  # start statement / premise

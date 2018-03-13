@@ -6,6 +6,8 @@ from dbas.helper.url import UrlManager
 from search.routes import get_statements_with_value_path, get_duplicates_or_reasons_path, \
     get_edits_path, get_suggestions_path
 
+mechanism = 'elastic'
+
 
 def response_as_dict(query: str) -> dict:
     """
@@ -83,3 +85,21 @@ def get_edits(issue_uid: int, statement_uid: int, search_value=""):
     """
     query = get_edits_path(issue_uid, statement_uid, search_value)
     return response_as_dict(query)["result"]
+
+
+def elastic_search(db_issue: Issue, search_value: str, mode: int, statement_uid: int) -> dict:
+    return_dict = {'distance_name': mechanism}
+
+    if mode in [0, 2]:  # start statement / premise
+        return_dict['values'] = get_suggestions(db_issue.uid, mode == 0, search_value)
+
+    elif mode == 1:  # edit statement popup
+        return_dict['values'] = get_edits(db_issue.uid, statement_uid, search_value)
+
+    elif mode in [3, 4]:  # adding reasons / duplicates
+        return_dict['values'] = get_duplicates_or_reasons(db_issue.uid, statement_uid, search_value)
+
+    elif mode in [8, 9]:  # search everything
+        return_dict['values'] = get_statements_with_value(db_issue.uid, search_value)
+
+    return return_dict
