@@ -266,8 +266,13 @@ def __valid_id_from_location(request, entity_name, location='path') -> int:
         return True
     elif location == 'json_body':
         if entity_name in request.json_body:
-            request.validated[entity_name] = int(request.json_body.get(entity_name))
-            return True
+            value = request.json_body.get(entity_name)
+            try:
+                request.validated[entity_name] = int(value)
+                return True
+            except ValueError:
+                add_error(request, '\'{}\' is not int parsable!'.format(value))
+                return False
         else:
             add_error(request, '{} is missing in json_body'.format(entity_name))
             return False
@@ -284,7 +289,7 @@ def valid_statement(location, depends_on: Set[Callable[[Request], bool]] = set()
             request.validated['statement'] = __validate_enabled_entity(request, request.validated.get('issue'),
                                                                        Statement,
                                                                        request.validated['statement_id'])
-            return True
+            return True if request.validated['statement'] else False
         return False
 
     return inner
@@ -298,7 +303,7 @@ def valid_argument(location, depends_on: Set[Callable[[Request], bool]] = set())
         if __valid_id_from_location(request, 'argument_id', location):
             request.validated['argument'] = __validate_enabled_entity(request, request.validated.get('issue'), Argument,
                                                                       request.validated['argument_id'])
-            return True
+            return True if request.validated['argument'] else False
         return False
 
     return inner

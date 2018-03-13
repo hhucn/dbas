@@ -7,6 +7,7 @@ from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import History
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
+from dbas.views import get_infos_about_argument, get_arguments_by_statement_id, get_all_posted_statements
 
 
 class AjaxGetInfosTest(unittest.TestCase):
@@ -75,9 +76,8 @@ class AjaxGetInfosTest(unittest.TestCase):
 
     def test_get_arguments_by_statement_uid(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_arguments_by_statement_id as ajax
-        request = testing.DummyRequest(json_body={'uid': 3})
-        response = ajax(request)
+        request = testing.DummyRequest(json_body={'statement_id': 3})
+        response = get_arguments_by_statement_id(request)
         self.assertIsNotNone(response)
         self.assertIn('arguments', response)
         for element in response['arguments']:
@@ -87,23 +87,20 @@ class AjaxGetInfosTest(unittest.TestCase):
 
     def test_get_arguments_by_statement_uid_failure1(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_arguments_by_statement_id as ajax
-        request = testing.DummyRequest(json_body={'uids': 1})
-        response = ajax(request)
-        self.assertEqual(400, response.status_code)
+        request = testing.DummyRequest(json_body={'statement_id': 1})
+        response = get_arguments_by_statement_id(request)
+        self.assertEqual(410, response.status_code)
 
     def test_get_arguments_by_statement_uid_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_arguments_by_statement_id as ajax
-        request = testing.DummyRequest(json_body={'uid': 'a'})
-        response = ajax(request)
+        request = testing.DummyRequest(json_body={'statement_id': 'a'})
+        response = get_arguments_by_statement_id(request)
         self.assertEqual(400, response.status_code)
 
     def test_get_infos_about_argument(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_infos_about_argument as ajax
-        request = testing.DummyRequest(json_body={'uid': 7, 'lang': 'en', 'issue': 2})
-        response = ajax(request)
+        request = testing.DummyRequest(json_body={'argument_id': 7, 'lang': 'en', 'issue': 2})
+        response = get_infos_about_argument(request)
         self.assertIn('supporter', response)
         self.assertIn('gravatars', response)
         self.assertIn('public_page', response)
@@ -114,17 +111,15 @@ class AjaxGetInfosTest(unittest.TestCase):
 
     def test_get_infos_about_argument_failure1(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_infos_about_argument as ajax
-        request = testing.DummyRequest(json_body={'uid': 100, 'lang': 'en', 'issue': 2})
-        response = ajax(request)
+        request = testing.DummyRequest(json_body={'argument_id': 100, 'lang': 'en', 'issue': 2})
+        response = get_infos_about_argument(request)
         self.assertIsNotNone(response)
         self.assertEqual(400, response.status_code)
 
     def test_get_infos_about_argument_failure2(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_infos_about_argument as ajax
-        request = testing.DummyRequest(json_body={'uids': 1, 'lang': 'en', 'issue': 2})
-        response = ajax(request)
+        request = testing.DummyRequest(json_body={'not-argument-ids': 1, 'lang': 'en', 'issue': 2})
+        response = get_infos_about_argument(request)
         self.assertIsNotNone(response)
         self.assertEqual(400, response.status_code)
 
@@ -206,11 +201,10 @@ class AjaxGetInfosTest(unittest.TestCase):
 
     def test_get_all_posted_statements(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import get_all_posted_statements as ajax
         request = testing.DummyRequest()
-        response = ajax(request)
+        response = get_all_posted_statements(request)
         self.assertIsNotNone(response)
-        self.assertEqual(len(response), 0)
+        self.assertListEqual(response, [])
 
     def test_get_all_posted_statements_failure(self):
         self.config.testing_securitypolicy(userid='', permissive=True)

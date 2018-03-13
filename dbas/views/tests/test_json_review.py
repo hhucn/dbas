@@ -9,7 +9,7 @@ from dbas.database.discussion_model import ReviewMerge, DBDiscussionSession, Rev
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReviewCanceled, ReviewDelete, ReviewDuplicate, \
     ReviewEdit, ReviewEditValue, ReviewOptimization, RevokedContentHistory, Statement
 from dbas.lib import get_text_for_argument_uid, nick_of_anonymous_user
-from dbas.views import review_delete_argument
+from dbas.views import review_delete_argument, revoke_statement_content
 
 
 class AjaxReviewTest(unittest.TestCase):
@@ -492,12 +492,11 @@ class AjaxReviewTest(unittest.TestCase):
 
     def test_revoke_content(self):
         self.config.testing_securitypolicy(userid=nick_of_anonymous_user, permissive=True)
-        from dbas.views import revoke_statement_content as ajax
         db_content1 = DBDiscussionSession.query(RevokedContentHistory).count()
         request = testing.DummyRequest(json_body={
-            'uid': 2,
+            'statement_id': 2,
         })
-        self.assertTrue(ajax(request))
+        self.assertTrue(revoke_statement_content(request))
         db_content2 = DBDiscussionSession.query(RevokedContentHistory).count()
         self.assertNotEqual(db_content1, db_content2)
 

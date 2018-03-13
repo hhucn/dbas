@@ -114,12 +114,12 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'uid': 1})
+        request = construct_dummy_request({'statement_id': 1})
         response = discussion.valid_statement(location='json_body')(request)
         self.assertFalse(response, 'uid 1 is disabled and should not be returned')
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'uid': 2})
+        request = construct_dummy_request({'statement_id': 2})
         response = discussion.valid_statement(location='json_body')(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
@@ -130,12 +130,12 @@ class TestDiscussionValidators(TestCaseWithConfig):
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'uid': 1})
+        request = construct_dummy_request({'argument_id': 1})
         response = discussion.valid_argument(location='json_body')(request)
         self.assertFalse(response, 'uid 1 should be disabled')
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'uid': 2})
+        request = construct_dummy_request({'argument_id': 2})
         response = discussion.valid_argument(location='json_body')(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
