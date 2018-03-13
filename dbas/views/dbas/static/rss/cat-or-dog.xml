@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>D-BAS Feed</title>
+        <link>https://dbas.cs.uni-duesseldorf.de/static/rss/cat-or-dog.xml</link>
+        <description>Latest news about actions in the discussion: Cat or Dog - Your family argues about whether to buy a
+            cat or dog as pet. Now your opinion matters!
+        </description>
+        <lastBuildDate>Tue, 13 Mar 2018 11:24:43 GMT</lastBuildDate>
+        <generator>PyRSS2Gen-1.1.0</generator>
+        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+        <item>
+            <title>Argument was added</title>
+            <link>/cat-or-dog/justify/77/dontknow</link>
+            <description>...as because this is my first premisegroup...</description>
+            <author>Björn</author>
+            <pubDate>Tue, 13 Mar 2018 10:24:43 GMT</pubDate>
+        </item>
+        <item>
+            <title>Statement was added</title>
+            <link>/cat-or-dog/justify/77/dontknow</link>
+            <description>...this is my first premisegroup...</description>
+            <author>Björn</author>
+            <pubDate>Tue, 13 Mar 2018 10:24:43 GMT</pubDate>
+        </item>
+        <item>
+            <title>Argument was added</title>
+            <link>/cat-or-dog/justify/77/dontknow</link>
+            <description>...as because this is my first premisegroup...</description>
+            <author>Björn</author>
+            <pubDate>Tue, 13 Mar 2018 10:24:43 GMT</pubDate>
+        </item>
+        <item>
+            <title>Statement was added</title>
+            <link>/cat-or-dog/justify/77/dontknow</link>
+            <description>...this is my first premisegroup...</description>
+            <author>Björn</author>
+            <pubDate>Tue, 13 Mar 2018 10:24:43 GMT</pubDate>
+        </item>
+        <item>
+            <title>Statement was added</title>
+            <link>/cat-or-dog/justify/77/dontknow</link>
+            <description>...some new reason for an argument...</description>
+            <author>Moody Eel</author>
+            <pubDate>Tue, 13 Mar 2018 10:24:43 GMT</pubDate>
+        </item>
+        <item>
+            <title>Argument was added</title>
+            <link>/cat-or-dog/justify/77/dontknow</link>
+            <description>...we should get a cat because this is my first premisegroup...</description>
+            <author>Björn</author>
+            <pubDate>Tue, 13 Mar 2018 10:21:12 GMT</pubDate>
+        </item>
+        <item>
+            <title>Statement was added</title>
+            <link>/cat-or-dog/justify/77/dontknow</link>
+            <description>...this is my first premisegroup...</description>
+            <author>Björn</author>
+            <pubDate>Tue, 13 Mar 2018 10:21:12 GMT</pubDate>
+        </item>
+        <item>
+            <title>Argument was added</title>
+            <link>/cat-or-dog/justify/77/dontknow</link>
+            <description>...we should get a cat because this is my first premisegroup...</description>
+            <author>Björn</author>
+            <pubDate>Tue, 13 Mar 2018 10:21:12 GMT</pubDate>
+        </item>
+        <item>
+            <title>Statement was added</title>
+            <link>/cat-or-dog/justify/77/dontknow</link>
+            <description>...this is my first premisegroup...</description>
+            <author>Björn</author>
+            <pubDate>Tue, 13 Mar 2018 10:21:12 GMT</pubDate>
+        </item>
+        <item>
+            <title>Statement was added</title>
+            <link>/cat-or-dog/justify/77/dontknow</link>
+            <description>...some new reason for an argument...</description>
+            <author>Moody Eel</author>
+            <pubDate>Tue, 13 Mar 2018 10:21:11 GMT</pubDate>
+        </item>
+    </channel>
+</rss>
