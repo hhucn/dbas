@@ -9,6 +9,7 @@ from dbas.database.discussion_model import ReviewMerge, DBDiscussionSession, Rev
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReviewCanceled, ReviewDelete, ReviewDuplicate, \
     ReviewEdit, ReviewEditValue, ReviewOptimization, RevokedContentHistory, Statement
 from dbas.lib import get_text_for_argument_uid, nick_of_anonymous_user
+from dbas.views import review_delete_argument
 
 
 class AjaxReviewTest(unittest.TestCase):
@@ -107,23 +108,26 @@ class AjaxReviewTest(unittest.TestCase):
     def test_review_delete_argument(self):
         db_review = DBDiscussionSession.query(ReviewDelete).filter(ReviewDelete.statement_uid is not None,
                                                                    ReviewDelete.is_executed == False).first()
-        from dbas.views import review_delete_argument as ajax
-
         # 1:0
-        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_delete', True, 'Pascal', LastReviewerDelete)
+        self.__exec_request_and_check_reviewes(db_review, review_delete_argument, 'should_delete', True, 'Pascal',
+                                               LastReviewerDelete)
 
         # 1:1
-        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_delete', False, 'Kurt', LastReviewerDelete)
+        self.__exec_request_and_check_reviewes(db_review, review_delete_argument, 'should_delete', False, 'Kurt',
+                                               LastReviewerDelete)
 
         # 2:1
-        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_delete', True, 'Torben', LastReviewerDelete)
+        self.__exec_request_and_check_reviewes(db_review, review_delete_argument, 'should_delete', True, 'Torben',
+                                               LastReviewerDelete)
 
         # 3:1
-        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_delete', True, 'Friedrich', LastReviewerDelete)
+        self.__exec_request_and_check_reviewes(db_review, review_delete_argument, 'should_delete', True, 'Friedrich',
+                                               LastReviewerDelete)
 
         # 4:1
         db_reputation1 = DBDiscussionSession.query(ReputationHistory).count()
-        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_delete', True, 'Thorsten', LastReviewerDelete)
+        self.__exec_request_and_check_reviewes(db_review, review_delete_argument, 'should_delete', True, 'Thorsten',
+                                               LastReviewerDelete)
         transaction.commit()
         db_reputation2 = DBDiscussionSession.query(ReputationHistory).count()
         db_statement = DBDiscussionSession.query(Statement).get(db_review.statement_uid)
@@ -131,23 +135,20 @@ class AjaxReviewTest(unittest.TestCase):
         self.assertEquals(db_reputation1 + 1, db_reputation2)
 
     def test_review_delete_argument_uid_error(self):
-        from dbas.views import review_delete_argument as ajax
-
         self.config.testing_securitypolicy(userid='Pascal', permissive=True)
         request = testing.DummyRequest(json_body={
             'should_delete': True,
             'review_uid': 'a'
         })
-        response = ajax(request)
+        response = review_delete_argument(request)
         self.assertIsNotNone(response)
         self.assertEqual(400, response.status_code)
 
     def test_review_delete_argument_author_error(self):
         db_review = DBDiscussionSession.query(ReviewDelete).filter(ReviewDelete.statement_uid is not None,
                                                                    ReviewDelete.is_executed == False).first()
-        from dbas.views import review_delete_argument as ajax
-
-        self.__exec_request_and_check_reviewes(db_review, ajax, 'should_delete', True, 'Pascal', LastReviewerDelete)
+        self.__exec_request_and_check_reviewes(db_review, review_delete_argument, 'should_delete', True, 'Pascal',
+                                               LastReviewerDelete)
 
     def test_review_optimization_argument(self):  # TODO check the voting method
         db_review = DBDiscussionSession.query(ReviewOptimization).filter(ReviewOptimization.statement_uid is not None,
