@@ -131,7 +131,7 @@ def is_position(statement_uid):
     :return: Boolean
     """
     db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
-    return db_statement.is_startpoint
+    return db_statement.is_position
 
 
 def related_with_undermine(attacked_arg_uid, attacking_arg_uid):

@@ -53,7 +53,7 @@ def attitude(db_issue: Issue, db_user: User, db_position: Statement, history: st
 
     :param db_issue: Issue
     :param db_user: User
-    :param db_position: Statement with is_startpoint == True
+    :param db_position: Statement with is_position == True
     :param history: Current history
     :param path:
     :return: prepared collection dict for the discussion

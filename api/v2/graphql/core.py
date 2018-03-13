@@ -114,12 +114,12 @@ class StatementGraph(SQLAlchemyObjectType):
 
     @staticmethod
     def singular():
-        return graphene.Field(StatementGraph, uid=graphene.Int(), is_startpoint=graphene.Boolean(),
+        return graphene.Field(StatementGraph, uid=graphene.Int(), is_position=graphene.Boolean(),
                               is_disabled=graphene.Boolean())
 
     @staticmethod
     def plural():
-        return graphene.List(StatementGraph, is_startpoint=graphene.Boolean(), issue_uid=graphene.Int(),
+        return graphene.List(StatementGraph, is_position=graphene.Boolean(), issue_uid=graphene.Int(),
                              is_disabled=graphene.Boolean())
 
 
@@ -138,7 +138,7 @@ class IssueGraph(SQLAlchemyObjectType):
         return resolve_field_query(kwargs, info, StatementGraph)
 
     def resolve_positions(self, info, **kwargs):
-        return resolve_list_query({**kwargs, "issue_uid": self.uid, "is_startpoint": True}, info, StatementGraph)
+        return resolve_list_query({**kwargs, "issue_uid": self.uid, "is_position": True}, info, StatementGraph)
 
     def resolve_statements(self, info, **kwargs):
         return resolve_list_query({**kwargs, "issue_uid": self.uid}, info, StatementGraph)

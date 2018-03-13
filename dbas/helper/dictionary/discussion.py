@@ -481,7 +481,7 @@ class DiscussionDictHelper(object):
             conclusion_uid = tmp_arg.conclusion_uid
 
         db_statement = DBDiscussionSession.query(Statement).get(conclusion_uid)
-        reply_for_argument = not (db_statement and db_statement.is_startpoint)
+        reply_for_argument = not (db_statement and db_statement.is_position)
         support_counter_argument = 'reaction' in self.history.split('-')[-1]
 
         current_argument = get_text_for_argument_uid(user_arg.uid, nickname=nickname, with_html_tag=True,

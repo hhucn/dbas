@@ -424,7 +424,7 @@ class Statement(DiscussionBase):
     """
     __tablename__ = 'statements'
     uid = Column(Integer, primary_key=True)
-    is_startpoint = Column(Boolean, nullable=False)
+    is_position = Column(Boolean)
     issue_uid = Column(Integer, ForeignKey('issues.uid'))
     is_disabled = Column(Boolean, nullable=False)
 
@@ -438,7 +438,7 @@ class Statement(DiscussionBase):
         :param issue: Issue.uid
         :param is_disabled: Boolean
         """
-        self.is_startpoint = is_position
+        self.is_position = is_position
         self.issue_uid = issue
         self.is_disabled = is_disabled
 
@@ -458,7 +458,7 @@ class Statement(DiscussionBase):
         :param is_position: boolean
         :return: None
         """
-        self.is_startpoint = is_position
+        self.is_position = is_position
 
     def get_timestamp(self):
         """
@@ -513,7 +513,7 @@ class Statement(DiscussionBase):
         return {
             'uid': self.uid,
             'textversion_uid': self.textversion_uid,
-            'is_startpoint': self.is_startpoint,
+            'is_position': self.is_position,
             'issue_uid': self.issue_uid,
             'is_disabled': self.is_disabled
         }
