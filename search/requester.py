@@ -88,6 +88,17 @@ def get_edits(issue_uid: int, statement_uid: int, search_value=""):
 
 
 def elastic_search(db_issue: Issue, search_value: str, mode: int, statement_uid: int) -> dict:
+    """
+    This method returns the search results for the specific search modes.
+    It requests to search and can therefor cause Connection errors etc.
+    This method is used in matcher.
+
+    :param db_issue:  current Issue the user looks at, used to get the uid of the issue to search at
+    :param search_value: users value, which should be the base for searching
+    :param mode: form of search the user chooses
+    :param statement_uid: the uid of the statement to be looked at
+    :return: search results of elastic search fitting the specific mode
+    """
     return_dict = {'distance_name': mechanism}
 
     if mode in [0, 2]:  # start statement / premise
