@@ -127,7 +127,7 @@ def __find_position_for_conclusion_of_argument(current_arg, list_todos, list_don
         return __find_position_for_conclusion_of_argument(db_target, list_todos, list_dones, positions)
 
     db_statement = DBDiscussionSession.query(Statement).get(current_arg.conclusion_uid)
-    if db_statement.is_startpoint:
+    if db_statement.is_position:
         if db_statement not in positions:
             logger('PartialGraph',
                    'conclusion of {} is a position (statement {})'.format(current_arg.uid, db_statement.uid))

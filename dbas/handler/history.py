@@ -365,7 +365,7 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
     reply_for_argument = True
     if db_argument.conclusion_uid is not None:
         db_statement = DBDiscussionSession.query(Statement).get(db_argument.conclusion_uid)
-        reply_for_argument = not (db_statement and db_statement.is_startpoint)
+        reply_for_argument = not (db_statement and db_statement.is_position)
 
     premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
     conclusion = get_text_for_conclusion(db_argument)
@@ -391,7 +391,7 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
 
     bubble_user = create_speechbubble_dict(BubbleTypes.USER, message=user_text, omit_url=False, argument_uid=uid,
                                            is_supportive=is_supportive, nickname=db_user.nickname, lang=lang, url=url)
-    if attack == 'end':
+    if not attack:
         bubble_syst = create_speechbubble_dict(BubbleTypes.SYSTEM, message=sys_text, omit_url=True,
                                                nickname=db_user.nickname, lang=lang)
     else:

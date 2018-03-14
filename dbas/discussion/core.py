@@ -53,7 +53,7 @@ def attitude(db_issue: Issue, db_user: User, db_position: Statement, history: st
 
     :param db_issue: Issue
     :param db_user: User
-    :param db_position: Statement with is_startpoint == True
+    :param db_position: Statement with is_position == True
     :param history: Current history
     :param path:
     :return: prepared collection dict for the discussion
@@ -80,8 +80,8 @@ def attitude(db_issue: Issue, db_user: User, db_position: Statement, history: st
     }
 
 
-def justify(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, relation: str, history, path) -> \
-        Union[dict, None]:
+def justify(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, relation: str, history: str,
+            path: str) -> Union[dict, None]:
     """
     Initialize the justification step for a statement or an argument in a discussion. Creates helper and
     returns a dictionary containing the necessary elements needed for the discussion.
@@ -111,7 +111,7 @@ def justify(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude:
     }
 
 
-def reaction(request_dict) -> Union[dict, None]:
+def reaction(request_dict: dict) -> Union[dict, None]:
     """
     Initialize the reaction step for a position in a discussion. Creates helper and returns a dictionary containing
     different feedback options for the confrontation with an argument in a discussion.
@@ -163,7 +163,7 @@ def reaction(request_dict) -> Union[dict, None]:
     return prepared_discussion
 
 
-def support(request_dict) -> Union[dict, None]:
+def support(request_dict: dict) -> Union[dict, None]:
     """
     Initialize the support step for the end of a branch in a discussion. Creates helper and returns a dictionary
     containing the first elements needed for the discussion.
@@ -205,7 +205,7 @@ def support(request_dict) -> Union[dict, None]:
     return prepared_discussion
 
 
-def choose(request_dict) -> Union[dict, None]:
+def choose(request_dict: dict) -> Union[dict, None]:
     """
     Initialize the choose step for more than one premise in a discussion. Creates helper and returns a dictionary
     containing several feedback options regarding this argument.
@@ -261,7 +261,7 @@ def choose(request_dict) -> Union[dict, None]:
     return prepared_discussion
 
 
-def jump(request_dict) -> Union[dict, None]:
+def jump(request_dict: dict) -> Union[dict, None]:
     """
     Initialize the jump step for an argument in a discussion. Creates helper and returns a dictionary containing
     several feedback options regarding this argument.
@@ -300,7 +300,7 @@ def jump(request_dict) -> Union[dict, None]:
     return prepared_discussion
 
 
-def finish(request_dict) -> Union[dict, None]:
+def finish(request_dict: dict) -> Union[dict, None]:
     logger('Core', 'main')
 
     db_issue = request_dict['issue']
@@ -319,8 +319,7 @@ def finish(request_dict) -> Union[dict, None]:
     disc_ui_locales = issue_dict['lang']
 
     _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug)
-    discussion_dict = _ddh.get_dict_for_argumentation(arg_id, last_arg.is_supportive, None, 'end_attack', history,
-                                                      db_user)
+    discussion_dict = _ddh.get_dict_for_argumentation(arg_id, last_arg.is_supportive, None, None, history, db_user)
     item_dict = ItemDictHelper.get_empty_dict()
 
     return {

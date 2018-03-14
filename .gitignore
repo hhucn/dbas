@@ -46,6 +46,7 @@ analyzer/
 # Pycharm
 .idea/
 data/
+!dbas/static/data
 
 # Deployment
 dbas/static/css/main.css

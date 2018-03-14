@@ -166,7 +166,7 @@ def __get_opinions_for_uid(uid, is_supportive, db_user, lang, _t, main_page):
     statement_dict['uid'] = str(uid)
     text = get_text_for_statement_uid(uid)
     try:
-        if db_statement.is_startpoint and lang == 'de':
+        if db_statement.is_position and lang == 'de':
             text = _t.get(_.statementIsAbout) + ' ' + text
         statement_dict['text'] = text
     except TypeError:

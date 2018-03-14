@@ -665,7 +665,7 @@ def get_text_for_statement_uid(uid: int, colored_position=False):
     :param colored_position: Boolean
     :return: String
     """
-    warnings.warn("Use Statement.get_text() or Statemente.get_html() instead.", DeprecationWarning)
+    warnings.warn("Use Statement.get_text() or Statement.get_html() instead.", DeprecationWarning)
 
     if not isinstance(uid, int):
         return None

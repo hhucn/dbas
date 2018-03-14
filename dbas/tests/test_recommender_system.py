@@ -10,11 +10,12 @@ from dbas.database.discussion_model import Argument
 class RecommenderSystemTests(unittest.TestCase):
 
     def test_get_attack_for_argument(self):
-        results = {}
-        results[0] = 'end'
-        results[39] = 'rebut'
-        results[44] = 'undermine'
-        results[43] = 'undercut'
+        results = {
+            None: None,
+            39: 'rebut',
+            44: 'undermine',
+            43: 'undercut'
+        }
         restriction_on_args = [40]
 
         db_all = DBDiscussionSession.query(Argument).all()
@@ -62,24 +63,24 @@ class RecommenderSystemTests(unittest.TestCase):
                                                      restriction_on_args=[40],
                                                      last_attack=None,
                                                      history='42/rebut/39-42/undermine/44')
-        self.assertIn(attack_uid, [0, None])
-        self.assertTrue(key in ['end', 'end_attack'])
+        self.assertIsNone(attack_uid)
+        self.assertIsNone(key)
 
         attack_uid, key = rs.get_attack_for_argument(argument_uid=42,
                                                      restriction_on_attacks=[rs.Attacks.UNDERMINE],
                                                      restriction_on_args=[40],
                                                      last_attack=None,
                                                      history='42/rebut/39-42/undercut/43')
-        self.assertIn(attack_uid, [0, None])
-        self.assertTrue(key in ['end', 'end_attack'])
+        self.assertIsNone(attack_uid)
+        self.assertIsNone(key)
 
         attack_uid, key = rs.get_attack_for_argument(argument_uid=42,
                                                      restriction_on_attacks=[rs.Attacks.REBUT],
                                                      restriction_on_args=[40],
                                                      last_attack=None,
                                                      history='42/undercut/43-42/undermine/44')
-        self.assertIn(attack_uid, [0, None])
-        self.assertTrue(key in ['end', 'end_attack'])
+        self.assertIsNone(attack_uid)
+        self.assertIsNone(key)
 
     def get_argument_by_conclusion(self):
         for i in range(0, 5):

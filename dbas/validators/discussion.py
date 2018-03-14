@@ -148,7 +148,7 @@ def valid_position(request):
         if db_position.is_disabled:
             add_error(request, 'Position is disabled', location='path', status_code=410)
             return False
-        if not db_position.is_startpoint:
+        if not db_position.is_position:
             add_error(request, 'Queried statement is not a valid position', location='path')
             return False
         if db_position.issue_uid != request.validated['issue'].uid:
