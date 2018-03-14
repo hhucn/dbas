@@ -6,7 +6,8 @@ from pyramid import testing, httpexceptions
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, \
     ReputationHistory, User
-from dbas.helper.test import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of, refresh_user
+from dbas.helper.test import verify_dictionary_of_view, clear_seen_by_of, clear_clicks_of, refresh_user, \
+    clear_reputation_of_user
 from dbas.tests.utils import construct_dummy_request
 from dbas.views import discussion_justify_argument, discussion_justify_statement
 
@@ -19,11 +20,6 @@ def get_meta_clicks():
         'click_a': DBDiscussionSession.query(ClickedArgument).count()
     }
     return d
-
-
-def delete_reputation_for_user(db_user):
-    DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()
-    transaction.commit()
 
 
 class TestJustifyStatement(unittest.TestCase):
@@ -211,7 +207,7 @@ class TestJustifyArgument(unittest.TestCase):
 
         clear_seen_by_of(db_user.nickname)
         clear_clicks_of(db_user.nickname)
-        delete_reputation_for_user(db_user)
+        clear_reputation_of_user(db_user)
 
         rep_history_before_new_rep = DBDiscussionSession.query(ReputationHistory).count()
         self.__call_function_and_count_seen_clicked_arguments()
@@ -220,7 +216,7 @@ class TestJustifyArgument(unittest.TestCase):
         self.assertGreater(rep_history_after_new_rep, rep_history_before_new_rep,
                            'Reputation should be granted on first confrontation')
 
-        delete_reputation_for_user(db_user)
+        clear_reputation_of_user(db_user)
         clear_seen_by_of(db_user.nickname)
         clear_clicks_of(db_user.nickname)
 
@@ -228,7 +224,7 @@ class TestJustifyArgument(unittest.TestCase):
         db_user: User = refresh_user('Björn')
         self.config.testing_securitypolicy(userid=db_user.nickname, permissive=True)
 
-        delete_reputation_for_user(db_user)
+        clear_reputation_of_user(db_user)
         rep_history_before_new_rep = DBDiscussionSession.query(ReputationHistory).count()
 
         self.__call_function_and_count_seen_clicked_arguments()
@@ -243,7 +239,7 @@ class TestJustifyArgument(unittest.TestCase):
         self.assertEqual(rep_history_after_new_rep, rep_history_after_second_try,
                          'Reputation should NOT be granted twice for the first confrontation')
 
-        delete_reputation_for_user(db_user)
+        clear_reputation_of_user(db_user)
         clear_seen_by_of(db_user.nickname)
         clear_clicks_of(db_user.nickname)
 
