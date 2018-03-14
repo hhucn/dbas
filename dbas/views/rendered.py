@@ -78,10 +78,6 @@ def __modifiy_issue_overview_url(prep_dict: dict):
     return prep_dict
 
 
-def base_layout():
-    return get_renderer('../templates/basetemplate.pt').implementation()
-
-
 def prepare_request_dict(request: Request):
     """
 
