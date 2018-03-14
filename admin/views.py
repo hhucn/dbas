@@ -15,7 +15,7 @@ from dbas.logger import logger
 from dbas.validators.core import has_keywords, validate
 from dbas.validators.database import valid_table_name
 from dbas.validators.user import valid_user_as_admin, invalid_user
-from dbas.views import user_logout, base_layout, project_name
+from dbas.views import user_logout, project_name
 
 #
 # CORS configuration
@@ -107,7 +107,6 @@ def main_admin(request):
     }
 
     return {
-        'layout': base_layout(),
         'language': str(ui_locales),
         'title': 'Admin' if db_user.is_admin() else '(B)admin',
         'project': project_name,
@@ -142,7 +141,6 @@ def main_table(request):
     table_dict = lib.get_table_dict(table_name, request.application_url)
 
     return {
-        'layout': base_layout(),
         'language': str(ui_locales),
         'title': 'Admin - ' + table_name,
         'project': project_name,

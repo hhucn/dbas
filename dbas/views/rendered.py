@@ -9,7 +9,6 @@ from typing import Callable, Any
 import graphene
 import pkg_resources
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from pyramid.renderers import get_renderer
 from pyramid.request import Request
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
@@ -76,10 +75,6 @@ def __modifiy_issue_overview_url(prep_dict: dict):
         for i, el in enumerate(prep_dict[p]):
             prep_dict[p][i]['url'] = '/discuss' + prep_dict[p][i]['url']
     return prep_dict
-
-
-def base_layout():
-    return get_renderer('../templates/basetemplate.pt').implementation()
 
 
 def prepare_request_dict(request: Request):
