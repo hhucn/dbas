@@ -52,5 +52,5 @@ def get_suggestions_path(issue_uid: int, position: bool, search_value: str = "")
     :param search_value: text to be searched for
     :return: query satisfied the requirements of search(service) to get suggestions fitting search_value
     """
-    suffix = "/suggestions?id={}&start={}&search={}".format(issue_uid, position, search_value)
+    suffix = "/suggestions?id={}&position={}&search={}".format(issue_uid, position, search_value)
     return ROUTE_API + suffix

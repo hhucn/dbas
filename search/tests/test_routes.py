@@ -1,4 +1,5 @@
 import json
+import time
 import unittest
 
 import requests
@@ -7,6 +8,9 @@ from search import ROUTE_API
 
 
 class TestRoutes(unittest.TestCase):
+
+    def setUp(self):
+        time.sleep(5)
 
     def test_get_suggestions_status_200(self):
         response = requests.get(ROUTE_API + "/suggestions?id=1")
