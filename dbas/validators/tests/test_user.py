@@ -22,23 +22,6 @@ class Usertest(TestCaseWithConfig):
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
 
-    def test_valid_user_as_author_of_statement(self):
-        request = construct_dummy_request()
-        response = user.valid_user_as_author_of_statement(request)
-        self.assertFalse(response)
-        self.assertIsInstance(response, bool)
-
-        for id in ['', 'hello', 'anonymous']:
-            self.config.testing_securitypolicy(userid=id, permissive=True)
-            for el in ['', 'a', '0', '1', 1]:
-                request = construct_dummy_request({'statement_id': el})
-                response = user.valid_user_as_author_of_statement(request)
-                self.assertIsInstance(response, bool)
-                if id == 'anonymous' and el in ['1', 1]:
-                    self.assertTrue(response)
-                else:
-                    self.assertFalse(response)
-
     def test_valid_user_as_author_of_argument(self):
         request = construct_dummy_request()
         response = user.valid_user_as_author_of_argument(request)
@@ -99,3 +82,38 @@ class Usertest(TestCaseWithConfig):
         response = user.invalid_user(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
+
+
+class TestValidUserAsAuthorOfStatement(TestCaseWithConfig):
+    def __assertValidResponse(self, validated, response):
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+        self.assertIn('statement', validated)
+
+    def __assertInvalidResponse(self, validated, response):
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+        self.assertNotIn('statement', validated)
+
+    def test_missing_user_and_statement_is_false(self):
+        request = construct_dummy_request()
+        response = user.valid_user_as_author_of_statement(request)
+        self.__assertInvalidResponse(request.validated, response)
+
+    def test_missing_statement_id(self):
+        self.config.testing_securitypolicy(userid='Christian', permissive=True)
+        request = construct_dummy_request()
+        response = user.valid_user_as_author_of_statement(request)
+        self.__assertInvalidResponse(request.validated, response)
+
+    def test_valid_user_and_statement_gives_statement(self):
+        self.config.testing_securitypolicy(userid='Christian', permissive=True)
+        request = construct_dummy_request({'statement_id': 36})
+        response = user.valid_user_as_author_of_statement(request)
+        self.__assertValidResponse(request.validated, response)
+
+    def test_user_is_not_author_of_statement(self):
+        self.config.testing_securitypolicy(userid='Christian', permissive=True)
+        request = construct_dummy_request({'statement_id': 2})
+        response = user.valid_user_as_author_of_statement(request)
+        self.__assertInvalidResponse(request.validated, response)
