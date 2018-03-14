@@ -8,7 +8,7 @@ from dbas.database.discussion_model import ReviewMerge, DBDiscussionSession, Rev
     PremiseGroupMerged, ArgumentsAddedByPremiseGroupSplit, LastReviewerDelete, LastReviewerDuplicate, \
     LastReviewerEdit, LastReviewerOptimization, ReputationHistory, ReviewCanceled, ReviewDelete, ReviewDuplicate, \
     ReviewEdit, ReviewEditValue, ReviewOptimization, RevokedContentHistory, Statement
-from dbas.lib import get_text_for_premisesgroup_uid, get_text_for_argument_uid, nick_of_anonymous_user
+from dbas.lib import get_text_for_argument_uid, nick_of_anonymous_user
 
 
 class AjaxReviewTest(unittest.TestCase):
@@ -1038,14 +1038,13 @@ class AjaxReviewTest(unittest.TestCase):
             'should_merge': True,
         })
         pgroup_old_len = DBDiscussionSession.query(PremiseGroup).count()
-        db_new_pgroup = DBDiscussionSession.query(PremiseGroup).order_by(PremiseGroup.uid.desc()).first()
         db_arguments_with_pgroup = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=pgroup_uid).all()
-        old_text, trash = get_text_for_premisesgroup_uid(pgroup_uid)
+        old_text = DBDiscussionSession.query(PremiseGroup).order_by(PremiseGroup.uid.desc()).first().get_text()
         old_argument_text = get_text_for_argument_uid(db_arguments_with_pgroup[0].uid)
         pgroup_merged_old_len = DBDiscussionSession.query(PremiseGroupMerged).count()
         response = ajax(request)
 
-        new_text, trash = get_text_for_premisesgroup_uid(db_new_pgroup.uid)
+        new_text = DBDiscussionSession.query(PremiseGroup).order_by(PremiseGroup.uid.desc()).first().get_text()
         new_argument_text = get_text_for_argument_uid(db_arguments_with_pgroup[0].uid)
         pgroup_new_len = DBDiscussionSession.query(PremiseGroup).count()
         pgroup_merged_new_len = DBDiscussionSession.query(PremiseGroupMerged).count()

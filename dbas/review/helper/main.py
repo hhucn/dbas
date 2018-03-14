@@ -662,7 +662,7 @@ def __merge_premisegroup(review):
         new_text = ' {} '.format(translator_discussion.get(_.aand)).join(texts)
     else:
         logger('review_main_helper', 'just merge the premisegroup')
-        new_text, tmp = get_text_for_premisesgroup_uid(review.premisesgroup_uid)
+        new_text = get_text_for_premisesgroup_uid(review.premisesgroup_uid)
 
     # now we have new text as a variable, let's set the statement
     new_statement, tmp = set_statement(new_text, db_user, db_first_old_statement.is_position, db_issue)

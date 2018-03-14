@@ -13,8 +13,7 @@ from dbas.database.discussion_model import Argument, Statement, User, History, s
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement
 from dbas.input_validator import check_reaction
 from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_text_for_statement_uid, \
-    get_text_for_premisesgroup_uid, get_text_for_conclusion, bubbles_already_last_in_list, BubbleTypes, \
-    nick_of_anonymous_user
+    get_text_for_conclusion, bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support
@@ -367,10 +366,10 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
         db_statement = DBDiscussionSession.query(Statement).get(db_argument.conclusion_uid)
         reply_for_argument = not (db_statement and db_statement.is_position)
 
-    premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+    premise = db_argument.get_premisegroup_text()
     conclusion = get_text_for_conclusion(db_argument)
     sys_conclusion = get_text_for_conclusion(db_confrontation)
-    confr, tmp = get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid)
+    confr = db_confrontation.get_premisegroup_text()
     user_is_attacking = not db_argument.is_supportive
 
     if lang != 'de':
@@ -400,7 +399,7 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
     return [bubble_user, bubble_syst]
 
 
-def save_path_in_database(db_user: User, slug: str, path: str, history: str='') -> None:
+def save_path_in_database(db_user: User, slug: str, path: str, history: str = '') -> None:
     """
     Saves a path into the database
 
