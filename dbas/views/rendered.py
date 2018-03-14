@@ -9,7 +9,6 @@ from typing import Callable, Any
 import graphene
 import pkg_resources
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from pyramid.renderers import get_renderer
 from pyramid.request import Request
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
