@@ -60,11 +60,6 @@ def check_reaction(attacked_arg_uid, attacking_arg_uid, relation, is_history=Fal
     if relation in relation_mapper:
         return relation_mapper[relation](attacked_arg_uid, attacking_arg_uid)
 
-    if relation.startswith('end') and not is_history:
-        if str(attacking_arg_uid) != '0':
-            return False
-        return True
-
     logger('Validator', 'else-case')
     return False
 

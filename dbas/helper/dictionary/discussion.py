@@ -3,6 +3,7 @@ Provides helping function for dictionaries, which are used in discussions.
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+from typing import Union
 
 import dbas.handler.history as history_helper
 from dbas.database import DBDiscussionSession
@@ -27,7 +28,7 @@ class DiscussionDictHelper(object):
     Provides all functions for creating the discussion dictionaries with all bubbles.
     """
 
-    def __init__(self, lang, nickname=None, history: str='', slug: str='', broke_limit: bool=False):
+    def __init__(self, lang, nickname=None, history: str = '', slug: str = '', broke_limit: bool = False):
         """
         Initialize default values
 
@@ -101,7 +102,8 @@ class DiscussionDictHelper(object):
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_justify_statement(self, stmt_or_arg: Statement, slug, is_supportive, count_of_items, db_user: User):
+    def get_dict_for_justify_statement(self, stmt_or_arg: Statement, slug, is_supportive, count_of_items,
+                                       db_user: User):
         """
         Prepares the discussion dict with all bubbles for the third step in discussion,
         where the user justifies his position.
@@ -131,13 +133,15 @@ class DiscussionDictHelper(object):
 
         # user bubble
         nickname = db_user.nickname if db_user and db_user.nickname != nick_of_anonymous_user else None
-        user_text, add_premise_text = get_user_bubble_text_for_justify_statement(stmt_or_arg.uid, db_user, is_supportive, _tn)
+        user_text, add_premise_text = get_user_bubble_text_for_justify_statement(stmt_or_arg.uid, db_user,
+                                                                                 is_supportive, _tn)
 
         question_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, message=system_question, omit_url=True,
                                                    lang=self.lang)
         url = UrlManager(slug).get_url_for_statement_attitude(stmt_or_arg.uid)
         select_bubble = create_speechbubble_dict(BubbleTypes.USER, url=url, message=user_text, omit_url=False,
-                                                 statement_uid=stmt_or_arg.uid, is_supportive=is_supportive, nickname=nickname,
+                                                 statement_uid=stmt_or_arg.uid, is_supportive=is_supportive,
+                                                 nickname=nickname,
                                                  lang=self.lang)
 
         if not bubbles_already_last_in_list(bubbles_array, select_bubble):
@@ -343,7 +347,8 @@ class DiscussionDictHelper(object):
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_argumentation(self, uid, is_supportive, additional_uid, attack, history, db_user):
+    def get_dict_for_argumentation(self, uid: int, is_supportive: bool, additional_uid: Union[int, None],
+                                   attack: Union[str, None], history: str, db_user: User) -> dict:
         """
         Prepares the discussion dict with all bubbles for the argumentation window.
 
@@ -368,22 +373,26 @@ class DiscussionDictHelper(object):
         gender_of_counter_arg = ''
         db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
 
-        if attack.startswith('end'):
-            user_text, mid_text, sys_text = self.__get_dict_for_argumentation_end(uid, user_changed_opinion, db_user,
-                                                                                  attack)
-            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, message=sys_text, omit_url=True, lang=self.lang)
-            bubble_mid = create_speechbubble_dict(BubbleTypes.INFO, message=mid_text, omit_url=True, lang=self.lang)
+        if not attack:
+            prep_dict = self.__get_dict_for_argumentation_end(uid, user_changed_opinion, db_user)
+            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, message=prep_dict['sys'], omit_url=True,
+                                                  lang=self.lang)
+            bubble_mid = create_speechbubble_dict(BubbleTypes.INFO, message=prep_dict['mid'], omit_url=True,
+                                                  lang=self.lang)
         else:
-            user_text, sys_text, gender_of_counter_arg, db_confrontation = self.__get_dict_for_argumentation(
+            prep_dict = self.__get_dict_for_argumentation(
                 db_argument, additional_uid, history, attack, nickname, is_supportive)
             quid = 'question-bubble-' + str(additional_uid) if int(additional_uid) > 0 else ''
-            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, uid=quid, message=sys_text, omit_url=True,
+            is_author = is_author_of_argument(db_user, prep_dict['confrontation'].uid)
+            bubble_sys = create_speechbubble_dict(BubbleTypes.SYSTEM, uid=quid, message=prep_dict['sys'], omit_url=True,
                                                   lang=self.lang, is_markable=True,
-                                                  is_author=is_author_of_argument(db_user, db_confrontation.uid))
-            statement_list = self.__get_all_statement_texts_by_argument(db_confrontation)
+                                                  is_author=is_author)
+            statement_list = self.__get_all_statement_texts_by_argument(prep_dict['confrontation'])
+            gender_of_counter_arg = prep_dict['gender']
 
-        bubble_user = create_speechbubble_dict(BubbleTypes.USER, message=user_text, omit_url=True, argument_uid=uid,
-                                               is_supportive=is_supportive, lang=self.lang, nickname=nickname)
+        bubble_user = create_speechbubble_dict(BubbleTypes.USER, message=prep_dict['user'], omit_url=True,
+                                               argument_uid=uid, is_supportive=is_supportive, lang=self.lang,
+                                               nickname=nickname)
 
         # dirty fixes
         if len(bubbles_array) > 0 and bubbles_array[-1]['message'] == bubble_user['message']:
@@ -395,7 +404,7 @@ class DiscussionDictHelper(object):
         if not bubbles_already_last_in_list(bubbles_array, bubble_sys):
             bubbles_array.append(bubble_sys)
 
-        if attack.startswith('end'):
+        if not attack:
             bubbles_array.append(bubble_mid)
 
         return {
@@ -408,11 +417,11 @@ class DiscussionDictHelper(object):
             'broke_limit': self.broke_limit
         }
 
-    def __get_dict_for_argumentation_end(self, argument_uid, user_changed_opinion, db_user, attack):
+    def __get_dict_for_argumentation_end(self, argument_uid: int, user_changed_opinion: bool, db_user: User) -> dict:
         """
         Returns a special dict() when the discussion ends during an argumentation
 
-        :param argument_uid: Argumebt.uid
+        :param argument_uid: Argument.uid
         :param user_changed_opinion:  Boolean
         :param nickname: User.nickname
         :param attack: String
@@ -423,12 +432,10 @@ class DiscussionDictHelper(object):
         text = get_text_for_argument_uid(argument_uid, user_changed_opinion=user_changed_opinion,
                                          minimize_on_undercut=True, nickname=nickname)
         user_text = text[0:1].upper() + text[1:]
-        if attack == 'end':
-            sys_text = _tn.get(_.otherParticipantsDontHaveCounterForThat) + '.'
-        else:
-            sys_text = _tn.get(_.otherParticipantsDontHaveNewCounterForThat)
+        sys_text = _tn.get(_.otherParticipantsDontHaveCounterForThat) + '.'
         trophy = '<i class="fa fa-trophy" aria-hidden="true"></i>'
-        mid_text = '{} {} {} <br>{}'.format(trophy, _tn.get(_.congratulation), trophy, _tn.get(_.discussionCongratulationEnd))
+        mid_text = '{} {} {} <br>{}'.format(trophy, _tn.get(_.congratulation), trophy,
+                                            _tn.get(_.discussionCongratulationEnd))
 
         # do we have task in the queue?
         count = get_complete_review_count(db_user)
@@ -443,7 +450,11 @@ class DiscussionDictHelper(object):
             else:
                 mid_text += _tn.get(_.discussionEndLinkTextNotLoggedIn)
 
-        return user_text, mid_text, sys_text
+        return {
+            'user': user_text,
+            'mid': mid_text,
+            'sys': sys_text
+        }
 
     def __get_dict_for_argumentation(self, user_arg, confrontation_arg_uid, history, attack, nickname, is_supportive):
         """
@@ -504,7 +515,12 @@ class DiscussionDictHelper(object):
                                                       not user_arg.is_supportive, user_arg, db_confrontation)
         gender_of_counter_arg = gender
 
-        return user_text, sys_text, gender_of_counter_arg, db_confrontation
+        return {
+            'user': user_text,
+            'sys': sys_text,
+            'gender': gender_of_counter_arg,
+            'confrontation': db_confrontation
+        }
 
     def get_dict_for_jump(self, uid):
         """
