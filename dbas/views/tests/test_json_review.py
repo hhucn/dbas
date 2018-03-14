@@ -1038,14 +1038,13 @@ class AjaxReviewTest(unittest.TestCase):
             'should_merge': True,
         })
         pgroup_old_len = DBDiscussionSession.query(PremiseGroup).count()
-        db_new_pgroup = DBDiscussionSession.query(PremiseGroup).order_by(PremiseGroup.uid.desc()).first()
         db_arguments_with_pgroup = DBDiscussionSession.query(Argument).filter_by(premisesgroup_uid=pgroup_uid).all()
-        old_text, trash = db_new_pgroup.get_text()
+        old_text = DBDiscussionSession.query(PremiseGroup).order_by(PremiseGroup.uid.desc()).first().get_text()
         old_argument_text = get_text_for_argument_uid(db_arguments_with_pgroup[0].uid)
         pgroup_merged_old_len = DBDiscussionSession.query(PremiseGroupMerged).count()
         response = ajax(request)
 
-        new_text = db_new_pgroup.get_text()
+        new_text = DBDiscussionSession.query(PremiseGroup).order_by(PremiseGroup.uid.desc()).first().get_text()
         new_argument_text = get_text_for_argument_uid(db_arguments_with_pgroup[0].uid)
         pgroup_new_len = DBDiscussionSession.query(PremiseGroup).count()
         pgroup_merged_new_len = DBDiscussionSession.query(PremiseGroupMerged).count()

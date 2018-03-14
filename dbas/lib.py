@@ -643,15 +643,12 @@ def get_text_for_premisesgroup_uid(uid):
 
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=uid).join(Statement).all()
     if len(db_premises) == 0:
-        return '', []
-
-    uids = [premise.statements.uid for premise in db_premises]
+        return ''
     texts = [premise.get_text() for premise in db_premises]
-
     lang = DBDiscussionSession.query(Statement).get(db_premises[0].statements.uid).lang
     _t = Translator(lang)
 
-    return ' {} '.format(_t.get(_.aand)).join(texts), uids
+    return ' {} '.format(_t.get(_.aand)).join(texts)
 
 
 def get_text_for_statement_uid(uid: int, colored_position=False):

@@ -487,7 +487,7 @@ def __get_subpage_dict_for_splits(session, application_url, db_user, translator)
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
     premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=rnd_review.premisesgroup_uid).all()
-    text, tmp = get_text_for_premisesgroup_uid(rnd_review.premisesgroup_uid)
+    text = get_text_for_premisesgroup_uid(rnd_review.premisesgroup_uid)
     db_review_values = DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=rnd_review.uid).all()
     if db_review_values:
         splitted_text = [rsv.content for rsv in db_review_values]
@@ -568,7 +568,7 @@ def __get_subpage_dict_for_merges(session, application_url, db_user, translator)
         merged_text = ' {} '.format(aand).join([rsv.content for rsv in db_review_values])
         pgroup_only = False
     else:
-        merged_text, tmp = get_text_for_premisesgroup_uid(rnd_review.premisesgroup_uid)
+        merged_text = get_text_for_premisesgroup_uid(rnd_review.premisesgroup_uid)
         pgroup_only = True
     issue = DBDiscussionSession.query(Issue).get(premises[0].issue_uid).title
     reason = translator.get(_.argumentFlaggedBecauseMerge)
@@ -641,8 +641,9 @@ def __get_text_parts_of_argument(argument):
     ret_list = list()
 
     # get premise of current argument
-    premisegroup, premises_uid = get_text_for_premisesgroup_uid(argument.premisesgroup_uid)
-    for uid in premises_uid:
+    db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
+    premises_uids = [premise.uid for premise in db_premises]
+    for uid in premises_uids:
         logger('ReviewSubpagerHelper', 'add premise of argument ' + str(argument.uid))
         text = get_text_for_statement_uid(uid)
         ret_list.append(__get_part_dict('premise', text, argument.uid, uid))
@@ -657,8 +658,10 @@ def __get_text_parts_of_argument(argument):
         while db_conclusions_argument.argument_uid is not None:  # get further conclusions arguments
 
             # get premise of conclusions arguments
-            premisegroup, premises_uid = get_text_for_premisesgroup_uid(db_conclusions_argument.premisesgroup_uid)
-            for uid in premises_uid:
+            premisegroup = get_text_for_premisesgroup_uid(db_conclusions_argument.premisesgroup_uid)
+            db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
+            premises_uids = [premise.uid for premise in db_premises]
+            for uid in premises_uids:
                 text = get_text_for_statement_uid(uid)
                 logger('ReviewSubpagerHelper', 'add premise of argument ' + str(db_conclusions_argument.uid))
                 ret_list.append(__get_part_dict('premise', text, db_conclusions_argument.uid, uid))

@@ -3,7 +3,6 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-from typing import Union
 
 import arrow
 from cryptacular.bcrypt import BCRYPTPasswordManager
@@ -929,7 +928,7 @@ class Argument(DiscussionBase):
         """
         return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
 
-    def get_conclusion_text(self, html: bool = False) -> Union[str, None]:
+    def get_conclusion_text(self, html: bool = False) -> str:
         """
         Gets the current conclusion text from the argument, without trailing punctuation.
 
@@ -937,7 +936,7 @@ class Argument(DiscussionBase):
         :return:
         """
         if not self.conclusion_uid:
-            return None
+            return ''
         db_statement = DBDiscussionSession.query(Statement).get(self.conclusion_uid)
         return db_statement.get_text(html)
 

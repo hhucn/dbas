@@ -40,27 +40,24 @@ class LibTests(unittest.TestCase):
 
     def test_get_text_for_premisesgroup_uid(self):
         # premise, which is in db_premises and premise_group contains only one premise
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=2), ('cats are very independent'))
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=2), 'cats are very independent')
 
         # premise_group with more than one premises
-        self.assertNotEqual(lib.get_text_for_premisesgroup_uid(uid=13), ('cats are fluffy und cats are small'))
+        self.assertNotEqual(lib.get_text_for_premisesgroup_uid(uid=13), 'cats are fluffy und cats are small')
 
-        values = lib.get_text_for_premisesgroup_uid(uid=12)
-        solution1 = 'cats are fluffy and cats are small', ['15', '16']
-        solution2 = 'cats are small and cats are fluffy', ['16', '15']
-        if values[1] == solution1[1]:
-            self.assertEqual(values, solution1)
-        else:
-            self.assertEqual(values, solution2)
+        val = lib.get_text_for_premisesgroup_uid(uid=12)
+        sol1 = 'cats are fluffy and cats are small'
+        sol2 = 'cats are small and cats are fluffy'
+        self.assertIn(val, [sol1, sol2])
 
         # premise, which is not in db_premises
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0), (''))
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0), '')
 
         # negative uid
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=-1), (''))
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=-1), '')
 
         # language is empty string
-        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0), (''))
+        self.assertEqual(lib.get_text_for_premisesgroup_uid(uid=0), '')
 
     def test_get_text_for_statement_uid(self):
         # id for no statement
@@ -86,13 +83,13 @@ class LibTests(unittest.TestCase):
         # 'argument' is a statement
         self.assertEqual(lib.get_text_for_conclusion(argument=argument2,
                                                      start_with_intro=True,
-                                                     rearrange_intro=True), None)
+                                                     rearrange_intro=True), '')
 
         # unknown conclusion id
         argument3 = Argument(premisegroup=0, is_supportive=True, author=0, issue=0, conclusion=0)
         self.assertEqual(lib.get_text_for_conclusion(argument=argument3,
                                                      start_with_intro=False,
-                                                     rearrange_intro=True), None)
+                                                     rearrange_intro=True), '')
 
     def test_resolve_issue_uid_to_slug(self):
         # id for issue
