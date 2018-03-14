@@ -13,6 +13,7 @@ from collections import defaultdict
 from datetime import datetime
 from enum import Enum, auto
 from html import escape
+from typing import List
 from urllib import parse
 from uuid import uuid4
 
@@ -270,7 +271,7 @@ def get_all_arguments_with_text_and_url_by_statement_id(db_statement, urlmanager
 
     uids.sort()
     for uid in uids:
-        statement_text = get_text_for_statement_uid(db_statement.uid)
+        statement_text = db_statement.get_text()
         attack_type = 'jump' if is_jump else ''
         argument_text = get_text_for_argument_uid(uid, anonymous_style=True, attack_type=attack_type)
         pos = argument_text.lower().find(statement_text.lower())
@@ -318,7 +319,7 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
     :param support_counter_argument: Boolean
     :return: String
     """
-    logger('DBAS.LIB', 'main ' + str(uid))
+    logger('DBAS.LIB', 'main {}'.format(uid))
     db_argument = DBDiscussionSession.query(Argument).get(uid)
     if not db_argument:
         return None
@@ -338,10 +339,10 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
         premisegroup_by_user = pgroup.author_uid == db_user.uid or marked_argument is not None
 
     # getting all argument id
-    arg_array = [db_argument.uid]
+    arg_array = [db_argument]
     while db_argument.argument_uid:
         db_argument = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
-        arg_array.append(db_argument.uid)
+        arg_array.append(db_argument)
 
     if attack_type == 'jump':
         return __build_argument_for_jump(arg_array, with_html_tag)
@@ -359,7 +360,7 @@ def get_text_for_argument_uid(uid, nickname=None, with_html_tag=False, start_wit
                                        _t)
 
 
-def __build_argument_for_jump(arg_array, with_html_tag):
+def __build_argument_for_jump(arg_array: List[Argument], with_html_tag):
     """
     Build tet for an argument, if we jump to this argument
 
@@ -370,11 +371,11 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     tag_premise = ('<' + tag_type + ' data-argumentation-type="attack">') if with_html_tag else ''
     tag_conclusion = ('<' + tag_type + ' data-argumentation-type="argument">') if with_html_tag else ''
     tag_end = ('</' + tag_type + '>') if with_html_tag else ''
-    lang = DBDiscussionSession.query(Argument).get(arg_array[0]).lang
+    lang = arg_array[0].lang
     _t = Translator(lang)
 
     if len(arg_array) == 1:
-        ret_value = __build_val_for_jump(arg_array, tag_premise, tag_conclusion, tag_end, _t)
+        ret_value = __build_val_for_jump(arg_array[0], tag_premise, tag_conclusion, tag_end, _t)
 
     elif len(arg_array) == 2:
         ret_value = __build_val_for_undercut(arg_array, tag_premise, tag_conclusion, tag_end, _t)
@@ -385,12 +386,11 @@ def __build_argument_for_jump(arg_array, with_html_tag):
     return ret_value.replace('  ', ' ')
 
 
-def __build_val_for_jump(arg_array, tag_premise, tag_conclusion, tag_end, _t):
-    db_argument = DBDiscussionSession.query(Argument).get(arg_array[0])
-    premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+def __build_val_for_jump(db_argument, tag_premise, tag_conclusion, tag_end, _t):
+    premises = db_argument.get_premisegroup_text()
     if premises[-1] != '.':
         premises += '.'
-    conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
+    conclusion = db_argument.get_conclusion_text()
 
     because = _t.get(_.because).lower()
     conclusion = tag_conclusion + conclusion + tag_end
@@ -407,12 +407,12 @@ def __build_val_for_jump(arg_array, tag_premise, tag_conclusion, tag_end, _t):
     return ret_value
 
 
-def __build_val_for_undercut(arg_array, tag_premise, tag_conclusion, tag_end, _t):
-    db_undercut = DBDiscussionSession.query(Argument).get(arg_array[0])
-    db_conclusion_argument = DBDiscussionSession.query(Argument).get(arg_array[1])
-    premise, uids = get_text_for_premisesgroup_uid(db_undercut.premisesgroup_uid)
-    conclusion_premise, uids = get_text_for_premisesgroup_uid(db_conclusion_argument.premisesgroup_uid)
-    conclusion_conclusion = get_text_for_statement_uid(db_conclusion_argument.conclusion_uid)
+def __build_val_for_undercut(arg_array: List[Argument], tag_premise, tag_conclusion, tag_end, _t):
+    db_undercut = arg_array[0]
+    db_conclusion_argument = arg_array[1]
+    premise = db_undercut.get_premisegroup_text()
+    conclusion_premise = db_conclusion_argument.get_premisegroup_text()
+    conclusion_conclusion = db_conclusion_argument.get_conclusion_text()
 
     premise = tag_premise + premise + tag_end
     conclusion_premise = tag_conclusion + conclusion_premise + tag_end
@@ -426,14 +426,11 @@ def __build_val_for_undercut(arg_array, tag_premise, tag_conclusion, tag_end, _t
     return ret_value
 
 
-def __build_val_for_undercutted_undercut(arg_array, tag_premise, tag_conclusion, tag_end, _t):
-    db_undercut1 = DBDiscussionSession.query(Argument).get(arg_array[0])
-    db_undercut2 = DBDiscussionSession.query(Argument).get(arg_array[1])
-    db_argument = DBDiscussionSession.query(Argument).get(arg_array[2])
-    premise1, uids = get_text_for_premisesgroup_uid(db_undercut1.premisesgroup_uid)
-    premise2, uids = get_text_for_premisesgroup_uid(db_undercut2.premisesgroup_uid)
-    premise3, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-    conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
+def __build_val_for_undercutted_undercut(arg_array: List[Argument], tag_premise, tag_conclusion, tag_end, _t):
+    premise1 = arg_array[0].get_premisegroup_text()
+    premise2 = arg_array[1].get_premisegroup_text()
+    premise3 = arg_array[2].get_premisegroup_text()
+    conclusion = arg_array[2].get_conclusion_text()
 
     bind = start_con + _t.get(_.isNotAGoodReasonAgainstArgument) + end_tag
     because = _t.get(_.because)
@@ -449,8 +446,9 @@ def __build_val_for_undercutted_undercut(arg_array, tag_premise, tag_conclusion,
     return ret_value
 
 
-def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_position, attack_type, _t, start_with_intro,
-                            is_users_opinion, anonymous_style, support_counter_argument=False, author_uid=None):
+def __build_single_argument(db_argument: Argument, rearrange_intro: bool, with_html_tag: bool, colored_position: bool,
+                            attack_type: str, _t: Translator, start_with_intro: bool, is_users_opinion: bool,
+                            anonymous_style: bool, support_counter_argument: bool=False, author_uid=None):
     """
     Build up argument text for a single argument
 
@@ -469,21 +467,22 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     :param author_uid: User.uid
     :return: String
     """
-    db_argument = DBDiscussionSession.query(Argument).get(uid)
-    premises, uids = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
-    conclusion = get_text_for_statement_uid(db_argument.conclusion_uid)
-    lang = DBDiscussionSession.query(Argument).get(uid).lang
+    premises_text = db_argument.get_premisegroup_text()
+    conclusion_text = db_argument.get_conclusion_text()
+    lang = db_argument.lang
 
     if lang != 'de':
-        premises = premises[0:1].lower() + premises[1:]  # pretty print
+        premises_text = premises_text[0:1].lower() + premises_text[1:]  # pretty print
 
-    premises, conclusion, sb, sb_none, se = __get_tags_for_building_single_argument(with_html_tag, attack_type,
-                                                                                    colored_position, premises,
-                                                                                    conclusion)
+    premises_text, conclusion_text, sb, sb_none, se = __get_tags_for_building_single_argument(with_html_tag,
+                                                                                              attack_type,
+                                                                                              colored_position,
+                                                                                              premises_text,
+                                                                                              conclusion_text)
 
     marked_element = False
     if author_uid:
-        db_marked = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.argument_uid == uid,
+        db_marked = DBDiscussionSession.query(MarkedArgument).filter(MarkedArgument.argument_uid == db_argument.uid,
                                                                      MarkedArgument.author_uid == author_uid).first()
         marked_element = db_marked is not None
 
@@ -492,11 +491,13 @@ def __build_single_argument(uid, rearrange_intro, with_html_tag, colored_positio
     if lang == 'de':
         ret_value = __build_single_argument_for_de(_t, sb, se, you_have_the_opinion_that, start_with_intro,
                                                    anonymous_style, rearrange_intro, db_argument, attack_type, sb_none,
-                                                   marked_element, lang, premises, conclusion, is_users_opinion,
+                                                   marked_element, lang, premises_text, conclusion_text,
+                                                   is_users_opinion,
                                                    support_counter_argument)
     else:
-        ret_value = __build_single_argument_for_en(_t, sb, se, you_have_the_opinion_that, marked_element, conclusion,
-                                                   premises, db_argument)
+        ret_value = __build_single_argument_for_en(_t, sb, se, you_have_the_opinion_that, marked_element,
+                                                   conclusion_text,
+                                                   premises_text, db_argument)
     return ret_value.replace('  ', ' ')
 
 
@@ -558,8 +559,8 @@ def __build_single_argument_for_en(_t, sb, se, you_have_the_opinion_that, marked
     return ret_value
 
 
-def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, with_html_tag, start_with_intro,
-                            minimize_on_undercut, anonymous_style, premisegroup_by_user, _t):
+def __build_nested_argument(arg_array: List[Argument], first_arg_by_user, user_changed_opinion, with_html_tag,
+                            start_with_intro, minimize_on_undercut, anonymous_style, premisegroup_by_user, _t):
     """
 
     :param arg_array:
@@ -577,18 +578,16 @@ def __build_nested_argument(arg_array, first_arg_by_user, user_changed_opinion, 
     pgroups = []
     supportive = []
     arg_array = arg_array[::-1]
-    local_lang = DBDiscussionSession.query(Argument).get(arg_array[0]).lang
+    local_lang = arg_array[0].lang
 
     # grepping all arguments in the chain
-    for uid in arg_array:
-        db_argument = DBDiscussionSession.query(Argument).get(uid)
-        text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+    for db_argument in arg_array:
+        text = db_argument.get_premisegroup_text()
 
         pgroups.append(text)
         supportive.append(db_argument.is_supportive)
 
-    uid = DBDiscussionSession.query(Argument).get(arg_array[0]).conclusion_uid
-    conclusion = get_text_for_statement_uid(uid)
+    conclusion = arg_array[0].get_conclusion_text()
 
     # html tags for framing
     sb = start_position if with_html_tag else ''
@@ -640,19 +639,17 @@ def get_text_for_premisesgroup_uid(uid):
     :param uid: premisesgroup_uid
     :return: text, uids
     """
+    warnings.warn("Use PremiseGroup.get_text() instead.", DeprecationWarning)
+
     db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=uid).join(Statement).all()
-    uids = []
-    texts = []
     if len(db_premises) == 0:
-        return '', uids
+        return '', []
+
+    uids = [premise.statements.uid for premise in db_premises]
+    texts = [premise.get_text() for premise in db_premises]
 
     lang = DBDiscussionSession.query(Statement).get(db_premises[0].statements.uid).lang
     _t = Translator(lang)
-
-    for premise in db_premises:
-        uids.append(str(premise.statements.uid))
-        tmp = get_text_for_statement_uid(premise.statements.uid)
-        texts.append(str(tmp))
 
     return ' {} '.format(_t.get(_.aand)).join(texts), uids
 
@@ -688,7 +685,7 @@ def get_text_for_statement_uid(uid: int, colored_position=False):
     return sb + content + se
 
 
-def get_text_for_premise(uid, colored_position=False):
+def get_text_for_premise(uid: int, colored_position: bool = False):
     """
     Returns text of premise with given uid
 
@@ -698,7 +695,7 @@ def get_text_for_premise(uid, colored_position=False):
     """
     db_premise = DBDiscussionSession.query(Premise).get(uid)
     if db_premise:
-        return get_text_for_statement_uid(db_premise.statement_uid, colored_position)
+        return db_premise.get_text(html=colored_position)
     else:
         return None
 
@@ -716,7 +713,7 @@ def get_text_for_conclusion(argument, start_with_intro=False, rearrange_intro=Fa
         return get_text_for_argument_uid(argument.argument_uid, start_with_intro, rearrange_intro=rearrange_intro,
                                          is_users_opinion=is_users_opinion)
     else:
-        return get_text_for_statement_uid(argument.conclusion_uid)
+        return argument.get_conclusion_text()
 
 
 def resolve_issue_uid_to_slug(uid):

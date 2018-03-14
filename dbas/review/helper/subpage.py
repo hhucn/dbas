@@ -184,7 +184,7 @@ def __get_base_subpage_dict(review_type, db_reviews, already_seen, first_time, d
         issue = DBDiscussionSession.query(Issue).get(db_argument.issue_uid).title
     else:
         db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
-        text = get_text_for_statement_uid(db_statement.uid)
+        text = db_statement.get_text()
         issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
 
     return rnd_review, already_seen, extra_info, text, issue
@@ -287,7 +287,7 @@ def __get_subpage_dict_for_optimization(session, application_url, db_user, trans
         context = [text]
     else:
         db_statement = DBDiscussionSession.query(Statement).get(rnd_review.statement_uid)
-        text = get_text_for_statement_uid(db_statement.uid)
+        text = db_statement.get_text()
         issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
         parts = [__get_part_dict('statement', text, 0, rnd_review.statement_uid)]
         context = []
@@ -425,7 +425,7 @@ def __get_subpage_dict_for_duplicates(session, application_url, db_user, transla
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
     db_statement = DBDiscussionSession.query(Statement).get(rnd_review.duplicate_statement_uid)
-    text = get_text_for_statement_uid(db_statement.uid)
+    text = db_statement.get_text()
     issue = DBDiscussionSession.query(Issue).get(db_statement.issue_uid).title
     reason = translator.get(_.argumentFlaggedBecauseDuplicate)
 
@@ -493,7 +493,7 @@ def __get_subpage_dict_for_splits(session, application_url, db_user, translator)
         splitted_text = [rsv.content for rsv in db_review_values]
         pgroup_only = False
     else:
-        splitted_text = [get_text_for_statement_uid(p.statement_uid) for p in premises]
+        splitted_text = [premise.get_text() for premise in premises]
         pgroup_only = True
     issue = DBDiscussionSession.query(Issue).get(premises[0].issue_uid).title
     reason = translator.get(_.argumentFlaggedBecauseSplit)
@@ -557,7 +557,7 @@ def __get_subpage_dict_for_merges(session, application_url, db_user, translator)
 
     rnd_review = db_reviews[random.randint(0, len(db_reviews) - 1)]
     premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=rnd_review.premisesgroup_uid).all()
-    text = [get_text_for_statement_uid(p.statement_uid) for p in premises]
+    text = [premise.get_text() for premise in premises]
     db_review_values = DBDiscussionSession.query(ReviewMergeValues).filter_by(review_uid=rnd_review.uid).all()
 
     discussion_lang = DBDiscussionSession.query(Statement).get(premises[0].uid).lang
@@ -647,8 +647,8 @@ def __get_text_parts_of_argument(argument):
         text = get_text_for_statement_uid(uid)
         ret_list.append(__get_part_dict('premise', text, argument.uid, uid))
 
-    if argument.argument_uid is None:  # get conlusion of current argument
-        conclusion = get_text_for_statement_uid(argument.conclusion_uid)
+    if argument.argument_uid is None:  # get conclusion of current argument
+        conclusion = argument.get_conclusion_text()
         logger('ReviewSubpagerHelper', 'add statement of argument ' + str(argument.uid))
         ret_list.append(__get_part_dict('conclusion', conclusion, argument.uid, argument.conclusion_uid))
     else:  # or get the conclusions argument
@@ -666,7 +666,7 @@ def __get_text_parts_of_argument(argument):
             db_conclusions_argument = DBDiscussionSession.query(Argument).get(db_conclusions_argument.argument_uid)
 
         # get the last conclusion of the chain
-        conclusion = get_text_for_statement_uid(db_conclusions_argument.conclusion_uid)
+        conclusion = db_conclusions_argument.get_conclusion_text()
         logger('ReviewSubpagerHelper', 'add statement of argument ' + str(db_conclusions_argument.uid))
         ret_list.append(__get_part_dict('conclusion', conclusion, db_conclusions_argument.uid,
                                         db_conclusions_argument.conclusion_uid))

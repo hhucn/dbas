@@ -3,6 +3,7 @@ D-BAS database Model
 
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
+from typing import Union
 
 import arrow
 from cryptacular.bcrypt import BCRYPTPasswordManager
@@ -13,6 +14,8 @@ from sqlalchemy.orm import relationship
 from sqlalchemy_utils import ArrowType
 
 from dbas.database import DBDiscussionSession, DiscussionBase
+from dbas.strings.keywords import Keywords as _
+from dbas.strings.translator import Translator
 
 
 def sql_timestamp_pretty_print(ts, lang='en', humanize=True, with_exact_time=False):
@@ -532,7 +535,7 @@ class Statement(DiscussionBase):
 
     def get_text(self, html: bool = False) -> str:
         """
-        Gets the current text form the statement, without trailing punctuation.
+        Gets the current text from the statement, without trailing punctuation.
 
         :param html: If True, returns a html span for coloring.
         :return:
@@ -546,7 +549,7 @@ class Statement(DiscussionBase):
         else:
             return text
 
-    def get_html(self):
+    def get_html(self) -> str:
         return self.get_text(html=True)
 
 
@@ -586,6 +589,16 @@ class StatementReferences(DiscussionBase):
         self.author_uid = author_uid
         self.statement_uid = statement_uid
         self.issue_uid = issue_uid
+
+    def get_statement_text(self, html: bool = False) -> str:
+        """
+        Gets the current references text from the statement, without trailing punctuation.
+
+        :param html: If True, returns a html span for coloring.
+        :return:
+        """
+        db_statement = DBDiscussionSession.query(Statement).get(self.statement_uid)
+        return db_statement.get_text(html)
 
 
 class SeenStatement(DiscussionBase):
@@ -720,6 +733,12 @@ class PremiseGroup(DiscussionBase):
         """
         self.author_uid = author
 
+    def get_text(self):
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=self.uid).join(Statement).all()
+        texts = [premise.get_text() for premise in db_premises]
+        lang = DBDiscussionSession.query(Statement).get(db_premises[0].statements.uid).lang
+        return ' {} '.format(Translator(lang).get(_.aand)).join(texts)
+
 
 class Premise(DiscussionBase):
     """
@@ -788,6 +807,19 @@ class Premise(DiscussionBase):
         """
         self.premisesgroup_uid = premisegroup
 
+    def get_text(self, html: bool = False) -> str:
+        """
+        Gets the current premise text from the statement, without trailing punctuation.
+
+        :param html: If True, returns a html span for coloring.
+        :return:
+        """
+        db_statement = DBDiscussionSession.query(Statement).get(self.statement_uid)
+        return db_statement.get_text(html)
+
+    def get_html(self) -> str:
+        return self.get_text(html=True)
+
     def to_dict(self):
         """
         Returns the row as dictionary.
@@ -828,12 +860,13 @@ class Argument(DiscussionBase):
     arguments = relationship('Argument', foreign_keys=[argument_uid], remote_side=uid)
     issues = relationship('Issue', foreign_keys=[issue_uid])
 
-    def __init__(self, premisegroup, issupportive, author, issue: int, conclusion=None, argument=None, is_disabled=False):
+    def __init__(self, premisegroup, is_supportive, author, issue: int, conclusion=None, argument=None,
+                 is_disabled=False):
         """
         Initializes a row in current argument-table
 
         :param premisegroup: PremiseGroup.uid
-        :param issupportive: Boolean
+        :param is_supportive: Boolean
         :param author: User.uid
         :param issue: Issue.uid
         :param conclusion: Default 0, which will be None
@@ -844,7 +877,7 @@ class Argument(DiscussionBase):
         self.premisesgroup_uid = premisegroup
         self.conclusion_uid = None if conclusion == 0 else conclusion
         self.argument_uid = None if argument == 0 else argument
-        self.is_supportive = issupportive
+        self.is_supportive = is_supportive
         self.author_uid = author
         self.argument_uid = argument
         self.issue_uid = issue
@@ -895,6 +928,23 @@ class Argument(DiscussionBase):
         :return: String
         """
         return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
+
+    def get_conclusion_text(self, html: bool = False) -> Union[str, None]:
+        """
+        Gets the current conclusion text from the argument, without trailing punctuation.
+
+        :param html: If True, returns a html span for coloring.
+        :return:
+        """
+        if not self.conclusion_uid:
+            return None
+        db_statement = DBDiscussionSession.query(Statement).get(self.conclusion_uid)
+        return db_statement.get_text(html)
+
+    def get_premisegroup_text(self) -> str:
+        db_premisegroup = DBDiscussionSession.query(PremiseGroup).get(self.premisesgroup_uid)
+        text = db_premisegroup.get_text()
+        return text
 
     def to_dict(self):
         """

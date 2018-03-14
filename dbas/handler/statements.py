@@ -546,8 +546,8 @@ def __create_argument_by_uids(db_user: User, premisegroup_uid, conclusion_uid, a
                                                               Argument.conclusion_uid == conclusion_uid,
                                                               Argument.issue_uid == db_issue.uid).first()
     if not new_argument:
-        new_argument = Argument(premisegroup=premisegroup_uid, issupportive=is_supportive, author=db_user.uid,
-                                conclusion=conclusion_uid, issue=db_issue.uid)
+        new_argument = Argument(premisegroup=premisegroup_uid, is_supportive=is_supportive, author=db_user.uid,
+                                issue=db_issue.uid, conclusion=conclusion_uid)
         new_argument.set_conclusions_argument(argument_uid)
 
         DBDiscussionSession.add(new_argument)

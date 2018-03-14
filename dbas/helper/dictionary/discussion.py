@@ -11,9 +11,8 @@ from dbas.database.discussion_model import Argument, Statement, Premise, User
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement, \
     get_system_bubble_text_for_justify_statement
 from dbas.helper.url import UrlManager
-from dbas.lib import get_text_for_argument_uid, get_text_for_statement_uid, get_text_for_premisesgroup_uid, \
-    get_text_for_conclusion, create_speechbubble_dict, is_author_of_argument, bubbles_already_last_in_list, BubbleTypes, \
-    nick_of_anonymous_user
+from dbas.lib import get_text_for_argument_uid, get_text_for_conclusion, create_speechbubble_dict, \
+    is_author_of_argument, bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user, get_text_for_statement_uid
 from dbas.logger import logger
 from dbas.review.helper.queues import get_complete_review_count
 from dbas.strings.keywords import Keywords as _
@@ -102,13 +101,13 @@ class DiscussionDictHelper(object):
             'broke_limit': self.broke_limit
         }
 
-    def get_dict_for_justify_statement(self, stmt_or_arg: Statement, slug, is_supportive, count_of_items,
+    def get_dict_for_justify_statement(self, db_statement: Statement, slug, is_supportive, count_of_items,
                                        db_user: User):
         """
         Prepares the discussion dict with all bubbles for the third step in discussion,
         where the user justifies his position.
 
-        :param stmt_or_arg: Statement
+        :param db_statement: Statement
         :param db_user: User
         :param slug: Issue.slug
         :param is_supportive: Boolean
@@ -121,7 +120,7 @@ class DiscussionDictHelper(object):
         bubbles_array = history_helper.create_bubbles_from_history(self.history, self.nickname, self.lang, self.slug)
 
         save_statement_url = 'set_new_start_statement'
-        text = get_text_for_statement_uid(stmt_or_arg.uid)
+        text = db_statement.get_text()
         if not text:
             return None
 
@@ -133,14 +132,14 @@ class DiscussionDictHelper(object):
 
         # user bubble
         nickname = db_user.nickname if db_user and db_user.nickname != nick_of_anonymous_user else None
-        user_text, add_premise_text = get_user_bubble_text_for_justify_statement(stmt_or_arg.uid, db_user,
+        user_text, add_premise_text = get_user_bubble_text_for_justify_statement(db_statement.uid, db_user,
                                                                                  is_supportive, _tn)
 
         question_bubble = create_speechbubble_dict(BubbleTypes.SYSTEM, message=system_question, omit_url=True,
                                                    lang=self.lang)
-        url = UrlManager(slug).get_url_for_statement_attitude(stmt_or_arg.uid)
+        url = UrlManager(slug).get_url_for_statement_attitude(db_statement.uid)
         select_bubble = create_speechbubble_dict(BubbleTypes.USER, url=url, message=user_text, omit_url=False,
-                                                 statement_uid=stmt_or_arg.uid, is_supportive=is_supportive,
+                                                 statement_uid=db_statement.uid, is_supportive=is_supportive,
                                                  nickname=nickname,
                                                  lang=self.lang)
 
@@ -207,7 +206,7 @@ class DiscussionDictHelper(object):
             }
 
         confrontation = get_text_for_argument_uid(uid)
-        premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+        premise = db_argument.get_premisegroup_text()
         conclusion = get_text_for_conclusion(db_argument, is_users_opinion=False)
 
         if db_argument.conclusion_uid is None:
@@ -468,14 +467,14 @@ class DiscussionDictHelper(object):
         :param is_supportive: Boolean
         :return: dict()
         """
-        premise, tmp = get_text_for_premisesgroup_uid(user_arg.premisesgroup_uid)
+        premise = user_arg.get_premisegroup_text()
         conclusion = get_text_for_conclusion(user_arg)
         db_confrontation = DBDiscussionSession.query(Argument).get(confrontation_arg_uid)
-        confr, tmp = get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid)
-        sys_conclusion = get_text_for_conclusion(db_confrontation)
+        confr = db_confrontation.get_premisegroup_text()
+        sys_conclusion = (db_confrontation.get_conclusion_text())
         if attack == 'undermine':
             if db_confrontation.conclusion_uid != 0:
-                premise = get_text_for_statement_uid(db_confrontation.conclusion_uid)
+                premise = db_confrontation.get_conclusion_text()
             else:
                 premise = get_text_for_argument_uid(db_confrontation.argument_uid, True, colored_position=True,
                                                     attack_type=attack)
@@ -629,7 +628,7 @@ class DiscussionDictHelper(object):
         tag_premise = '<' + tag_type + ' data-argumentation-type="argument">'
         tag_conclusion = '<' + tag_type + ' data-argumentation-type="attack">'
         tag_end = '</' + tag_type + '>'
-        premise, trash = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+        premise = db_argument.get_premisegroup_text()
         premise = tag_premise + premise + tag_end
         conclusion = tag_conclusion + get_text_for_conclusion(db_argument) + tag_end
         aand = ' ' + _tn.get(_.aand) + ' '
@@ -712,11 +711,11 @@ class DiscussionDictHelper(object):
                ' premise count: ' + str(len(db_premises)))
 
         for premise in db_premises:
-            statement_list.append({'text': get_text_for_statement_uid(premise.statement_uid),
+            statement_list.append({'text': premise.get_text(),
                                    'uid': premise.statement_uid})
 
         if argument.conclusion_uid is not None:
-            statement_list.append({'text': get_text_for_statement_uid(argument.conclusion_uid),
+            statement_list.append({'text': argument.get_conclusion_text(),
                                    'uid': argument.conclusion_uid})
 
         else:
@@ -724,10 +723,10 @@ class DiscussionDictHelper(object):
             db_conclusion_premises = DBDiscussionSession.query(Premise).filter_by(
                 premisesgroup_uid=db_conclusion_argument.premisesgroup_uid).all()
             for conclusion_premise in db_conclusion_premises:
-                statement_list.append({'text': get_text_for_statement_uid(conclusion_premise.statement_uid),
+                statement_list.append({'text': conclusion_premise.get_text(),
                                        'uid': conclusion_premise.statement_uid})
 
-            statement_list.append({'text': get_text_for_statement_uid(db_conclusion_argument.conclusion_uid),
+            statement_list.append({'text': db_conclusion_argument.get_conclusion_text(),
                                    'uid': db_conclusion_argument.conclusion_uid})
 
         return statement_list
