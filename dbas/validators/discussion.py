@@ -242,10 +242,9 @@ def __validate_enabled_entity(request: Request, db_issue: Union[Issue, None], en
     :param request:
     :param db_issue:
     :param entity:
-    :param entity_id_in_path:
+    :param entity_id:
     :return:
     """
-
     db_entity: entity = DBDiscussionSession.query(entity).get(entity_id)
     if not db_entity:
         return None
@@ -256,7 +255,6 @@ def __validate_enabled_entity(request: Request, db_issue: Union[Issue, None], en
     if db_issue and not db_entity.issue_uid == db_issue.uid:
         add_error(request, '{} does not belong to issue'.format(db_entity.__class__.__name__), location='path')
         return None
-
     return db_entity
 
 
@@ -301,9 +299,13 @@ def valid_argument(location, depends_on: Set[Callable[[Request], bool]] = set())
             return False
 
         if __valid_id_from_location(request, 'argument_id', location):
-            request.validated['argument'] = __validate_enabled_entity(request, request.validated.get('issue'), Argument,
-                                                                      request.validated['argument_id'])
-            return True if request.validated['argument'] else False
+            argument_id = request.validated['argument_id']
+            db_entity = __validate_enabled_entity(request, request.validated.get('issue'), Argument, argument_id)
+            if db_entity:
+                request.validated['argument'] = db_entity
+                return True
+            add_error(request, 'Argument with id {} could not be found'.format(argument_id))
+            return False
         return False
 
     return inner
