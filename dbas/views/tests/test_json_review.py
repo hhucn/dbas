@@ -1044,7 +1044,8 @@ class AjaxReviewTest(unittest.TestCase):
         pgroup_merged_old_len = DBDiscussionSession.query(PremiseGroupMerged).count()
         response = ajax(request)
 
-        new_text = DBDiscussionSession.query(PremiseGroup).order_by(PremiseGroup.uid.desc()).first().get_text()
+        db_new_pgroup = DBDiscussionSession.query(PremiseGroup).order_by(PremiseGroup.uid.desc()).first()
+        new_text = db_new_pgroup.get_text()
         new_argument_text = get_text_for_argument_uid(db_arguments_with_pgroup[0].uid)
         pgroup_new_len = DBDiscussionSession.query(PremiseGroup).count()
         pgroup_merged_new_len = DBDiscussionSession.query(PremiseGroupMerged).count()
