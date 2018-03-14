@@ -365,7 +365,7 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
     reply_for_argument = True
     if db_argument.conclusion_uid is not None:
         db_statement = DBDiscussionSession.query(Statement).get(db_argument.conclusion_uid)
-        reply_for_argument = not (db_statement and db_statement.is_startpoint)
+        reply_for_argument = not (db_statement and db_statement.is_position)
 
     premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
     conclusion = get_text_for_conclusion(db_argument)

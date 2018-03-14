@@ -72,7 +72,7 @@ class ItemDictHelper(object):
         logger('ItemDictHelper', 'def user: {}'.format(db_user.nickname))
         db_statements = DBDiscussionSession.query(Statement) \
             .filter(Statement.is_disabled == False,
-                    Statement.is_startpoint == True,
+                    Statement.is_position == True,
                     Statement.issue_uid == self.db_issue.uid).all()
 
         uids = [element.uid for element in db_statements if db_statements]

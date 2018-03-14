@@ -214,7 +214,7 @@ def discussion_init(request):
 
     db_positions = DBDiscussionSession.query(Statement).filter(Statement.is_disabled == False,
                                                                Statement.issue_uid == db_issue.uid,
-                                                               Statement.is_startpoint == True).all()
+                                                               Statement.is_position == True).all()
 
     items = [Item([pos.get_textversion().content], "{}/attitude/{}".format(db_issue.slug, pos.uid))
              for pos in db_positions]
