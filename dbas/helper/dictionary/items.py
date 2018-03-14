@@ -191,12 +191,12 @@ class ItemDictHelper(object):
 
             new_arg = None
             url = None
-            if 'end' in attack:  # TODO 343
+            if not attack:
                 new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
                 if new_arg:
                     url = _um.get_url_for_support_each_other(argument.uid, new_arg.uid)
 
-            if 'end' not in attack or new_arg is None or url is None:
+            if attack or new_arg is None or url is None:
                 url = _um.get_url_for_reaction_on_argument(argument.uid, attack, arg_id_sys)
 
             statements_array.append(self.__create_answer_dict(str(argument.uid), premise_array, 'justify', url,
@@ -269,9 +269,7 @@ class ItemDictHelper(object):
             url = ''
 
             # with a chance of 50% or at the end we will seed the new "support step"
-            logger('ItemDictHelper',
-                   'take support? is end: {} or rnd: {}'.format('end' in attack, 'NOO'))  # support_step))
-            if 'end' in attack:  # TODO 343
+            if not attack:
                 new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
                 the_other_one = new_arg is None
                 if new_arg:
@@ -506,7 +504,7 @@ class ItemDictHelper(object):
                                                             restriction_on_args=attacking_arg_uids,
                                                             history=self.path)
 
-        if new_attack == 'no_other_attack' or new_attack.startswith('end'):
+        if not new_attack:
             url = _um.get_last_valid_url_before_reaction()
             relation = 'step_back'
         else:

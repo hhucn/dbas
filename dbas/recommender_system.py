@@ -69,20 +69,14 @@ def get_attack_for_argument(argument_uid, restriction_on_attacks=None, restricti
                                                                    restriction_on_args, last_attack, history)
 
     if not attacks_array or len(attacks_array) == 0:
-        end = 'end'
-        attack_uid = 0
-        if no_new_attacks:
-            end += '_attack'
-            attack_uid = None
-        return attack_uid, end
+        return None, None
 
-    else:
-        attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
-        attack_uid = attacks_array[attack_no]['id']
+    attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
+    attack_uid = attacks_array[attack_no]['id']
 
-        logger('RS', 'main return {} by {}'.format(key, attack_uid))
+    logger('RS', 'main return {} by {}'.format(key, attack_uid))
 
-        return attack_uid, attack_mapping[key]
+    return attack_uid, attack_mapping[key]
 
 
 def get_argument_by_conclusion(statement_uid, is_supportive):
