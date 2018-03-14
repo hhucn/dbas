@@ -658,7 +658,6 @@ def __get_text_parts_of_argument(argument):
         while db_conclusions_argument.argument_uid is not None:  # get further conclusions arguments
 
             # get premise of conclusions arguments
-            premisegroup = get_text_for_premisesgroup_uid(db_conclusions_argument.premisesgroup_uid)
             db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=argument.premisesgroup_uid).all()
             premises_uids = [premise.uid for premise in db_premises]
             for uid in premises_uids:
