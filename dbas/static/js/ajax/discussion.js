@@ -191,7 +191,7 @@ function AjaxDiscussionHandler() {
     this.getMoreInfosAboutArgument = function (uid) {
         var url = 'get_infos_about_argument';
         var d = {
-            uid: uid,
+            argument_id: uid,
             lang: getDiscussionLanguage()
         };
         var done = function ajaxGetMoreInfosAboutArgumentDone(data) {

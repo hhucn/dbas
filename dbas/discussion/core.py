@@ -7,7 +7,8 @@ from dbas.handler import user
 from dbas.handler.voting import add_click_for_argument
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
-from dbas.helper.views import handle_justification_step
+from dbas.helper.views import handle_justification_statement, handle_justification_dontknow, \
+    handle_justification_argument
 from dbas.input_validator import is_integer, check_belonging_of_argument, check_belonging_of_premisegroups, \
     related_with_support, check_reaction, \
     check_belonging_of_arguments
@@ -80,15 +81,50 @@ def attitude(db_issue: Issue, db_user: User, db_position: Statement, history: st
     }
 
 
-def justify(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, relation: str, history: str,
-            path: str) -> Union[dict, None]:
+def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, attitude: str, history, path) -> \
+        Union[dict, None]:
     """
     Initialize the justification step for a statement or an argument in a discussion. Creates helper and
     returns a dictionary containing the necessary elements needed for the discussion.
 
     :param db_issue:
     :param db_user:
-    :param db_stmt_or_arg:
+    :param db_statement:
+    :param attitude:
+    :param history:
+    :param path:
+    :return:
+    """
+    logger('Justify discussion', 'main')
+
+    issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
+    if attitude in ['agree', 'disagree']:
+        item_dict, discussion_dict = handle_justification_statement(db_issue, db_user, db_statement, attitude,
+                                                                    history, path)
+    else:
+        item_dict, discussion_dict = handle_justification_dontknow(db_issue, db_user, db_statement, attitude,
+                                                                   history, path)
+
+    if not all([item_dict, discussion_dict]):
+        return None
+
+    return {
+        'issues': issue_dict,
+        'discussion': discussion_dict,
+        'items': item_dict,
+        'title': issue_dict['title']
+    }
+
+
+def justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, attitude: str, relation: str, history: str,
+                     path: str) -> Union[dict, None]:
+    """
+    Initialize the justification step for a statement or an argument in a discussion. Creates helper and
+    returns a dictionary containing the necessary elements needed for the discussion.
+
+    :param db_issue:
+    :param db_user:
+    :param db_argument:
     :param attitude:
     :param relation:
     :param history:
@@ -98,8 +134,8 @@ def justify(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude:
     logger('Justify discussion', 'main')
 
     issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
-    item_dict, discussion_dict = handle_justification_step(db_issue, db_user, db_stmt_or_arg, attitude, relation,
-                                                           history, path)
+    item_dict, discussion_dict = handle_justification_argument(db_issue, db_user, db_argument, attitude, relation,
+                                                               history, path)
     if not all([item_dict, discussion_dict]):
         return None
 

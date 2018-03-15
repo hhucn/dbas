@@ -150,11 +150,11 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
-    def get_array_for_justify_statement(self, stmt_or_arg: Statement, db_user: User, is_supportive: bool, history):
+    def get_array_for_justify_statement(self, db_statement: Statement, db_user: User, is_supportive: bool, history):
         """
         Prepares the dict with all items for the third step in discussion, where the user justifies his position.
 
-        :param stmt_or_arg: Statement
+        :param db_statement: Statement
         :param db_user: User
         :param is_supportive: Boolean
         :param history: history
@@ -164,7 +164,7 @@ class ItemDictHelper(object):
         statements_array = []
         _tn = Translator(self.lang)
         slug = self.db_issue.slug
-        db_arguments: List[Statement] = rs.get_arguments_by_conclusion(stmt_or_arg.uid, is_supportive)
+        db_arguments: List[Argument] = rs.get_arguments_by_conclusion(db_statement.uid, is_supportive)
         uids: List[int] = [argument.uid for argument in db_arguments if db_arguments]
 
         _um = UrlManager(slug, history=self.path)
