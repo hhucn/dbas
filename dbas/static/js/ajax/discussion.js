@@ -72,7 +72,7 @@ function AjaxDiscussionHandler() {
             supportive: supportive
         };
         var done = function ajaxSendNewStartPremiseDone(data) {
-            if ('error' in data && data.error.length > 0) {
+            if ('error' in data && data.error && data.error.length > 0) {
                 $('#' + addPremiseErrorContainer).show();
                 $('#' + addPremiseErrorMsg).text(data.error);
             } else {
