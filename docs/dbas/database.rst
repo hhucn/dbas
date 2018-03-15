@@ -7,6 +7,13 @@ the database is provided via this repository and all modifications to it are app
 
 You can find the pre-built image on DockerHub: https://hub.docker.com/r/hhucn/dbas-database/
 
+General
+=======
+
+D-BAS uses a session scope during the work with the database. The concept of session scopes was introduced, with an
+emphasis on web applications and the practice of linking the scope of a Session with that of a web request.
+
+
 Dump a database
 ===============
 

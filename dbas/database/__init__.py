@@ -6,17 +6,26 @@ TODO
 import os
 
 from sqlalchemy import engine_from_config, MetaData
+from sqlalchemy.engine import Engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
 from zope.sqlalchemy import ZopeTransactionExtension as Zte
 
+# the concept of “session scopes” was introduced, with an emphasis on web applications
+# and the practice of linking the scope of a Session with that of a web request
 DBDiscussionSession = scoped_session(sessionmaker(extension=Zte(), expire_on_commit=False))
 DiscussionBase = declarative_base()
 NewsBase = declarative_base(metadata=MetaData(schema='news'))
 DBEngine = None
 
 
-def load_discussion_database(engine):
+def load_discussion_database(engine: Engine):
+    """
+    Binds current engine for our session
+
+    :param engine:
+    :return:
+    """
     db_discussion_engine = engine
     DBDiscussionSession.remove()
     DBDiscussionSession.configure(bind=db_discussion_engine)
