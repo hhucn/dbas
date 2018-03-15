@@ -42,6 +42,14 @@ class TestDiscussionValidators(TestCaseWithConfig):
                          'The field-experiment-issue is disabled in the development-seed and can\'t be queried')
         self.assertIsInstance(response, bool)
 
+    def test_valid_issue_not_readonly(self):
+        request = construct_dummy_request()
+        request.session = {'issue': self.issue_not_read_only.uid}
+        response = discussion.valid_issue_not_readonly(request)
+        self.assertFalse(response,
+                         'The field-experiment-issue is no read only in the development-seed and can\'t be queried')
+        self.assertIsInstance(response, bool)
+
     def test_valid_new_issue(self):
         request = construct_dummy_request()
         response = discussion.valid_new_issue(request)
@@ -245,6 +253,47 @@ class TestDiscussionValidators(TestCaseWithConfig):
         response = discussion.valid_text_values(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
+
+    def test_valid_attitude(self):
+        request = construct_dummy_request(match_dict={})
+        response = discussion.valid_attitude(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request(match_dict={'foo': 'bar'})
+        response = discussion.valid_attitude(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request(match_dict={'attitude': 'bar'})
+        response = discussion.valid_attitude(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+        attitudes = ['agree', 'disagree', 'dontknow']
+        for attitude in attitudes:
+            request = construct_dummy_request(match_dict={'attitude': attitude})
+            response = discussion.valid_attitude(request)
+            self.assertTrue(response)
+            self.assertIsInstance(response, bool)
+
+    def test_valid_relation_optional(self):
+        request = construct_dummy_request(match_dict={})
+        response = discussion.valid_relation_optional(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request(match_dict={'relation': ['foo']})
+        response = discussion.valid_relation_optional(request)
+        self.assertFalse(response)
+        self.assertIsInstance(response, bool)
+
+        relations = ['undermine', 'undercut', 'rebut']
+        for relation in relations:
+            request = construct_dummy_request(match_dict={'relation': [relation]})
+            response = discussion.valid_relation_optional(request)
+            self.assertTrue(response)
+            self.assertIsInstance(response, bool)
 
 
 class TestValidIssueBySlug(TestCaseWithConfig):
