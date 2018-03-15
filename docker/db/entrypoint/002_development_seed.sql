@@ -4652,6 +4652,7 @@ COPY issues (uid, title, slug, info, long_info, date, author_uid, lang_uid, is_d
 5	Unterstützung der Sekretariate	unterstutzung-der-sekretariate	Unsere Sekretariate in der Informatik sind arbeitsmäßig stark überlastet. Bitte diskutieren Sie Möglichkeiten um dies zu verbessern.		2017-08-19 11:25:09.093618	2	2	f
 6	Verbesserung des Informatik-Studiengangs	verbesserung-des-informatik-studiengangs	Wie können der Informatik-Studiengang verbessert und die Probleme, die durch die große Anzahl der Studierenden entstanden sind, gelöst werden?	Die Anzahl der Studierenden in der Informatik hat sich in den letzten Jahren stark erhöht. Dadurch treten zahlreiche Probleme auf, wie z.B. Raumknappheit, überfüllte Lehrveranstaltungen und ein Mangel an Plätzen zum Lernen. Wir möchten Sie gerne dazu einladen, gemeinsam mit den Dozierenden der Informatik über Lösungsmöglichkeiten zu diskutieren: Wie können der Studiengang verbessert und die Probleme, die durch die große Anzahl der Studierenden entstanden sind, gelöst werden?	2017-08-19 11:25:09.093742	2	2	t
 7	Bürgerbeteiligung in der Kommune	burgerbeteiligung-in-der-kommune	Es werden Vorschläge zur Verbesserung des Zusammenlebens in unserer Kommune gesammelt.		2017-08-19 11:25:09.093865	2	2	f
+8	Read only Issue	read-only-issue	Dieses Thema ist zum Testm für die read-only Property.		2017-08-19 11:25:09.093865	2	2	f
 \.
 
 
@@ -4659,7 +4660,7 @@ COPY issues (uid, title, slug, info, long_info, date, author_uid, lang_uid, is_d
 -- Name: issues_uid_seq; Type: SEQUENCE SET; Schema: public; Owner: dbas
 --
 
-SELECT pg_catalog.setval('issues_uid_seq', 7, true);
+SELECT pg_catalog.setval('issues_uid_seq', 8, true);
 
 
 --

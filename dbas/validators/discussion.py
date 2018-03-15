@@ -93,7 +93,8 @@ def valid_issue_not_readonly(request):
     if valid_issue_by_id(request) and not request.validated.get('issue').is_read_only:
         return True
     _tn = Translator(get_language_from_cookie(request))
-    add_error(request, 'Issue is read only', _tn.get(_.discussionIsReadOnly))
+    uid = request.validated.get('issue').uid if request.validated.get('issue') else -1
+    add_error(request, 'Issue {} is read only'.format(uid), _tn.get(_.discussionIsReadOnly))
     return False
 
 
