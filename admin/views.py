@@ -33,7 +33,7 @@ dashboard = Service(name='dashboard_page',
                     path='/',
                     description='Admin Page',
                     renderer='templates/admin.pt',
-                    permission='everybody',  # or permission='use'
+                    permission='everybody',
                     cors_policy=cors_policy)
 
 z_table = Service(name='table_page',

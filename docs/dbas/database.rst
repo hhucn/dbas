@@ -13,6 +13,13 @@ General
 D-BAS uses a session scope during the work with the database. The concept of session scopes was introduced, with an
 emphasis on web applications and the practice of linking the scope of a Session with that of a web request.
 
+We also use __pyramid_tm__ to manage transaction automatically, because Pyramid view code usually doesn't manage
+transactions. In addition manually executed transactions are needed, if you want to force the session to write the
+edited values **now**.
+
+Normally this behaviour is not needed but since we are editing arguments/statements/... and want to get their text at
+another places of the program, we have to force transactions sometimes.
+
 
 Dump a database
 ===============
