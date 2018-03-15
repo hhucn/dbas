@@ -44,7 +44,13 @@ class TestDiscussionValidators(TestCaseWithConfig):
 
     def test_valid_issue_not_readonly(self):
         request = construct_dummy_request()
-        request.session = {'issue': self.issue_town.uid}
+        request.session = {'issue': self.issue_cat_or_dog.uid}
+        response = discussion.valid_issue_not_readonly(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, bool)
+
+        request = construct_dummy_request()
+        request.session = {'issue': self.issue_read_only.uid}
         response = discussion.valid_issue_not_readonly(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
