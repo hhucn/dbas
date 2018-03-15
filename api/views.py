@@ -28,7 +28,7 @@ from dbas.lib import (get_all_arguments_by_statement,
 from dbas.strings.translator import Keywords as _
 from dbas.strings.translator import get_translation
 from dbas.validators.core import has_keywords, validate
-from dbas.validators.discussion import valid_issue_by_slug, valid_position
+from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude
 from .lib import HTTP204, flatten, json_to_dict, logger
 from .login import validate_credentials, validate_login, valid_token, token_to_database, valid_token_optional
 from .references import (get_all_references_by_reference_text,
@@ -67,10 +67,16 @@ reaction = Service(name='api_reaction',
                    path='/{slug}/reaction/{arg_id_user}/{mode}/{arg_id_sys}',
                    description="Discussion Reaction",
                    cors_policy=cors_policy)
-justify = Service(name='api_justify',
-                  path='/{slug}/justify/{statement_or_arg_id}/{mode}*relation',
-                  description="Discussion Justify",
-                  cors_policy=cors_policy)
+justify_statement = Service(name='api_justify_statement',
+                            path='/{slug}/justify/{statement_id}/{attitude}',
+                            description="Discussion Justify",
+                            cors_policy=cors_policy)
+
+justify_argument = Service(name='api_justify_argument',
+                           path='/{slug}/justify/{argument_id}/{attitude}/{relation}',
+                           description="Discussion Justify",
+                           cors_policy=cors_policy)
+
 attitude = Service(name='api_attitude',
                    path='/{slug}/attitude/{position_id}',
                    description="Discussion Attitude",
@@ -251,8 +257,8 @@ def discussion_attitude(request):
     }
 
 
-@justify.get()
-@validate(valid_issue_by_slug, valid_token_optional, valid_position)
+@justify_statement.get()
+@validate(valid_issue_by_slug, valid_token_optional, valid_statement(location='path'), valid_attitude)
 def discussion_justify(request):
     """
     Return data from DBas discussion_justify page. Contains bubbles and lists of positions matching the current
@@ -263,8 +269,17 @@ def discussion_justify(request):
     :param request: request
     :return: dbas.discussion_justify(True)
     """
-    request_dict = prepare_dbas_request_dict(request)
-    return dbas.discussion.justify(request_dict)
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    # FALSCH
+    return dbas.discussion.justify_statement(db_issue,
+                                             db_user,
+                                             request.validated['statement'],
+                                             request.validated['attitude'],
+                                             history,
+                                             request.path)
 
 
 # -----------------------------------------------------------------------------

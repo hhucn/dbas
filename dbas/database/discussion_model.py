@@ -87,15 +87,6 @@ class Issue(DiscussionBase):
         self.is_read_only = is_read_only
         self.date = get_now()
 
-    @classmethod
-    def by_text(cls):
-        """
-        Return a query of positions sorted by text.
-
-        :return: Query
-        """
-        return DBDiscussionSession.query(Issue).order_by(Issue.text)
-
     @hybrid_property
     def lang(self):
         """

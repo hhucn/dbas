@@ -44,10 +44,9 @@ class TestDiscussionValidators(TestCaseWithConfig):
 
     def test_valid_issue_not_readonly(self):
         request = construct_dummy_request()
-        request.session = {'issue': self.issue_not_read_only.uid}
+        request.session = {'issue': self.issue_town.uid}
         response = discussion.valid_issue_not_readonly(request)
-        self.assertFalse(response,
-                         'The field-experiment-issue is no read only in the development-seed and can\'t be queried')
+        self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
     def test_valid_new_issue(self):
@@ -110,33 +109,33 @@ class TestDiscussionValidators(TestCaseWithConfig):
 
     def test_valid_statement(self):
         request = construct_dummy_request()
-        response = discussion.valid_statement(request)
+        response = discussion.valid_statement(location='json_body')(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'uid': 1})
-        response = discussion.valid_statement(request)
+        request = construct_dummy_request({'statement_id': 1})
+        response = discussion.valid_statement(location='json_body')(request)
         self.assertFalse(response, 'uid 1 is disabled and should not be returned')
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'uid': 2})
-        response = discussion.valid_statement(request)
+        request = construct_dummy_request({'statement_id': 2})
+        response = discussion.valid_statement(location='json_body')(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
 
     def test_valid_argument(self):
         request = construct_dummy_request()
-        response = discussion.valid_argument(request)
+        response = discussion.valid_argument(location='json_body')(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'uid': 1})
-        response = discussion.valid_argument(request)
+        request = construct_dummy_request({'argument_id': 1})
+        response = discussion.valid_argument(location='json_body')(request)
         self.assertFalse(response, 'uid 1 should be disabled')
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request({'uid': 2})
-        response = discussion.valid_argument(request)
+        request = construct_dummy_request({'argument_id': 2})
+        response = discussion.valid_argument(location='json_body')(request)
         self.assertTrue(response)
         self.assertIsInstance(response, bool)
 
@@ -277,21 +276,21 @@ class TestDiscussionValidators(TestCaseWithConfig):
             self.assertTrue(response)
             self.assertIsInstance(response, bool)
 
-    def test_valid_relation_optional(self):
+    def test_valid_relation(self):
         request = construct_dummy_request(match_dict={})
-        response = discussion.valid_relation_optional(request)
-        self.assertTrue(response)
+        response = discussion.valid_relation(request)
+        self.assertFalse(response, 'Relation is missing')
         self.assertIsInstance(response, bool)
 
-        request = construct_dummy_request(match_dict={'relation': ['foo']})
-        response = discussion.valid_relation_optional(request)
+        request = construct_dummy_request(match_dict={'relation': 'foo'})
+        response = discussion.valid_relation(request)
         self.assertFalse(response)
         self.assertIsInstance(response, bool)
 
         relations = ['undermine', 'undercut', 'rebut']
         for relation in relations:
-            request = construct_dummy_request(match_dict={'relation': [relation]})
-            response = discussion.valid_relation_optional(request)
+            request = construct_dummy_request(match_dict={'relation': relation})
+            response = discussion.valid_relation(request)
             self.assertTrue(response)
             self.assertIsInstance(response, bool)
 

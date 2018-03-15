@@ -2,6 +2,9 @@
 Discussion-related validators for statements, arguments, ...
 """
 from os import environ
+from typing import Union, Callable, Set
+
+from pyramid.request import Request
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement, Argument, PremiseGroup
@@ -37,7 +40,7 @@ def valid_issue_by_id(request):
     return False
 
 
-def valid_issue_by_slug(request):
+def valid_issue_by_slug(request: Request) -> bool:
     """
     Query issue by slug from the path.
 
@@ -212,20 +215,19 @@ def valid_attitude(request):
     return False
 
 
-def valid_relation_optional(request):
+def valid_relation(request):
     """
-    Parse relation from path if provided. Else return None. Should only fail if wrong relation is given.
+    Parse relation from path.
 
     :param request: Request
     :return:
     """
-    relations_from_path = request.matchdict.get('relation')
-    if not relations_from_path:
-        request.validated['relation'] = ''
-        return True
+    relation = request.matchdict.get('relation')
+    if not relation:
+        add_error(request, 'Relation is missing in path', location='path')
+        return False
 
     relations = ['undermine', 'undercut', 'rebut']
-    relation = relations_from_path[0]
     if relation not in relations:
         add_error(request,
                   'Your relation is not correct. Received \'{}\', expected one of {}'.format(relation, relations),
@@ -236,48 +238,80 @@ def valid_relation_optional(request):
     return True
 
 
-def valid_statement(request):
+def __validate_enabled_entity(request: Request, db_issue: Union[Issue, None], entity, entity_id):
     """
-    Given a uid, query the statement object from the database and return it in the request.
+    Get entity-id from path and query it in the database. Check if it belongs to the queried issue and if it is disabled.
 
     :param request:
+    :param db_issue:
+    :param entity:
+    :param entity_id:
     :return:
     """
-    statement_id = request.json_body.get('uid')
-    db_statement = None
-    if is_integer(statement_id):
-        db_statement = DBDiscussionSession.query(Statement).filter(Statement.uid == statement_id,
-                                                                   Statement.is_disabled == False).first()
+    db_entity: entity = DBDiscussionSession.query(entity).get(entity_id)
+    if not db_entity:
+        return None
+    if db_entity.is_disabled:
+        add_error(request, '{} no longer available'.format(db_entity.__class__.__name__), location='path',
+                  status_code=410)
+        return None
+    if db_issue and not db_entity.issue_uid == db_issue.uid:
+        add_error(request, '{} does not belong to issue'.format(db_entity.__class__.__name__), location='path')
+        return None
+    return db_entity
 
-    if db_statement:
-        request.validated['statement'] = db_statement
+
+def __valid_id_from_location(request, entity_name, location='path') -> int:
+    if location == 'path':
+        has_keywords_in_path((entity_name, int))(request)
         return True
+    elif location == 'json_body':
+        if entity_name in request.json_body:
+            value = request.json_body.get(entity_name)
+            try:
+                request.validated[entity_name] = int(value)
+                return True
+            except ValueError:
+                add_error(request, '\'{}\' is not int parsable!'.format(value))
+                return False
+        else:
+            add_error(request, '{} is missing in json_body'.format(entity_name))
+            return False
     else:
-        _tn = Translator(get_language_from_cookie(request))
-        add_error(request, 'Statement uid is missing', _tn.get(_.wrongStatement))
+        raise KeyError("location has to be one of: ('path', 'json_body')")
+
+
+def valid_statement(location, depends_on: Set[Callable[[Request], bool]] = set()) -> Callable[[Request], bool]:
+    def inner(request):
+        if depends_on and not all([dependence(request) for dependence in depends_on if depends_on]):
+            return False
+
+        if __valid_id_from_location(request, 'statement_id', location):
+            request.validated['statement'] = __validate_enabled_entity(request, request.validated.get('issue'),
+                                                                       Statement,
+                                                                       request.validated['statement_id'])
+            return True if request.validated['statement'] else False
         return False
 
+    return inner
 
-def valid_argument(request):
-    """
-    Given an uid, query the argument object from the database and return it in the request.
 
-    :param request:
-    :return:
-    """
-    argument_id = request.json_body.get('uid')
-    db_argument = None
-    if is_integer(argument_id):
-        db_argument = DBDiscussionSession.query(Argument).filter(Argument.uid == argument_id,
-                                                                 Argument.is_disabled == False).first()
+def valid_argument(location, depends_on: Set[Callable[[Request], bool]] = set()) -> Callable[[Request], bool]:
+    def inner(request):
+        if not all([dependence(request) for dependence in depends_on if depends_on]):
+            return False
 
-    if db_argument:
-        request.validated['argument'] = db_argument
-        return True
-    else:
-        _tn = Translator(get_language_from_cookie(request))
-        add_error(request, 'Argument uid is missing', _tn.get(_.wrongArgument))
+        if __valid_id_from_location(request, 'argument_id', location):
+            argument_id = request.validated['argument_id']
+            db_entity = __validate_enabled_entity(request, request.validated.get('issue'), Argument, argument_id)
+            if db_entity:
+                request.validated['argument'] = db_entity
+                return True
+            add_error(request, 'Argument with id {} could not be found'.format(argument_id))
+            return False
         return False
+
+    return inner
 
 
 def valid_text_length_of(keyword):
@@ -408,3 +442,21 @@ def __set_min_length_error(request, min_length):
     c = _tn.get(_.eachStatement)
     error_msg = '{} ({}: {} {})'.format(a, b, min_length, c)
     add_error(request, 'Text too short', error_msg)
+
+
+def __get_in_json_body_or_matchdict(request, field):
+    """
+    Look in path or matchdict for given field and return its value and location where it was found.
+
+    :param request:
+    :param field: e.g. 'uid'
+    :return: location ('body', 'path', ...) and field
+    """
+    if field in request.matchdict:
+        location = 'path'
+        value = request.matchdict.get(field)
+    else:
+        location = 'body'
+        value = request.json_body.get(field)
+
+    return location, value
