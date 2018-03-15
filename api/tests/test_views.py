@@ -10,13 +10,13 @@ import hypothesis.strategies as st
 from hypothesis import given, settings
 from pyramid import httpexceptions
 
+import api.views as apiviews
 from api.login import token_to_database
-from api.views import user_login, hello, user_logout, whoami_fn, get_issues
 # ------------------------------------------------------------------------------
 # Tests
 from dbas.database.discussion_model import Issue
 from dbas.lib import get_user_by_case_insensitive_nickname
-from dbas.tests.utils import construct_dummy_request
+from dbas.tests.utils import construct_dummy_request, TestCaseWithConfig
 
 
 def create_request_with_token_header(nickname='Walter', token='mytoken'):
@@ -33,7 +33,7 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         request = construct_dummy_request()
         request.json_body = {'nickname': 'Walter',
                              'password': 'iamatestuser2016'}
-        response = user_login(request)
+        response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
         self.assertIn('password', request.validated)
         self.assertIn('token', response)
@@ -42,7 +42,7 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
     def test_login_without_password(self):
         request = construct_dummy_request()
         request.json_body = {'nickname': 'Walter'}
-        response = user_login(request)
+        response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
         self.assertNotIn('password', request.validated)
         self.assertEqual(400, response.status_code)
@@ -56,27 +56,25 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         request = construct_dummy_request()
         request.json_body = {'nickname': 'Walter',
                              'password': pwd}
-        response = user_login(request)
+        response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
         self.assertIn('password', request.validated)
         self.assertEqual(401, response.status_code)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_login_wrong_user(self):
-        request = construct_dummy_request()
-        request.json_body = {'nickname': '¯\_(ツ)_/¯',
-                             'password': 'thankgoditsfriday'}
-        response = user_login(request)
+        request = construct_dummy_request({'nickname': '¯\_(ツ)_/¯',
+                                           'password': 'thankgoditsfriday'})
+        response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
         self.assertIn('password', request.validated)
         self.assertEqual(401, response.status_code)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_login_empty_user_is_not_allowed_to_login(self):
-        request = construct_dummy_request()
-        request.json_body = {'nickname': '',
-                             'password': 'thankgoditsfriday'}
-        response = user_login(request)
+        request = construct_dummy_request({'nickname': '',
+                                           'password': 'thankgoditsfriday'})
+        response = apiviews.user_login(request)
         self.assertIn('nickname', request.validated)
         self.assertIn('password', request.validated)
         self.assertEqual(401, response.status_code)
@@ -84,7 +82,7 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
 
     def test_logout_valid_user(self):
         request = create_request_with_token_header()
-        response = user_logout(request)
+        response = apiviews.user_logout(request)
         self.assertEqual(len(request.errors), 0)
         self.assertEqual('ok', response['status'])
 
@@ -92,13 +90,13 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
         nickname = 'Walter'
         request = construct_dummy_request()
         request.headers[self.header] = json.dumps({'nickname': nickname, 'token': 'notavalidtoken'})
-        response = user_logout(request)
+        response = apiviews.user_logout(request)
         self.assertGreater(len(request.errors), 0)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_logout_missing_header(self):
         request = construct_dummy_request()
-        response = user_logout(request)
+        response = apiviews.user_logout(request)
         self.assertGreater(len(request.errors), 0)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
@@ -106,13 +104,13 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
 class TestSystemRoutes(unittest.TestCase):
     def test_server_available(self):
         request = construct_dummy_request()
-        response = hello(request)
+        response = apiviews.hello(request)
         self.assertEqual(response['status'], 'ok')
 
     def test_whoami_and_check_for_valid_token(self):
         nickname = 'Walter'
         request = create_request_with_token_header(nickname)
-        response = whoami_fn(request)
+        response = apiviews.whoami_fn(request)
         self.assertEqual(len(request.errors), 0)
         self.assertEqual(response['status'], 'ok')
         self.assertEqual(response['nickname'], nickname)
@@ -121,47 +119,98 @@ class TestSystemRoutes(unittest.TestCase):
 class TestIssues(unittest.TestCase):
     def test_get_issues(self):
         request = construct_dummy_request()
-        response = get_issues(request)
+        response = apiviews.get_issues(request)
         self.assertIsInstance(response, list)
         for issue in response:
             self.assertIsInstance(issue, Issue)
 
-# def test_add_position_should_succeed():
-#     credentials = {"nickname": "Walter",
-#                    "password": "iamatestuser2016"}
-#     response = post_request("login", credentials)
-#     content = json_to_dict(response.content)
-#     payload = __payload_add_statement()
-#     response = post_request("add/start_statement", payload,
-#                             headers={"X-Authentication": json.dumps({"type": "user", "token": content.get("token")})})
-#     assert_true(response.ok)
-#
-#
-# def test_add_position_unsplittable_token():
-#     payload = __payload_add_statement()
-#     response = post_request("add/start_statement", payload,
-#                             headers={"X-Authentication": json.dumps({"type": "user", "token": "I am groot"})})
-#     assert_false(response.ok)
-#
-#
-# def test_add_position_splittable_invalid_token():
-#     payload = __payload_add_statement()
-#     response = post_request("add/start_statement", payload,
-#                             headers={"X-Authentication": json.dumps({"type": "user", "token": "Groot-iamgroot"})})
-#     assert_false(response.ok)
-#
-#
-# def test_correct_api_token():
-#     api_token = generate_application_token("Walter")
-#     payload = __payload_add_statement()
-#     response = post_request("add/start_statement", payload,
-#                             headers={"X-Authentication": json.dumps({"type": "user", "token": "Walter-" + api_token})})
-#     assert_true(response.ok)
-#
-#
-# def test_incorrect_api_token():
-#     api_token = "blablablab-df---df--df"
-#     payload = __payload_add_statement()
-#     response = post_request("add/start_statement", payload,
-#                             headers={"X-Authentication": json.dumps({"type": "user", "token": "Walter-" + api_token})})
-#     assert_false(response.ok)
+
+class TestDiscussionAttitude(TestCaseWithConfig):
+    def test_successful_discussion_attitude(self):
+        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
+                                                      'position_id': self.position_cat_or_dog.uid})
+        response = apiviews.discussion_attitude(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, dict)
+        self.assertIn('position', request.validated)
+        self.assertIn('issue', request.validated)
+        self.assertIn('user', request.validated)
+
+    def test_wrong_slug_returns_error(self):
+        request = construct_dummy_request(match_dict={'slug': '',
+                                                      'position_id': 2})
+        response = apiviews.discussion_attitude(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
+
+        request = construct_dummy_request(match_dict={'slug': 'this-is-not-a-valid-slug',
+                                                      'position_id': 2})
+        response = apiviews.discussion_attitude(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
+
+    def test_wrong_position_id_returns_error(self):
+        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
+                                                      'position_id': self.position_town.uid})
+        response = apiviews.discussion_attitude(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
+
+        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
+                                                      'position_id': -1})
+        response = apiviews.discussion_attitude(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
+
+
+class TestDiscussionJustifyStatement(TestCaseWithConfig):
+    def test_successful_discussion_justify_statement(self):
+        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
+                                                      'statement_id': self.statement_cat_or_dog.uid,
+                                                      'attitude': 'agree'})
+        response = apiviews.discussion_justify_statement(request)
+        self.assertTrue(response)
+        self.assertIsInstance(response, dict)
+        self.assertIn('statement', request.validated)
+        self.assertIn('issue', request.validated)
+        self.assertIn('user', request.validated)
+        self.assertIn('attitude', request.validated)
+
+    def test_wrong_slug_returns_error(self):
+        request = construct_dummy_request(match_dict={'slug': self.issue_town.slug,
+                                                      'statement_id': self.statement_cat_or_dog.uid,
+                                                      'attitude': 'agree'})
+        response = apiviews.discussion_justify_statement(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
+
+    def test_wrong_statement_returns_error(self):
+        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
+                                                      'statement_id': -1,
+                                                      'attitude': 'agree'})
+        response = apiviews.discussion_justify_statement(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
+
+    def test_wrong_attitude_returns_error(self):
+        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
+                                                      'statement_id': self.statement_cat_or_dog.uid,
+                                                      'attitude': 'not-an-attitude'})
+        response = apiviews.discussion_justify_statement(request)
+        self.assertIsInstance(response, httpexceptions.HTTPError)
+
+    # def test_wrong_slug_returns_error(self):
+    #     request = construct_dummy_request(match_dict={'slug': '',
+    #                                                   'position_id': 2})
+    #     response = apiviews.discussion_attitude(request)
+    #     self.assertIsInstance(response, httpexceptions.HTTPError)
+    #
+    #     request = construct_dummy_request(match_dict={'slug': 'this-is-not-a-valid-slug',
+    #                                                   'position_id': 2})
+    #     response = apiviews.discussion_attitude(request)
+    #     self.assertIsInstance(response, httpexceptions.HTTPError)
+    #
+    # def test_wrong_position_id_returns_error(self):
+    #     request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
+    #                                                   'position_id': self.position_town.uid})
+    #     response = apiviews.discussion_attitude(request)
+    #     self.assertIsInstance(response, httpexceptions.HTTPError, 'Position does not belong to issue')
+    #
+    #     request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
+    #                                                   'position_id': -1})
+    #     response = apiviews.discussion_attitude(request)
+    #     self.assertIsInstance(response, httpexceptions.HTTPError)
