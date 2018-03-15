@@ -116,8 +116,8 @@ def justify_statement(db_issue: Issue, db_user: User, db_statement: Statement, a
     }
 
 
-def justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, attitude:str, relation: str, history: str,
-        path: str) ->Union[dict, None]:
+def justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, attitude: str, relation: str, history: str,
+                     path: str) -> Union[dict, None]:
     """
     Initialize the justification step for a statement or an argument in a discussion. Creates helper and
     returns a dictionary containing the necessary elements needed for the discussion.
