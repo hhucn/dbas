@@ -244,12 +244,9 @@ def discussion_attitude(request):
     history = history_handler.handle_history(request, db_user, db_issue)
 
     prepared_discussion = discussion.attitude(db_issue, db_user, db_position, history, request.path)
-
-    bubbles = [Bubble(bubble) for bubble in prepared_discussion['discussion']['bubbles']]
+    bubbles, items = extract_items_and_bubbles(prepared_discussion)
 
     keys = [item['attitude'] for item in prepared_discussion['items']['elements']]
-    items = [Item([premise['title'] for premise in item['premises']], item['url'])
-             for item in prepared_discussion['items']['elements']]
 
     return {
         'bubbles': bubbles,
@@ -259,27 +256,34 @@ def discussion_attitude(request):
 
 @justify_statement.get()
 @validate(valid_issue_by_slug, valid_token_optional, valid_statement(location='path'), valid_attitude)
-def discussion_justify(request):
+def discussion_justify_statement(request) -> dict:
     """
-    Return data from DBas discussion_justify page. Contains bubbles and lists of positions matching the current
-    attitude of the user.
+    Pick attitude from path and query the statement. Show the user some statements to follow the discussion.
 
-    Path: /{slug}/justify/{statement_or_arg_id}/{mode}*relation
+    Path: /{slug}/justify/{statement_id}/{attitude}
 
     :param request: request
-    :return: dbas.discussion_justify(True)
+    :return: dict
     """
     db_user = request.validated['user']
     db_issue = request.validated['issue']
     history = history_handler.handle_history(request, db_user, db_issue)
 
-    # FALSCH
-    return dbas.discussion.justify_statement(db_issue,
-                                             db_user,
-                                             request.validated['statement'],
-                                             request.validated['attitude'],
-                                             history,
-                                             request.path)
+    prepared_discussion = dbas.discussion.justify_statement(db_issue, db_user, request.validated['statement'],
+                                                            request.validated['attitude'], history, request.path)
+    bubbles, items = extract_items_and_bubbles(prepared_discussion)
+
+    return {
+        'bubbles': bubbles,
+        'items': items
+    }
+
+
+def extract_items_and_bubbles(prepared_discussion):
+    items = [Item([premise['title'] for premise in item['premises']], item['url'])
+             for item in prepared_discussion['items']['elements']]
+    bubbles = [Bubble(bubble) for bubble in prepared_discussion['discussion']['bubbles']]
+    return bubbles, items
 
 
 # -----------------------------------------------------------------------------
