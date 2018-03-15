@@ -6,8 +6,8 @@ $(function () {
     'use strict';
     
     // execute only in the users page
-    if (window.location.href.indexOf(mainpage + 'discuss/') !== -1 ||
-        window.location.href.indexOf(mainpage + 'discuss') !== -1) {
+    if (window.location.href === mainpage + 'discuss/' ||
+        window.location.href === mainpage + 'discuss') {
         new OverviewCharts().create();
     }
 });
