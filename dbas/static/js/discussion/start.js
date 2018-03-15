@@ -61,7 +61,8 @@ function OverviewCharts() {
                 scales: {
                     yAxes: [{
                         ticks: {
-                            display: false
+                            display: false,
+                            suggestedMin: 0
                         }
                     }],
                     xAxes: [{

@@ -51,7 +51,7 @@ def valid_lang_cookie_fallback(request):
 
 def check_authentication(request):
     """
-    Checks whether the user is authenticated and if not logs user out.
+    Checks whether the user is authenticated and if user gets logged out.
 
     :param request:
     :return:
