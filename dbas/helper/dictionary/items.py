@@ -99,19 +99,20 @@ class ItemDictHelper(object):
         shuffle_list_by_user(db_user, statements_array)
 
         if not self.issue_read_only:
-            if db_user.nickname is not nick_of_anonymous_user:
+            logger('XX', db_user.nickname)
+            if db_user.nickname == nick_of_anonymous_user:
+                statements_array.append(self.__create_answer_dict('login',
+                                                                  [{'id': '0',
+                                                                    'title': _tn.get(_.wantToStateNewPosition)}],
+                                                                  'justify',
+                                                                  'login'))
+            else:
                 title = _tn.get(_.newConclusionRadioButtonText) if len(db_statements) > 0 else _tn.get(
                     _.newConclusionRadioButtonTextNewIdea)
                 statements_array.append(self.__create_answer_dict('start_statement',
                                                                   [{'title': title, 'id': 0}],
                                                                   'start',
                                                                   'add'))
-            else:
-                statements_array.append(self.__create_answer_dict('login',
-                                                                  [{'id': '0',
-                                                                    'title': _tn.get(_.wantToStateNewPosition)}],
-                                                                  'justify',
-                                                                  'login'))
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_statements)}}
 
