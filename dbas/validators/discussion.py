@@ -219,7 +219,7 @@ def valid_relation_optional(request):
     :param request: Request
     :return:
     """
-    relations_from_path = request.matchdict['relation']
+    relations_from_path = request.matchdict.get('relation')
     if not relations_from_path:
         request.validated['relation'] = ''
         return True
