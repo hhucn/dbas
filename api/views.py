@@ -17,6 +17,7 @@ from cornice import Service
 import dbas.discussion.core as discussion
 import dbas.handler.history as history_handler
 import dbas.views as dbas
+from api.lib import extract_items_and_bubbles
 from api.models import Item, Bubble
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Issue, Statement
@@ -235,6 +236,8 @@ def discussion_attitude(request):
     """
     Return data from DBas discussion_attitude page.
 
+    /{slug}/attitude/{position_id}
+
     :param request: request
     :return: dbas.discussion_attitude(True)
     """
@@ -277,13 +280,6 @@ def discussion_justify_statement(request) -> dict:
         'bubbles': bubbles,
         'items': items
     }
-
-
-def extract_items_and_bubbles(prepared_discussion):
-    items = [Item([premise['title'] for premise in item['premises']], item['url'])
-             for item in prepared_discussion['items']['elements']]
-    bubbles = [Bubble(bubble) for bubble in prepared_discussion['discussion']['bubbles']]
-    return bubbles, items
 
 
 # -----------------------------------------------------------------------------

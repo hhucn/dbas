@@ -9,13 +9,15 @@ import json
 import logging
 from functools import reduce
 from html import escape
+from typing import Tuple
 
 from webob import Response, exc
-
 
 # =============================================================================
 # Other
 # =============================================================================
+from api.models import Item, Bubble
+
 
 def logger():
     """
@@ -85,6 +87,7 @@ class HTTP204(exc.HTTPError):
 
     :return: JSON response
     """
+
     def __init__(self, msg='No Content'):
         body = {'status': 204, 'message': msg}
         Response.__init__(self, json.dumps(body))
@@ -98,6 +101,7 @@ class HTTP400(exc.HTTPError):
 
     :return: JSON response
     """
+
     def __init__(self, msg='Bad Request'):
         body = {'status': 400, 'message': msg}
         Response.__init__(self, json.dumps(body))
@@ -111,6 +115,7 @@ class HTTP401(exc.HTTPError):
 
     :return: JSON response
     """
+
     def __init__(self, msg='Unauthorized'):
         body = {'status': 401, 'message': msg}
         Response.__init__(self, json.dumps(body))
@@ -124,8 +129,23 @@ class HTTP501(exc.HTTPError):
 
     :return:
     """
+
     def __init__(self, msg='Not Implemented'):
         body = {'status': 501, 'message': msg}
         Response.__init__(self, json.dumps(body))
         self.status = 501
         self.content_type = 'application/json'
+
+
+def extract_items_and_bubbles(prepared_discussion: dict) -> Tuple[list, list]:
+    """
+    The prepared discussion is the result of the core functions from dbas.discussion.core. We need only few data for
+    the API, so we extract the data in this function and append it to lists.
+
+    :param prepared_discussion:
+    :return:
+    """
+    items = [Item([premise['title'] for premise in item['premises']], item['url'])
+             for item in prepared_discussion['items']['elements']]
+    bubbles = [Bubble(bubble) for bubble in prepared_discussion['discussion']['bubbles']]
+    return bubbles, items

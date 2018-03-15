@@ -253,10 +253,7 @@ def __validate_enabled_entity(request: Request, db_issue: Union[Issue, None], en
     """
     db_entity: entity = DBDiscussionSession.query(entity).get(entity_id)
     if not db_entity:
-        add_error(request,
-                  '{} with id {} could not be found'.format(entity(is_position=False, issue=None).__class__.__name__,
-                                                            entity_id),
-                  location='path')
+        add_error(request, 'Entity with id {} could not be found'.format(entity_id), location='path')
         return None
     if db_entity.is_disabled:
         add_error(request, '{} no longer available'.format(db_entity.__class__.__name__), location='path',
