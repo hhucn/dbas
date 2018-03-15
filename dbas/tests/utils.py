@@ -19,7 +19,6 @@ class TestCaseWithConfig(unittest.TestCase):
         self.config = testing.setUp()
         self.config.include('pyramid_chameleon')
         self.issue_disabled: Issue = DBDiscussionSession.query(Issue).get(6)
-        self.issue_not_read_only: Issue = DBDiscussionSession.query(Issue).get(1)
         self.issue_cat_or_dog: Issue = DBDiscussionSession.query(Issue).get(2)
         self.issue_town: Issue = DBDiscussionSession.query(Issue).get(1)
         self.position_cat_or_dog: Statement = DBDiscussionSession.query(Statement).get(2)

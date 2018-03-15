@@ -222,7 +222,10 @@ def valid_relation(request):
     :param request: Request
     :return:
     """
-    relation = request.matchdict['relation']
+    relation = request.matchdict.get('relation')
+    if not relation:
+        add_error(request, 'Relation is missing in path', location='path')
+        return False
 
     relations = ['undermine', 'undercut', 'rebut']
     if relation not in relations:
