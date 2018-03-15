@@ -537,6 +537,29 @@ def notfound(request):
     return prep_dict
 
 
+@view_config(route_name='discussion_start', renderer='../templates/discussion-start.pt', permission='everybody')
+@view_config(route_name='discussion_start_with_slash', renderer='../templates/discussion-start.pt',
+             permission='everybody')
+@validate(check_authentication, invalid_user, prep_extras_dict)
+def discussion_start(request):
+    """
+    View configuration for the initial discussion overview.
+
+    :param request: request of the web server
+    :return: dictionary
+    """
+    logger('discussion_start', 'main')
+    ui_locales = get_language_from_cookie(request)
+    issue_dict = issue_handler.get_issues_overview_on_start(request.validated['user'])
+    for i in range(len(issue_dict['issues'])):
+        issue_dict['issues'][i]['url'] = '/discuss' + issue_dict['issues'][i]['url']
+
+    prep_dict = __main_dict(request, Translator(ui_locales).get(_.discussionStart))
+
+    prep_dict.update(issue_dict)
+    return prep_dict
+
+
 # ####################################
 # DISCUSSION                         #
 # ####################################
@@ -572,29 +595,6 @@ def discussion_init(request):
                                     at_start=True)
 
     return prepared_discussion
-
-
-@view_config(route_name='discussion_start', renderer='../templates/discussion-start.pt', permission='everybody')
-@view_config(route_name='discussion_start_with_slash', renderer='../templates/discussion-start.pt',
-             permission='everybody')
-@validate(check_authentication, invalid_user, prep_extras_dict)
-def discussion_start(request):
-    """
-    View configuration for the initial discussion overview.
-
-    :param request: request of the web server
-    :return: dictionary
-    """
-    logger('discussion_start', 'main')
-    ui_locales = get_language_from_cookie(request)
-    issue_dict = issue_handler.get_issues_overview_on_start(request.validated['user'])
-    for i in range(len(issue_dict['issues'])):
-        issue_dict['issues'][i]['url'] = '/discuss' + issue_dict['issues'][i]['url']
-
-    prep_dict = __main_dict(request, Translator(ui_locales).get(_.discussionStart))
-
-    prep_dict.update(issue_dict)
-    return prep_dict
 
 
 # attitude page
