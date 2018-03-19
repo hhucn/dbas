@@ -385,16 +385,6 @@ def prepare_data_assign_reference(request, func: Callable[[bool, dict], Any]):
     return return_dict
 
 
-def prepare_dbas_request_dict(request) -> dict:
-    """
-    Wraps D-BAS' creation of the request dict
-
-    :param request:
-    :return:
-    """
-    return dbas.prepare_request_dict(request)
-
-
 @reaction.get(validators=validate_login)
 def discussion_reaction(request):
     """
@@ -404,7 +394,7 @@ def discussion_reaction(request):
     :return: dbas.discussion_reaction(True)
 
     """
-    request_dict = prepare_dbas_request_dict(request)
+    request_dict = dbas.prepare_request_dict(request)
     return dbas.discussion.reaction(request_dict)
 
 
@@ -423,13 +413,10 @@ def discussion_support(request):
     api_data["slug"] = request.matchdict["slug"]
     api_data["arg_user_uid"] = request.matchdict["arg_user_uid"]
     api_data["arg_system_uid"] = request.matchdict["arg_system_uid"]
-    request_dict = prepare_dbas_request_dict(request)
+    request_dict = dbas.prepare_request_dict(request)
     return dbas.discussion.support(request_dict, api_data=api_data)
 
 
-#
-# Add new statements / positions
-#
 @start_statement.post(validators=validate_login, require_csrf=False)
 def add_start_statement(request):
     """
