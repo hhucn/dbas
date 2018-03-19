@@ -196,8 +196,8 @@ class TestDiscussionJustifyStatement(TestCaseWithConfig):
 
 class TestDiscussionJustifyArgument(TestCaseWithConfig):
     def test_successful_discussion_justify_argument(self):
-        request = construct_dummy_request(match_dict={'slug': self.issue_town.slug,
-                                                      'argument_id': self.argument_town.uid,
+        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
+                                                      'argument_id': self.argument_cat_or_dog.uid,
                                                       'attitude': 'agree',
                                                       'relation': 'undermine'})
         response = apiviews.discussion_justify_argument(request)
@@ -226,16 +226,16 @@ class TestDiscussionJustifyArgument(TestCaseWithConfig):
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_wrong_attitude_returns_error(self):
-        request = construct_dummy_request(match_dict={'slug': self.issue_town.slug,
-                                                      'argument_id': self.argument_town.uid,
+        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
+                                                      'argument_id': self.argument_cat_or_dog.uid,
                                                       'attitude': 'not-an-attitude',
                                                       'relation': 'undermine'})
         response = apiviews.discussion_justify_argument(request)
         self.assertIsInstance(response, httpexceptions.HTTPError)
 
     def test_wrong_relation_returns_error(self):
-        request = construct_dummy_request(match_dict={'slug': self.issue_town.slug,
-                                                      'argument_id': self.argument_town.uid,
+        request = construct_dummy_request(match_dict={'slug': self.issue_cat_or_dog.slug,
+                                                      'argument_id': self.argument_cat_or_dog.uid,
                                                       'attitude': 'agree',
                                                       'relation': 'not-a-valid-relation'})
         response = apiviews.discussion_justify_argument(request)
