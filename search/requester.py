@@ -19,7 +19,7 @@ def response_as_dict(query: str) -> dict:
     return requests.get(query).json()
 
 
-def get_suggestions(issue_uid: int, position: bool, search_value: str = "") -> dict:
+def get_suggestions(issue_uid: int, position: bool, search_value: str = '') -> dict:
     """
     Return the search results for suggestions of the textversions of statements fitting
     the parametes.
@@ -30,10 +30,10 @@ def get_suggestions(issue_uid: int, position: bool, search_value: str = "") -> d
     :return: suggestions of the textversions fitting the given parameters
     """
     query = get_suggestions_path(issue_uid, position, search_value)
-    return response_as_dict(query)["result"]
+    return response_as_dict(query)['result']
 
 
-def get_statements_with_value(issue_uid: int, search_value: str = "") -> list:
+def get_statements_with_value(issue_uid: int, search_value: str = '') -> list:
     """
     This method returns statements fitting the given parametes.
     It returns the result as a list of single dicts containing the information of each result
@@ -48,20 +48,20 @@ def get_statements_with_value(issue_uid: int, search_value: str = "") -> list:
     _um = UrlManager(slug=slug)
 
     results = []
-    current_results = response_as_dict(query)["result"]
+    current_results = response_as_dict(query)['result']
     if current_results is not None:
         results = list(map(lambda res: {
-            "text": res["text"],
-            "statement_uid": res["statement_uid"],
-            "html": res["html"],
-            "score": res["score"],
-            "url": _um.get_url_for_statement_attitude(res["statement_uid"])
+            'text': res['text'],
+            'statement_uid': res['statement_uid'],
+            'html': res['html'],
+            'score': res['score'],
+            'url': _um.get_url_for_statement_attitude(res['statement_uid'])
         }, current_results))
 
     return results
 
 
-def get_duplicates_or_reasons(issue_uid: int, statement_uid: int, search_value: str = "") -> dict:
+def get_duplicates_or_reasons(issue_uid: int, statement_uid: int, search_value: str = '') -> dict:
     """
     This method returns suggestions for duplicated or reasoned statements.
 
@@ -71,10 +71,10 @@ def get_duplicates_or_reasons(issue_uid: int, statement_uid: int, search_value: 
     :return: duplicates or reasons fitting the parameters
     """
     query = get_duplicates_or_reasons_path(issue_uid, statement_uid, search_value)
-    return response_as_dict(query)["result"]
+    return response_as_dict(query)['result']
 
 
-def get_edits(issue_uid: int, statement_uid: int, search_value=""):
+def get_edits(issue_uid: int, statement_uid: int, search_value=''):
     """
     This method returns suggestions for edits fitting a the parameters.
 
@@ -84,7 +84,7 @@ def get_edits(issue_uid: int, statement_uid: int, search_value=""):
     :return: edits fitting the parameters
     """
     query = get_edits_path(issue_uid, statement_uid, search_value)
-    return response_as_dict(query)["result"]
+    return response_as_dict(query)['result']
 
 
 def elastic_search(db_issue: Issue, search_value: str, mode: int, statement_uid: int) -> dict:

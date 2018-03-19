@@ -75,3 +75,7 @@ docker/db/entrypoint/.*.sql
 
 .hypothesis/
 cover/
+
+# xml datas
+cat-or-dog.xml
+news.xml

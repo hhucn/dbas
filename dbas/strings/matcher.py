@@ -107,7 +107,7 @@ def get_suggestions_for_positions(search_value: str, issue_uid: int, position: b
     :param position: position of the statement
     :return: suggestions for statements with a certain position matching the search_value
     """
-    db_statements = get_not_disabled_statement_as_query().filter(Statement.is_startpoint == position,
+    db_statements = get_not_disabled_statement_as_query().filter(Statement.is_position == position,
                                                                  Statement.issue_uid == issue_uid).all()
     return_array = []
     for stat in db_statements:
