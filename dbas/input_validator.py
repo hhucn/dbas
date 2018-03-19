@@ -60,11 +60,6 @@ def check_reaction(attacked_arg_uid, attacking_arg_uid, relation, is_history=Fal
     if relation in relation_mapper:
         return relation_mapper[relation](attacked_arg_uid, attacking_arg_uid)
 
-    if relation.startswith('end') and not is_history:
-        if str(attacking_arg_uid) != '0':
-            return False
-        return True
-
     logger('Validator', 'else-case')
     return False
 
@@ -131,7 +126,7 @@ def is_position(statement_uid):
     :return: Boolean
     """
     db_statement = DBDiscussionSession.query(Statement).get(statement_uid)
-    return db_statement.is_startpoint
+    return db_statement.is_position
 
 
 def related_with_undermine(attacked_arg_uid, attacking_arg_uid):
@@ -254,19 +249,3 @@ def is_argument_forbidden(uid):
     if not db_argument:
         return False
     return db_argument.is_disabled
-
-
-def is_statement_forbidden(uid):
-    """
-    Is the given statement disabled?
-
-    :param uid: Statement.uid
-    :return: Boolean
-    """
-    if not is_integer(uid):
-        return False
-
-    db_statement = DBDiscussionSession.query(Statement).get(uid)
-    if not db_statement:
-        return False
-    return db_statement.is_disabled

@@ -1,4 +1,4 @@
-<tal:block metal:use-macro="layout" i18n:domain="admin" metal:define-macro="layout">
+<tal:block metal:use-macro="load: ../../dbas/templates/basetemplate.pt" i18n:domain="admin" metal:define-macro="layout">
   <tal:block metal:fill-slot="content_page">
     <section>
       <div class="text-center big-header">
@@ -164,7 +164,7 @@
                   <tbody>
                   <tr tal:attributes="data-href line.href; id line.name" tal:repeat="line group.content">
                     <td>${line.name}</td>
-                    <td><span class="badge">-</span></td>
+                    <td><span class="badge">${line.count}</span></td>
                   </tr>
                   </tbody>
                 </table>

@@ -37,7 +37,7 @@ def get_references_for_argument(uid, main_page):
         tmp_uid = premise.statement_uid
         references_array = __get_references_for_statement(tmp_uid, main_page)[tmp_uid]
         data[premise.statement_uid] = references_array
-        text[premise.statement_uid] = get_text_for_statement_uid(premise.statement_uid)
+        text[premise.statement_uid] = premise.get_text()
 
     if db_argument.conclusion_uid is not None:
         tmp_uid = db_argument.conclusion_uid
@@ -83,7 +83,7 @@ def __get_references_for_statement(uid, main_page):
     return {uid: references_array}
 
 
-def __get_values_of_reference(reference, main_page):
+def __get_values_of_reference(reference: StatementReferences, main_page):
     """
     Creates dictionary with all values of the column
 
@@ -105,7 +105,7 @@ def __get_values_of_reference(reference, main_page):
                        'name': name,
                        'link': link},
             'created': str(reference.created.humanize),
-            'statement_text': get_text_for_statement_uid(reference.statement_uid)}
+            'statement_text': reference.get_statement_text()}
 
 
 def set_reference(reference, url, db_user, db_statement, issue_uid):

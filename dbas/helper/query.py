@@ -18,8 +18,7 @@ from dbas.handler.history import get_bubble_from_reaction_step, get_splitted_his
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undermines_for_argument_uid, \
     get_undercuts_for_argument_uid, get_supports_for_argument_uid
-from dbas.lib import get_text_for_premisesgroup_uid, pretty_print_options, get_all_arguments_by_statement, \
-    nick_of_anonymous_user
+from dbas.lib import pretty_print_options, get_all_arguments_by_statement, nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
@@ -152,7 +151,7 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
             given_relations.add(relation.premisesgroup_uid)
             tmp_dict = dict()
             tmp_dict['id'] = relation.uid
-            tmp_dict['text'], trash = get_text_for_premisesgroup_uid(relation.premisesgroup_uid)
+            tmp_dict['text'] = relation.get_premisegroup_text()
             return_array.append(tmp_dict)
             index += 1
     return return_array

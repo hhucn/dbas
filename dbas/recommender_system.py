@@ -5,18 +5,14 @@ TODO
 """
 
 import random
-
 from enum import Enum, auto
-from dbas.helper.relation import get_undermines_for_argument_uid, get_rebuts_for_argument_uid, \
-    get_undercuts_for_argument_uid
+
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, ClickedArgument
+from dbas.helper.relation import get_undermines_for_argument_uid, get_rebuts_for_argument_uid, \
+    get_undercuts_for_argument_uid
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_arguments_as_query
-
-# Millers Magic Number are 6 (https://en.wikipedia.org/wiki/The_Magical_Number_Seven,_Plus_or_Minus_Two)
-# Buddeley says 3-4
-max_count = 5
 
 
 class Attacks(Enum):
@@ -31,60 +27,6 @@ attack_mapping = {
     Attacks.REBUT: 'rebut',
     '': ''
 }
-
-
-def get_uids_of_best_positions(db_statements):
-    """
-    Returns the uids of the n best positions
-
-    :param db_statements: [Statement]
-    :return: [Statement.uid]
-    """
-    if db_statements is None:
-        return []
-    if len(db_statements) <= max_count:
-        return [element.uid for element in db_statements]
-    return __select_random([element.uid for element in db_statements])
-
-
-def get_uids_of_best_statements_for_justify_position(db_arguments):
-    """
-    Get the best statements to justify the position
-
-    :param db_arguments: [Statement]
-    :return: [Statement.uid]
-    """
-    if db_arguments is None:
-        return []
-    if len(db_arguments) <= max_count:
-        return [element.uid for element in db_arguments]
-    return __select_random([element.uid for element in db_arguments])
-
-
-def get_uids_of_best_statements_for_justify_argument(db_arguments):
-    """
-    Get the best statements to support an argument
-
-    :param db_arguments: [Argument]
-    :return: [Argument.uid]
-    """
-    if db_arguments is None:
-        return []
-    if len(db_arguments) <= max_count:
-        return [element.uid for element in db_arguments]
-    return __select_random([element.uid for element in db_arguments])
-
-
-def __select_random(some_list):
-    """
-    If the input list is to long, a ordered list with random subset is returned as well as a boolean, if the list is to long
-
-    :param some_list: any kind of list
-    :return: list, boolean
-    """
-    return some_list  # TODO 166 currently disabled
-    # return some_list[:max_count] # we do not need to shuffle cause we everything is randomized based on the users nick
-    # return [some_list[i] for i in sorted(random.sample(range(len(some_list)), max_count))]
 
 
 def get_attack_for_argument(argument_uid, restriction_on_attacks=None, restriction_on_args=None,
@@ -127,20 +69,14 @@ def get_attack_for_argument(argument_uid, restriction_on_attacks=None, restricti
                                                                    restriction_on_args, last_attack, history)
 
     if not attacks_array or len(attacks_array) == 0:
-        end = 'end'
-        attack_uid = 0
-        if no_new_attacks:
-            end += '_attack'
-            attack_uid = None
-        return attack_uid, end
+        return None, None
 
-    else:
-        attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
-        attack_uid = attacks_array[attack_no]['id']
+    attack_no = random.randrange(0, len(attacks_array))  # Todo fix random
+    attack_uid = attacks_array[attack_no]['id']
 
-        logger('RS', 'main return {} by {}'.format(key, attack_uid))
+    logger('RS', 'main return {} by {}'.format(key, attack_uid))
 
-        return attack_uid, attack_mapping[key]
+    return attack_uid, attack_mapping[key]
 
 
 def get_argument_by_conclusion(statement_uid, is_supportive):

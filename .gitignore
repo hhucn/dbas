@@ -1,13 +1,11 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
 *.mo
 *.pot
 
 # Distribution / packaging
 build/
 dist/
-*.egg
 *.egg-info/
 source/
 
@@ -39,13 +37,15 @@ db.txt
 mergeDatabase.py
 getMails.py
 addEnglischDiscussion.py
-.#*
 pserve.ini
 analyzer/
 
 # Pycharm
 .idea/
-data/
+
+# Database
+docker/db/data/
+!dbas/static/data
 
 # Deployment
 dbas/static/css/main.css
@@ -66,7 +66,6 @@ node_modules/
 restorePostgres.sh
 
 # DB Files
-docker/db/data/
 docker/db/entrypoint/.*.sql
 
 .scannerwork/
@@ -75,3 +74,4 @@ docker/db/entrypoint/.*.sql
 .#*
 
 .hypothesis/
+cover/

@@ -13,8 +13,7 @@ from dbas.database.discussion_model import Argument, Statement, User, History, s
 from dbas.helper.dictionary.bubbles import get_user_bubble_text_for_justify_statement
 from dbas.input_validator import check_reaction
 from dbas.lib import create_speechbubble_dict, get_text_for_argument_uid, get_text_for_statement_uid, \
-    get_text_for_premisesgroup_uid, get_text_for_conclusion, bubbles_already_last_in_list, BubbleTypes, \
-    nick_of_anonymous_user
+    get_text_for_conclusion, bubbles_already_last_in_list, BubbleTypes, nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import tag_type, get_text_for_confrontation, get_text_for_support
@@ -69,7 +68,6 @@ def create_bubbles_from_history(history, nickname='', lang='', slug=''):
     :param history: String
     :param nickname: User.nickname
     :param lang: ui_locales
-    :param application_url: String
     :param slug: String
     :return: Array
     """
@@ -87,7 +85,7 @@ def create_bubbles_from_history(history, nickname='', lang='', slug=''):
         nickname=nickname).first()
 
     for index, step in enumerate(splitted_history):
-        url = slug + '/' + step
+        url = '/' + slug + '/' + step
         if len(consumed_history) != 0:
             url += '?history=' + consumed_history
         consumed_history += step if len(consumed_history) == 0 else '-' + step
@@ -366,12 +364,12 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
     reply_for_argument = True
     if db_argument.conclusion_uid is not None:
         db_statement = DBDiscussionSession.query(Statement).get(db_argument.conclusion_uid)
-        reply_for_argument = not (db_statement and db_statement.is_startpoint)
+        reply_for_argument = not (db_statement and db_statement.is_position)
 
-    premise, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+    premise = db_argument.get_premisegroup_text()
     conclusion = get_text_for_conclusion(db_argument)
     sys_conclusion = get_text_for_conclusion(db_confrontation)
-    confr, tmp = get_text_for_premisesgroup_uid(db_confrontation.premisesgroup_uid)
+    confr = db_confrontation.get_premisegroup_text()
     user_is_attacking = not db_argument.is_supportive
 
     if lang != 'de':
@@ -392,7 +390,7 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
 
     bubble_user = create_speechbubble_dict(BubbleTypes.USER, message=user_text, omit_url=False, argument_uid=uid,
                                            is_supportive=is_supportive, nickname=db_user.nickname, lang=lang, url=url)
-    if attack == 'end':
+    if not attack:
         bubble_syst = create_speechbubble_dict(BubbleTypes.SYSTEM, message=sys_text, omit_url=True,
                                                nickname=db_user.nickname, lang=lang)
     else:
@@ -401,7 +399,7 @@ def get_bubble_from_reaction_step(step, db_user, lang, splitted_history, url, co
     return [bubble_user, bubble_syst]
 
 
-def save_path_in_database(db_user: User, slug: str, path: str, history: str='') -> None:
+def save_path_in_database(db_user: User, slug: str, path: str, history: str = '') -> None:
     """
     Saves a path into the database
 
@@ -462,22 +460,20 @@ def delete_history_in_database(db_user):
     return True
 
 
-def handle_history(request: Request, db_user: User, slug: str, issue: Issue) -> str:
+def handle_history(request: Request, db_user: User, issue: Issue) -> str:
     """
 
     :param request: pyramid's request object
     :param nickname: the user's nickname creating the request
-    :param slug: the discussion's slugified title
     :param issue: the discussion's issue od
     :rtype: str
     :return: current user's history
     """
     history = request.params.get('history', '')
     if db_user and db_user.nickname != nick_of_anonymous_user:
-        save_path_in_database(db_user, slug, request.path, history)
+        save_path_in_database(db_user, issue.slug, request.path, history)
         save_issue_uid(issue.uid, db_user)
 
-    # __save_history_in_cookie(request, request.path, history)
     if request.path.startswith('/discuss/'):
         path = request.path[len('/discuss/'):]
         path = path[path.index('/') if '/' in path else 0:]

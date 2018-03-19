@@ -281,7 +281,12 @@ def __get_dash_dict(name, href):
     :param href: link for current table
     :return: {'count': count, 'name': name, 'href': href}
     """
-    return {'name': name, 'href': href}
+    count = DBDiscussionSession.query(table_mapper[name.lower()]['table']).count()
+    return {
+        'name': name,
+        'href': href,
+        'count': count,
+    }
 
 
 def get_rows_of(columns, db_elements, main_page):
@@ -353,13 +358,18 @@ def __resolve_password_attribute(attribute, main_page, db_languages, db_users, t
 
 
 def __resolve_premisesgroup_attribute(attribute, main_page, db_languages, db_users, tmp):
-    text, uid_list = get_text_for_premisesgroup_uid(attribute) if attribute is not None else ('None', '[-]')
-    tmp.append(str(attribute) + ' - ' + str(text) + ' ' + str(uid_list))
+    text = ''
+    uids = []
+    if attribute is not None:
+        text = get_text_for_premisesgroup_uid(attribute)
+        db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=attribute).join(Statement).all()
+        uids = [premise.statements.uid for premise in db_premises]
+    tmp.append('{} - {} {}'.format(attribute, text, uids))
 
 
 def __resolve_argument_attribute(attribute, main_page, db_languages, db_users, tmp):
     text = get_text_for_argument_uid(attribute) if attribute is not None else 'None'
-    tmp.append(str(attribute) + ' - ' + str(text))
+    tmp.append('{} - {}'.format(attribute, text))
 
 
 def __resolve_textversion_attribute(attribute, main_page, db_languages, db_users, tmp):
@@ -367,7 +377,7 @@ def __resolve_textversion_attribute(attribute, main_page, db_languages, db_users
     if attribute is not None:
         db_tv = DBDiscussionSession.query(TextVersion).get(attribute)
         text = db_tv.content if db_tv else ''
-    tmp.append(str(attribute) + ' - ' + str(text))
+    tmp.append('{} - {}'.format(attribute, text))
 
 
 def __resolve_path_attribute(attribute, main_page, db_languages, db_users, tmp):

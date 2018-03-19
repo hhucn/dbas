@@ -5,6 +5,7 @@ from pyramid import testing
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import StatementReferences
+from dbas.views import set_references, get_reference
 
 
 class AjaxReferencesTest(unittest.TestCase):
@@ -55,20 +56,18 @@ class AjaxReferencesTest(unittest.TestCase):
 
     def test_set_references(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from dbas.views import set_references as ajax
         request = testing.DummyRequest(json_body={
-            'uid': 17,
+            'statement_id': 17,
             'reference': 'This is a source',
             'ref_source': 'http://www.google.de/some_source',
         })
-        self.assertTrue(ajax(request))
+        self.assertTrue(set_references(request))
 
-        from dbas.views import get_reference as ajax
         request = testing.DummyRequest(json_body={
             'uids': [17],
             'is_argument': False
         })
-        response = ajax(request)
+        response = get_reference(request)
         self.assertIsNotNone(response)
         for uid in response['data']:
             self.assertTrue(17, uid)

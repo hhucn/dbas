@@ -88,7 +88,6 @@ search:
     - apt-get install -yqq curl
     - export DBAS_IP=$(ip a | grep 172. | awk '{print $2}' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
     - "curl -H \"Content-Type: application/json\" -X POST -d '{\"DBAS_HOST\":\"'$DBAS_IP'\",\"DBAS_PORT\":\"4284\",\"DBAS_PROTOCOL\":\"http\"}' http://search:5000/init"
-    - sleep 5
     - nosetests search
 
 sonar:

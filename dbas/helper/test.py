@@ -5,12 +5,14 @@ Utility functions for testing.
 .. codeauthor:: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
 import os
+
 import transaction
 from nose.tools import assert_in
-
 from paste.deploy import appconfig
+
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, User
+from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, User, \
+    ReputationHistory
 
 
 def path_to_settings(ini_file):
@@ -48,7 +50,6 @@ def verify_dictionary_of_view(some_dict):
     :return: None
     :rtype: None
     """
-    assert_in('layout', some_dict)
     assert_in('ui_locales', some_dict['extras'])
     assert_in('title', some_dict)
     assert_in('extras', some_dict)
@@ -61,6 +62,7 @@ def refresh_user(nickname):
     DBDiscussionSession.add(db_user)
     DBDiscussionSession.flush()
     transaction.commit()
+    return db_user
 
 
 def clear_seen_by_of(nickname):
@@ -86,4 +88,15 @@ def clear_clicks_of(nickname):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=db_user.uid).delete()
     DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=db_user.uid).delete()
+    transaction.commit()
+
+
+def clear_reputation_of_user(db_user: User) -> None:
+    """
+    Delete reputation of db_user in the database.
+
+    :param db_user:
+    :return:
+    """
+    DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()
     transaction.commit()

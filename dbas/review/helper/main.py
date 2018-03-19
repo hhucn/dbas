@@ -585,7 +585,7 @@ def __bend_objects_of_duplicate_review(db_review):
     # do we need a new position
     db_dupl_statement = DBDiscussionSession.query(Statement).get(db_review.duplicate_statement_uid)
     db_orig_statement = DBDiscussionSession.query(Statement).get(db_review.original_statement_uid)
-    if db_dupl_statement.is_startpoint and not db_orig_statement.is_startpoint:
+    if db_dupl_statement.is_position and not db_orig_statement.is_position:
         logger('review_main_helper', 'Duplicate is startpoint, but original one is not')
         DBDiscussionSession.add(
             RevokedDuplicate(review=db_review.uid, bend_position=True, statement=db_orig_statement.uid))
@@ -662,10 +662,10 @@ def __merge_premisegroup(review):
         new_text = ' {} '.format(translator_discussion.get(_.aand)).join(texts)
     else:
         logger('review_main_helper', 'just merge the premisegroup')
-        new_text, tmp = get_text_for_premisesgroup_uid(review.premisesgroup_uid)
+        new_text = get_text_for_premisesgroup_uid(review.premisesgroup_uid)
 
     # now we have new text as a variable, let's set the statement
-    new_statement, tmp = set_statement(new_text, db_user, db_first_old_statement.is_startpoint, db_issue)
+    new_statement, tmp = set_statement(new_text, db_user, db_first_old_statement.is_position, db_issue)
 
     # new premisegroup for the statement
     db_new_premisegroup = PremiseGroup(author=db_user.uid)
@@ -731,7 +731,7 @@ def __split_premisegroup(review):
         logger('review_main_helper', 'split given premisegroup into the mapped, new statements')
         db_statements = []
         for value in db_values:
-            new_statement, tmp = set_statement(value.content, db_user, db_first_old_statement.is_startpoint, db_issue)
+            new_statement, tmp = set_statement(value.content, db_user, db_first_old_statement.is_position, db_issue)
             db_statements.append(new_statement)
     else:
         logger('review_main_helper', 'just split the premisegroup')

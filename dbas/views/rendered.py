@@ -9,7 +9,6 @@ from typing import Callable, Any
 import graphene
 import pkg_resources
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
-from pyramid.renderers import get_renderer
 from pyramid.request import Request
 from pyramid.security import forget
 from pyramid.view import view_config, notfound_view_config, forbidden_view_config
@@ -26,7 +25,7 @@ import dbas.review.helper.subpage as review_page_helper
 from api.v2.graphql.core import Query
 from dbas.auth.login import oauth_providers
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, Issue
+from dbas.database.discussion_model import User, Issue, Statement, Argument
 from dbas.handler import user
 from dbas.handler.issue import get_issues_overiew
 from dbas.handler.language import set_language_for_visit, get_language_from_cookie
@@ -34,13 +33,15 @@ from dbas.handler.rss import get_list_of_all_feeds
 from dbas.helper.decoration import prep_extras_dict
 from dbas.helper.dictionary.main import DictionaryHelper
 from dbas.input_validator import is_integer
-from dbas.lib import escape_string, get_changelog, nick_of_anonymous_user, get_text_for_statement_uid
+from dbas.lib import escape_string, get_changelog, nick_of_anonymous_user
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.translator import Translator
 from dbas.validators.common import check_authentication
 from dbas.validators.core import validate
-from dbas.validators.user import valid_user, invalid_user
+from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_attitude, \
+    valid_relation, valid_argument, valid_statement
+from dbas.validators.user import valid_user, invalid_user, valid_user_optional
 
 name = 'D-BAS'
 version = '1.6.0'
@@ -74,10 +75,6 @@ def __modifiy_issue_overview_url(prep_dict: dict):
         for i, el in enumerate(prep_dict[p]):
             prep_dict[p][i]['url'] = '/discuss' + prep_dict[p][i]['url']
     return prep_dict
-
-
-def base_layout():
-    return get_renderer('../templates/basetemplate.pt').implementation()
 
 
 def prepare_request_dict(request: Request):
@@ -114,11 +111,8 @@ def prepare_request_dict(request: Request):
     else:
         db_issue = issue
 
-    if not slug:
-        slug = db_issue.slug
-
     issue_handler.save_issue_id_in_session(db_issue.uid, request)
-    history = history_handler.handle_history(request, db_user, slug, db_issue)
+    history = history_handler.handle_history(request, db_user, db_issue)
     set_language_for_visit(request)
 
     return {
@@ -159,7 +153,6 @@ def __call_from_discussion_step(request, f: Callable[[Any, Any, Any], Any]):
     request_dict = prepare_request_dict(request)
     prepared_discussion = f(request_dict)
     if prepared_discussion:
-        prepared_discussion['layout'] = base_layout()
         __modify_discussion_url(prepared_discussion)
 
     return prepared_discussion, request_dict
@@ -175,73 +168,57 @@ def __append_extras_dict(pdict: dict, rdict: dict, nickname: str, is_reportable:
     :return:
     """
     _dh = DictionaryHelper(rdict['ui_locales'], pdict['issues']['lang'])
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
-    pdict['extras'] = _dh.prepare_extras_dict(rdict['issue'].slug, is_reportable, True, True, rdict['registry'], rdict['app_url'], rdict['path'], db_user)
+    db_user = DBDiscussionSession.query(User).filter_by(
+        nickname=nickname if nickname else nick_of_anonymous_user).first()
+    pdict['extras'] = _dh.prepare_extras_dict(rdict['issue'].slug, is_reportable, True, True, rdict['registry'],
+                                              rdict['app_url'], rdict['path'], db_user)
 
 
-def __append_extras_dict_during_justification(request: Request, pdict: dict, rdict: dict) -> None:
-    """
-
-    :param request: pyramids Request object
-    :param pdict: prepared dict for rendering
-    :param idict: item dict with the answers
-    :param ddict: discussion dict with bubbles
-    :param rdict: request dict for the discussion core
-    :param is_reportable:
-    :return:
-    """
-    nickname = request.authenticated_userid
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname if nickname else nick_of_anonymous_user).first()
-    ui_locales = get_language_from_cookie(request)
-    mode = request.matchdict.get('mode', '')
-    relation = request.matchdict['relation'][0] if len(request.matchdict['relation']) > 0 else ''
-    stat_or_arg_uid = request.matchdict.get('statement_or_arg_id')
-    supportive = mode in ['agree', 'dontknow']
+def __append_extras_dict_during_justification_argument(request: Request, db_user: User, db_issue: Issue, pdict: dict):
+    system_lang = get_language_from_cookie(request)
     item_len = len(pdict['items']['elements'])
-    extras_dict = {}
+    _dh = DictionaryHelper(system_lang, db_issue.lang)
+    logged_in = (db_user and db_user.nickname != nick_of_anonymous_user) is not None
+    extras_dict = _dh.prepare_extras_dict(db_issue.slug, False, True, False, request.registry,
+                                          request.application_url, request.path, db_user=db_user)
+    # is the discussion at the end?
+    if item_len == 0 or item_len == 1 and logged_in or 'login' in pdict['items']['elements'][0].get('id'):
+        _dh.add_discussion_end_text(pdict['discussion'], extras_dict, request.authenticated_userid,
+                                    at_justify_argumentation=True)
 
-    _dh = DictionaryHelper(ui_locales, rdict['issue'].lang)
+    pdict['extras'] = extras_dict
+
+
+def __append_extras_dict_during_justification_statement(request: Request, db_user: User, db_issue: Issue,
+                                                        db_statement: Statement,
+                                                        pdict: dict, attitude: str):
+    system_lang = get_language_from_cookie(request)
+    supportive = attitude in ['agree', 'dontknow']
+    item_len = len(pdict['items']['elements'])
+    _dh = DictionaryHelper(system_lang, db_issue.lang)
     logged_in = (db_user and db_user.nickname != nick_of_anonymous_user) is not None
 
-    if [c for c in ('agree', 'disagree') if c in mode] and relation == '':
-        extras_dict = _dh.prepare_extras_dict(rdict['issue'].slug, False, True, True, request.registry,
+    if attitude in ('agree', 'disagree'):
+        extras_dict = _dh.prepare_extras_dict(db_issue.slug, False, True, True, request.registry,
                                               request.application_url, request.path, db_user)
         if item_len == 0 or item_len == 1 and logged_in:
-            _dh.add_discussion_end_text(pdict['discussion'], extras_dict, request.authenticated_userid, at_justify=True,
-                                        current_premise=get_text_for_statement_uid(stat_or_arg_uid),
+            _dh.add_discussion_end_text(pdict['discussion'], extras_dict, db_user.nickname, at_justify=True,
+                                        current_premise=db_statement.get_text(),
                                         supportive=supportive)
 
-    elif 'dontknow' in mode and relation == '':
-        extras_dict = _dh.prepare_extras_dict(rdict['issue'].slug, True, True, True, request.registry,
+    else:
+        extras_dict = _dh.prepare_extras_dict(db_issue.slug, True, True, True, request.registry,
                                               request.application_url, request.path, db_user=db_user)
         # is the discussion at the end?
         if item_len == 0:
-            if int(stat_or_arg_uid) == 0:
-                stat_or_arg_uid = rdict['history'].split('/')[-1]
-                if not is_integer(stat_or_arg_uid):
-                    stat_or_arg_uid = 0
-
-            text = ''
-            if int(stat_or_arg_uid) != 0:
-                text = get_text_for_statement_uid(stat_or_arg_uid)
-
-            _dh.add_discussion_end_text(pdict['discussion'], extras_dict, request.authenticated_userid,
-                                        at_dont_know=True, current_premise=text)
-
-    elif [c for c in ('undermine', 'rebut', 'undercut', 'support') if c in relation]:
-        extras_dict = _dh.prepare_extras_dict(rdict['issue'].slug, False, True, False, request.registry,
-                                              request.application_url, request.path, db_user=db_user)
-        # is the discussion at the end?
-        if item_len == 0 or item_len == 1 and logged_in or 'login' in pdict['items']['elements'][0].get('id'):
-            _dh.add_discussion_end_text(pdict['discussion'], extras_dict, request.authenticated_userid,
-                                        at_justify_argumentation=True)
+            _dh.add_discussion_end_text(pdict['discussion'], extras_dict, db_user.nickname,
+                                        at_dont_know=True, current_premise=db_statement.get_text())
 
     pdict['extras'] = extras_dict
 
 
 def __main_dict(request, title):
     return {
-        'layout': base_layout(),
         'title': title,
         'project': project_name,
         'extras': request.decorated['extras'],
@@ -546,43 +523,9 @@ def notfound(request):
     return prep_dict
 
 
-# ####################################
-# DISCUSSION                         #
-# ####################################
-
-
-# content page
-@view_config(route_name='discussion_init_with_slug', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, invalid_user)
-def discussion_init(request):
-    """
-    View configuration for the initial discussion.
-
-    :param request: request of the web server
-    :return: dictionary
-    """
-    logger('discussion_init', 'request.matchdict: {}'.format(request.matchdict))
-
-    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.init)
-    if not prepared_discussion:
-        raise HTTPNotFound()
-
-    # redirect to oauth url after login and redirecting
-    if request.authenticated_userid and 'service' in request.params and request.params['service'] in oauth_providers:
-        url = request.session['oauth_redirect_url']
-        return HTTPFound(location=url)
-
-    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
-    if len(prepared_discussion['items']['elements']) == 1:
-        _dh = DictionaryHelper(rdict['ui_locales'], prepared_discussion['issues']['lang'])
-        nickname = request.authenticated_userid if request.authenticated_userid else nick_of_anonymous_user
-        _dh.add_discussion_end_text(prepared_discussion['discussion'], prepared_discussion['extras'], nickname, at_start=True)
-
-    return prepared_discussion
-
-
 @view_config(route_name='discussion_start', renderer='../templates/discussion-start.pt', permission='everybody')
-@view_config(route_name='discussion_start_with_slash', renderer='../templates/discussion-start.pt', permission='everybody')
+@view_config(route_name='discussion_start_with_slash', renderer='../templates/discussion-start.pt',
+             permission='everybody')
 @validate(check_authentication, invalid_user, prep_extras_dict)
 def discussion_start(request):
     """
@@ -593,35 +536,75 @@ def discussion_start(request):
     """
     logger('discussion_start', 'main')
     ui_locales = get_language_from_cookie(request)
-    issue_list = issue_handler.get_issues_overview_on_start(request.validated['user'])
-    for i in range(len(issue_list)):
-        issue_list[i]['url'] = '/discuss' + issue_list[i]['url']
+    issue_dict = issue_handler.get_issues_overview_on_start(request.validated['user'])
+    for i in range(len(issue_dict['issues'])):
+        issue_dict['issues'][i]['url'] = '/discuss' + issue_dict['issues'][i]['url']
 
     prep_dict = __main_dict(request, Translator(ui_locales).get(_.discussionStart))
 
-    prep_dict.update({
-        'issues': issue_list
-    })
+    prep_dict.update(issue_dict)
     return prep_dict
 
 
-# attitude page
-@view_config(route_name='discussion_attitude', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, invalid_user)
-def discussion_attitude(request):
+# ####################################
+# DISCUSSION                         #
+# ####################################
+
+
+# content page
+@view_config(route_name='discussion_init_with_slug', renderer='../templates/discussion.pt', permission='everybody')
+@validate(check_authentication, valid_issue_by_slug, valid_user_optional)
+def discussion_init(request):
     """
-    View configuration for discussion step, where we will ask the user for her attitude towards a statement.
+    View configuration for the initial discussion.
 
     :param request: request of the web server
     :return: dictionary
     """
-    # '/discuss/{slug}/attitude/{statement_id}'
+    logger('discussion_init', 'request.matchdict: {}'.format(request.matchdict))
+
+    prepared_discussion = discussion.init(request.validated['issue'], request.validated['user'])
+    __modify_discussion_url(prepared_discussion)
+
+    rdict = prepare_request_dict(request)
+
+    # redirect to oauth url after login and redirecting
+    if request.authenticated_userid and 'service' in request.params and request.params['service'] in oauth_providers:
+        url = request.session['oauth_redirect_url']
+        return HTTPFound(location=url)
+
+    __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
+    if len(prepared_discussion['items']['elements']) == 1:
+        _dh = DictionaryHelper(rdict['ui_locales'], prepared_discussion['issues']['lang'])
+        nickname = request.authenticated_userid if request.authenticated_userid else nick_of_anonymous_user
+        _dh.add_discussion_end_text(prepared_discussion['discussion'], prepared_discussion['extras'], nickname,
+                                    at_start=True)
+
+    return prepared_discussion
+
+
+# attitude page
+@view_config(route_name='discussion_attitude', renderer='../templates/discussion.pt', permission='everybody')
+@validate(check_authentication, valid_user_optional, valid_position)
+def discussion_attitude(request):
+    """
+    View configuration for discussion step, where we will ask the user for her attitude towards a statement.
+    Route: /discuss/{slug}/attitude/{position_id}
+
+    :param request: request of the web server
+    :return: dictionary
+    """
     logger('discussion_attitude', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.attitude)
+    db_position = request.validated['position']
+    db_issue = request.validated['issue']
+    db_user = request.validated['user']
 
-    if not prepared_discussion:
-        raise HTTPNotFound()
+    history = history_handler.handle_history(request, db_user, db_issue)
+    prepared_discussion = discussion.attitude(db_issue, db_user, db_position, history, request.path)
+    __modify_discussion_url(prepared_discussion)
+
+    rdict = prepare_request_dict(request)
 
     __append_extras_dict(prepared_discussion, rdict, request.authenticated_userid, False)
 
@@ -629,23 +612,61 @@ def discussion_attitude(request):
 
 
 # justify page
-@view_config(route_name='discussion_justify', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, invalid_user)
-def discussion_justify(request):
+@view_config(route_name='discussion_justify_statement', renderer='../templates/discussion.pt', permission='everybody')
+@validate(check_authentication, valid_user_optional, valid_statement(location='path', depends_on={valid_issue_by_slug}),
+          valid_attitude)
+def discussion_justify_statement(request) -> dict:
     """
     View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
 
+    Path: /discuss/{slug}/justify/{statement_id}/{attitude}*relation
+
     :param request: request of the web server
-    :return: dictionary
+    :return: dict
     """
-    # '/discuss/{slug}/justify/{statement_or_arg_id}/{mode}*relation'
     logger('discussion_justify', 'request.matchdict: {}'.format(request.matchdict))
 
-    prepared_discussion, rdict = __call_from_discussion_step(request, discussion.justify)
-    if not prepared_discussion:
-        raise HTTPNotFound()
+    db_statement: Statement = request.validated['statement']
+    db_issue = request.validated['issue']
+    db_user = request.validated['user']
+    attitude = request.validated['attitude']
 
-    __append_extras_dict_during_justification(request, prepared_discussion, rdict)
+    history = history_handler.handle_history(request, db_user, db_issue)
+    prepared_discussion = discussion.justify_statement(db_issue, db_user, db_statement, attitude, history, request.path)
+    __modify_discussion_url(prepared_discussion)
+
+    __append_extras_dict_during_justification_statement(request, db_user, db_issue, db_statement, prepared_discussion,
+                                                        attitude)
+
+    return prepared_discussion
+
+
+@view_config(route_name='discussion_justify_argument', renderer='../templates/discussion.pt', permission='everybody')
+@validate(check_authentication, valid_user_optional, valid_argument(location='path', depends_on={valid_issue_by_slug}),
+          valid_attitude, valid_relation)
+def discussion_justify_argument(request) -> dict:
+    """
+    View configuration for discussion step, where we will ask the user for her a justification of her opinion/interest.
+
+    Path: /discuss/{slug}/justify/{statement_or_arg_id}/{attitude}*relation
+
+    :param request: request of the web server
+    :return: dict
+    """
+    logger('discussion_justify', 'request.matchdict: {}'.format(request.matchdict))
+
+    db_argument: Argument = request.validated['argument']
+    db_issue = request.validated['issue']
+    db_user = request.validated['user']
+    attitude = request.validated['attitude']
+    relation = request.validated['relation']
+
+    history = history_handler.handle_history(request, db_user, db_issue)
+    prepared_discussion = discussion.justify_argument(db_issue, db_user, db_argument, attitude, relation, history,
+                                                      request.path)
+    __modify_discussion_url(prepared_discussion)
+
+    __append_extras_dict_during_justification_argument(request, db_user, db_issue, prepared_discussion)
 
     return prepared_discussion
 
@@ -732,7 +753,6 @@ def discussion_exit(request):
     prepared_discussion = discussion.dexit(get_language_from_cookie(request), db_user)
     prepared_discussion['extras'] = dh.prepare_extras_dict_for_normal_page(request.registry, request.application_url,
                                                                            request.path, db_user)
-    prepared_discussion['layout'] = base_layout()
     prepared_discussion['language'] = str(get_language_from_cookie(request))
     prepared_discussion['show_summary'] = len(prepared_discussion['summary']) != 0
     return prepared_discussion

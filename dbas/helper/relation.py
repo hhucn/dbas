@@ -12,7 +12,6 @@ import transaction
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Premise, PremiseGroup, User, Issue
 from dbas.input_validator import is_integer
-from dbas.lib import get_text_for_premisesgroup_uid
 from dbas.query_wrapper import get_not_disabled_arguments_as_query, get_not_disabled_premises_as_query
 
 
@@ -104,15 +103,15 @@ def __get_rebuts_for_arguments_conclusion_uid(db_argument):
     return_array = []
     given_rebuts = set()
     db_arguments = get_not_disabled_arguments_as_query()
-    db_rebut = db_arguments.filter(Argument.is_supportive == (not db_argument.is_supportive),
-                                   Argument.conclusion_uid == db_argument.conclusion_uid).all()
-    for rebut in db_rebut:
+    db_rebuts = db_arguments.filter(Argument.is_supportive == (not db_argument.is_supportive),
+                                    Argument.conclusion_uid == db_argument.conclusion_uid).all()
+    for rebut in db_rebuts:
 
         if rebut.premisesgroup_uid not in given_rebuts:
             given_rebuts.add(rebut.premisesgroup_uid)
             tmp_dict = dict()
             tmp_dict['id'] = rebut.uid
-            text, trash = get_text_for_premisesgroup_uid(rebut.premisesgroup_uid)
+            text = rebut.get_premisegroup_text()
             tmp_dict['text'] = text[0:1].upper() + text[1:]
             return_array.append(tmp_dict)
     return return_array
@@ -152,7 +151,7 @@ def get_supports_for_argument_uid(argument_uid):
             if support.premisesgroup_uid not in given_supports:
                 tmp_dict = dict()
                 tmp_dict['id'] = support.uid
-                tmp_dict['text'], trash = get_text_for_premisesgroup_uid(support.premisesgroup_uid)
+                tmp_dict['text'] = support.get_premisegroup_text()
                 return_array.append(tmp_dict)
                 given_supports.add(support.premisesgroup_uid)
 
@@ -188,11 +187,9 @@ def set_new_undermine_or_support_for_pgroup(premisegroup_uid: int, current_argum
         if any([p.statement_uid == premise.statement_uid for p in db_tmp]):
             return False
 
-        new_arguments.append(Argument(premisegroup=premisegroup_uid,
-                                      issupportive=is_supportive,
-                                      author=db_user.uid,
-                                      conclusion=premise.statement_uid,
-                                      issue=db_issue.uid))
+        new_arguments.append(
+            Argument(premisegroup=premisegroup_uid, is_supportive=is_supportive, author=db_user.uid, issue=db_issue.uid,
+                     conclusion=premise.statement_uid))
 
         if len(new_arguments) > 0:
             DBDiscussionSession.add_all(new_arguments)
@@ -224,7 +221,7 @@ def set_new_undercut(premisegroup_uid, current_argument: Argument, db_user: User
         return db_argument, True
     else:
         new_argument = Argument(premisegroup=premisegroup_uid,
-                                issupportive=False,
+                                is_supportive=False,
                                 author=db_user.uid,
                                 issue=issue.uid)
         new_argument.set_conclusions_argument(current_argument.uid)
@@ -244,26 +241,7 @@ def set_new_rebut(premisegroup_uid, current_argument: Argument, db_user: User, d
     :param db_user: User
     :return: Argument, Boolean if the argument is a duplicate
     """
-    # duplicate?
-    db_arguments = get_not_disabled_arguments_as_query()
-    db_argument = db_arguments.filter(Argument.premisesgroup_uid == premisegroup_uid,
-                                      Argument.is_supportive == True,
-                                      Argument.conclusion_uid == current_argument.conclusion_uid).first()
-    if db_argument:
-        return db_argument, True
-    else:
-        db_tmp = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisegroup_uid).all()
-        if any([p.statement_uid == current_argument.conclusion_uid for p in db_tmp]):
-            return False, False
-        new_argument = Argument(premisegroup=premisegroup_uid,
-                                issupportive=False,
-                                author=db_user.uid,
-                                conclusion=current_argument.conclusion_uid,
-                                issue=db_issue.uid)
-        DBDiscussionSession.add(new_argument)
-        DBDiscussionSession.flush()
-        transaction.commit()
-        return new_argument, False
+    return __set_rebut_or_support(premisegroup_uid, current_argument, db_user, db_issue, False)
 
 
 def set_new_support(premisegroup_uid: int, current_argument: Argument, db_user: User, db_issue: Issue) \
@@ -277,7 +255,11 @@ def set_new_support(premisegroup_uid: int, current_argument: Argument, db_user: 
     :param db_issue: Issue
     :return: Argument, Boolean if the argument is a duplicate
     """
-    # duplicate?
+    return __set_rebut_or_support(premisegroup_uid, current_argument, db_user, db_issue, True)
+
+
+def __set_rebut_or_support(premisegroup_uid: int, current_argument: Argument, db_user: User, db_issue: Issue,
+                           is_supportive: bool) -> Tuple[Union[Argument, bool], bool]:
     db_arguments = get_not_disabled_arguments_as_query()
     db_argument = db_arguments.filter(Argument.premisesgroup_uid == premisegroup_uid,
                                       Argument.is_supportive == True,
@@ -288,12 +270,11 @@ def set_new_support(premisegroup_uid: int, current_argument: Argument, db_user: 
         db_tmp = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=premisegroup_uid).all()
         if any([p.statement_uid == current_argument.conclusion_uid for p in db_tmp]):
             return False, False
-
         new_argument = Argument(premisegroup=premisegroup_uid,
-                                issupportive=True,
+                                is_supportive=is_supportive,
                                 author=db_user.uid,
-                                conclusion=current_argument.conclusion_uid,
-                                issue=db_issue.uid)
+                                issue=db_issue.uid,
+                                conclusion=current_argument.conclusion_uid)
         DBDiscussionSession.add(new_argument)
         DBDiscussionSession.flush()
         transaction.commit()
@@ -317,13 +298,7 @@ def __get_attack_or_support_for_justification_of_argument_uid(argument_uid, is_s
     if not db_related_arguments:
         return None
 
-    for relation in db_related_arguments:
-        if relation.premisesgroup_uid not in given_relations:
-            given_relations.add(relation.premisesgroup_uid)
-            tmp_dict = dict()
-            tmp_dict['id'] = relation.uid
-            tmp_dict['text'], trash = get_text_for_premisesgroup_uid(relation.premisesgroup_uid)
-            return_array.append(tmp_dict)
+    __add_to_return_array(return_array, db_related_arguments, given_relations)
 
     return return_array
 
@@ -340,13 +315,17 @@ def __get_undermines_for_premises(premises_as_statements_uid, is_supportive=Fals
     given_undermines = set()
     for s_uid in premises_as_statements_uid:
         db_arguments = get_not_disabled_arguments_as_query()
-        db_undermine = db_arguments.filter(Argument.is_supportive == is_supportive,
-                                           Argument.conclusion_uid == s_uid).all()
-        for undermine in db_undermine:
-            if undermine.premisesgroup_uid not in given_undermines:
-                given_undermines.add(undermine.premisesgroup_uid)
-                tmp_dict = dict()
-                tmp_dict['id'] = undermine.uid
-                tmp_dict['text'], uids = get_text_for_premisesgroup_uid(undermine.premisesgroup_uid)
-                return_array.append(tmp_dict)
+        db_undermines = db_arguments.filter(Argument.is_supportive == is_supportive,
+                                            Argument.conclusion_uid == s_uid).all()
+        __add_to_return_array(return_array, db_undermines, given_undermines)
     return return_array
+
+
+def __add_to_return_array(return_array, db_arguments, given_argument):
+    for argument in db_arguments:
+        if argument.premisesgroup_uid not in given_argument:
+            given_argument.add(argument.premisesgroup_uid)
+            tmp_dict = dict()
+            tmp_dict['id'] = argument.uid
+            tmp_dict['text'] = argument.get_premisegroup_text()
+            return_array.append(tmp_dict)

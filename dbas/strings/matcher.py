@@ -95,16 +95,16 @@ def get_all_statements_with_value(issue_uid, application_url, value):
     return return_array[:list_length]
 
 
-def get_strings_for_start(value, issue, is_startpoint):
+def get_strings_for_start(value, issue, is_position):
     """
     Checks different position-strings for a match with given value
 
     :param value: string
     :param issue: int
-    :param is_startpoint: boolean
+    :param is_position: boolean
     :return: dict()
     """
-    db_statements = get_not_disabled_statement_as_query().filter(Statement.is_startpoint == is_startpoint,
+    db_statements = get_not_disabled_statement_as_query().filter(Statement.is_position == is_position,
                                                                  Statement.issue_uid == issue).all()
     return_array = []
     for stat in db_statements:

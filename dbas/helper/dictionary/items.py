@@ -6,22 +6,28 @@ Provides helping function for dictionaries, which are used for the radio buttons
 
 import hashlib
 import random
+from typing import List
 
 import dbas.recommender_system as rs
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, Statement, Premise, Issue, User
 from dbas.handler.arguments import get_another_argument_with_same_conclusion
 from dbas.handler.voting import add_seen_argument, add_seen_statement
-from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, \
+from dbas.helper.url import UrlManager
+from dbas.lib import get_all_attacking_arg_uids_from_history, is_author_of_statement, \
     is_author_of_argument
 from dbas.logger import logger
-from dbas.query_wrapper import get_not_disabled_statement_as_query, get_not_disabled_arguments_as_query
+from dbas.query_wrapper import get_not_disabled_arguments_as_query
 from dbas.review.helper.queues import is_statement_in_edit_queue, is_arguments_premise_in_edit_queue
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, get_jump_to_argument_text_list, \
     get_support_to_argument_text_list, nick_of_anonymous_user
 from dbas.strings.translator import Translator
-from dbas.helper.url import UrlManager
+
+
+def shuffle_list_by_user(db_user: User, l: List) -> List:
+    random.seed(int(hashlib.md5(str.encode(str(db_user.nickname))).hexdigest(), 16))
+    return random.sample(l, len(l))
 
 
 class ItemDictHelper(object):
@@ -41,11 +47,10 @@ class ItemDictHelper(object):
         """
         self.lang = lang
         self.db_issue = db_issue
-        self.LIMIT_SUPPORT_STEP = 0.30
         self.issue_read_only = db_issue.is_read_only
         limiter = '-' if len(history) > 0 else ''
 
-        path = path.replace(db_issue.slug, '').replace('discuss', '')
+        path = path.replace(db_issue.slug, '').replace('discuss', '').replace('api', '')
         while path.startswith('/'):
             path = path[1:]
         self.path = '{}{}/{}'.format(history, limiter, path)
@@ -65,11 +70,12 @@ class ItemDictHelper(object):
         :return:
         """
         logger('ItemDictHelper', 'def user: {}'.format(db_user.nickname))
-        db_statements = get_not_disabled_statement_as_query()
-        db_statements = db_statements.filter(Statement.is_startpoint == True,
-                                             Statement.issue_uid == self.db_issue.uid).all()
+        db_statements = DBDiscussionSession.query(Statement) \
+            .filter(Statement.is_disabled == False,
+                    Statement.is_position == True,
+                    Statement.issue_uid == self.db_issue.uid).all()
 
-        uids = rs.get_uids_of_best_positions(db_statements)  # TODO # 166
+        uids = [element.uid for element in db_statements if db_statements]
         slug = self.db_issue.slug
 
         statements_array = []
@@ -79,7 +85,7 @@ class ItemDictHelper(object):
             if statement.uid in uids:  # add seen by if the statement is visible
                 add_seen_statement(statement.uid, db_user)
             statements_array.append(self.__create_answer_dict(statement.uid,
-                                                              [{'title': get_text_for_statement_uid(statement.uid),
+                                                              [{'title': statement.get_text(),
                                                                 'id': statement.uid}],
                                                               'start',
                                                               _um.get_url_for_statement_attitude(statement.uid),
@@ -90,24 +96,23 @@ class ItemDictHelper(object):
 
         _tn = Translator(self.lang)
 
-        if type(db_statements) is list and len(db_statements) > 0:
-            random.seed(int(hashlib.md5(str.encode(str(db_user.nickname))).hexdigest(), 16))
-            random.shuffle(statements_array)
+        shuffle_list_by_user(db_user, statements_array)
 
         if not self.issue_read_only:
-            if db_user.nickname is not nick_of_anonymous_user:
+            logger('XX', db_user.nickname)
+            if db_user.nickname == nick_of_anonymous_user:
+                statements_array.append(self.__create_answer_dict('login',
+                                                                  [{'id': '0',
+                                                                    'title': _tn.get(_.wantToStateNewPosition)}],
+                                                                  'justify',
+                                                                  'login'))
+            else:
                 title = _tn.get(_.newConclusionRadioButtonText) if len(db_statements) > 0 else _tn.get(
                     _.newConclusionRadioButtonTextNewIdea)
                 statements_array.append(self.__create_answer_dict('start_statement',
                                                                   [{'title': title, 'id': 0}],
                                                                   'start',
                                                                   'add'))
-            else:
-                statements_array.append(self.__create_answer_dict('login',
-                                                                  [{'id': '0',
-                                                                    'title': _tn.get(_.wantToStateNewPosition)}],
-                                                                  'justify',
-                                                                  'login'))
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_statements)}}
 
@@ -145,11 +150,11 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
-    def get_array_for_justify_statement(self, statement_uid, db_user, is_supportive, history):
+    def get_array_for_justify_statement(self, db_statement: Statement, db_user: User, is_supportive: bool, history):
         """
         Prepares the dict with all items for the third step in discussion, where the user justifies his position.
 
-        :param statement_uid: Statement.uid
+        :param db_statement: Statement
         :param db_user: User
         :param is_supportive: Boolean
         :param history: history
@@ -159,8 +164,8 @@ class ItemDictHelper(object):
         statements_array = []
         _tn = Translator(self.lang)
         slug = self.db_issue.slug
-        db_arguments = rs.get_arguments_by_conclusion(statement_uid, is_supportive)
-        uids = rs.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
+        db_arguments: List[Argument] = rs.get_arguments_by_conclusion(db_statement.uid, is_supportive)
+        uids: List[int] = [argument.uid for argument in db_arguments if db_arguments]
 
         _um = UrlManager(slug, history=self.path)
 
@@ -173,7 +178,7 @@ class ItemDictHelper(object):
                 premisesgroup_uid=argument.premisesgroup_uid).all()
             premise_array = []
             for premise in db_premises:
-                text = get_text_for_statement_uid(premise.statement_uid)
+                text = premise.get_text()
                 premise_array.append({'title': text, 'id': premise.statement_uid})
 
             # filter forbidden attacks
@@ -187,12 +192,12 @@ class ItemDictHelper(object):
 
             new_arg = None
             url = None
-            if 'end' in attack:  # TODO 343
+            if not attack:
                 new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
                 if new_arg:
                     url = _um.get_url_for_support_each_other(argument.uid, new_arg.uid)
 
-            if 'end' not in attack or new_arg is None or url is None:
+            if attack or new_arg is None or url is None:
                 url = _um.get_url_for_reaction_on_argument(argument.uid, attack, arg_id_sys)
 
             statements_array.append(self.__create_answer_dict(str(argument.uid), premise_array, 'justify', url,
@@ -205,9 +210,7 @@ class ItemDictHelper(object):
                                                               is_visible=argument.uid in uids,
                                                               attack_url=_um.get_url_for_jump(argument.uid)))
 
-        if type(db_arguments) is list and len(db_arguments) > 0:
-            random.seed(int(hashlib.md5(str.encode(str(db_user.nickname))).hexdigest(), 16))
-            random.shuffle(statements_array)
+        shuffle_list_by_user(db_user, statements_array)
 
         if not self.issue_read_only:
             if db_user and db_user.nickname != nick_of_anonymous_user:
@@ -240,7 +243,7 @@ class ItemDictHelper(object):
         slug = self.db_issue.slug
         # description in docs: dbas/logic
         db_arguments = self.__get_arguments_based_on_attack(attack_type, argument_uid)
-        uids = rs.get_uids_of_best_statements_for_justify_position(db_arguments)  # TODO # 166
+        uids = [argument.uid for argument in db_arguments if db_arguments]
 
         _um = UrlManager(slug, history=self.path)
 
@@ -252,7 +255,7 @@ class ItemDictHelper(object):
                 premisesgroup_uid=argument.premisesgroup_uid).all()
             premises_array = []
             for premise in db_premises:
-                text = get_text_for_statement_uid(premise.statement_uid)
+                text = premise.get_text()
                 premises_array.append({'id': premise.statement_uid,
                                        'title': text})
 
@@ -267,9 +270,7 @@ class ItemDictHelper(object):
             url = ''
 
             # with a chance of 50% or at the end we will seed the new "support step"
-            logger('ItemDictHelper',
-                   'take support? is end: {} or rnd: {}'.format('end' in attack, 'NOO'))  # support_step))
-            if 'end' in attack:  # TODO 343
+            if not attack:
                 new_arg = get_another_argument_with_same_conclusion(argument.uid, history)
                 the_other_one = new_arg is None
                 if new_arg:
@@ -287,9 +288,7 @@ class ItemDictHelper(object):
                                                               is_visible=argument.uid in uids,
                                                               attack_url=_um.get_url_for_jump(argument.uid)))
 
-        if type(db_arguments) is list and len(db_arguments) > 0:
-            random.seed(int(hashlib.md5(str.encode(str(db_user.nickname))).hexdigest(), 16))
-            random.shuffle(statements_array)
+        shuffle_list_by_user(db_user, statements_array)
 
         if not self.issue_read_only:
             if db_user and db_user.nickname != nick_of_anonymous_user:
@@ -506,7 +505,7 @@ class ItemDictHelper(object):
                                                             restriction_on_args=attacking_arg_uids,
                                                             history=self.path)
 
-        if new_attack == 'no_other_attack' or new_attack.startswith('end'):
+        if not new_attack:
             url = _um.get_last_valid_url_before_reaction()
             relation = 'step_back'
         else:
@@ -642,7 +641,7 @@ class ItemDictHelper(object):
             db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=group_id).all()
             premise_array = []
             for premise in db_premises:
-                text = get_text_for_statement_uid(premise.statement_uid)
+                text = premise.get_text()
                 premise_array.append({'title': text, 'id': premise.statement_uid})
                 if db_user and db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
                     add_seen_statement(premise.statement_uid, db_user)

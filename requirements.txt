@@ -39,7 +39,7 @@ python-slugify==1.2.4
 python-twitter==3.3
 paste==2.0.3
 psycopg2_binary==2.7.4
-pyldap==2.4.37
+python-ldap==3.0.0
 requests==2.18.4
 requests_oauthlib==0.8.0
 selenium==3.8.1

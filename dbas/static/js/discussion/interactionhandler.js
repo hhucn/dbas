@@ -43,22 +43,17 @@ function InteractionHandler() {
     /**
      * Callback for Fuzzy Search
      * @param data
-     * @param callbackid
+     * @param callbackId
      * @param type
      * @param reason
      */
-    this.callbackIfDoneFuzzySearch = function (data, callbackid, type, reason) {
+    this.callbackIfDoneFuzzySearch = function (data, callbackId, type, reason) {
         // if there is no returned data, we will clean the list
 
         if (Object.keys(data).length === 0) {
-            $('#' + proposalStatementListGroupId).empty();
-            $('#' + proposalPremiseListGroupId).empty();
-            $('#' + proposalEditListGroupId).empty();
-            $('#' + proposalUserListGroupId).empty();
-            $('#' + proposalStatementSearchGroupId).empty();
-            $('#proposal-mergesplit-list-group-' + callbackid).empty();
+            new GuiHandler().clearProposalSpace(callbackId);
         } else {
-            new GuiHandler().setStatementsAsProposal(data, callbackid, type, reason);
+            new GuiHandler().setStatementsAsProposal(data, callbackId, type, reason);
         }
     };
 

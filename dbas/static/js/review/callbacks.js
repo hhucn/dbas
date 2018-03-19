@@ -11,12 +11,11 @@ function ReviewCallbacks() {
      * @param review_instance
      */
     this.forReviewLock = function (jsonData, review_instance) {
-        var parsedData = $.parseJSON(jsonData);
-        if (parsedData.info.length !== 0) {
-            setGlobalInfoHandler('Mhh!', parsedData.info);
+        if (jsonData.info.length !== 0) {
+            setGlobalInfoHandler('Mhh!', jsonData.info);
             return true;
         }
-        if (!parsedData.is_locked) {
+        if (!jsonData.is_locked) {
             setGlobalInfoHandler('Ohh!', _t(couldNotLock));
             return true;
         }

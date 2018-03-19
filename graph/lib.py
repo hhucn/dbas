@@ -228,14 +228,14 @@ def __prepare_statements_for_d3_data(db_statements, db_textversions, edge_type):
         text = text.content if text else 'None'
         node_dict = __get_node_dict(uid='statement_' + str(statement.uid),
                                     label=text,
-                                    node_type='position' if statement.is_startpoint else 'statement',
+                                    node_type='position' if statement.is_position else 'statement',
                                     author=__get_author_of_statement(statement.uid),
                                     editor=__get_editor_of_statement(statement.uid),
                                     timestamp=statement.get_first_timestamp().timestamp)
         extras[node_dict['id']] = node_dict
         all_ids.append('statement_' + str(statement.uid))
         nodes.append(node_dict)
-        if statement.is_startpoint:
+        if statement.is_position:
             edge_dict = __get_edge_dict(uid='edge_' + str(statement.uid) + '_issue',
                                         source='statement_' + str(statement.uid),
                                         target='issue',

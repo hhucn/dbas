@@ -43,7 +43,7 @@ from dbas.strings.translator import Translator
 from dbas.validators.common import valid_language, valid_lang_cookie_fallback
 from dbas.validators.core import has_keywords, has_maybe_keywords, validate
 from dbas.validators.database import valid_database_model
-from dbas.validators.discussion import valid_issue, valid_new_issue, valid_issue_not_readonly, valid_conclusion, \
+from dbas.validators.discussion import valid_issue_by_id, valid_new_issue, valid_issue_not_readonly, valid_conclusion, \
     valid_statement, valid_argument, valid_premisegroup, valid_premisegroups, valid_statement_or_argument, \
     valid_text_values, valid_text_length_of
 from dbas.validators.notifications import valid_notification_title, valid_notification_text, \
@@ -361,7 +361,7 @@ def set_user_lang(request):
 
 
 @view_config(route_name='set_discussion_properties', renderer='json')
-@validate(valid_user, valid_issue, has_keywords(('property', bool), ('value', str)))
+@validate(valid_user, valid_issue_by_id, has_keywords(('property', bool), ('value', str)))
 def set_discussion_properties(request):
     """
     Set availability, read-only, ... flags in the admin panel.
@@ -552,8 +552,7 @@ def set_new_issue(request):
     is_public = request.validated['is_public']
     is_read_only = request.validated['is_read_only']
 
-    return issue_handler.set_issue(request.validated['user'], info, long_info, title, lang, is_public, is_read_only,
-                                   request.application_url)
+    return issue_handler.set_issue(request.validated['user'], info, long_info, title, lang, is_public, is_read_only)
 
 
 # ajax - set seen premisegroup
@@ -600,7 +599,7 @@ def mark_or_unmark_statement_or_argument(request):
 
 # ajax - getting changelog of a statement
 @view_config(route_name='get_logfile_for_statements', renderer='json')
-@validate(valid_issue, has_keywords(('uids', list)))
+@validate(valid_issue_by_id, has_keywords(('uids', list)))
 def get_logfile_for_some_statements(request):
     """
     Returns the changelog of a statement
@@ -643,7 +642,7 @@ def get_news(request):
 
 # ajax - for getting argument infos
 @view_config(route_name='get_infos_about_argument', renderer='json')
-@validate(valid_issue, valid_language, valid_argument, invalid_user)
+@validate(valid_issue_by_id, valid_language, valid_argument(location='json_body'), invalid_user)
 def get_infos_about_argument(request):
     """
     ajax interface for getting a dump
@@ -660,7 +659,9 @@ def get_infos_about_argument(request):
 
 # ajax - for getting all users with the same opinion
 @view_config(route_name='get_user_with_same_opinion', renderer='json')
-@validate(valid_language, invalid_user, has_keywords(('uid', int), ('is_argument', bool), ('is_attitude', bool), ('is_reaction', bool), ('is_position', bool)))
+@validate(valid_language, invalid_user,
+          has_keywords(('uid', int), ('is_argument', bool), ('is_attitude', bool), ('is_reaction', bool),
+                       ('is_position', bool)))
 def get_users_with_opinion(request):
     """
     ajax interface for getting a dump
@@ -695,7 +696,7 @@ def get_public_user_data(request):
 
 
 @view_config(route_name='get_arguments_by_statement_uid', renderer='json')
-@validate(valid_statement)
+@validate(valid_statement(location='json_body'))
 def get_arguments_by_statement_id(request):
     """
     Returns all arguments, which use the given statement
@@ -724,7 +725,7 @@ def get_reference(request):
 
 
 @view_config(route_name='set_references', renderer='json')
-@validate(valid_user, valid_statement, has_keywords(('reference', str), ('ref_source', str)))
+@validate(valid_user, valid_statement('json_body'), has_keywords(('reference', str), ('ref_source', str)))
 def set_references(request):
     """
     Sets a reference for a statement or an arguments
@@ -779,7 +780,7 @@ def send_news(request):
 
 # ajax - for fuzzy search
 @view_config(route_name='fuzzy_search', renderer='json')
-@validate(valid_issue, invalid_user, has_keywords(('type', int), ('value', str), ('statement_uid', int)))
+@validate(valid_issue_by_id, invalid_user, has_keywords(('type', int), ('value', str), ('statement_uid', int)))
 def fuzzy_search(request):
     """
     ajax interface for fuzzy string search
@@ -1057,7 +1058,7 @@ def review_lock(request):
 
 
 @view_config(route_name='revoke_statement_content', renderer='json', require_csrf=False)
-@validate(valid_user_as_author_of_statement, valid_statement)
+@validate(valid_user_as_author_of_statement, valid_statement(location='json_body'))
 def revoke_statement_content(request):
     """
     Revokes the given user as author from a statement
@@ -1072,7 +1073,7 @@ def revoke_statement_content(request):
 
 
 @view_config(route_name='revoke_argument_content', renderer='json', require_csrf=False)
-@validate(valid_user_as_author_of_argument, valid_argument)
+@validate(valid_user_as_author_of_argument, valid_argument(location='json_body'))
 def revoke_argument_content(request):
     db_user = request.validated['user']
     argument = request.validated['argument']
