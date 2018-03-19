@@ -74,18 +74,21 @@ unit:
   <<: *add-services
   stage: test
   script:
-    - apt-get install -yqq curl
-    - export DBAS_IP=$(ip a | grep 172. | awk '{print $2}' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
-    - "curl -H \"Content-Type: application/json\" -X POST -d '{\"DBAS_HOST\":\"'$DBAS_IP'\",\"DBAS_PORT\":\"4284\",\"DBAS_PROTOCOL\":\"http\"}' http://search:5000/init"
-    - "echo curl -H \"Content-Type: application/json\" -X POST -d '{\"DBAS_HOST\":\"'$DBAS_IP'\",\"DBAS_PORT\":\"4284\",\"DBAS_PROTOCOL\":\"http\"}' http://search:5000/init"
-    - sleep 10
-    - nosetests --with-coverage --cover-package=dbas --cover-package=api --cover-package=graph --cover-package=admin --cover-xml --with-timer -w . search/tests
     - nosetests --with-coverage --cover-package=dbas --cover-package=graph --cover-package=admin --cover-package=api --cover-xml -w . api.v2 dbas graph admin api.tests.test_login api.tests.test_views
   coverage: '/^TOTAL\s*\d+\s*\d+\s*(\d+\%)\s*$/'
   artifacts:
     paths:
       - coverage.xml
     expire_in: 10 mins
+
+search:
+  <<: *add-services
+  stage: test
+  script:
+    - apt-get install -yqq curl
+    - export DBAS_IP=$(ip a | grep 172. | awk '{print $2}' | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}')
+    - "curl -H \"Content-Type: application/json\" -X POST -d '{\"DBAS_HOST\":\"'$DBAS_IP'\",\"DBAS_PORT\":\"4284\",\"DBAS_PROTOCOL\":\"http\"}' http://search:5000/init"
+    - nosetests search
 
 sonar:
   image: hhucn/sonar-scanner
