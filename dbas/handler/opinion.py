@@ -9,8 +9,7 @@ from dbas.database.discussion_model import Argument, Statement, User, ClickedArg
     SeenArgument, SeenStatement, sql_timestamp_pretty_print
 from dbas.helper.relation import get_rebuts_for_argument_uid, get_undercuts_for_argument_uid, \
     get_undermines_for_argument_uid, get_supports_for_argument_uid
-from dbas.lib import get_text_for_statement_uid, get_text_for_argument_uid, \
-    get_text_for_premisesgroup_uid, get_profile_picture
+from dbas.lib import get_text_for_statement_uid, get_text_for_argument_uid, get_profile_picture
 from dbas.logger import logger
 from dbas.strings.keywords import Keywords as _
 from dbas.strings.text_generator import get_relation_text_dict_with_substitution, \
@@ -237,7 +236,7 @@ def get_user_with_same_opinion_for_premisegroups(argument_uid, db_user, lang, ma
         statement_dict = {'uid': None, 'text': None, 'message': None, 'users': None, 'seen_by': None}
 
     statement_dict['uid'] = str(argument_uid)
-    text, tmp = get_text_for_premisesgroup_uid(db_argument.premisesgroup_uid)
+    text = db_argument.get_premisegroup_text()
     statement_dict['text'] = '... {} {}'.format(_t.get(_.because).lower(), text)
 
     premise_statement_uids = [p.statement_uid for p in db_premises]
@@ -331,10 +330,10 @@ def get_user_with_opinions_for_attitude(statement_uid, db_user, lang, main_page)
         empty_dict = {'users': [], 'text': None, 'message': ''}
         return {'text': None, 'agree': empty_dict, 'disagree': empty_dict, 'title': title}
 
-    title += ' ' + get_text_for_statement_uid(statement_uid)
+    text = db_statement.get_text() if statement_uid else None
+    title += ' ' + text
 
     ret_dict = dict()
-    text = get_text_for_statement_uid(statement_uid)
     ret_dict['text'] = text[0:1].upper() + text[1:]
     ret_dict['agree'] = None
     ret_dict['disagree'] = None

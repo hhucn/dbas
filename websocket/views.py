@@ -8,7 +8,7 @@ from pyramid_mailer import get_mailer
 from dbas.handler.language import get_language_from_cookie
 from dbas.logger import logger
 from dbas.validators.user import valid_user_as_admin, invalid_user
-from dbas.views import base_layout, validate
+from dbas.views import validate
 from dbas.views import project_name
 from dbas.handler.email import send_mail
 from dbas.helper.dictionary.main import DictionaryHelper
@@ -63,12 +63,12 @@ def debug_function(request):
                                                                                    request.validated['user'])
 
     return {
-        'layout': base_layout(),
         'language': str(ui_locales),
         'title': 'Debug Socket.IO Connection',
         'project': project_name,
         'extras': extras_dict,
-        'is_admin': request.validated['user'].is_admin()
+        'is_admin': request.validated['user'].is_admin(),
+        'discussion': {'broke_limit': False}
     }
 
 

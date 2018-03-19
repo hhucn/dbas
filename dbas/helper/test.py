@@ -11,7 +11,8 @@ from nose.tools import assert_in
 from paste.deploy import appconfig
 
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, User
+from dbas.database.discussion_model import SeenStatement, ClickedStatement, SeenArgument, ClickedArgument, User, \
+    ReputationHistory
 
 
 def path_to_settings(ini_file):
@@ -87,4 +88,15 @@ def clear_clicks_of(nickname):
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
     DBDiscussionSession.query(ClickedStatement).filter_by(author_uid=db_user.uid).delete()
     DBDiscussionSession.query(ClickedArgument).filter_by(author_uid=db_user.uid).delete()
+    transaction.commit()
+
+
+def clear_reputation_of_user(db_user: User) -> None:
+    """
+    Delete reputation of db_user in the database.
+
+    :param db_user:
+    :return:
+    """
+    DBDiscussionSession.query(ReputationHistory).filter_by(reputator_uid=db_user.uid).delete()
     transaction.commit()

@@ -14,7 +14,7 @@ from dbas.database.discussion_model import Argument, Statement, Premise, Issue, 
 from dbas.handler.arguments import get_another_argument_with_same_conclusion
 from dbas.handler.voting import add_seen_argument, add_seen_statement
 from dbas.helper.url import UrlManager
-from dbas.lib import get_text_for_statement_uid, get_all_attacking_arg_uids_from_history, is_author_of_statement, \
+from dbas.lib import get_all_attacking_arg_uids_from_history, is_author_of_statement, \
     is_author_of_argument
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_arguments_as_query
@@ -85,7 +85,7 @@ class ItemDictHelper(object):
             if statement.uid in uids:  # add seen by if the statement is visible
                 add_seen_statement(statement.uid, db_user)
             statements_array.append(self.__create_answer_dict(statement.uid,
-                                                              [{'title': get_text_for_statement_uid(statement.uid),
+                                                              [{'title': statement.get_text(),
                                                                 'id': statement.uid}],
                                                               'start',
                                                               _um.get_url_for_statement_attitude(statement.uid),
@@ -99,19 +99,20 @@ class ItemDictHelper(object):
         shuffle_list_by_user(db_user, statements_array)
 
         if not self.issue_read_only:
-            if db_user.nickname is not nick_of_anonymous_user:
+            logger('XX', db_user.nickname)
+            if db_user.nickname == nick_of_anonymous_user:
+                statements_array.append(self.__create_answer_dict('login',
+                                                                  [{'id': '0',
+                                                                    'title': _tn.get(_.wantToStateNewPosition)}],
+                                                                  'justify',
+                                                                  'login'))
+            else:
                 title = _tn.get(_.newConclusionRadioButtonText) if len(db_statements) > 0 else _tn.get(
                     _.newConclusionRadioButtonTextNewIdea)
                 statements_array.append(self.__create_answer_dict('start_statement',
                                                                   [{'title': title, 'id': 0}],
                                                                   'start',
                                                                   'add'))
-            else:
-                statements_array.append(self.__create_answer_dict('login',
-                                                                  [{'id': '0',
-                                                                    'title': _tn.get(_.wantToStateNewPosition)}],
-                                                                  'justify',
-                                                                  'login'))
 
         return {'elements': statements_array, 'extras': {'cropped_list': len(uids) < len(db_statements)}}
 
@@ -149,11 +150,11 @@ class ItemDictHelper(object):
 
         return {'elements': statements_array, 'extras': {'cropped_list': False}}
 
-    def get_array_for_justify_statement(self, stmt_or_arg: Statement, db_user: User, is_supportive: bool, history):
+    def get_array_for_justify_statement(self, db_statement: Statement, db_user: User, is_supportive: bool, history):
         """
         Prepares the dict with all items for the third step in discussion, where the user justifies his position.
 
-        :param stmt_or_arg: Statement
+        :param db_statement: Statement
         :param db_user: User
         :param is_supportive: Boolean
         :param history: history
@@ -163,7 +164,7 @@ class ItemDictHelper(object):
         statements_array = []
         _tn = Translator(self.lang)
         slug = self.db_issue.slug
-        db_arguments: List[Statement] = rs.get_arguments_by_conclusion(stmt_or_arg.uid, is_supportive)
+        db_arguments: List[Argument] = rs.get_arguments_by_conclusion(db_statement.uid, is_supportive)
         uids: List[int] = [argument.uid for argument in db_arguments if db_arguments]
 
         _um = UrlManager(slug, history=self.path)
@@ -177,7 +178,7 @@ class ItemDictHelper(object):
                 premisesgroup_uid=argument.premisesgroup_uid).all()
             premise_array = []
             for premise in db_premises:
-                text = get_text_for_statement_uid(premise.statement_uid)
+                text = premise.get_text()
                 premise_array.append({'title': text, 'id': premise.statement_uid})
 
             # filter forbidden attacks
@@ -254,7 +255,7 @@ class ItemDictHelper(object):
                 premisesgroup_uid=argument.premisesgroup_uid).all()
             premises_array = []
             for premise in db_premises:
-                text = get_text_for_statement_uid(premise.statement_uid)
+                text = premise.get_text()
                 premises_array.append({'id': premise.statement_uid,
                                        'title': text})
 
@@ -640,7 +641,7 @@ class ItemDictHelper(object):
             db_premises = DBDiscussionSession.query(Premise).filter_by(premisesgroup_uid=group_id).all()
             premise_array = []
             for premise in db_premises:
-                text = get_text_for_statement_uid(premise.statement_uid)
+                text = premise.get_text()
                 premise_array.append({'title': text, 'id': premise.statement_uid})
                 if db_user and db_user.nickname != nick_of_anonymous_user:  # add seen by if the statement is visible
                     add_seen_statement(premise.statement_uid, db_user)

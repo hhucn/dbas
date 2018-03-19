@@ -72,7 +72,7 @@ function AjaxDiscussionHandler() {
             supportive: supportive
         };
         var done = function ajaxSendNewStartPremiseDone(data) {
-            if (data.error.length > 0) {
+            if ('error' in data && data.error && data.error.length > 0) {
                 $('#' + addPremiseErrorContainer).show();
                 $('#' + addPremiseErrorMsg).text(data.error);
             } else {
@@ -191,7 +191,7 @@ function AjaxDiscussionHandler() {
     this.getMoreInfosAboutArgument = function (uid) {
         var url = 'get_infos_about_argument';
         var d = {
-            uid: uid,
+            argument_id: uid,
             lang: getDiscussionLanguage()
         };
         var done = function ajaxGetMoreInfosAboutArgumentDone(data) {

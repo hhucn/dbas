@@ -207,7 +207,7 @@ def __get_executed_review_element_of(table, main_page, review, last_review_type,
     if table == 'duplicates':
         full_text = get_text_for_statement_uid(review.duplicate_statement_uid)
     elif table in ['splits', 'merges']:
-        full_text, tmp = get_text_for_premisesgroup_uid(review.premisesgroup_uid)
+        full_text = get_text_for_premisesgroup_uid(review.premisesgroup_uid)
     elif review.statement_uid is None:
         full_text = get_text_for_argument_uid(review.argument_uid)
     else:
@@ -339,7 +339,7 @@ def __handle_table_of_review_duplicate(review, length, entry):
 
 
 def __handle_table_of_review_split(review, length, entry):
-    oem_fulltext, tmp = get_text_for_premisesgroup_uid(review.premisesgroup_uid)
+    oem_fulltext = get_text_for_premisesgroup_uid(review.premisesgroup_uid)
     full_text = oem_fulltext
     db_values = DBDiscussionSession.query(ReviewSplitValues).filter_by(review_uid=review.uid).all()
     if db_values:

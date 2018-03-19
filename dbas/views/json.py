@@ -642,7 +642,7 @@ def get_news(request):
 
 # ajax - for getting argument infos
 @view_config(route_name='get_infos_about_argument', renderer='json')
-@validate(valid_issue_by_id, valid_language, valid_argument, invalid_user)
+@validate(valid_issue_by_id, valid_language, valid_argument(location='json_body'), invalid_user)
 def get_infos_about_argument(request):
     """
     ajax interface for getting a dump
@@ -696,7 +696,7 @@ def get_public_user_data(request):
 
 
 @view_config(route_name='get_arguments_by_statement_uid', renderer='json')
-@validate(valid_statement)
+@validate(valid_statement(location='json_body'))
 def get_arguments_by_statement_id(request):
     """
     Returns all arguments, which use the given statement
@@ -725,7 +725,7 @@ def get_reference(request):
 
 
 @view_config(route_name='set_references', renderer='json')
-@validate(valid_user, valid_statement, has_keywords(('reference', str), ('ref_source', str)))
+@validate(valid_user, valid_statement('json_body'), has_keywords(('reference', str), ('ref_source', str)))
 def set_references(request):
     """
     Sets a reference for a statement or an arguments
@@ -1056,7 +1056,7 @@ def review_lock(request):
 
 
 @view_config(route_name='revoke_statement_content', renderer='json', require_csrf=False)
-@validate(valid_user_as_author_of_statement, valid_statement)
+@validate(valid_user_as_author_of_statement, valid_statement(location='json_body'))
 def revoke_statement_content(request):
     """
     Revokes the given user as author from a statement
@@ -1071,7 +1071,7 @@ def revoke_statement_content(request):
 
 
 @view_config(route_name='revoke_argument_content', renderer='json', require_csrf=False)
-@validate(valid_user_as_author_of_argument, valid_argument)
+@validate(valid_user_as_author_of_argument, valid_argument(location='json_body'))
 def revoke_argument_content(request):
     db_user = request.validated['user']
     argument = request.validated['argument']

@@ -68,7 +68,7 @@ def set_arguments_premises(data) -> dict:
     return prepared_dict
 
 
-def get_all_infos_about_argument(db_argument, main_page, db_user, lang) -> dict:
+def get_all_infos_about_argument(db_argument: Argument, main_page, db_user, lang) -> dict:
     """
     Returns bunch of information about the given argument
 

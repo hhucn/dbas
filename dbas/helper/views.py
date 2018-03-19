@@ -6,7 +6,7 @@ Helper for D-BAS Views
 from typing import Tuple
 
 import dbas.handler.voting as voting_helper
-from dbas.database.discussion_model import Statement, Issue, User
+from dbas.database.discussion_model import Statement, Issue, User, Argument
 from dbas.handler import user
 from dbas.helper.dictionary.discussion import DiscussionDictHelper
 from dbas.helper.dictionary.items import ItemDictHelper
@@ -31,40 +31,8 @@ def preparation_for_view(request):
     return request.authenticated_userid, session_expired
 
 
-def handle_justification_step(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, relation: str,
-                              history, path) -> Tuple[dict, dict]:
-    """
-    Handles the justification step
-
-    :param db_issue:
-    :param db_user:
-    :param db_stmt_or_arg:
-    :param attitude:
-    :param relation:
-    :param history:
-    :param path:
-    :return: dict(), dict(), dict()
-    """
-    item_dict = {}
-    discussion_dict = {}
-
-    if [c for c in ('agree', 'disagree') if c in attitude] and relation == '':
-        item_dict, discussion_dict = __handle_justification_statement(db_issue, db_user, db_stmt_or_arg, attitude,
-                                                                      history, path)
-
-    elif 'dontknow' in attitude and relation == '':
-        item_dict, discussion_dict = __handle_justification_dont_know(db_issue, db_user, db_stmt_or_arg, attitude,
-                                                                      history, path)
-
-    elif [c for c in ('undermine', 'rebut', 'undercut', 'support') if c in relation]:
-        item_dict, discussion_dict = __handle_justification_argument(db_issue, db_user, db_stmt_or_arg, attitude,
-                                                                     relation, history, path)
-
-    return item_dict, discussion_dict
-
-
-def __handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, history,
-                                     path):
+def handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, history,
+                                   path):
     """
 
     :param attitude:
@@ -80,8 +48,8 @@ def __handle_justification_statement(db_issue: Issue, db_user: User, db_stmt_or_
     return item_dict, discussion_dict
 
 
-def __handle_justification_dont_know(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, history,
-                                     path) -> Tuple[dict, dict]:
+def handle_justification_dontknow(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str, history,
+                                  path) -> Tuple[dict, dict]:
     """
 
     :param db_issue: Current issue
@@ -99,12 +67,17 @@ def __handle_justification_dont_know(db_issue: Issue, db_user: User, db_stmt_or_
     return item_dict, discussion_dict
 
 
-def __handle_justification_argument(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, attitude: str,
-                                    relation: str, history, path) -> Tuple[dict, dict]:
+def handle_justification_argument(db_issue: Issue, db_user: User, db_argument: Argument, attitude: str,
+                                  relation: str, history, path) -> Tuple[dict, dict]:
     """
 
-    :param relation:
+    :param db_issue:
+    :param db_user:
+    :param db_argument:
     :param attitude:
+    :param relation:
+    :param history:
+    :param path:
     :return:
     """
     logger('ViewHelper', 'justify argument')
@@ -112,7 +85,7 @@ def __handle_justification_argument(db_issue: Issue, db_user: User, db_stmt_or_a
     nickname = db_user.nickname
     supportive = attitude in ['agree', 'dontknow']
 
-    item_dict, discussion_dict = preparation_for_justify_argument(db_issue, db_user, db_stmt_or_arg, relation,
+    item_dict, discussion_dict = preparation_for_justify_argument(db_issue, db_user, db_argument, relation,
                                                                   supportive, history, path)
     add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_confrontation)
 
@@ -122,7 +95,7 @@ def __handle_justification_argument(db_issue: Issue, db_user: User, db_stmt_or_a
     return item_dict, discussion_dict
 
 
-def preparation_for_justify_statement(history, db_user: User, path, db_issue: Issue, stmt_or_arg: Statement,
+def preparation_for_justify_statement(history, db_user: User, path, db_issue: Issue, db_statement: Statement,
                                       supportive: bool):
     """
     Prepares some parameter for the justification step for an statement.
@@ -130,7 +103,7 @@ def preparation_for_justify_statement(history, db_user: User, path, db_issue: Is
     :param history: history
     :param db_user: User
     :param path:
-    :param stmt_or_arg: Statement
+    :param db_statement: Statement
     :param db_issue: Issue
     :param supportive: Boolean
     :return: dict(), dict(), dict()
@@ -143,10 +116,10 @@ def preparation_for_justify_statement(history, db_user: User, path, db_issue: Is
     _ddh = DiscussionDictHelper(disc_ui_locales, nickname, history, slug=slug)
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
 
-    voting_helper.add_click_for_statement(stmt_or_arg, db_user, supportive)
+    voting_helper.add_click_for_statement(db_statement, db_user, supportive)
 
-    item_dict = _idh.get_array_for_justify_statement(stmt_or_arg, db_user, supportive, history)
-    discussion_dict = _ddh.get_dict_for_justify_statement(stmt_or_arg, slug, supportive,
+    item_dict = _idh.get_array_for_justify_statement(db_statement, db_user, supportive, history)
+    discussion_dict = _ddh.get_dict_for_justify_statement(db_statement, slug, supportive,
                                                           len(item_dict['elements']), db_user)
     return item_dict, discussion_dict
 
@@ -178,7 +151,7 @@ def __preparation_for_dont_know_statement(db_issue: Issue, db_user: User, db_stm
     return item_dict, discussion_dict
 
 
-def preparation_for_justify_argument(db_issue: Issue, db_user: User, db_stmt_or_arg: Statement, relation: str,
+def preparation_for_justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, relation: str,
                                      supportive: bool, history, path):
     """
     Prepares some parameter for the justification step for an argument
@@ -201,7 +174,7 @@ def preparation_for_justify_argument(db_issue: Issue, db_user: User, db_stmt_or_
     _idh = ItemDictHelper(disc_ui_locales, db_issue, path=path, history=history)
 
     # justifying argument
-    item_dict = _idh.get_array_for_justify_argument(db_stmt_or_arg.uid, relation, db_user, history)
-    discussion_dict = _ddh.get_dict_for_justify_argument(db_stmt_or_arg.uid, supportive, relation)
+    item_dict = _idh.get_array_for_justify_argument(db_argument.uid, relation, db_user, history)
+    discussion_dict = _ddh.get_dict_for_justify_argument(db_argument.uid, supportive, relation)
 
     return item_dict, discussion_dict
