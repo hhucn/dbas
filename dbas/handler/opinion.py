@@ -424,7 +424,7 @@ def create_users_dict(db_user, timestamp, main_page, lang):
     :param lang: language
     :return: dict()
     """
-    tmp = db_user.get_global_nickname()
+    tmp = db_user.global_nickname
     return {'nickname': tmp,
             'public_profile_url': main_page + '/user/' + str(db_user.uid),
             'avatar_url': get_profile_picture(db_user),

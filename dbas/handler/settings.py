@@ -1,7 +1,6 @@
 import transaction
 
-from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import Settings, User
+from dbas.database.discussion_model import User
 from dbas.handler import user
 from dbas.lib import get_public_profile_picture
 from dbas.strings.keywords import Keywords as _
@@ -20,7 +19,7 @@ def set_settings(url, db_user: User, service, settings_value, _tn):
     """
     error = ''
     public_nick = db_user.public_nickname
-    db_setting = DBDiscussionSession.query(Settings).get(db_user.uid)
+    db_setting = db_user.settings
 
     if service == 'mail':
         db_setting.set_send_mails(settings_value)

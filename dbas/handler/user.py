@@ -149,7 +149,7 @@ def update_last_action(db_user: User) -> bool:
     diff_login = diff_login.seconds + diff_login.days * 24 * 60 * 60
 
     diff = diff_action if diff_action < diff_login else diff_login
-    should_log_out = diff > timeout_in_sec and not db_user.get_settings().keep_logged_in
+    should_log_out = diff > timeout_in_sec and not db_user.settings.keep_logged_in
     db_user.update_last_action()
 
     transaction.commit()
@@ -506,7 +506,7 @@ def get_information_of(db_user: User, lang):
     """
     db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
     ret_dict = dict()
-    ret_dict['public_nick'] = db_user.get_global_nickname()
+    ret_dict['public_nick'] = db_user.global_nickname
     ret_dict['last_action'] = sql_timestamp_pretty_print(db_user.last_action, lang)
     ret_dict['last_login'] = sql_timestamp_pretty_print(db_user.last_login, lang)
     ret_dict['registered'] = sql_timestamp_pretty_print(db_user.registered, lang)

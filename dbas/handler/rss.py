@@ -72,7 +72,7 @@ def create_initial_issue_rss(main_page: str, ui_locale: str) -> bool:
                                            RSS.author_uid.in_(db_authors.keys())).all()
 
         items = [__get_rss_item(rss.title, rss.description, arrow.utcnow().datetime,
-                                db_authors.get(rss.author_uid).get_global_nickname(),
+                                db_authors.get(rss.author_uid).global_nickname,
                                 '{}/{}'.format(get_global_url(), issue.slug)) for rss in db_rss]
 
         rss = __get_rss2gen(main_page, issue, items)
@@ -115,7 +115,7 @@ def rewrite_issue_rss(issue_uid: int, url: str):
     db_rss = Session.query(RSS).filter(RSS.issue_uid == issue_uid,
                                        RSS.author_uid.in_(db_authors.keys())).order_by(RSS.uid.desc()).all()
     items = [__get_rss_item(r.title, r.description, r.timestamp.datetime,
-                            db_authors.get(r.author_uid).get_global_nickname(), url) for r in db_rss]
+                            db_authors.get(r.author_uid).global_nickname, url) for r in db_rss]
 
     if not os.path.exists('dbas{}'.format(rss_path)):
         os.makedirs('dbas{}'.format(rss_path))

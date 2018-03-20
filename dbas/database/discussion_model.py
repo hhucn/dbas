@@ -278,8 +278,14 @@ class User(DiscussionBase):
         """
         self.public_nickname = nick
 
-    def get_global_nickname(self):
-        return self.firstname if self.get_settings().should_show_public_nickname else self.public_nickname
+    @hybrid_property
+    def global_nickname(self):
+        """
+        Return the first name if the user set this in his settings, otherwise the public nickname
+
+        :return:
+        """
+        return self.firstname if self.settings.should_show_public_nickname else self.public_nickname
 
     def to_small_dict(self):
         """
@@ -308,7 +314,8 @@ class User(DiscussionBase):
         """
         return DBDiscussionSession.query(Group).filter_by(name='authors').first().uid == self.group_uid
 
-    def get_settings(self):
+    @hybrid_property
+    def settings(self):
         """
         Check, if the user is member of the admin group
 
@@ -399,6 +406,10 @@ class Settings(DiscussionBase):
         :return: None
         """
         self.lang_uid = lang_uid
+
+    @hybrid_property
+    def lang(self) -> str:
+        return self.languages.ui_locales
 
     def should_hold_the_login(self, keep_logged_in):
         """
@@ -917,7 +928,7 @@ class Argument(DiscussionBase):
 
         :return: String
         """
-        return DBDiscussionSession.query(Issue).get(self.issue_uid).lang
+        return self.issues.lang
 
     def get_conclusion_text(self, html: bool = False) -> str:
         """
@@ -933,8 +944,7 @@ class Argument(DiscussionBase):
 
     def get_premisegroup_text(self) -> str:
         db_premisegroup = DBDiscussionSession.query(PremiseGroup).get(self.premisesgroup_uid)
-        text = db_premisegroup.get_text()
-        return text
+        return db_premisegroup.get_text()
 
     def to_dict(self):
         """

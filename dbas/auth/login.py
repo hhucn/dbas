@@ -379,7 +379,7 @@ def __refresh_headers_and_url(request, db_user, keep_login, url):
     :return: Headers, String
     """
     logger('Auth.Login', 'login', 'login successful / keep_login: {}'.format(keep_login))
-    db_settings = db_user.get_settings()
+    db_settings = db_user.settings
     db_settings.should_hold_the_login(keep_login)
     logger('Auth.Login', 'remembering headers for {}'.format(db_user.nickname))
     headers = remember(request, db_user.nickname)

@@ -8,7 +8,7 @@ import transaction
 
 import dbas.handler.email as email_helper
 from dbas.database import DBDiscussionSession
-from dbas.database.discussion_model import User, TextVersion, Message, Settings, Language, Argument, \
+from dbas.database.discussion_model import User, TextVersion, Message, Language, Argument, \
     sql_timestamp_pretty_print
 from dbas.database.initializedb import nick_of_admin
 from dbas.handler import user
@@ -57,13 +57,13 @@ def send_edit_text_notification(db_user, textversion, path, mailer):
     root_author = oem.author_uid
     new_author = textversion.author_uid
     last_author = all_textversions[-2].author_uid if len(all_textversions) > 1 else root_author
-    settings_root_author = root_author.get_settings()
-    settings_last_author = last_author.get_settings()
+    settings_root_author = root_author.settings
+    settings_last_author = last_author.settings
 
     # create content
     db_editor = DBDiscussionSession.query(User).get(new_author)
-    db_settings = DBDiscussionSession.query(Settings).get(db_editor.uid)
-    db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
+    db_settings = db_editor.settings
+    editor_ui_locales = db_settings.lang
 
     # add some information for highlights
     if path is not None:
@@ -105,12 +105,12 @@ def send_edit_text_notification(db_user, textversion, path, mailer):
 
     _t1 = Translator(user_lang1)
     topic1 = _t1.get(_.textversionChangedTopic)
-    content1 = get_text_for_edit_text_message(db_language.ui_locales, db_editor.public_nickname, textversion.content,
+    content1 = get_text_for_edit_text_message(editor_ui_locales, db_editor.public_nickname, textversion.content,
                                               oem.content, path)
 
     _t2 = Translator(user_lang2)
     topic2 = _t2.get(_.textversionChangedTopic)
-    content2 = get_text_for_edit_text_message(db_language.ui_locales, db_editor.public_nickname, textversion.content,
+    content2 = get_text_for_edit_text_message(editor_ui_locales, db_editor.public_nickname, textversion.content,
                                               oem.content, path)
 
     notifications = []
@@ -145,8 +145,8 @@ def send_add_text_notification(url, conclusion_id, db_user: User, mailer):
     db_textversions = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=conclusion_id).all()  # TODO #432
     db_root_author = DBDiscussionSession.query(User).get(db_textversions[0].author_uid)
     db_last_editor = DBDiscussionSession.query(User).get(db_textversions[-1].author_uid)
-    db_root_author_settings = db_root_author.get_settings()
-    db_last_editor_settings = db_last_editor.get_settings()
+    db_root_author_settings = db_root_author.settings
+    db_last_editor_settings = db_last_editor.settings
     root_lang = DBDiscussionSession.query(Language).get(db_root_author_settings.lang_uid).ui_locales
     editor_lang = DBDiscussionSession.query(Language).get(db_last_editor_settings.lang_uid).ui_locales
     _t_editor = Translator(editor_lang)
@@ -218,7 +218,7 @@ def send_add_argument_notification(url, attacked_argument_uid, user, mailer):
     if db_author == db_current_user:
         return None
 
-    db_author_settings = db_author.get_settings()
+    db_author_settings = db_author.settings
     user_lang = DBDiscussionSession.query(Language).get(db_author_settings.lang_uid).ui_locales
 
     # send notification via websocket to last author
@@ -287,7 +287,7 @@ def send_notification(from_user, to_user, topic, content, mainpage):
     DBDiscussionSession.flush()
     transaction.commit()
 
-    db_settings = to_user.get_settings()
+    db_settings = to_user.settings
     if db_settings.should_send_notifications:
         user_lang = DBDiscussionSession.query(Language).get(db_settings.lang_uid).ui_locales
         _t_user = Translator(user_lang)
@@ -340,13 +340,13 @@ def get_box_for(db_user, lang, main_page, is_inbox):
         tmp_dict = dict()
         if is_inbox:
             db_from_user = DBDiscussionSession.query(User).get(message.from_author_uid)
-            tmp_dict['show_from_author'] = db_from_user.get_global_nickname() != 'admin'
-            tmp_dict['from_author'] = db_from_user.get_global_nickname()
+            tmp_dict['show_from_author'] = db_from_user.global_nickname != 'admin'
+            tmp_dict['from_author'] = db_from_user.global_nickname
             tmp_dict['from_author_avatar'] = get_profile_picture(db_from_user, size=30)
             tmp_dict['from_author_url'] = main_page + '/user/' + str(db_from_user.uid)
         else:
             db_to_user = DBDiscussionSession.query(User).get(message.to_author_uid)
-            tmp_dict['to_author'] = db_to_user.get_global_nickname()
+            tmp_dict['to_author'] = db_to_user.global_nickname
             tmp_dict['to_author_avatar'] = get_profile_picture(db_to_user, size=30)
             tmp_dict['to_author_url'] = main_page + '/user/' + str(db_to_user.uid)
 

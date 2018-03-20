@@ -94,7 +94,7 @@ def __get_values_of_reference(reference: StatementReferences, main_page):
     db_user = DBDiscussionSession.query(User).get(int(reference.author_uid))
 
     img = get_profile_picture(db_user, 20, True)
-    name = db_user.get_global_nickname()
+    name = db_user.global_nickname
     link = main_page + '/user/' + str(db_user.uid)
 
     return {'uid': reference.uid,

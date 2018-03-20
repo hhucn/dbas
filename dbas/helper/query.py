@@ -91,7 +91,7 @@ def set_user_language(db_user: User, ui_locales) -> dict:
     """
     _tn = Translator(ui_locales)
 
-    db_settings = db_user.get_settings()
+    db_settings = db_user.settings
     db_language = DBDiscussionSession.query(Language).filter_by(ui_locales=ui_locales).first()
 
     if not db_language:
