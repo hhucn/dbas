@@ -20,4 +20,8 @@ class NotFoundViewTests(unittest.TestCase):
         response = d(request)
         verify_dictionary_of_view(response)
 
-        # place for additional stuff
+    def test_empty_route(self):
+        from dbas.views import main_api as d
+        request = testing.DummyRequest()
+        response = d(request)
+        self.assertEqual(response['status'], 'error')

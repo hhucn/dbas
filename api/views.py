@@ -183,7 +183,7 @@ logout = Service(name='logout',
 @empty_route.get()
 def empty(request):
     """
-    Return data from DBas discussion_reaction page.
+    Returns 404 because no route is given
 
     :return: 404
     """
