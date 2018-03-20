@@ -48,7 +48,7 @@ from dbas.validators.core import has_keywords, has_maybe_keywords, validate
 from dbas.validators.database import valid_database_model
 from dbas.validators.discussion import valid_issue_by_id, valid_new_issue, valid_issue_not_readonly, valid_conclusion, \
     valid_statement, valid_argument, valid_premisegroup, valid_premisegroups, valid_statement_or_argument, \
-    valid_text_values, valid_text_length_of
+    valid_text_values, valid_text_length_of, valid_fuzzy_search_mode
 from dbas.validators.notifications import valid_notification_title, valid_notification_text, \
     valid_notification_recipient
 from dbas.validators.reviews import valid_review_reason, valid_not_executed_review, valid_uid_as_row_in_review_queue
@@ -790,7 +790,7 @@ def send_news(request):
 
 # ajax - for fuzzy search
 @view_config(route_name='fuzzy_search', renderer='json')
-@validate(valid_issue_by_id, invalid_user, has_keywords(('type', int), ('value', str), ('statement_uid', int)))
+@validate(valid_issue_by_id, invalid_user, valid_fuzzy_search_mode, has_keywords(('value', str), ('statement_uid', int)))
 def fuzzy_search(request):
     """
     ajax interface for fuzzy string search
@@ -800,14 +800,12 @@ def fuzzy_search(request):
     """
     logger('views', 'main: {}'.format(request.json_body))
 
-    _tn = Translator(get_language_from_cookie(request))
     mode = request.validated['type']
     value = request.validated['value']
     db_issue = request.validated['issue']
     statement_uid = request.validated['statement_uid']
     db_user = request.validated['user']
-    return fuzzy_string_matcher.get_prediction(_tn, db_user, db_issue, request.application_url, value, mode,
-                                               statement_uid)
+    return fuzzy_string_matcher.get_prediction(db_user, db_issue, value, mode, statement_uid)
 
 
 # #######################################

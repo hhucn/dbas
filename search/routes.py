@@ -20,8 +20,8 @@ def get_duplicates_or_reasons_path(issue_uid: int, statement_uid: int, search_va
     This method contains all parameters used in search(service).
 
     :param issue_uid: uid of the issue to search in
+    :param statement_uid: uid of the statement which is supposed to be a duplicate or reason
     :param search_value: text to be searched for
-    :return: query satisfied the requirements of search(service)
     :return: query satisfied the requirements of search(service) to get duplicates or reasons fitting search_value
     """
     suffix = '/duplicates_reasons?id={}&statement_uid={}&search={}'.format(issue_uid, statement_uid, search_value)
@@ -34,7 +34,7 @@ def get_edits_path(issue_uid: int, statement_uid: int, search_value: str = '') -
     This method contains all parameters used in search(service).
 
     :param issue_uid: uid of the issue to search in
-    :param statement_uid: uid of the statement which is supposed to be a duplicate or reason
+    :param statement_uid: uid of the statement which had some edits
     :param search_value: text to be searched for
     :return: query satisfied the requirements of search(service) to get edits fitting search_value
     """
@@ -52,5 +52,5 @@ def get_suggestions_path(issue_uid: int, position: bool, search_value: str = '')
     :param search_value: text to be searched for
     :return: query satisfied the requirements of search(service) to get suggestions fitting search_value
     """
-    suffix = '/suggestions?id={}&start={}&search={}'.format(issue_uid, position, search_value)
+    suffix = '/suggestions?id={}&position={}&search={}'.format(issue_uid, position, search_value)
     return ROUTE_API + suffix
