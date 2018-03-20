@@ -264,10 +264,6 @@ def __get_author_data(uid, query, main_page):
     if not db_user:
         return 'Missing author with uid ' + str(uid), False
 
-    db_settings = DBDiscussionSession.query(Settings).get(uid)
-    if not db_settings:
-        return 'Missing settings of author with uid ' + str(uid), False
-
     img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, 20, True))
     return '<a href="{}/user/{}">{} {}</a> ({})'.format(main_page, db_user.uid, img, db_user.nickname,
                                                         db_user.uid), True
