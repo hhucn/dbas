@@ -104,8 +104,9 @@ class ValidateUserLoginLogoutRoute(unittest.TestCase):
 class TestSystemRoutes(unittest.TestCase):
     def test_empty_route(self):
         request = construct_dummy_request()
-        response = apiviews.empty(request)
-        self.assertEqual(response['status'], 'error')
+        self.assertEqual(0, len(request.errors))
+        apiviews.empty(request)
+        self.assertNotEqual(0, len(request.errors))
 
     def test_server_available(self):
         request = construct_dummy_request()

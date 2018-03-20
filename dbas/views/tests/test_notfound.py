@@ -1,5 +1,7 @@
 import unittest
 
+from cornice.util import _JSONError
+
 from dbas.views import notfound, main_api
 
 from dbas.tests.utils import construct_dummy_request
@@ -22,6 +24,6 @@ class NotFoundViewTests(unittest.TestCase):
         verify_dictionary_of_view(response)
 
     def test_empty_route(self):
-        request = testing.DummyRequest()
+        request = construct_dummy_request()
         response = main_api(request)
-        self.assertEqual(response['status'], 'error')
+        self.assertEqual(_JSONError, type(response))
