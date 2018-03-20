@@ -577,6 +577,12 @@ function GuiHandler() {
      * @param callbackId
      * @param type
      * @param reason
+     *       val a dictionary containing the information of the choosen search result.
+     *       text: stores the purely text (not highlighted)
+     *       html: stores the highlighting
+     *
+     *  Method to interact with the suggestions of a specific search.
+     *
      */
     this.setStatementsAsProposal = function (parsedData, callbackId, type, reason) {
         var callbackElement = $('#' + callbackId);
@@ -588,46 +594,34 @@ function GuiHandler() {
             return;
         }
 
-        var token, button, spanDist, spanText, index, text, img;
+        var button, spanText, index, img;
         callbackElement.focus();
 
         $.each(parsedData.values, function (key, val) {
             index = val.index;
 
-            token = callbackElement.val();
-
-            // make all tokens bold
-            var nonEditedValue = val.text;
-            // replacement from http://stackoverflow.com/a/280805/2648872
-            text = val.text.replace(new RegExp("(" + (token + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1") + ")", 'gi'), "</strong>$1<strong>");
-            text = '<strong>' + text;
-
             button = $('<button>')
                 .attr('type', 'button')
                 .attr('class', 'list-group-item')
                 .attr('id', 'proposal_' + index)
-                .attr('text', nonEditedValue)
+                .attr('text', val.text)
                 .hover(function () {
                         $(this).addClass('active');
                     },
                     function () {
                         $(this).removeClass('active');
                     });
+
             if (type === fuzzy_find_statement) {
                 button.attr('data-url', val.url);
             } else if (type === fuzzy_duplicate) {
                 button.attr('data-statement-uid', val.statement_uid);
             }
-            // we do not want the "Levensthein badge"
-            spanDist = '';//$('<span>').attr('class', 'badge').text(parsedData.distance_name + ' ' + distance);
-            spanText = $('<span>').attr('id', 'proposal_' + index + '_text').html(text);
-            img = $('<img>').addClass('preload-image').addClass('img-circle').attr('style', 'height: 20pt; margin-right: 1em;').attr('src', val.avatar);
+            // use the pre highlighted html key to get the highlighted string
+            spanText = $('<span>').attr('id', 'proposal_' + index + '_text').html(val.html);
 
-            if (type === fuzzy_find_user) {
-                button.append(img).append(spanText);
-            } else {
-                button.append(img).append(spanDist).append(spanText);
-            }
+            img = $('<img>').addClass('preload-image').addClass('img-circle').attr('style', 'height: 20pt; margin-right: 1em;').attr('src', val.avatar);
+            button.append(img).append(spanText);
 
             button.click(function () {
                 _this.clearProposalSpace(callbackId);

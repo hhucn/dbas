@@ -41,6 +41,3 @@ class TestRequester(unittest.TestCase):
     def test_edits_not_empty_1(self):
         results = get_edits(4, 58)
         self.assertNotEqual(0, len(results))
-
-    def teardown_package(self):
-        pass

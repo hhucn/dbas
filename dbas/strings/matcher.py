@@ -9,84 +9,87 @@ from collections import OrderedDict
 from itertools import islice
 
 from Levenshtein import distance
-from pyramid.response import Response
 from sqlalchemy import func
 
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Statement, User, TextVersion, Issue
-from dbas.lib import get_public_profile_picture, nick_of_anonymous_user
-from dbas.query_wrapper import get_not_disabled_statement_as_query
 from dbas.helper.url import UrlManager
+from dbas.lib import get_public_profile_picture, nick_of_anonymous_user
+from dbas.logger import logger
+from dbas.query_wrapper import get_not_disabled_statement_as_query
+from search.requester import elastic_search
 
 list_length = 5
 max_count_zeros = 5
 index_zeros = 3
 return_count = 10  # same number as in googles suggest list (16.12.2015)
 mechanism = 'Levensthein'
-# mechanism = 'SequenceMatcher'
 
 
-def get_prediction(_tn, db_user, db_issue, application_url, value, mode, statement_uid):
+def get_prediction(db_user: User, db_issue: Issue, search_value: str, mode: int, statement_uid: int) -> dict:
     """
     Get dictionary with matching words, based on the given mode
 
-    :param _tn: Translator
-    :param db_user: User
-    :param db_issue: Issue
-    :param application_url: application_url
-    :param value: users value, which should be the base for searching
-    :param mode: int
-    :param extra: Array
-    :return: Dictionary
+    :param statement_uid: the uid of the statement to be looked at
+    :param db_user: Current user
+    :param db_issue:  current Issue the user looks at, used to get the uid of the issue to search at
+    :param search_value: users value, which should be the base for searching
+    :param mode: form of search the user chooses
+    :return: Dictionary with the corresponding search results
     """
 
-    return_dict = {}
-    if mode == 0:  # start statement
-        return_dict['values'] = get_strings_for_start(value, db_issue.uid, True)
-        return_dict['distance_name'] = mechanism
+    try:
+        if mode == 5:
+            logger('Matcher', 'Mode 5 is active', error=False)
+            return __levensthein_search(db_user, db_issue, search_value, mode, statement_uid)
+
+        return elastic_search(db_issue, search_value, mode, statement_uid)
+
+    except Exception as ex:
+        logger('Matcher', 'An error occurred while requesting elasticsearch: {}'.format(ex), error=True)
+
+    return __levensthein_search(db_user, db_issue, search_value, mode, statement_uid)
+
+
+def __levensthein_search(db_user: User, db_issue: Issue, search_value: str, mode: int, statement_uid: int) -> dict:
+    return_dict = {'distance_name': mechanism}
+
+    if mode in [0, 2]:  # start statement / premise
+        return_dict['values'] = get_suggestions_for_positions(search_value, db_issue.uid, mode == 0)
 
     elif mode == 1:  # edit statement popup
-        return_dict['values'] = get_strings_for_edits(value, statement_uid)
-        return_dict['distance_name'] = mechanism
-
-    elif mode == 2:  # start premise
-        return_dict['values'] = get_strings_for_start(value, db_issue.uid, False)
-        return_dict['distance_name'] = mechanism
+        return_dict['values'] = get_strings_for_edits(search_value, statement_uid)
 
     elif mode in [3, 4]:  # adding reasons / duplicates
-        return_dict['values'] = get_strings_for_duplicates_or_reasons(value, db_issue.uid, statement_uid)
-        return_dict['distance_name'] = mechanism
+        return_dict['values'] = get_strings_for_duplicates_or_reasons(search_value, db_issue.uid, statement_uid)
 
     elif mode == 5:  # getting public nicknames
-        return_dict['values'] = get_strings_for_public_nickname(value, db_user.global_nickname)
-        return_dict['distance_name'] = mechanism
+        return_dict['values'] = get_strings_for_public_nickname(search_value, db_user.global_nickname)
 
     elif mode in [8, 9]:  # search everything
-        return_dict['values'] = get_all_statements_with_value(db_issue.uid, application_url, value)
-        return_dict['distance_name'] = mechanism
-    else:
-        return Response({'status_code': 400})
+        return_dict['values'] = get_all_statements_with_value(search_value, db_issue.uid)
 
     return return_dict
 
 
-def get_all_statements_with_value(issue_uid, application_url, value):
+def get_all_statements_with_value(search_value: str, issue_uid: int) -> list:
     """
-    Returns all statements, where with the value
+    Returns all statements matching the given search_value
 
-    :param issue_uid: issue_uid
-    :param application_url: application_url
-    :param value: string
-    :return: dict()
+    :param issue_uid: uid of the issue to be searched in
+    :param search_value: text to be searched for
+    :return: statements matching the given search value in the given issue, uses levensthein.
+
     """
     db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue_uid).all()
     return_array = []
     slug = DBDiscussionSession.query(Issue).get(issue_uid).slug
     _um = UrlManager(slug=slug)
     for stat in db_statements:
-        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(TextVersion.uid.asc()).first()
-        if value.lower() in db_tv.content.lower():
-            rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
+        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(
+            TextVersion.uid.asc()).first()
+        if search_value.lower() in db_tv.content.lower():
+            rd = __get_fuzzy_string_dict(current_text=search_value, return_text=db_tv.content, uid=db_tv.statement_uid)
             rd['url'] = _um.get_url_for_statement_attitude(db_tv.statement_uid)
             return_array.append(rd)
 
@@ -95,22 +98,23 @@ def get_all_statements_with_value(issue_uid, application_url, value):
     return return_array[:list_length]
 
 
-def get_strings_for_start(value, issue, is_position):
+def get_suggestions_for_positions(search_value: str, issue_uid: int, position: bool) -> list:
     """
     Checks different position-strings for a match with given value
 
-    :param value: string
-    :param issue: int
-    :param is_position: boolean
-    :return: dict()
+    :param search_value: text to be searched for
+    :param issue_uid: uid of the issue to be searched in
+    :param position: position of the statement
+    :return: suggestions for statements with a certain position matching the search_value
     """
-    db_statements = get_not_disabled_statement_as_query().filter(Statement.is_position == is_position,
-                                                                 Statement.issue_uid == issue).all()
+    db_statements = get_not_disabled_statement_as_query().filter(Statement.is_position == position,
+                                                                 Statement.issue_uid == issue_uid).all()
     return_array = []
     for stat in db_statements:
-        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(TextVersion.uid.asc()).first()
-        if value.lower() in db_tv.content.lower():
-            rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)
+        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(
+            TextVersion.uid.asc()).first()
+        if search_value.lower() in db_tv.content.lower():
+            rd = __get_fuzzy_string_dict(current_text=search_value, return_text=db_tv.content, uid=db_tv.statement_uid)
             return_array.append(rd)
 
     return_array = __sort_array(return_array)
@@ -118,13 +122,13 @@ def get_strings_for_start(value, issue, is_position):
     return return_array[:list_length]
 
 
-def get_strings_for_edits(value, statement_uid):
+def get_strings_for_edits(search_value: str, statement_uid: int) -> list:
     """
-    Checks different textversion-strings for a match with given value
+    Returns suggestions for edits of certain statement matching search_value.
 
-    :param value: string
-    :param statement_uid: Statement.uid
-    :return: dict()
+    :param search_value: text to be searched for
+    :param statement_uid: the uid of the statement with edits
+    :return: suggestions for edits of a certain statement matching the search_value
     """
 
     db_tvs = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=statement_uid).all()  # TODO #432
@@ -132,8 +136,9 @@ def get_strings_for_edits(value, statement_uid):
     return_array = []
     index = 1
     for textversion in db_tvs:
-        if value.lower() in textversion.content.lower():
-            rd = __get_fuzzy_string_dict(current_text=value, return_text=textversion.content, uid=textversion.statement_uid)  # TODO #432
+        if search_value.lower() in textversion.content.lower():
+            rd = __get_fuzzy_string_dict(current_text=search_value, return_text=textversion.content,
+                                         uid=textversion.statement_uid)  # TODO #432
             return_array.append(rd)
             index += 1
 
@@ -142,47 +147,46 @@ def get_strings_for_edits(value, statement_uid):
     return return_array[:list_length]
 
 
-def get_strings_for_duplicates_or_reasons(value, issue, statement_uid):
+def get_strings_for_duplicates_or_reasons(search_value: str, issue_uid: int, statement_uid: int) -> list:
     """
     Checks different textversion-strings for a match with given value
 
-    :param value: string
-    :param issue: Issue.uid
+    :param search_value: string
+    :param issue_uid: Issue.uid
     :param statement_uid: integer
     :return: dict()
     """
-    db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue).all()
+    db_statements = get_not_disabled_statement_as_query().filter_by(issue_uid=issue_uid).all()
     return_array = []
 
     for stat in db_statements:
         if stat.uid is statement_uid:
             continue
 
-        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(TextVersion.uid.asc()).first()
-        if value.lower() in db_tv.content.lower():  # and db_tv.content.lower() != oem_value.lower():
-            rd = __get_fuzzy_string_dict(current_text=value, return_text=db_tv.content, uid=db_tv.statement_uid)  # TODO #432
+        db_tv = DBDiscussionSession.query(TextVersion).filter_by(statement_uid=stat.uid).order_by(
+            TextVersion.uid.asc()).first()
+        if search_value.lower() in db_tv.content.lower():  # and db_tv.content.lower() != oem_value.lower():
+            rd = __get_fuzzy_string_dict(current_text=search_value, return_text=db_tv.content,
+                                         uid=db_tv.statement_uid)  # TODO #432
             return_array.append(rd)
 
     return_array = __sort_array(return_array)
 
-    # logger('fuzzy_string_matcher', 'get_strings_for_duplicates_or_reasons',
-    # 'string: {}, issue {}, len(dict): '.format(value, issue, len(return_array))
-
     return return_array[:list_length]
 
 
-def get_strings_for_issues(value):
+def get_strings_for_issues(search_value: str) -> list:
     """
     Checks different issue-strings for a match with given value
 
-    :param value: string
+    :param search_value: string
     :return: dict()
     """
     db_issues = DBDiscussionSession.query(Issue).all()
     return_array = []
 
     for index, issue in enumerate(db_issues):
-        rd = __get_fuzzy_string_dict(current_text=value, return_text=issue.title)
+        rd = __get_fuzzy_string_dict(current_text=search_value, return_text=issue.title)
         return_array.append(rd)
 
     return_array = __sort_array(return_array)
@@ -190,19 +194,20 @@ def get_strings_for_issues(value):
     return return_array[:list_length]
 
 
-def get_strings_for_search(value):
+def get_strings_for_search(search_value: str) -> dict:
     """
     Returns all statements which have a substring of the given value
 
-    :param value: String
+    :param search_value: String
     :return: dict() with Statements.uid as key and 'text', 'distance' as well as 'arguments' as values
     """
     tmp_dict = OrderedDict()
-    db_statements = get_not_disabled_statement_as_query().join(TextVersion, Statement.textversion_uid == TextVersion.uid).all()
+    db_statements = get_not_disabled_statement_as_query().join(TextVersion,
+                                                               Statement.textversion_uid == TextVersion.uid).all()
     for stat in db_statements:
-        if value.lower() in stat.textversions.content.lower():
+        if search_value.lower() in stat.textversions.content.lower():
             # get distance between input value and saved value
-            rd = __get_fuzzy_string_dict(current_text=value, return_text=stat.textversions.content, uid=stat.uid)
+            rd = __get_fuzzy_string_dict(current_text=search_value, return_text=stat.textversions.content, uid=stat.uid)
             tmp_dict[str(stat.uid)] = rd
 
     tmp_dict = __sort_dict(tmp_dict)
@@ -213,7 +218,7 @@ def get_strings_for_search(value):
     return return_dict
 
 
-def __get_fuzzy_string_dict(index=0, current_text='', return_text='', uid=0):
+def __get_fuzzy_string_dict(index: int = 0, current_text: str = '', return_text: str = '', uid: int = 0) -> dict:
     """
     Returns dictionary with index, distance, text and statement_uid as keys
 
@@ -226,33 +231,37 @@ def __get_fuzzy_string_dict(index=0, current_text='', return_text='', uid=0):
     return {'index': index,
             'distance': get_distance(current_text.lower(), return_text.lower()),
             'text': return_text,
+            'html': __highlight_fuzzy_string(return_text, current_text),
             'statement_uid': uid}
 
 
-def get_strings_for_public_nickname(value, nickname):
+def get_strings_for_public_nickname(search_value: str, nickname: str) -> list:
     """
     Returns dictionaries with public nicknames of users, where the nickname containts the value
 
-    :param value: String
+    :param search_value: String
     :param nickname: current users nickname
     :return: dict()
     """
-    db_user = DBDiscussionSession.query(User).filter(func.lower(User.public_nickname).contains(func.lower(value)),
-                                                     ~User.public_nickname.in_([nickname, 'admin', nick_of_anonymous_user])).all()
+    db_user = DBDiscussionSession.query(User).filter(
+        func.lower(User.public_nickname).contains(func.lower(search_value)),
+        ~User.public_nickname.in_(
+            [nickname, 'admin', nick_of_anonymous_user])).all()
     return_array = []
 
     for index, user in enumerate(db_user):
-        dist = get_distance(value, user.public_nickname)
+        dist = get_distance(search_value, user.public_nickname)
         return_array.append({'index': index,
                              'distance': dist,
                              'text': user.public_nickname,
+                             'html': __highlight_fuzzy_string(nickname, search_value),
                              'avatar': get_public_profile_picture(user)})
 
     return_array = __sort_array(return_array)
     return return_array[:list_length]
 
 
-def __sort_array(inlist):
+def __sort_array(inlist: list) -> list:
     """
     Returns sorted array, based on the distance
 
@@ -265,7 +274,6 @@ def __sort_array(inlist):
     if mechanism == 'SequenceMatcher':  # sort descending
         newlist = reversed(newlist)
 
-    # add index
     for index, dic in enumerate(newlist):
         dic['index'] = index
         return_list.append(dic)
@@ -273,7 +281,7 @@ def __sort_array(inlist):
     return return_list
 
 
-def __sort_dict(dictionary):
+def __sort_dict(dictionary: dict) -> dict:
     """
     Returns sorted dictionary, based on the distance
 
@@ -293,7 +301,7 @@ def __sort_dict(dictionary):
     return return_dict
 
 
-def get_distance(string_a, string_b):
+def get_distance(string_a: str, string_b: str) -> str:
     """
     Returns the distance between two string. Distance is based on Levensthein or difflibs Sequence Matcher
 
@@ -301,14 +309,13 @@ def get_distance(string_a, string_b):
     :param string_b: String
     :return: distance as zero filled string
     """
-    # logger('fuzzy_string_matcher', 'get_distance', string_a + ' - ' + string_b)
     if mechanism == 'Levensthein':
         return get_lev_distance(string_a, string_b)
     else:
         return get_difflib_distance(string_a, string_b)
 
 
-def get_lev_distance(a, b):
+def get_lev_distance(a: str, b: str) -> str:
     """
     Returns the levensthein distance between to strings
 
@@ -317,11 +324,10 @@ def get_lev_distance(a, b):
     :return: distance between a and b
     """
     dist = distance(a.strip().lower(), b.strip().lower())
-    #  logger('fuzzy_string_matcher', 'get_distance', 'levensthein: ' + str(dist) + ', value: ' + a.lower() + ' in: ' + b.lower())
     return str(dist).zfill(max_count_zeros)
 
 
-def get_difflib_distance(a, b):
+def get_difflib_distance(a: str, b: str) -> str:
     """
     Returns the difflib distance between to strings
 
@@ -331,5 +337,16 @@ def get_difflib_distance(a, b):
     """
     matcher = difflib.SequenceMatcher(lambda x: x == " ", a.lower(), b.lower())
     dist = str(round(matcher.ratio() * 100, 1))[:-2]
-    # logger('fuzzy_string_matcher', 'get_distance', 'SequenceMatcher: ' + str(matcher.ratio()) + ', value: ' + a.lower() + ' in: ' +  b.lower())
     return str(dist).zfill(max_count_zeros)
+
+
+def __highlight_fuzzy_string(target: str, search_value: str) -> str:
+    """
+    Highlight every existence of target in the search_value with the <em> tag.
+    This <em> tag can be replaces with any other tag.
+
+    :param target: the haystack to search in
+    :param search_value: the needle to search for target
+    :return: a highlighted html string
+    """
+    return target.replace(search_value, "<em>" + search_value + "</em>")
