@@ -88,7 +88,7 @@ def get_all_infos_about_argument(db_argument: Argument, main_page, db_user, lang
 
     db_author = DBDiscussionSession.query(User).get(db_argument.author_uid)
     return_dict['vote_count'] = str(len(db_votes))
-    return_dict['author'] = db_author.get_global_nickname()
+    return_dict['author'] = db_author.global_nickname
     return_dict['author_url'] = main_page + '/user/' + str(db_author.uid)
     return_dict['gravatar'] = get_profile_picture(db_author)
     return_dict['timestamp'] = sql_timestamp_pretty_print(db_argument.timestamp, db_argument.lang)
@@ -100,7 +100,7 @@ def get_all_infos_about_argument(db_argument: Argument, main_page, db_user, lang
     public_page = dict()
     for vote in db_votes:
         db_author = DBDiscussionSession.query(User).get(vote.author_uid)
-        name = db_author.get_global_nickname()
+        name = db_author.global_nickname
         if db_user.nickname == db_author.nickname:
             name += ' (' + _t.get(_.itsYou) + ')'
         supporters.append(name)

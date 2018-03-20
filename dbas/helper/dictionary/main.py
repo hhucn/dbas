@@ -206,9 +206,9 @@ class DictionaryHelper(object):
         statements = user.get_statement_count_of(db_user, False)
         arg_vote, stat_vote = user.get_mark_count_of(db_user)
         arg_clicks, stat_clicks = user.get_click_count_of(db_user)
-        public_nick = db_user.get_global_nickname()
+        public_nick = db_user.global_nickname
         db_group = DBDiscussionSession.query(Group).get(db_user.group_uid)
-        db_settings = db_user.get_settings()
+        db_settings = db_user.settings
         db_language = DBDiscussionSession.query(Language).get(db_settings.lang_uid)
 
         group = db_group.name if db_group else '-'

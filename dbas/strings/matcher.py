@@ -58,7 +58,7 @@ def get_prediction(_tn, db_user, db_issue, application_url, value, mode, stateme
         return_dict['distance_name'] = mechanism
 
     elif mode == 5:  # getting public nicknames
-        return_dict['values'] = get_strings_for_public_nickname(value, db_user.get_global_nickname())
+        return_dict['values'] = get_strings_for_public_nickname(value, db_user.global_nickname)
         return_dict['distance_name'] = mechanism
 
     elif mode in [8, 9]:  # search everything

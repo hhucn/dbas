@@ -358,7 +358,7 @@ def __get_author_of_statement(uid):
         TextVersion.uid.asc()).first()  # TODO #432
     db_author = DBDiscussionSession.query(User).get(db_tv.author_uid)
     gravatar = get_profile_picture(db_author, 40)
-    name = db_author.get_global_nickname()
+    name = db_author.global_nickname
     return {'name': name, 'gravatar_url': gravatar}
 
 
@@ -372,7 +372,7 @@ def __get_editor_of_statement(uid):
         TextVersion.uid.desc()).first()  # TODO #432
     db_editor = DBDiscussionSession.query(User).get(db_statement.author_uid)
     gravatar = get_profile_picture(db_editor, 40)
-    name = db_editor.get_global_nickname()
+    name = db_editor.global_nickname
     return {'name': name, 'gravatar': gravatar}
 
 
@@ -445,7 +445,7 @@ def __get_extras_dict(statement):
 
     return_dict = {
         'text': db_textversion_author.content,
-        'author': db_author.get_global_nickname(),
+        'author': db_author.global_nickname,
         'author_gravatar': get_profile_picture(db_author, 20),
         'votes': len(db_votes),
         'was_modified': 'false'
@@ -453,7 +453,7 @@ def __get_extras_dict(statement):
 
     if db_modifier.uid != db_author.uid:
         return_dict.update({
-            'modifier': db_modifier.get_global_nickname(),
+            'modifier': db_modifier.global_nickname,
             'modifier_gravatar': get_profile_picture(db_modifier, 20),
             'was_modified': 'true'
         })
