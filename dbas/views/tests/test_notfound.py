@@ -1,5 +1,10 @@
 import unittest
 
+from cornice.util import _JSONError
+
+from dbas.views import notfound, main_api
+
+from dbas.tests.utils import construct_dummy_request
 from pyramid import testing
 
 from dbas.helper.test import verify_dictionary_of_view
@@ -14,10 +19,11 @@ class NotFoundViewTests(unittest.TestCase):
         testing.tearDown()
 
     def test_page(self):
-        from dbas.views import notfound as d
-
-        request = testing.DummyRequest()
-        response = d(request)
+        request = construct_dummy_request()
+        response = notfound(request)
         verify_dictionary_of_view(response)
 
-        # place for additional stuff
+    def test_empty_route(self):
+        request = construct_dummy_request()
+        response = main_api(request)
+        self.assertEqual(_JSONError, type(response))

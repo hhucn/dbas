@@ -110,6 +110,7 @@ def main(global_config, **settings):
     config.add_route('main_discussions_overview', '/mydiscussions')
     config.add_route('main_user', '/user/{uid:\d+}')
     config.add_route('main_graphiql', '/graphiql')
+    config.add_route('main_api', '/api')
 
     # ajax for navigation logic, administration, settings and editing/viewing log
     config.add_route('user_login', '{url:.*}user_login')

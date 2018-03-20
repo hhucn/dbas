@@ -6,6 +6,9 @@ Collection of pyramids views components of D-BAS' core.
 
 from time import sleep
 
+from cornice.util import json_error
+
+from dbas.validators.lib import add_error
 from pyramid.httpexceptions import HTTPFound, HTTPBadRequest
 from pyramid.security import forget
 from pyramid.view import view_config
@@ -66,6 +69,13 @@ def __modifiy_discussion_url(prep_dict: dict) -> dict:
         if el is 'url':
             prep_dict['url'] = '/discuss' + prep_dict['url']
     return prep_dict
+
+
+# fallback for an empty api route
+@view_config(route_name='main_api', renderer='json')
+def main_api(request):
+    add_error(request, 'Route not found', 'There was no route given')
+    return json_error(request)
 
 
 # ajax - getting complete track of the user

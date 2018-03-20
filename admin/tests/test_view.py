@@ -1,6 +1,11 @@
 import unittest
 
+import transaction
 from pyramid import testing
+
+from admin.views import main_table, main_admin
+from dbas.database import DBDiscussionSession
+from dbas.database.discussion_model import User
 
 
 class AdminViewTest(unittest.TestCase):
@@ -11,8 +16,13 @@ class AdminViewTest(unittest.TestCase):
     def tearDown(self):
         testing.tearDown()
 
+    def __update_user(self, nickname):
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
+        db_user.update_last_login()
+        db_user.update_last_action()
+        transaction.commit()
+
     def test_main_admin_no_author(self):
-        from admin.views import main_admin
         request = testing.DummyRequest()
         response = main_admin(request)
         self.assertIn('title', response)
@@ -22,7 +32,7 @@ class AdminViewTest(unittest.TestCase):
 
     def test_main_admin(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from admin.views import main_admin
+        self.__update_user('Tobias')
         request = testing.DummyRequest()
         response = main_admin(request)
         self.assertIn('title', response)
@@ -31,21 +41,18 @@ class AdminViewTest(unittest.TestCase):
         self.assertIn('dashboard', response)
 
     def test_main_table_no_author(self):
-        from admin.views import main_table
         request = testing.DummyRequest()
         response = main_table(request)
         self.assertEqual(400, response.status_code)
 
     def test_main_table_error(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from admin.views import main_table
         request = testing.DummyRequest(matchdict={'table': 'fu'})
         response = main_table(request)
         self.assertEqual(400, response.status_code)
 
     def test_main_table(self):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
-        from admin.views import main_table
         request = testing.DummyRequest(matchdict={'table': 'User'})
         response = main_table(request)
         self.assertIn('title', response)
