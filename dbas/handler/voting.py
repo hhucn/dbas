@@ -17,26 +17,31 @@ from dbas.lib import nick_of_anonymous_user
 from dbas.logger import logger
 
 
-def add_click_for_argument(argument_uid, nickname):
+def add_click_for_argument(db_argument: Argument, db_user: User) -> bool:
     """
     Increases clicks of a given argument.
 
-    :param argument_uid: id of the argument
-    :param nickname: request.authenticated_userid
-    :return: Boolean
+    :param db_argument: Argument from User
+    :param db_user: User
+    :return:
     """
-    db_user = DBDiscussionSession.query(User).filter_by(nickname=str(nickname)).first()
-    if not db_user or not is_integer(argument_uid) or db_user.nickname == nick_of_anonymous_user:
-        logger('VotingHelper', 'User or argument does not exists', error=True)
-        return False
+    if isinstance(db_argument, int):
+        db_argument = DBDiscussionSession.query(Argument).get(db_argument)
+        if not db_argument:
+            return False
+    if isinstance(db_user, str):
+        db_user = DBDiscussionSession.query(User).filter_by(nickname=db_user).first()
+        if not db_user:
+            return False
 
-    logger('VotingHelper', 'increasing argument ' + str(argument_uid) + ' vote')
-    db_argument = DBDiscussionSession.query(Argument).get(argument_uid)
+    if db_user.nickname == nick_of_anonymous_user:
+        logger('VotingHelper', 'User is anonymous, don\'t counting clicks')
+        return False
+    logger('VotingHelper', 'Increasing argument ' + str(db_argument.uid) + ' vote')
 
     if db_argument.argument_uid is None:
         logger('VotingHelper', 'Undercut depth 0')
         __add_click_for_argument(db_user, db_argument)
-
     else:
         db_undercuted_arg_step_1 = DBDiscussionSession.query(Argument).get(db_argument.argument_uid)
 

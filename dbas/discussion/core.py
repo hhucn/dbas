@@ -1,7 +1,6 @@
 from typing import Union
 
 import dbas.handler.issue as issue_helper
-from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import Argument, User, Issue, Statement
 from dbas.handler import user
 from dbas.handler.voting import add_click_for_argument
@@ -10,8 +9,7 @@ from dbas.helper.dictionary.items import ItemDictHelper
 from dbas.helper.views import handle_justification_statement, handle_justification_dontknow, \
     handle_justification_argument
 from dbas.input_validator import is_integer, check_belonging_of_argument, check_belonging_of_premisegroups, \
-    related_with_support, check_reaction, \
-    check_belonging_of_arguments
+    related_with_support
 from dbas.logger import logger
 from dbas.query_wrapper import get_not_disabled_arguments_as_query
 from dbas.review.helper.reputation import add_reputation_for, rep_reason_first_argument_click
@@ -147,53 +145,42 @@ def justify_argument(db_issue: Issue, db_user: User, db_argument: Argument, atti
     }
 
 
-def reaction(request_dict: dict) -> Union[dict, None]:
+def reaction(db_issue: Issue, db_user: User, db_arg_user: Argument, db_arg_sys: Argument, relation: str, history,
+             path) -> dict:
     """
     Initialize the reaction step for a position in a discussion. Creates helper and returns a dictionary containing
     different feedback options for the confrontation with an argument in a discussion.
 
-    :param request_dict: dict out of pyramid's request object including issue, slug and history and more
-    :rtype: dict
-    :return: prepared collection matchdict for the discussion
+    :param db_issue:
+    :param db_user:
+    :param db_arg_user:
+    :param db_arg_sys:
+    :param relation:
+    :param history:
+    :param path:
+    :return:
     """
-    logger('Core', 'main')
+    logger('Core', 'Entering discussion.reaction')
 
-    nickname = request_dict['nickname']
-    db_issue = request_dict['issue']
-    history = request_dict['history']
-    slug = db_issue.slug
-    db_user = request_dict['user']
-
-    # get parameters
-    arg_id_user = request_dict['matchdict'].get('arg_id_user')
-    attack = request_dict['matchdict'].get('mode')
-    arg_id_sys = request_dict['matchdict'].get('arg_id_sys')
-    tmp_argument = DBDiscussionSession.query(Argument).get(arg_id_user)
-
-    if not check_reaction(arg_id_user, arg_id_sys, attack) or not check_belonging_of_arguments(db_issue.uid,
-                                                                                               [arg_id_user,
-                                                                                                arg_id_sys]):
-        logger('discussion_reaction', 'wrong belonging of arguments', error=True)
-        return None
+    arg_id_user = db_arg_user.uid
+    attack = relation
+    arg_id_sys = db_arg_sys.uid
 
     # set votes and reputation
-    add_rep, broke_limit = add_reputation_for(nickname, rep_reason_first_argument_click)
-    add_click_for_argument(arg_id_user, nickname)
+    add_rep, broke_limit = add_reputation_for(db_user, reason=rep_reason_first_argument_click)
+    add_click_for_argument(db_arg_user, db_user)
 
-    issue_dict = issue_helper.prepare_json_of_issue(db_issue, db_user)
-    disc_ui_locales = issue_dict['lang']
-
-    supportive = tmp_argument.is_supportive
-    _ddh = DiscussionDictHelper(disc_ui_locales, db_user.nickname, history, slug=slug, broke_limit=broke_limit)
-    _idh = ItemDictHelper(disc_ui_locales, db_issue, path=request_dict['path'], history=history)
+    supportive = db_arg_user.is_supportive
+    _ddh = DiscussionDictHelper(db_issue.lang, db_user.nickname, history, slug=db_issue.slug, broke_limit=broke_limit)
+    _idh = ItemDictHelper(db_issue.lang, db_issue, path=path, history=history)
     discussion_dict = _ddh.get_dict_for_argumentation(arg_id_user, supportive, arg_id_sys, attack, history, db_user)
     item_dict = _idh.get_array_for_reaction(arg_id_sys, arg_id_user, supportive, attack, discussion_dict['gender'])
 
     prepared_discussion = {
-        'issues': issue_dict,
+        'issues': issue_helper.prepare_json_of_issue(db_issue, db_user),
         'discussion': discussion_dict,
         'items': item_dict,
-        'title': issue_dict['title']
+        'title': db_issue.title
     }
 
     return prepared_discussion

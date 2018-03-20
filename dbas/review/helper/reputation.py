@@ -125,7 +125,7 @@ def get_reputation_of(db_user: User, only_today=False):
     return count, db_user.is_author() or db_user.is_admin()
 
 
-def add_reputation_for(user, reason):
+def add_reputation_for(user: User, reason):
     """
     Add reputation for the given nickname with the reason only iff the reason can be added. For example all reputation
     for 'first' things cannot be given twice.
