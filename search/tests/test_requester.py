@@ -10,7 +10,7 @@ from search.requester import get_suggestions, get_duplicates_or_reasons, get_sta
 
 class TestRequester(unittest.TestCase):
     def setUp(self):
-        time.sleep(5)
+        time.sleep(8)
         settings = add_settings_to_appconfig()
         DBDiscussionSession.configure(bind=get_dbas_db_configuration('discussion', settings))
 

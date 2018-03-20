@@ -10,7 +10,7 @@ from search import ROUTE_API
 class TestRoutes(unittest.TestCase):
 
     def setUp(self):
-        time.sleep(5)
+        time.sleep(8)
 
     def test_get_suggestions_status_200(self):
         response = requests.get(ROUTE_API + '/suggestions?id=1')
