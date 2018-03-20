@@ -96,28 +96,7 @@ class VotingHelperTest(unittest.TestCase):
         self.clear_every_vote()
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
 
-        val = add_click_for_argument([], 1100)
-        self.assertFalse(val)
-
-        val = add_click_for_argument([], self.user.nickname)
-        self.assertFalse(val)
-
-        val = add_click_for_argument([0], self.user.nickname)
-        self.assertFalse(val)
-
-        val = add_click_for_argument([1], self.user.nickname)
-        self.assertFalse(val)
-
-        val = add_click_for_argument(None, self.user.nickname)
-        self.assertFalse(val)
-
-        val = add_click_for_argument('a', self.user.nickname)
-        self.assertFalse(val)
-
         val = add_click_for_argument(1, self.user.nickname + '#')
-        self.assertFalse(val)
-
-        val = add_click_for_argument(0, 1)
         self.assertFalse(val)
 
         self.check_tables_of_user_for_n_rows(self.user, 0, 0, 0, 0)
