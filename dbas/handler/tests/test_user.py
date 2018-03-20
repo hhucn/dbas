@@ -27,7 +27,7 @@ class UserHandlerTests(unittest.TestCase):
         self.user.last_action = old_ts
         self.user.last_login = old_ts
         DBDiscussionSession.add(self.user)
-        settings = self.user.get_settings()
+        settings = self.user.settings
         settings.should_hold_the_login(False)
         DBDiscussionSession.add(settings)
         transaction.commit()

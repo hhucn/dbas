@@ -3,7 +3,7 @@ import unittest
 import transaction
 from pyramid import testing
 
-from nose.tools import assert_true, assert_less, assert_equal, assert_greater, assert_is_none
+from nose.tools import assert_true, assert_less, assert_equal, assert_greater, assert_is_none, assert_not_equal
 from dbas.database import DBDiscussionSession
 from dbas.database.discussion_model import User, History, Issue
 from dbas.handler import history
@@ -13,21 +13,26 @@ class HistoryHandlerTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp()
         self.user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-        self.issue = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).first()
-        self.settings = self.user.get_settings()
-        self.settings.set_last_topic_uid(self.issue.uid)
-        DBDiscussionSession.add(self.settings)
+        self.first_issue = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).first()
+        self.last_issue = DBDiscussionSession.query(Issue).filter_by(is_disabled=False).order_by(Issue.uid.desc()).first()
+        self.history = '/attitude/2-/justify/2/t-/reaction/12/undercut/13'
+        settings = self.user.settings
+        settings.set_last_topic_uid(self.first_issue.uid)
+        DBDiscussionSession.add(settings)
         DBDiscussionSession.flush()
         transaction.commit()
-        self.history = '/attitude/2-/justify/2/t-/reaction/12/undercut/13'
 
     def test_save_issue_uid(self):
-        assert_true(history.save_issue_uid(self.issue.uid, self.user))
-        assert_equal(self.issue.uid, self.settings.last_topic_uid)
+        settings = self.user.settings
+        assert_not_equal(self.last_issue.uid, settings.last_topic_uid)
+        history.save_issue_uid(self.last_issue.uid, self.user)
+        settings = self.user.settings
+        assert_equal(self.last_issue.uid, settings.last_topic_uid)
 
     def test_get_saved_issue(self):
         assert_is_none(history.get_saved_issue(None))
-        assert_equal(self.settings.last_topic_uid, history.get_saved_issue(self.user).uid)
+        settings = self.user.settings
+        assert_equal(settings.last_topic_uid, history.get_saved_issue(self.user).uid)
 
     def test_get_splitted_history(self):
         hist = history.get_splitted_history(self.history)

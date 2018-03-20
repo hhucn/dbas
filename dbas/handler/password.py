@@ -82,7 +82,7 @@ def request_password(email: str, mailer: Mailer, _tn: Translator):
         DBDiscussionSession.add(db_user)
         transaction.commit()
 
-        db_language = DBDiscussionSession.query(Language).get(db_user.get_settings().lang_uid)
+        db_language = DBDiscussionSession.query(Language).get(db_user.settings.lang_uid)
 
         body = _tn.get(_.nicknameIs) + db_user.nickname + '\n'
         body += _tn.get(_.newPwdIs) + pwd + '\n\n'

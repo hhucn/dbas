@@ -132,7 +132,7 @@ def send_request_for_recent_reviewer_socketio(nickname, main_page, queue):
     """
     logger('Websocket.lib', 'main - nickname {} for queue {}'.format(nickname, queue))
     db_user = DBDiscussionSession.query(User).filter_by(nickname=nickname).first()
-    reviewer_name = db_user.get_global_nickname()
+    reviewer_name = db_user.global_nickname
     reviewer_image_url = get_profile_picture(db_user)
     use_https = 'dbas' in main_page
     return __send_request_for_recent_review_to_socketio(reviewer_name, reviewer_image_url, queue, use_https)

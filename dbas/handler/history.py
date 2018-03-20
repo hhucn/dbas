@@ -3,7 +3,6 @@ Provides helping function for creating the history as bubbles.
 
 .. codeauthor: Tobias Krauthoff <krauthoff@cs.uni-duesseldorf.de
 """
-
 import transaction
 from pyramid.request import Request
 
@@ -28,11 +27,10 @@ def save_issue_uid(issue_uid: int, db_user: User):
     :param db_user: User
     :return: Boolean
     """
-    db_settings = db_user.get_settings()
+    db_settings = db_user.settings
     db_settings.set_last_topic_uid(issue_uid)
     DBDiscussionSession.add(db_settings)
     transaction.commit()
-    return True
 
 
 def get_saved_issue(db_user: User):
@@ -44,7 +42,7 @@ def get_saved_issue(db_user: User):
     """
     if not db_user or db_user.nickname == nick_of_anonymous_user:
         return None
-    db_issue = DBDiscussionSession.query(Issue).get(db_user.get_settings().last_topic_uid)
+    db_issue = DBDiscussionSession.query(Issue).get(db_user.settings.last_topic_uid)
     if not db_issue:
         return None
 

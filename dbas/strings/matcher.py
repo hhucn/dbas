@@ -64,7 +64,8 @@ def __levensthein_search(db_user: User, db_issue: Issue, search_value: str, mode
         return_dict['values'] = get_strings_for_duplicates_or_reasons(search_value, db_issue.uid, statement_uid)
 
     elif mode == 5:  # getting public nicknames
-        return_dict['values'] = get_strings_for_public_nickname(search_value, db_user.get_global_nickname())
+        return_dict['values'] = get_strings_for_public_nickname(search_value, db_user.global_nickname)
+        return_dict['distance_name'] = mechanism
 
     elif mode in [8, 9]:  # search everything
         return_dict['values'] = get_all_statements_with_value(search_value, db_issue.uid)

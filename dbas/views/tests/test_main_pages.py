@@ -286,7 +286,7 @@ class MainUserView(unittest.TestCase):
         self.config.testing_securitypolicy(userid='Tobias', permissive=True)
 
         db_user = DBDiscussionSession.query(User).filter_by(nickname='Tobias').first()
-        db_settings = db_user.get_settings()
+        db_settings = db_user.settings
         db_settings.set_show_public_nickname(True)
         transaction.commit()
 

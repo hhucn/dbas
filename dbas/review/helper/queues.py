@@ -387,7 +387,7 @@ def __get_last_reviewer_of(reviewer_type, main_page):
             tmp_dict = dict()
             tmp_dict['img_src'] = get_profile_picture(db_user, 40)
             tmp_dict['url'] = main_page + '/user/' + str(db_user.uid)
-            tmp_dict['name'] = db_user.get_global_nickname()
+            tmp_dict['name'] = db_user.global_nickname
             # skip it, if it is already in
             if tmp_dict in users_array:
                 limit += 1 if len(db_reviews) > limit else 0

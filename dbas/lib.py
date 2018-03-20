@@ -763,7 +763,7 @@ def get_user_by_private_or_public_nickname(nickname):
     elif db_public_user:
         uid = db_public_user.uid
 
-    db_settings = DBDiscussionSession.query(Settings).get(uid)
+    db_settings = DBDiscussionSession.query(Settings).filter_by(author_uid=uid).first()
 
     if not db_settings:
         return None
@@ -1054,7 +1054,7 @@ def get_profile_picture(user: User, size: int = 80, ignore_privacy_settings: boo
     """
     additional_id = ''
     if user and isinstance(user, User):
-        additional_id = '' if user.get_settings().should_show_public_nickname or ignore_privacy_settings else 'x'
+        additional_id = '' if user.settings.should_show_public_nickname or ignore_privacy_settings else 'x'
 
     return __get_gravatar(user, additional_id, size)
 
@@ -1071,7 +1071,7 @@ def get_public_profile_picture(user: User, size: int = 80):
     additional_id = 'y'
     if user and isinstance(user, User):
         additional_id = ''
-        if user.get_settings().should_show_public_nickname:
+        if user.settings.should_show_public_nickname:
             additional_id = 'x'
         if len(str(user.oauth_provider)) > 0:
             additional_id = '{}{}'.format(user.oauth_provider, user.oauth_provider_id)
@@ -1106,14 +1106,12 @@ def get_author_data(uid, gravatar_on_right_side=True, linked_with_users_page=Tru
     :return: HTML-String
     """
     db_user = DBDiscussionSession.query(User).get(int(uid))
-    db_settings = DBDiscussionSession.query(Settings).get(int(uid))
     if not db_user:
         return None, 'Missing author with uid ' + str(uid), False
-    if not db_settings:
-        return None, 'Missing settings of author with uid ' + str(uid), False
+
     img = '<img class="img-circle" src="{}">'.format(get_profile_picture(db_user, profile_picture_size))
 
-    nick = db_user.get_global_nickname()
+    nick = db_user.global_nickname
     link_begin = ''
     link_end = ''
     if linked_with_users_page:
