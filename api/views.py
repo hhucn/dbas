@@ -29,7 +29,8 @@ from dbas.lib import (get_all_arguments_by_statement,
 from dbas.strings.translator import Keywords as _
 from dbas.strings.translator import get_translation
 from dbas.validators.core import has_keywords, validate
-from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude
+from dbas.validators.discussion import valid_issue_by_slug, valid_position, valid_statement, valid_attitude, \
+    valid_argument, valid_relation
 from .lib import HTTP204, flatten, json_to_dict, logger
 from .login import validate_credentials, validate_login, valid_token, token_to_database, valid_token_optional
 from .references import (get_all_references_by_reference_text,
@@ -282,6 +283,32 @@ def discussion_justify_statement(request) -> dict:
     }
 
 
+@justify_argument.get()
+@validate(valid_issue_by_slug, valid_token_optional, valid_argument(location='path'), valid_attitude, valid_relation)
+def discussion_justify_argument(request) -> dict:
+    """
+    Justify an argument. Attitude and relation are important to show the correct items for the user.
+
+    /{slug}/justify/{argument_id}/{attitude}/{relation}
+
+    :param request:
+    :return:
+    """
+    db_user = request.validated['user']
+    db_issue = request.validated['issue']
+    history = history_handler.handle_history(request, db_user, db_issue)
+
+    prepared_discussion = dbas.discussion.justify_argument(db_issue, db_user, request.validated['argument'],
+                                                           request.validated['attitude'], request.validated['relation'],
+                                                           history, request.path)
+    bubbles, items = extract_items_and_bubbles(prepared_discussion)
+
+    return {
+        'bubbles': bubbles,
+        'items': items
+    }
+
+
 # -----------------------------------------------------------------------------
 
 def prepare_user_information(request):
@@ -358,16 +385,6 @@ def prepare_data_assign_reference(request, func: Callable[[bool, dict], Any]):
     return return_dict
 
 
-def prepare_dbas_request_dict(request) -> dict:
-    """
-    Wraps D-BAS' creation of the request dict
-
-    :param request:
-    :return:
-    """
-    return dbas.prepare_request_dict(request)
-
-
 @reaction.get(validators=validate_login)
 def discussion_reaction(request):
     """
@@ -377,7 +394,7 @@ def discussion_reaction(request):
     :return: dbas.discussion_reaction(True)
 
     """
-    request_dict = prepare_dbas_request_dict(request)
+    request_dict = dbas.prepare_request_dict(request)
     return dbas.discussion.reaction(request_dict)
 
 
@@ -396,13 +413,10 @@ def discussion_support(request):
     api_data["slug"] = request.matchdict["slug"]
     api_data["arg_user_uid"] = request.matchdict["arg_user_uid"]
     api_data["arg_system_uid"] = request.matchdict["arg_system_uid"]
-    request_dict = prepare_dbas_request_dict(request)
+    request_dict = dbas.prepare_request_dict(request)
     return dbas.discussion.support(request_dict, api_data=api_data)
 
 
-#
-# Add new statements / positions
-#
 @start_statement.post(validators=validate_login, require_csrf=False)
 def add_start_statement(request):
     """

@@ -671,17 +671,17 @@ def discussion_justify_argument(request) -> dict:
     return prepared_discussion
 
 
-# reaction page
 @view_config(route_name='discussion_reaction', renderer='../templates/discussion.pt', permission='everybody')
-@validate(check_authentication, invalid_user)
+@validate(check_authentication, valid_user_optional)
 def discussion_reaction(request):
     """
     View configuration for discussion step, where we will ask the user for her reaction (support, undercut, rebut)...
 
+    Path: /discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys
+
     :param request: request of the web server
     :return: dictionary
     """
-    # '/discuss/{slug}/reaction/{arg_id_user}/{mode}*arg_id_sys'
     logger('discussion_reaction', 'request.matchdict: {}'.format(request.matchdict))
 
     prepared_discussion, rdict = __call_from_discussion_step(request, discussion.reaction)
